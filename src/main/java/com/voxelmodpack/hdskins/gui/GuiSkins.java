@@ -1,0 +1,638 @@
+package com.voxelmodpack.hdskins.gui;
+
+import static net.minecraft.client.renderer.GlStateManager.*;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.DoubleBuffer;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
+
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.GLU;
+
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.exceptions.AuthenticationException;
+import com.mojang.authlib.minecraft.MinecraftSessionService;
+import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
+import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
+import com.voxelmodpack.common.net.upload.IUploadCompleteCallback;
+import com.voxelmodpack.common.net.upload.ThreadMultipartPostUpload;
+import com.voxelmodpack.common.net.upload.awt.IOpenFileCallback;
+import com.voxelmodpack.common.net.upload.awt.ThreadOpenFilePNG;
+import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.mod.HDSkinsModCore;
+import com.voxelmodpack.voxelmenu.IPanoramaRenderer;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Session;
+
+public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpenFileCallback, IPanoramaRenderer {
+    private static final ResourceLocation vignette = new ResourceLocation("textures/misc/vignette.png");
+    private static final int MAX_SKIN_DIMENSION = 8192;
+    private static final String skinServerId = "7853dfddc358333843ad55a2c7485c4aa0380a51";
+    private int updateCounter = 0;
+    private ResourceLocation viewportTexture;
+    private IPanoramaRenderer panoramaRenderer;
+    private static final ResourceLocation[] cubemapTextures = {
+            new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_0.png"),
+            new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_1.png"),
+            new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_2.png"),
+            new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_3.png"),
+            new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_4.png"),
+            new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_5.png") };
+    private GuiButton btnBrowse;
+    private GuiButton btnUpload;
+    private GuiButton btnClear;
+    private GuiButton btnBack;
+    protected EntityPlayerModel localPlayer;
+    protected EntityPlayerModel remotePlayer;
+    protected DoubleBuffer doubleBuffer;
+    private String screenTitle;
+    private String uploadError;
+    private volatile String skinMessage = "Choose a file";
+    private String skinUploadMessage = "Uploading skin please wait...";
+    private volatile boolean fetchingSkin;
+    private volatile boolean uploadingSkin;
+    private volatile boolean pendingRemoteSkinRefresh;
+    private volatile boolean throttledByMojang;
+    private ThreadOpenFilePNG openFileThread;
+    private ThreadMultipartPostUpload threadSkinUpload;
+    private Object skinLock = new Object();
+    private File pendingSkin;
+    private File selectedSkin;
+    private float uploadOpacity = 0.0F;
+    private float lastPartialTick;
+
+    public GuiSkins() {
+        Minecraft minecraft = Minecraft.getMinecraft();
+        this.screenTitle = "Skin Manager";
+        GameProfile profile = minecraft.getSession().getProfile();
+        this.localPlayer = new EntityPlayerModel(profile);
+        this.remotePlayer = new EntityPlayerModel(profile);
+        RenderManager rm = Minecraft.getMinecraft().getRenderManager();
+        rm.renderEngine = minecraft.getTextureManager();
+        rm.options = minecraft.gameSettings;
+        rm.livingPlayer = this.localPlayer;
+
+        try {
+            this.remotePlayer.setRemoteSkin();
+        } catch (Exception var4) {
+            var4.printStackTrace();
+            this.throttledByMojang = true;
+        }
+
+        this.fetchingSkin = true;
+        this.panoramaRenderer = HDSkinsModCore.getPanoramaRenderer(this);
+    }
+
+    @Override
+    public void updateScreen() {
+        ++this.updateCounter;
+        this.panoramaRenderer.updatePanorama();
+        this.localPlayer.updateModel();
+        this.remotePlayer.updateModel();
+        if (this.fetchingSkin && this.remotePlayer.isTextureSetupComplete()) {
+            this.fetchingSkin = false;
+            this.btnClear.enabled = true;
+        }
+
+        synchronized (this.skinLock) {
+            if (this.pendingSkin != null) {
+                this.setLocalSkin(this.pendingSkin);
+                this.selectedSkin = this.pendingSkin;
+                this.pendingSkin = null;
+            }
+        }
+
+        this.btnUpload.enabled = this.selectedSkin != null;
+        if (this.pendingRemoteSkinRefresh) {
+            this.pendingRemoteSkinRefresh = false;
+            this.fetchingSkin = true;
+            this.btnClear.enabled = false;
+            this.setRemoteSkin();
+        }
+
+    }
+
+    protected void setLocalSkin(File pendingSkin) {
+        this.localPlayer.setLocalSkin(pendingSkin);
+    }
+
+    protected void setRemoteSkin() {
+        this.remotePlayer.setRemoteSkin();
+    }
+
+    @Override
+    public void updatePanorama() {}
+
+    @Override
+    public int getUpdateCounter() {
+        return this.updateCounter;
+    }
+
+    @Override
+    public void setWorldAndResolution(Minecraft par1Minecraft, int par2, int par3) {
+        super.setWorldAndResolution(par1Minecraft, par2, par3);
+        this.panoramaRenderer.setPanoramaResolution(par1Minecraft, par2, par3);
+    }
+
+    @Override
+    public void setPanoramaResolution(Minecraft minecraft, int width, int height) {}
+
+    protected List<GuiButton> getControlList() {
+        return this.buttonList;
+    }
+
+    @Override
+    public void initGui() {
+        super.initGui();
+        this.panoramaRenderer.initPanoramaRenderer();
+        this.getControlList().clear();
+        this.getControlList().add(this.btnBrowse = new GuiButton(0, 30, this.height - 36, 60, 20, "Browse..."));
+        this.getControlList()
+                .add(this.btnUpload = new GuiButton(1, this.width / 2 - 24, this.height / 2 - 10, 48, 20, ">>"));
+        this.getControlList().add(this.btnClear = new GuiButton(2, this.width - 90, this.height - 36, 60, 20, "Clear"));
+        this.getControlList()
+                .add(this.btnBack = new GuiButton(3, this.width / 2 - 50, this.height - 36, 100, 20, "Close"));
+        this.btnUpload.enabled = false;
+        this.btnBrowse.enabled = !this.mc.isFullScreen();
+    }
+
+    @Override
+    public void initPanoramaRenderer() {
+        this.viewportTexture = this.mc.getTextureManager().getDynamicTextureLocation("skinpanorama",
+                new DynamicTexture(256, 256));
+    }
+
+    @Override
+    public void onGuiClosed() {
+        super.onGuiClosed();
+        this.localPlayer.releaseTextures();
+        this.remotePlayer.releaseTextures();
+    }
+
+    @Override
+    public void onFileOpenDialogClosed(JFileChooser fileDialog, int dialogResult) {
+        this.openFileThread = null;
+
+        try {
+            if (dialogResult == 0) {
+                File ex = fileDialog.getSelectedFile();
+                if (!ex.exists()) {
+                    this.skinMessage = "File not readable";
+                    return;
+                }
+
+                BufferedImage chosenImage = ImageIO.read(ex);
+                if (!isPowerOfTwo(chosenImage.getWidth())
+                        || (chosenImage.getWidth() != chosenImage.getHeight() * 2
+                                && chosenImage.getWidth() != chosenImage.getHeight())
+                        || chosenImage.getWidth() > MAX_SKIN_DIMENSION
+                        || chosenImage.getHeight() > MAX_SKIN_DIMENSION) {
+                    this.skinMessage = "Not a valid skin file";
+                    return;
+                }
+
+                synchronized (this.skinLock) {
+                    this.pendingSkin = ex;
+                }
+            }
+        } catch (Exception var8) {
+            this.skinMessage = "Error opening skin file";
+            var8.printStackTrace();
+        }
+
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton guiButton) {
+        if (this.openFileThread == null && !this.uploadingSkin) {
+            if (this.uploadError != null) {
+                this.uploadError = null;
+            } else {
+                if (guiButton.id == this.btnBrowse.id) {
+                    this.selectedSkin = null;
+                    this.localPlayer.releaseTextures();
+                    this.openFileThread = new ThreadOpenFilePNG(this.mc, "Choose skin", this);
+                    this.openFileThread.start();
+                }
+
+                if (guiButton.id == this.btnUpload.id && this.selectedSkin != null) {
+                    this.uploadSkin(this.mc.getSession(), this.selectedSkin);
+                    this.selectedSkin = null;
+                }
+
+                if (guiButton.id == this.btnClear.id && this.remotePlayer.isTextureSetupComplete()) {
+                    this.clearUploadedSkin(this.mc.getSession());
+                }
+
+                if (guiButton.id == this.btnBack.id) {
+                    this.mc.displayGuiScreen(new GuiMainMenu());
+                }
+
+            }
+        }
+    }
+
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
+        if (this.uploadError != null) {
+            this.uploadError = null;
+        } else {
+            super.mouseClicked(mouseX, mouseY, button);
+            byte top = 30;
+            int bottom = this.height - 40;
+            int mid = this.width / 2;
+            if ((mouseX > 30 && mouseX < mid - 30 || mouseX > mid + 30 && mouseX < this.width - 30) && mouseY > top
+                    && mouseY < bottom) {
+                this.localPlayer.swingArm();
+            } else if (mouseX > mid + 30 && mouseY > top && mouseX < this.width - 30 && mouseY < bottom) {
+                this.remotePlayer.swingArm();
+            }
+
+        }
+    }
+
+    @Override
+    protected void keyTyped(char keyChar, int keyCode) throws IOException {
+        if (this.openFileThread == null && !this.uploadingSkin) {
+            super.keyTyped(keyChar, keyCode);
+        }
+    }
+
+    public void setupCubemapCamera() {
+        matrixMode(5889);
+        pushMatrix();
+        loadIdentity();
+        GLU.gluPerspective(150.0F, 1.0F, 0.05F, 10.0F);
+        matrixMode(5888);
+        pushMatrix();
+        loadIdentity();
+    }
+
+    public void revertPanoramaMatrix() {
+        matrixMode(5889);
+        popMatrix();
+        matrixMode(5888);
+        popMatrix();
+    }
+
+    private void renderCubeMapTexture(int mouseX, int mouseY, float partialTick) {
+        this.setupCubemapCamera();
+        color(1.0F, 1.0F, 1.0F, 1.0F);
+        rotate(180.0F, 1.0F, 0.0F, 0.0F);
+        GL11.glEnable(3042);
+        GL11.glDisable(3008);
+        GL11.glDisable(2884);
+        depthMask(false);
+        blendFunc(770, 771);
+        byte blendIterations = 8;
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer wr = tessellator.getWorldRenderer();
+
+        for (int blendPass = 0; blendPass < blendIterations * blendIterations; ++blendPass) {
+            pushMatrix();
+            float offsetX = ((float) (blendPass % blendIterations) / (float) blendIterations - 0.5F) / 64.0F;
+            float offsetY = ((float) (blendPass / blendIterations) / (float) blendIterations - 0.5F) / 64.0F;
+            float offsetZ = 0.0F;
+            translate(offsetX, offsetY, offsetZ);
+            rotate(MathHelper.sin((this.updateCounter + 200 + partialTick) / 400.0F) * 25.0F + 20.0F, 1.0F,
+                    0.0F, 0.0F);
+            rotate(-(this.updateCounter + 200 + partialTick) * 0.1F, 0.0F, 1.0F, 0.0F);
+
+            for (int cubeSide = 0; cubeSide < 6; ++cubeSide) {
+                pushMatrix();
+                if (cubeSide == 1) {
+                    rotate(90.0F, 0.0F, 1.0F, 0.0F);
+                }
+
+                if (cubeSide == 2) {
+                    rotate(180.0F, 0.0F, 1.0F, 0.0F);
+                }
+
+                if (cubeSide == 3) {
+                    rotate(-90.0F, 0.0F, 1.0F, 0.0F);
+                }
+
+                if (cubeSide == 4) {
+                    rotate(90.0F, 1.0F, 0.0F, 0.0F);
+                }
+
+                if (cubeSide == 5) {
+                    rotate(-90.0F, 1.0F, 0.0F, 0.0F);
+                }
+
+                this.mc.getTextureManager().bindTexture(cubemapTextures[cubeSide]);
+                wr.startDrawingQuads();
+                wr.setColorRGBA_I(16777215, 255 / (blendPass + 1));
+                wr.addVertexWithUV(-1.0D, -1.0D, 1.0D, 0.0D, 0.0D);
+                wr.addVertexWithUV(1.0D, -1.0D, 1.0D, 1.0D, 0.0D);
+                wr.addVertexWithUV(1.0D, 1.0D, 1.0D, 1.0D, 1.0D);
+                wr.addVertexWithUV(-1.0D, 1.0D, 1.0D, 0.0D, 1.0D);
+                tessellator.draw();
+                popMatrix();
+            }
+
+            popMatrix();
+            colorMask(true, true, true, false);
+        }
+
+        wr.setTranslation(0.0D, 0.0D, 0.0D);
+        colorMask(true, true, true, true);
+        depthMask(true);
+        GL11.glEnable(2884);
+        GL11.glEnable(3008);
+        GL11.glEnable(2929);
+        this.revertPanoramaMatrix();
+    }
+
+    private void rotateAndBlurCubemap(float partialTick) {
+        this.mc.getTextureManager().bindTexture(this.viewportTexture);
+        GL11.glCopyTexSubImage2D(3553, 0, 0, 0, 0, 0, 256, 256);
+        GL11.glEnable(3042);
+        blendFunc(770, 771);
+        colorMask(true, true, true, false);
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer wr = tessellator.getWorldRenderer();
+        wr.startDrawingQuads();
+        byte blurPasses = 4;
+
+        for (int blurPass = 0; blurPass < blurPasses; ++blurPass) {
+            wr.setColorRGBA_F(1.0F, 1.0F, 1.0F, 1.0F / (blurPass + 1));
+            float var7 = (blurPass - blurPasses / 2) / 256.0F;
+            wr.addVertexWithUV(this.width, this.height, this.zLevel, 0.0F + var7, 0.0D);
+            wr.addVertexWithUV(this.width, 0.0D, this.zLevel, 1.0F + var7, 0.0D);
+            wr.addVertexWithUV(0.0D, 0.0D, this.zLevel, 1.0F + var7, 1.0D);
+            wr.addVertexWithUV(0.0D, this.height, this.zLevel, 0.0F + var7, 1.0D);
+        }
+
+        tessellator.draw();
+        colorMask(true, true, true, true);
+        GL11.glDisable(3042);
+    }
+
+    @Override
+    public boolean renderPanorama(int mouseX, int mouseY, float partialTicks) {
+        viewport(0, 0, 256, 256);
+        this.renderCubeMapTexture(mouseX, mouseY, partialTicks);
+        GL11.glDisable(3553);
+        GL11.glEnable(3553);
+
+        for (int tessellator = 0; tessellator < 8; ++tessellator) {
+            this.rotateAndBlurCubemap(partialTicks);
+        }
+
+        viewport(0, 0, this.mc.displayWidth, this.mc.displayHeight);
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer wr = tessellator.getWorldRenderer();
+        wr.startDrawingQuads();
+        float aspect = this.width > this.height ? 120.0F / this.width : 120.0F / this.height;
+        float uSample = this.height * aspect / 256.0F;
+        float vSample = this.width * aspect / 256.0F;
+        GL11.glTexParameteri(3553, 10241, 9729);
+        GL11.glTexParameteri(3553, 10240, 9729);
+        wr.setColorRGBA_F(1.0F, 1.0F, 1.0F, 1.0F);
+        wr.addVertexWithUV(0.0D, this.height, this.zLevel, 0.5F - uSample, 0.5F + vSample);
+        wr.addVertexWithUV(this.width, this.height, this.zLevel, 0.5F - uSample, 0.5F - vSample);
+        wr.addVertexWithUV(this.width, 0.0D, this.zLevel, 0.5F + uSample, 0.5F - vSample);
+        wr.addVertexWithUV(0.0D, 0.0D, this.zLevel, 0.5F + uSample, 0.5F + vSample);
+        tessellator.draw();
+        return true;
+    }
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTick) {
+        float deltaTime = this.updateCounter + partialTick - this.lastPartialTick;
+        this.lastPartialTick = this.updateCounter + partialTick;
+        GL11.glDisable(2912);
+        this.mc.entityRenderer.disableLightmap();
+        this.panoramaRenderer.renderPanorama(mouseX, mouseY, partialTick);
+        byte top = 30;
+        int bottom = this.height - 40;
+        int mid = this.width / 2;
+        int horizon = this.height / 2 + this.height / 5;
+        GL11.glPushAttrib(1048575);
+        Gui.drawRect(30, top, mid - 30, bottom, Integer.MIN_VALUE);
+        Gui.drawRect(mid + 30, top, this.width - 30, bottom, Integer.MIN_VALUE);
+        this.drawGradientRect(30, horizon, mid - 30, bottom, -2130706433, 16777215);
+        this.drawGradientRect(mid + 30, horizon, this.width - 30, bottom, -2130706433, 16777215);
+        super.drawScreen(mouseX, mouseY, partialTick);
+        popAttrib();
+        this.enableClipping(30, bottom);
+        float yPos = this.height * 0.75F;
+        float xPos1 = this.width * 0.25F;
+        float xPos2 = this.width * 0.75F;
+        float scale = this.height * 0.25F;
+        this.renderPlayerModel(this.localPlayer, xPos1, yPos, scale, xPos1 - mouseX, yPos - scale * 1.8F - mouseY,
+                partialTick);
+        this.renderPlayerModel(this.remotePlayer, xPos2, yPos, scale, xPos2 - mouseX, yPos - scale * 1.8F - mouseY,
+                partialTick);
+        this.disableClipping();
+        this.drawCenteredString(this.fontRendererObj, this.screenTitle, this.width / 2, 10, 16777215);
+        this.fontRendererObj.drawStringWithShadow("Local Skin", 34, 34, 16777215);
+        this.fontRendererObj.drawStringWithShadow("Server Skin", this.width / 2 + 34, 34, 16777215);
+        GL11.glDisable(2929);
+        depthMask(false);
+        this.drawGradientRect(30, this.height - 60, mid - 30, bottom, 0, -520093697);
+        this.drawGradientRect(mid + 30, this.height - 60, this.width - 30, bottom, 0, -520093697);
+        int labelwidth = (this.width / 2 - 80) / 2;
+        int opacity;
+        if (!this.localPlayer.isUsingLocalTexture()) {
+            opacity = this.fontRendererObj.getStringWidth(this.skinMessage) / 2;
+            Gui.drawRect(40, this.height / 2 - 12, this.width / 2 - 40, this.height / 2 + 12, -1342177280);
+            this.fontRendererObj.drawStringWithShadow(this.skinMessage, (int) (xPos1 - opacity), this.height / 2 - 4,
+                    16777215);
+        }
+
+        if (this.fetchingSkin) {
+            String opacity1 = this.throttledByMojang ? "\u00a7cMojang API Error!" : "Fetching skin...";
+            int stringWidth = this.fontRendererObj.getStringWidth(opacity1) / 2;
+            Gui.drawRect((int) (xPos2 - labelwidth), this.height / 2 - 12, this.width - 40, this.height / 2 + 12,
+                    -1342177280);
+            this.fontRendererObj.drawStringWithShadow(opacity1, (int) (xPos2 - stringWidth), this.height / 2 - 4,
+                    16777215);
+        }
+
+        if (this.uploadingSkin || this.uploadOpacity > 0.0F) {
+            if (!this.uploadingSkin) {
+                this.uploadOpacity -= deltaTime * 0.05F;
+            } else if (this.uploadOpacity < 1.0F) {
+                this.uploadOpacity += deltaTime * 0.1F;
+            }
+
+            if (this.uploadOpacity > 1.0F) {
+                this.uploadOpacity = 1.0F;
+            }
+
+            opacity = Math.min(180, (int) (this.uploadOpacity * 180.0F)) & 255;
+            if (this.uploadOpacity > 0.0F) {
+                Gui.drawRect(0, 0, this.width, this.height, opacity << 24 | 0);
+                if (this.uploadingSkin) {
+                    this.drawCenteredString(this.fontRendererObj, this.skinUploadMessage, this.width / 2,
+                            this.height / 2, opacity << 24 | 16777215);
+                }
+            }
+        }
+
+        if (this.uploadError != null) {
+            Gui.drawRect(0, 0, this.width, this.height, -1342177280);
+            this.drawCenteredString(this.fontRendererObj, "Uploading skin failed", this.width / 2, this.height / 2 - 10,
+                    -171);
+            this.drawCenteredString(this.fontRendererObj, this.uploadError, this.width / 2, this.height / 2 + 2,
+                    -43691);
+        }
+
+        depthMask(true);
+        GL11.glEnable(2929);
+    }
+
+    protected void renderVignette(int mouseX, int mouseY, float partialTick) {
+        GL11.glDisable(2929);
+        depthMask(false);
+        blendFunc(1, 774);
+        color(1.0F, 1.0F, 1.0F, 1.0F);
+        this.mc.getTextureManager().bindTexture(vignette);
+        GL11.glLogicOp(5386);
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer wr = tessellator.getWorldRenderer();
+        wr.startDrawingQuads();
+        wr.addVertexWithUV(0.0D, this.height, -90.0D, 0.0D, 1.0D);
+        wr.addVertexWithUV(this.width, this.height, -90.0D, 1.0D, 1.0D);
+        wr.addVertexWithUV(this.width, 0.0D, -90.0D, 1.0D, 0.0D);
+        wr.addVertexWithUV(0.0D, 0.0D, -90.0D, 0.0D, 0.0D);
+        tessellator.draw();
+        depthMask(true);
+        GL11.glDisable(3058);
+        GL11.glEnable(2929);
+        color(1.0F, 1.0F, 1.0F, 1.0F);
+        blendFunc(770, 771);
+    }
+
+    public void renderPlayerModel(EntityPlayerModel thePlayer, float xPosition, float yPosition, float scale,
+            float mouseX, float mouseY, float partialTick) {
+        GL11.glEnable(2903);
+        pushMatrix();
+        translate(xPosition, yPosition, 300.0F);
+        scale(-scale, scale, scale);
+        rotate(180.0F, 0.0F, 0.0F, 1.0F);
+        rotate(135.0F, 0.0F, 1.0F, 0.0F);
+        RenderHelper.enableStandardItemLighting();
+        rotate(-135.0F, 0.0F, 1.0F, 0.0F);
+        rotate(15.0F, 1.0F, 0.0F, 0.0F);
+        rotate((this.updateCounter + partialTick) * 2.5F, 0.0F, 1.0F, 0.0F);
+        thePlayer.rotationPitch = -((float) Math.atan(mouseY / 40.0F)) * 20.0F;
+        translate(0.0F, thePlayer.getYOffset(), 0.0F);
+        RenderManager rm = Minecraft.getMinecraft().getRenderManager();
+        rm.playerViewY = 180.0F;
+        rm.renderEntityWithPosYaw(thePlayer, 0.0D, 0.0D, 0.0D, 1.0F, 1.0F);
+        popMatrix();
+        RenderHelper.disableStandardItemLighting();
+        GL11.glDisable('\u803a');
+    }
+
+    protected final void enableClipping(int yTop, int yBottom) {
+        if (this.doubleBuffer == null) {
+            this.doubleBuffer = BufferUtils.createByteBuffer(32).asDoubleBuffer();
+        }
+
+        this.doubleBuffer.clear();
+        this.doubleBuffer.put(0.0D).put(1.0D).put(0.0D).put((-yTop)).flip();
+        GL11.glClipPlane(12288, this.doubleBuffer);
+        this.doubleBuffer.clear();
+        this.doubleBuffer.put(0.0D).put(-1.0D).put(0.0D).put(yBottom).flip();
+        GL11.glClipPlane(12289, this.doubleBuffer);
+        GL11.glEnable(12288);
+        GL11.glEnable(12289);
+    }
+
+    protected final void disableClipping() {
+        GL11.glDisable(12289);
+        GL11.glDisable(12288);
+    }
+
+    public static boolean isPowerOfTwo(int number) {
+        return number != 0 && (number & number - 1) == 0;
+    }
+
+    private boolean clearUploadedSkin(Session session) {
+        if (!this.registerServerConnection(session, skinServerId)) {
+            return false;
+        } else {
+            HashMap<String, Object> sourceData = new HashMap<String, Object>();
+            sourceData.put("user", session.getUsername());
+            sourceData.put("uuid", session.getPlayerID());
+            sourceData.put("clear", "1");
+            this.uploadError = null;
+            this.uploadingSkin = true;
+            this.skinUploadMessage = "Sending request to server please wait...";
+            this.threadSkinUpload = new ThreadMultipartPostUpload(HDSkinManager.getGatewayUrl(), sourceData, this);
+            this.threadSkinUpload.start();
+            return true;
+        }
+    }
+
+    private boolean uploadSkin(Session session, File skinFile) {
+        if (!this.registerServerConnection(session, skinServerId)) {
+            return false;
+        } else {
+            HashMap<String, Object> sourceData = new HashMap<String, Object>();
+            sourceData.put("user", session.getUsername());
+            sourceData.put("uuid", session.getPlayerID());
+            sourceData.put("skin", skinFile);
+            this.uploadError = null;
+            this.uploadingSkin = true;
+            this.skinUploadMessage = "Uploading skin please wait...";
+            this.threadSkinUpload = new ThreadMultipartPostUpload(HDSkinManager.getGatewayUrl(), sourceData, this);
+            this.threadSkinUpload.start();
+            return true;
+        }
+    }
+
+    private void setUploadError(String error) {
+        this.uploadError = error.startsWith("ERROR: ") ? error.substring(7) : error;
+        this.btnUpload.enabled = true;
+    }
+
+    @Override
+    public void onUploadComplete(String response) {
+        LiteLoaderLogger.info("Upload completed with: %s", new Object[] { response });
+        this.uploadingSkin = false;
+        this.threadSkinUpload = null;
+        if (!response.equalsIgnoreCase("OK")) {
+            this.setUploadError(response);
+        } else {
+            this.pendingRemoteSkinRefresh = true;
+        }
+    }
+
+    private boolean registerServerConnection(Session session, String serverId) {
+        try {
+            MinecraftSessionService e = (new YggdrasilAuthenticationService(this.mc.getProxy(),
+                    UUID.randomUUID().toString())).createMinecraftSessionService();
+            e.joinServer(session.getProfile(), session.getToken(), serverId);
+            return true;
+        } catch (AuthenticationException var4) {
+            this.setUploadError(var4.toString());
+            var4.printStackTrace();
+            return false;
+        }
+    }
+}

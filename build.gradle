@@ -1,0 +1,56 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		maven {
+			name = "forge"
+			url = "http://files.minecraftforge.net/maven"
+		}
+		maven {
+			name = "sonatype"
+			url = "https://oss.sonatype.org/content/repositories/snapshots/"
+		}
+        maven {
+            name = 'minecrell'
+            url = "http://repo.minecrell.net/snapshots"
+        }
+	}
+	dependencies {
+        classpath 'net.minecrell:VanillaGradle:3.0-SNAPSHOT'
+	}
+}
+evaluationDependsOnChildren()
+apply plugin: 'net.minecrell.vanilla'
+
+archivesBaseName = "mod_minelp"
+version = "1.8-UNOFFICIAL_mc1.8"
+
+minecraft {
+	version = "1.8"
+    mappings = 'snapshot_20150606'
+    clientTweaker = 'com.mumfrey.liteloader.launch.LiteLoaderTweaker'
+    // fix reobf issues
+    srgExtra "FD: com/voxelmodpack/common/properties/gui/GuiVoxelBoxSettingsPanel/zLevel bub/e"
+    srgExtra "FD: com/voxelmodpack/common/gui/GuiControl/zLevel bub/e"
+    srgExtra "FD: com/voxelmodpack/common/gui/GuiScreenEx/zLevel bub/e"
+}
+project(':voxellib').dependencies {
+    compile fileTree("libs")
+}
+dependencies {
+    compile project(':voxellib')
+}
+jar {
+    extension 'litemod'
+}
+task standaloneJar(type:Jar, dependsOn: [reobf, project(':voxellib').reobf]) {
+	extension "litemod"
+    from zipTree(jar.archivePath)
+    from project(':voxellib').jar.archivePath
+    classifier 'standalone'
+}
+artifacts {
+    archives standaloneJar
+}
+reobf {
+    setSrgMcp()
+}
