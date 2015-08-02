@@ -1123,11 +1123,12 @@ public class pm_newPonyAdv extends ModelPony {
 
         if (this.textureHeight == 64) {
             this.bipedLeftArm = new ModelRenderer(this, 32, 48);
-            this.bipedLeftLeg = new ModelRenderer(this, 32, 48);
+            this.bipedLeftLeg = new ModelRenderer(this, 16, 48);
 
             this.bipedRightArmwear = new ModelRenderer(this, 40, 32);
-            this.bipedLeftArmwear = new ModelRenderer(this, 48, 48);
             this.bipedRightLegwear = new ModelRenderer(this, 0, 32);
+
+            this.bipedLeftArmwear = new ModelRenderer(this, 48, 48);
             this.bipedLeftLegwear = new ModelRenderer(this, 0, 48);
         } else {
             this.bipedLeftArm = new ModelRenderer(this, 40, 16);
