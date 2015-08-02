@@ -78,6 +78,9 @@ public final class HDSkinManager {
 
     private static String resolvePlayerIdFromHash(String hash) {
         Minecraft mc = Minecraft.getMinecraft();
+        if (mc.theWorld == null) {
+            return null;
+        }
         Collection<NetworkPlayerInfo> playersInfo = mc.getNetHandler().func_175106_d();
         String uuid;
         // players
