@@ -67,8 +67,8 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
         }
 
         this.playerModel.armor.modelArmorChestplate.issneak = this.playerModel.armor.modelArmor.issneak = this.playerModel.model.issneak = player.isSneaking();
-        this.playerModel.armor.modelArmorChestplate.isFlying = this.playerModel.armor.modelArmor.isFlying = this.playerModel.model.isFlying = thePony.isFlying = player.capabilities.isFlying
-                || thePony.isPegasusFlying(player.posX, player.posY, player.posZ, player.fallDistance,
+        this.playerModel.armor.modelArmorChestplate.isFlying = this.playerModel.armor.modelArmor.isFlying = this.playerModel.model.isFlying = thePony.isFlying = thePony
+                .isPegasusFlying(player.posX, player.posY, player.posZ, player.fallDistance,
                         MineLPPrivateFields.isJumping.get(player).booleanValue(), player.onGround, this.renderManager.worldObj);
         this.playerModel.armor.modelArmorChestplate.isPegasus = this.playerModel.armor.modelArmor.isPegasus = this.playerModel.model.isPegasus = thePony
                 .isPegasus();
