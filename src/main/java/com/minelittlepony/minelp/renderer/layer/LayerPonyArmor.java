@@ -31,8 +31,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class LayerPonyArmor implements LayerRenderer {
 
-    private static final ResourceLocation ENCHANTED_ITEM_GLINT_RES = new ResourceLocation(
-            "textures/misc/enchanted_item_glint.png");
+    private static final ResourceLocation ENCHANTED_ITEM_GLINT_RES = new ResourceLocation("textures/misc/enchanted_item_glint.png");
 
     private static final Map<String, ResourceLocation> field_110859_k = Maps.newHashMap();
     private static final Map<String, ResourceLocation> ponyArmorMap = Maps.newHashMap();

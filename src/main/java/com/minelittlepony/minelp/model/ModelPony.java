@@ -84,7 +84,7 @@ public abstract class ModelPony extends ModelPlayer {
         }
     }
 
-    private void setModelVisibilities(AbstractClientPlayer clientPlayer) {
+    protected void setModelVisibilities(AbstractClientPlayer clientPlayer) {
         ModelPlayer modelplayer = this;
 
         if (clientPlayer.isSpectator()) {

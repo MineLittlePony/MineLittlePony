@@ -3,6 +3,7 @@ package com.minelittlepony.minelp.model.pony.armor;
 import com.minelittlepony.minelp.model.pony.pm_newPonyAdv;
 import com.minelittlepony.minelp.renderer.AniParams;
 
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -295,10 +296,11 @@ public class pm_newPonyArmor extends pm_newPonyAdv {
     }
 
     @Override
+    protected void setModelVisibilities(AbstractClientPlayer clientPlayer) {}
+
+    @Override
     public void setInvisible(boolean invisible) {
         super.setInvisible(invisible);
-        this.bipedLeftArm.showModel = invisible;
-        this.bipedRightArm.showModel = invisible;
         this.Bodypiece.showModel = invisible;
         extBody.showModel = invisible;
         for (ModelRenderer m : extHead) {
