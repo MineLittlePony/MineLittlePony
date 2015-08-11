@@ -2,6 +2,9 @@ package com.minelittlepony.minelp.hdskins.gui;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
+import java.awt.Color;
+import java.awt.Window.Type;
+import java.awt.dnd.DropTarget;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -11,13 +14,23 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 
+import org.apache.commons.io.FilenameUtils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
+import com.google.common.collect.Iterables;
 import com.minelittlepony.minelp.PonyManager;
+import com.minelittlepony.minelp.util.FileDropListener;
 import com.minelittlepony.minelp.util.MineLPLogger;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
@@ -84,6 +97,7 @@ public class GuiSkinsMineLP extends GuiScreen implements IUploadCompleteCallback
     private BufferedImage pendingSkinImage;
     private float uploadOpacity = 0.0F;
     private float lastPartialTick;
+    private JFrame fileDrop;
 
     public GuiSkinsMineLP() {
         Minecraft minecraft = Minecraft.getMinecraft();
@@ -181,7 +195,7 @@ public class GuiSkinsMineLP extends GuiScreen implements IUploadCompleteCallback
 
     @Override
     public void initGui() {
-        super.initGui();
+        enableDnd();
         this.panoramaRenderer.initPanoramaRenderer();
         this.getControlList().clear();
         this.getControlList().add(this.btnBrowse = new GuiButton(0, 30, this.height - 36, 60, 20, "Browse..."));
@@ -194,6 +208,48 @@ public class GuiSkinsMineLP extends GuiScreen implements IUploadCompleteCallback
         this.btnBrowse.enabled = !this.mc.isFullScreen();
     }
 
+    /**
+     * @wbp.parser.entryPoint
+     */
+    private void enableDnd() {
+        if (fileDrop != null && fileDrop.isVisible()) {
+            return;
+        }
+        fileDrop = new JFrame("Skin Drop");
+        fileDrop.setType(Type.UTILITY);
+        fileDrop.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        fileDrop.setResizable(false);
+        fileDrop.setTitle("Skin Drop");
+        fileDrop.setSize(256, 256);
+        fileDrop.setAlwaysOnTop(true);
+        fileDrop.getContentPane().setLayout(null);
+        JPanel panel = new JPanel();
+        panel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
+        panel.setBounds(10, 11, 230, 205);
+        fileDrop.getContentPane().add(panel);
+        JLabel txtInst = new JLabel("Drop skin file here");
+        txtInst.setHorizontalAlignment(SwingConstants.CENTER);
+        txtInst.setVerticalAlignment(SwingConstants.CENTER);
+        panel.add(txtInst);
+        // Display.setParent(canvas);
+        DropTarget dt = new DropTarget();
+        fileDrop.setDropTarget(dt);
+        try {
+            dt.addDropTargetListener(new FileDropListener() {
+                @Override
+                public void onDrop(List<File> files) {
+                    File skin = Iterables.getFirst(files, null);
+                    if (skin != null) {
+                        loadLocalFile(skin);
+                    }
+                }
+            });
+            fileDrop.setVisible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void initPanoramaRenderer() {
         this.viewportTexture = this.mc.getTextureManager().getDynamicTextureLocation("skinpanorama",
@@ -203,6 +259,7 @@ public class GuiSkinsMineLP extends GuiScreen implements IUploadCompleteCallback
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
+        this.fileDrop.dispose();
         this.localPlayer.releaseTextures();
         this.remotePlayer.releaseTextures();
         PonyManager.getInstance().getPonyFromResourceRegistry(this.localPlayer.getSkinTexture()).invalidateSkinCheck();
@@ -212,6 +269,7 @@ public class GuiSkinsMineLP extends GuiScreen implements IUploadCompleteCallback
     @Override
     public void onFileOpenDialogClosed(JFileChooser fileDialog, int dialogResult) {
         this.openFileThread = null;
+        this.btnBrowse.enabled = true;
         if (dialogResult == 0) {
             this.loadLocalFile(fileDialog.getSelectedFile());
         }
@@ -219,8 +277,16 @@ public class GuiSkinsMineLP extends GuiScreen implements IUploadCompleteCallback
     }
 
     private void loadLocalFile(File skinFile) {
+        Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+            @Override
+            public void run() {
+                localPlayer.releaseTextures();
+            }
+        });
         if (!skinFile.exists()) {
             this.skinMessage = "File not readable";
+        } else if (!FilenameUtils.isExtension(skinFile.getName(), new String[] { "png", "PNG" })) {
+            this.skinMessage = "File not PNG";
         } else {
             BufferedImage chosenImage;
             try {
@@ -259,6 +325,7 @@ public class GuiSkinsMineLP extends GuiScreen implements IUploadCompleteCallback
                     this.localPlayer.releaseTextures();
                     this.openFileThread = new ThreadOpenFilePNG(this.mc, "Choose skin", this);
                     this.openFileThread.start();
+                    guiButton.enabled = false;
                 }
 
                 if (guiButton.id == this.btnUpload.id) {
@@ -679,6 +746,14 @@ public class GuiSkinsMineLP extends GuiScreen implements IUploadCompleteCallback
             this.setUploadError(var4.toString());
             var4.printStackTrace();
             return false;
+        }
+    }
+
+    static {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
