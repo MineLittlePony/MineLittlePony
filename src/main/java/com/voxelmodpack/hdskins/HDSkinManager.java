@@ -3,7 +3,6 @@ package com.voxelmodpack.hdskins;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -13,8 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import com.google.common.cache.Cache;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.InsecureTextureException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -39,8 +37,8 @@ public final class HDSkinManager {
     private static String gatewayUrl = "skinmanager.voxelmodpack.com";
     private static String skinUrl = "skins.voxelmodpack.com";
     private static Cache<GameProfile, Map<Type, MinecraftProfileTexture>> skinsCache;
-    private static final BiMap<String, String> playerHashes = HashBiMap.create();
-    private static final Map<String, Map<Type, MinecraftProfileTexture>> cachedTextures = new HashMap<String, Map<Type, MinecraftProfileTexture>>();
+    private static final Map<String, String> playerHashes = Maps.newHashMap();
+    private static final Map<String, Map<Type, MinecraftProfileTexture>> cachedTextures = Maps.newHashMap();
 
     public static void onDownloadSkin(EventInfo<ThreadDownloadImageData> e) {
         ThreadDownloadImageData imageDownload = e.getSource();
@@ -116,14 +114,15 @@ public final class HDSkinManager {
     }
 
     private static String findUUID(GameProfile profile, Map<?, MinecraftProfileTexture> textures, String hash) {
+        String uuid = playerHashes.get(hash);
         for (MinecraftProfileTexture texture : textures.values()) {
             if (hash.equals(texture.getHash())) {
-                String uuid = trimUUID(profile.getId());
+                uuid = trimUUID(profile.getId());
                 playerHashes.put(hash, uuid);
-                return uuid;
+                break;
             }
         }
-        return null;
+        return uuid;
     }
 
     private static void storeTexturesForProfile(GameProfile profile, Map<Type, MinecraftProfileTexture> textures) {

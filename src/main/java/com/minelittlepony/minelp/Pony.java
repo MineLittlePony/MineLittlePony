@@ -348,6 +348,8 @@ public class Pony {
             return pegasusFlying = false;
         } else if (isJumping) {
             return true;
+        } else if (onGround) {
+            return false;
         } else {
             boolean falling = fallDistance > 0;
             boolean levitating = fallDistance == this.previousFallDistance;

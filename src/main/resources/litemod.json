@@ -2,7 +2,7 @@
     "name": "minelp",
     "mcversion": "1.8",
     "version": "1.8-UNOFFICIAL",
-    "revision": "185.16",
+    "revision": "185.18",
     "author": "Verdana, Rene_Z, Mumfrey, JoyJoy",
 	"voxelCommonJarName": "voxelcommon-2.4.0.jar",
     "classTransformerClasses": "com.minelittlepony.minelp.transformers.RenderPlayerTransformer",

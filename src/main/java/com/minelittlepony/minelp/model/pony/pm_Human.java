@@ -64,7 +64,6 @@ public class pm_Human extends ModelPony {
         return true;
     }
 
-
     @Override
     public void renderDrop(RenderManager rendermanager, ItemRenderer itemrenderer, EntityLivingBase entity) {
         this.renderDrop(itemrenderer, entity, this.bipedRightArm, 1.0F, -0.0625F, 0.4375F, 0.0625F);
