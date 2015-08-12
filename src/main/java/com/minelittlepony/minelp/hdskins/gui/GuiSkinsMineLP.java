@@ -24,6 +24,8 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.JavaVersion;
+import org.apache.commons.lang3.SystemUtils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
@@ -212,7 +214,10 @@ public class GuiSkinsMineLP extends GuiScreen implements IUploadCompleteCallback
      * @wbp.parser.entryPoint
      */
     private void enableDnd() {
-        if (fileDrop != null && fileDrop.isVisible()) {
+        if (!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_1_7))
+            return;
+        if (fileDrop != null) {
+            fileDrop.setVisible(true);
             return;
         }
         fileDrop = new JFrame("Skin Drop");
@@ -231,7 +236,7 @@ public class GuiSkinsMineLP extends GuiScreen implements IUploadCompleteCallback
         txtInst.setHorizontalAlignment(SwingConstants.CENTER);
         txtInst.setVerticalAlignment(SwingConstants.CENTER);
         panel.add(txtInst);
-        // Display.setParent(canvas);
+
         DropTarget dt = new DropTarget();
         fileDrop.setDropTarget(dt);
         try {
@@ -259,7 +264,8 @@ public class GuiSkinsMineLP extends GuiScreen implements IUploadCompleteCallback
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
-        this.fileDrop.dispose();
+        if (this.fileDrop != null)
+            this.fileDrop.dispose();
         this.localPlayer.releaseTextures();
         this.remotePlayer.releaseTextures();
         PonyManager.getInstance().getPonyFromResourceRegistry(this.localPlayer.getSkinTexture()).invalidateSkinCheck();
@@ -273,7 +279,6 @@ public class GuiSkinsMineLP extends GuiScreen implements IUploadCompleteCallback
         if (dialogResult == 0) {
             this.loadLocalFile(fileDialog.getSelectedFile());
         }
-
     }
 
     private void loadLocalFile(File skinFile) {
