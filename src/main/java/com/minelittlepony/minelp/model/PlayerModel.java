@@ -73,7 +73,7 @@ public class PlayerModel {
     }
 
     public void init() {
-        model.init();
+        model.init(0, 0);
         armor.modelArmorChestplate.init(0.0F, 1.0F);
         armor.modelArmor.init(0.0F, 0.5F);
     }

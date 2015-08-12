@@ -10,6 +10,7 @@ import com.minelittlepony.minelp.model.pony.pm_Human;
 import com.minelittlepony.minelp.model.pony.pm_newPonyAdv;
 import com.minelittlepony.minelp.renderer.layer.LayerHeldPonyItem;
 import com.minelittlepony.minelp.renderer.layer.LayerPonyArmor;
+import com.minelittlepony.minelp.renderer.layer.LayerPonyCape;
 import com.minelittlepony.minelp.renderer.layer.LayerPonySkull;
 import com.minelittlepony.minelp.util.MineLPPrivateFields;
 import com.mumfrey.liteloader.transformers.AppendInsns;
@@ -47,6 +48,7 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
         this.addLayer(new LayerHeldPonyItem(this));
         this.addLayer(new LayerArrow(this));
         this.addLayer(new LayerPonySkull(this));
+        this.addLayer(new LayerPonyCape(this));
     }
 
     @Obfuscated({ "a", "func_180596_a" })

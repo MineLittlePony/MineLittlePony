@@ -15,12 +15,7 @@ import com.minelittlepony.minelp.renderer.HornGlowRenderer;
 import com.minelittlepony.minelp.renderer.PlaneRenderer;
 
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 
 public class pm_newPonyAdv extends ModelPony {
@@ -1542,120 +1537,8 @@ public class pm_newPonyAdv extends ModelPony {
     }
 
     @Override
-    public void renderDrop(RenderManager rendermanager, ItemRenderer itemrenderer, EntityLivingBase entity) {
-
-        if (!this.isSleeping) {
-            if (this.isUnicorn && this.glowColor != 0) {
-                if (this.aimedBow) {
-                    this.renderDrop(itemrenderer, entity, this.unicornarm, 1.0F, 0.15F, 0.9375F, 0.0625F);
-                } else if (this.size == 0) {
-                    this.renderDrop(itemrenderer, entity, this.unicornarm, 1.0F, 0.35F, 0.5375F, -0.8F);
-                } else {
-                    this.renderDrop(itemrenderer, entity, this.unicornarm, 1.0F, 0.35F, 0.5375F, -0.45F);
-                }
-            } else if (this.size == 0) {
-                this.renderDrop(itemrenderer, entity, this.bipedRightArm, 1.0F, 0.08F, 0.8375F, 0.0625F);
-            } else {
-                this.renderDrop(itemrenderer, entity, this.bipedRightArm, 1.0F, -0.0625F, 0.8375F, 0.0625F);
-            }
-        }
-    }
-
-    @Override
-    public void renderCloak(EntityPlayer player, float par2) {
-        pushMatrix();
-        translate(0.0F, 0.24F, 0.0F);
-        if (this.size == 0) {
-            translate(0.0F, 0.67F, -0.04F);
-            scale(0.6F, 0.6F, 0.6F);
-        } else if (this.size == 2) {
-            translate(0.0F, -0.14F, -0.1F);
-            scale(1.15F, 1.2F, 1.2F);
-            if (this.issneak && !this.isFlying) {
-                translate(0.0F, 0.03F, 0.0F);
-            }
-        } else if (this.size == 3) {
-            translate(0.0F, -0.09F, 0.0F);
-            scale(1.0F, 1.0F, 1.0F);
-            if (this.issneak && !this.isFlying) {
-                translate(0.0F, 0.03F, 0.0F);
-            }
-        }
-
-        if (this.issneak && !this.isFlying) {
-            translate(0.0F, 0.4F, -0.12F);
-        }
-        double d = player.prevChasingPosX + (player.chasingPosX - player.prevChasingPosX) * par2
-                - (player.prevPosX + (player.posX - player.prevPosX) * par2);
-        double d1 = player.prevChasingPosY + (player.chasingPosY - player.prevChasingPosY) * par2
-                - (player.prevPosY + (player.posY - player.prevPosY) * par2);
-        double d2 = player.prevChasingPosZ + (player.chasingPosZ - player.prevChasingPosZ) * par2
-                - (player.prevPosZ + (player.posZ - player.prevPosZ) * par2);
-        float f10 = player.prevRenderYawOffset + (player.renderYawOffset - player.prevRenderYawOffset) * par2;
-        double d3 = MathHelper.sin(f10 * 3.1415927F / 180.0F);
-        double d4 = (-MathHelper.cos(f10 * 3.1415927F / 180.0F));
-        float f12 = (float) d1 * 10.0F;
-        if (f12 < -6.0F) {
-            f12 = -6.0F;
-        }
-
-        if (f12 > 32.0F) {
-            f12 = 32.0F;
-        }
-
-        float f13 = (float) (d * d3 + d2 * d4) * 100.0F;
-        float f14 = (float) (d * d4 - d2 * d3) * 100.0F;
-        if (f13 < 0.0F) {
-            f13 = 0.0F;
-        }
-
-        float f15 = player.prevCameraYaw + (player.cameraYaw - player.prevCameraYaw) * par2;
-        f12 += MathHelper.sin((player.prevDistanceWalkedModified
-                + (player.distanceWalkedModified - player.prevDistanceWalkedModified) * par2) * 6.0F) * 32.0F * f15;
-        if (player.isSneaking()) {
-            f12 += 25.0F;
-        }
-
-        rotate(2.0F + f13 / 12.0F + f12, 1.0F, 0.0F, 0.0F);
-        rotate(f14 / 2.0F, 0.0F, 0.0F, 1.0F);
-        rotate(-f14 / 2.0F, 0.0F, 1.0F, 0.0F);
-        rotate(180.0F, 0.0F, 0.0F, 1.0F);
-        rotate(90.0F, 1.0F, 0.0F, 0.0F);
-        this.bipedCape.render(0.0625F);
-        popMatrix();
-    }
-
-    @Override
-    public void renderStaticCloak(EntityLiving player, float par2) {
-        pushMatrix();
-        translate(0.0F, 0.24F, 0.0F);
-        if (this.size == 0) {
-            translate(0.0F, 0.67F, -0.04F);
-            scale(0.6F, 0.6F, 0.6F);
-        } else if (this.size == 2) {
-            translate(0.0F, -0.14F, -0.1F);
-            scale(1.15F, 1.2F, 1.2F);
-            if (this.issneak && !this.isFlying) {
-                translate(0.0F, 0.03F, 0.0F);
-            }
-        } else if (this.size == 3) {
-            translate(0.0F, -0.09F, 0.0F);
-            scale(1.0F, 1.0F, 1.0F);
-            if (this.issneak && !this.isFlying) {
-                translate(0.0F, 0.03F, 0.0F);
-            }
-        }
-
-        if (this.issneak && !this.isFlying) {
-            translate(0.0F, 0.4F, -0.12F);
-        }
-
-        rotate(3.0F, 1.0F, 0.0F, 0.0F);
-        rotate(2.0F, 0.0F, 1.0F, 0.0F);
-        rotate(180.0F, 0.0F, 0.0F, 1.0F);
-        rotate(90.0F, 1.0F, 0.0F, 0.0F);
-        this.bipedCape.render(0.0625F);
-        popMatrix();
+    public void renderCape(float scale) {
+        this.bipedCape.render(scale);
     }
 
     protected void compressWings() {

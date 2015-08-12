@@ -5,9 +5,6 @@ import com.minelittlepony.minelp.renderer.AniParams;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
 
 public class pm_newPonyArmor extends pm_newPonyAdv {
@@ -288,11 +285,6 @@ public class pm_newPonyArmor extends pm_newPonyAdv {
     protected void ponySleep() {
         super.ponySleep();
         this.syncLegs();
-    }
-
-    @Override
-    public void renderDrop(RenderManager rendermanager, ItemRenderer itemrenderer, EntityLivingBase entity) {
-        this.renderDrop(itemrenderer, entity, this.bipedRightArm, 1.0F, -0.0625F, 0.8375F, 0.0625F);
     }
 
     @Override
