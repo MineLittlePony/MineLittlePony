@@ -418,9 +418,9 @@ public class Pony {
 
         PlayerModel model;
         if (is_a_pony) {
-            model = newSkinSize ? PMAPI.newPonyAdv_64 : PMAPI.newPonyAdv;
+            model = newSkinSize ? PMAPI.newPonyAdv : PMAPI.newPonyAdv_32;
         } else {
-            model = newSkinSize ? PMAPI.human_64 : PMAPI.human;
+            model = PMAPI.human;
         }
         return model;
     }

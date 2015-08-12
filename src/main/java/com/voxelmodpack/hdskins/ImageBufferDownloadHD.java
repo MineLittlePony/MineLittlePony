@@ -28,16 +28,18 @@ public class ImageBufferDownloadHD implements IImageBuffer {
                 graphics.drawImage(downloadedImage, 0, 0, (ImageObserver) null);
 
                 // copy layers
-                drawImage(24, 48, 20, 52, 4, 16, 8, 20);
-                drawImage(28, 48, 24, 52, 8, 16, 12, 20);
-                drawImage(20, 52, 16, 64, 8, 20, 12, 32);
-                drawImage(24, 52, 20, 64, 4, 20, 8, 32);
-                drawImage(28, 52, 24, 64, 0, 20, 4, 32);
-                drawImage(32, 52, 28, 64, 12, 20, 16, 32);
-                drawImage(40, 48, 36, 52, 44, 16, 48, 20);
-                drawImage(44, 48, 40, 52, 48, 16, 52, 20);
-                drawImage(36, 52, 32, 64, 48, 20, 52, 32);
-                drawImage(40, 52, 36, 64, 44, 20, 48, 32);
+                // leg
+                drawImage(24, 48, 20, 52, 4, 16, 8, 20); // top
+                drawImage(28, 48, 24, 52, 8, 16, 12, 20); // bottom
+                drawImage(20, 52, 16, 64, 8, 20, 12, 32); // inside
+                drawImage(24, 52, 20, 64, 4, 20, 8, 32); // front
+                drawImage(28, 52, 24, 64, 0, 20, 4, 32); // outside
+                drawImage(32, 52, 28, 64, 12, 20, 16, 32); // back
+                // arm
+                drawImage(40, 48, 36, 52, 44, 16, 48, 20); // top
+                drawImage(44, 48, 40, 52, 48, 16, 52, 20); // bottom
+                drawImage(36, 52, 32, 64, 48, 20, 52, 32); //
+                drawImage(40, 52, 36, 64, 44, 20, 48, 32); //
                 drawImage(44, 52, 40, 64, 40, 20, 44, 32);
                 drawImage(48, 52, 44, 64, 52, 20, 56, 32);
 
