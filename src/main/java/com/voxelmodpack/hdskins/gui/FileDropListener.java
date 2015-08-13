@@ -1,4 +1,4 @@
-package com.minelittlepony.minelp.util;
+package com.voxelmodpack.hdskins.gui;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;

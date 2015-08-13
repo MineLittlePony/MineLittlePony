@@ -138,7 +138,8 @@ public class LayerHeldPonyItem implements LayerRenderer {
         if (!(drop.getItem() instanceof ItemBlock) || !drop.getItem().isFull3D()) {
             translate(0.02F, -0.06F, -0.02F);
         }
-        Minecraft.getMinecraft().getItemRenderer().renderItem(entity, drop, TransformType.THIRD_PERSON);
+        // Minecraft.getMinecraft().getItemRenderer().renderItem(entity, drop,
+        // TransformType.THIRD_PERSON);
         popAttrib();
         popMatrix();
     }

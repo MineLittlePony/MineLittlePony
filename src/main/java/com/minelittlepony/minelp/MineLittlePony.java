@@ -149,11 +149,11 @@ public class MineLittlePony implements InitCompleteListener {
 
     @Override
     public void onTick(Minecraft minecraft, float partialTicks, boolean inGame, boolean clock) {
-        this.ponyManager.setPonyLevel(PonyLevel.parse(this.config.getIntProperty("ponylevel")));
-        this.ponyManager.setUseSizes(this.config.getIntProperty("sizes"));
-        this.ponyManager.setPonyArmor(this.config.getIntProperty("ponyarmor"));
-        this.ponyManager.setShowSnuzzles(this.config.getIntProperty("snuzzles"));
-        this.ponyManager.setShowScale(this.config.getIntProperty("showscale"));
+        this.ponyManager.setPonyLevel(PonyLevel.parse(this.config.getIntPropertySafe("ponylevel", 0, 2)));
+        this.ponyManager.setUseSizes(this.config.getIntPropertySafe("sizes"));
+        this.ponyManager.setPonyArmor(this.config.getIntPropertySafe("ponyarmor"));
+        this.ponyManager.setShowSnuzzles(this.config.getIntPropertySafe("snuzzles"));
+        this.ponyManager.setShowScale(this.config.getIntPropertySafe("showscale"));
         if (inGame && minecraft.currentScreen == null && guiKeybinding.isPressed()) {
                 minecraft.displayGuiScreen(new MineLittlePonyGUI());
         }

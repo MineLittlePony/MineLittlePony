@@ -1,0 +1,15 @@
+# HD Skins fr_FR.lang file
+# Provided by Dalfio (PinkishPie)
+hdskins.choose=Choisissez un fichier
+hdskins.manager=Skin Manager HD
+hdskins.error.unreadable=Fichier non lisible
+hdskins.error.ext=Fichier non PNG
+hdskins.error.open=Erreur d'ouverture du fichier
+hdskins.error.invalid=Pas un fichier valide
+hdskins.error.select=S.V.P. sélectionner un skin en premier
+hdskins.error.mojang=Erreur d'API Mojang
+hdskins.open.title=Choisissez un skin
+hdskins.fetch=Chargement du skin...
+hdskins.failed=Ajout du skin échoué
+hdskins.request=Envoi de la requête au serveur S.V.P. patientez ...
+hdskins.upload=Ajout du skin, S.V.P. patientez ...

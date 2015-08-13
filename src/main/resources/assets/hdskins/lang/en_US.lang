@@ -1,0 +1,18 @@
+#HD Skins en_US.lang file
+hdskins.choose=Choose a file
+hdskins.manager=Skin Manager
+hdskins.error.unreadable=File not readable
+hdskins.error.ext=File not PNG
+hdskins.error.open=Error opening skin file
+hdskins.error.invalid=Not a valid skin file
+hdskins.error.select=Please select a skin first
+hdskins.error.mojang=Mojang API Error
+hdskins.error.mojang.wait=Please wait 1 minute
+hdskins.open.title=Choose skin
+hdskins.fetch=Fetching skin...
+hdskins.failed=Uploading skin failed
+hdskins.request=Sending request to server please wait...
+hdskins.upload=Uploading skin please wait...
+
+hdskins.local=Local Skin
+hdskins.server=Server Skin
