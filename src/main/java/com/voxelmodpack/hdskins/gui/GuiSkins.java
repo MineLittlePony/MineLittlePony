@@ -121,8 +121,8 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         Minecraft minecraft = Minecraft.getMinecraft();
         this.screenTitle = manager;
         GameProfile profile = minecraft.getSession().getProfile();
-        this.localPlayer = new EntityPlayerModel(profile);
-        this.remotePlayer = new EntityPlayerModel(profile);
+        this.localPlayer = getModel(profile);
+        this.remotePlayer = getModel(profile);
         RenderManager rm = Minecraft.getMinecraft().getRenderManager();
         rm.renderEngine = minecraft.getTextureManager();
         rm.options = minecraft.gameSettings;

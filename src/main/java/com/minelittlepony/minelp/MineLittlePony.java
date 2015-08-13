@@ -155,15 +155,17 @@ public class MineLittlePony implements InitCompleteListener {
         this.ponyManager.setShowSnuzzles(this.config.getIntPropertySafe("snuzzles"));
         this.ponyManager.setShowScale(this.config.getIntPropertySafe("showscale"));
         if (inGame && minecraft.currentScreen == null && guiKeybinding.isPressed()) {
-                minecraft.displayGuiScreen(new MineLittlePonyGUI());
+            minecraft.displayGuiScreen(new MineLittlePonyGUI());
         }
         // if (Keyboard.isKeyDown(Keyboard.KEY_O)) {
         // ponyManager.initmodels();
         // }
 
-        if (!inGame && minecraft.currentScreen != null
-                && (minecraft.currentScreen instanceof GuiMainMenu && Keyboard.isKeyDown(skinKeybinding.getKeyCode())
-                        || minecraft.currentScreen instanceof GuiSkins)) {
+        boolean pressed = minecraft.currentScreen instanceof GuiMainMenu
+                && Keyboard.isKeyDown(skinKeybinding.getKeyCode());
+        boolean skins = minecraft.currentScreen instanceof GuiSkins
+                && !(minecraft.currentScreen instanceof GuiSkinsMineLP);
+        if (pressed || skins) {
             minecraft.displayGuiScreen(new GuiSkinsMineLP());
         }
 
