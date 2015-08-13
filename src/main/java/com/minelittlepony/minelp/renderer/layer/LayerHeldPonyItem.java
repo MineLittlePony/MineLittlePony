@@ -2,9 +2,6 @@ package com.minelittlepony.minelp.renderer.layer;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL14;
-
 import com.minelittlepony.minelp.model.PMAPI;
 import com.minelittlepony.minelp.model.PlayerModel;
 import com.minelittlepony.minelp.model.pony.pm_newPonyAdv;
@@ -20,7 +17,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
 public class LayerHeldPonyItem implements LayerRenderer {
@@ -121,27 +117,7 @@ public class LayerHeldPonyItem implements LayerRenderer {
     }
 
     public void renderItemGlow(EntityLivingBase entity, ItemStack drop, int glowColor) {
-        // FIXME doesn't blend
-        pushMatrix();
-        GL11.glPushAttrib(24577);
-        GL11.glDisable(2896);
-        float red = (glowColor >> 16 & 255) / 255.0F;
-        float green = (glowColor >> 8 & 255) / 255.0F;
-        float blue = (glowColor & 255) / 255.0F;
-        float alpha = 0.2F;
-        enableBlend();
-        GL11.glEnable(3042);
-        GL14.glBlendColor(red, green, blue, alpha);
-        blendFunc('\u8001', 1);
-        color(red, green, blue, alpha);
-        // translate(1.1F, 1.1F, 1.1F);
-        if (!(drop.getItem() instanceof ItemBlock) || !drop.getItem().isFull3D()) {
-            translate(0.02F, -0.06F, -0.02F);
-        }
-        // Minecraft.getMinecraft().getItemRenderer().renderItem(entity, drop,
-        // TransformType.THIRD_PERSON);
-        popAttrib();
-        popMatrix();
+        // TODO reimplement
     }
 
     @Override

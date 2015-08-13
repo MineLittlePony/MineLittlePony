@@ -904,13 +904,13 @@ public class pm_newPonyAdv extends ModelPony {
             this.headpiece[2].render(this.scale);
             if (this.heldItemRight != 0 && this.glowColor != 0) {
                 GL11.glPushAttrib(24577);
-                GL11.glDisable(3553);
-                GL11.glDisable(2896);
-                GL11.glEnable(3042);
+                GL11.glDisable(GL11.GL_TEXTURE_2D);
+                GL11.glDisable(GL11.GL_LIGHTING);
+                GL11.glEnable(GL11.GL_BLEND);
                 float var4 = (this.glowColor >> 16 & 255) / 255.0F;
                 float green = (this.glowColor >> 8 & 255) / 255.0F;
                 float blue = (this.glowColor & 255) / 255.0F;
-                blendFunc(770, 1);
+                blendFunc(GL11.GL_SRC_ALPHA, 1);
                 color(var4, green, blue, 0.4F);
                 this.hornglow[0].render(this.scale);
                 color(var4, green, blue, 0.2F);
