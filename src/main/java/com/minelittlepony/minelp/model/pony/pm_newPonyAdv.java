@@ -15,7 +15,6 @@ import com.minelittlepony.minelp.renderer.HornGlowRenderer;
 import com.minelittlepony.minelp.renderer.PlaneRenderer;
 
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 
 public class pm_newPonyAdv extends ModelPony {
@@ -696,14 +695,6 @@ public class pm_newPonyAdv extends ModelPony {
         this.Bodypiece[13].rotateAngleX += 0.5F;
     }
 
-    @Override
-    public void setRotationAngles(float p_78087_1_, float p_78087_2_, float p_78087_3_, float p_78087_4_,
-            float p_78087_5_, float p_78087_6_, Entity p_78087_7_) {
-        // TODO Auto-generated method stub
-        super.setRotationAngles(p_78087_1_, p_78087_2_, p_78087_3_,
-                p_78087_4_, p_78087_5_, p_78087_6_, p_78087_7_);
-        copyModelAngles(this.bipedRightArm, this.SteveArm);
-    }
 
     protected void fixSpecialRotationPoints(float move) {}
 
@@ -1004,10 +995,10 @@ public class pm_newPonyAdv extends ModelPony {
     @Override
     public void renderRightArm() {
         copyModelAngles(PMAPI.human.model.bipedRightArm, SteveArm);
-        this.SteveArm.render(this.scale);
+        this.SteveArm.render(0.0625f);
         copyModelAngles(PMAPI.human.model.bipedRightArm, unicornarm);
         this.unicornarm.showModel = this.bipedRightArmwear.showModel;
-        this.unicornarm.render(this.scale);
+        this.unicornarm.render(0.0625f);
 
     }
 
@@ -1033,7 +1024,7 @@ public class pm_newPonyAdv extends ModelPony {
     }
 
     protected void initHeadTextures() {
-        this.bipedCape = new ModelRenderer(this, 0, 0);
+        this.bipedCape = new ModelRenderer(this, 0, 0).setTextureSize(64, 32);
         this.bipedHead = new ModelRenderer(this, 0, 0);
         this.headpiece[0] = new ModelRenderer(this, 12, 16);
         this.headpiece[1] = new ModelRenderer(this, 12, 16);
@@ -1131,8 +1122,8 @@ public class pm_newPonyAdv extends ModelPony {
             this.bipedLeftLeg = new ModelRenderer(this, 0, 16);
             this.bipedLeftLeg.mirror = true;
         }
-        this.SteveArm = new ModelRenderer(this, 40, 16);
-        this.unicornarm = new ModelRenderer(this, 40, 32);
+        this.SteveArm = new ModelRenderer(this, 40, 16).setTextureSize(64, 64);
+        this.unicornarm = new ModelRenderer(this, 40, 32).setTextureSize(64, 64);
         this.boxList.remove(this.SteveArm);
         this.boxList.remove(this.unicornarm);
     }
