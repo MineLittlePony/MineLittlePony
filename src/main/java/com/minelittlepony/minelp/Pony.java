@@ -21,7 +21,7 @@ import net.minecraft.world.World;
 
 public class Pony {
     public static PonyManager ponyManager = PonyManager.getInstance();
-    public Pony.PonyRace race;
+    public PonyRace race = PonyRace.EARTH;
     public boolean advancedTexturing;
     public ResourceLocation textureResourceLocation;
     public boolean isSpPlayer;
@@ -31,77 +31,32 @@ public class Pony {
     public boolean isUnicorn;
     public boolean isFlying;
     public boolean isGlow;
-    public int glowColor;
+    public int glowColor = -12303190;
     public boolean isMale;
-    public int size;
+    public int size = 1;
     public int wantTail;
     public boolean isVillager;
-    public int villagerProfession;
-    public float defaultYOffset;
+    public int villagerProfession = 1;
+    public float defaultYOffset = 1.62F;
     boolean pegasusFlying;
     @SuppressWarnings("unused")
-    private final int dangerzone;
+    private final int dangerzone = 2;
     private float previousFallDistance;
     private static int ponyCount = 0;
-    private final int ponyId;
+    private final int ponyId = ponyCount++;
     private int skinCheckCount;
     private boolean skinChecked;
     private boolean newSkinSize;
 
     public Pony(AbstractClientPlayer player) {
-        this.race = Pony.PonyRace.EARTH;
-        this.isSpPlayer = false;
-        this.isPony = false;
-        this.isPonySkin = false;
-        this.isPegasus = false;
-        this.isUnicorn = false;
-        this.isFlying = false;
-        this.isGlow = false;
-        this.glowColor = -12303190;
-        this.isMale = false;
-        this.size = 1;
-        this.wantTail = 0;
-        this.isVillager = false;
-        this.villagerProfession = 1;
-        this.defaultYOffset = 1.62F;
-        this.pegasusFlying = false;
-        this.dangerzone = 2;
-        this.previousFallDistance = 0.0F;
-        this.skinCheckCount = 0;
-        this.skinChecked = false;
-        this.ponyId = ++ponyCount;
         this.textureResourceLocation = player.getLocationSkin();
-        MineLPLogger.debug("+ Initialising new pony #%d for player %s (%s) with resource location %s.", this.ponyId,
-                player.getCommandSenderName(), player.getUniqueID(), this.textureResourceLocation);
+        MineLPLogger.debug("+ Initialising new pony #%d for player %s (%s) with resource location %s.", this.ponyId, player.getCommandSenderName(), player.getUniqueID(), this.textureResourceLocation);
         this.checkSkin(this.textureResourceLocation);
     }
 
     public Pony(ResourceLocation aTextureResourceLocation) {
-        this.race = Pony.PonyRace.EARTH;
-        this.isSpPlayer = false;
-        this.isPony = false;
-        this.isPonySkin = false;
-        this.isPegasus = false;
-        this.isUnicorn = false;
-        this.isFlying = false;
-        this.isGlow = false;
-        this.glowColor = -12303190;
-        this.isMale = false;
-        this.size = 1;
-        this.wantTail = 0;
-        this.isVillager = false;
-        this.villagerProfession = 1;
-        this.defaultYOffset = 1.62F;
-        this.pegasusFlying = false;
-        this.dangerzone = 2;
-        this.previousFallDistance = 0.0F;
-        this.skinCheckCount = 0;
-        this.skinChecked = false;
-        this.ponyId = ++ponyCount;
         this.textureResourceLocation = aTextureResourceLocation;
-
-        MineLPLogger.debug("+ Initialising new pony #%d with resource location %s.", this.ponyId,
-                this.textureResourceLocation);
+        MineLPLogger.debug("+ Initialising new pony #%d with resource location %s.", this.ponyId, this.textureResourceLocation);
         this.checkSkin(this.textureResourceLocation);
     }
 
@@ -129,8 +84,7 @@ public class Pony {
         BufferedImage skinImage = null;
 
         try {
-            skinImage = ImageIO.read(Minecraft.getMinecraft().getResourceManager().getResource(textureResourceLocation)
-                    .getInputStream());
+            skinImage = ImageIO.read(Minecraft.getMinecraft().getResourceManager().getResource(textureResourceLocation).getInputStream());
             MineLPLogger.debug("Obtained skin from resource location %s", textureResourceLocation);
             this.checkSkin(skinImage);
         } catch (Exception var6) {
