@@ -78,9 +78,9 @@ public abstract class ModelPony extends ModelPlayer {
     @Override
     public final void setRotationAngles(float f1, float f2, float f3, float f4, float f5, float f6, Entity ent) {
         // set the angles for the humans in preparation for arm rendering
-        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
         // Comes from RenderPlayer.render[Left|Right]Arm?
-        if (stack[2].getClassName().equals(RenderPlayer.class.getName())) {
+        if (PMAPI.human.model != this
+                && Thread.currentThread().getStackTrace()[2].getClassName().equals(RenderPlayer.class.getName())) {
             PMAPI.human.model.setModelVisibilities((AbstractClientPlayer) ent);
             PMAPI.human.model.isSneak = isSneak;
             PMAPI.human.model.swingProgress = swingProgress;
