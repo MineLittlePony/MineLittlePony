@@ -7,6 +7,7 @@ import com.voxelmodpack.common.gui.interfaces.IExtendedGui;
 import com.voxelmodpack.common.properties.VoxelProperty;
 import com.voxelmodpack.common.properties.interfaces.IVoxelPropertyProviderInteger;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.MathHelper;
 
 public class VoxelPropertyIntSlider extends VoxelProperty<IVoxelPropertyProviderInteger> {
@@ -55,9 +56,9 @@ public class VoxelPropertyIntSlider extends VoxelProperty<IVoxelPropertyProvider
         this.setBar = false;
         this.dragging = false;
         this.offset = 0;
-        this.minText = "Humans";
-        this.midText = "Mix";
-        this.maxText = "Ponies";
+        this.minText = I18n.format("minelp.options.ponylevel.human");
+        this.midText = I18n.format("minelp.options.ponylevel.mix");
+        this.maxText = I18n.format("minelp.options.ponylevel.pony");
     }
 
     @Override
