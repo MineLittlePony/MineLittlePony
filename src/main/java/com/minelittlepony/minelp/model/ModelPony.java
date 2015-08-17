@@ -5,6 +5,7 @@ import com.minelittlepony.minelp.renderer.AniParams;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.item.EnumAction;
@@ -60,6 +61,44 @@ public abstract class ModelPony extends ModelPlayer {
         } else {
             super.render(player, Move, Moveswing, Loop, Right, Down, Scale);
         }
+    }
+
+    @Override
+    public final void renderRightArm() {
+        // Use the human model
+        PMAPI.human.model.renderModelRightArm();
+    }
+
+    @Override
+    public final void renderLeftArm() {
+        // Use the human model
+        PMAPI.human.model.renderModelLeftArm();
+    }
+
+    @Override
+    public final void setRotationAngles(float f1, float f2, float f3, float f4, float f5, float f6, Entity ent) {
+        // set the angles for the humans in preparation for arm rendering
+        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+        // Comes from RenderPlayer.render[Left|Right]Arm?
+        if (stack[2].getClassName().equals(RenderPlayer.class.getName())) {
+            PMAPI.human.model.setModelVisibilities((AbstractClientPlayer) ent);
+            PMAPI.human.model.isSneak = isSneak;
+            PMAPI.human.model.swingProgress = swingProgress;
+            PMAPI.human.model.setModelRotationAngles(f1, f2, f3, f4, f5, f6, ent);
+        }
+        setModelRotationAngles(f1, f2, f3, f4, f5, f6, ent);
+    }
+
+    public void renderModelRightArm() {
+        super.renderRightArm();
+    }
+
+    public void renderModelLeftArm() {
+        super.renderLeftArm();
+    }
+
+    public void setModelRotationAngles(float f1, float f2, float f3, float f4, float f5, float f6, Entity ent) {
+        super.setRotationAngles(f1, f2, f3, f4, f5, f6, ent);
     }
 
     protected void setModelVisibilities(AbstractClientPlayer clientPlayer) {

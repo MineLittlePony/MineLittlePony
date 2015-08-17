@@ -8,7 +8,6 @@ import org.lwjgl.opengl.GL11;
 
 import com.minelittlepony.minelp.PonyManager;
 import com.minelittlepony.minelp.model.ModelPony;
-import com.minelittlepony.minelp.model.PMAPI;
 import com.minelittlepony.minelp.renderer.AniParams;
 import com.minelittlepony.minelp.renderer.CompressiveRendering;
 import com.minelittlepony.minelp.renderer.HornGlowRenderer;
@@ -348,13 +347,9 @@ public class pm_newPonyAdv extends ModelPony {
 
         } else {
             float swag = (float) Math.pow(swing, 16.0D);
-            this.getClass();
             float raQuad = 3.1415927F * swag * 0.5F;
-            this.getClass();
             float laQuad = 3.1415927F * swag;
-            this.getClass();
             float rlQuad = 3.1415927F * swag * 0.2F;
-            this.getClass();
             float llQuad = 3.1415927F * swag * -0.4F;
             rightArmRotateAngleX = MathHelper.cos(move * 0.6662F + 3.1415927F + raQuad) * 0.45F * swing;
             leftArmRotateAngleX = MathHelper.cos(move * 0.6662F + laQuad) * 0.45F * swing;
@@ -695,7 +690,6 @@ public class pm_newPonyAdv extends ModelPony {
         this.Bodypiece[13].rotateAngleX += 0.5F;
     }
 
-
     protected void fixSpecialRotationPoints(float move) {}
 
     public void shiftRotationPoint(PlaneRenderer aPlaneRenderer, float shiftX, float shiftY, float shiftZ) {
@@ -990,16 +984,6 @@ public class pm_newPonyAdv extends ModelPony {
             this.bipedLeftLegwear.render(this.scale);
             this.bipedRightLegwear.render(this.scale);
         }
-    }
-
-    @Override
-    public void renderRightArm() {
-        copyModelAngles(PMAPI.human.model.bipedRightArm, SteveArm);
-        this.SteveArm.render(0.0625f);
-        copyModelAngles(PMAPI.human.model.bipedRightArm, unicornarm);
-        this.unicornarm.showModel = this.bipedRightArmwear.showModel;
-        this.unicornarm.render(0.0625f);
-
     }
 
     protected void initTextures() {
