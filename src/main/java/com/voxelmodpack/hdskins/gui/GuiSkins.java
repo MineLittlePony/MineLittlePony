@@ -182,6 +182,9 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
 
     protected void onSetRemoteSkin() {}
 
+    /**
+     * @param skin The skin
+     */
     protected void onSetLocalSkin(BufferedImage skin) {}
 
     private void setRemoteSkin() {
@@ -415,7 +418,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         popMatrix();
     }
 
-    private void renderCubeMapTexture(int mouseX, int mouseY, float partialTick) {
+    private void renderCubeMapTexture(float partialTick) {
         this.setupCubemapCamera();
         color(1.0F, 1.0F, 1.0F, 1.0F);
         rotate(180.0F, 1.0F, 0.0F, 0.0F);
@@ -484,7 +487,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         this.revertPanoramaMatrix();
     }
 
-    private void rotateAndBlurCubemap(float partialTick) {
+    private void rotateAndBlurCubemap() {
         this.mc.getTextureManager().bindTexture(this.viewportTexture);
         GL11.glCopyTexSubImage2D(3553, 0, 0, 0, 0, 0, 256, 256);
         GL11.glEnable(3042);
@@ -512,12 +515,12 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     @Override
     public boolean renderPanorama(int mouseX, int mouseY, float partialTicks) {
         GL11.glViewport(0, 0, 256, 256);
-        this.renderCubeMapTexture(mouseX, mouseY, partialTicks);
+        this.renderCubeMapTexture(partialTicks);
         GL11.glDisable(3553);
         GL11.glEnable(3553);
 
         for (int tessellator = 0; tessellator < 8; ++tessellator) {
-            this.rotateAndBlurCubemap(partialTicks);
+            this.rotateAndBlurCubemap();
         }
 
         GL11.glViewport(0, 0, this.mc.displayWidth, this.mc.displayHeight);
@@ -640,7 +643,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     }
 
     public void renderPlayerModel(EntityPlayerModel thePlayer, float xPosition, float yPosition, float scale,
-            float mouseX, float mouseY, float partialTick) {
+            @SuppressWarnings("unused") float mouseX, float mouseY, float partialTick) {
         GL11.glEnable(GL.GL_COLOR_MATERIAL);
         pushMatrix();
         translate(xPosition, yPosition, 300.0F);
@@ -688,37 +691,35 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     private boolean clearUploadedSkin(Session session) {
         if (!this.registerServerConnection(session, skinServerId)) {
             return false;
-        } else {
-            HashMap<String, Object> sourceData = new HashMap<String, Object>();
-            sourceData.put("user", session.getUsername());
-            sourceData.put("uuid", session.getPlayerID());
-            sourceData.put("clear", "1");
-            this.uploadError = null;
-            this.uploadingSkin = true;
-            this.skinUploadMessage = request;
-            this.threadSkinUpload = new ThreadMultipartPostUpload("http://minelpskinmanager.voxelmodpack.com/",
-                    sourceData, this);
-            this.threadSkinUpload.start();
-            return true;
         }
+        HashMap<String, Object> sourceData = new HashMap<String, Object>();
+        sourceData.put("user", session.getUsername());
+        sourceData.put("uuid", session.getPlayerID());
+        sourceData.put("clear", "1");
+        this.uploadError = null;
+        this.uploadingSkin = true;
+        this.skinUploadMessage = request;
+        this.threadSkinUpload = new ThreadMultipartPostUpload("http://minelpskinmanager.voxelmodpack.com/",
+                sourceData, this);
+        this.threadSkinUpload.start();
+        return true;
     }
 
     private boolean uploadSkin(Session session, File skinFile) {
         if (!this.registerServerConnection(session, skinServerId)) {
             return false;
-        } else {
-            HashMap<String, Object> sourceData = new HashMap<String, Object>();
-            sourceData.put("user", session.getUsername());
-            sourceData.put("uuid", session.getPlayerID());
-            sourceData.put("skin", skinFile);
-            this.uploadError = null;
-            this.uploadingSkin = true;
-            this.skinUploadMessage = upload;
-            this.threadSkinUpload = new ThreadMultipartPostUpload("http://minelpskinmanager.voxelmodpack.com/",
-                    sourceData, this);
-            this.threadSkinUpload.start();
-            return true;
         }
+        HashMap<String, Object> sourceData = new HashMap<String, Object>();
+        sourceData.put("user", session.getUsername());
+        sourceData.put("uuid", session.getPlayerID());
+        sourceData.put("skin", skinFile);
+        this.uploadError = null;
+        this.uploadingSkin = true;
+        this.skinUploadMessage = upload;
+        this.threadSkinUpload = new ThreadMultipartPostUpload("http://minelpskinmanager.voxelmodpack.com/",
+                sourceData, this);
+        this.threadSkinUpload.start();
+        return true;
     }
 
     private void setUploadError(String error) {

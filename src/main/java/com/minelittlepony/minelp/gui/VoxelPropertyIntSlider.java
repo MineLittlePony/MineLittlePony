@@ -25,25 +25,6 @@ public class VoxelPropertyIntSlider extends VoxelProperty<IVoxelPropertyProvider
     String maxText;
     String labelText;
 
-    public VoxelPropertyIntSlider(IVoxelPropertyProviderInteger parent, String binding, String text, String minText,
-            String maxText, int xPos, int yPos, int min, int max) {
-        this(parent, binding, text, minText, maxText, xPos, yPos);
-        this.minValue = min;
-        this.maxValue = max;
-    }
-
-    public VoxelPropertyIntSlider(IVoxelPropertyProviderInteger parent, String binding, String text, int xPos, int yPos,
-            float min, float max) {
-        this(parent, binding, text, xPos, yPos);
-    }
-
-    public VoxelPropertyIntSlider(IVoxelPropertyProviderInteger parent, String binding, String text, String minText,
-            String maxText, int xPos, int yPos) {
-        this(parent, binding, text, xPos, yPos);
-        this.minText = minText;
-        this.maxText = maxText;
-    }
-
     public VoxelPropertyIntSlider(IVoxelPropertyProviderInteger parent, String binding, String text, int xPos,
             int yPos) {
         super(parent, binding, text, xPos, yPos);

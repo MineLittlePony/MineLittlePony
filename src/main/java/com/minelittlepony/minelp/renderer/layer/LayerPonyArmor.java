@@ -197,10 +197,8 @@ public class LayerPonyArmor implements LayerRenderer {
             Object[] armorResourceAndState = this.getPonyResourceLocation(path);
             renderer.bindTexture((ResourceLocation) armorResourceAndState[0]);
             return ((Boolean) armorResourceAndState[1]).booleanValue();
-        } else {
-            // this.a(RenderBiped.func_110858_a(armorPiece., slot, overlay));
-            return false;
         }
+        return false;
     }
 
     protected boolean bindForgeArmorTexture(Entity playerEntity, ItemStack armorStack, ItemArmor armorPiece, int slot,
@@ -251,12 +249,10 @@ public class LayerPonyArmor implements LayerRenderer {
 
             try {
                 TextureUtil.readImageData(Minecraft.getMinecraft().getResourceManager(), ponyArmorResource);
-                if (ponyArmorResource != null) {
-                    ponyResourceLocation = ponyArmorResource;
-                    ponyArmorMap.put(path, ponyArmorResource);
-                    onlyPonyArmorMap.put(path, ponyArmorResource);
-                    ponyArmor = true;
-                }
+                ponyResourceLocation = ponyArmorResource;
+                ponyArmorMap.put(path, ponyArmorResource);
+                onlyPonyArmorMap.put(path, ponyArmorResource);
+                ponyArmor = true;
             } catch (IOException var7) {
                 ponyResourceLocation = field_110859_k.get(path);
                 if (ponyResourceLocation == null) {

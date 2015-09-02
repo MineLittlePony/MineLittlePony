@@ -48,23 +48,19 @@ public class PonyConfig extends ModConfig {
             } catch (Exception var8) {
                 int defaultValue1 = this.getDefaultIntProperty(key);
                 this.setProperty(key, defaultValue1);
-                MineLPLogger.error("Invalid value for config key \"%s\", using default value %d",
-                        new Object[] { key, Integer.valueOf(defaultValue1) });
+                MineLPLogger.error("Invalid value for config key \"%s\", using default value %d", key, defaultValue1);
                 return defaultValue1;
             }
         }
 
         if (value >= minValue && value <= maxValue) {
             return value;
-        } else {
-            int defaultValue = value = this.getDefaultIntProperty(key);
-            this.setProperty(key, defaultValue);
-            MineLPLogger.error(
-                    "Invalid value for config key \"%s\", using default value %d. Found %d, expected value between %d and %d.",
-                    new Object[] { key, Integer.valueOf(defaultValue), Integer.valueOf(value),
-                            Integer.valueOf(minValue), Integer.valueOf(maxValue) });
-            return defaultValue;
         }
+        int defaultValue = value = this.getDefaultIntProperty(key);
+        this.setProperty(key, defaultValue);
+        MineLPLogger.error("Invalid value for config key \"%s\", using default value %d. Found %d, expected value between %d and %d.",
+                key, defaultValue, value, minValue, maxValue);
+        return defaultValue;
     }
 
     public boolean isSet(String key) {

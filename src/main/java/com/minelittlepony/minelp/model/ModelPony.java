@@ -42,10 +42,20 @@ public abstract class ModelPony extends ModelPlayer {
         this.strech = strech;
     }
 
+    /**
+     * @param var1
+     * @param var2
+     */
     public void init(float var1, float var2) {}
 
+    /**
+     * @param var1
+     */
     public void animate(AniParams var1) {}
 
+    /**
+     * @param var1
+     */
     public void render(AniParams var1) {}
 
     @Override

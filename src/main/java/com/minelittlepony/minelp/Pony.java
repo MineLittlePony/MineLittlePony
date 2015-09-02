@@ -100,7 +100,7 @@ public class Pony {
                     }
                 }
             } catch (Exception var5) {
-                ;
+
             }
         }
 
@@ -324,9 +324,8 @@ public class Pony {
                 this.previousFallDistance = fallDistance;
                 if (fallDistance < 2.0F) {
                     return false;
-                } else {
-                    return pegasusFlying = true;
                 }
+                return pegasusFlying = true;
             }
         }
     }
@@ -386,10 +385,6 @@ public class Pony {
     public void setVillager(int profession) {
         this.isVillager = true;
         this.villagerProfession = profession;
-    }
-
-    public void setIsPonySkin(boolean b) {
-        this.isPonySkin = false;
     }
 
     public static enum PonyRace {

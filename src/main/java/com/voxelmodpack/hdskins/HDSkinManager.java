@@ -138,25 +138,23 @@ public final class HDSkinManager {
         Map<Type, MinecraftProfileTexture> cached = getCachedTexturesForId(trimUUID(profile.getId()));
         if (cached != null) {
             return cached;
-        } else {
-            MinecraftSessionService sessionService = minecraft.getSessionService();
-            Map<Type, MinecraftProfileTexture> textures = null;
-
-            try {
-                textures = sessionService.getTextures(profile, true);
-            } catch (InsecureTextureException var6) {
-                textures = sessionService.getTextures(profile, false);
-            }
-
-            if ((textures == null || textures.isEmpty())
-                    && profile.getId().equals(minecraft.getSession().getProfile().getId())) {
-                textures = sessionService.getTextures(sessionService.fillProfileProperties(profile, false), false);
-            }
-
-            storeTexturesForProfile(profile, textures);
-
-            return textures;
         }
+        MinecraftSessionService sessionService = minecraft.getSessionService();
+        Map<Type, MinecraftProfileTexture> textures = null;
+
+        try {
+            textures = sessionService.getTextures(profile, true);
+        } catch (InsecureTextureException var6) {
+            textures = sessionService.getTextures(profile, false);
+        }
+
+        if ((textures == null || textures.isEmpty()) && profile.getId().equals(minecraft.getSession().getProfile().getId())) {
+            textures = sessionService.getTextures(sessionService.fillProfileProperties(profile, false), false);
+        }
+
+        storeTexturesForProfile(profile, textures);
+
+        return textures;
     }
 
     private static Cache<GameProfile, Map<Type, MinecraftProfileTexture>> getSkinsCache() {
@@ -211,8 +209,7 @@ public final class HDSkinManager {
             }
 
             String url = skin.getUrl();
-            skinTexture = new PreviewTexture(url, DefaultPlayerSkin.getDefaultSkin(profile.getId()),
-                    new ImageBufferDownloadHD());
+            skinTexture = new PreviewTexture(url, DefaultPlayerSkin.getDefaultSkin(profile.getId()), new ImageBufferDownloadHD());
             textureManager.loadTexture(skinResource, (ITextureObject) skinTexture);
         }
 
@@ -231,6 +228,5 @@ public final class HDSkinManager {
         getSkinsCache().invalidateAll();
         cachedTextures.clear();
         playerHashes.clear();
-
     }
 }

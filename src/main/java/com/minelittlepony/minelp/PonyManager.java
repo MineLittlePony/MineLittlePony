@@ -119,9 +119,8 @@ public class PonyManager {
             }
 
             return backgroundPonyResourceLocations.get(backgroundIndex);
-        } else {
-            return defaultPonyResourceLocation;
         }
+        return defaultPonyResourceLocation;
     }
 
     public Pony getPonyFromBackgroundResourceRegistry(AbstractClientPlayer player) {

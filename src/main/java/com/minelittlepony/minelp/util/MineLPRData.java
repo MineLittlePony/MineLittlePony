@@ -26,13 +26,13 @@ public class MineLPRData {
                     return e.newInstance(params);
                 }
 
-                return e.newInstance(new Object[0]);
+                return e.newInstance();
             }
 
-            MineLPLogger.error("Unknown requested constructor \"%s\"", new Object[] { constructorName });
+            MineLPLogger.error("Unknown requested constructor \"%s\"", constructorName);
         } catch (Exception var4) {
             var4.printStackTrace();
-            MineLPLogger.error("Error when trying to get constructor \"%s\"", new Object[] { constructorName });
+            MineLPLogger.error("Error when trying to get constructor \"%s\"", constructorName);
         }
 
         return null;
@@ -49,10 +49,10 @@ public class MineLPRData {
                 return e.get(object);
             }
 
-            MineLPLogger.error("Unknown requested field \"%s\"", new Object[] { fieldName });
+            MineLPLogger.error("Unknown requested field \"%s\"", fieldName);
         } catch (Exception var4) {
             var4.printStackTrace();
-            MineLPLogger.error("Error when trying to get field \"%s\"", new Object[] { fieldName });
+            MineLPLogger.error("Error when trying to get field \"%s\"", fieldName);
         }
 
         return null;
@@ -64,13 +64,12 @@ public class MineLPRData {
                 Field e = this.fields.get(fieldName);
                 e.set(object, value);
                 return true;
-            } else {
-                MineLPLogger.error("Unknown requested field \"%s\"", new Object[] { fieldName });
-                return false;
             }
+            MineLPLogger.error("Unknown requested field \"%s\"", fieldName);
+            return false;
         } catch (Exception var5) {
             var5.printStackTrace();
-            MineLPLogger.error("Error when trying to set field \"%s\"", new Object[] { fieldName });
+            MineLPLogger.error("Error when trying to set field \"%s\"", fieldName);
             return false;
         }
     }
@@ -79,36 +78,33 @@ public class MineLPRData {
         try {
             if (this.methods.containsKey(methodName)) {
                 Method e = this.methods.get(methodName);
-                return params != null ? e.invoke(object, params) : e.invoke(object, new Object[0]);
-            } else {
-                MineLPLogger.error("Unknown requested method \"%s\"", new Object[] { methodName });
-                return null;
+                return params != null ? e.invoke(object, params) : e.invoke(object);
             }
+            MineLPLogger.error("Unknown requested method \"%s\"", methodName);
+            return null;
         } catch (Exception var5) {
             var5.printStackTrace();
-            MineLPLogger.error("Method \"%s\" failed to be invoked", new Object[] { methodName });
-            MineLPLogger.error(
-                    "Types:  " + MineLPReflection.getStringFromTypes(MineLPReflection.getTypesFromObjects(params)));
-            MineLPLogger.error("Values:  " + params.toString());
+            MineLPLogger.error("Method \"%s\" failed to be invoked", methodName);
+            MineLPLogger.error("Types:  " + MineLPReflection.getStringFromTypes(MineLPReflection.getTypesFromObjects(params)));
+            MineLPLogger.error("Values: " + params);
             return null;
         }
     }
 
     public Class<?> getClass(String className) {
-        return this.classes.containsKey(className) ? (Class<?>) this.classes.get(className) : null;
+        return this.classes.containsKey(className) ? this.classes.get(className) : null;
     }
 
     public Constructor<?> getConstructor(String constructorName) {
-        return this.constructors.containsKey(constructorName) ? (Constructor<?>) this.constructors.get(constructorName)
-                : null;
+        return this.constructors.containsKey(constructorName) ? this.constructors.get(constructorName) : null;
     }
 
     public Method getMethod(String methodName) {
-        return this.methods.containsKey(methodName) ? (Method) this.methods.get(methodName) : null;
+        return this.methods.containsKey(methodName) ? this.methods.get(methodName) : null;
     }
 
     public Field getField(String fieldName) {
-        return this.fields.containsKey(fieldName) ? (Field) this.fields.get(fieldName) : null;
+        return this.fields.containsKey(fieldName) ? this.fields.get(fieldName) : null;
     }
 
     public Object getObject(String objectName) {
@@ -118,7 +114,7 @@ public class MineLPRData {
         }
 
         if (object == null) {
-            MineLPLogger.error("Object \"%s\" is NULL", new Object[] { objectName });
+            MineLPLogger.error("Object \"%s\" is NULL", objectName);
         }
 
         return object;

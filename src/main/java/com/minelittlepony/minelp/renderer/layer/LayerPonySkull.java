@@ -59,7 +59,7 @@ public class LayerPonySkull implements LayerRenderer {
             }
             color(1, 1, 1, 1);
             if (item instanceof ItemBlock) {
-                renderBlock(entity, itemstack, isVillager);
+                renderBlock(entity, itemstack);
             } else if (item == Items.skull) {
                 if (model instanceof pm_newPonyAdv) {
                     translate(0, 0, -.15);
@@ -71,7 +71,7 @@ public class LayerPonySkull implements LayerRenderer {
 
     }
 
-    private void renderBlock(EntityLivingBase entity, ItemStack itemstack, boolean isVillager) {
+    private void renderBlock(EntityLivingBase entity, ItemStack itemstack) {
         // translate(0, -0.25, 0);
         rotate(180, 0, 1, 0);
         scale(0.625, -0.625, -0.625);

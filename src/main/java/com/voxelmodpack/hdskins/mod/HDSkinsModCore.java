@@ -34,7 +34,7 @@ public class HDSkinsModCore implements HDSkinsMod {
                     new Class[] { Class.class, String.class });
             mRegisterCustomScreen.invoke(null, GuiSkins.class, "HD Skins Manager");
         } catch (ClassNotFoundException var4) {
-            ;
+
         } catch (Exception var5) {
             var5.printStackTrace();
         }
@@ -69,7 +69,7 @@ public class HDSkinsModCore implements HDSkinsMod {
                 return panoramaRenderer;
             }
         } catch (ClassNotFoundException var4) {
-            ;
+
         } catch (Exception var5) {
             var5.printStackTrace();
         }

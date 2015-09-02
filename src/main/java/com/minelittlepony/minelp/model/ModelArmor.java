@@ -12,7 +12,7 @@ public abstract class ModelArmor {
 
     public float layer() {
         return 1;
-    };
+    }
 
     public int subimage(int slot) {
         return slot == 2 ? 2 : 1;

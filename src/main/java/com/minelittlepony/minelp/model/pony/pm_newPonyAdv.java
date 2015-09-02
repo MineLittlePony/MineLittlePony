@@ -321,6 +321,9 @@ public class pm_newPonyAdv extends ModelPony {
         this.adjustLegs();
     }
 
+    /**
+     * @param tick
+     */
     protected void rotateLegs(float move, float swing, float tick) {
         float rightArmRotateAngleX;
         float leftArmRotateAngleX;
@@ -690,6 +693,9 @@ public class pm_newPonyAdv extends ModelPony {
         this.Bodypiece[13].rotateAngleX += 0.5F;
     }
 
+    /**
+     * @param move
+     */
     protected void fixSpecialRotationPoints(float move) {}
 
     public void shiftRotationPoint(PlaneRenderer aPlaneRenderer, float shiftX, float shiftY, float shiftZ) {

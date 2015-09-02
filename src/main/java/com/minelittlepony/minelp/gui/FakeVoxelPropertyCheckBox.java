@@ -31,7 +31,7 @@ public class FakeVoxelPropertyCheckBox extends VoxelProperty<IVoxelPropertyProvi
                 }
             }
         } catch (Exception var7) {
-            ;
+
         }
 
         host.drawTessellatedModalBorderRect(LiteModVoxelCommon.GUIPARTS, 256, this.xPosition, this.yPosition,
@@ -55,7 +55,7 @@ public class FakeVoxelPropertyCheckBox extends VoxelProperty<IVoxelPropertyProvi
                     }
                 }
             } catch (Exception var5) {
-                ;
+
             }
 
             if (checked) {

@@ -82,7 +82,8 @@ public class EntityPlayerModel extends EntityLiving {
         return !this.remoteSkin && this.hasLocalTexture;
     }
 
-    public float d(float par1) {
+    @Override
+    public float getBrightness(float par1) {
         return 1.0F;
     }
 

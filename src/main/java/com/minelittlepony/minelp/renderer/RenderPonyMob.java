@@ -111,7 +111,8 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
         return this.getEntityTexture((T) var1);
     }
 
-    protected void preRenderCallback(T t, float partick) {}
+    @SuppressWarnings("unused")
+    protected void preRenderCallback(T entity, float partick) {}
 
     @SuppressWarnings("unchecked")
     @Override
@@ -119,6 +120,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
         preRenderCallback((T) entitylivingbaseIn, partialTickTime);
     }
 
+    @SuppressWarnings("unused")
     protected void rotateCorpse(T entity, float xPosition, float yPosition, float zPosition) {}
 
     @SuppressWarnings("unchecked")

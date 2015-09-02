@@ -116,6 +116,7 @@ public class LayerHeldPonyItem implements LayerRenderer {
         }
     }
 
+    @SuppressWarnings("unused")
     public void renderItemGlow(EntityLivingBase entity, ItemStack drop, int glowColor) {
         // TODO reimplement
     }
