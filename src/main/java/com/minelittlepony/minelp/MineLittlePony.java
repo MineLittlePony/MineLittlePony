@@ -168,7 +168,6 @@ public class MineLittlePony implements InitCompleteListener {
         if (pressed || skins) {
             minecraft.displayGuiScreen(new GuiSkinsMineLP());
         }
-
     }
 
     public static ModConfig getConfig() {

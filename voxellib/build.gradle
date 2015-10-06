@@ -1,4 +1,4 @@
-apply plugin: 'net.minecrell.vanilla'
+apply plugin: 'net.minecraftforge.gradle.tweaker-client'
 
 archivesBaseName = "lib_voxelcommon"
 version = "4.4.0-mc1.8"
@@ -6,12 +6,16 @@ version = "4.4.0-mc1.8"
 minecraft {
 	version = "1.8"
     mappings = 'snapshot_20150606'
-    clientTweaker = 'com.mumfrey.liteloader.launch.LiteLoaderTweaker'
+    tweakClass = 'com.mumfrey.liteloader.launch.LiteLoaderTweaker'
+}
+repositories.flatDir {
+	dir 'liteloader'
+}
+dependencies {
+    deobfCompile 'com.mumfrey:liteloader:1.8-SNAPSHOT:srg'
 }
 jar {
     extension 'litemod'
     archiveName = 'voxelcommon-2.4.0.jar'
-}
-reobf {
-    setSrgMcp()
+	manifest.attributes.remove 'TweakClass'
 }

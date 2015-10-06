@@ -37,7 +37,6 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
         throw new InstantiationError("Overlay classes must not be instantiated");
     }
 
-    @SuppressWarnings("unused")
     @AppendInsns("<init>")
     private void init(RenderManager renderManager, boolean useSmallArms) {
         this.playerModel = PMAPI.newPonyAdv;
@@ -118,7 +117,6 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
         this.playerModel.armor.modelArmorChestplate.heldItemRight = this.playerModel.armor.modelArmor.heldItemRight = this.playerModel.model.heldItemRight = 0;
     }
 
-    @SuppressWarnings("unused")
     @AppendInsns("renderLivingAt")
     @Obfuscated({ "a", "func_77039_a" })
     public void setupPlayerScale(AbstractClientPlayer player, double xPosition, double yPosition, double zPosition) {

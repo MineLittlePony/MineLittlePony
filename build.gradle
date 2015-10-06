@@ -1,25 +1,7 @@
-buildscript {
-	repositories {
-		mavenCentral()
-		maven {
-			name = "forge"
-			url = "http://files.minecraftforge.net/maven"
-		}
-		maven {
-			name = "sonatype"
-			url = "https://oss.sonatype.org/content/repositories/snapshots/"
-		}
-        maven {
-            name = 'minecrell'
-            url = "http://repo.minecrell.net/snapshots"
-        }
-	}
-	dependencies {
-        classpath 'net.minecrell:VanillaGradle:3.0-SNAPSHOT'
-	}
+plugins {
+	id 'net.minecraftforge.gradle.tweaker-client' version '2.0.1'
 }
 evaluationDependsOnChildren()
-apply plugin: 'net.minecrell.vanilla'
 
 archivesBaseName = "mod_minelp"
 version = "1.8-UNOFFICIAL_mc1.8"
@@ -27,22 +9,25 @@ version = "1.8-UNOFFICIAL_mc1.8"
 minecraft {
 	version = "1.8"
     mappings = 'snapshot_20150606'
-    clientTweaker = 'com.mumfrey.liteloader.launch.LiteLoaderTweaker'
+    tweakClass = 'com.mumfrey.liteloader.launch.LiteLoaderTweaker'
+	runDir = 'run'
     // fix reobf issues
-    srgExtra "FD: com/voxelmodpack/common/properties/gui/GuiVoxelBoxSettingsPanel/zLevel bub/e"
-    srgExtra "FD: com/voxelmodpack/common/gui/GuiControl/zLevel bub/e"
-    srgExtra "FD: com/voxelmodpack/common/gui/GuiScreenEx/zLevel bub/e"
+//    srgExtra "FD: com/voxelmodpack/common/properties/gui/GuiVoxelBoxSettingsPanel/zLevel bub/e"
+//    srgExtra "FD: com/voxelmodpack/common/gui/GuiControl/zLevel bub/e"
+//    srgExtra "FD: com/voxelmodpack/common/gui/GuiScreenEx/zLevel bub/e"
 }
-project(':voxellib').dependencies {
-    compile fileTree("libs")
+
+repositories.flatDir {
+	dir 'voxellib/liteloader'
 }
 dependencies {
     compile project(':voxellib')
 }
 jar {
     extension 'litemod'
+	manifest.attributes.remove 'TweakClass'
 }
-task standaloneJar(type:Jar, dependsOn: [reobf, project(':voxellib').reobf]) {
+task standaloneJar(type:Jar, dependsOn: [reobfJar, project(':voxellib').reobfJar]) {
 	extension "litemod"
     from zipTree(jar.archivePath)
     from project(':voxellib').jar.archivePath
@@ -50,7 +35,4 @@ task standaloneJar(type:Jar, dependsOn: [reobf, project(':voxellib').reobf]) {
 }
 artifacts {
     archives standaloneJar
-}
-reobf {
-    setSrgMcp()
 }

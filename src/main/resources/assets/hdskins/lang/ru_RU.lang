@@ -1,0 +1,16 @@
+hdskins.choose=Выберите файл
+hdskins.manager=Помошник по работе со скинами
+hdskins.error.unreadable=Нечитаемый файл
+hdskins.error.ext=Файл не в png формате
+hdskins.error.open=Ошибка при открытии файла скина
+hdskins.error.invalid=Неверный файл скина
+hdskins.error.select=Пожалуйста сначала выберите скин
+hdskins.error.mojang=Ошибка Mojang API
+hdskins.error.mojang.wait=Пожалуйста подождите 1 минуту...
+hdskins.open.title=Выберите ваш скин
+hdskins.fetch=Извлечение скина...
+hdskins.failed=Загрузка скина завершилась неудачей
+hdskins.request=Отправка запроса на сервер, пожалуйста подождите.
+hdskins.upload=Загрузка скина, пожалуйста подождите.
+hdskins.local=Локальный скин
+hdskins.server=Скин на сервере
