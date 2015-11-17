@@ -1077,10 +1077,10 @@ public class pm_newPonyAdv extends ModelPony {
         this.Bodypiece[12] = new PlaneRenderer(this, 32, 0);
         this.Bodypiece[13] = new PlaneRenderer(this, 32, 0);
         // neck
-        this.BodypieceNeck[0] = new PlaneRenderer(this, 0, 8);
-        this.BodypieceNeck[1] = new PlaneRenderer(this, 0, 8);
-        this.BodypieceNeck[2] = new PlaneRenderer(this, 0, 8);
-        this.BodypieceNeck[3] = new PlaneRenderer(this, 0, 8);
+        this.BodypieceNeck[0] = new PlaneRenderer(this, 0, 16);
+        this.BodypieceNeck[1] = new PlaneRenderer(this, 0, 16);
+        this.BodypieceNeck[2] = new PlaneRenderer(this, 0, 16);
+        this.BodypieceNeck[3] = new PlaneRenderer(this, 0, 16);
 
         this.VillagerBagPiece[0] = new PlaneRenderer(this, 56, 19);
         this.VillagerBagPiece[1] = new PlaneRenderer(this, 56, 19);
