@@ -884,7 +884,7 @@ public class pm_newPonyAdv extends ModelPony {
         this.bipedHead.render(this.scale);
         this.headpiece[0].render(this.scale);
         this.headpiece[1].render(this.scale);
-        if (PonyManager.getInstance().getShowSnuzzles() == 1) {
+        if (MineLittlePony.getConfig().getSnuzzles().get()) {
             int red;
             if (this.isMale) {
                 for (red = 0; red < this.MuzzleMale.length; ++red) {

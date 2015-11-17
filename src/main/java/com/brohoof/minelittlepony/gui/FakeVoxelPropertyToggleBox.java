@@ -1,38 +1,30 @@
-package com.minelittlepony.minelp.gui;
+package com.brohoof.minelittlepony.gui;
 
+import com.brohoof.minelittlepony.Value;
 import com.voxelmodpack.common.LiteModVoxelCommon;
 import com.voxelmodpack.common.gui.interfaces.IExtendedGui;
 import com.voxelmodpack.common.properties.VoxelProperty;
-import com.voxelmodpack.common.properties.interfaces.IVoxelPropertyProvider;
 import com.voxelmodpack.common.properties.interfaces.IVoxelPropertyProviderInteger;
 
-public class FakeVoxelPropertyCheckBox extends VoxelProperty<IVoxelPropertyProviderInteger> {
+import net.minecraft.client.resources.I18n;
+
+public class FakeVoxelPropertyToggleBox extends VoxelProperty<IVoxelPropertyProviderInteger> {
+
+    private Value<Boolean> value;
     private int width = 11;
 
-    public FakeVoxelPropertyCheckBox(IVoxelPropertyProvider propertyProvider, String binding, String text, int xPos,
+    public FakeVoxelPropertyToggleBox(Value<Boolean> value, String text, int xPos,
             int yPos) {
-        super(propertyProvider, binding, text, xPos, yPos);
-        this.width = this.fontRenderer.getStringWidth(this.displayText) + 20;
+        super(null, null, text, xPos, yPos);
+        this.value = value;
+        this.width = this.fontRenderer.getStringWidth(I18n.format(this.displayText)) + 20;
     }
 
     @Override
     public void draw(IExtendedGui host, int mouseX, int mouseY) {
-        this.drawString(this.fontRenderer, this.displayText, this.xPosition + 20, this.yPosition + 2, 16777215);
+        this.drawString(this.fontRenderer, I18n.format(this.displayText), this.xPosition + 20, this.yPosition + 2, 16777215);
         boolean overButton = this.mouseOver(mouseX, mouseY);
-        boolean checked = true;
-
-        try {
-            int e = this.propertyProvider.getIntProperty(this.propertyBinding);
-            if (e < 2 && e > -1) {
-                if (e == 0) {
-                    checked = false;
-                } else {
-                    checked = true;
-                }
-            }
-        } catch (Exception var7) {
-
-        }
+        boolean checked = this.value.get();
 
         host.drawTessellatedModalBorderRect(LiteModVoxelCommon.GUIPARTS, 256, this.xPosition, this.yPosition,
                 this.xPosition + 11, this.yPosition + 11, 0, overButton ? 16 : 0, 16, overButton ? 32 : 16, 4);
@@ -43,28 +35,8 @@ public class FakeVoxelPropertyCheckBox extends VoxelProperty<IVoxelPropertyProvi
     @Override
     public void mouseClicked(int mouseX, int mouseY) {
         if (this.mouseOver(mouseX, mouseY)) {
-            boolean checked = true;
-
-            try {
-                int e = this.propertyProvider.getIntProperty(this.propertyBinding);
-                if (e < 2 && e > -1) {
-                    if (e == 0) {
-                        checked = false;
-                    } else {
-                        checked = true;
-                    }
-                }
-            } catch (Exception var5) {
-
-            }
-
-            if (checked) {
-                this.propertyProvider.setProperty(this.propertyBinding, 0);
-            } else {
-                this.propertyProvider.setProperty(this.propertyBinding, 1);
-            }
+            value.set(!value.get());
         }
-
     }
 
     public boolean mouseOver(int mouseX, int mouseY) {

@@ -30,21 +30,14 @@ public class PonyManager {
     public static List<ResourceLocation> villagerResourceLocations;
     private static final int MAX_BGPONY_COUNT = 141;
     private static int numberOfPonies;
+
+    private PonyConfig config;
+
     private Map<ResourceLocation, Pony> ponyResourceRegistry = new HashMap<ResourceLocation, Pony>();
     private Map<ResourceLocation, Pony> backgroudPonyResourceRegistry = new HashMap<ResourceLocation, Pony>();
-    private PonyLevel ponyLevel = PonyLevel.PONIES;
-    private int useSizes = 1;
-    private int ponyArmor = 1;
-    private int showSnuzzles = 1;
-    private int showScale = 1;
-    private int ponyVillagers = 1;
-    private int ponyZombies = 1;
-    private int ponyPigzombies = 1;
-    private int ponySkeletons = 1;
-    private int useHDSkinServer = 1;
-    private static PonyManager instance;
 
-    private PonyManager() {
+    public PonyManager(PonyConfig config) {
+        this.config = config;
         initmodels();
     }
 
@@ -52,14 +45,6 @@ public class PonyManager {
         MineLPLogger.info("Initializing models...");
         PMAPI.init();
         MineLPLogger.info("Done initializing models.");
-    }
-
-    public static PonyManager getInstance() {
-        if (instance == null) {
-            instance = new PonyManager();
-        }
-
-        return instance;
     }
 
     private Pony getPonyFromResourceRegistry(ResourceLocation skinResourceLocation, AbstractClientPlayer player) {
@@ -85,7 +70,7 @@ public class PonyManager {
 
     public Pony getPonyFromResourceRegistry(AbstractClientPlayer player) {
         Pony myLittlePony = this.getPonyFromResourceRegistry(player.getLocationSkin(), player);
-        if (this.ponyLevel == PonyLevel.PONIES && !myLittlePony.isPonySkin()) {
+        if (config.getPonyLevel().get() == PonyLevel.PONIES && !myLittlePony.isPonySkin()) {
             myLittlePony = this.getPonyFromBackgroundResourceRegistry(player);
         }
 
@@ -142,88 +127,8 @@ public class PonyManager {
         return myLittlePony;
     }
 
-    public int getHD() {
-        return this.useHDSkinServer;
-    }
-
     public int getNumberOfPonies() {
         return numberOfPonies;
-    }
-
-    public int getPonyArmor() {
-        return this.ponyArmor;
-    }
-
-    public PonyLevel getPonyLevel() {
-        return this.ponyLevel;
-    }
-
-    public int getPonyPigzombies() {
-        return this.ponyPigzombies;
-    }
-
-    public int getPonySkeletons() {
-        return this.ponySkeletons;
-    }
-
-    public int getPonyVillagers() {
-        return this.ponyVillagers;
-    }
-
-    public int getPonyZombies() {
-        return this.ponyZombies;
-    }
-
-    public int getShowScale() {
-        return this.showScale;
-    }
-
-    public int getShowSnuzzles() {
-        return this.showSnuzzles;
-    }
-
-    public int getUseSizes() {
-        return this.useSizes;
-    }
-
-    public void setHD(int useHDSkinServer) {
-        this.useHDSkinServer = useHDSkinServer;
-    }
-
-    public void setPonyArmor(int ponyArmor) {
-        this.ponyArmor = ponyArmor;
-    }
-
-    public void setPonyLevel(PonyLevel ponyLevel) {
-        this.ponyLevel = ponyLevel;
-    }
-
-    public void setPonyPigzombies(int ponyPigzombies) {
-        this.ponyPigzombies = ponyPigzombies;
-    }
-
-    public void setPonySkeletons(int ponySkeletons) {
-        this.ponySkeletons = ponySkeletons;
-    }
-
-    public void setPonyVillagers(int ponyVillagers) {
-        this.ponyVillagers = ponyVillagers;
-    }
-
-    public void setPonyZombies(int ponyZombies) {
-        this.ponyZombies = ponyZombies;
-    }
-
-    public void setShowScale(int showScale) {
-        this.showScale = showScale;
-    }
-
-    public void setShowSnuzzles(int showSnuzzles) {
-        this.showSnuzzles = showSnuzzles;
-    }
-
-    public void setUseSizes(int useSizes) {
-        this.useSizes = useSizes;
     }
 
     static {

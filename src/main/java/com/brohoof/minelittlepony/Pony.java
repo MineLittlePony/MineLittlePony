@@ -20,7 +20,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class Pony {
-    public static PonyManager ponyManager = PonyManager.getInstance();
+
+    private static PonyConfig config = MineLittlePony.getConfig();
+    
     public PonyRace race = PonyRace.EARTH;
     public boolean advancedTexturing;
     public ResourceLocation textureResourceLocation;
@@ -50,13 +52,15 @@ public class Pony {
 
     public Pony(AbstractClientPlayer player) {
         this.textureResourceLocation = player.getLocationSkin();
-        MineLPLogger.debug("+ Initialising new pony #%d for player %s (%s) with resource location %s.", this.ponyId, player.getCommandSenderName(), player.getUniqueID(), this.textureResourceLocation);
+        MineLPLogger.debug("+ Initialising new pony #%d for player %s (%s) with resource location %s.", this.ponyId,
+                player.getCommandSenderName(), player.getUniqueID(), this.textureResourceLocation);
         this.checkSkin(this.textureResourceLocation);
     }
 
     public Pony(ResourceLocation aTextureResourceLocation) {
         this.textureResourceLocation = aTextureResourceLocation;
-        MineLPLogger.debug("+ Initialising new pony #%d with resource location %s.", this.ponyId, this.textureResourceLocation);
+        MineLPLogger.debug("+ Initialising new pony #%d with resource location %s.", this.ponyId,
+                this.textureResourceLocation);
         this.checkSkin(this.textureResourceLocation);
     }
 
@@ -84,7 +88,8 @@ public class Pony {
         BufferedImage skinImage = null;
 
         try {
-            skinImage = ImageIO.read(Minecraft.getMinecraft().getResourceManager().getResource(textureResourceLocation).getInputStream());
+            skinImage = ImageIO.read(Minecraft.getMinecraft().getResourceManager().getResource(textureResourceLocation)
+                    .getInputStream());
             MineLPLogger.debug("Obtained skin from resource location %s", textureResourceLocation);
             this.checkSkin(skinImage);
         } catch (Exception var6) {
@@ -188,7 +193,7 @@ public class Pony {
         Color scootaloo = new Color(255, 190, 83);
         Color bigmac = new Color(206, 50, 84);
         Color luna = new Color(42, 60, 120);
-        if (ponyManager.getUseSizes() == 1) {
+        if (config.getSizes().get()) {
             if (sizecolor.equals(scootaloo)) {
                 this.size = 0;
             } else if (sizecolor.equals(bigmac)) {
@@ -273,7 +278,7 @@ public class Pony {
     }
 
     public int size() {
-        return ponyManager.getUseSizes() == 1 ? this.size : 1;
+        return config.getSizes().get() ? this.size : 1;
     }
 
     public boolean advancedTexturing() {
@@ -358,11 +363,11 @@ public class Pony {
 
     public PlayerModel getModel(boolean ignorePony) {
         boolean is_a_pony = false;
-        switch (ignorePony ? PonyLevel.MIXED : ponyManager.getPonyLevel()) {
+        switch (ignorePony ? PonyLevel.BOTH : config.getPonyLevel().get()) {
         case HUMANS:
             is_a_pony = false;
             break;
-        case MIXED:
+        case BOTH:
             is_a_pony = isPonySkin;
             break;
         case PONIES:

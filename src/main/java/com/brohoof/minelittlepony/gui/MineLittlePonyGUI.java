@@ -3,6 +3,8 @@ package com.brohoof.minelittlepony.gui;
 import com.brohoof.minelittlepony.MineLittlePony;
 import com.brohoof.minelittlepony.PonyConfig;
 import com.brohoof.minelittlepony.PonyLevel;
+import com.brohoof.minelittlepony.Value;
+import com.mumfrey.liteloader.core.LiteLoader;
 import com.voxelmodpack.common.properties.VoxelProperty;
 import com.voxelmodpack.common.properties.VoxelPropertyLabel;
 import com.voxelmodpack.common.properties.gui.GuiVoxelBoxSettingsPanel;
@@ -11,35 +13,43 @@ import net.minecraft.client.resources.I18n;
 
 public class MineLittlePonyGUI extends GuiVoxelBoxSettingsPanel {
 
-    private static final String pref = "minelp.options.";
+    private static final String _PREFIX = "minelp.options.";
+    private static final String TITLE = _PREFIX + "title";
+    private static final String PONY_LEVEL = _PREFIX + "ponylevel";
+    private static final String OPTIONS = _PREFIX + "options";
+    private static final String HD = _PREFIX + "hd";
+    private static final String SIZES = _PREFIX + "sizes";
+    private static final String PONY_ARMOR = _PREFIX + "ponyarmor";
+    private static final String SNUZZLES = _PREFIX + "snuzzles";
+    private static final String SHOW_SCALE = _PREFIX + "showscale";
 
-    private final String title = I18n.format(pref + "title");
-    private final String ponylevel = I18n.format(pref + "ponylevel");
-    private final String options = I18n.format(pref + "options");
-    private final String hd = I18n.format(pref + "hd");
-    private final String sizes = I18n.format(pref + "sizes");
-    private final String ponyarmor = I18n.format(pref + "ponyarmor");
-    private final String snuzzles = I18n.format(pref + "snuzzles");
-    private final String showscale = I18n.format(pref + "showscale");
+    private PonyConfig config;
 
     public MineLittlePonyGUI() {
         this.config = MineLittlePony.getConfig();
-        byte col1 = 30;
-        this.properties.add(new VoxelPropertyIntSlider(this.config, "ponylevel", ponylevel, PANEL_LEFT, PANEL_TOP + 24));
-        this.properties.add(new VoxelPropertyLabel(options, PANEL_LEFT + 15, PANEL_TOP + 58));
-        this.properties.add(check("hd", hd, PANEL_LEFT + col1, PANEL_TOP + 72));
-        this.properties.add(check("sizes", sizes, PANEL_LEFT + col1, PANEL_TOP + 90));
-        this.properties.add(check("ponyarmor", ponyarmor, PANEL_LEFT + col1, PANEL_TOP + 108));
-        this.properties.add(check("snuzzles", snuzzles, PANEL_LEFT + col1, PANEL_TOP + 126));
-        this.properties.add(check("showscale", showscale, PANEL_LEFT + col1, PANEL_TOP + 144));
+        final byte col1 = 30;
+        int row = PANEL_TOP;
+        this.properties.add(new VoxelPropertyEnum<PonyLevel>(config.getPonyLevel(), PONY_LEVEL, PONY_LEVEL + ".",
+                PANEL_LEFT, row += 24, PonyLevel.class));
+        this.properties.add(new VoxelPropertyLabel(I18n.format(OPTIONS), PANEL_LEFT + 15, row += 45));
+        this.properties.add(check(config.getHd(), HD, PANEL_LEFT + col1, row += 15));
+        this.properties.add(check(config.getSizes(), SIZES, PANEL_LEFT + col1, row += 15));
+        this.properties.add(check(config.getPonyArmor(), PONY_ARMOR, PANEL_LEFT + col1, row += 15));
+        this.properties.add(check(config.getSnuzzles(), SNUZZLES, PANEL_LEFT + col1, row += 15));
+        this.properties.add(check(config.getShowScale(), SHOW_SCALE, PANEL_LEFT + col1, row += 15));
     }
 
-    private VoxelProperty<?> check(String binding, String text, int xPos, int yPos) {
-        return new FakeVoxelPropertyCheckBox(this.config, binding, text, xPos, yPos);
+    private VoxelProperty<?> check(Value<Boolean> config, String text, int xPos, int yPos) {
+        return new FakeVoxelPropertyToggleBox(config, text, xPos, yPos);
     }
 
     @Override
     public String getPanelTitle() {
-        return title;
+        return I18n.format(TITLE);
+    }
+
+    @Override
+    public void onGuiClosed() {
+        LiteLoader.getInstance().writeConfig(config);
     }
 }

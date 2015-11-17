@@ -81,7 +81,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
         this.playerModel.armor.modelArmorChestplate.isSleeping = this.playerModel.armor.modelArmor.isSleeping = this.playerModel.model.isSleeping = false;
         this.playerModel.model.isVillager = false;
-        if (PonyManager.getInstance().getShowScale() == 1) {
+        if (MineLittlePony.getConfig().getShowScale().get()) {
             this.shadowSize = 0.4F;
         }
 

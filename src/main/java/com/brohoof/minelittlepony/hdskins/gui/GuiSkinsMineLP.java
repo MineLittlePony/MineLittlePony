@@ -11,6 +11,12 @@ import com.voxelmodpack.hdskins.gui.GuiSkins;
 
 public class GuiSkinsMineLP extends GuiSkins {
 
+    private PonyManager ponyManager;
+    
+    public GuiSkinsMineLP(PonyManager manager) {
+        this.ponyManager = manager;
+    }
+    
     @Override
     protected EntityPlayerModel getModel(GameProfile profile) {
         return new EntityPonyModel(profile);
@@ -19,20 +25,20 @@ public class GuiSkinsMineLP extends GuiSkins {
     @Override
     protected void onSetLocalSkin(BufferedImage skin) {
         MineLPLogger.debug("Invalidating old local skin, checking updated local skin");
-        PonyManager.getInstance().getPonyFromResourceRegistry(this.localPlayer.getSkinTexture()).checkSkin(skin);
+        ponyManager.getPonyFromResourceRegistry(this.localPlayer.getSkinTexture()).checkSkin(skin);
     }
 
     @Override
     protected void onSetRemoteSkin() {
         MineLPLogger.debug("Invalidating old remove skin, checking updated remote skin");
-        PonyManager.getInstance().getPonyFromResourceRegistry(this.remotePlayer.getSkinTexture()).invalidateSkinCheck();
+        ponyManager.getPonyFromResourceRegistry(this.remotePlayer.getSkinTexture()).invalidateSkinCheck();
     }
 
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
-        PonyManager.getInstance().getPonyFromResourceRegistry(this.localPlayer.getSkinTexture()).invalidateSkinCheck();
-        PonyManager.getInstance().getPonyFromResourceRegistry(this.remotePlayer.getSkinTexture()).invalidateSkinCheck();
+        ponyManager.getPonyFromResourceRegistry(this.localPlayer.getSkinTexture()).invalidateSkinCheck();
+        ponyManager.getPonyFromResourceRegistry(this.remotePlayer.getSkinTexture()).invalidateSkinCheck();
 
     }
 }

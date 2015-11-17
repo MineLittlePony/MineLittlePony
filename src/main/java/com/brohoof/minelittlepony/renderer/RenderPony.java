@@ -54,7 +54,7 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
     @Obfuscated({ "a", "func_180596_a" })
     public void doRender(AbstractClientPlayer player, double x, double y, double z, float yaw, float partialTicks) {
         ItemStack currentItemStack = player.inventory.getCurrentItem();
-        Pony thePony = PonyManager.getInstance().getPonyFromResourceRegistry(player);
+        Pony thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(player);
         this.playerModel = this.getModel(player);
         this.mainModel = this.playerModel.model;
         this.playerModel.armor.modelArmorChestplate.heldItemRight = this.playerModel.armor.modelArmor.heldItemRight = this.playerModel.model.heldItemRight = currentItemStack == null
@@ -81,7 +81,7 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
         this.playerModel.armor.modelArmorChestplate.isUnicorn = this.playerModel.armor.modelArmor.isUnicorn = this.playerModel.model.isUnicorn = thePony.isUnicorn();
         this.playerModel.armor.modelArmorChestplate.isMale = this.playerModel.armor.modelArmor.isMale = this.playerModel.model.isMale = thePony.isMale();
         this.playerModel.armor.modelArmorChestplate.size = this.playerModel.armor.modelArmor.size = this.playerModel.model.size = thePony.size();
-        if (PonyManager.getInstance().getShowScale() == 1) {
+        if (MineLittlePony.getConfig().getShowScale().get()) {
             if (this.playerModel != PMAPI.human) {
                 if (thePony.size() == 0) {
                     this.shadowSize = 0.25F;
@@ -121,7 +121,7 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
     @Obfuscated({ "a", "func_77039_a" })
     public void setupPlayerScale(AbstractClientPlayer player, double xPosition, double yPosition, double zPosition) {
 
-        if (PonyManager.getInstance().getShowScale() == 1 && !(playerModel.model instanceof pm_Human)) {
+        if (MineLittlePony.getConfig().getShowScale().get() && !(playerModel.model instanceof pm_Human)) {
             if (this.playerModel.model.size == 2) {
                 scale(0.9F, 0.9F, 0.9F);
             } else if (this.playerModel.model.size == 1 || this.playerModel.model.size == 0) {
@@ -131,7 +131,7 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
     }
 
     public ResourceLocation getEntityTexture(AbstractClientPlayer player) {
-        Pony thePony = PonyManager.getInstance().getPonyFromResourceRegistry(player);
+        Pony thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(player);
         return thePony.getTextureResourceLocation();
     }
 
@@ -141,7 +141,7 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
     }
 
     protected PlayerModel getModel(AbstractClientPlayer player) {
-        Pony thePony = PonyManager.getInstance().getPonyFromResourceRegistry(player);
+        Pony thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(player);
         return thePony.getModel();
     }
 

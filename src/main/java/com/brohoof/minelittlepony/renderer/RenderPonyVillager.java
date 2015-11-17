@@ -23,7 +23,7 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
             this.shadowSize = 0.25F;
         } else {
             this.mobModel.size = 1;
-            if (PonyManager.getInstance().getShowScale() == 1) {
+            if (MineLittlePony.getConfig().getShowScale().get()) {
                 this.shadowSize = 0.4F;
             } else {
                 this.shadowSize = 0.5F;
@@ -35,7 +35,7 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
 
     @Override
     protected ResourceLocation getEntityTexture(EntityVillager villager) {
-        Pony aVillagerPony = PonyManager.getInstance().getPonyFromResourceRegistry(villager);
+        Pony aVillagerPony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(villager);
         return aVillagerPony.getTextureResourceLocation();
     }
 }

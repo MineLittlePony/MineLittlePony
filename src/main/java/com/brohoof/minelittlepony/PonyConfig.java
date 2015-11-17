@@ -1,69 +1,90 @@
 package com.brohoof.minelittlepony;
 
-import com.minelittlepony.minelp.util.MineLPLogger;
-import com.voxelmodpack.common.properties.ModConfig;
+import java.io.File;
 
-public class PonyConfig extends ModConfig {
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
+import com.mumfrey.liteloader.modconfig.AdvancedExposable;
+import com.mumfrey.liteloader.modconfig.ConfigStrategy;
+import com.mumfrey.liteloader.modconfig.ExposableOptions;
+
+import net.minecraft.util.EnumTypeAdapterFactory;
+
+@ExposableOptions(filename = "minelittlepony", strategy = ConfigStrategy.Unversioned)
+public class PonyConfig implements AdvancedExposable {
+
+    @Expose
+    private Value<PonyLevel> ponylevel = new Value<PonyLevel>(PonyLevel.PONIES);
+    @Expose
+    private Value<Boolean> sizes = new Value<Boolean>(true);
+    @Expose
+    private Value<Boolean> ponyarmor = new Value<Boolean>(true);
+    @Expose
+    private Value<Boolean> snuzzles = new Value<Boolean>(true);
+    @Expose
+    private Value<Boolean> hd = new Value<Boolean>(true);
+    @Expose
+    private Value<Boolean> showscale = new Value<Boolean>(true);
+    @Expose
+    private Value<Boolean> villagers = new Value<Boolean>(true);
+    @Expose
+    private Value<Boolean> zombies = new Value<Boolean>(true);
+    @Expose
+    private Value<Boolean> pigzombies = new Value<Boolean>(true);
+    @Expose
+    private Value<Boolean> skeletons = new Value<Boolean>(true);
+
+    public Value<PonyLevel> getPonyLevel() {
+        if (ponylevel.get() == null)
+            ponylevel.set(PonyLevel.PONIES);
+        return ponylevel;
+    }
+
+    public Value<Boolean> getSizes() {
+        return sizes;
+    }
+
+    public Value<Boolean> getPonyArmor() {
+        return ponyarmor;
+    }
+
+    public Value<Boolean> getSnuzzles() {
+        return snuzzles;
+    }
+
+    public Value<Boolean> getHd() {
+        return hd;
+    }
+
+    public Value<Boolean> getShowScale() {
+        return showscale;
+    }
+
+    public Value<Boolean> getVillagers() {
+        return villagers;
+    }
+
+    public Value<Boolean> getZombies() {
+        return zombies;
+    }
+
+    public Value<Boolean> getPigZombies() {
+        return pigzombies;
+    }
+
+    public Value<Boolean> getSkeletons() {
+        return skeletons;
+    }
+
     @Override
-    protected void setDefaults() {
-        this.defaults.setProperty("ponylevel", "2");
-        this.defaults.setProperty("sizes", "1");
-        this.defaults.setProperty("ponyarmor", "1");
-        this.defaults.setProperty("snuzzles", "1");
-        this.defaults.setProperty("hd", "1");
-        this.defaults.setProperty("showscale", "1");
-        this.defaults.setProperty("eqg", "0");
-        this.defaults.setProperty("villagers", "1");
-        this.defaults.setProperty("zombies", "1");
-        this.defaults.setProperty("pigzombies", "1");
-        this.defaults.setProperty("skeletons", "1");
-        this.defaults.setProperty("oldSkinUploaded", "0");
-    }
-
-    public PonyConfig() {
-        super("Mine Little Pony", "minelittlepony.properties");
+    public void setupGsonSerialiser(GsonBuilder gsonBuilder) {
+        gsonBuilder.registerTypeAdapterFactory(new EnumTypeAdapterFactory())
+                .registerTypeAdapter(Value.class, new Value.Serializer());
     }
 
     @Override
-    public String getOptionDisplayString(String binding) {
-        return "";
+    public File getConfigFile(File configFile, File configFileLocation, String defaultFileName) {
+        return null;
     }
 
-    public int getIntPropertySafe(String key) {
-        return this.getIntPropertySafe(key, Integer.MIN_VALUE, Integer.MAX_VALUE);
-    }
-
-    public int getIntPropertySafe(String key, int minValue, int maxValue) {
-        int value;
-        try {
-            value = this.getIntProperty(key);
-        } catch (Exception var9) {
-            try {
-                boolean e2 = this.getBoolProperty(key);
-                if (e2) {
-                    value = 1;
-                } else {
-                    value = 0;
-                }
-            } catch (Exception var8) {
-                int defaultValue1 = this.getDefaultIntProperty(key);
-                this.setProperty(key, defaultValue1);
-                MineLPLogger.error("Invalid value for config key \"%s\", using default value %d", key, defaultValue1);
-                return defaultValue1;
-            }
-        }
-
-        if (value >= minValue && value <= maxValue) {
-            return value;
-        }
-        int defaultValue = value = this.getDefaultIntProperty(key);
-        this.setProperty(key, defaultValue);
-        MineLPLogger.error("Invalid value for config key \"%s\", using default value %d. Found %d, expected value between %d and %d.",
-                key, defaultValue, value, minValue, maxValue);
-        return defaultValue;
-    }
-
-    public boolean isSet(String key) {
-        return this.config.containsKey(key);
-    }
 }

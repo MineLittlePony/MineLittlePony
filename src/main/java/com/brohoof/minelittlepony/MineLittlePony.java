@@ -30,17 +30,19 @@ import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityVillager;
 
 public class MineLittlePony implements InitCompleteListener {
-    public static final String MOD_VERSION = "1.8-UNOFFICIAL";
+
+    public static final String MOD_VERSION = "@VERSION@";
     public static final String MOD_NAME = "Mine Little Pony";
     public static final String SKIN_SERVER_URL = "minelpskins.voxelmodpack.com";
     public static final String GATEWAY_URL = "minelpskinmanager.voxelmodpack.com";
     public static final String UPLOAD_URL = "http://minelpskinmanager.voxelmodpack.com/";
     private static final KeyBinding guiKeybinding = new KeyBinding("Settings", Keyboard.KEY_F9, "Mine Little Pony");
     private static final KeyBinding skinKeybinding = new KeyBinding("Skin Manager", Keyboard.KEY_F1, "Mine Little Pony");
+
+    private static MineLittlePony instance;
+
     private PonyConfig config;
     private PonyManager ponyManager;
-    private String spUsername;
-    private static MineLittlePony instance;
 
     public MineLittlePony() {
         instance = this;
@@ -67,56 +69,19 @@ public class MineLittlePony implements InitCompleteListener {
     public void init(File configPath) {
         LiteLoader.getInput().registerKeyBinding(guiKeybinding);
         LiteLoader.getInput().registerKeyBinding(skinKeybinding);
+
         SettingsPanelManager.addSettingsPanel("Pony", MineLittlePonyGUI.class);
         SettingsPanelManager.addSettingsPanel("Pony Mobs", MineLittlePonyGUIMob.class);
-        this.ponyManager = PonyManager.getInstance();
+
         this.config = new PonyConfig();
+        this.ponyManager = new PonyManager(config);
 
-        int readInt = this.config.getIntPropertySafe("ponylevel", 0, 2);
-        this.ponyManager.setPonyLevel(PonyLevel.parse(readInt));
-        MineLPLogger.info("Pony level is set to %d.", Integer.valueOf(readInt));
-
-        readInt = this.config.getIntPropertySafe("sizes", 0, 1);
-        this.ponyManager.setUseSizes(readInt);
-        MineLPLogger.info("Different pony sizes are %s.", readInt == 0 ? "disabled" : "enabled");
-
-        readInt = this.config.getIntPropertySafe("ponyarmor", 0, 1);
-        this.ponyManager.setPonyArmor(readInt);
-        MineLPLogger.info("Pony armor is %s.", readInt == 0 ? "disabled" : "enabled");
-
-        readInt = this.config.getIntPropertySafe("snuzzles", 0, 1);
-        this.ponyManager.setShowSnuzzles(readInt);
-        MineLPLogger.info("Snuzzels are %s.", readInt == 0 ? "disabled (You are a bad pony)" : "enabled");
-
-        readInt = this.config.getIntPropertySafe("hd", 0, 1);
-        this.ponyManager.setHD(readInt);
-        MineLPLogger.info("MineLittlePony skin server is %s.", readInt == 0 ? "disabled" : "enabled");
-
-        readInt = this.config.getIntPropertySafe("showscale", 0, 1);
-        this.ponyManager.setShowScale(readInt);
-        MineLPLogger.info("Show-accurate scaling is %s.", readInt == 0 ? "disabled" : "enabled");
-
-        readInt = this.config.getIntPropertySafe("villagers", 0, 1);
-        this.ponyManager.setPonyVillagers(readInt);
-        MineLPLogger.info("Pony villagers are %s.", readInt == 0 ? "disabled" : "enabled");
-
-        readInt = this.config.getIntPropertySafe("zombies", 0, 1);
-        this.ponyManager.setPonyZombies(readInt);
-        MineLPLogger.info("Pony zombies are %s.", readInt == 0 ? "disabled" : "enabled");
-
-        readInt = this.config.getIntPropertySafe("pigzombies", 0, 1);
-        this.ponyManager.setPonyPigzombies(readInt);
-        MineLPLogger.info("Pony pigzombies are %s.", readInt == 0 ? "disabled" : "enabled");
-
-        readInt = this.config.getIntPropertySafe("skeletons", 0, 1);
-        this.ponyManager.setPonySkeletons(readInt);
-        MineLPLogger.info("Pony skeletons are %s.", readInt == 0 ? "disabled" : "enabled");
+        LiteLoader.getInstance().registerExposable(config, null);
     }
 
     @Override
     public void onInitCompleted(Minecraft minecraft, LiteLoader loader) {
-        this.spUsername = minecraft.getSession().getUsername();
-        if (this.ponyManager.getHD() == 1) {
+        if (this.config.getHd().get()) {
             HDSkinManager.clearSkinCache();
             HDSkinManager.setSkinUrl(SKIN_SERVER_URL);
             HDSkinManager.setGatewayURL(GATEWAY_URL);
@@ -124,22 +89,22 @@ public class MineLittlePony implements InitCompleteListener {
         }
         RenderManager rm = minecraft.getRenderManager();
         ModUtilities.addRenderer(EntityPonyModel.class, new RenderPonyModel(rm));
-        if (this.ponyManager.getPonyVillagers() == 1) {
+        if (this.config.getVillagers().get()) {
             ModUtilities.addRenderer(EntityVillager.class, new RenderPonyVillager(rm));
             MineLPLogger.info("Villagers are now ponies.");
         }
 
-        if (this.ponyManager.getPonyZombies() == 1) {
+        if (this.config.getZombies().get()) {
             ModUtilities.addRenderer(EntityZombie.class, new RenderPonyZombie(rm));
             MineLPLogger.info("Zombies are now ponies.");
         }
 
-        if (this.ponyManager.getPonyPigzombies() == 1) {
+        if (this.config.getPigZombies().get()) {
             ModUtilities.addRenderer(EntityPigZombie.class, new RenderPonyZombie(rm));
             MineLPLogger.info("Zombie pigmen are now ponies.");
         }
 
-        if (this.ponyManager.getPonySkeletons() == 1) {
+        if (this.config.getSkeletons().get()) {
             ModUtilities.addRenderer(EntitySkeleton.class, new RenderPonySkeleton(rm));
             MineLPLogger.info("Skeletons are now ponies.");
         }
@@ -148,32 +113,29 @@ public class MineLittlePony implements InitCompleteListener {
 
     @Override
     public void onTick(Minecraft minecraft, float partialTicks, boolean inGame, boolean clock) {
-        this.ponyManager.setPonyLevel(PonyLevel.parse(this.config.getIntPropertySafe("ponylevel", 0, 2)));
-        this.ponyManager.setUseSizes(this.config.getIntPropertySafe("sizes"));
-        this.ponyManager.setPonyArmor(this.config.getIntPropertySafe("ponyarmor"));
-        this.ponyManager.setShowSnuzzles(this.config.getIntPropertySafe("snuzzles"));
-        this.ponyManager.setShowScale(this.config.getIntPropertySafe("showscale"));
         if (inGame && minecraft.currentScreen == null && guiKeybinding.isPressed()) {
             minecraft.displayGuiScreen(new MineLittlePonyGUI());
         }
-        // if (Keyboard.isKeyDown(Keyboard.KEY_O)) {
-        // ponyManager.initmodels();
-        // }
 
         boolean pressed = minecraft.currentScreen instanceof GuiMainMenu
                 && Keyboard.isKeyDown(skinKeybinding.getKeyCode());
         boolean skins = minecraft.currentScreen instanceof GuiSkins
                 && !(minecraft.currentScreen instanceof GuiSkinsMineLP);
         if (pressed || skins) {
-            minecraft.displayGuiScreen(new GuiSkinsMineLP());
+            minecraft.displayGuiScreen(new GuiSkinsMineLP(ponyManager));
         }
     }
 
-    public static ModConfig getConfig() {
+    public PonyManager getManager() {
+        return this.ponyManager;
+    }
+
+    public static PonyConfig getConfig() {
         return getInstance().config;
     }
 
     public static String getSPUsername() {
-        return getInstance().spUsername;
+        return Minecraft.getMinecraft().getSession().getUsername();
     }
+
 }

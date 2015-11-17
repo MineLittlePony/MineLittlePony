@@ -3,9 +3,9 @@ minelp.restart2=Minecraft before they will take effect!
 
 minelp.options.title=Mine Little Pony Settings
 minelp.options.ponylevel=Pony Level
-minelp.options.ponylevel.pony=Ponies
-minelp.options.ponylevel.human=Humans
-minelp.options.ponylevel.mix=Mix
+minelp.options.ponylevel.ponies=Ponies Only
+minelp.options.ponylevel.humans=Humans Only
+minelp.options.ponylevel.both=Both
 minelp.options.options=Pony Options
 minelp.options.hd=Enable MineLP skin server (requries restart)
 minelp.options.sizes=Allow all different sizes of pony
