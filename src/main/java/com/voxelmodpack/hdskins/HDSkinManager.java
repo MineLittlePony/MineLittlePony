@@ -32,6 +32,7 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
+import net.minecraft.world.World;
 
 public final class HDSkinManager {
     private static String gatewayUrl = "skinmanager.voxelmodpack.com";
@@ -79,33 +80,59 @@ public final class HDSkinManager {
         if (mc.theWorld == null) {
             return null;
         }
-        Collection<NetworkPlayerInfo> playersInfo = mc.getNetHandler().func_175106_d();
-        String uuid;
+        return findPlayer(mc, hash);
+
+    }
+
+    private static String findPlayer(Minecraft mc, String hash) {
+        String uuid = findNetworkPlayer(mc, hash);
+        if (uuid == null) {
+            uuid = findWorldPlayers(mc.theWorld, hash);
+        }
+        if (uuid == null) {
+            uuid = findSkullPlayers(hash);
+        }
+        return uuid;
+    }
+
+    private static String findNetworkPlayer(Minecraft mc, String hash) {
+        Collection<NetworkPlayerInfo> playersInfo = mc.getNetHandler().getPlayerInfoMap();
         // players
         for (NetworkPlayerInfo player : playersInfo) {
             GameProfile profile = player.getGameProfile();
-            Map<Type, MinecraftProfileTexture> textures = getTexturesForProfile(mc, profile);
+            Map<Type, MinecraftProfileTexture> textures = getTexturesForProfile(profile);
             storeTexturesForProfile(profile, textures);
-            uuid = findUUID(profile, textures, hash);
+            String uuid = findUUID(profile, textures, hash);
             if (uuid != null)
                 return uuid;
         }
+        return null;
+    }
+
+    private static String findWorldPlayers(World world, String hash) {
         @SuppressWarnings("unchecked")
-        List<EntityPlayer> players = mc.theWorld.playerEntities;
+        List<EntityPlayer> players = world.playerEntities;
         for (EntityPlayer player : players) {
             GameProfile profile = player.getGameProfile();
-            Map<Type, MinecraftProfileTexture> textures = getTexturesForProfile(mc, profile);
+            Map<Type, MinecraftProfileTexture> textures = getTexturesForProfile(profile);
             storeTexturesForProfile(profile, textures);
-            uuid = findUUID(profile, textures, hash);
+            String uuid = findUUID(profile, textures, hash);
             if (uuid != null)
                 return uuid;
         }
+        return null;
+    }
+
+    private static String findSkullPlayers(String hash) {
         // skulls
         for (Entry<GameProfile, Map<Type, MinecraftProfileTexture>> e : getSkinsCache().asMap().entrySet()) {
             GameProfile profile = e.getKey();
+            // stupid plugineers..
+            if (profile.getId() == null)
+                continue;
             Map<Type, MinecraftProfileTexture> textures = e.getValue();
             storeTexturesForProfile(profile, textures);
-            uuid = findUUID(profile, textures, hash);
+            String uuid = findUUID(profile, textures, hash);
             if (uuid != null)
                 return uuid;
         }
@@ -133,12 +160,13 @@ public final class HDSkinManager {
         }
     }
 
-    private static Map<Type, MinecraftProfileTexture> getTexturesForProfile(Minecraft minecraft, GameProfile profile) {
+    private static Map<Type, MinecraftProfileTexture> getTexturesForProfile(GameProfile profile) {
         LiteLoaderLogger.debug("Get textures for " + profile.getId(), new Object[0]);
         Map<Type, MinecraftProfileTexture> cached = getCachedTexturesForId(trimUUID(profile.getId()));
         if (cached != null) {
             return cached;
         }
+        Minecraft minecraft = Minecraft.getMinecraft();
         MinecraftSessionService sessionService = minecraft.getSessionService();
         Map<Type, MinecraftProfileTexture> textures = null;
 
@@ -148,7 +176,8 @@ public final class HDSkinManager {
             textures = sessionService.getTextures(profile, false);
         }
 
-        if ((textures == null || textures.isEmpty()) && profile.getId().equals(minecraft.getSession().getProfile().getId())) {
+        if ((textures == null || textures.isEmpty())
+                && profile.getId().equals(minecraft.getSession().getProfile().getId())) {
             textures = sessionService.getTextures(sessionService.fillProfileProperties(profile, false), false);
         }
 
@@ -201,19 +230,18 @@ public final class HDSkinManager {
     public static PreviewTexture getPreviewTexture(ResourceLocation skinResource, GameProfile profile) {
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         Object skinTexture = textureManager.getTexture(skinResource);
+
         if (skinTexture == null) {
-            Map<Type, MinecraftProfileTexture> textures = getTexturesForProfile(Minecraft.getMinecraft(), profile);
+            Map<Type, MinecraftProfileTexture> textures = getTexturesForProfile(profile);
             MinecraftProfileTexture skin = textures.get(Type.SKIN);
-            if (skin == null) {
-                throw new RuntimeException("Could not get player skin URL from profile");
+            if (skin != null) {
+                String url = skin.getUrl();
+                skinTexture = new PreviewTexture(url, DefaultPlayerSkin.getDefaultSkin(profile.getId()), new ImageBufferDownloadHD());
+                textureManager.loadTexture(skinResource, (ITextureObject) skinTexture);
             }
-
-            String url = skin.getUrl();
-            skinTexture = new PreviewTexture(url, DefaultPlayerSkin.getDefaultSkin(profile.getId()), new ImageBufferDownloadHD());
-            textureManager.loadTexture(skinResource, (ITextureObject) skinTexture);
         }
-
         return (PreviewTexture) skinTexture;
+
     }
 
     public static void clearSkinCache() {

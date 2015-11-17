@@ -642,8 +642,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         GL11.glEnable(GL11.GL_DEPTH_TEST);
     }
 
-    public void renderPlayerModel(EntityPlayerModel thePlayer, float xPosition, float yPosition, float scale,
-            @SuppressWarnings("unused") float mouseX, float mouseY, float partialTick) {
+    public void renderPlayerModel(EntityPlayerModel thePlayer, float xPosition, float yPosition, float scale, float mouseX, float mouseY, float partialTick) {
         GL11.glEnable(GL.GL_COLOR_MATERIAL);
         pushMatrix();
         translate(xPosition, yPosition, 300.0F);
