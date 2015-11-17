@@ -1,1 +1,3 @@
-include ':voxellib'
+rootProject.name = 'MineLittlePony'
+
+include 'voxellib', 'common', 'forge'

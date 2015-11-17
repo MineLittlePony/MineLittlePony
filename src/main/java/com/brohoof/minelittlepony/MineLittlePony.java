@@ -43,6 +43,7 @@ public class MineLittlePony implements InitCompleteListener {
 
     private PonyConfig config;
     private PonyManager ponyManager;
+    private ProxyContainer proxy;
 
     public MineLittlePony() {
         instance = this;
@@ -75,6 +76,7 @@ public class MineLittlePony implements InitCompleteListener {
 
         this.config = new PonyConfig();
         this.ponyManager = new PonyManager(config);
+        this.proxy = new ProxyContainer();
 
         LiteLoader.getInstance().registerExposable(config, null);
     }
@@ -128,6 +130,10 @@ public class MineLittlePony implements InitCompleteListener {
 
     public PonyManager getManager() {
         return this.ponyManager;
+    }
+
+    public static ProxyContainer getProxy() {
+        return getInstance().proxy;
     }
 
     public static PonyConfig getConfig() {

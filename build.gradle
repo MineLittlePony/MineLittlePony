@@ -15,7 +15,38 @@ minecraft {
     tweakClass = 'com.mumfrey.liteloader.launch.LiteLoaderTweaker'
 	replace '@VERSION@',project.version
 }
+project('common') {
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
 
+	sourceCompatibility = 1.6
+	targetCompatibility = 1.6
+
+	sourceSets.main {
+		compileClasspath += rootProject.configurations.forgeGradleMc
+	}
+	eclipse.classpath.file.withXml {
+		def path = "$gradle.gradleUserHomeDir/caches/minecraft/net/minecraft/minecraft/$minecraft.version/${minecraft.mappings.replace('_','/')}/minecraftSrc-$minecraft.version"
+		it.asNode().appendNode('classpathentry',[
+			kind:      "lib",
+			path:      "${path}.jar",
+			sourcepath:"$path-sources.jar"
+		])
+	}
+	
+}
+project('forge') {
+	apply plugin: 'net.minecraftforge.gradle.forge'
+	minecraft {
+		version = '1.8-11.14.3.1543'
+		mappings = rootProject.minecraft.mappings
+		runDir = '../run'
+		replace '@VERSION@',project.version
+	}
+	dependencies {
+		provided project(':common')
+	}
+}
 
 processResources {
     def props = [
@@ -36,12 +67,16 @@ repositories.flatDir {
 	dir 'liteloader'
 }
 dependencies {
+	compile project('common')
     deobfProvided 'com.mumfrey:liteloader:1.8-SNAPSHOT:srgnames'
 	provided voxellib
 }
 jar {
 	manifest.attributes.remove 'TweakClass'
+
 	extension 'litemod'
+	from project('common').sourceSets.main.output
+	from project('forge').sourceSets.main.output
 }
 task standaloneJar(type: Jar, dependsOn: [{voxellib.build}, reobfJar]) {
 	extension 'litemod'
