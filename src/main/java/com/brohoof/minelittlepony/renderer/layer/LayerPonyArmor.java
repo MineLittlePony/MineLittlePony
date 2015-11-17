@@ -43,21 +43,16 @@ public class LayerPonyArmor implements LayerRenderer {
     }
 
     @Override
-    public void doRenderLayer(EntityLivingBase entitylivingbaseIn, float p_177141_2_, float p_177141_3_,
-            float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
+    public void doRenderLayer(EntityLivingBase entity, float p_177141_2_, float p_177141_3_, float ticks,
+            float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
         pony = ((IRenderPony) renderer).getPony();
         if (pony.model instanceof pm_Human) {
-            humanArmor.doRenderLayer(entitylivingbaseIn, p_177141_2_, p_177141_3_, partialTicks, p_177141_5_,
-                    p_177141_6_, p_177141_7_, scale);
+            humanArmor.doRenderLayer(entity, p_177141_2_, p_177141_3_, ticks, p_177141_5_, p_177141_6_, p_177141_7_,
+                    scale);
         } else {
-            renderArmor(entitylivingbaseIn, p_177141_2_, p_177141_3_, partialTicks, p_177141_5_, p_177141_6_,
-                    p_177141_7_, scale, 4);
-            renderArmor(entitylivingbaseIn, p_177141_2_, p_177141_3_, partialTicks, p_177141_5_, p_177141_6_,
-                    p_177141_7_, scale, 3);
-            renderArmor(entitylivingbaseIn, p_177141_2_, p_177141_3_, partialTicks, p_177141_5_, p_177141_6_,
-                    p_177141_7_, scale, 2);
-            renderArmor(entitylivingbaseIn, p_177141_2_, p_177141_3_, partialTicks, p_177141_5_, p_177141_6_,
-                    p_177141_7_, scale, 1);
+            for (int i = 4; i > 0; i--) {
+                renderArmor(entity, p_177141_2_, p_177141_3_, ticks, p_177141_5_, p_177141_6_, p_177141_7_, scale, i);
+            }
         }
     }
 
@@ -67,12 +62,15 @@ public class LayerPonyArmor implements LayerRenderer {
 
         if (itemstack != null && itemstack.getItem() instanceof ItemArmor) {
             ItemArmor itemarmor = (ItemArmor) itemstack.getItem();
+            boolean isLegs = armorSlot == 3;
 
-            ModelPony modelbase = armorSlot > 2 ? pony.armor.modelArmorChestplate : pony.armor.modelArmor;
+            ModelPony modelbase = isLegs ? pony.armor.modelArmorChestplate : pony.armor.modelArmor;
             modelbase.setModelAttributes(this.renderer.getMainModel());
             modelbase.setLivingAnimations(entitylivingbaseIn, p_177141_2_, p_177141_3_, partialTicks);
+            modelbase = getArmorModel(entitylivingbaseIn, itemstack, armorSlot, modelbase);
             prepareToRender((pm_newPonyArmor) modelbase, armorSlot);
-            this.bindPonyArmorTexture(itemarmor, armorSlot, null);
+            // this.bindPonyArmorTexture(itemarmor, armorSlot, null);
+            this.renderer.bindTexture(getArmorTexture(entitylivingbaseIn, itemstack, isLegs ? 2 : 1, null));
             if (itemarmor.getArmorMaterial() == ArmorMaterial.LEATHER) {
                 int j = itemarmor.getColor(itemstack);
                 float f7 = (j >> 16 & 255) / 255.0F;
@@ -81,8 +79,7 @@ public class LayerPonyArmor implements LayerRenderer {
                 GlStateManager.color(f7, f8, f9, 1);
                 modelbase.render(entitylivingbaseIn, p_177141_2_, p_177141_3_, p_177141_5_, p_177141_6_, p_177141_7_,
                         scale);
-
-                bindPonyArmorTexture(itemarmor, armorSlot, "overlay");
+                this.renderer.bindTexture(getArmorTexture(entitylivingbaseIn, itemstack, isLegs ? 2 : 1, "overlay"));
             }
             GlStateManager.color(1, 1, 1, 1);
             modelbase.render(entitylivingbaseIn, p_177141_2_, p_177141_3_, p_177141_5_, p_177141_6_, p_177141_7_,
@@ -92,6 +89,29 @@ public class LayerPonyArmor implements LayerRenderer {
                 this.renderEnchantment(entitylivingbaseIn, modelbase, p_177141_2_, p_177141_3_, partialTicks,
                         p_177141_5_, p_177141_6_, p_177141_7_, scale);
             }
+        }
+    }
+
+    private ResourceLocation getArmorTexture(EntityLivingBase entity, ItemStack itemstack, int slot, String type) {
+        ItemArmor item = (ItemArmor) itemstack.getItem();
+        String texture = item.getArmorMaterial().getName();
+        String domain = "minecraft";
+        int idx = texture.indexOf(':');
+        if (idx != -1) {
+            domain = texture.substring(0, idx);
+            texture = texture.substring(idx + 1);
+        }
+        String s1 = String.format("%s:textures/models/armor/%s_layer_%d%s.png", domain, texture, (slot == 2 ? 2 : 1),
+                type == null ? "" : String.format("_%s", type));
+        s1 = getArmorTexture(entity, itemstack, s1, slot, type);
+        ResourceLocation human = getHumanResource(s1);
+        ResourceLocation pony = getPonyResource(human);
+
+        try {
+            Minecraft.getMinecraft().getResourceManager().getResource(pony);
+            return pony;
+        } catch (IOException e) {
+            return human;
         }
     }
 
@@ -177,107 +197,47 @@ public class LayerPonyArmor implements LayerRenderer {
         return false;
     }
 
-    protected boolean bindPonyArmorTexture(ItemArmor armorPiece, int slot, String overlay) {
-        String overlayText = "";
-        if (overlay != null) {
-            overlayText = String.format("_%s", overlay);
+    private static ResourceLocation getHumanResource(String s1) {
+        ResourceLocation human = HUMAN_ARMORS.get(s1);
+        if (human == null) {
+            human = new ResourceLocation(s1);
+            HUMAN_ARMORS.put(s1, human);
         }
-
-        String path = this.pony.armor.path
-                + bipedArmorFilenamePrefix[armorPiece.getArmorMaterial().ordinal()]
-                + "_layer_" + this.pony.armor.subimage(slot) + overlayText + ".png";
-        if (PonyManager.getInstance().getPonyArmor() == 1 && this.pony.model instanceof pm_newPonyAdv) {
-            Object[] armorResourceAndState = this.getPonyResourceLocation(path);
-            renderer.bindTexture((ResourceLocation) armorResourceAndState[0]);
-            return ((Boolean) armorResourceAndState[1]).booleanValue();
-        }
-        return false;
+        return human;
     }
 
-    protected boolean bindForgeArmorTexture(Entity playerEntity, ItemStack armorStack, ItemArmor armorPiece, int slot,
-            String overlay) {
-        String path = "";
-
-        try {
-            path = String.format("textures/models/armor/%s_layer_%d%s.png",
-                    bipedArmorFilenamePrefix[armorPiece.renderIndex],
-                    Integer.valueOf(slot == 2 ? 2 : 1),
-                    overlay == null ? "" : String.format("_%s", overlay));
-        } catch (ArrayIndexOutOfBoundsException var10) {}
-
-        path = (String) MineLPReflection.forgeAPI.invokeMethod("ForgeHooksClient.getArmorTexture", (Object) null,
-                playerEntity, armorStack, path, Integer.valueOf(slot), overlay);
-        boolean ponyArmor;
-        if (ponyArmors.contains(path)) {
-            ponyArmor = this.bindPonyArmorTexture(armorPiece, slot, overlay);
-        } else {
-            ponyArmor = false;
-            ResourceLocation forgeResourceLocation;
-            if (PonyManager.getInstance().getPonyArmor() == 1 && this.pony.model instanceof pm_newPonyAdv) {
-                Object[] armorResourceAndState = this.getPonyResourceLocation(path);
-                forgeResourceLocation = (ResourceLocation) armorResourceAndState[0];
-                ponyArmor = ((Boolean) armorResourceAndState[1]).booleanValue();
-            } else {
-                forgeResourceLocation = field_110859_k.get(path);
-                if (forgeResourceLocation == null) {
-                    forgeResourceLocation = new ResourceLocation(path);
-                    field_110859_k.put(path, forgeResourceLocation);
-                }
-
-                ponyArmor = false;
+    private static ResourceLocation getPonyResource(ResourceLocation human) {
+        ResourceLocation pony = PONY_ARMORS.get(human);
+        if (pony == null) {
+            String domain = human.getResourceDomain();
+            String path = human.getResourcePath();
+            if (domain.equals("minecraft")) {
+                // it's a vanilla armor. I provide these.
+                domain = "minelittlepony";
             }
-
-            renderer.bindTexture(forgeResourceLocation);
+            path = path.replace(".png", "_pony.png");
+            pony = new ResourceLocation(domain, path);
+            PONY_ARMORS.put(human, pony);
         }
-
-        return ponyArmor;
+        return pony;
     }
 
-    protected Object[] getPonyResourceLocation(String path) {
-        boolean ponyArmor = false;
-        String ponyPath = path.replace(".png", "_pony.png");
-        ResourceLocation ponyResourceLocation = ponyArmorMap.get(path);
-        if (ponyResourceLocation == null) {
-            ResourceLocation ponyArmorResource = new ResourceLocation(ponyPath);
-
-            try {
-                TextureUtil.readImageData(Minecraft.getMinecraft().getResourceManager(), ponyArmorResource);
-                ponyResourceLocation = ponyArmorResource;
-                ponyArmorMap.put(path, ponyArmorResource);
-                onlyPonyArmorMap.put(path, ponyArmorResource);
-                ponyArmor = true;
-            } catch (IOException var7) {
-                ponyResourceLocation = field_110859_k.get(path);
-                if (ponyResourceLocation == null) {
-                    ponyResourceLocation = new ResourceLocation(path);
-                    field_110859_k.put(path, ponyResourceLocation);
-                }
-
-                ponyArmorMap.put(path, ponyResourceLocation);
-                ponyArmor = false;
-            }
-        } else {
-            ponyArmor = true;
-            ponyResourceLocation = onlyPonyArmorMap.get(path);
-            if (ponyResourceLocation == null) {
-                ponyResourceLocation = ponyArmorMap.get(path);
-                ponyArmor = false;
-            }
+    private static String getArmorTexture(EntityLivingBase entity, ItemStack item, String def, int slot, String type) {
+        IPonyArmor armor = MineLittlePony.getProxy().getPonyArmors();
+        if (armor != null) {
+            return armor.getArmorTexture(entity, item, def, slot, type);
         }
-
-        return new Object[] { ponyResourceLocation, Boolean.valueOf(ponyArmor) };
+        return def;
     }
 
-    static {
-        MineLPReflection.preCall();
-
-        for (int i = 1; i <= 2; ++i) {
-            for (String prefix : bipedArmorFilenamePrefix) {
-                ponyArmors.add("textures/models/armor/" + prefix + "_layer_" + i + ".png");
+    private static ModelPony getArmorModel(EntityLivingBase entity, ItemStack itemstack, int slot, ModelPony def) {
+        IPonyArmor armor = MineLittlePony.getProxy().getPonyArmors();
+        if (armor != null) {
+            ModelBase model = armor.getArmorModel(entity, itemstack, slot, def);
+            if (model instanceof pm_newPonyArmor) {
+                return (ModelPony) model;
             }
         }
-
-        ponyArmors.add("textures/models/armor/leather_layer_1_overlay.png");
-        ponyArmors.add("textures/models/armor/leather_layer_2_overlay.png");
+        return def;
     }
 }
