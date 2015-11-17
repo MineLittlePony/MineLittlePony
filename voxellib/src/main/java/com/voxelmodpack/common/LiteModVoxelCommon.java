@@ -82,7 +82,7 @@ public class LiteModVoxelCommon implements PacketHandler {
     @Override
     public boolean handlePacket(INetHandler netHandler, Packet packet) {
         S03PacketTimeUpdate timeUpdatePacket = (S03PacketTimeUpdate) packet;
-        LiteModVoxelCommon.updateTime(netHandler, timeUpdatePacket.func_149366_c(), timeUpdatePacket.func_149365_d());
+        LiteModVoxelCommon.updateTime(netHandler, timeUpdatePacket.getTotalWorldTime(), timeUpdatePacket.getWorldTime());
         return false;
     }
 

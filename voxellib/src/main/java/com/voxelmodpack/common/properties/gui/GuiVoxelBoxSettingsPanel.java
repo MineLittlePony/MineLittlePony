@@ -264,10 +264,8 @@ public abstract class GuiVoxelBoxSettingsPanel extends GuiScreenEx implements Co
 
         if (keyCode == Keyboard.KEY_TAB) {
             VoxelProperty<?> focused = null; // focused property
-            VoxelProperty<?> next = null; // next focusable property AFTER the
-                                          // focused property
-            VoxelProperty<?> before = null; // first focusable property BEFORE
-                                            // the focused property
+            VoxelProperty<?> next = null; // next focusable property AFTER the focused property
+            VoxelProperty<?> before = null; // first focusable property BEFORE the focused property
 
             // Search through properties to find focus chain
             for (VoxelProperty<?> property : this.properties) {

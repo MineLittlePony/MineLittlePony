@@ -19,7 +19,7 @@ import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import net.minecraft.launchwrapper.Launch;
 
 public abstract class VoxelCommonLiteMod implements LiteMod, Configurable {
-    private String bundledJarName = "voxelcommon-2.3.1.jar";
+    private String bundledJarName = "voxelcommon-2.4.0.jar";
     private final String voxelCommonClassName = "com.voxelmodpack.common.LiteModVoxelCommon";
     private final String modClassName;
     private LiteMod mod;

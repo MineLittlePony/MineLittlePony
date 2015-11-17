@@ -122,24 +122,16 @@ public class PrivateMethods<P, R> {
     }
 
     // Methods on public classes
-    public static final PrivateMethods<GuiContainer, Slot> containerGetSlotAtPosition = new PrivateMethods<GuiContainer, Slot>(
-            GuiContainer.class, ObfMap.getSlotAtPosition, int.class, int.class);
-    public static final PrivateMethods<GuiContainer, Void> containerHandleMouseClick = new PrivateMethods<GuiContainer, Void>(
-            GuiContainer.class, ObfMap.handleMouseClick, Slot.class, int.class, int.class, int.class);
-    public static final PrivateMethods<GuiContainerCreative, Void> selectTab = new PrivateMethods<GuiContainerCreative, Void>(
-            GuiContainerCreative.class, ObfMap.selectTab, CreativeTabs.class);
-    public static final PrivateMethods<GuiMainMenu, Void> mainMenuRenderSkyBox = new PrivateMethods<GuiMainMenu, PrivateMethods.Void>(
-            GuiMainMenu.class, ObfMap.renderSkyBox, int.class, int.class, float.class);
+    public static final PrivateMethods<GuiContainer, Slot> containerGetSlotAtPosition = new PrivateMethods<GuiContainer, Slot>(GuiContainer.class, ObfMap.getSlotAtPosition, int.class, int.class);
+    public static final PrivateMethods<GuiContainer, Void> containerHandleMouseClick = new PrivateMethods<GuiContainer, Void>(GuiContainer.class, ObfMap.handleMouseClick, Slot.class, int.class, int.class, int.class);
+    public static final PrivateMethods<GuiContainerCreative, Void> selectTab = new PrivateMethods<GuiContainerCreative, Void>(GuiContainerCreative.class, ObfMap.selectTab, CreativeTabs.class);
+    public static final PrivateMethods<GuiMainMenu, Void> mainMenuRenderSkyBox = new PrivateMethods<GuiMainMenu, PrivateMethods.Void>(GuiMainMenu.class, ObfMap.renderSkyBox, int.class, int.class, float.class);
 
-    public static final PrivateMethods<GuiScreen, Void> guiScreenMouseClicked = new PrivateMethods<GuiScreen, Void>(
-            GuiScreen.class, ObfMap.guiScreenMouseClicked, int.class, int.class, int.class);
-    public static final PrivateMethods<GuiScreen, Void> guiScreenMouseMovedOrUp = new PrivateMethods<GuiScreen, Void>(
-            GuiScreen.class, ObfMap.guiScreenMouseMovedOrUp, int.class, int.class, int.class);
-    public static final PrivateMethods<GuiScreen, Void> guiScreenKeyTyped = new PrivateMethods<GuiScreen, Void>(
-            GuiScreen.class, ObfMap.guiScreenKeyTyped, char.class, int.class);
+    public static final PrivateMethods<GuiScreen, Void> guiScreenMouseClicked = new PrivateMethods<GuiScreen, Void>(GuiScreen.class, ObfMap.guiScreenMouseClicked, int.class, int.class, int.class);
+    public static final PrivateMethods<GuiScreen, Void> guiScreenMouseMovedOrUp = new PrivateMethods<GuiScreen, Void>(GuiScreen.class, ObfMap.guiScreenMouseMovedOrUp, int.class, int.class, int.class);
+    public static final PrivateMethods<GuiScreen, Void> guiScreenKeyTyped = new PrivateMethods<GuiScreen, Void>(GuiScreen.class, ObfMap.guiScreenKeyTyped, char.class, int.class);
 
     // Methods on dynamic classes below here
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static final PrivateMethods<Container, Void> scrollTo = new PrivateMethods(
-            PrivateClasses.ContainerCreative.Class, ObfMap.scrollTo, float.class);
+    public static final PrivateMethods<Container, Void> scrollTo = new PrivateMethods(PrivateClasses.ContainerCreative.Class, ObfMap.scrollTo, float.class);
 }

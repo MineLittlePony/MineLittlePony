@@ -96,7 +96,6 @@ public abstract class GuiScreenEx extends GuiScreen implements IExtendedGui {
     /**
      * Draws a solid color rectangle with the specified coordinates and color.
      */
-    @SuppressWarnings("cast")
     public void drawDepthRect(int x1, int y1, int x2, int y2, int color) {
         if (x1 < x2) {
             int xTemp = x1;

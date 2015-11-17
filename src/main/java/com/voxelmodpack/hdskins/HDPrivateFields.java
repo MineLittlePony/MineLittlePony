@@ -25,9 +25,7 @@ public class HDPrivateFields<P, T> extends PrivateFields<P, T> {
 
         protected HDObf(String seargeName, String obfName, String mcpName) {
             super(seargeName, obfName, mcpName);
-            // TODO Auto-generated constructor stub
         }
-
     }
 
 }

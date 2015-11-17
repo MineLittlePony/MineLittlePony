@@ -1,36 +1,55 @@
 plugins {
-	id 'net.minecraftforge.gradle.tweaker-client' version '2.0.1'
+	id 'net.minecraftforge.gradle.tweaker-client' version '2.0.2'
 }
-evaluationDependsOnChildren()
+ext.voxellib = project ':voxellib'
+ext.revision = 186
 
-archivesBaseName = "mod_minelp"
-version = "1.8-UNOFFICIAL_mc1.8"
+archivesBaseName = "MineLittlePony"
+group = 'com.brohoof.minelp'
+version = '1.8'
 
 minecraft {
 	version = "1.8"
-    mappings = 'snapshot_20150606'
-    tweakClass = 'com.mumfrey.liteloader.launch.LiteLoaderTweaker'
+    mappings = 'snapshot_20151027'
 	runDir = 'run'
-    // fix reobf issues
-//    srgExtra "FD: com/voxelmodpack/common/properties/gui/GuiVoxelBoxSettingsPanel/zLevel bub/e"
-//    srgExtra "FD: com/voxelmodpack/common/gui/GuiControl/zLevel bub/e"
-//    srgExtra "FD: com/voxelmodpack/common/gui/GuiScreenEx/zLevel bub/e"
+    tweakClass = 'com.mumfrey.liteloader.launch.LiteLoaderTweaker'
+	replace '@VERSION@',project.version
 }
 
+
+processResources {
+    def props = [
+        version:    version,
+        mcversion:  minecraft.version,
+        revision:   revision
+    ]
+    inputs.properties props
+	from(sourceSets.main.resources.srcDirs) {
+		include 'litemod.json'
+		expand props
+	}
+	from(sourceSets.main.resources.srcDirs) {
+		exclude 'litemod.json'
+	}
+}
 repositories.flatDir {
-	dir 'voxellib/liteloader'
+	dir 'liteloader'
 }
 dependencies {
-    compile project(':voxellib')
+    deobfProvided 'com.mumfrey:liteloader:1.8-SNAPSHOT:srgnames'
+	provided voxellib
 }
 jar {
-    extension 'litemod'
 	manifest.attributes.remove 'TweakClass'
+	extension 'litemod'
 }
-task standaloneJar(type:Jar, dependsOn: [reobfJar, project(':voxellib').reobfJar]) {
-	extension "litemod"
-    from zipTree(jar.archivePath)
-    from project(':voxellib').jar.archivePath
+task standaloneJar(type: Jar, dependsOn: [{voxellib.build}, reobfJar]) {
+	extension 'litemod'
+	from zipTree(jar.archivePath)
+
+	// voxellib
+    from {voxellib.jar.archivePath}
+
     classifier 'standalone'
 }
 artifacts {

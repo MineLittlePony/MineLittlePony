@@ -132,55 +132,33 @@ public class PrivateFields<P, T> {
             this.set(null, value);
         }
 
-        public static final StaticFields<I18n, Locale> locale = new StaticFields<I18n, Locale>(I18n.class,
-                ObfMap.currentLocale);
-        public static final StaticFields<Gui, ResourceLocation> optionsBackground = new StaticFields<Gui, ResourceLocation>(
-                Gui.class, ObfMap.optionsBackground);
+        public static final StaticFields<I18n, Locale> locale = new StaticFields<I18n, Locale>(I18n.class, ObfMap.currentLocale);
+        public static final StaticFields<Gui, ResourceLocation> optionsBackground = new StaticFields<Gui, ResourceLocation>(Gui.class, ObfMap.optionsBackground);
     }
 
     // If anyone screws up the formatting of this table again I will have them
     // fed to a shark
-    public static final PrivateFields<GuiScreen, GuiButton> guiScreenSelectedButton = new PrivateFields<GuiScreen, GuiButton>(
-            GuiScreen.class, ObfMap.guiScreenSelectedButton);
-    public static final PrivateFields<WorldInfo, WorldType> worldType = new PrivateFields<WorldInfo, WorldType>(
-            WorldInfo.class, ObfMap.worldType);
-    public static final PrivateFields<SoundManager, SoundSystem> soundSystem = new PrivateFields<SoundManager, SoundSystem>(
-            SoundManager.class, ObfMap.soundSystemThread);
-    public static final PrivateFields<GuiSlot, Long> lastClicked = new PrivateFields<GuiSlot, Long>(GuiSlot.class,
-            ObfMap.lastClicked);
-    public static final PrivateFields<EntityRenderer, Double> renderZoom = new PrivateFields<EntityRenderer, Double>(
-            EntityRenderer.class, ObfMap.renderZoom);
-    public static final PrivateFields<EntityRenderer, Double> renderOfsetX = new PrivateFields<EntityRenderer, Double>(
-            EntityRenderer.class, ObfMap.renderOfsetX);
-    public static final PrivateFields<EntityRenderer, Double> renderOfsetY = new PrivateFields<EntityRenderer, Double>(
-            EntityRenderer.class, ObfMap.renderOfsetY);
-    public static final PrivateFields<World, Float> rainingStrength = new PrivateFields<World, Float>(World.class,
-            ObfMap.rainingStrength);
-    public static final PrivateFields<World, Float> thunderingStrength = new PrivateFields<World, Float>(World.class,
-            ObfMap.thunderingStrength);
-    public static final PrivateFields<ThreadDownloadImageData, BufferedImage> downloadedImage = new PrivateFields<ThreadDownloadImageData, BufferedImage>(
-            ThreadDownloadImageData.class, ObfMap.downloadedImage);
-    public static final PrivateFields<GuiMultiplayer, ServerList> internetServerList = new PrivateFields<GuiMultiplayer, ServerList>(
-            GuiMultiplayer.class, ObfMap.internetServerList);
-    public static final PrivateFields<GuiMultiplayer, ServerSelectionList> serverSelectionList = new PrivateFields<GuiMultiplayer, ServerSelectionList>(
-            GuiMultiplayer.class, ObfMap.serverSelectionList);
-    public static final PrivateFields<GuiScreenResourcePacks, GuiScreen> guiResourcePacksParentScreen = new PrivateFields<GuiScreenResourcePacks, GuiScreen>(
-            GuiScreenResourcePacks.class, ObfMap.guiResourcePacksParentScreen);
-    public static final PrivateFields<AbstractResourcePack, File> abstractResourcePackFile = new PrivateFields<AbstractResourcePack, File>(
-            AbstractResourcePack.class, ObfMap.abstractResourcePackFile);
-    public static final PrivateFields<Minecraft, Framebuffer> mcFramebuffer = new PrivateFields<Minecraft, Framebuffer>(
-            Minecraft.class, ObfMap.mcFramebuffer);
-    public static final PrivateFields<ThreadDownloadImageData, String> imageUrl = new PrivateFields<ThreadDownloadImageData, String>(
-            ThreadDownloadImageData.class, ObfMap.imageUrl);
-    public static final PrivateFields<ThreadDownloadImageData, Thread> imageThread = new PrivateFields<ThreadDownloadImageData, Thread>(
-            ThreadDownloadImageData.class, ObfMap.imageThread);
-    public static final PrivateFields<ThreadDownloadImageData, IImageBuffer> imageBuffer = new PrivateFields<ThreadDownloadImageData, IImageBuffer>(
-            ThreadDownloadImageData.class, ObfMap.imageBuffer);
-    public static final PrivateFields<ThreadDownloadImageData, File> imageFile = new PrivateFields<ThreadDownloadImageData, File>(
-            ThreadDownloadImageData.class, ObfMap.imageFile);
+    public static final PrivateFields<GuiScreen, GuiButton> guiScreenSelectedButton = new PrivateFields<GuiScreen, GuiButton>(GuiScreen.class, ObfMap.guiScreenSelectedButton);
+    public static final PrivateFields<WorldInfo, WorldType> worldType = new PrivateFields<WorldInfo, WorldType>(WorldInfo.class, ObfMap.worldType);
+    public static final PrivateFields<SoundManager, SoundSystem> soundSystem = new PrivateFields<SoundManager, SoundSystem>(SoundManager.class, ObfMap.soundSystemThread);
+    public static final PrivateFields<GuiSlot, Long> lastClicked = new PrivateFields<GuiSlot, Long>(GuiSlot.class, ObfMap.lastClicked);
+    public static final PrivateFields<EntityRenderer, Double> renderZoom = new PrivateFields<EntityRenderer, Double>(EntityRenderer.class, ObfMap.renderZoom);
+    public static final PrivateFields<EntityRenderer, Double> renderOfsetX = new PrivateFields<EntityRenderer, Double>(EntityRenderer.class, ObfMap.renderOfsetX);
+    public static final PrivateFields<EntityRenderer, Double> renderOfsetY = new PrivateFields<EntityRenderer, Double>(EntityRenderer.class, ObfMap.renderOfsetY);
+    public static final PrivateFields<World, Float> rainingStrength = new PrivateFields<World, Float>(World.class, ObfMap.rainingStrength);
+    public static final PrivateFields<World, Float> thunderingStrength = new PrivateFields<World, Float>(World.class, ObfMap.thunderingStrength);
+    public static final PrivateFields<ThreadDownloadImageData, BufferedImage> downloadedImage = new PrivateFields<ThreadDownloadImageData, BufferedImage>(ThreadDownloadImageData.class, ObfMap.downloadedImage);
+    public static final PrivateFields<GuiMultiplayer, ServerList> internetServerList = new PrivateFields<GuiMultiplayer, ServerList>(GuiMultiplayer.class, ObfMap.internetServerList);
+    public static final PrivateFields<GuiMultiplayer, ServerSelectionList> serverSelectionList = new PrivateFields<GuiMultiplayer, ServerSelectionList>(GuiMultiplayer.class, ObfMap.serverSelectionList);
+    public static final PrivateFields<GuiScreenResourcePacks, GuiScreen> guiResourcePacksParentScreen = new PrivateFields<GuiScreenResourcePacks, GuiScreen>(GuiScreenResourcePacks.class, ObfMap.guiResourcePacksParentScreen);
+    public static final PrivateFields<AbstractResourcePack, File> abstractResourcePackFile = new PrivateFields<AbstractResourcePack, File>(AbstractResourcePack.class, ObfMap.abstractResourcePackFile);
+    public static final PrivateFields<Minecraft, Framebuffer> mcFramebuffer = new PrivateFields<Minecraft, Framebuffer>(Minecraft.class, ObfMap.mcFramebuffer);
+    public static final PrivateFields<ThreadDownloadImageData, String> imageUrl = new PrivateFields<ThreadDownloadImageData, String>(ThreadDownloadImageData.class, ObfMap.imageUrl);
+    public static final PrivateFields<ThreadDownloadImageData, Thread> imageThread = new PrivateFields<ThreadDownloadImageData, Thread>(ThreadDownloadImageData.class, ObfMap.imageThread);
+    public static final PrivateFields<ThreadDownloadImageData, IImageBuffer> imageBuffer = new PrivateFields<ThreadDownloadImageData, IImageBuffer>(ThreadDownloadImageData.class, ObfMap.imageBuffer);
+    public static final PrivateFields<ThreadDownloadImageData, File> imageFile = new PrivateFields<ThreadDownloadImageData, File>(ThreadDownloadImageData.class, ObfMap.imageFile);
 
-    public static final PrivateFields<SoundEventAccessorComposite, List<ISoundEventAccessor>> eventSounds = new PrivateFields<SoundEventAccessorComposite, List<ISoundEventAccessor>>(
-            SoundEventAccessorComposite.class, ObfMap.eventSounds);
+    public static final PrivateFields<SoundEventAccessorComposite, List<ISoundEventAccessor>> eventSounds = new PrivateFields<SoundEventAccessorComposite, List<ISoundEventAccessor>>(SoundEventAccessorComposite.class, ObfMap.eventSounds);
     public static final PrivateFields<TextureManager, Map<ResourceLocation, ? extends ITextureObject>> resourceToTextureMap = new PrivateFields<TextureManager, Map<ResourceLocation, ? extends ITextureObject>>(
             TextureManager.class, ObfMap.resourceToTextureMap);
 }
