@@ -12,35 +12,25 @@ minecraft {
 	version = "1.8"
     mappings = 'snapshot_20151027'
 	runDir = 'run'
-    tweakClass = 'com.mumfrey.liteloader.launch.LiteLoaderTweaker'
 	replace '@VERSION@',project.version
+    tweakClass = 'com.mumfrey.liteloader.launch.LiteLoaderTweaker'
+	clientJvmArgs += '-Dmcpenv=true'
 }
 project('common') {
-	apply plugin: 'java'
-	apply plugin: 'eclipse'
-
-	sourceCompatibility = 1.6
-	targetCompatibility = 1.6
-
-	sourceSets.main {
-		compileClasspath += rootProject.configurations.forgeGradleMc
+	apply plugin: 'net.minecraftforge.gradle.tweaker-client'
+	minecraft {
+		version = rootProject.minecraft.version
+		mappings = rootProject.minecraft.mappings
+		runDir = rootProject.minecraft.runDir
+		tweakClass = rootProject.minecraft.tweakClass
 	}
-	eclipse.classpath.file.withXml {
-		def path = "$gradle.gradleUserHomeDir/caches/minecraft/net/minecraft/minecraft/$minecraft.version/${minecraft.mappings.replace('_','/')}/minecraftSrc-$minecraft.version"
-		it.asNode().appendNode('classpathentry',[
-			kind:      "lib",
-			path:      "${path}.jar",
-			sourcepath:"$path-sources.jar"
-		])
-	}
-	
 }
 project('forge') {
 	apply plugin: 'net.minecraftforge.gradle.forge'
 	minecraft {
 		version = '1.8-11.14.3.1543'
 		mappings = rootProject.minecraft.mappings
-		runDir = '../run'
+		runDir = rootProject.minecraft.runDir
 		replace '@VERSION@',project.version
 	}
 	dependencies {
