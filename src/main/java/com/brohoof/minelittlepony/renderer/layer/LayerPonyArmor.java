@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import com.brohoof.minelittlepony.MineLittlePony;
-import com.brohoof.minelittlepony.common.IPonyArmor;
+import com.brohoof.minelittlepony.forge.IPonyArmor;
 import com.brohoof.minelittlepony.model.ModelPony;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.model.pony.pm_Human;

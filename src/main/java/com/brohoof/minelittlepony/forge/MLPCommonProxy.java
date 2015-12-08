@@ -1,4 +1,4 @@
-package com.brohoof.minelittlepony.common;
+package com.brohoof.minelittlepony.forge;
 
 public abstract class MLPCommonProxy {
 

@@ -1,6 +1,6 @@
 package com.brohoof.minelittlepony.forge;
 
-import com.brohoof.minelittlepony.common.IPonyArmor;
+import com.brohoof.minelittlepony.forge.IPonyArmor;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.entity.EntityLivingBase;

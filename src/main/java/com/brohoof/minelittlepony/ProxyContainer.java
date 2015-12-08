@@ -1,7 +1,7 @@
 package com.brohoof.minelittlepony;
 
-import com.brohoof.minelittlepony.common.IPonyArmor;
-import com.brohoof.minelittlepony.common.MLPCommonProxy;
+import com.brohoof.minelittlepony.forge.IPonyArmor;
+import com.brohoof.minelittlepony.forge.MLPCommonProxy;
 
 public class ProxyContainer extends MLPCommonProxy {
 

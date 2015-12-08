@@ -1,4 +1,4 @@
-package com.brohoof.minelittlepony.common;
+package com.brohoof.minelittlepony.forge;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.entity.EntityLivingBase;
