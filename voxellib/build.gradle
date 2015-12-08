@@ -15,4 +15,14 @@ repositories.flatDir {
 dependencies {
     deobfCompile 'com.mumfrey:liteloader:1.8-SNAPSHOT:srgnames'
 }
-jar.manifest.attributes.remove 'TweakClass'
+jar {
+	manifest.attributes.remove 'TweakClass'
+	classifier 'dev'
+}
+task obfJar(type:Jar) {
+	from sourceSets.main.output
+}
+reobf {
+	jar.task.enabled = false
+	obfJar {}
+}

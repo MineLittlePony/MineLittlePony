@@ -16,15 +16,6 @@ minecraft {
     tweakClass = 'com.mumfrey.liteloader.launch.LiteLoaderTweaker'
 	clientJvmArgs += '-Dmcpenv=true'
 }
-project('common') {
-	apply plugin: 'net.minecraftforge.gradle.tweaker-client'
-	minecraft {
-		version = rootProject.minecraft.version
-		mappings = rootProject.minecraft.mappings
-		runDir = rootProject.minecraft.runDir
-		tweakClass = rootProject.minecraft.tweakClass
-	}
-}
 project('forge') {
 	apply plugin: 'net.minecraftforge.gradle.forge'
 	minecraft {
@@ -34,7 +25,7 @@ project('forge') {
 		replace '@VERSION@',project.version
 	}
 	dependencies {
-		provided project(':common')
+		provided rootProject
 	}
 }
 
@@ -57,26 +48,26 @@ repositories.flatDir {
 	dir 'liteloader'
 }
 dependencies {
-	compile project('common')
     deobfProvided 'com.mumfrey:liteloader:1.8-SNAPSHOT:srgnames'
 	provided voxellib
 }
 jar {
 	manifest.attributes.remove 'TweakClass'
-
-	extension 'litemod'
-	from project('common').sourceSets.main.output
-	from project('forge').sourceSets.main.output
 }
-task standaloneJar(type: Jar, dependsOn: [{voxellib.build}, reobfJar]) {
+task standaloneJar(type: Jar, dependsOn: [{voxellib.reobfObfJar}, {project('forge').compileJava}]) {
 	extension 'litemod'
-	from zipTree(jar.archivePath)
+	from sourceSets.main.output
+	from {project('forge').sourceSets.main.output}
 
 	// voxellib
-    from {voxellib.jar.archivePath}
+    from {voxellib.obfJar.archivePath}
 
     classifier 'standalone'
 }
 artifacts {
     archives standaloneJar
+}
+reobf{
+	jar.task.enabled = false
+	standaloneJar{}
 }
