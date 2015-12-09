@@ -2,6 +2,7 @@ package com.brohoof.minelittlepony.renderer.layer;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
+import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.model.ModelPony;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.model.pony.pm_newPonyAdv;
@@ -38,7 +39,7 @@ public class LayerPonySkull implements LayerRenderer {
             float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
         ItemStack itemstack = entity.getCurrentArmor(3);
         if (itemstack != null && itemstack.getItem() != null) {
-            ModelPony model = getModel().model;
+            ModelPony model = getModel().getModel();
             Item item = itemstack.getItem();
 
             pushMatrix();
@@ -48,7 +49,7 @@ public class LayerPonySkull implements LayerRenderer {
                 scale(0.7, 0.7, 0.7);
             }
             if (model instanceof pm_newPonyAdv) {
-                if (model.size == 0) {
+                if (model.metadata.getSize() == PonySize.FOAL) {
                     translate(0.0F, 0.76F, 0.0F);
                     scale(0.9, 0.9, 0.9);
                 }

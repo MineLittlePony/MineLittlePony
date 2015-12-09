@@ -22,15 +22,8 @@ public class RenderPonyModel extends RenderPlayerModel {
         Pony thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(this.getEntityTexture(playerModelEntity));
         thePony.checkSkin();
         PlayerModel pm = thePony.getModel(true);
-        this.mainModel = pm.model;
-        pm.model.isFlying = thePony.isFlying = false;
-        pm.model.isPegasus = thePony.isPegasus();
-        pm.model.isUnicorn = thePony.isUnicorn();
-        pm.model.isMale = thePony.isMale();
-        pm.model.size = thePony.size();
-        pm.model.glowColor = thePony.glowColor();
-        pm.model.wantTail = thePony.wantTail();
-        pm.model.isVillager = false;
+        this.mainModel = pm.getModel();
+        pm.apply(thePony.metadata);
         this.mainModel.render(par1EntityLivingBase, par2, par3, par4, par5, par6, par7);
     }
 

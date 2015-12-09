@@ -17,8 +17,8 @@ public class RenderPonySkeleton extends RenderPonyMob<EntitySkeleton> {
         addLayer(new LayerBipedArmor(this) {
             @Override
             protected void initArmor() {
-                this.field_177189_c = PMAPI.skeletonPony.model;
-                this.field_177186_d = PMAPI.skeletonPony.model;
+                this.field_177189_c = PMAPI.skeletonPony.getModel();
+                this.field_177186_d = PMAPI.skeletonPony.getModel();
             }
         });
     }
@@ -37,7 +37,7 @@ public class RenderPonySkeleton extends RenderPonyMob<EntitySkeleton> {
 
     @Override
     protected ResourceLocation getEntityTexture(EntitySkeleton skeleton) {
-        return skeleton.getSkeletonType() == 1 ? PonyManager.skeletonWitherPonyResource
-                : PonyManager.skeletonPonyResource;
+        return skeleton.getSkeletonType() == 1 ? PonyManager.WITHER_SKELETON
+                : PonyManager.SKELETON;
     }
 }

@@ -1,15 +1,18 @@
 package com.brohoof.minelittlepony.model.pony;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
+import static net.minecraft.client.renderer.GlStateManager.popMatrix;
+import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
+import static net.minecraft.client.renderer.GlStateManager.scale;
+import static net.minecraft.client.renderer.GlStateManager.translate;
 
 import net.minecraft.util.MathHelper;
 
 public class pm_skeletonPony extends pm_newPonyAdv {
 
-    public pm_skeletonPony(String texture) {
-        super(texture);
+    public pm_skeletonPony() {
+        metadata.setGlowColor(0xff6666dd);
     }
-
+    
     @Override
     protected void rotateLegs(float move, float swing, float tick) {
         float rightArmRotateAngleX;
@@ -18,7 +21,7 @@ public class pm_skeletonPony extends pm_newPonyAdv {
         float leftLegRotateAngleX;
         float var8;
         float var9;
-        if (this.isFlying && this.isPegasus) {
+        if (this.isFlying && this.metadata.getRace().hasWings()) {
             if (this.rainboom) {
                 rightArmRotateAngleX = ROTATE_270;
                 leftArmRotateAngleX = ROTATE_270;
@@ -71,7 +74,7 @@ public class pm_skeletonPony extends pm_newPonyAdv {
         if (this.heldItemRight != 0) {
             var8 = MathHelper.sin(this.swingProgress * 3.1415927F);
             var9 = MathHelper.sin((1.0F - (1.0F - this.swingProgress) * (1.0F - this.swingProgress)) * 3.1415927F);
-            if (this.glowColor == 0) {
+            if (this.metadata.getGlowColor() == 0) {
                 this.bipedRightArm.rotateAngleZ = 0.0F;
                 this.bipedRightArm.rotateAngleY = 0.1F - var8 * 0.6F;
                 this.bipedRightArm.rotateAngleX = -1.5707964F;
@@ -95,7 +98,7 @@ public class pm_skeletonPony extends pm_newPonyAdv {
 
     @Override
     protected void fixSpecialRotationPoints(float move) {
-        if (this.heldItemRight != 0 && this.glowColor == 0) {
+        if (this.heldItemRight != 0 && this.metadata.getGlowColor() == 0) {
             this.setRotationPoint(this.bipedRightArm, -1.5F, 9.5F, 4.0F);
         }
 
@@ -110,7 +113,7 @@ public class pm_skeletonPony extends pm_newPonyAdv {
         popMatrix();
 
         pushMatrix();
-        if (this.heldItemRight != 0 && this.glowColor == 0) {
+        if (this.heldItemRight != 0 && this.metadata.getGlowColor() == 0) {
             translate(-0.1F, 0.3F, 0.1F);
             scale(0.5F, 0.5F, 1.2F);
         } else {

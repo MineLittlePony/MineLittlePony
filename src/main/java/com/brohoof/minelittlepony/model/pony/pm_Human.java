@@ -9,10 +9,6 @@ public class pm_Human extends ModelPony {
     public ModelRenderer bipedEars;
     public ModelRenderer cloak;
 
-    public pm_Human(String texture) {
-        super(texture);
-    }
-
     @Override
     protected boolean doCancelRender() {
         return true;

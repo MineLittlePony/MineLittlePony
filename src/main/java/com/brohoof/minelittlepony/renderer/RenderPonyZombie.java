@@ -23,9 +23,9 @@ public class RenderPonyZombie extends RenderPonyMob<EntityZombie> {
 
     @Override
     protected ResourceLocation getEntityTexture(EntityZombie zombie) {
-        return zombie instanceof EntityPigZombie ? PonyManager.zombiePigmanPonyResource
-                : (zombie.isVillager() ? PonyManager.zombieVillagerPonyResource
-                        : PonyManager.zombiePonyResource);
+        return zombie instanceof EntityPigZombie ? PonyManager.PIGMAN
+                : (zombie.isVillager() ? PonyManager.ZOMBIE_VILLAGER
+                        : PonyManager.ZOMBIE);
     }
 
 }

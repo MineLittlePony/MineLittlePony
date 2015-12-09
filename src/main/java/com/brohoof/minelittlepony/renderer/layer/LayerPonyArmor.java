@@ -46,7 +46,7 @@ public class LayerPonyArmor implements LayerRenderer {
     public void doRenderLayer(EntityLivingBase entity, float p_177141_2_, float p_177141_3_, float ticks,
             float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
         pony = ((IRenderPony) renderer).getPony();
-        if (pony.model instanceof pm_Human) {
+        if (pony.getModel() instanceof pm_Human) {
             humanArmor.doRenderLayer(entity, p_177141_2_, p_177141_3_, ticks, p_177141_5_, p_177141_6_, p_177141_7_,
                     scale);
         } else {
@@ -64,7 +64,7 @@ public class LayerPonyArmor implements LayerRenderer {
             ItemArmor itemarmor = (ItemArmor) itemstack.getItem();
             boolean isLegs = armorSlot == 3;
 
-            ModelPony modelbase = isLegs ? pony.armor.modelArmorChestplate : pony.armor.modelArmor;
+            ModelPony modelbase = isLegs ? pony.getArmor().modelArmorChestplate : pony.getArmor().modelArmor;
             modelbase.setModelAttributes(this.renderer.getMainModel());
             modelbase.setLivingAnimations(entitylivingbaseIn, p_177141_2_, p_177141_3_, partialTicks);
             modelbase = getArmorModel(entitylivingbaseIn, itemstack, armorSlot, modelbase);

@@ -5,6 +5,7 @@ import static net.minecraft.client.renderer.GlStateManager.*;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
+import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.model.PMAPI;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.model.pony.pm_newPonyAdv;
@@ -48,20 +49,20 @@ public class LayerHeldPonyItem implements LayerRenderer {
             return;
         }
 
-        if (!pony.model.isSleeping) {
-            if (pony.model.isUnicorn && pony.model.glowColor != 0) {
-                pm_newPonyAdv model = (pm_newPonyAdv) pony.model;
-                if (pony.model.aimedBow) {
+        if (!pony.getModel().isSleeping) {
+            if (pony.getModel().metadata.getRace().hasHorn() && pony.getModel().metadata.getGlowColor() != 0) {
+                pm_newPonyAdv model = (pm_newPonyAdv) pony.getModel();
+                if (pony.getModel().aimedBow) {
                     renderDrop(pony, entity, model.unicornarm, 1.0F, 0.15F, 0.9375F, 0.0625F);
-                } else if (pony.model.size == 0) {
+                } else if (pony.getModel().metadata.getSize() == PonySize.FOAL) {
                     renderDrop(pony, entity, model.unicornarm, 1.0F, 0.35F, 0.5375F, -0.8F);
                 } else {
                     renderDrop(pony, entity, model.unicornarm, 1.0F, 0.35F, 0.5375F, -0.45F);
                 }
-            } else if (pony.model.size == 0) {
-                renderDrop(pony, entity, pony.model.bipedRightArm, 1.0F, 0.08F, 0.8375F, 0.0625F);
+            } else if (pony.getModel().metadata.getSize() == PonySize.FOAL) {
+                renderDrop(pony, entity, pony.getModel().bipedRightArm, 1.0F, 0.08F, 0.8375F, 0.0625F);
             } else {
-                renderDrop(pony, entity, pony.model.bipedRightArm, 1.0F, -0.0625F, 0.8375F, 0.0625F);
+                renderDrop(pony, entity, pony.getModel().bipedRightArm, 1.0F, -0.0625F, 0.8375F, 0.0625F);
             }
         }
     }
@@ -117,8 +118,8 @@ public class LayerHeldPonyItem implements LayerRenderer {
             color(var19, g, b, 1.0F);
             Minecraft.getMinecraft().getItemRenderer().renderItem(entity, drop, TransformType.THIRD_PERSON);
 
-            if (pony.model.isUnicorn && pony.model.glowColor != 0) {
-                this.renderItemGlow(entity, drop, pony.model.glowColor);
+            if (pony.getModel().metadata.getRace().hasHorn() && pony.getModel().metadata.getGlowColor() != 0) {
+                this.renderItemGlow(entity, drop, pony.getModel().metadata.getGlowColor());
             }
 
             popMatrix();

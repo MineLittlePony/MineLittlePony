@@ -6,10 +6,6 @@ import net.minecraft.util.MathHelper;
 
 public class pm_zombiePony extends pm_newPonyAdv {
 
-    public pm_zombiePony(String texture) {
-        super(texture);
-    }
-
     @Override
     protected void rotateLegs(float move, float swing, float tick) {
         float rightArmRotateAngleX;
@@ -18,7 +14,7 @@ public class pm_zombiePony extends pm_newPonyAdv {
         float leftLegRotateAngleX;
         float var8;
         float var9;
-        if (this.isFlying && this.isPegasus) {
+        if (this.isFlying && this.metadata.getRace().hasWings()) {
             if (this.rainboom) {
                 rightArmRotateAngleX = ROTATE_270;
                 leftArmRotateAngleX = ROTATE_270;

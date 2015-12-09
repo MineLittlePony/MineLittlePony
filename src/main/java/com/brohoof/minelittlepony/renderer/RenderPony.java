@@ -4,15 +4,14 @@ import static net.minecraft.client.renderer.GlStateManager.scale;
 
 import com.brohoof.minelittlepony.MineLittlePony;
 import com.brohoof.minelittlepony.Pony;
+import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.model.PMAPI;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.model.pony.pm_Human;
-import com.brohoof.minelittlepony.model.pony.pm_newPonyAdv;
 import com.brohoof.minelittlepony.renderer.layer.LayerHeldPonyItem;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonyArmor;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonyCape;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonySkull;
-import com.brohoof.minelittlepony.util.MineLPPrivateFields;
 import com.mumfrey.liteloader.transformers.AppendInsns;
 import com.mumfrey.liteloader.transformers.Obfuscated;
 
@@ -31,6 +30,7 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
     @SuppressWarnings("unused")
     private static RenderPlayer __TARGET;
     private PlayerModel playerModel;
+    private Pony thePony;
 
     private RenderPony(RenderManager renderManager) {
         super(renderManager, null, 0.5F);
@@ -40,8 +40,8 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
     @AppendInsns("<init>")
     private void init(RenderManager renderManager, boolean useSmallArms) {
         this.playerModel = PMAPI.newPonyAdv;
-        this.mainModel = this.playerModel.model;
-        this.shadowSize = this.playerModel.shadowsize;
+        this.mainModel = this.playerModel.getModel();
+        this.shadowSize = this.playerModel.getShadowsize();
         this.layerRenderers.clear();
 
         this.addLayer(new LayerPonyArmor(this));
@@ -54,46 +54,42 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
     @Obfuscated({ "a", "func_180596_a" })
     public void doRender(AbstractClientPlayer player, double x, double y, double z, float yaw, float partialTicks) {
         ItemStack currentItemStack = player.inventory.getCurrentItem();
-        Pony thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(player);
+        this.thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(player);
+        thePony.checkSkin();
         this.playerModel = this.getModel(player);
-        this.mainModel = this.playerModel.model;
-        this.playerModel.armor.modelArmorChestplate.heldItemRight = this.playerModel.armor.modelArmor.heldItemRight = this.playerModel.model.heldItemRight = currentItemStack == null
-                ? 0 : 1;
+        this.mainModel = this.playerModel.getModel();
+        this.playerModel.getArmor().modelArmorChestplate.heldItemRight = this.playerModel.getArmor().modelArmor.heldItemRight = this.playerModel
+                .getModel().heldItemRight = currentItemStack == null ? 0 : 1;
+        this.playerModel.apply(thePony.metadata);
         if (currentItemStack != null && player.getItemInUseCount() > 0) {
             EnumAction yOrigin = currentItemStack.getItemUseAction();
             if (yOrigin == EnumAction.BLOCK) {
-                this.playerModel.armor.modelArmorChestplate.heldItemRight = this.playerModel.armor.modelArmor.heldItemRight = this.playerModel.model.heldItemRight = 3;
+                this.playerModel.getArmor().modelArmorChestplate.heldItemRight = this.playerModel.getArmor().modelArmor.heldItemRight = this.playerModel
+                        .getModel().heldItemRight = 3;
             } else if (yOrigin == EnumAction.BOW) {
-                this.playerModel.armor.modelArmorChestplate.aimedBow = this.playerModel.armor.modelArmor.aimedBow = this.playerModel.model.aimedBow = true;
+                this.playerModel.getArmor().modelArmorChestplate.aimedBow = this.playerModel.getArmor().modelArmor.aimedBow = this.playerModel
+                        .getModel().aimedBow = true;
             }
         }
 
-        this.playerModel.armor.modelArmorChestplate.issneak = this.playerModel.armor.modelArmor.issneak = this.playerModel.model.issneak = player.isSneaking();
-        this.playerModel.armor.modelArmorChestplate.isFlying = this.playerModel.armor.modelArmor.isFlying = this.playerModel.model.isFlying = thePony.isFlying = thePony
-                .isPegasusFlying(player.posX, player.posY, player.posZ, player.fallDistance,
-                        MineLPPrivateFields.isJumping.get(player).booleanValue(), player.onGround, this.renderManager.worldObj);
-        this.playerModel.armor.modelArmorChestplate.isPegasus = this.playerModel.armor.modelArmor.isPegasus = this.playerModel.model.isPegasus = thePony
-                .isPegasus();
-        if (this.playerModel.model instanceof pm_newPonyAdv) {
-            ((pm_newPonyAdv) this.playerModel.model).setHasWings_Compression(thePony.isPegasus());
-        }
+        this.playerModel.getArmor().modelArmorChestplate.issneak = this.playerModel.getArmor().modelArmor.issneak = this.playerModel.getModel().issneak = player
+                .isSneaking();
+        this.playerModel
+                .getArmor().modelArmorChestplate.isFlying = this.playerModel.getArmor().modelArmor.isFlying = this.playerModel.getModel().isFlying = thePony
+                        .isPegasusFlying(player);
+        // , this.renderManager.worldObj);
 
-        this.playerModel.armor.modelArmorChestplate.isUnicorn = this.playerModel.armor.modelArmor.isUnicorn = this.playerModel.model.isUnicorn = thePony.isUnicorn();
-        this.playerModel.armor.modelArmorChestplate.isMale = this.playerModel.armor.modelArmor.isMale = this.playerModel.model.isMale = thePony.isMale();
-        this.playerModel.armor.modelArmorChestplate.size = this.playerModel.armor.modelArmor.size = this.playerModel.model.size = thePony.size();
         if (MineLittlePony.getConfig().getShowScale().get()) {
             if (this.playerModel != PMAPI.human) {
-                if (thePony.size() == 0) {
+                PonySize size = thePony.metadata.getSize();
+                if (size == PonySize.FOAL)
                     this.shadowSize = 0.25F;
-                } else if (thePony.size() == 1) {
+                else if (size == PonySize.NORMAL)
                     this.shadowSize = 0.4F;
-                } else if (thePony.size() == 2) {
+                else if (size == PonySize.PRINCESS)
                     this.shadowSize = 0.45F;
-                } else if (thePony.size() == 3) {
+                else
                     this.shadowSize = 0.5F;
-                } else {
-                    this.shadowSize = 0.5F;
-                }
             } else {
                 this.shadowSize = 0.5F;
             }
@@ -106,27 +102,32 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
             yOrigin1 -= 0.125D;
         }
 
-        this.playerModel.model.glowColor = thePony.glowColor();
-        this.playerModel.armor.modelArmorChestplate.isSleeping = this.playerModel.armor.modelArmor.isSleeping = this.playerModel.model.isSleeping = player.isPlayerSleeping();
-        this.playerModel.armor.modelArmorChestplate.swingProgress = this.playerModel.armor.modelArmor.swingProgress = this.playerModel.model.swingProgress;
-        this.playerModel.model.wantTail = thePony.wantTail();
-        this.playerModel.armor.modelArmorChestplate.isVillager = this.playerModel.armor.modelArmor.isVillager = this.playerModel.model.isVillager = false;
+        this.playerModel.getArmor().modelArmorChestplate.isSleeping = this.playerModel.getArmor().modelArmor.isSleeping = this.playerModel
+                .getModel().isSleeping = player.isPlayerSleeping();
+        this.playerModel.getArmor().modelArmorChestplate.swingProgress = this.playerModel.getArmor().modelArmor.swingProgress = this.playerModel
+                .getModel().swingProgress;
+        this.playerModel.getArmor().modelArmorChestplate.isVillager = this.playerModel.getArmor().modelArmor.isVillager = this.playerModel
+                .getModel().isVillager = false;
+
         super.doRender(player, x, yOrigin1, z, yaw, partialTicks);
-        this.playerModel.armor.modelArmorChestplate.aimedBow = this.playerModel.armor.modelArmor.aimedBow = this.playerModel.model.aimedBow = false;
-        this.playerModel.armor.modelArmorChestplate.issneak = this.playerModel.armor.modelArmor.issneak = this.playerModel.model.issneak = false;
-        this.playerModel.armor.modelArmorChestplate.heldItemRight = this.playerModel.armor.modelArmor.heldItemRight = this.playerModel.model.heldItemRight = 0;
+
+        this.playerModel
+                .getArmor().modelArmorChestplate.aimedBow = this.playerModel.getArmor().modelArmor.aimedBow = this.playerModel.getModel().aimedBow = false;
+        this.playerModel.getArmor().modelArmorChestplate.issneak = this.playerModel.getArmor().modelArmor.issneak = this.playerModel.getModel().issneak = false;
+        this.playerModel.getArmor().modelArmorChestplate.heldItemRight = this.playerModel.getArmor().modelArmor.heldItemRight = this.playerModel
+                .getModel().heldItemRight = 0;
     }
 
     @AppendInsns("renderLivingAt")
     @Obfuscated({ "a", "func_77039_a" })
     public void setupPlayerScale(AbstractClientPlayer player, double xPosition, double yPosition, double zPosition) {
 
-        if (MineLittlePony.getConfig().getShowScale().get() && !(playerModel.model instanceof pm_Human)) {
-            if (this.playerModel.model.size == 2) {
+        if (MineLittlePony.getConfig().getShowScale().get() && !(playerModel.getModel() instanceof pm_Human)) {
+            PonySize size = thePony.metadata.getSize();
+            if (size == PonySize.LARGE)
                 scale(0.9F, 0.9F, 0.9F);
-            } else if (this.playerModel.model.size == 1 || this.playerModel.model.size == 0) {
+            else if (size == PonySize.NORMAL || size == PonySize.FOAL)
                 scale(0.8F, 0.8F, 0.8F);
-            }
         }
     }
 

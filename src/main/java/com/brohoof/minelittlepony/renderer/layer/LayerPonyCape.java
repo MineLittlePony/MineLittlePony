@@ -2,6 +2,7 @@ package com.brohoof.minelittlepony.renderer.layer;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
+import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.model.PMAPI;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.renderer.IRenderPony;
@@ -41,24 +42,24 @@ public class LayerPonyCape implements LayerRenderer {
 
             pushMatrix();
             translate(0.0F, 0.24F, 0.0F);
-            if (model.model.size == 0) {
+            if (model.getModel().metadata.getSize() == PonySize.FOAL) {
                 translate(0.0F, 0.67F, -0.04F);
                 scale(0.6F, 0.6F, 0.6F);
-            } else if (model.model.size == 2) {
+            } else if (model.getModel().metadata.getSize() == PonySize.LARGE) {
                 translate(0.0F, -0.14F, -0.1F);
                 scale(1.15F, 1.2F, 1.2F);
-                if (model.model.issneak && !model.model.isFlying) {
+                if (model.getModel().issneak && !model.getModel().isFlying) {
                     translate(0.0F, 0.03F, 0.0F);
                 }
-            } else if (model.model.size == 3) {
+            } else if (model.getModel().metadata.getSize() == PonySize.PRINCESS) {
                 translate(0.0F, -0.09F, 0.0F);
                 scale(1.0F, 1.0F, 1.0F);
-                if (model.model.issneak && !model.model.isFlying) {
+                if (model.getModel().issneak && !model.getModel().isFlying) {
                     translate(0.0F, 0.03F, 0.0F);
                 }
             }
 
-            if (model.model.issneak && !model.model.isFlying) {
+            if (model.getModel().issneak && !model.getModel().isFlying) {
                 translate(0.0F, 0.4F, -0.12F);
             }
             double d = clientPlayer.prevChasingPosX + (clientPlayer.chasingPosX - clientPlayer.prevChasingPosX) * scale
@@ -100,7 +101,7 @@ public class LayerPonyCape implements LayerRenderer {
             rotate(180.0F, 0.0F, 0.0F, 1.0F);
             rotate(90.0F, 1.0F, 0.0F, 0.0F);
             this.renderer.bindTexture(clientPlayer.getLocationCape());
-            model.model.renderCape(0.0625F);
+            model.getModel().renderCape(0.0625F);
             popMatrix();
         }
     }

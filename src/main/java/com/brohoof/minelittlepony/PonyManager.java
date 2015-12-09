@@ -1,44 +1,57 @@
 package com.brohoof.minelittlepony;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.brohoof.minelittlepony.model.PMAPI;
 import com.brohoof.minelittlepony.util.MineLPLogger;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.util.ResourceLocation;
 
 public class PonyManager {
+
     public static final String RESOURCE_NAMESPACE = "minelittlepony";
-    public static final ResourceLocation zombiePonyResource = new ResourceLocation("minelittlepony",
-            "textures/entity/zombie/zombie_pony.png");
-    public static final ResourceLocation zombieVillagerPonyResource = new ResourceLocation("minelittlepony",
-            "textures/entity/zombie/zombie_villager_pony.png");
-    public static final ResourceLocation zombiePigmanPonyResource = new ResourceLocation("minelittlepony",
-            "textures/entity/zombie_pigman_pony.png");
-    public static final ResourceLocation skeletonPonyResource = new ResourceLocation("minelittlepony",
-            "textures/entity/skeleton/skeleton_pony.png");
-    public static final ResourceLocation skeletonWitherPonyResource = new ResourceLocation("minelittlepony",
-            "textures/entity/skeleton/skeleton_wither_pony.png");
-    public static final ResourceLocation defaultPonyResourceLocation = new ResourceLocation("minelittlepony",
-            "textures/entity/pony/charpony.png");
-    public static List<ResourceLocation> backgroundPonyResourceLocations = new ArrayList<ResourceLocation>();
-    public static List<ResourceLocation> villagerResourceLocations;
+    public static final ResourceLocation ZOMBIE = new ResourceLocation("minelittlepony", "textures/entity/zombie/zombie_pony.png");
+    public static final ResourceLocation ZOMBIE_VILLAGER = new ResourceLocation("minelittlepony", "textures/entity/zombie/zombie_villager_pony.png");
+    public static final ResourceLocation PIGMAN = new ResourceLocation("minelittlepony", "textures/entity/zombie/zombie_pigman_pony.png");
+    public static final ResourceLocation SKELETON = new ResourceLocation("minelittlepony", "textures/entity/skeleton/skeleton_pony.png");
+    public static final ResourceLocation WITHER_SKELETON = new ResourceLocation("minelittlepony", "textures/entity/skeleton/skeleton_wither_pony.png");
+    public static final ResourceLocation STEVE = new ResourceLocation("minelittlepony", "textures/entity/steve_pony.png");
+    public static final ResourceLocation ALEX = new ResourceLocation("minelittlepony", "textures/entity/alex_pony.png");
+
     private static final int MAX_BGPONY_COUNT = 141;
-    private static int numberOfPonies;
+
+    public final List<ResourceLocation> backgroundPonyList = makeBkgndPonies();
+    public final List<ResourceLocation> villagerList = ImmutableList.<ResourceLocation> builder()
+            .add(new ResourceLocation("minelittlepony", "textures/entity/villager/farmer_pony.png"))
+            .add(new ResourceLocation("minelittlepony", "textures/entity/villager/librarian_pony.png"))
+            .add(new ResourceLocation("minelittlepony", "textures/entity/villager/priest_pony.png"))
+            .add(new ResourceLocation("minelittlepony", "textures/entity/villager/smith_pony.png"))
+            .add(new ResourceLocation("minelittlepony", "textures/entity/villager/butcher_pony.png"))
+            .add(new ResourceLocation("minelittlepony", "textures/entity/villager/villager_pony.png"))
+            .build();
+
+    private static List<ResourceLocation> makeBkgndPonies() {
+        ImmutableList.Builder<ResourceLocation> list = ImmutableList.builder();
+        for (int check = 0; check < MAX_BGPONY_COUNT; ++check) {
+            list.add(new ResourceLocation("minelittlepony", "textures/entity/pony/bpony_" + check + ".png"));
+        }
+        return list.build();
+    }
 
     private PonyConfig config;
 
-    private Map<ResourceLocation, Pony> ponyResourceRegistry = new HashMap<ResourceLocation, Pony>();
-    private Map<ResourceLocation, Pony> backgroudPonyResourceRegistry = new HashMap<ResourceLocation, Pony>();
+    private Map<ResourceLocation, Pony> ponies = Maps.newHashMap();
+    private Map<ResourceLocation, Pony> backgroudPonies = Maps.newHashMap();
 
     public PonyManager(PonyConfig config) {
         this.config = config;
         initmodels();
+        MineLPLogger.info("Detected %d of %d background ponies installed.", getNumberOfPonies(), MAX_BGPONY_COUNT);
     }
 
     public void initmodels() {
@@ -49,16 +62,16 @@ public class PonyManager {
 
     private Pony getPonyFromResourceRegistry(ResourceLocation skinResourceLocation, AbstractClientPlayer player) {
         Pony myLittlePony;
-        if (!this.ponyResourceRegistry.containsKey(skinResourceLocation)) {
+        if (!this.ponies.containsKey(skinResourceLocation)) {
             if (player != null) {
                 myLittlePony = new Pony(player);
             } else {
                 myLittlePony = new Pony(skinResourceLocation);
             }
 
-            this.ponyResourceRegistry.put(skinResourceLocation, myLittlePony);
+            this.ponies.put(skinResourceLocation, myLittlePony);
         } else {
-            myLittlePony = this.ponyResourceRegistry.get(skinResourceLocation);
+            myLittlePony = this.ponies.get(skinResourceLocation);
         }
 
         return myLittlePony;
@@ -70,12 +83,8 @@ public class PonyManager {
 
     public Pony getPonyFromResourceRegistry(AbstractClientPlayer player) {
         Pony myLittlePony = this.getPonyFromResourceRegistry(player.getLocationSkin(), player);
-        if (config.getPonyLevel().get() == PonyLevel.PONIES && !myLittlePony.isPonySkin()) {
+        if (config.getPonyLevel().get() == PonyLevel.PONIES && myLittlePony.metadata.getRace() == null) {
             myLittlePony = this.getPonyFromBackgroundResourceRegistry(player);
-        }
-
-        if (player.getCommandSenderName().equals(MineLittlePony.getSPUsername())) {
-            myLittlePony.isSpPlayer = true;
         }
 
         return myLittlePony;
@@ -86,81 +95,48 @@ public class PonyManager {
 
         ResourceLocation villagerResourceLocation;
         try {
-            villagerResourceLocation = villagerResourceLocations.get(profession);
+            villagerResourceLocation = villagerList.get(profession);
         } catch (IndexOutOfBoundsException var5) {
-            villagerResourceLocation = villagerResourceLocations.get(5);
+            villagerResourceLocation = villagerList.get(5);
         }
 
         Pony myLittlePony = this.getPonyFromResourceRegistry(villagerResourceLocation);
-        myLittlePony.setVillager(profession);
+        // myLittlePony.setVillager(profession);
         return myLittlePony;
     }
 
-    private ResourceLocation getBackgroundPonyResource(String username) {
-        if (numberOfPonies > 0) {
-            int backgroundIndex = username.hashCode() % this.getNumberOfPonies();
+    private ResourceLocation getBackgroundPonyResource(AbstractClientPlayer player) {
+        if (getNumberOfPonies() > 0) {
+            int backgroundIndex = player.getEntityId() % this.getNumberOfPonies();
             if (backgroundIndex < 0) {
                 backgroundIndex += this.getNumberOfPonies();
             }
 
-            return backgroundPonyResourceLocations.get(backgroundIndex);
+            return backgroundPonyList.get(backgroundIndex);
         }
-        return defaultPonyResourceLocation;
+        return STEVE;
     }
 
     public Pony getPonyFromBackgroundResourceRegistry(AbstractClientPlayer player) {
         ResourceLocation textureResourceLocation;
-        if (player.getCommandSenderName() == MineLittlePony.getSPUsername()) {
-            textureResourceLocation = defaultPonyResourceLocation;
+        if (player.isUser()) {
+            textureResourceLocation = (player.getUniqueID().hashCode() & 1) == 0 ? STEVE : ALEX;
         } else {
-            textureResourceLocation = this.getBackgroundPonyResource(player.getCommandSenderName());
+            textureResourceLocation = this.getBackgroundPonyResource(player);
         }
 
         Pony myLittlePony;
-        if (!this.backgroudPonyResourceRegistry.containsKey(textureResourceLocation)) {
+        if (!this.backgroudPonies.containsKey(textureResourceLocation)) {
             myLittlePony = new Pony(textureResourceLocation);
-            this.backgroudPonyResourceRegistry.put(textureResourceLocation, myLittlePony);
+            this.backgroudPonies.put(textureResourceLocation, myLittlePony);
         } else {
-            myLittlePony = this.backgroudPonyResourceRegistry.get(textureResourceLocation);
+            myLittlePony = this.backgroudPonies.get(textureResourceLocation);
         }
 
         return myLittlePony;
     }
 
     public int getNumberOfPonies() {
-        return numberOfPonies;
-    }
-
-    static {
-        for (int check = 0; check < MAX_BGPONY_COUNT; ++check) {
-            backgroundPonyResourceLocations
-                    .add(new ResourceLocation("minelittlepony", "textures/entity/pony/bpony_" + check + ".png"));
-        }
-
-        numberOfPonies = backgroundPonyResourceLocations.size();
-        MineLPLogger.info("Detected %d of %d background ponies installed.",
-                new Object[] { Integer.valueOf(numberOfPonies), Integer.valueOf(MAX_BGPONY_COUNT) });
-        villagerResourceLocations = new ArrayList<ResourceLocation>();
-        villagerResourceLocations
-                .add(new ResourceLocation("minelittlepony", "textures/entity/villager/farmer_pony.png"));
-        villagerResourceLocations
-                .add(new ResourceLocation("minelittlepony", "textures/entity/villager/librarian_pony.png"));
-        villagerResourceLocations
-                .add(new ResourceLocation("minelittlepony", "textures/entity/villager/priest_pony.png"));
-        villagerResourceLocations
-                .add(new ResourceLocation("minelittlepony", "textures/entity/villager/smith_pony.png"));
-        villagerResourceLocations
-                .add(new ResourceLocation("minelittlepony", "textures/entity/villager/butcher_pony.png"));
-        villagerResourceLocations
-                .add(new ResourceLocation("minelittlepony", "textures/entity/villager/villager_pony.png"));
-    }
-
-    public static enum PonyRace {
-        EARTH,
-        PEGASUS,
-        UNICORN,
-        ALICORN,
-        CHANGELING,
-        ZEBRA;
+        return backgroundPonyList.size();
     }
 }

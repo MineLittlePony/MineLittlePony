@@ -19,10 +19,8 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
     @Override
     protected void preRenderCallback(EntityVillager villager, float partialTicks) {
         if (villager.getGrowingAge() < 0) {
-            this.mobModel.size = 0;
             this.shadowSize = 0.25F;
         } else {
-            this.mobModel.size = 1;
             if (MineLittlePony.getConfig().getShowScale().get()) {
                 this.shadowSize = 0.4F;
             } else {

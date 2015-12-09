@@ -13,8 +13,7 @@ public class pm_newPonyArmor extends pm_newPonyAdv {
     public ModelRenderer[] extHead;
     public ModelRenderer[] extLegs;
 
-    public pm_newPonyArmor(String texture) {
-        super(texture);
+    public pm_newPonyArmor() {
         this.isArmour = true;
         this.textureHeight = 32;
     }
@@ -24,7 +23,7 @@ public class pm_newPonyArmor extends pm_newPonyAdv {
         this.checkRainboom(aniparams.swing);
         this.rotateHead(aniparams.horz, aniparams.vert);
         float bodySwingRotation = 0.0F;
-        if (this.swingProgress > -9990.0F && !this.isUnicorn) {
+        if (this.swingProgress > -9990.0F && !this.metadata.getRace().hasHorn()) {
             bodySwingRotation = MathHelper.sin(MathHelper.sqrt_float(this.swingProgress) * 3.1415927F * 2.0F) * 0.2F;
         }
 

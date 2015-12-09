@@ -14,6 +14,8 @@ import java.util.Random;
 import org.lwjgl.opengl.GL11;
 
 import com.brohoof.minelittlepony.MineLittlePony;
+import com.brohoof.minelittlepony.PonyGender;
+import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.model.ModelPony;
 import com.brohoof.minelittlepony.renderer.AniParams;
 import com.brohoof.minelittlepony.renderer.CompressiveRendering;
@@ -104,10 +106,6 @@ public class pm_newPonyAdv extends ModelPony {
     public CompressiveRendering CompressiveLeftWing;
     public CompressiveRendering CompressiveRightWing;
 
-    public pm_newPonyAdv(String texture) {
-        super(texture);
-    }
-
     @Override
     public void init(float yOffset, float stretch) {
         this.initTextures();
@@ -120,7 +118,7 @@ public class pm_newPonyAdv extends ModelPony {
         this.rotateHead(aniparams.horz, aniparams.vert);
         this.swingTailZ(aniparams.move, aniparams.swing);
         float bodySwingRotation = 0.0F;
-        if (this.swingProgress > -9990.0F && (!this.isUnicorn || this.glowColor == 0)) {
+        if (this.swingProgress > -9990.0F && (!this.metadata.getRace().hasHorn() || this.metadata.getGlowColor() == 0)) {
             bodySwingRotation = MathHelper.sin(MathHelper.sqrt_float(this.swingProgress) * 3.1415927F * 2.0F) * 0.2F;
         }
 
@@ -155,7 +153,7 @@ public class pm_newPonyAdv extends ModelPony {
         }
 
         this.tailstop = 0;
-        this.tailstop = this.Tail.length - this.wantTail * 5;
+        this.tailstop = this.Tail.length - this.metadata.getTail().getSize() * 5;
         if (this.tailstop <= 1) {
             this.tailstop = 0;
         }
@@ -175,7 +173,7 @@ public class pm_newPonyAdv extends ModelPony {
             this.sneakTail();
         } else {
             this.adjustBody(BODY_ROTATE_ANGLE_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
-            if (this.isPegasus) {
+            if (this.metadata.getRace().hasWings()) {
                 this.animatePegasusWingsNotSneaking(aniparams.tick);
             }
 
@@ -184,7 +182,7 @@ public class pm_newPonyAdv extends ModelPony {
             this.swingArms(aniparams.tick);
             this.setHead(0.0F, 0.0F, 0.0F);
             this.tailstop = 0;
-            this.tailstop = this.Tail.length - this.wantTail * 5;
+            this.tailstop = this.Tail.length - this.metadata.getTail().getSize() * 5;
             if (this.tailstop <= 1) {
                 this.tailstop = 0;
             }
@@ -205,7 +203,7 @@ public class pm_newPonyAdv extends ModelPony {
 
         if (this.rainboom) {
             this.tailstop = 0;
-            this.tailstop = this.Tail.length - this.wantTail * 5;
+            this.tailstop = this.Tail.length - this.metadata.getTail().getSize() * 5;
             if (this.tailstop <= 1) {
                 this.tailstop = 0;
             }
@@ -239,7 +237,7 @@ public class pm_newPonyAdv extends ModelPony {
     }
 
     protected void checkRainboom(float swing) {
-        if (this.isPegasus && this.isFlying && swing >= 0.9999F) {
+        if (this.metadata.getRace().hasWings() && this.isFlying && swing >= 0.9999F) {
             this.rainboom = true;
         } else {
             this.rainboom = false;
@@ -260,7 +258,7 @@ public class pm_newPonyAdv extends ModelPony {
             this.setRotationPoint(this.hornglow[j6], posX, posY, posZ);
         }
 
-        if (this.isMale) {
+        if (this.metadata.getGender() == PonyGender.STALLION) {
             for (j6 = 0; j6 < this.MuzzleMale.length; ++j6) {
                 this.setRotationPoint(this.MuzzleMale[j6], posX, posY, posZ);
             }
@@ -294,7 +292,7 @@ public class pm_newPonyAdv extends ModelPony {
         this.bipedHead.rotateAngleY = headRotateAngleY;
         this.bipedHead.rotateAngleX = headRotateAngleX;
         int i;
-        if (this.isMale) {
+        if (this.metadata.getGender() == PonyGender.STALLION) {
             for (i = 0; i < this.MuzzleMale.length; ++i) {
                 this.MuzzleMale[i].rotateAngleY = headRotateAngleY;
                 this.MuzzleMale[i].rotateAngleX = headRotateAngleX;
@@ -336,7 +334,7 @@ public class pm_newPonyAdv extends ModelPony {
         float leftArmRotateAngleX;
         float rightLegRotateAngleX;
         float leftLegRotateAngleX;
-        if (this.isFlying && this.isPegasus) {
+        if (this.isFlying && this.metadata.getRace().hasWings()) {
             if (this.rainboom) {
                 rightArmRotateAngleX = ROTATE_270;
                 leftArmRotateAngleX = ROTATE_270;
@@ -429,7 +427,7 @@ public class pm_newPonyAdv extends ModelPony {
 
     protected void swingTailZ(float move, float swing) {
         this.tailstop = 0;
-        this.tailstop = this.Tail.length - this.wantTail * 5;
+        this.tailstop = this.Tail.length - this.metadata.getTail().getSize() * 5;
         if (this.tailstop <= 1) {
             this.tailstop = 0;
         }
@@ -447,7 +445,7 @@ public class pm_newPonyAdv extends ModelPony {
     protected void swingTailX(float tick) {
         float sinTickFactor = MathHelper.sin(tick * 0.067F) * 0.05F;
         this.tailstop = 0;
-        this.tailstop = this.Tail.length - this.wantTail * 5;
+        this.tailstop = this.Tail.length - this.metadata.getTail().getSize() * 5;
         if (this.tailstop <= 1) {
             this.tailstop = 0;
         }
@@ -459,7 +457,7 @@ public class pm_newPonyAdv extends ModelPony {
     }
 
     protected void holdItem() {
-        if (this.heldItemRight != 0 && !this.rainboom && (!this.isUnicorn || this.glowColor == 0)) {
+        if (this.heldItemRight != 0 && !this.rainboom && (!this.metadata.getRace().hasHorn() || this.metadata.getGlowColor() == 0)) {
             this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - 0.3141593F;
             this.SteveArm.rotateAngleX = this.SteveArm.rotateAngleX * 0.5F - 0.3141593F;
         }
@@ -474,7 +472,7 @@ public class pm_newPonyAdv extends ModelPony {
             float f22 = MathHelper.sin(f16 * 3.1415927F);
             float f28 = MathHelper.sin(swingProgress * 3.1415927F);
             float f33 = f28 * -(this.bipedHead.rotateAngleX - 0.7F) * 0.75F;
-            if (this.isUnicorn && this.glowColor != 0 && this.heldItemRight != 0) {
+            if (this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0 && this.heldItemRight != 0) {
                 this.unicornarm.rotateAngleX = (float) (this.unicornarm.rotateAngleX
                         - (f22 * 1.2D + f33));
                 this.unicornarm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
@@ -498,7 +496,7 @@ public class pm_newPonyAdv extends ModelPony {
         if (this.heldItemRight != 0 && !this.isSleeping) {
             float cosTickFactor = MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
             float sinTickFactor = MathHelper.sin(tick * 0.067F) * 0.05F;
-            if (this.isUnicorn && this.glowColor != 0) {
+            if (this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0) {
                 this.unicornarm.rotateAngleZ += cosTickFactor;
                 this.unicornarm.rotateAngleX += sinTickFactor;
             } else {
@@ -564,7 +562,7 @@ public class pm_newPonyAdv extends ModelPony {
 
     protected void sneakTail() {
         this.tailstop = 0;
-        this.tailstop = this.Tail.length - this.wantTail * 5;
+        this.tailstop = this.Tail.length - this.metadata.getTail().getSize() * 5;
         if (this.tailstop <= 1) {
             this.tailstop = 0;
         }
@@ -602,7 +600,7 @@ public class pm_newPonyAdv extends ModelPony {
     }
 
     protected void aimBow(float tick) {
-        if (this.isUnicorn && this.glowColor != 0) {
+        if (this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0) {
             this.aimBowUnicorn(tick);
         } else {
             this.aimBowPony(tick);
@@ -749,7 +747,7 @@ public class pm_newPonyAdv extends ModelPony {
             rotate(180.0F, 0.0F, 1.0F, 0.0F);
         }
 
-        if (this.size == 0) {
+        if (this.metadata.getSize() == PonySize.FOAL) {
             if (this.issneak && !this.isFlying && !this.isArmour) {
                 translate(0.0F, -0.12F, 0.0F);
             }
@@ -790,7 +788,7 @@ public class pm_newPonyAdv extends ModelPony {
             this.renderLegs();
             popMatrix();
 
-        } else if (this.size == 2) {
+        } else if (this.metadata.getSize() == PonySize.LARGE) {
             if (this.isSleeping && !this.isArmour) {
                 translate(0.0F, -0.47F, 0.2F);
             }
@@ -829,7 +827,7 @@ public class pm_newPonyAdv extends ModelPony {
             scale(1.15F, 1.12F, 1.15F);
             this.renderLegs();
             popMatrix();
-        } else if (this.size == 3) {
+        } else if (this.metadata.getSize() == PonySize.PRINCESS) {
             if (this.isSleeping && !this.isArmour) {
                 translate(0.0F, -0.43F, 0.25F);
             }
@@ -886,7 +884,7 @@ public class pm_newPonyAdv extends ModelPony {
         this.headpiece[1].render(this.scale);
         if (MineLittlePony.getConfig().getSnuzzles().get()) {
             int red;
-            if (this.isMale) {
+            if (this.metadata.getGender() == PonyGender.STALLION) {
                 for (red = 0; red < this.MuzzleMale.length; ++red) {
                     this.MuzzleMale[red].render(this.scale);
                 }
@@ -898,16 +896,16 @@ public class pm_newPonyAdv extends ModelPony {
         }
 
         this.bipedHeadwear.render(this.scale);
-        if (this.isUnicorn) {
+        if (this.metadata.getRace().hasHorn()) {
             this.headpiece[2].render(this.scale);
-            if (this.heldItemRight != 0 && this.glowColor != 0) {
+            if (this.heldItemRight != 0 && this.metadata.getGlowColor() != 0) {
                 GL11.glPushAttrib(24577);
                 GL11.glDisable(GL11.GL_TEXTURE_2D);
                 GL11.glDisable(GL11.GL_LIGHTING);
                 GL11.glEnable(GL11.GL_BLEND);
-                float var4 = (this.glowColor >> 16 & 255) / 255.0F;
-                float green = (this.glowColor >> 8 & 255) / 255.0F;
-                float blue = (this.glowColor & 255) / 255.0F;
+                float var4 = (this.metadata.getGlowColor() >> 16 & 255) / 255.0F;
+                float green = (this.metadata.getGlowColor() >> 8 & 255) / 255.0F;
+                float blue = (this.metadata.getGlowColor() & 255) / 255.0F;
                 blendFunc(GL11.GL_SRC_ALPHA, 1);
                 color(var4, green, blue, 0.4F);
                 this.hornglow[0].render(this.scale);
@@ -936,19 +934,22 @@ public class pm_newPonyAdv extends ModelPony {
             this.Bodypiece[k1].render(this.scale);
         }
 
-        if (this.isVillager) {
-            if (this.villagerProfession < 2) {
-                for (k1 = 0; k1 < this.VillagerBagPiece.length; ++k1) {
-                    this.VillagerBagPiece[k1].render(this.scale);
-                }
-            } else if (this.villagerProfession == 2) {
-                this.VillagerTrinket.render(this.scale);
-            } else if (this.villagerProfession > 2) {
-                this.VillagerApron.render(this.scale);
-            }
-        }
+        // TODO: villager data
+        //@formatter:off
+//        if (this.metadata.isVillager()) {
+//            if (this.metadata.getVillagerProfession() < 2) {
+//                for (k1 = 0; k1 < this.VillagerBagPiece.length; ++k1) {
+//                    this.VillagerBagPiece[k1].render(this.scale);
+//                }
+//            } else if (this.metadata.getVillagerProfession() == 2) {
+//                this.VillagerTrinket.render(this.scale);
+//            } else if (this.metadata.getVillagerProfession() > 2) {
+//                this.VillagerApron.render(this.scale);
+//            }
+//        }
+        //@formatter:on
 
-        if (this.isPegasus) {
+        if (this.metadata.getRace().hasWings()) {
             if (!this.isFlying && !this.issneak) {
                 this.setExtendingWings(true);
 
@@ -975,7 +976,7 @@ public class pm_newPonyAdv extends ModelPony {
     }
 
     protected void renderTail() {
-        int var3 = this.Tail.length - this.wantTail * 5;
+        int var3 = this.Tail.length - this.metadata.getTail().getSize() * 5;
         if (var3 <= 1) {
             var3 = 0;
         }

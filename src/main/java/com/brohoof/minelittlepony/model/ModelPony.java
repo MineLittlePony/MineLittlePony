@@ -1,5 +1,6 @@
 package com.brohoof.minelittlepony.model;
 
+import com.brohoof.minelittlepony.PonyData;
 import com.brohoof.minelittlepony.renderer.AniParams;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -11,30 +12,24 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 
 public abstract class ModelPony extends ModelPlayer {
-    public String texture;
+
     protected float strech = 0.0F;
     protected float scale = 0.0625F;
     public boolean issneak = false;
     public boolean isArmour = false;
-    public int glowColor = -12303190;
-    public final float pi = 3.141593F;
-    public boolean isPegasus;
-    public boolean isUnicorn;
-    public boolean isMale;
-    public int wantTail;
-    public int size;
     public boolean isVillager;
-    public int villagerProfession;
     public boolean isFlying;
     public boolean isGlow;
     public boolean isSleeping;
+
+    public PonyData metadata = new PonyData();
+
     public int heldItemLeft;
     public int heldItemRight;
     public boolean aimedBow;
 
-    public ModelPony(String texture) {
+    public ModelPony() {
         super(0, false);
-        this.texture = texture;
     }
 
     public void setStrech(float strech) {
@@ -74,25 +69,25 @@ public abstract class ModelPony extends ModelPlayer {
     @Override
     public final void renderRightArm() {
         // Use the human model
-        PMAPI.human.model.renderModelRightArm();
+        PMAPI.human.getModel().renderModelRightArm();
     }
 
     @Override
     public final void renderLeftArm() {
         // Use the human model
-        PMAPI.human.model.renderModelLeftArm();
+        PMAPI.human.getModel().renderModelLeftArm();
     }
 
     @Override
     public final void setRotationAngles(float f1, float f2, float f3, float f4, float f5, float f6, Entity ent) {
         // set the angles for the humans in preparation for arm rendering
         // Comes from RenderPlayer.render[Left|Right]Arm?
-        if (PMAPI.human.model != this
+        if (PMAPI.human.getModel() != this
                 && Thread.currentThread().getStackTrace()[2].getClassName().equals(RenderPlayer.class.getName())) {
-            PMAPI.human.model.setModelVisibilities((AbstractClientPlayer) ent);
-            PMAPI.human.model.isSneak = isSneak;
-            PMAPI.human.model.swingProgress = swingProgress;
-            PMAPI.human.model.setModelRotationAngles(f1, f2, f3, f4, f5, f6, ent);
+            PMAPI.human.getModel().setModelVisibilities((AbstractClientPlayer) ent);
+            PMAPI.human.getModel().isSneak = isSneak;
+            PMAPI.human.getModel().swingProgress = swingProgress;
+            PMAPI.human.getModel().setModelRotationAngles(f1, f2, f3, f4, f5, f6, ent);
         }
         setModelRotationAngles(f1, f2, f3, f4, f5, f6, ent);
     }

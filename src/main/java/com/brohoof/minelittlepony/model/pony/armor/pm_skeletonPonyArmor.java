@@ -5,9 +5,6 @@ import com.brohoof.minelittlepony.model.pony.armor.pm_newPonyArmor;
 import net.minecraft.util.MathHelper;
 
 public class pm_skeletonPonyArmor extends pm_newPonyArmor {
-    public pm_skeletonPonyArmor(String texture) {
-        super(texture);
-    }
 
     @Override
     protected void rotateLegs(float move, float swing, float tick) {
@@ -17,7 +14,7 @@ public class pm_skeletonPonyArmor extends pm_newPonyArmor {
         float leftLegRotateAngleX;
         float var8;
         float var9;
-        if (this.isFlying && this.isPegasus) {
+        if (this.isFlying && this.metadata.getRace().hasWings()) {
             if (this.rainboom) {
                 rightArmRotateAngleX = ROTATE_270;
                 leftArmRotateAngleX = ROTATE_270;
@@ -70,7 +67,7 @@ public class pm_skeletonPonyArmor extends pm_newPonyArmor {
         if (this.heldItemRight != 0) {
             var8 = MathHelper.sin(this.swingProgress * 3.1415927F);
             var9 = MathHelper.sin((1.0F - (1.0F - this.swingProgress) * (1.0F - this.swingProgress)) * 3.1415927F);
-            if (this.glowColor == 0) {
+            if (this.metadata.getGlowColor() == 0) {
                 this.bipedRightArm.rotateAngleZ = 0.0F;
                 this.bipedRightArm.rotateAngleY = 0.1F - var8 * 0.6F;
                 this.bipedRightArm.rotateAngleX = -1.5707964F;
@@ -92,7 +89,7 @@ public class pm_skeletonPonyArmor extends pm_newPonyArmor {
 
     @Override
     protected void fixSpecialRotationPoints(float move) {
-        if (this.heldItemRight != 0 && this.glowColor == 0) {
+        if (this.heldItemRight != 0 && this.metadata.getGlowColor() == 0) {
             this.setRotationPoint(this.bipedRightArm, -1.5F, 9.5F, 4.0F);
         }
 
