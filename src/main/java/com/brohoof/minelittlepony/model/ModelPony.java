@@ -1,8 +1,11 @@
 package com.brohoof.minelittlepony.model;
 
+import com.brohoof.minelittlepony.MineLittlePony;
+import com.brohoof.minelittlepony.Pony;
 import com.brohoof.minelittlepony.PonyData;
 import com.brohoof.minelittlepony.renderer.AniParams;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -88,6 +91,9 @@ public abstract class ModelPony extends ModelPlayer {
             PMAPI.human.getModel().isSneak = isSneak;
             PMAPI.human.getModel().swingProgress = swingProgress;
             PMAPI.human.getModel().setModelRotationAngles(f1, f2, f3, f4, f5, f6, ent);
+            // override default skin
+            Pony pony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry((AbstractClientPlayer) ent);
+            Minecraft.getMinecraft().getTextureManager().bindTexture(pony.getTextureResourceLocation());
         }
         setModelRotationAngles(f1, f2, f3, f4, f5, f6, ent);
     }
