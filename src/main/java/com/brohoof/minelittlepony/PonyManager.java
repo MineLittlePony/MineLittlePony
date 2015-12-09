@@ -14,31 +14,31 @@ import net.minecraft.util.ResourceLocation;
 
 public class PonyManager {
 
-    public static final String RESOURCE_NAMESPACE = "minelittlepony";
-    public static final ResourceLocation ZOMBIE = new ResourceLocation("minelittlepony", "textures/entity/zombie/zombie_pony.png");
-    public static final ResourceLocation ZOMBIE_VILLAGER = new ResourceLocation("minelittlepony", "textures/entity/zombie/zombie_villager_pony.png");
-    public static final ResourceLocation PIGMAN = new ResourceLocation("minelittlepony", "textures/entity/zombie/zombie_pigman_pony.png");
-    public static final ResourceLocation SKELETON = new ResourceLocation("minelittlepony", "textures/entity/skeleton/skeleton_pony.png");
-    public static final ResourceLocation WITHER_SKELETON = new ResourceLocation("minelittlepony", "textures/entity/skeleton/skeleton_wither_pony.png");
-    public static final ResourceLocation STEVE = new ResourceLocation("minelittlepony", "textures/entity/steve_pony.png");
-    public static final ResourceLocation ALEX = new ResourceLocation("minelittlepony", "textures/entity/alex_pony.png");
+    private static final String NAMESPACE = "minelittlepony";
+    public static final ResourceLocation ZOMBIE = new ResourceLocation(NAMESPACE, "textures/entity/zombie/zombie_pony.png");
+    public static final ResourceLocation ZOMBIE_VILLAGER = new ResourceLocation(NAMESPACE, "textures/entity/zombie/zombie_villager_pony.png");
+    public static final ResourceLocation PIGMAN = new ResourceLocation(NAMESPACE, "textures/entity/zombie/zombie_pigman_pony.png");
+    public static final ResourceLocation SKELETON = new ResourceLocation(NAMESPACE, "textures/entity/skeleton/skeleton_pony.png");
+    public static final ResourceLocation WITHER_SKELETON = new ResourceLocation(NAMESPACE, "textures/entity/skeleton/skeleton_wither_pony.png");
+    public static final ResourceLocation STEVE = new ResourceLocation(NAMESPACE, "textures/entity/steve_pony.png");
+    public static final ResourceLocation ALEX = new ResourceLocation(NAMESPACE, "textures/entity/alex_pony.png");
 
     private static final int MAX_BGPONY_COUNT = 141;
 
-    public final List<ResourceLocation> backgroundPonyList = makeBkgndPonies();
-    public final List<ResourceLocation> villagerList = ImmutableList.<ResourceLocation> builder()
-            .add(new ResourceLocation("minelittlepony", "textures/entity/villager/farmer_pony.png"))
-            .add(new ResourceLocation("minelittlepony", "textures/entity/villager/librarian_pony.png"))
-            .add(new ResourceLocation("minelittlepony", "textures/entity/villager/priest_pony.png"))
-            .add(new ResourceLocation("minelittlepony", "textures/entity/villager/smith_pony.png"))
-            .add(new ResourceLocation("minelittlepony", "textures/entity/villager/butcher_pony.png"))
-            .add(new ResourceLocation("minelittlepony", "textures/entity/villager/villager_pony.png"))
+    private final List<ResourceLocation> backgroundPonyList = makeBkgndPonies();
+    private final List<ResourceLocation> villagerList = ImmutableList.<ResourceLocation> builder()
+            .add(new ResourceLocation(NAMESPACE, "textures/entity/villager/farmer_pony.png"))
+            .add(new ResourceLocation(NAMESPACE, "textures/entity/villager/librarian_pony.png"))
+            .add(new ResourceLocation(NAMESPACE, "textures/entity/villager/priest_pony.png"))
+            .add(new ResourceLocation(NAMESPACE, "textures/entity/villager/smith_pony.png"))
+            .add(new ResourceLocation(NAMESPACE, "textures/entity/villager/butcher_pony.png"))
+            .add(new ResourceLocation(NAMESPACE, "textures/entity/villager/villager_pony.png"))
             .build();
 
     private static List<ResourceLocation> makeBkgndPonies() {
         ImmutableList.Builder<ResourceLocation> list = ImmutableList.builder();
         for (int check = 0; check < MAX_BGPONY_COUNT; ++check) {
-            list.add(new ResourceLocation("minelittlepony", "textures/entity/pony/bpony_" + check + ".png"));
+            list.add(new ResourceLocation(NAMESPACE, "textures/entity/pony/bpony_" + check + ".png"));
         }
         return list.build();
     }

@@ -16,6 +16,19 @@ minecraft {
     tweakClass = 'com.mumfrey.liteloader.launch.LiteLoaderTweaker'
 	clientJvmArgs += '-Dmcpenv=true'
 }
+sourceSets {
+	def deps = [
+		configurations.forgeGradleMcDeps,
+		configurations.forgeGradleMc,
+		configurations.provided
+	]
+	common {
+		compileClasspath += files deps
+	}
+	hdskins {
+		compileClasspath += files deps
+	}
+}
 project('forge') {
 	apply plugin: 'net.minecraftforge.gradle.forge'
 	minecraft {
@@ -50,13 +63,16 @@ repositories.flatDir {
 dependencies {
     deobfProvided 'com.mumfrey:liteloader:1.8-SNAPSHOT:srgnames'
 	provided voxellib
+	compile sourceSets.common.output
+	compile sourceSets.hdskins.output
+	hdskinsCompile sourceSets.common.output
 }
 jar {
 	manifest.attributes.remove 'TweakClass'
 }
 task standaloneJar(type: Jar, dependsOn: [{voxellib.reobfObfJar}, {project('forge').compileJava}]) {
 	extension 'litemod'
-	from sourceSets.main.output
+	from sourceSets*.output
 	from {project('forge').sourceSets.main.output}
 
 	// voxellib
