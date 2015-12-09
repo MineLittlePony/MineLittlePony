@@ -13,19 +13,10 @@ import com.brohoof.minelittlepony.model.pony.armor.pma_zombiePony;
 
 public final class PMAPI {
 
-    public static PlayerModel newPonyAdv_32 = new PlayerModel(new pm_newPonyAdv())
-            .setTextureHeight(32)
-            .setArmor(new pma_newPony());
-    public static PlayerModel newPonyAdv = new PlayerModel(new pm_newPonyAdv())
-            .setArmor(new pma_newPony());
-    public static PlayerModel zombiePony = new PlayerModel(new pm_zombiePony())
-            .setTextureHeight(32)
-            .setArmor(new pma_zombiePony());
-    public static PlayerModel skeletonPony = new PlayerModel(new pm_skeletonPony())
-            .setTextureHeight(32)
-            .setArmor(new pma_skeletonPony());
-    public static PlayerModel human = new PlayerModel(new pm_Human())
-            .setArmor(new pma_Human());
+    public static final PlayerModel pony = new PlayerModel(new pm_newPonyAdv()).setArmor(new pma_newPony());
+    public static final PlayerModel zombie = new PlayerModel(new pm_zombiePony()).setArmor(new pma_zombiePony());
+    public static final PlayerModel skeleton = new PlayerModel(new pm_skeletonPony()).setArmor(new pma_skeletonPony());
+    public static final PlayerModel human = new PlayerModel(new pm_Human()).setArmor(new pma_Human());
 
     public static void init() {
         for (Field field : PMAPI.class.getFields()) {

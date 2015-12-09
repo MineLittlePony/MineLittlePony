@@ -39,7 +39,7 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
 
     @AppendInsns("<init>")
     private void init(RenderManager renderManager, boolean useSmallArms) {
-        this.playerModel = PMAPI.newPonyAdv;
+        this.playerModel = PMAPI.pony;
         this.mainModel = this.playerModel.getModel();
         this.shadowSize = this.playerModel.getShadowsize();
         this.layerRenderers.clear();

@@ -13,12 +13,12 @@ import net.minecraft.util.ResourceLocation;
 
 public class RenderPonySkeleton extends RenderPonyMob<EntitySkeleton> {
     public RenderPonySkeleton(RenderManager rm) {
-        super(rm, PMAPI.skeletonPony);
+        super(rm, PMAPI.skeleton);
         addLayer(new LayerBipedArmor(this) {
             @Override
             protected void initArmor() {
-                this.field_177189_c = PMAPI.skeletonPony.getModel();
-                this.field_177186_d = PMAPI.skeletonPony.getModel();
+                this.field_177189_c = PMAPI.skeleton.getModel();
+                this.field_177186_d = PMAPI.skeleton.getModel();
             }
         });
     }

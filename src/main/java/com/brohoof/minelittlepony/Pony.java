@@ -28,7 +28,6 @@ public class Pony {
 
     private int skinCheckCount;
     private boolean skinChecked;
-    private boolean newSkinSize;
 
     public Pony(AbstractClientPlayer player) {
         this.textureResourceLocation = player.getLocationSkin();
@@ -70,7 +69,7 @@ public class Pony {
             skinImage = ImageIO.read(Minecraft.getMinecraft().getResourceManager().getResource(textureResourceLocation)
                     .getInputStream());
             MineLPLogger.debug("Obtained skin from resource location %s", textureResourceLocation);
-            this.checkSkin(skinImage);
+            // this.checkSkin(skinImage);
         } catch (Exception var6) {
             Exception e = var6;
 
@@ -80,7 +79,7 @@ public class Pony {
                     skinImage = PrivateFields.downloadedImage.get((ThreadDownloadImageData) e2);
                     if (skinImage != null) {
                         MineLPLogger.debug(e, "Successfully reflected downloadedImage from texture object");
-                        this.checkSkin(skinImage);
+                        // this.checkSkin(skinImage);
                     }
                 }
             } catch (Exception var5) {
@@ -94,8 +93,6 @@ public class Pony {
     public void checkSkin(BufferedImage bufferedimage) {
         MineLPLogger.debug("\tStart skin check #%d for pony #%d with image %s.", ++this.skinCheckCount, this.ponyId);
         metadata = PonyData.parse(bufferedimage);
-
-        this.newSkinSize = bufferedimage.getWidth() == bufferedimage.getHeight();
         this.skinChecked = true;
     }
 
@@ -103,10 +100,9 @@ public class Pony {
         if (this.metadata.getRace() == null || !this.metadata.getRace().hasWings()) {
             return false;
         }
-        return player.capabilities.isFlying ||!(player.onGround || player.isOnLadder() || player.isInWater());
-         
-        
-            //@formatter:off
+        return player.capabilities.isFlying || !(player.onGround || player.isOnLadder() || player.isInWater());
+
+        //@formatter:off
 //            boolean falling = player.fallDistance > 0;
 //            boolean levitating = player.fallDistance == this.previousFallDistance;
 //            boolean standingOnAir;
@@ -174,7 +170,7 @@ public class Pony {
 
         PlayerModel model;
         if (is_a_pony) {
-            model = newSkinSize ? PMAPI.newPonyAdv : PMAPI.newPonyAdv_32;
+            model = PMAPI.pony;
         } else {
             model = PMAPI.human;
         }

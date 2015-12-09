@@ -11,7 +11,7 @@ import net.minecraft.util.ResourceLocation;
 public class RenderPonyZombie extends RenderPonyMob<EntityZombie> {
 
     public RenderPonyZombie(RenderManager rendermanager) {
-        super(rendermanager, PMAPI.zombiePony);
+        super(rendermanager, PMAPI.zombie);
     }
 
     @Override

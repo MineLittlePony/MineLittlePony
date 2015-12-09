@@ -13,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
 
     public RenderPonyVillager(RenderManager rm) {
-        super(rm, PMAPI.newPonyAdv_32);
+        super(rm, PMAPI.pony);
     }
 
     @Override
