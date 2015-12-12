@@ -8,22 +8,22 @@ import com.google.common.collect.ImmutableBiMap;
 public class PonyData {
 
     private static final Map<Integer, PonyRace> RACE_COLORS = ImmutableBiMap.<Integer, PonyRace> builder()
-            .put(0xfff9b131, PonyRace.EARTH)
-            .put(0xffd19fe4, PonyRace.UNICORN)
-            .put(0xff88caf0, PonyRace.PEGASUS)
-            .put(0xfffef9fc, PonyRace.ALICORN)
-            .put(0xffd0cccf, PonyRace.ZEBRA)
-            .put(0xff282b29, PonyRace.CHANGELING)
+            .put(0xf9b131, PonyRace.EARTH)
+            .put(0xd19fe4, PonyRace.UNICORN)
+            .put(0x88caf0, PonyRace.PEGASUS)
+            .put(0xfef9fc, PonyRace.ALICORN)
+            .put(0xd0cccf, PonyRace.ZEBRA)
+            .put(0x282b29, PonyRace.CHANGELING)
             .build();
     private static final Map<Integer, TailLengths> TAIL_COLORS = ImmutableBiMap.<Integer, TailLengths> builder()
-            .put(0xff425844, TailLengths.STUB)
-            .put(0xffd19fe4, TailLengths.QUARTER)
-            .put(0xff534b76, TailLengths.HALF)
-            .put(0xff8a6b7f, TailLengths.THREE_QUARTERS).build();
+            .put(0x425844, TailLengths.STUB)
+            .put(0xd19fe4, TailLengths.QUARTER)
+            .put(0x534b76, TailLengths.HALF)
+            .put(0x8a6b7f, TailLengths.THREE_QUARTERS).build();
     private static final Map<Integer, PonySize> SIZE_COLORS = ImmutableBiMap.<Integer, PonySize> builder()
-            .put(0xffffbe53, PonySize.FOAL)
-            .put(0xffce3254, PonySize.LARGE)
-            .put(0xff534b76, PonySize.PRINCESS)
+            .put(0xffbe53, PonySize.FOAL)
+            .put(0xce3254, PonySize.LARGE)
+            .put(0x534b76, PonySize.PRINCESS)
             .build();
 
     private PonyRace race = PonyRace.EARTH;
@@ -114,10 +114,10 @@ public class PonyData {
 
     private enum TriggerPixels {
         RACE(0, 0),
-        TAIL(0, 1),
-        GENDER(0, 2),
-        SIZE(0, 3),
-        GLOW(1, 0);
+        TAIL(1, 0),
+        GENDER(2, 0),
+        SIZE(3, 0),
+        GLOW(0, 1);
 
         private int x, y;
 
@@ -127,7 +127,7 @@ public class PonyData {
         }
 
         private int readColor(BufferedImage image) {
-            return image.getRGB(x, y);
+            return image.getRGB(x, y) & 0xffffff;
         }
     }
 }

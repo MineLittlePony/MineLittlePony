@@ -107,7 +107,7 @@ public class PonyManager {
 
     private ResourceLocation getBackgroundPonyResource(AbstractClientPlayer player) {
         if (getNumberOfPonies() > 0) {
-            int backgroundIndex = player.getEntityId() % this.getNumberOfPonies();
+            int backgroundIndex = player.getUniqueID().hashCode() % this.getNumberOfPonies();
             if (backgroundIndex < 0) {
                 backgroundIndex += this.getNumberOfPonies();
             }

@@ -27,8 +27,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class LayerPonyArmor implements LayerRenderer {
 
-    private static final ResourceLocation ENCHANTED_ITEM_GLINT_RES = new ResourceLocation(
-            "textures/misc/enchanted_item_glint.png");
+    private static final ResourceLocation ENCHANTED_ITEM_GLINT_RES = new ResourceLocation("textures/misc/enchanted_item_glint.png");
 
     private static final Map<String, ResourceLocation> HUMAN_ARMORS = Maps.newHashMap();
     private static final Map<ResourceLocation, ResourceLocation> PONY_ARMORS = Maps.newHashMap();
@@ -43,12 +42,11 @@ public class LayerPonyArmor implements LayerRenderer {
     }
 
     @Override
-    public void doRenderLayer(EntityLivingBase entity, float p_177141_2_, float p_177141_3_, float ticks,
-            float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
+    public void doRenderLayer(EntityLivingBase entity, float p_177141_2_, float p_177141_3_, float ticks, float p_177141_5_, float p_177141_6_,
+            float p_177141_7_, float scale) {
         pony = ((IRenderPony) renderer).getPony();
         if (pony.getModel() instanceof pm_Human) {
-            humanArmor.doRenderLayer(entity, p_177141_2_, p_177141_3_, ticks, p_177141_5_, p_177141_6_, p_177141_7_,
-                    scale);
+            humanArmor.doRenderLayer(entity, p_177141_2_, p_177141_3_, ticks, p_177141_5_, p_177141_6_, p_177141_7_, scale);
         } else {
             for (int i = 4; i > 0; i--) {
                 renderArmor(entity, p_177141_2_, p_177141_3_, ticks, p_177141_5_, p_177141_6_, p_177141_7_, scale, i);
@@ -56,8 +54,8 @@ public class LayerPonyArmor implements LayerRenderer {
         }
     }
 
-    private void renderArmor(EntityLivingBase entitylivingbaseIn, float p_177141_2_, float p_177141_3_,
-            float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale, int armorSlot) {
+    private void renderArmor(EntityLivingBase entitylivingbaseIn, float p_177141_2_, float p_177141_3_, float partialTicks, float p_177141_5_,
+            float p_177141_6_, float p_177141_7_, float scale, int armorSlot) {
         ItemStack itemstack = entitylivingbaseIn.getCurrentArmor(armorSlot - 1);
 
         if (itemstack != null && itemstack.getItem() instanceof ItemArmor) {
@@ -77,17 +75,14 @@ public class LayerPonyArmor implements LayerRenderer {
                 float f8 = (j >> 8 & 255) / 255.0F;
                 float f9 = (j & 255) / 255.0F;
                 GlStateManager.color(f7, f8, f9, 1);
-                modelbase.render(entitylivingbaseIn, p_177141_2_, p_177141_3_, p_177141_5_, p_177141_6_, p_177141_7_,
-                        scale);
+                modelbase.render(entitylivingbaseIn, p_177141_2_, p_177141_3_, p_177141_5_, p_177141_6_, p_177141_7_, scale);
                 this.renderer.bindTexture(getArmorTexture(entitylivingbaseIn, itemstack, isLegs ? 2 : 1, "overlay"));
             }
             GlStateManager.color(1, 1, 1, 1);
-            modelbase.render(entitylivingbaseIn, p_177141_2_, p_177141_3_, p_177141_5_, p_177141_6_, p_177141_7_,
-                    scale);
+            modelbase.render(entitylivingbaseIn, p_177141_2_, p_177141_3_, p_177141_5_, p_177141_6_, p_177141_7_, scale);
 
             if (itemstack.isItemEnchanted()) {
-                this.renderEnchantment(entitylivingbaseIn, modelbase, p_177141_2_, p_177141_3_, partialTicks,
-                        p_177141_5_, p_177141_6_, p_177141_7_, scale);
+                this.renderEnchantment(entitylivingbaseIn, modelbase, p_177141_2_, p_177141_3_, partialTicks, p_177141_5_, p_177141_6_, p_177141_7_, scale);
             }
         }
     }
@@ -156,9 +151,8 @@ public class LayerPonyArmor implements LayerRenderer {
         }
     }
 
-    private void renderEnchantment(EntityLivingBase entitylivingbaseIn, ModelBase modelbaseIn, float p_177183_3_,
-            float p_177183_4_, float p_177183_5_, float p_177183_6_, float p_177183_7_, float p_177183_8_,
-            float p_177183_9_) {
+    private void renderEnchantment(EntityLivingBase entitylivingbaseIn, ModelBase modelbaseIn, float p_177183_3_, float p_177183_4_, float p_177183_5_,
+            float p_177183_6_, float p_177183_7_, float p_177183_8_, float p_177183_9_) {
         float f7 = entitylivingbaseIn.ticksExisted + p_177183_5_;
         this.renderer.bindTexture(ENCHANTED_ITEM_GLINT_RES);
         GlStateManager.enableBlend();
@@ -179,8 +173,7 @@ public class LayerPonyArmor implements LayerRenderer {
             GlStateManager.rotate(30.0F - i * 60.0F, 0.0F, 0.0F, 1.0F);
             GlStateManager.translate(0.0F, f7 * (0.001F + i * 0.003F) * 20.0F, 0.0F);
             GlStateManager.matrixMode(5888);
-            modelbaseIn.render(entitylivingbaseIn, p_177183_3_, p_177183_4_, p_177183_6_, p_177183_7_, p_177183_8_,
-                    p_177183_9_);
+            modelbaseIn.render(entitylivingbaseIn, p_177183_3_, p_177183_4_, p_177183_6_, p_177183_7_, p_177183_8_, p_177183_9_);
         }
 
         GlStateManager.matrixMode(5890);
