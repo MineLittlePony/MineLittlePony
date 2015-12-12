@@ -25,8 +25,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
 public class LayerHeldPonyItem implements LayerRenderer {
@@ -72,50 +72,27 @@ public class LayerHeldPonyItem implements LayerRenderer {
         ItemStack drop = entity.getHeldItem();
         if (drop != null) {
             pushMatrix();
-            if (box != null) {
-                box.postRender(scalefactor * 0.0625F);
+            if (pony.getModel().isChild) {
+                translate(0.0F, 0.625F, 0.0F);
+                rotate(-20.0F, -1.0F, 0.0F, 0.0F);
+                scale(0.5F, 0.5F, 0.5F);
             }
+            box.postRender(scalefactor * 0.0625F);
 
             translate(posx, posy, posz);
-            EnumAction playerAction = null;
-            if (entity instanceof EntityPlayer) {
-                EntityPlayer is3D = (EntityPlayer) entity;
-                if (is3D.fishEntity != null) {
-                    drop = new ItemStack(Items.stick);
-                }
-
-                if (is3D.getItemInUseCount() > 0) {
-                    playerAction = drop.getItemUseAction();
-                }
+            if (entity instanceof EntityPlayer && ((EntityPlayer) entity).fishEntity != null) {
+                drop = new ItemStack(Items.stick);
             }
 
-            if (drop.getItem() == Items.bow) {
-                rotate(-20.0F, 0.0F, 1.0F, 0.0F);
+            Item item = drop.getItem();
+            if (item instanceof ItemBlock && ((ItemBlock)item).getBlock().getRenderType() == 2) {
+                translate(0.0F, 0.1875F, -0.3125F);
+                rotate(20.0F, 1.0F, 0.0F, 0.0F);
                 rotate(45.0F, 0.0F, 1.0F, 0.0F);
-            } else if (drop.getItem().isFull3D()) {
-                if (drop.getItem().shouldRotateAroundWhenRendering()) {
-                    rotate(180.0F, 0.0F, 0.0F, 1.0F);
-                    translate(0.0F, -0.125F, 0.0F);
-                }
-
-                if (playerAction == EnumAction.BLOCK && entity instanceof EntityPlayer
-                        && ((EntityPlayer) entity).getItemInUseCount() > 0) {
-                    translate(0.05F, 0.0F, -0.1F);
-                    rotate(-50.0F, 0.0F, 1.0F, 0.0F);
-                    rotate(-10.0F, 1.0F, 0.0F, 0.0F);
-                    rotate(-60.0F, 0.0F, 0.0F, 1.0F);
-                }
+                float f8 = 0.375F;
+                scale(-f8, -f8, f8);
             }
 
-            float g;
-            float b;
-            int var20;
-
-            var20 = drop.getItem().getColorFromItemStack(drop, 0);
-            float var19 = (var20 >> 16 & 255) / 255.0F;
-            g = (var20 >> 8 & 255) / 255.0F;
-            b = (var20 & 255) / 255.0F;
-            color(var19, g, b, 1.0F);
             Minecraft.getMinecraft().getItemRenderer().renderItem(entity, drop, TransformType.THIRD_PERSON);
 
             if (pony.getModel().metadata.getRace().hasHorn() && pony.getModel().metadata.getGlowColor() != 0) {
@@ -127,29 +104,32 @@ public class LayerHeldPonyItem implements LayerRenderer {
     }
 
     public void renderItemGlow(EntityLivingBase entity, ItemStack drop, int glowColor) {
-        pushMatrix();
         GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT);
-        // GlStateManager.disableLighting();
+
         float red = (glowColor >> 16 & 255) / 255.0F;
         float green = (glowColor >> 8 & 255) / 255.0F;
         float blue = (glowColor & 255) / 255.0F;
         float alpha = 0.2F;
+        disableLighting();
         enableBlend();
-        blendFunc(32769, 1);
-        GL14.glBlendColor(red, green, blue, alpha);
-        color(red, green, blue, alpha);
+        blendFunc(GL11.GL_CONSTANT_COLOR, 1);
+        GL14.glBlendColor(red / 2, green / 2, blue / 2, alpha);
         IBakedModel model = getItemModel(Minecraft.getMinecraft().getRenderItem(), entity, drop);
-        applyTransform(model.getItemCameraTransforms().thirdPerson);
-        if (!model.isGui3d()) {
-            scale(1.5, 1.5, 1.5);
-        } else {
-            translate(0,-0.01,0);
-            scale(.9, .9, .9);
+        if (model.isGui3d()) {
+            // disabling textures for items messes up bounds
+            disableTexture2D();
         }
+        scale(2, 2, 2);
+
+        applyTransform(model.getItemCameraTransforms().thirdPerson);
+        scale(1.1, 1.1, 1.1);
         Minecraft.getMinecraft().getRenderItem().renderItem(drop, model);
-        GL11.glPopAttrib();
         disableBlend();
-        popMatrix();
+        enableLighting();
+        enableTexture2D();
+        popAttrib();
+
+        // I hate rendering
     }
 
     @Override
@@ -187,17 +167,14 @@ public class LayerHeldPonyItem implements LayerRenderer {
         return ibakedmodel;
     }
 
-    // Adapted from RenderItem
+    // Copied from RenderItem
+    //@formatter:off
     private void applyTransform(ItemTransformVec3f transform) {
-        translate(transform.translation.x + RenderItem.debugItemOffsetX,
-                transform.translation.y + RenderItem.debugItemOffsetY,
-                transform.translation.z + RenderItem.debugItemOffsetZ);
-        translate(0f, .063f, -0.18);
-
+        translate(transform.translation.x + RenderItem.debugItemOffsetX, transform.translation.y + RenderItem.debugItemOffsetY, transform.translation.z + RenderItem.debugItemOffsetZ);
         rotate(transform.rotation.y + RenderItem.debugItemRotationOffsetY, 0.0F, 1.0F, 0.0F);
         rotate(transform.rotation.x + RenderItem.debugItemRotationOffsetX, 1.0F, 0.0F, 0.0F);
         rotate(transform.rotation.z + RenderItem.debugItemRotationOffsetZ, 0.0F, 0.0F, 1.0F);
-
-
+        scale(transform.scale.x + RenderItem.debugItemScaleX, transform.scale.y + RenderItem.debugItemScaleY, transform.scale.z + RenderItem.debugItemScaleZ);
     }
+    //@formatter:on
 }

@@ -1,13 +1,6 @@
 package com.brohoof.minelittlepony.model.pony;
 
-import static net.minecraft.client.renderer.GlStateManager.blendFunc;
-import static net.minecraft.client.renderer.GlStateManager.color;
-import static net.minecraft.client.renderer.GlStateManager.popAttrib;
-import static net.minecraft.client.renderer.GlStateManager.popMatrix;
-import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
-import static net.minecraft.client.renderer.GlStateManager.rotate;
-import static net.minecraft.client.renderer.GlStateManager.scale;
-import static net.minecraft.client.renderer.GlStateManager.translate;
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 import java.util.Random;
 
@@ -900,9 +893,9 @@ public class pm_newPonyAdv extends ModelPony {
             this.headpiece[2].render(this.scale);
             if (this.heldItemRight != 0 && this.metadata.getGlowColor() != 0) {
                 GL11.glPushAttrib(24577);
-                GL11.glDisable(GL11.GL_TEXTURE_2D);
-                GL11.glDisable(GL11.GL_LIGHTING);
-                GL11.glEnable(GL11.GL_BLEND);
+                disableTexture2D();
+                disableLighting();
+                enableBlend();
                 float var4 = (this.metadata.getGlowColor() >> 16 & 255) / 255.0F;
                 float green = (this.metadata.getGlowColor() >> 8 & 255) / 255.0F;
                 float blue = (this.metadata.getGlowColor() & 255) / 255.0F;
@@ -911,6 +904,10 @@ public class pm_newPonyAdv extends ModelPony {
                 this.hornglow[0].render(this.scale);
                 color(var4, green, blue, 0.2F);
                 this.hornglow[1].render(this.scale);
+
+                enableTexture2D();
+                enableLighting();
+                disableBlend();
                 popAttrib();
             }
         }
