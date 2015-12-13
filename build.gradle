@@ -87,3 +87,8 @@ reobf{
 	jar.task.enabled = false
 	standaloneJar{}
 }
+
+task installMod(type: Copy, dependsOn: build) {
+	from standaloneJar.archivePath
+	into file("$System.env.APPDATA/.minecraft/mods")
+}

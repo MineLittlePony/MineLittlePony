@@ -113,7 +113,7 @@ public class LayerHeldPonyItem implements LayerRenderer {
         disableLighting();
         enableBlend();
         blendFunc(GL11.GL_CONSTANT_COLOR, 1);
-        GL14.glBlendColor(red / 2, green / 2, blue / 2, alpha);
+        GL14.glBlendColor(red, green, blue, alpha);
         IBakedModel model = getItemModel(Minecraft.getMinecraft().getRenderItem(), entity, drop);
         if (model.isGui3d()) {
             // disabling textures for items messes up bounds
