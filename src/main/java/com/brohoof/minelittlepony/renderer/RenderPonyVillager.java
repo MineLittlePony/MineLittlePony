@@ -1,11 +1,10 @@
  package com.brohoof.minelittlepony.renderer;
 
-import org.lwjgl.opengl.GL11;
-
 import com.brohoof.minelittlepony.MineLittlePony;
 import com.brohoof.minelittlepony.Pony;
 import com.brohoof.minelittlepony.model.PMAPI;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.util.ResourceLocation;
@@ -28,7 +27,7 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
             }
         }
 
-        GL11.glScalef(0.9375F, 0.9375F, 0.9375F);
+        GlStateManager.scale(0.9375F, 0.9375F, 0.9375F);
     }
 
     @Override

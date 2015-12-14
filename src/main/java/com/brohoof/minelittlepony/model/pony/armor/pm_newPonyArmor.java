@@ -1,5 +1,6 @@
 package com.brohoof.minelittlepony.model.pony.armor;
 
+import com.brohoof.minelittlepony.model.part.PonyEars;
 import com.brohoof.minelittlepony.model.pony.pm_newPonyAdv;
 import com.brohoof.minelittlepony.renderer.AniParams;
 
@@ -19,6 +20,11 @@ public class pm_newPonyArmor extends pm_newPonyAdv {
     }
 
     @Override
+    protected void addParts() {
+        modelParts.add(new PonyEars());
+    }
+
+    @Override
     public void animate(AniParams aniparams) {
         this.checkRainboom(aniparams.swing);
         this.rotateHead(aniparams.horz, aniparams.vert);
@@ -33,7 +39,7 @@ public class pm_newPonyArmor extends pm_newPonyAdv {
         this.setLegs(aniparams.move, aniparams.swing, aniparams.tick);
         this.holdItem();
         this.swingItem(this.swingProgress);
-        if (this.issneak && !this.isFlying) {
+        if (this.isSneak && !this.isFlying) {
             this.adjustBody(BODY_ROTATE_ANGLE_X_SNEAK, BODY_RP_Y_SNEAK, BODY_RP_Z_SNEAK);
             this.sneakLegs();
             this.setHead(0.0F, 6.0F, -2.0F);

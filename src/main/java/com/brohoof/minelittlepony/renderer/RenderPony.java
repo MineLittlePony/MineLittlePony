@@ -58,26 +58,19 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
         thePony.checkSkin();
         this.playerModel = this.getModel(player);
         this.mainModel = this.playerModel.getModel();
-        this.playerModel.getArmor().modelArmorChestplate.heldItemRight = this.playerModel.getArmor().modelArmor.heldItemRight = this.playerModel
-                .getModel().heldItemRight = currentItemStack == null ? 0 : 1;
+        this.playerModel.getModel().heldItemRight = currentItemStack == null ? 0 : 1;
         this.playerModel.apply(thePony.metadata);
         if (currentItemStack != null && player.getItemInUseCount() > 0) {
             EnumAction yOrigin = currentItemStack.getItemUseAction();
             if (yOrigin == EnumAction.BLOCK) {
-                this.playerModel.getArmor().modelArmorChestplate.heldItemRight = this.playerModel.getArmor().modelArmor.heldItemRight = this.playerModel
-                        .getModel().heldItemRight = 3;
+                this.playerModel.getModel().heldItemRight = 3;
             } else if (yOrigin == EnumAction.BOW) {
-                this.playerModel.getArmor().modelArmorChestplate.aimedBow = this.playerModel.getArmor().modelArmor.aimedBow = this.playerModel
-                        .getModel().aimedBow = true;
+                this.playerModel.getModel().aimedBow = true;
             }
         }
 
-        this.playerModel.getArmor().modelArmorChestplate.issneak = this.playerModel.getArmor().modelArmor.issneak = this.playerModel.getModel().issneak = player
-                .isSneaking();
-        this.playerModel
-                .getArmor().modelArmorChestplate.isFlying = this.playerModel.getArmor().modelArmor.isFlying = this.playerModel.getModel().isFlying = thePony
-                        .isPegasusFlying(player);
-        // , this.renderManager.worldObj);
+        this.playerModel.getModel().isSneak = player.isSneaking();
+        this.playerModel.getModel().isFlying = thePony.isPegasusFlying(player);
 
         if (MineLittlePony.getConfig().getShowScale().get()) {
             if (this.playerModel != PMAPI.human) {
@@ -102,20 +95,15 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
             yOrigin1 -= 0.125D;
         }
 
-        this.playerModel.getArmor().modelArmorChestplate.isSleeping = this.playerModel.getArmor().modelArmor.isSleeping = this.playerModel
-                .getModel().isSleeping = player.isPlayerSleeping();
-        this.playerModel.getArmor().modelArmorChestplate.swingProgress = this.playerModel.getArmor().modelArmor.swingProgress = this.playerModel
-                .getModel().swingProgress;
-        this.playerModel.getArmor().modelArmorChestplate.isVillager = this.playerModel.getArmor().modelArmor.isVillager = this.playerModel
-                .getModel().isVillager = false;
+        this.playerModel.getModel().isSleeping = player.isPlayerSleeping();
+        this.playerModel.getModel().swingProgress = getSwingProgress(player, partialTicks);
+        this.playerModel.getModel().isVillager = false;
 
         super.doRender(player, x, yOrigin1, z, yaw, partialTicks);
 
-        this.playerModel
-                .getArmor().modelArmorChestplate.aimedBow = this.playerModel.getArmor().modelArmor.aimedBow = this.playerModel.getModel().aimedBow = false;
-        this.playerModel.getArmor().modelArmorChestplate.issneak = this.playerModel.getArmor().modelArmor.issneak = this.playerModel.getModel().issneak = false;
-        this.playerModel.getArmor().modelArmorChestplate.heldItemRight = this.playerModel.getArmor().modelArmor.heldItemRight = this.playerModel
-                .getModel().heldItemRight = 0;
+        this.playerModel.getModel().aimedBow = false;
+        this.playerModel.getModel().isSneak = false;
+        this.playerModel.getModel().heldItemRight = 0;
     }
 
     @AppendInsns("renderLivingAt")

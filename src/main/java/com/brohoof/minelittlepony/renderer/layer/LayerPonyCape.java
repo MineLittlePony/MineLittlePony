@@ -48,18 +48,18 @@ public class LayerPonyCape implements LayerRenderer {
             } else if (model.getModel().metadata.getSize() == PonySize.LARGE) {
                 translate(0.0F, -0.14F, -0.1F);
                 scale(1.15F, 1.2F, 1.2F);
-                if (model.getModel().issneak && !model.getModel().isFlying) {
+                if (model.getModel().isSneak && !model.getModel().isFlying) {
                     translate(0.0F, 0.03F, 0.0F);
                 }
             } else if (model.getModel().metadata.getSize() == PonySize.PRINCESS) {
                 translate(0.0F, -0.09F, 0.0F);
                 scale(1.0F, 1.0F, 1.0F);
-                if (model.getModel().issneak && !model.getModel().isFlying) {
+                if (model.getModel().isSneak && !model.getModel().isFlying) {
                     translate(0.0F, 0.03F, 0.0F);
                 }
             }
 
-            if (model.getModel().issneak && !model.getModel().isFlying) {
+            if (model.getModel().isSneak && !model.getModel().isFlying) {
                 translate(0.0F, 0.4F, -0.12F);
             }
             double d = clientPlayer.prevChasingPosX + (clientPlayer.chasingPosX - clientPlayer.prevChasingPosX) * scale

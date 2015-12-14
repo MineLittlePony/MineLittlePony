@@ -6,7 +6,6 @@ import com.brohoof.minelittlepony.PonyRace;
 import com.brohoof.minelittlepony.TailLengths;
 import com.brohoof.minelittlepony.model.ModelPony;
 import com.brohoof.minelittlepony.model.PlayerModel;
-import com.brohoof.minelittlepony.model.pony.pm_newPonyAdv;
 import com.brohoof.minelittlepony.renderer.layer.LayerHeldPonyItem;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonyArmor;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonySkull;
@@ -40,46 +39,38 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     public void doRender(EntityLiving entity, double xPosition, double yPosition, double zPosition, float yaw,
             float partialTicks) {
         ItemStack heldItem = entity.getHeldItem();
-        this.playerModel.getArmor().modelArmorChestplate.heldItemRight = this.playerModel.getArmor().modelArmor.heldItemRight = this.playerModel
-                .getModel().heldItemRight = heldItem == null
-                        ? 0 : 1;
+        this.playerModel.getModel().heldItemRight = heldItem == null ? 0 : 1;
 
-        this.playerModel.getArmor().modelArmorChestplate.issneak = this.playerModel.getArmor().modelArmor.issneak = this.playerModel.getModel().issneak = false;
-        this.playerModel
-                .getArmor().modelArmorChestplate.isFlying = this.playerModel.getArmor().modelArmor.isFlying = this.playerModel.getModel().isFlying = false;
-
-        if (this.playerModel.getModel() instanceof pm_newPonyAdv) {
-            ((pm_newPonyAdv) this.playerModel.getModel()).setHasWings_Compression(false);
-        }
+        this.playerModel.getModel().isSneak = false;
+        this.playerModel.getModel().isFlying = false;
 
         if (entity instanceof EntitySkeleton) {
 
-            switch (entity.getEntityId() % 3) {
+            switch (entity.getUniqueID().hashCode() % 3) {
             case 0:
             case 1:
-                this.playerModel.getArmor().modelArmor.metadata.setRace(PonyRace.UNICORN);
+                this.playerModel.getModel().metadata.setRace(PonyRace.UNICORN);
                 break;
             case 2:
-                this.playerModel.getArmor().modelArmor.metadata.setRace(PonyRace.EARTH);
+                this.playerModel.getModel().metadata.setRace(PonyRace.EARTH);
             }
         } else {
-            this.playerModel.getArmor().modelArmor.metadata.setRace(PonyRace.EARTH);
+            this.playerModel.getModel().metadata.setRace(PonyRace.EARTH);
         }
 
         if (entity instanceof EntityPigZombie) {
-            this.playerModel.getArmor().modelArmor.metadata.setGender(PonyGender.STALLION);
+            this.playerModel.getModel().metadata.setGender(PonyGender.STALLION);
         } else {
-            this.playerModel.getArmor().modelArmor.metadata.setGender(PonyGender.MARE);
+            this.playerModel.getModel().metadata.setGender(PonyGender.MARE);
         }
 
         if (entity instanceof EntitySkeleton) {
-            this.playerModel.getModel().metadata.setTail(TailLengths.FULL);
-        } else {
             this.playerModel.getModel().metadata.setTail(TailLengths.STUB);
+        } else {
+            this.playerModel.getModel().metadata.setTail(TailLengths.FULL);
         }
 
-        this.playerModel.getArmor().modelArmorChestplate.isSleeping = this.playerModel.getArmor().modelArmor.isSleeping = this.playerModel
-                .getModel().isSleeping = false;
+        this.playerModel.getModel().isSleeping = false;
         if (MineLittlePony.getConfig().getShowScale().get()) {
             this.shadowSize = 0.4F;
         }
@@ -90,11 +81,9 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
         }
 
         super.doRender(entity, xPosition, yOrigin, zPosition, yaw, partialTicks);
-        this.playerModel
-                .getArmor().modelArmorChestplate.aimedBow = this.playerModel.getArmor().modelArmor.aimedBow = this.playerModel.getModel().aimedBow = false;
-        this.playerModel.getArmor().modelArmorChestplate.issneak = this.playerModel.getArmor().modelArmor.issneak = this.playerModel.getModel().issneak = false;
-        this.playerModel.getArmor().modelArmorChestplate.heldItemRight = this.playerModel.getArmor().modelArmor.heldItemRight = this.playerModel
-                .getModel().heldItemRight = 0;
+        this.playerModel.getModel().aimedBow = false;
+        this.playerModel.getModel().isSneak = false;
+        this.playerModel.getModel().heldItemRight = 0;
     }
 
     @SuppressWarnings("unchecked")

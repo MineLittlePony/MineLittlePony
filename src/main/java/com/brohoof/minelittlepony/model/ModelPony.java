@@ -1,13 +1,27 @@
 package com.brohoof.minelittlepony.model;
 
+import static net.minecraft.client.renderer.GlStateManager.rotate;
+import static net.minecraft.client.renderer.GlStateManager.scale;
+import static net.minecraft.client.renderer.GlStateManager.translate;
+
+import java.util.List;
+
 import com.brohoof.minelittlepony.MineLittlePony;
 import com.brohoof.minelittlepony.Pony;
 import com.brohoof.minelittlepony.PonyData;
+import com.brohoof.minelittlepony.PonySize;
+import com.brohoof.minelittlepony.model.part.IPonyPart;
+import com.brohoof.minelittlepony.model.pony.pm_newPonyAdv;
 import com.brohoof.minelittlepony.renderer.AniParams;
+import com.brohoof.minelittlepony.renderer.PlaneRenderer;
+import com.google.common.collect.Lists;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EnumPlayerModelParts;
@@ -16,44 +30,35 @@ import net.minecraft.item.ItemStack;
 
 public abstract class ModelPony extends ModelPlayer {
 
-    protected float strech = 0.0F;
     protected float scale = 0.0625F;
-    public boolean issneak = false;
     public boolean isArmour = false;
     public boolean isVillager;
     public boolean isFlying;
-    public boolean isGlow;
     public boolean isSleeping;
 
     public PonyData metadata = new PonyData();
 
-    public int heldItemLeft;
-    public int heldItemRight;
-    public boolean aimedBow;
+    protected List<IPonyPart> modelParts = Lists.newArrayList();
 
     public ModelPony() {
         super(0, false);
     }
 
-    public void setStrech(float strech) {
-        this.strech = strech;
+    public final void init(float yOffset, float stretch) {
+        this.initTextures();
+        this.initPositions(yOffset, stretch);
+        for (IPonyPart part : modelParts) {
+            part.init(this, yOffset, stretch);
+        }
     }
 
-    /**
-     * @param var1
-     * @param var2
-     */
-    public void init(float var1, float var2) {}
+    protected void initTextures() {}
 
-    /**
-     * @param var1
-     */
-    public void animate(AniParams var1) {}
+    protected void initPositions(float yOffset, float stretch) {}
 
-    /**
-     * @param var1
-     */
-    public void render(AniParams var1) {}
+    protected void animate(AniParams var1) {}
+
+    protected void render() {}
 
     @Override
     public void render(Entity player, float Move, float Moveswing, float Loop, float Right, float Down, float Scale) {
@@ -63,7 +68,17 @@ public abstract class ModelPony extends ModelPlayer {
         if (!doCancelRender()) {
             AniParams ani = new AniParams(Move, Moveswing, Loop, Right, Down);
             this.animate(ani);
-            this.render(ani);
+            for (IPonyPart part : modelParts) {
+                part.animate(metadata, ani);
+            }
+            GlStateManager.pushMatrix();
+            this.render();
+            GlStateManager.popMatrix();
+            for (IPonyPart part : modelParts) {
+                GlStateManager.pushMatrix();
+                part.render(metadata, scale);
+                GlStateManager.popMatrix();
+            }
         } else {
             super.render(player, Move, Moveswing, Loop, Right, Down, Scale);
         }
@@ -98,15 +113,15 @@ public abstract class ModelPony extends ModelPlayer {
         setModelRotationAngles(f1, f2, f3, f4, f5, f6, ent);
     }
 
-    public void renderModelRightArm() {
+    protected void renderModelRightArm() {
         super.renderRightArm();
     }
 
-    public void renderModelLeftArm() {
+    protected void renderModelLeftArm() {
         super.renderLeftArm();
     }
 
-    public void setModelRotationAngles(float f1, float f2, float f3, float f4, float f5, float f6, Entity ent) {
+    protected void setModelRotationAngles(float f1, float f2, float f3, float f4, float f5, float f6, Entity ent) {
         super.setRotationAngles(f1, f2, f3, f4, f5, f6, ent);
     }
 
@@ -150,6 +165,168 @@ public abstract class ModelPony extends ModelPlayer {
 
     protected boolean doCancelRender() {
         return false;
+    }
+
+    public void setRotationPoint(ModelRenderer aRenderer, float setX, float setY, float setZ) {
+        aRenderer.rotationPointX = setX;
+        aRenderer.rotationPointY = setY;
+        aRenderer.rotationPointZ = setZ;
+    }
+
+    public void setRotationPoint(PlaneRenderer aPlaneRenderer, float setX, float setY, float setZ) {
+        aPlaneRenderer.rotationPointX = setX;
+        aPlaneRenderer.rotationPointY = setY;
+        aPlaneRenderer.rotationPointZ = setZ;
+    }
+
+    public void shiftRotationPoint(PlaneRenderer aPlaneRenderer, float shiftX, float shiftY, float shiftZ) {
+        aPlaneRenderer.rotationPointX += shiftX;
+        aPlaneRenderer.rotationPointY += shiftY;
+        aPlaneRenderer.rotationPointZ += shiftZ;
+    }
+
+    public void shiftRotationPoint(ModelRenderer aRenderer, float shiftX, float shiftY, float shiftZ) {
+        aRenderer.rotationPointX += shiftX;
+        aRenderer.rotationPointY += shiftY;
+        aRenderer.rotationPointZ += shiftZ;
+    }
+
+    public void transform(BodyPart part) {
+        if (this.isRiding && !this.isArmour) {
+            translate(0.0F, -0.56F, -0.46F);
+        }
+
+        if (this.isSleeping && !this.isArmour) {
+            rotate(90.0F, 0.0F, 1.0F, 0.0F);
+            rotate(270.0F, 0.0F, 0.0F, 1.0F);
+            rotate(90.0F, 0.0F, 1.0F, 0.0F);
+            rotate(180.0F, 0.0F, 0.0F, 1.0F);
+            rotate(180.0F, 0.0F, 1.0F, 0.0F);
+        }
+
+        if (this.metadata.getSize() == PonySize.FOAL) {
+            if (this.isSneak && !this.isFlying && !this.isArmour) {
+                translate(0.0F, -0.12F, 0.0F);
+            }
+
+            if (this.isSleeping && !this.isArmour) {
+                translate(0.0F, -1.0F, 0.25F);
+            }
+            switch (part) {
+            case NECK:
+            case HEAD:
+                translate(0.0F, 0.76F, 0.0F);
+                scale(0.9F, 0.9F, 0.9F);
+                if (part == BodyPart.HEAD)
+                    break;
+                if (this.isSneak && !this.isFlying) {
+                    translate(0.0F, -0.01F, 0.15F);
+                }
+                break;
+            case BODY:
+            case TAIL:
+                translate(0.0F, 0.76F, -0.04F);
+                scale(0.6F, 0.6F, 0.6F);
+                break;
+            case LEGS:
+                translate(0.0F, 0.89F, 0.0F);
+                scale(0.6F, 0.41F, 0.6F);
+                if (this.isSneak && !this.isFlying) {
+                    translate(0.0F, 0.12F, 0.0F);
+                }
+
+                if (this instanceof pm_newPonyAdv && ((pm_newPonyAdv) this).rainboom) {
+                    translate(0.0F, -0.08F, 0.0F);
+                }
+
+                break;
+            }
+
+        } else if (this.metadata.getSize() == PonySize.LARGE) {
+            if (this.isSleeping && !this.isArmour) {
+                translate(0.0F, -0.47F, 0.2F);
+            }
+
+            switch (part) {
+            case HEAD:
+
+                translate(0.0F, -0.17F, -0.04F);
+                if (this.isSleeping && !this.isArmour) {
+                    translate(0.0F, 0.0F, -0.1F);
+                }
+
+                if (this.isSneak && !this.isFlying) {
+                    translate(0.0F, 0.15F, 0.0F);
+                }
+
+                break;
+            case NECK:
+                translate(0.0F, -0.15F, -0.07F);
+                if (this.isSneak && !this.isFlying) {
+                    translate(0.0F, 0.0F, -0.05F);
+                }
+
+                break;
+            case BODY:
+                translate(0.0F, -0.2F, -0.04F);
+                scale(1.15F, 1.2F, 1.2F);
+                break;
+            case TAIL:
+                translate(0.0F, -0.2F, 0.08F);
+                break;
+            case LEGS:
+                translate(0.0F, -0.14F, 0.0F);
+                scale(1.15F, 1.12F, 1.15F);
+                break;
+            }
+        } else if (this.metadata.getSize() == PonySize.PRINCESS) {
+            if (this.isSleeping && !this.isArmour) {
+                translate(0.0F, -0.43F, 0.25F);
+            }
+
+            switch (part) {
+            case HEAD:
+                translate(0.0F, -0.15F, 0.01F);
+                if (this.isSneak && !this.isFlying) {
+                    translate(0.0F, 0.05F, 0.0F);
+                }
+                break;
+            case NECK:
+                translate(0.0F, -0.19F, -0.01F);
+                scale(1.0F, 1.1F, 1.0F);
+                if (this.isSneak && !this.isFlying) {
+                    translate(0.0F, -0.06F, -0.04F);
+                }
+                break;
+            case BODY:
+            case TAIL:
+                translate(0.0F, -0.1F, 0.0F);
+                scale(1.0F, 1.0F, 1.0F);
+                break;
+            case LEGS:
+                translate(0.0F, -0.25F, 0.03F);
+                scale(1.0F, 1.18F, 1.0F);
+                if (this instanceof pm_newPonyAdv && ((pm_newPonyAdv) this).rainboom) {
+                    translate(0.0F, 0.05F, 0.0F);
+                }
+                break;
+            }
+        } else {
+            if (this.isSleeping && !this.isArmour) {
+                translate(0.0F, -0.535F, 0.25F);
+            }
+        }
+    }
+
+    @Override
+    public void setModelAttributes(ModelBase model) {
+        super.setModelAttributes(model);
+        if (model instanceof ModelPony) {
+            ModelPony pony = (ModelPony) model;
+            this.isFlying = pony.isFlying;
+            this.isSleeping = pony.isSleeping;
+            this.isVillager = pony.isVillager;
+        }
     }
 
 }

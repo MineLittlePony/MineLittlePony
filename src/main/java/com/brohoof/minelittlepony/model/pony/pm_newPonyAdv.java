@@ -1,108 +1,51 @@
 package com.brohoof.minelittlepony.model.pony;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
+import static net.minecraft.client.renderer.GlStateManager.popMatrix;
+import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
+import static net.minecraft.client.renderer.GlStateManager.rotate;
+import static net.minecraft.client.renderer.GlStateManager.scale;
+import static net.minecraft.client.renderer.GlStateManager.translate;
 
 import java.util.Random;
 
-import org.lwjgl.opengl.GL11;
-
-import com.brohoof.minelittlepony.MineLittlePony;
-import com.brohoof.minelittlepony.PonyGender;
 import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.model.ModelPony;
+import com.brohoof.minelittlepony.model.PonyModelConstants;
+import com.brohoof.minelittlepony.model.part.PegasusWings;
+import com.brohoof.minelittlepony.model.part.PonyEars;
+import com.brohoof.minelittlepony.model.part.PonySnout;
+import com.brohoof.minelittlepony.model.part.UnicornHorn;
 import com.brohoof.minelittlepony.renderer.AniParams;
 import com.brohoof.minelittlepony.renderer.CompressiveRendering;
-import com.brohoof.minelittlepony.renderer.HornGlowRenderer;
 import com.brohoof.minelittlepony.renderer.PlaneRenderer;
 
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.util.MathHelper;
 
-public class pm_newPonyAdv extends ModelPony {
+public class pm_newPonyAdv extends ModelPony implements PonyModelConstants {
 
-    protected static final float HEAD_CENTRE_X = 0.0F;
-    protected static final float HEAD_CENTRE_Y = -1.0F;
-    protected static final float HEAD_CENTRE_Z = -2.0F;
-    protected static final float BODY_CENTRE_X = 0.0F;
-    protected static final float BODY_CENTRE_Y = 8.0F;
-    protected static final float BODY_CENTRE_Z = 6.0F;
-    protected static final float THIRDP_ARM_CENTRE_X = 0.0F;
-    protected static final float THIRDP_ARM_CENTRE_Y = 10.0F;
-    protected static final float THIRDP_ARM_CENTRE_Z = 0.0F;
-    protected static final float FIRSTP_ARM_CENTRE_X = -1.0F;
-    protected static final float FIRSTP_ARM_CENTRE_Y = 4.0F;
-    protected static final float FIRSTP_ARM_CENTRE_Z = 0.0F;
-    protected static final float HEAD_RP_X = 0.0F;
-    protected static final float HEAD_RP_Y = 0.0F;
-    protected static final float HEAD_RP_Z = 0.0F;
-    protected static final float BODY_RP_Y_SNEAK = 7.0F;
-    protected static final float BODY_RP_Y_NOTSNEAK = 0.0F;
-    protected static final float BODY_RP_Z_SNEAK = -4.0F;
-    protected static final float BODY_RP_Z_NOTSNEAK = 0.0F;
-    protected static final float FRONT_LEG_RP_Y_SNEAK = 7.0F;
-    protected static final float FRONT_LEG_RP_Y_NOTSNEAK = 8.0F;
-    protected static final float WING_FOLDED_RP_Y = 13.0F;
-    protected static final float WING_FOLDED_RP_Z = -3.0F;
-    protected static final float LEFT_WING_RP_Y_SNEAK = 10.5F;
-    protected static final float LEFT_WING_RP_Y_NOTSNEAK = 5.5F;
-    protected static final float LEFT_WING_RP_Z_SNEAK = 2.0F;
-    protected static final float LEFT_WING_RP_Z_NOTSNEAK = 3.0F;
-    protected static final float RIGHT_WING_RP_Y_SNEAK = 11.5F;
-    protected static final float RIGHT_WING_RP_Y_NOTSNEAK = 6.5F;
-    protected static final float RIGHT_WING_RP_Z_SNEAK = 2.0F;
-    protected static final float RIGHT_WING_RP_Z_NOTSNEAK = 3.0F;
-    protected static final float TAIL_RP_X = 0.0F;
-    protected static final float TAIL_RP_Y = 0.8F;
-    protected static final float TAIL_RP_Z = 0.0F;
-    protected static final float TAIL_RP_Z_SNEAK = 10.0F;
-    protected static final float TAIL_RP_Z_NOTSNEAK = 14.0F;
-    protected static final float LEFT_WING_EXT_RP_X = 4.5F;
-    protected static final float LEFT_WING_EXT_RP_Y = 5.0F;
-    protected static final float LEFT_WING_EXT_RP_Z = 6.0F;
-    protected static final float RIGHT_WING_EXT_RP_X = -4.5F;
-    protected static final float RIGHT_WING_EXT_RP_Y = 5.0F;
-    protected static final float RIGHT_WING_EXT_RP_Z = 6.0F;
-    protected static final float BODY_ROTATE_ANGLE_X_SNEAK = 0.4F;
-    protected static final float BODY_ROTATE_ANGLE_X_NOTSNEAK = 0.0F;
-    protected static final float EXT_WING_ROTATE_ANGLE_X = 2.5F;
-    protected static final float LEFT_WING_ROTATE_ANGLE_Z_SNEAK = -6.0F;
-    protected static final float RIGHT_WING_ROTATE_ANGLE_Z_SNEAK = 6.0F;
-    protected static final float SNEAK_LEG_X_ROTATION_ADJUSTMENT = 0.4F;
-    protected static final float ROTATE_270 = 4.712F;
-    protected static final float ROTATE_90 = 1.571F;
-    protected static final float RIDING_SHIFT_Y = -10.0F;
-    protected static final float RIDING_SHIFT_Z = -10.0F;
-
-    protected boolean rainboom;
-    protected final float Pi = 3.1415927F;
-    private float WingRotateAngleZ;
-    protected float NeckRotX = 0.166F;
-    public int tailstop = 0;
+    public boolean rainboom;
 
     public ModelRenderer bipedCape;
-    public ModelRenderer[] headpiece;// horn? ears?
-    public HornGlowRenderer[] hornglow;
+
     public PlaneRenderer[] Bodypiece;
     public PlaneRenderer[] VillagerBagPiece;
     public PlaneRenderer VillagerApron;
     public PlaneRenderer VillagerTrinket;
     public PlaneRenderer[] BodypieceNeck;
-    public PlaneRenderer[] MuzzleFemale;
-    public PlaneRenderer[] MuzzleMale;
     public ModelRenderer SteveArm;
     public ModelRenderer unicornarm;
     public PlaneRenderer[] Tail;
-    public ModelRenderer[] LeftWing;
-    public ModelRenderer[] RightWing;
-    public ModelRenderer[] LeftWingExt;
-    public ModelRenderer[] RightWingExt;
-    public CompressiveRendering CompressiveLeftWing;
-    public CompressiveRendering CompressiveRightWing;
 
-    @Override
-    public void init(float yOffset, float stretch) {
-        this.initTextures();
-        this.initPositions(yOffset, stretch);
+    public pm_newPonyAdv() {
+        addParts();
+    }
+    
+    protected void addParts() {
+        modelParts.add(new PonyEars());
+        modelParts.add(new PonySnout());
+        modelParts.add(new UnicornHorn());
+        modelParts.add(new PegasusWings());
     }
 
     @Override
@@ -137,50 +80,32 @@ public class pm_newPonyAdv extends ModelPony {
             this.BodypieceNeck[k1].rotateAngleY = bodySwingRotation * 0.2F;
         }
 
-        for (k1 = 0; k1 < this.LeftWing.length; ++k1) {
-            this.LeftWing[k1].rotateAngleY = bodySwingRotation * 0.2F;
+        int tailstop = this.Tail.length - this.metadata.getTail().getSize() * 5;
+        if (tailstop <= 1) {
+            tailstop = 0;
         }
 
-        for (k1 = 0; k1 < this.RightWing.length; ++k1) {
-            this.RightWing[k1].rotateAngleY = bodySwingRotation * 0.2F;
-        }
-
-        this.tailstop = 0;
-        this.tailstop = this.Tail.length - this.metadata.getTail().getSize() * 5;
-        if (this.tailstop <= 1) {
-            this.tailstop = 0;
-        }
-
-        for (k1 = 0; k1 < this.tailstop; ++k1) {
+        for (k1 = 0; k1 < tailstop; ++k1) {
             this.Tail[k1].rotateAngleY = bodySwingRotation;
         }
 
         this.setLegs(aniparams.move, aniparams.swing, aniparams.tick);
         this.holdItem();
         this.swingItem(this.swingProgress);
-        if (this.issneak && !this.isFlying) {
+        if (this.isSneak && !this.isFlying) {
             this.adjustBody(BODY_ROTATE_ANGLE_X_SNEAK, BODY_RP_Y_SNEAK, BODY_RP_Z_SNEAK);
-            this.animatePegasusWingsSneaking();
             this.sneakLegs();
             this.setHead(0.0F, 6.0F, -2.0F);
             this.sneakTail();
         } else {
             this.adjustBody(BODY_ROTATE_ANGLE_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
-            if (this.metadata.getRace().hasWings()) {
-                this.animatePegasusWingsNotSneaking(aniparams.tick);
-            }
 
             this.bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
             this.bipedLeftLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
             this.swingArms(aniparams.tick);
             this.setHead(0.0F, 0.0F, 0.0F);
-            this.tailstop = 0;
-            this.tailstop = this.Tail.length - this.metadata.getTail().getSize() * 5;
-            if (this.tailstop <= 1) {
-                this.tailstop = 0;
-            }
 
-            for (k1 = 0; k1 < this.tailstop; ++k1) {
+            for (k1 = 0; k1 < tailstop; ++k1) {
                 this.setRotationPoint(this.Tail[k1], TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_NOTSNEAK);
                 if (this.rainboom) {
                     this.Tail[k1].rotateAngleX = ROTATE_90 + 0.1F * MathHelper.sin(aniparams.move);
@@ -195,13 +120,8 @@ public class pm_newPonyAdv extends ModelPony {
         }
 
         if (this.rainboom) {
-            this.tailstop = 0;
-            this.tailstop = this.Tail.length - this.metadata.getTail().getSize() * 5;
-            if (this.tailstop <= 1) {
-                this.tailstop = 0;
-            }
 
-            for (k1 = 0; k1 < this.tailstop; ++k1) {
+            for (k1 = 0; k1 < tailstop; ++k1) {
                 this.Tail[k1].rotationPointY += 6.0F;
                 ++this.Tail[k1].rotationPointZ;
             }
@@ -230,37 +150,12 @@ public class pm_newPonyAdv extends ModelPony {
     }
 
     protected void checkRainboom(float swing) {
-        if (this.metadata.getRace().hasWings() && this.isFlying && swing >= 0.9999F) {
-            this.rainboom = true;
-        } else {
-            this.rainboom = false;
-        }
-
+        this.rainboom = this.metadata.getRace() != null && this.metadata.getRace().hasWings() && this.isFlying && swing >= 0.9999F;
     }
 
     protected void setHead(float posX, float posY, float posZ) {
         this.setRotationPoint(this.bipedHead, posX, posY, posZ);
         this.setRotationPoint(this.bipedHeadwear, posX, posY, posZ);
-
-        int j6;
-        for (j6 = 0; j6 < this.headpiece.length; ++j6) {
-            this.setRotationPoint(this.headpiece[j6], posX, posY, posZ);
-        }
-
-        for (j6 = 0; j6 < this.hornglow.length; ++j6) {
-            this.setRotationPoint(this.hornglow[j6], posX, posY, posZ);
-        }
-
-        if (this.metadata.getGender() == PonyGender.STALLION) {
-            for (j6 = 0; j6 < this.MuzzleMale.length; ++j6) {
-                this.setRotationPoint(this.MuzzleMale[j6], posX, posY, posZ);
-            }
-        } else {
-            for (j6 = 0; j6 < this.MuzzleFemale.length; ++j6) {
-                this.setRotationPoint(this.MuzzleFemale[j6], posX, posY, posZ);
-            }
-        }
-
     }
 
     protected void rotateHead(float horz, float vert) {
@@ -284,34 +179,8 @@ public class pm_newPonyAdv extends ModelPony {
 
         this.bipedHead.rotateAngleY = headRotateAngleY;
         this.bipedHead.rotateAngleX = headRotateAngleX;
-        int i;
-        if (this.metadata.getGender() == PonyGender.STALLION) {
-            for (i = 0; i < this.MuzzleMale.length; ++i) {
-                this.MuzzleMale[i].rotateAngleY = headRotateAngleY;
-                this.MuzzleMale[i].rotateAngleX = headRotateAngleX;
-            }
-        } else {
-            for (i = 0; i < this.MuzzleFemale.length; ++i) {
-                this.MuzzleFemale[i].rotateAngleY = headRotateAngleY;
-                this.MuzzleFemale[i].rotateAngleX = headRotateAngleX;
-            }
-        }
-
-        this.headpiece[0].rotateAngleY = headRotateAngleY;
-        this.headpiece[0].rotateAngleX = headRotateAngleX;
-        this.headpiece[1].rotateAngleY = headRotateAngleY;
-        this.headpiece[1].rotateAngleX = headRotateAngleX;
-        this.headpiece[2].rotateAngleY = headRotateAngleY;
-        this.headpiece[2].rotateAngleX = headRotateAngleX;
-        this.hornglow[0].rotateAngleY = headRotateAngleY;
-        this.hornglow[0].rotateAngleX = headRotateAngleX;
-        this.hornglow[1].rotateAngleY = headRotateAngleY;
-        this.hornglow[1].rotateAngleX = headRotateAngleX;
         this.bipedHeadwear.rotateAngleY = headRotateAngleY;
         this.bipedHeadwear.rotateAngleX = headRotateAngleX;
-        this.headpiece[2].rotateAngleX = headRotateAngleX + 0.5F;
-        this.hornglow[0].rotateAngleX = headRotateAngleX + 0.5F;
-        this.hornglow[1].rotateAngleX = headRotateAngleX + 0.5F;
     }
 
     protected void setLegs(float move, float swing, float tick) {
@@ -319,9 +188,6 @@ public class pm_newPonyAdv extends ModelPony {
         this.adjustLegs();
     }
 
-    /**
-     * @param tick
-     */
     protected void rotateLegs(float move, float swing, float tick) {
         float rightArmRotateAngleX;
         float leftArmRotateAngleX;
@@ -383,7 +249,7 @@ public class pm_newPonyAdv extends ModelPony {
         float sinBodyRotateAngleYFactor = MathHelper.sin(this.bipedBody.rotateAngleY) * 5.0F;
         float cosBodyRotateAngleYFactor = MathHelper.cos(this.bipedBody.rotateAngleY) * 5.0F;
         float legOutset = 4.0F;
-        if (this.issneak && !this.isFlying) {
+        if (this.isSneak && !this.isFlying) {
             legOutset = 0.0F;
         }
 
@@ -392,8 +258,7 @@ public class pm_newPonyAdv extends ModelPony {
         }
 
         if (this.rainboom) {
-            this.bipedRightArm.rotationPointZ = sinBodyRotateAngleYFactor +
-                    2.0F;
+            this.bipedRightArm.rotationPointZ = sinBodyRotateAngleYFactor + 2.0F;
             this.SteveArm.rotationPointZ = sinBodyRotateAngleYFactor + 2.0F;
             this.bipedLeftArm.rotationPointZ = 0.0F - sinBodyRotateAngleYFactor + 2.0F;
         } else {
@@ -419,13 +284,12 @@ public class pm_newPonyAdv extends ModelPony {
     }
 
     protected void swingTailZ(float move, float swing) {
-        this.tailstop = 0;
-        this.tailstop = this.Tail.length - this.metadata.getTail().getSize() * 5;
-        if (this.tailstop <= 1) {
-            this.tailstop = 0;
+        int tailstop = this.Tail.length - this.metadata.getTail().getSize() * 5;
+        if (tailstop <= 1) {
+            tailstop = 0;
         }
 
-        for (int j = 0; j < this.tailstop; ++j) {
+        for (int j = 0; j < tailstop; ++j) {
             if (this.rainboom) {
                 this.Tail[j].rotateAngleZ = 0.0F;
             } else {
@@ -437,13 +301,12 @@ public class pm_newPonyAdv extends ModelPony {
 
     protected void swingTailX(float tick) {
         float sinTickFactor = MathHelper.sin(tick * 0.067F) * 0.05F;
-        this.tailstop = 0;
-        this.tailstop = this.Tail.length - this.metadata.getTail().getSize() * 5;
-        if (this.tailstop <= 1) {
-            this.tailstop = 0;
+        int tailstop = this.Tail.length - this.metadata.getTail().getSize() * 5;
+        if (tailstop <= 1) {
+            tailstop = 0;
         }
 
-        for (int l6 = 0; l6 < this.tailstop; ++l6) {
+        for (int l6 = 0; l6 < tailstop; ++l6) {
             this.Tail[l6].rotateAngleX += sinTickFactor;
         }
 
@@ -466,19 +329,15 @@ public class pm_newPonyAdv extends ModelPony {
             float f28 = MathHelper.sin(swingProgress * 3.1415927F);
             float f33 = f28 * -(this.bipedHead.rotateAngleX - 0.7F) * 0.75F;
             if (this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0 && this.heldItemRight != 0) {
-                this.unicornarm.rotateAngleX = (float) (this.unicornarm.rotateAngleX
-                        - (f22 * 1.2D + f33));
+                this.unicornarm.rotateAngleX = (float) (this.unicornarm.rotateAngleX - (f22 * 1.2D + f33));
                 this.unicornarm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
                 this.unicornarm.rotateAngleZ = f28 * -0.4F;
             } else {
-                this.bipedRightArm.rotateAngleX = (float) (this.bipedRightArm.rotateAngleX
-                        - (f22 * 1.2D + f33));
+                this.bipedRightArm.rotateAngleX = (float) (this.bipedRightArm.rotateAngleX - (f22 * 1.2D + f33));
                 this.bipedRightArm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
                 this.bipedRightArm.rotateAngleZ = f28 * -0.4F;
-                this.SteveArm.rotateAngleX = (float) (this.SteveArm.rotateAngleX
-                        - (f22 * 1.2D + f33));
-                this.SteveArm.rotateAngleY += this.bipedBody.rotateAngleY *
-                        2.0F;
+                this.SteveArm.rotateAngleX = (float) (this.SteveArm.rotateAngleX - (f22 * 1.2D + f33));
+                this.SteveArm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
                 this.SteveArm.rotateAngleZ = f28 * -0.4F;
             }
         }
@@ -535,7 +394,7 @@ public class pm_newPonyAdv extends ModelPony {
 
     protected void adjustNeck(float rotateAngleX, float rotationPointY, float rotationPointZ) {
         for (int k3 = 0; k3 < this.BodypieceNeck.length; ++k3) {
-            this.BodypieceNeck[k3].rotateAngleX = this.NeckRotX + rotateAngleX;
+            this.BodypieceNeck[k3].rotateAngleX = NECK_ROT_X + rotateAngleX;
             this.BodypieceNeck[k3].rotationPointY = rotationPointY;
             this.BodypieceNeck[k3].rotationPointZ = rotationPointZ;
         }
@@ -554,13 +413,12 @@ public class pm_newPonyAdv extends ModelPony {
     }
 
     protected void sneakTail() {
-        this.tailstop = 0;
-        this.tailstop = this.Tail.length - this.metadata.getTail().getSize() * 5;
-        if (this.tailstop <= 1) {
-            this.tailstop = 0;
+        int tailstop = this.Tail.length - this.metadata.getTail().getSize() * 5;
+        if (tailstop <= 1) {
+            tailstop = 0;
         }
 
-        for (int i7 = 0; i7 < this.tailstop; ++i7) {
+        for (int i7 = 0; i7 < tailstop; ++i7) {
             this.setRotationPoint(this.Tail[i7], TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_SNEAK);
             this.Tail[i7].rotateAngleX = 0.0F;
         }
@@ -575,7 +433,7 @@ public class pm_newPonyAdv extends ModelPony {
         float headPosX;
         float headPosY;
         float headPosZ;
-        if (this.issneak) {
+        if (this.isSneak) {
             headPosY = 2.0F;
             headPosZ = -1.0F;
             headPosX = 1.0F;
@@ -625,65 +483,7 @@ public class pm_newPonyAdv extends ModelPony {
         this.unicornarm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.05F;
     }
 
-    protected void animatePegasusWingsSneaking() {
-        int k5;
-        for (k5 = 0; k5 < this.LeftWingExt.length; ++k5) {
-            this.LeftWingExt[k5].rotationPointY = LEFT_WING_RP_Y_SNEAK;
-            this.LeftWingExt[k5].rotationPointZ = LEFT_WING_RP_Z_SNEAK;
-            this.LeftWingExt[k5].rotateAngleX = EXT_WING_ROTATE_ANGLE_X;
-            this.LeftWingExt[k5].rotateAngleZ = LEFT_WING_ROTATE_ANGLE_Z_SNEAK;
-        }
-
-        for (k5 = 0; k5 < this.LeftWingExt.length; ++k5) {
-            this.RightWingExt[k5].rotationPointY = RIGHT_WING_RP_Y_SNEAK;
-            this.RightWingExt[k5].rotationPointZ = RIGHT_WING_RP_Z_SNEAK;
-            this.RightWingExt[k5].rotateAngleX = EXT_WING_ROTATE_ANGLE_X;
-            this.RightWingExt[k5].rotateAngleZ = RIGHT_WING_ROTATE_ANGLE_Z_SNEAK;
-        }
-
-    }
-
-    protected void animatePegasusWingsNotSneaking(float tick) {
-        int l5;
-        if (!this.isFlying) {
-            for (l5 = 0; l5 < this.LeftWing.length; ++l5) {
-                this.LeftWing[l5].rotationPointY = WING_FOLDED_RP_Y;
-                this.LeftWing[l5].rotationPointZ = WING_FOLDED_RP_Z;
-            }
-
-            for (l5 = 0; l5 < this.RightWing.length; ++l5) {
-                this.RightWing[l5].rotationPointY = WING_FOLDED_RP_Y;
-                this.RightWing[l5].rotationPointZ = WING_FOLDED_RP_Z;
-            }
-        } else {
-            this.WingRotateAngleZ = MathHelper.sin(tick * 0.536F) * 1.0F;
-
-            for (l5 = 0; l5 < this.LeftWingExt.length; ++l5) {
-                this.LeftWingExt[l5].rotateAngleX = EXT_WING_ROTATE_ANGLE_X;
-                this.LeftWingExt[l5].rotateAngleZ = -this.WingRotateAngleZ - ROTATE_270 - 0.4F;
-                this.LeftWingExt[l5].rotationPointY = LEFT_WING_RP_Y_NOTSNEAK;
-                this.LeftWingExt[l5].rotationPointZ = LEFT_WING_RP_Z_NOTSNEAK;
-            }
-
-            for (l5 = 0; l5 < this.RightWingExt.length; ++l5) {
-                this.RightWingExt[l5].rotateAngleX = EXT_WING_ROTATE_ANGLE_X;
-                this.RightWingExt[l5].rotateAngleZ = this.WingRotateAngleZ + ROTATE_270 + 0.4F;
-                this.RightWingExt[l5].rotationPointY = RIGHT_WING_RP_Y_NOTSNEAK;
-                this.RightWingExt[l5].rotationPointZ = RIGHT_WING_RP_Z_NOTSNEAK;
-            }
-        }
-
-    }
-
     protected void fixSpecialRotations() {
-        this.LeftWingExt[1].rotateAngleX -= 0.85F;
-        this.LeftWingExt[2].rotateAngleX -= 0.75F;
-        this.LeftWingExt[3].rotateAngleX -= 0.5F;
-        this.LeftWingExt[5].rotateAngleX -= 0.85F;
-        this.RightWingExt[1].rotateAngleX -= 0.85F;
-        this.RightWingExt[2].rotateAngleX -= 0.75F;
-        this.RightWingExt[3].rotateAngleX -= 0.5F;
-        this.RightWingExt[5].rotateAngleX -= 0.85F;
         this.Bodypiece[9].rotateAngleX += 0.5F;
         this.Bodypiece[10].rotateAngleX += 0.5F;
         this.Bodypiece[11].rotateAngleX += 0.5F;
@@ -691,43 +491,10 @@ public class pm_newPonyAdv extends ModelPony {
         this.Bodypiece[13].rotateAngleX += 0.5F;
     }
 
-    /**
-     * @param move
-     */
     protected void fixSpecialRotationPoints(float move) {}
 
-    public void shiftRotationPoint(PlaneRenderer aPlaneRenderer, float shiftX, float shiftY, float shiftZ) {
-        aPlaneRenderer.rotationPointX += shiftX;
-        aPlaneRenderer.rotationPointY += shiftY;
-        aPlaneRenderer.rotationPointZ += shiftZ;
-    }
-
-    public void shiftRotationPoint(ModelRenderer aRenderer, float shiftX, float shiftY, float shiftZ) {
-        aRenderer.rotationPointX += shiftX;
-        aRenderer.rotationPointY += shiftY;
-        aRenderer.rotationPointZ += shiftZ;
-    }
-
-    public void setRotationPoint(HornGlowRenderer aRenderer, float setX, float setY, float setZ) {
-        aRenderer.rotationPointX = setX;
-        aRenderer.rotationPointY = setY;
-        aRenderer.rotationPointZ = setZ;
-    }
-
-    public void setRotationPoint(PlaneRenderer aPlaneRenderer, float setX, float setY, float setZ) {
-        aPlaneRenderer.rotationPointX = setX;
-        aPlaneRenderer.rotationPointY = setY;
-        aPlaneRenderer.rotationPointZ = setZ;
-    }
-
-    public void setRotationPoint(ModelRenderer aRenderer, float setX, float setY, float setZ) {
-        aRenderer.rotationPointX = setX;
-        aRenderer.rotationPointY = setY;
-        aRenderer.rotationPointZ = setZ;
-    }
-
     @Override
-    public void render(AniParams aniparams) {
+    public void render() {
         if (this.isRiding && !this.isArmour) {
             translate(0.0F, -0.56F, -0.46F);
         }
@@ -741,7 +508,7 @@ public class pm_newPonyAdv extends ModelPony {
         }
 
         if (this.metadata.getSize() == PonySize.FOAL) {
-            if (this.issneak && !this.isFlying && !this.isArmour) {
+            if (this.isSneak && !this.isFlying && !this.isArmour) {
                 translate(0.0F, -0.12F, 0.0F);
             }
 
@@ -753,7 +520,7 @@ public class pm_newPonyAdv extends ModelPony {
             translate(0.0F, 0.76F, 0.0F);
             scale(0.9F, 0.9F, 0.9F);
             this.renderHead();
-            if (this.issneak && !this.isFlying) {
+            if (this.isSneak && !this.isFlying) {
                 translate(0.0F, -0.01F, 0.15F);
             }
 
@@ -770,7 +537,7 @@ public class pm_newPonyAdv extends ModelPony {
             pushMatrix();
             translate(0.0F, 0.89F, 0.0F);
             scale(0.6F, 0.41F, 0.6F);
-            if (this.issneak && !this.isFlying) {
+            if (this.isSneak && !this.isFlying) {
                 translate(0.0F, 0.12F, 0.0F);
             }
 
@@ -792,7 +559,7 @@ public class pm_newPonyAdv extends ModelPony {
                 translate(0.0F, 0.0F, -0.1F);
             }
 
-            if (this.issneak && !this.isFlying) {
+            if (this.isSneak && !this.isFlying) {
                 translate(0.0F, 0.15F, 0.0F);
             }
 
@@ -800,7 +567,7 @@ public class pm_newPonyAdv extends ModelPony {
             popMatrix();
             pushMatrix();
             translate(0.0F, -0.15F, -0.07F);
-            if (this.issneak && !this.isFlying) {
+            if (this.isSneak && !this.isFlying) {
                 translate(0.0F, 0.0F, -0.05F);
             }
 
@@ -827,7 +594,7 @@ public class pm_newPonyAdv extends ModelPony {
 
             pushMatrix();
             translate(0.0F, -0.15F, 0.01F);
-            if (this.issneak && !this.isFlying) {
+            if (this.isSneak && !this.isFlying) {
                 translate(0.0F, 0.05F, 0.0F);
             }
 
@@ -836,7 +603,7 @@ public class pm_newPonyAdv extends ModelPony {
             pushMatrix();
             translate(0.0F, -0.19F, -0.01F);
             scale(1.0F, 1.1F, 1.0F);
-            if (this.issneak && !this.isFlying) {
+            if (this.isSneak && !this.isFlying) {
                 translate(0.0F, -0.06F, -0.04F);
             }
 
@@ -868,50 +635,11 @@ public class pm_newPonyAdv extends ModelPony {
             this.renderTail();
             this.renderLegs();
         }
-
     }
 
     protected void renderHead() {
         this.bipedHead.render(this.scale);
-        this.headpiece[0].render(this.scale);
-        this.headpiece[1].render(this.scale);
-        if (MineLittlePony.getConfig().getSnuzzles().get()) {
-            int red;
-            if (this.metadata.getGender() == PonyGender.STALLION) {
-                for (red = 0; red < this.MuzzleMale.length; ++red) {
-                    this.MuzzleMale[red].render(this.scale);
-                }
-            } else {
-                for (red = 0; red < this.MuzzleFemale.length; ++red) {
-                    this.MuzzleFemale[red].render(this.scale);
-                }
-            }
-        }
-
         this.bipedHeadwear.render(this.scale);
-        if (this.metadata.getRace().hasHorn()) {
-            this.headpiece[2].render(this.scale);
-            if (this.heldItemRight != 0 && this.metadata.getGlowColor() != 0) {
-                GL11.glPushAttrib(24577);
-                disableTexture2D();
-                disableLighting();
-                enableBlend();
-                float var4 = (this.metadata.getGlowColor() >> 16 & 255) / 255.0F;
-                float green = (this.metadata.getGlowColor() >> 8 & 255) / 255.0F;
-                float blue = (this.metadata.getGlowColor() & 255) / 255.0F;
-                blendFunc(GL11.GL_SRC_ALPHA, 1);
-                color(var4, green, blue, 0.4F);
-                this.hornglow[0].render(this.scale);
-                color(var4, green, blue, 0.2F);
-                this.hornglow[1].render(this.scale);
-
-                enableTexture2D();
-                enableLighting();
-                disableBlend();
-                popAttrib();
-            }
-        }
-
     }
 
     protected void renderNeck() {
@@ -926,8 +654,7 @@ public class pm_newPonyAdv extends ModelPony {
         if (this.textureHeight == 64) {
             this.bipedBodyWear.render(this.scale);
         }
-        int k1;
-        for (k1 = 0; k1 < this.Bodypiece.length; ++k1) {
+        for (int k1 = 0; k1 < this.Bodypiece.length; ++k1) {
             this.Bodypiece[k1].render(this.scale);
         }
 
@@ -945,30 +672,6 @@ public class pm_newPonyAdv extends ModelPony {
 //            }
 //        }
         //@formatter:on
-
-        if (this.metadata.getRace().hasWings()) {
-            if (!this.isFlying && !this.issneak) {
-                this.setExtendingWings(true);
-
-                for (k1 = 0; k1 < this.LeftWing.length; ++k1) {
-                    this.LeftWing[k1].render(this.scale);
-                }
-
-                for (k1 = 0; k1 < this.RightWing.length; ++k1) {
-                    this.RightWing[k1].render(this.scale);
-                }
-            } else {
-                this.setExtendingWings(false);
-
-                for (k1 = 0; k1 < this.LeftWingExt.length; ++k1) {
-                    this.LeftWingExt[k1].render(this.scale);
-                }
-
-                for (k1 = 0; k1 < this.RightWingExt.length; ++k1) {
-                    this.RightWingExt[k1].render(this.scale);
-                }
-            }
-        }
 
     }
 
@@ -999,54 +702,20 @@ public class pm_newPonyAdv extends ModelPony {
 
     protected void initTextures() {
         this.Tail = new PlaneRenderer[21];
-        this.headpiece = new ModelRenderer[3];
-        this.hornglow = new HornGlowRenderer[2];
-        this.MuzzleFemale = new PlaneRenderer[10];
-        this.MuzzleMale = new PlaneRenderer[5];
+
         this.Bodypiece = new PlaneRenderer[14];
         this.VillagerBagPiece = new PlaneRenderer[14];
         this.BodypieceNeck = new PlaneRenderer[4];
-        this.LeftWing = new ModelRenderer[3];
-        this.RightWing = new ModelRenderer[3];
-        this.LeftWingExt = new ModelRenderer[6];
-        this.RightWingExt = new ModelRenderer[6];
         this.initHeadTextures();
-        this.initMuzzleTextures();
         this.initBodyTextures();
         this.initLegTextures();
         this.initTailTextures();
-        this.initWingTextures();
     }
 
     protected void initHeadTextures() {
         this.bipedCape = new ModelRenderer(this, 0, 0).setTextureSize(64, 32);
         this.bipedHead = new ModelRenderer(this, 0, 0);
-        this.headpiece[0] = new ModelRenderer(this, 12, 16);
-        this.headpiece[1] = new ModelRenderer(this, 12, 16);
-        this.headpiece[1].mirror = true;
-        this.headpiece[2] = new ModelRenderer(this, 0, 3);
-        this.hornglow[0] = new HornGlowRenderer(this, 0, 3);
-        this.hornglow[1] = new HornGlowRenderer(this, 0, 3);
         this.bipedHeadwear = new ModelRenderer(this, 32, 0);
-        this.boxList.remove(this.headpiece[2]);
-    }
-
-    protected void initMuzzleTextures() {
-        this.MuzzleFemale[0] = new PlaneRenderer(this, 10, 14);
-        this.MuzzleFemale[1] = new PlaneRenderer(this, 11, 13);
-        this.MuzzleFemale[2] = new PlaneRenderer(this, 9, 14);
-        this.MuzzleFemale[3] = new PlaneRenderer(this, 14, 14);
-        this.MuzzleFemale[4] = new PlaneRenderer(this, 11, 12);
-        this.MuzzleFemale[5] = new PlaneRenderer(this, 18, 7);
-        this.MuzzleFemale[6] = new PlaneRenderer(this, 9, 14);
-        this.MuzzleFemale[7] = new PlaneRenderer(this, 14, 14);
-        this.MuzzleFemale[8] = new PlaneRenderer(this, 11, 12);
-        this.MuzzleFemale[9] = new PlaneRenderer(this, 12, 12);
-        this.MuzzleMale[0] = new PlaneRenderer(this, 10, 13);
-        this.MuzzleMale[1] = new PlaneRenderer(this, 10, 13);
-        this.MuzzleMale[2] = new PlaneRenderer(this, 18, 7);
-        this.MuzzleMale[3] = new PlaneRenderer(this, 10, 13);
-        this.MuzzleMale[4] = new PlaneRenderer(this, 13, 13);
     }
 
     protected void initBodyTextures() {
@@ -1148,115 +817,19 @@ public class pm_newPonyAdv extends ModelPony {
         this.Tail[20] = new PlaneRenderer(this, 32, 0);
     }
 
-    protected void initWingTextures() {
-        this.LeftWing[0] = new ModelRenderer(this, 56, 16);
-        this.LeftWing[0].mirror = true;
-        this.LeftWing[1] = new ModelRenderer(this, 56, 16);
-        this.LeftWing[1].mirror = true;
-        this.LeftWing[2] = new ModelRenderer(this, 56, 16);
-        this.LeftWing[2].mirror = true;
-        this.RightWing[0] = new ModelRenderer(this, 56, 16);
-        this.RightWing[1] = new ModelRenderer(this, 56, 16);
-        this.RightWing[2] = new ModelRenderer(this, 56, 16);
-        this.LeftWingExt[0] = new ModelRenderer(this, 56, 19);
-        this.LeftWingExt[0].mirror = true;
-        this.LeftWingExt[1] = new ModelRenderer(this, 56, 19);
-        this.LeftWingExt[1].mirror = true;
-        this.LeftWingExt[2] = new ModelRenderer(this, 56, 19);
-        this.LeftWingExt[2].mirror = true;
-        this.LeftWingExt[3] = new ModelRenderer(this, 56, 19);
-        this.LeftWingExt[3].mirror = true;
-        this.LeftWingExt[4] = new ModelRenderer(this, 56, 19);
-        this.LeftWingExt[4].mirror = true;
-        this.LeftWingExt[5] = new ModelRenderer(this, 56, 19);
-        this.LeftWingExt[5].mirror = true;
-        this.RightWingExt[0] = new ModelRenderer(this, 56, 19);
-        this.RightWingExt[1] = new ModelRenderer(this, 56, 19);
-        this.RightWingExt[2] = new ModelRenderer(this, 56, 19);
-        this.RightWingExt[3] = new ModelRenderer(this, 56, 19);
-        this.RightWingExt[4] = new ModelRenderer(this, 56, 19);
-        this.RightWingExt[5] = new ModelRenderer(this, 56, 19);
-        this.compressWings();
-    }
-
     protected void initPositions(float yOffset, float stretch) {
         this.initHeadPositions(yOffset, stretch);
-        this.initMuzzlePositions(yOffset, stretch);
         this.initBodyPositions(yOffset, stretch);
         this.initLegPositions(yOffset, stretch);
         this.initTailPositions(yOffset, stretch);
-        this.initWingPositions(yOffset, stretch);
     }
 
     protected void initHeadPositions(float yOffset, float stretch) {
         this.bipedCape.addBox(-5.0F, 0.0F, -1.0F, 10, 16, 1, stretch);
-        this.bipedHead.addBox(-4.0F + HEAD_CENTRE_X, -4 + HEAD_CENTRE_Y, -4.0F + HEAD_CENTRE_Z,
-                8, 8, 8, stretch);
+        this.bipedHead.addBox(-4.0F + HEAD_CENTRE_X, -4 + HEAD_CENTRE_Y, -4.0F + HEAD_CENTRE_Z, 8, 8, 8, stretch);
         this.bipedHead.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.headpiece[0].addBox(-4.0F + HEAD_CENTRE_X, -6.0F + HEAD_CENTRE_Y, 1.0F + HEAD_CENTRE_Z, 2, 2, 2, stretch);
-        this.headpiece[0].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.headpiece[1].addBox(2.0F + HEAD_CENTRE_X, -6.0F + HEAD_CENTRE_Y, 1.0F + HEAD_CENTRE_Z, 2, 2, 2, stretch);
-        this.headpiece[1].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.headpiece[2].addBox(-0.5F + HEAD_CENTRE_X, -10.0F + HEAD_CENTRE_Y, -1.5F + HEAD_CENTRE_Z, 1, 4, 1,
-                stretch);
-        this.headpiece[2].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.hornglow[0].addBox(-0.5F + HEAD_CENTRE_X, -10.0F + HEAD_CENTRE_Y, -1.5F + HEAD_CENTRE_Z, 1, 4, 1,
-                stretch + 0.5F);
-        this.hornglow[0].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.hornglow[1].addBox(-0.5F + HEAD_CENTRE_X, -10.0F + HEAD_CENTRE_Y, -1.5F + HEAD_CENTRE_Z, 1, 3, 1,
-                stretch + 0.8F);
-        this.hornglow[1].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.bipedHeadwear.addBox(-4.0F + HEAD_CENTRE_X, -4.0F + HEAD_CENTRE_Y, -4.0F + HEAD_CENTRE_Z, 8, 8, 8,
-                stretch + 0.5F);
+        this.bipedHeadwear.addBox(-4.0F + HEAD_CENTRE_X, -4.0F + HEAD_CENTRE_Y, -4.0F + HEAD_CENTRE_Z, 8, 8, 8, stretch + 0.5F);
         this.bipedHeadwear.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-    }
-
-    protected void initMuzzlePositions(float yOffset, float stretch) {
-        this.MuzzleFemale[0].addBackPlane(-2.0F + HEAD_CENTRE_X, 2.0F + HEAD_CENTRE_Y,
-                -5.0F + HEAD_CENTRE_Z, 4, 2, 0, stretch);
-        this.MuzzleFemale[0].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.MuzzleFemale[1].addBackPlane(-1.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y,
-                -5.0F + HEAD_CENTRE_Z, 2, 1, 0, stretch);
-        this.MuzzleFemale[1].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.MuzzleFemale[2].addTopPlane(-2.0F + HEAD_CENTRE_X, 2.0F + HEAD_CENTRE_Y,
-                -5.0F + HEAD_CENTRE_Z, 1, 0, 1, stretch);
-        this.MuzzleFemale[2].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.MuzzleFemale[3].addTopPlane(1.0F + HEAD_CENTRE_X, 2.0F + HEAD_CENTRE_Y,
-                -5.0F + HEAD_CENTRE_Z, 1, 0, 1, stretch);
-        this.MuzzleFemale[3].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.MuzzleFemale[4].addTopPlane(-1.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y,
-                -5.0F + HEAD_CENTRE_Z, 2, 0, 1, stretch);
-        this.MuzzleFemale[4].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.MuzzleFemale[5].addBottomPlane(-2.0F + HEAD_CENTRE_X, 4.0F + HEAD_CENTRE_Y,
-                -5.0F + HEAD_CENTRE_Z, 4, 0, 1, stretch);
-        this.MuzzleFemale[5].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.MuzzleFemale[6].addSidePlane(-2.0F + HEAD_CENTRE_X, 2.0F + HEAD_CENTRE_Y,
-                -5.0F + HEAD_CENTRE_Z, 0, 2, 1, stretch);
-        this.MuzzleFemale[6].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.MuzzleFemale[7].addSidePlane(2.0F + HEAD_CENTRE_X, 2.0F + HEAD_CENTRE_Y,
-                -5.0F + HEAD_CENTRE_Z, 0, 2, 1, stretch);
-        this.MuzzleFemale[7].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.MuzzleFemale[8].addSidePlane(-1.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y,
-                -5.0F + HEAD_CENTRE_Z, 0, 1, 1, stretch);
-        this.MuzzleFemale[8].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.MuzzleFemale[9].addSidePlane(1.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y,
-                -5.0F + HEAD_CENTRE_Z, 0, 1, 1, stretch);
-        this.MuzzleFemale[9].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.MuzzleMale[0].addBackPlane(-2.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y,
-                -5.0F + HEAD_CENTRE_Z, 4, 3, 0, stretch);
-        this.MuzzleMale[0].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.MuzzleMale[1].addTopPlane(-2.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y,
-                -5.0F + HEAD_CENTRE_Z, 4, 0, 1, stretch);
-        this.MuzzleMale[1].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.MuzzleMale[2].addBottomPlane(-2.0F + HEAD_CENTRE_X, 4.0F + HEAD_CENTRE_Y,
-                -5.0F + HEAD_CENTRE_Z, 4, 0, 1, stretch);
-        this.MuzzleMale[2].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.MuzzleMale[3].addSidePlane(-2.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y,
-                -5.0F + HEAD_CENTRE_Z, 0, 3, 1, stretch);
-        this.MuzzleMale[3].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.MuzzleMale[4].addSidePlane(2.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y,
-                -5.0F + HEAD_CENTRE_Z, 0, 3, 1, stretch);
-        this.MuzzleMale[4].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
     }
 
     protected void initBodyPositions(float yOffset, float stretch) {
@@ -1265,158 +838,109 @@ public class pm_newPonyAdv extends ModelPony {
         this.bipedBodyWear.addBox(-4.0F, 4.0F, -2.0F, 8, 8, 4, stretch + 0.25F);
         this.bipedBodyWear.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
 
-        this.Bodypiece[0].addSidePlane(-4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y,
-                -4.0F + BODY_CENTRE_Z, 0, 8, 8, stretch);
+        this.Bodypiece[0].addSidePlane(-4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 0, 8, 8, stretch);
         this.Bodypiece[0].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.Bodypiece[1].addSidePlane(4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y,
-                -4.0F + BODY_CENTRE_Z, 0, 8, 8, stretch);
+        this.Bodypiece[1].addSidePlane(4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 0, 8, 8, stretch);
         this.Bodypiece[1].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.Bodypiece[2].addTopPlane(-4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y,
-                -4.0F + BODY_CENTRE_Z, 8, 0, 12, stretch);
+        this.Bodypiece[2].addTopPlane(-4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 8, 0, 12, stretch);
         this.Bodypiece[2].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.Bodypiece[3].addBottomPlane(-4.0F + BODY_CENTRE_X, 4.0F + BODY_CENTRE_Y,
-                -4.0F + BODY_CENTRE_Z, 8, 0, 8, stretch);
+        this.Bodypiece[3].addBottomPlane(-4.0F + BODY_CENTRE_X, 4.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 8, 0, 8, stretch);
         this.Bodypiece[3].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.Bodypiece[4].addSidePlane(-4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y,
-                4.0F + BODY_CENTRE_Z, 0, 8, 4, stretch);
+        this.Bodypiece[4].addSidePlane(-4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y, 4.0F + BODY_CENTRE_Z, 0, 8, 4, stretch);
         this.Bodypiece[4].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.Bodypiece[5].addSidePlane(4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y, 4.0F + BODY_CENTRE_Z,
-                0, 8, 4, stretch);
+        this.Bodypiece[5].addSidePlane(4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y, 4.0F + BODY_CENTRE_Z, 0, 8, 4, stretch);
         this.Bodypiece[5].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.Bodypiece[6].addBackPlane(-4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y,
-                8.0F + BODY_CENTRE_Z, 8, 4, 0, stretch);
+        this.Bodypiece[6].addBackPlane(-4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y, 8.0F + BODY_CENTRE_Z, 8, 4, 0, stretch);
         this.Bodypiece[6].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.Bodypiece[7].addBackPlane(-4.0F + BODY_CENTRE_X, 0.0F + BODY_CENTRE_Y, 8.0F + BODY_CENTRE_Z,
-                8, 4, 0, stretch);
+        this.Bodypiece[7].addBackPlane(-4.0F + BODY_CENTRE_X, 0.0F + BODY_CENTRE_Y, 8.0F + BODY_CENTRE_Z, 8, 4, 0, stretch);
         this.Bodypiece[7].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.Bodypiece[8].addBottomPlane(-4.0F + BODY_CENTRE_X, 4.0F + BODY_CENTRE_Y,
-                4.0F + BODY_CENTRE_Z, 8, 0, 4, stretch);
+        this.Bodypiece[8].addBottomPlane(-4.0F + BODY_CENTRE_X, 4.0F + BODY_CENTRE_Y, 4.0F + BODY_CENTRE_Z, 8, 0, 4, stretch);
         this.Bodypiece[8].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.Bodypiece[9].addTopPlane(-1.0F + BODY_CENTRE_X, 2.0F + BODY_CENTRE_Y, 2.0F + BODY_CENTRE_Z,
-                2, 0, 6, stretch);
+        this.Bodypiece[9].addTopPlane(-1.0F + BODY_CENTRE_X, 2.0F + BODY_CENTRE_Y, 2.0F + BODY_CENTRE_Z, 2, 0, 6, stretch);
         this.Bodypiece[9].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.Bodypiece[10].addBottomPlane(-1.0F + BODY_CENTRE_X, 4.0F + BODY_CENTRE_Y,
-                2.0F + BODY_CENTRE_Z, 2, 0, 6, stretch);
+        this.Bodypiece[10].addBottomPlane(-1.0F + BODY_CENTRE_X, 4.0F + BODY_CENTRE_Y, 2.0F + BODY_CENTRE_Z, 2, 0, 6, stretch);
         this.Bodypiece[10].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.Bodypiece[11].addSidePlane(-1.0F + BODY_CENTRE_X, 2.0F + BODY_CENTRE_Y,
-                2.0F + BODY_CENTRE_Z, 0, 2, 6, stretch);
+        this.Bodypiece[11].addSidePlane(-1.0F + BODY_CENTRE_X, 2.0F + BODY_CENTRE_Y, 2.0F + BODY_CENTRE_Z, 0, 2, 6, stretch);
         this.Bodypiece[11].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.Bodypiece[12].addSidePlane(1.0F + BODY_CENTRE_X, 2.0F + BODY_CENTRE_Y, 2.0F + BODY_CENTRE_Z,
-                0, 2, 6, stretch);
+        this.Bodypiece[12].addSidePlane(1.0F + BODY_CENTRE_X, 2.0F + BODY_CENTRE_Y, 2.0F + BODY_CENTRE_Z, 0, 2, 6, stretch);
         this.Bodypiece[12].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.Bodypiece[13].addBackPlane(-1.0F + BODY_CENTRE_X, 2.0F + BODY_CENTRE_Y,
-                8.0F + BODY_CENTRE_Z, 2, 2, 0, stretch);
+        this.Bodypiece[13].addBackPlane(-1.0F + BODY_CENTRE_X, 2.0F + BODY_CENTRE_Y, 8.0F + BODY_CENTRE_Z, 2, 2, 0, stretch);
         this.Bodypiece[13].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.VillagerBagPiece[0].addSidePlane(-7.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y,
-                -4.0F + BODY_CENTRE_Z, 0, 6, 8, stretch);
+        this.VillagerBagPiece[0].addSidePlane(-7.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 0, 6, 8, stretch);
         this.VillagerBagPiece[0].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.VillagerBagPiece[1].addSidePlane(-4.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y,
-                -4.0F + BODY_CENTRE_Z, 0, 6, 8, stretch);
+        this.VillagerBagPiece[1].addSidePlane(-4.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 0, 6, 8, stretch);
         this.VillagerBagPiece[1].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.VillagerBagPiece[2].addSidePlane(4.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y,
-                -4.0F + BODY_CENTRE_Z, 0, 6, 8, stretch);
+        this.VillagerBagPiece[2].addSidePlane(4.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 0, 6, 8, stretch);
         this.VillagerBagPiece[2].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.VillagerBagPiece[3].addSidePlane(7.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y,
-                -4.0F + BODY_CENTRE_Z, 0, 6, 8, stretch);
+        this.VillagerBagPiece[3].addSidePlane(7.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 0, 6, 8, stretch);
         this.VillagerBagPiece[3].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.VillagerBagPiece[4].addTopPlane(2.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y,
-                -2.0F + BODY_CENTRE_Z, 8, 0, 3, stretch);
+        this.VillagerBagPiece[4].addTopPlane(2.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y, -2.0F + BODY_CENTRE_Z, 8, 0, 3, stretch);
         this.VillagerBagPiece[4].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.VillagerBagPiece[5].addTopPlane(2.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y,
-                -13.0F + BODY_CENTRE_Z, 8, 0, 3, stretch);
+        this.VillagerBagPiece[5].addTopPlane(2.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y, -13.0F + BODY_CENTRE_Z, 8, 0, 3, stretch);
         this.VillagerBagPiece[5].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.VillagerBagPiece[6].addBottomPlane(2.0F + BODY_CENTRE_X, 1.0F + BODY_CENTRE_Y,
-                -2.0F + BODY_CENTRE_Z, 8, 0, 3, stretch);
+        this.VillagerBagPiece[6].addBottomPlane(2.0F + BODY_CENTRE_X, 1.0F + BODY_CENTRE_Y, -2.0F + BODY_CENTRE_Z, 8, 0, 3, stretch);
         this.VillagerBagPiece[6].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.VillagerBagPiece[7].addBottomPlane(2.0F + BODY_CENTRE_X, 1.0F + BODY_CENTRE_Y,
-                -13.0F + BODY_CENTRE_Z, 8, 0, 3, stretch);
+        this.VillagerBagPiece[7].addBottomPlane(2.0F + BODY_CENTRE_X, 1.0F + BODY_CENTRE_Y, -13.0F + BODY_CENTRE_Z, 8, 0, 3, stretch);
         this.VillagerBagPiece[7].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.VillagerBagPiece[8].addBackPlane(-7.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y,
-                -4.0F + BODY_CENTRE_Z, 3, 6, 0, stretch);
+        this.VillagerBagPiece[8].addBackPlane(-7.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 3, 6, 0, stretch);
         this.VillagerBagPiece[8].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.VillagerBagPiece[9].addBackPlane(4.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y,
-                -4.0F + BODY_CENTRE_Z, 3, 6, 0, stretch);
+        this.VillagerBagPiece[9].addBackPlane(4.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 3, 6, 0, stretch);
         this.VillagerBagPiece[9].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.VillagerBagPiece[10].addBackPlane(-7.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y,
-                4.0F + BODY_CENTRE_Z, 3, 6, 0, stretch);
+        this.VillagerBagPiece[10].addBackPlane(-7.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y, 4.0F + BODY_CENTRE_Z, 3, 6, 0, stretch);
         this.VillagerBagPiece[10].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.VillagerBagPiece[11].addBackPlane(4.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y,
-                4.0F + BODY_CENTRE_Z, 3, 6, 0, stretch);
+        this.VillagerBagPiece[11].addBackPlane(4.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y, 4.0F + BODY_CENTRE_Z, 3, 6, 0, stretch);
         this.VillagerBagPiece[11].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.VillagerBagPiece[12].addTopPlane(-4.0F + BODY_CENTRE_X, -4.5F + BODY_CENTRE_Y,
-                -1.0F + BODY_CENTRE_Z, 8, 0, 1, stretch);
+        this.VillagerBagPiece[12].addTopPlane(-4.0F + BODY_CENTRE_X, -4.5F + BODY_CENTRE_Y, -1.0F + BODY_CENTRE_Z, 8, 0, 1, stretch);
         this.VillagerBagPiece[13].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.VillagerBagPiece[13].addTopPlane(-4.0F + BODY_CENTRE_X, -4.5F + BODY_CENTRE_Y,
-                0.0F + BODY_CENTRE_Z, 8, 0, 1, stretch);
+        this.VillagerBagPiece[13].addTopPlane(-4.0F + BODY_CENTRE_X, -4.5F + BODY_CENTRE_Y, 0.0F + BODY_CENTRE_Z, 8, 0, 1, stretch);
         this.VillagerBagPiece[13].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.VillagerApron.addBackPlane(-4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y,
-                -9.0F + BODY_CENTRE_Z, 8, 10, 0, stretch);
+        this.VillagerApron.addBackPlane(-4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y, -9.0F + BODY_CENTRE_Z, 8, 10, 0, stretch);
         this.VillagerApron.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.VillagerTrinket.addBackPlane(-2.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y,
-                -9.0F + BODY_CENTRE_Z, 4, 5, 0, stretch);
+        this.VillagerTrinket.addBackPlane(-2.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y, -9.0F + BODY_CENTRE_Z, 4, 5, 0, stretch);
         this.VillagerTrinket.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.BodypieceNeck[0].addBackPlane(-2.0F + BODY_CENTRE_X, -6.8F + BODY_CENTRE_Y,
-                -8.8F + BODY_CENTRE_Z, 4, 4, 0, stretch);
+        this.BodypieceNeck[0].addBackPlane(-2.0F + BODY_CENTRE_X, -6.8F + BODY_CENTRE_Y, -8.8F + BODY_CENTRE_Z, 4, 4, 0, stretch);
         this.BodypieceNeck[0].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.BodypieceNeck[1].addBackPlane(-2.0F + BODY_CENTRE_X, -6.8F + BODY_CENTRE_Y,
-                -4.8F + BODY_CENTRE_Z, 4, 4, 0, stretch);
+        this.BodypieceNeck[1].addBackPlane(-2.0F + BODY_CENTRE_X, -6.8F + BODY_CENTRE_Y, -4.8F + BODY_CENTRE_Z, 4, 4, 0, stretch);
         this.BodypieceNeck[1].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.BodypieceNeck[2].addSidePlane(-2.0F + BODY_CENTRE_X, -6.8F + BODY_CENTRE_Y,
-                -8.8F + BODY_CENTRE_Z, 0, 4, 4, stretch);
+        this.BodypieceNeck[2].addSidePlane(-2.0F + BODY_CENTRE_X, -6.8F + BODY_CENTRE_Y, -8.8F + BODY_CENTRE_Z, 0, 4, 4, stretch);
         this.BodypieceNeck[2].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.BodypieceNeck[3].addSidePlane(2.0F + BODY_CENTRE_X, -6.8F + BODY_CENTRE_Y,
-                -8.8F + BODY_CENTRE_Z, 0, 4, 4, stretch);
+        this.BodypieceNeck[3].addSidePlane(2.0F + BODY_CENTRE_X, -6.8F + BODY_CENTRE_Y, -8.8F + BODY_CENTRE_Z, 0, 4, 4, stretch);
         this.BodypieceNeck[3].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.BodypieceNeck[0].rotateAngleX = this.NeckRotX;
-        this.BodypieceNeck[1].rotateAngleX = this.NeckRotX;
-        this.BodypieceNeck[2].rotateAngleX = this.NeckRotX;
-        this.BodypieceNeck[3].rotateAngleX = this.NeckRotX;
+        this.BodypieceNeck[0].rotateAngleX = NECK_ROT_X;
+        this.BodypieceNeck[1].rotateAngleX = NECK_ROT_X;
+        this.BodypieceNeck[2].rotateAngleX = NECK_ROT_X;
+        this.BodypieceNeck[3].rotateAngleX = NECK_ROT_X;
     }
 
     protected void initLegPositions(float yOffset, float stretch) {
-        this.bipedRightArm.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z,
-                4,
-                12, 4, stretch);
+        this.bipedRightArm.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch);
         this.bipedRightArm.setRotationPoint(-3.0F, 8.0F + yOffset, 0.0F);
         if (bipedRightArmwear != null) {
-            this.bipedRightArmwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y,
-                    -2.0F + THIRDP_ARM_CENTRE_Z, 4,
-                    12, 4, stretch + 0.25f);
+            this.bipedRightArmwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25f);
             this.bipedRightArmwear.setRotationPoint(-3.0F, 8.0F + yOffset, 0.0F);
         }
-        this.bipedLeftArm.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z,
-                4,
-                12, 4, stretch);
+        this.bipedLeftArm.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch);
         this.bipedLeftArm.setRotationPoint(3.0F, 8.0F + yOffset, 0.0F);
         if (this.bipedLeftArmwear != null) {
-            this.bipedLeftArmwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y,
-                    -2.0F + THIRDP_ARM_CENTRE_Z, 4,
-                    12, 4, stretch + 0.25f);
+            this.bipedLeftArmwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25f);
             this.bipedLeftArmwear.setRotationPoint(3.0F, 8.0F + yOffset, 0.0F);
         }
-        this.bipedRightLeg.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z,
-                4, 12, 4, stretch);
+        this.bipedRightLeg.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch);
         this.bipedRightLeg.setRotationPoint(-3.0F, 0.0F + yOffset, 0.0F);
 
         if (bipedRightLegwear != null) {
-            this.bipedRightLegwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y,
-                    -2.0F + THIRDP_ARM_CENTRE_Z,
-                    4, 12, 4, stretch + 0.25f);
+            this.bipedRightLegwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25f);
             this.bipedRightLegwear.setRotationPoint(-3.0F, 0.0F + yOffset, 0.0F);
 
         }
 
-        this.bipedLeftLeg.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z,
-                4, 12, 4, stretch);
+        this.bipedLeftLeg.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch);
         if (this.bipedLeftLegwear != null) {
-            this.bipedLeftLegwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y,
-                    -2.0F + THIRDP_ARM_CENTRE_Z,
-                    4, 12, 4, stretch + 0.25f);
+            this.bipedLeftLegwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25f);
         }
         this.SteveArm.addBox(-3.0F, -2.0F, -2.0F, 4, 12, 4, stretch);
         this.SteveArm.setRotationPoint(-5.0F, 2.0F + yOffset, 0.0F);
-        this.unicornarm.addBox(-2.0F + FIRSTP_ARM_CENTRE_X, -6.0F + FIRSTP_ARM_CENTRE_Y, -2.0F + FIRSTP_ARM_CENTRE_Z, 4,
-                12, 4, stretch + .25f);
+        this.unicornarm.addBox(-2.0F + FIRSTP_ARM_CENTRE_X, -6.0F + FIRSTP_ARM_CENTRE_Y, -2.0F + FIRSTP_ARM_CENTRE_Z, 4, 12, 4, stretch + .25f);
         this.unicornarm.setRotationPoint(-5.0F, 2.0F + yOffset, 0.0F);
     }
 
@@ -1465,113 +989,15 @@ public class pm_newPonyAdv extends ModelPony {
         this.Tail[20].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
     }
 
-    protected void initWingPositions(float yOffset, float stretch) {
-        this.LeftWing[0].addBox(4.0F, 5.0F, 2.0F, 2, 6, 2, stretch);
-        this.LeftWing[0].setRotationPoint(HEAD_RP_X, WING_FOLDED_RP_Y + yOffset, WING_FOLDED_RP_Z);
-        this.LeftWing[0].rotateAngleX = ROTATE_90;
-        this.LeftWing[1].addBox(4.0F, 5.0F, 4.0F, 2, 8, 2, stretch);
-        this.LeftWing[1].setRotationPoint(HEAD_RP_X, WING_FOLDED_RP_Y + yOffset, WING_FOLDED_RP_Z);
-        this.LeftWing[1].rotateAngleX = ROTATE_90;
-        this.LeftWing[2].addBox(4.0F, 5.0F, 6.0F, 2, 6, 2, stretch);
-        this.LeftWing[2].setRotationPoint(HEAD_RP_X, WING_FOLDED_RP_Y + yOffset, WING_FOLDED_RP_Z);
-        this.LeftWing[2].rotateAngleX = ROTATE_90;
-        this.RightWing[0].addBox(-6.0F, 5.0F, 2.0F, 2, 6, 2, stretch);
-        this.RightWing[0].setRotationPoint(HEAD_RP_X, WING_FOLDED_RP_Y + yOffset, WING_FOLDED_RP_Z);
-        this.RightWing[0].rotateAngleX = ROTATE_90;
-        this.RightWing[1].addBox(-6.0F, 5.0F, 4.0F, 2, 8, 2, stretch);
-        this.RightWing[1].setRotationPoint(HEAD_RP_X, WING_FOLDED_RP_Y + yOffset, WING_FOLDED_RP_Z);
-        this.RightWing[1].rotateAngleX = ROTATE_90;
-        this.RightWing[2].addBox(-6.0F, 5.0F, 6.0F, 2, 6, 2, stretch);
-        this.RightWing[2].setRotationPoint(HEAD_RP_X, WING_FOLDED_RP_Y + yOffset, WING_FOLDED_RP_Z);
-        this.RightWing[2].rotateAngleX = ROTATE_90;
-        this.LeftWingExt[0].addBox(0.0F, 6.0F, 0.0F, 1, 8, 2, stretch + 0.1F);
-        this.LeftWingExt[0].setRotationPoint(LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + yOffset,
-                LEFT_WING_EXT_RP_Z);
-        this.LeftWingExt[1].addBox(0.0F, -1.2F, -0.2F, 1, 8, 2, stretch - 0.2F);
-        this.LeftWingExt[1].setRotationPoint(LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + yOffset,
-                LEFT_WING_EXT_RP_Z);
-        this.LeftWingExt[2].addBox(0.0F, 1.8F, 1.3F, 1, 8, 2, stretch - 0.1F);
-        this.LeftWingExt[2].setRotationPoint(LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + yOffset,
-                LEFT_WING_EXT_RP_Z);
-        this.LeftWingExt[3].addBox(0.0F, 5.0F, 2.0F, 1, 8, 2, stretch);
-        this.LeftWingExt[3].setRotationPoint(LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + yOffset,
-                LEFT_WING_EXT_RP_Z);
-        this.LeftWingExt[4].addBox(0.0F, 0.0F, -0.2F, 1, 6, 2, stretch + 0.3F);
-        this.LeftWingExt[4].setRotationPoint(LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + yOffset,
-                LEFT_WING_EXT_RP_Z);
-        this.LeftWingExt[5].addBox(0.0F, 0.0F, 0.2F, 1, 3, 2, stretch + 0.2F);
-        this.LeftWingExt[5].setRotationPoint(LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + yOffset,
-                LEFT_WING_EXT_RP_Z);
-        this.RightWingExt[0].addBox(0.0F, 6.0F, 0.0F, 1, 8, 2, stretch + 0.1F);
-        this.RightWingExt[0].setRotationPoint(RIGHT_WING_EXT_RP_X, RIGHT_WING_EXT_RP_Y + yOffset,
-                RIGHT_WING_EXT_RP_Z);
-        this.RightWingExt[1].addBox(0.0F, -1.2F, -0.2F, 1, 8, 2, stretch - 0.2F);
-        this.RightWingExt[1].setRotationPoint(RIGHT_WING_EXT_RP_X, RIGHT_WING_EXT_RP_Y + yOffset,
-                RIGHT_WING_EXT_RP_Z);
-        this.RightWingExt[2].addBox(0.0F, 1.8F, 1.3F, 1, 8, 2, stretch - 0.1F);
-        this.RightWingExt[2].setRotationPoint(RIGHT_WING_EXT_RP_X, RIGHT_WING_EXT_RP_Y + yOffset,
-                RIGHT_WING_EXT_RP_Z);
-        this.RightWingExt[3].addBox(0.0F, 5.0F, 2.0F, 1, 8, 2, stretch);
-        this.RightWingExt[3].setRotationPoint(RIGHT_WING_EXT_RP_X, RIGHT_WING_EXT_RP_Y + yOffset,
-                RIGHT_WING_EXT_RP_Z);
-        this.RightWingExt[4].addBox(0.0F, 0.0F, -0.2F, 1, 6, 2, stretch + 0.3F);
-        this.RightWingExt[4].setRotationPoint(RIGHT_WING_EXT_RP_X, RIGHT_WING_EXT_RP_Y + yOffset,
-                RIGHT_WING_EXT_RP_Z);
-        this.RightWingExt[5].addBox(0.0F, 0.0F, 0.2F, 1, 3, 2, stretch + 0.2F);
-        this.RightWingExt[5].setRotationPoint(RIGHT_WING_EXT_RP_X, RIGHT_WING_EXT_RP_Y + yOffset,
-                RIGHT_WING_EXT_RP_Z);
-    }
-
     @Override
     public void renderCape(float scale) {
         this.bipedCape.render(scale);
     }
 
-    protected void compressWings() {
-        this.CompressiveLeftWing = new CompressiveRendering(this);
-        this.CompressiveRightWing = new CompressiveRendering(this);
-        this.CompressiveLeftWing.addCompressed(this.LeftWing[0]);
-        this.CompressiveLeftWing.addCompressed(this.LeftWing[1]);
-        this.CompressiveLeftWing.addCompressed(this.LeftWing[2]);
-        this.CompressiveRightWing.addCompressed(this.RightWing[0]);
-        this.CompressiveRightWing.addCompressed(this.RightWing[1]);
-        this.CompressiveRightWing.addCompressed(this.RightWing[2]);
-        this.CompressiveLeftWing.addExpanded(this.LeftWingExt[0]);
-        this.CompressiveLeftWing.addExpanded(this.LeftWingExt[1]);
-        this.CompressiveLeftWing.addExpanded(this.LeftWingExt[2]);
-        this.CompressiveLeftWing.addExpanded(this.LeftWingExt[3]);
-        this.CompressiveLeftWing.addExpanded(this.LeftWingExt[4]);
-        this.CompressiveLeftWing.addExpanded(this.LeftWingExt[5]);
-        this.CompressiveRightWing.addExpanded(this.RightWingExt[0]);
-        this.CompressiveRightWing.addExpanded(this.RightWingExt[1]);
-        this.CompressiveRightWing.addExpanded(this.RightWingExt[2]);
-        this.CompressiveRightWing.addExpanded(this.RightWingExt[3]);
-        this.CompressiveRightWing.addExpanded(this.RightWingExt[4]);
-        this.CompressiveRightWing.addExpanded(this.RightWingExt[5]);
-        this.CompressiveLeftWing.setChance(2);
-        this.CompressiveRightWing.setChance(2);
-    }
-
     @Override
     public ModelRenderer getRandomModelBox(Random par1Random) {
         Object part = this.boxList.get(par1Random.nextInt(this.boxList.size()));
-        return part instanceof ModelRenderer ? (ModelRenderer) part
-                : ((CompressiveRendering) part).getARenderer(par1Random);
-    }
-
-    public void setExtendingWings(boolean isCompressed) {
-        this.CompressiveLeftWing.setIsCompressed(isCompressed);
-        this.CompressiveRightWing.setIsCompressed(isCompressed);
-    }
-
-    public void setHasWings_Compression(boolean pegasus) {
-        if (pegasus) {
-            this.CompressiveLeftWing.init_Safe();
-            this.CompressiveRightWing.init_Safe();
-        } else {
-            this.CompressiveLeftWing.deInit_Safe();
-            this.CompressiveRightWing.deInit_Safe();
-        }
+        return part instanceof ModelRenderer ? (ModelRenderer) part : ((CompressiveRendering) part).getARenderer(par1Random);
     }
 
 }

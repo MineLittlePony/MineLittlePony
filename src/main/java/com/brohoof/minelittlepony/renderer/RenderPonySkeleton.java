@@ -1,10 +1,9 @@
 package com.brohoof.minelittlepony.renderer;
 
-import org.lwjgl.opengl.GL11;
-
 import com.brohoof.minelittlepony.PonyManager;
 import com.brohoof.minelittlepony.model.PMAPI;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
 import net.minecraft.entity.EntityLivingBase;
@@ -26,7 +25,7 @@ public class RenderPonySkeleton extends RenderPonyMob<EntitySkeleton> {
     @Override
     protected void preRenderCallback(EntitySkeleton skeleton, float partialTicks) {
         if (skeleton.getSkeletonType() == 1) {
-            GL11.glScalef(1.2F, 1.2F, 1.2F);
+            GlStateManager.scale(1.2F, 1.2F, 1.2F);
         }
 
     }
@@ -37,7 +36,6 @@ public class RenderPonySkeleton extends RenderPonyMob<EntitySkeleton> {
 
     @Override
     protected ResourceLocation getEntityTexture(EntitySkeleton skeleton) {
-        return skeleton.getSkeletonType() == 1 ? PonyManager.WITHER_SKELETON
-                : PonyManager.SKELETON;
+        return skeleton.getSkeletonType() == 1 ? PonyManager.WITHER_SKELETON : PonyManager.SKELETON;
     }
 }
