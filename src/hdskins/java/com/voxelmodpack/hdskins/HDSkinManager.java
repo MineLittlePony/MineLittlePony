@@ -46,6 +46,8 @@ public final class HDSkinManager {
         if (imageDownload != null) {
             String imageUrl = PrivateFields.imageUrl.get(imageDownload);
             if (imageUrl != null) {
+                if (imageUrl.contains("optifine.net"))
+                    return; // ignore optifine capes
                 String hash = FilenameUtils.getBaseName(imageUrl);
                 String uuid = resolvePlayerIdFromHash(hash);
                 if (uuid == null) {
