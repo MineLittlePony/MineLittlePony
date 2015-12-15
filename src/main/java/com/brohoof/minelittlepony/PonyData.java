@@ -61,7 +61,7 @@ public class PonyData {
     }
 
     public PonySize getSize() {
-        return size;
+        return MineLittlePony.getConfig().getSizes().get() ? size : PonySize.NORMAL;
     }
 
     public void setSize(PonySize size) {
