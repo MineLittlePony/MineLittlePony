@@ -9,7 +9,6 @@ minelp.options.ponylevel.both=Both
 minelp.options.options=Pony Options
 minelp.options.hd=Enable MineLP skin server (requries restart)
 minelp.options.sizes=Allow all different sizes of pony
-minelp.options.ponyarmor=Use Mine Little Pony compatible armor
 minelp.options.snuzzles=Display snuzzles on ponies
 minelp.options.showscale=Use show-accurate scaling
 

@@ -60,14 +60,14 @@ public class LayerPonyArmor implements LayerRenderer {
 
         if (itemstack != null && itemstack.getItem() instanceof ItemArmor) {
             ItemArmor itemarmor = (ItemArmor) itemstack.getItem();
-            boolean isLegs = armorSlot == 3;
+            boolean isLegs = armorSlot == 2;
 
-            ModelPony modelbase = isLegs ? pony.getArmor().modelArmorChestplate : pony.getArmor().modelArmor;
+            ModelPony modelbase = isLegs ? pony.getArmor().modelArmor : pony.getArmor().modelArmorChestplate;
             modelbase.setModelAttributes(this.pony.getModel());
             modelbase.setLivingAnimations(entitylivingbaseIn, p_177141_2_, p_177141_3_, partialTicks);
             modelbase = getArmorModel(entitylivingbaseIn, itemstack, armorSlot, modelbase);
             prepareToRender((pm_newPonyArmor) modelbase, armorSlot);
-            // this.bindPonyArmorTexture(itemarmor, armorSlot, null);
+
             this.renderer.bindTexture(getArmorTexture(entitylivingbaseIn, itemstack, isLegs ? 2 : 1, null));
             if (itemarmor.getArmorMaterial() == ArmorMaterial.LEATHER) {
                 int j = itemarmor.getColor(itemstack);

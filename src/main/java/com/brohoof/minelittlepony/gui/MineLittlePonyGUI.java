@@ -19,7 +19,6 @@ public class MineLittlePonyGUI extends GuiVoxelBoxSettingsPanel {
     private static final String OPTIONS = _PREFIX + "options";
     private static final String HD = _PREFIX + "hd";
     private static final String SIZES = _PREFIX + "sizes";
-    private static final String PONY_ARMOR = _PREFIX + "ponyarmor";
     private static final String SNUZZLES = _PREFIX + "snuzzles";
     private static final String SHOW_SCALE = _PREFIX + "showscale";
 
@@ -34,7 +33,6 @@ public class MineLittlePonyGUI extends GuiVoxelBoxSettingsPanel {
         this.properties.add(new VoxelPropertyLabel(I18n.format(OPTIONS), PANEL_LEFT + 15, row += 45));
         this.properties.add(check(config.getHd(), HD, PANEL_LEFT + col1, row += 15));
         this.properties.add(check(config.getSizes(), SIZES, PANEL_LEFT + col1, row += 15));
-        this.properties.add(check(config.getPonyArmor(), PONY_ARMOR, PANEL_LEFT + col1, row += 15));
         this.properties.add(check(config.getSnuzzles(), SNUZZLES, PANEL_LEFT + col1, row += 15));
         this.properties.add(check(config.getShowScale(), SHOW_SCALE, PANEL_LEFT + col1, row += 15));
     }

@@ -18,8 +18,6 @@ public class PonyConfig implements AdvancedExposable {
     @Expose
     private Value<Boolean> sizes = new Value<Boolean>(true);
     @Expose
-    private Value<Boolean> ponyarmor = new Value<Boolean>(true);
-    @Expose
     private Value<Boolean> snuzzles = new Value<Boolean>(true);
     @Expose
     private Value<Boolean> hd = new Value<Boolean>(true);
@@ -42,10 +40,6 @@ public class PonyConfig implements AdvancedExposable {
 
     public Value<Boolean> getSizes() {
         return sizes;
-    }
-
-    public Value<Boolean> getPonyArmor() {
-        return ponyarmor;
     }
 
     public Value<Boolean> getSnuzzles() {
