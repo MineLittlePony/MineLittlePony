@@ -204,7 +204,7 @@ public abstract class ModelPony extends ModelPlayer {
             rotate(180.0F, 0.0F, 1.0F, 0.0F);
         }
 
-        if (this.metadata.getSize() == PonySize.FOAL) {
+        if (this.metadata.getSize() == PonySize.FOAL || isChild) {
             if (this.isSneak && !this.isFlying && !this.isArmour) {
                 translate(0.0F, -0.12F, 0.0F);
             }

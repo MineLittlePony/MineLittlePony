@@ -1,12 +1,15 @@
 package com.brohoof.minelittlepony.renderer;
 
+import java.util.Random;
+
 import com.brohoof.minelittlepony.PonyManager;
+import com.brohoof.minelittlepony.PonyRace;
+import com.brohoof.minelittlepony.TailLengths;
 import com.brohoof.minelittlepony.model.PMAPI;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.util.ResourceLocation;
 
@@ -28,10 +31,17 @@ public class RenderPonySkeleton extends RenderPonyMob<EntitySkeleton> {
             GlStateManager.scale(1.2F, 1.2F, 1.2F);
         }
 
-    }
-
-    protected void a(EntityLivingBase entity, float partialTicks) {
-        this.preRenderCallback((EntitySkeleton) entity, partialTicks);
+        Random rand = new Random(skeleton.getUniqueID().hashCode());
+        switch (rand.nextInt() % 3) {
+        case 0:
+        case 1:
+            this.playerModel.getModel().metadata.setRace(PonyRace.UNICORN);
+            this.playerModel.getModel().metadata.setGlowColor(rand.nextInt());
+            break;
+        case 2:
+            this.playerModel.getModel().metadata.setRace(PonyRace.EARTH);
+        }
+        this.playerModel.getModel().metadata.setTail(TailLengths.STUB);
     }
 
     @Override

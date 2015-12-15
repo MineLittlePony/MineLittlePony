@@ -15,12 +15,11 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityPigZombie;
-import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving implements IRenderPony {
+
     protected ModelPony mobModel;
     protected PlayerModel playerModel;
 
@@ -36,68 +35,23 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     }
 
     @Override
-    public void doRender(EntityLiving entity, double xPosition, double yPosition, double zPosition, float yaw,
+    public void doRender(Entity entity, double xPosition, double yPosition, double zPosition, float yaw,
             float partialTicks) {
-        ItemStack heldItem = entity.getHeldItem();
-        this.playerModel.getModel().heldItemRight = heldItem == null ? 0 : 1;
-
-        this.playerModel.getModel().isSneak = false;
-        this.playerModel.getModel().isFlying = false;
-
-        if (entity instanceof EntitySkeleton) {
-
-            switch (entity.getUniqueID().hashCode() % 3) {
-            case 0:
-            case 1:
-                this.playerModel.getModel().metadata.setRace(PonyRace.UNICORN);
-                break;
-            case 2:
-                this.playerModel.getModel().metadata.setRace(PonyRace.EARTH);
-            }
-        } else {
-            this.playerModel.getModel().metadata.setRace(PonyRace.EARTH);
-        }
-
-        if (entity instanceof EntityPigZombie) {
-            this.playerModel.getModel().metadata.setGender(PonyGender.STALLION);
-        } else {
-            this.playerModel.getModel().metadata.setGender(PonyGender.MARE);
-        }
-
-        if (entity instanceof EntitySkeleton) {
-            this.playerModel.getModel().metadata.setTail(TailLengths.STUB);
-        } else {
-            this.playerModel.getModel().metadata.setTail(TailLengths.FULL);
-        }
-
-        this.playerModel.getModel().isSleeping = false;
-        if (MineLittlePony.getConfig().getShowScale().get()) {
-            this.shadowSize = 0.4F;
-        }
-
         double yOrigin = yPosition;
         if (entity.isSneaking()) {
             yOrigin -= 0.125D;
         }
-
         super.doRender(entity, xPosition, yOrigin, zPosition, yaw, partialTicks);
         this.playerModel.getModel().aimedBow = false;
         this.playerModel.getModel().isSneak = false;
         this.playerModel.getModel().heldItemRight = 0;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public void doRender(Entity entity, double xPosition, double yPosition, double zPosition, float yaw,
-            float partialTicks) {
-        this.doRender((T) entity, xPosition, yPosition, zPosition, yaw, partialTicks);
-    }
-
     protected abstract ResourceLocation getEntityTexture(T var1);
 
     @SuppressWarnings("unchecked")
     @Override
-    protected ResourceLocation getEntityTexture(Entity var1) {
+    protected final ResourceLocation getEntityTexture(Entity var1) {
         return this.getEntityTexture((T) var1);
     }
 
@@ -105,7 +59,23 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void preRenderCallback(EntityLivingBase entitylivingbaseIn, float partialTickTime) {
+    protected final void preRenderCallback(EntityLivingBase entitylivingbaseIn, float partialTickTime) {
+
+        ItemStack heldItem = entitylivingbaseIn.getHeldItem();
+        this.playerModel.getModel().heldItemRight = heldItem == null ? 0 : 1;
+
+        this.playerModel.getModel().isSneak = false;
+        this.playerModel.getModel().isFlying = false;
+        this.playerModel.getModel().isSleeping = false;
+
+        this.playerModel.getModel().metadata.setRace(PonyRace.EARTH);
+        this.playerModel.getModel().metadata.setGender(PonyGender.MARE);
+        this.playerModel.getModel().metadata.setTail(TailLengths.FULL);
+
+        if (MineLittlePony.getConfig().getShowScale().get()) {
+            this.shadowSize = 0.4F;
+        }
+
         preRenderCallback((T) entitylivingbaseIn, partialTickTime);
     }
 
@@ -115,7 +85,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void rotateCorpse(EntityLivingBase entity, float xPosition, float yPosition, float zPosition) {
+    protected final void rotateCorpse(EntityLivingBase entity, float xPosition, float yPosition, float zPosition) {
         this.rotateCorpse((T) entity, xPosition, yPosition, zPosition);
     }
 

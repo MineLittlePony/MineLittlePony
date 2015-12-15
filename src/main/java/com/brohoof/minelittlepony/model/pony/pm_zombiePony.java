@@ -14,6 +14,7 @@ public class pm_zombiePony extends pm_newPonyAdv {
         float leftLegRotateAngleX;
         float var8;
         float var9;
+        // why are zombies flying?
         if (this.isFlying && this.metadata.getRace().hasWings()) {
             if (this.rainboom) {
                 rightArmRotateAngleX = ROTATE_270;
