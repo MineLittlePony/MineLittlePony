@@ -8,10 +8,6 @@ import static net.minecraft.client.renderer.GlStateManager.translate;
 import net.minecraft.util.MathHelper;
 
 public class pm_skeletonPony extends pm_newPonyAdv {
-
-    public pm_skeletonPony() {
-        metadata.setGlowColor(0xff6666dd);
-    }
     
     @Override
     protected void rotateLegs(float move, float swing, float tick) {

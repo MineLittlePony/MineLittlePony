@@ -1,8 +1,9 @@
- package com.brohoof.minelittlepony.renderer;
+package com.brohoof.minelittlepony.renderer;
 
 import com.brohoof.minelittlepony.MineLittlePony;
 import com.brohoof.minelittlepony.Pony;
 import com.brohoof.minelittlepony.model.PMAPI;
+import com.brohoof.minelittlepony.model.ModelVillagerPony;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -12,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
 
     public RenderPonyVillager(RenderManager rm) {
-        super(rm, PMAPI.pony);
+        super(rm, PMAPI.villager);
     }
 
     @Override
@@ -26,6 +27,7 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
                 this.shadowSize = 0.5F;
             }
         }
+        ((ModelVillagerPony)this.mainModel).profession = villager.getProfession();
 
         GlStateManager.scale(0.9375F, 0.9375F, 0.9375F);
     }

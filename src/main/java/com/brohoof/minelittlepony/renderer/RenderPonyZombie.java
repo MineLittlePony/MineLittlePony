@@ -5,6 +5,8 @@ import java.util.Random;
 import com.brohoof.minelittlepony.PonyGender;
 import com.brohoof.minelittlepony.PonyManager;
 import com.brohoof.minelittlepony.PonyRace;
+import com.brohoof.minelittlepony.PonySize;
+import com.brohoof.minelittlepony.TailLengths;
 import com.brohoof.minelittlepony.model.PMAPI;
 
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -25,24 +27,40 @@ public class RenderPonyZombie extends RenderPonyMob<EntityZombie> {
         // 50-50 chance for gender
         this.playerModel.getModel().metadata.setGender(rand.nextBoolean() ? PonyGender.MARE : PonyGender.STALLION);
 
-        switch (rand.nextInt(5)) {
+        // races
+        switch (rand.nextInt(4)) {
         case 0:
         case 1:
-        case 2:
             this.playerModel.getModel().metadata.setRace(PonyRace.EARTH);
             break;
-        case 3:
+        case 2:
             this.playerModel.getModel().metadata.setRace(PonyRace.PEGASUS);
             break;
-        case 4:
+        case 3:
             this.playerModel.getModel().metadata.setRace(PonyRace.UNICORN);
             break;
         }
-        this.playerModel.getModel().metadata.setGlowColor(rand.nextInt());
         // Let's play the lottery!
         if (rand.nextInt(10000) == 0) {
             this.playerModel.getModel().metadata.setRace(PonyRace.ALICORN);
         }
+        // sizes
+        if (entity.isChild()) {
+            this.playerModel.getModel().metadata.setSize(PonySize.FOAL);
+        } else {
+            PonySize size = randEnum(rand, PonySize.class);
+            this.playerModel.getModel().metadata.setSize(size != PonySize.FOAL ? size : PonySize.NORMAL);
+        }
+        this.playerModel.getModel().metadata.setTail(randEnum(rand, TailLengths.class));
+
+        // glow
+        this.playerModel.getModel().metadata.setGlowColor(rand.nextInt());
+
+    }
+
+    private <T extends Enum<T>> T randEnum(Random rand, Class<T> en) {
+        T[] values = en.getEnumConstants();
+        return values[rand.nextInt(values.length)];
     }
 
     @Override
