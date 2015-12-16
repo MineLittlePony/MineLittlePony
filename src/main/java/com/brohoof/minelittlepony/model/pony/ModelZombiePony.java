@@ -1,10 +1,10 @@
-package com.brohoof.minelittlepony.model.pony.armor;
+package com.brohoof.minelittlepony.model.pony;
 
-import com.brohoof.minelittlepony.model.pony.armor.pm_newPonyArmor;
+import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
 
 import net.minecraft.util.MathHelper;
 
-public class pm_zombiePonyArmor extends pm_newPonyArmor {
+public class ModelZombiePony extends ModelPlayerPony {
 
     @Override
     protected void rotateLegs(float move, float swing, float tick) {
@@ -14,6 +14,7 @@ public class pm_zombiePonyArmor extends pm_newPonyArmor {
         float leftLegRotateAngleX;
         float var8;
         float var9;
+        // why are zombies flying?
         if (this.isFlying && this.metadata.getRace().hasWings()) {
             if (this.rainboom) {
                 rightArmRotateAngleX = ROTATE_270;
@@ -65,8 +66,8 @@ public class pm_zombiePonyArmor extends pm_newPonyArmor {
         this.unicornarm.rotateAngleZ = 0.0F;
         this.bipedLeftArm.rotateAngleZ = 0.0F;
         if (this.heldItemRight == 0) {
-            var8 = MathHelper.sin(this.swingProgress * 3.1415927F);
-            var9 = MathHelper.sin((1.0F - (1.0F - this.swingProgress) * (1.0F - this.swingProgress)) * 3.1415927F);
+            var8 = MathHelper.sin(this.swingProgress * (float) Math.PI);
+            var9 = MathHelper.sin((1.0F - (1.0F - this.swingProgress) * (1.0F - this.swingProgress)) * (float) Math.PI);
             if (MathHelper.sin(move / 20.0F) < 0.0F) {
                 this.bipedRightArm.rotateAngleZ = 0.0F;
                 this.bipedRightArm.rotateAngleY = 0.1F - var8 * 0.6F;
@@ -84,7 +85,6 @@ public class pm_zombiePonyArmor extends pm_newPonyArmor {
             }
         }
 
-        this.syncLegs();
     }
 
     @Override

@@ -1,12 +1,11 @@
-package com.brohoof.minelittlepony.model;
+package com.brohoof.minelittlepony.model.pony;
 
-import com.brohoof.minelittlepony.model.pony.pm_newPonyAdv;
 import com.brohoof.minelittlepony.renderer.AniParams;
 import com.brohoof.minelittlepony.renderer.PlaneRenderer;
 
 import net.minecraft.util.MathHelper;
 
-public class ModelVillagerPony extends pm_newPonyAdv {
+public class ModelVillagerPony extends ModelPlayerPony {
 
     public PlaneRenderer[] VillagerBagPiece;
     public PlaneRenderer VillagerApron;

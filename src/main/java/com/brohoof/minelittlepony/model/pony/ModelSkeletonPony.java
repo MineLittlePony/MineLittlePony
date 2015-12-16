@@ -7,7 +7,7 @@ import static net.minecraft.client.renderer.GlStateManager.translate;
 
 import net.minecraft.util.MathHelper;
 
-public class pm_skeletonPony extends pm_newPonyAdv {
+public class ModelSkeletonPony extends ModelPlayerPony {
     
     @Override
     protected void rotateLegs(float move, float swing, float tick) {

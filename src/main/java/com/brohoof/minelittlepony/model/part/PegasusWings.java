@@ -2,7 +2,7 @@ package com.brohoof.minelittlepony.model.part;
 
 import com.brohoof.minelittlepony.PonyData;
 import com.brohoof.minelittlepony.model.BodyPart;
-import com.brohoof.minelittlepony.model.ModelPony;
+import com.brohoof.minelittlepony.model.AbstractPonyModel;
 import com.brohoof.minelittlepony.model.PonyModelConstants;
 import com.brohoof.minelittlepony.renderer.AniParams;
 import com.brohoof.minelittlepony.renderer.CompressiveRendering;
@@ -12,7 +12,7 @@ import net.minecraft.util.MathHelper;
 
 public class PegasusWings implements IPonyPart, PonyModelConstants {
 
-    private ModelPony pony;
+    private AbstractPonyModel pony;
 
     public ModelRenderer[] leftWing;
     public ModelRenderer[] rightWing;
@@ -24,7 +24,7 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
     public CompressiveRendering compressiveRightWing;
 
     @Override
-    public void init(ModelPony pony, float yOffset, float stretch) {
+    public void init(AbstractPonyModel pony, float yOffset, float stretch) {
         this.pony = pony;
 
         this.leftWing = new ModelRenderer[3];

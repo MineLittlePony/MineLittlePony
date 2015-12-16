@@ -7,7 +7,7 @@ import com.brohoof.minelittlepony.Pony;
 import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.model.PMAPI;
 import com.brohoof.minelittlepony.model.PlayerModel;
-import com.brohoof.minelittlepony.model.pony.pm_Human;
+import com.brohoof.minelittlepony.model.pony.ModelHumanPlayer;
 import com.brohoof.minelittlepony.renderer.layer.LayerHeldPonyItem;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonyArmor;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonyCape;
@@ -79,7 +79,7 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
                     this.shadowSize = 0.25F;
                 else if (size == PonySize.NORMAL)
                     this.shadowSize = 0.4F;
-                else if (size == PonySize.PRINCESS)
+                else if (size == PonySize.TALL)
                     this.shadowSize = 0.45F;
                 else
                     this.shadowSize = 0.5F;
@@ -110,7 +110,7 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
     @Obfuscated({ "a", "func_77039_a" })
     public void setupPlayerScale(AbstractClientPlayer player, double xPosition, double yPosition, double zPosition) {
 
-        if (MineLittlePony.getConfig().getShowScale().get() && !(playerModel.getModel() instanceof pm_Human)) {
+        if (MineLittlePony.getConfig().getShowScale().get() && !(playerModel.getModel() instanceof ModelHumanPlayer)) {
             PonySize size = thePony.metadata.getSize();
             if (size == PonySize.LARGE)
                 scale(0.9F, 0.9F, 0.9F);

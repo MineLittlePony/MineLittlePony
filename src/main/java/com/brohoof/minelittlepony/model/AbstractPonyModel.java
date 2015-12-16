@@ -11,7 +11,7 @@ import com.brohoof.minelittlepony.Pony;
 import com.brohoof.minelittlepony.PonyData;
 import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.model.part.IPonyPart;
-import com.brohoof.minelittlepony.model.pony.pm_newPonyAdv;
+import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
 import com.brohoof.minelittlepony.renderer.AniParams;
 import com.brohoof.minelittlepony.renderer.PlaneRenderer;
 import com.google.common.collect.Lists;
@@ -28,7 +28,7 @@ import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 
-public abstract class ModelPony extends ModelPlayer {
+public abstract class AbstractPonyModel extends ModelPlayer {
 
     protected float scale = 0.0625F;
     public boolean isArmour = false;
@@ -40,7 +40,7 @@ public abstract class ModelPony extends ModelPlayer {
 
     protected List<IPonyPart> modelParts = Lists.newArrayList();
 
-    public ModelPony() {
+    public AbstractPonyModel() {
         super(0, false);
     }
 
@@ -235,7 +235,7 @@ public abstract class ModelPony extends ModelPlayer {
                     translate(0.0F, 0.12F, 0.0F);
                 }
 
-                if (this instanceof pm_newPonyAdv && ((pm_newPonyAdv) this).rainboom) {
+                if (this instanceof ModelPlayerPony && ((ModelPlayerPony) this).rainboom) {
                     translate(0.0F, -0.08F, 0.0F);
                 }
 
@@ -279,7 +279,7 @@ public abstract class ModelPony extends ModelPlayer {
                 scale(1.15F, 1.12F, 1.15F);
                 break;
             }
-        } else if (this.metadata.getSize() == PonySize.PRINCESS) {
+        } else if (this.metadata.getSize() == PonySize.TALL) {
             if (this.isSleeping && !this.isArmour) {
                 translate(0.0F, -0.43F, 0.25F);
             }
@@ -306,7 +306,7 @@ public abstract class ModelPony extends ModelPlayer {
             case LEGS:
                 translate(0.0F, -0.25F, 0.03F);
                 scale(1.0F, 1.18F, 1.0F);
-                if (this instanceof pm_newPonyAdv && ((pm_newPonyAdv) this).rainboom) {
+                if (this instanceof ModelPlayerPony && ((ModelPlayerPony) this).rainboom) {
                     translate(0.0F, 0.05F, 0.0F);
                 }
                 break;
@@ -321,8 +321,8 @@ public abstract class ModelPony extends ModelPlayer {
     @Override
     public void setModelAttributes(ModelBase model) {
         super.setModelAttributes(model);
-        if (model instanceof ModelPony) {
-            ModelPony pony = (ModelPony) model;
+        if (model instanceof AbstractPonyModel) {
+            AbstractPonyModel pony = (AbstractPonyModel) model;
             this.isFlying = pony.isFlying;
             this.isSleeping = pony.isSleeping;
             this.isVillager = pony.isVillager;

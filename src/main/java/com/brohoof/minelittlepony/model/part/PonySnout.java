@@ -5,7 +5,7 @@ import java.util.Map;
 import com.brohoof.minelittlepony.MineLittlePony;
 import com.brohoof.minelittlepony.PonyData;
 import com.brohoof.minelittlepony.PonyGender;
-import com.brohoof.minelittlepony.model.ModelPony;
+import com.brohoof.minelittlepony.model.AbstractPonyModel;
 import com.brohoof.minelittlepony.model.PonyModelConstants;
 import com.brohoof.minelittlepony.renderer.PlaneRenderer;
 import com.google.common.collect.ImmutableMap;
@@ -18,7 +18,7 @@ public class PonySnout extends AbstractHeadPart implements PonyModelConstants {
             .build();
 
     @Override
-    public void init(ModelPony pony, float yOffset, float stretch) {
+    public void init(AbstractPonyModel pony, float yOffset, float stretch) {
         super.init(pony, yOffset, stretch);
 
         PlaneRenderer[] muzzle = map.get(PonyGender.MARE);

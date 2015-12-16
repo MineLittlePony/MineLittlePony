@@ -9,7 +9,7 @@ import static net.minecraft.client.renderer.GlStateManager.translate;
 import java.util.Random;
 
 import com.brohoof.minelittlepony.PonySize;
-import com.brohoof.minelittlepony.model.ModelPony;
+import com.brohoof.minelittlepony.model.AbstractPonyModel;
 import com.brohoof.minelittlepony.model.PonyModelConstants;
 import com.brohoof.minelittlepony.model.part.PegasusWings;
 import com.brohoof.minelittlepony.model.part.PonyEars;
@@ -22,7 +22,7 @@ import com.brohoof.minelittlepony.renderer.PlaneRenderer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.util.MathHelper;
 
-public class pm_newPonyAdv extends ModelPony implements PonyModelConstants {
+public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConstants {
 
     public boolean rainboom;
 
@@ -34,7 +34,7 @@ public class pm_newPonyAdv extends ModelPony implements PonyModelConstants {
     public ModelRenderer unicornarm;
     public PlaneRenderer[] Tail;
 
-    public pm_newPonyAdv() {
+    public ModelPlayerPony() {
         addParts();
     }
     
@@ -561,7 +561,7 @@ public class pm_newPonyAdv extends ModelPony implements PonyModelConstants {
             scale(1.15F, 1.12F, 1.15F);
             this.renderLegs();
             popMatrix();
-        } else if (this.metadata.getSize() == PonySize.PRINCESS) {
+        } else if (this.metadata.getSize() == PonySize.TALL) {
             if (this.isSleeping && !this.isArmour) {
                 translate(0.0F, -0.43F, 0.25F);
             }

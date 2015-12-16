@@ -2,15 +2,15 @@ package com.brohoof.minelittlepony.model.part;
 
 import com.brohoof.minelittlepony.PonyData;
 import com.brohoof.minelittlepony.model.BodyPart;
-import com.brohoof.minelittlepony.model.ModelPony;
+import com.brohoof.minelittlepony.model.AbstractPonyModel;
 import com.brohoof.minelittlepony.renderer.AniParams;
 
 public abstract class AbstractHeadPart implements IPonyPart {
 
-    private ModelPony pony;
+    private AbstractPonyModel pony;
 
     @Override
-    public void init(ModelPony pony, float yOffset, float stretch) {
+    public void init(AbstractPonyModel pony, float yOffset, float stretch) {
         this.pony = pony;
     }
     
@@ -45,7 +45,7 @@ public abstract class AbstractHeadPart implements IPonyPart {
         rotate(x, y);
     }
 
-    protected ModelPony getPony() {
+    protected AbstractPonyModel getPony() {
         return pony;
     }
 

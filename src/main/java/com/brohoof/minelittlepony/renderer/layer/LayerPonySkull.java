@@ -3,9 +3,9 @@ package com.brohoof.minelittlepony.renderer.layer;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
 import com.brohoof.minelittlepony.PonySize;
-import com.brohoof.minelittlepony.model.ModelPony;
+import com.brohoof.minelittlepony.model.AbstractPonyModel;
 import com.brohoof.minelittlepony.model.PlayerModel;
-import com.brohoof.minelittlepony.model.pony.pm_newPonyAdv;
+import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
 import com.brohoof.minelittlepony.renderer.IRenderPony;
 import com.mojang.authlib.GameProfile;
 
@@ -39,7 +39,7 @@ public class LayerPonySkull implements LayerRenderer {
             float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
         ItemStack itemstack = entity.getCurrentArmor(3);
         if (itemstack != null && itemstack.getItem() != null) {
-            ModelPony model = getModel().getModel();
+            AbstractPonyModel model = getModel().getModel();
             Item item = itemstack.getItem();
 
             pushMatrix();
@@ -48,21 +48,21 @@ public class LayerPonySkull implements LayerRenderer {
             if (!isVillager && entity.isChild()) {
                 scale(0.7, 0.7, 0.7);
             }
-            if (model instanceof pm_newPonyAdv) {
+            if (model instanceof ModelPlayerPony) {
                 if (model.metadata.getSize() == PonySize.FOAL) {
                     translate(0.0F, 0.76F, 0.0F);
                     scale(0.9, 0.9, 0.9);
                 }
             }
             model.bipedHead.postRender(0.0625f);
-            if (model instanceof pm_newPonyAdv) {
+            if (model instanceof ModelPlayerPony) {
                 translate(0, .2, 0);
             }
             color(1, 1, 1, 1);
             if (item instanceof ItemBlock) {
                 renderBlock(entity, itemstack);
             } else if (item == Items.skull) {
-                if (model instanceof pm_newPonyAdv) {
+                if (model instanceof ModelPlayerPony) {
                     translate(0, 0, -.15);
                 }
                 renderSkull(itemstack, isVillager);

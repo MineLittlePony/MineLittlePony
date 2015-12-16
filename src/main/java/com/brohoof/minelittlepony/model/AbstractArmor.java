@@ -2,10 +2,10 @@ package com.brohoof.minelittlepony.model;
 
 import com.brohoof.minelittlepony.PonyData;
 
-public abstract class ModelArmor {
+public abstract class AbstractArmor {
 
-    public ModelPony modelArmorChestplate;
-    public ModelPony modelArmor;
+    public AbstractPonyModel modelArmorChestplate;
+    public AbstractPonyModel modelArmor;
 
     public float layer() {
         return 1;

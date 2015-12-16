@@ -4,11 +4,11 @@ import com.brohoof.minelittlepony.PonyData;
 
 public class PlayerModel {
 
-    private final ModelPony model;
-    private ModelArmor armor;
+    private final AbstractPonyModel model;
+    private AbstractArmor armor;
     private float shadowsize = 0.5F;
 
-    public PlayerModel(ModelPony model) {
+    public PlayerModel(AbstractPonyModel model) {
         this.model = model;
     }
 
@@ -17,11 +17,11 @@ public class PlayerModel {
         return this;
     }
 
-    public ModelPony getModel() {
+    public AbstractPonyModel getModel() {
         return model;
     }
 
-    public PlayerModel setArmor(ModelArmor armor) {
+    public PlayerModel setArmor(AbstractArmor armor) {
         this.armor = armor;
         return this;
     }
@@ -41,7 +41,7 @@ public class PlayerModel {
         getArmor().modelArmor.init(0.0F, 0.5F);
     }
 
-    public ModelArmor getArmor() {
+    public AbstractArmor getArmor() {
         return armor;
     }
     

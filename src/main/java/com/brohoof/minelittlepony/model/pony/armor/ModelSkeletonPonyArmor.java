@@ -1,10 +1,10 @@
 package com.brohoof.minelittlepony.model.pony.armor;
 
-import com.brohoof.minelittlepony.model.pony.armor.pm_newPonyArmor;
+import com.brohoof.minelittlepony.model.pony.armor.ModelPonyArmor;
 
 import net.minecraft.util.MathHelper;
 
-public class pm_skeletonPonyArmor extends pm_newPonyArmor {
+public class ModelSkeletonPonyArmor extends ModelPonyArmor {
 
     @Override
     protected void rotateLegs(float move, float swing, float tick) {

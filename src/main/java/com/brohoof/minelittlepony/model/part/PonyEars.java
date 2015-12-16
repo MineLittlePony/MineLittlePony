@@ -1,7 +1,7 @@
 package com.brohoof.minelittlepony.model.part;
 
 import com.brohoof.minelittlepony.PonyData;
-import com.brohoof.minelittlepony.model.ModelPony;
+import com.brohoof.minelittlepony.model.AbstractPonyModel;
 import com.brohoof.minelittlepony.model.PonyModelConstants;
 
 import net.minecraft.client.model.ModelRenderer;
@@ -12,7 +12,7 @@ public class PonyEars extends AbstractHeadPart implements PonyModelConstants {
     private ModelRenderer right;
 
     @Override
-    public void init(ModelPony pony, float yOffset, float stretch) {
+    public void init(AbstractPonyModel pony, float yOffset, float stretch) {
         super.init(pony, yOffset, stretch);
         this.left = new ModelRenderer(pony, 12, 16);
         this.right = new ModelRenderer(pony, 12, 16);

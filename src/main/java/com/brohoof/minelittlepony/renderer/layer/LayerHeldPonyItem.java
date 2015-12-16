@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL14;
 import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.model.PMAPI;
 import com.brohoof.minelittlepony.model.PlayerModel;
-import com.brohoof.minelittlepony.model.pony.pm_newPonyAdv;
+import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
 import com.brohoof.minelittlepony.renderer.IRenderPony;
 
 import net.minecraft.client.Minecraft;
@@ -51,7 +51,7 @@ public class LayerHeldPonyItem implements LayerRenderer {
 
         if (!pony.getModel().isSleeping) {
             if (pony.getModel().metadata.getRace().hasHorn() && pony.getModel().metadata.getGlowColor() != 0) {
-                pm_newPonyAdv model = (pm_newPonyAdv) pony.getModel();
+                ModelPlayerPony model = (ModelPlayerPony) pony.getModel();
                 if (pony.getModel().aimedBow) {
                     renderDrop(pony, entity, model.unicornarm, 1.0F, 0.15F, 0.9375F, 0.0625F);
                 } else if (pony.getModel().metadata.getSize() == PonySize.FOAL) {

@@ -1,20 +1,21 @@
 package com.brohoof.minelittlepony.model.pony.armor;
 
 import com.brohoof.minelittlepony.model.part.PonyEars;
-import com.brohoof.minelittlepony.model.pony.pm_newPonyAdv;
+import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
 import com.brohoof.minelittlepony.renderer.AniParams;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.util.MathHelper;
 
-public class pm_newPonyArmor extends pm_newPonyAdv {
+public class ModelPonyArmor extends ModelPlayerPony {
+
     public ModelRenderer Bodypiece;
     public ModelRenderer extBody;
     public ModelRenderer[] extHead;
     public ModelRenderer[] extLegs;
 
-    public pm_newPonyArmor() {
+    public ModelPonyArmor() {
         this.isArmour = true;
         this.textureHeight = 32;
     }

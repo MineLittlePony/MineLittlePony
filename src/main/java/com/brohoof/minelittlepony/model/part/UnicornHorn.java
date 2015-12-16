@@ -5,7 +5,7 @@ import static net.minecraft.client.renderer.GlStateManager.*;
 import org.lwjgl.opengl.GL11;
 
 import com.brohoof.minelittlepony.PonyData;
-import com.brohoof.minelittlepony.model.ModelPony;
+import com.brohoof.minelittlepony.model.AbstractPonyModel;
 import com.brohoof.minelittlepony.model.PonyModelConstants;
 import com.brohoof.minelittlepony.renderer.HornGlowRenderer;
 
@@ -17,7 +17,7 @@ public class UnicornHorn extends AbstractHeadPart implements PonyModelConstants 
     private HornGlowRenderer[] hornglow;
 
     @Override
-    public void init(ModelPony pony, float yOffset, float stretch) {
+    public void init(AbstractPonyModel pony, float yOffset, float stretch) {
         super.init(pony, yOffset, stretch);
 
         this.horn = new ModelRenderer(pony, 0, 3);

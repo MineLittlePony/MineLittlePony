@@ -5,10 +5,10 @@ import java.util.Map;
 
 import com.brohoof.minelittlepony.MineLittlePony;
 import com.brohoof.minelittlepony.forge.IPonyArmor;
-import com.brohoof.minelittlepony.model.ModelPony;
+import com.brohoof.minelittlepony.model.AbstractPonyModel;
 import com.brohoof.minelittlepony.model.PlayerModel;
-import com.brohoof.minelittlepony.model.pony.pm_Human;
-import com.brohoof.minelittlepony.model.pony.armor.pm_newPonyArmor;
+import com.brohoof.minelittlepony.model.pony.ModelHumanPlayer;
+import com.brohoof.minelittlepony.model.pony.armor.ModelPonyArmor;
 import com.brohoof.minelittlepony.renderer.IRenderPony;
 import com.google.common.collect.Maps;
 
@@ -45,7 +45,7 @@ public class LayerPonyArmor implements LayerRenderer {
     public void doRenderLayer(EntityLivingBase entity, float p_177141_2_, float p_177141_3_, float ticks, float p_177141_5_, float p_177141_6_,
             float p_177141_7_, float scale) {
         pony = ((IRenderPony) renderer).getPony();
-        if (pony.getModel() instanceof pm_Human) {
+        if (pony.getModel() instanceof ModelHumanPlayer) {
             humanArmor.doRenderLayer(entity, p_177141_2_, p_177141_3_, ticks, p_177141_5_, p_177141_6_, p_177141_7_, scale);
         } else {
             for (int i = 4; i > 0; i--) {
@@ -62,11 +62,11 @@ public class LayerPonyArmor implements LayerRenderer {
             ItemArmor itemarmor = (ItemArmor) itemstack.getItem();
             boolean isLegs = armorSlot == 2;
 
-            ModelPony modelbase = isLegs ? pony.getArmor().modelArmor : pony.getArmor().modelArmorChestplate;
+            AbstractPonyModel modelbase = isLegs ? pony.getArmor().modelArmor : pony.getArmor().modelArmorChestplate;
             modelbase.setModelAttributes(this.pony.getModel());
             modelbase.setLivingAnimations(entitylivingbaseIn, p_177141_2_, p_177141_3_, partialTicks);
             modelbase = getArmorModel(entitylivingbaseIn, itemstack, armorSlot, modelbase);
-            prepareToRender((pm_newPonyArmor) modelbase, armorSlot);
+            prepareToRender((ModelPonyArmor) modelbase, armorSlot);
 
             this.renderer.bindTexture(getArmorTexture(entitylivingbaseIn, itemstack, isLegs ? 2 : 1, null));
             if (itemarmor.getArmorMaterial() == ArmorMaterial.LEATHER) {
@@ -110,7 +110,7 @@ public class LayerPonyArmor implements LayerRenderer {
         }
     }
 
-    private void prepareToRender(pm_newPonyArmor model, int slot) {
+    private void prepareToRender(ModelPonyArmor model, int slot) {
         model.setInvisible(false);
 
         switch (slot) {
@@ -223,12 +223,12 @@ public class LayerPonyArmor implements LayerRenderer {
         return def;
     }
 
-    private static ModelPony getArmorModel(EntityLivingBase entity, ItemStack itemstack, int slot, ModelPony def) {
+    private static AbstractPonyModel getArmorModel(EntityLivingBase entity, ItemStack itemstack, int slot, AbstractPonyModel def) {
         IPonyArmor armor = MineLittlePony.getProxy().getPonyArmors();
         if (armor != null) {
             ModelBase model = armor.getArmorModel(entity, itemstack, slot, def);
-            if (model instanceof pm_newPonyArmor) {
-                return (ModelPony) model;
+            if (model instanceof ModelPonyArmor) {
+                return (AbstractPonyModel) model;
             }
         }
         return def;

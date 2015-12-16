@@ -23,7 +23,7 @@ public class PonyData {
     private static final Map<Integer, PonySize> SIZE_COLORS = ImmutableBiMap.<Integer, PonySize> builder()
             .put(0xffbe53, PonySize.FOAL)
             .put(0xce3254, PonySize.LARGE)
-            .put(0x534b76, PonySize.PRINCESS)
+            .put(0x534b76, PonySize.TALL)
             .build();
 
     private PonyRace race = PonyRace.EARTH;

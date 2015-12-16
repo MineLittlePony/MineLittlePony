@@ -3,7 +3,7 @@ package com.brohoof.minelittlepony.renderer;
 import com.brohoof.minelittlepony.MineLittlePony;
 import com.brohoof.minelittlepony.Pony;
 import com.brohoof.minelittlepony.model.PMAPI;
-import com.brohoof.minelittlepony.model.ModelVillagerPony;
+import com.brohoof.minelittlepony.model.pony.ModelVillagerPony;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;

@@ -51,7 +51,7 @@ public class LayerPonyCape implements LayerRenderer {
                 if (model.getModel().isSneak && !model.getModel().isFlying) {
                     translate(0.0F, 0.03F, 0.0F);
                 }
-            } else if (model.getModel().metadata.getSize() == PonySize.PRINCESS) {
+            } else if (model.getModel().metadata.getSize() == PonySize.TALL) {
                 translate(0.0F, -0.09F, 0.0F);
                 scale(1.0F, 1.0F, 1.0F);
                 if (model.getModel().isSneak && !model.getModel().isFlying) {

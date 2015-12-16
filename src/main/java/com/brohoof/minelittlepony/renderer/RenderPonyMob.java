@@ -4,7 +4,7 @@ import com.brohoof.minelittlepony.MineLittlePony;
 import com.brohoof.minelittlepony.PonyGender;
 import com.brohoof.minelittlepony.PonyRace;
 import com.brohoof.minelittlepony.TailLengths;
-import com.brohoof.minelittlepony.model.ModelPony;
+import com.brohoof.minelittlepony.model.AbstractPonyModel;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.renderer.layer.LayerHeldPonyItem;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonyArmor;
@@ -20,7 +20,7 @@ import net.minecraft.util.ResourceLocation;
 
 public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving implements IRenderPony {
 
-    protected ModelPony mobModel;
+    protected AbstractPonyModel mobModel;
     protected PlayerModel playerModel;
 
     public RenderPonyMob(RenderManager renderManager, PlayerModel playerModel) {
