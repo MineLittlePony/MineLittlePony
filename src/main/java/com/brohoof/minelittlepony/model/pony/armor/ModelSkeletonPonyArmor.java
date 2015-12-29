@@ -34,13 +34,9 @@ public class ModelSkeletonPonyArmor extends ModelPonyArmor {
             this.bipedLeftLeg.rotateAngleY = 0.2F;
         } else {
             var8 = (float) Math.pow(swing, 16.0D);
-            this.getClass();
             var9 = 3.1415927F * var8 * 0.5F;
-            this.getClass();
             float laQuad = 3.1415927F * var8;
-            this.getClass();
             float rlQuad = 3.1415927F * var8 * 0.2F;
-            this.getClass();
             float llQuad = 3.1415927F * var8 * -0.4F;
             rightArmRotateAngleX = MathHelper.cos(move * 0.6662F + 3.1415927F + var9) * 0.6F * swing;
             leftArmRotateAngleX = MathHelper.cos(move * 0.6662F + laQuad) * 0.6F * swing;

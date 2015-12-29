@@ -23,6 +23,7 @@ public class PlayerModel {
 
     public PlayerModel setArmor(AbstractArmor armor) {
         this.armor = armor;
+        this.armor.apply(model.metadata);
         return this;
     }
 
