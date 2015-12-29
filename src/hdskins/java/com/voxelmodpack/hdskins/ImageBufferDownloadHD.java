@@ -38,10 +38,13 @@ public class ImageBufferDownloadHD implements IImageBuffer {
         // arm
         drawImage(40, 48, 36, 52, 44, 16, 48, 20); // top
         drawImage(44, 48, 40, 52, 48, 16, 52, 20); // bottom
-        drawImage(36, 52, 32, 64, 48, 20, 52, 32); //
-        drawImage(40, 52, 36, 64, 44, 20, 48, 32); //
+        drawImage(36, 52, 32, 64, 48, 20, 52, 32);
+        drawImage(40, 52, 36, 64, 44, 20, 48, 32);
         drawImage(44, 52, 40, 64, 40, 20, 44, 32);
         drawImage(48, 52, 44, 64, 52, 20, 56, 32);
+
+        // mod things
+        HDSkinManager.updateSkin(image, graphics);
 
         graphics.dispose();
         return image;

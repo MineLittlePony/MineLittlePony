@@ -87,6 +87,7 @@ public class MineLittlePony implements InitCompleteListener {
             HDSkinManager.clearSkinCache();
             HDSkinManager.setSkinUrl(SKIN_SERVER_URL);
             HDSkinManager.setGatewayURL(GATEWAY_URL);
+            HDSkinManager.addSkinModifier(new PonySkinModifier());
             MineLPLogger.info("Set MineLP skin server URL.");
         }
         RenderManager rm = minecraft.getRenderManager();

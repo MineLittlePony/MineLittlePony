@@ -35,8 +35,7 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
         this.compressiveRightWing = new CompressiveRendering(pony);
 
         for (int i = 0; i < leftWing.length; i++) {
-            this.leftWing[i] = new ModelRenderer(pony, 56, 16);
-            this.leftWing[i].mirror = true;
+            this.leftWing[i] = new ModelRenderer(pony, 56, 32);
             this.compressiveLeftWing.addCompressed(this.leftWing[i]);
         }
         for (int i = 0; i < rightWing.length; i++) {
@@ -44,8 +43,7 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
             this.compressiveRightWing.addCompressed(this.rightWing[i]);
         }
         for (int i = 0; i < leftWingExt.length; i++) {
-            this.leftWingExt[i] = new ModelRenderer(pony, 56, 19);
-            this.leftWingExt[i].mirror = true;
+            this.leftWingExt[i] = new ModelRenderer(pony, 56, 35);
             this.compressiveLeftWing.addExpanded(this.leftWingExt[i]);
         }
         for (int i = 0; i < rightWingExt.length; i++) {

@@ -31,6 +31,7 @@ class HDSkinDownload extends Thread {
     public void run() {
         Proxy proxy = Minecraft.getMinecraft().getProxy();
         if (!this.tryDownload(proxy, this.skinUrl) && this.originalThread != null) {
+            PrivateFields.imageBuffer.set(image, imageBuffer);
             this.originalThread.run();
         }
 

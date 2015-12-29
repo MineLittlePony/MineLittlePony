@@ -1,5 +1,7 @@
 package com.voxelmodpack.hdskins;
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -12,6 +14,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import com.google.common.cache.Cache;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.InsecureTextureException;
@@ -40,6 +43,8 @@ public final class HDSkinManager {
     private static Cache<GameProfile, Map<Type, MinecraftProfileTexture>> skinsCache;
     private static final Map<String, String> playerHashes = Maps.newHashMap();
     private static final Map<String, Map<Type, MinecraftProfileTexture>> cachedTextures = Maps.newHashMap();
+
+    private static List<ISkinModifier> skinModifiers = Lists.newArrayList();
 
     public static void onDownloadSkin(EventInfo<ThreadDownloadImageData> e) {
         ThreadDownloadImageData imageDownload = e.getSource();
@@ -258,5 +263,15 @@ public final class HDSkinManager {
         getSkinsCache().invalidateAll();
         cachedTextures.clear();
         playerHashes.clear();
+    }
+    
+    public static void addSkinModifier(ISkinModifier modifier) {
+        skinModifiers.add(modifier);
+    }
+
+    static void updateSkin(BufferedImage image, Graphics dest) {
+        for (ISkinModifier skin : skinModifiers) {
+            skin.convertSkin(image, dest);
+        }
     }
 }
