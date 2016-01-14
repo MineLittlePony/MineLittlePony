@@ -118,9 +118,6 @@ public class LayerPonyArmor implements LayerRenderer {
         case 1:
             model.bipedRightArm.showModel = true;
             model.bipedLeftArm.showModel = true;
-            for (ModelRenderer m : model.extLegs) {
-                m.showModel = true;
-            }
             model.bipedRightLeg.showModel = true;
             model.bipedLeftLeg.showModel = true;
             break;
@@ -130,16 +127,10 @@ public class LayerPonyArmor implements LayerRenderer {
             model.bipedLeftLeg.showModel = true;
             model.bipedRightArm.showModel = true;
             model.bipedLeftArm.showModel = true;
-            model.Bodypiece.showModel = true;
             model.extBody.showModel = true;
-            model.bipedBody.showModel = true;
             break;
         // chest
         case 3:
-            model.bipedRightLeg.showModel = true;
-            model.bipedLeftLeg.showModel = true;
-            model.bipedRightArm.showModel = true;
-            model.bipedLeftArm.showModel = true;
             model.extBody.showModel = true;
             break;
         // head
