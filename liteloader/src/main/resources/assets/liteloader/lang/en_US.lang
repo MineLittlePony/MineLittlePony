@@ -1,0 +1,89 @@
+# This file MUST be saved as UTF-8
+
+key.categories.litemods=§eMod Keys
+
+gui.about.modsloaded=%d mod(s) loaded
+gui.about.versiontext=Version %s
+gui.about.poweredbyversion=v%s§r powered by LiteLoader v%s
+
+gui.about.checkupdates=§nCheck for updates
+
+gui.settings.showtab.label=Show LiteLoader Panel Tab
+gui.settings.showtab.help1=If you disable this option, use CTRL+SHIFT+TAB
+gui.settings.showtab.help2=to open the LiteLoader panel
+gui.settings.notabhide.label=LiteLoader Tab Always Expanded
+gui.settings.notabhide.help1=Only applies if the above option is also checked
+gui.settings.forceupdate.label=Periodically Check For Updates
+gui.settings.forceupdate.help1=This option is §cexperimental§r and may not work properly 
+gui.settings.forceupdate.help2=yet, it also enables the "force update" capability. 
+
+gui.about.taboptions=§nLiteLoader Panel Options
+
+gui.about.authors=Authors
+
+gui.disablemod=Disable mod
+gui.enablemod=Enable mod
+gui.modsettings=Settings...
+
+gui.unknown=Unknown
+
+gui.status.loaded=Loaded
+gui.status.active=Active
+gui.status.disabled=Disabled
+gui.status.pending.enabled=Enabled on next startup 
+gui.status.pending.disabled=Disabled on next startup
+gui.status.missingdeps=Missing dependencies
+gui.status.missingapis=Missing required APIs
+gui.status.startuperror=Startup errors detected
+gui.description.missingdeps=Missing dependencies: %s
+gui.description.missingapis=Missing APIs: %s
+
+gui.mod.providestweak=Tweak
+gui.mod.providestransformer=Transformer
+gui.mod.providesevents=Injector
+gui.mod.providesmixins=Mixins
+gui.mod.usingapi=Uses additional API
+gui.mod.startuperror=%d startup error(s)
+
+gui.mod.help.tweak=A tweaker is a special type of mod. Tweakers have almost unlimited control of the game and are usually mods which alter the game engine fundamentally, for example APIs or performance-enhancement mods like Optifine. Because they have the greatest amount of control, they are also the most likely to cause instability when not compatible with each other, if you are experiencing crashes or serious problems, you should always try disabling tweak mods first.
+gui.mod.help.transformer=A transformer mod uses bytecode injection to hook extra functionality within the game which LiteLoader does not normally provide. Because transformers access functionality outside of LiteLoader's core, it is possible for them to have unforseen side-effects when combined with other mods. If you are experiencing crashes or other unexpected behaviour, you should disable transformer mods before regular mods to determine whether they are the source of the issue. Forge refers to this type of mod as a §lCoreMod  
+gui.mod.help.events=An injector mod uses a restricted form of bytecode injection which makes it somewhat safer than a full transformer mod, but can still cause instability under some circumstances. If you are experiencing crashes or other issues, then you should disable injector mods before regular mods to determine whether they are the source of the issue.
+gui.mod.help.mixins=A mod with mixins uses a safe form of bytecode injection to hook into Minecraft
+
+gui.settings.title=%s Settings
+gui.saveandclose=Save & Close
+
+gui.updates.title=Check for updates for %s
+gui.updates.status.idle=§7No update check in progress
+gui.updates.status.checking=Contacting update site... %s
+gui.updates.status.success=§asuccess!
+gui.updates.status.failed=§cfailed!
+
+gui.updates.available.title=§nAvailable Update Info
+gui.updates.available.nonewversion=§7No newer version available
+gui.updates.available.newversion=§aNew version available
+gui.updates.available.version=Version: §a%s
+gui.updates.available.date=Release date: §a%s
+
+gui.updates.forced=Update forced, restart the game to apply update
+
+gui.checknow=Check now
+gui.installupdate=Install now
+gui.downloadupdate=Download now
+gui.forceupdate=Force update
+gui.exitgame=Exit Game
+
+gui.log.button=LiteLoader Log
+gui.log.title=LiteLoader Log Viewer
+gui.log.scalecheckbox=Use native resolution
+gui.log.postlog=Upload Log
+gui.log.uploading=Uploading log please wait...
+gui.log.uploadfailed=Upload failed
+gui.log.uploadsuccess=Upload succeeded, log available at
+gui.log.closedialog=Close
+
+gui.error.title=Startup errors for %s
+
+gui.error.tooltip=%d mod startup error(s) detected (%d critical)
+
+gui.notifications.updateavailable=LiteLoader Update Available!

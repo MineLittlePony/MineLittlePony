@@ -1,0 +1,290 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenLocal()
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+        maven {
+            name = 'sponge'
+            url = 'http://repo.spongepowered.org/maven'
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.0-SNAPSHOT'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.0'
+        classpath 'org.spongepowered:mixingradle:0.1-SNAPSHOT'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle.tweaker-client'
+apply plugin: 'checkstyle'
+apply plugin: 'maven'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'org.spongepowered.mixin'
+
+// Default tasks
+defaultTasks 'build'
+
+ext {
+    // Artefact details
+    buildNumber = project.hasProperty("buildNumber") ? buildNumber : '0'
+    buildVersion = project.hasProperty("buildVersion") ? buildVersion : '0.0'
+    ciSystem = project.hasProperty("ciSystem") ? ciSystem : 'unknown'
+    commit = project.hasProperty("commit") ? commit : 'unknown'
+    classifier = project.hasProperty("buildType") ? buildType : 'SNAPSHOT'
+    isReleaseBuild = "RELEASE".equals(project.classifier.toUpperCase())
+    mavenRepo = project.isReleaseBuild ? "mavenUrl" : "mavenSnapshotUrl"
+    
+    // Extended project information
+    projectName = 'LiteLoader'
+    inceptionYear = '2012'
+    packaging = 'jar'
+    
+    startClass = 'com.mumfrey.liteloader.debug.Start'
+    tweakClass = 'com.mumfrey.liteloader.launch.LiteLoaderTweaker'
+}
+
+// Basic project information
+group = "com.mumfrey"
+archivesBaseName = "liteloader"
+version = buildVersion + (project.isReleaseBuild ? '' : '-' + project.classifier)
+
+// Minimum version of Java required
+sourceCompatibility = '1.6'
+targetCompatibility = '1.6'
+
+repositories {
+    maven {
+        name = 'sponge'
+        url = 'https://repo.spongepowered.org/maven/'
+    }
+}
+
+dependencies {
+    compile 'org.spongepowered:mixin:0.4.11-SNAPSHOT'
+    compile 'com.google.guava:guava:17.0'
+    compile 'com.google.code.gson:gson:2.2.4'
+}
+
+minecraft {
+    version = project.mcVersion
+    mappings = project.mcMappings
+    runDir = "run"
+    tweakClass = project.tweakClass
+}
+
+sourceSets {
+    main {
+        refMap = "mixins.liteloader.core.refmap.json"
+    }
+    client {
+        compileClasspath += main.compileClasspath + main.output
+        //refMap = "mixins.liteloader.client.refmap.json"
+    }
+    debug {
+        compileClasspath += client.compileClasspath + client.output
+    }
+}
+
+mixin {
+    defaultObfuscationEnv notch
+}
+
+checkstyle {
+    configProperties = [
+        "name"        : project.name,
+        "organization": project.organization,
+        "url"         : project.url,
+        "year"        : project.inceptionYear
+    ]
+    configFile = file("checkstyle.xml")
+    toolVersion = '6.13'
+}
+
+javadoc {
+    source sourceSets.client.allJava
+    source sourceSets.debug.allJava
+}
+
+afterEvaluate {
+    logger.lifecycle '================================================='
+    logger.lifecycle '  LiteLoader'
+    logger.lifecycle '  Copyright (C) 2011-2016 Adam Mummery-Smith'
+    logger.lifecycle '  Running in {} mode', (project.isReleaseBuild ? "RELEASE" : "SNAPSHOT")
+    logger.lifecycle '================================================='
+    
+    makeEclipseCleanRunClient {
+        arguments = ""
+        jvmArguments = "-Dliteloader.debug=true -Dmixin.debug.verbose=true -Dmixin.debug.verify=true"
+    }
+    
+    // hacks for run configs
+    def mc = plugins.getPlugin 'net.minecraftforge.gradle.tweaker-client'
+    mc.replacer.putReplacement '{RUN_CLIENT_MAIN}', project.startClass
+    mc.replacer.putReplacement '{RUN_CLIENT_TWEAKER}', minecraft.tweakClass
+}
+
+// manifest entries for all jars
+def jarManifest = {
+    mainAttributes (
+        'Built-By': System.properties['user.name'],
+        'Created-By': System.properties['java.vm.version'] + " (" + System.properties['java.vm.vendor'] + ")",
+        'Implementation-Title': name,
+        'Implementation-Version': version + "+" + ciSystem + "-b" + buildNumber + ".git-" + commit,
+        'Implementation-Vendor': url
+    )
+}
+
+jar {
+    doFirst {
+        // Seriously forge?
+        ant.replace(
+            file: sourceSets.main.refMapFile,
+            token: "func_72355_a(Lnet/minecraft/network/NetworkManager;Lnet/minecraft/entity/player/EntityPlayerMP;)V",
+            value: "initializeConnectionToPlayer(Lnet/minecraft/network/NetworkManager;Lnet/minecraft/entity/player/EntityPlayerMP;Lnet/minecraft/network/NetHandlerPlayServer;)V"
+        )
+    }
+    from sourceSets.client.output
+    from sourceSets.debug.output
+    manifest jarManifest
+}
+
+task releaseJar(type: Jar) {
+    from sourceSets.main.output
+    from sourceSets.client.output
+    
+    manifest jarManifest
+    classifier = 'staging'
+}
+
+shadowJar {
+    manifest jarManifest
+    dependsOn 'reobfReleaseJar'
+
+    from sourceSets.main.output
+    from sourceSets.client.output
+    
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+    exclude 'dummyThing'
+    exclude 'LICENSE.txt'
+    
+    dependencies {
+        include(dependency('org.spongepowered:mixin'))
+    }
+    
+    classifier = 'release'
+}
+
+sourceJar {
+    dependsOn retromapReplacedDebug
+    dependsOn retromapReplacedClient
+    
+    from zipTree(tasks.retromapReplacedDebug.out)
+    from zipTree(tasks.retromapReplacedClient.out)
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
+}
+
+// Hey @AbrarSyed why can't we just turn this off >:(
+task runClient(type: JavaExec, overwrite: true) {
+    doFirst {
+        println "Do not use runClient, it is not compatible with Mixin"
+        System.exit(-1)
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += [
+        '-Xlint:all',
+        '-Xlint:-path',
+        '-Xlint:-rawtypes',
+        '-Xlint:-processing'
+    ]
+    options.deprecation = true
+    options.encoding = 'utf8'
+}
+
+if (JavaVersion.current().isJava8Compatible()) {
+    tasks.withType(Javadoc) {
+        // disable the crazy super-strict doclint tool in Java 8
+        options.addStringOption('Xdoclint:none', '-quiet')
+    }
+}
+
+reobf {
+    jar {
+        mappingType = 'SEARGE'
+    }
+    releaseJar {
+        mappingType = 'NOTCH'
+        classpath = sourceSets.main.compileClasspath
+    }
+    shadowJar {
+        mappingType = 'NOTCH'
+        classpath = sourceSets.main.compileClasspath
+    }
+}
+
+build.dependsOn {[
+    'reobfReleaseJar',
+    'reobfShadowJar'
+]}
+
+artifacts {
+    if (project.isReleaseBuild) {
+        archives jar
+    }
+    archives shadowJar
+    archives sourceJar
+    archives javadocJar
+}
+
+task deploy(type: Copy, dependsOn: build) {
+    def libraryDir = new File(new File(System.env.APPDATA), ".minecraft/libraries")
+    from shadowJar.outputs.files[0]
+    into new File(libraryDir, sprintf('%1$s%4$s%2$s%4$s%3$s', project.group.replace('.', File.separator), archivesBaseName, buildVersion, File.separatorChar)) 
+    rename shadowJar.outputs.files[0].name, sprintf("%s-%s.jar", archivesBaseName, buildVersion)
+}
+
+uploadArchives { 
+    repositories {
+        mavenDeployer {
+            if (project.hasProperty(project.mavenRepo)) {
+                repository(url: project.getProperty(project.mavenRepo)) {
+                    authentication(userName: project.mavenUsername, password: project.mavenPassword)
+                }
+            }
+            pom {
+                groupId = project.group
+                version = project.version
+                artifactId = project.archivesBaseName
+                project {
+                    name project.archivesBaseName
+                    packaging 'jar'
+                    description 'LiteLoader'
+                    url 'http://www.liteloader.com/'
+                    scm {
+                        url 'http://develop.liteloader.com/liteloader/LiteLoader'
+                        connection 'scm:git:http://develop.liteloader.com/liteloader/LiteLoader.git'
+                        developerConnection 'scm:git:http://develop.liteloader.com/liteloader/LiteLoader.git'
+                    }
+                    issueManagement {
+                        system 'GitLab Issues'
+                        url 'http://develop.liteloader.com/liteloader/LiteLoader/issues'
+                    }
+                }
+            }
+        }
+    }
+}

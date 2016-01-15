@@ -1,0 +1,23 @@
+{
+    "required": true,
+    "minVersion": "0.4.10",
+    "package": "com.mumfrey.liteloader.client.mixin",
+    "refmap": "mixins.liteloader.client.refmap.json",
+    "mixins": [
+        "MixinMinecraft",
+        "MixinSession",
+        "MixinEntityRenderer",
+        "MixinRenderManager",
+        "MixinGuiIngame",
+        "MixinEntityPlayerSP",
+        "MixinFramebuffer",
+        "MixinIntegratedServer",
+        "MixinScreenShotHelper",
+        "MixinRealmsMainScreen",
+        "MixinNetHandlerLoginClient",
+        "MixinRegistrySimple",
+        "MixinRegistryNamespaced",
+        "MixinTileEntityRendererDispatcher",
+        "MixinSimpleReloadableResourceManager"
+    ]
+}

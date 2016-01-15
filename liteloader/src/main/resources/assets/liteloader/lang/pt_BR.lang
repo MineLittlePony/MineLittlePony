@@ -1,0 +1,67 @@
+# This file MUST be saved as UTF-8
+
+key.categories.litemods=§eTecla de Mods
+
+gui.about.modsloaded=%d mod(s) carregados
+gui.about.versiontext=Versão %s
+gui.about.poweredbyversion=v%s§r powered by LiteLoader v%s
+
+gui.about.checkupdates=§nVerificar atualizações
+
+gui.settings.showtab.label=Mostrar aba do Painel do Liteloader
+gui.settings.showtab.help1=Se você desabilitar essa opção, use CTRL + SHIFT + TAB
+gui.settings.showtab.help2=para abrir o painel LiteLoader
+gui.settings.notabhide.label=Aba de LiteLoader Sempre Expandida
+gui.settings.notabhide.help1=Só se aplica se a opção acima também é verificada
+
+gui.about.taboptions=§nPainel de Opções do LiteLoader
+
+gui.about.authors=Autores
+
+gui.disablemod=Desativar Mod
+gui.enablemod=Ativar Mod
+gui.modsettings=Configurações...
+
+gui.unknown=Desconhecido
+
+gui.status.loaded=Carregado
+gui.status.active=Ativo
+gui.status.disabled=Desativado
+gui.status.pending.enabled=Ativado na próxima inicialização 
+gui.status.pending.disabled=Desativado na próxima inicialização 
+gui.status.missingdeps=dependências não existentes
+gui.status.missingapis=Faltando APIs necessárias
+gui.description.missingdeps=dependências não existentes: %s
+gui.description.missingapis=APIs que faltam: %s
+
+gui.mod.providestweak=oferece o Tweak
+gui.mod.providestransformer=oferece do transformador
+gui.mod.usingapi=Utilizar API adicional
+
+gui.settings.title=%s Configurações
+gui.saveandclose=Salvar & Fechar
+
+gui.updates.title=Verificar se há atualizações para %s
+gui.updates.status.idle=§7Nenhuma verificação de atualização em andamento
+gui.updates.status.checking=Contacting update site... %s
+gui.updates.status.success=§asucesso!
+gui.updates.status.failed=§cfalhou!
+
+gui.updates.available.title=§nAtualização de informações disponível
+gui.updates.available.nonewversion=§7Nenhuma versão recente disponível
+gui.updates.available.newversion=§aNova versão disponível
+gui.updates.available.version=Versão: §a%s
+gui.updates.available.date=Data de lançamento: §a%s
+
+gui.checknow=Verificar agora
+gui.installupdate=Instalar agora
+gui.downloadupdate=Baixar agora
+
+gui.log.button=LiteLoader Log
+gui.log.title=Visualizador de Logs do LiteLoader
+gui.log.scalecheckbox=Usar resolução nativa
+gui.log.postlog=Enviar Log
+gui.log.uploading=Enviando log para o Pastebin...
+gui.log.uploadfailed=Falha ao enviar
+gui.log.uploadsuccess=Enviado com sucesso, log disponível em
+gui.log.closedialog=Fechar

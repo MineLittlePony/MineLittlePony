@@ -11,7 +11,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 
 import com.mumfrey.liteloader.core.runtime.Obf;
-import com.mumfrey.liteloader.util.ModUtilities;
+import com.mumfrey.liteloader.util.ObfuscationUtilities;
 
 /**
  * Wrapper for obf/mcp reflection-accessed private methods, added to centralise
@@ -48,10 +48,9 @@ public class PrivateMethods<P, R> {
      * @param mcpName
      * @param name
      */
-    @SuppressWarnings("deprecation")
     private PrivateMethods(Class<?> owner, Obf mapping, Class<?>... parameterTypes) {
         this.parentClass = owner;
-        this.methodName = ModUtilities.getObfuscatedFieldName(mapping);
+        this.methodName = ObfuscationUtilities.getObfuscatedFieldName(mapping);
 
         Method method = null;
 

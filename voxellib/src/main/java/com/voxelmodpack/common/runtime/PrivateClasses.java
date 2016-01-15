@@ -1,7 +1,7 @@
 package com.voxelmodpack.common.runtime;
 
 import com.mumfrey.liteloader.core.runtime.Obf;
-import com.mumfrey.liteloader.util.ModUtilities;
+import com.mumfrey.liteloader.util.ObfuscationUtilities;
 
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -25,9 +25,9 @@ public class PrivateClasses<C> {
      */
     private final String className;
 
-    @SuppressWarnings({ "unchecked", "deprecation" })
+    @SuppressWarnings("unchecked")
     private PrivateClasses(Obf mapping) {
-        this.className = ModUtilities.getObfuscatedFieldName(mapping);
+        this.className = ObfuscationUtilities.getObfuscatedFieldName(mapping);
 
         Class<? extends C> reflectedClass = null;
 

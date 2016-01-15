@@ -3,7 +3,7 @@ package com.voxelmodpack.common.runtime;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import com.mumfrey.liteloader.util.ModUtilities;
+import com.mumfrey.liteloader.util.ObfuscationUtilities;
 
 public class Reflection {
     private static Field MODIFIERS = null;
@@ -26,12 +26,11 @@ public class Reflection {
      * @param fieldName Name of the field to set
      * @param value Value to set for the field
      */
-    @SuppressWarnings("deprecation")
     public static void setPrivateValue(Class<?> instanceClass, Object instance, String fieldName,
             String obfuscatedFieldName, String seargeName, Object value)
                     throws IllegalArgumentException, SecurityException, NoSuchFieldException {
         Reflection.setPrivateValueRaw(instanceClass, instance,
-                ModUtilities.getObfuscatedFieldName(fieldName, obfuscatedFieldName, seargeName), value);
+                ObfuscationUtilities.getObfuscatedFieldName(fieldName, obfuscatedFieldName, seargeName), value);
     }
 
     /**
@@ -57,12 +56,12 @@ public class Reflection {
      * @param fieldName Name of the field to get the value of
      * @return Value of the field
      */
-    @SuppressWarnings({ "unchecked", "deprecation" })
+    @SuppressWarnings("unchecked")
     public static <T> T getPrivateValue(Class<?> instanceClass, Object instance, String fieldName,
             String obfuscatedFieldName, String seargeName)
                     throws IllegalArgumentException, SecurityException, NoSuchFieldException {
         return (T) Reflection.getPrivateValueRaw(instanceClass, instance,
-                ModUtilities.getObfuscatedFieldName(fieldName, obfuscatedFieldName, seargeName));
+                ObfuscationUtilities.getObfuscatedFieldName(fieldName, obfuscatedFieldName, seargeName));
     }
 
     /**

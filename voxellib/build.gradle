@@ -13,7 +13,7 @@ repositories.flatDir {
 	dir '../liteloader'
 }
 dependencies {
-    deobfCompile 'com.mumfrey:liteloader:1.8-SNAPSHOT:srgnames'
+	compile rootProject.project('LiteLoader')
 }
 jar {
 	manifest.attributes.remove 'TweakClass'

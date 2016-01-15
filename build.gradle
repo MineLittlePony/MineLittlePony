@@ -1,8 +1,22 @@
-plugins {
-	id 'net.minecraftforge.gradle.tweaker-client' version '2.0.2'
+buildscript {
+	repositories {
+		jcenter()
+		maven {
+			name 'forge'
+			url 'http://files.minecraftforge.net/maven'
+		}
+	}
+	dependencies {
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.0-SNAPSHOT'
+	}
 }
+plugins {
+}
+
 ext.voxellib = project ':voxellib'
 ext.revision = 186
+
+apply plugin: 'net.minecraftforge.gradle.tweaker-client'
 
 archivesBaseName = "MineLittlePony"
 group = 'com.brohoof.minelp'
@@ -31,6 +45,7 @@ sourceSets {
 }
 project('forge') {
 	apply plugin: 'net.minecraftforge.gradle.forge'
+	version = '0'
 	minecraft {
 		version = '1.8-11.14.3.1543'
 		mappings = rootProject.minecraft.mappings
@@ -41,7 +56,10 @@ project('forge') {
 		provided rootProject
 	}
 }
-
+project('LiteLoader'){
+	apply plugin: 'mnm.gradle.ap-ide'
+	mcMappings = rootProject.minecraft.mappings
+}
 processResources {
     def props = [
         version:    version,
@@ -57,12 +75,16 @@ processResources {
 		exclude 'litemod.json'
 	}
 }
-repositories.flatDir {
-	dir 'liteloader'
-}
+allprojects {repositories{
+	maven {
+		name 'sponge'
+		url 'http://repo.spongepowered.org/maven'
+	}
+}}
 dependencies {
-    deobfProvided 'com.mumfrey:liteloader:1.8-SNAPSHOT:srgnames'
+	provided project('LiteLoader')
 	provided voxellib
+
 	compile sourceSets.common.output
 	compile sourceSets.hdskins.output
 	hdskinsCompile sourceSets.common.output
@@ -83,7 +105,7 @@ task standaloneJar(type: Jar, dependsOn: [{voxellib.reobfObfJar}, {project('forg
 artifacts {
     archives standaloneJar
 }
-reobf{
+reobf {
 	jar.task.enabled = false
 	standaloneJar{}
 }
