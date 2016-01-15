@@ -1,6 +1,12 @@
-package com.brohoof.minelittlepony.renderer;
+package com.brohoof.minelittlepony.mixin;
 
 import static net.minecraft.client.renderer.GlStateManager.scale;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.brohoof.minelittlepony.MineLittlePony;
 import com.brohoof.minelittlepony.Pony;
@@ -8,12 +14,11 @@ import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.model.PMAPI;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.model.pony.ModelHumanPlayer;
+import com.brohoof.minelittlepony.renderer.IRenderPony;
 import com.brohoof.minelittlepony.renderer.layer.LayerHeldPonyItem;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonyArmor;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonyCape;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonySkull;
-import com.mumfrey.liteloader.transformers.AppendInsns;
-import com.mumfrey.liteloader.transformers.Obfuscated;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -26,19 +31,18 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public abstract class RenderPony extends RendererLivingEntity implements IRenderPony {
-    @SuppressWarnings("unused")
-    private static RenderPlayer __TARGET;
+@Mixin(RenderPlayer.class)
+public abstract class MixinRenderPlayer extends RendererLivingEntity implements IRenderPony {
+
     private PlayerModel playerModel;
     private Pony thePony;
 
-    private RenderPony(RenderManager renderManager) {
+    private MixinRenderPlayer(RenderManager renderManager) {
         super(renderManager, null, 0.5F);
-        throw new InstantiationError("Overlay classes must not be instantiated");
     }
 
-    @AppendInsns("<init>")
-    private void init(RenderManager renderManager, boolean useSmallArms) {
+    @Inject(method="<init>(Lnet/minecraft/client/renderer/entity/RenderManager;Z)V", at=@At("RETURN"))
+    private void init(RenderManager renderManager, boolean useSmallArms, CallbackInfo ci) {
         this.playerModel = PMAPI.pony;
         this.mainModel = this.playerModel.getModel();
         this.shadowSize = this.playerModel.getShadowsize();
@@ -51,7 +55,7 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
         this.addLayer(new LayerPonyCape(this));
     }
 
-    @Obfuscated({ "a", "func_180596_a" })
+    @Overwrite
     public void doRender(AbstractClientPlayer player, double x, double y, double z, float yaw, float partialTicks) {
         ItemStack currentItemStack = player.inventory.getCurrentItem();
         this.thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(player);
@@ -106,9 +110,8 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
         this.playerModel.getModel().heldItemRight = 0;
     }
 
-    @AppendInsns("renderLivingAt")
-    @Obfuscated({ "a", "func_77039_a" })
-    public void setupPlayerScale(AbstractClientPlayer player, double xPosition, double yPosition, double zPosition) {
+    @Inject(method = "renderLivingAt", at = @At("RETURN"))
+    private void setupPlayerScale(AbstractClientPlayer player, double xPosition, double yPosition, double zPosition, CallbackInfo ci) {
 
         if (MineLittlePony.getConfig().getShowScale().get() && !(playerModel.getModel() instanceof ModelHumanPlayer)) {
             PonySize size = thePony.metadata.getSize();
@@ -119,17 +122,17 @@ public abstract class RenderPony extends RendererLivingEntity implements IRender
         }
     }
 
-    public ResourceLocation getEntityTexture(AbstractClientPlayer player) {
+    private ResourceLocation getEntityTexture(AbstractClientPlayer player) {
         Pony thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(player);
         return thePony.getTextureResourceLocation();
     }
 
     @Override
-    public ResourceLocation getEntityTexture(Entity entity) {
+    public final ResourceLocation getEntityTexture(Entity entity) {
         return this.getEntityTexture((AbstractClientPlayer) entity);
     }
 
-    protected PlayerModel getModel(AbstractClientPlayer player) {
+    private PlayerModel getModel(AbstractClientPlayer player) {
         Pony thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(player);
         return thePony.getModel();
     }

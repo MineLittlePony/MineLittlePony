@@ -6,3 +6,5 @@ run/
 .classpath
 .project
 *.launch
+/.apt_generated/
+.factorypath

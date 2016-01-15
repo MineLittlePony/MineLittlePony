@@ -1,0 +1,7 @@
+{
+	"package": "com.brohoof.minelittlepony.mixin",
+	"refmap": "mixin.minelp.refmap.json",
+	"mixins": [
+		"MixinRenderPlayer"
+	]
+}

@@ -5,18 +5,25 @@ buildscript {
 			name 'forge'
 			url 'http://files.minecraftforge.net/maven'
 		}
+		maven {
+			name = 'sponge'
+			url = 'http://repo.spongepowered.org/maven'
+		}
 	}
 	dependencies {
 		classpath 'net.minecraftforge.gradle:ForgeGradle:2.0-SNAPSHOT'
+		classpath 'org.spongepowered:mixingradle:0.1-SNAPSHOT'
 	}
 }
 plugins {
+	id 'mnm.gradle.ap-ide' version '1.0.2'
 }
 
 ext.voxellib = project ':voxellib'
 ext.revision = 186
 
 apply plugin: 'net.minecraftforge.gradle.tweaker-client'
+apply plugin: 'org.spongepowered.mixin'
 
 archivesBaseName = "MineLittlePony"
 group = 'com.brohoof.minelp'
@@ -24,7 +31,7 @@ version = '1.8'
 
 minecraft {
 	version = "1.8"
-    mappings = 'snapshot_20151027'
+    mappings = 'stable_18'
 	runDir = 'run'
 	replace '@VERSION@',project.version
     tweakClass = 'com.mumfrey.liteloader.launch.LiteLoaderTweaker'
@@ -75,12 +82,14 @@ processResources {
 		exclude 'litemod.json'
 	}
 }
-allprojects {repositories{
-	maven {
-		name 'sponge'
-		url 'http://repo.spongepowered.org/maven'
+allprojects {
+	repositories{
+		maven {
+			name 'sponge'
+			url 'http://repo.spongepowered.org/maven'
+		}
 	}
-}}
+}
 dependencies {
 	provided project('LiteLoader')
 	provided voxellib
@@ -109,7 +118,10 @@ reobf {
 	jar.task.enabled = false
 	standaloneJar{}
 }
-
+sourceSets.main.refMap = 'mixin.minelp.refmap.json'
+mixin {
+    defaultObfuscationEnv notch
+}
 task installMod(type: Copy, dependsOn: build) {
 	from standaloneJar.archivePath
 	into file("$System.env.APPDATA/.minecraft/mods")
