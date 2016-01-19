@@ -1,0 +1,9 @@
+{
+	"package": "com.voxelmodpack.hdskins.mixin",
+	"refmap": "mixin.hdskins.refmap.json",
+	"mixins": [
+		"MixinImageBufferDownload",
+		"MixinPlayerInfo",
+		"MixinSkullRenderer"
+	]
+}

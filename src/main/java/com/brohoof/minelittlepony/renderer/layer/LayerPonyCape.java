@@ -3,7 +3,6 @@ package com.brohoof.minelittlepony.renderer.layer;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
 import com.brohoof.minelittlepony.PonySize;
-import com.brohoof.minelittlepony.model.PMAPI;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.renderer.IRenderPony;
 
@@ -35,7 +34,7 @@ public class LayerPonyCape implements LayerRenderer {
     public void doRenderLayer(AbstractClientPlayer clientPlayer, float p2, float p3, float ticks, float p5, float p6,
             float p7, float scale) {
         PlayerModel model = ((IRenderPony) renderer).getPony();
-        if (model == PMAPI.human) {
+        if (model.getModel().metadata.getRace() == null) {
             cape.doRenderLayer(clientPlayer, p2, p3, ticks, p5, p6, p7, scale);
         } else if (clientPlayer.hasPlayerInfo() && !clientPlayer.isInvisible()
                 && clientPlayer.isWearing(EnumPlayerModelParts.CAPE) && clientPlayer.getLocationCape() != null) {

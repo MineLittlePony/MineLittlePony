@@ -4,6 +4,7 @@ import static net.minecraft.client.renderer.GlStateManager.scale;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -34,6 +35,8 @@ import net.minecraft.util.ResourceLocation;
 @Mixin(RenderPlayer.class)
 public abstract class MixinRenderPlayer extends RendererLivingEntity implements IRenderPony {
 
+    @Shadow
+    private boolean smallArms;
     private PlayerModel playerModel;
     private Pony thePony;
 
@@ -41,9 +44,11 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity implements 
         super(renderManager, null, 0.5F);
     }
 
-    @Inject(method="<init>(Lnet/minecraft/client/renderer/entity/RenderManager;Z)V", at=@At("RETURN"))
+    @Inject(
+            method = "<init>(Lnet/minecraft/client/renderer/entity/RenderManager;Z)V",
+            at = @At("RETURN") )
     private void init(RenderManager renderManager, boolean useSmallArms, CallbackInfo ci) {
-        this.playerModel = PMAPI.pony;
+        this.playerModel = smallArms ? PMAPI.ponySmall : PMAPI.pony;
         this.mainModel = this.playerModel.getModel();
         this.shadowSize = this.playerModel.getShadowsize();
         this.layerRenderers.clear();
@@ -77,7 +82,7 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity implements 
         this.playerModel.getModel().isFlying = thePony.isPegasusFlying(player);
 
         if (MineLittlePony.getConfig().getShowScale().get()) {
-            if (this.playerModel != PMAPI.human) {
+            if (this.playerModel.getModel().metadata.getRace() != null) {
                 PonySize size = thePony.metadata.getSize();
                 if (size == PonySize.FOAL)
                     this.shadowSize = 0.25F;
@@ -110,7 +115,7 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity implements 
         this.playerModel.getModel().heldItemRight = 0;
     }
 
-    @Inject(method = "renderLivingAt", at = @At("RETURN"))
+    @Inject(method = "renderLivingAt", at = @At("RETURN") )
     private void setupPlayerScale(AbstractClientPlayer player, double xPosition, double yPosition, double zPosition, CallbackInfo ci) {
 
         if (MineLittlePony.getConfig().getShowScale().get() && !(playerModel.getModel() instanceof ModelHumanPlayer)) {
@@ -133,8 +138,9 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity implements 
     }
 
     private PlayerModel getModel(AbstractClientPlayer player) {
-        Pony thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(player);
-        return thePony.getModel();
+        ResourceLocation skin = getEntityTexture(player);
+        Pony thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(skin);
+        return thePony.getModel(false, this.smallArms);
     }
 
     @Override

@@ -6,8 +6,6 @@ import static net.minecraft.client.renderer.GlStateManager.translate;
 
 import java.util.List;
 
-import com.brohoof.minelittlepony.MineLittlePony;
-import com.brohoof.minelittlepony.Pony;
 import com.brohoof.minelittlepony.PonyData;
 import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.model.part.IPonyPart;
@@ -16,13 +14,11 @@ import com.brohoof.minelittlepony.renderer.AniParams;
 import com.brohoof.minelittlepony.renderer.PlaneRenderer;
 import com.google.common.collect.Lists;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.item.EnumAction;
@@ -31,6 +27,12 @@ import net.minecraft.item.ItemStack;
 public abstract class AbstractPonyModel extends ModelPlayer {
 
     protected float scale = 0.0625F;
+
+    public ModelRenderer steveLeftArm;
+    public ModelRenderer steveRightArm;
+    public ModelRenderer steveLeftArmwear;
+    public ModelRenderer steveRightArmwear;
+    
     public boolean isArmour = false;
     public boolean isVillager;
     public boolean isFlying;
@@ -40,8 +42,12 @@ public abstract class AbstractPonyModel extends ModelPlayer {
 
     protected List<IPonyPart> modelParts = Lists.newArrayList();
 
-    public AbstractPonyModel() {
-        super(0, false);
+    public AbstractPonyModel(boolean arms) {
+        super(0, arms);
+        this.steveLeftArm = this.bipedLeftArm;
+        this.steveRightArm = this.bipedRightArm;
+        this.steveLeftArmwear = this.bipedLeftArmwear;
+        this.steveRightArmwear = this.bipedLeftArmwear;
     }
 
     public final void init(float yOffset, float stretch) {
@@ -85,44 +91,15 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     }
 
     @Override
-    public final void renderRightArm() {
-        // Use the human model
-        PMAPI.human.getModel().renderModelRightArm();
+    public void renderRightArm() {
+        this.steveRightArm.render(0.0625F);
+        this.steveRightArmwear.render(0.0625F);
     }
 
     @Override
-    public final void renderLeftArm() {
-        // Use the human model
-        PMAPI.human.getModel().renderModelLeftArm();
-    }
-
-    @Override
-    public final void setRotationAngles(float f1, float f2, float f3, float f4, float f5, float f6, Entity ent) {
-        // set the angles for the humans in preparation for arm rendering
-        // Comes from RenderPlayer.render[Left|Right]Arm?
-        if (PMAPI.human.getModel() != this
-                && Thread.currentThread().getStackTrace()[2].getClassName().equals(RenderPlayer.class.getName())) {
-            PMAPI.human.getModel().setModelVisibilities((AbstractClientPlayer) ent);
-            PMAPI.human.getModel().isSneak = isSneak;
-            PMAPI.human.getModel().swingProgress = swingProgress;
-            PMAPI.human.getModel().setModelRotationAngles(f1, f2, f3, f4, f5, f6, ent);
-            // override default skin
-            Pony pony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry((AbstractClientPlayer) ent);
-            Minecraft.getMinecraft().getTextureManager().bindTexture(pony.getTextureResourceLocation());
-        }
-        setModelRotationAngles(f1, f2, f3, f4, f5, f6, ent);
-    }
-
-    protected void renderModelRightArm() {
-        super.renderRightArm();
-    }
-
-    protected void renderModelLeftArm() {
-        super.renderLeftArm();
-    }
-
-    protected void setModelRotationAngles(float f1, float f2, float f3, float f4, float f5, float f6, Entity ent) {
-        super.setRotationAngles(f1, f2, f3, f4, f5, f6, ent);
+    public void renderLeftArm() {
+        this.steveLeftArm.render(0.0625f);
+        this.steveLeftArmwear.render(0.0625f);
     }
 
     protected void setModelVisibilities(AbstractClientPlayer clientPlayer) {

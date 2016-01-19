@@ -1,0 +1,34 @@
+package com.voxelmodpack.hdskins.mixin;
+
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.At.Shift;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+import com.voxelmodpack.hdskins.HDSkinManager;
+
+import net.minecraft.client.renderer.IImageBuffer;
+import net.minecraft.client.renderer.ImageBufferDownload;
+
+@Mixin(ImageBufferDownload.class)
+public abstract class MixinImageBufferDownload implements IImageBuffer {
+
+    @Inject(method = "parseUserSkin",
+            require = 1,
+            locals = LocalCapture.CAPTURE_FAILHARD,
+            at = @At(value = "INVOKE",
+                    shift = Shift.BEFORE,
+                    target = "Ljava/awt/Graphics;dispose()V") )
+    private void update(BufferedImage image, CallbackInfo ci, BufferedImage image2, Graphics graphics) {
+        // convert skins from legacy server
+        if (image.getHeight() == 32) {
+            HDSkinManager.INSTANCE.convertSkin(image2, graphics);
+        }
+    }
+
+}

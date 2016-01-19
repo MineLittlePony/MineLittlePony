@@ -9,6 +9,10 @@ public class ModelHumanPlayer extends AbstractPonyModel {
     public ModelRenderer bipedEars;
     public ModelRenderer cloak;
 
+    public ModelHumanPlayer(boolean smallArms) {
+        super(smallArms);
+    }
+
     @Override
     protected boolean doCancelRender() {
         return true;

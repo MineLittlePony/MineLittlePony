@@ -24,20 +24,22 @@ import net.minecraft.util.MathHelper;
 
 public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConstants {
 
+    private final boolean smallArms;
     public boolean rainboom;
 
     public ModelRenderer bipedCape;
 
     public PlaneRenderer[] Bodypiece;
     public PlaneRenderer[] BodypieceNeck;
-    public ModelRenderer SteveArm;
     public ModelRenderer unicornarm;
     public PlaneRenderer[] Tail;
 
-    public ModelPlayerPony() {
+    public ModelPlayerPony(boolean smallArms) {
+        super(smallArms);
+        this.smallArms = smallArms;
         addParts();
     }
-    
+
     protected void addParts() {
         modelParts.add(new PonyEars());
         modelParts.add(new PonySnout());
@@ -61,7 +63,6 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         for (k1 = 0; k1 < this.Bodypiece.length; ++k1) {
             this.Bodypiece[k1].rotateAngleY = bodySwingRotation * 0.2F;
         }
-
 
         for (k1 = 0; k1 < this.BodypieceNeck.length; ++k1) {
             this.BodypieceNeck[k1].rotateAngleY = bodySwingRotation * 0.2F;
@@ -193,7 +194,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
                 leftLegRotateAngleX = MathHelper.sin(swing * 0.5F);
             }
 
-            this.SteveArm.rotateAngleY = 0.2F;
+            this.steveRightArm.rotateAngleY = 0.2F;
             this.bipedRightArm.rotateAngleY = 0.2F;
             this.bipedLeftArm.rotateAngleY = -0.2F;
             this.bipedRightLeg.rotateAngleY = -0.2F;
@@ -209,7 +210,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             leftArmRotateAngleX = MathHelper.cos(move * 0.6662F + laQuad) * 0.45F * swing;
             rightLegRotateAngleX = MathHelper.cos(move * 0.6662F + rlQuad) * 0.45F * swing;
             leftLegRotateAngleX = MathHelper.cos(move * 0.6662F + 3.1415927F + llQuad) * 0.45F * swing;
-            this.SteveArm.rotateAngleY = 0.0F;
+            this.steveRightArm.rotateAngleY = 0.0F;
             this.unicornarm.rotateAngleY = 0.0F;
 
             this.bipedRightArm.rotateAngleY = 0.0F;
@@ -219,7 +220,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         }
 
         this.bipedRightArm.rotateAngleX = rightArmRotateAngleX;
-        this.SteveArm.rotateAngleX = rightArmRotateAngleX;
+        this.steveRightArm.rotateAngleX = rightArmRotateAngleX;
         this.unicornarm.rotateAngleX = 0.0F;
 
         this.bipedLeftArm.rotateAngleX = leftArmRotateAngleX;
@@ -227,7 +228,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.bipedLeftLeg.rotateAngleX = leftLegRotateAngleX;
         this.bipedRightArm.rotateAngleZ = 0.0F;
 
-        this.SteveArm.rotateAngleZ = 0.0F;
+        this.steveRightArm.rotateAngleZ = 0.0F;
         this.unicornarm.rotateAngleZ = 0.0F;
         this.bipedLeftArm.rotateAngleZ = 0.0F;
     }
@@ -237,7 +238,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         float cosBodyRotateAngleYFactor = MathHelper.cos(this.bipedBody.rotateAngleY) * 5.0F;
         float legOutset = 4.0F;
         if (this.isSneak && !this.isFlying) {
-            legOutset = 0.0F;
+            legOutset = smallArms ? 1.0F : 0F;
         }
 
         if (this.isSleeping) {
@@ -246,17 +247,17 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
         if (this.rainboom) {
             this.bipedRightArm.rotationPointZ = sinBodyRotateAngleYFactor + 2.0F;
-            this.SteveArm.rotationPointZ = sinBodyRotateAngleYFactor + 2.0F;
+            this.steveRightArm.rotationPointZ = sinBodyRotateAngleYFactor + 2.0F;
             this.bipedLeftArm.rotationPointZ = 0.0F - sinBodyRotateAngleYFactor + 2.0F;
         } else {
             this.bipedRightArm.rotationPointZ = sinBodyRotateAngleYFactor + 1.0F;
-            this.SteveArm.rotationPointZ = sinBodyRotateAngleYFactor + 1.0F;
+            this.steveRightArm.rotationPointZ = sinBodyRotateAngleYFactor + 1.0F;
             this.bipedLeftArm.rotationPointZ = 0.0F - sinBodyRotateAngleYFactor + 1.0F;
         }
-        this.SteveArm.rotationPointX = 0.0F - cosBodyRotateAngleYFactor;
+        this.steveRightArm.rotationPointX = 0.0F - cosBodyRotateAngleYFactor;
 
         this.bipedRightArm.rotationPointX = 0.0F - cosBodyRotateAngleYFactor - 1.0F + legOutset;
-        this.bipedLeftArm.rotationPointX = cosBodyRotateAngleYFactor + 1.0F - legOutset;
+        this.bipedLeftArm.rotationPointX = cosBodyRotateAngleYFactor + 2.0F - legOutset;
         this.bipedRightLeg.rotationPointX = 0.0F - cosBodyRotateAngleYFactor - 1.0F + legOutset;
         this.bipedLeftLeg.rotationPointX = cosBodyRotateAngleYFactor + 1.0F - legOutset;
 
@@ -302,7 +303,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     protected void holdItem() {
         if (this.heldItemRight != 0 && !this.rainboom && (!this.metadata.getRace().hasHorn() || this.metadata.getGlowColor() == 0)) {
             this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - 0.3141593F;
-            this.SteveArm.rotateAngleX = this.SteveArm.rotateAngleX * 0.5F - 0.3141593F;
+            this.steveRightArm.rotateAngleX = this.steveRightArm.rotateAngleX * 0.5F - 0.3141593F;
         }
 
     }
@@ -323,9 +324,9 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
                 this.bipedRightArm.rotateAngleX = (float) (this.bipedRightArm.rotateAngleX - (f22 * 1.2D + f33));
                 this.bipedRightArm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
                 this.bipedRightArm.rotateAngleZ = f28 * -0.4F;
-                this.SteveArm.rotateAngleX = (float) (this.SteveArm.rotateAngleX - (f22 * 1.2D + f33));
-                this.SteveArm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
-                this.SteveArm.rotateAngleZ = f28 * -0.4F;
+                this.steveRightArm.rotateAngleX = (float) (this.steveRightArm.rotateAngleX - (f22 * 1.2D + f33));
+                this.steveRightArm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
+                this.steveRightArm.rotateAngleZ = f28 * -0.4F;
             }
         }
 
@@ -341,8 +342,8 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             } else {
                 this.bipedRightArm.rotateAngleZ += cosTickFactor;
                 this.bipedRightArm.rotateAngleX += sinTickFactor;
-                this.SteveArm.rotateAngleZ += cosTickFactor;
-                this.SteveArm.rotateAngleX += sinTickFactor;
+                this.steveRightArm.rotateAngleZ += cosTickFactor;
+                this.steveRightArm.rotateAngleX += sinTickFactor;
             }
         }
 
@@ -376,7 +377,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     }
 
     protected void sneakLegs() {
-        this.SteveArm.rotateAngleX += SNEAK_LEG_X_ROTATION_ADJUSTMENT;
+        this.steveRightArm.rotateAngleX += SNEAK_LEG_X_ROTATION_ADJUSTMENT;
         this.unicornarm.rotateAngleX += SNEAK_LEG_X_ROTATION_ADJUSTMENT;
 
         this.bipedRightArm.rotateAngleX -= SNEAK_LEG_X_ROTATION_ADJUSTMENT;
@@ -713,24 +714,18 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.bipedRightArm = new ModelRenderer(this, 40, 16);
         this.bipedRightLeg = new ModelRenderer(this, 0, 16);
 
-        if (this.textureHeight == 64) {
-            this.bipedLeftArm = new ModelRenderer(this, 32, 48);
-            this.bipedLeftLeg = new ModelRenderer(this, 16, 48);
+        this.bipedLeftArm = new ModelRenderer(this, 32, 48);
+        this.bipedLeftLeg = new ModelRenderer(this, 16, 48);
 
-            this.bipedRightArmwear = new ModelRenderer(this, 40, 32);
-            this.bipedRightLegwear = new ModelRenderer(this, 0, 32);
+        this.bipedRightArmwear = new ModelRenderer(this, 40, 32);
+        this.bipedRightLegwear = new ModelRenderer(this, 0, 32);
 
-            this.bipedLeftArmwear = new ModelRenderer(this, 48, 48);
-            this.bipedLeftLegwear = new ModelRenderer(this, 0, 48);
-        } else {
-            this.bipedLeftArm = new ModelRenderer(this, 40, 16);
-            this.bipedLeftArm.mirror = true;
-            this.bipedLeftLeg = new ModelRenderer(this, 0, 16);
-            this.bipedLeftLeg.mirror = true;
-        }
-        this.SteveArm = new ModelRenderer(this, 40, 16).setTextureSize(64, 64);
+        this.bipedLeftArmwear = new ModelRenderer(this, 48, 48);
+        this.bipedLeftLegwear = new ModelRenderer(this, 0, 48);
+
         this.unicornarm = new ModelRenderer(this, 40, 32).setTextureSize(64, 64);
-        this.boxList.remove(this.SteveArm);
+
+        this.boxList.remove(this.steveRightArm);
         this.boxList.remove(this.unicornarm);
     }
 
@@ -824,17 +819,32 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     }
 
     protected void initLegPositions(float yOffset, float stretch) {
-        this.bipedRightArm.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch);
-        this.bipedRightArm.setRotationPoint(-3.0F, 8.0F + yOffset, 0.0F);
-        if (bipedRightArmwear != null) {
-            this.bipedRightArmwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25f);
-            this.bipedRightArmwear.setRotationPoint(-3.0F, 8.0F + yOffset, 0.0F);
-        }
-        this.bipedLeftArm.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch);
-        this.bipedLeftArm.setRotationPoint(3.0F, 8.0F + yOffset, 0.0F);
-        if (this.bipedLeftArmwear != null) {
-            this.bipedLeftArmwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25f);
-            this.bipedLeftArmwear.setRotationPoint(3.0F, 8.0F + yOffset, 0.0F);
+        if (this.smallArms) {
+            this.bipedRightArm.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 3, 12, 4, stretch);
+            this.bipedRightArm.setRotationPoint(-2.0F, 8.5F + yOffset, 0.0F);
+            if (bipedRightArmwear != null) {
+                this.bipedRightArmwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 3, 12, 4, stretch + 0.25f);
+                this.bipedRightArmwear.setRotationPoint(-3.0F, 8.5F + yOffset, 0.0F);
+            }
+            this.bipedLeftArm.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 3, 12, 4, stretch);
+            this.bipedLeftArm.setRotationPoint(3.0F, 8.5F + yOffset, 0.0F);
+            if (this.bipedLeftArmwear != null) {
+                this.bipedLeftArmwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 3, 12, 4, stretch + 0.25f);
+                this.bipedLeftArmwear.setRotationPoint(3.0F, 8.5F + yOffset, 0.0F);
+            }
+        } else {
+            this.bipedRightArm.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch);
+            this.bipedRightArm.setRotationPoint(-3.0F, 8.0F + yOffset, 0.0F);
+            if (bipedRightArmwear != null) {
+                this.bipedRightArmwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25f);
+                this.bipedRightArmwear.setRotationPoint(-3.0F, 8.0F + yOffset, 0.0F);
+            }
+            this.bipedLeftArm.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch);
+            this.bipedLeftArm.setRotationPoint(3.0F, 8.0F + yOffset, 0.0F);
+            if (this.bipedLeftArmwear != null) {
+                this.bipedLeftArmwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25f);
+                this.bipedLeftArmwear.setRotationPoint(3.0F, 8.0F + yOffset, 0.0F);
+            }
         }
         this.bipedRightLeg.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch);
         this.bipedRightLeg.setRotationPoint(-3.0F, 0.0F + yOffset, 0.0F);
@@ -849,8 +859,6 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         if (this.bipedLeftLegwear != null) {
             this.bipedLeftLegwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25f);
         }
-        this.SteveArm.addBox(-3.0F, -2.0F, -2.0F, 4, 12, 4, stretch);
-        this.SteveArm.setRotationPoint(-5.0F, 2.0F + yOffset, 0.0F);
         this.unicornarm.addBox(-2.0F + FIRSTP_ARM_CENTRE_X, -6.0F + FIRSTP_ARM_CENTRE_Y, -2.0F + FIRSTP_ARM_CENTRE_Z, 4, 12, 4, stretch + .25f);
         this.unicornarm.setRotationPoint(-5.0F, 2.0F + yOffset, 0.0F);
     }

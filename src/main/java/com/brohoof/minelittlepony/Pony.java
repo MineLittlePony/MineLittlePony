@@ -103,11 +103,7 @@ public class Pony {
         return player.capabilities.isFlying || !(player.onGround || player.isOnLadder() || player.isInWater());
     }
 
-    public PlayerModel getModel() {
-        return getModel(false);
-    }
-
-    public PlayerModel getModel(boolean ignorePony) {
+    public PlayerModel getModel(boolean ignorePony, boolean smallArms) {
         boolean is_a_pony = false;
         switch (ignorePony ? PonyLevel.BOTH : config.getPonyLevel().get()) {
         case HUMANS:
@@ -122,9 +118,9 @@ public class Pony {
 
         PlayerModel model;
         if (is_a_pony) {
-            model = PMAPI.pony;
+            model = smallArms ? PMAPI.ponySmall : PMAPI.pony;
         } else {
-            model = PMAPI.human;
+            model = smallArms ? PMAPI.humanSmall : PMAPI.human;
         }
         return model;
     }

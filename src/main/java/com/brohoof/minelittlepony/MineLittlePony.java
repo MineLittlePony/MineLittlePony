@@ -83,13 +83,14 @@ public class MineLittlePony implements InitCompleteListener {
 
     @Override
     public void onInitCompleted(Minecraft minecraft, LiteLoader loader) {
-        if (this.config.getHd().get()) {
-            HDSkinManager.clearSkinCache();
-            HDSkinManager.setSkinUrl(SKIN_SERVER_URL);
-            HDSkinManager.setGatewayURL(GATEWAY_URL);
-            HDSkinManager.addSkinModifier(new PonySkinModifier());
-            MineLPLogger.info("Set MineLP skin server URL.");
-        }
+
+        HDSkinManager.clearSkinCache();
+        HDSkinManager manager = HDSkinManager.INSTANCE;
+        manager.setSkinUrl(config.skinfix ? GATEWAY_URL : SKIN_SERVER_URL);
+        manager.setGatewayURL(GATEWAY_URL);
+        manager.addSkinModifier(new PonySkinModifier());
+        MineLPLogger.info("Set MineLP skin server URL.");
+
         RenderManager rm = minecraft.getRenderManager();
         ModUtilities.addRenderer(EntityPonyModel.class, new RenderPonyModel(rm));
         if (this.config.getVillagers().get()) {
@@ -127,6 +128,7 @@ public class MineLittlePony implements InitCompleteListener {
         if (pressed || skins) {
             minecraft.displayGuiScreen(new GuiSkinsMineLP(ponyManager));
         }
+        HDSkinManager.INSTANCE.setEnabled(config.getHd().get());
     }
 
     public PonyManager getManager() {

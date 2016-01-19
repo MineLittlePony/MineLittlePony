@@ -31,6 +31,8 @@ public class PonyConfig implements AdvancedExposable {
     private Value<Boolean> pigzombies = new Value<Boolean>(true);
     @Expose
     private Value<Boolean> skeletons = new Value<Boolean>(true);
+    @Expose
+    public boolean skinfix = true;
 
     public Value<PonyLevel> getPonyLevel() {
         if (ponylevel.get() == null)

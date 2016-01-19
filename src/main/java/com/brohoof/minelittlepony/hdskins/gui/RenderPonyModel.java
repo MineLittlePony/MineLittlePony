@@ -21,7 +21,8 @@ public class RenderPonyModel extends RenderPlayerModel {
         EntityPlayerModel playerModelEntity = (EntityPlayerModel) par1EntityLivingBase;
         Pony thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(this.getEntityTexture(playerModelEntity));
         thePony.checkSkin();
-        PlayerModel pm = thePony.getModel(true);
+        // TODO small arms
+        PlayerModel pm = thePony.getModel(true, false);
         this.mainModel = pm.getModel();
         pm.apply(thePony.metadata);
         this.mainModel.render(par1EntityLivingBase, par2, par3, par4, par5, par6, par7);

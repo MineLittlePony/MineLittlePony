@@ -13,6 +13,10 @@ public class ModelVillagerPony extends ModelPlayerPony {
 
     public int profession;
 
+    public ModelVillagerPony() {
+        super(false);
+    }
+
     @Override
     public void animate(AniParams aniparams) {
         super.animate(aniparams);

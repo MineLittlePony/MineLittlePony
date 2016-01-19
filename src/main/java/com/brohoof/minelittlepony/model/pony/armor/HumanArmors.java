@@ -6,8 +6,8 @@ import com.brohoof.minelittlepony.model.pony.ModelHumanPlayer;
 public class HumanArmors extends AbstractArmor {
 
     public HumanArmors() {
-        this.modelArmorChestplate = new ModelHumanPlayer();
-        this.modelArmor = new ModelHumanPlayer();
+        this.modelArmorChestplate = new ModelHumanPlayer(false);
+        this.modelArmor = new ModelHumanPlayer(false);
     }
 
 }

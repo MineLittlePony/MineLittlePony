@@ -16,6 +16,7 @@ public class ModelPonyArmor extends ModelPlayerPony {
     public ModelRenderer[] extLegs;
 
     public ModelPonyArmor() {
+        super(false);
         this.isArmour = true;
         this.textureHeight = 32;
     }
@@ -194,7 +195,7 @@ public class ModelPonyArmor extends ModelPlayerPony {
         this.bipedRightLeg = new ModelRenderer(this, 0, 16);
         this.bipedLeftLeg = new ModelRenderer(this, 0, 16);
         this.bipedLeftLeg.mirror = true;
-        this.SteveArm = new ModelRenderer(this, 0, 16);
+        this.steveRightArm = new ModelRenderer(this, 0, 16);
         this.unicornarm = new ModelRenderer(this, 0, 16);
         this.extLegs[0] = new ModelRenderer(this, 48, 8);
         this.extLegs[1] = new ModelRenderer(this, 48, 8);

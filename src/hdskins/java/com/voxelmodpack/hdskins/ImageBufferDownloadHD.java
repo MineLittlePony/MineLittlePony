@@ -44,7 +44,7 @@ public class ImageBufferDownloadHD implements IImageBuffer {
         drawImage(48, 52, 44, 64, 52, 20, 56, 32);
 
         // mod things
-        HDSkinManager.updateSkin(image, graphics);
+        HDSkinManager.INSTANCE.convertSkin(image, graphics);
 
         graphics.dispose();
         return image;

@@ -43,16 +43,20 @@ sourceSets {
 		configurations.forgeGradleMc,
 		configurations.provided
 	]
+	main {
+		refMap = 'mixin.minelp.refmap.json'
+	}
 	common {
 		compileClasspath += files deps
 	}
 	hdskins {
 		compileClasspath += files deps
+		refMap = 'mixin.hdskins.refmap.json'
 	}
 }
 project('forge') {
 	apply plugin: 'net.minecraftforge.gradle.forge'
-	version = '0'
+	version = '0.0'
 	minecraft {
 		version = '1.8-11.14.3.1543'
 		mappings = rootProject.minecraft.mappings
