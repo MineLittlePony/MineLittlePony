@@ -63,9 +63,9 @@ public class LayerPonyArmor implements LayerRenderer {
             boolean isLegs = armorSlot == 2;
 
             AbstractPonyModel modelbase = isLegs ? pony.getArmor().modelArmor : pony.getArmor().modelArmorChestplate;
+            modelbase = getArmorModel(entitylivingbaseIn, itemstack, armorSlot, modelbase);
             modelbase.setModelAttributes(this.pony.getModel());
             modelbase.setLivingAnimations(entitylivingbaseIn, p_177141_2_, p_177141_3_, partialTicks);
-            modelbase = getArmorModel(entitylivingbaseIn, itemstack, armorSlot, modelbase);
             prepareToRender((ModelPonyArmor) modelbase, armorSlot);
 
             this.renderer.bindTexture(getArmorTexture(entitylivingbaseIn, itemstack, isLegs ? 2 : 1, null));

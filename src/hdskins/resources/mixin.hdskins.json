@@ -1,4 +1,6 @@
 {
+	"required": true,
+    "minVersion": "0.4.10",
 	"package": "com.voxelmodpack.hdskins.mixin",
 	"refmap": "mixin.hdskins.refmap.json",
 	"mixins": [

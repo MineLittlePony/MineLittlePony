@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
 import com.brohoof.minelittlepony.PonySize;
+import com.brohoof.minelittlepony.model.BodyPart;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
 import com.brohoof.minelittlepony.renderer.IRenderPony;
@@ -47,7 +48,6 @@ public class LayerHeldPonyItem implements LayerRenderer {
                     p_177141_7_, scale);
             return;
         }
-
         if (!pony.getModel().isSleeping) {
             if (pony.getModel().metadata.getRace().hasHorn() && pony.getModel().metadata.getGlowColor() != 0) {
                 ModelPlayerPony model = (ModelPlayerPony) pony.getModel();
@@ -71,6 +71,7 @@ public class LayerHeldPonyItem implements LayerRenderer {
         ItemStack drop = entity.getHeldItem();
         if (drop != null) {
             pushMatrix();
+            pony.getModel().transform(BodyPart.LEGS);
             if (pony.getModel().isChild) {
                 translate(0.0F, 0.625F, 0.0F);
                 rotate(-20.0F, -1.0F, 0.0F, 0.0F);
