@@ -19,7 +19,7 @@ buildscript {
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.0-SNAPSHOT'
         classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.0'
-        classpath 'org.spongepowered:mixingradle:0.1-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.3-SNAPSHOT'
     }
 }
 
@@ -68,7 +68,7 @@ repositories {
 }
 
 dependencies {
-    compile 'org.spongepowered:mixin:0.4.11-SNAPSHOT'
+    compile 'org.spongepowered:mixin:0.4.14-SNAPSHOT'
     compile 'com.google.guava:guava:17.0'
     compile 'com.google.code.gson:gson:2.2.4'
 }
@@ -86,7 +86,7 @@ sourceSets {
     }
     client {
         compileClasspath += main.compileClasspath + main.output
-        //refMap = "mixins.liteloader.client.refmap.json"
+        refMap = "mixins.liteloader.client.refmap.json"
     }
     debug {
         compileClasspath += client.compileClasspath + client.output
@@ -119,12 +119,12 @@ afterEvaluate {
     logger.lifecycle '  Copyright (C) 2011-2016 Adam Mummery-Smith'
     logger.lifecycle '  Running in {} mode', (project.isReleaseBuild ? "RELEASE" : "SNAPSHOT")
     logger.lifecycle '================================================='
-    
+    allprojects {
     makeEclipseCleanRunClient {
         arguments = ""
         jvmArguments = "-Dliteloader.debug=true -Dmixin.debug.verbose=true -Dmixin.debug.verify=true"
     }
-    
+    }
     // hacks for run configs
     def mc = plugins.getPlugin 'net.minecraftforge.gradle.tweaker-client'
     mc.replacer.putReplacement '{RUN_CLIENT_MAIN}', project.startClass

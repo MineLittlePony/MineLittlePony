@@ -164,18 +164,18 @@ public abstract class Start
     {
         Set<String> args = qualifiedArgs.get(qualifier);
 
+        if (args != null && !Start.MULTI_VALUE_ARGS.contains(qualifier))
+        {
+            return;
+        }
+
         if (args == null)
         {
-            args =  new HashSet<String>();
+            args = new HashSet<String>();
             qualifiedArgs.put(qualifier, args);
         }
-
-        if (!Start.MULTI_VALUE_ARGS.contains(qualifier))
-        {
-            args.clear();
-        }
-
         args.add(arg);
+
     }
 
     private static String getArg(Map<String, Set<String>> qualifiedArgs, String arg)

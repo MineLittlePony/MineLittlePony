@@ -650,6 +650,8 @@ public class LiteLoaderEnumerator implements LoaderEnumerator
 
     private void addMixinsFrom(MixinContainer<File> container)
     {
+        try {
+        container.injectIntoClassPath(this.classLoader, true);
         for (String config : container.getMixinConfigs())
         {
             if (config.endsWith(".json"))
@@ -669,6 +671,10 @@ public class LiteLoaderEnumerator implements LoaderEnumerator
                     MixinEnvironment.getEnvironment(phase).addConfiguration(config);
                 }
             }
+        }
+        } catch (MalformedURLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
     
