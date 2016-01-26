@@ -1,11 +1,10 @@
 package com.brohoof.minelittlepony.model.part;
 
 import com.brohoof.minelittlepony.PonyData;
-import com.brohoof.minelittlepony.model.BodyPart;
 import com.brohoof.minelittlepony.model.AbstractPonyModel;
+import com.brohoof.minelittlepony.model.BodyPart;
 import com.brohoof.minelittlepony.model.PonyModelConstants;
 import com.brohoof.minelittlepony.renderer.AniParams;
-import com.brohoof.minelittlepony.renderer.CompressiveRendering;
 
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.util.MathHelper;
@@ -20,9 +19,6 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
     public ModelRenderer[] leftWingExt;
     public ModelRenderer[] rightWingExt;
 
-    public CompressiveRendering compressiveLeftWing;
-    public CompressiveRendering compressiveRightWing;
-
     @Override
     public void init(AbstractPonyModel pony, float yOffset, float stretch) {
         this.pony = pony;
@@ -31,28 +27,19 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
         this.rightWing = new ModelRenderer[3];
         this.leftWingExt = new ModelRenderer[6];
         this.rightWingExt = new ModelRenderer[6];
-        this.compressiveLeftWing = new CompressiveRendering(pony);
-        this.compressiveRightWing = new CompressiveRendering(pony);
 
         for (int i = 0; i < leftWing.length; i++) {
             this.leftWing[i] = new ModelRenderer(pony, 56, 32);
-            this.compressiveLeftWing.addCompressed(this.leftWing[i]);
         }
         for (int i = 0; i < rightWing.length; i++) {
             this.rightWing[i] = new ModelRenderer(pony, 56, 16);
-            this.compressiveRightWing.addCompressed(this.rightWing[i]);
         }
         for (int i = 0; i < leftWingExt.length; i++) {
             this.leftWingExt[i] = new ModelRenderer(pony, 56, 35);
-            this.compressiveLeftWing.addExpanded(this.leftWingExt[i]);
         }
         for (int i = 0; i < rightWingExt.length; i++) {
             this.rightWingExt[i] = new ModelRenderer(pony, 56, 19);
-            this.compressiveRightWing.addExpanded(this.rightWingExt[i]);
         }
-
-        this.compressiveLeftWing.setChance(2);
-        this.compressiveRightWing.setChance(2);
 
         initPositions(yOffset, stretch);
     }
@@ -147,7 +134,6 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
         pony.transform(BodyPart.BODY);
         if (data.getRace() != null && data.getRace().hasWings()) {
             if (!pony.isFlying && !pony.isSneak) {
-                this.setExtendingWings(true);
 
                 for (int k1 = 0; k1 < this.leftWing.length; ++k1) {
                     this.leftWing[k1].render(scale);
@@ -157,7 +143,6 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
                     this.rightWing[k1].render(scale);
                 }
             } else {
-                this.setExtendingWings(false);
 
                 for (int k1 = 0; k1 < this.leftWingExt.length; ++k1) {
                     this.leftWingExt[k1].render(scale);
@@ -167,21 +152,6 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
                     this.rightWingExt[i].render(scale);
                 }
             }
-        }
-    }
-
-    private void setExtendingWings(boolean compress) {
-        this.compressiveLeftWing.setIsCompressed(compress);
-        this.compressiveRightWing.setIsCompressed(compress);
-    }
-
-    public void setWingCompression(boolean pegasus) {
-        if (pegasus) {
-            this.compressiveLeftWing.init_Safe();
-            this.compressiveRightWing.init_Safe();
-        } else {
-            this.compressiveLeftWing.deInit_Safe();
-            this.compressiveRightWing.deInit_Safe();
         }
     }
 

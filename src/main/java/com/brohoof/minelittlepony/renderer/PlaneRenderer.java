@@ -24,12 +24,6 @@ public class PlaneRenderer {
     public float rotateAngleX;
     public float rotateAngleY;
     public float rotateAngleZ;
-    public float field_35977_i;
-    public float field_35975_j;
-    public float field_35976_k;
-    public float field_35973_l;
-    public float field_35974_m;
-    public float field_35972_n;
     private boolean compiled = false;
     private int displayList = 0;
     public boolean mirror = false;
@@ -38,9 +32,9 @@ public class PlaneRenderer {
     public boolean showModel = true;
     public boolean isHidden = false;
 
-    public PlaneRenderer(ModelBase modelbase, int i, int j) {
-        this.textureOffsetX = i;
-        this.textureOffsetY = j;
+    public PlaneRenderer(ModelBase modelbase, int offsetX, int offsetY) {
+        this.textureOffsetX = offsetX;
+        this.textureOffsetY = offsetY;
         this.textureWidth = modelbase.textureWidth;
         this.textureHeight = modelbase.textureHeight;
     }
@@ -62,12 +56,6 @@ public class PlaneRenderer {
     }
 
     public void addBackPlane(float f, float f1, float f2, int i, int j, int k, float f3) {
-        this.field_35977_i = f;
-        this.field_35975_j = f1;
-        this.field_35976_k = f2;
-        this.field_35973_l = f + i;
-        this.field_35974_m = f1 + j;
-        this.field_35972_n = f2 + k;
         this.corners = new PositionTextureVertex[8];
         this.faces = new TexturedQuad[1];
         float f4 = f + i;
@@ -117,12 +105,6 @@ public class PlaneRenderer {
     }
 
     public void addSidePlane(float f, float f1, float f2, int i, int j, int k, float f3) {
-        this.field_35977_i = f;
-        this.field_35975_j = f1;
-        this.field_35976_k = f2;
-        this.field_35973_l = f + i;
-        this.field_35974_m = f1 + j;
-        this.field_35972_n = f2 + k;
         this.corners = new PositionTextureVertex[8];
         this.faces = new TexturedQuad[1];
         float f4 = f + i;
@@ -172,12 +154,6 @@ public class PlaneRenderer {
     }
 
     public void addTopPlane(float f, float f1, float f2, int i, int j, int k, float f3) {
-        this.field_35977_i = f;
-        this.field_35975_j = f1;
-        this.field_35976_k = f2;
-        this.field_35973_l = f + i;
-        this.field_35974_m = f1 + j;
-        this.field_35972_n = f2 + k;
         this.corners = new PositionTextureVertex[8];
         this.faces = new TexturedQuad[1];
         float f4 = f + i;
@@ -243,12 +219,6 @@ public class PlaneRenderer {
     }
 
     public void addBottomPlane(float f, float f1, float f2, int i, int j, int k, float f3) {
-        this.field_35977_i = f;
-        this.field_35975_j = f1;
-        this.field_35976_k = f2;
-        this.field_35973_l = f + i;
-        this.field_35974_m = f1 + j;
-        this.field_35972_n = f2 + k;
         this.corners = new PositionTextureVertex[8];
         this.faces = new TexturedQuad[1];
         float f4 = f + i;
@@ -384,19 +354,19 @@ public class PlaneRenderer {
         }
     }
 
-    public void postRender(float f) {
+    public void postRender(float scale) {
         if (!this.isHidden) {
             if (this.showModel) {
                 if (!this.compiled) {
-                    this.compileDisplayList(f);
+                    this.compileDisplayList(scale);
                 }
 
                 if (this.rotateAngleX == 0.0F && this.rotateAngleY == 0.0F && this.rotateAngleZ == 0.0F) {
                     if (this.rotationPointX != 0.0F || this.rotationPointY != 0.0F || this.rotationPointZ != 0.0F) {
-                        translate(this.rotationPointX * f, this.rotationPointY * f, this.rotationPointZ * f);
+                        translate(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
                     }
                 } else {
-                    translate(this.rotationPointX * f, this.rotationPointY * f, this.rotationPointZ * f);
+                    translate(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
                     if (this.rotateAngleZ != 0.0F) {
                         rotate(this.rotateAngleZ * 57.29578F, 0.0F, 0.0F, 1.0F);
                     }

@@ -3,8 +3,6 @@ package com.brohoof.minelittlepony.model.pony;
 import static net.minecraft.client.renderer.GlStateManager.popMatrix;
 import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
 
-import java.util.Random;
-
 import com.brohoof.minelittlepony.model.AbstractPonyModel;
 import com.brohoof.minelittlepony.model.BodyPart;
 import com.brohoof.minelittlepony.model.PonyModelConstants;
@@ -13,7 +11,6 @@ import com.brohoof.minelittlepony.model.part.PonyEars;
 import com.brohoof.minelittlepony.model.part.PonySnout;
 import com.brohoof.minelittlepony.model.part.UnicornHorn;
 import com.brohoof.minelittlepony.renderer.AniParams;
-import com.brohoof.minelittlepony.renderer.CompressiveRendering;
 import com.brohoof.minelittlepony.renderer.PlaneRenderer;
 
 import net.minecraft.client.model.ModelRenderer;
@@ -818,12 +815,6 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     @Override
     public void renderCape(float scale) {
         this.bipedCape.render(scale);
-    }
-
-    @Override
-    public ModelRenderer getRandomModelBox(Random par1Random) {
-        Object part = this.boxList.get(par1Random.nextInt(this.boxList.size()));
-        return part instanceof ModelRenderer ? (ModelRenderer) part : ((CompressiveRendering) part).getARenderer(par1Random);
     }
 
 }
