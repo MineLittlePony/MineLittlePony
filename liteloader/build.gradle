@@ -68,7 +68,8 @@ repositories {
 }
 
 dependencies {
-    compile 'org.spongepowered:mixin:0.4.14-SNAPSHOT'
+    compile 'org.spongepowered:mixin:0.4.17-20160126.141141-3'
+	compile 'org.ow2.asm:asm-debug-all:5.0.3'
     compile 'com.google.guava:guava:17.0'
     compile 'com.google.code.gson:gson:2.2.4'
 }

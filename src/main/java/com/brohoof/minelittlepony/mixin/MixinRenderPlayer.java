@@ -69,13 +69,11 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity implements 
      */
     @Overwrite
     public void doRender(AbstractClientPlayer player, double x, double y, double z, float yaw, float partialTicks) {
+        updateModel(player);
         ItemStack currentItemStack = player.inventory.getCurrentItem();
-        this.thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(player);
-        thePony.checkSkin();
-        this.playerModel = this.getModel(player);
-        this.mainModel = this.playerModel.getModel();
+
         this.playerModel.getModel().heldItemRight = currentItemStack == null ? 0 : 1;
-        this.playerModel.apply(thePony.metadata);
+
         if (currentItemStack != null && player.getItemInUseCount() > 0) {
             EnumAction yOrigin = currentItemStack.getItemUseAction();
             if (yOrigin == EnumAction.BLOCK) {
@@ -136,12 +134,22 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity implements 
 
     @Inject(method = "renderRightArm(" + AbstractClientPlayer + ")V", at = @At("HEAD") )
     private void onRenderRightArm(AbstractClientPlayer player, CallbackInfo ci) {
+        updateModel(player);
         bindEntityTexture(player);
     }
 
     @Inject(method = "renderLeftArm(" + AbstractClientPlayer + ")V", at = @At("HEAD") )
     private void onRenderLeftArm(AbstractClientPlayer player, CallbackInfo ci) {
+        updateModel(player);
         bindEntityTexture(player);
+    }
+
+    private void updateModel(AbstractClientPlayer player) {
+        this.thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(player);
+        thePony.checkSkin();
+        this.playerModel = this.getModel(player);
+        this.mainModel = this.playerModel.getModel();
+        this.playerModel.apply(thePony.metadata);
     }
 
     private ResourceLocation getEntityTexture(AbstractClientPlayer player) {
@@ -149,9 +157,6 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity implements 
         return thePony.getTextureResourceLocation();
     }
 
-    /**
-     * @reason Change the skin in case of non-pony skin
-     */
     @Override
     public final ResourceLocation getEntityTexture(Entity entity) {
         return this.getEntityTexture((AbstractClientPlayer) entity);
