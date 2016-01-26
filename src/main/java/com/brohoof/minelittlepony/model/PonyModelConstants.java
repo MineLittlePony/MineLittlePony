@@ -7,10 +7,13 @@ public interface PonyModelConstants {
     float BODY_CENTRE_Z = 6.0F;
     float BODY_ROTATE_ANGLE_X_NOTSNEAK = 0.0F;
     float BODY_ROTATE_ANGLE_X_SNEAK = 0.4F;
+    float BODY_ROTATE_ANGLE_X_RIDING = (float) (Math.PI * 3.8);
     float BODY_RP_Y_NOTSNEAK = 0.0F;
     float BODY_RP_Y_SNEAK = 7.0F;
+    float BODY_RP_Y_RIDING = 3;
     float BODY_RP_Z_NOTSNEAK = 0.0F;
     float BODY_RP_Z_SNEAK = -4.0F;
+    float BODY_RP_Z_RIDING = 6F;
     float EXT_WING_ROTATE_ANGLE_X = 2.5F;
     float FIRSTP_ARM_CENTRE_X = -1.0F;
     float FIRSTP_ARM_CENTRE_Y = 4.0F;

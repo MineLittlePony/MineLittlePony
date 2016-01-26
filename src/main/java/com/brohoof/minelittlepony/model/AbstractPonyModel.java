@@ -20,6 +20,7 @@ import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
@@ -32,9 +33,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     public ModelRenderer steveRightArm;
     public ModelRenderer steveLeftArmwear;
     public ModelRenderer steveRightArmwear;
-    
-    public boolean isArmour = false;
-    public boolean isVillager;
+
     public boolean isFlying;
     public boolean isSleeping;
 
@@ -169,11 +168,11 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     }
 
     public void transform(BodyPart part) {
-        if (this.isRiding && !this.isArmour) {
-            translate(0.0F, -0.56F, -0.46F);
+        if (this.isRiding) {
+            translate(0.0F, -0.6F, -0.2F);
         }
 
-        if (this.isSleeping && !this.isArmour) {
+        if (this.isSleeping) {
             rotate(90.0F, 0.0F, 1.0F, 0.0F);
             rotate(270.0F, 0.0F, 0.0F, 1.0F);
             rotate(90.0F, 0.0F, 1.0F, 0.0F);
@@ -182,12 +181,15 @@ public abstract class AbstractPonyModel extends ModelPlayer {
         }
 
         if (this.metadata.getSize() == PonySize.FOAL || isChild) {
-            if (this.isSneak && !this.isFlying && !this.isArmour) {
+            if (this.isSneak && !this.isFlying) {
                 translate(0.0F, -0.12F, 0.0F);
             }
 
-            if (this.isSleeping && !this.isArmour) {
+            if (this.isSleeping) {
                 translate(0.0F, -1.0F, 0.25F);
+            }
+            if (this.isRiding) {
+                translate(0, -.1, 0);
             }
             switch (part) {
             case NECK:
@@ -220,7 +222,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
             }
 
         } else if (this.metadata.getSize() == PonySize.LARGE) {
-            if (this.isSleeping && !this.isArmour) {
+            if (this.isSleeping) {
                 translate(0.0F, -0.47F, 0.2F);
             }
 
@@ -228,7 +230,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
             case HEAD:
 
                 translate(0.0F, -0.17F, -0.04F);
-                if (this.isSleeping && !this.isArmour) {
+                if (this.isSleeping) {
                     translate(0.0F, 0.0F, -0.1F);
                 }
 
@@ -257,7 +259,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
                 break;
             }
         } else if (this.metadata.getSize() == PonySize.TALL) {
-            if (this.isSleeping && !this.isArmour) {
+            if (this.isSleeping) {
                 translate(0.0F, -0.43F, 0.25F);
             }
 
@@ -289,7 +291,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
                 break;
             }
         } else {
-            if (this.isSleeping && !this.isArmour) {
+            if (this.isSleeping) {
                 translate(0.0F, -0.535F, 0.25F);
             }
         }
@@ -302,8 +304,6 @@ public abstract class AbstractPonyModel extends ModelPlayer {
             AbstractPonyModel pony = (AbstractPonyModel) model;
             this.isFlying = pony.isFlying;
             this.isSleeping = pony.isSleeping;
-            this.isVillager = pony.isVillager;
         }
     }
-
 }

@@ -10,6 +10,7 @@ import java.util.Random;
 
 import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.model.AbstractPonyModel;
+import com.brohoof.minelittlepony.model.BodyPart;
 import com.brohoof.minelittlepony.model.PonyModelConstants;
 import com.brohoof.minelittlepony.model.part.PegasusWings;
 import com.brohoof.minelittlepony.model.part.PonyEars;
@@ -77,6 +78,10 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             this.Tail[k1].rotateAngleY = bodySwingRotation;
         }
 
+        this.bipedHead.offsetY = 0f;
+        this.bipedHead.offsetZ = 0f;
+        this.bipedHeadwear.offsetY = 0f;
+        this.bipedHeadwear.offsetZ = 0f;
         this.setLegs(aniparams.move, aniparams.swing, aniparams.tick);
         this.holdItem();
         this.swingItem(this.swingProgress);
@@ -85,7 +90,31 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             this.sneakLegs();
             this.setHead(0.0F, 6.0F, -2.0F);
             this.sneakTail();
+        } else if (this.isRiding) {
+
+            this.adjustBodyComponents(BODY_ROTATE_ANGLE_X_RIDING, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
+            this.adjustNeck((float) (Math.PI * 1), 9, 1);
+            this.bipedHead.offsetY = .1f;
+            this.bipedHead.offsetZ = .1f;
+            this.bipedHeadwear.offsetY = .1f;
+            this.bipedHeadwear.offsetZ = .1f;
+            this.bipedLeftLeg.rotationPointZ = 15;
+            this.bipedLeftLeg.rotationPointY = 21;
+            this.bipedLeftLeg.rotateAngleX = (float) (Math.PI * 1.5);
+            this.bipedLeftLeg.rotateAngleY = -.2f;
+
+            this.bipedRightLeg.rotationPointZ = 15;
+            this.bipedRightLeg.rotationPointY = 21;
+            this.bipedRightLeg.rotateAngleX = (float) (Math.PI * 1.5);
+            this.bipedRightLeg.rotateAngleY = .2f;
+
+            for (int i = 0; i < Tail.length; ++i) {
+                this.setRotationPoint(this.Tail[i], TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_NOTSNEAK);
+                this.Tail[i].rotationPointZ = 15;
+                this.Tail[i].rotationPointY = 14;
+            }
         } else {
+
             this.adjustBody(BODY_ROTATE_ANGLE_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
 
             this.bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
@@ -127,6 +156,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.fixSpecialRotationPoints(aniparams.move);
 
         animateWears();
+
     }
 
     private void animateWears() {
@@ -470,146 +500,27 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
     @Override
     public void render() {
-        if (this.isRiding && !this.isArmour) {
-            translate(0.0F, -0.56F, -0.46F);
-        }
 
-        if (this.isSleeping && !this.isArmour) {
-            rotate(90.0F, 0.0F, 1.0F, 0.0F);
-            rotate(270.0F, 0.0F, 0.0F, 1.0F);
-            rotate(90.0F, 0.0F, 1.0F, 0.0F);
-            rotate(180.0F, 0.0F, 0.0F, 1.0F);
-            rotate(180.0F, 0.0F, 1.0F, 0.0F);
-        }
+        pushMatrix();
+        this.transform(BodyPart.HEAD);
+        this.renderHead();
+        popMatrix();
 
-        if (this.metadata.getSize() == PonySize.FOAL || isChild) {
-            if (this.isSneak && !this.isFlying && !this.isArmour) {
-                translate(0.0F, -0.12F, 0.0F);
-            }
+        pushMatrix();
+        this.transform(BodyPart.NECK);
+        this.renderNeck();
+        popMatrix();
 
-            if (this.isSleeping && !this.isArmour) {
-                translate(0.0F, -1.0F, 0.25F);
-            }
+        pushMatrix();
+        this.transform(BodyPart.BODY);
+        this.renderBody();
+        this.renderTail();
+        popMatrix();
 
-            pushMatrix();
-            translate(0.0F, 0.76F, 0.0F);
-            scale(0.9F, 0.9F, 0.9F);
-            this.renderHead();
-            if (this.isSneak && !this.isFlying) {
-                translate(0.0F, -0.01F, 0.15F);
-            }
-
-            this.renderNeck();
-            popMatrix();
-
-            pushMatrix();
-            translate(0.0F, 0.76F, -0.04F);
-            scale(0.6F, 0.6F, 0.6F);
-            this.renderBody();
-            this.renderTail();
-            popMatrix();
-
-            pushMatrix();
-            translate(0.0F, 0.89F, 0.0F);
-            scale(0.6F, 0.41F, 0.6F);
-            if (this.isSneak && !this.isFlying) {
-                translate(0.0F, 0.12F, 0.0F);
-            }
-
-            if (this.rainboom) {
-                translate(0.0F, -0.08F, 0.0F);
-            }
-
-            this.renderLegs();
-            popMatrix();
-
-        } else if (this.metadata.getSize() == PonySize.LARGE) {
-            if (this.isSleeping && !this.isArmour) {
-                translate(0.0F, -0.47F, 0.2F);
-            }
-
-            pushMatrix();
-            translate(0.0F, -0.17F, -0.04F);
-            if (this.isSleeping && !this.isArmour) {
-                translate(0.0F, 0.0F, -0.1F);
-            }
-
-            if (this.isSneak && !this.isFlying) {
-                translate(0.0F, 0.15F, 0.0F);
-            }
-
-            this.renderHead();
-            popMatrix();
-            pushMatrix();
-            translate(0.0F, -0.15F, -0.07F);
-            if (this.isSneak && !this.isFlying) {
-                translate(0.0F, 0.0F, -0.05F);
-            }
-
-            this.renderNeck();
-            popMatrix();
-            pushMatrix();
-            translate(0.0F, -0.2F, -0.04F);
-            scale(1.15F, 1.2F, 1.2F);
-            this.renderBody();
-            popMatrix();
-            pushMatrix();
-            translate(0.0F, -0.2F, 0.08F);
-            this.renderTail();
-            popMatrix();
-            pushMatrix();
-            translate(0.0F, -0.14F, 0.0F);
-            scale(1.15F, 1.12F, 1.15F);
-            this.renderLegs();
-            popMatrix();
-        } else if (this.metadata.getSize() == PonySize.TALL) {
-            if (this.isSleeping && !this.isArmour) {
-                translate(0.0F, -0.43F, 0.25F);
-            }
-
-            pushMatrix();
-            translate(0.0F, -0.15F, 0.01F);
-            if (this.isSneak && !this.isFlying) {
-                translate(0.0F, 0.05F, 0.0F);
-            }
-
-            this.renderHead();
-            popMatrix();
-            pushMatrix();
-            translate(0.0F, -0.19F, -0.01F);
-            scale(1.0F, 1.1F, 1.0F);
-            if (this.isSneak && !this.isFlying) {
-                translate(0.0F, -0.06F, -0.04F);
-            }
-
-            this.renderNeck();
-            popMatrix();
-            pushMatrix();
-            translate(0.0F, -0.1F, 0.0F);
-            scale(1.0F, 1.0F, 1.0F);
-            this.renderBody();
-            this.renderTail();
-            popMatrix();
-            pushMatrix();
-            translate(0.0F, -0.25F, 0.03F);
-            scale(1.0F, 1.18F, 1.0F);
-            if (this.rainboom) {
-                translate(0.0F, 0.05F, 0.0F);
-            }
-
-            this.renderLegs();
-            popMatrix();
-        } else {
-            if (this.isSleeping && !this.isArmour) {
-                translate(0.0F, -0.535F, 0.25F);
-            }
-
-            this.renderHead();
-            this.renderNeck();
-            this.renderBody();
-            this.renderTail();
-            this.renderLegs();
-        }
+        pushMatrix();
+        this.transform(BodyPart.LEGS);
+        this.renderLegs();
+        popMatrix();
     }
 
     protected void renderHead() {
@@ -839,7 +750,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
                 this.bipedRightArmwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25f);
                 this.bipedRightArmwear.setRotationPoint(-3.0F, 8.0F + yOffset, 0.0F);
             }
-            this.bipedLeftArm.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch);
+            this.bipedLeftArm.addBox(-3.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch);
             this.bipedLeftArm.setRotationPoint(3.0F, 8.0F + yOffset, 0.0F);
             if (this.bipedLeftArmwear != null) {
                 this.bipedLeftArmwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25f);

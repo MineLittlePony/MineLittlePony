@@ -5,6 +5,8 @@ import com.brohoof.minelittlepony.model.BodyPart;
 import com.brohoof.minelittlepony.model.AbstractPonyModel;
 import com.brohoof.minelittlepony.renderer.AniParams;
 
+import net.minecraft.client.renderer.GlStateManager;
+
 public abstract class AbstractHeadPart implements IPonyPart {
 
     private AbstractPonyModel pony;
@@ -13,10 +15,11 @@ public abstract class AbstractHeadPart implements IPonyPart {
     public void init(AbstractPonyModel pony, float yOffset, float stretch) {
         this.pony = pony;
     }
-    
+
     @Override
     public void render(PonyData data, float scale) {
         pony.transform(BodyPart.HEAD);
+        GlStateManager.translate(pony.bipedHead.offsetX, pony.bipedHead.offsetY, pony.bipedHead.offsetZ);
     }
 
     @Override

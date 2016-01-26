@@ -117,11 +117,19 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
         }
         if (pony.isSneak && !pony.isFlying) {
             this.sneak();
-        } else if (metadata.getRace().hasWings()) {
+        } else {
             this.unsneak(ani.tick);
 
         }
 
+        float angle = pony.isRiding ? (float) (Math.PI * .3) : ROTATE_90;
+
+        for (int i = 0; i < this.leftWing.length; i++) {
+            this.leftWing[i].rotateAngleX = angle;
+        }
+        for (int i = 0; i < this.rightWing.length; i++) {
+            this.rightWing[i].rotateAngleX = angle;
+        }
         // Special
         this.leftWingExt[1].rotateAngleX -= 0.85F;
         this.leftWingExt[2].rotateAngleX -= 0.75F;

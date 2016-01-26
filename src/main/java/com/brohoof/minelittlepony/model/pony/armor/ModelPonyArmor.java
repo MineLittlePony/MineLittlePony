@@ -1,6 +1,5 @@
 package com.brohoof.minelittlepony.model.pony.armor;
 
-import com.brohoof.minelittlepony.model.part.PonyEars;
 import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
 import com.brohoof.minelittlepony.renderer.AniParams;
 
@@ -17,13 +16,12 @@ public class ModelPonyArmor extends ModelPlayerPony {
 
     public ModelPonyArmor() {
         super(false);
-        this.isArmour = true;
         this.textureHeight = 32;
     }
 
     @Override
     protected void addParts() {
-        modelParts.add(new PonyEars());
+       // modelParts.add(new PonyEars());
     }
 
     @Override
@@ -31,13 +29,18 @@ public class ModelPonyArmor extends ModelPlayerPony {
         this.checkRainboom(aniparams.swing);
         this.rotateHead(aniparams.horz, aniparams.vert);
         float bodySwingRotation = 0.0F;
-        if (this.swingProgress > -9990.0F && !this.metadata.getRace().hasHorn()) {
+        if (this.swingProgress > -9990.0F && (!this.metadata.getRace().hasHorn() || this.metadata.getGlowColor() == 0)) {
             bodySwingRotation = MathHelper.sin(MathHelper.sqrt_float(this.swingProgress) * 3.1415927F * 2.0F) * 0.2F;
         }
 
         this.bipedBody.rotateAngleY = bodySwingRotation * 0.2F;
-        this.Bodypiece.rotateAngleY = bodySwingRotation * 0.2F;
-        this.extBody.rotateAngleY = bodySwingRotation * 0.2F;
+
+        this.bipedHead.offsetY = 0f;
+        this.bipedHead.offsetZ = 0f;
+        this.extHead[0].offsetY = 0f;
+        this.extHead[0].offsetZ = 0f;
+        this.extHead[1].offsetY = 0f;
+        this.extHead[1].offsetZ = 0f;
         this.setLegs(aniparams.move, aniparams.swing, aniparams.tick);
         this.holdItem();
         this.swingItem(this.swingProgress);
@@ -45,15 +48,33 @@ public class ModelPonyArmor extends ModelPlayerPony {
             this.adjustBody(BODY_ROTATE_ANGLE_X_SNEAK, BODY_RP_Y_SNEAK, BODY_RP_Z_SNEAK);
             this.sneakLegs();
             this.setHead(0.0F, 6.0F, -2.0F);
+        } else if (this.isRiding) {
+
+            this.adjustBody(BODY_ROTATE_ANGLE_X_RIDING, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
+            this.bipedHead.offsetY = .1f;
+            this.bipedHead.offsetZ = .1f;
+            this.extHead[0].offsetY = .1f;
+            this.extHead[0].offsetZ = .1f;
+            this.extHead[1].offsetY = .1f;
+            this.extHead[1].offsetZ = .1f;
+            this.bipedLeftLeg.rotationPointZ = 15;
+            this.bipedLeftLeg.rotationPointY = 21;
+            this.bipedLeftLeg.rotateAngleX = (float) (Math.PI * 1.5);
+            this.bipedLeftLeg.rotateAngleY = -.2f;
+
+            this.bipedRightLeg.rotationPointZ = 15;
+            this.bipedRightLeg.rotationPointY = 21;
+            this.bipedRightLeg.rotateAngleX = (float) (Math.PI * 1.5);
+            this.bipedRightLeg.rotateAngleY = .2f;
         } else {
-            this.adjustBody(BODY_ROTATE_ANGLE_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK,
-                    BODY_RP_Z_NOTSNEAK);
+
+            this.adjustBody(BODY_ROTATE_ANGLE_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
+
             this.bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
             this.bipedLeftLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
-            this.extLegs[0].rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
-            this.extLegs[1].rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
             this.swingArms(aniparams.tick);
             this.setHead(0.0F, 0.0F, 0.0F);
+
         }
 
         if (this.isSleeping) {
@@ -64,7 +85,7 @@ public class ModelPonyArmor extends ModelPlayerPony {
             this.aimBow(aniparams.tick);
         }
 
-        this.fixSpecialRotationPoints(aniparams.move);
+//        this.fixSpecialRotationPoints(aniparams.move);
     }
 
     @Override
