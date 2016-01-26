@@ -1,8 +1,0 @@
-{
-    "name": "voxellib",
-    "mcversion": "1.8",
-    "version": "2.4.0",
-    "revision": "241",
-    "author": "The VoxelModPack Team",
-    "description": "VoxelLib contains all of the shared functionality for the VoxelModPack mods"
-}

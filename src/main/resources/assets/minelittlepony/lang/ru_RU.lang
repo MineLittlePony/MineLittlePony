@@ -1,5 +1,4 @@
-minelp.restart1=Если вы измените эти параметры, 
-minelp.restart2=то для их активации вы должны перезапустить игру!
+minelp.restart=Если вы измените эти параметры, то для их активации вы должны перезапустить игру!
 minelp.options.title=Настроайки мода Mine Little Pony
 minelp.options.ponylevel=Уровень понификации
 minelp.options.ponylevel.ponies=Только пони

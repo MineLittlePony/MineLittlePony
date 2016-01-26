@@ -19,8 +19,7 @@ plugins {
 	id 'mnm.gradle.ap-ide' version '1.0.2'
 }
 
-ext.voxellib = project ':voxellib'
-ext.revision = 186
+ext.revision = 200
 
 apply plugin: 'net.minecraftforge.gradle.tweaker-client'
 apply plugin: 'org.spongepowered.mixin'
@@ -41,34 +40,22 @@ sourceSets {
 	def deps = [
 		configurations.forgeGradleMcDeps,
 		configurations.forgeGradleMc,
-		configurations.provided
+		configurations.compile,
 	]
-	main {
-		refMap = 'mixin.minelp.refmap.json'
-	}
-	common {
-		compileClasspath += files deps
-	}
 	hdskins {
 		compileClasspath += files deps
 		refMap = 'mixin.hdskins.refmap.json'
 	}
-}
-project('forge') {
-	apply plugin: 'net.minecraftforge.gradle.forge'
-	version = '0.0'
-	minecraft {
-		version = '1.8-11.14.3.1543'
-		mappings = rootProject.minecraft.mappings
-		runDir = rootProject.minecraft.runDir
-		replace '@VERSION@',project.version
+	main {
+		refMap = 'mixin.minelp.refmap.json'
+		compileClasspath += hdskins.output
 	}
-	dependencies {
-		provided rootProject
+	forge {
+		compileClasspath += deps
+		compileClasspath += [main.output, api.output]
 	}
 }
 project('LiteLoader'){
-	apply plugin: 'mnm.gradle.ap-ide'
 	mcMappings = rootProject.minecraft.mappings
 }
 processResources {
@@ -86,47 +73,26 @@ processResources {
 		exclude 'litemod.json'
 	}
 }
-allprojects {
-	repositories{
-		maven {
-			name 'sponge'
-			url 'http://repo.spongepowered.org/maven'
-		}
+repositories{
+	maven {
+		name 'sponge'
+		url 'http://repo.spongepowered.org/maven'
 	}
 }
-dependencies {
-	provided project('LiteLoader')
-	provided voxellib
 
-	compile sourceSets.common.output
-	compile sourceSets.hdskins.output
-	hdskinsCompile sourceSets.common.output
+dependencies {
+	compile project('LiteLoader')
 }
 jar {
 	manifest.attributes.remove 'TweakClass'
-}
-task standaloneJar(type: Jar, dependsOn: [{voxellib.reobfObfJar}, {project('forge').compileJava}]) {
+	from sourceSets.findAll{it.name != "api"}*.output
+
 	extension 'litemod'
-	from sourceSets*.output
-	from {project('forge').sourceSets.main.output}
-
-	// voxellib
-    from {voxellib.obfJar.archivePath}
-
-    classifier 'standalone'
 }
-artifacts {
-    archives standaloneJar
-}
-reobf {
-	jar.task.enabled = false
-	standaloneJar{}
-}
-sourceSets.main.refMap = 'mixin.minelp.refmap.json'
 mixin {
     defaultObfuscationEnv notch
 }
-task installMod(type: Copy, dependsOn: build) {
-	from standaloneJar.archivePath
+task deploy(type: Copy, dependsOn: build) {
+	from jar.archivePath
 	into file("$System.env.APPDATA/.minecraft/mods")
 }

@@ -1,5 +1,4 @@
-minelp.restart1=If you make any changes here, you must restart
-minelp.restart2=Minecraft before they will take effect!
+minelp.restart=If you make any changes here, you must restart Minecraft before they will take effect!
 
 minelp.options.title=Mine Little Pony Settings
 minelp.options.ponylevel=Pony Level
@@ -12,7 +11,7 @@ minelp.options.sizes=Allow all different sizes of pony
 minelp.options.snuzzles=Display snuzzles on ponies
 minelp.options.showscale=Use show-accurate scaling
 
-minelp.mobs.title=Mine Little Pony Mob Settings
+minelp.mobs.title=Mob Settings
 minelp.mobs.villagers=Ponify villagers
 minelp.mobs.zombies=Ponify zombies
 minelp.mobs.zombiepigmen=Ponify zombie pigmen

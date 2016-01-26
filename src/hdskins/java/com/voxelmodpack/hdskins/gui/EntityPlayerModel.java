@@ -7,8 +7,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import com.mojang.authlib.GameProfile;
-import com.voxelmodpack.common.gl.TextureHelper;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.ImageBufferDownloadHD;
 import com.voxelmodpack.hdskins.PreviewTexture;
 
 import net.minecraft.client.Minecraft;
@@ -37,13 +37,13 @@ public class EntityPlayerModel extends EntityLiving {
         this.textureManager = Minecraft.getMinecraft().getTextureManager();
         this.remoteSkinResource = new ResourceLocation("skins/preview_" + this.profile.getName() + ".png");
         this.localSkinResource = NOSKIN;
-        TextureHelper.releaseTexture(this.remoteSkinResource);
+        this.textureManager.deleteTexture(this.remoteSkinResource);
     }
 
-    public void setRemoteSkin() {
+    public void reloadRemoteSkin() {
         this.remoteSkin = true;
         if (this.remoteSkinTexture != null) {
-            TextureHelper.releaseTexture(this.remoteSkinResource);
+            this.textureManager.deleteTexture(this.remoteSkinResource);
         }
 
         this.remoteSkinTexture = HDSkinManager.getPreviewTexture(this.remoteSkinResource, this.profile);
@@ -53,13 +53,14 @@ public class EntityPlayerModel extends EntityLiving {
         if (skinTextureFile.exists()) {
             this.remoteSkin = false;
             if (this.localSkinTexture != null) {
-                TextureHelper.releaseTexture(this.localSkinResource);
+                this.textureManager.deleteTexture(this.localSkinResource);
                 this.localSkinTexture = null;
             }
 
             BufferedImage bufferedImage;
             try {
-                bufferedImage = ImageIO.read(skinTextureFile);
+                BufferedImage image = ImageIO.read(skinTextureFile);
+                bufferedImage = new ImageBufferDownloadHD().parseUserSkin(image);
             } catch (IOException var4) {
                 this.localSkinResource = NOSKIN;
                 var4.printStackTrace();
@@ -67,8 +68,7 @@ public class EntityPlayerModel extends EntityLiving {
             }
 
             this.localSkinTexture = new DynamicTexture(bufferedImage);
-            this.localSkinResource = this.textureManager.getDynamicTextureLocation("localSkinPreview",
-                    this.localSkinTexture);
+            this.localSkinResource = this.textureManager.getDynamicTextureLocation("localSkinPreview", this.localSkinTexture);
             this.hasLocalTexture = true;
         }
 
@@ -93,21 +93,16 @@ public class EntityPlayerModel extends EntityLiving {
 
     public void releaseTextures() {
         if (this.localSkinTexture != null) {
-            TextureHelper.releaseTexture(this.localSkinResource);
+            this.textureManager.deleteTexture(this.localSkinResource);
             this.localSkinTexture = null;
             this.localSkinResource = NOSKIN;
             this.hasLocalTexture = false;
         }
-
     }
 
     public ResourceLocation getSkinTexture() {
         return this.remoteSkin ? (this.remoteSkinTexture != null ? this.remoteSkinResource
                 : DefaultPlayerSkin.getDefaultSkin(entityUniqueID)) : this.localSkinResource;
-    }
-
-    public boolean hasCloak() {
-        return false;
     }
 
     public void swingArm() {

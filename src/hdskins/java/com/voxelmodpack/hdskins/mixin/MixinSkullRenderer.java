@@ -19,7 +19,6 @@ import net.minecraft.util.ResourceLocation;
 public abstract class MixinSkullRenderer extends TileEntitySpecialRenderer {
 
     @Inject(method = "renderSkull",
-            require = 1,
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/renderer/tileentity/TileEntitySkullRenderer;bindTexture(Lnet/minecraft/util/ResourceLocation;)V",

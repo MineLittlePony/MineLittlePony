@@ -72,7 +72,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
         this.playerModel.getModel().metadata.setGender(PonyGender.MARE);
         this.playerModel.getModel().metadata.setTail(TailLengths.FULL);
 
-        if (MineLittlePony.getConfig().getShowScale().get()) {
+        if (MineLittlePony.getConfig().showscale) {
             this.shadowSize = 0.4F;
         }
 

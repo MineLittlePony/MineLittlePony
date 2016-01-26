@@ -37,12 +37,12 @@ import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mumfrey.liteloader.gl.GL;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
-import com.voxelmodpack.common.net.upload.IUploadCompleteCallback;
-import com.voxelmodpack.common.net.upload.ThreadMultipartPostUpload;
-import com.voxelmodpack.common.net.upload.awt.IOpenFileCallback;
-import com.voxelmodpack.common.net.upload.awt.ThreadOpenFilePNG;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
-import com.voxelmodpack.hdskins.mod.HDSkinsModCore;
+import com.voxelmodpack.hdskins.mod.LiteModHDSkinsMod;
+import com.voxelmodpack.hdskins.upload.IUploadCompleteCallback;
+import com.voxelmodpack.hdskins.upload.ThreadMultipartPostUpload;
+import com.voxelmodpack.hdskins.upload.awt.IOpenFileCallback;
+import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
 import com.voxelmodpack.voxelmenu.IPanoramaRenderer;
 
 import net.minecraft.client.Minecraft;
@@ -127,9 +127,9 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         rm.renderEngine = minecraft.getTextureManager();
         rm.options = minecraft.gameSettings;
         rm.livingPlayer = this.localPlayer;
-        this.setRemoteSkin();
+        this.reloadRemoteSkin();
         this.fetchingSkin = true;
-        this.panoramaRenderer = HDSkinsModCore.getPanoramaRenderer(this);
+        this.panoramaRenderer = LiteModHDSkinsMod.getPanoramaRenderer(this);
     }
 
     protected EntityPlayerModel getModel(GameProfile profile) {
@@ -162,7 +162,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
             this.pendingRemoteSkinRefresh = false;
             this.fetchingSkin = true;
             this.btnClear.enabled = false;
-            this.setRemoteSkin();
+            this.reloadRemoteSkin();
             this.onSetRemoteSkin();
         }
 
@@ -174,7 +174,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
             } else {
                 this.refreshCounter = -1;
                 this.throttledByMojang = false;
-                this.setRemoteSkin();
+                this.reloadRemoteSkin();
             }
         }
 
@@ -187,9 +187,9 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
      */
     protected void onSetLocalSkin(BufferedImage skin) {}
 
-    private void setRemoteSkin() {
+    private void reloadRemoteSkin() {
         try {
-            this.remotePlayer.setRemoteSkin();
+            this.remotePlayer.reloadRemoteSkin();
         } catch (Exception var2) {
             var2.printStackTrace();
             this.throttledByMojang = true;
@@ -249,7 +249,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         fileDrop.setResizable(false);
         fileDrop.setTitle("Skin Drop");
         fileDrop.setSize(256, 256);
-        fileDrop.setAlwaysOnTop(true);
+//        fileDrop.setAlwaysOnTop(true);
         fileDrop.getContentPane().setLayout(null);
         JPanel panel = new JPanel();
         panel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));

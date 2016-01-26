@@ -21,7 +21,7 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
         if (villager.getGrowingAge() < 0) {
             this.shadowSize = 0.25F;
         } else {
-            if (MineLittlePony.getConfig().getShowScale().get()) {
+            if (MineLittlePony.getConfig().showscale) {
                 this.shadowSize = 0.4F;
             } else {
                 this.shadowSize = 0.5F;

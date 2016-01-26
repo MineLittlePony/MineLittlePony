@@ -1,14 +1,32 @@
 package com.voxelmodpack.hdskins.gui;
 
-import com.voxelmodpack.common.properties.VoxelPropertyToggleButton;
-import com.voxelmodpack.common.properties.gui.GuiVoxelBoxSettingsPanel;
-import com.voxelmodpack.common.properties.interfaces.IVoxelPropertyProviderBoolean;
+import com.mumfrey.liteloader.modconfig.ConfigPanel;
+import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
 import com.voxelmodpack.hdskins.HDSkinManager;
 
-public class HDSkinsConfigPanel extends GuiVoxelBoxSettingsPanel implements IVoxelPropertyProviderBoolean {
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 
-    public HDSkinsConfigPanel() {
-        this.properties.add(new VoxelPropertyToggleButton(this, "clear", "Clear local skin cache", 72, 8, 120, 70, 16));
+public class HDSkinsConfigPanel implements ConfigPanel {
+
+    private GuiButton button;
+
+    @Override
+    public void onPanelShown(ConfigPanelHost host) {
+        this.button = new GuiButton(0, 72, 120, 70, 16, "Clear Skin Cache");
+
+    }
+
+    @Override
+    public void drawPanel(ConfigPanelHost host, int mouseX, int mouseY, float partialTicks) {
+        this.button.drawButton(Minecraft.getMinecraft(), mouseX, mouseY);
+    }
+
+    @Override
+    public void mousePressed(ConfigPanelHost host, int mouseX, int mouseY, int mouseButton) {
+        if (button.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
+            HDSkinManager.clearSkinCache();
+        }
     }
 
     @Override
@@ -17,30 +35,25 @@ public class HDSkinsConfigPanel extends GuiVoxelBoxSettingsPanel implements IVox
     }
 
     @Override
-    public String getStringProperty(String propertyName) {
-        return null;
+    public int getContentHeight() {
+        return 0;
     }
 
     @Override
-    public String getOptionDisplayString(String propertyName) {
-        return "Clear now";
-    }
+    public void keyPressed(ConfigPanelHost host, char keyChar, int keyCode) {}
 
     @Override
-    public void toggleOption(String propertyName) {
-        HDSkinManager.clearSkinCache();
-    }
+    public void mouseMoved(ConfigPanelHost host, int mouseX, int mouseY) {}
 
     @Override
-    public String getDefaultPropertyValue(String propertyName) {
-        return null;
-    }
+    public void mouseReleased(ConfigPanelHost host, int mouseX, int mouseY, int mouseButton) {}
 
     @Override
-    public void setProperty(String propertyName, boolean value) {}
+    public void onPanelHidden() {}
 
     @Override
-    public boolean getBoolProperty(String propertyName) {
-        return true;
-    }
+    public void onPanelResize(ConfigPanelHost host) {}
+
+    @Override
+    public void onTick(ConfigPanelHost host) {}
 }

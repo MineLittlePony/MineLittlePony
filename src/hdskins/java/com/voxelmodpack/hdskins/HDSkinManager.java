@@ -70,7 +70,17 @@ public final class HDSkinManager {
     private void loadTexture(GameProfile profile, final Type type, final SkinAvailableCallback callback) {
         if (profile != null && profile.getId() != null) {
             String uuid = UUIDTypeAdapter.fromUUID(profile.getId());
-            String url = getCustomSkinURLForId(uuid, true);
+            String url;
+            switch (type) {
+            case SKIN:
+                url = getCustomSkinURLForId(uuid, false);
+                break;
+            case CAPE:
+                url = getCustomCloakURLForId(uuid);
+                break;
+            default:
+                throw new NullPointerException("Skin type was null.");
+            }
             // TODO use cache
             final MinecraftProfileTexture texture = new MinecraftProfileTexture(url, null);
             final ResourceLocation skin = new ResourceLocation("skins/" + texture.getHash());
@@ -149,15 +159,12 @@ public final class HDSkinManager {
     public static PreviewTexture getPreviewTexture(ResourceLocation skinResource, GameProfile profile) {
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         ITextureObject skinTexture = textureManager.getTexture(skinResource);
-
-        if (skinTexture == null) {
-            Map<Type, MinecraftProfileTexture> textures = getTexturesForProfile(profile);
-            MinecraftProfileTexture skin = textures.get(Type.SKIN);
-            if (skin != null) {
-                String url = skin.getUrl();
-                skinTexture = new PreviewTexture(url, DefaultPlayerSkin.getDefaultSkin(profile.getId()), new ImageBufferDownloadHD());
-                textureManager.loadTexture(skinResource, skinTexture);
-            }
+        Map<Type, MinecraftProfileTexture> textures = getTexturesForProfile(profile);
+        MinecraftProfileTexture skin = textures.get(Type.SKIN);
+        if (skin != null) {
+            String url = INSTANCE.getCustomSkinURLForId(UUIDTypeAdapter.fromUUID(profile.getId()), true);
+            skinTexture = new PreviewTexture(url, DefaultPlayerSkin.getDefaultSkin(profile.getId()), new ImageBufferDownloadHD());
+            textureManager.loadTexture(skinResource, skinTexture);
         }
         return (PreviewTexture) skinTexture;
 

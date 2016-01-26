@@ -1,13 +1,14 @@
 package com.brohoof.minelittlepony;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
 import com.brohoof.minelittlepony.model.PMAPI;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.util.MineLPLogger;
-import com.voxelmodpack.common.runtime.PrivateFields;
+import com.brohoof.minelittlepony.util.PonyFields;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -66,17 +67,18 @@ public class Pony {
         BufferedImage skinImage = null;
 
         try {
-            skinImage = ImageIO.read(Minecraft.getMinecraft().getResourceManager().getResource(textureResourceLocation)
-                    .getInputStream());
+            skinImage = ImageIO.read(Minecraft.getMinecraft().getResourceManager()
+                    .getResource(textureResourceLocation).getInputStream());
             MineLPLogger.debug("Obtained skin from resource location %s", textureResourceLocation);
             // this.checkSkin(skinImage);
-        } catch (Exception var6) {
+        } catch (IOException var6) {
             Exception e = var6;
 
             try {
                 ITextureObject e2 = Minecraft.getMinecraft().getTextureManager().getTexture(textureResourceLocation);
                 if (e2 instanceof ThreadDownloadImageData) {
-                    skinImage = PrivateFields.downloadedImage.get((ThreadDownloadImageData) e2);
+                    
+                    skinImage = PonyFields.downloadedImage.get((ThreadDownloadImageData) e2);
                     if (skinImage != null) {
                         MineLPLogger.debug(e, "Successfully reflected downloadedImage from texture object");
                         // this.checkSkin(skinImage);
@@ -105,7 +107,7 @@ public class Pony {
 
     public PlayerModel getModel(boolean ignorePony, boolean smallArms) {
         boolean is_a_pony = false;
-        switch (ignorePony ? PonyLevel.BOTH : config.getPonyLevel().get()) {
+        switch (ignorePony ? PonyLevel.BOTH : config.getPonyLevel()) {
         case HUMANS:
             is_a_pony = false;
             break;

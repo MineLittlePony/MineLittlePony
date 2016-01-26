@@ -76,7 +76,7 @@ public class PonySnout extends AbstractHeadPart implements PonyModelConstants {
     @Override
     public void render(PonyData data, float scale) {
         super.render(data, scale);
-        if (MineLittlePony.getConfig().getSnuzzles().get() && data.getGender() != null) {
+        if (MineLittlePony.getConfig().snuzzles && data.getGender() != null) {
             PlaneRenderer[] muzzle = map.get(data.getGender());
             for (int i = 0; i < muzzle.length; i++) {
                 muzzle[i].render(scale);

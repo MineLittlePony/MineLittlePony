@@ -81,7 +81,7 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity implements 
         this.playerModel.getModel().isSneak = player.isSneaking();
         this.playerModel.getModel().isFlying = thePony.isPegasusFlying(player);
 
-        if (MineLittlePony.getConfig().getShowScale().get()) {
+        if (MineLittlePony.getConfig().showscale) {
             if (this.playerModel.getModel().metadata.getRace() != null) {
                 PonySize size = thePony.metadata.getSize();
                 if (size == PonySize.FOAL)
@@ -118,7 +118,7 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity implements 
     @Inject(method = "renderLivingAt", at = @At("RETURN") )
     private void setupPlayerScale(AbstractClientPlayer player, double xPosition, double yPosition, double zPosition, CallbackInfo ci) {
 
-        if (MineLittlePony.getConfig().getShowScale().get() && !(playerModel.getModel() instanceof ModelHumanPlayer)) {
+        if (MineLittlePony.getConfig().showscale && !(playerModel.getModel() instanceof ModelHumanPlayer)) {
             PonySize size = thePony.metadata.getSize();
             if (size == PonySize.LARGE)
                 scale(0.9F, 0.9F, 0.9F);

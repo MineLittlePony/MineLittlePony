@@ -2,6 +2,7 @@ package com.brohoof.minelittlepony;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.brohoof.minelittlepony.model.PMAPI;
 import com.brohoof.minelittlepony.util.MineLPLogger;
@@ -83,7 +84,7 @@ public class PonyManager {
 
     public Pony getPonyFromResourceRegistry(AbstractClientPlayer player) {
         Pony myLittlePony = this.getPonyFromResourceRegistry(player.getLocationSkin(), player);
-        if (config.getPonyLevel().get() == PonyLevel.PONIES && myLittlePony.metadata.getRace() == null) {
+        if (config.getPonyLevel() == PonyLevel.PONIES && myLittlePony.metadata.getRace() == null) {
             myLittlePony = this.getPonyFromBackgroundResourceRegistry(player);
         }
 
@@ -105,9 +106,9 @@ public class PonyManager {
         return myLittlePony;
     }
 
-    private ResourceLocation getBackgroundPonyResource(AbstractClientPlayer player) {
+    public ResourceLocation getBackgroundPonyResource(UUID id) {
         if (getNumberOfPonies() > 0) {
-            int backgroundIndex = player.getUniqueID().hashCode() % this.getNumberOfPonies();
+            int backgroundIndex = id.hashCode() % this.getNumberOfPonies();
             if (backgroundIndex < 0) {
                 backgroundIndex += this.getNumberOfPonies();
             }
@@ -120,9 +121,9 @@ public class PonyManager {
     public Pony getPonyFromBackgroundResourceRegistry(AbstractClientPlayer player) {
         ResourceLocation textureResourceLocation;
         if (player.isUser()) {
-            textureResourceLocation = (player.getUniqueID().hashCode() & 1) == 0 ? STEVE : ALEX;
+            textureResourceLocation = getDefaultSkin(player.getUniqueID());
         } else {
-            textureResourceLocation = this.getBackgroundPonyResource(player);
+            textureResourceLocation = this.getBackgroundPonyResource(player.getUniqueID());
         }
 
         Pony myLittlePony;
@@ -134,6 +135,10 @@ public class PonyManager {
         }
 
         return myLittlePony;
+    }
+    
+    public static ResourceLocation getDefaultSkin(UUID uuid) {
+        return (uuid.hashCode() & 1) == 0 ? STEVE : ALEX;
     }
 
     public int getNumberOfPonies() {

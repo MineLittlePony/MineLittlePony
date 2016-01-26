@@ -1,7 +1,6 @@
 ﻿# Mine Little Pony fr_FR.lang file
 # Provided by Dalfio (PinkishPie)
-minelp.restart1=Si vous apportez des modifications ici, vous devez redémarrer
-minelp.restart2=Minecraft avant qu'ils prennent effet!
+minelp.restart=Si vous apportez des modifications ici, vous devez redémarrer Minecraft avant qu'ils prennent effet!
 
 minelp.options.title=Options Mine Little Pony 
 minelp.options.ponylevel=Niveau Poney
@@ -15,7 +14,7 @@ minelp.options.ponyarmor=Utiliser armure compatible de MineLP
 minelp.options.snuzzles=Afficher museau sur les poneys
 minelp.options.showscale=Utiliser échelle fidèle à MLP
 
-minelp.mobs.title=Options de mobs Mine Little Pony
+minelp.mobs.title=Options de mobs
 minelp.mobs.villagers=Ponifier villageois
 minelp.mobs.zombies=Ponifier zombies
 minelp.mobs.zombiepigmen=Ponifier zombie pigmen
