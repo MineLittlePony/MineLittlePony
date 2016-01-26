@@ -35,6 +35,9 @@ import net.minecraft.util.ResourceLocation;
 @Mixin(RenderPlayer.class)
 public abstract class MixinRenderPlayer extends RendererLivingEntity implements IRenderPony {
 
+    private static final String RenderManager = "Lnet/minecraft/client/renderer/entity/RenderManager;";
+    private static final String AbstractClientPlayer = "Lnet/minecraft/client/entity/AbstractClientPlayer;";
+
     @Shadow
     private boolean smallArms;
     private PlayerModel playerModel;
@@ -45,7 +48,7 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity implements 
     }
 
     @Inject(
-            method = "<init>(Lnet/minecraft/client/renderer/entity/RenderManager;Z)V",
+            method = "<init>(" + RenderManager + "Z)V",
             at = @At("RETURN") )
     private void init(RenderManager renderManager, boolean useSmallArms, CallbackInfo ci) {
         this.playerModel = smallArms ? PMAPI.ponySmall : PMAPI.pony;
@@ -60,6 +63,10 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity implements 
         this.addLayer(new LayerPonyCape(this));
     }
 
+    /**
+     * @reason render a pony instead of a human
+     * @author JoyJoy
+     */
     @Overwrite
     public void doRender(AbstractClientPlayer player, double x, double y, double z, float yaw, float partialTicks) {
         ItemStack currentItemStack = player.inventory.getCurrentItem();
@@ -80,6 +87,7 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity implements 
 
         this.playerModel.getModel().isSneak = player.isSneaking();
         this.playerModel.getModel().isFlying = thePony.isPegasusFlying(player);
+        this.playerModel.getModel().isRiding = player.isRiding();
 
         if (MineLittlePony.getConfig().showscale) {
             if (this.playerModel.getModel().metadata.getRace() != null) {
@@ -106,7 +114,6 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity implements 
 
         this.playerModel.getModel().isSleeping = player.isPlayerSleeping();
         this.playerModel.getModel().swingProgress = getSwingProgress(player, partialTicks);
-        this.playerModel.getModel().isVillager = false;
 
         super.doRender(player, x, yOrigin1, z, yaw, partialTicks);
 
@@ -127,11 +134,24 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity implements 
         }
     }
 
+    @Inject(method = "renderRightArm(" + AbstractClientPlayer + ")V", at = @At("HEAD") )
+    private void onRenderRightArm(AbstractClientPlayer player, CallbackInfo ci) {
+        bindEntityTexture(player);
+    }
+
+    @Inject(method = "renderLeftArm(" + AbstractClientPlayer + ")V", at = @At("HEAD") )
+    private void onRenderLeftArm(AbstractClientPlayer player, CallbackInfo ci) {
+        bindEntityTexture(player);
+    }
+
     private ResourceLocation getEntityTexture(AbstractClientPlayer player) {
         Pony thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(player);
         return thePony.getTextureResourceLocation();
     }
 
+    /**
+     * @reason Change the skin in case of non-pony skin
+     */
     @Override
     public final ResourceLocation getEntityTexture(Entity entity) {
         return this.getEntityTexture((AbstractClientPlayer) entity);

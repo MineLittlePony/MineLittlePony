@@ -12,7 +12,7 @@ buildscript {
 	}
 	dependencies {
 		classpath 'net.minecraftforge.gradle:ForgeGradle:2.0-SNAPSHOT'
-		classpath 'org.spongepowered:mixingradle:0.1-SNAPSHOT'
+		classpath 'org.spongepowered:mixingradle:0.3-SNAPSHOT'
 	}
 }
 plugins {
@@ -51,8 +51,7 @@ sourceSets {
 		compileClasspath += hdskins.output
 	}
 	forge {
-		compileClasspath += deps
-		compileClasspath += [main.output, api.output]
+		compileClasspath += files(deps + [ main.output, api.output ])
 	}
 }
 project('LiteLoader'){
@@ -84,8 +83,8 @@ dependencies {
 	compile project('LiteLoader')
 }
 jar {
-	manifest.attributes.remove 'TweakClass'
-	from sourceSets.findAll{it.name != "api"}*.output
+	afterEvaluate {	manifest.attributes.remove 'TweakClass'}
+	from sourceSets.findAll { it.name != 'api' }*.output
 
 	extension 'litemod'
 }

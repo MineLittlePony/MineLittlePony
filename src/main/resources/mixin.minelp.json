@@ -1,4 +1,6 @@
 {
+	"required": true,
+    "minVersion": "0.4.10",
 	"package": "com.brohoof.minelittlepony.mixin",
 	"refmap": "mixin.minelp.refmap.json",
 	"mixins": [
