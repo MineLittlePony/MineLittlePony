@@ -27,7 +27,7 @@ public abstract class MixinSkullRenderer extends TileEntitySpecialRenderer {
     private void onBindTexture(float x, float y, float z, EnumFacing facing, float rotation, int meta, GameProfile profile, int p_180543_8_,
             CallbackInfo ci) {
         if (profile != null) {
-            Optional<ResourceLocation> skin = HDSkinManager.getSkin(profile);
+            Optional<ResourceLocation> skin = HDSkinManager.getSkin(profile, true);
             if (skin.isPresent())
                 // rebind
                 bindTexture(skin.get());

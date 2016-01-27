@@ -26,7 +26,7 @@ public abstract class MixinPlayerInfo {
         boolean has = ci.getReturnValueZ();
         if (!has) {
             // in case has no skin
-            ci.setReturnValue(HDSkinManager.getSkin(gameProfile).isPresent());
+            ci.setReturnValue(HDSkinManager.getSkin(gameProfile, false).isPresent());
         }
     }
 
@@ -34,7 +34,7 @@ public abstract class MixinPlayerInfo {
             cancellable = true,
             at = @At("RETURN") )
     private void getLocationSkin(CallbackInfoReturnable<ResourceLocation> ci) {
-        Optional<ResourceLocation> skin = HDSkinManager.getSkin(gameProfile);
+        Optional<ResourceLocation> skin = HDSkinManager.getSkin(gameProfile, true);
         if (skin.isPresent()) {
             // set the skin
             ci.setReturnValue(skin.get());

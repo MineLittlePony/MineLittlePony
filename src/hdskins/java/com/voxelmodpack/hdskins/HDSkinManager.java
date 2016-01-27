@@ -46,22 +46,24 @@ public final class HDSkinManager {
 
     private HDSkinManager() {}
 
-    public static Optional<ResourceLocation> getSkin(final GameProfile profile) {
-        return INSTANCE.getSkinLocation(profile);
+    public static Optional<ResourceLocation> getSkin(GameProfile profile, boolean loadIfAbsent) {
+        return INSTANCE.getSkinLocation(profile, loadIfAbsent);
     }
 
-    private Optional<ResourceLocation> getSkinLocation(final GameProfile profile) {
+    private Optional<ResourceLocation> getSkinLocation(final GameProfile profile, boolean loadIfAbsent) {
         if (!enabled)
             return Optional.absent();
         ResourceLocation skin = skinCache.get(profile);
         if (skin == null) {
-            skinCache.put(profile, LOADING);
-            loadTexture(profile, Type.SKIN, new SkinAvailableCallback() {
-                @Override
-                public void skinAvailable(Type p_180521_1_, ResourceLocation location, MinecraftProfileTexture profileTexture) {
-                    skinCache.put(profile, location);
-                }
-            });
+            if (loadIfAbsent) {
+                skinCache.put(profile, LOADING);
+                loadTexture(profile, Type.SKIN, new SkinAvailableCallback() {
+                    @Override
+                    public void skinAvailable(Type type, ResourceLocation location, MinecraftProfileTexture profileTexture) {
+                        skinCache.put(profile, location);
+                    }
+                });
+            }
             return Optional.absent();
         }
         return skin == LOADING ? Optional.<ResourceLocation> absent() : Optional.of(skin);
