@@ -101,9 +101,7 @@ public class MineLittlePony {
             minecraft.displayGuiScreen(new GuiSkinsMineLP(ponyManager));
         }
         HDSkinManager.INSTANCE.setEnabled(config.hd);
-        if (Keyboard.isKeyDown(Keyboard.KEY_O)) {
-            PMAPI.init();
-        }
+
     }
 
     public static MineLittlePony getInstance() {

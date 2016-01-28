@@ -50,6 +50,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     }
 
     public final void init(float yOffset, float stretch) {
+        this.boxList.clear();
         this.initTextures();
         this.initPositions(yOffset, stretch);
         for (IPonyPart part : modelParts) {
