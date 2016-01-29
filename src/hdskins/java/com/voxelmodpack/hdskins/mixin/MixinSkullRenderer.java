@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.google.common.base.Optional;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.HDSkinManager;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
@@ -27,7 +28,7 @@ public abstract class MixinSkullRenderer extends TileEntitySpecialRenderer {
     private void onBindTexture(float x, float y, float z, EnumFacing facing, float rotation, int meta, GameProfile profile, int p_180543_8_,
             CallbackInfo ci) {
         if (profile != null) {
-            Optional<ResourceLocation> skin = HDSkinManager.getSkin(profile, true);
+            Optional<ResourceLocation> skin = HDSkinManager.INSTANCE.getSkinLocation(profile, Type.SKIN, true);
             if (skin.isPresent())
                 // rebind
                 bindTexture(skin.get());

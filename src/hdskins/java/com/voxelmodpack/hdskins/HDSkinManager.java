@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
@@ -41,26 +42,30 @@ public final class HDSkinManager {
     private String skinUrl = "skins.voxelmodpack.com";
     private boolean enabled = true;
 
-    private Map<GameProfile, ResourceLocation> skinCache = Maps.newHashMap();
+    private Map<GameProfile, Map<Type, MinecraftProfileTexture>> profileTextures = Maps.newHashMap();
+    private Map<GameProfile, Map<Type, ResourceLocation>> skinCache = Maps.newHashMap();
     private List<ISkinModifier> skinModifiers = Lists.newArrayList();
 
     private HDSkinManager() {}
 
-    public static Optional<ResourceLocation> getSkin(GameProfile profile, boolean loadIfAbsent) {
-        return INSTANCE.getSkinLocation(profile, loadIfAbsent);
-    }
-
-    private Optional<ResourceLocation> getSkinLocation(final GameProfile profile, boolean loadIfAbsent) {
+    public Optional<ResourceLocation> getSkinLocation(final GameProfile profile, Type type, boolean loadIfAbsent) {
         if (!enabled)
             return Optional.absent();
-        ResourceLocation skin = skinCache.get(profile);
+        if (!this.skinCache.containsKey(profile)) {
+            this.skinCache.put(profile, Maps.<Type, ResourceLocation> newHashMap());
+        }
+        ResourceLocation skin = this.skinCache.get(profile).get(type);
         if (skin == null) {
             if (loadIfAbsent) {
-                skinCache.put(profile, LOADING);
-                loadTexture(profile, Type.SKIN, new SkinAvailableCallback() {
+                skinCache.get(profile).put(type, LOADING);
+                loadTexture(profile, type, new SkinAvailableCallback() {
                     @Override
                     public void skinAvailable(Type type, ResourceLocation location, MinecraftProfileTexture profileTexture) {
-                        skinCache.put(profile, location);
+                        skinCache.get(profile).put(type, location);
+                        if (!profileTextures.containsKey(profile)) {
+                            profileTextures.put(profile, Maps.<Type, MinecraftProfileTexture> newHashMap());
+                        }
+                        profileTextures.get(profile).put(type, profileTexture);
                     }
                 });
             }
@@ -71,26 +76,17 @@ public final class HDSkinManager {
 
     private void loadTexture(GameProfile profile, final Type type, final SkinAvailableCallback callback) {
         if (profile != null && profile.getId() != null) {
-            String uuid = UUIDTypeAdapter.fromUUID(profile.getId());
-            String url;
-            switch (type) {
-            case SKIN:
-                url = getCustomSkinURLForId(uuid, false);
-                break;
-            case CAPE:
-                url = getCustomCloakURLForId(uuid);
-                break;
-            default:
-                throw new NullPointerException("Skin type was null.");
+            Map<Type, MinecraftProfileTexture> data = getProfileData(profile);
+            final MinecraftProfileTexture texture = data.get(type);
+            if (texture == null) {
+                return;
             }
-            // TODO use cache
-            final MinecraftProfileTexture texture = new MinecraftProfileTexture(url, null);
             final ResourceLocation skin = new ResourceLocation("skins/" + texture.getHash());
             File file1 = new File(skinCacheDir, texture.getHash().substring(0, 2));
             @SuppressWarnings("unused")
             File file2 = new File(file1, texture.getHash());
             final IImageBuffer imagebufferdownload = new ImageBufferDownloadHD();
-            ThreadDownloadImageData threaddownloadimagedata = new ThreadDownloadImageData(null, url,
+            ThreadDownloadImageData threaddownloadimagedata = new ThreadDownloadImageData(null, texture.getUrl(),
                     DefaultPlayerSkin.getDefaultSkinLegacy(),
                     new IImageBuffer() {
                         public BufferedImage parseUserSkin(BufferedImage image) {
@@ -107,6 +103,24 @@ public final class HDSkinManager {
 
             Minecraft.getMinecraft().getTextureManager().loadTexture(skin, threaddownloadimagedata);
         }
+    }
+
+    public Map<Type, MinecraftProfileTexture> getProfileData(GameProfile profile) {
+        if (!enabled)
+            return ImmutableMap.of();
+        Map<Type, MinecraftProfileTexture> textures = this.profileTextures.get(profile);
+        if (textures == null) {
+            String uuid = UUIDTypeAdapter.fromUUID(profile.getId());
+            String skinUrl = getCustomSkinURLForId(uuid, false);
+            String capeUrl = getCustomCloakURLForId(uuid);
+
+            // TODO metadata (needs server support)
+            textures = ImmutableMap.of(
+                    Type.SKIN, new MinecraftProfileTexture(skinUrl, null),
+                    Type.CAPE, new MinecraftProfileTexture(capeUrl, null));
+            // this.profileTextures.put(profile, textures);
+        }
+        return textures;
     }
 
     private static Map<Type, MinecraftProfileTexture> getTexturesForProfile(GameProfile profile) {

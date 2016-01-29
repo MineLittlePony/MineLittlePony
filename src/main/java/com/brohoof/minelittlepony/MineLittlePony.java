@@ -6,7 +6,6 @@ import com.brohoof.minelittlepony.gui.PonySettingPanel;
 import com.brohoof.minelittlepony.hdskins.gui.EntityPonyModel;
 import com.brohoof.minelittlepony.hdskins.gui.GuiSkinsMineLP;
 import com.brohoof.minelittlepony.hdskins.gui.RenderPonyModel;
-import com.brohoof.minelittlepony.model.PMAPI;
 import com.brohoof.minelittlepony.renderer.RenderPonySkeleton;
 import com.brohoof.minelittlepony.renderer.RenderPonyVillager;
 import com.brohoof.minelittlepony.renderer.RenderPonyZombie;

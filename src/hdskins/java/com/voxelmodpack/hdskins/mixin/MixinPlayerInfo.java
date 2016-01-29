@@ -8,6 +8,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.google.common.base.Optional;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.HDSkinManager;
 
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -18,15 +20,21 @@ public abstract class MixinPlayerInfo {
 
     @Shadow
     private GameProfile gameProfile;
+    @Shadow
+    private ResourceLocation locationSkin;
+    @Shadow
+    private ResourceLocation locationCape;
+    @Shadow
+    public String skinType;
 
     @Inject(method = "hasLocationSkin",
             cancellable = true,
             at = @At("RETURN") )
     private void hasLocationSkin(CallbackInfoReturnable<Boolean> ci) {
-        boolean has = ci.getReturnValueZ();
-        if (!has) {
+        if (locationSkin == null) {
             // in case has no skin
-            ci.setReturnValue(HDSkinManager.getSkin(gameProfile, false).isPresent());
+            Optional<ResourceLocation> skin = HDSkinManager.INSTANCE.getSkinLocation(gameProfile, Type.SKIN, false);
+            ci.setReturnValue(skin.isPresent());
         }
     }
 
@@ -34,10 +42,33 @@ public abstract class MixinPlayerInfo {
             cancellable = true,
             at = @At("RETURN") )
     private void getLocationSkin(CallbackInfoReturnable<ResourceLocation> ci) {
-        Optional<ResourceLocation> skin = HDSkinManager.getSkin(gameProfile, true);
+        Optional<ResourceLocation> skin = HDSkinManager.INSTANCE.getSkinLocation(gameProfile, Type.SKIN, true);
         if (skin.isPresent()) {
             // set the skin
             ci.setReturnValue(skin.get());
+        }
+    }
+
+    @Inject(method = "getLocationCape",
+            cancellable = true,
+            at = @At("RETURN") )
+    private void getLocationCape(CallbackInfoReturnable<ResourceLocation> ci) {
+        Optional<ResourceLocation> cape = HDSkinManager.INSTANCE.getSkinLocation(gameProfile, Type.CAPE, true);
+        if (cape.isPresent()) {
+            // set the cape
+            ci.setReturnValue(cape.get());
+        }
+    }
+
+    @Inject(method = "getSkinType",
+            cancellable = true,
+            at = @At("RETURN") )
+    private void getSkinType(CallbackInfoReturnable<String> ci) {
+        MinecraftProfileTexture data = HDSkinManager.INSTANCE.getProfileData(gameProfile).get(Type.SKIN);
+        if (data != null) {
+            String type = data.getMetadata("model");
+            if (type != null)
+                ci.setReturnValue(type);
         }
     }
 }
