@@ -52,6 +52,7 @@ public class MineLittlePony {
         this.ponyManager = new PonyManager(config);
         this.proxy = new ProxyContainer();
 
+        LiteLoader.getInstance().registerExposable(config, null);
     }
 
     void postInit(Minecraft minecraft) {

@@ -4,6 +4,7 @@ import static net.minecraft.client.renderer.GlStateManager.*;
 
 import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.model.PlayerModel;
+import com.brohoof.minelittlepony.model.pony.ModelHumanPlayer;
 import com.brohoof.minelittlepony.renderer.IRenderPony;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -34,7 +35,7 @@ public class LayerPonyCape implements LayerRenderer {
     public void doRenderLayer(AbstractClientPlayer clientPlayer, float p2, float p3, float ticks, float p5, float p6,
             float p7, float scale) {
         PlayerModel model = ((IRenderPony) renderer).getPony();
-        if (model.getModel().metadata.getRace() == null) {
+        if (model.getModel() instanceof ModelHumanPlayer) {
             cape.doRenderLayer(clientPlayer, p2, p3, ticks, p5, p6, p7, scale);
         } else if (clientPlayer.hasPlayerInfo() && !clientPlayer.isInvisible()
                 && clientPlayer.isWearing(EnumPlayerModelParts.CAPE) && clientPlayer.getLocationCape() != null) {

@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL14;
 import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.model.BodyPart;
 import com.brohoof.minelittlepony.model.PlayerModel;
+import com.brohoof.minelittlepony.model.pony.ModelHumanPlayer;
 import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
 import com.brohoof.minelittlepony.renderer.IRenderPony;
 
@@ -43,7 +44,7 @@ public class LayerHeldPonyItem implements LayerRenderer {
     public void doRenderLayer(EntityLivingBase entity, float p_177141_2_, float p_177141_3_,
             float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
         PlayerModel pony = ((IRenderPony) livingPonyEntity).getPony();
-        if (pony.getModel().metadata.getRace() == null) {
+        if (pony.getModel() instanceof ModelHumanPlayer) {
             held.doRenderLayer(entity, p_177141_2_, p_177141_3_, partialTicks, p_177141_5_, p_177141_6_,
                     p_177141_7_, scale);
             return;
