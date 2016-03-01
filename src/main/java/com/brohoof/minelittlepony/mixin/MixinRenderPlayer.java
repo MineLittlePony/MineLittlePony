@@ -75,10 +75,10 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity implements 
         this.playerModel.getModel().heldItemRight = currentItemStack == null ? 0 : 1;
 
         if (currentItemStack != null && player.getItemInUseCount() > 0) {
-            EnumAction yOrigin = currentItemStack.getItemUseAction();
-            if (yOrigin == EnumAction.BLOCK) {
+            EnumAction action = currentItemStack.getItemUseAction();
+            if (action == EnumAction.BLOCK) {
                 this.playerModel.getModel().heldItemRight = 3;
-            } else if (yOrigin == EnumAction.BOW) {
+            } else if (action == EnumAction.BOW) {
                 this.playerModel.getModel().aimedBow = true;
             }
         }

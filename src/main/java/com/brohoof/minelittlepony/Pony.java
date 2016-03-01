@@ -52,7 +52,6 @@ public class Pony {
         if (!this.skinChecked) {
             this.checkSkin(this.textureResourceLocation);
         }
-
     }
 
     public void checkSkin(ResourceLocation textureResourceLocation) {
@@ -60,12 +59,10 @@ public class Pony {
         if (skinImage != null) {
             this.checkSkin(skinImage);
         }
-
     }
 
     public BufferedImage getBufferedImage(ResourceLocation textureResourceLocation) {
         BufferedImage skinImage = null;
-
         try {
             skinImage = ImageIO.read(Minecraft.getMinecraft().getResourceManager()
                     .getResource(textureResourceLocation).getInputStream());
@@ -77,7 +74,7 @@ public class Pony {
             try {
                 ITextureObject e2 = Minecraft.getMinecraft().getTextureManager().getTexture(textureResourceLocation);
                 if (e2 instanceof ThreadDownloadImageData) {
-                    
+
                     skinImage = PonyFields.downloadedImage.get((ThreadDownloadImageData) e2);
                     if (skinImage != null) {
                         MineLPLogger.debug(e, "Successfully reflected downloadedImage from texture object");

@@ -1,5 +1,6 @@
 package com.voxelmodpack.hdskins.mixin;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,12 +19,11 @@ import net.minecraft.util.ResourceLocation;
 @Mixin(NetworkPlayerInfo.class)
 public abstract class MixinPlayerInfo {
 
+    @Final
     @Shadow
     private GameProfile gameProfile;
     @Shadow
     private ResourceLocation locationSkin;
-    @Shadow
-    private ResourceLocation locationCape;
     @Shadow
     public String skinType;
 
@@ -67,8 +67,12 @@ public abstract class MixinPlayerInfo {
         MinecraftProfileTexture data = HDSkinManager.INSTANCE.getProfileData(gameProfile).get(Type.SKIN);
         if (data != null) {
             String type = data.getMetadata("model");
-            if (type != null)
+            boolean hasSkin = HDSkinManager.INSTANCE.getSkinLocation(gameProfile, Type.SKIN, false).isPresent();
+            if (hasSkin) {
+                if (type == null)
+                    type = "default";
                 ci.setReturnValue(type);
+            }
         }
     }
 }

@@ -6,18 +6,24 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.InsecureTextureException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
+import com.mojang.authlib.properties.Property;
 import com.mojang.util.UUIDTypeAdapter;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
@@ -36,42 +42,51 @@ public final class HDSkinManager {
 
     public static final HDSkinManager INSTANCE = new HDSkinManager();
     private static final ResourceLocation LOADING = new ResourceLocation("LOADING");
-    private static final File skinCacheDir = new File("assets/skins");
 
     private String gatewayUrl = "skinmanager.voxelmodpack.com";
     private String skinUrl = "skins.voxelmodpack.com";
     private boolean enabled = true;
 
-    private Map<GameProfile, Map<Type, MinecraftProfileTexture>> profileTextures = Maps.newHashMap();
-    private Map<GameProfile, Map<Type, ResourceLocation>> skinCache = Maps.newHashMap();
+    private Map<UUID, Map<Type, MinecraftProfileTexture>> profileTextures = Maps.newHashMap();
+    private Map<UUID, Map<Type, ResourceLocation>> skinCache = Maps.newHashMap();
     private List<ISkinModifier> skinModifiers = Lists.newArrayList();
 
     private HDSkinManager() {}
 
-    public Optional<ResourceLocation> getSkinLocation(final GameProfile profile, Type type, boolean loadIfAbsent) {
+    public Optional<ResourceLocation> getSkinLocation(GameProfile profile1, Type type, boolean loadIfAbsent) {
         if (!enabled)
             return Optional.absent();
-        if (!this.skinCache.containsKey(profile)) {
-            this.skinCache.put(profile, Maps.<Type, ResourceLocation> newHashMap());
+        // try to recreate a broken gameprofile
+        // happens when server sends a random profile with skin and displayname
+        Property prop = Iterables.getFirst(profile1.getProperties().get("textures"), null);
+        if (prop != null) {
+            JsonObject obj = new Gson().fromJson(new String(Base64.decodeBase64(prop.getValue())), JsonObject.class);
+            String name = obj.get("profileName").getAsString();
+            UUID uuid = UUIDTypeAdapter.fromString(obj.get("profileId").getAsString());
+            profile1 = new GameProfile(uuid, name);
         }
-        ResourceLocation skin = this.skinCache.get(profile).get(type);
+        final GameProfile profile = profile1;
+
+        if (!this.skinCache.containsKey(profile.getId())) {
+            this.skinCache.put(profile.getId(), Maps.<Type, ResourceLocation> newHashMap());
+        }
+
+        ResourceLocation skin = this.skinCache.get(profile.getId()).get(type);
         if (skin == null) {
             if (loadIfAbsent) {
-                skinCache.get(profile).put(type, LOADING);
+                skinCache.get(profile.getId()).put(type, LOADING);
                 loadTexture(profile, type, new SkinAvailableCallback() {
                     @Override
                     public void skinAvailable(Type type, ResourceLocation location, MinecraftProfileTexture profileTexture) {
-                        skinCache.get(profile).put(type, location);
-                        if (!profileTextures.containsKey(profile)) {
-                            profileTextures.put(profile, Maps.<Type, MinecraftProfileTexture> newHashMap());
-                        }
-                        profileTextures.get(profile).put(type, profileTexture);
+                        skinCache.get(profile.getId()).put(type, location);
                     }
                 });
             }
             return Optional.absent();
         }
+
         return skin == LOADING ? Optional.<ResourceLocation> absent() : Optional.of(skin);
+
     }
 
     private void loadTexture(GameProfile profile, final Type type, final SkinAvailableCallback callback) {
@@ -81,12 +96,12 @@ public final class HDSkinManager {
             if (texture == null) {
                 return;
             }
-            final ResourceLocation skin = new ResourceLocation("skins/" + texture.getHash());
-            File file1 = new File(skinCacheDir, texture.getHash().substring(0, 2));
-            @SuppressWarnings("unused")
+            String dir = type.toString().toLowerCase() + "s/";
+            final ResourceLocation skin = new ResourceLocation(dir + texture.getHash());
+            File file1 = new File(new File("assets/" + dir), texture.getHash().substring(0, 2));
             File file2 = new File(file1, texture.getHash());
             final IImageBuffer imagebufferdownload = new ImageBufferDownloadHD();
-            ThreadDownloadImageData threaddownloadimagedata = new ThreadDownloadImageData(null, texture.getUrl(),
+            ThreadDownloadImageData threaddownloadimagedata = new ThreadDownloadImageData(file2, texture.getUrl(),
                     DefaultPlayerSkin.getDefaultSkinLegacy(),
                     new IImageBuffer() {
                         public BufferedImage parseUserSkin(BufferedImage image) {
@@ -108,8 +123,9 @@ public final class HDSkinManager {
     public Map<Type, MinecraftProfileTexture> getProfileData(GameProfile profile) {
         if (!enabled)
             return ImmutableMap.of();
-        Map<Type, MinecraftProfileTexture> textures = this.profileTextures.get(profile);
+        Map<Type, MinecraftProfileTexture> textures = this.profileTextures.get(profile.getId());
         if (textures == null) {
+
             String uuid = UUIDTypeAdapter.fromUUID(profile.getId());
             String skinUrl = getCustomSkinURLForId(uuid, false);
             String capeUrl = getCustomCloakURLForId(uuid);
@@ -118,7 +134,7 @@ public final class HDSkinManager {
             textures = ImmutableMap.of(
                     Type.SKIN, new MinecraftProfileTexture(skinUrl, null),
                     Type.CAPE, new MinecraftProfileTexture(capeUrl, null));
-            // this.profileTextures.put(profile, textures);
+            this.profileTextures.put(profile.getId(), textures);
         }
         return textures;
     }

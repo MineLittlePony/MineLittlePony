@@ -1,6 +1,31 @@
 package com.voxelmodpack.hdskins.gui;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
+import static net.minecraft.client.renderer.GlStateManager.blendFunc;
+import static net.minecraft.client.renderer.GlStateManager.color;
+import static net.minecraft.client.renderer.GlStateManager.colorMask;
+import static net.minecraft.client.renderer.GlStateManager.depthMask;
+import static net.minecraft.client.renderer.GlStateManager.disableAlpha;
+import static net.minecraft.client.renderer.GlStateManager.disableBlend;
+import static net.minecraft.client.renderer.GlStateManager.disableColorMaterial;
+import static net.minecraft.client.renderer.GlStateManager.disableCull;
+import static net.minecraft.client.renderer.GlStateManager.disableDepth;
+import static net.minecraft.client.renderer.GlStateManager.disableFog;
+import static net.minecraft.client.renderer.GlStateManager.disableTexture2D;
+import static net.minecraft.client.renderer.GlStateManager.enableAlpha;
+import static net.minecraft.client.renderer.GlStateManager.enableBlend;
+import static net.minecraft.client.renderer.GlStateManager.enableColorMaterial;
+import static net.minecraft.client.renderer.GlStateManager.enableCull;
+import static net.minecraft.client.renderer.GlStateManager.enableDepth;
+import static net.minecraft.client.renderer.GlStateManager.enableTexture2D;
+import static net.minecraft.client.renderer.GlStateManager.loadIdentity;
+import static net.minecraft.client.renderer.GlStateManager.matrixMode;
+import static net.minecraft.client.renderer.GlStateManager.popAttrib;
+import static net.minecraft.client.renderer.GlStateManager.popMatrix;
+import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
+import static net.minecraft.client.renderer.GlStateManager.rotate;
+import static net.minecraft.client.renderer.GlStateManager.scale;
+import static net.minecraft.client.renderer.GlStateManager.translate;
+import static net.minecraft.client.renderer.GlStateManager.viewport;
 
 import java.awt.Color;
 import java.awt.Window.Type;
@@ -11,7 +36,6 @@ import java.io.IOException;
 import java.nio.DoubleBuffer;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -31,13 +55,12 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
-import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
-import com.mumfrey.liteloader.gl.GL;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
-import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
+import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.mod.LiteModHDSkinsMod;
 import com.voxelmodpack.hdskins.upload.IUploadCompleteCallback;
 import com.voxelmodpack.hdskins.upload.ThreadMultipartPostUpload;
@@ -182,9 +205,6 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
 
     protected void onSetRemoteSkin() {}
 
-    /**
-     * @param skin The skin
-     */
     protected void onSetLocalSkin(BufferedImage skin) {}
 
     private void reloadRemoteSkin() {
@@ -224,11 +244,9 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         this.panoramaRenderer.initPanoramaRenderer();
         this.getControlList().clear();
         this.getControlList().add(this.btnBrowse = new GuiButton(0, 30, this.height - 36, 60, 20, "Browse..."));
-        this.getControlList()
-                .add(this.btnUpload = new GuiButton(1, this.width / 2 - 24, this.height / 2 - 10, 48, 20, ">>"));
+        this.getControlList().add(this.btnUpload = new GuiButton(1, this.width / 2 - 24, this.height / 2 - 10, 48, 20, ">>"));
         this.getControlList().add(this.btnClear = new GuiButton(2, this.width - 90, this.height - 36, 60, 20, "Clear"));
-        this.getControlList()
-                .add(this.btnBack = new GuiButton(3, this.width / 2 - 50, this.height - 36, 100, 20, "Close"));
+        this.getControlList().add(this.btnBack = new GuiButton(3, this.width / 2 - 50, this.height - 36, 100, 20, "Close"));
         this.btnUpload.enabled = false;
         this.btnBrowse.enabled = !this.mc.isFullScreen();
     }
@@ -249,7 +267,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         fileDrop.setResizable(false);
         fileDrop.setTitle("Skin Drop");
         fileDrop.setSize(256, 256);
-//        fileDrop.setAlwaysOnTop(true);
+        // fileDrop.setAlwaysOnTop(true);
         fileDrop.getContentPane().setLayout(null);
         JPanel panel = new JPanel();
         panel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
@@ -280,8 +298,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
 
     @Override
     public void initPanoramaRenderer() {
-        this.viewportTexture = this.mc.getTextureManager().getDynamicTextureLocation("skinpanorama",
-                new DynamicTexture(256, 256));
+        this.viewportTexture = this.mc.getTextureManager().getDynamicTextureLocation("skinpanorama", new DynamicTexture(256, 256));
     }
 
     @Override
@@ -385,8 +402,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
             byte top = 30;
             int bottom = this.height - 40;
             int mid = this.width / 2;
-            if ((mouseX > 30 && mouseX < mid - 30 || mouseX > mid + 30 && mouseX < this.width - 30) && mouseY > top
-                    && mouseY < bottom) {
+            if ((mouseX > 30 && mouseX < mid - 30 || mouseX > mid + 30 && mouseX < this.width - 30) && mouseY > top && mouseY < bottom) {
                 this.localPlayer.swingArm();
                 this.remotePlayer.swingArm();
             }
@@ -402,19 +418,19 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     }
 
     public void setupCubemapCamera() {
-        matrixMode(5889);
+        matrixMode(GL11.GL_PROJECTION);
         pushMatrix();
         loadIdentity();
         GLU.gluPerspective(150.0F, 1.0F, 0.05F, 10.0F);
-        matrixMode(5888);
+        matrixMode(GL11.GL_MODELVIEW);
         pushMatrix();
         loadIdentity();
     }
 
     public void revertPanoramaMatrix() {
-        matrixMode(5889);
+        matrixMode(GL11.GL_PROJECTION);
         popMatrix();
-        matrixMode(5888);
+        matrixMode(GL11.GL_MODELVIEW);
         popMatrix();
     }
 
@@ -422,11 +438,11 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         this.setupCubemapCamera();
         color(1.0F, 1.0F, 1.0F, 1.0F);
         rotate(180.0F, 1.0F, 0.0F, 0.0F);
-        GL11.glEnable(3042);
-        GL11.glDisable(3008);
-        GL11.glDisable(2884);
+        enableBlend();
+        disableAlpha();
+        disableCull();
         depthMask(false);
-        blendFunc(770, 771);
+        blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         byte blendIterations = 8;
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer wr = tessellator.getWorldRenderer();
@@ -437,8 +453,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
             float offsetY = ((float) (blendPass / blendIterations) / (float) blendIterations - 0.5F) / 64.0F;
             float offsetZ = 0.0F;
             translate(offsetX, offsetY, offsetZ);
-            rotate(MathHelper.sin((this.updateCounter + 200 + partialTick) / 400.0F) * 25.0F + 20.0F, 1.0F,
-                    0.0F, 0.0F);
+            rotate(MathHelper.sin((this.updateCounter + 200 + partialTick) / 400.0F) * 25.0F + 20.0F, 1.0F, 0.0F, 0.0F);
             rotate(-(this.updateCounter + 200 + partialTick) * 0.1F, 0.0F, 1.0F, 0.0F);
 
             for (int cubeSide = 0; cubeSide < 6; ++cubeSide) {
@@ -465,7 +480,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
 
                 this.mc.getTextureManager().bindTexture(cubemapTextures[cubeSide]);
                 wr.startDrawingQuads();
-                wr.setColorRGBA_I(16777215, 255 / (blendPass + 1));
+                wr.setColorRGBA_I(0xffffff, 255 / (blendPass + 1));
                 wr.addVertexWithUV(-1.0D, -1.0D, 1.0D, 0.0D, 0.0D);
                 wr.addVertexWithUV(1.0D, -1.0D, 1.0D, 1.0D, 0.0D);
                 wr.addVertexWithUV(1.0D, 1.0D, 1.0D, 1.0D, 1.0D);
@@ -481,17 +496,17 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         wr.setTranslation(0.0D, 0.0D, 0.0D);
         colorMask(true, true, true, true);
         depthMask(true);
-        GL11.glEnable(2884);
-        GL11.glEnable(3008);
-        GL11.glEnable(2929);
+        enableCull();
+        enableAlpha();
+        enableDepth();
         this.revertPanoramaMatrix();
     }
 
     private void rotateAndBlurCubemap() {
         this.mc.getTextureManager().bindTexture(this.viewportTexture);
-        GL11.glCopyTexSubImage2D(3553, 0, 0, 0, 0, 0, 256, 256);
-        GL11.glEnable(3042);
-        blendFunc(770, 771);
+        GL11.glCopyTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, 0, 0, 256, 256);
+        enableBlend();
+        blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         colorMask(true, true, true, false);
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer wr = tessellator.getWorldRenderer();
@@ -509,29 +524,29 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
 
         tessellator.draw();
         colorMask(true, true, true, true);
-        GL11.glDisable(3042);
+        disableBlend();
     }
 
     @Override
     public boolean renderPanorama(int mouseX, int mouseY, float partialTicks) {
-        GL11.glViewport(0, 0, 256, 256);
+        viewport(0, 0, 256, 256);
         this.renderCubeMapTexture(partialTicks);
-        GL11.glDisable(3553);
-        GL11.glEnable(3553);
+        disableTexture2D();
+        enableTexture2D();
 
         for (int tessellator = 0; tessellator < 8; ++tessellator) {
             this.rotateAndBlurCubemap();
         }
 
-        GL11.glViewport(0, 0, this.mc.displayWidth, this.mc.displayHeight);
+        viewport(0, 0, this.mc.displayWidth, this.mc.displayHeight);
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer wr = tessellator.getWorldRenderer();
         wr.startDrawingQuads();
         float aspect = this.width > this.height ? 120.0F / this.width : 120.0F / this.height;
         float uSample = this.height * aspect / 256.0F;
         float vSample = this.width * aspect / 256.0F;
-        GL11.glTexParameteri(3553, 10241, 9729);
-        GL11.glTexParameteri(3553, 10240, 9729);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
         wr.setColorRGBA_F(1.0F, 1.0F, 1.0F, 1.0F);
         wr.addVertexWithUV(0.0D, this.height, this.zLevel, 0.5F - uSample, 0.5F + vSample);
         wr.addVertexWithUV(this.width, this.height, this.zLevel, 0.5F - uSample, 0.5F - vSample);
@@ -545,45 +560,58 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     public void drawScreen(int mouseX, int mouseY, float partialTick) {
         float deltaTime = this.updateCounter + partialTick - this.lastPartialTick;
         this.lastPartialTick = this.updateCounter + partialTick;
-        GL11.glDisable(GL11.GL_FOG);
+
+        disableFog();
         this.mc.entityRenderer.disableLightmap();
         this.panoramaRenderer.renderPanorama(mouseX, mouseY, partialTick);
-        byte top = 30;
+
+        int top = 30;
         int bottom = this.height - 40;
         int mid = this.width / 2;
         int horizon = this.height / 2 + this.height / 5;
+
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+
         Gui.drawRect(30, top, mid - 30, bottom, Integer.MIN_VALUE);
         Gui.drawRect(mid + 30, top, this.width - 30, bottom, Integer.MIN_VALUE);
-        this.drawGradientRect(30, horizon, mid - 30, bottom, -2130706433, 16777215);
-        this.drawGradientRect(mid + 30, horizon, this.width - 30, bottom, -2130706433, 16777215);
+
+        this.drawGradientRect(30, horizon, mid - 30, bottom, 0x80FFFFFF, 0xffffff);
+        this.drawGradientRect(mid + 30, horizon, this.width - 30, bottom, 0x80FFFFFF, 0xffffff);
+
         super.drawScreen(mouseX, mouseY, partialTick);
+
         popAttrib();
         this.enableClipping(30, bottom);
+
         float yPos = this.height * 0.75F;
         float xPos1 = this.width * 0.25F;
         float xPos2 = this.width * 0.75F;
         float scale = this.height * 0.25F;
-        this.renderPlayerModel(this.localPlayer, xPos1, yPos, scale, xPos1 - mouseX, yPos - scale * 1.8F - mouseY,
-                partialTick);
-        this.renderPlayerModel(this.remotePlayer, xPos2, yPos, scale, xPos2 - mouseX, yPos - scale * 1.8F - mouseY,
-                partialTick);
+
+        this.renderPlayerModel(this.localPlayer, xPos1, yPos, scale, xPos1 - mouseX, yPos - scale * 1.8F - mouseY, partialTick);
+        this.renderPlayerModel(this.remotePlayer, xPos2, yPos, scale, xPos2 - mouseX, yPos - scale * 1.8F - mouseY, partialTick);
+
         this.disableClipping();
-        this.drawCenteredString(this.fontRendererObj, this.screenTitle, this.width / 2, 10, 16777215);
-        this.fontRendererObj.drawStringWithShadow(localSkin, 34, 34, 16777215);
-        this.fontRendererObj.drawStringWithShadow(serverSkin, this.width / 2 + 34, 34, 16777215);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glEnable(GL11.GL_BLEND);
+
+        this.drawCenteredString(this.fontRendererObj, this.screenTitle, this.width / 2, 10, 0xffffff);
+
+        this.fontRendererObj.drawStringWithShadow(localSkin, 34, 34, 0xffffff);
+        this.fontRendererObj.drawStringWithShadow(serverSkin, this.width / 2 + 34, 34, 0xffffff);
+
+        disableDepth();
+        enableBlend();
         depthMask(false);
+
+        // this is here so the next few things get blended properly
+        Gui.drawRect(0, 0, 1, 1, 0);
         this.drawGradientRect(30, this.height - 60, mid - 30, bottom, 1, 0xe0ffffff);
-        this.drawGradientRect(mid + 30, this.height - 60, this.width - 30, bottom, 0, -520093697);
+        this.drawGradientRect(mid + 30, this.height - 60, this.width - 30, bottom, 0, 0xE0FFFFFF);
+
         int labelwidth = (this.width / 2 - 80) / 2;
-        int opacity;
         if (!this.localPlayer.isUsingLocalTexture()) {
-            opacity = this.fontRendererObj.getStringWidth(this.skinMessage) / 2;
-            Gui.drawRect(40, this.height / 2 - 12, this.width / 2 - 40, this.height / 2 + 12, -1342177280);
-            this.fontRendererObj.drawStringWithShadow(this.skinMessage, (int) (xPos1 - opacity), this.height / 2 - 4,
-                    16777215);
+            int opacity = this.fontRendererObj.getStringWidth(this.skinMessage) / 2;
+            Gui.drawRect(40, this.height / 2 - 12, this.width / 2 - 40, this.height / 2 + 12, 0xB0000000);
+            this.fontRendererObj.drawStringWithShadow(this.skinMessage, (int) (xPos1 - opacity), this.height / 2 - 4, 0xffffff);
         }
 
         if (this.fetchingSkin) {
@@ -593,19 +621,16 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
                 String stringWidth = wait;
                 int stringWidth1 = this.fontRendererObj.getStringWidth(opacity1) / 2;
                 int stringWidth2 = this.fontRendererObj.getStringWidth(stringWidth) / 2;
-                Gui.drawRect((int) (xPos2 - labelwidth), this.height / 2 - 16, this.width - 40, this.height / 2 + 16,
-                        -1342177280);
-                this.fontRendererObj.drawStringWithShadow(opacity1, (int) (xPos2 - stringWidth1), this.height / 2 - 10,
-                        16777215);
-                this.fontRendererObj.drawStringWithShadow(stringWidth, (int) (xPos2 - stringWidth2),
-                        this.height / 2 + 2, 16777215);
+
+                Gui.drawRect((int) (xPos2 - labelwidth), this.height / 2 - 16, this.width - 40, this.height / 2 + 16, 0xB0000000);
+
+                this.fontRendererObj.drawStringWithShadow(opacity1, (int) (xPos2 - stringWidth1), this.height / 2 - 10, 0xffffff);
+                this.fontRendererObj.drawStringWithShadow(stringWidth, (int) (xPos2 - stringWidth2), this.height / 2 + 2, 0xffffff);
             } else {
                 opacity1 = fetch;
                 int stringWidth1 = this.fontRendererObj.getStringWidth(opacity1) / 2;
-                Gui.drawRect((int) (xPos2 - labelwidth), this.height / 2 - 12, this.width - 40, this.height / 2 + 12,
-                        -1342177280);
-                this.fontRendererObj.drawStringWithShadow(opacity1, (int) (xPos2 - stringWidth1), this.height / 2 - 4,
-                        16777215);
+                Gui.drawRect((int) (xPos2 - labelwidth), this.height / 2 - 12, this.width - 40, this.height / 2 + 12, 0xB0000000);
+                this.fontRendererObj.drawStringWithShadow(opacity1, (int) (xPos2 - stringWidth1), this.height / 2 - 4, 0xffffff);
             }
         }
 
@@ -620,47 +645,49 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
                 this.uploadOpacity = 1.0F;
             }
 
-            opacity = Math.min(180, (int) (this.uploadOpacity * 180.0F)) & 255;
+            int opacity = Math.min(180, (int) (this.uploadOpacity * 180.0F)) & 255;
             if (this.uploadOpacity > 0.0F) {
                 Gui.drawRect(0, 0, this.width, this.height, opacity << 24 | 0);
                 if (this.uploadingSkin) {
-                    this.drawCenteredString(this.fontRendererObj, this.skinUploadMessage, this.width / 2,
-                            this.height / 2, opacity << 24 | 16777215);
+                    this.drawCenteredString(this.fontRendererObj, this.skinUploadMessage, this.width / 2, this.height / 2, opacity << 24 | 0xffffff);
                 }
             }
         }
 
         if (this.uploadError != null) {
-            Gui.drawRect(0, 0, this.width, this.height, -1342177280);
-            this.drawCenteredString(this.fontRendererObj, failed, this.width / 2, this.height / 2 - 10,
-                    -171);
-            this.drawCenteredString(this.fontRendererObj, this.uploadError, this.width / 2, this.height / 2 + 2,
-                    -43691);
+            Gui.drawRect(0, 0, this.width, this.height, 0xB0000000);
+            this.drawCenteredString(this.fontRendererObj, failed, this.width / 2, this.height / 2 - 10, 0xFFFFFF55);
+            this.drawCenteredString(this.fontRendererObj, this.uploadError, this.width / 2, this.height / 2 + 2, 0xFFFF5555);
         }
 
         depthMask(true);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        enableDepth();
     }
 
     public void renderPlayerModel(EntityPlayerModel thePlayer, float xPosition, float yPosition, float scale, float mouseX, float mouseY, float partialTick) {
-        GL11.glEnable(GL.GL_COLOR_MATERIAL);
+        enableColorMaterial();
         pushMatrix();
         translate(xPosition, yPosition, 300.0F);
+
         scale(-scale, scale, scale);
         rotate(180.0F, 0.0F, 0.0F, 1.0F);
         rotate(135.0F, 0.0F, 1.0F, 0.0F);
+
         RenderHelper.enableStandardItemLighting();
+
         rotate(-135.0F, 0.0F, 1.0F, 0.0F);
         rotate(15.0F, 1.0F, 0.0F, 0.0F);
         rotate((this.updateCounter + partialTick) * 2.5F, 0.0F, 1.0F, 0.0F);
         thePlayer.rotationPitch = -((float) Math.atan(mouseY / 40.0F)) * 20.0F;
         translate(0.0D, thePlayer.getYOffset(), 0.0D);
+
         RenderManager rm = Minecraft.getMinecraft().getRenderManager();
         rm.playerViewY = 180.0F;
         rm.renderEntityWithPosYaw(thePlayer, 0.0D, 0.0D, 0.0D, 1.0F, 1.0F);
+
         popMatrix();
         RenderHelper.disableStandardItemLighting();
-        GL11.glDisable(GL11.GL_COLOR_MATERIAL);
+        disableColorMaterial();
     }
 
     protected final void enableClipping(int yTop, int yBottom) {
@@ -670,17 +697,19 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
 
         this.doubleBuffer.clear();
         this.doubleBuffer.put(0.0D).put(1.0D).put(0.0D).put((-yTop)).flip();
-        GL11.glClipPlane(12288, this.doubleBuffer);
+
+        GL11.glClipPlane(GL11.GL_CLIP_PLANE0, this.doubleBuffer);
         this.doubleBuffer.clear();
         this.doubleBuffer.put(0.0D).put(-1.0D).put(0.0D).put(yBottom).flip();
-        GL11.glClipPlane(12289, this.doubleBuffer);
-        GL11.glEnable(12288);
-        GL11.glEnable(12289);
+
+        GL11.glClipPlane(GL11.GL_CLIP_PLANE1, this.doubleBuffer);
+        GL11.glEnable(GL11.GL_CLIP_PLANE0);
+        GL11.glEnable(GL11.GL_CLIP_PLANE1);
     }
 
     protected final void disableClipping() {
-        GL11.glDisable(12289);
-        GL11.glDisable(12288);
+        GL11.glDisable(GL11.GL_CLIP_PLANE1);
+        GL11.glDisable(GL11.GL_CLIP_PLANE0);
     }
 
     public static boolean isPowerOfTwo(int number) {
@@ -691,15 +720,14 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         if (!this.registerServerConnection(session, skinServerId)) {
             return false;
         }
-        HashMap<String, Object> sourceData = new HashMap<String, Object>();
+        HashMap<String, Object> sourceData = Maps.newHashMap();
         sourceData.put("user", session.getUsername());
         sourceData.put("uuid", session.getPlayerID());
         sourceData.put("clear", "1");
         this.uploadError = null;
         this.uploadingSkin = true;
         this.skinUploadMessage = request;
-        this.threadSkinUpload = new ThreadMultipartPostUpload("http://minelpskinmanager.voxelmodpack.com/",
-                sourceData, this);
+        this.threadSkinUpload = new ThreadMultipartPostUpload(HDSkinManager.INSTANCE.getGatewayUrl(), sourceData, this);
         this.threadSkinUpload.start();
         return true;
     }
@@ -715,8 +743,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         this.uploadError = null;
         this.uploadingSkin = true;
         this.skinUploadMessage = upload;
-        this.threadSkinUpload = new ThreadMultipartPostUpload("http://minelpskinmanager.voxelmodpack.com/",
-                sourceData, this);
+        this.threadSkinUpload = new ThreadMultipartPostUpload(HDSkinManager.INSTANCE.getGatewayUrl(), sourceData, this);
         this.threadSkinUpload.start();
         return true;
     }
@@ -740,9 +767,8 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
 
     private boolean registerServerConnection(Session session, String serverId) {
         try {
-            MinecraftSessionService e = (new YggdrasilAuthenticationService(this.mc.getProxy(),
-                    UUID.randomUUID().toString())).createMinecraftSessionService();
-            e.joinServer(session.getProfile(), session.getToken(), serverId);
+            MinecraftSessionService service = Minecraft.getMinecraft().getSessionService();
+            service.joinServer(session.getProfile(), session.getToken(), serverId);
             return true;
         } catch (AuthenticationException var4) {
             this.setUploadError(var4.toString());
