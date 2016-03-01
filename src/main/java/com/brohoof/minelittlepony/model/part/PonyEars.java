@@ -26,8 +26,8 @@ public class PonyEars extends AbstractHeadPart implements PonyModelConstants {
 
     @Override
     protected void position(float posX, float posY, float posZ) {
-        getPony().setRotationPoint(left, posX, posY, posZ);
-        getPony().setRotationPoint(right, posX, posY, posZ);
+        AbstractPonyModel.setRotationPoint(left, posX, posY, posZ);
+        AbstractPonyModel.setRotationPoint(right, posX, posY, posZ);
     }
 
     @Override

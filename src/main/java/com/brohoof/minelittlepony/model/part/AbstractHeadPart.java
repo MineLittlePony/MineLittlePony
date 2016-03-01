@@ -43,7 +43,7 @@ public abstract class AbstractHeadPart implements IPonyPart {
             x = vert / (float) (180 / Math.PI);
         }
         x = Math.min(x, 0.5F);
-        x = Math.max(x, -0.5F);
+        x = Math.max(x, -1.25F);
 
         rotate(x, y);
     }

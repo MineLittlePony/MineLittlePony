@@ -21,7 +21,7 @@ public class ModelPonyArmor extends ModelPlayerPony {
 
     @Override
     protected void addParts() {
-       // modelParts.add(new PonyEars());
+        // modelParts.add(new PonyEars());
     }
 
     @Override
@@ -85,45 +85,28 @@ public class ModelPonyArmor extends ModelPlayerPony {
             this.aimBow(aniparams.tick);
         }
 
-//        this.fixSpecialRotationPoints(aniparams.move);
+        // this.fixSpecialRotationPoints(aniparams.move);
     }
 
     @Override
     protected void setHead(float posX, float posY, float posZ) {
-        this.setRotationPoint(this.bipedHead, posX, posY, posZ);
-        this.setRotationPoint(this.bipedHeadwear, posX, posY, posZ);
-        this.setRotationPoint(this.extHead[0], posX, posY, posZ);
-        this.setRotationPoint(this.extHead[1], posX, posY, posZ);
+        setRotationPoint(this.bipedHead, posX, posY, posZ);
+        setRotationPoint(this.bipedHeadwear, posX, posY, posZ);
+        setRotationPoint(this.extHead[0], posX, posY, posZ);
+        setRotationPoint(this.extHead[1], posX, posY, posZ);
     }
 
     @Override
     protected void rotateHead(float horz, float vert) {
-        float headRotateAngleY;
-        float headRotateAngleX;
-        if (this.isSleeping) {
-            headRotateAngleY = 1.4F;
-            headRotateAngleX = 0.1F;
-        } else {
-            headRotateAngleY = horz / 57.29578F;
-            headRotateAngleX = vert / 57.29578F;
-        }
+        super.rotateHead(horz, vert);
 
-        if (headRotateAngleX > 0.5F) {
-            headRotateAngleX = 0.5F;
-        }
+        float headRotateAngleX = this.bipedHead.rotateAngleX;
+        float headRotateAngleY = this.bipedHead.rotateAngleY;
 
-        if (headRotateAngleX < -0.5F) {
-            headRotateAngleX = -0.5F;
-        }
-
-        this.bipedHead.rotateAngleY = headRotateAngleY;
-        this.bipedHead.rotateAngleX = headRotateAngleX;
         this.extHead[0].rotateAngleY = headRotateAngleY;
         this.extHead[0].rotateAngleX = headRotateAngleX;
         this.extHead[1].rotateAngleY = headRotateAngleY;
         this.extHead[1].rotateAngleX = headRotateAngleX;
-        this.bipedHeadwear.rotateAngleY = headRotateAngleY;
-        this.bipedHeadwear.rotateAngleX = headRotateAngleX;
     }
 
     @Override
@@ -140,17 +123,16 @@ public class ModelPonyArmor extends ModelPlayerPony {
     }
 
     protected void ridingPony() {
-        this.setHead(this.bipedHead.rotationPointX + 0.0F, this.bipedHead.rotationPointY + RIDING_SHIFT_Y,
-                this.bipedHead.rotationPointZ + RIDING_SHIFT_Z);
-        this.shiftRotationPoint(this.bipedBody, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
-        this.shiftRotationPoint(this.Bodypiece, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
-        this.shiftRotationPoint(this.extBody, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
-        this.shiftRotationPoint(this.bipedLeftArm, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
-        this.shiftRotationPoint(this.bipedRightArm, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
-        this.shiftRotationPoint(this.bipedLeftLeg, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
-        this.shiftRotationPoint(this.bipedRightLeg, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
-        this.shiftRotationPoint(this.extLegs[0], 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
-        this.shiftRotationPoint(this.extLegs[1], 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
+        this.setHead(this.bipedHead.rotationPointX + 0.0F, this.bipedHead.rotationPointY + RIDING_SHIFT_Y, this.bipedHead.rotationPointZ + RIDING_SHIFT_Z);
+        shiftRotationPoint(this.bipedBody, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
+        shiftRotationPoint(this.Bodypiece, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
+        shiftRotationPoint(this.extBody, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
+        shiftRotationPoint(this.bipedLeftArm, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
+        shiftRotationPoint(this.bipedRightArm, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
+        shiftRotationPoint(this.bipedLeftLeg, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
+        shiftRotationPoint(this.bipedRightLeg, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
+        shiftRotationPoint(this.extLegs[0], 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
+        shiftRotationPoint(this.extLegs[1], 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
     }
 
     @Override

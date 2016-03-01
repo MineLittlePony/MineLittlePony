@@ -72,11 +72,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
             setModelVisibilities((AbstractClientPlayer) player);
         }
         if (!doCancelRender()) {
-            AniParams ani = new AniParams(Move, Moveswing, Loop, Right, Down);
-            this.animate(ani);
-            for (IPonyPart part : modelParts) {
-                part.animate(metadata, ani);
-            }
+            this.setRotationAngles(Move, Moveswing, Loop, Right, Down, Scale, player);
             GlStateManager.pushMatrix();
             this.render();
             GlStateManager.popMatrix();
@@ -103,14 +99,20 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     }
 
     @Override
-    public void setRotationAngles(float p_78087_1_, float p_78087_2_, float p_78087_3_, float p_78087_4_, float p_78087_5_, float p_78087_6_, Entity entityIn) {
-
-        super.setRotationAngles(p_78087_1_, p_78087_2_, p_78087_3_, p_78087_4_, p_78087_5_, p_78087_6_, entityIn);
-
-        this.steveRightArm.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662F + (float) Math.PI) * 2.0F * p_78087_2_ * 0.5F;
+    public void setRotationAngles(float Move, float Moveswing, float Loop, float Right, float Down, float Scale, Entity entityIn) {
+        if (doCancelRender()) {
+            super.setRotationAngles(Move, Moveswing, Loop, Right, Down, Scale, entityIn);
+            return;
+        }
+        AniParams ani = new AniParams(Move, Moveswing, Loop, Right, Down);
+        this.animate(ani);
+        for (IPonyPart part : modelParts) {
+            part.animate(metadata, ani);
+        }
+        this.steveRightArm.rotateAngleX = MathHelper.cos(Move * 0.6662F + (float) Math.PI) * 2.0F * Moveswing * 0.5F;
         this.steveRightArm.rotateAngleY = 0;
         this.steveRightArm.rotateAngleZ = 0;
-        this.steveLeftArm.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662F) * 2.0F * p_78087_2_ * 0.5F;
+        this.steveLeftArm.rotateAngleX = MathHelper.cos(Move * 0.6662F) * 2.0F * Moveswing * 0.5F;
         this.steveLeftArm.rotateAngleY = 0;
         this.steveLeftArm.rotateAngleZ = 0;
 
@@ -160,25 +162,25 @@ public abstract class AbstractPonyModel extends ModelPlayer {
         return false;
     }
 
-    public void setRotationPoint(ModelRenderer aRenderer, float setX, float setY, float setZ) {
+    public static void setRotationPoint(ModelRenderer aRenderer, float setX, float setY, float setZ) {
         aRenderer.rotationPointX = setX;
         aRenderer.rotationPointY = setY;
         aRenderer.rotationPointZ = setZ;
     }
 
-    public void setRotationPoint(PlaneRenderer aPlaneRenderer, float setX, float setY, float setZ) {
+    public static void setRotationPoint(PlaneRenderer aPlaneRenderer, float setX, float setY, float setZ) {
         aPlaneRenderer.rotationPointX = setX;
         aPlaneRenderer.rotationPointY = setY;
         aPlaneRenderer.rotationPointZ = setZ;
     }
 
-    public void shiftRotationPoint(PlaneRenderer aPlaneRenderer, float shiftX, float shiftY, float shiftZ) {
+    public static void shiftRotationPoint(PlaneRenderer aPlaneRenderer, float shiftX, float shiftY, float shiftZ) {
         aPlaneRenderer.rotationPointX += shiftX;
         aPlaneRenderer.rotationPointY += shiftY;
         aPlaneRenderer.rotationPointZ += shiftZ;
     }
 
-    public void shiftRotationPoint(ModelRenderer aRenderer, float shiftX, float shiftY, float shiftZ) {
+    public static void shiftRotationPoint(ModelRenderer aRenderer, float shiftX, float shiftY, float shiftZ) {
         aRenderer.rotationPointX += shiftX;
         aRenderer.rotationPointY += shiftY;
         aRenderer.rotationPointZ += shiftZ;

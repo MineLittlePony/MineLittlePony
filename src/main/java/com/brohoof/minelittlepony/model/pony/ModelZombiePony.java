@@ -95,9 +95,9 @@ public class ModelZombiePony extends ModelPlayerPony {
     protected void fixSpecialRotationPoints(float move) {
         if (this.heldItemRight == 0) {
             if (MathHelper.sin(move / 20.0F) < 0.0F) {
-                this.shiftRotationPoint(this.bipedRightArm, 0.5F, 1.5F, 3.0F);
+                shiftRotationPoint(this.bipedRightArm, 0.5F, 1.5F, 3.0F);
             } else {
-                this.shiftRotationPoint(this.bipedLeftArm, -0.5F, 1.5F, 3.0F);
+                shiftRotationPoint(this.bipedLeftArm, -0.5F, 1.5F, 3.0F);
             }
         }
 

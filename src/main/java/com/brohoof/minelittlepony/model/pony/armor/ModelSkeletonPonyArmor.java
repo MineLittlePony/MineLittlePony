@@ -86,7 +86,7 @@ public class ModelSkeletonPonyArmor extends ModelPonyArmor {
     @Override
     protected void fixSpecialRotationPoints(float move) {
         if (this.heldItemRight != 0 && this.metadata.getGlowColor() == 0) {
-            this.setRotationPoint(this.bipedRightArm, -1.5F, 9.5F, 4.0F);
+            setRotationPoint(this.bipedRightArm, -1.5F, 9.5F, 4.0F);
         }
 
     }

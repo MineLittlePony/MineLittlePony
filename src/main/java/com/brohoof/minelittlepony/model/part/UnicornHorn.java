@@ -65,9 +65,9 @@ public class UnicornHorn extends AbstractHeadPart implements PonyModelConstants 
     }
 
     protected void position(float posX, float posY, float posZ) {
-        getPony().setRotationPoint(this.horn, posX, posY, posZ);
+        AbstractPonyModel.setRotationPoint(this.horn, posX, posY, posZ);
         for (int i = 0; i < this.hornglow.length; i++) {
-            getPony().setRotationPoint(this.hornglow[i], posX, posY, posZ);
+            AbstractPonyModel.setRotationPoint(this.hornglow[i], posX, posY, posZ);
         }
     }
 

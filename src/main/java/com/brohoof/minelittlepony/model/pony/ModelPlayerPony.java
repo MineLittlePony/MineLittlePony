@@ -102,7 +102,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             this.bipedRightLeg.rotateAngleY = .2f;
 
             for (int i = 0; i < Tail.length; ++i) {
-                this.setRotationPoint(this.Tail[i], TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_NOTSNEAK);
+                setRotationPoint(this.Tail[i], TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_NOTSNEAK);
                 this.Tail[i].rotationPointZ = 15;
                 this.Tail[i].rotationPointY = 14;
             }
@@ -116,7 +116,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             this.setHead(0.0F, 0.0F, 0.0F);
 
             for (k1 = 0; k1 < tailstop; ++k1) {
-                this.setRotationPoint(this.Tail[k1], TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_NOTSNEAK);
+                setRotationPoint(this.Tail[k1], TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_NOTSNEAK);
                 if (this.rainboom) {
                     this.Tail[k1].rotateAngleX = ROTATE_90 + 0.1F * MathHelper.sin(aniparams.move);
                 } else {
@@ -165,8 +165,8 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     }
 
     protected void setHead(float posX, float posY, float posZ) {
-        this.setRotationPoint(this.bipedHead, posX, posY, posZ);
-        this.setRotationPoint(this.bipedHeadwear, posX, posY, posZ);
+        setRotationPoint(this.bipedHead, posX, posY, posZ);
+        setRotationPoint(this.bipedHeadwear, posX, posY, posZ);
     }
 
     protected void rotateHead(float horz, float vert) {
@@ -180,14 +180,10 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             headRotateAngleX = vert / 57.29578F;
         }
 
-        if (headRotateAngleX > 0.5F) {
-            headRotateAngleX = 0.5F;
-        }
-
-        if (headRotateAngleX < -0.5F) {
-            headRotateAngleX = -0.5F;
-        }
-
+        final float max = 0.5f;
+        final float min = -1.25f;
+        headRotateAngleX = Math.min(headRotateAngleX, max);
+        headRotateAngleX = Math.max(headRotateAngleX, min);
         this.bipedHead.rotateAngleY = headRotateAngleY;
         this.bipedHead.rotateAngleX = headRotateAngleX;
         this.bipedHeadwear.rotateAngleY = headRotateAngleY;
@@ -417,7 +413,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         }
 
         for (int i7 = 0; i7 < tailstop; ++i7) {
-            this.setRotationPoint(this.Tail[i7], TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_SNEAK);
+            setRotationPoint(this.Tail[i7], TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_SNEAK);
             this.Tail[i7].rotateAngleX = 0.0F;
         }
 
@@ -442,10 +438,10 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         }
 
         this.setHead(headPosX, headPosY, headPosZ);
-        this.shiftRotationPoint(this.bipedRightArm, 0.0F, 2.0F, 6.0F);
-        this.shiftRotationPoint(this.bipedLeftArm, 0.0F, 2.0F, 6.0F);
-        this.shiftRotationPoint(this.bipedRightLeg, 0.0F, 2.0F, -8.0F);
-        this.shiftRotationPoint(this.bipedLeftLeg, 0.0F, 2.0F, -8.0F);
+        shiftRotationPoint(this.bipedRightArm, 0.0F, 2.0F, 6.0F);
+        shiftRotationPoint(this.bipedLeftArm, 0.0F, 2.0F, 6.0F);
+        shiftRotationPoint(this.bipedRightLeg, 0.0F, 2.0F, -8.0F);
+        shiftRotationPoint(this.bipedLeftLeg, 0.0F, 2.0F, -8.0F);
     }
 
     protected void aimBow(float tick) {
@@ -463,20 +459,20 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.bipedRightArm.rotateAngleX = ROTATE_270 + this.bipedHead.rotateAngleX;
         this.bipedRightArm.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
         this.bipedRightArm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.05F;
-        this.shiftRotationPoint(this.bipedRightArm, 0.0F, 0.0F, 1.0F);
+        shiftRotationPoint(this.bipedRightArm, 0.0F, 0.0F, 1.0F);
 
         this.bipedRightArmwear.rotateAngleZ = 0.0F;
         this.bipedRightArmwear.rotateAngleY = -0.06F + this.bipedHead.rotateAngleY;
         this.bipedRightArmwear.rotateAngleX = ROTATE_270 + this.bipedHead.rotateAngleX;
         this.bipedRightArmwear.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
         this.bipedRightArmwear.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.05F;
-        this.shiftRotationPoint(this.bipedRightArmwear, 0.0F, 0.0F, 1.0F);
+        shiftRotationPoint(this.bipedRightArmwear, 0.0F, 0.0F, 1.0F);
     }
 
     protected void aimBowUnicorn(float tick) {
         this.unicornarm.rotateAngleZ = 0.0F;
         this.unicornarm.rotateAngleY = -0.06F + this.bipedHead.rotateAngleY;
-        this.unicornarm.rotateAngleX = ROTATE_270 + this.bipedHead.rotateAngleX;
+        this.unicornarm.rotateAngleX = ROTATE_270+ this.bipedHead.rotateAngleX;
         this.unicornarm.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
         this.unicornarm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.05F;
     }

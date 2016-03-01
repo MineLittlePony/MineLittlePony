@@ -86,7 +86,7 @@ public class LayerHeldPonyItem implements LayerRenderer {
             }
 
             Item item = drop.getItem();
-            if (item instanceof ItemBlock && ((ItemBlock)item).getBlock().getRenderType() == 2) {
+            if (item instanceof ItemBlock && ((ItemBlock) item).getBlock().getRenderType() == 2) {
                 translate(0.0F, 0.1875F, -0.3125F);
                 rotate(20.0F, 1.0F, 0.0F, 0.0F);
                 rotate(45.0F, 0.0F, 1.0F, 0.0F);
@@ -111,20 +111,26 @@ public class LayerHeldPonyItem implements LayerRenderer {
         float green = (glowColor >> 8 & 255) / 255.0F;
         float blue = (glowColor & 255) / 255.0F;
         float alpha = 0.2F;
-        disableLighting();
+//        disableLighting();
         enableBlend();
         blendFunc(GL11.GL_CONSTANT_COLOR, 1);
         GL14.glBlendColor(red, green, blue, alpha);
         IBakedModel model = getItemModel(Minecraft.getMinecraft().getRenderItem(), entity, drop);
+
+        scale(2, 2, 2);
+
+        applyTransform(model.getItemCameraTransforms().thirdPerson);
+        RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+        scale(1.1, 1.1, 1.1);
         if (model.isGui3d()) {
             // disabling textures for items messes up bounds
             disableTexture2D();
         }
-        scale(2, 2, 2);
-
-        applyTransform(model.getItemCameraTransforms().thirdPerson);
-        scale(1.1, 1.1, 1.1);
-        Minecraft.getMinecraft().getRenderItem().renderItem(drop, model);
+        translate(0, .01, .01);
+        renderItem.renderItem(drop, model);
+        translate(.01, -.01, -.02);
+        // scale(1.1, 1.1, 1.1);
+        renderItem.renderItem(drop, model);
         disableBlend();
         enableLighting();
         enableTexture2D();

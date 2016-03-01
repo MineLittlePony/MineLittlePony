@@ -88,7 +88,7 @@ public class PonySnout extends AbstractHeadPart implements PonyModelConstants {
     protected void position(float posX, float posY, float posZ) {
         for (PlaneRenderer[] pr : MUZZLES.values()) {
             for (PlaneRenderer p : pr) {
-                getPony().setRotationPoint(p, posX, posY, posZ);
+                AbstractPonyModel.setRotationPoint(p, posX, posY, posZ);
             }
         }
     }
