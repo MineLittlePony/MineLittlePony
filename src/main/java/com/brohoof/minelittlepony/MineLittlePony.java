@@ -72,12 +72,12 @@ public class MineLittlePony {
         }
 
         if (this.config.zombies) {
-            ModUtilities.addRenderer(EntityZombie.class, new RenderPonyZombie(rm));
+            ModUtilities.addRenderer(EntityZombie.class, new RenderPonyZombie<EntityZombie>(rm));
             MineLPLogger.info("Zombies are now ponies.");
         }
 
         if (this.config.pigzombies) {
-            ModUtilities.addRenderer(EntityPigZombie.class, new RenderPonyZombie(rm));
+            ModUtilities.addRenderer(EntityPigZombie.class, new RenderPonyZombie<EntityPigZombie>(rm));
             MineLPLogger.info("Zombie pigmen are now ponies.");
         }
 

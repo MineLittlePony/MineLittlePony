@@ -27,13 +27,12 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.entity.layers.LayerArrow;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 @Mixin(RenderPlayer.class)
-public abstract class MixinRenderPlayer extends RendererLivingEntity implements IRenderPony {
+public abstract class MixinRenderPlayer extends RendererLivingEntity<AbstractClientPlayer> implements IRenderPony {
 
     private static final String RenderManager = "Lnet/minecraft/client/renderer/entity/RenderManager;";
     private static final String AbstractClientPlayer = "Lnet/minecraft/client/entity/AbstractClientPlayer;";
@@ -152,14 +151,10 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity implements 
         this.playerModel.apply(thePony.metadata);
     }
 
-    private ResourceLocation getEntityTexture(AbstractClientPlayer player) {
+    @Override
+    public ResourceLocation getEntityTexture(AbstractClientPlayer player) {
         Pony thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(player);
         return thePony.getTextureResourceLocation();
-    }
-
-    @Override
-    public final ResourceLocation getEntityTexture(Entity entity) {
-        return this.getEntityTexture((AbstractClientPlayer) entity);
     }
 
     private PlayerModel getModel(AbstractClientPlayer player) {

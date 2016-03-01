@@ -1,6 +1,11 @@
 package com.brohoof.minelittlepony.renderer.layer;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
+import static net.minecraft.client.renderer.GlStateManager.color;
+import static net.minecraft.client.renderer.GlStateManager.popMatrix;
+import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
+import static net.minecraft.client.renderer.GlStateManager.rotate;
+import static net.minecraft.client.renderer.GlStateManager.scale;
+import static net.minecraft.client.renderer.GlStateManager.translate;
 
 import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.model.AbstractPonyModel;
@@ -26,11 +31,11 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.EnumFacing;
 
-public class LayerPonySkull implements LayerRenderer {
+public class LayerPonySkull implements LayerRenderer<EntityLivingBase> {
 
-    private RendererLivingEntity renderer;
+    private RendererLivingEntity<? extends EntityLivingBase> renderer;
 
-    public LayerPonySkull(RendererLivingEntity renderPony) {
+    public LayerPonySkull(RendererLivingEntity<? extends EntityLivingBase> renderPony) {
         this.renderer = renderPony;
     }
 

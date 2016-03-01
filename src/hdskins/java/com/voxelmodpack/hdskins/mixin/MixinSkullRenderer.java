@@ -13,11 +13,12 @@ import com.voxelmodpack.hdskins.HDSkinManager;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
 @Mixin(TileEntitySkullRenderer.class)
-public abstract class MixinSkullRenderer extends TileEntitySpecialRenderer {
+public abstract class MixinSkullRenderer extends TileEntitySpecialRenderer<TileEntitySkull> {
 
     @Inject(method = "renderSkull",
             at = @At(

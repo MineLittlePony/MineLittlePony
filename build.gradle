@@ -11,30 +11,27 @@ buildscript {
 		}
 	}
 	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:2.0-SNAPSHOT'
-		classpath 'org.spongepowered:mixingradle:0.3-SNAPSHOT'
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+		classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
 	}
 }
-plugins {
-	id 'mnm.gradle.ap-ide' version '1.0.2'
-}
 
-ext.revision = 200
+ext.revision = 210
 
 apply plugin: 'net.minecraftforge.gradle.tweaker-client'
 apply plugin: 'org.spongepowered.mixin'
 
 archivesBaseName = "MineLittlePony"
 group = 'com.brohoof.minelp'
-version = '1.8'
+version = '1.8.9'
 
 ext.startClass = 'com.mumfrey.liteloader.debug.Start'
 minecraft {
-	version = "1.8"
-    mappings = 'stable_18'
+	version = "1.8.9"
+	mappings = 'stable_20'
 	runDir = 'run'
 	replace '@VERSION@',project.version
-    tweakClass = 'com.mumfrey.liteloader.launch.LiteLoaderTweaker'
+	tweakClass = 'com.mumfrey.liteloader.launch.LiteLoaderTweaker'
 }
 sourceSets {
 	def deps = [
@@ -88,8 +85,8 @@ repositories{
 
 dependencies {
 //	compile project('LiteLoader')
-	deobfCompile '1:liteloader:1.8-SNAPSHOT'
-	compile 'org.spongepowered:mixin:0.5.2-SNAPSHOT'
+//	deobfCompile '1:liteloader:1.8.9-SNAPSHOT'
+	compile 'org.spongepowered:mixin:0.5.3-SNAPSHOT'
 	compile 'org.ow2.asm:asm-debug-all:5.0.3'
 	compile 'net.minecraft:launchwrapper:1.12'
 }
@@ -98,6 +95,7 @@ jar {
 	from sourceSets.findAll { it.name != 'api' }*.output
 
 	extension 'litemod'
+	appendix "mc$minecraft.version"
 }
 mixin {
     defaultObfuscationEnv notch

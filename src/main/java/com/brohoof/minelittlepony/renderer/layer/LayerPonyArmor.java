@@ -25,18 +25,18 @@ import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class LayerPonyArmor implements LayerRenderer {
+public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
 
     private static final ResourceLocation ENCHANTED_ITEM_GLINT_RES = new ResourceLocation("textures/misc/enchanted_item_glint.png");
 
     private static final Map<String, ResourceLocation> HUMAN_ARMORS = Maps.newHashMap();
     private static final Map<ResourceLocation, ResourceLocation> PONY_ARMORS = Maps.newHashMap();
 
-    private RendererLivingEntity renderer;
+    private RendererLivingEntity<? extends EntityLivingBase> renderer;
     private LayerBipedArmor humanArmor;
     private PlayerModel pony;
 
-    public LayerPonyArmor(RendererLivingEntity entity) {
+    public LayerPonyArmor(RendererLivingEntity<? extends EntityLivingBase> entity) {
         this.renderer = entity;
         this.humanArmor = new LayerBipedArmor(entity);
     }

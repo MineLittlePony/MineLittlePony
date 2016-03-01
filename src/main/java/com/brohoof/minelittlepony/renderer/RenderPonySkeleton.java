@@ -29,6 +29,7 @@ public class RenderPonySkeleton extends RenderPonyMob<EntitySkeleton> {
 
     @Override
     protected void preRenderCallback(EntitySkeleton skeleton, float partialTicks) {
+        super.preRenderCallback(skeleton, partialTicks);
         if (skeleton.getSkeletonType() == 1) {
             GlStateManager.scale(1.2F, 1.2F, 1.2F);
         }

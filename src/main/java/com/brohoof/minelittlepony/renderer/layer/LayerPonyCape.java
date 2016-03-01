@@ -1,6 +1,10 @@
 package com.brohoof.minelittlepony.renderer.layer;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
+import static net.minecraft.client.renderer.GlStateManager.popMatrix;
+import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
+import static net.minecraft.client.renderer.GlStateManager.rotate;
+import static net.minecraft.client.renderer.GlStateManager.scale;
+import static net.minecraft.client.renderer.GlStateManager.translate;
 
 import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.model.PlayerModel;
@@ -12,24 +16,17 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.entity.layers.LayerCape;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.util.MathHelper;
 
-public class LayerPonyCape implements LayerRenderer {
+public class LayerPonyCape implements LayerRenderer<AbstractClientPlayer> {
 
-    private RendererLivingEntity renderer;
+    private RendererLivingEntity<? extends AbstractClientPlayer> renderer;
     private LayerCape cape;
 
-    public LayerPonyCape(RendererLivingEntity entity) {
+    public LayerPonyCape(RendererLivingEntity<? extends AbstractClientPlayer> entity) {
         renderer = entity;
         this.cape = new LayerCape((RenderPlayer) entity);
-    }
-
-    @Override
-    public void doRenderLayer(EntityLivingBase entity, float p2, float p3, float ticks, float p5, float p6, float p7,
-            float scale) {
-        doRenderLayer((AbstractClientPlayer) entity, p2, p3, ticks, p5, p6, p7, scale);
     }
 
     public void doRenderLayer(AbstractClientPlayer clientPlayer, float p2, float p3, float ticks, float p5, float p6,

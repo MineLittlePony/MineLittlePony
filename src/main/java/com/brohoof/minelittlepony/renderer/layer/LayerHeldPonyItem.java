@@ -14,8 +14,8 @@ import com.brohoof.minelittlepony.renderer.IRenderPony;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
@@ -30,12 +30,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-public class LayerHeldPonyItem implements LayerRenderer {
+public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
 
-    private final RendererLivingEntity livingPonyEntity;
+    private final RendererLivingEntity<? extends EntityLivingBase> livingPonyEntity;
     private LayerHeldItem held;
 
-    public LayerHeldPonyItem(RendererLivingEntity livingPony) {
+    public LayerHeldPonyItem(RendererLivingEntity<? extends EntityLivingBase> livingPony) {
         this.livingPonyEntity = livingPony;
         this.held = new LayerHeldItem(livingPony);
     }
@@ -111,7 +111,7 @@ public class LayerHeldPonyItem implements LayerRenderer {
         float green = (glowColor >> 8 & 255) / 255.0F;
         float blue = (glowColor & 255) / 255.0F;
         float alpha = 0.2F;
-//        disableLighting();
+        // disableLighting();
         enableBlend();
         blendFunc(GL11.GL_CONSTANT_COLOR, 1);
         GL14.glBlendColor(red, green, blue, alpha);
@@ -119,7 +119,8 @@ public class LayerHeldPonyItem implements LayerRenderer {
 
         scale(2, 2, 2);
 
-        applyTransform(model.getItemCameraTransforms().thirdPerson);
+        model.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.THIRD_PERSON);
+        applyTransform(model.getItemCameraTransforms(), TransformType.THIRD_PERSON);
         RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
         scale(1.1, 1.1, 1.1);
         if (model.isGui3d()) {
@@ -174,14 +175,7 @@ public class LayerHeldPonyItem implements LayerRenderer {
         return ibakedmodel;
     }
 
-    // Copied from RenderItem
-    //@formatter:off
-    private void applyTransform(ItemTransformVec3f transform) {
-        translate(transform.translation.x + RenderItem.debugItemOffsetX, transform.translation.y + RenderItem.debugItemOffsetY, transform.translation.z + RenderItem.debugItemOffsetZ);
-        rotate(transform.rotation.y + RenderItem.debugItemRotationOffsetY, 0.0F, 1.0F, 0.0F);
-        rotate(transform.rotation.x + RenderItem.debugItemRotationOffsetX, 1.0F, 0.0F, 0.0F);
-        rotate(transform.rotation.z + RenderItem.debugItemRotationOffsetZ, 0.0F, 0.0F, 1.0F);
-        scale(transform.scale.x + RenderItem.debugItemScaleX, transform.scale.y + RenderItem.debugItemScaleY, transform.scale.z + RenderItem.debugItemScaleZ);
+    private void applyTransform(ItemCameraTransforms camera, TransformType type) {
+        camera.applyTransform(type);
     }
-    //@formatter:on
 }

@@ -33,7 +33,7 @@ public class Pony {
     public Pony(AbstractClientPlayer player) {
         this.textureResourceLocation = player.getLocationSkin();
         MineLPLogger.debug("+ Initialising new pony #%d for player %s (%s) with resource location %s.", this.ponyId,
-                player.getCommandSenderName(), player.getUniqueID(), this.textureResourceLocation);
+                player.getName(), player.getUniqueID(), this.textureResourceLocation);
         this.checkSkin(this.textureResourceLocation);
     }
 

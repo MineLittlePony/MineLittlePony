@@ -52,7 +52,7 @@ public class LiteModHDSkinsMod implements HDSkinsMod {
 
     @Override
     public void onInitCompleted(Minecraft minecraft, LiteLoader loader) {
-        ModUtilities.addRenderer(EntityPlayerModel.class, new RenderPlayerModel(minecraft.getRenderManager()));
+        ModUtilities.addRenderer(EntityPlayerModel.class, new RenderPlayerModel<EntityPlayerModel>(minecraft.getRenderManager()));
     }
 
     @Override

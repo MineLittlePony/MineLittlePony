@@ -78,6 +78,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
@@ -479,12 +480,12 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
                 }
 
                 this.mc.getTextureManager().bindTexture(cubemapTextures[cubeSide]);
-                wr.startDrawingQuads();
-                wr.setColorRGBA_I(0xffffff, 255 / (blendPass + 1));
-                wr.addVertexWithUV(-1.0D, -1.0D, 1.0D, 0.0D, 0.0D);
-                wr.addVertexWithUV(1.0D, -1.0D, 1.0D, 1.0D, 0.0D);
-                wr.addVertexWithUV(1.0D, 1.0D, 1.0D, 1.0D, 1.0D);
-                wr.addVertexWithUV(-1.0D, 1.0D, 1.0D, 0.0D, 1.0D);
+//                wr.setColorRGBA_I(0xffffff, 255 / (blendPass + 1));
+                wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+                wr.pos(-1.0D, -1.0D, 1.0D).tex(0.0D, 0.0D).endVertex();
+                wr.pos(1.0D, -1.0D, 1.0D).tex(1.0D, 0.0D).endVertex();
+                wr.pos(1.0D, 1.0D, 1.0D).tex(1.0D, 1.0D).endVertex();
+                wr.pos(-1.0D, 1.0D, 1.0D).tex(0.0D,  1.0D).endVertex();
                 tessellator.draw();
                 popMatrix();
             }
@@ -510,16 +511,16 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         colorMask(true, true, true, false);
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer wr = tessellator.getWorldRenderer();
-        wr.startDrawingQuads();
+        wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         byte blurPasses = 4;
 
         for (int blurPass = 0; blurPass < blurPasses; ++blurPass) {
-            wr.setColorRGBA_F(1.0F, 1.0F, 1.0F, 1.0F / (blurPass + 1));
+//            wr.setColorRGBA_F(1.0F, 1.0F, 1.0F, 1.0F / (blurPass + 1));
             float var7 = (blurPass - blurPasses / 2) / 256.0F;
-            wr.addVertexWithUV(this.width, this.height, this.zLevel, 0.0F + var7, 0.0D);
-            wr.addVertexWithUV(this.width, 0.0D, this.zLevel, 1.0F + var7, 0.0D);
-            wr.addVertexWithUV(0.0D, 0.0D, this.zLevel, 1.0F + var7, 1.0D);
-            wr.addVertexWithUV(0.0D, this.height, this.zLevel, 0.0F + var7, 1.0D);
+            wr.pos(this.width, this.height, this.zLevel).tex(0.0F + var7, 0.0D).endVertex();
+            wr.pos(this.width, 0.0D, this.zLevel).tex(1.0F + var7, 0.0D).endVertex();
+            wr.pos(0.0D, 0.0D, this.zLevel).tex(1.0F + var7, 1.0D).endVertex();
+            wr.pos(0.0D, this.height, this.zLevel).tex(0.0F + var7, 1.0D).endVertex();
         }
 
         tessellator.draw();
@@ -541,17 +542,17 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         viewport(0, 0, this.mc.displayWidth, this.mc.displayHeight);
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer wr = tessellator.getWorldRenderer();
-        wr.startDrawingQuads();
+        wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         float aspect = this.width > this.height ? 120.0F / this.width : 120.0F / this.height;
         float uSample = this.height * aspect / 256.0F;
         float vSample = this.width * aspect / 256.0F;
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        wr.setColorRGBA_F(1.0F, 1.0F, 1.0F, 1.0F);
-        wr.addVertexWithUV(0.0D, this.height, this.zLevel, 0.5F - uSample, 0.5F + vSample);
-        wr.addVertexWithUV(this.width, this.height, this.zLevel, 0.5F - uSample, 0.5F - vSample);
-        wr.addVertexWithUV(this.width, 0.0D, this.zLevel, 0.5F + uSample, 0.5F - vSample);
-        wr.addVertexWithUV(0.0D, 0.0D, this.zLevel, 0.5F + uSample, 0.5F + vSample);
+       // wr.setColorRGBA_F(1.0F, 1.0F, 1.0F, 1.0F);
+        wr.pos(0.0D, this.height, this.zLevel).tex(0.5F - uSample, 0.5F + vSample).endVertex();
+        wr.pos(this.width, this.height, this.zLevel).tex(0.5F - uSample, 0.5F - vSample).endVertex();
+        wr.pos(this.width, 0.0D, this.zLevel).tex(0.5F + uSample, 0.5F - vSample).endVertex();
+        wr.pos(0.0D, 0.0D, this.zLevel).tex(0.5F + uSample, 0.5F + vSample).endVertex();
         tessellator.draw();
         return true;
     }

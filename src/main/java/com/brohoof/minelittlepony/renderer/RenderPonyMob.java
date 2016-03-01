@@ -12,13 +12,10 @@ import com.brohoof.minelittlepony.renderer.layer.LayerPonySkull;
 
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 
-public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving implements IRenderPony {
+public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving<T> implements IRenderPony {
 
     protected AbstractPonyModel mobModel;
     protected PlayerModel playerModel;
@@ -35,7 +32,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     }
 
     @Override
-    public void doRender(Entity entity, double xPosition, double yPosition, double zPosition, float yaw,
+    public void doRender(T entity, double xPosition, double yPosition, double zPosition, float yaw,
             float partialTicks) {
         double yOrigin = yPosition;
         if (entity.isSneaking()) {
@@ -47,19 +44,8 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
         this.playerModel.getModel().heldItemRight = 0;
     }
 
-    protected abstract ResourceLocation getEntityTexture(T var1);
-
-    @SuppressWarnings("unchecked")
     @Override
-    protected final ResourceLocation getEntityTexture(Entity var1) {
-        return this.getEntityTexture((T) var1);
-    }
-
-    protected void preRenderCallback(T entity, float partick) {}
-
-    @SuppressWarnings("unchecked")
-    @Override
-    protected final void preRenderCallback(EntityLivingBase entitylivingbaseIn, float partialTickTime) {
+    protected void preRenderCallback(T entitylivingbaseIn, float partialTickTime) {
 
         ItemStack heldItem = entitylivingbaseIn.getHeldItem();
         this.playerModel.getModel().heldItemRight = heldItem == null ? 0 : 1;
@@ -75,18 +61,6 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
         if (MineLittlePony.getConfig().showscale) {
             this.shadowSize = 0.4F;
         }
-
-        preRenderCallback((T) entitylivingbaseIn, partialTickTime);
-    }
-
-    protected void rotateCorpse(T entity, float xPosition, float yPosition, float zPosition) {
-        super.rotateCorpse(entity, xPosition, yPosition, zPosition);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    protected final void rotateCorpse(EntityLivingBase entity, float xPosition, float yPosition, float zPosition) {
-        this.rotateCorpse((T) entity, xPosition, yPosition, zPosition);
     }
 
     @Override

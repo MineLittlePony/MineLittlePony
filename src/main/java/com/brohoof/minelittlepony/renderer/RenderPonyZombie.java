@@ -14,14 +14,14 @@ import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.util.ResourceLocation;
 
-public class RenderPonyZombie extends RenderPonyMob<EntityZombie> {
+public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob<Zombie> {
 
     public RenderPonyZombie(RenderManager rendermanager) {
         super(rendermanager, PMAPI.zombie);
     }
 
     @Override
-    protected void preRenderCallback(EntityZombie entity, float partick) {
+    protected void preRenderCallback(Zombie entity, float partick) {
         Random rand = new Random(entity.getUniqueID().hashCode());
 
         // 50-50 chance for gender
@@ -64,7 +64,7 @@ public class RenderPonyZombie extends RenderPonyMob<EntityZombie> {
     }
 
     @Override
-    protected void rotateCorpse(EntityZombie zombie, float xPosition, float yPosition, float zPosition) {
+    protected void rotateCorpse(Zombie zombie, float xPosition, float yPosition, float zPosition) {
         super.rotateCorpse(zombie, xPosition, yPosition, zPosition);
         if (zombie.isConverting()) {
             yPosition += (float) (Math.cos(zombie.ticksExisted * 3.25D) * Math.PI * 0.25D);
@@ -72,7 +72,7 @@ public class RenderPonyZombie extends RenderPonyMob<EntityZombie> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityZombie zombie) {
+    protected ResourceLocation getEntityTexture(Zombie zombie) {
         return zombie instanceof EntityPigZombie ? PonyManager.PIGMAN
                 : (zombie.isVillager() ? PonyManager.ZOMBIE_VILLAGER
                         : PonyManager.ZOMBIE);
