@@ -28,13 +28,13 @@ archivesBaseName = "MineLittlePony"
 group = 'com.brohoof.minelp'
 version = '1.8'
 
+ext.startClass = 'com.mumfrey.liteloader.debug.Start'
 minecraft {
 	version = "1.8"
     mappings = 'stable_18'
 	runDir = 'run'
 	replace '@VERSION@',project.version
     tweakClass = 'com.mumfrey.liteloader.launch.LiteLoaderTweaker'
-	clientJvmArgs += '-Dmcpenv=true'
 }
 sourceSets {
 	def deps = [
@@ -54,9 +54,9 @@ sourceSets {
 		compileClasspath += files(deps + [ main.output, api.output ])
 	}
 }
-project('LiteLoader'){
-	mcMappings = rootProject.minecraft.mappings
-}
+//project('LiteLoader'){
+//	mcMappings = rootProject.minecraft.mappings
+//}
 processResources {
     def props = [
         version:    version,
@@ -77,10 +77,21 @@ repositories{
 		name 'sponge'
 		url 'http://repo.spongepowered.org/maven'
 	}
+	ivy {
+		name 'liteloader jenkins'
+		url 'http://jenkins.liteloader.com/job/LiteLoader%20Gradle'
+		layout('pattern') {
+			artifact '[organization]/artifact/build/libs/[artifact]-[revision](-[classifier]).[ext]'
+		}
+	}
 }
 
 dependencies {
-	compile project('LiteLoader')
+//	compile project('LiteLoader')
+	deobfCompile '1:liteloader:1.8-SNAPSHOT'
+	compile 'org.spongepowered:mixin:0.5.2-SNAPSHOT'
+	compile 'org.ow2.asm:asm-debug-all:5.0.3'
+	compile 'net.minecraft:launchwrapper:1.12'
 }
 jar {
 	afterEvaluate {	manifest.attributes.remove 'TweakClass'}
@@ -94,4 +105,15 @@ mixin {
 task deploy(type: Copy, dependsOn: build) {
 	from jar.archivePath
 	into file("$System.env.APPDATA/.minecraft/mods")
+}
+afterEvaluate {
+    minecraft {
+        clientRunArgs = [""]
+        clientJvmArgs += "-Dmixin.debug.verify=true"
+    }
+    // hacks for run configs
+	// TODO user makeStart configs
+    def mc = plugins['net.minecraftforge.gradle.tweaker-client']
+    mc.replacer.putReplacement '{RUN_CLIENT_MAIN}', project.startClass
+    mc.replacer.putReplacement '{RUN_CLIENT_TWEAKER}', minecraft.tweakClass
 }
