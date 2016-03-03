@@ -76,7 +76,7 @@ repositories{
 	}
 	ivy {
 		name 'liteloader jenkins'
-		url 'http://jenkins.liteloader.com/job/LiteLoader%20Gradle'
+		url 'http://jenkins.liteloader.com/view/1.8.9/job/LiteLoader%201.8.9'
 		layout('pattern') {
 			artifact '[organization]/artifact/build/libs/[artifact]-[revision](-[classifier]).[ext]'
 		}
@@ -85,9 +85,13 @@ repositories{
 
 dependencies {
 //	compile project('LiteLoader')
-//	deobfCompile '1:liteloader:1.8.9-SNAPSHOT'
-	compile 'org.spongepowered:mixin:0.5.3-SNAPSHOT'
-	compile 'org.ow2.asm:asm-debug-all:5.0.3'
+	deobfCompile 'lastSuccessfulBuild:liteloader:1.8.9-SNAPSHOT'
+    compile('org.spongepowered:mixin:0.5.3-SNAPSHOT') {
+        exclude module: 'asm-commons'
+        exclude module: 'asm-tree'
+        exclude module: 'launchwrapper'
+        exclude module: 'guava'
+    }
 	compile 'net.minecraft:launchwrapper:1.12'
 }
 jar {
