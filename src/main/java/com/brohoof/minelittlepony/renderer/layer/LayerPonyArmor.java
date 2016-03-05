@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.util.Map;
 
 import com.brohoof.minelittlepony.MineLittlePony;
+import com.brohoof.minelittlepony.ducks.IRenderPony;
 import com.brohoof.minelittlepony.forge.IPonyArmor;
 import com.brohoof.minelittlepony.model.AbstractPonyModel;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.model.pony.ModelHumanPlayer;
 import com.brohoof.minelittlepony.model.pony.armor.ModelPonyArmor;
-import com.brohoof.minelittlepony.renderer.IRenderPony;
 import com.google.common.collect.Maps;
 
 import net.minecraft.client.Minecraft;

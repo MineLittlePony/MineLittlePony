@@ -4,6 +4,7 @@ import com.brohoof.minelittlepony.MineLittlePony;
 import com.brohoof.minelittlepony.PonyGender;
 import com.brohoof.minelittlepony.PonyRace;
 import com.brohoof.minelittlepony.TailLengths;
+import com.brohoof.minelittlepony.ducks.IRenderPony;
 import com.brohoof.minelittlepony.model.AbstractPonyModel;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.renderer.layer.LayerHeldPonyItem;

@@ -8,10 +8,10 @@ import static net.minecraft.client.renderer.GlStateManager.scale;
 import static net.minecraft.client.renderer.GlStateManager.translate;
 
 import com.brohoof.minelittlepony.PonySize;
+import com.brohoof.minelittlepony.ducks.IRenderPony;
 import com.brohoof.minelittlepony.model.AbstractPonyModel;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
-import com.brohoof.minelittlepony.renderer.IRenderPony;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.client.Minecraft;

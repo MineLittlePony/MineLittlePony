@@ -1,4 +1,4 @@
-package com.brohoof.minelittlepony.renderer;
+package com.brohoof.minelittlepony.ducks;
 
 import com.brohoof.minelittlepony.model.PlayerModel;
 

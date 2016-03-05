@@ -6,11 +6,11 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
 import com.brohoof.minelittlepony.PonySize;
+import com.brohoof.minelittlepony.ducks.IRenderPony;
 import com.brohoof.minelittlepony.model.BodyPart;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.model.pony.ModelHumanPlayer;
 import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
-import com.brohoof.minelittlepony.renderer.IRenderPony;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelRenderer;
