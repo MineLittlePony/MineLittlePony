@@ -3,7 +3,6 @@ package com.brohoof.minelittlepony.model.part;
 import com.brohoof.minelittlepony.PonyData;
 import com.brohoof.minelittlepony.model.BodyPart;
 import com.brohoof.minelittlepony.model.AbstractPonyModel;
-import com.brohoof.minelittlepony.renderer.AniParams;
 
 import net.minecraft.client.renderer.GlStateManager;
 
@@ -23,8 +22,8 @@ public abstract class AbstractHeadPart implements IPonyPart {
     }
 
     @Override
-    public final void animate(PonyData data, AniParams ani) {
-        rotateHead(ani.horz, ani.vert);
+    public final void animate(PonyData data, float move, float swing, float tick, float horz, float vert) {
+        rotateHead(horz, vert);
         if (pony.isSneak && !pony.isFlying) {
             position(0, 6, -2);
         } else {

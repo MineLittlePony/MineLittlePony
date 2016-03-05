@@ -1,6 +1,5 @@
 package com.brohoof.minelittlepony.model.pony;
 
-import com.brohoof.minelittlepony.renderer.AniParams;
 import com.brohoof.minelittlepony.renderer.PlaneRenderer;
 
 import net.minecraft.util.MathHelper;
@@ -18,8 +17,8 @@ public class ModelVillagerPony extends ModelPlayerPony {
     }
 
     @Override
-    public void animate(AniParams aniparams) {
-        super.animate(aniparams);
+    public void animate(float move, float swing, float tick, float horz, float vert) {
+        super.animate(move, swing, tick, horz, vert);
         float bodySwingRotation = 0.0F;
         if (this.swingProgress > -9990.0F && (!this.metadata.getRace().hasHorn() || this.metadata.getGlowColor() == 0)) {
             bodySwingRotation = MathHelper.sin(MathHelper.sqrt_float(this.swingProgress) * 3.1415927F * 2.0F) * 0.2F;

@@ -10,7 +10,6 @@ import com.brohoof.minelittlepony.PonyData;
 import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.model.part.IPonyPart;
 import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
-import com.brohoof.minelittlepony.renderer.AniParams;
 import com.brohoof.minelittlepony.renderer.PlaneRenderer;
 import com.google.common.collect.Lists;
 
@@ -62,7 +61,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
 
     protected void initPositions(float yOffset, float stretch) {}
 
-    protected void animate(AniParams var1) {}
+    protected void animate(float move, float swing, float tick, float horz, float vert) {}
 
     protected void render() {}
 
@@ -104,10 +103,9 @@ public abstract class AbstractPonyModel extends ModelPlayer {
             super.setRotationAngles(Move, Moveswing, Loop, Right, Down, Scale, entityIn);
             return;
         }
-        AniParams ani = new AniParams(Move, Moveswing, Loop, Right, Down);
-        this.animate(ani);
+        this.animate(Move, Moveswing, Loop, Right, Down);
         for (IPonyPart part : modelParts) {
-            part.animate(metadata, ani);
+            part.animate(metadata, Move, Moveswing, Loop, Right, Down);
         }
         this.steveRightArm.rotateAngleX = MathHelper.cos(Move * 0.6662F + (float) Math.PI) * 2.0F * Moveswing * 0.5F;
         this.steveRightArm.rotateAngleY = 0;

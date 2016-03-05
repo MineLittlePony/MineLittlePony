@@ -10,7 +10,6 @@ import com.brohoof.minelittlepony.model.part.PegasusWings;
 import com.brohoof.minelittlepony.model.part.PonyEars;
 import com.brohoof.minelittlepony.model.part.PonySnout;
 import com.brohoof.minelittlepony.model.part.UnicornHorn;
-import com.brohoof.minelittlepony.renderer.AniParams;
 import com.brohoof.minelittlepony.renderer.PlaneRenderer;
 
 import net.minecraft.client.model.ModelRenderer;
@@ -42,10 +41,10 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     }
 
     @Override
-    public void animate(AniParams aniparams) {
-        this.checkRainboom(aniparams.swing);
-        this.rotateHead(aniparams.horz, aniparams.vert);
-        this.swingTailZ(aniparams.move, aniparams.swing);
+    public void animate(float move, float swing, float tick, float horz, float vert) {
+        this.checkRainboom(swing);
+        this.rotateHead(horz, vert);
+        this.swingTailZ(move, swing);
         float bodySwingRotation = 0.0F;
         if (this.swingProgress > -9990.0F && (!this.metadata.getRace().hasHorn() || this.metadata.getGlowColor() == 0)) {
             bodySwingRotation = MathHelper.sin(MathHelper.sqrt_float(this.swingProgress) * 3.1415927F * 2.0F) * 0.2F;
@@ -75,7 +74,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.bipedHead.offsetZ = 0f;
         this.bipedHeadwear.offsetY = 0f;
         this.bipedHeadwear.offsetZ = 0f;
-        this.setLegs(aniparams.move, aniparams.swing, aniparams.tick);
+        this.setLegs(move, swing, tick);
         this.holdItem();
         this.swingItem(this.swingProgress);
         if (this.isSneak && !this.isFlying) {
@@ -112,20 +111,20 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
             this.bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
             this.bipedLeftLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
-            this.swingArms(aniparams.tick);
+            this.swingArms(tick);
             this.setHead(0.0F, 0.0F, 0.0F);
 
             for (k1 = 0; k1 < tailstop; ++k1) {
                 setRotationPoint(this.Tail[k1], TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_NOTSNEAK);
                 if (this.rainboom) {
-                    this.Tail[k1].rotateAngleX = ROTATE_90 + 0.1F * MathHelper.sin(aniparams.move);
+                    this.Tail[k1].rotateAngleX = ROTATE_90 + 0.1F * MathHelper.sin(move);
                 } else {
-                    this.Tail[k1].rotateAngleX = 0.5F * aniparams.swing;
+                    this.Tail[k1].rotateAngleX = 0.5F * swing;
                 }
             }
 
             if (!this.rainboom) {
-                this.swingTailX(aniparams.tick);
+                this.swingTailX(tick);
             }
         }
 
@@ -142,11 +141,11 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         }
 
         if (this.aimedBow) {
-            this.aimBow(aniparams.tick);
+            this.aimBow(tick);
         }
 
         this.fixSpecialRotations();
-        this.fixSpecialRotationPoints(aniparams.move);
+        this.fixSpecialRotationPoints(move);
 
         animateWears();
 

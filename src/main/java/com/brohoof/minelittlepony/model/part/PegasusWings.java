@@ -4,7 +4,6 @@ import com.brohoof.minelittlepony.PonyData;
 import com.brohoof.minelittlepony.model.AbstractPonyModel;
 import com.brohoof.minelittlepony.model.BodyPart;
 import com.brohoof.minelittlepony.model.PonyModelConstants;
-import com.brohoof.minelittlepony.renderer.AniParams;
 
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.util.MathHelper;
@@ -90,7 +89,7 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
     }
 
     @Override
-    public void animate(PonyData metadata, AniParams ani) {
+    public void animate(PonyData metadata, float move, float swing, float tick, float horz, float vert) {
 
         float bodySwingRotation = 0.0F;
         if (pony.swingProgress > -9990.0F && (!metadata.getRace().hasHorn() || metadata.getGlowColor() == 0)) {
@@ -105,7 +104,7 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
         if (pony.isSneak && !pony.isFlying) {
             this.sneak();
         } else {
-            this.unsneak(ani.tick);
+            this.unsneak(tick);
 
         }
 
