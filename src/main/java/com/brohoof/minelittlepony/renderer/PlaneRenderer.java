@@ -1,6 +1,11 @@
 package com.brohoof.minelittlepony.renderer;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
+import static net.minecraft.client.renderer.GlStateManager.callList;
+import static net.minecraft.client.renderer.GlStateManager.popMatrix;
+import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
+import static net.minecraft.client.renderer.GlStateManager.rotate;
+import static net.minecraft.client.renderer.GlStateManager.translate;
+
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.model.ModelBase;
@@ -11,7 +16,7 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 
-public class PlaneRenderer {
+public class PlaneRenderer extends ModelRenderer {
     public float textureWidth;
     public float textureHeight;
     private PositionTextureVertex[] corners;
@@ -33,6 +38,7 @@ public class PlaneRenderer {
     public boolean isHidden = false;
 
     public PlaneRenderer(ModelBase modelbase, int offsetX, int offsetY) {
+        super(modelbase, offsetX, offsetY);
         this.textureOffsetX = offsetX;
         this.textureOffsetY = offsetY;
         this.textureWidth = modelbase.textureWidth;
@@ -283,12 +289,6 @@ public class PlaneRenderer {
 
     }
 
-    public void setRotationPoint(float f, float f1, float f2) {
-        this.rotationPointX = f;
-        this.rotationPointY = f1;
-        this.rotationPointZ = f2;
-    }
-
     public void render(float f) {
         if (!this.isHidden) {
             if (this.showModel) {
@@ -397,18 +397,4 @@ public class PlaneRenderer {
         this.compiled = true;
     }
 
-    public PlaneRenderer setTextureSize(int i, int j) {
-        this.textureWidth = i;
-        this.textureHeight = j;
-        return this;
-    }
-
-    public void setToModel(ModelRenderer modelrenderer) {
-        this.rotationPointX = modelrenderer.rotationPointX;
-        this.rotationPointY = modelrenderer.rotationPointY;
-        this.rotationPointZ = modelrenderer.rotationPointZ;
-        this.rotateAngleX = modelrenderer.rotateAngleX;
-        this.rotateAngleY = modelrenderer.rotateAngleY;
-        this.rotateAngleZ = modelrenderer.rotateAngleZ;
-    }
 }
