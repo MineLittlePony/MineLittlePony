@@ -18,20 +18,19 @@ buildscript {
 
 ext.revision = 210
 
-apply plugin: 'net.minecraftforge.gradle.tweaker-client'
+apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 
 archivesBaseName = "MineLittlePony"
 group = 'com.brohoof.minelp'
-version = '1.8.9'
+version = '1.8.9.0'
 
 ext.startClass = 'com.mumfrey.liteloader.debug.Start'
 minecraft {
 	version = "1.8.9"
-	mappings = 'stable_20'
+	mappings = 'stable_22'
 	runDir = 'run'
 	replace '@VERSION@',project.version
-	tweakClass = 'com.mumfrey.liteloader.launch.LiteLoaderTweaker'
 }
 sourceSets {
 	def deps = [
@@ -69,37 +68,13 @@ processResources {
 		exclude 'litemod.json'
 	}
 }
-repositories{
-	maven {
-		name 'sponge'
-		url 'http://repo.spongepowered.org/maven'
-	}
-	ivy {
-		name 'liteloader jenkins'
-		url 'http://jenkins.liteloader.com/view/1.8.9/job/LiteLoader%201.8.9'
-		layout('pattern') {
-			artifact '[organization]/artifact/build/libs/[artifact]-[revision](-[classifier]).[ext]'
-		}
-	}
-}
 
-dependencies {
-//	compile project('LiteLoader')
-	deobfCompile 'lastSuccessfulBuild:liteloader:1.8.9-SNAPSHOT'
-    compile('org.spongepowered:mixin:0.5.3-SNAPSHOT') {
-        exclude module: 'asm-commons'
-        exclude module: 'asm-tree'
-        exclude module: 'launchwrapper'
-        exclude module: 'guava'
-    }
-	compile 'net.minecraft:launchwrapper:1.12'
-}
 jar {
-	afterEvaluate {	manifest.attributes.remove 'TweakClass'}
+	//afterEvaluate {	manifest.attributes.remove 'TweakClass'}
 	from sourceSets.findAll { it.name != 'api' }*.output
 
-	extension 'litemod'
-	appendix "mc$minecraft.version"
+	//extension 'litemod'
+	//appendix "mc$minecraft.version"
 }
 mixin {
     defaultObfuscationEnv notch
@@ -107,15 +82,4 @@ mixin {
 task deploy(type: Copy, dependsOn: build) {
 	from jar.archivePath
 	into file("$System.env.APPDATA/.minecraft/mods")
-}
-afterEvaluate {
-    minecraft {
-        clientRunArgs = [""]
-        clientJvmArgs += "-Dmixin.debug.verify=true"
-    }
-    // hacks for run configs
-	// TODO user makeStart configs
-    def mc = plugins['net.minecraftforge.gradle.tweaker-client']
-    mc.replacer.putReplacement '{RUN_CLIENT_MAIN}', project.startClass
-    mc.replacer.putReplacement '{RUN_CLIENT_TWEAKER}', minecraft.tweakClass
 }
