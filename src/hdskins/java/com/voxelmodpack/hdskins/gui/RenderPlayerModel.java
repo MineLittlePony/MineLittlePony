@@ -41,14 +41,14 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
     }
 
     @Override
-    public void doRender(EntityPlayerModel par1Entity, double par2, double par4, double par6, float par8, float par9) {
+    public void doRender(M par1Entity, double par2, double par4, double par6, float par8, float par9) {
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-        this.doRender(par1Entity, par2, par4, par6, par8, par9);
+        super.doRender(par1Entity, par2, par4, par6, par8, par9);
         popAttrib();
         pushMatrix();
         scale(1.0F, -1.0F, 1.0F);
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-        this.doRender(par1Entity, par2, par4, par6, par8, par9);
+        super.doRender(par1Entity, par2, par4, par6, par8, par9);
         popAttrib();
         popMatrix();
     }

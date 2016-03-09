@@ -119,14 +119,10 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
 
         scale(2, 2, 2);
 
-        model.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.THIRD_PERSON);
         applyTransform(model.getItemCameraTransforms(), TransformType.THIRD_PERSON);
         RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
         scale(1.1, 1.1, 1.1);
-        if (model.isGui3d()) {
-            // disabling textures for items messes up bounds
-            disableTexture2D();
-        }
+
         translate(0, .01, .01);
         renderItem.renderItem(drop, model);
         translate(.01, -.01, -.02);
