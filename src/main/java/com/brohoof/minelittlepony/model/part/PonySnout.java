@@ -9,6 +9,9 @@ import com.brohoof.minelittlepony.model.AbstractPonyModel;
 import com.brohoof.minelittlepony.model.PonyModelConstants;
 import com.brohoof.minelittlepony.renderer.PlaneRenderer;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ObjectArrays;
+
+import net.minecraft.client.model.ModelRenderer;
 
 public class PonySnout extends AbstractHeadPart implements PonyModelConstants {
 
@@ -101,6 +104,13 @@ public class PonySnout extends AbstractHeadPart implements PonyModelConstants {
                 p.rotateAngleY = rotY;
             }
         }
+    }
+
+    @Override
+    protected ModelRenderer[] getModels() {
+        ModelRenderer[] male = MUZZLES.get(PonyGender.STALLION);
+        ModelRenderer[] female =  MUZZLES.get(PonyGender.MARE);
+        return ObjectArrays.concat(male, female, ModelRenderer.class);
     }
 
 }
