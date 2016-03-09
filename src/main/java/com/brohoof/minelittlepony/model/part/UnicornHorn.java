@@ -24,7 +24,6 @@ public class UnicornHorn extends AbstractHeadPart implements PonyModelConstants 
         this.hornglow = new HornGlowRenderer[2];
         for (int i = 0; i < hornglow.length; i++) {
             this.hornglow[i] = new HornGlowRenderer(pony, 0, 3);
-            this.horn.addChild(this.hornglow[i]);
         }
 
         this.horn.addBox(-0.5F + HEAD_CENTRE_X, -10.0F + HEAD_CENTRE_Y, -1.5F + HEAD_CENTRE_Z, 1, 4, 1, stretch);
@@ -67,9 +66,9 @@ public class UnicornHorn extends AbstractHeadPart implements PonyModelConstants 
 
     protected void position(float posX, float posY, float posZ) {
         AbstractPonyModel.setRotationPoint(this.horn, posX, posY, posZ);
-//        for (int i = 0; i < this.hornglow.length; i++) {
-//            AbstractPonyModel.setRotationPoint(this.hornglow[i], posX, posY, posZ);
-//        }
+        for (int i = 0; i < this.hornglow.length; i++) {
+            AbstractPonyModel.setRotationPoint(this.hornglow[i], posX, posY, posZ);
+        }
     }
 
     protected void rotate(float rotX, float rotY) {
@@ -77,15 +76,10 @@ public class UnicornHorn extends AbstractHeadPart implements PonyModelConstants 
         this.horn.rotateAngleX = rotX + 0.5F;
         this.horn.rotateAngleY = rotY;
 
-//        for (int i = 0; i < this.hornglow.length; i++) {
-//            this.hornglow[i].rotateAngleX = rotX + 0.5F;
-//            this.hornglow[i].rotateAngleY = rotY;
-//        }
+        for (int i = 0; i < this.hornglow.length; i++) {
+            this.hornglow[i].rotateAngleX = rotX + 0.5F;
+            this.hornglow[i].rotateAngleY = rotY;
+        }
     }
 
-    @Override
-    protected ModelRenderer[] getModels() {
-        // TODO Auto-generated method stub
-        return new ModelRenderer[] { horn };
-    }
 }

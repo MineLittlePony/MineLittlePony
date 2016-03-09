@@ -41,17 +41,6 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
         }
 
         initPositions(yOffset, stretch);
-
-        addChildren(this.leftWing);
-        addChildren(this.rightWing);
-        addChildren(this.leftWingExt);
-        addChildren(this.rightWingExt);
-    }
-
-    private void addChildren(ModelRenderer... models) {
-        for (ModelRenderer m : models) {
-            this.pony.bipedBody.addChild(m);
-        }
     }
 
     private void initPositions(float yOffset, float stretch) {

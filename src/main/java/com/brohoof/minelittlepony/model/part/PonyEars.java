@@ -45,8 +45,4 @@ public class PonyEars extends AbstractHeadPart implements PonyModelConstants {
         right.render(scale);
     }
 
-    @Override
-    protected ModelRenderer[] getModels() {
-        return new ModelRenderer[] { left, right };
-    }
 }

@@ -21,8 +21,8 @@ public class RenderPonySkeleton extends RenderPonyMob<EntitySkeleton> {
         addLayer(new LayerBipedArmor(this) {
             @Override
             protected void initArmor() {
-                this.modelLeggings = PMAPI.skeleton.getArmor().modelArmor;
-                this.modelArmor = PMAPI.skeleton.getArmor().modelArmorChestplate;
+                this.field_177189_c = PMAPI.skeleton.getArmor().modelArmor;
+                this.field_177186_d = PMAPI.skeleton.getArmor().modelArmorChestplate;
             }
         });
     }
