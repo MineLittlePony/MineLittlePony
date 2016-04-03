@@ -741,7 +741,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             this.bipedLeftArm.addBox(-3.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch);
             this.bipedLeftArm.setRotationPoint(3.0F, 8.0F + yOffset, 0.0F);
             if (this.bipedLeftArmwear != null) {
-                this.bipedLeftArmwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25f);
+                this.bipedLeftArmwear.addBox(-3.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25f);
                 this.bipedLeftArmwear.setRotationPoint(3.0F, 8.0F + yOffset, 0.0F);
             }
         }
