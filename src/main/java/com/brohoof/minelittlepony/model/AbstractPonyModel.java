@@ -185,6 +185,8 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     }
 
     public void transform(BodyPart part) {
+        if (this instanceof ModelPlayerPony)
+            return;
         if (this.isRiding) {
             translate(0.0F, -0.6F, -0.2F);
         }

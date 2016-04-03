@@ -7,9 +7,9 @@ import static net.minecraft.client.renderer.GlStateManager.rotate;
 import static net.minecraft.client.renderer.GlStateManager.scale;
 import static net.minecraft.client.renderer.GlStateManager.translate;
 
-import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.ducks.IRenderPony;
 import com.brohoof.minelittlepony.model.AbstractPonyModel;
+import com.brohoof.minelittlepony.model.BodyPart;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
 import com.mojang.authlib.GameProfile;
@@ -50,15 +50,8 @@ public class LayerPonySkull implements LayerRenderer<EntityLivingBase> {
             pushMatrix();
             boolean isVillager = entity instanceof EntityVillager
                     || entity instanceof EntityZombie && ((EntityZombie) entity).isVillager();
-            if (!isVillager && entity.isChild()) {
-                scale(0.7, 0.7, 0.7);
-            }
-            if (model instanceof ModelPlayerPony) {
-                if (model.metadata.getSize() == PonySize.FOAL) {
-                    translate(0.0F, 0.76F, 0.0F);
-                    scale(0.9, 0.9, 0.9);
-                }
-            }
+
+            model.transform(BodyPart.HEAD);
             model.bipedHead.postRender(0.0625f);
             if (model instanceof ModelPlayerPony) {
                 translate(0, .2, 0);

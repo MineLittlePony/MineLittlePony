@@ -3,11 +3,10 @@ package com.brohoof.minelittlepony.renderer.layer;
 import static net.minecraft.client.renderer.GlStateManager.popMatrix;
 import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
 import static net.minecraft.client.renderer.GlStateManager.rotate;
-import static net.minecraft.client.renderer.GlStateManager.scale;
 import static net.minecraft.client.renderer.GlStateManager.translate;
 
-import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.ducks.IRenderPony;
+import com.brohoof.minelittlepony.model.BodyPart;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.model.pony.ModelHumanPlayer;
 
@@ -38,27 +37,12 @@ public class LayerPonyCape implements LayerRenderer<AbstractClientPlayer> {
                 && clientPlayer.isWearing(EnumPlayerModelParts.CAPE) && clientPlayer.getLocationCape() != null) {
 
             pushMatrix();
+            model.getModel().transform(BodyPart.BODY);
             translate(0.0F, 0.24F, 0.0F);
-            if (model.getModel().metadata.getSize() == PonySize.FOAL) {
-                translate(0.0F, 0.67F, -0.04F);
-                scale(0.6F, 0.6F, 0.6F);
-            } else if (model.getModel().metadata.getSize() == PonySize.LARGE) {
-                translate(0.0F, -0.14F, -0.1F);
-                scale(1.15F, 1.2F, 1.2F);
-                if (model.getModel().isSneak && !model.getModel().isFlying) {
-                    translate(0.0F, 0.03F, 0.0F);
-                }
-            } else if (model.getModel().metadata.getSize() == PonySize.TALL) {
-                translate(0.0F, -0.09F, 0.0F);
-                scale(1.0F, 1.0F, 1.0F);
-                if (model.getModel().isSneak && !model.getModel().isFlying) {
-                    translate(0.0F, 0.03F, 0.0F);
-                }
+            if (clientPlayer.isRiding()) {
+                rotate(-36, 1, 0, 0);
             }
 
-            if (model.getModel().isSneak && !model.getModel().isFlying) {
-                translate(0.0F, 0.4F, -0.12F);
-            }
             double d = clientPlayer.prevChasingPosX + (clientPlayer.chasingPosX - clientPlayer.prevChasingPosX) * scale
                     - (clientPlayer.prevPosX + (clientPlayer.posX - clientPlayer.prevPosX) * scale);
             double d1 = clientPlayer.prevChasingPosY + (clientPlayer.chasingPosY - clientPlayer.prevChasingPosY) * scale

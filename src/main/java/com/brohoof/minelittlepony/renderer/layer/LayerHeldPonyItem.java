@@ -73,11 +73,6 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
         if (drop != null) {
             pushMatrix();
             pony.getModel().transform(BodyPart.LEGS);
-            if (pony.getModel().isChild) {
-                translate(0.0F, 0.625F, 0.0F);
-                rotate(-20.0F, -1.0F, 0.0F, 0.0F);
-                scale(0.5F, 0.5F, 0.5F);
-            }
             box.postRender(scalefactor * 0.0625F);
 
             translate(posx, posy, posz);
