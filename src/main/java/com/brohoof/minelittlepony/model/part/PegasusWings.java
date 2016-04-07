@@ -38,6 +38,8 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
         }
         for (int i = 0; i < rightWingExt.length; i++) {
             this.rightWingExt[i] = new ModelRenderer(pony, 56, 19);
+            // this seems to hide the wings being a different size when folded
+            this.rightWingExt[i].mirror = true;
         }
 
         initPositions(yOffset, stretch);
