@@ -9,6 +9,7 @@ import java.util.List;
 import com.brohoof.minelittlepony.PonyData;
 import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.model.part.IPonyPart;
+import com.brohoof.minelittlepony.model.pony.ModelHumanPlayer;
 import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
 import com.brohoof.minelittlepony.renderer.PlaneRenderer;
 import com.google.common.collect.Lists;
@@ -185,7 +186,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     }
 
     public void transform(BodyPart part) {
-        if (this instanceof ModelPlayerPony)
+        if (this instanceof ModelHumanPlayer)
             return;
         if (this.isRiding) {
             translate(0.0F, -0.6F, -0.2F);
