@@ -27,6 +27,7 @@ public class HornGlowRenderer extends ModelRenderer {
 
     }
 
+    @Override
     public HornGlowRenderer addBox(String par1Str, float par2, float par3, float par4, int par5, int par6, int par7) {
         par1Str = this.boxName + "." + par1Str;
         TextureOffset var8 = this.baseModel.getTextureOffset(par1Str);
@@ -35,11 +36,13 @@ public class HornGlowRenderer extends ModelRenderer {
         return this;
     }
 
+    @Override
     public HornGlowRenderer addBox(float par1, float par2, float par3, int par4, int par5, int par6) {
         this.cubeList.add(new ModelHornGlow(this, this.textureOffsetX, this.textureOffsetY, par1, par2, par3, par4, par5, par6, 0.0F));
         return this;
     }
 
+    @Override
     public void addBox(float par1, float par2, float par3, int par4, int par5, int par6, float par7) {
         this.cubeList.add(new ModelHornGlow(this, this.textureOffsetX, this.textureOffsetY, par1, par2, par3, par4, par5, par6, par7));
     }

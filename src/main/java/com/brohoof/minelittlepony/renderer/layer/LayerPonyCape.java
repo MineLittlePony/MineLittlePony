@@ -28,6 +28,7 @@ public class LayerPonyCape implements LayerRenderer<AbstractClientPlayer> {
         this.cape = new LayerCape((RenderPlayer) entity);
     }
 
+    @Override
     public void doRenderLayer(AbstractClientPlayer clientPlayer, float p2, float p3, float ticks, float p5, float p6,
             float p7, float scale) {
         PlayerModel model = ((IRenderPony) renderer).getPony();

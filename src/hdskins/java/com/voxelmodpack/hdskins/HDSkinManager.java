@@ -104,10 +104,12 @@ public final class HDSkinManager {
             ThreadDownloadImageData threaddownloadimagedata = new ThreadDownloadImageData(file2, texture.getUrl(),
                     DefaultPlayerSkin.getDefaultSkinLegacy(),
                     new IImageBuffer() {
+                        @Override
                         public BufferedImage parseUserSkin(BufferedImage image) {
                             return imagebufferdownload.parseUserSkin(image);
                         }
 
+                        @Override
                         public void skinAvailable() {
                             imagebufferdownload.skinAvailable();
                             if (callback != null) {

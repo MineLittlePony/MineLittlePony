@@ -559,6 +559,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         }
     }
 
+    @Override
     protected void initTextures() {
         this.Tail = new PlaneRenderer[21];
 
@@ -653,6 +654,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.Tail[20] = new PlaneRenderer(this, 32, 0);
     }
 
+    @Override
     protected void initPositions(float yOffset, float stretch) {
         this.initHeadPositions(yOffset, stretch);
         this.initBodyPositions(yOffset, stretch);

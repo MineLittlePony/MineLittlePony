@@ -289,6 +289,7 @@ public class PlaneRenderer extends ModelRenderer {
 
     }
 
+    @Override
     public void render(float f) {
         if (!this.isHidden) {
             if (this.showModel) {
@@ -327,6 +328,7 @@ public class PlaneRenderer extends ModelRenderer {
         }
     }
 
+    @Override
     public void renderWithRotation(float f) {
         if (!this.isHidden) {
             if (this.showModel) {
@@ -354,6 +356,7 @@ public class PlaneRenderer extends ModelRenderer {
         }
     }
 
+    @Override
     public void postRender(float scale) {
         if (!this.isHidden) {
             if (this.showModel) {

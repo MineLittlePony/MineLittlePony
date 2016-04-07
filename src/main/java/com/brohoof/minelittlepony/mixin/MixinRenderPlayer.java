@@ -3,7 +3,6 @@ package com.brohoof.minelittlepony.mixin;
 import static net.minecraft.client.renderer.GlStateManager.scale;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -66,7 +65,7 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity<AbstractCli
      * @reason render a pony instead of a human
      * @author JoyJoy
      */
-    @Overwrite
+    @Override
     public void doRender(AbstractClientPlayer player, double x, double y, double z, float yaw, float partialTicks) {
         updateModel(player);
         ItemStack currentItemStack = player.inventory.getCurrentItem();
