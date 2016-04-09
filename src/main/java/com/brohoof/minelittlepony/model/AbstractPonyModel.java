@@ -5,6 +5,7 @@ import static net.minecraft.client.renderer.GlStateManager.scale;
 import static net.minecraft.client.renderer.GlStateManager.translate;
 
 import java.util.List;
+import java.util.Random;
 
 import com.brohoof.minelittlepony.PonyData;
 import com.brohoof.minelittlepony.PonySize;
@@ -325,5 +326,16 @@ public abstract class AbstractPonyModel extends ModelPlayer {
             this.isFlying = pony.isFlying;
             this.isSleeping = pony.isSleeping;
         }
+    }
+
+    @Override
+    public ModelRenderer getRandomModelBox(Random rand) {
+        // empty lists cause problems
+        ModelRenderer mr = null;
+        do {
+            // try until it's not
+            mr = super.getRandomModelBox(rand);
+        } while (mr.cubeList.isEmpty());
+        return mr;
     }
 }
