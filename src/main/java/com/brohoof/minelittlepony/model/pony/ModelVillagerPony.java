@@ -36,27 +36,10 @@ public class ModelVillagerPony extends ModelPlayerPony {
     }
 
     @Override
-    protected void adjustBodyComponents(float rotateAngleX, float rotationPointY, float rotationPointZ) {
-        super.adjustBodyComponents(rotateAngleX, rotationPointY, rotationPointZ);
-
-        for (int i = 0; i < this.VillagerBagPiece.length; ++i) {
-            this.VillagerBagPiece[i].rotateAngleX = rotateAngleX;
-            this.VillagerBagPiece[i].rotationPointY = rotationPointY;
-            this.VillagerBagPiece[i].rotationPointZ = rotationPointZ;
-        }
-
-        this.VillagerApron.rotateAngleX = rotateAngleX;
-        this.VillagerApron.rotationPointY = rotationPointY;
-        this.VillagerApron.rotationPointZ = rotationPointZ;
-        this.VillagerTrinket.rotateAngleX = rotateAngleX;
-        this.VillagerTrinket.rotationPointY = rotationPointY;
-        this.VillagerTrinket.rotationPointZ = rotationPointZ;
-    }
-
-    @Override
     protected void renderBody() {
         super.renderBody();
 
+        this.bipedBody.postRender(scale);
         if (profession < 2) {
             for (int i = 0; i < this.VillagerBagPiece.length; ++i) {
                 this.VillagerBagPiece[i].render(this.scale);

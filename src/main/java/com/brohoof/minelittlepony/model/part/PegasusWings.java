@@ -10,7 +10,7 @@ import net.minecraft.util.MathHelper;
 
 public class PegasusWings implements IPonyPart, PonyModelConstants {
 
-    private AbstractPonyModel pony;
+    private final AbstractPonyModel pony;
 
     public ModelRenderer[] leftWing;
     public ModelRenderer[] rightWing;
@@ -18,10 +18,12 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
     public ModelRenderer[] leftWingExt;
     public ModelRenderer[] rightWingExt;
 
-    @Override
-    public void init(AbstractPonyModel pony, float yOffset, float stretch) {
+    public PegasusWings(AbstractPonyModel pony) {
         this.pony = pony;
-
+    }
+    
+    @Override
+    public void init(float yOffset, float stretch) {
         this.leftWing = new ModelRenderer[3];
         this.rightWing = new ModelRenderer[3];
         this.leftWingExt = new ModelRenderer[6];
@@ -110,7 +112,7 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
 
         }
 
-        float angle = pony.isRiding ? (float) (Math.PI * .3) : ROTATE_90;
+        float angle = ROTATE_90;
 
         for (int i = 0; i < this.leftWing.length; i++) {
             this.leftWing[i].rotateAngleX = angle;
@@ -133,6 +135,7 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
     @Override
     public void render(PonyData data, float scale) {
         pony.transform(BodyPart.BODY);
+        pony.bipedBody.postRender(scale);
         if (data.getRace() != null && data.getRace().hasWings()) {
             if (!pony.isFlying && !pony.isSneak) {
 
@@ -158,46 +161,28 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
 
     private void sneak() {
         for (int i = 0; i < this.leftWingExt.length; ++i) {
-            this.leftWingExt[i].rotationPointY = LEFT_WING_RP_Y_SNEAK;
-            this.leftWingExt[i].rotationPointZ = LEFT_WING_RP_Z_SNEAK;
             this.leftWingExt[i].rotateAngleX = EXT_WING_ROTATE_ANGLE_X;
             this.leftWingExt[i].rotateAngleZ = LEFT_WING_ROTATE_ANGLE_Z_SNEAK;
         }
 
         for (int i = 0; i < this.leftWingExt.length; ++i) {
-            this.rightWingExt[i].rotationPointY = RIGHT_WING_RP_Y_SNEAK;
-            this.rightWingExt[i].rotationPointZ = RIGHT_WING_RP_Z_SNEAK;
             this.rightWingExt[i].rotateAngleX = EXT_WING_ROTATE_ANGLE_X;
             this.rightWingExt[i].rotateAngleZ = RIGHT_WING_ROTATE_ANGLE_Z_SNEAK;
         }
     }
 
     private void unsneak(float tick) {
-        if (!pony.isFlying) {
-            for (int i = 0; i < this.leftWing.length; ++i) {
-                this.leftWing[i].rotationPointY = WING_FOLDED_RP_Y;
-                this.leftWing[i].rotationPointZ = WING_FOLDED_RP_Z;
-            }
-
-            for (int i = 0; i < this.rightWing.length; ++i) {
-                this.rightWing[i].rotationPointY = WING_FOLDED_RP_Y;
-                this.rightWing[i].rotationPointZ = WING_FOLDED_RP_Z;
-            }
-        } else {
+        if (pony.isFlying) {
             float WingRotateAngleZ = MathHelper.sin(tick * 0.536F) * 1.0F;
 
             for (int i = 0; i < this.leftWingExt.length; ++i) {
                 this.leftWingExt[i].rotateAngleX = EXT_WING_ROTATE_ANGLE_X;
                 this.leftWingExt[i].rotateAngleZ = -WingRotateAngleZ - ROTATE_270 - 0.4F;
-                this.leftWingExt[i].rotationPointY = LEFT_WING_RP_Y_NOTSNEAK;
-                this.leftWingExt[i].rotationPointZ = LEFT_WING_RP_Z_NOTSNEAK;
             }
 
             for (int i = 0; i < this.rightWingExt.length; ++i) {
                 this.rightWingExt[i].rotateAngleX = EXT_WING_ROTATE_ANGLE_X;
                 this.rightWingExt[i].rotateAngleZ = WingRotateAngleZ + ROTATE_270 + 0.4F;
-                this.rightWingExt[i].rotationPointY = RIGHT_WING_RP_Y_NOTSNEAK;
-                this.rightWingExt[i].rotationPointZ = RIGHT_WING_RP_Z_NOTSNEAK;
             }
         }
     }

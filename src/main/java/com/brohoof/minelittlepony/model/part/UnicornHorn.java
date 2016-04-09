@@ -16,10 +16,12 @@ public class UnicornHorn extends AbstractHeadPart implements PonyModelConstants 
     private ModelRenderer horn;
     private HornGlowRenderer[] hornglow;
 
-    @Override
-    public void init(AbstractPonyModel pony, float yOffset, float stretch) {
-        super.init(pony, yOffset, stretch);
+    public UnicornHorn(AbstractPonyModel pony) {
+        super(pony);
+    }
 
+    @Override
+    public void init(float yOffset, float stretch) {
         this.horn = new ModelRenderer(pony, 0, 3);
         this.hornglow = new HornGlowRenderer[2];
         for (int i = 0; i < hornglow.length; i++) {
@@ -28,11 +30,10 @@ public class UnicornHorn extends AbstractHeadPart implements PonyModelConstants 
 
         this.horn.addBox(-0.5F + HEAD_CENTRE_X, -10.0F + HEAD_CENTRE_Y, -1.5F + HEAD_CENTRE_Z, 1, 4, 1, stretch);
         this.horn.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
+        this.horn.rotateAngleX = 0.5F;
 
         this.hornglow[0].addBox(-0.5F + HEAD_CENTRE_X, -10.0F + HEAD_CENTRE_Y, -1.5F + HEAD_CENTRE_Z, 1, 4, 1, stretch + 0.5F);
-        this.hornglow[0].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
         this.hornglow[1].addBox(-0.5F + HEAD_CENTRE_X, -10.0F + HEAD_CENTRE_Y, -1.5F + HEAD_CENTRE_Z, 1, 3, 1, stretch + 0.8F);
-        this.hornglow[1].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
     }
 
     @Override
@@ -40,7 +41,7 @@ public class UnicornHorn extends AbstractHeadPart implements PonyModelConstants 
         super.render(data, scale);
         if (data.getRace() != null && data.getRace().hasHorn()) {
             this.horn.render(scale);
-            if (getPony().heldItemRight != 0 && data.getGlowColor() != 0) {
+            if (pony.heldItemRight != 0 && data.getGlowColor() != 0) {
                 GL11.glPushAttrib(24577);
                 disableTexture2D();
                 disableLighting();
@@ -51,6 +52,8 @@ public class UnicornHorn extends AbstractHeadPart implements PonyModelConstants 
                 float blue = (data.getGlowColor() & 255) / 255.0F;
                 blendFunc(GL11.GL_SRC_ALPHA, 1);
 
+                this.horn.postRender(scale);
+                
                 color(var4, green, blue, 0.4F);
                 this.hornglow[0].render(scale);
                 color(var4, green, blue, 0.2F);
@@ -61,26 +64,6 @@ public class UnicornHorn extends AbstractHeadPart implements PonyModelConstants 
                 disableBlend();
                 popAttrib();
             }
-        }
-    }
-
-    @Override
-    protected void position(float posX, float posY, float posZ) {
-        AbstractPonyModel.setRotationPoint(this.horn, posX, posY, posZ);
-        for (int i = 0; i < this.hornglow.length; i++) {
-            AbstractPonyModel.setRotationPoint(this.hornglow[i], posX, posY, posZ);
-        }
-    }
-
-    @Override
-    protected void rotate(float rotX, float rotY) {
-
-        this.horn.rotateAngleX = rotX + 0.5F;
-        this.horn.rotateAngleY = rotY;
-
-        for (int i = 0; i < this.hornglow.length; i++) {
-            this.hornglow[i].rotateAngleX = rotX + 0.5F;
-            this.hornglow[i].rotateAngleY = rotY;
         }
     }
 

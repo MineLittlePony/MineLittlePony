@@ -17,9 +17,12 @@ public class PonySnout extends AbstractHeadPart implements PonyModelConstants {
             .put(PonyGender.STALLION, new PlaneRenderer[5])
             .build();
 
+    public PonySnout(AbstractPonyModel pony) {
+        super(pony);
+    }
+
     @Override
-    public void init(AbstractPonyModel pony, float yOffset, float stretch) {
-        super.init(pony, yOffset, stretch);
+    public void init(float yOffset, float stretch) {
 
         PlaneRenderer[] muzzle = MUZZLES.get(PonyGender.MARE);
         muzzle[0] = new PlaneRenderer(pony, 10, 14);
@@ -80,25 +83,6 @@ public class PonySnout extends AbstractHeadPart implements PonyModelConstants {
             PlaneRenderer[] muzzle = MUZZLES.get(data.getGender());
             for (int i = 0; i < muzzle.length; i++) {
                 muzzle[i].render(scale);
-            }
-        }
-    }
-
-    @Override
-    protected void position(float posX, float posY, float posZ) {
-        for (PlaneRenderer[] pr : MUZZLES.values()) {
-            for (PlaneRenderer p : pr) {
-                AbstractPonyModel.setRotationPoint(p, posX, posY, posZ);
-            }
-        }
-    }
-
-    @Override
-    protected void rotate(float rotX, float rotY) {
-        for (PlaneRenderer[] pr : MUZZLES.values()) {
-            for (PlaneRenderer p : pr) {
-                p.rotateAngleX = rotX;
-                p.rotateAngleY = rotY;
             }
         }
     }

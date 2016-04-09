@@ -13,6 +13,7 @@ import com.brohoof.minelittlepony.model.part.UnicornHorn;
 import com.brohoof.minelittlepony.renderer.PlaneRenderer;
 
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.MathHelper;
 
 public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConstants {
@@ -34,10 +35,10 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     }
 
     protected void addParts() {
-        modelParts.add(new PonyEars());
-        modelParts.add(new PonySnout());
-        modelParts.add(new UnicornHorn());
-        modelParts.add(new PegasusWings());
+        modelParts.add(new PonyEars(this));
+        modelParts.add(new PonySnout(this));
+        modelParts.add(new UnicornHorn(this));
+        modelParts.add(new PegasusWings(this));
     }
 
     @Override
@@ -149,6 +150,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
         animateWears();
 
+        this.bipedCape.rotationPointY = isSneak ? 2 : isRiding ? -4 : 0;
     }
 
     private void animateWears() {
@@ -471,7 +473,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     protected void aimBowUnicorn(float tick) {
         this.unicornarm.rotateAngleZ = 0.0F;
         this.unicornarm.rotateAngleY = -0.06F + this.bipedHead.rotateAngleY;
-        this.unicornarm.rotateAngleX = ROTATE_270+ this.bipedHead.rotateAngleX;
+        this.unicornarm.rotateAngleX = ROTATE_270 + this.bipedHead.rotateAngleX;
         this.unicornarm.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
         this.unicornarm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.05F;
     }
@@ -517,10 +519,10 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     }
 
     protected void renderNeck() {
+        GlStateManager.scale(0.9, 0.9, 0.9);
         for (PlaneRenderer element : this.BodypieceNeck) {
             element.render(this.scale);
         }
-
     }
 
     protected void renderBody() {
@@ -665,9 +667,9 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     protected void initHeadPositions(float yOffset, float stretch) {
         this.bipedCape.addBox(-5.0F, 0.0F, -1.0F, 10, 16, 1, stretch);
         this.bipedHead.addBox(-4.0F + HEAD_CENTRE_X, -4 + HEAD_CENTRE_Y, -4.0F + HEAD_CENTRE_Z, 8, 8, 8, stretch);
-        this.bipedHead.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
+        this.bipedHead.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2);
         this.bipedHeadwear.addBox(-4.0F + HEAD_CENTRE_X, -4.0F + HEAD_CENTRE_Y, -4.0F + HEAD_CENTRE_Z, 8, 8, 8, stretch + 0.5F);
-        this.bipedHeadwear.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
+        this.bipedHeadwear.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2);
     }
 
     protected void initBodyPositions(float yOffset, float stretch) {

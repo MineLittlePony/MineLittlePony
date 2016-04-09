@@ -40,9 +40,7 @@ public class LayerPonyCape implements LayerRenderer<AbstractClientPlayer> {
             pushMatrix();
             model.getModel().transform(BodyPart.BODY);
             translate(0.0F, 0.24F, 0.0F);
-            if (clientPlayer.isRiding()) {
-                rotate(-36, 1, 0, 0);
-            }
+            model.getModel().bipedBody.postRender(scale);
 
             double d = clientPlayer.prevChasingPosX + (clientPlayer.chasingPosX - clientPlayer.prevChasingPosX) * scale
                     - (clientPlayer.prevPosX + (clientPlayer.posX - clientPlayer.prevPosX) * scale);
@@ -73,9 +71,6 @@ public class LayerPonyCape implements LayerRenderer<AbstractClientPlayer> {
             f12 += MathHelper.sin((clientPlayer.prevDistanceWalkedModified
                     + (clientPlayer.distanceWalkedModified - clientPlayer.prevDistanceWalkedModified) * scale) * 6.0F)
                     * 32.0F * f15;
-            if (clientPlayer.isSneaking()) {
-                f12 += 25.0F;
-            }
 
             rotate(2.0F + f13 / 12.0F + f12, 1.0F, 0.0F, 0.0F);
             rotate(f14 / 2.0F, 0.0F, 0.0F, 1.0F);

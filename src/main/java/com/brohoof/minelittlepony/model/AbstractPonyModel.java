@@ -55,7 +55,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
         this.initTextures();
         this.initPositions(yOffset, stretch);
         for (IPonyPart part : modelParts) {
-            part.init(this, yOffset, stretch);
+            part.init(yOffset, stretch);
         }
     }
 
