@@ -28,7 +28,7 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
         this.playerModel.getModel().metadata.setGender(rand.nextBoolean() ? PonyGender.MARE : PonyGender.STALLION);
 
         // races
-        switch (rand.nextInt(4)) {
+        switch (entity instanceof EntityPigZombie ? 0 : rand.nextInt(4)) {
         case 0:
         case 1:
             this.playerModel.getModel().metadata.setRace(PonyRace.EARTH);
