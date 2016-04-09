@@ -13,7 +13,7 @@ public class HDSkinsConfigPanel implements ConfigPanel {
 
     @Override
     public void onPanelShown(ConfigPanelHost host) {
-        this.button = new GuiButton(0, 72, 120, 70, 16, "Clear Skin Cache");
+        this.button = new GuiButton(0, 40, 10, 100, 20, "Clear Skin Cache");
 
     }
 
