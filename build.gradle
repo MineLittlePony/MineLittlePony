@@ -16,13 +16,13 @@ buildscript {
 	}
 }
 
-ext.revision = 212
+ext.revision = 213
 
 apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'com.brohoof.minelp'
-version = '1.8.9.1'
+version = '1.8.9.2'
 description = 'Mine Little Pony turns players and mobs into ponies'
 
 minecraft {
@@ -49,12 +49,12 @@ sourceSets {
 		compileClasspath += files(deps + [ main.output, api.output ])
 	}
 }
-litemod.json {
-	name = 'minelp'
-	revision = ext.revision
-	mixinConfigs += ['mixin.minelp.json', 'mixin.hdskins.json']
+//litemod.json {
+//	name = 'minelp'
+//	revision = ext.revision
+//	mixinConfigs += ['mixin.minelp.json', 'mixin.hdskins.json']
 	//tweakClass = 'com.brohoof.minelittlepony.launch.MineLPTweaker'
-}
+//}
 processResources {
     def props = [
         version:    version,
