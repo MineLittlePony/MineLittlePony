@@ -61,9 +61,16 @@ public final class HDSkinManager {
         Property prop = Iterables.getFirst(profile1.getProperties().get("textures"), null);
         if (prop != null) {
             JsonObject obj = new Gson().fromJson(new String(Base64.decodeBase64(prop.getValue())), JsonObject.class);
-            String name = obj.get("profileName").getAsString();
-            UUID uuid = UUIDTypeAdapter.fromString(obj.get("profileId").getAsString());
-            profile1 = new GameProfile(uuid, name);
+            String name = null;
+            // this should be optional
+            if (obj.has("profileName")) {
+                name = obj.get("profileName").getAsString();
+            }
+            // this is required
+            if (obj.has("profileId")) {
+                UUID uuid = UUIDTypeAdapter.fromString(obj.get("profileId").getAsString());
+                profile1 = new GameProfile(uuid, name);
+            }
         }
         final GameProfile profile = profile1;
 
