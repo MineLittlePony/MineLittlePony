@@ -33,9 +33,6 @@ import net.minecraft.util.ResourceLocation;
 @Mixin(RenderPlayer.class)
 public abstract class MixinRenderPlayer extends RendererLivingEntity<AbstractClientPlayer> implements IRenderPony {
 
-    private static final String RenderManager = "Lnet/minecraft/client/renderer/entity/RenderManager;";
-    private static final String AbstractClientPlayer = "Lnet/minecraft/client/entity/AbstractClientPlayer;";
-
     @Shadow
     private boolean smallArms;
     private PlayerModel playerModel;
@@ -46,7 +43,7 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity<AbstractCli
     }
 
     @Inject(
-            method = "<init>(" + RenderManager + "Z)V",
+            method = "<init>(" + "Lnet/minecraft/client/renderer/entity/RenderManager;" + "Z)V",
             at = @At("RETURN") )
     private void init(RenderManager renderManager, boolean useSmallArms, CallbackInfo ci) {
         this.playerModel = smallArms ? PMAPI.ponySmall : PMAPI.pony;
@@ -130,13 +127,13 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity<AbstractCli
         }
     }
 
-    @Inject(method = "renderRightArm(" + AbstractClientPlayer + ")V", at = @At("HEAD") )
+    @Inject(method = "renderRightArm(Lnet/minecraft/client/entity/AbstractClientPlayer;)V", at = @At("HEAD") )
     private void onRenderRightArm(AbstractClientPlayer player, CallbackInfo ci) {
         updateModel(player);
         bindEntityTexture(player);
     }
 
-    @Inject(method = "renderLeftArm(" + AbstractClientPlayer + ")V", at = @At("HEAD") )
+    @Inject(method = "renderLeftArm(Lnet/minecraft/client/entity/AbstractClientPlayer;)V", at = @At("HEAD") )
     private void onRenderLeftArm(AbstractClientPlayer player, CallbackInfo ci) {
         updateModel(player);
         bindEntityTexture(player);

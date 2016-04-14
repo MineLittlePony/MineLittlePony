@@ -6,6 +6,10 @@ buildscript {
 			url 'http://files.minecraftforge.net/maven'
 		}
 		maven {
+			name 'm2'
+			url 'https://plugins.gradle.org/m2'
+		}
+		maven {
 			name = 'sponge'
 			url = 'http://repo.spongepowered.org/maven'
 		}
@@ -13,6 +17,7 @@ buildscript {
 	dependencies {
 		classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
 		classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
+		classpath 'gradle.plugin.mnm.mods.kappa:ap-ide:1.0.5'
 	}
 }
 
@@ -20,6 +25,7 @@ ext.revision = 213
 
 apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'mnm.gradle.ap-ide'
 
 group = 'com.brohoof.minelp'
 version = '1.8.9.2'
@@ -56,12 +62,12 @@ sourceSets {
 	//tweakClass = 'com.brohoof.minelittlepony.launch.MineLPTweaker'
 //}
 processResources {
-    def props = [
-        version:    version,
-        mcversion:  minecraft.version,
-        revision:   revision
-    ]
-    inputs.properties props
+	def props = [
+		version:	version,
+		mcversion:  minecraft.version,
+		revision:   revision
+	]
+	inputs.properties props
 	from(sourceSets.main.resources.srcDirs) {
 		include 'litemod.json'
 		expand props
@@ -71,11 +77,18 @@ processResources {
 	}
 }
 
+dependencies {
+	factory 'org.spongepowered:mixin:0.5.3-SNAPSHOT'
+}
+processor {
+	options.reobfSrgFile = project.tasks.genSrgs.mcpToSrg.path
+}
+
 jar {
 	from sourceSets.findAll { it.name != 'api' }*.output
 }
 mixin {
-    defaultObfuscationEnv notch
+	defaultObfuscationEnv notch
 }
 task deploy(type: Copy, dependsOn: build) {
 	from jar.archivePath
