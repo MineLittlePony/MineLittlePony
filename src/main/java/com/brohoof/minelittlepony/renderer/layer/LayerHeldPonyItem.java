@@ -7,8 +7,11 @@ import org.lwjgl.opengl.GL14;
 
 import com.brohoof.minelittlepony.PonyData;
 import com.brohoof.minelittlepony.ducks.IRenderPony;
+import com.brohoof.minelittlepony.model.AbstractPonyModel;
+import com.brohoof.minelittlepony.model.BodyPart;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.model.pony.ModelHumanPlayer;
+import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
@@ -50,6 +53,7 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
 
         if (left != null || right != null) {
             pushMatrix();
+            pony.getModel().transform(BodyPart.LEGS);
             if (this.livingPonyEntity.getMainModel().isChild) {
                 translate(0, 0.625, 0);
                 rotate(-20, -1, 0, 0);
@@ -66,8 +70,15 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
     private void renderHeldItem(EntityLivingBase entity, ItemStack drop, ItemCameraTransforms.TransformType transform, EnumHandSide hand) {
         if (drop != null) {
             GlStateManager.pushMatrix();
-            ((ModelBiped) this.livingPonyEntity.getMainModel()).postRenderArm(0.0625F, hand);
-
+            AbstractPonyModel thePony = ((IRenderPony) this.livingPonyEntity).getPony().getModel();
+            PonyData metadata = thePony.metadata;
+            boolean isUnicorn = metadata.getRace().hasHorn();
+            if (isUnicorn) {
+                ModelPlayerPony playerModel = (ModelPlayerPony) thePony;
+                playerModel.unicornarm.postRender(0.0625F);
+            } else {
+                ((ModelBiped) this.livingPonyEntity.getMainModel()).postRenderArm(0.0625F, hand);
+            }
             if (entity.isSneaking()) {
                 GlStateManager.translate(0.0F, 0.2F, 0.0F);
             }
@@ -75,18 +86,26 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
             GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
             GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
             boolean isLeft = hand == EnumHandSide.LEFT;
-            GlStateManager.translate(isLeft ? -0.0625F : 0.0625F, 0.125F, -0.625F);
-            Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, drop, transform, isLeft);
-            GlStateManager.popMatrix();
-
-            PonyData metadata = ((IRenderPony) this.livingPonyEntity).getPony().getModel().metadata;
-            if (metadata.getRace().hasHorn() && metadata.getGlowColor() != 0) {
-                this.renderItemGlow(entity, drop, transform, hand, metadata.getGlowColor());
+            if (isUnicorn) {
+                GlStateManager.translate(isLeft ? -0.1F : 0.1F, 1, -.5);
+            } else {
+                GlStateManager.translate(isLeft ? -0.0625F : 0.0625F, 0.125F, -1.00F);
             }
+            Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, drop, transform, isLeft);
+
+            if (isUnicorn && metadata.getGlowColor() != 0) {
+                this.renderItemGlow(entity, drop.copy(), transform, hand, metadata.getGlowColor());
+            }
+            GlStateManager.popMatrix();
         }
     }
 
     public void renderItemGlow(EntityLivingBase entity, ItemStack drop, ItemCameraTransforms.TransformType transform, EnumHandSide hand, int glowColor) {
+
+        // enchantments mess up the rendering
+        if (drop.hasEffect())
+            drop.setTagInfo("ench", null);
+
         GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT);
 
         float red = (glowColor >> 16 & 255) / 255.0F;
@@ -99,9 +118,9 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
         GL14.glBlendColor(red, green, blue, alpha);
         IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(drop, null, null);
 
-        scale(2, 2, 2);
+        ItemCameraTransforms itemcameratransforms = model.getItemCameraTransforms();
+        ItemCameraTransforms.applyTransformSide(itemcameratransforms.getTransform(transform), hand == EnumHandSide.LEFT);
 
-        model.getItemCameraTransforms().applyTransform(transform);
         RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
         scale(1.1, 1.1, 1.1);
 
