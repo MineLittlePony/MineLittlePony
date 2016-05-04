@@ -1,8 +1,6 @@
 package com.brohoof.minelittlepony.model;
 
-import static net.minecraft.client.renderer.GlStateManager.rotate;
-import static net.minecraft.client.renderer.GlStateManager.scale;
-import static net.minecraft.client.renderer.GlStateManager.translate;
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 import java.util.List;
 import java.util.Random;
@@ -24,7 +22,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.math.MathHelper;
 
 public abstract class AbstractPonyModel extends ModelPlayer {
 
@@ -88,18 +87,6 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     }
 
     @Override
-    public void renderRightArm() {
-        this.steveRightArm.render(0.0625F);
-        this.steveRightArmwear.render(0.0625F);
-    }
-
-    @Override
-    public void renderLeftArm() {
-        this.steveLeftArm.render(0.0625f);
-        this.steveLeftArmwear.render(0.0625f);
-    }
-
-    @Override
     public void setRotationAngles(float Move, float Moveswing, float Loop, float Right, float Down, float Scale, Entity entityIn) {
         if (doCancelRender()) {
             super.setRotationAngles(Move, Moveswing, Loop, Right, Down, Scale, entityIn);
@@ -128,7 +115,6 @@ public abstract class AbstractPonyModel extends ModelPlayer {
             modelplayer.bipedHead.showModel = true;
             modelplayer.bipedHeadwear.showModel = true;
         } else {
-            ItemStack itemstack = clientPlayer.inventory.getCurrentItem();
             modelplayer.setInvisible(true);
             modelplayer.bipedHeadwear.showModel = clientPlayer.isWearing(EnumPlayerModelParts.HAT);
             modelplayer.bipedBodyWear.showModel = clientPlayer.isWearing(EnumPlayerModelParts.JACKET);
@@ -136,24 +122,48 @@ public abstract class AbstractPonyModel extends ModelPlayer {
             modelplayer.bipedRightLegwear.showModel = clientPlayer.isWearing(EnumPlayerModelParts.RIGHT_PANTS_LEG);
             modelplayer.bipedLeftArmwear.showModel = clientPlayer.isWearing(EnumPlayerModelParts.LEFT_SLEEVE);
             modelplayer.bipedRightArmwear.showModel = clientPlayer.isWearing(EnumPlayerModelParts.RIGHT_SLEEVE);
-            modelplayer.heldItemLeft = 0;
-            modelplayer.aimedBow = false;
             modelplayer.isSneak = clientPlayer.isSneaking();
 
-            if (itemstack == null) {
-                modelplayer.heldItemRight = 0;
+            ItemStack main = clientPlayer.getHeldItemMainhand();
+            ArmPose mainPose;
+            if (main == null) {
+                mainPose = ArmPose.EMPTY;
             } else {
-                modelplayer.heldItemRight = 1;
+                mainPose = ArmPose.ITEM;
 
                 if (clientPlayer.getItemInUseCount() > 0) {
-                    EnumAction enumaction = itemstack.getItemUseAction();
+                    EnumAction enumaction = main.getItemUseAction();
 
                     if (enumaction == EnumAction.BLOCK) {
-                        modelplayer.heldItemRight = 3;
+                        mainPose = ArmPose.BLOCK;
                     } else if (enumaction == EnumAction.BOW) {
-                        modelplayer.aimedBow = true;
+                        mainPose = ArmPose.BOW_AND_ARROW;
                     }
                 }
+            }
+
+            ItemStack off = clientPlayer.getHeldItemMainhand();
+            ArmPose offPose;
+            if (off == null) {
+                offPose = ArmPose.EMPTY;
+            } else {
+                offPose = ArmPose.ITEM;
+
+                if (clientPlayer.getItemInUseCount() > 0) {
+                    EnumAction enumaction = off.getItemUseAction();
+
+                    if (enumaction == EnumAction.BLOCK) {
+                        offPose = ArmPose.BLOCK;
+                    }
+                }
+            }
+
+            if (clientPlayer.getPrimaryHand() == EnumHandSide.RIGHT) {
+                modelplayer.rightArmPose = mainPose;
+                modelplayer.leftArmPose = offPose;
+            } else {
+                modelplayer.leftArmPose = mainPose;
+                modelplayer.rightArmPose = offPose;
             }
         }
     }

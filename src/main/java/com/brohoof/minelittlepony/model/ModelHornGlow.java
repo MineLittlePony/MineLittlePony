@@ -5,7 +5,7 @@ import com.brohoof.minelittlepony.renderer.HornGlowRenderer;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.PositionTextureVertex;
 import net.minecraft.client.model.TexturedQuad;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 
 public class ModelHornGlow extends ModelBox {
 
@@ -75,10 +75,10 @@ public class ModelHornGlow extends ModelBox {
     }
 
     @Override
-    public void render(WorldRenderer renderer, float par2) {
+    public void render(VertexBuffer buffer, float par2) {
         TexturedQuad[] var3 = this.quadList;
         for (TexturedQuad var6 : var3) {
-            var6.draw(renderer, par2);
+            var6.draw(buffer, par2);
         }
 
     }

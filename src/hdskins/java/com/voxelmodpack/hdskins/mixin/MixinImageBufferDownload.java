@@ -19,12 +19,14 @@ import net.minecraft.client.renderer.ImageBufferDownload;
 @Mixin(ImageBufferDownload.class)
 public abstract class MixinImageBufferDownload implements IImageBuffer {
 
-    @Inject(method = "parseUserSkin",
+    @Inject(
+            method = "parseUserSkin",
             locals = LocalCapture.CAPTURE_FAILSOFT,
-            at = @At(value = "INVOKE",
+            at = @At(
+                    value = "INVOKE",
                     shift = Shift.BEFORE,
                     target = "Ljava/awt/Graphics;dispose()V",
-                    remap = false) )
+                    remap = false))
     private void update(BufferedImage image, CallbackInfo ci, BufferedImage image2, Graphics graphics) {
         // convert skins from mojang server
         if (image.getHeight() == 32) {

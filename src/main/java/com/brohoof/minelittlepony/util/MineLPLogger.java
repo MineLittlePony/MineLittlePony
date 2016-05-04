@@ -1,9 +1,10 @@
 package com.brohoof.minelittlepony.util;
 
-import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 
 public class MineLPLogger {
    private static Logger logger = LogManager.getLogger("MineLittlePony");

@@ -5,37 +5,30 @@ import static net.minecraft.client.renderer.GlStateManager.*;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
-import com.brohoof.minelittlepony.PonySize;
+import com.brohoof.minelittlepony.PonyData;
 import com.brohoof.minelittlepony.ducks.IRenderPony;
-import com.brohoof.minelittlepony.model.BodyPart;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.model.pony.ModelHumanPlayer;
-import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RendererLivingEntity;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHandSide;
 
 public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
 
-    private final RendererLivingEntity<? extends EntityLivingBase> livingPonyEntity;
+    private final RenderLivingBase<? extends EntityLivingBase> livingPonyEntity;
     private LayerHeldItem held;
 
-    public LayerHeldPonyItem(RendererLivingEntity<? extends EntityLivingBase> livingPony) {
+    public LayerHeldPonyItem(RenderLivingBase<? extends EntityLivingBase> livingPony) {
         this.livingPonyEntity = livingPony;
         this.held = new LayerHeldItem(livingPony);
     }
@@ -49,57 +42,51 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
                     p_177141_7_, scale);
             return;
         }
-        if (!pony.getModel().isSleeping) {
-            if (pony.getModel().metadata.getRace().hasHorn() && pony.getModel().metadata.getGlowColor() != 0) {
-                ModelPlayerPony model = (ModelPlayerPony) pony.getModel();
-                if (pony.getModel().aimedBow) {
-                    renderDrop(pony, entity, model.unicornarm, 1.0F, 0.15F, 0.9375F, 0.0625F);
-                } else if (pony.getModel().metadata.getSize() == PonySize.FOAL) {
-                    renderDrop(pony, entity, model.unicornarm, 1.0F, 0.35F, 0.5375F, -0.8F);
-                } else {
-                    renderDrop(pony, entity, model.unicornarm, 1.0F, 0.35F, 0.5375F, -0.45F);
-                }
-            } else if (pony.getModel().metadata.getSize() == PonySize.FOAL) {
-                renderDrop(pony, entity, pony.getModel().bipedRightArm, 1.0F, 0.08F, 0.8375F, 0.0625F);
-            } else {
-                renderDrop(pony, entity, pony.getModel().bipedRightArm, 1.0F, -0.0625F, 0.8375F, 0.0625F);
-            }
-        }
-    }
+        boolean mainRight = entity.getPrimaryHand() == EnumHandSide.RIGHT;
+        ItemStack itemMain = entity.getHeldItemMainhand();
+        ItemStack itemOff = entity.getHeldItemOffhand();
+        ItemStack left = mainRight ? itemOff : itemMain;
+        ItemStack right = mainRight ? itemMain : itemOff;
 
-    protected void renderDrop(PlayerModel pony, EntityLivingBase entity, ModelRenderer box, float scalefactor,
-            float posx, float posy, float posz) {
-        ItemStack drop = entity.getHeldItem();
-        if (drop != null) {
+        if (left != null || right != null) {
             pushMatrix();
-            pony.getModel().transform(BodyPart.LEGS);
-            box.postRender(scalefactor * 0.0625F);
-
-            translate(posx, posy, posz);
-            if (entity instanceof EntityPlayer && ((EntityPlayer) entity).fishEntity != null) {
-                drop = new ItemStack(Items.stick);
+            if (this.livingPonyEntity.getMainModel().isChild) {
+                translate(0, 0.625, 0);
+                rotate(-20, -1, 0, 0);
+                scale(.5, .5, .5);
             }
 
-            Item item = drop.getItem();
-            if (item instanceof ItemBlock && ((ItemBlock) item).getBlock().getRenderType() == 2) {
-                translate(0.0F, 0.1875F, -0.3125F);
-                rotate(20.0F, 1.0F, 0.0F, 0.0F);
-                rotate(45.0F, 0.0F, 1.0F, 0.0F);
-                float f8 = 0.375F;
-                scale(-f8, -f8, f8);
-            }
-
-            Minecraft.getMinecraft().getItemRenderer().renderItem(entity, drop, TransformType.THIRD_PERSON);
-
-            if (pony.getModel().metadata.getRace().hasHorn() && pony.getModel().metadata.getGlowColor() != 0) {
-                this.renderItemGlow(entity, drop, pony.getModel().metadata.getGlowColor());
-            }
+            renderHeldItem(entity, right, ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, EnumHandSide.RIGHT);
+            renderHeldItem(entity, left, ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, EnumHandSide.LEFT);
 
             popMatrix();
         }
     }
 
-    public void renderItemGlow(EntityLivingBase entity, ItemStack drop, int glowColor) {
+    private void renderHeldItem(EntityLivingBase entity, ItemStack drop, ItemCameraTransforms.TransformType transform, EnumHandSide hand) {
+        if (drop != null) {
+            GlStateManager.pushMatrix();
+            ((ModelBiped) this.livingPonyEntity.getMainModel()).postRenderArm(0.0625F, hand);
+
+            if (entity.isSneaking()) {
+                GlStateManager.translate(0.0F, 0.2F, 0.0F);
+            }
+
+            GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
+            GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+            boolean isLeft = hand == EnumHandSide.LEFT;
+            GlStateManager.translate(isLeft ? -0.0625F : 0.0625F, 0.125F, -0.625F);
+            Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, drop, transform, isLeft);
+            GlStateManager.popMatrix();
+
+            PonyData metadata = ((IRenderPony) this.livingPonyEntity).getPony().getModel().metadata;
+            if (metadata.getRace().hasHorn() && metadata.getGlowColor() != 0) {
+                this.renderItemGlow(entity, drop, transform, hand, metadata.getGlowColor());
+            }
+        }
+    }
+
+    public void renderItemGlow(EntityLivingBase entity, ItemStack drop, ItemCameraTransforms.TransformType transform, EnumHandSide hand, int glowColor) {
         GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT);
 
         float red = (glowColor >> 16 & 255) / 255.0F;
@@ -110,11 +97,11 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
         enableBlend();
         blendFunc(GL11.GL_CONSTANT_COLOR, 1);
         GL14.glBlendColor(red, green, blue, alpha);
-        IBakedModel model = getItemModel(Minecraft.getMinecraft().getRenderItem(), entity, drop);
+        IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(drop, null, null);
 
         scale(2, 2, 2);
 
-        applyTransform(model.getItemCameraTransforms(), TransformType.THIRD_PERSON);
+        model.getItemCameraTransforms().applyTransform(transform);
         RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
         scale(1.1, 1.1, 1.1);
 
@@ -134,39 +121,5 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
     @Override
     public boolean shouldCombineTextures() {
         return false;
-    }
-
-    // Copied from RenderItem.renderItemModelForEntity
-    private IBakedModel getItemModel(RenderItem renderer, Entity entityToRenderFor, ItemStack stack) {
-        IBakedModel ibakedmodel = renderer.getItemModelMesher().getItemModel(stack);
-
-        if (entityToRenderFor instanceof EntityPlayer) {
-            EntityPlayer entityplayer = (EntityPlayer) entityToRenderFor;
-            Item item = stack.getItem();
-            ModelResourceLocation modelresourcelocation = null;
-
-            if (item == Items.fishing_rod && entityplayer.fishEntity != null) {
-                modelresourcelocation = new ModelResourceLocation("fishing_rod_cast", "inventory");
-            } else if (item == Items.bow && entityplayer.getItemInUse() != null) {
-                int i = stack.getMaxItemUseDuration() - entityplayer.getItemInUseCount();
-
-                if (i >= 18) {
-                    modelresourcelocation = new ModelResourceLocation("bow_pulling_2", "inventory");
-                } else if (i > 13) {
-                    modelresourcelocation = new ModelResourceLocation("bow_pulling_1", "inventory");
-                } else if (i > 0) {
-                    modelresourcelocation = new ModelResourceLocation("bow_pulling_0", "inventory");
-                }
-            }
-
-            if (modelresourcelocation != null) {
-                ibakedmodel = renderer.getItemModelMesher().getModelManager().getModel(modelresourcelocation);
-            }
-        }
-        return ibakedmodel;
-    }
-
-    private void applyTransform(ItemCameraTransforms camera, TransformType type) {
-        camera.applyTransform(type);
     }
 }

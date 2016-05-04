@@ -1,8 +1,6 @@
 package com.brohoof.minelittlepony.model.pony.armor;
 
-import com.brohoof.minelittlepony.model.pony.armor.ModelPonyArmor;
-
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 public class ModelSkeletonPonyArmor extends ModelPonyArmor {
 
@@ -60,7 +58,7 @@ public class ModelSkeletonPonyArmor extends ModelPonyArmor {
         this.steveRightArm.rotateAngleZ = 0.0F;
         this.unicornarm.rotateAngleZ = 0.0F;
         this.bipedLeftArm.rotateAngleZ = 0.0F;
-        if (this.heldItemRight != 0) {
+        if (this.rightArmPose != ArmPose.EMPTY) {
             var8 = MathHelper.sin(this.swingProgress * 3.1415927F);
             var9 = MathHelper.sin((1.0F - (1.0F - this.swingProgress) * (1.0F - this.swingProgress)) * 3.1415927F);
             if (this.metadata.getGlowColor() == 0) {
@@ -85,7 +83,7 @@ public class ModelSkeletonPonyArmor extends ModelPonyArmor {
 
     @Override
     protected void fixSpecialRotationPoints(float move) {
-        if (this.heldItemRight != 0 && this.metadata.getGlowColor() == 0) {
+        if (this.rightArmPose != ArmPose.EMPTY && this.metadata.getGlowColor() == 0) {
             setRotationPoint(this.bipedRightArm, -1.5F, 9.5F, 4.0F);
         }
 

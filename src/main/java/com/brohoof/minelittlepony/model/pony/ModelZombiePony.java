@@ -1,8 +1,6 @@
 package com.brohoof.minelittlepony.model.pony;
 
-import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
-
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 public class ModelZombiePony extends ModelPlayerPony {
 
@@ -69,7 +67,7 @@ public class ModelZombiePony extends ModelPlayerPony {
         this.steveRightArm.rotateAngleZ = 0.0F;
         this.unicornarm.rotateAngleZ = 0.0F;
         this.bipedLeftArm.rotateAngleZ = 0.0F;
-        if (this.heldItemRight == 0) {
+        if (this.rightArmPose == ArmPose.EMPTY) {
             var8 = MathHelper.sin(this.swingProgress * (float) Math.PI);
             var9 = MathHelper.sin((1.0F - (1.0F - this.swingProgress) * (1.0F - this.swingProgress)) * (float) Math.PI);
             if (MathHelper.sin(move / 20.0F) < 0.0F) {
@@ -93,7 +91,7 @@ public class ModelZombiePony extends ModelPlayerPony {
 
     @Override
     protected void fixSpecialRotationPoints(float move) {
-        if (this.heldItemRight == 0) {
+        if (this.rightArmPose == ArmPose.EMPTY) {
             if (MathHelper.sin(move / 20.0F) < 0.0F) {
                 shiftRotationPoint(this.bipedRightArm, 0.5F, 1.5F, 3.0F);
             } else {

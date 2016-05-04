@@ -1,9 +1,6 @@
 package com.voxelmodpack.hdskins.gui;
 
-import static net.minecraft.client.renderer.GlStateManager.popAttrib;
-import static net.minecraft.client.renderer.GlStateManager.popMatrix;
-import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
-import static net.minecraft.client.renderer.GlStateManager.scale;
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 import org.lwjgl.opengl.GL11;
 

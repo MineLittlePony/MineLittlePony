@@ -1,11 +1,6 @@
 package com.brohoof.minelittlepony.renderer.layer;
 
-import static net.minecraft.client.renderer.GlStateManager.color;
-import static net.minecraft.client.renderer.GlStateManager.popMatrix;
-import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
-import static net.minecraft.client.renderer.GlStateManager.rotate;
-import static net.minecraft.client.renderer.GlStateManager.scale;
-import static net.minecraft.client.renderer.GlStateManager.translate;
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 import com.brohoof.minelittlepony.ducks.IRenderPony;
 import com.brohoof.minelittlepony.model.AbstractPonyModel;
@@ -16,13 +11,14 @@ import com.mojang.authlib.GameProfile;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.entity.RendererLivingEntity;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -33,16 +29,16 @@ import net.minecraft.util.EnumFacing;
 
 public class LayerPonySkull implements LayerRenderer<EntityLivingBase> {
 
-    private RendererLivingEntity<? extends EntityLivingBase> renderer;
+    private RenderLivingBase<? extends EntityLivingBase> renderer;
 
-    public LayerPonySkull(RendererLivingEntity<? extends EntityLivingBase> renderPony) {
+    public LayerPonySkull(RenderLivingBase<? extends EntityLivingBase> renderPony) {
         this.renderer = renderPony;
     }
 
     @Override
-    public void doRenderLayer(EntityLivingBase entity, float p_177141_2_, float p_177141_3_,
+    public void doRenderLayer(EntityLivingBase entity, float limbSwing, float p_177141_3_,
             float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
-        ItemStack itemstack = entity.getCurrentArmor(3);
+        ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
         if (itemstack != null && itemstack.getItem() != null) {
             AbstractPonyModel model = getModel().getModel();
             Item item = itemstack.getItem();
@@ -59,11 +55,11 @@ public class LayerPonySkull implements LayerRenderer<EntityLivingBase> {
             color(1, 1, 1, 1);
             if (item instanceof ItemBlock) {
                 renderBlock(entity, itemstack);
-            } else if (item == Items.skull) {
+            } else if (item == Items.SKULL) {
                 if (model instanceof ModelPlayerPony) {
                     translate(0, 0, -.15);
                 }
-                renderSkull(itemstack, isVillager);
+                renderSkull(itemstack, isVillager, limbSwing);
             }
             popMatrix();
         }
@@ -79,7 +75,7 @@ public class LayerPonySkull implements LayerRenderer<EntityLivingBase> {
         Minecraft.getMinecraft().getItemRenderer().renderItem(entity, itemstack, TransformType.HEAD);
     }
 
-    private void renderSkull(ItemStack itemstack, boolean isVillager) {
+    private void renderSkull(ItemStack itemstack, boolean isVillager, float limbSwing) {
         float f = 1.1875f;
         scale(f, -f, -f);
         if (isVillager) {
@@ -99,8 +95,7 @@ public class LayerPonySkull implements LayerRenderer<EntityLivingBase> {
             }
         }
 
-        TileEntitySkullRenderer.instance.renderSkull(-0.5F, 0.0F, -0.45F, EnumFacing.UP, 180.0F,
-                itemstack.getMetadata(), profile, -1);
+        TileEntitySkullRenderer.instance.renderSkull(-0.5F, 0.0F, -0.45F, EnumFacing.UP, 180.0F, itemstack.getMetadata(), profile, -1, limbSwing);
 
     }
 

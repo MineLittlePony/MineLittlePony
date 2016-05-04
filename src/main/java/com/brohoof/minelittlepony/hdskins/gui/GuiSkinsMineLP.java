@@ -3,7 +3,6 @@ package com.brohoof.minelittlepony.hdskins.gui;
 import java.awt.image.BufferedImage;
 
 import com.brohoof.minelittlepony.PonyManager;
-import com.brohoof.minelittlepony.hdskins.gui.EntityPonyModel;
 import com.brohoof.minelittlepony.util.MineLPLogger;
 import com.mojang.authlib.GameProfile;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;

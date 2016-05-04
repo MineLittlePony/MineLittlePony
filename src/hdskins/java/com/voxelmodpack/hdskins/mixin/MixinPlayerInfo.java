@@ -27,9 +27,10 @@ public abstract class MixinPlayerInfo {
     @Shadow
     public String skinType;
 
-    @Inject(method = "hasLocationSkin",
+    @Inject(
+            method = "hasLocationSkin",
             cancellable = true,
-            at = @At("RETURN") )
+            at = @At("RETURN"))
     private void hasLocationSkin(CallbackInfoReturnable<Boolean> ci) {
         if (locationSkin == null) {
             // in case has no skin
@@ -38,9 +39,10 @@ public abstract class MixinPlayerInfo {
         }
     }
 
-    @Inject(method = "getLocationSkin",
+    @Inject(
+            method = "getLocationSkin",
             cancellable = true,
-            at = @At("RETURN") )
+            at = @At("RETURN"))
     private void getLocationSkin(CallbackInfoReturnable<ResourceLocation> ci) {
         Optional<ResourceLocation> skin = HDSkinManager.INSTANCE.getSkinLocation(gameProfile, Type.SKIN, true);
         if (skin.isPresent()) {
@@ -49,9 +51,10 @@ public abstract class MixinPlayerInfo {
         }
     }
 
-    @Inject(method = "getLocationCape",
+    @Inject(
+            method = "getLocationCape",
             cancellable = true,
-            at = @At("RETURN") )
+            at = @At("RETURN"))
     private void getLocationCape(CallbackInfoReturnable<ResourceLocation> ci) {
         Optional<ResourceLocation> cape = HDSkinManager.INSTANCE.getSkinLocation(gameProfile, Type.CAPE, true);
         if (cape.isPresent()) {
@@ -60,9 +63,10 @@ public abstract class MixinPlayerInfo {
         }
     }
 
-    @Inject(method = "getSkinType",
+    @Inject(
+            method = "getSkinType",
             cancellable = true,
-            at = @At("RETURN") )
+            at = @At("RETURN"))
     private void getSkinType(CallbackInfoReturnable<String> ci) {
         MinecraftProfileTexture data = HDSkinManager.INSTANCE.getProfileData(gameProfile).get(Type.SKIN);
         if (data != null) {

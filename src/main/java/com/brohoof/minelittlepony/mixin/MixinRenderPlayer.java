@@ -2,10 +2,12 @@ package com.brohoof.minelittlepony.mixin;
 
 import static net.minecraft.client.renderer.GlStateManager.scale;
 
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.brohoof.minelittlepony.MineLittlePony;
@@ -21,17 +23,16 @@ import com.brohoof.minelittlepony.renderer.layer.LayerPonyCape;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonySkull;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.entity.layers.LayerArrow;
-import net.minecraft.item.EnumAction;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 @Mixin(RenderPlayer.class)
-public abstract class MixinRenderPlayer extends RendererLivingEntity<AbstractClientPlayer> implements IRenderPony {
+public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientPlayer> implements IRenderPony {
 
     @Shadow
     private boolean smallArms;
@@ -44,7 +45,7 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity<AbstractCli
 
     @Inject(
             method = "<init>(" + "Lnet/minecraft/client/renderer/entity/RenderManager;" + "Z)V",
-            at = @At("RETURN") )
+            at = @At("RETURN"))
     private void init(RenderManager renderManager, boolean useSmallArms, CallbackInfo ci) {
         this.playerModel = smallArms ? PMAPI.ponySmall : PMAPI.pony;
         this.mainModel = this.playerModel.getModel();
@@ -58,29 +59,14 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity<AbstractCli
         this.addLayer(new LayerPonyCape(this));
     }
 
-    /**
-     * @reason render a pony instead of a human
-     * @author JoyJoy
-     */
-    @Override
-    public void doRender(AbstractClientPlayer player, double x, double y, double z, float yaw, float partialTicks) {
+    @Inject(
+            method = "doRender(Lnet/minecraft/client/entity/AbstractClientPlayer;DDDFF)V",
+            at = @At("HEAD"))
+    private void onDoRender(AbstractClientPlayer player, double x, double y, double z, float yaw, float partialTicks, CallbackInfo ci) {
         updateModel(player);
-        ItemStack currentItemStack = player.inventory.getCurrentItem();
-
-        this.playerModel.getModel().heldItemRight = currentItemStack == null ? 0 : 1;
-
-        if (currentItemStack != null && player.getItemInUseCount() > 0) {
-            EnumAction action = currentItemStack.getItemUseAction();
-            if (action == EnumAction.BLOCK) {
-                this.playerModel.getModel().heldItemRight = 3;
-            } else if (action == EnumAction.BOW) {
-                this.playerModel.getModel().aimedBow = true;
-            }
-        }
 
         this.playerModel.getModel().isSneak = player.isSneaking();
         this.playerModel.getModel().isFlying = thePony.isPegasusFlying(player);
-        this.playerModel.getModel().isRiding = player.isRiding();
 
         if (MineLittlePony.getConfig().showscale) {
             if (this.playerModel.getModel().metadata.getRace() != null) {
@@ -100,22 +86,11 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity<AbstractCli
             this.shadowSize = 0.5F;
         }
 
-        double yOrigin1 = y;
-        if (player.isSneaking() && !(player instanceof EntityPlayerSP)) {
-            yOrigin1 -= 0.125D;
-        }
-
-        this.playerModel.getModel().isSleeping = player.isPlayerSleeping();
-        this.playerModel.getModel().swingProgress = getSwingProgress(player, partialTicks);
-
-        super.doRender(player, x, yOrigin1, z, yaw, partialTicks);
-
-        this.playerModel.getModel().aimedBow = false;
-        this.playerModel.getModel().isSneak = false;
-        this.playerModel.getModel().heldItemRight = 0;
     }
 
-    @Inject(method = "renderLivingAt", at = @At("RETURN") )
+    @Inject(
+            method = "renderLivingAt",
+            at = @At("RETURN"))
     private void setupPlayerScale(AbstractClientPlayer player, double xPosition, double yPosition, double zPosition, CallbackInfo ci) {
 
         if (MineLittlePony.getConfig().showscale && !(playerModel.getModel() instanceof ModelHumanPlayer)) {
@@ -127,16 +102,64 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity<AbstractCli
         }
     }
 
-    @Inject(method = "renderRightArm(Lnet/minecraft/client/entity/AbstractClientPlayer;)V", at = @At("HEAD") )
+    @Inject(
+            method = "renderRightArm(Lnet/minecraft/client/entity/AbstractClientPlayer;)V",
+            at = @At("HEAD"))
     private void onRenderRightArm(AbstractClientPlayer player, CallbackInfo ci) {
         updateModel(player);
         bindEntityTexture(player);
     }
 
-    @Inject(method = "renderLeftArm(Lnet/minecraft/client/entity/AbstractClientPlayer;)V", at = @At("HEAD") )
+    @Inject(
+            method = "renderLeftArm(Lnet/minecraft/client/entity/AbstractClientPlayer;)V",
+            at = @At("HEAD"))
     private void onRenderLeftArm(AbstractClientPlayer player, CallbackInfo ci) {
         updateModel(player);
         bindEntityTexture(player);
+    }
+
+    @Redirect(
+            method = "renderLeftArm(Lnet/minecraft/client/entity/AbstractClientPlayer;)V",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/client/model/ModelPlayer;bipedLeftArm:Lnet/minecraft/client/model/ModelRenderer;",
+                    opcode = Opcodes.GETFIELD),
+            require = 2)
+    private ModelRenderer redirectLeftArm(ModelPlayer mr) {
+        return this.playerModel.getModel().steveLeftArm;
+    }
+
+    @Redirect(
+            method = "renderLeftArm(Lnet/minecraft/client/entity/AbstractClientPlayer;)V",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/client/model/ModelPlayer;bipedLeftArmwear:Lnet/minecraft/client/model/ModelRenderer;",
+                    opcode = Opcodes.GETFIELD),
+            require = 2)
+    private ModelRenderer redirectLeftArmwear(ModelPlayer mr) {
+        return this.playerModel.getModel().steveLeftArmwear;
+    }
+
+    @Redirect(
+            method = "renderRightArm(Lnet/minecraft/client/entity/AbstractClientPlayer;)V",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/client/model/ModelPlayer;bipedRightArm:Lnet/minecraft/client/model/ModelRenderer;",
+                    opcode = Opcodes.GETFIELD),
+            require = 2)
+    private ModelRenderer redirectRightArm(ModelPlayer mr) {
+        return this.playerModel.getModel().steveRightArm;
+    }
+
+    @Redirect(
+            method = "renderRightArm(Lnet/minecraft/client/entity/AbstractClientPlayer;)V",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/client/model/ModelPlayer;bipedRightArmwear:Lnet/minecraft/client/model/ModelRenderer;",
+                    opcode = Opcodes.GETFIELD),
+            require = 2)
+    private ModelRenderer redirectRightArmwear(ModelPlayer mr) {
+        return this.playerModel.getModel().steveRightArmwear;
     }
 
     private void updateModel(AbstractClientPlayer player) {

@@ -6,7 +6,7 @@ import com.brohoof.minelittlepony.model.BodyPart;
 import com.brohoof.minelittlepony.model.PonyModelConstants;
 
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 public class PegasusWings implements IPonyPart, PonyModelConstants {
 

@@ -1,7 +1,6 @@
 package com.brohoof.minelittlepony.model.pony;
 
-import static net.minecraft.client.renderer.GlStateManager.popMatrix;
-import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 import com.brohoof.minelittlepony.model.AbstractPonyModel;
 import com.brohoof.minelittlepony.model.BodyPart;
@@ -14,7 +13,7 @@ import com.brohoof.minelittlepony.renderer.PlaneRenderer;
 
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConstants {
 
@@ -141,9 +140,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             this.ponySleep();
         }
 
-        if (this.aimedBow) {
-            this.aimBow(tick);
-        }
+        this.aimBow(leftArmPose, rightArmPose, tick);
 
         this.fixSpecialRotations();
         this.fixSpecialRotationPoints(move);
@@ -321,11 +318,16 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     }
 
     protected void holdItem() {
-        if (this.heldItemRight != 0 && !this.rainboom && (!this.metadata.getRace().hasHorn() || this.metadata.getGlowColor() == 0)) {
-            this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - 0.3141593F;
-            this.steveRightArm.rotateAngleX = this.steveRightArm.rotateAngleX * 0.5F - 0.3141593F;
+        if (!this.rainboom && (!this.metadata.getRace().hasHorn() || this.metadata.getGlowColor() != 0)) {
+            if (this.rightArmPose != ArmPose.EMPTY) {
+                this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - (float) Math.PI / 10F;
+                this.steveRightArm.rotateAngleX = this.steveRightArm.rotateAngleX * 0.5F - (float) Math.PI / 10F;
+            }
+            if (this.leftArmPose != ArmPose.EMPTY) {
+                this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.05F - (float) Math.PI / 10F;
+                this.steveLeftArm.rotateAngleX = this.steveLeftArm.rotateAngleX * 0.05F - (float) Math.PI / 10F;
+            }
         }
-
     }
 
     protected void swingItem(float swingProgress) {
@@ -336,7 +338,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             float f22 = MathHelper.sin(f16 * 3.1415927F);
             float f28 = MathHelper.sin(swingProgress * 3.1415927F);
             float f33 = f28 * -(this.bipedHead.rotateAngleX - 0.7F) * 0.75F;
-            if (this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0 && this.heldItemRight != 0) {
+            if (this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0 && this.rightArmPose != ArmPose.EMPTY) {
                 this.unicornarm.rotateAngleX = (float) (this.unicornarm.rotateAngleX - (f22 * 1.2D + f33));
                 this.unicornarm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
                 this.unicornarm.rotateAngleZ = f28 * -0.4F;
@@ -353,7 +355,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     }
 
     protected void swingArms(float tick) {
-        if (this.heldItemRight != 0 && !this.isSleeping) {
+        if (this.rightArmPose != ArmPose.EMPTY && !this.isSleeping) {
             float cosTickFactor = MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
             float sinTickFactor = MathHelper.sin(tick * 0.067F) * 0.05F;
             if (this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0) {
@@ -445,29 +447,45 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         shiftRotationPoint(this.bipedLeftLeg, 0.0F, 2.0F, -8.0F);
     }
 
-    protected void aimBow(float tick) {
-        if (this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0) {
-            this.aimBowUnicorn(tick);
-        } else {
-            this.aimBowPony(tick);
-        }
+    protected void aimBow(ArmPose leftArm, ArmPose rightArm, float tick) {
+        if (leftArm == ArmPose.BOW_AND_ARROW || rightArm == ArmPose.BOW_AND_ARROW) {
 
+            if (this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0) {
+                this.aimBowUnicorn(tick);
+            } else {
+                this.aimBowPony(leftArm, rightArm, tick);
+            }
+        }
     }
 
-    protected void aimBowPony(float tick) {
-        this.bipedRightArm.rotateAngleZ = 0.0F;
-        this.bipedRightArm.rotateAngleY = -0.06F + this.bipedHead.rotateAngleY;
-        this.bipedRightArm.rotateAngleX = ROTATE_270 + this.bipedHead.rotateAngleX;
-        this.bipedRightArm.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
-        this.bipedRightArm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.05F;
-        shiftRotationPoint(this.bipedRightArm, 0.0F, 0.0F, 1.0F);
+    protected void aimBowPony(ArmPose leftArm, ArmPose rightArm, float tick) {
+        // TODO test left arm
+        if (rightArm == ArmPose.BOW_AND_ARROW) {
+            this.bipedRightArm.rotateAngleZ = 0.0F;
+            this.bipedRightArm.rotateAngleY = -0.06F + this.bipedHead.rotateAngleY;
+            this.bipedRightArm.rotateAngleX = ROTATE_270 + this.bipedHead.rotateAngleX;
+            this.bipedRightArm.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
+            this.bipedRightArm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.05F;
+            shiftRotationPoint(this.bipedRightArm, 0.0F, 0.0F, 1.0F);
+        } else if (leftArm == ArmPose.BOW_AND_ARROW) {
+            this.bipedLeftArm.rotateAngleZ = 0.0F;
+            this.bipedLeftArm.rotateAngleY = -0.06F + this.bipedHead.rotateAngleY;
+            this.bipedLeftArm.rotateAngleX = ROTATE_270 + this.bipedHead.rotateAngleX;
+            this.bipedLeftArm.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
+            this.bipedLeftArm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.05F;
+            shiftRotationPoint(this.bipedLeftArm, 0.0F, 0.0F, 1.0F);
+        }
 
-        this.bipedRightArmwear.rotateAngleZ = 0.0F;
-        this.bipedRightArmwear.rotateAngleY = -0.06F + this.bipedHead.rotateAngleY;
-        this.bipedRightArmwear.rotateAngleX = ROTATE_270 + this.bipedHead.rotateAngleX;
-        this.bipedRightArmwear.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
-        this.bipedRightArmwear.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.05F;
-        shiftRotationPoint(this.bipedRightArmwear, 0.0F, 0.0F, 1.0F);
+        // this.bipedRightArmwear.rotateAngleZ = 0.0F;
+        // this.bipedRightArmwear.rotateAngleY = -0.06F +
+        // this.bipedHead.rotateAngleY;
+        // this.bipedRightArmwear.rotateAngleX = ROTATE_270 +
+        // this.bipedHead.rotateAngleX;
+        // this.bipedRightArmwear.rotateAngleZ += MathHelper.cos(tick * 0.09F) *
+        // 0.05F + 0.05F;
+        // this.bipedRightArmwear.rotateAngleX += MathHelper.sin(tick * 0.067F)
+        // * 0.05F;
+        // shiftRotationPoint(this.bipedRightArmwear, 0.0F, 0.0F, 1.0F);
     }
 
     protected void aimBowUnicorn(float tick) {

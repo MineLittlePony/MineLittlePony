@@ -1,10 +1,6 @@
 package com.brohoof.minelittlepony.renderer;
 
-import static net.minecraft.client.renderer.GlStateManager.callList;
-import static net.minecraft.client.renderer.GlStateManager.popMatrix;
-import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
-import static net.minecraft.client.renderer.GlStateManager.rotate;
-import static net.minecraft.client.renderer.GlStateManager.translate;
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 import org.lwjgl.opengl.GL11;
 
@@ -14,7 +10,7 @@ import net.minecraft.client.model.PositionTextureVertex;
 import net.minecraft.client.model.TexturedQuad;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 
 public class PlaneRenderer extends ModelRenderer {
     public float textureWidth;
@@ -390,7 +386,7 @@ public class PlaneRenderer extends ModelRenderer {
     private void compileDisplayList(float f) {
         this.displayList = GLAllocation.generateDisplayLists(1);
         GL11.glNewList(this.displayList, 4864);
-        WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
+        VertexBuffer wr = Tessellator.getInstance().getBuffer();
 
         for (TexturedQuad face : this.faces) {
             face.draw(wr, f);

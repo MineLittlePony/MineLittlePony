@@ -1,9 +1,6 @@
 package com.brohoof.minelittlepony.renderer.layer;
 
-import static net.minecraft.client.renderer.GlStateManager.popMatrix;
-import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
-import static net.minecraft.client.renderer.GlStateManager.rotate;
-import static net.minecraft.client.renderer.GlStateManager.translate;
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 import com.brohoof.minelittlepony.ducks.IRenderPony;
 import com.brohoof.minelittlepony.model.BodyPart;
@@ -11,19 +8,19 @@ import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.model.pony.ModelHumanPlayer;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.entity.layers.LayerCape;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 public class LayerPonyCape implements LayerRenderer<AbstractClientPlayer> {
 
-    private RendererLivingEntity<? extends AbstractClientPlayer> renderer;
+    private RenderLivingBase<? extends AbstractClientPlayer> renderer;
     private LayerCape cape;
 
-    public LayerPonyCape(RendererLivingEntity<? extends AbstractClientPlayer> entity) {
+    public LayerPonyCape(RenderLivingBase<? extends AbstractClientPlayer> entity) {
         renderer = entity;
         this.cape = new LayerCape((RenderPlayer) entity);
     }

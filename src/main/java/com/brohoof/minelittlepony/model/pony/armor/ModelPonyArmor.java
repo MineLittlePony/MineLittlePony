@@ -4,7 +4,7 @@ import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 public class ModelPonyArmor extends ModelPlayerPony {
 
@@ -80,9 +80,7 @@ public class ModelPonyArmor extends ModelPlayerPony {
             this.ponySleep();
         }
 
-        if (this.aimedBow) {
-            this.aimBow(tick);
-        }
+        this.aimBow(leftArmPose, rightArmPose, tick);
 
         // this.fixSpecialRotationPoints(aniparams.move);
     }

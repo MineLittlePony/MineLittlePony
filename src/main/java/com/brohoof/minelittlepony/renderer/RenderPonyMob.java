@@ -11,6 +11,7 @@ import com.brohoof.minelittlepony.renderer.layer.LayerHeldPonyItem;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonyArmor;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonySkull;
 
+import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLiving;
@@ -40,16 +41,13 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
             yOrigin -= 0.125D;
         }
         super.doRender(entity, xPosition, yOrigin, zPosition, yaw, partialTicks);
-        this.playerModel.getModel().aimedBow = false;
-        this.playerModel.getModel().isSneak = false;
-        this.playerModel.getModel().heldItemRight = 0;
     }
 
     @Override
     protected void preRenderCallback(T entitylivingbaseIn, float partialTickTime) {
 
-        ItemStack heldItem = entitylivingbaseIn.getHeldItem();
-        this.playerModel.getModel().heldItemRight = heldItem == null ? 0 : 1;
+        ItemStack heldItem = entitylivingbaseIn.getHeldItemMainhand();
+        this.playerModel.getModel().rightArmPose = heldItem == null ? ArmPose.EMPTY : ArmPose.ITEM;
 
         this.playerModel.getModel().isSneak = false;
         this.playerModel.getModel().isFlying = false;

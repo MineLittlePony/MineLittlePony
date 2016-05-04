@@ -1,11 +1,8 @@
 package com.brohoof.minelittlepony.model.pony;
 
-import static net.minecraft.client.renderer.GlStateManager.popMatrix;
-import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
-import static net.minecraft.client.renderer.GlStateManager.scale;
-import static net.minecraft.client.renderer.GlStateManager.translate;
+import static net.minecraft.client.renderer.GlStateManager.*;
 
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 public class ModelSkeletonPony extends ModelPlayerPony {
 
@@ -15,6 +12,10 @@ public class ModelSkeletonPony extends ModelPlayerPony {
 
     @Override
     protected void rotateLegs(float move, float swing, float tick) {
+        if (true){
+            super.rotateLegs(move, swing, tick);
+            return;
+        }
         float rightArmRotateAngleX;
         float leftArmRotateAngleX;
         float rightLegRotateAngleX;
@@ -71,7 +72,7 @@ public class ModelSkeletonPony extends ModelPlayerPony {
         this.steveRightArm.rotateAngleZ = 0.0F;
         this.unicornarm.rotateAngleZ = 0.0F;
         this.bipedLeftArm.rotateAngleZ = 0.0F;
-        if (this.heldItemRight != 0) {
+        if (this.rightArmPose != ArmPose.EMPTY) {
             var8 = MathHelper.sin(this.swingProgress * 3.1415927F);
             var9 = MathHelper.sin((1.0F - (1.0F - this.swingProgress) * (1.0F - this.swingProgress)) * 3.1415927F);
             if (this.metadata.getGlowColor() == 0) {
@@ -98,7 +99,7 @@ public class ModelSkeletonPony extends ModelPlayerPony {
 
     @Override
     protected void fixSpecialRotationPoints(float move) {
-        if (this.heldItemRight != 0 && this.metadata.getGlowColor() == 0) {
+        if (this.rightArmPose != ArmPose.EMPTY && this.metadata.getGlowColor() == 0) {
             setRotationPoint(this.bipedRightArm, -1.5F, 9.5F, 4.0F);
         }
 
@@ -107,13 +108,19 @@ public class ModelSkeletonPony extends ModelPlayerPony {
     @Override
     protected void renderLegs() {
         pushMatrix();
-        translate(0.05F, -0.21F, -0.0F);
-        scale(0.5F, 1.15F, 0.5F);
+        if (this.leftArmPose != ArmPose.EMPTY && this.metadata.getRace().hasHorn()) {
+            translate(0.1F, 0.3F, -0.1F);
+            scale(0.5F, 0.5F, 1.2F);
+        } else {
+            translate(0.05F, -0.21F, -0.0F);
+            scale(0.5F, 1.15F, 0.5F);
+        }
+
         this.bipedLeftArm.render(this.scale);
         popMatrix();
 
         pushMatrix();
-        if (this.heldItemRight != 0 && this.metadata.getGlowColor() == 0) {
+        if (this.rightArmPose != ArmPose.EMPTY && this.metadata.getRace().hasHorn()) {
             translate(-0.1F, 0.3F, 0.1F);
             scale(0.5F, 0.5F, 1.2F);
         } else {

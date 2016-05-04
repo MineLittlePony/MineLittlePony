@@ -1,31 +1,6 @@
 package com.voxelmodpack.hdskins.gui;
 
-import static net.minecraft.client.renderer.GlStateManager.blendFunc;
-import static net.minecraft.client.renderer.GlStateManager.color;
-import static net.minecraft.client.renderer.GlStateManager.colorMask;
-import static net.minecraft.client.renderer.GlStateManager.depthMask;
-import static net.minecraft.client.renderer.GlStateManager.disableAlpha;
-import static net.minecraft.client.renderer.GlStateManager.disableBlend;
-import static net.minecraft.client.renderer.GlStateManager.disableColorMaterial;
-import static net.minecraft.client.renderer.GlStateManager.disableCull;
-import static net.minecraft.client.renderer.GlStateManager.disableDepth;
-import static net.minecraft.client.renderer.GlStateManager.disableFog;
-import static net.minecraft.client.renderer.GlStateManager.disableTexture2D;
-import static net.minecraft.client.renderer.GlStateManager.enableAlpha;
-import static net.minecraft.client.renderer.GlStateManager.enableBlend;
-import static net.minecraft.client.renderer.GlStateManager.enableColorMaterial;
-import static net.minecraft.client.renderer.GlStateManager.enableCull;
-import static net.minecraft.client.renderer.GlStateManager.enableDepth;
-import static net.minecraft.client.renderer.GlStateManager.enableTexture2D;
-import static net.minecraft.client.renderer.GlStateManager.loadIdentity;
-import static net.minecraft.client.renderer.GlStateManager.matrixMode;
-import static net.minecraft.client.renderer.GlStateManager.popAttrib;
-import static net.minecraft.client.renderer.GlStateManager.popMatrix;
-import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
-import static net.minecraft.client.renderer.GlStateManager.rotate;
-import static net.minecraft.client.renderer.GlStateManager.scale;
-import static net.minecraft.client.renderer.GlStateManager.translate;
-import static net.minecraft.client.renderer.GlStateManager.viewport;
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 import java.awt.Color;
 import java.awt.Window.Type;
@@ -75,15 +50,15 @@ import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Session;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 
 public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpenFileCallback, IPanoramaRenderer {
     private static final int MAX_SKIN_DIMENSION = 8192;
@@ -446,7 +421,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         byte blendIterations = 8;
         Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer wr = tessellator.getWorldRenderer();
+        VertexBuffer vb = tessellator.getBuffer();
 
         for (int blendPass = 0; blendPass < blendIterations * blendIterations; ++blendPass) {
             pushMatrix();
@@ -481,11 +456,11 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
 
                 this.mc.getTextureManager().bindTexture(cubemapTextures[cubeSide]);
 //                wr.setColorRGBA_I(0xffffff, 255 / (blendPass + 1));
-                wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-                wr.pos(-1.0D, -1.0D, 1.0D).tex(0.0D, 0.0D).endVertex();
-                wr.pos(1.0D, -1.0D, 1.0D).tex(1.0D, 0.0D).endVertex();
-                wr.pos(1.0D, 1.0D, 1.0D).tex(1.0D, 1.0D).endVertex();
-                wr.pos(-1.0D, 1.0D, 1.0D).tex(0.0D,  1.0D).endVertex();
+                vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+                vb.pos(-1.0D, -1.0D, 1.0D).tex(0.0D, 0.0D).endVertex();
+                vb.pos(1.0D, -1.0D, 1.0D).tex(1.0D, 0.0D).endVertex();
+                vb.pos(1.0D, 1.0D, 1.0D).tex(1.0D, 1.0D).endVertex();
+                vb.pos(-1.0D, 1.0D, 1.0D).tex(0.0D,  1.0D).endVertex();
                 tessellator.draw();
                 popMatrix();
             }
@@ -494,7 +469,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
             colorMask(true, true, true, false);
         }
 
-        wr.setTranslation(0.0D, 0.0D, 0.0D);
+        vb.setTranslation(0.0D, 0.0D, 0.0D);
         colorMask(true, true, true, true);
         depthMask(true);
         enableCull();
@@ -510,17 +485,16 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         colorMask(true, true, true, false);
         Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer wr = tessellator.getWorldRenderer();
-        wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        VertexBuffer vb = tessellator.getBuffer();
+        vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         byte blurPasses = 4;
 
         for (int blurPass = 0; blurPass < blurPasses; ++blurPass) {
-//            wr.setColorRGBA_F(1.0F, 1.0F, 1.0F, 1.0F / (blurPass + 1));
             float var7 = (blurPass - blurPasses / 2) / 256.0F;
-            wr.pos(this.width, this.height, this.zLevel).tex(0.0F + var7, 0.0D).endVertex();
-            wr.pos(this.width, 0.0D, this.zLevel).tex(1.0F + var7, 0.0D).endVertex();
-            wr.pos(0.0D, 0.0D, this.zLevel).tex(1.0F + var7, 1.0D).endVertex();
-            wr.pos(0.0D, this.height, this.zLevel).tex(0.0F + var7, 1.0D).endVertex();
+            vb.pos(this.width, this.height, this.zLevel).tex(0.0F + var7, 0.0D).endVertex();
+            vb.pos(this.width, 0.0D, this.zLevel).tex(1.0F + var7, 0.0D).endVertex();
+            vb.pos(0.0D, 0.0D, this.zLevel).tex(1.0F + var7, 1.0D).endVertex();
+            vb.pos(0.0D, this.height, this.zLevel).tex(0.0F + var7, 1.0D).endVertex();
         }
 
         tessellator.draw();
@@ -541,18 +515,18 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
 
         viewport(0, 0, this.mc.displayWidth, this.mc.displayHeight);
         Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer wr = tessellator.getWorldRenderer();
-        wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        VertexBuffer vb = tessellator.getBuffer();
+        vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         float aspect = this.width > this.height ? 120.0F / this.width : 120.0F / this.height;
         float uSample = this.height * aspect / 256.0F;
         float vSample = this.width * aspect / 256.0F;
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
        // wr.setColorRGBA_F(1.0F, 1.0F, 1.0F, 1.0F);
-        wr.pos(0.0D, this.height, this.zLevel).tex(0.5F - uSample, 0.5F + vSample).endVertex();
-        wr.pos(this.width, this.height, this.zLevel).tex(0.5F - uSample, 0.5F - vSample).endVertex();
-        wr.pos(this.width, 0.0D, this.zLevel).tex(0.5F + uSample, 0.5F - vSample).endVertex();
-        wr.pos(0.0D, 0.0D, this.zLevel).tex(0.5F + uSample, 0.5F + vSample).endVertex();
+        vb.pos(0.0D, this.height, this.zLevel).tex(0.5F - uSample, 0.5F + vSample).endVertex();
+        vb.pos(this.width, this.height, this.zLevel).tex(0.5F - uSample, 0.5F - vSample).endVertex();
+        vb.pos(this.width, 0.0D, this.zLevel).tex(0.5F + uSample, 0.5F - vSample).endVertex();
+        vb.pos(0.0D, 0.0D, this.zLevel).tex(0.5F + uSample, 0.5F + vSample).endVertex();
         tessellator.draw();
         return true;
     }
@@ -618,7 +592,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         if (this.fetchingSkin) {
             String opacity1;
             if (this.throttledByMojang) {
-                opacity1 = EnumChatFormatting.RED + mojang;
+                opacity1 = TextFormatting.RED + mojang;
                 String stringWidth = wait;
                 int stringWidth1 = this.fontRendererObj.getStringWidth(opacity1) / 2;
                 int stringWidth2 = this.fontRendererObj.getStringWidth(stringWidth) / 2;
@@ -684,7 +658,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
 
         RenderManager rm = Minecraft.getMinecraft().getRenderManager();
         rm.playerViewY = 180.0F;
-        rm.renderEntityWithPosYaw(thePlayer, 0.0D, 0.0D, 0.0D, 1.0F, 1.0F);
+        rm.renderEntityStatic(thePlayer, 0, false);
 
         popMatrix();
         RenderHelper.disableStandardItemLighting();

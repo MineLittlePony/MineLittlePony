@@ -9,6 +9,7 @@ import com.brohoof.minelittlepony.model.AbstractPonyModel;
 import com.brohoof.minelittlepony.model.PonyModelConstants;
 import com.brohoof.minelittlepony.renderer.HornGlowRenderer;
 
+import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.client.model.ModelRenderer;
 
 public class UnicornHorn extends AbstractHeadPart implements PonyModelConstants {
@@ -41,7 +42,7 @@ public class UnicornHorn extends AbstractHeadPart implements PonyModelConstants 
         super.render(data, scale);
         if (data.getRace() != null && data.getRace().hasHorn()) {
             this.horn.render(scale);
-            if (pony.heldItemRight != 0 && data.getGlowColor() != 0) {
+            if ((pony.leftArmPose != ArmPose.EMPTY || pony.rightArmPose != ArmPose.EMPTY) && data.getGlowColor() != 0) {
                 GL11.glPushAttrib(24577);
                 disableTexture2D();
                 disableLighting();

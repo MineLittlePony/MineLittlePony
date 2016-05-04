@@ -2,7 +2,7 @@ package com.brohoof.minelittlepony.model.pony;
 
 import com.brohoof.minelittlepony.renderer.PlaneRenderer;
 
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 public class ModelVillagerPony extends ModelPlayerPony {
 
