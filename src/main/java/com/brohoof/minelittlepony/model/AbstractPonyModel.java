@@ -62,7 +62,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
 
     protected void initPositions(float yOffset, float stretch) {}
 
-    protected void animate(float move, float swing, float tick, float horz, float vert) {}
+    protected void animate(float move, float swing, float tick, float horz, float vert, Entity entityIn) {}
 
     protected void render() {}
 
@@ -92,7 +92,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
             super.setRotationAngles(Move, Moveswing, Loop, Right, Down, Scale, entityIn);
             return;
         }
-        this.animate(Move, Moveswing, Loop, Right, Down);
+        this.animate(Move, Moveswing, Loop, Right, Down, entityIn);
         for (IPonyPart part : modelParts) {
             part.animate(metadata, Move, Moveswing, Loop, Right, Down);
         }
@@ -142,7 +142,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
                 }
             }
 
-            ItemStack off = clientPlayer.getHeldItemMainhand();
+            ItemStack off = clientPlayer.getHeldItemOffhand();
             ArmPose offPose;
             if (off == null) {
                 offPose = ArmPose.EMPTY;
@@ -170,6 +170,11 @@ public abstract class AbstractPonyModel extends ModelPlayer {
 
     protected boolean doCancelRender() {
         return false;
+    }
+
+    protected ArmPose getMainArmPose(Entity entity) {
+        EnumHandSide mainHand = this.getMainHand(entity);
+        return mainHand == EnumHandSide.RIGHT ? this.rightArmPose : this.leftArmPose;
     }
 
     public static void setRotationPoint(ModelRenderer aRenderer, float setX, float setY, float setZ) {

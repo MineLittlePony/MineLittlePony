@@ -89,7 +89,7 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
             if (isUnicorn) {
                 GlStateManager.translate(isLeft ? -0.1F : 0.1F, 1, -.5);
             } else {
-                GlStateManager.translate(isLeft ? -0.0625F : 0.0625F, 0.125F, -1.00F);
+                GlStateManager.translate(0.0425F, 0.125F, -1.00F);
             }
             Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, drop, transform, isLeft);
 

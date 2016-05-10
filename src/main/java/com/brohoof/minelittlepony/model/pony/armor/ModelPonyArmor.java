@@ -4,6 +4,7 @@ import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
 public class ModelPonyArmor extends ModelPlayerPony {
@@ -24,8 +25,8 @@ public class ModelPonyArmor extends ModelPlayerPony {
     }
 
     @Override
-    public void animate(float move, float swing, float tick, float horz, float vert) {
-        this.checkRainboom(swing);
+    public void animate(float move, float swing, float tick, float horz, float vert, Entity entity) {
+        this.checkRainboom(entity, swing);
         this.rotateHead(horz, vert);
         float bodySwingRotation = 0.0F;
         if (this.swingProgress > -9990.0F && (!this.metadata.getRace().hasHorn() || this.metadata.getGlowColor() == 0)) {
@@ -42,7 +43,7 @@ public class ModelPonyArmor extends ModelPlayerPony {
         this.extHead[1].offsetZ = 0f;
         this.setLegs(move, swing, tick);
         this.holdItem();
-        this.swingItem(this.swingProgress);
+        this.swingItem(entity, this.swingProgress);
         if (this.isSneak && !this.isFlying) {
             this.adjustBody(BODY_ROTATE_ANGLE_X_SNEAK, BODY_RP_Y_SNEAK, BODY_RP_Z_SNEAK);
             this.sneakLegs();
@@ -71,7 +72,7 @@ public class ModelPonyArmor extends ModelPlayerPony {
 
             this.bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
             this.bipedLeftLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
-            this.swingArms(tick);
+            this.swingArms(entity, tick);
             this.setHead(0.0F, 0.0F, 0.0F);
 
         }

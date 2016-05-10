@@ -17,14 +17,17 @@ import com.brohoof.minelittlepony.ducks.IRenderPony;
 import com.brohoof.minelittlepony.model.PMAPI;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.model.pony.ModelHumanPlayer;
+import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
 import com.brohoof.minelittlepony.renderer.layer.LayerHeldPonyItem;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonyArmor;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonyCape;
+import com.brohoof.minelittlepony.renderer.layer.LayerPonyElytra;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonySkull;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -55,8 +58,9 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
         this.addLayer(new LayerPonyArmor(this));
         this.addLayer(new LayerHeldPonyItem(this));
         this.addLayer(new LayerArrow(this));
-        this.addLayer(new LayerPonySkull(this));
         this.addLayer(new LayerPonyCape(this));
+        this.addLayer(new LayerPonySkull(this));
+        this.addLayer(new LayerPonyElytra((RenderPlayer) (Object) this));
     }
 
     @Inject(
@@ -160,6 +164,18 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
             require = 2)
     private ModelRenderer redirectRightArmwear(ModelPlayer mr) {
         return this.playerModel.getModel().steveRightArmwear;
+    }
+
+    @Redirect(
+            method = "rotateCorpse(Lnet/minecraft/client/entity/AbstractClientPlayer;FFF)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/renderer/GlStateManager;rotate(FFFF)V",
+                    ordinal = 3))
+    private void rotateRedirect(float f1, float f2, float f3, float f4) {
+        if (this.playerModel.getModel() instanceof ModelPlayerPony)
+            f1 += 90;
+        GlStateManager.rotate(f1, f2, f3, f4);
     }
 
     private void updateModel(AbstractClientPlayer player) {

@@ -13,6 +13,9 @@ import com.brohoof.minelittlepony.renderer.PlaneRenderer;
 
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 
 public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConstants {
@@ -41,8 +44,8 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     }
 
     @Override
-    public void animate(float move, float swing, float tick, float horz, float vert) {
-        this.checkRainboom(swing);
+    public void animate(float move, float swing, float tick, float horz, float vert, Entity entity) {
+        this.checkRainboom(entity, swing);
         this.rotateHead(horz, vert);
         this.swingTailZ(move, swing);
         float bodySwingRotation = 0.0F;
@@ -76,7 +79,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.bipedHeadwear.offsetZ = 0f;
         this.setLegs(move, swing, tick);
         this.holdItem();
-        this.swingItem(this.swingProgress);
+        this.swingItem(entity, this.swingProgress);
         if (this.isSneak && !this.isFlying) {
             this.adjustBody(BODY_ROTATE_ANGLE_X_SNEAK, BODY_RP_Y_SNEAK, BODY_RP_Z_SNEAK);
             this.sneakLegs();
@@ -111,7 +114,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
             this.bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
             this.bipedLeftLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
-            this.swingArms(tick);
+            this.swingArms(entity, tick);
             this.setHead(0.0F, 0.0F, 0.0F);
 
             for (k1 = 0; k1 < tailstop; ++k1) {
@@ -158,8 +161,12 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         copyModelAngles(bipedBody, bipedBodyWear);
     }
 
-    protected void checkRainboom(float swing) {
+    protected void checkRainboom(Entity entity, float swing) {
         this.rainboom = this.metadata.getRace() != null && this.metadata.getRace().hasWings() && this.isFlying && swing >= 0.9999F;
+
+        if (entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isElytraFlying()) {
+            this.rainboom = true;
+        }
     }
 
     protected void setHead(float posX, float posY, float posZ) {
@@ -317,20 +324,40 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
     }
 
+    @SuppressWarnings("incomplete-switch")
     protected void holdItem() {
         if (!this.rainboom && (!this.metadata.getRace().hasHorn() || this.metadata.getGlowColor() != 0)) {
-            if (this.rightArmPose != ArmPose.EMPTY) {
-                this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - (float) Math.PI / 10F;
-                this.steveRightArm.rotateAngleX = this.steveRightArm.rotateAngleX * 0.5F - (float) Math.PI / 10F;
+
+            switch (this.leftArmPose) {
+            case EMPTY:
+                this.bipedLeftArm.rotateAngleY = 0.0F;
+                break;
+            case BLOCK:
+                this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.5F - 0.9424779F;
+                this.bipedLeftArm.rotateAngleY = 0.5235988F;
+                break;
+            case ITEM:
+                this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.5F - ((float) Math.PI / 10F);
+                this.bipedLeftArm.rotateAngleY = 0.0F;
             }
-            if (this.leftArmPose != ArmPose.EMPTY) {
-                this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.05F - (float) Math.PI / 10F;
-                this.steveLeftArm.rotateAngleX = this.steveLeftArm.rotateAngleX * 0.05F - (float) Math.PI / 10F;
+
+            switch (this.rightArmPose) {
+            case EMPTY:
+                this.bipedRightArm.rotateAngleY = 0.0F;
+                break;
+            case BLOCK:
+                this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - 0.9424779F;
+                this.bipedRightArm.rotateAngleY = -0.5235988F;
+                break;
+            case ITEM:
+                this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - ((float) Math.PI / 10F);
+                this.bipedRightArm.rotateAngleY = 0.0F;
             }
+
         }
     }
 
-    protected void swingItem(float swingProgress) {
+    protected void swingItem(Entity entity, float swingProgress) {
         if (swingProgress > -9990.0F && !this.isSleeping) {
             float f16 = 1.0F - swingProgress;
             f16 *= f16 * f16;
@@ -338,23 +365,29 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             float f22 = MathHelper.sin(f16 * 3.1415927F);
             float f28 = MathHelper.sin(swingProgress * 3.1415927F);
             float f33 = f28 * -(this.bipedHead.rotateAngleX - 0.7F) * 0.75F;
-            if (this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0 && this.rightArmPose != ArmPose.EMPTY) {
+            EnumHandSide mainSide = this.getMainHand(entity);
+            boolean mainRight = mainSide == EnumHandSide.RIGHT;
+            ArmPose mainPose = mainRight ? this.rightArmPose : this.leftArmPose;
+            if (this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0 && mainPose != ArmPose.EMPTY) {
                 this.unicornarm.rotateAngleX = (float) (this.unicornarm.rotateAngleX - (f22 * 1.2D + f33));
                 this.unicornarm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
                 this.unicornarm.rotateAngleZ = f28 * -0.4F;
             } else {
-                this.bipedRightArm.rotateAngleX = (float) (this.bipedRightArm.rotateAngleX - (f22 * 1.2D + f33));
-                this.bipedRightArm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
-                this.bipedRightArm.rotateAngleZ = f28 * -0.4F;
-                this.steveRightArm.rotateAngleX = (float) (this.steveRightArm.rotateAngleX - (f22 * 1.2D + f33));
-                this.steveRightArm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
-                this.steveRightArm.rotateAngleZ = f28 * -0.4F;
+                ModelRenderer bipedArm = this.getArmForSide(mainSide);
+                ModelRenderer steveArm = mainRight ? this.steveRightArm : this.steveLeftArm;
+                bipedArm.rotateAngleX = (float) (bipedArm.rotateAngleX - (f22 * 1.2D + f33));
+                bipedArm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
+                bipedArm.rotateAngleZ = f28 * -0.4F;
+                steveArm.rotateAngleX = (float) (steveArm.rotateAngleX - (f22 * 1.2D + f33));
+                steveArm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
+                steveArm.rotateAngleZ = f28 * -0.4F;
             }
         }
 
     }
 
-    protected void swingArms(float tick) {
+    protected void swingArms(Entity entity, float tick) {
+
         if (this.rightArmPose != ArmPose.EMPTY && !this.isSleeping) {
             float cosTickFactor = MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
             float sinTickFactor = MathHelper.sin(tick * 0.067F) * 0.05F;
@@ -459,7 +492,6 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     }
 
     protected void aimBowPony(ArmPose leftArm, ArmPose rightArm, float tick) {
-        // TODO test left arm
         if (rightArm == ArmPose.BOW_AND_ARROW) {
             this.bipedRightArm.rotateAngleZ = 0.0F;
             this.bipedRightArm.rotateAngleY = -0.06F + this.bipedHead.rotateAngleY;
@@ -475,17 +507,6 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             this.bipedLeftArm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.05F;
             shiftRotationPoint(this.bipedLeftArm, 0.0F, 0.0F, 1.0F);
         }
-
-        // this.bipedRightArmwear.rotateAngleZ = 0.0F;
-        // this.bipedRightArmwear.rotateAngleY = -0.06F +
-        // this.bipedHead.rotateAngleY;
-        // this.bipedRightArmwear.rotateAngleX = ROTATE_270 +
-        // this.bipedHead.rotateAngleX;
-        // this.bipedRightArmwear.rotateAngleZ += MathHelper.cos(tick * 0.09F) *
-        // 0.05F + 0.05F;
-        // this.bipedRightArmwear.rotateAngleX += MathHelper.sin(tick * 0.067F)
-        // * 0.05F;
-        // shiftRotationPoint(this.bipedRightArmwear, 0.0F, 0.0F, 1.0F);
     }
 
     protected void aimBowUnicorn(float tick) {

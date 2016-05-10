@@ -12,10 +12,7 @@ public class ModelSkeletonPony extends ModelPlayerPony {
 
     @Override
     protected void rotateLegs(float move, float swing, float tick) {
-        if (true){
-            super.rotateLegs(move, swing, tick);
-            return;
-        }
+
         float rightArmRotateAngleX;
         float leftArmRotateAngleX;
         float rightLegRotateAngleX;

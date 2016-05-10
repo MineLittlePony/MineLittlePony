@@ -99,7 +99,7 @@ public class Pony {
         if (this.metadata.getRace() == null || !this.metadata.getRace().hasWings()) {
             return false;
         }
-        return player.capabilities.isFlying || !(player.onGround || player.isRiding() || player.isOnLadder() || player.isInWater());
+        return player.capabilities.isFlying || !(player.onGround || player.isRiding() || player.isOnLadder() || player.isInWater() || player.isElytraFlying());
     }
 
     public PlayerModel getModel(boolean ignorePony, boolean smallArms) {
