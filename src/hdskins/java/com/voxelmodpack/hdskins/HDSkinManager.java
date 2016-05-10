@@ -18,6 +18,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.InsecureTextureException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -27,6 +28,8 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.util.UUIDTypeAdapter;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
+import com.mumfrey.webprefs.WebPreferencesManager;
+import com.mumfrey.webprefs.interfaces.IWebPreferences;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IImageBuffer;
@@ -36,7 +39,6 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StringUtils;
 
 public final class HDSkinManager {
 
@@ -50,6 +52,8 @@ public final class HDSkinManager {
     private Map<UUID, Map<Type, MinecraftProfileTexture>> profileTextures = Maps.newHashMap();
     private Map<UUID, Map<Type, ResourceLocation>> skinCache = Maps.newHashMap();
     private List<ISkinModifier> skinModifiers = Lists.newArrayList();
+
+    private WebPreferencesManager webprefs = WebPreferencesManager.getDefault();
 
     private HDSkinManager() {}
 
@@ -103,6 +107,7 @@ public final class HDSkinManager {
             if (texture == null) {
                 return;
             }
+
             String dir = type.toString().toLowerCase() + "s/";
             final ResourceLocation skin = new ResourceLocation(dir + texture.getHash());
             File file1 = new File(new File("assets/" + dir), texture.getHash().substring(0, 2));
@@ -135,14 +140,18 @@ public final class HDSkinManager {
         Map<Type, MinecraftProfileTexture> textures = this.profileTextures.get(profile.getId());
         if (textures == null) {
 
+            IWebPreferences prefs = this.webprefs.getPreferences(profile);
+            Map<String, String> metadata = new Gson().fromJson(prefs.get("hdskins.metadata"), new TypeToken<Map<String, String>>() {}.getType());
             String uuid = UUIDTypeAdapter.fromUUID(profile.getId());
-            String skinUrl = getCustomSkinURLForId(uuid, false);
-            String capeUrl = getCustomCloakURLForId(uuid);
+            String skinUrl = getCustomTextureURLForId(Type.SKIN, uuid, false);
+            String capeUrl = getCustomTextureURLForId(Type.CAPE, uuid);
+            String elytraUrl = getCustomTextureURLForId(Type.ELYTRA, uuid);
 
             // TODO metadata (needs server support)
             textures = ImmutableMap.of(
-                    Type.SKIN, new MinecraftProfileTexture(skinUrl, null),
-                    Type.CAPE, new MinecraftProfileTexture(capeUrl, null));
+                    Type.SKIN, new MinecraftProfileTexture(skinUrl, metadata),
+                    Type.CAPE, new MinecraftProfileTexture(capeUrl, null),
+                    Type.ELYTRA, new MinecraftProfileTexture(elytraUrl, null));
             this.profileTextures.put(profile.getId(), textures);
         }
         return textures;
@@ -184,13 +193,14 @@ public final class HDSkinManager {
         return String.format("http://%s/", gatewayUrl);
     }
 
-    public String getCustomSkinURLForId(String uuid, boolean gateway) {
-        uuid = StringUtils.stripControlCodes(uuid);
-        return String.format("http://%s/skins/%s.png", gateway ? gatewayUrl : skinUrl, uuid);
+    public String getCustomTextureURLForId(Type type, String uuid, boolean gateway) {
+        String server = gateway ? gatewayUrl : skinUrl;
+        String path = type.toString().toLowerCase() + "s";
+        return String.format("http://%s/%s/%s.png", server, path, uuid);
     }
 
-    public String getCustomCloakURLForId(String uuid) {
-        return String.format("http://%s/capes/%s.png", skinUrl, StringUtils.stripControlCodes(uuid));
+    public String getCustomTextureURLForId(Type type, String uuid) {
+        return getCustomTextureURLForId(type, uuid, false);
     }
 
     public void setEnabled(boolean enabled) {
@@ -203,7 +213,7 @@ public final class HDSkinManager {
         Map<Type, MinecraftProfileTexture> textures = getTexturesForProfile(profile);
         MinecraftProfileTexture skin = textures.get(Type.SKIN);
         if (skin != null) {
-            String url = INSTANCE.getCustomSkinURLForId(UUIDTypeAdapter.fromUUID(profile.getId()), true);
+            String url = INSTANCE.getCustomTextureURLForId(Type.SKIN, UUIDTypeAdapter.fromUUID(profile.getId()), true);
             skinTexture = new PreviewTexture(url, DefaultPlayerSkin.getDefaultSkin(profile.getId()), new ImageBufferDownloadHD());
             textureManager.loadTexture(skinResource, skinTexture);
         }
