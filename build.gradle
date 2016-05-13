@@ -21,14 +21,14 @@ buildscript {
 	}
 }
 
-ext.revision = 213
+ext.revision = 213.1
 
 apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'mnm.gradle.ap-ide'
 
 group = 'com.brohoof.minelp'
-version = '1.8.9.2'
+version = '1.8.9.3'
 description = 'Mine Little Pony turns players and mobs into ponies'
 
 minecraft {
