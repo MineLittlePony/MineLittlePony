@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.ImageBufferDownloadHD;
@@ -15,11 +16,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class EntityPlayerModel extends EntityLiving {
+public class EntityPlayerModel extends EntityLivingBase {
     public static final ResourceLocation NOSKIN = new ResourceLocation("hdskins", "textures/mob/noskin.png");
     private PreviewTexture remoteSkinTexture;
     private ResourceLocation remoteSkinResource;
@@ -127,4 +131,30 @@ public class EntityPlayerModel extends EntityLiving {
 
         this.swingProgress = this.swingProgressInt / 8.0F;
     }
+
+    @Override
+    public EnumHandSide getPrimaryHand() {
+        return Minecraft.getMinecraft().gameSettings.mainHand;
+    }
+
+    @Override
+    public int getBrightnessForRender(float partialTicks) {
+        return 1;
+    }
+
+    @Override
+    public Iterable<ItemStack> getArmorInventoryList() {
+        return Iterables.cycle(null, null, null, null);
+    }
+
+    @Override
+    public ItemStack getItemStackFromSlot(EntityEquipmentSlot slotIn) {
+        return null;
+    }
+
+    @Override
+    public void setItemStackToSlot(EntityEquipmentSlot slotIn, ItemStack stack) {
+
+    }
+
 }

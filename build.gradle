@@ -82,7 +82,7 @@ processResources {
 }
 
 dependencies {
-	factory 'org.spongepowered:mixin:0.5.3-SNAPSHOT'
+	factory 'org.spongepowered:mixin:0.5.5-SNAPSHOT'
 }
 processor {
 	options.reobfSrgFile = project.tasks.genSrgs.mcpToSrg.path

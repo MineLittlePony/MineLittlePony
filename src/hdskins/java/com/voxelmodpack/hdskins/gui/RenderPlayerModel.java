@@ -6,11 +6,11 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 
-public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving<M> {
+public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLivingBase<M> {
 
     public RenderPlayerModel(RenderManager renderer) {
         super(renderer, new ModelPlayer(0, false), 0.0F);
