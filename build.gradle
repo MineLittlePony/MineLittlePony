@@ -21,7 +21,7 @@ buildscript {
 	}
 }
 
-ext.revision = 215
+ext.revision = 216
 
 apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
@@ -56,9 +56,8 @@ sourceSets {
 	}
 }
 //litemod.json {
-//	name = 'minelp'
-//	revision = ext.revision
 //	mixinConfigs += ['mixin.minelp.json', 'mixin.hdskins.json']
+//	author = "author": "Verdana, Rene_Z, Mumfrey, JoyJoy"
 //	description = "Mine Little Pony turns players and mobs into ponies"
 //	description.litemodminelittlepony = """Mine Little Pony turns players and mobs into ponies
 // Press F9 ingame to access settings"""

@@ -1,11 +1,14 @@
 {
-	"name": "minelp",
+	"name": "minelittlepony",
 	"mcversion": "${mcversion}",
 	"version": "${version}",
 	"revision": "${revision}",
 	"author": "Verdana, Rene_Z, Mumfrey, JoyJoy",
-	"tweakClass": "com.brohoof.minelittlepony.launch.MineLPTweaker",
 	"description": "Mine Little Pony turns players and mobs into ponies",
 	"description.litemodminelittlepony": "Mine Little Pony turns players and mobs into ponies",
-	"description.litemodhdskinsmod": "Seperate skin server for Mine Little Pony that also supports HD skins. Access via Skin Manager key binding (default: F1) in the main menu."
+	"description.litemodhdskinsmod": "Seperate skin server for Mine Little Pony that also supports HD skins. Access via Skin Manager key binding (default: F1) in the main menu.",
+	"mixinConfigs": [
+		"mixin.minelp.json",
+		"mixin.hdskins.json"
+	]
 }
