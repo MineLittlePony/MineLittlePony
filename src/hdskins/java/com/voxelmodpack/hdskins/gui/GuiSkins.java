@@ -125,7 +125,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         RenderManager rm = Minecraft.getMinecraft().getRenderManager();
         rm.renderEngine = minecraft.getTextureManager();
         rm.options = minecraft.gameSettings;
-        rm.livingPlayer = this.localPlayer;
+        rm.renderViewEntity = this.localPlayer;
         this.reloadRemoteSkin();
         this.fetchingSkin = true;
         this.panoramaRenderer = LiteModHDSkinsMod.getPanoramaRenderer(this);

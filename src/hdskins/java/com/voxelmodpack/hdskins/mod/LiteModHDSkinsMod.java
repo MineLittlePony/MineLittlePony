@@ -55,9 +55,6 @@ public class LiteModHDSkinsMod implements HDSkinsMod {
         ModUtilities.addRenderer(EntityPlayerModel.class, new RenderPlayerModel<EntityPlayerModel>(minecraft.getRenderManager()));
     }
 
-    @Override
-    public void onTick(Minecraft minecraft, float partialTicks, boolean inGame, boolean clock) {}
-
     public static IPanoramaRenderer getPanoramaRenderer(IPanoramaRenderer fallbackRenderer) {
         try {
             Class<?> ex = Class.forName("com.thevoxelbox.voxelmenu.VoxelMenuModCore");

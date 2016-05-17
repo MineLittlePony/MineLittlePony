@@ -3,11 +3,12 @@ package com.brohoof.minelittlepony;
 import java.io.File;
 
 import com.mumfrey.liteloader.InitCompleteListener;
+import com.mumfrey.liteloader.Tickable;
 import com.mumfrey.liteloader.core.LiteLoader;
 
 import net.minecraft.client.Minecraft;
 
-public class LiteModMineLittlePony implements InitCompleteListener {
+public class LiteModMineLittlePony implements Tickable, InitCompleteListener {
 
     private MineLittlePony mlp;
 
