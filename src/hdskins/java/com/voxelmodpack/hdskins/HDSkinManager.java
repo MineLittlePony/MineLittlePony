@@ -44,6 +44,7 @@ public final class HDSkinManager {
 
     public static final HDSkinManager INSTANCE = new HDSkinManager();
     private static final ResourceLocation LOADING = new ResourceLocation("LOADING");
+    public static final String METADATA_KEY = "hdskins.metadata";
 
     private String gatewayUrl = "skinmanager.voxelmodpack.com";
     private String skinUrl = "skins.voxelmodpack.com";
@@ -141,13 +142,13 @@ public final class HDSkinManager {
         if (textures == null) {
 
             IWebPreferences prefs = this.webprefs.getPreferences(profile);
-            Map<String, String> metadata = new Gson().fromJson(prefs.get("hdskins.metadata"), new TypeToken<Map<String, String>>() {}.getType());
+            TypeToken<?> map = new TypeToken<Map<String, String>>() {};
+            Map<String, String> metadata = new Gson().fromJson(prefs.get(METADATA_KEY), map.getType());
             String uuid = UUIDTypeAdapter.fromUUID(profile.getId());
             String skinUrl = getCustomTextureURLForId(Type.SKIN, uuid, false);
             String capeUrl = getCustomTextureURLForId(Type.CAPE, uuid);
             String elytraUrl = getCustomTextureURLForId(Type.ELYTRA, uuid);
 
-            // TODO metadata (needs server support)
             textures = ImmutableMap.of(
                     Type.SKIN, new MinecraftProfileTexture(skinUrl, metadata),
                     Type.CAPE, new MinecraftProfileTexture(capeUrl, null),

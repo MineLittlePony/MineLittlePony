@@ -77,6 +77,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     private GuiButton btnUpload;
     private GuiButton btnClear;
     private GuiButton btnBack;
+    private GuiButton btnMeta;
     protected EntityPlayerModel localPlayer;
     protected EntityPlayerModel remotePlayer;
     protected DoubleBuffer doubleBuffer;
@@ -98,6 +99,8 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     private float uploadOpacity = 0.0F;
     private float lastPartialTick;
     private JFrame fileDrop;
+
+    private MetaHandler metadata;
 
     // translations
     private final String manager = I18n.format("hdskins.manager");
@@ -129,6 +132,9 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         this.reloadRemoteSkin();
         this.fetchingSkin = true;
         this.panoramaRenderer = LiteModHDSkinsMod.getPanoramaRenderer(this);
+        this.metadata = new MetaHandler(this);
+        this.setupMetaOverrides(this.metadata);
+        this.metadata.fetch();
     }
 
     protected EntityPlayerModel getModel(GameProfile profile) {
@@ -210,21 +216,22 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     @Override
     public void setPanoramaResolution(Minecraft minecraft, int width, int height) {}
 
-    protected List<GuiButton> getControlList() {
-        return this.buttonList;
-    }
-
     @Override
     public void initGui() {
         enableDnd();
         this.panoramaRenderer.initPanoramaRenderer();
-        this.getControlList().clear();
-        this.getControlList().add(this.btnBrowse = new GuiButton(0, 30, this.height - 36, 60, 20, "Browse..."));
-        this.getControlList().add(this.btnUpload = new GuiButton(1, this.width / 2 - 24, this.height / 2 - 10, 48, 20, ">>"));
-        this.getControlList().add(this.btnClear = new GuiButton(2, this.width - 90, this.height - 36, 60, 20, "Clear"));
-        this.getControlList().add(this.btnBack = new GuiButton(3, this.width / 2 - 50, this.height - 36, 100, 20, "Close"));
+        this.buttonList.clear();
+        this.buttonList.add(this.btnBrowse = new GuiButton(0, 30, this.height - 36, 60, 20, "Browse..."));
+        this.buttonList.add(this.btnUpload = new GuiButton(1, this.width / 2 - 24, this.height / 2 - 10, 48, 20, ">>"));
+        this.buttonList.add(this.btnClear = new GuiButton(2, this.width - 90, this.height - 36, 60, 20, "Clear"));
+        this.buttonList.add(this.btnBack = new GuiButton(3, this.width / 2 - 50, this.height - 36, 100, 20, "Close"));
+        this.buttonList.add(this.btnMeta = new GuiButton(4, 2, 2, 20, 20, "..."));
         this.btnUpload.enabled = false;
         this.btnBrowse.enabled = !this.mc.isFullScreen();
+    }
+
+    protected void setupMetaOverrides(MetaHandler meta) {
+        meta.bool("slim");
     }
 
     /**
@@ -365,6 +372,10 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
                     this.mc.displayGuiScreen(new GuiMainMenu());
                 }
 
+                if (guiButton.id == this.btnMeta.id) {
+                    this.mc.displayGuiScreen(metadata);
+                }
+
             }
         }
     }
@@ -455,12 +466,12 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
                 }
 
                 this.mc.getTextureManager().bindTexture(cubemapTextures[cubeSide]);
-//                wr.setColorRGBA_I(0xffffff, 255 / (blendPass + 1));
+                // wr.setColorRGBA_I(0xffffff, 255 / (blendPass + 1));
                 vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
                 vb.pos(-1.0D, -1.0D, 1.0D).tex(0.0D, 0.0D).endVertex();
                 vb.pos(1.0D, -1.0D, 1.0D).tex(1.0D, 0.0D).endVertex();
                 vb.pos(1.0D, 1.0D, 1.0D).tex(1.0D, 1.0D).endVertex();
-                vb.pos(-1.0D, 1.0D, 1.0D).tex(0.0D,  1.0D).endVertex();
+                vb.pos(-1.0D, 1.0D, 1.0D).tex(0.0D, 1.0D).endVertex();
                 tessellator.draw();
                 popMatrix();
             }
@@ -522,7 +533,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         float vSample = this.width * aspect / 256.0F;
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-       // wr.setColorRGBA_F(1.0F, 1.0F, 1.0F, 1.0F);
+        // wr.setColorRGBA_F(1.0F, 1.0F, 1.0F, 1.0F);
         vb.pos(0.0D, this.height, this.zLevel).tex(0.5F - uSample, 0.5F + vSample).endVertex();
         vb.pos(this.width, this.height, this.zLevel).tex(0.5F - uSample, 0.5F - vSample).endVertex();
         vb.pos(this.width, 0.0D, this.zLevel).tex(0.5F + uSample, 0.5F - vSample).endVertex();
@@ -720,6 +731,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         this.skinUploadMessage = upload;
         this.threadSkinUpload = new ThreadMultipartPostUpload(HDSkinManager.INSTANCE.getGatewayUrl(), sourceData, this);
         this.threadSkinUpload.start();
+
         return true;
     }
 
