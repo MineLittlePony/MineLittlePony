@@ -14,7 +14,6 @@ public class ModelSkeletonPony extends ModelPlayerPony {
 
     @Override
     protected void rotateLegs(float move, float swing, float tick, Entity entity) {
-
         float rightArmRotateAngleX;
         float leftArmRotateAngleX;
         float rightLegRotateAngleX;
@@ -41,13 +40,9 @@ public class ModelSkeletonPony extends ModelPlayerPony {
             this.bipedLeftLeg.rotateAngleY = 0.2F;
         } else {
             var8 = (float) Math.pow(swing, 16.0D);
-            this.getClass();
             var9 = 3.1415927F * var8 * 0.5F;
-            this.getClass();
             float laQuad = 3.1415927F * var8;
-            this.getClass();
             float rlQuad = 3.1415927F * var8 * 0.2F;
-            this.getClass();
             float llQuad = 3.1415927F * var8 * -0.4F;
             rightArmRotateAngleX = MathHelper.cos(move * 0.6662F + 3.1415927F + var9) * 0.6F * swing;
             leftArmRotateAngleX = MathHelper.cos(move * 0.6662F + laQuad) * 0.6F * swing;
@@ -93,7 +88,31 @@ public class ModelSkeletonPony extends ModelPlayerPony {
                 this.unicornArmRight.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.1F;
             }
         }
-
+        if (this.leftArmPose != ArmPose.EMPTY) {
+            var8 = MathHelper.sin(this.swingProgress * 3.1415927F);
+            var9 = MathHelper.sin((1.0F - (1.0F - this.swingProgress) * (1.0F - this.swingProgress)) * 3.1415927F);
+            if (this.metadata.getGlowColor() == 0) {
+                this.bipedLeftArm.rotateAngleZ = 0.0F;
+                this.bipedLeftArm.rotateAngleY = 0.1F - var8 * 0.6F;
+                this.bipedLeftArm.rotateAngleX = -1.5707964F;
+                this.bipedLeftArm.rotateAngleX -= var8 * 1.2F - var9 * 0.4F;
+                this.bipedLeftArm.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
+                this.bipedLeftArm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.1F;
+            } else {
+                this.unicornArmLeft.rotationPointX = -7.0F;
+                this.unicornArmLeft.rotationPointY = 12.0F;
+                this.unicornArmLeft.rotationPointZ = -2.0F;
+                this.unicornArmLeft.rotateAngleZ = 0.0F;
+                this.unicornArmLeft.rotateAngleY = 0.1F - var8 * 0.6F;
+                this.unicornArmLeft.rotateAngleX = -1.5707964F;
+                this.unicornArmLeft.rotateAngleX -= var8 * 1.2F - var9 * 0.4F;
+                this.unicornArmLeft.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
+                this.unicornArmLeft.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.1F;
+            }
+        }
+        if (this.leftArmPose == ArmPose.BOW_AND_ARROW || this.rightArmPose == ArmPose.BOW_AND_ARROW) {
+            this.aimBow(this.leftArmPose, this.rightArmPose, tick);
+        }
     }
 
     @Override
@@ -107,26 +126,14 @@ public class ModelSkeletonPony extends ModelPlayerPony {
     @Override
     protected void renderLegs() {
         pushMatrix();
-        if (this.leftArmPose != ArmPose.EMPTY && this.metadata.getRace().hasHorn()) {
-            translate(0.1F, 0.3F, -0.1F);
-            scale(0.5F, 0.5F, 1.2F);
-        } else {
-            translate(0.05F, -0.21F, -0.0F);
-            scale(0.5F, 1.15F, 0.5F);
-        }
-
+        translate(0.05F, -0.21F, -0.0F);
+        scale(0.5F, 1.15F, 0.5F);
         this.bipedLeftArm.render(this.scale);
         popMatrix();
 
         pushMatrix();
-        if (this.rightArmPose != ArmPose.EMPTY && this.metadata.getRace().hasHorn()) {
-            translate(-0.1F, 0.3F, 0.1F);
-            scale(0.5F, 0.5F, 1.2F);
-        } else {
-            translate(-0.05F, -0.21F, -0.0F);
-            scale(0.5F, 1.2F, 0.5F);
-        }
-
+        translate(-0.05F, -0.21F, -0.0F);
+        scale(0.5F, 1.2F, 0.5F);
         this.bipedRightArm.render(this.scale);
         popMatrix();
 
