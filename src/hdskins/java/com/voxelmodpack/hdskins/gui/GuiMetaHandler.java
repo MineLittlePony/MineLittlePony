@@ -25,6 +25,9 @@ import com.mumfrey.webprefs.WebPreferencesManager;
 import com.mumfrey.webprefs.interfaces.IWebPreferences;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.IMetaHandler;
+import com.voxelmodpack.hdskins.gui.color.GuiColorButton;
+import com.voxelmodpack.hdskins.gui.color.GuiColorButton.CloseListener;
+import com.voxelmodpack.hdskins.gui.color.GuiControl;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -33,6 +36,7 @@ import net.minecraft.client.gui.GuiPageButtonList.GuiResponder;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSlider;
 import net.minecraft.client.gui.GuiSlider.FormatHelper;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.I18n;
@@ -46,6 +50,7 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
     protected int optionPosX;
 
     private EntityPlayerModel model;
+    private float updateCounter;
 
     public GuiMetaHandler(GuiScreen parent, EntityPlayerModel localPlayer) {
         this.parent = parent;
@@ -81,6 +86,13 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
     }
 
     @Override
+    public void setWorldAndResolution(Minecraft mc, int width, int height) {
+        super.setWorldAndResolution(mc, width, height);
+        ScaledResolution sr = new ScaledResolution(mc);
+        GuiControl.setScreenSizeAndScale(width, height, sr.getScaleFactor());
+    }
+
+    @Override
     public void initGui() {
         super.initGui();
         optionHeight = 30;
@@ -113,15 +125,14 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
         if (keyCode == Keyboard.KEY_ESCAPE) {
             mc.displayGuiScreen(parent);
         } else {
-            super.keyTyped(typedChar, keyCode);
+            for (Opt<?> opt : this.options) {
+                opt.keyTyped(typedChar, keyCode);
+            }
         }
     }
 
-    private float updateCounter;
-
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTick) {
-        // this.lastPartialTick = this.updateCounter + partialTick;
         this.drawDefaultBackground();
 
         int top = 30;
@@ -139,11 +150,11 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
         disableBlend();
         ((GuiSkins) parent).disableClipping();
 
+        this.drawCenteredString(this.fontRendererObj, "Skin Overrides", width / 2, 10, -1);
         super.drawScreen(mouseX, mouseY, partialTick);
         for (Opt<?> opt : options) {
             opt.drawOption(mouseX, mouseY);
         }
-        this.drawCenteredString(this.fontRendererObj, "Skin Overrides", width / 2, 10, -1);
     }
 
     public void renderPlayerModel(Entity thePlayer, float xPosition, float yPosition, float scale, float mouseX, float mouseY, float partialTick) {
@@ -178,9 +189,7 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
         if (mouseX > width / 2)
             this.model.swingArm();
         for (Opt<?> opt : options) {
-            if (opt.mouseClicked(mouseX, mouseY))
-                break;
-
+            opt.mouseClicked(mouseX, mouseY);
         }
     }
 
@@ -197,6 +206,15 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
         super.mouseReleased(mouseX, mouseY, state);
         for (Opt<?> opt : options) {
             opt.mouseReleased(mouseX, mouseY);
+        }
+    }
+
+    public void setControlsEnabled(boolean enabled) {
+        for (Opt<?> opt : this.options) {
+            opt.setControlEnabled(enabled);
+        }
+        for (GuiButton guiButton : buttonList) {
+            guiButton.enabled = enabled;
         }
     }
 
@@ -257,6 +275,10 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
             this.enabled.checked = enabled;
         }
 
+        public void setControlEnabled(boolean enabled) {
+            this.enabled.enabled = enabled;
+        }
+
         public boolean isEnabled() {
             return this.enabled.checked;
         }
@@ -269,15 +291,17 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
             this.enabled.drawButton(mc, mouseX, mouseY);
         }
 
-        protected boolean mouseClicked(int mouseX, int mouseY) {
+        protected void mouseClicked(int mouseX, int mouseY) {
             if (this.enabled.mousePressed(mc, mouseX, mouseY)) {
                 this.enabled.checked = !this.enabled.checked;
-                return true;
             }
-            return false;
         }
 
         protected void mouseReleased(int mouseX, int mouseY) {
+
+        }
+
+        protected void keyTyped(char typedChar, int keyCode) {
 
         }
 
@@ -296,6 +320,12 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
         }
 
         @Override
+        public void setControlEnabled(boolean enabled) {
+            super.setControlEnabled(enabled);
+            this.chk.enabled = enabled;
+        }
+
+        @Override
         public void init() {
             super.init();
             this.chk = new GuiCheckbox(0, optionPosX + 20, optionHeight, I18n.format(this.name));
@@ -310,13 +340,11 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
         }
 
         @Override
-        protected boolean mouseClicked(int mouseX, int mouseY) {
-            boolean clicked = super.mouseClicked(mouseX, mouseY);
-            if (!clicked && chk.mousePressed(mc, mouseX, mouseY)) {
+        protected void mouseClicked(int mouseX, int mouseY) {
+            super.mouseClicked(mouseX, mouseY);
+            if (chk.mousePressed(mc, mouseX, mouseY)) {
                 chk.checked = !chk.checked;
-                return true;
             }
-            return clicked;
         }
 
         @Override
@@ -345,6 +373,12 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
         }
 
         @Override
+        public void setControlEnabled(boolean enabled) {
+            super.setControlEnabled(enabled);
+            this.guiSlider.enabled = enabled;
+        }
+
+        @Override
         public void init() {
             super.init();
             this.guiSlider = new GuiSlider(this, 0, optionPosX + 20, optionHeight, this.name, min, max, min, this);
@@ -358,9 +392,9 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
         }
 
         @Override
-        protected boolean mouseClicked(int mouseX, int mouseY) {
-            boolean clicked = super.mouseClicked(mouseX, mouseY);
-            return clicked || this.guiSlider.mousePressed(mc, mouseX, mouseY);
+        protected void mouseClicked(int mouseX, int mouseY) {
+            super.mouseClicked(mouseX, mouseY);
+            this.guiSlider.mousePressed(mc, mouseX, mouseY);
         }
 
         @Override
@@ -413,6 +447,12 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
         }
 
         @Override
+        public void setControlEnabled(boolean enabled) {
+            super.setControlEnabled(enabled);
+            this.button.enabled = enabled;
+        }
+
+        @Override
         protected void init() {
             super.init();
             this.button = new GuiButton(0, optionPosX + 20, optionHeight, 100, 20, name + ": " + I18n.format(this.get().toString()));
@@ -426,18 +466,16 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
         }
 
         @Override
-        protected boolean mouseClicked(int mouseX, int mouseY) {
-            boolean clicked = super.mouseClicked(mouseX, mouseY);
-            if (!clicked && this.button.mousePressed(mc, mouseX, mouseY)) {
+        protected void mouseClicked(int mouseX, int mouseY) {
+            super.mouseClicked(mouseX, mouseY);
+            if (this.button.mousePressed(mc, mouseX, mouseY)) {
                 this.index++;
                 if (this.index >= this.options.size()) {
                     this.index = 0;
                 }
                 this.value = Optional.of(get());
                 this.button.displayString = name + ": " + I18n.format(this.toString());
-                return true;
             }
-            return clicked;
         }
 
         private E get() {
@@ -458,7 +496,7 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
 
     }
 
-    private class Col extends Opt<Color> {
+    private class Col extends Opt<Color> implements CloseListener {
 
         private GuiColorButton color;
 
@@ -482,23 +520,29 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
         @Override
         protected void init() {
             super.init();
-            this.color = new GuiColorButton(mc, 0, optionPosX + 20, optionHeight, 20, 20, value.transform(colorConverter).or(-1), name);
+            this.color = new GuiColorButton(mc, 0, optionPosX + 20, optionHeight, 20, 20, value.get(), name, this);
+        }
+
+        @Override
+        public void onClose() {
+            this.value = Optional.of(new Color(this.color.getColor()));
+            setControlsEnabled(true);
         }
 
         @Override
         protected void drawOption(int mouseX, int mouseY) {
             super.drawOption(mouseX, mouseY);
             this.color.drawButton(mc, mouseX, mouseY);
+            this.color.drawPicker(mc, mouseX, mouseY);
+
         }
 
         @Override
-        protected boolean mouseClicked(int mouseX, int mouseY) {
-            boolean clicked = super.mouseClicked(mouseX, mouseY);
-            if (!clicked && this.color.mousePressed(mc, mouseX, mouseY)) {
-                this.value = Optional.of(new Color(this.color.getColor()));
-                return true;
+        protected void mouseClicked(int mouseX, int mouseY) {
+            super.mouseClicked(mouseX, mouseY);
+            if (this.color.mousePressed(mc, mouseX, mouseY)) {
+                setControlsEnabled(false);
             }
-            return clicked;
         }
 
         @Override
@@ -507,8 +551,13 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
         }
 
         @Override
+        protected void keyTyped(char typedChar, int keyCode) {
+            this.color.keyTyped(typedChar, keyCode);
+        }
+
+        @Override
         public String toString() {
-            return this.value.transform(Functions.toStringFunction()).orNull();
+            return this.value.transform(colorConverter).transform(Functions.toStringFunction()).orNull();
         }
 
         @Override
