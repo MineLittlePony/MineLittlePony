@@ -21,19 +21,19 @@ buildscript {
 	}
 }
 
-ext.revision = 213.1
+ext.revision = 215
 
 apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'mnm.gradle.ap-ide'
 
 group = 'com.brohoof.minelp'
-version = '1.8.9.3'
-description = 'Mine Little Pony turns players and mobs into ponies'
+version = '1.9.0.0-beta'
+description = 'Mine Little Pony'
 
 minecraft {
-	version = "1.8.9"
-	mappings = 'stable_22'
+	version = "1.9"
+	mappings = 'snapshot_20160411'
 	runDir = 'run'
 	replace '@VERSION@',project.version
 }
@@ -59,7 +59,11 @@ sourceSets {
 //	name = 'minelp'
 //	revision = ext.revision
 //	mixinConfigs += ['mixin.minelp.json', 'mixin.hdskins.json']
-	//tweakClass = 'com.brohoof.minelittlepony.launch.MineLPTweaker'
+//	description = "Mine Little Pony turns players and mobs into ponies"
+//	description.litemodminelittlepony = """Mine Little Pony turns players and mobs into ponies
+// Press F9 ingame to access settings"""
+//	description.litemodhdskinsmod = """Seperate skin server for Mine Little Pony that also supports HD skins.
+// Access via Skin Manager key binding (default: F1) in the main menu."""
 //}
 processResources {
 	def props = [
