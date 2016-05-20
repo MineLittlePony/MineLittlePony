@@ -110,9 +110,7 @@ public class ModelSkeletonPony extends ModelPlayerPony {
                 this.unicornArmLeft.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.1F;
             }
         }
-        if (this.leftArmPose == ArmPose.BOW_AND_ARROW || this.rightArmPose == ArmPose.BOW_AND_ARROW) {
-            this.aimBow(this.leftArmPose, this.rightArmPose, tick);
-        }
+        this.aimBow(this.leftArmPose, this.rightArmPose, tick);
     }
 
     @Override
