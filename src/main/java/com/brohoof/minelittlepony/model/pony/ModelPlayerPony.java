@@ -78,7 +78,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.bipedHead.offsetZ = 0f;
         this.bipedHeadwear.offsetY = 0f;
         this.bipedHeadwear.offsetZ = 0f;
-        this.setLegs(move, swing, tick);
+        this.setLegs(move, swing, tick, entity);
         this.holdItem();
         this.swingItem(entity, this.swingProgress);
         if (this.isSneak && !this.isFlying) {
@@ -163,11 +163,10 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     }
 
     protected void checkRainboom(Entity entity, float swing) {
-        this.rainboom = this.metadata.getRace() != null && this.metadata.getRace().hasWings() && this.isFlying && swing >= 0.9999F;
+        boolean flying = this.metadata.getRace() != null && this.metadata.getRace().hasWings() && this.isFlying
+                || entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isElytraFlying();
 
-        if (entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isElytraFlying()) {
-            this.rainboom = true;
-        }
+        this.rainboom = flying && swing >= 0.9999F;
     }
 
     protected void setHead(float posX, float posY, float posZ) {
@@ -196,17 +195,17 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.bipedHeadwear.rotateAngleX = headRotateAngleX;
     }
 
-    protected void setLegs(float move, float swing, float tick) {
-        this.rotateLegs(move, swing, tick);
+    protected void setLegs(float move, float swing, float tick, Entity entity) {
+        this.rotateLegs(move, swing, tick, entity);
         this.adjustLegs();
     }
 
-    protected void rotateLegs(float move, float swing, float tick) {
+    protected void rotateLegs(float move, float swing, float tick, Entity entity) {
         float rightArmRotateAngleX;
         float leftArmRotateAngleX;
         float rightLegRotateAngleX;
         float leftLegRotateAngleX;
-        if (this.isFlying && this.metadata.getRace().hasWings()) {
+        if (this.isFlying && this.metadata.getRace().hasWings() || entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isElytraFlying()) {
             if (this.rainboom) {
                 rightArmRotateAngleX = ROTATE_270;
                 leftArmRotateAngleX = ROTATE_270;

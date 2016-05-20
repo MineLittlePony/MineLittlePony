@@ -2,6 +2,8 @@ package com.brohoof.minelittlepony.model.pony;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
 
 public class ModelSkeletonPony extends ModelPlayerPony {
@@ -11,7 +13,7 @@ public class ModelSkeletonPony extends ModelPlayerPony {
     }
 
     @Override
-    protected void rotateLegs(float move, float swing, float tick) {
+    protected void rotateLegs(float move, float swing, float tick, Entity entity) {
 
         float rightArmRotateAngleX;
         float leftArmRotateAngleX;
@@ -19,7 +21,7 @@ public class ModelSkeletonPony extends ModelPlayerPony {
         float leftLegRotateAngleX;
         float var8;
         float var9;
-        if (this.isFlying && this.metadata.getRace().hasWings()) {
+        if (this.isFlying && this.metadata.getRace().hasWings() || entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isElytraFlying()) {
             if (this.rainboom) {
                 rightArmRotateAngleX = ROTATE_270;
                 leftArmRotateAngleX = ROTATE_270;

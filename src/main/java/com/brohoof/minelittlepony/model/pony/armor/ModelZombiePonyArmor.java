@@ -1,18 +1,20 @@
 package com.brohoof.minelittlepony.model.pony.armor;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
 
 public class ModelZombiePonyArmor extends ModelPonyArmor {
 
     @Override
-    protected void rotateLegs(float move, float swing, float tick) {
+    protected void rotateLegs(float move, float swing, float tick, Entity entity) {
         float rightArmRotateAngleX;
         float leftArmRotateAngleX;
         float rightLegRotateAngleX;
         float leftLegRotateAngleX;
         float var8;
         float var9;
-        if (this.isFlying && this.metadata.getRace().hasWings()) {
+        if (this.isFlying && this.metadata.getRace().hasWings() || entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isElytraFlying()) {
             if (this.rainboom) {
                 rightArmRotateAngleX = ROTATE_270;
                 leftArmRotateAngleX = ROTATE_270;

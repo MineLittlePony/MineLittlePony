@@ -41,7 +41,7 @@ public class ModelPonyArmor extends ModelPlayerPony {
         this.extHead[0].offsetZ = 0f;
         this.extHead[1].offsetY = 0f;
         this.extHead[1].offsetZ = 0f;
-        this.setLegs(move, swing, tick);
+        this.setLegs(move, swing, tick, entity);
         this.holdItem();
         this.swingItem(entity, this.swingProgress);
         if (this.isSneak && !this.isFlying) {
@@ -198,6 +198,7 @@ public class ModelPonyArmor extends ModelPlayerPony {
         this.bipedLeftLeg.mirror = true;
         this.steveRightArm = new ModelRenderer(this, 0, 16);
         this.unicornArmRight = new ModelRenderer(this, 0, 16);
+        this.unicornArmLeft = new ModelRenderer(this, 0, 16);
         this.extLegs[0] = new ModelRenderer(this, 48, 8);
         this.extLegs[1] = new ModelRenderer(this, 48, 8);
         this.extLegs[1].mirror = true;
@@ -272,8 +273,8 @@ public class ModelPonyArmor extends ModelPlayerPony {
     }
 
     @Override
-    protected void rotateLegs(float move, float swing, float tick) {
-        super.rotateLegs(move, swing, tick);
+    protected void rotateLegs(float move, float swing, float tick, Entity entity) {
+        super.rotateLegs(move, swing, tick, entity);
         this.syncLegs();
     }
 
