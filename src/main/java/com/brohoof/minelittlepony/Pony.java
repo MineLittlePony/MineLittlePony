@@ -72,11 +72,16 @@ public class Pony {
     }
 
     private void checkMeta(GameProfile profile) {
-        if (profile == null)
-            return;
         IWebPreferences prefs = WebPreferencesManager.getDefault().getPreferences(profile);
+
+        if (prefs == null)
+            return;
+
         String json = prefs.get(HDSkinManager.METADATA_KEY, "{}");
         Map<String, String> data = new Gson().fromJson(json, new TypeToken<Map<String, String>>() {}.getType());
+
+        if (data == null)
+            return;
 
         if (data.containsKey("race"))
             metadata.setRace(PonyRace.valueOf(data.get("race")));
