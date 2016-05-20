@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.IMetaHandler;
 import com.voxelmodpack.hdskins.ImageBufferDownloadHD;
 import com.voxelmodpack.hdskins.PreviewTexture;
 
@@ -34,6 +35,7 @@ public class EntityPlayerModel extends EntityLivingBase {
     public boolean isSwinging = false;
     protected boolean remoteSkin = false;
     protected boolean hasLocalTexture = false;
+    public IMetaHandler metaHandler;
 
     public EntityPlayerModel(GameProfile profile) {
         super((World) null);
@@ -130,6 +132,11 @@ public class EntityPlayerModel extends EntityLivingBase {
         }
 
         this.swingProgress = this.swingProgressInt / 8.0F;
+    }
+
+    public void updateMeta(IMetaHandler guiMetaHandler) {
+        this.metaHandler = guiMetaHandler;
+
     }
 
     @Override

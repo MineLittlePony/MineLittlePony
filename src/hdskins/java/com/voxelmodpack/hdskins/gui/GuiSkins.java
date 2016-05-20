@@ -100,7 +100,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     private float lastPartialTick;
     private JFrame fileDrop;
 
-    private MetaHandler metadata;
+    private GuiMetaHandler metadata;
 
     // translations
     private final String manager = I18n.format("hdskins.manager");
@@ -132,9 +132,8 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         this.reloadRemoteSkin();
         this.fetchingSkin = true;
         this.panoramaRenderer = LiteModHDSkinsMod.getPanoramaRenderer(this);
-        this.metadata = new MetaHandler(this);
+        this.metadata = new GuiMetaHandler(this, this.remotePlayer);
         this.setupMetaOverrides(this.metadata);
-        this.metadata.fetch();
     }
 
     protected EntityPlayerModel getModel(GameProfile profile) {
@@ -230,7 +229,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         this.btnBrowse.enabled = !this.mc.isFullScreen();
     }
 
-    protected void setupMetaOverrides(MetaHandler meta) {
+    protected void setupMetaOverrides(GuiMetaHandler meta) {
         meta.bool("slim");
     }
 
@@ -573,6 +572,8 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         float xPos1 = this.width * 0.25F;
         float xPos2 = this.width * 0.75F;
         float scale = this.height * 0.25F;
+
+        mc.getTextureManager().bindTexture(EntityPlayerModel.NOSKIN);
 
         this.renderPlayerModel(this.localPlayer, xPos1, yPos, scale, xPos1 - mouseX, yPos - scale * 1.8F - mouseY, partialTick);
         this.renderPlayerModel(this.remotePlayer, xPos2, yPos, scale, xPos2 - mouseX, yPos - scale * 1.8F - mouseY, partialTick);

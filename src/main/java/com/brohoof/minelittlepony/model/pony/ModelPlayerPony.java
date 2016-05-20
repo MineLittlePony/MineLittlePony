@@ -27,7 +27,8 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
     public PlaneRenderer[] Bodypiece;
     public PlaneRenderer[] BodypieceNeck;
-    public ModelRenderer unicornarm;
+    public ModelRenderer unicornArmRight;
+    public ModelRenderer unicornArmLeft;
     public PlaneRenderer[] Tail;
 
     public ModelPlayerPony(boolean smallArms) {
@@ -235,7 +236,8 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             rightLegRotateAngleX = MathHelper.cos(move * 0.6662F + rlQuad) * 0.45F * swing;
             leftLegRotateAngleX = MathHelper.cos(move * 0.6662F + 3.1415927F + llQuad) * 0.45F * swing;
             this.steveRightArm.rotateAngleY = 0.0F;
-            this.unicornarm.rotateAngleY = 0.0F;
+            this.unicornArmRight.rotateAngleY = 0.0F;
+            this.unicornArmLeft.rotateAngleY = 0.0F;
 
             this.bipedRightArm.rotateAngleY = 0.0F;
             this.bipedLeftArm.rotateAngleY = 0.0F;
@@ -245,7 +247,8 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
         this.bipedRightArm.rotateAngleX = rightArmRotateAngleX;
         this.steveRightArm.rotateAngleX = rightArmRotateAngleX;
-        this.unicornarm.rotateAngleX = 0.0F;
+        this.unicornArmRight.rotateAngleX = 0.0F;
+        this.unicornArmLeft.rotateAngleX = 0.0F;
 
         this.bipedLeftArm.rotateAngleX = leftArmRotateAngleX;
         this.bipedRightLeg.rotateAngleX = rightLegRotateAngleX;
@@ -253,7 +256,8 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.bipedRightArm.rotateAngleZ = 0.0F;
 
         this.steveRightArm.rotateAngleZ = 0.0F;
-        this.unicornarm.rotateAngleZ = 0.0F;
+        this.unicornArmRight.rotateAngleZ = 0.0F;
+        this.unicornArmLeft.rotateAngleZ = 0.0F;
         this.bipedLeftArm.rotateAngleZ = 0.0F;
     }
 
@@ -326,7 +330,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
     @SuppressWarnings("incomplete-switch")
     protected void holdItem() {
-        if (!this.rainboom && (!this.metadata.getRace().hasHorn() || this.metadata.getGlowColor() != 0)) {
+        if (!this.rainboom && (!this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0)) {
 
             switch (this.leftArmPose) {
             case EMPTY:
@@ -369,9 +373,12 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             boolean mainRight = mainSide == EnumHandSide.RIGHT;
             ArmPose mainPose = mainRight ? this.rightArmPose : this.leftArmPose;
             if (this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0 && mainPose != ArmPose.EMPTY) {
-                this.unicornarm.rotateAngleX = (float) (this.unicornarm.rotateAngleX - (f22 * 1.2D + f33));
-                this.unicornarm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
-                this.unicornarm.rotateAngleZ = f28 * -0.4F;
+
+                ModelRenderer unicornarm = mainSide == EnumHandSide.LEFT ? this.unicornArmLeft : this.unicornArmRight;
+
+                unicornarm.rotateAngleX = (float) (this.unicornArmRight.rotateAngleX - (f22 * 1.2D + f33));
+                unicornarm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
+                unicornarm.rotateAngleZ = f28 * -0.4F;
             } else {
                 ModelRenderer bipedArm = this.getArmForSide(mainSide);
                 ModelRenderer steveArm = mainRight ? this.steveRightArm : this.steveLeftArm;
@@ -392,13 +399,26 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             float cosTickFactor = MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
             float sinTickFactor = MathHelper.sin(tick * 0.067F) * 0.05F;
             if (this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0) {
-                this.unicornarm.rotateAngleZ += cosTickFactor;
-                this.unicornarm.rotateAngleX += sinTickFactor;
+                this.unicornArmRight.rotateAngleZ += cosTickFactor;
+                this.unicornArmRight.rotateAngleX += sinTickFactor;
             } else {
                 this.bipedRightArm.rotateAngleZ += cosTickFactor;
                 this.bipedRightArm.rotateAngleX += sinTickFactor;
                 this.steveRightArm.rotateAngleZ += cosTickFactor;
                 this.steveRightArm.rotateAngleX += sinTickFactor;
+            }
+        }
+        if (this.leftArmPose != ArmPose.EMPTY && !this.isSleeping) {
+            float cosTickFactor = MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
+            float sinTickFactor = MathHelper.sin(tick * 0.067F) * 0.05F;
+            if (this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0) {
+                this.unicornArmLeft.rotateAngleZ += cosTickFactor;
+                this.unicornArmLeft.rotateAngleX += sinTickFactor;
+            } else {
+                this.bipedLeftArm.rotateAngleZ += cosTickFactor;
+                this.bipedLeftArm.rotateAngleX += sinTickFactor;
+                this.steveLeftArm.rotateAngleZ += cosTickFactor;
+                this.steveLeftArm.rotateAngleX += sinTickFactor;
             }
         }
 
@@ -433,7 +453,8 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
     protected void sneakLegs() {
         this.steveRightArm.rotateAngleX += SNEAK_LEG_X_ROTATION_ADJUSTMENT;
-        this.unicornarm.rotateAngleX += SNEAK_LEG_X_ROTATION_ADJUSTMENT;
+        this.unicornArmRight.rotateAngleX += SNEAK_LEG_X_ROTATION_ADJUSTMENT;
+        this.unicornArmLeft.rotateAngleX += SNEAK_LEG_X_ROTATION_ADJUSTMENT;
 
         this.bipedRightArm.rotateAngleX -= SNEAK_LEG_X_ROTATION_ADJUSTMENT;
         this.bipedLeftArm.rotateAngleX -= SNEAK_LEG_X_ROTATION_ADJUSTMENT;
@@ -510,11 +531,11 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     }
 
     protected void aimBowUnicorn(float tick) {
-        this.unicornarm.rotateAngleZ = 0.0F;
-        this.unicornarm.rotateAngleY = -0.06F + this.bipedHead.rotateAngleY;
-        this.unicornarm.rotateAngleX = ROTATE_270 + this.bipedHead.rotateAngleX;
-        this.unicornarm.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
-        this.unicornarm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.05F;
+        this.unicornArmRight.rotateAngleZ = 0.0F;
+        this.unicornArmRight.rotateAngleY = -0.06F + this.bipedHead.rotateAngleY;
+        this.unicornArmRight.rotateAngleX = ROTATE_270 + this.bipedHead.rotateAngleX;
+        this.unicornArmRight.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
+        this.unicornArmRight.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.05F;
     }
 
     protected void fixSpecialRotations() {
@@ -664,10 +685,11 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.bipedLeftArmwear = new ModelRenderer(this, 48, 48);
         this.bipedLeftLegwear = new ModelRenderer(this, 0, 48);
 
-        this.unicornarm = new ModelRenderer(this, 40, 32).setTextureSize(64, 64);
+        this.unicornArmRight = new ModelRenderer(this, 40, 32).setTextureSize(64, 64);
+        this.unicornArmLeft = new ModelRenderer(this, 40, 32).setTextureSize(64, 64);
 
         this.boxList.remove(this.steveRightArm);
-        this.boxList.remove(this.unicornarm);
+        this.boxList.remove(this.unicornArmRight);
     }
 
     protected void initTailTextures() {
@@ -801,8 +823,11 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         if (this.bipedLeftLegwear != null) {
             this.bipedLeftLegwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25f);
         }
-        this.unicornarm.addBox(-2.0F + FIRSTP_ARM_CENTRE_X, -6.0F + FIRSTP_ARM_CENTRE_Y, -2.0F + FIRSTP_ARM_CENTRE_Z, 4, 12, 4, stretch + .25f);
-        this.unicornarm.setRotationPoint(-5.0F, 2.0F + yOffset, 0.0F);
+        this.unicornArmRight.addBox(-2.0F + FIRSTP_ARM_CENTRE_X, -6.0F + FIRSTP_ARM_CENTRE_Y, -2.0F + FIRSTP_ARM_CENTRE_Z, 4, 12, 4, stretch + .25f);
+        this.unicornArmRight.setRotationPoint(-5.0F, 2.0F + yOffset, 0.0F);
+
+        this.unicornArmLeft.addBox(-2.0F + FIRSTP_ARM_CENTRE_X, -6.0F + FIRSTP_ARM_CENTRE_Y, -2.0F + FIRSTP_ARM_CENTRE_Z, 4, 12, 4, stretch + .25f);
+        this.unicornArmLeft.setRotationPoint(-5.0F, 2.0F + yOffset, 0.0F);
     }
 
     protected void initTailPositions(float yOffset, float stretch) {

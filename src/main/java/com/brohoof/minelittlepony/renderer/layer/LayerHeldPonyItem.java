@@ -15,6 +15,7 @@ import com.brohoof.minelittlepony.model.pony.ModelPlayerPony;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -75,7 +76,8 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
             boolean isUnicorn = metadata.getRace().hasHorn();
             if (isUnicorn) {
                 ModelPlayerPony playerModel = (ModelPlayerPony) thePony;
-                playerModel.unicornarm.postRender(0.0625F);
+                ModelRenderer unicornarm = hand == EnumHandSide.LEFT ? playerModel.unicornArmLeft : playerModel.unicornArmRight;
+                unicornarm.postRender(0.0625F);
             } else {
                 ((ModelBiped) this.livingPonyEntity.getMainModel()).postRenderArm(0.0625F, hand);
             }
@@ -87,7 +89,7 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
             GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
             boolean isLeft = hand == EnumHandSide.LEFT;
             if (isUnicorn) {
-                GlStateManager.translate(isLeft ? -0.1F : 0.1F, 1, -.5);
+                GlStateManager.translate(isLeft ? -0.6F : 0.1F, 1, -.5);
             } else {
                 GlStateManager.translate(0.0425F, 0.125F, -1.00F);
             }

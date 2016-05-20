@@ -5,6 +5,7 @@ import static net.minecraft.client.renderer.GlStateManager.*;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -12,8 +13,11 @@ import net.minecraft.util.ResourceLocation;
 
 public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLivingBase<M> {
 
+    private static final ModelPlayer FAT = new ModelPlayer(0, false);
+    private static final ModelPlayer THIN = new ModelPlayer(0, true);
+
     public RenderPlayerModel(RenderManager renderer) {
-        super(renderer, new ModelPlayer(0, false), 0.0F);
+        super(renderer, FAT, 0.0F);
     }
 
     @Override
@@ -39,6 +43,13 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
 
     @Override
     public void doRender(M par1Entity, double par2, double par4, double par6, float par8, float par9) {
+        if (par1Entity.metaHandler != null && par1Entity.metaHandler.get("slim").isPresent()) {
+            boolean skinny = "true".equals(par1Entity.metaHandler.get("slim").get());
+            this.mainModel = skinny ? THIN : FAT;
+        } else {
+            this.mainModel = FAT;
+        }
+
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         super.doRender(par1Entity, par2, par4, par6, par8, par9);
         popAttrib();

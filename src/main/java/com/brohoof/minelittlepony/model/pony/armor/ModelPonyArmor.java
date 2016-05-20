@@ -197,7 +197,7 @@ public class ModelPonyArmor extends ModelPlayerPony {
         this.bipedLeftLeg = new ModelRenderer(this, 0, 16);
         this.bipedLeftLeg.mirror = true;
         this.steveRightArm = new ModelRenderer(this, 0, 16);
-        this.unicornarm = new ModelRenderer(this, 0, 16);
+        this.unicornArmRight = new ModelRenderer(this, 0, 16);
         this.extLegs[0] = new ModelRenderer(this, 48, 8);
         this.extLegs[1] = new ModelRenderer(this, 48, 8);
         this.extLegs[1].mirror = true;

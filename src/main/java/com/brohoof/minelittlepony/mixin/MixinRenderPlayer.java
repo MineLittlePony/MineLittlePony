@@ -180,6 +180,7 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
 
     private void updateModel(AbstractClientPlayer player) {
         this.thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(player);
+        thePony.invalidateSkinCheck();
         thePony.checkSkin();
         this.playerModel = this.getModel(player);
         this.mainModel = this.playerModel.getModel();

@@ -42,7 +42,7 @@ public class ModelSkeletonPonyArmor extends ModelPonyArmor {
             leftLegRotateAngleX = MathHelper.cos(move * 0.6662F + 3.1415927F + llQuad) * 0.6F * swing;
             this.bipedRightArm.rotateAngleY = 0.0F;
             this.steveRightArm.rotateAngleY = 0.0F;
-            this.unicornarm.rotateAngleY = 0.0F;
+            this.unicornArmRight.rotateAngleY = 0.0F;
             this.bipedLeftArm.rotateAngleY = 0.0F;
             this.bipedRightLeg.rotateAngleY = 0.0F;
             this.bipedLeftLeg.rotateAngleY = 0.0F;
@@ -50,13 +50,13 @@ public class ModelSkeletonPonyArmor extends ModelPonyArmor {
 
         this.bipedRightArm.rotateAngleX = rightArmRotateAngleX;
         this.steveRightArm.rotateAngleX = rightArmRotateAngleX;
-        this.unicornarm.rotateAngleX = 0.0F;
+        this.unicornArmRight.rotateAngleX = 0.0F;
         this.bipedLeftArm.rotateAngleX = leftArmRotateAngleX;
         this.bipedRightLeg.rotateAngleX = rightLegRotateAngleX;
         this.bipedLeftLeg.rotateAngleX = leftLegRotateAngleX;
         this.bipedRightArm.rotateAngleZ = 0.0F;
         this.steveRightArm.rotateAngleZ = 0.0F;
-        this.unicornarm.rotateAngleZ = 0.0F;
+        this.unicornArmRight.rotateAngleZ = 0.0F;
         this.bipedLeftArm.rotateAngleZ = 0.0F;
         if (this.rightArmPose != ArmPose.EMPTY) {
             var8 = MathHelper.sin(this.swingProgress * 3.1415927F);
@@ -69,12 +69,12 @@ public class ModelSkeletonPonyArmor extends ModelPonyArmor {
                 this.bipedRightArm.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
                 this.bipedRightArm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.1F;
             } else {
-                this.unicornarm.rotateAngleZ = 0.0F;
-                this.unicornarm.rotateAngleY = 0.1F - var8 * 0.6F;
-                this.unicornarm.rotateAngleX = -1.5707964F;
-                this.unicornarm.rotateAngleX -= var8 * 1.2F - var9 * 0.4F;
-                this.unicornarm.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
-                this.unicornarm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.1F;
+                this.unicornArmRight.rotateAngleZ = 0.0F;
+                this.unicornArmRight.rotateAngleY = 0.1F - var8 * 0.6F;
+                this.unicornArmRight.rotateAngleX = -1.5707964F;
+                this.unicornArmRight.rotateAngleX -= var8 * 1.2F - var9 * 0.4F;
+                this.unicornArmRight.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
+                this.unicornArmRight.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.1F;
             }
         }
 

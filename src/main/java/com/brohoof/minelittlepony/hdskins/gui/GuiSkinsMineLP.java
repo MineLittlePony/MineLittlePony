@@ -11,7 +11,7 @@ import com.brohoof.minelittlepony.util.MineLPLogger;
 import com.mojang.authlib.GameProfile;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
 import com.voxelmodpack.hdskins.gui.GuiSkins;
-import com.voxelmodpack.hdskins.gui.MetaHandler;
+import com.voxelmodpack.hdskins.gui.GuiMetaHandler;
 
 public class GuiSkinsMineLP extends GuiSkins {
 
@@ -22,7 +22,7 @@ public class GuiSkinsMineLP extends GuiSkins {
     }
 
     @Override
-    protected void setupMetaOverrides(MetaHandler meta) {
+    protected void setupMetaOverrides(GuiMetaHandler meta) {
         super.setupMetaOverrides(meta);
         meta.selection("race", PonyRace.class);
         meta.selection("tail", TailLengths.class);

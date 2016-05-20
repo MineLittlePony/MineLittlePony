@@ -1,5 +1,7 @@
 package com.voxelmodpack.hdskins.gui;
 
+import static net.minecraft.client.renderer.GlStateManager.*;
+
 import java.awt.Color;
 import java.io.IOException;
 import java.util.List;
@@ -22,24 +24,32 @@ import com.mumfrey.liteloader.client.gui.GuiCheckbox;
 import com.mumfrey.webprefs.WebPreferencesManager;
 import com.mumfrey.webprefs.interfaces.IWebPreferences;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.IMetaHandler;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiPageButtonList.GuiResponder;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSlider;
 import net.minecraft.client.gui.GuiSlider.FormatHelper;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.Entity;
 
-public class MetaHandler extends GuiScreen {
+public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
 
     private GuiScreen parent;
     private List<Opt<?>> options = Lists.newArrayList();
     protected int optionHeight = 5;
     protected int optionPosX;
 
-    public MetaHandler(GuiScreen parent) {
+    private EntityPlayerModel model;
+
+    public GuiMetaHandler(GuiScreen parent, EntityPlayerModel localPlayer) {
         this.parent = parent;
+        model = localPlayer;
     }
 
     public <E extends Enum<E>> void selection(String name, Class<E> options) {
@@ -59,16 +69,33 @@ public class MetaHandler extends GuiScreen {
     }
 
     @Override
+    public Optional<String> get(String key) {
+        for (Opt<?> opt : options) {
+            if (opt.name.equals(key)) {
+                if (opt.isEnabled()) {
+                    return Optional.fromNullable(opt.toString());
+                }
+            }
+        }
+        return Optional.absent();
+    }
+
+    @Override
     public void initGui() {
         super.initGui();
         optionHeight = 30;
         optionPosX = this.width / 8;
-        this.buttonList.add(new GuiButton(0, width / 2 - 100, height - 40, 80, 20, "Cancel"));
-        this.buttonList.add(new GuiButton(1, width / 2 + 20, height - 40, 80, 20, "Apply"));
+        this.buttonList.add(new GuiButton(0, width / 2 - 100, height - 30, 80, 20, "Cancel"));
+        this.buttonList.add(new GuiButton(1, width / 2 + 20, height - 30, 80, 20, "Apply"));
         for (Opt<?> opt : options) {
             opt.init();
         }
         fetch();
+    }
+
+    @Override
+    public void onGuiClosed() {
+        this.model.updateMeta(null);
     }
 
     @Override
@@ -90,23 +117,79 @@ public class MetaHandler extends GuiScreen {
         }
     }
 
+    private float updateCounter;
+
     @Override
-    public void drawScreen(int mouseX, int mouseY, float ticks) {
+    public void drawScreen(int mouseX, int mouseY, float partialTick) {
+        // this.lastPartialTick = this.updateCounter + partialTick;
         this.drawDefaultBackground();
-        super.drawScreen(mouseX, mouseY, ticks);
+
+        int top = 30;
+        int bottom = height - 40;
+        int mid = width / 2;
+
+        Gui.drawRect(mid + 10, top, width - 10, bottom, Integer.MIN_VALUE);
+
+        ((GuiSkins) parent).enableClipping(30, height - 40);
+        enableBlend();
+        enableDepth();
+        mc.getTextureManager().bindTexture(EntityPlayerModel.NOSKIN);
+        renderPlayerModel(this.model, width * 0.75F, height * .75F, height * 0.25F, mouseX, mouseY, partialTick);
+        disableDepth();
+        disableBlend();
+        ((GuiSkins) parent).disableClipping();
+
+        super.drawScreen(mouseX, mouseY, partialTick);
         for (Opt<?> opt : options) {
             opt.drawOption(mouseX, mouseY);
         }
+        this.drawCenteredString(this.fontRendererObj, "Skin Overrides", width / 2, 10, -1);
+    }
+
+    public void renderPlayerModel(Entity thePlayer, float xPosition, float yPosition, float scale, float mouseX, float mouseY, float partialTick) {
+        enableColorMaterial();
+        pushMatrix();
+        translate(xPosition, yPosition, 300.0F);
+
+        scale(-scale, scale, scale);
+        rotate(180.0F, 0.0F, 0.0F, 1.0F);
+        rotate(135.0F, 0.0F, 1.0F, 0.0F);
+
+        RenderHelper.enableStandardItemLighting();
+
+        rotate(-135.0F, 0.0F, 1.0F, 0.0F);
+        rotate(15.0F, 1.0F, 0.0F, 0.0F);
+        rotate((updateCounter + partialTick) * 2.5F, 0.0F, 1.0F, 0.0F);
+        thePlayer.rotationPitch = -((float) Math.atan(mouseY / 40.0F)) * 20.0F;
+        translate(0.0D, thePlayer.getYOffset(), 0.0D);
+
+        RenderManager rm = Minecraft.getMinecraft().getRenderManager();
+        rm.playerViewY = 180.0F;
+        rm.renderEntityStatic(thePlayer, 0, false);
+
+        popMatrix();
+        RenderHelper.disableStandardItemLighting();
+        disableColorMaterial();
     }
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
+        if (mouseX > width / 2)
+            this.model.swingArm();
         for (Opt<?> opt : options) {
             if (opt.mouseClicked(mouseX, mouseY))
                 break;
 
         }
+    }
+
+    @Override
+    public void updateScreen() {
+        this.model.updateMeta(this);
+        this.model.updateModel();
+
+        this.updateCounter++;
     }
 
     @Override
@@ -146,8 +229,8 @@ public class MetaHandler extends GuiScreen {
         for (Entry<String, String> e : data.entrySet()) {
             for (Opt<?> opt : options) {
                 if (opt.name.equals(e.getKey())) {
-                    opt.setEnabled(true);
                     opt.fromString(e.getValue());
+                    opt.setEnabled(opt.value.isPresent());
                     break;
                 }
             }
@@ -169,7 +252,7 @@ public class MetaHandler extends GuiScreen {
         private String getName() {
             return name;
         }
-        
+
         public void setEnabled(boolean enabled) {
             this.enabled.checked = enabled;
         }
@@ -258,6 +341,7 @@ public class MetaHandler extends GuiScreen {
             super(name);
             this.min = min;
             this.max = max;
+            this.value = Optional.of(min);
         }
 
         @Override
@@ -325,6 +409,7 @@ public class MetaHandler extends GuiScreen {
             super(name);
             this.type = enumType;
             this.options = ImmutableList.copyOf(enumType.getEnumConstants());
+            this.value = Optional.of(this.get());
         }
 
         @Override
@@ -391,6 +476,7 @@ public class MetaHandler extends GuiScreen {
 
         public Col(String name) {
             super(name);
+            value = Optional.of(Color.WHITE);
         }
 
         @Override

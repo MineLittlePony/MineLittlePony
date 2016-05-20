@@ -2,7 +2,12 @@ package com.brohoof.minelittlepony.hdskins.gui;
 
 import com.brohoof.minelittlepony.MineLittlePony;
 import com.brohoof.minelittlepony.Pony;
+import com.brohoof.minelittlepony.PonyGender;
+import com.brohoof.minelittlepony.PonyRace;
+import com.brohoof.minelittlepony.PonySize;
+import com.brohoof.minelittlepony.TailLengths;
 import com.brohoof.minelittlepony.model.PlayerModel;
+import com.google.common.base.Optional;
 import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
 
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -17,7 +22,28 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
     protected void renderModel(EntityPonyModel playermodel, float par2, float par3, float par4, float par5, float par6, float par7) {
         this.bindEntityTexture(playermodel);
         Pony thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(this.getEntityTexture(playermodel));
+        thePony.invalidateSkinCheck();
         thePony.checkSkin();
+
+        if (playermodel.metaHandler != null) {
+            Optional<String> race = playermodel.metaHandler.get("race");
+            Optional<String> tail = playermodel.metaHandler.get("tail");
+            Optional<String> gender = playermodel.metaHandler.get("gender");
+            Optional<String> size = playermodel.metaHandler.get("size");
+            Optional<String> magicColor = playermodel.metaHandler.get("magic");
+
+            if (race.isPresent())
+                thePony.metadata.setRace(PonyRace.valueOf(race.get()));
+            if (tail.isPresent())
+                thePony.metadata.setTail(TailLengths.valueOf(tail.get()));
+            if (gender.isPresent())
+                thePony.metadata.setGender(PonyGender.valueOf(gender.get()));
+            if (size.isPresent())
+                thePony.metadata.setSize(PonySize.valueOf(size.get()));
+            if (magicColor.isPresent())
+                thePony.metadata.setGlowColor(Integer.parseInt(magicColor.get()));
+        }
+
         // TODO small arms
         PlayerModel pm = thePony.getModel(true, false);
         this.mainModel = pm.getModel();

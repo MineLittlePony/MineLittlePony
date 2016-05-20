@@ -51,7 +51,7 @@ public class ModelZombiePony extends ModelPlayerPony {
             leftLegRotateAngleX = MathHelper.cos(move * 0.6662F + 3.1415927F + llQuad) * 0.45F * swing;
             this.bipedRightArm.rotateAngleY = 0.0F;
             this.steveRightArm.rotateAngleY = 0.0F;
-            this.unicornarm.rotateAngleY = 0.0F;
+            this.unicornArmRight.rotateAngleY = 0.0F;
             this.bipedLeftArm.rotateAngleY = 0.0F;
             this.bipedRightLeg.rotateAngleY = 0.0F;
             this.bipedLeftLeg.rotateAngleY = 0.0F;
@@ -59,13 +59,13 @@ public class ModelZombiePony extends ModelPlayerPony {
 
         this.bipedRightArm.rotateAngleX = rightArmRotateAngleX;
         this.steveRightArm.rotateAngleX = rightArmRotateAngleX;
-        this.unicornarm.rotateAngleX = 0.0F;
+        this.unicornArmRight.rotateAngleX = 0.0F;
         this.bipedLeftArm.rotateAngleX = leftArmRotateAngleX;
         this.bipedRightLeg.rotateAngleX = rightLegRotateAngleX;
         this.bipedLeftLeg.rotateAngleX = leftLegRotateAngleX;
         this.bipedRightArm.rotateAngleZ = 0.0F;
         this.steveRightArm.rotateAngleZ = 0.0F;
-        this.unicornarm.rotateAngleZ = 0.0F;
+        this.unicornArmRight.rotateAngleZ = 0.0F;
         this.bipedLeftArm.rotateAngleZ = 0.0F;
         if (this.rightArmPose == ArmPose.EMPTY) {
             var8 = MathHelper.sin(this.swingProgress * (float) Math.PI);
