@@ -31,17 +31,21 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
 
         for (int i = 0; i < leftWing.length; i++) {
             this.leftWing[i] = new ModelRenderer(pony, 56, 32);
+            this.pony.boxList.remove(this.leftWing[i]);
         }
         for (int i = 0; i < rightWing.length; i++) {
             this.rightWing[i] = new ModelRenderer(pony, 56, 16);
+            this.pony.boxList.remove(this.rightWing[i]);
         }
         for (int i = 0; i < leftWingExt.length; i++) {
             this.leftWingExt[i] = new ModelRenderer(pony, 56, 35);
+            this.pony.boxList.remove(this.leftWingExt[i]);
         }
         for (int i = 0; i < rightWingExt.length; i++) {
             this.rightWingExt[i] = new ModelRenderer(pony, 56, 19);
             // this seems to hide the wings being a different size when folded
             this.rightWingExt[i].mirror = true;
+            this.pony.boxList.remove(this.rightWingExt[i]);
         }
 
         initPositions(yOffset, stretch);
