@@ -89,25 +89,24 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         } else if (this.isRiding) {
 
             this.adjustBodyComponents(BODY_ROTATE_ANGLE_X_RIDING, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
-            this.adjustNeck((float) (Math.PI * 1), 9, 1);
-            this.bipedHead.offsetY = .1f;
-            this.bipedHead.offsetZ = .1f;
-            this.bipedHeadwear.offsetY = .1f;
-            this.bipedHeadwear.offsetZ = .1f;
+            this.adjustNeck(BODY_ROTATE_ANGLE_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
             this.bipedLeftLeg.rotationPointZ = 15;
-            this.bipedLeftLeg.rotationPointY = 21;
-            this.bipedLeftLeg.rotateAngleX = (float) (Math.PI * 1.5);
-            this.bipedLeftLeg.rotateAngleY = -.2f;
+            this.bipedLeftLeg.rotationPointY = 10;
+            this.bipedLeftLeg.rotateAngleX = (float) (Math.PI * -0.25);
+            this.bipedLeftLeg.rotateAngleY = (float) (Math.PI * -0.2);
 
             this.bipedRightLeg.rotationPointZ = 15;
-            this.bipedRightLeg.rotationPointY = 21;
-            this.bipedRightLeg.rotateAngleX = (float) (Math.PI * 1.5);
-            this.bipedRightLeg.rotateAngleY = .2f;
+            this.bipedRightLeg.rotationPointY = 10;
+            this.bipedRightLeg.rotateAngleX = (float) (Math.PI * -0.25);
+            this.bipedRightLeg.rotateAngleY = (float) (Math.PI * 0.2);
+
+            this.bipedLeftArm.rotateAngleZ = (float) (Math.PI * -0.06);
+            this.bipedRightArm.rotateAngleZ = (float) (Math.PI * 0.06);
 
             for (int i = 0; i < Tail.length; ++i) {
-                setRotationPoint(this.Tail[i], TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_NOTSNEAK);
-                this.Tail[i].rotationPointZ = 15;
-                this.Tail[i].rotationPointY = 14;
+                this.Tail[i].rotationPointZ = 13;
+                this.Tail[i].rotationPointY = 3;
+                this.Tail[i].rotateAngleX = (float) (Math.PI * 0.2);
             }
         } else {
 
@@ -459,6 +458,8 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.bipedLeftArm.rotateAngleX -= SNEAK_LEG_X_ROTATION_ADJUSTMENT;
         this.bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_SNEAK;
         this.bipedLeftLeg.rotationPointY = FRONT_LEG_RP_Y_SNEAK;
+        this.bipedRightArm.rotationPointY = 1;
+        this.bipedLeftArm.rotationPointY = 1;
 
     }
 
@@ -470,7 +471,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
         for (int i7 = 0; i7 < tailstop; ++i7) {
             setRotationPoint(this.Tail[i7], TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_SNEAK);
-            this.Tail[i7].rotateAngleX = 0.0F;
+            this.Tail[i7].rotateAngleX = -BODY_ROTATE_ANGLE_X_SNEAK;
         }
 
     }
@@ -601,6 +602,8 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             var3 = 0;
         }
 
+        this.bipedBody.postRender(this.scale);
+
         for (int k = 0; k < var3; ++k) {
             this.Tail[k].render(this.scale);
         }
@@ -608,6 +611,8 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     }
 
     protected void renderLegs() {
+        this.bipedBody.postRender(this.scale);
+
         this.bipedLeftArm.render(this.scale);
         this.bipedRightArm.render(this.scale);
         this.bipedLeftLeg.render(this.scale);
