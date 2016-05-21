@@ -37,6 +37,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSlider;
 import net.minecraft.client.gui.GuiSlider.FormatHelper;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.I18n;
@@ -139,13 +140,16 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
         int bottom = height - 40;
         int mid = width / 2;
 
+        float yPos = this.height;
+        float scale = this.height * 0.25F;
+
         Gui.drawRect(mid + 10, top, width - 10, bottom, Integer.MIN_VALUE);
 
         ((GuiSkins) parent).enableClipping(30, height - 40);
         enableBlend();
         enableDepth();
-        mc.getTextureManager().bindTexture(EntityPlayerModel.NOSKIN);
-        renderPlayerModel(this.model, width * 0.75F, height * .75F, height * 0.25F, mouseX, mouseY, partialTick);
+        mc.getTextureManager().bindTexture(this.model.getSkinTexture());
+        renderPlayerModel(this.model, width * 0.75F, height * .75F, height * 0.25F, mouseX, yPos - scale * 1.8F - mouseY, partialTick);
         disableDepth();
         disableBlend();
         ((GuiSkins) parent).disableClipping();
@@ -160,8 +164,9 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
     public void renderPlayerModel(Entity thePlayer, float xPosition, float yPosition, float scale, float mouseX, float mouseY, float partialTick) {
         enableColorMaterial();
         pushMatrix();
-        translate(xPosition, yPosition, 300.0F);
+        translate(xPosition, yPosition, 200.0F);
 
+        GlStateManager.color(1, 1, 1, 1);
         scale(-scale, scale, scale);
         rotate(180.0F, 0.0F, 0.0F, 1.0F);
         rotate(135.0F, 0.0F, 1.0F, 0.0F);
@@ -170,13 +175,13 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
 
         rotate(-135.0F, 0.0F, 1.0F, 0.0F);
         rotate(15.0F, 1.0F, 0.0F, 0.0F);
-        rotate((updateCounter + partialTick) * 2.5F, 0.0F, 1.0F, 0.0F);
+        rotate((this.updateCounter + partialTick) * 2.5F, 0.0F, 1.0F, 0.0F);
         thePlayer.rotationPitch = -((float) Math.atan(mouseY / 40.0F)) * 20.0F;
         translate(0.0D, thePlayer.getYOffset(), 0.0D);
 
         RenderManager rm = Minecraft.getMinecraft().getRenderManager();
         rm.playerViewY = 180.0F;
-        rm.renderEntityStatic(thePlayer, 0, false);
+        rm.doRenderEntity(thePlayer, 0, 0, 0, 0, 1, false);
 
         popMatrix();
         RenderHelper.disableStandardItemLighting();

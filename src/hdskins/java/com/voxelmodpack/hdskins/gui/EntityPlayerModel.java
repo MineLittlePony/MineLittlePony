@@ -146,7 +146,7 @@ public class EntityPlayerModel extends EntityLivingBase {
 
     @Override
     public int getBrightnessForRender(float partialTicks) {
-        return 1;
+        return 15728880;
     }
 
     @Override

@@ -573,9 +573,10 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         float xPos2 = this.width * 0.75F;
         float scale = this.height * 0.25F;
 
-        mc.getTextureManager().bindTexture(EntityPlayerModel.NOSKIN);
-
+        mc.getTextureManager().bindTexture(this.localPlayer.getSkinTexture());
         this.renderPlayerModel(this.localPlayer, xPos1, yPos, scale, xPos1 - mouseX, yPos - scale * 1.8F - mouseY, partialTick);
+
+        mc.getTextureManager().bindTexture(this.remotePlayer.getSkinTexture());
         this.renderPlayerModel(this.remotePlayer, xPos2, yPos, scale, xPos2 - mouseX, yPos - scale * 1.8F - mouseY, partialTick);
 
         this.disableClipping();
@@ -670,7 +671,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
 
         RenderManager rm = Minecraft.getMinecraft().getRenderManager();
         rm.playerViewY = 180.0F;
-        rm.renderEntityStatic(thePlayer, 0, false);
+        rm.doRenderEntity(thePlayer, 0, 0, 0, 0, 1, false);
 
         popMatrix();
         RenderHelper.disableStandardItemLighting();
