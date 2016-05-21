@@ -2,12 +2,15 @@ package com.voxelmodpack.hdskins.gui;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
+import java.util.Set;
+
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.util.ResourceLocation;
 
 public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLivingBase<M> {
@@ -48,6 +51,16 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         } else {
             this.mainModel = FAT;
         }
+
+        ModelPlayer player = (ModelPlayer) this.getMainModel();
+
+        Set<EnumPlayerModelParts> parts = Minecraft.getMinecraft().gameSettings.getModelParts();
+        player.bipedHeadwear.isHidden = !parts.contains(EnumPlayerModelParts.HAT);
+        player.bipedBodyWear.isHidden = !parts.contains(EnumPlayerModelParts.JACKET);
+        player.bipedLeftLegwear.isHidden = !parts.contains(EnumPlayerModelParts.LEFT_PANTS_LEG);
+        player.bipedRightLegwear.isHidden = !parts.contains(EnumPlayerModelParts.RIGHT_PANTS_LEG);
+        player.bipedLeftArmwear.isHidden = !parts.contains(EnumPlayerModelParts.LEFT_SLEEVE);
+        player.bipedRightArmwear.isHidden = !parts.contains(EnumPlayerModelParts.RIGHT_SLEEVE);
 
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         super.doRender(par1Entity, par2, par4, par6, par8, par9);
