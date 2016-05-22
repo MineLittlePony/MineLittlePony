@@ -29,6 +29,12 @@ public class MineLittlePony {
     public static final String MOD_NAME = "Mine Little Pony";
     public static final String MOD_VERSION = "@VERSION@";
 
+    public static final String MLP_SIZE = "mlp.size";
+    public static final String MLP_GENDER = "mlp.gender";
+    public static final String MLP_TAIL = "mlp.tail";
+    public static final String MLP_RACE = "mlp.race";
+    public static final String MLP_MAGIC = "mlp.magic";
+
     private static final String SKIN_SERVER_URL = "minelpskins.voxelmodpack.com";
     private static final String GATEWAY_URL = "minelpskinmanager.voxelmodpack.com";
     private static final KeyBinding SETTINGS_GUI = new KeyBinding("Settings", Keyboard.KEY_F9, "Mine Little Pony");

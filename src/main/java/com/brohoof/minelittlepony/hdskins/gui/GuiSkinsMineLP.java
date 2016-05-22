@@ -2,6 +2,7 @@ package com.brohoof.minelittlepony.hdskins.gui;
 
 import java.awt.image.BufferedImage;
 
+import com.brohoof.minelittlepony.MineLittlePony;
 import com.brohoof.minelittlepony.PonyGender;
 import com.brohoof.minelittlepony.PonyManager;
 import com.brohoof.minelittlepony.PonyRace;
@@ -24,11 +25,11 @@ public class GuiSkinsMineLP extends GuiSkins {
     @Override
     protected void setupMetaOverrides(GuiMetaHandler meta) {
         super.setupMetaOverrides(meta);
-        meta.selection("race", PonyRace.class);
-        meta.selection("tail", TailLengths.class);
-        meta.selection("gender", PonyGender.class);
-        meta.selection("size", PonySize.class);
-        meta.color("magic");
+        meta.selection(MineLittlePony.MLP_RACE, PonyRace.class);
+        meta.selection(MineLittlePony.MLP_TAIL, TailLengths.class);
+        meta.selection(MineLittlePony.MLP_GENDER, PonyGender.class);
+        meta.selection(MineLittlePony.MLP_SIZE, PonySize.class);
+        meta.color(MineLittlePony.MLP_MAGIC);
     }
 
     @Override

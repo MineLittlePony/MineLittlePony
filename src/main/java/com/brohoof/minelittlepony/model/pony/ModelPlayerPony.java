@@ -50,7 +50,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.rotateHead(horz, vert);
         this.swingTailZ(move, swing);
         float bodySwingRotation = 0.0F;
-        if (this.swingProgress > -9990.0F && (!this.metadata.getRace().hasHorn() || this.metadata.getGlowColor() == 0)) {
+        if (this.swingProgress > -9990.0F && !this.metadata.hasMagic()) {
             bodySwingRotation = MathHelper.sin(MathHelper.sqrt_float(this.swingProgress) * 3.1415927F * 2.0F) * 0.2F;
         }
 
@@ -328,7 +328,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
     @SuppressWarnings("incomplete-switch")
     protected void holdItem() {
-        if (!this.rainboom && (!this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0)) {
+        if (!this.rainboom && !this.metadata.hasMagic()) {
 
             switch (this.leftArmPose) {
             case EMPTY:
@@ -370,7 +370,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             EnumHandSide mainSide = this.getMainHand(entity);
             boolean mainRight = mainSide == EnumHandSide.RIGHT;
             ArmPose mainPose = mainRight ? this.rightArmPose : this.leftArmPose;
-            if (this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0 && mainPose != ArmPose.EMPTY) {
+            if (this.metadata.hasMagic() && mainPose != ArmPose.EMPTY) {
 
                 ModelRenderer unicornarm = mainSide == EnumHandSide.LEFT ? this.unicornArmLeft : this.unicornArmRight;
 
@@ -396,7 +396,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         if (this.rightArmPose != ArmPose.EMPTY && !this.isSleeping) {
             float cosTickFactor = MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
             float sinTickFactor = MathHelper.sin(tick * 0.067F) * 0.05F;
-            if (this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0) {
+            if (this.metadata.hasMagic()) {
                 this.unicornArmRight.rotateAngleZ += cosTickFactor;
                 this.unicornArmRight.rotateAngleX += sinTickFactor;
             } else {
@@ -409,7 +409,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         if (this.leftArmPose != ArmPose.EMPTY && !this.isSleeping) {
             float cosTickFactor = MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
             float sinTickFactor = MathHelper.sin(tick * 0.067F) * 0.05F;
-            if (this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0) {
+            if (this.metadata.hasMagic()) {
                 this.unicornArmLeft.rotateAngleZ += cosTickFactor;
                 this.unicornArmLeft.rotateAngleX += sinTickFactor;
             } else {
@@ -504,7 +504,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     protected void aimBow(ArmPose leftArm, ArmPose rightArm, float tick) {
         if (leftArm == ArmPose.BOW_AND_ARROW || rightArm == ArmPose.BOW_AND_ARROW) {
 
-            if (this.metadata.getRace().hasHorn() && this.metadata.getGlowColor() != 0) {
+            if (this.metadata.hasMagic()) {
                 this.aimBowUnicorn(tick);
             } else {
                 this.aimBowPony(leftArm, rightArm, tick);

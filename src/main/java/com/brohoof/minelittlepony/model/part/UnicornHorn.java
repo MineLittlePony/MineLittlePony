@@ -42,22 +42,22 @@ public class UnicornHorn extends AbstractHeadPart implements PonyModelConstants 
         super.render(data, scale);
         if (data.getRace() != null && data.getRace().hasHorn()) {
             this.horn.render(scale);
-            if ((pony.leftArmPose != ArmPose.EMPTY || pony.rightArmPose != ArmPose.EMPTY) && data.getGlowColor() != 0) {
+            if ((pony.leftArmPose != ArmPose.EMPTY || pony.rightArmPose != ArmPose.EMPTY) && data.hasMagic()) {
                 GL11.glPushAttrib(24577);
                 disableTexture2D();
                 disableLighting();
                 enableBlend();
 
-                float var4 = (data.getGlowColor() >> 16 & 255) / 255.0F;
+                float red = (data.getGlowColor() >> 16 & 255) / 255.0F;
                 float green = (data.getGlowColor() >> 8 & 255) / 255.0F;
                 float blue = (data.getGlowColor() & 255) / 255.0F;
                 blendFunc(GL11.GL_SRC_ALPHA, 1);
 
                 this.horn.postRender(scale);
                 
-                color(var4, green, blue, 0.4F);
+                color(red, green, blue, 0.4F);
                 this.hornglow[0].render(scale);
-                color(var4, green, blue, 0.2F);
+                color(red, green, blue, 0.2F);
                 this.hornglow[1].render(scale);
 
                 enableTexture2D();

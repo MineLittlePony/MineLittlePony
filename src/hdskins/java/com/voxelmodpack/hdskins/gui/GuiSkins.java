@@ -230,7 +230,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     }
 
     protected void setupMetaOverrides(GuiMetaHandler meta) {
-        meta.bool("slim");
+        meta.bool("hdskins.slim");
     }
 
     /**

@@ -29,7 +29,7 @@ public class ModelPonyArmor extends ModelPlayerPony {
         this.checkRainboom(entity, swing);
         this.rotateHead(horz, vert);
         float bodySwingRotation = 0.0F;
-        if (this.swingProgress > -9990.0F && (!this.metadata.getRace().hasHorn() || this.metadata.getGlowColor() == 0)) {
+        if (this.swingProgress > -9990.0F && !this.metadata.hasMagic()) {
             bodySwingRotation = MathHelper.sin(MathHelper.sqrt_float(this.swingProgress) * 3.1415927F * 2.0F) * 0.2F;
         }
 

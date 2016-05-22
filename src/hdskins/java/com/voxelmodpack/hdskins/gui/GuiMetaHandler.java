@@ -13,13 +13,13 @@ import org.lwjgl.input.Keyboard;
 import com.google.common.base.Converter;
 import com.google.common.base.Enums;
 import com.google.common.base.Functions;
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.primitives.Ints;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.mumfrey.liteloader.client.gui.GuiCheckbox;
 import com.mumfrey.webprefs.WebPreferencesManager;
 import com.mumfrey.webprefs.interfaces.IWebPreferences;
@@ -224,18 +224,28 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
     }
 
     public void push() {
-        String data = new Gson().toJson(toMap());
-
         IWebPreferences prefs = WebPreferencesManager.getDefault().getLocalPreferences(false);
-        prefs.set(HDSkinManager.METADATA_KEY, data);
+        Map<String, String> data = this.toMap();
+        for (Entry<String, String> e : data.entrySet()) {
+            prefs.set(e.getKey(), e.getValue());
+        }
+        // set the enabled metadata
+        prefs.set(HDSkinManager.METADATA_KEY, Joiner.on(',').join(data.keySet()));
         prefs.commit(false);
     }
 
     public void fetch() {
         IWebPreferences prefs = WebPreferencesManager.getDefault().getLocalPreferences(false);
-        String json = prefs.get(HDSkinManager.METADATA_KEY, "{}");
-        Map<String, String> data = new Gson().fromJson(json, new TypeToken<Map<String, String>>() {}.getType());
-        fromMap(data);
+        if (prefs.has(HDSkinManager.METADATA_KEY)) {
+            String meta = prefs.get(HDSkinManager.METADATA_KEY);
+            Map<String, String> data = Maps.newHashMap();
+            for (String key : Splitter.on(',').split(meta)) {
+                if (prefs.has(key)) {
+                    data.put(key, prefs.get(key));
+                }
+            }
+            fromMap(data);
+        }
     }
 
     private Map<String, String> toMap() {
@@ -249,13 +259,10 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
     }
 
     private void fromMap(Map<String, String> data) {
-        for (Entry<String, String> e : data.entrySet()) {
-            for (Opt<?> opt : options) {
-                if (opt.name.equals(e.getKey())) {
-                    opt.fromString(e.getValue());
-                    opt.setEnabled(opt.value.isPresent());
-                    break;
-                }
+        for (Opt<?> opt : options) {
+            if (data.containsKey(opt.getName())) {
+                opt.fromString(data.get(opt.getName()));
+                opt.setEnabled(opt.value.isPresent());
             }
         }
     }
@@ -386,7 +393,7 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
         @Override
         public void init() {
             super.init();
-            this.guiSlider = new GuiSlider(this, 0, optionPosX + 20, optionHeight, this.name, min, max, min, this);
+            this.guiSlider = new GuiSlider(this, 0, optionPosX + 20, optionHeight, I18n.format(this.name), min, max, min, this);
             optionHeight += 22;
         }
 
@@ -460,7 +467,7 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
         @Override
         protected void init() {
             super.init();
-            this.button = new GuiButton(0, optionPosX + 20, optionHeight, 100, 20, name + ": " + I18n.format(this.get().toString()));
+            this.button = new GuiButton(0, optionPosX + 20, optionHeight, 100, 20, I18n.format(name, this.get().toString()));
             optionHeight += 22;
         }
 
@@ -479,7 +486,7 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
                     this.index = 0;
                 }
                 this.value = Optional.of(get());
-                this.button.displayString = name + ": " + I18n.format(this.toString());
+                this.button.displayString = I18n.format(name, this.toString());
             }
         }
 
@@ -496,7 +503,7 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
         public void fromString(String s) {
             value = Enums.getIfPresent(type, s);
             this.index = value.isPresent() ? value.get().ordinal() : 0;
-            this.button.displayString = name + ": " + I18n.format(this.toString());
+            this.button.displayString = I18n.format(name, this.toString());
         }
 
     }
@@ -525,7 +532,7 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
         @Override
         protected void init() {
             super.init();
-            this.color = new GuiColorButton(mc, 0, optionPosX + 20, optionHeight, 20, 20, value.get(), name, this);
+            this.color = new GuiColorButton(mc, 0, optionPosX + 20, optionHeight, 20, 20, value.get(), I18n.format(name), this);
         }
 
         @Override

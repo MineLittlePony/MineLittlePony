@@ -21,7 +21,7 @@ public class ModelVillagerPony extends ModelPlayerPony {
     public void animate(float move, float swing, float tick, float horz, float vert, Entity entity) {
         super.animate(move, swing, tick, horz, vert, entity);
         float bodySwingRotation = 0.0F;
-        if (this.swingProgress > -9990.0F && (!this.metadata.getRace().hasHorn() || this.metadata.getGlowColor() == 0)) {
+        if (this.swingProgress > -9990.0F && !this.metadata.hasMagic()) {
             bodySwingRotation = MathHelper.sin(MathHelper.sqrt_float(this.swingProgress) * 3.1415927F * 2.0F) * 0.2F;
         }
         for (int i = 0; i < this.VillagerBagPiece.length; ++i) {

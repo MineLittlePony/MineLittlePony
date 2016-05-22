@@ -18,7 +18,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.InsecureTextureException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -28,8 +27,6 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.util.UUIDTypeAdapter;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
-import com.mumfrey.webprefs.WebPreferencesManager;
-import com.mumfrey.webprefs.interfaces.IWebPreferences;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IImageBuffer;
@@ -53,8 +50,6 @@ public final class HDSkinManager {
     private Map<UUID, Map<Type, MinecraftProfileTexture>> profileTextures = Maps.newHashMap();
     private Map<UUID, Map<Type, ResourceLocation>> skinCache = Maps.newHashMap();
     private List<ISkinModifier> skinModifiers = Lists.newArrayList();
-
-    private WebPreferencesManager webprefs = WebPreferencesManager.getDefault();
 
     private HDSkinManager() {}
 
@@ -141,16 +136,13 @@ public final class HDSkinManager {
         Map<Type, MinecraftProfileTexture> textures = this.profileTextures.get(profile.getId());
         if (textures == null) {
 
-            IWebPreferences prefs = this.webprefs.getPreferences(profile);
-            TypeToken<?> map = new TypeToken<Map<String, String>>() {};
-            Map<String, String> metadata = new Gson().fromJson(prefs.get(METADATA_KEY), map.getType());
             String uuid = UUIDTypeAdapter.fromUUID(profile.getId());
             String skinUrl = getCustomTextureURLForId(Type.SKIN, uuid, false);
             String capeUrl = getCustomTextureURLForId(Type.CAPE, uuid);
             String elytraUrl = getCustomTextureURLForId(Type.ELYTRA, uuid);
 
             textures = ImmutableMap.of(
-                    Type.SKIN, new MinecraftProfileTexture(skinUrl, metadata),
+                    Type.SKIN, new MinecraftProfileTexture(skinUrl, null),
                     Type.CAPE, new MinecraftProfileTexture(capeUrl, null),
                     Type.ELYTRA, new MinecraftProfileTexture(elytraUrl, null));
             this.profileTextures.put(profile.getId(), textures);

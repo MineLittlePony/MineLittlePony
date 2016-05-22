@@ -100,7 +100,7 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
     public void animate(PonyData metadata, float move, float swing, float tick, float horz, float vert) {
 
         float bodySwingRotation = 0.0F;
-        if (pony.swingProgress > -9990.0F && (!metadata.getRace().hasHorn() || metadata.getGlowColor() == 0)) {
+        if (pony.swingProgress > -9990.0F && !metadata.hasMagic()) {
             bodySwingRotation = MathHelper.sin(MathHelper.sqrt_float(pony.swingProgress) * 3.1415927F * 2.0F) * 0.2F;
         }
         for (int i = 0; i < this.leftWing.length; ++i) {

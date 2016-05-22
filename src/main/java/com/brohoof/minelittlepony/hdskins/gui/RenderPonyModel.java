@@ -26,11 +26,11 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
         thePony.checkSkin();
 
         if (playermodel.metaHandler != null) {
-            Optional<String> race = playermodel.metaHandler.get("race");
-            Optional<String> tail = playermodel.metaHandler.get("tail");
-            Optional<String> gender = playermodel.metaHandler.get("gender");
-            Optional<String> size = playermodel.metaHandler.get("size");
-            Optional<String> magicColor = playermodel.metaHandler.get("magic");
+            Optional<String> race = playermodel.metaHandler.get(MineLittlePony.MLP_RACE);
+            Optional<String> tail = playermodel.metaHandler.get(MineLittlePony.MLP_TAIL);
+            Optional<String> gender = playermodel.metaHandler.get(MineLittlePony.MLP_GENDER);
+            Optional<String> size = playermodel.metaHandler.get(MineLittlePony.MLP_SIZE);
+            Optional<String> magicColor = playermodel.metaHandler.get(MineLittlePony.MLP_MAGIC);
 
             if (race.isPresent())
                 thePony.metadata.setRace(PonyRace.valueOf(race.get()));

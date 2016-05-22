@@ -72,8 +72,12 @@ public class PonyData {
         return glowColor;
     }
 
+    public boolean hasMagic() {
+        return this.race != null && this.race.hasHorn() && this.glowColor != 0;
+    }
+
     public void setGlowColor(int glowColor) {
-        this.glowColor = glowColor;
+        this.glowColor = glowColor & 0xffffff;
     }
 
     public int getTextureWidth() {

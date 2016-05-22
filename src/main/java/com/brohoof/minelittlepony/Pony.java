@@ -2,7 +2,7 @@ package com.brohoof.minelittlepony;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Map;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -10,8 +10,10 @@ import com.brohoof.minelittlepony.model.PMAPI;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.util.MineLPLogger;
 import com.brohoof.minelittlepony.util.PonyFields;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import com.mumfrey.webprefs.WebPreferencesManager;
 import com.mumfrey.webprefs.interfaces.IWebPreferences;
@@ -72,27 +74,46 @@ public class Pony {
     }
 
     private void checkMeta(GameProfile profile) {
-        IWebPreferences prefs = WebPreferencesManager.getDefault().getPreferences(profile);
+        final IWebPreferences prefs = WebPreferencesManager.getDefault().getPreferences(profile);
 
         if (prefs == null)
             return;
 
-        String json = prefs.get(HDSkinManager.METADATA_KEY, "{}");
-        Map<String, String> data = new Gson().fromJson(json, new TypeToken<Map<String, String>>() {}.getType());
+        final List<String> keys;
+        if (prefs.has(HDSkinManager.METADATA_KEY)) {
+            String list = prefs.get(HDSkinManager.METADATA_KEY);
+            keys = Splitter.on(',').splitToList(list);
+        } else {
+            keys = Lists.newArrayList();
+        }
 
-        if (data == null)
-            return;
+        // >inb4 java 8
+        // checkMeta(Predicates.and(keys::contains, prefs::has), prefs::get);
+        checkMeta(new Predicate<String>() {
+            @Override
+            public boolean apply(String key) {
+                return keys.contains(key) && prefs.has(key);
+            }
+        }, new Function<String, String>() {
+            @Override
+            public String apply(String key) {
+                return prefs.get(key);
+            }
+        });
+    }
 
-        if (data.containsKey("race"))
-            metadata.setRace(PonyRace.valueOf(data.get("race")));
-        if (data.containsKey("tail"))
-            metadata.setTail(TailLengths.valueOf(data.get("tail")));
-        if (data.containsKey("gender"))
-            metadata.setGender(PonyGender.valueOf(data.get("gender")));
-        if (data.containsKey("size"))
-            metadata.setSize(PonySize.valueOf(data.get("size")));
-        if (data.containsKey("magic"))
-            metadata.setGlowColor(Integer.parseInt(data.get("magic")));
+    private void checkMeta(Predicate<String> has, Function<String, String> prefs) {
+
+        if (has.apply(MineLittlePony.MLP_RACE))
+            metadata.setRace(PonyRace.valueOf(prefs.apply(MineLittlePony.MLP_RACE)));
+        if (has.apply(MineLittlePony.MLP_TAIL))
+            metadata.setTail(TailLengths.valueOf(prefs.apply(MineLittlePony.MLP_TAIL)));
+        if (has.apply(MineLittlePony.MLP_GENDER))
+            metadata.setGender(PonyGender.valueOf(prefs.apply(MineLittlePony.MLP_GENDER)));
+        if (has.apply(MineLittlePony.MLP_SIZE))
+            metadata.setSize(PonySize.valueOf(prefs.apply(MineLittlePony.MLP_SIZE)));
+        if (has.apply(MineLittlePony.MLP_MAGIC))
+            metadata.setGlowColor(Integer.parseInt(prefs.apply(MineLittlePony.MLP_MAGIC)));
     }
 
     public BufferedImage getBufferedImage(ResourceLocation textureResourceLocation) {

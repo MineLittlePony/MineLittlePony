@@ -73,7 +73,7 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
             GlStateManager.pushMatrix();
             AbstractPonyModel thePony = ((IRenderPony) this.livingPonyEntity).getPony().getModel();
             PonyData metadata = thePony.metadata;
-            boolean isUnicorn = metadata.getRace().hasHorn();
+            boolean isUnicorn = metadata.hasMagic();
             if (isUnicorn) {
                 ModelPlayerPony playerModel = (ModelPlayerPony) thePony;
                 ModelRenderer unicornarm = hand == EnumHandSide.LEFT ? playerModel.unicornArmLeft : playerModel.unicornArmRight;
@@ -95,7 +95,7 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
             }
             Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, drop, transform, isLeft);
 
-            if (isUnicorn && metadata.getGlowColor() != 0) {
+            if (isUnicorn) {
                 this.renderItemGlow(entity, drop.copy(), transform, hand, metadata.getGlowColor());
             }
             GlStateManager.popMatrix();
