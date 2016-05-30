@@ -21,14 +21,14 @@ buildscript {
 	}
 }
 
-ext.revision = 218
+ext.revision = 219
 
 apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'mnm.gradle.ap-ide'
 
 group = 'com.brohoof.minelp'
-version = '1.9.4.0'
+version = '1.9.4.1'
 description = 'Mine Little Pony'
 
 minecraft {
@@ -79,14 +79,16 @@ processResources {
 		exclude 'litemod.json'
 	}
 }
-
-dependencies {
-	factory 'org.spongepowered:mixin:0.5.5-SNAPSHOT'
+afterEvaluate {
+	dependencies {
+		def liteloader = project.plugins['net.minecraftforge.gradle.liteloader']
+		def artifact = liteloader.artifact.libraries.collect{it.name}.find{it.contains 'mixin'}
+		factory artifact
+	}
+	processor {
+		options.reobfSrgFile = mixin.reobfSrgFile
+	}
 }
-processor {
-	options.reobfSrgFile = project.tasks.genSrgs.mcpToSrg.path
-}
-
 jar {
 	from sourceSets.findAll { it.name != 'api' }*.output
 }

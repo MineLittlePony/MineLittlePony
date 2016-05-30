@@ -627,6 +627,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
     @Override
     protected void initTextures() {
+        this.boxList.clear();
         this.Tail = new PlaneRenderer[21];
 
         this.Bodypiece = new PlaneRenderer[14];
