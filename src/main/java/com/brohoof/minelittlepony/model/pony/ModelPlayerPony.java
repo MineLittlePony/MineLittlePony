@@ -458,8 +458,6 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.bipedLeftArm.rotateAngleX -= SNEAK_LEG_X_ROTATION_ADJUSTMENT;
         this.bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_SNEAK;
         this.bipedLeftLeg.rotationPointY = FRONT_LEG_RP_Y_SNEAK;
-        this.bipedRightArm.rotationPointY = 1;
-        this.bipedLeftArm.rotationPointY = 1;
 
     }
 
@@ -611,6 +609,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     }
 
     protected void renderLegs() {
+        if (!this.isSneak)
         this.bipedBody.postRender(this.scale);
 
         this.bipedLeftArm.render(this.scale);

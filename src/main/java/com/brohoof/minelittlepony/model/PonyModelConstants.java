@@ -19,7 +19,7 @@ public interface PonyModelConstants {
     float FIRSTP_ARM_CENTRE_Y = 4.0F;
     float FIRSTP_ARM_CENTRE_Z = 0.0F;
     float FRONT_LEG_RP_Y_NOTSNEAK = 8.0F;
-    float FRONT_LEG_RP_Y_SNEAK = 6.0F;
+    float FRONT_LEG_RP_Y_SNEAK = 8.0F;
     float HEAD_CENTRE_X = 0.0F;
     float HEAD_CENTRE_Y = -1.0F;
     float HEAD_CENTRE_Z = -2.0F;
@@ -46,7 +46,7 @@ public interface PonyModelConstants {
     float RIGHT_WING_RP_Z_SNEAK = 2.0F;
     float ROTATE_270 = 4.712F;
     float ROTATE_90 = 1.571F;
-    float SNEAK_LEG_X_ROTATION_ADJUSTMENT = 0.8F;
+    float SNEAK_LEG_X_ROTATION_ADJUSTMENT = 0.4F;
     float TAIL_RP_X = 0.0F;
     float TAIL_RP_Y = 0.0F;
     float TAIL_RP_Z = 0.0F;
