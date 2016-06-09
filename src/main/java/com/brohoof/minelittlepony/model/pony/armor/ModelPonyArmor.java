@@ -42,7 +42,7 @@ public class ModelPonyArmor extends ModelPlayerPony {
         this.extHead[1].offsetY = 0f;
         this.extHead[1].offsetZ = 0f;
         this.setLegs(move, swing, tick, entity);
-        this.holdItem();
+        this.holdItem(swing);
         this.swingItem(entity, this.swingProgress);
         if (this.isSneak && !this.isFlying) {
             this.adjustBody(BODY_ROTATE_ANGLE_X_SNEAK, BODY_RP_Y_SNEAK, BODY_RP_Z_SNEAK);

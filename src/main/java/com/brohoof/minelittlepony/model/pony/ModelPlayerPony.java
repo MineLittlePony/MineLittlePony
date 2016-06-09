@@ -79,7 +79,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.bipedHeadwear.offsetY = 0f;
         this.bipedHeadwear.offsetZ = 0f;
         this.setLegs(move, swing, tick, entity);
-        this.holdItem();
+        this.holdItem(swing);
         this.swingItem(entity, this.swingProgress);
         if (this.isSneak && !this.isFlying) {
             this.adjustBody(BODY_ROTATE_ANGLE_X_SNEAK, BODY_RP_Y_SNEAK, BODY_RP_Z_SNEAK);
@@ -327,8 +327,9 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     }
 
     @SuppressWarnings("incomplete-switch")
-    protected void holdItem() {
+    protected void holdItem(float swing) {
         if (!this.rainboom && !this.metadata.hasMagic()) {
+            boolean bothHoovesAreOccupied = this.leftArmPose == ArmPose.ITEM && this.rightArmPose == ArmPose.ITEM;
 
             switch (this.leftArmPose) {
             case EMPTY:
@@ -339,7 +340,12 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
                 this.bipedLeftArm.rotateAngleY = 0.5235988F;
                 break;
             case ITEM:
-                this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.5F - ((float) Math.PI / 10F);
+                float swag = 1f;
+                if (!isFlying && bothHoovesAreOccupied) {
+                    swag = (float) (1d - Math.pow(swing, 2d));
+                }
+                float rotationMultiplier = 0.5f + 0.5f * (1f - swag);
+                this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * rotationMultiplier - ((float) Math.PI / 10F) * swag;
                 this.bipedLeftArm.rotateAngleY = 0.0F;
             }
 
@@ -352,7 +358,12 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
                 this.bipedRightArm.rotateAngleY = -0.5235988F;
                 break;
             case ITEM:
-                this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - ((float) Math.PI / 10F);
+                float swag = 1f;
+                if (!isFlying && bothHoovesAreOccupied) {
+                    swag = (float) (1d - Math.pow(swing, 2d));
+                }
+                float rotationMultiplier = 0.5f + 0.5f * (1f - swag);
+                this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * rotationMultiplier - ((float) Math.PI / 10F) * swag;
                 this.bipedRightArm.rotateAngleY = 0.0F;
             }
 
