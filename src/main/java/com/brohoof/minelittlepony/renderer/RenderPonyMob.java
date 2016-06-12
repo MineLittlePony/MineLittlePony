@@ -74,6 +74,8 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
                 if (action == EnumAction.BLOCK) {
                     offPose = ArmPose.BLOCK;
+                } else if (action == EnumAction.BOW) {
+                    offPose = ArmPose.BOW_AND_ARROW;
                 }
             }
         }

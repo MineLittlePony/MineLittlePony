@@ -153,6 +153,8 @@ public abstract class AbstractPonyModel extends ModelPlayer {
 
                     if (enumaction == EnumAction.BLOCK) {
                         offPose = ArmPose.BLOCK;
+                    } else if (enumaction == EnumAction.BOW) {
+                        offPose = ArmPose.BOW_AND_ARROW;
                     }
                 }
             }
