@@ -177,11 +177,13 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
                     shift = Shift.AFTER))
     private void onRotateCorpse(AbstractClientPlayer player, float yaw, float pitch, float ticks, CallbackInfo ci) {
         if (this.mainModel instanceof ModelPlayerPony) {
-            double motionY = player.motionY;
+            double motionX = player.posX - player.prevPosX;
+            double motionY = player.posY - player.prevPosY;
+            double motionZ = player.posZ - player.prevPosZ;
             if (player.onGround) {
                 motionY = 0;
             }
-            double dist = Math.sqrt(player.motionX * player.motionX + player.motionZ * player.motionZ);
+            double dist = Math.sqrt(motionX * motionX + motionZ * motionZ);
             double angle = Math.atan2(motionY, dist);
             if (!player.capabilities.isFlying) {
                 if (angle > 0) {
@@ -194,11 +196,6 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
                 angle *= -1;
             }
 
-            // if (player.motionY > 0.2 && dist < 1) {
-            //
-            // // TODO straight up/down
-            // angle = Math.signum(player.motionY) * Math.PI / 3;
-            // }
             if (angle > Math.PI / 3)
                 angle = Math.PI / 3;
             if (angle < -Math.PI / 3)
