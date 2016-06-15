@@ -6,6 +6,7 @@ import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -164,6 +165,50 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
             require = 2)
     private ModelRenderer redirectRightArmwear(ModelPlayer mr) {
         return this.playerModel.getModel().steveRightArmwear;
+    }
+
+    @Inject(
+            method = "rotateCorpse(Lnet/minecraft/client/entity/AbstractClientPlayer;FFF)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/renderer/entity/RenderLivingBase;"
+                            + "rotateCorpse(Lnet/minecraft/entity/EntityLivingBase;FFF)V",
+                    ordinal = 1,
+                    shift = Shift.AFTER))
+    private void onRotateCorpse(AbstractClientPlayer player, float yaw, float pitch, float ticks, CallbackInfo ci) {
+        if (this.mainModel instanceof ModelPlayerPony) {
+            double motionY = player.motionY;
+            if (player.onGround) {
+                motionY = 0;
+            }
+            double dist = Math.sqrt(player.motionX * player.motionX + player.motionZ * player.motionZ);
+            double angle = Math.atan2(motionY, dist);
+            if (!player.capabilities.isFlying) {
+                if (angle > 0) {
+                    angle = 0;
+                } else {
+                    angle /= 2;
+                }
+            }
+            if (player.moveForward < 0) {
+                angle *= -1;
+            }
+
+            // if (player.motionY > 0.2 && dist < 1) {
+            //
+            // // TODO straight up/down
+            // angle = Math.signum(player.motionY) * Math.PI / 3;
+            // }
+            if (angle > Math.PI / 3)
+                angle = Math.PI / 3;
+            if (angle < -Math.PI / 3)
+                angle = -Math.PI / 3;
+
+            this.playerModel.getModel().motionPitch = (float) Math.toDegrees(angle);
+
+            GlStateManager.rotate((float) Math.toDegrees(angle), 1F, 0F, 0F);
+
+        }
     }
 
     @Redirect(

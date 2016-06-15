@@ -184,8 +184,8 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             headRotateAngleX = vert / 57.29578F;
         }
 
-        final float max = 0.5f;
-        final float min = -1.25f;
+        final float max = (float) (0.5f - Math.toRadians(this.motionPitch));
+        final float min = (float) (-1.25f - Math.toRadians(this.motionPitch));
         headRotateAngleX = Math.min(headRotateAngleX, max);
         headRotateAngleX = Math.max(headRotateAngleX, min);
         this.bipedHead.rotateAngleY = headRotateAngleY;

@@ -38,6 +38,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     public boolean isSleeping;
 
     public PonyData metadata = new PonyData();
+    public float motionPitch;
 
     protected List<IPonyPart> modelParts = Lists.newArrayList();
 
@@ -331,6 +332,9 @@ public abstract class AbstractPonyModel extends ModelPlayer {
             if (this.isSleeping) {
                 translate(0.0F, -0.535F, 0.25F);
             }
+        }
+        if (part == BodyPart.HEAD) {
+            rotate(motionPitch, 1F, 0F, 0F);
         }
     }
 
