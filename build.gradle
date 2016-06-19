@@ -21,14 +21,14 @@ buildscript {
 	}
 }
 
-ext.revision = 219
+ext.revision = 220
 
 apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'mnm.gradle.ap-ide'
 
 group = 'com.brohoof.minelp'
-version = '1.9.4.1'
+version = '1.9.4.2'
 description = 'Mine Little Pony'
 
 minecraft {
