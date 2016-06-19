@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
 import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.SkeletonType;
 import net.minecraft.util.ResourceLocation;
 
 public class RenderPonySkeleton extends RenderPonyMob<EntitySkeleton> {
@@ -30,7 +31,8 @@ public class RenderPonySkeleton extends RenderPonyMob<EntitySkeleton> {
     @Override
     protected void preRenderCallback(EntitySkeleton skeleton, float partialTicks) {
         super.preRenderCallback(skeleton, partialTicks);
-        if (skeleton.getSkeletonType() == 1) {
+        if (skeleton.func_189771_df() == SkeletonType.WITHER) {// getSkeletonType()
+                                                               // == 1) {
             GlStateManager.scale(1.2F, 1.2F, 1.2F);
         }
 
@@ -49,13 +51,19 @@ public class RenderPonySkeleton extends RenderPonyMob<EntitySkeleton> {
         }
         PonySize[] sizes = PonySize.values();
         PonySize size = sizes[rand.nextInt(sizes.length)];
-        this.playerModel.getModel().metadata.setSize(size== PonySize.FOAL ? PonySize.NORMAL : size);
+        this.playerModel.getModel().metadata.setSize(size == PonySize.FOAL ? PonySize.NORMAL : size);
         this.playerModel.getModel().metadata.setTail(TailLengths.STUB);
         this.playerModel.getModel().metadata.setGlowColor(rand.nextInt());
     }
 
     @Override
     protected ResourceLocation getEntityTexture(EntitySkeleton skeleton) {
-        return skeleton.getSkeletonType() == 1 ? PonyManager.WITHER_SKELETON : PonyManager.SKELETON;
+        SkeletonType type = skeleton.func_189771_df();
+        if (type == SkeletonType.WITHER)
+            return PonyManager.WITHER_SKELETON;
+        else if (type == SkeletonType.STRAY)
+            return PonyManager.STRAY_SKELETON;
+        else
+            return PonyManager.SKELETON;
     }
 }
