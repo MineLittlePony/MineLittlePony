@@ -22,6 +22,7 @@ public class PonyManager {
     public static final ResourceLocation SKELETON = new ResourceLocation(NAMESPACE, "textures/entity/skeleton/skeleton_pony.png");
     public static final ResourceLocation WITHER_SKELETON = new ResourceLocation(NAMESPACE, "textures/entity/skeleton/skeleton_wither_pony.png");
     public static final ResourceLocation STRAY_SKELETON = new ResourceLocation(NAMESPACE, "textures/entity/skeleton/stray_pony.png");
+    public static final ResourceLocation STRAY_SKELETON_OVERLAY = new ResourceLocation(NAMESPACE, "textures/entity/skeleton/stray_pony_overlay.png");
     public static final ResourceLocation STEVE = new ResourceLocation(NAMESPACE, "textures/entity/steve_pony.png");
     public static final ResourceLocation ALEX = new ResourceLocation(NAMESPACE, "textures/entity/alex_pony.png");
 

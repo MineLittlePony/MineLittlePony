@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -11,11 +12,13 @@ import java.util.UUID;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.io.Resources;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
@@ -104,9 +107,9 @@ public final class HDSkinManager {
                 return;
             }
 
-            String dir = type.toString().toLowerCase() + "s/";
-            final ResourceLocation skin = new ResourceLocation(dir + texture.getHash());
-            File file1 = new File(new File("assets/" + dir), texture.getHash().substring(0, 2));
+            String skinDir = "hd" + type.toString().toLowerCase() + "s/";
+            final ResourceLocation skin = new ResourceLocation(skinDir + texture.getHash());
+            File file1 = new File(new File("assets/" + skinDir), texture.getHash().substring(0, 2));
             File file2 = new File(file1, texture.getHash());
             final IImageBuffer imagebufferdownload = new ImageBufferDownloadHD();
             ThreadDownloadImageData threaddownloadimagedata = new ThreadDownloadImageData(file2, texture.getUrl(),
@@ -137,14 +140,16 @@ public final class HDSkinManager {
         if (textures == null) {
 
             String uuid = UUIDTypeAdapter.fromUUID(profile.getId());
-            String skinUrl = getCustomTextureURLForId(Type.SKIN, uuid, false);
-            String capeUrl = getCustomTextureURLForId(Type.CAPE, uuid);
-            String elytraUrl = getCustomTextureURLForId(Type.ELYTRA, uuid);
 
-            textures = ImmutableMap.of(
-                    Type.SKIN, new MinecraftProfileTexture(skinUrl, null),
-                    Type.CAPE, new MinecraftProfileTexture(capeUrl, null),
-                    Type.ELYTRA, new MinecraftProfileTexture(elytraUrl, null));
+            ImmutableMap.Builder<Type, MinecraftProfileTexture> builder = ImmutableMap.builder();
+            for (Type type : Type.values()) {
+                String url = getCustomTextureURLForId(type, uuid);
+                String hash = getTextureHash(type, uuid);
+
+                builder.put(type, new HDProfileTexture(url, hash, null));
+            }
+
+            textures = builder.build();
             this.profileTextures.put(profile.getId(), textures);
         }
         return textures;
@@ -194,6 +199,15 @@ public final class HDSkinManager {
 
     public String getCustomTextureURLForId(Type type, String uuid) {
         return getCustomTextureURLForId(type, uuid, false);
+    }
+
+    private String getTextureHash(Type type, String uuid) {
+        try {
+            URL url = new URL(getCustomTextureURLForId(type, uuid) + ".md5");
+            return Resources.asCharSource(url, Charsets.UTF_8).readFirstLine();
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     public void setEnabled(boolean enabled) {

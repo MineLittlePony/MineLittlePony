@@ -48,7 +48,7 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
     }
 
     @Inject(
-            method = "<init>(" + "Lnet/minecraft/client/renderer/entity/RenderManager;" + "Z)V",
+            method = "<init>(Lnet/minecraft/client/renderer/entity/RenderManager;Z)V",
             at = @At("RETURN"))
     private void init(RenderManager renderManager, boolean useSmallArms, CallbackInfo ci) {
         this.playerModel = smallArms ? PMAPI.ponySmall : PMAPI.pony;

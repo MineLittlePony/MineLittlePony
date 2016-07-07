@@ -28,12 +28,12 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'mnm.gradle.ap-ide'
 
 group = 'com.brohoof.minelp'
-version = '1.10.0.0'
+version = '1.10.2.0'
 description = 'Mine Little Pony'
 
 minecraft {
-	version = "1.10"
-	mappings = 'snapshot_20160619'
+	version = "1.10.2"
+	mappings = 'snapshot_20160704' // 'murica! F*** yeah!
 	runDir = 'run'
 	replace '@VERSION@',project.version
 }
@@ -55,29 +55,14 @@ sourceSets {
 		compileClasspath += files(deps + [ main.output, api.output ])
 	}
 }
-//litemod.json {
-//	mixinConfigs += ['mixin.minelp.json', 'mixin.hdskins.json']
-//	author = "author": "Verdana, Rene_Z, Mumfrey, JoyJoy"
-//	description = "Mine Little Pony turns players and mobs into ponies"
-//	description.litemodminelittlepony = """Mine Little Pony turns players and mobs into ponies
-// Press F9 ingame to access settings"""
-//	description.litemodhdskinsmod = """Seperate skin server for Mine Little Pony that also supports HD skins.
-// Access via Skin Manager key binding (default: F1) in the main menu."""
-//}
-processResources {
-	def props = [
-		version:	version,
-		mcversion:  minecraft.version,
-		revision:   revision
-	]
-	inputs.properties props
-	from(sourceSets.main.resources.srcDirs) {
-		include 'litemod.json'
-		expand props
-	}
-	from(sourceSets.main.resources.srcDirs) {
-		exclude 'litemod.json'
-	}
+litemod.json {
+	author = "Verdana, Rene_Z, Mumfrey, JoyJoy"
+	description = "Mine Little Pony turns players and mobs into ponies"
+	description.litemodminelittlepony = """Mine Little Pony turns players and mobs into ponies
+ Press F9 ingame to access settings"""
+	description.litemodhdskinsmod = """Seperate skin server for Mine Little Pony that also supports HD skins.
+ Access via Skin Manager key binding (default: F1) in the main menu."""
+	mixinConfigs += ['mixin.minelp.json', 'mixin.hdskins.json']
 }
 afterEvaluate {
 	dependencies {
@@ -91,6 +76,7 @@ afterEvaluate {
 }
 jar {
 	from sourceSets.findAll { it.name != 'api' }*.output
+	from litemod.outputs
 }
 mixin {
 	defaultObfuscationEnv notch

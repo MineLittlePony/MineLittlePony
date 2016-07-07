@@ -8,6 +8,7 @@ import com.brohoof.minelittlepony.PonyRace;
 import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.TailLengths;
 import com.brohoof.minelittlepony.model.PMAPI;
+import com.brohoof.minelittlepony.renderer.layer.LayerPonySkeletonOverlay;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -19,20 +20,20 @@ import net.minecraft.util.ResourceLocation;
 public class RenderPonySkeleton extends RenderPonyMob<EntitySkeleton> {
     public RenderPonySkeleton(RenderManager rm) {
         super(rm, PMAPI.skeleton);
-        addLayer(new LayerBipedArmor(this) {
+        this.addLayer(new LayerBipedArmor(this) {
             @Override
             protected void initArmor() {
                 this.modelLeggings = PMAPI.skeleton.getArmor().modelArmor;
                 this.modelArmor = PMAPI.skeleton.getArmor().modelArmorChestplate;
             }
         });
+        this.addLayer(new LayerPonySkeletonOverlay(this));
     }
 
     @Override
     protected void preRenderCallback(EntitySkeleton skeleton, float partialTicks) {
         super.preRenderCallback(skeleton, partialTicks);
-        if (skeleton.func_189771_df() == SkeletonType.WITHER) {// getSkeletonType()
-                                                               // == 1) {
+        if (skeleton.getSkeletonType() == SkeletonType.WITHER) {
             GlStateManager.scale(1.2F, 1.2F, 1.2F);
         }
 
@@ -58,7 +59,7 @@ public class RenderPonySkeleton extends RenderPonyMob<EntitySkeleton> {
 
     @Override
     protected ResourceLocation getEntityTexture(EntitySkeleton skeleton) {
-        SkeletonType type = skeleton.func_189771_df();
+        SkeletonType type = skeleton.getSkeletonType();
         if (type == SkeletonType.WITHER)
             return PonyManager.WITHER_SKELETON;
         else if (type == SkeletonType.STRAY)
