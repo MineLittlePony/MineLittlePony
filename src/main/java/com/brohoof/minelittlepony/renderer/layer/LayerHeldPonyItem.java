@@ -96,7 +96,7 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
             Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, drop, transform, isLeft);
 
             if (isUnicorn) {
-                this.renderItemGlow(entity, drop.copy(), transform, hand, metadata.getGlowColor());
+                this.renderItemGlow(entity, drop, transform, hand, metadata.getGlowColor());
             }
             GlStateManager.popMatrix();
         }
@@ -105,8 +105,9 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
     public void renderItemGlow(EntityLivingBase entity, ItemStack drop, ItemCameraTransforms.TransformType transform, EnumHandSide hand, int glowColor) {
 
         // enchantments mess up the rendering
-        if (drop.hasEffect())
-            drop.setTagInfo("ench", null);
+        ItemStack drop2 = drop.copy();
+        if (drop2.hasEffect())
+            drop2.setTagInfo("ench", null);
 
         GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT);
 
@@ -118,19 +119,21 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
         enableBlend();
         blendFunc(GL11.GL_CONSTANT_COLOR, 1);
         GL14.glBlendColor(red, green, blue, alpha);
-        IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(drop, null, null);
+
+        RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+        IBakedModel model = renderItem.getItemModelWithOverrides(drop, entity.worldObj, entity);
 
         ItemCameraTransforms itemcameratransforms = model.getItemCameraTransforms();
         ItemCameraTransforms.applyTransformSide(itemcameratransforms.getTransform(transform), hand == EnumHandSide.LEFT);
 
-        RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
         scale(1.1, 1.1, 1.1);
 
         translate(0, .01, .01);
-        renderItem.renderItem(drop, model);
+        renderItem.renderItem(drop2, model);
         translate(.01, -.01, -.02);
         // scale(1.1, 1.1, 1.1);
-        renderItem.renderItem(drop, model);
+        renderItem.renderItem(drop2, model);
+
         disableBlend();
         enableLighting();
         enableTexture2D();

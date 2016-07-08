@@ -337,7 +337,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
                 break;
             case BLOCK:
                 this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.5F - 0.9424779F;
-                this.bipedLeftArm.rotateAngleY = 0.5235988F;
+                this.bipedLeftArm.rotateAngleY = (float) (Math.PI / 6);
                 break;
             case ITEM:
                 float swag = 1f;
@@ -355,7 +355,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
                 break;
             case BLOCK:
                 this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - 0.9424779F;
-                this.bipedRightArm.rotateAngleY = -0.5235988F;
+                this.bipedRightArm.rotateAngleY = (float) (-Math.PI / 6);
                 break;
             case ITEM:
                 float swag = 1f;
@@ -367,6 +367,15 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
                 this.bipedRightArm.rotateAngleY = 0.0F;
             }
 
+        } else if (this.metadata.hasMagic()) {
+            if (this.leftArmPose == ArmPose.BLOCK) {
+                this.unicornArmLeft.rotateAngleX = this.unicornArmLeft.rotateAngleX * 0.5F - 0.9424779F;
+                this.unicornArmLeft.rotateAngleY = (float) (Math.PI / 6);
+            }
+            if (this.rightArmPose == ArmPose.BLOCK) {
+                this.unicornArmRight.rotateAngleY = (float) (-Math.PI / 6);
+                this.unicornArmRight.rotateAngleX = this.unicornArmRight.rotateAngleX * 0.5F - 0.9424779F;
+            }
         }
     }
 
@@ -621,7 +630,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
     protected void renderLegs() {
         if (!this.isSneak)
-        this.bipedBody.postRender(this.scale);
+            this.bipedBody.postRender(this.scale);
 
         this.bipedLeftArm.render(this.scale);
         this.bipedRightArm.render(this.scale);
