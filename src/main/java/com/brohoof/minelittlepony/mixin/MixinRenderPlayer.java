@@ -72,6 +72,7 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
 
         this.playerModel.getModel().isSneak = player.isSneaking();
         this.playerModel.getModel().isFlying = thePony.isPegasusFlying(player);
+        this.playerModel.getModel().isSleeping = player.isPlayerSleeping();
 
         if (MineLittlePony.getConfig().showscale) {
             if (this.playerModel.getModel().metadata.getRace() != null) {

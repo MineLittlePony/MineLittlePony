@@ -224,7 +224,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
             }
 
             if (this.isSleeping) {
-                translate(0.0F, -1.0F, 0.25F);
+                translate(0.0F, -1.2F, 0.25F);
             }
             if (this.isRiding) {
                 translate(0, -.1, 0);
@@ -261,7 +261,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
 
         } else if (this.metadata.getSize() == PonySize.LARGE) {
             if (this.isSleeping) {
-                translate(0.0F, -0.47F, 0.2F);
+                translate(0.0F, -0.7F, 0.2F);
             }
 
             switch (part) {
@@ -298,7 +298,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
             }
         } else if (this.metadata.getSize() == PonySize.TALL) {
             if (this.isSleeping) {
-                translate(0.0F, -0.43F, 0.25F);
+                translate(0.0F, -0.65F, 0.25F);
             }
 
             switch (part) {
@@ -330,7 +330,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
             }
         } else {
             if (this.isSleeping) {
-                translate(0.0F, -0.535F, 0.25F);
+                translate(0.0F, -0.75F, 0.25F);
             }
         }
         if (part == BodyPart.HEAD) {
