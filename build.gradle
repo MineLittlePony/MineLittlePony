@@ -21,8 +21,6 @@ buildscript {
 	}
 }
 
-ext.revision = 221
-
 apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'mnm.gradle.ap-ide'
