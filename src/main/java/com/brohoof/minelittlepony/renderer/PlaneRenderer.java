@@ -115,9 +115,9 @@ public class PlaneRenderer extends ModelRenderer {
         f -= f3;
         f1 -= f3;
         f2 -= f3;
-        f4 += f3;
-        f5 += f3;
-        f6 += f3;
+        f4 += f < 0 ? -f3 : f3;
+        f5 += f1 < 0 ? -f3 : f3;
+        f6 += f2 < 0 ? -f3 : f3;
         if (this.mirror) {
             float positiontexturevertex = f4;
             f4 = f;
