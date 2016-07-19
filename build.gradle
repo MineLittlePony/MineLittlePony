@@ -26,7 +26,7 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'mnm.gradle.ap-ide'
 
 group = 'com.brohoof.minelp'
-version = '1.10.2.0'
+version = '1.10.2.1'
 description = 'Mine Little Pony'
 
 minecraft {
@@ -75,6 +75,18 @@ afterEvaluate {
 jar {
 	from sourceSets.findAll { it.name != 'api' }*.output
 	from litemod.outputs
+}
+task srgJar(type: Jar) {
+	from sourceSets.findAll { it.name != 'api' }*.output
+	from litemod.outputs
+	classifier "mc${minecraft.version}-srg"
+	baseName "mod-${project.name.toLowerCase()}"
+	extension 'litemod'
+}
+reobf {
+	srgJar {
+		mappingType = 'SEARGE'
+	}
 }
 mixin {
 	defaultObfuscationEnv notch
