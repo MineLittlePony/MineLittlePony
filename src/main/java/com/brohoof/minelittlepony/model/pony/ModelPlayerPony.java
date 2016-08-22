@@ -668,16 +668,14 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         if (this.textureHeight == 64) {
             this.bipedBodyWear = new ModelRenderer(this, 16, 32);
         }
-
         this.Bodypiece[0] = new PlaneRenderer(this, 24, 0);
-        this.Bodypiece[1] = new PlaneRenderer(this, 24, 0);
-
-        this.Bodypiece[0] = new PlaneRenderer(this, 24, 0);
+        this.Bodypiece[0].mirrorz = true;
         this.Bodypiece[1] = new PlaneRenderer(this, 24, 0);
         this.Bodypiece[2] = new PlaneRenderer(this, 32, 20);
-        this.Bodypiece[2].mirrorxy = true;
+        this.Bodypiece[2].mirrorz = true;
         this.Bodypiece[3] = new PlaneRenderer(this, 56, 0);
         this.Bodypiece[4] = new PlaneRenderer(this, 4, 0);
+        this.Bodypiece[4].mirrorz = true;
         this.Bodypiece[5] = new PlaneRenderer(this, 4, 0);
         this.Bodypiece[6] = new PlaneRenderer(this, 36, 16);
         this.Bodypiece[7] = new PlaneRenderer(this, 36, 16);
@@ -763,17 +761,17 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.bipedBodyWear.addBox(-4.0F, 4.0F, -2.0F, 8, 8, 4, stretch + 0.25F);
         this.bipedBodyWear.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
 
-        this.Bodypiece[0].addSidePlane(-4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 0, 8, 8, stretch);
+        this.Bodypiece[0].addWestPlane(-4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 0, 8, 8, stretch);
         this.Bodypiece[0].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.Bodypiece[1].addSidePlane(4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 0, 8, 8, stretch);
+        this.Bodypiece[1].addEastPlane(4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 0, 8, 8, stretch);
         this.Bodypiece[1].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
         this.Bodypiece[2].addTopPlane(-4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 8, 0, 12, stretch);
         this.Bodypiece[2].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
         this.Bodypiece[3].addBottomPlane(-4.0F + BODY_CENTRE_X, 4.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 8, 0, 8, stretch);
         this.Bodypiece[3].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.Bodypiece[4].addSidePlane(-4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y, 4.0F + BODY_CENTRE_Z, 0, 8, 4, stretch);
+        this.Bodypiece[4].addWestPlane(-4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y, 4.0F + BODY_CENTRE_Z, 0, 8, 4, stretch);
         this.Bodypiece[4].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.Bodypiece[5].addSidePlane(4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y, 4.0F + BODY_CENTRE_Z, 0, 8, 4, stretch);
+        this.Bodypiece[5].addEastPlane(4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y, 4.0F + BODY_CENTRE_Z, 0, 8, 4, stretch);
         this.Bodypiece[5].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
         this.Bodypiece[6].addBackPlane(-4.0F + BODY_CENTRE_X, -4.0F + BODY_CENTRE_Y, 8.0F + BODY_CENTRE_Z, 8, 4, 0, stretch);
         this.Bodypiece[6].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
@@ -785,9 +783,9 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.Bodypiece[9].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
         this.Bodypiece[10].addBottomPlane(-1.0F + BODY_CENTRE_X, 4.0F + BODY_CENTRE_Y, 2.0F + BODY_CENTRE_Z, 2, 0, 6, stretch);
         this.Bodypiece[10].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.Bodypiece[11].addSidePlane(-1.0F + BODY_CENTRE_X, 2.0F + BODY_CENTRE_Y, 2.0F + BODY_CENTRE_Z, 0, 2, 6, stretch);
+        this.Bodypiece[11].addWestPlane(-1.0F + BODY_CENTRE_X, 2.0F + BODY_CENTRE_Y, 2.0F + BODY_CENTRE_Z, 0, 2, 6, stretch);
         this.Bodypiece[11].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.Bodypiece[12].addSidePlane(1.0F + BODY_CENTRE_X, 2.0F + BODY_CENTRE_Y, 2.0F + BODY_CENTRE_Z, 0, 2, 6, stretch);
+        this.Bodypiece[12].addEastPlane(1.0F + BODY_CENTRE_X, 2.0F + BODY_CENTRE_Y, 2.0F + BODY_CENTRE_Z, 0, 2, 6, stretch);
         this.Bodypiece[12].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
         this.Bodypiece[13].addBackPlane(-1.0F + BODY_CENTRE_X, 2.0F + BODY_CENTRE_Y, 8.0F + BODY_CENTRE_Z, 2, 2, 0, stretch);
         this.Bodypiece[13].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
@@ -796,9 +794,9 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.BodypieceNeck[0].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
         this.BodypieceNeck[1].addBackPlane(-2.0F + BODY_CENTRE_X, -6.8F + BODY_CENTRE_Y, -4.8F + BODY_CENTRE_Z, 4, 4, 0, stretch);
         this.BodypieceNeck[1].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.BodypieceNeck[2].addSidePlane(-2.0F + BODY_CENTRE_X, -6.8F + BODY_CENTRE_Y, -8.8F + BODY_CENTRE_Z, 0, 4, 4, stretch);
+        this.BodypieceNeck[2].addWestPlane(-2.0F + BODY_CENTRE_X, -6.8F + BODY_CENTRE_Y, -8.8F + BODY_CENTRE_Z, 0, 4, 4, stretch);
         this.BodypieceNeck[2].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.BodypieceNeck[3].addSidePlane(2.0F + BODY_CENTRE_X, -6.8F + BODY_CENTRE_Y, -8.8F + BODY_CENTRE_Z, 0, 4, 4, stretch);
+        this.BodypieceNeck[3].addEastPlane(2.0F + BODY_CENTRE_X, -6.8F + BODY_CENTRE_Y, -8.8F + BODY_CENTRE_Z, 0, 4, 4, stretch);
         this.BodypieceNeck[3].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
         this.BodypieceNeck[0].rotateAngleX = NECK_ROT_X;
         this.BodypieceNeck[1].rotateAngleX = NECK_ROT_X;
@@ -857,41 +855,41 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     protected void initTailPositions(float yOffset, float stretch) {
         this.Tail[0].addTopPlane(-2.0F, 1.0F, 2.0F, 4, 0, 4, stretch);
         this.Tail[0].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
-        this.Tail[1].addSidePlane(-2.0F, 1.0F, 2.0F, 0, 4, 4, stretch);
+        this.Tail[1].addWestPlane(-2.0F, 1.0F, 2.0F, 0, 4, 4, stretch);
         this.Tail[1].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
         this.Tail[2].addBackPlane(-2.0F, 1.0F, 2.0F, 4, 4, 0, stretch);
         this.Tail[2].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
-        this.Tail[3].addSidePlane(2.0F, 1.0F, 2.0F, 0, 4, 4, stretch);
+        this.Tail[3].addEastPlane(2.0F, 1.0F, 2.0F, 0, 4, 4, stretch);
         this.Tail[3].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
         this.Tail[4].addBackPlane(-2.0F, 1.0F, 6.0F, 4, 4, 0, stretch);
         this.Tail[4].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
         this.Tail[5].addTopPlane(-2.0F, 5.0F, 2.0F, 4, 0, 4, stretch);
         this.Tail[5].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
-        this.Tail[6].addSidePlane(-2.0F, 5.0F, 2.0F, 0, 4, 4, stretch);
+        this.Tail[6].addWestPlane(-2.0F, 5.0F, 2.0F, 0, 4, 4, stretch);
         this.Tail[6].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
         this.Tail[7].addBackPlane(-2.0F, 5.0F, 2.0F, 4, 4, 0, stretch);
         this.Tail[7].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
-        this.Tail[8].addSidePlane(2.0F, 5.0F, 2.0F, 0, 4, 4, stretch);
+        this.Tail[8].addEastPlane(2.0F, 5.0F, 2.0F, 0, 4, 4, stretch);
         this.Tail[8].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
         this.Tail[9].addBackPlane(-2.0F, 5.0F, 6.0F, 4, 4, 0, stretch);
         this.Tail[9].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
         this.Tail[10].addTopPlane(-2.0F, 9.0F, 2.0F, 4, 0, 4, stretch);
         this.Tail[10].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
-        this.Tail[11].addSidePlane(-2.0F, 9.0F, 2.0F, 0, 4, 4, stretch);
+        this.Tail[11].addWestPlane(-2.0F, 9.0F, 2.0F, 0, 4, 4, stretch);
         this.Tail[11].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
         this.Tail[12].addBackPlane(-2.0F, 9.0F, 2.0F, 4, 4, 0, stretch);
         this.Tail[12].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
-        this.Tail[13].addSidePlane(2.0F, 9.0F, 2.0F, 0, 4, 4, stretch);
+        this.Tail[13].addEastPlane(2.0F, 9.0F, 2.0F, 0, 4, 4, stretch);
         this.Tail[13].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
         this.Tail[14].addBackPlane(-2.0F, 9.0F, 6.0F, 4, 4, 0, stretch);
         this.Tail[14].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
         this.Tail[15].addTopPlane(-2.0F, 13.0F, 2.0F, 4, 0, 4, stretch);
         this.Tail[15].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
-        this.Tail[16].addSidePlane(-2.0F, 13.0F, 2.0F, 0, 4, 4, stretch);
+        this.Tail[16].addWestPlane(-2.0F, 13.0F, 2.0F, 0, 4, 4, stretch);
         this.Tail[16].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
         this.Tail[17].addBackPlane(-2.0F, 13.0F, 2.0F, 4, 4, 0, stretch);
         this.Tail[17].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
-        this.Tail[18].addSidePlane(2.0F, 13.0F, 2.0F, 0, 4, 4, stretch);
+        this.Tail[18].addEastPlane(2.0F, 13.0F, 2.0F, 0, 4, 4, stretch);
         this.Tail[18].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
         this.Tail[19].addBackPlane(-2.0F, 13.0F, 6.0F, 4, 4, 0, stretch);
         this.Tail[19].setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);

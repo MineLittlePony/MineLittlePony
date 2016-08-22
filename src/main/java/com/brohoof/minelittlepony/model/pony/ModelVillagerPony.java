@@ -77,13 +77,13 @@ public class ModelVillagerPony extends ModelPlayerPony {
     @Override
     protected void initPositions(float yOffset, float stretch) {
         super.initPositions(yOffset, stretch);
-        this.VillagerBagPiece[0].addSidePlane(-7.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 0, 6, 8, stretch);
+        this.VillagerBagPiece[0].addWestPlane(-7.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 0, 6, 8, stretch);
         this.VillagerBagPiece[0].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.VillagerBagPiece[1].addSidePlane(-4.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 0, 6, 8, stretch);
+        this.VillagerBagPiece[1].addWestPlane(-4.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 0, 6, 8, stretch);
         this.VillagerBagPiece[1].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.VillagerBagPiece[2].addSidePlane(4.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 0, 6, 8, stretch);
+        this.VillagerBagPiece[2].addWestPlane(4.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 0, 6, 8, stretch);
         this.VillagerBagPiece[2].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.VillagerBagPiece[3].addSidePlane(7.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 0, 6, 8, stretch);
+        this.VillagerBagPiece[3].addWestPlane(7.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y, -4.0F + BODY_CENTRE_Z, 0, 6, 8, stretch);
         this.VillagerBagPiece[3].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
         this.VillagerBagPiece[4].addTopPlane(2.0F + BODY_CENTRE_X, -5.0F + BODY_CENTRE_Y, -2.0F + BODY_CENTRE_Z, 8, 0, 3, stretch);
         this.VillagerBagPiece[4].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);

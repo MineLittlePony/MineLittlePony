@@ -14,6 +14,7 @@ import org.apache.commons.io.FileUtils;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -62,17 +63,20 @@ public final class HDSkinManager {
         // try to recreate a broken gameprofile
         // happens when server sends a random profile with skin and displayname
         Property prop = Iterables.getFirst(profile1.getProperties().get("textures"), null);
-        if (prop != null) {
+        if (prop != null && Strings.isNullOrEmpty(prop.getValue())) {
             JsonObject obj = new Gson().fromJson(new String(Base64.decodeBase64(prop.getValue())), JsonObject.class);
-            String name = null;
-            // this should be optional
-            if (obj.has("profileName")) {
-                name = obj.get("profileName").getAsString();
-            }
-            // this is required
-            if (obj.has("profileId")) {
-                UUID uuid = UUIDTypeAdapter.fromString(obj.get("profileId").getAsString());
-                profile1 = new GameProfile(uuid, name);
+            // why are plugins sending a json null?
+            if (obj != null) {
+                String name = null;
+                // this should be optional
+                if (obj.has("profileName")) {
+                    name = obj.get("profileName").getAsString();
+                }
+                // this is required
+                if (obj.has("profileId")) {
+                    UUID uuid = UUIDTypeAdapter.fromString(obj.get("profileId").getAsString());
+                    profile1 = new GameProfile(uuid, name);
+                }
             }
         }
         final GameProfile profile = profile1;
