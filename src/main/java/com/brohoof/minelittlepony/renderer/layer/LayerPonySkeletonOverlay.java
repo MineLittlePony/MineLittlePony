@@ -11,6 +11,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class LayerPonySkeletonOverlay extends LayerOverlayBase<EntitySkeleton> {
 
+    public static final ResourceLocation STRAY_SKELETON_OVERLAY = new ResourceLocation(PonyManager.NAMESPACE, "textures/entity/skeleton/stray_pony_overlay.png");
+
     private final ModelSkeletonPony overlayModel;
 
     public LayerPonySkeletonOverlay(RenderLivingBase<?> render) {
@@ -33,6 +35,6 @@ public class LayerPonySkeletonOverlay extends LayerOverlayBase<EntitySkeleton> {
 
     @Override
     protected ResourceLocation getOverlayTexture() {
-        return PonyManager.STRAY_SKELETON_OVERLAY;
+        return STRAY_SKELETON_OVERLAY;
     }
 }

@@ -6,6 +6,7 @@ import com.brohoof.minelittlepony.gui.PonySettingPanel;
 import com.brohoof.minelittlepony.hdskins.gui.EntityPonyModel;
 import com.brohoof.minelittlepony.hdskins.gui.GuiSkinsMineLP;
 import com.brohoof.minelittlepony.hdskins.gui.RenderPonyModel;
+import com.brohoof.minelittlepony.renderer.RenderPonyPigman;
 import com.brohoof.minelittlepony.renderer.RenderPonySkeleton;
 import com.brohoof.minelittlepony.renderer.RenderPonyVillager;
 import com.brohoof.minelittlepony.renderer.RenderPonyZombie;
@@ -18,6 +19,7 @@ import com.voxelmodpack.hdskins.gui.GuiSkins;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntitySkeleton;
@@ -59,6 +61,9 @@ public class MineLittlePony {
         this.proxy = new ProxyContainer();
 
         LiteLoader.getInstance().registerExposable(config, null);
+
+        IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
+        irrm.registerReloadListener(this.ponyManager);
     }
 
     void postInit(Minecraft minecraft) {
@@ -78,12 +83,12 @@ public class MineLittlePony {
         }
 
         if (this.config.zombies) {
-            ModUtilities.addRenderer(EntityZombie.class, new RenderPonyZombie<EntityZombie>(rm));
+            ModUtilities.addRenderer(EntityZombie.class, new RenderPonyZombie(rm));
             MineLPLogger.info("Zombies are now ponies.");
         }
 
         if (this.config.pigzombies) {
-            ModUtilities.addRenderer(EntityPigZombie.class, new RenderPonyZombie<EntityPigZombie>(rm));
+            ModUtilities.addRenderer(EntityPigZombie.class, new RenderPonyPigman(rm));
             MineLPLogger.info("Zombie pigmen are now ponies.");
         }
 

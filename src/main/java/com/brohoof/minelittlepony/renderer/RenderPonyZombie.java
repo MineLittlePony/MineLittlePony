@@ -10,25 +10,25 @@ import com.brohoof.minelittlepony.TailLengths;
 import com.brohoof.minelittlepony.model.PMAPI;
 
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.util.ResourceLocation;
 
-public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob<Zombie> {
+public class RenderPonyZombie extends RenderPonyMob<EntityZombie> {
 
     public RenderPonyZombie(RenderManager rendermanager) {
         super(rendermanager, PMAPI.zombie);
     }
 
     @Override
-    protected void preRenderCallback(Zombie entity, float partick) {
+    protected void preRenderCallback(EntityZombie entity, float partick) {
+        super.preRenderCallback(entity, partick);
         Random rand = new Random(entity.getUniqueID().hashCode());
 
         // 50-50 chance for gender
         this.playerModel.getModel().metadata.setGender(rand.nextBoolean() ? PonyGender.MARE : PonyGender.STALLION);
 
         // races
-        switch (entity instanceof EntityPigZombie ? 0 : rand.nextInt(4)) {
+        switch (rand.nextInt(2)+2) {
         case 0:
         case 1:
             this.playerModel.getModel().metadata.setRace(PonyRace.EARTH);
@@ -64,7 +64,7 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
     }
 
     @Override
-    protected void rotateCorpse(Zombie zombie, float xPosition, float yPosition, float zPosition) {
+    protected void rotateCorpse(EntityZombie zombie, float xPosition, float yPosition, float zPosition) {
         super.rotateCorpse(zombie, xPosition, yPosition, zPosition);
         if (zombie.isConverting()) {
             yPosition += (float) (Math.cos(zombie.ticksExisted * 3.25D) * Math.PI * 0.25D);
@@ -72,10 +72,12 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(Zombie zombie) {
-        return zombie instanceof EntityPigZombie ? PonyManager.PIGMAN
-                : (zombie.isVillager() ? PonyManager.ZOMBIE_VILLAGER
-                        : PonyManager.ZOMBIE);
+    protected ResourceLocation getEntityTexture(EntityZombie zombie) {
+        ResourceLocation loc = PonyManager.ZOMBIES.get(zombie.getZombieType());
+        if (loc == null) {
+            loc = zombie.isVillager() ? PonyManager.ZOMBIE_VILLAGER : PonyManager.ZOMBIE;
+        }
+        return loc;
     }
 
 }

@@ -60,11 +60,9 @@ public class RenderPonySkeleton extends RenderPonyMob<EntitySkeleton> {
     @Override
     protected ResourceLocation getEntityTexture(EntitySkeleton skeleton) {
         SkeletonType type = skeleton.getSkeletonType();
-        if (type == SkeletonType.WITHER)
-            return PonyManager.WITHER_SKELETON;
-        else if (type == SkeletonType.STRAY)
-            return PonyManager.STRAY_SKELETON;
-        else
-            return PonyManager.SKELETON;
+        ResourceLocation loc = PonyManager.SKELETONS.get(type);
+        if (loc == null)
+            loc = PonyManager.SKELETON;
+        return loc;
     }
 }
