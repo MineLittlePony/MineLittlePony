@@ -17,7 +17,6 @@ import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.gui.GuiSkins;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
@@ -40,7 +39,6 @@ public class MineLittlePony {
     private static final String SKIN_SERVER_URL = "minelpskins.voxelmodpack.com";
     private static final String GATEWAY_URL = "minelpskinmanager.voxelmodpack.com";
     private static final KeyBinding SETTINGS_GUI = new KeyBinding("Settings", Keyboard.KEY_F9, "Mine Little Pony");
-    private static final KeyBinding SKIN_MANAGER = new KeyBinding("Skin Manager", Keyboard.KEY_F1, "Mine Little Pony");
 
     private static MineLittlePony instance;
 
@@ -54,7 +52,6 @@ public class MineLittlePony {
 
     void init() {
         LiteLoader.getInput().registerKeyBinding(SETTINGS_GUI);
-        LiteLoader.getInput().registerKeyBinding(SKIN_MANAGER);
 
         this.config = new PonyConfig();
         this.ponyManager = new PonyManager(config);
@@ -104,11 +101,9 @@ public class MineLittlePony {
             minecraft.displayGuiScreen(new PonySettingPanel());
         }
 
-        boolean pressed = minecraft.currentScreen instanceof GuiMainMenu
-                && Keyboard.isKeyDown(SKIN_MANAGER.getKeyCode());
         boolean skins = minecraft.currentScreen instanceof GuiSkins
                 && !(minecraft.currentScreen instanceof GuiSkinsMineLP);
-        if (pressed || skins) {
+        if (skins) {
             minecraft.displayGuiScreen(new GuiSkinsMineLP(ponyManager));
         }
         HDSkinManager.INSTANCE.setEnabled(config.hd);

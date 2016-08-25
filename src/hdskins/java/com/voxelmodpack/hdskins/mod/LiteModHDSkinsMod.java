@@ -14,6 +14,7 @@ import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
 import com.voxelmodpack.voxelmenu.IPanoramaRenderer;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.IReloadableResourceManager;
 
 public class LiteModHDSkinsMod implements HDSkinsMod {
     @Override
@@ -38,6 +39,8 @@ public class LiteModHDSkinsMod implements HDSkinsMod {
             var5.printStackTrace();
         }
 
+        IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
+        irrm.registerReloadListener(HDSkinManager.INSTANCE);
     }
 
     @Override

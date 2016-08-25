@@ -239,7 +239,7 @@ public class GuiMetaHandler extends GuiScreen implements IMetaHandler {
         if (prefs.has(HDSkinManager.METADATA_KEY)) {
             String meta = prefs.get(HDSkinManager.METADATA_KEY);
             Map<String, String> data = Maps.newHashMap();
-            for (String key : Splitter.on(',').split(meta)) {
+            for (String key : Splitter.on(',').omitEmptyStrings().trimResults().split(meta)) {
                 if (prefs.has(key)) {
                     data.put(key, prefs.get(key));
                 }

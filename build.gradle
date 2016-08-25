@@ -26,7 +26,7 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'mnm.gradle.ap-ide'
 
 group = 'com.brohoof.minelp'
-version = '1.10.2.2'
+version = '1.10.2.3'
 description = 'Mine Little Pony'
 
 minecraft {
@@ -35,6 +35,7 @@ minecraft {
 	runDir = 'run'
 	replace '@VERSION@',project.version
 }
+
 sourceSets {
 	def deps = [
 		configurations.forgeGradleMcDeps,
@@ -49,40 +50,57 @@ sourceSets {
 		refMap = 'mixin.minelp.refmap.json'
 		compileClasspath += hdskins.output
 	}
-	forge {
-		compileClasspath += files(deps + [ main.output, api.output ])
-	}
 }
+
+dependencies.testCompile 'junit:junit:4.12'
+
 litemod.json {
-	author = "Verdana, Rene_Z, Mumfrey, JoyJoy"
-	description = "Mine Little Pony turns players and mobs into ponies"
-	description.litemodminelittlepony = """Mine Little Pony turns players and mobs into ponies
- Press F9 ingame to access settings"""
-	description.litemodhdskinsmod = """Seperate skin server for Mine Little Pony that also supports HD skins.
- Access via Skin Manager key binding (default: F1) in the main menu."""
-	mixinConfigs += ['mixin.minelp.json', 'mixin.hdskins.json']
+	author = 'Verdana, Rene_Z, Mumfrey, JoyJoy'
+	description = 'Mine Little Pony turns players and mobs into ponies'
+	description.minelittlepony = '''\
+		Mine Little Pony turns players and mobs into ponies
+		Press F9 ingame to access settings'''.stripIndent()
+	description.hdskinsmod = '''\
+		Seperate skin server for Mine Little Pony that also supports HD skins.
+		Access via Skin Manager key binding (default: F1) in the main menu.'''.stripIndent()
+
+	mixinConfigs += [
+		'mixin.minelp.json',
+		'mixin.hdskins.json'
+	]
 }
+
 afterEvaluate {
 	dependencies {
+		// add mixin to the factory path
+		// use same version as liteloader
 		def liteloader = project.plugins['net.minecraftforge.gradle.liteloader']
-		def artifact = liteloader.artifact.libraries.collect{it.name}.find{it.contains 'mixin'}
+		def artifact = liteloader.artifact.libraries
+			.collect {it.name}
+			.find {it.contains 'mixin'}
 		factory artifact
 	}
 	processor {
+		// tell the processor where the reobf file is
 		options.reobfSrgFile = mixin.reobfSrgFile
 	}
 }
+
 jar {
-	from sourceSets.findAll { it.name != 'api' }*.output
+	from sourceSets.hdskins.output
 	from litemod.outputs
+}
+sourceJar {
+	// add hdskins sources
+	from sourceSets.hdskins.allSource
 }
 task srgJar(type: Jar) {
-	from sourceSets.findAll { it.name != 'api' }*.output
+	from sourceSets.hdskins.output
 	from litemod.outputs
-	classifier "mc${minecraft.version}-srg"
+	classifier "mc$minecraft.version-srg"
 	baseName "mod-${project.name.toLowerCase()}"
-	extension 'litemod'
 }
+
 reobf {
 	srgJar {
 		mappingType = 'SEARGE'
@@ -91,6 +109,8 @@ reobf {
 mixin {
 	defaultObfuscationEnv notch
 }
+
+// windows only
 task deploy(type: Copy, dependsOn: build) {
 	from jar.archivePath
 	into file("$System.env.APPDATA/.minecraft/mods")

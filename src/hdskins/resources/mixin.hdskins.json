@@ -4,6 +4,7 @@
 	"package": "com.voxelmodpack.hdskins.mixin",
 	"refmap": "mixin.hdskins.refmap.json",
 	"mixins": [
+		"MixinGuiMainMenu",
 		"MixinImageBufferDownload",
 		"MixinPlayerInfo",
 		"MixinSkullRenderer"

@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
+import com.voxelmodpack.hdskins.DynamicTextureImage;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.IMetaHandler;
 import com.voxelmodpack.hdskins.ImageBufferDownloadHD;
@@ -73,7 +74,7 @@ public class EntityPlayerModel extends EntityLivingBase {
                 return;
             }
 
-            this.localSkinTexture = new DynamicTexture(bufferedImage);
+            this.localSkinTexture = new DynamicTextureImage(bufferedImage);
             this.localSkinResource = this.textureManager.getDynamicTextureLocation("localSkinPreview", this.localSkinTexture);
             this.hasLocalTexture = true;
         }

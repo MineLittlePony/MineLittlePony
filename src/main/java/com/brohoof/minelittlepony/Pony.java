@@ -4,8 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-
 import com.brohoof.minelittlepony.model.PMAPI;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.util.MineLPLogger;
@@ -17,12 +15,15 @@ import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import com.mumfrey.webprefs.WebPreferencesManager;
 import com.mumfrey.webprefs.interfaces.IWebPreferences;
+import com.voxelmodpack.hdskins.DynamicTextureImage;
 import com.voxelmodpack.hdskins.HDSkinManager;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.ITextureObject;
+import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
@@ -57,6 +58,7 @@ public class Pony {
 
     public void invalidateSkinCheck() {
         this.skinChecked = false;
+        metadata = new PonyData();
     }
 
     public void checkSkin() {
@@ -119,7 +121,8 @@ public class Pony {
     public BufferedImage getBufferedImage(ResourceLocation textureResourceLocation) {
         BufferedImage skinImage = null;
         try {
-            skinImage = ImageIO.read(Minecraft.getMinecraft().getResourceManager().getResource(textureResourceLocation).getInputStream());
+            IResource skin = Minecraft.getMinecraft().getResourceManager().getResource(textureResourceLocation);
+            skinImage = TextureUtil.readBufferedImage(skin.getInputStream());
             MineLPLogger.debug("Obtained skin from resource location %s", textureResourceLocation);
             // this.checkSkin(skinImage);
         } catch (IOException var6) {
@@ -134,6 +137,8 @@ public class Pony {
                         MineLPLogger.debug(e, "Successfully reflected downloadedImage from texture object");
                         // this.checkSkin(skinImage);
                     }
+                } else if (e2 instanceof DynamicTextureImage) {
+                    skinImage = ((DynamicTextureImage) e2).getImage();
                 }
             } catch (Exception var5) {
 

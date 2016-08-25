@@ -43,16 +43,19 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         return false;
     }
 
+    public ModelPlayer getEntityModel(M entity) {
+        if (entity.metaHandler != null && entity.metaHandler.get("slim").isPresent()) {
+            boolean skinny = "true".equals(entity.metaHandler.get("slim").get());
+            return skinny ? THIN : FAT;
+        }
+        return FAT;
+
+    }
+
     @Override
     public void doRender(M par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        if (par1Entity.metaHandler != null && par1Entity.metaHandler.get("slim").isPresent()) {
-            boolean skinny = "true".equals(par1Entity.metaHandler.get("slim").get());
-            this.mainModel = skinny ? THIN : FAT;
-        } else {
-            this.mainModel = FAT;
-        }
-
-        ModelPlayer player = (ModelPlayer) this.getMainModel();
+        ModelPlayer player = this.getEntityModel(par1Entity);
+        this.mainModel = player;
 
         Set<EnumPlayerModelParts> parts = Minecraft.getMinecraft().gameSettings.getModelParts();
         player.bipedHeadwear.isHidden = !parts.contains(EnumPlayerModelParts.HAT);

@@ -26,7 +26,7 @@ public class PonyData {
             .put(0x534b76, PonySize.TALL)
             .build();
 
-    private PonyRace race = PonyRace.EARTH;
+    private PonyRace race;
     private TailLengths tailSize = TailLengths.FULL;
     private PonyGender gender = PonyGender.MARE;
     private PonySize size = PonySize.NORMAL;

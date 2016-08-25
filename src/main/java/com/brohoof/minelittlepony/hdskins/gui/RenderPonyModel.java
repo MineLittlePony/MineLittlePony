@@ -10,6 +10,7 @@ import com.brohoof.minelittlepony.model.PlayerModel;
 import com.google.common.base.Optional;
 import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
 
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderManager;
 
 public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
@@ -19,8 +20,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
     }
 
     @Override
-    protected void renderModel(EntityPonyModel playermodel, float par2, float par3, float par4, float par5, float par6, float par7) {
-        this.bindEntityTexture(playermodel);
+    public ModelPlayer getEntityModel(EntityPonyModel playermodel) {
         Pony thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(this.getEntityTexture(playermodel));
         thePony.invalidateSkinCheck();
         thePony.checkSkin();
@@ -46,9 +46,9 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
 
         // TODO small arms
         PlayerModel pm = thePony.getModel(true, false);
-        this.mainModel = pm.getModel();
         pm.apply(thePony.metadata);
-        this.mainModel.render(playermodel, par2, par3, par4, par5, par6, par7);
+
+        return pm.getModel();
     }
 
 }

@@ -31,6 +31,7 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.util.UUIDTypeAdapter;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
+import com.voxelmodpack.hdskins.resource.SkinResourceManager;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IImageBuffer;
@@ -38,10 +39,12 @@ import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
+import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.util.ResourceLocation;
 
-public final class HDSkinManager {
+public final class HDSkinManager implements IResourceManagerReloadListener {
 
     public static final HDSkinManager INSTANCE = new HDSkinManager();
     private static final ResourceLocation LOADING = new ResourceLocation("LOADING");
@@ -55,11 +58,18 @@ public final class HDSkinManager {
     private Map<UUID, Map<Type, ResourceLocation>> skinCache = Maps.newHashMap();
     private List<ISkinModifier> skinModifiers = Lists.newArrayList();
 
-    private HDSkinManager() {}
+    private SkinResourceManager resources = new SkinResourceManager();
+
+    public HDSkinManager() {}
 
     public Optional<ResourceLocation> getSkinLocation(GameProfile profile1, Type type, boolean loadIfAbsent) {
         if (!enabled)
             return Optional.absent();
+
+        ResourceLocation skin = this.resources.getPlayerTexture(profile1, type);
+        if (skin != null)
+            return Optional.of(skin);
+
         // try to recreate a broken gameprofile
         // happens when server sends a random profile with skin and displayname
         Property prop = Iterables.getFirst(profile1.getProperties().get("textures"), null);
@@ -85,7 +95,7 @@ public final class HDSkinManager {
             this.skinCache.put(profile.getId(), Maps.<Type, ResourceLocation> newHashMap());
         }
 
-        ResourceLocation skin = this.skinCache.get(profile.getId()).get(type);
+        skin = this.skinCache.get(profile.getId()).get(type);
         if (skin == null) {
             if (loadIfAbsent) {
                 skinCache.get(profile.getId()).put(type, LOADING);
@@ -251,5 +261,10 @@ public final class HDSkinManager {
         for (ISkinModifier skin : skinModifiers) {
             skin.convertSkin(image, dest);
         }
+    }
+
+    @Override
+    public void onResourceManagerReload(IResourceManager resourceManager) {
+        this.resources.onResourceManagerReload(resourceManager);
     }
 }
