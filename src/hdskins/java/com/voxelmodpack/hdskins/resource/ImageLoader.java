@@ -3,6 +3,7 @@ package com.voxelmodpack.hdskins.resource;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.Callable;
 
 import javax.annotation.Nullable;
 
@@ -15,20 +16,28 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.util.ResourceLocation;
 
-public class SkinThread implements Runnable {
+public class ImageLoader implements Callable<ResourceLocation> {
 
-    private ResourceLocation original;
-    private ResourceLocation updated;
-    private BufferedImage image;
+    private Minecraft mc = Minecraft.getMinecraft();
 
-    public SkinThread(ResourceLocation loc) {
+    private final ResourceLocation original;
+
+    public ImageLoader(ResourceLocation loc) {
         this.original = loc;
-        new Thread(this).start();
     }
 
     @Override
-    public void run() {
-        image = new ImageBufferDownloadHD().parseUserSkin(getImage(original));
+    public ResourceLocation call() throws Exception {
+        BufferedImage image = getImage(original);
+        final BufferedImage updated = new ImageBufferDownloadHD().parseUserSkin(image);
+        return this.mc.addScheduledTask(new Callable<ResourceLocation>() {
+
+            @Override
+            public ResourceLocation call() throws Exception {
+                return loadSkin(updated);
+            }
+
+        }).get();
     }
 
     @Nullable
@@ -46,24 +55,11 @@ public class SkinThread implements Runnable {
         return null;
     }
 
-    public ResourceLocation getResource() {
-        return this.updated;
-    }
-
-    public void deleteTexture() {
-        Minecraft.getMinecraft().getTextureManager().deleteTexture(updated);
-    }
-
-    public boolean isReady() {
-        return image != null;
-    }
-
-    public void uploadSkin() {
+    private ResourceLocation loadSkin(BufferedImage image) {
 
         ResourceLocation conv = new ResourceLocation("hdskins-converted", original.getResourcePath());
-        Minecraft.getMinecraft().getTextureManager().loadTexture(conv, new DynamicTextureImage(image));
-        updated = conv;
-
-        image = null;
+        this.mc.getTextureManager().loadTexture(conv, new DynamicTextureImage(image));
+        return conv;
     }
+
 }

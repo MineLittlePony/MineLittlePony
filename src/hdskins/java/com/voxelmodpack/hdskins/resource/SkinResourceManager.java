@@ -5,18 +5,25 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.annotation.Nullable;
 
 import org.apache.commons.io.IOUtils;
 
 import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
@@ -24,17 +31,24 @@ import net.minecraft.util.ResourceLocation;
 
 public class SkinResourceManager implements IResourceManagerReloadListener {
 
+    private ListeningExecutorService executor = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
+
     private Map<UUID, Skin> uuidSkins = Maps.newHashMap();
     private Map<String, Skin> namedSkins = Maps.newHashMap();
-    private Map<ResourceLocation, SkinThread> converted = Maps.newHashMap();
+    private Map<ResourceLocation, Future<ResourceLocation>> inProgress = Maps.newHashMap();
+    private Map<ResourceLocation, ResourceLocation> converted = Maps.newHashMap();
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
         try {
             uuidSkins.clear();
             namedSkins.clear();
-            for (SkinThread loc : converted.values()) {
-                loc.deleteTexture();
+            for (Future<ResourceLocation> loc : inProgress.values()) {
+                loc.cancel(true);
+            }
+            inProgress.clear();
+            for (ResourceLocation res : converted.values()) {
+                Minecraft.getMinecraft().getTextureManager().deleteTexture(res);
             }
             converted.clear();
             for (IResource res : resourceManager.getAllResources(new ResourceLocation("hdskins", "textures/skins/skins.json"))) {
@@ -74,19 +88,27 @@ public class SkinResourceManager implements IResourceManagerReloadListener {
 
         Skin skin = getSkin(profile);
         if (skin != null) {
-            ResourceLocation res = skin.getTexture();
+            final ResourceLocation res = skin.getTexture();
             if (res != null) {
-                SkinThread conv = this.converted.get(res);
-                if (conv == null) {
+                if (this.inProgress.get(res) == null) {
                     // read and convert in a new thread
-                    this.converted.put(res, conv = new SkinThread(res));
+                    final ListenableFuture<ResourceLocation> conv = executor.submit(new ImageLoader(res));
+                    conv.addListener(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                converted.put(res, conv.get());
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, executor);
+                    this.inProgress.put(res, conv);
                 }
-                // gotta stay in this thread to load it
-                if (conv.isReady()) {
-                    conv.uploadSkin();
-                }
-                return conv.getResource();
             }
+            return converted.get(res);
         }
         return null;
     }
