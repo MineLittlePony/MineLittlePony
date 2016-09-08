@@ -27,7 +27,7 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
                 this.shadowSize = 0.5F;
             }
         }
-        ((ModelVillagerPony)this.mainModel).profession = villager.getProfession();
+        ((ModelVillagerPony) this.mainModel).profession = villager.getProfession();
 
         GlStateManager.scale(0.9375F, 0.9375F, 0.9375F);
     }
@@ -35,6 +35,6 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
     @Override
     protected ResourceLocation getEntityTexture(EntityVillager villager) {
         Pony aVillagerPony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(villager);
-        return aVillagerPony.getTextureResourceLocation();
+        return getTexture(aVillagerPony.getTextureResourceLocation());
     }
 }

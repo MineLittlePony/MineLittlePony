@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 
@@ -255,6 +257,11 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     public void addSkinModifier(ISkinModifier modifier) {
         skinModifiers.add(modifier);
+    }
+
+    @Nullable
+    public ResourceLocation getConvertedSkin(@Nullable ResourceLocation res) {
+        return resources.getConvertedResource(res);
     }
 
     public void convertSkin(BufferedImage image, Graphics dest) {

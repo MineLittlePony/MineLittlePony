@@ -12,6 +12,7 @@ import java.util.concurrent.Future;
 import javax.annotation.Nullable;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
 
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -22,6 +23,7 @@ import com.google.gson.JsonParseException;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
+import com.voxelmodpack.hdskins.HDSkinManager;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
@@ -89,28 +91,43 @@ public class SkinResourceManager implements IResourceManagerReloadListener {
         Skin skin = getSkin(profile);
         if (skin != null) {
             final ResourceLocation res = skin.getTexture();
-            if (res != null) {
-                if (this.inProgress.get(res) == null) {
-                    // read and convert in a new thread
-                    final ListenableFuture<ResourceLocation> conv = executor.submit(new ImageLoader(res));
-                    conv.addListener(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                converted.put(res, conv.get());
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }, executor);
-                    this.inProgress.put(res, conv);
-                }
-            }
-            return converted.get(res);
+            return getConvertedResource(res);
         }
         return null;
+    }
+
+    /**
+     * Convert older resources to a newer format.
+     *
+     * @param res The skin resource to convert
+     * @return The converted resource
+     */
+    @Nullable
+    public ResourceLocation getConvertedResource(@Nullable ResourceLocation res) {
+        loadSkinResource(res);
+        return converted.get(res);
+    }
+
+    private void loadSkinResource(@Nullable final ResourceLocation res) {
+        if (res != null) {
+            if (this.inProgress.get(res) == null) {
+                // read and convert in a new thread
+                final ListenableFuture<ResourceLocation> conv = executor.submit(new ImageLoader(res));
+                conv.addListener(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            if (!conv.isCancelled())
+                                converted.put(res, conv.get());
+                        } catch (Exception e) {
+                            LogManager.getLogger().warn("Errored while processing " + res + ". Using original.", e);
+                            converted.put(res, res);
+                        }
+                    }
+                }, executor);
+                this.inProgress.put(res, conv);
+            }
+        }
     }
 
     @Nullable

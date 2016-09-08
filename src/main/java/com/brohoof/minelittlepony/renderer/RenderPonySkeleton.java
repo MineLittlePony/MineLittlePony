@@ -63,6 +63,6 @@ public class RenderPonySkeleton extends RenderPonyMob<EntitySkeleton> {
         ResourceLocation loc = PonyManager.SKELETONS.get(type);
         if (loc == null)
             loc = PonyManager.SKELETON;
-        return loc;
+        return getTexture(loc);
     }
 }

@@ -10,6 +10,7 @@ import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.renderer.layer.LayerHeldPonyItem;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonyArmor;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonySkull;
+import com.voxelmodpack.hdskins.HDSkinManager;
 
 import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.client.renderer.entity.RenderLiving;
@@ -18,6 +19,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.ResourceLocation;
 
 public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving<T> implements IRenderPony {
 
@@ -104,5 +106,9 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     @Override
     public PlayerModel getPony() {
         return playerModel;
+    }
+
+    protected ResourceLocation getTexture(ResourceLocation res) {
+        return HDSkinManager.INSTANCE.getConvertedSkin(res);
     }
 }

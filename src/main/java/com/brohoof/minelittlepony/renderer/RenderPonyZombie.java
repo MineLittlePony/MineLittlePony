@@ -28,7 +28,7 @@ public class RenderPonyZombie extends RenderPonyMob<EntityZombie> {
         this.playerModel.getModel().metadata.setGender(rand.nextBoolean() ? PonyGender.MARE : PonyGender.STALLION);
 
         // races
-        switch (rand.nextInt(2)+2) {
+        switch (rand.nextInt(2) + 2) {
         case 0:
         case 1:
             this.playerModel.getModel().metadata.setRace(PonyRace.EARTH);
@@ -77,7 +77,7 @@ public class RenderPonyZombie extends RenderPonyMob<EntityZombie> {
         if (loc == null) {
             loc = zombie.isVillager() ? PonyManager.ZOMBIE_VILLAGER : PonyManager.ZOMBIE;
         }
-        return loc;
+        return getTexture(loc);
     }
 
 }

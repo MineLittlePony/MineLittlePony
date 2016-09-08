@@ -57,7 +57,7 @@ public class ImageLoader implements Callable<ResourceLocation> {
 
     private ResourceLocation loadSkin(BufferedImage image) {
 
-        ResourceLocation conv = new ResourceLocation("hdskins-converted", original.getResourcePath());
+        ResourceLocation conv = new ResourceLocation(original.getResourceDomain() + "-converted", original.getResourcePath());
         this.mc.getTextureManager().loadTexture(conv, new DynamicTextureImage(image));
         return conv;
     }
