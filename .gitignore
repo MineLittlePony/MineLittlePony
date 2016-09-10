@@ -8,3 +8,4 @@ run/
 *.launch
 /.apt_generated/
 .factorypath
+logs/

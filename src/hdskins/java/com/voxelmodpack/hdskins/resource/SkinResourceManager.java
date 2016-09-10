@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
@@ -23,7 +22,6 @@ import com.google.gson.JsonParseException;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
-import com.voxelmodpack.hdskins.HDSkinManager;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
@@ -42,34 +40,36 @@ public class SkinResourceManager implements IResourceManagerReloadListener {
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
-        try {
-            uuidSkins.clear();
-            namedSkins.clear();
-            for (Future<ResourceLocation> loc : inProgress.values()) {
-                loc.cancel(true);
-            }
-            inProgress.clear();
-            for (ResourceLocation res : converted.values()) {
-                Minecraft.getMinecraft().getTextureManager().deleteTexture(res);
-            }
-            converted.clear();
-            for (IResource res : resourceManager.getAllResources(new ResourceLocation("hdskins", "textures/skins/skins.json"))) {
-                try {
-                    SkinData data = getSkinData(res.getInputStream());
-                    for (Skin s : data.skins) {
-                        if (s.uuid != null) {
-                            uuidSkins.put(s.uuid, s);
+        uuidSkins.clear();
+        namedSkins.clear();
+        for (Future<ResourceLocation> loc : inProgress.values()) {
+            loc.cancel(true);
+        }
+        inProgress.clear();
+        for (ResourceLocation res : converted.values()) {
+            Minecraft.getMinecraft().getTextureManager().deleteTexture(res);
+        }
+        converted.clear();
+        for (String domain : resourceManager.getResourceDomains()) {
+            try {
+                for (IResource res : resourceManager.getAllResources(new ResourceLocation(domain, "textures/skins/skins.json"))) {
+                    try {
+                        SkinData data = getSkinData(res.getInputStream());
+                        for (Skin s : data.skins) {
+                            if (s.uuid != null) {
+                                uuidSkins.put(s.uuid, s);
+                            }
+                            if (s.name != null) {
+                                namedSkins.put(s.name, s);
+                            }
                         }
-                        if (s.name != null) {
-                            namedSkins.put(s.name, s);
-                        }
+                    } catch (JsonParseException je) {
+                        LiteLoaderLogger.warning(je, "Invalid skins.json in %s", res.getResourcePackName());
                     }
-                } catch (JsonParseException je) {
-                    LiteLoaderLogger.warning(je, "Invalid skins.json in %s", res.getResourcePackName());
                 }
+            } catch (IOException e) {
+                // ignore
             }
-        } catch (IOException e) {
-            // ignore
         }
 
     }
