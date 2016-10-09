@@ -16,8 +16,6 @@ public @interface Mod {
 
     String version() default "";
 
-    String dependencies() default "";
-
     boolean clientSideOnly() default false;
 
     public @interface EventHandler {

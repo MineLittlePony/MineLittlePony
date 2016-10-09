@@ -10,7 +10,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
         modid = "minelp_forge",
         name = "MineLP Forge Hooks",
         version = MineLittlePony.MOD_VERSION,
-        dependencies = "forge@[12.18.1.2020,)",
         clientSideOnly = true)
 public class MLPForge {
 
