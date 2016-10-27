@@ -30,6 +30,8 @@ public class ImageLoader implements Callable<ResourceLocation> {
     public ResourceLocation call() throws Exception {
         BufferedImage image = getImage(original);
         final BufferedImage updated = new ImageBufferDownloadHD().parseUserSkin(image);
+        if (updated == null)
+            return null;
         return this.mc.addScheduledTask(new Callable<ResourceLocation>() {
 
             @Override
