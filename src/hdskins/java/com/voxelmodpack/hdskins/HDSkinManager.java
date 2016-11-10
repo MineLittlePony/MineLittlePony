@@ -8,6 +8,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.annotation.Nullable;
 
@@ -61,10 +63,11 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     private List<ISkinModifier> skinModifiers = Lists.newArrayList();
 
     private SkinResourceManager resources = new SkinResourceManager();
+    private ExecutorService executor = Executors.newCachedThreadPool();
 
     public HDSkinManager() {}
 
-    public Optional<ResourceLocation> getSkinLocation(GameProfile profile1, Type type, boolean loadIfAbsent) {
+    public Optional<ResourceLocation> getSkinLocation(GameProfile profile1, final Type type, boolean loadIfAbsent) {
         if (!enabled)
             return Optional.absent();
 
@@ -101,10 +104,15 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         if (skin == null) {
             if (loadIfAbsent) {
                 skinCache.get(profile.getId()).put(type, LOADING);
-                loadTexture(profile, type, new SkinAvailableCallback() {
+                executor.submit(new Runnable() {
                     @Override
-                    public void skinAvailable(Type type, ResourceLocation location, MinecraftProfileTexture profileTexture) {
-                        skinCache.get(profile.getId()).put(type, location);
+                    public void run() {
+                        loadTexture(profile, type, new SkinAvailableCallback() {
+                            @Override
+                            public void skinAvailable(Type type, ResourceLocation location, MinecraftProfileTexture profileTexture) {
+                                skinCache.get(profile.getId()).put(type, location);
+                            }
+                        });
                     }
                 });
             }
