@@ -21,7 +21,7 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
     public PegasusWings(AbstractPonyModel pony) {
         this.pony = pony;
     }
-    
+
     @Override
     public void init(float yOffset, float stretch) {
         this.leftWing = new ModelRenderer[3];
@@ -80,7 +80,7 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
         this.leftWingExt[3].setRotationPoint(LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + yOffset, LEFT_WING_EXT_RP_Z);
         this.leftWingExt[4].addBox(0.0F, 0.0F, -0.2F, 1, 6, 2, stretch + 0.3F);
         this.leftWingExt[4].setRotationPoint(LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + yOffset, LEFT_WING_EXT_RP_Z);
-        this.leftWingExt[5].addBox(0.0F, 0.0F, 0.2F, 1, 3, 2, stretch + 0.2F);
+        this.leftWingExt[5].addBox(0.0F, 0.0F, 0.2F, 1, 3, 2, stretch + 0.19F);
         this.leftWingExt[5].setRotationPoint(LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + yOffset, LEFT_WING_EXT_RP_Z);
         this.rightWingExt[0].addBox(0.0F, 6.0F, 0.0F, 1, 8, 2, stretch + 0.1F);
         this.rightWingExt[0].setRotationPoint(RIGHT_WING_EXT_RP_X, RIGHT_WING_EXT_RP_Y + yOffset, RIGHT_WING_EXT_RP_Z);
@@ -92,7 +92,7 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
         this.rightWingExt[3].setRotationPoint(RIGHT_WING_EXT_RP_X, RIGHT_WING_EXT_RP_Y + yOffset, RIGHT_WING_EXT_RP_Z);
         this.rightWingExt[4].addBox(0.0F, 0.0F, -0.2F, 1, 6, 2, stretch + 0.3F);
         this.rightWingExt[4].setRotationPoint(RIGHT_WING_EXT_RP_X, RIGHT_WING_EXT_RP_Y + yOffset, RIGHT_WING_EXT_RP_Z);
-        this.rightWingExt[5].addBox(0.0F, 0.0F, 0.2F, 1, 3, 2, stretch + 0.2F);
+        this.rightWingExt[5].addBox(0.0F, 0.0F, 0.2F, 1, 3, 2, stretch + 0.19F);
         this.rightWingExt[5].setRotationPoint(RIGHT_WING_EXT_RP_X, RIGHT_WING_EXT_RP_Y + yOffset, RIGHT_WING_EXT_RP_Z);
     }
 
