@@ -345,6 +345,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
             AbstractPonyModel pony = (AbstractPonyModel) model;
             this.isFlying = pony.isFlying;
             this.isSleeping = pony.isSleeping;
+            this.metadata = pony.metadata;
         }
     }
 

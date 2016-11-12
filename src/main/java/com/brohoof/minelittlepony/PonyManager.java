@@ -59,7 +59,7 @@ public class PonyManager implements IResourceManagerReloadListener {
     public static final Map<SkeletonType, ResourceLocation> SKELETONS = Maps.immutableEnumMap(ImmutableMap.<SkeletonType, ResourceLocation> builder()
             .put(SkeletonType.NORMAL, SKELETON)
             .put(SkeletonType.WITHER, new ResourceLocation(NAMESPACE, "textures/entity/skeleton/skeleton_wither_pony.png"))
-            .put(SkeletonType.STRAY, new ResourceLocation(NAMESPACE, "testures/entity/skeleton/stray_pony.png"))
+            .put(SkeletonType.STRAY, new ResourceLocation(NAMESPACE, "textures/entity/skeleton/stray_pony.png"))
             .build());
     public static final ResourceLocation STEVE = new ResourceLocation(NAMESPACE, "textures/entity/steve_pony.png");
     public static final ResourceLocation ALEX = new ResourceLocation(NAMESPACE, "textures/entity/alex_pony.png");
