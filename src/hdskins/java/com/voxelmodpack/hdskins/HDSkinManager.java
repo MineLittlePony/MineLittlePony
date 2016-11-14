@@ -153,7 +153,8 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                         }
                     });
 
-            Minecraft.getMinecraft().getTextureManager().loadTexture(skin, threaddownloadimagedata);
+            // schedule texture loading on the main thread.
+            TextureLoader.loadTexture(skin, threaddownloadimagedata);
         }
     }
 
@@ -246,7 +247,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         if (skin != null) {
             String url = INSTANCE.getCustomTextureURLForId(Type.SKIN, UUIDTypeAdapter.fromUUID(profile.getId()), true);
             skinTexture = new PreviewTexture(url, DefaultPlayerSkin.getDefaultSkin(profile.getId()), new ImageBufferDownloadHD());
-            textureManager.loadTexture(skinResource, skinTexture);
+            TextureLoader.loadTexture(skinResource, skinTexture);
         }
         return (PreviewTexture) skinTexture;
 
