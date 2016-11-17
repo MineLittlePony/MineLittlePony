@@ -1,7 +1,7 @@
 {
 	"required": true,
     "minVersion": "0.4.10",
-	"package": "com.brohoof.minelittlepony.mixin",
+	"package": "com.minelittlepony.mixin",
 	"refmap": "mixin.minelp.refmap.json",
 	"mixins": [
 		"MixinRenderPlayer"
