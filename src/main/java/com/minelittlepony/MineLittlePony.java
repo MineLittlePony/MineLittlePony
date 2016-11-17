@@ -8,6 +8,7 @@ import com.minelittlepony.hdskins.gui.GuiSkinsMineLP;
 import com.minelittlepony.hdskins.gui.RenderPonyModel;
 import com.minelittlepony.renderer.RenderPonyPigman;
 import com.minelittlepony.renderer.RenderPonySkeleton;
+import com.minelittlepony.renderer.RenderPonyVex;
 import com.minelittlepony.renderer.RenderPonyVillager;
 import com.minelittlepony.renderer.RenderPonyZombie;
 import com.minelittlepony.renderer.RenderPonyZombieVillager;
@@ -25,6 +26,7 @@ import net.minecraft.entity.monster.EntityHusk;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityStray;
+import net.minecraft.entity.monster.EntityVex;
 import net.minecraft.entity.monster.EntityWitherSkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.monster.EntityZombieVillager;
@@ -101,6 +103,10 @@ public class MineLittlePony {
             ModUtilities.addRenderer(EntityStray.class, new RenderPonySkeleton.Stray(rm));
             ModUtilities.addRenderer(EntityWitherSkeleton.class, new RenderPonySkeleton.Wither(rm));
             MineLPLogger.info("Skeletons are now ponies.");
+        }
+        
+        if (this.config.illagers) {
+            ModUtilities.addRenderer(EntityVex.class, new RenderPonyVex(rm));
         }
 
     }

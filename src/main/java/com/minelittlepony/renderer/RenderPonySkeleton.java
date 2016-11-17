@@ -67,6 +67,7 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
 
         public Stray(RenderManager rm) {
             super(rm);
+            this.addLayer(new LayerPonyStrayOverlay(this));
         }
 
         @Override
@@ -79,7 +80,6 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
 
         public Wither(RenderManager rm) {
             super(rm);
-            this.addLayer(new LayerPonyStrayOverlay(this));
         }
 
         @Override

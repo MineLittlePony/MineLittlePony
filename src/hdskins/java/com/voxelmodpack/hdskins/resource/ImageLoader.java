@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.io.IOUtils;
 
+import com.google.common.base.Throwables;
 import com.voxelmodpack.hdskins.DynamicTextureImage;
 import com.voxelmodpack.hdskins.ImageBufferDownloadHD;
 
@@ -52,7 +53,7 @@ public class ImageLoader implements Callable<ResourceLocation> {
                 IOUtils.closeQuietly(in);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
         return null;
     }
