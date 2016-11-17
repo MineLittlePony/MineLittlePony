@@ -12,13 +12,9 @@ import com.brohoof.minelittlepony.renderer.layer.LayerPonyArmor;
 import com.brohoof.minelittlepony.renderer.layer.LayerPonySkull;
 import com.voxelmodpack.hdskins.HDSkinManager;
 
-import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.item.EnumAction;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 
 public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving<T> implements IRenderPony {
@@ -49,47 +45,6 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
     @Override
     protected void preRenderCallback(T entity, float partialTickTime) {
-        ItemStack main = entity.getHeldItemMainhand();
-        ItemStack off = entity.getHeldItemOffhand();
-        ArmPose mainPose = ArmPose.EMPTY;
-        ArmPose offPose = ArmPose.EMPTY;
-
-        if (main != null) {
-            mainPose = ArmPose.ITEM;
-
-            if (entity.getItemInUseCount() > 0) {
-                EnumAction action = main.getItemUseAction();
-
-                if (action == EnumAction.BLOCK) {
-                    mainPose = ArmPose.BLOCK;
-                } else if (action == EnumAction.BOW) {
-                    mainPose = ArmPose.BOW_AND_ARROW;
-                }
-            }
-        }
-
-        if (off != null) {
-            offPose = ArmPose.ITEM;
-
-            if (entity.getItemInUseCount() > 0) {
-                EnumAction action = off.getItemUseAction();
-
-                if (action == EnumAction.BLOCK) {
-                    offPose = ArmPose.BLOCK;
-                } else if (action == EnumAction.BOW) {
-                    offPose = ArmPose.BOW_AND_ARROW;
-                }
-            }
-        }
-
-        if (entity.getPrimaryHand() == EnumHandSide.RIGHT) {
-            this.playerModel.getModel().rightArmPose = mainPose;
-            this.playerModel.getModel().leftArmPose = offPose;
-        } else {
-            this.playerModel.getModel().rightArmPose = offPose;
-            this.playerModel.getModel().leftArmPose = mainPose;
-        }
-
         this.playerModel.getModel().isSneak = false;
         this.playerModel.getModel().isFlying = false;
         this.playerModel.getModel().isSleeping = false;

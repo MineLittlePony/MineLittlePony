@@ -1,7 +1,6 @@
 package com.brohoof.minelittlepony.renderer;
 
 import com.brohoof.minelittlepony.MineLittlePony;
-import com.brohoof.minelittlepony.Pony;
 import com.brohoof.minelittlepony.model.PMAPI;
 import com.brohoof.minelittlepony.model.pony.ModelVillagerPony;
 
@@ -11,6 +10,13 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.util.ResourceLocation;
 
 public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
+
+    private static final ResourceLocation GENERIC = new ResourceLocation("minelittlepony", "textures/entity/villager/villager_pony.png");
+    private static final ResourceLocation FARMER = new ResourceLocation("minelittlepony", "textures/entity/villager/farmer_pony.png");
+    private static final ResourceLocation LIBRARIAN = new ResourceLocation("minelittlepony", "textures/entity/villager/librarian_pony.png");
+    private static final ResourceLocation PRIEST = new ResourceLocation("minelittlepony", "textures/entity/villager/priest_pony.png");
+    private static final ResourceLocation SMITH = new ResourceLocation("minelittlepony", "textures/entity/villager/smith_pony.png");
+    private static final ResourceLocation BUTCHER = new ResourceLocation("minelittlepony", "textures/entity/villager/butcher_pony.png");
 
     public RenderPonyVillager(RenderManager rm) {
         super(rm, PMAPI.villager);
@@ -34,7 +40,24 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
 
     @Override
     protected ResourceLocation getEntityTexture(EntityVillager villager) {
-        Pony aVillagerPony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(villager);
-        return getTexture(aVillagerPony.getTextureResourceLocation());
+        return getTexture(getTextureForVillager(villager));
+    }
+
+    private ResourceLocation getTextureForVillager(EntityVillager villager) {
+        switch (villager.getProfession()) {
+        case 0:
+            return FARMER;
+        case 1:
+            return LIBRARIAN;
+        case 2:
+            return PRIEST;
+        case 3:
+            return SMITH;
+        case 4:
+            return BUTCHER;
+        case 5:
+        default:
+            return GENERIC;
+        }
     }
 }

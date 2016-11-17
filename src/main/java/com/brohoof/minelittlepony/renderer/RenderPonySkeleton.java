@@ -3,21 +3,26 @@ package com.brohoof.minelittlepony.renderer;
 import java.util.Random;
 
 import com.brohoof.minelittlepony.PonyGender;
-import com.brohoof.minelittlepony.PonyManager;
 import com.brohoof.minelittlepony.PonyRace;
 import com.brohoof.minelittlepony.PonySize;
 import com.brohoof.minelittlepony.TailLengths;
 import com.brohoof.minelittlepony.model.PMAPI;
-import com.brohoof.minelittlepony.renderer.layer.LayerPonySkeletonOverlay;
+import com.brohoof.minelittlepony.renderer.layer.LayerPonyStrayOverlay;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.SkeletonType;
+import net.minecraft.entity.monster.AbstractSkeleton;
+import net.minecraft.entity.monster.EntityStray;
+import net.minecraft.entity.monster.EntityWitherSkeleton;
 import net.minecraft.util.ResourceLocation;
 
-public class RenderPonySkeleton extends RenderPonyMob<EntitySkeleton> {
+public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends RenderPonyMob<Skeleton> {
+
+    private static final ResourceLocation SKELETON = new ResourceLocation("minelittlepony", "textures/entity/skeleton/skeleton_pony.png");
+    private static final ResourceLocation WITHER = new ResourceLocation("minelittlepony", "textures/entity/skeleton/skeleton_wither_pony.png");
+    private static final ResourceLocation STRAY = new ResourceLocation("minelittlepony", "textures/entity/skeleton/stray_pony.png");
+
     public RenderPonySkeleton(RenderManager rm) {
         super(rm, PMAPI.skeleton);
         this.addLayer(new LayerBipedArmor(this) {
@@ -27,15 +32,11 @@ public class RenderPonySkeleton extends RenderPonyMob<EntitySkeleton> {
                 this.modelArmor = PMAPI.skeleton.getArmor().modelArmorChestplate;
             }
         });
-        this.addLayer(new LayerPonySkeletonOverlay(this));
     }
 
     @Override
-    protected void preRenderCallback(EntitySkeleton skeleton, float partialTicks) {
+    protected void preRenderCallback(Skeleton skeleton, float partialTicks) {
         super.preRenderCallback(skeleton, partialTicks);
-        if (skeleton.getSkeletonType() == SkeletonType.WITHER) {
-            GlStateManager.scale(1.2F, 1.2F, 1.2F);
-        }
 
         Random rand = new Random(skeleton.getUniqueID().hashCode());
         this.playerModel.getModel().metadata.setGender(rand.nextBoolean() ? PonyGender.MARE : PonyGender.STALLION);
@@ -58,11 +59,40 @@ public class RenderPonySkeleton extends RenderPonyMob<EntitySkeleton> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntitySkeleton skeleton) {
-        SkeletonType type = skeleton.getSkeletonType();
-        ResourceLocation loc = PonyManager.SKELETONS.get(type);
-        if (loc == null)
-            loc = PonyManager.SKELETON;
-        return getTexture(loc);
+    protected ResourceLocation getEntityTexture(Skeleton entity) {
+        return getTexture(SKELETON);
     }
+
+    public static class Stray extends RenderPonySkeleton<EntityStray> {
+
+        public Stray(RenderManager rm) {
+            super(rm);
+        }
+
+        @Override
+        protected ResourceLocation getEntityTexture(EntityStray entity) {
+            return getTexture(STRAY);
+        }
+    }
+
+    public static class Wither extends RenderPonySkeleton<EntityWitherSkeleton> {
+
+        public Wither(RenderManager rm) {
+            super(rm);
+            this.addLayer(new LayerPonyStrayOverlay(this));
+        }
+
+        @Override
+        protected ResourceLocation getEntityTexture(EntityWitherSkeleton entity) {
+            return getTexture(WITHER);
+        }
+
+        @Override
+        protected void preRenderCallback(EntityWitherSkeleton skeleton, float partialTicks) {
+            super.preRenderCallback(skeleton, partialTicks);
+            GlStateManager.scale(1.2F, 1.2F, 1.2F);
+        }
+
+    }
+
 }

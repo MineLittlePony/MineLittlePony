@@ -101,7 +101,7 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
 
         float bodySwingRotation = 0.0F;
         if (pony.swingProgress > -9990.0F && !metadata.hasMagic()) {
-            bodySwingRotation = MathHelper.sin(MathHelper.sqrt_float(pony.swingProgress) * 3.1415927F * 2.0F) * 0.2F;
+            bodySwingRotation = MathHelper.sin(MathHelper.sqrt(pony.swingProgress) * 3.1415927F * 2.0F) * 0.2F;
         }
         for (int i = 0; i < this.leftWing.length; ++i) {
             this.leftWing[i].rotateAngleY = bodySwingRotation * 0.2F;

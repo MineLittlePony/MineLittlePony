@@ -10,6 +10,7 @@ import com.brohoof.minelittlepony.renderer.RenderPonyPigman;
 import com.brohoof.minelittlepony.renderer.RenderPonySkeleton;
 import com.brohoof.minelittlepony.renderer.RenderPonyVillager;
 import com.brohoof.minelittlepony.renderer.RenderPonyZombie;
+import com.brohoof.minelittlepony.renderer.RenderPonyZombieVillager;
 import com.brohoof.minelittlepony.util.MineLPLogger;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.util.ModUtilities;
@@ -20,9 +21,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.monster.EntityHusk;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.EntityStray;
+import net.minecraft.entity.monster.EntityWitherSkeleton;
 import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.monster.EntityZombieVillager;
 import net.minecraft.entity.passive.EntityVillager;
 
 public class MineLittlePony {
@@ -76,11 +81,13 @@ public class MineLittlePony {
         ModUtilities.addRenderer(EntityPonyModel.class, new RenderPonyModel(rm));
         if (this.config.villagers) {
             ModUtilities.addRenderer(EntityVillager.class, new RenderPonyVillager(rm));
+            ModUtilities.addRenderer(EntityZombieVillager.class, new RenderPonyZombieVillager(rm));
             MineLPLogger.info("Villagers are now ponies.");
         }
 
         if (this.config.zombies) {
-            ModUtilities.addRenderer(EntityZombie.class, new RenderPonyZombie(rm));
+            ModUtilities.addRenderer(EntityZombie.class, new RenderPonyZombie<EntityZombie>(rm));
+            ModUtilities.addRenderer(EntityHusk.class, new RenderPonyZombie.Husk(rm));
             MineLPLogger.info("Zombies are now ponies.");
         }
 
@@ -90,7 +97,9 @@ public class MineLittlePony {
         }
 
         if (this.config.skeletons) {
-            ModUtilities.addRenderer(EntitySkeleton.class, new RenderPonySkeleton(rm));
+            ModUtilities.addRenderer(EntitySkeleton.class, new RenderPonySkeleton<EntitySkeleton>(rm));
+            ModUtilities.addRenderer(EntityStray.class, new RenderPonySkeleton.Stray(rm));
+            ModUtilities.addRenderer(EntityWitherSkeleton.class, new RenderPonySkeleton.Wither(rm));
             MineLPLogger.info("Skeletons are now ponies.");
         }
 
@@ -124,10 +133,6 @@ public class MineLittlePony {
 
     public static PonyConfig getConfig() {
         return getInstance().config;
-    }
-
-    public static String getSPUsername() {
-        return Minecraft.getMinecraft().getSession().getUsername();
     }
 
 }

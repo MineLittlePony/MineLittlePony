@@ -121,7 +121,7 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
         GL14.glBlendColor(red, green, blue, alpha);
 
         RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
-        IBakedModel model = renderItem.getItemModelWithOverrides(drop, entity.worldObj, entity);
+        IBakedModel model = renderItem.getItemModelWithOverrides(drop, entity.world, entity);
 
         ItemCameraTransforms itemcameratransforms = model.getItemCameraTransforms();
         ItemCameraTransforms.applyTransformSide(itemcameratransforms.getTransform(transform), hand == EnumHandSide.LEFT);

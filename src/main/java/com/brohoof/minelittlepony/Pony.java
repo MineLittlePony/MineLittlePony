@@ -4,6 +4,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import com.brohoof.minelittlepony.model.PMAPI;
 import com.brohoof.minelittlepony.model.PlayerModel;
 import com.brohoof.minelittlepony.util.MineLPLogger;
@@ -41,7 +43,7 @@ public class Pony {
     private int skinCheckCount;
     private boolean skinChecked;
 
-    public Pony(AbstractClientPlayer player) {
+    public Pony(@Nonnull AbstractClientPlayer player) {
         this.profile = player.getGameProfile();
         this.textureResourceLocation = player.getLocationSkin();
         MineLPLogger.debug("+ Initialising new pony #%d for player %s (%s) with resource location %s.", this.ponyId,
@@ -50,7 +52,7 @@ public class Pony {
         this.checkMeta(profile);
     }
 
-    public Pony(ResourceLocation aTextureResourceLocation) {
+    public Pony(@Nonnull ResourceLocation aTextureResourceLocation) {
         this.textureResourceLocation = aTextureResourceLocation;
         MineLPLogger.debug("+ Initialising new pony #%d with resource location %s.", this.ponyId, this.textureResourceLocation);
         this.checkSkin(this.textureResourceLocation);
@@ -118,7 +120,7 @@ public class Pony {
             metadata.setGlowColor(Integer.parseInt(prefs.apply(MineLittlePony.MLP_MAGIC)));
     }
 
-    public BufferedImage getBufferedImage(ResourceLocation textureResourceLocation) {
+    public BufferedImage getBufferedImage(@Nonnull ResourceLocation textureResourceLocation) {
         BufferedImage skinImage = null;
         try {
             IResource skin = Minecraft.getMinecraft().getResourceManager().getResource(textureResourceLocation);

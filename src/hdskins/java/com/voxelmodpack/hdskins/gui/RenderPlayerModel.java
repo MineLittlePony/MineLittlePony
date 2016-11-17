@@ -29,7 +29,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
 
     @Override
     protected boolean canRenderName(M targetEntity) {
-        if (Minecraft.getMinecraft().thePlayer != null) {
+        if (Minecraft.getMinecraft().player != null) {
             return super.canRenderName(targetEntity);
         }
         return false;
@@ -37,7 +37,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
 
     @Override
     protected boolean setBrightness(M entitylivingbaseIn, float partialTicks, boolean p_177092_3_) {
-        if (Minecraft.getMinecraft().theWorld != null) {
+        if (Minecraft.getMinecraft().world != null) {
             return super.setBrightness(entitylivingbaseIn, partialTicks, p_177092_3_);
         }
         return false;

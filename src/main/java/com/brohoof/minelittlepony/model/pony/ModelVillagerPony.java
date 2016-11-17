@@ -22,7 +22,7 @@ public class ModelVillagerPony extends ModelPlayerPony {
         super.animate(move, swing, tick, horz, vert, entity);
         float bodySwingRotation = 0.0F;
         if (this.swingProgress > -9990.0F && !this.metadata.hasMagic()) {
-            bodySwingRotation = MathHelper.sin(MathHelper.sqrt_float(this.swingProgress) * 3.1415927F * 2.0F) * 0.2F;
+            bodySwingRotation = MathHelper.sin(MathHelper.sqrt(this.swingProgress) * 3.1415927F * 2.0F) * 0.2F;
         }
         for (int i = 0; i < this.VillagerBagPiece.length; ++i) {
             this.VillagerBagPiece[i].rotateAngleY = bodySwingRotation * 0.2F;

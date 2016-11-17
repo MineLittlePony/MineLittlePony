@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.monster.EntityZombieVillager;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -44,8 +44,7 @@ public class LayerPonySkull implements LayerRenderer<EntityLivingBase> {
             Item item = itemstack.getItem();
 
             pushMatrix();
-            boolean isVillager = entity instanceof EntityVillager
-                    || entity instanceof EntityZombie && ((EntityZombie) entity).isVillager();
+            boolean isVillager = entity instanceof EntityVillager || entity instanceof EntityZombieVillager;
 
             model.transform(BodyPart.HEAD);
             model.bipedHead.postRender(0.0625f);

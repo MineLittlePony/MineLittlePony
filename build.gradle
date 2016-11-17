@@ -26,12 +26,12 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'mnm.gradle.ap-ide'
 
 group = 'com.brohoof.minelp'
-version = '1.10.2.6'
+version = '1.11.0.0-beta'
 description = 'Mine Little Pony'
 
 minecraft {
-	version = "1.10.2"
-	mappings = 'snapshot_20160704' // 'murica! F*** yeah!
+	version = "1.11"
+	mappings = 'snapshot_20161116'
 	runDir = 'run'
 	replace '@VERSION@',project.version
 }
@@ -51,8 +51,6 @@ sourceSets {
 		compileClasspath += hdskins.output
 	}
 }
-
-dependencies.testCompile 'junit:junit:4.12'
 
 litemod.json {
 	author = 'Verdana, Rene_Z, Mumfrey, JoyJoy'
