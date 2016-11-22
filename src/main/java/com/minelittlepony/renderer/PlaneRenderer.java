@@ -14,15 +14,24 @@ public class PlaneRenderer extends ModelRenderer {
     private int textureOffsetX;
     private int textureOffsetY;
 
+    public PlaneRenderer(ModelBase model, String boxNameIn) {
+        super(model, boxNameIn);
+    }
+
+    public PlaneRenderer(ModelBase model) {
+        super(model);
+    }
+
     public PlaneRenderer(ModelBase model, int x, int y) {
         super(model, x, y);
     }
 
     @Override
-    public ModelRenderer setTextureOffset(int x, int y) {
+    public PlaneRenderer setTextureOffset(int x, int y) {
         this.textureOffsetX = x;
         this.textureOffsetY = y;
-        return super.setTextureOffset(x, y);
+        super.setTextureOffset(x, y);
+        return this;
     }
 
     public void addPlane(float offX, float offY, float offZ, int width, int height, int depth, float scale, Face face) {

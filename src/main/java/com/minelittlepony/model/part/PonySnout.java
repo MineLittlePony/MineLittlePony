@@ -1,9 +1,5 @@
 package com.minelittlepony.model.part;
 
-import java.util.Map;
-
-import com.google.common.collect.ImmutableMap;
-import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyData;
 import com.minelittlepony.PonyGender;
 import com.minelittlepony.model.AbstractPonyModel;
@@ -12,10 +8,8 @@ import com.minelittlepony.renderer.PlaneRenderer;
 
 public class PonySnout extends AbstractHeadPart implements PonyModelConstants {
 
-    private static final Map<PonyGender, PlaneRenderer[]> MUZZLES = ImmutableMap.<PonyGender, PlaneRenderer[]> builder()
-            .put(PonyGender.MARE, new PlaneRenderer[10])
-            .put(PonyGender.STALLION, new PlaneRenderer[5])
-            .build();
+    private PlaneRenderer mare;
+    private PlaneRenderer stallion;
 
     public PonySnout(AbstractPonyModel pony) {
         super(pony);
@@ -24,67 +18,45 @@ public class PonySnout extends AbstractHeadPart implements PonyModelConstants {
     @Override
     public void init(float yOffset, float stretch) {
 
-        PlaneRenderer[] muzzle = MUZZLES.get(PonyGender.MARE);
-        muzzle[0] = new PlaneRenderer(pony, 10, 14);
-        muzzle[1] = new PlaneRenderer(pony, 11, 13);
-        muzzle[2] = new PlaneRenderer(pony, 9, 14);
-        muzzle[3] = new PlaneRenderer(pony, 14, 14);
-        muzzle[4] = new PlaneRenderer(pony, 11, 12);
-        muzzle[5] = new PlaneRenderer(pony, 18, 7);
-        muzzle[6] = new PlaneRenderer(pony, 9, 14);
-        muzzle[7] = new PlaneRenderer(pony, 14, 14);
-        muzzle[8] = new PlaneRenderer(pony, 11, 12);
-        muzzle[9] = new PlaneRenderer(pony, 12, 12);
+        mare = new PlaneRenderer(this.pony);
+        mare.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
 
-        muzzle[0].addBackPlane(-2.0F + HEAD_CENTRE_X, 2.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 4, 2, 0, stretch);
-        muzzle[0].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        muzzle[1].addBackPlane(-1.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 2, 1, 0, stretch);
-        muzzle[1].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        muzzle[2].addTopPlane(-2.0F + HEAD_CENTRE_X, 2.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 1, 0, 1, stretch);
-        muzzle[2].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        muzzle[3].addTopPlane(1.0F + HEAD_CENTRE_X, 2.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 1, 0, 1, stretch);
-        muzzle[3].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        muzzle[4].addTopPlane(-1.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 2, 0, 1, stretch);
-        muzzle[4].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        muzzle[5].addBottomPlane(-2.0F + HEAD_CENTRE_X, 4.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 4, 0, 1, stretch);
-        muzzle[5].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        muzzle[6].addWestPlane(-2.0F + HEAD_CENTRE_X, 2.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 0, 2, 1, stretch);
-        muzzle[6].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        muzzle[7].addEastPlane(2.0F + HEAD_CENTRE_X, 2.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 0, 2, 1, stretch);
-        muzzle[7].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        muzzle[8].addWestPlane(-1.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 0, 1, 1, stretch);
-        muzzle[8].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        muzzle[9].addEastPlane(1.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 0, 1, 1, stretch);
-        muzzle[9].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
+        mare.setTextureOffset(10, 14).addBackPlane(-2.0F + HEAD_CENTRE_X, 2.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 4, 2, 0, stretch);
+        mare.setTextureOffset(11, 13).addBackPlane(-1.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 2, 1, 0, stretch);
+        mare.setTextureOffset(9, 14).addTopPlane(-2.0F + HEAD_CENTRE_X, 2.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 1, 0, 1, stretch);
+        mare.setTextureOffset(14, 14).addTopPlane(1.0F + HEAD_CENTRE_X, 2.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 1, 0, 1, stretch);
+        mare.setTextureOffset(11, 12).addTopPlane(-1.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 2, 0, 1, stretch);
+        mare.setTextureOffset(18, 7).addBottomPlane(-2.0F + HEAD_CENTRE_X, 4.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 4, 0, 1, stretch);
+        mare.setTextureOffset(9, 14).addWestPlane(-2.0F + HEAD_CENTRE_X, 2.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 0, 2, 1, stretch);
+        mare.setTextureOffset(14, 14).addEastPlane(2.0F + HEAD_CENTRE_X, 2.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 0, 2, 1, stretch);
+        mare.setTextureOffset(11, 12).addWestPlane(-1.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 0, 1, 1, stretch);
+        mare.setTextureOffset(12, 12).addEastPlane(1.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 0, 1, 1, stretch);
 
-        muzzle = MUZZLES.get(PonyGender.STALLION);
-        muzzle[0] = new PlaneRenderer(pony, 10, 13);
-        muzzle[1] = new PlaneRenderer(pony, 10, 13);
-        muzzle[2] = new PlaneRenderer(pony, 18, 7);
-        muzzle[3] = new PlaneRenderer(pony, 10, 13);
-        muzzle[4] = new PlaneRenderer(pony, 13, 13);
+        stallion = new PlaneRenderer(this.pony);
+        stallion.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
 
-        muzzle[0].addBackPlane(-2.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 4, 3, 0, stretch);
-        muzzle[0].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        muzzle[1].addTopPlane(-2.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 4, 0, 1, stretch);
-        muzzle[1].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        muzzle[2].addBottomPlane(-2.0F + HEAD_CENTRE_X, 4.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 4, 0, 1, stretch);
-        muzzle[2].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        muzzle[3].addWestPlane(-2.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 0, 3, 1, stretch);
-        muzzle[3].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        muzzle[4].addEastPlane(2.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 0, 3, 1, stretch);
-        muzzle[4].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
+        stallion.setTextureOffset(10, 13).addBackPlane(-2.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 4, 3, 0, stretch);
+        stallion.setTextureOffset(10, 13).addTopPlane(-2.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 4, 0, 1, stretch);
+        stallion.setTextureOffset(18, 7).addBottomPlane(-2.0F + HEAD_CENTRE_X, 4.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 4, 0, 1, stretch);
+        stallion.setTextureOffset(10, 13).addWestPlane(-2.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 0, 3, 1, stretch);
+        stallion.setTextureOffset(13, 13).addEastPlane(2.0F + HEAD_CENTRE_X, 1.0F + HEAD_CENTRE_Y, -5.0F + HEAD_CENTRE_Z, 0, 3, 1, stretch);
     }
 
     @Override
-    public void render(PonyData data, float scale) {
-        super.render(data, scale);
-        if (MineLittlePony.getConfig().snuzzles && data.getGender() != null) {
-            PlaneRenderer[] muzzle = MUZZLES.get(data.getGender());
-            for (int i = 0; i < muzzle.length; i++) {
-                muzzle[i].render(scale);
-            }
-        }
+    public void animate(PonyData metadata, float move, float swing, float tick, float horz, float vert) {
+        mare.isHidden = metadata.getGender() != PonyGender.MARE;
+        stallion.isHidden = metadata.getGender() != PonyGender.STALLION;
     }
+
+//    @Override
+//    public void render(PonyData data, float scale) {
+//        super.render(data, scale);
+//        if (MineLittlePony.getConfig().snuzzles && data.getGender() != null) {
+//            PlaneRenderer[] muzzle = MUZZLES.get(data.getGender());
+//            for (int i = 0; i < muzzle.length; i++) {
+//                muzzle[i].render(scale);
+//            }
+//        }
+//    }
 
 }

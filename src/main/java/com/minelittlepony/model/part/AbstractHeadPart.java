@@ -2,7 +2,6 @@ package com.minelittlepony.model.part;
 
 import com.minelittlepony.PonyData;
 import com.minelittlepony.model.AbstractPonyModel;
-import com.minelittlepony.model.BodyPart;
 
 public abstract class AbstractHeadPart implements IPonyPart {
 
@@ -13,13 +12,8 @@ public abstract class AbstractHeadPart implements IPonyPart {
     }
 
     @Override
-    public void render(PonyData data, float scale) {
-        pony.transform(BodyPart.HEAD);
-        pony.bipedHead.postRender(scale);
-    }
+    public void render(PonyData data, float scale) {}
 
     @Override
-    public void animate(PonyData metadata, float move, float swing, float tick, float horz, float vert) {
-
-    }
+    public void animate(PonyData metadata, float move, float swing, float tick, float horz, float vert) {}
 }

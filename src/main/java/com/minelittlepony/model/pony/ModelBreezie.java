@@ -9,11 +9,6 @@ import net.minecraft.util.math.MathHelper;
 public class ModelBreezie extends ModelBiped {
 
     ModelRenderer neck;
-    ModelRenderer snuzzle;
-    ModelRenderer leftEar;
-    ModelRenderer rightEar;
-    ModelRenderer leftAntenna;
-    ModelRenderer rightAntenna;
     ModelRenderer tail;
     ModelRenderer tailStub;
     ModelRenderer leftWing;
@@ -26,7 +21,18 @@ public class ModelBreezie extends ModelBiped {
         this.bipedHeadwear.showModel = false;
 
         bipedHead = new ModelRenderer(this, 0, 0);
-        bipedHead.addBox(0F, 0F, 0F, 6, 6, 6).setRotationPoint(-3F, -7F, -7F);
+        bipedHead.setRotationPoint(0, 0, -4);
+        bipedHead.addBox(-3, -6, -3F, 6, 6, 6);
+        bipedHead.setTextureOffset(28, 0).addBox(2F, -7F, 1F, 1, 1, 1);
+        bipedHead.setTextureOffset(24, 0).addBox(-3F, -7F, 1F, 1, 1, 1);
+        bipedHead.setTextureOffset(24, 9).addBox(-1F, -2F, -4F, 2, 2, 1);
+
+        ModelRenderer antenna = new ModelRenderer(this);
+        antenna.setTextureOffset(28, 2).addBox(1F, -11F, -2F, 1, 6, 1);
+        antenna.setTextureOffset(24, 2).addBox(-2F, -11F, -2F, 1, 6, 1);
+        setRotation(antenna, -0.2617994F, 0F, 0F);
+
+        this.bipedHead.addChild(antenna);
 
         bipedBody = new ModelRenderer(this, 2, 12);
         bipedBody.addBox(0F, 0F, 0F, 6, 7, 14).setRotationPoint(-3F, 1F, -3F);
@@ -47,23 +53,6 @@ public class ModelBreezie extends ModelBiped {
         neck = new ModelRenderer(this, 40, 0);
         neck.addBox(0F, 0F, 0F, 2, 5, 2).setRotationPoint(-1F, -2F, -4F);
         setRotation(neck, 0.0872665F, 0F, 0F);
-
-        leftEar = new ModelRenderer(this, 28, 0);
-        leftEar.addBox(0F, 0F, 0F, 1, 1, 1).setRotationPoint(2F, -8F, -3F);
-
-        rightEar = new ModelRenderer(this, 24, 0);
-        rightEar.addBox(0F, 0F, 0F, 1, 1, 1).setRotationPoint(-3F, -8F, -3F);
-
-        leftAntenna = new ModelRenderer(this, 28, 2);
-        leftAntenna.addBox(0F, 0F, 0F, 1, 6, 1).setRotationPoint(1F, -12F, -4F);
-        setRotation(leftAntenna, -0.2617994F, 0F, 0F);
-
-        rightAntenna = new ModelRenderer(this, 24, 2);
-        rightAntenna.addBox(0F, 0F, 0F, 1, 6, 1).setRotationPoint(-2F, -12F, -4F);
-        setRotation(rightAntenna, -0.2617994F, 0F, 0F);
-
-        snuzzle = new ModelRenderer(this, 24, 9);
-        snuzzle.addBox(0F, 0F, 0F, 2, 2, 1).setRotationPoint(-1F, -3F, -8F);
 
         tailStub = new ModelRenderer(this, 40, 7);
         tailStub.addBox(0F, 0F, 0F, 1, 1, 3).setRotationPoint(-0.5F, 8F, 8F);
@@ -90,11 +79,6 @@ public class ModelBreezie extends ModelBiped {
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         super.render(entity, f, f1, f2, f3, f4, f5);
         neck.render(f5);
-        leftEar.render(f5);
-        rightEar.render(f5);
-        leftAntenna.render(f5);
-        rightAntenna.render(f5);
-        snuzzle.render(f5);
         tailStub.render(f5);
         tail.render(f5);
         leftWing.render(f5);
@@ -111,10 +95,9 @@ public class ModelBreezie extends ModelBiped {
     @Override
     public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
 
-        // this.bipedRightArm.rotationPointZ = 0.0F;
-        // this.bipedRightArm.rotationPointX = -5.0F;
-        // this.bipedLeftArm.rotationPointZ = 0.0F;
-        // this.bipedLeftArm.rotationPointX = 5.0F;
+        this.bipedHead.rotateAngleY = netHeadYaw * 0.017453292F;
+        this.bipedHead.rotateAngleX = headPitch * 0.017453292F;
+
         this.bipedRightArm.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F;
         this.bipedLeftArm.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
         this.bipedRightArm.rotateAngleZ = 0.0F;
