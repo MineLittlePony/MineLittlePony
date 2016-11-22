@@ -57,7 +57,7 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
         this.layerRenderers.clear();
 
         this.addLayer(new LayerPonyArmor(this));
-        this.addLayer(new LayerHeldPonyItem(this));
+        this.addLayer(new LayerHeldPonyItem<AbstractClientPlayer>(this));
         this.addLayer(new LayerArrow(this));
         this.addLayer(new LayerPonyCape(this));
         this.addLayer(new LayerPonySkull(this));
@@ -95,7 +95,7 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
     }
 
     @Inject(
-            method = "renderLivingAt",
+            method = "renderLivingAt(Lnet/minecraft/client/entity/AbstractClientPlayer;DDD)V",
             at = @At("RETURN"))
     private void setupPlayerScale(AbstractClientPlayer player, double xPosition, double yPosition, double zPosition, CallbackInfo ci) {
 
@@ -169,16 +169,17 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
     }
 
     @Inject(
-            method = "rotateCorpse(Lnet/minecraft/client/entity/AbstractClientPlayer;FFF)V",
+            method = "applyRotations(Lnet/minecraft/client/entity/AbstractClientPlayer;FFF)V",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/renderer/entity/RenderLivingBase;"
-                            + "rotateCorpse(Lnet/minecraft/entity/EntityLivingBase;FFF)V",
+                            + "applyRotations(Lnet/minecraft/entity/EntityLivingBase;FFF)V",
                     ordinal = 1,
                     shift = Shift.AFTER))
     private void onRotateCorpse(AbstractClientPlayer player, float yaw, float pitch, float ticks, CallbackInfo ci) {
         if (this.mainModel instanceof ModelPlayerPony) {
-            // require arms to be stretched out (sorry mud ponies, no flight skills for you)
+            // require arms to be stretched out (sorry mud ponies, no flight
+            // skills for you)
             if (!((ModelPlayerPony) this.mainModel).rainboom) {
                 this.playerModel.getModel().motionPitch = 0;
                 return;
@@ -212,7 +213,7 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
     }
 
     @Redirect(
-            method = "rotateCorpse(Lnet/minecraft/client/entity/AbstractClientPlayer;FFF)V",
+            method = "applyRotations(Lnet/minecraft/client/entity/AbstractClientPlayer;FFF)V",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/renderer/GlStateManager;rotate(FFFF)V",

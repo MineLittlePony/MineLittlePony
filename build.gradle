@@ -31,7 +31,8 @@ description = 'Mine Little Pony'
 
 minecraft {
 	version = "1.11"
-	mappings = 'snapshot_20161116'
+	// first snapshot for 1.11. Change to stable when possible.
+	mappings = 'snapshot_20161120'
 	runDir = 'run'
 	replace '@VERSION@',project.version
 }

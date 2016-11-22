@@ -1,6 +1,7 @@
 package com.minelittlepony.renderer;
 
 import com.minelittlepony.model.PMAPI;
+import com.minelittlepony.util.Villagers;
 
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.monster.EntityZombieVillager;
@@ -25,29 +26,29 @@ public class RenderPonyZombieVillager extends RenderPonyMob<EntityZombieVillager
     }
 
     private ResourceLocation getTextureForVillager(EntityZombieVillager villager) {
-        switch (villager.func_190736_dl()) {
-        case 0:
+        switch (villager.getProfession()) { // getProfession
+        case Villagers.FARMER:
             return FARMER; // applejack
-        case 1:
+        case Villagers.LIBRARIAN:
             return LIBRARIAN; // twilight sparkle
-        case 2:
+        case Villagers.PRIEST:
             return PRIEST; // fluttershy
-        case 3:
+        case Villagers.BLACKSMITH:
             return SMITH; // rarity
-        case 4:
+        case Villagers.BUTCHER:
             return BUTCHER; // rainbow dash
-        case 5:
+        case Villagers.GENERIC:
         default:
             return GENERIC; // pinkie pie
         }
     }
 
     @Override
-    protected void rotateCorpse(EntityZombieVillager villager, float p_77043_2_, float p_77043_3_, float partialTicks) {
+    protected void applyRotations(EntityZombieVillager villager, float p_77043_2_, float p_77043_3_, float partialTicks) {
         if (villager.isConverting()) {
             p_77043_3_ += (float) (Math.cos(villager.ticksExisted * 3.25D) * Math.PI * 0.25D);
         }
 
-        super.rotateCorpse(villager, p_77043_2_, p_77043_3_, partialTicks);
+        super.applyRotations(villager, p_77043_2_, p_77043_3_, partialTicks);
     }
 }

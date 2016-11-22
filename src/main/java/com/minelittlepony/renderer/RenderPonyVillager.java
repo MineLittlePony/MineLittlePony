@@ -3,6 +3,7 @@ package com.minelittlepony.renderer;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.model.pony.ModelVillagerPony;
+import com.minelittlepony.util.Villagers;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -45,17 +46,17 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
 
     private ResourceLocation getTextureForVillager(EntityVillager villager) {
         switch (villager.getProfession()) {
-        case 0:
+        case Villagers.FARMER:
             return FARMER;
-        case 1:
+        case Villagers.LIBRARIAN:
             return LIBRARIAN;
-        case 2:
+        case Villagers.PRIEST:
             return PRIEST;
-        case 3:
+        case Villagers.BLACKSMITH:
             return SMITH;
-        case 4:
+        case Villagers.BUTCHER:
             return BUTCHER;
-        case 5:
+        case Villagers.GENERIC:
         default:
             return GENERIC;
         }

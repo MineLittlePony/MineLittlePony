@@ -27,7 +27,7 @@ public class RenderPonyVex extends RenderBiped<EntityVex> {
 
     @Override
     protected ResourceLocation getEntityTexture(EntityVex entity) {
-        return entity.func_190647_dj() ? VEX_CHARGING : VEX;
+        return entity.isCharging() ? VEX_CHARGING : VEX;
     }
 
 }
