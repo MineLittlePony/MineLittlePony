@@ -126,7 +126,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
 
             ItemStack main = clientPlayer.getHeldItemMainhand();
             ArmPose mainPose;
-            if (main == null) {
+            if (main.isEmpty()) {
                 mainPose = ArmPose.EMPTY;
             } else {
                 mainPose = ArmPose.ITEM;
@@ -144,7 +144,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
 
             ItemStack off = clientPlayer.getHeldItemOffhand();
             ArmPose offPose;
-            if (off == null) {
+            if (off.isEmpty()) {
                 offPose = ArmPose.EMPTY;
             } else {
                 offPose = ArmPose.ITEM;

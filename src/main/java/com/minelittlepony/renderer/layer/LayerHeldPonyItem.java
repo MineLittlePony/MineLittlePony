@@ -69,7 +69,7 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
     }
 
     private void renderHeldItem(EntityLivingBase entity, ItemStack drop, ItemCameraTransforms.TransformType transform, EnumHandSide hand) {
-        if (drop != null) {
+        if (!drop.isEmpty()) {
             GlStateManager.pushMatrix();
             AbstractPonyModel thePony = ((IRenderPony) this.livingPonyEntity).getPony().getModel();
             PonyData metadata = thePony.metadata;
