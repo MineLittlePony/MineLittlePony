@@ -57,7 +57,7 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
         this.layerRenderers.clear();
 
         this.addLayer(new LayerPonyArmor(this));
-        this.addLayer(new LayerHeldPonyItem<AbstractClientPlayer>(this));
+        this.addLayer(new LayerHeldPonyItem(this));
         this.addLayer(new LayerArrow(this));
         this.addLayer(new LayerPonyCape(this));
         this.addLayer(new LayerPonySkull(this));

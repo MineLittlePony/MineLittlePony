@@ -1,19 +1,13 @@
 package com.minelittlepony.renderer.layer;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL14;
-
 import com.minelittlepony.PonyData;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.PlayerModel;
 import com.minelittlepony.model.pony.ModelHumanPlayer;
 import com.minelittlepony.model.pony.ModelPlayerPony;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -26,10 +20,14 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL14;
+
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
 
-    private final RenderLivingBase<? extends EntityLivingBase> livingPonyEntity;
+    protected final RenderLivingBase<? extends EntityLivingBase> livingPonyEntity;
     private LayerHeldItem held;
 
     public LayerHeldPonyItem(RenderLivingBase<? extends EntityLivingBase> livingPony) {
@@ -39,9 +37,9 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
 
     @Override
     public void doRenderLayer(EntityLivingBase entity, float p_177141_2_, float p_177141_3_,
-            float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
-        PlayerModel pony = ((IRenderPony) livingPonyEntity).getPony();
-        if (pony.getModel() instanceof ModelHumanPlayer) {
+                              float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
+        ModelBase model = livingPonyEntity.getMainModel();
+        if (model instanceof ModelHumanPlayer) {
             held.doRenderLayer(entity, p_177141_2_, p_177141_3_, partialTicks, p_177141_5_, p_177141_6_,
                     p_177141_7_, scale);
             return;
@@ -52,9 +50,12 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
         ItemStack left = mainRight ? itemOff : itemMain;
         ItemStack right = mainRight ? itemMain : itemOff;
 
-        if (left != null || right != null) {
+        if (!left.isEmpty() || !right.isEmpty()) {
             pushMatrix();
-            pony.getModel().transform(BodyPart.LEGS);
+            if (model instanceof AbstractPonyModel) {
+                ((AbstractPonyModel) model).transform(BodyPart.LEGS);
+            }
+
             if (this.livingPonyEntity.getMainModel().isChild) {
                 translate(0, 0.625, 0);
                 rotate(-20, -1, 0, 0);
@@ -71,22 +72,15 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
     private void renderHeldItem(EntityLivingBase entity, ItemStack drop, ItemCameraTransforms.TransformType transform, EnumHandSide hand) {
         if (!drop.isEmpty()) {
             GlStateManager.pushMatrix();
-            AbstractPonyModel thePony = ((IRenderPony) this.livingPonyEntity).getPony().getModel();
-            PonyData metadata = thePony.metadata;
-            boolean isUnicorn = metadata.hasMagic();
-            if (isUnicorn) {
-                ModelPlayerPony playerModel = (ModelPlayerPony) thePony;
-                ModelRenderer unicornarm = hand == EnumHandSide.LEFT ? playerModel.unicornArmLeft : playerModel.unicornArmRight;
-                unicornarm.postRender(0.0625F);
-            } else {
-                ((ModelBiped) this.livingPonyEntity.getMainModel()).postRenderArm(0.0625F, hand);
-            }
+            translateToHand(hand);
+
             if (entity.isSneaking()) {
                 GlStateManager.translate(0.0F, 0.2F, 0.0F);
             }
 
             GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
             GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+            boolean isUnicorn = isUnicorn(this.livingPonyEntity.getMainModel());
             boolean isLeft = hand == EnumHandSide.LEFT;
             if (isUnicorn) {
                 GlStateManager.translate(isLeft ? -0.6F : 0.1F, 1, -.5);
@@ -96,9 +90,25 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
             Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, drop, transform, isLeft);
 
             if (isUnicorn) {
+                PonyData metadata = ((AbstractPonyModel)this.livingPonyEntity.getMainModel()).metadata;
                 this.renderItemGlow(entity, drop, transform, hand, metadata.getGlowColor());
             }
             GlStateManager.popMatrix();
+        }
+    }
+
+    private static boolean isUnicorn(ModelBase model) {
+        return model instanceof AbstractPonyModel && ((AbstractPonyModel) model).metadata.hasMagic();
+    }
+
+    protected void translateToHand(EnumHandSide hand) {
+        AbstractPonyModel thePony = ((IRenderPony) this.livingPonyEntity).getPony().getModel();
+        if (thePony.metadata.hasMagic()) {
+            ModelPlayerPony playerModel = (ModelPlayerPony) thePony;
+            ModelRenderer unicornarm = hand == EnumHandSide.LEFT ? playerModel.unicornArmLeft : playerModel.unicornArmRight;
+            unicornarm.postRender(0.0625F);
+        } else {
+            ((ModelBiped) this.livingPonyEntity.getMainModel()).postRenderArm(0.0625F, hand);
         }
     }
 

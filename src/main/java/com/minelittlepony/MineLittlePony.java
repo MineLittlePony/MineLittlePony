@@ -6,10 +6,12 @@ import com.minelittlepony.gui.PonySettingPanel;
 import com.minelittlepony.hdskins.gui.EntityPonyModel;
 import com.minelittlepony.hdskins.gui.GuiSkinsMineLP;
 import com.minelittlepony.hdskins.gui.RenderPonyModel;
+import com.minelittlepony.renderer.RenderPonyEvoker;
 import com.minelittlepony.renderer.RenderPonyPigman;
 import com.minelittlepony.renderer.RenderPonySkeleton;
 import com.minelittlepony.renderer.RenderPonyVex;
 import com.minelittlepony.renderer.RenderPonyVillager;
+import com.minelittlepony.renderer.RenderPonyVindicator;
 import com.minelittlepony.renderer.RenderPonyZombie;
 import com.minelittlepony.renderer.RenderPonyZombieVillager;
 import com.minelittlepony.util.MineLPLogger;
@@ -21,12 +23,15 @@ import com.voxelmodpack.hdskins.gui.GuiSkins;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.resources.data.MetadataSerializer;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.monster.EntityEvoker;
 import net.minecraft.entity.monster.EntityHusk;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityStray;
 import net.minecraft.entity.monster.EntityVex;
+import net.minecraft.entity.monster.EntityVindicator;
 import net.minecraft.entity.monster.EntityWitherSkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.monster.EntityZombieVillager;
@@ -68,6 +73,9 @@ public class MineLittlePony {
 
         IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
         irrm.registerReloadListener(this.ponyManager);
+
+        MetadataSerializer ms = Minecraft.getMinecraft().getResourcePackRepository().rprMetadataSerializer;
+        ms.registerMetadataSectionType(new PonyDataSerialzier(), IPonyData.class);
     }
 
     void postInit(Minecraft minecraft) {
@@ -104,9 +112,11 @@ public class MineLittlePony {
             ModUtilities.addRenderer(EntityWitherSkeleton.class, new RenderPonySkeleton.Wither(rm));
             MineLPLogger.info("Skeletons are now ponies.");
         }
-        
+
         if (this.config.illagers) {
             ModUtilities.addRenderer(EntityVex.class, new RenderPonyVex(rm));
+            ModUtilities.addRenderer(EntityEvoker.class, new RenderPonyEvoker(rm));
+            ModUtilities.addRenderer(EntityVindicator.class, new RenderPonyVindicator(rm));
         }
 
     }

@@ -4,8 +4,9 @@ import java.awt.image.BufferedImage;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableBiMap;
+import net.minecraft.client.resources.data.IMetadataSection;
 
-public class PonyData {
+public class PonyData implements IPonyData {
 
     private static final Map<Integer, PonyRace> RACE_COLORS = ImmutableBiMap.<Integer, PonyRace> builder()
             .put(0xf9b131, PonyRace.EARTH)
@@ -31,10 +32,6 @@ public class PonyData {
     private PonyGender gender = PonyGender.MARE;
     private PonySize size = PonySize.NORMAL;
     private int glowColor = 0x4444aa;
-
-    private int textureWidth;
-
-    private int textureHeight;
 
     public PonyRace getRace() {
         return race;
@@ -80,15 +77,7 @@ public class PonyData {
         this.glowColor = glowColor & 0xffffff;
     }
 
-    public int getTextureWidth() {
-        return textureWidth;
-    }
-
-    public int getTextureHeight() {
-        return textureHeight;
-    }
-
-    public static PonyData parse(BufferedImage image) {
+    static PonyData parse(BufferedImage image) {
         PonyData data = new PonyData();
 
         int race = TriggerPixels.RACE.readColor(image);
@@ -110,9 +99,6 @@ public class PonyData {
         if (color != 0x000000)
             data.glowColor = color;
 
-        data.textureWidth = image.getWidth();
-        data.textureHeight = image.getHeight();
-
         return data;
     }
 
@@ -125,7 +111,7 @@ public class PonyData {
 
         private int x, y;
 
-        private TriggerPixels(int x, int y) {
+        TriggerPixels(int x, int y) {
             this.x = x;
             this.y = y;
         }
