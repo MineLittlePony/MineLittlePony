@@ -3,6 +3,7 @@
     "minVersion": "0.4.10",
 	"package": "com.minelittlepony.mixin",
 	"refmap": "mixin.minelp.refmap.json",
+	"compatibilityLevel": "JAVA_8",
 	"mixins": [
 		"MixinRenderPlayer"
 	]

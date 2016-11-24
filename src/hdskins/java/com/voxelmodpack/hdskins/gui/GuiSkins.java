@@ -1,34 +1,5 @@
 package com.voxelmodpack.hdskins.gui;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
-
-import java.awt.Color;
-import java.awt.Window.Type;
-import java.awt.dnd.DropTarget;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.nio.DoubleBuffer;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.JavaVersion;
-import org.apache.commons.lang3.SystemUtils;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.GLU;
-
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
@@ -42,7 +13,6 @@ import com.voxelmodpack.hdskins.upload.ThreadMultipartPostUpload;
 import com.voxelmodpack.hdskins.upload.awt.IOpenFileCallback;
 import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
 import com.voxelmodpack.voxelmenu.IPanoramaRenderer;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -59,6 +29,26 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Session;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.JavaVersion;
+import org.apache.commons.lang3.SystemUtils;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.GLU;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.Color;
+import java.awt.Window.Type;
+import java.awt.dnd.DropTarget;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.DoubleBuffer;
+import java.util.HashMap;
+import java.util.List;
+
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpenFileCallback, IPanoramaRenderer {
     private static final int MAX_SKIN_DIMENSION = 8192;
@@ -72,12 +62,11 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
             new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_2.png"),
             new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_3.png"),
             new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_4.png"),
-            new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_5.png") };
+            new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_5.png")};
     private GuiButton btnBrowse;
     private GuiButton btnUpload;
     private GuiButton btnClear;
     private GuiButton btnBack;
-    private GuiButton btnMeta;
     protected EntityPlayerModel localPlayer;
     protected EntityPlayerModel remotePlayer;
     protected DoubleBuffer doubleBuffer;
@@ -99,8 +88,6 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     private float uploadOpacity = 0.0F;
     private float lastPartialTick;
     private JFrame fileDrop;
-
-    private GuiMetaHandler metadata;
 
     // translations
     private final String manager = I18n.format("hdskins.manager");
@@ -132,8 +119,6 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         this.reloadRemoteSkin();
         this.fetchingSkin = true;
         this.panoramaRenderer = LiteModHDSkinsMod.getPanoramaRenderer(this);
-        this.metadata = new GuiMetaHandler(this, this.remotePlayer);
-        this.setupMetaOverrides(this.metadata);
     }
 
     protected EntityPlayerModel getModel(GameProfile profile) {
@@ -184,9 +169,11 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
 
     }
 
-    protected void onSetRemoteSkin() {}
+    protected void onSetRemoteSkin() {
+    }
 
-    protected void onSetLocalSkin(BufferedImage skin) {}
+    protected void onSetLocalSkin(BufferedImage skin) {
+    }
 
     private void reloadRemoteSkin() {
         try {
@@ -199,7 +186,8 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     }
 
     @Override
-    public void updatePanorama() {}
+    public void updatePanorama() {
+    }
 
     @Override
     public int getUpdateCounter() {
@@ -213,7 +201,8 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     }
 
     @Override
-    public void setPanoramaResolution(Minecraft minecraft, int width, int height) {}
+    public void setPanoramaResolution(Minecraft minecraft, int width, int height) {
+    }
 
     @Override
     public void initGui() {
@@ -224,13 +213,8 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         this.buttonList.add(this.btnUpload = new GuiButton(1, this.width / 2 - 24, this.height / 2 - 10, 48, 20, ">>"));
         this.buttonList.add(this.btnClear = new GuiButton(2, this.width - 90, this.height - 36, 60, 20, "Clear"));
         this.buttonList.add(this.btnBack = new GuiButton(3, this.width / 2 - 50, this.height - 36, 100, 20, "Close"));
-        this.buttonList.add(this.btnMeta = new GuiButton(4, 2, 2, 20, 20, "..."));
         this.btnUpload.enabled = false;
         this.btnBrowse.enabled = !this.mc.isFullScreen();
-    }
-
-    protected void setupMetaOverrides(GuiMetaHandler meta) {
-        meta.bool("hdskins.slim");
     }
 
     /**
@@ -310,7 +294,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         });
         if (!skinFile.exists()) {
             this.skinMessage = unreadable;
-        } else if (!FilenameUtils.isExtension(skinFile.getName(), new String[] { "png", "PNG" })) {
+        } else if (!FilenameUtils.isExtension(skinFile.getName(), new String[]{"png", "PNG"})) {
             this.skinMessage = ext;
         } else {
             BufferedImage chosenImage;
@@ -326,7 +310,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
                 this.skinMessage = open;
             } else if (isPowerOfTwo(chosenImage.getWidth())
                     && (chosenImage.getWidth() == chosenImage.getHeight() * 2
-                            || chosenImage.getWidth() == chosenImage.getHeight())
+                    || chosenImage.getWidth() == chosenImage.getHeight())
                     && chosenImage.getWidth() <= MAX_SKIN_DIMENSION
                     && chosenImage.getHeight() <= MAX_SKIN_DIMENSION) {
                 synchronized (this.skinLock) {
@@ -369,10 +353,6 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
 
                 if (guiButton.id == this.btnBack.id) {
                     this.mc.displayGuiScreen(new GuiMainMenu());
-                }
-
-                if (guiButton.id == this.btnMeta.id) {
-                    this.mc.displayGuiScreen(metadata);
                 }
 
             }
@@ -744,7 +724,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
 
     @Override
     public void onUploadComplete(String response) {
-        LiteLoaderLogger.info("Upload completed with: %s", new Object[] { response });
+        LiteLoaderLogger.info("Upload completed with: %s", new Object[]{response});
         this.uploadingSkin = false;
         this.threadSkinUpload = null;
         if (!response.equalsIgnoreCase("OK")) {

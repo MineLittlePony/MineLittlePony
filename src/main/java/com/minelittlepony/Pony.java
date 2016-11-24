@@ -49,7 +49,6 @@ public class Pony {
         MineLPLogger.debug("+ Initialising new pony #%d for player %s (%s) with resource location %s.", this.ponyId,
                 player.getName(), player.getUniqueID(), this.textureResourceLocation);
         this.checkSkin(this.textureResourceLocation);
-        this.checkMeta(profile);
     }
 
     public Pony(@Nonnull ResourceLocation aTextureResourceLocation) {
@@ -66,7 +65,6 @@ public class Pony {
     public void checkSkin() {
         if (!this.skinChecked) {
             this.checkSkin(this.textureResourceLocation);
-            this.checkMeta(this.profile);
         }
     }
 
@@ -75,49 +73,6 @@ public class Pony {
         if (skinImage != null) {
             this.checkSkin(skinImage);
         }
-    }
-
-    private void checkMeta(GameProfile profile) {
-        final IWebPreferences prefs = WebPreferencesManager.getDefault().getPreferences(profile);
-
-        if (prefs == null)
-            return;
-
-        final List<String> keys;
-        if (prefs.has(HDSkinManager.METADATA_KEY)) {
-            String list = prefs.get(HDSkinManager.METADATA_KEY);
-            keys = Splitter.on(',').splitToList(list);
-        } else {
-            keys = Lists.newArrayList();
-        }
-
-        // >inb4 java 8
-        // checkMeta(Predicates.and(keys::contains, prefs::has), prefs::get);
-        checkMeta(new Predicate<String>() {
-            @Override
-            public boolean apply(String key) {
-                return keys.contains(key) && prefs.has(key);
-            }
-        }, new Function<String, String>() {
-            @Override
-            public String apply(String key) {
-                return prefs.get(key);
-            }
-        });
-    }
-
-    private void checkMeta(Predicate<String> has, Function<String, String> prefs) {
-
-        if (has.apply(MineLittlePony.MLP_RACE))
-            metadata.setRace(PonyRace.valueOf(prefs.apply(MineLittlePony.MLP_RACE)));
-        if (has.apply(MineLittlePony.MLP_TAIL))
-            metadata.setTail(TailLengths.valueOf(prefs.apply(MineLittlePony.MLP_TAIL)));
-        if (has.apply(MineLittlePony.MLP_GENDER))
-            metadata.setGender(PonyGender.valueOf(prefs.apply(MineLittlePony.MLP_GENDER)));
-        if (has.apply(MineLittlePony.MLP_SIZE))
-            metadata.setSize(PonySize.valueOf(prefs.apply(MineLittlePony.MLP_SIZE)));
-        if (has.apply(MineLittlePony.MLP_MAGIC))
-            metadata.setGlowColor(Integer.parseInt(prefs.apply(MineLittlePony.MLP_MAGIC)));
     }
 
     public BufferedImage getBufferedImage(@Nonnull ResourceLocation textureResourceLocation) {

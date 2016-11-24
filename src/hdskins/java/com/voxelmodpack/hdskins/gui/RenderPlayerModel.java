@@ -44,12 +44,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
     }
 
     public ModelPlayer getEntityModel(M entity) {
-        if (entity.metaHandler != null && entity.metaHandler.get("slim").isPresent()) {
-            boolean skinny = "true".equals(entity.metaHandler.get("slim").get());
-            return skinny ? THIN : FAT;
-        }
         return FAT;
-
     }
 
     @Override

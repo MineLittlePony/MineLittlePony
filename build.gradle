@@ -29,6 +29,9 @@ group = 'com.brohoof.minelp'
 version = '1.11.0.0-beta'
 description = 'Mine Little Pony'
 
+targetCompatibility = 1.8
+sourceCompatibility = 1.8
+
 minecraft {
 	version = "1.11"
 	// first snapshot for 1.11. Change to stable when possible.
@@ -51,7 +54,11 @@ sourceSets {
 		refMap = 'mixin.minelp.refmap.json'
 		compileClasspath += hdskins.output
 	}
+
 }
+
+compileApiJava.sourceCompatibility = 1.6
+compileApiJava.targetCompatibility = 1.6
 
 litemod.json {
 	author = 'Verdana, Rene_Z, Mumfrey, JoyJoy'

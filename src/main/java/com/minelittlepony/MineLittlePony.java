@@ -1,7 +1,5 @@
 package com.minelittlepony;
 
-import org.lwjgl.input.Keyboard;
-
 import com.minelittlepony.gui.PonySettingPanel;
 import com.minelittlepony.hdskins.gui.EntityPonyModel;
 import com.minelittlepony.hdskins.gui.GuiSkinsMineLP;
@@ -19,7 +17,6 @@ import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.util.ModUtilities;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.gui.GuiSkins;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.IReloadableResourceManager;
@@ -36,17 +33,12 @@ import net.minecraft.entity.monster.EntityWitherSkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.monster.EntityZombieVillager;
 import net.minecraft.entity.passive.EntityVillager;
+import org.lwjgl.input.Keyboard;
 
 public class MineLittlePony {
 
     public static final String MOD_NAME = "Mine Little Pony";
     public static final String MOD_VERSION = "@VERSION@";
-
-    public static final String MLP_SIZE = "mlp.size";
-    public static final String MLP_GENDER = "mlp.gender";
-    public static final String MLP_TAIL = "mlp.tail";
-    public static final String MLP_RACE = "mlp.race";
-    public static final String MLP_MAGIC = "mlp.magic";
 
     private static final String SKIN_SERVER_URL = "minelpskins.voxelmodpack.com";
     private static final String GATEWAY_URL = "minelpskinmanager.voxelmodpack.com";
@@ -122,6 +114,7 @@ public class MineLittlePony {
     }
 
     void onTick(Minecraft minecraft, boolean inGame) {
+
         if (inGame && minecraft.currentScreen == null && SETTINGS_GUI.isPressed()) {
             minecraft.displayGuiScreen(new PonySettingPanel());
         }
