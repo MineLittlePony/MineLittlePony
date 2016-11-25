@@ -1,13 +1,15 @@
-package com.minelittlepony.model.part;
+package com.minelittlepony.model;
 
-import com.minelittlepony.PonyData;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.PonyModelConstants;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
-public class PegasusWings implements IPonyPart, PonyModelConstants {
+public class PegasusWings extends ModelBase implements PonyModelConstants {
+
 
     private final AbstractPonyModel pony;
 
@@ -17,12 +19,9 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
     public ModelRenderer[] leftWingExt;
     public ModelRenderer[] rightWingExt;
 
-    public PegasusWings(AbstractPonyModel pony) {
+    public PegasusWings(AbstractPonyModel pony, float yOffset, float stretch) {
         this.pony = pony;
-    }
 
-    @Override
-    public void init(float yOffset, float stretch) {
         this.leftWing = new ModelRenderer[3];
         this.rightWing = new ModelRenderer[3];
         this.leftWingExt = new ModelRenderer[6];
@@ -47,10 +46,6 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
             this.pony.boxList.remove(this.rightWingExt[i]);
         }
 
-        initPositions(yOffset, stretch);
-    }
-
-    private void initPositions(float yOffset, float stretch) {
         this.leftWing[0].addBox(4.0F, 5.0F, 2.0F, 2, 6, 2, stretch);
         this.leftWing[0].setRotationPoint(HEAD_RP_X, WING_FOLDED_RP_Y + yOffset, WING_FOLDED_RP_Z);
         this.leftWing[0].rotateAngleX = ROTATE_90;
@@ -96,10 +91,10 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
     }
 
     @Override
-    public void animate(PonyData metadata, float move, float swing, float tick, float horz, float vert) {
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
 
         float bodySwingRotation = 0.0F;
-        if (pony.swingProgress > -9990.0F && !metadata.hasMagic()) {
+        if (pony.swingProgress > -9990.0F && !pony.metadata.hasMagic()) {
             bodySwingRotation = MathHelper.sin(MathHelper.sqrt(pony.swingProgress) * 3.1415927F * 2.0F) * 0.2F;
         }
         for (ModelRenderer aLeftWing : this.leftWing) {
@@ -111,7 +106,7 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
         if (pony.isSneak && !pony.isFlying) {
             this.sneak();
         } else {
-            this.unsneak(tick);
+            this.unsneak(ageInTicks);
 
         }
 
@@ -136,10 +131,12 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
     }
 
     @Override
-    public void render(PonyData data, float scale) {
+    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        super.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+
         pony.transform(BodyPart.BODY);
         pony.bipedBody.postRender(scale);
-        if (data.getRace() != null && data.getRace().hasWings()) {
+        if (pony.metadata.getRace() != null && pony.metadata.getRace().hasWings()) {
             if (!pony.isFlying && !pony.isSneak) {
 
                 for (ModelRenderer aLeftWing : this.leftWing) {

@@ -1,30 +1,24 @@
 package com.minelittlepony.model;
 
-import com.google.common.collect.Lists;
 import com.minelittlepony.PonyData;
 import com.minelittlepony.PonySize;
-import com.minelittlepony.model.part.IPonyPart;
 import com.minelittlepony.model.pony.ModelHumanPlayer;
 import com.minelittlepony.model.pony.ModelPlayerPony;
-import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EnumPlayerModelParts;
-import net.minecraft.item.EnumAction;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 
-import java.util.List;
 import java.util.Random;
 
 import static net.minecraft.client.renderer.GlStateManager.rotate;
 import static net.minecraft.client.renderer.GlStateManager.scale;
 import static net.minecraft.client.renderer.GlStateManager.translate;
 
+/**
+ * TODO move this into constructor and make separate classes for the races.
+ */
 public abstract class AbstractPonyModel extends ModelPlayer {
 
     protected float scale = 0.0625F;
@@ -40,7 +34,6 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     public PonyData metadata = new PonyData();
     public float motionPitch;
 
-    protected List<IPonyPart> modelParts = Lists.newArrayList();
 
     public AbstractPonyModel(boolean arms) {
         super(0, arms);
@@ -50,12 +43,9 @@ public abstract class AbstractPonyModel extends ModelPlayer {
         this.steveRightArmwear = this.bipedLeftArmwear;
     }
 
-    public final void init(float yOffset, float stretch) {
+    public void init(float yOffset, float stretch) {
         this.initTextures();
         this.initPositions(yOffset, stretch);
-        for (IPonyPart part : modelParts) {
-            part.init(yOffset, stretch);
-        }
     }
 
     protected void initTextures() {
@@ -64,114 +54,21 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     protected void initPositions(float yOffset, float stretch) {
     }
 
-    protected void animate(float move, float swing, float tick, float horz, float vert, Entity entityIn) {
-    }
-
-    protected void render() {
-    }
-
     @Override
-    public void render(Entity player, float Move, float Moveswing, float Loop, float Right, float Down, float Scale) {
-        if (player instanceof AbstractClientPlayer) {
-            setModelVisibilities((AbstractClientPlayer) player);
-        }
-        if (!doCancelRender()) {
-            this.setRotationAngles(Move, Moveswing, Loop, Right, Down, Scale, player);
-            GlStateManager.pushMatrix();
-            this.render();
-            GlStateManager.popMatrix();
-            for (IPonyPart part : modelParts) {
-                GlStateManager.pushMatrix();
-                part.render(metadata, scale);
-                GlStateManager.popMatrix();
-            }
-        } else {
-            super.render(player, Move, Moveswing, Loop, Right, Down, Scale);
-        }
-    }
-
-    @Override
-    public void setRotationAngles(float Move, float Moveswing, float Loop, float Right, float Down, float Scale, Entity entityIn) {
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
         if (doCancelRender()) {
-            super.setRotationAngles(Move, Moveswing, Loop, Right, Down, Scale, entityIn);
+            super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
             return;
         }
-        this.animate(Move, Moveswing, Loop, Right, Down, entityIn);
-        for (IPonyPart part : modelParts) {
-            part.animate(metadata, Move, Moveswing, Loop, Right, Down);
-        }
-        this.steveRightArm.rotateAngleX = MathHelper.cos(Move * 0.6662F + (float) Math.PI) * 2.0F * Moveswing * 0.5F;
+        this.steveRightArm.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F;
         this.steveRightArm.rotateAngleY = 0;
         this.steveRightArm.rotateAngleZ = 0;
-        this.steveLeftArm.rotateAngleX = MathHelper.cos(Move * 0.6662F) * 2.0F * Moveswing * 0.5F;
+        this.steveLeftArm.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
         this.steveLeftArm.rotateAngleY = 0;
         this.steveLeftArm.rotateAngleZ = 0;
 
         copyModelAngles(steveRightArm, steveRightArmwear);
         copyModelAngles(steveLeftArm, steveLeftArmwear);
-    }
-
-    protected void setModelVisibilities(AbstractClientPlayer clientPlayer) {
-        ModelPlayer modelplayer = this;
-
-        if (clientPlayer.isSpectator()) {
-            modelplayer.setInvisible(false);
-            modelplayer.bipedHead.showModel = true;
-            modelplayer.bipedHeadwear.showModel = true;
-        } else {
-            modelplayer.setInvisible(true);
-            modelplayer.bipedHeadwear.showModel = clientPlayer.isWearing(EnumPlayerModelParts.HAT);
-            modelplayer.bipedBodyWear.showModel = clientPlayer.isWearing(EnumPlayerModelParts.JACKET);
-            modelplayer.bipedLeftLegwear.showModel = clientPlayer.isWearing(EnumPlayerModelParts.LEFT_PANTS_LEG);
-            modelplayer.bipedRightLegwear.showModel = clientPlayer.isWearing(EnumPlayerModelParts.RIGHT_PANTS_LEG);
-            modelplayer.bipedLeftArmwear.showModel = clientPlayer.isWearing(EnumPlayerModelParts.LEFT_SLEEVE);
-            modelplayer.bipedRightArmwear.showModel = clientPlayer.isWearing(EnumPlayerModelParts.RIGHT_SLEEVE);
-            modelplayer.isSneak = clientPlayer.isSneaking();
-
-            ItemStack main = clientPlayer.getHeldItemMainhand();
-            ArmPose mainPose;
-            if (main.isEmpty()) {
-                mainPose = ArmPose.EMPTY;
-            } else {
-                mainPose = ArmPose.ITEM;
-
-                if (clientPlayer.getItemInUseCount() > 0) {
-                    EnumAction enumaction = main.getItemUseAction();
-
-                    if (enumaction == EnumAction.BLOCK) {
-                        mainPose = ArmPose.BLOCK;
-                    } else if (enumaction == EnumAction.BOW) {
-                        mainPose = ArmPose.BOW_AND_ARROW;
-                    }
-                }
-            }
-
-            ItemStack off = clientPlayer.getHeldItemOffhand();
-            ArmPose offPose;
-            if (off.isEmpty()) {
-                offPose = ArmPose.EMPTY;
-            } else {
-                offPose = ArmPose.ITEM;
-
-                if (clientPlayer.getItemInUseCount() > 0) {
-                    EnumAction enumaction = off.getItemUseAction();
-
-                    if (enumaction == EnumAction.BLOCK) {
-                        offPose = ArmPose.BLOCK;
-                    } else if (enumaction == EnumAction.BOW) {
-                        offPose = ArmPose.BOW_AND_ARROW;
-                    }
-                }
-            }
-
-            if (clientPlayer.getPrimaryHand() == EnumHandSide.RIGHT) {
-                modelplayer.rightArmPose = mainPose;
-                modelplayer.leftArmPose = offPose;
-            } else {
-                modelplayer.leftArmPose = mainPose;
-                modelplayer.rightArmPose = offPose;
-            }
-        }
     }
 
     protected boolean doCancelRender() {

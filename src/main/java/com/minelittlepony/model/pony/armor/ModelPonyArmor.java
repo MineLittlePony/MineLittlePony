@@ -1,7 +1,6 @@
 package com.minelittlepony.model.pony.armor;
 
 import com.minelittlepony.model.pony.ModelPlayerPony;
-import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -19,14 +18,10 @@ public class ModelPonyArmor extends ModelPlayerPony {
     }
 
     @Override
-    protected void addParts() {
-        // modelParts.add(new PonyEars());
-    }
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
 
-    @Override
-    public void animate(float move, float swing, float tick, float horz, float vert, Entity entity) {
-        this.checkRainboom(entity, swing);
-        this.rotateHead(horz, vert);
+        this.checkRainboom(entityIn, limbSwingAmount);
+        this.rotateHead(netHeadYaw, headPitch);
         float bodySwingRotation = 0.0F;
         if (this.swingProgress > -9990.0F && !this.metadata.hasMagic()) {
             bodySwingRotation = MathHelper.sin(MathHelper.sqrt(this.swingProgress) * 3.1415927F * 2.0F) * 0.2F;
@@ -40,9 +35,9 @@ public class ModelPonyArmor extends ModelPlayerPony {
         this.extHead[0].offsetZ = 0f;
         this.extHead[1].offsetY = 0f;
         this.extHead[1].offsetZ = 0f;
-        this.setLegs(move, swing, tick, entity);
-        this.holdItem(swing);
-        this.swingItem(entity, this.swingProgress);
+        this.setLegs(limbSwing, limbSwingAmount, ageInTicks, entityIn);
+        this.holdItem(limbSwingAmount);
+        this.swingItem(entityIn, this.swingProgress);
         if (this.isSneak && !this.isFlying) {
             this.adjustBody(BODY_ROTATE_ANGLE_X_SNEAK, BODY_RP_Y_SNEAK, BODY_RP_Z_SNEAK);
             this.sneakLegs();
@@ -71,7 +66,7 @@ public class ModelPonyArmor extends ModelPlayerPony {
 
             this.bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
             this.bipedLeftLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
-            this.swingArms(tick);
+            this.swingArms(ageInTicks);
             this.setHead(0.0F, 0.0F, 0.0F);
 
         }
@@ -80,7 +75,7 @@ public class ModelPonyArmor extends ModelPlayerPony {
             this.ponySleep();
         }
 
-        this.aimBow(leftArmPose, rightArmPose, tick);
+        this.aimBow(leftArmPose, rightArmPose, ageInTicks);
 
         // this.fixSpecialRotationPoints(aniparams.move);
     }
@@ -282,10 +277,6 @@ public class ModelPonyArmor extends ModelPlayerPony {
     protected void ponySleep() {
         super.ponySleep();
         this.syncLegs();
-    }
-
-    @Override
-    protected void setModelVisibilities(AbstractClientPlayer clientPlayer) {
     }
 
     @Override

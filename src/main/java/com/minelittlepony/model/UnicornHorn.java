@@ -1,26 +1,26 @@
-package com.minelittlepony.model.part;
+package com.minelittlepony.model;
 
 import com.minelittlepony.PonyData;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.PonyModelConstants;
 import com.minelittlepony.renderer.HornGlowRenderer;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
-public class UnicornHorn extends AbstractHeadPart implements PonyModelConstants {
+public class UnicornHorn extends ModelBase implements PonyModelConstants {
 
+    protected final AbstractPonyModel pony;
     private ModelRenderer horn;
     private HornGlowRenderer[] hornglow;
 
-    public UnicornHorn(AbstractPonyModel pony) {
-        super(pony);
-    }
+    public UnicornHorn(AbstractPonyModel pony, float yOffset, float stretch) {
+        this.pony = pony;
 
-    @Override
-    public void init(float yOffset, float stretch) {
         this.horn = new ModelRenderer(pony, 0, 3);
         this.hornglow = new HornGlowRenderer[2];
         for (int i = 0; i < hornglow.length; i++) {
@@ -36,8 +36,10 @@ public class UnicornHorn extends AbstractHeadPart implements PonyModelConstants 
     }
 
     @Override
-    public void render(PonyData data, float scale) {
-        super.render(data, scale);
+    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+
+        PonyData data = pony.metadata;
+
         if (data.getRace() != null && data.getRace().hasHorn()) {
             this.horn.render(scale);
             if ((pony.leftArmPose != ArmPose.EMPTY || pony.rightArmPose != ArmPose.EMPTY) && data.hasMagic()) {

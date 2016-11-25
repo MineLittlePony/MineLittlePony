@@ -17,8 +17,9 @@ public class ModelVillagerPony extends ModelPlayerPony {
     }
 
     @Override
-    public void animate(float move, float swing, float tick, float horz, float vert, Entity entity) {
-        super.animate(move, swing, tick, horz, vert, entity);
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
+        super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
+
         float bodySwingRotation = 0.0F;
         if (this.swingProgress > -9990.0F && !this.metadata.hasMagic()) {
             bodySwingRotation = MathHelper.sin(MathHelper.sqrt(this.swingProgress) * 3.1415927F * 2.0F) * 0.2F;
