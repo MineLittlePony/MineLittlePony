@@ -26,7 +26,7 @@ public class ModelEvokerPony extends ModelIllagerPony {
         super.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
         EntityEvoker evoker = (EntityEvoker) entityIn;
 
-        if (evoker.isCastingSpell()) {
+        if (isUnicorn && evoker.isCastingSpell()) {
             GL11.glPushAttrib(24577);
             disableTexture2D();
             disableLighting();

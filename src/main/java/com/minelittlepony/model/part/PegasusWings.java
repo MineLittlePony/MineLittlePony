@@ -4,7 +4,6 @@ import com.minelittlepony.PonyData;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.PonyModelConstants;
-
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
 
@@ -103,11 +102,11 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
         if (pony.swingProgress > -9990.0F && !metadata.hasMagic()) {
             bodySwingRotation = MathHelper.sin(MathHelper.sqrt(pony.swingProgress) * 3.1415927F * 2.0F) * 0.2F;
         }
-        for (int i = 0; i < this.leftWing.length; ++i) {
-            this.leftWing[i].rotateAngleY = bodySwingRotation * 0.2F;
+        for (ModelRenderer aLeftWing : this.leftWing) {
+            aLeftWing.rotateAngleY = bodySwingRotation * 0.2F;
         }
-        for (int i = 0; i < this.rightWing.length; ++i) {
-            this.rightWing[i].rotateAngleY = bodySwingRotation * 0.2F;
+        for (ModelRenderer aRightWing : this.rightWing) {
+            aRightWing.rotateAngleY = bodySwingRotation * 0.2F;
         }
         if (pony.isSneak && !pony.isFlying) {
             this.sneak();
@@ -118,11 +117,11 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
 
         float angle = ROTATE_90;
 
-        for (int i = 0; i < this.leftWing.length; i++) {
-            this.leftWing[i].rotateAngleX = angle;
+        for (ModelRenderer aLeftWing : this.leftWing) {
+            aLeftWing.rotateAngleX = angle;
         }
-        for (int i = 0; i < this.rightWing.length; i++) {
-            this.rightWing[i].rotateAngleX = angle;
+        for (ModelRenderer aRightWing : this.rightWing) {
+            aRightWing.rotateAngleX = angle;
         }
         // Special
         this.leftWingExt[1].rotateAngleX -= 0.85F;
@@ -143,30 +142,30 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
         if (data.getRace() != null && data.getRace().hasWings()) {
             if (!pony.isFlying && !pony.isSneak) {
 
-                for (int k1 = 0; k1 < this.leftWing.length; ++k1) {
-                    this.leftWing[k1].render(scale);
+                for (ModelRenderer aLeftWing : this.leftWing) {
+                    aLeftWing.render(scale);
                 }
 
-                for (int k1 = 0; k1 < this.rightWing.length; ++k1) {
-                    this.rightWing[k1].render(scale);
+                for (ModelRenderer aRightWing : this.rightWing) {
+                    aRightWing.render(scale);
                 }
             } else {
 
-                for (int k1 = 0; k1 < this.leftWingExt.length; ++k1) {
-                    this.leftWingExt[k1].render(scale);
+                for (ModelRenderer aLeftWingExt : this.leftWingExt) {
+                    aLeftWingExt.render(scale);
                 }
 
-                for (int i = 0; i < this.rightWingExt.length; ++i) {
-                    this.rightWingExt[i].render(scale);
+                for (ModelRenderer aRightWingExt : this.rightWingExt) {
+                    aRightWingExt.render(scale);
                 }
             }
         }
     }
 
     private void sneak() {
-        for (int i = 0; i < this.leftWingExt.length; ++i) {
-            this.leftWingExt[i].rotateAngleX = EXT_WING_ROTATE_ANGLE_X;
-            this.leftWingExt[i].rotateAngleZ = LEFT_WING_ROTATE_ANGLE_Z_SNEAK;
+        for (ModelRenderer aLeftWingExt : this.leftWingExt) {
+            aLeftWingExt.rotateAngleX = EXT_WING_ROTATE_ANGLE_X;
+            aLeftWingExt.rotateAngleZ = LEFT_WING_ROTATE_ANGLE_Z_SNEAK;
         }
 
         for (int i = 0; i < this.leftWingExt.length; ++i) {
@@ -179,14 +178,14 @@ public class PegasusWings implements IPonyPart, PonyModelConstants {
         if (pony.isFlying) {
             float WingRotateAngleZ = MathHelper.sin(tick * 0.536F) * 1.0F;
 
-            for (int i = 0; i < this.leftWingExt.length; ++i) {
-                this.leftWingExt[i].rotateAngleX = EXT_WING_ROTATE_ANGLE_X;
-                this.leftWingExt[i].rotateAngleZ = -WingRotateAngleZ - ROTATE_270 - 0.4F;
+            for (ModelRenderer aLeftWingExt : this.leftWingExt) {
+                aLeftWingExt.rotateAngleX = EXT_WING_ROTATE_ANGLE_X;
+                aLeftWingExt.rotateAngleZ = -WingRotateAngleZ - ROTATE_270 - 0.4F;
             }
 
-            for (int i = 0; i < this.rightWingExt.length; ++i) {
-                this.rightWingExt[i].rotateAngleX = EXT_WING_ROTATE_ANGLE_X;
-                this.rightWingExt[i].rotateAngleZ = WingRotateAngleZ + ROTATE_270 + 0.4F;
+            for (ModelRenderer aRightWingExt : this.rightWingExt) {
+                aRightWingExt.rotateAngleX = EXT_WING_ROTATE_ANGLE_X;
+                aRightWingExt.rotateAngleZ = WingRotateAngleZ + ROTATE_270 + 0.4F;
             }
         }
     }

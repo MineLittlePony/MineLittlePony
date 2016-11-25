@@ -12,7 +12,6 @@ import com.minelittlepony.renderer.RenderPonyVillager;
 import com.minelittlepony.renderer.RenderPonyVindicator;
 import com.minelittlepony.renderer.RenderPonyZombie;
 import com.minelittlepony.renderer.RenderPonyZombieVillager;
-import com.minelittlepony.util.MineLPLogger;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.util.ModUtilities;
 import com.voxelmodpack.hdskins.HDSkinManager;
@@ -33,9 +32,14 @@ import net.minecraft.entity.monster.EntityWitherSkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.monster.EntityZombieVillager;
 import net.minecraft.entity.passive.EntityVillager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
 public class MineLittlePony {
+
+    public static final Logger logger = LogManager.getLogger("MineLittlePony");
+
 
     public static final String MOD_NAME = "Mine Little Pony";
     public static final String MOD_VERSION = "@VERSION@";
@@ -77,38 +81,39 @@ public class MineLittlePony {
         manager.setSkinUrl(SKIN_SERVER_URL);
         manager.setGatewayURL(GATEWAY_URL);
         manager.addSkinModifier(new PonySkinModifier());
-        MineLPLogger.info("Set MineLP skin server URL.");
+        logger.info("Set MineLP skin server URL.");
 
         RenderManager rm = minecraft.getRenderManager();
         ModUtilities.addRenderer(EntityPonyModel.class, new RenderPonyModel(rm));
         if (this.config.villagers) {
             ModUtilities.addRenderer(EntityVillager.class, new RenderPonyVillager(rm));
             ModUtilities.addRenderer(EntityZombieVillager.class, new RenderPonyZombieVillager(rm));
-            MineLPLogger.info("Villagers are now ponies.");
+            logger.info("Villagers are now ponies.");
         }
 
         if (this.config.zombies) {
-            ModUtilities.addRenderer(EntityZombie.class, new RenderPonyZombie<EntityZombie>(rm));
+            ModUtilities.addRenderer(EntityZombie.class, new RenderPonyZombie<>(rm));
             ModUtilities.addRenderer(EntityHusk.class, new RenderPonyZombie.Husk(rm));
-            MineLPLogger.info("Zombies are now ponies.");
+            logger.info("Zombies are now ponies.");
         }
 
         if (this.config.pigzombies) {
             ModUtilities.addRenderer(EntityPigZombie.class, new RenderPonyPigman(rm));
-            MineLPLogger.info("Zombie pigmen are now ponies.");
+            logger.info("Zombie pigmen are now ponies.");
         }
 
         if (this.config.skeletons) {
-            ModUtilities.addRenderer(EntitySkeleton.class, new RenderPonySkeleton<EntitySkeleton>(rm));
+            ModUtilities.addRenderer(EntitySkeleton.class, new RenderPonySkeleton<>(rm));
             ModUtilities.addRenderer(EntityStray.class, new RenderPonySkeleton.Stray(rm));
             ModUtilities.addRenderer(EntityWitherSkeleton.class, new RenderPonySkeleton.Wither(rm));
-            MineLPLogger.info("Skeletons are now ponies.");
+            logger.info("Skeletons are now ponies.");
         }
 
         if (this.config.illagers) {
             ModUtilities.addRenderer(EntityVex.class, new RenderPonyVex(rm));
             ModUtilities.addRenderer(EntityEvoker.class, new RenderPonyEvoker(rm));
             ModUtilities.addRenderer(EntityVindicator.class, new RenderPonyVindicator(rm));
+            logger.info("Illagers are now ponies.");
         }
 
     }

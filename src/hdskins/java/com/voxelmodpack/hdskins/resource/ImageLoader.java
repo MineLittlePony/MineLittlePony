@@ -1,21 +1,18 @@
 package com.voxelmodpack.hdskins.resource;
 
+import com.google.common.base.Throwables;
+import com.voxelmodpack.hdskins.DynamicTextureImage;
+import com.voxelmodpack.hdskins.ImageBufferDownloadHD;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.util.ResourceLocation;
+import org.apache.commons.io.IOUtils;
+
+import javax.annotation.Nullable;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Callable;
-
-import javax.annotation.Nullable;
-
-import org.apache.commons.io.IOUtils;
-
-import com.google.common.base.Throwables;
-import com.voxelmodpack.hdskins.DynamicTextureImage;
-import com.voxelmodpack.hdskins.ImageBufferDownloadHD;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.util.ResourceLocation;
 
 public class ImageLoader implements Callable<ResourceLocation> {
 
@@ -33,14 +30,7 @@ public class ImageLoader implements Callable<ResourceLocation> {
         final BufferedImage updated = new ImageBufferDownloadHD().parseUserSkin(image);
         if (updated == null)
             return null;
-        return this.mc.addScheduledTask(new Callable<ResourceLocation>() {
-
-            @Override
-            public ResourceLocation call() throws Exception {
-                return loadSkin(updated);
-            }
-
-        }).get();
+        return this.mc.addScheduledTask(() -> loadSkin(updated)).get();
     }
 
     @Nullable

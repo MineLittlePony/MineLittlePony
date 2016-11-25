@@ -1,7 +1,6 @@
 package com.minelittlepony.renderer.layer;
 
 import com.minelittlepony.model.pony.ModelSkeletonPony;
-
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.monster.EntityStray;

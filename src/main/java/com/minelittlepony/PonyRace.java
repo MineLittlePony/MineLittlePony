@@ -11,7 +11,7 @@ public enum PonyRace {
     private boolean wings;
     private boolean horn;
 
-    private PonyRace(boolean wings, boolean horn) {
+    PonyRace(boolean wings, boolean horn) {
         this.wings = wings;
         this.horn = horn;
     }

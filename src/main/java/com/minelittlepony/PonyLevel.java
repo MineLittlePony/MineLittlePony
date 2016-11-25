@@ -4,5 +4,5 @@ public enum PonyLevel {
 
     PONIES,
     HUMANS,
-    BOTH;
+    BOTH
 }

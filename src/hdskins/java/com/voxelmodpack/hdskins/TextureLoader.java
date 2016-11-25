@@ -9,11 +9,6 @@ public class TextureLoader {
     private static Minecraft mc = Minecraft.getMinecraft();
 
     public static void loadTexture(final ResourceLocation textureLocation, final ITextureObject textureObj) {
-        mc.addScheduledTask(new Runnable() {
-            @Override
-            public void run() {
-                mc.getTextureManager().loadTexture(textureLocation, textureObj);
-            }
-        });
+        mc.addScheduledTask((Runnable) () -> mc.getTextureManager().loadTexture(textureLocation, textureObj));
     }
 }

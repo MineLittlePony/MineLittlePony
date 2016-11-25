@@ -1,14 +1,11 @@
 package com.minelittlepony.renderer.layer;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
-
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.PlayerModel;
 import com.minelittlepony.model.pony.ModelPlayerPony;
 import com.mojang.authlib.GameProfile;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
@@ -27,6 +24,8 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.EnumFacing;
 
+import static net.minecraft.client.renderer.GlStateManager.*;
+
 public class LayerPonySkull implements LayerRenderer<EntityLivingBase> {
 
     private RenderLivingBase<? extends EntityLivingBase> renderer;
@@ -37,7 +36,7 @@ public class LayerPonySkull implements LayerRenderer<EntityLivingBase> {
 
     @Override
     public void doRenderLayer(EntityLivingBase entity, float limbSwing, float p_177141_3_,
-            float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
+                              float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
         ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
         if (itemstack != null && itemstack.getItem() != null) {
             AbstractPonyModel model = getModel().getModel();
@@ -86,6 +85,7 @@ public class LayerPonySkull implements LayerRenderer<EntityLivingBase> {
         if (itemstack.hasTagCompound()) {
             NBTTagCompound nbt = itemstack.getTagCompound();
 
+            assert nbt != null;
             if (nbt.hasKey("SkullOwner", 10)) {
                 profile = NBTUtil.readGameProfileFromNBT(nbt.getCompoundTag("SkullOwner"));
             } else if (nbt.hasKey("SkullOwner", 8)) {

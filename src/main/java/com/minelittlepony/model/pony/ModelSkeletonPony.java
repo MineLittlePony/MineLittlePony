@@ -1,10 +1,10 @@
 package com.minelittlepony.model.pony;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
+
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class ModelSkeletonPony extends ModelPlayerPony {
 

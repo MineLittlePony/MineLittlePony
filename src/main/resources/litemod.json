@@ -1,11 +1,11 @@
 {
-	"name": "minelittlepony",
-	"mcversion": "${mcversion}",
-	"version": "${version}",
-	"revision": "${revision}",
-	"description": "Mine Little Pony turns players and mobs into ponies",
-	"mixinConfigs": [
-		"mixin.minelp.json",
-		"mixin.hdskins.json"
-	]
+    "name": "minelittlepony",
+    "mcversion": "${mcversion}",
+    "version": "${version}",
+    "revision": "${revision}",
+    "description": "Mine Little Pony turns players and mobs into ponies",
+    "mixinConfigs": [
+        "mixin.minelp.json",
+        "mixin.hdskins.json"
+    ]
 }

@@ -2,10 +2,10 @@ package com.minelittlepony.renderer;
 
 import com.minelittlepony.model.ModelPlane;
 import com.minelittlepony.model.ModelPlane.Face;
-
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 
+@SuppressWarnings("unused")
 public class PlaneRenderer extends ModelRenderer {
 
     public boolean mirrory;
@@ -14,9 +14,9 @@ public class PlaneRenderer extends ModelRenderer {
     private int textureOffsetX;
     private int textureOffsetY;
 
-    public PlaneRenderer(ModelBase model, String boxNameIn) {
-        super(model, boxNameIn);
-    }
+//    public PlaneRenderer(ModelBase model, String boxNameIn) {
+//        super(model, boxNameIn);
+//    }
 
     public PlaneRenderer(ModelBase model) {
         super(model);

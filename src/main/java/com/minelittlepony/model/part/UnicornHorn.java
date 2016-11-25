@@ -1,16 +1,14 @@
 package com.minelittlepony.model.part;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
-
-import org.lwjgl.opengl.GL11;
-
 import com.minelittlepony.PonyData;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.PonyModelConstants;
 import com.minelittlepony.renderer.HornGlowRenderer;
-
 import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.client.model.ModelRenderer;
+import org.lwjgl.opengl.GL11;
+
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class UnicornHorn extends AbstractHeadPart implements PonyModelConstants {
 
@@ -54,7 +52,7 @@ public class UnicornHorn extends AbstractHeadPart implements PonyModelConstants 
                 blendFunc(GL11.GL_SRC_ALPHA, 1);
 
                 this.horn.postRender(scale);
-                
+
                 color(red, green, blue, 0.4F);
                 this.hornglow[0].render(scale);
                 color(red, green, blue, 0.2F);

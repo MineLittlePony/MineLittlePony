@@ -1,10 +1,9 @@
 package com.voxelmodpack.hdskins;
 
-import java.util.Map;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 
 import javax.annotation.Nullable;
-
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import java.util.Map;
 
 /**
  * Profile texture with a custom hash which is not the file name.

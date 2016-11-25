@@ -1,7 +1,6 @@
 package com.minelittlepony.renderer;
 
 import com.minelittlepony.model.ModelHornGlow;
-
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.TextureOffset;

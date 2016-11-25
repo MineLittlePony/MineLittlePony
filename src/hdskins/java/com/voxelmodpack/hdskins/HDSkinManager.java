@@ -1,23 +1,6 @@
 package com.voxelmodpack.hdskins;
 
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import javax.annotation.Nullable;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.FileUtils;
-
 import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
@@ -36,7 +19,6 @@ import com.mojang.util.UUIDTypeAdapter;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.resource.SkinResourceManager;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
@@ -47,12 +29,26 @@ import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
+
+import javax.annotation.Nullable;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public final class HDSkinManager implements IResourceManagerReloadListener {
 
     public static final HDSkinManager INSTANCE = new HDSkinManager();
     private static final ResourceLocation LOADING = new ResourceLocation("LOADING");
-    public static final String METADATA_KEY = "hdskins.metadata";
 
     private String gatewayUrl = "skinmanager.voxelmodpack.com";
     private String skinUrl = "skins.voxelmodpack.com";
@@ -65,11 +61,12 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     private SkinResourceManager resources = new SkinResourceManager();
     private ExecutorService executor = Executors.newCachedThreadPool();
 
-    public HDSkinManager() {}
+    public HDSkinManager() {
+    }
 
     public Optional<ResourceLocation> getSkinLocation(GameProfile profile1, final Type type, boolean loadIfAbsent) {
         if (!enabled)
-            return Optional.absent();
+            return Optional.empty();
 
         ResourceLocation skin = this.resources.getPlayerTexture(profile1, type);
         if (skin != null)
@@ -97,29 +94,19 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         final GameProfile profile = profile1;
 
         if (!this.skinCache.containsKey(profile.getId())) {
-            this.skinCache.put(profile.getId(), Maps.<Type, ResourceLocation> newHashMap());
+            this.skinCache.put(profile.getId(), Maps.newHashMap());
         }
 
         skin = this.skinCache.get(profile.getId()).get(type);
         if (skin == null) {
             if (loadIfAbsent) {
                 skinCache.get(profile.getId()).put(type, LOADING);
-                executor.submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadTexture(profile, type, new SkinAvailableCallback() {
-                            @Override
-                            public void skinAvailable(Type type, ResourceLocation location, MinecraftProfileTexture profileTexture) {
-                                skinCache.get(profile.getId()).put(type, location);
-                            }
-                        });
-                    }
-                });
+                executor.submit(() -> loadTexture(profile, type, (type1, location, profileTexture) -> skinCache.get(profile.getId()).put(type1, location)));
             }
-            return Optional.absent();
+            return Optional.empty();
         }
 
-        return skin == LOADING ? Optional.<ResourceLocation> absent() : Optional.of(skin);
+        return skin == LOADING ? Optional.empty() : Optional.of(skin);
 
     }
 
@@ -181,11 +168,11 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     private static Map<Type, MinecraftProfileTexture> getTexturesForProfile(GameProfile profile) {
-        LiteLoaderLogger.debug("Get textures for " + profile.getId(), new Object[0]);
+        LiteLoaderLogger.debug("Get textures for " + profile.getId());
 
         Minecraft minecraft = Minecraft.getMinecraft();
         MinecraftSessionService sessionService = minecraft.getSessionService();
-        Map<Type, MinecraftProfileTexture> textures = null;
+        Map<Type, MinecraftProfileTexture> textures;
 
         try {
             textures = sessionService.getTextures(profile, true);
@@ -206,10 +193,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     public void setGatewayURL(String gatewayURL) {
         this.gatewayUrl = gatewayURL;
-    }
-
-    public String getSkinUrl() {
-        return String.format("http://%s/", skinUrl);
     }
 
     public String getGatewayUrl() {
@@ -254,7 +237,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     public static void clearSkinCache() {
-        LiteLoaderLogger.info("Clearing local player skin cache", new Object[0]);
+        LiteLoaderLogger.info("Clearing local player skin cache");
 
         try {
             FileUtils.deleteDirectory(new File(LiteLoader.getAssetsDirectory(), "skins"));

@@ -1,22 +1,15 @@
 package com.minelittlepony.renderer;
 
-import com.minelittlepony.PonyData;
-import com.minelittlepony.PonyDataSerialzier;
 import com.minelittlepony.model.pony.ModelIllagerPony;
 import com.minelittlepony.model.pony.ModelVindicatorPony;
 import com.minelittlepony.renderer.layer.LayerHeldPonyItem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.resources.IResource;
-import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityVindicator;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
-
-import java.io.IOException;
 
 public class RenderPonyVindicator extends RenderLiving<EntityVindicator> {
 

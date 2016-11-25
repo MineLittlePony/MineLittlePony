@@ -5,13 +5,11 @@ import com.minelittlepony.PonyGender;
 import com.minelittlepony.PonyRace;
 import com.minelittlepony.TailLengths;
 import com.minelittlepony.ducks.IRenderPony;
-import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.PlayerModel;
 import com.minelittlepony.renderer.layer.LayerHeldPonyItem;
 import com.minelittlepony.renderer.layer.LayerPonyArmor;
 import com.minelittlepony.renderer.layer.LayerPonySkull;
 import com.voxelmodpack.hdskins.HDSkinManager;
-
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLiving;
@@ -19,12 +17,10 @@ import net.minecraft.util.ResourceLocation;
 
 public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving<T> implements IRenderPony {
 
-    protected AbstractPonyModel mobModel;
     protected PlayerModel playerModel;
 
     public RenderPonyMob(RenderManager renderManager, PlayerModel playerModel) {
-        super(renderManager, playerModel.getModel(), playerModel.getShadowsize());
-        this.mobModel = playerModel.getModel();
+        super(renderManager, playerModel.getModel(), 0.5F);
         this.playerModel = playerModel;
 
         this.addLayer(new LayerPonyArmor(this));
@@ -35,7 +31,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
     @Override
     public void doRender(T entity, double xPosition, double yPosition, double zPosition, float yaw,
-            float partialTicks) {
+                         float partialTicks) {
         double yOrigin = yPosition;
         if (entity.isSneaking()) {
             yOrigin -= 0.125D;

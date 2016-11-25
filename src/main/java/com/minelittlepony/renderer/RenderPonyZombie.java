@@ -1,18 +1,17 @@
 package com.minelittlepony.renderer;
 
-import java.util.Random;
-
 import com.minelittlepony.PonyGender;
 import com.minelittlepony.PonyRace;
 import com.minelittlepony.PonySize;
 import com.minelittlepony.TailLengths;
 import com.minelittlepony.model.PMAPI;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.monster.EntityHusk;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.Random;
 
 public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob<Zombie> {
 
@@ -33,16 +32,16 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
 
         // races
         switch (rand.nextInt(2) + 2) {
-        case 0:
-        case 1:
-            this.playerModel.getModel().metadata.setRace(PonyRace.EARTH);
-            break;
-        case 2:
-            this.playerModel.getModel().metadata.setRace(PonyRace.PEGASUS);
-            break;
-        case 3:
-            this.playerModel.getModel().metadata.setRace(PonyRace.UNICORN);
-            break;
+            case 0:
+            case 1:
+                this.playerModel.getModel().metadata.setRace(PonyRace.EARTH);
+                break;
+            case 2:
+                this.playerModel.getModel().metadata.setRace(PonyRace.PEGASUS);
+                break;
+            case 3:
+                this.playerModel.getModel().metadata.setRace(PonyRace.UNICORN);
+                break;
         }
         // Let's play the lottery!
         if (rand.nextInt(10000) == 0) {

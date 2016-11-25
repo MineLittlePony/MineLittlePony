@@ -1,22 +1,24 @@
 package com.voxelmodpack.hdskins.gui;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
-
-import java.util.Set;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+import java.util.Set;
+
+import static net.minecraft.client.renderer.GlStateManager.popAttrib;
+import static net.minecraft.client.renderer.GlStateManager.popMatrix;
+import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
+import static net.minecraft.client.renderer.GlStateManager.scale;
 
 public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLivingBase<M> {
 
     private static final ModelPlayer FAT = new ModelPlayer(0, false);
-    private static final ModelPlayer THIN = new ModelPlayer(0, true);
+    //private static final ModelPlayer THIN = new ModelPlayer(0, true);
 
     public RenderPlayerModel(RenderManager renderer) {
         super(renderer, FAT, 0.0F);
@@ -29,18 +31,12 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
 
     @Override
     protected boolean canRenderName(M targetEntity) {
-        if (Minecraft.getMinecraft().player != null) {
-            return super.canRenderName(targetEntity);
-        }
-        return false;
+        return Minecraft.getMinecraft().player != null && super.canRenderName(targetEntity);
     }
 
     @Override
     protected boolean setBrightness(M entitylivingbaseIn, float partialTicks, boolean p_177092_3_) {
-        if (Minecraft.getMinecraft().world != null) {
-            return super.setBrightness(entitylivingbaseIn, partialTicks, p_177092_3_);
-        }
-        return false;
+        return Minecraft.getMinecraft().world != null && super.setBrightness(entitylivingbaseIn, partialTicks, p_177092_3_);
     }
 
     public ModelPlayer getEntityModel(M entity) {

@@ -11,10 +11,7 @@ public interface IOpenFileCallback {
 
     /**
      * Callback method called when the "open file" dialog is closed
-     * 
-     * @param fileDialog
-     * @param dialogResult
      */
-    public abstract void onFileOpenDialogClosed(JFileChooser fileDialog, int dialogResult);
+    void onFileOpenDialogClosed(JFileChooser fileDialog, int dialogResult);
 
 }

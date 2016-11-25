@@ -1,12 +1,9 @@
 package com.minelittlepony.renderer.layer;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
-
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.PlayerModel;
 import com.minelittlepony.model.pony.ModelHumanPlayer;
-
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -14,6 +11,8 @@ import net.minecraft.client.renderer.entity.layers.LayerCape;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.util.math.MathHelper;
+
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class LayerPonyCape implements LayerRenderer<AbstractClientPlayer> {
 
@@ -27,7 +26,7 @@ public class LayerPonyCape implements LayerRenderer<AbstractClientPlayer> {
 
     @Override
     public void doRenderLayer(AbstractClientPlayer clientPlayer, float p2, float p3, float ticks, float p5, float p6,
-            float p7, float scale) {
+                              float p7, float scale) {
         PlayerModel model = ((IRenderPony) renderer).getPony();
         if (model.getModel() instanceof ModelHumanPlayer) {
             cape.doRenderLayer(clientPlayer, p2, p3, ticks, p5, p6, p7, scale);

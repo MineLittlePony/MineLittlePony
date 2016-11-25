@@ -1,7 +1,6 @@
 package com.minelittlepony.renderer;
 
 import com.minelittlepony.model.PMAPI;
-
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.util.ResourceLocation;

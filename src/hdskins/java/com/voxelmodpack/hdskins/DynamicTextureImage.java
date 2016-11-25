@@ -1,8 +1,8 @@
 package com.voxelmodpack.hdskins;
 
-import java.awt.image.BufferedImage;
-
 import net.minecraft.client.renderer.texture.DynamicTexture;
+
+import java.awt.image.BufferedImage;
 
 public class DynamicTextureImage extends DynamicTexture {
 

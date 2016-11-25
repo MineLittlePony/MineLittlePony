@@ -1,11 +1,10 @@
 package com.minelittlepony.util;
 
-import java.awt.image.BufferedImage;
-
 import com.mumfrey.liteloader.core.runtime.Obf;
 import com.mumfrey.liteloader.util.PrivateFields;
-
 import net.minecraft.client.renderer.ThreadDownloadImageData;
+
+import java.awt.image.BufferedImage;
 
 public class PonyFields<P, T> extends PrivateFields<P, T> {
 
@@ -16,7 +15,7 @@ public class PonyFields<P, T> extends PrivateFields<P, T> {
     }
 
     private static <P, T> PrivateFields<P, T> field(Class<P> c, Obf o) {
-        return new PonyFields<P, T>(c, o);
+        return new PonyFields<>(c, o);
     }
 
     private static class PonyObf extends Obf {

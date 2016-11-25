@@ -87,7 +87,6 @@ public abstract class ModelIllagerPony extends ModelBase {
         tail.addChild(tailStub);
 
 
-
     }
 
     @Override

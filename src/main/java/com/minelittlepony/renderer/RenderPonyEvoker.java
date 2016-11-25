@@ -34,8 +34,10 @@ public class RenderPonyEvoker extends RenderLiving<EntityEvoker> {
             IResource resource = resources.getResource(EVOKER);
             if (resource.hasMetadata()) {
                 PonyData meta = resource.getMetadata(PonyDataSerialzier.NAME);
-                model.isUnicorn = meta.hasMagic();
-                model.glowColor = meta.getGlowColor();
+                if (meta != null) {
+                    model.isUnicorn = meta.hasMagic();
+                    model.glowColor = meta.getGlowColor();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

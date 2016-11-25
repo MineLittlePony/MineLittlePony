@@ -1,16 +1,14 @@
 package com.voxelmodpack.hdskins.mixin;
 
+import com.voxelmodpack.hdskins.gui.GuiButtonSkins;
+import com.voxelmodpack.hdskins.gui.GuiSkins;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.GuiScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import com.voxelmodpack.hdskins.gui.GuiButtonSkins;
-import com.voxelmodpack.hdskins.gui.GuiSkins;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.gui.GuiScreen;
 
 @Mixin(GuiMainMenu.class)
 public class MixinGuiMainMenu extends GuiScreen {

@@ -1,8 +1,5 @@
 package com.voxelmodpack.hdskins.mod;
 
-import java.io.File;
-import java.lang.reflect.Method;
-
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.modconfig.ConfigPanel;
 import com.mumfrey.liteloader.util.ModUtilities;
@@ -11,10 +8,11 @@ import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
 import com.voxelmodpack.hdskins.gui.GuiSkins;
 import com.voxelmodpack.hdskins.gui.HDSkinsConfigPanel;
 import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
-import com.voxelmodpack.voxelmenu.IPanoramaRenderer;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
+
+import java.io.File;
+import java.lang.reflect.Method;
 
 public class LiteModHDSkinsMod implements HDSkinsMod {
     @Override
@@ -55,23 +53,6 @@ public class LiteModHDSkinsMod implements HDSkinsMod {
 
     @Override
     public void onInitCompleted(Minecraft minecraft, LiteLoader loader) {
-        ModUtilities.addRenderer(EntityPlayerModel.class, new RenderPlayerModel<EntityPlayerModel>(minecraft.getRenderManager()));
-    }
-
-    public static IPanoramaRenderer getPanoramaRenderer(IPanoramaRenderer fallbackRenderer) {
-        try {
-            Class<?> ex = Class.forName("com.thevoxelbox.voxelmenu.VoxelMenuModCore");
-            Method mGetPanoramaRenderer = ex.getDeclaredMethod("getPanoramaRenderer");
-            IPanoramaRenderer panoramaRenderer = (IPanoramaRenderer) mGetPanoramaRenderer.invoke(null);
-            if (panoramaRenderer != null) {
-                return panoramaRenderer;
-            }
-        } catch (ClassNotFoundException var4) {
-
-        } catch (Exception var5) {
-            var5.printStackTrace();
-        }
-
-        return fallbackRenderer;
+        ModUtilities.addRenderer(EntityPlayerModel.class, new RenderPlayerModel<>(minecraft.getRenderManager()));
     }
 }

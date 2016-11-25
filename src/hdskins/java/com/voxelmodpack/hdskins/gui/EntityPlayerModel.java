@@ -1,18 +1,11 @@
 package com.voxelmodpack.hdskins.gui;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.voxelmodpack.hdskins.DynamicTextureImage;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.ImageBufferDownloadHD;
 import com.voxelmodpack.hdskins.PreviewTexture;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -22,7 +15,11 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class EntityPlayerModel extends EntityLivingBase {
     public static final ResourceLocation NOSKIN = new ResourceLocation("hdskins", "textures/mob/noskin.png");
@@ -37,7 +34,7 @@ public class EntityPlayerModel extends EntityLivingBase {
     protected boolean hasLocalTexture = false;
 
     public EntityPlayerModel(GameProfile profile) {
-        super((World) null);
+        super(null);
         this.profile = profile;
         this.textureManager = Minecraft.getMinecraft().getTextureManager();
         this.remoteSkinResource = new ResourceLocation("skins/preview_" + this.profile.getName() + ".png");
@@ -79,10 +76,6 @@ public class EntityPlayerModel extends EntityLivingBase {
 
     }
 
-    public boolean usingRemoteSkin() {
-        return this.remoteSkin;
-    }
-
     public boolean isUsingLocalTexture() {
         return !this.remoteSkin && this.hasLocalTexture;
     }
@@ -93,7 +86,7 @@ public class EntityPlayerModel extends EntityLivingBase {
     }
 
     public boolean isTextureSetupComplete() {
-        return this.remoteSkin && this.remoteSkinTexture != null ? this.remoteSkinTexture.isTextureUploaded() : false;
+        return (this.remoteSkin && this.remoteSkinTexture != null) && this.remoteSkinTexture.isTextureUploaded();
     }
 
     public void releaseTextures() {

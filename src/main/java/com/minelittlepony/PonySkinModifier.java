@@ -1,10 +1,10 @@
 package com.minelittlepony;
 
+import com.voxelmodpack.hdskins.ISkinModifier;
+
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-
-import com.voxelmodpack.hdskins.ISkinModifier;
 
 public class PonySkinModifier implements ISkinModifier {
 

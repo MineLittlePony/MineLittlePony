@@ -1,22 +1,16 @@
 package com.voxelmodpack.hdskins.upload.awt;
 
-import java.awt.Frame;
+import net.minecraft.client.Minecraft;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
-import net.minecraft.client.Minecraft;
-
 /**
  * Base class for "open file" dialog threads
- * 
+ *
  * @author Adam Mummery-Smith
  */
 public abstract class ThreadOpenFile extends Thread {
-    /**
-     * Minecraft's AWT parent frame
-     */
-    protected Frame parentFrame;
 
     protected String dialogTitle;
 
@@ -25,10 +19,6 @@ public abstract class ThreadOpenFile extends Thread {
      */
     protected final IOpenFileCallback parentScreen;
 
-    /**
-     * @param minecraft
-     * @param callback
-     */
     protected ThreadOpenFile(Minecraft minecraft, String dialogTitle, IOpenFileCallback callback)
             throws IllegalStateException {
         if (minecraft.isFullScreen()) {
@@ -45,15 +35,13 @@ public abstract class ThreadOpenFile extends Thread {
         fileDialog.setDialogTitle(this.dialogTitle);
         fileDialog.setFileFilter(this.getFileFilter());
 
-        int dialogResult = fileDialog.showOpenDialog(this.parentFrame);
+        int dialogResult = fileDialog.showOpenDialog(null);
 
         this.parentScreen.onFileOpenDialogClosed(fileDialog, dialogResult);
     }
 
     /**
      * Subclasses should override this to return a file filter
-     * 
-     * @return
      */
     protected abstract FileFilter getFileFilter();
 }

@@ -1,7 +1,6 @@
 package com.minelittlepony.renderer;
 
 import com.minelittlepony.model.pony.ModelBreezie;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;

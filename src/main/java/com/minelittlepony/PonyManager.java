@@ -1,27 +1,24 @@
 package com.minelittlepony;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
+import com.minelittlepony.model.PMAPI;
+import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.resources.IResource;
+import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.resources.IResourceManagerReloadListener;
+import net.minecraft.util.ResourceLocation;
+import org.apache.commons.compress.utils.IOUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import org.apache.commons.compress.utils.IOUtils;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
-import com.minelittlepony.model.PMAPI;
-import com.minelittlepony.util.MineLPLogger;
-
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.resources.IResource;
-import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.client.resources.IResourceManagerReloadListener;
-import net.minecraft.util.ResourceLocation;
+import java.util.stream.Collectors;
 
 public class PonyManager implements IResourceManagerReloadListener {
 
@@ -42,9 +39,9 @@ public class PonyManager implements IResourceManagerReloadListener {
     }
 
     public void initmodels() {
-        MineLPLogger.info("Initializing models...");
+        MineLittlePony.logger.info("Initializing models...");
         PMAPI.init();
-        MineLPLogger.info("Done initializing models.");
+        MineLittlePony.logger.info("Done initializing models.");
     }
 
     private Pony getPonyFromResourceRegistry(ResourceLocation skinResourceLocation, AbstractClientPlayer player) {
@@ -65,7 +62,7 @@ public class PonyManager implements IResourceManagerReloadListener {
     }
 
     public Pony getPonyFromResourceRegistry(ResourceLocation skinResourceLocation) {
-        return this.getPonyFromResourceRegistry(skinResourceLocation, (AbstractClientPlayer) null);
+        return this.getPonyFromResourceRegistry(skinResourceLocation, null);
     }
 
     public Pony getPonyFromResourceRegistry(AbstractClientPlayer player) {
@@ -122,13 +119,13 @@ public class PonyManager implements IResourceManagerReloadListener {
                     }
                     this.backgroundPonyList.addAll(ponies.getPonies());
                 } catch (JsonParseException e) {
-                    MineLPLogger.error(e, "Invalid bgponies.json in {}", res.getResourcePackName());
+                    MineLittlePony.logger.error("Invalid bgponies.json in " + res.getResourcePackName(), e);
                 }
             }
         } catch (IOException e) {
             // this isn't the exception you're looking for.
         }
-        MineLPLogger.info("Detected %d background ponies installed.", getNumberOfPonies());
+        MineLittlePony.logger.info("Detected %d background ponies installed.", getNumberOfPonies());
     }
 
     private BackgroundPonies getBackgroundPonies(InputStream stream) {
@@ -147,18 +144,22 @@ public class PonyManager implements IResourceManagerReloadListener {
         return backgroundPonyList.size();
     }
 
-    private static class BackgroundPonies implements Function<String, ResourceLocation> {
+    private static class BackgroundPonies {
 
-        public boolean override;
+        private boolean override;
         private List<String> ponies;
 
-        @Override
-        public ResourceLocation apply(String input) {
+        private BackgroundPonies(List<String> ponies, boolean override) {
+            this.ponies = ponies;
+            this.override = override;
+        }
+
+        private ResourceLocation apply(String input) {
             return new ResourceLocation("minelittlepony", String.format("textures/entity/pony/%s.png", input));
         }
 
         public List<ResourceLocation> getPonies() {
-            return Lists.transform(ponies, this);
+            return this.ponies.stream().map(this::apply).collect(Collectors.toList());
         }
     }
 }

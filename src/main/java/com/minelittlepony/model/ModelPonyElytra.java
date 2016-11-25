@@ -77,8 +77,4 @@ public class ModelPonyElytra extends ModelBase {
         this.rightWing.rotateAngleZ = -this.leftWing.rotateAngleZ;
     }
 
-    @Override
-    public void setLivingAnimations(EntityLivingBase entitylivingbaseIn, float p_78086_2_, float p_78086_3_, float partialTickTime) {
-        super.setLivingAnimations(entitylivingbaseIn, p_78086_2_, p_78086_3_, partialTickTime);
-    }
 }

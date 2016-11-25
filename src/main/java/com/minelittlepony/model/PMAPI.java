@@ -1,7 +1,5 @@
 package com.minelittlepony.model;
 
-import java.lang.reflect.Field;
-
 import com.minelittlepony.model.pony.ModelHumanPlayer;
 import com.minelittlepony.model.pony.ModelPlayerPony;
 import com.minelittlepony.model.pony.ModelSkeletonPony;
@@ -11,6 +9,8 @@ import com.minelittlepony.model.pony.armor.HumanArmors;
 import com.minelittlepony.model.pony.armor.PonyArmors;
 import com.minelittlepony.model.pony.armor.SkeletonPonyArmors;
 import com.minelittlepony.model.pony.armor.ZombiePonyArmors;
+
+import java.lang.reflect.Field;
 
 public final class PMAPI {
 

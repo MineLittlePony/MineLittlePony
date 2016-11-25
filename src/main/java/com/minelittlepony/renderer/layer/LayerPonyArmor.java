@@ -1,8 +1,5 @@
 package com.minelittlepony.renderer.layer;
 
-import java.io.IOException;
-import java.util.Map;
-
 import com.google.common.collect.Maps;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IRenderPony;
@@ -11,7 +8,6 @@ import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.PlayerModel;
 import com.minelittlepony.model.pony.ModelHumanPlayer;
 import com.minelittlepony.model.pony.armor.ModelPonyArmor;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -25,6 +21,9 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+
+import java.io.IOException;
+import java.util.Map;
 
 public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
 
@@ -57,7 +56,7 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
     }
 
     private void renderArmor(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale,
-            EntityEquipmentSlot armorSlot) {
+                             EntityEquipmentSlot armorSlot) {
         ItemStack itemstack = entity.getItemStackFromSlot(armorSlot);
 
         if (itemstack != null && itemstack.getItem() instanceof ItemArmor) {
@@ -117,36 +116,36 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
         model.setInvisible(false);
 
         switch (slot) {
-        // feet
-        case FEET:
-            model.bipedRightArm.showModel = true;
-            model.bipedLeftArm.showModel = true;
-            model.bipedRightLeg.showModel = true;
-            model.bipedLeftLeg.showModel = true;
-            break;
-        // legs
-        case LEGS:
-            model.bipedRightLeg.showModel = true;
-            model.bipedLeftLeg.showModel = true;
-            model.bipedRightArm.showModel = true;
-            model.bipedLeftArm.showModel = true;
-            model.extBody.showModel = true;
-            break;
-        // chest
-        case CHEST:
-            model.extBody.showModel = true;
-            break;
-        // head
-        case HEAD:
-            model.bipedHead.showModel = true;
-            for (ModelRenderer m : model.extHead) {
-                m.showModel = true;
-            }
+            // feet
+            case FEET:
+                model.bipedRightArm.showModel = true;
+                model.bipedLeftArm.showModel = true;
+                model.bipedRightLeg.showModel = true;
+                model.bipedLeftLeg.showModel = true;
+                break;
+            // legs
+            case LEGS:
+                model.bipedRightLeg.showModel = true;
+                model.bipedLeftLeg.showModel = true;
+                model.bipedRightArm.showModel = true;
+                model.bipedLeftArm.showModel = true;
+                model.extBody.showModel = true;
+                break;
+            // chest
+            case CHEST:
+                model.extBody.showModel = true;
+                break;
+            // head
+            case HEAD:
+                model.bipedHead.showModel = true;
+                for (ModelRenderer m : model.extHead) {
+                    m.showModel = true;
+                }
         }
     }
 
     private void renderEnchantment(EntityLivingBase entitylivingbaseIn, ModelBase modelbaseIn, float p_177183_3_, float p_177183_4_, float p_177183_5_,
-            float p_177183_6_, float p_177183_7_, float p_177183_8_, float p_177183_9_) {
+                                   float p_177183_6_, float p_177183_7_, float p_177183_8_, float p_177183_9_) {
         float f7 = entitylivingbaseIn.ticksExisted + p_177183_5_;
         this.renderer.bindTexture(ENCHANTED_ITEM_GLINT_RES);
         GlStateManager.enableBlend();
@@ -185,12 +184,7 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
     }
 
     private static ResourceLocation getHumanResource(String s1) {
-        ResourceLocation human = HUMAN_ARMORS.get(s1);
-        if (human == null) {
-            human = new ResourceLocation(s1);
-            HUMAN_ARMORS.put(s1, human);
-        }
-        return human;
+        return HUMAN_ARMORS.computeIfAbsent(s1, k -> new ResourceLocation(s1));
     }
 
     private static ResourceLocation getPonyResource(ResourceLocation human) {

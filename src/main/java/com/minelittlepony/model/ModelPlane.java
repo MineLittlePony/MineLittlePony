@@ -1,7 +1,6 @@
 package com.minelittlepony.model;
 
 import com.minelittlepony.renderer.PlaneRenderer;
-
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.PositionTextureVertex;
 import net.minecraft.client.model.TexturedQuad;
@@ -13,8 +12,8 @@ public class ModelPlane extends ModelBox {
     private final Face face;
 
     public ModelPlane(PlaneRenderer renderer, int textureX, int textureY,
-            float x, float y, float z, int w, int h, int d,
-            float scale, Face face) {
+                      float x, float y, float z, int w, int h, int d,
+                      float scale, Face face) {
         super(renderer, textureX, textureY, x, y, z, w, h, d, scale, false);
         this.face = face;
 
@@ -60,37 +59,37 @@ public class ModelPlane extends ModelBox {
 
         // east
         this.quadList[0] = new TexturedQuad(
-                new PositionTextureVertex[] { edn, eds, eus, eun },
+                new PositionTextureVertex[]{edn, eds, eus, eun},
                 textureX, textureY,
                 textureX + d, textureY + h,
                 renderer.textureWidth, renderer.textureHeight);
         // west
         this.quadList[1] = new TexturedQuad(
-                new PositionTextureVertex[] { wds, wdn, wun, wus },
+                new PositionTextureVertex[]{wds, wdn, wun, wus},
                 textureX, textureY,
                 textureX + d, textureY + h,
                 renderer.textureWidth, renderer.textureHeight);
         // down
         this.quadList[3] = new TexturedQuad(
-                new PositionTextureVertex[] { edn, wdn, wds, eds },
+                new PositionTextureVertex[]{edn, wdn, wds, eds},
                 textureX, textureY,
                 textureX + w, textureY + d,
                 renderer.textureWidth, renderer.textureHeight);
         // up
         this.quadList[2] = new TexturedQuad(
-                new PositionTextureVertex[] { eus, wus, wun, eun },
+                new PositionTextureVertex[]{eus, wus, wun, eun},
                 textureX, textureY,
                 textureX + w, textureY + d,
                 renderer.textureWidth, renderer.textureHeight);
         // south
         this.quadList[4] = new TexturedQuad(
-                new PositionTextureVertex[] { eds, wds, wus, eus },
+                new PositionTextureVertex[]{eds, wds, wus, eus},
                 textureX, textureY,
                 textureX + w, textureY + h,
                 renderer.textureWidth, renderer.textureHeight);
         // north
         this.quadList[5] = new TexturedQuad(
-                new PositionTextureVertex[] { wdn, edn, eun, wun },
+                new PositionTextureVertex[]{wdn, edn, eun, wun},
                 textureX, textureY,
                 textureX + w, textureY + h,
                 renderer.textureWidth, renderer.textureHeight);
@@ -107,12 +106,12 @@ public class ModelPlane extends ModelBox {
         this.quadList[this.face.ordinal()].draw(renderer, scale);
     }
 
-    public static enum Face {
+    public enum Face {
         EAST,
         WEST,
         DOWN,
         UP,
         SOUTH,
-        NORTH;
+        NORTH
     }
 }

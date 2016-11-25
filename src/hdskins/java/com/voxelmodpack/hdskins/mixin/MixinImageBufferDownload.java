@@ -1,8 +1,8 @@
 package com.voxelmodpack.hdskins.mixin;
 
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-
+import com.voxelmodpack.hdskins.HDSkinManager;
+import net.minecraft.client.renderer.IImageBuffer;
+import net.minecraft.client.renderer.ImageBufferDownload;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
@@ -11,10 +11,8 @@ import org.spongepowered.asm.mixin.injection.Surrogate;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import com.voxelmodpack.hdskins.HDSkinManager;
-
-import net.minecraft.client.renderer.IImageBuffer;
-import net.minecraft.client.renderer.ImageBufferDownload;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 @Mixin(ImageBufferDownload.class)
 public abstract class MixinImageBufferDownload implements IImageBuffer {

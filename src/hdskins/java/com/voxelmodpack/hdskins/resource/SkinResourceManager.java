@@ -1,18 +1,5 @@
 package com.voxelmodpack.hdskins.resource;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import javax.annotation.Nullable;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
-
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -22,12 +9,22 @@ import com.google.gson.JsonParseException;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class SkinResourceManager implements IResourceManagerReloadListener {
 
@@ -113,16 +110,13 @@ public class SkinResourceManager implements IResourceManagerReloadListener {
             if (this.inProgress.get(res) == null) {
                 // read and convert in a new thread
                 final ListenableFuture<ResourceLocation> conv = executor.submit(new ImageLoader(res));
-                conv.addListener(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            if (!conv.isCancelled())
-                                converted.put(res, conv.get());
-                        } catch (Exception e) {
-                            LogManager.getLogger().warn("Errored while processing " + res + ". Using original.", e);
-                            converted.put(res, res);
-                        }
+                conv.addListener(() -> {
+                    try {
+                        if (!conv.isCancelled())
+                            converted.put(res, conv.get());
+                    } catch (Exception e) {
+                        LogManager.getLogger().warn("Errored while processing " + res + ". Using original.", e);
+                        converted.put(res, res);
                     }
                 }, executor);
                 this.inProgress.put(res, conv);

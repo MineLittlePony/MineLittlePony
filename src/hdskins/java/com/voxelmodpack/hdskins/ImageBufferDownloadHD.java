@@ -1,10 +1,9 @@
 package com.voxelmodpack.hdskins;
 
+import net.minecraft.client.renderer.IImageBuffer;
+
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-
-import net.minecraft.client.renderer.IImageBuffer;
 
 public class ImageBufferDownloadHD implements IImageBuffer {
 
@@ -13,6 +12,7 @@ public class ImageBufferDownloadHD implements IImageBuffer {
     private BufferedImage image;
 
     @Override
+    @SuppressWarnings("SuspiciousNameCombination")
     public BufferedImage parseUserSkin(BufferedImage downloadedImage) {
         if (downloadedImage == null) {
             return null;
@@ -25,7 +25,7 @@ public class ImageBufferDownloadHD implements IImageBuffer {
         scale = imageWidth / 64;
         image = new BufferedImage(imageWidth, imageWidth, BufferedImage.TYPE_INT_ARGB);
         graphics = image.getGraphics();
-        graphics.drawImage(downloadedImage, 0, 0, (ImageObserver) null);
+        graphics.drawImage(downloadedImage, 0, 0, null);
 
         // copy layers
         // leg
@@ -58,5 +58,6 @@ public class ImageBufferDownloadHD implements IImageBuffer {
     }
 
     @Override
-    public void skinAvailable() {}
+    public void skinAvailable() {
+    }
 }

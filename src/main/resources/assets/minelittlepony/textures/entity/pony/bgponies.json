@@ -1,8 +1,8 @@
 {
-	// Removes all of the previous resourcepack's ponies
-	"override": false,
-	// A list of all the pony names without the extension
-	// e.g. textures/entity/pony/bpony_12.png
+    // Removes all of the previous resourcepack's ponies
+    "override": false,
+    // A list of all the pony names without the extension
+    // e.g. textures/entity/pony/bpony_12.png
     "ponies": [
         "bpony_0",
         "bpony_1",

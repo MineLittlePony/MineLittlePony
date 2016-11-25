@@ -1,14 +1,11 @@
 package com.minelittlepony.renderer;
 
-import java.util.Random;
-
 import com.minelittlepony.PonyGender;
 import com.minelittlepony.PonyRace;
 import com.minelittlepony.PonySize;
 import com.minelittlepony.TailLengths;
 import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.renderer.layer.LayerPonyStrayOverlay;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
@@ -16,6 +13,8 @@ import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.entity.monster.EntityStray;
 import net.minecraft.entity.monster.EntityWitherSkeleton;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.Random;
 
 public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends RenderPonyMob<Skeleton> {
 
@@ -41,15 +40,15 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
         Random rand = new Random(skeleton.getUniqueID().hashCode());
         this.playerModel.getModel().metadata.setGender(rand.nextBoolean() ? PonyGender.MARE : PonyGender.STALLION);
         switch (rand.nextInt(4)) {
-        case 0:
-        case 1:
-            this.playerModel.getModel().metadata.setRace(PonyRace.UNICORN);
-            break;
-        case 2:
-            this.playerModel.getModel().metadata.setRace(PonyRace.EARTH);
-            break;
-        case 3:
-            this.playerModel.getModel().metadata.setRace(PonyRace.PEGASUS);
+            case 0:
+            case 1:
+                this.playerModel.getModel().metadata.setRace(PonyRace.UNICORN);
+                break;
+            case 2:
+                this.playerModel.getModel().metadata.setRace(PonyRace.EARTH);
+                break;
+            case 3:
+                this.playerModel.getModel().metadata.setRace(PonyRace.PEGASUS);
         }
         PonySize[] sizes = PonySize.values();
         PonySize size = sizes[rand.nextInt(sizes.length)];

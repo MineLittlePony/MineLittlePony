@@ -1,14 +1,13 @@
 package com.minelittlepony;
 
+import com.google.common.collect.ImmutableBiMap;
+
 import java.awt.image.BufferedImage;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableBiMap;
-import net.minecraft.client.resources.data.IMetadataSection;
-
 public class PonyData implements IPonyData {
 
-    private static final Map<Integer, PonyRace> RACE_COLORS = ImmutableBiMap.<Integer, PonyRace> builder()
+    private static final Map<Integer, PonyRace> RACE_COLORS = ImmutableBiMap.<Integer, PonyRace>builder()
             .put(0xf9b131, PonyRace.EARTH)
             .put(0xd19fe4, PonyRace.UNICORN)
             .put(0x88caf0, PonyRace.PEGASUS)
@@ -16,12 +15,12 @@ public class PonyData implements IPonyData {
             .put(0xd0cccf, PonyRace.ZEBRA)
             .put(0x282b29, PonyRace.CHANGELING)
             .build();
-    private static final Map<Integer, TailLengths> TAIL_COLORS = ImmutableBiMap.<Integer, TailLengths> builder()
+    private static final Map<Integer, TailLengths> TAIL_COLORS = ImmutableBiMap.<Integer, TailLengths>builder()
             .put(0x425844, TailLengths.STUB)
             .put(0xd19fe4, TailLengths.QUARTER)
             .put(0x534b76, TailLengths.HALF)
             .put(0x8a6b7f, TailLengths.THREE_QUARTERS).build();
-    private static final Map<Integer, PonySize> SIZE_COLORS = ImmutableBiMap.<Integer, PonySize> builder()
+    private static final Map<Integer, PonySize> SIZE_COLORS = ImmutableBiMap.<Integer, PonySize>builder()
             .put(0xffbe53, PonySize.FOAL)
             .put(0xce3254, PonySize.LARGE)
             .put(0x534b76, PonySize.TALL)

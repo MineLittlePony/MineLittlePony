@@ -1,7 +1,6 @@
 package com.minelittlepony.model.pony;
 
 import com.minelittlepony.renderer.PlaneRenderer;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
@@ -24,8 +23,8 @@ public class ModelVillagerPony extends ModelPlayerPony {
         if (this.swingProgress > -9990.0F && !this.metadata.hasMagic()) {
             bodySwingRotation = MathHelper.sin(MathHelper.sqrt(this.swingProgress) * 3.1415927F * 2.0F) * 0.2F;
         }
-        for (int i = 0; i < this.VillagerBagPiece.length; ++i) {
-            this.VillagerBagPiece[i].rotateAngleY = bodySwingRotation * 0.2F;
+        for (PlaneRenderer aVillagerBagPiece : this.VillagerBagPiece) {
+            aVillagerBagPiece.rotateAngleY = bodySwingRotation * 0.2F;
         }
 
         this.VillagerBagPiece[4].rotateAngleY += 4.712389F;
@@ -42,8 +41,8 @@ public class ModelVillagerPony extends ModelPlayerPony {
 
         this.bipedBody.postRender(scale);
         if (profession < 2) {
-            for (int i = 0; i < this.VillagerBagPiece.length; ++i) {
-                this.VillagerBagPiece[i].render(this.scale);
+            for (PlaneRenderer aVillagerBagPiece : this.VillagerBagPiece) {
+                aVillagerBagPiece.render(this.scale);
             }
         } else if (profession == 2) {
             this.VillagerTrinket.render(this.scale);

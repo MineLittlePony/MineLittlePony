@@ -1,7 +1,5 @@
 package com.minelittlepony.model.pony;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
-
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.PonyModelConstants;
@@ -10,13 +8,15 @@ import com.minelittlepony.model.part.PonyEars;
 import com.minelittlepony.model.part.PonySnout;
 import com.minelittlepony.model.part.UnicornHorn;
 import com.minelittlepony.renderer.PlaneRenderer;
-
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
+
+import static net.minecraft.client.renderer.GlStateManager.popMatrix;
+import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
 
 public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConstants {
 
@@ -103,10 +103,10 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             this.bipedLeftArm.rotateAngleZ = (float) (Math.PI * -0.06);
             this.bipedRightArm.rotateAngleZ = (float) (Math.PI * 0.06);
 
-            for (int i = 0; i < Tail.length; ++i) {
-                this.Tail[i].rotationPointZ = 13;
-                this.Tail[i].rotationPointY = 3;
-                this.Tail[i].rotateAngleX = (float) (Math.PI * 0.2);
+            for (PlaneRenderer aTail : Tail) {
+                aTail.rotationPointZ = 13;
+                aTail.rotationPointY = 3;
+                aTail.rotateAngleX = (float) (Math.PI * 0.2);
             }
         } else {
 
@@ -114,7 +114,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
             this.bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
             this.bipedLeftLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
-            this.swingArms(entity, tick);
+            this.swingArms(tick);
             this.setHead(0.0F, 0.0F, 0.0F);
 
             for (k1 = 0; k1 < tailstop; ++k1) {
@@ -289,6 +289,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
         this.bipedRightArm.rotateAngleY += this.bipedBody.rotateAngleY;
         this.bipedLeftArm.rotateAngleY += this.bipedBody.rotateAngleY;
+        //noinspection SuspiciousNameCombination
         this.bipedLeftArm.rotateAngleX += this.bipedBody.rotateAngleY;
 
         this.bipedRightArm.rotationPointY = 8.0F;
@@ -332,39 +333,39 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             boolean bothHoovesAreOccupied = this.leftArmPose == ArmPose.ITEM && this.rightArmPose == ArmPose.ITEM;
 
             switch (this.leftArmPose) {
-            case EMPTY:
-                this.bipedLeftArm.rotateAngleY = 0.0F;
-                break;
-            case BLOCK:
-                this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.5F - 0.9424779F;
-                this.bipedLeftArm.rotateAngleY = (float) (Math.PI / 6);
-                break;
-            case ITEM:
-                float swag = 1f;
-                if (!isFlying && bothHoovesAreOccupied) {
-                    swag = (float) (1d - Math.pow(swing, 2d));
-                }
-                float rotationMultiplier = 0.5f + 0.5f * (1f - swag);
-                this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * rotationMultiplier - ((float) Math.PI / 10F) * swag;
-                this.bipedLeftArm.rotateAngleY = 0.0F;
+                case EMPTY:
+                    this.bipedLeftArm.rotateAngleY = 0.0F;
+                    break;
+                case BLOCK:
+                    this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.5F - 0.9424779F;
+                    this.bipedLeftArm.rotateAngleY = (float) (Math.PI / 6);
+                    break;
+                case ITEM:
+                    float swag = 1f;
+                    if (!isFlying && bothHoovesAreOccupied) {
+                        swag = (float) (1d - Math.pow(swing, 2d));
+                    }
+                    float rotationMultiplier = 0.5f + 0.5f * (1f - swag);
+                    this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * rotationMultiplier - ((float) Math.PI / 10F) * swag;
+                    this.bipedLeftArm.rotateAngleY = 0.0F;
             }
 
             switch (this.rightArmPose) {
-            case EMPTY:
-                this.bipedRightArm.rotateAngleY = 0.0F;
-                break;
-            case BLOCK:
-                this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - 0.9424779F;
-                this.bipedRightArm.rotateAngleY = (float) (-Math.PI / 6);
-                break;
-            case ITEM:
-                float swag = 1f;
-                if (!isFlying && bothHoovesAreOccupied) {
-                    swag = (float) (1d - Math.pow(swing, 2d));
-                }
-                float rotationMultiplier = 0.5f + 0.5f * (1f - swag);
-                this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * rotationMultiplier - ((float) Math.PI / 10F) * swag;
-                this.bipedRightArm.rotateAngleY = 0.0F;
+                case EMPTY:
+                    this.bipedRightArm.rotateAngleY = 0.0F;
+                    break;
+                case BLOCK:
+                    this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - 0.9424779F;
+                    this.bipedRightArm.rotateAngleY = (float) (-Math.PI / 6);
+                    break;
+                case ITEM:
+                    float swag = 1f;
+                    if (!isFlying && bothHoovesAreOccupied) {
+                        swag = (float) (1d - Math.pow(swing, 2d));
+                    }
+                    float rotationMultiplier = 0.5f + 0.5f * (1f - swag);
+                    this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * rotationMultiplier - ((float) Math.PI / 10F) * swag;
+                    this.bipedRightArm.rotateAngleY = 0.0F;
             }
 
         } else if (this.metadata.hasMagic()) {
@@ -411,7 +412,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
     }
 
-    protected void swingArms(Entity entity, float tick) {
+    protected void swingArms(float tick) {
 
         if (this.rightArmPose != ArmPose.EMPTY && !this.isSleeping) {
             float cosTickFactor = MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
@@ -461,10 +462,10 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
     }
 
     protected void adjustNeck(float rotateAngleX, float rotationPointY, float rotationPointZ) {
-        for (int k3 = 0; k3 < this.BodypieceNeck.length; ++k3) {
-            this.BodypieceNeck[k3].rotateAngleX = NECK_ROT_X + rotateAngleX;
-            this.BodypieceNeck[k3].rotationPointY = rotationPointY;
-            this.BodypieceNeck[k3].rotationPointZ = rotationPointZ;
+        for (PlaneRenderer aBodypieceNeck : this.BodypieceNeck) {
+            aBodypieceNeck.rotateAngleX = NECK_ROT_X + rotateAngleX;
+            aBodypieceNeck.rotationPointY = rotationPointY;
+            aBodypieceNeck.rotationPointZ = rotationPointZ;
         }
 
     }
@@ -564,7 +565,8 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.Bodypiece[13].rotateAngleX += 0.5F;
     }
 
-    protected void fixSpecialRotationPoints(float move) {}
+    protected void fixSpecialRotationPoints(float move) {
+    }
 
     @Override
     public void render() {
@@ -608,8 +610,8 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         if (this.textureHeight == 64) {
             this.bipedBodyWear.render(this.scale);
         }
-        for (int k1 = 0; k1 < this.Bodypiece.length; ++k1) {
-            this.Bodypiece[k1].render(this.scale);
+        for (PlaneRenderer aBodypiece : this.Bodypiece) {
+            aBodypiece.render(this.scale);
         }
 
     }

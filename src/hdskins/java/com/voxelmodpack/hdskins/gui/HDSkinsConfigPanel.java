@@ -3,7 +3,6 @@ package com.voxelmodpack.hdskins.gui;
 import com.mumfrey.liteloader.modconfig.ConfigPanel;
 import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
 import com.voxelmodpack.hdskins.HDSkinManager;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 
@@ -40,20 +39,26 @@ public class HDSkinsConfigPanel implements ConfigPanel {
     }
 
     @Override
-    public void keyPressed(ConfigPanelHost host, char keyChar, int keyCode) {}
+    public void keyPressed(ConfigPanelHost host, char keyChar, int keyCode) {
+    }
 
     @Override
-    public void mouseMoved(ConfigPanelHost host, int mouseX, int mouseY) {}
+    public void mouseMoved(ConfigPanelHost host, int mouseX, int mouseY) {
+    }
 
     @Override
-    public void mouseReleased(ConfigPanelHost host, int mouseX, int mouseY, int mouseButton) {}
+    public void mouseReleased(ConfigPanelHost host, int mouseX, int mouseY, int mouseButton) {
+    }
 
     @Override
-    public void onPanelHidden() {}
+    public void onPanelHidden() {
+    }
 
     @Override
-    public void onPanelResize(ConfigPanelHost host) {}
+    public void onPanelResize(ConfigPanelHost host) {
+    }
 
     @Override
-    public void onTick(ConfigPanelHost host) {}
+    public void onTick(ConfigPanelHost host) {
+    }
 }

@@ -1,16 +1,15 @@
 package com.minelittlepony.gui;
 
-import java.io.IOException;
-
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyConfig;
 import com.minelittlepony.PonyLevel;
 import com.mumfrey.liteloader.client.gui.GuiCheckbox;
 import com.mumfrey.liteloader.core.LiteLoader;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
+
+import java.io.IOException;
 
 public class PonySettingPanel extends GuiScreen {
 
@@ -59,6 +58,7 @@ public class PonySettingPanel extends GuiScreen {
         config = MineLittlePony.getConfig();
     }
 
+    @SuppressWarnings("UnusedAssignment")
     @Override
     public void initGui() {
         final int LEFT = width / 10 + 16;
@@ -81,16 +81,16 @@ public class PonySettingPanel extends GuiScreen {
         this.buttonList.add(skeleton = new GuiCheckbox(SKELETONS_ID, RIGHT, row += 15, I18n.format(SKELETONS)));
 
         switch (config.getPonyLevel()) {
-        default:
-        case PONIES:
-            pony.checked = true;
-            break;
-        case HUMANS:
-            human.checked = true;
-            break;
-        case BOTH:
-            both.checked = true;
-            break;
+            default:
+            case PONIES:
+                pony.checked = true;
+                break;
+            case HUMANS:
+                human.checked = true;
+                break;
+            case BOTH:
+                both.checked = true;
+                break;
         }
         hd.checked = config.hd;
         sizes.checked = config.sizes;
@@ -123,49 +123,49 @@ public class PonySettingPanel extends GuiScreen {
             ((GuiCheckbox) button).checked = checked;
 
             switch (button.id) {
-            case PONY_ID:
-                config.setPonyLevel(PonyLevel.PONIES);
-                ponies.checked = true;
-                humans.checked = false;
-                both.checked = false;
-                break;
-            case HUMAN_ID:
-                config.setPonyLevel(PonyLevel.HUMANS);
-                humans.checked = true;
-                ponies.checked = false;
-                both.checked = false;
-                break;
-            case BOTH_ID:
-                config.setPonyLevel(PonyLevel.BOTH);
-                both.checked = true;
-                ponies.checked = false;
-                humans.checked = false;
-                break;
-            case HD_ID:
-                config.hd = checked;
-                break;
-            case SIZES_ID:
-                config.sizes = checked;
-                break;
-            case SNUZZLES_ID:
-                config.snuzzles = checked;
-                break;
-            case SHOW_SCALE_ID:
-                config.showscale = checked;
-                break;
+                case PONY_ID:
+                    config.setPonyLevel(PonyLevel.PONIES);
+                    ponies.checked = true;
+                    humans.checked = false;
+                    both.checked = false;
+                    break;
+                case HUMAN_ID:
+                    config.setPonyLevel(PonyLevel.HUMANS);
+                    humans.checked = true;
+                    ponies.checked = false;
+                    both.checked = false;
+                    break;
+                case BOTH_ID:
+                    config.setPonyLevel(PonyLevel.BOTH);
+                    both.checked = true;
+                    ponies.checked = false;
+                    humans.checked = false;
+                    break;
+                case HD_ID:
+                    config.hd = checked;
+                    break;
+                case SIZES_ID:
+                    config.sizes = checked;
+                    break;
+                case SNUZZLES_ID:
+                    config.snuzzles = checked;
+                    break;
+                case SHOW_SCALE_ID:
+                    config.showscale = checked;
+                    break;
 
-            case VILLAGERS_ID:
-                config.villagers = checked;
-                break;
-            case ZOMBIES_ID:
-                config.zombies=checked;
-                break;
-            case ZOMBIE_PIGMEN_ID:
-                config.pigzombies = checked;
-                break;
-            case SKELETONS_ID:
-                config.skeletons=checked;
-                break;
+                case VILLAGERS_ID:
+                    config.villagers = checked;
+                    break;
+                case ZOMBIES_ID:
+                    config.zombies = checked;
+                    break;
+                case ZOMBIE_PIGMEN_ID:
+                    config.pigzombies = checked;
+                    break;
+                case SKELETONS_ID:
+                    config.skeletons = checked;
+                    break;
             }
         }
     }

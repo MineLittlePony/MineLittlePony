@@ -124,29 +124,29 @@ public class ModelBreezie extends ModelBiped {
         this.bipedRightArm.rotateAngleZ = 0F;
 
         switch (this.leftArmPose) {
-        case EMPTY:
-            this.bipedLeftArm.rotateAngleY = 0.0F;
-            break;
-        case BLOCK:
-            this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.5F - 0.9424779F;
-            this.bipedLeftArm.rotateAngleY = 0.5235988F;
-            break;
-        case ITEM:
-            this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.5F - ((float) Math.PI / 10F);
-            this.bipedLeftArm.rotateAngleY = 0.0F;
+            case EMPTY:
+                this.bipedLeftArm.rotateAngleY = 0.0F;
+                break;
+            case BLOCK:
+                this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.5F - 0.9424779F;
+                this.bipedLeftArm.rotateAngleY = 0.5235988F;
+                break;
+            case ITEM:
+                this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.5F - ((float) Math.PI / 10F);
+                this.bipedLeftArm.rotateAngleY = 0.0F;
         }
 
         switch (this.rightArmPose) {
-        case EMPTY:
-            this.bipedRightArm.rotateAngleY = 0.0F;
-            break;
-        case BLOCK:
-            this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - 0.9424779F;
-            this.bipedRightArm.rotateAngleY = -0.5235988F;
-            break;
-        case ITEM:
-            this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - ((float) Math.PI / 10F);
-            this.bipedRightArm.rotateAngleY = 0.0F;
+            case EMPTY:
+                this.bipedRightArm.rotateAngleY = 0.0F;
+                break;
+            case BLOCK:
+                this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - 0.9424779F;
+                this.bipedRightArm.rotateAngleY = -0.5235988F;
+                break;
+            case ITEM:
+                this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - ((float) Math.PI / 10F);
+                this.bipedRightArm.rotateAngleY = 0.0F;
         }
 
         if (this.swingProgress > 0.0F) {
@@ -165,6 +165,7 @@ public class ModelBreezie extends ModelBiped {
             this.bipedLeftArm.rotationPointX = MathHelper.cos(this.bipedBody.rotateAngleY) * 5.0F;
             this.bipedRightArm.rotateAngleY += this.bipedBody.rotateAngleY;
             this.bipedLeftArm.rotateAngleY += this.bipedBody.rotateAngleY;
+            //noinspection SuspiciousNameCombination
             this.bipedLeftArm.rotateAngleX += this.bipedBody.rotateAngleY;
             f1 = 1.0F - this.swingProgress;
             f1 = f1 * f1;

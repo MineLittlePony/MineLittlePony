@@ -11,35 +11,37 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public abstract class FileDropListener implements DropTargetListener {
+public interface FileDropListener extends DropTargetListener {
 
     @Override
-    public void dragEnter(DropTargetDragEvent dtde) {}
+    default void dragEnter(DropTargetDragEvent dtde) {
+    }
 
     @Override
-    public void dragOver(DropTargetDragEvent dtde) {}
+    default void dragOver(DropTargetDragEvent dtde) {
+    }
 
     @Override
-    public void dropActionChanged(DropTargetDragEvent dtde) {}
+    default void dropActionChanged(DropTargetDragEvent dtde) {
+    }
 
     @Override
-    public void dragExit(DropTargetEvent dte) {}
+    default void dragExit(DropTargetEvent dte) {
+    }
 
     @SuppressWarnings("unchecked")
     @Override
-    public void drop(DropTargetDropEvent dtde) {
+    default void drop(DropTargetDropEvent dtde) {
         dtde.acceptDrop(DnDConstants.ACTION_LINK);
         try {
             onDrop((List<File>) dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor));
             dtde.getDropTargetContext().dropComplete(true);
-        } catch (UnsupportedFlavorException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (UnsupportedFlavorException | IOException e) {
             e.printStackTrace();
         }
 
     }
 
-    public abstract void onDrop(List<File> files);
+    void onDrop(List<File> files);
 
 }

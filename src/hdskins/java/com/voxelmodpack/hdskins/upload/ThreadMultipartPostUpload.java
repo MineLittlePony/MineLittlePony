@@ -1,10 +1,10 @@
 package com.voxelmodpack.hdskins.upload;
 
+import com.google.common.io.Files;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,7 +19,7 @@ import java.util.Map.Entry;
  * @author Adam Mummery-Smith
  */
 public class ThreadMultipartPostUpload extends Thread {
-    protected final Map<String, Object> sourceData;
+    protected final Map<String, ?> sourceData;
 
     protected final String method;
 
@@ -39,12 +39,7 @@ public class ThreadMultipartPostUpload extends Thread {
 
     public String response;
 
-    public int httpResponseCode;
-
-    public String httpResponse;
-
-    public ThreadMultipartPostUpload(String method, String url, Map<String, Object> sourceData, String authorization,
-            IUploadCompleteCallback callback) {
+    public ThreadMultipartPostUpload(String method, String url, Map<String, ?> sourceData, String authorization, IUploadCompleteCallback callback) {
         this.method = method;
         this.urlString = url;
         this.sourceData = sourceData;
@@ -52,7 +47,7 @@ public class ThreadMultipartPostUpload extends Thread {
         this.callback = callback;
     }
 
-    public ThreadMultipartPostUpload(String url, Map<String, Object> sourceData, IUploadCompleteCallback callback) {
+    public ThreadMultipartPostUpload(String url, Map<String, ?> sourceData, IUploadCompleteCallback callback) {
         this("POST", url, sourceData, null, callback);
     }
 
@@ -66,11 +61,6 @@ public class ThreadMultipartPostUpload extends Thread {
             this.uploadMultipart();
         } catch (IOException ex) {
             ex.printStackTrace();
-
-            try {
-                this.httpResponseCode = this.httpClient.getResponseCode();
-                this.httpResponse = this.httpClient.getResponseMessage();
-            } catch (Exception ex1) {}
         }
 
         this.callback.onUploadComplete(this.getResponse());
@@ -87,12 +77,10 @@ public class ThreadMultipartPostUpload extends Thread {
 
         this.httpClient.setRequestMethod(this.method);
         this.httpClient.setRequestProperty("Connection", "Close");
-        this.httpClient.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)"); // For
-                                                                                                                // CloudFlare
+        this.httpClient.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)"); // For CloudFlare
 
         if (this.sourceData.size() > 0) {
-            this.httpClient.setRequestProperty("Content-Type",
-                    "multipart/form-data, boundary=" + ThreadMultipartPostUpload.boundary);
+            this.httpClient.setRequestProperty("Content-Type", "multipart/form-data, boundary=" + boundary);
         }
 
         if (this.authorization != null) {
@@ -101,30 +89,27 @@ public class ThreadMultipartPostUpload extends Thread {
 
         DataOutputStream outputStream = new DataOutputStream(this.httpClient.getOutputStream());
 
-        for (Entry<String, Object> data : this.sourceData.entrySet()) {
-            outputStream.writeBytes(ThreadMultipartPostUpload.twoHyphens + ThreadMultipartPostUpload.boundary
-                    + ThreadMultipartPostUpload.CRLF);
+        for (Entry<String, ?> data : this.sourceData.entrySet()) {
+            outputStream.writeBytes(twoHyphens + boundary + CRLF);
 
             String paramName = data.getKey();
             Object paramData = data.getValue();
 
             if (paramData instanceof File) {
                 File uploadFile = (File) paramData;
-                outputStream.writeBytes(
-                        "Content-Disposition: form-data; name=\"" + paramName + "\"; filename=\"" + uploadFile.getName()
-                                + "\"" + ThreadMultipartPostUpload.CRLF + ThreadMultipartPostUpload.CRLF);
-                this.writeFile(uploadFile, outputStream);
+                outputStream.writeBytes("Content-Disposition: form-data; name=\"" + paramName + "\"; filename=\"" + uploadFile.getName() + "\"" + CRLF + CRLF);
+
+                Files.asByteSource(uploadFile).copyTo(outputStream);
+
             } else {
-                outputStream.writeBytes("Content-Disposition: form-data; name=\"" + paramName + "\""
-                        + ThreadMultipartPostUpload.CRLF + ThreadMultipartPostUpload.CRLF);
+                outputStream.writeBytes("Content-Disposition: form-data; name=\"" + paramName + "\"" + CRLF + CRLF);
                 outputStream.writeBytes(paramData.toString());
             }
 
             outputStream.writeBytes(ThreadMultipartPostUpload.CRLF);
         }
 
-        outputStream.writeBytes(ThreadMultipartPostUpload.twoHyphens + ThreadMultipartPostUpload.boundary
-                + ThreadMultipartPostUpload.twoHyphens + ThreadMultipartPostUpload.CRLF);
+        outputStream.writeBytes(twoHyphens + boundary + twoHyphens + CRLF);
         outputStream.flush();
 
         InputStream httpStream = this.httpClient.getInputStream();
@@ -145,36 +130,6 @@ public class ThreadMultipartPostUpload extends Thread {
         }
 
         outputStream.close();
-
-        this.httpResponseCode = this.httpClient.getResponseCode();
-        this.httpResponse = this.httpClient.getResponseMessage();
     }
 
-    /**
-     * @param sourceFile
-     * @param outputStream
-     * @throws FileNotFoundException
-     * @throws IOException
-     */
-    public void writeFile(File sourceFile, DataOutputStream outputStream) throws FileNotFoundException, IOException {
-        int bytesRead, bufferSize;
-        int maxBufferSize = 1 * 1024 * 1024;
-
-        FileInputStream fileInputStream = new FileInputStream(sourceFile);
-
-        int bytesAvailable = fileInputStream.available();
-        bufferSize = Math.min(bytesAvailable, maxBufferSize);
-        byte[] buffer = new byte[bufferSize];
-
-        bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
-        while (bytesRead > 0) {
-            outputStream.write(buffer, 0, bufferSize);
-            bytesAvailable = fileInputStream.available();
-            bufferSize = Math.min(bytesAvailable, maxBufferSize);
-            bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-        }
-
-        fileInputStream.close();
-    }
 }

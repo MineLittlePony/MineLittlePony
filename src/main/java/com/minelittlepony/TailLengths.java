@@ -10,10 +10,10 @@ public enum TailLengths {
 
     private int size;
 
-    private TailLengths(int size) {
+    TailLengths(int size) {
         this.size = size;
     }
-    
+
     public int getSize() {
         return size;
     }

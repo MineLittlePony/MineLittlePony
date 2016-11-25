@@ -90,7 +90,7 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
             Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, drop, transform, isLeft);
 
             if (isUnicorn) {
-                PonyData metadata = ((AbstractPonyModel)this.livingPonyEntity.getMainModel()).metadata;
+                PonyData metadata = ((AbstractPonyModel) this.livingPonyEntity.getMainModel()).metadata;
                 this.renderItemGlow(entity, drop, transform, hand, metadata.getGlowColor());
             }
             GlStateManager.popMatrix();

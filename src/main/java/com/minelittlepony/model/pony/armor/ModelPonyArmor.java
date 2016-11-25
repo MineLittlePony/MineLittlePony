@@ -1,7 +1,6 @@
 package com.minelittlepony.model.pony.armor;
 
 import com.minelittlepony.model.pony.ModelPlayerPony;
-
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -72,7 +71,7 @@ public class ModelPonyArmor extends ModelPlayerPony {
 
             this.bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
             this.bipedLeftLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
-            this.swingArms(entity, tick);
+            this.swingArms(tick);
             this.setHead(0.0F, 0.0F, 0.0F);
 
         }
@@ -120,19 +119,6 @@ public class ModelPonyArmor extends ModelPlayerPony {
         this.extBody.rotationPointZ = rotationPointZ;
     }
 
-    protected void ridingPony() {
-        this.setHead(this.bipedHead.rotationPointX + 0.0F, this.bipedHead.rotationPointY + RIDING_SHIFT_Y, this.bipedHead.rotationPointZ + RIDING_SHIFT_Z);
-        shiftRotationPoint(this.bipedBody, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
-        shiftRotationPoint(this.Bodypiece, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
-        shiftRotationPoint(this.extBody, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
-        shiftRotationPoint(this.bipedLeftArm, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
-        shiftRotationPoint(this.bipedRightArm, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
-        shiftRotationPoint(this.bipedLeftLeg, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
-        shiftRotationPoint(this.bipedRightLeg, 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
-        shiftRotationPoint(this.extLegs[0], 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
-        shiftRotationPoint(this.extLegs[1], 0.0F, RIDING_SHIFT_Y, RIDING_SHIFT_Z);
-    }
-
     @Override
     protected void renderHead() {
         this.bipedHead.render(this.scale);
@@ -142,7 +128,8 @@ public class ModelPonyArmor extends ModelPlayerPony {
     }
 
     @Override
-    protected void renderNeck() {}
+    protected void renderNeck() {
+    }
 
     @Override
     protected void renderBody() {
@@ -152,7 +139,8 @@ public class ModelPonyArmor extends ModelPlayerPony {
     }
 
     @Override
-    protected void renderTail() {}
+    protected void renderTail() {
+    }
 
     @Override
     protected void renderLegs() {
@@ -297,7 +285,8 @@ public class ModelPonyArmor extends ModelPlayerPony {
     }
 
     @Override
-    protected void setModelVisibilities(AbstractClientPlayer clientPlayer) {}
+    protected void setModelVisibilities(AbstractClientPlayer clientPlayer) {
+    }
 
     @Override
     public void setInvisible(boolean invisible) {
