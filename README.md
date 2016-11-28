@@ -2,4 +2,4 @@
 
 Turns players and mobs into ponies.
 
-http://brohoof.com/minelittlepony
+http://minelittlepony-mod.com
