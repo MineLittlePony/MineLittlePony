@@ -9,3 +9,5 @@ run/
 /.apt_generated/
 .factorypath
 logs/
+.idea/
+classes/
