@@ -67,10 +67,9 @@ public class ModelBreezie extends ModelBiped {
         setRotation(leftWing, 0F, -0.6981317F, 0F);
 
         rightWing = new ModelRenderer(this, 0, 40);
-        rightWing.addBox(-24F, -12F, 0F, 24, 24, 0);
+        rightWing.addBox(-24F, -12F, 0F, 24, 24, 0, true);
         rightWing.setRotationPoint(-2F, 3F, 1F);
         rightWing.setTextureSize(64, 32);
-        rightWing.mirror = true;
         setRotation(rightWing, 0F, 0.6981317F, 0F);
 
     }
