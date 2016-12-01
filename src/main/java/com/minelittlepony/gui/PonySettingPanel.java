@@ -177,5 +177,6 @@ public class PonySettingPanel extends GuiScreen {
     @Override
     public void onGuiClosed() {
         LiteLoader.getInstance().writeConfig(config);
+        MineLittlePony.getInstance().initializeMobRenderers(mc.getRenderManager());
     }
 }
