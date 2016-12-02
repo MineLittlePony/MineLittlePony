@@ -581,8 +581,8 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         pushMatrix();
         this.transform(BodyPart.HEAD);
         this.renderHead();
+        this.bipedHead.postRender(scale);
         this.horn.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-        this.snout.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
         popMatrix();
 
         pushMatrix();
