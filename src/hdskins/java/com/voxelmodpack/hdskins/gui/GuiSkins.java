@@ -679,7 +679,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     }
 
     private Map<String, ?> getUploadData(Session session, File skinFile) {
-        return getData(session, "file", skinFile);
+        return getData(session, "skin", skinFile);
     }
 
     private void setUploadError(String error) {
