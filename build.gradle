@@ -25,8 +25,8 @@ apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'mnm.gradle.ap-ide'
 
-group = 'com.brohoof.minelp'
-version = '1.11.0.1'
+group = 'com.minelittlepony'
+version = '1.11.0.2'
 description = 'Mine Little Pony'
 
 targetCompatibility = 1.8
@@ -56,9 +56,6 @@ sourceSets {
 	}
 
 }
-
-compileApiJava.sourceCompatibility = 1.6
-compileApiJava.targetCompatibility = 1.6
 
 litemod.json {
 	author = 'Verdana, Rene_Z, Mumfrey, JoyJoy'
