@@ -1,8 +1,5 @@
 package com.minelittlepony.model;
 
-import com.minelittlepony.model.AbstractPonyModel;
-import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.PonyModelConstants;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -132,10 +129,6 @@ public class PegasusWings extends ModelBase implements PonyModelConstants {
 
     @Override
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        super.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-
-        pony.transform(BodyPart.BODY);
-        pony.bipedBody.postRender(scale);
         if (pony.metadata.getRace() != null && pony.metadata.getRace().hasWings()) {
             if (!pony.isFlying && !pony.isSneak) {
 

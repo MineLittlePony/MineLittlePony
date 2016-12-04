@@ -497,7 +497,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
         for (int i7 = 0; i7 < tailstop; ++i7) {
             setRotationPoint(this.Tail[i7], TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_SNEAK);
-            this.Tail[i7].rotateAngleX = -BODY_ROTATE_ANGLE_X_SNEAK;
+            this.Tail[i7].rotateAngleX = -BODY_ROTATE_ANGLE_X_SNEAK + 0.1F;
         }
 
     }
@@ -580,9 +580,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
         pushMatrix();
         this.transform(BodyPart.HEAD);
-        this.renderHead();
-        this.bipedHead.postRender(scale);
-        this.horn.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+        this.renderHead(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
         popMatrix();
 
         pushMatrix();
@@ -592,8 +590,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
         pushMatrix();
         this.transform(BodyPart.BODY);
-        this.renderBody();
-        this.wings.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+        this.renderBody(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
         this.renderTail();
         popMatrix();
 
@@ -603,9 +600,12 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         popMatrix();
     }
 
-    protected void renderHead() {
+    protected void renderHead(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         this.bipedHead.render(this.scale);
         this.bipedHeadwear.render(this.scale);
+        this.bipedHead.postRender(scale);
+        this.horn.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+
     }
 
     protected void renderNeck() {
@@ -615,7 +615,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         }
     }
 
-    protected void renderBody() {
+    protected void renderBody(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         this.bipedBody.render(this.scale);
         if (this.textureHeight == 64) {
             this.bipedBodyWear.render(this.scale);
@@ -623,6 +623,9 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         for (PlaneRenderer aBodypiece : this.Bodypiece) {
             aBodypiece.render(this.scale);
         }
+        this.bipedBody.postRender(scale);
+        this.wings.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, this.scale);
+
 
     }
 
@@ -632,7 +635,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
             var3 = 0;
         }
 
-        this.bipedBody.postRender(this.scale);
+//        this.bipedBody.postRender(this.scale);
 
         for (int k = 0; k < var3; ++k) {
             this.Tail[k].render(this.scale);

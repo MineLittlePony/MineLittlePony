@@ -37,10 +37,10 @@ public class ModelVillagerPony extends ModelPlayerPony {
     }
 
     @Override
-    protected void renderBody() {
-        super.renderBody();
+    protected void renderBody(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        super.renderBody(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
-        this.bipedBody.postRender(scale);
+        this.bipedBody.postRender(this.scale);
         if (profession < 2) {
             for (PlaneRenderer aVillagerBagPiece : this.VillagerBagPiece) {
                 aVillagerBagPiece.render(this.scale);

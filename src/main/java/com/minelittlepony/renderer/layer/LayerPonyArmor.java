@@ -60,13 +60,14 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
         ItemStack itemstack = entity.getItemStackFromSlot(armorSlot);
 
         if (itemstack != null && itemstack.getItem() instanceof ItemArmor) {
+
             ItemArmor itemarmor = (ItemArmor) itemstack.getItem();
             boolean isLegs = armorSlot == EntityEquipmentSlot.CHEST;
 
             AbstractPonyModel modelbase = isLegs ? pony.getArmor().modelArmor : pony.getArmor().modelArmorChestplate;
             modelbase = getArmorModel(entity, itemstack, isLegs ? 2 : 1, modelbase);
             modelbase.setModelAttributes(this.pony.getModel());
-            modelbase.setLivingAnimations(entity, limbSwing, limbSwingAmount, partialTicks);
+            modelbase.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
             prepareToRender((ModelPonyArmor) modelbase, armorSlot);
 
             this.renderer.bindTexture(getArmorTexture(entity, itemstack, isLegs ? 2 : 1, null));

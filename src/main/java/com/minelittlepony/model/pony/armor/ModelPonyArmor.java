@@ -29,12 +29,6 @@ public class ModelPonyArmor extends ModelPlayerPony {
 
         this.bipedBody.rotateAngleY = bodySwingRotation * 0.2F;
 
-        this.bipedHead.offsetY = 0f;
-        this.bipedHead.offsetZ = 0f;
-        this.extHead[0].offsetY = 0f;
-        this.extHead[0].offsetZ = 0f;
-        this.extHead[1].offsetY = 0f;
-        this.extHead[1].offsetZ = 0f;
         this.setLegs(limbSwing, limbSwingAmount, ageInTicks, entityIn);
         this.holdItem(limbSwingAmount);
         this.swingItem(entityIn, this.swingProgress);
@@ -45,21 +39,20 @@ public class ModelPonyArmor extends ModelPlayerPony {
         } else if (this.isRiding) {
 
             this.adjustBody(BODY_ROTATE_ANGLE_X_RIDING, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
-            this.bipedHead.offsetY = .1f;
-            this.bipedHead.offsetZ = .1f;
-            this.extHead[0].offsetY = .1f;
-            this.extHead[0].offsetZ = .1f;
-            this.extHead[1].offsetY = .1f;
-            this.extHead[1].offsetZ = .1f;
             this.bipedLeftLeg.rotationPointZ = 15;
-            this.bipedLeftLeg.rotationPointY = 21;
-            this.bipedLeftLeg.rotateAngleX = (float) (Math.PI * 1.5);
-            this.bipedLeftLeg.rotateAngleY = -.2f;
+            this.bipedLeftLeg.rotationPointY = 10;
+            this.bipedLeftLeg.rotateAngleX = (float) (Math.PI * -0.25);
+            this.bipedLeftLeg.rotateAngleY = (float) (Math.PI * -0.2);
 
             this.bipedRightLeg.rotationPointZ = 15;
-            this.bipedRightLeg.rotationPointY = 21;
-            this.bipedRightLeg.rotateAngleX = (float) (Math.PI * 1.5);
-            this.bipedRightLeg.rotateAngleY = .2f;
+            this.bipedRightLeg.rotationPointY = 10;
+            this.bipedRightLeg.rotateAngleX = (float) (Math.PI * -0.25);
+            this.bipedRightLeg.rotateAngleY = (float) (Math.PI * 0.2);
+
+
+            this.bipedLeftArm.rotateAngleZ = (float) (Math.PI * -0.06);
+            this.bipedRightArm.rotateAngleZ = (float) (Math.PI * 0.06);
+
         } else {
 
             this.adjustBody(BODY_ROTATE_ANGLE_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
@@ -71,13 +64,14 @@ public class ModelPonyArmor extends ModelPlayerPony {
 
         }
 
+
         if (this.isSleeping) {
             this.ponySleep();
         }
 
         this.aimBow(leftArmPose, rightArmPose, ageInTicks);
 
-        // this.fixSpecialRotationPoints(aniparams.move);
+
     }
 
     @Override
@@ -115,7 +109,7 @@ public class ModelPonyArmor extends ModelPlayerPony {
     }
 
     @Override
-    protected void renderHead() {
+    protected void renderHead(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         this.bipedHead.render(this.scale);
         this.extHead[0].render(this.scale);
         this.extHead[1].render(this.scale);
@@ -127,7 +121,7 @@ public class ModelPonyArmor extends ModelPlayerPony {
     }
 
     @Override
-    protected void renderBody() {
+    protected void renderBody(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         this.bipedBody.render(this.scale);
         this.Bodypiece.render(this.scale);
         this.extBody.render(this.scale);
@@ -139,6 +133,12 @@ public class ModelPonyArmor extends ModelPlayerPony {
 
     @Override
     protected void renderLegs() {
+        if (!isSneak) {
+            boolean isLegs = this.extBody.showModel;
+            this.extBody.showModel = true;
+            this.extBody.postRender(this.scale);
+            this.extBody.showModel = isLegs;
+        }
         this.bipedLeftArm.render(this.scale);
         this.bipedRightArm.render(this.scale);
         this.bipedLeftLeg.render(this.scale);
@@ -196,25 +196,14 @@ public class ModelPonyArmor extends ModelPlayerPony {
 
     @Override
     protected void initHeadPositions(float yOffset, float stretch) {
-        this.bipedHead.addBox(-4.0F + HEAD_CENTRE_X, -4.0F + HEAD_CENTRE_Y,
-                -4.0F + HEAD_CENTRE_Z, 8, 8, 8,
-                stretch * 1.1F);
+        this.bipedHead.addBox(-4.0F + HEAD_CENTRE_X, -4.0F + HEAD_CENTRE_Y, -4.0F + HEAD_CENTRE_Z, 8, 8, 8, stretch * 1.1F);
         this.bipedHead.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        this.extHead[0].addBox(-4.0F + HEAD_CENTRE_X, -6.0F + HEAD_CENTRE_Y,
-                1.0F + HEAD_CENTRE_Z, 2, 2,
-                2, stretch * 0.5F);
-        this.extHead[0].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset,
-                HEAD_RP_Z);
-        this.extHead[1].addBox(2.0F + HEAD_CENTRE_X, -6.0F + HEAD_CENTRE_Y,
-                1.0F + HEAD_CENTRE_Z, 2, 2,
-                2, stretch * 0.5F);
-        this.extHead[1].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset,
-                HEAD_RP_Z);
-        this.bipedHeadwear.addBox(-4.0F + HEAD_CENTRE_X, -4.0F + HEAD_CENTRE_Y,
-                -4.0F + HEAD_CENTRE_Z, 8, 8, 8,
-                stretch * 1.1F + 0.5F);
-        this.bipedHeadwear.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset,
-                HEAD_RP_Z);
+        this.extHead[0].addBox(-4.0F + HEAD_CENTRE_X, -6.0F + HEAD_CENTRE_Y, 1.0F + HEAD_CENTRE_Z, 2, 2, 2, stretch * 0.5F);
+        this.extHead[0].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
+        this.extHead[1].addBox(2.0F + HEAD_CENTRE_X, -6.0F + HEAD_CENTRE_Y, 1.0F + HEAD_CENTRE_Z, 2, 2, 2, stretch * 0.5F);
+        this.extHead[1].setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
+        this.bipedHeadwear.addBox(-4.0F + HEAD_CENTRE_X, -4.0F + HEAD_CENTRE_Y, -4.0F + HEAD_CENTRE_Z, 8, 8, 8, stretch * 1.1F + 0.5F);
+        this.bipedHeadwear.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
     }
 
     @Override
@@ -222,21 +211,17 @@ public class ModelPonyArmor extends ModelPlayerPony {
         this.bipedBody.addBox(-4.0F, 4.0F, -2.0F, 8, 8, 4, stretch);
         this.bipedBody.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
         this.Bodypiece.addBox(-4.0F, 4.0F, 6.0F, 8, 8, 8, stretch);
-        this.Bodypiece.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset,
-                HEAD_RP_Z);
+        this.Bodypiece.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
         this.extBody.addBox(-4.0F, 4.0F, -2.0F, 8, 8, 16, stretch);
-        this.extBody.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset,
-                HEAD_RP_Z);
+        this.extBody.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
     }
 
     @Override
     protected void initLegPositions(float yOffset, float stretch) {
         super.initLegPositions(yOffset, stretch);
-        this.extLegs[0].addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y,
-                -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch);
+        this.extLegs[0].addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch);
         this.extLegs[0].setRotationPoint(-3.0F, 0.0F + yOffset, 0.0F);
-        this.extLegs[1].addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y,
-                -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch);
+        this.extLegs[1].addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch);
         this.extLegs[1].setRotationPoint(3.0F, 0.0F + yOffset, 0.0F);
     }
 
