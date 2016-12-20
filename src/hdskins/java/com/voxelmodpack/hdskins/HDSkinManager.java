@@ -124,22 +124,25 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                 return;
             }
 
-            String skinDir = "hd" + type.toString().toLowerCase() + "s/";
-            final ResourceLocation skin = new ResourceLocation(skinDir + texture.getHash());
-            File file1 = new File(new File("assets/" + skinDir), texture.getHash().substring(0, 2));
-            File file2 = new File(file1, texture.getHash());
-            final IImageBuffer imagebufferdownload = new ImageBufferDownloadHD();
+            String skinDir = type.toString().toLowerCase() + "s/";
+            final ResourceLocation skin = new ResourceLocation("hdskins", skinDir + texture.getHash());
+            File file2 = new File(LiteLoader.getAssetsDirectory(), "hd" + skinDir + "/" + texture.getHash().substring(0, 2) + "/" + texture.getHash());
+            final IImageBuffer imagebufferdownload = type == Type.SKIN ? new ImageBufferDownloadHD() : null;
             ThreadDownloadImageData threaddownloadimagedata = new ThreadDownloadImageData(file2, texture.getUrl(),
                     DefaultPlayerSkin.getDefaultSkinLegacy(),
                     new IImageBuffer() {
                         @Override
                         public BufferedImage parseUserSkin(BufferedImage image) {
-                            return imagebufferdownload.parseUserSkin(image);
+                            if (imagebufferdownload != null)
+                                return imagebufferdownload.parseUserSkin(image);
+                            return image;
                         }
 
                         @Override
                         public void skinAvailable() {
-                            imagebufferdownload.skinAvailable();
+                            if (imagebufferdownload != null) {
+                                imagebufferdownload.skinAvailable();
+                            }
                             if (callback != null) {
                                 callback.skinAvailable(type, skin, texture);
                             }
