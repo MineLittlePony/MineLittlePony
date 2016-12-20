@@ -3,7 +3,7 @@ package com.minelittlepony.renderer.layer;
 import com.google.common.collect.Maps;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IRenderPony;
-import com.minelittlepony.forge.IPonyArmor;
+import com.minelittlepony.forge.IForgeHooks;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.PlayerModel;
 import com.minelittlepony.model.pony.ModelHumanPlayer;
@@ -205,7 +205,7 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
     }
 
     private static String getArmorTexture(EntityLivingBase entity, ItemStack item, String def, int slot, String type) {
-        IPonyArmor armor = MineLittlePony.getProxy().getPonyArmors();
+        IForgeHooks armor = MineLittlePony.getProxy().getHooks();
         if (armor != null) {
             return armor.getArmorTexture(entity, item, def, slot, type);
         }
@@ -213,7 +213,7 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
     }
 
     private static AbstractPonyModel getArmorModel(EntityLivingBase entity, ItemStack itemstack, int slot, AbstractPonyModel def) {
-        IPonyArmor armor = MineLittlePony.getProxy().getPonyArmors();
+        IForgeHooks armor = MineLittlePony.getProxy().getHooks();
         if (armor != null) {
             ModelBase model = armor.getArmorModel(entity, itemstack, slot, def);
             if (model instanceof ModelPonyArmor) {

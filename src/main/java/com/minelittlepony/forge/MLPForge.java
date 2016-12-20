@@ -15,6 +15,6 @@ public class MLPForge {
     @SuppressWarnings("unused")
     @EventHandler
     public void init(FMLPostInitializationEvent init) {
-        MLPCommonProxy.getInstance().setPonyArmors(new PonyArmors());
+        MLPCommonProxy.getInstance().setForgeHooks(new ForgePonyHooks());
     }
 }

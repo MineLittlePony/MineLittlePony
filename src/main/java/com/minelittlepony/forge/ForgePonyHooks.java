@@ -5,7 +5,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.ForgeHooksClient;
 
-public class PonyArmors implements IPonyArmor {
+public class ForgePonyHooks implements IForgeHooks {
 
     @Override
     public String getArmorTexture(EntityLivingBase entity, ItemStack armor, String def, int slot, String type) {

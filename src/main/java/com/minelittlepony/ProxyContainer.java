@@ -1,18 +1,21 @@
 package com.minelittlepony;
 
-import com.minelittlepony.forge.IPonyArmor;
+import com.minelittlepony.forge.IForgeHooks;
 import com.minelittlepony.forge.MLPCommonProxy;
+
+import javax.annotation.Nullable;
 
 public class ProxyContainer extends MLPCommonProxy {
 
-    private IPonyArmor ponyArmors;
+    private IForgeHooks ponyArmors;
 
     @Override
-    public void setPonyArmors(IPonyArmor armors) {
+    public void setForgeHooks(IForgeHooks armors) {
         this.ponyArmors = armors;
     }
 
-    public IPonyArmor getPonyArmors() {
+    @Nullable
+    public IForgeHooks getHooks() {
         return ponyArmors;
     }
 }

@@ -12,5 +12,5 @@ public abstract class MLPCommonProxy {
         instance = this;
     }
 
-    public abstract void setPonyArmors(IPonyArmor armors);
+    public abstract void setForgeHooks(IForgeHooks armors);
 }
