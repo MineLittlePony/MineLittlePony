@@ -125,7 +125,7 @@ public class PonyManager implements IResourceManagerReloadListener {
         } catch (IOException e) {
             // this isn't the exception you're looking for.
         }
-        MineLittlePony.logger.info("Detected %d background ponies installed.", getNumberOfPonies());
+        MineLittlePony.logger.info("Detected {} background ponies installed.", getNumberOfPonies());
     }
 
     private BackgroundPonies getBackgroundPonies(InputStream stream) {
