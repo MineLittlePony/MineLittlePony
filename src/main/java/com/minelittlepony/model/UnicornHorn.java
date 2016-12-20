@@ -1,8 +1,6 @@
 package com.minelittlepony.model;
 
 import com.minelittlepony.PonyData;
-import com.minelittlepony.model.AbstractPonyModel;
-import com.minelittlepony.model.PonyModelConstants;
 import com.minelittlepony.renderer.HornGlowRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped.ArmPose;
@@ -51,7 +49,7 @@ public class UnicornHorn extends ModelBase implements PonyModelConstants {
                 float red = (data.getGlowColor() >> 16 & 255) / 255.0F;
                 float green = (data.getGlowColor() >> 8 & 255) / 255.0F;
                 float blue = (data.getGlowColor() & 255) / 255.0F;
-                blendFunc(GL11.GL_SRC_ALPHA, 1);
+                blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 
                 this.horn.postRender(scale);
 

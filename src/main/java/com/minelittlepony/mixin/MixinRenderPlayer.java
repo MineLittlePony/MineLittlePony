@@ -23,6 +23,7 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerArrow;
 import net.minecraft.util.ResourceLocation;
 import org.objectweb.asm.Opcodes;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -37,6 +38,7 @@ import static net.minecraft.client.renderer.GlStateManager.scale;
 public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientPlayer> implements IRenderPony {
 
     @Shadow
+    @Final
     private boolean smallArms;
     private PlayerModel playerModel;
     private Pony thePony;

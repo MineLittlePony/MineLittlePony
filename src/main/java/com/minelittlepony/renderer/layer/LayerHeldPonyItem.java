@@ -1,6 +1,7 @@
 package com.minelittlepony.renderer.layer;
 
 import com.minelittlepony.PonyData;
+import com.minelittlepony.ducks.IRenderItem;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
@@ -12,7 +13,6 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
@@ -20,7 +20,6 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
@@ -119,35 +118,29 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
         if (drop2.hasEffect())
             drop2.setTagInfo("ench", null);
 
-        GL11.glPushAttrib(GL11.GL_CURRENT_BIT | GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT);
-
         float red = (glowColor >> 16 & 255) / 255.0F;
         float green = (glowColor >> 8 & 255) / 255.0F;
         float blue = (glowColor & 255) / 255.0F;
         float alpha = 0.2F;
-        // disableLighting();
-        enableBlend();
-        blendFunc(GL11.GL_CONSTANT_COLOR, 1);
+
+        pushMatrix();
+        disableLighting();
+
         GL14.glBlendColor(red, green, blue, alpha);
 
         RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
-        IBakedModel model = renderItem.getItemModelWithOverrides(drop, entity.world, entity);
-
-        ItemCameraTransforms itemcameratransforms = model.getItemCameraTransforms();
-        ItemCameraTransforms.applyTransformSide(itemcameratransforms.getTransform(transform), hand == EnumHandSide.LEFT);
+        ((IRenderItem)renderItem).useTransparency(true);
 
         scale(1.1, 1.1, 1.1);
 
         translate(0, .01, .01);
-        renderItem.renderItem(drop2, model);
+        renderItem.renderItem(drop, entity, transform, hand == EnumHandSide.LEFT);
         translate(.01, -.01, -.02);
-        // scale(1.1, 1.1, 1.1);
-        renderItem.renderItem(drop2, model);
+        renderItem.renderItem(drop, entity, transform, hand == EnumHandSide.LEFT);
 
-        disableBlend();
+        ((IRenderItem)renderItem).useTransparency(false);
         enableLighting();
-        enableTexture2D();
-        popAttrib();
+        popMatrix();
 
         // I hate rendering
     }
