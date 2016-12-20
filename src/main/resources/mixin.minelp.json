@@ -5,6 +5,7 @@
     "refmap": "mixin.minelp.refmap.json",
     "compatibilityLevel": "JAVA_8",
     "mixins": [
-        "MixinRenderPlayer"
+        "MixinRenderPlayer",
+        "MixinRenderItem"
     ]
 }
