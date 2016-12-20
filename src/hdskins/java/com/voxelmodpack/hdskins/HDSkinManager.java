@@ -101,7 +101,13 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         if (skin == null) {
             if (loadIfAbsent) {
                 skinCache.get(profile.getId()).put(type, LOADING);
-                executor.submit(() -> loadTexture(profile, type, (type1, location, profileTexture) -> skinCache.get(profile.getId()).put(type1, location)));
+                //noinspection Convert2Lambda
+                executor.submit(() -> loadTexture(profile, type, new SkinAvailableCallback() {
+                    @Override
+                    public void skinAvailable(Type type1, ResourceLocation location, MinecraftProfileTexture profileTexture) {
+                        skinCache.get(profile.getId()).put(type1, location);
+                    }
+                }));
             }
             return Optional.empty();
         }
