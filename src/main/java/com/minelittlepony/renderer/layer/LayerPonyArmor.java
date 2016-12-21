@@ -21,6 +21,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Tuple;
 
 import java.io.IOException;
 import java.util.Map;
@@ -62,15 +63,17 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
         if (itemstack != null && itemstack.getItem() instanceof ItemArmor) {
 
             ItemArmor itemarmor = (ItemArmor) itemstack.getItem();
-            boolean isLegs = armorSlot == EntityEquipmentSlot.CHEST;
+            boolean isLegs = armorSlot == EntityEquipmentSlot.LEGS;
 
             AbstractPonyModel modelbase = isLegs ? pony.getArmor().modelArmor : pony.getArmor().modelArmorChestplate;
             modelbase = getArmorModel(entity, itemstack, isLegs ? 2 : 1, modelbase);
             modelbase.setModelAttributes(this.pony.getModel());
             modelbase.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
-            prepareToRender((ModelPonyArmor) modelbase, armorSlot);
 
-            this.renderer.bindTexture(getArmorTexture(entity, itemstack, isLegs ? 2 : 1, null));
+            Tuple<ResourceLocation, Boolean> armors = getArmorTexture(entity, itemstack, isLegs ? 2 : 1, null);
+            prepareToRender((ModelPonyArmor) modelbase, armorSlot, armors.getSecond());
+
+            this.renderer.bindTexture(armors.getFirst());
             if (itemarmor.getArmorMaterial() == ArmorMaterial.LEATHER) {
                 int j = itemarmor.getColor(itemstack);
                 float f7 = (j >> 16 & 255) / 255.0F;
@@ -78,7 +81,8 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
                 float f9 = (j & 255) / 255.0F;
                 GlStateManager.color(f7, f8, f9, 1);
                 modelbase.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-                this.renderer.bindTexture(getArmorTexture(entity, itemstack, isLegs ? 2 : 1, "overlay"));
+                armors = getArmorTexture(entity, itemstack, isLegs ? 2 : 1, "overlay");
+                this.renderer.bindTexture(armors.getFirst());
             }
             GlStateManager.color(1, 1, 1, 1);
             modelbase.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
@@ -89,7 +93,7 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
         }
     }
 
-    private ResourceLocation getArmorTexture(EntityLivingBase entity, ItemStack itemstack, int slot, String type) {
+    private Tuple<ResourceLocation, Boolean> getArmorTexture(EntityLivingBase entity, ItemStack itemstack, int slot, String type) {
         ItemArmor item = (ItemArmor) itemstack.getItem();
         String texture = item.getArmorMaterial().getName();
         String domain = "minecraft";
@@ -104,16 +108,17 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
         ResourceLocation human = getHumanResource(s1);
         ResourceLocation pony = getPonyResource(human);
 
+        // TODO handle resource packs better
         try {
             Minecraft.getMinecraft().getResourceManager().getResource(pony);
-            return pony;
+            return new Tuple<>(pony, true);
         } catch (IOException e) {
-            return human;
+            return new Tuple<>(human, false);
         }
     }
 
     @SuppressWarnings("incomplete-switch")
-    private void prepareToRender(ModelPonyArmor model, EntityEquipmentSlot slot) {
+    private void prepareToRender(ModelPonyArmor model, EntityEquipmentSlot slot, boolean isPony) {
         model.setInvisible(false);
 
         switch (slot) {
@@ -121,26 +126,36 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
             case FEET:
                 model.bipedRightArm.showModel = true;
                 model.bipedLeftArm.showModel = true;
-                model.bipedRightLeg.showModel = true;
-                model.bipedLeftLeg.showModel = true;
+                model.bipedRightLeg.showModel = !isPony;
+                model.bipedLeftLeg.showModel = !isPony;
+                for (ModelRenderer extLeg : model.extLegs) {
+                    extLeg.showModel = isPony;
+                }
                 break;
             // legs
             case LEGS:
-                model.bipedRightLeg.showModel = true;
-                model.bipedLeftLeg.showModel = true;
+                model.bipedRightLeg.showModel = !isPony;
+                model.bipedLeftLeg.showModel = !isPony;
                 model.bipedRightArm.showModel = true;
                 model.bipedLeftArm.showModel = true;
-                model.extBody.showModel = true;
+                model.bipedBody.showModel = !isPony;
+                model.Bodypiece.showModel = !isPony;
+                model.extBody.showModel = isPony;
+                for (ModelRenderer extLeg : model.extLegs) {
+                    extLeg.showModel = isPony;
+                }
                 break;
             // chest
             case CHEST:
-                model.extBody.showModel = true;
+                model.extBody.showModel = isPony;
+                model.bipedBody.showModel = !isPony;
+                model.Bodypiece.showModel = !isPony;
                 break;
             // head
             case HEAD:
                 model.bipedHead.showModel = true;
-                for (ModelRenderer m : model.extHead) {
-                    m.showModel = true;
+                for (ModelRenderer head : model.extHead) {
+                    head.showModel = isPony;
                 }
         }
     }
@@ -222,4 +237,5 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
         }
         return def;
     }
+
 }
