@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.client.resources.ResourcePackRepository;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
@@ -108,7 +109,17 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
         ResourceLocation human = getHumanResource(s1);
         ResourceLocation pony = getPonyResource(human);
 
-        // TODO handle resource packs better
+        // check resource packs for either texture.
+        for (ResourcePackRepository.Entry entry : Minecraft.getMinecraft().getResourcePackRepository().getRepositoryEntries()) {
+            if (entry.getResourcePack().resourceExists(pony)) {
+                // ponies are more important
+                return new Tuple<>(pony, true);
+            } else if (entry.getResourcePack().resourceExists(human)) {
+                // but I guess I'll take a human
+                return new Tuple<>(human, false);
+            }
+        }
+        // the default pack
         try {
             Minecraft.getMinecraft().getResourceManager().getResource(pony);
             return new Tuple<>(pony, true);
@@ -200,7 +211,7 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
     }
 
     private static ResourceLocation getHumanResource(String s1) {
-        return HUMAN_ARMORS.computeIfAbsent(s1, k -> new ResourceLocation(s1));
+        return HUMAN_ARMORS.computeIfAbsent(s1, ResourceLocation::new);
     }
 
     private static ResourceLocation getPonyResource(ResourceLocation human) {
