@@ -17,4 +17,6 @@ hdskins.upload=Uploading skin please wait...
 hdskins.local=Local Skin
 hdskins.server=Server Skin
 
-gui.ok=OK
+hdskins.mode.skin=Skin
+hdskins.mode.elytra=Elytra
+

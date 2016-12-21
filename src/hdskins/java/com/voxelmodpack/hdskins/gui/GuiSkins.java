@@ -3,6 +3,7 @@ package com.voxelmodpack.hdskins.gui;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.HDSkinManager;
@@ -22,6 +23,9 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.init.Items;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Session;
 import net.minecraft.util.math.MathHelper;
@@ -32,14 +36,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import java.awt.Color;
 import java.awt.Window.Type;
 import java.awt.dnd.DropTarget;
@@ -47,8 +44,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.DoubleBuffer;
+import java.util.Locale;
 import java.util.Map;
 
+import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.ELYTRA;
+import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.SKIN;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpenFileCallback {
@@ -63,12 +63,17 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
             new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_3.png"),
             new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_4.png"),
             new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_5.png")};
+
     private GuiButton btnBrowse;
     private GuiButton btnUpload;
     private GuiButton btnClear;
     private GuiButton btnBack;
+    private GuiButton btnModeSkin;
+    private GuiButton btnModeElytra;
+
     protected EntityPlayerModel localPlayer;
     protected EntityPlayerModel remotePlayer;
+
     protected DoubleBuffer doubleBuffer;
     //    private String screenTitle;
     private String uploadError;
@@ -88,6 +93,8 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     private float uploadOpacity = 0.0F;
     private float lastPartialTick;
     private JFrame fileDrop;
+
+    private MinecraftProfileTexture.Type textureType = SKIN;
 
     // translations
     private final String screenTitle = I18n.format("hdskins.manager");
@@ -136,10 +143,11 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
 
         synchronized (this.skinLock) {
             if (this.pendingSkinFile != null) {
-                this.localPlayer.setLocalSkin(this.pendingSkinFile);
+                System.out.println("Set " + textureType + " " + this.pendingSkinFile);
+                this.localPlayer.setLocalTexture(this.pendingSkinFile, textureType);
                 this.selectedSkin = this.pendingSkinFile;
                 this.pendingSkinFile = null;
-                this.onSetLocalSkin(this.pendingSkinImage);
+                this.onSetLocalSkin(this.pendingSkinImage, textureType);
                 this.pendingSkinImage = null;
                 this.btnUpload.enabled = true;
             }
@@ -150,7 +158,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
             this.fetchingSkin = true;
             this.btnClear.enabled = false;
             this.reloadRemoteSkin();
-            this.onSetRemoteSkin();
+            this.onSetRemoteSkin(textureType);
         }
 
         if (this.throttledByMojang) {
@@ -167,10 +175,10 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
 
     }
 
-    protected void onSetRemoteSkin() {
+    protected void onSetRemoteSkin(MinecraftProfileTexture.Type type) {
     }
 
-    protected void onSetLocalSkin(BufferedImage skin) {
+    protected void onSetLocalSkin(BufferedImage skin, MinecraftProfileTexture.Type type) {
     }
 
     private void reloadRemoteSkin() {
@@ -192,8 +200,15 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         this.buttonList.add(this.btnUpload = new GuiButton(1, this.width / 2 - 24, this.height / 2 - 10, 48, 20, ">>"));
         this.buttonList.add(this.btnClear = new GuiButton(2, this.width - 90, this.height - 36, 60, 20, "Clear"));
         this.buttonList.add(this.btnBack = new GuiButton(3, this.width / 2 - 50, this.height - 36, 100, 20, "Close"));
+
+        ItemStack skin = new ItemStack(Items.LEATHER_LEGGINGS);
+        Items.LEATHER_LEGGINGS.setColor(skin, 0x3c5dcb);
+        this.buttonList.add(this.btnModeElytra = new GuiItemStackButton(5, 2, 24, new ItemStack(Items.ELYTRA)));
+        this.buttonList.add(this.btnModeSkin = new GuiItemStackButton(4, 2, 2, skin));
+
         this.btnUpload.enabled = false;
         this.btnBrowse.enabled = !this.mc.isFullScreen();
+        (this.textureType == SKIN ? this.btnModeSkin : this.btnModeElytra).enabled = false;
     }
 
     /**
@@ -316,6 +331,27 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
 
                 if (guiButton.id == this.btnBack.id) {
                     this.mc.displayGuiScreen(new GuiMainMenu());
+                }
+
+                if (guiButton.id == this.btnModeSkin.id || guiButton.id == this.btnModeElytra.id) {
+                    ItemStack stack;
+                    if (guiButton.id == this.btnModeSkin.id) {
+                        this.textureType = SKIN;
+                        this.btnModeElytra.enabled = true;
+                        stack = ItemStack.EMPTY;
+                    } else {
+                        this.textureType = ELYTRA;
+                        this.btnModeSkin.enabled = true;
+                        stack = new ItemStack(Items.ELYTRA);
+                    }
+                    guiButton.enabled = false;
+                    // clear currently selected skin
+                    this.selectedSkin = null;
+                    this.localPlayer.releaseTextures();
+
+                    // put on or take off the elytra
+                    this.localPlayer.setItemStackToSlot(EntityEquipmentSlot.CHEST, stack);
+                    this.remotePlayer.setItemStackToSlot(EntityEquipmentSlot.CHEST, stack);
                 }
 
             }
@@ -542,6 +578,16 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
             Gui.drawRect(40, this.height / 2 - 12, this.width / 2 - 40, this.height / 2 + 12, 0xB0000000);
             this.fontRendererObj.drawStringWithShadow(this.skinMessage, (int) (xPos1 - opacity), this.height / 2 - 4, 0xffffff);
         }
+        if (this.btnModeSkin.isMouseOver() || this.btnModeElytra.isMouseOver()) {
+            int y = Math.max(mouseY, 16);
+            String text;
+            if (this.btnModeSkin.isMouseOver()) {
+                text = "hdskins.mode.skin";
+            } else{
+                text = "hdskins.mode.elytra";
+            }
+            this.drawCreativeTabHoveringText(I18n.format(text), mouseX, y);
+        }
 
         if (this.fetchingSkin) {
             String opacity1;
@@ -671,6 +717,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         return ImmutableMap.of(
                 "user", session.getUsername(),
                 "uuid", session.getPlayerID(),
+                "type", this.textureType.toString().toLowerCase(Locale.US),
                 param, val);
     }
 
@@ -679,7 +726,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     }
 
     private Map<String, ?> getUploadData(Session session, File skinFile) {
-        return getData(session, "skin", skinFile);
+        return getData(session, this.textureType.toString().toLowerCase(Locale.US), skinFile);
     }
 
     private void setUploadError(String error) {

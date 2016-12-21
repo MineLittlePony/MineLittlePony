@@ -33,7 +33,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 
 import javax.annotation.Nullable;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -231,16 +231,12 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         this.enabled = enabled;
     }
 
-    public static PreviewTexture getPreviewTexture(ResourceLocation skinResource, GameProfile profile) {
+    public static PreviewTexture getPreviewTexture(ResourceLocation skinResource, GameProfile profile, Type type, ResourceLocation def) {
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
-        ITextureObject skinTexture = textureManager.getTexture(skinResource);
-        Map<Type, MinecraftProfileTexture> textures = getTexturesForProfile(profile);
-        MinecraftProfileTexture skin = textures.get(Type.SKIN);
-        if (skin != null) {
-            String url = INSTANCE.getCustomTextureURLForId(Type.SKIN, UUIDTypeAdapter.fromUUID(profile.getId()), true);
-            skinTexture = new PreviewTexture(url, DefaultPlayerSkin.getDefaultSkin(profile.getId()), new ImageBufferDownloadHD());
-            TextureLoader.loadTexture(skinResource, skinTexture);
-        }
+        String url = INSTANCE.getCustomTextureURLForId(type, UUIDTypeAdapter.fromUUID(profile.getId()), true);
+        ITextureObject skinTexture = new PreviewTexture(url, def, type == Type.SKIN ? new ImageBufferDownloadHD() : null);
+        textureManager.loadTexture(skinResource, skinTexture);
+
         return (PreviewTexture) skinTexture;
 
     }
