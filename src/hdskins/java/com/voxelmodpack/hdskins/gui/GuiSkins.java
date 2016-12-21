@@ -75,7 +75,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     protected EntityPlayerModel remotePlayer;
 
     protected DoubleBuffer doubleBuffer;
-    //    private String screenTitle;
+
     private String uploadError;
     private volatile String skinMessage = I18n.format("hdskins.choose");
     private String skinUploadMessage = I18n.format("hdskins.request");
@@ -95,23 +95,6 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     private JFrame fileDrop;
 
     private MinecraftProfileTexture.Type textureType = SKIN;
-
-    // translations
-    private final String screenTitle = I18n.format("hdskins.manager");
-    private final String unreadable = I18n.format("hdskins.error.unreadable");
-    private final String ext = I18n.format("hdskins.error.ext");
-    private final String open = I18n.format("hdskins.error.open");
-    private final String invalid = I18n.format("hdskins.error.invalid");
-    private final String select = I18n.format("hdskins.error.select");
-    private final String mojang = I18n.format("hdskins.error.mojang");
-    private final String wait = I18n.format("hdskins.error.mojang.wait");
-    private final String title = I18n.format("hdskins.open.title");
-    private final String fetch = I18n.format("hdskins.fetch");
-    private final String failed = I18n.format("hdskins.failed");
-    private final String request = I18n.format("hdskins.request");
-    private final String upload = I18n.format("hdskins.upload");
-    private final String localSkin = I18n.format("hdskins.local");
-    private final String serverSkin = I18n.format("hdskins.server");
 
     public GuiSkins() {
         Minecraft minecraft = Minecraft.getMinecraft();
@@ -271,21 +254,21 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     private void loadLocalFile(File skinFile) {
         Minecraft.getMinecraft().addScheduledTask(localPlayer::releaseTextures);
         if (!skinFile.exists()) {
-            this.skinMessage = unreadable;
+            this.skinMessage = I18n.format("hdskins.error.unreadable");
         } else if (!FilenameUtils.isExtension(skinFile.getName(), new String[]{"png", "PNG"})) {
-            this.skinMessage = ext;
+            this.skinMessage = I18n.format("hdskins.error.ext");
         } else {
             BufferedImage chosenImage;
             try {
                 chosenImage = ImageIO.read(skinFile);
             } catch (IOException var6) {
-                this.skinMessage = open;
+                this.skinMessage = I18n.format("hdskins.error.open");
                 var6.printStackTrace();
                 return;
             }
 
             if (chosenImage == null) {
-                this.skinMessage = open;
+                this.skinMessage = I18n.format("hdskins.error.open");
             } else if (isPowerOfTwo(chosenImage.getWidth())
                     && (chosenImage.getWidth() == chosenImage.getHeight() * 2
                     || chosenImage.getWidth() == chosenImage.getHeight())
@@ -296,7 +279,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
                     this.pendingSkinImage = chosenImage;
                 }
             } else {
-                this.skinMessage = invalid;
+                this.skinMessage = I18n.format("hdskins.error.invalid");
             }
         }
     }
@@ -310,7 +293,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
                 if (guiButton.id == this.btnBrowse.id) {
                     this.selectedSkin = null;
                     this.localPlayer.releaseTextures();
-                    this.openFileThread = new ThreadOpenFilePNG(this.mc, title, this);
+                    this.openFileThread = new ThreadOpenFilePNG(this.mc, I18n.format("hdskins.open.title"), this);
                     this.openFileThread.start();
                     guiButton.enabled = false;
                 }
@@ -320,7 +303,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
                         this.uploadSkin(this.mc.getSession(), this.selectedSkin);
                         this.btnUpload.enabled = false;
                     } else {
-                        this.setUploadError(select);
+                        this.setUploadError(I18n.format("hdskins.error.select"));
                     }
                 }
 
@@ -558,10 +541,10 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
 
         this.disableClipping();
 
-        this.drawCenteredString(this.fontRendererObj, this.screenTitle, this.width / 2, 10, 0xffffff);
+        this.drawCenteredString(this.fontRendererObj, I18n.format("hdskins.manager"), this.width / 2, 10, 0xffffff);
 
-        this.fontRendererObj.drawStringWithShadow(localSkin, 34, 34, 0xffffff);
-        this.fontRendererObj.drawStringWithShadow(serverSkin, this.width / 2 + 34, 34, 0xffffff);
+        this.fontRendererObj.drawStringWithShadow(I18n.format("hdskins.local"), 34, 34, 0xffffff);
+        this.fontRendererObj.drawStringWithShadow(I18n.format("hdskins.server"), this.width / 2 + 34, 34, 0xffffff);
 
         disableDepth();
         enableBlend();
@@ -592,8 +575,8 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         if (this.fetchingSkin) {
             String opacity1;
             if (this.throttledByMojang) {
-                opacity1 = TextFormatting.RED + mojang;
-                String stringWidth = wait;
+                opacity1 = TextFormatting.RED + I18n.format("hdskins.error.mojang");
+                String stringWidth = I18n.format("hdskins.error.mojang.wait");
                 int stringWidth1 = this.fontRendererObj.getStringWidth(opacity1) / 2;
                 int stringWidth2 = this.fontRendererObj.getStringWidth(stringWidth) / 2;
 
@@ -602,7 +585,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
                 this.fontRendererObj.drawStringWithShadow(opacity1, (int) (xPos2 - stringWidth1), this.height / 2 - 10, 0xffffff);
                 this.fontRendererObj.drawStringWithShadow(stringWidth, (int) (xPos2 - stringWidth2), this.height / 2 + 2, 0xffffff);
             } else {
-                opacity1 = fetch;
+                opacity1 = I18n.format("hdskins.fetch");
                 int stringWidth1 = this.fontRendererObj.getStringWidth(opacity1) / 2;
                 Gui.drawRect((int) (xPos2 - labelwidth), this.height / 2 - 12, this.width - 40, this.height / 2 + 12, 0xB0000000);
                 this.fontRendererObj.drawStringWithShadow(opacity1, (int) (xPos2 - stringWidth1), this.height / 2 - 4, 0xffffff);
@@ -631,7 +614,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
 
         if (this.uploadError != null) {
             Gui.drawRect(0, 0, this.width, this.height, 0xB0000000);
-            this.drawCenteredString(this.fontRendererObj, failed, this.width / 2, this.height / 2 - 10, 0xFFFFFF55);
+            this.drawCenteredString(this.fontRendererObj, I18n.format("hdskins.failed"), this.width / 2, this.height / 2 - 10, 0xFFFFFF55);
             this.drawCenteredString(this.fontRendererObj, this.uploadError, this.width / 2, this.height / 2 + 2, 0xFFFF5555);
         }
 
@@ -696,7 +679,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
             Map<String, ?> sourceData = getClearData(session);
             this.uploadError = null;
             this.uploadingSkin = true;
-            this.skinUploadMessage = request;
+            this.skinUploadMessage = I18n.format("hdskins.request");
             this.threadSkinUpload = new ThreadMultipartPostUpload(HDSkinManager.INSTANCE.getGatewayUrl(), sourceData, this);
             this.threadSkinUpload.start();
         }
@@ -707,7 +690,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
             Map<String, ?> sourceData = getUploadData(session, skinFile);
             this.uploadError = null;
             this.uploadingSkin = true;
-            this.skinUploadMessage = upload;
+            this.skinUploadMessage = I18n.format("hdskins.upload");
             this.threadSkinUpload = new ThreadMultipartPostUpload(HDSkinManager.INSTANCE.getGatewayUrl(), sourceData, this);
             this.threadSkinUpload.start();
         }
