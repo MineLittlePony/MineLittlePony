@@ -17,16 +17,14 @@ buildscript {
 	dependencies {
 		classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
 		classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
-		classpath 'gradle.plugin.mnm.mods.kappa:ap-ide:1.0.5'
 	}
 }
 
 apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'mnm.gradle.ap-ide'
 
 group = 'com.minelittlepony'
-version = '1.11.0.3-beta2'
+version = '1.11.0.3'
 description = 'Mine Little Pony'
 
 targetCompatibility = 1.8
@@ -71,22 +69,6 @@ litemod.json {
 		'mixin.minelp.json',
 		'mixin.hdskins.json'
 	]
-}
-
-afterEvaluate {
-	dependencies {
-		// add mixin to the factory path
-		// use same version as liteloader
-		def liteloader = project.plugins['net.minecraftforge.gradle.liteloader']
-		def artifact = liteloader.artifact.libraries
-			.collect {it.name}
-			.find {it.contains 'mixin'}
-		factory artifact
-	}
-	processor {
-		// tell the processor where the reobf file is
-		options.reobfSrgFile = mixin.reobfSrgFile
-	}
 }
 
 jar {
