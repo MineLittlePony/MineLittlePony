@@ -5,14 +5,10 @@ import com.minelittlepony.gui.PonySettingPanel;
 import com.minelittlepony.hdskins.gui.EntityPonyModel;
 import com.minelittlepony.hdskins.gui.GuiSkinsMineLP;
 import com.minelittlepony.hdskins.gui.RenderPonyModel;
-import com.minelittlepony.renderer.RenderPonyEvoker;
 import com.minelittlepony.renderer.RenderPonyPigman;
 import com.minelittlepony.renderer.RenderPonySkeleton;
-import com.minelittlepony.renderer.RenderPonyVex;
 import com.minelittlepony.renderer.RenderPonyVillager;
-import com.minelittlepony.renderer.RenderPonyVindicator;
 import com.minelittlepony.renderer.RenderPonyZombie;
-import com.minelittlepony.renderer.RenderPonyZombieVillager;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.util.ModUtilities;
 import com.voxelmodpack.hdskins.HDSkinManager;
@@ -24,16 +20,9 @@ import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.data.MetadataSerializer;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.monster.EntityEvoker;
-import net.minecraft.entity.monster.EntityHusk;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntityStray;
-import net.minecraft.entity.monster.EntityVex;
-import net.minecraft.entity.monster.EntityVindicator;
-import net.minecraft.entity.monster.EntityWitherSkeleton;
 import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.monster.EntityZombieVillager;
 import net.minecraft.entity.passive.EntityVillager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -100,20 +89,12 @@ public class MineLittlePony {
     private void saveCurrentRenderers(RenderManager rm) {
         // villagers
         this.renderMap.put(EntityVillager.class, rm.getEntityClassRenderObject(EntityVillager.class));
-        this.renderMap.put(EntityZombieVillager.class, rm.getEntityClassRenderObject(EntityZombieVillager.class));
         // zombies
         this.renderMap.put(EntityZombie.class, rm.getEntityClassRenderObject(EntityZombie.class));
-        this.renderMap.put(EntityHusk.class, rm.getEntityClassRenderObject(EntityHusk.class));
         // pig zombie
         this.renderMap.put(EntityPigZombie.class, rm.getEntityClassRenderObject(EntityPigZombie.class));
         // skeletons
         this.renderMap.put(EntitySkeleton.class, rm.getEntityClassRenderObject(EntitySkeleton.class));
-        this.renderMap.put(EntityStray.class, rm.getEntityClassRenderObject(EntityStray.class));
-        this.renderMap.put(EntityWitherSkeleton.class, rm.getEntityClassRenderObject(EntityWitherSkeleton.class));
-        // illagers
-        this.renderMap.put(EntityVex.class, rm.getEntityClassRenderObject(EntityVex.class));
-        this.renderMap.put(EntityEvoker.class, rm.getEntityClassRenderObject(EntityEvoker.class));
-        this.renderMap.put(EntityVindicator.class, rm.getEntityClassRenderObject(EntityVindicator.class));
     }
 
     @SuppressWarnings("unchecked")
@@ -127,20 +108,16 @@ public class MineLittlePony {
     public void initializeMobRenderers(RenderManager rm) {
         if (this.config.villagers) {
             ModUtilities.addRenderer(EntityVillager.class, new RenderPonyVillager(rm));
-            ModUtilities.addRenderer(EntityZombieVillager.class, new RenderPonyZombieVillager(rm));
             logger.info("Villagers are now ponies.");
         } else {
             ModUtilities.addRenderer(EntityVillager.class, getRenderer(EntityVillager.class));
-            ModUtilities.addRenderer(EntityZombieVillager.class, getRenderer(EntityZombieVillager.class));
         }
 
         if (this.config.zombies) {
             ModUtilities.addRenderer(EntityZombie.class, new RenderPonyZombie<>(rm));
-            ModUtilities.addRenderer(EntityHusk.class, new RenderPonyZombie.Husk(rm));
             logger.info("Zombies are now ponies.");
         } else {
             ModUtilities.addRenderer(EntityZombie.class, getRenderer(EntityZombie.class));
-            ModUtilities.addRenderer(EntityHusk.class, getRenderer(EntityHusk.class));
         }
 
         if (this.config.pigzombies) {
@@ -152,25 +129,11 @@ public class MineLittlePony {
 
         if (this.config.skeletons) {
             ModUtilities.addRenderer(EntitySkeleton.class, new RenderPonySkeleton<>(rm));
-            ModUtilities.addRenderer(EntityStray.class, new RenderPonySkeleton.Stray(rm));
-            ModUtilities.addRenderer(EntityWitherSkeleton.class, new RenderPonySkeleton.Wither(rm));
             logger.info("Skeletons are now ponies.");
         } else {
             ModUtilities.addRenderer(EntitySkeleton.class, getRenderer(EntitySkeleton.class));
-            ModUtilities.addRenderer(EntityStray.class, getRenderer(EntityStray.class));
-            ModUtilities.addRenderer(EntityWitherSkeleton.class, getRenderer(EntityWitherSkeleton.class));
         }
 
-        if (this.config.illagers) {
-            ModUtilities.addRenderer(EntityVex.class, new RenderPonyVex(rm));
-            ModUtilities.addRenderer(EntityEvoker.class, new RenderPonyEvoker(rm));
-            ModUtilities.addRenderer(EntityVindicator.class, new RenderPonyVindicator(rm));
-            logger.info("Illagers are now ponies.");
-        } else {
-            ModUtilities.addRenderer(EntityVex.class, getRenderer(EntityVex.class));
-            ModUtilities.addRenderer(EntityEvoker.class, getRenderer(EntityEvoker.class));
-            ModUtilities.addRenderer(EntityVindicator.class, getRenderer(EntityVindicator.class));
-        }
     }
 
     void onTick(Minecraft minecraft, boolean inGame) {

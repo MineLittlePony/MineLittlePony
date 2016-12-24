@@ -32,7 +32,6 @@ public class PonySettingPanel extends GuiScreen {
     private static final String ZOMBIES = MOB_PREFIX + "zombies";
     private static final String ZOMBIE_PIGMEN = MOB_PREFIX + "zombiepigmen";
     private static final String SKELETONS = MOB_PREFIX + "skeletons";
-    private static final String ILLAGERS = MOB_PREFIX + "illagers";
 
     private static final int PONY_ID = 0;
     private static final int HUMAN_ID = 1;
@@ -46,7 +45,6 @@ public class PonySettingPanel extends GuiScreen {
     private static final int ZOMBIES_ID = 8;
     private static final int ZOMBIE_PIGMEN_ID = 9;
     private static final int SKELETONS_ID = 10;
-    private static final int ILLAGER_ID = 11;
 
     private PonyConfig config;
 
@@ -62,7 +60,7 @@ public class PonySettingPanel extends GuiScreen {
     @Override
     public void initGui() {
         final int LEFT = width / 10 + 16;
-        GuiCheckbox pony, human, both, hd, sizes, snuzzles, showscale, villager, zombie, pigmen, skeleton, illager;
+        GuiCheckbox pony, human, both, hd, sizes, snuzzles, showscale, villager, zombie, pigmen, skeleton;
         int row = 32;
         this.buttonList.add(pony = ponies = new GuiCheckbox(PONY_ID, LEFT, row += 15, I18n.format(PONY)));
         this.buttonList.add(human = humans = new GuiCheckbox(HUMAN_ID, LEFT, row += 15, I18n.format(HUMAN)));
@@ -79,7 +77,6 @@ public class PonySettingPanel extends GuiScreen {
         this.buttonList.add(zombie = new GuiCheckbox(ZOMBIES_ID, RIGHT, row += 15, I18n.format(ZOMBIES)));
         this.buttonList.add(pigmen = new GuiCheckbox(ZOMBIE_PIGMEN_ID, RIGHT, row += 15, I18n.format(ZOMBIE_PIGMEN)));
         this.buttonList.add(skeleton = new GuiCheckbox(SKELETONS_ID, RIGHT, row += 15, I18n.format(SKELETONS)));
-        this.buttonList.add(illager = new GuiCheckbox(ILLAGER_ID, RIGHT, row += 15, I18n.format(ILLAGERS)));
 
         switch (config.getPonyLevel()) {
             default:
@@ -101,7 +98,6 @@ public class PonySettingPanel extends GuiScreen {
         zombie.checked = config.zombies;
         pigmen.checked = config.pigzombies;
         skeleton.checked = config.skeletons;
-        illager.checked = config.illagers;
     }
 
     @Override
@@ -166,9 +162,6 @@ public class PonySettingPanel extends GuiScreen {
                     break;
                 case SKELETONS_ID:
                     config.skeletons = checked;
-                    break;
-                case ILLAGER_ID:
-                    config.illagers = checked;
                     break;
             }
         }

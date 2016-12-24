@@ -9,14 +9,13 @@ import com.minelittlepony.renderer.layer.LayerPonyStrayOverlay;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
-import net.minecraft.entity.monster.AbstractSkeleton;
-import net.minecraft.entity.monster.EntityStray;
-import net.minecraft.entity.monster.EntityWitherSkeleton;
+import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.SkeletonType;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Random;
 
-public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends RenderPonyMob<Skeleton> {
+public class RenderPonySkeleton<Skeleton extends EntitySkeleton> extends RenderPonyMob<Skeleton> {
 
     private static final ResourceLocation SKELETON = new ResourceLocation("minelittlepony", "textures/entity/skeleton/skeleton_pony.png");
     private static final ResourceLocation WITHER = new ResourceLocation("minelittlepony", "textures/entity/skeleton/skeleton_wither_pony.png");
@@ -31,6 +30,7 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
                 this.modelArmor = PMAPI.skeleton.getArmor().modelArmorChestplate;
             }
         });
+        this.addLayer(new LayerPonyStrayOverlay(this));
     }
 
     @Override
@@ -55,43 +55,27 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
         this.playerModel.getModel().metadata.setSize(size == PonySize.FOAL ? PonySize.NORMAL : size);
         this.playerModel.getModel().metadata.setTail(TailLengths.STUB);
         this.playerModel.getModel().metadata.setGlowColor(rand.nextInt());
+
+        if (skeleton.getSkeletonType() == SkeletonType.WITHER) {
+            GlStateManager.scale(1.2F, 1.2F, 1.2F);
+        }
     }
 
     @Override
     protected ResourceLocation getEntityTexture(Skeleton entity) {
-        return getTexture(SKELETON);
+        return getTexture(getResource(entity));
     }
 
-    public static class Stray extends RenderPonySkeleton<EntityStray> {
-
-        public Stray(RenderManager rm) {
-            super(rm);
-            this.addLayer(new LayerPonyStrayOverlay(this));
+    private ResourceLocation getResource(Skeleton entity) {
+        switch (entity.getSkeletonType()) {
+            case WITHER:
+                return WITHER;
+            case STRAY:
+                return STRAY;
+            case NORMAL:
+            default:
+                return SKELETON;
         }
-
-        @Override
-        protected ResourceLocation getEntityTexture(EntityStray entity) {
-            return getTexture(STRAY);
-        }
-    }
-
-    public static class Wither extends RenderPonySkeleton<EntityWitherSkeleton> {
-
-        public Wither(RenderManager rm) {
-            super(rm);
-        }
-
-        @Override
-        protected ResourceLocation getEntityTexture(EntityWitherSkeleton entity) {
-            return getTexture(WITHER);
-        }
-
-        @Override
-        protected void preRenderCallback(EntityWitherSkeleton skeleton, float partialTicks) {
-            super.preRenderCallback(skeleton, partialTicks);
-            GlStateManager.scale(1.2F, 1.2F, 1.2F);
-        }
-
     }
 
 }

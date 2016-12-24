@@ -1,6 +1,5 @@
 package com.voxelmodpack.hdskins.gui;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
@@ -30,13 +29,7 @@ public class EntityPlayerModel extends EntityLivingBase {
     public static final ResourceLocation NO_SKIN = new ResourceLocation("hdskins", "textures/mob/noskin.png");
     public static final ResourceLocation NO_ELYTRA = new ResourceLocation("textures/entity/elytra.png");
 
-    private Map<EntityEquipmentSlot, ItemStack> armors = Maps.newEnumMap(ImmutableMap.of(
-            EntityEquipmentSlot.HEAD, ItemStack.EMPTY,
-            EntityEquipmentSlot.CHEST, ItemStack.EMPTY,
-            EntityEquipmentSlot.LEGS, ItemStack.EMPTY,
-            EntityEquipmentSlot.FEET, ItemStack.EMPTY,
-            EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY
-    ));
+    private Map<EntityEquipmentSlot, ItemStack> armors = Maps.newEnumMap(EntityEquipmentSlot.class);
 
     private PreviewTexture remoteSkinTexture;
     private ResourceLocation remoteSkinResource;

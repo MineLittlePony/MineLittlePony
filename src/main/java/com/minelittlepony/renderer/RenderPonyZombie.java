@@ -7,8 +7,8 @@ import com.minelittlepony.TailLengths;
 import com.minelittlepony.model.PMAPI;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.monster.EntityHusk;
 import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.monster.ZombieType;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Random;
@@ -17,6 +17,13 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
 
     private static final ResourceLocation ZOMBIE = new ResourceLocation("minelittlepony", "textures/entity/zombie/zombie_pony.png");
     private static final ResourceLocation HUSK = new ResourceLocation("minelittlepony", "textures/entity/zombie/husk_pony.png");
+
+    private static final ResourceLocation GENERIC = new ResourceLocation("minelittlepony", "textures/entity/zombie_villager/zombie_villager_pony.png");
+    private static final ResourceLocation FARMER = new ResourceLocation("minelittlepony", "textures/entity/zombie_villager/zombie_farmer_pony.png");
+    private static final ResourceLocation LIBRARIAN = new ResourceLocation("minelittlepony", "textures/entity/zombie_villager/zombie_librarian_pony.png");
+    private static final ResourceLocation PRIEST = new ResourceLocation("minelittlepony", "textures/entity/zombie_villager/zombie_priest_pony.png");
+    private static final ResourceLocation SMITH = new ResourceLocation("minelittlepony", "textures/entity/zombie_villager/zombie_smith_pony.png");
+    private static final ResourceLocation BUTCHER = new ResourceLocation("minelittlepony", "textures/entity/zombie_villager/zombie_butcher_pony.png");
 
     public RenderPonyZombie(RenderManager rendermanager) {
         super(rendermanager, PMAPI.zombie);
@@ -59,6 +66,17 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
         // glow
         this.playerModel.getModel().metadata.setGlowColor(rand.nextInt());
 
+        if (entity.getZombieType() == ZombieType.HUSK) {
+            GlStateManager.scale(1.0625F, 1.0625F, 1.0625F);
+        }
+    }
+
+    @Override
+    protected void applyRotations(Zombie zombie, float p_77043_2_, float p_77043_3_, float partialTicks) {
+        if (zombie.isConverting()) {
+            p_77043_3_ += (float) (Math.cos(zombie.ticksExisted * 3.25D) * Math.PI * 0.25D);
+        }
+        super.applyRotations(zombie, p_77043_2_, p_77043_3_, partialTicks);
     }
 
     private static <T extends Enum<T>> T randEnum(Random rand, Class<T> en) {
@@ -68,26 +86,30 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
 
     @Override
     protected ResourceLocation getEntityTexture(Zombie zombie) {
-        return getTexture(ZOMBIE);
+
+        return getTexture(getResource(zombie));
     }
 
-    public static class Husk extends RenderPonyZombie<EntityHusk> {
+    private ResourceLocation getResource(Zombie zombie) {
 
-        public Husk(RenderManager rendermanager) {
-            super(rendermanager);
+        switch (zombie.getZombieType()) {
+            case VILLAGER_FARMER:
+                return FARMER;
+            case VILLAGER_LIBRARIAN:
+                return LIBRARIAN;
+            case VILLAGER_PRIEST:
+                return PRIEST;
+            case VILLAGER_SMITH:
+                return SMITH;
+            case VILLAGER_BUTCHER:
+                return BUTCHER;
+            case HUSK:
+                return HUSK;
+            case NORMAL:
+            default:
+                return ZOMBIE;
+
         }
-
-        @Override
-        protected void preRenderCallback(EntityHusk entitylivingbaseIn, float partialTickTime) {
-            GlStateManager.scale(1.0625F, 1.0625F, 1.0625F);
-            super.preRenderCallback(entitylivingbaseIn, partialTickTime);
-        }
-
-        @Override
-        protected ResourceLocation getEntityTexture(EntityHusk zombie) {
-            return getTexture(HUSK);
-        }
-
     }
 
 }

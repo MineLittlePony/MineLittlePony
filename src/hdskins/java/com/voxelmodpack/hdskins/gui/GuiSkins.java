@@ -321,7 +321,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
                     if (guiButton.id == this.btnModeSkin.id) {
                         this.textureType = SKIN;
                         this.btnModeElytra.enabled = true;
-                        stack = ItemStack.EMPTY;
+                        stack = null;
                     } else {
                         this.textureType = ELYTRA;
                         this.btnModeSkin.enabled = true;

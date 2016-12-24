@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityZombieVillager;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -23,6 +23,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.EnumFacing;
+
+import javax.annotation.Nonnull;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
@@ -35,15 +37,15 @@ public class LayerPonySkull implements LayerRenderer<EntityLivingBase> {
     }
 
     @Override
-    public void doRenderLayer(EntityLivingBase entity, float limbSwing, float p_177141_3_,
+    public void doRenderLayer(@Nonnull EntityLivingBase entity, float limbSwing, float p_177141_3_,
                               float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
         ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
-        if (itemstack != null && itemstack.getItem() != null) {
+        if (itemstack != null) {
             AbstractPonyModel model = getModel().getModel();
             Item item = itemstack.getItem();
 
             pushMatrix();
-            boolean isVillager = entity instanceof EntityVillager || entity instanceof EntityZombieVillager;
+            boolean isVillager = entity instanceof EntityVillager || (entity instanceof EntityZombie && ((EntityZombie) entity).isVillager());
 
             model.transform(BodyPart.HEAD);
             model.bipedHead.postRender(0.0625f);

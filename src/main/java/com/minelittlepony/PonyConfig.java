@@ -26,8 +26,6 @@ public class PonyConfig implements Exposable {
     public boolean pigzombies = true;
     @Expose
     public boolean skeletons = true;
-    @Expose
-    public boolean illagers = true;
 
     public PonyLevel getPonyLevel() {
         if (ponylevel == null)

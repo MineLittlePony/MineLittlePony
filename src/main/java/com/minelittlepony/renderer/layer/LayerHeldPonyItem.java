@@ -22,6 +22,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
 import org.lwjgl.opengl.GL14;
 
+import javax.annotation.Nonnull;
+
 import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
@@ -35,7 +37,7 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
     }
 
     @Override
-    public void doRenderLayer(EntityLivingBase entity, float p_177141_2_, float p_177141_3_,
+    public void doRenderLayer(@Nonnull EntityLivingBase entity, float p_177141_2_, float p_177141_3_,
                               float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
         ModelBase model = livingPonyEntity.getMainModel();
         if (model instanceof ModelHumanPlayer) {
@@ -49,7 +51,7 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
         ItemStack left = mainRight ? itemOff : itemMain;
         ItemStack right = mainRight ? itemMain : itemOff;
 
-        if (!left.isEmpty() || !right.isEmpty()) {
+        if (left != null || right != null) {
             pushMatrix();
             if (model instanceof AbstractPonyModel) {
                 ((AbstractPonyModel) model).transform(BodyPart.LEGS);
@@ -69,7 +71,7 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
     }
 
     private void renderHeldItem(EntityLivingBase entity, ItemStack drop, ItemCameraTransforms.TransformType transform, EnumHandSide hand) {
-        if (!drop.isEmpty()) {
+        if (drop != null) {
             GlStateManager.pushMatrix();
             translateToHand(hand);
 
@@ -129,7 +131,7 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
         GL14.glBlendColor(red, green, blue, alpha);
 
         RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
-        ((IRenderItem)renderItem).useTransparency(true);
+        ((IRenderItem) renderItem).useTransparency(true);
 
         scale(1.1, 1.1, 1.1);
 
@@ -138,7 +140,7 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
         translate(.01, -.01, -.02);
         renderItem.renderItem(drop, entity, transform, hand == EnumHandSide.LEFT);
 
-        ((IRenderItem)renderItem).useTransparency(false);
+        ((IRenderItem) renderItem).useTransparency(false);
         enableLighting();
         popMatrix();
 
