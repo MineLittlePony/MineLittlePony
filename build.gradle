@@ -24,18 +24,17 @@ apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'com.minelittlepony'
-version = '1.11.0.3'
+version = '1.11.2.0-SNAPSHOT'
 description = 'Mine Little Pony'
 
 targetCompatibility = 1.8
 sourceCompatibility = 1.8
 
 minecraft {
-	version = "1.11"
-	// first snapshot for 1.11. Change to stable when possible.
-	mappings = 'snapshot_20161120'
+	version = "1.11.2"
+	mappings = 'snapshot_20161224'
 	runDir = 'run'
-	replace '@VERSION@',project.version
+	replace '@VERSION@', project.version
 }
 
 sourceSets {
