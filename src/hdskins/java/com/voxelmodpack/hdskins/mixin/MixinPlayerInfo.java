@@ -1,7 +1,6 @@
 package com.voxelmodpack.hdskins.mixin;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -54,15 +53,16 @@ public abstract class MixinPlayerInfo {
             cancellable = true,
             at = @At("RETURN"))
     private void getSkinType(CallbackInfoReturnable<String> ci) {
-        MinecraftProfileTexture data = HDSkinManager.INSTANCE.getProfileData(getGameProfile()).get(Type.SKIN);
-        if (data != null) {
-            String type = data.getMetadata("model");
-            if (type == null)
-                type = "default";
-            String type1 = type;
-            Optional<ResourceLocation> texture = HDSkinManager.INSTANCE.getSkinLocation(getGameProfile(), Type.SKIN, false);
+        HDSkinManager.INSTANCE.getProfileData(getGameProfile())
+                .map(m -> m.get(Type.SKIN))
+                .ifPresent(data -> {
+                    String type = data.getMetadata("model");
+                    if (type == null)
+                        type = "default";
+                    String type1 = type;
+                    Optional<ResourceLocation> texture = HDSkinManager.INSTANCE.getSkinLocation(getGameProfile(), Type.SKIN, false);
 
-            texture.ifPresent((res) -> ci.setReturnValue(type1));
-        }
+                    texture.ifPresent((res) -> ci.setReturnValue(type1));
+                });
     }
 }

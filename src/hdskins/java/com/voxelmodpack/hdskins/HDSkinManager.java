@@ -32,6 +32,7 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -118,7 +119,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     private void loadTexture(GameProfile profile, final Type type, final SkinAvailableCallback callback) {
         if (profile != null && profile.getId() != null) {
-            Map<Type, MinecraftProfileTexture> data = getProfileData(profile);
+            Map<Type, MinecraftProfileTexture> data = loadProfileData(profile);
             final MinecraftProfileTexture texture = data.get(type);
             if (texture == null) {
                 return;
@@ -131,8 +132,9 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             ThreadDownloadImageData threaddownloadimagedata = new ThreadDownloadImageData(file2, texture.getUrl(),
                     DefaultPlayerSkin.getDefaultSkinLegacy(),
                     new IImageBuffer() {
+                        @Nonnull
                         @Override
-                        public BufferedImage parseUserSkin(BufferedImage image) {
+                        public BufferedImage parseUserSkin(@Nonnull BufferedImage image) {
                             if (imagebufferdownload != null)
                                 return imagebufferdownload.parseUserSkin(image);
                             return image;
@@ -154,11 +156,15 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         }
     }
 
-    public Map<Type, MinecraftProfileTexture> getProfileData(GameProfile profile) {
+    public Optional<Map<Type, MinecraftProfileTexture>> getProfileData(GameProfile profile) {
         if (!enabled)
-            return ImmutableMap.of();
-        Map<Type, MinecraftProfileTexture> textures = this.profileTextures.get(profile.getId());
-        if (textures == null) {
+            return Optional.of(ImmutableMap.of());
+        return Optional.ofNullable(this.profileTextures.get(profile.getId()));
+
+    }
+
+    private Map<Type, MinecraftProfileTexture> loadProfileData(final GameProfile profile) {
+       return getProfileData(profile).orElseGet(() -> {
 
             String uuid = UUIDTypeAdapter.fromUUID(profile.getId());
 
@@ -170,10 +176,10 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                 builder.put(type, new HDProfileTexture(url, hash, null));
             }
 
-            textures = builder.build();
-            this.profileTextures.put(profile.getId(), textures);
-        }
-        return textures;
+           Map<Type, MinecraftProfileTexture> textures = builder.build();
+           this.profileTextures.put(profile.getId(), textures);
+           return textures;
+        });
     }
 
     private static Map<Type, MinecraftProfileTexture> getTexturesForProfile(GameProfile profile) {
