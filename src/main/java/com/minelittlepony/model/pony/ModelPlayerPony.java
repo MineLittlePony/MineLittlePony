@@ -93,6 +93,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
 
             this.adjustBodyComponents(BODY_ROTATE_ANGLE_X_RIDING, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
             this.adjustNeck(BODY_ROTATE_ANGLE_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
+            this.setHead(0.0F, 0.0F, 0.0F);
             this.bipedLeftLeg.rotationPointZ = 15;
             this.bipedLeftLeg.rotationPointY = 10;
             this.bipedLeftLeg.rotateAngleX = (float) (Math.PI * -0.25);
