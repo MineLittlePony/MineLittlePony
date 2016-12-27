@@ -8,11 +8,7 @@ import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.model.PlayerModel;
 import com.minelittlepony.model.pony.ModelHumanPlayer;
 import com.minelittlepony.model.pony.ModelPlayerPony;
-import com.minelittlepony.renderer.layer.LayerHeldPonyItem;
-import com.minelittlepony.renderer.layer.LayerPonyArmor;
-import com.minelittlepony.renderer.layer.LayerPonyCape;
-import com.minelittlepony.renderer.layer.LayerPonyElytra;
-import com.minelittlepony.renderer.layer.LayerPonySkull;
+import com.minelittlepony.renderer.layer.*;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
@@ -32,8 +28,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static net.minecraft.client.renderer.GlStateManager.scale;
-
 @Mixin(RenderPlayer.class)
 public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientPlayer> implements IRenderPony {
 
@@ -43,6 +37,7 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
     private PlayerModel playerModel;
     private Pony thePony;
 
+    @SuppressWarnings("ConstantConditions")
     private MixinRenderPlayer(RenderManager renderManager) {
         super(renderManager, null, 0.5F);
     }
@@ -101,9 +96,9 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
         if (MineLittlePony.getConfig().showscale && !(playerModel.getModel() instanceof ModelHumanPlayer)) {
             PonySize size = thePony.metadata.getSize();
             if (size == PonySize.LARGE)
-                scale(0.9F, 0.9F, 0.9F);
+                GlStateManager.scale(0.9F, 0.9F, 0.9F);
             else if (size == PonySize.NORMAL || size == PonySize.FOAL)
-                scale(0.8F, 0.8F, 0.8F);
+                GlStateManager.scale(0.8F, 0.8F, 0.8F);
         }
     }
 
@@ -218,9 +213,13 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
                     target = "Lnet/minecraft/client/renderer/GlStateManager;rotate(FFFF)V",
                     ordinal = 3))
     private void rotateRedirect(float f1, float f2, float f3, float f4) {
-        if (this.playerModel.getModel() instanceof ModelPlayerPony)
+        boolean isPony = this.playerModel.getModel() instanceof ModelPlayerPony;
+        if (isPony)
             f1 += 90;
+
         GlStateManager.rotate(f1, f2, f3, f4);
+        if (isPony)
+            GlStateManager.translate(0, -1, 0);
     }
 
     private void updateModel(AbstractClientPlayer player) {

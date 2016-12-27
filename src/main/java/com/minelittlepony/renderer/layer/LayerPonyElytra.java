@@ -17,6 +17,8 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
+
 public class LayerPonyElytra implements LayerRenderer<AbstractClientPlayer> {
 
     private static final ResourceLocation TEXTURE_ELYTRA = new ResourceLocation("textures/entity/elytra.png");
@@ -31,7 +33,7 @@ public class LayerPonyElytra implements LayerRenderer<AbstractClientPlayer> {
     }
 
     @Override
-    public void doRenderLayer(AbstractClientPlayer entity, float swing, float swingAmount, float ticks, float age, float yaw, float head, float scale) {
+    public void doRenderLayer(@Nonnull AbstractClientPlayer entity, float swing, float swingAmount, float ticks, float age, float yaw, float head, float scale) {
 
         AbstractPonyModel model = ((IRenderPony) this.renderPlayer).getPony().getModel();
         if (model instanceof ModelHumanPlayer) {
@@ -41,7 +43,7 @@ public class LayerPonyElytra implements LayerRenderer<AbstractClientPlayer> {
 
         ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
-        if (itemstack != null && itemstack.getItem() == Items.ELYTRA) {
+        if (itemstack.getItem() == Items.ELYTRA) {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
             if (entity.isPlayerInfoSet() && entity.getLocationElytra() != null) {

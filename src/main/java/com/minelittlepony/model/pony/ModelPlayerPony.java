@@ -1,11 +1,6 @@
 package com.minelittlepony.model.pony;
 
-import com.minelittlepony.model.AbstractPonyModel;
-import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.PonyModelConstants;
-import com.minelittlepony.model.PegasusWings;
-import com.minelittlepony.model.PonySnout;
-import com.minelittlepony.model.UnicornHorn;
+import com.minelittlepony.model.*;
 import com.minelittlepony.renderer.PlaneRenderer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -84,7 +79,7 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.setLegs(limbSwing, limbSwingAmount, ageInTicks, entityIn);
         this.holdItem(limbSwingAmount);
         this.swingItem(entityIn, this.swingProgress);
-        if (this.isSneak && !this.isFlying) {
+        if (this.isSneak && !this.isFlying && !this.rainboom) {
             this.adjustBody(BODY_ROTATE_ANGLE_X_SNEAK, BODY_RP_Y_SNEAK, BODY_RP_Z_SNEAK);
             this.sneakLegs();
             this.setHead(0.0F, 6.0F, -2.0F);
