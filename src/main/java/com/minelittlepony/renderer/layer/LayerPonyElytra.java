@@ -7,10 +7,11 @@ import com.minelittlepony.model.ModelPonyElytra;
 import com.minelittlepony.model.pony.ModelHumanPlayer;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
 import net.minecraft.client.renderer.entity.layers.LayerElytra;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -19,21 +20,21 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
-public class LayerPonyElytra implements LayerRenderer<AbstractClientPlayer> {
+public class LayerPonyElytra implements LayerRenderer<EntityLivingBase> {
 
     private static final ResourceLocation TEXTURE_ELYTRA = new ResourceLocation("textures/entity/elytra.png");
-    private RenderPlayer renderPlayer;
+    private RenderLivingBase<?> renderPlayer;
     private ModelPonyElytra modelElytra = new ModelPonyElytra();
 
     private LayerElytra elytra;
 
-    public LayerPonyElytra(RenderPlayer rp) {
+    public LayerPonyElytra(RenderLivingBase<?> rp) {
         this.renderPlayer = rp;
         this.elytra = new LayerElytra(rp);
     }
 
     @Override
-    public void doRenderLayer(@Nonnull AbstractClientPlayer entity, float swing, float swingAmount, float ticks, float age, float yaw, float head, float scale) {
+    public void doRenderLayer(@Nonnull EntityLivingBase entity, float swing, float swingAmount, float ticks, float age, float yaw, float head, float scale) {
 
         AbstractPonyModel model = ((IRenderPony) this.renderPlayer).getPony().getModel();
         if (model instanceof ModelHumanPlayer) {
@@ -46,10 +47,16 @@ public class LayerPonyElytra implements LayerRenderer<AbstractClientPlayer> {
         if (itemstack.getItem() == Items.ELYTRA) {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-            if (entity.isPlayerInfoSet() && entity.getLocationElytra() != null) {
-                this.renderPlayer.bindTexture(entity.getLocationElytra());
-            } else if (entity.hasPlayerInfo() && entity.getLocationCape() != null && entity.isWearing(EnumPlayerModelParts.CAPE)) {
-                this.renderPlayer.bindTexture(entity.getLocationCape());
+            if (entity instanceof AbstractClientPlayer) {
+
+                AbstractClientPlayer player = (AbstractClientPlayer) entity;
+                if (player.isPlayerInfoSet() && player.getLocationElytra() != null) {
+                    this.renderPlayer.bindTexture(player.getLocationElytra());
+                } else if (player.hasPlayerInfo() && player.getLocationCape() != null && player.isWearing(EnumPlayerModelParts.CAPE)) {
+                    this.renderPlayer.bindTexture(player.getLocationCape());
+                } else {
+                    this.renderPlayer.bindTexture(TEXTURE_ELYTRA);
+                }
             } else {
                 this.renderPlayer.bindTexture(TEXTURE_ELYTRA);
             }
