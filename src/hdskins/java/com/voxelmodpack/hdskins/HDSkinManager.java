@@ -1,12 +1,10 @@
 package com.voxelmodpack.hdskins;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.io.Resources;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
@@ -21,7 +19,6 @@ import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.resource.SkinResourceManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IImageBuffer;
-import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
@@ -38,7 +35,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -127,9 +123,11 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
             String skinDir = type.toString().toLowerCase() + "s/";
             final ResourceLocation skin = new ResourceLocation("hdskins", skinDir + texture.getHash());
-            File file2 = new File(LiteLoader.getAssetsDirectory(), "skins/" + skinDir + texture.getHash().substring(0, 2) + "/" + texture.getHash());
+            File file2 = new File(LiteLoader.getAssetsDirectory(), "hd/" + skinDir + texture.getHash().substring(0, 2) + "/" + texture.getHash());
+
             final IImageBuffer imagebufferdownload = type == Type.SKIN ? new ImageBufferDownloadHD() : null;
-            ThreadDownloadImageData threaddownloadimagedata = new ThreadDownloadImageData(file2, texture.getUrl(),
+
+            ITextureObject texObject = new ThreadDownloadImageETag(file2, texture.getUrl(),
                     DefaultPlayerSkin.getDefaultSkinLegacy(),
                     new IImageBuffer() {
                         @Nonnull
@@ -152,7 +150,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                     });
 
             // schedule texture loading on the main thread.
-            TextureLoader.loadTexture(skin, threaddownloadimagedata);
+            TextureLoader.loadTexture(skin, texObject);
         }
     }
 
@@ -171,9 +169,8 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             ImmutableMap.Builder<Type, MinecraftProfileTexture> builder = ImmutableMap.builder();
             for (Type type : Type.values()) {
                 String url = getCustomTextureURLForId(type, uuid);
-                String hash = getTextureHash(type, uuid);
 
-                builder.put(type, new HDProfileTexture(url, hash, null));
+                builder.put(type, new MinecraftProfileTexture(url, null));
             }
 
             Map<Type, MinecraftProfileTexture> textures = builder.build();
@@ -222,15 +219,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     public String getCustomTextureURLForId(Type type, String uuid) {
         return getCustomTextureURLForId(type, uuid, false);
-    }
-
-    private String getTextureHash(Type type, String uuid) {
-        try {
-            URL url = new URL(getCustomTextureURLForId(type, uuid) + ".md5");
-            return Resources.asCharSource(url, Charsets.UTF_8).readFirstLine();
-        } catch (IOException e) {
-            return null;
-        }
     }
 
     public void setEnabled(boolean enabled) {

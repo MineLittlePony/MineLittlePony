@@ -4,6 +4,7 @@ import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.model.PlayerModel;
 import com.minelittlepony.util.PonyFields;
 import com.voxelmodpack.hdskins.DynamicTextureImage;
+import com.voxelmodpack.hdskins.ThreadDownloadImageETag;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
@@ -79,6 +80,8 @@ public class Pony {
                         MineLittlePony.logger.debug("Successfully reflected downloadedImage from texture object", e);
                         // this.checkSkin(skinImage);
                     }
+                } else if (e2 instanceof ThreadDownloadImageETag) {
+                    skinImage = ((ThreadDownloadImageETag) e2).getBufferedImage();
                 } else if (e2 instanceof DynamicTextureImage) {
                     skinImage = ((DynamicTextureImage) e2).getImage();
                 }

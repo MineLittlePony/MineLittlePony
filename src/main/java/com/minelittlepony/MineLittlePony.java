@@ -83,7 +83,6 @@ public class MineLittlePony {
 
     void postInit(Minecraft minecraft) {
 
-        HDSkinManager.clearSkinCache();
         HDSkinManager manager = HDSkinManager.INSTANCE;
         manager.setSkinUrl(SKIN_SERVER_URL);
         manager.setGatewayURL(GATEWAY_URL);
