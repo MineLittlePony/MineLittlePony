@@ -127,7 +127,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
             String skinDir = type.toString().toLowerCase() + "s/";
             final ResourceLocation skin = new ResourceLocation("hdskins", skinDir + texture.getHash());
-            File file2 = new File(LiteLoader.getAssetsDirectory(), "hd" + skinDir + "/" + texture.getHash().substring(0, 2) + "/" + texture.getHash());
+            File file2 = new File(LiteLoader.getAssetsDirectory(), "skins/" + skinDir + texture.getHash().substring(0, 2) + "/" + texture.getHash());
             final IImageBuffer imagebufferdownload = type == Type.SKIN ? new ImageBufferDownloadHD() : null;
             ThreadDownloadImageData threaddownloadimagedata = new ThreadDownloadImageData(file2, texture.getUrl(),
                     DefaultPlayerSkin.getDefaultSkinLegacy(),
@@ -164,7 +164,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     private Map<Type, MinecraftProfileTexture> loadProfileData(final GameProfile profile) {
-       return getProfileData(profile).orElseGet(() -> {
+        return getProfileData(profile).orElseGet(() -> {
 
             String uuid = UUIDTypeAdapter.fromUUID(profile.getId());
 
@@ -176,9 +176,9 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                 builder.put(type, new HDProfileTexture(url, hash, null));
             }
 
-           Map<Type, MinecraftProfileTexture> textures = builder.build();
-           this.profileTextures.put(profile.getId(), textures);
-           return textures;
+            Map<Type, MinecraftProfileTexture> textures = builder.build();
+            this.profileTextures.put(profile.getId(), textures);
+            return textures;
         });
     }
 
@@ -252,6 +252,12 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
         try {
             FileUtils.deleteDirectory(new File(LiteLoader.getAssetsDirectory(), "skins"));
+            TextureManager textures = Minecraft.getMinecraft().getTextureManager();
+            INSTANCE.skinCache.values().stream()
+                    .flatMap(m -> m.values().stream())
+                    .forEach(textures::deleteTexture);
+            INSTANCE.skinCache.clear();
+            INSTANCE.profileTextures.clear();
         } catch (IOException var1) {
             var1.printStackTrace();
         }
