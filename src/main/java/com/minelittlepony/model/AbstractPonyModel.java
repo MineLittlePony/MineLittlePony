@@ -2,7 +2,6 @@ package com.minelittlepony.model;
 
 import com.minelittlepony.PonyData;
 import com.minelittlepony.PonySize;
-import com.minelittlepony.model.pony.ModelHumanPlayer;
 import com.minelittlepony.model.pony.ModelPlayerPony;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
@@ -12,9 +11,7 @@ import net.minecraft.util.math.MathHelper;
 
 import java.util.Random;
 
-import static net.minecraft.client.renderer.GlStateManager.rotate;
-import static net.minecraft.client.renderer.GlStateManager.scale;
-import static net.minecraft.client.renderer.GlStateManager.translate;
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 /**
  * TODO move this into constructor and make separate classes for the races.
@@ -88,8 +85,6 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     }
 
     public void transform(BodyPart part) {
-        if (this instanceof ModelHumanPlayer)
-            return;
         if (this.isRiding) {
             translate(0.0F, -0.6F, -0.2F);
         }
