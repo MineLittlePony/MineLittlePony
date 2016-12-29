@@ -9,7 +9,7 @@ import com.minelittlepony.model.PlayerModel;
 import com.minelittlepony.renderer.layer.LayerHeldPonyItem;
 import com.minelittlepony.renderer.layer.LayerPonyArmor;
 import com.minelittlepony.renderer.layer.LayerPonyElytra;
-import com.minelittlepony.renderer.layer.LayerPonySkull;
+import com.minelittlepony.renderer.layer.LayerPonyCustomHead;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -27,7 +27,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
         this.addLayer(new LayerPonyArmor(this));
         this.addLayer(new LayerHeldPonyItem(this));
         // this.addLayer(new LayerArrow(this));
-        this.addLayer(new LayerPonySkull(this));
+        this.addLayer(new LayerPonyCustomHead(this));
         this.addLayer(new LayerPonyElytra(this));
     }
 

@@ -17,7 +17,7 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
@@ -26,11 +26,11 @@ import net.minecraft.util.EnumFacing;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
-public class LayerPonySkull implements LayerRenderer<EntityLivingBase> {
+public class LayerPonyCustomHead implements LayerRenderer<EntityLivingBase> {
 
     private RenderLivingBase<? extends EntityLivingBase> renderer;
 
-    public LayerPonySkull(RenderLivingBase<? extends EntityLivingBase> renderPony) {
+    public LayerPonyCustomHead(RenderLivingBase<? extends EntityLivingBase> renderPony) {
         this.renderer = renderPony;
     }
 
@@ -38,7 +38,7 @@ public class LayerPonySkull implements LayerRenderer<EntityLivingBase> {
     public void doRenderLayer(EntityLivingBase entity, float limbSwing, float p_177141_3_,
                               float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
         ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
-        if (itemstack != null && itemstack.getItem() != null) {
+        if (!itemstack.isEmpty()) {
             AbstractPonyModel model = getModel().getModel();
             Item item = itemstack.getItem();
 
@@ -49,15 +49,14 @@ public class LayerPonySkull implements LayerRenderer<EntityLivingBase> {
             model.bipedHead.postRender(0.0625f);
             if (model instanceof ModelPlayerPony) {
                 translate(0, .2, 0);
+            } else {
+                translate(0, 0, .15);
             }
             color(1, 1, 1, 1);
-            if (item instanceof ItemBlock) {
-                renderBlock(entity, itemstack);
-            } else if (item == Items.SKULL) {
-                if (model instanceof ModelPlayerPony) {
-                    translate(0, 0, -.15);
-                }
+            if (item == Items.SKULL) {
                 renderSkull(itemstack, isVillager, limbSwing);
+            } else if (!(item instanceof ItemArmor) || ((ItemArmor)item).getEquipmentSlot() != EntityEquipmentSlot.HEAD) {
+                renderBlock(entity, itemstack);
             }
             popMatrix();
         }
@@ -65,7 +64,6 @@ public class LayerPonySkull implements LayerRenderer<EntityLivingBase> {
     }
 
     private void renderBlock(EntityLivingBase entity, ItemStack itemstack) {
-        // translate(0, -0.25, 0);
         rotate(180, 0, 1, 0);
         scale(0.625, -0.625, -0.625);
         translate(0, 0.4, -0.21);
@@ -74,6 +72,7 @@ public class LayerPonySkull implements LayerRenderer<EntityLivingBase> {
     }
 
     private void renderSkull(ItemStack itemstack, boolean isVillager, float limbSwing) {
+        translate(0, 0, -.14);
         float f = 1.1875f;
         scale(f, -f, -f);
         if (isVillager) {

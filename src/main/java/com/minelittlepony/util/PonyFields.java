@@ -24,7 +24,6 @@ public class PonyFields<P, T> extends PrivateFields<P, T> {
 
         protected PonyObf(String seargeName, String obfName, String mcpName) {
             super(seargeName, obfName, mcpName);
-            // TODO Auto-generated constructor stub
         }
 
     }
