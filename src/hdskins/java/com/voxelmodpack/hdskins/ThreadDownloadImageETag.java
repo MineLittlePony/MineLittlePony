@@ -102,26 +102,35 @@ public class ThreadDownloadImageETag extends SimpleTexture {
             HttpClient client = HttpClientBuilder.create().build();
             response = client.execute(new HttpGet(imageUrl));
             int status = response.getStatusLine().getStatusCode();
-            if (status == HttpStatus.SC_NOT_FOUND)
-                return;
-            if (checkEtag(response)) {
+            if (status == HttpStatus.SC_NOT_FOUND) {
+                // delete the cache files in case we can't connect in the future
+                clearCache();
+            } else if (checkETag(response)) {
                 LOGGER.debug("Loading http texture from local cache ({})", cacheFile);
 
                 try {
-                    bufferedImage = ImageIO.read(cacheFile);
-
-                    if (imageBuffer != null) {
-                        setBufferedImage(imageBuffer.parseUserSkin(bufferedImage));
-                    }
+                    // e-tag check passed. Load the local file
+                    setLocalCache();
                 } catch (IOException ioexception) {
+                    // Nope. Local cache is corrupt. Re-download it.
                     LOGGER.error("Couldn't load skin {}", cacheFile, ioexception);
                     loadTextureFromServer(response);
                 }
             } else {
+                // there's an updated file. Download it again.
                 loadTextureFromServer(response);
             }
 
         } catch (IOException e) {
+            // connection failed
+            if (cacheFile.isFile()) {
+                try {
+                    // try to load from cache anyway
+                    setLocalCache();
+                    return;
+                } catch (IOException ignored) {
+                }
+            }
             LOGGER.error("Couldn't load skin {} ", imageUrl, e);
         } finally {
             if (response != null)
@@ -129,8 +138,22 @@ public class ThreadDownloadImageETag extends SimpleTexture {
         }
     }
 
+    private void setLocalCache() throws IOException {
+        if (cacheFile.isFile()) {
+            BufferedImage image = ImageIO.read(cacheFile);
+            if (imageBuffer != null) {
+                image = imageBuffer.parseUserSkin(image);
+            }
+            setBufferedImage(image);
+        }
+    }
 
-    private boolean checkEtag(HttpResponse response) {
+    private void clearCache() {
+        FileUtils.deleteQuietly(this.cacheFile);
+        FileUtils.deleteQuietly(this.eTagFile);
+    }
+
+    private boolean checkETag(HttpResponse response) {
         try {
             if (cacheFile.isFile()) {
                 String localETag = Files.readFirstLine(eTagFile, Charsets.UTF_8);
@@ -147,23 +170,23 @@ public class ThreadDownloadImageETag extends SimpleTexture {
 
     private void loadTextureFromServer(HttpResponse response) {
         LOGGER.debug("Downloading http texture from {} to {}", imageUrl, cacheFile);
-
         try {
-
             if (response.getStatusLine().getStatusCode() / 100 == 2) {
                 BufferedImage bufferedimage;
 
+                // write the image to disk
                 FileUtils.copyInputStreamToFile(response.getEntity().getContent(), cacheFile);
                 bufferedimage = ImageIO.read(cacheFile);
 
+                // maybe write the etag to disk
                 Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
                 if (eTag != null) {
                     FileUtils.write(eTagFile, eTag.getValue(), Charsets.UTF_8);
                 }
+
                 if (imageBuffer != null) {
                     bufferedimage = imageBuffer.parseUserSkin(bufferedimage);
                 }
-
                 setBufferedImage(bufferedimage);
             }
         } catch (Exception exception) {
