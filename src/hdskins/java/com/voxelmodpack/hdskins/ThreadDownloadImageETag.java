@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -27,14 +28,17 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ThreadDownloadImageETag extends SimpleTexture {
+
     private static final Logger LOGGER = LogManager.getLogger();
     private static final AtomicInteger THREAD_ID = new AtomicInteger(0);
+
     @Nonnull
     private final File cacheFile;
     private final File eTagFile;
     private final String imageUrl;
     @Nullable
     private final IImageBuffer imageBuffer;
+
     @Nullable
     private BufferedImage bufferedImage;
     @Nullable
@@ -67,7 +71,7 @@ public class ThreadDownloadImageETag extends SimpleTexture {
         return super.getGlTextureId();
     }
 
-    private void setBufferedImage(BufferedImage bufferedImageIn) {
+    private void setBufferedImage(@Nonnull BufferedImage bufferedImageIn) {
         this.bufferedImage = bufferedImageIn;
 
         if (this.imageBuffer != null) {
@@ -86,54 +90,53 @@ public class ThreadDownloadImageETag extends SimpleTexture {
         }
 
         if (this.imageThread == null) {
-            loadTexture();
+            this.imageThread = new Thread(this::loadTexture, "Texture Downloader #" + THREAD_ID.incrementAndGet());
+            this.imageThread.setDaemon(true);
+            this.imageThread.start();
         }
     }
 
     private void loadTexture() {
-        this.imageThread = new Thread("Texture Downloader #" + THREAD_ID.incrementAndGet()) {
-            @Override
-            public void run() {
-                HttpResponse response = null;
+        HttpResponse response = null;
+        try {
+            HttpClient client = HttpClientBuilder.create().build();
+            response = client.execute(new HttpGet(imageUrl));
+            int status = response.getStatusLine().getStatusCode();
+            if (status == HttpStatus.SC_NOT_FOUND)
+                return;
+            if (checkEtag(response)) {
+                LOGGER.debug("Loading http texture from local cache ({})", cacheFile);
+
                 try {
-                    HttpClient client = HttpClientBuilder.create().build();
-                    response = client.execute(new HttpGet(ThreadDownloadImageETag.this.imageUrl));
-                    if (checkEtag(response)) {
-                        LOGGER.debug("Loading http texture from local cache ({})", cacheFile);
+                    bufferedImage = ImageIO.read(cacheFile);
 
-                        try {
-                            bufferedImage = ImageIO.read(cacheFile);
-
-                            if (imageBuffer != null) {
-                                setBufferedImage(imageBuffer.parseUserSkin(bufferedImage));
-                            }
-                        } catch (IOException ioexception) {
-                            LOGGER.error("Couldn't load skin {}", cacheFile, ioexception);
-                            loadTextureFromServer(response);
-                        }
-                    } else {
-                        loadTextureFromServer(response);
+                    if (imageBuffer != null) {
+                        setBufferedImage(imageBuffer.parseUserSkin(bufferedImage));
                     }
-                } catch (IOException e) {
-                    LOGGER.error("Couldn't load skin {} ", imageUrl, e);
-                } finally {
-                    if (response != null)
-                        EntityUtils.consumeQuietly(response.getEntity());
+                } catch (IOException ioexception) {
+                    LOGGER.error("Couldn't load skin {}", cacheFile, ioexception);
+                    loadTextureFromServer(response);
                 }
+            } else {
+                loadTextureFromServer(response);
             }
-        };
-        this.imageThread.setDaemon(true);
-        this.imageThread.start();
 
+        } catch (IOException e) {
+            LOGGER.error("Couldn't load skin {} ", imageUrl, e);
+        } finally {
+            if (response != null)
+                EntityUtils.consumeQuietly(response.getEntity());
+        }
     }
+
 
     private boolean checkEtag(HttpResponse response) {
         try {
             if (cacheFile.isFile()) {
-                String localEtag = Files.readFirstLine(eTagFile, Charsets.UTF_8);
-                Header remoteEtag = response.getFirstHeader(HttpHeaders.ETAG);
+                String localETag = Files.readFirstLine(eTagFile, Charsets.UTF_8);
+                Header remoteETag = response.getFirstHeader(HttpHeaders.ETAG);
                 // true if no remote etag or does match
-                return remoteEtag == null || localEtag.equals(remoteEtag.getValue());
+                return remoteETag == null || localETag.equals(remoteETag.getValue());
             }
             return false;
         } catch (IOException e) {
@@ -142,7 +145,7 @@ public class ThreadDownloadImageETag extends SimpleTexture {
         }
     }
 
-    protected void loadTextureFromServer(HttpResponse response) {
+    private void loadTextureFromServer(HttpResponse response) {
         LOGGER.debug("Downloading http texture from {} to {}", imageUrl, cacheFile);
 
         try {
@@ -153,9 +156,9 @@ public class ThreadDownloadImageETag extends SimpleTexture {
                 FileUtils.copyInputStreamToFile(response.getEntity().getContent(), cacheFile);
                 bufferedimage = ImageIO.read(cacheFile);
 
-                Header etag = response.getFirstHeader(HttpHeaders.ETAG);
-                if (etag != null) {
-                    FileUtils.write(eTagFile, etag.getValue(), Charsets.UTF_8);
+                Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
+                if (eTag != null) {
+                    FileUtils.write(eTagFile, eTag.getValue(), Charsets.UTF_8);
                 }
                 if (imageBuffer != null) {
                     bufferedimage = imageBuffer.parseUserSkin(bufferedimage);
