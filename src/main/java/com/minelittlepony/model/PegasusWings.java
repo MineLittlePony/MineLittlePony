@@ -30,6 +30,7 @@ public class PegasusWings extends ModelBase implements PonyModelConstants {
         }
         for (int i = 0; i < rightWing.length; i++) {
             this.rightWing[i] = new ModelRenderer(pony, 56, 16);
+			this.rightWing[i].mirror = true;
             this.pony.boxList.remove(this.rightWing[i]);
         }
         for (int i = 0; i < leftWingExt.length; i++) {
@@ -61,29 +62,29 @@ public class PegasusWings extends ModelBase implements PonyModelConstants {
         this.rightWing[2].addBox(-6.0F, 5.0F, 6.0F, 2, 6, 2, stretch);
         this.rightWing[2].setRotationPoint(HEAD_RP_X, WING_FOLDED_RP_Y + yOffset, WING_FOLDED_RP_Z);
         this.rightWing[2].rotateAngleX = ROTATE_90;
-        this.leftWingExt[0].addBox(0.0F, 6.0F, 0.0F, 1, 8, 2, stretch + 0.1F);
+        this.leftWingExt[0].addBox(-0.5F, 6.0F, 0.0F, 1, 8, 2, stretch + 0.1F);
         this.leftWingExt[0].setRotationPoint(LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + yOffset, LEFT_WING_EXT_RP_Z);
-        this.leftWingExt[1].addBox(0.0F, -1.2F, -0.2F, 1, 8, 2, stretch - 0.2F);
+        this.leftWingExt[1].addBox(-0.5F, -1.2F, -0.2F, 1, 8, 2, stretch - 0.2F);
         this.leftWingExt[1].setRotationPoint(LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + yOffset, LEFT_WING_EXT_RP_Z);
-        this.leftWingExt[2].addBox(0.0F, 1.8F, 1.3F, 1, 8, 2, stretch - 0.1F);
+        this.leftWingExt[2].addBox(-0.5F, 1.8F, 1.3F, 1, 8, 2, stretch - 0.1F);
         this.leftWingExt[2].setRotationPoint(LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + yOffset, LEFT_WING_EXT_RP_Z);
-        this.leftWingExt[3].addBox(0.0F, 5.0F, 2.0F, 1, 8, 2, stretch);
+        this.leftWingExt[3].addBox(-0.5F, 5.0F, 2.0F, 1, 8, 2, stretch);
         this.leftWingExt[3].setRotationPoint(LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + yOffset, LEFT_WING_EXT_RP_Z);
-        this.leftWingExt[4].addBox(0.0F, 0.0F, -0.2F, 1, 6, 2, stretch + 0.3F);
+        this.leftWingExt[4].addBox(-0.5F, 0.0F, -0.2F, 1, 6, 2, stretch + 0.3F);
         this.leftWingExt[4].setRotationPoint(LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + yOffset, LEFT_WING_EXT_RP_Z);
-        this.leftWingExt[5].addBox(0.0F, 0.0F, 0.2F, 1, 3, 2, stretch + 0.19F);
+        this.leftWingExt[5].addBox(-0.5F, 0.0F, 0.2F, 1, 3, 2, stretch + 0.19F);
         this.leftWingExt[5].setRotationPoint(LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + yOffset, LEFT_WING_EXT_RP_Z);
-        this.rightWingExt[0].addBox(0.0F, 6.0F, 0.0F, 1, 8, 2, stretch + 0.1F);
+        this.rightWingExt[0].addBox(-0.5F, 6.0F, 0.0F, 1, 8, 2, stretch + 0.1F);
         this.rightWingExt[0].setRotationPoint(RIGHT_WING_EXT_RP_X, RIGHT_WING_EXT_RP_Y + yOffset, RIGHT_WING_EXT_RP_Z);
-        this.rightWingExt[1].addBox(0.0F, -1.2F, -0.2F, 1, 8, 2, stretch - 0.2F);
+        this.rightWingExt[1].addBox(-0.5F, -1.2F, -0.2F, 1, 8, 2, stretch - 0.2F);
         this.rightWingExt[1].setRotationPoint(RIGHT_WING_EXT_RP_X, RIGHT_WING_EXT_RP_Y + yOffset, RIGHT_WING_EXT_RP_Z);
-        this.rightWingExt[2].addBox(0.0F, 1.8F, 1.3F, 1, 8, 2, stretch - 0.1F);
+        this.rightWingExt[2].addBox(-0.5F, 1.8F, 1.3F, 1, 8, 2, stretch - 0.1F);
         this.rightWingExt[2].setRotationPoint(RIGHT_WING_EXT_RP_X, RIGHT_WING_EXT_RP_Y + yOffset, RIGHT_WING_EXT_RP_Z);
-        this.rightWingExt[3].addBox(0.0F, 5.0F, 2.0F, 1, 8, 2, stretch);
+        this.rightWingExt[3].addBox(-0.5F, 5.0F, 2.0F, 1, 8, 2, stretch);
         this.rightWingExt[3].setRotationPoint(RIGHT_WING_EXT_RP_X, RIGHT_WING_EXT_RP_Y + yOffset, RIGHT_WING_EXT_RP_Z);
-        this.rightWingExt[4].addBox(0.0F, 0.0F, -0.2F, 1, 6, 2, stretch + 0.3F);
+        this.rightWingExt[4].addBox(-0.5F, 0.0F, -0.2F, 1, 6, 2, stretch + 0.3F);
         this.rightWingExt[4].setRotationPoint(RIGHT_WING_EXT_RP_X, RIGHT_WING_EXT_RP_Y + yOffset, RIGHT_WING_EXT_RP_Z);
-        this.rightWingExt[5].addBox(0.0F, 0.0F, 0.2F, 1, 3, 2, stretch + 0.19F);
+        this.rightWingExt[5].addBox(-0.5F, 0.0F, 0.2F, 1, 3, 2, stretch + 0.19F);
         this.rightWingExt[5].setRotationPoint(RIGHT_WING_EXT_RP_X, RIGHT_WING_EXT_RP_Y + yOffset, RIGHT_WING_EXT_RP_Z);
     }
 
