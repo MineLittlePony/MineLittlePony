@@ -26,11 +26,11 @@ public class PegasusWings extends ModelBase implements PonyModelConstants {
 
         for (int i = 0; i < leftWing.length; i++) {
             this.leftWing[i] = new ModelRenderer(pony, 56, 32);
+			this.leftWing[i].mirror = true;
             this.pony.boxList.remove(this.leftWing[i]);
         }
         for (int i = 0; i < rightWing.length; i++) {
             this.rightWing[i] = new ModelRenderer(pony, 56, 16);
-			this.rightWing[i].mirror = true;
             this.pony.boxList.remove(this.rightWing[i]);
         }
         for (int i = 0; i < leftWingExt.length; i++) {
