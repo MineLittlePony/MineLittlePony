@@ -61,7 +61,7 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
                              EntityEquipmentSlot armorSlot) {
         ItemStack itemstack = entity.getItemStackFromSlot(armorSlot);
 
-        if (itemstack != null && itemstack.getItem() instanceof ItemArmor) {
+        if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemArmor) {
 
             ItemArmor itemarmor = (ItemArmor) itemstack.getItem();
             boolean isLegs = armorSlot == EntityEquipmentSlot.LEGS;
