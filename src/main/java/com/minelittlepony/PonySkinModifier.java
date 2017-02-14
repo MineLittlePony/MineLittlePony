@@ -13,8 +13,8 @@ public class PonySkinModifier implements ISkinModifier {
         int scale = skin.getWidth() / 64;
 
 		//drawImage(dest, skin, scale, 64, 32, 56, 48, 56, 16, 64, 32); //old code from 2015, let's try it :D
-        //That didn't work right, needs un-mirrored that way
-		drawImage(dest, skin, scale, 64, 32, 56, 48, 64, 16, 56, 32); // same code as above but not horizontally flipping the wing texture it copies
+        //That didn't work right, needs un-mirrored horizontally
+        drawImage(dest, skin, scale, 64, 32, 56, 48, 64, 16, 56, 32); // same code as above but not horizontally flipping the wing texture it copies
         //removed all below code because it doesn't seem to be necessary if you just mirror the model
         //top, mirror
         //drawImage(dest, skin, scale, 60, 32, 58, 34, 58, 16, 60, 18);
