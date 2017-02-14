@@ -6,10 +6,6 @@ buildscript {
 			url 'http://files.minecraftforge.net/maven'
 		}
 		maven {
-			name 'm2'
-			url 'https://plugins.gradle.org/m2'
-		}
-		maven {
 			name = 'sponge'
 			url = 'http://repo.spongepowered.org/maven'
 		}
@@ -24,7 +20,7 @@ apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'com.minelittlepony'
-version = '1.11.2.1'
+version = '1.11.2.2-SNAPSHOT'
 description = 'Mine Little Pony'
 
 targetCompatibility = 1.8
