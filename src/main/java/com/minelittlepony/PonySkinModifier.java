@@ -12,22 +12,18 @@ public class PonySkinModifier implements ISkinModifier {
     public void convertSkin(BufferedImage skin, Graphics dest) {
         int scale = skin.getWidth() / 64;
 
-        //drawImage(dest, skin, scale, 64, 32, 56, 48, 56, 16, 64, 32); //old code from 2015, let's try it :D
-        //That didn't work right, needs un-mirrored horizontally
-        drawImage(dest, skin, scale, 64, 32, 56, 48, 64, 16, 56, 32); // same code as above but not horizontally flipping the wing texture it copies
-        //removed all below code because it doesn't seem to be necessary if you just mirror the model
         //top, mirror
-        //drawImage(dest, skin, scale, 60, 32, 58, 34, 58, 16, 60, 18);
+        drawImage(dest, skin, scale, 60, 32, 58, 34, 58, 16, 60, 18);
         //bottom, mirror
-        //drawImage(dest, skin, scale, 62, 32, 60, 34, 60, 16, 62, 18);
+        drawImage(dest, skin, scale, 62, 32, 60, 34, 60, 16, 62, 18);
         //inside
-        //drawImage(dest, skin, scale, 58, 34, 56, 48, 60, 18, 62, 32);
+        drawImage(dest, skin, scale, 58, 34, 56, 48, 60, 18, 62, 32);
         //back
-        //drawImage(dest, skin, scale, 60, 34, 58, 48, 58, 18, 60, 32);
+        drawImage(dest, skin, scale, 60, 34, 58, 48, 58, 18, 60, 32);
         //outside
-        //drawImage(dest, skin, scale, 62, 34, 60, 48, 56, 18, 58, 32);
+        drawImage(dest, skin, scale, 62, 34, 60, 48, 56, 18, 58, 32);
         //back
-        //drawImage(dest, skin, scale, 64, 34, 62, 48, 62, 18, 64, 32);
+        drawImage(dest, skin, scale, 64, 34, 62, 48, 62, 18, 64, 32);
     }
 
     private void drawImage(Graphics graphics, Image image, int scale, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2) {
