@@ -182,4 +182,3 @@ public class PegasusWings extends ModelBase implements PonyModelConstants {
     }
 
 }
-
