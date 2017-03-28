@@ -1,9 +1,8 @@
 package com.minelittlepony.renderer.layer;
 
 import com.google.common.collect.Maps;
-import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.ForgeProxy;
 import com.minelittlepony.ducks.IRenderPony;
-import com.minelittlepony.forge.IForgeHooks;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.PlayerModel;
 import com.minelittlepony.model.pony.ModelHumanPlayer;
@@ -64,14 +63,18 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
         if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemArmor) {
 
             ItemArmor itemarmor = (ItemArmor) itemstack.getItem();
-            boolean isLegs = armorSlot == EntityEquipmentSlot.LEGS;
 
-            AbstractPonyModel modelbase = isLegs ? pony.getArmor().modelArmor : pony.getArmor().modelArmorChestplate;
-            modelbase = getArmorModel(entity, itemstack, isLegs ? 2 : 1, modelbase);
+            AbstractPonyModel modelbase;
+            if (armorSlot == EntityEquipmentSlot.LEGS) {
+                modelbase = pony.getArmor().modelArmor;
+            } else {
+                modelbase = pony.getArmor().modelArmorChestplate;
+            }
+            modelbase = getArmorModel(entity, itemstack, armorSlot, modelbase);
             modelbase.setModelAttributes(this.pony.getModel());
             modelbase.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
 
-            Tuple<ResourceLocation, Boolean> armors = getArmorTexture(entity, itemstack, isLegs ? 2 : 1, null);
+            Tuple<ResourceLocation, Boolean> armors = getArmorTexture(entity, itemstack, armorSlot, null);
             prepareToRender((ModelPonyArmor) modelbase, armorSlot, armors.getSecond());
 
             this.renderer.bindTexture(armors.getFirst());
@@ -82,7 +85,7 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
                 float f9 = (j & 255) / 255.0F;
                 GlStateManager.color(f7, f8, f9, 1);
                 modelbase.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-                armors = getArmorTexture(entity, itemstack, isLegs ? 2 : 1, "overlay");
+                armors = getArmorTexture(entity, itemstack, armorSlot, "overlay");
                 this.renderer.bindTexture(armors.getFirst());
             }
             GlStateManager.color(1, 1, 1, 1);
@@ -94,7 +97,7 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
         }
     }
 
-    private Tuple<ResourceLocation, Boolean> getArmorTexture(EntityLivingBase entity, ItemStack itemstack, int slot, String type) {
+    private Tuple<ResourceLocation, Boolean> getArmorTexture(EntityLivingBase entity, ItemStack itemstack, EntityEquipmentSlot slot, String type) {
         ItemArmor item = (ItemArmor) itemstack.getItem();
         String texture = item.getArmorMaterial().getName();
         String domain = "minecraft";
@@ -103,7 +106,7 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
             domain = texture.substring(0, idx);
             texture = texture.substring(idx + 1);
         }
-        String s1 = String.format("%s:textures/models/armor/%s_layer_%d%s.png", domain, texture, (slot == 2 ? 2 : 1),
+        String s1 = String.format("%s:textures/models/armor/%s_layer_%d%s.png", domain, texture, slot == EntityEquipmentSlot.LEGS ? 2 : 1,
                 type == null ? "" : String.format("_%s", type));
         s1 = getArmorTexture(entity, itemstack, s1, slot, type);
         ResourceLocation human = getHumanResource(s1);
@@ -230,22 +233,16 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
         return pony;
     }
 
-    private static String getArmorTexture(EntityLivingBase entity, ItemStack item, String def, int slot, String type) {
-        IForgeHooks armor = MineLittlePony.getProxy().getHooks();
-        if (armor != null) {
-            return armor.getArmorTexture(entity, item, def, slot, type);
-        }
-        return def;
+    private static String getArmorTexture(EntityLivingBase entity, ItemStack item, String def, EntityEquipmentSlot slot, String type) {
+        return ForgeProxy.getArmorTexture(entity, item, def, slot, type);
     }
 
-    private static AbstractPonyModel getArmorModel(EntityLivingBase entity, ItemStack itemstack, int slot, AbstractPonyModel def) {
-        IForgeHooks armor = MineLittlePony.getProxy().getHooks();
-        if (armor != null) {
-            ModelBase model = armor.getArmorModel(entity, itemstack, slot, def);
-            if (model instanceof ModelPonyArmor) {
-                return (AbstractPonyModel) model;
-            }
+    private static AbstractPonyModel getArmorModel(EntityLivingBase entity, ItemStack itemstack, EntityEquipmentSlot slot, AbstractPonyModel def) {
+        ModelBase model = ForgeProxy.getArmorModel(entity, itemstack, slot, def);
+        if (model instanceof ModelPonyArmor) {
+            return (AbstractPonyModel) model;
         }
+
         return def;
     }
 
