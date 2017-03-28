@@ -46,7 +46,6 @@ public class MineLittlePony {
 
     private PonyConfig config;
     private PonyManager ponyManager;
-    private ProxyContainer proxy;
 
     private Map<Class<? extends Entity>, Render<?>> renderMap = Maps.newHashMap();
 
@@ -59,7 +58,6 @@ public class MineLittlePony {
 
         this.config = new PonyConfig();
         this.ponyManager = new PonyManager(config);
-        this.proxy = new ProxyContainer();
 
         LiteLoader.getInstance().registerExposable(config, null);
 
@@ -157,10 +155,6 @@ public class MineLittlePony {
 
     public PonyManager getManager() {
         return this.ponyManager;
-    }
-
-    public static ProxyContainer getProxy() {
-        return getInstance().proxy;
     }
 
     public static PonyConfig getConfig() {
