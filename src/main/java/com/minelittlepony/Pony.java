@@ -15,32 +15,32 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Pony {
 
-    private static PonyConfig config = MineLittlePony.getConfig();
+    private static final AtomicInteger ponyCount = new AtomicInteger();
+    private final int ponyId = ponyCount.getAndIncrement();
 
-    private static int ponyCount = 0;
-    private final int ponyId = ponyCount++;
-
-    public ResourceLocation textureResourceLocation;
+    private ResourceLocation textureResourceLocation;
     public PonyData metadata = new PonyData();
 
     private int skinCheckCount;
     private boolean skinChecked;
 
-    public Pony(@Nonnull AbstractClientPlayer player) {
+    public Pony(AbstractClientPlayer player) {
         this.textureResourceLocation = player.getLocationSkin();
-        MineLittlePony.logger.debug("+ Initialising new pony #%d for player %s (%s) with resource location %s.", this.ponyId,
+        MineLittlePony.logger.debug("+ Initialising new pony #{} for player {} ({}) with resource location {}.", this.ponyId,
                 player.getName(), player.getUniqueID(), this.textureResourceLocation);
         this.checkSkin(this.textureResourceLocation);
     }
 
-    public Pony(@Nonnull ResourceLocation aTextureResourceLocation) {
+    public Pony(ResourceLocation aTextureResourceLocation) {
         this.textureResourceLocation = aTextureResourceLocation;
-        MineLittlePony.logger.debug("+ Initialising new pony #%d with resource location %s.", this.ponyId, this.textureResourceLocation);
+        MineLittlePony.logger.debug("+ Initialising new pony #{} with resource location {}.", this.ponyId, this.textureResourceLocation);
         this.checkSkin(this.textureResourceLocation);
     }
 
@@ -55,19 +55,39 @@ public class Pony {
         }
     }
 
-    public void checkSkin(ResourceLocation textureResourceLocation) {
-        BufferedImage skinImage = this.getBufferedImage(textureResourceLocation);
-        if (skinImage != null) {
-            this.checkSkin(skinImage);
+    private void checkSkin(ResourceLocation textureResourceLocation) {
+        if(!checkPonyMeta(textureResourceLocation))        {
+            BufferedImage skinImage = this.getBufferedImage(textureResourceLocation);
+            if (skinImage != null) {
+                this.checkSkin(skinImage);
+            }
         }
     }
 
-    public BufferedImage getBufferedImage(@Nonnull ResourceLocation textureResourceLocation) {
+    private boolean checkPonyMeta(ResourceLocation location) {
+        try {
+            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(location);
+            if (res.hasMetadata()) {
+                PonyData data = res.getMetadata(PonyDataSerialzier.NAME);
+                if (data != null) {
+                    metadata = data;
+                    this.skinChecked = true;
+                }
+                return true;
+            }
+        } catch (IOException e) {
+            MineLittlePony.logger.warn("Unable to read {} metadata", location, e);
+        }
+        return false;
+    }
+
+    @Nullable
+    private BufferedImage getBufferedImage(@Nonnull ResourceLocation textureResourceLocation) {
         BufferedImage skinImage = null;
         try {
             IResource skin = Minecraft.getMinecraft().getResourceManager().getResource(textureResourceLocation);
             skinImage = TextureUtil.readBufferedImage(skin.getInputStream());
-            MineLittlePony.logger.debug("Obtained skin from resource location %s", textureResourceLocation);
+            MineLittlePony.logger.debug("Obtained skin from resource location {}", textureResourceLocation);
             // this.checkSkin(skinImage);
         } catch (IOException e) {
 
@@ -94,14 +114,14 @@ public class Pony {
     }
 
     public void checkSkin(BufferedImage bufferedimage) {
-        MineLittlePony.logger.debug("\tStart skin check #%d for pony #%d with image %s.", ++this.skinCheckCount, this.ponyId);
+        MineLittlePony.logger.debug("\tStart skin check #{} for pony #{} with image {}.", ++this.skinCheckCount, this.ponyId, bufferedimage);
         metadata = PonyData.parse(bufferedimage);
         this.skinChecked = true;
     }
 
     public boolean isPegasusFlying(EntityPlayer player) {
         //noinspection SimplifiableIfStatement
-        if (this.metadata.getRace() == null || !this.metadata.getRace().hasWings()) {
+        if (!this.metadata.getRace().hasWings()) {
             return false;
         }
         return player.capabilities.isFlying || !(player.onGround || player.isRiding() || player.isOnLadder() || player.isInWater() || player.isElytraFlying());
@@ -109,12 +129,12 @@ public class Pony {
 
     public PlayerModel getModel(boolean ignorePony, boolean smallArms) {
         boolean is_a_pony = false;
-        switch (ignorePony ? PonyLevel.BOTH : config.getPonyLevel()) {
+        switch (ignorePony ? PonyLevel.BOTH : MineLittlePony.getConfig().getPonyLevel()) {
             case HUMANS:
                 is_a_pony = false;
                 break;
             case BOTH:
-                is_a_pony = metadata.getRace() != null;
+                is_a_pony = metadata.getRace() != PonyRace.HUMAN;
                 break;
             case PONIES:
                 is_a_pony = true;

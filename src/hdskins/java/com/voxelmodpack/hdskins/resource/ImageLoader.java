@@ -1,6 +1,5 @@
 package com.voxelmodpack.hdskins.resource;
 
-import com.google.common.base.Throwables;
 import com.voxelmodpack.hdskins.DynamicTextureImage;
 import com.voxelmodpack.hdskins.ImageBufferDownloadHD;
 import net.minecraft.client.Minecraft;
@@ -12,9 +11,9 @@ import javax.annotation.Nullable;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
-public class ImageLoader implements Callable<ResourceLocation> {
+public class ImageLoader implements Supplier<ResourceLocation> {
 
     private Minecraft mc = Minecraft.getMinecraft();
 
@@ -25,11 +24,17 @@ public class ImageLoader implements Callable<ResourceLocation> {
     }
 
     @Override
-    public ResourceLocation call() throws Exception {
+    @Nullable
+    public ResourceLocation get() {
         BufferedImage image = getImage(original);
         final BufferedImage updated = new ImageBufferDownloadHD().parseUserSkin(image);
-        if (updated == null)
+        if (updated == null) {
             return null;
+        }
+        if (updated == image) {
+            // don't load a new image
+            return this.original;
+        }
         return this.mc.addScheduledTask(() -> loadSkin(updated)).get();
     }
 
@@ -43,16 +48,16 @@ public class ImageLoader implements Callable<ResourceLocation> {
                 IOUtils.closeQuietly(in);
             }
         } catch (IOException e) {
-            Throwables.propagate(e);
+            return null;
         }
-        return null;
     }
 
+    @Nullable
     private ResourceLocation loadSkin(BufferedImage image) {
 
         ResourceLocation conv = new ResourceLocation(original.getResourceDomain() + "-converted", original.getResourcePath());
-        this.mc.getTextureManager().loadTexture(conv, new DynamicTextureImage(image));
-        return conv;
+        boolean success= this.mc.getTextureManager().loadTexture(conv, new DynamicTextureImage(image));
+        return success ? conv : null;
     }
 
 }

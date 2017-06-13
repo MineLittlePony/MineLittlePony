@@ -3,7 +3,6 @@ package com.minelittlepony.model;
 import com.minelittlepony.PonyData;
 import com.minelittlepony.renderer.HornGlowRenderer;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
@@ -15,6 +14,8 @@ public class UnicornHorn extends ModelBase implements PonyModelConstants {
     protected final AbstractPonyModel pony;
     private ModelRenderer horn;
     private HornGlowRenderer[] hornglow;
+
+    private boolean usingMagic;
 
     public UnicornHorn(AbstractPonyModel pony, float yOffset, float stretch) {
         this.pony = pony;
@@ -40,7 +41,7 @@ public class UnicornHorn extends ModelBase implements PonyModelConstants {
 
         if (data.getRace().hasHorn()) {
             this.horn.render(scale);
-            if ((pony.leftArmPose != ArmPose.EMPTY || pony.rightArmPose != ArmPose.EMPTY) && data.hasMagic()) {
+            if (usingMagic && data.hasMagic()) {
                 GL11.glPushAttrib(24577);
                 disableTexture2D();
                 disableLighting();
@@ -66,4 +67,7 @@ public class UnicornHorn extends ModelBase implements PonyModelConstants {
         }
     }
 
+    public void setUsingMagic(boolean usingMagic) {
+        this.usingMagic = usingMagic;
+    }
 }

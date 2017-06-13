@@ -5,7 +5,6 @@ import com.minelittlepony.ducks.IRenderItem;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.pony.ModelHumanPlayer;
 import com.minelittlepony.model.pony.ModelPlayerPony;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
@@ -16,33 +15,26 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHandSide;
 import org.lwjgl.opengl.GL14;
 
+import javax.annotation.Nullable;
+
 import static net.minecraft.client.renderer.GlStateManager.*;
 
-public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
-
-    protected final RenderLivingBase<? extends EntityLivingBase> livingPonyEntity;
-    private LayerHeldItem held;
+public class LayerHeldPonyItem extends AbstractPonyLayer<EntityLivingBase> {
 
     public LayerHeldPonyItem(RenderLivingBase<? extends EntityLivingBase> livingPony) {
-        this.livingPonyEntity = livingPony;
-        this.held = new LayerHeldItem(livingPony);
+        super(livingPony, new LayerHeldItem(livingPony));
     }
 
     @Override
-    public void doRenderLayer(EntityLivingBase entity, float p_177141_2_, float p_177141_3_,
-                              float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
-        ModelBase model = livingPonyEntity.getMainModel();
-        if (model instanceof ModelHumanPlayer) {
-            held.doRenderLayer(entity, p_177141_2_, p_177141_3_, partialTicks, p_177141_5_, p_177141_6_,
-                    p_177141_7_, scale);
-            return;
-        }
+    public void doPonyRender(EntityLivingBase entity, float p_177141_2_, float p_177141_3_,
+            float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
+        ModelBase model = getRenderer().getMainModel();
         boolean mainRight = entity.getPrimaryHand() == EnumHandSide.RIGHT;
         ItemStack itemMain = entity.getHeldItemMainhand();
         ItemStack itemOff = entity.getHeldItemOffhand();
@@ -55,7 +47,7 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
                 ((AbstractPonyModel) model).transform(BodyPart.LEGS);
             }
 
-            if (this.livingPonyEntity.getMainModel().isChild) {
+            if (model.isChild) {
                 translate(0, 0.625, 0);
                 rotate(-20, -1, 0, 0);
                 scale(.5, .5, .5);
@@ -79,7 +71,7 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
 
             GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
             GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
-            boolean isUnicorn = isUnicorn(this.livingPonyEntity.getMainModel());
+            boolean isUnicorn = isUnicorn(this.getRenderer().getMainModel());
             boolean isLeft = hand == EnumHandSide.LEFT;
             if (isUnicorn) {
                 GlStateManager.translate(isLeft ? -0.6F : 0.1F, 1, -.5);
@@ -89,7 +81,7 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
             Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, drop, transform, isLeft);
 
             if (isUnicorn) {
-                PonyData metadata = ((AbstractPonyModel) this.livingPonyEntity.getMainModel()).metadata;
+                PonyData metadata = ((AbstractPonyModel) this.getRenderer().getMainModel()).metadata;
                 this.renderItemGlow(entity, drop, transform, hand, metadata.getGlowColor());
             }
             GlStateManager.popMatrix();
@@ -101,23 +93,24 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
     }
 
     protected void translateToHand(EnumHandSide hand) {
-        AbstractPonyModel thePony = ((IRenderPony) this.livingPonyEntity).getPony().getModel();
+        AbstractPonyModel thePony = ((IRenderPony) this.getRenderer()).getPony().getModel();
         if (thePony.metadata.hasMagic()) {
             ModelPlayerPony playerModel = (ModelPlayerPony) thePony;
             ModelRenderer unicornarm = hand == EnumHandSide.LEFT ? playerModel.unicornArmLeft : playerModel.unicornArmRight;
             unicornarm.postRender(0.0625F);
         } else {
-            ((ModelBiped) this.livingPonyEntity.getMainModel()).postRenderArm(0.0625F, hand);
+            ((ModelBiped) this.getRenderer().getMainModel()).postRenderArm(0.0625F, hand);
         }
     }
 
-    public void renderItemGlow(EntityLivingBase entity, ItemStack drop, ItemCameraTransforms.TransformType transform, EnumHandSide hand, int glowColor) {
+    public void renderItemGlow(EntityLivingBase entity, ItemStack drop, ItemCameraTransforms.TransformType transform, EnumHandSide hand,
+            int glowColor) {
 
         // enchantments mess up the rendering
         ItemStack drop2 = drop.copy();
-        if (drop2.hasEffect())
-            drop2.setTagInfo("ench", null);
-
+        if (drop2.hasEffect()) {
+            removeEnch(drop2.getTagCompound());
+        }
         float red = (glowColor >> 16 & 255) / 255.0F;
         float green = (glowColor >> 8 & 255) / 255.0F;
         float blue = (glowColor & 255) / 255.0F;
@@ -129,7 +122,7 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
         GL14.glBlendColor(red, green, blue, alpha);
 
         RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
-        ((IRenderItem)renderItem).useTransparency(true);
+        ((IRenderItem) renderItem).useTransparency(true);
 
         scale(1.1, 1.1, 1.1);
 
@@ -138,11 +131,17 @@ public class LayerHeldPonyItem implements LayerRenderer<EntityLivingBase> {
         translate(.01, -.01, -.02);
         renderItem.renderItem(drop, entity, transform, hand == EnumHandSide.LEFT);
 
-        ((IRenderItem)renderItem).useTransparency(false);
+        ((IRenderItem) renderItem).useTransparency(false);
         enableLighting();
         popMatrix();
 
         // I hate rendering
+    }
+
+    private void removeEnch(@Nullable NBTTagCompound tag) {
+        if (tag != null) {
+            tag.removeTag("ench");
+        }
     }
 
     @Override

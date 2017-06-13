@@ -14,8 +14,8 @@ public class RenderPonyPigman extends RenderPonyMob<EntityPigZombie> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityPigZombie entity) {
-        return getTexture(PIGMAN);
+    protected ResourceLocation getTexture(EntityPigZombie entity) {
+        return PIGMAN;
     }
 
 }

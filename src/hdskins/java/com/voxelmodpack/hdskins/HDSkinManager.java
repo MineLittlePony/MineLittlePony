@@ -232,9 +232,10 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         skinModifiers.add(modifier);
     }
 
-    @Nullable
+    @Nonnull
     public ResourceLocation getConvertedSkin(@Nullable ResourceLocation res) {
-        return resources.getConvertedResource(res);
+        ResourceLocation loc = resources.getConvertedResource(res);
+        return loc == null ? res : loc;
     }
 
     public void convertSkin(BufferedImage image, Graphics dest) {

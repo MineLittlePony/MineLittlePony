@@ -18,7 +18,8 @@ public class HDSkinsConfigPanel implements ConfigPanel {
 
     @Override
     public void drawPanel(ConfigPanelHost host, int mouseX, int mouseY, float partialTicks) {
-        this.button.drawButton(Minecraft.getMinecraft(), mouseX, mouseY);
+        // TODO drawButton
+        this.button.func_191745_a(Minecraft.getMinecraft(), mouseX, mouseY, partialTicks);
     }
 
     @Override

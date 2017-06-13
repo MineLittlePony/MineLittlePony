@@ -39,12 +39,12 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityVillager villager) {
-        return getTexture(getTextureForVillager(villager));
+    protected ResourceLocation getTexture(EntityVillager villager) {
+        return getTextureForVillager(villager.getProfession());
     }
 
-    private ResourceLocation getTextureForVillager(EntityVillager villager) {
-        switch (villager.getProfession()) {
+    private ResourceLocation getTextureForVillager(int profession) {
+        switch (profession) {
             case Villagers.FARMER:
                 return FARMER;
             case Villagers.LIBRARIAN:

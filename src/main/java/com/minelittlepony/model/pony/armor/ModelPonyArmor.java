@@ -264,9 +264,8 @@ public class ModelPonyArmor extends ModelPlayerPony {
         this.syncLegs();
     }
 
-    @Override
-    public void setInvisible(boolean invisible) {
-        super.setInvisible(invisible);
+    public void setVisible(boolean invisible) {
+        super.setVisible(invisible);
         this.Bodypiece.showModel = invisible;
         extBody.showModel = invisible;
         for (ModelRenderer m : extHead) {

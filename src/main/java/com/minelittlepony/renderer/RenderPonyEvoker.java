@@ -1,53 +1,41 @@
 package com.minelittlepony.renderer;
 
-import com.minelittlepony.PonyData;
-import com.minelittlepony.PonyDataSerialzier;
-import com.minelittlepony.model.pony.ModelEvokerPony;
+import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.model.pony.ModelIllagerPony;
-import net.minecraft.client.Minecraft;
+import com.minelittlepony.renderer.layer.LayerHeldPonyItem;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.resources.IResource;
-import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityEvoker;
+import net.minecraft.entity.monster.EntitySpellcasterIllager;
+import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 
-import java.io.IOException;
-
-public class RenderPonyEvoker extends RenderLiving<EntityEvoker> {
+public class RenderPonyEvoker extends RenderPonyMob<EntityEvoker> {
 
     private static final ResourceLocation EVOKER = new ResourceLocation("minelittlepony", "textures/entity/illager/evoker_pony.png");
 
     public RenderPonyEvoker(RenderManager rendermanagerIn) {
-        super(rendermanagerIn, new ModelEvokerPony(), 0.5F);
+        super(rendermanagerIn, PMAPI.illager);
     }
 
     @Override
-    public void doRender(EntityEvoker entity, double x, double y, double z, float entityYaw, float partialTicks) {
-        ModelIllagerPony model = (ModelIllagerPony) this.getMainModel();
-
-        IResourceManager resources = Minecraft.getMinecraft().getResourceManager();
-        try {
-            model.glowColor = 0x4444aa;
-            model.isUnicorn = false;
-            IResource resource = resources.getResource(EVOKER);
-            if (resource.hasMetadata()) {
-                PonyData meta = resource.getMetadata(PonyDataSerialzier.NAME);
-                if (meta != null) {
-                    model.isUnicorn = meta.hasMagic();
-                    model.glowColor = meta.getGlowColor();
+    protected void addLayers() {
+        this.addLayer(new LayerHeldPonyItem(this) {
+            public void doPonyRender(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+                if (((EntitySpellcasterIllager) entitylivingbaseIn).func_193082_dl()) {
+                    super.doPonyRender(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        super.doRender(entity, x, y, z, entityYaw, partialTicks);
+            protected void translateToHand(EnumHandSide p_191361_1_) {
+                ((ModelIllagerPony) this.getRenderer().getMainModel()).getArmForSide(p_191361_1_).postRender(0.0625F);
+            }
+        });
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityEvoker entity) {
+    protected ResourceLocation getTexture(EntityEvoker entity) {
         return EVOKER;
     }
 

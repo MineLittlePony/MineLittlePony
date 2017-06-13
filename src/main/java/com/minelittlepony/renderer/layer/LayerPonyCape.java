@@ -3,12 +3,10 @@ package com.minelittlepony.renderer.layer;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.PlayerModel;
-import com.minelittlepony.model.pony.ModelHumanPlayer;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerCape;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -18,22 +16,16 @@ import javax.annotation.Nonnull;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
-public class LayerPonyCape implements LayerRenderer<AbstractClientPlayer> {
-
-    private RenderLivingBase<? extends AbstractClientPlayer> renderer;
-    private LayerCape cape;
+public class LayerPonyCape extends AbstractPonyLayer<AbstractClientPlayer> {
 
     public LayerPonyCape(RenderLivingBase<? extends AbstractClientPlayer> entity) {
-        renderer = entity;
-        this.cape = new LayerCape((RenderPlayer) entity);
+        super(entity, new LayerCape((RenderPlayer) entity));
     }
 
     @Override
-    public void doRenderLayer(@Nonnull AbstractClientPlayer clientPlayer, float p2, float p3, float ticks, float p5, float p6, float p7, float scale) {
-        PlayerModel model = ((IRenderPony) renderer).getPony();
-        if (model.getModel() instanceof ModelHumanPlayer) {
-            cape.doRenderLayer(clientPlayer, p2, p3, ticks, p5, p6, p7, scale);
-        } else if (clientPlayer.hasPlayerInfo() && !clientPlayer.isInvisible()
+    public void doPonyRender(@Nonnull AbstractClientPlayer clientPlayer, float p2, float p3, float ticks, float p5, float p6, float p7, float scale) {
+        PlayerModel model = ((IRenderPony) getRenderer()).getPony();
+        if (clientPlayer.hasPlayerInfo() && !clientPlayer.isInvisible()
                 && clientPlayer.isWearing(EnumPlayerModelParts.CAPE) && clientPlayer.getLocationCape() != null
                 && clientPlayer.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() != Items.ELYTRA) {
             pushMatrix();
@@ -70,7 +62,7 @@ public class LayerPonyCape implements LayerRenderer<AbstractClientPlayer> {
             rotate(-f14 / 2.0F, 0.0F, 1.0F, 0.0F);
             rotate(180.0F, 0.0F, 0.0F, 1.0F);
             rotate(90.0F, 1.0F, 0.0F, 0.0F);
-            this.renderer.bindTexture(clientPlayer.getLocationCape());
+            this.getRenderer().bindTexture(clientPlayer.getLocationCape());
             model.getModel().renderCape(0.0625F);
             popMatrix();
         }

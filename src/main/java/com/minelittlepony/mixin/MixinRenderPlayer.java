@@ -9,7 +9,12 @@ import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.model.PlayerModel;
 import com.minelittlepony.model.pony.ModelHumanPlayer;
 import com.minelittlepony.model.pony.ModelPlayerPony;
-import com.minelittlepony.renderer.layer.*;
+import com.minelittlepony.renderer.layer.LayerEntityOnPonyShoulder;
+import com.minelittlepony.renderer.layer.LayerHeldPonyItem;
+import com.minelittlepony.renderer.layer.LayerPonyArmor;
+import com.minelittlepony.renderer.layer.LayerPonyCape;
+import com.minelittlepony.renderer.layer.LayerPonyCustomHead;
+import com.minelittlepony.renderer.layer.LayerPonyElytra;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
@@ -30,6 +35,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import javax.annotation.Nonnull;
+
 @Mixin(RenderPlayer.class)
 public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientPlayer> implements IRenderPony {
 
@@ -57,7 +63,9 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
         this.addLayer(new LayerArrow(this));
         this.addLayer(new LayerPonyCape(this));
         this.addLayer(new LayerPonyCustomHead(this));
-        this.addLayer(new LayerPonyElytra((RenderPlayer) (Object) this));
+        this.addLayer(new LayerPonyElytra(this));
+        this.addLayer(new LayerEntityOnPonyShoulder(renderManager, this));
+
     }
 
     @Inject(

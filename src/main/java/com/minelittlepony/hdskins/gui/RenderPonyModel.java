@@ -6,7 +6,7 @@ import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.ModelPonyElytra;
 import com.minelittlepony.model.PlayerModel;
-import com.minelittlepony.model.pony.ModelHumanPlayer;
+import com.minelittlepony.renderer.layer.AbstractPonyLayer;
 import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -40,14 +40,11 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
     protected LayerRenderer<EntityLivingBase> getElytraLayer() {
         final LayerRenderer<EntityLivingBase> elytra = super.getElytraLayer();
         final ModelPonyElytra modelElytra = new ModelPonyElytra();
-        return new LayerRenderer<EntityLivingBase>() {
+        return new AbstractPonyLayer<EntityLivingBase>(this, elytra) {
 
             @Override
-            public void doRenderLayer(EntityLivingBase entityBase, float swing, float swingAmount, float ticks, float age, float yaw, float head, float scale) {
-                if (mainModel instanceof ModelHumanPlayer) {
-                    elytra.doRenderLayer(entityBase, swing, swingAmount, ticks, age, yaw, head, scale);
-                    return;
-                }
+            public void doPonyRender(EntityLivingBase entityBase, float swing, float swingAmount, float ticks, float age, float yaw, float head,
+                    float scale) {
 
                 EntityPonyModel entity = (EntityPonyModel) entityBase;
 
@@ -60,8 +57,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
 
                     GlStateManager.pushMatrix();
                     GlStateManager.translate(0.0F, 0.25F, 0.125F);
-                    if (mainModel instanceof AbstractPonyModel)
-                        ((AbstractPonyModel) mainModel).transform(BodyPart.BODY);
+                    ((AbstractPonyModel) mainModel).transform(BodyPart.BODY);
 
                     modelElytra.setRotationAngles(swing, swingAmount, age, yaw, head, scale, entity);
                     modelElytra.render(entity, swing, swingAmount, age, yaw, head, scale);
@@ -69,11 +65,6 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
 
                     GlStateManager.popMatrix();
                 }
-            }
-
-            @Override
-            public boolean shouldCombineTextures() {
-                return false;
             }
 
         };

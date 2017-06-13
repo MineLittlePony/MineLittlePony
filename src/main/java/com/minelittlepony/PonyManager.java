@@ -10,11 +10,10 @@ import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
-import org.apache.commons.compress.utils.IOUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -26,6 +25,9 @@ public class PonyManager implements IResourceManagerReloadListener {
     public static final ResourceLocation ALEX = new ResourceLocation("minelittlepony", "textures/entity/alex_pony.png");
 
     private static final ResourceLocation BGPONIES_JSON = new ResourceLocation("minelittlepony", "textures/entity/pony/bgponies.json");
+
+    private static final Gson GSON = new Gson();
+
     private List<ResourceLocation> backgroundPonyList = Lists.newArrayList();
 
     private PonyConfig config;
@@ -44,37 +46,22 @@ public class PonyManager implements IResourceManagerReloadListener {
         MineLittlePony.logger.info("Done initializing models.");
     }
 
-    private Pony getPonyFromResourceRegistry(ResourceLocation skinResourceLocation, AbstractClientPlayer player) {
-        Pony myLittlePony;
-        if (!this.poniesCache.containsKey(skinResourceLocation)) {
-            if (player != null) {
-                myLittlePony = new Pony(player);
-            } else {
-                myLittlePony = new Pony(skinResourceLocation);
-            }
-
-            this.poniesCache.put(skinResourceLocation, myLittlePony);
-        } else {
-            myLittlePony = this.poniesCache.get(skinResourceLocation);
-        }
-
-        return myLittlePony;
-    }
-
     public Pony getPonyFromResourceRegistry(ResourceLocation skinResourceLocation) {
-        return this.getPonyFromResourceRegistry(skinResourceLocation, null);
+        return this.poniesCache.computeIfAbsent(skinResourceLocation, Pony::new);
     }
 
     public Pony getPonyFromResourceRegistry(AbstractClientPlayer player) {
-        Pony myLittlePony = this.getPonyFromResourceRegistry(player.getLocationSkin(), player);
-        if (config.getPonyLevel() == PonyLevel.PONIES && myLittlePony.metadata.getRace() == null) {
+
+        Pony myLittlePony = this.poniesCache.computeIfAbsent(player.getLocationSkin(), res -> new Pony(player));
+
+        if (config.getPonyLevel() == PonyLevel.PONIES && myLittlePony.metadata.getRace() == PonyRace.HUMAN) {
             myLittlePony = this.getPonyFromBackgroundResourceRegistry(player);
         }
 
         return myLittlePony;
     }
 
-    public ResourceLocation getBackgroundPonyResource(UUID id) {
+    private ResourceLocation getBackgroundPonyResource(UUID id) {
         if (getNumberOfPonies() > 0) {
             int backgroundIndex = id.hashCode() % this.getNumberOfPonies();
             if (backgroundIndex < 0) {
@@ -86,7 +73,7 @@ public class PonyManager implements IResourceManagerReloadListener {
         return STEVE;
     }
 
-    public Pony getPonyFromBackgroundResourceRegistry(AbstractClientPlayer player) {
+    private Pony getPonyFromBackgroundResourceRegistry(AbstractClientPlayer player) {
         ResourceLocation textureResourceLocation;
         if (player.isUser()) {
             textureResourceLocation = getDefaultSkin(player.getUniqueID());
@@ -107,13 +94,13 @@ public class PonyManager implements IResourceManagerReloadListener {
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
-        // TODO Auto-generated method stub
+        this.poniesCache.clear();
         this.backgroudPoniesCache.clear();
         this.backgroundPonyList.clear();
         try {
             for (IResource res : resourceManager.getAllResources(BGPONIES_JSON)) {
-                try {
-                    BackgroundPonies ponies = getBackgroundPonies(res.getInputStream());
+                try (Reader reader = new InputStreamReader((res.getInputStream()))) {
+                    BackgroundPonies ponies = GSON.fromJson(reader, BackgroundPonies.class);
                     if (ponies.override) {
                         this.backgroundPonyList.clear();
                     }
@@ -126,14 +113,6 @@ public class PonyManager implements IResourceManagerReloadListener {
             // this isn't the exception you're looking for.
         }
         MineLittlePony.logger.info("Detected {} background ponies installed.", getNumberOfPonies());
-    }
-
-    private BackgroundPonies getBackgroundPonies(InputStream stream) {
-        try {
-            return new Gson().fromJson(new InputStreamReader(stream), BackgroundPonies.class);
-        } finally {
-            IOUtils.closeQuietly(stream);
-        }
     }
 
     private ResourceLocation getDefaultSkin(UUID uuid) {

@@ -108,11 +108,11 @@ public class PonySettingPanel extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
 
-        this.drawCenteredString(mc.fontRendererObj, I18n.format(TITLE), width / 2, 12, -1);
+        this.drawCenteredString(mc.fontRenderer, I18n.format(TITLE), width / 2, 12, -1);
 
-        this.drawString(mc.fontRendererObj, I18n.format(MOB_TITLE), width - width / 3 - 16, 32, -1);
-        this.drawString(mc.fontRendererObj, I18n.format(PONY_LEVEL), width / 10, 32, -1);
-        this.drawString(mc.fontRendererObj, I18n.format(OPTIONS), width / 10, 94, -1);
+        this.drawString(mc.fontRenderer, I18n.format(MOB_TITLE), width - width / 3 - 16, 32, -1);
+        this.drawString(mc.fontRenderer, I18n.format(PONY_LEVEL), width / 10, 32, -1);
+        this.drawString(mc.fontRenderer, I18n.format(OPTIONS), width / 10, 94, -1);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }

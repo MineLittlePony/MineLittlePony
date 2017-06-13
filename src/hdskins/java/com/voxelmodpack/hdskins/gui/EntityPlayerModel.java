@@ -91,6 +91,7 @@ public class EntityPlayerModel extends EntityLivingBase {
                 try {
                     BufferedImage image = ImageIO.read(skinTextureFile);
                     bufferedImage = new ImageBufferDownloadHD().parseUserSkin(image);
+                    assert bufferedImage != null;
                 } catch (IOException var4) {
                     this.localSkinResource = NO_SKIN;
                     var4.printStackTrace();
@@ -127,7 +128,7 @@ public class EntityPlayerModel extends EntityLivingBase {
         return !this.remoteSkin && this.hasLocalTexture;
     }
 
-    @Override
+//    @Override TODO
     public float getBrightness(float par1) {
         return 1.0F;
     }
@@ -188,9 +189,9 @@ public class EntityPlayerModel extends EntityLivingBase {
         return Minecraft.getMinecraft().gameSettings.mainHand;
     }
 
-    @Override
+//    @Override TODO
     public int getBrightnessForRender(float partialTicks) {
-        return 15728880;
+        return 0xf000f0;
     }
 
 

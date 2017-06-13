@@ -67,8 +67,8 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(Zombie zombie) {
-        return getTexture(ZOMBIE);
+    protected ResourceLocation getTexture(Zombie zombie) {
+        return ZOMBIE;
     }
 
     public static class Husk extends RenderPonyZombie<EntityHusk> {
@@ -84,8 +84,8 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
         }
 
         @Override
-        protected ResourceLocation getEntityTexture(EntityHusk zombie) {
-            return getTexture(HUSK);
+        protected ResourceLocation getTexture(EntityHusk zombie) {
+            return HUSK;
         }
 
     }

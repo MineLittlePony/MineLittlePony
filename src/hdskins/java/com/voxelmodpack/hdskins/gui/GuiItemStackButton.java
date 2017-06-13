@@ -4,21 +4,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.item.ItemStack;
 
-import javax.annotation.Nonnull;
-
 public class GuiItemStackButton extends GuiButton {
 
     private ItemStack itemStack;
 
-    public GuiItemStackButton(int buttonId, int x, int y, @Nonnull ItemStack itemStack) {
+    public GuiItemStackButton(int buttonId, int x, int y, ItemStack itemStack) {
         super(buttonId, x, y, 20, 20, "");
         this.itemStack = itemStack;
     }
 
+    // drawButton
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        super.drawButton(mc, mouseX, mouseY);
+    public void func_191745_a(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+        super.func_191745_a(mc, mouseX, mouseY, partialTicks);
 
-        mc.getRenderItem().renderItemIntoGUI(itemStack, this.xPosition + 2, this.yPosition + 2);
+        mc.getRenderItem().renderItemIntoGUI(itemStack, this.x + 2, this.y + 2);
     }
 }

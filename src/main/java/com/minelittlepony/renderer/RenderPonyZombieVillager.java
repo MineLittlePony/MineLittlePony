@@ -20,12 +20,12 @@ public class RenderPonyZombieVillager extends RenderPonyMob<EntityZombieVillager
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityZombieVillager villager) {
-        return getTexture(getTextureForVillager(villager));
+    protected ResourceLocation getTexture(EntityZombieVillager villager) {
+        return getTextureForVillager(villager.getProfession());
     }
 
-    private ResourceLocation getTextureForVillager(EntityZombieVillager villager) {
-        switch (villager.getProfession()) { // getProfession
+    private ResourceLocation getTextureForVillager(int profession) {
+        switch (profession) { // getProfession
             case Villagers.FARMER:
                 return FARMER; // applejack
             case Villagers.LIBRARIAN:

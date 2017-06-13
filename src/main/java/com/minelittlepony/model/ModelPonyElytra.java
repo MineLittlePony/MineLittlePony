@@ -41,7 +41,7 @@ public class ModelPonyElytra extends ModelBase {
 
             if (entityIn.motionY < 0.0D) {
                 Vec3d vec3d = (new Vec3d(entityIn.motionX, entityIn.motionY, entityIn.motionZ)).normalize();
-                f4 = 1.0F - (float) Math.pow(-vec3d.yCoord, 1.5D);
+                f4 = 1.0F - (float) Math.pow(-vec3d.y, 1.5D);
             }
 
             rotateX = f4 * PI * (2 / 3F) + (1.0F - f4) * rotateX;

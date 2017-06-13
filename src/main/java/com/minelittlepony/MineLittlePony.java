@@ -6,6 +6,7 @@ import com.minelittlepony.hdskins.gui.EntityPonyModel;
 import com.minelittlepony.hdskins.gui.GuiSkinsMineLP;
 import com.minelittlepony.hdskins.gui.RenderPonyModel;
 import com.minelittlepony.renderer.RenderPonyEvoker;
+import com.minelittlepony.renderer.RenderPonyIllusionIllager;
 import com.minelittlepony.renderer.RenderPonyPigman;
 import com.minelittlepony.renderer.RenderPonySkeleton;
 import com.minelittlepony.renderer.RenderPonyVex;
@@ -26,6 +27,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityEvoker;
 import net.minecraft.entity.monster.EntityHusk;
+import net.minecraft.entity.monster.EntityIllusionIllager;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityStray;
@@ -96,21 +98,26 @@ public class MineLittlePony {
 
     private void saveCurrentRenderers(RenderManager rm) {
         // villagers
-        this.renderMap.put(EntityVillager.class, rm.getEntityClassRenderObject(EntityVillager.class));
-        this.renderMap.put(EntityZombieVillager.class, rm.getEntityClassRenderObject(EntityZombieVillager.class));
+        saveRenderer(rm, EntityVillager.class);
+        saveRenderer(rm, EntityZombieVillager.class);
         // zombies
-        this.renderMap.put(EntityZombie.class, rm.getEntityClassRenderObject(EntityZombie.class));
-        this.renderMap.put(EntityHusk.class, rm.getEntityClassRenderObject(EntityHusk.class));
+        saveRenderer(rm, EntityZombie.class);
+        saveRenderer(rm, EntityHusk.class);
         // pig zombie
-        this.renderMap.put(EntityPigZombie.class, rm.getEntityClassRenderObject(EntityPigZombie.class));
+        saveRenderer(rm, EntityPigZombie.class);
         // skeletons
-        this.renderMap.put(EntitySkeleton.class, rm.getEntityClassRenderObject(EntitySkeleton.class));
-        this.renderMap.put(EntityStray.class, rm.getEntityClassRenderObject(EntityStray.class));
-        this.renderMap.put(EntityWitherSkeleton.class, rm.getEntityClassRenderObject(EntityWitherSkeleton.class));
+        saveRenderer(rm, EntitySkeleton.class);
+        saveRenderer(rm, EntityStray.class);
+        saveRenderer(rm, EntityWitherSkeleton.class);
         // illagers
-        this.renderMap.put(EntityVex.class, rm.getEntityClassRenderObject(EntityVex.class));
-        this.renderMap.put(EntityEvoker.class, rm.getEntityClassRenderObject(EntityEvoker.class));
-        this.renderMap.put(EntityVindicator.class, rm.getEntityClassRenderObject(EntityVindicator.class));
+        saveRenderer(rm, EntityVex.class);
+        saveRenderer(rm, EntityEvoker.class);
+        saveRenderer(rm, EntityVindicator.class);
+        saveRenderer(rm, EntityIllusionIllager.class);
+    }
+
+    private void saveRenderer(RenderManager rm, Class<? extends Entity> cl) {
+        this.renderMap.put(cl, rm.getEntityClassRenderObject(cl));
     }
 
     @SuppressWarnings("unchecked")
@@ -162,11 +169,13 @@ public class MineLittlePony {
             ModUtilities.addRenderer(EntityVex.class, new RenderPonyVex(rm));
             ModUtilities.addRenderer(EntityEvoker.class, new RenderPonyEvoker(rm));
             ModUtilities.addRenderer(EntityVindicator.class, new RenderPonyVindicator(rm));
+            ModUtilities.addRenderer(EntityIllusionIllager.class, new RenderPonyIllusionIllager(rm));
             logger.info("Illagers are now ponies.");
         } else {
             ModUtilities.addRenderer(EntityVex.class, getRenderer(EntityVex.class));
             ModUtilities.addRenderer(EntityEvoker.class, getRenderer(EntityEvoker.class));
             ModUtilities.addRenderer(EntityVindicator.class, getRenderer(EntityVindicator.class));
+            ModUtilities.addRenderer(EntityIllusionIllager.class, getRenderer(EntityIllusionIllager.class));
         }
     }
 

@@ -7,18 +7,16 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.HDSkinManager;
-import com.voxelmodpack.hdskins.upload.IUploadCompleteCallback;
 import com.voxelmodpack.hdskins.upload.ThreadMultipartPostUpload;
-import com.voxelmodpack.hdskins.upload.awt.IOpenFileCallback;
 import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -392,7 +390,7 @@ public class GuiSkins extends GuiScreen {
         blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         byte blendIterations = 8;
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vb = tessellator.getBuffer();
+        BufferBuilder vb = tessellator.getBuffer();
 
         for (int blendPass = 0; blendPass < blendIterations * blendIterations; ++blendPass) {
             pushMatrix();
@@ -456,7 +454,7 @@ public class GuiSkins extends GuiScreen {
         blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         colorMask(true, true, true, false);
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vb = tessellator.getBuffer();
+        BufferBuilder vb = tessellator.getBuffer();
         vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         byte blurPasses = 4;
 
@@ -485,7 +483,7 @@ public class GuiSkins extends GuiScreen {
 
         viewport(0, 0, this.mc.displayWidth, this.mc.displayHeight);
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vb = tessellator.getBuffer();
+        BufferBuilder vb = tessellator.getBuffer();
         vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         float aspect = this.width > this.height ? 120.0F / this.width : 120.0F / this.height;
         float uSample = this.height * aspect / 256.0F;
@@ -540,10 +538,10 @@ public class GuiSkins extends GuiScreen {
 
         this.disableClipping();
 
-        this.drawCenteredString(this.fontRendererObj, I18n.format("hdskins.manager"), this.width / 2, 10, 0xffffff);
+        this.drawCenteredString(this.fontRenderer, I18n.format("hdskins.manager"), this.width / 2, 10, 0xffffff);
 
-        this.fontRendererObj.drawStringWithShadow(I18n.format("hdskins.local"), 34, 34, 0xffffff);
-        this.fontRendererObj.drawStringWithShadow(I18n.format("hdskins.server"), this.width / 2 + 34, 34, 0xffffff);
+        this.fontRenderer.drawStringWithShadow(I18n.format("hdskins.local"), 34, 34, 0xffffff);
+        this.fontRenderer.drawStringWithShadow(I18n.format("hdskins.server"), this.width / 2 + 34, 34, 0xffffff);
 
         disableDepth();
         enableBlend();
@@ -556,19 +554,19 @@ public class GuiSkins extends GuiScreen {
 
         int labelwidth = (this.width / 2 - 80) / 2;
         if (!this.localPlayer.isUsingLocalTexture()) {
-            int opacity = this.fontRendererObj.getStringWidth(this.skinMessage) / 2;
+            int opacity = this.fontRenderer.getStringWidth(this.skinMessage) / 2;
             Gui.drawRect(40, this.height / 2 - 12, this.width / 2 - 40, this.height / 2 + 12, 0xB0000000);
-            this.fontRendererObj.drawStringWithShadow(this.skinMessage, (int) (xPos1 - opacity), this.height / 2 - 4, 0xffffff);
+            this.fontRenderer.drawStringWithShadow(this.skinMessage, (int) (xPos1 - opacity), this.height / 2 - 4, 0xffffff);
         }
         if (this.btnModeSkin.isMouseOver() || this.btnModeElytra.isMouseOver()) {
             int y = Math.max(mouseY, 16);
             String text;
             if (this.btnModeSkin.isMouseOver()) {
                 text = "hdskins.mode.skin";
-            } else{
+            } else {
                 text = "hdskins.mode.elytra";
             }
-            this.drawCreativeTabHoveringText(I18n.format(text), mouseX, y);
+            this.drawHoveringText(I18n.format(text), mouseX, y);
         }
 
         if (this.fetchingSkin) {
@@ -576,18 +574,18 @@ public class GuiSkins extends GuiScreen {
             if (this.throttledByMojang) {
                 opacity1 = TextFormatting.RED + I18n.format("hdskins.error.mojang");
                 String stringWidth = I18n.format("hdskins.error.mojang.wait");
-                int stringWidth1 = this.fontRendererObj.getStringWidth(opacity1) / 2;
-                int stringWidth2 = this.fontRendererObj.getStringWidth(stringWidth) / 2;
+                int stringWidth1 = this.fontRenderer.getStringWidth(opacity1) / 2;
+                int stringWidth2 = this.fontRenderer.getStringWidth(stringWidth) / 2;
 
                 Gui.drawRect((int) (xPos2 - labelwidth), this.height / 2 - 16, this.width - 40, this.height / 2 + 16, 0xB0000000);
 
-                this.fontRendererObj.drawStringWithShadow(opacity1, (int) (xPos2 - stringWidth1), this.height / 2 - 10, 0xffffff);
-                this.fontRendererObj.drawStringWithShadow(stringWidth, (int) (xPos2 - stringWidth2), this.height / 2 + 2, 0xffffff);
+                this.fontRenderer.drawStringWithShadow(opacity1, (int) (xPos2 - stringWidth1), this.height / 2 - 10, 0xffffff);
+                this.fontRenderer.drawStringWithShadow(stringWidth, (int) (xPos2 - stringWidth2), this.height / 2 + 2, 0xffffff);
             } else {
                 opacity1 = I18n.format("hdskins.fetch");
-                int stringWidth1 = this.fontRendererObj.getStringWidth(opacity1) / 2;
+                int stringWidth1 = this.fontRenderer.getStringWidth(opacity1) / 2;
                 Gui.drawRect((int) (xPos2 - labelwidth), this.height / 2 - 12, this.width - 40, this.height / 2 + 12, 0xB0000000);
-                this.fontRendererObj.drawStringWithShadow(opacity1, (int) (xPos2 - stringWidth1), this.height / 2 - 4, 0xffffff);
+                this.fontRenderer.drawStringWithShadow(opacity1, (int) (xPos2 - stringWidth1), this.height / 2 - 4, 0xffffff);
             }
         }
 
@@ -606,15 +604,15 @@ public class GuiSkins extends GuiScreen {
             if (this.uploadOpacity > 0.0F) {
                 Gui.drawRect(0, 0, this.width, this.height, opacity << 24);
                 if (this.uploadingSkin) {
-                    this.drawCenteredString(this.fontRendererObj, this.skinUploadMessage, this.width / 2, this.height / 2, opacity << 24 | 0xffffff);
+                    this.drawCenteredString(this.fontRenderer, this.skinUploadMessage, this.width / 2, this.height / 2, opacity << 24 | 0xffffff);
                 }
             }
         }
 
         if (this.uploadError != null) {
             Gui.drawRect(0, 0, this.width, this.height, 0xB0000000);
-            this.drawCenteredString(this.fontRendererObj, I18n.format("hdskins.failed"), this.width / 2, this.height / 2 - 10, 0xFFFFFF55);
-            this.drawCenteredString(this.fontRendererObj, this.uploadError, this.width / 2, this.height / 2 + 2, 0xFFFF5555);
+            this.drawCenteredString(this.fontRenderer, I18n.format("hdskins.failed"), this.width / 2, this.height / 2 - 10, 0xFFFFFF55);
+            this.drawCenteredString(this.fontRenderer, this.uploadError, this.width / 2, this.height / 2 + 2, 0xFFFF5555);
         }
 
         depthMask(true);
@@ -672,7 +670,7 @@ public class GuiSkins extends GuiScreen {
     public static boolean isPowerOfTwo(int number) {
         return number != 0 && (number & number - 1) == 0;
     }
-    
+
     private void clearUploadedSkin(Session session) {
         if (this.registerServerConnection(session, skinServerId)) {
             Map<String, ?> sourceData = getClearData(session);

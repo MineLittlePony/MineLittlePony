@@ -4,7 +4,9 @@ import com.minelittlepony.renderer.PlaneRenderer;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.PositionTextureVertex;
 import net.minecraft.client.model.TexturedQuad;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
+
+import javax.annotation.Nonnull;
 
 public class ModelPlane extends ModelBox {
 
@@ -102,7 +104,7 @@ public class ModelPlane extends ModelBox {
     }
 
     @Override
-    public void render(VertexBuffer renderer, float scale) {
+    public void render(@Nonnull BufferBuilder renderer, float scale) {
         this.quadList[this.face.ordinal()].draw(renderer, scale);
     }
 

@@ -4,13 +4,11 @@ import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.ModelPonyElytra;
-import com.minelittlepony.model.pony.ModelHumanPlayer;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
 import net.minecraft.client.renderer.entity.layers.LayerElytra;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.init.Items;
@@ -20,27 +18,19 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
-public class LayerPonyElytra implements LayerRenderer<EntityLivingBase> {
+public class LayerPonyElytra extends AbstractPonyLayer<EntityLivingBase> {
 
     private static final ResourceLocation TEXTURE_ELYTRA = new ResourceLocation("textures/entity/elytra.png");
-    private RenderLivingBase<?> renderPlayer;
     private ModelPonyElytra modelElytra = new ModelPonyElytra();
 
-    private LayerElytra elytra;
-
     public LayerPonyElytra(RenderLivingBase<?> rp) {
-        this.renderPlayer = rp;
-        this.elytra = new LayerElytra(rp);
+        super(rp, new LayerElytra(rp));
     }
 
     @Override
-    public void doRenderLayer(@Nonnull EntityLivingBase entity, float swing, float swingAmount, float ticks, float age, float yaw, float head, float scale) {
+    public void doPonyRender(@Nonnull EntityLivingBase entity, float swing, float swingAmount, float ticks, float age, float yaw, float head, float scale) {
 
-        AbstractPonyModel model = ((IRenderPony) this.renderPlayer).getPony().getModel();
-        if (model instanceof ModelHumanPlayer) {
-            this.elytra.doRenderLayer(entity, swing, swingAmount, ticks, age, yaw, head, scale);
-            return;
-        }
+        AbstractPonyModel model = ((IRenderPony) this.getRenderer()).getPony().getModel();
 
         ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
@@ -51,14 +41,14 @@ public class LayerPonyElytra implements LayerRenderer<EntityLivingBase> {
 
                 AbstractClientPlayer player = (AbstractClientPlayer) entity;
                 if (player.isPlayerInfoSet() && player.getLocationElytra() != null) {
-                    this.renderPlayer.bindTexture(player.getLocationElytra());
+                    this.getRenderer().bindTexture(player.getLocationElytra());
                 } else if (player.hasPlayerInfo() && player.getLocationCape() != null && player.isWearing(EnumPlayerModelParts.CAPE)) {
-                    this.renderPlayer.bindTexture(player.getLocationCape());
+                    this.getRenderer().bindTexture(player.getLocationCape());
                 } else {
-                    this.renderPlayer.bindTexture(TEXTURE_ELYTRA);
+                    this.getRenderer().bindTexture(TEXTURE_ELYTRA);
                 }
             } else {
-                this.renderPlayer.bindTexture(TEXTURE_ELYTRA);
+                this.getRenderer().bindTexture(TEXTURE_ELYTRA);
             }
 
             GlStateManager.pushMatrix();
@@ -68,7 +58,7 @@ public class LayerPonyElytra implements LayerRenderer<EntityLivingBase> {
             this.modelElytra.render(entity, swing, swingAmount, age, yaw, head, scale);
 
             if (itemstack.isItemEnchanted()) {
-                LayerArmorBase.renderEnchantedGlint(this.renderPlayer, entity, this.modelElytra, swing, swingAmount, ticks, age, yaw, head, scale);
+                LayerArmorBase.renderEnchantedGlint(this.getRenderer(), entity, this.modelElytra, swing, swingAmount, ticks, age, yaw, head, scale);
             }
 
             GlStateManager.popMatrix();

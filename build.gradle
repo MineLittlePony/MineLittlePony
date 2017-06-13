@@ -11,7 +11,7 @@ buildscript {
 		}
 	}
 	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
 		classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
 	}
 }
@@ -20,34 +20,31 @@ apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'com.minelittlepony'
-version = '1.11.2.3'
+version = '1.12_0'
 description = 'Mine Little Pony'
 
 targetCompatibility = 1.8
 sourceCompatibility = 1.8
 
 minecraft {
-	version = "1.11.2"
-	mappings = 'snapshot_20161224'
+	version = "1.12"
+	mappings = 'snapshot_20170611'
 	runDir = 'run'
 	replace '@VERSION@', project.version
 }
 
 sourceSets {
-	def deps = [
-		configurations.forgeGradleMcDeps,
-		configurations.forgeGradleMc,
-		configurations.compile,
-	]
 	hdskins {
-		compileClasspath += files deps
-		refMap = 'mixin.hdskins.refmap.json'
+		compileClasspath += main.compileClasspath
 	}
 	main {
-		refMap = 'mixin.minelp.refmap.json'
 		compileClasspath += hdskins.output
 	}
+}
 
+mixin {
+	add sourceSets.main, 'mixin.minelp.refmap.json'
+	add sourceSets.hdskins, 'mixin.hdskins.refmap.json'
 }
 
 litemod.json {

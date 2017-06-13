@@ -5,7 +5,6 @@ import com.minelittlepony.ForgeProxy;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.PlayerModel;
-import com.minelittlepony.model.pony.ModelHumanPlayer;
 import com.minelittlepony.model.pony.armor.ModelPonyArmor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
@@ -13,7 +12,6 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.resources.ResourcePackRepository;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -23,41 +21,34 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Map;
 
-public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
+public class LayerPonyArmor extends AbstractPonyLayer<EntityLivingBase> {
 
     private static final ResourceLocation ENCHANTED_ITEM_GLINT_RES = new ResourceLocation("textures/misc/enchanted_item_glint.png");
 
     private static final Map<String, ResourceLocation> HUMAN_ARMORS = Maps.newHashMap();
     private static final Map<ResourceLocation, ResourceLocation> PONY_ARMORS = Maps.newHashMap();
 
-    private RenderLivingBase<? extends EntityLivingBase> renderer;
-    private LayerBipedArmor humanArmor;
     private PlayerModel pony;
 
-    public LayerPonyArmor(RenderLivingBase<? extends EntityLivingBase> entity) {
-        this.renderer = entity;
-        this.humanArmor = new LayerBipedArmor(entity);
+    public LayerPonyArmor(RenderLivingBase<? extends EntityLivingBase> renderer) {
+        super(renderer, new LayerBipedArmor(renderer));
     }
 
     @Override
-    public void doRenderLayer(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float ticks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        pony = ((IRenderPony) renderer).getPony();
-        if (pony.getModel() instanceof ModelHumanPlayer) {
-            humanArmor.doRenderLayer(entity, limbSwing, limbSwingAmount, ticks, ageInTicks, netHeadYaw, headPitch, scale);
-        } else {
-            renderArmor(entity, limbSwing, limbSwingAmount, ticks, ageInTicks, netHeadYaw, headPitch, scale, EntityEquipmentSlot.FEET);
-            renderArmor(entity, limbSwing, limbSwingAmount, ticks, ageInTicks, netHeadYaw, headPitch, scale, EntityEquipmentSlot.LEGS);
-            renderArmor(entity, limbSwing, limbSwingAmount, ticks, ageInTicks, netHeadYaw, headPitch, scale, EntityEquipmentSlot.CHEST);
-            renderArmor(entity, limbSwing, limbSwingAmount, ticks, ageInTicks, netHeadYaw, headPitch, scale, EntityEquipmentSlot.HEAD);
+    public void doPonyRender(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float ticks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        pony = ((IRenderPony) getRenderer()).getPony();
+        renderArmor(entity, limbSwing, limbSwingAmount, ticks, ageInTicks, netHeadYaw, headPitch, scale, EntityEquipmentSlot.FEET);
+        renderArmor(entity, limbSwing, limbSwingAmount, ticks, ageInTicks, netHeadYaw, headPitch, scale, EntityEquipmentSlot.LEGS);
+        renderArmor(entity, limbSwing, limbSwingAmount, ticks, ageInTicks, netHeadYaw, headPitch, scale, EntityEquipmentSlot.CHEST);
+        renderArmor(entity, limbSwing, limbSwingAmount, ticks, ageInTicks, netHeadYaw, headPitch, scale, EntityEquipmentSlot.HEAD);
 
-        }
     }
 
-    private void renderArmor(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale,
-                             EntityEquipmentSlot armorSlot) {
+    private void renderArmor(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, EntityEquipmentSlot armorSlot) {
         ItemStack itemstack = entity.getItemStackFromSlot(armorSlot);
 
         if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemArmor) {
@@ -77,16 +68,16 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
             Tuple<ResourceLocation, Boolean> armors = getArmorTexture(entity, itemstack, armorSlot, null);
             prepareToRender((ModelPonyArmor) modelbase, armorSlot, armors.getSecond());
 
-            this.renderer.bindTexture(armors.getFirst());
+            this.getRenderer().bindTexture(armors.getFirst());
             if (itemarmor.getArmorMaterial() == ArmorMaterial.LEATHER) {
-                int j = itemarmor.getColor(itemstack);
-                float f7 = (j >> 16 & 255) / 255.0F;
-                float f8 = (j >> 8 & 255) / 255.0F;
-                float f9 = (j & 255) / 255.0F;
-                GlStateManager.color(f7, f8, f9, 1);
+                int color = itemarmor.getColor(itemstack);
+                float r = (color >> 16 & 255) / 255.0F;
+                float g = (color >> 8 & 255) / 255.0F;
+                float b = (color & 255) / 255.0F;
+                GlStateManager.color(r, g, b, 1);
                 modelbase.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
                 armors = getArmorTexture(entity, itemstack, armorSlot, "overlay");
-                this.renderer.bindTexture(armors.getFirst());
+                this.getRenderer().bindTexture(armors.getFirst());
             }
             GlStateManager.color(1, 1, 1, 1);
             modelbase.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
@@ -97,7 +88,7 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
         }
     }
 
-    private Tuple<ResourceLocation, Boolean> getArmorTexture(EntityLivingBase entity, ItemStack itemstack, EntityEquipmentSlot slot, String type) {
+    private Tuple<ResourceLocation, Boolean> getArmorTexture(EntityLivingBase entity, ItemStack itemstack, EntityEquipmentSlot slot, @Nullable String type) {
         ItemArmor item = (ItemArmor) itemstack.getItem();
         String texture = item.getArmorMaterial().getName();
         String domain = "minecraft";
@@ -133,7 +124,7 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
 
     @SuppressWarnings("incomplete-switch")
     private void prepareToRender(ModelPonyArmor model, EntityEquipmentSlot slot, boolean isPony) {
-        model.setInvisible(false);
+        model.setVisible(false);
 
         switch (slot) {
             // feet
@@ -177,7 +168,7 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
     private void renderEnchantment(EntityLivingBase entitylivingbaseIn, ModelBase modelbaseIn, float p_177183_3_, float p_177183_4_, float p_177183_5_,
                                    float p_177183_6_, float p_177183_7_, float p_177183_8_, float p_177183_9_) {
         float f7 = entitylivingbaseIn.ticksExisted + p_177183_5_;
-        this.renderer.bindTexture(ENCHANTED_ITEM_GLINT_RES);
+        this.getRenderer().bindTexture(ENCHANTED_ITEM_GLINT_RES);
         GlStateManager.enableBlend();
         GlStateManager.depthFunc(514);
         GlStateManager.depthMask(false);
@@ -208,11 +199,6 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
         GlStateManager.disableBlend();
     }
 
-    @Override
-    public boolean shouldCombineTextures() {
-        return false;
-    }
-
     private static ResourceLocation getHumanResource(String s1) {
         return HUMAN_ARMORS.computeIfAbsent(s1, ResourceLocation::new);
     }
@@ -233,7 +219,7 @@ public class LayerPonyArmor implements LayerRenderer<EntityLivingBase> {
         return pony;
     }
 
-    private static String getArmorTexture(EntityLivingBase entity, ItemStack item, String def, EntityEquipmentSlot slot, String type) {
+    private static String getArmorTexture(EntityLivingBase entity, ItemStack item, String def, EntityEquipmentSlot slot, @Nullable String type) {
         return ForgeProxy.getArmorTexture(entity, item, def, slot, type);
     }
 

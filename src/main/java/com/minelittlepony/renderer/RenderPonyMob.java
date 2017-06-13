@@ -1,20 +1,19 @@
 package com.minelittlepony.renderer;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.PonyGender;
-import com.minelittlepony.PonyRace;
-import com.minelittlepony.TailLengths;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.PlayerModel;
 import com.minelittlepony.renderer.layer.LayerHeldPonyItem;
 import com.minelittlepony.renderer.layer.LayerPonyArmor;
-import com.minelittlepony.renderer.layer.LayerPonyElytra;
 import com.minelittlepony.renderer.layer.LayerPonyCustomHead;
+import com.minelittlepony.renderer.layer.LayerPonyElytra;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
+
+import javax.annotation.Nonnull;
 
 public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving<T> implements IRenderPony {
 
@@ -23,6 +22,11 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     public RenderPonyMob(RenderManager renderManager, PlayerModel playerModel) {
         super(renderManager, playerModel.getModel(), 0.5F);
         this.playerModel = playerModel;
+
+        addLayers();
+    }
+
+    protected void addLayers() {
 
         this.addLayer(new LayerPonyArmor(this));
         this.addLayer(new LayerHeldPonyItem(this));
@@ -33,7 +37,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
     @Override
     public void doRender(T entity, double xPosition, double yPosition, double zPosition, float yaw,
-                         float partialTicks) {
+            float partialTicks) {
         double yOrigin = yPosition;
         if (entity.isSneaking()) {
             yOrigin -= 0.125D;
@@ -47,12 +51,15 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
         this.playerModel.getModel().isFlying = false;
         this.playerModel.getModel().isSleeping = false;
 
-        this.playerModel.getModel().metadata.setRace(PonyRace.EARTH);
-        this.playerModel.getModel().metadata.setGender(PonyGender.MARE);
-        this.playerModel.getModel().metadata.setTail(TailLengths.FULL);
+        ResourceLocation loc = getEntityTexture(entity);
+        if (loc != null) {
+            this.playerModel.apply(MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(loc).metadata);
+        }
 
         if (MineLittlePony.getConfig().showscale) {
             this.shadowSize = 0.4F;
+        } else {
+            this.shadowSize = 0.5F;
         }
     }
 
@@ -61,7 +68,11 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
         return playerModel;
     }
 
-    protected ResourceLocation getTexture(ResourceLocation res) {
-        return HDSkinManager.INSTANCE.getConvertedSkin(res);
+    @Override
+    @Nonnull
+    protected final ResourceLocation getEntityTexture(T entity) {
+        return HDSkinManager.INSTANCE.getConvertedSkin(getTexture(entity));
     }
+
+    protected abstract ResourceLocation getTexture(T entity);
 }
