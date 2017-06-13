@@ -5,17 +5,18 @@ import com.voxelmodpack.hdskins.ImageBufferDownloadHD;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.util.ResourceLocation;
-import org.apache.commons.io.IOUtils;
 
 import javax.annotation.Nullable;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
 public class ImageLoader implements Supplier<ResourceLocation> {
 
-    private Minecraft mc = Minecraft.getMinecraft();
+    private static Minecraft mc = Minecraft.getMinecraft();
 
     private final ResourceLocation original;
 
@@ -35,18 +36,22 @@ public class ImageLoader implements Supplier<ResourceLocation> {
             // don't load a new image
             return this.original;
         }
-        return this.mc.addScheduledTask(() -> loadSkin(updated)).get();
+        return addTaskAndGet(() -> loadSkin(updated));
+    }
+
+    private static <V> V addTaskAndGet(Callable<V> callable) {
+        try {
+            return mc.addScheduledTask(callable).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Nullable
     private static BufferedImage getImage(ResourceLocation res) {
-        try {
-            InputStream in = Minecraft.getMinecraft().getResourceManager().getResource(res).getInputStream();
-            try {
-                return TextureUtil.readBufferedImage(in);
-            } finally {
-                IOUtils.closeQuietly(in);
-            }
+
+        try (InputStream in = mc.getResourceManager().getResource(res).getInputStream()) {
+            return TextureUtil.readBufferedImage(in);
         } catch (IOException e) {
             return null;
         }
@@ -56,7 +61,7 @@ public class ImageLoader implements Supplier<ResourceLocation> {
     private ResourceLocation loadSkin(BufferedImage image) {
 
         ResourceLocation conv = new ResourceLocation(original.getResourceDomain() + "-converted", original.getResourcePath());
-        boolean success= this.mc.getTextureManager().loadTexture(conv, new DynamicTextureImage(image));
+        boolean success = mc.getTextureManager().loadTexture(conv, new DynamicTextureImage(image));
         return success ? conv : null;
     }
 
