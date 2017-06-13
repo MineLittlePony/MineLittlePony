@@ -38,6 +38,7 @@ public class SkinResourceManager implements IResourceManagerReloadListener {
         uuidSkins.clear();
         namedSkins.clear();
         executor.shutdownNow();
+        executor = Executors.newSingleThreadExecutor();
         inProgress.clear();
         converted.clear();
         for (String domain : resourceManager.getResourceDomains()) {
