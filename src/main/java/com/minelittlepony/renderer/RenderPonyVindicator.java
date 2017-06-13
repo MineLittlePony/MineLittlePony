@@ -33,7 +33,7 @@ public class RenderPonyVindicator extends RenderPonyMob<EntityVindicator> {
 
             @Override
             protected void translateToHand(EnumHandSide side) {
-                ((ModelIllagerPony) this.getRenderer().getMainModel()).getArmForSide(side).postRender(0.0625F);
+                ((ModelIllagerPony) this.getRenderer().getMainModel()).getArm(side).postRender(0.0625F);
             }
         });
     }
@@ -45,6 +45,7 @@ public class RenderPonyVindicator extends RenderPonyMob<EntityVindicator> {
 
     @Override
     protected void preRenderCallback(EntityVindicator entitylivingbaseIn, float partialTickTime) {
+        super.preRenderCallback(entitylivingbaseIn, partialTickTime);
         GlStateManager.scale(0.9375F, 0.9375F, 0.9375F);
     }
 

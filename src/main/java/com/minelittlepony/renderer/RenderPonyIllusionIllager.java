@@ -31,7 +31,7 @@ public class RenderPonyIllusionIllager extends RenderPonyMob<EntityIllusionIllag
             }
 
             protected void translateToHand(EnumHandSide p_191361_1_) {
-                ((ModelIllagerPony) this.getRenderer().getMainModel()).getArmForSide(p_191361_1_).postRender(0.0625F);
+                ((ModelIllagerPony) this.getRenderer().getMainModel()).getArm(p_191361_1_).postRender(0.0625F);
             }
         });
     }

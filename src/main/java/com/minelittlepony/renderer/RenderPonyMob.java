@@ -37,7 +37,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
     @Override
     public void doRender(T entity, double xPosition, double yPosition, double zPosition, float yaw,
-            float partialTicks) {
+                         float partialTicks) {
         double yOrigin = yPosition;
         if (entity.isSneaking()) {
             yOrigin -= 0.125D;
@@ -52,9 +52,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
         this.playerModel.getModel().isSleeping = false;
 
         ResourceLocation loc = getEntityTexture(entity);
-        if (loc != null) {
-            this.playerModel.apply(MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(loc).metadata);
-        }
+        this.playerModel.apply(MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(loc).metadata);
 
         if (MineLittlePony.getConfig().showscale) {
             this.shadowSize = 0.4F;

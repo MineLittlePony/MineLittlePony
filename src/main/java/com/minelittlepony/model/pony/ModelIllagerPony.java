@@ -70,7 +70,7 @@ public class ModelIllagerPony extends ModelPlayerPony {
         }
     }
 
-    public ModelRenderer getArmForSide(EnumHandSide side) {
-        return super.getArmForSide(side);
+    public ModelRenderer getArm(EnumHandSide side) {
+        return metadata.hasMagic() ? side == EnumHandSide.LEFT ? this.unicornArmLeft : this.unicornArmRight : this.getArmForSide(side);
     }
 }
