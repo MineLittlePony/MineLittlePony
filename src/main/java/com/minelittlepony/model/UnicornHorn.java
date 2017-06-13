@@ -38,7 +38,7 @@ public class UnicornHorn extends ModelBase implements PonyModelConstants {
 
         PonyData data = pony.metadata;
 
-        if (data.getRace() != null && data.getRace().hasHorn()) {
+        if (data.getRace().hasHorn()) {
             this.horn.render(scale);
             if ((pony.leftArmPose != ArmPose.EMPTY || pony.rightArmPose != ArmPose.EMPTY) && data.hasMagic()) {
                 GL11.glPushAttrib(24577);

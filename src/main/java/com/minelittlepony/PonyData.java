@@ -27,10 +27,22 @@ public class PonyData implements IPonyData {
             .build();
 
     private PonyRace race;
-    private TailLengths tailSize = TailLengths.FULL;
-    private PonyGender gender = PonyGender.MARE;
-    private PonySize size = PonySize.NORMAL;
-    private int glowColor = 0x4444aa;
+    private TailLengths tailSize;
+    private PonyGender gender;
+    private PonySize size;
+    private int glowColor;
+
+    public PonyData() {
+        this(PonyRace.HUMAN, TailLengths.FULL, PonyGender.MARE, PonySize.NORMAL, 0x4444aa);
+    }
+
+    private PonyData(PonyRace race, TailLengths tailSize, PonyGender gender, PonySize size, int glowColor) {
+        this.race = race;
+        this.tailSize = tailSize;
+        this.gender = gender;
+        this.size = size;
+        this.glowColor = glowColor;
+    }
 
     public PonyRace getRace() {
         return race;
@@ -77,28 +89,21 @@ public class PonyData implements IPonyData {
     }
 
     static PonyData parse(BufferedImage image) {
-        PonyData data = new PonyData();
+        int racePx = TriggerPixels.RACE.readColor(image);
+        PonyRace race = RACE_COLORS.getOrDefault(racePx, PonyRace.HUMAN);
 
-        int race = TriggerPixels.RACE.readColor(image);
-        data.race = RACE_COLORS.get(race);
+        int tailPx = TriggerPixels.TAIL.readColor(image);
+        TailLengths tail = TAIL_COLORS.getOrDefault(tailPx, TailLengths.FULL);
 
-        int tail = TriggerPixels.TAIL.readColor(image);
-        if (TAIL_COLORS.containsKey(tail))
-            data.tailSize = TAIL_COLORS.get(tail);
+        int sizePx = TriggerPixels.SIZE.readColor(image);
+        PonySize size = SIZE_COLORS.getOrDefault(sizePx, PonySize.NORMAL);
 
-        int gender = TriggerPixels.GENDER.readColor(image);
-        if (gender == 0xffffff)
-            data.gender = PonyGender.STALLION;
+        int genderPx = TriggerPixels.GENDER.readColor(image);
+        PonyGender gender = genderPx == 0xffffff ? PonyGender.STALLION : PonyGender.MARE;
 
-        int size = TriggerPixels.SIZE.readColor(image);
-        if (SIZE_COLORS.containsKey(size))
-            data.size = SIZE_COLORS.get(size);
+        int glowColor = TriggerPixels.GLOW.readColor(image, -1);
 
-        int color = TriggerPixels.GLOW.readColor(image);
-        if (color != 0x000000)
-            data.glowColor = color;
-
-        return data;
+        return new PonyData(race, tail, gender, size, glowColor);
     }
 
     private enum TriggerPixels {
@@ -116,7 +121,11 @@ public class PonyData implements IPonyData {
         }
 
         private int readColor(BufferedImage image) {
-            return image.getRGB(x, y) & 0xffffff;
+            return readColor(image, 0xffffff);
+        }
+
+        private int readColor(BufferedImage image, int mask) {
+            return image.getRGB(x, y) & mask;
         }
     }
 }

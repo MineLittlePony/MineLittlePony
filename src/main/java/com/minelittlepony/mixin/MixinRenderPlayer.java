@@ -2,6 +2,7 @@ package com.minelittlepony.mixin;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.Pony;
+import com.minelittlepony.PonyRace;
 import com.minelittlepony.PonySize;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.PMAPI;
@@ -28,6 +29,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import javax.annotation.Nonnull;
 @Mixin(RenderPlayer.class)
 public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientPlayer> implements IRenderPony {
 
@@ -68,20 +70,18 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
         this.playerModel.getModel().isFlying = thePony.isPegasusFlying(player);
         this.playerModel.getModel().isSleeping = player.isPlayerSleeping();
 
-        if (MineLittlePony.getConfig().showscale) {
-            if (this.playerModel.getModel().metadata.getRace() != null) {
-                PonySize size = thePony.metadata.getSize();
-                if (size == PonySize.FOAL)
-                    this.shadowSize = 0.25F;
-                else if (size == PonySize.NORMAL)
-                    this.shadowSize = 0.4F;
-                else if (size == PonySize.TALL)
-                    this.shadowSize = 0.45F;
-                else
-                    this.shadowSize = 0.5F;
+        if (MineLittlePony.getConfig().showscale && this.playerModel.getModel().metadata.getRace() != PonyRace.HUMAN) {
+            PonySize size = thePony.metadata.getSize();
+            if (size == PonySize.FOAL) {
+                this.shadowSize = 0.25F;
+            } else if (size == PonySize.NORMAL) {
+                this.shadowSize = 0.4F;
+            } else if (size == PonySize.TALL) {
+                this.shadowSize = 0.45F;
             } else {
                 this.shadowSize = 0.5F;
             }
+
         } else {
             this.shadowSize = 0.5F;
         }
@@ -95,10 +95,11 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
 
         if (MineLittlePony.getConfig().showscale && !(playerModel.getModel() instanceof ModelHumanPlayer)) {
             PonySize size = thePony.metadata.getSize();
-            if (size == PonySize.LARGE)
+            if (size == PonySize.LARGE) {
                 GlStateManager.scale(0.9F, 0.9F, 0.9F);
-            else if (size == PonySize.NORMAL || size == PonySize.FOAL)
+            } else if (size == PonySize.NORMAL || size == PonySize.FOAL) {
                 GlStateManager.scale(0.8F, 0.8F, 0.8F);
+            }
         }
     }
 
@@ -194,10 +195,12 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
                 }
             }
 
-            if (angle > Math.PI / 3)
+            if (angle > Math.PI / 3) {
                 angle = Math.PI / 3;
-            if (angle < -Math.PI / 3)
+            }
+            if (angle < -Math.PI / 3) {
                 angle = -Math.PI / 3;
+            }
 
             this.playerModel.getModel().motionPitch = (float) Math.toDegrees(angle);
 
@@ -214,12 +217,14 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
                     ordinal = 3))
     private void rotateRedirect(float f1, float f2, float f3, float f4) {
         boolean isPony = this.playerModel.getModel() instanceof ModelPlayerPony;
-        if (isPony)
+        if (isPony) {
             f1 += 90;
+        }
 
         GlStateManager.rotate(f1, f2, f3, f4);
-        if (isPony)
+        if (isPony) {
             GlStateManager.translate(0, -1, 0);
+        }
     }
 
     private void updateModel(AbstractClientPlayer player) {
@@ -232,6 +237,7 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
     }
 
     @Override
+    @Nonnull
     public ResourceLocation getEntityTexture(AbstractClientPlayer player) {
         Pony thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(player);
         return thePony.getTextureResourceLocation();

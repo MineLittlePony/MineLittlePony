@@ -2,6 +2,7 @@ package com.voxelmodpack.hdskins.upload;
 
 import com.google.common.io.Files;
 
+import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -39,7 +40,7 @@ public class ThreadMultipartPostUpload extends Thread {
 
     public String response;
 
-    public ThreadMultipartPostUpload(String method, String url, Map<String, ?> sourceData, String authorization, IUploadCompleteCallback callback) {
+    public ThreadMultipartPostUpload(String method, String url, Map<String, ?> sourceData, @Nullable String authorization, IUploadCompleteCallback callback) {
         this.method = method;
         this.urlString = url;
         this.sourceData = sourceData;

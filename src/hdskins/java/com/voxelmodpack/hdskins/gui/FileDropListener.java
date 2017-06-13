@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+@FunctionalInterface
 public interface FileDropListener extends DropTargetListener {
 
     @Override

@@ -8,11 +8,13 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.ForgeHooksClient;
 
+import javax.annotation.Nullable;
+
 public class ForgeProxy {
 
     private static boolean forgeLoaded = ModUtilities.fmlIsPresent();
 
-    public static String getArmorTexture(Entity entity, ItemStack armor, String def, EntityEquipmentSlot slot, String type) {
+    public static String getArmorTexture(Entity entity, ItemStack armor, String def, EntityEquipmentSlot slot, @Nullable String type) {
         if (forgeLoaded)
             return ForgeHooksClient.getArmorTexture(entity, armor, def, slot, type);
         return def;

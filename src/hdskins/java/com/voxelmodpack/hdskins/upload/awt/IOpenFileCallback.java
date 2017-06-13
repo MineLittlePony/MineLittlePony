@@ -7,6 +7,7 @@ import javax.swing.JFileChooser;
  *
  * @author Adam Mummery-Smith
  */
+@FunctionalInterface
 public interface IOpenFileCallback {
 
     /**

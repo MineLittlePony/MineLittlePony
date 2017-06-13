@@ -2,6 +2,7 @@ package com.voxelmodpack.hdskins;
 
 import net.minecraft.client.renderer.IImageBuffer;
 
+import javax.annotation.Nullable;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -12,8 +13,9 @@ public class ImageBufferDownloadHD implements IImageBuffer {
     private BufferedImage image;
 
     @Override
-    @SuppressWarnings("SuspiciousNameCombination")
-    public BufferedImage parseUserSkin(BufferedImage downloadedImage) {
+    @Nullable
+    @SuppressWarnings({"SuspiciousNameCombination", "NullableProblems"})
+    public BufferedImage parseUserSkin(@Nullable BufferedImage downloadedImage) {
         if (downloadedImage == null) {
             return null;
         }

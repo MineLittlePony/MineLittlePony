@@ -51,7 +51,7 @@ import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.ELYTRA;
 import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.SKIN;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
-public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpenFileCallback {
+public class GuiSkins extends GuiScreen {
     private static final int MAX_SKIN_DIMENSION = 8192;
     private static final String skinServerId = "7853dfddc358333843ad55a2c7485c4aa0380a51";
     private int updateCounter = 0;
@@ -242,8 +242,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         this.remotePlayer.releaseTextures();
     }
 
-    @Override
-    public void onFileOpenDialogClosed(JFileChooser fileDialog, int dialogResult) {
+    private void onFileOpenDialogClosed(JFileChooser fileDialog, int dialogResult) {
         this.openFileThread = null;
         this.btnBrowse.enabled = true;
         if (dialogResult == 0) {
@@ -293,7 +292,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
                 if (guiButton.id == this.btnBrowse.id) {
                     this.selectedSkin = null;
                     this.localPlayer.releaseTextures();
-                    this.openFileThread = new ThreadOpenFilePNG(this.mc, I18n.format("hdskins.open.title"), this);
+                    this.openFileThread = new ThreadOpenFilePNG(this.mc, I18n.format("hdskins.open.title"), this::onFileOpenDialogClosed);
                     this.openFileThread.start();
                     guiButton.enabled = false;
                 }
@@ -673,14 +672,14 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
     public static boolean isPowerOfTwo(int number) {
         return number != 0 && (number & number - 1) == 0;
     }
-
+    
     private void clearUploadedSkin(Session session) {
         if (this.registerServerConnection(session, skinServerId)) {
             Map<String, ?> sourceData = getClearData(session);
             this.uploadError = null;
             this.uploadingSkin = true;
             this.skinUploadMessage = I18n.format("hdskins.request");
-            this.threadSkinUpload = new ThreadMultipartPostUpload(HDSkinManager.INSTANCE.getGatewayUrl(), sourceData, this);
+            this.threadSkinUpload = new ThreadMultipartPostUpload(HDSkinManager.INSTANCE.getGatewayUrl(), sourceData, this::onUploadComplete);
             this.threadSkinUpload.start();
         }
     }
@@ -691,7 +690,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
             this.uploadError = null;
             this.uploadingSkin = true;
             this.skinUploadMessage = I18n.format("hdskins.upload");
-            this.threadSkinUpload = new ThreadMultipartPostUpload(HDSkinManager.INSTANCE.getGatewayUrl(), sourceData, this);
+            this.threadSkinUpload = new ThreadMultipartPostUpload(HDSkinManager.INSTANCE.getGatewayUrl(), sourceData, this::onUploadComplete);
             this.threadSkinUpload.start();
         }
     }
@@ -717,8 +716,7 @@ public class GuiSkins extends GuiScreen implements IUploadCompleteCallback, IOpe
         this.btnUpload.enabled = true;
     }
 
-    @Override
-    public void onUploadComplete(String response) {
+    private void onUploadComplete(String response) {
         LiteLoaderLogger.info("Upload completed with: %s", response);
         this.uploadingSkin = false;
         this.threadSkinUpload = null;

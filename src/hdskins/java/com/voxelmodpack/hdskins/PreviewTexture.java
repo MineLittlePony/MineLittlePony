@@ -4,11 +4,13 @@ import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
+
 public class PreviewTexture extends ThreadDownloadImageData {
 
     private boolean uploaded;
 
-    public PreviewTexture(String url, ResourceLocation fallbackTexture, IImageBuffer imageBuffer) {
+    public PreviewTexture(String url, ResourceLocation fallbackTexture, @Nullable IImageBuffer imageBuffer) {
         super(null, url, fallbackTexture, imageBuffer);
     }
 

@@ -129,7 +129,7 @@ public class PegasusWings extends ModelBase implements PonyModelConstants {
 
     @Override
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        if (pony.metadata.getRace() != null && pony.metadata.getRace().hasWings()) {
+        if (pony.metadata.getRace().hasWings()) {
             if (!pony.isFlying && !pony.isSneak) {
 
                 for (ModelRenderer aLeftWing : this.leftWing) {

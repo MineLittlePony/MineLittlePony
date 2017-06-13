@@ -1,6 +1,8 @@
 package com.minelittlepony;
 
 public enum PonyRace {
+
+    HUMAN(false, false),
     EARTH(false, false),
     PEGASUS(true, false),
     UNICORN(false, true),

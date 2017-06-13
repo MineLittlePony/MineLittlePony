@@ -8,10 +8,8 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.InsecureTextureException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.properties.Property;
 import com.mojang.util.UUIDTypeAdapter;
 import com.mumfrey.liteloader.core.LiteLoader;
@@ -31,7 +29,7 @@ import org.apache.commons.io.FileUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.*;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -114,7 +112,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     private void loadTexture(GameProfile profile, final Type type, final SkinAvailableCallback callback) {
-        if (profile != null && profile.getId() != null) {
+        if (profile.getId() != null) {
             Map<Type, MinecraftProfileTexture> data = loadProfileData(profile);
             final MinecraftProfileTexture texture = data.get(type);
             if (texture == null) {
@@ -143,9 +141,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                             if (imagebufferdownload != null) {
                                 imagebufferdownload.skinAvailable();
                             }
-                            if (callback != null) {
-                                callback.skinAvailable(type, skin, texture);
-                            }
+                            callback.skinAvailable(type, skin, texture);
                         }
                     });
 
@@ -177,26 +173,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             this.profileTextures.put(profile.getId(), textures);
             return textures;
         });
-    }
-
-    private static Map<Type, MinecraftProfileTexture> getTexturesForProfile(GameProfile profile) {
-        LiteLoaderLogger.debug("Get textures for " + profile.getId());
-
-        Minecraft minecraft = Minecraft.getMinecraft();
-        MinecraftSessionService sessionService = minecraft.getSessionService();
-        Map<Type, MinecraftProfileTexture> textures;
-
-        try {
-            textures = sessionService.getTextures(profile, true);
-        } catch (InsecureTextureException var6) {
-            textures = sessionService.getTextures(profile, false);
-        }
-
-        if ((textures == null || textures.isEmpty())
-                && profile.getId().equals(minecraft.getSession().getProfile().getId())) {
-            textures = sessionService.getTextures(sessionService.fillProfileProperties(profile, false), false);
-        }
-        return textures;
     }
 
     public void setSkinUrl(String skinUrl) {

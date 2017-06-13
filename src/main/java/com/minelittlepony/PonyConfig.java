@@ -36,8 +36,6 @@ public class PonyConfig implements Exposable {
     }
 
     public void setPonyLevel(PonyLevel ponylevel) {
-        if (ponylevel == null)
-            ponylevel = PonyLevel.PONIES;
         this.ponylevel = ponylevel;
     }
 }

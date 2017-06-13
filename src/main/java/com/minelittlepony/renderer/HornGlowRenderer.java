@@ -10,14 +10,10 @@ public class HornGlowRenderer extends ModelRenderer {
     private int textureOffsetX;
     private int textureOffsetY;
     private ModelBase baseModel;
-
-    public HornGlowRenderer(ModelBase par1ModelBase, String par2Str) {
-        super(par1ModelBase, par2Str);
-        this.baseModel = par1ModelBase;
-    }
-
+    
     public HornGlowRenderer(ModelBase par1ModelBase) {
-        this(par1ModelBase, null);
+        super(par1ModelBase);
+        this.baseModel = par1ModelBase;
     }
 
     public HornGlowRenderer(ModelBase par1ModelBase, int par2, int par3) {
