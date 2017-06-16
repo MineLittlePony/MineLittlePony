@@ -46,19 +46,23 @@ public class PonyManager implements IResourceManagerReloadListener {
         MineLittlePony.logger.info("Done initializing models.");
     }
 
-    public Pony getPonyFromResourceRegistry(ResourceLocation skinResourceLocation) {
+    public Pony getPony(ResourceLocation skinResourceLocation) {
         return this.poniesCache.computeIfAbsent(skinResourceLocation, Pony::new);
     }
 
-    public Pony getPonyFromResourceRegistry(AbstractClientPlayer player) {
+    public Pony getPony(AbstractClientPlayer player) {
 
         Pony myLittlePony = this.poniesCache.computeIfAbsent(player.getLocationSkin(), res -> new Pony(player));
 
-        if (config.getPonyLevel() == PonyLevel.PONIES && myLittlePony.metadata.getRace() == PonyRace.HUMAN) {
+        if (config.getPonyLevel() == PonyLevel.PONIES && myLittlePony.getMetadata().getRace() == PonyRace.HUMAN) {
             myLittlePony = this.getPonyFromBackgroundResourceRegistry(player);
         }
 
         return myLittlePony;
+    }
+
+    public Pony removePony(ResourceLocation location) {
+        return this.poniesCache.remove(location);
     }
 
     private ResourceLocation getBackgroundPonyResource(UUID id) {

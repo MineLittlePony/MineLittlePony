@@ -16,6 +16,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
 
@@ -25,13 +26,15 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
 
     @Override
     public ModelPlayer getEntityModel(EntityPonyModel playermodel) {
-        Pony thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(this.getEntityTexture(playermodel));
-        thePony.invalidateSkinCheck();
-        thePony.checkSkin();
+        ResourceLocation loc = this.getEntityTexture(playermodel);
+        if (loc == null) {
+            return super.getEntityModel(playermodel);
+        }
+        Pony thePony = MineLittlePony.getInstance().getManager().getPony(loc);
 
         // TODO small arms
         PlayerModel pm = thePony.getModel(true, false);
-        pm.apply(thePony.metadata);
+        pm.apply(thePony.getMetadata());
 
         return pm.getModel();
     }

@@ -79,7 +79,7 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
         this.playerModel.getModel().isSleeping = player.isPlayerSleeping();
 
         if (MineLittlePony.getConfig().showscale && this.playerModel.getModel().metadata.getRace() != PonyRace.HUMAN) {
-            PonySize size = thePony.metadata.getSize();
+            PonySize size = thePony.getMetadata().getSize();
             if (size == PonySize.FOAL) {
                 this.shadowSize = 0.25F;
             } else if (size == PonySize.NORMAL) {
@@ -102,7 +102,7 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
     private void setupPlayerScale(AbstractClientPlayer player, double xPosition, double yPosition, double zPosition, CallbackInfo ci) {
 
         if (MineLittlePony.getConfig().showscale && !(playerModel.getModel() instanceof ModelHumanPlayer)) {
-            PonySize size = thePony.metadata.getSize();
+            PonySize size = thePony.getMetadata().getSize();
             if (size == PonySize.LARGE) {
                 GlStateManager.scale(0.9F, 0.9F, 0.9F);
             } else if (size == PonySize.NORMAL || size == PonySize.FOAL) {
@@ -236,24 +236,22 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
     }
 
     private void updateModel(AbstractClientPlayer player) {
-        this.thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(player);
-        thePony.invalidateSkinCheck();
-        thePony.checkSkin();
+        this.thePony = MineLittlePony.getInstance().getManager().getPony(player);
         this.playerModel = this.getModel(player);
         this.mainModel = this.playerModel.getModel();
-        this.playerModel.apply(thePony.metadata);
+        this.playerModel.apply(thePony.getMetadata());
     }
 
     @Override
     @Nonnull
     public ResourceLocation getEntityTexture(AbstractClientPlayer player) {
-        Pony thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(player);
-        return thePony.getTextureResourceLocation();
+        Pony thePony = MineLittlePony.getInstance().getManager().getPony(player);
+        return thePony.getTexture();
     }
 
     private PlayerModel getModel(AbstractClientPlayer player) {
         ResourceLocation skin = getEntityTexture(player);
-        Pony thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(skin);
+        Pony thePony = MineLittlePony.getInstance().getManager().getPony(skin);
         return thePony.getModel(false, this.smallArms);
     }
 

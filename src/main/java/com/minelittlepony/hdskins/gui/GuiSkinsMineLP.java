@@ -25,20 +25,20 @@ public class GuiSkinsMineLP extends GuiSkins {
     @Override
     protected void onSetLocalSkin(BufferedImage skin, MinecraftProfileTexture.Type type) {
         MineLittlePony.logger.debug("Invalidating old local skin, checking updated local skin");
-        ponyManager.getPonyFromResourceRegistry(this.localPlayer.getSkinTexture()).checkSkin(skin);
+        ponyManager.removePony(this.localPlayer.getSkinTexture());
     }
 
     @Override
     protected void onSetRemoteSkin(MinecraftProfileTexture.Type type) {
         MineLittlePony.logger.debug("Invalidating old remote skin, checking updated remote skin");
-        ponyManager.getPonyFromResourceRegistry(this.remotePlayer.getSkinTexture()).invalidateSkinCheck();
+        ponyManager.removePony(this.remotePlayer.getSkinTexture());
     }
 
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
-        ponyManager.getPonyFromResourceRegistry(this.localPlayer.getSkinTexture()).invalidateSkinCheck();
-        ponyManager.getPonyFromResourceRegistry(this.remotePlayer.getSkinTexture()).invalidateSkinCheck();
+        ponyManager.removePony(this.localPlayer.getSkinTexture());
+        ponyManager.removePony(this.remotePlayer.getSkinTexture());
 
     }
 }

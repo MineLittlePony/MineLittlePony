@@ -18,11 +18,16 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
 
     public RenderPonySkeleton(RenderManager rm) {
         super(rm, PMAPI.skeleton);
+    }
+
+    @Override
+    protected void addLayers() {
+        super.addLayers();
         this.addLayer(new LayerBipedArmor(this) {
             @Override
             protected void initArmor() {
-                this.modelLeggings = PMAPI.skeleton.getArmor().modelArmor;
-                this.modelArmor = PMAPI.skeleton.getArmor().modelArmorChestplate;
+                this.modelLeggings = getPony().getArmor().modelArmor;
+                this.modelArmor = getPony().getArmor().modelArmorChestplate;
             }
         });
     }

@@ -4,7 +4,9 @@ import com.google.common.collect.ImmutableBiMap;
 
 import java.awt.image.BufferedImage;
 import java.util.Map;
+import javax.annotation.concurrent.Immutable;
 
+@Immutable
 public class PonyData implements IPonyData {
 
     private static final Map<Integer, PonyRace> RACE_COLORS = ImmutableBiMap.<Integer, PonyRace>builder()
@@ -26,11 +28,11 @@ public class PonyData implements IPonyData {
             .put(0x534b76, PonySize.TALL)
             .build();
 
-    private PonyRace race;
-    private TailLengths tailSize;
-    private PonyGender gender;
-    private PonySize size;
-    private int glowColor;
+    private final PonyRace race;
+    private final TailLengths tailSize;
+    private final PonyGender gender;
+    private final PonySize size;
+    private final int glowColor;
 
     public PonyData() {
         this(PonyRace.HUMAN, TailLengths.FULL, PonyGender.MARE, PonySize.NORMAL, 0x4444aa);
@@ -48,32 +50,16 @@ public class PonyData implements IPonyData {
         return race;
     }
 
-    public void setRace(PonyRace race) {
-        this.race = race;
-    }
-
     public TailLengths getTail() {
         return tailSize;
-    }
-
-    public void setTail(TailLengths tailSize) {
-        this.tailSize = tailSize;
     }
 
     public PonyGender getGender() {
         return gender;
     }
 
-    public void setGender(PonyGender gender) {
-        this.gender = gender;
-    }
-
     public PonySize getSize() {
         return MineLittlePony.getConfig().sizes ? size : PonySize.NORMAL;
-    }
-
-    public void setSize(PonySize size) {
-        this.size = size;
     }
 
     public int getGlowColor() {
@@ -82,10 +68,6 @@ public class PonyData implements IPonyData {
 
     public boolean hasMagic() {
         return this.race != null && this.race.hasHorn() && this.glowColor != 0;
-    }
-
-    public void setGlowColor(int glowColor) {
-        this.glowColor = glowColor & 0xffffff;
     }
 
     static PonyData parse(BufferedImage image) {
