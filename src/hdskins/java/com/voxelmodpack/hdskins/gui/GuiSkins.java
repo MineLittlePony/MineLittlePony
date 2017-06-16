@@ -72,7 +72,7 @@ public class GuiSkins extends GuiScreen {
     protected EntityPlayerModel localPlayer;
     protected EntityPlayerModel remotePlayer;
 
-    protected DoubleBuffer doubleBuffer;
+    private DoubleBuffer doubleBuffer;
 
     private String uploadError;
     private volatile String skinMessage = I18n.format("hdskins.choose");
@@ -87,7 +87,6 @@ public class GuiSkins extends GuiScreen {
     private final Object skinLock = new Object();
     private File pendingSkinFile;
     private File selectedSkin;
-    private BufferedImage pendingSkinImage;
     private float uploadOpacity = 0.0F;
     private float lastPartialTick;
     private JFrame fileDrop;
@@ -128,8 +127,7 @@ public class GuiSkins extends GuiScreen {
                 this.localPlayer.setLocalTexture(this.pendingSkinFile, textureType);
                 this.selectedSkin = this.pendingSkinFile;
                 this.pendingSkinFile = null;
-                this.onSetLocalSkin(this.pendingSkinImage, textureType);
-                this.pendingSkinImage = null;
+                this.onSetLocalSkin(textureType);
                 this.btnUpload.enabled = true;
             }
         }
@@ -139,7 +137,6 @@ public class GuiSkins extends GuiScreen {
             this.fetchingSkin = true;
             this.btnClear.enabled = false;
             this.reloadRemoteSkin();
-            this.onSetRemoteSkin(textureType);
         }
 
         if (this.throttledByMojang) {
@@ -156,15 +153,15 @@ public class GuiSkins extends GuiScreen {
 
     }
 
-    protected void onSetRemoteSkin(MinecraftProfileTexture.Type type) {
+    protected void onSetRemoteSkin(MinecraftProfileTexture.Type typeIn, ResourceLocation location, MinecraftProfileTexture profileTexture) {
     }
 
-    protected void onSetLocalSkin(BufferedImage skin, MinecraftProfileTexture.Type type) {
+    protected void onSetLocalSkin(MinecraftProfileTexture.Type type) {
     }
 
     private void reloadRemoteSkin() {
         try {
-            this.remotePlayer.reloadRemoteSkin();
+            this.remotePlayer.reloadRemoteSkin(this::onSetRemoteSkin);
         } catch (Exception var2) {
             var2.printStackTrace();
             this.throttledByMojang = true;
@@ -192,9 +189,6 @@ public class GuiSkins extends GuiScreen {
         (this.textureType == SKIN ? this.btnModeSkin : this.btnModeElytra).enabled = false;
     }
 
-    /**
-     * @wbp.parser.entryPoint
-     */
     private void enableDnd() {
         if (fileDrop != null) {
             fileDrop.setVisible(true);
@@ -227,7 +221,7 @@ public class GuiSkins extends GuiScreen {
         }
     }
 
-    public void initPanoramaRenderer() {
+    private void initPanoramaRenderer() {
         this.viewportTexture = this.mc.getTextureManager().getDynamicTextureLocation("skinpanorama", new DynamicTexture(256, 256));
     }
 
@@ -273,7 +267,6 @@ public class GuiSkins extends GuiScreen {
                     && chosenImage.getHeight() <= MAX_SKIN_DIMENSION) {
                 synchronized (this.skinLock) {
                     this.pendingSkinFile = skinFile;
-                    this.pendingSkinImage = chosenImage;
                 }
             } else {
                 this.skinMessage = I18n.format("hdskins.error.invalid");
@@ -362,7 +355,7 @@ public class GuiSkins extends GuiScreen {
         }
     }
 
-    public void setupCubemapCamera() {
+    private void setupCubemapCamera() {
         matrixMode(GL11.GL_PROJECTION);
         pushMatrix();
         loadIdentity();
@@ -372,7 +365,7 @@ public class GuiSkins extends GuiScreen {
         loadIdentity();
     }
 
-    public void revertPanoramaMatrix() {
+    private void revertPanoramaMatrix() {
         matrixMode(GL11.GL_PROJECTION);
         popMatrix();
         matrixMode(GL11.GL_MODELVIEW);
@@ -471,7 +464,7 @@ public class GuiSkins extends GuiScreen {
         disableBlend();
     }
 
-    public void renderPanorama(float partialTicks) {
+    private void renderPanorama(float partialTicks) {
         viewport(0, 0, 256, 256);
         this.renderCubeMapTexture(partialTicks);
         disableTexture2D();
@@ -523,7 +516,7 @@ public class GuiSkins extends GuiScreen {
         super.drawScreen(mouseX, mouseY, partialTick);
 
         popAttrib();
-        this.enableClipping(30, bottom);
+        this.enableClipping(bottom);
 
         float yPos = this.height * 0.75F;
         float xPos1 = this.width * 0.25F;
@@ -613,13 +606,14 @@ public class GuiSkins extends GuiScreen {
             Gui.drawRect(0, 0, this.width, this.height, 0xB0000000);
             this.drawCenteredString(this.fontRenderer, I18n.format("hdskins.failed"), this.width / 2, this.height / 2 - 10, 0xFFFFFF55);
             this.drawCenteredString(this.fontRenderer, this.uploadError, this.width / 2, this.height / 2 + 2, 0xFFFF5555);
+            LiteLoaderLogger.warning("Upload Failed: {}", this.uploadError);
         }
 
         depthMask(true);
         enableDepth();
     }
 
-    public void renderPlayerModel(EntityPlayerModel thePlayer, float xPosition, float yPosition, float scale, float mouseY, float partialTick) {
+    private void renderPlayerModel(EntityPlayerModel thePlayer, float xPosition, float yPosition, float scale, float mouseY, float partialTick) {
         enableColorMaterial();
         pushMatrix();
         translate(xPosition, yPosition, 300.0F);
@@ -645,13 +639,13 @@ public class GuiSkins extends GuiScreen {
         disableColorMaterial();
     }
 
-    protected final void enableClipping(int yTop, int yBottom) {
+    private void enableClipping(int yBottom) {
         if (this.doubleBuffer == null) {
             this.doubleBuffer = BufferUtils.createByteBuffer(32).asDoubleBuffer();
         }
 
         this.doubleBuffer.clear();
-        this.doubleBuffer.put(0.0D).put(1.0D).put(0.0D).put((-yTop)).flip();
+        this.doubleBuffer.put(0.0D).put(1.0D).put(0.0D).put((-30)).flip();
 
         GL11.glClipPlane(GL11.GL_CLIP_PLANE0, this.doubleBuffer);
         this.doubleBuffer.clear();
@@ -662,12 +656,12 @@ public class GuiSkins extends GuiScreen {
         GL11.glEnable(GL11.GL_CLIP_PLANE1);
     }
 
-    protected final void disableClipping() {
+    private void disableClipping() {
         GL11.glDisable(GL11.GL_CLIP_PLANE1);
         GL11.glDisable(GL11.GL_CLIP_PLANE0);
     }
 
-    public static boolean isPowerOfTwo(int number) {
+    private static boolean isPowerOfTwo(int number) {
         return number != 0 && (number & number - 1) == 0;
     }
 

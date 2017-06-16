@@ -27,8 +27,6 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -39,6 +37,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public final class HDSkinManager implements IResourceManagerReloadListener {
 
@@ -201,13 +201,27 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         this.enabled = enabled;
     }
 
-    public static PreviewTexture getPreviewTexture(ResourceLocation skinResource, GameProfile profile, Type type, ResourceLocation def) {
+    public static PreviewTexture getPreviewTexture(ResourceLocation skinResource, GameProfile profile, Type type, ResourceLocation def, @Nullable final SkinAvailableCallback callback) {
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         String url = INSTANCE.getCustomTextureURLForId(type, UUIDTypeAdapter.fromUUID(profile.getId()), true);
-        ITextureObject skinTexture = new PreviewTexture(url, def, type == Type.SKIN ? new ImageBufferDownloadHD() : null);
+        IImageBuffer buffer = new ImageBufferDownloadHD();
+        PreviewTexture skinTexture = new PreviewTexture(url, def, type == Type.SKIN ? new IImageBuffer() {
+            @Override
+            @Nullable
+            public BufferedImage parseUserSkin(BufferedImage image) {
+                return buffer.parseUserSkin(image);
+            }
+
+            @Override
+            public void skinAvailable() {
+                if (callback != null) {
+                    callback.skinAvailable(type, skinResource, new MinecraftProfileTexture(url, Maps.newHashMap()));
+                }
+            }
+        } : null);
         textureManager.loadTexture(skinResource, skinTexture);
 
-        return (PreviewTexture) skinTexture;
+        return skinTexture;
 
     }
 

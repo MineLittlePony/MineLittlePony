@@ -12,17 +12,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
+import net.minecraft.client.resources.SkinManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import javax.imageio.ImageIO;
 
 @SuppressWarnings("EntityConstructor")
 public class EntityPlayerModel extends EntityLivingBase {
@@ -64,7 +65,7 @@ public class EntityPlayerModel extends EntityLivingBase {
         this.textureManager.deleteTexture(this.remoteElytraResource);
     }
 
-    public void reloadRemoteSkin() {
+    public void reloadRemoteSkin(SkinManager.SkinAvailableCallback listener) {
         this.remoteSkin = true;
         if (this.remoteSkinTexture != null) {
             this.textureManager.deleteTexture(this.remoteSkinResource);
@@ -73,8 +74,8 @@ public class EntityPlayerModel extends EntityLivingBase {
             this.textureManager.deleteTexture(this.remoteElytraResource);
         }
 
-        this.remoteSkinTexture = HDSkinManager.getPreviewTexture(this.remoteSkinResource, this.profile, Type.SKIN, NO_SKIN);
-        this.remoteElytraTexture = HDSkinManager.getPreviewTexture(this.remoteElytraResource, this.profile, Type.ELYTRA, NO_ELYTRA);
+        this.remoteSkinTexture = HDSkinManager.getPreviewTexture(this.remoteSkinResource, this.profile, Type.SKIN, NO_SKIN, listener);
+        this.remoteElytraTexture = HDSkinManager.getPreviewTexture(this.remoteElytraResource, this.profile, Type.ELYTRA, NO_ELYTRA, null);
 
     }
 
@@ -126,11 +127,6 @@ public class EntityPlayerModel extends EntityLivingBase {
 
     public boolean isUsingLocalTexture() {
         return !this.remoteSkin && this.hasLocalTexture;
-    }
-
-//    @Override TODO
-    public float getBrightness(float par1) {
-        return 1.0F;
     }
 
     public boolean isTextureSetupComplete() {
@@ -188,12 +184,6 @@ public class EntityPlayerModel extends EntityLivingBase {
     public EnumHandSide getPrimaryHand() {
         return Minecraft.getMinecraft().gameSettings.mainHand;
     }
-
-//    @Override TODO
-    public int getBrightnessForRender(float partialTicks) {
-        return 0xf000f0;
-    }
-
 
     @Override
     public Iterable<ItemStack> getArmorInventoryList() {
