@@ -1,5 +1,9 @@
 package com.voxelmodpack.hdskins.gui;
 
+import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.ELYTRA;
+import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.SKIN;
+import static net.minecraft.client.renderer.GlStateManager.*;
+
 import com.google.common.collect.ImmutableMap;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
@@ -33,8 +37,6 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.Color;
 import java.awt.Window.Type;
 import java.awt.dnd.DropTarget;
@@ -44,10 +46,8 @@ import java.io.IOException;
 import java.nio.DoubleBuffer;
 import java.util.Locale;
 import java.util.Map;
-
-import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.ELYTRA;
-import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.SKIN;
-import static net.minecraft.client.renderer.GlStateManager.*;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
 public class GuiSkins extends GuiScreen {
     private static final int MAX_SKIN_DIMENSION = 8192;

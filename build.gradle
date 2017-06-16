@@ -28,7 +28,7 @@ sourceCompatibility = 1.8
 
 minecraft {
 	version = "1.12"
-	mappings = 'snapshot_20170611'
+	mappings = 'snapshot_20170615'
 	runDir = 'run'
 	replace '@VERSION@', project.version
 }
@@ -48,14 +48,14 @@ mixin {
 }
 
 litemod.json {
-	author = 'Verdana, Rene_Z, Mumfrey, JoyJoy'
+	author = 'Verdana, Rene_Z, Mumfrey, Killjoy1221'
 	description = 'Mine Little Pony turns players and mobs into ponies'
 	description.minelittlepony = '''\
 		Mine Little Pony turns players and mobs into ponies
 		Press F9 ingame to access settings'''.stripIndent()
 	description.hdskinsmod = '''\
-		Seperate skin server for Mine Little Pony that also supports HD skins.
-		Access via Skin Manager key binding (default: F1) in the main menu.'''.stripIndent()
+		Separate skin server for Mine Little Pony that also supports HD skins.
+		Access via button on the main menu.'''.stripIndent()
 
 	mixinConfigs += [
 		'mixin.minelp.json',
@@ -65,7 +65,7 @@ litemod.json {
 
 jar {
 	from sourceSets.hdskins.output
-	from litemod.outputs
+	from litemod
 }
 sourceJar {
 	// add hdskins sources
@@ -73,7 +73,7 @@ sourceJar {
 }
 task srgJar(type: Jar) {
 	from sourceSets.hdskins.output
-	from litemod.outputs
+	from litemod
 	classifier "mc$minecraft.version-srg"
 	baseName "mod-${project.name.toLowerCase()}"
 }
