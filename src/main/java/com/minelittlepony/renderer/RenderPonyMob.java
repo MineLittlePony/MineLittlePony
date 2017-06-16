@@ -14,6 +14,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving<T> implements IRenderPony {
 
@@ -46,15 +47,18 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     protected void preRenderCallback(T entity, float partialTickTime) {
         this.playerModel.getModel().isSneak = false;
         this.playerModel.getModel().isFlying = false;
         this.playerModel.getModel().isSleeping = false;
 
         ResourceLocation loc = getEntityTexture(entity);
-        this.playerModel.apply(MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(loc).metadata);
+        this.playerModel.apply(MineLittlePony.getInstance().getManager().getPony(loc).getMetadata());
 
-        if (MineLittlePony.getConfig().showscale) {
+        if (mainModel.isChild) {
+            this.shadowSize = 0.25F;
+        } else if (MineLittlePony.getConfig().showscale) {
             this.shadowSize = 0.4F;
         } else {
             this.shadowSize = 0.5F;

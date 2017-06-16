@@ -1,17 +1,11 @@
 package com.minelittlepony.renderer;
 
-import com.minelittlepony.PonyGender;
-import com.minelittlepony.PonyRace;
-import com.minelittlepony.PonySize;
-import com.minelittlepony.TailLengths;
 import com.minelittlepony.model.PMAPI;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.monster.EntityHusk;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.util.ResourceLocation;
-
-import java.util.Random;
 
 public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob<Zombie> {
 
@@ -20,50 +14,6 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
 
     public RenderPonyZombie(RenderManager rendermanager) {
         super(rendermanager, PMAPI.zombie);
-    }
-
-    @Override
-    protected void preRenderCallback(Zombie entity, float partick) {
-        super.preRenderCallback(entity, partick);
-        Random rand = new Random(entity.getUniqueID().hashCode());
-
-        // 50-50 chance for gender
-        this.playerModel.getModel().metadata.setGender(rand.nextBoolean() ? PonyGender.MARE : PonyGender.STALLION);
-
-        // races
-        switch (rand.nextInt(2) + 2) {
-            case 0:
-            case 1:
-                this.playerModel.getModel().metadata.setRace(PonyRace.EARTH);
-                break;
-            case 2:
-                this.playerModel.getModel().metadata.setRace(PonyRace.PEGASUS);
-                break;
-            case 3:
-                this.playerModel.getModel().metadata.setRace(PonyRace.UNICORN);
-                break;
-        }
-        // Let's play the lottery!
-        if (rand.nextInt(10000) == 0) {
-            this.playerModel.getModel().metadata.setRace(PonyRace.ALICORN);
-        }
-        // sizes
-        if (entity.isChild()) {
-            this.playerModel.getModel().metadata.setSize(PonySize.FOAL);
-        } else {
-            PonySize size = randEnum(rand, PonySize.class);
-            this.playerModel.getModel().metadata.setSize(size != PonySize.FOAL ? size : PonySize.NORMAL);
-        }
-        this.playerModel.getModel().metadata.setTail(randEnum(rand, TailLengths.class));
-
-        // glow
-        this.playerModel.getModel().metadata.setGlowColor(rand.nextInt());
-
-    }
-
-    private static <T extends Enum<T>> T randEnum(Random rand, Class<T> en) {
-        T[] values = en.getEnumConstants();
-        return values[rand.nextInt(values.length)];
     }
 
     @Override

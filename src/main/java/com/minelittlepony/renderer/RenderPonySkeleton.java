@@ -1,9 +1,5 @@
 package com.minelittlepony.renderer;
 
-import com.minelittlepony.PonyGender;
-import com.minelittlepony.PonyRace;
-import com.minelittlepony.PonySize;
-import com.minelittlepony.TailLengths;
 import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.renderer.layer.LayerPonyStrayOverlay;
 import net.minecraft.client.renderer.GlStateManager;
@@ -13,8 +9,6 @@ import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.entity.monster.EntityStray;
 import net.minecraft.entity.monster.EntityWitherSkeleton;
 import net.minecraft.util.ResourceLocation;
-
-import java.util.Random;
 
 public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends RenderPonyMob<Skeleton> {
 
@@ -31,30 +25,6 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
                 this.modelArmor = PMAPI.skeleton.getArmor().modelArmorChestplate;
             }
         });
-    }
-
-    @Override
-    protected void preRenderCallback(Skeleton skeleton, float partialTicks) {
-        super.preRenderCallback(skeleton, partialTicks);
-
-        Random rand = new Random(skeleton.getUniqueID().hashCode());
-        this.playerModel.getModel().metadata.setGender(rand.nextBoolean() ? PonyGender.MARE : PonyGender.STALLION);
-        switch (rand.nextInt(4)) {
-            case 0:
-            case 1:
-                this.playerModel.getModel().metadata.setRace(PonyRace.UNICORN);
-                break;
-            case 2:
-                this.playerModel.getModel().metadata.setRace(PonyRace.EARTH);
-                break;
-            case 3:
-                this.playerModel.getModel().metadata.setRace(PonyRace.PEGASUS);
-        }
-        PonySize[] sizes = PonySize.values();
-        PonySize size = sizes[rand.nextInt(sizes.length)];
-        this.playerModel.getModel().metadata.setSize(size == PonySize.FOAL ? PonySize.NORMAL : size);
-        this.playerModel.getModel().metadata.setTail(TailLengths.STUB);
-        this.playerModel.getModel().metadata.setGlowColor(rand.nextInt());
     }
 
     @Override

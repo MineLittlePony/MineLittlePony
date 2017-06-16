@@ -23,7 +23,7 @@ public class RenderPonyEvoker extends RenderPonyMob<EntityEvoker> {
     protected void addLayers() {
         this.addLayer(new LayerHeldPonyItem(this) {
             public void doPonyRender(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-                if (((EntitySpellcasterIllager) entitylivingbaseIn).func_193082_dl()) {
+                if (((EntitySpellcasterIllager) entitylivingbaseIn).isSpellcasting()) {
                     super.doPonyRender(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
                 }
             }
@@ -41,7 +41,7 @@ public class RenderPonyEvoker extends RenderPonyMob<EntityEvoker> {
 
     @Override
     protected void preRenderCallback(EntityEvoker entitylivingbaseIn, float partialTickTime) {
-
+        super.preRenderCallback(entitylivingbaseIn, partialTickTime);
         GlStateManager.scale(0.9375F, 0.9375F, 0.9375F);
     }
 

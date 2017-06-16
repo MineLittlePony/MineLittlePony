@@ -17,7 +17,7 @@ public class ModelIllagerPony extends ModelPlayerPony {
 
         super.setRotationAngles(swing, move, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
         AbstractIllager illager = (AbstractIllager) entityIn;
-        AbstractIllager.IllagerArmPose pose = illager.func_193077_p();
+        AbstractIllager.IllagerArmPose pose = illager.getArmPose();
 
         boolean rightHanded = illager.getPrimaryHand() == EnumHandSide.RIGHT;
 

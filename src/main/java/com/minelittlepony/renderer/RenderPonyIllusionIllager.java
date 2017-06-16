@@ -3,6 +3,7 @@ package com.minelittlepony.renderer;
 import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.model.pony.ModelIllagerPony;
 import com.minelittlepony.renderer.layer.LayerHeldPonyItem;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityIllusionIllager;
@@ -23,13 +24,15 @@ public class RenderPonyIllusionIllager extends RenderPonyMob<EntityIllusionIllag
     @Override
     protected void addLayers() {
         this.addLayer(new LayerHeldPonyItem(this) {
+            @Override
             public void doPonyRender(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks,
-                    float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-                if (((EntityIllusionIllager) entitylivingbaseIn).func_193082_dl() || ((EntityIllusionIllager) entitylivingbaseIn).func_193096_dj()) {
+                                     float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+                if (((EntityIllusionIllager) entitylivingbaseIn).isSpellcasting() || ((EntityIllusionIllager) entitylivingbaseIn).isAggressive()) {
                     super.doPonyRender(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
                 }
             }
 
+            @Override
             protected void translateToHand(EnumHandSide p_191361_1_) {
                 ((ModelIllagerPony) this.getRenderer().getMainModel()).getArm(p_191361_1_).postRender(0.0625F);
             }
@@ -41,10 +44,15 @@ public class RenderPonyIllusionIllager extends RenderPonyMob<EntityIllusionIllag
         return TEXTURE;
     }
 
+    protected void preRenderCallback(EntityIllusionIllager entitylivingbaseIn, float partialTickTime) {
+        super.preRenderCallback(entitylivingbaseIn, partialTickTime);
+        GlStateManager.scale(0.9375F, 0.9375F, 0.9375F);
+    }
+
     @Override
     public void doRender(EntityIllusionIllager entity, double x, double y, double z, float yaw, float partialTicks) {
         if (entity.isInvisible()) {
-            Vec3d[] avec3d = entity.func_193098_a(partialTicks);
+            Vec3d[] avec3d = entity.getRenderLocations(partialTicks);
             float f = this.handleRotationFloat(entity, partialTicks);
 
             for (int i = 0; i < avec3d.length; ++i) {
@@ -59,7 +67,8 @@ public class RenderPonyIllusionIllager extends RenderPonyMob<EntityIllusionIllag
         }
     }
 
-    protected boolean func_193115_c(EntityIllusionIllager p_193115_1_) {
+    @Override
+    protected boolean isVisible(EntityIllusionIllager p_193115_1_) {
         return true;
     }
 }
