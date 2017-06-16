@@ -1,5 +1,6 @@
 package com.minelittlepony;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableBiMap;
 
 import java.awt.image.BufferedImage;
@@ -68,6 +69,17 @@ public class PonyData implements IPonyData {
 
     public boolean hasMagic() {
         return this.race != null && this.race.hasHorn() && this.glowColor != 0;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("race", race)
+                .add("tailSize", tailSize)
+                .add("gender", gender)
+                .add("size", size)
+                .add("glowColor", "#" + Integer.toHexString(glowColor))
+                .toString();
     }
 
     static PonyData parse(BufferedImage image) {

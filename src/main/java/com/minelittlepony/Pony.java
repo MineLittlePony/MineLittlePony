@@ -1,5 +1,6 @@
 package com.minelittlepony;
 
+import com.google.common.base.MoreObjects;
 import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.model.PlayerModel;
 import com.minelittlepony.util.PonyFields;
@@ -154,5 +155,13 @@ public class Pony {
 
     public PonyData getMetadata() {
         return metadata;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("texture", texture)
+                .add("metadata", metadata)
+                .toString();
     }
 }
