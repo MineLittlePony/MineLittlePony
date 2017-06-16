@@ -2,13 +2,18 @@ package com.minelittlepony;
 
 import com.mumfrey.liteloader.util.ModUtilities;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.ForgeHooksClient;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
+import java.util.function.Function;
 
 public class ForgeProxy {
 
@@ -24,6 +29,13 @@ public class ForgeProxy {
         if (forgeLoaded)
             return ForgeHooksClient.getArmorModel(entity, item, slot, def);
         return def;
+    }
+
+    public static Optional<Function<RenderManager,LayerRenderer<EntityPlayer>>> createShoulderLayer() {
+        if (forgeLoaded) {
+            // TODO
+        }
+        return Optional.empty();
     }
 
 }
