@@ -2,6 +2,7 @@ package com.minelittlepony.model.pony;
 
 import com.minelittlepony.renderer.PlaneRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.util.math.MathHelper;
 
 public class ModelVillagerPony extends ModelPlayerPony {
@@ -9,8 +10,6 @@ public class ModelVillagerPony extends ModelPlayerPony {
     public PlaneRenderer[] VillagerBagPiece;
     public PlaneRenderer VillagerApron;
     public PlaneRenderer VillagerTrinket;
-
-    public int profession;
 
     public ModelVillagerPony() {
         super(false);
@@ -40,15 +39,18 @@ public class ModelVillagerPony extends ModelPlayerPony {
     protected void renderBody(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         super.renderBody(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
-        this.bipedBody.postRender(this.scale);
-        if (profession < 2) {
-            for (PlaneRenderer aVillagerBagPiece : this.VillagerBagPiece) {
-                aVillagerBagPiece.render(this.scale);
+        if (entityIn instanceof EntityVillager) {
+            this.bipedBody.postRender(this.scale);
+            int profession = ((EntityVillager) entityIn).getProfession();
+            if (profession < 2) {
+                for (PlaneRenderer aVillagerBagPiece : this.VillagerBagPiece) {
+                    aVillagerBagPiece.render(this.scale);
+                }
+            } else if (profession == 2) {
+                this.VillagerTrinket.render(this.scale);
+            } else if (profession > 2) {
+                this.VillagerApron.render(this.scale);
             }
-        } else if (profession == 2) {
-            this.VillagerTrinket.render(this.scale);
-        } else if (profession > 2) {
-            this.VillagerApron.render(this.scale);
         }
     }
 

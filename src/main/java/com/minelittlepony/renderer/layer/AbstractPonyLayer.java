@@ -1,8 +1,7 @@
 package com.minelittlepony.renderer.layer;
 
-import com.minelittlepony.ducks.IRenderPony;
-import com.minelittlepony.model.PlayerModel;
 import com.minelittlepony.model.pony.ModelHumanPlayer;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,8 +18,8 @@ public abstract class AbstractPonyLayer<T extends EntityLivingBase> implements L
 
     public final void doRenderLayer(T entity, float limbSwing, float limbSwingAmount, float ticks, float ageInTicks,
             float netHeadYaw, float headPitch, float scale) {
-        PlayerModel model = ((IRenderPony) renderer).getPony();
-        if (model.getModel() instanceof ModelHumanPlayer) {
+        ModelBase model = renderer.getMainModel();
+        if (model instanceof ModelHumanPlayer) {
             // render the human layer
             layer.doRenderLayer(entity, limbSwing, limbSwingAmount, ticks, ageInTicks, netHeadYaw, headPitch, scale);
         } else {
