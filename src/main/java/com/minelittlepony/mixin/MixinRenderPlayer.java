@@ -34,8 +34,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import javax.annotation.Nonnull;
-
 @Mixin(RenderPlayer.class)
 public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientPlayer> implements IRenderPony {
 
@@ -243,7 +241,6 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
     }
 
     @Override
-    @Nonnull
     public ResourceLocation getEntityTexture(AbstractClientPlayer player) {
         Pony thePony = MineLittlePony.getInstance().getManager().getPony(player);
         return thePony.getTexture();
