@@ -17,7 +17,7 @@ public class MixinGuiMainMenu extends GuiScreen {
 
     private static final int SKINS = 5000;
 
-    @Inject(method = "initGui()V", at = @At("RETURN"))
+    @Inject(method = "initGui()V", at = @At("HEAD"))
     private void onInit(CallbackInfo ci) {
         ItemStack itemStack = new ItemStack(Items.LEATHER_LEGGINGS);
         Items.LEATHER_LEGGINGS.setColor(itemStack, 0x3c5dcb);
