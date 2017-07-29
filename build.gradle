@@ -72,6 +72,7 @@ sourceJar {
 	from sourceSets.hdskins.allSource
 }
 task srgJar(type: Jar) {
+	from sourceSets.main.output
 	from sourceSets.hdskins.output
 	from litemod
 	classifier "mc$minecraft.version-srg"

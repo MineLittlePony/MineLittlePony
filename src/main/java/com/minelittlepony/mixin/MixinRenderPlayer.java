@@ -245,6 +245,7 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
 
     /**
      * @author killjoy
+     * @reason Support for background ponies and default pony skin
      */
     @Overwrite
     @Override
