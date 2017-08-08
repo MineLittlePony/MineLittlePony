@@ -5,7 +5,7 @@
     "revision": "${revision}",
     "description": "Mine Little Pony turns players and mobs into ponies",
     "mixinConfigs": [
-        "mixin.minelp.json",
-        "mixin.hdskins.json"
+        "minelp.mixin.json",
+        "hdskins.mixin.json"
     ]
 }

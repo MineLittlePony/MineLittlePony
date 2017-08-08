@@ -7,12 +7,12 @@ buildscript {
 		}
 		maven {
 			name = 'sponge'
-			url = 'http://repo.spongepowered.org/maven'
+			url = 'https://repo.spongepowered.org/maven'
 		}
 	}
 	dependencies {
 		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-		classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
+		classpath 'org.spongepowered:mixingradle:0.5-SNAPSHOT'
 	}
 }
 
@@ -20,15 +20,15 @@ apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'com.minelittlepony'
-version = '1.12.0.2'
+version = '1.12.1.0'
 description = 'Mine Little Pony'
 
 targetCompatibility = 1.8
 sourceCompatibility = 1.8
 
 minecraft {
-	version = "1.12"
-	mappings = 'snapshot_20170627'
+	version = "1.12.1"
+	mappings = 'snapshot_20170805'
 	runDir = 'run'
 	replace '@VERSION@', project.version
 }
@@ -36,15 +36,12 @@ minecraft {
 sourceSets {
 	hdskins {
 		compileClasspath += main.compileClasspath
+		ext.refMap = 'hdskins.mixin.refmap.json'
 	}
 	main {
 		compileClasspath += hdskins.output
+		ext.refMap = 'minelp.mixin.refmap.json'
 	}
-}
-
-mixin {
-	add sourceSets.main, 'mixin.minelp.refmap.json'
-	add sourceSets.hdskins, 'mixin.hdskins.refmap.json'
 }
 
 litemod.json {
@@ -58,8 +55,8 @@ litemod.json {
 		Access via button on the main menu.'''.stripIndent()
 
 	mixinConfigs += [
-		'mixin.minelp.json',
-		'mixin.hdskins.json'
+		'minelp.mixin.json',
+		'hdskins.mixin.json'
 	]
 }
 
