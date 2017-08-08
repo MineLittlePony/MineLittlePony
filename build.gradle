@@ -20,7 +20,7 @@ apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'com.minelittlepony'
-version = '1.12.1.0'
+version = '1.12.1.0-pre'
 description = 'Mine Little Pony'
 
 targetCompatibility = 1.8
