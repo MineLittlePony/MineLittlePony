@@ -8,7 +8,11 @@ import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.model.PlayerModel;
 import com.minelittlepony.model.pony.ModelHumanPlayer;
 import com.minelittlepony.model.pony.ModelPlayerPony;
-import com.minelittlepony.renderer.layer.*;
+import com.minelittlepony.renderer.layer.LayerHeldPonyItem;
+import com.minelittlepony.renderer.layer.LayerPonyArmor;
+import com.minelittlepony.renderer.layer.LayerPonyCape;
+import com.minelittlepony.renderer.layer.LayerPonyCustomHead;
+import com.minelittlepony.renderer.layer.LayerPonyElytra;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
@@ -231,8 +235,10 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
         this.playerModel.apply(thePony.metadata);
     }
 
-    @Override
-    public ResourceLocation getEntityTexture(AbstractClientPlayer player) {
+    @Redirect(
+            method = "getEntityTexture(Lnet/minecraft/client/entity/AbstractClientPlayer;)Lnet/minecraft/util/ResourceLocation;",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/AbstractClientPlayer;getLocationSkin()Lnet/minecraft/util/ResourceLocation;"))
+    private ResourceLocation redirectEntityTexture(AbstractClientPlayer player) {
         Pony thePony = MineLittlePony.getInstance().getManager().getPonyFromResourceRegistry(player);
         return thePony.getTextureResourceLocation();
     }
