@@ -27,15 +27,12 @@ import net.minecraft.util.ResourceLocation;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import javax.annotation.Nonnull;
 
 @Mixin(RenderPlayer.class)
 public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientPlayer> implements IRenderPony {
@@ -243,14 +240,10 @@ public abstract class MixinRenderPlayer extends RenderLivingBase<AbstractClientP
         this.playerModel.apply(thePony.getMetadata());
     }
 
-    /**
-     * @author killjoy
-     * @reason Support for background ponies and default pony skin
-     */
-    @Overwrite
-    @Override
-    @Nonnull
-    public ResourceLocation getEntityTexture(AbstractClientPlayer player) {
+    @Redirect(
+            method = "getEntityTexture(Lnet/minecraft/client/entity/AbstractClientPlayer;)Lnet/minecraft/util/ResourceLocation;",
+            at = @At(value =  "INVOKE", target = "Lnet/minecraft/client/entity/AbstractClientPlayer;getLocationSkin()Lnet/minecraft/util/ResourceLocation;"))
+    private ResourceLocation redirectEntityTexture(AbstractClientPlayer player) {
         Pony thePony = MineLittlePony.getInstance().getManager().getPony(player);
         return thePony.getTexture();
     }
