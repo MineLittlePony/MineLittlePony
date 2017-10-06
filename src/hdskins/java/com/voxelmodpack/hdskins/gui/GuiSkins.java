@@ -632,7 +632,7 @@ public class GuiSkins extends GuiScreen {
 
         RenderManager rm = Minecraft.getMinecraft().getRenderManager();
         rm.playerViewY = 180.0F;
-        rm.doRenderEntity(thePlayer, 0, 0, 0, 0, 1, false);
+        rm.renderEntity(thePlayer, 0, 0, 0, 0, 1, false);
 
         popMatrix();
         RenderHelper.disableStandardItemLighting();

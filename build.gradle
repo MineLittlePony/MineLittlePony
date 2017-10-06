@@ -12,7 +12,7 @@ buildscript {
 	}
 	dependencies {
 		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-		classpath 'org.spongepowered:mixingradle:0.5-SNAPSHOT'
+		classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
 	}
 }
 
@@ -20,15 +20,15 @@ apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'com.minelittlepony'
-version = '1.12.1.0-pre'
+version = '1.12.2.1'
 description = 'Mine Little Pony'
 
 targetCompatibility = 1.8
 sourceCompatibility = 1.8
 
 minecraft {
-	version = "1.12.1"
-	mappings = 'snapshot_20170805'
+	version = "1.12.2"
+	mappings = 'snapshot_20170919'
 	runDir = 'run'
 	replace '@VERSION@', project.version
 }
@@ -45,6 +45,7 @@ sourceSets {
 }
 
 litemod.json {
+	mcversion = '1.12.r2'
 	author = 'Verdana, Rene_Z, Mumfrey, Killjoy1221'
 	description = 'Mine Little Pony turns players and mobs into ponies'
 	description.minelittlepony = '''\
