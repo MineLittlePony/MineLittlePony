@@ -17,6 +17,9 @@ public class PonyData implements IPonyData {
             .put(0xfef9fc, PonyRace.ALICORN)
             .put(0xd0cccf, PonyRace.ZEBRA)
             .put(0x282b29, PonyRace.CHANGELING)
+            .put(0xcaed5a, PonyRace.REFORMED_CHANGELING)
+            .put(0xae9145, PonyRace.GRIFFIN)
+            .put(0xd6ddac, PonyRace.HIPPOGRIFF)
             .build();
     private static final Map<Integer, TailLengths> TAIL_COLORS = ImmutableBiMap.<Integer, TailLengths>builder()
             .put(0x425844, TailLengths.STUB)

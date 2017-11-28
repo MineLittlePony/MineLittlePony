@@ -8,7 +8,11 @@ public enum PonyRace {
     UNICORN(false, true),
     ALICORN(true, true),
     CHANGELING(true, true),
-    ZEBRA(false, false);
+    ZEBRA(false, false),
+    REFORMED_CHANGELING(true, true),
+    GRIFFIN(true, false),
+    HIPPOGRIFF(true, false),
+    ;
 
     private boolean wings;
     private boolean horn;
