@@ -1,25 +1,25 @@
 package com.voxelmodpack.hdskins.upload;
 
-import com.google.common.io.Files;
+import org.apache.commons.io.IOUtils;
 
-import javax.annotation.Nullable;
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.annotation.Nullable;
 
 /**
  * Uploader for Multipart form data
  *
  * @author Adam Mummery-Smith
  */
-public class ThreadMultipartPostUpload extends Thread {
+public class ThreadMultipartPostUpload {
     protected final Map<String, ?> sourceData;
 
     protected final String method;
@@ -27,8 +27,6 @@ public class ThreadMultipartPostUpload extends Thread {
     protected final String authorization;
 
     protected final String urlString;
-
-    protected final IUploadCompleteCallback callback;
 
     protected HttpURLConnection httpClient;
 
@@ -40,34 +38,18 @@ public class ThreadMultipartPostUpload extends Thread {
 
     public String response;
 
-    public ThreadMultipartPostUpload(String method, String url, Map<String, ?> sourceData, @Nullable String authorization, IUploadCompleteCallback callback) {
+    public ThreadMultipartPostUpload(String method, String url, Map<String, ?> sourceData, @Nullable String authorization) {
         this.method = method;
         this.urlString = url;
         this.sourceData = sourceData;
         this.authorization = authorization;
-        this.callback = callback;
     }
 
-    public ThreadMultipartPostUpload(String url, Map<String, ?> sourceData, IUploadCompleteCallback callback) {
-        this("POST", url, sourceData, null, callback);
+    public ThreadMultipartPostUpload(String url, Map<String, ?> sourceData) {
+        this("POST", url, sourceData, null);
     }
 
-    public String getResponse() {
-        return this.response == null ? "" : this.response.trim();
-    }
-
-    @Override
-    public void run() {
-        try {
-            this.uploadMultipart();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-        this.callback.onUploadComplete(this.getResponse());
-    }
-
-    protected void uploadMultipart() throws IOException {
+    public String uploadMultipart() throws IOException {
         // open a URL connection
         URL url = new URL(this.urlString);
 
@@ -88,49 +70,33 @@ public class ThreadMultipartPostUpload extends Thread {
             this.httpClient.addRequestProperty("Authorization", this.authorization);
         }
 
-        DataOutputStream outputStream = new DataOutputStream(this.httpClient.getOutputStream());
+        try (DataOutputStream outputStream = new DataOutputStream(this.httpClient.getOutputStream())) {
 
-        for (Entry<String, ?> data : this.sourceData.entrySet()) {
-            outputStream.writeBytes(twoHyphens + boundary + CRLF);
+            for (Entry<String, ?> data : this.sourceData.entrySet()) {
+                outputStream.writeBytes(twoHyphens + boundary + CRLF);
 
-            String paramName = data.getKey();
-            Object paramData = data.getValue();
+                String paramName = data.getKey();
+                Object paramData = data.getValue();
 
-            if (paramData instanceof File) {
-                File uploadFile = (File) paramData;
-                outputStream.writeBytes("Content-Disposition: form-data; name=\"" + paramName + "\"; filename=\"" + uploadFile.getName() + "\"" + CRLF + CRLF);
+                if (paramData instanceof Path) {
+                    Path uploadPath = (Path) paramData;
+                    outputStream.writeBytes("Content-Disposition: form-data; name=\"" + paramName + "\"; filename=\"" + uploadPath.getFileName() + "\"" + CRLF + CRLF);
 
-                Files.asByteSource(uploadFile).copyTo(outputStream);
+                    Files.copy(uploadPath, outputStream);
+                } else {
+                    outputStream.writeBytes("Content-Disposition: form-data; name=\"" + paramName + "\"" + CRLF + CRLF);
+                    outputStream.writeBytes(paramData.toString());
+                }
 
-            } else {
-                outputStream.writeBytes("Content-Disposition: form-data; name=\"" + paramName + "\"" + CRLF + CRLF);
-                outputStream.writeBytes(paramData.toString());
+                outputStream.writeBytes(ThreadMultipartPostUpload.CRLF);
             }
 
-            outputStream.writeBytes(ThreadMultipartPostUpload.CRLF);
+            outputStream.writeBytes(twoHyphens + boundary + twoHyphens + CRLF);
         }
 
-        outputStream.writeBytes(twoHyphens + boundary + twoHyphens + CRLF);
-        outputStream.flush();
-
-        InputStream httpStream = this.httpClient.getInputStream();
-
-        try {
-            StringBuilder readString = new StringBuilder();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(httpStream));
-
-            String readLine;
-            while ((readLine = reader.readLine()) != null) {
-                readString.append(readLine).append("\n");
-            }
-
-            reader.close();
-            this.response = readString.toString();
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        try (InputStream input = this.httpClient.getInputStream()) {
+            return IOUtils.toString(input, StandardCharsets.UTF_8);
         }
-
-        outputStream.close();
     }
 
 }

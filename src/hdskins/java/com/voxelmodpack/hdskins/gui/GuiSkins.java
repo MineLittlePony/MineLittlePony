@@ -4,14 +4,13 @@ import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.ELYTRA;
 import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.SKIN;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.HDSkinManager;
-import com.voxelmodpack.hdskins.upload.ThreadMultipartPostUpload;
+import com.voxelmodpack.hdskins.skins.SkinUploadResponse;
 import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -33,6 +32,7 @@ import net.minecraft.util.Session;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.logging.log4j.LogManager;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
@@ -44,14 +44,13 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.DoubleBuffer;
-import java.util.Locale;
-import java.util.Map;
+import java.nio.file.Path;
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-public class GuiSkins extends GuiScreen {
-    private static final int MAX_SKIN_DIMENSION = 8192;
-    private static final String skinServerId = "7853dfddc358333843ad55a2c7485c4aa0380a51";
+public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResponse> {
+    private static final int MAX_SKIN_DIMENSION = 1024;
     private int updateCounter = 0;
     private ResourceLocation viewportTexture;
     private static final ResourceLocation[] cubemapTextures = {
@@ -74,6 +73,7 @@ public class GuiSkins extends GuiScreen {
 
     private DoubleBuffer doubleBuffer;
 
+    @Nullable
     private String uploadError;
     private volatile String skinMessage = I18n.format("hdskins.choose");
     private String skinUploadMessage = I18n.format("hdskins.request");
@@ -83,7 +83,6 @@ public class GuiSkins extends GuiScreen {
     private volatile boolean throttledByMojang;
     private int refreshCounter = -1;
     private ThreadOpenFilePNG openFileThread;
-    private ThreadMultipartPostUpload threadSkinUpload;
     private final Object skinLock = new Object();
     private File pendingSkinFile;
     private File selectedSkin;
@@ -606,7 +605,6 @@ public class GuiSkins extends GuiScreen {
             Gui.drawRect(0, 0, this.width, this.height, 0xB0000000);
             this.drawCenteredString(this.fontRenderer, I18n.format("hdskins.failed"), this.width / 2, this.height / 2 - 10, 0xFFFFFF55);
             this.drawCenteredString(this.fontRenderer, this.uploadError, this.width / 2, this.height / 2 + 2, 0xFFFF5555);
-            LiteLoaderLogger.warning("Upload Failed: {}", this.uploadError);
         }
 
         depthMask(true);
@@ -666,68 +664,43 @@ public class GuiSkins extends GuiScreen {
     }
 
     private void clearUploadedSkin(Session session) {
-        if (this.registerServerConnection(session, skinServerId)) {
-            Map<String, ?> sourceData = getClearData(session);
-            this.uploadError = null;
-            this.uploadingSkin = true;
-            this.skinUploadMessage = I18n.format("hdskins.request");
-            this.threadSkinUpload = new ThreadMultipartPostUpload(HDSkinManager.INSTANCE.getGatewayUrl(), sourceData, this::onUploadComplete);
-            this.threadSkinUpload.start();
-        }
+        this.uploadingSkin = true;
+        this.skinUploadMessage = I18n.format("hdskins.request");
+        Futures.addCallback(HDSkinManager.INSTANCE.getGatewayServer().uploadSkin(session, null, this.textureType), this);
     }
 
-    private void uploadSkin(Session session, File skinFile) {
-        if (this.registerServerConnection(session, skinServerId)) {
-            Map<String, ?> sourceData = getUploadData(session, skinFile);
-            this.uploadError = null;
-            this.uploadingSkin = true;
-            this.skinUploadMessage = I18n.format("hdskins.upload");
-            this.threadSkinUpload = new ThreadMultipartPostUpload(HDSkinManager.INSTANCE.getGatewayUrl(), sourceData, this::onUploadComplete);
-            this.threadSkinUpload.start();
-        }
+    private void uploadSkin(Session session, @Nullable File skinFile) {
+        this.uploadingSkin = true;
+        this.skinUploadMessage = I18n.format("hdskins.upload");
+        Path path = skinFile == null ? null : skinFile.toPath();
+        Futures.addCallback(HDSkinManager.INSTANCE.getGatewayServer().uploadSkin(session, path, this.textureType), this);
     }
 
-    private Map<String, ?> getData(Session session, String param, Object val) {
-        return ImmutableMap.of(
-                "user", session.getUsername(),
-                "uuid", session.getPlayerID(),
-                "type", this.textureType.toString().toLowerCase(Locale.US),
-                param, val);
-    }
-
-    private Map<String, ?> getClearData(Session session) {
-        return getData(session, "clear", "1");
-    }
-
-    private Map<String, ?> getUploadData(Session session, File skinFile) {
-        return getData(session, this.textureType.toString().toLowerCase(Locale.US), skinFile);
-    }
-
-    private void setUploadError(String error) {
-        this.uploadError = error.startsWith("ERROR: ") ? error.substring(7) : error;
+    private void setUploadError(@Nullable String error) {
+        this.uploadError = error != null && error.startsWith("ERROR: ") ? error.substring(7) : error;
         this.btnUpload.enabled = true;
     }
 
-    private void onUploadComplete(String response) {
-        LiteLoaderLogger.info("Upload completed with: %s", response);
-        this.uploadingSkin = false;
-        this.threadSkinUpload = null;
-        if (!response.equalsIgnoreCase("OK")) {
-            this.setUploadError(response);
-        } else {
-            this.pendingRemoteSkinRefresh = true;
-        }
+    @Override
+    public void onSuccess(@Nullable SkinUploadResponse result) {
+        if (result != null)
+            onUploadComplete(result);
     }
 
-    private boolean registerServerConnection(Session session, String serverId) {
-        try {
-            MinecraftSessionService service = Minecraft.getMinecraft().getSessionService();
-            service.joinServer(session.getProfile(), session.getToken(), serverId);
-            return true;
-        } catch (AuthenticationException var4) {
-            this.setUploadError(var4.toString());
-            var4.printStackTrace();
-            return false;
+    @Override
+    public void onFailure(Throwable t) {
+        LogManager.getLogger().warn("Upload failed", t);
+        this.setUploadError(t.toString());
+        this.uploadingSkin = false;
+    }
+
+    private void onUploadComplete(SkinUploadResponse response) {
+        LiteLoaderLogger.info("Upload completed with: %s", response);
+        this.uploadingSkin = false;
+        if (!"OK".equalsIgnoreCase(response.getMessage())) {
+            this.setUploadError(response.getMessage());
+        } else {
+            this.pendingRemoteSkinRefresh = true;
         }
     }
 
