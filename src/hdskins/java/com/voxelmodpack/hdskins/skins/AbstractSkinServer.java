@@ -1,5 +1,6 @@
 package com.voxelmodpack.hdskins.skins;
 
+import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -22,8 +23,6 @@ public abstract class AbstractSkinServer implements SkinServer {
     protected static final ExecutorService skinDownloadExecutor = Executors.newCachedThreadPool();
     protected static final ListeningExecutorService skinUploadExecutor = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
 
-    public static final MinecraftTexturesPayload EMPTY_PAYLOAD = new MinecraftTexturesPayload();
-
     private LoadingCache<GameProfile, Optional<MinecraftTexturesPayload>> skins = CacheBuilder.newBuilder()
             .initialCapacity(20)
             .maximumSize(100)
@@ -32,7 +31,11 @@ public abstract class AbstractSkinServer implements SkinServer {
 
                 @Override
                 public Optional<MinecraftTexturesPayload> load(GameProfile key) {
-                    return loadProfileData(key);
+                    Preconditions.checkNotNull(key, "profile cannot be null");
+                    // prevent race condition where one server responds faster than the previous one
+                    synchronized (key) {
+                        return loadProfileData(key);
+                    }
                 }
             }, Optional.empty(), skinDownloadExecutor));
 
@@ -40,7 +43,6 @@ public abstract class AbstractSkinServer implements SkinServer {
 
     @Override
     public final Optional<MinecraftTexturesPayload> getProfileData(GameProfile profile) {
-
         boolean was = !skins.asMap().containsKey(profile);
         Optional<MinecraftTexturesPayload> textures = skins.getUnchecked(profile);
         // This is the initial value. Refreshing will load it syncronously.
