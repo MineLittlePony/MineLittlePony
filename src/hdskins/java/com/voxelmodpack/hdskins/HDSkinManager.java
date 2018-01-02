@@ -83,9 +83,16 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                 // uuid is required
                 if (uuid != null)
                     profile1 = new GameProfile(uuid, name);
+
+                // probably uses this texture for a reason. Don't mess with it.
+                if (!texturePayload.getTextures().isEmpty() && texturePayload.getProfileId() == null)
+                    return Optional.empty();
             }
         }
         final GameProfile profile = profile1;
+
+        // cannot get texture without id!
+        if (profile.getId() == null) return Optional.empty();
 
         if (!this.skinCache.containsKey(profile.getId())) {
             this.skinCache.put(profile.getId(), Maps.newHashMap());
