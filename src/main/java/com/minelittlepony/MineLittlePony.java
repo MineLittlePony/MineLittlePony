@@ -18,7 +18,7 @@ import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.util.ModUtilities;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.gui.GuiSkins;
-import com.voxelmodpack.hdskins.skins.LegacySkinServer;
+import com.voxelmodpack.hdskins.skins.SkinServer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -80,6 +80,9 @@ public class MineLittlePony {
 
         MetadataSerializer ms = Minecraft.getMinecraft().getResourcePackRepository().rprMetadataSerializer;
         ms.registerMetadataSectionType(new PonyDataSerialzier(), IPonyData.class);
+
+        // This also makes it the default gateway server.
+        SkinServer.defaultServers.add("legacy:http://minelpskins.voxelmodpack.com;http://minelpskinmanager.voxelmodpack.com");
     }
 
     void postInit(Minecraft minecraft) {
@@ -89,9 +92,6 @@ public class MineLittlePony {
 //        manager.setGatewayURL(GATEWAY_URL);
         manager.addSkinModifier(new PonySkinModifier());
 //        logger.info("Set MineLP skin server URL.");
-
-        // This also makes it the default gateway server.
-        manager.addSkinServer(new LegacySkinServer("http://minelpskins.voxelmodpack.com", "http://minelpskinmanager.voxelmodpack.com"));
 
         RenderManager rm = minecraft.getRenderManager();
         this.saveCurrentRenderers(rm);
