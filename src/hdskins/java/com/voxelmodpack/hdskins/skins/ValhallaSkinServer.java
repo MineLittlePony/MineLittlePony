@@ -14,7 +14,8 @@ import javax.annotation.Nullable;
 
 public class ValhallaSkinServer implements SkinServer {
 
-    private final String baseURL;
+    @SuppressWarnings("unused")
+	private final String baseURL;
 
     public ValhallaSkinServer(String baseURL) {
         this.baseURL = baseURL;
