@@ -113,7 +113,7 @@ public class PonyManager implements IResourceManagerReloadListener {
                     MineLittlePony.logger.error("Invalid bgponies.json in " + res.getResourcePackName(), e);
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException ignored) {
             // this isn't the exception you're looking for.
         }
         MineLittlePony.logger.info("Detected {} background ponies installed.", getNumberOfPonies());
