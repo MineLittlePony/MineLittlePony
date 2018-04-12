@@ -27,6 +27,7 @@ import net.minecraft.client.resources.data.MetadataSerializer;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityEvoker;
+import net.minecraft.entity.monster.EntityGiantZombie;
 import net.minecraft.entity.monster.EntityHusk;
 import net.minecraft.entity.monster.EntityIllusionIllager;
 import net.minecraft.entity.monster.EntityPigZombie;
@@ -108,6 +109,7 @@ public class MineLittlePony {
         saveRenderer(rm, EntityZombieVillager.class);
         // zombies
         saveRenderer(rm, EntityZombie.class);
+        saveRenderer(rm, EntityGiantZombie.class);
         saveRenderer(rm, EntityHusk.class);
         // pig zombie
         saveRenderer(rm, EntityPigZombie.class);
@@ -147,10 +149,12 @@ public class MineLittlePony {
         if (this.config.zombies) {
             ModUtilities.addRenderer(EntityZombie.class, new RenderPonyZombie<>(rm));
             ModUtilities.addRenderer(EntityHusk.class, new RenderPonyZombie.Husk(rm));
+            ModUtilities.addRenderer(EntityGiantZombie.class, new RenderPonyZombie.Giant(rm));
             logger.info("Zombies are now ponies.");
         } else {
             ModUtilities.addRenderer(EntityZombie.class, getRenderer(EntityZombie.class));
             ModUtilities.addRenderer(EntityHusk.class, getRenderer(EntityHusk.class));
+            ModUtilities.addRenderer(EntityGiantZombie.class, getRenderer(EntityGiantZombie.class));
         }
 
         if (this.config.pigzombies) {

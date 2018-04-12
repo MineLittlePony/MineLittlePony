@@ -1,8 +1,10 @@
 package com.minelittlepony.renderer;
 
 import com.minelittlepony.model.PMAPI;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.monster.EntityGiantZombie;
 import net.minecraft.entity.monster.EntityHusk;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.util.ResourceLocation;
@@ -39,5 +41,22 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
         }
 
     }
+    
+    public static class Giant extends RenderPonyMob<EntityGiantZombie> {
 
+		public Giant(RenderManager renderManager) {
+			super(renderManager, PMAPI.zombie);
+		}
+		
+		@Override
+		protected void preRenderCallback(EntityGiantZombie entitylivingbaseIn, float partialTickTime) {
+	        GlStateManager.scale(3, 3, 3);
+	        super.preRenderCallback(entitylivingbaseIn, partialTickTime);
+	    }
+    	
+		@Override
+	    protected ResourceLocation getTexture(EntityGiantZombie zombie) {
+	        return ZOMBIE;
+	    }
+    }
 }

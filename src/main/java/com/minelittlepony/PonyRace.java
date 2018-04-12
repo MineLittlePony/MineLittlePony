@@ -11,8 +11,7 @@ public enum PonyRace {
     ZEBRA(false, false),
     REFORMED_CHANGELING(true, true),
     GRIFFIN(true, false),
-    HIPPOGRIFF(true, false),
-    ;
+    HIPPOGRIFF(true, false);
 
     private boolean wings;
     private boolean horn;
