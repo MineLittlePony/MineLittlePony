@@ -8,6 +8,7 @@
         "MixinThreadDownloadImageData",
         "MixinNetworkPlayerInfo",
         "MixinRenderItem",
-        "MixinRenderManager"
+        "MixinRenderManager",
+        "MixinEntityLivingBase"
     ]
 }

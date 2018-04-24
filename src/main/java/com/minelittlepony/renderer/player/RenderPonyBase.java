@@ -26,7 +26,8 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
   protected final boolean smallArms;
   
   private PlayerModel playerModel;
-  private AbstractPonyModel ponyModel;
+  
+  protected AbstractPonyModel ponyModel;
   
   private Pony pony;
   
@@ -72,60 +73,51 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
       super.doRender(player, x, y, z, entityYaw, partialTicks);
   }
   
+  
+  // TODO: Why are there two sets of arms?
   @Override
   public void renderRightArm(AbstractClientPlayer player) {
       updateModel(player);
       bindEntityTexture(player);
+      GlStateManager.pushMatrix();
+      GlStateManager.translate(0, -0.37, 0);
       super.renderRightArm(player);
+      GlStateManager.popMatrix();
   }
 
   @Override
   public void renderLeftArm(AbstractClientPlayer player) {
       updateModel(player);
       bindEntityTexture(player);
+      GlStateManager.pushMatrix();
+      GlStateManager.translate(0.06, -0.37, -0);
       super.renderLeftArm(player);
+      GlStateManager.popMatrix();
   }
   
   @Override
   protected void applyRotations(AbstractClientPlayer player, float yaw, float pitch, float ticks) {
       super.applyRotations(player, yaw, pitch, ticks);
       
+      double motionX = player.posX - player.prevPosX;
+      double motionY = player.onGround ? 0 : player.posY - player.prevPosY;
+      double motionZ = player.posZ - player.prevPosZ;
+      
       if (player.isElytraFlying()) {
-        transformFlying(player, yaw, pitch, ticks);
+        transformElytraFlight(player, motionX, motionY, motionZ, ticks);
         
         return;
       }
       
       if (player.isEntityAlive() && player.isPlayerSleeping()) return;
       
-      // require arms to be stretched out (sorry mud ponies, no flight skills for you)
-      if (!((ModelPlayerPony) ponyModel).rainboom) {
-          ponyModel.motionPitch = 0;
+      if (((ModelPlayerPony) ponyModel).rainboom) {
+          transformPegasusFlight(player, motionX, motionY, motionZ, yaw, pitch, ticks);
           return;
       }
-      double motionX = player.posX - player.prevPosX;
-      double motionY = player.posY - player.prevPosY;
-      double motionZ = player.posZ - player.prevPosZ;
-      if (player.onGround) {
-          motionY = 0;
-      }
-      double dist = Math.sqrt(motionX * motionX + motionZ * motionZ);
-      double angle = Math.atan2(motionY, dist);
       
-      if (!player.capabilities.isFlying) {
-          if (angle > 0) {
-              angle = 0;
-          } else {
-              angle /= 2;
-          }
-      }
-
-      if (angle > Math.PI / 3) angle = Math.PI / 3;
-      if (angle < -Math.PI / 3) angle = -Math.PI / 3;
-
-      ponyModel.motionPitch = (float) Math.toDegrees(angle);
-
-      GlStateManager.rotate((float) Math.toDegrees(angle), 1, 0, 0);
+      // require arms to be stretched out (sorry mud ponies, no flight skills for you)
+      ponyModel.motionPitch = 0;
   }
   
   public ResourceLocation getEntityTexture(AbstractClientPlayer entity) {
@@ -156,5 +148,7 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
   
   protected abstract float getScaleFactor();
 
-  protected abstract void transformFlying(AbstractClientPlayer player, float yaw, float pitch, float ticks);
+  protected abstract void transformElytraFlight(AbstractClientPlayer player, double motionX, double motionY, double motionZ, float ticks);
+  
+  protected abstract void transformPegasusFlight(AbstractClientPlayer player, double motionX, double motionY, double motionZ, float yaw, float pitch, float ticks);
 }
