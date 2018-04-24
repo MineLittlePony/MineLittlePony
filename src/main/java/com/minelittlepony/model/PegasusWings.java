@@ -30,12 +30,12 @@ public class PegasusWings extends ModelBase implements PonyModelConstants {
         
         if (pony.isSneak && !pony.isFlying) {
             leftWing.rotateSneaked(LEFT_WING_ROTATE_ANGLE_Z_SNEAK);
-            rightWing.rotateSneaked(RIGHT_WING_ROTATE_ANGLE_Z_SNEAK);
+            rightWing.rotateSneaked(-LEFT_WING_ROTATE_ANGLE_Z_SNEAK);
         } else if (pony.isFlying) {
             float WingRotateAngleZ = (MathHelper.sin(ticks * 0.536F) * 1.0F) + ROTATE_270 + 0.4F;
             
-            leftWing.rotateUnsneaked(-WingRotateAngleZ);
-            rightWing.rotateUnsneaked(WingRotateAngleZ);
+            leftWing.rotateUnsneaked(WingRotateAngleZ);
+            rightWing.rotateUnsneaked(-WingRotateAngleZ);
         }
         
         leftWing.rotate(ROTATE_90);

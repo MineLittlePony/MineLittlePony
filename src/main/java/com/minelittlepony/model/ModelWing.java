@@ -22,7 +22,7 @@ public class ModelWing implements PonyModelConstants {
             extended[i].mirror = mirror;
         }
 
-        init(yOffset, xOffset, stretch);
+        init(xOffset, yOffset, stretch);
         addFeathers(mirror ? -1 : 1, yOffset, stretch);
     }
 
