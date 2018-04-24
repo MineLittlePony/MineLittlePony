@@ -3,7 +3,7 @@ package com.minelittlepony;
 import com.google.common.collect.Maps;
 import com.minelittlepony.gui.PonySettingPanel;
 import com.minelittlepony.hdskins.gui.GuiSkinsMineLP;
-import com.minelittlepony.model.PlayerModels;
+import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.renderer.RenderPonyEvoker;
 import com.minelittlepony.renderer.RenderPonyIllusionIllager;
 import com.minelittlepony.renderer.RenderPonyPigman;
@@ -137,8 +137,8 @@ public class MineLittlePony {
     }
 
     public void initialisePlayerRenderers(RenderManager rm) {
-      new RenderPonyPlayer(rm, false, PlayerModels.PONY);
-      new RenderPonyPlayer(rm, true, PlayerModels.PONY);
+      new RenderPonyPlayer(rm, false, "pony", PMAPI.pony);
+      new RenderPonyPlayer(rm, true, "slimpony", PMAPI.ponySmall);
     }
 
     public void initializeMobRenderers(RenderManager rm) {

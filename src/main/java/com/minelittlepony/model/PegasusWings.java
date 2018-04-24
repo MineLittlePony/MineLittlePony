@@ -7,16 +7,16 @@ import net.minecraft.util.math.MathHelper;
 public class PegasusWings extends ModelBase implements PonyModelConstants {
 
     private final AbstractPonyModel pony;
-    
+
     public final ModelWing leftWing, rightWing;
-    
+
     public PegasusWings(AbstractPonyModel pony, float yOffset, float stretch) {
         this.pony = pony;
         
         leftWing = new ModelWing(pony, false, 4f, yOffset, stretch, 32);
         rightWing = new ModelWing(pony, true, -6f, yOffset, stretch, 16);
     }
-    
+
     @Override
     public void setRotationAngles(float limbSwing, float limbSwingAmount, float ticks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
 
@@ -41,7 +41,7 @@ public class PegasusWings extends ModelBase implements PonyModelConstants {
         leftWing.rotate(ROTATE_90);
         rightWing.rotate(ROTATE_90);
     }
-        
+
     @Override
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if (pony.metadata.getRace().hasWings()) {

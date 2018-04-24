@@ -8,7 +8,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.Pony;
+import com.minelittlepony.PonyManager;
 import com.minelittlepony.ducks.IPlayerInfo;
+import com.mojang.authlib.GameProfile;
 
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.util.ResourceLocation;
@@ -22,25 +24,26 @@ public abstract class MixinNetworkPlayerInfo implements IPlayerInfo {
     @Shadow
     public abstract ResourceLocation getLocationSkin();
 
-    @Inject(method = "getSkinType()Ljava/lang/String;", at = @At("RETURN"))
-    private void getSkinType(CallbackInfoReturnable<String> info) {
-        ResourceLocation skin = getLocationSkin();
-        if (skin != null) {
-            info.setReturnValue(getPony(skin).getRace(false).getModel().getId(usesSlimArms()));
-        }
-    }
+    @Shadow
+    public abstract GameProfile getGameProfile();
 
-    protected Pony getPony(ResourceLocation skin) {
-        return MineLittlePony.getInstance().getManager().getPony(skin, usesSlimArms());
+    @Inject(method = "getSkinType()Ljava/lang/String;", at = @At("RETURN"), cancellable = true)
+    private void getSkinType(CallbackInfoReturnable<String> info) {
+        info.setReturnValue(getPony().getRace(false).getModel().getId(usesSlimArms()));
     }
 
     @Override
     public Pony getPony() {
-        return getPony(getLocationSkin());
+        ResourceLocation skin = getLocationSkin();
+        if (skin == null) {
+            return MineLittlePony.getInstance().getManager().getDefaultPony(getGameProfile().getId());
+        }
+        return MineLittlePony.getInstance().getManager().getPony(skin, getGameProfile().getId());
     }
 
     @Override
     public boolean usesSlimArms() {
-        return skinType == "slim";
+        if (skinType == null) return PonyManager.isSlimSkin(getGameProfile().getId());
+        return "slim".equals(skinType);
     }
 }

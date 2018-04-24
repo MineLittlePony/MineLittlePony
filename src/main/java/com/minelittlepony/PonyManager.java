@@ -8,6 +8,7 @@ import com.minelittlepony.ducks.IPlayerInfo;
 import com.minelittlepony.model.PMAPI;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
@@ -53,44 +54,45 @@ public class PonyManager implements IResourceManagerReloadListener {
         return poniesCache.computeIfAbsent(skinResourceLocation, res -> new Pony(res, slim));
     }
 
-    // TODO: Slim arms
-    public Pony getPony(ResourceLocation skinResourceLocation) {
-        return getPony(skinResourceLocation, false);
-    }
-
     public Pony getPony(AbstractClientPlayer player) {
-        Pony myLittlePony = getPony(player.getLocationSkin(), IPlayerInfo.getPlayerInfo(player).usesSlimArms());
+        Pony pony = getPony(player.getLocationSkin(), IPlayerInfo.getPlayerInfo(player).usesSlimArms());
 
-        if (config.getPonyLevel() == PonyLevel.PONIES && myLittlePony.getMetadata().getRace().isHuman()) {
-            return this.getPonyFromBackgroundResourceRegistry(player);
+        if (config.getPonyLevel() == PonyLevel.PONIES && pony.getMetadata().getRace().isHuman()) {
+            return getBackgroundPony(player.getUniqueID());
         }
 
-        return myLittlePony;
+        return pony;
+    }
+    
+    public Pony getPony(ResourceLocation resource, UUID uuid) {
+        Pony pony = getPony(resource, isSlimSkin(uuid));
+        
+        if (config.getPonyLevel() == PonyLevel.PONIES && pony.getMetadata().getRace().isHuman()) {
+            return getBackgroundPony(uuid);
+        }
+        
+        return pony;
+    }
+
+    public Pony getDefaultPony(UUID uuid) {
+        if (config.getPonyLevel() != PonyLevel.PONIES) {
+            return getPony(DefaultPlayerSkin.getDefaultSkin(uuid), isSlimSkin(uuid));
+        }
+
+        return getBackgroundPony(uuid);
+    }
+
+    private Pony getBackgroundPony(UUID uuid) {
+        if (getNumberOfPonies() == 0) return getPony(getDefaultSkin(uuid), isSlimSkin(uuid));
+
+        int bgi = uuid.hashCode() % this.getNumberOfPonies();
+        while (bgi < 0) bgi += this.getNumberOfPonies();
+
+        return getPony(backgroundPonyList.get(bgi), false);
     }
 
     public Pony removePony(ResourceLocation location) {
         return poniesCache.remove(location);
-    }
-
-    private ResourceLocation getBackgroundPonyResource(UUID id) {
-        if (getNumberOfPonies() > 0) {
-            int backgroundIndex = id.hashCode() % this.getNumberOfPonies();
-            if (backgroundIndex < 0) {
-                backgroundIndex += this.getNumberOfPonies();
-            }
-
-            return backgroundPonyList.get(backgroundIndex);
-        }
-        return STEVE;
-    }
-
-    private Pony getPonyFromBackgroundResourceRegistry(AbstractClientPlayer player) {
-        return backgroudPoniesCache.computeIfAbsent(getDefaultPonyResource(player), res -> new Pony(res, false));
-    }
-
-    private ResourceLocation getDefaultPonyResource(AbstractClientPlayer player) {
-      if (player.isUser()) return getDefaultSkin(player.getUniqueID());
-      return getBackgroundPonyResource(player.getUniqueID());
     }
 
     @Override
@@ -117,7 +119,11 @@ public class PonyManager implements IResourceManagerReloadListener {
     }
 
     private ResourceLocation getDefaultSkin(UUID uuid) {
-        return (uuid.hashCode() & 1) == 0 ? STEVE : ALEX;
+        return isSlimSkin(uuid) ? ALEX : STEVE;
+    }
+    
+    public static boolean isSlimSkin(UUID uuid) {
+        return (uuid.hashCode() & 1) == 1;
     }
 
     private int getNumberOfPonies() {

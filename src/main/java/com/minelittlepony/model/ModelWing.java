@@ -41,9 +41,9 @@ public class ModelWing implements PonyModelConstants {
     }
 
     private void init(float x, float y, float scale) {
-        initFeather(folded[0], y, x, 2.0F, 6, scale);
-        initFeather(folded[1], y, x, 4.0F, 8, scale);
-        initFeather(folded[2], y, x, 6.0F, 6, scale);
+        initFeather(folded[0], y, x, 2F, 6, scale);
+        initFeather(folded[1], y, x, 4F, 8, scale);
+        initFeather(folded[2], y, x, 6F, 6, scale);
     }
 
     private void initFeather(ModelRenderer wing, float y, float x, float z, int h, float scale) {
@@ -69,14 +69,10 @@ public class ModelWing implements PonyModelConstants {
         extended[5].rotateAngleX -= 0.85F;
     }
 
-    private void renderWing(ModelRenderer[] wing, float scale) {
-        for (ModelRenderer feather : wing) {
+    public void render(boolean standing, float scale) {
+        for (ModelRenderer feather : (standing ? folded : extended)) {
             feather.render(scale);
         }
-    }
-
-    public void render(boolean standing, float scale) {
-        renderWing(standing ? folded : extended, scale);
     }
 
     public void rotateSneaked(float rotZ) {

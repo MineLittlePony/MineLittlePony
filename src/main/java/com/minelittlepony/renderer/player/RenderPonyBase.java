@@ -6,7 +6,6 @@ import com.minelittlepony.ducks.IRenderManager;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.PlayerModel;
-import com.minelittlepony.model.PlayerModels;
 import com.minelittlepony.model.pony.ModelPlayerPony;
 import com.minelittlepony.renderer.layer.LayerEntityOnPonyShoulder;
 import com.minelittlepony.renderer.layer.LayerHeldPonyItem;
@@ -20,6 +19,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerArrow;
+import net.minecraft.util.ResourceLocation;
 
 public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony {
   
@@ -30,16 +30,16 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
   
   private Pony pony;
   
-  public RenderPonyBase(RenderManager manager, boolean useSmallArms, PlayerModels model) {
+  public RenderPonyBase(RenderManager manager, boolean useSmallArms, String id, PlayerModel model) {
       super(manager, useSmallArms);
       smallArms = useSmallArms;
       
-      setPlayerModel(model.getModel(useSmallArms));
+      setPlayerModel(model);
       
       layerRenderers.clear();
       addExtraLayers();
       
-      ((IRenderManager)manager).addPlayerSkin(model.getId(useSmallArms), this);
+      ((IRenderManager)manager).addPlayerSkin(id, this);
   }
   
   protected void addExtraLayers() {
@@ -75,12 +75,14 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
   @Override
   public void renderRightArm(AbstractClientPlayer player) {
       updateModel(player);
+      bindEntityTexture(player);
       super.renderRightArm(player);
   }
 
   @Override
   public void renderLeftArm(AbstractClientPlayer player) {
       updateModel(player);
+      bindEntityTexture(player);
       super.renderLeftArm(player);
   }
   
@@ -126,9 +128,9 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
       GlStateManager.rotate((float) Math.toDegrees(angle), 1, 0, 0);
   }
   
-  @Override
-  public AbstractPonyModel getMainModel() {
-      return (AbstractPonyModel)super.getMainModel();
+  public ResourceLocation getEntityTexture(AbstractClientPlayer entity) {
+      updateModel(entity);
+      return pony.getTexture();
   }
   
   @Override

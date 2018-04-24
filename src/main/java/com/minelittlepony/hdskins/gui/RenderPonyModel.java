@@ -31,7 +31,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
             return super.getEntityModel(playermodel);
         }
 
-        Pony thePony = MineLittlePony.getInstance().getManager().getPony(loc);
+        Pony thePony = MineLittlePony.getInstance().getManager().getPony(loc, playermodel.profile.getId());
 
         PlayerModel pm = thePony.getModel(true);
         pm.apply(thePony.getMetadata());

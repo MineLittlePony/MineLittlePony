@@ -107,7 +107,8 @@ public class Pony {
     }
 
     public PonyRace getRace(boolean ignorePony) {
-        return metadata.getRace().getEffectiveRace(MineLittlePony.getConfig().getPonyLevel(ignorePony));
+        return PonyRace.ALICORN;
+        //return metadata.getRace().getEffectiveRace(MineLittlePony.getConfig().getPonyLevel(ignorePony));
     }
 
     public ResourceLocation getTexture() {

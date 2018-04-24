@@ -54,7 +54,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
         this.playerModel.getModel().isSleeping = false;
 
         ResourceLocation loc = getEntityTexture(entity);
-        this.playerModel.apply(MineLittlePony.getInstance().getManager().getPony(loc).getMetadata());
+        this.playerModel.apply(MineLittlePony.getInstance().getManager().getPony(loc, false).getMetadata());
 
         if (mainModel.isChild) {
             this.shadowSize = 0.25F;
