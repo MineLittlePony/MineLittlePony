@@ -1,8 +1,10 @@
 package com.minelittlepony.model;
 
+import com.minelittlepony.IPonyData;
 import com.minelittlepony.PonyData;
 import com.minelittlepony.PonySize;
 import com.minelittlepony.model.pony.ModelPlayerPony;
+
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
@@ -28,7 +30,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     public boolean isFlying;
     public boolean isSleeping;
 
-    public PonyData metadata = new PonyData();
+    public IPonyData metadata = new PonyData();
     public float motionPitch;
 
 

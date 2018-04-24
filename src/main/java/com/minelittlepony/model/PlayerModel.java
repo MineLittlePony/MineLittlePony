@@ -1,6 +1,6 @@
 package com.minelittlepony.model;
 
-import com.minelittlepony.PonyData;
+import com.minelittlepony.IPonyData;
 
 public class PlayerModel {
 
@@ -31,7 +31,7 @@ public class PlayerModel {
         return armor;
     }
 
-    public void apply(PonyData meta) {
+    public void apply(IPonyData meta) {
         model.metadata = meta;
         armor.apply(meta);
     }

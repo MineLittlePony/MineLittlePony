@@ -5,25 +5,19 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
+// TODO: Break this down into ModelWing (one for each side)
 public class PegasusWings extends ModelBase implements PonyModelConstants {
 
 
     private final AbstractPonyModel pony;
 
-    public ModelRenderer[] leftWing;
-    public ModelRenderer[] rightWing;
-
-    public ModelRenderer[] leftWingExt;
-    public ModelRenderer[] rightWingExt;
+    public ModelRenderer[] leftWing = new ModelRenderer[3], rightWing = new ModelRenderer[3],
+                           leftWingExt = new ModelRenderer[6], rightWingExt = new ModelRenderer[6];
 
     public PegasusWings(AbstractPonyModel pony, float yOffset, float stretch) {
         this.pony = pony;
 
-        this.leftWing = new ModelRenderer[3];
-        this.rightWing = new ModelRenderer[3];
-        this.leftWingExt = new ModelRenderer[6];
-        this.rightWingExt = new ModelRenderer[6];
-
+        // TODO: Don't add the model to the pony if you're just going to remove it again.
         for (int i = 0; i < leftWing.length; i++) {
             this.leftWing[i] = new ModelRenderer(pony, 56, 32);
             this.pony.boxList.remove(this.leftWing[i]);
@@ -46,21 +40,27 @@ public class PegasusWings extends ModelBase implements PonyModelConstants {
         this.leftWing[0].addBox(4.0F, 5.0F, 2.0F, 2, 6, 2, stretch);
         this.leftWing[0].setRotationPoint(HEAD_RP_X, WING_FOLDED_RP_Y + yOffset, WING_FOLDED_RP_Z);
         this.leftWing[0].rotateAngleX = ROTATE_90;
+        
         this.leftWing[1].addBox(4.0F, 5.0F, 4.0F, 2, 8, 2, stretch);
         this.leftWing[1].setRotationPoint(HEAD_RP_X, WING_FOLDED_RP_Y + yOffset, WING_FOLDED_RP_Z);
         this.leftWing[1].rotateAngleX = ROTATE_90;
+        
         this.leftWing[2].addBox(4.0F, 5.0F, 6.0F, 2, 6, 2, stretch);
         this.leftWing[2].setRotationPoint(HEAD_RP_X, WING_FOLDED_RP_Y + yOffset, WING_FOLDED_RP_Z);
         this.leftWing[2].rotateAngleX = ROTATE_90;
+        
         this.rightWing[0].addBox(-6.0F, 5.0F, 2.0F, 2, 6, 2, stretch);
         this.rightWing[0].setRotationPoint(HEAD_RP_X, WING_FOLDED_RP_Y + yOffset, WING_FOLDED_RP_Z);
         this.rightWing[0].rotateAngleX = ROTATE_90;
+        
         this.rightWing[1].addBox(-6.0F, 5.0F, 4.0F, 2, 8, 2, stretch);
         this.rightWing[1].setRotationPoint(HEAD_RP_X, WING_FOLDED_RP_Y + yOffset, WING_FOLDED_RP_Z);
         this.rightWing[1].rotateAngleX = ROTATE_90;
+        
         this.rightWing[2].addBox(-6.0F, 5.0F, 6.0F, 2, 6, 2, stretch);
         this.rightWing[2].setRotationPoint(HEAD_RP_X, WING_FOLDED_RP_Y + yOffset, WING_FOLDED_RP_Z);
         this.rightWing[2].rotateAngleX = ROTATE_90;
+        
         this.leftWingExt[0].addBox(-0.5F, 6.0F, 0.0F, 1, 8, 2, stretch + 0.1F);
         this.leftWingExt[0].setRotationPoint(LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + yOffset, LEFT_WING_EXT_RP_Z);
         this.leftWingExt[1].addBox(-0.5F, -1.2F, -0.2F, 1, 8, 2, stretch - 0.2F);
@@ -163,19 +163,20 @@ public class PegasusWings extends ModelBase implements PonyModelConstants {
             this.rightWingExt[i].rotateAngleZ = RIGHT_WING_ROTATE_ANGLE_Z_SNEAK;
         }
     }
-
+    
+    // TODO: Combine each wing into one ModelRenderer with multiple boxes, not multiple ModelRenderers each with one box.
     private void unsneak(float tick) {
         if (pony.isFlying) {
-            float WingRotateAngleZ = MathHelper.sin(tick * 0.536F) * 1.0F;
+            float WingRotateAngleZ = (MathHelper.sin(tick * 0.536F) * 1.0F) + ROTATE_270 + 0.4F;
 
             for (ModelRenderer aLeftWingExt : this.leftWingExt) {
                 aLeftWingExt.rotateAngleX = EXT_WING_ROTATE_ANGLE_X;
-                aLeftWingExt.rotateAngleZ = -WingRotateAngleZ - ROTATE_270 - 0.4F;
+                aLeftWingExt.rotateAngleZ = -WingRotateAngleZ;
             }
 
             for (ModelRenderer aRightWingExt : this.rightWingExt) {
                 aRightWingExt.rotateAngleX = EXT_WING_ROTATE_ANGLE_X;
-                aRightWingExt.rotateAngleZ = WingRotateAngleZ + ROTATE_270 + 0.4F;
+                aRightWingExt.rotateAngleZ = WingRotateAngleZ;
             }
         }
     }

@@ -66,7 +66,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     }
 
     @Override
-    public PlayerModel getPony() {
+    public PlayerModel getPlayerModel() {
         return playerModel;
     }
 

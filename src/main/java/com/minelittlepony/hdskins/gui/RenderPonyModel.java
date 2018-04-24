@@ -26,14 +26,14 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
 
     @Override
     public ModelPlayer getEntityModel(EntityPonyModel playermodel) {
-        ResourceLocation loc = this.getEntityTexture(playermodel);
+        ResourceLocation loc = getEntityTexture(playermodel);
         if (loc == null) {
             return super.getEntityModel(playermodel);
         }
+
         Pony thePony = MineLittlePony.getInstance().getManager().getPony(loc);
 
-        // TODO small arms
-        PlayerModel pm = thePony.getModel(true, false);
+        PlayerModel pm = thePony.getModel(true);
         pm.apply(thePony.getMetadata());
 
         return pm.getModel();
@@ -46,8 +46,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
         return new AbstractPonyLayer<EntityLivingBase>(this, elytra) {
 
             @Override
-            public void doPonyRender(EntityLivingBase entityBase, float swing, float swingAmount, float ticks, float age, float yaw, float head,
-                    float scale) {
+            public void doPonyRender(EntityLivingBase entityBase, float swing, float swingAmount, float ticks, float age, float yaw, float head, float scale) {
 
                 EntityPonyModel entity = (EntityPonyModel) entityBase;
 

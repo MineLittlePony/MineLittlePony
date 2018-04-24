@@ -50,26 +50,32 @@ public class PonyData implements IPonyData {
         this.glowColor = glowColor;
     }
 
+    @Override
     public PonyRace getRace() {
         return race;
     }
 
+    @Override
     public TailLengths getTail() {
         return tailSize;
     }
 
+    @Override
     public PonyGender getGender() {
         return gender;
     }
 
+    @Override
     public PonySize getSize() {
         return MineLittlePony.getConfig().sizes ? size : PonySize.NORMAL;
     }
 
+    @Override
     public int getGlowColor() {
         return glowColor;
     }
 
+    @Override
     public boolean hasMagic() {
         return this.race != null && this.race.hasHorn() && this.glowColor != 0;
     }
@@ -85,7 +91,7 @@ public class PonyData implements IPonyData {
                 .toString();
     }
 
-    static PonyData parse(BufferedImage image) {
+    static IPonyData parse(BufferedImage image) {
         int racePx = TriggerPixels.RACE.readColor(image);
         PonyRace race = RACE_COLORS.getOrDefault(racePx, PonyRace.HUMAN);
 

@@ -1,11 +1,12 @@
 package com.minelittlepony.renderer.layer;
 
-import com.minelittlepony.PonyData;
+import com.minelittlepony.IPonyData;
 import com.minelittlepony.ducks.IRenderItem;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.pony.ModelPlayerPony;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
@@ -81,7 +82,7 @@ public class LayerHeldPonyItem extends AbstractPonyLayer<EntityLivingBase> {
             Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, drop, transform, isLeft);
 
             if (isUnicorn) {
-                PonyData metadata = ((AbstractPonyModel) this.getRenderer().getMainModel()).metadata;
+                IPonyData metadata = ((AbstractPonyModel) this.getRenderer().getMainModel()).metadata;
                 this.renderItemGlow(entity, drop, transform, hand, metadata.getGlowColor());
             }
             GlStateManager.popMatrix();
@@ -93,7 +94,7 @@ public class LayerHeldPonyItem extends AbstractPonyLayer<EntityLivingBase> {
     }
 
     protected void translateToHand(EnumHandSide hand) {
-        AbstractPonyModel thePony = ((IRenderPony) this.getRenderer()).getPony().getModel();
+        AbstractPonyModel thePony = ((IRenderPony) this.getRenderer()).getPlayerModel().getModel();
         if (thePony.metadata.hasMagic()) {
             ModelPlayerPony playerModel = (ModelPlayerPony) thePony;
             ModelRenderer unicornarm = hand == EnumHandSide.LEFT ? playerModel.unicornArmLeft : playerModel.unicornArmRight;

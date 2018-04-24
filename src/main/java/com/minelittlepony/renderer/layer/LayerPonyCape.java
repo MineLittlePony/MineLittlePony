@@ -24,7 +24,7 @@ public class LayerPonyCape extends AbstractPonyLayer<AbstractClientPlayer> {
 
     @Override
     public void doPonyRender(@Nonnull AbstractClientPlayer clientPlayer, float p2, float p3, float ticks, float p5, float p6, float p7, float scale) {
-        PlayerModel model = ((IRenderPony) getRenderer()).getPony();
+        PlayerModel model = ((IRenderPony) getRenderer()).getPlayerModel();
         if (clientPlayer.hasPlayerInfo() && !clientPlayer.isInvisible()
                 && clientPlayer.isWearing(EnumPlayerModelParts.CAPE) && clientPlayer.getLocationCape() != null
                 && clientPlayer.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() != Items.ELYTRA) {

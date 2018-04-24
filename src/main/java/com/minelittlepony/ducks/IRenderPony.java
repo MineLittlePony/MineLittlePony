@@ -4,5 +4,5 @@ import com.minelittlepony.model.PlayerModel;
 
 public interface IRenderPony {
 
-    PlayerModel getPony();
+    PlayerModel getPlayerModel();
 }

@@ -98,7 +98,7 @@ public class LayerPonyCustomHead implements LayerRenderer<EntityLivingBase> {
     }
 
     private PlayerModel getModel() {
-        return ((IRenderPony) renderer).getPony();
+        return ((IRenderPony) renderer).getPlayerModel();
     }
 
     @Override

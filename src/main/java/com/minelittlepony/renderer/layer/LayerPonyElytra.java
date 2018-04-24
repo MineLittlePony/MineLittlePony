@@ -30,7 +30,7 @@ public class LayerPonyElytra extends AbstractPonyLayer<EntityLivingBase> {
     @Override
     public void doPonyRender(@Nonnull EntityLivingBase entity, float swing, float swingAmount, float ticks, float age, float yaw, float head, float scale) {
 
-        AbstractPonyModel model = ((IRenderPony) this.getRenderer()).getPony().getModel();
+        AbstractPonyModel model = ((IRenderPony) this.getRenderer()).getPlayerModel().getModel();
 
         ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 

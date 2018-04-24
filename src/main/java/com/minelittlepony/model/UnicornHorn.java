@@ -1,6 +1,6 @@
 package com.minelittlepony.model;
 
-import com.minelittlepony.PonyData;
+import com.minelittlepony.IPonyData;
 import com.minelittlepony.renderer.HornGlowRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -37,7 +37,7 @@ public class UnicornHorn extends ModelBase implements PonyModelConstants {
     @Override
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
 
-        PonyData data = pony.metadata;
+        IPonyData data = pony.metadata;
 
         if (data.getRace().hasHorn()) {
             this.horn.render(scale);

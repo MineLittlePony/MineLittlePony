@@ -4,7 +4,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+import com.minelittlepony.ducks.IPlayerInfo;
 import com.minelittlepony.model.PMAPI;
+
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
@@ -32,8 +34,9 @@ public class PonyManager implements IResourceManagerReloadListener {
 
     private PonyConfig config;
 
-    private Map<ResourceLocation, Pony> poniesCache = Maps.newHashMap();
-    private Map<ResourceLocation, Pony> backgroudPoniesCache = Maps.newHashMap();
+    private Map<ResourceLocation, Pony>
+        poniesCache = Maps.newHashMap(),
+        backgroudPoniesCache = Maps.newHashMap();
 
     public PonyManager(PonyConfig config) {
         this.config = config;
@@ -46,23 +49,27 @@ public class PonyManager implements IResourceManagerReloadListener {
         MineLittlePony.logger.info("Done initializing models.");
     }
 
+    public Pony getPony(ResourceLocation skinResourceLocation, boolean slim) {
+        return poniesCache.computeIfAbsent(skinResourceLocation, res -> new Pony(res, slim));
+    }
+
+    // TODO: Slim arms
     public Pony getPony(ResourceLocation skinResourceLocation) {
-        return this.poniesCache.computeIfAbsent(skinResourceLocation, Pony::new);
+        return getPony(skinResourceLocation, false);
     }
 
     public Pony getPony(AbstractClientPlayer player) {
+        Pony myLittlePony = getPony(player.getLocationSkin(), IPlayerInfo.getPlayerInfo(player).usesSlimArms());
 
-        Pony myLittlePony = this.poniesCache.computeIfAbsent(player.getLocationSkin(), res -> new Pony(player));
-
-        if (config.getPonyLevel() == PonyLevel.PONIES && myLittlePony.getMetadata().getRace() == PonyRace.HUMAN) {
-            myLittlePony = this.getPonyFromBackgroundResourceRegistry(player);
+        if (config.getPonyLevel() == PonyLevel.PONIES && myLittlePony.getMetadata().getRace().isHuman()) {
+            return this.getPonyFromBackgroundResourceRegistry(player);
         }
 
         return myLittlePony;
     }
 
     public Pony removePony(ResourceLocation location) {
-        return this.poniesCache.remove(location);
+        return poniesCache.remove(location);
     }
 
     private ResourceLocation getBackgroundPonyResource(UUID id) {
@@ -78,22 +85,12 @@ public class PonyManager implements IResourceManagerReloadListener {
     }
 
     private Pony getPonyFromBackgroundResourceRegistry(AbstractClientPlayer player) {
-        ResourceLocation textureResourceLocation;
-        if (player.isUser()) {
-            textureResourceLocation = getDefaultSkin(player.getUniqueID());
-        } else {
-            textureResourceLocation = this.getBackgroundPonyResource(player.getUniqueID());
-        }
+        return backgroudPoniesCache.computeIfAbsent(getDefaultPonyResource(player), res -> new Pony(res, false));
+    }
 
-        Pony myLittlePony;
-        if (!this.backgroudPoniesCache.containsKey(textureResourceLocation)) {
-            myLittlePony = new Pony(textureResourceLocation);
-            this.backgroudPoniesCache.put(textureResourceLocation, myLittlePony);
-        } else {
-            myLittlePony = this.backgroudPoniesCache.get(textureResourceLocation);
-        }
-
-        return myLittlePony;
+    private ResourceLocation getDefaultPonyResource(AbstractClientPlayer player) {
+      if (player.isUser()) return getDefaultSkin(player.getUniqueID());
+      return getBackgroundPonyResource(player.getUniqueID());
     }
 
     @Override

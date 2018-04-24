@@ -2,9 +2,8 @@ package com.minelittlepony;
 
 import com.google.common.collect.Maps;
 import com.minelittlepony.gui.PonySettingPanel;
-import com.minelittlepony.hdskins.gui.EntityPonyModel;
 import com.minelittlepony.hdskins.gui.GuiSkinsMineLP;
-import com.minelittlepony.hdskins.gui.RenderPonyModel;
+import com.minelittlepony.model.PlayerModels;
 import com.minelittlepony.renderer.RenderPonyEvoker;
 import com.minelittlepony.renderer.RenderPonyIllusionIllager;
 import com.minelittlepony.renderer.RenderPonyPigman;
@@ -14,6 +13,7 @@ import com.minelittlepony.renderer.RenderPonyVillager;
 import com.minelittlepony.renderer.RenderPonyVindicator;
 import com.minelittlepony.renderer.RenderPonyZombie;
 import com.minelittlepony.renderer.RenderPonyZombieVillager;
+import com.minelittlepony.renderer.player.RenderPonyPlayer;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.util.ModUtilities;
 import com.voxelmodpack.hdskins.HDSkinManager;
@@ -48,7 +48,6 @@ import java.util.Map;
 public class MineLittlePony {
 
     public static final Logger logger = LogManager.getLogger("MineLittlePony");
-
 
     public static final String MOD_NAME = "Mine Little Pony";
     public static final String MOD_VERSION = "@VERSION@";
@@ -98,7 +97,9 @@ public class MineLittlePony {
 
         RenderManager rm = minecraft.getRenderManager();
         this.saveCurrentRenderers(rm);
-        ModUtilities.addRenderer(EntityPonyModel.class, new RenderPonyModel(rm));
+        //ModUtilities.addRenderer(EntityPonyModel.class, new RenderPonyModel(rm));
+
+        this.initialisePlayerRenderers(rm);
         this.initializeMobRenderers(rm);
 
     }
@@ -131,9 +132,13 @@ public class MineLittlePony {
     @SuppressWarnings("unchecked")
     private <T extends Entity> Render<T> getRenderer(Class<T> cl) {
         Render<T> render = (Render<T>) this.renderMap.get(cl);
-        if (render == null)
-            throw new MissingRendererException(cl);
+        if (render == null) throw new MissingRendererException(cl);
         return render;
+    }
+
+    public void initialisePlayerRenderers(RenderManager rm) {
+      new RenderPonyPlayer(rm, false, PlayerModels.PONY);
+      new RenderPonyPlayer(rm, true, PlayerModels.PONY);
     }
 
     public void initializeMobRenderers(RenderManager rm) {
@@ -209,7 +214,7 @@ public class MineLittlePony {
     }
 
     public PonyManager getManager() {
-        return this.ponyManager;
+        return ponyManager;
     }
 
     public static PonyConfig getConfig() {

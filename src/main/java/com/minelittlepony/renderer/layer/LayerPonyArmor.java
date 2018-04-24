@@ -40,7 +40,7 @@ public class LayerPonyArmor extends AbstractPonyLayer<EntityLivingBase> {
 
     @Override
     public void doPonyRender(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float ticks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        pony = ((IRenderPony) getRenderer()).getPony();
+        pony = ((IRenderPony) getRenderer()).getPlayerModel();
         renderArmor(entity, limbSwing, limbSwingAmount, ticks, ageInTicks, netHeadYaw, headPitch, scale, EntityEquipmentSlot.FEET);
         renderArmor(entity, limbSwing, limbSwingAmount, ticks, ageInTicks, netHeadYaw, headPitch, scale, EntityEquipmentSlot.LEGS);
         renderArmor(entity, limbSwing, limbSwingAmount, ticks, ageInTicks, netHeadYaw, headPitch, scale, EntityEquipmentSlot.CHEST);
