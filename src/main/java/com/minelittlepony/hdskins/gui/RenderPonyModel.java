@@ -3,10 +3,10 @@ package com.minelittlepony.hdskins.gui;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.ModelPonyElytra;
-import com.minelittlepony.model.PlayerModel;
+import com.minelittlepony.model.ModelWrapper;
+import com.minelittlepony.model.components.PonyElytra;
 import com.minelittlepony.pony.data.Pony;
-import com.minelittlepony.renderer.layer.AbstractPonyLayer;
+import com.minelittlepony.render.layer.AbstractPonyLayer;
 import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -33,7 +33,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
 
         Pony thePony = MineLittlePony.getInstance().getManager().getPony(loc, playermodel.profile.getId());
 
-        PlayerModel pm = thePony.getModel(true);
+        ModelWrapper pm = thePony.getModel(true);
         pm.apply(thePony.getMetadata());
 
         return pm.getModel();
@@ -42,7 +42,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
     @Override
     protected LayerRenderer<EntityLivingBase> getElytraLayer() {
         final LayerRenderer<EntityLivingBase> elytra = super.getElytraLayer();
-        final ModelPonyElytra modelElytra = new ModelPonyElytra();
+        final PonyElytra modelElytra = new PonyElytra();
         return new AbstractPonyLayer<EntityLivingBase>(this, elytra) {
 
             @Override

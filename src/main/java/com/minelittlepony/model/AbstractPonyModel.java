@@ -1,6 +1,7 @@
 package com.minelittlepony.model;
 
-import com.minelittlepony.model.pony.ModelPlayerPony;
+import com.minelittlepony.model.armour.PonyArmor;
+import com.minelittlepony.model.ponies.ModelPlayerPony;
 import com.minelittlepony.pony.data.IPonyData;
 import com.minelittlepony.pony.data.PonyData;
 import com.minelittlepony.pony.data.PonySize;
@@ -44,7 +45,9 @@ public abstract class AbstractPonyModel extends ModelPlayer {
         this.initTextures();
         this.initPositions(yOffset, stretch);
     }
-
+    
+    public abstract PonyArmor createArmour();
+    
     protected abstract void initTextures();
 
     protected abstract void initPositions(float yOffset, float stretch);
@@ -74,6 +77,15 @@ public abstract class AbstractPonyModel extends ModelPlayer {
         aRenderer.rotationPointX += shiftX;
         aRenderer.rotationPointY += shiftY;
         aRenderer.rotationPointZ += shiftZ;
+    }
+    
+    protected static void rotateArmHolding(ModelRenderer arm, float direction, float var8, float var9, float tick) {
+        arm.rotateAngleZ = 0.0F;
+        arm.rotateAngleY = direction * (0.1F - var8 * 0.6F);
+        arm.rotateAngleX = -1.5707964F;
+        arm.rotateAngleX -= var8 * 1.2F - var9 * 0.4F;
+        arm.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
+        arm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.1F;
     }
 
     public void transform(BodyPart part) {

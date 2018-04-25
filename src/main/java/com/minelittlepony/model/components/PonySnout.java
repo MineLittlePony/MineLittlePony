@@ -1,10 +1,11 @@
 package com.minelittlepony.model.components;
 
-import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.pony.data.PonyGender;
-import com.minelittlepony.renderer.plane.PlaneRenderer;
+import com.minelittlepony.render.plane.PlaneRenderer;
 
 import static com.minelittlepony.model.PonyModelConstants.*;
+
+import com.minelittlepony.model.AbstractPonyModel;
 
 public class PonySnout {
 

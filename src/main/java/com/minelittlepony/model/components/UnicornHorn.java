@@ -1,7 +1,8 @@
 package com.minelittlepony.model.components;
 
 import com.minelittlepony.model.AbstractPonyModel;
-import com.minelittlepony.renderer.HornGlowRenderer;
+import com.minelittlepony.render.HornGlowRenderer;
+
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;

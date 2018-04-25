@@ -1,6 +1,6 @@
 package com.minelittlepony.pony.data;
 
-import com.minelittlepony.model.PlayerModels;
+import com.minelittlepony.model.player.PlayerModels;
 
 public enum PonyRace implements ITriggerPixelMapped<PonyRace> {
 

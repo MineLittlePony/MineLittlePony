@@ -1,21 +1,21 @@
 package com.minelittlepony.model.components;
 
-import com.minelittlepony.renderer.plane.PlaneRenderer;
-
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.util.math.MathHelper;
 
 import static com.minelittlepony.model.PonyModelConstants.*;
 
+import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.pony.data.TailLengths;
+import com.minelittlepony.render.plane.PlaneRenderer;
 
 public class PonyTail extends PlaneRenderer {
     
     private final TailSegment[] segments = new TailSegment[4];
     
-    private final ModelBase theModel;
+    private final AbstractPonyModel theModel;
     
-    public PonyTail(ModelBase model) {
+    public PonyTail(AbstractPonyModel model) {
         super(model);
         theModel = model;
     }
@@ -23,6 +23,35 @@ public class PonyTail extends PlaneRenderer {
     public void init(float yOffset, float stretch) {
         for (int i = 0; i < segments.length; i++) {
             addChild(segments[i] = new TailSegment(theModel, i, yOffset, stretch));
+        }
+    }
+    
+    public void setRotationAndAngles(boolean rainboom, float limbSwing, float limbSwingAmount, float bodySwing, float ticks) {
+        swingZ(rainboom, limbSwing, limbSwingAmount);
+        rotateAngleY = bodySwing;
+        
+        if (theModel.isSneak && !theModel.isFlying && !rainboom) {
+            rotateSneak();
+        } else if (theModel.isRiding) {
+            rotationPointZ = 13;
+            rotationPointY = 3;
+            rotateAngleX = (float) (Math.PI * 0.2);
+        } else {
+            setRotationPoint(TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_NOTSNEAK);
+            if (rainboom) {
+                rotateAngleX = ROTATE_90 + 0.1F * MathHelper.sin(limbSwing);
+            } else {
+                rotateAngleX = 0.5F * limbSwingAmount;
+            }
+
+            if (!rainboom) {
+                swingX(ticks);
+            }
+        }
+
+        if (rainboom) {
+            rotationPointY += 6.0F;
+            rotationPointZ++;
         }
     }
 

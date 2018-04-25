@@ -1,35 +1,36 @@
 package com.minelittlepony.model;
 
-import com.minelittlepony.model.pony.ModelHumanPlayer;
-import com.minelittlepony.model.pony.ModelIllagerPony;
-import com.minelittlepony.model.pony.ModelPlayerPony;
-import com.minelittlepony.model.pony.ModelSkeletonPony;
-import com.minelittlepony.model.pony.ModelVillagerPony;
-import com.minelittlepony.model.pony.ModelZombiePony;
-import com.minelittlepony.model.pony.armor.HumanArmors;
-import com.minelittlepony.model.pony.armor.PonyArmors;
-import com.minelittlepony.model.pony.armor.SkeletonPonyArmors;
-import com.minelittlepony.model.pony.armor.ZombiePonyArmors;
+import com.minelittlepony.model.ponies.ModelHumanPlayer;
+import com.minelittlepony.model.ponies.ModelIllagerPony;
+import com.minelittlepony.model.ponies.ModelPlayerPony;
+import com.minelittlepony.model.ponies.ModelSkeletonPony;
+import com.minelittlepony.model.ponies.ModelVillagerPony;
+import com.minelittlepony.model.ponies.ModelZombiePony;
 
 import java.lang.reflect.Field;
 
+/**
+ * PMAPI - Pony Models API?
+ *
+ */
 public final class PMAPI {
 
-    public static final PlayerModel pony = new PlayerModel(new ModelPlayerPony(false)).setArmor(new PonyArmors());
-    public static final PlayerModel ponySmall = new PlayerModel(new ModelPlayerPony(true)).setArmor(new PonyArmors());
+    public static final ModelWrapper
+        pony = new ModelWrapper(new ModelPlayerPony(false)),
+        ponySmall = new ModelWrapper(new ModelPlayerPony(true)),
 
-    public static final PlayerModel human = new PlayerModel(new ModelHumanPlayer(false)).setArmor(new HumanArmors());
-    public static final PlayerModel humanSmall = new PlayerModel(new ModelHumanPlayer(true)).setArmor(new HumanArmors());
+        human = new ModelWrapper(new ModelHumanPlayer(false)),
+        humanSmall = new ModelWrapper(new ModelHumanPlayer(true)),
 
-    public static final PlayerModel zombie = new PlayerModel(new ModelZombiePony()).setArmor(new ZombiePonyArmors());
-    public static final PlayerModel skeleton = new PlayerModel(new ModelSkeletonPony()).setArmor(new SkeletonPonyArmors());
-    public static final PlayerModel villager = new PlayerModel(new ModelVillagerPony()).setArmor(new PonyArmors());
-    public static final PlayerModel illager = new PlayerModel(new ModelIllagerPony()).setArmor(new PonyArmors());
+        zombie = new ModelWrapper(new ModelZombiePony()),
+        skeleton = new ModelWrapper(new ModelSkeletonPony()),
+        villager = new ModelWrapper(new ModelVillagerPony()),
+        illager = new ModelWrapper(new ModelIllagerPony());
 
     public static void init() {
         for (Field field : PMAPI.class.getFields()) {
             try {
-                PlayerModel model = (PlayerModel) field.get(null);
+                ModelWrapper model = (ModelWrapper) field.get(null);
                 model.init();
             } catch (Exception e) {
                 e.printStackTrace();

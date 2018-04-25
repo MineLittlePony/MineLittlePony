@@ -3,7 +3,7 @@ package com.minelittlepony.pony.data;
 import com.google.common.base.MoreObjects;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IDownloadImageData;
-import com.minelittlepony.model.PlayerModel;
+import com.minelittlepony.model.ModelWrapper;
 import com.voxelmodpack.hdskins.DynamicTextureImage;
 import com.voxelmodpack.hdskins.ThreadDownloadImageETag;
 import net.minecraft.client.Minecraft;
@@ -103,7 +103,7 @@ public class Pony {
         return player.capabilities.isFlying || !(player.onGround || player.isRiding() || player.isOnLadder() || player.isInWater() || player.isElytraFlying());
     }
 
-    public PlayerModel getModel(boolean ignorePony) {
+    public ModelWrapper getModel(boolean ignorePony) {
         return getRace(ignorePony).getModel().getModel(smallArms);
     }
 
