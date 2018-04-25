@@ -29,15 +29,8 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     public IPonyData metadata = new PonyData();
     public float motionPitch;
 
-    @Deprecated
-    // TODO: Why so many arms?
-    public ModelRenderer steveLeftArm;
-    public ModelRenderer steveRightArm;
-
     public AbstractPonyModel(boolean arms) {
         super(0, arms);
-        this.steveLeftArm = this.bipedLeftArm;
-        this.steveRightArm = this.bipedRightArm;
     }
 
     /**
@@ -71,14 +64,6 @@ public abstract class AbstractPonyModel extends ModelPlayer {
             super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
             return;
         }
-
-        this.steveRightArm.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 2 * limbSwingAmount * 0.5F;
-        this.steveRightArm.rotateAngleY = 0;
-        this.steveRightArm.rotateAngleZ = 0;
-
-        this.steveLeftArm.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 2 * limbSwingAmount * 0.5F;
-        this.steveLeftArm.rotateAngleY = 0;
-        this.steveLeftArm.rotateAngleZ = 0;
     }
 
     /**

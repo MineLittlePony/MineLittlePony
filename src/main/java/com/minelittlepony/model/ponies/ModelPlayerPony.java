@@ -204,7 +204,7 @@ public class ModelPlayerPony extends AbstractPonyModel {
                 rightLeg = leftLeg = MathHelper.sin(swing / 2);
             }
 
-            steveRightArm.rotateAngleY = bipedRightArm.rotateAngleY = 0.2F;
+            bipedRightArm.rotateAngleY = 0.2F;
             bipedLeftArm.rotateAngleY = bipedRightLeg.rotateAngleY = -0.2F;
             
             this.bipedLeftLeg.rotateAngleY = 0.2F;
@@ -222,7 +222,7 @@ public class ModelPlayerPony extends AbstractPonyModel {
             leftLeg = MathHelper.cos(mve + PI - (pi * 0.4f)) * srt;
             rightLeg = MathHelper.cos(mve + pi * 0.2f) * srt;
             
-            this.steveRightArm.rotateAngleY = this.bipedRightArm.rotateAngleY = 0;
+            this.bipedRightArm.rotateAngleY = 0;
             
             this.bipedLeftArm.rotateAngleY = 0;
             this.bipedRightLeg.rotateAngleY = 0;
@@ -236,11 +236,11 @@ public class ModelPlayerPony extends AbstractPonyModel {
         
         
         
-        this.steveLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX = leftArm;
-        this.steveRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX = rightArm;
+        this.bipedLeftArm.rotateAngleX = leftArm;
+        this.bipedRightArm.rotateAngleX = rightArm;
         
         this.bipedLeftArm.rotateAngleZ = 0;
-        this.steveRightArm.rotateAngleZ = this.bipedRightArm.rotateAngleZ = 0;
+        this.bipedRightArm.rotateAngleZ = 0;
         
         this.bipedLeftLeg.rotateAngleX = leftLeg;
         this.bipedRightLeg.rotateAngleX = rightLeg;
@@ -263,10 +263,9 @@ public class ModelPlayerPony extends AbstractPonyModel {
 
         float spread = rainboom ? 2 : 1;
 
-        steveRightArm.rotationPointZ = bipedRightArm.rotationPointZ = spread + sin;
+        bipedRightArm.rotationPointZ = spread + sin;
 
         bipedLeftArm.rotationPointZ = spread - sin;
-        steveRightArm.rotationPointZ = -cos;
 
         float legOutset = getLegOutset();
         float rpxl = cos + 1 - legOutset;
@@ -347,8 +346,7 @@ public class ModelPlayerPony extends AbstractPonyModel {
             if (this.metadata.hasMagic() && mainPose != ArmPose.EMPTY) {
                 swingArm(mainRight ? this.unicornArmRight : this.unicornArmLeft, f22, f33, f28);
             } else {
-                swingArm(this.getArmForSide(mainSide), f22, f33, f28);
-                swingArm(mainRight ? this.steveRightArm : this.steveLeftArm, f22, f33, f28);
+                swingArm(getArmForSide(mainSide), f22, f33, f28);
             }
         }
     }
@@ -370,10 +368,7 @@ public class ModelPlayerPony extends AbstractPonyModel {
                 this.unicornArmRight.rotateAngleX += sin;
             } else {
                 this.bipedRightArm.rotateAngleZ += cos;
-                this.steveRightArm.rotateAngleZ += cos;
-
                 this.bipedRightArm.rotateAngleX += sin;
-                this.steveRightArm.rotateAngleX += sin;
             }
         }
         if (this.leftArmPose != ArmPose.EMPTY && !this.isSleeping) {
@@ -382,10 +377,7 @@ public class ModelPlayerPony extends AbstractPonyModel {
                 this.unicornArmLeft.rotateAngleX += sin;
             } else {
                 this.bipedLeftArm.rotateAngleZ += cos;
-                this.steveLeftArm.rotateAngleZ += cos;
-
                 this.bipedLeftArm.rotateAngleX += sin;
-                this.steveLeftArm.rotateAngleX += sin;
             }
         }
     }
@@ -412,8 +404,6 @@ public class ModelPlayerPony extends AbstractPonyModel {
     }
 
     protected void sneakLegs() {
-        this.steveRightArm.rotateAngleX += SNEAK_LEG_X_ROTATION_ADJUSTMENT;
-        
         this.unicornArmRight.rotateAngleX += SNEAK_LEG_X_ROTATION_ADJUSTMENT;
         this.unicornArmLeft.rotateAngleX += SNEAK_LEG_X_ROTATION_ADJUSTMENT;
 
@@ -619,7 +609,6 @@ public class ModelPlayerPony extends AbstractPonyModel {
         this.unicornArmRight = new ModelRenderer(this, 40, 32).setTextureSize(64, 64);
         this.unicornArmLeft = new ModelRenderer(this, 40, 32).setTextureSize(64, 64);
 
-        this.boxList.remove(this.steveRightArm);
         this.boxList.remove(this.unicornArmRight);
     }
 

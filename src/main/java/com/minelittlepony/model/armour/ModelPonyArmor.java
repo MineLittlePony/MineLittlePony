@@ -125,7 +125,6 @@ public class ModelPonyArmor extends ModelMobPony {
     @Override
     protected void initLegTextures() {
         this.bipedRightArm = new ModelRenderer(this, 0, 16);
-        this.steveRightArm = new ModelRenderer(this, 0, 16);
         
         this.bipedLeftArm = new ModelRenderer(this, 0, 16);
         this.bipedLeftArm.mirror = true;
