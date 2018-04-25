@@ -8,11 +8,9 @@ import net.minecraft.client.model.ModelRenderer;
 @SuppressWarnings("unused")
 public class PlaneRenderer extends ModelRenderer {
 
-    public boolean mirrory;
-    public boolean mirrorz;
+    public boolean mirrory, mirrorz;
 
-    private int textureOffsetX;
-    private int textureOffsetY;
+    private int textureOffsetX, textureOffsetY;
 
     public PlaneRenderer(ModelBase model) {
         super(model);
@@ -30,7 +28,7 @@ public class PlaneRenderer extends ModelRenderer {
         return this;
     }
 
-    public void addPlane(float offX, float offY, float offZ, int width, int height, int depth, float scale, Face face) {
+    private void addPlane(float offX, float offY, float offZ, int width, int height, int depth, float scale, Face face) {
         this.cubeList.add(new ModelPlane(this, this.textureOffsetX, this.textureOffsetY, offX, offY, offZ, width, height, depth, scale, face));
     }
 
