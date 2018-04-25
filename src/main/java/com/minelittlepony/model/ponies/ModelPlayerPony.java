@@ -222,31 +222,33 @@ public class ModelPlayerPony extends AbstractPonyModel {
             leftLeg = MathHelper.cos(mve + PI - (pi * 0.4f)) * srt;
             rightLeg = MathHelper.cos(mve + pi * 0.2f) * srt;
             
-            this.steveRightArm.rotateAngleY = 0;
-            this.unicornArmRight.rotateAngleY = 0;
-            this.unicornArmLeft.rotateAngleY = 0;
-
-            this.bipedRightArm.rotateAngleY = 0;
+            this.steveRightArm.rotateAngleY = this.bipedRightArm.rotateAngleY = 0;
+            
             this.bipedLeftArm.rotateAngleY = 0;
             this.bipedRightLeg.rotateAngleY = 0;
             this.bipedLeftLeg.rotateAngleY = 0;
+
+            this.unicornArmRight.rotateAngleY = 0;
+            this.unicornArmLeft.rotateAngleY = 0;
         }
 
-        this.bipedRightArm.rotateAngleX = rightArm;
-        this.steveRightArm.rotateAngleX = rightArm;
+        
+        
+        
+        
+        this.steveLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX = leftArm;
+        this.steveRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX = rightArm;
+        
+        this.bipedLeftArm.rotateAngleZ = 0;
+        this.steveRightArm.rotateAngleZ = this.bipedRightArm.rotateAngleZ = 0;
+        
+        this.bipedLeftLeg.rotateAngleX = leftLeg;
+        this.bipedRightLeg.rotateAngleX = rightLeg;
+        
         this.unicornArmRight.rotateAngleX = 0;
         this.unicornArmLeft.rotateAngleX = 0;
-
-        this.bipedLeftArm.rotateAngleX = leftArm;
-        this.bipedRightLeg.rotateAngleX = rightLeg;
-        this.bipedLeftLeg.rotateAngleX = leftLeg;
-        
-        this.bipedRightArm.rotateAngleZ = 0;
-
-        this.steveRightArm.rotateAngleZ = 0;
         this.unicornArmRight.rotateAngleZ = 0;
         this.unicornArmLeft.rotateAngleZ = 0;
-        this.bipedLeftArm.rotateAngleZ = 0;
     }
     
     private float getLegOutset() {
@@ -256,29 +258,33 @@ public class ModelPlayerPony extends AbstractPonyModel {
     }
 
     protected void adjustLegs() {
-        float sinBodyRotateAngleYFactor = MathHelper.sin(this.bipedBody.rotateAngleY) * 5;
-        float cosBodyRotateAngleYFactor = MathHelper.cos(this.bipedBody.rotateAngleY) * 5;
-        
-        
-        float legOutset = getLegOutset();
+        float sin = MathHelper.sin(bipedBody.rotateAngleY) * 5;
+        float cos = MathHelper.cos(bipedBody.rotateAngleY) * 5;
+
         float spread = rainboom ? 2 : 1;
 
-        this.bipedRightArm.rotationPointZ = spread + sinBodyRotateAngleYFactor;
-        this.steveRightArm.rotationPointZ = spread + sinBodyRotateAngleYFactor;
-        this.bipedLeftArm.rotationPointZ = spread - sinBodyRotateAngleYFactor;
-        this.steveRightArm.rotationPointX = -cosBodyRotateAngleYFactor;
+        steveRightArm.rotationPointZ = bipedRightArm.rotationPointZ = spread + sin;
 
-        float rpxl = legOutset - cosBodyRotateAngleYFactor - 1;
-        float rpxr = cosBodyRotateAngleYFactor + 2 - legOutset;
-        
-        bipedRightArm.rotationPointX = bipedRightLeg.rotationPointX = rpxl;
-        bipedLeftArm.rotationPointX = bipedLeftLeg.rotationPointX = rpxr;
+        bipedLeftArm.rotationPointZ = spread - sin;
+        steveRightArm.rotationPointZ = -cos;
+
+        float legOutset = getLegOutset();
+        float rpxl = cos + 1 - legOutset;
+        float rpxr = legOutset - cos - 1;
+
+        bipedRightArm.rotationPointX = rpxr;
+        bipedRightLeg.rotationPointX = rpxr;
+        bipedLeftArm.rotationPointX = rpxl;
+        bipedLeftLeg.rotationPointX = rpxl;
+
+        // Push the front legs back apart if we're a thin pony
+        if (smallArms) {
+            bipedLeftArm.rotationPointX--;
+            bipedLeftArm.rotationPointX += 2;
+        }
 
         bipedRightArm.rotateAngleY += bipedBody.rotateAngleY;
         bipedLeftArm.rotateAngleY += bipedBody.rotateAngleY;
-
-        //noinspection SuspiciousNameCombination
-        this.bipedLeftArm.rotateAngleX += this.bipedBody.rotateAngleY;
 
         bipedRightArm.rotationPointY = bipedLeftArm.rotationPointY = 8;
         bipedRightLeg.rotationPointZ = bipedLeftLeg.rotationPointZ = 10;
@@ -298,17 +304,16 @@ public class ModelPlayerPony extends AbstractPonyModel {
 
         this.horn.setUsingMagic(this.leftArmPose != ArmPose.EMPTY || this.rightArmPose != ArmPose.EMPTY);
     }
-    
-    @SuppressWarnings("incomplete-switch")
-    private void alignArmForAction(ModelRenderer arm, ArmPose pose, boolean bothHoovesAreOccupied, float swing) {
+
+    private void alignArmForAction(ModelRenderer arm, ArmPose pose, boolean both, float swing) {
         switch (pose) {
             case ITEM:
                 float swag = 1;
-                if (!isFlying && bothHoovesAreOccupied) {
+                if (!isFlying && both) {
                     swag = (float) (1 - Math.pow(swing, 2));
                 }
-                float rotationMultiplier = 0.5f + (1 - swag)/2;
-                arm.rotateAngleX = this.bipedLeftArm.rotateAngleX * rotationMultiplier - ((float) Math.PI / 10) * swag;
+                float mult = 0.5f + (1 - swag)/2;
+                arm.rotateAngleX = this.bipedLeftArm.rotateAngleX * mult - ((float) Math.PI / 10) * swag;
             case EMPTY:
                 arm.rotateAngleY = 0;
                 break;
@@ -316,6 +321,7 @@ public class ModelPlayerPony extends AbstractPonyModel {
                 arm.rotateAngleX = arm.rotateAngleX / 2 - 0.9424779F;
                 arm.rotateAngleY = (float) (Math.PI / 6);
                 break;
+            default:
         }
     }
     
@@ -348,38 +354,38 @@ public class ModelPlayerPony extends AbstractPonyModel {
     }
     
     private void swingArm(ModelRenderer arm, float f22, float f33, float f28) {
-        arm.rotateAngleX = (float) (this.unicornArmRight.rotateAngleX - (f22 * 1.2D + f33));
+        arm.rotateAngleX = (float) (arm.rotateAngleX - (f22 * 1.2D + f33));
         arm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
         arm.rotateAngleZ = f28 * -0.4F;
     }
 
     protected void swingArms(float tick) {
-        float cosTickFactor = MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
-        float sinTickFactor = MathHelper.sin(tick * 0.067F) * 0.05F;
+        float cos = MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
+        float sin = MathHelper.sin(tick * 0.067F) * 0.05F;
 
         if (this.rightArmPose != ArmPose.EMPTY && !this.isSleeping) {
             
             if (this.metadata.hasMagic()) {
-                this.unicornArmRight.rotateAngleZ += cosTickFactor;
-                this.unicornArmRight.rotateAngleX += sinTickFactor;
+                this.unicornArmRight.rotateAngleZ += cos;
+                this.unicornArmRight.rotateAngleX += sin;
             } else {
-                this.bipedRightArm.rotateAngleZ += cosTickFactor;
-                this.bipedRightArm.rotateAngleX += sinTickFactor;
-                
-                this.steveRightArm.rotateAngleZ += cosTickFactor;
-                this.steveRightArm.rotateAngleX += sinTickFactor;
+                this.bipedRightArm.rotateAngleZ += cos;
+                this.steveRightArm.rotateAngleZ += cos;
+
+                this.bipedRightArm.rotateAngleX += sin;
+                this.steveRightArm.rotateAngleX += sin;
             }
         }
         if (this.leftArmPose != ArmPose.EMPTY && !this.isSleeping) {
             if (this.metadata.hasMagic()) {
-                this.unicornArmLeft.rotateAngleZ += cosTickFactor;
-                this.unicornArmLeft.rotateAngleX += sinTickFactor;
+                this.unicornArmLeft.rotateAngleZ += cos;
+                this.unicornArmLeft.rotateAngleX += sin;
             } else {
-                this.bipedLeftArm.rotateAngleZ += cosTickFactor;
-                this.bipedLeftArm.rotateAngleX += sinTickFactor;
-                
-                this.steveLeftArm.rotateAngleZ += cosTickFactor;
-                this.steveLeftArm.rotateAngleX += sinTickFactor;
+                this.bipedLeftArm.rotateAngleZ += cos;
+                this.steveLeftArm.rotateAngleZ += cos;
+
+                this.bipedLeftArm.rotateAngleX += sin;
+                this.steveLeftArm.rotateAngleX += sin;
             }
         }
     }
@@ -412,10 +418,9 @@ public class ModelPlayerPony extends AbstractPonyModel {
         this.unicornArmLeft.rotateAngleX += SNEAK_LEG_X_ROTATION_ADJUSTMENT;
 
         this.bipedRightArm.rotateAngleX -= SNEAK_LEG_X_ROTATION_ADJUSTMENT;
-        this.bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_SNEAK;
-        
         this.bipedLeftArm.rotateAngleX -= SNEAK_LEG_X_ROTATION_ADJUSTMENT;
-        this.bipedLeftLeg.rotationPointY = FRONT_LEG_RP_Y_SNEAK;
+        
+        this.bipedLeftLeg.rotationPointY = this.bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_SNEAK;
     }
 
     protected void ponySleep() {
@@ -675,50 +680,55 @@ public class ModelPlayerPony extends AbstractPonyModel {
     }
 
     protected void initLegPositions(float yOffset, float stretch) {
-        int armWidth = this.smallArms ? 3 : 4;
-        float armY = this.smallArms ? 8.5f : 8f;
-        float armX = this.smallArms ? -2f : -3f;
+        int armWidth = smallArms ? 3 : 4;
+        float rarmY = smallArms ? 8.5f : 8;
+        float rarmX = smallArms ? 2 : 3;
         
-        this.bipedRightArm.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, armWidth, 12, 4, stretch);
-        this.bipedLeftArm .addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, armWidth, 12, 4, stretch);
+        float armX = THIRDP_ARM_CENTRE_X - 2;
+        float armY = THIRDP_ARM_CENTRE_Y - 6;
+        float armZ = THIRDP_ARM_CENTRE_Z - 2;
         
-        this.bipedRightArm.setRotationPoint(armX, yOffset + armY, 0.0F);
-        this.bipedLeftArm .setRotationPoint(3.0F, yOffset + armY, 0.0F);
+        this.bipedLeftArm .addBox(armX, armY, armZ, armWidth, 12, 4, stretch);
+        this.bipedRightArm.addBox(armX, armY, armZ, armWidth, 12, 4, stretch);
         
-        this.bipedRightLeg.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch);
-        this.bipedLeftLeg .addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch);
+        this.bipedLeftLeg .addBox(armX, armY, armZ, 4, 12, 4, stretch);
+        this.bipedRightLeg.addBox(armX, armY, armZ, 4, 12, 4, stretch);
         
-        this.bipedRightLeg.setRotationPoint(-3.0F, 0.0F + yOffset, 0.0F);
+        this.bipedLeftArm .setRotationPoint( rarmX, yOffset + rarmY, 0);
+        this.bipedRightArm.setRotationPoint(-rarmX, yOffset + rarmY, 0);
+        
+        this.bipedLeftLeg .setRotationPoint( rarmX, yOffset, 0);
+        this.bipedRightLeg.setRotationPoint(-rarmX, yOffset, 0);
 
-        this.unicornArmRight.addBox(-2.0F + FIRSTP_ARM_CENTRE_X, -6.0F + FIRSTP_ARM_CENTRE_Y, -2.0F + FIRSTP_ARM_CENTRE_Z, 4, 12, 4, stretch + .25f);
-        this.unicornArmLeft .addBox(-2.0F + FIRSTP_ARM_CENTRE_X, -6.0F + FIRSTP_ARM_CENTRE_Y, -2.0F + FIRSTP_ARM_CENTRE_Z, 4, 12, 4, stretch + .25f);
-        
-        this.unicornArmRight.setRotationPoint(-5.0F, 2.0F + yOffset, 0.0F);
-        this.unicornArmLeft .setRotationPoint(-5.0F, 2.0F + yOffset, 0.0F);
-        
-        if (bipedRightArmwear != null) {
-            this.bipedRightArmwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, armWidth, 12, 4, stretch + 0.25f);
-            this.bipedRightArmwear.setRotationPoint(-3.0F, yOffset + armY, 0.0F);
+        if (bipedLeftArmwear != null) {
+            this.bipedLeftArmwear.addBox(armX, armY, armZ, 3, 12, 4, stretch + 0.25f);
+            this.bipedLeftArmwear.setRotationPoint(3, yOffset + rarmY, 0);
         }
         
-        if (bipedLeftArmwear != null) {
-            this.bipedLeftArmwear .addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 3, 12, 4, stretch + 0.25f);
-            this.bipedLeftArmwear .setRotationPoint(3.0F, yOffset + armY, 0.0F);
+        if (bipedRightArmwear != null) {
+            this.bipedRightArmwear.addBox(armX, armY, armZ, armWidth, 12, 4, stretch + 0.25f);
+            this.bipedRightArmwear.setRotationPoint(-3, yOffset + rarmY, 0);
+        }
+        
+        if (this.bipedLeftLegwear != null) {
+            this.bipedLeftLegwear.addBox(armX, armY, armZ, 4, 12, 4, stretch + 0.25f);
+            this.bipedRightLegwear.setRotationPoint(3, yOffset, 0);
         }
         
         if (bipedRightLegwear != null) {
-            this.bipedRightLegwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25f);
-            this.bipedRightLegwear.setRotationPoint(-3.0F, 0.0F + yOffset, 0.0F);
+            this.bipedRightLegwear.addBox(armX, armY, armZ, 4, 12, 4, stretch + 0.25f);
+            this.bipedRightLegwear.setRotationPoint(-3, yOffset, 0);
         }
 
-        if (this.bipedLeftLegwear != null) {
-            this.bipedLeftLegwear.addBox(-2.0F + THIRDP_ARM_CENTRE_X, -6.0F + THIRDP_ARM_CENTRE_Y, -2.0F + THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25f);
-        }
+        this.unicornArmLeft .addBox(FIRSTP_ARM_CENTRE_X - 2, armY, armZ, 4, 12, 4, stretch + .25f);
+        this.unicornArmRight.addBox(FIRSTP_ARM_CENTRE_X - 2, armY, armZ, 4, 12, 4, stretch + .25f);
+
+        this.unicornArmLeft .setRotationPoint(5, yOffset + 2, 0);
+        this.unicornArmRight.setRotationPoint(-5, yOffset + 2, 0);
     }
 
     @Override
     public void renderCape(float scale) {
         this.bipedCape.render(scale);
     }
-
 }

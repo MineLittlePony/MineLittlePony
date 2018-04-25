@@ -1,15 +1,26 @@
 package com.minelittlepony.model.armour;
 
+/**
+ * Armour for skeleton ponies.
+ *
+ */
 public class ModelSkeletonPonyArmor extends ModelPonyArmor {
 
+    /**
+     * The code here is copied from ModelMobPony, all with but one line of difference.
+     */
     @Override
-    protected void rotateRightArm(float var8, float var9, float move, float tick) {
+    protected void rotateRightArm(float move, float tick) {
         if (this.rightArmPose == ArmPose.EMPTY) return;
         
         if (!this.metadata.hasMagic()) {
-            rotateArmHolding(bipedRightArm, 1, var8, var9, tick);
+            rotateArmHolding(bipedRightArm, 1, swingProgress, tick);
         } else {
-            rotateArmHolding(unicornArmRight, 1, var8, var9, tick);
+            // With everything that's happening in ModelPonyArmor,
+            // it's hard to tell if this is need or not.
+            // Testing will probably reveal all.
+            //unicornArmRight.setRotationPoint(-7, 12, -2);
+            rotateArmHolding(unicornArmRight, 1, swingProgress, tick);
         }
     }
 

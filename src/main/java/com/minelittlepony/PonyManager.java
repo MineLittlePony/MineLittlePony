@@ -24,15 +24,22 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * The PonyManager is responsible for reading and recoding all the pony data associated with an entity of skin.
+ *
+ */
 public class PonyManager implements IResourceManagerReloadListener {
 
-    public static final ResourceLocation STEVE = new ResourceLocation("minelittlepony", "textures/entity/steve_pony.png");
-    public static final ResourceLocation ALEX = new ResourceLocation("minelittlepony", "textures/entity/alex_pony.png");
-
-    private static final ResourceLocation BGPONIES_JSON = new ResourceLocation("minelittlepony", "textures/entity/pony/bgponies.json");
+    public static final ResourceLocation
+        STEVE = new ResourceLocation("minelittlepony", "textures/entity/steve_pony.png"),
+        ALEX = new ResourceLocation("minelittlepony", "textures/entity/alex_pony.png"),
+        BGPONIES_JSON = new ResourceLocation("minelittlepony", "textures/entity/pony/bgponies.json");
 
     private static final Gson GSON = new Gson();
 
+    /**
+     * All currently loaded background ponies.
+     */
     private List<ResourceLocation> backgroundPonyList = Lists.newArrayList();
 
     private PonyConfig config;
@@ -46,16 +53,27 @@ public class PonyManager implements IResourceManagerReloadListener {
         initmodels();
     }
 
-    public void initmodels() {
+    private void initmodels() {
         MineLittlePony.logger.info("Initializing models...");
         PMAPI.init();
         MineLittlePony.logger.info("Done initializing models.");
     }
 
-    public Pony getPony(ResourceLocation skinResourceLocation, boolean slim) {
-        return poniesCache.computeIfAbsent(skinResourceLocation, res -> new Pony(res, slim));
+    /**
+     * Gets or creates a pony for the given skin resource and vanilla model type.
+     * 
+     * @param resource A texture resource
+     */
+    public Pony getPony(ResourceLocation resource, boolean slim) {
+        return poniesCache.computeIfAbsent(resource, res -> new Pony(res, slim));
     }
 
+    /**
+     * Gets or creates a pony for the given player.
+     * Delegates to the background-ponies registry if no pony skins were available and client settings allows it.
+     * 
+     * @param player the player
+     */
     public Pony getPony(AbstractClientPlayer player) {
         Pony pony = getPony(player.getLocationSkin(), IPlayerInfo.getPlayerInfo(player).usesSlimArms());
 
@@ -66,6 +84,16 @@ public class PonyManager implements IResourceManagerReloadListener {
         return pony;
     }
     
+    /**
+     * Gets or creates a pony for the given skin resource and entity id.
+     * 
+     * Whether is has slim arms is determined by the id.
+     * 
+     * Delegates to the background-ponies registry if no pony skins were available and client settings allows it.
+     * 
+     * @param resource A texture resource
+     * @param uuid id of a player or entity
+     */
     public Pony getPony(ResourceLocation resource, UUID uuid) {
         Pony pony = getPony(resource, isSlimSkin(uuid));
         
@@ -76,6 +104,11 @@ public class PonyManager implements IResourceManagerReloadListener {
         return pony;
     }
 
+    /**
+     * Gets the default pony. Either STEVE/ALEX, or a background pony based on client settings.
+     * 
+     * @param uuid id of a player or entity
+     */
     public Pony getDefaultPony(UUID uuid) {
         if (config.getPonyLevel() != PonyLevel.PONIES) {
             return getPony(DefaultPlayerSkin.getDefaultSkin(uuid), isSlimSkin(uuid));
@@ -93,6 +126,9 @@ public class PonyManager implements IResourceManagerReloadListener {
         return getPony(backgroundPonyList.get(bgi), false);
     }
 
+    /**
+     * De-registers a pony from the cache.
+     */
     public Pony removePony(ResourceLocation location) {
         return poniesCache.remove(location);
     }
@@ -124,6 +160,9 @@ public class PonyManager implements IResourceManagerReloadListener {
         return isSlimSkin(uuid) ? ALEX : STEVE;
     }
     
+    /**
+     * Returns true if the given uuid is of a player would would use the ALEX skin type.
+     */
     public static boolean isSlimSkin(UUID uuid) {
         return (uuid.hashCode() & 1) == 1;
     }

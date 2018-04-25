@@ -54,7 +54,6 @@ public class ModelSkeletonPony extends ModelMobPony {
         if (rightArmPose != ArmPose.EMPTY && !metadata.hasMagic()) {
             bipedRightArm.setRotationPoint(-1.5F, 9.5F, 4);
         }
-        
     }
 
     @Override

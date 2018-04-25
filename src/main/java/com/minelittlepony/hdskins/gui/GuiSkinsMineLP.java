@@ -8,6 +8,9 @@ import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
 import com.voxelmodpack.hdskins.gui.GuiSkins;
 import net.minecraft.util.ResourceLocation;
 
+/**
+ * Skin uploading GUI. Usually displayed over the main menu.
+ */
 public class GuiSkinsMineLP extends GuiSkins {
 
     private PonyManager ponyManager;

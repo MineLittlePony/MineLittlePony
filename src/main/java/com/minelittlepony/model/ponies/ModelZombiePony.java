@@ -22,18 +22,18 @@ public class ModelZombiePony extends ModelMobPony {
     }
     
     @Override
-    protected void rotateRightArm(float var8, float var9, float move, float tick) {
+    protected void rotateRightArm(float move, float tick) {
         if (rightArmPose != ArmPose.EMPTY) return;
         
         if (isRight(move)) {
-            rotateArmHolding(bipedRightArm, 1, var8, var9, tick);
+            rotateArmHolding(bipedRightArm, 1, swingProgress, tick);
         } else {
-            rotateArmHolding(bipedLeftArm, -1, var8, var9, tick);
+            rotateArmHolding(bipedLeftArm, -1, swingProgress, tick);
         }
     }
     
     @Override
-    protected void rotateLeftArm(float var8, float var9, float move, float tick) {
+    protected void rotateLeftArm(float move, float tick) {
         
     }
 

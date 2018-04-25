@@ -29,27 +29,40 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     public IPonyData metadata = new PonyData();
     public float motionPitch;
 
+    @Deprecated
     // TODO: Why so many arms?
-    public ModelRenderer steveLeftArm, steveRightArm,
-                         steveLeftArmwear, steveRightArmwear;
+    public ModelRenderer steveLeftArm;
+    public ModelRenderer steveRightArm;
 
     public AbstractPonyModel(boolean arms) {
         super(0, arms);
         this.steveLeftArm = this.bipedLeftArm;
         this.steveRightArm = this.bipedRightArm;
-        this.steveLeftArmwear = this.bipedLeftArmwear;
-        this.steveRightArmwear = this.bipedLeftArmwear;
     }
 
+    /**
+     * Sets up this model's initial values, like a constructor...
+     * @param yOffset YPosition for this model. Always 0.
+     * @param stretch Scaling factor for this model. Ranges above or below 0 (no change).
+     */
     public void init(float yOffset, float stretch) {
-        this.initTextures();
+        initTextures();
         this.initPositions(yOffset, stretch);
     }
     
+    /**
+     * Returns a new pony armour to go with this model. Called on startup by a model wrapper.
+     */
     public abstract PonyArmor createArmour();
     
+    /**
+     * Loads texture values.
+     */
     protected abstract void initTextures();
 
+    /**
+     * Loads texture positions and boxes. Pretty much just finishes the job of initTextures.
+     */
     protected abstract void initPositions(float yOffset, float stretch);
 
     @Override
@@ -58,17 +71,19 @@ public abstract class AbstractPonyModel extends ModelPlayer {
             super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
             return;
         }
-        this.steveRightArm.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F;
+
+        this.steveRightArm.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 2 * limbSwingAmount * 0.5F;
         this.steveRightArm.rotateAngleY = 0;
         this.steveRightArm.rotateAngleZ = 0;
-        this.steveLeftArm.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
+
+        this.steveLeftArm.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 2 * limbSwingAmount * 0.5F;
         this.steveLeftArm.rotateAngleY = 0;
         this.steveLeftArm.rotateAngleZ = 0;
-
-        copyModelAngles(steveRightArm, steveRightArmwear);
-        copyModelAngles(steveLeftArm, steveLeftArmwear);
     }
 
+    /**
+     * Returns true if the default minecraft handling should be used.
+     */
     protected boolean doCancelRender() {
         return false;
     }
@@ -79,15 +94,31 @@ public abstract class AbstractPonyModel extends ModelPlayer {
         aRenderer.rotationPointZ += shiftZ;
     }
     
-    protected static void rotateArmHolding(ModelRenderer arm, float direction, float var8, float var9, float tick) {
+    /**
+     * Rotates the provided arm to the correct orientation for holding an item.
+     * 
+     * @param arm           The arm to rotate
+     * @param direction     Direction multiplier. 1 for right, -1 for left.
+     * @param swingProgress How far we are through the current swing
+     * @param tick          Render partial ticks
+     */
+    protected static void rotateArmHolding(ModelRenderer arm, float direction, float swingProgress, float tick) {
+        float swing = MathHelper.sin(swingProgress * (float)Math.PI);
+        float roll = MathHelper.sin((1 - (1 - swingProgress) * (1 - swingProgress)) * (float)Math.PI);
+        
         arm.rotateAngleZ = 0.0F;
-        arm.rotateAngleY = direction * (0.1F - var8 * 0.6F);
+        arm.rotateAngleY = direction * (0.1F - swing * 0.6F);
         arm.rotateAngleX = -1.5707964F;
-        arm.rotateAngleX -= var8 * 1.2F - var9 * 0.4F;
+        arm.rotateAngleX -= swing * 1.2F - roll * 0.4F;
         arm.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
         arm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.1F;
     }
 
+    /**
+     * Applies a transform particular to a certain body part.
+     * 
+     * FIXME: Too long! Is there a better way to do this?
+     */
     public void transform(BodyPart part) {
         if (this.isRiding) {
             translate(0.0F, -0.6F, -0.2F);
@@ -221,15 +252,18 @@ public abstract class AbstractPonyModel extends ModelPlayer {
         }
     }
 
+    /**
+     * Copies this model's attributes from some other.
+     */
     @Override
     public void setModelAttributes(ModelBase model) {
         super.setModelAttributes(model);
         if (model instanceof AbstractPonyModel) {
             AbstractPonyModel pony = (AbstractPonyModel) model;
-            this.isFlying = pony.isFlying;
-            this.isSleeping = pony.isSleeping;
-            this.metadata = pony.metadata;
-            this.motionPitch = pony.motionPitch;
+            isFlying = pony.isFlying;
+            isSleeping = pony.isSleeping;
+            metadata = pony.metadata;
+            motionPitch = pony.motionPitch;
         }
     }
 

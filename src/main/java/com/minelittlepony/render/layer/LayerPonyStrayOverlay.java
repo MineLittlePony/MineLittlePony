@@ -16,7 +16,7 @@ public class LayerPonyStrayOverlay extends LayerOverlayBase<EntityStray> {
     public LayerPonyStrayOverlay(RenderLivingBase<?> render) {
         super(render);
         this.overlayModel = new ModelSkeletonPony();
-        this.overlayModel.init(0F, 0.25F);
+        this.overlayModel.init(0, 0.25F);
     }
 
     @Override

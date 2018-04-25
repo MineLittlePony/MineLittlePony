@@ -18,6 +18,9 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+/**
+ * Renderer used for the dummy pony model when selecting a skin.
+ */
 public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
 
     public RenderPonyModel(RenderManager renderer) {

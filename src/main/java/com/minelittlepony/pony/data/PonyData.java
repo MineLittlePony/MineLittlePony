@@ -6,6 +6,11 @@ import com.minelittlepony.MineLittlePony;
 import java.awt.image.BufferedImage;
 import javax.annotation.concurrent.Immutable;
 
+
+/**
+ * Implementation for IPonyData.
+ *
+ */
 @Immutable
 public class PonyData implements IPonyData {
     private final PonyRace race;
@@ -71,6 +76,9 @@ public class PonyData implements IPonyData {
                 .toString();
     }
 
+    /**
+     * Parses an image buffer into a new IPonyData representing the values stored in it's individual trigger pixels.
+     */
     static IPonyData parse(BufferedImage image) {
         return new PonyData(image);
     }

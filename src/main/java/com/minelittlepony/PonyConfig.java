@@ -6,6 +6,10 @@ import com.mumfrey.liteloader.modconfig.ConfigStrategy;
 import com.mumfrey.liteloader.modconfig.Exposable;
 import com.mumfrey.liteloader.modconfig.ExposableOptions;
 
+/**
+ * Storage contained for MineLP client settings.
+ *
+ */
 @ExposableOptions(filename = "minelittlepony", strategy = ConfigStrategy.Unversioned)
 public class PonyConfig implements Exposable {
 
@@ -20,15 +24,26 @@ public class PonyConfig implements Exposable {
     @Expose public boolean skeletons = true;
     @Expose public boolean illagers = true;
 
+    /**
+     * Gets the current PonyLevel. That is the level of ponies you would like to see.
+     * @param ignorePony true to ignore whatever value the setting has.
+     */
     public PonyLevel getPonyLevel(boolean ignorePony) {
         return ignorePony ? PonyLevel.BOTH : getPonyLevel();
     }
 
+    /**
+     * Actually gets the pony level value. No option to ignore reality here.
+     */
     public PonyLevel getPonyLevel() {
         if (ponylevel == null) ponylevel = PonyLevel.PONIES;
         return ponylevel;
     }
 
+    /**
+     * Sets the pony level. Want MOAR PONEHS? Well here you go.
+     * @param ponylevel
+     */
     public void setPonyLevel(PonyLevel ponylevel) {
         this.ponylevel = ponylevel;
     }

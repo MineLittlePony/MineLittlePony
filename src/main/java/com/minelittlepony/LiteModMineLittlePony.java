@@ -28,8 +28,6 @@ public class LiteModMineLittlePony implements Tickable, InitCompleteListener {
     @Override
     public void init(File configPath) {
         this.mlp = new MineLittlePony();
-        this.mlp.init();
-
     }
 
     @Override
@@ -41,5 +39,4 @@ public class LiteModMineLittlePony implements Tickable, InitCompleteListener {
     public void onTick(Minecraft minecraft, float partialTicks, boolean inGame, boolean clock) {
         this.mlp.onTick(minecraft, inGame);
     }
-
 }

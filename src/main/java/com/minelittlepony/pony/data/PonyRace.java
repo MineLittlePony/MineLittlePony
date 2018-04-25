@@ -29,22 +29,41 @@ public enum PonyRace implements ITriggerPixelMapped<PonyRace> {
         this.model = model;
     }
 
+    /**
+     * Returns true if this pony has a horn (and by extension can cast magic).
+     * @return
+     */
     public boolean hasHorn() {
         return horn;
     }
 
+    /**
+     * Returns true if this pony has wings. If it has wings, it can fly, of course.
+     */
     public boolean hasWings() {
         return wings;
     }
 
+    /**
+     * Returns true if this is a human.
+     */
     public boolean isHuman() {
         return this == HUMAN;
     }
 
+    /**
+     * Gets the model type associated with this species.
+     */
     public PlayerModels getModel() {
         return model;
     }
 
+    /**
+     * Gets the actual race determined by the given pony level.
+     * PonyLevel.HUMANS would force all races to be humans.
+     * PonyLevel.BOTH is no change.
+     * PonyLevel.PONIES (should) return a pony if this is a human. Don't be fooled, though. It doesn't.
+     */
     public PonyRace getEffectiveRace(PonyLevel level) {
         if (level == PonyLevel.HUMANS) return HUMAN;
         return this;

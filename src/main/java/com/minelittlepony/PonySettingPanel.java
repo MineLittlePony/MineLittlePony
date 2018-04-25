@@ -9,6 +9,9 @@ import net.minecraft.client.resources.I18n;
 
 import java.io.IOException;
 
+/**
+ * In-Game options menu.
+ */
 public class PonySettingPanel extends GuiScreen {
 
     private static final String _PREFIX = "minelp.options.";
@@ -175,6 +178,6 @@ public class PonySettingPanel extends GuiScreen {
     @Override
     public void onGuiClosed() {
         LiteLoader.getInstance().writeConfig(config);
-        MineLittlePony.getInstance().initializeMobRenderers(mc.getRenderManager());
+        MineLittlePony.getInstance().getRenderManager().initializeMobRenderers(mc.getRenderManager(), config);
     }
 }
