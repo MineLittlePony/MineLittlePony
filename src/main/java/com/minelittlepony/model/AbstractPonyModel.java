@@ -252,15 +252,21 @@ public abstract class AbstractPonyModel extends ModelPlayer {
         }
     }
 
-    // TODO: This has potential to create an infinite loop.
     @Override
     public ModelRenderer getRandomModelBox(Random rand) {
-        // empty lists cause problems
+        // grab one at random, but cycle through the list until you find one that's filled.
+        // Return if you find one, or if you get back to where you started in which case there isn't any.
+        int index = rand.nextInt(boxList.size());
+        int i = index;
+
         ModelRenderer mr;
         do {
-            // try until it's not
-            mr = super.getRandomModelBox(rand);
-        } while (mr.cubeList.isEmpty());
+            mr = boxList.get(index);
+            if (!mr.cubeList.isEmpty()) return mr;
+
+            i = (i + 1) % boxList.size();
+        } while (i != index);
+
         return mr;
     }
 }
