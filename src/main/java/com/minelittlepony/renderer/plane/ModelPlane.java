@@ -1,6 +1,5 @@
-package com.minelittlepony.model;
+package com.minelittlepony.renderer.plane;
 
-import com.minelittlepony.renderer.PlaneRenderer;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.PositionTextureVertex;
 import net.minecraft.client.model.TexturedQuad;
@@ -108,14 +107,5 @@ public class ModelPlane extends ModelBox {
     @Override
     public void render(@Nonnull BufferBuilder renderer, float scale) {
         if (!hidden) this.quad.draw(renderer, scale);
-    }
-
-    public enum Face {
-        EAST,
-        WEST,
-        DOWN,
-        UP,
-        SOUTH,
-        NORTH
     }
 }

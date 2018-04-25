@@ -2,12 +2,12 @@ package com.minelittlepony.model.pony;
 
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.PegasusWings;
-import com.minelittlepony.model.PonyModelConstants;
-import com.minelittlepony.model.PonySnout;
-import com.minelittlepony.model.PonyTail;
-import com.minelittlepony.model.UnicornHorn;
-import com.minelittlepony.renderer.PlaneRenderer;
+import com.minelittlepony.model.components.PegasusWings;
+import com.minelittlepony.model.components.PonySnout;
+import com.minelittlepony.model.components.PonyTail;
+import com.minelittlepony.model.components.UnicornHorn;
+import com.minelittlepony.renderer.plane.PlaneRenderer;
+
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
@@ -17,8 +17,9 @@ import net.minecraft.util.math.MathHelper;
 
 import static net.minecraft.client.renderer.GlStateManager.popMatrix;
 import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
+import static com.minelittlepony.model.PonyModelConstants.*;
 
-public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConstants {
+public class ModelPlayerPony extends AbstractPonyModel {
 
     private final boolean smallArms;
     public boolean rainboom;
@@ -143,7 +144,6 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         this.bipedCape.rotationPointY = isSneak ? 2 : isRiding ? -4 : 0;
 
         this.snout.setGender(this.metadata.getGender());
-        this.snout.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
         this.wings.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
     }
 
@@ -477,7 +477,8 @@ public class ModelPlayerPony extends AbstractPonyModel implements PonyModelConst
         if (leftArm == ArmPose.BOW_AND_ARROW || rightArm == ArmPose.BOW_AND_ARROW) {
 
             if (this.metadata.hasMagic()) {
-                aimBowPony(unicornArmRight, tick, true);
+                if (rightArm == ArmPose.BOW_AND_ARROW) aimBowPony(unicornArmRight, tick, true);
+                if (leftArm == ArmPose.BOW_AND_ARROW) aimBowPony(unicornArmLeft, tick, false);
             } else {
                 if (rightArm == ArmPose.BOW_AND_ARROW) aimBowPony(bipedRightArm, tick, false);
                 if (leftArm == ArmPose.BOW_AND_ARROW) aimBowPony(bipedLeftArm, tick, false);

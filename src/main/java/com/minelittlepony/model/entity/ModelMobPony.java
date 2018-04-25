@@ -1,11 +1,19 @@
-package com.minelittlepony.model.pony.armor;
+package com.minelittlepony.model.entity;
 
+import static com.minelittlepony.model.PonyModelConstants.*;
+
+import com.minelittlepony.model.pony.ModelPlayerPony;
+
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
-import static com.minelittlepony.model.PonyModelConstants.*;
 
-public class ModelZombiePonyArmor extends ModelPonyArmor {
+public class ModelMobPony extends ModelPlayerPony {
+
+    public ModelMobPony() {
+        super(false);
+    }
 
     @Override
     protected void rotateLegs(float move, float swing, float tick, Entity entity) {
@@ -13,8 +21,10 @@ public class ModelZombiePonyArmor extends ModelPonyArmor {
         float leftArmRotateAngleX;
         float rightLegRotateAngleX;
         float leftLegRotateAngleX;
+        
         float var8;
         float var9;
+        
         if (this.isFlying && this.metadata.getRace().hasWings() || entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isElytraFlying()) {
             if (this.rainboom) {
                 rightArmRotateAngleX = ROTATE_270;
@@ -39,10 +49,10 @@ public class ModelZombiePonyArmor extends ModelPonyArmor {
             float laQuad = 3.1415927F * var8;
             float rlQuad = 3.1415927F * var8 * 0.2F;
             float llQuad = 3.1415927F * var8 * -0.4F;
-            rightArmRotateAngleX = MathHelper.cos(move * 0.6662F + 3.1415927F + var9) * 0.45F * swing;
-            leftArmRotateAngleX = MathHelper.cos(move * 0.6662F + laQuad) * 0.45F * swing;
-            rightLegRotateAngleX = MathHelper.cos(move * 0.6662F + rlQuad) * 0.45F * swing;
-            leftLegRotateAngleX = MathHelper.cos(move * 0.6662F + 3.1415927F + llQuad) * 0.45F * swing;
+            rightArmRotateAngleX = MathHelper.cos(move * 0.6662F + 3.1415927F + var9) * 0.6F * swing;
+            leftArmRotateAngleX = MathHelper.cos(move * 0.6662F + laQuad) * 0.6F * swing;
+            rightLegRotateAngleX = MathHelper.cos(move * 0.6662F + rlQuad) * 0.6F * swing;
+            leftLegRotateAngleX = MathHelper.cos(move * 0.6662F + 3.1415927F + llQuad) * 0.6F * swing;
             this.bipedRightArm.rotateAngleY = 0.0F;
             this.steveRightArm.rotateAngleY = 0.0F;
             this.unicornArmRight.rotateAngleY = 0.0F;
@@ -53,7 +63,7 @@ public class ModelZombiePonyArmor extends ModelPonyArmor {
 
         this.bipedRightArm.rotateAngleX = rightArmRotateAngleX;
         this.steveRightArm.rotateAngleX = rightArmRotateAngleX;
-        this.unicornArmRight.rotateAngleX = 0.0F;
+        this.unicornArmRight.rotateAngleX = rightArmRotateAngleX;
         this.bipedLeftArm.rotateAngleX = leftArmRotateAngleX;
         this.bipedRightLeg.rotateAngleX = rightLegRotateAngleX;
         this.bipedLeftLeg.rotateAngleX = leftLegRotateAngleX;
@@ -61,38 +71,43 @@ public class ModelZombiePonyArmor extends ModelPonyArmor {
         this.steveRightArm.rotateAngleZ = 0.0F;
         this.unicornArmRight.rotateAngleZ = 0.0F;
         this.bipedLeftArm.rotateAngleZ = 0.0F;
-        if (this.rightArmPose == ArmPose.EMPTY) {
-            var8 = MathHelper.sin(this.swingProgress * 3.1415927F);
-            var9 = MathHelper.sin((1.0F - (1.0F - this.swingProgress) * (1.0F - this.swingProgress)) * 3.1415927F);
-            if (MathHelper.sin(move / 20.0F) < 0.0F) {
-                this.bipedRightArm.rotateAngleZ = 0.0F;
-                this.bipedRightArm.rotateAngleY = 0.1F - var8 * 0.6F;
-                this.bipedRightArm.rotateAngleX = -1.5707964F;
-                this.bipedRightArm.rotateAngleX -= var8 * 1.2F - var9 * 0.4F;
-                this.bipedRightArm.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
-                this.bipedRightArm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.1F;
-            } else {
-                this.bipedLeftArm.rotateAngleZ = 0.0F;
-                this.bipedLeftArm.rotateAngleY = -(0.1F - var8 * 0.6F);
-                this.bipedLeftArm.rotateAngleX = -1.5707964F;
-                this.bipedLeftArm.rotateAngleX -= var8 * 1.2F - var9 * 0.4F;
-                this.bipedLeftArm.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
-                this.bipedLeftArm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.1F;
-            }
+        
+        var8 = MathHelper.sin(this.swingProgress * (float)Math.PI);
+        var9 = MathHelper.sin((1.0F - (1.0F - this.swingProgress) * (1.0F - this.swingProgress)) * 3.1415927F);
+        
+        rotateRightArm(var8, var9, move, tick);
+        rotateLeftArm(var8, var9, move, tick);
+    }
+    
+    protected void rotateRightArm(float var8, float var9, float move, float tick) {
+        if (this.rightArmPose == ArmPose.EMPTY) return;
+        
+        if (!this.metadata.hasMagic()) {
+            rotateArmHolding(bipedRightArm, 1, var8, var9, tick);
+        } else {
+            this.unicornArmRight.setRotationPoint(-7, 12, -2);
+            rotateArmHolding(unicornArmRight, 1, var8, var9, tick);
         }
-
-        this.syncLegs();
     }
 
-    @Override
-    protected void fixSpecialRotationPoints(float move) {
-        if (this.rightArmPose == ArmPose.EMPTY) {
-            if (MathHelper.sin(move / 20.0F) < 0.0F) {
-                shiftRotationPoint(this.bipedRightArm, 0.5F, 1.5F, 3.0F);
-            } else {
-                shiftRotationPoint(this.bipedLeftArm, -0.5F, 1.5F, 3.0F);
-            }
-        }
+    protected static void rotateArmHolding(ModelRenderer arm, float direction, float var8, float var9, float tick) {
+        arm.rotateAngleZ = 0.0F;
+        arm.rotateAngleY = direction * (0.1F - var8 * 0.6F);
+        arm.rotateAngleX = -1.5707964F;
+        arm.rotateAngleX -= var8 * 1.2F - var9 * 0.4F;
+        arm.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
+        arm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.1F;
+    }
+    
+    
+    protected void rotateLeftArm(float var8, float var9, float move, float tick) {
+        if (this.leftArmPose == ArmPose.EMPTY) return;
 
+        if (!this.metadata.hasMagic()) {
+            rotateArmHolding(bipedLeftArm, 1, var8, var9, tick);
+        } else {
+            this.unicornArmRight.setRotationPoint(-7, 12, -2);
+            rotateArmHolding(unicornArmLeft, 1, var8, var9, tick);
+        }
     }
 }

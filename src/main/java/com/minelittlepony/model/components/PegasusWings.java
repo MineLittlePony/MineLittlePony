@@ -1,10 +1,14 @@
-package com.minelittlepony.model;
+package com.minelittlepony.model.components;
+
+import com.minelittlepony.model.AbstractPonyModel;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
-public class PegasusWings extends ModelBase implements PonyModelConstants {
+import static com.minelittlepony.model.PonyModelConstants.*;
+
+public class PegasusWings extends ModelBase {
 
     private final AbstractPonyModel pony;
 

@@ -1,16 +1,12 @@
-package com.minelittlepony.renderer;
+package com.minelittlepony.renderer.plane;
 
-import com.minelittlepony.model.ModelPlane;
-import com.minelittlepony.model.ModelPlane.Face;
+import com.minelittlepony.renderer.BasePonyRenderer;
+
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
 
-@SuppressWarnings("unused")
-public class PlaneRenderer extends ModelRenderer {
+public class PlaneRenderer extends BasePonyRenderer<PlaneRenderer> {
 
     public boolean mirrory, mirrorz;
-
-    private int textureOffsetX, textureOffsetY;
 
     public PlaneRenderer(ModelBase model) {
         super(model);
@@ -20,16 +16,8 @@ public class PlaneRenderer extends ModelRenderer {
         super(model, x, y);
     }
 
-    @Override
-    public PlaneRenderer setTextureOffset(int x, int y) {
-        this.textureOffsetX = x;
-        this.textureOffsetY = y;
-        super.setTextureOffset(x, y);
-        return this;
-    }
-
     private void addPlane(float offX, float offY, float offZ, int width, int height, int depth, float scale, Face face) {
-        this.cubeList.add(new ModelPlane(this, this.textureOffsetX, this.textureOffsetY, offX, offY, offZ, width, height, depth, scale, face));
+        this.cubeList.add(new ModelPlane(this, textureOffsetX, textureOffsetY, offX, offY, offZ, width, height, depth, scale, face));
     }
 
     public void addTopPlane(float offX, float offY, float offZ, int width, int depth, float scale) {

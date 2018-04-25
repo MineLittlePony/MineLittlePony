@@ -1,9 +1,11 @@
 package com.minelittlepony.model.pony;
 
-import com.minelittlepony.renderer.PlaneRenderer;
+import com.minelittlepony.renderer.plane.PlaneRenderer;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.util.math.MathHelper;
+import static com.minelittlepony.model.PonyModelConstants.*;
 
 public class ModelVillagerPony extends ModelPlayerPony {
 

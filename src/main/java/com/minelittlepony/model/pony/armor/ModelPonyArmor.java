@@ -5,6 +5,8 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
+import static com.minelittlepony.model.PonyModelConstants.*;
+
 public class ModelPonyArmor extends ModelPlayerPony {
 
     public ModelRenderer Bodypiece;

@@ -1,16 +1,14 @@
-package com.minelittlepony.model;
+package com.minelittlepony.model.components;
 
 import com.minelittlepony.PonyGender;
-import com.minelittlepony.renderer.PlaneRenderer;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.entity.Entity;
+import com.minelittlepony.model.AbstractPonyModel;
+import com.minelittlepony.renderer.plane.PlaneRenderer;
 
-public class PonySnout extends ModelBase implements PonyModelConstants {
+import static com.minelittlepony.model.PonyModelConstants.*;
 
-    private PonyGender gender;
+public class PonySnout {
 
-    private PlaneRenderer mare;
-    private PlaneRenderer stallion;
+    private PlaneRenderer mare, stallion;
 
     public PonySnout(AbstractPonyModel pony, float yOffset, float stretch) {
         mare = new PlaneRenderer(pony);
@@ -41,13 +39,8 @@ public class PonySnout extends ModelBase implements PonyModelConstants {
         pony.bipedHead.addChild(stallion);
     }
 
-    @Override
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
+    public void setGender(PonyGender gender) {
         mare.isHidden = gender != PonyGender.MARE;
         stallion.isHidden = gender != PonyGender.STALLION;
-    }
-
-    public void setGender(PonyGender gender) {
-        this.gender = gender;
     }
 }

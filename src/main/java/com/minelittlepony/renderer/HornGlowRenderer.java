@@ -1,51 +1,44 @@
 package com.minelittlepony.renderer;
 
+import static net.minecraft.client.renderer.GlStateManager.color;
+
 import com.minelittlepony.model.ModelHornGlow;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.model.TextureOffset;
 
-public class HornGlowRenderer extends ModelRenderer {
+public class HornGlowRenderer extends BasePonyRenderer<HornGlowRenderer> {
 
-    private int textureOffsetX;
-    private int textureOffsetY;
-    private ModelBase baseModel;
-    
-    public HornGlowRenderer(ModelBase par1ModelBase) {
-        super(par1ModelBase);
-        this.baseModel = par1ModelBase;
+    float r, g, b, a = 1;
+
+    public HornGlowRenderer(ModelBase model, int x, int y) {
+        super(model, x, y);
     }
 
-    public HornGlowRenderer(ModelBase par1ModelBase, int par2, int par3) {
-        this(par1ModelBase);
-        this.setTextureSize(par2, par3);
+    public HornGlowRenderer setAlpha(float a) {
+        this.a = a;
 
-    }
-
-    @Override
-    public HornGlowRenderer addBox(String par1Str, float par2, float par3, float par4, int par5, int par6, int par7) {
-        par1Str = this.boxName + "." + par1Str;
-        TextureOffset var8 = this.baseModel.getTextureOffset(par1Str);
-        this.setTextureOffset(var8.textureOffsetX, var8.textureOffsetY);
-        this.cubeList.add((new ModelHornGlow(this, this.textureOffsetX, this.textureOffsetY, par2, par3, par4, par5, par6, par7, 0.0F)).setBoxName(par1Str));
         return this;
     }
 
-    @Override
-    public HornGlowRenderer addBox(float par1, float par2, float par3, int par4, int par5, int par6) {
-        this.cubeList.add(new ModelHornGlow(this, this.textureOffsetX, this.textureOffsetY, par1, par2, par3, par4, par5, par6, 0.0F));
+    public HornGlowRenderer setTint(int tint) {
+        r = (tint >> 16 & 255) / 255.0F;
+        g = (tint >> 8 & 255) / 255.0F;
+        b = (tint & 255) / 255.0F;
+
         return this;
     }
 
-    @Override
-    public void addBox(float par1, float par2, float par3, int par4, int par5, int par6, float par7) {
-        this.cubeList.add(new ModelHornGlow(this, this.textureOffsetX, this.textureOffsetY, par1, par2, par3, par4, par5, par6, par7));
+    public void applyTint(float alpha) {
+        color(r, g, b, alpha);
     }
 
     @Override
-    public ModelRenderer setTextureOffset(int x, int y) {
-        this.textureOffsetX = x;
-        this.textureOffsetY = y;
-        return this;
+    public void addBox(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor) {
+        this.cubeList.add(new ModelHornGlow(this, textureOffsetX, textureOffsetY, offX, offY, offZ, width, height, depth, scaleFactor, a));
+    }
+
+    @Override
+    public void render(float scale) {
+        super.render(scale);
+        color(1, 1, 1, 1);
     }
 }

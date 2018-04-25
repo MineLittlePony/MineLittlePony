@@ -4,6 +4,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
 
+import static com.minelittlepony.model.PonyModelConstants.*;
+
 public class ModelSkeletonPonyArmor extends ModelPonyArmor {
 
     @Override

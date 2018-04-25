@@ -1,9 +1,13 @@
-package com.minelittlepony.model;
+package com.minelittlepony.model.components;
+
+import com.minelittlepony.model.AbstractPonyModel;
 
 import net.minecraft.client.model.ModelRenderer;
 
+import static com.minelittlepony.model.PonyModelConstants.*;
+
 // TODO: Combine each wing into one ModelRenderer with multiple boxes, not multiple ModelRenderers each with one box.
-public class ModelWing implements PonyModelConstants {
+public class ModelWing {
     public ModelRenderer[] folded = new ModelRenderer[3],
                            extended = new ModelRenderer[6];
 
