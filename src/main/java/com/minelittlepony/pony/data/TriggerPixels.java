@@ -2,11 +2,6 @@ package com.minelittlepony.pony.data;
 
 import java.awt.image.BufferedImage;
 
-import com.minelittlepony.PonyGender;
-import com.minelittlepony.PonyRace;
-import com.minelittlepony.PonySize;
-import com.minelittlepony.TailLengths;
-
 public enum TriggerPixels {
     RACE(PonyRace.HUMAN, 0, 0),
     TAIL(TailLengths.FULL, 1, 0),

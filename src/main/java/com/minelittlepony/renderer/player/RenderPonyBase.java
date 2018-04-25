@@ -1,12 +1,12 @@
 package com.minelittlepony.renderer.player;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.Pony;
 import com.minelittlepony.ducks.IRenderManager;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.PlayerModel;
 import com.minelittlepony.model.pony.ModelPlayerPony;
+import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.renderer.layer.LayerEntityOnPonyShoulder;
 import com.minelittlepony.renderer.layer.LayerHeldPonyItem;
 import com.minelittlepony.renderer.layer.LayerPonyArmor;

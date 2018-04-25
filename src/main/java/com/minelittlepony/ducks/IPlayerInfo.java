@@ -1,6 +1,6 @@
 package com.minelittlepony.ducks;
 
-import com.minelittlepony.Pony;
+import com.minelittlepony.pony.data.Pony;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;

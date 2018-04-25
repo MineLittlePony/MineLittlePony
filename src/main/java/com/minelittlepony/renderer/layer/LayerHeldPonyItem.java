@@ -1,11 +1,11 @@
 package com.minelittlepony.renderer.layer;
 
-import com.minelittlepony.IPonyData;
 import com.minelittlepony.ducks.IRenderItem;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.pony.ModelPlayerPony;
+import com.minelittlepony.pony.data.IPonyData;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;

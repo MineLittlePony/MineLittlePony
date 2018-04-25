@@ -1,6 +1,7 @@
 package com.minelittlepony;
 
 import com.google.gson.annotations.Expose;
+import com.minelittlepony.pony.data.PonyLevel;
 import com.mumfrey.liteloader.modconfig.ConfigStrategy;
 import com.mumfrey.liteloader.modconfig.Exposable;
 import com.mumfrey.liteloader.modconfig.ExposableOptions;

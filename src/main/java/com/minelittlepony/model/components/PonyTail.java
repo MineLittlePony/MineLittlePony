@@ -1,12 +1,13 @@
 package com.minelittlepony.model.components;
 
-import com.minelittlepony.TailLengths;
 import com.minelittlepony.renderer.plane.PlaneRenderer;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.util.math.MathHelper;
 
 import static com.minelittlepony.model.PonyModelConstants.*;
+
+import com.minelittlepony.pony.data.TailLengths;
 
 public class PonyTail extends PlaneRenderer {
     

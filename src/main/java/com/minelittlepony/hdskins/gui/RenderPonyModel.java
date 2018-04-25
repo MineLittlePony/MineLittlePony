@@ -1,11 +1,11 @@
 package com.minelittlepony.hdskins.gui;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.Pony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.ModelPonyElytra;
 import com.minelittlepony.model.PlayerModel;
+import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.renderer.layer.AbstractPonyLayer;
 import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
 import net.minecraft.client.model.ModelPlayer;

@@ -1,6 +1,7 @@
-package com.minelittlepony;
+package com.minelittlepony.pony.data;
 
 import com.google.common.base.MoreObjects;
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IDownloadImageData;
 import com.minelittlepony.model.PlayerModel;
 import com.voxelmodpack.hdskins.DynamicTextureImage;

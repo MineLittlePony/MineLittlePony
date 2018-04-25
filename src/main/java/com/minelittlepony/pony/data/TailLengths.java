@@ -1,6 +1,4 @@
-package com.minelittlepony;
-
-import com.minelittlepony.pony.data.ITriggerPixelMapped;
+package com.minelittlepony.pony.data;
 
 public enum TailLengths implements ITriggerPixelMapped<TailLengths> {
 

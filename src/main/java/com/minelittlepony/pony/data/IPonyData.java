@@ -1,4 +1,4 @@
-package com.minelittlepony;
+package com.minelittlepony.pony.data;
 
 import net.minecraft.client.resources.data.IMetadataSection;
 

@@ -1,6 +1,6 @@
 package com.minelittlepony.model;
 
-import com.minelittlepony.IPonyData;
+import com.minelittlepony.pony.data.IPonyData;
 
 public abstract class AbstractArmor {
 

@@ -2,7 +2,7 @@ package com.minelittlepony.gui;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyConfig;
-import com.minelittlepony.PonyLevel;
+import com.minelittlepony.pony.data.PonyLevel;
 import com.mumfrey.liteloader.client.gui.GuiCheckbox;
 import com.mumfrey.liteloader.core.LiteLoader;
 import net.minecraft.client.gui.GuiButton;

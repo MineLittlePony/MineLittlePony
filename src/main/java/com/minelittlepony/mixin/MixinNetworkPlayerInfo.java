@@ -7,9 +7,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.Pony;
 import com.minelittlepony.PonyManager;
 import com.minelittlepony.ducks.IPlayerInfo;
+import com.minelittlepony.pony.data.Pony;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.client.network.NetworkPlayerInfo;

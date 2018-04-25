@@ -1,7 +1,7 @@
-package com.minelittlepony;
+package com.minelittlepony.pony.data;
 
 import com.google.common.base.MoreObjects;
-import com.minelittlepony.pony.data.TriggerPixels;
+import com.minelittlepony.MineLittlePony;
 
 import java.awt.image.BufferedImage;
 import javax.annotation.concurrent.Immutable;

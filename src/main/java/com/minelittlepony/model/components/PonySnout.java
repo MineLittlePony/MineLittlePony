@@ -1,7 +1,7 @@
 package com.minelittlepony.model.components;
 
-import com.minelittlepony.PonyGender;
 import com.minelittlepony.model.AbstractPonyModel;
+import com.minelittlepony.pony.data.PonyGender;
 import com.minelittlepony.renderer.plane.PlaneRenderer;
 
 import static com.minelittlepony.model.PonyModelConstants.*;

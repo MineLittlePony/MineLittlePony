@@ -1,4 +1,4 @@
-package com.minelittlepony;
+package com.minelittlepony.pony.data;
 
 public enum PonyLevel {
 

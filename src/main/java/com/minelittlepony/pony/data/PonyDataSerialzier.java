@@ -1,4 +1,4 @@
-package com.minelittlepony;
+package com.minelittlepony.pony.data;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;

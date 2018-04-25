@@ -4,6 +4,8 @@ import com.google.common.collect.Maps;
 import com.minelittlepony.gui.PonySettingPanel;
 import com.minelittlepony.hdskins.gui.GuiSkinsMineLP;
 import com.minelittlepony.model.PMAPI;
+import com.minelittlepony.pony.data.IPonyData;
+import com.minelittlepony.pony.data.PonyDataSerialzier;
 import com.minelittlepony.renderer.RenderPonyEvoker;
 import com.minelittlepony.renderer.RenderPonyIllusionIllager;
 import com.minelittlepony.renderer.RenderPonyPigman;

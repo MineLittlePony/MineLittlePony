@@ -1,6 +1,4 @@
-package com.minelittlepony;
-
-import com.minelittlepony.pony.data.ITriggerPixelMapped;
+package com.minelittlepony.pony.data;
 
 public enum PonySize implements ITriggerPixelMapped<PonySize> {
     NORMAL(0, 0.4f, 1f),

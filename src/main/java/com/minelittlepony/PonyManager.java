@@ -6,6 +6,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.minelittlepony.ducks.IPlayerInfo;
 import com.minelittlepony.model.PMAPI;
+import com.minelittlepony.pony.data.Pony;
+import com.minelittlepony.pony.data.PonyLevel;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.resources.DefaultPlayerSkin;

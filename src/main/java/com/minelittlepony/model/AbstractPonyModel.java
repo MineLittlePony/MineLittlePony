@@ -1,9 +1,9 @@
 package com.minelittlepony.model;
 
-import com.minelittlepony.IPonyData;
-import com.minelittlepony.PonyData;
-import com.minelittlepony.PonySize;
 import com.minelittlepony.model.pony.ModelPlayerPony;
+import com.minelittlepony.pony.data.IPonyData;
+import com.minelittlepony.pony.data.PonyData;
+import com.minelittlepony.pony.data.PonySize;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
