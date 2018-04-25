@@ -1,14 +1,19 @@
 package com.minelittlepony;
 
-public enum PonySize {
-    NORMAL(0.4f, 1f),
-    LARGE(0.5f, 0.8f),
-    FOAL(0.25f, 0.8f),
-    TALL(0.45f, 1f);
+import com.minelittlepony.pony.data.ITriggerPixelMapped;
 
+public enum PonySize implements ITriggerPixelMapped<PonySize> {
+    NORMAL(0, 0.4f, 1f),
+    LARGE(0xce3254, 0.5f, 0.8f),
+    FOAL(0xffbe53, 0.25f, 0.8f),
+    TALL(0x534b76, 0.45f, 1f);
+
+    private int triggerValue;
+    
     private float shadowSize, scale;
 
-    PonySize(float shadowSz, float scaleF) {
+    PonySize(int pixel, float shadowSz, float scaleF) {
+        triggerValue = pixel;
         shadowSize = shadowSz;
         scale = scaleF;
     }
@@ -19,5 +24,10 @@ public enum PonySize {
 
     public float getScaleFactor() {
         return scale;
+    }
+
+    @Override
+    public int getTriggerPixel() {
+        return triggerValue;
     }
 }

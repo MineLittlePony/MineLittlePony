@@ -1,10 +1,23 @@
 package com.minelittlepony;
 
-public enum TailLengths {
+import com.minelittlepony.pony.data.ITriggerPixelMapped;
 
-    STUB,
-    QUARTER,
-    HALF,
-    THREE_QUARTERS,
-    FULL;
+public enum TailLengths implements ITriggerPixelMapped<TailLengths> {
+
+    STUB(0x425844),
+    QUARTER(0xd19fe4),
+    HALF(0x534b76),
+    THREE_QUARTERS(0x8a6b7f),
+    FULL(0);
+    
+    private int triggerValue;
+    
+    TailLengths(int pixel) {
+        triggerValue = pixel;
+    }
+    
+    @Override
+    public int getTriggerPixel() {
+        return triggerValue;
+    }
 }
