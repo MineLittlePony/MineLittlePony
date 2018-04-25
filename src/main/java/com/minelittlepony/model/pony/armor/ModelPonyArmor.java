@@ -76,10 +76,10 @@ public class ModelPonyArmor extends ModelPlayerPony {
 
     @Override
     protected void setHead(float posX, float posY, float posZ) {
-        setRotationPoint(this.bipedHead, posX, posY, posZ);
-        setRotationPoint(this.bipedHeadwear, posX, posY, posZ);
-        setRotationPoint(this.extHead[0], posX, posY, posZ);
-        setRotationPoint(this.extHead[1], posX, posY, posZ);
+        this.bipedHead.setRotationPoint(posX, posY, posZ);
+        this.bipedHeadwear.setRotationPoint(posX, posY, posZ);
+        this.extHead[0].setRotationPoint(posX, posY, posZ);
+        this.extHead[1].setRotationPoint(posX, posY, posZ);
     }
 
     @Override
@@ -125,10 +125,6 @@ public class ModelPonyArmor extends ModelPlayerPony {
         this.bipedBody.render(this.scale);
         this.Bodypiece.render(this.scale);
         this.extBody.render(this.scale);
-    }
-
-    @Override
-    protected void renderTail() {
     }
 
     @Override

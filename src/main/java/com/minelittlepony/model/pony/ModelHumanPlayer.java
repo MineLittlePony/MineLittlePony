@@ -17,4 +17,14 @@ public class ModelHumanPlayer extends AbstractPonyModel {
     @Override
     public void transform(BodyPart part) {
     }
+
+    @Override
+    protected void initTextures() {
+        
+    }
+
+    @Override
+    protected void initPositions(float yOffset, float stretch) {
+        
+    }
 }

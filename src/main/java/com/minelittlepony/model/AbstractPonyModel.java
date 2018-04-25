@@ -22,17 +22,15 @@ public abstract class AbstractPonyModel extends ModelPlayer {
 
     protected float scale = 0.0625F;
 
-    public ModelRenderer steveLeftArm;
-    public ModelRenderer steveRightArm;
-    public ModelRenderer steveLeftArmwear;
-    public ModelRenderer steveRightArmwear;
-
     public boolean isFlying;
     public boolean isSleeping;
 
     public IPonyData metadata = new PonyData();
     public float motionPitch;
 
+    // TODO: Why so many arms?
+    public ModelRenderer steveLeftArm, steveRightArm,
+                         steveLeftArmwear, steveRightArmwear;
 
     public AbstractPonyModel(boolean arms) {
         super(0, arms);
@@ -47,11 +45,9 @@ public abstract class AbstractPonyModel extends ModelPlayer {
         this.initPositions(yOffset, stretch);
     }
 
-    protected void initTextures() {
-    }
+    protected abstract void initTextures();
 
-    protected void initPositions(float yOffset, float stretch) {
-    }
+    protected abstract void initPositions(float yOffset, float stretch);
 
     @Override
     public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
@@ -72,12 +68,6 @@ public abstract class AbstractPonyModel extends ModelPlayer {
 
     protected boolean doCancelRender() {
         return false;
-    }
-
-    public static void setRotationPoint(ModelRenderer aRenderer, float setX, float setY, float setZ) {
-        aRenderer.rotationPointX = setX;
-        aRenderer.rotationPointY = setY;
-        aRenderer.rotationPointZ = setZ;
     }
 
     public static void shiftRotationPoint(ModelRenderer aRenderer, float shiftX, float shiftY, float shiftZ) {
@@ -231,6 +221,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
         }
     }
 
+    // TODO: This has potential to create an infinite loop.
     @Override
     public ModelRenderer getRandomModelBox(Random rand) {
         // empty lists cause problems
