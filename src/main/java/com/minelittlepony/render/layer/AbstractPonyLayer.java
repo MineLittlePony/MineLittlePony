@@ -17,8 +17,7 @@ public abstract class AbstractPonyLayer<T extends EntityLivingBase> implements L
         this.layer = humanLayer;
     }
 
-    public final void doRenderLayer(T entity, float limbSwing, float limbSwingAmount, float ticks, float ageInTicks,
-            float netHeadYaw, float headPitch, float scale) {
+    public final void doRenderLayer(T entity, float limbSwing, float limbSwingAmount, float ticks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         ModelBase model = renderer.getMainModel();
         if (model instanceof ModelHumanPlayer) {
             // render the human layer

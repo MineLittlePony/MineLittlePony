@@ -73,8 +73,6 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
       super.doRender(player, x, y, z, entityYaw, partialTicks);
   }
   
-  
-  // TODO: Why are there two sets of arms?
   @Override
   public void renderRightArm(AbstractClientPlayer player) {
       updateModel(player);

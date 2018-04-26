@@ -33,12 +33,13 @@ public class LayerHeldPonyItem extends AbstractPonyLayer<EntityLivingBase> {
     }
 
     @Override
-    public void doPonyRender(EntityLivingBase entity, float p_177141_2_, float p_177141_3_,
-            float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
+    public void doPonyRender(EntityLivingBase entity, float p_177141_2_, float p_177141_3_, float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
         ModelBase model = getRenderer().getMainModel();
         boolean mainRight = entity.getPrimaryHand() == EnumHandSide.RIGHT;
+        
         ItemStack itemMain = entity.getHeldItemMainhand();
         ItemStack itemOff = entity.getHeldItemOffhand();
+        
         ItemStack left = mainRight ? itemOff : itemMain;
         ItemStack right = mainRight ? itemMain : itemOff;
 
@@ -70,14 +71,14 @@ public class LayerHeldPonyItem extends AbstractPonyLayer<EntityLivingBase> {
                 GlStateManager.translate(0.0F, 0.2F, 0.0F);
             }
 
-            GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
-            GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(-90.0F, 1, 0, 0);
+            GlStateManager.rotate(180.0F, 0, 1, 0);
             boolean isUnicorn = isUnicorn(this.getRenderer().getMainModel());
             boolean isLeft = hand == EnumHandSide.LEFT;
             if (isUnicorn) {
-                GlStateManager.translate(isLeft ? -0.6F : 0.1F, 1, -.5);
+                GlStateManager.translate(isLeft ? -0.6F : 0.1F, 1, -0.5F);
             } else {
-                GlStateManager.translate(0.0425F, 0.125F, -1.00F);
+                GlStateManager.translate(0.0425F, 0.125F, -1);
             }
             Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, drop, transform, isLeft);
 

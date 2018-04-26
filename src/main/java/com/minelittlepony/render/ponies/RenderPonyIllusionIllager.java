@@ -54,14 +54,14 @@ public class RenderPonyIllusionIllager extends RenderPonyMob<EntityIllusionIllag
     @Override
     public void doRender(EntityIllusionIllager entity, double x, double y, double z, float yaw, float partialTicks) {
         if (entity.isInvisible()) {
-            Vec3d[] avec3d = entity.getRenderLocations(partialTicks);
+            Vec3d[] vects = entity.getRenderLocations(partialTicks);
             float f = this.handleRotationFloat(entity, partialTicks);
 
-            for (int i = 0; i < avec3d.length; ++i) {
+            for (int i = 0; i < vects.length; ++i) {
                 super.doRender(entity,
-                        x + avec3d[i].x + (double) MathHelper.cos((float) i + f * 0.5F) * 0.025D,
-                        y + avec3d[i].y + (double) MathHelper.cos((float) i + f * 0.75F) * 0.0125D,
-                        z + avec3d[i].z + (double) MathHelper.cos((float) i + f * 0.7F) * 0.025D,
+                        x + vects[i].x + (double) MathHelper.cos((float) i + f * 0.5F) * 0.025D,
+                        y + vects[i].y + (double) MathHelper.cos((float) i + f * 0.75F) * 0.0125D,
+                        z + vects[i].z + (double) MathHelper.cos((float) i + f * 0.7F) * 0.025D,
                         yaw, partialTicks);
             }
         } else {
@@ -70,7 +70,7 @@ public class RenderPonyIllusionIllager extends RenderPonyMob<EntityIllusionIllag
     }
 
     @Override
-    protected boolean isVisible(EntityIllusionIllager p_193115_1_) {
+    protected boolean isVisible(EntityIllusionIllager entity) {
         return true;
     }
 }

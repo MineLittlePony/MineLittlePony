@@ -30,11 +30,10 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<EntityPlayer> {
         this.rm = rm;
     }
 
-    public void doPonyRender(EntityPlayer player, float limbSwing, float limbSwingAmount, float partialTicks,
-                             float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void doPonyRender(EntityPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
 
         GlStateManager.enableRescaleNormal();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1, 1, 1, 1);
 
         NBTTagCompound leftTag = player.getLeftShoulderEntity();
 
@@ -71,9 +70,7 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<EntityPlayer> {
         model.transform(BodyPart.BODY);
 
         // render on the haunches
-        float f = .25F;
-        float f1 = left ? 0.25F : -0.25F;
-        GlStateManager.translate(f1, f, 0.35F);
+        GlStateManager.translate(left ? 0.25F : -0.25F, 0.25F, 0.35F);
         GlStateManager.scale(1, -1, -1);
         GlStateManager.rotate(5 * (left ? -1 : 1), 0, 0, 1);
 

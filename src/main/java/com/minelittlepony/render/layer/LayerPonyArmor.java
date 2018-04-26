@@ -163,9 +163,9 @@ public class LayerPonyArmor extends AbstractPonyLayer<EntityLivingBase> {
         }
     }
 
-    private void renderEnchantment(EntityLivingBase entitylivingbaseIn, ModelBase modelbaseIn, float p_177183_3_, float p_177183_4_, float p_177183_5_,
+    private void renderEnchantment(EntityLivingBase entity, ModelBase model, float p_177183_3_, float p_177183_4_, float p_177183_5_,
                                    float p_177183_6_, float p_177183_7_, float p_177183_8_, float p_177183_9_) {
-        float f7 = entitylivingbaseIn.ticksExisted + p_177183_5_;
+        float f7 = entity.ticksExisted + p_177183_5_;
         this.getRenderer().bindTexture(ENCHANTED_ITEM_GLINT_RES);
         GlStateManager.enableBlend();
         GlStateManager.depthFunc(514);
@@ -185,7 +185,7 @@ public class LayerPonyArmor extends AbstractPonyLayer<EntityLivingBase> {
             GlStateManager.rotate(30.0F - i * 60.0F, 0.0F, 0.0F, 1.0F);
             GlStateManager.translate(0.0F, f7 * (0.001F + i * 0.003F) * 20.0F, 0.0F);
             GlStateManager.matrixMode(5888);
-            modelbaseIn.render(entitylivingbaseIn, p_177183_3_, p_177183_4_, p_177183_6_, p_177183_7_, p_177183_8_, p_177183_9_);
+            model.render(entity, p_177183_3_, p_177183_4_, p_177183_6_, p_177183_7_, p_177183_8_, p_177183_9_);
         }
 
         GlStateManager.matrixMode(5890);
