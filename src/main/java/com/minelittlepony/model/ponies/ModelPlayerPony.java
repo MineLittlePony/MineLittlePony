@@ -107,10 +107,12 @@ public class ModelPlayerPony extends AbstractPonyModel {
 
         animateWears();
 
-        bipedCape.rotationPointY = isSneak ? 2 : isRiding ? -4 : 0;
-
-        snout.setGender(metadata.getGender());
-        wings.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
+        if (bipedCape != null) {
+            bipedCape.rotationPointY = isSneak ? 2 : isRiding ? -4 : 0;
+    
+            snout.setGender(metadata.getGender());
+            wings.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
+        }
     }
     
     protected void adjustBodyRiding() {
@@ -456,7 +458,6 @@ public class ModelPlayerPony extends AbstractPonyModel {
         pushMatrix();
         transform(BodyPart.BODY);
         renderBody(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-        tail.render(metadata.getTail(), scale);
         popMatrix();
 
         pushMatrix();
@@ -485,6 +486,7 @@ public class ModelPlayerPony extends AbstractPonyModel {
         upperTorso.render(scale);
         bipedBody.postRender(scale);
         wings.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+        tail.render(metadata.getTail(), scale);
     }
 
     protected void renderLegs() {
