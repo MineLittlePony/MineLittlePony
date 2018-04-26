@@ -35,13 +35,13 @@ public class PonyTail extends PlaneRenderer {
         } else if (theModel.isRiding) {
             rotationPointZ = 13;
             rotationPointY = 3;
-            rotateAngleX = (float) (Math.PI * 0.2);
+            rotateAngleX = PI / 5;
         } else {
             setRotationPoint(TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_NOTSNEAK);
             if (rainboom) {
-                rotateAngleX = ROTATE_90 + 0.1F * MathHelper.sin(limbSwing);
+                rotateAngleX = ROTATE_90 + MathHelper.sin(limbSwing) / 10;
             } else {
-                rotateAngleX = 0.5F * limbSwingAmount;
+                rotateAngleX = limbSwingAmount / 2;
             }
 
             if (!rainboom) {
@@ -50,17 +50,17 @@ public class PonyTail extends PlaneRenderer {
         }
 
         if (rainboom) {
-            rotationPointY += 6.0F;
+            rotationPointY += 6;
             rotationPointZ++;
         }
     }
 
     public void swingZ(boolean rainboom, float move, float swing) {
-        rotateAngleZ = rainboom ? 0 : MathHelper.cos(move * 0.8F) * 0.2F * swing;
+        rotateAngleZ = rainboom ? 0 : MathHelper.cos(move * 0.8F) * 0.2f * swing;
     }
 
     public void swingX(float tick) {
-        float sinTickFactor = MathHelper.sin(tick * 0.067F) * 0.05F;
+        float sinTickFactor = MathHelper.sin(tick * 0.067f) * 0.05f;
         rotateAngleX += sinTickFactor;
         rotateAngleY += sinTickFactor;
     }
@@ -94,16 +94,18 @@ public class PonyTail extends PlaneRenderer {
             int texX = (index % 2) * 4;
             
             if (index == 0) {
-                setTextureOffset(32, 0).addTopPlane(-2, 0, 2, 4, 4, stretch);
+                tex(32, 0).addTopPlane(-2, 0, 2, 4, 4, stretch);
             }
             
-            setTextureOffset(36, texX).addEastPlane(2, 0, 2, 4, 4, stretch);
-            addWestPlane(-2, 0, 2, 4, 4, stretch);
-            setTextureOffset(32, texX).addBackPlane(-2, 0, 2, 4, 4, stretch);
-            addFrontPlane(-2, 0, 6, 4, 4, stretch);
-            setTextureOffset(32, 0).addBottomPlane(-2, 4, 2, 4, 4, stretch);
-            
-            setRotationPoint(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
+            around(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
+            tex(36, texX)
+                .addEastPlane(2, 0, 2, 4, 4, stretch)
+                .addWestPlane(-2, 0, 2, 4, 4, stretch);
+            tex(32, texX)
+                .addBackPlane(-2, 0, 2, 4, 4, stretch)
+                .addFrontPlane(-2, 0, 6, 4, 4, stretch);
+            tex(32, 0)
+                .addBottomPlane(-2, 4, 2, 4, 4, stretch);
         }
     }
 }
