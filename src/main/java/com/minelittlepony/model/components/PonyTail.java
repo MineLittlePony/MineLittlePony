@@ -62,6 +62,7 @@ public class PonyTail extends PlaneRenderer {
     public void swingX(float tick) {
         float sinTickFactor = MathHelper.sin(tick * 0.067F) * 0.05F;
         rotateAngleX += sinTickFactor;
+        rotateAngleY += sinTickFactor;
     }
     
     public void rotateSneak() {
