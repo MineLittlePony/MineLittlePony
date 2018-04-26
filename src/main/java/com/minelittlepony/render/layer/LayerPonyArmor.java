@@ -9,13 +9,13 @@ import com.minelittlepony.model.armour.ModelPonyArmor;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
 import net.minecraft.client.resources.ResourcePackRepository;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EntityEquipmentSlot.Type;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
@@ -42,11 +42,12 @@ public class LayerPonyArmor extends AbstractPonyLayer<EntityLivingBase> {
     @Override
     public void doPonyRender(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float ticks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         pony = ((IRenderPony) getRenderer()).getPlayerModel();
-        renderArmor(entity, limbSwing, limbSwingAmount, ticks, ageInTicks, netHeadYaw, headPitch, scale, EntityEquipmentSlot.FEET);
-        renderArmor(entity, limbSwing, limbSwingAmount, ticks, ageInTicks, netHeadYaw, headPitch, scale, EntityEquipmentSlot.LEGS);
-        renderArmor(entity, limbSwing, limbSwingAmount, ticks, ageInTicks, netHeadYaw, headPitch, scale, EntityEquipmentSlot.CHEST);
-        renderArmor(entity, limbSwing, limbSwingAmount, ticks, ageInTicks, netHeadYaw, headPitch, scale, EntityEquipmentSlot.HEAD);
-
+        
+        for (EntityEquipmentSlot i : EntityEquipmentSlot.values()) {
+            if (i.getSlotType() == Type.ARMOR) {
+                renderArmor(entity, limbSwing, limbSwingAmount, ticks, ageInTicks, netHeadYaw, headPitch, scale, i);
+            }
+        }
     }
 
     private void renderArmor(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, EntityEquipmentSlot armorSlot) {
@@ -134,9 +135,8 @@ public class LayerPonyArmor extends AbstractPonyLayer<EntityLivingBase> {
                 model.bipedLeftArm.showModel = true;
                 model.bipedRightLeg.showModel = !isPony;
                 model.bipedLeftLeg.showModel = !isPony;
-                for (ModelRenderer extLeg : model.extLegs) {
-                    extLeg.showModel = isPony;
-                }
+                model.extLegLeft.showModel = isPony;
+                model.extLegRight.showModel = isPony;
                 break;
             // legs
             case LEGS:
@@ -147,9 +147,8 @@ public class LayerPonyArmor extends AbstractPonyLayer<EntityLivingBase> {
                 model.bipedBody.showModel = !isPony;
                 model.Bodypiece.showModel = !isPony;
                 model.extBody.showModel = isPony;
-                for (ModelRenderer extLeg : model.extLegs) {
-                    extLeg.showModel = isPony;
-                }
+                model.extLegLeft.showModel = isPony;
+                model.extLegRight.showModel = isPony;
                 break;
             // chest
             case CHEST:
@@ -160,9 +159,7 @@ public class LayerPonyArmor extends AbstractPonyLayer<EntityLivingBase> {
             // head
             case HEAD:
                 model.bipedHead.showModel = true;
-                for (ModelRenderer head : model.extHead) {
-                    head.showModel = isPony;
-                }
+                model.extHead.showModel = isPony;
         }
     }
 

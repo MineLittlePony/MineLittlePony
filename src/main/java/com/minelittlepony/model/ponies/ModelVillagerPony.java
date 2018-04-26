@@ -33,7 +33,7 @@ public class ModelVillagerPony extends ModelPlayerPony {
         super.renderBody(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
         if (entityIn instanceof EntityVillager) {
-            this.bipedBody.postRender(this.scale);
+            bipedBody.postRender(this.scale);
             int profession = ((EntityVillager) entityIn).getProfession();
             if (profession < 2) {
                 bag.render(scale);
@@ -43,49 +43,44 @@ public class ModelVillagerPony extends ModelPlayerPony {
                 apron.render(scale);
             }
         }
+        
     }
 
     @Override
     protected void initTextures() {
         super.initTextures();
-        bag = new PlaneRenderer(this, 56, 19).at(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z);
-        apron = new PlaneRenderer(this, 56, 16).at(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z);
-        trinket = new PlaneRenderer(this, 0, 3).at(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z);
+        bag = new PlaneRenderer(this, 56, 19);
+        apron = new PlaneRenderer(this, 56, 16);
+        trinket = new PlaneRenderer(this, 0, 3);
     }
 
     @Override
     protected void initPositions(float yOffset, float stretch) {
         super.initPositions(yOffset, stretch);
         
-        bag.around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        bag.setTextureOffset(56, 29);
-        bag.addWestPlane(-7, -5, -4, 6, 8, stretch);
-        bag.addWestPlane(-4, -5, -4, 6, 8, stretch);
-        bag.addWestPlane( 4, -5, -4, 6, 8, stretch);
-        bag.addWestPlane( 7, -5, -4, 6, 8, stretch);
+        bag.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
+           .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
+           .tex(56, 25).addBackPlane(-7, -5,    -4, 3, 6, stretch) //right bag front
+                       .addBackPlane( 4, -5,    -4, 3, 6, stretch) //left bag front
+           .tex(59, 25).addBackPlane(-7, -5,     4, 3, 6, stretch) //right bag back
+                       .addBackPlane( 5, -5,     4, 3, 6, stretch) //left bag back
+           .tex(56, 29).addWestPlane(-7, -5,    -4, 6, 8, stretch) //right bag outside
+                       .addWestPlane( 7, -5,    -4, 6, 8, stretch) //left bag outside
+                       .addWestPlane(-4, -5,    -4, 6, 8, stretch) //right bag inside
+                       .addWestPlane( 4, -5,    -4, 6, 8, stretch) //left bag inside
+            .tex(56, 31).addTopPlane(-4, -4.5F, -1, 8, 1, stretch) //strap front
+                        .addTopPlane(-4, -4.5F,  0, 8, 1, stretch) //strap back
+           .child(0).tex(56, 16).addTopPlane(2, -5, -2,  8, 3, stretch) //right bag top
+                                .addTopPlane(2, -5, -13, 8, 3, stretch) //left bag top
+                 .tex(56, 22).addBottomPlane(2,  1, -2,  8, 3, stretch) //right bag bottom
+                             .addBottomPlane(2,  1, -13, 8, 3, stretch) //left bag bottom
+                    .rotateAngleY = 4.712389F;
         
-        PlaneRenderer rotatedPieces = new PlaneRenderer(this, 56, 16);
-        rotatedPieces.rotateAngleY = 4.712389F;
-        bag.addChild(rotatedPieces);
-        
-        rotatedPieces.addTopPlane(2, -5, -2, 8, 3, stretch);
-        rotatedPieces.addTopPlane(2, -5, -13, 8, 3, stretch);
-        rotatedPieces.setTextureOffset(56, 22);
-        rotatedPieces.addBottomPlane(2, 1, -2, 8, 3, stretch);
-        
-        bag.setTextureOffset(56, 22);
-        bag.addBottomPlane(2, 1, -13, 8, 3, stretch);
-        bag.setTextureOffset(56, 25);
-        bag.addBackPlane(-7, -5, -4, 3, 6, stretch);
-        bag.addBackPlane( 4, -5, -4, 3, 6, stretch);
-        bag.setTextureOffset(59, 25);
-        bag.addBackPlane(-7, -5, 4, 3, 6, stretch);
-        bag.addBackPlane( 5, -5, 4, 3, 6, stretch);
-        bag.setTextureOffset(56, 31);
-        bag.addTopPlane(-4, -4.5F, -1, 8, 1, stretch);
-        bag.addTopPlane(-4, -4.5F, 0, 8, 1, stretch);
-        
-        apron.around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z).addBackPlane(-4, -4, -9, 8, 10, stretch);
-        trinket.around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z).addBackPlane(-2, -4, -9, 4, 5, stretch);
+        apron.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
+             .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
+             .addBackPlane(-4, -4, -9, 8, 10, stretch);
+        trinket.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
+               .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
+               .addBackPlane(-2, -4, -9, 4, 5, stretch);
     }
 }

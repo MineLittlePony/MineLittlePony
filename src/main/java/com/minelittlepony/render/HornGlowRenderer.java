@@ -33,13 +33,18 @@ public class HornGlowRenderer extends BasePonyRenderer<HornGlowRenderer> {
     }
 
     @Override
-    public void addBox(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor) {
-        this.cubeList.add(new HornGlow(this, textureOffsetX, textureOffsetY, offX, offY, offZ, width, height, depth, scaleFactor, a));
+    public void createBox(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor, boolean mirrored) {
+        cubeList.add(new HornGlow(this, textureOffsetX, textureOffsetY, offX, offY, offZ, width, height, depth, scaleFactor, a));
     }
 
     @Override
     public void render(float scale) {
         super.render(scale);
         color(1, 1, 1, 1);
+    }
+
+    @Override
+    protected HornGlowRenderer copySelf() {
+        return new HornGlowRenderer(baseModel, textureOffsetX, textureOffsetY);
     }
 }

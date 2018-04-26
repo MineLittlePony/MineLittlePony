@@ -3,9 +3,15 @@ package com.minelittlepony.model;
 public final class PonyModelConstants {
 
     public static final float
-        BODY_CENTRE_X = 0.0F,
-        BODY_CENTRE_Y = 8.0F,
-        BODY_CENTRE_Z = 6.0F,
+        PI = (float)Math.PI,
+
+        BODY_CENTRE_X = 0,
+        BODY_CENTRE_Y = 8,
+        BODY_CENTRE_Z = 6,
+
+        NECK_CENTRE_X = BODY_CENTRE_X - 2,
+        NECK_CENTRE_Y = BODY_CENTRE_Y - 6.8f,
+        NECK_CENTRE_Z = BODY_CENTRE_Z - 8.8f,
 
         BODY_ROTATE_ANGLE_X_NOTSNEAK = 0.0F,
         BODY_ROTATE_ANGLE_X_SNEAK = 0.4F,

@@ -1,7 +1,6 @@
 package com.minelittlepony.model;
 
 import com.minelittlepony.model.armour.PonyArmor;
-import com.minelittlepony.model.ponies.ModelPlayerPony;
 import com.minelittlepony.pony.data.IPonyData;
 import com.minelittlepony.pony.data.PonyData;
 import com.minelittlepony.pony.data.PonySize;
@@ -10,6 +9,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.Random;
@@ -17,18 +17,33 @@ import java.util.Random;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
 /**
- * TODO move this into constructor and make separate classes for the races.
+ * TODO: move this into constructor and make separate classes for the races.
  */
 public abstract class AbstractPonyModel extends ModelPlayer {
 
+    /**
+     * The model's current scale.
+     */
     protected float scale = 0.0625F;
 
     public boolean isFlying;
     public boolean isSleeping;
 
+    /**
+     * Associcated pony data.
+     */
     public IPonyData metadata = new PonyData();
+    
+    /**
+     * Vertical pitch whilst flying.
+     */
     public float motionPitch;
-
+    
+    /**
+     * Flag indicating that this model is performing a rainboom (flight).
+     */
+    public boolean rainboom;
+    
     public AbstractPonyModel(boolean arms) {
         super(0, arms);
     }
@@ -40,7 +55,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
      */
     public void init(float yOffset, float stretch) {
         initTextures();
-        this.initPositions(yOffset, stretch);
+        initPositions(yOffset, stretch);
     }
     
     /**
@@ -62,7 +77,6 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
         if (doCancelRender()) {
             super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
-            return;
         }
     }
 
@@ -72,11 +86,36 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     protected boolean doCancelRender() {
         return false;
     }
+    
+    /**
+     * Returns true if this model is on the ground and crouching.
+     */
+    public boolean isCrouching() {
+        return isSneak && !isFlying;
+    }
 
-    public static void shiftRotationPoint(ModelRenderer aRenderer, float shiftX, float shiftY, float shiftZ) {
-        aRenderer.rotationPointX += shiftX;
-        aRenderer.rotationPointY += shiftY;
-        aRenderer.rotationPointZ += shiftZ;
+    /**
+     * Returns true if the given entity can and is flying, or has an elytra.
+     */
+    public boolean isFlying(Entity entity) {
+        return (isFlying && metadata.getRace().hasWings()) ||
+                (entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isElytraFlying());
+    }
+    
+    /**
+     * Returns true if the current model is a child or a child-like foal.
+     */
+    public boolean isChild() {
+        return metadata.getSize() == PonySize.FOAL || isChild;
+    }
+
+    /**
+     * Adjusts the rotation center of the given renderer by the given amounts in each direction.
+     */
+    public static void shiftRotationPoint(ModelRenderer renderer, float x, float y, float z) {
+        renderer.rotationPointX += x;
+        renderer.rotationPointY += y;
+        renderer.rotationPointZ += z;
     }
     
     /**
@@ -105,135 +144,111 @@ public abstract class AbstractPonyModel extends ModelPlayer {
      * FIXME: Too long! Is there a better way to do this?
      */
     public void transform(BodyPart part) {
-        if (this.isRiding) {
-            translate(0.0F, -0.6F, -0.2F);
+        if (isRiding) translate(0, -0.6F, -0.2F);
+
+        if (isSleeping) {
+            rotate(90, 0, 1, 0);
+            rotate(270, 0, 0, 1);
+            rotate(90, 0, 1, 0);
+            rotate(180, 0, 0, 1);
+            rotate(180, 0, 1, 0);
         }
 
-        if (this.isSleeping) {
-            rotate(90.0F, 0.0F, 1.0F, 0.0F);
-            rotate(270.0F, 0.0F, 0.0F, 1.0F);
-            rotate(90.0F, 0.0F, 1.0F, 0.0F);
-            rotate(180.0F, 0.0F, 0.0F, 1.0F);
-            rotate(180.0F, 0.0F, 1.0F, 0.0F);
-        }
-
-        if (this.metadata.getSize() == PonySize.FOAL || isChild) {
-            if (this.isSneak && !this.isFlying) {
-                translate(0.0F, -0.12F, 0.0F);
-            }
-
-            if (this.isSleeping) {
-                translate(0.0F, -1.2F, 0.25F);
-            }
-            if (this.isRiding) {
-                translate(0, -.1, 0);
-            }
-            switch (part) {
-                case NECK:
-                case HEAD:
-                    translate(0.0F, 0.76F, 0.0F);
-                    scale(0.9F, 0.9F, 0.9F);
-                    if (part == BodyPart.HEAD)
-                        break;
-                    if (this.isSneak && !this.isFlying) {
-                        translate(0.0F, -0.01F, 0.15F);
-                    }
-                    break;
-                case BODY:
-                case TAIL:
-                    translate(0.0F, 0.76F, -0.04F);
-                    scale(0.6F, 0.6F, 0.6F);
-                    break;
-                case LEGS:
-                    translate(0.0F, 0.89F, 0.0F);
-                    scale(0.6F, 0.41F, 0.6F);
-                    if (this.isSneak && !this.isFlying) {
-                        translate(0.0F, 0.12F, 0.0F);
-                    }
-
-                    if (this instanceof ModelPlayerPony && ((ModelPlayerPony) this).rainboom) {
-                        translate(0.0F, -0.08F, 0.0F);
-                    }
-
-                    break;
-            }
-
-        } else if (this.metadata.getSize() == PonySize.LARGE) {
-            if (this.isSleeping) {
-                translate(0.0F, -0.7F, 0.2F);
-            }
-
-            switch (part) {
-                case HEAD:
-
-                    translate(0.0F, -0.17F, -0.04F);
-                    if (this.isSleeping) {
-                        translate(0.0F, 0.0F, -0.1F);
-                    }
-
-                    if (this.isSneak && !this.isFlying) {
-                        translate(0.0F, 0.15F, 0.0F);
-                    }
-
-                    break;
-                case NECK:
-                    translate(0.0F, -0.15F, -0.07F);
-                    if (this.isSneak && !this.isFlying) {
-                        translate(0.0F, 0.0F, -0.05F);
-                    }
-
-                    break;
-                case BODY:
-                    translate(0.0F, -0.2F, -0.04F);
-                    scale(1.15F, 1.2F, 1.2F);
-                    break;
-                case TAIL:
-                    translate(0.0F, -0.2F, 0.08F);
-                    break;
-                case LEGS:
-                    translate(0.0F, -0.14F, 0.0F);
-                    scale(1.15F, 1.12F, 1.15F);
-                    break;
-            }
-        } else if (this.metadata.getSize() == PonySize.TALL) {
-            if (this.isSleeping) {
-                translate(0.0F, -0.65F, 0.25F);
-            }
-
-            switch (part) {
-                case HEAD:
-                    translate(0.0F, -0.15F, 0.01F);
-                    if (this.isSneak && !this.isFlying) {
-                        translate(0.0F, 0.05F, 0.0F);
-                    }
-                    break;
-                case NECK:
-                    translate(0.0F, -0.19F, -0.01F);
-                    scale(1.0F, 1.1F, 1.0F);
-                    if (this.isSneak && !this.isFlying) {
-                        translate(0.0F, -0.06F, -0.04F);
-                    }
-                    break;
-                case BODY:
-                case TAIL:
-                    translate(0.0F, -0.1F, 0.0F);
-                    scale(1.0F, 1.0F, 1.0F);
-                    break;
-                case LEGS:
-                    translate(0.0F, -0.25F, 0.03F);
-                    scale(1.0F, 1.18F, 1.0F);
-                    if (this instanceof ModelPlayerPony && ((ModelPlayerPony) this).rainboom) {
-                        translate(0.0F, 0.05F, 0.0F);
-                    }
-                    break;
-            }
+        if (isChild()) {
+            transformFoal(part);
+        } else if (metadata.getSize() == PonySize.LARGE) {
+            transformLarge(part);
+        } else if (metadata.getSize() == PonySize.TALL) {
+            transformTall(part);
         } else {
-            if (this.isSleeping) {
-                translate(0.0F, -0.75F, 0.25F);
-            }
+            if (isSleeping) translate(0, -0.75F, 0.25F);
         }
         if (part == BodyPart.HEAD) {
-            rotate(motionPitch, 1F, 0F, 0F);
+            rotate(motionPitch, 1, 0, 0);
+        }
+    }
+    
+    private void transformTall(BodyPart part) {
+        if (isSleeping) translate(0, -0.65F, 0.25F);
+
+        switch (part) {
+            case HEAD:
+                translate(0, -0.15F, 0.01F);
+                if (isCrouching()) translate(0, 0.05F, 0);
+                break;
+            case NECK:
+                translate(0, -0.19F, -0.01F);
+                scale(1, 1.1F, 1);
+                if (isCrouching()) translate(0, -0.06F, -0.04F);
+                break;
+            case BODY:
+            case TAIL:
+                translate(0, -0.1F, 0);
+                scale(1, 1, 1);
+                break;
+            case LEGS:
+                translate(0, -0.25F, 0.03F);
+                scale(1, 1.18F, 1);
+                if (rainboom) translate(0, 0.05F, 0);
+                break;
+        }
+    }
+    
+    private void transformLarge(BodyPart part) {
+        if (this.isSleeping) translate(0, -0.7F, 0.2F);
+
+        switch (part) {
+            case HEAD:
+                translate(0, -0.17F, -0.04F);
+                if (isSleeping) translate(0, 0, -0.1F);
+                if (isCrouching()) translate(0, 0.15F, 0);
+
+                break;
+            case NECK:
+                translate(0, -0.15F, -0.07F);
+                if (isCrouching()) translate(0, 0, -0.05F);
+
+                break;
+            case BODY:
+                translate(0, -0.2F, -0.04F);
+                scale(1.15F, 1.2F, 1.2F);
+                break;
+            case TAIL:
+                translate(0, -0.2F, 0.08F);
+                break;
+            case LEGS:
+                translate(0, -0.14F, 0);
+                scale(1.15F, 1.12F, 1.15F);
+                break;
+        }
+    }
+    
+    private void transformFoal(BodyPart part) {
+        if (isCrouching()) translate(0, -0.12F, 0.0F);
+        if (isSleeping) translate(0, -1.2F, 0.25F);
+        if (isRiding) translate(0, -.1, 0);
+        
+        switch (part) {
+            case NECK:
+            case HEAD:
+                translate(0, 0.76F, 0);
+                scale(0.9F, 0.9F, 0.9F);
+                if (part == BodyPart.HEAD)
+                    break;
+                if (isCrouching()) translate(0, -0.01F, 0.15F);
+                break;
+            case BODY:
+            case TAIL:
+                translate(0, 0.76F, -0.04F);
+                scale(0.6F, 0.6F, 0.6F);
+                break;
+            case LEGS:
+                translate(0, 0.89F, 0);
+                scale(0.6F, 0.41F, 0.6F);
+                if (isCrouching()) translate(0, 0.12F, 0);
+                if (rainboom) translate(0, -0.08F, 0);
+
+                break;
         }
     }
 
@@ -249,6 +264,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
             isSleeping = pony.isSleeping;
             metadata = pony.metadata;
             motionPitch = pony.motionPitch;
+            rainboom = pony.rainboom;
         }
     }
 

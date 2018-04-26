@@ -59,27 +59,27 @@ public class ModelSkeletonPony extends ModelMobPony {
     @Override
     protected void renderLegs() {
         pushMatrix();
-        translate(0.05F, -0.21F, 0);
-        scale(0.5F, 1.15F, 0.5F);
-        this.bipedLeftArm.render(this.scale);
+            translate(0.05F, -0.21F, 0);
+            scale(0.5F, 1.15F, 0.5F);
+            bipedLeftArm.render(this.scale);
         popMatrix();
 
         pushMatrix();
-        translate(-0.05F, -0.21F, 0);
-        scale(0.5F, 1.2F, 0.5F);
-        this.bipedRightArm.render(this.scale);
+            translate(-0.05F, -0.21F, 0);
+            scale(0.5F, 1.2F, 0.5F);
+            bipedRightArm.render(this.scale);
         popMatrix();
 
         pushMatrix();
-        translate(0.05F, -0.21F, 0.35F);
-        scale(0.5F, 1.2F, 0.5F);
-        this.bipedLeftLeg.render(this.scale);
+            translate(0.05F, -0.21F, 0.35F);
+            scale(0.5F, 1.2F, 0.5F);
+            bipedLeftLeg.render(this.scale);
         popMatrix();
 
         pushMatrix();
-        translate(-0.05F, -0.21F, 0.35F);
-        scale(0.5F, 1.15F, 0.5F);
-        this.bipedRightLeg.render(this.scale);
+            translate(-0.05F, -0.21F, 0.35F);
+            scale(0.5F, 1.15F, 0.5F);
+            bipedRightLeg.render(this.scale);
         popMatrix();
     }
 }

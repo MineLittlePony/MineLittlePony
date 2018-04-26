@@ -17,75 +17,62 @@ public class HornGlow extends ModelBox {
     
     private TexturedQuad[] quadList;
 
-    public HornGlow(HornGlowRenderer parent, int par2, int par3, float par4, float par5, float par6, int par7, int par8, int par9, float par10, float alpha) {
-        super(parent, par2, par3, par4, par5, par6, par7, par8, par9, par10);
+    public HornGlow(HornGlowRenderer parent, int texU, int texV, float x, float y, float z, int w, int h, int d, float scale, float alpha) {
+        super(parent, texU, texV, x, y, z, w, h, d, scale);
+        
         this.parent = parent;
         this.alpha = alpha;
         
         this.quadList = new TexturedQuad[6];
-        float var11 = par4 + par7;
-        float var12 = par5 + par8;
-        float var13 = par6 + par9;
-        float halfpar4 = par4 + par7 * 0.05F;
-        float halfpar6 = par6 + par9 * 0.05F;
-        float halfvar11 = par4 + par7 * 0.95F;
-        float halfvar13 = par6 + par9 * 0.95F;
-        par4 -= par10;
-        par5 -= par10;
-        par6 -= par10;
-        var11 += par10;
-        var12 += par10;
-        var13 += par10;
+        
+        float x2 = x + w + scale;
+        float y2 = y + h + scale;
+        float z2 = z + d + scale;
+        
+        x -= scale;
+        y -= scale;
+        z -= scale;
+        
         if (parent.mirror) {
-            float var26 = var11;
-            var11 = par4;
-            par4 = var26;
+            float f3 = x2;
+            x2 = x;
+            x = f3;
         }
 
-        PositionTextureVertex var32 = new PositionTextureVertex(halfpar4, par5, halfpar6, 0.0F, 0.0F);
-        PositionTextureVertex var15 = new PositionTextureVertex(halfvar11, par5, halfpar6, 0.0F, 8.0F);
-        PositionTextureVertex var16 = new PositionTextureVertex(var11, var12, par6, 8.0F, 8.0F);
-        PositionTextureVertex var17 = new PositionTextureVertex(par4, var12, par6, 8.0F, 0.0F);
-        PositionTextureVertex var18 = new PositionTextureVertex(halfpar4, par5, halfvar13, 0.0F, 0.0F);
-        PositionTextureVertex var19 = new PositionTextureVertex(halfvar11, par5, halfvar13, 0.0F, 8.0F);
-        PositionTextureVertex var20 = new PositionTextureVertex(var11, var12, var13, 8.0F, 8.0F);
-        PositionTextureVertex var21 = new PositionTextureVertex(par4, var12, var13, 8.0F, 0.0F);
+        float halfpar4 = x + w * 0.05F;
+        float halfpar6 = z + d * 0.05F;
+        float halfvar11 = x + w * 0.95F;
+        float halfvar13 = z + d * 0.95F;
+        
+        PositionTextureVertex p7 = new PositionTextureVertex(halfpar4, y, halfpar6, 0, 0);
+        PositionTextureVertex p0 = new PositionTextureVertex(halfvar11, y, halfpar6, 0, 8);
+        PositionTextureVertex p1 = new PositionTextureVertex(x2, y2, z, 8, 8);
+        PositionTextureVertex p2 = new PositionTextureVertex(x, y2, z, 8, 0);
+        PositionTextureVertex p3 = new PositionTextureVertex(halfpar4, y, halfvar13, 0, 0);
+        PositionTextureVertex p4 = new PositionTextureVertex(halfvar11, y, halfvar13, 0, 8);
+        PositionTextureVertex p5 = new PositionTextureVertex(x2, y2, z2, 8, 8);
+        PositionTextureVertex p6 = new PositionTextureVertex(x, y2, z2, 8, 0);
 
-        this.quadList[0] = new TexturedQuad(new PositionTextureVertex[]{var19, var15, var16, var20},
-                par2 + par9 + par7, par3 + par9, par2 + par9 + par7 + par9, par3 + par9 + par8,
-                parent.textureWidth, parent.textureHeight);
-        this.quadList[1] = new TexturedQuad(new PositionTextureVertex[]{var32, var18, var21, var17}, par2,
-                par3 + par9, par2 + par9, par3 + par9 + par8, parent.textureWidth,
-                parent.textureHeight);
-        this.quadList[2] = new TexturedQuad(new PositionTextureVertex[]{var19, var18, var32, var15}, par2 + par9,
-                par3, par2 + par9 + par7, par3 + par9, parent.textureWidth, parent.textureHeight);
-        this.quadList[3] = new TexturedQuad(new PositionTextureVertex[]{var16, var17, var21, var20},
-                par2 + par9 + par7, par3 + par9, par2 + par9 + par7 + par7, par3, parent.textureWidth,
-                parent.textureHeight);
-        this.quadList[4] = new TexturedQuad(new PositionTextureVertex[]{var15, var32, var17, var16}, par2 + par9,
-                par3 + par9, par2 + par9 + par7, par3 + par9 + par8, parent.textureWidth,
-                parent.textureHeight);
-        this.quadList[5] = new TexturedQuad(new PositionTextureVertex[]{var18, var19, var20, var21},
-                par2 + par9 + par7 + par9, par3 + par9, par2 + par9 + par7 + par9 + par7, par3 + par9 + par8,
-                parent.textureWidth, parent.textureHeight);
+        this.quadList[0] = new TexturedQuad(new PositionTextureVertex[]{p4, p0, p1, p5}, texU + d + w, texV + d, texU + d + w + d, texV + d + h, parent.textureWidth, parent.textureHeight);
+        this.quadList[1] = new TexturedQuad(new PositionTextureVertex[]{p7, p3, p6, p2}, texU, texV + d, texU + d, texV + d + h, parent.textureWidth, parent.textureHeight);
+        this.quadList[2] = new TexturedQuad(new PositionTextureVertex[]{p4, p3, p7, p0}, texU + d, texV, texU + d + w, texV + d, parent.textureWidth, parent.textureHeight);
+        this.quadList[3] = new TexturedQuad(new PositionTextureVertex[]{p1, p2, p6, p5}, texU + d + w, texV + d, texU + d + w + w, texV, parent.textureWidth, parent.textureHeight);
+        this.quadList[4] = new TexturedQuad(new PositionTextureVertex[]{p0, p7, p2, p1}, texU + d, texV + d, texU + d + w, texV + d + h, parent.textureWidth, parent.textureHeight);
+        this.quadList[5] = new TexturedQuad(new PositionTextureVertex[]{p3, p4, p5, p6}, texU + d + w + d, texV + d, texU + d + w + d + w, texV + d + h, parent.textureWidth, parent.textureHeight);
+        
         if (parent.mirror) {
-            TexturedQuad[] var22 = this.quadList;
-
-            for (TexturedQuad var25 : var22) {
-                var25.flipFace();
+            for (TexturedQuad i : quadList) {
+                i.flipFace();
             }
         }
-
     }
 
     @Override
-    public void render(@Nonnull BufferBuilder buffer, float par2) {
+    public void render(@Nonnull BufferBuilder buffer, float scale) {
         parent.applyTint(alpha);
         
-        TexturedQuad[] var3 = this.quadList;
-        for (TexturedQuad var6 : var3) {
-            var6.draw(buffer, par2);
+        for (TexturedQuad i : quadList) {
+            i.draw(buffer, scale);
         }
-
     }
 }

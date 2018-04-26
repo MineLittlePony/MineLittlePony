@@ -1,5 +1,6 @@
 package com.minelittlepony.model.armour;
 
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
 
 public class ModelZombiePonyArmor extends ModelPonyArmor {
@@ -8,10 +9,11 @@ public class ModelZombiePonyArmor extends ModelPonyArmor {
         return MathHelper.sin(move / 20f) < 0;
     }
     
+    // Copied from ModelZombiePony
     @Override
     protected void rotateRightArm(float move, float tick) {
         if (rightArmPose != ArmPose.EMPTY) return;
-        
+
         if (isRight(move)) {
             rotateArmHolding(bipedRightArm, 1, swingProgress, tick);
         } else {
@@ -21,16 +23,16 @@ public class ModelZombiePonyArmor extends ModelPonyArmor {
     
     @Override
     protected void rotateLeftArm(float move, float tick) {
-        
+        // Zombies are unidexterous.
     }
 
     @Override
     protected void fixSpecialRotationPoints(float move) {
-        if (this.rightArmPose != ArmPose.EMPTY) return;
-        if (isRight(move)) {
-            shiftRotationPoint(bipedRightArm, 0.5F, 1.5F, 3);
-        } else {
-            shiftRotationPoint(bipedLeftArm, -0.5F, 1.5F, 3);
-        }
+        if (rightArmPose != ArmPose.EMPTY) return;
+        boolean right = isRight(move);
+        float xchange = right ? 0.5f : -0.5f;
+        ModelRenderer arm = right ? bipedRightArm : bipedLeftArm;
+        
+        shiftRotationPoint(arm, xchange, 1.5f, 3);
     }
 }

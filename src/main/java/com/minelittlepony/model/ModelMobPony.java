@@ -33,10 +33,10 @@ public class ModelMobPony extends ModelPlayerPony {
         if (this.rightArmPose == ArmPose.EMPTY) return;
         
         if (!metadata.hasMagic()) {
-            rotateArmHolding(bipedRightArm, 1, swingProgress, tick);
+            rotateArmHolding(bipedRightArm, -1, swingProgress, tick);
         } else {
             unicornArmRight.setRotationPoint(-7, 12, -2);
-            rotateArmHolding(unicornArmRight, 1, swingProgress, tick);
+            rotateArmHolding(unicornArmRight, -1, swingProgress, tick);
         }
     }
     
@@ -50,10 +50,10 @@ public class ModelMobPony extends ModelPlayerPony {
         if (leftArmPose == ArmPose.EMPTY) return;
 
         if (!metadata.hasMagic()) {
-            rotateArmHolding(bipedLeftArm, 1, swingProgress, tick);
+            rotateArmHolding(bipedLeftArm, -1, swingProgress, tick);
         } else {
             unicornArmRight.setRotationPoint(-7, 12, -2);
-            rotateArmHolding(unicornArmLeft, 1, swingProgress, tick);
+            rotateArmHolding(unicornArmLeft, -1, swingProgress, tick);
         }
     }
 }
