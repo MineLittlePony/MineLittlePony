@@ -33,6 +33,7 @@ public abstract class MixinEntityLivingBase extends Entity implements IPonyAnima
         } else {
             strafeRollAmount *= 0.8;
         }
-        return (float)Math.toDegrees(strafeRollAmount * ticks);
+        
+        return (float)Math.toDegrees(strafeRollAmount);
     }
 }
