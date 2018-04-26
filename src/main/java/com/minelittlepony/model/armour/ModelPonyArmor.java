@@ -37,7 +37,7 @@ public class ModelPonyArmor extends ModelMobPony {
     protected void updateHeadRotation(float x, float y) {
         super.updateHeadRotation(x, y);
         extHead.rotateAngleX = x;
-        extHead.rotateAngleX = x;
+        extHead.rotateAngleY = y;
     }
 
     @Override
@@ -158,11 +158,12 @@ public class ModelPonyArmor extends ModelMobPony {
     @Override
     protected void initLegPositions(float yOffset, float stretch) {
         super.initLegPositions(yOffset, stretch);
+        
         extLegLeft.offset(THIRDP_ARM_CENTRE_X, THIRDP_ARM_CENTRE_Y, THIRDP_ARM_CENTRE_Z)
-                       .around(-3, yOffset, 0)
+                       .around(3, yOffset, 0)
                        .box(-2, -6, -2, 4, 12, 4, stretch);
         extLegRight.offset(THIRDP_ARM_CENTRE_X, THIRDP_ARM_CENTRE_Y, THIRDP_ARM_CENTRE_Z)
-                       .around(3, yOffset, 0)
+                       .around(-3, yOffset, 0)
               .mirror().box(-2, -6, -2, 4, 12, 4, stretch);
     }
 

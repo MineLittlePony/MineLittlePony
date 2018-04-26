@@ -91,7 +91,7 @@ public abstract class BasePonyRenderer<T extends BasePonyRenderer<T>> extends Mo
     }
     
     public T rotateAt(ModelRenderer other) {
-        return at(other.rotationPointX, other.rotationPointY, other.rotationPointZ);
+        return around(other.rotationPointX, other.rotationPointY, other.rotationPointZ);
     }
 
     /**
