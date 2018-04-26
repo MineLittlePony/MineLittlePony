@@ -175,7 +175,7 @@ public class PonyManager implements IResourceManagerReloadListener {
      * Returns true if the given uuid is of a player would would use the ALEX skin type.
      */
     public static boolean isSlimSkin(UUID uuid) {
-        return false;//(uuid.hashCode() & 1) == 1;
+        return (uuid.hashCode() & 1) == 1;
     }
 
     private int getNumberOfPonies() {
