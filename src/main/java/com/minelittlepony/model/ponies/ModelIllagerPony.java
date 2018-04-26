@@ -51,13 +51,13 @@ public class ModelIllagerPony extends ModelPlayerPony {
 //                this.bipedRightArm.rotationPointZ = 0.0F;
 //                this.bipedRightArm.rotationPointX = -5.0F;
                 this.bipedRightArm.rotateAngleX = (float) (-.75F * Math.PI);
-                this.bipedRightArm.rotateAngleZ = MathHelper.cos(ageInTicks * 0.6662F) * 0.25F;
+                this.bipedRightArm.rotateAngleZ = MathHelper.cos(ageInTicks * 0.6662F) / 4;
                 this.bipedRightArm.rotateAngleY = 1.1F;
             } else {
 //                this.bipedLeftArm.rotationPointZ = 0.0F;
 //                this.bipedLeftArm.rotationPointX = 5.0F;
                 this.bipedLeftArm.rotateAngleX = (float) (-.75F * Math.PI);
-                this.bipedLeftArm.rotateAngleZ = -MathHelper.cos(ageInTicks * 0.6662F) * 0.25F;
+                this.bipedLeftArm.rotateAngleZ = -MathHelper.cos(ageInTicks * 0.6662F) / 4;
                 this.bipedLeftArm.rotateAngleY = -1.1F;
             }
 

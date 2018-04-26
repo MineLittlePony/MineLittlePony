@@ -1,53 +1,53 @@
 package com.minelittlepony.model.components;
 
 import com.minelittlepony.model.PonyModelConstants;
+import com.minelittlepony.render.PonyRenderer;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.Vec3d;
 
 public class PonyElytra extends ModelBase {
-    private ModelRenderer rightWing;
-    private ModelRenderer leftWing = new ModelRenderer(this, 22, 0);
+    private PonyRenderer rightWing = new PonyRenderer(this, 22, 0);
+    private PonyRenderer leftWing = new PonyRenderer(this, 22, 0);
 
     public PonyElytra() {
-        this.leftWing.addBox(-10.0F, 0.0F, 0.0F, 10, 20, 2, 1.0F);
-        this.rightWing = new ModelRenderer(this, 22, 0);
-        this.rightWing.mirror = true;
-        this.rightWing.addBox(0.0F, 0.0F, 0.0F, 10, 20, 2, 1.0F);
+        this.leftWing          .box(-10, 0, 0, 10, 20, 2, 1);
+        this.rightWing.mirror().box( 0,  0, 0, 10, 20, 2, 1);
     }
 
     @Override
-    public void render(Entity entityIn, float p_78088_2_, float limbSwing, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         GlStateManager.disableRescaleNormal();
         GlStateManager.disableCull();
-        this.leftWing.render(scale);
-        this.rightWing.render(scale);
+        leftWing.render(scale);
+        rightWing.render(scale);
     }
 
     @Override
     public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
         super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
+
         final float PI = (float) Math.PI;
         float rotateX = PI / 2F;
-        float rotateZ = PI / 12;
-        float rpY = PonyModelConstants.BODY_RP_Y_NOTSNEAK;
         float rotateY = PI / 8F;
-
+        float rotateZ = PI / 12;
+        
+        float rpY = PonyModelConstants.BODY_RP_Y_NOTSNEAK;
+        
         if (entityIn instanceof EntityLivingBase && ((EntityLivingBase) entityIn).isElytraFlying()) {
-            float f4 = 1.0F;
+            float f4 = 1;
 
-            if (entityIn.motionY < 0.0D) {
+            if (entityIn.motionY < 0) {
                 Vec3d vec3d = (new Vec3d(entityIn.motionX, entityIn.motionY, entityIn.motionZ)).normalize();
-                f4 = 1.0F - (float) Math.pow(-vec3d.y, 1.5D);
+                f4 = 1 - (float) Math.pow(-vec3d.y, 1.5);
             }
 
-            rotateX = f4 * PI * (2 / 3F) + (1.0F - f4) * rotateX;
-            rotateY = f4 * ((float) Math.PI / 2F) + (1.0F - f4) * rotateY;
+            rotateX = f4 * PI * (2 / 3F) + (1 - f4) * rotateX;
+            rotateY = f4 * ((float) Math.PI / 2F) + (1 - f4) * rotateY;
         } else if (entityIn.isSneaking()) {
             rotateX = ((float) Math.PI * 1.175F);
             rotateY = PI / 2;
@@ -55,7 +55,7 @@ public class PonyElytra extends ModelBase {
             rotateZ = PI / 4F;
         }
 
-        this.leftWing.rotationPointX = 5.0F;
+        this.leftWing.rotationPointX = 5;
         this.leftWing.rotationPointY = rpY;
 
         if (entityIn instanceof AbstractClientPlayer) {

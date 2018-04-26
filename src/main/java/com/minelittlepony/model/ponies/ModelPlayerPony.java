@@ -62,9 +62,9 @@ public class ModelPlayerPony extends AbstractPonyModel {
         this.checkRainboom(entityIn, limbSwingAmount);
         this.rotateHead(netHeadYaw, headPitch);
 
-        float bodySwingRotation = 0.0F;
-        if (this.swingProgress > -9990.0F && !this.metadata.hasMagic()) {
-            bodySwingRotation = MathHelper.sin(MathHelper.sqrt(this.swingProgress) * 3.1415927F * 2.0F) * 0.2F;
+        float bodySwingRotation = 0;
+        if (swingProgress > -9990.0F && !metadata.hasMagic()) {
+            bodySwingRotation = MathHelper.sin(MathHelper.sqrt(swingProgress) * PI * 2) * 0.2F;
         }
 
         rotateLook(limbSwing, limbSwingAmount, bodySwingRotation, ageInTicks);
@@ -184,7 +184,10 @@ public class ModelPlayerPony extends AbstractPonyModel {
     }
     
     protected void rotateLegs(float move, float swing, float tick, Entity entity) {
-        float leftArm, rightArm, leftLeg, rightLeg;
+        float leftArm;
+        float rightArm;
+        float leftLeg;
+        float rightLeg;
         
         
         if (isFlying(entity)) {
@@ -196,11 +199,8 @@ public class ModelPlayerPony extends AbstractPonyModel {
                 rightLeg = leftLeg = MathHelper.sin(swing / 2);
             }
 
-            bipedRightArm.rotateAngleY = 0.2F;
+            bipedLeftLeg.rotateAngleY = bipedRightArm.rotateAngleY = 0.2F;
             bipedLeftArm.rotateAngleY = bipedRightLeg.rotateAngleY = -0.2F;
-            
-            bipedLeftLeg.rotateAngleY = 0.2F;
-
         } else {
             float pi = PI * (float) Math.pow(swing, 16);
             
@@ -325,55 +325,55 @@ public class ModelPlayerPony extends AbstractPonyModel {
             
             if (mainPose == ArmPose.EMPTY) return;
             
-            float f16 = 1 - swingProgress;
-            f16 *= f16 * f16;
-            f16 = 1 - f16;
-            float f22 = MathHelper.sin(f16 * PI);
-            float f28 = MathHelper.sin(swingProgress * PI);
-            float f33 = f28 * (0.7F - bipedHead.rotateAngleX) * 0.75F;
-            
             if (metadata.hasMagic()) {
-                swingArm(mainRight ? unicornArmRight : unicornArmLeft, f22, f33, f28);
+                swingArm(mainRight ? unicornArmRight : unicornArmLeft);
             } else {
-                swingArm(getArmForSide(mainSide), f22, f33, f28);
+                swingArm(getArmForSide(mainSide));
             }
         }
     }
     
-    private void swingArm(ModelRenderer arm, float f22, float f33, float f28) {
-        arm.rotateAngleX = (float) (arm.rotateAngleX - (f22 * 1.2D + f33));
-        arm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
-        arm.rotateAngleZ = f28 * -0.4F;
+    private void swingArm(ModelRenderer arm) {
+        float swing = 1 - (float)Math.pow(1 - swingProgress, 3);
+        
+        float deltaX = MathHelper.sin(swing * PI);
+        float deltaZ = MathHelper.sin(swingProgress * PI);
+        
+        float deltaAim = deltaZ * (0.7F - bipedHead.rotateAngleX) * 0.75F;
+        
+        arm.rotateAngleX -= deltaAim + deltaX * 1.2F;
+        arm.rotateAngleZ = deltaZ * -0.4F;
+        arm.rotateAngleY += bipedBody.rotateAngleY * 2;
     }
 
     protected void swingArms(float tick) {
         float cos = MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
         float sin = MathHelper.sin(tick * 0.067F) * 0.05F;
 
-        if (this.rightArmPose != ArmPose.EMPTY && !this.isSleeping) {
+        if (rightArmPose != ArmPose.EMPTY && !isSleeping) {
             
-            if (this.metadata.hasMagic()) {
-                this.unicornArmRight.rotateAngleZ += cos;
-                this.unicornArmRight.rotateAngleX += sin;
+            if (metadata.hasMagic()) {
+                unicornArmRight.rotateAngleZ += cos;
+                unicornArmRight.rotateAngleX += sin;
             } else {
-                this.bipedRightArm.rotateAngleZ += cos;
-                this.bipedRightArm.rotateAngleX += sin;
+                bipedRightArm.rotateAngleZ += cos;
+                bipedRightArm.rotateAngleX += sin;
             }
         }
-        if (this.leftArmPose != ArmPose.EMPTY && !this.isSleeping) {
-            if (this.metadata.hasMagic()) {
-                this.unicornArmLeft.rotateAngleZ += cos;
-                this.unicornArmLeft.rotateAngleX += sin;
+        if (leftArmPose != ArmPose.EMPTY && !isSleeping) {
+            if (metadata.hasMagic()) {
+                unicornArmLeft.rotateAngleZ += cos;
+                unicornArmLeft.rotateAngleX += sin;
             } else {
-                this.bipedLeftArm.rotateAngleZ += cos;
-                this.bipedLeftArm.rotateAngleX += sin;
+                bipedLeftArm.rotateAngleZ += cos;
+                bipedLeftArm.rotateAngleX += sin;
             }
         }
     }
 
     protected void adjustBody(float rotateAngleX, float rotationPointY, float rotationPointZ) {
-        this.adjustBodyComponents(rotateAngleX, rotationPointY, rotationPointZ);
-        this.adjustNeck(rotateAngleX, rotationPointY, rotationPointZ);
+        adjustBodyComponents(rotateAngleX, rotationPointY, rotationPointZ);
+        adjustNeck(rotateAngleX, rotationPointY, rotationPointZ);
     }
 
     protected void adjustBodyComponents(float rotateAngleX, float rotationPointY, float rotationPointZ) {
@@ -420,7 +420,7 @@ public class ModelPlayerPony extends AbstractPonyModel {
     protected void aimBow(ArmPose leftArm, ArmPose rightArm, float tick) {
         if (leftArm == ArmPose.BOW_AND_ARROW || rightArm == ArmPose.BOW_AND_ARROW) {
 
-            if (this.metadata.hasMagic()) {
+            if (metadata.hasMagic()) {
                 if (rightArm == ArmPose.BOW_AND_ARROW) aimBowPony(unicornArmRight, tick, true);
                 if (leftArm == ArmPose.BOW_AND_ARROW) aimBowPony(unicornArmLeft, tick, false);
             } else {

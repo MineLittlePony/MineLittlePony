@@ -36,7 +36,7 @@ public class LayerPonyElytra extends AbstractPonyLayer<EntityLivingBase> {
         ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
         if (itemstack.getItem() == Items.ELYTRA) {
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.color(1, 1, 1, 1);
 
             if (entity instanceof AbstractClientPlayer) {
 
@@ -53,7 +53,7 @@ public class LayerPonyElytra extends AbstractPonyLayer<EntityLivingBase> {
             }
 
             GlStateManager.pushMatrix();
-            GlStateManager.translate(0.0F, 0.25F, 0.125F);
+            GlStateManager.translate(0, 0.25F, 0.125F);
             model.transform(BodyPart.BODY);
             this.modelElytra.setRotationAngles(swing, swingAmount, age, yaw, head, scale, entity);
             this.modelElytra.render(entity, swing, swingAmount, age, yaw, head, scale);
