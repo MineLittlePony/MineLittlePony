@@ -112,7 +112,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     /**
      * Adjusts the rotation center of the given renderer by the given amounts in each direction.
      */
-    public static void shiftRotationPoint(ModelRenderer renderer, float x, float y, float z) {
+    public void shiftRotationPoint(ModelRenderer renderer, float x, float y, float z) {
         renderer.rotationPointX += x;
         renderer.rotationPointY += y;
         renderer.rotationPointZ += z;
@@ -126,7 +126,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
      * @param swingProgress How far we are through the current swing
      * @param tick          Render partial ticks
      */
-    protected static void rotateArmHolding(ModelRenderer arm, float direction, float swingProgress, float tick) {
+    protected void rotateArmHolding(ModelRenderer arm, float direction, float swingProgress, float tick) {
         float swing = MathHelper.sin(swingProgress * (float)Math.PI);
         float roll = MathHelper.sin((1 - (1 - swingProgress) * (1 - swingProgress)) * (float)Math.PI);
         
