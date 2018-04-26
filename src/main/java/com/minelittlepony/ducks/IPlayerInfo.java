@@ -1,16 +1,10 @@
 package com.minelittlepony.ducks;
 
-import com.minelittlepony.pony.data.Pony;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.network.NetworkPlayerInfo;
 
 public interface IPlayerInfo {
-    /**
-     * Gets the pony associated with this player.
-     */
-    Pony getPony();
-
     /**
      * Returns true if the vanilla skin (the one returned by NetworkPlayerInfo.getSkinLocation) uses the ALEX model type.
      */
@@ -21,5 +15,9 @@ public interface IPlayerInfo {
      */
     public static IPlayerInfo getPlayerInfo(AbstractClientPlayer player) {
         return (IPlayerInfo)Minecraft.getMinecraft().getConnection().getPlayerInfo(player.getUniqueID());
+    }
+    
+    default NetworkPlayerInfo unwrap() {
+        return (NetworkPlayerInfo)this;
     }
 }

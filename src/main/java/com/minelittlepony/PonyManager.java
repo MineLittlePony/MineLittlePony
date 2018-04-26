@@ -9,7 +9,9 @@ import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyLevel;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
@@ -75,13 +77,16 @@ public class PonyManager implements IResourceManagerReloadListener {
      * @param player the player
      */
     public Pony getPony(AbstractClientPlayer player) {
-        Pony pony = getPony(player.getLocationSkin(), IPlayerInfo.getPlayerInfo(player).usesSlimArms());
-
-        if (config.getPonyLevel() == PonyLevel.PONIES && pony.getMetadata().getRace().isHuman()) {
-            return getBackgroundPony(player.getUniqueID());
-        }
-
-        return pony;
+        return getPony(IPlayerInfo.getPlayerInfo(player).unwrap());
+    }
+    
+    public Pony getPony(NetworkPlayerInfo playerInfo) {
+        ResourceLocation skin = playerInfo.getLocationSkin();
+        UUID uuid = playerInfo.getGameProfile().getId();
+        
+        if (skin == null) return getDefaultPony(uuid);
+        
+        return getPony(skin, uuid);
     }
     
     /**
@@ -118,12 +123,18 @@ public class PonyManager implements IResourceManagerReloadListener {
     }
 
     private Pony getBackgroundPony(UUID uuid) {
-        if (getNumberOfPonies() == 0) return getPony(getDefaultSkin(uuid), isSlimSkin(uuid));
+        if (getNumberOfPonies() == 0 || isUser(uuid)) {
+            return getPony(getDefaultSkin(uuid), isSlimSkin(uuid));
+        }
 
-        int bgi = uuid.hashCode() % this.getNumberOfPonies();
-        while (bgi < 0) bgi += this.getNumberOfPonies();
+        int bgi = uuid.hashCode() % getNumberOfPonies();
+        while (bgi < 0) bgi += getNumberOfPonies();
 
         return getPony(backgroundPonyList.get(bgi), false);
+    }
+    
+    private boolean isUser(UUID uuid) {
+        return Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().player.getUniqueID().equals(uuid);
     }
 
     /**
@@ -164,7 +175,7 @@ public class PonyManager implements IResourceManagerReloadListener {
      * Returns true if the given uuid is of a player would would use the ALEX skin type.
      */
     public static boolean isSlimSkin(UUID uuid) {
-        return (uuid.hashCode() & 1) == 1;
+        return false;//(uuid.hashCode() & 1) == 1;
     }
 
     private int getNumberOfPonies() {
