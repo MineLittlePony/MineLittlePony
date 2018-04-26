@@ -23,35 +23,52 @@ public class PegasusWings extends ModelBase {
 
     @Override
     public void setRotationAngles(float limbSwing, float limbSwingAmount, float ticks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
-
-        float bodySwingRotation = 0.0F;
-        if (pony.swingProgress > -9990.0F && !pony.metadata.hasMagic()) {
-            bodySwingRotation = MathHelper.sin(MathHelper.sqrt(pony.swingProgress) * 3.1415927F * 2.0F) * 0.2F;
-        }
+        if (!isVisible()) return;
         
-        leftWing.updateModelRotation(bodySwingRotation);
-        rightWing.updateModelRotation(bodySwingRotation);
+        float swing = 0;
         
-        if (pony.isSneak && !pony.isFlying) {
-            leftWing.rotateSneaked(LEFT_WING_ROTATE_ANGLE_Z_SNEAK);
-            rightWing.rotateSneaked(-LEFT_WING_ROTATE_ANGLE_Z_SNEAK);
-        } else if (pony.isFlying) {
-            float WingRotateAngleZ = (MathHelper.sin(ticks * 0.536F) * 1.0F) + ROTATE_270 + 0.4F;
+        if (pony.swingProgress > 0) {
+            swing = MathHelper.sin(MathHelper.sqrt(pony.swingProgress) * PI * 2);
+        } else {
+            float pi = PI * (float) Math.pow(limbSwingAmount, 16);
             
-            leftWing.rotateUnsneaked(WingRotateAngleZ);
-            rightWing.rotateUnsneaked(-WingRotateAngleZ);
+            float mve = limbSwing * 0.6662F; // magic number ahoy
+            float srt = limbSwingAmount / 4;
+            
+            swing = MathHelper.cos(mve + pi) * srt;
         }
         
-        leftWing.rotate(ROTATE_90);
-        rightWing.rotate(ROTATE_90);
+        leftWing.rotateWalking(swing);
+        rightWing.rotateWalking(-swing);
+        
+        if (isExtended()) {
+            float flapAngle = getWingRotationFactor(ticks);
+            leftWing.rotateFlying(flapAngle);
+            rightWing.rotateFlying(-flapAngle);
+        }
+        
+    }
+    
+    public float getWingRotationFactor(float ticks) {
+        if (pony.isFlying) {
+            return (MathHelper.sin(ticks * 0.536F) * 1.0F) + ROTATE_270 + 0.4F;
+        }
+        return LEFT_WING_ROTATE_ANGLE_Z_SNEAK;
+    }
+    
+    public boolean isVisible() {
+        return pony.metadata.getRace().hasWings();
+    }
+    
+    public boolean isExtended() {
+        return pony.isFlying || pony.isSneak;
     }
 
     @Override
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        if (pony.metadata.getRace().hasWings()) {
-            boolean standing = !pony.isFlying && !pony.isSneak;
-            leftWing.render(standing, scale);
-            rightWing.render(standing, scale);
-        }
+        if (!isVisible()) return;
+        boolean standing = isExtended();
+        leftWing.render(standing, scale);
+        rightWing.render(standing, scale);
     }
 }
