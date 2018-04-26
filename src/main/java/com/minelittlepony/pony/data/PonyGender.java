@@ -4,7 +4,7 @@ public enum PonyGender implements ITriggerPixelMapped<PonyGender> {
     MARE(0),
     STALLION(0xffffff);
     
-    int triggerValue;
+    private int triggerValue;
     
     PonyGender(int pixel) {
         triggerValue = pixel;

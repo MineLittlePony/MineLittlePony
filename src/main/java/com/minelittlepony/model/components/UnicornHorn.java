@@ -2,9 +2,9 @@ package com.minelittlepony.model.components;
 
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.render.HornGlowRenderer;
+import com.minelittlepony.render.PonyRenderer;
 
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -12,15 +12,10 @@ import static net.minecraft.client.renderer.GlStateManager.*;
 import static com.minelittlepony.model.PonyModelConstants.*;
 
 public class UnicornHorn extends ModelBase {
-    static final float
-            hornX = HEAD_CENTRE_X - 0.5F,
-            hornY = HEAD_CENTRE_Y - 10,
-            hornZ = HEAD_CENTRE_Z - 1.5F;
 
     protected final AbstractPonyModel pony;
 
-    private ModelRenderer horn;
-
+    private PonyRenderer horn;
     private HornGlowRenderer glow;
 
     private boolean usingMagic;
@@ -28,22 +23,25 @@ public class UnicornHorn extends ModelBase {
     public UnicornHorn(AbstractPonyModel pony, float yOffset, float stretch) {
         this.pony = pony;
 
-        horn = new ModelRenderer(pony, 0, 3);
+        horn = new PonyRenderer(pony, 0, 3);
         glow = new HornGlowRenderer(pony, 0, 3);
         
-        horn.addBox(hornX, hornY, hornZ, 1, 4, 1, stretch);
-        horn.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        horn.rotateAngleX = 0.5F;
+        horn.offset(HORN_X, HORN_Y, HORN_Z)
+            .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
+            .box(0, 0, 0, 1, 4, 1, stretch)
+            .rotateAngleX = 0.5F;
 
-        glow.setAlpha(0.4f).addBox(hornX, hornY, hornZ, 1, 4, 1, stretch + 0.5F);
-        glow.setAlpha(0.2f).addBox(hornX, hornY, hornZ, 1, 3, 1, stretch + 0.8F);
+        glow.offset(HORN_X, HORN_Y, HORN_Z)
+            .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
+            .setAlpha(0.4f).box(0, 0, 0, 1, 4, 1, stretch + 0.5F)
+            .setAlpha(0.2f).box(0, 0, 0, 1, 3, 1, stretch + 0.8F);
     }
 
     @Override
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if (!pony.metadata.getRace().hasHorn()) return;
         
-        this.horn.render(scale);
+        horn.render(scale);
         
         if (usingMagic && pony.metadata.hasMagic()) {
             renderMagic(pony.metadata.getGlowColor(), scale);

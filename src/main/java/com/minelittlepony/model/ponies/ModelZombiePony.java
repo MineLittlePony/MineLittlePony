@@ -18,7 +18,7 @@ public class ModelZombiePony extends ModelMobPony {
     }
     
     private boolean isRight(float move) {
-        return MathHelper.sin(move / 20f) < 0;
+        return MathHelper.sin(move / 20) < 0;
     }
     
     @Override

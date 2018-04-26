@@ -13,7 +13,8 @@ public enum TriggerPixels {
     SIZE(PonySize.NORMAL, 3, 0),
     GLOW(null, 0, 1);
 
-    private int x, y;
+    private int x;
+    private int y;
     
     ITriggerPixelMapped<?> def;
     

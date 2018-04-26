@@ -10,9 +10,12 @@ public abstract class BasePonyRenderer<T extends BasePonyRenderer<T>> extends Mo
 
     protected final ModelBase baseModel;
 
-    protected int textureOffsetX, textureOffsetY;
+    protected int textureOffsetX;
+    protected int textureOffsetY;
 
-    protected float modelOffsetX, modelOffsetY, modelOffsetZ;
+    protected float modelOffsetX;
+    protected float modelOffsetY;
+    protected float modelOffsetZ;
     
     public BasePonyRenderer(ModelBase model) {
         super(model);

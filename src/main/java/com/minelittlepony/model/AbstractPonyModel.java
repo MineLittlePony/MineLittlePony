@@ -130,7 +130,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
         float swing = MathHelper.sin(swingProgress * (float)Math.PI);
         float roll = MathHelper.sin((1 - (1 - swingProgress) * (1 - swingProgress)) * (float)Math.PI);
         
-        arm.rotateAngleZ = 0.0F;
+        arm.rotateAngleZ = 0;
         arm.rotateAngleY = direction * (0.1F - swing * 0.6F);
         arm.rotateAngleX = -1.5707964F;
         arm.rotateAngleX -= swing * 1.2F - roll * 0.4F;
@@ -224,9 +224,9 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     }
     
     private void transformFoal(BodyPart part) {
-        if (isCrouching()) translate(0, -0.12F, 0.0F);
+        if (isCrouching()) translate(0, -0.12F, 0);
         if (isSleeping) translate(0, -1.2F, 0.25F);
-        if (isRiding) translate(0, -.1, 0);
+        if (isRiding) translate(0, -0.1F, 0);
         
         switch (part) {
             case NECK:
@@ -247,7 +247,6 @@ public abstract class AbstractPonyModel extends ModelPlayer {
                 scale(0.6F, 0.41F, 0.6F);
                 if (isCrouching()) translate(0, 0.12F, 0);
                 if (rainboom) translate(0, -0.08F, 0);
-
                 break;
         }
     }
@@ -272,17 +271,17 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     public ModelRenderer getRandomModelBox(Random rand) {
         // grab one at random, but cycle through the list until you find one that's filled.
         // Return if you find one, or if you get back to where you started in which case there isn't any.
-        int index = rand.nextInt(boxList.size());
-        int i = index;
+        int randomI = rand.nextInt(boxList.size());
+        int index = randomI;
 
-        ModelRenderer mr;
+        ModelRenderer result;
         do {
-            mr = boxList.get(index);
-            if (!mr.cubeList.isEmpty()) return mr;
+            result = boxList.get(randomI);
+            if (!result.cubeList.isEmpty()) return result;
 
-            i = (i + 1) % boxList.size();
-        } while (i != index);
+            index = (index + 1) % boxList.size();
+        } while (index != randomI);
 
-        return mr;
+        return result;
     }
 }

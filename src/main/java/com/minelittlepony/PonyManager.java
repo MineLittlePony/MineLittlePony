@@ -32,10 +32,9 @@ import java.util.stream.Collectors;
  */
 public class PonyManager implements IResourceManagerReloadListener {
 
-    public static final ResourceLocation
-        STEVE = new ResourceLocation("minelittlepony", "textures/entity/steve_pony.png"),
-        ALEX = new ResourceLocation("minelittlepony", "textures/entity/alex_pony.png"),
-        BGPONIES_JSON = new ResourceLocation("minelittlepony", "textures/entity/pony/bgponies.json");
+    public static final ResourceLocation STEVE = new ResourceLocation("minelittlepony", "textures/entity/steve_pony.png");
+    public static final ResourceLocation ALEX = new ResourceLocation("minelittlepony", "textures/entity/alex_pony.png");
+    public static final ResourceLocation BGPONIES_JSON = new ResourceLocation("minelittlepony", "textures/entity/pony/bgponies.json");
 
     private static final Gson GSON = new Gson();
 

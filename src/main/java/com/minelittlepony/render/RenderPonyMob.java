@@ -37,8 +37,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     }
 
     @Override
-    public void doRender(T entity, double xPosition, double yPosition, double zPosition, float yaw,
-                         float partialTicks) {
+    public void doRender(T entity, double xPosition, double yPosition, double zPosition, float yaw, float partialTicks) {
         double yOrigin = yPosition;
         if (entity.isSneaking()) {
             yOrigin -= 0.125D;

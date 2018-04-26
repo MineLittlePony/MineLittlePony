@@ -10,12 +10,12 @@ public final class PonyModelConstants {
         BODY_CENTRE_Z = 6,
 
         NECK_CENTRE_X = BODY_CENTRE_X - 2,
-        NECK_CENTRE_Y = BODY_CENTRE_Y - 6.8f,
-        NECK_CENTRE_Z = BODY_CENTRE_Z - 8.8f,
+        NECK_CENTRE_Y = BODY_CENTRE_Y - 6.8F,
+        NECK_CENTRE_Z = BODY_CENTRE_Z - 8.8F,
 
         BODY_ROTATE_ANGLE_X_NOTSNEAK = 0,
         BODY_ROTATE_ANGLE_X_SNEAK = 0.4F,
-        BODY_ROTATE_ANGLE_X_RIDING = (float) (Math.PI * 3.8),
+        BODY_ROTATE_ANGLE_X_RIDING = PI * 3.8F,
 
         BODY_RP_Y_NOTSNEAK = 0,
         BODY_RP_Y_SNEAK = 7,
@@ -41,6 +41,10 @@ public final class PonyModelConstants {
         HEAD_RP_X = 0,
         HEAD_RP_Y = 0,
         HEAD_RP_Z = 0,
+
+        HORN_X = HEAD_CENTRE_X - 0.5F,
+        HORN_Y = HEAD_CENTRE_Y - 10,
+        HORN_Z = HEAD_CENTRE_Z - 1.5F,
 
         LEFT_WING_EXT_RP_X = 4.5F,
         LEFT_WING_EXT_RP_Y = 6,

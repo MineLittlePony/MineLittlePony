@@ -21,7 +21,7 @@ public class ModelVillagerPony extends ModelPlayerPony {
 
         float swing = 0;
         if (swingProgress > -9990.0F && !metadata.hasMagic()) {
-            swing = MathHelper.sin(MathHelper.sqrt(swingProgress) * (float)Math.PI * 2) * 0.04f;
+            swing = MathHelper.sin(MathHelper.sqrt(swingProgress) * PI * 2) * 0.04F;
         }
         bag.rotateAngleY = swing;
         apron.rotateAngleY = swing;

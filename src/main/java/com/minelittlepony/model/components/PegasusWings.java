@@ -12,7 +12,8 @@ public class PegasusWings extends ModelBase {
 
     private final AbstractPonyModel pony;
 
-    public final ModelWing leftWing, rightWing;
+    public final ModelWing leftWing;
+    public final ModelWing rightWing;
 
     public PegasusWings(AbstractPonyModel pony, float yOffset, float stretch) {
         this.pony = pony;
@@ -32,7 +33,7 @@ public class PegasusWings extends ModelBase {
         } else {
             float pi = PI * (float) Math.pow(limbSwingAmount, 16);
             
-            float mve = limbSwing * 0.6662F; // magic number ahoy
+            float mve = limbSwing * 0.6662f; // magic number ahoy
             float srt = limbSwingAmount / 4;
             
             swing = MathHelper.cos(mve + pi) * srt;
@@ -51,7 +52,7 @@ public class PegasusWings extends ModelBase {
     
     public float getWingRotationFactor(float ticks) {
         if (pony.isFlying) {
-            return (MathHelper.sin(ticks * 0.536F) * 1.0F) + ROTATE_270 + 0.4F;
+            return (MathHelper.sin(ticks * 0.536f) * 1) + ROTATE_270 + 0.4f;
         }
         return LEFT_WING_ROTATE_ANGLE_Z_SNEAK;
     }

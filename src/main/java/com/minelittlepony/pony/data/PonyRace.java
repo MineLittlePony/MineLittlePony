@@ -15,7 +15,8 @@ public enum PonyRace implements ITriggerPixelMapped<PonyRace> {
     GRIFFIN(0xae9145, PlayerModels.PONY, true, false),
     HIPPOGRIFF(0xd6ddac, PlayerModels.PONY, true, false);
 
-    private boolean wings, horn;
+    private boolean wings;
+    private boolean horn;
 
     private int triggerPixel;
     
