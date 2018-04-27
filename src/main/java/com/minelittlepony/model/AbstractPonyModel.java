@@ -10,6 +10,7 @@ import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.Random;
@@ -78,6 +79,10 @@ public abstract class AbstractPonyModel extends ModelPlayer {
         if (doCancelRender()) {
             super.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
         }
+    }
+
+    public ArmPose getArmPoseForSide(EnumHandSide side) {
+        return side == EnumHandSide.RIGHT ? rightArmPose : leftArmPose;
     }
 
     /**

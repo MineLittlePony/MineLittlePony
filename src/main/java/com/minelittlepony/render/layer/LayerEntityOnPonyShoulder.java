@@ -2,7 +2,6 @@ package com.minelittlepony.render.layer;
 
 import com.minelittlepony.ForgeProxy;
 import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.ponies.ModelPlayerPony;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -54,7 +53,6 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientP
         GlStateManager.disableRescaleNormal();
     }
 
-    @SuppressWarnings("unchecked")
     @Nullable
     private EntityLivingBase renderShoulderEntity(AbstractClientPlayer player, @Nullable EntityLivingBase entity, NBTTagCompound tag,
             float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale, boolean left) {
@@ -69,19 +67,19 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientP
 
         GlStateManager.pushMatrix();
 
-        ModelPlayerPony model = ((ModelPlayerPony) getRenderer().getMainModel());
-        model.transform(BodyPart.BODY);
+        getPonyModel().transform(BodyPart.BODY);
 
         // render on the haunches
         GlStateManager.translate(left ? 0.25F : -0.25F, 0.25F, 0.35F);
         GlStateManager.scale(1, -1, -1);
-        GlStateManager.rotate(5 * (left ? -1 : 1), 0, 0, 1);
+        GlStateManager.rotate(left ? -5 : 5, 0, 0, 1);
 
         Render<Entity> render = renderManager.getEntityRenderObject(entity);
         if (render != null) {
             render.doRender(entity, 0, 0, 0, 0, 0);
-            GlStateManager.popMatrix();
         }
+
+        GlStateManager.popMatrix();
         return entity;
     }
 

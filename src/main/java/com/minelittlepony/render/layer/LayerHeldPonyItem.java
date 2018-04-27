@@ -22,7 +22,7 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
 
     @Override
     public void doPonyRender(T entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
-        ModelBase model = getRenderer().getMainModel();
+
         boolean mainRight = entity.getPrimaryHand() == EnumHandSide.RIGHT;
 
         ItemStack itemMain = entity.getHeldItemMainhand();
@@ -32,6 +32,8 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
         ItemStack right = mainRight ? itemMain : itemOff;
 
         if (!left.isEmpty() || !right.isEmpty()) {
+            ModelBase model = getRenderer().getMainModel();
+
             pushMatrix();
             if (model instanceof AbstractPonyModel) {
                 ((AbstractPonyModel) model).transform(BodyPart.LEGS);

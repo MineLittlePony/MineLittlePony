@@ -321,13 +321,11 @@ public class ModelPlayerPony extends AbstractPonyModel {
     protected void swingItem(Entity entity, float swingProgress) {
         if (swingProgress > -9990.0F && !isSleeping) {
             EnumHandSide mainSide = getMainHand(entity);
-            boolean mainRight = mainSide == EnumHandSide.RIGHT;
-            ArmPose mainPose = mainRight ? rightArmPose : leftArmPose;
 
-            if (mainPose == ArmPose.EMPTY) return;
+            if (getArmPoseForSide(mainSide) == ArmPose.EMPTY) return;
 
             if (metadata.hasMagic()) {
-                swingArm(mainRight ? unicornArmRight : unicornArmLeft);
+                swingArm(getUnicornArmForSide(mainSide));
             } else {
                 swingArm(getArmForSide(mainSide));
             }
@@ -348,10 +346,12 @@ public class ModelPlayerPony extends AbstractPonyModel {
     }
 
     protected void swingArms(float tick) {
+        if (isSleeping) return;
+
         float cos = MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
         float sin = MathHelper.sin(tick * 0.067F) * 0.05F;
 
-        if (rightArmPose != ArmPose.EMPTY && !isSleeping) {
+        if (rightArmPose != ArmPose.EMPTY) {
 
             if (metadata.hasMagic()) {
                 unicornArmRight.rotateAngleZ += cos;
@@ -361,7 +361,8 @@ public class ModelPlayerPony extends AbstractPonyModel {
                 bipedRightArm.rotateAngleX += sin;
             }
         }
-        if (leftArmPose != ArmPose.EMPTY && !isSleeping) {
+
+        if (leftArmPose != ArmPose.EMPTY) {
             if (metadata.hasMagic()) {
                 unicornArmLeft.rotateAngleZ += cos;
                 unicornArmLeft.rotateAngleX += sin;
@@ -389,6 +390,10 @@ public class ModelPlayerPony extends AbstractPonyModel {
 
     protected void adjustNeck(float rotateAngleX, float rotationPointY, float rotationPointZ) {
         neck.setRotationPoint(NECK_ROT_X + rotateAngleX, rotationPointY, rotationPointZ);
+    }
+
+    public PonyRenderer getUnicornArmForSide(EnumHandSide side) {
+        return side == EnumHandSide.LEFT ? unicornArmLeft : unicornArmRight;
     }
 
     /**
@@ -659,11 +664,8 @@ public class ModelPlayerPony extends AbstractPonyModel {
             bipedRightLegwear.setRotationPoint(-3, yOffset, 0);
         }
 
-        unicornArmLeft .addBox(FIRSTP_ARM_CENTRE_X - 2, armY, armZ, 4, 12, 4, stretch + .25f);
-        unicornArmRight.addBox(FIRSTP_ARM_CENTRE_X - 2, armY, armZ, 4, 12, 4, stretch + .25f);
-
-        unicornArmLeft .setRotationPoint(5, yOffset + 2, 0);
-        unicornArmRight.setRotationPoint(-5, yOffset + 2, 0);
+        unicornArmLeft .box(FIRSTP_ARM_CENTRE_X - 2, armY, armZ, 4, 12, 4, stretch + .25f).around(5, yOffset + 2, 0);
+        unicornArmRight.box(FIRSTP_ARM_CENTRE_X - 2, armY, armZ, 4, 12, 4, stretch + .25f).around(-5, yOffset + 2, 0);
     }
 
     @Override

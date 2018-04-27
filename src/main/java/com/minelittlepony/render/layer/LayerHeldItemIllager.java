@@ -22,7 +22,7 @@ public class LayerHeldItemIllager<T extends AbstractIllager> extends LayerHeldPo
 
     @Override
     protected void renderArm(EnumHandSide side) {
-        ((ModelIllagerPony) getRenderer().getMainModel()).getArm(side).postRender(0.0625F);
+        ((ModelIllagerPony)getPonyModel()).getArm(side).postRender(0.0625F);
     }
 
     public boolean shouldRender(T entity) {
