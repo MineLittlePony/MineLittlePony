@@ -43,7 +43,6 @@ public class ModelVillagerPony extends ModelPlayerPony {
                 apron.render(scale);
             }
         }
-
     }
 
     @Override
@@ -60,20 +59,22 @@ public class ModelVillagerPony extends ModelPlayerPony {
 
         bag.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
            .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-           .tex(56, 25).addBackPlane(-7, -5,    -4, 3, 6, stretch) //right bag front
-                       .addBackPlane( 4, -5,    -4, 3, 6, stretch) //left bag front
-           .tex(59, 25).addBackPlane(-7, -5,     4, 3, 6, stretch) //right bag back
-                       .addBackPlane( 5, -5,     4, 3, 6, stretch) //left bag back
-           .tex(56, 29).addWestPlane(-7, -5,    -4, 6, 8, stretch) //right bag outside
-                       .addWestPlane( 7, -5,    -4, 6, 8, stretch) //left bag outside
-                       .addWestPlane(-4, -5,    -4, 6, 8, stretch) //right bag inside
-                       .addWestPlane( 4, -5,    -4, 6, 8, stretch) //left bag inside
-            .tex(56, 31).addTopPlane(-4, -4.5F, -1, 8, 1, stretch) //strap front
-                        .addTopPlane(-4, -4.5F,  0, 8, 1, stretch) //strap back
-           .child(0).tex(56, 16).addTopPlane(2, -5, -2,  8, 3, stretch) //right bag top
-                                .addTopPlane(2, -5, -13, 8, 3, stretch) //left bag top
-                 .tex(56, 22).addBottomPlane(2,  1, -2,  8, 3, stretch) //right bag bottom
-                             .addBottomPlane(2,  1, -13, 8, 3, stretch) //left bag bottom
+           .tex(56, 25).addBackPlane(-7,     -5,    -4, 3, 6, stretch) //right bag front
+                       .addBackPlane( 4,     -5,    -4, 3, 6, stretch) //left bag front
+           .tex(59, 25).addBackPlane(-7,     -5,     4, 3, 6, stretch) //right bag back
+                       .addBackPlane( 4,     -5,     4, 3, 6, stretch) //left bag back
+           .tex(56, 29).addWestPlane(-7,     -5,    -4, 6, 8, stretch) //right bag outside
+                       .addWestPlane( 7,     -5,    -4, 6, 8, stretch) //left bag outside
+                       .addWestPlane(-4.01f, -5,    -4, 6, 8, stretch) //right bag inside
+                       .addWestPlane( 4.01f, -5,    -4, 6, 8, stretch) //left bag inside
+           .tex(56, 31) .addTopPlane(-4,     -4.5F, -1, 8, 1, stretch) //strap front
+                        .addTopPlane(-4,     -4.5F,  0, 8, 1, stretch) //strap back
+                       .addBackPlane(-4,     -4.5F,  0, 8, 1, stretch)
+                      .addFrontPlane(-4,     -4.5F,  0, 8, 1, stretch)
+           .child(0).tex(56, 16).flipZ().addTopPlane(2, -5, -13, 8, 3, stretch) //left bag top
+                                .flipZ().addTopPlane(2, -5,  -2, 8, 3, stretch) //right bag top
+                 .tex(56, 22).flipZ().addBottomPlane(2,  1, -13, 8, 3, stretch) //left bag bottom
+                             .flipZ().addBottomPlane(2,  1,  -2, 8, 3, stretch) //right bag bottom
                     .rotateAngleY = 4.712389F;
 
         apron.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
