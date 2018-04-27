@@ -80,6 +80,16 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
         return (T) this;
     }
 
+    /**
+     * Sets this renderer's rotation angles.
+     */
+    public T rotate(float x, float y, float z) {
+        rotateAngleX = x;
+        rotateAngleY = y;
+        rotateAngleZ = z;
+        return (T) this;
+    }
+
     public static <T extends ModelRenderer> T at(T renderer, float x, float y, float z) {
         renderer.offsetX = x / 16;
         renderer.offsetY = y / 16;
@@ -88,9 +98,7 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
     }
 
     public void rotateTo(ModelRenderer other) {
-        rotateAngleX = other.rotateAngleX;
-        rotateAngleY = other.rotateAngleY;
-        rotateAngleZ = other.rotateAngleZ;
+        rotate(other.rotateAngleX, other.rotateAngleY, other.rotateAngleZ);
     }
 
     public T rotateAt(ModelRenderer other) {
@@ -111,9 +119,17 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
      */
     public T child(int index) {
         if (childModels == null || index >= childModels.size()) {
-            addChild(copySelf().offset(modelOffsetX, modelOffsetY, modelOffsetZ));
+            child(copySelf().offset(modelOffsetX, modelOffsetY, modelOffsetZ));
         }
         return (T)childModels.get(index);
+    }
+
+    /**
+     * Adds a new child renderer and returns itself for chaining.
+     */
+    public <K extends ModelRenderer> T child(K child) {
+        addChild(child);
+        return (T)this;
     }
 
     @Override

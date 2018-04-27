@@ -6,72 +6,62 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 
+import static com.minelittlepony.model.PonyModelConstants.PI;
+
+import com.minelittlepony.render.PonyRenderer;
+
 public class ModelBreezie extends ModelBiped {
 
-    ModelRenderer neck;
-    ModelRenderer tail;
-    ModelRenderer tailStub;
+    PonyRenderer neck;
+    PonyRenderer tail;
+    PonyRenderer tailStub;
 
-    ModelRenderer leftWing;
-    ModelRenderer rightWing;
+    PonyRenderer leftWing;
+    PonyRenderer rightWing;
 
     public ModelBreezie() {
         textureWidth = 64;
         textureHeight = 64;
 
         bipedHeadwear.showModel = false;
+        bipedHead = new PonyRenderer(this)
+                .child(new PonyRenderer(this)
+                    .addBox(-3, -6, -3, 6, 6, 6).around(0, 0, -4)
+                    .tex(28, 0).addBox( 2, -7,  1, 1, 1, 1)
+                    .tex(24, 0).addBox(-3, -7,  1, 1, 1, 1)
+                    .tex(24, 9).addBox(-1, -2, -4, 2, 2, 1))
+                .child(new PonyRenderer(this)
+                    .tex(28, 2).addBox( 1, -11, -2, 1, 6, 1)
+                    .tex(24, 2).addBox(-2, -11, -2, 1, 6, 1)
+                    .rotate(-0.2617994F, 0, 0));
 
-        bipedHead = new ModelRenderer(this, 0, 0);
-        bipedHead.setRotationPoint(0, 0, -4);
-        bipedHead.addBox(-3, -6, -3F, 6, 6, 6);
-        bipedHead.setTextureOffset(28, 0).addBox(2F, -7F, 1F, 1, 1, 1);
-        bipedHead.setTextureOffset(24, 0).addBox(-3F, -7F, 1F, 1, 1, 1);
-        bipedHead.setTextureOffset(24, 9).addBox(-1F, -2F, -4F, 2, 2, 1);
+        bipedBody = new PonyRenderer(this, 2, 12)
+                .addBox(0, 0, 0, 6, 7, 14).rotate(-0.5235988F, 0, 0).around(-3, 1, -3);
 
-        ModelRenderer antenna = new ModelRenderer(this);
-        antenna.setTextureOffset(28, 2).addBox(1F, -11F, -2F, 1, 6, 1);
-        antenna.setTextureOffset(24, 2).addBox(-2F, -11F, -2F, 1, 6, 1);
-        setRotation(antenna, -0.2617994F, 0, 0);
+        bipedLeftArm =  new PonyRenderer(this, 28, 12).addBox(0, 0, 0, 2, 12, 2).around( 1, 8, -5);
+        bipedRightArm = new PonyRenderer(this, 36, 12).addBox(0, 0, 0, 2, 12, 2).around(-3, 8, -5);
+        bipedLeftLeg =  new PonyRenderer(this, 8, 12) .addBox(0, 0, 0, 2, 12, 2).around( 1, 12, 3);
+        bipedRightLeg = new PonyRenderer(this, 0, 12) .addBox(0, 0, 0, 2, 12, 2).around(-3, 12, 3);
 
-        bipedHead.addChild(antenna);
+        neck = new PonyRenderer(this, 40, 0)
+                .addBox(0, 0, 0, 2, 5, 2)
+                .rotate(0.0872665F, 0, 0).around(-1, -2, -4);
 
-        bipedBody = new ModelRenderer(this, 2, 12);
-        bipedBody.addBox(0, 0, 0, 6, 7, 14).setRotationPoint(-3, 1, -3);
-        setRotation(bipedBody, -0.5235988F, 0, 0);
+        tailStub = new PonyRenderer(this, 40, 7)
+                .addBox(0, 0, 0, 1, 1, 3).around(-0.5F, 8, 8);
 
-        bipedRightArm = new ModelRenderer(this, 36, 12);
-        bipedRightArm.addBox(0, 0, 0, 2, 12, 2).setRotationPoint(-3, 8, -5);
+        tail = new PonyRenderer(this, 32, 0)
+                .addBox(0, 0, 1, 2, 9, 2).around(-1, 7, 10);
 
-        bipedLeftArm = new ModelRenderer(this, 28, 12);
-        bipedLeftArm.addBox(0, 0, 0, 2, 12, 2).setRotationPoint(1, 8, -5);
-
-        bipedLeftLeg = new ModelRenderer(this, 8, 12);
-        bipedLeftLeg.addBox(0, 0, 0, 2, 12, 2).setRotationPoint(1, 12, 3);
-
-        bipedRightLeg = new ModelRenderer(this, 0, 12);
-        bipedRightLeg.addBox(0, 0, 0, 2, 12, 2).setRotationPoint(-3, 12, 3);
-
-        neck = new ModelRenderer(this, 40, 0);
-        neck.addBox(0, 0, 0, 2, 5, 2).setRotationPoint(-1, -2, -4);
-        setRotation(neck, 0.0872665F, 0, 0);
-
-        tailStub = new ModelRenderer(this, 40, 7);
-        tailStub.addBox(0, 0, 0, 1, 1, 3).setRotationPoint(-0.5F, 8, 8);
-
-        tail = new ModelRenderer(this, 32, 0);
-        tail.addBox(0, 0, 1, 2, 9, 2).setRotationPoint(-1, 7, 10);
-
-        leftWing = new ModelRenderer(this, 0, 40);
-        leftWing.addBox(0, -12, 0, 24, 24, 0);
-        leftWing.setRotationPoint(2, 3, 1);
+        leftWing = new PonyRenderer(this, 0, 40)
+                .addBox(0, -12, 0, 24, 24, 0)
+                .rotate(0, -0.6981317F, 0).around(2, 3, 1);
         leftWing.setTextureSize(64, 32);
-        setRotation(leftWing, 0, -0.6981317F, 0);
 
-        rightWing = new ModelRenderer(this, 0, 40);
-        rightWing.addBox(-24, -12, 0, 24, 24, 0, true);
-        rightWing.setRotationPoint(-2, 3, 1);
+        rightWing = new PonyRenderer(this, 0, 40)
+                .addBox(-24, -12, 0, 24, 24, 0, true)
+                .rotate(0, 0.6981317F, 0).around(-2, 3, 1);
         rightWing.setTextureSize(64, 32);
-        setRotation(rightWing, 0, 0.6981317F, 0);
 
     }
 
@@ -85,12 +75,6 @@ public class ModelBreezie extends ModelBiped {
         rightWing.render(scale);
     }
 
-    private void setRotation(ModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
-    }
-
     @SuppressWarnings("incomplete-switch")
     @Override
     public void setRotationAngles(float move, float swing, float age, float headYaw, float headPitch, float scale, Entity entity) {
@@ -98,103 +82,99 @@ public class ModelBreezie extends ModelBiped {
         bipedHead.rotateAngleY = headYaw * 0.017453292F;
         bipedHead.rotateAngleX = headPitch * 0.017453292F;
 
-        bipedRightArm.rotateAngleX = MathHelper.cos(move * 0.6662F + (float) Math.PI) * 2.0F * swing * 0.5F;
-        bipedLeftArm.rotateAngleX = MathHelper.cos(move * 0.6662F) * 2.0F * swing * 0.5F;
-        bipedRightArm.rotateAngleZ = 0;
+        bipedLeftArm.rotateAngleX = MathHelper.cos(move * 0.6662F) * swing;
         bipedLeftArm.rotateAngleZ = 0;
-        bipedRightLeg.rotateAngleX = MathHelper.cos(move * 0.6662F) * 1.4F * swing;
-        bipedLeftLeg.rotateAngleX = MathHelper.cos(move * 0.6662F + (float) Math.PI) * 1.4F * swing;
-        bipedRightLeg.rotateAngleY = 0;
-        bipedLeftLeg.rotateAngleY = 0;
-        bipedRightLeg.rotateAngleZ = 0;
-        bipedLeftLeg.rotateAngleZ = 0;
+
+        ((PonyRenderer)bipedRightArm).rotate(swing * MathHelper.cos(move * 0.6662F + PI),        0, 0);
+        ((PonyRenderer)bipedLeftLeg) .rotate(swing * MathHelper.cos(move * 0.6662F + PI) * 1.4F, 0, 0);
+        ((PonyRenderer)bipedRightLeg).rotate(swing * MathHelper.cos(move * 0.6662F)      * 1.4F, 0, 0);
 
         if (isRiding) {
-            bipedRightArm.rotateAngleX += -((float) Math.PI / 5F);
-            bipedLeftArm.rotateAngleX += -((float) Math.PI / 5F);
-            bipedRightLeg.rotateAngleX = -1.4137167F;
-            bipedRightLeg.rotateAngleY = ((float) Math.PI / 10F);
-            bipedRightLeg.rotateAngleZ = 0.07853982F;
-            bipedLeftLeg.rotateAngleX = -1.4137167F;
-            bipedLeftLeg.rotateAngleY = -((float) Math.PI / 10F);
-            bipedLeftLeg.rotateAngleZ = -0.07853982F;
+            bipedLeftArm.rotateAngleX += -PI / 5;
+            bipedRightArm.rotateAngleX += -PI / 5;
+
+            rotateLegRiding(((PonyRenderer)bipedLeftLeg), -1);
+            rotateLegRiding(((PonyRenderer)bipedRightLeg), 1);
         }
 
-        bipedRightArm.rotateAngleY = 0;
-        bipedRightArm.rotateAngleZ = 0F;
+        rotateArm(bipedLeftArm, leftArmPose, 1);
+        rotateArm(bipedRightArm, rightArmPose, 1);
 
-        switch (leftArmPose) {
-            case EMPTY:
-                bipedLeftArm.rotateAngleY = 0;
-                break;
-            case BLOCK:
-                bipedLeftArm.rotateAngleX = bipedLeftArm.rotateAngleX * 0.5F - 0.9424779F;
-                bipedLeftArm.rotateAngleY = 0.5235988F;
-                break;
-            case ITEM:
-                bipedLeftArm.rotateAngleX = bipedLeftArm.rotateAngleX * 0.5F - ((float) Math.PI / 10F);
-                bipedLeftArm.rotateAngleY = 0;
+        if (swingProgress > 0) {
+            swingArms(getMainHand(entity));
         }
 
-        switch (rightArmPose) {
-            case EMPTY:
-                bipedRightArm.rotateAngleY = 0;
-                break;
-            case BLOCK:
-                bipedRightArm.rotateAngleX = bipedRightArm.rotateAngleX * 0.5F - 0.9424779F;
-                bipedRightArm.rotateAngleY = -0.5235988F;
-                break;
-            case ITEM:
-                bipedRightArm.rotateAngleX = bipedRightArm.rotateAngleX * 0.5F - ((float) Math.PI / 10F);
-                bipedRightArm.rotateAngleY = 0;
-        }
+        float rotX = MathHelper.sin(age * 0.067F) * 0.05F;
+        float rotZ = MathHelper.cos(age * 0.09F) * 0.05F + 0.05F;
 
-        if (swingProgress > 0.0F) {
-            EnumHandSide enumhandside = getMainHand(entity);
-            ModelRenderer modelrenderer = getArmForSide(enumhandside);
-            float f1 = swingProgress;
-            bipedBody.rotateAngleY = MathHelper.sin(MathHelper.sqrt(f1) * ((float) Math.PI * 2F)) * 0.2F;
+        bipedLeftArm.rotateAngleX -= rotX;
+        bipedLeftArm.rotateAngleZ -= rotZ;
 
-            if (enumhandside == EnumHandSide.LEFT) {
-                bipedBody.rotateAngleY *= -1.0F;
-            }
-
-            bipedRightArm.rotationPointZ = MathHelper.sin(bipedBody.rotateAngleY) * 5;
-            bipedRightArm.rotationPointX = -MathHelper.cos(bipedBody.rotateAngleY) * 5;
-            bipedLeftArm.rotationPointZ = -MathHelper.sin(bipedBody.rotateAngleY) * 5;
-            bipedLeftArm.rotationPointX = MathHelper.cos(bipedBody.rotateAngleY) * 5;
-            bipedRightArm.rotateAngleY += bipedBody.rotateAngleY;
-            bipedLeftArm.rotateAngleY += bipedBody.rotateAngleY;
-            //noinspection SuspiciousNameCombination
-            bipedLeftArm.rotateAngleX += bipedBody.rotateAngleY;
-            f1 = 1.0F - swingProgress;
-            f1 = f1 * f1;
-            f1 = f1 * f1;
-            f1 = 1.0F - f1;
-            float f2 = MathHelper.sin(f1 * (float) Math.PI);
-            float f3 = MathHelper.sin(swingProgress * (float) Math.PI) * -(bipedHead.rotateAngleX - 0.7F) * 0.75F;
-            modelrenderer.rotateAngleX = (float) (modelrenderer.rotateAngleX - (f2 * 1.2D + f3));
-            modelrenderer.rotateAngleY += bipedBody.rotateAngleY * 2.0F;
-            modelrenderer.rotateAngleZ += MathHelper.sin(swingProgress * (float) Math.PI) * -0.4F;
-        }
-
-        bipedRightArm.rotateAngleZ += MathHelper.cos(age * 0.09F) * 0.05F + 0.05F;
-        bipedLeftArm.rotateAngleZ -= MathHelper.cos(age * 0.09F) * 0.05F + 0.05F;
-        bipedRightArm.rotateAngleX += MathHelper.sin(age * 0.067F) * 0.05F;
-        bipedLeftArm.rotateAngleX -= MathHelper.sin(age * 0.067F) * 0.05F;
+        bipedRightArm.rotateAngleX += rotX;
+        bipedRightArm.rotateAngleZ += rotZ;
 
         if (rightArmPose == ModelBiped.ArmPose.BOW_AND_ARROW) {
-            bipedRightArm.rotateAngleY = -0.1F + bipedHead.rotateAngleY;
-            bipedLeftArm.rotateAngleY = 0.1F + bipedHead.rotateAngleY + 0.4F;
-            bipedRightArm.rotateAngleX = -((float) Math.PI / 2F) + bipedHead.rotateAngleX;
-            bipedLeftArm.rotateAngleX = -((float) Math.PI / 2F) + bipedHead.rotateAngleX;
+            raiseArm(bipedRightArm, bipedLeftArm, -1);
         } else if (leftArmPose == ModelBiped.ArmPose.BOW_AND_ARROW) {
-            bipedRightArm.rotateAngleY = -0.1F + bipedHead.rotateAngleY - 0.4F;
-            bipedLeftArm.rotateAngleY = 0.1F + bipedHead.rotateAngleY;
-            bipedRightArm.rotateAngleX = -((float) Math.PI / 2) + bipedHead.rotateAngleX;
-            bipedLeftArm.rotateAngleX = -((float) Math.PI / 2) + bipedHead.rotateAngleX;
+            raiseArm(bipedLeftArm, bipedRightArm, 1);
         }
-
     }
 
+    protected void rotateLegRiding(PonyRenderer leg, float factor) {
+        leg.rotate(-1.4137167F, factor * PI / 10, factor * 0.07853982F);
+    }
+
+    protected void swingArms(EnumHandSide mainHand) {
+        bipedBody.rotateAngleY = MathHelper.sin(MathHelper.sqrt(swingProgress) * PI * 2) / 5;
+
+        if (mainHand == EnumHandSide.LEFT) {
+            bipedBody.rotateAngleY *= -1;
+        }
+
+        float sin = MathHelper.sin(bipedBody.rotateAngleY) * 5;
+        float cos = MathHelper.cos(bipedBody.rotateAngleY) * 5;
+
+        bipedLeftArm.rotateAngleX += bipedBody.rotateAngleY;
+        bipedLeftArm.rotateAngleY += bipedBody.rotateAngleY;
+        bipedLeftArm.rotationPointX = cos;
+        bipedLeftArm.rotationPointZ = -sin;
+
+        bipedRightArm.rotateAngleY += bipedBody.rotateAngleY;
+        bipedRightArm.rotationPointX = -cos;
+        bipedRightArm.rotationPointZ = sin;
+
+        float swingAmount = 1 - (float)Math.pow(1 - swingProgress, 4);
+
+        float swingFactorX = MathHelper.sin(swingAmount * PI);
+        float swingX = MathHelper.sin(swingProgress * PI) * (0.7F - bipedHead.rotateAngleX) * 0.75F;
+
+        ModelRenderer mainArm = getArmForSide(mainHand);
+        mainArm.rotateAngleX -= swingFactorX * 1.2F + swingX;
+        mainArm.rotateAngleY += bipedBody.rotateAngleY * 2;
+        mainArm.rotateAngleZ -= MathHelper.sin(swingProgress * PI) * 0.4F;
+    }
+
+    protected void rotateArm(ModelRenderer arm, ArmPose pose, float factor) {
+        switch (pose) {
+            case EMPTY:
+                arm.rotateAngleY = 0;
+                break;
+            case ITEM:
+                arm.rotateAngleX = arm.rotateAngleX / 2 - (PI / 10);
+                arm.rotateAngleY = 0;
+            case BLOCK:
+                arm.rotateAngleX = arm.rotateAngleX / 2 - 0.9424779F;
+                arm.rotateAngleY = factor * 0.5235988F;
+                break;
+            default:
+        }
+    }
+
+    protected void raiseArm(ModelRenderer up, ModelRenderer down, float factor) {
+        up.rotateAngleY = bipedHead.rotateAngleY + (factor / 10);
+        up.rotateAngleX = bipedHead.rotateAngleX - (PI / 2);
+
+        down.rotateAngleY = bipedHead.rotateAngleY - (factor / 2);
+        down.rotateAngleX = bipedHead.rotateAngleX - (PI / 2);
+    }
 }
