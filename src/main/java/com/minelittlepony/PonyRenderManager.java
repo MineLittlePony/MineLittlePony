@@ -7,13 +7,11 @@ import com.minelittlepony.hdskins.gui.EntityPonyModel;
 import com.minelittlepony.hdskins.gui.RenderPonyModel;
 import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.render.player.RenderPonyPlayer;
-import com.minelittlepony.render.ponies.RenderPonyEvoker;
-import com.minelittlepony.render.ponies.RenderPonyIllusionIllager;
+import com.minelittlepony.render.ponies.RenderPonyIllager;
 import com.minelittlepony.render.ponies.RenderPonyPigman;
 import com.minelittlepony.render.ponies.RenderPonySkeleton;
 import com.minelittlepony.render.ponies.RenderPonyVex;
 import com.minelittlepony.render.ponies.RenderPonyVillager;
-import com.minelittlepony.render.ponies.RenderPonyVindicator;
 import com.minelittlepony.render.ponies.RenderPonyZombie;
 import com.minelittlepony.render.ponies.RenderPonyZombieVillager;
 import com.mumfrey.liteloader.util.ModUtilities;
@@ -104,9 +102,9 @@ public class PonyRenderManager {
 
         if (config.illagers) {
             pushNewRenderer(rm, EntityVex.class, new RenderPonyVex(rm));
-            pushNewRenderer(rm, EntityEvoker.class, new RenderPonyEvoker(rm));
-            pushNewRenderer(rm, EntityVindicator.class, new RenderPonyVindicator(rm));
-            pushNewRenderer(rm, EntityIllusionIllager.class, new RenderPonyIllusionIllager(rm));
+            pushNewRenderer(rm, EntityEvoker.class, new RenderPonyIllager.Evoker(rm));
+            pushNewRenderer(rm, EntityVindicator.class, new RenderPonyIllager.Vindicator(rm));
+            pushNewRenderer(rm, EntityIllusionIllager.class, new RenderPonyIllager.Illusionist(rm));
             MineLittlePony.logger.info("Illagers are now ponies.");
         } else {
             restoreRenderer(EntityVex.class);
