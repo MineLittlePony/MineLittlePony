@@ -31,6 +31,6 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
 
     @Override
     protected ResourceLocation getTexture(EntityVillager entity) {
-        return PROFESSIONS[entity.getProfession()];
+        return PROFESSIONS[entity.getProfession() % PROFESSIONS.length];
     }
 }
