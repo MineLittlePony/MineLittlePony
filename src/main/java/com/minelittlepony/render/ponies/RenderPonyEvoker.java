@@ -7,9 +7,7 @@ import com.minelittlepony.render.layer.LayerHeldPonyItem;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityEvoker;
-import net.minecraft.entity.monster.EntitySpellcasterIllager;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 
@@ -23,11 +21,11 @@ public class RenderPonyEvoker extends RenderPonyMob<EntityEvoker> {
 
     @Override
     protected void addLayers() {
-        addLayer(new LayerHeldPonyItem(this) {
+        addLayer(new LayerHeldPonyItem<EntityEvoker>(this) {
             @Override
-            public void doPonyRender(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float ticks, float age, float headYaw, float headPitch, float scale) {
-                if (((EntitySpellcasterIllager) entity).isSpellcasting()) {
-                    super.doPonyRender(entity, limbSwing, limbSwingAmount, ticks, age, headYaw, headPitch, scale);
+            public void doPonyRender(EntityEvoker entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+                if (entity.isSpellcasting()) {
+                    super.doPonyRender(entity, move, swing, ticks, age, headYaw, headPitch, scale);
                 }
             }
 

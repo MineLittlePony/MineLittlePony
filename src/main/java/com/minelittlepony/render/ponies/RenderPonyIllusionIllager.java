@@ -7,7 +7,6 @@ import com.minelittlepony.render.layer.LayerHeldPonyItem;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityIllusionIllager;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
@@ -25,11 +24,11 @@ public class RenderPonyIllusionIllager extends RenderPonyMob<EntityIllusionIllag
 
     @Override
     protected void addLayers() {
-        addLayer(new LayerHeldPonyItem(this) {
+        addLayer(new LayerHeldPonyItem<EntityIllusionIllager>(this) {
             @Override
-            public void doPonyRender(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float ticks, float age, float headYaw, float headPitch, float scale) {
-                if (((EntityIllusionIllager) entity).isSpellcasting() || ((EntityIllusionIllager) entity).isAggressive()) {
-                    super.doPonyRender(entity, limbSwing, limbSwingAmount, ticks, age, headYaw, headPitch, scale);
+            public void doPonyRender(EntityIllusionIllager entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+                if (entity.isSpellcasting() || entity.isAggressive()) {
+                    super.doPonyRender(entity, move, swing, ticks, age, headYaw, headPitch, scale);
                 }
             }
 

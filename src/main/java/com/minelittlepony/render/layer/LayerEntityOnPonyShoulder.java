@@ -19,7 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nullable;
 
-public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<EntityPlayer> {
+public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientPlayer> {
 
     private final RenderManager renderManager;
 
@@ -32,7 +32,7 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<EntityPlayer> {
     }
 
     @Override
-    public void doPonyRender(EntityPlayer player, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+    public void doPonyRender(AbstractClientPlayer player, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
 
         GlStateManager.enableRescaleNormal();
         GlStateManager.color(1, 1, 1, 1);
@@ -56,7 +56,7 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<EntityPlayer> {
 
     @SuppressWarnings("unchecked")
     @Nullable
-    private EntityLivingBase renderShoulderEntity(EntityPlayer player, @Nullable EntityLivingBase entity, NBTTagCompound tag,
+    private EntityLivingBase renderShoulderEntity(AbstractClientPlayer player, @Nullable EntityLivingBase entity, NBTTagCompound tag,
             float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale, boolean left) {
 
         if (entity == null || !entity.getUniqueID().equals(tag.getUniqueId("UUID"))) {

@@ -20,7 +20,7 @@ import static com.minelittlepony.model.PonyModelConstants.PI;
 
 public class LayerPonyCape extends AbstractPonyLayer<AbstractClientPlayer> {
 
-    public LayerPonyCape(RenderLivingBase<? extends AbstractClientPlayer> entity) {
+    public LayerPonyCape(RenderLivingBase<AbstractClientPlayer> entity) {
         super(entity, new LayerCape((RenderPlayer) entity));
     }
 

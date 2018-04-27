@@ -26,14 +26,14 @@ import javax.annotation.Nullable;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
-public class LayerHeldPonyItem extends AbstractPonyLayer<EntityLivingBase> {
+public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyLayer<T> {
 
-    public LayerHeldPonyItem(RenderLivingBase<? extends EntityLivingBase> livingPony) {
+    public LayerHeldPonyItem(RenderLivingBase<T> livingPony) {
         super(livingPony, new LayerHeldItem(livingPony));
     }
 
     @Override
-    public void doPonyRender(EntityLivingBase entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+    public void doPonyRender(T entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
         ModelBase model = getRenderer().getMainModel();
         boolean mainRight = entity.getPrimaryHand() == EnumHandSide.RIGHT;
 
@@ -62,7 +62,7 @@ public class LayerHeldPonyItem extends AbstractPonyLayer<EntityLivingBase> {
         }
     }
 
-    private void renderHeldItem(EntityLivingBase entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
+    private void renderHeldItem(T entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
         if (!drop.isEmpty()) {
             GlStateManager.pushMatrix();
             translateToHand(hand);
@@ -108,7 +108,7 @@ public class LayerHeldPonyItem extends AbstractPonyLayer<EntityLivingBase> {
         }
     }
 
-    public void renderItemGlow(EntityLivingBase entity, ItemStack drop, TransformType transform, EnumHandSide hand, int glowColor) {
+    public void renderItemGlow(T entity, ItemStack drop, TransformType transform, EnumHandSide hand, int glowColor) {
 
         // enchantments mess up the rendering
         ItemStack drop2 = drop.copy();

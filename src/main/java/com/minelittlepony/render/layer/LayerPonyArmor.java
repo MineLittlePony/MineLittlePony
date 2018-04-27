@@ -29,7 +29,7 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 import java.util.Map;
 
-public class LayerPonyArmor extends AbstractPonyLayer<EntityLivingBase> {
+public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLayer<T> {
 
     private static final ResourceLocation ENCHANTED_ITEM_GLINT_RES = new ResourceLocation("textures/misc/enchanted_item_glint.png");
 
@@ -38,12 +38,12 @@ public class LayerPonyArmor extends AbstractPonyLayer<EntityLivingBase> {
 
     private ModelWrapper pony;
 
-    public LayerPonyArmor(RenderLivingBase<? extends EntityLivingBase> renderer) {
+    public LayerPonyArmor(RenderLivingBase<T> renderer) {
         super(renderer, new LayerBipedArmor(renderer));
     }
 
     @Override
-    public void doPonyRender(EntityLivingBase entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+    public void doPonyRender(T entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
         pony = ((IRenderPony) getRenderer()).getPlayerModel();
 
         for (EntityEquipmentSlot i : EntityEquipmentSlot.values()) {
@@ -53,7 +53,7 @@ public class LayerPonyArmor extends AbstractPonyLayer<EntityLivingBase> {
         }
     }
 
-    private void renderArmor(EntityLivingBase entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale, EntityEquipmentSlot armorSlot) {
+    private void renderArmor(T entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale, EntityEquipmentSlot armorSlot) {
         ItemStack itemstack = entity.getItemStackFromSlot(armorSlot);
 
         if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemArmor) {
@@ -93,7 +93,7 @@ public class LayerPonyArmor extends AbstractPonyLayer<EntityLivingBase> {
         }
     }
 
-    private Tuple<ResourceLocation, Boolean> getArmorTexture(EntityLivingBase entity, ItemStack itemstack, EntityEquipmentSlot slot, @Nullable String type) {
+    private Tuple<ResourceLocation, Boolean> getArmorTexture(T entity, ItemStack itemstack, EntityEquipmentSlot slot, @Nullable String type) {
         ItemArmor item = (ItemArmor) itemstack.getItem();
         String texture = item.getArmorMaterial().getName();
         String domain = "minecraft";
@@ -166,7 +166,7 @@ public class LayerPonyArmor extends AbstractPonyLayer<EntityLivingBase> {
         }
     }
 
-    private void renderEnchantment(EntityLivingBase entity, ModelBase model, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+    private void renderEnchantment(T entity, ModelBase model, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
 
         getRenderer().bindTexture(ENCHANTED_ITEM_GLINT_RES);
 

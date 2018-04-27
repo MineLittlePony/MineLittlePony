@@ -44,15 +44,11 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
 
     @Override
     protected LayerRenderer<EntityLivingBase> getElytraLayer() {
-        final LayerRenderer<EntityLivingBase> elytra = super.getElytraLayer();
-        final PonyElytra modelElytra = new PonyElytra();
-        return new AbstractPonyLayer<EntityLivingBase>(this, elytra) {
+        return new AbstractPonyLayer<EntityPonyModel>(this, super.getElytraLayer()) {
+            final PonyElytra modelElytra = new PonyElytra();
 
             @Override
-            public void doPonyRender(EntityLivingBase entityBase, float swing, float swingAmount, float ticks, float age, float yaw, float head, float scale) {
-
-                EntityPonyModel entity = (EntityPonyModel) entityBase;
-
+            public void doPonyRender(EntityPonyModel entity, float swing, float swingAmount, float ticks, float age, float yaw, float head, float scale) {
                 ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
                 if (itemstack.getItem() == Items.ELYTRA) {

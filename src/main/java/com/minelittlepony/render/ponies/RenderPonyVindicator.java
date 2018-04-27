@@ -7,7 +7,6 @@ import com.minelittlepony.render.layer.LayerHeldPonyItem;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityVindicator;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
@@ -23,10 +22,10 @@ public class RenderPonyVindicator extends RenderPonyMob<EntityVindicator> {
 
     @Override
     protected void addLayers() {
-        this.addLayer(new LayerHeldPonyItem(this) {
+        this.addLayer(new LayerHeldPonyItem<EntityVindicator>(this) {
             @Override
-            public void doPonyRender(EntityLivingBase entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
-                if (((EntityVindicator) entity).isAggressive()) {
+            public void doPonyRender(EntityVindicator entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+                if (entity.isAggressive()) {
                     super.doPonyRender(entity, move, swing, ticks, age, headYaw, headPitch, scale);
                 }
             }

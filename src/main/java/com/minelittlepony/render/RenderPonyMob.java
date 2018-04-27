@@ -28,11 +28,11 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     }
 
     protected void addLayers() {
-        addLayer(new LayerPonyArmor(this));
-        addLayer(new LayerHeldPonyItem(this));
+        addLayer(new LayerPonyArmor<>(this));
+        addLayer(new LayerHeldPonyItem<>(this));
         // addLayer(new LayerArrow(this));
-        addLayer(new LayerPonyCustomHead(this));
-        addLayer(new LayerPonyElytra(this));
+        addLayer(new LayerPonyCustomHead<>(this));
+        addLayer(new LayerPonyElytra<>(this));
     }
 
     @Override

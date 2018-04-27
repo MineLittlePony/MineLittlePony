@@ -26,16 +26,16 @@ import net.minecraft.util.EnumFacing;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
-public class LayerPonyCustomHead implements LayerRenderer<EntityLivingBase> {
+public class LayerPonyCustomHead<T extends EntityLivingBase> implements LayerRenderer<T> {
 
-    private RenderLivingBase<? extends EntityLivingBase> renderer;
+    private RenderLivingBase<T> renderer;
 
-    public LayerPonyCustomHead(RenderLivingBase<? extends EntityLivingBase> renderPony) {
+    public LayerPonyCustomHead(RenderLivingBase<T> renderPony) {
         renderer = renderPony;
     }
 
     @Override
-    public void doRenderLayer(EntityLivingBase entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+    public void doRenderLayer(T entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
         ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
         if (!itemstack.isEmpty()) {
             AbstractPonyModel model = getModel().getModel();
@@ -67,7 +67,7 @@ public class LayerPonyCustomHead implements LayerRenderer<EntityLivingBase> {
 
     }
 
-    private void renderBlock(EntityLivingBase entity, ItemStack itemstack) {
+    private void renderBlock(T entity, ItemStack itemstack) {
         rotate(180, 0, 1, 0);
         scale(0.625, -0.625F, -0.625F);
         translate(0, 0.4F, -0.21F);

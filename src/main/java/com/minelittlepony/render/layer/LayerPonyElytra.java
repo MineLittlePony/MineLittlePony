@@ -19,17 +19,17 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
-public class LayerPonyElytra extends AbstractPonyLayer<EntityLivingBase> {
+public class LayerPonyElytra<T extends EntityLivingBase> extends AbstractPonyLayer<T> {
 
     private static final ResourceLocation TEXTURE_ELYTRA = new ResourceLocation("textures/entity/elytra.png");
     private PonyElytra modelElytra = new PonyElytra();
 
-    public LayerPonyElytra(RenderLivingBase<?> rp) {
+    public LayerPonyElytra(RenderLivingBase<T> rp) {
         super(rp, new LayerElytra(rp));
     }
 
     @Override
-    public void doPonyRender(@Nonnull EntityLivingBase entity, float move, float swing, float ticks, float age, float yaw, float head, float scale) {
+    public void doPonyRender(@Nonnull T entity, float move, float swing, float ticks, float age, float yaw, float head, float scale) {
 
         AbstractPonyModel model = ((IRenderPony) getRenderer()).getPlayerModel().getModel();
 

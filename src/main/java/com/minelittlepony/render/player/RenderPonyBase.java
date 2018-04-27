@@ -44,12 +44,12 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
   }
 
   protected void addExtraLayers() {
-      addLayer(new LayerPonyArmor(this));
-      addLayer(new LayerHeldPonyItem(this));
+      addLayer(new LayerPonyArmor<>(this));
+      addLayer(new LayerHeldPonyItem<>(this));
       addLayer(new LayerArrow(this));
       addLayer(new LayerPonyCape(this));
-      addLayer(new LayerPonyCustomHead(this));
-      addLayer(new LayerPonyElytra(this));
+      addLayer(new LayerPonyCustomHead<>(this));
+      addLayer(new LayerPonyElytra<>(this));
       addLayer(new LayerEntityOnPonyShoulder(renderManager, this));
   }
 
