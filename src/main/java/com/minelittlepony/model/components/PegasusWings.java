@@ -62,7 +62,7 @@ public class PegasusWings extends ModelBase {
     }
 
     public boolean isExtended() {
-        return pony.isFlying || pony.isSneak;
+        return pony.isFlying || pony.isCrouching();
     }
 
     @Override

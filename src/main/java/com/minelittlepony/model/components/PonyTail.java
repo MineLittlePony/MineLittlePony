@@ -30,7 +30,7 @@ public class PonyTail extends PlaneRenderer {
         rotateAngleZ = rainboom ? 0 : MathHelper.cos(move * 0.8F) * 0.2f * swing;
         rotateAngleY = bodySwing;
 
-        if (theModel.isSneak && !theModel.isFlying && !rainboom) {
+        if (theModel.isCrouching() && !rainboom) {
             rotateSneak();
         } else if (theModel.isRiding) {
             rotationPointZ = 13;
