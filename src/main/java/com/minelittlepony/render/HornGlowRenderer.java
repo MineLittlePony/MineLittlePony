@@ -4,7 +4,7 @@ import static net.minecraft.client.renderer.GlStateManager.color;
 
 import net.minecraft.client.model.ModelBase;
 
-public class HornGlowRenderer extends BasePonyRenderer<HornGlowRenderer> {
+public class HornGlowRenderer extends AbstractPonyRenderer<HornGlowRenderer> {
 
     float red;
     float green;

@@ -2,7 +2,7 @@ package com.minelittlepony.render;
 
 import net.minecraft.client.model.ModelBase;
 
-public class PonyRenderer extends BasePonyRenderer<PonyRenderer> {
+public class PonyRenderer extends AbstractPonyRenderer<PonyRenderer> {
 
     public PonyRenderer(ModelBase model) {
         super(model);

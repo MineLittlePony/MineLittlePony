@@ -6,7 +6,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.TextureOffset;
 
 @SuppressWarnings("unchecked")
-public abstract class BasePonyRenderer<T extends BasePonyRenderer<T>> extends ModelRenderer {
+public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> extends ModelRenderer {
 
     protected final ModelBase baseModel;
 
@@ -17,12 +17,12 @@ public abstract class BasePonyRenderer<T extends BasePonyRenderer<T>> extends Mo
     protected float modelOffsetY;
     protected float modelOffsetZ;
     
-    public BasePonyRenderer(ModelBase model) {
+    public AbstractPonyRenderer(ModelBase model) {
         super(model);
         baseModel = model;
     }
 
-    public BasePonyRenderer(ModelBase model, int x, int y) {
+    public AbstractPonyRenderer(ModelBase model, int x, int y) {
         super(model, x, y);
         baseModel = model;
     }

@@ -1,10 +1,10 @@
 package com.minelittlepony.render.plane;
 
-import com.minelittlepony.render.BasePonyRenderer;
+import com.minelittlepony.render.AbstractPonyRenderer;
 
 import net.minecraft.client.model.ModelBase;
 
-public class PlaneRenderer extends BasePonyRenderer<PlaneRenderer> {
+public class PlaneRenderer extends AbstractPonyRenderer<PlaneRenderer> {
 
     public boolean mirrory, mirrorz;
 
