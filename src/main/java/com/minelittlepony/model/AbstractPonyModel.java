@@ -33,17 +33,17 @@ public abstract class AbstractPonyModel extends ModelPlayer {
      * Associcated pony data.
      */
     public IPonyData metadata = new PonyData();
-    
+
     /**
      * Vertical pitch whilst flying.
      */
     public float motionPitch;
-    
+
     /**
      * Flag indicating that this model is performing a rainboom (flight).
      */
     public boolean rainboom;
-    
+
     public AbstractPonyModel(boolean arms) {
         super(0, arms);
     }
@@ -57,12 +57,12 @@ public abstract class AbstractPonyModel extends ModelPlayer {
         initTextures();
         initPositions(yOffset, stretch);
     }
-    
+
     /**
      * Returns a new pony armour to go with this model. Called on startup by a model wrapper.
      */
     public abstract PonyArmor createArmour();
-    
+
     /**
      * Loads texture values.
      */
@@ -86,7 +86,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     protected boolean doCancelRender() {
         return false;
     }
-    
+
     /**
      * Returns true if this model is on the ground and crouching.
      */
@@ -101,7 +101,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
         return (isFlying && metadata.getRace().hasWings()) ||
                 (entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isElytraFlying());
     }
-    
+
     /**
      * Returns true if the current model is a child or a child-like foal.
      */
@@ -117,7 +117,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
         renderer.rotationPointY += y;
         renderer.rotationPointZ += z;
     }
-    
+
     /**
      * Rotates the provided arm to the correct orientation for holding an item.
      * 
@@ -129,7 +129,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     protected void rotateArmHolding(ModelRenderer arm, float direction, float swingProgress, float tick) {
         float swing = MathHelper.sin(swingProgress * (float)Math.PI);
         float roll = MathHelper.sin((1 - (1 - swingProgress) * (1 - swingProgress)) * (float)Math.PI);
-        
+
         arm.rotateAngleZ = 0;
         arm.rotateAngleY = direction * (0.1F - swing * 0.6F);
         arm.rotateAngleX = -1.5707964F;
@@ -167,7 +167,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
             rotate(motionPitch, 1, 0, 0);
         }
     }
-    
+
     private void transformTall(BodyPart part) {
         if (isSleeping) translate(0, -0.65F, 0.25F);
 
@@ -193,7 +193,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
                 break;
         }
     }
-    
+
     private void transformLarge(BodyPart part) {
         if (this.isSleeping) translate(0, -0.7F, 0.2F);
 
@@ -222,12 +222,12 @@ public abstract class AbstractPonyModel extends ModelPlayer {
                 break;
         }
     }
-    
+
     private void transformFoal(BodyPart part) {
         if (isCrouching()) translate(0, -0.12F, 0);
         if (isSleeping) translate(0, -1.2F, 0.25F);
         if (isRiding) translate(0, -0.1F, 0);
-        
+
         switch (part) {
             case NECK:
             case HEAD:
