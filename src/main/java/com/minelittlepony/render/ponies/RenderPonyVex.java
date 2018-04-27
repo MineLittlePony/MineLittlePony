@@ -16,12 +16,12 @@ public class RenderPonyVex extends RenderBiped<EntityVex> {
     private static final ResourceLocation VEX = new ResourceLocation("minelittlepony", "textures/entity/illager/vex_pony.png");
     private static final ResourceLocation VEX_CHARGING = new ResourceLocation("minelittlepony", "textures/entity/illager/vex_charging_pony.png");
 
-    public RenderPonyVex(RenderManager renderManagerIn) {
-        super(renderManagerIn, new ModelBreezie(), 0.3F);
+    public RenderPonyVex(RenderManager manager) {
+        super(manager, new ModelBreezie(), 0.3F);
     }
 
     @Override
-    protected void preRenderCallback(EntityVex entitylivingbaseIn, float partialTickTime) {
+    protected void preRenderCallback(EntityVex entity, float ticks) {
         GlStateManager.scale(0.4F, 0.4F, 0.4F);
     }
 

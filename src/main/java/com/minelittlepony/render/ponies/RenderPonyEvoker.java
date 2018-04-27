@@ -17,21 +17,23 @@ public class RenderPonyEvoker extends RenderPonyMob<EntityEvoker> {
 
     private static final ResourceLocation EVOKER = new ResourceLocation("minelittlepony", "textures/entity/illager/evoker_pony.png");
 
-    public RenderPonyEvoker(RenderManager rendermanagerIn) {
-        super(rendermanagerIn, PMAPI.illager);
+    public RenderPonyEvoker(RenderManager manager) {
+        super(manager, PMAPI.illager);
     }
 
     @Override
     protected void addLayers() {
-        this.addLayer(new LayerHeldPonyItem(this) {
-            public void doPonyRender(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-                if (((EntitySpellcasterIllager) entitylivingbaseIn).isSpellcasting()) {
-                    super.doPonyRender(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+        addLayer(new LayerHeldPonyItem(this) {
+            @Override
+            public void doPonyRender(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float ticks, float age, float headYaw, float headPitch, float scale) {
+                if (((EntitySpellcasterIllager) entity).isSpellcasting()) {
+                    super.doPonyRender(entity, limbSwing, limbSwingAmount, ticks, age, headYaw, headPitch, scale);
                 }
             }
 
-            protected void translateToHand(EnumHandSide p_191361_1_) {
-                ((ModelIllagerPony) this.getRenderer().getMainModel()).getArm(p_191361_1_).postRender(0.0625F);
+            @Override
+            protected void translateToHand(EnumHandSide hand) {
+                ((ModelIllagerPony) getRenderer().getMainModel()).getArm(hand).postRender(0.0625F);
             }
         });
     }
@@ -42,8 +44,8 @@ public class RenderPonyEvoker extends RenderPonyMob<EntityEvoker> {
     }
 
     @Override
-    protected void preRenderCallback(EntityEvoker entitylivingbaseIn, float partialTickTime) {
-        super.preRenderCallback(entitylivingbaseIn, partialTickTime);
+    protected void preRenderCallback(EntityEvoker entity, float ticks) {
+        super.preRenderCallback(entity, ticks);
         GlStateManager.scale(0.9375F, 0.9375F, 0.9375F);
     }
 

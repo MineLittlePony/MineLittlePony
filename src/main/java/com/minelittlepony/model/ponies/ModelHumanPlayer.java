@@ -21,12 +21,12 @@ public class ModelHumanPlayer extends AbstractPonyModel {
 
     @Override
     protected void initTextures() {
-        
+
     }
 
     @Override
     protected void initPositions(float yOffset, float stretch) {
-        
+
     }
 
     @Override

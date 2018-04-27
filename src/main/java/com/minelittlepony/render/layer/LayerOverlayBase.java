@@ -12,7 +12,7 @@ public abstract class LayerOverlayBase<T extends EntityLiving> implements LayerR
     protected final RenderLivingBase<?> renderer;
 
     public LayerOverlayBase(RenderLivingBase<?> render) {
-        this.renderer = render;
+        renderer = render;
     }
 
     @Override
@@ -20,12 +20,15 @@ public abstract class LayerOverlayBase<T extends EntityLiving> implements LayerR
         return true;
     }
 
-    protected void renderOverlay(T skele, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        ModelBase overlayModel = this.getOverlayModel();
-        overlayModel.setModelAttributes(this.renderer.getMainModel());
-        overlayModel.setLivingAnimations(skele, limbSwing, limbSwingAmount, partialTicks);
-        renderer.bindTexture(this.getOverlayTexture());
-        overlayModel.render(skele, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+    protected void renderOverlay(T entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+        ModelBase overlayModel = getOverlayModel();
+
+        overlayModel.setModelAttributes(renderer.getMainModel());
+        overlayModel.setLivingAnimations(entity, move, swing, ticks);
+
+        renderer.bindTexture(getOverlayTexture());
+
+        overlayModel.render(entity, move, swing, age, headYaw, headPitch, scale);
     }
 
     protected abstract ModelBase getOverlayModel();

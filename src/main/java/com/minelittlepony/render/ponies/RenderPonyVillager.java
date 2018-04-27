@@ -19,13 +19,13 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
             new ResourceLocation("minelittlepony", "textures/entity/villager/villager_pony.png")
     };
 
-    public RenderPonyVillager(RenderManager rm) {
-        super(rm, PMAPI.villager);
+    public RenderPonyVillager(RenderManager manager) {
+        super(manager, PMAPI.villager);
     }
 
     @Override
-    protected void preRenderCallback(EntityVillager villager, float partialTicks) {
-        super.preRenderCallback(villager, partialTicks);
+    protected void preRenderCallback(EntityVillager villager, float ticks) {
+        super.preRenderCallback(villager, ticks);
         GlStateManager.scale(0.9375F, 0.9375F, 0.9375F);
     }
 

@@ -15,15 +15,15 @@ public enum TriggerPixels {
 
     private int x;
     private int y;
-    
+
     ITriggerPixelMapped<?> def;
-    
+
     TriggerPixels(ITriggerPixelMapped<?> def, int x, int y) {
         this.def = def;
         this.x = x;
         this.y = y;
     }
-    
+
     /**
      * Reads tis trigger pixel's value and returns the raw colour value.
      * @param image Image to read
@@ -35,7 +35,7 @@ public enum TriggerPixels {
 
     /**
      * Reads this trigger pixel's value and parses it to an Enum instance.
-     * 
+     *
      * @param image Image to read
      */
     @SuppressWarnings("unchecked")

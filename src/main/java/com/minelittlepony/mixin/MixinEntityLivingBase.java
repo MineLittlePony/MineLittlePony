@@ -25,7 +25,7 @@ public abstract class MixinEntityLivingBase extends Entity implements IPonyAnima
 
     @Override
     public float getStrafeAmount(float ticks) {
-        float strafing = this.moveStrafing;
+        float strafing = moveStrafing;
         if (strafing != 0) {
             if (Math.abs(strafeRollAmount) < Math.abs(strafing)) {
                 strafeRollAmount += strafing/10;
@@ -33,7 +33,7 @@ public abstract class MixinEntityLivingBase extends Entity implements IPonyAnima
         } else {
             strafeRollAmount *= 0.8;
         }
-        
+
         return (float)Math.toDegrees(strafeRollAmount);
     }
 }

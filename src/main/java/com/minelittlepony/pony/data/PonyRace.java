@@ -19,12 +19,12 @@ public enum PonyRace implements ITriggerPixelMapped<PonyRace> {
     private boolean horn;
 
     private int triggerPixel;
-    
+
     private PlayerModels model;
 
     PonyRace(int triggerPixel, PlayerModels model, boolean wings, boolean horn) {
         this.triggerPixel = triggerPixel;
-        
+
         this.wings = wings;
         this.horn = horn;
         this.model = model;

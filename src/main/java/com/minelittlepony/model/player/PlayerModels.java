@@ -20,7 +20,7 @@ public enum PlayerModels {
     }
 
     public ModelWrapper getModel(boolean slim) {
-          return slim ? this.slim.resolve() : this.normal.resolve(); 
+          return slim ? this.slim.resolve() : normal.resolve();
     }
 
     public String getId(boolean useSlimArms) {

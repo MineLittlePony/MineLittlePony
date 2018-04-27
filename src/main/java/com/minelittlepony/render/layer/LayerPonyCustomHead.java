@@ -31,33 +31,37 @@ public class LayerPonyCustomHead implements LayerRenderer<EntityLivingBase> {
     private RenderLivingBase<? extends EntityLivingBase> renderer;
 
     public LayerPonyCustomHead(RenderLivingBase<? extends EntityLivingBase> renderPony) {
-        this.renderer = renderPony;
+        renderer = renderPony;
     }
 
     @Override
-    public void doRenderLayer(EntityLivingBase entity, float limbSwing, float p_177141_3_,
-                              float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
+    public void doRenderLayer(EntityLivingBase entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
         ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
         if (!itemstack.isEmpty()) {
             AbstractPonyModel model = getModel().getModel();
             Item item = itemstack.getItem();
 
             pushMatrix();
-            boolean isVillager = entity instanceof EntityVillager || entity instanceof EntityZombieVillager;
 
             model.transform(BodyPart.HEAD);
             model.bipedHead.postRender(0.0625f);
+
             if (model instanceof ModelPlayerPony) {
                 translate(0, 0.2F, 0);
             } else {
                 translate(0, 0, 0.15F);
             }
+
             color(1, 1, 1, 1);
+
             if (item == Items.SKULL) {
-                renderSkull(itemstack, isVillager, limbSwing);
+                boolean isVillager = entity instanceof EntityVillager || entity instanceof EntityZombieVillager;
+
+                renderSkull(itemstack, isVillager, move);
             } else if (!(item instanceof ItemArmor) || ((ItemArmor)item).getEquipmentSlot() != EntityEquipmentSlot.HEAD) {
                 renderBlock(entity, itemstack);
             }
+
             popMatrix();
         }
 

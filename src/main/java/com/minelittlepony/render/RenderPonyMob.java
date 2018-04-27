@@ -20,48 +20,50 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
     protected ModelWrapper playerModel;
 
-    public RenderPonyMob(RenderManager renderManager, ModelWrapper playerModel) {
-        super(renderManager, playerModel.getModel(), 0.5F);
-        this.playerModel = playerModel;
+    public RenderPonyMob(RenderManager manager, ModelWrapper model) {
+        super(manager, model.getModel(), 0.5F);
+        playerModel = model;
 
         addLayers();
     }
 
     protected void addLayers() {
-
-        this.addLayer(new LayerPonyArmor(this));
-        this.addLayer(new LayerHeldPonyItem(this));
-        // this.addLayer(new LayerArrow(this));
-        this.addLayer(new LayerPonyCustomHead(this));
-        this.addLayer(new LayerPonyElytra(this));
+        addLayer(new LayerPonyArmor(this));
+        addLayer(new LayerHeldPonyItem(this));
+        // addLayer(new LayerArrow(this));
+        addLayer(new LayerPonyCustomHead(this));
+        addLayer(new LayerPonyElytra(this));
     }
 
     @Override
-    public void doRender(T entity, double xPosition, double yPosition, double zPosition, float yaw, float partialTicks) {
-        double yOrigin = yPosition;
+    public void doRender(T entity, double xPosition, double yPosition, double zPosition, float yaw, float ticks) {
         if (entity.isSneaking()) {
-            yOrigin -= 0.125D;
+            yPosition -= 0.125D;
         }
-        super.doRender(entity, xPosition, yOrigin, zPosition, yaw, partialTicks);
+        super.doRender(entity, xPosition, yPosition, zPosition, yaw, ticks);
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    protected void preRenderCallback(T entity, float partialTickTime) {
-        this.playerModel.getModel().isSneak = false;
-        this.playerModel.getModel().isFlying = false;
-        this.playerModel.getModel().isSleeping = false;
+    protected void preRenderCallback(T entity, float ticks) {
+        playerModel.getModel().isSneak = false;
+        playerModel.getModel().isFlying = false;
+        playerModel.getModel().isSleeping = false;
 
         ResourceLocation loc = getEntityTexture(entity);
-        this.playerModel.apply(MineLittlePony.getInstance().getManager().getPony(loc, false).getMetadata());
+        playerModel.apply(MineLittlePony.getInstance().getManager().getPony(loc, false).getMetadata());
 
+        shadowSize = getShadowScale();
+    }
+
+    @Override
+    public float getShadowScale() {
         if (mainModel.isChild) {
-            this.shadowSize = 0.25F;
+            return 0.25F;
         } else if (MineLittlePony.getConfig().showscale) {
-            this.shadowSize = 0.4F;
-        } else {
-            this.shadowSize = 0.5F;
+            return 0.4F;
         }
+        return 0.5F;
     }
 
     @Override

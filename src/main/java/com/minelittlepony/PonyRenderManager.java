@@ -40,20 +40,20 @@ import net.minecraft.entity.passive.EntityVillager;
  * Old values of persisted internally.
  */
 public class PonyRenderManager {
-    
+
     private final Map<Class<? extends Entity>, Render<?>> renderMap = Maps.newHashMap();
-    
+
     public PonyRenderManager() {
-        
+
     }
-    
+
     /**
      * Registers all new player skin types. (currently only pony and slimpony).
      */
     public void initialisePlayerRenderers(RenderManager rm) {
         // Preview on the select skin gui
         ModUtilities.addRenderer(EntityPonyModel.class, new RenderPonyModel(rm));
-        
+
         new RenderPonyPlayer(rm, false, "pony", PMAPI.pony);
         new RenderPonyPlayer(rm, true, "slimpony", PMAPI.ponySmall);
         //TODO: Add skin types for each species? May require model break up.
@@ -63,7 +63,7 @@ public class PonyRenderManager {
      * Registers all entity model replacements. (except for players).
      */
     public void initializeMobRenderers(RenderManager rm, PonyConfig config) {
-        
+
         if (config.villagers) {
             pushNewRenderer(rm, EntityVillager.class, new RenderPonyVillager(rm));
             pushNewRenderer(rm, EntityZombieVillager.class, new RenderPonyZombieVillager(rm));
@@ -129,7 +129,7 @@ public class PonyRenderManager {
         }
         ModUtilities.addRenderer(type, renderer);
     }
-    
+
     /**
      * Restores a renderer to its previous value.
      */

@@ -7,7 +7,7 @@ public enum PonySize implements ITriggerPixelMapped<PonySize> {
     TALL(0x534b76, 0.45f, 1f);
 
     private int triggerValue;
-    
+
     private float shadowSize;
     private float scale;
 

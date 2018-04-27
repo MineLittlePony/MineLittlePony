@@ -16,7 +16,7 @@ public interface IPlayerInfo {
     public static IPlayerInfo getPlayerInfo(AbstractClientPlayer player) {
         return (IPlayerInfo)Minecraft.getMinecraft().getConnection().getPlayerInfo(player.getUniqueID());
     }
-    
+
     default NetworkPlayerInfo unwrap() {
         return (NetworkPlayerInfo)this;
     }

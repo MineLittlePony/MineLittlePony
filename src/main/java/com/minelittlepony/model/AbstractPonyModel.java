@@ -74,9 +74,9 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     protected abstract void initPositions(float yOffset, float stretch);
 
     @Override
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
+    public void setRotationAngles(float move, float swing, float age, float headYaw, float headPitch, float scale, Entity entity) {
         if (doCancelRender()) {
-            super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
+            super.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
         }
     }
 
@@ -120,7 +120,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
 
     /**
      * Rotates the provided arm to the correct orientation for holding an item.
-     * 
+     *
      * @param arm           The arm to rotate
      * @param direction     Direction multiplier. 1 for right, -1 for left.
      * @param swingProgress How far we are through the current swing
@@ -140,7 +140,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
 
     /**
      * Applies a transform particular to a certain body part.
-     * 
+     *
      * FIXME: Too long! Is there a better way to do this?
      */
     public void transform(BodyPart part) {
@@ -195,7 +195,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
     }
 
     private void transformLarge(BodyPart part) {
-        if (this.isSleeping) translate(0, -0.7F, 0.2F);
+        if (isSleeping) translate(0, -0.7F, 0.2F);
 
         switch (part) {
             case HEAD:

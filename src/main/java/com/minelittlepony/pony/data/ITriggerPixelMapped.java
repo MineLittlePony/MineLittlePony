@@ -11,11 +11,11 @@ public interface ITriggerPixelMapped<T extends Enum<T> & ITriggerPixelMapped<T>>
      * Gets the pixel colour matching this enum value.
      */
     int getTriggerPixel();
-    
+
     /**
      * Gets the enum value corresponding to the given enum type and pixel value.
      * If none are found, the first parameter is returned as the default.
-     * 
+     *
      * @param type Return type and default value.
      * @param pixelValue The pixel colour to search for.
      */

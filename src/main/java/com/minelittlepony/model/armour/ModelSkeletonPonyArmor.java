@@ -17,7 +17,7 @@ public class ModelSkeletonPonyArmor extends ModelPonyArmor {
     @Override
     protected void fixSpecialRotationPoints(float move) {
         if (rightArmPose != ArmPose.EMPTY && !metadata.hasMagic()) {
-            bipedRightArm.setRotationPoint(-1.5F, 9.5F, 4.0F);
+            bipedRightArm.setRotationPoint(-1.5F, 9.5F, 4);
         }
     }
 }

@@ -19,7 +19,7 @@ import java.util.function.Function;
  * Proxy class for accessing forge fields and methods.
  */
 public class ForgeProxy {
-    
+
     /**
      * True if forge is present.
      */
@@ -27,7 +27,7 @@ public class ForgeProxy {
 
     /**
      * Gets the mod armour texture for associated item and slot.
-     * 
+     *
      * @param entity    The entity to get armour for.
      * @param item      The armour item
      * @param def       Default return value if no mods present
@@ -43,7 +43,7 @@ public class ForgeProxy {
 
     /**
      * Gets the mod armour texture for associated item and slot.
-     * 
+     *
      * @param entity    The entity to get armour for.
      * @param item      The armour item
      * @param slot      The slot this armour piece is place in.

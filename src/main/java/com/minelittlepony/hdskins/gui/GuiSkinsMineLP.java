@@ -16,7 +16,7 @@ public class GuiSkinsMineLP extends GuiSkins {
     private PonyManager ponyManager;
 
     public GuiSkinsMineLP(PonyManager manager) {
-        this.ponyManager = manager;
+        ponyManager = manager;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class GuiSkinsMineLP extends GuiSkins {
     protected void onSetLocalSkin(MinecraftProfileTexture.Type type) {
         MineLittlePony.logger.debug("Invalidating old local skin, checking updated local skin");
         if (type == MinecraftProfileTexture.Type.SKIN) {
-            ponyManager.removePony(this.localPlayer.getSkinTexture());
+            ponyManager.removePony(localPlayer.getSkinTexture());
         }
     }
 
@@ -43,8 +43,8 @@ public class GuiSkinsMineLP extends GuiSkins {
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
-        ponyManager.removePony(this.localPlayer.getSkinTexture());
-        ponyManager.removePony(this.remotePlayer.getSkinTexture());
+        ponyManager.removePony(localPlayer.getSkinTexture());
+        ponyManager.removePony(remotePlayer.getSkinTexture());
 
     }
 }

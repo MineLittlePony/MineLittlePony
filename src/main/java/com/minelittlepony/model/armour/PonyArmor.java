@@ -5,20 +5,21 @@ import com.minelittlepony.pony.data.IPonyData;
 
 public class PonyArmor {
 
-    public final AbstractPonyModel modelArmorChestplate, modelArmor;
-    
+    public final AbstractPonyModel chestplate;
+    public final AbstractPonyModel armour;
+
     public PonyArmor(AbstractPonyModel chest, AbstractPonyModel body) {
-        this.modelArmorChestplate = chest;
-        this.modelArmor = body;
+        chestplate = chest;
+        armour = body;
     }
-    
+
     public void apply(IPonyData meta) {
-        modelArmorChestplate.metadata = meta;
-        modelArmor.metadata = meta;
+        chestplate.metadata = meta;
+        armour.metadata = meta;
     }
 
     public void init() {
-        modelArmorChestplate.init(0, 1);
-        modelArmor.init(0, 0.5f);
+        chestplate.init(0, 1);
+        armour.init(0, 0.5f);
     }
 }

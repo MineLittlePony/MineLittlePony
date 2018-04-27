@@ -17,21 +17,21 @@ public class ModelMobPony extends ModelPlayerPony {
     @Override
     protected void rotateLegs(float move, float swing, float tick, Entity entity) {
         super.rotateLegs(move, swing, tick, entity);
-        
+
         rotateRightArm(move, tick);
         rotateLeftArm(move, tick);
     }
-    
+
     /**
      * Called to update the left arm's final rotation.
      * Subclasses may replace it with their own implementations.
-     * 
+     *
      * @param move Limb swing amount.
      * @param tick Render partial ticks.
      */
     protected void rotateRightArm(float move, float tick) {
-        if (this.rightArmPose == ArmPose.EMPTY) return;
-        
+        if (rightArmPose == ArmPose.EMPTY) return;
+
         if (!metadata.hasMagic()) {
             rotateArmHolding(bipedRightArm, -1, swingProgress, tick);
         } else {
@@ -39,10 +39,10 @@ public class ModelMobPony extends ModelPlayerPony {
             rotateArmHolding(unicornArmRight, -1, swingProgress, tick);
         }
     }
-    
+
     /**
      * Same as rotateRightArm but for the left arm (duh).
-     * 
+     *
      * @param move Limb swing amount.
      * @param tick Render partial ticks.
      */

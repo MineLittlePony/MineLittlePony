@@ -15,18 +15,18 @@ public class LayerPonyStrayOverlay extends LayerOverlayBase<EntityStray> {
 
     public LayerPonyStrayOverlay(RenderLivingBase<?> render) {
         super(render);
-        this.overlayModel = new ModelSkeletonPony();
-        this.overlayModel.init(0, 0.25F);
+        overlayModel = new ModelSkeletonPony();
+        overlayModel.init(0, 0.25F);
     }
 
     @Override
-    public void doRenderLayer(EntityStray skele, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        this.renderOverlay(skele, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+    public void doRenderLayer(EntityStray entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+        renderOverlay(entity, move, swing, ticks, age, headYaw, headPitch, scale);
     }
 
     @Override
     protected ModelBase getOverlayModel() {
-        return this.overlayModel;
+        return overlayModel;
     }
 
     @Override

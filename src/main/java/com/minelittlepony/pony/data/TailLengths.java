@@ -7,13 +7,13 @@ public enum TailLengths implements ITriggerPixelMapped<TailLengths> {
     HALF(0x534b76),
     THREE_QUARTERS(0x8a6b7f),
     FULL(0);
-    
+
     private int triggerValue;
-    
+
     TailLengths(int pixel) {
         triggerValue = pixel;
     }
-    
+
     @Override
     public int getTriggerPixel() {
         return triggerValue;

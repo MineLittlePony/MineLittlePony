@@ -15,48 +15,48 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
     private static final ResourceLocation ZOMBIE = new ResourceLocation("minelittlepony", "textures/entity/zombie/zombie_pony.png");
     private static final ResourceLocation HUSK = new ResourceLocation("minelittlepony", "textures/entity/zombie/husk_pony.png");
 
-    public RenderPonyZombie(RenderManager rendermanager) {
-        super(rendermanager, PMAPI.zombie);
+    public RenderPonyZombie(RenderManager manager) {
+        super(manager, PMAPI.zombie);
     }
 
     @Override
-    protected ResourceLocation getTexture(Zombie zombie) {
+    protected ResourceLocation getTexture(Zombie entity) {
         return ZOMBIE;
     }
 
     public static class Husk extends RenderPonyZombie<EntityHusk> {
 
-        public Husk(RenderManager rendermanager) {
-            super(rendermanager);
+        public Husk(RenderManager manager) {
+            super(manager);
         }
 
         @Override
-        protected void preRenderCallback(EntityHusk entitylivingbaseIn, float partialTickTime) {
+        protected void preRenderCallback(EntityHusk entity, float ticks) {
             GlStateManager.scale(1.0625F, 1.0625F, 1.0625F);
-            super.preRenderCallback(entitylivingbaseIn, partialTickTime);
+            super.preRenderCallback(entity, ticks);
         }
 
         @Override
-        protected ResourceLocation getTexture(EntityHusk zombie) {
+        protected ResourceLocation getTexture(EntityHusk entity) {
             return HUSK;
         }
 
     }
-    
+
     public static class Giant extends RenderPonyMob<EntityGiantZombie> {
 
-		public Giant(RenderManager renderManager) {
-			super(renderManager, PMAPI.zombie);
+		public Giant(RenderManager manager) {
+			super(manager, PMAPI.zombie);
 		}
-		
+
 		@Override
-		protected void preRenderCallback(EntityGiantZombie entitylivingbaseIn, float partialTickTime) {
+		protected void preRenderCallback(EntityGiantZombie entity, float ticks) {
 	        GlStateManager.scale(3, 3, 3);
-	        super.preRenderCallback(entitylivingbaseIn, partialTickTime);
+	        super.preRenderCallback(entity, ticks);
 	    }
-    	
+
 		@Override
-	    protected ResourceLocation getTexture(EntityGiantZombie zombie) {
+	    protected ResourceLocation getTexture(EntityGiantZombie entity) {
 	        return ZOMBIE;
 	    }
     }

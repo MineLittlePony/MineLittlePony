@@ -18,6 +18,7 @@ public abstract class MixinThreadDownloadImageData extends SimpleTexture impleme
         super(textureResourceLocation);
     }
 
+    @Override
     @Accessor("bufferedImage")
     public abstract BufferedImage getBufferedImage();
 }

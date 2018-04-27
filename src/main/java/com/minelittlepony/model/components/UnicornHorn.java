@@ -25,7 +25,7 @@ public class UnicornHorn extends ModelBase {
 
         horn = new PonyRenderer(pony, 0, 3);
         glow = new HornGlowRenderer(pony, 0, 3);
-        
+
         horn.offset(HORN_X, HORN_Y, HORN_Z)
             .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
             .box(0, 0, 0, 1, 4, 1, stretch)
@@ -38,16 +38,16 @@ public class UnicornHorn extends ModelBase {
     }
 
     @Override
-    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void render(Entity entityIn, float move, float swing, float age, float headYaw, float headPitch, float scale) {
         if (!pony.metadata.getRace().hasHorn()) return;
-        
+
         horn.render(scale);
-        
+
         if (usingMagic && pony.metadata.hasMagic()) {
             renderMagic(pony.metadata.getGlowColor(), scale);
         }
     }
-    
+
     private void renderMagic(int tint, float scale) {
         glPushAttrib(24577);
         disableTexture2D();

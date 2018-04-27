@@ -16,6 +16,7 @@ public abstract class MixinRenderManager implements IRenderManager {
     @Shadow @Final
     private Map<String, RenderPlayer> skinMap;
 
+    @Override
     public void addPlayerSkin(String key, RenderPlayer render) {
         skinMap.put(key, render);
     }

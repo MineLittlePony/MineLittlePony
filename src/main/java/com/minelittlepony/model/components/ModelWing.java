@@ -10,20 +10,20 @@ public class ModelWing {
     public PonyRenderer folded;
 
     private boolean mirror;
-    
+
     public ModelWing(AbstractPonyModel pony, boolean mirror, float x, float y, float scale, int texY) {
         this.mirror = mirror;
-        
+
         folded = new PonyRenderer(pony, 56, texY)
                 .around(HEAD_RP_X, WING_FOLDED_RP_Y, WING_FOLDED_RP_Z);
         extended = new PonyRenderer(pony, 56, texY + 3)
                 .around(HEAD_RP_X, WING_FOLDED_RP_Y, WING_FOLDED_RP_Z).mirror(mirror);
-        
-        addCloseWing(x, y, scale);
+
+        addClosedWing(x, y, scale);
         addFeathers(mirror, y, scale);
     }
-    
-    private void addCloseWing(float x, float y, float scale) {
+
+    private void addClosedWing(float x, float y, float scale) {
         folded.box(x, 5f, 2, 2, 6, 2, scale)
               .box(x, 5f, 4, 2, 8, 2, scale)
               .box(x, 5f, 6, 2, 6, 2, scale)
@@ -50,11 +50,11 @@ public class ModelWing {
         folded.rotateAngleY = swing * 0.2F;
     }
 
-    
+
     public void render(boolean extend, float scale) {
         extended.rotationPointX = (mirror ? -1 : 1) * LEFT_WING_EXT_RP_X;
         extended.rotationPointY = LEFT_WING_EXT_RP_Y;
-        
+
         extended.rotateAngleY = 3;
         if (extend) {
             extended.render(scale);

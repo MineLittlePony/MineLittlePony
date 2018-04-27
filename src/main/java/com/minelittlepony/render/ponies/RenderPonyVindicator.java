@@ -16,8 +16,8 @@ public class RenderPonyVindicator extends RenderPonyMob<EntityVindicator> {
 
     private static final ResourceLocation VINDICATOR = new ResourceLocation("minelittlepony", "textures/entity/illager/vindicator_pony.png");
 
-    public RenderPonyVindicator(RenderManager renderManager) {
-        super(renderManager, PMAPI.illager);
+    public RenderPonyVindicator(RenderManager manager) {
+        super(manager, PMAPI.illager);
 
     }
 
@@ -25,17 +25,15 @@ public class RenderPonyVindicator extends RenderPonyMob<EntityVindicator> {
     protected void addLayers() {
         this.addLayer(new LayerHeldPonyItem(this) {
             @Override
-            public void doPonyRender(EntityLivingBase vindicator, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks,
-                    float netHeadYaw, float headPitch, float scale) {
-
-                if (((EntityVindicator) vindicator).isAggressive()) {
-                    super.doPonyRender(vindicator, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+            public void doPonyRender(EntityLivingBase entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+                if (((EntityVindicator) entity).isAggressive()) {
+                    super.doPonyRender(entity, move, swing, ticks, age, headYaw, headPitch, scale);
                 }
             }
 
             @Override
             protected void translateToHand(EnumHandSide side) {
-                ((ModelIllagerPony) this.getRenderer().getMainModel()).getArm(side).postRender(0.0625F);
+                ((ModelIllagerPony) getRenderer().getMainModel()).getArm(side).postRender(0.0625F);
             }
         });
     }
@@ -46,8 +44,8 @@ public class RenderPonyVindicator extends RenderPonyMob<EntityVindicator> {
     }
 
     @Override
-    protected void preRenderCallback(EntityVindicator entitylivingbaseIn, float partialTickTime) {
-        super.preRenderCallback(entitylivingbaseIn, partialTickTime);
+    protected void preRenderCallback(EntityVindicator entity, float ticks) {
+        super.preRenderCallback(entity, ticks);
         GlStateManager.scale(0.9375F, 0.9375F, 0.9375F);
     }
 

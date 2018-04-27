@@ -29,9 +29,9 @@ public class LayerPonyElytra extends AbstractPonyLayer<EntityLivingBase> {
     }
 
     @Override
-    public void doPonyRender(@Nonnull EntityLivingBase entity, float swing, float swingAmount, float ticks, float age, float yaw, float head, float scale) {
+    public void doPonyRender(@Nonnull EntityLivingBase entity, float move, float swing, float ticks, float age, float yaw, float head, float scale) {
 
-        AbstractPonyModel model = ((IRenderPony) this.getRenderer()).getPlayerModel().getModel();
+        AbstractPonyModel model = ((IRenderPony) getRenderer()).getPlayerModel().getModel();
 
         ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
@@ -42,24 +42,24 @@ public class LayerPonyElytra extends AbstractPonyLayer<EntityLivingBase> {
 
                 AbstractClientPlayer player = (AbstractClientPlayer) entity;
                 if (player.isPlayerInfoSet() && player.getLocationElytra() != null) {
-                    this.getRenderer().bindTexture(player.getLocationElytra());
+                    getRenderer().bindTexture(player.getLocationElytra());
                 } else if (player.hasPlayerInfo() && player.getLocationCape() != null && player.isWearing(EnumPlayerModelParts.CAPE)) {
-                    this.getRenderer().bindTexture(player.getLocationCape());
+                    getRenderer().bindTexture(player.getLocationCape());
                 } else {
-                    this.getRenderer().bindTexture(TEXTURE_ELYTRA);
+                    getRenderer().bindTexture(TEXTURE_ELYTRA);
                 }
             } else {
-                this.getRenderer().bindTexture(TEXTURE_ELYTRA);
+                getRenderer().bindTexture(TEXTURE_ELYTRA);
             }
 
             GlStateManager.pushMatrix();
             GlStateManager.translate(0, 0.25F, 0.125F);
             model.transform(BodyPart.BODY);
-            this.modelElytra.setRotationAngles(swing, swingAmount, age, yaw, head, scale, entity);
-            this.modelElytra.render(entity, swing, swingAmount, age, yaw, head, scale);
+            modelElytra.setRotationAngles(move, swing, age, yaw, head, scale, entity);
+            modelElytra.render(entity, move, swing, age, yaw, head, scale);
 
             if (itemstack.isItemEnchanted()) {
-                LayerArmorBase.renderEnchantedGlint(this.getRenderer(), entity, this.modelElytra, swing, swingAmount, ticks, age, yaw, head, scale);
+                LayerArmorBase.renderEnchantedGlint(getRenderer(), entity, modelElytra, move, swing, ticks, age, yaw, head, scale);
             }
 
             GlStateManager.popMatrix();

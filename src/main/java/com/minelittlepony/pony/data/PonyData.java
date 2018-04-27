@@ -20,19 +20,19 @@ public class PonyData implements IPonyData {
     private final int glowColor;
 
     public PonyData() {
-        this.race = PonyRace.HUMAN;
-        this.tailSize = TailLengths.FULL;
-        this.gender = PonyGender.MARE;
-        this.size = PonySize.NORMAL;
-        this.glowColor = 0x4444aa;
+        race = PonyRace.HUMAN;
+        tailSize = TailLengths.FULL;
+        gender = PonyGender.MARE;
+        size = PonySize.NORMAL;
+        glowColor = 0x4444aa;
     }
-    
+
     private PonyData(BufferedImage image) {
-        this.race = TriggerPixels.RACE.readValue(image);
-        this.tailSize = TriggerPixels.TAIL.readValue(image);
-        this.size = TriggerPixels.SIZE.readValue(image);
-        this.gender = TriggerPixels.GENDER.readValue(image);
-        this.glowColor = TriggerPixels.GLOW.readColor(image, -1);
+        race = TriggerPixels.RACE.readValue(image);
+        tailSize = TriggerPixels.TAIL.readValue(image);
+        size = TriggerPixels.SIZE.readValue(image);
+        gender = TriggerPixels.GENDER.readValue(image);
+        glowColor = TriggerPixels.GLOW.readColor(image, -1);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class PonyData implements IPonyData {
 
     @Override
     public boolean hasMagic() {
-        return this.race != null && this.race.hasHorn() && this.glowColor != 0;
+        return race != null && race.hasHorn() && glowColor != 0;
     }
 
     @Override

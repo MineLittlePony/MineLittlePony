@@ -18,21 +18,21 @@ public class RenderPonyZombieVillager extends RenderPonyMob<EntityZombieVillager
             new ResourceLocation("minelittlepony", "textures/entity/zombie_villager/zombie_villager_pony.png")
     };
 
-    public RenderPonyZombieVillager(RenderManager renderManager) {
-        super(renderManager, PMAPI.villager);
+    public RenderPonyZombieVillager(RenderManager manager) {
+        super(manager, PMAPI.villager);
     }
 
     @Override
-    protected ResourceLocation getTexture(EntityZombieVillager villager) {
-        return PROFESSIONS[villager.getProfession()];
+    protected ResourceLocation getTexture(EntityZombieVillager entity) {
+        return PROFESSIONS[entity.getProfession()];
     }
 
     @Override
-    protected void applyRotations(EntityZombieVillager villager, float p_77043_2_, float p_77043_3_, float partialTicks) {
-        if (villager.isConverting()) {
-            p_77043_3_ += (float) (Math.cos(villager.ticksExisted * 3.25D) * Math.PI * 0.25D);
+    protected void applyRotations(EntityZombieVillager entity, float move, float rotationYaw, float ticks) {
+        if (entity.isConverting()) {
+            rotationYaw += (float) (Math.cos(entity.ticksExisted * 3.25D) * (Math.PI / 4));
         }
 
-        super.applyRotations(villager, p_77043_2_, p_77043_3_, partialTicks);
+        super.applyRotations(entity, move, rotationYaw, ticks);
     }
 }

@@ -21,7 +21,7 @@ public class HornGlow extends ModelBox {
         this.parent = parent;
         this.alpha = alpha;
 
-        this.quadList = new TexturedQuad[6];
+        quadList = new TexturedQuad[6];
 
         float x2 = x + w + scale;
         float y2 = y + h + scale;
@@ -51,12 +51,12 @@ public class HornGlow extends ModelBox {
         PositionTextureVertex p5 = new PositionTextureVertex(x2, y2, z2, 8, 8);
         PositionTextureVertex p6 = new PositionTextureVertex(x, y2, z2, 8, 0);
 
-        this.quadList[0] = new TexturedQuad(new PositionTextureVertex[]{p4, p0, p1, p5}, texU + d + w, texV + d, texU + d + w + d, texV + d + h, parent.textureWidth, parent.textureHeight);
-        this.quadList[1] = new TexturedQuad(new PositionTextureVertex[]{p7, p3, p6, p2}, texU, texV + d, texU + d, texV + d + h, parent.textureWidth, parent.textureHeight);
-        this.quadList[2] = new TexturedQuad(new PositionTextureVertex[]{p4, p3, p7, p0}, texU + d, texV, texU + d + w, texV + d, parent.textureWidth, parent.textureHeight);
-        this.quadList[3] = new TexturedQuad(new PositionTextureVertex[]{p1, p2, p6, p5}, texU + d + w, texV + d, texU + d + w + w, texV, parent.textureWidth, parent.textureHeight);
-        this.quadList[4] = new TexturedQuad(new PositionTextureVertex[]{p0, p7, p2, p1}, texU + d, texV + d, texU + d + w, texV + d + h, parent.textureWidth, parent.textureHeight);
-        this.quadList[5] = new TexturedQuad(new PositionTextureVertex[]{p3, p4, p5, p6}, texU + d + w + d, texV + d, texU + d + w + d + w, texV + d + h, parent.textureWidth, parent.textureHeight);
+        quadList[0] = new TexturedQuad(new PositionTextureVertex[]{p4, p0, p1, p5}, texU + d + w, texV + d, texU + d + w + d, texV + d + h, parent.textureWidth, parent.textureHeight);
+        quadList[1] = new TexturedQuad(new PositionTextureVertex[]{p7, p3, p6, p2}, texU, texV + d, texU + d, texV + d + h, parent.textureWidth, parent.textureHeight);
+        quadList[2] = new TexturedQuad(new PositionTextureVertex[]{p4, p3, p7, p0}, texU + d, texV, texU + d + w, texV + d, parent.textureWidth, parent.textureHeight);
+        quadList[3] = new TexturedQuad(new PositionTextureVertex[]{p1, p2, p6, p5}, texU + d + w, texV + d, texU + d + w + w, texV, parent.textureWidth, parent.textureHeight);
+        quadList[4] = new TexturedQuad(new PositionTextureVertex[]{p0, p7, p2, p1}, texU + d, texV + d, texU + d + w, texV + d + h, parent.textureWidth, parent.textureHeight);
+        quadList[5] = new TexturedQuad(new PositionTextureVertex[]{p3, p4, p5, p6}, texU + d + w + d, texV + d, texU + d + w + d + w, texV + d + h, parent.textureWidth, parent.textureHeight);
 
         if (parent.mirror) {
             for (TexturedQuad i : quadList) {

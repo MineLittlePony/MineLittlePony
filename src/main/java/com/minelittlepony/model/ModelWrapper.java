@@ -16,8 +16,8 @@ public class ModelWrapper {
      */
     public ModelWrapper(AbstractPonyModel model) {
         this.model = model;
-        this.armor = model.createArmour();
-        this.armor.apply(model.metadata);
+        armor = model.createArmour();
+        armor.apply(model.metadata);
     }
 
     public AbstractPonyModel getModel() {
@@ -39,7 +39,7 @@ public class ModelWrapper {
         model.metadata = meta;
         armor.apply(meta);
     }
-    
+
     /**
      * Called at startup to configure a model's needed components.
      */

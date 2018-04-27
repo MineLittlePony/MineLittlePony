@@ -21,16 +21,18 @@ import javax.annotation.Nullable;
 
 public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<EntityPlayer> {
 
-    private final RenderManager rm;
+    private final RenderManager renderManager;
+
     private EntityLivingBase leftEntity;
     private EntityLivingBase rightEntity;
 
-    public LayerEntityOnPonyShoulder(RenderManager rm, RenderLivingBase<AbstractClientPlayer> renderer) {
-        super(renderer, getForgeLayer(rm));
-        this.rm = rm;
+    public LayerEntityOnPonyShoulder(RenderManager manager, RenderLivingBase<AbstractClientPlayer> renderer) {
+        super(renderer, getForgeLayer(manager));
+        renderManager = manager;
     }
 
-    public void doPonyRender(EntityPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    @Override
+    public void doPonyRender(EntityPlayer player, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
 
         GlStateManager.enableRescaleNormal();
         GlStateManager.color(1, 1, 1, 1);
@@ -38,15 +40,15 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<EntityPlayer> {
         NBTTagCompound leftTag = player.getLeftShoulderEntity();
 
         if (!leftTag.hasNoTags()) {
-            this.leftEntity = this.renderShoulderEntity(player, this.leftEntity, leftTag,
-                    limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale, true);
+            leftEntity = renderShoulderEntity(player, leftEntity,
+                    leftTag, move, swing, ticks, age, headYaw, headPitch, scale, true);
         }
 
         NBTTagCompound rightTag = player.getRightShoulderEntity();
 
         if (!rightTag.hasNoTags()) {
-            this.rightEntity = this.renderShoulderEntity(player, this.rightEntity, rightTag,
-                    limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale, false);
+            rightEntity = renderShoulderEntity(player, rightEntity,
+                    rightTag, move, swing, ticks, age, headYaw, headPitch, scale, false);
         }
 
         GlStateManager.disableRescaleNormal();
@@ -54,7 +56,8 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<EntityPlayer> {
 
     @SuppressWarnings("unchecked")
     @Nullable
-    private EntityLivingBase renderShoulderEntity(EntityPlayer player, @Nullable EntityLivingBase entity, NBTTagCompound tag, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean left) {
+    private EntityLivingBase renderShoulderEntity(EntityPlayer player, @Nullable EntityLivingBase entity, NBTTagCompound tag,
+            float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale, boolean left) {
 
         if (entity == null || !entity.getUniqueID().equals(tag.getUniqueId("UUID"))) {
             entity = (EntityLivingBase) EntityList.createEntityFromNBT(tag, player.world);
@@ -74,7 +77,7 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<EntityPlayer> {
         GlStateManager.scale(1, -1, -1);
         GlStateManager.rotate(5 * (left ? -1 : 1), 0, 0, 1);
 
-        Render<Entity> render = rm.getEntityRenderObject(entity);
+        Render<Entity> render = renderManager.getEntityRenderObject(entity);
         if (render != null) {
             render.doRender(entity, 0, 0, 0, 0, 0);
             GlStateManager.popMatrix();
@@ -82,9 +85,9 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<EntityPlayer> {
         return entity;
     }
 
-    private static LayerRenderer<EntityPlayer> getForgeLayer(RenderManager rm) {
+    private static LayerRenderer<EntityPlayer> getForgeLayer(RenderManager manager) {
         return ForgeProxy.createShoulderLayer()
                 .orElse(LayerEntityOnShoulder::new)
-                .apply(rm);
+                .apply(manager);
     }
 }

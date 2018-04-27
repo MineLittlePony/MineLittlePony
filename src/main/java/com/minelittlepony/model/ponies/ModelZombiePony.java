@@ -11,16 +11,16 @@ public class ModelZombiePony extends ModelMobPony {
     public ModelZombiePony() {
         super();
     }
-    
+
     @Override
     public PonyArmor createArmour() {
         return new PonyArmor(new ModelZombiePonyArmor(), new ModelZombiePonyArmor());
     }
-    
+
     private boolean isRight(float move) {
         return MathHelper.sin(move / 20) < 0;
     }
-    
+
     @Override
     protected void rotateRightArm(float move, float tick) {
         if (rightArmPose != ArmPose.EMPTY) return;

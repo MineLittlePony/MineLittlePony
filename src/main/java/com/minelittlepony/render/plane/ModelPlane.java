@@ -10,20 +10,20 @@ import javax.annotation.Nonnull;
 public class ModelPlane extends ModelBox {
 
     private TexturedQuad quad;
-    
+
     public boolean hidden = false;
-    
+
     public ModelPlane(PlaneRenderer renderer, int textureX, int textureY, float x, float y, float z, int w, int h, int d, float scale, Face face) {
         super(renderer, textureX, textureY, x, y, z, w, h, d, scale, false);
 
         float x2 = x + w + scale;
         float y2 = y + h + scale;
         float z2 = z + d + scale;
-        
+
         x -= scale;
         y -= scale;
         z -= scale;
-        
+
         if (renderer.mirror) {
             float v = x2;
             x2 = x;
@@ -79,6 +79,6 @@ public class ModelPlane extends ModelBox {
 
     @Override
     public void render(@Nonnull BufferBuilder renderer, float scale) {
-        if (!hidden) this.quad.draw(renderer, scale);
+        if (!hidden) quad.draw(renderer, scale);
     }
 }

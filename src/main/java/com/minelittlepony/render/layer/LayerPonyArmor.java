@@ -23,6 +23,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 
 import javax.annotation.Nullable;
+
+import org.lwjgl.opengl.GL11;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -40,17 +43,17 @@ public class LayerPonyArmor extends AbstractPonyLayer<EntityLivingBase> {
     }
 
     @Override
-    public void doPonyRender(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float ticks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void doPonyRender(EntityLivingBase entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
         pony = ((IRenderPony) getRenderer()).getPlayerModel();
-        
+
         for (EntityEquipmentSlot i : EntityEquipmentSlot.values()) {
             if (i.getSlotType() == Type.ARMOR) {
-                renderArmor(entity, limbSwing, limbSwingAmount, ticks, ageInTicks, netHeadYaw, headPitch, scale, i);
+                renderArmor(entity, move, swing, ticks, age, headYaw, headPitch, scale, i);
             }
         }
     }
 
-    private void renderArmor(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, EntityEquipmentSlot armorSlot) {
+    private void renderArmor(EntityLivingBase entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale, EntityEquipmentSlot armorSlot) {
         ItemStack itemstack = entity.getItemStackFromSlot(armorSlot);
 
         if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemArmor) {
@@ -59,33 +62,33 @@ public class LayerPonyArmor extends AbstractPonyLayer<EntityLivingBase> {
 
             AbstractPonyModel modelbase;
             if (armorSlot == EntityEquipmentSlot.LEGS) {
-                modelbase = pony.getArmor().modelArmor;
+                modelbase = pony.getArmor().armour;
             } else {
-                modelbase = pony.getArmor().modelArmorChestplate;
+                modelbase = pony.getArmor().chestplate;
             }
             modelbase = getArmorModel(entity, itemstack, armorSlot, modelbase);
-            modelbase.setModelAttributes(this.pony.getModel());
-            modelbase.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
+            modelbase.setModelAttributes(pony.getModel());
+            modelbase.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
 
             Tuple<ResourceLocation, Boolean> armors = getArmorTexture(entity, itemstack, armorSlot, null);
             prepareToRender((ModelPonyArmor) modelbase, armorSlot, armors.getSecond());
 
-            this.getRenderer().bindTexture(armors.getFirst());
+            getRenderer().bindTexture(armors.getFirst());
             if (itemarmor.getArmorMaterial() == ArmorMaterial.LEATHER) {
                 int color = itemarmor.getColor(itemstack);
                 float r = (color >> 16 & 255) / 255.0F;
                 float g = (color >> 8 & 255) / 255.0F;
                 float b = (color & 255) / 255.0F;
                 GlStateManager.color(r, g, b, 1);
-                modelbase.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+                modelbase.render(entity, move, swing, age, headYaw, headPitch, scale);
                 armors = getArmorTexture(entity, itemstack, armorSlot, "overlay");
-                this.getRenderer().bindTexture(armors.getFirst());
+                getRenderer().bindTexture(armors.getFirst());
             }
             GlStateManager.color(1, 1, 1, 1);
-            modelbase.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+            modelbase.render(entity, move, swing, age, headYaw, headPitch, scale);
 
             if (itemstack.isItemEnchanted()) {
-                this.renderEnchantment(entity, modelbase, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+                renderEnchantment(entity, modelbase, move, swing, ticks, age, headYaw, headPitch, scale);
             }
         }
     }
@@ -135,8 +138,8 @@ public class LayerPonyArmor extends AbstractPonyLayer<EntityLivingBase> {
                 model.bipedLeftArm.showModel = true;
                 model.bipedRightLeg.showModel = !isPony;
                 model.bipedLeftLeg.showModel = !isPony;
-                model.extLegLeft.showModel = isPony;
-                model.extLegRight.showModel = isPony;
+                model.leftLegging.showModel = isPony;
+                model.rightLegging.showModel = isPony;
                 break;
             // legs
             case LEGS:
@@ -145,55 +148,63 @@ public class LayerPonyArmor extends AbstractPonyLayer<EntityLivingBase> {
                 model.bipedRightArm.showModel = true;
                 model.bipedLeftArm.showModel = true;
                 model.bipedBody.showModel = !isPony;
-                model.Bodypiece.showModel = !isPony;
-                model.extBody.showModel = isPony;
-                model.extLegLeft.showModel = isPony;
-                model.extLegRight.showModel = isPony;
+                model.flankGuard.showModel = !isPony;
+                model.saddle.showModel = isPony;
+                model.leftLegging.showModel = isPony;
+                model.rightLegging.showModel = isPony;
                 break;
             // chest
             case CHEST:
-                model.extBody.showModel = isPony;
+                model.saddle.showModel = isPony;
                 model.bipedBody.showModel = !isPony;
-                model.Bodypiece.showModel = !isPony;
+                model.flankGuard.showModel = !isPony;
                 break;
             // head
             case HEAD:
                 model.bipedHead.showModel = true;
-                model.extHead.showModel = isPony;
+                model.helmet.showModel = isPony;
         }
     }
 
-    private void renderEnchantment(EntityLivingBase entity, ModelBase model, float p_177183_3_, float p_177183_4_, float p_177183_5_,
-                                   float p_177183_6_, float p_177183_7_, float p_177183_8_, float p_177183_9_) {
-        float f7 = entity.ticksExisted + p_177183_5_;
-        this.getRenderer().bindTexture(ENCHANTED_ITEM_GLINT_RES);
-        GlStateManager.enableBlend();
-        GlStateManager.depthFunc(514);
-        GlStateManager.depthMask(false);
-        float f8 = 0.5F;
-        GlStateManager.color(f8, f8, f8, 1.0F);
+    private void renderEnchantment(EntityLivingBase entity, ModelBase model, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
 
-        for (int i = 0; i < 2; ++i) {
+        getRenderer().bindTexture(ENCHANTED_ITEM_GLINT_RES);
+
+        GlStateManager.enableBlend();
+        GlStateManager.depthFunc(GL11.GL_EQUAL);
+        GlStateManager.depthMask(false);
+
+        float brightness = 0.5F;
+        GlStateManager.color(brightness, brightness, brightness, 1);
+
+        float baseYOffset = entity.ticksExisted + ticks;
+        float glintBrightness = 0.76F;
+        float scaleFactor = 0.33333334F;
+
+        for (int i = 0; i < 2; i++) {
             GlStateManager.disableLighting();
-            GlStateManager.blendFunc(768, 1);
-            float f9 = 0.76F;
-            GlStateManager.color(0.5F * f9, 0.25F * f9, 0.8F * f9, 1.0F);
+            GlStateManager.blendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
+
+            GlStateManager.color(glintBrightness / 2, glintBrightness / 4, 0.8F * glintBrightness, 1);
+
             GlStateManager.matrixMode(5890);
             GlStateManager.loadIdentity();
-            float f10 = 0.33333334F;
-            GlStateManager.scale(f10, f10, f10);
-            GlStateManager.rotate(30.0F - i * 60.0F, 0.0F, 0.0F, 1.0F);
-            GlStateManager.translate(0.0F, f7 * (0.001F + i * 0.003F) * 20.0F, 0.0F);
-            GlStateManager.matrixMode(5888);
-            model.render(entity, p_177183_3_, p_177183_4_, p_177183_6_, p_177183_7_, p_177183_8_, p_177183_9_);
+
+
+            GlStateManager.scale(scaleFactor, scaleFactor, scaleFactor);
+            GlStateManager.rotate(30 - i * 60, 0, 0, 1);
+            GlStateManager.translate(0, baseYOffset * (0.02F + i * 0.06F), 0);
+            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+
+            model.render(entity, move, swing, age, headYaw, headPitch, scale);
         }
 
-        GlStateManager.matrixMode(5890);
+        GlStateManager.matrixMode(GL11.GL_TEXTURE);
         GlStateManager.loadIdentity();
-        GlStateManager.matrixMode(5888);
+        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
         GlStateManager.enableLighting();
         GlStateManager.depthMask(true);
-        GlStateManager.depthFunc(515);
+        GlStateManager.depthFunc(GL11.GL_LEQUAL);
         GlStateManager.disableBlend();
     }
 
@@ -207,8 +218,7 @@ public class LayerPonyArmor extends AbstractPonyLayer<EntityLivingBase> {
             String domain = human.getResourceDomain();
             String path = human.getResourcePath();
             if (domain.equals("minecraft")) {
-                // it's a vanilla armor. I provide these.
-                domain = "minelittlepony";
+                domain = "minelittlepony"; // it's a vanilla armor. I provide these.
             }
             path = path.replace(".png", "_pony.png");
             pony = new ResourceLocation(domain, path);

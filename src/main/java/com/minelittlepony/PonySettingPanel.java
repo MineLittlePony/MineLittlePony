@@ -65,22 +65,22 @@ public class PonySettingPanel extends GuiScreen {
         final int LEFT = width / 10 + 16;
         GuiCheckbox pony, human, both, hd, sizes, snuzzles, showscale, villager, zombie, pigmen, skeleton, illager;
         int row = 32;
-        this.buttonList.add(pony = ponies = new GuiCheckbox(PONY_ID, LEFT, row += 15, I18n.format(PONY)));
-        this.buttonList.add(human = humans = new GuiCheckbox(HUMAN_ID, LEFT, row += 15, I18n.format(HUMAN)));
-        this.buttonList.add(both = this.both = new GuiCheckbox(BOTH_ID, LEFT, row += 15, I18n.format(BOTH)));
+        buttonList.add(pony = ponies = new GuiCheckbox(PONY_ID, LEFT, row += 15, I18n.format(PONY)));
+        buttonList.add(human = humans = new GuiCheckbox(HUMAN_ID, LEFT, row += 15, I18n.format(HUMAN)));
+        buttonList.add(both = this.both = new GuiCheckbox(BOTH_ID, LEFT, row += 15, I18n.format(BOTH)));
         row += 15;
-        this.buttonList.add(hd = new GuiCheckbox(HD_ID, LEFT, row += 15, I18n.format(HD)));
-        this.buttonList.add(sizes = new GuiCheckbox(SIZES_ID, LEFT, row += 15, I18n.format(SIZES)));
-        this.buttonList.add(snuzzles = new GuiCheckbox(SNUZZLES_ID, LEFT, row += 15, I18n.format(SNUZZLES)));
-        this.buttonList.add(showscale = new GuiCheckbox(SHOW_SCALE_ID, LEFT, row += 15, I18n.format(SHOW_SCALE)));
+        buttonList.add(hd = new GuiCheckbox(HD_ID, LEFT, row += 15, I18n.format(HD)));
+        buttonList.add(sizes = new GuiCheckbox(SIZES_ID, LEFT, row += 15, I18n.format(SIZES)));
+        buttonList.add(snuzzles = new GuiCheckbox(SNUZZLES_ID, LEFT, row += 15, I18n.format(SNUZZLES)));
+        buttonList.add(showscale = new GuiCheckbox(SHOW_SCALE_ID, LEFT, row += 15, I18n.format(SHOW_SCALE)));
 
         final int RIGHT = width - width / 3;
         row = 32;
-        this.buttonList.add(villager = new GuiCheckbox(VILLAGERS_ID, RIGHT, row += 15, I18n.format(VILLAGERS)));
-        this.buttonList.add(zombie = new GuiCheckbox(ZOMBIES_ID, RIGHT, row += 15, I18n.format(ZOMBIES)));
-        this.buttonList.add(pigmen = new GuiCheckbox(ZOMBIE_PIGMEN_ID, RIGHT, row += 15, I18n.format(ZOMBIE_PIGMEN)));
-        this.buttonList.add(skeleton = new GuiCheckbox(SKELETONS_ID, RIGHT, row += 15, I18n.format(SKELETONS)));
-        this.buttonList.add(illager = new GuiCheckbox(ILLAGER_ID, RIGHT, row += 15, I18n.format(ILLAGERS)));
+        buttonList.add(villager = new GuiCheckbox(VILLAGERS_ID, RIGHT, row += 15, I18n.format(VILLAGERS)));
+        buttonList.add(zombie = new GuiCheckbox(ZOMBIES_ID, RIGHT, row += 15, I18n.format(ZOMBIES)));
+        buttonList.add(pigmen = new GuiCheckbox(ZOMBIE_PIGMEN_ID, RIGHT, row += 15, I18n.format(ZOMBIE_PIGMEN)));
+        buttonList.add(skeleton = new GuiCheckbox(SKELETONS_ID, RIGHT, row += 15, I18n.format(SKELETONS)));
+        buttonList.add(illager = new GuiCheckbox(ILLAGER_ID, RIGHT, row += 15, I18n.format(ILLAGERS)));
 
         switch (config.getPonyLevel()) {
             default:
@@ -107,13 +107,13 @@ public class PonySettingPanel extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        this.drawDefaultBackground();
+        drawDefaultBackground();
 
-        this.drawCenteredString(mc.fontRenderer, I18n.format(TITLE), width / 2, 12, -1);
+        drawCenteredString(mc.fontRenderer, I18n.format(TITLE), width / 2, 12, -1);
 
-        this.drawString(mc.fontRenderer, I18n.format(MOB_TITLE), width - width / 3 - 16, 32, -1);
-        this.drawString(mc.fontRenderer, I18n.format(PONY_LEVEL), width / 10, 32, -1);
-        this.drawString(mc.fontRenderer, I18n.format(OPTIONS), width / 10, 94, -1);
+        drawString(mc.fontRenderer, I18n.format(MOB_TITLE), width - width / 3 - 16, 32, -1);
+        drawString(mc.fontRenderer, I18n.format(PONY_LEVEL), width / 10, 32, -1);
+        drawString(mc.fontRenderer, I18n.format(OPTIONS), width / 10, 94, -1);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }

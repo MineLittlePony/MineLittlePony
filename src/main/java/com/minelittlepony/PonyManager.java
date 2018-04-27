@@ -62,7 +62,7 @@ public class PonyManager implements IResourceManagerReloadListener {
 
     /**
      * Gets or creates a pony for the given skin resource and vanilla model type.
-     * 
+     *
      * @param resource A texture resource
      */
     public Pony getPony(ResourceLocation resource, boolean slim) {
@@ -72,45 +72,45 @@ public class PonyManager implements IResourceManagerReloadListener {
     /**
      * Gets or creates a pony for the given player.
      * Delegates to the background-ponies registry if no pony skins were available and client settings allows it.
-     * 
+     *
      * @param player the player
      */
     public Pony getPony(AbstractClientPlayer player) {
         return getPony(IPlayerInfo.getPlayerInfo(player).unwrap());
     }
-    
+
     public Pony getPony(NetworkPlayerInfo playerInfo) {
         ResourceLocation skin = playerInfo.getLocationSkin();
         UUID uuid = playerInfo.getGameProfile().getId();
-        
+
         if (skin == null) return getDefaultPony(uuid);
-        
+
         return getPony(skin, uuid);
     }
-    
+
     /**
      * Gets or creates a pony for the given skin resource and entity id.
-     * 
+     *
      * Whether is has slim arms is determined by the id.
-     * 
+     *
      * Delegates to the background-ponies registry if no pony skins were available and client settings allows it.
-     * 
+     *
      * @param resource A texture resource
      * @param uuid id of a player or entity
      */
     public Pony getPony(ResourceLocation resource, UUID uuid) {
         Pony pony = getPony(resource, isSlimSkin(uuid));
-        
+
         if (config.getPonyLevel() == PonyLevel.PONIES && pony.getMetadata().getRace().isHuman()) {
             return getBackgroundPony(uuid);
         }
-        
+
         return pony;
     }
 
     /**
      * Gets the default pony. Either STEVE/ALEX, or a background pony based on client settings.
-     * 
+     *
      * @param uuid id of a player or entity
      */
     public Pony getDefaultPony(UUID uuid) {
@@ -131,7 +131,7 @@ public class PonyManager implements IResourceManagerReloadListener {
 
         return getPony(backgroundPonyList.get(bgi), false);
     }
-    
+
     private boolean isUser(UUID uuid) {
         return Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().player.getUniqueID().equals(uuid);
     }
@@ -145,17 +145,17 @@ public class PonyManager implements IResourceManagerReloadListener {
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
-        this.poniesCache.clear();
-        this.backgroudPoniesCache.clear();
-        this.backgroundPonyList.clear();
+        poniesCache.clear();
+        backgroudPoniesCache.clear();
+        backgroundPonyList.clear();
         try {
             for (IResource res : resourceManager.getAllResources(BGPONIES_JSON)) {
                 try (Reader reader = new InputStreamReader((res.getInputStream()))) {
                     BackgroundPonies ponies = GSON.fromJson(reader, BackgroundPonies.class);
                     if (ponies.override) {
-                        this.backgroundPonyList.clear();
+                        backgroundPonyList.clear();
                     }
-                    this.backgroundPonyList.addAll(ponies.getPonies());
+                    backgroundPonyList.addAll(ponies.getPonies());
                 } catch (JsonParseException e) {
                     MineLittlePony.logger.error("Invalid bgponies.json in " + res.getResourcePackName(), e);
                 }
@@ -169,7 +169,7 @@ public class PonyManager implements IResourceManagerReloadListener {
     private ResourceLocation getDefaultSkin(UUID uuid) {
         return isSlimSkin(uuid) ? ALEX : STEVE;
     }
-    
+
     /**
      * Returns true if the given uuid is of a player would would use the ALEX skin type.
      */
@@ -196,7 +196,7 @@ public class PonyManager implements IResourceManagerReloadListener {
         }
 
         public List<ResourceLocation> getPonies() {
-            return this.ponies.stream().map(this::apply).collect(Collectors.toList());
+            return ponies.stream().map(this::apply).collect(Collectors.toList());
         }
     }
 }

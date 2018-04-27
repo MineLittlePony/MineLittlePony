@@ -21,12 +21,13 @@ public class ModelSkeletonPony extends ModelMobPony {
     public ModelSkeletonPony() {
         super();
     }
-    
+
     @Override
     public PonyArmor createArmour() {
         return new PonyArmor(new ModelSkeletonPonyArmor(), new ModelSkeletonPonyArmor());
     }
-    
+
+    @Override
     public void setLivingAnimations(EntityLivingBase entity, float move, float swing, float ticks) {
         rightArmPose = ModelBiped.ArmPose.EMPTY;
         leftArmPose = ModelBiped.ArmPose.EMPTY;
@@ -45,18 +46,18 @@ public class ModelSkeletonPony extends ModelMobPony {
     }
 
     @Override
-    protected void rotateLegs(float move, float swing, float tick, Entity entity) {
-        super.rotateLegs(move, swing, tick, entity);
-        aimBow(leftArmPose, rightArmPose, tick);
+    protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
+        super.rotateLegs(move, swing, ticks, entity);
+        aimBow(leftArmPose, rightArmPose, ticks);
     }
-    
+
     @Override
     protected void fixSpecialRotationPoints(float move) {
         if (rightArmPose != ArmPose.EMPTY && !metadata.hasMagic()) {
             bipedRightArm.setRotationPoint(-1.5F, 9.5F, 4);
         }
     }
-    
+
     // TODO: HACK It would be better to just change the size of the legs.
     private void renderScaledArm(ModelRenderer arm, float x, float y, float z) {
         scale(x, y, z);

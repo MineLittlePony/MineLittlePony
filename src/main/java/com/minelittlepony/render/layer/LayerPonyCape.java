@@ -25,46 +25,47 @@ public class LayerPonyCape extends AbstractPonyLayer<AbstractClientPlayer> {
     }
 
     @Override
-    public void doPonyRender(@Nonnull AbstractClientPlayer clientPlayer, float p2, float p3, float ticks, float p5, float p6, float p7, float scale) {
+    public void doPonyRender(@Nonnull AbstractClientPlayer player, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
         ModelWrapper model = ((IRenderPony) getRenderer()).getPlayerModel();
-        if (clientPlayer.hasPlayerInfo() && !clientPlayer.isInvisible()
-                && clientPlayer.isWearing(EnumPlayerModelParts.CAPE) && clientPlayer.getLocationCape() != null
-                && clientPlayer.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() != Items.ELYTRA) {
+
+        if (player.hasPlayerInfo() && !player.isInvisible()
+                && player.isWearing(EnumPlayerModelParts.CAPE) && player.getLocationCape() != null
+                && player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() != Items.ELYTRA) {
+
             pushMatrix();
             model.getModel().transform(BodyPart.BODY);
             translate(0, 0.24F, 0);
             model.getModel().bipedBody.postRender(scale);
 
-            double d = clientPlayer.prevChasingPosX + (clientPlayer.chasingPosX - clientPlayer.prevChasingPosX) * scale - (clientPlayer.prevPosX + (clientPlayer.posX - clientPlayer.prevPosX) * scale);
-            double d1 = clientPlayer.prevChasingPosY + (clientPlayer.chasingPosY - clientPlayer.prevChasingPosY) * scale - (clientPlayer.prevPosY + (clientPlayer.posY - clientPlayer.prevPosY) * scale);
-            double d2 = clientPlayer.prevChasingPosZ + (clientPlayer.chasingPosZ - clientPlayer.prevChasingPosZ) * scale - (clientPlayer.prevPosZ + (clientPlayer.posZ - clientPlayer.prevPosZ) * scale);
-            float f10 = clientPlayer.prevRenderYawOffset + (clientPlayer.renderYawOffset - clientPlayer.prevRenderYawOffset) * scale;
-            double d3 = MathHelper.sin(f10 * PI / 180);
-            double d4 = (-MathHelper.cos(f10 * PI / 180));
-            float f12 = (float) d1 * 10;
-            if (f12 < -6.0F) {
-                f12 = -6.0F;
-            }
+            double capeX = player.prevChasingPosX + (player.chasingPosX - player.prevChasingPosX) * scale - (player.prevPosX + (player.posX - player.prevPosX) * scale);
+            double capeY = player.prevChasingPosY + (player.chasingPosY - player.prevChasingPosY) * scale - (player.prevPosY + (player.posY - player.prevPosY) * scale);
+            double capeZ = player.prevChasingPosZ + (player.chasingPosZ - player.prevChasingPosZ) * scale - (player.prevPosZ + (player.posZ - player.prevPosZ) * scale);
 
-            if (f12 > 32) {
-                f12 = 32;
-            }
+            float motionYaw = player.prevRenderYawOffset + (player.renderYawOffset - player.prevRenderYawOffset) * scale;
 
-            float f13 = (float) (d * d3 + d2 * d4) * 100;
-            float f14 = (float) (d * d4 - d2 * d3) * 100;
-            if (f13 < 0) {
-                f13 = 0;
-            }
+            double sin = MathHelper.sin(motionYaw * PI / 180);
+            double cos = (-MathHelper.cos(motionYaw * PI / 180));
 
-            float f15 = clientPlayer.prevCameraYaw + (clientPlayer.cameraYaw - clientPlayer.prevCameraYaw) * scale;
-            f12 += MathHelper.sin((clientPlayer.prevDistanceWalkedModified + (clientPlayer.distanceWalkedModified - clientPlayer.prevDistanceWalkedModified) * scale) * 6) * 32 * f15;
+            float capeMotionY = (float) capeY * 10;
 
-            rotate(2 + f13 / 12 + f12, 1, 0, 0);
-            rotate(f14 / 2, 0, 0, 1);
-            rotate(-f14 / 2, 0, 1, 0);
+            if (capeMotionY < -6) capeMotionY = -6;
+            if (capeMotionY > 32) capeMotionY = 32;
+
+            float capeMotionX = (float) (capeX * sin + capeZ * cos) * 100;
+
+            float diagMotion =  (float) (capeX * cos - capeZ * sin) * 100;
+
+            if (capeMotionX < 0) capeMotionX = 0;
+
+            float camera = player.prevCameraYaw + (player.cameraYaw - player.prevCameraYaw) * scale;
+            capeMotionY += MathHelper.sin((player.prevDistanceWalkedModified + (player.distanceWalkedModified - player.prevDistanceWalkedModified) * scale) * 6) * 32 * camera;
+
+            rotate(2 + capeMotionX / 12 + capeMotionY, 1, 0, 0);
+            rotate( diagMotion / 2, 0, 0, 1);
+            rotate(-diagMotion / 2, 0, 1, 0);
             rotate(180, 0, 0, 1);
             rotate(90, 1, 0, 0);
-            this.getRenderer().bindTexture(clientPlayer.getLocationCape());
+            getRenderer().bindTexture(player.getLocationCape());
             model.getModel().renderCape(0.0625F);
             popMatrix();
         }

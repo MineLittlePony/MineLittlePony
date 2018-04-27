@@ -13,7 +13,7 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.entity.EntityLivingBase;
@@ -33,13 +33,13 @@ public class LayerHeldPonyItem extends AbstractPonyLayer<EntityLivingBase> {
     }
 
     @Override
-    public void doPonyRender(EntityLivingBase entity, float p_177141_2_, float p_177141_3_, float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
+    public void doPonyRender(EntityLivingBase entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
         ModelBase model = getRenderer().getMainModel();
         boolean mainRight = entity.getPrimaryHand() == EnumHandSide.RIGHT;
-        
+
         ItemStack itemMain = entity.getHeldItemMainhand();
         ItemStack itemOff = entity.getHeldItemOffhand();
-        
+
         ItemStack left = mainRight ? itemOff : itemMain;
         ItemStack right = mainRight ? itemMain : itemOff;
 
@@ -55,36 +55,39 @@ public class LayerHeldPonyItem extends AbstractPonyLayer<EntityLivingBase> {
                 scale(.5, .5, .5);
             }
 
-            renderHeldItem(entity, right, ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, EnumHandSide.RIGHT);
-            renderHeldItem(entity, left, ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, EnumHandSide.LEFT);
+            renderHeldItem(entity, right, TransformType.THIRD_PERSON_RIGHT_HAND, EnumHandSide.RIGHT);
+            renderHeldItem(entity, left, TransformType.THIRD_PERSON_LEFT_HAND, EnumHandSide.LEFT);
 
             popMatrix();
         }
     }
 
-    private void renderHeldItem(EntityLivingBase entity, ItemStack drop, ItemCameraTransforms.TransformType transform, EnumHandSide hand) {
+    private void renderHeldItem(EntityLivingBase entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
         if (!drop.isEmpty()) {
             GlStateManager.pushMatrix();
             translateToHand(hand);
 
             if (entity.isSneaking()) {
-                GlStateManager.translate(0.0F, 0.2F, 0.0F);
+                GlStateManager.translate(0, 0.2F, 0);
             }
 
-            GlStateManager.rotate(-90.0F, 1, 0, 0);
-            GlStateManager.rotate(180.0F, 0, 1, 0);
-            boolean isUnicorn = isUnicorn(this.getRenderer().getMainModel());
+            GlStateManager.rotate(-90, 1, 0, 0);
+            GlStateManager.rotate(180, 0, 1, 0);
+
+            boolean isUnicorn = isUnicorn(getRenderer().getMainModel());
             boolean isLeft = hand == EnumHandSide.LEFT;
+
             if (isUnicorn) {
                 GlStateManager.translate(isLeft ? -0.6F : 0.1F, 1, -0.5F);
             } else {
                 GlStateManager.translate(0.0425F, 0.125F, -1);
             }
+
             Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, drop, transform, isLeft);
 
             if (isUnicorn) {
-                IPonyData metadata = ((AbstractPonyModel) this.getRenderer().getMainModel()).metadata;
-                this.renderItemGlow(entity, drop, transform, hand, metadata.getGlowColor());
+                IPonyData metadata = ((AbstractPonyModel) getRenderer().getMainModel()).metadata;
+                renderItemGlow(entity, drop, transform, hand, metadata.getGlowColor());
             }
             GlStateManager.popMatrix();
         }
@@ -95,18 +98,17 @@ public class LayerHeldPonyItem extends AbstractPonyLayer<EntityLivingBase> {
     }
 
     protected void translateToHand(EnumHandSide hand) {
-        AbstractPonyModel thePony = ((IRenderPony) this.getRenderer()).getPlayerModel().getModel();
+        AbstractPonyModel thePony = ((IRenderPony) getRenderer()).getPlayerModel().getModel();
         if (thePony.metadata.hasMagic()) {
             ModelPlayerPony playerModel = (ModelPlayerPony) thePony;
             ModelRenderer unicornarm = hand == EnumHandSide.LEFT ? playerModel.unicornArmLeft : playerModel.unicornArmRight;
             unicornarm.postRender(0.0625F);
         } else {
-            ((ModelBiped) this.getRenderer().getMainModel()).postRenderArm(0.0625F, hand);
+            ((ModelBiped) getRenderer().getMainModel()).postRenderArm(0.0625F, hand);
         }
     }
 
-    public void renderItemGlow(EntityLivingBase entity, ItemStack drop, ItemCameraTransforms.TransformType transform, EnumHandSide hand,
-            int glowColor) {
+    public void renderItemGlow(EntityLivingBase entity, ItemStack drop, TransformType transform, EnumHandSide hand, int glowColor) {
 
         // enchantments mess up the rendering
         ItemStack drop2 = drop.copy();

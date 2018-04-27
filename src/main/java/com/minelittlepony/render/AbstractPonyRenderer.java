@@ -16,7 +16,7 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
     protected float modelOffsetX;
     protected float modelOffsetY;
     protected float modelOffsetZ;
-    
+
     public AbstractPonyRenderer(ModelBase model) {
         super(model);
         baseModel = model;
@@ -26,7 +26,7 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
         super(model, x, y);
         baseModel = model;
     }
-    
+
     /**
      * Called to create a new instance of this renderer (used for child renderers)
      */
@@ -39,37 +39,37 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
         super.setTextureOffset(x, y);
         return (T) this;
     }
-    
+
     /**
      * Flips the mirror flag. All faces are mirrored until this is called again.
      */
     public T mirror() {
         return mirror(!mirror);
     }
-    
+
     public T mirror(boolean m) {
         mirror = m;
         return (T) this;
     }
-    
+
     /**
      * Sets the texture offset
      */
     public T tex(int x, int y) {
         return setTextureOffset(x, y);
     }
-    
+
     public T size(int x, int y) {
         return (T) setTextureSize(x, y);
     }
-    
+
     /**
      * Positions this model in space.
      */
     public T at(float x, float y, float z) {
         return (T)at(this, x, y, z);
     }
-    
+
     /**
      * Sets an offset to be used on all shapes and children created through this renderer.
      */
@@ -79,20 +79,20 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
         modelOffsetZ = z;
         return (T) this;
     }
-    
+
     public static <T extends ModelRenderer> T at(T renderer, float x, float y, float z) {
         renderer.offsetX = x / 16;
         renderer.offsetY = y / 16;
         renderer.offsetZ = z / 16;
         return renderer;
     }
-    
+
     public void rotateTo(ModelRenderer other) {
         rotateAngleX = other.rotateAngleX;
         rotateAngleY = other.rotateAngleY;
         rotateAngleZ = other.rotateAngleZ;
     }
-    
+
     public T rotateAt(ModelRenderer other) {
         return around(other.rotationPointX, other.rotationPointY, other.rotationPointZ);
     }
@@ -104,7 +104,7 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
         setRotationPoint(x, y, z);
         return (T) this;
     }
-    
+
     /**
      * Gets or creates a new child model based on its unique index.
      * New children will be of the same type and inherit the same textures and offsets of the original.
@@ -134,27 +134,29 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
         return (T) this;
     }
 
+    @Override
     public T addBox(float offX, float offY, float offZ, int width, int height, int depth, boolean mirrored) {
         addBox(offX, offY, offZ, width, height, depth, 0, mirrored);
         return (T)this;
     }
 
+    @Override
     public void addBox(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor) {
         addBox(offX, offY, offZ, width, height, depth, scaleFactor, mirror);
     }
-    
+
     /**
      * Creates a textured box.
      */
     public T box(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor) {
         return addBox(offX, offY, offZ, width, height, depth, scaleFactor, mirror);
     }
-    
+
     private T addBox(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor, boolean mirrored) {
         createBox(modelOffsetX + offX, modelOffsetY + offY, modelOffsetZ + offZ, width, height, depth, scaleFactor, mirrored);
         return (T)this;
     }
-    
+
     protected void createBox(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor, boolean mirrored) {
         cubeList.add(new ModelBox(this, textureOffsetX, textureOffsetY, offX, offY, offZ, width, height, depth, scaleFactor, mirrored));
     }

@@ -24,14 +24,15 @@ import static com.minelittlepony.model.PonyModelConstants.*;
 public class ModelPlayerPony extends AbstractPonyModel {
 
     private final boolean smallArms;
-    
+
     public ModelRenderer bipedCape;
-    
+
     public PlaneRenderer upperTorso;
     public PlaneRenderer neck;
-    
-    public PonyRenderer unicornArmRight, unicornArmLeft;
-    
+
+    public PonyRenderer unicornArmRight;
+    public PonyRenderer unicornArmLeft;
+
     public PonyTail tail;
     public PonySnout snout;
     public UnicornHorn horn;
@@ -41,7 +42,7 @@ public class ModelPlayerPony extends AbstractPonyModel {
         super(smallArms);
         this.smallArms = smallArms;
     }
-    
+
     @Override
     public PonyArmor createArmour() {
         return new PonyArmor(new ModelPonyArmor(), new ModelPonyArmor());
@@ -56,29 +57,29 @@ public class ModelPlayerPony extends AbstractPonyModel {
     }
 
     @Override
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
-        super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
+    public void setRotationAngles(float move, float swing, float age, float headYaw, float headPitch, float scale, Entity entity) {
+        super.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
 
-        this.checkRainboom(entityIn, limbSwingAmount);
-        this.rotateHead(netHeadYaw, headPitch);
+        checkRainboom(entity, swing);
+        rotateHead(headYaw, headPitch);
 
         float bodySwingRotation = 0;
         if (swingProgress > -9990.0F && !metadata.hasMagic()) {
             bodySwingRotation = MathHelper.sin(MathHelper.sqrt(swingProgress) * PI * 2) * 0.2F;
         }
 
-        rotateLook(limbSwing, limbSwingAmount, bodySwingRotation, ageInTicks);
+        rotateLook(move, swing, bodySwingRotation, age);
 
-        setLegs(limbSwing, limbSwingAmount, ageInTicks, entityIn);
-        holdItem(limbSwingAmount);
-        swingItem(entityIn, swingProgress);
+        setLegs(move, swing, age, entity);
+        holdItem(swing);
+        swingItem(entity, swingProgress);
 
         if (isCrouching() && !rainboom) {
             adjustBody(BODY_ROTATE_ANGLE_X_SNEAK, BODY_RP_Y_SNEAK, BODY_RP_Z_SNEAK);
             sneakLegs();
             setHead(0, 6, -2);
         } else if (isRiding) {
-            this.adjustBodyRiding();
+            adjustBodyRiding();
             bipedLeftLeg.rotationPointZ = 15;
             bipedLeftLeg.rotationPointY = 10;
             bipedLeftLeg.rotateAngleX = -PI / 4;
@@ -96,35 +97,35 @@ public class ModelPlayerPony extends AbstractPonyModel {
 
             bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
             bipedLeftLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
-            swingArms(ageInTicks);
+            swingArms(age);
             setHead(0, 0, 0);
         }
-        
+
         if (isSleeping) ponySleep();
 
-        aimBow(leftArmPose, rightArmPose, ageInTicks);
-        fixSpecialRotationPoints(limbSwing);
+        aimBow(leftArmPose, rightArmPose, age);
+        fixSpecialRotationPoints(move);
 
         animateWears();
 
         if (bipedCape != null) {
             bipedCape.rotationPointY = isSneak ? 2 : isRiding ? -4 : 0;
-    
+
             snout.setGender(metadata.getGender());
-            wings.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
+            wings.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
         }
     }
-    
+
     protected void adjustBodyRiding() {
         adjustBodyComponents(BODY_ROTATE_ANGLE_X_RIDING, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
         adjustNeck(BODY_ROTATE_ANGLE_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
         setHead(0, 0, 0);
     }
-    
-    protected void rotateLook(float limbSwing, float limbSwingAmount, float bodySwing, float ticks) {
-        tail.setRotationAndAngles(rainboom, limbSwing, limbSwingAmount, bodySwing, ticks);
+
+    protected void rotateLook(float move, float swing, float bodySwing, float ticks) {
+        tail.setRotationAndAngles(rainboom, move, swing, bodySwing, ticks);
         bodySwing /= 5;
-        
+
         upperTorso.rotateAngleY = bodySwing;
         bipedBody.rotateAngleY = bodySwing;
         neck.rotateAngleY = bodySwing;
@@ -160,16 +161,16 @@ public class ModelPlayerPony extends AbstractPonyModel {
     private void rotateHead(float horz, float vert) {
         float headRotateAngleY = isSleeping ? 1.4f : horz / 57.29578F;
         float headRotateAngleX = isSleeping ? 0.1f : vert / 57.29578F;
-        
+
         headRotateAngleX = Math.min(headRotateAngleX, (float) (0.5f - Math.toRadians(motionPitch)));
         headRotateAngleX = Math.max(headRotateAngleX, (float) (-1.25f - Math.toRadians(motionPitch)));
-        
+
         updateHeadRotation(headRotateAngleX, headRotateAngleY);
     }
-    
+
     /**
      * Called to update the head rotation.
-     * 
+     *
      * @param x New rotation X
      * @param y New rotation Y
      */
@@ -182,14 +183,14 @@ public class ModelPlayerPony extends AbstractPonyModel {
         rotateLegs(move, swing, tick, entity);
         adjustLegs();
     }
-    
+
     protected void rotateLegs(float move, float swing, float tick, Entity entity) {
         float leftArm;
         float rightArm;
         float leftLeg;
         float rightLeg;
-        
-        
+
+
         if (isFlying(entity)) {
             if (rainboom) {
                 rightArm = leftArm = ROTATE_270;
@@ -203,13 +204,13 @@ public class ModelPlayerPony extends AbstractPonyModel {
             bipedLeftArm.rotateAngleY = bipedRightLeg.rotateAngleY = -0.2F;
         } else {
             float pi = PI * (float) Math.pow(swing, 16);
-            
+
             float mve = move * 0.6662F; // magic number ahoy
             float srt = swing / 4;
-            
+
             leftArm = MathHelper.cos(mve + pi) * srt;
             rightArm = MathHelper.cos(mve + PI + pi / 2) * srt;
-            
+
             leftLeg = MathHelper.cos(mve + PI - (pi * 0.4f)) * srt;
             rightLeg = MathHelper.cos(mve + pi * 0.2f) * srt;
 
@@ -238,7 +239,7 @@ public class ModelPlayerPony extends AbstractPonyModel {
         unicornArmLeft.rotateAngleX = 0;
         unicornArmRight.rotateAngleX = 0;
     }
-    
+
     private float getLegOutset() {
         if (isSleeping) return 2.6f;
         if (isSneak && !isFlying) return smallArms ? 1 : 0;
@@ -277,8 +278,8 @@ public class ModelPlayerPony extends AbstractPonyModel {
         bipedRightLeg.rotationPointZ = bipedLeftLeg.rotationPointZ = 10;
     }
 
-    
-    
+
+
     protected void holdItem(float swing) {
         boolean both = leftArmPose == ArmPose.ITEM && rightArmPose == ArmPose.ITEM;
 
@@ -290,7 +291,7 @@ public class ModelPlayerPony extends AbstractPonyModel {
             alignArmForAction(unicornArmRight, rightArmPose, both, swing);
         }
 
-        horn.setUsingMagic(this.leftArmPose != ArmPose.EMPTY || this.rightArmPose != ArmPose.EMPTY);
+        horn.setUsingMagic(leftArmPose != ArmPose.EMPTY || rightArmPose != ArmPose.EMPTY);
     }
 
     private void alignArmForAction(ModelRenderer arm, ArmPose pose, boolean both, float swing) {
@@ -311,20 +312,20 @@ public class ModelPlayerPony extends AbstractPonyModel {
             default:
         }
     }
-    
+
     private void blockArm(ModelRenderer arm) {
         arm.rotateAngleX = arm.rotateAngleX / 2 - 0.9424779F;
         arm.rotateAngleY = PI / 6;
     }
 
     protected void swingItem(Entity entity, float swingProgress) {
-        if (swingProgress > -9990.0F && !this.isSleeping) {
-            EnumHandSide mainSide = this.getMainHand(entity);
+        if (swingProgress > -9990.0F && !isSleeping) {
+            EnumHandSide mainSide = getMainHand(entity);
             boolean mainRight = mainSide == EnumHandSide.RIGHT;
             ArmPose mainPose = mainRight ? rightArmPose : leftArmPose;
-            
+
             if (mainPose == ArmPose.EMPTY) return;
-            
+
             if (metadata.hasMagic()) {
                 swingArm(mainRight ? unicornArmRight : unicornArmLeft);
             } else {
@@ -332,15 +333,15 @@ public class ModelPlayerPony extends AbstractPonyModel {
             }
         }
     }
-    
+
     private void swingArm(ModelRenderer arm) {
         float swing = 1 - (float)Math.pow(1 - swingProgress, 3);
-        
+
         float deltaX = MathHelper.sin(swing * PI);
         float deltaZ = MathHelper.sin(swingProgress * PI);
-        
+
         float deltaAim = deltaZ * (0.7F - bipedHead.rotateAngleX) * 0.75F;
-        
+
         arm.rotateAngleX -= deltaAim + deltaX * 1.2F;
         arm.rotateAngleZ = deltaZ * -0.4F;
         arm.rotateAngleY += bipedBody.rotateAngleY * 2;
@@ -351,7 +352,7 @@ public class ModelPlayerPony extends AbstractPonyModel {
         float sin = MathHelper.sin(tick * 0.067F) * 0.05F;
 
         if (rightArmPose != ArmPose.EMPTY && !isSleeping) {
-            
+
             if (metadata.hasMagic()) {
                 unicornArmRight.rotateAngleZ += cos;
                 unicornArmRight.rotateAngleX += sin;
@@ -380,7 +381,7 @@ public class ModelPlayerPony extends AbstractPonyModel {
         bipedBody.rotateAngleX = rotateAngleX;
         bipedBody.rotationPointY = rotationPointY;
         bipedBody.rotationPointZ = rotationPointZ;
-        
+
         upperTorso.rotateAngleX = rotateAngleX;
         upperTorso.rotationPointY = rotationPointY;
         upperTorso.rotationPointZ = rotationPointZ;
@@ -408,9 +409,9 @@ public class ModelPlayerPony extends AbstractPonyModel {
         bipedLeftArm.rotateAngleX = ROTATE_270;
         bipedRightLeg.rotateAngleX = ROTATE_90;
         bipedLeftLeg.rotateAngleX = ROTATE_90;
-        
+
         setHead(1, 2, isSneak ? -1 : 1);
-        
+
         shiftRotationPoint(bipedRightArm, 0, 2, 6);
         shiftRotationPoint(bipedLeftArm, 0, 2, 6);
         shiftRotationPoint(bipedRightLeg, 0, 2, -8);
@@ -443,11 +444,11 @@ public class ModelPlayerPony extends AbstractPonyModel {
     }
 
     @Override
-    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        
+    public void render(Entity entityIn, float move, float swing, float age, float headYaw, float headPitch, float scale) {
+
         pushMatrix();
         transform(BodyPart.HEAD);
-        renderHead(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+        renderHead(entityIn, move, swing, age, headYaw, headPitch, scale);
         popMatrix();
 
         pushMatrix();
@@ -457,7 +458,7 @@ public class ModelPlayerPony extends AbstractPonyModel {
 
         pushMatrix();
         transform(BodyPart.BODY);
-        renderBody(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+        renderBody(entityIn, move, swing, age, headYaw, headPitch, scale);
         popMatrix();
 
         pushMatrix();
@@ -466,11 +467,11 @@ public class ModelPlayerPony extends AbstractPonyModel {
         popMatrix();
     }
 
-    protected void renderHead(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    protected void renderHead(Entity entity, float move, float swing, float age, float headYaw, float headPitch, float scale) {
         bipedHead.render(scale);
         bipedHeadwear.render(scale);
         bipedHead.postRender(scale);
-        horn.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+        horn.render(entity, move, swing, age, headYaw, headPitch, scale);
     }
 
     protected void renderNeck() {
@@ -478,14 +479,14 @@ public class ModelPlayerPony extends AbstractPonyModel {
         neck.render(scale);
     }
 
-    protected void renderBody(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    protected void renderBody(Entity entity, float move, float swing, float age, float headYaw, float headPitch, float scale) {
         bipedBody.render(scale);
         if (textureHeight == 64) {
             bipedBodyWear.render(scale);
         }
         upperTorso.render(scale);
         bipedBody.postRender(scale);
-        wings.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+        wings.render(entity, move, swing, age, headYaw, headPitch, scale);
         tail.render(metadata.getTail(), scale);
     }
 
@@ -496,7 +497,7 @@ public class ModelPlayerPony extends AbstractPonyModel {
         bipedRightArm.render(scale);
         bipedLeftLeg.render(scale);
         bipedRightLeg.render(scale);
-        
+
         if (textureHeight == 64) {
             bipedLeftArmwear.render(scale);
             bipedRightArmwear.render(scale);
@@ -522,11 +523,11 @@ public class ModelPlayerPony extends AbstractPonyModel {
 
     protected void initBodyTextures() {
         bipedBody = new ModelRenderer(this, 16, 16);
-        
+
         if (textureHeight == 64) {
             bipedBodyWear = new ModelRenderer(this, 16, 32);
         }
-        
+
         upperTorso = new PlaneRenderer(this, 24, 0);
         neck = new PlaneRenderer(this, 0, 16);
     }
@@ -557,14 +558,14 @@ public class ModelPlayerPony extends AbstractPonyModel {
         initLegPositions(yOffset, stretch);
         initTailPositions(yOffset, stretch);
     }
-    
+
     protected void initTailPositions(float yOffset, float stretch) {
         tail.init(yOffset, stretch);
     }
 
     protected void initHeadPositions(float yOffset, float stretch) {
         bipedCape.addBox(-5.0F, 0.0F, -1.0F, 10, 16, 1, stretch);
-        
+
         ((PonyRenderer)bipedHead).offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
                                  .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
                                  .box(-4, -4, -4, 8, 8, 8, stretch)
@@ -572,7 +573,7 @@ public class ModelPlayerPony extends AbstractPonyModel {
                                  .box(-4, -6, 1, 2, 2, 2, stretch)
                                  .mirror()
                                  .box(2, -6, 1, 2, 2, 2, stretch);
-        
+
         ((PonyRenderer)bipedHeadwear).offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
                                      .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
                                      .box(-4, -4, -4, 8, 8, 8, stretch + 0.5F);
@@ -584,10 +585,10 @@ public class ModelPlayerPony extends AbstractPonyModel {
     protected void initBodyPositions(float yOffset, float stretch) {
         bipedBody.addBox(-4, 4, -2, 8, 8, 4, stretch);
         bipedBody.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        
+
         bipedBodyWear.addBox(-4, 4, -2, 8, 8, 4, stretch + 0.25F);
         bipedBodyWear.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        
+
         upperTorso.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
                   .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                     .tex(24, 0)    .addEastPlane( 4, -4, -4, 8, 8, stretch)
@@ -607,7 +608,7 @@ public class ModelPlayerPony extends AbstractPonyModel {
                           .addBackPlane(-1, 2, 8, 2, 2, stretch)
                   .flipZ().addWestPlane(-1, 2, 2, 2, 6, stretch)
                   .rotateAngleX = 0.5F;
-        
+
         neck.at(NECK_CENTRE_X, NECK_CENTRE_Y, NECK_CENTRE_Z)
             .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
             .addFrontPlane(0, 0, 0, 4, 4, stretch)
@@ -621,20 +622,20 @@ public class ModelPlayerPony extends AbstractPonyModel {
         int armWidth = smallArms ? 3 : 4;
         float rarmY = smallArms ? 8.5f : 8;
         float rarmX = smallArms ? 2 : 3;
-        
+
         float armX = THIRDP_ARM_CENTRE_X - 2;
         float armY = THIRDP_ARM_CENTRE_Y - 6;
         float armZ = THIRDP_ARM_CENTRE_Z - 2;
-        
+
         bipedLeftArm .addBox(armX, armY, armZ, armWidth, 12, 4, stretch);
         bipedRightArm.addBox(armX, armY, armZ, armWidth, 12, 4, stretch);
-        
+
         bipedLeftLeg .addBox(armX, armY, armZ, 4, 12, 4, stretch);
         bipedRightLeg.addBox(armX, armY, armZ, 4, 12, 4, stretch);
-        
+
         bipedLeftArm .setRotationPoint( rarmX, yOffset + rarmY, 0);
         bipedRightArm.setRotationPoint(-rarmX, yOffset + rarmY, 0);
-        
+
         bipedLeftLeg .setRotationPoint( rarmX, yOffset, 0);
         bipedRightLeg.setRotationPoint(-rarmX, yOffset, 0);
 
@@ -642,17 +643,17 @@ public class ModelPlayerPony extends AbstractPonyModel {
             bipedLeftArmwear.addBox(armX, armY, armZ, 3, 12, 4, stretch + 0.25f);
             bipedLeftArmwear.setRotationPoint(3, yOffset + rarmY, 0);
         }
-        
+
         if (bipedRightArmwear != null) {
             bipedRightArmwear.addBox(armX, armY, armZ, armWidth, 12, 4, stretch + 0.25f);
             bipedRightArmwear.setRotationPoint(-3, yOffset + rarmY, 0);
         }
-        
+
         if (bipedLeftLegwear != null) {
             bipedLeftLegwear.addBox(armX, armY, armZ, 4, 12, 4, stretch + 0.25f);
             bipedRightLegwear.setRotationPoint(3, yOffset, 0);
         }
-        
+
         if (bipedRightLegwear != null) {
             bipedRightLegwear.addBox(armX, armY, armZ, 4, 12, 4, stretch + 0.25f);
             bipedRightLegwear.setRotationPoint(-3, yOffset, 0);

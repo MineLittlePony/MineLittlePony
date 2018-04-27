@@ -48,7 +48,7 @@ public class MineLittlePony {
         config = new PonyConfig();
         ponyManager = new PonyManager(config);
         renderManager = new PonyRenderManager();
-                
+
         LiteLoader.getInstance().registerExposable(config, null);
 
         IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
@@ -108,7 +108,7 @@ public class MineLittlePony {
     public PonyManager getManager() {
         return ponyManager;
     }
-    
+
     /**
      * Gets the static pony render manager responsible for all entity renderers.
      */

@@ -25,11 +25,11 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
     @Override
     protected void addLayers() {
         super.addLayers();
-        this.addLayer(new LayerBipedArmor(this) {
+        addLayer(new LayerBipedArmor(this) {
             @Override
             protected void initArmor() {
-                this.modelLeggings = getPlayerModel().getArmor().modelArmor;
-                this.modelArmor = getPlayerModel().getArmor().modelArmorChestplate;
+                modelLeggings = getPlayerModel().getArmor().armour;
+                modelArmor = getPlayerModel().getArmor().chestplate;
             }
         });
     }
@@ -43,7 +43,7 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
 
         public Stray(RenderManager rm) {
             super(rm);
-            this.addLayer(new LayerPonyStrayOverlay(this));
+            addLayer(new LayerPonyStrayOverlay(this));
         }
 
         @Override
@@ -64,8 +64,8 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
         }
 
         @Override
-        protected void preRenderCallback(EntityWitherSkeleton skeleton, float partialTicks) {
-            super.preRenderCallback(skeleton, partialTicks);
+        protected void preRenderCallback(EntityWitherSkeleton skeleton, float ticks) {
+            super.preRenderCallback(skeleton, ticks);
             GlStateManager.scale(1.2F, 1.2F, 1.2F);
         }
 

@@ -19,12 +19,12 @@ public class PonyElytra extends ModelBase {
     private PonyRenderer leftWing = new PonyRenderer(this, 22, 0);
 
     public PonyElytra() {
-        this.leftWing          .box(-10, 0, 0, 10, 20, 2, 1);
-        this.rightWing.mirror().box( 0,  0, 0, 10, 20, 2, 1);
+        leftWing          .box(-10, 0, 0, 10, 20, 2, 1);
+        rightWing.mirror().box( 0,  0, 0, 10, 20, 2, 1);
     }
 
     @Override
-    public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void render(Entity entity, float move, float swing, float age, float headYaw, float headPitch, float scale) {
         GlStateManager.disableRescaleNormal();
         GlStateManager.disableCull();
         leftWing.render(scale);
@@ -32,8 +32,8 @@ public class PonyElytra extends ModelBase {
     }
 
     @Override
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entity) {
-        super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entity);
+    public void setRotationAngles(float move, float swing, float age, float headYaw, float headPitch, float scale, Entity entity) {
+        super.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
 
         float rotateX = PI / 2;
         float rotateY = PI / 8;

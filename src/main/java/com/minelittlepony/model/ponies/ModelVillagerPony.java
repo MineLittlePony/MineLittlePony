@@ -16,25 +16,25 @@ public class ModelVillagerPony extends ModelPlayerPony {
     }
 
     @Override
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
-        super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
+    public void setRotationAngles(float move, float swing, float age, float headYaw, float headPitch, float scale, Entity entity) {
+        super.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
 
-        float swing = 0;
+        float angleY = 0;
         if (swingProgress > -9990.0F && !metadata.hasMagic()) {
-            swing = MathHelper.sin(MathHelper.sqrt(swingProgress) * PI * 2) * 0.04F;
+            angleY = MathHelper.sin(MathHelper.sqrt(swingProgress) * PI * 2) * 0.04F;
         }
-        bag.rotateAngleY = swing;
-        apron.rotateAngleY = swing;
-        trinket.rotateAngleY = swing;
+        bag.rotateAngleY = angleY;
+        apron.rotateAngleY = angleY;
+        trinket.rotateAngleY = angleY;
     }
 
     @Override
-    protected void renderBody(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        super.renderBody(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+    protected void renderBody(Entity entity, float move, float swing, float age, float headYaw, float headPitch, float scale) {
+        super.renderBody(entity, move, swing, age, headYaw, headPitch, scale);
 
-        if (entityIn instanceof EntityVillager) {
+        if (entity instanceof EntityVillager) {
             bipedBody.postRender(this.scale);
-            int profession = ((EntityVillager) entityIn).getProfession();
+            int profession = ((EntityVillager) entity).getProfession();
             if (profession < 2) {
                 bag.render(scale);
             } else if (profession == 2) {
@@ -43,7 +43,7 @@ public class ModelVillagerPony extends ModelPlayerPony {
                 apron.render(scale);
             }
         }
-        
+
     }
 
     @Override
@@ -57,7 +57,7 @@ public class ModelVillagerPony extends ModelPlayerPony {
     @Override
     protected void initPositions(float yOffset, float stretch) {
         super.initPositions(yOffset, stretch);
-        
+
         bag.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
            .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
            .tex(56, 25).addBackPlane(-7, -5,    -4, 3, 6, stretch) //right bag front
@@ -75,7 +75,7 @@ public class ModelVillagerPony extends ModelPlayerPony {
                  .tex(56, 22).addBottomPlane(2,  1, -2,  8, 3, stretch) //right bag bottom
                              .addBottomPlane(2,  1, -13, 8, 3, stretch) //left bag bottom
                     .rotateAngleY = 4.712389F;
-        
+
         apron.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
              .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
              .addBackPlane(-4, -4, -9, 8, 10, stretch);
