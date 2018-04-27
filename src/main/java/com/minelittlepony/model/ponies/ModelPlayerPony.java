@@ -242,7 +242,7 @@ public class ModelPlayerPony extends AbstractPonyModel {
 
     private float getLegOutset() {
         if (isSleeping) return 2.6f;
-        if (isSneak && !isFlying) return smallArms ? 1 : 0;
+        if (isCrouching()) return smallArms ? 1 : 0;
         return 4;
     }
 
@@ -267,8 +267,8 @@ public class ModelPlayerPony extends AbstractPonyModel {
 
         // Push the front legs back apart if we're a thin pony
         if (smallArms) {
-            bipedLeftArm.rotationPointX--;
-            bipedLeftArm.rotationPointX += 2;
+            bipedLeftArm.rotationPointX++;
+            bipedLeftLeg.rotationPointX++;
         }
 
         bipedRightArm.rotateAngleY += bipedBody.rotateAngleY;
@@ -538,20 +538,20 @@ public class ModelPlayerPony extends AbstractPonyModel {
     }
 
     protected void initLegTextures() {
-        bipedRightArm = new ModelRenderer(this, 40, 16);
-        bipedRightLeg = new ModelRenderer(this, 0, 16);
-
         bipedLeftArm = new ModelRenderer(this, 32, 48);
-        bipedLeftLeg = new ModelRenderer(this, 16, 48);
-
-        bipedRightArmwear = new ModelRenderer(this, 40, 32);
-        bipedRightLegwear = new ModelRenderer(this, 0, 32);
+        bipedRightArm = new ModelRenderer(this, 40, 16);
 
         bipedLeftArmwear = new ModelRenderer(this, 48, 48);
-        bipedLeftLegwear = new ModelRenderer(this, 0, 48);
+        bipedRightArmwear = new ModelRenderer(this, 40, 32);
 
-        unicornArmRight = new PonyRenderer(this, 40, 32).size(64, 64);
+        bipedLeftLeg = new ModelRenderer(this, 16, 48);
+        bipedRightLeg = new ModelRenderer(this, 0, 16);
+
+        bipedLeftLegwear = new ModelRenderer(this, 0, 48);
+        bipedRightLegwear = new ModelRenderer(this, 0, 32);
+
         unicornArmLeft = new PonyRenderer(this, 40, 32).size(64, 64);
+        unicornArmRight = new PonyRenderer(this, 40, 32).size(64, 64);
 
         boxList.remove(unicornArmRight);
     }
@@ -623,8 +623,17 @@ public class ModelPlayerPony extends AbstractPonyModel {
             .rotateAngleX = NECK_ROT_X;
     }
 
+    protected int getArmWidth() {
+        return smallArms ? 3 : 4;
+    }
+
+    protected int getArmDepth() {
+        return 4;
+    }
+
     protected void initLegPositions(float yOffset, float stretch) {
-        int armWidth = smallArms ? 3 : 4;
+        int armWidth = getArmWidth();
+        int armDepth = getArmDepth();
         float rarmY = smallArms ? 8.5f : 8;
         float rarmX = smallArms ? 2 : 3;
 
@@ -632,11 +641,11 @@ public class ModelPlayerPony extends AbstractPonyModel {
         float armY = THIRDP_ARM_CENTRE_Y - 6;
         float armZ = THIRDP_ARM_CENTRE_Z - 2;
 
-        bipedLeftArm .addBox(armX, armY, armZ, armWidth, 12, 4, stretch);
-        bipedRightArm.addBox(armX, armY, armZ, armWidth, 12, 4, stretch);
+        bipedLeftArm .addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch);
+        bipedRightArm.addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch);
 
-        bipedLeftLeg .addBox(armX, armY, armZ, 4, 12, 4, stretch);
-        bipedRightLeg.addBox(armX, armY, armZ, 4, 12, 4, stretch);
+        bipedLeftLeg .addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch);
+        bipedRightLeg.addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch);
 
         bipedLeftArm .setRotationPoint( rarmX, yOffset + rarmY, 0);
         bipedRightArm.setRotationPoint(-rarmX, yOffset + rarmY, 0);
@@ -645,22 +654,22 @@ public class ModelPlayerPony extends AbstractPonyModel {
         bipedRightLeg.setRotationPoint(-rarmX, yOffset, 0);
 
         if (bipedLeftArmwear != null) {
-            bipedLeftArmwear.addBox(armX, armY, armZ, 3, 12, 4, stretch + 0.25f);
+            bipedLeftArmwear.addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch + 0.25f);
             bipedLeftArmwear.setRotationPoint(3, yOffset + rarmY, 0);
         }
 
         if (bipedRightArmwear != null) {
-            bipedRightArmwear.addBox(armX, armY, armZ, armWidth, 12, 4, stretch + 0.25f);
+            bipedRightArmwear.addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch + 0.25f);
             bipedRightArmwear.setRotationPoint(-3, yOffset + rarmY, 0);
         }
 
         if (bipedLeftLegwear != null) {
-            bipedLeftLegwear.addBox(armX, armY, armZ, 4, 12, 4, stretch + 0.25f);
+            bipedLeftLegwear.addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch + 0.25f);
             bipedRightLegwear.setRotationPoint(3, yOffset, 0);
         }
 
         if (bipedRightLegwear != null) {
-            bipedRightLegwear.addBox(armX, armY, armZ, 4, 12, 4, stretch + 0.25f);
+            bipedRightLegwear.addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch + 0.25f);
             bipedRightLegwear.setRotationPoint(-3, yOffset, 0);
         }
 
