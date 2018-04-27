@@ -31,7 +31,7 @@ public class RenderPonyVindicator extends RenderPonyMob<EntityVindicator> {
             }
 
             @Override
-            protected void translateToHand(EnumHandSide side) {
+            protected void postRenderArm(EnumHandSide side) {
                 ((ModelIllagerPony) getRenderer().getMainModel()).getArm(side).postRender(0.0625F);
             }
         });

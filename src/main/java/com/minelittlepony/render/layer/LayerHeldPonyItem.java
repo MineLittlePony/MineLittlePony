@@ -65,7 +65,7 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
     private void renderHeldItem(T entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
         if (!drop.isEmpty()) {
             GlStateManager.pushMatrix();
-            translateToHand(hand);
+            postRenderArm(hand);
 
             if (entity.isSneaking()) {
                 GlStateManager.translate(0, 0.2F, 0);
@@ -97,14 +97,17 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
         return model instanceof AbstractPonyModel && ((AbstractPonyModel) model).metadata.hasMagic();
     }
 
-    protected void translateToHand(EnumHandSide hand) {
+    /**
+     * Renders the main arm
+     */
+    protected void postRenderArm(EnumHandSide side) {
         AbstractPonyModel thePony = ((IRenderPony) getRenderer()).getPlayerModel().getModel();
         if (thePony.metadata.hasMagic()) {
             ModelPlayerPony playerModel = (ModelPlayerPony) thePony;
-            ModelRenderer unicornarm = hand == EnumHandSide.LEFT ? playerModel.unicornArmLeft : playerModel.unicornArmRight;
+            ModelRenderer unicornarm = side == EnumHandSide.LEFT ? playerModel.unicornArmLeft : playerModel.unicornArmRight;
             unicornarm.postRender(0.0625F);
         } else {
-            ((ModelBiped) getRenderer().getMainModel()).postRenderArm(0.0625F, hand);
+            ((ModelBiped) getRenderer().getMainModel()).postRenderArm(0.0625F, side);
         }
     }
 
