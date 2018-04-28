@@ -20,7 +20,7 @@ public class TexturesPayloadBuilder {
 
     private static Gson gson = new GsonBuilder().registerTypeAdapter(UUID.class, new UUIDTypeAdapter()).create();
 
-	private long timestamp;
+    private long timestamp;
     private UUID profileId;
     private String profileName;
     private boolean isPublic;
