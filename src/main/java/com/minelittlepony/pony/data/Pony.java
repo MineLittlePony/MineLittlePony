@@ -121,6 +121,9 @@ public class Pony {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("texture", texture).add("metadata", metadata).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("texture", texture)
+                .add("metadata", metadata)
+                .toString();
     }
 }
