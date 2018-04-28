@@ -126,8 +126,8 @@ public class ModelPonyArmor extends ModelMobPony {
         bipedRightArm = new PonyRenderer(this, 0, 16);
         bipedRightLeg = new PonyRenderer(this, 0, 16);
 
-        bipedLeftArm = new PonyRenderer(this, 0, 16).mirror();
-        bipedLeftLeg = new PonyRenderer(this, 0, 16).mirror();
+        bipedLeftArm = new PonyRenderer(this, 0, 16).flipX();
+        bipedLeftLeg = new PonyRenderer(this, 0, 16).flipX();
 
         unicornArmRight = new PonyRenderer(this, 0, 16);
         unicornArmLeft = new PonyRenderer(this, 0, 16);
@@ -175,7 +175,7 @@ public class ModelPonyArmor extends ModelMobPony {
                        .box(-2, -6, -2, 4, 12, 4, stretch);
         rightLegging.offset(THIRDP_ARM_CENTRE_X, THIRDP_ARM_CENTRE_Y, THIRDP_ARM_CENTRE_Z)
                        .around(-3, yOffset, 0)
-              .mirror().box(-2, -6, -2, 4, 12, 4, stretch);
+              .flipX().box(-2, -6, -2, 4, 12, 4, stretch);
     }
 
     protected void syncLegs() {

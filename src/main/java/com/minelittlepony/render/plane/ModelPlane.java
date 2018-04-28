@@ -1,75 +1,73 @@
 package com.minelittlepony.render.plane;
 
-import net.minecraft.client.model.ModelBox;
-import net.minecraft.client.model.PositionTextureVertex;
-import net.minecraft.client.model.TexturedQuad;
 import net.minecraft.client.renderer.BufferBuilder;
 
 import javax.annotation.Nonnull;
 
-public class ModelPlane extends ModelBox {
+import com.minelittlepony.util.coordinates.*;
 
-    private TexturedQuad quad;
+public class ModelPlane extends Box<PlaneRenderer> {
+
+    private Quad quad;
 
     public boolean hidden = false;
 
-    public ModelPlane(PlaneRenderer renderer, int textureX, int textureY, float x, float y, float z, int w, int h, int d, float scale, Face face) {
-        super(renderer, textureX, textureY, x, y, z, w, h, d, scale, false);
+    public ModelPlane(PlaneRenderer renderer, int textureX, int textureY, float xMin, float yMin, float zMin, int w, int h, int d, float scale, Face face) {
+        super(renderer, textureX, textureY, xMin, yMin, zMin, w, h, d, scale, false);
 
-        float x2 = x + w + scale;
-        float y2 = y + h + scale;
-        float z2 = z + d + scale;
+        float xMax = xMin + w + scale;
+        float yMax = yMin + h + scale;
+        float zMax = zMin + d + scale;
 
-        x -= scale;
-        y -= scale;
-        z -= scale;
+        xMin -= scale;
+        yMin -= scale;
+        zMin -= scale;
 
         if (renderer.mirror) {
-            float v = x2;
-            x2 = x;
-            x = v;
+            float v = xMax;
+            xMax = xMin;
+            xMin = v;
         }
 
         if (renderer.mirrory) {
-            float v = y2;
-            y2 = y;
-            y = v;
+            float v = yMax;
+            yMax = yMin;
+            yMin = v;
         }
 
         if (renderer.mirrorz) {
-            float v = z2;
-            z2 = z;
-            z = v;
-
+            float v = zMax;
+            zMax = zMin;
+            zMin = v;
         }
 
         // w:west e:east d:down u:up s:south n:north
-        PositionTextureVertex wds = new PositionTextureVertex(x , y , z , 0, 0);
-        PositionTextureVertex eds = new PositionTextureVertex(x2, y , z , 0, 8);
-        PositionTextureVertex eus = new PositionTextureVertex(x2, y2, z , 8, 8);
-        PositionTextureVertex wus = new PositionTextureVertex(x , y2, z , 8, 0);
-        PositionTextureVertex wdn = new PositionTextureVertex(x , y , z2, 0, 0);
-        PositionTextureVertex edn = new PositionTextureVertex(x2, y , z2, 0, 8);
-        PositionTextureVertex eun = new PositionTextureVertex(x2, y2, z2, 8, 8);
-        PositionTextureVertex wun = new PositionTextureVertex(x , y2, z2, 8, 0);
+        Vertex wds = vert(xMin , yMin , zMin , 0, 0);
+        Vertex eds = vert(xMax, yMin , zMin , 0, 8);
+        Vertex eus = vert(xMax, yMax, zMin , 8, 8);
+        Vertex wus = vert(xMin , yMax, zMin , 8, 0);
+        Vertex wdn = vert(xMin , yMin , zMax, 0, 0);
+        Vertex edn = vert(xMax, yMin , zMax, 0, 8);
+        Vertex eun = vert(xMax, yMax, zMax, 8, 8);
+        Vertex wun = vert(xMin , yMax, zMax, 8, 0);
 
-        if (face == Face.EAST) { // North/Front (was East)
-            quad = new TexturedQuad(new PositionTextureVertex[]{edn, eds, eus, eun}, textureX, textureY, textureX + d, textureY + h, renderer.textureWidth, renderer.textureHeight);
+        if (face == Face.EAST) {
+            quad = quad(textureX, d, textureY, h, edn, eds, eus, eun);
         }
-        if (face == Face.WEST) { // South/Back (was West)
-            quad = new TexturedQuad(new PositionTextureVertex[]{wds, wdn, wun, wus}, textureX, textureY, textureX + d, textureY + h, renderer.textureWidth, renderer.textureHeight);
+        if (face == Face.WEST) {
+            quad = quad(textureX, d, textureY, h, wds, wdn, wun, wus);
         }
-        if (face == Face.UP) { // Up
-            quad = new TexturedQuad(new PositionTextureVertex[]{edn, wdn, wds, eds}, textureX, textureY, textureX + w, textureY + d, renderer.textureWidth, renderer.textureHeight);
+        if (face == Face.UP) {
+            quad = quad(textureX, w, textureY, h, edn, wdn, wds, eds);
         }
-        if (face == Face.DOWN) { // Down
-            quad = new TexturedQuad(new PositionTextureVertex[]{eus, wus, wun, eun}, textureX, textureY, textureX + w, textureY + d, renderer.textureWidth, renderer.textureHeight);
+        if (face == Face.DOWN) {
+            quad = quad(textureX, w, textureY, d, eus, wus, wun, eun);
         }
         if (face == Face.SOUTH) { // East/Left (was South)
-            quad = new TexturedQuad(new PositionTextureVertex[]{eds, wds, wus, eus}, textureX, textureY, textureX + w, textureY + h, renderer.textureWidth, renderer.textureHeight);
+            quad = quad(textureX, w, textureY, h, eds, wds, wus, eus);
         }
         if (face == Face.NORTH) { // West/Right (was North)
-            quad = new TexturedQuad(new PositionTextureVertex[]{wdn, edn, eun, wun}, textureX, textureY, textureX + w, textureY + h, renderer.textureWidth, renderer.textureHeight);
+            quad = quad(textureX, w, textureY, h, wdn, edn, eun, wun);
         }
 
         if (renderer.mirror || renderer.mirrory || renderer.mirrorz) {

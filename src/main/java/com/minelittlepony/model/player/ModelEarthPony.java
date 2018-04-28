@@ -514,7 +514,7 @@ public class ModelEarthPony extends AbstractPonyModel {
                                  .box(-4, -4, -4, 8, 8, 8, stretch)
                                  .tex(12, 16)
                                  .box(-4, -6, 1, 2, 2, 2, stretch)
-                                 .mirror()
+                                 .flipX()
                                  .box(2, -6, 1, 2, 2, 2, stretch);
 
         ((PonyRenderer)bipedHeadwear).offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
