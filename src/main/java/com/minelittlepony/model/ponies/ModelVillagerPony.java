@@ -1,6 +1,7 @@
 package com.minelittlepony.model.ponies;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.EntityZombieVillager;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.util.math.MathHelper;
 import static com.minelittlepony.model.PonyModelConstants.*;
@@ -33,9 +34,9 @@ public class ModelVillagerPony extends ModelAlicorn {
     protected void renderBody(Entity entity, float move, float swing, float age, float headYaw, float headPitch, float scale) {
         super.renderBody(entity, move, swing, age, headYaw, headPitch, scale);
 
-        if (entity instanceof EntityVillager) {
+        int profession = getProfession(entity);
+        if (profession > -1) {
             bipedBody.postRender(this.scale);
-            int profession = ((EntityVillager) entity).getProfession();
             if (profession < 2) {
                 bag.render(scale);
             } else if (profession == 2) {
@@ -44,6 +45,16 @@ public class ModelVillagerPony extends ModelAlicorn {
                 apron.render(scale);
             }
         }
+    }
+
+    protected int getProfession(Entity entity) {
+        if (entity instanceof EntityVillager) {
+            return ((EntityVillager) entity).getProfession();
+        }
+        if (entity instanceof EntityZombieVillager) {
+            return ((EntityZombieVillager) entity).getProfession();
+        }
+        return -1;
     }
 
     @Override
