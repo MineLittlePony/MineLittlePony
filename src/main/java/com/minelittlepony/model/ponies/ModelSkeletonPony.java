@@ -7,6 +7,7 @@ import com.minelittlepony.model.armour.ModelSkeletonPonyArmor;
 import com.minelittlepony.model.armour.PonyArmor;
 
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.init.Items;
@@ -19,6 +20,11 @@ public class ModelSkeletonPony extends ModelMobPony {
     @Override
     public PonyArmor createArmour() {
         return new PonyArmor(new ModelSkeletonPonyArmor(), new ModelSkeletonPonyArmor());
+    }
+
+    @Override
+    public boolean isCasting() {
+        return true;
     }
 
     @Override
