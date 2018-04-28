@@ -40,6 +40,7 @@ public class UnicornHorn {
         blendFunc(GL_SRC_ALPHA, GL_ONE);
 
         horn.postRender(scale);
+
         glow.setTint(tint).render(scale);
 
         enableTexture2D();

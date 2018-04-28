@@ -7,7 +7,6 @@ import com.minelittlepony.model.armour.ModelSkeletonPonyArmor;
 import com.minelittlepony.model.armour.PonyArmor;
 
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.init.Items;
