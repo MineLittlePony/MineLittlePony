@@ -2,7 +2,7 @@ package com.minelittlepony.pony.data;
 
 import com.google.common.base.MoreObjects;
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.ducks.IDownloadImageData;
+import com.minelittlepony.mixin.MixinThreadDownloadImageData;
 import com.minelittlepony.model.ModelWrapper;
 import com.voxelmodpack.hdskins.DynamicTextureImage;
 import com.voxelmodpack.hdskins.ThreadDownloadImageETag;
@@ -78,8 +78,8 @@ public class Pony {
         try {
             ITextureObject e2 = Minecraft.getMinecraft().getTextureManager().getTexture(resource);
 
-            if (e2 instanceof IDownloadImageData) {
-                return ((IDownloadImageData) e2).getBufferedImage();
+            if (e2 instanceof MixinThreadDownloadImageData) {
+                return ((MixinThreadDownloadImageData) e2).getBufferedImage();
             } else if (e2 instanceof ThreadDownloadImageETag) {
                 return ((ThreadDownloadImageETag) e2).getBufferedImage();
             } else if (e2 instanceof DynamicTextureImage) {
