@@ -5,10 +5,9 @@ import com.minelittlepony.ducks.IRenderManager;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.ModelWrapper;
-import com.minelittlepony.model.ponies.ModelPlayerPony;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.render.layer.LayerEntityOnPonyShoulder;
-import com.minelittlepony.render.layer.LayerHeldPonyItem;
+import com.minelittlepony.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.render.layer.LayerPonyArmor;
 import com.minelittlepony.render.layer.LayerPonyCape;
 import com.minelittlepony.render.layer.LayerPonyCustomHead;
@@ -45,7 +44,7 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
 
   protected void addExtraLayers() {
       addLayer(new LayerPonyArmor<>(this));
-      addLayer(new LayerHeldPonyItem<>(this));
+      addLayer(new LayerHeldPonyItemMagical<>(this));
       addLayer(new LayerArrow(this));
       addLayer(new LayerPonyCape(this));
       addLayer(new LayerPonyCustomHead<>(this));
@@ -108,7 +107,7 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
 
       if (player.isEntityAlive() && player.isPlayerSleeping()) return;
 
-      if (((ModelPlayerPony) ponyModel).rainboom) {
+      if (ponyModel.rainboom) {
           transformPegasusFlight(player, motionX, motionY, motionZ, yaw, pitch, ticks);
           return;
       }

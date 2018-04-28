@@ -1,10 +1,12 @@
 package com.minelittlepony.model;
 
-import com.minelittlepony.model.ponies.ModelHumanPlayer;
+import com.minelittlepony.model.player.ModelAlicorn;
+import com.minelittlepony.model.player.ModelEarthPony;
+import com.minelittlepony.model.player.ModelPegasus;
 import com.minelittlepony.model.ponies.ModelIllagerPony;
-import com.minelittlepony.model.ponies.ModelPlayerPony;
 import com.minelittlepony.model.ponies.ModelSkeletonPony;
 import com.minelittlepony.model.ponies.ModelVillagerPony;
+import com.minelittlepony.model.ponies.ModelWitchPony;
 import com.minelittlepony.model.ponies.ModelZombiePony;
 
 import java.lang.reflect.Field;
@@ -15,17 +17,23 @@ import java.lang.reflect.Field;
  */
 public final class PMAPI {
 
-    public static final ModelWrapper
-        pony = new ModelWrapper(new ModelPlayerPony(false)),
-        ponySmall = new ModelWrapper(new ModelPlayerPony(true)),
+    public static final ModelWrapper pony = new ModelWrapper(new ModelAlicorn(false));
+    public static final ModelWrapper ponySmall = new ModelWrapper(new ModelAlicorn(true));
 
-        human = new ModelWrapper(new ModelHumanPlayer(false)),
-        humanSmall = new ModelWrapper(new ModelHumanPlayer(true)),
+    public static final ModelWrapper earthpony = new ModelWrapper(new ModelEarthPony(false));
+    public static final ModelWrapper earthponySmall = new ModelWrapper(new ModelEarthPony(true));
 
-        zombie = new ModelWrapper(new ModelZombiePony()),
-        skeleton = new ModelWrapper(new ModelSkeletonPony()),
-        villager = new ModelWrapper(new ModelVillagerPony()),
-        illager = new ModelWrapper(new ModelIllagerPony());
+    public static final ModelWrapper pegasus = new ModelWrapper(new ModelPegasus(false));
+    public static final ModelWrapper pegasusSmall = new ModelWrapper(new ModelPegasus(true));
+
+    public static final ModelWrapper alicorn = new ModelWrapper(new ModelAlicorn(false));
+    public static final ModelWrapper alicornSmall = new ModelWrapper(new ModelAlicorn(true));
+
+    public static final ModelWrapper zombie = new ModelWrapper(new ModelZombiePony());
+    public static final ModelWrapper skeleton = new ModelWrapper(new ModelSkeletonPony());
+    public static final ModelWrapper villager = new ModelWrapper(new ModelVillagerPony());
+    public static final ModelWrapper illager = new ModelWrapper(new ModelIllagerPony());
+    public static final ModelWrapper witch = new ModelWrapper(new ModelWitchPony());
 
     public static void init() {
         for (Field field : PMAPI.class.getFields()) {

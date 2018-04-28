@@ -3,23 +3,33 @@ package com.minelittlepony.model.armour;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.pony.data.IPonyData;
 
+import net.minecraft.inventory.EntityEquipmentSlot;
+
 public class PonyArmor {
 
     public final AbstractPonyModel chestplate;
-    public final AbstractPonyModel armour;
+    public final AbstractPonyModel leggings;
 
     public PonyArmor(AbstractPonyModel chest, AbstractPonyModel body) {
         chestplate = chest;
-        armour = body;
+        leggings = body;
     }
 
     public void apply(IPonyData meta) {
         chestplate.metadata = meta;
-        armour.metadata = meta;
+        leggings.metadata = meta;
     }
 
     public void init() {
         chestplate.init(0, 1);
-        armour.init(0, 0.5f);
+        leggings.init(0, 0.5f);
+    }
+
+    public AbstractPonyModel getArmorForSlot(EntityEquipmentSlot slot) {
+        if (slot == EntityEquipmentSlot.LEGS) {
+            return leggings;
+        }
+
+        return chestplate;
     }
 }

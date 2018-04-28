@@ -36,6 +36,10 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
 
         Pony thePony = MineLittlePony.getInstance().getManager().getPony(loc, playermodel.profile.getId());
 
+        if (thePony.getRace(false).isHuman()) {
+            return super.getEntityModel(playermodel);
+        }
+
         ModelWrapper pm = thePony.getModel(true);
         pm.apply(thePony.getMetadata());
 
@@ -44,7 +48,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
 
     @Override
     protected LayerRenderer<EntityLivingBase> getElytraLayer() {
-        return new AbstractPonyLayer<EntityPonyModel>(this, super.getElytraLayer()) {
+        return new AbstractPonyLayer<EntityPonyModel>(this) {
             final PonyElytra modelElytra = new PonyElytra();
 
             @Override

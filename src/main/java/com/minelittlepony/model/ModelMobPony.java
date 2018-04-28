@@ -1,25 +1,31 @@
 package com.minelittlepony.model;
 
-import com.minelittlepony.model.ponies.ModelPlayerPony;
+import com.minelittlepony.model.player.ModelAlicorn;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.util.math.MathHelper;
 
 /**
  * Common class for all humanoid (ponioid?) non-player enemies.
  *
  */
-public class ModelMobPony extends ModelPlayerPony {
+public class ModelMobPony extends ModelAlicorn {
 
     public ModelMobPony() {
         super(false);
     }
 
     @Override
-    protected void rotateLegs(float move, float swing, float tick, Entity entity) {
-        super.rotateLegs(move, swing, tick, entity);
-
+    protected void adjustLegs(float move, float swing, float tick) {
+        super.adjustLegs(move, swing, tick);
         rotateRightArm(move, tick);
         rotateLeftArm(move, tick);
+    }
+
+    /**
+     * Returns true if the angle is to the right?
+     */
+    public boolean islookAngleRight(float move) {
+        return MathHelper.sin(move / 20f) < 0;
     }
 
     /**

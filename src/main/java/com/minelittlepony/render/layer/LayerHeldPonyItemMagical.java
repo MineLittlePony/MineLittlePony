@@ -10,8 +10,8 @@ import static net.minecraft.client.renderer.GlStateManager.translate;
 import org.lwjgl.opengl.GL14;
 
 import com.minelittlepony.ducks.IRenderItem;
-import com.minelittlepony.model.AbstractPonyModel;
-import com.minelittlepony.model.ponies.ModelPlayerPony;
+import com.minelittlepony.model.capabilities.IModelUnicorn;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
@@ -30,7 +30,7 @@ public class LayerHeldPonyItemMagical<T extends EntityLivingBase> extends LayerH
 
     private boolean isUnicorn() {
         ModelBase model = getMainModel();
-        return model instanceof AbstractPonyModel && ((AbstractPonyModel) model).metadata.hasMagic();
+        return model instanceof IModelUnicorn && ((IModelUnicorn) model).isCasting();
     }
 
     protected void preItemRender(T entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
@@ -52,7 +52,7 @@ public class LayerHeldPonyItemMagical<T extends EntityLivingBase> extends LayerH
      */
     protected void renderArm(EnumHandSide side) {
         if (isUnicorn()) {
-            this.<ModelPlayerPony>getMainModel().getUnicornArmForSide(side).postRender(0.0625F);
+            ((IModelUnicorn)getMainModel()).getUnicornArmForSide(side).postRender(0.0625F);
         } else {
             super.renderArm(side);
         }

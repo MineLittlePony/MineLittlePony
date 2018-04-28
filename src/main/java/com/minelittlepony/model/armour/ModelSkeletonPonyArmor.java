@@ -1,7 +1,5 @@
 package com.minelittlepony.model.armour;
 
-import net.minecraft.entity.Entity;
-
 /**
  * Armour for skeleton ponies.
  *
@@ -9,9 +7,9 @@ import net.minecraft.entity.Entity;
 public class ModelSkeletonPonyArmor extends ModelPonyArmor {
 
     @Override
-    protected void rotateLegs(float move, float swing, float tick, Entity entity) {
-        super.rotateLegs(move, swing, tick, entity);
+    protected void adjustLegs(float move, float swing, float tick) {
         aimBow(leftArmPose, rightArmPose, tick);
+        super.adjustLegs(move, swing, tick);
     }
 
     @Override

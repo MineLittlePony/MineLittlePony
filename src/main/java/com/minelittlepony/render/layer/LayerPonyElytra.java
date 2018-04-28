@@ -7,7 +7,6 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
-import net.minecraft.client.renderer.entity.layers.LayerElytra;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.init.Items;
@@ -23,7 +22,7 @@ public class LayerPonyElytra<T extends EntityLivingBase> extends AbstractPonyLay
     private PonyElytra modelElytra = new PonyElytra();
 
     public LayerPonyElytra(RenderLivingBase<T> rp) {
-        super(rp, new LayerElytra(rp));
+        super(rp);
     }
 
     @Override

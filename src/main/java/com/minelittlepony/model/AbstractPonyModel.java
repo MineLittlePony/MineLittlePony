@@ -74,22 +74,8 @@ public abstract class AbstractPonyModel extends ModelPlayer {
      */
     protected abstract void initPositions(float yOffset, float stretch);
 
-    @Override
-    public void setRotationAngles(float move, float swing, float age, float headYaw, float headPitch, float scale, Entity entity) {
-        if (doCancelRender()) {
-            super.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
-        }
-    }
-
     public ArmPose getArmPoseForSide(EnumHandSide side) {
         return side == EnumHandSide.RIGHT ? rightArmPose : leftArmPose;
-    }
-
-    /**
-     * Returns true if the default minecraft handling should be used.
-     */
-    protected boolean doCancelRender() {
-        return false;
     }
 
     /**
@@ -97,6 +83,13 @@ public abstract class AbstractPonyModel extends ModelPlayer {
      */
     public boolean isCrouching() {
         return isSneak && !isFlying;
+    }
+
+    /**
+     * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
+     */
+    protected void checkRainboom(Entity entity, float swing) {
+        rainboom = isFlying(entity) && swing >= 0.9999F;
     }
 
     /**

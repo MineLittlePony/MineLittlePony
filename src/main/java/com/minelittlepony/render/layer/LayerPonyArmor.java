@@ -11,7 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
 import net.minecraft.client.resources.ResourcePackRepository;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -39,7 +38,7 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
     private ModelWrapper pony;
 
     public LayerPonyArmor(RenderLivingBase<T> renderer) {
-        super(renderer, new LayerBipedArmor(renderer));
+        super(renderer);
     }
 
     @Override
@@ -60,12 +59,7 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
 
             ItemArmor itemarmor = (ItemArmor) itemstack.getItem();
 
-            AbstractPonyModel modelbase;
-            if (armorSlot == EntityEquipmentSlot.LEGS) {
-                modelbase = pony.getArmor().armour;
-            } else {
-                modelbase = pony.getArmor().chestplate;
-            }
+            AbstractPonyModel modelbase = pony.getArmor().getArmorForSlot(armorSlot);
             modelbase = getArmorModel(entity, itemstack, armorSlot, modelbase);
             modelbase.setModelAttributes(pony.getModel());
             modelbase.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
@@ -167,7 +161,6 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
     }
 
     private void renderEnchantment(T entity, ModelBase model, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
-
         getRenderer().bindTexture(ENCHANTED_ITEM_GLINT_RES);
 
         GlStateManager.enableBlend();

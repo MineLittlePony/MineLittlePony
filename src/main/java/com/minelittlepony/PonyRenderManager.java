@@ -5,7 +5,7 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 import com.minelittlepony.hdskins.gui.EntityPonyModel;
 import com.minelittlepony.hdskins.gui.RenderPonyModel;
-import com.minelittlepony.model.PMAPI;
+import com.minelittlepony.model.player.PlayerModels;
 import com.minelittlepony.render.player.RenderPonyPlayer;
 import com.minelittlepony.render.ponies.RenderPonyIllager;
 import com.minelittlepony.render.ponies.RenderPonyPigman;
@@ -52,9 +52,14 @@ public class PonyRenderManager {
         // Preview on the select skin gui
         ModUtilities.addRenderer(EntityPonyModel.class, new RenderPonyModel(rm));
 
-        new RenderPonyPlayer(rm, false, "pony", PMAPI.pony);
-        new RenderPonyPlayer(rm, true, "slimpony", PMAPI.ponySmall);
-        //TODO: Add skin types for each species? May require model break up.
+        registerPlayerSkin(rm, PlayerModels.EARTH);
+        registerPlayerSkin(rm, PlayerModels.PEGASUS);
+        registerPlayerSkin(rm, PlayerModels.ALICORN);
+    }
+
+    protected void registerPlayerSkin(RenderManager rm, PlayerModels playerModel) {
+        new RenderPonyPlayer(rm, false, playerModel.getId(false), playerModel.getModel(false));
+        new RenderPonyPlayer(rm, true, playerModel.getId(true), playerModel.getModel(true));
     }
 
     /**

@@ -1,12 +1,14 @@
 package com.minelittlepony.model.ponies;
 
+import com.minelittlepony.model.player.ModelAlicorn;
+
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.AbstractIllager;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 
-public class ModelIllagerPony extends ModelPlayerPony {
+public class ModelIllagerPony extends ModelAlicorn {
 
     public ModelIllagerPony() {
         super(false);
@@ -14,8 +16,8 @@ public class ModelIllagerPony extends ModelPlayerPony {
 
     @Override
     public void setRotationAngles(float move, float swing, float age, float headYaw, float headPitch, float scale, Entity entity) {
-
         super.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
+
         AbstractIllager illager = (AbstractIllager) entity;
         AbstractIllager.IllagerArmPose pose = illager.getArmPose();
 

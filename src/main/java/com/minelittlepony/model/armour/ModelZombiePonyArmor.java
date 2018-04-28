@@ -1,20 +1,13 @@
 package com.minelittlepony.model.armour;
 
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.util.math.MathHelper;
-
 public class ModelZombiePonyArmor extends ModelPonyArmor {
-
-    private boolean isRight(float move) {
-        return MathHelper.sin(move / 20f) < 0;
-    }
 
     // Copied from ModelZombiePony
     @Override
     protected void rotateRightArm(float move, float tick) {
         if (rightArmPose != ArmPose.EMPTY) return;
 
-        if (isRight(move)) {
+        if (islookAngleRight(move)) {
             rotateArmHolding(bipedRightArm, 1, swingProgress, tick);
         } else {
             rotateArmHolding(bipedLeftArm, -1, swingProgress, tick);
@@ -29,10 +22,11 @@ public class ModelZombiePonyArmor extends ModelPonyArmor {
     @Override
     protected void fixSpecialRotationPoints(float move) {
         if (rightArmPose != ArmPose.EMPTY) return;
-        boolean right = isRight(move);
-        float xchange = right ? 0.5f : -0.5f;
-        ModelRenderer arm = right ? bipedRightArm : bipedLeftArm;
 
-        shiftRotationPoint(arm, xchange, 1.5f, 3);
+        if (islookAngleRight(move)) {
+            shiftRotationPoint(bipedRightArm, 0.5F, 1.5F, 3);
+        } else {
+            shiftRotationPoint(bipedLeftArm, -0.5F, 1.5F, 3);
+        }
     }
 }

@@ -179,14 +179,8 @@ public class ModelPonyArmor extends ModelMobPony {
     }
 
     @Override
-    protected void rotateLegs(float move, float swing, float tick, Entity entity) {
-        super.rotateLegs(move, swing, tick, entity);
-        syncLegs();
-    }
-
-    @Override
-    protected void adjustLegs() {
-        super.adjustLegs();
+    protected void setLegs(float move, float swing, float tick, Entity entity) {
+        super.setLegs(move, swing, tick, entity);
         syncLegs();
     }
 

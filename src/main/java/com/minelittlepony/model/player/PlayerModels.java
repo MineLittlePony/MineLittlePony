@@ -4,8 +4,13 @@ import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.model.ModelWrapper;
 
 public enum PlayerModels {
-    HUMAN("default", "slim", () -> PMAPI.human, () -> PMAPI.humanSmall),
-    PONY("pony", "slimpony", () -> PMAPI.pony, () -> PMAPI.ponySmall);
+    /**
+     * @deprecated Will be removed in a later revision
+     */
+    @Deprecated HUMAN("default", "slim", () -> PMAPI.pony, () -> PMAPI.ponySmall),
+    EARTH("earthpony", "slimearthpony", () -> PMAPI.earthpony, () -> PMAPI.earthponySmall),
+    PEGASUS("pegasus", "slimpegasus", () -> PMAPI.pegasus, () -> PMAPI.pegasusSmall),
+    ALICORN("alicorn", "slimalicorn", () -> PMAPI.alicorn, () -> PMAPI.alicornSmall);
 
     private final ModelResolver normal, slim;
 
@@ -20,11 +25,11 @@ public enum PlayerModels {
     }
 
     public ModelWrapper getModel(boolean slim) {
-          return slim ? this.slim.resolve() : normal.resolve();
+        return slim ? this.slim.resolve() : normal.resolve();
     }
 
     public String getId(boolean useSlimArms) {
-          return useSlimArms ? slimKey : normalKey;
+        return useSlimArms ? slimKey : normalKey;
     }
 
     /**

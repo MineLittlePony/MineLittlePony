@@ -8,7 +8,6 @@ import com.minelittlepony.model.armour.PonyArmor;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.init.Items;
@@ -46,8 +45,8 @@ public class ModelSkeletonPony extends ModelMobPony {
     }
 
     @Override
-    protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
-        super.rotateLegs(move, swing, ticks, entity);
+    protected void adjustLegs(float move, float swing, float ticks) {
+        super.adjustLegs(move, swing, ticks);
         aimBow(leftArmPose, rightArmPose, ticks);
     }
 

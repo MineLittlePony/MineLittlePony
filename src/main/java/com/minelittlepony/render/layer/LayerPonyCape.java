@@ -6,8 +6,6 @@ import com.minelittlepony.model.ModelWrapper;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.entity.layers.LayerCape;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -21,7 +19,7 @@ import static com.minelittlepony.model.PonyModelConstants.PI;
 public class LayerPonyCape extends AbstractPonyLayer<AbstractClientPlayer> {
 
     public LayerPonyCape(RenderLivingBase<AbstractClientPlayer> entity) {
-        super(entity, new LayerCape((RenderPlayer) entity));
+        super(entity);
     }
 
     @Override

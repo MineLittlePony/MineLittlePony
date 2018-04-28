@@ -4,7 +4,6 @@ import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.ModelWrapper;
-import com.minelittlepony.model.ponies.ModelPlayerPony;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -46,7 +45,7 @@ public class LayerPonyCustomHead<T extends EntityLivingBase> implements LayerRen
             model.transform(BodyPart.HEAD);
             model.bipedHead.postRender(0.0625f);
 
-            if (model instanceof ModelPlayerPony) {
+            if (model instanceof AbstractPonyModel) {
                 translate(0, 0.2F, 0);
             } else {
                 translate(0, 0, 0.15F);

@@ -5,9 +5,10 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.util.math.MathHelper;
 import static com.minelittlepony.model.PonyModelConstants.*;
 
+import com.minelittlepony.model.player.ModelAlicorn;
 import com.minelittlepony.render.plane.PlaneRenderer;
 
-public class ModelVillagerPony extends ModelPlayerPony {
+public class ModelVillagerPony extends ModelAlicorn {
 
     public PlaneRenderer bag, apron, trinket;
 

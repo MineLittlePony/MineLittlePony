@@ -8,7 +8,6 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
@@ -17,7 +16,7 @@ import static net.minecraft.client.renderer.GlStateManager.*;
 public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyLayer<T> {
 
     public LayerHeldPonyItem(RenderLivingBase<T> livingPony) {
-        super(livingPony, new LayerHeldItem(livingPony));
+        super(livingPony);
     }
 
     @Override

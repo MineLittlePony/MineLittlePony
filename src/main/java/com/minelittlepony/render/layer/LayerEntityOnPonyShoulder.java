@@ -1,6 +1,5 @@
 package com.minelittlepony.render.layer;
 
-import com.minelittlepony.ForgeProxy;
 import com.minelittlepony.model.BodyPart;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -8,12 +7,9 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.layers.LayerEntityOnShoulder;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nullable;
@@ -26,7 +22,7 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientP
     private EntityLivingBase rightEntity;
 
     public LayerEntityOnPonyShoulder(RenderManager manager, RenderLivingBase<AbstractClientPlayer> renderer) {
-        super(renderer, getForgeLayer(manager));
+        super(renderer);
         renderManager = manager;
     }
 
@@ -81,11 +77,5 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientP
 
         GlStateManager.popMatrix();
         return entity;
-    }
-
-    private static LayerRenderer<EntityPlayer> getForgeLayer(RenderManager manager) {
-        return ForgeProxy.createShoulderLayer()
-                .orElse(LayerEntityOnShoulder::new)
-                .apply(manager);
     }
 }
