@@ -28,7 +28,7 @@ public class LayerHeldPonyItemMagical<T extends EntityLivingBase> extends LayerH
         super(livingPony);
     }
 
-    private boolean isUnicorn() {
+    protected boolean isUnicorn() {
         ModelBase model = getMainModel();
         return model instanceof IModelUnicorn && ((IModelUnicorn) model).canCast();
     }

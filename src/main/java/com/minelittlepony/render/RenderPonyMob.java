@@ -3,6 +3,7 @@ package com.minelittlepony.render;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.ModelWrapper;
+import com.minelittlepony.render.layer.LayerHeldPonyItem;
 import com.minelittlepony.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.render.layer.LayerPonyArmor;
 import com.minelittlepony.render.layer.LayerPonyCustomHead;
@@ -29,10 +30,14 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
     protected void addLayers() {
         addLayer(new LayerPonyArmor<>(this));
-        addLayer(new LayerHeldPonyItemMagical<>(this));
         // addLayer(new LayerArrow(this));
         addLayer(new LayerPonyCustomHead<>(this));
         addLayer(new LayerPonyElytra<>(this));
+        addLayer(createItemHoldingLayer());
+    }
+
+    protected LayerHeldPonyItem<T> createItemHoldingLayer() {
+        return new LayerHeldPonyItemMagical<>(this);
     }
 
     @Override

@@ -12,6 +12,7 @@ import com.minelittlepony.render.ponies.RenderPonyPigman;
 import com.minelittlepony.render.ponies.RenderPonySkeleton;
 import com.minelittlepony.render.ponies.RenderPonyVex;
 import com.minelittlepony.render.ponies.RenderPonyVillager;
+import com.minelittlepony.render.ponies.RenderPonyWitch;
 import com.minelittlepony.render.ponies.RenderPonyZombie;
 import com.minelittlepony.render.ponies.RenderPonyZombieVillager;
 import com.mumfrey.liteloader.util.ModUtilities;
@@ -28,6 +29,7 @@ import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityStray;
 import net.minecraft.entity.monster.EntityVex;
 import net.minecraft.entity.monster.EntityVindicator;
+import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.entity.monster.EntityWitherSkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.monster.EntityZombieVillager;
@@ -69,10 +71,12 @@ public class PonyRenderManager {
 
         if (config.villagers) {
             pushNewRenderer(rm, EntityVillager.class, new RenderPonyVillager(rm));
+            pushNewRenderer(rm, EntityWitch.class, new RenderPonyWitch(rm));
             pushNewRenderer(rm, EntityZombieVillager.class, new RenderPonyZombieVillager(rm));
             MineLittlePony.logger.info("Villagers are now ponies.");
         } else {
             restoreRenderer(EntityVillager.class);
+            restoreRenderer(EntityWitch.class);
             restoreRenderer(EntityZombieVillager.class);
         }
 
