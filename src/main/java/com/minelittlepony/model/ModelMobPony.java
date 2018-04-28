@@ -38,11 +38,11 @@ public class ModelMobPony extends ModelAlicorn {
     protected void rotateRightArm(float move, float tick) {
         if (rightArmPose == ArmPose.EMPTY) return;
 
-        if (!metadata.hasMagic()) {
-            rotateArmHolding(bipedRightArm, -1, swingProgress, tick);
-        } else {
+        if (canCast()) {
             unicornArmRight.setRotationPoint(-7, 12, -2);
             rotateArmHolding(unicornArmRight, -1, swingProgress, tick);
+        } else {
+            rotateArmHolding(bipedRightArm, -1, swingProgress, tick);
         }
     }
 
@@ -55,11 +55,11 @@ public class ModelMobPony extends ModelAlicorn {
     protected void rotateLeftArm(float move, float tick) {
         if (leftArmPose == ArmPose.EMPTY) return;
 
-        if (!metadata.hasMagic()) {
-            rotateArmHolding(bipedLeftArm, -1, swingProgress, tick);
-        } else {
+        if (!canCast()) {
             unicornArmRight.setRotationPoint(-7, 12, -2);
             rotateArmHolding(unicornArmLeft, -1, swingProgress, tick);
+        } else {
+            rotateArmHolding(bipedLeftArm, -1, swingProgress, tick);
         }
     }
 }

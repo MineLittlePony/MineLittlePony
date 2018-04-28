@@ -1,6 +1,5 @@
 package com.minelittlepony.model.armour;
 
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
 import static com.minelittlepony.model.PonyModelConstants.*;
@@ -24,8 +23,14 @@ public class ModelPonyArmor extends ModelMobPony {
     }
 
     @Override
+    public void setRotationAngles(float move, float swing, float age, float headYaw, float headPitch, float scale, Entity entity) {
+        super.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
+        syncLegs();
+    }
+
+    @Override
     protected void rotateLook(float limbSwing, float limbSwingAmount, float bodySwing, float ticks) {
-        bipedBody.rotateAngleY = bodySwing * 0.2F;
+        bipedBody.rotateAngleY = bodySwing / 5;
     }
 
     @Override
@@ -104,8 +109,8 @@ public class ModelPonyArmor extends ModelMobPony {
 
     @Override
     protected void initHeadTextures() {
-        bipedHead = new ModelRenderer(this, 0, 0);
-        bipedHeadwear = new ModelRenderer(this, 32, 0);
+        bipedHead = new PonyRenderer(this, 0, 0);
+        bipedHeadwear = new PonyRenderer(this, 32, 0);
         helmet = new PonyRenderer(this, 0, 0);
     }
 
@@ -119,7 +124,7 @@ public class ModelPonyArmor extends ModelMobPony {
     @Override
     protected void initLegTextures() {
         bipedRightArm = new PonyRenderer(this, 0, 16);
-        bipedRightLeg = new ModelRenderer(this, 0, 16);
+        bipedRightLeg = new PonyRenderer(this, 0, 16);
 
         bipedLeftArm = new PonyRenderer(this, 0, 16).mirror();
         bipedLeftLeg = new PonyRenderer(this, 0, 16).mirror();
@@ -176,24 +181,6 @@ public class ModelPonyArmor extends ModelMobPony {
     protected void syncLegs() {
         rightLegging.rotateAt(bipedRightLeg).rotateTo(bipedRightLeg);
         leftLegging.rotateAt(bipedLeftLeg).rotateTo(bipedLeftLeg);
-    }
-
-    @Override
-    protected void setLegs(float move, float swing, float tick, Entity entity) {
-        super.setLegs(move, swing, tick, entity);
-        syncLegs();
-    }
-
-    @Override
-    protected void sneakLegs() {
-        super.sneakLegs();
-        syncLegs();
-    }
-
-    @Override
-    protected void ponySleep() {
-        super.ponySleep();
-        syncLegs();
     }
 
     @Override

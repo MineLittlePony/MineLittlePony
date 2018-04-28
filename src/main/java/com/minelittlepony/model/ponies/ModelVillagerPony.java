@@ -21,7 +21,7 @@ public class ModelVillagerPony extends ModelAlicorn {
         super.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
 
         float angleY = 0;
-        if (swingProgress > -9990.0F && !metadata.hasMagic()) {
+        if (swingProgress > -9990.0F && !canCast()) {
             angleY = MathHelper.sin(MathHelper.sqrt(swingProgress) * PI * 2) * 0.04F;
         }
         bag.rotateAngleY = angleY;

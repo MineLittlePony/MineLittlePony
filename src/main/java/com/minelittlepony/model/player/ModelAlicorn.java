@@ -51,7 +51,7 @@ public class ModelAlicorn extends ModelPegasus implements IModelUnicorn {
 
     @Override
     protected void holdItem(float swing) {
-        if (metadata.hasMagic()) {
+        if (canCast()) {
             boolean both = leftArmPose == ArmPose.ITEM && rightArmPose == ArmPose.ITEM;
 
             alignArmForAction(unicornArmLeft, leftArmPose, both, swing);
@@ -59,13 +59,11 @@ public class ModelAlicorn extends ModelPegasus implements IModelUnicorn {
         } else {
             super.holdItem(swing);
         }
-
-        horn.setUsingMagic(leftArmPose != ArmPose.EMPTY || rightArmPose != ArmPose.EMPTY);
     }
 
     @Override
     protected void swingItem(Entity entity, float swingProgress) {
-        if (metadata.hasMagic()) {
+        if (canCast()) {
             if (swingProgress > -9990.0F && !isSleeping) {
                 EnumHandSide mainSide = getMainHand(entity);
 
@@ -81,9 +79,7 @@ public class ModelAlicorn extends ModelPegasus implements IModelUnicorn {
     protected void swingArms(float tick) {
         if (isSleeping) return;
 
-        if (!metadata.hasMagic()) {
-            super.swingArms(tick);
-        } else {
+        if (canCast()) {
             float cos = MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
             float sin = MathHelper.sin(tick * 0.067F) * 0.05F;
 
@@ -96,6 +92,8 @@ public class ModelAlicorn extends ModelPegasus implements IModelUnicorn {
                 unicornArmLeft.rotateAngleZ += cos;
                 unicornArmLeft.rotateAngleX += sin;
             }
+        } else {
+            super.swingArms(tick);
         }
     }
 
@@ -105,8 +103,13 @@ public class ModelAlicorn extends ModelPegasus implements IModelUnicorn {
     }
 
     @Override
-    public boolean isCasting() {
+    public boolean canCast() {
         return metadata.hasMagic();
+    }
+
+    @Override
+    public boolean isCasting() {
+        return rightArmPose != ArmPose.EMPTY || leftArmPose != ArmPose.EMPTY;
     }
 
     @Override
@@ -118,18 +121,24 @@ public class ModelAlicorn extends ModelPegasus implements IModelUnicorn {
 
     @Override
     protected void aimBow(ArmPose leftArm, ArmPose rightArm, float tick) {
-        if (!metadata.hasMagic()) {
-            super.aimBow(leftArm, rightArm, tick);
-        } else if (leftArm == ArmPose.BOW_AND_ARROW || rightArm == ArmPose.BOW_AND_ARROW) {
+        if (canCast()) {
             if (rightArm == ArmPose.BOW_AND_ARROW) aimBowPony(unicornArmRight, tick, true);
             if (leftArm == ArmPose.BOW_AND_ARROW) aimBowPony(unicornArmLeft, tick, false);
+        } else {
+            super.aimBow(leftArm, rightArm, tick);
         }
     }
 
     @Override
     protected void renderHead(Entity entity, float move, float swing, float age, float headYaw, float headPitch, float scale) {
         super.renderHead(entity, move, swing, age, headYaw, headPitch, scale);
-        horn.render(entity, move, swing, age, headYaw, headPitch, scale);
+
+        if (canCast()) {
+            horn.render(scale);
+            if (isCasting()) {
+                horn.renderMagic(metadata.getGlowColor(), scale);
+            }
+        }
     }
 
     @Override

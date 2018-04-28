@@ -30,7 +30,7 @@ public class LayerHeldPonyItemMagical<T extends EntityLivingBase> extends LayerH
 
     private boolean isUnicorn() {
         ModelBase model = getMainModel();
-        return model instanceof IModelUnicorn && ((IModelUnicorn) model).isCasting();
+        return model instanceof IModelUnicorn && ((IModelUnicorn) model).canCast();
     }
 
     protected void preItemRender(T entity, ItemStack drop, TransformType transform, EnumHandSide hand) {

@@ -1,35 +1,32 @@
 package com.minelittlepony.model.components;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
 import static com.minelittlepony.model.PonyModelConstants.*;
 
 import com.minelittlepony.model.AbstractPonyModel;
+import com.minelittlepony.model.capabilities.IModelPegasus;
 
-public class PegasusWings extends ModelBase {
+public class PegasusWings {
 
-    private final AbstractPonyModel pony;
+    private final IModelPegasus pegasus;
 
     public final ModelWing leftWing;
     public final ModelWing rightWing;
 
-    public PegasusWings(AbstractPonyModel model, float yOffset, float stretch) {
-        pony = model;
+    public <T extends AbstractPonyModel & IModelPegasus> PegasusWings(T model, float yOffset, float stretch) {
+        pegasus = model;
 
-        leftWing = new ModelWing(pony, false, 4f, yOffset, stretch, 32);
-        rightWing = new ModelWing(pony, true, -6f, yOffset, stretch, 16);
+        leftWing = new ModelWing(model, false, 4f, yOffset, stretch, 32);
+        rightWing = new ModelWing(model, true, -6f, yOffset, stretch, 16);
     }
 
-    @Override
-    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
-        if (!isVisible()) return;
-
+    public void setRotationAngles(float move, float swing, float ticks) {
         float flap = 0;
+        float progress = pegasus.getSwingAmount();
 
-        if (pony.swingProgress > 0) {
-            flap = MathHelper.sin(MathHelper.sqrt(pony.swingProgress) * PI * 2);
+        if (progress > 0) {
+            flap = MathHelper.sin(MathHelper.sqrt(progress) * PI * 2);
         } else {
             float pi = PI * (float) Math.pow(swing, 16);
 
@@ -42,7 +39,7 @@ public class PegasusWings extends ModelBase {
         leftWing.rotateWalking(flap);
         rightWing.rotateWalking(-flap);
 
-        if (isExtended()) {
+        if (pegasus.wingsAreOpen()) {
             float flapAngle = getWingRotationFactor(ticks);
             leftWing.rotateFlying(flapAngle);
             rightWing.rotateFlying(-flapAngle);
@@ -51,24 +48,14 @@ public class PegasusWings extends ModelBase {
     }
 
     public float getWingRotationFactor(float ticks) {
-        if (pony.isFlying) {
+        if (pegasus.isFlying()) {
             return (MathHelper.sin(ticks * 0.536f) * 1) + ROTATE_270 + 0.4f;
         }
         return LEFT_WING_ROTATE_ANGLE_Z_SNEAK;
     }
 
-    public boolean isVisible() {
-        return pony.metadata.getRace().hasWings();
-    }
-
-    public boolean isExtended() {
-        return pony.isFlying || pony.isCrouching();
-    }
-
-    @Override
-    public void render(Entity entity, float move, float swing, float age, float headYaw, float headPitch, float scale) {
-        if (!isVisible()) return;
-        boolean standing = isExtended();
+    public void render(float scale) {
+        boolean standing = pegasus.wingsAreOpen();
         leftWing.render(standing, scale);
         rightWing.render(standing, scale);
     }

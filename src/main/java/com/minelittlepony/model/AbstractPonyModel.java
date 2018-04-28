@@ -1,6 +1,7 @@
 package com.minelittlepony.model;
 
 import com.minelittlepony.model.armour.PonyArmor;
+import com.minelittlepony.model.capabilities.IModel;
 import com.minelittlepony.pony.data.IPonyData;
 import com.minelittlepony.pony.data.PonyData;
 import com.minelittlepony.pony.data.PonySize;
@@ -20,7 +21,7 @@ import static net.minecraft.client.renderer.GlStateManager.*;
 /**
  * TODO: move this into constructor and make separate classes for the races.
  */
-public abstract class AbstractPonyModel extends ModelPlayer {
+public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
     /**
      * The model's current scale.
@@ -78,9 +79,7 @@ public abstract class AbstractPonyModel extends ModelPlayer {
         return side == EnumHandSide.RIGHT ? rightArmPose : leftArmPose;
     }
 
-    /**
-     * Returns true if this model is on the ground and crouching.
-     */
+    @Override
     public boolean isCrouching() {
         return isSneak && !isFlying;
     }
@@ -92,19 +91,25 @@ public abstract class AbstractPonyModel extends ModelPlayer {
         rainboom = isFlying(entity) && swing >= 0.9999F;
     }
 
-    /**
-     * Returns true if the given entity can and is flying, or has an elytra.
-     */
+    @Override
     public boolean isFlying(Entity entity) {
         return (isFlying && metadata.getRace().hasWings()) ||
                 (entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isElytraFlying());
     }
 
-    /**
-     * Returns true if the current model is a child or a child-like foal.
-     */
+    @Override
+    public boolean isFlying() {
+        return isFlying;
+    }
+
+    @Override
     public boolean isChild() {
         return metadata.getSize() == PonySize.FOAL || isChild;
+    }
+
+    @Override
+    public float getSwingAmount() {
+        return swingProgress;
     }
 
     /**

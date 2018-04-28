@@ -5,6 +5,7 @@ import com.minelittlepony.model.player.ModelAlicorn;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.AbstractIllager;
+import net.minecraft.entity.monster.AbstractIllager.IllagerArmPose;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 
@@ -19,11 +20,11 @@ public class ModelIllagerPony extends ModelAlicorn {
         super.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
 
         AbstractIllager illager = (AbstractIllager) entity;
-        AbstractIllager.IllagerArmPose pose = illager.getArmPose();
+        IllagerArmPose pose = illager.getArmPose();
 
         boolean rightHanded = illager.getPrimaryHand() == EnumHandSide.RIGHT;
 
-        if (pose == AbstractIllager.IllagerArmPose.ATTACKING) {
+        if (pose == IllagerArmPose.ATTACKING) {
             // vindicator attacking
             float f = MathHelper.sin(swingProgress * (float) Math.PI);
             float f1 = MathHelper.sin((1.0F - (1.0F - swingProgress) * (1.0F - swingProgress)) * (float) Math.PI);
@@ -44,10 +45,7 @@ public class ModelIllagerPony extends ModelAlicorn {
             bipedLeftArm.rotateAngleZ -= MathHelper.cos(age * 0.09F) * 0.05F + 0.05F;
             bipedRightArm.rotateAngleX += MathHelper.sin(age * 0.067F) * 0.05F;
             bipedLeftArm.rotateAngleX -= MathHelper.sin(age * 0.067F) * 0.05F;
-        } else if (pose == AbstractIllager.IllagerArmPose.SPELLCASTING) {
-            if (metadata.hasMagic()) {
-                horn.setUsingMagic(true);
-            }
+        } else if (pose == IllagerArmPose.SPELLCASTING) {
             // waving arms!
             if (rightHanded) {
 //                this.bipedRightArm.rotationPointZ = 0.0F;
@@ -63,7 +61,7 @@ public class ModelIllagerPony extends ModelAlicorn {
                 bipedLeftArm.rotateAngleY = -1.1F;
             }
 
-        } else if (pose == AbstractIllager.IllagerArmPose.BOW_AND_ARROW) {
+        } else if (pose == IllagerArmPose.BOW_AND_ARROW) {
             if (rightHanded) {
                 aimBow(ArmPose.EMPTY, ArmPose.BOW_AND_ARROW, age);
             } else {
@@ -73,6 +71,6 @@ public class ModelIllagerPony extends ModelAlicorn {
     }
 
     public ModelRenderer getArm(EnumHandSide side) {
-        return metadata.hasMagic() ? getUnicornArmForSide(side) : getArmForSide(side);
+        return canCast() ? getUnicornArmForSide(side) : getArmForSide(side);
     }
 }

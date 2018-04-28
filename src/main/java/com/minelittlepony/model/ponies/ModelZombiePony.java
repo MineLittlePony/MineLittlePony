@@ -6,10 +6,6 @@ import com.minelittlepony.model.armour.PonyArmor;
 
 public class ModelZombiePony extends ModelMobPony {
 
-    public ModelZombiePony() {
-        super();
-    }
-
     @Override
     public PonyArmor createArmour() {
         return new PonyArmor(new ModelZombiePonyArmor(), new ModelZombiePonyArmor());

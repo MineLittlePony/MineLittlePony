@@ -6,7 +6,6 @@ import com.minelittlepony.model.ModelMobPony;
 import com.minelittlepony.model.armour.ModelSkeletonPonyArmor;
 import com.minelittlepony.model.armour.PonyArmor;
 
-import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.AbstractSkeleton;
@@ -17,10 +16,6 @@ import net.minecraft.util.EnumHandSide;
 
 public class ModelSkeletonPony extends ModelMobPony {
 
-    public ModelSkeletonPony() {
-        super();
-    }
-
     @Override
     public PonyArmor createArmour() {
         return new PonyArmor(new ModelSkeletonPonyArmor(), new ModelSkeletonPonyArmor());
@@ -28,16 +23,16 @@ public class ModelSkeletonPony extends ModelMobPony {
 
     @Override
     public void setLivingAnimations(EntityLivingBase entity, float move, float swing, float ticks) {
-        rightArmPose = ModelBiped.ArmPose.EMPTY;
-        leftArmPose = ModelBiped.ArmPose.EMPTY;
+        rightArmPose = ArmPose.EMPTY;
+        leftArmPose = ArmPose.EMPTY;
         ItemStack itemstack = entity.getHeldItem(EnumHand.MAIN_HAND);
 
         if (itemstack.getItem() == Items.BOW && ((AbstractSkeleton)entity).isSwingingArms())
         {
             if (entity.getPrimaryHand() == EnumHandSide.RIGHT) {
-                rightArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
+                rightArmPose = ArmPose.BOW_AND_ARROW;
             } else {
-                leftArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
+                leftArmPose = ArmPose.BOW_AND_ARROW;
             }
         }
 
@@ -45,14 +40,8 @@ public class ModelSkeletonPony extends ModelMobPony {
     }
 
     @Override
-    protected void adjustLegs(float move, float swing, float ticks) {
-        super.adjustLegs(move, swing, ticks);
-        aimBow(leftArmPose, rightArmPose, ticks);
-    }
-
-    @Override
     protected void fixSpecialRotationPoints(float move) {
-        if (rightArmPose != ArmPose.EMPTY && !metadata.hasMagic()) {
+        if (rightArmPose != ArmPose.EMPTY && !canCast()) {
             bipedRightArm.setRotationPoint(-1.5F, 9.5F, 4);
         }
     }

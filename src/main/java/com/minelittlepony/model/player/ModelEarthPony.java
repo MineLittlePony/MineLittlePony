@@ -272,7 +272,7 @@ public class ModelEarthPony extends AbstractPonyModel {
                 if (!isFlying && both) {
                     swag -= (float)Math.pow(swing, 2);
                 }
-                float mult = 1 - swag/2f;
+                float mult = 1 - swag/2;
                 arm.rotateAngleX = bipedLeftArm.rotateAngleX * mult - (PI / 10) * swag;
             case EMPTY:
                 arm.rotateAngleY = 0;
@@ -373,10 +373,8 @@ public class ModelEarthPony extends AbstractPonyModel {
     }
 
     protected void aimBow(ArmPose leftArm, ArmPose rightArm, float tick) {
-        if (leftArm == ArmPose.BOW_AND_ARROW || rightArm == ArmPose.BOW_AND_ARROW) {
-            if (rightArm == ArmPose.BOW_AND_ARROW) aimBowPony(bipedRightArm, tick, false);
-            if (leftArm == ArmPose.BOW_AND_ARROW) aimBowPony(bipedLeftArm, tick, false);
-        }
+        if (rightArm == ArmPose.BOW_AND_ARROW) aimBowPony(bipedRightArm, tick, false);
+        if (leftArm == ArmPose.BOW_AND_ARROW) aimBowPony(bipedLeftArm, tick, false);
     }
 
     protected void aimBowPony(ModelRenderer arm, float tick, boolean shift) {
@@ -458,6 +456,10 @@ public class ModelEarthPony extends AbstractPonyModel {
         initHeadTextures();
         initBodyTextures();
         initLegTextures();
+        initTailTextures();
+    }
+
+    protected void initTailTextures() {
         tail = new PonyTail(this);
     }
 

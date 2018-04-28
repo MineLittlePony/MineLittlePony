@@ -4,25 +4,16 @@ import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.render.HornGlowRenderer;
 import com.minelittlepony.render.PonyRenderer;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.entity.Entity;
-
 import static org.lwjgl.opengl.GL11.*;
 import static net.minecraft.client.renderer.GlStateManager.*;
 import static com.minelittlepony.model.PonyModelConstants.*;
 
-public class UnicornHorn extends ModelBase {
-
-    protected final AbstractPonyModel pony;
+public class UnicornHorn {
 
     private PonyRenderer horn;
     private HornGlowRenderer glow;
 
-    private boolean usingMagic;
-
     public UnicornHorn(AbstractPonyModel pony, float yOffset, float stretch) {
-        this.pony = pony;
-
         horn = new PonyRenderer(pony, 0, 3);
         glow = new HornGlowRenderer(pony, 0, 3);
 
@@ -37,18 +28,11 @@ public class UnicornHorn extends ModelBase {
             .setAlpha(0.2f).box(0, 0, 0, 1, 3, 1, stretch + 0.8F);
     }
 
-    @Override
-    public void render(Entity entityIn, float move, float swing, float age, float headYaw, float headPitch, float scale) {
-        if (!pony.metadata.getRace().hasHorn()) return;
-
+    public void render(float scale) {
         horn.render(scale);
-
-        if (usingMagic && pony.metadata.hasMagic()) {
-            renderMagic(pony.metadata.getGlowColor(), scale);
-        }
     }
 
-    private void renderMagic(int tint, float scale) {
+    public void renderMagic(int tint, float scale) {
         glPushAttrib(24577);
         disableTexture2D();
         disableLighting();
@@ -62,9 +46,5 @@ public class UnicornHorn extends ModelBase {
         enableLighting();
         disableBlend();
         popAttrib();
-    }
-
-    public void setUsingMagic(boolean usingMagic) {
-        this.usingMagic = usingMagic;
     }
 }
