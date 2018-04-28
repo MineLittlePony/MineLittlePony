@@ -1,75 +1,75 @@
 package com.minelittlepony.render;
 
-import net.minecraft.client.model.ModelBox;
-import net.minecraft.client.model.PositionTextureVertex;
-import net.minecraft.client.model.TexturedQuad;
 import net.minecraft.client.renderer.BufferBuilder;
 
-import javax.annotation.Nonnull;
+import com.minelittlepony.util.coordinates.*;
 
-public class HornGlow extends ModelBox {
+/**
+ * Like a normal box, but with the top narrowed a bit.
+ */
+public class HornGlow extends Box<HornGlowRenderer> {
 
     private final float alpha;
 
-    private final HornGlowRenderer parent;
+    private Quad[] quadList;
 
-    private TexturedQuad[] quadList;
+    public HornGlow(HornGlowRenderer renderer, int texX, int texY, float xMin, float yMin, float zMin, int w, int h, int d, float scale, float alpha) {
+        super(renderer, texX, texY, xMin, yMin, zMin, w, h, d, scale);
 
-    public HornGlow(HornGlowRenderer parent, int texU, int texV, float x, float y, float z, int w, int h, int d, float scale, float alpha) {
-        super(parent, texU, texV, x, y, z, w, h, d, scale);
-
-        this.parent = parent;
         this.alpha = alpha;
 
-        quadList = new TexturedQuad[6];
+        float xMax = xMin + w + scale;
+        float yMax = yMin + h + scale;
+        float zMax = zMin + d + scale;
 
-        float x2 = x + w + scale;
-        float y2 = y + h + scale;
-        float z2 = z + d + scale;
+        xMin -= scale;
+        yMin -= scale;
+        zMin -= scale;
 
-        x -= scale;
-        y -= scale;
-        z -= scale;
-
-        if (parent.mirror) {
-            float tmp = x2;
-            x2 = x;
-            x = tmp;
+        if (renderer.mirror) {
+            float v = xMax;
+            xMax = xMin;
+            xMin = v;
         }
 
-        float halfpar4 = x + w * 0.05F;
-        float halfpar6 = z + d * 0.05F;
-        float halfvar11 = x + w * 0.95F;
-        float halfvar13 = z + d * 0.95F;
+        float tipInset = 0.4f;
 
-        PositionTextureVertex p7 = new PositionTextureVertex(halfpar4, y, halfpar6, 0, 0);
-        PositionTextureVertex p0 = new PositionTextureVertex(halfvar11, y, halfpar6, 0, 8);
-        PositionTextureVertex p1 = new PositionTextureVertex(x2, y2, z, 8, 8);
-        PositionTextureVertex p2 = new PositionTextureVertex(x, y2, z, 8, 0);
-        PositionTextureVertex p3 = new PositionTextureVertex(halfpar4, y, halfvar13, 0, 0);
-        PositionTextureVertex p4 = new PositionTextureVertex(halfvar11, y, halfvar13, 0, 8);
-        PositionTextureVertex p5 = new PositionTextureVertex(x2, y2, z2, 8, 8);
-        PositionTextureVertex p6 = new PositionTextureVertex(x, y2, z2, 8, 0);
+        float tipXmin = xMin + w * tipInset;
+        float tipZmin = zMin + d * tipInset;
+        float tipXMax = xMax - w * tipInset;
+        float tipZMax = zMax - d * tipInset;
 
-        quadList[0] = new TexturedQuad(new PositionTextureVertex[]{p4, p0, p1, p5}, texU + d + w, texV + d, texU + d + w + d, texV + d + h, parent.textureWidth, parent.textureHeight);
-        quadList[1] = new TexturedQuad(new PositionTextureVertex[]{p7, p3, p6, p2}, texU, texV + d, texU + d, texV + d + h, parent.textureWidth, parent.textureHeight);
-        quadList[2] = new TexturedQuad(new PositionTextureVertex[]{p4, p3, p7, p0}, texU + d, texV, texU + d + w, texV + d, parent.textureWidth, parent.textureHeight);
-        quadList[3] = new TexturedQuad(new PositionTextureVertex[]{p1, p2, p6, p5}, texU + d + w, texV + d, texU + d + w + w, texV, parent.textureWidth, parent.textureHeight);
-        quadList[4] = new TexturedQuad(new PositionTextureVertex[]{p0, p7, p2, p1}, texU + d, texV + d, texU + d + w, texV + d + h, parent.textureWidth, parent.textureHeight);
-        quadList[5] = new TexturedQuad(new PositionTextureVertex[]{p3, p4, p5, p6}, texU + d + w + d, texV + d, texU + d + w + d + w, texV + d + h, parent.textureWidth, parent.textureHeight);
+        // w:west e:east d:down u:up s:south n:north
+        Vertex wds = vert(tipXmin, yMin, tipZmin, 0, 0);
+        Vertex eds = vert(tipXMax, yMin, tipZmin, 0, 8);
+        Vertex eus = vert(xMax,    yMax, zMin,    8, 8);
+        Vertex wus = vert(xMin,    yMax, zMin,    8, 0);
+        Vertex wdn = vert(tipXmin, yMin, tipZMax, 0, 0);
+        Vertex edn = vert(tipXMax, yMin, tipZMax, 0, 8);
+        Vertex eun = vert(xMax,    yMax, zMax,    8, 8);
+        Vertex wun = vert(xMin,    yMax, zMax,    8, 0);
 
-        if (parent.mirror) {
-            for (TexturedQuad i : quadList) {
+        quadList = new Quad[] {
+            quad(texX + d + w,     d, texY + d,  h, edn, eds, eus, eun),
+            quad(texX,             d, texY + d,  h, wds, wdn, wun, wus),
+            quad(texX + d,         w, texY,      d, edn, wdn, wds, eds),
+            quad(texX + d + w,     w, texY + d, -d, eus, wus, wun, eun),
+            quad(texX + d,         w, texY + d,  h, eds, wds, wus, eus),
+            quad(texX + d + w + d, w, texY + d,  h, wdn, edn, eun, wun)
+        };
+
+        if (renderer.mirror) {
+            for (Quad i : quadList) {
                 i.flipFace();
             }
         }
     }
 
     @Override
-    public void render(@Nonnull BufferBuilder buffer, float scale) {
+    public void render(BufferBuilder buffer, float scale) {
         parent.applyTint(alpha);
 
-        for (TexturedQuad i : quadList) {
+        for (Quad i : quadList) {
             i.draw(buffer, scale);
         }
     }
