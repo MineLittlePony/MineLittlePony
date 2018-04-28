@@ -8,8 +8,8 @@ public class PonyRenderer extends AbstractPonyRenderer<PonyRenderer> {
         super(model);
     }
 
-    public PonyRenderer(ModelBase model, int x, int y) {
-        super(model, x, y);
+    public PonyRenderer(ModelBase model, int texX, int texY) {
+        super(model, texX, texY);
     }
 
     @Override

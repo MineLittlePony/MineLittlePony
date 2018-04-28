@@ -22,8 +22,8 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
         baseModel = model;
     }
 
-    public AbstractPonyRenderer(ModelBase model, int x, int y) {
-        super(model, x, y);
+    public AbstractPonyRenderer(ModelBase model, int texX, int texY) {
+        super(model, texX, texY);
         baseModel = model;
     }
 
@@ -119,7 +119,10 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
      */
     public T child(int index) {
         if (childModels == null || index >= childModels.size()) {
-            child(copySelf().offset(modelOffsetX, modelOffsetY, modelOffsetZ));
+            T copy = copySelf();
+            child(copy.offset(modelOffsetX, modelOffsetY, modelOffsetZ));
+            copy.textureHeight = textureHeight;
+            copy.textureWidth = textureWidth;
         }
         return (T)childModels.get(index);
     }
