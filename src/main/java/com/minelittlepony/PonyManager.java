@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-import com.minelittlepony.ducks.IPlayerInfo;
 import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyLevel;
@@ -76,7 +75,12 @@ public class PonyManager implements IResourceManagerReloadListener {
      * @param player the player
      */
     public Pony getPony(AbstractClientPlayer player) {
-        return getPony(IPlayerInfo.getPlayerInfo(player).unwrap());
+        ResourceLocation skin = player.getLocationSkin();
+        UUID uuid = player.getGameProfile().getId();
+
+        if (skin == null) return getDefaultPony(uuid);
+
+        return getPony(skin, uuid);
     }
 
     public Pony getPony(NetworkPlayerInfo playerInfo) {
