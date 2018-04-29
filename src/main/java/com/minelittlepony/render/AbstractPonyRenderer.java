@@ -81,6 +81,15 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
     }
 
     /**
+     * Adjusts the rotation center of the given renderer by the given amounts in each direction.
+     */
+    public static void shiftRotationPoint(ModelRenderer renderer, float x, float y, float z) {
+        renderer.rotationPointX += x;
+        renderer.rotationPointY += y;
+        renderer.rotationPointZ += z;
+    }
+
+    /**
      * Sets this renderer's rotation angles.
      */
     public T rotate(float x, float y, float z) {

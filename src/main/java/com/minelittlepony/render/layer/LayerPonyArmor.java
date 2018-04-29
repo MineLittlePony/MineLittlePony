@@ -6,6 +6,7 @@ import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.model.armour.ModelPonyArmor;
+import com.minelittlepony.util.coordinates.Color;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
@@ -69,11 +70,7 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
 
             getRenderer().bindTexture(armors.getFirst());
             if (itemarmor.getArmorMaterial() == ArmorMaterial.LEATHER) {
-                int color = itemarmor.getColor(itemstack);
-                float r = (color >> 16 & 255) / 255.0F;
-                float g = (color >> 8 & 255) / 255.0F;
-                float b = (color & 255) / 255.0F;
-                GlStateManager.color(r, g, b, 1);
+                Color.glColor(itemarmor.getColor(itemstack), 1);
                 modelbase.render(entity, move, swing, age, headYaw, headPitch, scale);
                 armors = getArmorTexture(entity, itemstack, armorSlot, "overlay");
                 getRenderer().bindTexture(armors.getFirst());

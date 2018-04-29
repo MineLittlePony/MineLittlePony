@@ -6,6 +6,7 @@ import com.minelittlepony.model.armour.ModelPonyArmor;
 import com.minelittlepony.model.armour.PonyArmor;
 import com.minelittlepony.model.components.PonySnout;
 import com.minelittlepony.model.components.PonyTail;
+import com.minelittlepony.render.AbstractPonyRenderer;
 import com.minelittlepony.render.PonyRenderer;
 import com.minelittlepony.render.plane.PlaneRenderer;
 
@@ -23,7 +24,7 @@ public class ModelEarthPony extends AbstractPonyModel {
 
     private final boolean smallArms;
 
-    public ModelRenderer bipedCape;
+    public PonyRenderer bipedCape;
 
     public PlaneRenderer upperTorso;
     public PlaneRenderer neck;
@@ -39,12 +40,6 @@ public class ModelEarthPony extends AbstractPonyModel {
     @Override
     public PonyArmor createArmour() {
         return new PonyArmor(new ModelPonyArmor(), new ModelPonyArmor());
-    }
-
-    @Override
-    public void init(float yOffset, float stretch) {
-        super.init(yOffset, stretch);
-        snout = new PonySnout(this, yOffset, stretch);
     }
 
     @Override
@@ -366,10 +361,10 @@ public class ModelEarthPony extends AbstractPonyModel {
 
         setHead(1, 2, isSneak ? -1 : 1);
 
-        shiftRotationPoint(bipedRightArm, 0, 2, 6);
-        shiftRotationPoint(bipedLeftArm, 0, 2, 6);
-        shiftRotationPoint(bipedRightLeg, 0, 2, -8);
-        shiftRotationPoint(bipedLeftLeg, 0, 2, -8);
+        AbstractPonyRenderer.shiftRotationPoint(bipedRightArm, 0, 2, 6);
+        AbstractPonyRenderer.shiftRotationPoint(bipedLeftArm, 0, 2, 6);
+        AbstractPonyRenderer.shiftRotationPoint(bipedRightLeg, 0, 2, -8);
+        AbstractPonyRenderer.shiftRotationPoint(bipedLeftLeg, 0, 2, -8);
     }
 
     protected void aimBow(ArmPose leftArm, ArmPose rightArm, float tick) {
@@ -383,7 +378,7 @@ public class ModelEarthPony extends AbstractPonyModel {
         arm.rotateAngleX = ROTATE_270 + bipedHead.rotateAngleX;
         arm.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
         arm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.05F;
-        if (shift) shiftRotationPoint(arm, 0, 0, 1);
+        if (shift) AbstractPonyRenderer.shiftRotationPoint(arm, 0, 0, 1);
     }
 
     protected void fixSpecialRotationPoints(float move) {
@@ -467,6 +462,7 @@ public class ModelEarthPony extends AbstractPonyModel {
         bipedCape = new PonyRenderer(this, 0, 0).size(64, 32);
         bipedHead = new PonyRenderer(this, 0, 0);
         bipedHeadwear = new PonyRenderer(this, 32, 0);
+        snout = new PonySnout(this);
     }
 
     protected void initBodyTextures() {
@@ -507,6 +503,8 @@ public class ModelEarthPony extends AbstractPonyModel {
     }
 
     protected void initHeadPositions(float yOffset, float stretch) {
+        snout.init(yOffset, stretch);
+
         bipedCape.addBox(-5.0F, 0.0F, -1.0F, 10, 16, 1, stretch);
 
         ((PonyRenderer)bipedHead).offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)

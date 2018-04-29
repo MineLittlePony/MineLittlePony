@@ -2,6 +2,7 @@ package com.minelittlepony.render.layer;
 
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
+import com.minelittlepony.model.capabilities.IModel;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
@@ -33,8 +34,9 @@ public abstract class AbstractPonyLayer<T extends EntityLivingBase> implements L
         return ((IRenderPony) getRenderer()).getPlayerModel().getModel();
     }
 
-    public AbstractPonyModel getPonyModel() {
-        return getMainModel();
+    @SuppressWarnings("unchecked")
+    public <M extends IModel> M getPonyModel() {
+        return (M)getMainModel();
     }
 
     @SuppressWarnings("unchecked")

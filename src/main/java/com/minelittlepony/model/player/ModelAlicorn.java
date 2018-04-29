@@ -113,6 +113,11 @@ public class ModelAlicorn extends ModelPegasus implements IModelUnicorn {
     }
 
     @Override
+    public int getMagicColor() {
+        return metadata.getGlowColor();
+    }
+
+    @Override
     protected void sneakLegs() {
         super.sneakLegs();
         unicornArmRight.rotateAngleX += SNEAK_LEG_X_ROTATION_ADJUSTMENT;
@@ -136,7 +141,7 @@ public class ModelAlicorn extends ModelPegasus implements IModelUnicorn {
         if (canCast()) {
             horn.render(scale);
             if (isCasting()) {
-                horn.renderMagic(metadata.getGlowColor(), scale);
+                horn.renderMagic(getMagicColor(), scale);
             }
         }
     }
@@ -146,7 +151,6 @@ public class ModelAlicorn extends ModelPegasus implements IModelUnicorn {
         super.initLegTextures();
         unicornArmLeft = new PonyRenderer(this, 40, 32).size(64, 64);
         unicornArmRight = new PonyRenderer(this, 40, 32).size(64, 64);
-        boxList.remove(unicornArmRight);
     }
 
     @Override
@@ -155,7 +159,7 @@ public class ModelAlicorn extends ModelPegasus implements IModelUnicorn {
         float armY = THIRDP_ARM_CENTRE_Y - 6;
         float armZ = THIRDP_ARM_CENTRE_Z - 2;
 
-        unicornArmLeft .box(FIRSTP_ARM_CENTRE_X - 2, armY, armZ, 4, 12, 4, stretch + .25f).around(5, yOffset + 2, 0);
-        unicornArmRight.box(FIRSTP_ARM_CENTRE_X - 2, armY, armZ, 4, 12, 4, stretch + .25f).around(-5, yOffset + 2, 0);
+        unicornArmLeft .box(FIRSTP_ARM_CENTRE_X - 2, armY, armZ, 4, 12, 4, stretch + .25F).around(5, yOffset + 2, 0);
+        unicornArmRight.box(FIRSTP_ARM_CENTRE_X - 2, armY, armZ, 4, 12, 4, stretch + .25F).around(-5, yOffset + 2, 0);
     }
 }

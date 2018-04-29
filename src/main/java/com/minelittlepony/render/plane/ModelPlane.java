@@ -63,10 +63,10 @@ public class ModelPlane extends Box<PlaneRenderer> {
         if (face == Face.DOWN) {
             quad = quad(textureX, w, textureY, d, eus, wus, wun, eun);
         }
-        if (face == Face.SOUTH) { // East/Left (was South)
+        if (face == Face.SOUTH) {
             quad = quad(textureX, w, textureY, h, eds, wds, wus, eus);
         }
-        if (face == Face.NORTH) { // West/Right (was North)
+        if (face == Face.NORTH) {
             quad = quad(textureX, w, textureY, h, wdn, edn, eun, wun);
         }
 

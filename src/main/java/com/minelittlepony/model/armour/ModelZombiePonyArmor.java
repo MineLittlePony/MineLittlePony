@@ -1,5 +1,7 @@
 package com.minelittlepony.model.armour;
 
+import com.minelittlepony.render.AbstractPonyRenderer;
+
 public class ModelZombiePonyArmor extends ModelPonyArmor {
 
     // Copied from ModelZombiePony
@@ -24,9 +26,9 @@ public class ModelZombiePonyArmor extends ModelPonyArmor {
         if (rightArmPose != ArmPose.EMPTY) return;
 
         if (islookAngleRight(move)) {
-            shiftRotationPoint(bipedRightArm, 0.5F, 1.5F, 3);
+            AbstractPonyRenderer.shiftRotationPoint(bipedRightArm, 0.5F, 1.5F, 3);
         } else {
-            shiftRotationPoint(bipedLeftArm, -0.5F, 1.5F, 3);
+            AbstractPonyRenderer.shiftRotationPoint(bipedLeftArm, -0.5F, 1.5F, 3);
         }
     }
 }

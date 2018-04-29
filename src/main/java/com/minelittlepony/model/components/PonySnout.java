@@ -12,8 +12,13 @@ public class PonySnout {
     private PlaneRenderer mare;
     private PlaneRenderer stallion;
 
-    public PonySnout(AbstractPonyModel pony, float yOffset, float stretch) {
+    public PonySnout(AbstractPonyModel pony) {
         mare = new PlaneRenderer(pony);
+        stallion = new PlaneRenderer(pony);
+        pony.bipedHead.addChild(stallion);
+    }
+
+    public void init(float yOffset, float stretch) {
         mare.offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
             .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
             .tex(10, 14) .addBackPlane(-2, 2, -5, 4, 2, stretch)
@@ -26,9 +31,6 @@ public class PonySnout {
             .tex(14, 14) .addEastPlane( 2, 2, -5, 2, 1, stretch)
             .tex(11, 12) .addWestPlane(-1, 1, -5, 1, 1, stretch)
             .tex(12, 12) .addEastPlane( 1, 1, -5, 1, 1, stretch);
-        pony.bipedHead.addChild(mare);
-
-        stallion = new PlaneRenderer(pony);
         stallion.offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
                 .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                 .tex(10, 13) .addBackPlane(-2, 1, -5, 4, 3, stretch)
@@ -36,7 +38,6 @@ public class PonySnout {
                 .tex(18, 7).addBottomPlane(-2, 4, -5, 4, 1, stretch)
                 .tex(10, 13) .addWestPlane(-2, 1, -5, 3, 1, stretch)
                 .tex(13, 13) .addEastPlane( 2, 1, -5, 3, 1, stretch);
-        pony.bipedHead.addChild(stallion);
     }
 
     public void setGender(PonyGender gender) {

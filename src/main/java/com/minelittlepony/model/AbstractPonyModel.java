@@ -61,11 +61,6 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     }
 
     /**
-     * Returns a new pony armour to go with this model. Called on startup by a model wrapper.
-     */
-    public abstract PonyArmor createArmour();
-
-    /**
      * Loads texture values.
      */
     protected abstract void initTextures();
@@ -141,11 +136,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         arm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.1F;
     }
 
-    /**
-     * Applies a transform particular to a certain body part.
-     *
-     * FIXME: Too long! Is there a better way to do this?
-     */
+    @Override
     public void transform(BodyPart part) {
         if (isRiding) translate(0, -0.6F, -0.2F);
 

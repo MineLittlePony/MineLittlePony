@@ -2,13 +2,13 @@ package com.minelittlepony.render;
 
 import static net.minecraft.client.renderer.GlStateManager.color;
 
+import com.minelittlepony.util.coordinates.Color;
+
 import net.minecraft.client.model.ModelBase;
 
 public class HornGlowRenderer extends AbstractPonyRenderer<HornGlowRenderer> {
 
-    float red;
-    float green;
-    float blue;
+    int tint;
     float alpha = 1;
 
     public HornGlowRenderer(ModelBase model, int x, int y) {
@@ -22,15 +22,13 @@ public class HornGlowRenderer extends AbstractPonyRenderer<HornGlowRenderer> {
     }
 
     public HornGlowRenderer setTint(int tint) {
-        red = (tint >> 16 & 255) / 255.0F;
-        green = (tint >> 8 & 255) / 255.0F;
-        blue = (tint & 255) / 255.0F;
+        this.tint = tint;
 
         return this;
     }
 
     public void applyTint(float alpha) {
-        color(red, green, blue, alpha);
+        Color.glColor(tint, alpha);
     }
 
     @Override

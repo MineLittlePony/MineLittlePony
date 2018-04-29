@@ -7,13 +7,11 @@ import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
 import static net.minecraft.client.renderer.GlStateManager.scale;
 import static net.minecraft.client.renderer.GlStateManager.translate;
 
-import org.lwjgl.opengl.GL14;
-
 import com.minelittlepony.ducks.IRenderItem;
 import com.minelittlepony.model.capabilities.IModelUnicorn;
+import com.minelittlepony.util.coordinates.Color;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -29,10 +27,10 @@ public class LayerHeldPonyItemMagical<T extends EntityLivingBase> extends LayerH
     }
 
     protected boolean isUnicorn() {
-        ModelBase model = getMainModel();
-        return model instanceof IModelUnicorn && ((IModelUnicorn) model).canCast();
+        return getMainModel() instanceof IModelUnicorn && this.<IModelUnicorn>getPonyModel().canCast();
     }
 
+    @Override
     protected void preItemRender(T entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
         if (isUnicorn()) {
             GlStateManager.translate(hand == EnumHandSide.LEFT ? -0.6F : 0.1F, 1, -0.5F);
@@ -41,18 +39,17 @@ public class LayerHeldPonyItemMagical<T extends EntityLivingBase> extends LayerH
         }
     }
 
+    @Override
     protected void postItemRender(T entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
         if (isUnicorn()) {
-            renderItemGlow(entity, drop, transform, hand, getPonyModel().metadata.getGlowColor());
+            renderItemGlow(entity, drop, transform, hand, this.<IModelUnicorn>getPonyModel().getMagicColor());
         }
     }
 
-    /**
-     * Renders the main arm
-     */
+    @Override
     protected void renderArm(EnumHandSide side) {
         if (isUnicorn()) {
-            ((IModelUnicorn)getMainModel()).getUnicornArmForSide(side).postRender(0.0625F);
+            this.<IModelUnicorn>getPonyModel().getUnicornArmForSide(side).postRender(0.0625F);
         } else {
             super.renderArm(side);
         }
@@ -63,15 +60,10 @@ public class LayerHeldPonyItemMagical<T extends EntityLivingBase> extends LayerH
         // enchantments mess up the rendering
         drop = stackWithoutEnchantment(drop);
 
-        float red = (glowColor >> 16 & 255) / 255.0F;
-        float green = (glowColor >> 8 & 255) / 255.0F;
-        float blue = (glowColor & 255) / 255.0F;
-        float alpha = 0.2F;
-
         pushMatrix();
         disableLighting();
 
-        GL14.glBlendColor(red, green, blue, alpha);
+        Color.glColor(glowColor, 0.2F);
 
         RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
         ((IRenderItem) renderItem).useTransparency(true);

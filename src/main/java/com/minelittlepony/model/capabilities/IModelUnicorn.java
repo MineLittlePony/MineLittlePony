@@ -17,4 +17,9 @@ public interface IModelUnicorn extends IModel {
      * @return
      */
     boolean isCasting();
+
+    /**
+     * Gets the preferred magic color for this mode.
+     */
+    int getMagicColor();
 }
