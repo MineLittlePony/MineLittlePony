@@ -11,17 +11,11 @@ public class LayerPonyStrayOverlay extends LayerOverlayBase<EntityStray> {
 
     public static final ResourceLocation STRAY_SKELETON_OVERLAY = new ResourceLocation("minelittlepony", "textures/entity/skeleton/stray_pony_overlay.png");
 
-    private final ModelSkeletonPony overlayModel;
+    private final ModelSkeletonPony overlayModel = new ModelSkeletonPony();
 
     public LayerPonyStrayOverlay(RenderLivingBase<?> render) {
         super(render);
-        overlayModel = new ModelSkeletonPony();
         overlayModel.init(0, 0.25F);
-    }
-
-    @Override
-    public void doRenderLayer(EntityStray entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
-        renderOverlay(entity, move, swing, ticks, age, headYaw, headPitch, scale);
     }
 
     @Override
