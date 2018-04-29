@@ -229,9 +229,9 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     }
 
     protected float getLegOutset() {
-        if (isSleeping) return 2.6f;
-        if (isCrouching()) return 0;
-        return 4;
+        if (isSleeping) return 3.6f;
+        if (isCrouching()) return 1;
+        return 5;
     }
 
     protected float getLegSpread() {

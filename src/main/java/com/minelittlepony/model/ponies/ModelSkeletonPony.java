@@ -48,6 +48,12 @@ public class ModelSkeletonPony extends ModelMobPony {
         }
     }
 
+    protected float getLegOutset() {
+        if (isSleeping) return 2.6f;
+        if (isCrouching()) return 0;
+        return 4;
+    }
+
     protected int getArmWidth() {
         return 2;
     }

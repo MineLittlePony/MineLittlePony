@@ -26,7 +26,11 @@ public class ModelEarthPony extends AbstractPonyModel {
     }
 
     protected float getLegOutset() {
-        if (isCrouching() && smallArms) return 1;
+        if (smallArms) {
+            if (isSleeping) return 2.6f;
+            if (isCrouching()) return 1;
+            return 4;
+        }
         return super.getLegOutset();
     }
 
