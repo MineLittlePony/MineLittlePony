@@ -7,6 +7,8 @@ import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
 import static net.minecraft.client.renderer.GlStateManager.scale;
 import static net.minecraft.client.renderer.GlStateManager.translate;
 
+import org.lwjgl.opengl.GL14;
+
 import com.minelittlepony.ducks.IRenderItem;
 import com.minelittlepony.model.capabilities.IModelUnicorn;
 import com.minelittlepony.util.coordinates.Color;
@@ -63,7 +65,7 @@ public class LayerHeldPonyItemMagical<T extends EntityLivingBase> extends LayerH
         pushMatrix();
         disableLighting();
 
-        Color.glColor(glowColor, 0.2F);
+        GL14.glBlendColor(Color.r(glowColor), Color.g(glowColor), Color.b(glowColor), 0.2F);
 
         RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
         ((IRenderItem) renderItem).useTransparency(true);
@@ -83,10 +85,10 @@ public class LayerHeldPonyItemMagical<T extends EntityLivingBase> extends LayerH
     }
 
     private ItemStack stackWithoutEnchantment(ItemStack original) {
-        ItemStack copy = original.copy();
-        if (copy.isItemEnchanted()) {
-            copy.getTagCompound().removeTag("ench");
+        if (original.isItemEnchanted()) {
+            original = original.copy();
+            original.getTagCompound().removeTag("ench");
         }
-        return copy;
+        return original;
     }
 }
