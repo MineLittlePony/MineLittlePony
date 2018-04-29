@@ -78,6 +78,11 @@ public class ModelPonyArmor extends ModelMobPony {
     }
 
     @Override
+    protected void adjustNeck(float rotateAngleX, float rotationPointY, float rotationPointZ) {
+
+    }
+
+    @Override
     protected void renderBody(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         bipedBody.render(this.scale);
         flankGuard.render(this.scale);

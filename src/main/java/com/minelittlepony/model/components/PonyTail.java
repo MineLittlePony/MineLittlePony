@@ -6,14 +6,15 @@ import net.minecraft.util.math.MathHelper;
 import static com.minelittlepony.model.PonyModelConstants.*;
 
 import com.minelittlepony.model.AbstractPonyModel;
-import com.minelittlepony.pony.data.TailLengths;
 import com.minelittlepony.render.plane.PlaneRenderer;
 
 public class PonyTail extends PlaneRenderer {
 
-    private final TailSegment[] segments = new TailSegment[4];
+    private static final int SEGMENTS = 4;
 
     private final AbstractPonyModel theModel;
+
+    private int tailStop = 0;
 
     public PonyTail(AbstractPonyModel model) {
         super(model);
@@ -21,8 +22,8 @@ public class PonyTail extends PlaneRenderer {
     }
 
     public void init(float yOffset, float stretch) {
-        for (int i = 0; i < segments.length; i++) {
-            addChild(segments[i] = new TailSegment(theModel, i, yOffset, stretch));
+        for (int i = 0; i < SEGMENTS; i++) {
+            addChild(new TailSegment(theModel, i, yOffset, stretch));
         }
     }
 
@@ -53,6 +54,8 @@ public class PonyTail extends PlaneRenderer {
             rotationPointY += 6;
             rotationPointZ++;
         }
+
+        tailStop = theModel.metadata.getTail().ordinal();
     }
 
     public void swingX(float tick) {
@@ -66,42 +69,40 @@ public class PonyTail extends PlaneRenderer {
         rotateAngleX = -BODY_ROTATE_ANGLE_X_SNEAK + 0.1F;
     }
 
-    public void render(TailLengths tail, float scale) {
-        int tailStop = tail.ordinal();
-
-        for (int i = 0; i < segments.length; i++) {
-            segments[i].isHidden = i >= tailStop;
-        }
-
-        super.render(scale);
-    }
-
     private class TailSegment extends PlaneRenderer {
+
+        private final int index;
 
         public TailSegment(ModelBase model, int index, float yOffset, float stretch) {
             super(model);
+            this.index = index;
 
             offsetY = ((float)index)/4 + 0.063f;
 
-            init(index, yOffset, stretch);
+            init(yOffset, stretch);
         }
 
-        public void init(int index, float yOffset, float stretch) {
+        public void init(float yOffset, float stretch) {
             int texX = (index % 2) * 4;
+
+            around(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
 
             if (index == 0) {
                 tex(32, 0).addTopPlane(-2, 0, 2, 4, 4, stretch);
             }
 
-            around(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
-            tex(36, texX)
-                .addEastPlane(2, 0, 2, 4, 4, stretch)
-                .addWestPlane(-2, 0, 2, 4, 4, stretch);
-            tex(32, texX)
-                .addBackPlane(-2, 0, 2, 4, 4, stretch)
-                .addFrontPlane(-2, 0, 6, 4, 4, stretch);
-            tex(32, 0)
-                .addBottomPlane(-2, 4, 2, 4, 4, stretch);
+            tex(36, texX).addEastPlane( 2, 0, 2, 4, 4, stretch)
+                         .addWestPlane(-2, 0, 2, 4, 4, stretch);
+            tex(32, texX).addBackPlane(-2, 0, 2, 4, 4, stretch)
+                        .addFrontPlane(-2, 0, 6, 4, 4, stretch);
+             tex(32, 0).addBottomPlane(-2, 4, 2, 4, 4, stretch);
+        }
+
+        @Override
+        public void render(float scale) {
+            if (index < tailStop) {
+                super.render(scale);
+            }
         }
     }
 }

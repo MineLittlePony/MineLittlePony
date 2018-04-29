@@ -13,7 +13,8 @@ public class ModelZombiePony extends ModelMobPony {
     }
 
     @Override
-    protected void rotateRightArm(float move, float tick) {
+    protected void adjustLegs(float move, float swing, float tick) {
+        super.adjustLegs(move, swing, tick);
         if (rightArmPose != ArmPose.EMPTY) return;
 
         if (islookAngleRight(move)) {
@@ -21,11 +22,6 @@ public class ModelZombiePony extends ModelMobPony {
         } else {
             rotateArmHolding(bipedLeftArm, -1, swingProgress, tick);
         }
-    }
-
-    @Override
-    protected void rotateLeftArm(float move, float tick) {
-        // zombies are unidexterous.
     }
 
     @Override
