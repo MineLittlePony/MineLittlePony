@@ -32,7 +32,7 @@ public class PonyData implements IPonyData {
         tailSize = TriggerPixels.TAIL.readValue(image);
         size = TriggerPixels.SIZE.readValue(image);
         gender = TriggerPixels.GENDER.readValue(image);
-        glowColor = TriggerPixels.GLOW.readColor(image, -1);
+        glowColor = TriggerPixels.GLOW.readColor(image);
     }
 
     @Override

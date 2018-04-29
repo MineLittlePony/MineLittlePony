@@ -8,19 +8,22 @@ import java.awt.image.BufferedImage;
  */
 @SuppressWarnings("unchecked")
 public enum TriggerPixels {
-    RACE(PonyRace.HUMAN, 0, 0),
-    TAIL(TailLengths.FULL, 1, 0),
-    GENDER(PonyGender.MARE, 2, 0),
-    SIZE(PonySize.LARGE, 3, 0),
-    GLOW(null, 0, 1);
+    RACE(PonyRace.HUMAN, Channel.ALL, 0, 0),
+    TAIL(TailLengths.FULL, Channel.ALL, 1, 0),
+    GENDER(PonyGender.MARE, Channel.ALL, 2, 0),
+    SIZE(PonySize.NORMAL, Channel.ALL, 3, 0),
+    GLOW(null, Channel.RAW, 0, 1);
 
     private int x;
     private int y;
 
+    private Channel channel;
+
     ITriggerPixelMapped<?> def;
 
-    TriggerPixels(ITriggerPixelMapped<?> def, int x, int y) {
+    TriggerPixels(ITriggerPixelMapped<?> def, Channel channel, int x, int y) {
         this.def = def;
+        this.channel = channel;
         this.x = x;
         this.y = y;
     }
@@ -29,10 +32,9 @@ public enum TriggerPixels {
      * Reads this trigger pixel's value and returns the raw colour.
      *
      * @param image Image to read
-     * @param mask  Colour mask (0xffffff for rgb, -1 for rgba)
      */
-    public int readColor(BufferedImage image, int mask) {
-        return image.getRGB(x, y) & mask;
+    public int readColor(BufferedImage image) {
+        return channel.readValue(x, y, image);
     }
 
     /**
@@ -41,6 +43,26 @@ public enum TriggerPixels {
      * @param image Image to read
      */
     public <T extends Enum<T> & ITriggerPixelMapped<T>> T readValue(BufferedImage image) {
-        return ITriggerPixelMapped.getByTriggerPixel((T)def, readColor(image, 0xffffff));
+        return ITriggerPixelMapped.getByTriggerPixel((T)def, readColor(image));
+    }
+
+    enum Channel {
+        RAW(-1, 0),
+        ALL(0xffffff, 0),
+        RED(0xff0000, 16),
+        GREEN(0x00ff00, 8),
+        BLUE(0x0000ff, 0);
+
+        private int mask;
+        private int offset;
+
+        Channel(int mask, int offset) {
+            this.mask = mask;
+            this.offset = offset;
+        }
+
+        public int readValue(int x, int y, BufferedImage image) {
+            return (image.getRGB(x, y) & mask) >> offset;
+        }
     }
 }
