@@ -15,7 +15,9 @@ public class PonySnout {
     public PonySnout(AbstractPonyModel pony) {
         mare = new PlaneRenderer(pony);
         stallion = new PlaneRenderer(pony);
+
         pony.bipedHead.addChild(stallion);
+        pony.bipedHead.addChild(mare);
     }
 
     public void init(float yOffset, float stretch) {
@@ -41,7 +43,7 @@ public class PonySnout {
     }
 
     public void setGender(PonyGender gender) {
-        mare.isHidden = gender != PonyGender.MARE;
-        stallion.isHidden = gender != PonyGender.STALLION;
+        mare.isHidden = gender == PonyGender.STALLION;
+        stallion.isHidden = !mare.isHidden;
     }
 }

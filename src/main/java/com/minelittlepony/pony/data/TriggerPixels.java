@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
  * Individual trigger pixels for a pony skin.
  *
  */
+@SuppressWarnings("unchecked")
 public enum TriggerPixels {
     RACE(PonyRace.HUMAN, 0, 0),
     TAIL(TailLengths.FULL, 1, 0),
@@ -25,7 +26,8 @@ public enum TriggerPixels {
     }
 
     /**
-     * Reads tis trigger pixel's value and returns the raw colour value.
+     * Reads this trigger pixel's value and returns the raw colour.
+     *
      * @param image Image to read
      * @param mask  Colour mask (0xffffff for rgb, -1 for rgba)
      */
@@ -38,7 +40,6 @@ public enum TriggerPixels {
      *
      * @param image Image to read
      */
-    @SuppressWarnings("unchecked")
     public <T extends Enum<T> & ITriggerPixelMapped<T>> T readValue(BufferedImage image) {
         return ITriggerPixelMapped.getByTriggerPixel((T)def, readColor(image, 0xffffff));
     }
