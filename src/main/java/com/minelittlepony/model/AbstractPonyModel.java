@@ -108,15 +108,6 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     }
 
     /**
-     * Adjusts the rotation center of the given renderer by the given amounts in each direction.
-     */
-    public void shiftRotationPoint(ModelRenderer renderer, float x, float y, float z) {
-        renderer.rotationPointX += x;
-        renderer.rotationPointY += y;
-        renderer.rotationPointZ += z;
-    }
-
-    /**
      * Rotates the provided arm to the correct orientation for holding an item.
      *
      * @param arm           The arm to rotate
