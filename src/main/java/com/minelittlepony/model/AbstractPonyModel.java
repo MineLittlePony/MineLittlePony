@@ -126,7 +126,9 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
         animateWears();
 
-        snout.setGender(metadata.getGender());
+        if (snout != null) {
+            snout.setGender(metadata.getGender());
+        }
     }
 
     protected void adjustBodyRiding() {
@@ -243,17 +245,15 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         float spread = getLegSpread();
 
         bipedRightArm.rotationPointZ = spread + sin;
-
         bipedLeftArm.rotationPointZ = spread - sin;
 
-        float legOutset = getLegOutset();
-        float rpxl = cos + 1 - legOutset;
-        float rpxr = legOutset - cos - 1;
+        float legRPX = cos - getLegOutset();
 
-        bipedRightArm.rotationPointX = rpxr;
-        bipedRightLeg.rotationPointX = rpxr;
-        bipedLeftArm.rotationPointX = rpxl;
-        bipedLeftLeg.rotationPointX = rpxl;
+        bipedRightArm.rotationPointX = -legRPX;
+        bipedRightLeg.rotationPointX = -legRPX;
+
+        bipedLeftArm.rotationPointX = legRPX;
+        bipedLeftLeg.rotationPointX = legRPX;
 
         bipedRightArm.rotateAngleY += bipedBody.rotateAngleY;
         bipedLeftArm.rotateAngleY += bipedBody.rotateAngleY;
@@ -536,15 +536,15 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         float rarmX = getLegRotationX();
         float rarmY = getArmRotationY();
 
-        float armX = THIRDP_ARM_CENTRE_X - 2;
+        float armX = THIRDP_ARM_CENTRE_X;
         float armY = THIRDP_ARM_CENTRE_Y - 6;
-        float armZ = THIRDP_ARM_CENTRE_Z - 2;
+        float armZ = BODY_CENTRE_Z / 2 - 1 - armDepth;
 
         bipedLeftArm .addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch);
-        bipedRightArm.addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch);
+        bipedRightArm.addBox(armX - armWidth, armY, armZ, armWidth, 12, armDepth, stretch);
 
         bipedLeftLeg .addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch);
-        bipedRightLeg.addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch);
+        bipedRightLeg.addBox(armX - armWidth, armY, armZ, armWidth, 12, armDepth, stretch);
 
         bipedLeftArm .setRotationPoint( rarmX, yOffset + rarmY, 0);
         bipedRightArm.setRotationPoint(-rarmX, yOffset + rarmY, 0);
@@ -554,22 +554,22 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
         if (bipedLeftArmwear != null) {
             bipedLeftArmwear.addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch + 0.25f);
-            bipedLeftArmwear.setRotationPoint(3, yOffset + rarmY, 0);
+            bipedLeftArmwear.setRotationPoint(rarmX, yOffset + rarmY, 0);
         }
 
         if (bipedRightArmwear != null) {
-            bipedRightArmwear.addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch + 0.25f);
-            bipedRightArmwear.setRotationPoint(-3, yOffset + rarmY, 0);
+            bipedRightArmwear.addBox(armX - armWidth, armY, armZ, armWidth, 12, armDepth, stretch + 0.25f);
+            bipedRightArmwear.setRotationPoint(-rarmX, yOffset + rarmY, 0);
         }
 
         if (bipedLeftLegwear != null) {
             bipedLeftLegwear.addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch + 0.25f);
-            bipedRightLegwear.setRotationPoint(3, yOffset, 0);
+            bipedRightLegwear.setRotationPoint(rarmX, yOffset, 0);
         }
 
         if (bipedRightLegwear != null) {
-            bipedRightLegwear.addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch + 0.25f);
-            bipedRightLegwear.setRotationPoint(-3, yOffset, 0);
+            bipedRightLegwear.addBox(armX - armWidth, armY, armZ, armWidth, 12, armDepth, stretch + 0.25f);
+            bipedRightLegwear.setRotationPoint(-rarmX, yOffset, 0);
         }
     }
 

@@ -1,12 +1,9 @@
 package com.minelittlepony.model.ponies;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
-
 import com.minelittlepony.model.ModelMobPony;
 import com.minelittlepony.model.armour.ModelSkeletonPonyArmor;
 import com.minelittlepony.model.armour.PonyArmor;
 
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.init.Items;
@@ -51,40 +48,19 @@ public class ModelSkeletonPony extends ModelMobPony {
         }
     }
 
-    // TODO: HACK It would be better to just change the size of the legs.
-    private void renderScaledArm(ModelRenderer arm, float x, float y, float z) {
-        scale(x, y, z);
-        x /= 1.5f;
-        z /= 1.5f;
-        arm.rotateAngleX /= x;
-        arm.rotateAngleY /= y;
-        arm.rotateAngleZ /= z;
-        arm.render(scale);
-        arm.rotateAngleX *= x;
-        arm.rotateAngleY *= y;
-        arm.rotateAngleZ *= z;
+    protected int getArmWidth() {
+        return 2;
     }
 
-    @Override
-    protected void renderLegs() {
-        pushMatrix();
-            translate(0.05F, -0.21F, 0);
-            renderScaledArm(bipedLeftArm, 0.5F, 1.15F, 0.5F);
-        popMatrix();
+    protected int getArmDepth() {
+        return 2;
+    }
 
-        pushMatrix();
-            translate(-0.05F, -0.21F, 0);
-            renderScaledArm(bipedRightArm, 0.5F, 1.2F, 0.5F);
-        popMatrix();
+    protected float getLegRotationX() {
+        return 3;
+    }
 
-        pushMatrix();
-            translate(0.05F, -0.21F, 0.35F);
-            renderScaledArm(bipedLeftLeg, 0.5F, 1.2F, 0.5F);
-        popMatrix();
-
-        pushMatrix();
-            translate(-0.05F, -0.21F, 0.35F);
-            renderScaledArm(bipedRightLeg, 0.5F, 1.15F, 0.5F);
-        popMatrix();
+    protected float getArmRotationY() {
+        return 8;
     }
 }

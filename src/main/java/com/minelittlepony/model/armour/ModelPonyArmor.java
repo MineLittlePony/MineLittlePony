@@ -175,12 +175,18 @@ public class ModelPonyArmor extends ModelMobPony {
     protected void initLegPositions(float yOffset, float stretch) {
         super.initLegPositions(yOffset, stretch);
 
-        leftLegging.offset(THIRDP_ARM_CENTRE_X, THIRDP_ARM_CENTRE_Y, THIRDP_ARM_CENTRE_Z)
-                       .around(3, yOffset, 0)
-                       .box(-2, -6, -2, 4, 12, 4, stretch);
-        rightLegging.offset(THIRDP_ARM_CENTRE_X, THIRDP_ARM_CENTRE_Y, THIRDP_ARM_CENTRE_Z)
-                       .around(-3, yOffset, 0)
-              .flipX().box(-2, -6, -2, 4, 12, 4, stretch);
+        float rarmX = getLegRotationX();
+
+        float armX = THIRDP_ARM_CENTRE_X;
+        float armY = THIRDP_ARM_CENTRE_Y;
+        float armZ = THIRDP_ARM_CENTRE_Z;
+
+          leftLegging.offset(armX + 2, armY, armZ)
+                         .around(rarmX, yOffset, 0)
+                         .box(-2, -6, -2, 4, 12, 4, stretch);
+          rightLegging.offset(armX - 2, armY, armZ)
+                         .around(-rarmX, yOffset, 0)
+                .flipX().box(-2, -6, -2, 4, 12, 4, stretch);
     }
 
     protected void syncLegs() {
