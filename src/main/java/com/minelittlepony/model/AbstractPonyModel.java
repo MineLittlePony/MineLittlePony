@@ -487,8 +487,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         upperTorso.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
                   .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                     .tex(24, 0)    .addEastPlane( 4, -4, -4, 8, 8, stretch)
-                    .tex(56, 0)  .addBottomPlane(-4,  4, -4, 8, 8, stretch)
                     .tex(4,  0)    .addEastPlane( 4, -4,  4, 8, 4, stretch)
+                    .tex(56, 0)  .addBottomPlane(-4,  4, -4, 8, 8, stretch)
                     .tex(36, 16)   .addBackPlane(-4, -4,  8, 8, 4, stretch)
                                    .addBackPlane(-4,  0,  8, 8, 4, stretch)
                                  .addBottomPlane(-4,  4,  4, 8, 4, stretch)
@@ -700,11 +700,12 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         if (isRiding) translate(0, -0.6F, -0.2F);
 
         if (isSleeping) {
-            rotate(90, 0, 1, 0);
-            rotate(270, 0, 0, 1);
-            rotate(90, 0, 1, 0);
-            rotate(180, 0, 0, 1);
+            rotate(90, 1, 0, 0);
             rotate(180, 0, 1, 0);
+        }
+
+        if (part == BodyPart.HEAD) {
+            rotate(motionPitch, 1, 0, 0);
         }
 
         if (isChild()) {
@@ -714,15 +715,13 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         } else if (metadata.getSize() == PonySize.TALL) {
             transformTall(part);
         } else {
-            if (isSleeping) translate(0, -0.75F, 0.25F);
+            if (isSleeping) translate(0, -0.61F, 0.25F);
         }
-        if (part == BodyPart.HEAD) {
-            rotate(motionPitch, 1, 0, 0);
-        }
+
     }
 
     private void transformTall(BodyPart part) {
-        if (isSleeping) translate(0, -0.65F, 0.25F);
+        if (isSleeping) translate(0, -0.5F, 0.25F);
 
         switch (part) {
             case HEAD:
@@ -748,7 +747,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     }
 
     private void transformLarge(BodyPart part) {
-        if (isSleeping) translate(0, -0.7F, 0.2F);
+        if (isSleeping) translate(0, -0.98F, 0.2F);
 
         switch (part) {
             case HEAD:
@@ -778,7 +777,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
     private void transformFoal(BodyPart part) {
         if (isCrouching()) translate(0, -0.12F, 0);
-        if (isSleeping) translate(0, -1.2F, 0.25F);
+        if (isSleeping) translate(0, -1.48F, 0.25F);
         if (isRiding) translate(0, -0.1F, 0);
 
         switch (part) {
