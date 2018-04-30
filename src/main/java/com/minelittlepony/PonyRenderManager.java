@@ -59,9 +59,9 @@ public class PonyRenderManager {
         registerPlayerSkin(rm, PlayerModels.ALICORN);
     }
 
-    protected void registerPlayerSkin(RenderManager rm, PlayerModels playerModel) {
-        new RenderPonyPlayer(rm, false, playerModel.getId(false), playerModel.getModel(false));
-        new RenderPonyPlayer(rm, true, playerModel.getId(true), playerModel.getModel(true));
+    protected void registerPlayerSkin(RenderManager manager, PlayerModels playerModel) {
+        new RenderPonyPlayer(manager, false, playerModel);
+        new RenderPonyPlayer(manager, true, playerModel);
     }
 
     /**

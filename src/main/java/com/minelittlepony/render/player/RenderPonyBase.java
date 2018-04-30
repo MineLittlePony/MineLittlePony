@@ -1,7 +1,6 @@
 package com.minelittlepony.render.player;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.ducks.IRenderManager;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.ModelWrapper;
@@ -30,7 +29,7 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
 
   private Pony pony;
 
-  public RenderPonyBase(RenderManager manager, boolean useSmallArms, String id, ModelWrapper model) {
+  public RenderPonyBase(RenderManager manager, boolean useSmallArms, ModelWrapper model) {
       super(manager, useSmallArms);
       smallArms = useSmallArms;
 
@@ -38,8 +37,6 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
 
       layerRenderers.clear();
       addExtraLayers();
-
-      ((IRenderManager)manager).addPlayerSkin(id, this);
   }
 
   protected void addExtraLayers() {

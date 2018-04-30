@@ -2,15 +2,19 @@ package com.minelittlepony.render.player;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IPonyAnimationHolder;
-import com.minelittlepony.model.ModelWrapper;
+import com.minelittlepony.ducks.IRenderManager;
+import com.minelittlepony.model.player.PlayerModels;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 
 public class RenderPonyPlayer extends RenderPonyBase {
-    public RenderPonyPlayer(RenderManager renderManager, boolean useSmallArms, String id, ModelWrapper model) {
-        super(renderManager, useSmallArms, id, model);
+
+    public RenderPonyPlayer(RenderManager renderManager, boolean useSmallArms, PlayerModels model) {
+        super(renderManager, useSmallArms, model.getModel(useSmallArms));
+
+        ((IRenderManager)renderManager).addPlayerSkin(model.getId(useSmallArms), this);
     }
 
     @Override
