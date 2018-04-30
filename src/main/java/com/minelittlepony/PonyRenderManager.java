@@ -3,6 +3,7 @@ package com.minelittlepony;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
+import com.minelittlepony.ducks.IRenderManager;
 import com.minelittlepony.hdskins.gui.EntityPonyModel;
 import com.minelittlepony.hdskins.gui.RenderPonyModel;
 import com.minelittlepony.model.player.PlayerModels;
@@ -60,8 +61,12 @@ public class PonyRenderManager {
     }
 
     protected void registerPlayerSkin(RenderManager manager, PlayerModels playerModel) {
-        new RenderPonyPlayer(manager, false, playerModel);
-        new RenderPonyPlayer(manager, true, playerModel);
+        addPlayerSkin(manager, new RenderPonyPlayer(manager, false, playerModel));
+        addPlayerSkin(manager, new RenderPonyPlayer(manager, true, playerModel));
+    }
+
+    public void addPlayerSkin(RenderManager manager, RenderPonyPlayer renderer) {
+        ((IRenderManager)manager).addPlayerSkin(renderer.skinId, renderer);
     }
 
     /**
