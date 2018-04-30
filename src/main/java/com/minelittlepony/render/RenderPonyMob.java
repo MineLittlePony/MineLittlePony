@@ -11,6 +11,7 @@ import com.minelittlepony.render.layer.LayerPonyElytra;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.layers.LayerArrow;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 
@@ -30,7 +31,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
     protected void addLayers() {
         addLayer(new LayerPonyArmor<>(this));
-        // addLayer(new LayerArrow(this));
+        addLayer(new LayerArrow(this));
         addLayer(new LayerPonyCustomHead<>(this));
         addLayer(new LayerPonyElytra<>(this));
         addLayer(createItemHoldingLayer());
