@@ -371,17 +371,16 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     }
 
     protected void aimBow(ArmPose leftArm, ArmPose rightArm, float tick) {
-        if (rightArm == ArmPose.BOW_AND_ARROW) aimBowPony(bipedRightArm, tick, false);
-        if (leftArm == ArmPose.BOW_AND_ARROW) aimBowPony(bipedLeftArm, tick, false);
+        if (rightArm == ArmPose.BOW_AND_ARROW) aimBowPony(bipedRightArm, tick);
+        if (leftArm == ArmPose.BOW_AND_ARROW) aimBowPony(bipedLeftArm, tick);
     }
 
-    protected void aimBowPony(ModelRenderer arm, float tick, boolean shift) {
+    protected void aimBowPony(ModelRenderer arm, float tick) {
         arm.rotateAngleZ = 0;
         arm.rotateAngleY = bipedHead.rotateAngleY - 0.06F;
         arm.rotateAngleX = ROTATE_270 + bipedHead.rotateAngleX;
         arm.rotateAngleZ += MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
         arm.rotateAngleX += MathHelper.sin(tick * 0.067F) * 0.05F;
-        if (shift) AbstractPonyRenderer.shiftRotationPoint(arm, 0, 0, 1);
     }
 
     protected void fixSpecialRotationPoints(float move) {

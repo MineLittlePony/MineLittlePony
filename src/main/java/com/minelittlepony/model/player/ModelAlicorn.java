@@ -126,8 +126,8 @@ public class ModelAlicorn extends ModelPegasus implements IModelUnicorn {
     @Override
     protected void aimBow(ArmPose leftArm, ArmPose rightArm, float tick) {
         if (canCast()) {
-            if (rightArm == ArmPose.BOW_AND_ARROW) aimBowPony(unicornArmRight, tick, true);
-            if (leftArm == ArmPose.BOW_AND_ARROW) aimBowPony(unicornArmLeft, tick, false);
+            if (rightArm == ArmPose.BOW_AND_ARROW) aimBowPony(unicornArmRight, tick);
+            if (leftArm == ArmPose.BOW_AND_ARROW) aimBowPony(unicornArmLeft, tick);
         } else {
             super.aimBow(leftArm, rightArm, tick);
         }
