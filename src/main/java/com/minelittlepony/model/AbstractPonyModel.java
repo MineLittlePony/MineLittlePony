@@ -293,8 +293,6 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         if (swingProgress > -9990.0F && !isSleeping) {
             EnumHandSide mainSide = getMainHand(entity);
 
-            if (getArmPoseForSide(mainSide) == ArmPose.EMPTY) return;
-
             swingArm(getArmForSide(mainSide));
         }
     }

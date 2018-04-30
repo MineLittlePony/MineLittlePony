@@ -63,11 +63,10 @@ public class ModelAlicorn extends ModelPegasus implements IModelUnicorn {
 
     @Override
     protected void swingItem(Entity entity, float swingProgress) {
-        if (canCast()) {
-            if (swingProgress > -9990.0F && !isSleeping) {
-                EnumHandSide mainSide = getMainHand(entity);
+        EnumHandSide mainSide = getMainHand(entity);
 
-                if (getArmPoseForSide(mainSide) == ArmPose.EMPTY) return;
+        if (canCast() && getArmPoseForSide(mainSide) != ArmPose.EMPTY) {
+            if (swingProgress > -9990.0F && !isSleeping) {
                 swingArm(getUnicornArmForSide(mainSide));
             }
         } else {
