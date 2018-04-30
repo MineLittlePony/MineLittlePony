@@ -71,9 +71,6 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
     @Override
     public void setRotationAngles(float move, float swing, float age, float headYaw, float headPitch, float scale, Entity entity) {
-        this.boxList.clear();
-        this.init(0, 0);
-
         super.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
 
         float headRotateAngleY = isSleeping ? 1.4f : headYaw / 57.29578F;
