@@ -58,6 +58,7 @@ public class PonyRenderManager {
         registerPlayerSkin(manager, PlayerModels.EARTH);
         registerPlayerSkin(manager, PlayerModels.PEGASUS);
         registerPlayerSkin(manager, PlayerModels.ALICORN);
+        registerPlayerSkin(manager, PlayerModels.ZEBRA);
     }
 
     private void registerPlayerSkin(RenderManager manager, PlayerModels playerModel) {

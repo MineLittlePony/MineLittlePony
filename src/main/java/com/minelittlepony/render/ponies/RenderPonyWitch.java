@@ -30,7 +30,8 @@ public class RenderPonyWitch extends RenderPonyMob<EntityWitch> {
                     GlStateManager.translate(-0.1F, 0.7F, 0);
                     GlStateManager.rotate(110, 1, 0, 0);
                 } else {
-                    GlStateManager.translate(-0.2F, -0.3F, -0.7F);
+                    GlStateManager.translate(0, -0.3F, -0.8F);
+                    GlStateManager.rotate(10, 1, 0, 0);
                 }
             }
         };
