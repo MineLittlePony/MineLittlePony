@@ -56,17 +56,16 @@ public class ModelWitchPony extends ModelVillagerPony {
     @Override
     protected void initPositions(float yOffset, float stretch) {
         super.initPositions(yOffset, stretch);
-        witchHat.offset(-5, -6, -7)
-                .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
-                .tex(0, 64).box(0, 0, 0, 10, 2, 10, stretch)
-                    .child(0).offset(-5, -5, -7).around(1.75F, -4, 2)
-                        .tex(0, 76).box(0, 0, 0, 7, 4, 7, stretch)
-                        .rotate(-0.05235988F, 0, 0.02617994F)
-                        .child(0).offset(-5, -4, -7).around(1.75F, -4, 2)
-                            .tex(0, 87).box(0, 0, 0, 4, 4, 4, stretch)
-                            .rotate(-0.10471976F, 0, 0.05235988F)
-                            .child(0).offset(-5, -2, -7).around(1.75F, -2, 2)
-                                .tex(0, 95).box(0, 0, 0, 1, 2, 1, stretch)
-                                .rotate(-0.20943952F, 0, 0.10471976F);
+        witchHat.around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
+                .tex(0, 64).box(-5, -6, -7, 10, 2, 10, stretch)
+                .child(0).around(1.75F, -4, 2)
+                    .tex(0, 76).box(-5, -5, -7, 7, 4, 7, stretch)
+                    .rotate(-0.05235988F, 0, 0.02617994F)
+                    .child(0).around(1.75F, -4, 2)
+                        .tex(0, 87).box(-5, -4, -7, 4, 4, 4, stretch)
+                        .rotate(-0.10471976F, 0, 0.05235988F)
+                        .child(0).around(1.75F, -2, 2)
+                            .tex(0, 95).box(-5, -2, -7, 1, 2, 1, stretch)
+                            .rotate(-0.20943952F, 0, 0.10471976F);
     }
 }
