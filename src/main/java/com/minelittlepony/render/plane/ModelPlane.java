@@ -42,14 +42,14 @@ public class ModelPlane extends Box<PlaneRenderer> {
         }
 
         // w:west e:east d:down u:up s:south n:north
-        Vertex wds = vert(xMin , yMin , zMin , 0, 0);
-        Vertex eds = vert(xMax, yMin , zMin , 0, 8);
-        Vertex eus = vert(xMax, yMax, zMin , 8, 8);
-        Vertex wus = vert(xMin , yMax, zMin , 8, 0);
-        Vertex wdn = vert(xMin , yMin , zMax, 0, 0);
-        Vertex edn = vert(xMax, yMin , zMax, 0, 8);
+        Vertex wds = vert(xMin, yMin, zMin, 0, 0);
+        Vertex eds = vert(xMax, yMin, zMin, 0, 8);
+        Vertex eus = vert(xMax, yMax, zMin, 8, 8);
+        Vertex wus = vert(xMin, yMax, zMin, 8, 0);
+        Vertex wdn = vert(xMin, yMin, zMax, 0, 0);
+        Vertex edn = vert(xMax, yMin, zMax, 0, 8);
         Vertex eun = vert(xMax, yMax, zMax, 8, 8);
-        Vertex wun = vert(xMin , yMax, zMax, 8, 0);
+        Vertex wun = vert(xMin, yMax, zMax, 8, 0);
 
         if (face == Face.EAST) {
             quad = quad(textureX, d, textureY, h, edn, eds, eus, eun);
@@ -58,7 +58,7 @@ public class ModelPlane extends Box<PlaneRenderer> {
             quad = quad(textureX, d, textureY, h, wds, wdn, wun, wus);
         }
         if (face == Face.UP) {
-            quad = quad(textureX, w, textureY, h, edn, wdn, wds, eds);
+            quad = quad(textureX, w, textureY, d, edn, wdn, wds, eds);
         }
         if (face == Face.DOWN) {
             quad = quad(textureX, w, textureY, d, eus, wus, wun, eun);
