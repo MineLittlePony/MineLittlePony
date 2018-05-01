@@ -44,9 +44,8 @@ public class PonyManager implements IResourceManagerReloadListener {
 
     private PonyConfig config;
 
-    private Map<ResourceLocation, Pony>
-        poniesCache = Maps.newHashMap(),
-        backgroudPoniesCache = Maps.newHashMap();
+    private Map<ResourceLocation, Pony> poniesCache = Maps.newHashMap();
+    private Map<ResourceLocation, Pony> backgroudPoniesCache = Maps.newHashMap();
 
     public PonyManager(PonyConfig config) {
         this.config = config;
