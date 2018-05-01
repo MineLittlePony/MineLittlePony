@@ -56,6 +56,12 @@ public class ModelPegasus extends ModelEarthPony implements IModelPegasus {
         }
     }
 
+    protected void holdItem(float swing) {
+        if (!rainboom) {
+            super.holdItem(swing);
+        }
+    }
+
     @Override
     protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         super.renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
