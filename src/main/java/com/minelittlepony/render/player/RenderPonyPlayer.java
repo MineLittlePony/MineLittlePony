@@ -2,7 +2,7 @@ package com.minelittlepony.render.player;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IPonyAnimationHolder;
-import com.minelittlepony.model.player.PlayerModels;
+import com.minelittlepony.model.ModelWrapper;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -10,14 +10,8 @@ import net.minecraft.client.renderer.entity.RenderManager;
 
 public class RenderPonyPlayer extends RenderPonyBase {
 
-    /**
-     * The id used to find this renderer in the player skin map.
-     */
-    public final String skinId;
-
-    public RenderPonyPlayer(RenderManager renderManager, boolean useSmallArms, PlayerModels model) {
-        super(renderManager, useSmallArms, model.getModel(useSmallArms));
-        skinId = model.getId(useSmallArms);
+    public RenderPonyPlayer(RenderManager renderManager, boolean useSmallArms, ModelWrapper model) {
+        super(renderManager, useSmallArms, model);
     }
 
     @Override
