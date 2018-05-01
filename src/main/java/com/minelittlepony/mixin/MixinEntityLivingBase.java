@@ -1,7 +1,6 @@
 package com.minelittlepony.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 
 import com.minelittlepony.ducks.IPonyAnimationHolder;
 
@@ -11,9 +10,6 @@ import net.minecraft.world.World;
 
 @Mixin(EntityLivingBase.class)
 public abstract class MixinEntityLivingBase extends Entity implements IPonyAnimationHolder {
-    @Shadow
-    public float moveStrafing;
-
     private MixinEntityLivingBase(World worldIn) {
         super(worldIn);
     }
@@ -24,16 +20,12 @@ public abstract class MixinEntityLivingBase extends Entity implements IPonyAnima
     private float strafeRollAmount = 0;
 
     @Override
-    public float getStrafeAmount(float ticks) {
-        float strafing = moveStrafing;
-        if (strafing != 0) {
-            if (Math.abs(strafeRollAmount) < Math.abs(strafing)) {
-                strafeRollAmount += strafing/10;
-            }
-        } else {
-            strafeRollAmount *= 0.8;
-        }
+    public float getStrafeAmount() {
+        return strafeRollAmount;
+    }
 
-        return (float)Math.toDegrees(strafeRollAmount);
+    @Override
+    public void setStrafeAmount(float strafeAmount) {
+        strafeRollAmount = strafeAmount;
     }
 }

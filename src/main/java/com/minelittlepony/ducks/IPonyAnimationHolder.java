@@ -8,5 +8,7 @@ public interface IPonyAnimationHolder {
     /**
      * Updates and gets the amount this entity is strafing to each side.
      */
-    float getStrafeAmount(float ticks);
+    float getStrafeAmount();
+
+    void setStrafeAmount(float strafeAmount);
 }

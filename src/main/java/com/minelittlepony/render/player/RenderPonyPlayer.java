@@ -50,7 +50,21 @@ public class RenderPonyPlayer extends RenderPonyBase {
         ponyModel.motionPitch = (float) Math.toDegrees(angle);
 
         GlStateManager.rotate(ponyModel.motionPitch, 1, 0, 0);
-        GlStateManager.rotate(((IPonyAnimationHolder)player).getStrafeAmount(ticks), 0, 0, 1);
+
+
+        float lastStrafe = ((IPonyAnimationHolder)player).getStrafeAmount();
+
+        float strafing = player.moveStrafing;
+        if (strafing != 0) {
+            if (Math.abs(lastStrafe) < Math.abs(strafing)) {
+                lastStrafe += strafing/10;
+            }
+        } else {
+            lastStrafe *= 0.8;
+        }
+
+        ((IPonyAnimationHolder)player).setStrafeAmount(lastStrafe);
+        GlStateManager.rotate((float)Math.toDegrees(lastStrafe), 0, 0, 1);
     }
 
     //TODO: MC1.13 transformSwimming()
