@@ -28,7 +28,7 @@ public class PonyConfig implements Exposable {
      * Gets the current PonyLevel. That is the level of ponies you would like to see.
      * @param ignorePony true to ignore whatever value the setting has.
      */
-    public PonyLevel getPonyLevel(boolean ignorePony) {
+    public PonyLevel getEffectivePonyLevel(boolean ignorePony) {
         return ignorePony ? PonyLevel.BOTH : getPonyLevel();
     }
 

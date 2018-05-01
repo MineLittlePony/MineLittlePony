@@ -108,7 +108,7 @@ public class Pony {
     }
 
     public PonyRace getRace(boolean ignorePony) {
-        return metadata.getRace().getEffectiveRace(MineLittlePony.getConfig().getPonyLevel(ignorePony));
+        return metadata.getRace().getEffectiveRace(MineLittlePony.getConfig().getEffectivePonyLevel(ignorePony));
     }
 
     public ResourceLocation getTexture() {
