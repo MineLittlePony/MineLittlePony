@@ -23,17 +23,27 @@ public class PonyElytra extends ModelBase {
         rightWing.flipX().box( 0,  0, 0, 10, 20, 2, 1);
     }
 
+    /**
+     * Sets the model's various rotation angles.
+     *
+     * See {@link AbstractPonyModel.render} for an explanation of the various parameters.
+     */
     @Override
-    public void render(Entity entity, float move, float swing, float age, float headYaw, float headPitch, float scale) {
+    public void render(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         GlStateManager.disableRescaleNormal();
         GlStateManager.disableCull();
         leftWing.render(scale);
         rightWing.render(scale);
     }
 
+    /**
+     * Sets the model's various rotation angles.
+     *
+     * See {@link AbstractPonyModel.setRotationAngles} for an explanation of the various parameters.
+     */
     @Override
-    public void setRotationAngles(float move, float swing, float age, float headYaw, float headPitch, float scale, Entity entity) {
-        super.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
+    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
+        super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
 
         float rotateX = PI / 2;
         float rotateY = PI / 8;

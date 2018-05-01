@@ -14,6 +14,7 @@ import java.lang.reflect.Field;
 /**
  * PMAPI - Pony Models API?
  *
+ * TODO: Remove this, move the models to where they're being used.
  */
 public final class PMAPI {
 

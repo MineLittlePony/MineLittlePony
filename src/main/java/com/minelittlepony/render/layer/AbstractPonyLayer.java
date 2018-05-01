@@ -19,12 +19,24 @@ public abstract class AbstractPonyLayer<T extends EntityLivingBase> implements L
 
     @SuppressWarnings("unchecked")
     @Override
-    public final void doRenderLayer(EntityLivingBase entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+    public final void doRenderLayer(EntityLivingBase entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
         // render the pony layer
-        doPonyRender((T)entity, move, swing, ticks, age, headYaw, headPitch, scale);
+        doPonyRender((T)entity, move, swing, partialTicks, ticks, headYaw, headPitch, scale);
     }
 
-    protected abstract void doPonyRender(T entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale);
+    /**
+     * Renders this layer.
+     *
+     * @param entity       The entity we're being called for.
+     * @param move         Entity motion parameter - i.e. velocity in no specific direction used in bipeds to calculate step amount.
+     * @param swing        Degree to which each 'limb' swings.
+     * @param partialTicks Render partial ticks
+     * @param ticks        Total whole and partial ticks since the entity's existance. Used in animations together with {@code swing} and {@code move}.
+     * @param headYaw      Horizontal head motion in radians.
+     * @param headPitch    Vertical head motion in radians.
+     * @param scale        Scaling factor used to render this model. Determined by the return value of {@link RenderLivingBase.prepareScale}. Usually {@code 0.0625F}.
+     */
+    protected abstract void doPonyRender(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale);
 
     protected RenderLivingBase<T> getRenderer() {
         return renderer;

@@ -143,8 +143,8 @@ public class PonyManager implements IResourceManagerReloadListener {
     /**
      * De-registers a pony from the cache.
      */
-    public Pony removePony(ResourceLocation location) {
-        return poniesCache.remove(location);
+    public Pony removePony(ResourceLocation resource) {
+        return poniesCache.remove(resource);
     }
 
     @Override

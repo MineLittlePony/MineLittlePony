@@ -39,18 +39,18 @@ public class Pony {
         smallArms = slim;
     }
 
-    private IPonyData checkSkin(ResourceLocation textureResourceLocation) {
-        IPonyData data = checkPonyMeta(textureResourceLocation);
+    private IPonyData checkSkin(ResourceLocation resource) {
+        IPonyData data = checkPonyMeta(resource);
         if (data != null) return data;
 
-        BufferedImage skinImage = getBufferedImage(textureResourceLocation);
+        BufferedImage skinImage = getBufferedImage(resource);
         return this.checkSkin(skinImage);
     }
 
     @Nullable
-    private IPonyData checkPonyMeta(ResourceLocation location) {
+    private IPonyData checkPonyMeta(ResourceLocation resource) {
         try {
-            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(location);
+            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(resource);
             if (res.hasMetadata()) {
                 PonyData data = res.getMetadata(PonyDataSerialzier.NAME);
                 if (data != null) {
@@ -60,7 +60,7 @@ public class Pony {
         } catch (FileNotFoundException e) {
             // Ignore uploaded texture
         } catch (IOException e) {
-            MineLittlePony.logger.warn("Unable to read {} metadata", location, e);
+            MineLittlePony.logger.warn("Unable to read {} metadata", resource, e);
         }
         return null;
     }
@@ -76,14 +76,14 @@ public class Pony {
         } catch (IOException ignored) { }
 
         try {
-            ITextureObject e2 = Minecraft.getMinecraft().getTextureManager().getTexture(resource);
+            ITextureObject texture = Minecraft.getMinecraft().getTextureManager().getTexture(resource);
 
-            if (e2 instanceof MixinThreadDownloadImageData) {
-                return ((MixinThreadDownloadImageData) e2).getBufferedImage();
-            } else if (e2 instanceof ThreadDownloadImageETag) {
-                return ((ThreadDownloadImageETag) e2).getBufferedImage();
-            } else if (e2 instanceof DynamicTextureImage) {
-                return ((DynamicTextureImage) e2).getImage();
+            if (texture instanceof MixinThreadDownloadImageData) {
+                return ((MixinThreadDownloadImageData) texture).getBufferedImage();
+            } else if (texture instanceof ThreadDownloadImageETag) {
+                return ((ThreadDownloadImageETag) texture).getBufferedImage();
+            } else if (texture instanceof DynamicTextureImage) {
+                return ((DynamicTextureImage) texture).getImage();
             }
         } catch (Exception ignored) { }
 

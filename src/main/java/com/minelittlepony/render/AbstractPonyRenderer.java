@@ -99,6 +99,10 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
         return (T) this;
     }
 
+    /**
+     * Positions a given model in space by setting its offset values divided
+     * by 16 to account for scaling applied inside the model.
+     */
     public static <T extends ModelRenderer> T at(T renderer, float x, float y, float z) {
         renderer.offsetX = x / 16;
         renderer.offsetY = y / 16;
@@ -106,10 +110,16 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
         return renderer;
     }
 
+    /**
+     * Rotates this model to align itself with the angles of another.
+     */
     public void rotateTo(ModelRenderer other) {
         rotate(other.rotateAngleX, other.rotateAngleY, other.rotateAngleZ);
     }
 
+    /**
+     * Shifts this model to align its center with the center of another.
+     */
     public T rotateAt(ModelRenderer other) {
         return around(other.rotationPointX, other.rotationPointY, other.rotationPointZ);
     }

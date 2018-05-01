@@ -4,6 +4,7 @@ import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyManager;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
 import com.voxelmodpack.hdskins.gui.GuiSkins;
 import net.minecraft.util.ResourceLocation;
@@ -25,18 +26,18 @@ public class GuiSkinsMineLP extends GuiSkins {
     }
 
     @Override
-    protected void onSetLocalSkin(MinecraftProfileTexture.Type type) {
+    protected void onSetLocalSkin(Type type) {
         MineLittlePony.logger.debug("Invalidating old local skin, checking updated local skin");
-        if (type == MinecraftProfileTexture.Type.SKIN) {
+        if (type == Type.SKIN) {
             ponyManager.removePony(localPlayer.getSkinTexture());
         }
     }
 
     @Override
-    protected void onSetRemoteSkin(MinecraftProfileTexture.Type type, ResourceLocation location, MinecraftProfileTexture profileTexture) {
+    protected void onSetRemoteSkin(Type type, ResourceLocation resource, MinecraftProfileTexture profileTexture) {
         MineLittlePony.logger.debug("Invalidating old remote skin, checking updated remote skin");
-        if (type == MinecraftProfileTexture.Type.SKIN) {
-            ponyManager.removePony(location);
+        if (type == Type.SKIN) {
+            ponyManager.removePony(resource);
         }
     }
 

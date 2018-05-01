@@ -14,6 +14,9 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nullable;
 
+/**
+ * TODO: Looks like {@link LayerEntityOnShoulder}
+ */
 public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientPlayer> {
 
     private final RenderManager renderManager;
@@ -27,7 +30,7 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientP
     }
 
     @Override
-    public void doPonyRender(AbstractClientPlayer player, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+    public void doPonyRender(AbstractClientPlayer player, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
 
         GlStateManager.enableRescaleNormal();
         GlStateManager.color(1, 1, 1, 1);
@@ -35,30 +38,33 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientP
         NBTTagCompound leftTag = player.getLeftShoulderEntity();
 
         if (!leftTag.hasNoTags()) {
-            leftEntity = renderShoulderEntity(player, leftEntity,
-                    leftTag, move, swing, ticks, age, headYaw, headPitch, scale, true);
+            leftEntity = renderShoulderEntity(player, leftEntity, leftTag, partialTicks, true);
         }
 
         NBTTagCompound rightTag = player.getRightShoulderEntity();
 
         if (!rightTag.hasNoTags()) {
-            rightEntity = renderShoulderEntity(player, rightEntity,
-                    rightTag, move, swing, ticks, age, headYaw, headPitch, scale, false);
+            rightEntity = renderShoulderEntity(player, rightEntity, rightTag, partialTicks, false);
         }
 
         GlStateManager.disableRescaleNormal();
     }
 
     @Nullable
-    private EntityLivingBase renderShoulderEntity(AbstractClientPlayer player, @Nullable EntityLivingBase entity, NBTTagCompound tag,
-            float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale, boolean left) {
+    private EntityLivingBase renderShoulderEntity(AbstractClientPlayer player, @Nullable EntityLivingBase entity, NBTTagCompound shoulderTag, float partialTicks, boolean left) {
 
-        if (entity == null || !entity.getUniqueID().equals(tag.getUniqueId("UUID"))) {
-            entity = (EntityLivingBase) EntityList.createEntityFromNBT(tag, player.world);
+        if (entity == null || !entity.getUniqueID().equals(shoulderTag.getUniqueId("UUID"))) {
+            entity = (EntityLivingBase) EntityList.createEntityFromNBT(shoulderTag, player.world);
             // this isn't an entity.
             if (entity == null) {
                 return null;
             }
+        }
+
+        Render<Entity> render = renderManager.getEntityRenderObject(entity);
+
+        if (render == null) {
+            return entity;
         }
 
         GlStateManager.pushMatrix();
@@ -70,10 +76,7 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientP
         GlStateManager.scale(1, -1, -1);
         GlStateManager.rotate(left ? -5 : 5, 0, 0, 1);
 
-        Render<Entity> render = renderManager.getEntityRenderObject(entity);
-        if (render != null) {
-            render.doRender(entity, 0, 0, 0, 0, 0);
-        }
+        render.doRender(entity, 0, 0, 0, 0, partialTicks);
 
         GlStateManager.popMatrix();
         return entity;

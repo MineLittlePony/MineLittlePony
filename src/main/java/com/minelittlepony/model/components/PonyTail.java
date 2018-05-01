@@ -27,6 +27,11 @@ public class PonyTail extends PlaneRenderer {
         }
     }
 
+    /**
+     * Sets the model's various rotation angles.
+     *
+     * See {@link AbstractPonyMode.setRotationAndAngle} for an explanation of the various parameters.
+     */
     public void setRotationAndAngles(boolean rainboom, float move, float swing, float bodySwing, float ticks) {
         rotateAngleZ = rainboom ? 0 : MathHelper.cos(move * 0.8F) * 0.2f * swing;
         rotateAngleY = bodySwing;
@@ -58,8 +63,8 @@ public class PonyTail extends PlaneRenderer {
         tailStop = theModel.metadata.getTail().ordinal();
     }
 
-    public void swingX(float tick) {
-        float sinTickFactor = MathHelper.sin(tick * 0.067f) * 0.05f;
+    public void swingX(float ticks) {
+        float sinTickFactor = MathHelper.sin(ticks * 0.067f) * 0.05f;
         rotateAngleX += sinTickFactor;
         rotateAngleY += sinTickFactor;
     }

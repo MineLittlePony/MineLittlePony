@@ -27,8 +27,8 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
 
     boolean renderingAsHuman = false;
 
-    public RenderPonyModel(RenderManager renderer) {
-        super(renderer);
+    public RenderPonyModel(RenderManager manager) {
+        super(manager);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
             final ModelElytra modelElytra = new ModelElytra();
 
             @Override
-            public void doPonyRender(EntityPonyModel entity, float swing, float swingAmount, float ticks, float age, float yaw, float head, float scale) {
+            public void doPonyRender(EntityPonyModel entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
                 ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
                 if (itemstack.getItem() == Items.ELYTRA) {
@@ -79,8 +79,8 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
                         GlStateManager.translate(0, 0.25F, 0.125F);
                     }
 
-                    model.setRotationAngles(swing, swingAmount, age, yaw, head, scale, entity);
-                    model.render(entity, swing, swingAmount, age, yaw, head, scale);
+                    model.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
+                    model.render(entity, move, swing, ticks, headYaw, headPitch, scale);
 
                     GlStateManager.popMatrix();
                 }

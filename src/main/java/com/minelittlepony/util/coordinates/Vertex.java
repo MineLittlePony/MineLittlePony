@@ -12,10 +12,10 @@ public class Vertex extends PositionTextureVertex {
         super(old, texX, texY);
     }
 
+    // The MCP name is misleading.
+    // This is meant to return a COPY with the given texture position
     public Vertex setTexturePosition(float texX, float texY) {
-        texturePositionX = texX;
-        texturePositionY = texY;
-        return this;
+        return new Vertex(this, texX, texY);
     }
 
     /**

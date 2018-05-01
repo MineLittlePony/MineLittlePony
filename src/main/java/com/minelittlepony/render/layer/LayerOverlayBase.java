@@ -21,16 +21,16 @@ public abstract class LayerOverlayBase<T extends EntityLiving> implements LayerR
     }
 
     @Override
-    public void doRenderLayer(T entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+    public void doRenderLayer(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
         ModelBase overlayModel = getOverlayModel();
 
         overlayModel.setModelAttributes(renderer.getMainModel());
-        overlayModel.setLivingAnimations(entity, move, swing, ticks);
-        overlayModel.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
+        overlayModel.setLivingAnimations(entity, move, swing, partialTicks);
+        overlayModel.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
 
         renderer.bindTexture(getOverlayTexture());
 
-        overlayModel.render(entity, move, swing, age, headYaw, headPitch, scale);
+        overlayModel.render(entity, move, swing, ticks, headYaw, headPitch, scale);
     }
 
     protected abstract ModelBase getOverlayModel();

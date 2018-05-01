@@ -13,14 +13,14 @@ public class ModelZombiePony extends ModelMobPony {
     }
 
     @Override
-    protected void adjustLegs(float move, float swing, float tick) {
-        super.adjustLegs(move, swing, tick);
+    protected void adjustLegs(float move, float swing, float ticks) {
+        super.adjustLegs(move, swing, ticks);
         if (rightArmPose != ArmPose.EMPTY) return;
 
         if (islookAngleRight(move)) {
-            rotateArmHolding(bipedRightArm, 1, swingProgress, tick);
+            rotateArmHolding(bipedRightArm, 1, swingProgress, ticks);
         } else {
-            rotateArmHolding(bipedLeftArm, -1, swingProgress, tick);
+            rotateArmHolding(bipedLeftArm, -1, swingProgress, ticks);
         }
     }
 

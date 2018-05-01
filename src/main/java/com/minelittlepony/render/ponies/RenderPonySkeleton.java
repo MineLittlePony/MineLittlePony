@@ -18,8 +18,8 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
     private static final ResourceLocation WITHER = new ResourceLocation("minelittlepony", "textures/entity/skeleton/skeleton_wither_pony.png");
     private static final ResourceLocation STRAY = new ResourceLocation("minelittlepony", "textures/entity/skeleton/stray_pony.png");
 
-    public RenderPonySkeleton(RenderManager rm) {
-        super(rm, PMAPI.skeleton);
+    public RenderPonySkeleton(RenderManager manager) {
+        super(manager, PMAPI.skeleton);
     }
 
     @Override

@@ -17,8 +17,8 @@ public class ModelEarthPony extends AbstractPonyModel {
     }
 
     @Override
-    public void setRotationAngles(float move, float swing, float age, float headYaw, float headPitch, float scale, Entity entity) {
-        super.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
+    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
+        super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
 
         if (bipedCape != null) {
             bipedCape.rotationPointY = isSneak ? 2 : isRiding ? -4 : 0;

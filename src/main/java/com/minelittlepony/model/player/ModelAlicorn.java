@@ -6,9 +6,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 
-import static com.minelittlepony.model.PonyModelConstants.*;
-
 import com.minelittlepony.model.capabilities.IModelUnicorn;
+
+import static com.minelittlepony.model.PonyModelConstants.*;
 
 /**
  * Used for both unicorns and alicorns since there's no logical way to keep them distinct and not duplicate stuff.
@@ -31,16 +31,16 @@ public class ModelAlicorn extends ModelPegasus implements IModelUnicorn {
     }
 
     @Override
-    protected void rotateLegsOnGround(float move, float swing, float tick, Entity entity) {
-        super.rotateLegsOnGround(move, swing, tick, entity);
+    protected void rotateLegsOnGround(float move, float swing, float ticks, Entity entity) {
+        super.rotateLegsOnGround(move, swing, ticks, entity);
 
         unicornArmRight.rotateAngleY = 0;
         unicornArmLeft.rotateAngleY = 0;
     }
 
     @Override
-    protected void adjustLegs(float move, float swing, float tick) {
-        super.adjustLegs(move, swing, tick);
+    protected void adjustLegs(float move, float swing, float ticks) {
+        super.adjustLegs(move, swing, ticks);
 
         unicornArmLeft.rotateAngleZ = 0;
         unicornArmRight.rotateAngleZ = 0;
@@ -62,7 +62,7 @@ public class ModelAlicorn extends ModelPegasus implements IModelUnicorn {
     }
 
     @Override
-    protected void swingItem(Entity entity, float swingProgress) {
+    protected void swingItem(Entity entity) {
         EnumHandSide mainSide = getMainHand(entity);
 
         if (canCast() && getArmPoseForSide(mainSide) != ArmPose.EMPTY) {
@@ -70,17 +70,17 @@ public class ModelAlicorn extends ModelPegasus implements IModelUnicorn {
                 swingArm(getUnicornArmForSide(mainSide));
             }
         } else {
-            super.swingItem(entity, swingProgress);
+            super.swingItem(entity);
         }
     }
 
     @Override
-    protected void swingArms(float tick) {
+    protected void swingArms(float ticks) {
         if (isSleeping) return;
 
         if (canCast()) {
-            float cos = MathHelper.cos(tick * 0.09F) * 0.05F + 0.05F;
-            float sin = MathHelper.sin(tick * 0.067F) * 0.05F;
+            float cos = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
+            float sin = MathHelper.sin(ticks * 0.067F) * 0.05F;
 
             if (rightArmPose != ArmPose.EMPTY) {
                 unicornArmRight.rotateAngleZ += cos;
@@ -92,7 +92,7 @@ public class ModelAlicorn extends ModelPegasus implements IModelUnicorn {
                 unicornArmLeft.rotateAngleX += sin;
             }
         } else {
-            super.swingArms(tick);
+            super.swingArms(ticks);
         }
     }
 
@@ -124,18 +124,18 @@ public class ModelAlicorn extends ModelPegasus implements IModelUnicorn {
     }
 
     @Override
-    protected void aimBow(ArmPose leftArm, ArmPose rightArm, float tick) {
+    protected void aimBow(ArmPose leftArm, ArmPose rightArm, float ticks) {
         if (canCast()) {
-            if (rightArm == ArmPose.BOW_AND_ARROW) aimBowPony(unicornArmRight, tick);
-            if (leftArm == ArmPose.BOW_AND_ARROW) aimBowPony(unicornArmLeft, tick);
+            if (rightArm == ArmPose.BOW_AND_ARROW) aimBowPony(unicornArmRight, ticks);
+            if (leftArm == ArmPose.BOW_AND_ARROW) aimBowPony(unicornArmLeft, ticks);
         } else {
-            super.aimBow(leftArm, rightArm, tick);
+            super.aimBow(leftArm, rightArm, ticks);
         }
     }
 
     @Override
-    protected void renderHead(Entity entity, float move, float swing, float age, float headYaw, float headPitch, float scale) {
-        super.renderHead(entity, move, swing, age, headYaw, headPitch, scale);
+    protected void renderHead(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        super.renderHead(entity, move, swing, ticks, headYaw, headPitch, scale);
 
         if (canCast()) {
             horn.render(scale);

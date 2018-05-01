@@ -26,7 +26,7 @@ public class LayerPonyElytra<T extends EntityLivingBase> extends AbstractPonyLay
     }
 
     @Override
-    public void doPonyRender(@Nonnull T entity, float move, float swing, float ticks, float age, float yaw, float head, float scale) {
+    public void doPonyRender(@Nonnull T entity, float move, float swing, float partialTicks, float ticks, float yaw, float head, float scale) {
         ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
         if (itemstack.getItem() == Items.ELYTRA) {
@@ -37,11 +37,11 @@ public class LayerPonyElytra<T extends EntityLivingBase> extends AbstractPonyLay
             GlStateManager.pushMatrix();
             GlStateManager.translate(0, 0.25F, 0.125F);
             getPlayerModel().transform(BodyPart.BODY);
-            modelElytra.setRotationAngles(move, swing, age, yaw, head, scale, entity);
-            modelElytra.render(entity, move, swing, age, yaw, head, scale);
+            modelElytra.setRotationAngles(move, swing, ticks, yaw, head, scale, entity);
+            modelElytra.render(entity, move, swing, ticks, yaw, head, scale);
 
             if (itemstack.isItemEnchanted()) {
-                LayerArmorBase.renderEnchantedGlint(getRenderer(), entity, modelElytra, move, swing, ticks, age, yaw, head, scale);
+                LayerArmorBase.renderEnchantedGlint(getRenderer(), entity, modelElytra, move, swing, partialTicks, ticks, yaw, head, scale);
             }
 
             GlStateManager.popMatrix();

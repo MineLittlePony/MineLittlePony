@@ -27,18 +27,18 @@ public class ModelPegasus extends ModelEarthPony implements IModelPegasus {
     }
 
     @Override
-    public void setRotationAngles(float move, float swing, float age, float headYaw, float headPitch, float scale, Entity entity) {
+    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
         checkRainboom(entity, swing);
 
-        super.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
+        super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
 
         if (bipedCape != null) {
-            wings.setRotationAngles(move, swing, age);
+            wings.setRotationAngles(move, swing, ticks);
         }
     }
 
     @Override
-    protected void rotateLegsInFlight(float move, float swing, float tick, Entity entity) {
+    protected void rotateLegsInFlight(float move, float swing, float ticks, Entity entity) {
         if (rainboom) {
             bipedLeftArm.rotateAngleX = ROTATE_270;
             bipedRightArm.rotateAngleX = ROTATE_270;
@@ -52,13 +52,13 @@ public class ModelPegasus extends ModelEarthPony implements IModelPegasus {
             bipedRightArm.rotateAngleY = 0.2F;
             bipedRightLeg.rotateAngleY = -0.2F;
         } else {
-            super.rotateLegsInFlight(move, swing, tick, entity);
+            super.rotateLegsInFlight(move, swing, ticks, entity);
         }
     }
 
     @Override
-    protected void renderBody(Entity entity, float move, float swing, float age, float headYaw, float headPitch, float scale) {
-        super.renderBody(entity, move, swing, age, headYaw, headPitch, scale);
+    protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        super.renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
         if (canFly()) {
             wings.render(scale);
         }

@@ -16,8 +16,8 @@ public class ModelIllagerPony extends ModelAlicorn {
     }
 
     @Override
-    public void setRotationAngles(float move, float swing, float age, float headYaw, float headPitch, float scale, Entity entity) {
-        super.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
+    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
+        super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
 
         AbstractIllager illager = (AbstractIllager) entity;
         IllagerArmPose pose = illager.getArmPose();
@@ -34,38 +34,38 @@ public class ModelIllagerPony extends ModelAlicorn {
             bipedLeftArm.rotateAngleY = -0.15707964F;
 
             if (rightHanded) {
-                bipedRightArm.rotateAngleX = -1.8849558F + MathHelper.cos(age * 0.09F) * 0.15F;
+                bipedRightArm.rotateAngleX = -1.8849558F + MathHelper.cos(ticks * 0.09F) * 0.15F;
                 bipedRightArm.rotateAngleX += f * 2.2F - f1 * 0.4F;
             } else {
-                bipedLeftArm.rotateAngleX = -1.8849558F + MathHelper.cos(age * 0.09F) * 0.15F;
+                bipedLeftArm.rotateAngleX = -1.8849558F + MathHelper.cos(ticks * 0.09F) * 0.15F;
                 bipedLeftArm.rotateAngleX += f * 2.2F - f1 * 0.4F;
             }
 
-            bipedRightArm.rotateAngleZ += MathHelper.cos(age * 0.09F) * 0.05F + 0.05F;
-            bipedLeftArm.rotateAngleZ -= MathHelper.cos(age * 0.09F) * 0.05F + 0.05F;
-            bipedRightArm.rotateAngleX += MathHelper.sin(age * 0.067F) * 0.05F;
-            bipedLeftArm.rotateAngleX -= MathHelper.sin(age * 0.067F) * 0.05F;
+            bipedRightArm.rotateAngleZ += MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
+            bipedLeftArm.rotateAngleZ -= MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
+            bipedRightArm.rotateAngleX += MathHelper.sin(ticks * 0.067F) * 0.05F;
+            bipedLeftArm.rotateAngleX -= MathHelper.sin(ticks * 0.067F) * 0.05F;
         } else if (pose == IllagerArmPose.SPELLCASTING) {
             // waving arms!
             if (rightHanded) {
 //                this.bipedRightArm.rotationPointZ = 0.0F;
 //                this.bipedRightArm.rotationPointX = -5.0F;
                 bipedRightArm.rotateAngleX = (float) (-.75F * Math.PI);
-                bipedRightArm.rotateAngleZ = MathHelper.cos(age * 0.6662F) / 4;
+                bipedRightArm.rotateAngleZ = MathHelper.cos(ticks * 0.6662F) / 4;
                 bipedRightArm.rotateAngleY = 1.1F;
             } else {
 //                this.bipedLeftArm.rotationPointZ = 0.0F;
 //                this.bipedLeftArm.rotationPointX = 5.0F;
                 bipedLeftArm.rotateAngleX = (float) (-.75F * Math.PI);
-                bipedLeftArm.rotateAngleZ = -MathHelper.cos(age * 0.6662F) / 4;
+                bipedLeftArm.rotateAngleZ = -MathHelper.cos(ticks * 0.6662F) / 4;
                 bipedLeftArm.rotateAngleY = -1.1F;
             }
 
         } else if (pose == IllagerArmPose.BOW_AND_ARROW) {
             if (rightHanded) {
-                aimBow(ArmPose.EMPTY, ArmPose.BOW_AND_ARROW, age);
+                aimBow(ArmPose.EMPTY, ArmPose.BOW_AND_ARROW, ticks);
             } else {
-                aimBow(ArmPose.BOW_AND_ARROW, ArmPose.EMPTY, age);
+                aimBow(ArmPose.BOW_AND_ARROW, ArmPose.EMPTY, ticks);
             }
         }
     }

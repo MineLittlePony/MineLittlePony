@@ -39,6 +39,6 @@ public class EntityPonyModel extends EntityPlayerModel {
 
         // Fixes the preview model swinging the wrong arm.
         // Who's maintaining HDSkins anyway?
-        this.swingingHand = EnumHand.MAIN_HAND;
+        swingingHand = EnumHand.MAIN_HAND;
     }
 }

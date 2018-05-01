@@ -34,7 +34,7 @@ public class LayerPonyCustomHead<T extends EntityLivingBase> implements LayerRen
     }
 
     @Override
-    public void doRenderLayer(T entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+    public void doRenderLayer(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
         ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
         if (!itemstack.isEmpty()) {
             AbstractPonyModel model = getModel().getModel();
@@ -97,6 +97,7 @@ public class LayerPonyCustomHead<T extends EntityLivingBase> implements LayerRen
             }
         }
 
+        // TODO: PonySkullRenderer
         TileEntitySkullRenderer.instance.renderSkull(-0.5F, 0, -0.45F, EnumFacing.UP, 180, itemstack.getMetadata(), profile, -1, limbSwing);
 
     }

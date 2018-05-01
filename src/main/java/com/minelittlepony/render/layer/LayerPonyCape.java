@@ -23,7 +23,7 @@ public class LayerPonyCape extends AbstractPonyLayer<AbstractClientPlayer> {
     }
 
     @Override
-    public void doPonyRender(@Nonnull AbstractClientPlayer player, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+    public void doPonyRender(@Nonnull AbstractClientPlayer player, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
         ModelWrapper model = ((IRenderPony) getRenderer()).getPlayerModel();
 
         if (player.hasPlayerInfo() && !player.isInvisible()

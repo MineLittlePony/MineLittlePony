@@ -43,17 +43,17 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
     }
 
     @Override
-    public void doPonyRender(T entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+    public void doPonyRender(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
         pony = ((IRenderPony) getRenderer()).getPlayerModel();
 
         for (EntityEquipmentSlot i : EntityEquipmentSlot.values()) {
             if (i.getSlotType() == Type.ARMOR) {
-                renderArmor(entity, move, swing, ticks, age, headYaw, headPitch, scale, i);
+                renderArmor(entity, move, swing, partialTicks, ticks, headYaw, headPitch, scale, i);
             }
         }
     }
 
-    private void renderArmor(T entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale, EntityEquipmentSlot armorSlot) {
+    private void renderArmor(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale, EntityEquipmentSlot armorSlot) {
         ItemStack itemstack = entity.getItemStackFromSlot(armorSlot);
 
         if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemArmor) {
@@ -63,7 +63,7 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
             AbstractPonyModel modelbase = pony.getArmor().getArmorForSlot(armorSlot);
             modelbase = getArmorModel(entity, itemstack, armorSlot, modelbase);
             modelbase.setModelAttributes(pony.getModel());
-            modelbase.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
+            modelbase.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
 
             Tuple<ResourceLocation, Boolean> armors = getArmorTexture(entity, itemstack, armorSlot, null);
             prepareToRender((ModelPonyArmor) modelbase, armorSlot, armors.getSecond());
@@ -71,15 +71,15 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
             getRenderer().bindTexture(armors.getFirst());
             if (itemarmor.getArmorMaterial() == ArmorMaterial.LEATHER) {
                 Color.glColor(itemarmor.getColor(itemstack), 1);
-                modelbase.render(entity, move, swing, age, headYaw, headPitch, scale);
+                modelbase.render(entity, move, swing, ticks, headYaw, headPitch, scale);
                 armors = getArmorTexture(entity, itemstack, armorSlot, "overlay");
                 getRenderer().bindTexture(armors.getFirst());
             }
             GlStateManager.color(1, 1, 1, 1);
-            modelbase.render(entity, move, swing, age, headYaw, headPitch, scale);
+            modelbase.render(entity, move, swing, ticks, headYaw, headPitch, scale);
 
             if (itemstack.isItemEnchanted()) {
-                renderEnchantment(entity, modelbase, move, swing, ticks, age, headYaw, headPitch, scale);
+                renderEnchantment(entity, modelbase, move, swing, partialTicks, ticks, headYaw, headPitch, scale);
             }
         }
     }
@@ -157,7 +157,7 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
         }
     }
 
-    private void renderEnchantment(T entity, ModelBase model, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+    private void renderEnchantment(T entity, ModelBase model, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
         getRenderer().bindTexture(ENCHANTED_ITEM_GLINT_RES);
 
         GlStateManager.enableBlend();
@@ -167,7 +167,7 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
         float brightness = 0.5F;
         GlStateManager.color(brightness, brightness, brightness, 1);
 
-        float baseYOffset = entity.ticksExisted + ticks;
+        float baseYOffset = entity.ticksExisted + partialTicks;
         float glintBrightness = 0.76F;
         float scaleFactor = 0.33333334F;
 
@@ -186,7 +186,7 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
             GlStateManager.translate(0, baseYOffset * (0.02F + i * 0.06F), 0);
             GlStateManager.matrixMode(GL11.GL_MODELVIEW);
 
-            model.render(entity, move, swing, age, headYaw, headPitch, scale);
+            model.render(entity, move, swing, ticks, headYaw, headPitch, scale);
         }
 
         GlStateManager.matrixMode(GL11.GL_TEXTURE);

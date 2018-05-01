@@ -21,8 +21,6 @@ import net.minecraft.util.ResourceLocation;
 
 public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony {
 
-  protected final boolean smallArms;
-
   private ModelWrapper playerModel;
 
   protected AbstractPonyModel ponyModel;
@@ -31,7 +29,6 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
 
   public RenderPonyBase(RenderManager manager, boolean useSmallArms, ModelWrapper model) {
       super(manager, useSmallArms);
-      smallArms = useSmallArms;
 
       setPlayerModel(model);
 

@@ -59,5 +59,5 @@ public class RenderPonyPlayer extends RenderPonyBase {
         GlStateManager.rotate(((IPonyAnimationHolder)player).getStrafeAmount(ticks), 0, 0, 1);
     }
 
-    //TODO: transformSwimming()
+    //TODO: MC1.13 transformSwimming()
 }

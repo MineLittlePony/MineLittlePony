@@ -1,11 +1,12 @@
 package com.minelittlepony.model.armour;
 
 import com.minelittlepony.model.AbstractPonyModel;
+import com.minelittlepony.model.capabilities.IModelWrapper;
 import com.minelittlepony.pony.data.IPonyData;
 
 import net.minecraft.inventory.EntityEquipmentSlot;
 
-public class PonyArmor {
+public class PonyArmor implements IModelWrapper {
 
     public final AbstractPonyModel chestplate;
     public final AbstractPonyModel leggings;

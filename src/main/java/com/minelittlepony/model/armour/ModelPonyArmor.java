@@ -23,13 +23,13 @@ public class ModelPonyArmor extends ModelMobPony {
     }
 
     @Override
-    public void setRotationAngles(float move, float swing, float age, float headYaw, float headPitch, float scale, Entity entity) {
-        super.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
+    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
+        super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
         syncLegs();
     }
 
     @Override
-    protected void rotateLook(float limbSwing, float limbSwingAmount, float bodySwing, float ticks) {
+    protected void rotateLook(float move, float swing, float bodySwing, float ticks) {
         bipedBody.rotateAngleY = bodySwing / 5;
     }
 
@@ -67,7 +67,7 @@ public class ModelPonyArmor extends ModelMobPony {
     }
 
     @Override
-    protected void renderHead(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    protected void renderHead(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         bipedHead.render(this.scale);
         helmet.render(this.scale);
         bipedHeadwear.render(this.scale);
@@ -75,6 +75,7 @@ public class ModelPonyArmor extends ModelMobPony {
 
     @Override
     protected void renderNeck() {
+        // TODO: Disabling the neck like this forces more complexity lower down
     }
 
     @Override
@@ -83,7 +84,7 @@ public class ModelPonyArmor extends ModelMobPony {
     }
 
     @Override
-    protected void renderBody(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         bipedBody.render(this.scale);
         flankGuard.render(this.scale);
         saddle.render(this.scale);

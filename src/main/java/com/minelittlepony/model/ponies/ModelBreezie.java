@@ -66,8 +66,8 @@ public class ModelBreezie extends ModelBiped {
     }
 
     @Override
-    public void render(Entity entity, float move, float swing, float age, float headYaw, float headPitch, float scale) {
-        super.render(entity, move, swing, age, headYaw, headPitch, scale);
+    public void render(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        super.render(entity, move, swing, ticks, headYaw, headPitch, scale);
         neck.render(scale);
         tailStub.render(scale);
         tail.render(scale);
@@ -77,7 +77,7 @@ public class ModelBreezie extends ModelBiped {
 
     @SuppressWarnings("incomplete-switch")
     @Override
-    public void setRotationAngles(float move, float swing, float age, float headYaw, float headPitch, float scale, Entity entity) {
+    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
 
         bipedHead.rotateAngleY = headYaw * 0.017453292F;
         bipedHead.rotateAngleX = headPitch * 0.017453292F;
@@ -104,8 +104,8 @@ public class ModelBreezie extends ModelBiped {
             swingArms(getMainHand(entity));
         }
 
-        float rotX = MathHelper.sin(age * 0.067F) * 0.05F;
-        float rotZ = MathHelper.cos(age * 0.09F) * 0.05F + 0.05F;
+        float rotX = MathHelper.sin(ticks * 0.067F) * 0.05F;
+        float rotZ = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
 
         bipedLeftArm.rotateAngleX -= rotX;
         bipedLeftArm.rotateAngleZ -= rotZ;

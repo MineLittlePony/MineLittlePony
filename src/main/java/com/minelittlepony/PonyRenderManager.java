@@ -44,20 +44,16 @@ public class PonyRenderManager {
 
     private final Map<Class<? extends Entity>, Render<?>> renderMap = Maps.newHashMap();
 
-    public PonyRenderManager() {
-
-    }
-
     /**
      * Registers all new player skin types. (currently only pony and slimpony).
      */
-    public void initialisePlayerRenderers(RenderManager rm) {
+    public void initialisePlayerRenderers(RenderManager manager) {
         // Preview on the select skin gui
-        ModUtilities.addRenderer(EntityPonyModel.class, new RenderPonyModel(rm));
+        ModUtilities.addRenderer(EntityPonyModel.class, new RenderPonyModel(manager));
 
-        registerPlayerSkin(rm, PlayerModels.EARTH);
-        registerPlayerSkin(rm, PlayerModels.PEGASUS);
-        registerPlayerSkin(rm, PlayerModels.ALICORN);
+        registerPlayerSkin(manager, PlayerModels.EARTH);
+        registerPlayerSkin(manager, PlayerModels.PEGASUS);
+        registerPlayerSkin(manager, PlayerModels.ALICORN);
     }
 
     protected void registerPlayerSkin(RenderManager manager, PlayerModels playerModel) {
@@ -72,12 +68,12 @@ public class PonyRenderManager {
     /**
      * Registers all entity model replacements. (except for players).
      */
-    public void initializeMobRenderers(RenderManager rm, PonyConfig config) {
+    public void initializeMobRenderers(RenderManager manager, PonyConfig config) {
 
         if (config.villagers) {
-            pushNewRenderer(rm, EntityVillager.class, new RenderPonyVillager(rm));
-            pushNewRenderer(rm, EntityWitch.class, new RenderPonyWitch(rm));
-            pushNewRenderer(rm, EntityZombieVillager.class, new RenderPonyZombieVillager(rm));
+            pushNewRenderer(manager, EntityVillager.class, new RenderPonyVillager(manager));
+            pushNewRenderer(manager, EntityWitch.class, new RenderPonyWitch(manager));
+            pushNewRenderer(manager, EntityZombieVillager.class, new RenderPonyZombieVillager(manager));
             MineLittlePony.logger.info("Villagers are now ponies.");
         } else {
             restoreRenderer(EntityVillager.class);
@@ -86,9 +82,9 @@ public class PonyRenderManager {
         }
 
         if (config.zombies) {
-            pushNewRenderer(rm, EntityZombie.class, new RenderPonyZombie<>(rm));
-            pushNewRenderer(rm, EntityHusk.class, new RenderPonyZombie.Husk(rm));
-            pushNewRenderer(rm, EntityGiantZombie.class, new RenderPonyZombie.Giant(rm));
+            pushNewRenderer(manager, EntityZombie.class, new RenderPonyZombie<>(manager));
+            pushNewRenderer(manager, EntityHusk.class, new RenderPonyZombie.Husk(manager));
+            pushNewRenderer(manager, EntityGiantZombie.class, new RenderPonyZombie.Giant(manager));
             MineLittlePony.logger.info("Zombies are now ponies.");
         } else {
             restoreRenderer(EntityZombie.class);
@@ -97,16 +93,16 @@ public class PonyRenderManager {
         }
 
         if (config.pigzombies) {
-            pushNewRenderer(rm, EntityPigZombie.class, new RenderPonyPigman(rm));
+            pushNewRenderer(manager, EntityPigZombie.class, new RenderPonyPigman(manager));
             MineLittlePony.logger.info("Zombie pigmen are now ponies.");
         } else {
             restoreRenderer(EntityPigZombie.class);
         }
 
         if (config.skeletons) {
-            pushNewRenderer(rm, EntitySkeleton.class, new RenderPonySkeleton<>(rm));
-            pushNewRenderer(rm, EntityStray.class, new RenderPonySkeleton.Stray(rm));
-            pushNewRenderer(rm, EntityWitherSkeleton.class, new RenderPonySkeleton.Wither(rm));
+            pushNewRenderer(manager, EntitySkeleton.class, new RenderPonySkeleton<>(manager));
+            pushNewRenderer(manager, EntityStray.class, new RenderPonySkeleton.Stray(manager));
+            pushNewRenderer(manager, EntityWitherSkeleton.class, new RenderPonySkeleton.Wither(manager));
             MineLittlePony.logger.info("Skeletons are now ponies.");
         } else {
             restoreRenderer(EntitySkeleton.class);
@@ -115,10 +111,10 @@ public class PonyRenderManager {
         }
 
         if (config.illagers) {
-            pushNewRenderer(rm, EntityVex.class, new RenderPonyVex(rm));
-            pushNewRenderer(rm, EntityEvoker.class, new RenderPonyIllager.Evoker(rm));
-            pushNewRenderer(rm, EntityVindicator.class, new RenderPonyIllager.Vindicator(rm));
-            pushNewRenderer(rm, EntityIllusionIllager.class, new RenderPonyIllager.Illusionist(rm));
+            pushNewRenderer(manager, EntityVex.class, new RenderPonyVex(manager));
+            pushNewRenderer(manager, EntityEvoker.class, new RenderPonyIllager.Evoker(manager));
+            pushNewRenderer(manager, EntityVindicator.class, new RenderPonyIllager.Vindicator(manager));
+            pushNewRenderer(manager, EntityIllusionIllager.class, new RenderPonyIllager.Illusionist(manager));
             MineLittlePony.logger.info("Illagers are now ponies.");
         } else {
             restoreRenderer(EntityVex.class);

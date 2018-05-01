@@ -7,11 +7,10 @@ import net.minecraft.entity.Entity;
 
 public interface IModel {
 
-
     /**
      * Sets up this model's initial values, like a constructor...
-     * @param yOffset YPosition for this model. Always 0.
-     * @param stretch Scaling factor for this model. Ranges above or below 0 (no change).
+     * @param yOffset   YPosition for this model. Always 0.
+     * @param stretch   Scaling factor for this model. Ranges above or below 0 (no change).
      */
     void init(float yOffset, float stretch);
 

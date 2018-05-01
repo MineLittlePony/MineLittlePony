@@ -22,11 +22,12 @@ public class ModelWitchPony extends ModelVillagerPony {
         super();
     }
 
-    public void setRotationAngles(float move, float swing, float age, float headYaw, float headPitch, float scale, Entity entity) {
+    @Override
+    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
         rightArmPose = ArmPose.EMPTY;
         leftArmPose = ((EntityWitch) entity).getHeldItemMainhand().isEmpty() ? ArmPose.EMPTY : ArmPose.ITEM;
 
-        super.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
+        super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
         if (leftArmPose != ArmPose.EMPTY) {
             if (!canCast()) {
                 bipedRightArm.rotateAngleX = -2 * (float)Math.PI/3;
@@ -37,8 +38,8 @@ public class ModelWitchPony extends ModelVillagerPony {
     }
 
     @Override
-    public void render(Entity entityIn, float move, float swing, float age, float headYaw, float headPitch, float scale) {
-        super.render(entityIn, move, swing, age, headYaw, headPitch, scale);
+    public void render(Entity entityIn, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        super.render(entityIn, move, swing, ticks, headYaw, headPitch, scale);
 
         copyModelAngles(bipedHead, witchHat);
 

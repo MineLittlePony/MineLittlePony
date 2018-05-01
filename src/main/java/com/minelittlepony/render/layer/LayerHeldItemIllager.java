@@ -14,9 +14,9 @@ public class LayerHeldItemIllager<T extends AbstractIllager> extends LayerHeldPo
     }
 
     @Override
-    public void doPonyRender(T entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+    public void doPonyRender(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
         if (shouldRender(entity)) {
-            super.doPonyRender(entity, move, swing, ticks, age, headYaw, headPitch, scale);
+            super.doPonyRender(entity, move, swing, partialTicks, ticks, headYaw, headPitch, scale);
         }
     }
 

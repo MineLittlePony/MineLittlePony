@@ -20,7 +20,7 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
     }
 
     @Override
-    public void doPonyRender(T entity, float move, float swing, float ticks, float age, float headYaw, float headPitch, float scale) {
+    public void doPonyRender(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
 
         boolean mainRight = entity.getPrimaryHand() == EnumHandSide.RIGHT;
 

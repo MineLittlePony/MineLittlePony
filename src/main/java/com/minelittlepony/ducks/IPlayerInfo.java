@@ -8,6 +8,9 @@ public interface IPlayerInfo {
      */
     boolean usesSlimArms();
 
+    /**
+     * Quick cast back to the original type.
+     */
     default NetworkPlayerInfo unwrap() {
         return (NetworkPlayerInfo)this;
     }

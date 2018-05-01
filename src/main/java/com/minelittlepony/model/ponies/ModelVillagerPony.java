@@ -18,8 +18,8 @@ public class ModelVillagerPony extends ModelAlicorn {
     }
 
     @Override
-    public void setRotationAngles(float move, float swing, float age, float headYaw, float headPitch, float scale, Entity entity) {
-        super.setRotationAngles(move, swing, age, headYaw, headPitch, scale, entity);
+    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
+        super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
 
         float angleY = 0;
         if (swingProgress > -9990.0F && !canCast()) {
@@ -31,8 +31,8 @@ public class ModelVillagerPony extends ModelAlicorn {
     }
 
     @Override
-    protected void renderBody(Entity entity, float move, float swing, float age, float headYaw, float headPitch, float scale) {
-        super.renderBody(entity, move, swing, age, headYaw, headPitch, scale);
+    protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        super.renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
 
         int profession = getProfession(entity);
         if (profession > -1) {
