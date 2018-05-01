@@ -1,6 +1,5 @@
 package com.minelittlepony.model.armour;
 
-import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.capabilities.IModelWrapper;
 import com.minelittlepony.pony.data.IPonyData;
 
@@ -8,10 +7,10 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 
 public class PonyArmor implements IModelWrapper {
 
-    public final AbstractPonyModel chestplate;
-    public final AbstractPonyModel leggings;
+    public final ModelPonyArmor chestplate;
+    public final ModelPonyArmor leggings;
 
-    public PonyArmor(AbstractPonyModel chest, AbstractPonyModel body) {
+    public PonyArmor(ModelPonyArmor chest, ModelPonyArmor body) {
         chestplate = chest;
         leggings = body;
     }
@@ -26,7 +25,7 @@ public class PonyArmor implements IModelWrapper {
         leggings.init(0, 0.5f);
     }
 
-    public AbstractPonyModel getArmorForSlot(EntityEquipmentSlot slot) {
+    public ModelPonyArmor getArmorForSlot(EntityEquipmentSlot slot) {
         if (slot == EntityEquipmentSlot.LEGS) {
             return leggings;
         }

@@ -1,17 +1,9 @@
 package com.minelittlepony.model.ponies;
 
 import com.minelittlepony.model.ModelMobPony;
-import com.minelittlepony.model.armour.ModelZombiePonyArmor;
-import com.minelittlepony.model.armour.PonyArmor;
 import com.minelittlepony.render.AbstractPonyRenderer;
 
 public class ModelZombiePony extends ModelMobPony {
-
-    @Override
-    public PonyArmor createArmour() {
-        return new PonyArmor(new ModelZombiePonyArmor(), new ModelZombiePonyArmor());
-    }
-
     @Override
     protected void adjustLegs(float move, float swing, float ticks) {
         super.adjustLegs(move, swing, ticks);

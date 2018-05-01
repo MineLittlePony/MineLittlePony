@@ -4,58 +4,23 @@ import net.minecraft.entity.Entity;
 
 import static com.minelittlepony.model.PonyModelConstants.*;
 
-import com.minelittlepony.model.ModelMobPony;
+import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.render.PonyRenderer;
 
-public class ModelPonyArmor extends ModelMobPony {
+public class ModelPonyArmor extends AbstractPonyModel {
 
     public PonyRenderer flankGuard;
 
     public PonyRenderer saddle;
-    public PonyRenderer helmet;
-
-    public PonyRenderer leftLegging;
-    public PonyRenderer rightLegging;
 
     public ModelPonyArmor() {
-        super();
+        super(false);
         textureHeight = 32;
     }
 
     @Override
-    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
-        super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
-        syncLegs();
-    }
-
-    @Override
-    protected void rotateLook(float move, float swing, float bodySwing, float ticks) {
-        bipedBody.rotateAngleY = bodySwing / 5;
-    }
-
-    @Override
-    protected void adjustBodyRiding() {
-        adjustBody(BODY_ROTATE_ANGLE_X_RIDING, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
-    }
-
-    @Override
-    protected void setHead(float posX, float posY, float posZ) {
-        super.setHead(posX, posY, posZ);
-        helmet.setRotationPoint(posX, posY, posZ);
-    }
-
-    @Override
-    protected void updateHeadRotation(float x, float y) {
-        super.updateHeadRotation(x, y);
-        helmet.rotateAngleX = x;
-        helmet.rotateAngleY = y;
-    }
-
-    @Override
-    protected void adjustBody(float rotateAngleX, float rotationPointY, float rotationPointZ) {
-        bipedBody.rotateAngleX = rotateAngleX;
-        bipedBody.rotationPointY = rotationPointY;
-        bipedBody.rotationPointZ = rotationPointZ;
+    protected void adjustBodyComponents(float rotateAngleX, float rotationPointY, float rotationPointZ) {
+        super.adjustBodyComponents(rotateAngleX, rotationPointY, rotationPointZ);
 
         flankGuard.rotateAngleX = rotateAngleX;
         flankGuard.rotationPointY = rotationPointY;
@@ -67,25 +32,7 @@ public class ModelPonyArmor extends ModelMobPony {
     }
 
     @Override
-    protected void renderHead(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        bipedHead.render(this.scale);
-        helmet.render(this.scale);
-        bipedHeadwear.render(this.scale);
-    }
-
-    @Override
-    protected void renderNeck() {
-        // TODO: Disabling the neck like this forces more complexity lower down
-    }
-
-    @Override
-    protected void adjustNeck(float rotateAngleX, float rotationPointY, float rotationPointZ) {
-
-    }
-
-    @Override
     protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        bipedBody.render(this.scale);
         flankGuard.render(this.scale);
         saddle.render(this.scale);
     }
@@ -98,101 +45,50 @@ public class ModelPonyArmor extends ModelMobPony {
             saddle.postRender(scale);
             saddle.showModel = isLegs;
         }
-        bipedLeftArm.render(scale);
-        bipedRightArm.render(scale);
-        bipedLeftLeg.render(scale);
-        bipedRightLeg.render(scale);
-        rightLegging.render(scale);
-        leftLegging.render(scale);
-    }
 
-    @Override
-    protected void initTextures() {
-        initHeadTextures();
-        initBodyTextures();
-        initLegTextures();
-    }
-
-    @Override
-    protected void initHeadTextures() {
-        bipedHead = new PonyRenderer(this, 0, 0);
-        bipedHeadwear = new PonyRenderer(this, 32, 0);
-        helmet = new PonyRenderer(this, 0, 0);
+        super.renderLegs();
     }
 
     @Override
     protected void initBodyTextures() {
-        bipedBody = new PonyRenderer(this, 16, 16);
+        super.initBodyTextures();
         flankGuard = new PonyRenderer(this, 0, 0);
         saddle = new PonyRenderer(this, 16, 8);
     }
 
     @Override
     protected void initLegTextures() {
-        bipedRightArm = new PonyRenderer(this, 0, 16);
-        bipedRightLeg = new PonyRenderer(this, 0, 16);
+        super.initLegTextures();
 
         bipedLeftArm = new PonyRenderer(this, 0, 16).flipX();
+        bipedRightArm = new PonyRenderer(this, 0, 16);
+
         bipedLeftLeg = new PonyRenderer(this, 0, 16).flipX();
-
-        unicornArmRight = new PonyRenderer(this, 0, 16);
-        unicornArmLeft = new PonyRenderer(this, 0, 16);
-
-        leftLegging = new PonyRenderer(this, 48, 8);
-        rightLegging = new PonyRenderer(this, 48, 8);
+        bipedRightLeg = new PonyRenderer(this, 0, 16);
     }
 
-    @Override
-    protected void initTailPositions(float yOffset, float stretch) {
-
+    public void synchroniseLegs(AbstractPonyModel mainModel) {
+        copyModelAngles(mainModel.bipedRightArm, bipedRightArm);
+        copyModelAngles(mainModel.bipedLeftArm, bipedLeftArm);
+        copyModelAngles(mainModel.bipedRightLeg, bipedRightLeg);
+        copyModelAngles(mainModel.bipedLeftLeg, bipedLeftLeg);
     }
 
     @Override
     protected void initHeadPositions(float yOffset, float stretch) {
-        bipedHead    .addBox(HEAD_CENTRE_X - 4, HEAD_CENTRE_Y - 4, HEAD_CENTRE_Z - 4, 8, 8, 8, stretch * 1.1F);
-        bipedHeadwear.addBox(HEAD_CENTRE_X - 4, HEAD_CENTRE_Y - 4, HEAD_CENTRE_Z - 4, 8, 8, 8, stretch * 1.1F + 0.5F);
-
-        helmet.offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
-               .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-                  .box(-4, -6, 1, 2, 2, 2, stretch * 0.5F)
-        .tex(0, 4).box( 2, -6, 1, 2, 2, 2, stretch * 0.5F);
-
-        bipedHead    .setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        bipedHeadwear.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
+        super.initHeadPositions(yOffset, stretch * 1.1F);
+        ((PonyRenderer)bipedHead).child()
+                .tex(0, 4).box(2, -6, 1, 2, 2, 2, stretch * 0.5F)
+                          .box(-4, -6, 1, 2, 2, 2, stretch * 0.5F);
     }
 
     @Override
     protected void initBodyPositions(float yOffset, float stretch) {
-        bipedBody.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-        bipedBody.addBox(-4.0F, 4.0F, -2.0F, 8, 8, 4, stretch);
-
+        super.initBodyPositions(yOffset, stretch);
         flankGuard.around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-                 .box(-4.0F, 4.0F,  6.0F, 8, 8, 8, stretch);
+                 .box(-4, 4,  6, 8, 8, 8, stretch);
         saddle.around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-                 .box(-4.0F, 4.0F, -2.0F, 8, 8, 16, stretch);
-    }
-
-    @Override
-    protected void initLegPositions(float yOffset, float stretch) {
-        super.initLegPositions(yOffset, stretch);
-
-        float rarmX = getLegRotationX();
-
-        float armX = THIRDP_ARM_CENTRE_X;
-        float armY = THIRDP_ARM_CENTRE_Y;
-        float armZ = THIRDP_ARM_CENTRE_Z;
-
-          leftLegging.offset(armX + 2, armY, armZ)
-                         .around(rarmX, yOffset, 0)
-                         .box(-2, -6, -2, 4, 12, 4, stretch);
-          rightLegging.offset(armX - 2, armY, armZ)
-                         .around(-rarmX, yOffset, 0)
-                .flipX().box(-2, -6, -2, 4, 12, 4, stretch);
-    }
-
-    protected void syncLegs() {
-        rightLegging.rotateAt(bipedRightLeg).rotateTo(bipedRightLeg);
-        leftLegging.rotateAt(bipedLeftLeg).rotateTo(bipedLeftLeg);
+                 .box(-4, 4, -2, 8, 8, 16, stretch);
     }
 
     @Override
@@ -200,8 +96,30 @@ public class ModelPonyArmor extends ModelMobPony {
         super.setVisible(invisible);
         flankGuard.showModel = invisible;
         saddle.showModel = invisible;
-        helmet.showModel = invisible;
-        leftLegging.showModel = invisible;
-        rightLegging.showModel = invisible;
+        bipedHead.showModel = invisible;
+        tail.isHidden = true;
+        neck.isHidden = true;
+        upperTorso.isHidden = true;
+        snout.isHidden = true;
+    }
+
+    public void showFeet(boolean show) {
+        bipedRightArm.showModel = show;
+        bipedLeftArm.showModel = show;
+        bipedRightLeg.showModel = show;
+        bipedLeftLeg.showModel = show;
+    }
+
+    public void showLegs(boolean isPony) {
+        bipedBody.showModel =  true;
+    }
+
+    public void showSaddle(boolean isPony) {
+        flankGuard.showModel = !isPony;
+        saddle.showModel = isPony;
+    }
+
+    public void showHead(boolean show) {
+        bipedHead.showModel = show;
     }
 }

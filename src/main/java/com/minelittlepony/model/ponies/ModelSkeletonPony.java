@@ -1,8 +1,6 @@
 package com.minelittlepony.model.ponies;
 
 import com.minelittlepony.model.ModelMobPony;
-import com.minelittlepony.model.armour.ModelSkeletonPonyArmor;
-import com.minelittlepony.model.armour.PonyArmor;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.AbstractSkeleton;
@@ -12,12 +10,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 
 public class ModelSkeletonPony extends ModelMobPony {
-
-    @Override
-    public PonyArmor createArmour() {
-        return new PonyArmor(new ModelSkeletonPonyArmor(), new ModelSkeletonPonyArmor());
-    }
-
     @Override
     public boolean isCasting() {
         return true;
