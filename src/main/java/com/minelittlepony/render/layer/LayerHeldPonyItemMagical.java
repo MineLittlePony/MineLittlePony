@@ -1,7 +1,7 @@
 package com.minelittlepony.render.layer;
 
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.model.capabilities.IModelUnicorn;
-import com.minelittlepony.render.LevitatingItemRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
@@ -31,7 +31,7 @@ public class LayerHeldPonyItemMagical<T extends EntityLivingBase> extends LayerH
     @Override
     protected void postItemRender(T entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
         if (isUnicorn()) {
-            LevitatingItemRenderer.instance.renderItemGlow(entity, drop, transform, hand, this.<IModelUnicorn>getPonyModel().getMagicColor());
+            MineLittlePony.getInstance().getRenderManager().getMagicRenderer().renderItemGlow(entity, drop, transform, hand, this.<IModelUnicorn>getPonyModel().getMagicColor());
         }
     }
 
