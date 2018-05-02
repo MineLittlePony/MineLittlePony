@@ -1,12 +1,13 @@
 package com.minelittlepony.render.player;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.ducks.IPonyAnimationHolder;
 import com.minelittlepony.model.ModelWrapper;
+import com.minelittlepony.util.math.MathUtil;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.util.math.Vec3d;
 
 public class RenderPonyPlayer extends RenderPonyBase {
 
@@ -28,7 +29,7 @@ public class RenderPonyPlayer extends RenderPonyBase {
     @Override
     protected void transformElytraFlight(AbstractClientPlayer player, double motionX, double motionY, double motionZ, float ticks) {
         GlStateManager.rotate(90, 1, 0, 0);
-        GlStateManager.translate(0, -1, 0);
+        GlStateManager.translate(0, player.isSneaking() ? 0.2F : -1, 0);
     }
 
     @Override
@@ -44,27 +45,23 @@ public class RenderPonyPlayer extends RenderPonyBase {
             }
         }
 
-        if (angle > Math.PI / 3) angle = Math.PI / 3;
-        if (angle < -Math.PI / 3) angle = -Math.PI / 3;
+        angle = MathUtil.clampLimit(angle, Math.PI / 3);
 
         ponyModel.motionPitch = (float) Math.toDegrees(angle);
 
         GlStateManager.rotate(ponyModel.motionPitch, 1, 0, 0);
 
+        // Strafe like an elytra
+        Vec3d lookDirection = player.getForward();
 
-        float lastStrafe = ((IPonyAnimationHolder)player).getStrafeAmount();
+        double horMotion = Math.sqrt(motionX * motionX + motionZ * motionZ);
+        double horLook = Math.sqrt(lookDirection.x * lookDirection.x + lookDirection.z * lookDirection.z);
 
-        float strafing = player.moveStrafing;
-        if (strafing != 0) {
-            if (Math.abs(lastStrafe) < Math.abs(strafing)) {
-                lastStrafe += strafing/10;
-            }
-        } else {
-            lastStrafe *= 0.8;
+        if (horMotion > 0 && horLook > 0) {
+            double magnitude = (motionX * lookDirection.x + motionZ * lookDirection.z) / horMotion * horLook;
+            double direction = motionX * lookDirection.z - motionZ * lookDirection.x;
+            GlStateManager.rotate((float)Math.toDegrees(Math.signum(direction) * Math.acos(magnitude)), 0, 0, 1);
         }
-
-        ((IPonyAnimationHolder)player).setStrafeAmount(lastStrafe);
-        GlStateManager.rotate((float)Math.toDegrees(lastStrafe), 0, 0, 1);
     }
 
     //TODO: MC1.13 transformSwimming()
