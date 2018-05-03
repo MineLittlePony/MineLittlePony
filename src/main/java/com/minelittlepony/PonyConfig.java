@@ -36,7 +36,9 @@ public class PonyConfig implements Exposable {
      * Actually gets the pony level value. No option to ignore reality here.
      */
     public PonyLevel getPonyLevel() {
-        if (ponylevel == null) ponylevel = PonyLevel.PONIES;
+        if (ponylevel == null) {
+            ponylevel = PonyLevel.PONIES;
+        }
         return ponylevel;
     }
 
