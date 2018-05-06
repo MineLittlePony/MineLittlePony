@@ -21,7 +21,7 @@ public class ForgeProxy {
     private static boolean forgeLoaded = ModUtilities.fmlIsPresent();
 
     /**
-     * Gets the mod armour texture for associated item and slot.
+     * Gets the mod armour texture for an associated item and slot.
      *
      * @param entity    The entity to get armour for.
      * @param item      The armour item
@@ -37,7 +37,7 @@ public class ForgeProxy {
     }
 
     /**
-     * Gets the mod armour texture for associated item and slot.
+     * Gets the mod armour model for an associated item and slot.
      *
      * @param entity    The entity to get armour for.
      * @param item      The armour item
