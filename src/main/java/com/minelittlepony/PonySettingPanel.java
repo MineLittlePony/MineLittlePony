@@ -1,0 +1,183 @@
+package com.minelittlepony;
+
+import com.minelittlepony.pony.data.PonyLevel;
+import com.mumfrey.liteloader.client.gui.GuiCheckbox;
+import com.mumfrey.liteloader.core.LiteLoader;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
+
+import java.io.IOException;
+
+/**
+ * In-Game options menu.
+ */
+public class PonySettingPanel extends GuiScreen {
+
+    private static final String _PREFIX = "minelp.options.";
+    private static final String TITLE = _PREFIX + "title";
+    private static final String PONY_LEVEL = _PREFIX + "ponylevel";
+    private static final String PONY = PONY_LEVEL + ".ponies";
+    private static final String HUMAN = PONY_LEVEL + ".humans";
+    private static final String BOTH = PONY_LEVEL + ".both";
+    private static final String OPTIONS = _PREFIX + "options";
+    private static final String HD = _PREFIX + "hd";
+    private static final String SIZES = _PREFIX + "sizes";
+    private static final String SNUZZLES = _PREFIX + "snuzzles";
+    private static final String SHOW_SCALE = _PREFIX + "showscale";
+
+    private static final String MOB_PREFIX = "minelp.mobs.";
+
+    private static final String MOB_TITLE = MOB_PREFIX + "title";
+    private static final String VILLAGERS = MOB_PREFIX + "villagers";
+    private static final String ZOMBIES = MOB_PREFIX + "zombies";
+    private static final String ZOMBIE_PIGMEN = MOB_PREFIX + "zombiepigmen";
+    private static final String SKELETONS = MOB_PREFIX + "skeletons";
+    private static final String ILLAGERS = MOB_PREFIX + "illagers";
+
+    private static final int PONY_ID = 0;
+    private static final int HUMAN_ID = 1;
+    private static final int BOTH_ID = 2;
+    private static final int HD_ID = 3;
+    private static final int SIZES_ID = 4;
+    private static final int SNUZZLES_ID = 5;
+    private static final int SHOW_SCALE_ID = 6;
+
+    private static final int VILLAGERS_ID = 7;
+    private static final int ZOMBIES_ID = 8;
+    private static final int ZOMBIE_PIGMEN_ID = 9;
+    private static final int SKELETONS_ID = 10;
+    private static final int ILLAGER_ID = 11;
+
+    private PonyConfig config;
+
+    private GuiCheckbox ponies;
+    private GuiCheckbox humans;
+    private GuiCheckbox both;
+
+    public PonySettingPanel() {
+        config = MineLittlePony.getConfig();
+    }
+
+    @SuppressWarnings("UnusedAssignment")
+    @Override
+    public void initGui() {
+        final int LEFT = width / 10 + 16;
+        GuiCheckbox pony, human, both, hd, sizes, snuzzles, showscale, villager, zombie, pigmen, skeleton, illager;
+        int row = 32;
+        buttonList.add(pony = ponies = new GuiCheckbox(PONY_ID, LEFT, row += 15, I18n.format(PONY)));
+        buttonList.add(human = humans = new GuiCheckbox(HUMAN_ID, LEFT, row += 15, I18n.format(HUMAN)));
+        buttonList.add(both = this.both = new GuiCheckbox(BOTH_ID, LEFT, row += 15, I18n.format(BOTH)));
+        row += 15;
+        buttonList.add(hd = new GuiCheckbox(HD_ID, LEFT, row += 15, I18n.format(HD)));
+        buttonList.add(sizes = new GuiCheckbox(SIZES_ID, LEFT, row += 15, I18n.format(SIZES)));
+        buttonList.add(snuzzles = new GuiCheckbox(SNUZZLES_ID, LEFT, row += 15, I18n.format(SNUZZLES)));
+        buttonList.add(showscale = new GuiCheckbox(SHOW_SCALE_ID, LEFT, row += 15, I18n.format(SHOW_SCALE)));
+
+        final int RIGHT = width - width / 3;
+        row = 32;
+        buttonList.add(villager = new GuiCheckbox(VILLAGERS_ID, RIGHT, row += 15, I18n.format(VILLAGERS)));
+        buttonList.add(zombie = new GuiCheckbox(ZOMBIES_ID, RIGHT, row += 15, I18n.format(ZOMBIES)));
+        buttonList.add(pigmen = new GuiCheckbox(ZOMBIE_PIGMEN_ID, RIGHT, row += 15, I18n.format(ZOMBIE_PIGMEN)));
+        buttonList.add(skeleton = new GuiCheckbox(SKELETONS_ID, RIGHT, row += 15, I18n.format(SKELETONS)));
+        buttonList.add(illager = new GuiCheckbox(ILLAGER_ID, RIGHT, row += 15, I18n.format(ILLAGERS)));
+
+        switch (config.getPonyLevel()) {
+            default:
+            case PONIES:
+                pony.checked = true;
+                break;
+            case HUMANS:
+                human.checked = true;
+                break;
+            case BOTH:
+                both.checked = true;
+                break;
+        }
+        hd.checked = config.hd;
+        sizes.checked = config.sizes;
+        snuzzles.checked = config.snuzzles;
+        showscale.checked = config.showscale;
+        villager.checked = config.villagers;
+        zombie.checked = config.zombies;
+        pigmen.checked = config.pigzombies;
+        skeleton.checked = config.skeletons;
+        illager.checked = config.illagers;
+    }
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        drawDefaultBackground();
+
+        drawCenteredString(mc.fontRenderer, I18n.format(TITLE), width / 2, 12, -1);
+
+        drawString(mc.fontRenderer, I18n.format(MOB_TITLE), width - width / 3 - 16, 32, -1);
+        drawString(mc.fontRenderer, I18n.format(PONY_LEVEL), width / 10, 32, -1);
+        drawString(mc.fontRenderer, I18n.format(OPTIONS), width / 10, 94, -1);
+
+        super.drawScreen(mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton button) throws IOException {
+        if (button instanceof GuiCheckbox) {
+            boolean checked = !((GuiCheckbox) button).checked;
+            ((GuiCheckbox) button).checked = checked;
+
+            switch (button.id) {
+                case PONY_ID:
+                    config.setPonyLevel(PonyLevel.PONIES);
+                    ponies.checked = true;
+                    humans.checked = false;
+                    both.checked = false;
+                    break;
+                case HUMAN_ID:
+                    config.setPonyLevel(PonyLevel.HUMANS);
+                    humans.checked = true;
+                    ponies.checked = false;
+                    both.checked = false;
+                    break;
+                case BOTH_ID:
+                    config.setPonyLevel(PonyLevel.BOTH);
+                    both.checked = true;
+                    ponies.checked = false;
+                    humans.checked = false;
+                    break;
+                case HD_ID:
+                    config.hd = checked;
+                    break;
+                case SIZES_ID:
+                    config.sizes = checked;
+                    break;
+                case SNUZZLES_ID:
+                    config.snuzzles = checked;
+                    break;
+                case SHOW_SCALE_ID:
+                    config.showscale = checked;
+                    break;
+
+                case VILLAGERS_ID:
+                    config.villagers = checked;
+                    break;
+                case ZOMBIES_ID:
+                    config.zombies = checked;
+                    break;
+                case ZOMBIE_PIGMEN_ID:
+                    config.pigzombies = checked;
+                    break;
+                case SKELETONS_ID:
+                    config.skeletons = checked;
+                    break;
+                case ILLAGER_ID:
+                    config.illagers = checked;
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onGuiClosed() {
+        LiteLoader.getInstance().writeConfig(config);
+        MineLittlePony.getInstance().getRenderManager().initializeMobRenderers(mc.getRenderManager(), config);
+    }
+}

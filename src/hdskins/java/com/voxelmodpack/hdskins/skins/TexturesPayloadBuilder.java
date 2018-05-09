@@ -15,6 +15,7 @@ import java.util.UUID;
  * required because it has no useful constructor. This uses reflection
  * via Gson to create a new instance and populate the fields.
  */
+@SuppressWarnings("unused")
 public class TexturesPayloadBuilder {
 
     private static Gson gson = new GsonBuilder().registerTypeAdapter(UUID.class, new UUIDTypeAdapter()).create();

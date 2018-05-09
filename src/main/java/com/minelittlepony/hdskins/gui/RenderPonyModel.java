@@ -1,13 +1,15 @@
 package com.minelittlepony.hdskins.gui;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.Pony;
-import com.minelittlepony.model.AbstractPonyModel;
-import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.ModelPonyElytra;
-import com.minelittlepony.model.PlayerModel;
-import com.minelittlepony.renderer.layer.AbstractPonyLayer;
+import com.minelittlepony.PonyManager;
+import com.minelittlepony.model.ModelWrapper;
+import com.minelittlepony.model.components.PonyElytra;
+import com.minelittlepony.pony.data.Pony;
+import com.minelittlepony.render.layer.AbstractPonyLayer;
 import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
+
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelElytra;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -18,53 +20,67 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+/**
+ * Renderer used for the dummy pony model when selecting a skin.
+ */
 public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
 
-    public RenderPonyModel(RenderManager renderer) {
-        super(renderer);
+    boolean renderingAsHuman = false;
+
+    public RenderPonyModel(RenderManager manager) {
+        super(manager);
     }
 
     @Override
     public ModelPlayer getEntityModel(EntityPonyModel playermodel) {
-        ResourceLocation loc = this.getEntityTexture(playermodel);
+        renderingAsHuman = true;
+
+        ResourceLocation loc = getEntityTexture(playermodel);
         if (loc == null) {
             return super.getEntityModel(playermodel);
         }
-        Pony thePony = MineLittlePony.getInstance().getManager().getPony(loc);
 
-        // TODO small arms
-        PlayerModel pm = thePony.getModel(true, false);
+        // TODO: We can't find out whether to use thin arms just by the texture.
+        //       Maybe a trigger pixel for thin arms? #FutureThoughts
+        Pony thePony = MineLittlePony.getInstance().getManager().getPony(loc, PonyManager.isSlimSkin(playermodel.profile.getId()));
+
+        if (thePony.getRace(false).isHuman()) {
+            return super.getEntityModel(playermodel);
+        }
+
+        ModelWrapper pm = thePony.getModel(true);
         pm.apply(thePony.getMetadata());
+
+        renderingAsHuman = false;
 
         return pm.getModel();
     }
 
     @Override
     protected LayerRenderer<EntityLivingBase> getElytraLayer() {
-        final LayerRenderer<EntityLivingBase> elytra = super.getElytraLayer();
-        final ModelPonyElytra modelElytra = new ModelPonyElytra();
-        return new AbstractPonyLayer<EntityLivingBase>(this, elytra) {
+        return new AbstractPonyLayer<EntityPonyModel>(this) {
+            final PonyElytra ponyElytra = new PonyElytra();
+            final ModelElytra modelElytra = new ModelElytra();
 
             @Override
-            public void doPonyRender(EntityLivingBase entityBase, float swing, float swingAmount, float ticks, float age, float yaw, float head,
-                    float scale) {
-
-                EntityPonyModel entity = (EntityPonyModel) entityBase;
-
+            public void doPonyRender(EntityPonyModel entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
                 ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
                 if (itemstack.getItem() == Items.ELYTRA) {
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                    GlStateManager.color(1, 1, 1, 1);
 
                     bindTexture(entity.getElytraTexture());
 
                     GlStateManager.pushMatrix();
-                    GlStateManager.translate(0.0F, 0.25F, 0.125F);
-                    ((AbstractPonyModel) mainModel).transform(BodyPart.BODY);
 
-                    modelElytra.setRotationAngles(swing, swingAmount, age, yaw, head, scale, entity);
-                    modelElytra.render(entity, swing, swingAmount, age, yaw, head, scale);
+                    ModelBase model = renderingAsHuman ? modelElytra : ponyElytra;
 
+                    if (!renderingAsHuman) {
+                        GlStateManager.translate(0, 0.25F, 0.125F);
+                    }
+
+                    model.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
+                    model.render(entity, move, swing, ticks, headYaw, headPitch, scale);
 
                     GlStateManager.popMatrix();
                 }
