@@ -100,7 +100,7 @@ public class Pony {
         //noinspection SimplifiableIfStatement
         if (!getRace(false).hasWings()) return false;
 
-        return player.capabilities.isFlying || !(player.onGround || player.isRiding() || player.isOnLadder() || player.isInWater() || player.isElytraFlying());
+        return player.capabilities.isFlying || !(player.onGround || player.isRiding() || player.isOnLadder() || player.isInWater());
     }
 
     public ModelWrapper getModel(boolean ignorePony) {

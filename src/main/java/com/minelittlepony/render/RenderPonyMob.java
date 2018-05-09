@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerArrow;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -53,7 +54,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     @OverridingMethodsMustInvokeSuper
     protected void preRenderCallback(T entity, float ticks) {
         playerModel.getModel().isSneak = entity.isSneaking();
-        playerModel.getModel().isFlying = !entity.onGround;
+        playerModel.getModel().isFlying = !entity.onGround || (entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isElytraFlying());
         playerModel.getModel().isSleeping = false;
 
         ResourceLocation loc = getEntityTexture(entity);
