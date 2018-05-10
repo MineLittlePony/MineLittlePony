@@ -2,6 +2,7 @@ package com.minelittlepony.model.capabilities;
 
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.armour.PonyArmor;
+import com.minelittlepony.pony.data.IPonyData;
 
 import net.minecraft.entity.Entity;
 
@@ -25,6 +26,8 @@ public interface IModel {
      */
     PonyArmor createArmour();
 
+    IPonyData getMetadata();
+
     /**
      * Returns true if this model is on the ground and crouching.
      */
@@ -39,6 +42,18 @@ public interface IModel {
      * Returns true if the model is flying.
      */
     boolean isFlying();
+
+    /**
+     * Returns true if we're flying really fast.
+     */
+    boolean isGoingFast();
+
+    /**
+     * Returns true if this model is being applied to a race that has wings.
+     */
+    default boolean canFly() {
+        return getMetadata().getRace().hasWings();
+    }
 
     /**
      * Returns true if the current model is a child or a child-like foal.

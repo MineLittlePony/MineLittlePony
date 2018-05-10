@@ -52,7 +52,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     /**
      * Flag indicating that this model is performing a rainboom (flight).
      */
-    public boolean rainboom;
+    protected boolean rainboom;
 
     public PlaneRenderer upperTorso;
     public PlaneRenderer neck;
@@ -70,6 +70,13 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     }
 
     /**
+     * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
+     */
+    protected void checkRainboom(Entity entity, float swing) {
+        rainboom = canFly() && isFlying(entity) && swing >= 0.9999F;
+    }
+
+    /**
      * Sets the model's various rotation angles.
      *
      * @param move      Entity motion parameter - i.e. velocity in no specific direction used in bipeds to calculate step amount.
@@ -82,6 +89,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      */
     @Override
     public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
+        checkRainboom(entity, swing);
+
         super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
 
         float headRotateAngleY = isSleeping ? 1.4f : headYaw / 57.29578F;
@@ -100,7 +109,9 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         rotateLook(move, swing, bodySwingRotation, ticks);
 
         setLegs(move, swing, ticks, entity);
-        holdItem(swing);
+        if (!rainboom) {
+            holdItem(swing);
+        }
         swingItem(entity);
 
         if (isCrouching()) {
@@ -224,8 +235,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      *
      */
     protected void rotateLegsInFlight(float move, float swing, float ticks, Entity entity) {
-        float armX = MathHelper.sin(-swing / 2);
-        float legX = MathHelper.sin(swing / 2);
+        float armX = rainboom ? ROTATE_270 : MathHelper.sin(-swing / 2);
+        float legX = rainboom ? ROTATE_90 : MathHelper.sin(swing / 2);
 
         bipedLeftArm.rotateAngleX = armX;
         bipedRightArm.rotateAngleX = armX;
@@ -655,21 +666,24 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     }
 
     @Override
-    public boolean isCrouching() {
-        return isSneak && !isFlying;
+    public IPonyData getMetadata() {
+        return metadata;
     }
 
-    /**
-     * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
-     */
-    protected void checkRainboom(Entity entity, float swing) {
-        rainboom = isFlying(entity) && swing >= 0.9999F;
+    @Override
+    public boolean isCrouching() {
+        return !rainboom && isSneak && !isFlying;
     }
 
     @Override
     public boolean isFlying(Entity entity) {
-        return (isFlying && metadata.getRace().hasWings()) ||
+        return (isFlying && canFly()) ||
                 (entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isElytraFlying());
+    }
+
+    @Override
+    public boolean isGoingFast() {
+        return rainboom;
     }
 
     @Override
