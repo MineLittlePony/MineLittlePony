@@ -17,7 +17,6 @@ import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 
@@ -73,7 +72,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
      */
     protected void checkRainboom(Entity entity, float swing) {
-        rainboom = canFly() && isFlying(entity) && swing >= 0.9999F;
+        rainboom = isFlying() && swing >= 0.9999F;
     }
 
     /**
@@ -213,7 +212,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     *
     */
     protected void setLegs(float move, float swing, float ticks, Entity entity) {
-        if (isFlying(entity)) {
+        if (isFlying()) {
             rotateLegsInFlight(move, swing, ticks, entity);
         } else {
             rotateLegsOnGround(move, swing, ticks, entity);
@@ -676,19 +675,13 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     }
 
     @Override
-    public boolean isFlying(Entity entity) {
-        return (isFlying && canFly()) ||
-                (entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isElytraFlying());
-    }
-
-    @Override
     public boolean isGoingFast() {
         return rainboom;
     }
 
     @Override
     public boolean isFlying() {
-        return isFlying;
+        return isFlying && canFly();
     }
 
     @Override

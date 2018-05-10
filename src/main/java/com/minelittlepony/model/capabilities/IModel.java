@@ -4,8 +4,6 @@ import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.armour.PonyArmor;
 import com.minelittlepony.pony.data.IPonyData;
 
-import net.minecraft.entity.Entity;
-
 public interface IModel {
 
     /**
@@ -32,11 +30,6 @@ public interface IModel {
      * Returns true if this model is on the ground and crouching.
      */
     boolean isCrouching();
-
-    /**
-     * Returns true if the given entity can and is flying, or has an elytra.
-     */
-    boolean isFlying(Entity entity);
 
     /**
      * Returns true if the model is flying.

@@ -53,7 +53,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     @Override
     protected void preRenderCallback(T entity, float ticks) {
         playerModel.getModel().isSneak = entity.isSneaking();
-        playerModel.getModel().isFlying = !entity.onGround;
+        playerModel.getModel().isFlying = !entity.onGround || entity.isElytraFlying();
         playerModel.getModel().isSleeping = false;
 
         ResourceLocation loc = getEntityTexture(entity);
