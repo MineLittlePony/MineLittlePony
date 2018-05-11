@@ -58,10 +58,11 @@ public class PonyRenderManager {
         // Preview on the select skin gui
         ModUtilities.addRenderer(EntityPonyModel.class, new RenderPonyModel(manager));
 
-        registerPlayerSkin(manager, PlayerModels.EARTH);
-        registerPlayerSkin(manager, PlayerModels.PEGASUS);
-        registerPlayerSkin(manager, PlayerModels.ALICORN);
-        registerPlayerSkin(manager, PlayerModels.ZEBRA);
+        for (PlayerModels i : PlayerModels.values()) {
+            if (i != PlayerModels.HUMAN) {
+                registerPlayerSkin(manager, i);
+            }
+        }
     }
 
     private void registerPlayerSkin(RenderManager manager, PlayerModels playerModel) {

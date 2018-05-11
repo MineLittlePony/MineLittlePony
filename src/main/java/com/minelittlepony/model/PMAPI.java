@@ -3,6 +3,7 @@ package com.minelittlepony.model;
 import com.minelittlepony.model.player.ModelAlicorn;
 import com.minelittlepony.model.player.ModelEarthPony;
 import com.minelittlepony.model.player.ModelPegasus;
+import com.minelittlepony.model.player.ModelUnicorn;
 import com.minelittlepony.model.player.ModelZebra;
 import com.minelittlepony.model.ponies.ModelIllagerPony;
 import com.minelittlepony.model.ponies.ModelSeapony;
@@ -28,6 +29,9 @@ public final class PMAPI {
 
     public static final ModelWrapper pegasus = new ModelWrapper(new ModelPegasus(false));
     public static final ModelWrapper pegasusSmall = new ModelWrapper(new ModelPegasus(true));
+
+    public static final ModelWrapper unicorn = new ModelWrapper(new ModelUnicorn(false));
+    public static final ModelWrapper unicornSmall = new ModelWrapper(new ModelUnicorn(true));
 
     public static final ModelWrapper alicorn = new ModelWrapper(new ModelAlicorn(false));
     public static final ModelWrapper alicornSmall = new ModelWrapper(new ModelAlicorn(true));
