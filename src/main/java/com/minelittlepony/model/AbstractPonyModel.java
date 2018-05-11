@@ -3,6 +3,7 @@ package com.minelittlepony.model;
 import com.minelittlepony.model.armour.ModelPonyArmor;
 import com.minelittlepony.model.armour.PonyArmor;
 import com.minelittlepony.model.capabilities.IModel;
+import com.minelittlepony.model.capabilities.IModelPart;
 import com.minelittlepony.model.components.PonySnout;
 import com.minelittlepony.model.components.PonyTail;
 import com.minelittlepony.pony.data.IPonyData;
@@ -56,7 +57,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     public PlaneRenderer upperTorso;
     public PlaneRenderer neck;
 
-    public PonyTail tail;
+    public IModelPart tail;
     public PonySnout snout;
 
     public AbstractPonyModel(boolean arms) {
@@ -730,11 +731,11 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      * @param scale     Scaling factor used to render this model. Determined by the return value of {@link RenderLivingBase.prepareScale}. Usually {@code 0.0625F}.
      */
     @Override
-    public void render(Entity entityIn, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
 
         pushMatrix();
         transform(BodyPart.HEAD);
-        renderHead(entityIn, move, swing, ticks, headYaw, headPitch, this.scale);
+        renderHead(entity, move, swing, ticks, headYaw, headPitch, scale);
         popMatrix();
 
         pushMatrix();
@@ -744,7 +745,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
         pushMatrix();
         transform(BodyPart.BODY);
-        renderBody(entityIn, move, swing, ticks, headYaw, headPitch, this.scale);
+        renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
         popMatrix();
 
         pushMatrix();

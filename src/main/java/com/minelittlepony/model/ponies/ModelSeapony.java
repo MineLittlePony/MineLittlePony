@@ -1,22 +1,25 @@
 package com.minelittlepony.model.ponies;
 
+import com.minelittlepony.model.components.SeaponyTail;
 import com.minelittlepony.model.player.ModelUnicorn;
 import com.minelittlepony.render.PonyRenderer;
+import com.minelittlepony.render.plane.PlaneRenderer;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.MathHelper;
+
+import static com.minelittlepony.model.PonyModelConstants.*;
 
 public class ModelSeapony extends ModelUnicorn {
 
+    private static final float FIN_ROTY = PI / 6;
+
     PonyRenderer bodyCenter;
-    PonyRenderer bodyRear;
-    PonyRenderer bodyBack;
 
-    PonyRenderer tail;
-    PonyRenderer tailFin;
-
-    PonyRenderer leftFin;
-    PonyRenderer centerFin;
-    PonyRenderer rightFin;
+    PlaneRenderer leftFin;
+    PlaneRenderer centerFin;
+    PlaneRenderer rightFin;
 
     public ModelSeapony() {
         super(false);
@@ -26,103 +29,117 @@ public class ModelSeapony extends ModelUnicorn {
     @Override
     protected void initLegTextures() {
         super.initLegTextures();
-
         // hide the back legs
         bipedLeftLeg.showModel = false;
         bipedRightLeg.showModel = false;
         bipedLeftLegwear.showModel = false;
         bipedRightLegwear.showModel = false;
 
-        centerFin = new PonyRenderer(this, 58, 36);
-        leftFin = new PonyRenderer(this, 56, 8);
-        rightFin = new PonyRenderer(this, 56, 8);
+        centerFin = new PlaneRenderer(this, 58, 28);
+        leftFin = new PlaneRenderer(this, 56, 16);
+        rightFin = new PlaneRenderer(this, 56, 16);
     }
 
     @Override
     protected void initLegPositions(float yOffset, float stretch) {
         super.initLegPositions(yOffset, stretch);
 
-        centerFin.around(0, 1, 9)
-                .addBox(0, 0, 0, 0, 6, 6).flipX();
+        centerFin.rotate(PI / 2 - 0.1F, 0, 0).around(0, 6, 9)
+                .addEastPlane(0, -6, 0, 12, 6, stretch);
 
-        leftFin.rotate(0, 0.5235988F, 0).around(3, -6, 3)
-                  .addBox(0, 0, 0, 0, 12, 8).flipX();
+        leftFin.rotate(0, FIN_ROTY, 0).around(3, -6, 3)
+               .flipZ().addEastPlane(0, 0, 0, 12, 8, stretch);
 
-        rightFin.rotate(0, -0.5235988F, 0).around(-3, -6, 3)
-                .addBox(0, 0, 0, 0, 12, 8).flipX();
+        rightFin.rotate(0, -FIN_ROTY, 0).around(-3, -6, 3)
+                .addWestPlane(0, 0, 0, 12, 8, stretch);
     }
 
     @Override
     protected void initTailTextures() {
-        tail = new PonyRenderer(this, 24, 0);
-        tailFin = new PonyRenderer(this, 56, 20);
-    }
-
-    @Override
-    protected void initTailPositions(float yOffset, float stretch) {
-        tail.rotate(1.570796F, 0, 0).around(-1, 12.5F, 14)
-            .addBox(0, 0, 0, 2, 6, 1).flipX();
-        tailFin.rotate(0, 0, -1.570796F).around(-2, 12, 18)
-            .addBox(0, -5, 0, 0, 14, 8).flipX();
+        tail = new SeaponyTail(this);
     }
 
     @Override
     protected void initBodyTextures() {
         super.initBodyTextures();
-
         bodyCenter = new PonyRenderer(this, 0, 48);
-        bodyBack = new PonyRenderer(this, 0, 16);
-        bodyRear = new PonyRenderer(this, 0, 38);
-
     }
 
     @Override
     protected void initBodyPositions(float yOffset, float stretch) {
         super.initBodyPositions(yOffset, stretch);
-
         bodyCenter.around(0, 6, 1)
-                  .addBox(-3, -1, 0, 6, 7, 9).flipX();
-
-        bodyBack.around(-4, 2, -1)
-                  .addBox(0, 0, 0, 8, 8, 4);
-
-        bodyRear.rotate(1.570796F, 0, 0).around(-2, 14, 8)
-                  .addBox(0, 0, 0, 4, 6, 4).flipX();
-    }
-
-    @Override
-    protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        bipedBody.render(scale);
-        if (textureHeight == 64) {
-            bipedBodyWear.render(scale);
-        }
-
-        bodyCenter.render(scale);
-        bodyRear.render(scale);
-        bodyBack.render(scale);
-
-        bipedBody.postRender(scale);
-
-        tail.render(scale);
-        tailFin.render(scale);
-    }
-
-    @Override
-    protected void renderLegs() {
-        super.renderLegs();
-
-        leftFin.render(scale);
-        centerFin.render(scale);
-        rightFin.render(scale);
+                .box(-3, -1, 0, 6, 7, 9, stretch).flipX();
     }
 
     @Override
     public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
         super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
+
+        float finAngle = FIN_ROTY + MathHelper.cos(ticks / 10) / 5;
+
+        leftFin.rotateAngleY = finAngle;
+        rightFin.rotateAngleY = -finAngle;
+        centerFin.rotateAngleZ = MathHelper.cos(ticks / 10) / 5;
+
+        if (!entity.isInWater()) {
+            bipedLeftArm.rotateAngleX -= 0.5F;
+            bipedRightArm.rotateAngleX -= 0.5F;
+        }
+
+        if (!entity.isInWater() || entity.onGround) {
+            bipedLeftArm.rotateAngleY -= 0.5F;
+            bipedRightArm.rotateAngleY += 0.5F;
+        }
+    }
+
+    protected void fixSpecialRotationPoints(float move) {
+        bipedLeftArm.rotateAngleX -= 1.4F;
+        bipedLeftArm.rotateAngleY -= 0.3F;
+        bipedRightArm.rotateAngleX -= 1.4F;
+        bipedRightArm.rotateAngleY += 0.3F;
     }
 
     @Override
-    public boolean canFly() {
-        return false;
+    public void render(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0, 0.6F, 0);
+        super.render(entity, move, swing, ticks, headYaw, headPitch, scale);
+        GlStateManager.popMatrix();
+    }
+
+    @Override
+    protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        bipedBody.render(scale);
+        bodyCenter.render(scale);
+        bipedBody.postRender(scale);
+
+        tail.render(scale);
+
+        GlStateManager.enableBlend();
+
+
+        leftFin.render(scale);
+        centerFin.render(scale);
+        rightFin.render(scale);
+
+        GlStateManager.disableBlend();
+
+    }
+
+    @Override
+    public boolean canCast() {
+        return true;
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+
+        // hide the back legs
+        bipedLeftLeg.showModel = false;
+        bipedRightLeg.showModel = false;
+        bipedLeftLegwear.showModel = false;
+        bipedRightLegwear.showModel = false;
     }
 }

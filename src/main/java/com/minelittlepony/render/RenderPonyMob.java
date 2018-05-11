@@ -95,4 +95,24 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     }
 
     protected abstract ResourceLocation getTexture(T entity);
+
+    public abstract static class Proxy<T extends EntityLiving> extends RenderPonyMob<T> {
+
+        public Proxy(RenderManager manager, ModelWrapper model) {
+            super(manager, model);
+        }
+
+        @Override
+        protected void addLayers() {
+
+        }
+
+        public void preRenderCallback(T entity, float ticks) {
+            super.preRenderCallback(entity, ticks);
+        }
+
+        public final ResourceLocation getTextureFor(T entity) {
+            return super.getEntityTexture(entity);
+        }
+    }
 }

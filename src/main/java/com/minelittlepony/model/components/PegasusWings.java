@@ -5,9 +5,10 @@ import net.minecraft.util.math.MathHelper;
 import static com.minelittlepony.model.PonyModelConstants.*;
 
 import com.minelittlepony.model.AbstractPonyModel;
+import com.minelittlepony.model.capabilities.IModelPart;
 import com.minelittlepony.model.capabilities.IModelPegasus;
 
-public class PegasusWings {
+public class PegasusWings implements IModelPart {
 
     private final IModelPegasus pegasus;
 
@@ -21,7 +22,14 @@ public class PegasusWings {
         rightWing = new ModelWing(model, true, -6f, yOffset, stretch, 16);
     }
 
-    public void setRotationAngles(float move, float swing, float ticks) {
+
+    @Override
+    public void init(float yOffset, float stretch) {
+
+    }
+
+    @Override
+    public void setRotationAndAngles(boolean rainboom, float move, float swing, float bodySwing, float ticks) {
         float flap = 0;
         float progress = pegasus.getSwingAmount();
 
@@ -54,6 +62,7 @@ public class PegasusWings {
         return LEFT_WING_ROTATE_ANGLE_Z_SNEAK;
     }
 
+    @Override
     public void render(float scale) {
         boolean standing = pegasus.wingsAreOpen();
         leftWing.render(standing, scale);

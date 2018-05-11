@@ -9,6 +9,7 @@ import com.minelittlepony.hdskins.gui.RenderPonyModel;
 import com.minelittlepony.model.player.PlayerModels;
 import com.minelittlepony.render.LevitatingItemRenderer;
 import com.minelittlepony.render.player.RenderPonyPlayer;
+import com.minelittlepony.render.ponies.RenderPonyGuardian;
 import com.minelittlepony.render.ponies.RenderPonyIllager;
 import com.minelittlepony.render.ponies.RenderPonyPigman;
 import com.minelittlepony.render.ponies.RenderPonySkeleton;
@@ -22,8 +23,10 @@ import com.mumfrey.liteloader.util.ModUtilities;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.EntityElderGuardian;
 import net.minecraft.entity.monster.EntityEvoker;
 import net.minecraft.entity.monster.EntityGiantZombie;
+import net.minecraft.entity.monster.EntityGuardian;
 import net.minecraft.entity.monster.EntityHusk;
 import net.minecraft.entity.monster.EntityIllusionIllager;
 import net.minecraft.entity.monster.EntityPigZombie;
@@ -129,6 +132,14 @@ public class PonyRenderManager {
             restoreRenderer(EntityVindicator.class);
             restoreRenderer(EntityIllusionIllager.class);
         }
+
+        if (config.guardians) {
+            pushNewRenderer(manager, EntityGuardian.class, new RenderPonyGuardian(manager));
+            pushNewRenderer(manager, EntityElderGuardian.class, new RenderPonyGuardian.Elder(manager));
+        } else {
+            restoreRenderer(EntityGuardian.class);
+            restoreRenderer(EntityElderGuardian.class);
+        }
     }
 
     /**
@@ -138,11 +149,12 @@ public class PonyRenderManager {
      * @param renderer The replacement value
      * @param <T> The entity type
      */
-    public <T extends Entity> void pushNewRenderer(RenderManager manager, Class<T> type, Render<T> renderer) {
+    @SuppressWarnings("unchecked")
+    public <T extends Entity, V extends T> void pushNewRenderer(RenderManager manager, Class<V> type, Render<T> renderer) {
         if (!renderMap.containsKey(type)) {
             renderMap.put(type, manager.getEntityClassRenderObject(type));
         }
-        ModUtilities.addRenderer(type, renderer);
+        ModUtilities.addRenderer((Class<T>)type, renderer);
     }
 
     /**

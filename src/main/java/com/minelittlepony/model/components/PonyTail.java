@@ -6,9 +6,10 @@ import net.minecraft.util.math.MathHelper;
 import static com.minelittlepony.model.PonyModelConstants.*;
 
 import com.minelittlepony.model.AbstractPonyModel;
+import com.minelittlepony.model.capabilities.IModelPart;
 import com.minelittlepony.render.plane.PlaneRenderer;
 
-public class PonyTail extends PlaneRenderer {
+public class PonyTail extends PlaneRenderer implements IModelPart {
 
     private static final int SEGMENTS = 4;
 
@@ -21,17 +22,14 @@ public class PonyTail extends PlaneRenderer {
         theModel = model;
     }
 
+    @Override
     public void init(float yOffset, float stretch) {
         for (int i = 0; i < SEGMENTS; i++) {
             addChild(new TailSegment(theModel, i, yOffset, stretch));
         }
     }
 
-    /**
-     * Sets the model's various rotation angles.
-     *
-     * See {@link AbstractPonyMode.setRotationAndAngle} for an explanation of the various parameters.
-     */
+    @Override
     public void setRotationAndAngles(boolean rainboom, float move, float swing, float bodySwing, float ticks) {
         rotateAngleZ = rainboom ? 0 : MathHelper.cos(move * 0.8F) * 0.2f * swing;
         rotateAngleY = bodySwing;
@@ -63,13 +61,13 @@ public class PonyTail extends PlaneRenderer {
         tailStop = theModel.metadata.getTail().ordinal();
     }
 
-    public void swingX(float ticks) {
+    private void swingX(float ticks) {
         float sinTickFactor = MathHelper.sin(ticks * 0.067f) * 0.05f;
         rotateAngleX += sinTickFactor;
         rotateAngleY += sinTickFactor;
     }
 
-    public void rotateSneak() {
+    private void rotateSneak() {
         setRotationPoint(TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_SNEAK);
         rotateAngleX = -BODY_ROTATE_ANGLE_X_SNEAK + 0.1F;
     }
