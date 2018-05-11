@@ -137,6 +137,7 @@ public class PonyRenderManager {
         if (config.guardians) {
             pushNewRenderer(manager, EntityGuardian.class, new RenderPonyGuardian(manager));
             pushNewRenderer(manager, EntityElderGuardian.class, new RenderPonyGuardian.Elder(manager));
+            MineLittlePony.logger.info("Guardians are now ponies.");
         } else {
             restoreRenderer(EntityGuardian.class);
             restoreRenderer(EntityElderGuardian.class);

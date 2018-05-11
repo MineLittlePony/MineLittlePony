@@ -11,6 +11,8 @@ import java.io.IOException;
 
 /**
  * In-Game options menu.
+ *
+ * TODO: What a mess
  */
 public class PonySettingPanel extends GuiScreen {
 
@@ -34,6 +36,7 @@ public class PonySettingPanel extends GuiScreen {
     private static final String ZOMBIE_PIGMEN = MOB_PREFIX + "zombiepigmen";
     private static final String SKELETONS = MOB_PREFIX + "skeletons";
     private static final String ILLAGERS = MOB_PREFIX + "illagers";
+    private static final String GUARDIANS = MOB_PREFIX + "guardians";
 
     private static final int PONY_ID = 0;
     private static final int HUMAN_ID = 1;
@@ -48,6 +51,7 @@ public class PonySettingPanel extends GuiScreen {
     private static final int ZOMBIE_PIGMEN_ID = 9;
     private static final int SKELETONS_ID = 10;
     private static final int ILLAGER_ID = 11;
+    private static final int GUARDIAN_ID = 12;
 
     private PonyConfig config;
 
@@ -63,15 +67,15 @@ public class PonySettingPanel extends GuiScreen {
     @Override
     public void initGui() {
         final int LEFT = width / 10 + 16;
-        GuiCheckbox pony, human, both, hd, sizes, snuzzles, showscale, villager, zombie, pigmen, skeleton, illager;
+        GuiCheckbox pony, human, both, hd, sizes, snuzzles, showscale, villager, zombie, pigmen, skeleton, illager, guardian;
         int row = 32;
         buttonList.add(pony = ponies = new GuiCheckbox(PONY_ID, LEFT, row += 15, I18n.format(PONY)));
         buttonList.add(human = humans = new GuiCheckbox(HUMAN_ID, LEFT, row += 15, I18n.format(HUMAN)));
         buttonList.add(both = this.both = new GuiCheckbox(BOTH_ID, LEFT, row += 15, I18n.format(BOTH)));
         row += 15;
         buttonList.add(hd = new GuiCheckbox(HD_ID, LEFT, row += 15, I18n.format(HD)));
-        buttonList.add(sizes = new GuiCheckbox(SIZES_ID, LEFT, row += 15, I18n.format(SIZES)));
         buttonList.add(snuzzles = new GuiCheckbox(SNUZZLES_ID, LEFT, row += 15, I18n.format(SNUZZLES)));
+        buttonList.add(sizes = new GuiCheckbox(SIZES_ID, LEFT, row += 15, I18n.format(SIZES)));
         buttonList.add(showscale = new GuiCheckbox(SHOW_SCALE_ID, LEFT, row += 15, I18n.format(SHOW_SCALE)));
 
         final int RIGHT = width - width / 3;
@@ -81,6 +85,7 @@ public class PonySettingPanel extends GuiScreen {
         buttonList.add(pigmen = new GuiCheckbox(ZOMBIE_PIGMEN_ID, RIGHT, row += 15, I18n.format(ZOMBIE_PIGMEN)));
         buttonList.add(skeleton = new GuiCheckbox(SKELETONS_ID, RIGHT, row += 15, I18n.format(SKELETONS)));
         buttonList.add(illager = new GuiCheckbox(ILLAGER_ID, RIGHT, row += 15, I18n.format(ILLAGERS)));
+        buttonList.add(guardian = new GuiCheckbox(GUARDIAN_ID, RIGHT, row += 15, I18n.format(GUARDIANS)));
 
         switch (config.getPonyLevel()) {
             default:
@@ -103,6 +108,7 @@ public class PonySettingPanel extends GuiScreen {
         pigmen.checked = config.pigzombies;
         skeleton.checked = config.skeletons;
         illager.checked = config.illagers;
+        guardian.checked = config.guardians;
     }
 
     @Override
@@ -170,6 +176,9 @@ public class PonySettingPanel extends GuiScreen {
                     break;
                 case ILLAGER_ID:
                     config.illagers = checked;
+                    break;
+                case GUARDIAN_ID:
+                    config.guardians = checked;
                     break;
             }
         }
