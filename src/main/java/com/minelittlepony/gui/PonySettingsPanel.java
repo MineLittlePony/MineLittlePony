@@ -38,13 +38,14 @@ public class PonySettingsPanel extends GuiPonySettings implements ConfigPanel {
     public void onPanelShown(ConfigPanelHost host) {
         mc = Minecraft.getMinecraft();
         width = host.getWidth();
+        buttonList.clear();
         initGui();
     }
 
     @Override
     public void onPanelResize(ConfigPanelHost host) {
         width = host.getWidth();
-        this.buttonList.clear();
+        buttonList.clear();
         initGui();
     }
 
