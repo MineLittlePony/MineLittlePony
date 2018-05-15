@@ -4,7 +4,9 @@ import java.io.IOException;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyConfig;
+import com.minelittlepony.PonyConfig.PonySettings;
 import com.minelittlepony.pony.data.PonyLevel;
+import com.minelittlepony.render.ponies.MobRenderers;
 import com.mumfrey.liteloader.core.LiteLoader;
 
 import net.minecraft.client.gui.GuiButton;
@@ -51,10 +53,9 @@ public class GuiPonySettings extends GuiScreen {
 
         row += 15;
         addButton(new Label(LEFT, row += 15, OPTIONS_PREFIX + "options", -1));
-        addButton(new Checkbox(LEFT, row += 15, OPTIONS_PREFIX + "hd",        config.hd,        v -> config.hd = v));
-        addButton(new Checkbox(LEFT, row += 15, OPTIONS_PREFIX + "snuzzles",  config.snuzzles,  v -> config.snuzzles = v));
-        addButton(new Checkbox(LEFT, row += 15, OPTIONS_PREFIX + "sizes",     config.sizes,     v -> config.sizes = v));
-        addButton(new Checkbox(LEFT, row += 15, OPTIONS_PREFIX + "showscale", config.showscale, v -> config.showscale = v));
+        for (PonySettings i : PonySettings.values()) {
+            addButton(new Checkbox(LEFT, row += 15, OPTIONS_PREFIX + i.name().toLowerCase(), i.get(), i));
+        }
 
         if (mustScroll()) {
             row += 15;
@@ -63,12 +64,9 @@ public class GuiPonySettings extends GuiScreen {
         }
 
         addButton(new Label(RIGHT, row += 15, MOB_PREFIX + "title", -1));
-        addButton(new Checkbox(RIGHT, row += 15, MOB_PREFIX + "villagers",    config.villagers,  v -> config.villagers = v));
-        addButton(new Checkbox(RIGHT, row += 15, MOB_PREFIX + "zombies",      config.zombies,    v -> config.zombies = v));
-        addButton(new Checkbox(RIGHT, row += 15, MOB_PREFIX + "zombiepigmen", config.pigzombies, v -> config.pigzombies = v));
-        addButton(new Checkbox(RIGHT, row += 15, MOB_PREFIX + "skeletons",    config.skeletons,  v -> config.skeletons = v));
-        addButton(new Checkbox(RIGHT, row += 15, MOB_PREFIX + "illagers",     config.illagers,   v -> config.illagers = v));
-        addButton(new Checkbox(RIGHT, row += 15, MOB_PREFIX + "guardians",     config.guardians,   v -> config.guardians = v));
+        for (MobRenderers i : MobRenderers.values()) {
+            addButton(new Checkbox(RIGHT, row += 15, MOB_PREFIX + i.name().toLowerCase(), i.get(), i));
+        }
     }
 
     @Override
@@ -87,7 +85,6 @@ public class GuiPonySettings extends GuiScreen {
     @Override
     public void onGuiClosed() {
         LiteLoader.getInstance().writeConfig(config);
-        MineLittlePony.getInstance().getRenderManager().initializeMobRenderers(mc.getRenderManager(), config);
     }
 
     protected String getTitle() {

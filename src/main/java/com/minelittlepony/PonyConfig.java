@@ -2,22 +2,32 @@ package com.minelittlepony;
 
 import com.google.gson.annotations.Expose;
 import com.minelittlepony.pony.data.PonyLevel;
+import com.minelittlepony.settings.SensibleConfig;
 import com.mumfrey.liteloader.modconfig.ConfigStrategy;
 import com.mumfrey.liteloader.modconfig.Exposable;
 import com.mumfrey.liteloader.modconfig.ExposableOptions;
 
 /**
- * Storage contained for MineLP client settings.
+ * Storage container for MineLP client settings.
  *
  */
 @ExposableOptions(filename = "minelittlepony", strategy = ConfigStrategy.Unversioned)
-public class PonyConfig implements Exposable {
+public class PonyConfig extends SensibleConfig implements Exposable {
 
     @Expose private PonyLevel ponylevel = PonyLevel.PONIES;
+
     @Expose public boolean sizes = true;
     @Expose public boolean snuzzles = true;
     @Expose public boolean hd = true;
     @Expose public boolean showscale = true;
+
+    public enum PonySettings implements Setting {
+        SIZES,
+        SNUZZLES,
+        HD,
+        SHOWSCALE;
+    }
+
     @Expose public boolean villagers = true;
     @Expose public boolean zombies = true;
     @Expose public boolean pigzombies = true;
