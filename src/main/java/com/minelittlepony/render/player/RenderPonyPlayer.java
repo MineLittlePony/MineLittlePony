@@ -1,6 +1,5 @@
 package com.minelittlepony.render.player;
 
-import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.util.math.MathUtil;
 
@@ -17,12 +16,11 @@ public class RenderPonyPlayer extends RenderPonyBase {
 
     @Override
     public float getShadowScale() {
-        if (!MineLittlePony.getConfig().showscale) return .5f;
         return getPony().getMetadata().getSize().getShadowSize();
     }
 
     @Override
-    protected float getScaleFactor() {
+    public float getScaleFactor() {
         return getPony().getMetadata().getSize().getScaleFactor();
     }
 
