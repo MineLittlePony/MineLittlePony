@@ -59,6 +59,8 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
 
       float s = getScaleFactor();
       GlStateManager.scale(s, s, s);
+
+      GlStateManager.translate(0, 0, -player.width / 2); // move us to the center of the shadow
   }
 
   @Override
