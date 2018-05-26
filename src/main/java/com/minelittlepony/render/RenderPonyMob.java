@@ -9,6 +9,8 @@ import com.minelittlepony.render.layer.LayerPonyArmor;
 import com.minelittlepony.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.render.layer.LayerPonyElytra;
 import com.voxelmodpack.hdskins.HDSkinManager;
+
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerArrow;
@@ -16,7 +18,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving<T> implements IRenderPony {
 
@@ -50,7 +51,6 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
     protected void preRenderCallback(T entity, float ticks) {
         playerModel.getModel().isSneak = entity.isSneaking();
         playerModel.getModel().isFlying = !entity.onGround;
@@ -60,6 +60,11 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
         playerModel.apply(MineLittlePony.getInstance().getManager().getPony(loc, false).getMetadata());
 
         shadowSize = getShadowScale();
+
+        float s = getScaleFactor();
+        GlStateManager.scale(s, s, s);
+
+        GlStateManager.translate(0, 0, -entity.width / 2); // move us to the center of the shadow
     }
 
     @Override
@@ -70,6 +75,12 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
             return 0.4F;
         }
         return 0.5F;
+    }
+
+    @Override
+    public float getScaleFactor() {
+        if (MineLittlePony.getConfig().showscale) return 0.9F;
+        return 1;
     }
 
     @Override

@@ -727,7 +727,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
         pushMatrix();
         transform(BodyPart.HEAD);
-        renderHead(entityIn, move, swing, ticks, headYaw, headPitch, scale);
+        renderHead(entityIn, move, swing, ticks, headYaw, headPitch, this.scale);
         popMatrix();
 
         pushMatrix();
@@ -737,7 +737,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
         pushMatrix();
         transform(BodyPart.BODY);
-        renderBody(entityIn, move, swing, ticks, headYaw, headPitch, scale);
+        renderBody(entityIn, move, swing, ticks, headYaw, headPitch, this.scale);
         popMatrix();
 
         pushMatrix();

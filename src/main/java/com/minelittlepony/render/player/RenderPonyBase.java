@@ -47,23 +47,20 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
   }
 
   @Override
-  protected void renderLivingAt(AbstractClientPlayer player, double x, double y, double z) {
-      float s = getScaleFactor();
-      GlStateManager.scale(s, s, s);
-      super.renderLivingAt(player, x, y, z);
-  }
-
-  @Override
-  public void doRender(AbstractClientPlayer player, double x, double y, double z, float entityYaw, float ticks) {
+  protected void preRenderCallback(AbstractClientPlayer player, float ticks) {
       updateModel(player);
 
       ponyModel.isSneak = player.isSneaking();
       ponyModel.isSleeping = player.isPlayerSleeping();
       ponyModel.isFlying = pony.isPegasusFlying(player);
 
+      super.preRenderCallback(player, ticks);
       shadowSize = getShadowScale();
 
-      super.doRender(player, x, y, z, entityYaw, ticks);
+      float s = getScaleFactor();
+      GlStateManager.scale(s, s, s);
+
+      GlStateManager.translate(0, 0, -player.width / 2); // move us to the center of the shadow
   }
 
   @Override
@@ -134,8 +131,6 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
   public Pony getPony() {
       return pony;
   }
-
-  protected abstract float getScaleFactor();
 
   protected abstract void transformElytraFlight(AbstractClientPlayer player, double motionX, double motionY, double motionZ, float ticks);
 

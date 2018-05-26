@@ -16,4 +16,9 @@ public interface IRenderPony {
      * Gets the current shadow size for rendering.
      */
     float getShadowScale();
+
+    /**
+     * Gets the scaling factor used when rendering this pony.
+     */
+    float getScaleFactor();
 }
