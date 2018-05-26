@@ -178,6 +178,11 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         copyModelAngles(bipedBody, bipedBodyWear);
     }
 
+    @Override
+    public ModelRenderer getHead() {
+        return bipedHead;
+    }
+
     /**
      * Sets the head rotation point.
      */

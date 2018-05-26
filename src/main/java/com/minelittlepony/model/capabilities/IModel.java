@@ -5,7 +5,7 @@ import com.minelittlepony.model.armour.PonyArmor;
 import com.minelittlepony.pony.data.IPonyData;
 import com.minelittlepony.pony.data.PonyWearable;
 
-public interface IModel {
+public interface IModel extends ICapitated {
 
     /**
      * Sets up this model's initial values, like a constructor...
