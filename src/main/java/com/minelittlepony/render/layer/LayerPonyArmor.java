@@ -2,7 +2,6 @@ package com.minelittlepony.render.layer;
 
 import com.google.common.collect.Maps;
 import com.minelittlepony.ForgeProxy;
-import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.model.armour.ModelPonyArmor;
 import com.minelittlepony.util.coordinates.Color;
@@ -40,7 +39,7 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
 
     @Override
     public void doPonyRender(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
-        pony = ((IRenderPony) getRenderer()).getModelWrapper();
+        pony = getPonyRenderer().getModelWrapper();
 
         for (EntityEquipmentSlot i : EntityEquipmentSlot.values()) {
             if (i.getSlotType() == Type.ARMOR) {

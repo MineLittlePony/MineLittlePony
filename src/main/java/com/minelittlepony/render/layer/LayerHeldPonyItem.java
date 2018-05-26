@@ -32,7 +32,7 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
         ItemStack right = mainRight ? itemMain : itemOff;
 
         if (!left.isEmpty() || !right.isEmpty()) {
-            ModelBase model = getRenderer().getMainModel();
+            ModelBase model = getMainModel();
 
             pushMatrix();
             if (model instanceof IModel) {
@@ -83,7 +83,7 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
      * Renders the main arm
      */
     protected void renderArm(EnumHandSide side) {
-        ((ModelBiped) getRenderer().getMainModel()).postRenderArm(0.0625F, side);
+        this.<ModelBiped>getMainModel().postRenderArm(0.0625F, side);
     }
 
     @Override

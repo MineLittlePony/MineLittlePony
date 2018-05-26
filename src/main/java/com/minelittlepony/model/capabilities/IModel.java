@@ -4,6 +4,7 @@ import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.armour.PonyArmor;
 import com.minelittlepony.pony.data.IPonyData;
 import com.minelittlepony.pony.data.PonyWearable;
+import com.minelittlepony.transformation.PonyTransformation;
 
 public interface IModel extends ICapitated {
 
@@ -18,6 +19,8 @@ public interface IModel extends ICapitated {
      * Applies a transform particular to a certain body part.
      */
     void transform(BodyPart part);
+
+    PonyTransformation getBodyTransformation();
 
     /**
      * Returns a new pony armour to go with this model. Called on startup by a model wrapper.

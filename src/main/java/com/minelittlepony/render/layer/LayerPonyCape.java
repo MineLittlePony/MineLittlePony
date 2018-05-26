@@ -1,8 +1,7 @@
 package com.minelittlepony.render.layer;
 
-import com.minelittlepony.ducks.IRenderPony;
+import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.ModelWrapper;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
@@ -24,16 +23,17 @@ public class LayerPonyCape extends AbstractPonyLayer<AbstractClientPlayer> {
 
     @Override
     public void doPonyRender(@Nonnull AbstractClientPlayer player, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
-        ModelWrapper model = ((IRenderPony) getRenderer()).getModelWrapper();
+        AbstractPonyModel model = getPlayerModel();
 
         if (player.hasPlayerInfo() && !player.isInvisible()
                 && player.isWearing(EnumPlayerModelParts.CAPE) && player.getLocationCape() != null
                 && player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() != Items.ELYTRA) {
 
             pushMatrix();
-            model.getBody().transform(BodyPart.BODY);
+
+            model.transform(BodyPart.BODY);
             translate(0, 0.24F, 0);
-            model.getBody().bipedBody.postRender(scale);
+            model.bipedBody.postRender(scale);
 
             double capeX = player.prevChasingPosX + (player.chasingPosX - player.prevChasingPosX) * scale - (player.prevPosX + (player.posX - player.prevPosX) * scale);
             double capeY = player.prevChasingPosY + (player.chasingPosY - player.prevChasingPosY) * scale - (player.prevPosY + (player.posY - player.prevPosY) * scale);
@@ -64,7 +64,7 @@ public class LayerPonyCape extends AbstractPonyLayer<AbstractClientPlayer> {
             rotate(180, 0, 0, 1);
             rotate(90, 1, 0, 0);
             getRenderer().bindTexture(player.getLocationCape());
-            model.getBody().renderCape(0.0625F);
+            model.renderCape(0.0625F);
             popMatrix();
         }
     }

@@ -16,7 +16,7 @@ public class ModelWrapper implements IModelWrapper {
      * Created a new model wrapper to contain the given pony.
      */
     public ModelWrapper(AbstractPonyModel model) {
-        this.body = model;
+        body = model;
         armor = model.createArmour();
         armor.apply(model.metadata);
     }

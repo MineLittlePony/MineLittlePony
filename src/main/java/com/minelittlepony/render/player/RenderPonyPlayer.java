@@ -3,13 +3,23 @@ package com.minelittlepony.render.player;
 import java.util.Map;
 import java.util.Optional;
 
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyConfig;
+import com.minelittlepony.ducks.IRenderPony;
+import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.model.components.ModelDeadMau5Ears;
+import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyLevel;
 import com.minelittlepony.render.PonySkull;
 import com.minelittlepony.render.PonySkullRenderer.ISkull;
-import com.minelittlepony.util.math.MathUtil;
+import com.minelittlepony.render.layer.LayerEntityOnPonyShoulder;
+import com.minelittlepony.render.layer.LayerHeldPonyItemMagical;
+import com.minelittlepony.render.layer.LayerPonyArmor;
+import com.minelittlepony.render.layer.LayerPonyCape;
+import com.minelittlepony.render.layer.LayerPonyCustomHead;
+import com.minelittlepony.render.layer.LayerPonyElytra;
+import com.minelittlepony.transformation.PonyPosture;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
@@ -19,12 +29,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
+
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.entity.layers.LayerArrow;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 
-public class RenderPonyPlayer extends RenderPonyBase {
+public class RenderPonyPlayer extends RenderPlayer implements IRenderPony {
 
     public static final ISkull SKULL = new PonySkull() {
 
@@ -70,76 +84,153 @@ public class RenderPonyPlayer extends RenderPonyBase {
         }
     }.register(ISkull.PLAYER);
 
-    public RenderPonyPlayer(RenderManager renderManager, boolean useSmallArms, ModelWrapper model) {
-        super(renderManager, useSmallArms, model);
+    private ModelWrapper playerModel;
+
+    protected AbstractPonyModel ponyModel;
+
+    protected Pony pony;
+
+    public RenderPonyPlayer(RenderManager manager, boolean useSmallArms, ModelWrapper model) {
+        super(manager, useSmallArms);
+
+        playerModel = model;
+        mainModel = ponyModel = playerModel.getBody();
+
+        layerRenderers.clear();
+        addLayers();
+    }
+
+    protected void addLayers() {
+        addLayer(new LayerPonyArmor<>(this));
+        addLayer(new LayerArrow(this));
+        addLayer(new LayerPonyCustomHead<>(this));
+        addLayer(new LayerPonyElytra<>(this));
+        addLayer(new LayerHeldPonyItemMagical<>(this));
+        addLayer(new LayerPonyCape(this));
+        addLayer(new LayerEntityOnPonyShoulder(renderManager, this));
+    }
+
+    @Override
+    public float prepareScale(AbstractClientPlayer player, float ticks) {
+
+        if (!player.isRiding()) {
+            float x = player.width/2;
+            float y = 0;
+
+            if (player.isSneaking()) {
+                // Sneaking makes the player 1/15th shorter.
+                // This should be compatible with height-changing mods.
+                y += player.height / 15;
+            }
+
+            super.doRenderShadowAndFire(player, 0, y, x, 0, ticks);
+        }
+
+        return super.prepareScale(player, ticks);
+    }
+
+    @Override
+    protected void preRenderCallback(AbstractClientPlayer player, float ticks) {
+        updateModel(player);
+
+        ponyModel.updateLivingState(player, pony);
+
+        super.preRenderCallback(player, ticks);
+        shadowSize = getShadowScale();
+
+        float s = getScaleFactor();
+        GlStateManager.scale(s, s, s);
+
+        if (player.isRiding()) {
+            GlStateManager.translate(0, player.getYOffset(), 0);
+        }
+    }
+
+    @Override
+    public void doRenderShadowAndFire(Entity player, double x, double y, double z, float yaw, float ticks) {
+        if (player.isRiding()) {
+            super.doRenderShadowAndFire(player, x, y, z, yaw, ticks);
+        }
+    }
+
+    @Override
+    public void renderRightArm(AbstractClientPlayer player) {
+        updateModel(player);
+        bindEntityTexture(player);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0, -0.37, 0);
+        super.renderRightArm(player);
+        GlStateManager.popMatrix();
+    }
+
+    @Override
+    public void renderLeftArm(AbstractClientPlayer player) {
+        updateModel(player);
+        bindEntityTexture(player);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0.06, -0.37, 0);
+        super.renderLeftArm(player);
+        GlStateManager.popMatrix();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void applyRotations(AbstractClientPlayer player, float yaw, float pitch, float ticks) {
+        super.applyRotations(player, yaw, pitch, ticks);
+
+        PonyPosture<?> posture = getPosture(player);
+        if (posture != null && posture.applies(player)) {
+            double motionX = player.posX - player.prevPosX;
+            double motionY = player.onGround ? 0 : player.posY - player.prevPosY;
+            double motionZ = player.posZ - player.prevPosZ;
+            ((PonyPosture<EntityLivingBase>)posture).transform(getModelWrapper().getBody(), player, motionX, motionY, motionZ, pitch, yaw, ticks);
+        }
+    }
+
+    protected PonyPosture<?> getPosture(EntityLivingBase entity) {
+        if (entity.isElytraFlying()) {
+            return PonyPosture.ELYTRA;
+        }
+
+        if (entity.isEntityAlive() && entity.isPlayerSleeping()) return null;
+
+        if (getModelWrapper().getBody().isGoingFast()) {
+            return PonyPosture.FLIGHT;
+        }
+
+        //TODO: MC1.13 transformSwimming()
+
+        return PonyPosture.FALLING;
+    }
+
+    @Override
+    public ResourceLocation getEntityTexture(AbstractClientPlayer player) {
+        updateModel(player);
+        return pony.getTexture();
+    }
+
+    @Override
+    public ModelWrapper getModelWrapper() {
+        return playerModel;
+    }
+
+    protected void setPonyModel(ModelWrapper model) {
+        playerModel = model;
+        mainModel = ponyModel = playerModel.getBody();
+    }
+
+    protected void updateModel(AbstractClientPlayer player) {
+        pony = MineLittlePony.getInstance().getManager().getPony(player);
+        playerModel.apply(pony.getMetadata());
     }
 
     @Override
     public float getShadowScale() {
-        return getPony().getMetadata().getSize().getShadowSize();
+        return pony.getMetadata().getSize().getShadowSize();
     }
 
     @Override
     public float getScaleFactor() {
-        return getPony().getMetadata().getSize().getScaleFactor();
+        return pony.getMetadata().getSize().getScaleFactor();
     }
-
-    @Override
-    protected void transformElytraFlight(AbstractClientPlayer player, double motionX, double motionY, double motionZ, float ticks) {
-        GlStateManager.rotate(90, 1, 0, 0);
-        GlStateManager.translate(0, player.isSneaking() ? 0.2F : -1, 0);
-    }
-
-    private double calculateRoll(AbstractClientPlayer player, double motionX, double motionY, double motionZ) {
-
-        // since model roll should probably be calculated from model rotation rather than entity rotation...
-        double roll = MathUtil.sensibleAngle(player.prevRenderYawOffset - player.renderYawOffset);
-        double horMotion = Math.sqrt(motionX * motionX + motionZ * motionZ);
-        float modelYaw = MathUtil.sensibleAngle(player.renderYawOffset);
-
-        // detecting that we're flying backwards and roll must be inverted
-        if (Math.abs(MathUtil.sensibleAngle((float) Math.toDegrees(Math.atan2(motionX, motionZ)) + modelYaw)) > 90) {
-            roll *= -1;
-        }
-
-        // ayyy magic numbers (after 5 - an approximation of nice looking coefficients calculated by hand)
-
-        // roll might be zero, in which case Math.pow produces +Infinity. Anything x Infinity = NaN.
-        double pow = roll != 0 ? Math.pow(Math.abs(roll), -0.191) : 0;
-
-        roll *= horMotion * 5 * (3.6884f * pow);
-
-        assert !Float.isNaN((float)roll);
-
-        return MathHelper.clamp(roll, -54, 54);
-    }
-
-    @Override
-    protected void transformPegasusFlight(AbstractClientPlayer player, double motionX, double motionY, double motionZ, float yaw, float pitch, float ticks) {
-        double dist = Math.sqrt(motionX * motionX + motionZ * motionZ);
-        double angle = Math.atan2(motionY, dist);
-
-        if (!player.capabilities.isFlying) {
-            if (angle > 0) {
-                angle = 0;
-            } else {
-                angle /= 2;
-            }
-        }
-
-        angle = MathUtil.clampLimit(angle, Math.PI / 3);
-
-        ponyModel.motionPitch = (float) Math.toDegrees(angle);
-
-        GlStateManager.rotate(ponyModel.motionPitch, 1, 0, 0);
-
-        float roll = (float)calculateRoll(player, motionX,  motionY, motionZ);
-
-        roll = getPony().getMetadata().getInterpolator().interpolate("pegasusRoll", roll, 10);
-
-        GlStateManager.rotate((float)roll, 0, 0, 1);
-
-    }
-
-    //TODO: MC1.13 transformSwimming()
 }

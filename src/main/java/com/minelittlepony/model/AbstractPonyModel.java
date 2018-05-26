@@ -13,6 +13,7 @@ import com.minelittlepony.pony.data.PonySize;
 import com.minelittlepony.render.AbstractPonyRenderer;
 import com.minelittlepony.render.PonyRenderer;
 import com.minelittlepony.render.plane.PlaneRenderer;
+import com.minelittlepony.transformation.PonyTransformation;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
@@ -33,7 +34,7 @@ import static com.minelittlepony.model.PonyModelConstants.*;
  */
 public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
-    protected boolean isSleeping;
+    public boolean isSleeping;
 
     private boolean isFlying;
     private boolean isSwimming;
@@ -667,6 +668,11 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     }
 
     @Override
+    public PonyTransformation getBodyTransformation() {
+        return (isChild ? PonySize.FOAL : metadata.getSize()).getTranformation();
+    }
+
+    @Override
     public float getSwingAmount() {
         return swingProgress;
     }
@@ -770,110 +776,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
             rotate(motionPitch, 1, 0, 0);
         }
 
-        // TODO: Get these out of here
-        if (isChild()) {
-            transformFoal(part);
-        } else if (metadata.getSize() == PonySize.LARGE) {
-            transformLarge(part);
-        } else if (metadata.getSize() == PonySize.TALL) {
-            transformTall(part);
-        } else {
-            transformNormal(part);
-        }
-
-    }
-
-    private void transformNormal(BodyPart part) {
-        if (isSleeping) translate(0, -0.61F, 0.25F);
-
-        switch (part) {
-            case NECK:
-                if (isCrouching()) translate(-0.03F, 0.03F, 0.1F);
-            default:
-        }
-    }
-
-    private void transformTall(BodyPart part) {
-        if (isSleeping) translate(0, -0.5F, 0.25F);
-
-        switch (part) {
-            case HEAD:
-                translate(0, -0.15F, 0.01F);
-                if (isCrouching()) translate(0, 0.05F, 0);
-                break;
-            case NECK:
-                translate(0, -0.09F, -0.01F);
-                scale(1, 1.1F, 1);
-                if (isCrouching()) translate(-0.02F, -0.02F, 0.1F);
-                break;
-            case BODY:
-            case TAIL:
-                translate(0, -0.1F, 0);
-                scale(1, 1, 1);
-                break;
-            case LEGS:
-                translate(0, -0.25F, 0.03F);
-                scale(1, 1.18F, 1);
-                if (rainboom) translate(0, 0.05F, 0);
-                break;
-        }
-    }
-
-    private void transformLarge(BodyPart part) {
-        if (isSleeping) translate(0, -0.98F, 0.2F);
-
-        switch (part) {
-            case HEAD:
-                translate(0, -0.17F, -0.04F);
-                if (isSleeping) translate(0, 0, -0.1F);
-                if (isCrouching()) translate(0, 0.15F, 0);
-
-                break;
-            case NECK:
-                translate(0, -0.15F, -0.07F);
-                if (isCrouching()) translate(-0.03F, 0.16F, 0.07F);
-
-                break;
-            case BODY:
-                translate(0, -0.2F, -0.04F);
-                scale(1.15F, 1.2F, 1.2F);
-                break;
-            case TAIL:
-                translate(0, -0.2F, 0.08F);
-                break;
-            case LEGS:
-                translate(0, -0.14F, 0);
-                scale(1.15F, 1.12F, 1.15F);
-                break;
-        }
-    }
-
-    private void transformFoal(BodyPart part) {
-        if (isCrouching()) translate(0, -0.12F, 0);
-        if (isSleeping) translate(0, -1.48F, 0.25F);
-        if (isRiding) translate(0, 0.1F, 0);
-
-        switch (part) {
-            case NECK:
-            case HEAD:
-                translate(0, 0.76F, 0);
-                scale(0.9F, 0.9F, 0.9F);
-                if (part == BodyPart.HEAD)
-                    break;
-                if (isCrouching()) translate(0, -0.01F, 0.15F);
-                break;
-            case BODY:
-            case TAIL:
-                translate(0, 0.76F, -0.04F);
-                scale(0.6F, 0.6F, 0.6F);
-                break;
-            case LEGS:
-                translate(0, 0.89F, 0);
-                scale(0.6F, 0.41F, 0.6F);
-                if (isCrouching()) translate(0, 0.12F, 0);
-                if (rainboom) translate(0, -0.08F, 0);
-                break;
-        }
+        getBodyTransformation().transform(this, part);
     }
 
     /**
