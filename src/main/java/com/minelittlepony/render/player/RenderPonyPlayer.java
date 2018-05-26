@@ -6,7 +6,7 @@ import com.minelittlepony.util.math.MathUtil;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.MathHelper;
 
 public class RenderPonyPlayer extends RenderPonyBase {
 
@@ -49,17 +49,19 @@ public class RenderPonyPlayer extends RenderPonyBase {
 
         GlStateManager.rotate(ponyModel.motionPitch, 1, 0, 0);
 
-        // Strafe like an elytra
-        Vec3d lookDirection = player.getForward();
-
         double horMotion = Math.sqrt(motionX * motionX + motionZ * motionZ);
-        double horLook = Math.sqrt(lookDirection.x * lookDirection.x + lookDirection.z * lookDirection.z);
+        if (horMotion > 0) {
+            yaw = (player.cameraYaw - player.rotationYaw) % 360;
+            double roll = (Math.toDegrees(Math.atan2(motionX, motionZ)) - yaw) % 360;
 
-        if (horMotion > 0 && horLook > 0) {
-            double magnitude = (motionX * lookDirection.x + motionZ * lookDirection.z) / horMotion * horLook;
-            double direction = motionX * lookDirection.z - motionZ * lookDirection.x;
-            GlStateManager.rotate((float)Math.toDegrees(Math.signum(direction) * Math.acos(magnitude)), 0, 0, 1);
+            if (roll > 180) {
+                roll -= 360;
+            }
+            roll = MathHelper.clamp(roll, -44, 44) * horMotion * 2;
+
+            GlStateManager.rotate((float)roll, 0, 0, 1);
         }
+
     }
 
     //TODO: MC1.13 transformSwimming()
