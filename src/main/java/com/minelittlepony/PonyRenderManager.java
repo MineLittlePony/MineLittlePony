@@ -7,6 +7,7 @@ import com.minelittlepony.mixin.MixinRenderManager;
 import com.minelittlepony.hdskins.gui.EntityPonyModel;
 import com.minelittlepony.hdskins.gui.RenderPonyModel;
 import com.minelittlepony.model.player.PlayerModels;
+import com.minelittlepony.render.LevitatingItemRenderer;
 import com.minelittlepony.render.player.RenderPonyPlayer;
 import com.minelittlepony.render.ponies.RenderPonyIllager;
 import com.minelittlepony.render.ponies.RenderPonyPigman;
@@ -41,6 +42,9 @@ import net.minecraft.entity.passive.EntityVillager;
  * Old values of persisted internally.
  */
 public class PonyRenderManager {
+
+    private LevitatingItemRenderer magicRenderer = new LevitatingItemRenderer();
+
 
     private final Map<Class<? extends Entity>, Render<?>> renderMap = Maps.newHashMap();
 
@@ -148,5 +152,9 @@ public class PonyRenderManager {
         if (renderMap.containsKey(type)) {
             ModUtilities.addRenderer(type, (Render<T>)renderMap.get(type));
         }
+    }
+
+    public LevitatingItemRenderer getMagicRenderer() {
+        return magicRenderer;
     }
 }

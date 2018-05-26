@@ -1,7 +1,8 @@
 package com.minelittlepony.render.layer;
 
-import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.capabilities.IModel;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
@@ -34,8 +35,8 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
             ModelBase model = getRenderer().getMainModel();
 
             pushMatrix();
-            if (model instanceof AbstractPonyModel) {
-                ((AbstractPonyModel) model).transform(BodyPart.LEGS);
+            if (model instanceof IModel) {
+                ((IModel) model).transform(BodyPart.LEGS);
             }
 
             if (model.isChild) {
