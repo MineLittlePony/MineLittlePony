@@ -75,7 +75,7 @@ public class ModelVillagerPony extends ModelAlicorn {
                        .addBackPlane( 4,     -5,    -4, 3, 6, stretch) //left bag front
            .tex(59, 25).addBackPlane(-7,     -5,     4, 3, 6, stretch) //right bag back
                        .addBackPlane( 4,     -5,     4, 3, 6, stretch) //left bag back
-           .tex(56, 29).addWestPlane(-7,     -5,    -4, 6, 8, stretch) //right bag outside
+           .tex(56, 19).addWestPlane(-7,     -5,    -4, 6, 8, stretch) //right bag outside
                        .addWestPlane( 7,     -5,    -4, 6, 8, stretch) //left bag outside
                        .addWestPlane(-4.01f, -5,    -4, 6, 8, stretch) //right bag inside
                        .addWestPlane( 4.01f, -5,    -4, 6, 8, stretch) //left bag inside
