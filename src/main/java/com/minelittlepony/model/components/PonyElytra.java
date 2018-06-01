@@ -7,6 +7,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import static com.minelittlepony.model.PonyModelConstants.*;
@@ -17,6 +18,8 @@ import static com.minelittlepony.model.PonyModelConstants.*;
 public class PonyElytra extends ModelBase {
     private PonyRenderer rightWing = new PonyRenderer(this, 22, 0);
     private PonyRenderer leftWing = new PonyRenderer(this, 22, 0);
+
+    public boolean isCape;
 
     public PonyElytra() {
         leftWing          .box(-10, 0, 0, 10, 20, 2, 1);
@@ -46,12 +49,12 @@ public class PonyElytra extends ModelBase {
         super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
 
         float rotateX = PI / 2;
-        float rotateY = PI / 8;
-        float rotateZ = PI / 12;
+        float rotateY = isCape ? 0 : PI / 8;
+        float rotateZ = isCape ? 0 : PI / 12;
 
         float rpY = BODY_RP_Y_NOTSNEAK;
 
-        if (entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isElytraFlying()) {
+        if (isCape || entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isElytraFlying()) {
             float velY = 1;
 
             if (entity.motionY < 0) {
@@ -59,8 +62,15 @@ public class PonyElytra extends ModelBase {
                 velY = 1 - (float) Math.pow(-motion.y, 1.5);
             }
 
-            rotateX = velY * PI * (2 / 3F) + (1 - velY) * rotateX;
-            rotateY = velY * (PI / 2) + (1 - velY) * rotateY;
+
+            if (isCape) {
+                rotateX = ((1 - velY) * (-PI * 1.5F) + velY * rotateX) + PI/4;
+                rotateX = MathHelper.clamp(rotateX, PI/2, PI * 0.6F);
+                rotateX += MathHelper.sin(move) / 6;
+            } else {
+                rotateX = velY * PI * (2 / 3F) + (1 - velY) * rotateX;
+                rotateY = velY * (PI / 2) + (1 - velY) * rotateY;
+            }
         } else if (entity.isSneaking()) {
             rotateX = PI * 1.175F;
             rotateY = PI / 2;

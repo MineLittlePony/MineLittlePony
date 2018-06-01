@@ -1,6 +1,7 @@
 package com.minelittlepony.render.layer;
 
 import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.capabilities.IModelPegasus;
 import com.minelittlepony.model.components.PonyElytra;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -37,6 +38,9 @@ public class LayerPonyElytra<T extends EntityLivingBase> extends AbstractPonyLay
             GlStateManager.pushMatrix();
             GlStateManager.translate(0, 0.25F, 0.125F);
             getPlayerModel().transform(BodyPart.BODY);
+
+            modelElytra.isCape = getPlayerModel().metadata.getRace().hasWings() && getPlayerModel().isFlying();
+
             modelElytra.setRotationAngles(move, swing, ticks, yaw, head, scale, entity);
             modelElytra.render(entity, move, swing, ticks, yaw, head, scale);
 
