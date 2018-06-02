@@ -1,5 +1,6 @@
 package com.minelittlepony;
 
+import com.minelittlepony.gui.GuiPonySettings;
 import com.minelittlepony.hdskins.gui.GuiSkinsMineLP;
 import com.minelittlepony.pony.data.IPonyData;
 import com.minelittlepony.pony.data.PonyDataSerialzier;
@@ -81,7 +82,7 @@ public class MineLittlePony {
     void onTick(Minecraft minecraft, boolean inGame) {
 
         if (inGame && minecraft.currentScreen == null && SETTINGS_GUI.isPressed()) {
-            minecraft.displayGuiScreen(new PonySettingPanel());
+            minecraft.displayGuiScreen(new GuiPonySettings());
         }
 
         boolean skins = minecraft.currentScreen instanceof GuiSkins

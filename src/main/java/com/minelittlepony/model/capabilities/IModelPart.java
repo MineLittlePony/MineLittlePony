@@ -19,4 +19,11 @@ public interface IModelPart {
      * Renders this model component.
      */
     void render(float scale);
+
+    /**
+     * Sets whether this part should be rendered.
+     */
+    default void setVisible(boolean visible) {
+
+    }
 }

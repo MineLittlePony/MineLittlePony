@@ -9,36 +9,12 @@ import com.minelittlepony.hdskins.gui.RenderPonyModel;
 import com.minelittlepony.model.player.PlayerModels;
 import com.minelittlepony.render.LevitatingItemRenderer;
 import com.minelittlepony.render.player.RenderPonyPlayer;
-import com.minelittlepony.render.ponies.RenderPonyGuardian;
-import com.minelittlepony.render.ponies.RenderPonyIllager;
-import com.minelittlepony.render.ponies.RenderPonyPigman;
-import com.minelittlepony.render.ponies.RenderPonySkeleton;
-import com.minelittlepony.render.ponies.RenderPonyVex;
-import com.minelittlepony.render.ponies.RenderPonyVillager;
-import com.minelittlepony.render.ponies.RenderPonyWitch;
-import com.minelittlepony.render.ponies.RenderPonyZombie;
-import com.minelittlepony.render.ponies.RenderPonyZombieVillager;
+import com.minelittlepony.render.ponies.MobRenderers;
 import com.mumfrey.liteloader.util.ModUtilities;
 
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.monster.EntityElderGuardian;
-import net.minecraft.entity.monster.EntityEvoker;
-import net.minecraft.entity.monster.EntityGiantZombie;
-import net.minecraft.entity.monster.EntityGuardian;
-import net.minecraft.entity.monster.EntityHusk;
-import net.minecraft.entity.monster.EntityIllusionIllager;
-import net.minecraft.entity.monster.EntityPigZombie;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntityStray;
-import net.minecraft.entity.monster.EntityVex;
-import net.minecraft.entity.monster.EntityVindicator;
-import net.minecraft.entity.monster.EntityWitch;
-import net.minecraft.entity.monster.EntityWitherSkeleton;
-import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.monster.EntityZombieVillager;
-import net.minecraft.entity.passive.EntityVillager;
 
 /**
  * Render manager responsible for replacing and restoring entity renderers when the client settings change.
@@ -80,92 +56,32 @@ public class PonyRenderManager {
      * Registers all entity model replacements. (except for players).
      */
     public void initializeMobRenderers(RenderManager manager, PonyConfig config) {
-
-        if (config.villagers) {
-            pushNewRenderer(manager, EntityVillager.class, new RenderPonyVillager(manager));
-            pushNewRenderer(manager, EntityWitch.class, new RenderPonyWitch(manager));
-            pushNewRenderer(manager, EntityZombieVillager.class, new RenderPonyZombieVillager(manager));
-            MineLittlePony.logger.info("Villagers are now ponies.");
-        } else {
-            restoreRenderer(EntityVillager.class);
-            restoreRenderer(EntityWitch.class);
-            restoreRenderer(EntityZombieVillager.class);
-        }
-
-        if (config.zombies) {
-            pushNewRenderer(manager, EntityZombie.class, new RenderPonyZombie<>(manager));
-            pushNewRenderer(manager, EntityHusk.class, new RenderPonyZombie.Husk(manager));
-            pushNewRenderer(manager, EntityGiantZombie.class, new RenderPonyZombie.Giant(manager));
-            MineLittlePony.logger.info("Zombies are now ponies.");
-        } else {
-            restoreRenderer(EntityZombie.class);
-            restoreRenderer(EntityHusk.class);
-            restoreRenderer(EntityGiantZombie.class);
-        }
-
-        if (config.pigzombies) {
-            pushNewRenderer(manager, EntityPigZombie.class, new RenderPonyPigman(manager));
-            MineLittlePony.logger.info("Zombie pigmen are now ponies.");
-        } else {
-            restoreRenderer(EntityPigZombie.class);
-        }
-
-        if (config.skeletons) {
-            pushNewRenderer(manager, EntitySkeleton.class, new RenderPonySkeleton<>(manager));
-            pushNewRenderer(manager, EntityStray.class, new RenderPonySkeleton.Stray(manager));
-            pushNewRenderer(manager, EntityWitherSkeleton.class, new RenderPonySkeleton.Wither(manager));
-            MineLittlePony.logger.info("Skeletons are now ponies.");
-        } else {
-            restoreRenderer(EntitySkeleton.class);
-            restoreRenderer(EntityStray.class);
-            restoreRenderer(EntityWitherSkeleton.class);
-        }
-
-        if (config.illagers) {
-            pushNewRenderer(manager, EntityVex.class, new RenderPonyVex(manager));
-            pushNewRenderer(manager, EntityEvoker.class, new RenderPonyIllager.Evoker(manager));
-            pushNewRenderer(manager, EntityVindicator.class, new RenderPonyIllager.Vindicator(manager));
-            pushNewRenderer(manager, EntityIllusionIllager.class, new RenderPonyIllager.Illusionist(manager));
-            MineLittlePony.logger.info("Illagers are now ponies.");
-        } else {
-            restoreRenderer(EntityVex.class);
-            restoreRenderer(EntityEvoker.class);
-            restoreRenderer(EntityVindicator.class);
-            restoreRenderer(EntityIllusionIllager.class);
-        }
-
-        if (config.guardians) {
-            pushNewRenderer(manager, EntityGuardian.class, new RenderPonyGuardian(manager));
-            pushNewRenderer(manager, EntityElderGuardian.class, new RenderPonyGuardian.Elder(manager));
-            MineLittlePony.logger.info("Guardians are now ponies.");
-        } else {
-            restoreRenderer(EntityGuardian.class);
-            restoreRenderer(EntityElderGuardian.class);
+        for (MobRenderers i : MobRenderers.values()) {
+            i.apply(this, manager);
         }
     }
 
     /**
-     * Pushes a new renderer replacement storing the original internally. This change can be undone with {@link #restoreRenderer(Class)}
+     *
+     * Replaces an entity renderer depending on whether we want ponies or not.
+     *
+     * @param state   True if we want ponies (the original will be stored)
      * @param manager The render manager
      * @param type    The type to replace
      * @param renderer The replacement value
      * @param <T> The entity type
      */
     @SuppressWarnings("unchecked")
-    public <T extends Entity, V extends T> void pushNewRenderer(RenderManager manager, Class<V> type, Render<T> renderer) {
-        if (!renderMap.containsKey(type)) {
-            renderMap.put(type, manager.getEntityClassRenderObject(type));
-        }
-        ModUtilities.addRenderer((Class<T>)type, renderer);
-    }
-
-    /**
-     * Restores a renderer to its previous value.
-     */
-    @SuppressWarnings("unchecked")
-    public <T extends Entity> void restoreRenderer(Class<T> type) {
-        if (renderMap.containsKey(type)) {
-            ModUtilities.addRenderer(type, (Render<T>)renderMap.get(type));
+    public <T extends Entity, V extends T> void switchRenderer(boolean state, RenderManager manager, Class<V> type, Render<T> renderer) {
+        if (state) {
+            if (!renderMap.containsKey(type)) {
+                renderMap.put(type, manager.getEntityClassRenderObject(type));
+            }
+            ModUtilities.addRenderer((Class<T>)type, renderer);
+        } else {
+            if (renderMap.containsKey(type)) {
+                ModUtilities.addRenderer(type, (Render<V>)renderMap.get(type));
+            }
         }
     }
 
