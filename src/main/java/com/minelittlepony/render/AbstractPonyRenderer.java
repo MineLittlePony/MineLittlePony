@@ -138,12 +138,20 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
      */
     public T child(int index) {
         if (childModels == null || index >= childModels.size()) {
-            T copy = copySelf();
-            child(copy.offset(modelOffsetX, modelOffsetY, modelOffsetZ));
-            copy.textureHeight = textureHeight;
-            copy.textureWidth = textureWidth;
+            return child();
         }
         return (T)childModels.get(index);
+    }
+
+    /**
+     * Returns a brand new child under this renderer.
+     */
+    public T child() {
+        T copy = copySelf();
+        child(copy.offset(modelOffsetX, modelOffsetY, modelOffsetZ));
+        copy.textureHeight = textureHeight;
+        copy.textureWidth = textureWidth;
+        return copy;
     }
 
     /**

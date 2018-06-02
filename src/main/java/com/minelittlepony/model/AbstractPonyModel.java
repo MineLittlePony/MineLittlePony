@@ -148,9 +148,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
         animateWears();
 
-        if (snout != null) {
-            snout.setGender(metadata.getGender());
-        }
+        snout.setGender(metadata.getGender());
     }
 
     protected void adjustBodyRiding() {
@@ -640,25 +638,17 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         bipedLeftLeg .setRotationPoint( rarmX, yOffset, 0);
         bipedRightLeg.setRotationPoint(-rarmX, yOffset, 0);
 
-        if (bipedLeftArmwear != null) {
-            bipedLeftArmwear.addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch + 0.25f);
-            bipedLeftArmwear.setRotationPoint(rarmX, yOffset + rarmY, 0);
-        }
+        bipedLeftArmwear.addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch + 0.25f);
+        bipedLeftArmwear.setRotationPoint(rarmX, yOffset + rarmY, 0);
 
-        if (bipedRightArmwear != null) {
-            bipedRightArmwear.addBox(armX - armWidth, armY, armZ, armWidth, 12, armDepth, stretch + 0.25f);
-            bipedRightArmwear.setRotationPoint(-rarmX, yOffset + rarmY, 0);
-        }
+        bipedRightArmwear.addBox(armX - armWidth, armY, armZ, armWidth, 12, armDepth, stretch + 0.25f);
+        bipedRightArmwear.setRotationPoint(-rarmX, yOffset + rarmY, 0);
 
-        if (bipedLeftLegwear != null) {
-            bipedLeftLegwear.addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch + 0.25f);
-            bipedRightLegwear.setRotationPoint(rarmX, yOffset, 0);
-        }
+        bipedLeftLegwear.addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch + 0.25f);
+        bipedRightLegwear.setRotationPoint(rarmX, yOffset, 0);
 
-        if (bipedRightLegwear != null) {
-            bipedRightLegwear.addBox(armX - armWidth, armY, armZ, armWidth, 12, armDepth, stretch + 0.25f);
-            bipedRightLegwear.setRotationPoint(-rarmX, yOffset, 0);
-        }
+        bipedRightLegwear.addBox(armX - armWidth, armY, armZ, armWidth, 12, armDepth, stretch + 0.25f);
+        bipedRightLegwear.setRotationPoint(-rarmX, yOffset, 0);
     }
 
     public ArmPose getArmPoseForSide(EnumHandSide side) {

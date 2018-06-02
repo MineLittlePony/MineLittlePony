@@ -9,6 +9,8 @@ import com.minelittlepony.model.AbstractPonyModel;
 
 public class PonySnout {
 
+    public boolean isHidden = false;
+
     private PlaneRenderer mare;
     private PlaneRenderer stallion;
 
@@ -48,7 +50,7 @@ public class PonySnout {
     }
 
     public void setGender(PonyGender gender) {
-        mare.isHidden = gender == PonyGender.STALLION;
-        stallion.isHidden = !mare.isHidden;
+        mare.isHidden = !isHidden && gender == PonyGender.STALLION;
+        stallion.isHidden = !isHidden && !mare.isHidden;
     }
 }
