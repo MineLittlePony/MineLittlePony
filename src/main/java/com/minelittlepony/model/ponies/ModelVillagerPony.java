@@ -3,7 +3,6 @@ package com.minelittlepony.model.ponies;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityZombieVillager;
 import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.util.math.MathHelper;
 import static com.minelittlepony.model.PonyModelConstants.*;
 
 import com.minelittlepony.model.player.ModelAlicorn;
@@ -18,16 +17,12 @@ public class ModelVillagerPony extends ModelAlicorn {
     }
 
     @Override
-    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
-        super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
+    protected void rotateLook(float move, float swing, float bodySwing, float ticks) {
+        super.rotateLook(move, swing, bodySwing, ticks);
 
-        float angleY = 0;
-        if (swingProgress > -9990.0F && !canCast()) {
-            angleY = MathHelper.sin(MathHelper.sqrt(swingProgress) * PI * 2) * 0.04F;
-        }
-        bag.rotateAngleY = angleY;
-        apron.rotateAngleY = angleY;
-        trinket.rotateAngleY = angleY;
+        bag.rotateAngleY = bodySwing;
+        apron.rotateAngleY = bodySwing;
+        trinket.rotateAngleY = bodySwing;
     }
 
     @Override

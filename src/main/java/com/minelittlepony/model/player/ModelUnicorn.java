@@ -38,6 +38,13 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
         unicornArmLeft.rotateAngleY = 0;
     }
 
+    protected float getWobbleAmount() {
+        if (isCasting()) {
+            return 0;
+        }
+        return super.getWobbleAmount();
+    }
+
     @Override
     protected void adjustLegs(float move, float swing, float ticks) {
         super.adjustLegs(move, swing, ticks);

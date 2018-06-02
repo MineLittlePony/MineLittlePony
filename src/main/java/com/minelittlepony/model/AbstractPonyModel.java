@@ -101,12 +101,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
         updateHeadRotation(headRotateAngleX, headRotateAngleY);
 
-        float bodySwingRotation = 0;
-        if (swingProgress > -9990.0F && !metadata.hasMagic()) {
-            bodySwingRotation = MathHelper.sin(MathHelper.sqrt(swingProgress) * PI * 2) * 0.2F;
-        }
-
-        rotateLook(move, swing, bodySwingRotation, ticks);
+        rotateLook(move, swing, getWobbleAmount(), ticks);
 
         setLegs(move, swing, ticks, entity);
         if (!rainboom) {
@@ -149,6 +144,13 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         animateWears();
 
         snout.setGender(metadata.getGender());
+    }
+
+    protected float getWobbleAmount() {
+        if (swingProgress <= -9990.0F) {
+            return 0;
+        }
+        return MathHelper.sin(MathHelper.sqrt(swingProgress) * PI * 2) * 0.2F;
     }
 
     protected void adjustBodyRiding() {
