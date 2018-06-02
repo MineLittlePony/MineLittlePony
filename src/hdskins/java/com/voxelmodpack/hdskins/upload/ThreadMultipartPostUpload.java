@@ -63,7 +63,7 @@ public class ThreadMultipartPostUpload {
         this.httpClient.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)"); // For CloudFlare
 
         if (this.sourceData.size() > 0) {
-            this.httpClient.setRequestProperty("Content-Type", "multipart/form-data, boundary=" + boundary);
+            this.httpClient.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
         }
 
         if (this.authorization != null) {
