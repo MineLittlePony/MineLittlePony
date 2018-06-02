@@ -18,6 +18,7 @@ public class PonyData implements IPonyData {
     private final PonyGender gender;
     private final PonySize size;
     private final int glowColor;
+    private final PonyAccessory accessory;
 
     public PonyData() {
         race = PonyRace.HUMAN;
@@ -25,6 +26,7 @@ public class PonyData implements IPonyData {
         gender = PonyGender.MARE;
         size = PonySize.NORMAL;
         glowColor = 0x4444aa;
+        accessory = PonyAccessory.NONE;
     }
 
     private PonyData(BufferedImage image) {
@@ -33,6 +35,7 @@ public class PonyData implements IPonyData {
         size = TriggerPixels.SIZE.readValue(image);
         gender = TriggerPixels.GENDER.readValue(image);
         glowColor = TriggerPixels.GLOW.readColor(image, -1);
+        accessory = TriggerPixels.ACCESSORY.readValue(image);
     }
 
     @Override
@@ -58,6 +61,10 @@ public class PonyData implements IPonyData {
     @Override
     public int getGlowColor() {
         return glowColor;
+    }
+
+    public boolean hasBags() {
+        return accessory == PonyAccessory.SADDLEBAGS;
     }
 
     @Override
