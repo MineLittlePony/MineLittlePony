@@ -5,6 +5,7 @@ import com.minelittlepony.render.plane.PlaneRenderer;
 
 import static com.minelittlepony.model.PonyModelConstants.*;
 
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.model.AbstractPonyModel;
 
 public class PonySnout {
@@ -50,7 +51,9 @@ public class PonySnout {
     }
 
     public void setGender(PonyGender gender) {
-        mare.isHidden = !isHidden && gender == PonyGender.STALLION;
-        stallion.isHidden = !isHidden && !mare.isHidden;
+        boolean show = !isHidden && MineLittlePony.getConfig().snuzzles;
+
+        mare.isHidden = !show || gender == PonyGender.STALLION;
+        stallion.isHidden = !show || gender == PonyGender.MARE;
     }
 }
