@@ -17,7 +17,7 @@ public class ModelWing {
         folded = new PonyRenderer(pony, 56, texY)
                 .around(HEAD_RP_X, WING_FOLDED_RP_Y, WING_FOLDED_RP_Z);
         extended = new PonyRenderer(pony, 56, texY + 3)
-                .around(HEAD_RP_X, WING_FOLDED_RP_Y, WING_FOLDED_RP_Z).mirror(mirror);
+                .around(HEAD_RP_X, WING_FOLDED_RP_Y, WING_FOLDED_RP_Z);
 
         addClosedWing(x, y, scale);
         addFeathers(mirror, y, scale);
