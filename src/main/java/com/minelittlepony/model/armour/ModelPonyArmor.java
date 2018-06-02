@@ -97,7 +97,7 @@ public class ModelPonyArmor extends AbstractPonyModel {
         flankGuard.showModel = invisible;
         saddle.showModel = invisible;
         bipedHead.showModel = invisible;
-        tail.isHidden = true;
+        tail.setVisible(false);
         neck.isHidden = true;
         upperTorso.isHidden = true;
         snout.isHidden = true;
