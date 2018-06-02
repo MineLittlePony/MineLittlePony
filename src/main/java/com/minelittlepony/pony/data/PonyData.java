@@ -63,6 +63,10 @@ public class PonyData implements IPonyData {
         return glowColor;
     }
 
+    public boolean hasAccessory() {
+        return accessory != PonyAccessory.NONE;
+    }
+
     public boolean hasBags() {
         return accessory == PonyAccessory.SADDLEBAGS;
     }

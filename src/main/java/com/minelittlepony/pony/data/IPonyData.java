@@ -39,5 +39,10 @@ public interface IPonyData extends IMetadataSection {
     /**
      * Returns true if and only if this metadata represents a pony that has bags.
      */
+    boolean hasAccessory();
+
+    /**
+     * Returns true if and only if this metadata represents a pony that has bags.
+     */
     boolean hasBags();
 }
