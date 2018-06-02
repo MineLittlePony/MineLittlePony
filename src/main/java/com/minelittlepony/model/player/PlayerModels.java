@@ -10,7 +10,9 @@ public enum PlayerModels {
     @Deprecated HUMAN("default", "slim", () -> PMAPI.pony, () -> PMAPI.ponySmall),
     EARTH("earthpony", "slimearthpony", () -> PMAPI.earthpony, () -> PMAPI.earthponySmall),
     PEGASUS("pegasus", "slimpegasus", () -> PMAPI.pegasus, () -> PMAPI.pegasusSmall),
-    ALICORN("alicorn", "slimalicorn", () -> PMAPI.alicorn, () -> PMAPI.alicornSmall);
+    UNICORN("unicorn", "slimunicorn", () -> PMAPI.unicorn, () -> PMAPI.unicornSmall),
+    ALICORN("alicorn", "slimalicorn", () -> PMAPI.alicorn, () -> PMAPI.alicornSmall),
+    ZEBRA("zebra", "slimzebra", () -> PMAPI.zebra, () -> PMAPI.zebraSmall);
 
     private final ModelResolver normal, slim;
 

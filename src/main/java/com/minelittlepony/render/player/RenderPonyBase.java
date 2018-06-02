@@ -98,7 +98,7 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
 
       if (player.isEntityAlive() && player.isPlayerSleeping()) return;
 
-      if (ponyModel.rainboom) {
+      if (ponyModel.isGoingFast()) {
           transformPegasusFlight(player, motionX, motionY, motionZ, yaw, pitch, ticks);
           return;
       }

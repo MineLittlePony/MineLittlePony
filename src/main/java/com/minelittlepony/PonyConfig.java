@@ -23,6 +23,7 @@ public class PonyConfig implements Exposable {
     @Expose public boolean pigzombies = true;
     @Expose public boolean skeletons = true;
     @Expose public boolean illagers = true;
+    @Expose public boolean guardians = true;
 
     /**
      * Gets the current PonyLevel. That is the level of ponies you would like to see.

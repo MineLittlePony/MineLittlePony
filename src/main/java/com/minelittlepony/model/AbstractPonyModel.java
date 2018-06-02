@@ -3,6 +3,7 @@ package com.minelittlepony.model;
 import com.minelittlepony.model.armour.ModelPonyArmor;
 import com.minelittlepony.model.armour.PonyArmor;
 import com.minelittlepony.model.capabilities.IModel;
+import com.minelittlepony.model.capabilities.IModelPart;
 import com.minelittlepony.model.components.PonySnout;
 import com.minelittlepony.model.components.PonyTail;
 import com.minelittlepony.pony.data.IPonyData;
@@ -17,7 +18,6 @@ import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 
@@ -52,12 +52,12 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     /**
      * Flag indicating that this model is performing a rainboom (flight).
      */
-    public boolean rainboom;
+    protected boolean rainboom;
 
     public PlaneRenderer upperTorso;
     public PlaneRenderer neck;
 
-    public PonyTail tail;
+    public IModelPart tail;
     public PonySnout snout;
 
     public AbstractPonyModel(boolean arms) {
@@ -67,6 +67,13 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     @Override
     public PonyArmor createArmour() {
         return new PonyArmor(new ModelPonyArmor(), new ModelPonyArmor());
+    }
+
+    /**
+     * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
+     */
+    protected void checkRainboom(Entity entity, float swing) {
+        rainboom = isFlying() && swing >= 0.9999F;
     }
 
     /**
@@ -82,6 +89,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      */
     @Override
     public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
+        checkRainboom(entity, swing);
+
         super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
 
         float headRotateAngleY = isSleeping ? 1.4f : headYaw / 57.29578F;
@@ -100,7 +109,9 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         rotateLook(move, swing, bodySwingRotation, ticks);
 
         setLegs(move, swing, ticks, entity);
-        holdItem(swing);
+        if (!rainboom) {
+            holdItem(swing);
+        }
         swingItem(entity);
 
         if (isCrouching()) {
@@ -202,7 +213,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     *
     */
     protected void setLegs(float move, float swing, float ticks, Entity entity) {
-        if (isFlying(entity)) {
+        if (isFlying()) {
             rotateLegsInFlight(move, swing, ticks, entity);
         } else {
             rotateLegsOnGround(move, swing, ticks, entity);
@@ -224,8 +235,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      *
      */
     protected void rotateLegsInFlight(float move, float swing, float ticks, Entity entity) {
-        float armX = MathHelper.sin(-swing / 2);
-        float legX = MathHelper.sin(swing / 2);
+        float armX = rainboom ? ROTATE_270 : MathHelper.sin(-swing / 2);
+        float legX = rainboom ? ROTATE_90 : MathHelper.sin(swing / 2);
 
         bipedLeftArm.rotateAngleX = armX;
         bipedRightArm.rotateAngleX = armX;
@@ -655,26 +666,23 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     }
 
     @Override
-    public boolean isCrouching() {
-        return isSneak && !isFlying;
-    }
-
-    /**
-     * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
-     */
-    protected void checkRainboom(Entity entity, float swing) {
-        rainboom = isFlying(entity) && swing >= 0.9999F;
+    public IPonyData getMetadata() {
+        return metadata;
     }
 
     @Override
-    public boolean isFlying(Entity entity) {
-        return (isFlying && metadata.getRace().hasWings()) ||
-                (entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isElytraFlying());
+    public boolean isCrouching() {
+        return !rainboom && isSneak && !isFlying;
+    }
+
+    @Override
+    public boolean isGoingFast() {
+        return rainboom;
     }
 
     @Override
     public boolean isFlying() {
-        return isFlying;
+        return isFlying && canFly();
     }
 
     @Override
@@ -723,11 +731,11 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      * @param scale     Scaling factor used to render this model. Determined by the return value of {@link RenderLivingBase.prepareScale}. Usually {@code 0.0625F}.
      */
     @Override
-    public void render(Entity entityIn, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
 
         pushMatrix();
         transform(BodyPart.HEAD);
-        renderHead(entityIn, move, swing, ticks, headYaw, headPitch, this.scale);
+        renderHead(entity, move, swing, ticks, headYaw, headPitch, scale);
         popMatrix();
 
         pushMatrix();
@@ -737,7 +745,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
         pushMatrix();
         transform(BodyPart.BODY);
-        renderBody(entityIn, move, swing, ticks, headYaw, headPitch, this.scale);
+        renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
         popMatrix();
 
         pushMatrix();

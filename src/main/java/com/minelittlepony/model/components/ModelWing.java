@@ -24,9 +24,9 @@ public class ModelWing {
     }
 
     private void addClosedWing(float x, float y, float scale) {
-        folded.box(x, 5f, 2, 2, 6, 2, scale)
-              .box(x, 5f, 4, 2, 8, 2, scale)
-              .box(x, 5f, 6, 2, 6, 2, scale)
+        folded.box(x, 5, 2, 2, 6, 2, scale)
+              .box(x, 5, 4, 2, 8, 2, scale)
+              .box(x, 5, 6, 2, 6, 2, scale)
               .rotateAngleX = ROTATE_90;
     }
 

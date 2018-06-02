@@ -20,6 +20,11 @@ public class PonySnout {
         pony.bipedHead.addChild(mare);
     }
 
+    public void rotate(float x, float y, float z) {
+        mare.rotate(x, y, z);
+        stallion.rotate(x, y, z);
+    }
+
     public void init(float yOffset, float stretch) {
         mare.offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
             .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)

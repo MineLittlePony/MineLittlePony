@@ -3,38 +3,73 @@ package com.minelittlepony.model.ponies;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 
 import static com.minelittlepony.model.PonyModelConstants.HEAD_RP_X;
 import static com.minelittlepony.model.PonyModelConstants.HEAD_RP_Y;
 import static com.minelittlepony.model.PonyModelConstants.HEAD_RP_Z;
+import static com.minelittlepony.model.PonyModelConstants.PI;
 
+import com.minelittlepony.model.player.ModelZebra;
 import com.minelittlepony.render.PonyRenderer;
 
-public class ModelWitchPony extends ModelVillagerPony {
+public class ModelWitchPony extends ModelZebra {
 
     private static final ResourceLocation WITCH_TEXTURES = new ResourceLocation("textures/entity/witch.png");
 
     private PonyRenderer witchHat;
 
     public ModelWitchPony() {
-        super();
+        super(false);
+    }
+
+    public void setLivingAnimations(EntityLivingBase entity, float move, float swing, float ticks) {
+        EntityWitch witch = ((EntityWitch) entity);
+
+        leftArmPose = ArmPose.EMPTY;
+        rightArmPose = witch.getHeldItemMainhand().isEmpty() ? ArmPose.EMPTY : ArmPose.ITEM;
     }
 
     @Override
     public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
-        rightArmPose = ArmPose.EMPTY;
-        leftArmPose = ((EntityWitch) entity).getHeldItemMainhand().isEmpty() ? ArmPose.EMPTY : ArmPose.ITEM;
-
         super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
-        if (leftArmPose != ArmPose.EMPTY) {
-            if (!canCast()) {
-                bipedRightArm.rotateAngleX = -2 * (float)Math.PI/3;
-                bipedRightArm.offsetZ = 0.1f;
-            }
-            unicornArmRight.offsetZ = -0.1f;
+
+        if (((EntityWitch)entity).isDrinkingPotion()) {
+            float noseRot = MathHelper.sin(entity.ticksExisted);
+
+            snout.rotate(noseRot * 4.5F * 0.02F, 0, noseRot * 2.5F * 0.02F);
+        } else {
+            snout.rotate(0, 0, 0);
         }
+
+
+        if (rightArmPose != ArmPose.EMPTY) {
+            float rot = (float)(Math.tan(ticks / 7) + Math.sin(ticks / 3));
+            if (rot > 1) rot = 1;
+            if (rot < -1) rot = -1;
+
+            float legDrinkingAngle = -1 * PI/3 + rot;
+
+            bipedRightArm.rotateAngleX = legDrinkingAngle;
+            bipedRightArmwear.rotateAngleX = legDrinkingAngle;
+            bipedRightArm.rotateAngleY = 0.1F;
+            bipedRightArmwear.rotateAngleY = 0.1F;
+            bipedRightArm.offsetZ = 0.1f;
+            bipedRightArmwear.offsetZ = 0.1f;
+
+            if (rot > 0) rot = 0;
+
+            bipedHead.rotateAngleX = -rot / 2;
+            bipedHeadwear.rotateAngleX = -rot / 2;
+        } else {
+            bipedRightArm.offsetZ = 0;
+            bipedRightArmwear.offsetZ = 0;
+        }
+
+
     }
 
     @Override
