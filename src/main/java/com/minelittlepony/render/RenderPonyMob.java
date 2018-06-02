@@ -2,7 +2,9 @@ package com.minelittlepony.render;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IRenderPony;
+import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.ModelWrapper;
+import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.render.layer.LayerHeldPonyItem;
 import com.minelittlepony.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.render.layer.LayerPonyArmor;
@@ -23,9 +25,14 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
     protected ModelWrapper playerModel;
 
+    protected AbstractPonyModel ponyModel;
+
+    private Pony pony;
+
     public RenderPonyMob(RenderManager manager, ModelWrapper model) {
         super(manager, model.getModel(), 0.5F);
         playerModel = model;
+        ponyModel = playerModel.getModel();
 
         addLayers();
     }
@@ -52,13 +59,13 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
     @Override
     protected void preRenderCallback(T entity, float ticks) {
-        playerModel.getModel().isSneak = entity.isSneaking();
-        playerModel.getModel().isFlying = !entity.onGround || entity.isElytraFlying();
-        playerModel.getModel().isSleeping = false;
+        updateModel(entity);
 
-        ResourceLocation loc = getEntityTexture(entity);
-        playerModel.apply(MineLittlePony.getInstance().getManager().getPony(loc, false).getMetadata());
+        ponyModel.isSneak = entity.isSneaking();
+        ponyModel.isSleeping = entity.isPlayerSleeping();
+        ponyModel.isFlying = pony.isPegasusFlying(entity);
 
+        super.preRenderCallback(entity, ticks);
         shadowSize = getShadowScale();
 
         float s = getScaleFactor();
@@ -86,6 +93,11 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     @Override
     public ModelWrapper getPlayerModel() {
         return playerModel;
+    }
+
+    protected void updateModel(T entity) {
+        pony = MineLittlePony.getInstance().getManager().getPony(getEntityTexture(entity), false);
+        playerModel.apply(pony.getMetadata());
     }
 
     @Override

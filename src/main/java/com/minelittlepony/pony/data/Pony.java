@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResource;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.image.BufferedImage;
@@ -96,11 +96,9 @@ public class Pony {
         return PonyData.parse(bufferedimage);
     }
 
-    public boolean isPegasusFlying(EntityPlayer player) {
-        //noinspection SimplifiableIfStatement
-        if (!getRace(false).hasWings()) return false;
-
-        return player.capabilities.isFlying || !(player.onGround || player.isRiding() || player.isOnLadder() || player.isInWater());
+    public boolean isPegasusFlying(EntityLivingBase entity) {
+        return getRace(false).hasWings() &&
+                !(entity.onGround || entity.isRiding() || entity.isOnLadder() || entity.isInWater());
     }
 
     public ModelWrapper getModel(boolean ignorePony) {
