@@ -799,7 +799,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
     @Override
     public void transform(BodyPart part) {
-        if (isRiding) translate(0, -0.6F, -0.2F);
+        if (isRiding) translate(0, -0.4F, -0.2F);
 
         if (isSleeping) {
             rotate(90, 1, 0, 0);
@@ -881,7 +881,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     private void transformFoal(BodyPart part) {
         if (isCrouching()) translate(0, -0.12F, 0);
         if (isSleeping) translate(0, -1.48F, 0.25F);
-        if (isRiding) translate(0, -0.1F, 0);
+        if (isRiding) translate(0, 0.1F, 0);
 
         switch (part) {
             case NECK:
