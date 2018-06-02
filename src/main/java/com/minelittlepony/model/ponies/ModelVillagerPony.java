@@ -78,10 +78,10 @@ public class ModelVillagerPony extends ModelAlicorn {
                         .addTopPlane(-4,     -4.5F,  0, 8, 1, stretch) //strap back
                        .addBackPlane(-4,     -4.5F,  0, 8, 1, stretch)
                       .addFrontPlane(-4,     -4.5F,  0, 8, 1, stretch)
-           .child(0).tex(56, 16).flipZ().addTopPlane(2, -5, -13, 8, 3, stretch) //left bag top
-                                .flipZ().addTopPlane(2, -5,  -2, 8, 3, stretch) //right bag top
-                 .tex(56, 22).flipZ().addBottomPlane(2,  1, -13, 8, 3, stretch) //left bag bottom
-                             .flipZ().addBottomPlane(2,  1,  -2, 8, 3, stretch) //right bag bottom
+           .child(0).tex(56, 16).addTopPlane(2, -5, -13, 8, 3, stretch) //left bag top
+                        .flipZ().addTopPlane(2, -5,  -2, 8, 3, stretch) //right bag top
+                 .tex(56, 22).addBottomPlane(2,  1, -13, 8, 3, stretch) //left bag bottom
+                     .flipZ().addBottomPlane(2,  1,  -2, 8, 3, stretch) //right bag bottom
                     .rotateAngleY = 4.712389F;
 
         apron.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
