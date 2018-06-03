@@ -18,7 +18,7 @@ import net.minecraft.entity.Entity;
 
 /**
  * Render manager responsible for replacing and restoring entity renderers when the client settings change.
- * Old values of persisted internally.
+ * Old values are persisted internally.
  */
 public class PonyRenderManager {
 
