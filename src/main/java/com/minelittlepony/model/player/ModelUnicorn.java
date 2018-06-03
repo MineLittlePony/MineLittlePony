@@ -46,8 +46,14 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
     }
 
     @Override
-    protected void adjustLegs(float move, float swing, float ticks) {
-        super.adjustLegs(move, swing, ticks);
+    protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
+        super.rotateLegs(move, swing, ticks, entity);
+
+        unicornArmLeft.rotationPointX = 5;
+        unicornArmRight.rotationPointX = -5;
+
+        unicornArmLeft.rotationPointY = unicornArmRight.rotationPointY = 8;
+        unicornArmLeft.rotationPointZ = unicornArmRight.rotationPointZ = 10;
 
         unicornArmLeft.rotateAngleZ = 0;
         unicornArmRight.rotateAngleZ = 0;
@@ -61,8 +67,8 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
         if (canCast()) {
             boolean both = leftArmPose == ArmPose.ITEM && rightArmPose == ArmPose.ITEM;
 
-            alignArmForAction(unicornArmLeft, leftArmPose, both, swing, 1);
-            alignArmForAction(unicornArmRight, rightArmPose, both, swing, -1);
+            alignArmForAction(unicornArmLeft, leftArmPose, rightArmPose, both, swing, 1);
+            alignArmForAction(unicornArmRight, rightArmPose, leftArmPose, both, swing, -1);
         } else {
             super.holdItem(swing);
         }
@@ -128,16 +134,6 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
         super.sneakLegs();
         unicornArmRight.rotateAngleX += SNEAK_LEG_X_ROTATION_ADJUSTMENT;
         unicornArmLeft.rotateAngleX += SNEAK_LEG_X_ROTATION_ADJUSTMENT;
-    }
-
-    @Override
-    protected void aimBow(ArmPose leftArm, ArmPose rightArm, float ticks) {
-        if (canCast()) {
-            if (rightArm == ArmPose.BOW_AND_ARROW) aimBowPony(unicornArmRight, ticks);
-            if (leftArm == ArmPose.BOW_AND_ARROW) aimBowPony(unicornArmLeft, ticks);
-        } else {
-            super.aimBow(leftArm, rightArm, ticks);
-        }
     }
 
     @Override

@@ -3,10 +3,12 @@ package com.minelittlepony.model.ponies;
 import com.minelittlepony.model.ModelMobPony;
 import com.minelittlepony.render.AbstractPonyRenderer;
 
+import net.minecraft.entity.Entity;
+
 public class ModelZombiePony extends ModelMobPony {
     @Override
-    protected void adjustLegs(float move, float swing, float ticks) {
-        super.adjustLegs(move, swing, ticks);
+    protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
+        super.rotateLegs(move, swing, ticks, entity);
         if (rightArmPose != ArmPose.EMPTY) return;
 
         if (islookAngleRight(move)) {

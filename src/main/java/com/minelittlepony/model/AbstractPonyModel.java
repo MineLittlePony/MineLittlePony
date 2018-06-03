@@ -18,6 +18,7 @@ import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 
@@ -73,7 +74,11 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
      */
     protected void checkRainboom(Entity entity, float swing) {
-        rainboom = isFlying() && swing >= 0.9999F;
+        rainboom = canFly() && Math.sqrt(entity.motionX * entity.motionX + entity.motionZ * entity.motionZ) > 0.4F;
+    }
+
+    public void setLivingAnimations(EntityLivingBase entity, float move, float swing, float partialTicks) {
+
     }
 
     /**
@@ -81,7 +86,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      *
      * @param move      Entity motion parameter - i.e. velocity in no specific direction used in bipeds to calculate step amount.
      * @param swing     Degree to which each 'limb' swings.
-     * @param ticks       Total whole and partial ticks since the entity's existance. Used in animations together with {@code swing} and {@code move}.
+     * @param ticks     Total whole and partial ticks since the entity's existance. Used in animations together with {@code swing} and {@code move}.
      * @param headYaw   Horizontal head motion in radians.
      * @param headPitch Vertical head motion in radians.
      * @param scale     Scaling factor used to render this model. Determined by the return value of {@link RenderLivingBase.prepareScale}. Usually {@code 0.0625F}.
@@ -101,9 +106,9 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
         updateHeadRotation(headRotateAngleX, headRotateAngleY);
 
-        rotateLook(move, swing, getWobbleAmount(), ticks);
+        shakeBody(move, swing, getWobbleAmount(), ticks);
+        rotateLegs(move, swing, ticks, entity);
 
-        setLegs(move, swing, ticks, entity);
         if (!rainboom) {
             holdItem(swing);
         }
@@ -138,7 +143,6 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
         if (isSleeping) ponySleep();
 
-        aimBow(leftArmPose, rightArmPose, ticks);
         fixSpecialRotationPoints(move);
 
         animateWears();
@@ -147,9 +151,11 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     }
 
     protected float getWobbleAmount() {
-        if (swingProgress <= -9990.0F) {
+
+        if (swingProgress <= 0) {
             return 0;
         }
+
         return MathHelper.sin(MathHelper.sqrt(swingProgress) * PI * 2) * 0.2F;
     }
 
@@ -167,7 +173,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      * @param bodySwing Horizontal (Y) body rotation.
      * @param ticks       Total whole and partial ticks since the entity's existance. Used in animations together with {@code swing} and {@code move}.
      */
-    protected void rotateLook(float move, float swing, float bodySwing, float ticks) {
+    protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
         tail.setRotationAndAngles(rainboom, move, swing, bodySwing, ticks);
         bodySwing /= 5;
 
@@ -209,21 +215,40 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     *
     * Takes the same parameters as {@link AbstractPonyModel.setRotationAndAngles}
     *
-    * TODO: This can be merged into adjustLegs
-    *
     */
-    protected void setLegs(float move, float swing, float ticks, Entity entity) {
+    protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
         if (isFlying()) {
             rotateLegsInFlight(move, swing, ticks, entity);
         } else {
             rotateLegsOnGround(move, swing, ticks, entity);
         }
 
-        bipedLeftArm.rotateAngleZ = 0;
         bipedRightArm.rotateAngleZ = 0;
+        bipedLeftArm.rotateAngleZ = 0;
 
-        adjustLegs(move, swing, ticks);
+        float sin = MathHelper.sin(bipedBody.rotateAngleY) * 5;
+        float cos = MathHelper.cos(bipedBody.rotateAngleY) * 5;
+
+        float spread = getLegSpread();
+
+        bipedRightArm.rotationPointZ = spread + sin;
+        bipedLeftArm.rotationPointZ = spread - sin;
+
+        float legRPX = cos - getLegOutset();
+
+        bipedRightArm.rotationPointX = -legRPX;
+        bipedRightLeg.rotationPointX = -legRPX;
+
+        bipedLeftArm.rotationPointX = legRPX;
+        bipedLeftLeg.rotationPointX = legRPX;
+
+        bipedRightArm.rotateAngleY += bipedBody.rotateAngleY;
+        bipedLeftArm.rotateAngleY += bipedBody.rotateAngleY;
+
+        bipedRightArm.rotationPointY = bipedLeftArm.rotationPointY = 8;
+        bipedRightLeg.rotationPointZ = bipedLeftLeg.rotationPointZ = 10;
     }
+
 
     /**
      * Rotates legs in quopy fashion whilst flying.
@@ -290,39 +315,6 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     }
 
     /**
-    *
-    * Used to set the legs rotation based on walking/crouching animations.
-    *
-    * Takes the same parameters as {@link AbstractPonyModel.setRotationAndAngles}
-    *
-    * TODO: This can be merged into setLegs
-    *
-    */
-    protected void adjustLegs(float move, float swing, float ticks) {
-        float sin = MathHelper.sin(bipedBody.rotateAngleY) * 5;
-        float cos = MathHelper.cos(bipedBody.rotateAngleY) * 5;
-
-        float spread = getLegSpread();
-
-        bipedRightArm.rotationPointZ = spread + sin;
-        bipedLeftArm.rotationPointZ = spread - sin;
-
-        float legRPX = cos - getLegOutset();
-
-        bipedRightArm.rotationPointX = -legRPX;
-        bipedRightLeg.rotationPointX = -legRPX;
-
-        bipedLeftArm.rotationPointX = legRPX;
-        bipedLeftLeg.rotationPointX = legRPX;
-
-        bipedRightArm.rotateAngleY += bipedBody.rotateAngleY;
-        bipedLeftArm.rotateAngleY += bipedBody.rotateAngleY;
-
-        bipedRightArm.rotationPointY = bipedLeftArm.rotationPointY = 8;
-        bipedRightLeg.rotationPointZ = bipedLeftLeg.rotationPointZ = 10;
-    }
-
-    /**
      * Adjusts legs as if holding an item. Delegates to the correct arm/leg/limb as neccessary.
      *
      * @param swing
@@ -330,8 +322,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     protected void holdItem(float swing) {
         boolean both = leftArmPose == ArmPose.ITEM && rightArmPose == ArmPose.ITEM;
 
-        alignArmForAction(bipedLeftArm, leftArmPose, both, swing, 1);
-        alignArmForAction(bipedRightArm, rightArmPose, both, swing, -1);
+        alignArmForAction(bipedLeftArm, leftArmPose, rightArmPose, both, swing, 1);
+        alignArmForAction(bipedRightArm, rightArmPose, leftArmPose, both, swing, -1);
     }
 
     /**
@@ -342,7 +334,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      * @param both  True if we have something in both hands
      * @param swing     Degree to which each 'limb' swings.
      */
-    protected void alignArmForAction(ModelRenderer arm, ArmPose pose, boolean both, float swing, float reflect) {
+    protected void alignArmForAction(ModelRenderer arm, ArmPose pose, ArmPose complement, boolean both, float swing, float reflect) {
         switch (pose) {
             case ITEM:
                 float swag = 1;
@@ -351,17 +343,40 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
                 }
                 float mult = 1 - swag/2;
                 arm.rotateAngleX = arm.rotateAngleX * mult - (PI / 10) * swag;
-                arm.rotateAngleZ = -reflect * (mult - PI / 10);
+                arm.rotateAngleZ = -reflect * (PI / 15);
+                if (isSneak) {
+                    arm.rotationPointX -= reflect * 2;
+                }
             case EMPTY:
                 arm.rotateAngleY = 0;
                 break;
             case BLOCK:
-                arm.rotateAngleX = arm.rotateAngleX / 2 - 0.9424779F;
-                arm.rotateAngleY = reflect * PI / 6;
+                if (complement != ArmPose.BOW_AND_ARROW) {
+                    arm.rotateAngleX = (arm.rotateAngleX / 2 - 0.9424779F) - 0.3F;
+                    arm.rotateAngleY = reflect * PI / 9;
+                    arm.rotationPointX += reflect;
+                    arm.rotationPointZ += 3;
+                    if (isSneak) {
+                        arm.rotationPointY += 4;
+                    }
+                }
+                break;
+            case BOW_AND_ARROW:
+                aimBow(arm, swing);
                 break;
             default:
         }
     }
+
+    protected void aimBow(ModelRenderer arm, float ticks) {
+        arm.rotateAngleX = ROTATE_270 + bipedHead.rotateAngleX + (MathHelper.sin(ticks * 0.067F) * 0.05F);
+        arm.rotateAngleY = bipedHead.rotateAngleY - 0.06F;
+        arm.rotateAngleZ = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
+        if (isSneak) {
+            arm.rotationPointY += 4;
+        }
+    }
+
 
     /**
      * Animates arm swinging. Delegates to the correct arm/leg/limb as neccessary.
@@ -369,7 +384,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      * @param entity     The entity we are being called for.
      */
     protected void swingItem(Entity entity) {
-        if (swingProgress > -9990.0F && !isSleeping) {
+        if (swingProgress > 0 && !isSleeping) {
             EnumHandSide mainSide = getMainHand(entity);
 
             swingArm(getArmForSide(mainSide));
@@ -457,19 +472,6 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         AbstractPonyRenderer.shiftRotationPoint(bipedLeftArm, 0, 2, 6);
         AbstractPonyRenderer.shiftRotationPoint(bipedRightLeg, 0, 2, -8);
         AbstractPonyRenderer.shiftRotationPoint(bipedLeftLeg, 0, 2, -8);
-    }
-
-    protected void aimBow(ArmPose leftArm, ArmPose rightArm, float ticks) {
-        if (rightArm == ArmPose.BOW_AND_ARROW) aimBowPony(bipedRightArm, ticks);
-        if (leftArm == ArmPose.BOW_AND_ARROW) aimBowPony(bipedLeftArm, ticks);
-    }
-
-    protected void aimBowPony(ModelRenderer arm, float ticks) {
-        arm.rotateAngleZ = 0;
-        arm.rotateAngleY = bipedHead.rotateAngleY - 0.06F;
-        arm.rotateAngleX = ROTATE_270 + bipedHead.rotateAngleX;
-        arm.rotateAngleZ += MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
-        arm.rotateAngleX += MathHelper.sin(ticks * 0.067F) * 0.05F;
     }
 
     /**
@@ -686,30 +688,6 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     @Override
     public float getSwingAmount() {
         return swingProgress;
-    }
-
-    /**
-     * Rotates the provided arm to the correct orientation for holding an item.
-     *
-     * @param arm           The arm to rotate
-     * @param direction     Direction multiplier. 1 for right, -1 for left.
-     * @param swingProgress How far we are through the current swing
-     * @param ticks         Render partial ticks
-     */
-    protected void rotateArmHolding(ModelRenderer arm, float direction, float swingProgress, float ticks) {
-        float swing = MathHelper.sin(swingProgress * PI);
-        float roll = MathHelper.sin((1 - (1 - swingProgress) * (1 - swingProgress)) * PI);
-
-        float cos = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
-        float sin = MathHelper.sin(ticks * 0.067F) / 10;
-
-        arm.rotateAngleX = -1.5707964F;
-        arm.rotateAngleX -= swing * 1.2F - roll * 0.4F;
-        arm.rotateAngleX += sin;
-
-        arm.rotateAngleY = direction * (0.1F - swing * 0.6F);
-        arm.rotateAngleZ = cos;
-
     }
 
     /**
