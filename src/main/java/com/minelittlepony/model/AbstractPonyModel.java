@@ -330,8 +330,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     protected void holdItem(float swing) {
         boolean both = leftArmPose == ArmPose.ITEM && rightArmPose == ArmPose.ITEM;
 
-        alignArmForAction(bipedLeftArm, leftArmPose, both, swing);
-        alignArmForAction(bipedRightArm, rightArmPose, both, swing);
+        alignArmForAction(bipedLeftArm, leftArmPose, both, swing, 1);
+        alignArmForAction(bipedRightArm, rightArmPose, both, swing, -1);
     }
 
     /**
@@ -342,7 +342,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      * @param both  True if we have something in both hands
      * @param swing     Degree to which each 'limb' swings.
      */
-    protected void alignArmForAction(ModelRenderer arm, ArmPose pose, boolean both, float swing) {
+    protected void alignArmForAction(ModelRenderer arm, ArmPose pose, boolean both, float swing, float reflect) {
         switch (pose) {
             case ITEM:
                 float swag = 1;
@@ -350,13 +350,14 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
                     swag -= (float)Math.pow(swing, 2);
                 }
                 float mult = 1 - swag/2;
-                arm.rotateAngleX = bipedLeftArm.rotateAngleX * mult - (PI / 10) * swag;
+                arm.rotateAngleX = arm.rotateAngleX * mult - (PI / 10) * swag;
+                arm.rotateAngleZ = -reflect * (mult - PI / 10);
             case EMPTY:
                 arm.rotateAngleY = 0;
                 break;
             case BLOCK:
                 arm.rotateAngleX = arm.rotateAngleX / 2 - 0.9424779F;
-                arm.rotateAngleY = PI / 6;
+                arm.rotateAngleY = reflect * PI / 6;
                 break;
             default:
         }

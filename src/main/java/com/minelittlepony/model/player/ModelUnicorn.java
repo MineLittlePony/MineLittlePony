@@ -61,8 +61,8 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
         if (canCast()) {
             boolean both = leftArmPose == ArmPose.ITEM && rightArmPose == ArmPose.ITEM;
 
-            alignArmForAction(unicornArmLeft, leftArmPose, both, swing);
-            alignArmForAction(unicornArmRight, rightArmPose, both, swing);
+            alignArmForAction(unicornArmLeft, leftArmPose, both, swing, 1);
+            alignArmForAction(unicornArmRight, rightArmPose, both, swing, -1);
         } else {
             super.holdItem(swing);
         }
