@@ -64,6 +64,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
         ponyModel.isSneak = entity.isSneaking();
         ponyModel.isSleeping = entity.isPlayerSleeping();
         ponyModel.isFlying = pony.isPegasusFlying(entity);
+        ponyModel.isSwimming = pony.isSwimming(entity);
 
         super.preRenderCallback(entity, ticks);
         shadowSize = getShadowScale();

@@ -37,6 +37,11 @@ public interface IModel {
     boolean isFlying();
 
     /**
+     * Returns true if this model is wimming underwater.
+     */
+    boolean isSwimming();
+
+    /**
      * Returns true if we're flying really fast.
      */
     boolean isGoingFast();

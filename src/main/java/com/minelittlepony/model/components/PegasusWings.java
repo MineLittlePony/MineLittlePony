@@ -56,8 +56,11 @@ public class PegasusWings implements IModelPart {
     }
 
     public float getWingRotationFactor(float ticks) {
+        if (pegasus.isSwimming()) {
+            return (MathHelper.sin(ticks * 0.136f) / 2) + ROTATE_270;
+        }
         if (pegasus.isFlying()) {
-            return (MathHelper.sin(ticks * 0.536f) * 1) + ROTATE_270 + 0.4f;
+            return MathHelper.sin(ticks * 0.536f) + ROTATE_270 + 0.4f;
         }
         return LEFT_WING_ROTATE_ANGLE_Z_SNEAK;
     }

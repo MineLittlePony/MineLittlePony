@@ -6,12 +6,15 @@ import com.minelittlepony.mixin.MixinThreadDownloadImageData;
 import com.minelittlepony.model.ModelWrapper;
 import com.voxelmodpack.hdskins.DynamicTextureImage;
 import com.voxelmodpack.hdskins.ThreadDownloadImageETag;
+
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
@@ -99,6 +102,14 @@ public class Pony {
     public boolean isPegasusFlying(EntityLivingBase entity) {
         return getRace(false).hasWings() &&
                 !(entity.onGround || entity.isRiding() || entity.isOnLadder() || entity.isInWater());
+    }
+
+    public boolean isSwimming(EntityLivingBase entity) {
+        return isFullySubmerged(entity) && !(entity.onGround || entity.isOnLadder());
+    }
+
+    public boolean isFullySubmerged(EntityLivingBase entity) {
+        return entity.isInWater() && entity.getEntityWorld().getBlockState(new BlockPos(entity.getPositionEyes(1))).getMaterial() == Material.WATER;
     }
 
     public ModelWrapper getModel(boolean ignorePony) {

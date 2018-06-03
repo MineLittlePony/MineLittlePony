@@ -53,6 +53,7 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
       ponyModel.isSneak = player.isSneaking();
       ponyModel.isSleeping = player.isPlayerSleeping();
       ponyModel.isFlying = pony.isPegasusFlying(player);
+      ponyModel.isSwimming = pony.isSwimming(player);
 
       super.preRenderCallback(player, ticks);
       shadowSize = getShadowScale();

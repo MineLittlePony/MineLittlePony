@@ -33,12 +33,12 @@ public class ModelPonyArmor extends AbstractPonyModel {
 
     @Override
     protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        flankGuard.render(this.scale);
-        saddle.render(this.scale);
+        flankGuard.render(scale);
+        saddle.render(scale);
     }
 
     @Override
-    protected void renderLegs() {
+    protected void renderLegs(float scale) {
         if (!isSneak) {
             boolean isLegs = saddle.showModel;
             saddle.showModel = true;
@@ -46,7 +46,7 @@ public class ModelPonyArmor extends AbstractPonyModel {
             saddle.showModel = isLegs;
         }
 
-        super.renderLegs();
+        super.renderLegs(scale);
     }
 
     @Override

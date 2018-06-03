@@ -31,13 +31,9 @@ import static com.minelittlepony.model.PonyModelConstants.*;
  */
 public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
-    /**
-     * The model's current scale.
-     */
-    protected float scale = 0.0625F;
-
     public boolean isFlying;
     public boolean isSleeping;
+    public boolean isSwimming;
 
     /**
      * Associcated pony data.
@@ -661,6 +657,11 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     }
 
     @Override
+    public boolean isSwimming() {
+        return isSwimming;
+    }
+
+    @Override
     public boolean isChild() {
         return metadata.getSize() == PonySize.FOAL || isChild;
     }
@@ -691,7 +692,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
         pushMatrix();
         transform(BodyPart.NECK);
-        renderNeck();
+        renderNeck(scale);
         popMatrix();
 
         pushMatrix();
@@ -701,7 +702,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
         pushMatrix();
         transform(BodyPart.LEGS);
-        renderLegs();
+        renderLegs(scale);
         popMatrix();
     }
 
@@ -718,7 +719,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         bipedHead.postRender(scale);
     }
 
-    protected void renderNeck() {
+    protected void renderNeck(float scale) {
         GlStateManager.scale(0.9, 0.9, 0.9);
         neck.render(scale);
     }
@@ -740,7 +741,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         tail.render(scale);
     }
 
-    protected void renderLegs() {
+    protected void renderLegs(float scale) {
         if (!isSneak) bipedBody.postRender(scale);
 
         bipedLeftArm.render(scale);
