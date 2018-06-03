@@ -31,7 +31,6 @@ public class ModelVillagerPony extends ModelAlicorn {
 
         int profession = getProfession(entity);
         if (profession > -1) {
-            bipedBody.postRender(this.scale);
             if (profession < 2) {
                 bag.render(scale);
             } else if (profession == 2) {
