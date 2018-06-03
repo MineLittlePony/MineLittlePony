@@ -45,6 +45,8 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -61,6 +63,8 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     public static final HDSkinManager INSTANCE = new HDSkinManager();
 
     private boolean enabled = true;
+
+    private List<ISkinCacheClearListener> clearListeners = Lists.newArrayList();
 
     private List<SkinServer> skinServers = Lists.newArrayList();
 
@@ -223,6 +227,10 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     }
 
+    public void addClearListener(ISkinCacheClearListener listener) {
+        clearListeners.add(listener);
+    }
+
     public static void clearSkinCache() {
         LiteLoaderLogger.info("Clearing local player skin cache");
 
@@ -238,6 +246,19 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             var1.printStackTrace();
         }
 
+        INSTANCE.clearListeners = INSTANCE.clearListeners.stream()
+                .filter(HDSkinManager::onSkinCacheCleared)
+                .collect(Collectors.toList());
+    }
+
+    private static boolean onSkinCacheCleared(ISkinCacheClearListener callback) {
+        try {
+            return callback.onSkinCacheCleared();
+        } catch (Exception e) {
+            LiteLoaderLogger.warning("Exception ancountered calling skin listener '{}'. It will be removed.", callback.getClass().getName());
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public void addSkinModifier(ISkinModifier modifier) {

@@ -46,6 +46,7 @@ public class MineLittlePony {
 
         config = new PonyConfig();
         ponyManager = new PonyManager(config);
+
         renderManager = new PonyRenderManager();
 
         LiteLoader.getInstance().registerExposable(config, null);
@@ -70,6 +71,7 @@ public class MineLittlePony {
 //        manager.setGatewayURL(GATEWAY_URL);
         manager.addSkinModifier(new PonySkinModifier());
 //        logger.info("Set MineLP skin server URL.");
+        manager.addClearListener(ponyManager);
 
         RenderManager rm = minecraft.getRenderManager();
         renderManager.initialisePlayerRenderers(rm);

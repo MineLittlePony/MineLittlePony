@@ -10,6 +10,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.Later;
 import com.voxelmodpack.hdskins.skins.SkinUploadResponse;
 import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
 import net.minecraft.client.Minecraft;
@@ -34,6 +35,7 @@ import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
@@ -88,7 +90,8 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     private File selectedSkin;
     private float uploadOpacity = 0.0F;
     private float lastPartialTick;
-    private JFrame fileDrop;
+
+    private static JFrame fileDrop;
 
     private MinecraftProfileTexture.Type textureType = SKIN;
 
@@ -170,7 +173,8 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
 
     @Override
     public void initGui() {
-        enableDnd();
+        Later.performLater(1, this::enableDnd);
+
         this.initPanoramaRenderer();
         this.buttonList.clear();
         this.buttonList.add(this.btnBrowse = new GuiButton(0, 30, this.height - 36, 60, 20, "Browse..."));
@@ -191,16 +195,21 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     private void enableDnd() {
         if (fileDrop != null) {
             fileDrop.setVisible(true);
+            fileDrop.requestFocusInWindow();
+            fileDrop.setLocation(Display.getX(), Display.getY());
             return;
         }
         fileDrop = new JFrame("Skin Drop");
         fileDrop.setType(Type.UTILITY);
-        fileDrop.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        fileDrop.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         fileDrop.setResizable(false);
         fileDrop.setTitle("Skin Drop");
         fileDrop.setSize(256, 256);
-        // fileDrop.setAlwaysOnTop(true);
+        fileDrop.setAlwaysOnTop(true);
+        fileDrop.getRootPane().setWindowDecorationStyle(JRootPane.NONE);
+        fileDrop.setLocation(Display.getX(), Display.getY());
         fileDrop.getContentPane().setLayout(null);
+
         JPanel panel = new JPanel();
         panel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
         panel.setBounds(10, 11, 230, 205);
@@ -215,6 +224,7 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
         try {
             dt.addDropTargetListener((FileDropListener) files -> files.stream().findFirst().ifPresent(this::loadLocalFile));
             fileDrop.setVisible(true);
+            fileDrop.requestFocusInWindow();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -227,10 +237,16 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
-        if (this.fileDrop != null)
-            this.fileDrop.dispose();
-        this.localPlayer.releaseTextures();
-        this.remotePlayer.releaseTextures();
+        Later.performLater(1, () -> {
+            if (!(Minecraft.getMinecraft().currentScreen instanceof GuiSkins)) {
+                if (fileDrop != null) {
+                    fileDrop.setVisible(false);
+                }
+                GuiSkins.this.localPlayer.releaseTextures();
+                GuiSkins.this.remotePlayer.releaseTextures();
+                HDSkinManager.clearSkinCache();
+            }
+        });
     }
 
     private void onFileOpenDialogClosed(JFileChooser fileDialog, int dialogResult) {
@@ -283,7 +299,7 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
                     this.selectedSkin = null;
                     this.localPlayer.releaseTextures();
                     this.openFileThread = new ThreadOpenFilePNG(this.mc, I18n.format("hdskins.open.title"), this::onFileOpenDialogClosed);
-                    this.openFileThread.start();
+                    this.openFileThread.setParent(fileDrop).start();
                     guiButton.enabled = false;
                 }
 
