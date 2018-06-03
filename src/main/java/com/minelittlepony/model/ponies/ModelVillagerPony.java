@@ -19,7 +19,6 @@ public class ModelVillagerPony extends ModelAlicorn {
     @Override
     protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
         super.shakeBody(move, swing, bodySwing, ticks);
-        bodySwing /= 5;
 
         bag.rotateAngleY = bodySwing;
         apron.rotateAngleY = bodySwing;

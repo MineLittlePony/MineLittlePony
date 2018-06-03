@@ -149,7 +149,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
             return 0;
         }
 
-        return MathHelper.sin(MathHelper.sqrt(swingProgress) * PI * 2) * 0.2F;
+        return MathHelper.sin(MathHelper.sqrt(swingProgress) * PI * 2) * 0.04F;
     }
 
     protected void adjustBodyRiding() {
@@ -167,8 +167,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      * @param ticks       Total whole and partial ticks since the entity's existance. Used in animations together with {@code swing} and {@code move}.
      */
     protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
-        tail.setRotationAndAngles(rainboom, move, swing, bodySwing, ticks);
-        bodySwing /= 5;
+        tail.setRotationAndAngles(rainboom, move, swing, bodySwing * 5, ticks);
 
         upperTorso.rotateAngleY = bodySwing;
         bipedBody.rotateAngleY = bodySwing;
