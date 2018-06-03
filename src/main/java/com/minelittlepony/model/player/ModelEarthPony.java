@@ -19,22 +19,25 @@ public class ModelEarthPony extends AbstractPonyModel {
     }
 
     @Override
-    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
-        super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
+    public void init(float yOffset, float stretch) {
+        super.init(yOffset, stretch);
 
-        if (bipedCape != null) {
-            bipedCape.rotationPointY = isSneak ? 2 : isRiding ? -4 : 0;
-        }
         if (accessory != null && metadata.hasAccessory()) {
-            accessory.setRotationAndAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
+            accessory.init(yOffset, stretch);
+        }
+    }
+
+    @Override
+    protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
+        super.shakeBody(move, swing, bodySwing, ticks);
+        if (accessory != null && metadata.hasAccessory()) {
+            accessory.shakeBody(bodySwing);
         }
     }
 
     @Override
     protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         super.renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
-
-        bipedBody.postRender(this.scale);
         if (accessory != null && metadata.hasAccessory()) {
             accessory.render(scale);
         }
@@ -49,11 +52,11 @@ public class ModelEarthPony extends AbstractPonyModel {
     }
 
     @Override
-    protected void initPositions(float yOffset, float stretch) {
-        super.initPositions(yOffset, stretch);
+    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
+        super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
 
-        if (accessory != null && metadata.hasAccessory()) {
-            accessory.initPositions(yOffset, stretch);
+        if (bipedCape != null) {
+            bipedCape.rotationPointY = isSneak ? 2 : isRiding ? -4 : 0;
         }
     }
 
