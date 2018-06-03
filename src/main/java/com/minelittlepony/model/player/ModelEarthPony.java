@@ -21,9 +21,8 @@ public class ModelEarthPony extends AbstractPonyModel {
     @Override
     public void init(float yOffset, float stretch) {
         super.init(yOffset, stretch);
-
-        if (accessory != null && metadata.hasAccessory()) {
-            accessory.init(yOffset, stretch);
+        if (metadata.hasAccessory()) {
+            accessory = new PonyAccessory(this, yOffset, stretch);
         }
     }
 
@@ -40,14 +39,6 @@ public class ModelEarthPony extends AbstractPonyModel {
         super.renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
         if (accessory != null && metadata.hasAccessory()) {
             accessory.render(scale);
-        }
-    }
-
-    @Override
-    protected void initTextures() {
-        super.initTextures();
-        if (metadata.hasAccessory()) {
-            accessory = new PonyAccessory(this);
         }
     }
 

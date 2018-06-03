@@ -14,17 +14,11 @@ public class PonyAccessory implements IModelPart {
 
     public PlaneRenderer bag;
 
-    public <T extends AbstractPonyModel> PonyAccessory(T model) {
+    public <T extends AbstractPonyModel> PonyAccessory(T model, float yOffset, float stretch) {
         theModel = model;
 
         if (theModel.metadata.hasBags()) {
             bag = new PlaneRenderer(theModel, 56, 19);
-        }
-    }
-
-    @Override
-    public void init(float yOffset, float stretch) {
-        if (bag != null && theModel.metadata.hasBags()) {
             bag.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
                .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                .tex(56, 25).addBackPlane(-7,     -5,    -4, 3, 6, stretch) //right bag front
@@ -47,7 +41,11 @@ public class PonyAccessory implements IModelPart {
         }
     }
 
-    @Override  // I really didn't know, what to do here, but since this has to be overridden...
+    @Override
+    public void init(float yOffset, float stretch) {
+    }
+
+    @Override
     public void setRotationAndAngles(boolean rainboom, float move, float swing, float bodySwing, float ticks) {
     }
 
