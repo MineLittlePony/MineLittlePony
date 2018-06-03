@@ -93,6 +93,8 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
 
     private static JFrame fileDrop;
 
+    private static GuiSkins instance;
+
     private MinecraftProfileTexture.Type textureType = SKIN;
 
     public GuiSkins() {
@@ -107,6 +109,8 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
         rm.renderViewEntity = this.localPlayer;
         this.reloadRemoteSkin();
         this.fetchingSkin = true;
+
+        instance = this;
     }
 
     protected EntityPlayerModel getModel(GameProfile profile) {
@@ -199,6 +203,7 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
             fileDrop.setLocation(Display.getX(), Display.getY());
             return;
         }
+
         fileDrop = new JFrame("Skin Drop");
         fileDrop.setType(Type.UTILITY);
         fileDrop.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -222,7 +227,9 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
         DropTarget dt = new DropTarget();
         fileDrop.setDropTarget(dt);
         try {
-            dt.addDropTargetListener((FileDropListener) files -> files.stream().findFirst().ifPresent(this::loadLocalFile));
+            dt.addDropTargetListener((FileDropListener) files -> {
+                files.stream().findFirst().ifPresent(instance::loadLocalFile);
+            });
             fileDrop.setVisible(true);
             fileDrop.requestFocusInWindow();
         } catch (Exception e) {
