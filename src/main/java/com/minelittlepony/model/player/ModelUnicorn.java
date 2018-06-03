@@ -3,7 +3,6 @@ package com.minelittlepony.model.player;
 import com.minelittlepony.model.components.UnicornHorn;
 import com.minelittlepony.render.PonyRenderer;
 
-import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;

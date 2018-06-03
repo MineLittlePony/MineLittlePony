@@ -11,24 +11,33 @@ import net.minecraft.util.EnumHandSide;
 
 public class ModelSkeletonPony extends ModelMobPony {
     @Override
-    public boolean isCasting() {
-        return true;
-    }
-
-    @Override
     public void setLivingAnimations(EntityLivingBase entity, float move, float swing, float ticks) {
         rightArmPose = ArmPose.EMPTY;
         leftArmPose = ArmPose.EMPTY;
-        ItemStack itemstack = entity.getHeldItem(EnumHand.MAIN_HAND);
 
-        if (itemstack.getItem() == Items.BOW && ((AbstractSkeleton)entity).isSwingingArms())
-        {
-            if (entity.getPrimaryHand() == EnumHandSide.RIGHT) {
-                rightArmPose = ArmPose.BOW_AND_ARROW;
+        ItemStack mainHand = entity.getHeldItem(EnumHand.MAIN_HAND);
+        ItemStack offHand = entity.getHeldItem(EnumHand.OFF_HAND);
+
+        boolean right = entity.getPrimaryHand() == EnumHandSide.RIGHT;
+
+        if (!offHand.isEmpty()) {
+            if (right) {
+                leftArmPose = ArmPose.ITEM;
             } else {
-                leftArmPose = ArmPose.BOW_AND_ARROW;
+                rightArmPose = ArmPose.ITEM;
             }
         }
+
+        if (!mainHand.isEmpty()) {
+            ArmPose pose = mainHand.getItem() == Items.BOW && ((AbstractSkeleton)entity).isSwingingArms() ? ArmPose.BOW_AND_ARROW : ArmPose.ITEM;
+
+            if (right) {
+                rightArmPose = pose;
+            } else {
+                leftArmPose = pose;
+            }
+        }
+
 
         super.setLivingAnimations(entity, move, swing, ticks);
     }
