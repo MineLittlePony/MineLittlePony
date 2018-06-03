@@ -79,6 +79,11 @@ public class PonyTail extends PlaneRenderer implements IModelPart {
         isHidden = !visible;
     }
 
+
+    public void renderPart(float scale) {
+        render(scale);
+    }
+
     private class TailSegment extends PlaneRenderer {
 
         private final int index;

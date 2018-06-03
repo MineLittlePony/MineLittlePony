@@ -778,7 +778,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         }
         upperTorso.render(scale);
         bipedBody.postRender(scale);
-        tail.render(scale);
+        tail.renderPart(scale);
     }
 
     protected void renderLegs() {

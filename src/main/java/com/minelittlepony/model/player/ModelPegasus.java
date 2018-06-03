@@ -28,6 +28,6 @@ public class ModelPegasus extends ModelEarthPony implements IModelPegasus {
     @Override
     protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         super.renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
-        wings.render(scale);
+        wings.renderPart(scale);
     }
 }
