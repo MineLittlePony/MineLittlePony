@@ -18,20 +18,12 @@ public class ModelMobPony extends ModelAlicorn {
         super(false);
     }
 
-    /**
-     * Returns true if the angle is to the right?
-     */
-    public boolean islookAngleRight(float move) {
-        return MathHelper.sin(move / 20) < 0;
-    }
-
     @Override
     protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
         super.rotateLegs(move, swing, ticks, entity);
 
         if (rightArmPose != ArmPose.EMPTY) {
             if (canCast()) {
-                unicornArmRight.setRotationPoint(-7, 12, -2);
                 rotateArmHolding(unicornArmRight, -1, swingProgress, ticks);
             } else {
                 rotateArmHolding(bipedRightArm, -1, swingProgress, ticks);
@@ -40,7 +32,6 @@ public class ModelMobPony extends ModelAlicorn {
 
         if (leftArmPose != ArmPose.EMPTY) {
             if (canCast()) {
-                unicornArmRight.setRotationPoint(-7, 12, -2);
                 rotateArmHolding(unicornArmLeft, -1, swingProgress, ticks);
             } else {
                 rotateArmHolding(bipedLeftArm, -1, swingProgress, ticks);

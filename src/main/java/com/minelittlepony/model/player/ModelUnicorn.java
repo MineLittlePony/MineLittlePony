@@ -2,6 +2,8 @@ package com.minelittlepony.model.player;
 
 import com.minelittlepony.model.components.UnicornHorn;
 import com.minelittlepony.render.PonyRenderer;
+
+import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
@@ -49,11 +51,8 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
     protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
         super.rotateLegs(move, swing, ticks, entity);
 
-        unicornArmLeft.rotationPointX = 5;
-        unicornArmRight.rotationPointX = -5;
-
-        unicornArmLeft.rotationPointY = unicornArmRight.rotationPointY = 8;
-        unicornArmLeft.rotationPointZ = unicornArmRight.rotationPointZ = 10;
+        unicornArmRight.setRotationPoint(-7, 12, -2);
+        unicornArmLeft.setRotationPoint(-7, 12, -2);
 
         unicornArmLeft.rotateAngleZ = 0;
         unicornArmRight.rotateAngleZ = 0;

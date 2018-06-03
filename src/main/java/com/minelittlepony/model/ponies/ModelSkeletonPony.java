@@ -33,13 +33,6 @@ public class ModelSkeletonPony extends ModelMobPony {
         super.setLivingAnimations(entity, move, swing, ticks);
     }
 
-    @Override
-    protected void fixSpecialRotationPoints(float move) {
-        if (rightArmPose != ArmPose.EMPTY && !canCast()) {
-            bipedRightArm.setRotationPoint(-1.5F, 9.5F, 4);
-        }
-    }
-
     protected float getLegOutset() {
         if (isSleeping) return 2.6f;
         if (isCrouching()) return 0;

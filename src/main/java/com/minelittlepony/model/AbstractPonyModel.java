@@ -18,7 +18,6 @@ import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 
@@ -75,10 +74,6 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      */
     protected void checkRainboom(Entity entity, float swing) {
         rainboom = canFly() && Math.sqrt(entity.motionX * entity.motionX + entity.motionZ * entity.motionZ) > 0.4F;
-    }
-
-    public void setLivingAnimations(EntityLivingBase entity, float move, float swing, float partialTicks) {
-
     }
 
     /**
@@ -142,8 +137,6 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         }
 
         if (isSleeping) ponySleep();
-
-        fixSpecialRotationPoints(move);
 
         animateWears();
 
@@ -472,16 +465,6 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         AbstractPonyRenderer.shiftRotationPoint(bipedLeftArm, 0, 2, 6);
         AbstractPonyRenderer.shiftRotationPoint(bipedRightLeg, 0, 2, -8);
         AbstractPonyRenderer.shiftRotationPoint(bipedLeftLeg, 0, 2, -8);
-    }
-
-    /**
-     * Called after postioning but before wears alignment to perform some last-minute adjustments.
-     *
-     * @param move  Entity motion parameter. See {@link AbstractPonyModel.setRotationAngles}.
-     *
-     * TODO: Empty method
-     */
-    protected void fixSpecialRotationPoints(float move) {
     }
 
     public void init(float yOffset, float stretch) {
