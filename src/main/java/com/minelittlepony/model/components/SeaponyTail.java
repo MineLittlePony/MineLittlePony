@@ -53,7 +53,7 @@ public class SeaponyTail implements IModelPart {
     }
 
     @Override
-    public void render(float scale) {
+    public void renderPart(float scale) {
         GlStateManager.enableBlend();
         tailBase.render(scale);
         GlStateManager.disableBlend();

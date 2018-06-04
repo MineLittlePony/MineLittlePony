@@ -18,7 +18,7 @@ public interface IModelPart {
     /**
      * Renders this model component.
      */
-    void render(float scale);
+    void renderPart(float scale);
 
     /**
      * Sets whether this part should be rendered.

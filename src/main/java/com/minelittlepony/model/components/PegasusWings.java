@@ -66,7 +66,7 @@ public class PegasusWings implements IModelPart {
     }
 
     @Override
-    public void render(float scale) {
+    public void renderPart(float scale) {
         boolean standing = pegasus.wingsAreOpen();
         leftWing.render(standing, scale);
         rightWing.render(standing, scale);
