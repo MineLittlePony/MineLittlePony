@@ -12,8 +12,8 @@ public class PegasusWings implements IModelPart {
 
     private final IModelPegasus pegasus;
 
-    public final ModelWing leftWing;
-    public final ModelWing rightWing;
+    private final ModelWing leftWing;
+    private final ModelWing rightWing;
 
     public <T extends AbstractPonyModel & IModelPegasus> PegasusWings(T model, float yOffset, float stretch) {
         pegasus = model;

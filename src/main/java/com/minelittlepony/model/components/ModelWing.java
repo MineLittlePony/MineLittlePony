@@ -6,25 +6,20 @@ import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.render.PonyRenderer;
 
 public class ModelWing {
-    public PonyRenderer extended;
-    public PonyRenderer folded;
-
-    private boolean mirror;
+    private PonyRenderer extended;
+    private PonyRenderer folded;
 
     public ModelWing(AbstractPonyModel pony, boolean mirror, float x, float y, float scale, int texY) {
-        this.mirror = mirror;
-
-        folded = new PonyRenderer(pony, 56, texY)
-                .around(HEAD_RP_X, WING_FOLDED_RP_Y, WING_FOLDED_RP_Z);
-        extended = new PonyRenderer(pony, 56, texY + 3)
-                .around(HEAD_RP_X, WING_FOLDED_RP_Y, WING_FOLDED_RP_Z);
+        folded = new PonyRenderer(pony, 56, texY);
+        extended = new PonyRenderer(pony, 56, texY + 3);
 
         addClosedWing(x, y, scale);
         addFeathers(mirror, y, scale);
     }
 
     private void addClosedWing(float x, float y, float scale) {
-        folded.box(x, 5, 2, 2, 6, 2, scale)
+        folded.around(HEAD_RP_X, WING_FOLDED_RP_Y, WING_FOLDED_RP_Z)
+              .box(x, 5, 2, 2, 6, 2, scale)
               .box(x, 5, 4, 2, 8, 2, scale)
               .box(x, 5, 6, 2, 6, 2, scale)
               .rotateAngleX = ROTATE_90;
@@ -32,7 +27,6 @@ public class ModelWing {
 
     private void addFeathers(boolean mirror, float y, float scale) {
         float r = mirror ? -1 : 1;
-        extended.cubeList.clear();
         extended.around(r * LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + y, LEFT_WING_EXT_RP_Z);
         addFeather(0, r, y,  6,     0,    8, scale + 0.1F);
         addFeather(1, r, y, -1.2F, -0.2F, 8, scale + 0.2F) .rotateAngleX = -0.85F;
@@ -52,9 +46,6 @@ public class ModelWing {
 
 
     public void render(boolean extend, float scale) {
-        extended.rotationPointX = (mirror ? -1 : 1) * LEFT_WING_EXT_RP_X;
-        extended.rotationPointY = LEFT_WING_EXT_RP_Y;
-
         extended.rotateAngleY = 3;
         if (extend) {
             extended.render(scale);
