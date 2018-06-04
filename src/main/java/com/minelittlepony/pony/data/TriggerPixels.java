@@ -12,7 +12,8 @@ public enum TriggerPixels {
     TAIL(TailLengths.FULL, 1, 0),
     GENDER(PonyGender.MARE, 2, 0),
     SIZE(PonySize.LARGE, 3, 0),
-    GLOW(null, 0, 1);
+    GLOW(null, 0, 1),
+    ACCESSORY(PonyAccessory.NONE, 1, 1);
 
     private int x;
     private int y;
