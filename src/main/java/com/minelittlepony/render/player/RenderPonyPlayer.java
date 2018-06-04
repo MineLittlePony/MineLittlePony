@@ -50,14 +50,17 @@ public class RenderPonyPlayer extends RenderPonyBase {
         GlStateManager.rotate(ponyModel.motionPitch, 1, 0, 0);
 
         double horMotion = Math.sqrt(motionX * motionX + motionZ * motionZ);
+
         if (horMotion > 0) {
-            yaw = (player.cameraYaw - player.rotationYaw) % 360;
+
+            yaw = player.cameraYaw - player.rotationYawHead;
+
             double roll = (Math.toDegrees(Math.atan2(motionX, motionZ)) - yaw) % 360;
 
-            if (roll > 180) {
-                roll -= 360;
-            }
-            roll = MathHelper.clamp(roll, -44, 44) * horMotion * 2;
+            if (roll < -180) roll += 360;
+
+            roll *= horMotion * 2;
+            roll = MathHelper.clamp(roll, -54, 54);
 
             GlStateManager.rotate((float)roll, 0, 0, 1);
         }
