@@ -18,10 +18,8 @@ public class PegasusWings implements IModelPart {
     public <T extends AbstractPonyModel & IModelPegasus> PegasusWings(T model, float yOffset, float stretch) {
         pegasus = model;
 
-        boolean hasBags = ((AbstractPonyModel) pegasus).metadata.hasBags();
-        if (hasBags) yOffset -= 12f;
-        leftWing = new ModelWing(model, false, 4f - (hasBags ? -0.5f : 0f), yOffset, stretch, 32);
-        rightWing = new ModelWing(model, true, (hasBags ? -0.5f : 0f) - 6f, yOffset, stretch, hasBags ? 32 : 16);
+        leftWing = new ModelWing(model, false, 4f, yOffset, stretch, 32);
+        rightWing = new ModelWing(model, true, -6f, yOffset, stretch, 16);
     }
 
 
@@ -70,10 +68,11 @@ public class PegasusWings implements IModelPart {
     @Override
     public void render(float scale) {
         AbstractPonyModel model = ((AbstractPonyModel) pegasus);
-        if (!model.metadata.hasBags() || model.textureHeight == 64) {
+        boolean hasBags = model.metadata.hasBags();
+        if (!hasBags || model.textureHeight == 64) {
             boolean standing = pegasus.wingsAreOpen();
-            leftWing.render(standing, scale);
-            rightWing.render(standing, scale);
+            leftWing.render(hasBags, standing, scale);
+            rightWing.render(hasBags, standing, scale);
         }
     }
 }

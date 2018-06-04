@@ -51,11 +51,13 @@ public class ModelWing {
     }
 
 
-    public void render(boolean extend, float scale) {
+    public void render(boolean hasBags, boolean extend, float scale) {
         extended.rotationPointX = (mirror ? -1 : 1) * LEFT_WING_EXT_RP_X;
-        extended.rotationPointY = LEFT_WING_EXT_RP_Y;
-
+        extended.rotationPointY = LEFT_WING_EXT_RP_Y + (hasBags ? -1f : 0f);
+        extended.rotationPointZ = LEFT_WING_EXT_RP_Z + (hasBags ? 1f : 0f);
         extended.rotateAngleY = 3;
+
+        folded.offset((hasBags ? (mirror ? -0.5f : 0.5f) : 0f), (hasBags ? -0.5f : 0f), (hasBags ? -1.5f : 0f));
         if (extend) {
             extended.render(scale);
         } else {

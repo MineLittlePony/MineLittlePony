@@ -84,6 +84,7 @@ public class PonyData implements IPonyData {
                 .add("gender", gender)
                 .add("size", size)
                 .add("glowColor", "#" + Integer.toHexString(glowColor))
+                .add("accessory", accessory)
                 .toString();
     }
 

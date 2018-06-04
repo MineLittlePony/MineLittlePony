@@ -21,9 +21,7 @@ public class ModelEarthPony extends AbstractPonyModel {
     @Override
     public void init(float yOffset, float stretch) {
         super.init(yOffset, stretch);
-        if (metadata.hasAccessory()) {
-            accessory = new PonyAccessory(this, yOffset, stretch);
-        }
+        accessory = new PonyAccessory(this, yOffset, stretch);
     }
 
     @Override
