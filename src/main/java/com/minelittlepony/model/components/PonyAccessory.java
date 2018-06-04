@@ -3,8 +3,6 @@ package com.minelittlepony.model.components;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.capabilities.IModelPart;
 import com.minelittlepony.render.plane.PlaneRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.MathHelper;
 
 import static com.minelittlepony.model.PonyModelConstants.*;
 

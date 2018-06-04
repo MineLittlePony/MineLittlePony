@@ -68,11 +68,10 @@ public class PegasusWings implements IModelPart {
     @Override
     public void render(float scale) {
         AbstractPonyModel model = ((AbstractPonyModel) pegasus);
-        boolean hasBags = model.metadata.hasBags();
-        if (!hasBags || model.textureHeight == 64) {
+        if (!model.metadata.hasBags() || model.textureHeight == 64) {
             boolean standing = pegasus.wingsAreOpen();
-            leftWing.render(hasBags, standing, scale);
-            rightWing.render(hasBags, standing, scale);
+            leftWing.render(standing, scale);
+            rightWing.render(standing, scale);
         }
     }
 }
