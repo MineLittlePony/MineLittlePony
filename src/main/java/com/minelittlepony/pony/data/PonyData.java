@@ -19,12 +19,16 @@ public class PonyData implements IPonyData {
     private final PonySize size;
     private final int glowColor;
 
+    private final boolean[] wearables;
+
     public PonyData() {
         race = PonyRace.HUMAN;
         tailSize = TailLengths.FULL;
         gender = PonyGender.MARE;
         size = PonySize.NORMAL;
         glowColor = 0x4444aa;
+
+        wearables = new boolean[PonyWearable.values().length];
     }
 
     private PonyData(BufferedImage image) {
@@ -33,6 +37,8 @@ public class PonyData implements IPonyData {
         size = TriggerPixels.SIZE.readValue(image);
         gender = TriggerPixels.GENDER.readValue(image);
         glowColor = TriggerPixels.GLOW.readColor(image);
+
+        wearables = TriggerPixels.WEARABLES.readFlags(image);
     }
 
     @Override
@@ -66,12 +72,18 @@ public class PonyData implements IPonyData {
     }
 
     @Override
+    public boolean isWearing(PonyWearable wearable) {
+        return wearables[wearable.ordinal()];
+    }
+
+    @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("race", race)
                 .add("tailSize", tailSize)
                 .add("gender", gender)
                 .add("size", size)
+                .add("wearables", PonyWearable.flags(wearables))
                 .add("glowColor", "#" + Integer.toHexString(glowColor))
                 .toString();
     }

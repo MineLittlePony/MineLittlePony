@@ -3,7 +3,6 @@ package com.minelittlepony.model.components;
 import static com.minelittlepony.model.PonyModelConstants.*;
 
 import com.minelittlepony.model.AbstractPonyModel;
-import com.minelittlepony.model.capabilities.IModel;
 import com.minelittlepony.model.capabilities.IModelPart;
 import com.minelittlepony.render.plane.PlaneRenderer;
 
@@ -17,11 +16,9 @@ public class SaddleBags implements IModelPart {
 
     private PlaneRenderer strap;
 
-    private IModel model;
+    private boolean hangLow = false;
 
     public SaddleBags(AbstractPonyModel model) {
-        this.model = model;
-
         leftBag = new PlaneRenderer(model, 56, 19);
         rightBag = new PlaneRenderer(model, 56, 19);
         strap = new PlaneRenderer(model, 56, 19);
@@ -69,7 +66,7 @@ public class SaddleBags implements IModelPart {
         float pi = PI * (float) Math.pow(swing, 16);
 
         float mve = move * 0.6662f;
-        float srt = swing / 4;
+        float srt = swing / 6;
 
         bodySwing = MathHelper.cos(mve + pi) * srt;
 
@@ -80,9 +77,13 @@ public class SaddleBags implements IModelPart {
         rightBag.rotateAngleZ = -bodySwing;
     }
 
+    public void sethangingLow(boolean veryLow) {
+        hangLow = veryLow;
+    }
+
     @Override
     public void renderPart(float scale) {
-        if (model.canFly()) {
+        if (hangLow) {
             GlStateManager.pushMatrix();
             GlStateManager.translate(0, 0.3F, 0);
         }
@@ -91,7 +92,7 @@ public class SaddleBags implements IModelPart {
         rightBag.render(scale);
         strap.render(scale);
 
-        if (model.canFly()) {
+        if (hangLow) {
             GlStateManager.popMatrix();
         }
     }

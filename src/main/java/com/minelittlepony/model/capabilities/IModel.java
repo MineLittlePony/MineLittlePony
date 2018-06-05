@@ -3,6 +3,7 @@ package com.minelittlepony.model.capabilities;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.armour.PonyArmor;
 import com.minelittlepony.pony.data.IPonyData;
+import com.minelittlepony.pony.data.PonyWearable;
 
 public interface IModel {
 
@@ -59,4 +60,8 @@ public interface IModel {
     boolean isChild();
 
     float getSwingAmount();
+
+    default boolean isWearing(PonyWearable wearable) {
+        return getMetadata().isWearing(wearable);
+    }
 }

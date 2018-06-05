@@ -1,13 +1,16 @@
 package com.minelittlepony.model.player;
 
 import com.minelittlepony.model.AbstractPonyModel;
+import com.minelittlepony.model.components.SaddleBags;
+import com.minelittlepony.pony.data.PonyWearable;
 import com.minelittlepony.render.PonyRenderer;
-
 import net.minecraft.entity.Entity;
 
 public class ModelEarthPony extends AbstractPonyModel {
 
     private final boolean smallArms;
+
+    public SaddleBags saddlebags;
 
     public PonyRenderer bipedCape;
 
@@ -23,6 +26,34 @@ public class ModelEarthPony extends AbstractPonyModel {
         if (bipedCape != null) {
             bipedCape.rotationPointY = isSneak ? 2 : isRiding ? -4 : 0;
         }
+    }
+
+    @Override
+    protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
+        super.shakeBody(move, swing, bodySwing, ticks);
+        saddlebags.setRotationAndAngles(rainboom, move, swing, bodySwing, ticks);
+    }
+    
+    @Override
+    protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        super.renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
+        
+        if (isWearing(PonyWearable.SADDLE_BAGS)) {
+            saddlebags.renderPart(scale);
+        }
+    }
+
+    @Override
+    protected void initTextures() {
+        super.initTextures();
+        saddlebags = new SaddleBags(this);
+    }
+
+    @Override
+    protected void initPositions(float yOffset, float stretch) {
+        super.initPositions(yOffset, stretch);
+
+        saddlebags.init(yOffset, stretch);
     }
 
     protected float getLegOutset() {

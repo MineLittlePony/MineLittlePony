@@ -7,6 +7,7 @@ import static com.minelittlepony.model.PonyModelConstants.*;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.capabilities.IModelPart;
 import com.minelittlepony.model.capabilities.IModelPegasus;
+import com.minelittlepony.pony.data.PonyWearable;
 
 public class PegasusWings implements IModelPart {
 
@@ -15,17 +16,28 @@ public class PegasusWings implements IModelPart {
     private final ModelWing leftWing;
     private final ModelWing rightWing;
 
+    private final ModelWing legacyWing;
+
     public <T extends AbstractPonyModel & IModelPegasus> PegasusWings(T model, float yOffset, float stretch) {
         pegasus = model;
 
-        leftWing = new ModelWing(model, false, 4f, yOffset, stretch, 32);
-        rightWing = new ModelWing(model, true, -6f, yOffset, stretch, 16);
+        leftWing = new ModelWing(model, false, 4, yOffset, stretch, 32);
+        rightWing = new ModelWing(model, true, -6, yOffset, stretch, 16);
+        legacyWing = new ModelWing(model, true, -6, yOffset, stretch, 32);
     }
 
 
     @Override
     public void init(float yOffset, float stretch) {
 
+    }
+
+    public ModelWing getLeft() {
+        return leftWing;
+    }
+
+    public ModelWing getRight() {
+        return pegasus.isWearing(PonyWearable.SADDLE_BAGS) ? legacyWing : rightWing;
     }
 
     @Override
@@ -44,31 +56,21 @@ public class PegasusWings implements IModelPart {
             flap = MathHelper.cos(mve + pi) * srt;
         }
 
-        leftWing.rotateWalking(flap);
-        rightWing.rotateWalking(-flap);
+        getLeft().rotateWalking(flap);
+        getRight().rotateWalking(-flap);
 
         if (pegasus.wingsAreOpen()) {
-            float flapAngle = getWingRotationFactor(ticks);
-            leftWing.rotateFlying(flapAngle);
-            rightWing.rotateFlying(-flapAngle);
+            float flapAngle = pegasus.getWingRotationFactor(ticks);
+            getLeft().rotateFlying(flapAngle);
+            getRight().rotateFlying(-flapAngle);
         }
 
-    }
-
-    public float getWingRotationFactor(float ticks) {
-        if (pegasus.isSwimming()) {
-            return (MathHelper.sin(ticks * 0.136f) / 2) + ROTATE_270;
-        }
-        if (pegasus.isFlying()) {
-            return MathHelper.sin(ticks * 0.536f) + ROTATE_270 + 0.4f;
-        }
-        return LEFT_WING_ROTATE_ANGLE_Z_SNEAK;
     }
 
     @Override
     public void renderPart(float scale) {
         boolean standing = pegasus.wingsAreOpen();
-        leftWing.render(standing, scale);
-        rightWing.render(standing, scale);
+        getLeft().render(standing, scale);
+        getRight().render(standing, scale);
     }
 }

@@ -25,6 +25,7 @@ public class ModelAlicorn extends ModelUnicorn implements IModelPegasus {
 
         if (canFly()) {
             wings.setRotationAndAngles(rainboom, move, swing, 0, ticks);
+            saddlebags.sethangingLow(wingsAreOpen());
         }
     }
 

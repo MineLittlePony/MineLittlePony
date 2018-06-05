@@ -1,19 +1,21 @@
 package com.minelittlepony.model.ponies;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityZombieVillager;
 import net.minecraft.entity.passive.EntityVillager;
 import static com.minelittlepony.model.PonyModelConstants.*;
 
 import com.minelittlepony.model.components.SaddleBags;
 import com.minelittlepony.model.player.ModelAlicorn;
+import com.minelittlepony.pony.data.PonyWearable;
 import com.minelittlepony.render.plane.PlaneRenderer;
 
 public class ModelVillagerPony extends ModelAlicorn {
 
     public PlaneRenderer apron, trinket;
 
-    public SaddleBags saddlebags;
+    private int profession;
 
     public ModelVillagerPony() {
         super(false);
@@ -22,26 +24,33 @@ public class ModelVillagerPony extends ModelAlicorn {
     @Override
     protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
         super.shakeBody(move, swing, bodySwing, ticks);
-
-        saddlebags.setRotationAndAngles(rainboom, move, swing, bodySwing, ticks);
         apron.rotateAngleY = bodySwing;
         trinket.rotateAngleY = bodySwing;
+    }
+
+    @Override
+    public void setLivingAnimations(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTickTime) {
+        profession = getProfession(entity);
     }
 
     @Override
     protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         super.renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
 
-        int profession = getProfession(entity);
-        if (profession > -1) {
-            if (profession < 2) {
-                saddlebags.renderPart(scale);
-            } else if (profession == 2) {
-                trinket.render(scale);
-            } else if (profession > 2) {
-                apron.render(scale);
-            }
+        if (profession == 2) {
+            trinket.render(scale);
+        } else if (profession > 2) {
+            apron.render(scale);
         }
+    }
+
+    @Override
+    public boolean isWearing(PonyWearable wearable) {
+        if (wearable == PonyWearable.SADDLE_BAGS) {
+            return profession > -1 && profession < 2;
+        }
+
+        return super.isWearing(wearable);
     }
 
     protected int getProfession(Entity entity) {
