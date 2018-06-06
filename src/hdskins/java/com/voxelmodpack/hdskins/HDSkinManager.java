@@ -129,7 +129,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     private String bustCache(String url) {
-        return (url.indexOf('?') > -1 ? '&' : '?') + Long.toString(new Date().getTime()/1000);
+        return url + (url.indexOf('?') > -1 ? '&' : '?') + Long.toString(new Date().getTime()/1000);
     }
 
     private void loadTexture(GameProfile profile, final Type type, final SkinAvailableCallback callback) {
