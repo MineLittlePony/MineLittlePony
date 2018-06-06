@@ -7,6 +7,7 @@ import com.google.gson.JsonParseException;
 import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyLevel;
+import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.ISkinCacheClearListener;
 
 import net.minecraft.client.Minecraft;
@@ -83,6 +84,9 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
     }
 
     public Pony getPony(NetworkPlayerInfo playerInfo) {
+        // force load HDSkins if they're not available
+        HDSkinManager.INSTANCE.getProfileData(playerInfo.getGameProfile());
+
         ResourceLocation skin = playerInfo.getLocationSkin();
         UUID uuid = playerInfo.getGameProfile().getId();
 
