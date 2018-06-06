@@ -38,6 +38,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -127,6 +128,10 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         return skin == LOADING ? Optional.empty() : Optional.of(skin);
     }
 
+    private String bustCache(String url) {
+        return (url.indexOf('?') > -1 ? '&' : '?') + Long.toString(new Date().getTime()/1000);
+    }
+
     private void loadTexture(GameProfile profile, final Type type, final SkinAvailableCallback callback) {
         if (profile.getId() != null) {
             Map<Type, MinecraftProfileTexture> data = getProfileData(profile);
@@ -138,7 +143,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
             final IImageBuffer imagebufferdownload = type == Type.SKIN ? new ImageBufferDownloadHD() : null;
 
-            ITextureObject texObject = new ThreadDownloadImageETag(file2, texture.getUrl(),
+            ITextureObject texObject = new ThreadDownloadImageETag(file2, bustCache(texture.getUrl()),
                     DefaultPlayerSkin.getDefaultSkinLegacy(),
                     new IImageBuffer() {
                         @Nonnull
