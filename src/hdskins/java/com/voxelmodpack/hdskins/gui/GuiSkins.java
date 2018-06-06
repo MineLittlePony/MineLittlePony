@@ -244,14 +244,15 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
+        localPlayer.releaseTextures();
+        remotePlayer.releaseTextures();
+        HDSkinManager.clearSkinCache();
+
         Later.performLater(1, () -> {
             if (!(Minecraft.getMinecraft().currentScreen instanceof GuiSkins)) {
                 if (fileDrop != null) {
                     fileDrop.setVisible(false);
                 }
-                GuiSkins.this.localPlayer.releaseTextures();
-                GuiSkins.this.remotePlayer.releaseTextures();
-                HDSkinManager.clearSkinCache();
             }
         });
     }
