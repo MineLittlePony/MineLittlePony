@@ -27,8 +27,7 @@ public class MineLittlePony {
     public static final String MOD_NAME = "Mine Little Pony";
     public static final String MOD_VERSION = "@VERSION@";
 
-    private static final String SKIN_SERVER_URL = "minelpskins.voxelmodpack.com";
-    private static final String GATEWAY_URL = "minelpskinmanager.voxelmodpack.com";
+    private static final String MINELP_LEGACY_SERVER = "legacy:http://minelpskins.voxelmodpack.com;http://minelpskinmanager.voxelmodpack.com";
 
     private static final KeyBinding SETTINGS_GUI = new KeyBinding("Settings", Keyboard.KEY_F9, "Mine Little Pony");
 
@@ -58,7 +57,7 @@ public class MineLittlePony {
         ms.registerMetadataSectionType(new PonyDataSerialzier(), IPonyData.class);
 
         // This also makes it the default gateway server.
-        SkinServer.defaultServers.add("legacy:" + SKIN_SERVER_URL + ";" + GATEWAY_URL);
+        SkinServer.defaultServers.add(MINELP_LEGACY_SERVER);
     }
 
     /**
