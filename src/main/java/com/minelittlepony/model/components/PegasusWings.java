@@ -50,7 +50,7 @@ public class PegasusWings implements IModelPart {
         } else {
             float pi = PI * (float) Math.pow(swing, 16);
 
-            float mve = move * 0.6662f; // magic number ahoy
+            float mve = move * 0.6662f; // magic number ahoy (actually 2/3)
             float srt = swing / 4;
 
             flap = MathHelper.cos(mve + pi) * srt;
@@ -61,6 +61,9 @@ public class PegasusWings implements IModelPart {
 
         if (pegasus.wingsAreOpen()) {
             float flapAngle = pegasus.getWingRotationFactor(ticks);
+            if (pegasus.isWearing(PonyWearable.SADDLE_BAGS)) {
+                flapAngle -= 0.6F;
+            }
             getLeft().rotateFlying(flapAngle);
             getRight().rotateFlying(-flapAngle);
         }

@@ -18,7 +18,7 @@ public class ModelWing {
     }
 
     private void addClosedWing(float x, float y, float scale) {
-        folded.around(HEAD_RP_X, WING_FOLDED_RP_Y, WING_FOLDED_RP_Z)
+        folded.around(HEAD_RP_X, WING_FOLDED_RP_Y + y, WING_FOLDED_RP_Z)
               .box(x, 5, 2, 2, 6, 2, scale)
               .box(x, 5, 4, 2, 8, 2, scale)
               .box(x, 5, 6, 2, 6, 2, scale)
@@ -28,15 +28,15 @@ public class ModelWing {
     private void addFeathers(boolean mirror, float y, float scale) {
         float r = mirror ? -1 : 1;
         extended.around(r * LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + y, LEFT_WING_EXT_RP_Z);
-        addFeather(0, r, y,  6,     0,    8, scale + 0.1F);
-        addFeather(1, r, y, -1.2F, -0.2F, 8, scale + 0.2F) .rotateAngleX = -0.85F;
-        addFeather(2, r, y,  1.8F,  1.3F, 8, scale - 0.1F) .rotateAngleX = -0.75F;
-        addFeather(3, r, y,  5,     2,    8, scale)        .rotateAngleX = -0.5F;
-        addFeather(4, r, y,  0,   -0.2F,  6, scale + 0.3F);
-        addFeather(5, r, y,  0,    0.2F,  3, scale + 0.19F).rotateAngleX = -0.85F;
+        addFeather(0, r,  6,     0,    8, scale + 0.1F);
+        addFeather(1, r, -1.2F, -0.2F, 8, scale + 0.2F) .rotateAngleX = -0.85F;
+        addFeather(2, r,  1.8F,  1.3F, 8, scale - 0.1F) .rotateAngleX = -0.75F;
+        addFeather(3, r,  5,     2,    8, scale)        .rotateAngleX = -0.5F;
+        addFeather(4, r,  0,   -0.2F,  6, scale + 0.3F);
+        addFeather(5, r,  0,    0.2F,  3, scale + 0.19F).rotateAngleX = -0.85F;
     }
 
-    private PonyRenderer addFeather(int i, float r, float Y, float y, float z, int h, float scale) {
+    private PonyRenderer addFeather(int i, float r, float y, float z, int h, float scale) {
         return extended.child(i).around(0, 0, 0).box(-0.5f, y, z, 1, h, 2, scale);
     }
 

@@ -4,6 +4,7 @@ import static com.minelittlepony.model.PonyModelConstants.*;
 
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.capabilities.IModelPart;
+import com.minelittlepony.model.capabilities.IModelPegasus;
 import com.minelittlepony.render.plane.PlaneRenderer;
 
 import net.minecraft.client.renderer.GlStateManager;
@@ -18,7 +19,12 @@ public class SaddleBags implements IModelPart {
 
     private boolean hangLow = false;
 
+    float dropAmount = 0;
+
+    AbstractPonyModel model;
     public SaddleBags(AbstractPonyModel model) {
+        this.model = model;
+
         leftBag = new PlaneRenderer(model, 56, 19);
         rightBag = new PlaneRenderer(model, 56, 19);
         strap = new PlaneRenderer(model, 56, 19);
@@ -28,7 +34,7 @@ public class SaddleBags implements IModelPart {
     public void init(float yOffset, float stretch) {
         float y = -0.5F;
         int x = 4;
-        int z = -2;
+        int z = -1;
 
         strap.offset(-x, y + 0.2F, z + 3).around(0, 4, 4)
         .tex(56, 31).addTopPlane(0, 0, 0, 8, 1, stretch)
@@ -66,15 +72,23 @@ public class SaddleBags implements IModelPart {
         float pi = PI * (float) Math.pow(swing, 16);
 
         float mve = move * 0.6662f;
-        float srt = swing / 6;
+        float srt = swing / 10;
 
         bodySwing = MathHelper.cos(mve + pi) * srt;
 
         leftBag.rotateAngleX = bodySwing;
         rightBag.rotateAngleX = bodySwing;
 
+        if (model instanceof IModelPegasus && model.isFlying()) {
+            bodySwing = ((IModelPegasus)model).getWingRotationFactor(ticks) - ROTATE_270;
+            bodySwing /= 10;
+        }
+
         leftBag.rotateAngleZ = bodySwing;
         rightBag.rotateAngleZ = -bodySwing;
+
+        // TODO: Interpolate
+        dropAmount = (hangLow ? 0.15F : 0) * model.getSwingAmount();
     }
 
     public void sethangingLow(boolean veryLow) {
@@ -85,7 +99,7 @@ public class SaddleBags implements IModelPart {
     public void renderPart(float scale) {
         if (hangLow) {
             GlStateManager.pushMatrix();
-            GlStateManager.translate(0, 0.3F, 0);
+            GlStateManager.translate(0, dropAmount, 0);
         }
 
         leftBag.render(scale);
