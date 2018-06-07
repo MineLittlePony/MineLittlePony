@@ -7,6 +7,8 @@ import com.google.gson.JsonParseException;
 import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyLevel;
+import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.ISkinCacheClearListener;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -29,7 +31,7 @@ import java.util.stream.Collectors;
  * The PonyManager is responsible for reading and recoding all the pony data associated with an entity of skin.
  *
  */
-public class PonyManager implements IResourceManagerReloadListener {
+public class PonyManager implements IResourceManagerReloadListener, ISkinCacheClearListener {
 
     public static final ResourceLocation STEVE = new ResourceLocation("minelittlepony", "textures/entity/steve_pony.png");
     public static final ResourceLocation ALEX = new ResourceLocation("minelittlepony", "textures/entity/alex_pony.png");
@@ -45,7 +47,6 @@ public class PonyManager implements IResourceManagerReloadListener {
     private PonyConfig config;
 
     private Map<ResourceLocation, Pony> poniesCache = Maps.newHashMap();
-    private Map<ResourceLocation, Pony> backgroudPoniesCache = Maps.newHashMap();
 
     public PonyManager(PonyConfig config) {
         this.config = config;
@@ -83,6 +84,9 @@ public class PonyManager implements IResourceManagerReloadListener {
     }
 
     public Pony getPony(NetworkPlayerInfo playerInfo) {
+        // force load HDSkins if they're not available
+        HDSkinManager.INSTANCE.getProfileData(playerInfo.getGameProfile());
+
         ResourceLocation skin = playerInfo.getLocationSkin();
         UUID uuid = playerInfo.getGameProfile().getId();
 
@@ -149,7 +153,6 @@ public class PonyManager implements IResourceManagerReloadListener {
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
         poniesCache.clear();
-        backgroudPoniesCache.clear();
         backgroundPonyList.clear();
         try {
             for (IResource res : resourceManager.getAllResources(BGPONIES_JSON)) {
@@ -201,5 +204,12 @@ public class PonyManager implements IResourceManagerReloadListener {
         public List<ResourceLocation> getPonies() {
             return ponies.stream().map(this::apply).collect(Collectors.toList());
         }
+    }
+
+    @Override
+    public boolean onSkinCacheCleared() {
+        MineLittlePony.logger.info("Flushed {} cached ponies.", poniesCache.size());
+        poniesCache.clear();
+        return true;
     }
 }

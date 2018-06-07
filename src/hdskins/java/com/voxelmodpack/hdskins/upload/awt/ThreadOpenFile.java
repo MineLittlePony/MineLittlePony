@@ -2,8 +2,16 @@ package com.voxelmodpack.hdskins.upload.awt;
 
 import net.minecraft.client.Minecraft;
 
+import java.awt.AWTEvent;
+import java.awt.event.MouseEvent;
+
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
+
+import org.lwjgl.opengl.Display;
+
+import com.voxelmodpack.hdskins.Later;
 
 /**
  * Base class for "open file" dialog threads
@@ -19,6 +27,10 @@ public abstract class ThreadOpenFile extends Thread {
      */
     protected final IOpenFileCallback parentScreen;
 
+    private JFileChooser fileDialog;
+
+    private JFrame parent = null;
+
     protected ThreadOpenFile(Minecraft minecraft, String dialogTitle, IOpenFileCallback callback)
             throws IllegalStateException {
         if (minecraft.isFullScreen()) {
@@ -30,13 +42,34 @@ public abstract class ThreadOpenFile extends Thread {
     }
 
     @Override
+    public void start() {
+        Later.performLater(0, this);
+    }
+
+    public ThreadOpenFile setParent(JFrame parent) {
+        this.parent = parent;
+        this.parent.setAlwaysOnTop(true);
+
+        return this;
+    }
+
+    @Override
     public void run() {
-        JFileChooser fileDialog = new JFileChooser();
+        if (parent == null) {
+            parent = new JFrame("InternalDialog");
+            parent.setAlwaysOnTop(true);
+        }
+
+        parent.requestFocusInWindow();
+        parent.setVisible(false);
+
+        fileDialog = new JFileChooser();
         fileDialog.setDialogTitle(this.dialogTitle);
         fileDialog.setFileFilter(this.getFileFilter());
 
-        int dialogResult = fileDialog.showOpenDialog(null);
+        int dialogResult = fileDialog.showOpenDialog(parent);
 
+        parent.setVisible(true);
         this.parentScreen.onFileOpenDialogClosed(fileDialog, dialogResult);
     }
 

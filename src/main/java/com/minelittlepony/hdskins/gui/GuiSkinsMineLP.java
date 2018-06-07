@@ -40,12 +40,4 @@ public class GuiSkinsMineLP extends GuiSkins {
             ponyManager.removePony(resource);
         }
     }
-
-    @Override
-    public void onGuiClosed() {
-        super.onGuiClosed();
-        ponyManager.removePony(localPlayer.getSkinTexture());
-        ponyManager.removePony(remotePlayer.getSkinTexture());
-
-    }
 }

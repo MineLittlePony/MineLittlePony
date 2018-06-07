@@ -10,6 +10,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.Later;
 import com.voxelmodpack.hdskins.skins.SkinUploadResponse;
 import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
 import net.minecraft.client.Minecraft;
@@ -37,14 +38,12 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
-import java.awt.Color;
-import java.awt.Window.Type;
-import java.awt.dnd.DropTarget;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.DoubleBuffer;
 import java.nio.file.Path;
+
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -88,7 +87,8 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     private File selectedSkin;
     private float uploadOpacity = 0.0F;
     private float lastPartialTick;
-    private JFrame fileDrop;
+
+    private static GuiSkins instance;
 
     private MinecraftProfileTexture.Type textureType = SKIN;
 
@@ -104,6 +104,8 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
         rm.renderViewEntity = this.localPlayer;
         this.reloadRemoteSkin();
         this.fetchingSkin = true;
+
+        instance = this;
     }
 
     protected EntityPlayerModel getModel(GameProfile profile) {
@@ -171,6 +173,7 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     @Override
     public void initGui() {
         enableDnd();
+
         this.initPanoramaRenderer();
         this.buttonList.clear();
         this.buttonList.add(this.btnBrowse = new GuiButton(0, 30, this.height - 36, 60, 20, "Browse..."));
@@ -189,35 +192,9 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     }
 
     private void enableDnd() {
-        if (fileDrop != null) {
-            fileDrop.setVisible(true);
-            return;
-        }
-        fileDrop = new JFrame("Skin Drop");
-        fileDrop.setType(Type.UTILITY);
-        fileDrop.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        fileDrop.setResizable(false);
-        fileDrop.setTitle("Skin Drop");
-        fileDrop.setSize(256, 256);
-        // fileDrop.setAlwaysOnTop(true);
-        fileDrop.getContentPane().setLayout(null);
-        JPanel panel = new JPanel();
-        panel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
-        panel.setBounds(10, 11, 230, 205);
-        fileDrop.getContentPane().add(panel);
-        JLabel txtInst = new JLabel("Drop skin file here");
-        txtInst.setHorizontalAlignment(SwingConstants.CENTER);
-        txtInst.setVerticalAlignment(SwingConstants.CENTER);
-        panel.add(txtInst);
-
-        DropTarget dt = new DropTarget();
-        fileDrop.setDropTarget(dt);
-        try {
-            dt.addDropTargetListener((FileDropListener) files -> files.stream().findFirst().ifPresent(this::loadLocalFile));
-            fileDrop.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        GLWindow.current().setDropTargetListener((FileDropListener) files -> {
+            files.stream().findFirst().ifPresent(instance::loadLocalFile);
+        });
     }
 
     private void initPanoramaRenderer() {
@@ -227,10 +204,9 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
-        if (this.fileDrop != null)
-            this.fileDrop.dispose();
-        this.localPlayer.releaseTextures();
-        this.remotePlayer.releaseTextures();
+        localPlayer.releaseTextures();
+        remotePlayer.releaseTextures();
+        HDSkinManager.clearSkinCache();
     }
 
     private void onFileOpenDialogClosed(JFileChooser fileDialog, int dialogResult) {

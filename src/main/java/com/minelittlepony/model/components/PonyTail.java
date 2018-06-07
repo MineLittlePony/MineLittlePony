@@ -81,7 +81,7 @@ public class PonyTail extends PlaneRenderer implements IModelPart {
 
     @Override
     public void renderPart(float scale) {
-        this.render(scale);
+        render(scale);
     }
 
     private class TailSegment extends PlaneRenderer {
