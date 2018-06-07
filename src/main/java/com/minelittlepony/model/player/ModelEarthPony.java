@@ -33,11 +33,11 @@ public class ModelEarthPony extends AbstractPonyModel {
         super.shakeBody(move, swing, bodySwing, ticks);
         saddlebags.setRotationAndAngles(rainboom, move, swing, bodySwing, ticks);
     }
-    
+
     @Override
     protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         super.renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
-        
+
         if (isWearing(PonyWearable.SADDLE_BAGS)) {
             saddlebags.renderPart(scale);
         }
