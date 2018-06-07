@@ -35,18 +35,15 @@ import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
-import java.awt.Color;
-import java.awt.Window.Type;
-import java.awt.dnd.DropTarget;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.DoubleBuffer;
 import java.nio.file.Path;
+
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -90,8 +87,6 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     private File selectedSkin;
     private float uploadOpacity = 0.0F;
     private float lastPartialTick;
-
-    private static JFrame fileDrop;
 
     private static GuiSkins instance;
 
@@ -177,7 +172,7 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
 
     @Override
     public void initGui() {
-        Later.performLater(1, this::enableDnd);
+        enableDnd();
 
         this.initPanoramaRenderer();
         this.buttonList.clear();
@@ -197,44 +192,9 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     }
 
     private void enableDnd() {
-        if (fileDrop != null) {
-            fileDrop.setVisible(true);
-            fileDrop.requestFocusInWindow();
-            fileDrop.setLocation(Display.getX(), Display.getY());
-            return;
-        }
-
-        fileDrop = new JFrame("Skin Drop");
-        fileDrop.setType(Type.UTILITY);
-        fileDrop.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        fileDrop.setResizable(false);
-        fileDrop.setTitle("Skin Drop");
-        fileDrop.setSize(256, 256);
-        fileDrop.setAlwaysOnTop(true);
-        fileDrop.getRootPane().setWindowDecorationStyle(JRootPane.NONE);
-        fileDrop.setLocation(Display.getX(), Display.getY());
-        fileDrop.getContentPane().setLayout(null);
-
-        JPanel panel = new JPanel();
-        panel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
-        panel.setBounds(10, 11, 230, 205);
-        fileDrop.getContentPane().add(panel);
-        JLabel txtInst = new JLabel("Drop skin file here");
-        txtInst.setHorizontalAlignment(SwingConstants.CENTER);
-        txtInst.setVerticalAlignment(SwingConstants.CENTER);
-        panel.add(txtInst);
-
-        DropTarget dt = new DropTarget();
-        fileDrop.setDropTarget(dt);
-        try {
-            dt.addDropTargetListener((FileDropListener) files -> {
-                files.stream().findFirst().ifPresent(instance::loadLocalFile);
-            });
-            fileDrop.setVisible(true);
-            fileDrop.requestFocusInWindow();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        GLWindow.current().setDropTargetListener((FileDropListener) files -> {
+            files.stream().findFirst().ifPresent(instance::loadLocalFile);
+        });
     }
 
     private void initPanoramaRenderer() {
@@ -247,14 +207,6 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
         localPlayer.releaseTextures();
         remotePlayer.releaseTextures();
         HDSkinManager.clearSkinCache();
-
-        Later.performLater(1, () -> {
-            if (!(Minecraft.getMinecraft().currentScreen instanceof GuiSkins)) {
-                if (fileDrop != null) {
-                    fileDrop.setVisible(false);
-                }
-            }
-        });
     }
 
     private void onFileOpenDialogClosed(JFileChooser fileDialog, int dialogResult) {
@@ -307,7 +259,7 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
                     this.selectedSkin = null;
                     this.localPlayer.releaseTextures();
                     this.openFileThread = new ThreadOpenFilePNG(this.mc, I18n.format("hdskins.open.title"), this::onFileOpenDialogClosed);
-                    this.openFileThread.setParent(fileDrop).start();
+                    this.openFileThread.start();
                     guiButton.enabled = false;
                 }
 

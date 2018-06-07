@@ -7,6 +7,8 @@ public final class Later extends Thread {
     protected Later(int delay, Runnable runnable) {
         super(runnable);
         this.delay = delay;
+        setDaemon(true);
+        setName("Later#" + getId());
     }
 
     public static void performLater(int delay, Runnable callable) {
