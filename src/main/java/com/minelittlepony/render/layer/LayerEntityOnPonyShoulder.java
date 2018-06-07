@@ -14,9 +14,6 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nullable;
 
-/**
- * TODO: Looks like {@link LayerEntityOnShoulder}
- */
 public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientPlayer> {
 
     private final RenderManager renderManager;
@@ -38,20 +35,20 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientP
         NBTTagCompound leftTag = player.getLeftShoulderEntity();
 
         if (!leftTag.hasNoTags()) {
-            leftEntity = renderShoulderEntity(player, leftEntity, leftTag, partialTicks, true);
+            leftEntity = renderShoulderEntity(player, leftEntity, leftTag, headYaw, headPitch, true);
         }
 
         NBTTagCompound rightTag = player.getRightShoulderEntity();
 
         if (!rightTag.hasNoTags()) {
-            rightEntity = renderShoulderEntity(player, rightEntity, rightTag, partialTicks, false);
+            rightEntity = renderShoulderEntity(player, rightEntity, rightTag, headYaw, headPitch, false);
         }
 
         GlStateManager.disableRescaleNormal();
     }
 
     @Nullable
-    private EntityLivingBase renderShoulderEntity(AbstractClientPlayer player, @Nullable EntityLivingBase entity, NBTTagCompound shoulderTag, float partialTicks, boolean left) {
+    private EntityLivingBase renderShoulderEntity(AbstractClientPlayer player, @Nullable EntityLivingBase entity, NBTTagCompound shoulderTag, float headYaw, float headPitch, boolean left) {
 
         if (entity == null || !entity.getUniqueID().equals(shoulderTag.getUniqueId("UUID"))) {
             entity = (EntityLivingBase) EntityList.createEntityFromNBT(shoulderTag, player.world);
@@ -76,7 +73,13 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientP
         GlStateManager.scale(1, -1, -1);
         GlStateManager.rotate(left ? -5 : 5, 0, 0, 1);
 
-        render.doRender(entity, 0, 0, 0, 0, partialTicks);
+        // look where the player is looking
+        entity.prevRotationYawHead = headYaw;
+        entity.rotationYawHead = headYaw;
+        entity.rotationPitch = headPitch;
+        entity.prevRotationPitch = headPitch;
+
+        render.doRender(entity, 0, 0, 0, 0, 0);
 
         GlStateManager.popMatrix();
         return entity;
