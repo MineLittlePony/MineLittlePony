@@ -79,5 +79,4 @@ public class LiteModHDSkinsMod implements HDSkinsMod {
             }
         }
     }
-
 }

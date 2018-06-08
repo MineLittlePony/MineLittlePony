@@ -1,6 +1,7 @@
 package com.voxelmodpack.hdskins.gui;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Frame;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetListener;
@@ -21,9 +22,11 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
 import com.google.common.collect.Lists;
+import com.voxelmodpack.hdskins.IMinecraft;
 import com.voxelmodpack.hdskins.Later;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.DefaultResourcePack;
 import net.minecraft.util.ResourceLocation;
 
 public class GLWindow implements Closeable {
@@ -64,6 +67,7 @@ public class GLWindow implements Closeable {
         frame.setResizable(Display.isResizable());
         frame.setLocation(x, y);
         frame.setSize(w, h);
+        frame.setBackground(Color.BLACK);
         frame.getContentPane().setLayout(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
@@ -118,9 +122,11 @@ public class GLWindow implements Closeable {
 
     private final void setIcons(JFrame frame) {
         try {
+            DefaultResourcePack pack = ((IMinecraft)mc).getDefaultResourcePack();
+
             frame.setIconImages(Lists.newArrayList(
-                    ImageIO.read(mc.getResourceManager().getResource(new ResourceLocation("icons/icon_16x16.png")).getInputStream()),
-                    ImageIO.read(mc.getResourceManager().getResource(new ResourceLocation("icons/icon_32x32.png")).getInputStream())
+                    ImageIO.read(pack.getInputStreamAssets(new ResourceLocation("icons/icon_16x16.png"))),
+                    ImageIO.read(pack.getInputStreamAssets(new ResourceLocation("icons/icon_32x32.png")))
             ));
         } catch (IOException e) {
             e.printStackTrace();
