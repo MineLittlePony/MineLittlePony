@@ -58,6 +58,7 @@ public class RenderPonyPlayer extends RenderPonyBase {
             double roll = (Math.toDegrees(Math.atan2(motionX, motionZ)) - yaw) % 360;
 
             if (roll < -180) roll += 360;
+            if (roll > 180) roll -= 360;
 
             roll *= horMotion * 2;
             roll = MathHelper.clamp(roll, -54, 54);
