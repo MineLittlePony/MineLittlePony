@@ -88,7 +88,7 @@ public class SaddleBags implements IModelPart {
         rightBag.rotateAngleZ = -bodySwing;
 
         // TODO: Interpolate
-        dropAmount = (hangLow ? 0.15F : 0) * model.getSwingAmount();
+        dropAmount = hangLow ? 0.15F : 0;
     }
 
     public void sethangingLow(boolean veryLow) {
