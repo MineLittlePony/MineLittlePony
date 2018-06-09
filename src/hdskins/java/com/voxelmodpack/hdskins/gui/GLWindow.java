@@ -1,18 +1,21 @@
 package com.voxelmodpack.hdskins.gui;
 
 import com.google.common.collect.Lists;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.DefaultResourcePack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.PixelFormat;
+import org.lwjgl.opengl.DisplayMode;
 
 import java.awt.Canvas;
-import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.TooManyListenersException;
 import javax.annotation.Nullable;
@@ -22,82 +25,164 @@ import javax.swing.*;
 /**
  * Experimental window to control file drop. It kind of sucks.
  *
- * This has to be enabled using the {@code experimentalSkinDrop} config.
  */
 public class GLWindow extends DropTarget {
 
-    private static GLWindow instance = null;
-
-    public static void create() {
-        if (instance == null)
-            instance = new GLWindow();
-    }
+    // Serial version because someone decided to extend DropTarget
+    private static final long serialVersionUID = -8891327070920541481L;
 
     @Nullable
+    private static GLWindow instance = null;
+
+    /**
+     * Gets or creates the current GLWindow context.
+     */
     public static GLWindow current() {
+        if (instance == null) {
+            instance = new GLWindow();
+        }
         return instance;
     }
 
-    private final JFrame frame;
+    public static void refresh(boolean fullscreen) {
+        if (instance != null) {
+            instance.onRefresh(fullscreen);
+        }
+    }
 
-    private DropTargetListener saved = null;
+    /**
+     * Destroys the current GLWindow context and restores default behaviour.
+     */
+    public static void dispose() {
+        if (instance != null) {
+            instance.close();
+        }
+    }
 
-    // What's so special about these numbers? Are they the same on all systems?
-    private final int frameX = 15;
-    private final int frameY = 36;
+    private static int getScaledPixelUnit(int i) {
+        return (int)Math.floor(i * Display.getPixelScaleFactor());
+    }
 
     private final Minecraft mc = Minecraft.getMinecraft();
 
+    private JFrame frame;
+    private Canvas canvas;
+
+    private DropTargetListener dropListener = null;
+
+    private int windowState = 0;
+
+    private boolean isFullscreen;
+
     private GLWindow() {
-
-        setDefaultActions(DnDConstants.ACTION_LINK);
         try {
-
-            int x = Display.getX();
-            int y = Display.getY();
-
-            int w = Display.getWidth() + frameX;
-
-            int h = Display.getHeight() + frameY;
-
-            Canvas canvas = new AWTGLCanvas(new PixelFormat().withDepthBits(24));
-
-            frame = new JFrame(Display.getTitle());
-            frame.setResizable(Display.isResizable());
-            frame.setLocation(x, y);
-            frame.setSize(w, h);
-
-            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-            // FIXME: icon is super small on the task bar
-            setIcons(frame);
-
-            frame.add(canvas);
-            frame.setVisible(true);
-
-            Display.setParent(canvas);
-
-            Display.setFullscreen(mc.isFullScreen());
-
+            open();
         } catch (LWJGLException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
-    public void refresh() {
-        // trigger an update
-        frame.setSize(frame.getWidth(), frame.getHeight()+1);
-        frame.setSize(frame.getWidth(), frame.getHeight()-1);
-//        frame.pack();
+    private void open() throws LWJGLException {
+        // Dimensions from LWJGL may have a non 1:1 scale on high DPI monitors.
+        int x = getScaledPixelUnit(Display.getX());
+        int y = getScaledPixelUnit(Display.getY());
+
+        int w = getScaledPixelUnit(Display.getWidth());
+        int h = getScaledPixelUnit(Display.getHeight());
+
+        isFullscreen = mc.isFullScreen();
+
+        canvas = new Canvas();
+
+        frame = new JFrame(Display.getTitle());
+        frame.add(canvas);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent windowEvent) {
+                mc.shutdown();
+            }
+
+            @Override
+            public void windowStateChanged(WindowEvent event) {
+                windowState = event.getNewState();
+                onResize();
+            }
+
+            @Override
+            public void windowOpened(WindowEvent e) {
+                // Once the window has opened compare the content and window dimensions to get
+                // the OS's frame size then reassign adjusted dimensions to match LWJGL's window.
+                float frameFactorX = frame.getWidth() - frame.getContentPane().getWidth();
+                float frameFactorY = frame.getHeight() - frame.getContentPane().getHeight();
+
+                frame.setSize((int)Math.floor(w + frameFactorX), (int)Math.floor(h + frameFactorY));
+            }
+        });
+        frame.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent componentEvent) {
+                onResize();
+            }
+        });
+
+        // TODO: (Unconfirmed) reports say the icon appears small on some OSs.
+        //       I've yet to reproduce this.
+        setIcons();
+
+        // Order here is important. Size is set _before_ displaying but
+        // after events to ensure the window and canvas both get correct dimensions.
+        frame.setResizable(Display.isResizable());
+        frame.setLocation(x, y);
+        frame.setSize(w, h);
+        frame.setVisible(true);
+
+        Display.setParent(canvas);
+        Display.setFullscreen(isFullscreen);
     }
 
-    private void setIcons(JFrame frame) {
+    private void close() {
         try {
-            // This should be using reflection. No need for this.
-            DefaultResourcePack pack = (DefaultResourcePack) mc.getResourcePackRepository().rprDefaultResourcePack;
+            Display.setParent(null);
+        } catch (LWJGLException e) {
+            e.printStackTrace();
+        }
 
+        try {
+            if (isFullscreen) {
+                Display.setFullscreen(true);
+            } else {
+                if ((windowState & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH) {
+                    Display.setLocation(0, 0);
+                    Display.setDisplayMode(Display.getDesktopDisplayMode());
+                } else {
+                    Display.setDisplayMode(new DisplayMode(frame.getContentPane().getWidth(), frame.getContentPane().getHeight()));
+                    Display.setLocation(frame.getX(), frame.getY());
+                }
+
+                // https://bugs.mojang.com/browse/MC-68754
+                Display.setResizable(false);
+                Display.setResizable(true);
+            }
+        } catch (LWJGLException e) {
+            e.printStackTrace();
+        }
+
+        frame.setVisible(false);
+        frame.dispose();
+
+        instance = null;
+    }
+
+    private void setIcons() {
+        // VanillaTweakInjector.loadIconsOnFrames();
+        try {
+            //
+            // The icons are stored in Display#cached_icons. However they're not the _original_ values.
+            // LWJGL copies the initial byte streams and then reverses them. The result is a stream that's not
+            // only already consumed, but somehow invalid when you try to parse it through ImageIO.read.
+            //
+            DefaultResourcePack pack = (DefaultResourcePack) mc.getResourcePackRepository().rprDefaultResourcePack;
             frame.setIconImages(Lists.newArrayList(
                     ImageIO.read(pack.getInputStreamAssets(new ResourceLocation("icons/icon_16x16.png"))),
                     ImageIO.read(pack.getInputStreamAssets(new ResourceLocation("icons/icon_32x32.png")))
@@ -107,18 +192,35 @@ public class GLWindow extends DropTarget {
         }
     }
 
-    void setDropTargetListener(@Nullable DropTargetListener dtl) {
-        if (saved != null) {
-            removeDropTargetListener(saved);
+    private void onResize() {
+        canvas.setBounds(0, 0, frame.getContentPane().getWidth(), frame.getContentPane().getHeight());
+    }
+
+    private void onRefresh(boolean fullscreen) {
+        if (fullscreen != isFullscreen) {
+            // Repaint the canvas, not the window.
+            // The former strips the window of its state. The latter fixes a viewport scaling bug.
+            canvas.setBounds(0, 0, 0, 0);
+            onResize();
+            isFullscreen = fullscreen;
         }
-        if (dtl == null)
+    }
+
+    public void clearDropTargetListener() {
+        if (dropListener != null) {
+            removeDropTargetListener(dropListener);
+            dropListener = null;
             frame.setDropTarget(null);
-        else {
-            frame.setDropTarget(this);
-            try {
-                addDropTargetListener(dtl);
-            } catch (TooManyListenersException e) { }
-            saved = dtl;
         }
+    }
+
+    public void setDropTargetListener(DropTargetListener dtl) {
+        clearDropTargetListener();
+        dropListener = dtl;
+
+        try {
+            frame.setDropTarget(this);
+            addDropTargetListener(dtl);
+        } catch (TooManyListenersException ignored) { }
     }
 }

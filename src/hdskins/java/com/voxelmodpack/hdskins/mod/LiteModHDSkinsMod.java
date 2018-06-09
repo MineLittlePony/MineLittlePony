@@ -26,8 +26,6 @@ public class LiteModHDSkinsMod implements HDSkinsMod {
 
     @Expose
     public List<String> skin_servers = SkinServer.defaultServers;
-    @Expose
-    public boolean experimentalSkinDrop = false;
 
     @Override
     public String getName() {
@@ -59,7 +57,7 @@ public class LiteModHDSkinsMod implements HDSkinsMod {
         IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
         irrm.registerReloadListener(HDSkinManager.INSTANCE);
 
-        if (experimentalSkinDrop) GLWindow.create();
+        GLWindow.current();
     }
 
     @Override
@@ -94,8 +92,6 @@ public class LiteModHDSkinsMod implements HDSkinsMod {
 
     @Override
     public void onFullScreenToggled(boolean fullScreen) {
-        if (!fullScreen && GLWindow.current() != null) {
-            GLWindow.current().refresh();
-        }
+        GLWindow.refresh(fullScreen);
     }
 }
