@@ -1,128 +1,102 @@
 package com.voxelmodpack.hdskins.gui;
 
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Frame;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.TooManyListenersException;
-
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-
 import com.google.common.collect.Lists;
-import com.voxelmodpack.hdskins.IMinecraft;
-import com.voxelmodpack.hdskins.Later;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.DefaultResourcePack;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.AWTGLCanvas;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.PixelFormat;
 
-public class GLWindow implements Closeable {
+import java.awt.Canvas;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetListener;
+import java.io.IOException;
+import java.util.TooManyListenersException;
+import javax.annotation.Nullable;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
-    static GLWindow instance = null;
+/**
+ * Experimental window to control file drop. It kind of sucks.
+ *
+ * This has to be enabled using the {@code experimentalSkinDrop} config.
+ */
+public class GLWindow extends DropTarget {
 
-    public static GLWindow current() {
-        if (instance == null) {
+    private static GLWindow instance = null;
+
+    public static void create() {
+        if (instance == null)
             instance = new GLWindow();
-        }
-        return instance;
     }
 
-    private final DropTarget dt;
+    @Nullable
+    public static GLWindow current() {
+        return instance;
+    }
 
     private final JFrame frame;
 
     private DropTargetListener saved = null;
 
+    // What's so special about these numbers? Are they the same on all systems?
     private final int frameX = 15;
     private final int frameY = 36;
 
     private final Minecraft mc = Minecraft.getMinecraft();
 
-    private int state = 0;
-
     private GLWindow() {
-        int x = Display.getX();
-        int y = Display.getY();
 
-        int w = Display.getWidth() + frameX;
-
-        int h = Display.getHeight() + frameY;
-
-        Canvas canvas = new Canvas();
-
-        frame = new JFrame(Display.getTitle());
-        frame.setResizable(Display.isResizable());
-        frame.setLocation(x, y);
-        frame.setSize(w, h);
-        frame.setBackground(Color.BLACK);
-        frame.getContentPane().setLayout(null);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent windowEvent) {
-                Minecraft.getMinecraft().shutdown();
-            }
-        });
-        frame.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent componentEvent) {
-                canvas.setBounds(0, 0, frame.getWidth() - frameX, frame.getHeight() - frameY);
-            }
-        });
-        frame.addWindowStateListener(new WindowStateListener() {
-            @Override
-            public void windowStateChanged(WindowEvent event) {
-                state = event.getNewState();
-                Later.performLater(1, () -> {
-                    canvas.setBounds(0, 0, frame.getWidth() - frameX, frame.getHeight() - frameY);
-                });
-            }
-        });
-        setIcons(frame);
-
-        frame.getContentPane().add(canvas);
-        frame.setVisible(true);
-
+        setDefaultActions(DnDConstants.ACTION_LINK);
         try {
+
+            int x = Display.getX();
+            int y = Display.getY();
+
+            int w = Display.getWidth() + frameX;
+
+            int h = Display.getHeight() + frameY;
+
+            Canvas canvas = new AWTGLCanvas(new PixelFormat().withDepthBits(24));
+
+            frame = new JFrame(Display.getTitle());
+            frame.setResizable(Display.isResizable());
+            frame.setLocation(x, y);
+            frame.setSize(w, h);
+
+            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+            // FIXME: icon is super small on the task bar
+            setIcons(frame);
+
+            frame.add(canvas);
+            frame.setVisible(true);
+
             Display.setParent(canvas);
+
+            Display.setFullscreen(mc.isFullScreen());
+
         } catch (LWJGLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
-        if (Display.getWidth() == Display.getDesktopDisplayMode().getWidth()) {
-            frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-        }
 
-        state = frame.getExtendedState();
-
-        if (mc.isFullScreen()) {
-            try {
-                Display.setFullscreen(true);
-            } catch (LWJGLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        dt = new DropTarget();
-        canvas.setDropTarget(dt);
     }
 
-    private final void setIcons(JFrame frame) {
+    public void refresh() {
+        // trigger an update
+        frame.setSize(frame.getWidth(), frame.getHeight()+1);
+        frame.setSize(frame.getWidth(), frame.getHeight()-1);
+//        frame.pack();
+    }
+
+    private void setIcons(JFrame frame) {
         try {
-            DefaultResourcePack pack = ((IMinecraft)mc).getDefaultResourcePack();
+            // This should be using reflection. No need for this.
+            DefaultResourcePack pack = (DefaultResourcePack) mc.getResourcePackRepository().rprDefaultResourcePack;
 
             frame.setIconImages(Lists.newArrayList(
                     ImageIO.read(pack.getInputStreamAssets(new ResourceLocation("icons/icon_16x16.png"))),
@@ -133,58 +107,18 @@ public class GLWindow implements Closeable {
         }
     }
 
-    public void setDropTargetListener(DropTargetListener dtl) {
+    void setDropTargetListener(@Nullable DropTargetListener dtl) {
         if (saved != null) {
-            dt.removeDropTargetListener(saved);
+            removeDropTargetListener(saved);
         }
-        if (dtl != null) {
+        if (dtl == null)
+            frame.setDropTarget(null);
+        else {
+            frame.setDropTarget(this);
             try {
-                dt.addDropTargetListener(dtl);
+                addDropTargetListener(dtl);
             } catch (TooManyListenersException e) { }
             saved = dtl;
         }
-    }
-
-    public static void dispose() {
-        if (instance != null) {
-            try {
-                instance.close();
-            } catch (IOException ignored) {
-            }
-        }
-    }
-
-    @Override
-    public void close() throws IOException {
-        mc.addScheduledTask(() -> {
-            try {
-                Display.setParent(null);
-            } catch (LWJGLException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                if (mc.isFullScreen()) {
-                    Display.setFullscreen(true);
-                } else {
-                    if ((state & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH) {
-                        Display.setLocation(0, 0);
-                        Display.setDisplayMode(Display.getDesktopDisplayMode());
-                    } else {
-                        Display.setDisplayMode(new DisplayMode(mc.displayWidth, mc.displayHeight));
-                        Display.setLocation(frame.getX(), frame.getY());
-                    }
-                    Display.setResizable(false);
-                    Display.setResizable(true);
-                }
-            } catch (LWJGLException e) {
-                e.printStackTrace();
-            }
-
-            frame.setVisible(false);
-            frame.dispose();
-
-            instance = null;
-        });
     }
 }

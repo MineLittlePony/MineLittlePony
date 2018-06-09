@@ -42,7 +42,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.DoubleBuffer;
 import java.nio.file.Path;
-
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -188,12 +187,15 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
         this.btnUpload.enabled = false;
         this.btnBrowse.enabled = !this.mc.isFullScreen();
         (this.textureType == SKIN ? this.btnModeSkin : this.btnModeElytra).enabled = false;
+
     }
 
     private void enableDnd() {
-        GLWindow.current().setDropTargetListener((FileDropListener) files -> {
-            files.stream().findFirst().ifPresent(instance::loadLocalFile);
-        });
+        GLWindow window = GLWindow.current();
+        if (window != null)
+            window.setDropTargetListener((FileDropListener) files -> {
+                files.stream().findFirst().ifPresent(instance::loadLocalFile);
+            });
     }
 
     private void initPanoramaRenderer() {
@@ -206,6 +208,10 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
         localPlayer.releaseTextures();
         remotePlayer.releaseTextures();
         HDSkinManager.clearSkinCache();
+
+        GLWindow window = GLWindow.current();
+        if (window != null)
+            window.setDropTargetListener(null);
     }
 
     private void onFileOpenDialogClosed(JFileChooser fileDialog, int dialogResult) {

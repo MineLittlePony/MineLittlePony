@@ -8,11 +8,13 @@ import com.mumfrey.liteloader.modconfig.ExposableOptions;
 import com.mumfrey.liteloader.util.ModUtilities;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
+import com.voxelmodpack.hdskins.gui.GLWindow;
 import com.voxelmodpack.hdskins.gui.GuiSkins;
 import com.voxelmodpack.hdskins.gui.HDSkinsConfigPanel;
 import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
 import com.voxelmodpack.hdskins.skins.SkinServer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.resources.IReloadableResourceManager;
 
 import java.io.File;
@@ -24,6 +26,8 @@ public class LiteModHDSkinsMod implements HDSkinsMod {
 
     @Expose
     public List<String> skin_servers = SkinServer.defaultServers;
+    @Expose
+    public boolean experimentalSkinDrop = false;
 
     @Override
     public String getName() {
@@ -54,6 +58,8 @@ public class LiteModHDSkinsMod implements HDSkinsMod {
 
         IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
         irrm.registerReloadListener(HDSkinManager.INSTANCE);
+
+        if (experimentalSkinDrop) GLWindow.create();
     }
 
     @Override
@@ -77,6 +83,19 @@ public class LiteModHDSkinsMod implements HDSkinsMod {
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             }
+        }
+
+    }
+
+    @Override
+    public void onViewportResized(ScaledResolution resolution, int displayWidth, int displayHeight) {
+
+    }
+
+    @Override
+    public void onFullScreenToggled(boolean fullScreen) {
+        if (!fullScreen && GLWindow.current() != null) {
+            GLWindow.current().refresh();
         }
     }
 }
