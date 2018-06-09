@@ -4,7 +4,9 @@ import static com.minelittlepony.model.PonyModelConstants.*;
 
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.capabilities.IModelPegasus;
+import com.minelittlepony.pony.data.PonyWearable;
 import com.minelittlepony.render.PonyRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 
 public class ModelWing {
 
@@ -61,12 +63,17 @@ public class ModelWing {
         extended.rotateAngleZ = angle;
     }
 
-    public void render(float scale) {
+    public void render(float scale, boolean isRight) {
         extended.rotateAngleY = 3;
-        if (pegasus.wingsAreOpen()) {
-            extended.render(scale);
-        } else {
-            folded.render(scale);
+        boolean extend = pegasus.wingsAreOpen();
+        boolean bags = pegasus.isWearing(PonyWearable.SADDLE_BAGS);
+        if (bags) {
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(extend ? (isRight ? 0.05F : -0.05F) : 0, extend ? -0.05F : 0, extend ? 0 : 0.198F);
+        }
+        (extend ? extended : folded).render(scale);
+        if (bags) {
+            GlStateManager.popMatrix();
         }
     }
 }

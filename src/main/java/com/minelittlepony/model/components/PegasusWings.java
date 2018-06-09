@@ -63,8 +63,8 @@ public class PegasusWings<T extends AbstractPonyModel & IModelPegasus> implement
 
         if (pegasus.wingsAreOpen()) {
             float flapAngle = pegasus.getWingRotationFactor(ticks);
-            if (pegasus.isWearing(PonyWearable.SADDLE_BAGS)) {
-                flapAngle -= 0.6F;
+            if (pegasus.isWearing(PonyWearable.SADDLE_BAGS) && (pegasus.isSwimming() || pegasus.isFlying())) {
+                flapAngle -= 1F;
             }
             getLeft().rotateFlying(flapAngle);
             getRight().rotateFlying(-flapAngle);
@@ -74,7 +74,7 @@ public class PegasusWings<T extends AbstractPonyModel & IModelPegasus> implement
 
     @Override
     public void renderPart(float scale) {
-        getLeft().render(scale);
-        getRight().render(scale);
+        getLeft().render(scale, false);
+        getRight().render(scale, true);
     }
 }
