@@ -82,6 +82,7 @@ public class LevitatingItemRenderer {
 
             IRenderItem renderItem = (IRenderItem)Minecraft.getMinecraft().getRenderItem();
             renderItem.useTransparency(true);
+            ((IRenderItem)PonySkullRenderer.instance).useTransparency(true);
 
             setColor(pony.getMetadata().getGlowColor());
 
@@ -93,6 +94,7 @@ public class LevitatingItemRenderer {
             renderer.renderItemSide(entity, stack, transform, left);
 
             renderItem.useTransparency(false);
+            ((IRenderItem)PonySkullRenderer.instance).useTransparency(false);
             unsetColor();
             enableLighting();
         }

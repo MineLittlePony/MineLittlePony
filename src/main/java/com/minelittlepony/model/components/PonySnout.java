@@ -18,8 +18,12 @@ public class PonySnout {
     private PlaneRenderer stallion;
 
     public <T extends ModelBase & ICapitated> PonySnout(T pony) {
-        mare = new PlaneRenderer(pony);
-        stallion = new PlaneRenderer(pony);
+        this(pony, 0, 0, 0);
+    }
+
+    public <T extends ModelBase & ICapitated> PonySnout(T pony, int x, int y, int z) {
+        mare = new PlaneRenderer(pony).offset(HEAD_CENTRE_X + x, HEAD_CENTRE_Y + y, HEAD_CENTRE_Z + z);
+        stallion = new PlaneRenderer(pony).offset(HEAD_CENTRE_X + x, HEAD_CENTRE_Y + y, HEAD_CENTRE_Z + z);
 
         pony.getHead().addChild(stallion);
         pony.getHead().addChild(mare);
@@ -31,8 +35,7 @@ public class PonySnout {
     }
 
     public void init(float yOffset, float stretch) {
-        mare.offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
-            .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
+        mare.around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
             .tex(10, 14) .addBackPlane(-2, 2, -5, 4, 2, stretch)
             .tex(11, 13) .addBackPlane(-1, 1, -5, 2, 1, stretch)
             .tex(9, 14)   .addTopPlane(-2, 2, -5, 1, 1, stretch)
@@ -43,8 +46,7 @@ public class PonySnout {
             .tex(14, 14) .addEastPlane( 2, 2, -5, 2, 1, stretch)
             .tex(11, 12) .addWestPlane(-1, 1, -5, 1, 1, stretch)
             .tex(12, 12) .addEastPlane( 1, 1, -5, 1, 1, stretch);
-        stallion.offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
-                .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
+        stallion.around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                 .tex(10, 13) .addBackPlane(-2, 1, -5, 4, 3, stretch)
                 .tex(10, 13)  .addTopPlane(-2, 1, -5, 4, 1, stretch)
                 .tex(18, 7).addBottomPlane(-2, 4, -5, 4, 1, stretch)

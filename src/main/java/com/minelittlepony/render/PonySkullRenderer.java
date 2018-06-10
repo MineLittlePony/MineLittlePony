@@ -1,12 +1,9 @@
 package com.minelittlepony.render;
 
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
-
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyConfig;
@@ -18,9 +15,10 @@ import com.minelittlepony.render.ponies.RenderPonyZombie;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+import com.mumfrey.liteloader.util.ModUtilities;
+import com.voxelmodpack.hdskins.HDSkinManager;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
@@ -28,18 +26,43 @@ import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
 public class PonySkullRenderer extends TileEntitySkullRenderer implements IRenderItem {
 
-    private final ModelPonyHead ponyHead = new ModelPonyHead();
+    private ModelPonyHead ponyHead = new ModelPonyHead();
 
     private boolean renderAsPony = false;
 
     protected boolean transparency = false;
 
-    public void renderSkull(float x, float y, float z, EnumFacing facing, float rotationIn, int skullType, @Nullable GameProfile profile, int destroyStage, float animateTicks, CallbackInfo info) {
+    private static final PonySkullRenderer ponyInstance = new PonySkullRenderer();
+    private static TileEntitySkullRenderer backup = null;
+
+    public static TileEntitySkullRenderer apply() {
+        if (instance != ponyInstance) {
+            backup = instance;
+            ModUtilities.addRenderer(TileEntitySkull.class, ponyInstance);
+            instance = ponyInstance;
+        }
+        return instance;
+    }
+
+    public static TileEntitySkullRenderer unapply() {
+        if (instance == ponyInstance && backup != null) {
+            ModUtilities.addRenderer(TileEntitySkull.class, backup);
+            instance = backup;
+        }
+        return instance;
+    }
+
+    private PonySkullRenderer() {
+
+    }
+
+    public void renderSkull(float x, float y, float z, EnumFacing facing, float rotationIn, int skullType, @Nullable GameProfile profile, int destroyStage, float animateTicks) {
         PonyConfig config = MineLittlePony.getConfig();
 
         switch (skullType)
@@ -73,11 +96,17 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
             return RenderPonySkeleton.WITHER;
         }
         if (skullType == 2) {
-            return RenderPonySkeleton.SKELETON;
+            return RenderPonyZombie.ZOMBIE;
         }
+
 
         if (skullType == 3) {
             if (profile != null) {
+                Optional<ResourceLocation> skin = HDSkinManager.INSTANCE.getSkinLocation(profile, Type.SKIN, true);
+                if (skin.isPresent()) {
+                    return skin.get();
+                }
+
                 Minecraft minecraft = Minecraft.getMinecraft();
                 Map<Type, MinecraftProfileTexture> map = minecraft.getSkinManager().loadSkinFromCache(profile);
 
@@ -91,7 +120,7 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
             return DefaultPlayerSkin.getDefaultSkinLegacy();
         }
 
-        return RenderPonyZombie.ZOMBIE;
+        return RenderPonySkeleton.SKELETON;
     }
 
     public void renderPonySkull(float x, float y, float z, EnumFacing facing, float rotationIn, int skullType, @Nullable GameProfile profile, int destroyStage, float animateTicks) {
@@ -152,18 +181,8 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
         }
     }
 
-    @Redirect(method = "renderSkull(FFFLnet/minecraft/util/EnumFacing;FILcom/mojang/authlib/GameProfile;IF)V",
-                at = @At(value = "INVOKE",
-                        target = "Lnet/minecraft/client/model/ModelBase;render(Let/minecraft/entity/Entity;FFFFFFF)V"))
-    private void redirectRender(ModelBase self, Entity entity, float ticks, float swing, float swingAmount, float age, float headYaw, float headPitch, float scale) {
-        if (renderAsPony) {
-            self = ponyHead;
-        }
-
-        self.render(entity, swing, swingAmount, age, headYaw, headPitch, scale);
-    }
-
-    protected void bindTexture(ResourceLocation location, CallbackInfo info) {
+    @Override
+    protected void bindTexture(ResourceLocation location) {
         Pony pony = MineLittlePony.getInstance().getManager().getPony(location, false);
         ponyHead.metadata = pony.getMetadata();
         super.bindTexture(location);
