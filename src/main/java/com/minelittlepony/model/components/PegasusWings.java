@@ -28,10 +28,10 @@ public class PegasusWings<T extends AbstractPonyModel & IModelPegasus> implement
     public void init(float yOffset, float stretch) {
         int x = 57;
 
-        leftWing = new ModelWing(pegasus, false, yOffset, stretch, x, 32);
-        rightWing = new ModelWing(pegasus, true, yOffset, stretch, x, 16);
+        leftWing = new ModelWing(pegasus, false, false, yOffset, stretch, x, 32);
+        rightWing = new ModelWing(pegasus, true, false, yOffset, stretch, x, 16);
 
-        legacyWing = new ModelWing(pegasus, true, yOffset, stretch, x - 1, 32);
+        legacyWing = new ModelWing(pegasus, true, true, yOffset, stretch, x - 1, 32);
     }
 
     public ModelWing getLeft() {
@@ -74,7 +74,7 @@ public class PegasusWings<T extends AbstractPonyModel & IModelPegasus> implement
 
     @Override
     public void renderPart(float scale) {
-        getLeft().render(scale, false);
-        getRight().render(scale, true);
+        getLeft().render(scale);
+        getRight().render(scale);
     }
 }
