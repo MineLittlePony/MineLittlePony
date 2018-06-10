@@ -16,7 +16,7 @@ buildscript {
 	}
 }
 
-apply plugin: 'net.minecraftforge.gradle.liteloader'
+apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'com.minelittlepony'
@@ -27,8 +27,8 @@ targetCompatibility = 1.8
 sourceCompatibility = 1.8
 
 minecraft {
-	version = "1.12.2"
-	mappings = 'snapshot_20170919'
+	version = "1.12.2-14.23.4.2705"
+	mappings = 'snapshot_20180606'
 	runDir = 'run'
 	replace '@VERSION@', project.version
 }
@@ -43,38 +43,37 @@ sourceSets {
 		ext.refMap = 'minelp.mixin.refmap.json'
 	}
 }
-
-litemod.json {
-	mcversion = '1.12.r2'
-	author = 'Verdana, Rene_Z, Mumfrey, Killjoy1221'
-	description = 'Mine Little Pony turns players and mobs into ponies'
-	description.minelittlepony = '''\
-		Mine Little Pony turns players and mobs into ponies
-		Press F9 ingame to access settings'''.stripIndent()
-	description.hdskinsmod = '''\
-		Separate skin server for Mine Little Pony that also supports HD skins.
-		Access via button on the main menu.'''.stripIndent()
-
-	mixinConfigs += [
-		'minelp.mixin.json',
-		'hdskins.mixin.json'
-	]
+repositories {
+	maven {
+		url = 'https://repo.spongepowered.org/maven'
+	}
 }
+dependencies {
+	compile('org.spongepowered:mixin:0.7.8-SNAPSHOT') {transitive = false}
+}
+//litemod.json {
+//	mcversion = '1.12.r2'
+//	author = 'Verdana, Rene_Z, Mumfrey, Killjoy1221'
+//	description = 'Mine Little Pony turns players and mobs into ponies'
+//	description.minelittlepony = '''\
+//		Mine Little Pony turns players and mobs into ponies
+//		Press F9 ingame to access settings'''.stripIndent()
+//	description.hdskinsmod = '''\
+//		Separate skin server for Mine Little Pony that also supports HD skins.
+//		Access via button on the main menu.'''.stripIndent()
+//
+//	mixinConfigs += [
+//		'minelp.mixin.json',
+//		'hdskins.mixin.json'
+//	]
+//}
 
 jar {
 	from sourceSets.hdskins.output
-	from litemod
 }
 sourceJar {
 	// add hdskins sources
 	from sourceSets.hdskins.allSource
-}
-task srgJar(type: Jar) {
-	from sourceSets.main.output
-	from sourceSets.hdskins.output
-	from litemod
-	classifier "mc$minecraft.version-srg"
-	baseName "mod-${project.name.toLowerCase()}"
 }
 task skinZip(type: Zip) {
 	from fileTree('skins')
@@ -82,11 +81,6 @@ task skinZip(type: Zip) {
 	version 'v1'
 }
 
-reobf {
-	srgJar {
-		mappingType = 'SEARGE'
-	}
-}
 mixin {
 	defaultObfuscationEnv notch
 }

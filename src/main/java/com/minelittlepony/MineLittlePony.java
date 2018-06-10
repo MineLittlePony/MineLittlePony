@@ -20,6 +20,7 @@ import org.lwjgl.input.Keyboard;
 /**
  * Static MineLittlePony singleton class. Everything's controlled from up here.
  */
+@Mod(modid = "minelittlepony", name = MineLittlePony.MOD_NAME, version = MineLittlePony.MOD_VERSION, clientSideOnly = true)
 public class MineLittlePony {
 
     public static final Logger logger = LogManager.getLogger("MineLittlePony");
@@ -38,7 +39,8 @@ public class MineLittlePony {
 
     private final PonyRenderManager renderManager;
 
-    MineLittlePony() {
+    @Mod.EventHandler
+    public void preInit(FMLPreInitializationEvent event) {
         instance = this;
 
         LiteLoader.getInput().registerKeyBinding(SETTINGS_GUI);
@@ -60,10 +62,8 @@ public class MineLittlePony {
         SkinServer.defaultServers.add(MINELP_LEGACY_SERVER);
     }
 
-    /**
-     * Called when the game is ready.
-     */
-    void postInit(Minecraft minecraft) {
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
 
         HDSkinManager manager = HDSkinManager.INSTANCE;
 //        manager.setSkinUrl(SKIN_SERVER_URL);
