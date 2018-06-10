@@ -8,6 +8,7 @@ minelp.options.hd=Enable MineLP skin server
 minelp.options.sizes=Allow all different sizes of pony
 minelp.options.snuzzles=Display snuzzles on ponies
 minelp.options.showscale=Use show-accurate scaling
+minelp.options.fpsmagic=Ponies use magic in first-person
 
 minelp.mobs.title=Mob Settings
 minelp.mobs.villagers=Ponify villagers

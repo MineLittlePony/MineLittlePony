@@ -68,7 +68,7 @@ public class LevitatingItemRenderer {
 
         pushMatrix();
 
-        boolean doMagic = pony.getMetadata().hasMagic();
+        boolean doMagic = MineLittlePony.getConfig().fpsmagic && pony.getMetadata().hasMagic();
 
         if (doMagic) {
             setupPerspective(entity, stack, left);
