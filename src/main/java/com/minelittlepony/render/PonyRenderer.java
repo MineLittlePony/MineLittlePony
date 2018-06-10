@@ -16,5 +16,4 @@ public class PonyRenderer extends AbstractPonyRenderer<PonyRenderer> {
     protected PonyRenderer copySelf() {
         return new PonyRenderer(baseModel, textureOffsetX, textureOffsetY);
     }
-
 }

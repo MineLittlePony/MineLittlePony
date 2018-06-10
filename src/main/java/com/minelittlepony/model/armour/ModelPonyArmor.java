@@ -60,10 +60,10 @@ public class ModelPonyArmor extends AbstractPonyModel {
     protected void initLegTextures() {
         super.initLegTextures();
 
-        bipedLeftArm = new PonyRenderer(this, 0, 16).flipX();
+        bipedLeftArm = new PonyRenderer(this, 0, 16).flip();
         bipedRightArm = new PonyRenderer(this, 0, 16);
 
-        bipedLeftLeg = new PonyRenderer(this, 0, 16).flipX();
+        bipedLeftLeg = new PonyRenderer(this, 0, 16).flip();
         bipedRightLeg = new PonyRenderer(this, 0, 16);
     }
 

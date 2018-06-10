@@ -69,7 +69,7 @@ public class ModelSeapony extends ModelUnicorn {
     protected void initBodyPositions(float yOffset, float stretch) {
         super.initBodyPositions(yOffset, stretch);
         bodyCenter.around(0, 6, 1)
-                .box(-3, -1, 0, 6, 7, 9, stretch).flipX();
+                .box(-3, -1, 0, 6, 7, 9, stretch).flip();
     }
 
     @Override

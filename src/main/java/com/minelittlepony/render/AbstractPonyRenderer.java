@@ -43,7 +43,7 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
     /**
      * Flips the mirror flag. All faces are mirrored until this is called again.
      */
-    public T flipX() {
+    public T flip() {
         return mirror(!mirror);
     }
 
