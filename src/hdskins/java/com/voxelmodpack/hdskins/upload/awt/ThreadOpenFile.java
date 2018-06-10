@@ -2,16 +2,8 @@ package com.voxelmodpack.hdskins.upload.awt;
 
 import net.minecraft.client.Minecraft;
 
-import java.awt.AWTEvent;
-import java.awt.event.MouseEvent;
-
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.filechooser.FileFilter;
-
-import org.lwjgl.opengl.Display;
-
-import com.voxelmodpack.hdskins.Later;
+import javax.swing.*;
+import javax.swing.filechooser.*;
 
 /**
  * Base class for "open file" dialog threads
@@ -39,18 +31,6 @@ public abstract class ThreadOpenFile extends Thread {
 
         this.parentScreen = callback;
         this.dialogTitle = dialogTitle;
-    }
-
-    @Override
-    public void start() {
-        Later.performLater(0, this);
-    }
-
-    public ThreadOpenFile setParent(JFrame parent) {
-        this.parent = parent;
-        this.parent.setAlwaysOnTop(true);
-
-        return this;
     }
 
     @Override

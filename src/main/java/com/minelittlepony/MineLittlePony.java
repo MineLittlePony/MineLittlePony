@@ -4,53 +4,49 @@ import com.minelittlepony.gui.GuiPonySettings;
 import com.minelittlepony.hdskins.gui.GuiSkinsMineLP;
 import com.minelittlepony.pony.data.IPonyData;
 import com.minelittlepony.pony.data.PonyDataSerialzier;
-import com.mumfrey.liteloader.core.LiteLoader;
+import com.minelittlepony.settings.PonyConfig;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.gui.GuiSkins;
 import com.voxelmodpack.hdskins.skins.SkinServer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.data.MetadataSerializer;
 import net.minecraft.client.settings.KeyBinding;
-import org.apache.logging.log4j.LogManager;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
-/**
- * Static MineLittlePony singleton class. Everything's controlled from up here.
- */
+
 @Mod(modid = "minelittlepony", name = MineLittlePony.MOD_NAME, version = MineLittlePony.MOD_VERSION, clientSideOnly = true)
 public class MineLittlePony {
 
-    public static final Logger logger = LogManager.getLogger("MineLittlePony");
+    public static Logger logger;
 
     public static final String MOD_NAME = "Mine Little Pony";
     public static final String MOD_VERSION = "@VERSION@";
 
     private static final String MINELP_LEGACY_SERVER = "legacy:http://minelpskins.voxelmodpack.com;http://minelpskinmanager.voxelmodpack.com";
 
+    // TODO Replace this with a config screen
     private static final KeyBinding SETTINGS_GUI = new KeyBinding("Settings", Keyboard.KEY_F9, "Mine Little Pony");
 
     private static MineLittlePony instance;
 
-    private final PonyConfig config;
-    private final PonyManager ponyManager;
+    private PonyConfig.Loader configLoader;
+    private PonyManager ponyManager;
 
-    private final PonyRenderManager renderManager;
+    private PonyRenderManager renderManager;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         instance = this;
+        logger = event.getModLog();
 
-        LiteLoader.getInput().registerKeyBinding(SETTINGS_GUI);
+        configLoader = new PonyConfig.Loader(event.getModConfigurationDirectory().toPath().resolve("minelittlepony.json"));
+        ponyManager = new PonyManager(configLoader.getConfig());
 
-        config = new PonyConfig();
-        ponyManager = new PonyManager(config);
-
-        renderManager = new PonyRenderManager();
-
-        LiteLoader.getInstance().registerExposable(config, null);
 
         IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
         irrm.registerReloadListener(ponyManager);
@@ -63,7 +59,9 @@ public class MineLittlePony {
     }
 
     @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
+    public void postInit(FMLLoadCompleteEvent event) {
+
+        renderManager = new PonyRenderManager(Minecraft.getMinecraft().getRenderManager());
 
         HDSkinManager manager = HDSkinManager.INSTANCE;
 //        manager.setSkinUrl(SKIN_SERVER_URL);
@@ -72,9 +70,8 @@ public class MineLittlePony {
 //        logger.info("Set MineLP skin server URL.");
         manager.addClearListener(ponyManager);
 
-        RenderManager rm = minecraft.getRenderManager();
-        renderManager.initialisePlayerRenderers(rm);
-        renderManager.initializeMobRenderers(rm, config);
+        renderManager.initialisePlayerRenderers();
+        renderManager.initializeMobRenderers(configLoader.getConfig());
     }
 
     /**
@@ -91,7 +88,7 @@ public class MineLittlePony {
         if (skins) {
             minecraft.displayGuiScreen(new GuiSkinsMineLP(ponyManager));
         }
-        HDSkinManager.INSTANCE.setEnabled(config.hd);
+        HDSkinManager.INSTANCE.setEnabled(configLoader.getConfig().hd);
 
     }
 
@@ -119,8 +116,8 @@ public class MineLittlePony {
     /**
      * Gets the global MineLP client configuration.
      */
-    public static PonyConfig getConfig() {
-        return getInstance().config;
+    public static PonyConfig.Loader getConfigLoader() {
+        return getInstance().configLoader;
     }
 
 }

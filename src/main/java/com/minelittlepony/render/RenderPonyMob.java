@@ -83,7 +83,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     public float getShadowScale() {
         if (mainModel.isChild) {
             return 0.25F;
-        } else if (MineLittlePony.getConfig().showscale) {
+        } else if (MineLittlePony.getConfigLoader().getConfig().showscale) {
             return 0.4F;
         }
         return 0.5F;
@@ -91,7 +91,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
     @Override
     public float getScaleFactor() {
-        if (MineLittlePony.getConfig().showscale) return 0.9F;
+        if (MineLittlePony.getConfigLoader().getConfig().showscale) return 0.9F;
         return 1;
     }
 

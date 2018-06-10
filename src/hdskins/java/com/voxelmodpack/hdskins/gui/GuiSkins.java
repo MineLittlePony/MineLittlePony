@@ -8,7 +8,6 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.skins.SkinUploadResponse;
 import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
@@ -33,6 +32,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
@@ -47,6 +47,9 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResponse> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private static final int MAX_SKIN_DIMENSION = 1024;
     private int updateCounter = 0;
     private ResourceLocation viewportTexture;
@@ -672,7 +675,7 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     }
 
     private void onUploadComplete(SkinUploadResponse response) {
-        LiteLoaderLogger.info("Upload completed with: %s", response);
+        LOGGER.info("Upload completed with: %s", response);
         this.uploadingSkin = false;
         if (!"OK".equalsIgnoreCase(response.getMessage())) {
             this.setUploadError(response.getMessage());

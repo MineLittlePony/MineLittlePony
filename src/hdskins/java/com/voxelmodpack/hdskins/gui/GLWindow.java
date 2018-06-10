@@ -96,7 +96,7 @@ public class GLWindow extends DropTarget {
 
         frame = new JFrame(Display.getTitle());
         frame.add(canvas);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent windowEvent) {

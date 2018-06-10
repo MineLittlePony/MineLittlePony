@@ -1,23 +1,19 @@
 package com.minelittlepony.gui;
 
-import java.io.IOException;
-
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.PonyConfig;
-import com.minelittlepony.PonyConfig.PonySettings;
 import com.minelittlepony.pony.data.PonyLevel;
 import com.minelittlepony.render.ponies.MobRenderers;
-import com.mumfrey.liteloader.core.LiteLoader;
-
+import com.minelittlepony.settings.PonyConfig;
+import com.minelittlepony.settings.Setting;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
+import net.minecraftforge.fml.client.config.GuiConfig;
 
 /**
  * In-Game options menu.
  *
  */
-public class GuiPonySettings extends GuiScreen {
+public class GuiPonySettings extends GuiConfig {
 
     private static final String OPTIONS_PREFIX = "minelp.options.";
 
@@ -25,10 +21,13 @@ public class GuiPonySettings extends GuiScreen {
 
     private static final String MOB_PREFIX = "minelp.mobs.";
 
+    private PonyConfig.Loader configLoader;
     private PonyConfig config;
 
     public GuiPonySettings() {
-        config = MineLittlePony.getConfig();
+        super(null, "minelittlepony", "Mine Little Pony");
+        configLoader = MineLittlePony.getConfigLoader();
+        config = configLoader.getConfig();
     }
 
     @Override
@@ -44,17 +43,17 @@ public class GuiPonySettings extends GuiScreen {
 
         addButton(new Label(LEFT, row += 15, PONY_LEVEL, -1));
         addButton(new Slider(LEFT, row += 15, 0, 2, config.getPonyLevel().ordinal(), (int id, String name, float value) -> {
-            return I18n.format(PONY_LEVEL + "." + PonyLevel.valueFor(value).name().toLowerCase());
+            return I18n.format(PONY_LEVEL + "." + PonyLevel.valueFor((int) value).name().toLowerCase());
         }, v -> {
-            PonyLevel level = PonyLevel.valueFor(v);
+            PonyLevel level = PonyLevel.valueFor((int) v);
             config.setPonyLevel(level);
             return (float)level.ordinal();
         }));
 
         row += 15;
         addButton(new Label(LEFT, row += 15, OPTIONS_PREFIX + "options", -1));
-        for (PonySettings i : PonySettings.values()) {
-            addButton(new Checkbox(LEFT, row += 15, OPTIONS_PREFIX + i.name().toLowerCase(), i.get(), i));
+        for (Setting<PonyConfig> i : PonyConfig.PonySettings.values()) {
+            addButton(new Checkbox(LEFT, row += 15, OPTIONS_PREFIX + i.name().toLowerCase(), i.get(config), b -> i.set(config, b)));
         }
 
         if (mustScroll()) {
@@ -65,12 +64,12 @@ public class GuiPonySettings extends GuiScreen {
 
         addButton(new Label(RIGHT, row += 15, MOB_PREFIX + "title", -1));
         for (MobRenderers i : MobRenderers.values()) {
-            addButton(new Checkbox(RIGHT, row += 15, MOB_PREFIX + i.name().toLowerCase(), i.get(), i));
+            addButton(new Checkbox(RIGHT, row += 15, MOB_PREFIX + i.name().toLowerCase(), i.get(config), v -> i.set(config, v)));
         }
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) throws IOException {
+    protected void actionPerformed(GuiButton button) {
         if (button instanceof IActionable) {
             ((IActionable)button).perform();
         }
@@ -84,7 +83,7 @@ public class GuiPonySettings extends GuiScreen {
 
     @Override
     public void onGuiClosed() {
-        LiteLoader.getInstance().writeConfig(config);
+        configLoader.save();
     }
 
     protected String getTitle() {

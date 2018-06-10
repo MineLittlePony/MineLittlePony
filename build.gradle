@@ -1,19 +1,19 @@
 buildscript {
-	repositories {
-		jcenter()
-		maven {
-			name 'forge'
-			url 'http://files.minecraftforge.net/maven'
-		}
-		maven {
-			name = 'sponge'
-			url = 'https://repo.spongepowered.org/maven'
-		}
-	}
-	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-		classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
-	}
+    repositories {
+        jcenter()
+        maven {
+            name 'forge'
+            url 'http://files.minecraftforge.net/maven'
+        }
+        maven {
+            name = 'sponge'
+            url = 'https://repo.spongepowered.org/maven'
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+    }
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -27,66 +27,70 @@ targetCompatibility = 1.8
 sourceCompatibility = 1.8
 
 minecraft {
-	version = "1.12.2-14.23.4.2705"
-	mappings = 'snapshot_20180606'
-	runDir = 'run'
-	replace '@VERSION@', project.version
+    version = "1.12.2-14.23.4.2705"
+    mappings = 'snapshot_20180606'
+    runDir = 'run'
+    replace '@VERSION@', project.version
+
+	clientJvmArgs += '-Dfml.coreMod.load=com.minelittlepony.core.MLPLoadingPlugin'
 }
 
 sourceSets {
-	hdskins {
-		compileClasspath += main.compileClasspath
-		ext.refMap = 'hdskins.mixin.refmap.json'
-	}
-	main {
-		compileClasspath += hdskins.output
-		ext.refMap = 'minelp.mixin.refmap.json'
-	}
+    hdskins {
+        compileClasspath += main.compileClasspath
+        ext.refMap = 'hdskins.mixin.refmap.json'
+    }
+    main {
+        compileClasspath += hdskins.output
+        ext.refMap = 'minelp.mixin.refmap.json'
+    }
 }
 repositories {
-	maven {
-		url = 'https://repo.spongepowered.org/maven'
-	}
+    maven {
+        url = 'https://repo.spongepowered.org/maven'
+    }
 }
 dependencies {
-	compile('org.spongepowered:mixin:0.7.8-SNAPSHOT') {transitive = false}
+    compile('org.spongepowered:mixin:0.7.8-SNAPSHOT') {transitive = false}
 }
 //litemod.json {
-//	mcversion = '1.12.r2'
-//	author = 'Verdana, Rene_Z, Mumfrey, Killjoy1221'
-//	description = 'Mine Little Pony turns players and mobs into ponies'
-//	description.minelittlepony = '''\
-//		Mine Little Pony turns players and mobs into ponies
-//		Press F9 ingame to access settings'''.stripIndent()
-//	description.hdskinsmod = '''\
-//		Separate skin server for Mine Little Pony that also supports HD skins.
-//		Access via button on the main menu.'''.stripIndent()
+//    mcversion = '1.12.r2'
+//    author = 'Verdana, Rene_Z, Mumfrey, Killjoy1221'
+//    description = 'Mine Little Pony turns players and mobs into ponies'
+//    description.minelittlepony = '''\
+//        Mine Little Pony turns players and mobs into ponies
+//        Press F9 ingame to access settings'''.stripIndent()
+//    description.hdskinsmod = '''\
+//        Separate skin server for Mine Little Pony that also supports HD skins.
+//        Access via button on the main menu.'''.stripIndent()
 //
-//	mixinConfigs += [
-//		'minelp.mixin.json',
-//		'hdskins.mixin.json'
-//	]
+//    mixinConfigs += [
+//        'minelp.mixin.json',
+//        'hdskins.mixin.json'
+//    ]
 //}
 
 jar {
-	from sourceSets.hdskins.output
+    from sourceSets.hdskins.output
+    manifest.attributes FMLCorePlugin: 'com.minelittlepony.core.MLPLoadingPlugin',
+                        FMLCorePluginContainsFMLMod: 'true'
 }
 sourceJar {
-	// add hdskins sources
-	from sourceSets.hdskins.allSource
+    // add hdskins sources
+    from sourceSets.hdskins.allSource
 }
 task skinZip(type: Zip) {
-	from fileTree('skins')
-	baseName 'Pony Skin Resources'
-	version 'v1'
+    from fileTree('skins')
+    baseName 'Pony Skin Resources'
+    version 'v1'
 }
 
 mixin {
-	defaultObfuscationEnv notch
+    defaultObfuscationEnv notch
 }
 
 // windows only
 task deploy(type: Copy, dependsOn: build) {
-	from jar.archivePath
-	into file("$System.env.APPDATA/.minecraft/mods")
+    from jar.archivePath
+    into file("$System.env.APPDATA/.minecraft/mods")
 }

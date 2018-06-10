@@ -1,12 +1,10 @@
 package com.minelittlepony.render.layer;
 
 import com.google.common.collect.Maps;
-import com.minelittlepony.ForgeProxy;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.model.armour.ModelPonyArmor;
 import com.minelittlepony.util.coordinates.Color;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
@@ -21,11 +19,11 @@ import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
-
-import javax.annotation.Nullable;
+import net.minecraftforge.client.ForgeHooksClient;
 
 import java.io.IOException;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLayer<T> {
 
@@ -157,11 +155,11 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
     }
 
     private static String getArmorTexture(EntityLivingBase entity, ItemStack item, String def, EntityEquipmentSlot slot, @Nullable String type) {
-        return ForgeProxy.getArmorTexture(entity, item, def, slot, type);
+        return ForgeHooksClient.getArmorTexture(entity, item, def, slot, type);
     }
 
     private static ModelPonyArmor getArmorModel(EntityLivingBase entity, ItemStack itemstack, EntityEquipmentSlot slot, ModelPonyArmor def) {
-        ModelBase model = ForgeProxy.getArmorModel(entity, itemstack, slot, def);
+        ModelBase model = ForgeHooksClient.getArmorModel(entity, itemstack, slot, def);
         if (model instanceof ModelPonyArmor) {
             return (ModelPonyArmor) model;
         }

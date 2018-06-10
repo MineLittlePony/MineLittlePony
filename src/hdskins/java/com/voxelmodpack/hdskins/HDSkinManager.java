@@ -16,8 +16,6 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
-import com.mumfrey.liteloader.core.LiteLoader;
-import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.resource.SkinResourceManager;
 import com.voxelmodpack.hdskins.skins.AsyncCacheLoader;
 import com.voxelmodpack.hdskins.skins.SkinServer;
@@ -29,9 +27,12 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -47,11 +48,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public final class HDSkinManager implements IResourceManagerReloadListener {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final ResourceLocation LOADING = new ResourceLocation("LOADING");
     private static final Gson GSON = new GsonBuilder()
@@ -139,7 +141,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
             String skinDir = type.toString().toLowerCase() + "s/";
             final ResourceLocation skin = new ResourceLocation("hdskins", skinDir + texture.getHash());
-            File file2 = new File(LiteLoader.getAssetsDirectory(), "hd/" + skinDir + texture.getHash().substring(0, 2) + "/" + texture.getHash());
+            File file2 = new File(Launch.assetsDir, "hd/" + skinDir + texture.getHash().substring(0, 2) + "/" + texture.getHash());
 
             final IImageBuffer imagebufferdownload = type == Type.SKIN ? new ImageBufferDownloadHD() : null;
 
@@ -237,11 +239,11 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     public static void clearSkinCache() {
-        LiteLoaderLogger.info("Clearing local player skin cache");
+        LOGGER.info("Clearing local player skin cache");
 
         try {
-            FileUtils.deleteDirectory(new File(LiteLoader.getAssetsDirectory(), "skins"));
-            FileUtils.deleteDirectory(new File(LiteLoader.getAssetsDirectory(), "hd"));
+            FileUtils.deleteDirectory(new File(Launch.assetsDir, "skins"));
+            FileUtils.deleteDirectory(new File(Launch.assetsDir, "hd"));
             TextureManager textures = Minecraft.getMinecraft().getTextureManager();
             INSTANCE.skinCache.values().stream()
                     .flatMap(m -> m.values().stream())
@@ -261,7 +263,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         try {
             return callback.onSkinCacheCleared();
         } catch (Exception e) {
-            LiteLoaderLogger.warning("Exception ancountered calling skin listener '{}'. It will be removed.", callback.getClass().getName());
+            LOGGER.warn("Exception encountered calling skin listener '{}'. It will be removed.", callback.getClass().getName());
             e.printStackTrace();
             return false;
         }

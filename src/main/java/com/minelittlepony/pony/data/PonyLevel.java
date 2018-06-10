@@ -5,11 +5,11 @@ public enum PonyLevel {
     HUMANS,
     BOTH;
 
-    public static PonyLevel valueFor(float index) {
+    public static PonyLevel valueFor(int index) {
         PonyLevel[] values = values();
         if (index < 0) {
             index = 0;
         }
-        return values[(int)Math.round(index) % values.length];
+        return values[Math.round(index) % values.length];
     }
 }

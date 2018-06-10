@@ -1,13 +1,11 @@
 package com.minelittlepony.render;
 
-import org.lwjgl.opengl.GL14;
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IRenderItem;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.util.coordinates.Color;
-import com.mumfrey.liteloader.client.overlays.IMinecraft;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -17,7 +15,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
-import static net.minecraft.client.renderer.GlStateManager.*;
+import org.lwjgl.opengl.GL14;
 
 public class LevitatingItemRenderer {
 
@@ -112,7 +110,7 @@ public class LevitatingItemRenderer {
         boolean doBow = doNormal && stack.getItemUseAction() == EnumAction.BOW;
 
         if (doNormal) { // eating, blocking, and drinking are not transformed. Only held items.
-            float ticks = ((IMinecraft)Minecraft.getMinecraft()).getTimer().elapsedPartialTicks - entity.ticksExisted;
+            float ticks = Minecraft.getMinecraft().getTickLength() - entity.ticksExisted;
 
             float floatAmount = (float)Math.sin(ticks / 9) / 40;
             float driftAmount = (float)Math.cos(ticks / 10) / 40;

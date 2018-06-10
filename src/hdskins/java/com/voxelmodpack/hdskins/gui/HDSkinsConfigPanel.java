@@ -1,64 +1,28 @@
 package com.voxelmodpack.hdskins.gui;
 
-import com.mumfrey.liteloader.modconfig.ConfigPanel;
-import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
 import com.voxelmodpack.hdskins.HDSkinManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraftforge.fml.client.config.GuiConfig;
 
-public class HDSkinsConfigPanel implements ConfigPanel {
+public class HDSkinsConfigPanel extends GuiConfig {
 
     private GuiButton button;
 
-    @Override
-    public void onPanelShown(ConfigPanelHost host) {
-        this.button = new GuiButton(0, 40, 10, 100, 20, "Clear Skin Cache");
-
+    public HDSkinsConfigPanel() {
+        super(null, "hdskins", "HD Skins");
     }
 
     @Override
-    public void drawPanel(ConfigPanelHost host, int mouseX, int mouseY, float partialTicks) {
-        this.button.drawButton(Minecraft.getMinecraft(), mouseX, mouseY, partialTicks);
+    public void initGui() {
+        this.addButton(new GuiButton(0, 40, 10, 100, 20, "Clear Skin Cache"));
     }
 
     @Override
-    public void mousePressed(ConfigPanelHost host, int mouseX, int mouseY, int mouseButton) {
-        if (button.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
+    protected void actionPerformed(GuiButton button) {
+        super.actionPerformed(button);
+
+        if (button.id == 0) {
             HDSkinManager.clearSkinCache();
         }
-    }
-
-    @Override
-    public String getPanelTitle() {
-        return "HD Skins Settings";
-    }
-
-    @Override
-    public int getContentHeight() {
-        return 0;
-    }
-
-    @Override
-    public void keyPressed(ConfigPanelHost host, char keyChar, int keyCode) {
-    }
-
-    @Override
-    public void mouseMoved(ConfigPanelHost host, int mouseX, int mouseY) {
-    }
-
-    @Override
-    public void mouseReleased(ConfigPanelHost host, int mouseX, int mouseY, int mouseButton) {
-    }
-
-    @Override
-    public void onPanelHidden() {
-    }
-
-    @Override
-    public void onPanelResize(ConfigPanelHost host) {
-    }
-
-    @Override
-    public void onTick(ConfigPanelHost host) {
     }
 }
