@@ -1,7 +1,6 @@
 package com.voxelmodpack.hdskins.gui;
 
 import com.google.common.collect.Lists;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.DefaultResourcePack;
 import net.minecraft.util.ResourceLocation;
@@ -24,7 +23,6 @@ import javax.swing.*;
 
 /**
  * Experimental window to control file drop. It kind of sucks.
- *
  */
 public class GLWindow extends DropTarget {
 
@@ -60,7 +58,7 @@ public class GLWindow extends DropTarget {
     }
 
     private static int getScaledPixelUnit(int i) {
-        return (int)Math.floor(i * Display.getPixelScaleFactor());
+        return (int) Math.floor(i * Display.getPixelScaleFactor());
     }
 
     private final Minecraft mc = Minecraft.getMinecraft();
@@ -73,6 +71,8 @@ public class GLWindow extends DropTarget {
     private int windowState = 0;
 
     private boolean isFullscreen;
+
+    private boolean open;
 
     private GLWindow() {
         try {
@@ -95,12 +95,16 @@ public class GLWindow extends DropTarget {
         canvas = new Canvas();
 
         frame = new JFrame(Display.getTitle());
-        frame.add(canvas);
+        frame.getContentPane().add(canvas);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent windowEvent) {
-                mc.shutdown();
+                // If we don't check this, exiting the skins menu
+                // will shutdown minecraft.
+                if (open) {
+                    mc.shutdown();
+                }
             }
 
             @Override
@@ -116,7 +120,7 @@ public class GLWindow extends DropTarget {
                 float frameFactorX = frame.getWidth() - frame.getContentPane().getWidth();
                 float frameFactorY = frame.getHeight() - frame.getContentPane().getHeight();
 
-                frame.setSize((int)Math.floor(w + frameFactorX), (int)Math.floor(h + frameFactorY));
+                frame.setSize((int) Math.floor(w + frameFactorX), (int) Math.floor(h + frameFactorY));
             }
         });
         frame.addComponentListener(new ComponentAdapter() {
@@ -139,9 +143,13 @@ public class GLWindow extends DropTarget {
 
         Display.setParent(canvas);
         Display.setFullscreen(isFullscreen);
+
+        open = true;
     }
 
     private void close() {
+        open = false;
+        clearDropTargetListener();
         try {
             Display.setParent(null);
         } catch (LWJGLException e) {
@@ -197,7 +205,9 @@ public class GLWindow extends DropTarget {
     }
 
     private void onRefresh(boolean fullscreen) {
-        if (fullscreen != isFullscreen) {
+        if (fullscreen) {
+            close();
+        } else if (open) {
             // Repaint the canvas, not the window.
             // The former strips the window of its state. The latter fixes a viewport scaling bug.
             canvas.setBounds(0, 0, 0, 0);
@@ -206,7 +216,7 @@ public class GLWindow extends DropTarget {
         }
     }
 
-    public void clearDropTargetListener() {
+    private void clearDropTargetListener() {
         if (dropListener != null) {
             removeDropTargetListener(dropListener);
             dropListener = null;

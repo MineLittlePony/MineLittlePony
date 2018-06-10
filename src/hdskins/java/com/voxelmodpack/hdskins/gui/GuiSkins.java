@@ -194,9 +194,11 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     }
 
     private void enableDnd() {
-        GLWindow.current().setDropTargetListener((FileDropListener) files -> {
-            files.stream().findFirst().ifPresent(instance::loadLocalFile);
-        });
+        if (!mc.isFullScreen()) {
+            GLWindow.current().setDropTargetListener((FileDropListener) files -> {
+                files.stream().findFirst().ifPresent(instance::loadLocalFile);
+            });
+        }
     }
 
     private void initPanoramaRenderer() {
@@ -210,7 +212,7 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
         remotePlayer.releaseTextures();
         HDSkinManager.clearSkinCache();
 
-        GLWindow.current().clearDropTargetListener();
+        GLWindow.dispose();
     }
 
     private void onFileOpenDialogClosed(JFileChooser fileDialog, int dialogResult) {

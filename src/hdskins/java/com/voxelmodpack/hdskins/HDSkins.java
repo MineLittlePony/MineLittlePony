@@ -9,6 +9,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.ICrashCallable;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -53,7 +55,20 @@ public class HDSkins {
             }
         }
 
-//        GLWindow.current();
+        // Create a bogus crash callable so we can properly close the window in case of a crash.
+        FMLCommonHandler.instance().registerCrashCallable(new ICrashCallable() {
+            @Override
+            public String getLabel() {
+                return "HDSkins";
+            }
+
+            @Override
+            public String call() {
+                GLWindow.dispose();
+                return "";
+            }
+        });
+
     }
 
     private boolean fullscreen;
