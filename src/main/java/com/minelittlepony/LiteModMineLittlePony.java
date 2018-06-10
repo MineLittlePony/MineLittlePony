@@ -3,7 +3,6 @@ package com.minelittlepony;
 import com.minelittlepony.gui.PonySettingsPanel;
 import com.mumfrey.liteloader.Configurable;
 import com.mumfrey.liteloader.InitCompleteListener;
-import com.mumfrey.liteloader.Tickable;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.modconfig.ConfigPanel;
 
@@ -11,7 +10,7 @@ import net.minecraft.client.Minecraft;
 
 import java.io.File;
 
-public class LiteModMineLittlePony implements Tickable, InitCompleteListener, Configurable {
+public class LiteModMineLittlePony implements InitCompleteListener, Configurable {
 
     private MineLittlePony mlp;
 
@@ -37,11 +36,6 @@ public class LiteModMineLittlePony implements Tickable, InitCompleteListener, Co
     @Override
     public void onInitCompleted(Minecraft minecraft, LiteLoader loader) {
         mlp.postInit(minecraft);
-    }
-
-    @Override
-    public void onTick(Minecraft minecraft, float partialTicks, boolean inGame, boolean clock) {
-        mlp.onTick(minecraft, inGame);
     }
 
     @Override

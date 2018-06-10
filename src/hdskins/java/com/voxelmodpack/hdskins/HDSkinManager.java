@@ -18,6 +18,7 @@ import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
+import com.voxelmodpack.hdskins.gui.GuiSkins;
 import com.voxelmodpack.hdskins.resource.SkinResourceManager;
 import com.voxelmodpack.hdskins.skins.AsyncCacheLoader;
 import com.voxelmodpack.hdskins.skins.SkinServer;
@@ -81,6 +82,24 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     private SkinResourceManager resources = new SkinResourceManager();
 //    private ExecutorService executor = Executors.newCachedThreadPool();
+
+    private Class<? extends GuiSkins> skinsClass = null;
+
+    public void setPrefferedSkinsGuiClass(Class<? extends GuiSkins> clazz) {
+        skinsClass = clazz;
+    }
+
+    public GuiSkins createSkinsGui() {
+        if (skinsClass != null) {
+            try {
+                return skinsClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return new GuiSkins();
+    }
 
     public Optional<ResourceLocation> getSkinLocation(GameProfile profile1, final Type type, boolean loadIfAbsent) {
         if (!enabled)

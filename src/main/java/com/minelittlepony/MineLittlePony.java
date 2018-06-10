@@ -1,12 +1,10 @@
 package com.minelittlepony;
 
-import com.minelittlepony.gui.GuiPonySettings;
 import com.minelittlepony.hdskins.gui.GuiSkinsMineLP;
 import com.minelittlepony.pony.data.IPonyData;
 import com.minelittlepony.pony.data.PonyDataSerialzier;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.voxelmodpack.hdskins.HDSkinManager;
-import com.voxelmodpack.hdskins.gui.GuiSkins;
 import com.voxelmodpack.hdskins.skins.SkinServer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -72,27 +70,11 @@ public class MineLittlePony {
 //        logger.info("Set MineLP skin server URL.");
         manager.addClearListener(ponyManager);
 
+        manager.setPrefferedSkinsGuiClass(GuiSkinsMineLP.class);
+
         RenderManager rm = minecraft.getRenderManager();
         renderManager.initialisePlayerRenderers(rm);
         renderManager.initializeMobRenderers(rm, config);
-    }
-
-    /**
-     * Called on every update tick
-     */
-    void onTick(Minecraft minecraft, boolean inGame) {
-
-        if (inGame && minecraft.currentScreen == null && SETTINGS_GUI.isPressed()) {
-            minecraft.displayGuiScreen(new GuiPonySettings());
-        }
-
-        boolean skins = minecraft.currentScreen instanceof GuiSkins
-                && !(minecraft.currentScreen instanceof GuiSkinsMineLP);
-        if (skins) {
-            minecraft.displayGuiScreen(new GuiSkinsMineLP(ponyManager));
-        }
-        HDSkinManager.INSTANCE.setEnabled(config.hd);
-
     }
 
     /**

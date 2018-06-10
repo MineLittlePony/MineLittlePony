@@ -14,11 +14,7 @@ import net.minecraft.util.ResourceLocation;
  */
 public class GuiSkinsMineLP extends GuiSkins {
 
-    private PonyManager ponyManager;
-
-    public GuiSkinsMineLP(PonyManager manager) {
-        ponyManager = manager;
-    }
+    private PonyManager ponyManager = MineLittlePony.getInstance().getManager();
 
     @Override
     protected EntityPlayerModel getModel(GameProfile profile) {

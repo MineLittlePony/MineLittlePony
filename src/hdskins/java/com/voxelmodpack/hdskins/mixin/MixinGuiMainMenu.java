@@ -1,7 +1,7 @@
 package com.voxelmodpack.hdskins.mixin;
 
+import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.gui.GuiItemStackButton;
-import com.voxelmodpack.hdskins.gui.GuiSkins;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
@@ -27,8 +27,7 @@ public class MixinGuiMainMenu extends GuiScreen {
     @Inject(method = "actionPerformed(Lnet/minecraft/client/gui/GuiButton;)V", at = @At("RETURN"))
     private void onActionPerformed(GuiButton button, CallbackInfo ci) {
         if (button.id == SKINS) {
-            this.mc.displayGuiScreen(new GuiSkins());
+            this.mc.displayGuiScreen(HDSkinManager.INSTANCE.createSkinsGui());
         }
     }
-
 }
