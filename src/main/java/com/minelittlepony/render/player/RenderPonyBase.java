@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerArrow;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
 public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony {
@@ -47,6 +48,25 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
   }
 
   @Override
+  public float prepareScale(AbstractClientPlayer player, float ticks) {
+
+      if (!player.isRiding()) {
+          float x = player.width/2;
+          float y = 0;
+
+          if (player.isSneaking()) {
+              // Sneaking makes the player 1/15th shorter.
+              // This should be compatible with height-changing mods.
+              y += player.height / 15;
+          }
+
+          super.doRenderShadowAndFire(player, 0, y, x, 0, ticks);
+      }
+
+      return super.prepareScale(player, ticks);
+  }
+
+  @Override
   protected void preRenderCallback(AbstractClientPlayer player, float ticks) {
       updateModel(player);
 
@@ -61,10 +81,15 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
       float s = getScaleFactor();
       GlStateManager.scale(s, s, s);
 
-      if (!player.isRiding()) {
-          GlStateManager.translate(0, 0, -player.width / 2); // move us to the center of the shadow
-      } else {
+      if (player.isRiding()) {
           GlStateManager.translate(0, player.getYOffset(), 0);
+      }
+  }
+
+  @Override
+  public void doRenderShadowAndFire(Entity player, double x, double y, double z, float yaw, float ticks) {
+      if (player.isRiding()) {
+          super.doRenderShadowAndFire(player, x, y, z, yaw, ticks);
       }
   }
 
