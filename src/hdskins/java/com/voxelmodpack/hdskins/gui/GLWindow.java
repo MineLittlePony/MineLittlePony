@@ -44,9 +44,11 @@ public class GLWindow extends DropTarget {
         return instance;
     }
 
-    public static void refresh(boolean fullscreen) {
-        if (instance != null) {
-            instance.onRefresh(fullscreen);
+    public static void create() {
+        try {
+            current().open();
+        } catch (LWJGLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -74,12 +76,11 @@ public class GLWindow extends DropTarget {
 
     private boolean isFullscreen;
 
+    private boolean ready = false;
+    private boolean closeRequested = false;
+
     private GLWindow() {
-        try {
-            open();
-        } catch (LWJGLException e) {
-            throw new RuntimeException(e);
-        }
+
     }
 
     private void open() throws LWJGLException {
@@ -100,7 +101,10 @@ public class GLWindow extends DropTarget {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent windowEvent) {
-                mc.shutdown();
+                if (!closeRequested) {
+                    mc.shutdown();
+                }
+                closeRequested = false;
             }
 
             @Override
@@ -139,9 +143,13 @@ public class GLWindow extends DropTarget {
 
         Display.setParent(canvas);
         Display.setFullscreen(isFullscreen);
+
+        ready = true;
     }
 
     private void close() {
+        closeRequested = true;
+
         try {
             Display.setParent(null);
         } catch (LWJGLException e) {
@@ -196,8 +204,8 @@ public class GLWindow extends DropTarget {
         canvas.setBounds(0, 0, frame.getContentPane().getWidth(), frame.getContentPane().getHeight());
     }
 
-    private void onRefresh(boolean fullscreen) {
-        if (fullscreen != isFullscreen) {
+    public void refresh(boolean fullscreen) {
+        if (ready && fullscreen != isFullscreen) {
             // Repaint the canvas, not the window.
             // The former strips the window of its state. The latter fixes a viewport scaling bug.
             canvas.setBounds(0, 0, 0, 0);
@@ -207,7 +215,7 @@ public class GLWindow extends DropTarget {
     }
 
     public void clearDropTargetListener() {
-        if (dropListener != null) {
+        if (ready && dropListener != null) {
             removeDropTargetListener(dropListener);
             dropListener = null;
             frame.setDropTarget(null);
@@ -215,6 +223,10 @@ public class GLWindow extends DropTarget {
     }
 
     public void setDropTargetListener(DropTargetListener dtl) {
+        if (!ready) {
+            return;
+        }
+
         clearDropTargetListener();
         dropListener = dtl;
 

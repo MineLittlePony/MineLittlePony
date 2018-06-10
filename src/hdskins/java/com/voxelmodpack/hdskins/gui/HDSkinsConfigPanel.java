@@ -1,8 +1,12 @@
 package com.voxelmodpack.hdskins.gui;
 
+import com.mumfrey.liteloader.client.gui.GuiCheckbox;
+import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.modconfig.ConfigPanel;
 import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.mod.LiteModHDSkinsMod;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 
@@ -10,21 +14,45 @@ public class HDSkinsConfigPanel implements ConfigPanel {
 
     private GuiButton button;
 
+    private GuiCheckbox checkbox;
+
+    private LiteModHDSkinsMod mod;
+
     @Override
     public void onPanelShown(ConfigPanelHost host) {
-        this.button = new GuiButton(0, 40, 10, 100, 20, "Clear Skin Cache");
+        this.mod = LiteLoader.getInstance().getMod(LiteModHDSkinsMod.class);
 
+        this.button = new GuiButton(0, 40, 70, 100, 20, "Clear Skin Cache");
+        this.checkbox = new GuiCheckbox(1, 40, 40, "Experimental Skin Drop");
+
+        this.checkbox.checked = mod.experimentalSkinDrop;
     }
 
     @Override
     public void drawPanel(ConfigPanelHost host, int mouseX, int mouseY, float partialTicks) {
-        this.button.drawButton(Minecraft.getMinecraft(), mouseX, mouseY, partialTicks);
+        Minecraft mc = Minecraft.getMinecraft();
+
+        this.button.drawButton(mc, mouseX, mouseY, partialTicks);
+        this.checkbox.drawButton(mc, mouseX, mouseY, partialTicks);
     }
 
     @Override
     public void mousePressed(ConfigPanelHost host, int mouseX, int mouseY, int mouseButton) {
-        if (button.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
+        Minecraft mc = Minecraft.getMinecraft();
+
+        if (button.mousePressed(mc, mouseX, mouseY)) {
             HDSkinManager.clearSkinCache();
+        } else if (checkbox.mousePressed(mc, mouseX, mouseY)) {
+            checkbox.checked = !checkbox.checked;
+            mod.experimentalSkinDrop = checkbox.checked;
+
+            LiteLoader.getInstance().writeConfig(mod);
+
+            if (mod.experimentalSkinDrop) {
+                GLWindow.create();
+            } else {
+                GLWindow.dispose();
+            }
         }
     }
 
