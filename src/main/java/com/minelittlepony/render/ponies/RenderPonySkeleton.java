@@ -14,9 +14,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends RenderPonyMob<Skeleton> {
 
-    private static final ResourceLocation SKELETON = new ResourceLocation("minelittlepony", "textures/entity/skeleton/skeleton_pony.png");
-    private static final ResourceLocation WITHER = new ResourceLocation("minelittlepony", "textures/entity/skeleton/skeleton_wither_pony.png");
-    private static final ResourceLocation STRAY = new ResourceLocation("minelittlepony", "textures/entity/skeleton/stray_pony.png");
+    public static final ResourceLocation SKELETON = new ResourceLocation("minelittlepony", "textures/entity/skeleton/skeleton_pony.png");
+    public static final ResourceLocation WITHER = new ResourceLocation("minelittlepony", "textures/entity/skeleton/skeleton_wither_pony.png");
+    public static final ResourceLocation STRAY = new ResourceLocation("minelittlepony", "textures/entity/skeleton/stray_pony.png");
 
     public RenderPonySkeleton(RenderManager manager) {
         super(manager, PMAPI.skeleton);
@@ -28,8 +28,8 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
         addLayer(new LayerBipedArmor(this) {
             @Override
             protected void initArmor() {
-                modelLeggings = getPlayerModel().getArmor().leggings;
-                modelArmor = getPlayerModel().getArmor().chestplate;
+                modelLeggings = getModelWrapper().getArmor().leggings;
+                modelArmor = getModelWrapper().getArmor().chestplate;
             }
         });
     }

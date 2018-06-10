@@ -20,7 +20,7 @@ public class RenderPonyGuardian extends RenderGuardian {
 
     public RenderPonyGuardian(RenderManager manager) {
         super(manager);
-        mainModel = PMAPI.seapony.getModel();
+        mainModel = PMAPI.seapony.getBody();
 
         ponyRenderer = new RenderPonyMob.Proxy<EntityGuardian>(manager, PMAPI.seapony) {
             @Override

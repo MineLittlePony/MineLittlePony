@@ -30,9 +30,9 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     private Pony pony;
 
     public RenderPonyMob(RenderManager manager, ModelWrapper model) {
-        super(manager, model.getModel(), 0.5F);
+        super(manager, model.getBody(), 0.5F);
         playerModel = model;
-        ponyModel = playerModel.getModel();
+        ponyModel = playerModel.getBody();
 
         addLayers();
     }
@@ -96,7 +96,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     }
 
     @Override
-    public ModelWrapper getPlayerModel() {
+    public ModelWrapper getModelWrapper() {
         return playerModel;
     }
 

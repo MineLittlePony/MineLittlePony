@@ -144,13 +144,13 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
   }
 
   @Override
-  public ModelWrapper getPlayerModel() {
+  public ModelWrapper getModelWrapper() {
       return playerModel;
   }
 
   protected void setPlayerModel(ModelWrapper model) {
       playerModel = model;
-      mainModel = ponyModel = playerModel.getModel();
+      mainModel = ponyModel = playerModel.getBody();
   }
 
   protected void updateModel(AbstractClientPlayer player) {

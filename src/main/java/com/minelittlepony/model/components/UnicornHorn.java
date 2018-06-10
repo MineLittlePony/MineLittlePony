@@ -1,8 +1,10 @@
 package com.minelittlepony.model.components;
 
-import com.minelittlepony.model.AbstractPonyModel;
+import com.minelittlepony.model.capabilities.ICapitated;
 import com.minelittlepony.render.HornGlowRenderer;
 import com.minelittlepony.render.PonyRenderer;
+
+import net.minecraft.client.model.ModelBase;
 
 import static org.lwjgl.opengl.GL11.*;
 import static net.minecraft.client.renderer.GlStateManager.*;
@@ -13,7 +15,7 @@ public class UnicornHorn {
     private PonyRenderer horn;
     private HornGlowRenderer glow;
 
-    public UnicornHorn(AbstractPonyModel pony, float yOffset, float stretch) {
+    public <T extends ModelBase & ICapitated> UnicornHorn(T pony, float yOffset, float stretch) {
         horn = new PonyRenderer(pony, 0, 3);
         glow = new HornGlowRenderer(pony, 0, 3);
 

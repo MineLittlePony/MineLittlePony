@@ -24,16 +24,16 @@ public class LayerPonyCape extends AbstractPonyLayer<AbstractClientPlayer> {
 
     @Override
     public void doPonyRender(@Nonnull AbstractClientPlayer player, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
-        ModelWrapper model = ((IRenderPony) getRenderer()).getPlayerModel();
+        ModelWrapper model = ((IRenderPony) getRenderer()).getModelWrapper();
 
         if (player.hasPlayerInfo() && !player.isInvisible()
                 && player.isWearing(EnumPlayerModelParts.CAPE) && player.getLocationCape() != null
                 && player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() != Items.ELYTRA) {
 
             pushMatrix();
-            model.getModel().transform(BodyPart.BODY);
+            model.getBody().transform(BodyPart.BODY);
             translate(0, 0.24F, 0);
-            model.getModel().bipedBody.postRender(scale);
+            model.getBody().bipedBody.postRender(scale);
 
             double capeX = player.prevChasingPosX + (player.chasingPosX - player.prevChasingPosX) * scale - (player.prevPosX + (player.posX - player.prevPosX) * scale);
             double capeY = player.prevChasingPosY + (player.chasingPosY - player.prevChasingPosY) * scale - (player.prevPosY + (player.posY - player.prevPosY) * scale);
@@ -64,7 +64,7 @@ public class LayerPonyCape extends AbstractPonyLayer<AbstractClientPlayer> {
             rotate(180, 0, 0, 1);
             rotate(90, 1, 0, 0);
             getRenderer().bindTexture(player.getLocationCape());
-            model.getModel().renderCape(0.0625F);
+            model.getBody().renderCape(0.0625F);
             popMatrix();
         }
     }

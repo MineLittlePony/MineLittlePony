@@ -9,20 +9,20 @@ import com.minelittlepony.pony.data.IPonyData;
  */
 public class ModelWrapper implements IModelWrapper {
 
-    private final AbstractPonyModel model;
+    private final AbstractPonyModel body;
     private final PonyArmor armor;
 
     /**
      * Created a new model wrapper to contain the given pony.
      */
     public ModelWrapper(AbstractPonyModel model) {
-        this.model = model;
+        this.body = model;
         armor = model.createArmour();
         armor.apply(model.metadata);
     }
 
-    public AbstractPonyModel getModel() {
-        return model;
+    public AbstractPonyModel getBody() {
+        return body;
     }
 
     /**
@@ -34,12 +34,12 @@ public class ModelWrapper implements IModelWrapper {
     }
 
     public void apply(IPonyData meta) {
-        model.metadata = meta;
+        body.metadata = meta;
         armor.apply(meta);
     }
 
     public void init() {
-        model.init(0, 0);
+        body.init(0, 0);
         armor.init();
     }
 }

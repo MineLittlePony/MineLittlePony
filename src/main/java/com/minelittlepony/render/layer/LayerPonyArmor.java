@@ -40,7 +40,7 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
 
     @Override
     public void doPonyRender(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
-        pony = ((IRenderPony) getRenderer()).getPlayerModel();
+        pony = ((IRenderPony) getRenderer()).getModelWrapper();
 
         for (EntityEquipmentSlot i : EntityEquipmentSlot.values()) {
             if (i.getSlotType() == Type.ARMOR) {
@@ -57,9 +57,9 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
             ItemArmor itemarmor = (ItemArmor) itemstack.getItem();
 
             ModelPonyArmor armour = getArmorModel(entity, itemstack, armorSlot, pony.getArmor().getArmorForSlot(armorSlot));
-            armour.setModelAttributes(pony.getModel());
+            armour.setModelAttributes(pony.getBody());
             armour.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
-            armour.synchroniseLegs(pony.getModel());
+            armour.synchroniseLegs(pony.getBody());
 
             Tuple<ResourceLocation, Boolean> armors = getArmorTexture(entity, itemstack, armorSlot, null);
             prepareToRender(armour, armorSlot, armors.getSecond());

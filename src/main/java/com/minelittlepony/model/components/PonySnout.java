@@ -3,10 +3,12 @@ package com.minelittlepony.model.components;
 import com.minelittlepony.pony.data.PonyGender;
 import com.minelittlepony.render.plane.PlaneRenderer;
 
+import net.minecraft.client.model.ModelBase;
+
 import static com.minelittlepony.model.PonyModelConstants.*;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.model.AbstractPonyModel;
+import com.minelittlepony.model.capabilities.ICapitated;
 
 public class PonySnout {
 
@@ -15,12 +17,12 @@ public class PonySnout {
     private PlaneRenderer mare;
     private PlaneRenderer stallion;
 
-    public PonySnout(AbstractPonyModel pony) {
+    public <T extends ModelBase & ICapitated> PonySnout(T pony) {
         mare = new PlaneRenderer(pony);
         stallion = new PlaneRenderer(pony);
 
-        pony.bipedHead.addChild(stallion);
-        pony.bipedHead.addChild(mare);
+        pony.getHead().addChild(stallion);
+        pony.getHead().addChild(mare);
     }
 
     public void rotate(float x, float y, float z) {

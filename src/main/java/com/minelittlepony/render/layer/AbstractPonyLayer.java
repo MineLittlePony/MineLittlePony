@@ -43,7 +43,7 @@ public abstract class AbstractPonyLayer<T extends EntityLivingBase> implements L
     }
 
     public AbstractPonyModel getPlayerModel() {
-        return ((IRenderPony) getRenderer()).getPlayerModel().getModel();
+        return ((IRenderPony) getRenderer()).getModelWrapper().getBody();
     }
 
     @SuppressWarnings("unchecked")

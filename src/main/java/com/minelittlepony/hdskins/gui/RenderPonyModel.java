@@ -53,7 +53,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
 
         renderingAsHuman = false;
 
-        return pm.getModel();
+        return pm.getBody();
     }
 
     @Override

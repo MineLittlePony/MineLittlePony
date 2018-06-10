@@ -10,7 +10,7 @@ public interface IRenderPony {
     /**
      * Gets the wrapped pony model for this renderer.
      */
-    ModelWrapper getPlayerModel();
+    ModelWrapper getModelWrapper();
 
     /**
      * Gets the current shadow size for rendering.

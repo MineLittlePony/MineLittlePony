@@ -12,8 +12,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob<Zombie> {
 
-    private static final ResourceLocation ZOMBIE = new ResourceLocation("minelittlepony", "textures/entity/zombie/zombie_pony.png");
-    private static final ResourceLocation HUSK = new ResourceLocation("minelittlepony", "textures/entity/zombie/husk_pony.png");
+    public static final ResourceLocation ZOMBIE = new ResourceLocation("minelittlepony", "textures/entity/zombie/zombie_pony.png");
+    public static final ResourceLocation HUSK = new ResourceLocation("minelittlepony", "textures/entity/zombie/husk_pony.png");
 
     public RenderPonyZombie(RenderManager manager) {
         super(manager, PMAPI.zombie);
