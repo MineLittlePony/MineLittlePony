@@ -44,17 +44,16 @@ public class ModelWing {
 
         extended.around(r * LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + rotationPointY, LEFT_WING_EXT_RP_Z)
                 .rotateAngleY = r * 3;
-        addFeather(0, r, l,  6,     0,    8, scale + 0.1F);
-        addFeather(1, r, l, -1,    -0.3F, 8, scale + 0.1F) .rotateAngleX = -0.85F;
-        addFeather(2, r, l,  1.8F,  1.3F, 8, scale - 0.1F) .rotateAngleX = -0.75F;
-        addFeather(3, r, l,  5,     2,    8, scale)        .rotateAngleX = -0.5F;
-        addFeather(4, r, l,  0,   -0.2F,  6, scale + 0.3F);
-        addFeather(5, r, l,  0,     0,    3, scale + 0.19F).rotateAngleX = -0.85F;
+        addFeather(0, l,  6,     0,    8, scale + 0.1F);
+        addFeather(1, l, -1,    -0.3F, 8, scale + 0.1F) .rotateAngleX = -0.85F;
+        addFeather(2, l,  1.8F,  1.3F, 8, scale - 0.1F) .rotateAngleX = -0.75F;
+        addFeather(3, l,  5,     2,    8, scale)        .rotateAngleX = -0.5F;
+        addFeather(4, l,  0,   -0.2F,  6, scale + 0.3F);
+        addFeather(5, l,  0,     0,    3, scale + 0.19F).rotateAngleX = -0.85F;
     }
 
-    private PonyRenderer addFeather(int i, float r, boolean l, float y, float z, int h, float scale) {
-        // TODO: if (r == -1 && !l) {child.flipZ().box(...)} // after said flipZ() is added
-        return extended.child(i).around(0, 0, 0).mirror(r == -1).box(-0.5f, y, z, 1, h, 2, scale);
+    private PonyRenderer addFeather(int i, boolean l, float y, float z, int h, float scale) {
+        return extended.child(i).around(0, 0, 0).mirror(l).box(0, y, z, 1, h, 2, scale);
     }
 
     public void rotateWalking(float swing) {
