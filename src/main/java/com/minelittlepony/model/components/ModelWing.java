@@ -71,7 +71,11 @@ public class ModelWing {
             GlStateManager.pushMatrix();
             GlStateManager.translate(extend ? (isRight ? 0.05F : -0.05F) : 0, extend ? -0.05F : 0, extend ? 0 : 0.198F);
         }
-        (extend ? extended : folded).render(scale);
+        if (extend) {
+            extended.render(scale);
+        } else {
+            folded.render(scale);
+        }
         if (bags) {
             GlStateManager.popMatrix();
         }
