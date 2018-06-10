@@ -7,7 +7,7 @@ import com.minelittlepony.model.capabilities.IModelPegasus;
 
 public class ModelPegasus extends ModelEarthPony implements IModelPegasus {
 
-    public PegasusWings wings;
+    public PegasusWings<ModelPegasus> wings;
 
     public ModelPegasus(boolean smallArms) {
         super(smallArms);
@@ -16,7 +16,7 @@ public class ModelPegasus extends ModelEarthPony implements IModelPegasus {
     @Override
     public void init(float yOffset, float stretch) {
         super.init(yOffset, stretch);
-        wings = new PegasusWings(this, yOffset, stretch);
+        wings = new PegasusWings<>(this, yOffset, stretch);
     }
 
     @Override

@@ -9,27 +9,29 @@ import com.minelittlepony.model.capabilities.IModelPart;
 import com.minelittlepony.model.capabilities.IModelPegasus;
 import com.minelittlepony.pony.data.PonyWearable;
 
-public class PegasusWings implements IModelPart {
+public class PegasusWings<T extends AbstractPonyModel & IModelPegasus> implements IModelPart {
 
-    private final IModelPegasus pegasus;
+    private final T pegasus;
 
-    private final ModelWing leftWing;
-    private final ModelWing rightWing;
+    private ModelWing leftWing;
+    private ModelWing rightWing;
 
-    private final ModelWing legacyWing;
+    private ModelWing legacyWing;
 
-    public <T extends AbstractPonyModel & IModelPegasus> PegasusWings(T model, float yOffset, float stretch) {
+    public PegasusWings(T model, float yOffset, float stretch) {
         pegasus = model;
 
-        leftWing = new ModelWing(model, false, 4, yOffset, stretch, 32);
-        rightWing = new ModelWing(model, true, -6, yOffset, stretch, 16);
-        legacyWing = new ModelWing(model, true, -6, yOffset, stretch, 32);
+        init(yOffset, stretch);
     }
-
 
     @Override
     public void init(float yOffset, float stretch) {
+        int x = 57;
 
+        leftWing = new ModelWing(pegasus, false, yOffset, stretch, x, 32);
+        rightWing = new ModelWing(pegasus, true, yOffset, stretch, x, 16);
+
+        legacyWing = new ModelWing(pegasus, true, yOffset, stretch, x - 1, 32);
     }
 
     public ModelWing getLeft() {
@@ -72,8 +74,7 @@ public class PegasusWings implements IModelPart {
 
     @Override
     public void renderPart(float scale) {
-        boolean standing = pegasus.wingsAreOpen();
-        getLeft().render(standing, scale);
-        getRight().render(standing, scale);
+        getLeft().render(scale);
+        getRight().render(scale);
     }
 }

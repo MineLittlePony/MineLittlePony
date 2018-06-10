@@ -7,7 +7,7 @@ import com.minelittlepony.model.capabilities.IModelPegasus;
 
 public class ModelAlicorn extends ModelUnicorn implements IModelPegasus {
 
-    public PegasusWings wings;
+    public PegasusWings<ModelAlicorn> wings;
 
     public ModelAlicorn(boolean smallArms) {
         super(smallArms);
@@ -16,7 +16,7 @@ public class ModelAlicorn extends ModelUnicorn implements IModelPegasus {
     @Override
     public void init(float yOffset, float stretch) {
         super.init(yOffset, stretch);
-        wings = new PegasusWings(this, yOffset, stretch);
+        wings = new PegasusWings<>(this, yOffset, stretch);
     }
 
     @Override
