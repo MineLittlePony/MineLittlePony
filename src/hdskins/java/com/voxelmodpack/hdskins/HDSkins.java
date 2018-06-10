@@ -7,6 +7,7 @@ import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
 import com.voxelmodpack.hdskins.skins.SkinServer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -19,12 +20,13 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.List;
 
-@Mod(modid = "hdskins", name = "HD Skins", version = "4.0.0")
-@Mod.EventBusSubscriber
+@Mod(modid = "hdskins", name = "HD Skins", version = "5.0.0")
 public class HDSkins {
 
     @Mod.EventHandler
     public void init(FMLPreInitializationEvent event) {
+
+        MinecraftForge.EVENT_BUS.register(this);
 
         Path json = event.getModConfigurationDirectory().toPath().resolve("skinservers.txt");
         List<String> list = SkinServer.defaultServers;
@@ -54,10 +56,10 @@ public class HDSkins {
 //        GLWindow.current();
     }
 
-    private static boolean fullscreen;
+    private boolean fullscreen;
 
     @SubscribeEvent
-    public static void onFullScreenToggled(TickEvent.ClientTickEvent event) {
+    public void onFullScreenToggled(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
             fullscreen = Minecraft.getMinecraft().isFullScreen();
         } else if (Minecraft.getMinecraft().isFullScreen() != fullscreen) {
@@ -65,4 +67,5 @@ public class HDSkins {
             GLWindow.refresh(Minecraft.getMinecraft().isFullScreen());
         }
     }
+
 }
