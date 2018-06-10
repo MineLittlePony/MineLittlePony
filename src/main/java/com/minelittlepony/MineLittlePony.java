@@ -1,9 +1,9 @@
 package com.minelittlepony;
 
-import com.minelittlepony.gui.GuiPonySettings;
 import com.minelittlepony.hdskins.gui.GuiSkinsMineLP;
 import com.minelittlepony.pony.data.IPonyData;
 import com.minelittlepony.pony.data.PonyDataSerialzier;
+import com.minelittlepony.render.ponies.MobRenderers;
 import com.minelittlepony.settings.PonyConfig;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.gui.GuiSkins;
@@ -11,13 +11,16 @@ import com.voxelmodpack.hdskins.skins.SkinServer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.data.MetadataSerializer;
-import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.input.Keyboard;
-
 
 @Mod(modid = "minelittlepony", name = MineLittlePony.MOD_NAME, version = MineLittlePony.MOD_VERSION, clientSideOnly = true)
 public class MineLittlePony {
@@ -29,12 +32,8 @@ public class MineLittlePony {
 
     private static final String MINELP_LEGACY_SERVER = "legacy:http://minelpskins.voxelmodpack.com;http://minelpskinmanager.voxelmodpack.com";
 
-    // TODO Replace this with a config screen
-    private static final KeyBinding SETTINGS_GUI = new KeyBinding("Settings", Keyboard.KEY_F9, "Mine Little Pony");
-
     private static MineLittlePony instance;
 
-    private PonyConfig.Loader configLoader;
     private PonyManager ponyManager;
 
     private PonyRenderManager renderManager;
@@ -44,9 +43,11 @@ public class MineLittlePony {
         instance = this;
         logger = event.getModLog();
 
-        configLoader = new PonyConfig.Loader(event.getModConfigurationDirectory().toPath().resolve("minelittlepony.json"));
-        ponyManager = new PonyManager(configLoader.getConfig());
+        MinecraftForge.EVENT_BUS.register(this);
 
+        ConfigManager.sync("minelittlepony", Config.Type.INSTANCE);
+
+        ponyManager = new PonyManager();
 
         IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
         irrm.registerReloadListener(ponyManager);
@@ -71,25 +72,32 @@ public class MineLittlePony {
         manager.addClearListener(ponyManager);
 
         renderManager.initialisePlayerRenderers();
-        renderManager.initializeMobRenderers(configLoader.getConfig());
+        renderManager.initializeMobRenderers();
     }
 
     /**
      * Called on every update tick
      */
-    void onTick(Minecraft minecraft, boolean inGame) {
+    @SubscribeEvent
+    public void onTick(GuiScreenEvent.InitGuiEvent.Pre event) {
 
-        if (inGame && minecraft.currentScreen == null && SETTINGS_GUI.isPressed()) {
-            minecraft.displayGuiScreen(new GuiPonySettings());
+        if (event.getGui() instanceof GuiSkins && !(event.getGui() instanceof GuiSkinsMineLP)) {
+            event.setCanceled(true);
+            Minecraft.getMinecraft().displayGuiScreen(new GuiSkinsMineLP(ponyManager));
         }
+        HDSkinManager.INSTANCE.setEnabled(PonyConfig.hd);
+    }
 
-        boolean skins = minecraft.currentScreen instanceof GuiSkins
-                && !(minecraft.currentScreen instanceof GuiSkinsMineLP);
-        if (skins) {
-            minecraft.displayGuiScreen(new GuiSkinsMineLP(ponyManager));
+    @SubscribeEvent
+    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
+//        System.out.println("Config " + event.getModID() + "." + event.getConfigID() + " Loaded");
+        if (event.getModID().equals("minelittlepony")) {
+            ConfigManager.sync("minelittlepony", Config.Type.INSTANCE);
+            for (MobRenderers mobRenderers : MobRenderers.values()) {
+                mobRenderers.set(mobRenderers.get());
+            }
+            renderManager.initializeMobRenderers();
         }
-        HDSkinManager.INSTANCE.setEnabled(configLoader.getConfig().hd);
-
     }
 
     /**
@@ -111,13 +119,6 @@ public class MineLittlePony {
      */
     public PonyRenderManager getRenderManager() {
         return renderManager;
-    }
-
-    /**
-     * Gets the global MineLP client configuration.
-     */
-    public static PonyConfig.Loader getConfigLoader() {
-        return getInstance().configLoader;
     }
 
 }

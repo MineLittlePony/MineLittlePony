@@ -1,0 +1,9 @@
+[{
+  "modid": "minelittlepony",
+  "name": "Mine Little Pony",
+  "description": "Mine Little Pony turns players and mobs into ponies",
+  "version": "1.0.0.0",
+  "url": "minecraftforge.net/",
+  "authorList": ["killjoy"],
+  "credits": "I'd like to thank my mother and father."
+}]

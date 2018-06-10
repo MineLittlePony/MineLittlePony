@@ -10,6 +10,7 @@ import com.minelittlepony.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.render.layer.LayerPonyArmor;
 import com.minelittlepony.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.render.layer.LayerPonyElytra;
+import com.minelittlepony.settings.PonyConfig;
 import com.voxelmodpack.hdskins.HDSkinManager;
 
 import net.minecraft.client.renderer.GlStateManager;
@@ -83,7 +84,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     public float getShadowScale() {
         if (mainModel.isChild) {
             return 0.25F;
-        } else if (MineLittlePony.getConfigLoader().getConfig().showscale) {
+        } else if (PonyConfig.showscale) {
             return 0.4F;
         }
         return 0.5F;
@@ -91,7 +92,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
     @Override
     public float getScaleFactor() {
-        if (MineLittlePony.getConfigLoader().getConfig().showscale) return 0.9F;
+        if (PonyConfig.showscale) return 0.9F;
         return 1;
     }
 

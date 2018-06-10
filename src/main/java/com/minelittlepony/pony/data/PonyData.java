@@ -1,7 +1,7 @@
 package com.minelittlepony.pony.data;
 
 import com.google.common.base.MoreObjects;
-import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.settings.PonyConfig;
 
 import java.awt.image.BufferedImage;
 import javax.annotation.concurrent.Immutable;
@@ -58,7 +58,7 @@ public class PonyData implements IPonyData {
 
     @Override
     public PonySize getSize() {
-        return MineLittlePony.getConfigLoader().getConfig().sizes ? size : PonySize.NORMAL;
+        return PonyConfig.sizes ? size : PonySize.NORMAL;
     }
 
     @Override

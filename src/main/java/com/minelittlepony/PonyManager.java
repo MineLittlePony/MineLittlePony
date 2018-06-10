@@ -45,12 +45,9 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
      */
     private List<ResourceLocation> backgroundPonyList = Lists.newArrayList();
 
-    private PonyConfig config;
-
     private Map<ResourceLocation, Pony> poniesCache = Maps.newHashMap();
 
-    public PonyManager(PonyConfig config) {
-        this.config = config;
+    public PonyManager() {
         initmodels();
     }
 
@@ -109,7 +106,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
     public Pony getPony(ResourceLocation resource, UUID uuid) {
         Pony pony = getPony(resource, isSlimSkin(uuid));
 
-        if (config.getPonyLevel() == PonyLevel.PONIES && pony.getMetadata().getRace().isHuman()) {
+        if (PonyConfig.getPonyLevel() == PonyLevel.PONIES && pony.getMetadata().getRace().isHuman()) {
             return getBackgroundPony(uuid);
         }
 
@@ -122,7 +119,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
      * @param uuid id of a player or entity
      */
     public Pony getDefaultPony(UUID uuid) {
-        if (config.getPonyLevel() != PonyLevel.PONIES) {
+        if (PonyConfig.getPonyLevel() != PonyLevel.PONIES) {
             return getPony(DefaultPlayerSkin.getDefaultSkin(uuid), isSlimSkin(uuid));
         }
 

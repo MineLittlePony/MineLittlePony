@@ -2,10 +2,10 @@ package com.minelittlepony.model.components;
 
 import static com.minelittlepony.model.PonyModelConstants.*;
 
-import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.pony.data.PonyGender;
 import com.minelittlepony.render.plane.PlaneRenderer;
+import com.minelittlepony.settings.PonyConfig;
 
 public class PonySnout {
 
@@ -50,7 +50,7 @@ public class PonySnout {
     }
 
     public void setGender(PonyGender gender) {
-        boolean show = !isHidden && MineLittlePony.getConfigLoader().getConfig().snuzzles;
+        boolean show = !isHidden && PonyConfig.snuzzles;
 
         mare.isHidden = !show || gender == PonyGender.STALLION;
         stallion.isHidden = !show || gender == PonyGender.MARE;

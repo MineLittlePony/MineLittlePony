@@ -2,7 +2,7 @@ package com.minelittlepony.render.ponies;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyRenderManager;
-import com.minelittlepony.settings.PonyConfig;
+import com.minelittlepony.settings.MobConfig;
 import com.minelittlepony.settings.Setting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -29,7 +29,7 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
  *
  * Due to the limitations in Mumfrey's framework, needs to be paired with a field in PonyConfig.
  */
-public enum MobRenderers implements Setting<PonyConfig> {
+public enum MobRenderers implements Setting {
     VILLAGERS {
         @Override
         public void register(boolean state, PonyRenderManager pony) {
@@ -78,8 +78,13 @@ public enum MobRenderers implements Setting<PonyConfig> {
     };
 
     @Override
-    public void set(PonyConfig config, boolean value) {
-        Setting.super.set(config, value);
+    public Class<?> getEnclosingClass() {
+        return MobConfig.class;
+    }
+
+    @Override
+    public void set(boolean value) {
+        Setting.super.set(value);
         apply(value, MineLittlePony.getInstance().getRenderManager(), Minecraft.getMinecraft().getRenderManager());
     }
 

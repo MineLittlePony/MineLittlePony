@@ -3,33 +3,37 @@ package com.minelittlepony.settings;
 
 import java.lang.reflect.Field;
 
-public interface Setting<Config> {
+public interface Setting {
 
     String name();
 
-    default boolean get(Config config) {
+    default boolean get() {
         try {
-            Field field = getField(config.getClass());
-            return field.getBoolean(config);
+            Field field = getField();
+            return field.getBoolean(null);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
 
-    default void set(Config config, boolean value) {
+    default void set(boolean value) {
         try {
-            Field field = getField(config.getClass());
-            field.setBoolean(config, value);
+            Field field = getField();
+            field.setBoolean(null, value);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
 
-    default Field getField(Class<?> owner) {
+    default Class<?> getEnclosingClass() {
+        return getClass().getEnclosingClass();
+    }
+
+    default Field getField() {
         try {
-            return owner.getField(name().toLowerCase());
+            return getEnclosingClass().getField(name().toLowerCase());
         } catch (NoSuchFieldException e) {
-            throw new IllegalArgumentException(e);
+            throw new RuntimeException(e);
         }
     }
 }

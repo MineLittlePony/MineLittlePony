@@ -1,6 +1,5 @@
 package com.minelittlepony.gui;
 
-import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.pony.data.PonyLevel;
 import com.minelittlepony.render.ponies.MobRenderers;
 import com.minelittlepony.settings.PonyConfig;
@@ -21,13 +20,8 @@ public class GuiPonySettings extends GuiConfig {
 
     private static final String MOB_PREFIX = "minelp.mobs.";
 
-    private PonyConfig.Loader configLoader;
-    private PonyConfig config;
-
     public GuiPonySettings() {
         super(null, "minelittlepony", "Mine Little Pony");
-        configLoader = MineLittlePony.getConfigLoader();
-        config = configLoader.getConfig();
     }
 
     @Override
@@ -42,18 +36,18 @@ public class GuiPonySettings extends GuiConfig {
         }
 
         addButton(new Label(LEFT, row += 15, PONY_LEVEL, -1));
-        addButton(new Slider(LEFT, row += 15, 0, 2, config.getPonyLevel().ordinal(), (int id, String name, float value) -> {
+        addButton(new Slider(LEFT, row += 15, 0, 2, PonyConfig.getPonyLevel().ordinal(), (int id, String name, float value) -> {
             return I18n.format(PONY_LEVEL + "." + PonyLevel.valueFor((int) value).name().toLowerCase());
         }, v -> {
             PonyLevel level = PonyLevel.valueFor((int) v);
-            config.setPonyLevel(level);
+            PonyConfig.setPonyLevel(level);
             return (float)level.ordinal();
         }));
 
         row += 15;
         addButton(new Label(LEFT, row += 15, OPTIONS_PREFIX + "options", -1));
-        for (Setting<PonyConfig> i : PonyConfig.PonySettings.values()) {
-            addButton(new Checkbox(LEFT, row += 15, OPTIONS_PREFIX + i.name().toLowerCase(), i.get(config), b -> i.set(config, b)));
+        for (Setting i : PonyConfig.PonySettings.values()) {
+            addButton(new Checkbox(LEFT, row += 15, OPTIONS_PREFIX + i.name().toLowerCase(), i.get(), i::set));
         }
 
         if (mustScroll()) {
@@ -64,7 +58,7 @@ public class GuiPonySettings extends GuiConfig {
 
         addButton(new Label(RIGHT, row += 15, MOB_PREFIX + "title", -1));
         for (MobRenderers i : MobRenderers.values()) {
-            addButton(new Checkbox(RIGHT, row += 15, MOB_PREFIX + i.name().toLowerCase(), i.get(config), v -> i.set(config, v)));
+            addButton(new Checkbox(RIGHT, row += 15, MOB_PREFIX + i.name().toLowerCase(), i.get(), i::set));
         }
     }
 
@@ -81,10 +75,6 @@ public class GuiPonySettings extends GuiConfig {
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
-    @Override
-    public void onGuiClosed() {
-        configLoader.save();
-    }
 
     protected String getTitle() {
         return OPTIONS_PREFIX + "title";

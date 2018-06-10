@@ -7,7 +7,6 @@ import com.minelittlepony.model.player.PlayerModels;
 import com.minelittlepony.render.LevitatingItemRenderer;
 import com.minelittlepony.render.player.RenderPonyPlayer;
 import com.minelittlepony.render.ponies.MobRenderers;
-import com.minelittlepony.settings.PonyConfig;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -66,9 +65,9 @@ public class PonyRenderManager {
     /**
      * Registers all entity model replacements. (except for players).
      */
-    public void initializeMobRenderers(PonyConfig config) {
+    public void initializeMobRenderers() {
         for (MobRenderers i : MobRenderers.values()) {
-            boolean state = i.get(config);
+            boolean state = i.get();
             i.register(state, this);
             if (state) {
                 MineLittlePony.logger.info(i.name() + " are now ponies.");
@@ -88,10 +87,11 @@ public class PonyRenderManager {
      */
     @SuppressWarnings("unchecked")
     public <T extends Entity> void switchRenderer(boolean state, Class<T> type, IRenderFactory<T> renderer) {
+        // always put the original, regardless of state
+        if (!renderMap.containsKey(type)) {
+            renderMap.put(type, manager.getEntityClassRenderObject(type));
+        }
         if (state) {
-            if (!renderMap.containsKey(type)) {
-                renderMap.put(type, manager.getEntityClassRenderObject(type));
-            }
             RenderingRegistry.registerEntityRenderingHandler(type, renderer);
         } else if (renderMap.containsKey(type)) {
             RenderingRegistry.registerEntityRenderingHandler(type, mngr -> (Render<T>) renderMap.get(type));

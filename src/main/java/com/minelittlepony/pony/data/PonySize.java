@@ -1,6 +1,6 @@
 package com.minelittlepony.pony.data;
 
-import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.settings.PonyConfig;
 
 public enum PonySize implements ITriggerPixelMapped<PonySize> {
     NORMAL(0, 0.4f, 1f),
@@ -20,14 +20,14 @@ public enum PonySize implements ITriggerPixelMapped<PonySize> {
     }
 
     public float getShadowSize() {
-        if (MineLittlePony.getConfigLoader().getConfig().showscale) {
+        if (PonyConfig.showscale) {
             return shadowSize * 0.9F;
         }
         return shadowSize;
     }
 
     public float getScaleFactor() {
-        if (MineLittlePony.getConfigLoader().getConfig().showscale) {
+        if (PonyConfig.showscale) {
             return scale * 0.9F;
         }
         return scale;

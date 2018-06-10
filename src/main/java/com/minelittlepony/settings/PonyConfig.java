@@ -1,37 +1,26 @@
 package com.minelittlepony.settings;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.pony.data.PonyLevel;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
+import net.minecraftforge.common.config.Config;
 
 /**
  * Storage container for MineLP client settings.
  */
+@Config(modid = "minelittlepony", name = "options")
+@Config.LangKey("minelp.options.options")
 public class PonyConfig {
 
-    private PonyLevel ponylevel = PonyLevel.PONIES;
+    @Config.LangKey("minelp.options.ponylevel")
+    public static PonyLevel ponylevel = PonyLevel.PONIES;
 
-    public boolean sizes = true;
-    public boolean snuzzles = true;
-    public boolean hd = true;
-    public boolean showscale = true;
+    @Config.LangKey("minelp.options.sizes")
+    public static boolean sizes = true;
+    public static boolean snuzzles = true;
+    public static boolean hd = true;
+    public static boolean showscale = true;
 
-    public boolean villagers = true;
-    public boolean zombies = true;
-    public boolean pigzombies = true;
-    public boolean skeletons = true;
-    public boolean illagers = true;
-    public boolean guardians = true;
 
-    public enum PonySettings implements Setting<PonyConfig> {
+    public enum PonySettings implements Setting {
         SIZES,
         SNUZZLES,
         HD,
@@ -44,14 +33,14 @@ public class PonyConfig {
      *
      * @param ignorePony true to ignore whatever value the setting has.
      */
-    public PonyLevel getEffectivePonyLevel(boolean ignorePony) {
+    public static PonyLevel getEffectivePonyLevel(boolean ignorePony) {
         return ignorePony ? PonyLevel.BOTH : getPonyLevel();
     }
 
     /**
      * Actually gets the pony level value. No option to ignore reality here.
      */
-    public PonyLevel getPonyLevel() {
+    public static PonyLevel getPonyLevel() {
         if (ponylevel == null) {
             ponylevel = PonyLevel.PONIES;
         }
@@ -63,51 +52,8 @@ public class PonyConfig {
      *
      * @param ponylevel
      */
-    public void setPonyLevel(PonyLevel ponylevel) {
-        this.ponylevel = ponylevel;
+    public static void setPonyLevel(PonyLevel ponylevel) {
+        PonyConfig.ponylevel = ponylevel;
     }
 
-    public void save() {
-
-    }
-
-    public static class Loader {
-
-        private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-        private final Path path;
-
-        private PonyConfig config;
-
-        public Loader(Path path) {
-            this.path = path;
-        }
-
-        public PonyConfig getConfig() {
-            if (config == null) {
-                reload();
-            }
-            return config;
-        }
-
-        public void reload() {
-            try (BufferedReader reader = Files.newBufferedReader(path)) {
-                config = gson.fromJson(reader, PonyConfig.class);
-            } catch (NoSuchFileException e) {
-                config = new PonyConfig();
-            } catch (IOException e) {
-                MineLittlePony.logger.warn("Error while loading config. Using defaults.", e);
-                config = new PonyConfig();
-            }
-            save();
-        }
-
-        public void save() {
-            try (BufferedWriter writer = Files.newBufferedWriter(path)) {
-                gson.toJson(getConfig(), writer);
-            } catch (IOException e) {
-                MineLittlePony.logger.warn("Unable to save config.", e);
-            }
-        }
-    }
 }

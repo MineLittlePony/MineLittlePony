@@ -4,6 +4,7 @@ import com.google.common.base.MoreObjects;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.mixin.MixinThreadDownloadImageData;
 import com.minelittlepony.model.ModelWrapper;
+import com.minelittlepony.settings.PonyConfig;
 import com.voxelmodpack.hdskins.DynamicTextureImage;
 import com.voxelmodpack.hdskins.ThreadDownloadImageETag;
 
@@ -117,7 +118,7 @@ public class Pony {
     }
 
     public PonyRace getRace(boolean ignorePony) {
-        return metadata.getRace().getEffectiveRace(MineLittlePony.getConfigLoader().getConfig().getEffectivePonyLevel(ignorePony));
+        return metadata.getRace().getEffectiveRace(PonyConfig.getEffectivePonyLevel(ignorePony));
     }
 
     public ResourceLocation getTexture() {
