@@ -22,6 +22,7 @@ public class SaddleBags implements IModelPart {
     float dropAmount = 0;
 
     AbstractPonyModel model;
+
     public SaddleBags(AbstractPonyModel model) {
         this.model = model;
 
@@ -93,7 +94,6 @@ public class SaddleBags implements IModelPart {
         leftBag.rotateAngleZ = bodySwing;
         rightBag.rotateAngleZ = -bodySwing;
 
-        // TODO: Interpolate
         dropAmount = hangLow ? 0.15F : 0;
     }
 
@@ -103,16 +103,16 @@ public class SaddleBags implements IModelPart {
 
     @Override
     public void renderPart(float scale) {
-        if (hangLow) {
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(0, dropAmount, 0);
-        }
+        dropAmount = model.getMetadata().getInterpolator().interpolate("dropAmount", dropAmount, 3);
+
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0, dropAmount, 0);
 
         leftBag.render(scale);
         rightBag.render(scale);
-        if (hangLow) {
-            GlStateManager.popMatrix();
-        }
+
+
+        GlStateManager.popMatrix();
         strap.render(scale);
     }
 
