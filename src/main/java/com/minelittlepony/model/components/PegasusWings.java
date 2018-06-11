@@ -28,10 +28,10 @@ public class PegasusWings<T extends AbstractPonyModel & IModelPegasus> implement
     public void init(float yOffset, float stretch) {
         int x = 57;
 
-        leftWing = new ModelWing(pegasus, false, yOffset, stretch, x, 32);
-        rightWing = new ModelWing(pegasus, true, yOffset, stretch, x, 16);
+        leftWing = new ModelWing(pegasus, false, false, yOffset, stretch, x, 32);
+        rightWing = new ModelWing(pegasus, true, false, yOffset, stretch, x - 1, 16);
 
-        legacyWing = new ModelWing(pegasus, true, yOffset, stretch, x - 1, 32);
+        legacyWing = new ModelWing(pegasus, true, true, yOffset, stretch, x, 32);
     }
 
     public ModelWing getLeft() {
@@ -63,8 +63,8 @@ public class PegasusWings<T extends AbstractPonyModel & IModelPegasus> implement
 
         if (pegasus.wingsAreOpen()) {
             float flapAngle = pegasus.getWingRotationFactor(ticks);
-            if (pegasus.isWearing(PonyWearable.SADDLE_BAGS)) {
-                flapAngle -= 0.6F;
+            if (!pegasus.isCrouching() && pegasus.isWearing(PonyWearable.SADDLE_BAGS)) {
+                flapAngle -= 1F;
             }
             getLeft().rotateFlying(flapAngle);
             getRight().rotateFlying(-flapAngle);

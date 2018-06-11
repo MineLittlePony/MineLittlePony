@@ -47,7 +47,7 @@ public final class PonyModelConstants {
         HORN_Z = HEAD_CENTRE_Z - 1.5F,
 
         LEFT_WING_EXT_RP_X = 4.5F,
-        LEFT_WING_EXT_RP_Y = 6,
+        LEFT_WING_EXT_RP_Y = 5.3F,
         LEFT_WING_EXT_RP_Z = 6,
 
         LEFT_WING_ROTATE_ANGLE_Z_SNEAK = 4,

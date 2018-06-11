@@ -40,7 +40,13 @@ public class SaddleBags implements IModelPart {
         .tex(56, 31).addTopPlane(0, 0, 0, 8, 1, stretch)
                     .addTopPlane(0, 0, 1, 8, 1, stretch)
                    .addBackPlane(0, 0, 2, 8, 1, stretch)
-                  .addFrontPlane(0, 0, 0, 8, 1, stretch);
+                  .addFrontPlane(0, 0, 0, 8, 1, stretch)
+                .child(0).offset(0, -3, -0.305F).tex(56, 31)
+                   .addWestPlane(4.0002F, 0, 0, 1, 3, stretch)  // 0.0001 is there
+                   .addWestPlane(4.0002F, -1, 0, 1, 3, stretch)  // otherwise straps
+                   .addWestPlane(-4.0002F, 0, 0, 1, 3, stretch)  // clip into the body
+                   .addWestPlane(-4.0002F, -1, 0, 1, 3, stretch)
+                .rotateAngleX = ROTATE_270;
 
         leftBag.offset(x, y, z).around(0, 4, 4)
                 .tex(56, 25).addBackPlane(0, 0, 0, 3, 6, stretch)
@@ -104,11 +110,10 @@ public class SaddleBags implements IModelPart {
 
         leftBag.render(scale);
         rightBag.render(scale);
-        strap.render(scale);
-
         if (hangLow) {
             GlStateManager.popMatrix();
         }
+        strap.render(scale);
     }
 
 }
