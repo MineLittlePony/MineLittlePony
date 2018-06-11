@@ -21,6 +21,11 @@ public class BasicEasingInterpolator implements IInterpolator {
 
         from += (to - from) / scalingFactor;
 
+        if (Float.isNaN(from) || Float.isInfinite(from)) {
+            System.err.println("Error: Animation frame for " + key + " is NaN or Infinite.");
+            from = to;
+        }
+
         properties.put(key, from);
 
         return from;

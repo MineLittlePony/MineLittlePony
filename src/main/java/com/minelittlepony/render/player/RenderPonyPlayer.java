@@ -43,7 +43,13 @@ public class RenderPonyPlayer extends RenderPonyBase {
         }
 
         // ayyy magic numbers (after 5 - an approximation of nice looking coefficients calculated by hand)
-        roll *= horMotion * 5 * (3.6884f * Math.pow(Math.abs(roll), -0.191));
+
+        // roll might be zero, in which case Math.pow produces +Infinity. Anything x Infinity = NaN.
+        double pow = roll != 0 ? Math.pow(Math.abs(roll), -0.191) : 0;
+
+        roll *= horMotion * 5 * (3.6884f * pow);
+
+        assert !Float.isNaN((float)roll);
 
         return MathHelper.clamp(roll, -54, 54);
     }
@@ -67,7 +73,9 @@ public class RenderPonyPlayer extends RenderPonyBase {
 
         GlStateManager.rotate(ponyModel.motionPitch, 1, 0, 0);
 
-        float roll = getPony().getMetadata().getInterpolator().interpolate("pegasusRoll", (float)calculateRoll(player, motionX,  motionY, motionZ), 10);
+        float roll = (float)calculateRoll(player, motionX,  motionY, motionZ);
+
+        roll = getPony().getMetadata().getInterpolator().interpolate("pegasusRoll", roll, 10);
 
         GlStateManager.rotate((float)roll, 0, 0, 1);
 

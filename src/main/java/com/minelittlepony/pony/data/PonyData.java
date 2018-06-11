@@ -47,7 +47,7 @@ public class PonyData implements IPonyData {
 
     @Override
     public PonyRace getRace() {
-        return race.isHuman() ? race : PonyRace.PEGASUS;
+        return race;
     }
 
     @Override
@@ -77,7 +77,7 @@ public class PonyData implements IPonyData {
 
     @Override
     public boolean isWearing(PonyWearable wearable) {
-        return true;//wearables[wearable.ordinal()];
+        return wearables[wearable.ordinal()];
     }
 
     @Override
