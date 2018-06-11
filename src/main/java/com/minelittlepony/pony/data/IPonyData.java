@@ -1,5 +1,7 @@
 package com.minelittlepony.pony.data;
 
+import com.minelittlepony.model.anim.IInterpolator;
+
 import net.minecraft.client.resources.data.IMetadataSection;
 
 /**
@@ -36,5 +38,13 @@ public interface IPonyData extends IMetadataSection {
      */
     boolean hasMagic();
 
+    /**
+     * Checks it this pony is wearing the given accessory.
+     */
     boolean isWearing(PonyWearable wearable);
+
+    /**
+     * Gets an interpolator for interpolating values.
+     */
+    IInterpolator getInterpolator();
 }

@@ -224,6 +224,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
         float legRPX = cos - getLegOutset();
 
+        legRPX = metadata.getInterpolator().interpolate("legOffset", legRPX, 3);
+
         bipedRightArm.rotationPointX = -legRPX;
         bipedRightLeg.rotationPointX = -legRPX;
 

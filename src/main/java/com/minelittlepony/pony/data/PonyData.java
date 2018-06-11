@@ -2,6 +2,8 @@ package com.minelittlepony.pony.data;
 
 import com.google.common.base.MoreObjects;
 import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.model.anim.BasicEasingInterpolator;
+import com.minelittlepony.model.anim.IInterpolator;
 
 import java.awt.image.BufferedImage;
 import javax.annotation.concurrent.Immutable;
@@ -20,6 +22,8 @@ public class PonyData implements IPonyData {
     private final int glowColor;
 
     private final boolean[] wearables;
+
+    private final IInterpolator interpolator = new BasicEasingInterpolator();
 
     public PonyData() {
         race = PonyRace.HUMAN;
@@ -43,7 +47,7 @@ public class PonyData implements IPonyData {
 
     @Override
     public PonyRace getRace() {
-        return race;
+        return race.isHuman() ? race : PonyRace.PEGASUS;
     }
 
     @Override
@@ -73,7 +77,7 @@ public class PonyData implements IPonyData {
 
     @Override
     public boolean isWearing(PonyWearable wearable) {
-        return wearables[wearable.ordinal()];
+        return true;//wearables[wearable.ordinal()];
     }
 
     @Override
@@ -86,6 +90,11 @@ public class PonyData implements IPonyData {
                 .add("wearables", PonyWearable.flags(wearables))
                 .add("glowColor", "#" + Integer.toHexString(glowColor))
                 .toString();
+    }
+
+    @Override
+    public IInterpolator getInterpolator() {
+        return interpolator;
     }
 
     /**
