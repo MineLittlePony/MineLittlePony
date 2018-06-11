@@ -18,10 +18,6 @@ public class ModelWing {
     public <T extends AbstractPonyModel & IModelPegasus> ModelWing(T pegasus, boolean right, boolean legacy, float y, float scale, int texX, int texY) {
         this.pegasus = pegasus;
 
-        if (right) {
-            texX ++;
-        }
-
         folded = new PonyRenderer(pegasus, 56, texY).mirror(legacy);
         extended = new PonyRenderer(pegasus, texX, texY + 3);
 
@@ -53,7 +49,7 @@ public class ModelWing {
     }
 
     private PonyRenderer addFeather(int i, boolean l, float y, float z, int h, float scale) {
-        return extended.child(i).around(0, 0, 0).mirror(l).box(0, y, z, 1, h, 2, scale);
+        return extended.child(i).around(0, 0, 0).mirror(l).box(-0.5F, y, z, 1, h, 2, scale);
     }
 
     public void rotateWalking(float swing) {

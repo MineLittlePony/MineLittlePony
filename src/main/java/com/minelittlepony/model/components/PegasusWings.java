@@ -29,9 +29,9 @@ public class PegasusWings<T extends AbstractPonyModel & IModelPegasus> implement
         int x = 57;
 
         leftWing = new ModelWing(pegasus, false, false, yOffset, stretch, x, 32);
-        rightWing = new ModelWing(pegasus, true, false, yOffset, stretch, x, 16);
+        rightWing = new ModelWing(pegasus, true, false, yOffset, stretch, x - 1, 16);
 
-        legacyWing = new ModelWing(pegasus, true, true, yOffset, stretch, x - 1, 32);
+        legacyWing = new ModelWing(pegasus, true, true, yOffset, stretch, x, 32);
     }
 
     public ModelWing getLeft() {
