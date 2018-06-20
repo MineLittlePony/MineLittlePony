@@ -781,6 +781,12 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
             transformTall(part);
         } else {
             if (isSleeping) translate(0, -0.61F, 0.25F);
+
+            switch (part) {
+                case NECK:
+                    if (isCrouching()) translate(-0.03F, 0.03F, 0.1F);
+                default:
+            }
         }
 
     }
@@ -794,9 +800,9 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
                 if (isCrouching()) translate(0, 0.05F, 0);
                 break;
             case NECK:
-                translate(0, -0.19F, -0.01F);
+                translate(0, -0.09F, -0.01F);
                 scale(1, 1.1F, 1);
-                if (isCrouching()) translate(0, -0.06F, -0.04F);
+                if (isCrouching()) translate(-0.02F, -0.02F, 0.1F);
                 break;
             case BODY:
             case TAIL:
@@ -823,7 +829,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
                 break;
             case NECK:
                 translate(0, -0.15F, -0.07F);
-                if (isCrouching()) translate(0, 0, -0.05F);
+                if (isCrouching()) translate(-0.03F, 0.16F, 0.07F);
 
                 break;
             case BODY:
