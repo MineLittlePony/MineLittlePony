@@ -1,5 +1,6 @@
 package com.minelittlepony;
 
+import com.minelittlepony.gui.GuiPonySettings;
 import com.minelittlepony.hdskins.gui.GuiSkinsMineLP;
 import com.minelittlepony.pony.data.IPonyData;
 import com.minelittlepony.pony.data.PonyDataSerialzier;
@@ -75,6 +76,12 @@ public class MineLittlePony {
         RenderManager rm = minecraft.getRenderManager();
         renderManager.initialisePlayerRenderers(rm);
         renderManager.initializeMobRenderers(rm, config);
+    }
+
+    void onTick(Minecraft minecraft, boolean inGame) {
+        if (inGame && minecraft.currentScreen == null && SETTINGS_GUI.isPressed()) {
+            minecraft.displayGuiScreen(new GuiPonySettings());
+        }
     }
 
     /**
