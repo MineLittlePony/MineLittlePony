@@ -79,14 +79,12 @@ public class MineLittlePony {
         renderManager.initializeMobRenderers(rm, config);
     }
 
-    void onTick() {
-        PonySkullRenderer.resolve();
-    }
-
     void onTick(Minecraft minecraft, boolean inGame) {
         if (inGame && minecraft.currentScreen == null && SETTINGS_GUI.isPressed()) {
             minecraft.displayGuiScreen(new GuiPonySettings());
         }
+
+        PonySkullRenderer.resolve();
     }
 
     /**
