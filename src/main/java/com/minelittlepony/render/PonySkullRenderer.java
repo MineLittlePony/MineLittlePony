@@ -139,6 +139,10 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
         transparency = use;
     }
 
+    public boolean usesTransparency() {
+        return transparency;
+    }
+
     /**
      * A skull, just a skull.
      *

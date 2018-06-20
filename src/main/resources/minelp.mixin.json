@@ -9,6 +9,7 @@
         "MixinNetworkPlayerInfo",
         "MixinRenderItem",
         "MixinItemRenderer",
-        "MixinRenderManager"
+        "MixinRenderManager",
+        "MixinGlStateManager"
     ]
 }

@@ -35,6 +35,7 @@ public class LevitatingItemRenderer {
 
         RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
         ((IRenderItem) renderItem).useTransparency(true);
+        PonySkullRenderer.ponyInstance.useTransparency(true);
 
         scale(1.1, 1.1, 1.1);
 
@@ -44,6 +45,7 @@ public class LevitatingItemRenderer {
         renderItem.renderItem(drop, entity, transform, hand == EnumHandSide.LEFT);
 
         ((IRenderItem) renderItem).useTransparency(false);
+        PonySkullRenderer.ponyInstance.useTransparency(false);
         unsetColor();
         enableLighting();
         popMatrix();

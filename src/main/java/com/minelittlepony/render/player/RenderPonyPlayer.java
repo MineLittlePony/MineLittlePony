@@ -18,8 +18,6 @@ import com.voxelmodpack.hdskins.HDSkinManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.player.EntityPlayer;
@@ -39,11 +37,7 @@ public class RenderPonyPlayer extends RenderPonyBase {
 
         @Override
         public void preRender(boolean transparency) {
-            if (transparency) {
-                GlStateManager.tryBlendFuncSeparate(SourceFactor.CONSTANT_COLOR, DestFactor.ONE, SourceFactor.ONE, DestFactor.ZERO);
-            } else {
-                GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
-            }
+            GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
         }
 
         @Override
