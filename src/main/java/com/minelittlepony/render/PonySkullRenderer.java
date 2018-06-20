@@ -24,7 +24,7 @@ import net.minecraft.util.ResourceLocation;
  */
 public class PonySkullRenderer extends TileEntitySkullRenderer implements IRenderItem {
 
-    private static PonySkullRenderer ponyInstance = new PonySkullRenderer();
+    public static PonySkullRenderer ponyInstance = new PonySkullRenderer();
     private static TileEntitySkullRenderer backup = null;
 
     private static final Map<Integer, ISkull> skullMap = new HashMap<Integer, ISkull>();
@@ -43,8 +43,11 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
                 instance = ponyInstance;
             }
         } else {
-            if ((instance instanceof PonySkullRenderer) && backup != null) {
+            if ((instance instanceof PonySkullRenderer)) {
                 ponyInstance = (PonySkullRenderer)instance;
+                if (backup == null) {
+                    backup = new TileEntitySkullRenderer();
+                }
                 ModUtilities.addRenderer(TileEntitySkull.class, backup);
                 instance = backup;
             }
