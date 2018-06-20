@@ -4,12 +4,12 @@ import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.ModelWrapper;
+import com.minelittlepony.render.PonySkullRenderer;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityZombieVillager;
 import net.minecraft.entity.passive.EntityVillager;
@@ -97,9 +97,7 @@ public class LayerPonyCustomHead<T extends EntityLivingBase> implements LayerRen
             }
         }
 
-        // TODO: PonySkullRenderer
-        TileEntitySkullRenderer.instance.renderSkull(-0.5F, 0, -0.45F, EnumFacing.UP, 180, itemstack.getMetadata(), profile, -1, limbSwing);
-
+        PonySkullRenderer.resolve().renderSkull(-0.5F, 0, -0.45F, EnumFacing.UP, 180, itemstack.getMetadata(), profile, -1, limbSwing);
     }
 
     private ModelWrapper getModel() {

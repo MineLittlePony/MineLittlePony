@@ -48,4 +48,9 @@ public class LiteModMineLittlePony implements InitCompleteListener, Tickable, Co
     public Class<? extends ConfigPanel> getConfigPanelClass() {
         return PonySettingsPanel.class;
     }
+
+    @Override
+    public void onTick(Minecraft minecraft, float partialTicks, boolean inGame, boolean clock) {
+        mlp.onTick();
+    }
 }
