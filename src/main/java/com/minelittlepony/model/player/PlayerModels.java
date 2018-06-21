@@ -5,9 +5,9 @@ import com.minelittlepony.model.ModelWrapper;
 
 public enum PlayerModels {
     /**
-     * @deprecated Will be removed in a later revision
+     * The default non-pony model. This is typically handled my the vanilla renderer.
      */
-    @Deprecated HUMAN("default", "slim", () -> PMAPI.pony, () -> PMAPI.ponySmall),
+    DEFAULT("default", "slim", () -> PMAPI.earthpony, () -> PMAPI.earthponySmall),
     EARTH("earthpony", "slimearthpony", () -> PMAPI.earthpony, () -> PMAPI.earthponySmall),
     PEGASUS("pegasus", "slimpegasus", () -> PMAPI.pegasus, () -> PMAPI.pegasusSmall),
     UNICORN("unicorn", "slimunicorn", () -> PMAPI.unicorn, () -> PMAPI.unicornSmall),

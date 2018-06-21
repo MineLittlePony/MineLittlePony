@@ -21,9 +21,6 @@ import java.lang.reflect.Field;
  */
 public final class PMAPI {
 
-    public static final ModelWrapper pony = new ModelWrapper(new ModelAlicorn(false));
-    public static final ModelWrapper ponySmall = new ModelWrapper(new ModelAlicorn(true));
-
     public static final ModelWrapper earthpony = new ModelWrapper(new ModelEarthPony(false));
     public static final ModelWrapper earthponySmall = new ModelWrapper(new ModelEarthPony(true));
 

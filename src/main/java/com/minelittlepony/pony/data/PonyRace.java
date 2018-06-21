@@ -4,7 +4,7 @@ import com.minelittlepony.model.player.PlayerModels;
 
 public enum PonyRace implements ITriggerPixelMapped<PonyRace> {
 
-    HUMAN(0, PlayerModels.HUMAN, false, false),
+    HUMAN(0, PlayerModels.DEFAULT, false, false),
     EARTH(0xf9b131, PlayerModels.EARTH,false, false),
     PEGASUS(0x88caf0, PlayerModels.PEGASUS, true, false),
     UNICORN(0xd19fe4, PlayerModels.UNICORN, false, true),

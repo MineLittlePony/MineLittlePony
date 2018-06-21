@@ -34,10 +34,10 @@ public class PonyRenderManager {
         // Preview on the select skin gui
         ModUtilities.addRenderer(EntityPonyModel.class, new RenderPonyModel(manager));
 
-        for (PlayerModels i : PlayerModels.values()) {
-            if (i != PlayerModels.HUMAN) {
-                registerPlayerSkin(manager, i);
-            }
+        PlayerModels[] models = PlayerModels.values();
+
+        for (int i = 1; i < models.length; i++) {
+            registerPlayerSkin(manager, models[i]);
         }
     }
 
