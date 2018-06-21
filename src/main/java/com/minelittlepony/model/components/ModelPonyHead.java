@@ -40,6 +40,11 @@ public class ModelPonyHead extends ModelHumanoidHead implements ICapitated {
     }
 
     @Override
+    public boolean hasHeadGear() {
+        return false;
+    }
+
+    @Override
     public void render(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         snout.isHidden = metadata.getRace().isHuman();
         ears.isHidden = snout.isHidden;
@@ -53,4 +58,5 @@ public class ModelPonyHead extends ModelHumanoidHead implements ICapitated {
             horn.render(scale);
         }
     }
+
 }

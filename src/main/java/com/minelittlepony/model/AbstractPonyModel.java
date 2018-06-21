@@ -34,6 +34,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     public boolean isFlying;
     public boolean isSleeping;
     public boolean isSwimming;
+    public boolean headGear;
 
     /**
      * Associcated pony data.
@@ -654,6 +655,11 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     @Override
     public boolean isGoingFast() {
         return rainboom;
+    }
+
+    @Override
+    public boolean hasHeadGear() {
+        return headGear;
     }
 
     @Override

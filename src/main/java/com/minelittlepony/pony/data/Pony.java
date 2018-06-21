@@ -13,6 +13,10 @@ import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
@@ -110,6 +114,18 @@ public class Pony {
 
     public boolean isFullySubmerged(EntityLivingBase entity) {
         return entity.isInWater() && entity.getEntityWorld().getBlockState(new BlockPos(entity.getPositionEyes(1))).getMaterial() == Material.WATER;
+    }
+
+    public boolean isWearingHeadgear(EntityLivingBase entity) {
+        ItemStack stack = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+
+        if (stack.isEmpty()) {
+            return false;
+        }
+
+        Item item = stack.getItem();
+
+        return !(item instanceof ItemArmor) || ((ItemArmor)item).getEquipmentSlot() != EntityEquipmentSlot.HEAD;
     }
 
     public ModelWrapper getModel(boolean ignorePony) {

@@ -17,11 +17,15 @@ public class PonySnout {
     private PlaneRenderer mare;
     private PlaneRenderer stallion;
 
+    private final ICapitated head;
+
     public <T extends ModelBase & ICapitated> PonySnout(T pony) {
         this(pony, 0, 0, 0);
     }
 
     public <T extends ModelBase & ICapitated> PonySnout(T pony, int x, int y, int z) {
+        head = pony;
+
         mare = new PlaneRenderer(pony).offset(HEAD_CENTRE_X + x, HEAD_CENTRE_Y + y, HEAD_CENTRE_Z + z);
         stallion = new PlaneRenderer(pony).offset(HEAD_CENTRE_X + x, HEAD_CENTRE_Y + y, HEAD_CENTRE_Z + z);
 
@@ -55,7 +59,7 @@ public class PonySnout {
     }
 
     public void setGender(PonyGender gender) {
-        boolean show = !isHidden && MineLittlePony.getConfig().snuzzles;
+        boolean show = !head.hasHeadGear() && !isHidden && MineLittlePony.getConfig().snuzzles;
 
         mare.isHidden = !show || gender == PonyGender.STALLION;
         stallion.isHidden = !show || gender == PonyGender.MARE;

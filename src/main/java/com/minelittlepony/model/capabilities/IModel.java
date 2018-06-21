@@ -19,7 +19,6 @@ public interface IModel extends ICapitated {
      */
     void transform(BodyPart part);
 
-
     /**
      * Returns a new pony armour to go with this model. Called on startup by a model wrapper.
      */
