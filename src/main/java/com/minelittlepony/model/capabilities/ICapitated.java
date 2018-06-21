@@ -1,7 +1,5 @@
 package com.minelittlepony.model.capabilities;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.client.model.ModelRenderer;
 
 public interface ICapitated {

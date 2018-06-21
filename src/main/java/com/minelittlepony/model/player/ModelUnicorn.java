@@ -77,7 +77,7 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
         EnumHandSide mainSide = getMainHand(entity);
 
         if (canCast() && getArmPoseForSide(mainSide) != ArmPose.EMPTY) {
-            if (swingProgress > -9990.0F && !isSleeping) {
+            if (swingProgress > -9990.0F && !isSleeping()) {
                 swingArm(getUnicornArmForSide(mainSide));
             }
         } else {
@@ -87,7 +87,7 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
 
     @Override
     protected void swingArms(float ticks) {
-        if (isSleeping) return;
+        if (isSleeping()) return;
 
         if (canCast()) {
             float cos = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;

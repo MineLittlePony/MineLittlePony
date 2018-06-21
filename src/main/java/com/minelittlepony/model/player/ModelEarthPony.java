@@ -46,7 +46,7 @@ public class ModelEarthPony extends AbstractPonyModel {
     @Override
     protected float getLegOutset() {
         if (smallArms) {
-            if (isSleeping) return 2.6f;
+            if (isSleeping()) return 2.6f;
             if (isCrouching()) return 1;
             return 4;
         }

@@ -1,4 +1,4 @@
-package com.minelittlepony.transformation;
+package com.minelittlepony.transform;
 
 import com.minelittlepony.model.AbstractPonyModel;
 

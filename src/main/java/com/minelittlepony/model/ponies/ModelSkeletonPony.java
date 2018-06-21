@@ -43,7 +43,7 @@ public class ModelSkeletonPony extends ModelMobPony {
     }
 
     protected float getLegOutset() {
-        if (isSleeping) return 2.6f;
+        if (isSleeping()) return 2.6f;
         if (isCrouching()) return 0;
         return 4;
     }

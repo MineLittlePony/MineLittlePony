@@ -13,7 +13,7 @@ import com.minelittlepony.pony.data.PonySize;
 import com.minelittlepony.render.AbstractPonyRenderer;
 import com.minelittlepony.render.PonyRenderer;
 import com.minelittlepony.render.plane.PlaneRenderer;
-import com.minelittlepony.transformation.PonyTransformation;
+import com.minelittlepony.transform.PonyTransformation;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
@@ -34,8 +34,7 @@ import static com.minelittlepony.model.PonyModelConstants.*;
  */
 public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
-    public boolean isSleeping;
-
+    private boolean isSleeping;
     private boolean isFlying;
     private boolean isSwimming;
     private boolean headGear;
@@ -655,6 +654,16 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     @Override
     public boolean isFlying() {
         return isFlying && canFly();
+    }
+
+    @Override
+    public boolean isSleeping() {
+        return isSleeping;
+    }
+
+    @Override
+    public boolean isRiding() {
+        return isRiding;
     }
 
     @Override

@@ -4,7 +4,7 @@ import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.armour.PonyArmor;
 import com.minelittlepony.pony.data.IPonyData;
 import com.minelittlepony.pony.data.PonyWearable;
-import com.minelittlepony.transformation.PonyTransformation;
+import com.minelittlepony.transform.PonyTransformation;
 
 public interface IModel extends ICapitated {
 
@@ -40,9 +40,19 @@ public interface IModel extends ICapitated {
     boolean isFlying();
 
     /**
+     * Returns true if this model is lying on a bed or bed-like object.
+     */
+    boolean isSleeping();
+
+    /**
      * Returns true if this model is wimming underwater.
      */
     boolean isSwimming();
+
+    /**
+     * Returns true if this model is riding a boat, horse, or other animals.
+     */
+    boolean isRiding();
 
     /**
      * Returns true if we're flying really fast.
