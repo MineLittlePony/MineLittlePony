@@ -130,8 +130,8 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
     @Override
     protected void sneakLegs() {
         super.sneakLegs();
-        unicornArmRight.rotateAngleX += SNEAK_LEG_X_ROTATION_ADJUSTMENT;
-        unicornArmLeft.rotateAngleX += SNEAK_LEG_X_ROTATION_ADJUSTMENT;
+        unicornArmRight.rotateAngleX -= SNEAK_LEG_X_ROTATION_ADJUSTMENT;
+        unicornArmLeft.rotateAngleX -= SNEAK_LEG_X_ROTATION_ADJUSTMENT;
     }
 
     @Override
