@@ -778,15 +778,19 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         } else if (metadata.getSize() == PonySize.TALL) {
             transformTall(part);
         } else {
-            if (isSleeping) translate(0, -0.61F, 0.25F);
-
-            switch (part) {
-                case NECK:
-                    if (isCrouching()) translate(-0.03F, 0.03F, 0.1F);
-                default:
-            }
+            transformNormal(part);
         }
 
+    }
+
+    private void transformNormal(BodyPart part) {
+        if (isSleeping) translate(0, -0.61F, 0.25F);
+
+        switch (part) {
+            case NECK:
+                if (isCrouching()) translate(-0.03F, 0.03F, 0.1F);
+            default:
+        }
     }
 
     private void transformTall(BodyPart part) {
