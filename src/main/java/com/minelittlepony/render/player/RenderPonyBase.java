@@ -30,20 +30,19 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
 
   public RenderPonyBase(RenderManager manager, boolean useSmallArms, ModelWrapper model) {
       super(manager, useSmallArms);
-
-      setPlayerModel(model);
+      setPonyModel(model);
 
       layerRenderers.clear();
-      addExtraLayers();
+      addLayers();
   }
 
-  protected void addExtraLayers() {
+  protected void addLayers() {
       addLayer(new LayerPonyArmor<>(this));
       addLayer(new LayerHeldPonyItemMagical<>(this));
       addLayer(new LayerArrow(this));
-      addLayer(new LayerPonyCape(this));
       addLayer(new LayerPonyCustomHead<>(this));
       addLayer(new LayerPonyElytra<>(this));
+      addLayer(new LayerPonyCape(this));
       addLayer(new LayerEntityOnPonyShoulder(renderManager, this));
   }
 
@@ -70,11 +69,7 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
   protected void preRenderCallback(AbstractClientPlayer player, float ticks) {
       updateModel(player);
 
-      ponyModel.isSneak = player.isSneaking();
-      ponyModel.isSleeping = player.isPlayerSleeping();
-      ponyModel.isFlying = pony.isPegasusFlying(player);
-      ponyModel.isSwimming = pony.isSwimming(player);
-      ponyModel.headGear = pony.isWearingHeadgear(player);
+      ponyModel.updateLivingState(player, pony);
 
       super.preRenderCallback(player, ticks);
       shadowSize = getShadowScale();
@@ -149,7 +144,7 @@ public abstract class RenderPonyBase extends RenderPlayer implements IRenderPony
       return playerModel;
   }
 
-  protected void setPlayerModel(ModelWrapper model) {
+  protected void setPonyModel(ModelWrapper model) {
       playerModel = model;
       mainModel = ponyModel = playerModel.getBody();
   }

@@ -7,6 +7,7 @@ import com.minelittlepony.model.capabilities.IModelPart;
 import com.minelittlepony.model.components.PonySnout;
 import com.minelittlepony.model.components.PonyTail;
 import com.minelittlepony.pony.data.IPonyData;
+import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyData;
 import com.minelittlepony.pony.data.PonySize;
 import com.minelittlepony.render.AbstractPonyRenderer;
@@ -18,6 +19,7 @@ import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 
@@ -31,10 +33,11 @@ import static com.minelittlepony.model.PonyModelConstants.*;
  */
 public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
-    public boolean isFlying;
-    public boolean isSleeping;
-    public boolean isSwimming;
-    public boolean headGear;
+    protected boolean isSleeping;
+
+    private boolean isFlying;
+    private boolean isSwimming;
+    private boolean headGear;
 
     /**
      * Associcated pony data.
@@ -71,6 +74,14 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      */
     protected void checkRainboom(Entity entity, float swing) {
         rainboom = canFly() && Math.sqrt(entity.motionX * entity.motionX + entity.motionZ * entity.motionZ) > 0.4F;
+    }
+
+    public void updateLivingState(EntityLivingBase entity, Pony pony) {
+        isSneak = entity.isSneaking();
+        isSleeping = entity.isPlayerSleeping();
+        isFlying = pony.isPegasusFlying(entity);
+        isSwimming = pony.isSwimming(entity);
+        headGear = pony.isWearingHeadgear(entity);
     }
 
     /**
@@ -469,94 +480,53 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     }
 
     public void init(float yOffset, float stretch) {
-        // TODO: Splitting things like this isn't strictly neccessary and just complicates things.
-        initTextures();
-        initPositions(yOffset, stretch);
-    }
-
-    /**
-     * Loads texture values.
-     */
-    protected void initTextures() {
         boxList.clear();
-        initHeadTextures();
-        initBodyTextures();
-        initLegTextures();
-        initTailTextures();
+
+        initHead(yOffset, stretch);
+        initBody(yOffset, stretch);
+        initLegs(yOffset, stretch);
+        initTail(yOffset, stretch);
     }
 
-    /**
-     * Loads texture positions and boxes. Pretty much just finishes the job of initTextures.
-     */
-    protected void initPositions(float yOffset, float stretch) {
-        initHeadPositions(yOffset, stretch);
-        initBodyPositions(yOffset, stretch);
-        initLegPositions(yOffset, stretch);
-        initTailPositions(yOffset, stretch);
-    }
-
-    protected void initTailTextures() {
-        tail = new PonyTail(this);
-    }
-
-    protected void initHeadTextures() {
-        bipedHead = new PonyRenderer(this, 0, 0);
-        bipedHeadwear = new PonyRenderer(this, 32, 0);
+    protected void initHead(float yOffset, float stretch) {
         snout = new PonySnout(this);
-    }
-
-    protected void initBodyTextures() {
-        bipedBody = new ModelRenderer(this, 16, 16);
-
-        if (textureHeight == 64) {
-            bipedBodyWear = new ModelRenderer(this, 16, 32);
-        }
-
-        upperTorso = new PlaneRenderer(this, 24, 0);
-        neck = new PlaneRenderer(this, 0, 16);
-    }
-
-    protected void initLegTextures() {
-        bipedLeftArm = new ModelRenderer(this, 32, 48);
-        bipedRightArm = new ModelRenderer(this, 40, 16);
-
-        bipedLeftArmwear = new ModelRenderer(this, 48, 48);
-        bipedRightArmwear = new ModelRenderer(this, 40, 32);
-
-        bipedLeftLeg = new ModelRenderer(this, 16, 48);
-        bipedRightLeg = new ModelRenderer(this, 0, 16);
-
-        bipedLeftLegwear = new ModelRenderer(this, 0, 48);
-        bipedRightLegwear = new ModelRenderer(this, 0, 32);
-    }
-
-    protected void initTailPositions(float yOffset, float stretch) {
-        tail.init(yOffset, stretch);
-    }
-
-    protected void initHeadPositions(float yOffset, float stretch) {
         snout.init(yOffset, stretch);
-        ((PonyRenderer)bipedHead).offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
+
+        bipedHead = new PonyRenderer(this, 0, 0)
+                                 .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
                                  .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
                                  .box(-4, -4, -4, 8, 8, 8, stretch)
                      .tex(12, 16).box(-4, -6, 1, 2, 2, 2, stretch)
                           .flip().box( 2, -6, 1, 2, 2, 2, stretch);
 
-        ((PonyRenderer)bipedHeadwear).offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
+        bipedHeadwear = new PonyRenderer(this, 32, 0)
+                                     .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
                                      .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
                                      .box(-4, -4, -4, 8, 8, 8, stretch + 0.5F);
     }
 
+    protected void initTail(float yOffset, float stretch) {
+        tail = new PonyTail(this);
+        tail.init(yOffset, stretch);
+    }
+
+
     /**
      * Creates the main torso and neck.
      */
-    protected void initBodyPositions(float yOffset, float stretch) {
-        bipedBody.addBox(-4, 4, -2, 8, 8, 4, stretch);
-        bipedBody.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
+    protected void initBody(float yOffset, float stretch) {
+        if (textureHeight == 64) {
+            bipedBodyWear = new ModelRenderer(this, 16, 32);
+        }
+
+        bipedBody = new PonyRenderer(this, 16, 16)
+                    .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
+                    .box(-4, 4, -2, 8, 8, 4, stretch);
 
         bipedBodyWear.addBox(-4, 4, -2, 8, 8, 4, stretch + 0.25F);
         bipedBodyWear.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
 
+        upperTorso = new PlaneRenderer(this, 24, 0);
         upperTorso.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
                   .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                     .tex(24, 0)    .addEastPlane( 4, -4, -4, 8, 8, stretch)
@@ -575,34 +545,37 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
                           .addEastPlane( 1, 2, 2, 2, 6, stretch)
                           .addBackPlane(-1, 2, 8, 2, 2, stretch)
                   .flipZ().addWestPlane(-1, 2, 2, 2, 6, stretch)
-                  .rotateAngleX = 0.5F;
+                  .rotate(0.5F, 0, 0);
 
-        neck.at(NECK_CENTRE_X, NECK_CENTRE_Y, NECK_CENTRE_Z)
-            .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
+        neck = new PlaneRenderer(this, 0, 16)
+            .at(NECK_CENTRE_X, NECK_CENTRE_Y, NECK_CENTRE_Z)
+            .rotate(NECK_ROT_X, 0, 0).around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
             .addFrontPlane(0, 0, 0, 4, 4, stretch)
             .addBackPlane(0, 0, 4, 4, 4, stretch)
             .addEastPlane(4, 0, 0, 4, 4, stretch)
-            .addWestPlane(0, 0, 0, 4, 4, stretch)
-            .rotateAngleX = NECK_ROT_X;
+            .addWestPlane(0, 0, 0, 4, 4, stretch);
     }
 
-    protected int getArmWidth() {
-        return 4;
+    protected void preInitLegs() {
+        bipedLeftArm = new ModelRenderer(this, 32, 48);
+        bipedRightArm = new ModelRenderer(this, 40, 16);
+
+        bipedLeftLeg = new ModelRenderer(this, 16, 48);
+        bipedRightLeg = new ModelRenderer(this, 0, 16);
     }
 
-    protected int getArmDepth() {
-        return 4;
+    protected void preInitLegwear() {
+        bipedLeftArmwear = new ModelRenderer(this, 48, 48);
+        bipedRightArmwear = new ModelRenderer(this, 40, 32);
+
+        bipedLeftLegwear = new ModelRenderer(this, 0, 48);
+        bipedRightLegwear = new ModelRenderer(this, 0, 32);
     }
 
-    protected float getLegRotationX() {
-        return 3;
-    }
+    protected void initLegs(float yOffset, float stretch) {
+        preInitLegs();
+        preInitLegwear();
 
-    protected float getArmRotationY() {
-        return 8;
-    }
-
-    protected void initLegPositions(float yOffset, float stretch) {
         int armWidth = getArmWidth();
         int armDepth = getArmDepth();
 
@@ -636,6 +609,22 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
         bipedRightLegwear.addBox(armX - armWidth, armY, armZ, armWidth, 12, armDepth, stretch + 0.25f);
         bipedRightLegwear.setRotationPoint(-rarmX, yOffset, 0);
+    }
+
+    protected int getArmWidth() {
+        return 4;
+    }
+
+    protected int getArmDepth() {
+        return 4;
+    }
+
+    protected float getLegRotationX() {
+        return 3;
+    }
+
+    protected float getArmRotationY() {
+        return 8;
     }
 
     public ArmPose getArmPoseForSide(EnumHandSide side) {

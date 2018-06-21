@@ -27,48 +27,38 @@ public class ModelSeapony extends ModelUnicorn {
     }
 
     @Override
-    protected void initLegTextures() {
-        super.initLegTextures();
+    protected void initLegs(float yOffset, float stretch) {
+        super.initLegs(yOffset, stretch);
         // hide the back legs
         bipedLeftLeg.showModel = false;
         bipedRightLeg.showModel = false;
         bipedLeftLegwear.showModel = false;
         bipedRightLegwear.showModel = false;
 
-        centerFin = new PlaneRenderer(this, 58, 28);
-        leftFin = new PlaneRenderer(this, 56, 16);
-        rightFin = new PlaneRenderer(this, 56, 16);
-    }
-
-    @Override
-    protected void initLegPositions(float yOffset, float stretch) {
-        super.initLegPositions(yOffset, stretch);
-
-        centerFin.rotate(PI / 2 - 0.1F, 0, 0).around(0, 6, 9)
+        centerFin = new PlaneRenderer(this, 58, 28)
+                .rotate(PI / 2 - 0.1F, 0, 0).around(0, 6, 9)
                 .addEastPlane(0, -6, 0, 12, 6, stretch);
 
-        leftFin.rotate(0, FIN_ROTY, 0).around(3, -6, 3)
+        leftFin = new PlaneRenderer(this, 56, 16)
+                .rotate(0, FIN_ROTY, 0).around(3, -6, 3)
                .flipZ().addEastPlane(0, 0, 0, 12, 8, stretch);
 
-        rightFin.rotate(0, -FIN_ROTY, 0).around(-3, -6, 3)
+        rightFin = new PlaneRenderer(this, 56, 16)
+                .rotate(0, -FIN_ROTY, 0).around(-3, -6, 3)
                 .addWestPlane(0, 0, 0, 12, 8, stretch);
     }
 
     @Override
-    protected void initTailTextures() {
+    protected void initTail(float yOffset, float stretch) {
         tail = new SeaponyTail(this);
+        tail.init(yOffset, stretch);
     }
 
     @Override
-    protected void initBodyTextures() {
-        super.initBodyTextures();
-        bodyCenter = new PonyRenderer(this, 0, 48);
-    }
-
-    @Override
-    protected void initBodyPositions(float yOffset, float stretch) {
-        super.initBodyPositions(yOffset, stretch);
-        bodyCenter.around(0, 6, 1)
+    protected void initBody(float yOffset, float stretch) {
+        super.initBody(yOffset, stretch);
+        bodyCenter = new PonyRenderer(this, 0, 48)
+                .around(0, 6, 1)
                 .box(-3, -1, 0, 6, 7, 9, stretch).flip();
     }
 

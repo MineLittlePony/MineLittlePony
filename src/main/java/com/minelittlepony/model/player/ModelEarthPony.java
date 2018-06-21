@@ -44,18 +44,6 @@ public class ModelEarthPony extends AbstractPonyModel {
     }
 
     @Override
-    protected void initTextures() {
-        super.initTextures();
-        saddlebags = new SaddleBags(this);
-    }
-
-    @Override
-    protected void initPositions(float yOffset, float stretch) {
-        super.initPositions(yOffset, stretch);
-
-        saddlebags.init(yOffset, stretch);
-    }
-
     protected float getLegOutset() {
         if (smallArms) {
             if (isSleeping) return 2.6f;
@@ -65,26 +53,33 @@ public class ModelEarthPony extends AbstractPonyModel {
         return super.getLegOutset();
     }
 
+    @Override
     protected int getArmWidth() {
         return smallArms ? 3 : super.getArmWidth();
     }
 
+    @Override
     protected float getLegRotationX() {
         return smallArms ? 2 : super.getLegRotationX();
     }
 
+    @Override
     protected float getArmRotationY() {
         return smallArms ? 8.5f : super.getArmRotationY();
     }
 
-    protected void initHeadTextures() {
-        super.initHeadTextures();
-        bipedCape = new PonyRenderer(this, 0, 0).size(64, 32);
+    @Override
+    protected void initHead(float yOffset, float stretch) {
+        super.initHead(yOffset, stretch);
+        bipedCape = new PonyRenderer(this, 0, 0)
+                .size(64, 32).box(-5, 0, -1, 10, 16, 1, stretch);
     }
 
-    protected void initHeadPositions(float yOffset, float stretch) {
-        super.initHeadPositions(yOffset, stretch);
-        bipedCape.addBox(-5.0F, 0.0F, -1.0F, 10, 16, 1, stretch);
+    @Override
+    protected void initBody(float yOffset, float stretch) {
+        super.initBody(yOffset, stretch);
+        saddlebags = new SaddleBags(this);
+        saddlebags.init(yOffset, stretch);
     }
 
     @Override

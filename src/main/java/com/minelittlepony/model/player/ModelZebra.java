@@ -26,16 +26,11 @@ public class ModelZebra extends ModelEarthPony {
     }
 
     @Override
-    protected void initHeadTextures() {
-        super.initHeadTextures();
+    protected void initHead(float yOffset, float stretch) {
+        super.initHead(yOffset, stretch);
 
         bristles = new PonyRenderer(this, 56, 32);
         bipedHead.addChild(bristles);
-    }
-
-    @Override
-    protected void initHeadPositions(float yOffset, float stretch) {
-        super.initHeadPositions(yOffset, stretch);
 
         bristles.offset(-1, -1, -3)
                 .box(0, -10, 2, 2, 6, 2, stretch)

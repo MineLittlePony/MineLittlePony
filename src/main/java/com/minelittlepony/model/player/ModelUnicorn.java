@@ -147,15 +147,11 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
     }
 
     @Override
-    protected void initLegTextures() {
-        super.initLegTextures();
+    protected void initLegs(float yOffset, float stretch) {
+        super.initLegs(yOffset, stretch);
         unicornArmLeft = new PonyRenderer(this, 40, 32).size(64, 64);
         unicornArmRight = new PonyRenderer(this, 40, 32).size(64, 64);
-    }
 
-    @Override
-    protected void initLegPositions(float yOffset, float stretch) {
-        super.initLegPositions(yOffset, stretch);
         float armY = THIRDP_ARM_CENTRE_Y - 6;
         float armZ = THIRDP_ARM_CENTRE_Z - 2;
 

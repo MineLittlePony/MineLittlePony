@@ -84,14 +84,9 @@ public class ModelWitchPony extends ModelZebra {
     }
 
     @Override
-    protected void initTextures() {
-        super.initTextures();
+    public void init(float yOffset, float stretch) {
+        super.init(yOffset, stretch);
         witchHat = new PonyRenderer(this).size(64, 128);
-    }
-
-    @Override
-    protected void initPositions(float yOffset, float stretch) {
-        super.initPositions(yOffset, stretch);
         witchHat.around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
                 .tex(0, 64).box(-5, -6, -7, 10, 2, 10, stretch)
                 .child(0).around(1.75F, -4, 2)

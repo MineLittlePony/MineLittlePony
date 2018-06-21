@@ -31,18 +31,17 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
     public RenderPonyMob(RenderManager manager, ModelWrapper model) {
         super(manager, model.getBody(), 0.5F);
-        playerModel = model;
-        ponyModel = playerModel.getBody();
+        setPonyModel(model);
 
         addLayers();
     }
 
     protected void addLayers() {
         addLayer(new LayerPonyArmor<>(this));
+        addLayer(createItemHoldingLayer());
         addLayer(new LayerArrow(this));
         addLayer(new LayerPonyCustomHead<>(this));
         addLayer(new LayerPonyElytra<>(this));
-        addLayer(createItemHoldingLayer());
     }
 
     protected LayerHeldPonyItem<T> createItemHoldingLayer() {
@@ -61,11 +60,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     protected void preRenderCallback(T entity, float ticks) {
         updateModel(entity);
 
-        ponyModel.isSneak = entity.isSneaking();
-        ponyModel.isSleeping = entity.isPlayerSleeping();
-        ponyModel.isFlying = pony.isPegasusFlying(entity);
-        ponyModel.isSwimming = pony.isSwimming(entity);
-        ponyModel.headGear = pony.isWearingHeadgear(entity);
+        ponyModel.updateLivingState(entity, pony);
 
         super.preRenderCallback(entity, ticks);
         shadowSize = getShadowScale();
@@ -99,6 +94,11 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     @Override
     public ModelWrapper getModelWrapper() {
         return playerModel;
+    }
+
+    protected void setPonyModel(ModelWrapper model) {
+        playerModel = model;
+        ponyModel = playerModel.getBody();
     }
 
     protected void updateModel(T entity) {

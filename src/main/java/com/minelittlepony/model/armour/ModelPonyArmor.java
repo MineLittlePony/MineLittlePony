@@ -49,24 +49,6 @@ public class ModelPonyArmor extends AbstractPonyModel {
         super.renderLegs(scale);
     }
 
-    @Override
-    protected void initBodyTextures() {
-        super.initBodyTextures();
-        flankGuard = new PonyRenderer(this, 0, 0);
-        saddle = new PonyRenderer(this, 16, 8);
-    }
-
-    @Override
-    protected void initLegTextures() {
-        super.initLegTextures();
-
-        bipedLeftArm = new PonyRenderer(this, 0, 16).flip();
-        bipedRightArm = new PonyRenderer(this, 0, 16);
-
-        bipedLeftLeg = new PonyRenderer(this, 0, 16).flip();
-        bipedRightLeg = new PonyRenderer(this, 0, 16);
-    }
-
     public void synchroniseLegs(AbstractPonyModel mainModel) {
         copyModelAngles(mainModel.bipedRightArm, bipedRightArm);
         copyModelAngles(mainModel.bipedLeftArm, bipedLeftArm);
@@ -75,20 +57,32 @@ public class ModelPonyArmor extends AbstractPonyModel {
     }
 
     @Override
-    protected void initHeadPositions(float yOffset, float stretch) {
-        super.initHeadPositions(yOffset, stretch * 1.1F);
+    protected void initHead(float yOffset, float stretch) {
+        super.initHead(yOffset, stretch * 1.1F);
         ((PonyRenderer)bipedHead).child()
                 .tex(0, 4).box(2, -6, 1, 2, 2, 2, stretch * 0.5F)
                           .box(-4, -6, 1, 2, 2, 2, stretch * 0.5F);
     }
 
     @Override
-    protected void initBodyPositions(float yOffset, float stretch) {
-        super.initBodyPositions(yOffset, stretch);
-        flankGuard.around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
+    protected void initBody(float yOffset, float stretch) {
+        super.initBody(yOffset, stretch);
+
+        flankGuard = new PonyRenderer(this, 0, 0)
+                .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                  .box(-4, 4,  6, 8, 8, 8, stretch);
-        saddle.around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
+        saddle = new PonyRenderer(this, 16, 8)
+                .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                  .box(-4, 4, -2, 8, 8, 16, stretch);
+    }
+
+    @Override
+    protected void preInitLegs() {
+        bipedLeftArm = new PonyRenderer(this, 0, 16).flip();
+        bipedRightArm = new PonyRenderer(this, 0, 16);
+
+        bipedLeftLeg = new PonyRenderer(this, 0, 16).flip();
+        bipedRightLeg = new PonyRenderer(this, 0, 16);
     }
 
     @Override
