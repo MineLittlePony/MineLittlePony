@@ -583,7 +583,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         float rarmY = getArmRotationY();
 
         float armX = THIRDP_ARM_CENTRE_X;
-        float armY = THIRDP_ARM_CENTRE_Y - 6;
+        float armY = THIRDP_ARM_CENTRE_Y;
         float armZ = BODY_CENTRE_Z / 2 - 1 - armDepth;
 
         bipedLeftArm .addBox(armX, armY, armZ, armWidth, 12, armDepth, stretch);

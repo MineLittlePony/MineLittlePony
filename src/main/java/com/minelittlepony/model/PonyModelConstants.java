@@ -25,12 +25,6 @@ public final class PonyModelConstants {
         BODY_RP_Z_SNEAK = -4,
         BODY_RP_Z_RIDING = 4,
 
-        EXT_WING_ROTATE_ANGLE_X = 2.5F,
-
-        FIRSTP_ARM_CENTRE_X = -1,
-        FIRSTP_ARM_CENTRE_Y = 4,
-        FIRSTP_ARM_CENTRE_Z = 0,
-
         FRONT_LEG_RP_Y_NOTSNEAK = 8,
         FRONT_LEG_RP_Y_SNEAK = 8,
 
@@ -64,9 +58,11 @@ public final class PonyModelConstants {
         TAIL_RP_Z_NOTSNEAK = 14,
         TAIL_RP_Z_SNEAK = 15,
 
+        FIRSTP_ARM_CENTRE_X = -3,
+
         THIRDP_ARM_CENTRE_X = 0,
-        THIRDP_ARM_CENTRE_Y = 10,
-        THIRDP_ARM_CENTRE_Z = 0,
+        THIRDP_ARM_CENTRE_Y = 4,
+        THIRDP_ARM_CENTRE_Z = -1,
 
         WING_FOLDED_RP_Y = 13,
         WING_FOLDED_RP_Z = -3,
