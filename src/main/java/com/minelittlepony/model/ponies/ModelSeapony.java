@@ -83,7 +83,9 @@ public class ModelSeapony extends ModelUnicorn {
         }
     }
 
-    protected void fixSpecialRotationPoints(float move) {
+    @Override
+    protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
+        super.rotateLegs(move, swing, ticks, entity);
         bipedLeftArm.rotateAngleX -= 1.4F;
         bipedLeftArm.rotateAngleY -= 0.3F;
         bipedRightArm.rotateAngleX -= 1.4F;
