@@ -96,7 +96,7 @@ public class LegacySkinServer implements SkinServer {
         return HDSkinManager.skinUploadExecutor.submit(() -> {
             verifyServerConnection(session, SERVER_ID);
 
-            Map<String, ?> data = image == null ? getClearData(session, type) : getUploadData(session, type, (thinSkinType ? "thin" : "default"), image);
+            Map<String, ?> data = image == null ? getClearData(session, type) : getUploadData(session, type, (thinSkinType ? "slim" : "default"), image);
             ThreadMultipartPostUpload upload = new ThreadMultipartPostUpload(this.gateway, data);
             String response = upload.uploadMultipart();
             return new SkinUploadResponse(response.equalsIgnoreCase("OK"), response);
