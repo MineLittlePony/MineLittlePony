@@ -528,8 +528,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     }
 
     protected void initHead(float yOffset, float stretch) {
-        snout = new PonySnout(this);
-        snout.init(yOffset, stretch);
+
 
         bipedHead = new PonyRenderer(this, 0, 0)
                                  .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
@@ -542,6 +541,9 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
                                      .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
                                      .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
                                      .box(-4, -4, -4, 8, 8, 8, stretch + 0.5F);
+
+        snout = new PonySnout(this);
+        snout.init(yOffset, stretch);
     }
 
     protected void initTail(float yOffset, float stretch) {
