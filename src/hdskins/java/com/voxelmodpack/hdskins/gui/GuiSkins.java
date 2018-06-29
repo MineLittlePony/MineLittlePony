@@ -260,7 +260,7 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
                     this.selectedSkin = null;
                     this.localPlayer.releaseTextures();
                     this.openFileThread = new ThreadOpenFilePNG(this.mc, I18n.format("hdskins.open.title"), this::onFileOpenDialogClosed);
-                    this.openFileThread.start();
+                    this.openFileThread.setParent(GLWindow.current().getFrame()).start();
                     guiButton.enabled = false;
                 }
 

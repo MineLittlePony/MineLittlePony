@@ -83,6 +83,10 @@ public class GLWindow extends DropTarget {
 
     }
 
+    public JFrame getFrame() {
+        return frame;
+    }
+
     private void open() throws LWJGLException {
         // Dimensions from LWJGL may have a non 1:1 scale on high DPI monitors.
         int x = getScaledPixelUnit(Display.getX());
