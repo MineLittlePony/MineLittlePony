@@ -9,6 +9,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyManager;
 import com.minelittlepony.ducks.IPlayerInfo;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+import com.voxelmodpack.hdskins.HDSkinManager;
 
 import net.minecraft.client.network.NetworkPlayerInfo;
 
@@ -25,7 +28,16 @@ public abstract class MixinNetworkPlayerInfo implements IPlayerInfo {
 
     @Override
     public boolean usesSlimArms() {
-        if (skinType == null) return PonyManager.isSlimSkin(unwrap().getGameProfile().getId());
+        if (skinType == null) {
+            MinecraftProfileTexture skin = HDSkinManager.INSTANCE.getProfileData(unwrap().getGameProfile()).get(Type.SKIN);
+
+            if (skin != null) {
+                return "slim".equals(skin.getMetadata("model"));
+            }
+
+            return PonyManager.isSlimSkin(unwrap().getGameProfile().getId());
+        }
+
         return "slim".equals(skinType);
     }
 }
