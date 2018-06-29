@@ -14,7 +14,7 @@ public class PostureFlight implements PonyPosture<AbstractClientPlayer> {
         return entity instanceof AbstractClientPlayer;
     }
 
-    private double calculateRoll(AbstractClientPlayer player, double motionX, double motionY, double motionZ) {
+    protected double calculateRoll(AbstractClientPlayer player, double motionX, double motionY, double motionZ) {
 
         // since model roll should probably be calculated from model rotation rather than entity rotation...
         double roll = MathUtil.sensibleAngle(player.prevRenderYawOffset - player.renderYawOffset);
@@ -38,23 +38,22 @@ public class PostureFlight implements PonyPosture<AbstractClientPlayer> {
         return MathHelper.clamp(roll, -54, 54);
     }
 
-
-    @Override
-    public void transform(AbstractPonyModel model, AbstractClientPlayer player, double motionX, double motionY, double motionZ, float pitch, float yaw, float ticks) {
+    protected double calculateIncline(AbstractClientPlayer player, double motionX, double motionY, double motionZ) {
         double dist = Math.sqrt(motionX * motionX + motionZ * motionZ);
         double angle = Math.atan2(motionY, dist);
 
         if (!player.capabilities.isFlying) {
-            if (angle > 0) {
-                angle = 0;
-            } else {
-                angle /= 2;
-            }
+            angle /= 2;
         }
 
         angle = MathUtil.clampLimit(angle, Math.PI / 3);
 
-        model.motionPitch = (float) Math.toDegrees(angle);
+        return Math.toDegrees(angle);
+    }
+
+    @Override
+    public void transform(AbstractPonyModel model, AbstractClientPlayer player, double motionX, double motionY, double motionZ, float pitch, float yaw, float ticks) {
+        model.motionPitch = (float) calculateIncline(player, motionX, motionY, motionZ);
 
         GlStateManager.rotate(model.motionPitch, 1, 0, 0);
 

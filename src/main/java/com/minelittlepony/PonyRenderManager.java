@@ -47,7 +47,7 @@ public class PonyRenderManager {
     }
 
     private void addPlayerSkin(RenderManager manager, boolean slimArms, PlayerModels playerModel) {
-        RenderPonyPlayer renderer = new RenderPonyPlayer(manager, slimArms, playerModel.getModel(slimArms));
+        RenderPonyPlayer renderer = playerModel.createRenderer(manager, slimArms);
 
         ((MixinRenderManager)manager).getSkinMap().put(playerModel.getId(slimArms), renderer);
     }

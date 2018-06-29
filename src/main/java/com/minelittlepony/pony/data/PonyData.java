@@ -72,7 +72,7 @@ public class PonyData implements IPonyData {
 
     @Override
     public boolean hasMagic() {
-        return race != null && race.hasHorn() && glowColor != 0;
+        return race != null && getRace().hasHorn() && getGlowColor() != 0;
     }
 
     @Override

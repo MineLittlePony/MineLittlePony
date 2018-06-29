@@ -93,8 +93,7 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony {
     public RenderPonyPlayer(RenderManager manager, boolean useSmallArms, ModelWrapper model) {
         super(manager, useSmallArms);
 
-        playerModel = model;
-        mainModel = ponyModel = playerModel.getBody();
+        setPonyModel(model);
 
         layerRenderers.clear();
         addLayers();
@@ -194,11 +193,13 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony {
 
         if (entity.isEntityAlive() && entity.isPlayerSleeping()) return null;
 
+        if (getModelWrapper().getBody().isSwimming()) {
+            return PonyPosture.SWIMMING;
+        }
+
         if (getModelWrapper().getBody().isGoingFast()) {
             return PonyPosture.FLIGHT;
         }
-
-        //TODO: MC1.13 transformSwimming()
 
         return PonyPosture.FALLING;
     }
@@ -219,9 +220,13 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony {
         mainModel = ponyModel = playerModel.getBody();
     }
 
-    protected void updateModel(AbstractClientPlayer player) {
+    protected void updatePony(AbstractClientPlayer player) {
         pony = MineLittlePony.getInstance().getManager().getPony(player);
-        playerModel.apply(pony.getMetadata());
+    }
+
+    protected void updateModel(AbstractClientPlayer player) {
+        updatePony(player);
+        getModelWrapper().apply(pony.getMetadata());
     }
 
     @Override

@@ -7,6 +7,7 @@ import net.minecraft.entity.EntityLivingBase;
 public interface PonyPosture<T extends EntityLivingBase> {
     PonyPosture<EntityLivingBase> ELYTRA = new PostureElytra();
     PonyPosture<? extends EntityLivingBase> FLIGHT = new PostureFlight();
+    PonyPosture<? extends EntityLivingBase> SWIMMING = new PostureSwimming();
     PonyPosture<EntityLivingBase> FALLING = new PostureFalling();
 
     default boolean applies(EntityLivingBase entity) {

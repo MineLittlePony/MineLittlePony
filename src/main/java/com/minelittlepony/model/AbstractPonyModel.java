@@ -73,7 +73,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
      */
     protected void checkRainboom(Entity entity, float swing) {
-        rainboom = canFly() && Math.sqrt(entity.motionX * entity.motionX + entity.motionZ * entity.motionZ) > 0.4F;
+        rainboom = isSwimming() || canFly() && Math.sqrt(entity.motionX * entity.motionX + entity.motionZ * entity.motionZ) > 0.4F;
     }
 
     public void updateLivingState(EntityLivingBase entity, Pony pony) {
@@ -222,7 +222,9 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     *
     */
     protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
-        if (isFlying()) {
+        if (isSwimming()) {
+            rotateLegsSwimming(move, swing, ticks, entity);
+        } else if (isFlying()) {
             rotateLegsInFlight(move, swing, ticks, entity);
         } else {
             rotateLegsOnGround(move, swing, ticks, entity);
@@ -256,6 +258,43 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         bipedRightLeg.rotationPointZ = bipedLeftLeg.rotationPointZ = 10;
     }
 
+    /**
+     * Rotates legs in quopy fashion whilst swimming.
+     *
+     * @param move      Entity motion parameter - i.e. velocity in no specific direction used in bipeds to calculate step amount.
+     * @param swing     Degree to which each 'limb' swings.
+     * @param ticks     Total whole and partial ticks since the entity's existance. Used in animations together with {@code swing} and {@code move}.
+     * @param entity    The entity we're being called for.
+     *
+     */
+    protected void rotateLegsSwimming(float move, float swing, float ticks, Entity entity) {
+
+        float forward = ROTATE_270 - ROTATE_90/3;
+        float down = ROTATE_90;
+
+        float leftX = down + MathHelper.sin((move / 3) + 2*PI/3) / 2;
+        float leftY = -forward - MathHelper.sin((move / 3) + 2*PI/3);
+
+        float rightX = down + MathHelper.sin(move / 3) / 2;
+        float rightY = forward + MathHelper.sin(move / 3);
+
+
+        bipedLeftArm.rotateAngleX = leftX;
+        bipedLeftArm.rotateAngleY = leftY;
+
+        bipedRightArm.rotateAngleY = rightY;
+        bipedRightArm.rotateAngleX = rightX;
+
+
+
+        bipedLeftLeg.rotateAngleX = leftX;
+        bipedRightLeg.rotateAngleX = rightX;
+
+        bipedLeftLeg.rotateAngleY = 0;
+        bipedRightLeg.rotateAngleY = 0;
+
+
+    }
 
     /**
      * Rotates legs in quopy fashion whilst flying.

@@ -1,6 +1,11 @@
 package com.minelittlepony.model.player;
 
 import com.minelittlepony.model.PMAPI;
+import com.minelittlepony.render.player.RenderPonyPlayer;
+import com.minelittlepony.render.player.RenderSeaponyPlayer;
+
+import net.minecraft.client.renderer.entity.RenderManager;
+
 import com.minelittlepony.model.ModelWrapper;
 
 public enum PlayerModels {
@@ -12,7 +17,12 @@ public enum PlayerModels {
     PEGASUS("pegasus", "slimpegasus", () -> PMAPI.pegasus, () -> PMAPI.pegasusSmall),
     UNICORN("unicorn", "slimunicorn", () -> PMAPI.unicorn, () -> PMAPI.unicornSmall),
     ALICORN("alicorn", "slimalicorn", () -> PMAPI.alicorn, () -> PMAPI.alicornSmall),
-    ZEBRA("zebra", "slimzebra", () -> PMAPI.zebra, () -> PMAPI.zebraSmall);
+    ZEBRA("zebra", "slimzebra", () -> PMAPI.zebra, () -> PMAPI.zebraSmall),
+    SEAPONY("seapony", "slimseapony", () -> PMAPI.seapony, () -> PMAPI.seapony) {
+        public RenderPonyPlayer createRenderer(RenderManager manager, boolean slimArms) {
+            return new RenderSeaponyPlayer(manager, slimArms, PlayerModels.UNICORN.getModel(slimArms), getModel(slimArms));
+        }
+    };
 
     private final ModelResolver normal, slim;
 
@@ -32,6 +42,10 @@ public enum PlayerModels {
 
     public String getId(boolean useSlimArms) {
         return useSlimArms ? slimKey : normalKey;
+    }
+
+    public RenderPonyPlayer createRenderer(RenderManager manager, boolean slimArms) {
+        return new RenderPonyPlayer(manager, slimArms, getModel(slimArms));
     }
 
     /**

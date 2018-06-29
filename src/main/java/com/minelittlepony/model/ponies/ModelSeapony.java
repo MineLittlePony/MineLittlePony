@@ -92,8 +92,16 @@ public class ModelSeapony extends ModelUnicorn {
         bipedRightArm.rotateAngleY += 0.3F;
     }
 
+
+    @Override
+    protected void rotateLegsSwimming(float move, float swing, float ticks, Entity entity) {
+        super.rotateLegsOnGround(move, swing, ticks, entity);
+    }
+
     @Override
     public void render(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        setVisible(bipedLeftArmwear.showModel);
+
         GlStateManager.pushMatrix();
         GlStateManager.translate(0, 0.6F, 0);
         super.render(entity, move, swing, ticks, headYaw, headPitch, scale);

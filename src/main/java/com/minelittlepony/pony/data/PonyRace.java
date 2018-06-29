@@ -13,7 +13,8 @@ public enum PonyRace implements ITriggerPixelMapped<PonyRace> {
     ZEBRA(0xd0cccf, PlayerModels.ZEBRA, false, false),
     REFORMED_CHANGELING(0xcaed5a, PlayerModels.ALICORN, true, true),
     GRIFFIN(0xae9145, PlayerModels.PEGASUS, true, false),
-    HIPPOGRIFF(0xd6ddac, PlayerModels.PEGASUS, true, false);
+    HIPPOGRIFF(0xd6ddac, PlayerModels.PEGASUS, true, false),
+    SEAPONY(0x333333, PlayerModels.SEAPONY, false, true);
 
     private boolean wings;
     private boolean horn;
