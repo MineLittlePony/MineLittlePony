@@ -10,8 +10,12 @@ public class PreviewTexture extends ThreadDownloadImageData {
 
     private boolean uploaded;
 
-    public PreviewTexture(String url, ResourceLocation fallbackTexture, @Nullable IImageBuffer imageBuffer) {
+    private String model;
+
+    public PreviewTexture(String model, String url, ResourceLocation fallbackTexture, @Nullable IImageBuffer imageBuffer) {
         super(null, url, fallbackTexture, imageBuffer);
+
+        this.model = model;
     }
 
     public boolean isTextureUploaded() {
@@ -22,5 +26,13 @@ public class PreviewTexture extends ThreadDownloadImageData {
     public void deleteGlTexture() {
         super.deleteGlTexture();
         this.uploaded = true;
+    }
+
+    public boolean hasModel() {
+        return model != null;
+    }
+
+    public boolean usesThinArms() {
+        return "thin".equals(model);
     }
 }

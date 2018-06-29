@@ -65,7 +65,14 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
      * @param resource A texture resource
      */
     public Pony getPony(ResourceLocation resource, boolean slim) {
-        return poniesCache.computeIfAbsent(resource, res -> new Pony(res, slim));
+        Pony pony = poniesCache.computeIfAbsent(resource, res -> new Pony(res, slim));
+
+        if (pony.usesThinArms() != slim) {
+            pony = new Pony(resource, slim);
+            poniesCache.put(resource,  pony);
+        }
+
+        return pony;
     }
 
     /**

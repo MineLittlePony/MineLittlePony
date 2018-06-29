@@ -88,7 +88,7 @@ public class LegacySkinServer implements SkinServer {
     }
 
     @Override
-    public ListenableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable Path image, MinecraftProfileTexture.Type type) {
+    public ListenableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable Path image, MinecraftProfileTexture.Type type, boolean thinSkinType) {
 
         if (Strings.isNullOrEmpty(this.gateway))
             return Futures.immediateFailedFuture(new NullPointerException("gateway url is blank"));
@@ -96,27 +96,28 @@ public class LegacySkinServer implements SkinServer {
         return HDSkinManager.skinUploadExecutor.submit(() -> {
             verifyServerConnection(session, SERVER_ID);
 
-            Map<String, ?> data = image == null ? getClearData(session, type) : getUploadData(session, type, image);
+            Map<String, ?> data = image == null ? getClearData(session, type) : getUploadData(session, type, (thinSkinType ? "thin" : "default"), image);
             ThreadMultipartPostUpload upload = new ThreadMultipartPostUpload(this.gateway, data);
             String response = upload.uploadMultipart();
             return new SkinUploadResponse(response.equalsIgnoreCase("OK"), response);
         });
     }
 
-    private static Map<String, ?> getData(Session session, MinecraftProfileTexture.Type type, String param, Object val) {
+    private static Map<String, ?> getData(Session session, MinecraftProfileTexture.Type type, String model, String param, Object val) {
         return ImmutableMap.of(
                 "user", session.getUsername(),
                 "uuid", session.getPlayerID(),
                 "type", type.toString().toLowerCase(Locale.US),
+                "model", model,
                 param, val);
     }
 
     private static Map<String, ?> getClearData(Session session, MinecraftProfileTexture.Type type) {
-        return getData(session, type, "clear", "1");
+        return getData(session, type, "default", "clear", "1");
     }
 
-    private static Map<String, ?> getUploadData(Session session, MinecraftProfileTexture.Type type, Path skinFile) {
-        return getData(session, type, type.toString().toLowerCase(Locale.US), skinFile);
+    private static Map<String, ?> getUploadData(Session session, MinecraftProfileTexture.Type type, String model, Path skinFile) {
+        return getData(session, type, model, type.toString().toLowerCase(Locale.US), skinFile);
     }
 
     private static String getPath(String address, MinecraftProfileTexture.Type type, GameProfile profile) {

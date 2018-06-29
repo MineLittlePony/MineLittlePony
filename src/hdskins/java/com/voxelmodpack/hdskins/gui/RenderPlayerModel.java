@@ -27,7 +27,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
     protected final ResourceLocation TEXTURE_ELYTRA = new ResourceLocation("textures/entity/elytra.png");
 
     private static final ModelPlayer FAT = new ModelPlayer(0, false);
-    //private static final ModelPlayer THIN = new ModelPlayer(0, true);
+    private static final ModelPlayer THIN = new ModelPlayer(0, true);
 
     public RenderPlayerModel(RenderManager renderer) {
         super(renderer, FAT, 0.0F);
@@ -83,7 +83,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
     }
 
     public ModelPlayer getEntityModel(M entity) {
-        return FAT;
+        return entity.usesThinSkin() ? THIN : FAT;
     }
 
     @Override

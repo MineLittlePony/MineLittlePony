@@ -231,7 +231,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             return null;
 
         IImageBuffer buffer = new ImageBufferDownloadHD();
-        PreviewTexture skinTexture = new PreviewTexture(url.getUrl(), def, type == Type.SKIN ? new IImageBuffer() {
+        PreviewTexture skinTexture = new PreviewTexture(url.getMetadata("model"), url.getUrl(), def, type == Type.SKIN ? new IImageBuffer() {
             @Override
             @Nullable
             public BufferedImage parseUserSkin(BufferedImage image) {

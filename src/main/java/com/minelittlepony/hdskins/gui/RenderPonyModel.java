@@ -1,7 +1,6 @@
 package com.minelittlepony.hdskins.gui;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.PonyManager;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.model.components.PonyElytra;
 import com.minelittlepony.pony.data.Pony;
@@ -40,9 +39,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
             return super.getEntityModel(playermodel);
         }
 
-        // TODO: We can't find out whether to use thin arms just by the texture.
-        //       Maybe a trigger pixel for thin arms? #FutureThoughts
-        Pony thePony = MineLittlePony.getInstance().getManager().getPony(loc, PonyManager.isSlimSkin(playermodel.profile.getId()));
+        Pony thePony = MineLittlePony.getInstance().getManager().getPony(loc, playermodel.usesThinSkin());
 
         if (thePony.getRace(false).isHuman()) {
             return super.getEntityModel(playermodel);

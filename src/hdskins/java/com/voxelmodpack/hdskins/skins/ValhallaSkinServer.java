@@ -32,7 +32,7 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     @Override
-    public ListenableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable Path image, MinecraftProfileTexture.Type type) {
+    public ListenableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable Path image, MinecraftProfileTexture.Type type, boolean thinArmType) {
         return null;
     }
 

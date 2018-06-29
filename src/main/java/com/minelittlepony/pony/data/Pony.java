@@ -136,6 +136,10 @@ public class Pony {
         return metadata.getRace().getEffectiveRace(MineLittlePony.getConfig().getEffectivePonyLevel(ignorePony));
     }
 
+    public boolean usesThinArms() {
+        return smallArms;
+    }
+
     public ResourceLocation getTexture() {
         return texture;
     }

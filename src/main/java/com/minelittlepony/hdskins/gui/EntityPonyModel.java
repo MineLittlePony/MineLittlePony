@@ -1,12 +1,8 @@
 package com.minelittlepony.hdskins.gui;
 
-import java.io.File;
-
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
 
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -20,25 +16,8 @@ public class EntityPonyModel extends EntityPlayerModel {
         super(profile);
     }
 
-    public void setLocalTexture(File skinTextureFile, Type type) {
-        super.setLocalTexture(skinTextureFile, type);
-    }
-
-    public ResourceLocation getSkinTexture() {
-        ResourceLocation skin = super.getSkinTexture();
-        if (skin == NO_SKIN) {
-            // We're a pony, might as well look like one.
-            return NO_SKIN_PONY;
-        }
-
-        return skin;
-    }
-
-    public void swingArm() {
-        super.swingArm();
-
-        // Fixes the preview model swinging the wrong arm.
-        // Who's maintaining HDSkins anyway?
-        swingingHand = EnumHand.MAIN_HAND;
+    @Override
+    protected ResourceLocation getBlankSkin() {
+        return NO_SKIN_PONY;
     }
 }

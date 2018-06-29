@@ -20,7 +20,7 @@ public interface SkinServer {
 
     Optional<MinecraftProfileTexture> getPreviewTexture(MinecraftProfileTexture.Type type, GameProfile profile);
 
-    ListenableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable Path image, MinecraftProfileTexture.Type type);
+    ListenableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable Path image, MinecraftProfileTexture.Type type, boolean thinArmType);
 
     static SkinServer from(String server) {
         int i = server.indexOf(':');

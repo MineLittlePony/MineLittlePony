@@ -27,6 +27,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Session;
 import net.minecraft.util.math.MathHelper;
@@ -63,6 +64,7 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     private GuiButton btnClear;
     private GuiButton btnBack;
     private GuiButton btnModeSkin;
+    private GuiButton btnModeSkinnySkin;
     private GuiButton btnModeElytra;
 
     protected EntityPlayerModel localPlayer;
@@ -89,6 +91,7 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     private static GuiSkins instance;
 
     private MinecraftProfileTexture.Type textureType = SKIN;
+    private boolean thinArmType = false;
 
     public GuiSkins() {
         Minecraft minecraft = Minecraft.getMinecraft();
@@ -181,12 +184,18 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
 
         ItemStack skin = new ItemStack(Items.LEATHER_LEGGINGS);
         Items.LEATHER_LEGGINGS.setColor(skin, 0x3c5dcb);
-        this.buttonList.add(this.btnModeElytra = new GuiItemStackButton(5, 2, 24, new ItemStack(Items.ELYTRA)));
         this.buttonList.add(this.btnModeSkin = new GuiItemStackButton(4, 2, 2, skin));
+        skin = new ItemStack(Items.LEATHER_LEGGINGS);
+        Items.LEATHER_LEGGINGS.setColor(skin, 0xfff500);
+        this.buttonList.add(this.btnModeSkinnySkin = new GuiItemStackButton(6, 2, 24, skin));
+        this.buttonList.add(this.btnModeElytra = new GuiItemStackButton(5, 2, 46, new ItemStack(Items.ELYTRA)));
 
         this.btnUpload.enabled = false;
         this.btnBrowse.enabled = !this.mc.isFullScreen();
-        (this.textureType == SKIN ? this.btnModeSkin : this.btnModeElytra).enabled = false;
+
+        this.btnModeSkin.enabled = this.thinArmType || this.textureType != SKIN;
+        this.btnModeSkinnySkin.enabled = !this.thinArmType || this.textureType != SKIN;
+        this.btnModeElytra.enabled = this.textureType == SKIN;
 
     }
 
@@ -282,15 +291,24 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
                     this.mc.displayGuiScreen(new GuiMainMenu());
                 }
 
-                if (guiButton.id == this.btnModeSkin.id || guiButton.id == this.btnModeElytra.id) {
+                if (guiButton.id == this.btnModeSkin.id || guiButton.id == this.btnModeElytra.id || guiButton.id == this.btnModeSkinnySkin.id) {
                     ItemStack stack;
                     if (guiButton.id == this.btnModeSkin.id) {
+                        this.thinArmType = false;
                         this.textureType = SKIN;
+                        this.btnModeElytra.enabled = true;
+                        this.btnModeSkinnySkin.enabled = true;
+                        stack = ItemStack.EMPTY;
+                    } else if (guiButton.id == this.btnModeSkinnySkin.id) {
+                        this.thinArmType = true;
+                        this.textureType = SKIN;
+                        this.btnModeSkin.enabled = true;
                         this.btnModeElytra.enabled = true;
                         stack = ItemStack.EMPTY;
                     } else {
                         this.textureType = ELYTRA;
                         this.btnModeSkin.enabled = true;
+                        this.btnModeSkinnySkin.enabled = true;
                         stack = new ItemStack(Items.ELYTRA);
                     }
                     guiButton.enabled = false;
@@ -301,6 +319,9 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
                     // put on or take off the elytra
                     this.localPlayer.setItemStackToSlot(EntityEquipmentSlot.CHEST, stack);
                     this.remotePlayer.setItemStackToSlot(EntityEquipmentSlot.CHEST, stack);
+
+                    this.localPlayer.setPreviewThinArms(thinArmType);
+                    this.remotePlayer.setPreviewThinArms(thinArmType);
                 }
 
             }
@@ -317,8 +338,8 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
             int bottom = this.height - 40;
             int mid = this.width / 2;
             if ((mouseX > 30 && mouseX < mid - 30 || mouseX > mid + 30 && mouseX < this.width - 30) && mouseY > top && mouseY < bottom) {
-                this.localPlayer.swingArm();
-                this.remotePlayer.swingArm();
+                this.localPlayer.swingArm(EnumHand.MAIN_HAND);
+                this.remotePlayer.swingArm(EnumHand.MAIN_HAND);
             }
 
         }
@@ -527,11 +548,13 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
             Gui.drawRect(40, this.height / 2 - 12, this.width / 2 - 40, this.height / 2 + 12, 0xB0000000);
             this.fontRenderer.drawStringWithShadow(this.skinMessage, (int) (xPos1 - opacity), this.height / 2 - 4, 0xffffff);
         }
-        if (this.btnModeSkin.isMouseOver() || this.btnModeElytra.isMouseOver()) {
+        if (this.btnModeSkin.isMouseOver() || this.btnModeElytra.isMouseOver() || this.btnModeSkinnySkin.isMouseOver()) {
             int y = Math.max(mouseY, 16);
             String text;
             if (this.btnModeSkin.isMouseOver()) {
                 text = "hdskins.mode.skin";
+            } else if (this.btnModeSkinnySkin.isMouseOver()) {
+                text = "hdskins.mode.skinny";
             } else {
                 text = "hdskins.mode.elytra";
             }
@@ -643,14 +666,14 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     private void clearUploadedSkin(Session session) {
         this.uploadingSkin = true;
         this.skinUploadMessage = I18n.format("hdskins.request");
-        Futures.addCallback(HDSkinManager.INSTANCE.getGatewayServer().uploadSkin(session, null, this.textureType), this);
+        Futures.addCallback(HDSkinManager.INSTANCE.getGatewayServer().uploadSkin(session, null, this.textureType, this.thinArmType), this);
     }
 
     private void uploadSkin(Session session, @Nullable File skinFile) {
         this.uploadingSkin = true;
         this.skinUploadMessage = I18n.format("hdskins.upload");
         Path path = skinFile == null ? null : skinFile.toPath();
-        Futures.addCallback(HDSkinManager.INSTANCE.getGatewayServer().uploadSkin(session, path, this.textureType), this);
+        Futures.addCallback(HDSkinManager.INSTANCE.getGatewayServer().uploadSkin(session, path, this.textureType, this.thinArmType), this);
     }
 
     private void setUploadError(@Nullable String error) {
