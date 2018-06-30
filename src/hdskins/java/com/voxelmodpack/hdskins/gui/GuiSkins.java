@@ -37,6 +37,7 @@ import org.apache.logging.log4j.LogManager;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
+import org.lwjgl.util.glu.Project;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -58,7 +59,6 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
             new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_3.png"),
             new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_4.png"),
             new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_5.png")};
-
     private GuiButton btnBrowse;
     private GuiButton btnUpload;
     private GuiButton btnClear;
@@ -356,7 +356,7 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
         matrixMode(GL11.GL_PROJECTION);
         pushMatrix();
         loadIdentity();
-        GLU.gluPerspective(150.0F, 1.0F, 0.05F, 10.0F);
+        Project.gluPerspective(120, 1, 0.05F, 10);
         matrixMode(GL11.GL_MODELVIEW);
         pushMatrix();
         loadIdentity();
@@ -371,55 +371,61 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
 
     private void renderCubeMapTexture(float partialTick) {
         this.setupCubemapCamera();
-        color(1.0F, 1.0F, 1.0F, 1.0F);
-        rotate(180.0F, 1.0F, 0.0F, 0.0F);
+        color(1, 1, 1, 1);
+        rotate(180, 1, 0, 0);
+
         enableBlend();
         disableAlpha();
         disableCull();
         depthMask(false);
-        blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
         byte blendIterations = 8;
+
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder vb = tessellator.getBuffer();
 
         for (int blendPass = 0; blendPass < blendIterations * blendIterations; ++blendPass) {
             pushMatrix();
-            float offsetX = ((float) (blendPass % blendIterations) / (float) blendIterations - 0.5F) / 64.0F;
-            float offsetY = ((float) (blendPass / blendIterations) / (float) blendIterations - 0.5F) / 64.0F;
-            float offsetZ = 0.0F;
-            translate(offsetX, offsetY, offsetZ);
-            rotate(MathHelper.sin((this.updateCounter + 200 + partialTick) / 400.0F) * 25.0F + 20.0F, 1.0F, 0.0F, 0.0F);
-            rotate(-(this.updateCounter + 200 + partialTick) * 0.1F, 0.0F, 1.0F, 0.0F);
+            float offsetX = ((float) (blendPass % blendIterations) / (float) blendIterations - 0.5F) / 64;
+            float offsetY = ((float) (blendPass / blendIterations) / (float) blendIterations - 0.5F) / 64;
+
+            translate(offsetX, offsetY, 0);
+            rotate(MathHelper.sin((updateCounter + partialTick) / 400) * 25 + 20, 1, 0, 0);
+            rotate(-(updateCounter + partialTick) / 10, 0, 1, 0);
 
             for (int cubeSide = 0; cubeSide < 6; ++cubeSide) {
                 pushMatrix();
                 if (cubeSide == 1) {
-                    rotate(90.0F, 0.0F, 1.0F, 0.0F);
+                    rotate(90, 0, 1, 0);
                 }
 
                 if (cubeSide == 2) {
-                    rotate(180.0F, 0.0F, 1.0F, 0.0F);
+                    rotate(180, 0, 1, 0);
                 }
 
                 if (cubeSide == 3) {
-                    rotate(-90.0F, 0.0F, 1.0F, 0.0F);
+                    rotate(-90, 0, 1, 0);
                 }
 
                 if (cubeSide == 4) {
-                    rotate(90.0F, 1.0F, 0.0F, 0.0F);
+                    rotate(90, 1, 0, 0);
                 }
 
                 if (cubeSide == 5) {
-                    rotate(-90.0F, 1.0F, 0.0F, 0.0F);
+                    rotate(-90, 1, 0, 0);
                 }
 
-                this.mc.getTextureManager().bindTexture(cubemapTextures[cubeSide]);
-                // wr.setColorRGBA_I(0xffffff, 255 / (blendPass + 1));
-                vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-                vb.pos(-1.0D, -1.0D, 1.0D).tex(0.0D, 0.0D).endVertex();
-                vb.pos(1.0D, -1.0D, 1.0D).tex(1.0D, 0.0D).endVertex();
-                vb.pos(1.0D, 1.0D, 1.0D).tex(1.0D, 1.0D).endVertex();
-                vb.pos(-1.0D, 1.0D, 1.0D).tex(0.0D, 1.0D).endVertex();
+                mc.getTextureManager().bindTexture(cubemapTextures[cubeSide]);
+
+                vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+
+                int l = 255 / (blendPass + 1);
+
+                vb.pos(-1, -1, 1).tex(0, 0).color(255, 255, 255, l).endVertex();
+                vb.pos(1, -1, 1).tex(1, 0).color(255, 255, 255, l).endVertex();
+                vb.pos(1, 1, 1).tex(1, 1).color(255, 255, 255, l).endVertex();
+                vb.pos(-1, 1, 1).tex(0, 1).color(255, 255, 255, l).endVertex();
+
                 tessellator.draw();
                 popMatrix();
             }
@@ -438,53 +444,65 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     }
 
     private void rotateAndBlurCubemap() {
-        this.mc.getTextureManager().bindTexture(this.viewportTexture);
+        mc.getTextureManager().bindTexture(viewportTexture);
+
+        glTexParameteri(3553, 10241, 9729);
+        glTexParameteri(3553, 10240, 9729);
         GL11.glCopyTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, 0, 0, 256, 256);
         enableBlend();
-        blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
         colorMask(true, true, true, false);
+
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder vb = tessellator.getBuffer();
-        vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        byte blurPasses = 4;
+        vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+        disableAlpha();
+
+        byte blurPasses = 3;
 
         for (int blurPass = 0; blurPass < blurPasses; ++blurPass) {
-            float var7 = (blurPass - blurPasses / 2) / 256.0F;
-            vb.pos(this.width, this.height, this.zLevel).tex(0.0F + var7, 0.0D).endVertex();
-            vb.pos(this.width, 0.0D, this.zLevel).tex(1.0F + var7, 0.0D).endVertex();
-            vb.pos(0.0D, 0.0D, this.zLevel).tex(1.0F + var7, 1.0D).endVertex();
-            vb.pos(0.0D, this.height, this.zLevel).tex(0.0F + var7, 1.0D).endVertex();
+            float f = 1 / (float)(blurPass + 1);
+            float var7 = (blurPass - 1) / 256F;
+
+            vb.pos(width, height, zLevel).tex(var7, 1).color(1, 1, 1, f).endVertex();
+            vb.pos(width, 0, zLevel).tex(1 + var7, 1).color(1, 1, 1, f).endVertex();
+            vb.pos(0, 0, zLevel).tex(1 + var7, 0).color(1, 1, 1, f).endVertex();
+            vb.pos(0, height, zLevel).tex(var7, 0).color(1, 1, 1, f).endVertex();
         }
 
         tessellator.draw();
+        enableAlpha();
         colorMask(true, true, true, true);
-        disableBlend();
     }
 
     private void renderPanorama(float partialTicks) {
+        mc.getFramebuffer().unbindFramebuffer();
+
         viewport(0, 0, 256, 256);
-        this.renderCubeMapTexture(partialTicks);
-        disableTexture2D();
-        enableTexture2D();
+        renderCubeMapTexture(partialTicks);
 
         for (int tessellator = 0; tessellator < 8; ++tessellator) {
-            this.rotateAndBlurCubemap();
+            rotateAndBlurCubemap();
         }
 
-        viewport(0, 0, this.mc.displayWidth, this.mc.displayHeight);
+        mc.getFramebuffer().bindFramebuffer(true);
+
+        viewport(0, 0, mc.displayWidth, mc.displayHeight);
+
+        float aspect = width > height ? 120F / width : 120F / height;
+        float uSample = height * aspect / 256F;
+        float vSample = width * aspect / 256F;
+
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder vb = tessellator.getBuffer();
         vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        float aspect = this.width > this.height ? 120.0F / this.width : 120.0F / this.height;
-        float uSample = this.height * aspect / 256.0F;
-        float vSample = this.width * aspect / 256.0F;
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        // wr.setColorRGBA_F(1.0F, 1.0F, 1.0F, 1.0F);
-        vb.pos(0.0D, this.height, this.zLevel).tex(0.5F - uSample, 0.5F + vSample).endVertex();
-        vb.pos(this.width, this.height, this.zLevel).tex(0.5F - uSample, 0.5F - vSample).endVertex();
-        vb.pos(this.width, 0.0D, this.zLevel).tex(0.5F + uSample, 0.5F - vSample).endVertex();
-        vb.pos(0.0D, 0.0D, this.zLevel).tex(0.5F + uSample, 0.5F + vSample).endVertex();
+        vb.pos(0, height, zLevel).tex(0.5F - uSample, 0.5F + vSample).endVertex();
+        vb.pos(width, height, zLevel).tex(0.5F - uSample, 0.5F - vSample).endVertex();
+        vb.pos(width, 0, zLevel).tex(0.5F + uSample, 0.5F - vSample).endVertex();
+        vb.pos(0, 0, zLevel).tex(0.5F + uSample, 0.5F + vSample).endVertex();
         tessellator.draw();
     }
 
@@ -495,7 +513,9 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
 
         disableFog();
         this.mc.entityRenderer.disableLightmap();
+        disableAlpha();
         this.renderPanorama(partialTick);
+        enableAlpha();
 
         int top = 30;
         int bottom = this.height - 40;
