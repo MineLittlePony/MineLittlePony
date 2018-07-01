@@ -12,17 +12,14 @@ import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.skins.SkinUploadResponse;
 import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -30,14 +27,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Session;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.GLU;
-import org.lwjgl.util.glu.Project;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -51,14 +46,7 @@ import javax.swing.*;
 public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResponse> {
     private static final int MAX_SKIN_DIMENSION = 1024;
     private int updateCounter = 0;
-    private ResourceLocation viewportTexture;
-    private static final ResourceLocation[] cubemapTextures = {
-            new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_0.png"),
-            new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_1.png"),
-            new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_2.png"),
-            new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_3.png"),
-            new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_4.png"),
-            new ResourceLocation("hdskins", "textures/cubemaps/cubemap0_5.png")};
+
     private GuiButton btnBrowse;
     private GuiButton btnUpload;
     private GuiButton btnClear;
@@ -86,9 +74,12 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     private File pendingSkinFile;
     private File selectedSkin;
     private float uploadOpacity = 0.0F;
-    private float lastPartialTick;
+
+    private int lastMouseX = 0;
 
     private static GuiSkins instance;
+
+    protected CubeMap panorama;
 
     private MinecraftProfileTexture.Type textureType = SKIN;
     private boolean thinArmType = false;
@@ -107,6 +98,13 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
         this.fetchingSkin = true;
 
         instance = this;
+
+        panorama = new CubeMap(this);
+        initPanorama();
+    }
+
+    protected void initPanorama() {
+        panorama.setSource("hdskins:textures/cubemaps/cubemap0_%d.png");
     }
 
     protected EntityPlayerModel getModel(GameProfile profile) {
@@ -115,7 +113,12 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
 
     @Override
     public void updateScreen() {
-        ++this.updateCounter;
+
+        if (!(Keyboard.isKeyDown(Keyboard.KEY_LEFT) || Keyboard.isKeyDown(Keyboard.KEY_RIGHT))) {
+            updateCounter++;
+        }
+        panorama.update();
+
         this.localPlayer.updateModel();
         this.remotePlayer.updateModel();
         if (this.fetchingSkin && this.remotePlayer.isTextureSetupComplete()) {
@@ -175,7 +178,8 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     public void initGui() {
         enableDnd();
 
-        this.initPanoramaRenderer();
+        panorama.init();
+
         this.buttonList.clear();
         this.buttonList.add(this.btnBrowse = new GuiButton(0, 30, this.height - 36, 60, 20, "Browse..."));
         this.buttonList.add(this.btnUpload = new GuiButton(1, this.width / 2 - 24, this.height / 2 - 10, 48, 20, ">>"));
@@ -187,26 +191,21 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
         this.buttonList.add(this.btnModeSkin = new GuiItemStackButton(4, 2, 2, skin));
         skin = new ItemStack(Items.LEATHER_LEGGINGS);
         Items.LEATHER_LEGGINGS.setColor(skin, 0xfff500);
-        this.buttonList.add(this.btnModeSkinnySkin = new GuiItemStackButton(6, 2, 24, skin));
-        this.buttonList.add(this.btnModeElytra = new GuiItemStackButton(5, 2, 46, new ItemStack(Items.ELYTRA)));
+        this.buttonList.add(this.btnModeSkinnySkin = new GuiItemStackButton(6, 2, 21, skin));
+        this.buttonList.add(this.btnModeElytra = new GuiItemStackButton(5, 2, 52, new ItemStack(Items.ELYTRA)));
 
         this.btnUpload.enabled = false;
         this.btnBrowse.enabled = !this.mc.isFullScreen();
 
-        this.btnModeSkin.enabled = this.thinArmType || this.textureType != SKIN;
-        this.btnModeSkinnySkin.enabled = !this.thinArmType || this.textureType != SKIN;
+        this.btnModeSkin.enabled = this.thinArmType;
+        this.btnModeSkinnySkin.enabled = !this.thinArmType;
         this.btnModeElytra.enabled = this.textureType == SKIN;
-
     }
 
     private void enableDnd() {
         GLWindow.current().setDropTargetListener((FileDropListener) files -> {
             files.stream().findFirst().ifPresent(instance::loadLocalFile);
         });
-    }
-
-    private void initPanoramaRenderer() {
-        this.viewportTexture = this.mc.getTextureManager().getDynamicTextureLocation("skinpanorama", new DynamicTexture(256, 256));
     }
 
     @Override
@@ -296,21 +295,20 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
                     if (guiButton.id == this.btnModeSkin.id) {
                         this.thinArmType = false;
                         this.textureType = SKIN;
-                        this.btnModeElytra.enabled = true;
-                        this.btnModeSkinnySkin.enabled = true;
                         stack = ItemStack.EMPTY;
                     } else if (guiButton.id == this.btnModeSkinnySkin.id) {
                         this.thinArmType = true;
                         this.textureType = SKIN;
-                        this.btnModeSkin.enabled = true;
-                        this.btnModeElytra.enabled = true;
                         stack = ItemStack.EMPTY;
                     } else {
                         this.textureType = ELYTRA;
-                        this.btnModeSkin.enabled = true;
-                        this.btnModeSkinnySkin.enabled = true;
                         stack = new ItemStack(Items.ELYTRA);
                     }
+
+                    this.btnModeSkin.enabled = thinArmType;
+                    this.btnModeSkinnySkin.enabled = !thinArmType;
+                    this.btnModeElytra.enabled = this.textureType == SKIN;
+
                     guiButton.enabled = false;
                     // clear currently selected skin
                     this.selectedSkin = null;
@@ -341,226 +339,86 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
                 this.localPlayer.swingArm(EnumHand.MAIN_HAND);
                 this.remotePlayer.swingArm(EnumHand.MAIN_HAND);
             }
-
         }
+
+        lastMouseX = mouseX;
+    }
+
+    @Override
+    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+
+        updateCounter -= (lastMouseX - mouseX);
+
+        lastMouseX = mouseX;
     }
 
     @Override
     protected void keyTyped(char keyChar, int keyCode) throws IOException {
         if (this.openFileThread == null && !this.uploadingSkin) {
+
+            if (keyCode == Keyboard.KEY_LEFT) {
+                updateCounter -= 5;
+            } else if (keyCode == Keyboard.KEY_RIGHT) {
+                updateCounter += 5;
+            }
+
             super.keyTyped(keyChar, keyCode);
         }
     }
 
-    private void setupCubemapCamera() {
-        matrixMode(GL11.GL_PROJECTION);
-        pushMatrix();
-        loadIdentity();
-        Project.gluPerspective(120, 1, 0.05F, 10);
-        matrixMode(GL11.GL_MODELVIEW);
-        pushMatrix();
-        loadIdentity();
-    }
-
-    private void revertPanoramaMatrix() {
-        matrixMode(GL11.GL_PROJECTION);
-        popMatrix();
-        matrixMode(GL11.GL_MODELVIEW);
-        popMatrix();
-    }
-
-    private void renderCubeMapTexture(float partialTick) {
-        this.setupCubemapCamera();
-        color(1, 1, 1, 1);
-        rotate(180, 1, 0, 0);
-
-        enableBlend();
-        disableAlpha();
-        disableCull();
-        depthMask(false);
-        tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
-        byte blendIterations = 8;
-
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder vb = tessellator.getBuffer();
-
-        for (int blendPass = 0; blendPass < blendIterations * blendIterations; ++blendPass) {
-            pushMatrix();
-            float offsetX = ((float) (blendPass % blendIterations) / (float) blendIterations - 0.5F) / 64;
-            float offsetY = ((float) (blendPass / blendIterations) / (float) blendIterations - 0.5F) / 64;
-
-            translate(offsetX, offsetY, 0);
-            rotate(MathHelper.sin((updateCounter + partialTick) / 400) * 25 + 20, 1, 0, 0);
-            rotate(-(updateCounter + partialTick) / 10, 0, 1, 0);
-
-            for (int cubeSide = 0; cubeSide < 6; ++cubeSide) {
-                pushMatrix();
-                if (cubeSide == 1) {
-                    rotate(90, 0, 1, 0);
-                }
-
-                if (cubeSide == 2) {
-                    rotate(180, 0, 1, 0);
-                }
-
-                if (cubeSide == 3) {
-                    rotate(-90, 0, 1, 0);
-                }
-
-                if (cubeSide == 4) {
-                    rotate(90, 1, 0, 0);
-                }
-
-                if (cubeSide == 5) {
-                    rotate(-90, 1, 0, 0);
-                }
-
-                mc.getTextureManager().bindTexture(cubemapTextures[cubeSide]);
-
-                vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-
-                int l = 255 / (blendPass + 1);
-
-                vb.pos(-1, -1, 1).tex(0, 0).color(255, 255, 255, l).endVertex();
-                vb.pos(1, -1, 1).tex(1, 0).color(255, 255, 255, l).endVertex();
-                vb.pos(1, 1, 1).tex(1, 1).color(255, 255, 255, l).endVertex();
-                vb.pos(-1, 1, 1).tex(0, 1).color(255, 255, 255, l).endVertex();
-
-                tessellator.draw();
-                popMatrix();
-            }
-
-            popMatrix();
-            colorMask(true, true, true, false);
-        }
-
-        vb.setTranslation(0.0D, 0.0D, 0.0D);
-        colorMask(true, true, true, true);
-        depthMask(true);
-        enableCull();
-        enableAlpha();
-        enableDepth();
-        this.revertPanoramaMatrix();
-    }
-
-    private void rotateAndBlurCubemap() {
-        mc.getTextureManager().bindTexture(viewportTexture);
-
-        glTexParameteri(3553, 10241, 9729);
-        glTexParameteri(3553, 10240, 9729);
-        GL11.glCopyTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, 0, 0, 256, 256);
-        enableBlend();
-        tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
-        colorMask(true, true, true, false);
-
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder vb = tessellator.getBuffer();
-        vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-        disableAlpha();
-
-        byte blurPasses = 3;
-
-        for (int blurPass = 0; blurPass < blurPasses; ++blurPass) {
-            float f = 1 / (float)(blurPass + 1);
-            float var7 = (blurPass - 1) / 256F;
-
-            vb.pos(width, height, zLevel).tex(var7, 1).color(1, 1, 1, f).endVertex();
-            vb.pos(width, 0, zLevel).tex(1 + var7, 1).color(1, 1, 1, f).endVertex();
-            vb.pos(0, 0, zLevel).tex(1 + var7, 0).color(1, 1, 1, f).endVertex();
-            vb.pos(0, height, zLevel).tex(var7, 0).color(1, 1, 1, f).endVertex();
-        }
-
-        tessellator.draw();
-        enableAlpha();
-        colorMask(true, true, true, true);
-    }
-
-    private void renderPanorama(float partialTicks) {
-        mc.getFramebuffer().unbindFramebuffer();
-
-        viewport(0, 0, 256, 256);
-        renderCubeMapTexture(partialTicks);
-
-        for (int tessellator = 0; tessellator < 8; ++tessellator) {
-            rotateAndBlurCubemap();
-        }
-
-        mc.getFramebuffer().bindFramebuffer(true);
-
-        viewport(0, 0, mc.displayWidth, mc.displayHeight);
-
-        float aspect = width > height ? 120F / width : 120F / height;
-        float uSample = height * aspect / 256F;
-        float vSample = width * aspect / 256F;
-
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder vb = tessellator.getBuffer();
-        vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        vb.pos(0, height, zLevel).tex(0.5F - uSample, 0.5F + vSample).endVertex();
-        vb.pos(width, height, zLevel).tex(0.5F - uSample, 0.5F - vSample).endVertex();
-        vb.pos(width, 0, zLevel).tex(0.5F + uSample, 0.5F - vSample).endVertex();
-        vb.pos(0, 0, zLevel).tex(0.5F + uSample, 0.5F + vSample).endVertex();
-        tessellator.draw();
-    }
-
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTick) {
-        float deltaTime = this.updateCounter + partialTick - this.lastPartialTick;
-        this.lastPartialTick = this.updateCounter + partialTick;
+        float deltaTime = panorama.getDelta(partialTick);
+        panorama.render(partialTick, zLevel);
 
-        disableFog();
-        this.mc.entityRenderer.disableLightmap();
-        disableAlpha();
-        this.renderPanorama(partialTick);
-        enableAlpha();
 
         int top = 30;
-        int bottom = this.height - 40;
-        int mid = this.width / 2;
-        int horizon = this.height / 2 + this.height / 5;
+        int bottom = height - 40;
+        int mid = width / 2;
+        int horizon = height / 2 + height / 5;
 
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
 
         Gui.drawRect(30, top, mid - 30, bottom, Integer.MIN_VALUE);
-        Gui.drawRect(mid + 30, top, this.width - 30, bottom, Integer.MIN_VALUE);
+        Gui.drawRect(mid + 30, top, width - 30, bottom, Integer.MIN_VALUE);
 
-        this.drawGradientRect(30, horizon, mid - 30, bottom, 0x80FFFFFF, 0xffffff);
-        this.drawGradientRect(mid + 30, horizon, this.width - 30, bottom, 0x80FFFFFF, 0xffffff);
+        drawGradientRect(30, horizon, mid - 30, bottom, 0x80FFFFFF, 0xffffff);
+        drawGradientRect(mid + 30, horizon, this.width - 30, bottom, 0x80FFFFFF, 0xffffff);
 
         super.drawScreen(mouseX, mouseY, partialTick);
 
         popAttrib();
-        this.enableClipping(bottom);
+        enableClipping(bottom);
 
-        float yPos = this.height * 0.75F;
-        float xPos1 = this.width * 0.25F;
-        float xPos2 = this.width * 0.75F;
-        float scale = this.height * 0.25F;
+        float yPos = height * 0.75F;
+        float xPos1 = width * 0.25F;
+        float xPos2 = width * 0.75F;
+        float scale = height * 0.25F;
+        float lookX = mid - mouseX;
 
-        mc.getTextureManager().bindTexture(this.localPlayer.getSkinTexture());
-        this.renderPlayerModel(this.localPlayer, xPos1, yPos, scale, yPos - scale * 1.8F - mouseY, partialTick);
+        mc.getTextureManager().bindTexture(localPlayer.getSkinTexture());
 
-        mc.getTextureManager().bindTexture(this.remotePlayer.getSkinTexture());
-        this.renderPlayerModel(this.remotePlayer, xPos2, yPos, scale, yPos - scale * 1.8F - mouseY, partialTick);
+        renderPlayerModel(localPlayer, xPos1, yPos, scale, horizon - mouseY, lookX, partialTick);
 
-        this.disableClipping();
+        mc.getTextureManager().bindTexture(remotePlayer.getSkinTexture());
 
-        this.drawCenteredString(this.fontRenderer, I18n.format("hdskins.manager"), this.width / 2, 10, 0xffffff);
+        renderPlayerModel(remotePlayer, xPos2, yPos, scale, horizon - mouseY, lookX, partialTick);
 
-        this.fontRenderer.drawStringWithShadow(I18n.format("hdskins.local"), 34, 34, 0xffffff);
-        this.fontRenderer.drawStringWithShadow(I18n.format("hdskins.server"), this.width / 2 + 34, 34, 0xffffff);
+        disableClipping();
+
+        drawCenteredString(this.fontRenderer, I18n.format("hdskins.manager"), width / 2, 10, 0xffffff);
+
+        fontRenderer.drawStringWithShadow(I18n.format("hdskins.local"), 34, 34, 0xffffff);
+        fontRenderer.drawStringWithShadow(I18n.format("hdskins.server"), width / 2 + 34, 34, 0xffffff);
 
         disableDepth();
         enableBlend();
         depthMask(false);
 
         // this is here so the next few things get blended properly
-        Gui.drawRect(0, 0, 1, 1, 0);
-        this.drawGradientRect(30, this.height - 60, mid - 30, bottom, 1, 0xe0ffffff);
-        this.drawGradientRect(mid + 30, this.height - 60, this.width - 30, bottom, 0, 0xE0FFFFFF);
+        //Gui.drawRect(0, 0, 1, 1, 0);
+        //this.drawGradientRect(30, this.height - 60, mid - 30, bottom, 1, 0xe0ffffff);
+        //this.drawGradientRect(mid + 30, this.height - 60, this.width - 30, bottom, 0, 0xE0FFFFFF);
 
         int labelwidth = (this.width / 2 - 80) / 2;
         if (!this.localPlayer.isUsingLocalTexture()) {
@@ -631,7 +489,7 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
         enableDepth();
     }
 
-    private void renderPlayerModel(EntityPlayerModel thePlayer, float xPosition, float yPosition, float scale, float mouseY, float partialTick) {
+    private void renderPlayerModel(EntityPlayerModel thePlayer, float xPosition, float yPosition, float scale, float mouseY, float mouseX, float partialTick) {
         enableColorMaterial();
         pushMatrix();
         translate(xPosition, yPosition, 300.0F);
@@ -644,8 +502,14 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
 
         rotate(-135.0F, 0.0F, 1.0F, 0.0F);
         rotate(15.0F, 1.0F, 0.0F, 0.0F);
-        rotate((this.updateCounter + partialTick) * 2.5F, 0.0F, 1.0F, 0.0F);
-        thePlayer.rotationPitch = -((float) Math.atan(mouseY / 40.0F)) * 20.0F;
+
+        float rot = ((updateCounter + partialTick) * 2.5F) % 360;
+
+        rotate(rot, 0, 1, 0);
+
+        thePlayer.rotationYawHead = ((float) Math.atan(mouseX / 20)) * 30;
+
+        thePlayer.rotationPitch = -((float) Math.atan(mouseY / 40)) * 20;
         translate(0.0D, thePlayer.getYOffset(), 0.0D);
 
         RenderManager rm = Minecraft.getMinecraft().getRenderManager();

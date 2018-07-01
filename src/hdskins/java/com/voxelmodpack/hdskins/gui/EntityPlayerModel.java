@@ -42,7 +42,7 @@ public class EntityPlayerModel extends EntityLivingBase {
 
     private PreviewTexture remoteSkinTexture;
     private ResourceLocation remoteSkinResource;
-    private ResourceLocation localSkinResource;
+    protected ResourceLocation localSkinResource;
     private DynamicTexture localSkinTexture;
     private PreviewTexture remoteElytraTexture;
     private ResourceLocation remoteElytraResource;

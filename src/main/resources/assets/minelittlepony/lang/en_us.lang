@@ -18,3 +18,6 @@ minelp.mobs.pigzombies=Ponify zombie pigmen
 minelp.mobs.skeletons=Ponify skeletons
 minelp.mobs.illagers=Ponify illagers
 minelp.mobs.guardians=Ponify guardians
+
+minelp.mode.dry=Landpony
+minelp.mode.wet=Seapony

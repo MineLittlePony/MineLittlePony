@@ -35,7 +35,7 @@ public class LayerPonyElytra<T extends EntityLivingBase> extends AbstractPonyLay
             getRenderer().bindTexture(getElytraTexture(entity));
 
             GlStateManager.pushMatrix();
-            GlStateManager.translate(0, 0.25F, 0.125F);
+            GlStateManager.translate(0, getPlayerModel().getModelOffsetY(), 0.125F);
             getPlayerModel().transform(BodyPart.BODY);
             modelElytra.setRotationAngles(move, swing, ticks, yaw, head, scale, entity);
             modelElytra.render(entity, move, swing, ticks, yaw, head, scale);

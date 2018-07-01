@@ -11,6 +11,9 @@ import net.minecraft.util.ResourceLocation;
 public class EntityPonyModel extends EntityPlayerModel {
 
     public static final ResourceLocation NO_SKIN_PONY = new ResourceLocation("minelittlepony", "textures/mob/noskin.png");
+    public static final ResourceLocation NO_SKIN_SEAPONY = new ResourceLocation("minelittlepony", "textures/mob/noskin_seapony.png");
+
+    public boolean wet = false;
 
     public EntityPonyModel(GameProfile profile) {
         super(profile);
@@ -18,6 +21,18 @@ public class EntityPonyModel extends EntityPlayerModel {
 
     @Override
     protected ResourceLocation getBlankSkin() {
-        return NO_SKIN_PONY;
+        return wet ? NO_SKIN_SEAPONY : NO_SKIN_PONY;
+    }
+
+    public void setWet(boolean wet) {
+        this.wet = wet;
+
+        if (wet && localSkinResource == NO_SKIN_PONY) {
+            localSkinResource = NO_SKIN_SEAPONY;
+        }
+
+        if (!wet && localSkinResource == NO_SKIN_SEAPONY) {
+            localSkinResource = NO_SKIN_PONY;
+        }
     }
 }

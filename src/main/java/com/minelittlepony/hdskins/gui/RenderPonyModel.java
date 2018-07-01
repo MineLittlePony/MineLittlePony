@@ -2,7 +2,9 @@ package com.minelittlepony.hdskins.gui;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.model.ModelWrapper;
+import com.minelittlepony.model.capabilities.IModel;
 import com.minelittlepony.model.components.PonyElytra;
+import com.minelittlepony.model.player.PlayerModels;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.render.layer.AbstractPonyLayer;
 import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
@@ -39,13 +41,15 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
             return super.getEntityModel(playermodel);
         }
 
-        Pony thePony = MineLittlePony.getInstance().getManager().getPony(loc, playermodel.usesThinSkin());
+        boolean slim = playermodel.usesThinSkin();
+
+        Pony thePony = MineLittlePony.getInstance().getManager().getPony(loc, slim);
 
         if (thePony.getRace(false).isHuman()) {
             return super.getEntityModel(playermodel);
         }
 
-        ModelWrapper pm = thePony.getModel(true);
+        ModelWrapper pm = playermodel.wet ? PlayerModels.SEAPONY.getModel(slim) : thePony.getModel(true);
         pm.apply(thePony.getMetadata());
 
         renderingAsHuman = false;
@@ -73,7 +77,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
                     ModelBase model = renderingAsHuman ? modelElytra : ponyElytra;
 
                     if (!renderingAsHuman) {
-                        GlStateManager.translate(0, 0.25F, 0.125F);
+                        GlStateManager.translate(0, ((IModel)getMainModel()).getModelOffsetY(), 0.125F);
                     }
 
                     model.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);

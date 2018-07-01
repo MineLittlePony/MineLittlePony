@@ -727,6 +727,11 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         return swingProgress;
     }
 
+    @Override
+    public float getModelOffsetY() {
+        return 0.25F;
+    }
+
     /**
      * Sets the model's various rotation angles.
      *
