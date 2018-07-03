@@ -60,14 +60,11 @@ public class CubeMap {
     }
 
     public void setSource(String source) {
-        cubemapTextures = new ResourceLocation[] {
-           new ResourceLocation(String.format(source, 0)),
-           new ResourceLocation(String.format(source, 1)),
-           new ResourceLocation(String.format(source, 2)),
-           new ResourceLocation(String.format(source, 3)),
-           new ResourceLocation(String.format(source, 4)),
-           new ResourceLocation(String.format(source, 5))
-       };
+        setSource(CubeMapRegistry.generatePanoramaResources(source));
+    }
+
+    public void setSource(ResourceLocation[] source) {
+        cubemapTextures = source;
     }
 
     public void init() {
@@ -242,5 +239,4 @@ public class CubeMap {
         vb.pos(0, 0, zLevel).tex(0.5F + uSample, 0.5F + vSample).endVertex();
         tessellator.draw();
     }
-
 }

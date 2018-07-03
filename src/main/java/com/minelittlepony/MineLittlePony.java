@@ -7,6 +7,7 @@ import com.minelittlepony.pony.data.PonyDataSerialzier;
 import com.minelittlepony.render.PonySkullRenderer;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.gui.CubeMapRegistry;
 import com.voxelmodpack.hdskins.skins.SkinServer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -49,6 +50,7 @@ public class MineLittlePony {
         renderManager = new PonyRenderManager();
 
         LiteLoader.getInstance().registerExposable(config, null);
+        LiteLoader.getInstance().writeConfig(config);
 
         IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
         irrm.registerReloadListener(ponyManager);
@@ -58,6 +60,10 @@ public class MineLittlePony {
 
         // This also makes it the default gateway server.
         SkinServer.defaultServers.add(MINELP_LEGACY_SERVER);
+
+        for (String resource : config.panoramas) {
+            CubeMapRegistry.addSource(resource);
+        }
     }
 
     /**

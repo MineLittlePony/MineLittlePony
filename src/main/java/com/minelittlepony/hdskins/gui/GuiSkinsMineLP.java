@@ -5,6 +5,7 @@ import com.minelittlepony.PonyManager;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+import com.voxelmodpack.hdskins.gui.CubeMapRegistry;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
 import com.voxelmodpack.hdskins.gui.GuiItemStackButton;
 import com.voxelmodpack.hdskins.gui.GuiSkins;
@@ -27,12 +28,6 @@ public class GuiSkinsMineLP extends GuiSkins {
 
     private boolean isWet = false;
 
-
-    private static final String[] panoramas = new String[] {
-        "minelp:textures/cubemap/sugurcubecorner_%d.png",
-        "minelp:textures/cubemap/quillsandsofas_%d.png"
-    };
-
     @Override
     protected EntityPlayerModel getModel(GameProfile profile) {
         return new EntityPonyModel(profile);
@@ -51,9 +46,7 @@ public class GuiSkinsMineLP extends GuiSkins {
 
     @Override
     protected void initPanorama() {
-        int i = (int)Math.floor(Math.random() * panoramas.length);
-
-        panorama.setSource(panoramas[i]);
+        panorama.setSource(CubeMapRegistry.pickResource());
     }
 
 
@@ -103,7 +96,7 @@ public class GuiSkinsMineLP extends GuiSkins {
     @Override
     protected void onSetRemoteSkin(Type type, ResourceLocation resource, MinecraftProfileTexture profileTexture) {
         MineLittlePony.logger.debug("Invalidating old remote skin, checking updated remote skin");
-        if (type == Type.SKIN) {
+        if (ponyManager != null && resource != null && type == Type.SKIN) {
             ponyManager.removePony(resource);
         }
     }

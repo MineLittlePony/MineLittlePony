@@ -39,6 +39,11 @@ public class PonyConfig extends SensibleConfig implements Exposable {
     @Expose public boolean illagers = true;
     @Expose public boolean guardians = true;
 
+    @Expose public String[] panoramas = new String[] {
+            "minelp:textures/cubemap/sugarcubecorner_%d.png",
+            "minelp:textures/cubemap/quillsandsofas_%d.png"
+    };
+
     /**
      * Gets the current PonyLevel. That is the level of ponies you would like to see.
      * @param ignorePony true to ignore whatever value the setting has.
