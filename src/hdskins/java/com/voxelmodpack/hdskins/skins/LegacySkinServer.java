@@ -92,10 +92,9 @@ public class LegacySkinServer implements SkinServer {
                 .build());
     }
 
+    @SuppressWarnings("deprecation")
     @Override
-    public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable URI image,
-            MinecraftProfileTexture.Type type, Map<String, String> metadata) {
-
+    public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable URI image, MinecraftProfileTexture.Type type, Map<String, String> metadata) {
         if (Strings.isNullOrEmpty(this.gateway)) {
             return CallableFutures.failedFuture(new NullPointerException("gateway url is blank"));
         }
