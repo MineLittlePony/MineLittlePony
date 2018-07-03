@@ -37,7 +37,7 @@ public class GLWindow extends DropTarget {
     /**
      * Gets or creates the current GLWindow context.
      */
-    public static GLWindow current() {
+    public static synchronized GLWindow current() {
         if (instance == null) {
             instance = new GLWindow();
         }
@@ -218,7 +218,7 @@ public class GLWindow extends DropTarget {
         }
     }
 
-    public void clearDropTargetListener() {
+    public synchronized void clearDropTargetListener() {
         if (ready && dropListener != null) {
             removeDropTargetListener(dropListener);
             dropListener = null;
@@ -226,7 +226,7 @@ public class GLWindow extends DropTarget {
         }
     }
 
-    public void setDropTargetListener(DropTargetListener dtl) {
+    public synchronized void setDropTargetListener(DropTargetListener dtl) {
         if (!ready) {
             return;
         }
