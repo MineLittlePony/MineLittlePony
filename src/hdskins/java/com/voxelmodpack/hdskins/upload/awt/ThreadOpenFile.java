@@ -2,6 +2,8 @@ package com.voxelmodpack.hdskins.upload.awt;
 
 import net.minecraft.client.Minecraft;
 
+import java.io.File;
+
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
@@ -24,6 +26,8 @@ public abstract class ThreadOpenFile extends Thread {
 
     private JFrame parent = null;
 
+    private static String lastChosenFile = null;
+
     protected ThreadOpenFile(Minecraft minecraft, String dialogTitle, IOpenFileCallback callback)
             throws IllegalStateException {
         if (minecraft.isFullScreen()) {
@@ -43,9 +47,15 @@ public abstract class ThreadOpenFile extends Thread {
     public void run() {
         fileDialog = new JFileChooser();
         fileDialog.setDialogTitle(this.dialogTitle);
+
+        if (lastChosenFile != null) {
+            fileDialog.setSelectedFile(new File(lastChosenFile));
+        }
         fileDialog.setFileFilter(this.getFileFilter());
 
         int dialogResult = fileDialog.showOpenDialog(parent);
+
+        lastChosenFile = fileDialog.getSelectedFile().getAbsolutePath();
 
         this.parentScreen.onFileOpenDialogClosed(fileDialog, dialogResult);
     }
