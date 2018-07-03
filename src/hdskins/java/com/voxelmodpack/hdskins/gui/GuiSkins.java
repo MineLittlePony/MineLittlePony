@@ -88,6 +88,7 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
         Minecraft minecraft = Minecraft.getMinecraft();
 //        this.screenTitle = manager;
         GameProfile profile = minecraft.getSession().getProfile();
+
         this.localPlayer = getModel(profile);
         this.remotePlayer = getModel(profile);
         RenderManager rm = Minecraft.getMinecraft().getRenderManager();

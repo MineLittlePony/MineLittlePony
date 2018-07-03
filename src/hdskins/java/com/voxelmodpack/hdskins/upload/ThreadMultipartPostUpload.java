@@ -80,11 +80,13 @@ public class ThreadMultipartPostUpload {
 
                 if (paramData instanceof Path) {
                     Path uploadPath = (Path) paramData;
-                    outputStream.writeBytes("Content-Disposition: form-data; name=\"" + paramName + "\"; filename=\"" + uploadPath.getFileName() + "\"" + CRLF + CRLF);
+                    outputStream.writeBytes("Content-Disposition: form-data; name=\"" + paramName + "\"; filename=\"" + uploadPath.getFileName() + "\"" + CRLF);
+                    outputStream.writeBytes("Content-Type: image/png" + CRLF + CRLF);
 
                     Files.copy(uploadPath, outputStream);
                 } else {
                     outputStream.writeBytes("Content-Disposition: form-data; name=\"" + paramName + "\"" + CRLF + CRLF);
+
                     outputStream.writeBytes(paramData.toString());
                 }
 

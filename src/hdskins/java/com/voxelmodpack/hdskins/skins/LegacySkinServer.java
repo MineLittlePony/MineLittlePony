@@ -106,7 +106,7 @@ public class LegacySkinServer implements SkinServer {
     private static Map<String, ?> getData(Session session, MinecraftProfileTexture.Type type, String model, String param, Object val) {
         return ImmutableMap.of(
                 "user", session.getUsername(),
-                "uuid", session.getPlayerID(),
+                "uuid", UUIDTypeAdapter.fromUUID(session.getProfile().getId()),
                 "type", type.toString().toLowerCase(Locale.US),
                 "model", model,
                 param, val);
