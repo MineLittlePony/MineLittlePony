@@ -55,7 +55,7 @@ public class GLWindow extends DropTarget {
     /**
      * Destroys the current GLWindow context and restores default behaviour.
      */
-    public static void dispose() {
+    public static synchronized void dispose() {
         if (instance != null) {
             instance.close();
         }
@@ -87,7 +87,7 @@ public class GLWindow extends DropTarget {
         return frame;
     }
 
-    private void open() throws LWJGLException {
+    private synchronized void open() throws LWJGLException {
         // Dimensions from LWJGL may have a non 1:1 scale on high DPI monitors.
         int x = getScaledPixelUnit(Display.getX());
         int y = getScaledPixelUnit(Display.getY());
@@ -151,7 +151,7 @@ public class GLWindow extends DropTarget {
         ready = true;
     }
 
-    private void close() {
+    private synchronized void close() {
         closeRequested = true;
 
         try {
