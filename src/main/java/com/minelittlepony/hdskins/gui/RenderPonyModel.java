@@ -6,6 +6,7 @@ import com.minelittlepony.model.capabilities.IModel;
 import com.minelittlepony.model.components.PonyElytra;
 import com.minelittlepony.model.player.PlayerModels;
 import com.minelittlepony.pony.data.Pony;
+import com.minelittlepony.pony.data.PonyRace;
 import com.minelittlepony.render.layer.AbstractPonyLayer;
 import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
 
@@ -45,11 +46,15 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
 
         Pony thePony = MineLittlePony.getInstance().getManager().getPony(loc, slim);
 
-        if (thePony.getRace(false).isHuman()) {
+        PonyRace race = thePony.getRace(false);
+
+        if (race.isHuman()) {
             return super.getEntityModel(playermodel);
         }
 
-        ModelWrapper pm = playermodel.wet ? PlayerModels.SEAPONY.getModel(slim) : thePony.getModel(true);
+        boolean canWet = playermodel.wet && (loc == playermodel.getBlankSkin() || race == PonyRace.SEAPONY);
+
+        ModelWrapper pm = canWet ? PlayerModels.SEAPONY.getModel(slim) : thePony.getModel(true);
         pm.apply(thePony.getMetadata());
 
         renderingAsHuman = false;
