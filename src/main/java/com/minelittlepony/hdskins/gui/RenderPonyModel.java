@@ -82,7 +82,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
                     ModelBase model = renderingAsHuman ? modelElytra : ponyElytra;
 
                     if (!renderingAsHuman) {
-                        GlStateManager.translate(0, ((IModel)getMainModel()).getModelOffsetY(), 0.125F);
+                        GlStateManager.translate(0, ((IModel)getMainModel()).getRiderYOffset(), 0.125F);
                     }
 
                     model.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
