@@ -1,6 +1,7 @@
 package com.voxelmodpack.hdskins.gui;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.client.model.ModelElytra;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -98,6 +99,9 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         player.bipedRightLegwear.isHidden = !parts.contains(EnumPlayerModelParts.RIGHT_PANTS_LEG);
         player.bipedLeftArmwear.isHidden = !parts.contains(EnumPlayerModelParts.LEFT_SLEEVE);
         player.bipedRightArmwear.isHidden = !parts.contains(EnumPlayerModelParts.RIGHT_SLEEVE);
+
+        player.leftArmPose = ArmPose.EMPTY;
+        player.rightArmPose = ArmPose.EMPTY;
 
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         super.doRender(par1Entity, par2, par4, par6, par8, par9);

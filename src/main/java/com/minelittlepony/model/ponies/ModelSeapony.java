@@ -133,7 +133,7 @@ public class ModelSeapony extends ModelUnicorn {
     }
 
     @Override
-    public float getModelOffsetY() {
+    public float getRiderYOffset() {
         return 1.05F;
     }
 

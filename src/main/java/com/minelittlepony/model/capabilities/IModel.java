@@ -73,7 +73,7 @@ public interface IModel extends ICapitated {
 
     float getSwingAmount();
 
-    float getModelOffsetY();
+    float getRiderYOffset();
 
     default boolean isWearing(PonyWearable wearable) {
         return getMetadata().isWearing(wearable);

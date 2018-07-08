@@ -29,7 +29,7 @@ public class GuiSkinsMineLP extends GuiSkins {
 
 
     private static final String[] panoramas = new String[] {
-        "minelp:textures/cubemap/sugurcubecorner_%d.png",
+        "minelp:textures/cubemap/sugarcubecorner_%d.png",
         "minelp:textures/cubemap/quillsandsofas_%d.png"
     };
 
