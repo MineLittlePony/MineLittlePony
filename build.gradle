@@ -13,11 +13,13 @@ buildscript {
 	dependencies {
 		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
 		classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+		classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
 	}
 }
 
 apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'com.minelittlepony'
 version = '1.12.2.2-SNAPSHOT'
@@ -39,14 +41,14 @@ sourceSets {
 		ext.refMap = 'hdskins.mixin.refmap.json'
 	}
 	main {
-		compileClasspath += hdskins.output + hdskins.compileClasspath
+		compileClasspath += hdskins.output
 		ext.refMap = 'minelp.mixin.refmap.json'
 	}
 }
 
 dependencies {
 	// use the same version as httpclient
-	hdskinsCompile('org.apache.httpcomponents:httpmime:4.3.2'){
+	compile('org.apache.httpcomponents:httpmime:4.3.2'){
 		transitive = false
 	}
 }
@@ -71,9 +73,23 @@ litemod.json {
 jar {
 	from sourceSets.hdskins.output
 	from litemod
+	classifier 'base'
+	extension 'jar'
+}
+shadowJar {
+	extension 'litemod'
+	classifier "mc$minecraft.version"
+	baseName "mod-${project.name.toLowerCase()}"
 
-	// TODO relocate. LiteLoader excludes apache libs from classloading
-	from {configurations.hdskinsCompile.collect{it.isDirectory() ? it : zipTree(it)}}
+	from sourceSets.hdskins.output
+	from litemod
+	dependencies {
+		exclude dependency('deobf.com.mumfrey:liteloader:')
+		exclude dependency('deobf.org.ow2.asm:')
+		exclude 'META-INF/**'
+	}
+	relocate 'org.apache.http.entity.mime', 'com.voxelmodpack.repack.org.apache.http.entity.mime'
+	exclude 'dummyThing'
 }
 sourceJar {
 	// add hdskins sources
@@ -92,10 +108,15 @@ task skinZip(type: Zip) {
 	version 'v1'
 }
 
+artifacts {
+	archives shadowJar
+}
+
 reobf {
 	srgJar {
 		mappingType = 'SEARGE'
 	}
+	shadowJar{}
 }
 mixin {
 	defaultObfuscationEnv notch
