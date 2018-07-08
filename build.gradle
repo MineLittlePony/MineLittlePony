@@ -44,21 +44,25 @@ sourceSets {
 	}
 }
 
-litemod.json {
-	mcversion = '1.12.r2'
-	author = 'Verdana, Rene_Z, Mumfrey, Killjoy1221'
-	description = 'Mine Little Pony turns players and mobs into ponies'
-	description.minelittlepony = '''\
-		Mine Little Pony turns players and mobs into ponies
-		Press F9 ingame to access settings'''.stripIndent()
-	description.hdskinsmod = '''\
-		Separate skin server for Mine Little Pony that also supports HD skins.
-		Access via button on the main menu.'''.stripIndent()
+litemod {
+	doFirst {
+		json {
+			mcversion = '1.12.r2'
+			author = 'Verdana, Rene_Z, Mumfrey, Killjoy1221'
+			description = 'Mine Little Pony turns players and mobs into ponies'
+			description.minelittlepony = '''\
+				Mine Little Pony turns players and mobs into ponies
+				Press F9 ingame to access settings'''
+			description.hdskinsmod = '''\
+				Separate skin server for Mine Little Pony that also supports HD skins.
+				Access via button on the main menu.'''
 
-	mixinConfigs += [
-		'minelp.mixin.json',
-		'hdskins.mixin.json'
-	]
+			mixinConfigs += [
+					'minelp.mixin.json',
+					'hdskins.mixin.json'
+			]
+		}
+	}
 }
 
 jar {
