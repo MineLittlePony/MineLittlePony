@@ -39,8 +39,15 @@ sourceSets {
 		ext.refMap = 'hdskins.mixin.refmap.json'
 	}
 	main {
-		compileClasspath += hdskins.output
+		compileClasspath += hdskins.output + hdskins.compileClasspath
 		ext.refMap = 'minelp.mixin.refmap.json'
+	}
+}
+
+dependencies {
+	// use the same version as httpclient
+	hdskinsCompile('org.apache.httpcomponents:httpmime:4.3.2'){
+		transitive = false
 	}
 }
 
@@ -64,6 +71,9 @@ litemod.json {
 jar {
 	from sourceSets.hdskins.output
 	from litemod
+
+	// TODO relocate. LiteLoader excludes apache libs from classloading
+	from {configurations.hdskinsCompile.collect{it.isDirectory() ? it : zipTree(it)}}
 }
 sourceJar {
 	// add hdskins sources

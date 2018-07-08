@@ -223,7 +223,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         this.enabled = enabled;
     }
 
-    @Nullable
     public static PreviewTexture getPreviewTexture(ResourceLocation skinResource, GameProfile profile, Type type, ResourceLocation def, @Nullable final SkinAvailableCallback callback) {
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         MinecraftProfileTexture url = INSTANCE.getGatewayServer().getPreviewTexture(type, profile).orElse(null);
