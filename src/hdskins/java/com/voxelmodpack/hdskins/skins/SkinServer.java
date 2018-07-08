@@ -1,15 +1,17 @@
 package com.voxelmodpack.hdskins.skins;
 
 import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import net.minecraft.util.Session;
 
-import java.nio.file.Path;
+import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
 import javax.annotation.Nullable;
 
 public interface SkinServer {
@@ -18,9 +20,12 @@ public interface SkinServer {
 
     Optional<MinecraftTexturesPayload> loadProfileData(GameProfile profile);
 
-    Optional<MinecraftProfileTexture> getPreviewTexture(MinecraftProfileTexture.Type type, GameProfile profile);
+    default Optional<MinecraftProfileTexture> getPreviewTexture(MinecraftProfileTexture.Type type, GameProfile profile) {
+        return loadProfileData(profile).map(data -> data.getTextures().get(type));
+    }
 
-    ListenableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable Path image, MinecraftProfileTexture.Type type, boolean thinArmType);
+    CompletableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable URI image,
+            MinecraftProfileTexture.Type type, Map<String, String> metadata);
 
     static SkinServer from(String server) {
         int i = server.indexOf(':');
@@ -36,4 +41,5 @@ public interface SkinServer {
         }
         throw new IllegalArgumentException();
     }
+
 }

@@ -2,8 +2,6 @@ package com.voxelmodpack.hdskins.skins;
 
 import com.google.common.base.MoreObjects;
 
-import javax.annotation.Nullable;
-
 public class SkinUploadResponse {
 
     private final boolean success;
@@ -18,7 +16,6 @@ public class SkinUploadResponse {
         return success;
     }
 
-    @Nullable
     public String getMessage() {
         return message;
     }

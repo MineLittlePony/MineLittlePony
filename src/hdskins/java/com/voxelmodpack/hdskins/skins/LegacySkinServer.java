@@ -3,8 +3,6 @@ package com.voxelmodpack.hdskins.skins;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -20,13 +18,15 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.annotation.Nullable;
 
 public class LegacySkinServer implements SkinServer {
@@ -88,19 +88,24 @@ public class LegacySkinServer implements SkinServer {
     }
 
     @Override
-    public ListenableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable Path image, MinecraftProfileTexture.Type type, boolean thinSkinType) {
+    public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable URI image,
+            MinecraftProfileTexture.Type type, Map<String, String> metadata) {
 
-        if (Strings.isNullOrEmpty(this.gateway))
-            return Futures.immediateFailedFuture(new NullPointerException("gateway url is blank"));
+        if (Strings.isNullOrEmpty(this.gateway)) {
+            return CallableFutures.failedFuture(new NullPointerException("gateway url is blank"));
+        }
 
-        return HDSkinManager.skinUploadExecutor.submit(() -> {
+        return CallableFutures.asyncFailableFuture(() -> {
             verifyServerConnection(session, SERVER_ID);
-
-            Map<String, ?> data = image == null ? getClearData(session, type) : getUploadData(session, type, (thinSkinType ? "slim" : "default"), image);
+            String model = metadata.getOrDefault("model", "default");
+            Map<String, ?> data = image == null ? getClearData(session, type) : getUploadData(session, type, model, image);
             ThreadMultipartPostUpload upload = new ThreadMultipartPostUpload(this.gateway, data);
             String response = upload.uploadMultipart();
+            if (response.startsWith("ERROR: "))
+                response = response.substring(7);
             return new SkinUploadResponse(response.equalsIgnoreCase("OK"), response);
-        });
+
+        }, HDSkinManager.skinUploadExecutor);
     }
 
     private static Map<String, ?> getData(Session session, MinecraftProfileTexture.Type type, String model, String param, Object val) {
@@ -116,7 +121,7 @@ public class LegacySkinServer implements SkinServer {
         return getData(session, type, "default", "clear", "1");
     }
 
-    private static Map<String, ?> getUploadData(Session session, MinecraftProfileTexture.Type type, String model, Path skinFile) {
+    private static Map<String, ?> getUploadData(Session session, MinecraftProfileTexture.Type type, String model, URI skinFile) {
         return getData(session, type, model, type.toString().toLowerCase(Locale.US), skinFile);
     }
 
