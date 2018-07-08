@@ -27,7 +27,6 @@ public interface SkinServer {
         return loadProfileData(profile).map(MinecraftTexturesPayload::getTextures).orElse(Collections.emptyMap());
     }
 
-    CompletableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable URI image,
-            MinecraftProfileTexture.Type type, Map<String, String> metadata);
+    CompletableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable URI image, MinecraftProfileTexture.Type type, Map<String, String> metadata);
 
 }

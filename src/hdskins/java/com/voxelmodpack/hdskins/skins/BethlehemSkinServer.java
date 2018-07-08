@@ -4,16 +4,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.annotation.Nullable;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -22,8 +21,6 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -54,7 +51,8 @@ public class BethlehemSkinServer implements SkinServer {
 
     private static final Gson gson = new GsonBuilder().registerTypeAdapter(UUID.class, new UUIDTypeAdapter()).create();
 
-    public MinecraftTexturesPayload getProfileData(GameProfile profile) {
+    @Override
+    public Optional<MinecraftTexturesPayload> loadProfileData(GameProfile profile) {
 
         String url = getPath(profile);
 
@@ -89,7 +87,7 @@ public class BethlehemSkinServer implements SkinServer {
             if (s.has("success") && s.get("success").getAsBoolean()) {
                 s = s.get("data").getAsJsonObject();
 
-                return gson.fromJson(s, MinecraftTexturesPayload.class);
+                return Optional.ofNullable(gson.fromJson(s, MinecraftTexturesPayload.class));
             }
         } catch (IOException e) {
             logger.trace("Couldn't reach skin server for {} at {}", profile.getName(), url, e);
@@ -101,46 +99,27 @@ public class BethlehemSkinServer implements SkinServer {
             IOUtils.closeQuietly(reader);
         }
 
-        return null;
+        return Optional.empty();
     }
 
-    public MinecraftProfileTexture getPreview(Type type, GameProfile profile) {
-        MinecraftTexturesPayload payload = getProfileData(profile);
+    @Override
+    public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, URI image, Type type, Map<String, String> metadata) {
 
-        if (payload != null && payload.getTextures().containsKey(type)) {
-            return payload.getTextures().get(type);
+        if (Strings.isNullOrEmpty(gateway)) {
+            return CallableFutures.failedFuture(new NullPointerException("gateway url is blank"));
         }
 
-        return null;
-    }
-
-    @Override
-    public final Optional<MinecraftTexturesPayload> loadProfileData(GameProfile profile) {
-        return Optional.ofNullable(getProfileData(profile));
-    }
-
-    @Override
-    public final Optional<MinecraftProfileTexture> getPreviewTexture(Type type, GameProfile profile) {
-        return Optional.ofNullable(getPreview(type, profile));
-    }
-
-    @Override
-    public ListenableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable Path image, MinecraftProfileTexture.Type type, boolean thinSkinType) {
-
-        if (Strings.isNullOrEmpty(gateway))
-            return Futures.immediateFailedFuture(new NullPointerException("gateway url is blank"));
-
-        return HDSkinManager.skinUploadExecutor.submit(() -> {
+        return CallableFutures.asyncFailableFuture(() -> {
             verifyServerConnection(session, SERVER_ID);
 
-            Map<String, ?> data = image == null ? getClearData(session, type) : getUploadData(session, type, (thinSkinType ? "slim" : "default"), image);
+            Map<String, ?> data = image == null ? getClearData(session, type) : getUploadData(session, type, metadata.getOrDefault("mode", "default"), image);
 
             ThreadMultipartPostUpload upload = new ThreadMultipartPostUpload(gateway, data);
 
             String response = upload.uploadMultipart();
 
             return new SkinUploadResponse(response.equalsIgnoreCase("OK"), response);
-        });
+        }, HDSkinManager.skinUploadExecutor);
     }
 
     protected static ImmutableMap.Builder<String, Object> getData(Session session, MinecraftProfileTexture.Type type) {
@@ -157,7 +136,7 @@ public class BethlehemSkinServer implements SkinServer {
                 .build();
     }
 
-    protected static Map<String, ?> getUploadData(Session session, MinecraftProfileTexture.Type type, String model, Path skinFile) {
+    protected static Map<String, ?> getUploadData(Session session, MinecraftProfileTexture.Type type, String model, URI skinFile) {
         return getData(session, type)
                 .put("model", model)
                 .put(type.toString().toLowerCase(Locale.US), skinFile)

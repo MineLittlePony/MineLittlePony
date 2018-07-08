@@ -46,6 +46,7 @@ public class ValhallaSkinServer implements SkinServer {
 
     @Expose
     private final String address;
+
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
             .create();
