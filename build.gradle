@@ -1,20 +1,20 @@
 buildscript {
-	repositories {
-		jcenter()
-		maven {
-			name 'forge'
-			url 'http://files.minecraftforge.net/maven'
-		}
-		maven {
-			name = 'sponge'
-			url = 'https://repo.spongepowered.org/maven'
-		}
-	}
-	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-		classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
-		classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
-	}
+    repositories {
+        jcenter()
+        maven {
+            name 'forge'
+            url 'http://files.minecraftforge.net/maven'
+        }
+        maven {
+            name = 'sponge'
+            url = 'https://repo.spongepowered.org/maven'
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
+    }
 }
 
 apply plugin: 'net.minecraftforge.gradle.liteloader'
@@ -29,101 +29,106 @@ targetCompatibility = 1.8
 sourceCompatibility = 1.8
 
 minecraft {
-	version = "1.12.2"
-	mappings = 'snapshot_20170919'
-	runDir = 'run'
-	replace '@VERSION@', project.version
+    version = "1.12.2"
+    mappings = 'snapshot_20170919'
+    runDir = 'run'
+    replace '@VERSION@', project.version
 }
 
 sourceSets {
-	hdskins {
-		compileClasspath += main.compileClasspath
-		ext.refMap = 'hdskins.mixin.refmap.json'
-	}
-	main {
-		compileClasspath += hdskins.output
-		ext.refMap = 'minelp.mixin.refmap.json'
-	}
+    hdskins {
+        compileClasspath += main.compileClasspath
+        ext.refMap = 'hdskins.mixin.refmap.json'
+    }
+    main {
+        compileClasspath += hdskins.output
+        ext.refMap = 'minelp.mixin.refmap.json'
+    }
 }
 
 dependencies {
-	// use the same version as httpclient
-	compile('org.apache.httpcomponents:httpmime:4.3.2'){
-		transitive = false
-	}
+    // use the same version as httpclient
+    compile('org.apache.httpcomponents:httpmime:4.3.2') {
+        transitive = false
+    }
 }
 
-litemod.json {
-	mcversion = '1.12.r2'
-	author = 'Verdana, Rene_Z, Mumfrey, Killjoy1221'
-	description = 'Mine Little Pony turns players and mobs into ponies'
-	description.minelittlepony = '''\
-		Mine Little Pony turns players and mobs into ponies
-		Press F9 ingame to access settings'''.stripIndent()
-	description.hdskinsmod = '''\
-		Separate skin server for Mine Little Pony that also supports HD skins.
-		Access via button on the main menu.'''.stripIndent()
-
-	mixinConfigs += [
-		'minelp.mixin.json',
-		'hdskins.mixin.json'
-	]
+litemod {
+    doFirst {
+        json {
+            mcversion = '1.12.r2'
+            author = 'Verdana, Rene_Z, Mumfrey, Killjoy1221'
+            description = 'Mine Little Pony turns players and mobs into ponies'
+            description.minelittlepony = '''\
+				Mine Little Pony turns players and mobs into ponies
+				Press F9 ingame to access settings'''
+            description.hdskinsmod = '''\
+				Separate skin server for Mine Little Pony that also supports HD skins.
+				Access via button on the main menu.'''
+            mixinConfigs += [
+                    'minelp.mixin.json',
+                    'hdskins.mixin.json'
+            ]
+        }
+    }
 }
 
 jar {
-	from sourceSets.hdskins.output
-	from litemod
-	classifier 'base'
-	extension 'jar'
+    from sourceSets.hdskins.output
+    from litemod
+    classifier 'base'
+    extension 'jar'
 }
 shadowJar {
-	extension 'litemod'
-	classifier "mc$minecraft.version"
-	baseName "mod-${project.name.toLowerCase()}"
+    extension 'litemod'
+    classifier "mc$minecraft.version"
+    baseName "mod-${project.name.toLowerCase()}"
 
-	from sourceSets.hdskins.output
-	from litemod
-	dependencies {
-		exclude dependency('deobf.com.mumfrey:liteloader:')
-		exclude dependency('deobf.org.ow2.asm:')
-		exclude 'META-INF/**'
-	}
-	relocate 'org.apache.http.entity.mime', 'com.voxelmodpack.repack.org.apache.http.entity.mime'
-	exclude 'dummyThing'
+    from sourceSets.hdskins.output
+    from litemod
+    dependencies {
+        exclude dependency('deobf.com.mumfrey:liteloader:')
+        exclude dependency('deobf.org.ow2.asm:')
+        exclude 'META-INF/**'
+    }
+    relocate 'org.apache.http.entity.mime', 'com.voxelmodpack.repack.org.apache.http.entity.mime'
+    exclude 'dummyThing'
+
 }
 sourceJar {
-	// add hdskins sources
-	from sourceSets.hdskins.allSource
+    // add hdskins sources
+    from sourceSets.hdskins.allSource
 }
 task srgJar(type: Jar) {
-	from sourceSets.main.output
-	from sourceSets.hdskins.output
-	from litemod
-	classifier "mc$minecraft.version-srg"
-	baseName "mod-${project.name.toLowerCase()}"
+    from sourceSets.main.output
+    from sourceSets.hdskins.output
+    from litemod
+    classifier "mc$minecraft.version-srg"
+    baseName "mod-${project.name.toLowerCase()}"
 }
 task skinZip(type: Zip) {
-	from fileTree('skins')
-	baseName 'Pony Skin Resources'
-	version 'v1'
+    from fileTree('skins')
+    baseName 'Pony Skin Resources'
+    version 'v1'
 }
 
 artifacts {
-	archives shadowJar
+    archives shadowJar
 }
 
 reobf {
-	srgJar {
-		mappingType = 'SEARGE'
-	}
-	shadowJar{}
+    srgJar {
+        mappingType = 'SEARGE'
+    }
+    shadowJar {}
+
 }
 mixin {
-	defaultObfuscationEnv notch
+    defaultObfuscationEnv notch
 }
 
 // windows only
 task deploy(type: Copy, dependsOn: build) {
-	from jar.archivePath
-	into file("$System.env.APPDATA/.minecraft/mods")
+    from jar.archivePath
+    into file("$System.env.APPDATA/.minecraft/mods")
 }
