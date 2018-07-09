@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -48,10 +50,15 @@ public class LegacySkinServer implements SkinServer {
     }
 
     @Override
-    public Optional<MinecraftProfileTexture> getPreviewTexture(MinecraftProfileTexture.Type type, GameProfile profile) {
-        if (Strings.isNullOrEmpty(this.gateway))
-            return Optional.empty();
-        return Optional.of(new MinecraftProfileTexture(getPath(this.gateway, type, profile), null));
+    public Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> getPreviewTextures(GameProfile profile) {
+        if (Strings.isNullOrEmpty(this.gateway)) {
+            return Collections.emptyMap();
+        }
+        Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = new EnumMap<>(MinecraftProfileTexture.Type.class);
+        for (MinecraftProfileTexture.Type type : MinecraftProfileTexture.Type.values()) {
+            map.put(type, new MinecraftProfileTexture(getPath(gateway, type, profile), null));
+        }
+        return map;
     }
 
     @Override
@@ -101,8 +108,9 @@ public class LegacySkinServer implements SkinServer {
             Map<String, ?> data = image == null ? getClearData(session, type) : getUploadData(session, type, model, image);
             ThreadMultipartPostUpload upload = new ThreadMultipartPostUpload(this.gateway, data);
             String response = upload.uploadMultipart();
-            if (response.startsWith("ERROR: "))
+            if (response.startsWith("ERROR: ")) {
                 response = response.substring(7);
+            }
             return new SkinUploadResponse(response.equalsIgnoreCase("OK"), response);
 
         }, HDSkinManager.skinUploadExecutor);

@@ -223,31 +223,8 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         this.enabled = enabled;
     }
 
-    public static PreviewTexture getPreviewTexture(ResourceLocation skinResource, GameProfile profile, Type type, ResourceLocation def, @Nullable final SkinAvailableCallback callback) {
-        TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
-        MinecraftProfileTexture url = INSTANCE.getGatewayServer().getPreviewTexture(type, profile).orElse(null);
-        if (url == null)
-            return null;
-
-        IImageBuffer buffer = new ImageBufferDownloadHD();
-        PreviewTexture skinTexture = new PreviewTexture(url.getMetadata("model"), url.getUrl(), def, type == Type.SKIN ? new IImageBuffer() {
-            @Override
-            @Nullable
-            public BufferedImage parseUserSkin(BufferedImage image) {
-                return buffer.parseUserSkin(image);
-            }
-
-            @Override
-            public void skinAvailable() {
-                if (callback != null) {
-                    callback.skinAvailable(type, skinResource, new MinecraftProfileTexture(url.getUrl(), Maps.newHashMap()));
-                }
-            }
-        } : null);
-        textureManager.loadTexture(skinResource, skinTexture);
-
-        return skinTexture;
-
+    public static PreviewTextureManager getPreviewTextureManager(GameProfile profile) {
+        return new PreviewTextureManager(INSTANCE.getGatewayServer().getPreviewTextures(profile));
     }
 
     public void addClearListener(ISkinCacheClearListener listener) {

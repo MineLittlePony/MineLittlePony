@@ -7,6 +7,7 @@ import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import net.minecraft.util.Session;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,8 +21,8 @@ public interface SkinServer {
 
     Optional<MinecraftTexturesPayload> loadProfileData(GameProfile profile);
 
-    default Optional<MinecraftProfileTexture> getPreviewTexture(MinecraftProfileTexture.Type type, GameProfile profile) {
-        return loadProfileData(profile).map(data -> data.getTextures().get(type));
+    default Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> getPreviewTextures(GameProfile profile) {
+        return loadProfileData(profile).map(MinecraftTexturesPayload::getTextures).orElse(Collections.emptyMap());
     }
 
     CompletableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable URI image,
@@ -41,5 +42,4 @@ public interface SkinServer {
         }
         throw new IllegalArgumentException();
     }
-
 }

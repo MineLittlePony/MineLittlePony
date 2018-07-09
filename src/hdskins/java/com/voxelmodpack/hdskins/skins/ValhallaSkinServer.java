@@ -43,7 +43,6 @@ import javax.annotation.Nullable;
 
 public class ValhallaSkinServer implements SkinServer {
 
-    @SuppressWarnings("unused")
     private final String baseURL;
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
@@ -51,7 +50,7 @@ public class ValhallaSkinServer implements SkinServer {
 
     private String accessToken;
 
-    public ValhallaSkinServer(String baseURL) {
+    private ValhallaSkinServer(String baseURL) {
         this.baseURL = baseURL;
     }
 

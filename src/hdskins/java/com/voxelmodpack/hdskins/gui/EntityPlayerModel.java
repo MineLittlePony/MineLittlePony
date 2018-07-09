@@ -8,6 +8,7 @@ import com.voxelmodpack.hdskins.DynamicTextureImage;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.ImageBufferDownloadHD;
 import com.voxelmodpack.hdskins.PreviewTexture;
+import com.voxelmodpack.hdskins.PreviewTextureManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -76,8 +77,10 @@ public class EntityPlayerModel extends EntityLivingBase {
             this.textureManager.deleteTexture(this.remoteElytraResource);
         }
 
-        this.remoteSkinTexture = HDSkinManager.getPreviewTexture(this.remoteSkinResource, this.profile, Type.SKIN, getBlankSkin(), listener);
-        this.remoteElytraTexture = HDSkinManager.getPreviewTexture(this.remoteElytraResource, this.profile, Type.ELYTRA, getBlankElytra(), null);
+        PreviewTextureManager ptm = HDSkinManager.getPreviewTextureManager(this.profile);
+
+        this.remoteSkinTexture = ptm.getPreviewTexture(this.remoteSkinResource, Type.SKIN, getBlankSkin(), listener);
+        this.remoteElytraTexture = ptm.getPreviewTexture(this.remoteElytraResource, Type.ELYTRA, getBlankElytra(), null);
 
     }
 
