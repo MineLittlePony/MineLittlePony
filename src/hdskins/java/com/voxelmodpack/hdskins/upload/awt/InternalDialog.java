@@ -11,7 +11,7 @@ final class InternalDialog {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static JFrame hiddenFrame;
+    static JFrame hiddenFrame;
 
     public static JFrame getAWTContext() {
         JFrame context = GLWindow.current().getFrame();

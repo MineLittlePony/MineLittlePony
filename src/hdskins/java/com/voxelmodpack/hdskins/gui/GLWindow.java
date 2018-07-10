@@ -1,22 +1,29 @@
 package com.voxelmodpack.hdskins.gui;
 
 import com.google.common.collect.Lists;
+import com.voxelmodpack.hdskins.upload.awt.FileDropper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.DefaultResourcePack;
+import net.minecraft.launchwrapper.injector.VanillaTweakInjector;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
 import java.awt.Canvas;
+import java.awt.Frame;
+import java.awt.Image;
+import java.awt.Window;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.TooManyListenersException;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
@@ -101,11 +108,14 @@ public class GLWindow extends DropTarget {
 
         frame = new JFrame(Display.getTitle());
         frame.add(canvas);
-        // frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent windowEvent) {
                 if (!closeRequested) {
+                    for (Window w : Frame.getWindows()) {
+                        w.dispose();
+                    }
+
                     mc.shutdown();
                 }
                 closeRequested = false;
@@ -183,6 +193,10 @@ public class GLWindow extends DropTarget {
         frame.setVisible(false);
         frame.dispose();
 
+        for (Window w : Frame.getWindows()) {
+            w.dispose();
+        }
+
         instance = null;
     }
 
@@ -195,10 +209,21 @@ public class GLWindow extends DropTarget {
             // only already consumed, but somehow invalid when you try to parse it through ImageIO.read.
             //
             DefaultResourcePack pack = (DefaultResourcePack) mc.getResourcePackRepository().rprDefaultResourcePack;
-            frame.setIconImages(Lists.newArrayList(
+
+            ArrayList<Image> images = Lists.newArrayList(
                     ImageIO.read(pack.getInputStreamAssets(new ResourceLocation("icons/icon_16x16.png"))),
                     ImageIO.read(pack.getInputStreamAssets(new ResourceLocation("icons/icon_32x32.png")))
-            ));
+            );
+
+            Frame[] frames = Frame.getFrames();
+
+            if (frames != null) {
+                for (Frame frame : frames) {
+                    try {
+                        frame.setIconImages(images);
+                    } catch (Throwable t) {}
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -219,22 +244,29 @@ public class GLWindow extends DropTarget {
     }
 
     public synchronized void clearDropTargetListener() {
-        if (ready && dropListener != null) {
-            removeDropTargetListener(dropListener);
+        if (dropListener != null) {
+            if (!ready) {
+                FileDropper.getAWTContext().hide(dropListener);
+                return;
+            } else {
+                frame.setDropTarget(null);
+                removeDropTargetListener(dropListener);
+            }
             dropListener = null;
-            frame.setDropTarget(null);
         }
     }
 
     public synchronized void setDropTargetListener(DropTargetListener dtl) {
-        if (!ready) {
-            return;
-        }
-
-        clearDropTargetListener();
-        dropListener = dtl;
-
         try {
+            clearDropTargetListener();
+
+            dropListener = dtl;
+
+            if (!ready) {
+                FileDropper.getAWTContext().show(dtl);
+                return;
+            }
+
             frame.setDropTarget(this);
             addDropTargetListener(dtl);
         } catch (TooManyListenersException ignored) { }
