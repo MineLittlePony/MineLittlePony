@@ -1,13 +1,16 @@
 package com.minelittlepony.model.armour;
 
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 
 import static com.minelittlepony.model.PonyModelConstants.*;
 
 import com.minelittlepony.model.AbstractPonyModel;
+import com.minelittlepony.model.capabilities.IModel;
+import com.minelittlepony.model.capabilities.IModelArmor;
 import com.minelittlepony.render.PonyRenderer;
 
-public class ModelPonyArmor extends AbstractPonyModel {
+public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
 
     public PonyRenderer flankGuard;
 
@@ -49,7 +52,7 @@ public class ModelPonyArmor extends AbstractPonyModel {
         super.renderLegs(scale);
     }
 
-    public void synchroniseLegs(AbstractPonyModel mainModel) {
+    public <T extends ModelBiped & IModel> void synchroniseLegs(T mainModel) {
         copyModelAngles(mainModel.bipedRightArm, bipedRightArm);
         copyModelAngles(mainModel.bipedLeftArm, bipedLeftArm);
         copyModelAngles(mainModel.bipedRightLeg, bipedRightLeg);

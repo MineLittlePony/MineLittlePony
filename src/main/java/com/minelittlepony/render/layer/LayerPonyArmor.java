@@ -2,12 +2,15 @@ package com.minelittlepony.render.layer;
 
 import com.google.common.collect.Maps;
 import com.minelittlepony.ForgeProxy;
+import com.minelittlepony.api.events.EventBus;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.model.armour.ModelPonyArmor;
+import com.minelittlepony.model.capabilities.IModelArmor;
 import com.minelittlepony.util.coordinates.Color;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
@@ -48,7 +51,7 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
         }
     }
 
-    private void renderArmor(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale, EntityEquipmentSlot armorSlot) {
+    private <V extends ModelBiped & IModelArmor> void renderArmor(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale, EntityEquipmentSlot armorSlot) {
         ItemStack itemstack = entity.getItemStackFromSlot(armorSlot);
 
         if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemArmor) {
@@ -65,6 +68,10 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
 
             getRenderer().bindTexture(armors.getFirst());
 
+            if (EventBus.ARMOR.dispatcher().preRenderPonyArmor(armour, entity, move, swing, partialTicks, ticks, headYaw, headPitch, scale, armorSlot)) {
+                return;
+            }
+
             if (itemarmor.getArmorMaterial() == ArmorMaterial.LEATHER) {
                 Color.glColor(itemarmor.getColor(itemstack), 1);
                 armour.render(entity, move, swing, ticks, headYaw, headPitch, scale);
@@ -78,6 +85,8 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
             if (itemstack.isItemEnchanted()) {
                 LayerArmorBase.renderEnchantedGlint(getRenderer(), entity, armour, move, swing, partialTicks, ticks, headYaw, headPitch, scale);
             }
+
+            EventBus.ARMOR.dispatcher().postRenderPonyArmor(armour, entity, move, swing, partialTicks, ticks, headYaw, headPitch, scale, armorSlot);
         }
     }
 
@@ -121,7 +130,7 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
         }
     }
 
-    private void prepareToRender(ModelPonyArmor model, EntityEquipmentSlot slot, boolean isPony) {
+    private <V extends ModelBiped & IModelArmor> void prepareToRender(V model, EntityEquipmentSlot slot, boolean isPony) {
         model.setVisible(false);
 
         switch (slot) {
@@ -161,8 +170,9 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
 
     private static ModelPonyArmor getArmorModel(EntityLivingBase entity, ItemStack itemstack, EntityEquipmentSlot slot, ModelPonyArmor def) {
         ModelBase model = ForgeProxy.getArmorModel(entity, itemstack, slot, def);
+
         if (model instanceof ModelPonyArmor) {
-            return (ModelPonyArmor) model;
+            return (ModelPonyArmor)model;
         }
 
         return def;
