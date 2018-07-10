@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import java.io.File;
 
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 
 /**
@@ -24,8 +23,6 @@ public abstract class ThreadOpenFile extends Thread {
 
     private JFileChooser fileDialog;
 
-    private JFrame parent = null;
-
     private static String lastChosenFile = null;
 
     protected ThreadOpenFile(Minecraft minecraft, String dialogTitle, IOpenFileCallback callback)
@@ -38,11 +35,6 @@ public abstract class ThreadOpenFile extends Thread {
         this.dialogTitle = dialogTitle;
     }
 
-    public ThreadOpenFile setParent(JFrame parent) {
-        this.parent = parent;
-        return this;
-    }
-
     @Override
     public void run() {
         fileDialog = new JFileChooser();
@@ -53,9 +45,13 @@ public abstract class ThreadOpenFile extends Thread {
         }
         fileDialog.setFileFilter(this.getFileFilter());
 
-        int dialogResult = fileDialog.showOpenDialog(parent);
+        int dialogResult = fileDialog.showOpenDialog(InternalDialog.getAWTContext());
 
-        lastChosenFile = fileDialog.getSelectedFile().getAbsolutePath();
+        File f = fileDialog.getSelectedFile();
+
+        if (f != null) {
+            lastChosenFile = f.getAbsolutePath();
+        }
 
         this.parentScreen.onFileOpenDialogClosed(fileDialog, dialogResult);
     }
