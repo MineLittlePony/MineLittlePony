@@ -2,6 +2,7 @@ package com.minelittlepony.render.layer;
 
 import com.google.common.collect.Maps;
 import com.minelittlepony.ForgeProxy;
+import com.minelittlepony.api.armor.IEquestrianArmor;
 import com.minelittlepony.api.events.EventBus;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.model.armour.ModelPonyArmor;
@@ -173,6 +174,10 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
 
         if (model instanceof ModelPonyArmor) {
             return (ModelPonyArmor)model;
+        }
+
+        if (model instanceof IEquestrianArmor) {
+            return ((IEquestrianArmor) model).getEquestrianArmour().getArmorForSlot(slot);
         }
 
         return def;
