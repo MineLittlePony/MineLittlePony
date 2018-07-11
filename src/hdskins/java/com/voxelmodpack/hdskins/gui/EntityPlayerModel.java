@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+import com.sollace.dummy.DWorld;
 import com.voxelmodpack.hdskins.DynamicTextureImage;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.ImageBufferDownloadHD;
@@ -56,7 +57,7 @@ public class EntityPlayerModel extends EntityLivingBase {
     protected boolean previewThinArms = false;
 
     public EntityPlayerModel(GameProfile profile) {
-        super(null);
+        super(new DWorld());
         this.profile = profile;
         this.textureManager = Minecraft.getMinecraft().getTextureManager();
         this.remoteSkinResource = new ResourceLocation("skins/preview_" + this.profile.getName() + ".png");
