@@ -11,7 +11,7 @@ public enum TriggerPixels {
     RACE(PonyRace.HUMAN, Channel.ALL, 0, 0),
     TAIL(TailLengths.FULL, Channel.ALL, 1, 0),
     GENDER(PonyGender.MARE, Channel.ALL, 2, 0),
-    SIZE(PonySize.LARGE, Channel.ALL, 3, 0),
+    SIZE(PonySize.NORMAL, Channel.ALL, 3, 0),
     GLOW(null, Channel.RAW, 0, 1),
     WEARABLES(PonyWearable.NONE, Channel.RAW, 1, 1);
 
