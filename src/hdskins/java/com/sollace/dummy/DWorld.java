@@ -14,7 +14,7 @@ public class DWorld extends World {
 	public DWorld() {
 		super(null, new WorldInfo(
 				new WorldSettings(0, GameType.NOT_SET, false, false, WorldType.DEFAULT), "MpServer"),
-				new WorldProviderSurface(), null, false);
+				new WorldProviderSurface(), null, true);
 	}
 
 	@Override
@@ -26,12 +26,12 @@ public class DWorld extends World {
 	protected boolean isChunkLoaded(int x, int z, boolean allowEmpty) {
 		return true;
 	}
-	
+
 	@Override
 	public float getLightBrightness(BlockPos pos) {
 		return 1;
 	}
-	
+
 	@Override
 	public BlockPos getSpawnPoint() {
 		return BlockPos.ORIGIN;
