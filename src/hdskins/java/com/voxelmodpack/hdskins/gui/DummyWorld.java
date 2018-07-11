@@ -1,4 +1,4 @@
-package com.sollace.dummy;
+package com.voxelmodpack.hdskins.gui;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameType;
@@ -9,9 +9,9 @@ import net.minecraft.world.WorldType;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.storage.WorldInfo;
 
-public class DWorld extends World {
+public class DummyWorld extends World {
 
-	public DWorld() {
+	public DummyWorld() {
 		super(null, new WorldInfo(
 				new WorldSettings(0, GameType.NOT_SET, false, false, WorldType.DEFAULT), "MpServer"),
 				new WorldProviderSurface(), null, true);
