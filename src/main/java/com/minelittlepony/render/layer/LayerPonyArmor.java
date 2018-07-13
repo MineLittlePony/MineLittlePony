@@ -2,7 +2,6 @@ package com.minelittlepony.render.layer;
 
 import com.google.common.collect.Maps;
 import com.minelittlepony.ForgeProxy;
-import com.minelittlepony.api.events.EventBus;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.model.armour.IEquestrianArmor;
 import com.minelittlepony.model.armour.ModelPonyArmor;
@@ -69,10 +68,6 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
 
             getRenderer().bindTexture(armors.getFirst());
 
-            if (EventBus.ARMOR.dispatcher().preRenderPonyArmor(armour, entity, move, swing, partialTicks, ticks, headYaw, headPitch, scale, armorSlot)) {
-                return;
-            }
-
             if (itemarmor.getArmorMaterial() == ArmorMaterial.LEATHER) {
                 Color.glColor(itemarmor.getColor(itemstack), 1);
                 armour.render(entity, move, swing, ticks, headYaw, headPitch, scale);
@@ -86,8 +81,6 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
             if (itemstack.isItemEnchanted()) {
                 LayerArmorBase.renderEnchantedGlint(getRenderer(), entity, armour, move, swing, partialTicks, ticks, headYaw, headPitch, scale);
             }
-
-            EventBus.ARMOR.dispatcher().postRenderPonyArmor(armour, entity, move, swing, partialTicks, ticks, headYaw, headPitch, scale, armorSlot);
         }
     }
 
