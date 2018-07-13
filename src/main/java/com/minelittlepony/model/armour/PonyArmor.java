@@ -5,7 +5,7 @@ import com.minelittlepony.pony.data.IPonyData;
 
 import net.minecraft.inventory.EntityEquipmentSlot;
 
-public class PonyArmor implements IModelWrapper {
+public class PonyArmor implements IModelWrapper, IEquestrianArmor {
 
     public final ModelPonyArmor chestplate;
     public final ModelPonyArmor leggings;
@@ -15,16 +15,19 @@ public class PonyArmor implements IModelWrapper {
         leggings = body;
     }
 
+    @Override
     public void apply(IPonyData meta) {
         chestplate.metadata = meta;
         leggings.metadata = meta;
     }
 
+    @Override
     public void init() {
         chestplate.init(0, 1);
         leggings.init(0, 0.5f);
     }
 
+    @Override
     public ModelPonyArmor getArmorForSlot(EntityEquipmentSlot slot) {
         if (slot == EntityEquipmentSlot.LEGS) {
             return leggings;

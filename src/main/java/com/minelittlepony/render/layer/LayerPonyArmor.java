@@ -2,9 +2,9 @@ package com.minelittlepony.render.layer;
 
 import com.google.common.collect.Maps;
 import com.minelittlepony.ForgeProxy;
-import com.minelittlepony.api.armor.IEquestrianArmor;
 import com.minelittlepony.api.events.EventBus;
 import com.minelittlepony.model.ModelWrapper;
+import com.minelittlepony.model.armour.IEquestrianArmor;
 import com.minelittlepony.model.armour.ModelPonyArmor;
 import com.minelittlepony.model.capabilities.IModelArmor;
 import com.minelittlepony.util.coordinates.Color;
@@ -177,7 +177,7 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
         }
 
         if (model instanceof IEquestrianArmor) {
-            return ((IEquestrianArmor) model).getEquestrianArmour().getArmorForSlot(slot);
+            return ((IEquestrianArmor) model).getArmorForSlot(slot);
         }
 
         return def;
