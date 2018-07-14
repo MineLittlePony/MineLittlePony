@@ -84,8 +84,6 @@ public class BethlehemSkinServer implements SkinServer {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, IndentedToStringStyle.INSTANCE)
-                .append("address", address)
-                .build();
+        return new ToStringBuilder(this, IndentedToStringStyle.INSTANCE).append("address", address).build();
     }
 }
