@@ -286,7 +286,7 @@ public class GuiSkins extends GuiScreen {
 
                 if (guiButton.id == this.btnUpload.id) {
                     if (this.selectedSkin != null) {
-                        this.uploadSkin(this.mc.getSession(), this.selectedSkin);
+                        punchServer("hdskins.upload", selectedSkin.toURI());
                         this.btnUpload.enabled = false;
                     } else {
                         this.setUploadError(I18n.format("hdskins.error.select"));
@@ -294,7 +294,7 @@ public class GuiSkins extends GuiScreen {
                 }
 
                 if (guiButton.id == this.btnClear.id && this.remotePlayer.isTextureSetupComplete()) {
-                    this.clearUploadedSkin(this.mc.getSession());
+                    punchServer("hdskins.request", null);
                     this.btnUpload.enabled = this.selectedSkin != null;
                 }
 
@@ -344,10 +344,11 @@ public class GuiSkins extends GuiScreen {
             this.uploadError = null;
         } else {
             super.mouseClicked(mouseX, mouseY, button);
-            byte top = 30;
+
             int bottom = this.height - 40;
             int mid = this.width / 2;
-            if ((mouseX > 30 && mouseX < mid - 30 || mouseX > mid + 30 && mouseX < this.width - 30) && mouseY > top && mouseY < bottom) {
+
+            if ((mouseX > 30 && mouseX < mid - 30 || mouseX > mid + 30 && mouseX < this.width - 30) && mouseY > 30 && mouseY < bottom) {
                 this.localPlayer.swingArm(EnumHand.MAIN_HAND);
                 this.remotePlayer.swingArm(EnumHand.MAIN_HAND);
             }
@@ -358,9 +359,7 @@ public class GuiSkins extends GuiScreen {
 
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-
         updateCounter -= (lastMouseX - mouseX);
-
         lastMouseX = mouseX;
     }
 
@@ -383,16 +382,14 @@ public class GuiSkins extends GuiScreen {
         float deltaTime = panorama.getDelta(partialTick);
         panorama.render(partialTick, zLevel);
 
-
-        int top = 30;
         int bottom = height - 40;
         int mid = width / 2;
         int horizon = height / 2 + height / 5;
 
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
 
-        Gui.drawRect(30, top, mid - 30, bottom, Integer.MIN_VALUE);
-        Gui.drawRect(mid + 30, top, width - 30, bottom, Integer.MIN_VALUE);
+        Gui.drawRect(30, 30, mid - 30, bottom, Integer.MIN_VALUE);
+        Gui.drawRect(mid + 30, 30, width - 30, bottom, Integer.MIN_VALUE);
 
         drawGradientRect(30, horizon, mid - 30, bottom, 0x80FFFFFF, 0xffffff);
         drawGradientRect(mid + 30, horizon, this.width - 30, bottom, 0x80FFFFFF, 0xffffff);
@@ -427,11 +424,6 @@ public class GuiSkins extends GuiScreen {
         enableBlend();
         depthMask(false);
 
-        // this is here so the next few things get blended properly
-        //Gui.drawRect(0, 0, 1, 1, 0);
-        //this.drawGradientRect(30, this.height - 60, mid - 30, bottom, 1, 0xe0ffffff);
-        //this.drawGradientRect(mid + 30, this.height - 60, this.width - 30, bottom, 0, 0xE0FFFFFF);
-
         int labelwidth = (this.width / 2 - 80) / 2;
         if (!this.localPlayer.isUsingLocalTexture()) {
             int opacity = this.fontRenderer.getStringWidth(this.skinMessage) / 2;
@@ -456,22 +448,16 @@ public class GuiSkins extends GuiScreen {
         }
 
         if (this.fetchingSkin) {
-            String opacity1;
+
+            int lineHeight = throttledByMojang ? 16 : 12;
+
+            Gui.drawRect((int) (xPos2 - labelwidth), this.height / 2 - lineHeight, this.width - 40, this.height / 2 + lineHeight, 0xB0000000);
+
             if (this.throttledByMojang) {
-                opacity1 = TextFormatting.RED + I18n.format("hdskins.error.mojang");
-                String stringWidth = I18n.format("hdskins.error.mojang.wait");
-                int stringWidth1 = this.fontRenderer.getStringWidth(opacity1) / 2;
-                int stringWidth2 = this.fontRenderer.getStringWidth(stringWidth) / 2;
-
-                Gui.drawRect((int) (xPos2 - labelwidth), this.height / 2 - 16, this.width - 40, this.height / 2 + 16, 0xB0000000);
-
-                this.fontRenderer.drawStringWithShadow(opacity1, (int) (xPos2 - stringWidth1), this.height / 2 - 10, 0xffffff);
-                this.fontRenderer.drawStringWithShadow(stringWidth, (int) (xPos2 - stringWidth2), this.height / 2 + 2, 0xffffff);
+                this.drawCenteredString(fontRenderer, I18n.format("hdskins.error.mojang"), (int)xPos2, height / 2 - 10, 0xffffff);
+                this.drawCenteredString(fontRenderer, I18n.format("hdskins.error.mojang.wait"), (int)xPos2, height / 2 + 2, 0xffffff);
             } else {
-                opacity1 = I18n.format("hdskins.fetch");
-                int stringWidth1 = this.fontRenderer.getStringWidth(opacity1) / 2;
-                Gui.drawRect((int) (xPos2 - labelwidth), this.height / 2 - 12, this.width - 40, this.height / 2 + 12, 0xB0000000);
-                this.fontRenderer.drawStringWithShadow(opacity1, (int) (xPos2 - stringWidth1), this.height / 2 - 4, 0xffffff);
+                this.drawCenteredString(fontRenderer, I18n.format("hdskins.fetch"), (int)xPos2, height / 2 - 4, 0xffffff);
             }
         }
 
@@ -564,21 +550,12 @@ public class GuiSkins extends GuiScreen {
         return number != 0 && (number & number - 1) == 0;
     }
 
-    private void clearUploadedSkin(Session session) {
-        this.uploadingSkin = true;
-        this.skinUploadMessage = I18n.format("hdskins.request");
-        HDSkinManager.INSTANCE.getGatewayServer()
-                .uploadSkin(session, null, this.textureType, getMetadata())
-                .thenAccept(this::onUploadComplete)
-                .exceptionally(this::onFailure);
-    }
+    private void punchServer(String uploadMsg, @Nullable URI path) {
+        uploadingSkin = true;
+        skinUploadMessage = I18n.format(uploadMsg);
 
-    private void uploadSkin(Session session, @Nullable File skinFile) {
-        this.uploadingSkin = true;
-        this.skinUploadMessage = I18n.format("hdskins.upload");
-        URI path = skinFile == null ? null : skinFile.toURI();
         HDSkinManager.INSTANCE.getGatewayServer()
-                .uploadSkin(session, path, this.textureType, getMetadata())
+                .uploadSkin(mc.getSession(), path, textureType, getMetadata())
                 .thenAccept(this::onUploadComplete)
                 .exceptionally(this::onFailure);
     }
