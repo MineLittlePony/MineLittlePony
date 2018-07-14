@@ -4,14 +4,11 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.upload.ThreadMultipartPostUpload;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -100,7 +97,7 @@ public class LegacySkinServer implements SkinServer {
         }
 
         return CallableFutures.asyncFailableFuture(() -> {
-            verifyServerConnection(session, SERVER_ID);
+            SkinServer.verifyServerConnection(session, SERVER_ID);
             String model = metadata.getOrDefault("model", "default");
             Map<String, ?> data = image == null ? getClearData(session, type) : getUploadData(session, type, model, image);
             ThreadMultipartPostUpload upload = new ThreadMultipartPostUpload(this.gateway, data);
@@ -134,11 +131,6 @@ public class LegacySkinServer implements SkinServer {
         String uuid = UUIDTypeAdapter.fromUUID(profile.getId());
         String path = type.toString().toLowerCase() + "s";
         return String.format("%s/%s/%s.png", address, path, uuid);
-    }
-
-    private static void verifyServerConnection(Session session, String serverId) throws AuthenticationException {
-        MinecraftSessionService service = Minecraft.getMinecraft().getSessionService();
-        service.joinServer(session.getProfile(), session.getToken(), serverId);
     }
 
     @Override
