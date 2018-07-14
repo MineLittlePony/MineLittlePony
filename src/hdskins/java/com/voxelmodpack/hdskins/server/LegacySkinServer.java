@@ -1,4 +1,4 @@
-package com.voxelmodpack.hdskins.skins;
+package com.voxelmodpack.hdskins.server;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
@@ -8,7 +8,10 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
-import com.voxelmodpack.hdskins.upload.ThreadMultipartPostUpload;
+import com.voxelmodpack.hdskins.util.CallableFutures;
+import com.voxelmodpack.hdskins.util.IndentedToStringStyle;
+import com.voxelmodpack.hdskins.util.ThreadMultipartPostUpload;
+
 import net.minecraft.util.Session;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.logging.log4j.LogManager;

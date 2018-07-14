@@ -1,4 +1,4 @@
-package com.voxelmodpack.hdskins.resource;
+package com.voxelmodpack.hdskins.resources;
 
 import com.voxelmodpack.hdskins.DynamicTextureImage;
 import com.voxelmodpack.hdskins.ImageBufferDownloadHD;

@@ -1,4 +1,4 @@
-package com.voxelmodpack.hdskins.resource;
+package com.voxelmodpack.hdskins.resources;
 
 import net.minecraft.util.ResourceLocation;
 
@@ -7,7 +7,6 @@ import java.util.UUID;
 
 @SuppressWarnings("unused")
 class SkinData {
-
     List<Skin> skins;
 }
 

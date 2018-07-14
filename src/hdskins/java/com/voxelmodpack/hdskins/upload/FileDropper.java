@@ -1,4 +1,4 @@
-package com.voxelmodpack.hdskins.upload.awt;
+package com.voxelmodpack.hdskins.upload;
 
 import java.awt.Color;
 import java.awt.dnd.DropTarget;

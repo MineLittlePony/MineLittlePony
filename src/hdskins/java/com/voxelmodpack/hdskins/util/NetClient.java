@@ -1,4 +1,4 @@
-package com.voxelmodpack.hdskins.skins;
+package com.voxelmodpack.hdskins.util;
 
 import java.io.BufferedReader;
 import java.io.File;

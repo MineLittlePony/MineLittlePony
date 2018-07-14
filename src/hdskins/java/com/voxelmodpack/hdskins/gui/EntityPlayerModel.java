@@ -9,6 +9,7 @@ import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.ImageBufferDownloadHD;
 import com.voxelmodpack.hdskins.PreviewTexture;
 import com.voxelmodpack.hdskins.PreviewTextureManager;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;

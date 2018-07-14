@@ -1,4 +1,4 @@
-package com.voxelmodpack.hdskins.skins;
+package com.voxelmodpack.hdskins.server;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
@@ -9,6 +9,9 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.util.CallableFutures;
+import com.voxelmodpack.hdskins.util.IndentedToStringStyle;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 import org.apache.commons.lang3.builder.ToStringBuilder;

@@ -1,4 +1,4 @@
-package com.voxelmodpack.hdskins.upload;
+package com.voxelmodpack.hdskins.util;
 
 import org.apache.commons.io.IOUtils;
 

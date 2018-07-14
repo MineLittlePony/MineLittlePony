@@ -1,4 +1,4 @@
-package com.voxelmodpack.hdskins.resource;
+package com.voxelmodpack.hdskins.resources;
 
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;

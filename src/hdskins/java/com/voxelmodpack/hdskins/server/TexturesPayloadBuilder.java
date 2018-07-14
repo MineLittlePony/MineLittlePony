@@ -1,4 +1,4 @@
-package com.voxelmodpack.hdskins.skins;
+package com.voxelmodpack.hdskins.server;
 
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
@@ -17,6 +17,7 @@ import java.util.UUID;
  * required because it has no useful constructor. This uses reflection
  * via Gson to create a new instance and populate the fields.
  */
+@Deprecated
 @SuppressWarnings("unused")
 public class TexturesPayloadBuilder {
 

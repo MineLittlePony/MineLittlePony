@@ -1,4 +1,4 @@
-package com.voxelmodpack.hdskins.skins;
+package com.voxelmodpack.hdskins.server;
 
 import java.net.URI;
 import java.util.Locale;
@@ -16,6 +16,10 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.util.CallableFutures;
+import com.voxelmodpack.hdskins.util.IndentedToStringStyle;
+import com.voxelmodpack.hdskins.util.NetClient;
+
 import net.minecraft.util.Session;
 
 @ServerType("bethlehem")

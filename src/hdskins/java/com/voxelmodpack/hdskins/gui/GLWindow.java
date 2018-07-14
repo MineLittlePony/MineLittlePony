@@ -1,7 +1,7 @@
 package com.voxelmodpack.hdskins.gui;
 
 import com.google.common.collect.Lists;
-import com.voxelmodpack.hdskins.upload.awt.FileDropper;
+import com.voxelmodpack.hdskins.upload.FileDropper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.DefaultResourcePack;

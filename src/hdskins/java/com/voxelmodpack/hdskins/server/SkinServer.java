@@ -1,4 +1,4 @@
-package com.voxelmodpack.hdskins.skins;
+package com.voxelmodpack.hdskins.server;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;

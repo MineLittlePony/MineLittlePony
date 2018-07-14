@@ -1,6 +1,6 @@
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-package com.voxelmodpack.hdskins.upload.awt;
+package com.voxelmodpack.hdskins.resources;
 
 import mcp.MethodsReturnNonnullByDefault;
 

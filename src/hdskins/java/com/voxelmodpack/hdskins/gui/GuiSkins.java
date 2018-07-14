@@ -10,9 +10,11 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.HDSkinManager;
-import com.voxelmodpack.hdskins.skins.SkinServer;
-import com.voxelmodpack.hdskins.skins.SkinUploadResponse;
-import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
+import com.voxelmodpack.hdskins.server.SkinServer;
+import com.voxelmodpack.hdskins.server.SkinUploadResponse;
+import com.voxelmodpack.hdskins.upload.FileDropListener;
+import com.voxelmodpack.hdskins.upload.ThreadOpenFilePNG;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
