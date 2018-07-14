@@ -4,11 +4,14 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.mumfrey.liteloader.modconfig.Exposable;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 
 import java.net.URI;
@@ -39,4 +42,9 @@ public interface SkinServer extends Exposable {
 
     CompletableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable URI image, MinecraftProfileTexture.Type type, Map<String, String> metadata);
 
+
+    public static void verifyServerConnection(Session session, String serverId) throws AuthenticationException {
+        MinecraftSessionService service = Minecraft.getMinecraft().getSessionService();
+        service.joinServer(session.getProfile(), session.getToken(), serverId);
+    }
 }
