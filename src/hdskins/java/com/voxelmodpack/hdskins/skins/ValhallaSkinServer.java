@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -12,6 +13,7 @@ import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -36,22 +38,22 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
+@ServerType("valhalla")
 public class ValhallaSkinServer implements SkinServer {
 
-    private final String baseURL;
+    @Expose
+    private final String address;
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
             .create();
 
-    private String accessToken;
+    private transient String accessToken;
 
-    private ValhallaSkinServer(String baseURL) {
-        this.baseURL = baseURL;
+    public ValhallaSkinServer(String address) {
+        this.address = address;
     }
 
     @Override
@@ -189,28 +191,27 @@ public class ValhallaSkinServer implements SkinServer {
     private URI buildUserTextureUri(GameProfile profile, MinecraftProfileTexture.Type textureType) {
         String user = UUIDTypeAdapter.fromUUID(profile.getId());
         String skinType = textureType.name().toLowerCase(Locale.US);
-        return URI.create(String.format("%s/user/%s/%s", this.baseURL, user, skinType));
+        return URI.create(String.format("%s/user/%s/%s", this.address, user, skinType));
     }
 
     private URI getTexturesURI(GameProfile profile) {
         Preconditions.checkNotNull(profile.getId(), "profile id required for skins");
-        return URI.create(String.format("%s/user/%s", this.baseURL, UUIDTypeAdapter.fromUUID(profile.getId())));
+        return URI.create(String.format("%s/user/%s", this.address, UUIDTypeAdapter.fromUUID(profile.getId())));
     }
 
     private URI getHandshakeURI() {
-        return URI.create(String.format("%s/auth/handshake", this.baseURL));
+        return URI.create(String.format("%s/auth/handshake", this.address));
     }
 
     private URI getResponseURI() {
-        return URI.create(String.format("%s/auth/response", this.baseURL));
+        return URI.create(String.format("%s/auth/response", this.address));
     }
 
-    static ValhallaSkinServer from(String server) {
-        Matcher matcher = Pattern.compile("^valhalla:(.*)$").matcher(server);
-        if (matcher.find()) {
-            return new ValhallaSkinServer(matcher.group(1));
-        }
-        throw new IllegalArgumentException();
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, IndentedToStringStyle.INSTANCE)
+                .append("address", this.address)
+                .toString();
     }
 
     @SuppressWarnings("WeakerAccess")

@@ -17,7 +17,9 @@ import javax.annotation.Nullable;
 
 public interface SkinServer {
 
-    List<String> defaultServers = Lists.newArrayList("legacy:http://skins.voxelmodpack.com;http://skinmanager.voxelmodpack.com");
+    List<SkinServer> defaultServers = Lists.newArrayList(new LegacySkinServer(
+            "http://skins.voxelmodpack.com",
+            "http://skinmanager.voxelmodpack.com"));
 
     Optional<MinecraftTexturesPayload> loadProfileData(GameProfile profile);
 
@@ -28,18 +30,4 @@ public interface SkinServer {
     CompletableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable URI image,
             MinecraftProfileTexture.Type type, Map<String, String> metadata);
 
-    static SkinServer from(String server) {
-        int i = server.indexOf(':');
-        if (i >= 0) {
-            String type = server.substring(0, i);
-            switch (type) {
-                case "legacy":
-                    return LegacySkinServer.from(server);
-                case "valhalla": {
-                    return ValhallaSkinServer.from(server);
-                }
-            }
-        }
-        throw new IllegalArgumentException();
-    }
 }

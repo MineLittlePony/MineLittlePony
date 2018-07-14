@@ -7,6 +7,7 @@ import com.minelittlepony.pony.data.PonyDataSerialzier;
 import com.minelittlepony.render.PonySkullRenderer;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.skins.LegacySkinServer;
 import com.voxelmodpack.hdskins.skins.SkinServer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -27,7 +28,8 @@ public class MineLittlePony {
     public static final String MOD_NAME = "Mine Little Pony";
     public static final String MOD_VERSION = "@VERSION@";
 
-    private static final String MINELP_LEGACY_SERVER = "legacy:http://minelpskins.voxelmodpack.com;http://minelpskinmanager.voxelmodpack.com";
+    private static final String MINELP_LEGACY_SERVER = "http://minelpskins.voxelmodpack.com";
+    private static final String MINELP_LEGACY_GATEWAY = "http://minelpskinmanager.voxelmodpack.com";
 
     private static final KeyBinding SETTINGS_GUI = new KeyBinding("Settings", Keyboard.KEY_F9, "Mine Little Pony");
 
@@ -57,7 +59,7 @@ public class MineLittlePony {
         ms.registerMetadataSectionType(new PonyDataSerialzier(), IPonyData.class);
 
         // This also makes it the default gateway server.
-        SkinServer.defaultServers.add(MINELP_LEGACY_SERVER);
+        SkinServer.defaultServers.add(new LegacySkinServer(MINELP_LEGACY_SERVER, MINELP_LEGACY_GATEWAY));
     }
 
     /**

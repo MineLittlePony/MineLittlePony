@@ -4,11 +4,13 @@ import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.ELYTRA;
 import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.SKIN;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.skins.SkinServer;
 import com.voxelmodpack.hdskins.skins.SkinUploadResponse;
 import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
 import net.minecraft.client.Minecraft;
@@ -56,6 +58,8 @@ public class GuiSkins extends GuiScreen {
     private GuiButton btnModeSkin;
     private GuiButton btnModeSkinnySkin;
     private GuiButton btnModeElytra;
+
+    private GuiButton btnAbout;
 
     protected EntityPlayerModel localPlayer;
     protected EntityPlayerModel remotePlayer;
@@ -194,8 +198,10 @@ public class GuiSkins extends GuiScreen {
         this.buttonList.add(this.btnModeSkin = new GuiItemStackButton(4, 2, 2, skin));
         skin = new ItemStack(Items.LEATHER_LEGGINGS);
         Items.LEATHER_LEGGINGS.setColor(skin, 0xfff500);
-        this.buttonList.add(this.btnModeSkinnySkin = new GuiItemStackButton(6, 2, 21, skin));
         this.buttonList.add(this.btnModeElytra = new GuiItemStackButton(5, 2, 52, new ItemStack(Items.ELYTRA)));
+        this.buttonList.add(this.btnModeSkinnySkin = new GuiItemStackButton(6, 2, 21, skin));
+
+        this.buttonList.add(this.btnAbout = new GuiButton(-1, this.width - 25, this.height - 25, 20, 20, "?"));
 
         this.btnUpload.enabled = false;
         this.btnBrowse.enabled = !this.mc.isFullScreen();
@@ -203,6 +209,7 @@ public class GuiSkins extends GuiScreen {
         this.btnModeSkin.enabled = this.thinArmType;
         this.btnModeSkinnySkin.enabled = !this.thinArmType;
         this.btnModeElytra.enabled = this.textureType == SKIN;
+
     }
 
     private void enableDnd() {
@@ -440,6 +447,10 @@ public class GuiSkins extends GuiScreen {
                 text = "hdskins.mode.elytra";
             }
             this.drawHoveringText(I18n.format(text), mouseX, y);
+        }
+        if (this.btnAbout.isMouseOver()) {
+            SkinServer gateway = HDSkinManager.INSTANCE.getGatewayServer();
+            this.drawHoveringText(Splitter.on("\r\n").splitToList(gateway.toString()), mouseX, mouseY);
         }
 
         if (this.fetchingSkin) {

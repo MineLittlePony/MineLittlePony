@@ -1,7 +1,9 @@
 package com.voxelmodpack.hdskins.mod;
 
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.mumfrey.liteloader.core.LiteLoader;
+import com.mumfrey.liteloader.modconfig.AdvancedExposable;
 import com.mumfrey.liteloader.modconfig.ConfigPanel;
 import com.mumfrey.liteloader.modconfig.ConfigStrategy;
 import com.mumfrey.liteloader.modconfig.ExposableOptions;
@@ -9,26 +11,25 @@ import com.mumfrey.liteloader.util.ModUtilities;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
 import com.voxelmodpack.hdskins.gui.GLWindow;
-import com.voxelmodpack.hdskins.gui.GuiSkins;
 import com.voxelmodpack.hdskins.gui.HDSkinsConfigPanel;
 import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
 import com.voxelmodpack.hdskins.skins.SkinServer;
+import com.voxelmodpack.hdskins.skins.SkinServerSerializer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.resources.IReloadableResourceManager;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.util.List;
 
 @ExposableOptions(strategy = ConfigStrategy.Unversioned, filename = "hdskins")
-public class LiteModHDSkinsMod implements HDSkinsMod {
+public class LiteModHDSkinsMod implements HDSkinsMod, AdvancedExposable {
 
     @Expose
-    public List<String> skin_servers = SkinServer.defaultServers;
+    public List<SkinServer> skin_servers = SkinServer.defaultServers;
 
     @Expose
-    public boolean experimentalSkinDrop = true;
+    public boolean experimentalSkinDrop = false;
 
     @Override
     public String getName() {
@@ -46,17 +47,6 @@ public class LiteModHDSkinsMod implements HDSkinsMod {
         // register config
         LiteLoader.getInstance().registerExposable(this, null);
 
-        // try it initialize voxelmenu button
-        try {
-            Class<?> ex = Class.forName("com.thevoxelbox.voxelmenu.GuiMainMenuVoxelBox");
-            Method mRegisterCustomScreen = ex.getDeclaredMethod("registerCustomScreen", Class.class, String.class);
-            mRegisterCustomScreen.invoke(null, GuiSkins.class, "HD Skins Manager");
-        } catch (ClassNotFoundException var4) {
-            // voxelmenu's not here, man
-        } catch (Exception var5) {
-            var5.printStackTrace();
-        }
-
         IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
         irrm.registerReloadListener(HDSkinManager.INSTANCE);
 
@@ -71,6 +61,16 @@ public class LiteModHDSkinsMod implements HDSkinsMod {
     }
 
     @Override
+    public void setupGsonSerialiser(GsonBuilder gsonBuilder) {
+        gsonBuilder.registerTypeAdapter(SkinServer.class, new SkinServerSerializer());
+    }
+
+    @Override
+    public File getConfigFile(File configFile, File configFileLocation, String defaultFileName) {
+        return null;
+    }
+
+    @Override
     public Class<? extends ConfigPanel> getConfigPanelClass() {
         return HDSkinsConfigPanel.class;
     }
@@ -80,14 +80,7 @@ public class LiteModHDSkinsMod implements HDSkinsMod {
         ModUtilities.addRenderer(EntityPlayerModel.class, new RenderPlayerModel<>(minecraft.getRenderManager()));
 
         // register skin servers.
-        for (String s : skin_servers) {
-            try {
-                HDSkinManager.INSTANCE.addSkinServer(SkinServer.from(s));
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            }
-        }
-
+        skin_servers.forEach(HDSkinManager.INSTANCE::addSkinServer);
     }
 
     @Override

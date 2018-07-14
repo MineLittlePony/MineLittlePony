@@ -1,8 +1,8 @@
 package com.voxelmodpack.hdskins.skins;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -13,6 +13,7 @@ import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.upload.ThreadMultipartPostUpload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,23 +27,20 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
+@ServerType("legacy")
 public class LegacySkinServer implements SkinServer {
 
     private static final String SERVER_ID = "7853dfddc358333843ad55a2c7485c4aa0380a51";
 
     private static final Logger logger = LogManager.getLogger();
 
+    @Expose
     private final String address;
+    @Expose
     private final String gateway;
-
-    public LegacySkinServer(String address) {
-        this(address, null);
-    }
 
     public LegacySkinServer(String address, @Nullable String gateway) {
         this.address = address;
@@ -144,24 +142,11 @@ public class LegacySkinServer implements SkinServer {
         service.joinServer(session.getProfile(), session.getToken(), serverId);
     }
 
-    /**
-     * Should be in the format {@code legacy:http://address;http://gateway}. Gateway is optional.
-     */
-    static LegacySkinServer from(String parsed) {
-        Matcher matcher = Pattern.compile("^legacy:(.+?)(?:;(.*))?$").matcher(parsed);
-        if (matcher.find()) {
-            String addr = matcher.group(1);
-            String gate = matcher.group(2);
-            return new LegacySkinServer(addr, gate);
-        }
-        throw new IllegalArgumentException("server format string was not correct");
-    }
-
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("address", address)
-                .add("gateway", gateway)
-                .toString();
+        return new ToStringBuilder(this, IndentedToStringStyle.INSTANCE)
+                .append("address", this.address)
+                .append("gateway", this.gateway)
+                .build();
     }
 }
