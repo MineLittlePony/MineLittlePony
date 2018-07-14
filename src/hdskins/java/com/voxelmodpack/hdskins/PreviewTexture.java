@@ -12,10 +12,10 @@ public class PreviewTexture extends ThreadDownloadImageData {
 
     private String model;
 
-    public PreviewTexture(String model, String url, ResourceLocation fallbackTexture, @Nullable IImageBuffer imageBuffer) {
+    public PreviewTexture(@Nullable String model, String url, ResourceLocation fallbackTexture, @Nullable IImageBuffer imageBuffer) {
         super(null, url, fallbackTexture, imageBuffer);
 
-        this.model = model;
+        this.model = model == null ? "default" : model;
     }
 
     public boolean isTextureUploaded() {

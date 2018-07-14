@@ -18,7 +18,9 @@ import javax.annotation.Nullable;
  * Uploader for Multipart form data
  *
  * @author Adam Mummery-Smith
+ * @deprecated Use httpmime multipart upload
  */
+@Deprecated
 public class ThreadMultipartPostUpload {
     protected final Map<String, ?> sourceData;
 

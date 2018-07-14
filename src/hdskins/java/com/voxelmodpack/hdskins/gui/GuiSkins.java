@@ -4,15 +4,15 @@ import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.ELYTRA;
 import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.SKIN;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableMap;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.skins.SkinServer;
 import com.voxelmodpack.hdskins.skins.SkinUploadResponse;
 import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -37,13 +37,17 @@ import org.lwjgl.opengl.GL11;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.DoubleBuffer;
-import java.nio.file.Path;
+import java.util.Map;
+
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.JFileChooser;
+import javax.swing.UIManager;
 
-public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResponse> {
+public class GuiSkins extends GuiScreen {
+
     private static final int MAX_SKIN_DIMENSION = 1024;
     private int updateCounter = 0;
 
@@ -54,6 +58,8 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     private GuiButton btnModeSkin;
     private GuiButton btnModeSkinnySkin;
     private GuiButton btnModeElytra;
+
+    private GuiButton btnAbout;
 
     protected EntityPlayerModel localPlayer;
     protected EntityPlayerModel remotePlayer;
@@ -86,7 +92,7 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
 
     public GuiSkins() {
         Minecraft minecraft = Minecraft.getMinecraft();
-//        this.screenTitle = manager;
+        //        this.screenTitle = manager;
         GameProfile profile = minecraft.getSession().getProfile();
 
         this.localPlayer = getModel(profile);
@@ -192,8 +198,10 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
         this.buttonList.add(this.btnModeSkin = new GuiItemStackButton(4, 2, 2, skin));
         skin = new ItemStack(Items.LEATHER_LEGGINGS);
         Items.LEATHER_LEGGINGS.setColor(skin, 0xfff500);
-        this.buttonList.add(this.btnModeSkinnySkin = new GuiItemStackButton(6, 2, 21, skin));
         this.buttonList.add(this.btnModeElytra = new GuiItemStackButton(5, 2, 52, new ItemStack(Items.ELYTRA)));
+        this.buttonList.add(this.btnModeSkinnySkin = new GuiItemStackButton(6, 2, 21, skin));
+
+        this.buttonList.add(this.btnAbout = new GuiButton(-1, this.width - 25, this.height - 25, 20, 20, "?"));
 
         this.btnUpload.enabled = false;
         this.btnBrowse.enabled = !this.mc.isFullScreen();
@@ -201,6 +209,7 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
         this.btnModeSkin.enabled = this.thinArmType;
         this.btnModeSkinnySkin.enabled = !this.thinArmType;
         this.btnModeElytra.enabled = this.textureType == SKIN;
+
     }
 
     private void enableDnd() {
@@ -439,6 +448,10 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
             }
             this.drawHoveringText(I18n.format(text), mouseX, y);
         }
+        if (this.btnAbout.isMouseOver()) {
+            SkinServer gateway = HDSkinManager.INSTANCE.getGatewayServer();
+            this.drawHoveringText(Splitter.on("\r\n").splitToList(gateway.toString()), mouseX, mouseY);
+        }
 
         if (this.fetchingSkin) {
             String opacity1;
@@ -490,7 +503,8 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
         enableDepth();
     }
 
-    private void renderPlayerModel(EntityPlayerModel thePlayer, float xPosition, float yPosition, float scale, float mouseY, float mouseX, float partialTick) {
+    private void renderPlayerModel(EntityPlayerModel thePlayer, float xPosition, float yPosition, float scale, float mouseY, float mouseX,
+            float partialTick) {
         enableColorMaterial();
         pushMatrix();
         translate(xPosition, yPosition, 300.0F);
@@ -551,38 +565,44 @@ public class GuiSkins extends GuiScreen implements FutureCallback<SkinUploadResp
     private void clearUploadedSkin(Session session) {
         this.uploadingSkin = true;
         this.skinUploadMessage = I18n.format("hdskins.request");
-        Futures.addCallback(HDSkinManager.INSTANCE.getGatewayServer().uploadSkin(session, null, this.textureType, this.thinArmType), this);
+        HDSkinManager.INSTANCE.getGatewayServer()
+                .uploadSkin(session, null, this.textureType, getMetadata())
+                .thenAccept(this::onUploadComplete)
+                .exceptionally(this::onFailure);
     }
 
     private void uploadSkin(Session session, @Nullable File skinFile) {
         this.uploadingSkin = true;
         this.skinUploadMessage = I18n.format("hdskins.upload");
-        Path path = skinFile == null ? null : skinFile.toPath();
-        Futures.addCallback(HDSkinManager.INSTANCE.getGatewayServer().uploadSkin(session, path, this.textureType, this.thinArmType), this);
+        URI path = skinFile == null ? null : skinFile.toURI();
+        HDSkinManager.INSTANCE.getGatewayServer()
+                .uploadSkin(session, path, this.textureType, getMetadata())
+                .thenAccept(this::onUploadComplete)
+                .exceptionally(this::onFailure);
+    }
+
+    private Map<String, String> getMetadata() {
+        return ImmutableMap.of("model", this.thinArmType ? "slim" : "default");
     }
 
     private void setUploadError(@Nullable String error) {
-        this.uploadError = error != null && error.startsWith("ERROR: ") ? error.substring(7) : error;
+        this.uploadError = error;
         this.btnUpload.enabled = true;
     }
 
-    @Override
-    public void onSuccess(@Nullable SkinUploadResponse result) {
-        if (result != null)
-            onUploadComplete(result);
-    }
 
-    @Override
-    public void onFailure(Throwable t) {
+    private Void onFailure(Throwable t) {
         LogManager.getLogger().warn("Upload failed", t);
         this.setUploadError(t.toString());
         this.uploadingSkin = false;
+
+        return null;
     }
 
     private void onUploadComplete(SkinUploadResponse response) {
         LiteLoaderLogger.info("Upload completed with: %s", response);
         this.uploadingSkin = false;
-        if (!"OK".equalsIgnoreCase(response.getMessage())) {
+        if (!response.isSuccess()) {
             this.setUploadError(response.getMessage());
         } else {
             this.pendingRemoteSkinRefresh = true;
