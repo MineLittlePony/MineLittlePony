@@ -1,8 +1,6 @@
 package com.voxelmodpack.hdskins.skins;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
@@ -47,11 +45,7 @@ public class ValhallaSkinServer implements SkinServer {
     @Expose
     private final String address;
 
-    private final Gson gson = new GsonBuilder()
-            .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
-            .create();
-
-    private transient String accessToken;
+    private String accessToken;
 
     public ValhallaSkinServer(String address) {
         this.address = address;

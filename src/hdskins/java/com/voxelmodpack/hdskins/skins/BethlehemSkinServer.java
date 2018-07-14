@@ -11,19 +11,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -37,16 +36,18 @@ import com.voxelmodpack.hdskins.upload.ThreadMultipartPostUpload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 
+@ServerType("bethlehem")
 public class BethlehemSkinServer implements SkinServer {
 
     private static final String SERVER_ID = "7853dfddc358333843ad55a2c7485c4aa0380a51";
 
     private static final Logger logger = LogManager.getLogger();
 
-    private final String gateway;
+    @Expose
+    private final String address;
 
     private BethlehemSkinServer(String address) {
-        gateway = address;
+        this.address = address;
     }
 
     private static final Gson gson = new GsonBuilder().registerTypeAdapter(UUID.class, new UUIDTypeAdapter()).create();
@@ -68,8 +69,6 @@ public class BethlehemSkinServer implements SkinServer {
             if (urlConnection.getResponseCode() / 100 != 2) {
                 throw new IOException("Bad response code: " + urlConnection.getResponseCode());
             }
-
-
 
             reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 
@@ -105,7 +104,7 @@ public class BethlehemSkinServer implements SkinServer {
     @Override
     public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, URI image, Type type, Map<String, String> metadata) {
 
-        if (Strings.isNullOrEmpty(gateway)) {
+        if (Strings.isNullOrEmpty(address)) {
             return CallableFutures.failedFuture(new NullPointerException("gateway url is blank"));
         }
 
@@ -114,7 +113,7 @@ public class BethlehemSkinServer implements SkinServer {
 
             Map<String, ?> data = image == null ? getClearData(session, type) : getUploadData(session, type, metadata.getOrDefault("mode", "default"), image);
 
-            ThreadMultipartPostUpload upload = new ThreadMultipartPostUpload(gateway, data);
+            ThreadMultipartPostUpload upload = new ThreadMultipartPostUpload(address, data);
 
             String response = upload.uploadMultipart();
 
@@ -147,7 +146,7 @@ public class BethlehemSkinServer implements SkinServer {
 
         String uuid = UUIDTypeAdapter.fromUUID(profile.getId());
 
-        return String.format("%s/profile/%s", gateway, uuid);
+        return String.format("%s/profile/%s", address, uuid);
     }
 
     protected static void verifyServerConnection(Session session, String serverId) throws AuthenticationException {
@@ -157,18 +156,8 @@ public class BethlehemSkinServer implements SkinServer {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("gateway", gateway)
-                .toString();
-    }
-
-    public static BethlehemSkinServer from(String parsed) {
-        Matcher matcher = Pattern.compile("^bethlehem:(.+?)$").matcher(parsed);
-        if (matcher.find()) {
-            String addr = matcher.group(1);
-
-            return new BethlehemSkinServer(addr);
-        }
-        throw new IllegalArgumentException("server format string was not correct");
+        return new ToStringBuilder(this, IndentedToStringStyle.INSTANCE)
+                .append("address", address)
+                .build();
     }
 }
