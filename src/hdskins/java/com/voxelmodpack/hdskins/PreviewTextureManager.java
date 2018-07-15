@@ -2,6 +2,8 @@ package com.voxelmodpack.hdskins;
 
 import com.google.common.collect.Maps;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.resources.SkinManager;
@@ -18,35 +20,44 @@ import javax.annotation.Nullable;
  */
 public class PreviewTextureManager {
 
-    private final Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> textures;
+    private final Map<Type, MinecraftProfileTexture> textures;
 
-    PreviewTextureManager(Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> textures) {
+    PreviewTextureManager(Map<Type, MinecraftProfileTexture> textures) {
         this.textures = textures;
     }
 
+    private IImageBuffer getPreviewImageBuffer(MinecraftProfileTexture texture, ResourceLocation location, Type type, SkinManager.SkinAvailableCallback callback) {
+        if (type != Type.SKIN) {
+            return null;
+        }
+
+        IImageBuffer buffer = new ImageBufferDownloadHD();
+
+        return new IImageBuffer() {
+            @Override
+            @Nullable
+            public BufferedImage parseUserSkin(BufferedImage image) {
+                return buffer.parseUserSkin(image);
+            }
+
+            @Override
+            public void skinAvailable() {
+                if (callback != null) {
+                    callback.skinAvailable(type, location, new MinecraftProfileTexture(texture.getUrl(), Maps.newHashMap()));
+                }
+            }
+        };
+    }
+
     @Nullable
-    public PreviewTexture getPreviewTexture(ResourceLocation location, MinecraftProfileTexture.Type type, ResourceLocation def,
-            @Nullable SkinManager.SkinAvailableCallback callback) {
+    public PreviewTexture getPreviewTexture(ResourceLocation location, Type type, ResourceLocation def, @Nullable SkinManager.SkinAvailableCallback callback) {
         if (!textures.containsKey(type)) {
             return null;
         }
-        MinecraftProfileTexture texture = textures.get(type);
-        IImageBuffer buffer = new ImageBufferDownloadHD();
-        PreviewTexture skinTexture = new PreviewTexture(texture.getMetadata("model"), texture.getUrl(), def,
-                type == MinecraftProfileTexture.Type.SKIN ? new IImageBuffer() {
-                    @Override
-                    @Nullable
-                    public BufferedImage parseUserSkin(BufferedImage image) {
-                        return buffer.parseUserSkin(image);
-                    }
 
-                    @Override
-                    public void skinAvailable() {
-                        if (callback != null) {
-                            callback.skinAvailable(type, location, new MinecraftProfileTexture(texture.getUrl(), Maps.newHashMap()));
-                        }
-                    }
-                } : null);
+        MinecraftProfileTexture texture = textures.get(type);
+        PreviewTexture skinTexture = new PreviewTexture(texture, def, getPreviewImageBuffer(texture, location, type, callback));
+
         Minecraft.getMinecraft().getTextureManager().loadTexture(location, skinTexture);
 
         return skinTexture;

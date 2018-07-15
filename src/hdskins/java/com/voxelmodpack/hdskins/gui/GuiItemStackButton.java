@@ -17,6 +17,6 @@ public class GuiItemStackButton extends GuiButton {
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         super.drawButton(mc, mouseX, mouseY, partialTicks);
 
-        mc.getRenderItem().renderItemIntoGUI(itemStack, this.x + 2, this.y + 2);
+        mc.getRenderItem().renderItemIntoGUI(itemStack, x + 2, y + 2);
     }
 }

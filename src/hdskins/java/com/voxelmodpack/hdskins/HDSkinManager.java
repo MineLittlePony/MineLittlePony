@@ -82,6 +82,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     private Map<UUID, Map<Type, ResourceLocation>> skinCache = Maps.newHashMap();
 
+    // TODO: Garggling marbles
     private LoadingCache<GameProfile, Map<Type, MinecraftProfileTexture>> skins = CacheBuilder.newBuilder()
             .initialCapacity(20)
             .maximumSize(100)
@@ -248,16 +249,16 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     public Class<? extends SkinServer> getSkinServerClass(String type) {
-        return this.skinServerTypes.get(type);
+        return skinServerTypes.get(type);
     }
 
     public void addSkinServer(SkinServer skinServer) {
-        this.skinServers.add(skinServer);
+        skinServers.add(skinServer);
     }
 
     @Deprecated
     public SkinServer getGatewayServer() {
-        return this.skinServers.get(0);
+        return skinServers.get(0);
     }
 
     public void setEnabled(boolean enabled) {
@@ -278,9 +279,10 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         try {
             FileUtils.deleteDirectory(new File(LiteLoader.getAssetsDirectory(), "skins"));
             FileUtils.deleteDirectory(new File(LiteLoader.getAssetsDirectory(), "hd"));
+
             TextureManager textures = Minecraft.getMinecraft().getTextureManager();
-            INSTANCE.skinCache.values().stream()
-                    .flatMap(m -> m.values().stream())
+
+            INSTANCE.skinCache.values().stream().flatMap(m -> m.values().stream())
                     .forEach(textures::deleteTexture);
             INSTANCE.skinCache.clear();
             INSTANCE.skins.invalidateAll();
@@ -313,13 +315,11 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     public void convertSkin(BufferedImage image, Graphics dest) {
-        for (ISkinModifier skin : skinModifiers) {
-            skin.convertSkin(image, dest);
-        }
+        skinModifiers.forEach(a -> a.convertSkin(image, dest));
     }
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
-        this.resources.onResourceManagerReload(resourceManager);
+        resources.onResourceManagerReload(resourceManager);
     }
 }
