@@ -14,15 +14,13 @@ import java.awt.image.BufferedImage;
 @Mixin(ImageBufferDownload.class)
 public abstract class MixinImageBufferDownload implements IImageBuffer {
 
-    @Inject(
-            method = "parseUserSkin(Ljava/awt/image/BufferedImage;)Ljava/awt/image/BufferedImage;",
+    @Inject(method = "parseUserSkin(Ljava/awt/image/BufferedImage;)Ljava/awt/image/BufferedImage;",
             at = @At("RETURN"),
     cancellable = true)
     private void update(BufferedImage image, CallbackInfoReturnable<BufferedImage> ci) {
         // convert skins from mojang server
-        BufferedImage image2 = ci.getReturnValue();
-        boolean isLegacy = image.getHeight() == 32;
-        if (isLegacy) {
+        if (image.getHeight() == 32) {
+            BufferedImage image2 = ci.getReturnValue();
             Graphics graphics = image2.getGraphics();
             HDSkinManager.INSTANCE.convertSkin(image2, graphics);
             graphics.dispose();

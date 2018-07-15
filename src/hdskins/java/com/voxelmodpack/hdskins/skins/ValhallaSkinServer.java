@@ -54,7 +54,6 @@ public class ValhallaSkinServer implements SkinServer {
 
     @Override
     public Optional<MinecraftTexturesPayload> loadProfileData(GameProfile profile) {
-
         try (CloseableHttpClient client = HttpClients.createSystem();
                 CloseableHttpResponse response = client.execute(new HttpGet(getTexturesURI(profile)))) {
 
@@ -65,6 +64,7 @@ public class ValhallaSkinServer implements SkinServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return Optional.empty();
     }
 
@@ -128,7 +128,6 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     private SkinUploadResponse uploadUrl(CloseableHttpClient client, URI uri, GameProfile profile, MinecraftProfileTexture.Type type, Map<String, String> metadata) throws IOException {
-
         return upload(client, RequestBuilder.post()
                 .setUri(buildUserTextureUri(profile, type))
                 .addHeader(HttpHeaders.AUTHORIZATION, this.accessToken)
@@ -147,9 +146,10 @@ public class ValhallaSkinServer implements SkinServer {
 
 
     private void authorize(CloseableHttpClient client, Session session) throws IOException, AuthenticationException {
-        if (this.accessToken != null) {
+        if (accessToken != null) {
             return;
         }
+
         GameProfile profile = session.getProfile();
         String token = session.getToken();
         AuthHandshake handshake = authHandshake(client, profile.getName());
@@ -165,11 +165,13 @@ public class ValhallaSkinServer implements SkinServer {
         if (!response.userId.equals(profile.getId())) {
             throw new IOException("UUID mismatch!"); // probably won't ever throw
         }
-        this.accessToken = response.accessToken;
+
+        accessToken = response.accessToken;
     }
 
     private <T> T readJson(HttpResponse resp, Class<T> cl) throws IOException {
         String type = resp.getEntity().getContentType().getValue();
+
         if (!"application/json".equals(type)) {
             try {
                 throw new IOException("Server returned a non-json response!");
@@ -177,11 +179,13 @@ public class ValhallaSkinServer implements SkinServer {
                 EntityUtils.consumeQuietly(resp.getEntity());
             }
         }
+
         try (Reader r = new InputStreamReader(resp.getEntity().getContent())) {
             if (resp.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 // TODO specific error handling
                 throw new IOException(gson.fromJson(r, JsonObject.class).get("message").getAsString());
             }
+
             return gson.fromJson(r, cl);
         }
     }
@@ -208,26 +212,26 @@ public class ValhallaSkinServer implements SkinServer {
     private URI buildUserTextureUri(GameProfile profile, MinecraftProfileTexture.Type textureType) {
         String user = UUIDTypeAdapter.fromUUID(profile.getId());
         String skinType = textureType.name().toLowerCase(Locale.US);
-        return URI.create(String.format("%s/user/%s/%s", this.address, user, skinType));
+        return URI.create(String.format("%s/user/%s/%s", address, user, skinType));
     }
 
     private URI getTexturesURI(GameProfile profile) {
         Preconditions.checkNotNull(profile.getId(), "profile id required for skins");
-        return URI.create(String.format("%s/user/%s", this.address, UUIDTypeAdapter.fromUUID(profile.getId())));
+        return URI.create(String.format("%s/user/%s", address, UUIDTypeAdapter.fromUUID(profile.getId())));
     }
 
     private URI getHandshakeURI() {
-        return URI.create(String.format("%s/auth/handshake", this.address));
+        return URI.create(String.format("%s/auth/handshake", address));
     }
 
     private URI getResponseURI() {
-        return URI.create(String.format("%s/auth/response", this.address));
+        return URI.create(String.format("%s/auth/response", address));
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this, IndentedToStringStyle.INSTANCE)
-                .append("address", this.address)
+                .append("address", address)
                 .toString();
     }
 

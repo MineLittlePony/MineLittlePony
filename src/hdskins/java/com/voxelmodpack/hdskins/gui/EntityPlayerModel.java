@@ -33,7 +33,7 @@ public class EntityPlayerModel extends EntityLivingBase {
     public static final ResourceLocation NO_SKIN = new ResourceLocation("hdskins", "textures/mob/noskin.png");
     public static final ResourceLocation NO_ELYTRA = new ResourceLocation("textures/entity/elytra.png");
 
-    private Map<EntityEquipmentSlot, ItemStack> armors = Maps.newEnumMap(ImmutableMap.of(
+    private Map<EntityEquipmentSlot, ItemStack> armour = Maps.newEnumMap(ImmutableMap.of(
             EntityEquipmentSlot.HEAD, ItemStack.EMPTY,
             EntityEquipmentSlot.CHEST, ItemStack.EMPTY,
             EntityEquipmentSlot.LEGS, ItemStack.EMPTY,
@@ -56,41 +56,41 @@ public class EntityPlayerModel extends EntityLivingBase {
     protected boolean hasLocalTexture = false;
     protected boolean previewThinArms = false;
 
-    public EntityPlayerModel(GameProfile profile) {
+    public EntityPlayerModel(GameProfile gameprofile) {
         super(new DummyWorld());
-        this.profile = profile;
-        this.textureManager = Minecraft.getMinecraft().getTextureManager();
-        this.remoteSkinResource = new ResourceLocation("skins/preview_" + this.profile.getName() + ".png");
-        this.remoteElytraResource = new ResourceLocation("elytras/preview_" + this.profile.getName() + ".png");
-        this.localSkinResource = getBlankSkin();
-        this.localElytraResource = getBlankElytra();
-        this.textureManager.deleteTexture(this.remoteSkinResource);
-        this.textureManager.deleteTexture(this.remoteElytraResource);
+        profile = gameprofile;
+        textureManager = Minecraft.getMinecraft().getTextureManager();
+        remoteSkinResource = new ResourceLocation("skins/preview_" + profile.getName() + ".png");
+        remoteElytraResource = new ResourceLocation("elytras/preview_" + profile.getName() + ".png");
+        localSkinResource = getBlankSkin();
+        localElytraResource = getBlankElytra();
+        textureManager.deleteTexture(remoteSkinResource);
+        textureManager.deleteTexture(remoteElytraResource);
     }
 
     public void reloadRemoteSkin(SkinManager.SkinAvailableCallback listener) {
-        this.remoteSkin = true;
-        if (this.remoteSkinTexture != null) {
-            this.textureManager.deleteTexture(this.remoteSkinResource);
+        remoteSkin = true;
+        if (remoteSkinTexture != null) {
+            textureManager.deleteTexture(remoteSkinResource);
         }
-        if (this.remoteElytraTexture != null) {
-            this.textureManager.deleteTexture(this.remoteElytraResource);
+        if (remoteElytraTexture != null) {
+            textureManager.deleteTexture(remoteElytraResource);
         }
 
-        PreviewTextureManager ptm = HDSkinManager.getPreviewTextureManager(this.profile);
+        PreviewTextureManager ptm = HDSkinManager.getPreviewTextureManager(profile);
 
-        this.remoteSkinTexture = ptm.getPreviewTexture(this.remoteSkinResource, Type.SKIN, getBlankSkin(), listener);
-        this.remoteElytraTexture = ptm.getPreviewTexture(this.remoteElytraResource, Type.ELYTRA, getBlankElytra(), null);
+        remoteSkinTexture = ptm.getPreviewTexture(remoteSkinResource, Type.SKIN, getBlankSkin(), listener);
+        remoteElytraTexture = ptm.getPreviewTexture(remoteElytraResource, Type.ELYTRA, getBlankElytra(), null);
 
     }
 
     public void setLocalTexture(File skinTextureFile, Type type) {
         if (skinTextureFile.exists()) {
             if (type == Type.SKIN) {
-                this.remoteSkin = false;
-                if (this.localSkinTexture != null) {
-                    this.textureManager.deleteTexture(this.localSkinResource);
-                    this.localSkinTexture = null;
+                remoteSkin = false;
+                if (localSkinTexture != null) {
+                    textureManager.deleteTexture(localSkinResource);
+                    localSkinTexture = null;
                 }
 
                 BufferedImage bufferedImage;
@@ -99,33 +99,33 @@ public class EntityPlayerModel extends EntityLivingBase {
                     bufferedImage = new ImageBufferDownloadHD().parseUserSkin(image);
                     assert bufferedImage != null;
                 } catch (IOException var4) {
-                    this.localSkinResource = getBlankSkin();
+                    localSkinResource = getBlankSkin();
                     var4.printStackTrace();
                     return;
                 }
 
-                this.localSkinTexture = new DynamicTextureImage(bufferedImage);
-                this.localSkinResource = this.textureManager.getDynamicTextureLocation("localSkinPreview", this.localSkinTexture);
-                this.hasLocalTexture = true;
+                localSkinTexture = new DynamicTextureImage(bufferedImage);
+                localSkinResource = textureManager.getDynamicTextureLocation("localSkinPreview", localSkinTexture);
+                hasLocalTexture = true;
             } else if (type == Type.ELYTRA) {
-                this.remoteSkin = false;
-                if (this.localElytraTexture != null) {
-                    this.textureManager.deleteTexture(this.localElytraResource);
-                    this.localElytraTexture = null;
+                remoteSkin = false;
+                if (localElytraTexture != null) {
+                    textureManager.deleteTexture(localElytraResource);
+                    localElytraTexture = null;
                 }
 
                 BufferedImage bufferedImage;
                 try {
                     bufferedImage = ImageIO.read(skinTextureFile);
                 } catch (IOException var4) {
-                    this.localElytraResource = getBlankElytra();
+                    localElytraResource = getBlankElytra();
                     var4.printStackTrace();
                     return;
                 }
 
-                this.localElytraTexture = new DynamicTextureImage(bufferedImage);
-                this.localElytraResource = this.textureManager.getDynamicTextureLocation("localElytraPreview", this.localElytraTexture);
-                this.hasLocalTexture = true;
+                localElytraTexture = new DynamicTextureImage(bufferedImage);
+                localElytraResource = textureManager.getDynamicTextureLocation("localElytraPreview", localElytraTexture);
+                hasLocalTexture = true;
             }
         }
     }
@@ -139,35 +139,35 @@ public class EntityPlayerModel extends EntityLivingBase {
     }
 
     public boolean isUsingLocalTexture() {
-        return !this.remoteSkin && this.hasLocalTexture;
+        return !remoteSkin && hasLocalTexture;
     }
 
     public boolean isTextureSetupComplete() {
-        return (this.remoteSkin && this.remoteSkinTexture != null) && this.remoteSkinTexture.isTextureUploaded();
+        return (remoteSkin && remoteSkinTexture != null) && remoteSkinTexture.isTextureUploaded();
     }
 
     public void releaseTextures() {
-        if (this.localSkinTexture != null) {
-            this.textureManager.deleteTexture(this.localSkinResource);
-            this.localSkinTexture = null;
-            this.localSkinResource = getBlankSkin();
-            this.hasLocalTexture = false;
+        if (localSkinTexture != null) {
+            textureManager.deleteTexture(localSkinResource);
+            localSkinTexture = null;
+            localSkinResource = getBlankSkin();
+            hasLocalTexture = false;
         }
-        if (this.localElytraTexture != null) {
-            this.textureManager.deleteTexture(this.localElytraResource);
-            this.localElytraTexture = null;
-            this.localElytraResource = getBlankElytra();
-            this.hasLocalTexture = false;
+        if (localElytraTexture != null) {
+            textureManager.deleteTexture(localElytraResource);
+            localElytraTexture = null;
+            localElytraResource = getBlankElytra();
+            hasLocalTexture = false;
         }
     }
 
     public ResourceLocation getSkinTexture() {
-        return this.remoteSkin ? (this.remoteSkinTexture != null ? this.remoteSkinResource
-                : DefaultPlayerSkin.getDefaultSkin(entityUniqueID)) : this.localSkinResource;
+        return remoteSkin ? (remoteSkinTexture != null ? remoteSkinResource
+                : DefaultPlayerSkin.getDefaultSkin(entityUniqueID)) : localSkinResource;
     }
 
     public ResourceLocation getElytraTexture() {
-        return this.remoteSkin && this.remoteElytraTexture != null ? this.remoteElytraResource : localElytraResource;
+        return remoteSkin && remoteElytraTexture != null ? remoteElytraResource : localElytraResource;
     }
 
     public void setPreviewThinArms(boolean thinArms) {
@@ -185,27 +185,27 @@ public class EntityPlayerModel extends EntityLivingBase {
     @Override
     public void swingArm(EnumHand hand) {
         super.swingArm(hand);
-        if (!this.isSwingInProgress || this.swingProgressInt >= 4 || this.swingProgressInt < 0) {
-            this.swingProgressInt = -1;
-            this.isSwingInProgress = true;
-            this.swingingHand = hand;
+        if (!isSwingInProgress || swingProgressInt >= 4 || swingProgressInt < 0) {
+            swingProgressInt = -1;
+            isSwingInProgress = true;
+            swingingHand = hand;
         }
 
     }
 
     public void updateModel() {
-        this.prevSwingProgress = this.swingProgress;
-        if (this.isSwingInProgress) {
-            ++this.swingProgressInt;
-            if (this.swingProgressInt >= 8) {
-                this.swingProgressInt = 0;
-                this.isSwingInProgress = false;
+        prevSwingProgress = swingProgress;
+        if (isSwingInProgress) {
+            ++swingProgressInt;
+            if (swingProgressInt >= 8) {
+                swingProgressInt = 0;
+                isSwingInProgress = false;
             }
         } else {
-            this.swingProgressInt = 0;
+            swingProgressInt = 0;
         }
 
-        this.swingProgress = this.swingProgressInt / 8.0F;
+        swingProgress = swingProgressInt / 8;
     }
 
     @Override
@@ -215,17 +215,17 @@ public class EntityPlayerModel extends EntityLivingBase {
 
     @Override
     public Iterable<ItemStack> getArmorInventoryList() {
-        return armors.values();
+        return armour.values();
     }
 
     @Override
     public ItemStack getItemStackFromSlot(EntityEquipmentSlot slotIn) {
-        return armors.get(slotIn);
+        return armour.get(slotIn);
     }
 
     @Override
     public void setItemStackToSlot(EntityEquipmentSlot slotIn, ItemStack stack) {
-        armors.put(slotIn, stack);
+        armour.put(slotIn, stack);
     }
 
 }

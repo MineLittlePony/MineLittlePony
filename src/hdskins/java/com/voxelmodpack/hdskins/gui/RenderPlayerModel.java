@@ -31,7 +31,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
     private static final ModelPlayer THIN = new ModelPlayer(0, true);
 
     public RenderPlayerModel(RenderManager renderer) {
-        super(renderer, FAT, 0.0F);
+        super(renderer, FAT, 0);
         this.addLayer(this.getElytraLayer());
     }
 
@@ -44,14 +44,14 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
                 ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
                 if (itemstack.getItem() == Items.ELYTRA) {
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                    GlStateManager.color(1, 1, 1, 1);
                     GlStateManager.enableBlend();
                     GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
                     bindTexture(entity.getElytraTexture());
 
                     GlStateManager.pushMatrix();
-                    GlStateManager.translate(0.0F, 0.0F, 0.125F);
+                    GlStateManager.translate(0, 0, 0.125F);
 
                     modelElytra.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
                     modelElytra.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
@@ -69,18 +69,18 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(M var1) {
-        return var1.getSkinTexture();
+    protected ResourceLocation getEntityTexture(M entity) {
+        return entity.getSkinTexture();
     }
 
     @Override
-    protected boolean canRenderName(M targetEntity) {
-        return Minecraft.getMinecraft().player != null && super.canRenderName(targetEntity);
+    protected boolean canRenderName(M entity) {
+        return Minecraft.getMinecraft().player != null && super.canRenderName(entity);
     }
 
     @Override
-    protected boolean setBrightness(M entitylivingbaseIn, float partialTicks, boolean p_177092_3_) {
-        return Minecraft.getMinecraft().world != null && super.setBrightness(entitylivingbaseIn, partialTicks, p_177092_3_);
+    protected boolean setBrightness(M entity, float partialTicks, boolean combineTextures) {
+        return Minecraft.getMinecraft().world != null && super.setBrightness(entity, partialTicks, combineTextures);
     }
 
     public ModelPlayer getEntityModel(M entity) {
@@ -88,8 +88,8 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
     }
 
     @Override
-    public void doRender(M par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        ModelPlayer player = this.getEntityModel(par1Entity);
+    public void doRender(M entity, double x, double y, double z, float entityYaw, float partialTicks) {
+        ModelPlayer player = this.getEntityModel(entity);
         this.mainModel = player;
 
         Set<EnumPlayerModelParts> parts = Minecraft.getMinecraft().gameSettings.getModelParts();
@@ -104,22 +104,22 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         player.rightArmPose = ArmPose.EMPTY;
 
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-        super.doRender(par1Entity, par2, par4, par6, par8, par9);
+        super.doRender(entity, x, y, z, entityYaw, partialTicks);
         popAttrib();
         pushMatrix();
-        scale(1.0F, -1.0F, 1.0F);
+        scale(1, -1, 1);
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-        super.doRender(par1Entity, par2, par4, par6, par8, par9);
+        super.doRender(entity, x, y, z, entityYaw, partialTicks);
         popAttrib();
         popMatrix();
     }
 
     @Override
-    protected void preRenderCallback(M par1EntityLiving, float par2) {
-        this.renderCloak(par1EntityLiving, par2);
+    protected void preRenderCallback(M entity, float partialTicks) {
+        renderCloak(entity, partialTicks);
     }
 
-    protected void renderCloak(M entity, float par2) {
-        super.preRenderCallback(entity, par2);
+    protected void renderCloak(M entity, float partialTicks) {
+        super.preRenderCallback(entity, partialTicks);
     }
 }

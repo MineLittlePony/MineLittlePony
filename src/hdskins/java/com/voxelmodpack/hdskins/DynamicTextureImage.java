@@ -10,7 +10,7 @@ public class DynamicTextureImage extends DynamicTexture {
 
     public DynamicTextureImage(BufferedImage bufferedImage) {
         super(bufferedImage);
-        this.image = bufferedImage;
+        image = bufferedImage;
     }
 
     public BufferedImage getImage() {
@@ -20,7 +20,7 @@ public class DynamicTextureImage extends DynamicTexture {
     @Override
     public void deleteGlTexture() {
         super.deleteGlTexture();
-        this.image = null;
+        image = null;
     }
 
 }

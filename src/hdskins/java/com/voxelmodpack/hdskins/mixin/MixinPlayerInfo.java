@@ -20,24 +20,21 @@ public abstract class MixinPlayerInfo {
     @Shadow
     public abstract GameProfile getGameProfile();
 
-    @Inject(
-            method = "getLocationSkin",
+    @Inject(method = "getLocationSkin",
             cancellable = true,
             at = @At("RETURN"))
     private void getLocationSkin(CallbackInfoReturnable<ResourceLocation> ci) {
         getTextureLocation(ci, Type.SKIN);
     }
 
-    @Inject(
-            method = "getLocationCape",
+    @Inject(method = "getLocationCape",
             cancellable = true,
             at = @At("RETURN"))
     private void getLocationCape(CallbackInfoReturnable<ResourceLocation> ci) {
         getTextureLocation(ci, Type.CAPE);
     }
 
-    @Inject(
-            method = "getLocationElytra",
+    @Inject(method = "getLocationElytra",
             cancellable = true,
             at = @At("RETURN"))
     private void getLocationElytra(CallbackInfoReturnable<ResourceLocation> ci) {
@@ -49,8 +46,7 @@ public abstract class MixinPlayerInfo {
         texture.ifPresent(ci::setReturnValue);
     }
 
-    @Inject(
-            method = "getSkinType",
+    @Inject(method = "getSkinType",
             cancellable = true,
             at = @At("RETURN"))
     private void getSkinType(CallbackInfoReturnable<String> ci) {
