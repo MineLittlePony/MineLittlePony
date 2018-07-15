@@ -20,21 +20,17 @@ import net.minecraft.util.ResourceLocation;
 import java.io.File;
 import java.util.Map;
 
-import static net.minecraft.inventory.EntityEquipmentSlot.*;
-import static net.minecraft.item.ItemStack.EMPTY;
-import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.*;
-
 public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSupplier {
 
     public static final ResourceLocation NO_SKIN = new ResourceLocation("hdskins", "textures/mob/noskin.png");
     public static final ResourceLocation NO_ELYTRA = new ResourceLocation("textures/entity/elytra.png");
 
     private final Map<EntityEquipmentSlot, ItemStack> armour = Maps.newEnumMap(ImmutableMap.of(
-            HEAD, EMPTY,
-            CHEST, EMPTY,
-            LEGS, EMPTY,
-            FEET, EMPTY,
-            MAINHAND, EMPTY
+            EntityEquipmentSlot.HEAD, ItemStack.EMPTY,
+            EntityEquipmentSlot.CHEST, ItemStack.EMPTY,
+            EntityEquipmentSlot.LEGS, ItemStack.EMPTY,
+            EntityEquipmentSlot.FEET, ItemStack.EMPTY,
+            EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY
     ));
 
     protected final LocalTexture skin;
@@ -48,8 +44,8 @@ public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSup
         super(new DummyWorld());
         this.profile = profile;
 
-        skin = new LocalTexture(profile, SKIN, this);
-        elytra = new LocalTexture(profile, ELYTRA, this);
+        skin = new LocalTexture(profile, Type.SKIN, this);
+        elytra = new LocalTexture(profile, Type.ELYTRA, this);
     }
 
     public void reloadRemoteSkin(SkinManager.SkinAvailableCallback listener) {
@@ -60,16 +56,16 @@ public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSup
     }
 
     public void setLocalTexture(File skinTextureFile, Type type) {
-        if (type == SKIN) {
+        if (type == Type.SKIN) {
             skin.setLocal(skinTextureFile);
-        } else if (type == ELYTRA) {
+        } else if (type == Type.ELYTRA) {
             skin.setLocal(skinTextureFile);
         }
     }
 
     @Override
     public ResourceLocation getBlankSkin(Type type) {
-        return type == SKIN ? NO_SKIN : NO_ELYTRA;
+        return type == Type.SKIN ? NO_SKIN : NO_ELYTRA;
     }
 
     public boolean isUsingLocalTexture() {
@@ -86,7 +82,7 @@ public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSup
     }
 
     public LocalTexture getLocal(Type type) {
-        return type == SKIN ? skin : elytra;
+        return type == Type.SKIN ? skin : elytra;
     }
 
     public void setPreviewThinArms(boolean thinArms) {
