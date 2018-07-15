@@ -1,6 +1,7 @@
 package com.minelittlepony.hdskins.gui;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
 
 import net.minecraft.util.ResourceLocation;
@@ -20,19 +21,22 @@ public class EntityPonyModel extends EntityPlayerModel {
     }
 
     @Override
-    protected ResourceLocation getBlankSkin() {
-        return wet ? NO_SKIN_SEAPONY : NO_SKIN_PONY;
+    public ResourceLocation getBlankSkin(Type type) {
+        if (type == Type.SKIN) {
+            return wet ? NO_SKIN_SEAPONY : NO_SKIN_PONY;
+        }
+        return super.getBlankSkin(type);
     }
 
     public void setWet(boolean wet) {
         this.wet = wet;
 
-        if (wet && localSkinResource == NO_SKIN_PONY) {
-            localSkinResource = NO_SKIN_SEAPONY;
+        if (wet && skin.getTexture() == NO_SKIN_PONY) {
+            skin.reset();
         }
 
-        if (!wet && localSkinResource == NO_SKIN_SEAPONY) {
-            localSkinResource = NO_SKIN_PONY;
+        if (!wet && skin.getTexture() == NO_SKIN_SEAPONY) {
+            skin.reset();
         }
     }
 }

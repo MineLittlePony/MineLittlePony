@@ -8,6 +8,7 @@ import com.minelittlepony.model.player.PlayerModels;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyRace;
 import com.minelittlepony.render.layer.AbstractPonyLayer;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
 
 import net.minecraft.client.model.ModelBase;
@@ -52,7 +53,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
             return super.getEntityModel(playermodel);
         }
 
-        boolean canWet = playermodel.wet && (loc == playermodel.getBlankSkin() || race == PonyRace.SEAPONY);
+        boolean canWet = playermodel.wet && (loc == playermodel.getBlankSkin(Type.SKIN) || race == PonyRace.SEAPONY);
 
         ModelWrapper pm = canWet ? PlayerModels.SEAPONY.getModel(slim) : thePony.getModel(true);
         pm.apply(thePony.getMetadata());
@@ -75,7 +76,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
                 if (itemstack.getItem() == Items.ELYTRA) {
                     GlStateManager.color(1, 1, 1, 1);
 
-                    bindTexture(entity.getElytraTexture());
+                    bindTexture(entity.getLocal(Type.ELYTRA).getTexture());
 
                     GlStateManager.pushMatrix();
 
