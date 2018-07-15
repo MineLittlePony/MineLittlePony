@@ -1,29 +1,24 @@
 package com.voxelmodpack.hdskins.server;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
-import com.voxelmodpack.hdskins.HDSkinManager;
-import com.voxelmodpack.hdskins.util.CallableFutures;
-import com.voxelmodpack.hdskins.util.IndentedToStringStyle;
 import com.voxelmodpack.hdskins.util.NetClient;
 
 import net.minecraft.util.Session;
 
 @ServerType("bethlehem")
-public class BethlehemSkinServer implements SkinServer {
+public class BethlehemSkinServer extends AbstractSkinServer {
 
     private static final String SERVER_ID = "7853dfddc358333843ad55a2c7485c4aa0380a51";
 
@@ -35,35 +30,31 @@ public class BethlehemSkinServer implements SkinServer {
     }
 
     @Override
-    public Optional<MinecraftTexturesPayload> loadProfileData(GameProfile profile) {
-        NetClient client = new NetClient("GET", getPath(profile));
+    public MinecraftTexturesPayload getProfileData(GameProfile profile) {
+        try (NetClient client = new NetClient("GET", getPath(profile))) {
+            if (!client.send()) {
+                return null;
+            }
 
-        String json = client.getResponseText();
-
-        JsonObject s = gson.fromJson(json, JsonObject.class);
-
-        if (s.has("success") && s.get("success").getAsBoolean()) {
-            s = s.get("data").getAsJsonObject();
-
-            return Optional.ofNullable(gson.fromJson(s, MinecraftTexturesPayload.class));
+            return gson.fromJson(client.getResponseText(), MinecraftTexturesPayload.class);
+        } catch (IOException e) {
+            return null;
         }
-
-        return Optional.empty();
     }
 
     @Override
-    public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, URI image, Type type, Map<String, String> metadata) {
-        return CallableFutures.asyncFailableFuture(() -> {
-            SkinServer.verifyServerConnection(session, SERVER_ID);
+    public SkinUploadResponse doUpload(Session session, URI image, Type type, Map<String, String> metadata) throws AuthenticationException, IOException {
+        SkinServer.verifyServerConnection(session, SERVER_ID);
 
-            NetClient client = new NetClient("POST", address).putHeaders(createHeaders(session, type, image, metadata));
+        try (NetClient client = new NetClient("POST", address)) {
+            client.putHeaders(createHeaders(session, type, image, metadata));
 
             if (image != null) {
                 client.putFile(type.toString().toLowerCase(Locale.US), "image/png", image);
             }
 
             return new SkinUploadResponse(client.send(), client.getResponseText());
-        }, HDSkinManager.skinUploadExecutor);
+        }
     }
 
     protected Map<String, ?> createHeaders(Session session, Type type, URI image, Map<String, String> metadata) {
@@ -87,7 +78,7 @@ public class BethlehemSkinServer implements SkinServer {
     }
 
     @Override
-    public String toString() {
-        return new ToStringBuilder(this, IndentedToStringStyle.INSTANCE).append("address", address).build();
+    protected ToStringBuilder addFields(ToStringBuilder builder) {
+        return builder.append("address", address);
     }
 }

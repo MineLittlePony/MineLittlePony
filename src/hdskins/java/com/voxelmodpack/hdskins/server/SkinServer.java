@@ -15,7 +15,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 
 import java.net.URI;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -36,12 +35,9 @@ public interface SkinServer extends Exposable {
 
     Optional<MinecraftTexturesPayload> loadProfileData(GameProfile profile);
 
-    default Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> getPreviewTextures(GameProfile profile) {
-        return loadProfileData(profile).map(MinecraftTexturesPayload::getTextures).orElse(Collections.emptyMap());
-    }
+    Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> getPreviewTextures(GameProfile profile);
 
     CompletableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable URI image, MinecraftProfileTexture.Type type, Map<String, String> metadata);
-
 
     public static void verifyServerConnection(Session session, String serverId) throws AuthenticationException {
         MinecraftSessionService service = Minecraft.getMinecraft().getSessionService();

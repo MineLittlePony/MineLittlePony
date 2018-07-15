@@ -1,6 +1,7 @@
 package com.voxelmodpack.hdskins.util;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,21 +16,36 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 /**
  * Ew. Why so many builders? >.<
  */
-public class NetClient {
+public class NetClient implements Closeable {
 
-    private final RequestBuilder rqBuilder;
+    private CloseableHttpClient client;
+
+    private RequestBuilder rqBuilder;
 
     private Map<String, ?> headers;
 
     private CloseableHttpResponse response = null;
 
     public NetClient(String method, String uri) {
+        start(method, uri);
+    }
+
+    public NetClient start(String method, String uri) {
         rqBuilder = RequestBuilder.create(method).setUri(uri);
+        headers = null;
+
+        if (response != null) {
+            IOUtils.closeQuietly(response);
+            response = null;
+        }
+
+        return this;
     }
 
     public NetClient putFile(String key, String contentType, URI file) {
@@ -50,12 +66,18 @@ public class NetClient {
     public boolean send() {
         HttpUriRequest request = rqBuilder.build();
 
-        for (Map.Entry<String, ?> parameter : headers.entrySet()) {
-            request.addHeader(parameter.getKey(), parameter.getValue().toString());
+        if (headers != null) {
+            for (Map.Entry<String, ?> parameter : headers.entrySet()) {
+                request.addHeader(parameter.getKey(), parameter.getValue().toString());
+            }
+        }
+
+        if (client == null) {
+            client = HttpClients.createSystem();
         }
 
         try {
-            response = HttpClients.createSystem().execute(request);
+            response = client.execute(request);
 
             return getResponseCode() == HttpStatus.SC_OK;
         } catch (IOException e) { }
@@ -78,11 +100,7 @@ public class NetClient {
             }
         }
 
-        BufferedReader reader = null;
-
-        try {
-            reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()))) {
             StringBuilder builder = new StringBuilder();
 
             int ch;
@@ -93,10 +111,21 @@ public class NetClient {
             return builder.toString();
         } catch (IOException e) {
 
-        } finally {
-            IOUtils.closeQuietly(reader);
         }
 
         return "";
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (response != null) {
+            IOUtils.closeQuietly(response);
+            response = null;
+        }
+
+        if (client != null) {
+            IOUtils.closeQuietly(client);
+            client = null;
+        }
     }
 }
