@@ -24,7 +24,7 @@ public class PreviewTexture extends ThreadDownloadImageData {
     }
 
     public boolean isTextureUploaded() {
-        return uploaded && this.getGlTextureId() > -1;
+        return uploaded && getGlTextureId() > -1;
     }
 
     @Override

@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 @Mixin(ImageBufferDownload.class)
@@ -20,11 +19,7 @@ public abstract class MixinImageBufferDownload implements IImageBuffer {
     private void update(BufferedImage image, CallbackInfoReturnable<BufferedImage> ci) {
         // convert skins from mojang server
         if (image.getHeight() == 32) {
-            BufferedImage image2 = ci.getReturnValue();
-            Graphics graphics = image2.getGraphics();
-            HDSkinManager.INSTANCE.convertSkin(image2, graphics);
-            graphics.dispose();
+            HDSkinManager.INSTANCE.convertSkin(ci.getReturnValue());
         }
     }
-
 }

@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 
 public interface SkinServer extends Exposable {
 
-    static final Gson gson = new GsonBuilder()
+    public static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
             .create();
 
