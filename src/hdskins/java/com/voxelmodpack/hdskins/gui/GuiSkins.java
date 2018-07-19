@@ -93,19 +93,22 @@ public class GuiSkins extends GuiScreen {
     private boolean thinArmType = false;
 
     public GuiSkins() {
+        instance = this;
+
         Minecraft minecraft = Minecraft.getMinecraft();
         GameProfile profile = minecraft.getSession().getProfile();
 
         localPlayer = getModel(profile);
         remotePlayer = getModel(profile);
-        RenderManager rm = Minecraft.getMinecraft().getRenderManager();
+
+        RenderManager rm = minecraft.getRenderManager();
         rm.renderEngine = minecraft.getTextureManager();
         rm.options = minecraft.gameSettings;
         rm.renderViewEntity = localPlayer;
-        reloadRemoteSkin();
-        fetchingSkin = true;
 
-        instance = this;
+        reloadRemoteSkin();
+
+        fetchingSkin = true;
 
         panorama = new CubeMap(this);
         initPanorama();
@@ -125,6 +128,7 @@ public class GuiSkins extends GuiScreen {
         if (!(Keyboard.isKeyDown(Keyboard.KEY_LEFT) || Keyboard.isKeyDown(Keyboard.KEY_RIGHT))) {
             updateCounter++;
         }
+
         panorama.update();
 
         localPlayer.updateModel();
@@ -185,7 +189,9 @@ public class GuiSkins extends GuiScreen {
 
     @Override
     public void initGui() {
-        enableDnd();
+        GLWindow.current().setDropTargetListener((FileDropListener) files -> {
+            files.stream().findFirst().ifPresent(instance::loadLocalFile);
+        });
 
         panorama.init();
 
@@ -213,12 +219,6 @@ public class GuiSkins extends GuiScreen {
         btnModeSkinnySkin.enabled = !thinArmType;
         btnModeElytra.enabled = textureType == SKIN;
 
-    }
-
-    private void enableDnd() {
-        GLWindow.current().setDropTargetListener((FileDropListener) files -> {
-            files.stream().findFirst().ifPresent(instance::loadLocalFile);
-        });
     }
 
     @Override
@@ -438,8 +438,7 @@ public class GuiSkins extends GuiScreen {
             drawHoveringText(I18n.format(text), mouseX, y);
         }
         if (btnAbout.isMouseOver()) {
-            SkinServer gateway = HDSkinManager.INSTANCE.getGatewayServer();
-            drawHoveringText(Splitter.on("\r\n").splitToList(gateway.toString()), mouseX, mouseY);
+            drawHoveringText(Splitter.on("\r\n").splitToList(HDSkinManager.INSTANCE.getGatewayServer().toString()), mouseX, mouseY);
         }
 
         if (fetchingSkin) {

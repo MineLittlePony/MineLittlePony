@@ -21,7 +21,7 @@ public class ImageLoader implements Supplier<ResourceLocation> {
     private final ResourceLocation original;
 
     public ImageLoader(ResourceLocation loc) {
-        this.original = loc;
+        original = loc;
     }
 
     @Override
@@ -49,7 +49,6 @@ public class ImageLoader implements Supplier<ResourceLocation> {
 
     @Nullable
     private static BufferedImage getImage(ResourceLocation res) {
-
         try (InputStream in = mc.getResourceManager().getResource(res).getInputStream()) {
             return TextureUtil.readBufferedImage(in);
         } catch (IOException e) {
@@ -59,9 +58,9 @@ public class ImageLoader implements Supplier<ResourceLocation> {
 
     @Nullable
     private ResourceLocation loadSkin(BufferedImage image) {
-
         ResourceLocation conv = new ResourceLocation(original.getResourceDomain() + "-converted", original.getResourcePath());
         boolean success = mc.getTextureManager().loadTexture(conv, new DynamicTextureImage(image));
+
         return success ? conv : null;
     }
 
