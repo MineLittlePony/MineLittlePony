@@ -11,7 +11,6 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.HDSkinManager;
-import com.voxelmodpack.hdskins.server.SkinServer;
 import com.voxelmodpack.hdskins.upload.FileDropListener;
 import com.voxelmodpack.hdskins.upload.ThreadOpenFilePNG;
 
@@ -226,7 +225,7 @@ public class GuiSkins extends GuiScreen {
         super.onGuiClosed();
         localPlayer.releaseTextures();
         remotePlayer.releaseTextures();
-        HDSkinManager.clearSkinCache();
+        HDSkinManager.INSTANCE.clearSkinCache();
 
         GLWindow.current().clearDropTargetListener();
     }

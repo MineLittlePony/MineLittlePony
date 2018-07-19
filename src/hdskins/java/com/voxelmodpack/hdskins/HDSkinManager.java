@@ -88,10 +88,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener, ISki
 
     private Class<? extends GuiSkins> skinsClass = null;
 
-    public static void clearSkinCache() {
-        INSTANCE.clearSKinCache();
-    }
-
     public static PreviewTextureManager getPreviewTextureManager(GameProfile profile) {
         return new PreviewTextureManager(INSTANCE.getGatewayServer().getPreviewTextures(profile));
     }
@@ -270,7 +266,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener, ISki
         clearListeners.add(listener);
     }
 
-    private void clearSKinCache() {
+    public void clearSkinCache() {
         LiteLoaderLogger.info("Clearing local player skin cache");
 
         try {

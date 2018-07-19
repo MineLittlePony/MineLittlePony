@@ -41,7 +41,7 @@ public class HDSkinsConfigPanel implements ConfigPanel {
         Minecraft mc = Minecraft.getMinecraft();
 
         if (button.mousePressed(mc, mouseX, mouseY)) {
-            HDSkinManager.clearSkinCache();
+            HDSkinManager.INSTANCE.clearSkinCache();
         } else if (checkbox.mousePressed(mc, mouseX, mouseY)) {
             checkbox.checked = !checkbox.checked;
             mod.experimentalSkinDrop = checkbox.checked;
