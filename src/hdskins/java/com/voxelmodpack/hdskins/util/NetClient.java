@@ -18,6 +18,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 /**
  * Ew. Why so many builders? >.<
@@ -36,18 +37,34 @@ public class NetClient implements Closeable {
         start(method, uri);
     }
 
+    /**
+     * Starts a new network request.
+     *
+     * @param method    The HTTP method verb. GET/PUT/POST/DELETE/OPTIONS
+     * @param uri       Http link to query
+     *
+     * @return Itself for chaining
+     */
     public NetClient start(String method, String uri) {
         rqBuilder = RequestBuilder.create(method).setUri(uri);
         headers = null;
 
         if (response != null) {
-            IOUtils.closeQuietly(response);
+            EntityUtils.consumeQuietly(response.getEntity());
             response = null;
         }
 
         return this;
     }
 
+    /**
+     * Adds a file to the request. Typically used with PUT/POST for uploading.
+     * @param key           Key identifier to index the file in the request.
+     * @param contentType   Type of file being sent. Usually the mime-type.
+     * @param file          The file or a link to the file.
+     *
+     * @return itself for chaining
+     */
     public NetClient putFile(String key, String contentType, URI file) {
         File f = new File(file);
         HttpEntity entity = MultipartEntityBuilder.create().addBinaryBody(key, f, ContentType.create(contentType), f.getName()).build();
@@ -57,13 +74,22 @@ public class NetClient implements Closeable {
         return this;
     }
 
+    /**
+     * Sets the headers to be included with this request.
+     * @param headers   Headers to send
+     *
+     * @return itself for chaining
+     */
     public NetClient putHeaders(Map<String, ?> headers) {
         this.headers = headers;
 
         return this;
     }
 
-    public boolean send() {
+    /**
+     * Commits and sends the request.
+     */
+    private void send() {
         HttpUriRequest request = rqBuilder.build();
 
         if (headers != null) {
@@ -78,26 +104,37 @@ public class NetClient implements Closeable {
 
         try {
             response = client.execute(request);
-
-            return getResponseCode() == HttpStatus.SC_OK;
         } catch (IOException e) { }
-
-        return false;
     }
 
-    public int getResponseCode() {
+    /**
+     * Gets or obtains the http response body.
+     */
+    public CloseableHttpResponse getResponse() {
         if (response == null) {
             send();
+        }
+
+        return response;
+    }
+
+    /**
+     * Gets or obtains a response status code.
+     */
+    public int getResponseCode() {
+        if (getResponse() == null) {
+            return HttpStatus.SC_NOT_FOUND;
         }
 
         return response.getStatusLine().getStatusCode();
     }
 
+    /**
+     * Consumes and returns the entire response body.
+     */
     public String getResponseText() {
-        if (response == null) {
-            if (!send()) {
-                return "";
-            }
+        if (getResponse() == null || response.getEntity() == null) {
+            return "";
         }
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()))) {
@@ -119,7 +156,7 @@ public class NetClient implements Closeable {
     @Override
     public void close() throws IOException {
         if (response != null) {
-            IOUtils.closeQuietly(response);
+            EntityUtils.consumeQuietly(response.getEntity());
             response = null;
         }
 

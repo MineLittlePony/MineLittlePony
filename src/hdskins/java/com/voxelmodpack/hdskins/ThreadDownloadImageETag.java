@@ -2,6 +2,8 @@ package com.voxelmodpack.hdskins;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import com.voxelmodpack.hdskins.util.NetClient;
+
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
@@ -12,9 +14,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,6 +33,7 @@ public class ThreadDownloadImageETag extends SimpleTexture {
 
     @Nonnull
     private final File cacheFile;
+
     private final File eTagFile;
     private final String imageUrl;
 
@@ -41,6 +42,7 @@ public class ThreadDownloadImageETag extends SimpleTexture {
 
     @Nullable
     private BufferedImage bufferedImage;
+
     @Nullable
     private Thread imageThread;
     private boolean textureUploaded;
@@ -94,12 +96,10 @@ public class ThreadDownloadImageETag extends SimpleTexture {
     }
 
     private void loadTexture() {
-        HttpResponse response = null;
-        try {
-            response = HttpClientBuilder.create().build().execute(new HttpGet(imageUrl));
+        try (NetClient client = new NetClient("GET", imageUrl)) {
+            CloseableHttpResponse response = client.getResponse();
 
-            int status = response.getStatusLine().getStatusCode();
-            if (status == HttpStatus.SC_NOT_FOUND) {
+            if (client.getResponseCode() == HttpStatus.SC_NOT_FOUND) {
                 // delete the cache files in case we can't connect in the future
                 clearCache();
             } else if (checkETag(response)) {
@@ -129,10 +129,6 @@ public class ThreadDownloadImageETag extends SimpleTexture {
                 }
             }
             LOGGER.error("Couldn't load skin {} ", imageUrl, e);
-        } finally {
-            if (response != null) {
-                EntityUtils.consumeQuietly(response.getEntity());
-            }
         }
     }
 
