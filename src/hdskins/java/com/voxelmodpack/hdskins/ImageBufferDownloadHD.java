@@ -13,9 +13,9 @@ public class ImageBufferDownloadHD implements IImageBuffer {
     private Graphics graphics;
     private BufferedImage image;
 
-    private ISkinAvailableCallback callback;
+    private Runnable callback;
 
-    public ImageBufferDownloadHD withCallback(ISkinAvailableCallback callback) {
+    public ImageBufferDownloadHD withCallback(Runnable callback) {
         this.callback = callback;
         return this;
     }
@@ -71,7 +71,7 @@ public class ImageBufferDownloadHD implements IImageBuffer {
     @Override
     public void skinAvailable() {
         if (callback != null) {
-            callback.skinAvailable();
+            callback.run();
         }
     }
 }
