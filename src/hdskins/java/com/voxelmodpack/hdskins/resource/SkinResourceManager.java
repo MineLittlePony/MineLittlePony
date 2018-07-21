@@ -102,15 +102,21 @@ public class SkinResourceManager implements IResourceManagerReloadListener {
      */
     private void loadSkinResource(@Nullable ResourceLocation res) {
         if (res != null) {
-            inProgress.computeIfAbsent(res, r -> CompletableFuture.supplyAsync(new ImageLoader(r), executor).whenComplete((loc, t) -> {
-                if (loc != null) {
-                    converted.put(res, loc);
-                } else {
-                    LogManager.getLogger().warn("Errored while processing {}. Using original.", res, t);
-                    converted.put(res, res);
-                }
-            }));
+            if (!inProgress.containsKey(res)) {
+                inProgress.put(res, scheduleConvertion(res));
+            }
         }
+    }
+
+    private Future<ResourceLocation> scheduleConvertion(ResourceLocation res) {
+        return CompletableFuture.supplyAsync(new ImageLoader(res), executor).whenComplete((result, error) -> {
+            if (result == null) {
+                result = res;
+                LogManager.getLogger().warn("Errored while processing {}. Using original.", res, error);
+            }
+
+            converted.put(res, result);
+        });
     }
 
     @Nullable
