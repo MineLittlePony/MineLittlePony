@@ -86,7 +86,7 @@ public class LegacySkinServer extends AbstractSkinServer {
             return null;
         }
 
-        return TexturesPayloadBuilder.createTexuresPayload(profile, map);
+        return TexturesPayloadBuilder.createTexturesPayload(profile, map);
     }
 
     @Override
