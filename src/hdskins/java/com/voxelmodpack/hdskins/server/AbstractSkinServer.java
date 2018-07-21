@@ -32,7 +32,9 @@ public abstract class AbstractSkinServer implements SkinServer {
 
     @Override
     public Map<Type, MinecraftProfileTexture> getPreviewTextures(GameProfile profile) {
-        return loadProfileData(profile).map(MinecraftTexturesPayload::getTextures).orElse(Collections.emptyMap());
+        return loadProfileData(profile)
+                .map(MinecraftTexturesPayload::getTextures)
+                .orElse(Collections.emptyMap());
     }
 
     @Override
