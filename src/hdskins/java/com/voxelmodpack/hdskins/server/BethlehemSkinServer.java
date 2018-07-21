@@ -32,7 +32,7 @@ public class BethlehemSkinServer extends AbstractSkinServer {
     }
 
     @Override
-    public MinecraftTexturesPayload getProfileData(GameProfile profile) {
+    protected MinecraftTexturesPayload getProfileData(GameProfile profile) {
         try (NetClient client = new NetClient("GET", getPath(profile))) {
             if (client.getResponseCode() == HttpStatus.SC_OK) {
                 return gson.fromJson(client.getResponseText(), MinecraftTexturesPayload.class);
@@ -44,7 +44,7 @@ public class BethlehemSkinServer extends AbstractSkinServer {
     }
 
     @Override
-    public SkinUploadResponse doUpload(Session session, URI image, Type type, Map<String, String> metadata) throws AuthenticationException, IOException {
+    protected SkinUploadResponse doUpload(Session session, URI image, Type type, Map<String, String> metadata) throws AuthenticationException, IOException {
         SkinServer.verifyServerConnection(session, SERVER_ID);
 
         try (NetClient client = new NetClient("POST", address)) {

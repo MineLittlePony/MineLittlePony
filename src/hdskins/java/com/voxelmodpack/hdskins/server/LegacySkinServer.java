@@ -61,7 +61,7 @@ public class LegacySkinServer extends AbstractSkinServer {
 
     @SuppressWarnings("deprecation")
     @Override
-    public MinecraftTexturesPayload getProfileData(GameProfile profile) {
+    protected MinecraftTexturesPayload getProfileData(GameProfile profile) {
         ImmutableMap.Builder<Type, MinecraftProfileTexture> builder = ImmutableMap.builder();
 
         for (Type type : Type.values()) {
@@ -90,7 +90,7 @@ public class LegacySkinServer extends AbstractSkinServer {
     }
 
     @Override
-    public SkinUploadResponse doUpload(Session session, URI image, Type type, Map<String, String> metadata) throws AuthenticationException, IOException {
+    protected SkinUploadResponse doUpload(Session session, URI image, Type type, Map<String, String> metadata) throws AuthenticationException, IOException {
         SkinServer.verifyServerConnection(session, SERVER_ID);
 
         try (NetClient client = new NetClient("POST", address)) {
