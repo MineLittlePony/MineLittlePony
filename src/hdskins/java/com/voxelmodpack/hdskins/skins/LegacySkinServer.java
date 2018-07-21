@@ -13,6 +13,7 @@ import com.mojang.util.UUIDTypeAdapter;
 
 import net.minecraft.util.Session;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.http.HttpStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -66,7 +67,7 @@ public class LegacySkinServer extends AbstractSkinServer {
             String url = getPath(address, type, profile);
 
             try (NetClient client = new NetClient("GET", url)) {
-                if (!client.send()) {
+                if (client.getResponseCode() != HttpStatus.SC_OK) {
                     throw new IOException("Bad response code: " + client.getResponseCode());
                 }
 
