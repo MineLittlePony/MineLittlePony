@@ -1,4 +1,4 @@
-package com.voxelmodpack.hdskins;
+package com.voxelmodpack.hdskins.util;
 
 public final class Later extends Thread {
 

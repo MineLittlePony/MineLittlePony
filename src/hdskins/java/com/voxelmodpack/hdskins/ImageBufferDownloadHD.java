@@ -3,6 +3,7 @@ package com.voxelmodpack.hdskins;
 import net.minecraft.client.renderer.IImageBuffer;
 
 import javax.annotation.Nullable;
+
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -12,6 +13,13 @@ public class ImageBufferDownloadHD implements IImageBuffer {
     private Graphics graphics;
     private BufferedImage image;
 
+    private Runnable callback;
+
+    public ImageBufferDownloadHD withCallback(Runnable callback) {
+        this.callback = callback;
+        return this;
+    }
+
     @Override
     @Nullable
     @SuppressWarnings({"SuspiciousNameCombination", "NullableProblems"})
@@ -19,6 +27,7 @@ public class ImageBufferDownloadHD implements IImageBuffer {
         if (downloadedImage == null) {
             return null;
         }
+
         int imageWidth = downloadedImage.getWidth();
         int imageHeight = downloadedImage.getHeight();
         if (imageHeight == imageWidth) {
@@ -61,5 +70,8 @@ public class ImageBufferDownloadHD implements IImageBuffer {
 
     @Override
     public void skinAvailable() {
+        if (callback != null) {
+            callback.run();
+        }
     }
 }

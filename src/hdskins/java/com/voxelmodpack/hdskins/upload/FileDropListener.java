@@ -1,4 +1,4 @@
-package com.voxelmodpack.hdskins.gui;
+package com.voxelmodpack.hdskins.upload;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;

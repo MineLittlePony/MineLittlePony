@@ -1,4 +1,4 @@
-package com.voxelmodpack.hdskins.skins;
+package com.voxelmodpack.hdskins.util;
 
 import com.google.common.cache.CacheLoader;
 import com.google.common.util.concurrent.ListenableFuture;

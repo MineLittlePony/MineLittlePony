@@ -1,4 +1,4 @@
-package com.voxelmodpack.hdskins.skins;
+package com.voxelmodpack.hdskins.util;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
@@ -15,12 +15,6 @@ public class CallableFutures {
                 ret.completeExceptionally(e);
             }
         });
-        return ret;
-    }
-
-    public static <T> CompletableFuture<T> failedFuture(Exception e) {
-        CompletableFuture<T> ret = new CompletableFuture<>();
-        ret.completeExceptionally(e);
         return ret;
     }
 }

@@ -2,6 +2,8 @@ package com.voxelmodpack.hdskins;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import com.voxelmodpack.hdskins.util.NetClient;
+
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
@@ -12,10 +14,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,48 +33,48 @@ public class ThreadDownloadImageETag extends SimpleTexture {
 
     @Nonnull
     private final File cacheFile;
+
     private final File eTagFile;
     private final String imageUrl;
+
     @Nullable
     private final IImageBuffer imageBuffer;
 
     @Nullable
     private BufferedImage bufferedImage;
+
     @Nullable
     private Thread imageThread;
     private boolean textureUploaded;
 
     public ThreadDownloadImageETag(@Nonnull File cacheFileIn, String imageUrlIn, ResourceLocation defLocation, @Nullable IImageBuffer imageBufferIn) {
         super(defLocation);
-        this.cacheFile = cacheFileIn;
-        this.eTagFile = new File(cacheFile.getParentFile(), cacheFile.getName() + ".etag");
-        this.imageUrl = imageUrlIn;
-        this.imageBuffer = imageBufferIn;
-    }
-
-    private void checkTextureUploaded() {
-        if (!this.textureUploaded) {
-            if (this.bufferedImage != null) {
-                if (this.textureLocation != null) {
-                    this.deleteGlTexture();
-                }
-
-                TextureUtil.uploadTextureImage(super.getGlTextureId(), this.bufferedImage);
-                this.textureUploaded = true;
-            }
-        }
+        cacheFile = cacheFileIn;
+        eTagFile = new File(cacheFile.getParentFile(), cacheFile.getName() + ".etag");
+        imageUrl = imageUrlIn;
+        imageBuffer = imageBufferIn;
     }
 
     public int getGlTextureId() {
-        this.checkTextureUploaded();
+        if (!textureUploaded) {
+            if (bufferedImage != null) {
+                if (textureLocation != null) {
+                    deleteGlTexture();
+                }
+
+                TextureUtil.uploadTextureImage(super.getGlTextureId(), bufferedImage);
+                textureUploaded = true;
+            }
+        }
+
         return super.getGlTextureId();
     }
 
     private void setBufferedImage(@Nonnull BufferedImage bufferedImageIn) {
-        this.bufferedImage = bufferedImageIn;
+        bufferedImage = bufferedImageIn;
 
-        if (this.imageBuffer != null) {
-            this.imageBuffer.skinAvailable();
+        if (imageBuffer != null) {
+            imageBuffer.skinAvailable();
         }
     }
 
@@ -85,24 +84,22 @@ public class ThreadDownloadImageETag extends SimpleTexture {
     }
 
     public void loadTexture(IResourceManager resourceManager) throws IOException {
-        if (this.bufferedImage == null && this.textureLocation != null) {
+        if (bufferedImage == null && textureLocation != null) {
             super.loadTexture(resourceManager);
         }
 
-        if (this.imageThread == null) {
-            this.imageThread = new Thread(this::loadTexture, "Texture Downloader #" + THREAD_ID.incrementAndGet());
-            this.imageThread.setDaemon(true);
-            this.imageThread.start();
+        if (imageThread == null) {
+            imageThread = new Thread(this::loadTexture, "Texture Downloader #" + THREAD_ID.incrementAndGet());
+            imageThread.setDaemon(true);
+            imageThread.start();
         }
     }
 
     private void loadTexture() {
-        HttpResponse response = null;
-        try {
-            HttpClient client = HttpClientBuilder.create().build();
-            response = client.execute(new HttpGet(imageUrl));
-            int status = response.getStatusLine().getStatusCode();
-            if (status == HttpStatus.SC_NOT_FOUND) {
+        try (NetClient client = new NetClient("GET", imageUrl)) {
+            CloseableHttpResponse response = client.getResponse();
+
+            if (client.getResponseCode() == HttpStatus.SC_NOT_FOUND) {
                 // delete the cache files in case we can't connect in the future
                 clearCache();
             } else if (checkETag(response)) {
@@ -132,9 +129,6 @@ public class ThreadDownloadImageETag extends SimpleTexture {
                 }
             }
             LOGGER.error("Couldn't load skin {} ", imageUrl, e);
-        } finally {
-            if (response != null)
-                EntityUtils.consumeQuietly(response.getEntity());
         }
     }
 
@@ -149,8 +143,8 @@ public class ThreadDownloadImageETag extends SimpleTexture {
     }
 
     private void clearCache() {
-        FileUtils.deleteQuietly(this.cacheFile);
-        FileUtils.deleteQuietly(this.eTagFile);
+        FileUtils.deleteQuietly(cacheFile);
+        FileUtils.deleteQuietly(eTagFile);
     }
 
     private boolean checkETag(HttpResponse response) {
@@ -158,14 +152,15 @@ public class ThreadDownloadImageETag extends SimpleTexture {
             if (cacheFile.isFile()) {
                 String localETag = Files.readFirstLine(eTagFile, Charsets.UTF_8);
                 Header remoteETag = response.getFirstHeader(HttpHeaders.ETAG);
+
                 // true if no remote etag or does match
                 return remoteETag == null || localETag.equals(remoteETag.getValue());
             }
-            return false;
         } catch (IOException e) {
-            // it failed, so re-fetch.
-            return false;
+
         }
+
+        return false; // it failed, so re-fetch.
     }
 
     private void loadTextureFromServer(HttpResponse response) {
