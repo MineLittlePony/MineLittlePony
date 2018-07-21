@@ -57,7 +57,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
-public final class HDSkinManager implements IResourceManagerReloadListener, ISkinModifier {
+public final class HDSkinManager implements IResourceManagerReloadListener {
 
     private static final ResourceLocation LOADING = new ResourceLocation("LOADING");
 
@@ -310,7 +310,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener, ISki
         graphics.dispose();
     }
 
-    @Override
     public void convertSkin(BufferedImage image, Graphics dest) {
         skinModifiers.forEach(a -> a.convertSkin(image, dest));
     }
