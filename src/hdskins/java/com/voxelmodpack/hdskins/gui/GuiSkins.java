@@ -11,6 +11,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.server.SkinUploadResponse;
 import com.voxelmodpack.hdskins.upload.FileDropListener;
 import com.voxelmodpack.hdskins.upload.ThreadOpenFilePNG;
 
@@ -539,28 +540,33 @@ public class GuiSkins extends GuiScreen {
         return number != 0 && (number & number - 1) == 0;
     }
 
-    //TODO: Garggling marbles
     private void punchServer(String uploadMsg, @Nullable URI path) {
         uploadingSkin = true;
         skinUploadMessage = I18n.format(uploadMsg);
 
+        // TODO: This looks too much like the "fetch(method, url, headers).then(...then(..).then(...)).then(...).catch(...).then(...).then(...)...etc" hell.
         HDSkinManager.INSTANCE.getGatewayServer()
-        .uploadSkin(mc.getSession(), path, textureType, getMetadata())
-        .thenAccept(response -> {
-            LiteLoaderLogger.info("Upload completed with: %s", response);
-            uploadingSkin = false;
-            if (!response.isSuccess()) {
-                setUploadError(response.getMessage());
-            } else {
-                pendingRemoteSkinRefresh = true;
-            }
-        }).exceptionally(t -> {
-            LogManager.getLogger().warn("Upload failed", t);
-            setUploadError(t.toString());
-            uploadingSkin = false;
+            .uploadSkin(mc.getSession(), path, textureType, getMetadata())
+            .thenAccept(this::onUploadComplete)
+            .exceptionally(this::onUploadFailed);
+    }
 
-            return null;
-        });
+    private void onUploadComplete(SkinUploadResponse response) {
+        LiteLoaderLogger.info("Upload completed with: %s", response);
+        uploadingSkin = false;
+        if (!response.isSuccess()) {
+            setUploadError(response.getMessage());
+        } else {
+            pendingRemoteSkinRefresh = true;
+        }
+    }
+
+    private Void onUploadFailed(Throwable t) {
+        LogManager.getLogger().warn("Upload failed", t);
+        setUploadError(t.toString());
+        uploadingSkin = false;
+
+        return null;
     }
 
     private Map<String, String> getMetadata() {
