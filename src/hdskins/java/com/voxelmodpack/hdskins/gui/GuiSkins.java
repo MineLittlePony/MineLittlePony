@@ -544,11 +544,10 @@ public class GuiSkins extends GuiScreen {
         uploadingSkin = true;
         skinUploadMessage = I18n.format(uploadMsg);
 
-        // TODO: This looks too much like the "fetch(method, url, headers).then(...then(..).then(...)).then(...).catch(...).then(...).then(...)...etc" hell.
         HDSkinManager.INSTANCE.getGatewayServer()
-            .uploadSkin(mc.getSession(), path, textureType, getMetadata())
-            .thenAccept(this::onUploadComplete)
-            .exceptionally(this::onUploadFailed);
+                .uploadSkin(mc.getSession(), path, textureType, getMetadata())
+                .thenAccept(this::onUploadComplete)
+                .exceptionally(this::onUploadFailed);
     }
 
     private void onUploadComplete(SkinUploadResponse response) {
@@ -566,7 +565,7 @@ public class GuiSkins extends GuiScreen {
         setUploadError(t.toString());
         uploadingSkin = false;
 
-        return null;
+        return null; // TODO: Why must this return something? >.>
     }
 
     private Map<String, String> getMetadata() {
