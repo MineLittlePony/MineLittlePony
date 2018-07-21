@@ -20,6 +20,7 @@ import net.minecraft.util.ResourceLocation;
 import java.io.File;
 import java.util.Map;
 
+@SuppressWarnings("EntityConstructor")
 public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSupplier {
 
     public static final ResourceLocation NO_SKIN = new ResourceLocation("hdskins", "textures/mob/noskin.png");
