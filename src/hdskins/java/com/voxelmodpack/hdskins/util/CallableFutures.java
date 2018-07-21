@@ -17,10 +17,4 @@ public class CallableFutures {
         });
         return ret;
     }
-
-    public static <T> CompletableFuture<T> failedFuture(Exception e) {
-        CompletableFuture<T> ret = new CompletableFuture<>();
-        ret.completeExceptionally(e);
-        return ret;
-    }
 }
