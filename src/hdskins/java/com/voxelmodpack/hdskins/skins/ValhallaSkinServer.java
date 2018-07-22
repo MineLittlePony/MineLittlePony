@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.http.HttpHeaders;
+import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -29,7 +30,6 @@ import org.apache.http.message.BasicNameValuePair;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
@@ -46,7 +46,7 @@ public class ValhallaSkinServer implements SkinServer {
 
     @Expose
     private final String address;
-    private final Gson gson = new GsonBuilder()
+    private static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
             .create();
 
@@ -64,7 +64,7 @@ public class ValhallaSkinServer implements SkinServer {
 
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 
-                return Optional.of(readJson(response.getEntity().getContent(), MinecraftTexturesPayload.class));
+                return Optional.of(readJson(response, MinecraftTexturesPayload.class));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -132,16 +132,13 @@ public class ValhallaSkinServer implements SkinServer {
 
     private SkinUploadResponse upload(CloseableHttpClient client, HttpUriRequest request) throws IOException {
         try (CloseableHttpResponse response = client.execute(request)) {
-            int code = response.getStatusLine().getStatusCode();
-            JsonObject json = readJson(response.getEntity().getContent(), JsonObject.class);
-
-            return new SkinUploadResponse(code == HttpStatus.SC_OK, json.get("message").getAsString());
+            return readJson(response, SkinUploadResponse.class);
         }
     }
 
 
     private void authorize(CloseableHttpClient client, Session session) throws IOException, AuthenticationException {
-        if (accessToken != null) {
+        if (this.accessToken != null) {
             return;
         }
         GameProfile profile = session.getProfile();
@@ -160,11 +157,19 @@ public class ValhallaSkinServer implements SkinServer {
             throw new IOException("UUID mismatch!"); // probably won't ever throw
         }
         this.accessToken = response.accessToken;
-
     }
 
-    private <T> T readJson(InputStream in, Class<T> cl) throws IOException {
-        try (Reader r = new InputStreamReader(in)) {
+    private <T> T readJson(HttpResponse resp, Class<T> cl) throws IOException {
+        String type = resp.getEntity().getContentType().getValue();
+        String enc = resp.getEntity().getContentEncoding().getValue();
+        if (!"application/json".equals(type)) {
+            throw new IOException("Server returned a non-json response!");
+        }
+        try (Reader r = new InputStreamReader(resp.getEntity().getContent(), enc)) {
+            if (resp.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                // TODO specific error handling
+                throw new IOException(gson.fromJson(r, JsonObject.class).get("message").getAsString());
+            }
             return gson.fromJson(r, cl);
         }
     }
@@ -174,7 +179,7 @@ public class ValhallaSkinServer implements SkinServer {
                 .setUri(getHandshakeURI())
                 .addParameter("name", name)
                 .build())) {
-            return readJson(resp.getEntity().getContent(), AuthHandshake.class);
+            return readJson(resp, AuthHandshake.class);
         }
     }
 
@@ -184,7 +189,7 @@ public class ValhallaSkinServer implements SkinServer {
                 .addParameter("name", name)
                 .addParameter("verifyToken", String.valueOf(verifyToken))
                 .build())) {
-            return readJson(resp.getEntity().getContent(), AuthResponse.class);
+            return readJson(resp, AuthResponse.class);
         }
     }
 
@@ -215,17 +220,18 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     @SuppressWarnings("WeakerAccess")
-    static class AuthHandshake {
+    private static class AuthHandshake {
 
-        boolean offline;
-        String serverId;
-        long verifyToken;
+        private boolean offline;
+        private String serverId;
+        private long verifyToken;
     }
 
     @SuppressWarnings("WeakerAccess")
-    static class AuthResponse {
+    private static class AuthResponse {
 
-        String accessToken;
-        UUID userId;
+        private String accessToken;
+        private UUID userId;
+
     }
 }

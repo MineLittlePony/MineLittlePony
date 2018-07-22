@@ -602,11 +602,7 @@ public class GuiSkins extends GuiScreen {
     private void onUploadComplete(SkinUploadResponse response) {
         LiteLoaderLogger.info("Upload completed with: %s", response);
         this.uploadingSkin = false;
-        if (!response.isSuccess()) {
-            this.setUploadError(response.getMessage());
-        } else {
-            this.pendingRemoteSkinRefresh = true;
-        }
+        this.pendingRemoteSkinRefresh = true;
     }
 
     static {

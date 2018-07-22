@@ -4,16 +4,10 @@ import com.google.common.base.MoreObjects;
 
 public class SkinUploadResponse {
 
-    private final boolean success;
     private final String message;
 
-    public SkinUploadResponse(boolean success, String message) {
-        this.success = success;
+    public SkinUploadResponse(String message) {
         this.message = message;
-    }
-
-    public boolean isSuccess() {
-        return success;
     }
 
     public String getMessage() {
@@ -23,7 +17,6 @@ public class SkinUploadResponse {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("success", success)
                 .add("message", message)
                 .toString();
     }
