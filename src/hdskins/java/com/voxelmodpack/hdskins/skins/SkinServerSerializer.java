@@ -17,18 +17,21 @@ public class SkinServerSerializer implements JsonSerializer<SkinServer>, JsonDes
     @Override
     public JsonElement serialize(SkinServer src, Type typeOfSrc, JsonSerializationContext context) {
         ServerType serverType = src.getClass().getAnnotation(ServerType.class);
+
         if (serverType == null) {
             throw new JsonIOException("Skin server class did not have a type: " + typeOfSrc);
         }
+
         JsonObject obj = context.serialize(src).getAsJsonObject();
         obj.addProperty("type", serverType.value());
+
         return obj;
     }
 
     @Override
     public SkinServer deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         String type = json.getAsJsonObject().get("type").getAsString();
-        Class<? extends SkinServer> clas = HDSkinManager.INSTANCE.getSkinServerClass(type);
-        return context.deserialize(json, clas);
+
+        return context.deserialize(json, HDSkinManager.INSTANCE.getSkinServerClass(type));
     }
 }

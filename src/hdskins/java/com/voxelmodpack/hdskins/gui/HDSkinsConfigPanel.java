@@ -5,7 +5,7 @@ import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.modconfig.ConfigPanel;
 import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
 import com.voxelmodpack.hdskins.HDSkinManager;
-import com.voxelmodpack.hdskins.mod.LiteModHDSkinsMod;
+import com.voxelmodpack.hdskins.LiteModHDSkins;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -16,11 +16,11 @@ public class HDSkinsConfigPanel implements ConfigPanel {
 
     private GuiCheckbox checkbox;
 
-    private LiteModHDSkinsMod mod;
+    private LiteModHDSkins mod;
 
     @Override
     public void onPanelShown(ConfigPanelHost host) {
-        this.mod = LiteLoader.getInstance().getMod(LiteModHDSkinsMod.class);
+        this.mod = LiteLoader.getInstance().getMod(LiteModHDSkins.class);
 
         this.button = new GuiButton(0, 40, 70, 100, 20, "Clear Skin Cache");
         this.checkbox = new GuiCheckbox(1, 40, 40, "Experimental Skin Drop");

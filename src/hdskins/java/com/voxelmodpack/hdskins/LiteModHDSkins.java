@@ -1,14 +1,16 @@
-package com.voxelmodpack.hdskins.mod;
+package com.voxelmodpack.hdskins;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
+import com.mumfrey.liteloader.Configurable;
+import com.mumfrey.liteloader.InitCompleteListener;
+import com.mumfrey.liteloader.ViewportListener;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.modconfig.AdvancedExposable;
 import com.mumfrey.liteloader.modconfig.ConfigPanel;
 import com.mumfrey.liteloader.modconfig.ConfigStrategy;
 import com.mumfrey.liteloader.modconfig.ExposableOptions;
 import com.mumfrey.liteloader.util.ModUtilities;
-import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
 import com.voxelmodpack.hdskins.gui.GLWindow;
 import com.voxelmodpack.hdskins.gui.HDSkinsConfigPanel;
@@ -23,7 +25,7 @@ import java.io.File;
 import java.util.List;
 
 @ExposableOptions(strategy = ConfigStrategy.Unversioned, filename = "hdskins")
-public class LiteModHDSkinsMod implements HDSkinsMod, AdvancedExposable {
+public class LiteModHDSkins implements InitCompleteListener, ViewportListener, Configurable, AdvancedExposable {
 
     @Expose
     public List<SkinServer> skin_servers = SkinServer.defaultServers;
