@@ -729,16 +729,17 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
     @Override
     public float getRiderYOffset() {
+
         if (isChild()) {
-            return 1.05F;
+            return 0.25F;
         }
 
         switch (getMetadata().getSize()) {
             case NORMAL: return 0.4F;
-            case FOAL: return 1.05F;
+            case FOAL:
             case TALL:
             case LARGE:
-            default:  return 0.25F;
+            default: return 0.25F;
         }
     }
 

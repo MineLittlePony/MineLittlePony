@@ -7,7 +7,7 @@ public enum PonySize implements ITriggerPixelMapped<PonySize> {
     TALL(0x534b76, 0.45f, 1.1F, PonyTransformation.TALL),
     LARGE(0xce3254, 0.5f, 1, PonyTransformation.LARGE),
     NORMAL(0, 0.4f, 0.8F, PonyTransformation.NORMAL),
-    FOAL(0xffbe53, 0.25f, 0.8F, PonyTransformation.FOAL);
+    FOAL(0xffbe53, 0.25f, 0.5F, PonyTransformation.FOAL);
 
     private int triggerValue;
 
