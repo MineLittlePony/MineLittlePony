@@ -112,7 +112,7 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony {
     @Override
     public float prepareScale(AbstractClientPlayer player, float ticks) {
 
-        if (!player.isRiding()) {
+        if (!player.isRiding() && !player.isPlayerSleeping()) {
             float x = player.width/2;
             float y = 0;
 
@@ -147,7 +147,7 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony {
 
     @Override
     public void doRenderShadowAndFire(Entity player, double x, double y, double z, float yaw, float ticks) {
-        if (player.isRiding()) {
+        if (player.isRiding() && ((AbstractClientPlayer)player).isPlayerSleeping()) {
             super.doRenderShadowAndFire(player, x, y, z, yaw, ticks);
         }
     }

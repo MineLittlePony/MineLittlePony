@@ -24,6 +24,7 @@ import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.gui.GuiSkins;
 import com.voxelmodpack.hdskins.resource.SkinResourceManager;
 import com.voxelmodpack.hdskins.skins.AsyncCacheLoader;
+import com.voxelmodpack.hdskins.skins.BethlehemSkinServer;
 import com.voxelmodpack.hdskins.skins.LegacySkinServer;
 import com.voxelmodpack.hdskins.skins.ServerType;
 import com.voxelmodpack.hdskins.skins.SkinServer;
@@ -98,6 +99,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         // register default skin server types
         addSkinServerType(LegacySkinServer.class);
         addSkinServerType(ValhallaSkinServer.class);
+        addSkinServerType(BethlehemSkinServer.class);
     }
 
     public void setPrefferedSkinsGuiClass(Class<? extends GuiSkins> clazz) {

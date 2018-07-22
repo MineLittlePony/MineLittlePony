@@ -1,8 +1,6 @@
 package com.voxelmodpack.hdskins.skins;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
@@ -46,9 +44,6 @@ public class ValhallaSkinServer implements SkinServer {
 
     @Expose
     private final String address;
-    private static final Gson gson = new GsonBuilder()
-            .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
-            .create();
 
     private transient String accessToken;
 
@@ -73,8 +68,7 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     @Override
-    public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable URI image,
-            MinecraftProfileTexture.Type type, Map<String, String> metadata) {
+    public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable URI image, MinecraftProfileTexture.Type type, Map<String, String> metadata) {
         return CallableFutures.asyncFailableFuture(() -> {
             try (CloseableHttpClient client = HttpClients.createSystem()) {
                 authorize(client, session);
@@ -104,8 +98,7 @@ public class ValhallaSkinServer implements SkinServer {
                 .build());
     }
 
-    private SkinUploadResponse uploadFile(CloseableHttpClient client, File file, GameProfile profile, MinecraftProfileTexture.Type type,
-            Map<String, String> metadata) throws IOException {
+    private SkinUploadResponse uploadFile(CloseableHttpClient client, File file, GameProfile profile, MinecraftProfileTexture.Type type, Map<String, String> metadata) throws IOException {
         MultipartEntityBuilder b = MultipartEntityBuilder.create();
         b.addBinaryBody("file", file, ContentType.create("image/png"), file.getName());
         metadata.forEach(b::addTextBody);
@@ -117,8 +110,7 @@ public class ValhallaSkinServer implements SkinServer {
                 .build());
     }
 
-    private SkinUploadResponse uploadUrl(CloseableHttpClient client, URI uri, GameProfile profile, MinecraftProfileTexture.Type type,
-            Map<String, String> metadata) throws IOException {
+    private SkinUploadResponse uploadUrl(CloseableHttpClient client, URI uri, GameProfile profile, MinecraftProfileTexture.Type type, Map<String, String> metadata) throws IOException {
 
         return upload(client, RequestBuilder.post()
                 .setUri(buildUserTextureUri(profile, type))
