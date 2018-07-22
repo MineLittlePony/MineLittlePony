@@ -49,10 +49,6 @@ public class LiteModHDSkinsMod implements HDSkinsMod, AdvancedExposable {
 
         IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
         irrm.registerReloadListener(HDSkinManager.INSTANCE);
-
-        if (experimentalSkinDrop) {
-            GLWindow.create();
-        }
     }
 
     @Override
@@ -81,6 +77,10 @@ public class LiteModHDSkinsMod implements HDSkinsMod, AdvancedExposable {
 
         // register skin servers.
         skin_servers.forEach(HDSkinManager.INSTANCE::addSkinServer);
+
+        if (experimentalSkinDrop) {
+            GLWindow.create();
+        }
     }
 
     @Override
