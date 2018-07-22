@@ -6,12 +6,15 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import javax.annotation.Nullable;
 
 /**
@@ -80,10 +83,12 @@ public class ThreadMultipartPostUpload {
                 String paramName = data.getKey();
                 Object paramData = data.getValue();
 
-                if (paramData instanceof Path) {
-                    Path uploadPath = (Path) paramData;
+                if (paramData instanceof URI) {
+                    Path uploadPath = Paths.get((URI) paramData);
+
                     outputStream.writeBytes("Content-Disposition: form-data; name=\"" + paramName + "\"; filename=\"" + uploadPath.getFileName() + "\"" + CRLF);
                     outputStream.writeBytes("Content-Type: image/png" + CRLF + CRLF);
+
 
                     Files.copy(uploadPath, outputStream);
                 } else {
