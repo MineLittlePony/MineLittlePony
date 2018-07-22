@@ -1,5 +1,7 @@
 package com.voxelmodpack.hdskins.upload.awt;
 
+import org.lwjgl.opengl.Display;
+
 import java.awt.Color;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetListener;
@@ -11,8 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.SwingConstants;
-
-import org.lwjgl.opengl.Display;
 
 public class FileDropper extends JFrame {
     private static final long serialVersionUID = -2945117328826695659L;
@@ -33,7 +33,7 @@ public class FileDropper extends JFrame {
         super("Skin Drop");
 
         setType(Type.UTILITY);
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setResizable(false);
         setTitle("Skin Drop");
         setSize(256, 256);
