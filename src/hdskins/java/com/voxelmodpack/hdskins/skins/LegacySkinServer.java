@@ -99,7 +99,7 @@ public class LegacySkinServer implements SkinServer {
             if (response.startsWith("ERROR: ")) {
                 response = response.substring(7);
             }
-            if (response.equalsIgnoreCase("OK") || !response.endsWith("OK"))
+            if (!response.equalsIgnoreCase("OK") || !response.endsWith("OK"))
                 throw new IOException(response);
             return new SkinUploadResponse(response);
 
