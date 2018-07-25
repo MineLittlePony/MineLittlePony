@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -25,7 +24,7 @@ import org.apache.http.util.EntityUtils;
  */
 public class NetClient implements Closeable {
 
-    private CloseableHttpClient client;
+    private static CloseableHttpClient client = null;
 
     private RequestBuilder rqBuilder;
 
@@ -89,7 +88,7 @@ public class NetClient implements Closeable {
     /**
      * Commits and sends the request.
      */
-    private void send() {
+    private void send() throws IOException {
         HttpUriRequest request = rqBuilder.build();
 
         if (headers != null) {
@@ -102,15 +101,13 @@ public class NetClient implements Closeable {
             client = HttpClients.createSystem();
         }
 
-        try {
-            response = client.execute(request);
-        } catch (IOException e) { }
+        response = client.execute(request);
     }
 
     /**
      * Gets or obtains the http response body.
      */
-    public CloseableHttpResponse getResponse() {
+    public CloseableHttpResponse getResponse() throws IOException {
         if (response == null) {
             send();
         }
@@ -121,7 +118,7 @@ public class NetClient implements Closeable {
     /**
      * Gets or obtains a response status code.
      */
-    public int getResponseCode() {
+    public int getResponseCode() throws IOException {
         if (getResponse() == null) {
             return HttpStatus.SC_NOT_FOUND;
         }
@@ -132,7 +129,7 @@ public class NetClient implements Closeable {
     /**
      * Consumes and returns the entire response body.
      */
-    public String getResponseText() {
+    public String getResponseText() throws IOException {
         if (getResponse() == null || response.getEntity() == null) {
             return "";
         }
@@ -146,23 +143,13 @@ public class NetClient implements Closeable {
             }
 
             return builder.toString();
-        } catch (IOException e) {
-
         }
-
-        return "";
     }
 
     @Override
     public void close() throws IOException {
         if (response != null) {
             EntityUtils.consumeQuietly(response.getEntity());
-            response = null;
-        }
-
-        if (client != null) {
-            IOUtils.closeQuietly(client);
-            client = null;
         }
     }
 }
