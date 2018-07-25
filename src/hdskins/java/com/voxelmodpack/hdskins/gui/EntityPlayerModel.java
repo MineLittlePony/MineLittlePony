@@ -4,36 +4,28 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-import com.voxelmodpack.hdskins.DynamicTextureImage;
 import com.voxelmodpack.hdskins.HDSkinManager;
-import com.voxelmodpack.hdskins.ImageBufferDownloadHD;
-import com.voxelmodpack.hdskins.PreviewTexture;
+import com.voxelmodpack.hdskins.LocalTexture;
+import com.voxelmodpack.hdskins.LocalTexture.IBlankSkinSupplier;
 import com.voxelmodpack.hdskins.PreviewTextureManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
-import javax.imageio.ImageIO;
 
 @SuppressWarnings("EntityConstructor")
-public class EntityPlayerModel extends EntityLivingBase {
+public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSupplier {
 
     public static final ResourceLocation NO_SKIN = new ResourceLocation("hdskins", "textures/mob/noskin.png");
     public static final ResourceLocation NO_ELYTRA = new ResourceLocation("textures/entity/elytra.png");
 
-    private Map<EntityEquipmentSlot, ItemStack> armour = Maps.newEnumMap(ImmutableMap.of(
+    private final Map<EntityEquipmentSlot, ItemStack> armour = Maps.newEnumMap(ImmutableMap.of(
             EntityEquipmentSlot.HEAD, ItemStack.EMPTY,
             EntityEquipmentSlot.CHEST, ItemStack.EMPTY,
             EntityEquipmentSlot.LEGS, ItemStack.EMPTY,
@@ -41,133 +33,56 @@ public class EntityPlayerModel extends EntityLivingBase {
             EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY
     ));
 
-    private PreviewTexture remoteSkinTexture;
-    private ResourceLocation remoteSkinResource;
-    protected ResourceLocation localSkinResource;
-    private DynamicTexture localSkinTexture;
-    private PreviewTexture remoteElytraTexture;
-    private ResourceLocation remoteElytraResource;
-    private ResourceLocation localElytraResource;
-    private DynamicTexture localElytraTexture;
-    private TextureManager textureManager;
+    protected final LocalTexture skin;
+    protected final LocalTexture elytra;
+
     public final GameProfile profile;
 
-    protected boolean remoteSkin = false;
-    protected boolean hasLocalTexture = false;
     protected boolean previewThinArms = false;
 
     public EntityPlayerModel(GameProfile gameprofile) {
         super(new DummyWorld());
         profile = gameprofile;
-        textureManager = Minecraft.getMinecraft().getTextureManager();
-        remoteSkinResource = new ResourceLocation("skins/preview_" + profile.getName() + ".png");
-        remoteElytraResource = new ResourceLocation("elytras/preview_" + profile.getName() + ".png");
-        localSkinResource = getBlankSkin();
-        localElytraResource = getBlankElytra();
-        textureManager.deleteTexture(remoteSkinResource);
-        textureManager.deleteTexture(remoteElytraResource);
+
+        skin = new LocalTexture(profile, Type.SKIN, this);
+        elytra = new LocalTexture(profile, Type.ELYTRA, this);
     }
 
     public void reloadRemoteSkin(SkinManager.SkinAvailableCallback listener) {
-        remoteSkin = true;
-        if (remoteSkinTexture != null) {
-            textureManager.deleteTexture(remoteSkinResource);
-        }
-        if (remoteElytraTexture != null) {
-            textureManager.deleteTexture(remoteElytraResource);
-        }
-
         PreviewTextureManager ptm = HDSkinManager.getPreviewTextureManager(profile);
 
-        remoteSkinTexture = ptm.getPreviewTexture(remoteSkinResource, Type.SKIN, getBlankSkin(), listener);
-        remoteElytraTexture = ptm.getPreviewTexture(remoteElytraResource, Type.ELYTRA, getBlankElytra(), null);
-
+        skin.setRemote(ptm, listener);
+        elytra.setRemote(ptm, listener);
     }
 
     public void setLocalTexture(File skinTextureFile, Type type) {
-        if (skinTextureFile.exists()) {
-            if (type == Type.SKIN) {
-                remoteSkin = false;
-                if (localSkinTexture != null) {
-                    textureManager.deleteTexture(localSkinResource);
-                    localSkinTexture = null;
-                }
-
-                BufferedImage bufferedImage;
-                try {
-                    BufferedImage image = ImageIO.read(skinTextureFile);
-                    bufferedImage = new ImageBufferDownloadHD().parseUserSkin(image);
-                    assert bufferedImage != null;
-                } catch (IOException var4) {
-                    localSkinResource = getBlankSkin();
-                    var4.printStackTrace();
-                    return;
-                }
-
-                localSkinTexture = new DynamicTextureImage(bufferedImage);
-                localSkinResource = textureManager.getDynamicTextureLocation("localSkinPreview", localSkinTexture);
-                hasLocalTexture = true;
-            } else if (type == Type.ELYTRA) {
-                remoteSkin = false;
-                if (localElytraTexture != null) {
-                    textureManager.deleteTexture(localElytraResource);
-                    localElytraTexture = null;
-                }
-
-                BufferedImage bufferedImage;
-                try {
-                    bufferedImage = ImageIO.read(skinTextureFile);
-                } catch (IOException var4) {
-                    localElytraResource = getBlankElytra();
-                    var4.printStackTrace();
-                    return;
-                }
-
-                localElytraTexture = new DynamicTextureImage(bufferedImage);
-                localElytraResource = textureManager.getDynamicTextureLocation("localElytraPreview", localElytraTexture);
-                hasLocalTexture = true;
-            }
+        if (type == Type.SKIN) {
+            skin.setLocal(skinTextureFile);
+        } else if (type == Type.ELYTRA) {
+            skin.setLocal(skinTextureFile);
         }
     }
 
-    protected ResourceLocation getBlankSkin() {
-        return NO_SKIN;
-    }
-
-    protected ResourceLocation getBlankElytra() {
-        return NO_ELYTRA;
+    @Override
+    public ResourceLocation getBlankSkin(Type type) {
+        return type == Type.SKIN ? NO_SKIN : NO_ELYTRA;
     }
 
     public boolean isUsingLocalTexture() {
-        return !remoteSkin && hasLocalTexture;
+        return skin.usingLocal() || elytra.usingLocal();
     }
 
     public boolean isTextureSetupComplete() {
-        return (remoteSkin && remoteSkinTexture != null) && remoteSkinTexture.isTextureUploaded();
+        return skin.uploadComplete() && elytra.uploadComplete();
     }
 
     public void releaseTextures() {
-        if (localSkinTexture != null) {
-            textureManager.deleteTexture(localSkinResource);
-            localSkinTexture = null;
-            localSkinResource = getBlankSkin();
-            hasLocalTexture = false;
-        }
-        if (localElytraTexture != null) {
-            textureManager.deleteTexture(localElytraResource);
-            localElytraTexture = null;
-            localElytraResource = getBlankElytra();
-            hasLocalTexture = false;
-        }
+        skin.clearLocal();
+        elytra.clearLocal();
     }
 
-    public ResourceLocation getSkinTexture() {
-        return remoteSkin ? (remoteSkinTexture != null ? remoteSkinResource
-                : DefaultPlayerSkin.getDefaultSkin(entityUniqueID)) : localSkinResource;
-    }
-
-    public ResourceLocation getElytraTexture() {
-        return remoteSkin && remoteElytraTexture != null ? remoteElytraResource : localElytraResource;
+    public LocalTexture getLocal(Type type) {
+        return type == Type.SKIN ? skin : elytra;
     }
 
     public void setPreviewThinArms(boolean thinArms) {
@@ -175,22 +90,11 @@ public class EntityPlayerModel extends EntityLivingBase {
     }
 
     public boolean usesThinSkin() {
-        if (isTextureSetupComplete() && remoteSkinTexture.hasModel()) {
-            return remoteSkinTexture.usesThinArms();
+        if (skin.uploadComplete() && skin.getRemote().hasModel()) {
+            return skin.getRemote().usesThinArms();
         }
 
         return previewThinArms;
-    }
-
-    @Override
-    public void swingArm(EnumHand hand) {
-        super.swingArm(hand);
-        if (!isSwingInProgress || swingProgressInt >= 4 || swingProgressInt < 0) {
-            swingProgressInt = -1;
-            isSwingInProgress = true;
-            swingingHand = hand;
-        }
-
     }
 
     public void updateModel() {
@@ -205,7 +109,7 @@ public class EntityPlayerModel extends EntityLivingBase {
             swingProgressInt = 0;
         }
 
-        swingProgress = swingProgressInt / 8;
+        swingProgress = swingProgressInt / 8F;
     }
 
     @Override
@@ -227,5 +131,4 @@ public class EntityPlayerModel extends EntityLivingBase {
     public void setItemStackToSlot(EntityEquipmentSlot slotIn, ItemStack stack) {
         armour.put(slotIn, stack);
     }
-
 }

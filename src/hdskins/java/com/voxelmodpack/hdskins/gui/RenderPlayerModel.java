@@ -16,6 +16,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+
 import java.util.Set;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
@@ -48,7 +50,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
                     GlStateManager.enableBlend();
                     GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
-                    bindTexture(entity.getElytraTexture());
+                    bindTexture(entity.getLocal(Type.ELYTRA).getTexture());
 
                     GlStateManager.pushMatrix();
                     GlStateManager.translate(0, 0, 0.125F);
@@ -70,7 +72,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
 
     @Override
     protected ResourceLocation getEntityTexture(M entity) {
-        return entity.getSkinTexture();
+        return entity.getLocal(Type.SKIN).getTexture();
     }
 
     @Override

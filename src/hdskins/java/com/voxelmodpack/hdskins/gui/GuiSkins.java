@@ -9,6 +9,7 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.skins.SkinServer;
@@ -69,10 +70,12 @@ public class GuiSkins extends GuiScreen {
     private String uploadError;
     private volatile String skinMessage = I18n.format("hdskins.choose");
     private String skinUploadMessage = I18n.format("hdskins.request");
+
     private volatile boolean fetchingSkin;
     private volatile boolean uploadingSkin;
     private volatile boolean pendingRemoteSkinRefresh;
     private volatile boolean throttledByMojang;
+
     private int refreshCounter = -1;
     private ThreadOpenFilePNG openFileThread;
     private final Object skinLock = new Object();
@@ -127,6 +130,7 @@ public class GuiSkins extends GuiScreen {
 
         localPlayer.updateModel();
         remotePlayer.updateModel();
+
         if (fetchingSkin && remotePlayer.isTextureSetupComplete()) {
             fetchingSkin = false;
             btnClear.enabled = true;
@@ -237,34 +241,33 @@ public class GuiSkins extends GuiScreen {
 
     private void loadLocalFile(File skinFile) {
         Minecraft.getMinecraft().addScheduledTask(localPlayer::releaseTextures);
+
         if (!skinFile.exists()) {
             skinMessage = I18n.format("hdskins.error.unreadable");
         } else if (!FilenameUtils.isExtension(skinFile.getName(), new String[]{"png", "PNG"})) {
             skinMessage = I18n.format("hdskins.error.ext");
         } else {
-            BufferedImage chosenImage;
             try {
-                chosenImage = ImageIO.read(skinFile);
+                BufferedImage chosenImage = ImageIO.read(skinFile);
+
+                if (chosenImage == null) {
+                    skinMessage = I18n.format("hdskins.error.open");
+                } else if (!acceptsSkinDimensions(chosenImage.getWidth(), chosenImage.getHeight())) {
+                    skinMessage = I18n.format("hdskins.error.invalid");
+                } else {
+                    synchronized (skinLock) {
+                        pendingSkinFile = skinFile;
+                    }
+                }
             } catch (IOException var6) {
                 skinMessage = I18n.format("hdskins.error.open");
                 var6.printStackTrace();
-                return;
-            }
-
-            if (chosenImage == null) {
-                skinMessage = I18n.format("hdskins.error.open");
-            } else if (isPowerOfTwo(chosenImage.getWidth())
-                    && (chosenImage.getWidth() == chosenImage.getHeight() * 2
-                    || chosenImage.getWidth() == chosenImage.getHeight())
-                    && chosenImage.getWidth() <= MAX_SKIN_DIMENSION
-                    && chosenImage.getHeight() <= MAX_SKIN_DIMENSION) {
-                synchronized (skinLock) {
-                    pendingSkinFile = skinFile;
-                }
-            } else {
-                skinMessage = I18n.format("hdskins.error.invalid");
             }
         }
+    }
+
+    protected boolean acceptsSkinDimensions(int w, int h) {
+        return isPowerOfTwo(w) && w == h * 2 || w == h && w <= MAX_SKIN_DIMENSION && h <= MAX_SKIN_DIMENSION;
     }
 
     @Override
@@ -279,28 +282,21 @@ public class GuiSkins extends GuiScreen {
                     openFileThread = new ThreadOpenFilePNG(mc, I18n.format("hdskins.open.title"), this::onFileOpenDialogClosed);
                     openFileThread.start();
                     guiButton.enabled = false;
-                }
-
-                if (guiButton.id == btnUpload.id) {
+                } else if (guiButton.id == btnUpload.id) {
                     if (selectedSkin != null) {
                         punchServer("hdskins.upload", selectedSkin.toURI());
                         btnUpload.enabled = false;
                     } else {
                         setUploadError(I18n.format("hdskins.error.select"));
                     }
-                }
-
-                if (guiButton.id == btnClear.id && remotePlayer.isTextureSetupComplete()) {
+                } else if (guiButton.id == btnClear.id && remotePlayer.isTextureSetupComplete()) {
                     punchServer("hdskins.request", null);
                     btnUpload.enabled = selectedSkin != null;
-                }
-
-                if (guiButton.id == btnBack.id) {
+                } else if (guiButton.id == btnBack.id) {
                     mc.displayGuiScreen(new GuiMainMenu());
-                }
-
-                if (guiButton.id == btnModeSkin.id || guiButton.id == btnModeElytra.id || guiButton.id == btnModeSkinnySkin.id) {
+                } else if (guiButton.id == btnModeSkin.id || guiButton.id == btnModeElytra.id || guiButton.id == btnModeSkinnySkin.id) {
                     ItemStack stack;
+
                     if (guiButton.id == btnModeSkin.id) {
                         thinArmType = false;
                         textureType = SKIN;
@@ -402,11 +398,11 @@ public class GuiSkins extends GuiScreen {
         float scale = height / 4;
         float lookX = mid - mouseX;
 
-        mc.getTextureManager().bindTexture(localPlayer.getSkinTexture());
+        mc.getTextureManager().bindTexture(localPlayer.getLocal(Type.SKIN).getTexture());
 
         renderPlayerModel(localPlayer, xPos1, yPos, scale, horizon - mouseY, lookX, partialTick);
 
-        mc.getTextureManager().bindTexture(remotePlayer.getSkinTexture());
+        mc.getTextureManager().bindTexture(remotePlayer.getLocal(Type.SKIN).getTexture());
 
         renderPlayerModel(remotePlayer, xPos2, yPos, scale, horizon - mouseY, lookX, partialTick);
 
@@ -421,15 +417,16 @@ public class GuiSkins extends GuiScreen {
         enableBlend();
         depthMask(false);
 
-        int labelwidth = (width / 2 - 80) / 2;
         if (!localPlayer.isUsingLocalTexture()) {
             int opacity = fontRenderer.getStringWidth(skinMessage) / 2;
+
             Gui.drawRect(40, height / 2 - 12, width / 2 - 40, height / 2 + 12, 0xB0000000);
             fontRenderer.drawStringWithShadow(skinMessage, (int) (xPos1 - opacity), height / 2 - 4, 0xffffff);
         }
         if (btnModeSkin.isMouseOver() || btnModeElytra.isMouseOver() || btnModeSkinnySkin.isMouseOver()) {
             int y = Math.max(mouseY, 16);
             String text;
+
             if (btnModeSkin.isMouseOver()) {
                 text = "hdskins.mode.skin";
             } else if (btnModeSkinnySkin.isMouseOver()) {
@@ -437,6 +434,7 @@ public class GuiSkins extends GuiScreen {
             } else {
                 text = "hdskins.mode.elytra";
             }
+
             drawHoveringText(I18n.format(text), mouseX, y);
         }
         if (btnAbout.isMouseOver()) {
@@ -448,7 +446,7 @@ public class GuiSkins extends GuiScreen {
 
             int lineHeight = throttledByMojang ? 16 : 12;
 
-            Gui.drawRect((int) (xPos2 - labelwidth), height / 2 - lineHeight, width - 40, height / 2 + lineHeight, 0xB0000000);
+            Gui.drawRect((int) (xPos2 - width / 4 + 40), height / 2 - lineHeight, width - 40, height / 2 + lineHeight, 0xB0000000);
 
             if (throttledByMojang) {
                 drawCenteredString(fontRenderer, I18n.format("hdskins.error.mojang"), (int)xPos2, height / 2 - 10, 0xffffff);
@@ -460,9 +458,9 @@ public class GuiSkins extends GuiScreen {
 
         if (uploadingSkin || uploadOpacity > 0) {
             if (!uploadingSkin) {
-                uploadOpacity -= deltaTime * 0.05F;
+                uploadOpacity -= deltaTime / 20;
             } else if (uploadOpacity < 1) {
-                uploadOpacity += deltaTime * 0.1F;
+                uploadOpacity += deltaTime / 10;
             }
 
             if (uploadOpacity > 1) {
@@ -488,8 +486,7 @@ public class GuiSkins extends GuiScreen {
         enableDepth();
     }
 
-    private void renderPlayerModel(EntityPlayerModel thePlayer, float xPosition, float yPosition, float scale, float mouseY, float mouseX,
-            float partialTick) {
+    private void renderPlayerModel(EntityPlayerModel thePlayer, float xPosition, float yPosition, float scale, float mouseY, float mouseX, float partialTick) {
         enableColorMaterial();
         pushMatrix();
         translate(xPosition, yPosition, 300);
@@ -505,9 +502,9 @@ public class GuiSkins extends GuiScreen {
 
         rotate(((updateCounter + partialTick) * 2.5F) % 360, 0, 1, 0);
 
-        thePlayer.rotationYawHead = ((float) Math.atan(mouseX / 20)) * 30;
+        thePlayer.rotationYawHead = (float)Math.atan(mouseX / 20) * 30;
+        thePlayer.rotationPitch = (float)Math.atan(mouseY / 40) * -20;
 
-        thePlayer.rotationPitch = -((float) Math.atan(mouseY / 40)) * 20;
         translate(0, thePlayer.getYOffset(), 0);
 
         RenderManager rm = Minecraft.getMinecraft().getRenderManager();
@@ -552,7 +549,7 @@ public class GuiSkins extends GuiScreen {
         HDSkinManager.INSTANCE.getGatewayServer()
                 .uploadSkin(mc.getSession(), path, textureType, getMetadata())
                 .thenAccept(this::onUploadComplete)
-                .exceptionally(this::onFailure);
+                .exceptionally(this::onUploadFailure);
     }
 
     private Map<String, String> getMetadata() {
@@ -564,8 +561,7 @@ public class GuiSkins extends GuiScreen {
         btnUpload.enabled = true;
     }
 
-
-    private Void onFailure(Throwable t) {
+    private Void onUploadFailure(Throwable t) {
         t = Throwables.getRootCause(t);
         LogManager.getLogger().warn("Upload failed", t);
         setUploadError(t.toString());
