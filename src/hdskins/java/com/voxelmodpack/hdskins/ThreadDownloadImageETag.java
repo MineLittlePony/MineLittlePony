@@ -2,7 +2,7 @@ package com.voxelmodpack.hdskins;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-import com.voxelmodpack.hdskins.util.NetClient;
+import com.voxelmodpack.hdskins.skins.NetClient;
 
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.texture.SimpleTexture;
