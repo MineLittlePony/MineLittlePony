@@ -80,7 +80,7 @@ public class LegacySkinServer implements SkinServer {
             return Optional.empty();
         }
 
-        return Optional.of(TexturesPayloadBuilder.createTexuresPayload(profile, map));
+        return Optional.of(TexturesPayloadBuilder.createTexturesPayload(profile, map));
     }
 
     @SuppressWarnings("deprecation")

@@ -22,7 +22,7 @@ public class TexturesPayloadBuilder {
 
     private static Gson gson = new GsonBuilder().registerTypeAdapter(UUID.class, new UUIDTypeAdapter()).create();
 
-    public static MinecraftTexturesPayload createTexuresPayload(GameProfile profile, Map<Type, MinecraftProfileTexture> textures) {
+    public static MinecraftTexturesPayload createTexturesPayload(GameProfile profile, Map<Type, MinecraftProfileTexture> textures) {
         return gson.fromJson(gson.toJson(new TexturesPayloadBuilder(profile, textures)), MinecraftTexturesPayload.class);
     }
 
