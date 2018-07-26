@@ -13,7 +13,6 @@ import com.minelittlepony.pony.data.PonySize;
 import com.minelittlepony.render.AbstractPonyRenderer;
 import com.minelittlepony.render.PonyRenderer;
 import com.minelittlepony.render.plane.PlaneRenderer;
-import com.minelittlepony.transform.PonyTransformation;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
@@ -21,7 +20,6 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 
@@ -720,8 +718,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     }
 
     @Override
-    public PonyTransformation getBodyTransformation() {
-        return (isChild ? PonySize.FOAL : metadata.getSize()).getTranformation();
+    public PonySize getSize() {
+        return isChild ? PonySize.FOAL : metadata.getSize();
     }
 
     @Override
@@ -844,7 +842,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
             rotate(motionPitch, 1, 0, 0);
         }
 
-        getBodyTransformation().transform(this, part);
+        getSize().getTranformation().transform(this, part);
     }
 
     /**

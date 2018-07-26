@@ -95,11 +95,12 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony {
 
         setPonyModel(model);
 
-        layerRenderers.clear();
         addLayers();
     }
 
     protected void addLayers() {
+        layerRenderers.clear();
+
         addLayer(new LayerPonyArmor<>(this));
         addLayer(new LayerArrow(this));
         addLayer(new LayerPonyCustomHead<>(this));
@@ -133,8 +134,6 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony {
         updateModel(player);
 
         ponyModel.updateLivingState(player, pony);
-
-        super.preRenderCallback(player, ticks);
         shadowSize = getShadowScale();
 
         float s = getScaleFactor();
@@ -231,11 +230,11 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony {
 
     @Override
     public float getShadowScale() {
-        return pony.getMetadata().getSize().getShadowSize();
+        return ponyModel.getSize().getShadowSize();
     }
 
     @Override
     public float getScaleFactor() {
-        return pony.getMetadata().getSize().getScaleFactor();
+        return ponyModel.getSize().getScaleFactor();
     }
 }

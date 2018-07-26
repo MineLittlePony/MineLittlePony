@@ -21,6 +21,8 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
+// TODO: A lot of this duplicates RenderPonyPlayer
+//       and is the whole reason we had this scaling bug in the first place.
 public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving<T> implements IRenderPony {
 
     protected ModelWrapper playerModel;
@@ -31,6 +33,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
     public RenderPonyMob(RenderManager manager, ModelWrapper model) {
         super(manager, model.getBody(), 0.5F);
+
         setPonyModel(model);
 
         addLayers();
@@ -61,8 +64,6 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
         updateModel(entity);
 
         ponyModel.updateLivingState(entity, pony);
-
-        super.preRenderCallback(entity, ticks);
         shadowSize = getShadowScale();
 
         float s = getScaleFactor();
@@ -76,34 +77,32 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     }
 
     @Override
-    public float getShadowScale() {
-        if (mainModel.isChild) {
-            return 0.25F;
-        } else if (MineLittlePony.getConfig().showscale) {
-            return 0.4F;
-        }
-        return 0.5F;
-    }
-
-    @Override
-    public float getScaleFactor() {
-        if (MineLittlePony.getConfig().showscale) return 0.9F;
-        return 1;
-    }
-
-    @Override
     public ModelWrapper getModelWrapper() {
         return playerModel;
     }
 
     protected void setPonyModel(ModelWrapper model) {
         playerModel = model;
-        ponyModel = playerModel.getBody();
+        mainModel = ponyModel = playerModel.getBody();
+    }
+
+    protected void updatePony(T entity) {
+        pony = MineLittlePony.getInstance().getManager().getPony(getEntityTexture(entity), false);
     }
 
     protected void updateModel(T entity) {
-        pony = MineLittlePony.getInstance().getManager().getPony(getEntityTexture(entity), false);
+        updatePony(entity);
         playerModel.apply(pony.getMetadata());
+    }
+
+    @Override
+    public float getShadowScale() {
+        return ponyModel.getSize().getShadowSize();
+    }
+
+    @Override
+    public float getScaleFactor() {
+        return ponyModel.getSize().getScaleFactor();
     }
 
     @Override
