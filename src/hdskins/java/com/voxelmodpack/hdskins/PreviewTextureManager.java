@@ -1,15 +1,17 @@
 package com.voxelmodpack.hdskins;
 
 import com.google.common.collect.Maps;
+import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+import com.voxelmodpack.hdskins.skins.CallableFutures;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Nullable;
 
@@ -19,14 +21,26 @@ import javax.annotation.Nullable;
  */
 public class PreviewTextureManager {
 
-    private final Map<Type, MinecraftProfileTexture> textures;
+    private final GameProfile profile;
 
-    PreviewTextureManager(Map<Type, MinecraftProfileTexture> textures) {
-        this.textures = textures;
+    private Map<Type, MinecraftProfileTexture> textures = null;
+
+    PreviewTextureManager(GameProfile profile) {
+        this.profile = profile;
+    }
+
+    public CompletableFuture<PreviewTexture> getPreviewTexture(ResourceLocation location, Type type, ResourceLocation def, @Nullable SkinAvailableCallback callback) {
+        return CallableFutures.asyncFailableFuture(() ->
+            loadPreviewTexture(location, type, def, callback)
+        , HDSkinManager.skinUploadExecutor);
     }
 
     @Nullable
-    public PreviewTexture getPreviewTexture(ResourceLocation location, Type type, ResourceLocation def, @Nullable SkinAvailableCallback callback) {
+    private PreviewTexture loadPreviewTexture(ResourceLocation location, Type type, ResourceLocation def, @Nullable SkinAvailableCallback callback) {
+        if (textures == null) {
+            textures = HDSkinManager.INSTANCE.getGatewayServer().getPreviewTextures(profile);
+        }
+
         if (!textures.containsKey(type)) {
             return null;
         }
@@ -41,7 +55,7 @@ public class PreviewTextureManager {
 
         PreviewTexture skinTexture = new PreviewTexture(texture, def, buffer);
 
-        Minecraft.getMinecraft().getTextureManager().loadTexture(location, skinTexture);
+        TextureLoader.loadTexture(location, skinTexture);
 
         return skinTexture;
     }

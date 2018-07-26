@@ -87,7 +87,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     private Class<? extends GuiSkins> skinsClass = null;
 
     public static PreviewTextureManager getPreviewTextureManager(GameProfile profile) {
-        return new PreviewTextureManager(INSTANCE.getGatewayServer().getPreviewTextures(profile));
+        return new PreviewTextureManager(profile);
     }
 
     private HDSkinManager() {

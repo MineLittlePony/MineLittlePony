@@ -19,8 +19,8 @@ public class LocalTexture {
 
     private final TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
 
-    private DynamicTexture local;
-    private PreviewTexture remote;
+    private volatile DynamicTexture local;
+    private volatile PreviewTexture remote;
 
     private ResourceLocation remoteResource;
     private ResourceLocation localResource;
@@ -33,7 +33,7 @@ public class LocalTexture {
         this.blank = blank;
         this.type = type;
 
-        String file =  type.name().toLowerCase() + "s/preview_${profile.getName()}.png";
+        String file = String.format("%ss/preview_%s.png", type.name().toLowerCase(), profile.getName());
 
         remoteResource = new ResourceLocation(file);
         textureManager.deleteTexture(remoteResource);
@@ -76,7 +76,9 @@ public class LocalTexture {
     public void setRemote(PreviewTextureManager ptm, SkinAvailableCallback callback) {
         clearRemote();
 
-        remote = ptm.getPreviewTexture(remoteResource, type, blank.getBlankSkin(type), callback);
+        ptm.getPreviewTexture(remoteResource, type, blank.getBlankSkin(type), callback).thenAccept(texture -> {
+            remote = texture;
+        });
     }
 
     public void setLocal(File file) {
