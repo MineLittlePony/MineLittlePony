@@ -1,6 +1,5 @@
 package com.voxelmodpack.hdskins.skins;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.annotations.Expose;
@@ -16,10 +15,10 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.http.HttpStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Map;
@@ -33,22 +32,15 @@ public class LegacySkinServer extends AbstractSkinServer {
     private static final Logger logger = LogManager.getLogger();
 
     @Expose
-    private final String address;
-
-    @Expose
     private final String gateway;
 
     public LegacySkinServer(String address, @Nullable String gateway) {
-        this.address = address;
-        this.gateway = gateway;
+        super(address);
+        this.gateway = Strings.isBlank(gateway) ? address : gateway;
     }
 
     @Override
     public Map<Type, MinecraftProfileTexture> getPreviewTextures(GameProfile profile) {
-        if (Strings.isNullOrEmpty(gateway)) {
-            return Collections.emptyMap();
-        }
-
         Map<Type, MinecraftProfileTexture> map = new EnumMap<>(Type.class);
 
         for (Type type : Type.values()) {
@@ -105,8 +97,10 @@ public class LegacySkinServer extends AbstractSkinServer {
                 response = response.substring(7);
             }
 
-            if (!response.equalsIgnoreCase("OK") && !response.endsWith("OK"))
+            if (!response.equalsIgnoreCase("OK") && !response.endsWith("OK")) {
                 throw new IOException(response);
+            }
+
             return new SkinUploadResponse(response);
         }
     }

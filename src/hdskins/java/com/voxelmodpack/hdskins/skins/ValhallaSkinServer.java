@@ -2,7 +2,6 @@ package com.voxelmodpack.hdskins.skins;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -14,7 +13,6 @@ import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -42,13 +40,10 @@ import java.util.UUID;
 @ServerType("valhalla")
 public class ValhallaSkinServer extends AbstractSkinServer {
 
-    @Expose
-    private final String address;
-
     private transient String accessToken;
 
     public ValhallaSkinServer(String address) {
-        this.address = address;
+        super(address);
     }
 
     @Override
@@ -220,13 +215,6 @@ public class ValhallaSkinServer extends AbstractSkinServer {
 
     private URI getResponseURI() {
         return URI.create(String.format("%s/auth/response", address));
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this, IndentedToStringStyle.INSTANCE)
-                .append("address", address)
-                .build();
     }
 
     @SuppressWarnings("WeakerAccess")

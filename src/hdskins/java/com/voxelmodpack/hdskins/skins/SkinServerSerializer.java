@@ -32,6 +32,10 @@ public class SkinServerSerializer implements JsonSerializer<SkinServer>, JsonDes
     public SkinServer deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         String type = json.getAsJsonObject().get("type").getAsString();
 
-        return context.deserialize(json, HDSkinManager.INSTANCE.getSkinServerClass(type));
+        SkinServer server = context.deserialize(json, HDSkinManager.INSTANCE.getSkinServerClass(type));
+
+        server.validate();
+
+        return server;
     }
 }
