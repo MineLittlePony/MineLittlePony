@@ -19,6 +19,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
@@ -113,7 +114,13 @@ public class Pony {
     }
 
     public boolean isFullySubmerged(EntityLivingBase entity) {
-        return entity.isInWater() && entity.getEntityWorld().getBlockState(new BlockPos(entity.getPositionEyes(1))).getMaterial() == Material.WATER;
+        return entity.isInWater() && entity.getEntityWorld().getBlockState(new BlockPos(getVisualEyePosition(entity))).getMaterial() == Material.WATER;
+    }
+
+    protected Vec3d getVisualEyePosition(EntityLivingBase entity) {
+        PonySize size = entity.isChild() ? PonySize.FOAL : metadata.getSize();
+
+        return new Vec3d(entity.posX, entity.posY + (double)entity.getEyeHeight() * size.getScaleFactor(), entity.posZ);
     }
 
     public boolean isWearingHeadgear(EntityLivingBase entity) {
