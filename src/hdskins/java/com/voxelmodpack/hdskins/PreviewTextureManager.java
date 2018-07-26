@@ -6,7 +6,6 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.skins.CallableFutures;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.util.ResourceLocation;
@@ -56,12 +55,7 @@ public class PreviewTextureManager {
 
         PreviewTexture skinTexture = new PreviewTexture(texture, def, buffer);
 
-        Minecraft mc = Minecraft.getMinecraft();
-
-        mc.addScheduledTask(() -> {
-            mc.getTextureManager().loadTexture(location, skinTexture);
-        });
-
+        TextureLoader.loadTexture(location, skinTexture);
 
         return skinTexture;
     }
