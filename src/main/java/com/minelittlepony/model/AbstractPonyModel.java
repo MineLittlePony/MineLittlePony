@@ -21,6 +21,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 
@@ -77,6 +78,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     }
 
     public void updateLivingState(EntityLivingBase entity, Pony pony) {
+        isChild = entity.isChild();
         isSneak = entity.isSneaking();
         isSleeping = entity.isPlayerSleeping();
         isFlying = pony.isPegasusFlying(entity);
