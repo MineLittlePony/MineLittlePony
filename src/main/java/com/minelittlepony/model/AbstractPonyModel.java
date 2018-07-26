@@ -72,7 +72,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
      */
     protected void checkRainboom(Entity entity, float swing) {
-        rainboom = isSwimming() || canFly() && Math.sqrt(entity.motionX * entity.motionX + entity.motionZ * entity.motionZ) > 0.4F;
+        rainboom = canFly() && Math.sqrt(entity.motionX * entity.motionX + entity.motionZ * entity.motionZ) > 0.4F;
     }
 
     public void updateLivingState(EntityLivingBase entity, Pony pony) {
@@ -112,7 +112,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         shakeBody(move, swing, getWobbleAmount(), ticks);
         rotateLegs(move, swing, ticks, entity);
 
-        if (!rainboom) {
+        if (!isSwimming && !rainboom) {
             holdItem(swing);
         }
         swingItem(entity);
@@ -175,7 +175,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      * @param ticks       Total whole and partial ticks since the entity's existance. Used in animations together with {@code swing} and {@code move}.
      */
     protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
-        tail.setRotationAndAngles(rainboom, move, swing, bodySwing * 5, ticks);
+        tail.setRotationAndAngles(isSwimming || rainboom, move, swing, bodySwing * 5, ticks);
 
         upperTorso.rotateAngleY = bodySwing;
         bipedBody.rotateAngleY = bodySwing;
@@ -276,24 +276,19 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         float leftY = -forward - MathHelper.sin((move / 3) + 2*PI/3);
 
         float rightX = down + MathHelper.sin(move / 3) / 2;
-        float rightY = forward + MathHelper.sin(move / 3);
 
 
         bipedLeftArm.rotateAngleX = leftX;
         bipedLeftArm.rotateAngleY = leftY;
 
-        bipedRightArm.rotateAngleY = rightY;
-        bipedRightArm.rotateAngleX = rightX;
-
-
+        bipedRightArm.rotateAngleY = -leftY;
+        bipedRightArm.rotateAngleX = leftX;
 
         bipedLeftLeg.rotateAngleX = leftX;
         bipedRightLeg.rotateAngleX = rightX;
 
         bipedLeftLeg.rotateAngleY = 0;
         bipedRightLeg.rotateAngleY = 0;
-
-
     }
 
     /**
