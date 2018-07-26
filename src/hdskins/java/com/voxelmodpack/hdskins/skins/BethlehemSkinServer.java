@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Locale;
 import java.util.Map;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.http.HttpStatus;
 
 import com.google.common.collect.ImmutableMap;
@@ -75,12 +74,5 @@ public class BethlehemSkinServer extends AbstractSkinServer {
 
     private String getPath(GameProfile profile) {
         return String.format("%s/profile/%s", address, UUIDTypeAdapter.fromUUID(profile.getId()));
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this, IndentedToStringStyle.INSTANCE)
-                .append("address", address)
-                .build();
     }
 }

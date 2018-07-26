@@ -9,7 +9,6 @@ import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Nullable;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.logging.log4j.util.Strings;
 
 import com.google.gson.JsonParseException;
@@ -64,7 +63,7 @@ public abstract class AbstractSkinServer implements SkinServer {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, IndentedToStringStyle.INSTANCE)
+        return new IndentedToStringStyle.Builder(this)
                 .append("address", address)
                 .build();
     }
