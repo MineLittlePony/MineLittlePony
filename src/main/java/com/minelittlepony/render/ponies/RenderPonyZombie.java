@@ -47,7 +47,7 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
         }
 
         @Override
-        protected void preRenderCallback(EntityHusk entity, float ticks) {
+        public void preRenderCallback(EntityHusk entity, float ticks) {
             super.preRenderCallback(entity, ticks);
             GlStateManager.scale(1.0625F, 1.0625F, 1.0625F);
         }
@@ -66,7 +66,7 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
 		}
 
 		@Override
-		protected void preRenderCallback(EntityGiantZombie entity, float ticks) {
+		public void preRenderCallback(EntityGiantZombie entity, float ticks) {
 	        super.preRenderCallback(entity, ticks);
 	        GlStateManager.scale(3, 3, 3);
 	    }

@@ -24,7 +24,7 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
     }
 
     @Override
-    protected void preRenderCallback(EntityVillager villager, float ticks) {
+    public void preRenderCallback(EntityVillager villager, float ticks) {
         super.preRenderCallback(villager, ticks);
         GlStateManager.scale(0.9375F, 0.9375F, 0.9375F);
     }

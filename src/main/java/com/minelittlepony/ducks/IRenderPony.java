@@ -1,24 +1,19 @@
 package com.minelittlepony.ducks;
 
 import com.minelittlepony.model.ModelWrapper;
+import com.minelittlepony.pony.data.Pony;
+
+import net.minecraft.entity.EntityLivingBase;
 
 /**
  * I Render Pony now, oky?
  */
-public interface IRenderPony {
+public interface IRenderPony<T extends EntityLivingBase> {
 
     /**
      * Gets the wrapped pony model for this renderer.
      */
     ModelWrapper getModelWrapper();
 
-    /**
-     * Gets the current shadow size for rendering.
-     */
-    float getShadowScale();
-
-    /**
-     * Gets the scaling factor used when rendering this pony.
-     */
-    float getScaleFactor();
+    Pony getEntityPony(T entity);
 }

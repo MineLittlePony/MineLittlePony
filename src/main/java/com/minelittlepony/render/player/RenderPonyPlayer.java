@@ -6,20 +6,18 @@ import java.util.Optional;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyConfig;
 import com.minelittlepony.ducks.IRenderPony;
-import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.model.components.ModelDeadMau5Ears;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyLevel;
 import com.minelittlepony.render.PonySkull;
+import com.minelittlepony.render.RenderPony;
 import com.minelittlepony.render.PonySkullRenderer.ISkull;
 import com.minelittlepony.render.layer.LayerEntityOnPonyShoulder;
 import com.minelittlepony.render.layer.LayerHeldPonyItemMagical;
-import com.minelittlepony.render.layer.LayerPonyArmor;
 import com.minelittlepony.render.layer.LayerPonyCape;
 import com.minelittlepony.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.render.layer.LayerPonyElytra;
-import com.minelittlepony.transform.PonyPosture;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
@@ -32,13 +30,13 @@ import net.minecraft.client.renderer.entity.RenderManager;
 
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerArrow;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 
-public class RenderPonyPlayer extends RenderPlayer implements IRenderPony {
+public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<AbstractClientPlayer> {
 
     public static final ISkull SKULL = new PonySkull() {
 
@@ -84,16 +82,12 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony {
         }
     }.register(ISkull.PLAYER);
 
-    private ModelWrapper playerModel;
-
-    protected AbstractPonyModel ponyModel;
-
-    protected Pony pony;
+    protected final RenderPony<AbstractClientPlayer> renderPony = new RenderPony<>(this);
 
     public RenderPonyPlayer(RenderManager manager, boolean useSmallArms, ModelWrapper model) {
         super(manager, useSmallArms);
 
-        setPonyModel(model);
+        mainModel = renderPony.setPonyModel(model);
 
         addLayers();
     }
@@ -101,7 +95,6 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony {
     protected void addLayers() {
         layerRenderers.clear();
 
-        addLayer(new LayerPonyArmor<>(this));
         addLayer(new LayerArrow(this));
         addLayer(new LayerPonyCustomHead<>(this));
         addLayer(new LayerPonyElytra<>(this));
@@ -131,13 +124,8 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony {
 
     @Override
     protected void preRenderCallback(AbstractClientPlayer player, float ticks) {
-        updateModel(player);
-
-        ponyModel.updateLivingState(player, pony);
-        shadowSize = getShadowScale();
-
-        float s = getScaleFactor();
-        GlStateManager.scale(s, s, s);
+        renderPony.preRenderCallback(player, ticks);
+        shadowSize = renderPony.getShadowScale();
 
         if (player.isRiding()) {
             GlStateManager.translate(0, player.getYOffset(), 0);
@@ -152,89 +140,49 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony {
     }
 
     @Override
-    public void renderRightArm(AbstractClientPlayer player) {
-        updateModel(player);
-        bindEntityTexture(player);
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0, -0.37, 0);
-        super.renderRightArm(player);
-        GlStateManager.popMatrix();
+    public final void renderRightArm(AbstractClientPlayer player) {
+        renderArm(player, EnumHandSide.RIGHT);
     }
 
     @Override
-    public void renderLeftArm(AbstractClientPlayer player) {
-        updateModel(player);
+    public final void renderLeftArm(AbstractClientPlayer player) {
+        renderArm(player, EnumHandSide.LEFT);
+    }
+
+    protected void renderArm(AbstractClientPlayer player, EnumHandSide side) {
+        renderPony.updateModel(player);
         bindEntityTexture(player);
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0.06, -0.37, 0);
-        super.renderLeftArm(player);
+        GlStateManager.translate(side == EnumHandSide.LEFT ? 0.06 : 0, -0.37, 0);
+
+        if (side == EnumHandSide.LEFT) {
+            super.renderLeftArm(player);
+        } else {
+            super.renderRightArm(player);
+        }
+
         GlStateManager.popMatrix();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void applyRotations(AbstractClientPlayer player, float yaw, float pitch, float ticks) {
         super.applyRotations(player, yaw, pitch, ticks);
 
-        PonyPosture<?> posture = getPosture(player);
-        if (posture != null && posture.applies(player)) {
-            double motionX = player.posX - player.prevPosX;
-            double motionY = player.onGround ? 0 : player.posY - player.prevPosY;
-            double motionZ = player.posZ - player.prevPosZ;
-            ((PonyPosture<EntityLivingBase>)posture).transform(getModelWrapper().getBody(), player, motionX, motionY, motionZ, pitch, yaw, ticks);
-        }
-    }
-
-    protected PonyPosture<?> getPosture(EntityLivingBase entity) {
-        if (entity.isElytraFlying()) {
-            return PonyPosture.ELYTRA;
-        }
-
-        if (entity.isEntityAlive() && entity.isPlayerSleeping()) return null;
-
-        if (getModelWrapper().getBody().isSwimming()) {
-            return PonyPosture.SWIMMING;
-        }
-
-        if (getModelWrapper().getBody().isGoingFast()) {
-            return PonyPosture.FLIGHT;
-        }
-
-        return PonyPosture.FALLING;
+        renderPony.applyPostureTransform(player, yaw, pitch, ticks);
     }
 
     @Override
     public ResourceLocation getEntityTexture(AbstractClientPlayer player) {
-        updateModel(player);
-        return pony.getTexture();
+        return renderPony.getPony(player).getTexture();
     }
 
     @Override
     public ModelWrapper getModelWrapper() {
-        return playerModel;
-    }
-
-    protected void setPonyModel(ModelWrapper model) {
-        playerModel = model;
-        mainModel = ponyModel = playerModel.getBody();
-    }
-
-    protected void updatePony(AbstractClientPlayer player) {
-        pony = MineLittlePony.getInstance().getManager().getPony(player);
-    }
-
-    protected void updateModel(AbstractClientPlayer player) {
-        updatePony(player);
-        getModelWrapper().apply(pony.getMetadata());
+        return renderPony.playerModel;
     }
 
     @Override
-    public float getShadowScale() {
-        return ponyModel.getSize().getShadowSize();
-    }
-
-    @Override
-    public float getScaleFactor() {
-        return ponyModel.getSize().getScaleFactor();
+    public Pony getEntityPony(AbstractClientPlayer player) {
+        return MineLittlePony.getInstance().getManager().getPony(player);
     }
 }

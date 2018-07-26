@@ -92,7 +92,7 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
         }
 
         @Override
-        protected void preRenderCallback(EntityWitherSkeleton skeleton, float ticks) {
+        public void preRenderCallback(EntityWitherSkeleton skeleton, float ticks) {
             super.preRenderCallback(skeleton, ticks);
             GlStateManager.scale(1.2F, 1.2F, 1.2F);
         }

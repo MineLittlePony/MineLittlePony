@@ -2,7 +2,6 @@ package com.minelittlepony.render;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IRenderPony;
-import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.render.layer.LayerHeldPonyItem;
@@ -23,18 +22,14 @@ import javax.annotation.Nonnull;
 
 // TODO: A lot of this duplicates RenderPonyPlayer
 //       and is the whole reason we had this scaling bug in the first place.
-public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving<T> implements IRenderPony {
+public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving<T> implements IRenderPony<T> {
 
-    protected ModelWrapper playerModel;
-
-    protected AbstractPonyModel ponyModel;
-
-    private Pony pony;
+    protected final RenderPony<T> renderPony = new RenderPony<T>(this);
 
     public RenderPonyMob(RenderManager manager, ModelWrapper model) {
         super(manager, model.getBody(), 0.5F);
 
-        setPonyModel(model);
+        mainModel = renderPony.setPonyModel(model);
 
         addLayers();
     }
@@ -60,14 +55,9 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     }
 
     @Override
-    protected void preRenderCallback(T entity, float ticks) {
-        updateModel(entity);
-
-        ponyModel.updateLivingState(entity, pony);
-        shadowSize = getShadowScale();
-
-        float s = getScaleFactor();
-        GlStateManager.scale(s, s, s);
+    public void preRenderCallback(T entity, float ticks) {
+        renderPony.preRenderCallback(entity, ticks);
+        shadowSize = renderPony.getShadowScale();
 
         if (!entity.isRiding()) {
             GlStateManager.translate(0, 0, -entity.width / 2); // move us to the center of the shadow
@@ -78,31 +68,12 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
     @Override
     public ModelWrapper getModelWrapper() {
-        return playerModel;
-    }
-
-    protected void setPonyModel(ModelWrapper model) {
-        playerModel = model;
-        mainModel = ponyModel = playerModel.getBody();
-    }
-
-    protected void updatePony(T entity) {
-        pony = MineLittlePony.getInstance().getManager().getPony(getEntityTexture(entity), false);
-    }
-
-    protected void updateModel(T entity) {
-        updatePony(entity);
-        playerModel.apply(pony.getMetadata());
+        return renderPony.playerModel;
     }
 
     @Override
-    public float getShadowScale() {
-        return ponyModel.getSize().getShadowSize();
-    }
-
-    @Override
-    public float getScaleFactor() {
-        return ponyModel.getSize().getScaleFactor();
+    public Pony getEntityPony(T entity) {
+        return MineLittlePony.getInstance().getManager().getPony(getEntityTexture(entity), false);
     }
 
     @Override
@@ -122,10 +93,6 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
         @Override
         protected void addLayers() {
 
-        }
-
-        public void preRenderCallback(T entity, float ticks) {
-            super.preRenderCallback(entity, ticks);
         }
 
         public final ResourceLocation getTextureFor(T entity) {
