@@ -56,7 +56,12 @@ public class PreviewTextureManager {
 
         PreviewTexture skinTexture = new PreviewTexture(texture, def, buffer);
 
-        Minecraft.getMinecraft().getTextureManager().loadTexture(location, skinTexture);
+        Minecraft mc = Minecraft.getMinecraft();
+
+        mc.addScheduledTask(() -> {
+            mc.getTextureManager().loadTexture(location, skinTexture);
+        });
+
 
         return skinTexture;
     }
