@@ -8,7 +8,6 @@ import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import net.minecraft.util.Session;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -29,8 +28,8 @@ public class BethlehemSkinServer implements SkinServer {
 
     @Override
     public MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException {
+        // TODO: Fix this
         try (MoreHttpResponses response = new NetClient("GET", getPath(profile)).send()) {
-
             if (!response.ok()) {
                 throw new IOException(response.getResponse().getStatusLine().getReasonPhrase());
             }
@@ -85,7 +84,7 @@ public class BethlehemSkinServer implements SkinServer {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, IndentedToStringStyle.INSTANCE)
+        return new IndentedToStringStyle.Builder(this)
                 .append("address", address)
                 .build();
     }

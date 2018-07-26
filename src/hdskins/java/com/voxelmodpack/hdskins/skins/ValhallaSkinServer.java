@@ -11,7 +11,6 @@ import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpGet;
@@ -208,8 +207,8 @@ public class ValhallaSkinServer implements SkinServer {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, IndentedToStringStyle.INSTANCE)
-                .append("address", this.address)
+        return new IndentedToStringStyle.Builder(this)
+                .append("address", address)
                 .toString();
     }
 

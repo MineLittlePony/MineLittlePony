@@ -10,7 +10,6 @@ import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.upload.ThreadMultipartPostUpload;
 import net.minecraft.util.Session;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -140,9 +139,9 @@ public class LegacySkinServer implements SkinServer {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, IndentedToStringStyle.INSTANCE)
-                .append("address", this.address)
-                .append("gateway", this.gateway)
+        return new IndentedToStringStyle.Builder(this)
+                .append("address", address)
+                .append("gateway", gateway)
                 .build();
     }
 }
