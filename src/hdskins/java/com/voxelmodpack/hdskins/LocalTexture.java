@@ -76,7 +76,9 @@ public class LocalTexture {
     public void setRemote(PreviewTextureManager ptm, SkinAvailableCallback callback) {
         clearRemote();
 
-        remote = ptm.getPreviewTexture(remoteResource, type, blank.getBlankSkin(type), callback);
+        ptm.getPreviewTexture(remoteResource, type, blank.getBlankSkin(type), callback).thenAccept(texture -> {
+            remote = texture;
+        });
     }
 
     public void setLocal(File file) {
