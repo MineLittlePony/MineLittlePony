@@ -12,6 +12,7 @@ public class CallableFutures {
             try {
                 ret.complete(call.call());
             } catch (Throwable e) {
+                e.printStackTrace();
                 ret.completeExceptionally(e);
             }
         });
