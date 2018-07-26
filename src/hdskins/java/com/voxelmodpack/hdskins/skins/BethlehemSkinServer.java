@@ -9,7 +9,6 @@ import org.apache.http.HttpStatus;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
-import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
@@ -23,11 +22,8 @@ public class BethlehemSkinServer extends AbstractSkinServer {
 
     private static final String SERVER_ID = "7853dfddc358333843ad55a2c7485c4aa0380a51";
 
-    @Expose
-    private final String address;
-
-    private BethlehemSkinServer(String address) {
-        this.address = address;
+    public BethlehemSkinServer(String address) {
+        super(address);
     }
 
     @Override

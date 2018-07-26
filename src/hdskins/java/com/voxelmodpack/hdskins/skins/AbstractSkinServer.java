@@ -9,6 +9,11 @@ import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.logging.log4j.util.Strings;
+
+import com.google.gson.JsonParseException;
+import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -20,6 +25,12 @@ import net.minecraft.util.Session;
 
 public abstract class AbstractSkinServer implements SkinServer {
 
+    @Expose
+    protected final String address;
+
+    public AbstractSkinServer(String address) {
+        this.address = address;
+    }
 
     @Override
     public final Optional<MinecraftTexturesPayload> loadProfileData(GameProfile profile) {
@@ -40,8 +51,21 @@ public abstract class AbstractSkinServer implements SkinServer {
         }, HDSkinManager.skinUploadExecutor);
     }
 
+    @Override
+    public void validate() throws JsonParseException {
+        if (Strings.isBlank(address)) {
+            throw new JsonParseException("Address was not specified.");
+        }
+    }
+
     protected abstract MinecraftTexturesPayload getProfileData(GameProfile profile);
 
     protected abstract SkinUploadResponse doUpload(Session session, URI image, Type type, Map<String, String> metadata) throws AuthenticationException, IOException;
 
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, IndentedToStringStyle.INSTANCE)
+                .append("address", address)
+                .build();
+    }
 }

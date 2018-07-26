@@ -242,6 +242,8 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     public void addSkinServer(SkinServer skinServer) {
+        skinServer.validate();
+
         skinServers.add(skinServer);
     }
 
