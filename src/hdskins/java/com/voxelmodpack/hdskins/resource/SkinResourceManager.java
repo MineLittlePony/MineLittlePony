@@ -28,7 +28,7 @@ import java.util.concurrent.Future;
 public class SkinResourceManager implements IResourceManagerReloadListener {
     private final Gson GSON = new Gson();
 
-    private ExecutorService executor;
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private Map<UUID, Skin> uuidSkins = Maps.newHashMap();
     private Map<String, Skin> namedSkins = Maps.newHashMap();
