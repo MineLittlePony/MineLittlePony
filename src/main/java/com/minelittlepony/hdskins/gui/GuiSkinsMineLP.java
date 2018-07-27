@@ -10,7 +10,9 @@ import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
 import com.voxelmodpack.hdskins.gui.GuiItemStackButton;
 import com.voxelmodpack.hdskins.gui.GuiSkins;
 
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -42,17 +44,11 @@ public class GuiSkinsMineLP extends GuiSkins {
         super.initGui();
 
         addButton(btnModeWet = new GuiItemStackButton(width - 25, 139, new ItemStack(Items.WATER_BUCKET), sender -> {
-            if (!isWet) {
-                setWet(true);
-            }
+            setWet(true);
         })).setTooltip("minelp.mode.wet");
         addButton(btnModeDry = new GuiItemStackButton(width - 25, 120, new ItemStack(Items.BUCKET), sender -> {
-            if (isWet) {
-                setWet(false);
-            }
-        })).setTooltip("minelp.mode.dry");
-
-        setWet(false);
+            setWet(false);
+        })).setEnabled(false).setTooltip("minelp.mode.dry");
     }
 
     @Override
@@ -63,6 +59,12 @@ public class GuiSkinsMineLP extends GuiSkins {
     }
 
     protected void setWet(boolean wet) {
+        if (wet == isWet) {
+            return;
+        }
+
+        mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_BREWING_STAND_BREW, 1));
+
         isWet = wet;
         localPlayer.releaseTextures();
 
