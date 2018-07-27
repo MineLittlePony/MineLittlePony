@@ -21,3 +21,11 @@ hdskins.mode.skin=Skin (Steve)
 hdskins.mode.skinny=Skin (Alex)
 hdskins.mode.elytra=Elytra
 
+hdskins.options.chevy=>>
+hdskins.options.chevy.title=Upload Skin
+hdskins.options.close=Close
+hdskins.options.clear=Clear
+hdskins.options.browse=Browse
+
+hdskins.options.skindrops=Experimental Skin Drop
+hdskins.options.cache=Clear Skin Cache
