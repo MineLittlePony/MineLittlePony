@@ -1,12 +1,14 @@
 package com.minelittlepony.hdskins.gui;
 
 import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.model.capabilities.IModel;
 import com.minelittlepony.model.components.PonyElytra;
 import com.minelittlepony.model.player.PlayerModels;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyRace;
+import com.minelittlepony.render.RenderPony;
 import com.minelittlepony.render.layer.AbstractPonyLayer;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
@@ -26,12 +28,38 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Renderer used for the dummy pony model when selecting a skin.
  */
-public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
+public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> implements IRenderPony<EntityPonyModel> {
 
     boolean renderingAsHuman = false;
 
+    protected final RenderPony<EntityPonyModel> renderPony = new RenderPony<>(this);
+
     public RenderPonyModel(RenderManager manager) {
         super(manager);
+    }
+
+    private ModelWrapper playerModel;
+
+    @Override
+    public ModelWrapper getModelWrapper() {
+        return playerModel;
+    }
+
+    @Override
+    public Pony getEntityPony(EntityPonyModel entity) {
+        boolean slim = entity.usesThinSkin();
+        ResourceLocation loc = getEntityTexture(entity);
+
+        return MineLittlePony.getInstance().getManager().getPony(loc, slim);
+    }
+
+    @Override
+    protected void preRenderCallback(EntityPonyModel entity, float ticks) {
+        if (renderingAsHuman) {
+            super.preRenderCallback(entity, ticks);
+        } else {
+            renderPony.preRenderCallback(entity, ticks);
+        }
     }
 
     @Override
@@ -55,12 +83,14 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
 
         boolean canWet = playermodel.wet && (loc == playermodel.getBlankSkin(Type.SKIN) || race == PonyRace.SEAPONY);
 
-        ModelWrapper pm = canWet ? PlayerModels.SEAPONY.getModel(slim) : thePony.getModel(true);
-        pm.apply(thePony.getMetadata());
+        playerModel = canWet ? PlayerModels.SEAPONY.getModel(slim) : thePony.getModel(true);
+        playerModel.apply(thePony.getMetadata());
+
+        renderPony.setPonyModel(playerModel);
 
         renderingAsHuman = false;
 
-        return pm.getBody();
+        return playerModel.getBody();
     }
 
     @Override
