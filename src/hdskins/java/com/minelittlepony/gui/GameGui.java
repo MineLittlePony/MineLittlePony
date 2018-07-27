@@ -16,4 +16,19 @@ public abstract class GameGui extends GuiScreen {
     protected static String format(String string) {
         return I18n.format(string);
     }
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        drawContents(mouseX, mouseY, partialTicks);
+
+        buttonList.forEach(button -> {
+            if (button instanceof IGuiTooltipped) {
+                ((IGuiTooltipped)button).renderToolTip(mc, mouseX, mouseY);
+            }
+        });
+    }
+
+    protected void drawContents(int mouseX, int mouseY, float partialTicks) {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+    }
 }

@@ -7,7 +7,7 @@ import com.google.common.base.Splitter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 
-public class Button extends GuiButton implements IActionable {
+public class Button extends GuiButton implements IActionable, IGuiTooltipped {
 
     private IGuiAction<Button> action;
 
@@ -38,8 +38,8 @@ public class Button extends GuiButton implements IActionable {
         return setTooltip(Splitter.on("\r\n").splitToList(GameGui.format(tooltip)));
     }
 
-    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-        super.drawButton(mc, mouseX, mouseY, partialTicks);
+    @Override
+    public void renderToolTip(Minecraft mc, int mouseX, int mouseY) {
         if (visible && isMouseOver() && tooltip != null) {
             mc.currentScreen.drawHoveringText(tooltip, mouseX, mouseY);
         }
