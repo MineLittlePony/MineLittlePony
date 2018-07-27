@@ -193,7 +193,7 @@ public class GuiSkins extends GameGui {
 
         panorama.init();
 
-        addButton(new Label(width / 2, 10, "hdskins.manager", 0xffffff));
+        addButton(new Label(width / 2, 10, "hdskins.manager", 0xffffff, true));
 
         addButton(new Button(30, height - 36, 60, 20, "Browse...", sender ->{
             selectedSkin = null;
