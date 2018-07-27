@@ -271,28 +271,28 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         clearListeners.add(listener);
     }
 
-    public static void clearSkinCache() {
+    public void clearSkinCache() {
         LiteLoaderLogger.info("Clearing local player skin cache");
 
         try {
             FileUtils.deleteDirectory(new File(LiteLoader.getAssetsDirectory(), "skins"));
             FileUtils.deleteDirectory(new File(LiteLoader.getAssetsDirectory(), "hd"));
             TextureManager textures = Minecraft.getMinecraft().getTextureManager();
-            INSTANCE.skinCache.values().stream()
+            skinCache.values().stream()
                     .flatMap(m -> m.values().stream())
                     .forEach(textures::deleteTexture);
-            INSTANCE.skinCache.clear();
-            INSTANCE.skins.invalidateAll();
-        } catch (IOException var1) {
-            var1.printStackTrace();
+            skinCache.clear();
+            skins.invalidateAll();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        INSTANCE.clearListeners = INSTANCE.clearListeners.stream()
-                .filter(HDSkinManager::onSkinCacheCleared)
+        clearListeners = clearListeners.stream()
+                .filter(this::onSkinCacheCleared)
                 .collect(Collectors.toList());
     }
 
-    private static boolean onSkinCacheCleared(ISkinCacheClearListener callback) {
+    private boolean onSkinCacheCleared(ISkinCacheClearListener callback) {
         try {
             return callback.onSkinCacheCleared();
         } catch (Exception e) {

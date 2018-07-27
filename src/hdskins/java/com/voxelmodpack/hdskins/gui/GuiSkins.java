@@ -20,12 +20,14 @@ import com.voxelmodpack.hdskins.skins.SkinUploadResponse;
 import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
@@ -242,7 +244,7 @@ public class GuiSkins extends GameGui {
         })).setEnabled(!thinArmType).setTooltip("hdskins.mode.skinny");
 
         addButton(new Button(width - 25, height - 65, 20, 20, "?", sender -> {
-
+            mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_VILLAGER_YES, 1));
         })).setTooltip(Splitter.on("\r\n").splitToList(HDSkinManager.INSTANCE.getGatewayServer().toString()));
     }
 
@@ -288,6 +290,8 @@ public class GuiSkins extends GameGui {
     }
 
     protected void switchSkinMode(Button sender, boolean thin, Type newType, ItemStack stack) {
+        mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_BREWING_STAND_BREW, 1));
+
         thinArmType = thin;
         textureType = newType;
 
@@ -360,7 +364,7 @@ public class GuiSkins extends GameGui {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTick) {
+    protected void drawContents(int mouseX, int mouseY, float partialTick) {
         float deltaTime = panorama.getDelta(partialTick);
         panorama.render(partialTick, zLevel);
 
@@ -376,7 +380,7 @@ public class GuiSkins extends GameGui {
         drawGradientRect(30, horizon, mid - 30, bottom, 0x80FFFFFF, 0xffffff);
         drawGradientRect(mid + 30, horizon, width - 30, bottom, 0x80FFFFFF, 0xffffff);
 
-        super.drawScreen(mouseX, mouseY, partialTick);
+        super.drawContents(mouseX, mouseY, partialTick);
 
         popAttrib();
         enableClipping(bottom);
