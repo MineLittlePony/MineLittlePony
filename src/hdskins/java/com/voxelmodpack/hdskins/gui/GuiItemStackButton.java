@@ -1,16 +1,24 @@
 package com.voxelmodpack.hdskins.gui;
 
+import com.minelittlepony.gui.Button;
+import com.minelittlepony.gui.IGuiAction;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-public class GuiItemStackButton extends GuiButton {
+public class GuiItemStackButton extends Button {
 
     private ItemStack itemStack;
 
-    public GuiItemStackButton(int buttonId, int x, int y, ItemStack itemStack) {
-        super(buttonId, x, y, 20, 20, "");
+    public GuiItemStackButton(int x, int y, ItemStack itemStack, IGuiAction<GuiItemStackButton> callback) {
+        super(x, y, 20, 20, "", callback);
         this.itemStack = itemStack;
+    }
+
+    public GuiItemStackButton(int x, int y, ItemStack itemStack, int colour, IGuiAction<GuiItemStackButton> callback) {
+        this(x, y, itemStack, callback);
+        Items.LEATHER_LEGGINGS.setColor(itemStack, colour);
     }
 
     @Override

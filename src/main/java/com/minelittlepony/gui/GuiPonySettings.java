@@ -1,7 +1,5 @@
 package com.minelittlepony.gui;
 
-import java.io.IOException;
-
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyConfig;
 import com.minelittlepony.PonyConfig.PonySettings;
@@ -9,15 +7,11 @@ import com.minelittlepony.pony.data.PonyLevel;
 import com.minelittlepony.render.ponies.MobRenderers;
 import com.mumfrey.liteloader.core.LiteLoader;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.I18n;
-
 /**
  * In-Game options menu.
  *
  */
-public class GuiPonySettings extends GuiScreen {
+public class GuiPonySettings extends SettingsPanel {
 
     private static final String OPTIONS_PREFIX = "minelp.options.";
 
@@ -44,7 +38,7 @@ public class GuiPonySettings extends GuiScreen {
 
         addButton(new Label(LEFT, row += 15, PONY_LEVEL, -1));
         addButton(new Slider(LEFT, row += 15, 0, 2, config.getPonyLevel().ordinal(), (int id, String name, float value) -> {
-            return I18n.format(PONY_LEVEL + "." + PonyLevel.valueFor(value).name().toLowerCase());
+            return format(PONY_LEVEL + "." + PonyLevel.valueFor(value).name().toLowerCase());
         }, v -> {
             PonyLevel level = PonyLevel.valueFor(v);
             config.setPonyLevel(level);
@@ -70,13 +64,6 @@ public class GuiPonySettings extends GuiScreen {
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) throws IOException {
-        if (button instanceof IActionable) {
-            ((IActionable)button).perform();
-        }
-    }
-
-    @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
@@ -89,9 +76,5 @@ public class GuiPonySettings extends GuiScreen {
 
     protected String getTitle() {
         return OPTIONS_PREFIX + "title";
-    }
-
-    protected boolean mustScroll() {
-        return false;
     }
 }

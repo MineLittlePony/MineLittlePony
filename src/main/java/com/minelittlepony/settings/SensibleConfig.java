@@ -1,6 +1,6 @@
 package com.minelittlepony.settings;
 
-import com.minelittlepony.gui.IGUIAction;
+import com.minelittlepony.gui.IGuiCallback;
 
 /**
  * A sensible config container that actually lets us programatically index values by a key.
@@ -17,7 +17,7 @@ public abstract class SensibleConfig {
         instance = this;
     }
 
-    public interface Setting extends IGUIAction<Boolean> {
+    public interface Setting extends IGuiCallback<Boolean> {
         String name();
 
         /**
