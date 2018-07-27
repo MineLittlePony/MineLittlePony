@@ -195,7 +195,7 @@ public class GuiSkins extends GameGui {
 
         addButton(new Label(width / 2, 10, "hdskins.manager", 0xffffff, true));
 
-        addButton(new Button(30, height - 36, 60, 20, "Browse...", sender ->{
+        addButton(new Button(width / 2 - 150, height - 27, 90, 20, "Browse...", sender ->{
             selectedSkin = null;
             localPlayer.releaseTextures();
             openFileThread = new ThreadOpenFilePNG(mc, format("hdskins.open.title"), (fileDialog, dialogResult) -> {
@@ -218,30 +218,30 @@ public class GuiSkins extends GameGui {
             }
         })).setEnabled(false);
 
-        addButton(btnClear = new Button(width - 90, height - 36, 60, 20, "Clear", sender -> {
+        addButton(btnClear = new Button(width / 2 + 60, height - 27, 90, 20, "Clear", sender -> {
             if (remotePlayer.isTextureSetupComplete()) {
                 punchServer("hdskins.request", null);
                 btnUpload.enabled = selectedSkin != null;
             }
         }));
 
-        addButton(new Button(width / 2 - 50, height - 36, 100, 20, "Close", sender -> {
+        addButton(new Button(width / 2 - 50, height - 25, 100, 20, "Close", sender -> {
             mc.displayGuiScreen(new GuiMainMenu());
         }));
 
-        addButton(btnModeSkin = new GuiItemStackButton(2, 2, new ItemStack(Items.LEATHER_LEGGINGS), 0x3c5dcb, sender -> {
+        addButton(btnModeSkin = new GuiItemStackButton(width - 25, 32, new ItemStack(Items.LEATHER_LEGGINGS), 0x3c5dcb, sender -> {
             switchSkinMode(sender, false, SKIN, ItemStack.EMPTY);
         })).setEnabled(thinArmType).setTooltip("hdskins.mode.skin");
 
-        addButton(btnModeElytra = new GuiItemStackButton(2, 52, new ItemStack(Items.ELYTRA), sender -> {
+        addButton(btnModeElytra = new GuiItemStackButton(width - 25, 82, new ItemStack(Items.ELYTRA), sender -> {
             switchSkinMode(sender, thinArmType, ELYTRA, new ItemStack(Items.ELYTRA));
         })).setEnabled(textureType == SKIN).setTooltip("hdskins.mode.elytra");
 
-        addButton(btnModeSkinnySkin = new GuiItemStackButton(2, 21, new ItemStack(Items.LEATHER_LEGGINGS), 0xfff500, sender -> {
+        addButton(btnModeSkinnySkin = new GuiItemStackButton(width - 25, 51, new ItemStack(Items.LEATHER_LEGGINGS), 0xfff500, sender -> {
             switchSkinMode(sender, true, SKIN, ItemStack.EMPTY);
         })).setEnabled(!thinArmType).setTooltip("hdskins.mode.skinny");
 
-        addButton(new Button(width - 25, height - 25, 20, 20, "?", sender -> {
+        addButton(new Button(width - 25, height - 65, 20, 20, "?", sender -> {
 
         })).setTooltip(Splitter.on("\r\n").splitToList(HDSkinManager.INSTANCE.getGatewayServer().toString()));
     }
