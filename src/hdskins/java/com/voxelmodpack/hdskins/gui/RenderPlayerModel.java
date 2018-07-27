@@ -115,13 +115,4 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         popAttrib();
         popMatrix();
     }
-
-    @Override
-    protected void preRenderCallback(M entity, float partialTicks) {
-        renderCloak(entity, partialTicks);
-    }
-
-    protected void renderCloak(M entity, float partialTicks) {
-        super.preRenderCallback(entity, partialTicks);
-    }
 }
