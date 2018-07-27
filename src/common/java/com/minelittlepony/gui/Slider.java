@@ -3,6 +3,12 @@ package com.minelittlepony.gui;
 import net.minecraft.client.gui.GuiSlider;
 import net.minecraft.client.gui.GuiPageButtonList.GuiResponder;
 
+/**
+ * A slider for sliding.
+ *
+ * @author Sollace
+ *
+ */
 public class Slider extends GuiSlider {
 
     private static Responder callback;

@@ -4,6 +4,12 @@ import com.mumfrey.liteloader.client.gui.GuiCheckbox;
 
 import net.minecraft.client.resources.I18n;
 
+/**
+ * Checkbox that supports a gui action when it changes.
+ *
+ * @author Sollace
+ *
+ */
 public class Checkbox extends GuiCheckbox implements IActionable {
 
     private final IGUIAction<Boolean> action;

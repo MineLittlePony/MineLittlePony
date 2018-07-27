@@ -4,6 +4,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 
+/**
+ * A simple label for drawing text to a gui screen.
+ *
+ * @author Sollace
+ *
+ */
 public class Label extends GuiButton {
 
     private boolean center;
