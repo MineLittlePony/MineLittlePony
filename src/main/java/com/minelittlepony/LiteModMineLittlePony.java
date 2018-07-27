@@ -1,6 +1,6 @@
 package com.minelittlepony;
 
-import com.minelittlepony.gui.PonySettingsPanel;
+import com.minelittlepony.gui.GuiPonySettings;
 import com.mumfrey.liteloader.Configurable;
 import com.mumfrey.liteloader.InitCompleteListener;
 import com.mumfrey.liteloader.Tickable;
@@ -46,6 +46,6 @@ public class LiteModMineLittlePony implements InitCompleteListener, Tickable, Co
 
     @Override
     public Class<? extends ConfigPanel> getConfigPanelClass() {
-        return PonySettingsPanel.class;
+        return GuiPonySettings.class;
     }
 }
