@@ -20,7 +20,7 @@ public abstract class SettingsPanel extends GameGui implements ConfigPanel {
 
     @Override
     public String getPanelTitle() {
-        return translate(getTitle());
+        return format(getTitle());
     }
 
     @Override

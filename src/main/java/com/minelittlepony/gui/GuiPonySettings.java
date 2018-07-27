@@ -38,7 +38,7 @@ public class GuiPonySettings extends SettingsPanel {
 
         addButton(new Label(LEFT, row += 15, PONY_LEVEL, -1));
         addButton(new Slider(LEFT, row += 15, 0, 2, config.getPonyLevel().ordinal(), (int id, String name, float value) -> {
-            return translate(PONY_LEVEL + "." + PonyLevel.valueFor(value).name().toLowerCase());
+            return format(PONY_LEVEL + "." + PonyLevel.valueFor(value).name().toLowerCase());
         }, v -> {
             PonyLevel level = PonyLevel.valueFor(v);
             config.setPonyLevel(level);
