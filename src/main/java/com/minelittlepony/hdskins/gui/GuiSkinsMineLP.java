@@ -41,12 +41,12 @@ public class GuiSkinsMineLP extends GuiSkins {
     public void initGui() {
         super.initGui();
 
-        addButton(btnModeWet = new GuiItemStackButton(2, 99, new ItemStack(Items.WATER_BUCKET), sender -> {
+        addButton(btnModeWet = new GuiItemStackButton(width - 25, 139, new ItemStack(Items.WATER_BUCKET), sender -> {
             if (!isWet) {
                 setWet(true);
             }
         })).setTooltip("minelp.mode.wet");
-        addButton(btnModeDry = new GuiItemStackButton(2, 80, new ItemStack(Items.BUCKET), sender -> {
+        addButton(btnModeDry = new GuiItemStackButton(width - 25, 120, new ItemStack(Items.BUCKET), sender -> {
             if (isWet) {
                 setWet(false);
             }
