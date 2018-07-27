@@ -197,7 +197,7 @@ public class GuiSkins extends GameGui {
 
         addButton(new Label(width / 2, 10, "hdskins.manager", 0xffffff, true));
 
-        addButton(new Button(width / 2 - 150, height - 27, 90, 20, "Browse...", sender ->{
+        addButton(new Button(width / 2 - 150, height - 27, 90, 20, "hdskins.options.browse", sender ->{
             selectedSkin = null;
             localPlayer.releaseTextures();
             openFileThread = new ThreadOpenFilePNG(mc, format("hdskins.open.title"), (fileDialog, dialogResult) -> {
@@ -211,23 +211,23 @@ public class GuiSkins extends GameGui {
             sender.enabled = false;
         })).setEnabled(!mc.isFullScreen());
 
-        addButton(btnUpload = new Button(width / 2 - 24, height / 2 - 10, 48, 20, ">>", sender -> {
+        addButton(btnUpload = new Button(width / 2 - 24, height / 2 - 10, 48, 20, "hdskins.options.chevy", sender -> {
             if (selectedSkin != null) {
                 punchServer("hdskins.upload", selectedSkin.toURI());
                 sender.enabled = false;
             } else {
                 setUploadError(format("hdskins.error.select"));
             }
-        })).setEnabled(false);
+        })).setEnabled(false).setTooltip("hdskins.options.chevy.title");
 
-        addButton(btnClear = new Button(width / 2 + 60, height - 27, 90, 20, "Clear", sender -> {
+        addButton(btnClear = new Button(width / 2 + 60, height - 27, 90, 20, "hdskins.options.clear", sender -> {
             if (remotePlayer.isTextureSetupComplete()) {
                 punchServer("hdskins.request", null);
                 btnUpload.enabled = selectedSkin != null;
             }
         }));
 
-        addButton(new Button(width / 2 - 50, height - 25, 100, 20, "Close", sender -> {
+        addButton(new Button(width / 2 - 50, height - 25, 100, 20, "hdskins.options.close", sender -> {
             mc.displayGuiScreen(new GuiMainMenu());
         }));
 

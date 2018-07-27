@@ -12,11 +12,10 @@ public class HDSkinsConfigPanel extends SettingsPanel {
     public void initGui() {
         final LiteModHDSkins mod = LiteLoader.getInstance().getMod(LiteModHDSkins.class);
 
-        addButton(new Button(40, 70, 100, 20, "Clear Skin Cache", sender ->{
+        addButton(new Button(40, 70, 100, 20, "hdskins.options.cache", sender ->{
             HDSkinManager.INSTANCE.clearSkinCache();
         }));
-        addButton(new Checkbox(40, 40, "Experimental Skin Drop", mod.experimentalSkinDrop, checked -> {
-            System.out.println(checked);
+        addButton(new Checkbox(40, 40, "hdskins.options.skindrops", mod.experimentalSkinDrop, checked -> {
             mod.experimentalSkinDrop = checked;
 
             LiteLoader.getInstance().writeConfig(mod);
