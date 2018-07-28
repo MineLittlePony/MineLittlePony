@@ -26,6 +26,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -57,8 +58,10 @@ public class GuiSkins extends GameGui {
     private Button btnUpload;
     private Button btnClear;
 
+    private Button btnModeSteve;
+    private Button btnModeAlex;
+
     private Button btnModeSkin;
-    private Button btnModeSkinnySkin;
     private Button btnModeElytra;
 
     protected EntityPlayerModel localPlayer;
@@ -231,17 +234,23 @@ public class GuiSkins extends GameGui {
             mc.displayGuiScreen(new GuiMainMenu());
         }));
 
-        addButton(btnModeSkin = new GuiItemStackButton(width - 25, 32, new ItemStack(Items.LEATHER_LEGGINGS), 0x3c5dcb, sender -> {
-            switchSkinMode(sender, false, SKIN, ItemStack.EMPTY);
-        })).setEnabled(thinArmType).setTooltip("hdskins.mode.skin");
+        addButton(btnModeSteve = new GuiItemStackButton(width - 25, 32, new ItemStack(Items.LEATHER_LEGGINGS), 0x3c5dcb, sender -> {
+            switchSkinMode(sender, false);
+        })).setEnabled(thinArmType).setTooltip("hdskins.mode.steve");
 
-        addButton(btnModeElytra = new GuiItemStackButton(width - 25, 82, new ItemStack(Items.ELYTRA), sender -> {
-            switchSkinMode(sender, thinArmType, ELYTRA, new ItemStack(Items.ELYTRA));
-        })).setEnabled(textureType == SKIN).setTooltip("hdskins.mode.elytra");
+        addButton(btnModeAlex = new GuiItemStackButton(width - 25, 51, new ItemStack(Items.LEATHER_LEGGINGS), 0xfff500, sender -> {
+            switchSkinMode(sender, true);
+        })).setEnabled(!thinArmType).setTooltip("hdskins.mode.alex");
 
-        addButton(btnModeSkinnySkin = new GuiItemStackButton(width - 25, 51, new ItemStack(Items.LEATHER_LEGGINGS), 0xfff500, sender -> {
-            switchSkinMode(sender, true, SKIN, ItemStack.EMPTY);
-        })).setEnabled(!thinArmType).setTooltip("hdskins.mode.skinny");
+
+        addButton(btnModeSkin = new GuiItemStackButton(width - 25, 75, new ItemStack(Items.LEATHER_CHESTPLATE), sender -> {
+            switchSkinType(sender, SKIN);
+        })).setEnabled(textureType == ELYTRA).setTooltip(format("hdskins.mode.skin", toTitleCase(SKIN.name())));
+
+        addButton(btnModeElytra = new GuiItemStackButton(width - 25, 94, new ItemStack(Items.ELYTRA), sender -> {
+            switchSkinType(sender, ELYTRA);
+        })).setEnabled(textureType == SKIN).setTooltip(format("hdskins.mode.skin", toTitleCase(ELYTRA.name())));
+
 
         addButton(new Button(width - 25, height - 65, 20, 20, "?", sender -> {
             mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_VILLAGER_YES, 1));
@@ -289,25 +298,31 @@ public class GuiSkins extends GameGui {
         return isPowerOfTwo(w) && w == h * 2 || w == h && w <= MAX_SKIN_DIMENSION && h <= MAX_SKIN_DIMENSION;
     }
 
-    protected void switchSkinMode(Button sender, boolean thin, Type newType, ItemStack stack) {
+    protected void switchSkinType(Button sender, Type newType) {
+        mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_BREWING_STAND_BREW, 1));
+
+        textureType = newType;
+
+        btnModeSkin.enabled = textureType == ELYTRA;
+        btnModeElytra.enabled = textureType == SKIN;
+
+        ItemStack stack = newType == ELYTRA ? new ItemStack(Items.ELYTRA) : ItemStack.EMPTY;
+        // put on or take off the elytra
+        localPlayer.setItemStackToSlot(EntityEquipmentSlot.CHEST, stack);
+        remotePlayer.setItemStackToSlot(EntityEquipmentSlot.CHEST, stack);
+    }
+
+    protected void switchSkinMode(Button sender, boolean thin) {
         mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_BREWING_STAND_BREW, 1));
 
         thinArmType = thin;
-        textureType = newType;
 
-        btnModeSkin.enabled = thinArmType;
-        btnModeSkinnySkin.enabled = !thinArmType;
-        btnModeElytra.enabled = textureType == SKIN;
-
-        sender.enabled = false;
+        btnModeSteve.enabled = thinArmType;
+        btnModeAlex.enabled = !thinArmType;
 
         // clear currently selected skin
         selectedSkin = null;
         localPlayer.releaseTextures();
-
-        // put on or take off the elytra
-        localPlayer.setItemStackToSlot(EntityEquipmentSlot.CHEST, stack);
-        remotePlayer.setItemStackToSlot(EntityEquipmentSlot.CHEST, stack);
 
         localPlayer.setPreviewThinArms(thinArmType);
         remotePlayer.setPreviewThinArms(thinArmType);

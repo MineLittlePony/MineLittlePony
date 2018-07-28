@@ -1,5 +1,7 @@
 package com.minelittlepony.gui;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -13,8 +15,12 @@ public abstract class GameGui extends GuiScreen {
         }
     }
 
-    protected static String format(String string) {
-        return I18n.format(string);
+    protected static String format(String string, Object... pars) {
+        return I18n.format(string, pars);
+    }
+
+    protected static String toTitleCase(String string) {
+        return WordUtils.capitalize(string.toLowerCase());
     }
 
     @Override
