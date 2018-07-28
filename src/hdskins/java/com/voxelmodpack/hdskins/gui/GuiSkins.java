@@ -479,25 +479,17 @@ public class GuiSkins extends GameGui {
         pushMatrix();
         translate(xPosition, yPosition, 300);
 
-        scale(-scale, scale, scale);
-        rotate(180, 0, 0, 1);
-        rotate(135, 0, 1, 0);
+        scale(scale, scale, scale);
+        rotate(-15, 1, 0, 0);
 
         RenderHelper.enableStandardItemLighting();
-
-        rotate(-135, 0, 1, 0);
-        rotate(15, 1, 0, 0);
 
         rotate(((updateCounter + partialTick) * 2.5F) % 360, 0, 1, 0);
 
         thePlayer.rotationYawHead = (float)Math.atan(mouseX / 20) * 30;
         thePlayer.rotationPitch = (float)Math.atan(mouseY / 40) * -20;
 
-        translate(0, thePlayer.getYOffset(), 0);
-
-        RenderManager rm = Minecraft.getMinecraft().getRenderManager();
-        rm.playerViewY = 180;
-        rm.renderEntity(thePlayer, 0, 0, 0, 0, 1, false);
+        mc.getRenderManager().renderEntity(thePlayer, 0, 0, 0, 0, 1, false);
 
         popMatrix();
         RenderHelper.disableStandardItemLighting();
