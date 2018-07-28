@@ -4,6 +4,7 @@ import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.components.PonyElytra;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
@@ -35,18 +36,26 @@ public class LayerPonyElytra<T extends EntityLivingBase> extends AbstractPonyLay
             getRenderer().bindTexture(getElytraTexture(entity));
 
             GlStateManager.pushMatrix();
-            GlStateManager.translate(0, getPlayerModel().getRiderYOffset(), 0.125F);
-            getPlayerModel().transform(BodyPart.BODY);
+            preRenderCallback();
 
-            modelElytra.setRotationAngles(move, swing, ticks, yaw, head, scale, entity);
-            modelElytra.render(entity, move, swing, ticks, yaw, head, scale);
+            getElytraModel().setRotationAngles(move, swing, ticks, yaw, head, scale, entity);
+            getElytraModel().render(entity, move, swing, ticks, yaw, head, scale);
 
             if (itemstack.isItemEnchanted()) {
-                LayerArmorBase.renderEnchantedGlint(getRenderer(), entity, modelElytra, move, swing, partialTicks, ticks, yaw, head, scale);
+                LayerArmorBase.renderEnchantedGlint(getRenderer(), entity, getElytraModel(), move, swing, partialTicks, ticks, yaw, head, scale);
             }
 
             GlStateManager.popMatrix();
         }
+    }
+
+    protected void preRenderCallback() {
+        GlStateManager.translate(0, getPlayerModel().getRiderYOffset(), 0.125F);
+        getPlayerModel().transform(BodyPart.BODY);
+    }
+
+    protected ModelBase getElytraModel() {
+        return modelElytra;
     }
 
     protected ResourceLocation getElytraTexture(T entity) {
