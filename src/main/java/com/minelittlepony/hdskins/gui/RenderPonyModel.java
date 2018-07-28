@@ -2,6 +2,7 @@ package com.minelittlepony.hdskins.gui;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IRenderPony;
+import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.model.capabilities.IModel;
 import com.minelittlepony.model.components.PonyElytra;
@@ -116,6 +117,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> implemen
                     ModelBase model = renderingAsHuman ? modelElytra : ponyElytra;
 
                     if (!renderingAsHuman) {
+                        ((IModel)getMainModel()).transform(BodyPart.BODY);
                         GlStateManager.translate(0, ((IModel)getMainModel()).getRiderYOffset(), 0.125F);
                     }
 
