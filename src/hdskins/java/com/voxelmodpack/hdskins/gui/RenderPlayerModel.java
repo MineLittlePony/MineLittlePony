@@ -20,6 +20,8 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 import java.util.Set;
 
+import org.lwjgl.opengl.GL11;
+
 import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLivingBase<M> {
@@ -105,14 +107,21 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         player.leftArmPose = ArmPose.EMPTY;
         player.rightArmPose = ArmPose.EMPTY;
 
-        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
-        popAttrib();
+
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+
         pushMatrix();
         scale(1, -1, 1);
-        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+
+        color(1, 1, 1, 0.3F);
+
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
-        popAttrib();
+
+        color(1, 1, 1, 1);
+
         popMatrix();
+
+        popAttrib();
     }
 }
