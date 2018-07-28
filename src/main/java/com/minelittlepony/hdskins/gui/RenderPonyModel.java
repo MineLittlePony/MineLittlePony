@@ -59,6 +59,8 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> implemen
             super.preRenderCallback(entity, ticks);
         } else {
             renderPony.preRenderCallback(entity, ticks);
+
+            GlStateManager.translate(0, 0, -entity.width / 2); // move us to the center of the shadow
         }
     }
 
