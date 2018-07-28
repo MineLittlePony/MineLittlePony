@@ -1,5 +1,7 @@
 package com.voxelmodpack.hdskins.gui;
 
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameType;
 import net.minecraft.world.World;
@@ -25,6 +27,11 @@ public class DummyWorld extends World {
 	@Override
 	protected boolean isChunkLoaded(int x, int z, boolean allowEmpty) {
 		return true;
+	}
+
+	@Override
+	public IBlockState getBlockState(BlockPos pos) {
+	    return Blocks.AIR.getDefaultState();
 	}
 
 	@Override

@@ -130,6 +130,8 @@ public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSup
             posY = 0;
         }
         onGround = posY == 0;
+
+        ticksExisted++;
     }
 
     @Override
