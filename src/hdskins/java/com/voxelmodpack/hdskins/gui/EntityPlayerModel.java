@@ -59,7 +59,7 @@ public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSup
         if (type == Type.SKIN) {
             skin.setLocal(skinTextureFile);
         } else if (type == Type.ELYTRA) {
-            skin.setLocal(skinTextureFile);
+            elytra.setLocal(skinTextureFile);
         }
     }
 
