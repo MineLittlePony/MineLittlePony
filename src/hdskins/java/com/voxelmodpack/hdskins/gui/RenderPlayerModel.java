@@ -104,7 +104,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         player.leftArmPose = ArmPose.EMPTY;
         player.rightArmPose = ArmPose.EMPTY;
 
-        double offset = entity.getYOffset() + 0.01;
+        double offset = entity.getYOffset() + entity.posY + 0.01;
 
         pushMatrix();
         enableBlend();
