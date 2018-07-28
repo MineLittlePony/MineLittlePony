@@ -27,11 +27,24 @@ import java.util.List;
 @ExposableOptions(strategy = ConfigStrategy.Unversioned, filename = "hdskins")
 public class LiteModHDSkins implements InitCompleteListener, ViewportListener, Configurable, AdvancedExposable {
 
+    private static LiteModHDSkins instance;
+
+    public static LiteModHDSkins instance() {
+        return instance;
+    }
+
     @Expose
     public List<SkinServer> skin_servers = SkinServer.defaultServers;
 
     @Expose
     public boolean experimentalSkinDrop = false;
+
+    @Expose
+    public String lastChosenFile = "";
+
+    public LiteModHDSkins() {
+        instance = this;
+    }
 
     @Override
     public String getName() {
@@ -41,6 +54,10 @@ public class LiteModHDSkins implements InitCompleteListener, ViewportListener, C
     @Override
     public String getVersion() {
         return "4.0.0";
+    }
+
+    public void writeConfig() {
+        LiteLoader.getInstance().writeConfig(this);
     }
 
     @Override

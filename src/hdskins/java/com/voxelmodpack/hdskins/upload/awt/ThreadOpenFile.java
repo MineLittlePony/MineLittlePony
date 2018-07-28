@@ -8,6 +8,7 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.lang3.StringUtils;
+import com.voxelmodpack.hdskins.LiteModHDSkins;
 
 /**
  * Base class for "open file" dialog threads
@@ -23,8 +24,6 @@ public abstract class ThreadOpenFile extends Thread {
      */
     protected final IOpenFileCallback parentScreen;
 
-    private static String lastChosenFile = null;
-
     protected ThreadOpenFile(Minecraft minecraft, String dialogTitle, IOpenFileCallback callback) throws IllegalStateException {
         if (minecraft.isFullScreen()) {
             throw new IllegalStateException("Cannot open an awt window whilst minecraft is in full screen mode!");
@@ -39,8 +38,9 @@ public abstract class ThreadOpenFile extends Thread {
         JFileChooser fileDialog = new JFileChooser();
         fileDialog.setDialogTitle(dialogTitle);
 
-        if (!StringUtils.isBlank(lastChosenFile)) {
-            fileDialog.setSelectedFile(new File(lastChosenFile));
+        String last = LiteModHDSkins.instance().lastChosenFile;
+        if (!StringUtils.isBlank(last)) {
+            fileDialog.setSelectedFile(new File(last));
         }
         fileDialog.setFileFilter(getFileFilter());
 
@@ -49,7 +49,8 @@ public abstract class ThreadOpenFile extends Thread {
         File f = fileDialog.getSelectedFile();
 
         if (f != null) {
-            lastChosenFile = f.getAbsolutePath();
+            LiteModHDSkins.instance().lastChosenFile = f.getAbsolutePath();
+            LiteModHDSkins.instance().writeConfig();
         }
 
         parentScreen.onFileOpenDialogClosed(fileDialog, dialogResult);
