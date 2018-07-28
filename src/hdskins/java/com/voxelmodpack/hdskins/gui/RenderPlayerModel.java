@@ -14,7 +14,6 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
@@ -105,17 +104,18 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         player.leftArmPose = ArmPose.EMPTY;
         player.rightArmPose = ArmPose.EMPTY;
 
-        super.doRender(entity, x, y, z, entityYaw, partialTicks);
-
-        pushMatrix();
-        scale(1, -1, 1);
-
+        enableBlend();
         color(1, 1, 1, 0.3F);
 
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
 
         color(1, 1, 1, 1);
+        disableBlend();
 
+        pushMatrix();
+        scale(1, -1, 1);
+
+        super.doRender(entity, x, y, z, entityYaw, partialTicks);
         popMatrix();
     }
 }
