@@ -717,7 +717,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
     @Override
     public boolean isChild() {
-        return metadata.getSize() == PonySize.FOAL || isChild;
+        return getSize() == PonySize.FOAL;
     }
 
     @Override
@@ -737,7 +737,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
             return 0.25F;
         }
 
-        switch (getMetadata().getSize()) {
+        switch (getSize()) {
             case NORMAL: return 0.4F;
             case FOAL:
             case TALL:
@@ -834,7 +834,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
     @Override
     public void transform(BodyPart part) {
-        if (isRiding) translate(0, -0.4F, -0.2F);
+        if (isRiding()) translate(0, -0.4F, -0.2F);
 
         if (isSleeping) {
             rotate(90, 1, 0, 0);

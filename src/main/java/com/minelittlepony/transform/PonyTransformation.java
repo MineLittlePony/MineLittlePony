@@ -11,11 +11,16 @@ public enum PonyTransformation {
     NORMAL {
         @Override
         public void transform(IModel model, BodyPart part) {
+            if (model.isCrouching()) translate(0, -0.2F, 0);
             if (model.isSleeping()) translate(0, -0.61F, 0);
 
             switch (part) {
                 case NECK:
                     if (model.isCrouching()) translate(-0.03F, 0.03F, 0.1F);
+                    break;
+                case HEAD:
+                    if (model.isCrouching()) translate(0, 0.1F, 0);
+                    break;
                 default:
             }
         }
@@ -23,6 +28,7 @@ public enum PonyTransformation {
     LARGE {
         @Override
         public void transform(IModel model, BodyPart part) {
+            if (model.isCrouching()) translate(0, -0.15F, 0);
             if (model.isSleeping()) translate(0, -0.98F, 0.2F);
 
             switch (part) {
@@ -77,6 +83,7 @@ public enum PonyTransformation {
     TALL {
         @Override
         public void transform(IModel model, BodyPart part) {
+            if (model.isCrouching()) translate(0, -0.15F, 0);
             if (model.isSleeping()) translate(0, -0.5F, 0.25F);
 
             switch (part) {
@@ -87,11 +94,9 @@ public enum PonyTransformation {
                     break;
                 case HEAD:
                     translate(0, -0.15F, 0.01F);
-                    if (model.isCrouching()) translate(0, 0.05F, 0);
+                    if (model.isCrouching()) translate(0, 0.04F, 0);
                     break;
                 case BODY:
-                    translate(0, -0.1F, 0);
-                    break;
                 case TAIL:
                     translate(0, -0.1F, 0);
                     break;

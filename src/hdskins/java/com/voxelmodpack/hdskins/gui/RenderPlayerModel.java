@@ -108,6 +108,10 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
 
         double offset = entity.getYOffset() + entity.posY + 0.01;
 
+        if (entity.isSneaking()) {
+            y -= 0.125D;
+        }
+
         pushMatrix();
         enableBlend();
         color(1, 1, 1, 0.3F);
