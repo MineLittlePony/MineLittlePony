@@ -25,6 +25,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -153,11 +154,14 @@ public class ValhallaSkinServer implements SkinServer {
 
     private <T> T readJson(HttpResponse resp, Class<T> cl) throws IOException {
         String type = resp.getEntity().getContentType().getValue();
-        String enc = resp.getEntity().getContentEncoding().getValue();
         if (!"application/json".equals(type)) {
-            throw new IOException("Server returned a non-json response!");
+            try {
+                throw new IOException("Server returned a non-json response!");
+            } finally {
+                EntityUtils.consumeQuietly(resp.getEntity());
+            }
         }
-        try (Reader r = new InputStreamReader(resp.getEntity().getContent(), enc)) {
+        try (Reader r = new InputStreamReader(resp.getEntity().getContent())) {
             if (resp.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 // TODO specific error handling
                 throw new IOException(gson.fromJson(r, JsonObject.class).get("message").getAsString());
