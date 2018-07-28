@@ -17,9 +17,10 @@ hdskins.upload=Uploading skin please wait...
 hdskins.local=Local Skin
 hdskins.server=Server Skin
 
-hdskins.mode.skin=Skin (Steve)
-hdskins.mode.skinny=Skin (Alex)
-hdskins.mode.elytra=Elytra
+hdskins.mode.steve=Steve Model
+hdskins.mode.alex=Alex Model
+
+hdskins.mode.skin=%s
 
 hdskins.options.chevy=>>
 hdskins.options.chevy.title=Upload Skin
