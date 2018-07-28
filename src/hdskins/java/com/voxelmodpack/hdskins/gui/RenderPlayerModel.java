@@ -105,14 +105,17 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         player.leftArmPose = ArmPose.EMPTY;
         player.rightArmPose = ArmPose.EMPTY;
 
-        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
-        popAttrib();
+
         pushMatrix();
         scale(1, -1, 1);
-        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+
+        color(1, 1, 1, 0.3F);
+
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
-        popAttrib();
+
+        color(1, 1, 1, 1);
+
         popMatrix();
     }
 }
