@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiButton;
 
 public class Button extends GuiButton implements IActionable, IGuiTooltipped {
 
-    private IGuiAction<Button> action;
+    protected IGuiAction<Button> action;
 
     private List<String> tooltip = null;
 
