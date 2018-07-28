@@ -1,26 +1,19 @@
 package com.minelittlepony.hdskins.gui;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.ModelWrapper;
-import com.minelittlepony.model.capabilities.IModel;
-import com.minelittlepony.model.components.PonyElytra;
 import com.minelittlepony.model.player.PlayerModels;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyRace;
-import com.minelittlepony.render.layer.AbstractPonyLayer;
+import com.minelittlepony.render.layer.LayerPonyElytra;
 import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelElytra;
 import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -65,35 +58,25 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> {
 
     @Override
     protected LayerRenderer<EntityLivingBase> getElytraLayer() {
-        return new AbstractPonyLayer<EntityPonyModel>(this) {
-            final PonyElytra ponyElytra = new PonyElytra();
-            final ModelElytra modelElytra = new ModelElytra();
+        return new LayerPonyElytra<EntityPonyModel>(this) {
+            private final ModelElytra modelElytra = new ModelElytra();
 
             @Override
-            public void doPonyRender(EntityPonyModel entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
-                ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-
-                if (itemstack.getItem() == Items.ELYTRA) {
-                    GlStateManager.color(1, 1, 1, 1);
-
-                    bindTexture(entity.getElytraTexture());
-
-                    GlStateManager.pushMatrix();
-
-                    ModelBase model = renderingAsHuman ? modelElytra : ponyElytra;
-
-                    if (!renderingAsHuman) {
-                        ((IModel)getMainModel()).transform(BodyPart.BODY);
-                        GlStateManager.translate(0, ((IModel)getMainModel()).getRiderYOffset(), 0.125F);
-                    }
-
-                    model.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
-                    model.render(entity, move, swing, ticks, headYaw, headPitch, scale);
-
-                    GlStateManager.popMatrix();
+            protected void preRenderCallback() {
+                if (!renderingAsHuman) {
+                    super.preRenderCallback();
                 }
             }
 
+            @Override
+            protected ModelBase getElytraModel() {
+                return renderingAsHuman ? modelElytra : super.getElytraModel();
+            }
+
+            @Override
+            protected ResourceLocation getElytraTexture(EntityPonyModel entity) {
+                return entity.getElytraTexture();
+            }
         };
     }
 }
