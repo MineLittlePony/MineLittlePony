@@ -104,16 +104,22 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         player.leftArmPose = ArmPose.EMPTY;
         player.rightArmPose = ArmPose.EMPTY;
 
+        double offset = entity.getYOffset() + 0.01;
+
+        pushMatrix();
         enableBlend();
         color(1, 1, 1, 0.3F);
+        translate(0, offset, 0);
 
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
 
         color(1, 1, 1, 1);
         disableBlend();
+        popMatrix();
 
         pushMatrix();
         scale(1, -1, 1);
+        translate(0, offset, 0);
 
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
         popMatrix();

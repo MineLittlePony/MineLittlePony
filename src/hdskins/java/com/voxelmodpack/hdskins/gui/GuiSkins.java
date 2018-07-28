@@ -486,10 +486,8 @@ public class GuiSkins extends GameGui {
 
         rotate(((updateCounter + partialTick) * 2.5F) % 360, 0, 1, 0);
 
-        thePlayer.rotationYawHead = (float)Math.atan(mouseX / 20) * -30;
+        thePlayer.rotationYawHead = (float)Math.atan(mouseX / 20) * 30;
         thePlayer.rotationPitch = (float)Math.atan(mouseY / 40) * -20;
-
-        translate(0, thePlayer.getYOffset(), 0);
 
         mc.getRenderManager().renderEntity(thePlayer, 0, 0, 0, 0, 1, false);
 
