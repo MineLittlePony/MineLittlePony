@@ -109,6 +109,28 @@ public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSup
         }
 
         swingProgress = swingProgressInt / 8F;
+
+        motionY *= 0.98;
+        if (Math.abs(motionY) < 0.003) {
+            motionY = 0;
+        }
+
+        if (posY == 0 && isJumping) {
+            jump();
+        }
+
+
+        motionY -= 0.08D;
+        motionY *= 0.9800000190734863D;
+
+        posY += motionY;
+
+        if (posY < 0) {
+            posY = 0;
+        }
+        onGround = posY == 0;
+
+        ticksExisted++;
     }
 
     @Override

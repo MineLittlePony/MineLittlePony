@@ -11,7 +11,6 @@ import com.minelittlepony.gui.Button;
 import com.minelittlepony.gui.GameGui;
 import com.minelittlepony.gui.IconicButton;
 import com.minelittlepony.gui.Label;
-import com.minelittlepony.util.math.MathUtil;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
@@ -394,6 +393,17 @@ public class GuiSkins extends GameGui {
 
     @Override
     protected void drawContents(int mouseX, int mouseY, float partialTick) {
+
+
+        boolean sneak = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
+
+        localPlayer.setSneaking(sneak);
+        remotePlayer.setSneaking(sneak);
+
+        boolean jump = Keyboard.isKeyDown(Keyboard.KEY_SPACE);
+        localPlayer.setJumping(jump);
+        remotePlayer.setJumping(jump);
+
         float deltaTime = panorama.getDelta(partialTick);
         panorama.render(partialTick, zLevel);
 

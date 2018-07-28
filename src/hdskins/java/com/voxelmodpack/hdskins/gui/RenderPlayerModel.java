@@ -106,7 +106,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
 
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
 
-        double offset = entity.getYOffset() + 0.01;
+        double offset = entity.getYOffset() + entity.posY + 0.01;
 
         pushMatrix();
         enableBlend();
