@@ -481,12 +481,9 @@ public class GuiSkins extends GameGui {
 
         scale(-scale, scale, scale);
         rotate(180, 0, 0, 1);
-        rotate(135, 0, 1, 0);
+        rotate(15, 1, 0, 0);
 
         RenderHelper.enableStandardItemLighting();
-
-        rotate(-135, 0, 1, 0);
-        rotate(15, 1, 0, 0);
 
         rotate(((updateCounter + partialTick) * 2.5F) % 360, 0, 1, 0);
 
