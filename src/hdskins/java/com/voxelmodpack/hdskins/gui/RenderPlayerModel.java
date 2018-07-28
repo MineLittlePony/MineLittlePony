@@ -19,6 +19,8 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 import java.util.Set;
 
+import org.lwjgl.opengl.GL11;
+
 import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLivingBase<M> {
@@ -106,6 +108,8 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
 
         double offset = entity.getYOffset() + entity.posY + 0.01;
 
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+
         pushMatrix();
         enableBlend();
         color(1, 1, 1, 0.3F);
@@ -123,5 +127,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
 
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
         popMatrix();
+
+        popAttrib();
     }
 }
