@@ -74,22 +74,38 @@ public class ValhallaSkinServer implements SkinServer {
             try (CloseableHttpClient client = HttpClients.createSystem()) {
                 authorize(client, session);
 
-                GameProfile profile = session.getProfile();
-
-                if (image == null) {
-                    return resetSkin(client, profile, type);
-                }
-                switch (image.getScheme()) {
-                    case "file":
-                        return uploadFile(client, new File(image), profile, type, metadata);
-                    case "http":
-                    case "https":
-                        return uploadUrl(client, image, profile, type, metadata);
-                    default:
-                        throw new IOException("Unsupported URI scheme: " + image.getScheme());
+                try {
+                    return upload(client, session, image, type, metadata);
+                } catch (IOException e) {
+                    if (e.getMessage().equals("Authorization failed")) {
+                        accessToken = null;
+                        authorize(client, session);
+                        return upload(client, session, image, type, metadata);
+                    }
+                    throw e;
                 }
             }
         }, HDSkinManager.skinUploadExecutor);
+    }
+
+    private SkinUploadResponse upload(CloseableHttpClient client, Session session, @Nullable URI image,
+            MinecraftProfileTexture.Type type, Map<String, String> metadata)
+            throws IOException {
+        GameProfile profile = session.getProfile();
+
+        if (image == null) {
+            return resetSkin(client, profile, type);
+        }
+        switch (image.getScheme()) {
+            case "file":
+                return uploadFile(client, new File(image), profile, type, metadata);
+            case "http":
+            case "https":
+                return uploadUrl(client, image, profile, type, metadata);
+            default:
+                throw new IOException("Unsupported URI scheme: " + image.getScheme());
+        }
+
     }
 
     private SkinUploadResponse resetSkin(CloseableHttpClient client, GameProfile profile, MinecraftProfileTexture.Type type) throws IOException {
