@@ -5,6 +5,7 @@ import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.SKIN;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
 import com.google.common.base.Splitter;
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -592,6 +593,7 @@ public class GuiSkins extends GuiScreen {
 
 
     private Void onFailure(Throwable t) {
+        t = Throwables.getRootCause(t);
         LogManager.getLogger().warn("Upload failed", t);
         this.setUploadError(t.toString());
         this.uploadingSkin = false;
