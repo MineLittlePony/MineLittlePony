@@ -119,22 +119,18 @@ public class NetClient implements Closeable {
      * Gets or obtains a response status code.
      */
     public int getResponseCode() throws IOException {
-        if (getResponse() == null) {
-            return HttpStatus.SC_NOT_FOUND;
-        }
-
-        return response.getStatusLine().getStatusCode();
+        return getResponse().getStatusLine().getStatusCode();
     }
 
     /**
      * Consumes and returns the entire response body.
      */
     public String getResponseText() throws IOException {
-        if (getResponse() == null || response.getEntity() == null) {
+        if (getResponse().getEntity() == null) {
             return "";
         }
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(getResponse().getEntity().getContent()))) {
             StringBuilder builder = new StringBuilder();
 
             int ch;
@@ -148,8 +144,12 @@ public class NetClient implements Closeable {
 
     @Override
     public void close() throws IOException {
-        if (response != null) {
-            EntityUtils.consumeQuietly(response.getEntity());
+        try {
+            if (response != null) {
+                response.close();
+            }
+        } finally {
+            response = null;
         }
     }
 }
