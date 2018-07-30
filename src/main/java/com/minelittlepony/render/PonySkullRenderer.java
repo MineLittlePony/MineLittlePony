@@ -2,6 +2,7 @@ package com.minelittlepony.render;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyConfig;
+import com.minelittlepony.PonyConfig.PonySettings;
 import com.minelittlepony.ducks.IRenderItem;
 import com.minelittlepony.pony.data.Pony;
 import com.mojang.authlib.GameProfile;
@@ -35,7 +36,7 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
      * Original/Existing renderer is stored to a backup variable as a fallback in case of mods.
      */
     public static TileEntitySkullRenderer resolve() {
-        if (MineLittlePony.getConfig().getPonyskulls().get()) {
+        if (PonySettings.PONYSKULLS.get()) {
             if (!(instance instanceof PonySkullRenderer)) {
                 backup = instance;
                 ModUtilities.addRenderer(TileEntitySkull.class, ponyInstance);

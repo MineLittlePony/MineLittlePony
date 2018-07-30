@@ -81,7 +81,7 @@ public class MineLittlePony {
 
         RenderManager rm = minecraft.getRenderManager();
         renderManager.initialisePlayerRenderers(rm);
-        renderManager.initializeMobRenderers(rm, config);
+        renderManager.initializeMobRenderers(rm);
     }
 
     void onTick(Minecraft minecraft, boolean inGame) {

@@ -5,7 +5,6 @@ import com.minelittlepony.PonyConfig;
 import com.minelittlepony.PonyConfig.PonySettings;
 import com.minelittlepony.pony.data.PonyLevel;
 import com.minelittlepony.render.ponies.MobRenderers;
-import com.mumfrey.liteloader.core.LiteLoader;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -53,7 +52,7 @@ public class GuiPonySettings extends GuiScreen {
         row += 15;
         addButton(new Label(LEFT, row += 15, OPTIONS_PREFIX + "options", -1));
         for (PonySettings i : PonySettings.values()) {
-            addButton(new Checkbox(LEFT, row += 15, OPTIONS_PREFIX + i.name().toLowerCase(), i));
+            addButton(new Checkbox(LEFT, row += 15, OPTIONS_PREFIX + i.key(), i.get(), i));
         }
 
         if (mustScroll()) {
@@ -64,14 +63,14 @@ public class GuiPonySettings extends GuiScreen {
 
         addButton(new Label(RIGHT, row += 15, MOB_PREFIX + "title", -1));
         for (MobRenderers i : MobRenderers.values()) {
-            addButton(new Checkbox(RIGHT, row += 15, MOB_PREFIX + i.name().toLowerCase(), i));
+            addButton(new Checkbox(RIGHT, row += 15, MOB_PREFIX + i.key(), i.get(), i));
         }
     }
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         if (button instanceof IActionable) {
-            ((IActionable)button).perform();
+            ((IActionable)button).performAction();
         }
     }
 
@@ -79,11 +78,6 @@ public class GuiPonySettings extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
-    }
-
-    @Override
-    public void onGuiClosed() {
-        LiteLoader.getInstance().writeConfig(config);
     }
 
     protected String getTitle() {

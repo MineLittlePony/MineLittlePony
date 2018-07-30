@@ -1,9 +1,8 @@
 package com.minelittlepony.render.ponies;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.PonyConfig;
 import com.minelittlepony.PonyRenderManager;
-import com.minelittlepony.settings.Value;
+import com.minelittlepony.settings.ValueConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.monster.EntityElderGuardian;
@@ -23,15 +22,13 @@ import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.monster.EntityZombieVillager;
 import net.minecraft.entity.passive.EntityVillager;
 
-import java.util.function.Function;
-
 /**
  * Central location where new entity renderers are registered and applied.
  *
  * Due to the limitations in Mumfrey's framework, needs to be paired with a field in PonyConfig.
  */
-public enum MobRenderers implements Value<Boolean> {
-    VILLAGERS(PonyConfig::getVillagers) {
+public enum MobRenderers implements ValueConfig.Flag {
+    VILLAGERS {
         @Override
         public void register(boolean state, PonyRenderManager pony, RenderManager manager) {
             pony.switchRenderer(state, manager, EntityVillager.class, new RenderPonyVillager(manager));
@@ -39,7 +36,7 @@ public enum MobRenderers implements Value<Boolean> {
             pony.switchRenderer(state, manager, EntityZombieVillager.class, new RenderPonyZombieVillager(manager));
         }
     },
-    ZOMBIES(PonyConfig::getZombies) {
+    ZOMBIES {
         @Override
         public void register(boolean state, PonyRenderManager pony, RenderManager manager) {
             pony.switchRenderer(state, manager, EntityZombie.class, new RenderPonyZombie<>(manager));
@@ -47,13 +44,13 @@ public enum MobRenderers implements Value<Boolean> {
             pony.switchRenderer(state, manager, EntityGiantZombie.class, new RenderPonyZombie.Giant(manager));
         }
     },
-    PIGZOMBIES(PonyConfig::getPigzombies) {
+    PIGZOMBIES {
         @Override
         public void register(boolean state, PonyRenderManager pony, RenderManager manager) {
             pony.switchRenderer(state, manager, EntityPigZombie.class, new RenderPonyPigman(manager));
         }
     },
-    SKELETONS(PonyConfig::getSkeletons) {
+    SKELETONS {
         @Override
         public void register(boolean state, PonyRenderManager pony, RenderManager manager) {
             pony.switchRenderer(state, manager, EntitySkeleton.class, new RenderPonySkeleton<>(manager));
@@ -61,7 +58,7 @@ public enum MobRenderers implements Value<Boolean> {
             pony.switchRenderer(state, manager, EntityWitherSkeleton.class, new RenderPonySkeleton.Wither(manager));
         }
     },
-    ILLAGERS(PonyConfig::getIllagers) {
+    ILLAGERS {
         @Override
         public void register(boolean state, PonyRenderManager pony, RenderManager manager) {
             pony.switchRenderer(state, manager, EntityVex.class, new RenderPonyVex(manager));
@@ -70,7 +67,7 @@ public enum MobRenderers implements Value<Boolean> {
             pony.switchRenderer(state, manager, EntityIllusionIllager.class, new RenderPonyIllager.Illusionist(manager));
         }
     },
-    GUARDIANS(PonyConfig::getGuardians) {
+    GUARDIANS {
         @Override
         public void register(boolean state, PonyRenderManager pony, RenderManager manager) {
             pony.switchRenderer(state, manager, EntityGuardian.class, new RenderPonyGuardian(manager));
@@ -78,25 +75,14 @@ public enum MobRenderers implements Value<Boolean> {
         }
     };
 
-    private final Value<Boolean> setting;
-
-    MobRenderers(Function<PonyConfig, Value<Boolean>> setting) {
-        this.setting = setting.apply(MineLittlePony.getConfig());
-    }
-
-    @Override
-    public Boolean get() {
-        return setting.get();
-    }
-
     @Override
     public void set(Boolean value) {
-        setting.set(value);
+        ValueConfig.Flag.super.set(value);
         apply(MineLittlePony.getInstance().getRenderManager(), Minecraft.getMinecraft().getRenderManager());
     }
 
     public void apply(PonyRenderManager pony, RenderManager manager) {
-        boolean state = setting.get();
+        boolean state = get();
         register(state, pony, manager);
         if (state) {
             MineLittlePony.logger.info(name() + " are now ponies.");
@@ -106,4 +92,9 @@ public enum MobRenderers implements Value<Boolean> {
     }
 
     public abstract void register(boolean state, PonyRenderManager pony, RenderManager manager);
+
+    @Override
+    public ValueConfig config() {
+        return MineLittlePony.getConfig();
+    }
 }
