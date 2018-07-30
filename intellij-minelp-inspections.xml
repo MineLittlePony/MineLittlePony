@@ -33,6 +33,7 @@
   </inspection_tool>
   <inspection_tool class="OptionalAssignedToNull" enabled="false" level="WARNING" enabled_by_default="false" />
   <inspection_tool class="ProtectedInFinal" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+  <inspection_tool class="SameReturnValue" enabled="false" level="WARNING" enabled_by_default="false" />
   <inspection_tool class="SimplifiableIfStatement" enabled="false" level="INFORMATION" enabled_by_default="false" />
   <inspection_tool class="SpellCheckingInspection" enabled="false" level="TYPO" enabled_by_default="false">
     <option name="processCode" value="true" />
@@ -41,6 +42,7 @@
   </inspection_tool>
   <inspection_tool class="UnnecessaryQualifierForThis" enabled="true" level="WARNING" enabled_by_default="true" />
   <inspection_tool class="UnnecessaryThis" enabled="true" level="WARNING" enabled_by_default="true" />
+  <inspection_tool class="UnusedReturnValue" enabled="false" level="WARNING" enabled_by_default="false" />
   <inspection_tool class="WeakerAccess" enabled="false" level="WARNING" enabled_by_default="false">
     <option name="SUGGEST_PACKAGE_LOCAL_FOR_MEMBERS" value="true" />
     <option name="SUGGEST_PACKAGE_LOCAL_FOR_TOP_CLASSES" value="true" />
