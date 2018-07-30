@@ -40,7 +40,7 @@ public class GuiPonySettings extends SettingsPanel {
         addButton(new Slider(LEFT, row += 15, 0, 2, config.getPonyLevel().ordinal(), (int id, String name, float value) -> {
             return format(PONY_LEVEL + "." + PonyLevel.valueFor(value).name().toLowerCase());
         }, v -> {
-            PonyLevel level = PonyLevel.valueFor(v);
+            PonyLevel level = PonyLevel.valueFor((float) v);
             config.setPonyLevel(level);
             return (float)level.ordinal();
         }));
@@ -48,7 +48,7 @@ public class GuiPonySettings extends SettingsPanel {
         row += 15;
         addButton(new Label(LEFT, row += 15, OPTIONS_PREFIX + "options", -1));
         for (PonySettings i : PonySettings.values()) {
-            addButton(new Checkbox(LEFT, row += 15, OPTIONS_PREFIX + i.name().toLowerCase(), i.get(), i));
+            addButton(new Checkbox(LEFT, row += 15, OPTIONS_PREFIX + i.name().toLowerCase(), i));
         }
 
         if (mustScroll()) {
@@ -59,7 +59,7 @@ public class GuiPonySettings extends SettingsPanel {
 
         addButton(new Label(RIGHT, row += 15, MOB_PREFIX + "title", -1));
         for (MobRenderers i : MobRenderers.values()) {
-            addButton(new Checkbox(RIGHT, row += 15, MOB_PREFIX + i.name().toLowerCase(), i.get(), i));
+            addButton(new Checkbox(RIGHT, row += 15, MOB_PREFIX + i.name().toLowerCase(), i));
         }
     }
 
