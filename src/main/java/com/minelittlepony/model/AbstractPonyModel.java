@@ -35,6 +35,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
     private boolean isSleeping;
     private boolean isFlying;
+    private boolean isElytraFlying;
     private boolean isSwimming;
     private boolean headGear;
 
@@ -72,7 +73,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
      */
     protected void checkRainboom(Entity entity, float swing) {
-        rainboom = canFly() && Math.sqrt(entity.motionX * entity.motionX + entity.motionZ * entity.motionZ) > 0.4F;
+        rainboom = canFly() || isElytraFlying();
+        rainboom &= Math.sqrt(entity.motionX * entity.motionX + entity.motionZ * entity.motionZ) > 0.4F;
     }
 
     public void updateLivingState(EntityLivingBase entity, Pony pony) {
@@ -80,6 +82,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         isSneak = entity.isSneaking();
         isSleeping = entity.isPlayerSleeping();
         isFlying = pony.isPegasusFlying(entity);
+        isElytraFlying = entity.isElytraFlying();
         isSwimming = pony.isSwimming(entity);
         headGear = pony.isWearingHeadgear(entity);
     }
@@ -224,7 +227,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
         if (isSwimming()) {
             rotateLegsSwimming(move, swing, ticks, entity);
-        } else if (isFlying()) {
+        } else if (isGoingFast()) {
             rotateLegsInFlight(move, swing, ticks, entity);
         } else {
             rotateLegsOnGround(move, swing, ticks, entity);
@@ -693,6 +696,11 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     }
 
     @Override
+    public boolean isElytraFlying() {
+        return isElytraFlying;
+    }
+
+    @Override
     public boolean isSleeping() {
         return isSleeping;
     }
@@ -849,6 +857,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         if (model instanceof AbstractPonyModel) {
             AbstractPonyModel pony = (AbstractPonyModel) model;
             isFlying = pony.isFlying;
+            isElytraFlying = pony.isElytraFlying;
+            isSwimming = pony.isSwimming;
             isSleeping = pony.isSleeping;
             metadata = pony.metadata;
             motionPitch = pony.motionPitch;

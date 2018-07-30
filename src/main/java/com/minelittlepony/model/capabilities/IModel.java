@@ -40,6 +40,12 @@ public interface IModel extends ICapitated {
     boolean isFlying();
 
     /**
+     * Returns true if the model is elytra flying. Elytra flying is different
+     * from regular flying in that there are actual "wings" involved.
+     */
+    boolean isElytraFlying();
+
+    /**
      * Returns true if this model is lying on a bed or bed-like object.
      */
     boolean isSleeping();

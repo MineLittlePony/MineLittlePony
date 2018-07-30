@@ -6,11 +6,12 @@ import static com.minelittlepony.model.PonyModelConstants.ROTATE_270;
 import net.minecraft.util.math.MathHelper;
 
 public interface IModelPegasus extends IModel {
+
     /**
      * Returns true if the wings are spread.
      */
     default boolean wingsAreOpen() {
-        return isSwimming() || isFlying() || isCrouching();
+        return (isSwimming() || isFlying() || isCrouching()) && !isElytraFlying();
     }
 
 
