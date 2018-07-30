@@ -86,15 +86,11 @@ public class ValhallaSkinServer extends AbstractSkinServer {
             return resetSkin(client, profile, type);
         }
         switch (image.getScheme()) {
-            case "file":
-                return uploadFile(client, new File(image), profile, type, metadata);
+            case "file": return uploadFile(client, new File(image), profile, type, metadata);
             case "http":
-            case "https":
-                return uploadUrl(client, image, profile, type, metadata);
-            default:
-                throw new IOException("Unsupported URI scheme: " + image.getScheme());
+            case "https": return uploadUrl(client, image, profile, type, metadata);
+            default: throw new IOException("Unsupported URI scheme: " + image.getScheme());
         }
-
     }
 
     private SkinUploadResponse resetSkin(CloseableHttpClient client, GameProfile profile, MinecraftProfileTexture.Type type) throws IOException {
