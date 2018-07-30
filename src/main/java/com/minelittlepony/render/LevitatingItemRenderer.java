@@ -1,13 +1,12 @@
 package com.minelittlepony.render;
 
-import org.lwjgl.opengl.GL14;
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IRenderItem;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.util.coordinates.Color;
 import com.mumfrey.liteloader.client.overlays.IMinecraft;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -17,7 +16,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
-import static net.minecraft.client.renderer.GlStateManager.*;
+import org.lwjgl.opengl.GL14;
 
 public class LevitatingItemRenderer {
 
@@ -70,7 +69,7 @@ public class LevitatingItemRenderer {
 
         pushMatrix();
 
-        boolean doMagic = MineLittlePony.getConfig().fpsmagic && pony.getMetadata().hasMagic();
+        boolean doMagic = MineLittlePony.getConfig().getFpsmagic().get() && pony.getMetadata().hasMagic();
 
         if (doMagic) {
             setupPerspective(entity, stack, left);

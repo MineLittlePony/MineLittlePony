@@ -1,12 +1,5 @@
 package com.minelittlepony.render;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
-import org.lwjgl.opengl.GL11;
-
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyConfig;
 import com.minelittlepony.ducks.IRenderItem;
@@ -18,6 +11,12 @@ import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Nullable;
 
 /**
  * PonySkullRenderer! It renders ponies as skulls, or something...
@@ -36,7 +35,7 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
      * Original/Existing renderer is stored to a backup variable as a fallback in case of mods.
      */
     public static TileEntitySkullRenderer resolve() {
-        if (MineLittlePony.getConfig().ponyskulls) {
+        if (MineLittlePony.getConfig().getPonyskulls().get()) {
             if (!(instance instanceof PonySkullRenderer)) {
                 backup = instance;
                 ModUtilities.addRenderer(TileEntitySkull.class, ponyInstance);
