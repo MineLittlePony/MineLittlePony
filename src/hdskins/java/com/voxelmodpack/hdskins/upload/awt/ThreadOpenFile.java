@@ -7,9 +7,8 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
-import org.apache.logging.log4j.util.Strings;
-
 import com.voxelmodpack.hdskins.LiteModHDSkins;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Base class for "open file" dialog threads
@@ -40,7 +39,7 @@ public abstract class ThreadOpenFile extends Thread {
         fileDialog.setDialogTitle(dialogTitle);
 
         String last = LiteModHDSkins.instance().lastChosenFile;
-        if (!Strings.isBlank(last)) {
+        if (!StringUtils.isBlank(last)) {
             fileDialog.setSelectedFile(new File(last));
         }
         fileDialog.setFileFilter(getFileFilter());
