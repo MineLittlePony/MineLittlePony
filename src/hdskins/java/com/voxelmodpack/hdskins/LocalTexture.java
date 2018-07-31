@@ -19,8 +19,8 @@ public class LocalTexture {
 
     private final TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
 
-    private DynamicTexture local;
-    private PreviewTexture remote;
+    private volatile DynamicTexture local;
+    private volatile PreviewTexture remote;
 
     private ResourceLocation remoteResource;
     private ResourceLocation localResource;
