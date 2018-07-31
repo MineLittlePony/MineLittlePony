@@ -64,8 +64,7 @@ public class ImageBufferDownloadHD implements IImageBuffer {
     private void drawImage(int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2) {
         graphics.drawImage(image,
                 dx1 * scale, dy1 * scale, dx2 * scale, dy2 * scale,
-                sx1 * scale, sy1 * scale, sx2 * scale, sy2 * scale,
-                null);
+                sx1 * scale, sy1 * scale, sx2 * scale, sy2 * scale, null);
     }
 
     @Override
