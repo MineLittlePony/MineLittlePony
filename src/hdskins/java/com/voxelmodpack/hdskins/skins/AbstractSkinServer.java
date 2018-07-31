@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Nullable;
@@ -32,15 +31,14 @@ public abstract class AbstractSkinServer implements SkinServer {
     }
 
     @Override
-    public final Optional<MinecraftTexturesPayload> loadProfileData(GameProfile profile) {
-        return Optional.ofNullable(getProfileData(profile));
-    }
+    public Map<Type, MinecraftProfileTexture> getProfileTextures(GameProfile profile) {
+        MinecraftTexturesPayload payload = getProfileData(profile);
 
-    @Override
-    public Map<Type, MinecraftProfileTexture> getPreviewTextures(GameProfile profile) {
-        return loadProfileData(profile)
-                .map(MinecraftTexturesPayload::getTextures)
-                .orElse(Collections.emptyMap());
+        if (payload != null && payload.getTextures() != null) {
+            return payload.getTextures();
+        }
+
+        return Collections.emptyMap();
     }
 
     @Override
@@ -56,8 +54,6 @@ public abstract class AbstractSkinServer implements SkinServer {
             throw new JsonParseException("Address was not specified.");
         }
     }
-
-    protected abstract MinecraftTexturesPayload getProfileData(GameProfile profile);
 
     protected abstract SkinUploadResponse doUpload(Session session, URI image, Type type, Map<String, String> metadata) throws AuthenticationException, IOException;
 

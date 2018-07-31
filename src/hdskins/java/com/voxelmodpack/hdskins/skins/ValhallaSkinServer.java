@@ -47,11 +47,12 @@ public class ValhallaSkinServer extends AbstractSkinServer {
     }
 
     @Override
-    protected MinecraftTexturesPayload getProfileData(GameProfile profile) {
-        try (CloseableHttpClient client = HttpClients.createSystem();
-                CloseableHttpResponse response = client.execute(new HttpGet(getTexturesURI(profile)))) {
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                return readJson(response, MinecraftTexturesPayload.class);
+    public MinecraftTexturesPayload getProfileData(GameProfile profile) {
+        try (CloseableHttpClient client = HttpClients.createSystem()) {
+            try (CloseableHttpResponse response = client.execute(new HttpGet(getTexturesURI(profile)))) {
+                if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                    return readJson(response, MinecraftTexturesPayload.class);
+                }
             }
 
         } catch (IOException e) {

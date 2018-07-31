@@ -204,10 +204,9 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     private Map<Type, MinecraftProfileTexture> loadProfileData(GameProfile profile) {
         Map<Type, MinecraftProfileTexture> textures = Maps.newEnumMap(Type.class);
 
-        skinServers.forEach(server -> server
-                .loadProfileData(profile)
-                .map(MinecraftTexturesPayload::getTextures)
-                .ifPresent(a -> a.forEach(textures::putIfAbsent)));
+        for (SkinServer server : skinServers) {
+            server.getProfileTextures(profile).forEach(textures::putIfAbsent);
+        }
 
         return textures;
     }
