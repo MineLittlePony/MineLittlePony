@@ -15,7 +15,7 @@ public class Button extends GuiButton implements IActionable, IGuiTooltipped {
 
     @SuppressWarnings("unchecked")
     public Button(int x, int y, int width, int height, String label, IGuiAction<? extends Button> callback) {
-        super(0, x, y, width, height, GameGui.format(label));
+        super(5000, x, y, width, height, GameGui.format(label));
         action = (IGuiAction<Button>)callback;
     }
 
