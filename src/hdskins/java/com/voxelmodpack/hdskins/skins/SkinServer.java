@@ -34,7 +34,10 @@ public interface SkinServer extends Exposable {
             "http://skins.voxelmodpack.com",
             "http://skinmanager.voxelmodpack.com"));
 
+    @Deprecated
     Optional<MinecraftTexturesPayload> loadProfileData(GameProfile profile);
+
+    MinecraftTexturesPayload getProfileData(GameProfile profile);
 
     Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> getPreviewTextures(GameProfile profile);
 

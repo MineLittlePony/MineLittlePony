@@ -57,8 +57,6 @@ public abstract class AbstractSkinServer implements SkinServer {
         }
     }
 
-    protected abstract MinecraftTexturesPayload getProfileData(GameProfile profile);
-
     protected abstract SkinUploadResponse doUpload(Session session, URI image, Type type, Map<String, String> metadata) throws AuthenticationException, IOException;
 
     @Override

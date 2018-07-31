@@ -51,7 +51,7 @@ public class LegacySkinServer extends AbstractSkinServer {
 
     @SuppressWarnings("deprecation")
     @Override
-    protected MinecraftTexturesPayload getProfileData(GameProfile profile) {
+    public MinecraftTexturesPayload getProfileData(GameProfile profile) {
         ImmutableMap.Builder<Type, MinecraftProfileTexture> builder = ImmutableMap.builder();
 
         for (Type type : Type.values()) {

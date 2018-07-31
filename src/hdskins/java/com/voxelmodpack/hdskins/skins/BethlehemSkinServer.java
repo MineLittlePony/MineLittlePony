@@ -26,7 +26,7 @@ public class BethlehemSkinServer extends AbstractSkinServer {
     }
 
     @Override
-    protected MinecraftTexturesPayload getProfileData(GameProfile profile) {
+    public MinecraftTexturesPayload getProfileData(GameProfile profile) {
         try (NetClient client = new NetClient("GET", getPath(profile))) {
             if (client.getResponseCode() == HttpStatus.SC_OK) {
                 return gson.fromJson(client.getResponseText(), MinecraftTexturesPayload.class);
