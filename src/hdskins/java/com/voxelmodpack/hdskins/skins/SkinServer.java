@@ -18,7 +18,6 @@ import net.minecraft.util.Session;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -34,12 +33,9 @@ public interface SkinServer extends Exposable {
             "http://skins.voxelmodpack.com",
             "http://skinmanager.voxelmodpack.com"));
 
-    @Deprecated
-    Optional<MinecraftTexturesPayload> loadProfileData(GameProfile profile);
-
     MinecraftTexturesPayload getProfileData(GameProfile profile);
 
-    Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> getPreviewTextures(GameProfile profile);
+    Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> getProfileTextures(GameProfile profile);
 
     CompletableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable URI image, MinecraftProfileTexture.Type type, Map<String, String> metadata);
 

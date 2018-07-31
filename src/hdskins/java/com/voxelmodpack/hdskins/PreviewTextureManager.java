@@ -38,7 +38,7 @@ public class PreviewTextureManager {
     @Nullable
     private PreviewTexture loadPreviewTexture(ResourceLocation location, Type type, ResourceLocation def, @Nullable SkinAvailableCallback callback) {
         if (textures == null) {
-            textures = HDSkinManager.INSTANCE.getGatewayServer().getPreviewTextures(profile);
+            textures = HDSkinManager.INSTANCE.getGatewayServer().getProfileTextures(profile);
         }
 
         if (!textures.containsKey(type)) {

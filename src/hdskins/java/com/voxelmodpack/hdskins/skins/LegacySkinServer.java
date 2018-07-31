@@ -39,7 +39,7 @@ public class LegacySkinServer extends AbstractSkinServer {
     }
 
     @Override
-    public Map<Type, MinecraftProfileTexture> getPreviewTextures(GameProfile profile) {
+    public Map<Type, MinecraftProfileTexture> getProfileTextures(GameProfile profile) {
         Map<Type, MinecraftProfileTexture> map = new EnumMap<>(Type.class);
 
         for (Type type : Type.values()) {
