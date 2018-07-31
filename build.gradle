@@ -37,18 +37,27 @@ minecraft {
 
 sourceSets {
     hdskins {
+        java {
+            srcDirs "src/hdskins/java", "src/common/java"
+        }
+        resources {
+            srcDirs "src/hdskins/resources"
+        }
+        refMap = 'hdskins.mixin.refmap.json'
+        
         compileClasspath += main.compileClasspath
-				compileClasspath += common.compileClasspath
-        ext.refMap = 'hdskins.mixin.refmap.json'
     }
     main {
+        java {
+            srcDirs "src/main/java", "src/common/java"
+        }
+        resources {
+            srcDirs "src/main/resources"
+        }
+        refMap = 'minelp.mixin.refmap.json'
+        
         compileClasspath += hdskins.output
-				compileClasspath += common.output
-        ext.refMap = 'minelp.mixin.refmap.json'
     }
-		common {
-				
-		}
 }
 
 dependencies {
