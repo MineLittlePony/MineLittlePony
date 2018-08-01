@@ -75,9 +75,10 @@ public class SkinResourceManager implements IResourceManagerReloadListener {
 
     @Nullable
     public ResourceLocation getPlayerTexture(GameProfile profile, Type type) {
-        if (type != Type.SKIN)
+        if (type != Type.SKIN) {
             // not supported
             return null;
+        }
 
         Skin skin = getSkin(profile);
         if (skin != null) {
@@ -102,11 +103,11 @@ public class SkinResourceManager implements IResourceManagerReloadListener {
     private void loadSkinResource(@Nullable final ResourceLocation res) {
         if (res != null) {
             // read and convert in a new thread
-            this.inProgress.computeIfAbsent(res, r -> CompletableFuture.supplyAsync(new ImageLoader(r), executor)
+            inProgress.computeIfAbsent(res, r -> CompletableFuture.supplyAsync(new ImageLoader(r), executor)
                     .whenComplete((loc, t) -> {
-                        if (loc != null)
+                        if (loc != null) {
                             converted.put(res, loc);
-                        else {
+                        } else {
                             LogManager.getLogger().warn("Errored while processing {}. Using original.", res, t);
                             converted.put(res, res);
                         }
@@ -119,9 +120,9 @@ public class SkinResourceManager implements IResourceManagerReloadListener {
 
     @Nullable
     private Skin getSkin(GameProfile profile) {
-        Skin skin = this.uuidSkins.get(profile.getId());
+        Skin skin = uuidSkins.get(profile.getId());
         if (skin == null) {
-            skin = this.namedSkins.get(profile.getName());
+            skin = namedSkins.get(profile.getName());
         }
         return skin;
     }

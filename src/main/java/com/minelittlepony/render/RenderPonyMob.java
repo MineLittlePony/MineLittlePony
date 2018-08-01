@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 //       and is the whole reason we had this scaling bug in the first place.
 public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving<T> implements IRenderPony<T> {
 
-    protected final RenderPony<T> renderPony = new RenderPony<T>(this);
+    protected final RenderPony<T> renderPony = new RenderPony<>(this);
 
     public RenderPonyMob(RenderManager manager, ModelWrapper model) {
         super(manager, model.getBody(), 0.5F);

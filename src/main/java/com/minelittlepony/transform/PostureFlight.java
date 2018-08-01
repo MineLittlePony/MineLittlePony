@@ -61,6 +61,6 @@ public class PostureFlight implements PonyPosture<AbstractClientPlayer> {
 
         roll = model.getMetadata().getInterpolator().interpolate("pegasusRoll", roll, 10);
 
-        GlStateManager.rotate((float)roll, 0, 0, 1);
+        GlStateManager.rotate(roll, 0, 0, 1);
     }
 }

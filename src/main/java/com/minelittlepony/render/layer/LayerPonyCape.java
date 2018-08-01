@@ -42,18 +42,24 @@ public class LayerPonyCape extends AbstractPonyLayer<AbstractClientPlayer> {
             float motionYaw = player.prevRenderYawOffset + (player.renderYawOffset - player.prevRenderYawOffset) * scale;
 
             double sin = MathHelper.sin(motionYaw * PI / 180);
-            double cos = (-MathHelper.cos(motionYaw * PI / 180));
+            double cos = -MathHelper.cos(motionYaw * PI / 180);
 
             float capeMotionY = (float) capeY * 10;
 
-            if (capeMotionY < -6) capeMotionY = -6;
-            if (capeMotionY > 32) capeMotionY = 32;
+            if (capeMotionY < -6) {
+                capeMotionY = -6;
+            }
+            if (capeMotionY > 32) {
+                capeMotionY = 32;
+            }
 
             float capeMotionX = (float) (capeX * sin + capeZ * cos) * 100;
 
             float diagMotion =  (float) (capeX * cos - capeZ * sin) * 100;
 
-            if (capeMotionX < 0) capeMotionX = 0;
+            if (capeMotionX < 0) {
+                capeMotionX = 0;
+            }
 
             float camera = player.prevCameraYaw + (player.cameraYaw - player.prevCameraYaw) * scale;
             capeMotionY += MathHelper.sin((player.prevDistanceWalkedModified + (player.distanceWalkedModified - player.prevDistanceWalkedModified) * scale) * 6) * 32 * camera;

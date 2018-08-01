@@ -17,7 +17,7 @@ public abstract class MixinImageBufferDownload implements IImageBuffer {
     @Inject(
             method = "parseUserSkin(Ljava/awt/image/BufferedImage;)Ljava/awt/image/BufferedImage;",
             at = @At("RETURN"),
-    cancellable = true)
+            cancellable = true)
     private void update(BufferedImage image, CallbackInfoReturnable<BufferedImage> ci) {
         // convert skins from mojang server
         BufferedImage image2 = ci.getReturnValue();

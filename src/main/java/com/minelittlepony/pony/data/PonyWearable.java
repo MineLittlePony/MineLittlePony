@@ -20,10 +20,12 @@ public enum PonyWearable implements ITriggerPixelMapped<PonyWearable> {
     }
 
     public static PonyWearable[] flags(boolean[] flags) {
-        List<PonyWearable> wears = new ArrayList<PonyWearable>();
+        List<PonyWearable> wears = new ArrayList<>();
         PonyWearable[] values = values();
         for (int i = 0; i < values.length; i++) {
-            if (flags[i]) wears.add(values[i]);
+            if (flags[i]) {
+                wears.add(values[i]);
+            }
         }
         return wears.toArray(new PonyWearable[wears.size()]);
     }

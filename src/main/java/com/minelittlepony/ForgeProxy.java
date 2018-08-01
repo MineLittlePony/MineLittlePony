@@ -31,8 +31,9 @@ public class ForgeProxy {
      * @return
      */
     public static String getArmorTexture(Entity entity, ItemStack item, String def, EntityEquipmentSlot slot, @Nullable String type) {
-        if (forgeLoaded)
+        if (forgeLoaded) {
             return ForgeHooksClient.getArmorTexture(entity, item, def, slot, type);
+        }
         return def;
     }
 
@@ -45,8 +46,9 @@ public class ForgeProxy {
      * @param def       Default return value if no mods present
      */
     public static ModelBiped getArmorModel(EntityLivingBase entity, ItemStack item, EntityEquipmentSlot slot, ModelBiped def) {
-        if (forgeLoaded)
+        if (forgeLoaded) {
             return ForgeHooksClient.getArmorModel(entity, item, slot, def);
+        }
         return def;
     }
 }

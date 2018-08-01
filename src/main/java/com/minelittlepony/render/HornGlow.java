@@ -50,12 +50,12 @@ public class HornGlow extends Box<HornGlowRenderer> {
         Vertex wun = vert(xMin,    yMax, zMax,    8, 0);
 
         quadList = new Quad[] {
-            quad(texX + d + w,     d, texY + d,  h, edn, eds, eus, eun),
-            quad(texX,             d, texY + d,  h, wds, wdn, wun, wus),
-            quad(texX + d,         w, texY,      d, edn, wdn, wds, eds),
-            quad(texX + d + w,     w, texY + d, -d, eus, wus, wun, eun),
-            quad(texX + d,         w, texY + d,  h, eds, wds, wus, eus),
-            quad(texX + d + w + d, w, texY + d,  h, wdn, edn, eun, wun)
+                quad(texX + d + w,     d, texY + d,  h, edn, eds, eus, eun),
+                quad(texX,             d, texY + d,  h, wds, wdn, wun, wus),
+                quad(texX + d,         w, texY,      d, edn, wdn, wds, eds),
+                quad(texX + d + w,     w, texY + d, -d, eus, wus, wun, eun),
+                quad(texX + d,         w, texY + d,  h, eds, wds, wus, eus),
+                quad(texX + d + w + d, w, texY + d,  h, wdn, edn, eun, wun)
         };
 
         if (renderer.mirror) {

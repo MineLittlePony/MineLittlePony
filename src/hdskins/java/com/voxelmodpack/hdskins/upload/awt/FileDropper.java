@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 
 public class FileDropper extends JFrame {
     private static final long serialVersionUID = -2945117328826695659L;
@@ -33,7 +34,7 @@ public class FileDropper extends JFrame {
         super("Skin Drop");
 
         setType(Type.UTILITY);
-        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         setResizable(false);
         setTitle("Skin Drop");
         setSize(256, 256);

@@ -97,6 +97,7 @@ public class PonySettingsPanel extends GuiPonySettings implements ConfigPanel {
 
     }
 
+    @Override
     protected boolean mustScroll() {
         return true;
     }

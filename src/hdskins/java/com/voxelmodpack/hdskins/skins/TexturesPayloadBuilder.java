@@ -1,6 +1,5 @@
 package com.voxelmodpack.hdskins.skins;
 
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.authlib.GameProfile;

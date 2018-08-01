@@ -90,7 +90,7 @@ public class ValhallaSkinServer implements SkinServer {
 
     private SkinUploadResponse upload(CloseableHttpClient client, Session session, @Nullable URI image,
             MinecraftProfileTexture.Type type, Map<String, String> metadata)
-            throws IOException {
+                    throws IOException {
         GameProfile profile = session.getProfile();
 
         if (image == null) {
@@ -111,7 +111,7 @@ public class ValhallaSkinServer implements SkinServer {
     private SkinUploadResponse resetSkin(CloseableHttpClient client, GameProfile profile, MinecraftProfileTexture.Type type) throws IOException {
         return upload(client, RequestBuilder.delete()
                 .setUri(buildUserTextureUri(profile, type))
-                .addHeader(HttpHeaders.AUTHORIZATION, this.accessToken)
+                .addHeader(HttpHeaders.AUTHORIZATION, accessToken)
                 .build());
     }
 
@@ -122,7 +122,7 @@ public class ValhallaSkinServer implements SkinServer {
 
         return upload(client, RequestBuilder.put()
                 .setUri(buildUserTextureUri(profile, type))
-                .addHeader(HttpHeaders.AUTHORIZATION, this.accessToken)
+                .addHeader(HttpHeaders.AUTHORIZATION, accessToken)
                 .setEntity(b.build())
                 .build());
     }
@@ -131,7 +131,7 @@ public class ValhallaSkinServer implements SkinServer {
 
         return upload(client, RequestBuilder.post()
                 .setUri(buildUserTextureUri(profile, type))
-                .addHeader(HttpHeaders.AUTHORIZATION, this.accessToken)
+                .addHeader(HttpHeaders.AUTHORIZATION, accessToken)
                 .addParameter("file", uri.toString())
                 .addParameters(metadata.entrySet().stream()
                         .map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
@@ -147,7 +147,7 @@ public class ValhallaSkinServer implements SkinServer {
 
 
     private void authorize(CloseableHttpClient client, Session session) throws IOException, AuthenticationException {
-        if (this.accessToken != null) {
+        if (accessToken != null) {
             return;
         }
         GameProfile profile = session.getProfile();
@@ -165,7 +165,7 @@ public class ValhallaSkinServer implements SkinServer {
         if (!response.userId.equals(profile.getId())) {
             throw new IOException("UUID mismatch!"); // probably won't ever throw
         }
-        this.accessToken = response.accessToken;
+        accessToken = response.accessToken;
     }
 
     private <T> T readJson(HttpResponse resp, Class<T> cl) throws IOException {
@@ -208,26 +208,26 @@ public class ValhallaSkinServer implements SkinServer {
     private URI buildUserTextureUri(GameProfile profile, MinecraftProfileTexture.Type textureType) {
         String user = UUIDTypeAdapter.fromUUID(profile.getId());
         String skinType = textureType.name().toLowerCase(Locale.US);
-        return URI.create(String.format("%s/user/%s/%s", this.address, user, skinType));
+        return URI.create(String.format("%s/user/%s/%s", address, user, skinType));
     }
 
     private URI getTexturesURI(GameProfile profile) {
         Preconditions.checkNotNull(profile.getId(), "profile id required for skins");
-        return URI.create(String.format("%s/user/%s", this.address, UUIDTypeAdapter.fromUUID(profile.getId())));
+        return URI.create(String.format("%s/user/%s", address, UUIDTypeAdapter.fromUUID(profile.getId())));
     }
 
     private URI getHandshakeURI() {
-        return URI.create(String.format("%s/auth/handshake", this.address));
+        return URI.create(String.format("%s/auth/handshake", address));
     }
 
     private URI getResponseURI() {
-        return URI.create(String.format("%s/auth/response", this.address));
+        return URI.create(String.format("%s/auth/response", address));
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this, IndentedToStringStyle.INSTANCE)
-                .append("address", this.address)
+                .append("address", address)
                 .toString();
     }
 

@@ -61,7 +61,9 @@ public enum TriggerPixels {
 
     private <T extends Enum<T> & ITriggerPixelMapped<T>> void readFlag(boolean[] out, Channel channel, BufferedImage image) {
         T value = ITriggerPixelMapped.getByTriggerPixel((T)def, channel.readValue(x, y, image));
-        if (value != def) out[value.ordinal()] = true;
+        if (value != def) {
+            out[value.ordinal()] = true;
+        }
     }
 
     enum Channel {

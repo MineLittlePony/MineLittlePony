@@ -12,7 +12,7 @@ public class ModelDeadMau5Ears extends ModelSkeletonHead {
     }
 
     public void setVisible(boolean show) {
-        this.boxList.clear();
+        boxList.clear();
 
         skeletonHead = new ModelRenderer(this, 24, 0);
         skeletonHead.addBox(-9, -13, -1, 6, 6, 1, 0);

@@ -22,7 +22,9 @@ public final class Later extends Thread {
     @Override
     public void run() {
         try {
-            if (delay > 0) sleep(delay);
+            if (delay > 0) {
+                sleep(delay);
+            }
         } catch (InterruptedException e) {}
         super.run();
     }

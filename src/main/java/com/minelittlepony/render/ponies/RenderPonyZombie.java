@@ -61,21 +61,21 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
 
     public static class Giant extends RenderPonyMob<EntityGiantZombie> {
 
-		public Giant(RenderManager manager) {
-			super(manager, PMAPI.zombie);
-		}
+        public Giant(RenderManager manager) {
+            super(manager, PMAPI.zombie);
+        }
 
-		@Override
-		public void preRenderCallback(EntityGiantZombie entity, float ticks) {
-	        super.preRenderCallback(entity, ticks);
-	        GlStateManager.scale(3, 3, 3);
-	    }
+        @Override
+        public void preRenderCallback(EntityGiantZombie entity, float ticks) {
+            super.preRenderCallback(entity, ticks);
+            GlStateManager.scale(3, 3, 3);
+        }
 
-		@Override
-	    protected ResourceLocation getTexture(EntityGiantZombie entity) {
-	        return ZOMBIE;
-	    }
+        @Override
+        protected ResourceLocation getTexture(EntityGiantZombie entity) {
+            return ZOMBIE;
+        }
     }
 
-  //TODO: MC1.13 EntityDrowned
+    //TODO: MC1.13 EntityDrowned
 }

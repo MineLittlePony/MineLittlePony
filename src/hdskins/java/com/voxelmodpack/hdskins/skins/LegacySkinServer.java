@@ -46,7 +46,7 @@ public class LegacySkinServer implements SkinServer {
 
     @Override
     public Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> getPreviewTextures(GameProfile profile) {
-        if (Strings.isNullOrEmpty(this.gateway)) {
+        if (Strings.isNullOrEmpty(gateway)) {
             return Collections.emptyMap();
         }
         Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = new EnumMap<>(MinecraftProfileTexture.Type.class);
@@ -61,7 +61,7 @@ public class LegacySkinServer implements SkinServer {
         ImmutableMap.Builder<MinecraftProfileTexture.Type, MinecraftProfileTexture> builder = ImmutableMap.builder();
         for (MinecraftProfileTexture.Type type : MinecraftProfileTexture.Type.values()) {
 
-            String url = getPath(this.address, type, profile);
+            String url = getPath(address, type, profile);
             try {
                 HttpURLConnection urlConnection = (HttpURLConnection) new URL(url).openConnection();
                 if (urlConnection.getResponseCode() / 100 != 2) {
@@ -76,7 +76,7 @@ public class LegacySkinServer implements SkinServer {
 
         Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = builder.build();
         if (map.isEmpty()) {
-            logger.debug("No textures found for {} at {}", profile, this.address);
+            logger.debug("No textures found for {} at {}", profile, address);
             return Optional.empty();
         }
 
@@ -86,7 +86,7 @@ public class LegacySkinServer implements SkinServer {
     @SuppressWarnings("deprecation")
     @Override
     public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable URI image, MinecraftProfileTexture.Type type, Map<String, String> metadata) {
-        if (Strings.isNullOrEmpty(this.gateway)) {
+        if (Strings.isNullOrEmpty(gateway)) {
             return CallableFutures.failedFuture(new NullPointerException("gateway url is blank"));
         }
 
@@ -94,13 +94,14 @@ public class LegacySkinServer implements SkinServer {
             SkinServer.verifyServerConnection(session, SERVER_ID);
             String model = metadata.getOrDefault("model", "default");
             Map<String, ?> data = image == null ? getClearData(session, type) : getUploadData(session, type, model, image);
-            ThreadMultipartPostUpload upload = new ThreadMultipartPostUpload(this.gateway, data);
+            ThreadMultipartPostUpload upload = new ThreadMultipartPostUpload(gateway, data);
             String response = upload.uploadMultipart();
             if (response.startsWith("ERROR: ")) {
                 response = response.substring(7);
             }
-            if (!response.equalsIgnoreCase("OK") && !response.endsWith("OK"))
+            if (!response.equalsIgnoreCase("OK") && !response.endsWith("OK")) {
                 throw new IOException(response);
+            }
             return new SkinUploadResponse(response);
 
         }, HDSkinManager.skinUploadExecutor);
@@ -132,8 +133,8 @@ public class LegacySkinServer implements SkinServer {
     @Override
     public String toString() {
         return new ToStringBuilder(this, IndentedToStringStyle.INSTANCE)
-                .append("address", this.address)
-                .append("gateway", this.gateway)
+                .append("address", address)
+                .append("gateway", gateway)
                 .build();
     }
 }

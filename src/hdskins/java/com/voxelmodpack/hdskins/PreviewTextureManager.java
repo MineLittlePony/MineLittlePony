@@ -34,19 +34,19 @@ public class PreviewTextureManager {
         IImageBuffer buffer = new ImageBufferDownloadHD();
         PreviewTexture skinTexture = new PreviewTexture(texture.getMetadata("model"), texture.getUrl(), def,
                 type == MinecraftProfileTexture.Type.SKIN ? new IImageBuffer() {
-                    @Override
-                    @Nullable
-                    public BufferedImage parseUserSkin(BufferedImage image) {
-                        return buffer.parseUserSkin(image);
-                    }
+            @Override
+            @Nullable
+            public BufferedImage parseUserSkin(BufferedImage image) {
+                return buffer.parseUserSkin(image);
+            }
 
-                    @Override
-                    public void skinAvailable() {
-                        if (callback != null) {
-                            callback.skinAvailable(type, location, new MinecraftProfileTexture(texture.getUrl(), Maps.newHashMap()));
-                        }
-                    }
-                } : null);
+            @Override
+            public void skinAvailable() {
+                if (callback != null) {
+                    callback.skinAvailable(type, location, new MinecraftProfileTexture(texture.getUrl(), Maps.newHashMap()));
+                }
+            }
+        } : null);
         Minecraft.getMinecraft().getTextureManager().loadTexture(location, skinTexture);
 
         return skinTexture;

@@ -85,7 +85,9 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         ResourceLocation skin = player.getLocationSkin();
         UUID uuid = player.getGameProfile().getId();
 
-        if (skin == null) return getDefaultPony(uuid);
+        if (skin == null) {
+            return getDefaultPony(uuid);
+        }
 
         return getPony(skin, uuid);
     }
@@ -97,7 +99,9 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         ResourceLocation skin = playerInfo.getLocationSkin();
         UUID uuid = playerInfo.getGameProfile().getId();
 
-        if (skin == null) return getDefaultPony(uuid);
+        if (skin == null) {
+            return getDefaultPony(uuid);
+        }
 
         return getPony(skin, uuid);
     }
@@ -141,7 +145,9 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         }
 
         int bgi = uuid.hashCode() % getNumberOfPonies();
-        while (bgi < 0) bgi += getNumberOfPonies();
+        while (bgi < 0) {
+            bgi += getNumberOfPonies();
+        }
 
         return getPony(backgroundPonyList.get(bgi), false);
     }
@@ -163,7 +169,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         backgroundPonyList.clear();
         try {
             for (IResource res : resourceManager.getAllResources(BGPONIES_JSON)) {
-                try (Reader reader = new InputStreamReader((res.getInputStream()))) {
+                try (Reader reader = new InputStreamReader(res.getInputStream())) {
                     BackgroundPonies ponies = GSON.fromJson(reader, BackgroundPonies.class);
                     if (ponies.override) {
                         backgroundPonyList.clear();

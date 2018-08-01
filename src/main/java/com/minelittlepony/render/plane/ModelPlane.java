@@ -77,6 +77,8 @@ public class ModelPlane extends Box<PlaneRenderer> {
 
     @Override
     public void render(@Nonnull BufferBuilder buffer, float scale) {
-        if (!hidden) quad.draw(buffer, scale);
+        if (!hidden) {
+            quad.draw(buffer, scale);
+        }
     }
 }

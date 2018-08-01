@@ -31,19 +31,19 @@ public abstract class ThreadOpenFile extends Thread {
             throw new IllegalStateException("Cannot open an awt window whilst minecraft is in full screen mode!");
         }
 
-        this.parentScreen = callback;
+        parentScreen = callback;
         this.dialogTitle = dialogTitle;
     }
 
     @Override
     public void run() {
         fileDialog = new JFileChooser();
-        fileDialog.setDialogTitle(this.dialogTitle);
+        fileDialog.setDialogTitle(dialogTitle);
 
         if (lastChosenFile != null) {
             fileDialog.setSelectedFile(new File(lastChosenFile));
         }
-        fileDialog.setFileFilter(this.getFileFilter());
+        fileDialog.setFileFilter(getFileFilter());
 
         int dialogResult = fileDialog.showOpenDialog(InternalDialog.getAWTContext());
 
@@ -53,7 +53,7 @@ public abstract class ThreadOpenFile extends Thread {
             lastChosenFile = f.getAbsolutePath();
         }
 
-        this.parentScreen.onFileOpenDialogClosed(fileDialog, dialogResult);
+        parentScreen.onFileOpenDialogClosed(fileDialog, dialogResult);
     }
 
     /**

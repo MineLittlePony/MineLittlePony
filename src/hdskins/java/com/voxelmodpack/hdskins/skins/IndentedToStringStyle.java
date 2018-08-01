@@ -10,11 +10,11 @@ public class IndentedToStringStyle extends ToStringStyle {
     public static final ToStringStyle INSTANCE = new IndentedToStringStyle();
 
     private IndentedToStringStyle() {
-        this.setContentStart(null);
-        this.setFieldSeparator(SystemUtils.LINE_SEPARATOR + "  ");
-        this.setFieldSeparatorAtStart(true);
-        this.setContentEnd(null);
-        this.setUseIdentityHashCode(false);
-        this.setUseShortClassName(true);
+        setContentStart(null);
+        setFieldSeparator(SystemUtils.LINE_SEPARATOR + "  ");
+        setFieldSeparatorAtStart(true);
+        setContentEnd(null);
+        setUseIdentityHashCode(false);
+        setUseShortClassName(true);
     }
 }

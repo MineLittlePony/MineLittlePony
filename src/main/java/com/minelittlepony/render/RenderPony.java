@@ -48,7 +48,9 @@ public class RenderPony<T extends EntityLivingBase> {
             return PonyPosture.ELYTRA;
         }
 
-        if (entity.isEntityAlive() && entity.isPlayerSleeping()) return null;
+        if (entity.isEntityAlive() && entity.isPlayerSleeping()) {
+            return null;
+        }
 
         if (ponyModel.isSwimming()) {
             return PonyPosture.SWIMMING;

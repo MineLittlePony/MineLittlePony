@@ -39,6 +39,7 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
         unicornArmLeft.rotateAngleY = 0;
     }
 
+    @Override
     protected float getWobbleAmount() {
         if (isCasting()) {
             return 0;
@@ -87,7 +88,9 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
 
     @Override
     protected void swingArms(float ticks) {
-        if (isSleeping()) return;
+        if (isSleeping()) {
+            return;
+        }
 
         if (canCast()) {
             float cos = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;

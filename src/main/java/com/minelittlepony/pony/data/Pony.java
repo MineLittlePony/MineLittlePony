@@ -49,7 +49,9 @@ public class Pony {
 
     private IPonyData checkSkin(ResourceLocation resource) {
         IPonyData data = checkPonyMeta(resource);
-        if (data != null) return data;
+        if (data != null) {
+            return data;
+        }
 
         BufferedImage skinImage = getBufferedImage(resource);
         return this.checkSkin(skinImage);
@@ -99,7 +101,9 @@ public class Pony {
     }
 
     private IPonyData checkSkin(BufferedImage bufferedimage) {
-        if (bufferedimage == null) return new PonyData();
+        if (bufferedimage == null) {
+            return new PonyData();
+        }
         MineLittlePony.logger.debug("\tStart skin check for pony #{} with image {}.", ponyId, bufferedimage);
         return PonyData.parse(bufferedimage);
     }

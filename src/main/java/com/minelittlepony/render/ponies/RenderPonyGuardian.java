@@ -41,6 +41,7 @@ public class RenderPonyGuardian extends RenderGuardian {
         ponyRenderer.preRenderCallback(entity, ticks);
     }
 
+    @Override
     public void doRender(EntityGuardian entity, double x, double y, double z, float entityYaw, float partialTicks) {
         float origin = entity.height;
 

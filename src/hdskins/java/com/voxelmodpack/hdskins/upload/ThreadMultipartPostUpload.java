@@ -45,7 +45,7 @@ public class ThreadMultipartPostUpload {
 
     public ThreadMultipartPostUpload(String method, String url, Map<String, ?> sourceData, @Nullable String authorization) {
         this.method = method;
-        this.urlString = url;
+        urlString = url;
         this.sourceData = sourceData;
         this.authorization = authorization;
     }
@@ -56,28 +56,28 @@ public class ThreadMultipartPostUpload {
 
     public String uploadMultipart() throws IOException {
         // open a URL connection
-        URL url = new URL(this.urlString);
+        URL url = new URL(urlString);
 
         // Open a HTTP connection to the URL
-        this.httpClient = (HttpURLConnection) url.openConnection();
-        this.httpClient.setDoOutput(true);
-        this.httpClient.setUseCaches(false);
+        httpClient = (HttpURLConnection) url.openConnection();
+        httpClient.setDoOutput(true);
+        httpClient.setUseCaches(false);
 
-        this.httpClient.setRequestMethod(this.method);
-        this.httpClient.setRequestProperty("Connection", "Close");
-        this.httpClient.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)"); // For CloudFlare
+        httpClient.setRequestMethod(method);
+        httpClient.setRequestProperty("Connection", "Close");
+        httpClient.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)"); // For CloudFlare
 
-        if (this.sourceData.size() > 0) {
-            this.httpClient.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+        if (sourceData.size() > 0) {
+            httpClient.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
         }
 
-        if (this.authorization != null) {
-            this.httpClient.addRequestProperty("Authorization", this.authorization);
+        if (authorization != null) {
+            httpClient.addRequestProperty("Authorization", authorization);
         }
 
-        try (DataOutputStream outputStream = new DataOutputStream(this.httpClient.getOutputStream())) {
+        try (DataOutputStream outputStream = new DataOutputStream(httpClient.getOutputStream())) {
 
-            for (Entry<String, ?> data : this.sourceData.entrySet()) {
+            for (Entry<String, ?> data : sourceData.entrySet()) {
                 outputStream.writeBytes(twoHyphens + boundary + CRLF);
 
                 String paramName = data.getKey();
@@ -103,7 +103,7 @@ public class ThreadMultipartPostUpload {
             outputStream.writeBytes(twoHyphens + boundary + twoHyphens + CRLF);
         }
 
-        try (InputStream input = this.httpClient.getInputStream()) {
+        try (InputStream input = httpClient.getInputStream()) {
             return IOUtils.toString(input, StandardCharsets.UTF_8);
         }
     }

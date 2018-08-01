@@ -58,13 +58,17 @@ public class LayerPonyElytra<T extends EntityLivingBase> extends AbstractPonyLay
             if (player.isPlayerInfoSet()) {
                 result = player.getLocationElytra();
 
-                if (result != null) return result;
+                if (result != null) {
+                    return result;
+                }
             }
 
             if (player.hasPlayerInfo() && player.isWearing(EnumPlayerModelParts.CAPE)) {
                 result = player.getLocationCape();
 
-                if (result != null) return result;
+                if (result != null) {
+                    return result;
+                }
             }
         }
 
