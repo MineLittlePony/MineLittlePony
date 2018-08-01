@@ -10,8 +10,9 @@ public interface IModel extends ICapitated {
 
     /**
      * Sets up this model's initial values, like a constructor...
-     * @param yOffset   YPosition for this model. Always 0.
-     * @param stretch   Scaling factor for this model. Ranges above or below 0 (no change).
+     * 
+     * @param yOffset YPosition for this model. Always 0.
+     * @param stretch Scaling factor for this model. Ranges above or below 0 (no change).
      */
     void init(float yOffset, float stretch);
 
@@ -40,8 +41,8 @@ public interface IModel extends ICapitated {
     boolean isFlying();
 
     /**
-     * Returns true if the model is elytra flying. Elytra flying is different
-     * from regular flying in that there are actual "wings" involved.
+     * Returns true if the model is elytra flying. Elytra flying is different from regular flying in
+     * that there are actual "wings" involved.
      */
     boolean isElytraFlying();
 

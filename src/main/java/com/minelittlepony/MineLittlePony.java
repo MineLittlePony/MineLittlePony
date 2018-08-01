@@ -54,7 +54,7 @@ public class MineLittlePony {
 
         LiteLoader.getInstance().registerExposable(config, null);
 
-        IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
+        IReloadableResourceManager irrm = (IReloadableResourceManager)Minecraft.getMinecraft().getResourceManager();
         irrm.registerReloadListener(ponyManager);
 
         MetadataSerializer ms = Minecraft.getMinecraft().getResourcePackRepository().rprMetadataSerializer;

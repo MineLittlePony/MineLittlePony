@@ -53,7 +53,7 @@ public enum TriggerPixels {
         return out;
     }
 
-    public <T extends Enum<T> & ITriggerPixelMapped<T>> void readFlags(boolean[] out,  BufferedImage image) {
+    public <T extends Enum<T> & ITriggerPixelMapped<T>> void readFlags(boolean[] out, BufferedImage image) {
         readFlag(out, Channel.RED, image);
         readFlag(out, Channel.GREEN, image);
         readFlag(out, Channel.BLUE, image);

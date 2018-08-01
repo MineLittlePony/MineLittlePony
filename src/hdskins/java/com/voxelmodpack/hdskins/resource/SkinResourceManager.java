@@ -91,8 +91,8 @@ public class SkinResourceManager implements IResourceManagerReloadListener {
     /**
      * Convert older resources to a newer format.
      *
-     * @param res The skin resource to convert
-     * @return The converted resource
+     * @param  res The skin resource to convert
+     * @return     The converted resource
      */
     @Nullable
     public ResourceLocation getConvertedResource(@Nullable ResourceLocation res) {

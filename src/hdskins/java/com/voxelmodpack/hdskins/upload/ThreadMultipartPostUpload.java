@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 /**
  * Uploader for Multipart form data
  *
- * @author Adam Mummery-Smith
+ * @author     Adam Mummery-Smith
  * @deprecated Use httpmime multipart upload
  */
 @Deprecated
@@ -59,7 +59,7 @@ public class ThreadMultipartPostUpload {
         URL url = new URL(urlString);
 
         // Open a HTTP connection to the URL
-        httpClient = (HttpURLConnection) url.openConnection();
+        httpClient = (HttpURLConnection)url.openConnection();
         httpClient.setDoOutput(true);
         httpClient.setUseCaches(false);
 
@@ -84,7 +84,7 @@ public class ThreadMultipartPostUpload {
                 Object paramData = data.getValue();
 
                 if (paramData instanceof URI) {
-                    Path uploadPath = Paths.get((URI) paramData);
+                    Path uploadPath = Paths.get((URI)paramData);
 
                     outputStream.writeBytes("Content-Disposition: form-data; name=\"" + paramName + "\"; filename=\"" + uploadPath.getFileName() + "\"" + CRLF);
                     outputStream.writeBytes("Content-Type: image/png" + CRLF + CRLF);

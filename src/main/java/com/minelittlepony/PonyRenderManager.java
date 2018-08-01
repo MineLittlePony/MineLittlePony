@@ -17,8 +17,8 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 
 /**
- * Render manager responsible for replacing and restoring entity renderers when the client settings change.
- * Old values are persisted internally.
+ * Render manager responsible for replacing and restoring entity renderers when the client settings
+ * change. Old values are persisted internally.
  */
 public class PonyRenderManager {
 
@@ -65,11 +65,11 @@ public class PonyRenderManager {
      *
      * Replaces an entity renderer depending on whether we want ponies or not.
      *
-     * @param state   True if we want ponies (the original will be stored)
-     * @param manager The render manager
-     * @param type    The type to replace
+     * @param state    True if we want ponies (the original will be stored)
+     * @param manager  The render manager
+     * @param type     The type to replace
      * @param renderer The replacement value
-     * @param <T> The entity type
+     * @param          <T> The entity type
      */
     @SuppressWarnings("unchecked")
     public <T extends Entity, V extends T> void switchRenderer(boolean state, RenderManager manager, Class<V> type, Render<T> renderer) {

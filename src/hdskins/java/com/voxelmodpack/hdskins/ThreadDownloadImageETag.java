@@ -130,8 +130,7 @@ public class ThreadDownloadImageETag extends SimpleTexture {
                     // try to load from cache anyway
                     setLocalCache();
                     return;
-                } catch (IOException ignored) {
-                }
+                } catch (IOException ignored) {}
             }
             LOGGER.error("Couldn't load skin {} ", imageUrl, e);
         } finally {

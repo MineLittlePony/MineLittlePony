@@ -37,7 +37,7 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
         this.textureOffsetX = x;
         this.textureOffsetY = y;
         super.setTextureOffset(x, y);
-        return (T) this;
+        return (T)this;
     }
 
     /**
@@ -49,7 +49,7 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
 
     public T mirror(boolean m) {
         mirror = m;
-        return (T) this;
+        return (T)this;
     }
 
     /**
@@ -60,7 +60,7 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
     }
 
     public T size(int x, int y) {
-        return (T) setTextureSize(x, y);
+        return (T)setTextureSize(x, y);
     }
 
     /**
@@ -77,7 +77,7 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
         modelOffsetX = x;
         modelOffsetY = y;
         modelOffsetZ = z;
-        return (T) this;
+        return (T)this;
     }
 
     /**
@@ -96,12 +96,12 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
         rotateAngleX = x;
         rotateAngleY = y;
         rotateAngleZ = z;
-        return (T) this;
+        return (T)this;
     }
 
     /**
-     * Positions a given model in space by setting its offset values divided
-     * by 16 to account for scaling applied inside the model.
+     * Positions a given model in space by setting its offset values divided by 16 to account for
+     * scaling applied inside the model.
      */
     public static <T extends ModelRenderer> T at(T renderer, float x, float y, float z) {
         renderer.offsetX = x / 16;
@@ -129,12 +129,12 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
      */
     public T around(float x, float y, float z) {
         setRotationPoint(x, y, z);
-        return (T) this;
+        return (T)this;
     }
 
     /**
-     * Gets or creates a new child model based on its unique index.
-     * New children will be of the same type and inherit the same textures and offsets of the original.
+     * Gets or creates a new child model based on its unique index. New children will be of the same
+     * type and inherit the same textures and offsets of the original.
      */
     public T child(int index) {
         if (childModels == null || index >= childModels.size()) {
@@ -171,13 +171,13 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
         setTextureOffset(tex.textureOffsetX, tex.textureOffsetY).addBox(offX, offY, offZ, width, height, depth);
         cubeList.get(cubeList.size() - 1).setBoxName(partName);
 
-        return (T) this;
+        return (T)this;
     }
 
     @Override
     public T addBox(float offX, float offY, float offZ, int width, int height, int depth) {
         addBox(offX, offY, offZ, width, height, depth, 0);
-        return (T) this;
+        return (T)this;
     }
 
     @Override

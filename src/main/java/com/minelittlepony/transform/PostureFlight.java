@@ -22,7 +22,7 @@ public class PostureFlight implements PonyPosture<AbstractClientPlayer> {
         float modelYaw = MathUtil.sensibleAngle(player.renderYawOffset);
 
         // detecting that we're flying backwards and roll must be inverted
-        if (Math.abs(MathUtil.sensibleAngle((float) Math.toDegrees(Math.atan2(motionX, motionZ)) + modelYaw)) > 90) {
+        if (Math.abs(MathUtil.sensibleAngle((float)Math.toDegrees(Math.atan2(motionX, motionZ)) + modelYaw)) > 90) {
             roll *= -1;
         }
 
@@ -53,11 +53,11 @@ public class PostureFlight implements PonyPosture<AbstractClientPlayer> {
 
     @Override
     public void transform(AbstractPonyModel model, AbstractClientPlayer player, double motionX, double motionY, double motionZ, float pitch, float yaw, float ticks) {
-        model.motionPitch = (float) calculateIncline(player, motionX, motionY, motionZ);
+        model.motionPitch = (float)calculateIncline(player, motionX, motionY, motionZ);
 
         GlStateManager.rotate(model.motionPitch, 1, 0, 0);
 
-        float roll = (float)calculateRoll(player, motionX,  motionY, motionZ);
+        float roll = (float)calculateRoll(player, motionX, motionY, motionZ);
 
         roll = model.getMetadata().getInterpolator().interpolate("pegasusRoll", roll, 10);
 

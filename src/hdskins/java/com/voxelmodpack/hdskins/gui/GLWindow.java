@@ -206,12 +206,11 @@ public class GLWindow extends DropTarget {
             // LWJGL copies the initial byte streams and then reverses them. The result is a stream that's not
             // only already consumed, but somehow invalid when you try to parse it through ImageIO.read.
             //
-            DefaultResourcePack pack = (DefaultResourcePack) mc.getResourcePackRepository().rprDefaultResourcePack;
+            DefaultResourcePack pack = (DefaultResourcePack)mc.getResourcePackRepository().rprDefaultResourcePack;
 
             ArrayList<Image> images = Lists.newArrayList(
                     ImageIO.read(pack.getInputStreamAssets(new ResourceLocation("icons/icon_16x16.png"))),
-                    ImageIO.read(pack.getInputStreamAssets(new ResourceLocation("icons/icon_32x32.png")))
-                    );
+                    ImageIO.read(pack.getInputStreamAssets(new ResourceLocation("icons/icon_32x32.png"))));
 
             Frame[] frames = Frame.getFrames();
 
@@ -267,6 +266,6 @@ public class GLWindow extends DropTarget {
 
             frame.setDropTarget(this);
             addDropTargetListener(dtl);
-        } catch (TooManyListenersException ignored) { }
+        } catch (TooManyListenersException ignored) {}
     }
 }

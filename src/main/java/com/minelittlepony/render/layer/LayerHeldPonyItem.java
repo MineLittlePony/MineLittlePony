@@ -36,7 +36,7 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
 
             pushMatrix();
             if (model instanceof IModel) {
-                ((IModel) model).transform(BodyPart.LEGS);
+                ((IModel)model).transform(BodyPart.LEGS);
             }
 
             if (model.isChild) {

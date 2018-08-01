@@ -2,9 +2,10 @@ package com.minelittlepony.pony.data;
 
 /**
  * Interface for enums that can be parsed from an image trigger pixel value.
+ * 
  * @author Chris Albers
  *
- * @param <T>
+ * @param  <T>
  */
 public interface ITriggerPixelMapped<T extends Enum<T> & ITriggerPixelMapped<T>> {
     /**
@@ -13,10 +14,10 @@ public interface ITriggerPixelMapped<T extends Enum<T> & ITriggerPixelMapped<T>>
     int getTriggerPixel();
 
     /**
-     * Gets the enum value corresponding to the given enum type and pixel value.
-     * If none are found, the first parameter is returned as the default.
+     * Gets the enum value corresponding to the given enum type and pixel value. If none are found, the
+     * first parameter is returned as the default.
      *
-     * @param type Return type and default value.
+     * @param type       Return type and default value.
      * @param pixelValue The pixel colour to search for.
      */
     @SuppressWarnings("unchecked")

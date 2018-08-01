@@ -123,8 +123,8 @@ public class CubeMap {
 
         for (int blendPass = 0; blendPass < blendIterations * blendIterations; ++blendPass) {
             pushMatrix();
-            float offsetX = ((float) (blendPass % blendIterations) / (float) blendIterations - 0.5F) / 64;
-            float offsetY = ((float) (blendPass / blendIterations) / (float) blendIterations - 0.5F) / 64;
+            float offsetX = ((float)(blendPass % blendIterations) / (float)blendIterations - 0.5F) / 64;
+            float offsetY = ((float)(blendPass / blendIterations) / (float)blendIterations - 0.5F) / 64;
 
             translate(offsetX, offsetY, 0);
             rotate(MathHelper.sin(lastPartialTick / 400) * 25 + 20, 1, 0, 0);

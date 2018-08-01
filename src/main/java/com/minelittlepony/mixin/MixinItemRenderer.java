@@ -25,7 +25,7 @@ public class MixinItemRenderer {
     //public void renderItemSide(EntityLivingBase entitylivingbaseIn, ItemStack heldStack, ItemCameraTransforms.TransformType transform, boolean leftHanded)
     @Redirect(method = "renderItemInFirstPerson(" + AbstractClientPlayer + "FF" + EnumHand + "F" + ItemStack + "F)V",
             at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/client/renderer/ItemRenderer;renderItemSide(" + EntityLivingBase + ItemStack + TransformType + "Z)V"))
+                    target = "Lnet/minecraft/client/renderer/ItemRenderer;renderItemSide(" + EntityLivingBase + ItemStack + TransformType + "Z)V"))
     private void redirectRenderItemSide(ItemRenderer self, EntityLivingBase entity, ItemStack stack, TransformType transform, boolean left) {
         MineLittlePony.getInstance().getRenderManager().getMagicRenderer().renderItemInFirstPerson(self, (AbstractClientPlayer)entity, stack, transform, left);
     }

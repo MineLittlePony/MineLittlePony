@@ -55,10 +55,10 @@ public class ModelVillagerPony extends ModelAlicorn {
 
     protected int getProfession(Entity entity) {
         if (entity instanceof EntityVillager) {
-            return ((EntityVillager) entity).getProfession();
+            return ((EntityVillager)entity).getProfession();
         }
         if (entity instanceof EntityZombieVillager) {
-            return ((EntityZombieVillager) entity).getProfession();
+            return ((EntityZombieVillager)entity).getProfession();
         }
         return -1;
     }

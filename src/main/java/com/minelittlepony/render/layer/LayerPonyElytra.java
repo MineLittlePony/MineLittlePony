@@ -51,7 +51,7 @@ public class LayerPonyElytra<T extends EntityLivingBase> extends AbstractPonyLay
 
     protected ResourceLocation getElytraTexture(T entity) {
         if (entity instanceof AbstractClientPlayer) {
-            AbstractClientPlayer player = (AbstractClientPlayer) entity;
+            AbstractClientPlayer player = (AbstractClientPlayer)entity;
 
             ResourceLocation result;
 

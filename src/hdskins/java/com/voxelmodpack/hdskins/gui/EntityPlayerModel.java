@@ -38,8 +38,7 @@ public class EntityPlayerModel extends EntityLivingBase {
             EntityEquipmentSlot.CHEST, ItemStack.EMPTY,
             EntityEquipmentSlot.LEGS, ItemStack.EMPTY,
             EntityEquipmentSlot.FEET, ItemStack.EMPTY,
-            EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY
-            ));
+            EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY));
 
     private PreviewTexture remoteSkinTexture;
     private ResourceLocation remoteSkinResource;

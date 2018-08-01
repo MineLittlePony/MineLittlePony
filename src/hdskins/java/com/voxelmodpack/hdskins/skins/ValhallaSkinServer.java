@@ -55,8 +55,7 @@ public class ValhallaSkinServer implements SkinServer {
     @Override
     public Optional<MinecraftTexturesPayload> loadProfileData(GameProfile profile) {
 
-        try (CloseableHttpClient client = HttpClients.createSystem();
-                CloseableHttpResponse response = client.execute(new HttpGet(getTexturesURI(profile)))) {
+        try (CloseableHttpClient client = HttpClients.createSystem(); CloseableHttpResponse response = client.execute(new HttpGet(getTexturesURI(profile)))) {
 
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 
@@ -88,9 +87,7 @@ public class ValhallaSkinServer implements SkinServer {
         }, HDSkinManager.skinUploadExecutor);
     }
 
-    private SkinUploadResponse upload(CloseableHttpClient client, Session session, @Nullable URI image,
-            MinecraftProfileTexture.Type type, Map<String, String> metadata)
-                    throws IOException {
+    private SkinUploadResponse upload(CloseableHttpClient client, Session session, @Nullable URI image, MinecraftProfileTexture.Type type, Map<String, String> metadata) throws IOException {
         GameProfile profile = session.getProfile();
 
         if (image == null) {

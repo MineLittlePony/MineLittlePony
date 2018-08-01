@@ -27,6 +27,7 @@ public class ModelWrapper implements IModelWrapper {
 
     /**
      * Returns the contained armour model.
+     * 
      * @return
      */
     public PonyArmor getArmor() {

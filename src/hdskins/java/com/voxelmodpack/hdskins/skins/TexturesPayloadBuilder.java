@@ -12,9 +12,9 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Use this to build a {@link MinecraftTexturesPayload} object. This is
- * required because it has no useful constructor. This uses reflection
- * via Gson to create a new instance and populate the fields.
+ * Use this to build a {@link MinecraftTexturesPayload} object. This is required because it has no
+ * useful constructor. This uses reflection via Gson to create a new instance and populate the
+ * fields.
  */
 @SuppressWarnings("unused")
 public class TexturesPayloadBuilder {

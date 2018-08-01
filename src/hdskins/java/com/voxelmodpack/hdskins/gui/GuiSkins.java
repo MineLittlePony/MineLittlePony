@@ -214,7 +214,7 @@ public class GuiSkins extends GuiScreen {
     }
 
     private void enableDnd() {
-        GLWindow.current().setDropTargetListener((FileDropListener) files -> {
+        GLWindow.current().setDropTargetListener((FileDropListener)files -> {
             files.stream().findFirst().ifPresent(instance::loadLocalFile);
         });
     }
@@ -241,7 +241,7 @@ public class GuiSkins extends GuiScreen {
         Minecraft.getMinecraft().addScheduledTask(localPlayer::releaseTextures);
         if (!skinFile.exists()) {
             skinMessage = I18n.format("hdskins.error.unreadable");
-        } else if (!FilenameUtils.isExtension(skinFile.getName(), new String[]{"png", "PNG"})) {
+        } else if (!FilenameUtils.isExtension(skinFile.getName(), new String[] {"png", "PNG"})) {
             skinMessage = I18n.format("hdskins.error.ext");
         } else {
             BufferedImage chosenImage;
@@ -257,7 +257,7 @@ public class GuiSkins extends GuiScreen {
                 skinMessage = I18n.format("hdskins.error.open");
             } else if (isPowerOfTwo(chosenImage.getWidth())
                     && (chosenImage.getWidth() == chosenImage.getHeight() * 2
-                    || chosenImage.getWidth() == chosenImage.getHeight())
+                            || chosenImage.getWidth() == chosenImage.getHeight())
                     && chosenImage.getWidth() <= MAX_SKIN_DIMENSION
                     && chosenImage.getHeight() <= MAX_SKIN_DIMENSION) {
                 synchronized (skinLock) {
@@ -435,7 +435,7 @@ public class GuiSkins extends GuiScreen {
         if (!localPlayer.isUsingLocalTexture()) {
             int opacity = fontRenderer.getStringWidth(skinMessage) / 2;
             Gui.drawRect(40, height / 2 - 12, width / 2 - 40, height / 2 + 12, 0xB0000000);
-            fontRenderer.drawStringWithShadow(skinMessage, (int) (xPos1 - opacity), height / 2 - 4, 0xffffff);
+            fontRenderer.drawStringWithShadow(skinMessage, (int)(xPos1 - opacity), height / 2 - 4, 0xffffff);
         }
         if (btnModeSkin.isMouseOver() || btnModeElytra.isMouseOver() || btnModeSkinnySkin.isMouseOver()) {
             int y = Math.max(mouseY, 16);
@@ -462,15 +462,15 @@ public class GuiSkins extends GuiScreen {
                 int stringWidth1 = fontRenderer.getStringWidth(opacity1) / 2;
                 int stringWidth2 = fontRenderer.getStringWidth(stringWidth) / 2;
 
-                Gui.drawRect((int) (xPos2 - labelwidth), height / 2 - 16, width - 40, height / 2 + 16, 0xB0000000);
+                Gui.drawRect((int)(xPos2 - labelwidth), height / 2 - 16, width - 40, height / 2 + 16, 0xB0000000);
 
-                fontRenderer.drawStringWithShadow(opacity1, (int) (xPos2 - stringWidth1), height / 2 - 10, 0xffffff);
-                fontRenderer.drawStringWithShadow(stringWidth, (int) (xPos2 - stringWidth2), height / 2 + 2, 0xffffff);
+                fontRenderer.drawStringWithShadow(opacity1, (int)(xPos2 - stringWidth1), height / 2 - 10, 0xffffff);
+                fontRenderer.drawStringWithShadow(stringWidth, (int)(xPos2 - stringWidth2), height / 2 + 2, 0xffffff);
             } else {
                 opacity1 = I18n.format("hdskins.fetch");
                 int stringWidth1 = fontRenderer.getStringWidth(opacity1) / 2;
-                Gui.drawRect((int) (xPos2 - labelwidth), height / 2 - 12, width - 40, height / 2 + 12, 0xB0000000);
-                fontRenderer.drawStringWithShadow(opacity1, (int) (xPos2 - stringWidth1), height / 2 - 4, 0xffffff);
+                Gui.drawRect((int)(xPos2 - labelwidth), height / 2 - 12, width - 40, height / 2 + 12, 0xB0000000);
+                fontRenderer.drawStringWithShadow(opacity1, (int)(xPos2 - stringWidth1), height / 2 - 4, 0xffffff);
             }
         }
 
@@ -485,7 +485,7 @@ public class GuiSkins extends GuiScreen {
                 uploadOpacity = 1;
             }
 
-            int opacity = Math.min(180, (int) (uploadOpacity * 180)) & 255;
+            int opacity = Math.min(180, (int)(uploadOpacity * 180)) & 255;
             if (uploadOpacity > 0) {
                 Gui.drawRect(0, 0, width, height, opacity << 24);
                 if (uploadingSkin) {
@@ -504,8 +504,7 @@ public class GuiSkins extends GuiScreen {
         enableDepth();
     }
 
-    private void renderPlayerModel(EntityPlayerModel thePlayer, float xPosition, float yPosition, float scale, float mouseY, float mouseX,
-            float partialTick) {
+    private void renderPlayerModel(EntityPlayerModel thePlayer, float xPosition, float yPosition, float scale, float mouseY, float mouseX, float partialTick) {
         enableColorMaterial();
         pushMatrix();
         translate(xPosition, yPosition, 300);
@@ -523,9 +522,9 @@ public class GuiSkins extends GuiScreen {
 
         rotate(rot, 0, 1, 0);
 
-        thePlayer.rotationYawHead = (float) Math.atan(mouseX / 20) * 30;
+        thePlayer.rotationYawHead = (float)Math.atan(mouseX / 20) * 30;
 
-        thePlayer.rotationPitch = -((float) Math.atan(mouseY / 40)) * 20;
+        thePlayer.rotationPitch = -((float)Math.atan(mouseY / 40)) * 20;
         translate(0, thePlayer.getYOffset(), 0);
 
         RenderManager rm = Minecraft.getMinecraft().getRenderManager();

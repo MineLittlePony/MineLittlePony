@@ -49,7 +49,7 @@ public class LiteModHDSkins implements InitCompleteListener, ViewportListener, C
         // register config
         LiteLoader.getInstance().registerExposable(this, null);
 
-        IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
+        IReloadableResourceManager irrm = (IReloadableResourceManager)Minecraft.getMinecraft().getResourceManager();
         irrm.registerReloadListener(HDSkinManager.INSTANCE);
     }
 

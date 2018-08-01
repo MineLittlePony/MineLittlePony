@@ -63,7 +63,7 @@ public class LegacySkinServer implements SkinServer {
 
             String url = getPath(address, type, profile);
             try {
-                HttpURLConnection urlConnection = (HttpURLConnection) new URL(url).openConnection();
+                HttpURLConnection urlConnection = (HttpURLConnection)new URL(url).openConnection();
                 if (urlConnection.getResponseCode() / 100 != 2) {
                     throw new IOException("Bad response code: " + urlConnection.getResponseCode());
                 }

@@ -30,8 +30,8 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
     private static final Map<Integer, ISkull> skullMap = new HashMap<>();
 
     /**
-     * Resolves the games skull renderer to either a specialised pony skull renderer
-     * or some other skull renderer depending on the ponyskulls state.
+     * Resolves the games skull renderer to either a specialised pony skull renderer or some other skull
+     * renderer depending on the ponyskulls state.
      *
      * Original/Existing renderer is stored to a backup variable as a fallback in case of mods.
      */

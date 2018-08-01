@@ -25,8 +25,7 @@ public abstract class ThreadOpenFile extends Thread {
 
     private static String lastChosenFile = null;
 
-    protected ThreadOpenFile(Minecraft minecraft, String dialogTitle, IOpenFileCallback callback)
-            throws IllegalStateException {
+    protected ThreadOpenFile(Minecraft minecraft, String dialogTitle, IOpenFileCallback callback) throws IllegalStateException {
         if (minecraft.isFullScreen()) {
             throw new IllegalStateException("Cannot open an awt window whilst minecraft is in full screen mode!");
         }

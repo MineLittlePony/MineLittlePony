@@ -11,6 +11,7 @@ class SkinData {
     List<Skin> skins;
 }
 
+
 @SuppressWarnings("unused")
 class Skin {
 

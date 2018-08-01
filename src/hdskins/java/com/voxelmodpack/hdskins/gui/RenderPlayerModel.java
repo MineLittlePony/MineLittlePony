@@ -40,7 +40,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         return new LayerRenderer<EntityLivingBase>() {
             @Override
             public void doRenderLayer(EntityLivingBase entityBase, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-                EntityPlayerModel entity = (EntityPlayerModel) entityBase;
+                EntityPlayerModel entity = (EntityPlayerModel)entityBase;
                 ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
                 if (itemstack.getItem() == Items.ELYTRA) {

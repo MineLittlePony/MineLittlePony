@@ -21,7 +21,7 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nonnull;
 
 // TODO: A lot of this duplicates RenderPonyPlayer
-//       and is the whole reason we had this scaling bug in the first place.
+// and is the whole reason we had this scaling bug in the first place.
 public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving<T> implements IRenderPony<T> {
 
     protected final RenderPony<T> renderPony = new RenderPony<>(this);

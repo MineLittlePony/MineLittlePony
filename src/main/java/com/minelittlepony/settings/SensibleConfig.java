@@ -53,8 +53,7 @@ public abstract class SensibleConfig {
     public boolean setValue(Setting key, boolean value) {
         try {
             this.getClass().getField(key.name().toLowerCase()).setBoolean(this, value);
-        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException ignored) {
-        }
+        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException ignored) {}
         return value;
     }
 }

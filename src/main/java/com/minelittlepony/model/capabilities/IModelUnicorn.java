@@ -14,6 +14,7 @@ public interface IModelUnicorn extends IModel {
 
     /**
      * Returns true if this model is currently using magic (horn is lit).
+     * 
      * @return
      */
     boolean isCasting();

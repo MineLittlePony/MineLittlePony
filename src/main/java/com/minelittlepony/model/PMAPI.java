@@ -47,7 +47,7 @@ public final class PMAPI {
     public static void init() {
         for (Field field : PMAPI.class.getFields()) {
             try {
-                ModelWrapper model = (ModelWrapper) field.get(null);
+                ModelWrapper model = (ModelWrapper)field.get(null);
                 model.init();
             } catch (Exception e) {
                 e.printStackTrace();
