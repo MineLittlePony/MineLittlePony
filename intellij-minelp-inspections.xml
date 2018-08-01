@@ -1,5 +1,6 @@
 <profile version="1.0">
   <option name="myName" value="Mine Little Pony" />
+  <inspection_tool class="CatchMayIgnoreException" enabled="false" level="WARNING" enabled_by_default="false" />
   <inspection_tool class="ChainedMethodCall" enabled="false" level="WEAK WARNING" enabled_by_default="false">
     <option name="m_ignoreFieldInitializations" value="true" />
     <option name="m_ignoreThisSuperCalls" value="true" />
