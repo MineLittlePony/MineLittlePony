@@ -48,7 +48,7 @@ public class ModelIllagerPony extends ModelAlicorn {
             bipedLeftArm.rotateAngleX  -= sin;
         } else if (pose == IllagerArmPose.SPELLCASTING) {
             // waving arms!
-//          this.bipedRightArm.rotationPointZ = 0;
+            //          this.bipedRightArm.rotationPointZ = 0;
             arm.rotateAngleX = (float) (-.75F * Math.PI);
             arm.rotateAngleZ = mult * MathHelper.cos(ticks * 0.6662F) / 4;
             arm.rotateAngleY = mult * 1.1F;

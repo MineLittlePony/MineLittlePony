@@ -29,17 +29,17 @@ public class ModelWing {
         float x = right ? -6 : 4;
 
         folded.around(HEAD_RP_X, WING_FOLDED_RP_Y + y, WING_FOLDED_RP_Z)
-              .box(x, 5, 2, 2, 6, 2, scale)
-              .box(x, 5, 4, 2, 8, 2, scale)
-              .box(x, 5, 6, 2, 6, 2, scale)
-              .rotateAngleX = ROTATE_90;
+        .box(x, 5, 2, 2, 6, 2, scale)
+        .box(x, 5, 4, 2, 8, 2, scale)
+        .box(x, 5, 6, 2, 6, 2, scale)
+        .rotateAngleX = ROTATE_90;
     }
 
     private void addFeathers(boolean right, boolean l, float rotationPointY, float scale) {
         float r = right ? -1 : 1;
 
         extended.around(r * LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + rotationPointY, LEFT_WING_EXT_RP_Z)
-                .rotateAngleY = r * 3;
+        .rotateAngleY = r * 3;
         addFeather(0, l,  6,     0,    8, scale + 0.1F);
         addFeather(1, l, -1,    -0.3F, 8, scale + 0.1F) .rotateAngleX = -0.85F;
         addFeather(2, l,  1.8F,  1.3F, 8, scale - 0.1F) .rotateAngleX = -0.75F;

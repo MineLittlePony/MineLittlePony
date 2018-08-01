@@ -55,7 +55,7 @@ public class PonyElytra extends ModelBase {
             float velY = 1;
 
             if (entity.motionY < 0) {
-                Vec3d motion = (new Vec3d(entity.motionX, entity.motionY, entity.motionZ)).normalize();
+                Vec3d motion = new Vec3d(entity.motionX, entity.motionY, entity.motionZ).normalize();
                 velY = 1 - (float) Math.pow(-motion.y, 1.5);
             }
 

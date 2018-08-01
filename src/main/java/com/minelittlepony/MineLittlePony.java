@@ -71,10 +71,10 @@ public class MineLittlePony {
     void postInit(Minecraft minecraft) {
 
         HDSkinManager manager = HDSkinManager.INSTANCE;
-//        manager.setSkinUrl(SKIN_SERVER_URL);
-//        manager.setGatewayURL(GATEWAY_URL);
+        //        manager.setSkinUrl(SKIN_SERVER_URL);
+        //        manager.setGatewayURL(GATEWAY_URL);
         manager.addSkinModifier(new PonySkinModifier());
-//        logger.info("Set MineLP skin server URL.");
+        //        logger.info("Set MineLP skin server URL.");
         manager.addClearListener(ponyManager);
 
         manager.setPrefferedSkinsGuiClass(GuiSkinsMineLP.class);

@@ -28,8 +28,8 @@ public class ModelPonyHead extends ModelHumanoidHead implements ICapitated {
         snout.init(0, 0);
 
         ears = new PonyRenderer(this, 0, 0).offset(0, -3, 2).around(0, 0, -2)
-                                    .tex(12, 16).box(-4, -6, 1, 2, 2, 2, 0)
-                                         .flip().box( 2, -6, 1, 2, 2, 2, 0);
+                .tex(12, 16).box(-4, -6, 1, 2, 2, 2, 0)
+                .flip().box( 2, -6, 1, 2, 2, 2, 0);
 
         skeletonHead.addChild(ears);
     }
