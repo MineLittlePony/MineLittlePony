@@ -19,8 +19,8 @@ public class PonyElytra extends ModelBase {
     private PonyRenderer leftWing = new PonyRenderer(this, 22, 0);
 
     public PonyElytra() {
-        leftWing        .box(-10, 0, 0, 10, 20, 2, 1);
-        rightWing.flip().box( 0,  0, 0, 10, 20, 2, 1);
+        leftWing.box(-10, 0, 0, 10, 20, 2, 1);
+        rightWing.flip().box(0, 0, 0, 10, 20, 2, 1);
     }
 
     /**
@@ -51,12 +51,12 @@ public class PonyElytra extends ModelBase {
 
         float rpY = BODY_RP_Y_NOTSNEAK;
 
-        if (entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isElytraFlying()) {
+        if (entity instanceof EntityLivingBase && ((EntityLivingBase)entity).isElytraFlying()) {
             float velY = 1;
 
             if (entity.motionY < 0) {
                 Vec3d motion = new Vec3d(entity.motionX, entity.motionY, entity.motionZ).normalize();
-                velY = 1 - (float) Math.pow(-motion.y, 1.5);
+                velY = 1 - (float)Math.pow(-motion.y, 1.5);
             }
 
             rotateX = velY * PI * (2 / 3F) + (1 - velY) * rotateX;
@@ -72,7 +72,7 @@ public class PonyElytra extends ModelBase {
         leftWing.rotationPointY = rpY;
 
         if (entity instanceof AbstractClientPlayer) {
-            AbstractClientPlayer player = (AbstractClientPlayer) entity;
+            AbstractClientPlayer player = (AbstractClientPlayer)entity;
 
             player.rotateElytraX += (rotateX - player.rotateElytraX) / 10;
             player.rotateElytraY += (rotateY - player.rotateElytraY) / 10;

@@ -38,8 +38,8 @@ public class ModelZebra extends ModelEarthPony {
                 .box(0, -8, 6, 2, 6, 2, stretch)
                 .rotate(0.3F, 0, 0)
                 .child(0).offset(-1.01F, 2, -7) //0.01 to prevent z-fighting
-                    .box(0, -10, 4, 2, 8, 2, stretch)
-                    .box(0, -8, 6, 2, 6, 2, stretch)
-                    .rotate(-1, 0, 0);
+                .box(0, -10, 4, 2, 8, 2, stretch)
+                .box(0, -8, 6, 2, 6, 2, stretch)
+                .rotate(-1, 0, 0);
     }
 }

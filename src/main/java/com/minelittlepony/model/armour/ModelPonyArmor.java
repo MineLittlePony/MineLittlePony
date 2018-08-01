@@ -64,8 +64,8 @@ public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
     protected void initHead(float yOffset, float stretch) {
         super.initHead(yOffset, stretch * 1.1F);
         ((PonyRenderer)bipedHead).child()
-            .tex(0, 4).box( 2, -6, 1, 2, 2, 2, stretch / 2)
-                      .box(-4, -6, 1, 2, 2, 2, stretch / 2);
+                .tex(0, 4).box(2, -6, 1, 2, 2, 2, stretch / 2)
+                .box(-4, -6, 1, 2, 2, 2, stretch / 2);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
 
         flankGuard = new PonyRenderer(this, 0, 0)
                 .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-                .box(-4, 4,  6, 8, 8, 8, stretch);
+                .box(-4, 4, 6, 8, 8, 8, stretch);
         saddle = new PonyRenderer(this, 16, 8)
                 .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                 .box(-4, 4, -2, 8, 8, 16, stretch);
@@ -111,7 +111,7 @@ public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
 
     @Override
     public void showLegs(boolean isPony) {
-        bipedBody.showModel =  true;
+        bipedBody.showModel = true;
     }
 
     @Override

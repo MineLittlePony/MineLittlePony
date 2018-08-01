@@ -42,20 +42,20 @@ public class HornGlow extends Box<HornGlowRenderer> {
         // w:west e:east d:down u:up s:south n:north
         Vertex wds = vert(tipXmin, yMin, tipZmin, 0, 0);
         Vertex eds = vert(tipXMax, yMin, tipZmin, 0, 8);
-        Vertex eus = vert(xMax,    yMax, zMin,    8, 8);
-        Vertex wus = vert(xMin,    yMax, zMin,    8, 0);
+        Vertex eus = vert(xMax, yMax, zMin, 8, 8);
+        Vertex wus = vert(xMin, yMax, zMin, 8, 0);
         Vertex wdn = vert(tipXmin, yMin, tipZMax, 0, 0);
         Vertex edn = vert(tipXMax, yMin, tipZMax, 0, 8);
-        Vertex eun = vert(xMax,    yMax, zMax,    8, 8);
-        Vertex wun = vert(xMin,    yMax, zMax,    8, 0);
+        Vertex eun = vert(xMax, yMax, zMax, 8, 8);
+        Vertex wun = vert(xMin, yMax, zMax, 8, 0);
 
         quadList = new Quad[] {
-                quad(texX + d + w,     d, texY + d,  h, edn, eds, eus, eun),
-                quad(texX,             d, texY + d,  h, wds, wdn, wun, wus),
-                quad(texX + d,         w, texY,      d, edn, wdn, wds, eds),
-                quad(texX + d + w,     w, texY + d, -d, eus, wus, wun, eun),
-                quad(texX + d,         w, texY + d,  h, eds, wds, wus, eus),
-                quad(texX + d + w + d, w, texY + d,  h, wdn, edn, eun, wun)
+                quad(texX + d + w, d, texY + d, h, edn, eds, eus, eun),
+                quad(texX, d, texY + d, h, wds, wdn, wun, wus),
+                quad(texX + d, w, texY, d, edn, wdn, wds, eds),
+                quad(texX + d + w, w, texY + d, -d, eus, wus, wun, eun),
+                quad(texX + d, w, texY + d, h, eds, wds, wus, eus),
+                quad(texX + d + w + d, w, texY + d, h, wdn, edn, eun, wun)
         };
 
         if (renderer.mirror) {

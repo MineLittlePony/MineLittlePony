@@ -19,7 +19,7 @@ public class ModelIllagerPony extends ModelAlicorn {
     public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
         super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
 
-        AbstractIllager illager = (AbstractIllager) entity;
+        AbstractIllager illager = (AbstractIllager)entity;
         IllagerArmPose pose = illager.getArmPose();
 
         boolean rightHanded = illager.getPrimaryHand() == EnumHandSide.RIGHT;
@@ -28,15 +28,15 @@ public class ModelIllagerPony extends ModelAlicorn {
 
         if (pose == IllagerArmPose.ATTACKING) {
             // vindicator attacking
-            float f = MathHelper.sin(swingProgress * (float) Math.PI);
-            float f1 = MathHelper.sin((1.0F - (1.0F - swingProgress) * (1.0F - swingProgress)) * (float) Math.PI);
+            float f = MathHelper.sin(swingProgress * (float)Math.PI);
+            float f1 = MathHelper.sin((1.0F - (1.0F - swingProgress) * (1.0F - swingProgress)) * (float)Math.PI);
 
 
             float cos = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
             float sin = MathHelper.sin(ticks * 0.067F) * 0.05F;
 
             bipedRightArm.rotateAngleZ = cos;
-            bipedLeftArm.rotateAngleZ  = cos;
+            bipedLeftArm.rotateAngleZ = cos;
 
             bipedRightArm.rotateAngleY = 0.15707964F;
             bipedLeftArm.rotateAngleY = -0.15707964F;
@@ -45,10 +45,10 @@ public class ModelIllagerPony extends ModelAlicorn {
             arm.rotateAngleX += f * 2.2F - f1 * 0.4F;
 
             bipedRightArm.rotateAngleX += sin;
-            bipedLeftArm.rotateAngleX  -= sin;
+            bipedLeftArm.rotateAngleX -= sin;
         } else if (pose == IllagerArmPose.SPELLCASTING) {
             // waving arms!
-            arm.rotateAngleX = (float) (-0.75F * Math.PI);
+            arm.rotateAngleX = (float)(-0.75F * Math.PI);
             arm.rotateAngleZ = mult * MathHelper.cos(ticks * 0.6662F) / 4;
             arm.rotateAngleY = mult * 1.1F;
         } else if (pose == IllagerArmPose.BOW_AND_ARROW) {
