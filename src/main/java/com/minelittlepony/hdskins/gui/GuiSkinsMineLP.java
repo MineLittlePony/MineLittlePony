@@ -88,9 +88,8 @@ public class GuiSkinsMineLP extends GuiSkins {
             } else {
                 text = "minelp.mode.wet";
             }
-            this.drawHoveringText(I18n.format(text), mouseX, y);
+            drawHoveringText(I18n.format(text), mouseX, y);
         }
-        ;
     }
 
     @Override

@@ -111,8 +111,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         float headRotateAngleY = isSleeping ? 1.4f : headYaw / 57.29578F;
         float headRotateAngleX = isSleeping ? 0.1f : headPitch / 57.29578F;
 
-        headRotateAngleX = Math.min(headRotateAngleX, (float)(0.5f - Math.toRadians(motionPitch)));
-        headRotateAngleX = Math.max(headRotateAngleX, (float)(-1.25f - Math.toRadians(motionPitch)));
+        headRotateAngleX = Math.min(headRotateAngleX, (float)( 0.5F  - Math.toRadians(motionPitch)));
+        headRotateAngleX = Math.max(headRotateAngleX, (float)(-1.25F - Math.toRadians(motionPitch)));
 
         updateHeadRotation(headRotateAngleX, headRotateAngleY);
 
@@ -138,7 +138,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
             bipedRightLeg.rotationPointZ = 15;
             bipedRightLeg.rotationPointY = 10;
             bipedRightLeg.rotateAngleX = -PI / 4;
-            bipedRightLeg.rotateAngleY = PI / 5;
+            bipedRightLeg.rotateAngleY =  PI / 5;
 
             bipedLeftArm.rotateAngleZ = -PI * 0.06f;
             bipedRightArm.rotateAngleZ = PI * 0.06f;
@@ -285,7 +285,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         float forward = ROTATE_270 - ROTATE_90 / 3;
         float down = ROTATE_90;
 
-        float leftX = down + MathHelper.sin(move / 3 + 2 * PI / 3) / 2;
+        float leftX =     down + MathHelper.sin(move / 3 + 2 * PI / 3) / 2;
         float leftY = -forward - MathHelper.sin(move / 3 + 2 * PI / 3);
 
         float rightX = down + MathHelper.sin(move / 3) / 2;
@@ -295,9 +295,9 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         bipedLeftArm.rotateAngleY = leftY;
 
         bipedRightArm.rotateAngleY = -leftY;
-        bipedRightArm.rotateAngleX = leftX;
+        bipedRightArm.rotateAngleX =  leftX;
 
-        bipedLeftLeg.rotateAngleX = leftX;
+        bipedLeftLeg.rotateAngleX =  leftX;
         bipedRightLeg.rotateAngleX = rightX;
 
         bipedLeftLeg.rotateAngleY = 0;
@@ -319,16 +319,16 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         float armX = rainboom ? ROTATE_270 : MathHelper.sin(-swing / 2);
         float legX = rainboom ? ROTATE_90 : MathHelper.sin(swing / 2);
 
-        bipedLeftArm.rotateAngleX = armX;
+        bipedLeftArm.rotateAngleX =  armX;
         bipedRightArm.rotateAngleX = armX;
 
-        bipedLeftLeg.rotateAngleX = legX;
+        bipedLeftLeg.rotateAngleX =  legX;
         bipedRightLeg.rotateAngleX = legX;
 
         bipedLeftArm.rotateAngleY = -0.2F;
-        bipedLeftLeg.rotateAngleY = 0.2F;
+        bipedLeftLeg.rotateAngleY =  0.2F;
 
-        bipedRightArm.rotateAngleY = 0.2F;
+        bipedRightArm.rotateAngleY =  0.2F;
         bipedRightLeg.rotateAngleY = -0.2F;
     }
 
@@ -553,9 +553,9 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         bipedHead = new PonyRenderer(this, 0, 0)
                 .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
                 .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
-                .box(-4, -4, -4, 8, 8, 8, stretch)
+                            .box(-4, -4, -4, 8, 8, 8, stretch)
                 .tex(12, 16).box(-4, -6, 1, 2, 2, 2, stretch)
-                .flip().box(2, -6, 1, 2, 2, 2, stretch);
+                     .flip().box( 2, -6, 1, 2, 2, 2, stretch);
 
         bipedHeadwear = new PonyRenderer(this, 32, 0)
                 .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
@@ -590,31 +590,31 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         upperTorso = new PlaneRenderer(this, 24, 0);
         upperTorso.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
                 .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-                .tex(24, 0).addEastPlane(4, -4, -4, 8, 8, stretch)
-                .tex(4, 0).addEastPlane(4, -4, 4, 8, 4, stretch)
-                .tex(56, 0).addBottomPlane(-4, 4, -4, 8, 8, stretch)
-                .tex(36, 16).addBackPlane(-4, -4, 8, 8, 4, stretch)
-                .addBackPlane(-4, 0, 8, 8, 4, stretch)
-                .addBottomPlane(-4, 4, 4, 8, 4, stretch)
-                .flipZ().tex(32, 20).addTopPlane(-4, -4, -4, 8, 12, stretch)
-                .tex(24, 0).addWestPlane(-4, -4, -4, 8, 8, stretch)
-                .tex(4, 0).addWestPlane(-4, -4, 4, 8, 4, stretch)
+                .tex(24, 0) .addEastPlane(   4, -4, -4, 8, 8, stretch)
+                .tex(4, 0)  .addEastPlane(   4, -4,  4, 8, 4, stretch)
+                .tex(56, 0) .addBottomPlane(-4,  4, -4, 8, 8, stretch)
+                .tex(36, 16).addBackPlane(  -4, -4,  8, 8, 4, stretch)
+                            .addBackPlane(  -4,  0,  8, 8, 4, stretch)
+                            .addBottomPlane(-4,  4,  4, 8, 4, stretch)
+           .flipZ().tex(32, 20).addTopPlane(-4, -4, -4, 8, 12, stretch)
+                .tex(24, 0).addWestPlane(   -4, -4, -4, 8, 8, stretch)
+                .tex(4, 0) .addWestPlane(   -4, -4,  4, 8, 4, stretch)
                 // Tail stub
                 .child(0)
-                .tex(32, 0).addTopPlane(-1, 2, 2, 2, 6, stretch)
-                .addBottomPlane(-1, 4, 2, 2, 6, stretch)
-                .addEastPlane(1, 2, 2, 2, 6, stretch)
-                .addBackPlane(-1, 2, 8, 2, 2, stretch)
-                .flipZ().addWestPlane(-1, 2, 2, 2, 6, stretch)
-                .rotate(0.5F, 0, 0);
+                    .tex(32, 0).addTopPlane(-1, 2, 2, 2, 6, stretch)
+                            .addBottomPlane(-1, 4, 2, 2, 6, stretch)
+                              .addEastPlane( 1, 2, 2, 2, 6, stretch)
+                              .addBackPlane(-1, 2, 8, 2, 2, stretch)
+                      .flipZ().addWestPlane(-1, 2, 2, 2, 6, stretch)
+                              .rotate(0.5F, 0, 0);
 
         neck = new PlaneRenderer(this, 0, 16)
                 .at(NECK_CENTRE_X, NECK_CENTRE_Y, NECK_CENTRE_Z)
                 .rotate(NECK_ROT_X, 0, 0).around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                 .addFrontPlane(0, 0, 0, 4, 4, stretch)
-                .addBackPlane(0, 0, 4, 4, 4, stretch)
-                .addEastPlane(4, 0, 0, 4, 4, stretch)
-                .addWestPlane(0, 0, 0, 4, 4, stretch);
+                .addBackPlane( 0, 0, 4, 4, 4, stretch)
+                .addEastPlane( 4, 0, 0, 4, 4, stretch)
+                .addWestPlane( 0, 0, 0, 4, 4, stretch);
     }
 
     protected void preInitLegs() {

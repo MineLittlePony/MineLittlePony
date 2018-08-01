@@ -156,7 +156,7 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
         unicornArmLeft = new PonyRenderer(this, 40, 32).size(64, 64);
         unicornArmRight = new PonyRenderer(this, 40, 32).size(64, 64);
 
-        unicornArmLeft.box(FIRSTP_ARM_CENTRE_X, THIRDP_ARM_CENTRE_Y, THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + .25F).around(5, yOffset + 2, 0);
-        unicornArmRight.box(FIRSTP_ARM_CENTRE_X, THIRDP_ARM_CENTRE_Y, THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + .25F).around(-5, yOffset + 2, 0);
+        unicornArmLeft .box(FIRSTP_ARM_CENTRE_X, THIRDP_ARM_CENTRE_Y, THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25F).around(5, yOffset + 2, 0);
+        unicornArmRight.box(FIRSTP_ARM_CENTRE_X, THIRDP_ARM_CENTRE_Y, THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25F).around(-5, yOffset + 2, 0);
     }
 }

@@ -38,7 +38,7 @@ public class SeaponyTail implements IModelPart {
 
         tailFins.offset(1, 0, 4).rotate(-TAIL_ROTX, 0, 0)
                 .addTopPlane(-8, 0, 0, 8, 8, stretch)
-                .flip().addTopPlane(0, 0, 0, 8, 8, stretch);
+         .flip().addTopPlane( 0, 0, 0, 8, 8, stretch);
     }
 
     @Override
