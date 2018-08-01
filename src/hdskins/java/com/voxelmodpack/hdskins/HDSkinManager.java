@@ -186,9 +186,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
             final IImageBuffer imagebufferdownload = type == Type.SKIN ? new ImageBufferDownloadHD() : null;
 
-            ITextureObject texObject = new ThreadDownloadImageETag(file2, bustCache(texture.getUrl()),
-                    DefaultPlayerSkin.getDefaultSkinLegacy(),
-                    new IImageBuffer() {
+            ITextureObject texObject = new ThreadDownloadImageETag(file2, bustCache(texture.getUrl()), DefaultPlayerSkin.getDefaultSkinLegacy(), new IImageBuffer() {
                 @Nonnull
                 @Override
                 public BufferedImage parseUserSkin(@Nonnull BufferedImage image) {
@@ -279,12 +277,12 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             FileUtils.deleteDirectory(new File(LiteLoader.getAssetsDirectory(), "hd"));
             TextureManager textures = Minecraft.getMinecraft().getTextureManager();
             INSTANCE.skinCache.values().stream()
-            .flatMap(m -> m.values().stream())
-            .forEach(textures::deleteTexture);
+                    .flatMap(m -> m.values().stream())
+                    .forEach(textures::deleteTexture);
             INSTANCE.skinCache.clear();
             INSTANCE.skins.invalidateAll();
-        } catch (IOException var1) {
-            var1.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         INSTANCE.clearListeners = INSTANCE.clearListeners.stream()

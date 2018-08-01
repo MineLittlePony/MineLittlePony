@@ -107,10 +107,10 @@ public class PonyTail extends PlaneRenderer implements IModelPart {
             }
 
             tex(36, texX).addEastPlane( 2, 0, 2, 4, 4, stretch)
-            .addWestPlane(-2, 0, 2, 4, 4, stretch);
+                         .addWestPlane(-2, 0, 2, 4, 4, stretch);
             tex(32, texX).addBackPlane(-2, 0, 2, 4, 4, stretch)
-            .addFrontPlane(-2, 0, 6, 4, 4, stretch);
-            tex(32, 0).addBottomPlane(-2, 4, 2, 4, 4, stretch);
+                        .addFrontPlane(-2, 0, 6, 4, 4, stretch);
+            tex(32, 0) .addBottomPlane(-2, 4, 2, 4, 4, stretch);
         }
 
         @Override

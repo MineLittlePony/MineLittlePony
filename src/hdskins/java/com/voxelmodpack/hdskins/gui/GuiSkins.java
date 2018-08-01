@@ -80,7 +80,7 @@ public class GuiSkins extends GuiScreen {
     private final Object skinLock = new Object();
     private File pendingSkinFile;
     private File selectedSkin;
-    private float uploadOpacity = 0.0F;
+    private float uploadOpacity = 0;
 
     private int lastMouseX = 0;
 
@@ -474,19 +474,19 @@ public class GuiSkins extends GuiScreen {
             }
         }
 
-        if (uploadingSkin || uploadOpacity > 0.0F) {
+        if (uploadingSkin || uploadOpacity > 0) {
             if (!uploadingSkin) {
                 uploadOpacity -= deltaTime * 0.05F;
-            } else if (uploadOpacity < 1.0F) {
+            } else if (uploadOpacity < 1) {
                 uploadOpacity += deltaTime * 0.1F;
             }
 
-            if (uploadOpacity > 1.0F) {
-                uploadOpacity = 1.0F;
+            if (uploadOpacity > 1) {
+                uploadOpacity = 1;
             }
 
-            int opacity = Math.min(180, (int) (uploadOpacity * 180.0F)) & 255;
-            if (uploadOpacity > 0.0F) {
+            int opacity = Math.min(180, (int) (uploadOpacity * 180)) & 255;
+            if (uploadOpacity > 0) {
                 Gui.drawRect(0, 0, width, height, opacity << 24);
                 if (uploadingSkin) {
                     drawCenteredString(fontRenderer, skinUploadMessage, width / 2, height / 2, opacity << 24 | 0xffffff);
@@ -508,16 +508,16 @@ public class GuiSkins extends GuiScreen {
             float partialTick) {
         enableColorMaterial();
         pushMatrix();
-        translate(xPosition, yPosition, 300.0F);
+        translate(xPosition, yPosition, 300);
 
         scale(-scale, scale, scale);
-        rotate(180.0F, 0.0F, 0.0F, 1.0F);
-        rotate(135.0F, 0.0F, 1.0F, 0.0F);
+        rotate(180, 0, 0, 1);
+        rotate(135, 0, 1, 0);
 
         RenderHelper.enableStandardItemLighting();
 
-        rotate(-135.0F, 0.0F, 1.0F, 0.0F);
-        rotate(15.0F, 1.0F, 0.0F, 0.0F);
+        rotate(-135, 0, 1, 0);
+        rotate(15, 1, 0, 0);
 
         float rot = (updateCounter + partialTick) * 2.5F % 360;
 
@@ -526,10 +526,10 @@ public class GuiSkins extends GuiScreen {
         thePlayer.rotationYawHead = (float) Math.atan(mouseX / 20) * 30;
 
         thePlayer.rotationPitch = -((float) Math.atan(mouseY / 40)) * 20;
-        translate(0.0D, thePlayer.getYOffset(), 0.0D);
+        translate(0, thePlayer.getYOffset(), 0);
 
         RenderManager rm = Minecraft.getMinecraft().getRenderManager();
-        rm.playerViewY = 180.0F;
+        rm.playerViewY = 180;
         rm.renderEntity(thePlayer, 0, 0, 0, 0, 1, false);
 
         popMatrix();
@@ -543,11 +543,11 @@ public class GuiSkins extends GuiScreen {
         }
 
         doubleBuffer.clear();
-        doubleBuffer.put(0.0D).put(1.0D).put(0.0D).put(-30).flip();
+        doubleBuffer.put(0).put(1).put(0).put(-30).flip();
 
         GL11.glClipPlane(GL11.GL_CLIP_PLANE0, doubleBuffer);
         doubleBuffer.clear();
-        doubleBuffer.put(0.0D).put(-1.0D).put(0.0D).put(yBottom).flip();
+        doubleBuffer.put(0).put(-1).put(0).put(yBottom).flip();
 
         GL11.glClipPlane(GL11.GL_CLIP_PLANE1, doubleBuffer);
         GL11.glEnable(GL11.GL_CLIP_PLANE0);
@@ -567,9 +567,9 @@ public class GuiSkins extends GuiScreen {
         uploadingSkin = true;
         skinUploadMessage = I18n.format("hdskins.request");
         HDSkinManager.INSTANCE.getGatewayServer()
-        .uploadSkin(session, null, textureType, getMetadata())
-        .thenAccept(this::onUploadComplete)
-        .exceptionally(this::onFailure);
+                .uploadSkin(session, null, textureType, getMetadata())
+                .thenAccept(this::onUploadComplete)
+                .exceptionally(this::onFailure);
     }
 
     private void uploadSkin(Session session, @Nullable File skinFile) {
@@ -577,9 +577,9 @@ public class GuiSkins extends GuiScreen {
         skinUploadMessage = I18n.format("hdskins.upload");
         URI path = skinFile == null ? null : skinFile.toURI();
         HDSkinManager.INSTANCE.getGatewayServer()
-        .uploadSkin(session, path, textureType, getMetadata())
-        .thenAccept(this::onUploadComplete)
-        .exceptionally(this::onFailure);
+                .uploadSkin(session, path, textureType, getMetadata())
+                .thenAccept(this::onUploadComplete)
+                .exceptionally(this::onFailure);
     }
 
     private Map<String, String> getMetadata() {

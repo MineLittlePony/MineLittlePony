@@ -64,8 +64,8 @@ public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
     protected void initHead(float yOffset, float stretch) {
         super.initHead(yOffset, stretch * 1.1F);
         ((PonyRenderer)bipedHead).child()
-        .tex(0, 4).box(2, -6, 1, 2, 2, 2, stretch * 0.5F)
-        .box(-4, -6, 1, 2, 2, 2, stretch * 0.5F);
+            .tex(0, 4).box( 2, -6, 1, 2, 2, 2, stretch / 2)
+                      .box(-4, -6, 1, 2, 2, 2, stretch / 2);
     }
 
     @Override

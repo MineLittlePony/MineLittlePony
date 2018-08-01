@@ -540,9 +540,9 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         bipedHead = new PonyRenderer(this, 0, 0)
                 .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
                 .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
-                .box(-4, -4, -4, 8, 8, 8, stretch)
-                .tex(12, 16).box(-4, -6, 1, 2, 2, 2, stretch)
-                .flip().box( 2, -6, 1, 2, 2, 2, stretch);
+                    .box(-4, -4, -4, 8, 8, 8, stretch)
+        .tex(12, 16).box(-4, -6,  1, 2, 2, 2, stretch)
+             .flip().box( 2, -6,  1, 2, 2, 2, stretch);
 
         bipedHeadwear = new PonyRenderer(this, 32, 0)
                 .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
@@ -576,24 +576,24 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
         upperTorso = new PlaneRenderer(this, 24, 0);
         upperTorso.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
-        .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-        .tex(24, 0)    .addEastPlane( 4, -4, -4, 8, 8, stretch)
-        .tex(4,  0)    .addEastPlane( 4, -4,  4, 8, 4, stretch)
-        .tex(56, 0)  .addBottomPlane(-4,  4, -4, 8, 8, stretch)
-        .tex(36, 16)   .addBackPlane(-4, -4,  8, 8, 4, stretch)
-        .addBackPlane(-4,  0,  8, 8, 4, stretch)
-        .addBottomPlane(-4,  4,  4, 8, 4, stretch)
-        .flipZ().tex(32, 20).addTopPlane(-4, -4, -4, 8, 12, stretch)
-        .tex(24, 0).addWestPlane(-4, -4, -4, 8, 8, stretch)
-        .tex(4, 0) .addWestPlane(-4, -4,  4, 8, 4, stretch)
-        // Tail stub
-        .child(0)
-        .tex(32, 0).addTopPlane(-1, 2, 2, 2, 6, stretch)
-        .addBottomPlane(-1, 4, 2, 2, 6, stretch)
-        .addEastPlane( 1, 2, 2, 2, 6, stretch)
-        .addBackPlane(-1, 2, 8, 2, 2, stretch)
-        .flipZ().addWestPlane(-1, 2, 2, 2, 6, stretch)
-        .rotate(0.5F, 0, 0);
+                    .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
+                    .tex(24, 0)    .addEastPlane( 4, -4, -4, 8, 8, stretch)
+                    .tex(4,  0)    .addEastPlane( 4, -4,  4, 8, 4, stretch)
+                    .tex(56, 0)  .addBottomPlane(-4,  4, -4, 8, 8, stretch)
+                    .tex(36, 16)   .addBackPlane(-4, -4,  8, 8, 4, stretch)
+                                   .addBackPlane(-4,  0,  8, 8, 4, stretch)
+                                 .addBottomPlane(-4,  4,  4, 8, 4, stretch)
+                .flipZ().tex(32, 20).addTopPlane(-4, -4, -4, 8, 12, stretch)
+                        .tex(24, 0).addWestPlane(-4, -4, -4, 8, 8, stretch)
+                        .tex(4, 0) .addWestPlane(-4, -4,  4, 8, 4, stretch)
+                            // Tail stub
+                            .child(0)
+                            .tex(32, 0).addTopPlane(-1, 2, 2, 2, 6, stretch)
+                                    .addBottomPlane(-1, 4, 2, 2, 6, stretch)
+                                      .addEastPlane( 1, 2, 2, 2, 6, stretch)
+                                      .addBackPlane(-1, 2, 8, 2, 2, stretch)
+                              .flipZ().addWestPlane(-1, 2, 2, 2, 6, stretch)
+                                      .rotate(0.5F, 0, 0);
 
         neck = new PlaneRenderer(this, 0, 16)
                 .at(NECK_CENTRE_X, NECK_CENTRE_Y, NECK_CENTRE_Z)
