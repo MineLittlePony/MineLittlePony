@@ -50,7 +50,7 @@ public class PegasusWings<T extends AbstractPonyModel & IModelPegasus> implement
         if (progress > 0) {
             flap = MathHelper.sin(MathHelper.sqrt(progress) * PI * 2);
         } else {
-            float pi = PI * (float) Math.pow(swing, 16);
+            float pi = PI * (float)Math.pow(swing, 16);
 
             float mve = move * 0.6662f; // magic number ahoy (actually 2/3)
             float srt = swing / 4;

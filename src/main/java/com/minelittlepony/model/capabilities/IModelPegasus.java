@@ -17,7 +17,7 @@ public interface IModelPegasus extends IModel {
 
     default float getWingRotationFactor(float ticks) {
         if (isSwimming()) {
-            return (MathHelper.sin(ticks * 0.136f) / 2) + ROTATE_270;
+            return MathHelper.sin(ticks * 0.136f) / 2 + ROTATE_270;
         }
         if (isFlying()) {
             return MathHelper.sin(ticks * 0.536f) + ROTATE_270 + 0.4f;

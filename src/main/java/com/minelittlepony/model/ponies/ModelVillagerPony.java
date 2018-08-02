@@ -55,10 +55,10 @@ public class ModelVillagerPony extends ModelAlicorn {
 
     protected int getProfession(Entity entity) {
         if (entity instanceof EntityVillager) {
-            return ((EntityVillager) entity).getProfession();
+            return ((EntityVillager)entity).getProfession();
         }
         if (entity instanceof EntityZombieVillager) {
-            return ((EntityZombieVillager) entity).getProfession();
+            return ((EntityZombieVillager)entity).getProfession();
         }
         return -1;
     }
@@ -70,12 +70,12 @@ public class ModelVillagerPony extends ModelAlicorn {
         saddlebags.init(yOffset, stretch);
 
         apron = new PlaneRenderer(this, 56, 16)
-             .offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
-             .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-             .addBackPlane(-4, -4, -9, 8, 10, stretch);
+                .offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
+                .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
+                .addBackPlane(-4, -4, -9, 8, 10, stretch);
         trinket = new PlaneRenderer(this, 0, 3)
-               .offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
-               .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-               .addBackPlane(-2, -4, -9, 4, 5, stretch);
+                .offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
+                .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
+                .addBackPlane(-2, -4, -9, 4, 5, stretch);
     }
 }

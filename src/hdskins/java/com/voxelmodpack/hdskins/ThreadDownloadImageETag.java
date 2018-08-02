@@ -47,35 +47,36 @@ public class ThreadDownloadImageETag extends SimpleTexture {
 
     public ThreadDownloadImageETag(@Nonnull File cacheFileIn, String imageUrlIn, ResourceLocation defLocation, @Nullable IImageBuffer imageBufferIn) {
         super(defLocation);
-        this.cacheFile = cacheFileIn;
-        this.eTagFile = new File(cacheFile.getParentFile(), cacheFile.getName() + ".etag");
-        this.imageUrl = imageUrlIn;
-        this.imageBuffer = imageBufferIn;
+        cacheFile = cacheFileIn;
+        eTagFile = new File(cacheFile.getParentFile(), cacheFile.getName() + ".etag");
+        imageUrl = imageUrlIn;
+        imageBuffer = imageBufferIn;
     }
 
     private void checkTextureUploaded() {
-        if (!this.textureUploaded) {
-            if (this.bufferedImage != null) {
-                if (this.textureLocation != null) {
-                    this.deleteGlTexture();
+        if (!textureUploaded) {
+            if (bufferedImage != null) {
+                if (textureLocation != null) {
+                    deleteGlTexture();
                 }
 
-                TextureUtil.uploadTextureImage(super.getGlTextureId(), this.bufferedImage);
-                this.textureUploaded = true;
+                TextureUtil.uploadTextureImage(super.getGlTextureId(), bufferedImage);
+                textureUploaded = true;
             }
         }
     }
 
+    @Override
     public int getGlTextureId() {
-        this.checkTextureUploaded();
+        checkTextureUploaded();
         return super.getGlTextureId();
     }
 
     private void setBufferedImage(@Nonnull BufferedImage bufferedImageIn) {
-        this.bufferedImage = bufferedImageIn;
+        bufferedImage = bufferedImageIn;
 
-        if (this.imageBuffer != null) {
-            this.imageBuffer.skinAvailable();
+        if (imageBuffer != null) {
+            imageBuffer.skinAvailable();
         }
     }
 
@@ -84,15 +85,16 @@ public class ThreadDownloadImageETag extends SimpleTexture {
         return bufferedImage;
     }
 
+    @Override
     public void loadTexture(IResourceManager resourceManager) throws IOException {
-        if (this.bufferedImage == null && this.textureLocation != null) {
+        if (bufferedImage == null && textureLocation != null) {
             super.loadTexture(resourceManager);
         }
 
-        if (this.imageThread == null) {
-            this.imageThread = new Thread(this::loadTexture, "Texture Downloader #" + THREAD_ID.incrementAndGet());
-            this.imageThread.setDaemon(true);
-            this.imageThread.start();
+        if (imageThread == null) {
+            imageThread = new Thread(this::loadTexture, "Texture Downloader #" + THREAD_ID.incrementAndGet());
+            imageThread.setDaemon(true);
+            imageThread.start();
         }
     }
 
@@ -128,13 +130,13 @@ public class ThreadDownloadImageETag extends SimpleTexture {
                     // try to load from cache anyway
                     setLocalCache();
                     return;
-                } catch (IOException ignored) {
-                }
+                } catch (IOException ignored) {}
             }
             LOGGER.error("Couldn't load skin {} ", imageUrl, e);
         } finally {
-            if (response != null)
+            if (response != null) {
                 EntityUtils.consumeQuietly(response.getEntity());
+            }
         }
     }
 
@@ -149,8 +151,8 @@ public class ThreadDownloadImageETag extends SimpleTexture {
     }
 
     private void clearCache() {
-        FileUtils.deleteQuietly(this.cacheFile);
-        FileUtils.deleteQuietly(this.eTagFile);
+        FileUtils.deleteQuietly(cacheFile);
+        FileUtils.deleteQuietly(eTagFile);
     }
 
     private boolean checkETag(HttpResponse response) {

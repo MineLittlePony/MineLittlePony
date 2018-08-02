@@ -123,7 +123,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             return Optional.empty();
         }
 
-        ResourceLocation skin = this.resources.getPlayerTexture(profile1, type);
+        ResourceLocation skin = resources.getPlayerTexture(profile1, type);
         if (skin != null) {
             return Optional.of(skin);
         }
@@ -156,11 +156,11 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             return Optional.empty();
         }
 
-        if (!this.skinCache.containsKey(profile.getId())) {
-            this.skinCache.put(profile.getId(), Maps.newHashMap());
+        if (!skinCache.containsKey(profile.getId())) {
+            skinCache.put(profile.getId(), Maps.newHashMap());
         }
 
-        skin = this.skinCache.get(profile.getId()).get(type);
+        skin = skinCache.get(profile.getId()).get(type);
         if (skin == null) {
             if (loadIfAbsent && getProfileData(profile).containsKey(type)) {
                 skinCache.get(profile.getId()).put(type, LOADING);
@@ -186,27 +186,25 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
             final IImageBuffer imagebufferdownload = type == Type.SKIN ? new ImageBufferDownloadHD() : null;
 
-            ITextureObject texObject = new ThreadDownloadImageETag(file2, bustCache(texture.getUrl()),
-                    DefaultPlayerSkin.getDefaultSkinLegacy(),
-                    new IImageBuffer() {
-                        @Nonnull
-                        @Override
-                        public BufferedImage parseUserSkin(@Nonnull BufferedImage image) {
-                            BufferedImage image1 = image;
-                            if (imagebufferdownload != null) {
-                                image1 = imagebufferdownload.parseUserSkin(image);
-                            }
-                            return image1 == null ? image : image1;
-                        }
+            ITextureObject texObject = new ThreadDownloadImageETag(file2, bustCache(texture.getUrl()), DefaultPlayerSkin.getDefaultSkinLegacy(), new IImageBuffer() {
+                @Nonnull
+                @Override
+                public BufferedImage parseUserSkin(@Nonnull BufferedImage image) {
+                    BufferedImage image1 = image;
+                    if (imagebufferdownload != null) {
+                        image1 = imagebufferdownload.parseUserSkin(image);
+                    }
+                    return image1 == null ? image : image1;
+                }
 
-                        @Override
-                        public void skinAvailable() {
-                            if (imagebufferdownload != null) {
-                                imagebufferdownload.skinAvailable();
-                            }
-                            callback.skinAvailable(type, skin, texture);
-                        }
-                    });
+                @Override
+                public void skinAvailable() {
+                    if (imagebufferdownload != null) {
+                        imagebufferdownload.skinAvailable();
+                    }
+                    callback.skinAvailable(type, skin, texture);
+                }
+            });
 
             // schedule texture loading on the main thread.
             TextureLoader.loadTexture(skin, texObject);
@@ -243,20 +241,20 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         if (st == null) {
             throw new IllegalArgumentException("class is not annotated with @ServerType");
         }
-        this.skinServerTypes.put(st.value(), type);
+        skinServerTypes.put(st.value(), type);
     }
 
     public Class<? extends SkinServer> getSkinServerClass(String type) {
-        return this.skinServerTypes.get(type);
+        return skinServerTypes.get(type);
     }
 
     public void addSkinServer(SkinServer skinServer) {
-        this.skinServers.add(skinServer);
+        skinServers.add(skinServer);
     }
 
     @Deprecated
     public SkinServer getGatewayServer() {
-        return this.skinServers.get(0);
+        return skinServers.get(0);
     }
 
     public void setEnabled(boolean enabled) {
@@ -283,8 +281,8 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                     .forEach(textures::deleteTexture);
             INSTANCE.skinCache.clear();
             INSTANCE.skins.invalidateAll();
-        } catch (IOException var1) {
-            var1.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         INSTANCE.clearListeners = INSTANCE.clearListeners.stream()
@@ -319,6 +317,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
-        this.resources.onResourceManagerReload(resourceManager);
+        resources.onResourceManagerReload(resourceManager);
     }
 }

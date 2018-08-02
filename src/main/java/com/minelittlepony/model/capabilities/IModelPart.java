@@ -3,6 +3,7 @@ package com.minelittlepony.model.capabilities;
 public interface IModelPart {
     /**
      * Initialises all of the boxes in this modelpart.
+     * 
      * @param yOffset
      * @param stretch
      */

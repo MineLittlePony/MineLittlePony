@@ -12,7 +12,8 @@ import com.minelittlepony.model.capabilities.IModelUnicorn;
 import static com.minelittlepony.model.PonyModelConstants.*;
 
 /**
- * Used for both unicorns and alicorns since there's no logical way to keep them distinct and not duplicate stuff.
+ * Used for both unicorns and alicorns since there's no logical way to keep them distinct and not
+ * duplicate stuff.
  */
 public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
 
@@ -39,6 +40,7 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
         unicornArmLeft.rotateAngleY = 0;
     }
 
+    @Override
     protected float getWobbleAmount() {
         if (isCasting()) {
             return 0;
@@ -87,7 +89,9 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
 
     @Override
     protected void swingArms(float ticks) {
-        if (isSleeping()) return;
+        if (isSleeping()) {
+            return;
+        }
 
         if (canCast()) {
             float cos = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
@@ -152,7 +156,7 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
         unicornArmLeft = new PonyRenderer(this, 40, 32).size(64, 64);
         unicornArmRight = new PonyRenderer(this, 40, 32).size(64, 64);
 
-        unicornArmLeft .box(FIRSTP_ARM_CENTRE_X, THIRDP_ARM_CENTRE_Y, THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + .25F).around(5, yOffset + 2, 0);
-        unicornArmRight.box(FIRSTP_ARM_CENTRE_X, THIRDP_ARM_CENTRE_Y, THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + .25F).around(-5, yOffset + 2, 0);
+        unicornArmLeft .box(FIRSTP_ARM_CENTRE_X, THIRDP_ARM_CENTRE_Y, THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25F).around(5, yOffset + 2, 0);
+        unicornArmRight.box(FIRSTP_ARM_CENTRE_X, THIRDP_ARM_CENTRE_Y, THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + 0.25F).around(-5, yOffset + 2, 0);
     }
 }

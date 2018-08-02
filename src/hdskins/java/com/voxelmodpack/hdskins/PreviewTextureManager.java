@@ -13,8 +13,8 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 /**
- * Manager for fetching preview textures. This ensures that multiple calls
- * to the skin server aren't done when fetching preview textures.
+ * Manager for fetching preview textures. This ensures that multiple calls to the skin server aren't
+ * done when fetching preview textures.
  */
 public class PreviewTextureManager {
 
@@ -25,8 +25,7 @@ public class PreviewTextureManager {
     }
 
     @Nullable
-    public PreviewTexture getPreviewTexture(ResourceLocation location, MinecraftProfileTexture.Type type, ResourceLocation def,
-            @Nullable SkinManager.SkinAvailableCallback callback) {
+    public PreviewTexture getPreviewTexture(ResourceLocation location, MinecraftProfileTexture.Type type, ResourceLocation def, @Nullable SkinManager.SkinAvailableCallback callback) {
         if (!textures.containsKey(type)) {
             return null;
         }

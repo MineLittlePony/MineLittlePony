@@ -27,9 +27,9 @@ public abstract class Box<T extends ModelRenderer> extends ModelBox {
     /**
      * Creates a new quad with the given spacial vertices.
      */
-    protected Quad quad(int startX, int width, int startY, int height, Vertex ...verts) {
+    protected Quad quad(int startX, int width, int startY, int height, Vertex... verts) {
         return new Quad(verts,
-                startX,         startY,
+                startX, startY,
                 startX + width, startY + height,
                 parent.textureWidth, parent.textureHeight);
     }

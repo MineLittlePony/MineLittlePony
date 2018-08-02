@@ -41,7 +41,7 @@ public class ModelSeapony extends ModelUnicorn {
 
         leftFin = new PlaneRenderer(this, 56, 16)
                 .rotate(0, FIN_ROTY, 0).around(3, -6, 3)
-               .flipZ().addEastPlane(0, 0, 0, 12, 8, stretch);
+                .flipZ().addEastPlane(0, 0, 0, 12, 8, stretch);
 
         rightFin = new PlaneRenderer(this, 56, 16)
                 .rotate(0, -FIN_ROTY, 0).around(-3, -6, 3)

@@ -57,8 +57,9 @@ public abstract class MixinPlayerInfo {
         MinecraftProfileTexture skin = HDSkinManager.INSTANCE.getProfileData(getGameProfile()).get(Type.SKIN);
         if (skin != null) {
             String type = skin.getMetadata("model");
-            if (type == null)
+            if (type == null) {
                 type = "default";
+            }
             String type1 = type;
             Optional<ResourceLocation> texture = HDSkinManager.INSTANCE.getSkinLocation(getGameProfile(), Type.SKIN, false);
 

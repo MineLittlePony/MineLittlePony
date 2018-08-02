@@ -27,17 +27,20 @@ public class ModelWrapper implements IModelWrapper {
 
     /**
      * Returns the contained armour model.
+     * 
      * @return
      */
     public PonyArmor getArmor() {
         return armor;
     }
 
+    @Override
     public void apply(IPonyData meta) {
         body.metadata = meta;
         armor.apply(meta);
     }
 
+    @Override
     public void init() {
         body.init(0, 0);
         armor.init();

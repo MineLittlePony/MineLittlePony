@@ -14,14 +14,21 @@ import com.mumfrey.liteloader.modconfig.ExposableOptions;
 @ExposableOptions(filename = "minelittlepony", strategy = ConfigStrategy.Unversioned)
 public class PonyConfig extends SensibleConfig implements Exposable {
 
-    @Expose private PonyLevel ponylevel = PonyLevel.PONIES;
+    @Expose
+    private PonyLevel ponylevel = PonyLevel.PONIES;
 
-    @Expose public boolean sizes = true;
-    @Expose public boolean snuzzles = true;
-    @Expose public boolean hd = true;
-    @Expose public boolean showscale = true;
-    @Expose public boolean fpsmagic = true;
-    @Expose public boolean ponyskulls = true;
+    @Expose
+    public boolean sizes = true;
+    @Expose
+    public boolean snuzzles = true;
+    @Expose
+    public boolean hd = true;
+    @Expose
+    public boolean showscale = true;
+    @Expose
+    public boolean fpsmagic = true;
+    @Expose
+    public boolean ponyskulls = true;
 
     public enum PonySettings implements Setting {
         SIZES,
@@ -32,15 +39,22 @@ public class PonyConfig extends SensibleConfig implements Exposable {
         PONYSKULLS;
     }
 
-    @Expose public boolean villagers = true;
-    @Expose public boolean zombies = true;
-    @Expose public boolean pigzombies = true;
-    @Expose public boolean skeletons = true;
-    @Expose public boolean illagers = true;
-    @Expose public boolean guardians = true;
+    @Expose
+    public boolean villagers = true;
+    @Expose
+    public boolean zombies = true;
+    @Expose
+    public boolean pigzombies = true;
+    @Expose
+    public boolean skeletons = true;
+    @Expose
+    public boolean illagers = true;
+    @Expose
+    public boolean guardians = true;
 
     /**
      * Gets the current PonyLevel. That is the level of ponies you would like to see.
+     * 
      * @param ignorePony true to ignore whatever value the setting has.
      */
     public PonyLevel getEffectivePonyLevel(boolean ignorePony) {
@@ -59,6 +73,7 @@ public class PonyConfig extends SensibleConfig implements Exposable {
 
     /**
      * Sets the pony level. Want MOAR PONEHS? Well here you go.
+     * 
      * @param ponylevel
      */
     public void setPonyLevel(PonyLevel ponylevel) {

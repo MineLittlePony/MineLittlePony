@@ -56,7 +56,7 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
 
         if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemArmor) {
 
-            ItemArmor itemarmor = (ItemArmor) itemstack.getItem();
+            ItemArmor itemarmor = (ItemArmor)itemstack.getItem();
 
             ModelPonyArmor armour = getArmorModel(entity, itemstack, armorSlot, pony.getArmor().getArmorForSlot(armorSlot));
             armour.setModelAttributes(pony.getBody());
@@ -85,7 +85,7 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
     }
 
     private Tuple<ResourceLocation, Boolean> getArmorTexture(T entity, ItemStack itemstack, EntityEquipmentSlot slot, @Nullable String type) {
-        ItemArmor item = (ItemArmor) itemstack.getItem();
+        ItemArmor item = (ItemArmor)itemstack.getItem();
         String texture = item.getArmorMaterial().getName();
 
         String domain = "minecraft";
@@ -170,7 +170,7 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
         }
 
         if (model instanceof IEquestrianArmor) {
-            return ((IEquestrianArmor) model).getArmorForSlot(slot);
+            return ((IEquestrianArmor)model).getArmorForSlot(slot);
         }
 
         return def;

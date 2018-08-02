@@ -98,7 +98,8 @@ public class PonyData implements IPonyData {
     }
 
     /**
-     * Parses an image buffer into a new IPonyData representing the values stored in it's individual trigger pixels.
+     * Parses an image buffer into a new IPonyData representing the values stored in it's individual
+     * trigger pixels.
      */
     static IPonyData parse(BufferedImage image) {
         return new PonyData(image);

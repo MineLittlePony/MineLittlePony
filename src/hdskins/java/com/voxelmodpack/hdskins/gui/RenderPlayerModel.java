@@ -40,7 +40,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         return new LayerRenderer<EntityLivingBase>() {
             @Override
             public void doRenderLayer(EntityLivingBase entityBase, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-                EntityPlayerModel entity = (EntityPlayerModel) entityBase;
+                EntityPlayerModel entity = (EntityPlayerModel)entityBase;
                 ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
                 if (itemstack.getItem() == Items.ELYTRA) {
@@ -90,7 +90,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
     @Override
     public void doRender(M par1Entity, double par2, double par4, double par6, float par8, float par9) {
         ModelPlayer player = this.getEntityModel(par1Entity);
-        this.mainModel = player;
+        mainModel = player;
 
         Set<EnumPlayerModelParts> parts = Minecraft.getMinecraft().gameSettings.getModelParts();
         player.bipedHeadwear.isHidden = !parts.contains(EnumPlayerModelParts.HAT);

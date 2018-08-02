@@ -26,21 +26,21 @@ public class ModelBreezie extends ModelBiped {
         bipedHeadwear.showModel = false;
         bipedHead = new PonyRenderer(this)
                 .child(new PonyRenderer(this)
-                    .addBox(-3, -6, -3, 6, 6, 6).around(0, 0, -4)
-                    .tex(28, 0).addBox( 2, -7,  1, 1, 1, 1)
-                    .tex(24, 0).addBox(-3, -7,  1, 1, 1, 1)
-                    .tex(24, 9).addBox(-1, -2, -4, 2, 2, 1))
+                        .addBox(-3, -6, -3, 6, 6, 6).around(0, 0, -4)
+                        .tex(28, 0).addBox( 2, -7,  1, 1, 1, 1)
+                        .tex(24, 0).addBox(-3, -7,  1, 1, 1, 1)
+                        .tex(24, 9).addBox(-1, -2, -4, 2, 2, 1))
                 .child(new PonyRenderer(this)
-                    .tex(28, 2).addBox( 1, -11, -2, 1, 6, 1)
-                    .tex(24, 2).addBox(-2, -11, -2, 1, 6, 1)
-                    .rotate(-0.2617994F, 0, 0));
+                        .tex(28, 2).addBox( 1, -11, -2, 1, 6, 1)
+                        .tex(24, 2).addBox(-2, -11, -2, 1, 6, 1)
+                        .rotate(-0.2617994F, 0, 0));
 
         bipedBody = new PonyRenderer(this, 2, 12)
                 .addBox(0, 0, 0, 6, 7, 14).rotate(-0.5235988F, 0, 0).around(-3, 1, -3);
 
-        bipedLeftArm =  new PonyRenderer(this, 28, 12).addBox(0, 0, 0, 2, 12, 2).around( 1, 8, -5);
+        bipedLeftArm = new PonyRenderer(this, 28, 12) .addBox(0, 0, 0, 2, 12, 2).around( 1, 8, -5);
         bipedRightArm = new PonyRenderer(this, 36, 12).addBox(0, 0, 0, 2, 12, 2).around(-3, 8, -5);
-        bipedLeftLeg =  new PonyRenderer(this, 8, 12) .addBox(0, 0, 0, 2, 12, 2).around( 1, 12, 3);
+        bipedLeftLeg = new PonyRenderer(this, 8, 12)  .addBox(0, 0, 0, 2, 12, 2).around( 1, 12, 3);
         bipedRightLeg = new PonyRenderer(this, 0, 12) .addBox(0, 0, 0, 2, 12, 2).around(-3, 12, 3);
 
         neck = new PonyRenderer(this, 40, 0)
@@ -85,16 +85,16 @@ public class ModelBreezie extends ModelBiped {
         bipedLeftArm.rotateAngleX = MathHelper.cos(move * 0.6662F) * swing;
         bipedLeftArm.rotateAngleZ = 0;
 
-        ((PonyRenderer)bipedRightArm).rotate(swing * MathHelper.cos(move * 0.6662F + PI),        0, 0);
+        ((PonyRenderer)bipedRightArm).rotate(swing * MathHelper.cos(move * 0.6662F + PI), 0, 0);
         ((PonyRenderer)bipedLeftLeg) .rotate(swing * MathHelper.cos(move * 0.6662F + PI) * 1.4F, 0, 0);
-        ((PonyRenderer)bipedRightLeg).rotate(swing * MathHelper.cos(move * 0.6662F)      * 1.4F, 0, 0);
+        ((PonyRenderer)bipedRightLeg).rotate(swing * MathHelper.cos(move * 0.6662F) * 1.4F, 0, 0);
 
         if (isRiding) {
             bipedLeftArm.rotateAngleX += -PI / 5;
             bipedRightArm.rotateAngleX += -PI / 5;
 
-            rotateLegRiding(((PonyRenderer)bipedLeftLeg), -1);
-            rotateLegRiding(((PonyRenderer)bipedRightLeg), 1);
+            rotateLegRiding((PonyRenderer)bipedLeftLeg, -1);
+            rotateLegRiding((PonyRenderer)bipedRightLeg, 1);
         }
 
         rotateArm(bipedLeftArm, leftArmPose, 1);
@@ -160,7 +160,7 @@ public class ModelBreezie extends ModelBiped {
                 arm.rotateAngleY = 0;
                 break;
             case ITEM:
-                arm.rotateAngleX = arm.rotateAngleX / 2 - (PI / 10);
+                arm.rotateAngleX = arm.rotateAngleX / 2 - PI / 10;
                 arm.rotateAngleY = 0;
             case BLOCK:
                 arm.rotateAngleX = arm.rotateAngleX / 2 - 0.9424779F;
@@ -171,10 +171,10 @@ public class ModelBreezie extends ModelBiped {
     }
 
     protected void raiseArm(ModelRenderer up, ModelRenderer down, float factor) {
-        up.rotateAngleY = bipedHead.rotateAngleY + (factor / 10);
-        up.rotateAngleX = bipedHead.rotateAngleX - (PI / 2);
+        up.rotateAngleY = bipedHead.rotateAngleY + factor / 10;
+        up.rotateAngleX = bipedHead.rotateAngleX - PI / 2;
 
-        down.rotateAngleY = bipedHead.rotateAngleY - (factor / 2);
-        down.rotateAngleX = bipedHead.rotateAngleX - (PI / 2);
+        down.rotateAngleY = bipedHead.rotateAngleY - factor / 2;
+        down.rotateAngleX = bipedHead.rotateAngleX - PI / 2;
     }
 }

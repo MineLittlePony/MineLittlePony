@@ -31,14 +31,14 @@ public class SeaponyTail implements IModelPart {
     @Override
     public void init(float yOffset, float stretch) {
         tailBase.rotate(TAIL_ROTX, 0, 0).around(-2, 14, 8)
-                .box( 0,  0, 0, 4, 6, 4, stretch).flip();
+                .box(0, 0, 0, 4, 6, 4, stretch).flip();
 
         tailTip.rotate(0, 0, 0).around(1, 5, 1)
                 .box(0, 0, 0, 2, 6, 1, stretch);
 
         tailFins.offset(1, 0, 4).rotate(-TAIL_ROTX, 0, 0)
-                    .addTopPlane(-8, 0, 0, 8, 8, stretch)
-          .flip().addTopPlane( 0, 0, 0, 8, 8, stretch);
+                .addTopPlane(-8, 0, 0, 8, 8, stretch)
+         .flip().addTopPlane( 0, 0, 0, 8, 8, stretch);
     }
 
     @Override

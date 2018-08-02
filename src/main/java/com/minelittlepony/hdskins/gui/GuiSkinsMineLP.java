@@ -29,8 +29,8 @@ public class GuiSkinsMineLP extends GuiSkins {
 
 
     private static final String[] panoramas = new String[] {
-        "minelp:textures/cubemap/sugarcubecorner_%d.png",
-        "minelp:textures/cubemap/quillsandsofas_%d.png"
+            "minelp:textures/cubemap/sugarcubecorner_%d.png",
+            "minelp:textures/cubemap/quillsandsofas_%d.png"
     };
 
     @Override
@@ -61,19 +61,19 @@ public class GuiSkinsMineLP extends GuiSkins {
     protected void actionPerformed(GuiButton guiButton) {
         super.actionPerformed(guiButton);
 
-        if (guiButton.id == this.btnModeDry.id) {
-            this.isWet = false;
-            this.localPlayer.releaseTextures();
-        } else if (guiButton.id == this.btnModeWet.id) {
-            this.isWet = true;
-            this.localPlayer.releaseTextures();
+        if (guiButton.id == btnModeDry.id) {
+            isWet = false;
+            localPlayer.releaseTextures();
+        } else if (guiButton.id == btnModeWet.id) {
+            isWet = true;
+            localPlayer.releaseTextures();
         }
 
         btnModeDry.enabled = isWet;
         btnModeWet.enabled = !isWet;
 
-        ((EntityPonyModel)this.localPlayer).setWet(isWet);
-        ((EntityPonyModel)this.remotePlayer).setWet(isWet);
+        ((EntityPonyModel)localPlayer).setWet(isWet);
+        ((EntityPonyModel)remotePlayer).setWet(isWet);
     }
 
     @Override
@@ -88,8 +88,8 @@ public class GuiSkinsMineLP extends GuiSkins {
             } else {
                 text = "minelp.mode.wet";
             }
-            this.drawHoveringText(I18n.format(text), mouseX, y);
-        };
+            drawHoveringText(I18n.format(text), mouseX, y);
+        }
     }
 
     @Override

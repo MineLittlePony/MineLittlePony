@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 
 public interface SkinServer extends Exposable {
 
-    static final Gson gson = new GsonBuilder()
+    Gson gson = new GsonBuilder()
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
             .create();
 
@@ -43,7 +43,7 @@ public interface SkinServer extends Exposable {
     CompletableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable URI image, MinecraftProfileTexture.Type type, Map<String, String> metadata);
 
 
-    public static void verifyServerConnection(Session session, String serverId) throws AuthenticationException {
+    static void verifyServerConnection(Session session, String serverId) throws AuthenticationException {
         MinecraftSessionService service = Minecraft.getMinecraft().getSessionService();
         service.joinServer(session.getProfile(), session.getToken(), serverId);
     }

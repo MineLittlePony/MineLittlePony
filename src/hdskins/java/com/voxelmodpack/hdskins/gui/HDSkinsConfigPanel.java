@@ -20,20 +20,20 @@ public class HDSkinsConfigPanel implements ConfigPanel {
 
     @Override
     public void onPanelShown(ConfigPanelHost host) {
-        this.mod = LiteLoader.getInstance().getMod(LiteModHDSkins.class);
+        mod = LiteLoader.getInstance().getMod(LiteModHDSkins.class);
 
-        this.button = new GuiButton(0, 40, 70, 100, 20, "Clear Skin Cache");
-        this.checkbox = new GuiCheckbox(1, 40, 40, "Experimental Skin Drop");
+        button = new GuiButton(0, 40, 70, 100, 20, "Clear Skin Cache");
+        checkbox = new GuiCheckbox(1, 40, 40, "Experimental Skin Drop");
 
-        this.checkbox.checked = mod.experimentalSkinDrop;
+        checkbox.checked = mod.experimentalSkinDrop;
     }
 
     @Override
     public void drawPanel(ConfigPanelHost host, int mouseX, int mouseY, float partialTicks) {
         Minecraft mc = Minecraft.getMinecraft();
 
-        this.button.drawButton(mc, mouseX, mouseY, partialTicks);
-        this.checkbox.drawButton(mc, mouseX, mouseY, partialTicks);
+        button.drawButton(mc, mouseX, mouseY, partialTicks);
+        checkbox.drawButton(mc, mouseX, mouseY, partialTicks);
     }
 
     @Override

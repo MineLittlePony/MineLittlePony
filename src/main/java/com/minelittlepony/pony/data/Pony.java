@@ -49,7 +49,9 @@ public class Pony {
 
     private IPonyData checkSkin(ResourceLocation resource) {
         IPonyData data = checkPonyMeta(resource);
-        if (data != null) return data;
+        if (data != null) {
+            return data;
+        }
 
         BufferedImage skinImage = getBufferedImage(resource);
         return this.checkSkin(skinImage);
@@ -81,25 +83,27 @@ public class Pony {
             MineLittlePony.logger.debug("Obtained skin from resource location {}", resource);
 
             return skinImage;
-        } catch (IOException ignored) { }
+        } catch (IOException ignored) {}
 
         try {
             ITextureObject texture = Minecraft.getMinecraft().getTextureManager().getTexture(resource);
 
             if (texture instanceof MixinThreadDownloadImageData) {
-                return ((MixinThreadDownloadImageData) texture).getBufferedImage();
+                return ((MixinThreadDownloadImageData)texture).getBufferedImage();
             } else if (texture instanceof ThreadDownloadImageETag) {
-                return ((ThreadDownloadImageETag) texture).getBufferedImage();
+                return ((ThreadDownloadImageETag)texture).getBufferedImage();
             } else if (texture instanceof DynamicTextureImage) {
-                return ((DynamicTextureImage) texture).getImage();
+                return ((DynamicTextureImage)texture).getImage();
             }
-        } catch (Exception ignored) { }
+        } catch (Exception ignored) {}
 
         return null;
     }
 
     private IPonyData checkSkin(BufferedImage bufferedimage) {
-        if (bufferedimage == null) return new PonyData();
+        if (bufferedimage == null) {
+            return new PonyData();
+        }
         MineLittlePony.logger.debug("\tStart skin check for pony #{} with image {}.", ponyId, bufferedimage);
         return PonyData.parse(bufferedimage);
     }

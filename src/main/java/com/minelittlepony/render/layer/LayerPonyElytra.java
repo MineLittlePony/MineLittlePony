@@ -51,20 +51,24 @@ public class LayerPonyElytra<T extends EntityLivingBase> extends AbstractPonyLay
 
     protected ResourceLocation getElytraTexture(T entity) {
         if (entity instanceof AbstractClientPlayer) {
-            AbstractClientPlayer player = (AbstractClientPlayer) entity;
+            AbstractClientPlayer player = (AbstractClientPlayer)entity;
 
             ResourceLocation result;
 
             if (player.isPlayerInfoSet()) {
                 result = player.getLocationElytra();
 
-                if (result != null) return result;
+                if (result != null) {
+                    return result;
+                }
             }
 
             if (player.hasPlayerInfo() && player.isWearing(EnumPlayerModelParts.CAPE)) {
                 result = player.getLocationCape();
 
-                if (result != null) return result;
+                if (result != null) {
+                    return result;
+                }
             }
         }
 

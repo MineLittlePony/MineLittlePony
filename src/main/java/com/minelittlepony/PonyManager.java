@@ -28,7 +28,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * The PonyManager is responsible for reading and recoding all the pony data associated with an entity of skin.
+ * The PonyManager is responsible for reading and recoding all the pony data associated with an
+ * entity of skin.
  *
  */
 public class PonyManager implements IResourceManagerReloadListener, ISkinCacheClearListener {
@@ -69,15 +70,15 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
 
         if (pony.usesThinArms() != slim) {
             pony = new Pony(resource, slim);
-            poniesCache.put(resource,  pony);
+            poniesCache.put(resource, pony);
         }
 
         return pony;
     }
 
     /**
-     * Gets or creates a pony for the given player.
-     * Delegates to the background-ponies registry if no pony skins were available and client settings allows it.
+     * Gets or creates a pony for the given player. Delegates to the background-ponies registry if no
+     * pony skins were available and client settings allows it.
      *
      * @param player the player
      */
@@ -85,7 +86,9 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         ResourceLocation skin = player.getLocationSkin();
         UUID uuid = player.getGameProfile().getId();
 
-        if (skin == null) return getDefaultPony(uuid);
+        if (skin == null) {
+            return getDefaultPony(uuid);
+        }
 
         return getPony(skin, uuid);
     }
@@ -97,7 +100,9 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         ResourceLocation skin = playerInfo.getLocationSkin();
         UUID uuid = playerInfo.getGameProfile().getId();
 
-        if (skin == null) return getDefaultPony(uuid);
+        if (skin == null) {
+            return getDefaultPony(uuid);
+        }
 
         return getPony(skin, uuid);
     }
@@ -107,10 +112,11 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
      *
      * Whether is has slim arms is determined by the id.
      *
-     * Delegates to the background-ponies registry if no pony skins were available and client settings allows it.
+     * Delegates to the background-ponies registry if no pony skins were available and client settings
+     * allows it.
      *
      * @param resource A texture resource
-     * @param uuid id of a player or entity
+     * @param uuid     id of a player or entity
      */
     public Pony getPony(ResourceLocation resource, UUID uuid) {
         Pony pony = getPony(resource, isSlimSkin(uuid));
@@ -141,7 +147,9 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         }
 
         int bgi = uuid.hashCode() % getNumberOfPonies();
-        while (bgi < 0) bgi += getNumberOfPonies();
+        while (bgi < 0) {
+            bgi += getNumberOfPonies();
+        }
 
         return getPony(backgroundPonyList.get(bgi), false);
     }
@@ -163,7 +171,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         backgroundPonyList.clear();
         try {
             for (IResource res : resourceManager.getAllResources(BGPONIES_JSON)) {
-                try (Reader reader = new InputStreamReader((res.getInputStream()))) {
+                try (Reader reader = new InputStreamReader(res.getInputStream())) {
                     BackgroundPonies ponies = GSON.fromJson(reader, BackgroundPonies.class);
                     if (ponies.override) {
                         backgroundPonyList.clear();

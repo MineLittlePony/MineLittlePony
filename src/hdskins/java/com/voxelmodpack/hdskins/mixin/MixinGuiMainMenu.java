@@ -21,13 +21,13 @@ public class MixinGuiMainMenu extends GuiScreen {
     private void onInit(CallbackInfo ci) {
         ItemStack itemStack = new ItemStack(Items.LEATHER_LEGGINGS);
         Items.LEATHER_LEGGINGS.setColor(itemStack, 0x3c5dcb);
-        this.buttonList.add(new GuiItemStackButton(SKINS, width - 50, height - 50, itemStack));
+        buttonList.add(new GuiItemStackButton(SKINS, width - 50, height - 50, itemStack));
     }
 
     @Inject(method = "actionPerformed(Lnet/minecraft/client/gui/GuiButton;)V", at = @At("RETURN"))
     private void onActionPerformed(GuiButton button, CallbackInfo ci) {
         if (button.id == SKINS) {
-            this.mc.displayGuiScreen(HDSkinManager.INSTANCE.createSkinsGui());
+            mc.displayGuiScreen(HDSkinManager.INSTANCE.createSkinsGui());
         }
     }
 }

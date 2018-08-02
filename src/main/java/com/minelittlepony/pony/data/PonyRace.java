@@ -5,7 +5,7 @@ import com.minelittlepony.model.player.PlayerModels;
 public enum PonyRace implements ITriggerPixelMapped<PonyRace> {
 
     HUMAN(0, PlayerModels.DEFAULT, false, false),
-    EARTH(0xf9b131, PlayerModels.EARTH,false, false),
+    EARTH(0xf9b131, PlayerModels.EARTH, false, false),
     PEGASUS(0x88caf0, PlayerModels.PEGASUS, true, false),
     UNICORN(0xd19fe4, PlayerModels.UNICORN, false, true),
     ALICORN(0xfef9fc, PlayerModels.ALICORN, true, true),
@@ -33,6 +33,7 @@ public enum PonyRace implements ITriggerPixelMapped<PonyRace> {
 
     /**
      * Returns true if this pony has a horn (and by extension can cast magic).
+     *
      * @return
      */
     public boolean hasHorn() {
@@ -62,12 +63,14 @@ public enum PonyRace implements ITriggerPixelMapped<PonyRace> {
 
     /**
      * Gets the actual race determined by the given pony level.
-     * PonyLevel.HUMANS would force all races to be humans.
-     * PonyLevel.BOTH is no change.
-     * PonyLevel.PONIES (should) return a pony if this is a human. Don't be fooled, though. It doesn't.
+     *  PonyLevel.HUMANS would force all races to be humans.
+     *  PonyLevel.BOTH is no change.
+     *  PonyLevel.PONIES (should) return a pony if this is a human. Don't be fooled, though. It doesn't.
      */
     public PonyRace getEffectiveRace(PonyLevel level) {
-        if (level == PonyLevel.HUMANS) return HUMAN;
+        if (level == PonyLevel.HUMANS) {
+            return HUMAN;
+        }
         return this;
     }
 

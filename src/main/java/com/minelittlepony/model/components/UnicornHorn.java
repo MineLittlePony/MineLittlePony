@@ -24,14 +24,13 @@ public class UnicornHorn {
         glow = new HornGlowRenderer(pony, 0, 3);
 
         horn.offset(HORN_X + x, HORN_Y + y, HORN_Z + z)
-            .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-            .box(0, 0, 0, 1, 4, 1, stretch)
-            .rotateAngleX = 0.5F;
+                .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
+                               .box(0, 0, 0, 1, 4, 1, stretch).rotateAngleX = 0.5F;
 
         glow.offset(HORN_X + x, HORN_Y + y, HORN_Z + z)
-            .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-            .setAlpha(0.4f).box(0, 0, 0, 1, 4, 1, stretch + 0.5F)
-            .setAlpha(0.2f).box(0, 0, 0, 1, 3, 1, stretch + 0.8F);
+                .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
+                .setAlpha(0.4f).box(0, 0, 0, 1, 4, 1, stretch + 0.5F)
+                .setAlpha(0.2f).box(0, 0, 0, 1, 3, 1, stretch + 0.8F);
     }
 
     public void render(float scale) {

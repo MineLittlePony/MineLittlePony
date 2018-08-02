@@ -53,7 +53,7 @@ public enum TriggerPixels {
         return out;
     }
 
-    public <T extends Enum<T> & ITriggerPixelMapped<T>> void readFlags(boolean[] out,  BufferedImage image) {
+    public <T extends Enum<T> & ITriggerPixelMapped<T>> void readFlags(boolean[] out, BufferedImage image) {
         readFlag(out, Channel.RED, image);
         readFlag(out, Channel.GREEN, image);
         readFlag(out, Channel.BLUE, image);
@@ -61,7 +61,9 @@ public enum TriggerPixels {
 
     private <T extends Enum<T> & ITriggerPixelMapped<T>> void readFlag(boolean[] out, Channel channel, BufferedImage image) {
         T value = ITriggerPixelMapped.getByTriggerPixel((T)def, channel.readValue(x, y, image));
-        if (value != def) out[value.ordinal()] = true;
+        if (value != def) {
+            out[value.ordinal()] = true;
+        }
     }
 
     enum Channel {

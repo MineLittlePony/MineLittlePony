@@ -58,7 +58,7 @@ public class NetClient {
             response = HttpClients.createSystem().execute(request);
 
             return getResponseCode() == HttpStatus.SC_OK;
-        } catch (IOException e) { }
+        } catch (IOException e) {}
 
         return false;
     }

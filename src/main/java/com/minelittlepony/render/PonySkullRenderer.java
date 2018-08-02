@@ -27,11 +27,11 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
     public static PonySkullRenderer ponyInstance = new PonySkullRenderer();
     private static TileEntitySkullRenderer backup = null;
 
-    private static final Map<Integer, ISkull> skullMap = new HashMap<Integer, ISkull>();
+    private static final Map<Integer, ISkull> skullMap = new HashMap<>();
 
     /**
-     * Resolves the games skull renderer to either a specialised pony skull renderer
-     * or some other skull renderer depending on the ponyskulls state.
+     * Resolves the games skull renderer to either a specialised pony skull renderer or some other skull
+     * renderer depending on the ponyskulls state.
      *
      * Original/Existing renderer is stored to a backup variable as a fallback in case of mods.
      */
@@ -43,7 +43,7 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
                 instance = ponyInstance;
             }
         } else {
-            if ((instance instanceof PonySkullRenderer)) {
+            if (instance instanceof PonySkullRenderer) {
                 ponyInstance = (PonySkullRenderer)instance;
                 if (backup == null) {
                     backup = new TileEntitySkullRenderer();
@@ -150,12 +150,12 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
      */
     public interface ISkull {
 
-        public static final int SKELETON = 0;
-        public static final int WITHER = 1;
-        public static final int ZOMBIE = 2;
-        public static final int PLAYER = 3;
-        public static final int CREEPER = 4;
-        public static final int DRAGON = 5;
+        int SKELETON = 0;
+        int WITHER = 1;
+        int ZOMBIE = 2;
+        int PLAYER = 3;
+        int CREEPER = 4;
+        int DRAGON = 5;
 
         void preRender(boolean transparency);
 

@@ -92,13 +92,13 @@ public class PonyTail extends PlaneRenderer implements IModelPart {
             super(model);
             this.index = index;
 
-            offsetY = ((float)index)/4 + 0.063f;
+            offsetY = (float)index / 4 + 0.063f;
 
             init(yOffset, stretch);
         }
 
         public void init(float yOffset, float stretch) {
-            int texX = (index % 2) * 4;
+            int texX = index % 2 * 4;
 
             around(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
 
@@ -106,11 +106,11 @@ public class PonyTail extends PlaneRenderer implements IModelPart {
                 tex(32, 0).addTopPlane(-2, 0, 2, 4, 4, stretch);
             }
 
-            tex(36, texX).addEastPlane( 2, 0, 2, 4, 4, stretch)
-                         .addWestPlane(-2, 0, 2, 4, 4, stretch);
-            tex(32, texX).addBackPlane(-2, 0, 2, 4, 4, stretch)
-                        .addFrontPlane(-2, 0, 6, 4, 4, stretch);
-             tex(32, 0).addBottomPlane(-2, 4, 2, 4, 4, stretch);
+            tex(36, texX).addEastPlane(  2, 0, 2, 4, 4, stretch)
+                         .addWestPlane( -2, 0, 2, 4, 4, stretch);
+            tex(32, texX).addBackPlane( -2, 0, 2, 4, 4, stretch)
+                        .addFrontPlane( -2, 0, 6, 4, 4, stretch);
+            tex(32, 0) .addBottomPlane( -2, 4, 2, 4, 4, stretch);
         }
 
         @Override

@@ -10,7 +10,9 @@ public class ModelZombiePony extends ModelMobPony {
     @Override
     protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
         super.rotateLegs(move, swing, ticks, entity);
-        if (rightArmPose != ArmPose.EMPTY) return;
+        if (rightArmPose != ArmPose.EMPTY) {
+            return;
+        }
 
         if (islookAngleRight(move)) {
             rotateArmHolding(bipedRightArm, 1, swingProgress, ticks);

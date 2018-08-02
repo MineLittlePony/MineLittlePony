@@ -24,7 +24,8 @@ public class Slider extends GuiSlider {
         }
 
         @Override
-        public void setEntryValue(int id, boolean value) { }
+        public void setEntryValue(int id, boolean value) {
+        }
 
         @Override
         public void setEntryValue(int id, float value) {
@@ -32,7 +33,8 @@ public class Slider extends GuiSlider {
         }
 
         @Override
-        public void setEntryValue(int id, String value) { }
+        public void setEntryValue(int id, String value) {
+        }
 
     }
 }

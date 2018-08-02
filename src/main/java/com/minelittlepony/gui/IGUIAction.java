@@ -8,8 +8,8 @@ public interface IGUIAction<T> {
     /**
      * Performs this action now.
      *
-     * @param value    New Value of the field being changed
-     * @return Adjusted value the field must take on
+     * @param  value New Value of the field being changed
+     * @return       Adjusted value the field must take on
      */
     T perform(T value);
 }

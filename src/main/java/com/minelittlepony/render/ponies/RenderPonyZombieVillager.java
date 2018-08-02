@@ -30,7 +30,7 @@ public class RenderPonyZombieVillager extends RenderPonyMob<EntityZombieVillager
     @Override
     protected void applyRotations(EntityZombieVillager entity, float move, float rotationYaw, float ticks) {
         if (entity.isConverting()) {
-            rotationYaw += (float) (Math.cos(entity.ticksExisted * 3.25D) * (Math.PI / 4));
+            rotationYaw += (float)(Math.cos(entity.ticksExisted * 3.25D) * (Math.PI / 4));
         }
 
         super.applyRotations(entity, move, rotationYaw, ticks);

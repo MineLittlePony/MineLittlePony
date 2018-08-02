@@ -12,8 +12,7 @@ import java.io.File;
  */
 public class ThreadOpenFilePNG extends ThreadOpenFile {
 
-    public ThreadOpenFilePNG(Minecraft minecraft, String dialogTitle, IOpenFileCallback callback)
-            throws IllegalStateException {
+    public ThreadOpenFilePNG(Minecraft minecraft, String dialogTitle, IOpenFileCallback callback) throws IllegalStateException {
         super(minecraft, dialogTitle, callback);
     }
 

@@ -20,13 +20,15 @@ public class Label extends GuiButton {
         super(0, x, y, "");
         this.color = color;
         this.center = center;
-        this.text = translationString;
+        text = translationString;
     }
 
+    @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
         return false;
     }
 
+    @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         if (center) {
             drawCenteredString(mc.fontRenderer, I18n.format(text), x, y, color);

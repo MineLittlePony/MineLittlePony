@@ -35,7 +35,7 @@ public interface FileDropListener extends DropTargetListener {
     default void drop(DropTargetDropEvent dtde) {
         dtde.acceptDrop(DnDConstants.ACTION_LINK);
         try {
-            onDrop((List<File>) dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor));
+            onDrop((List<File>)dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor));
             dtde.getDropTargetContext().dropComplete(true);
         } catch (UnsupportedFlavorException | IOException e) {
             e.printStackTrace();

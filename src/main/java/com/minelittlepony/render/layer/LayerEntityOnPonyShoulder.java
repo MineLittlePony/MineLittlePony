@@ -51,7 +51,7 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientP
     private EntityLivingBase renderShoulderEntity(AbstractClientPlayer player, @Nullable EntityLivingBase entity, NBTTagCompound shoulderTag, float headYaw, float headPitch, boolean left) {
 
         if (entity == null || !entity.getUniqueID().equals(shoulderTag.getUniqueId("UUID"))) {
-            entity = (EntityLivingBase) EntityList.createEntityFromNBT(shoulderTag, player.world);
+            entity = (EntityLivingBase)EntityList.createEntityFromNBT(shoulderTag, player.world);
             // this isn't an entity.
             if (entity == null) {
                 return null;

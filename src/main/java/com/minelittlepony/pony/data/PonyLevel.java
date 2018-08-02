@@ -10,6 +10,6 @@ public enum PonyLevel {
         if (index < 0) {
             index = 0;
         }
-        return values[(int)Math.round(index) % values.length];
+        return values[Math.round(index) % values.length];
     }
 }

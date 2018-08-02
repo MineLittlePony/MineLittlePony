@@ -5,7 +5,6 @@ import com.voxelmodpack.hdskins.upload.awt.FileDropper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.DefaultResourcePack;
-import net.minecraft.launchwrapper.injector.VanillaTweakInjector;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
@@ -21,7 +20,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.TooManyListenersException;
@@ -112,7 +110,7 @@ public class GLWindow extends DropTarget {
             @Override
             public void windowClosed(WindowEvent windowEvent) {
                 if (!closeRequested) {
-                    for (Window w : Frame.getWindows()) {
+                    for (Window w : Window.getWindows()) {
                         w.dispose();
                     }
 
@@ -174,7 +172,7 @@ public class GLWindow extends DropTarget {
             if (isFullscreen) {
                 Display.setFullscreen(true);
             } else {
-                if ((windowState & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH) {
+                if ((windowState & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH) {
                     Display.setLocation(0, 0);
                     Display.setDisplayMode(Display.getDesktopDisplayMode());
                 } else {
@@ -193,7 +191,7 @@ public class GLWindow extends DropTarget {
         frame.setVisible(false);
         frame.dispose();
 
-        for (Window w : Frame.getWindows()) {
+        for (Window w : Window.getWindows()) {
             w.dispose();
         }
 
@@ -208,12 +206,11 @@ public class GLWindow extends DropTarget {
             // LWJGL copies the initial byte streams and then reverses them. The result is a stream that's not
             // only already consumed, but somehow invalid when you try to parse it through ImageIO.read.
             //
-            DefaultResourcePack pack = (DefaultResourcePack) mc.getResourcePackRepository().rprDefaultResourcePack;
+            DefaultResourcePack pack = (DefaultResourcePack)mc.getResourcePackRepository().rprDefaultResourcePack;
 
             ArrayList<Image> images = Lists.newArrayList(
                     ImageIO.read(pack.getInputStreamAssets(new ResourceLocation("icons/icon_16x16.png"))),
-                    ImageIO.read(pack.getInputStreamAssets(new ResourceLocation("icons/icon_32x32.png")))
-            );
+                    ImageIO.read(pack.getInputStreamAssets(new ResourceLocation("icons/icon_32x32.png"))));
 
             Frame[] frames = Frame.getFrames();
 
@@ -269,6 +266,6 @@ public class GLWindow extends DropTarget {
 
             frame.setDropTarget(this);
             addDropTargetListener(dtl);
-        } catch (TooManyListenersException ignored) { }
+        } catch (TooManyListenersException ignored) {}
     }
 }

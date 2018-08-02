@@ -21,7 +21,7 @@ public class ImageLoader implements Supplier<ResourceLocation> {
     private final ResourceLocation original;
 
     public ImageLoader(ResourceLocation loc) {
-        this.original = loc;
+        original = loc;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ImageLoader implements Supplier<ResourceLocation> {
         }
         if (updated == image) {
             // don't load a new image
-            return this.original;
+            return original;
         }
         return addTaskAndGet(() -> loadSkin(updated));
     }

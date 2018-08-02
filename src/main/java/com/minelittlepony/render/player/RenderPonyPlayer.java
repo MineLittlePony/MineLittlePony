@@ -107,7 +107,7 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
     public float prepareScale(AbstractClientPlayer player, float ticks) {
 
         if (!player.isRiding() && !player.isPlayerSleeping()) {
-            float x = player.width/2;
+            float x = player.width / 2;
             float y = 0;
 
             if (player.isSneaking()) {
