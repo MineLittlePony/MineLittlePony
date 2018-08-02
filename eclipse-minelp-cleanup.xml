@@ -27,7 +27,7 @@
 <setting id="cleanup.make_variable_declarations_final" value="false"/>
 <setting id="cleanup.never_use_blocks" value="false"/>
 <setting id="cleanup.never_use_parentheses_in_expressions" value="true"/>
-<setting id="cleanup.organize_imports" value="false"/>
+<setting id="cleanup.organize_imports" value="true"/>
 <setting id="cleanup.qualify_static_field_accesses_with_declaring_class" value="false"/>
 <setting id="cleanup.qualify_static_member_accesses_through_instances_with_declaring_class" value="true"/>
 <setting id="cleanup.qualify_static_member_accesses_through_subtypes_with_declaring_class" value="true"/>
