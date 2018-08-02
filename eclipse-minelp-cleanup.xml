@@ -54,9 +54,9 @@
 <setting id="cleanup.use_blocks_only_for_return_and_throw" value="false"/>
 <setting id="cleanup.use_lambda" value="true"/>
 <setting id="cleanup.use_parentheses_in_expressions" value="true"/>
-<setting id="cleanup.use_this_for_non_static_field_access" value="true"/>
+<setting id="cleanup.use_this_for_non_static_field_access" value="false"/>
 <setting id="cleanup.use_this_for_non_static_field_access_only_if_necessary" value="true"/>
-<setting id="cleanup.use_this_for_non_static_method_access" value="true"/>
+<setting id="cleanup.use_this_for_non_static_method_access" value="false"/>
 <setting id="cleanup.use_this_for_non_static_method_access_only_if_necessary" value="true"/>
 </profile>
 </profiles>
