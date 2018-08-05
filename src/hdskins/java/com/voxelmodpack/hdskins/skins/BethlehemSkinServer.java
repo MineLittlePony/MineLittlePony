@@ -57,7 +57,7 @@ public class BethlehemSkinServer implements SkinServer {
             NetClient client = new NetClient("POST", address).putHeaders(createHeaders(session, type, image, metadata));
 
             if (image != null) {
-                client.putFile(skin.getType().toString().toLowerCase(Locale.US), "image/png", image);
+                client.putFile(type.toString().toLowerCase(Locale.US), "image/png", image);
             }
 
             try (MoreHttpResponses response = client.send()) {

@@ -24,7 +24,7 @@ public interface MoreHttpResponses extends AutoCloseable {
     CloseableHttpResponse getResponse();
 
     default boolean ok() {
-        return getResponseCode() != HttpStatus.SC_OK;
+        return getResponseCode() == HttpStatus.SC_OK;
     }
 
     default int getResponseCode() {
