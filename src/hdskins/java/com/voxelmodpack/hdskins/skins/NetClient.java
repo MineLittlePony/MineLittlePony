@@ -1,5 +1,6 @@
 package com.voxelmodpack.hdskins.skins;
 
+import com.voxelmodpack.hdskins.HDSkinManager;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
@@ -46,7 +47,7 @@ public class NetClient {
             request.addHeader(parameter.getKey(), parameter.getValue().toString());
         }
 
-        return MoreHttpResponses.execute(SkinServer.httpClient, request);
+        return MoreHttpResponses.execute(HDSkinManager.httpClient, request);
     }
 
 }

@@ -8,6 +8,7 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
+import com.voxelmodpack.hdskins.HDSkinManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -45,7 +46,7 @@ public class ValhallaSkinServer implements SkinServer {
     @Override
     public MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException {
 
-        try (MoreHttpResponses response = MoreHttpResponses.execute(httpClient, new HttpGet(getTexturesURI(profile)))) {
+        try (MoreHttpResponses response = MoreHttpResponses.execute(HDSkinManager.httpClient, new HttpGet(getTexturesURI(profile)))) {
 
             if (response.ok()) {
                 return readJson(response, MinecraftTexturesPayload.class);
@@ -73,7 +74,7 @@ public class ValhallaSkinServer implements SkinServer {
                     }
                     throw e;
                 }
-        }, skinUploadExecutor);
+        }, HDSkinManager.skinUploadExecutor);
     }
 
     private SkinUploadResponse upload(Session session, @Nullable URI image,
@@ -128,7 +129,7 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     private SkinUploadResponse upload(HttpUriRequest request) throws IOException {
-        try (MoreHttpResponses response = MoreHttpResponses.execute(httpClient, request)) {
+        try (MoreHttpResponses response = MoreHttpResponses.execute(HDSkinManager.httpClient, request)) {
             return readJson(response, SkinUploadResponse.class);
         }
     }
@@ -168,7 +169,7 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     private AuthHandshake authHandshake(String name) throws IOException {
-        try (MoreHttpResponses resp = MoreHttpResponses.execute(httpClient, RequestBuilder.post()
+        try (MoreHttpResponses resp = MoreHttpResponses.execute(HDSkinManager.httpClient, RequestBuilder.post()
                 .setUri(getHandshakeURI())
                 .addParameter("name", name)
                 .build())) {
@@ -177,7 +178,7 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     private AuthResponse authResponse(String name, long verifyToken) throws IOException {
-        try (MoreHttpResponses resp = MoreHttpResponses.execute(httpClient, RequestBuilder.post()
+        try (MoreHttpResponses resp = MoreHttpResponses.execute(HDSkinManager.httpClient, RequestBuilder.post()
                 .setUri(getResponseURI())
                 .addParameter("name", name)
                 .addParameter("verifyToken", String.valueOf(verifyToken))

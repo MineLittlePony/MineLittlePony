@@ -7,6 +7,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
+import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.upload.ThreadMultipartPostUpload;
 import net.minecraft.util.Session;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -107,7 +108,7 @@ public class LegacySkinServer implements SkinServer {
             }
             return new SkinUploadResponse(response);
 
-        }, skinUploadExecutor);
+        }, HDSkinManager.skinUploadExecutor);
     }
 
     private UnsupportedOperationException gatewayUnsupported() {

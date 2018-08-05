@@ -34,6 +34,8 @@ import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.LogManager;
 
 import java.awt.Graphics;
@@ -50,12 +52,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
 public final class HDSkinManager implements IResourceManagerReloadListener {
+
+    public static final ExecutorService skinUploadExecutor = Executors.newSingleThreadExecutor();
+    public static final ExecutorService skinDownloadExecutor = Executors.newFixedThreadPool(8);
+    public static final CloseableHttpClient httpClient = HttpClients.createSystem();
 
     private static final ResourceLocation LOADING = new ResourceLocation("LOADING");
 
@@ -74,7 +82,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             .initialCapacity(20)
             .maximumSize(100)
             .expireAfterWrite(4, TimeUnit.HOURS)
-            .build(AsyncCacheLoader.create(CacheLoader.from(this::loadProfileData), Collections.emptyMap(), SkinServer.skinDownloadExecutor));
+            .build(AsyncCacheLoader.create(CacheLoader.from(this::loadProfileData), Collections.emptyMap(), skinDownloadExecutor));
 
     private List<ISkinModifier> skinModifiers = Lists.newArrayList();
 

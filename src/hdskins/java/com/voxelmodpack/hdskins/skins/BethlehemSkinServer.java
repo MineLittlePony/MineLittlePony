@@ -9,6 +9,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
+import com.voxelmodpack.hdskins.HDSkinManager;
 import net.minecraft.util.Session;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -67,7 +68,7 @@ public class BethlehemSkinServer implements SkinServer {
                 return new SkinUploadResponse(response.text());
             }
 
-        }, skinUploadExecutor);
+        }, HDSkinManager.skinUploadExecutor);
     }
 
     protected Map<String, ?> createHeaders(Session session, Type type, @Nullable URI image, Map<String, String> metadata) {
