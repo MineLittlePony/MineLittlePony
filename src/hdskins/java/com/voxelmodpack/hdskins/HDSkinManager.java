@@ -9,16 +9,11 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
-import com.mojang.util.UUIDTypeAdapter;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.gui.GuiSkins;
@@ -39,6 +34,7 @@ import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -53,8 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -63,12 +58,6 @@ import javax.annotation.Nonnull;
 public final class HDSkinManager implements IResourceManagerReloadListener {
 
     private static final ResourceLocation LOADING = new ResourceLocation("LOADING");
-    private static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
-            .create();
-
-    private static final ExecutorService skinDownloadExecutor = Executors.newFixedThreadPool(8);
-    public static final ListeningExecutorService skinUploadExecutor = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
 
     public static final HDSkinManager INSTANCE = new HDSkinManager();
 
@@ -85,7 +74,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             .initialCapacity(20)
             .maximumSize(100)
             .expireAfterWrite(4, TimeUnit.HOURS)
-            .build(AsyncCacheLoader.create(CacheLoader.from(this::loadProfileData), Collections.emptyMap(), skinDownloadExecutor));
+            .build(AsyncCacheLoader.create(CacheLoader.from(this::loadProfileData), Collections.emptyMap(), SkinServer.skinDownloadExecutor));
 
     private List<ISkinModifier> skinModifiers = Lists.newArrayList();
 
@@ -133,7 +122,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         Property textures = Iterables.getFirst(profile1.getProperties().get("textures"), null);
         if (textures != null) {
             String json = new String(Base64.getDecoder().decode(textures.getValue()), StandardCharsets.UTF_8);
-            MinecraftTexturesPayload texturePayload = GSON.fromJson(json, MinecraftTexturesPayload.class);
+            MinecraftTexturesPayload texturePayload = SkinServer.gson.fromJson(json, MinecraftTexturesPayload.class);
             if (texturePayload != null) {
                 // name is optional
                 String name = texturePayload.getProfileName();
@@ -216,10 +205,13 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     private Map<Type, MinecraftProfileTexture> loadProfileData(GameProfile profile) {
         Map<Type, MinecraftProfileTexture> textures = Maps.newEnumMap(Type.class);
         for (SkinServer server : skinServers) {
-            Optional<MinecraftTexturesPayload> profileData = server.loadProfileData(profile);
-            profileData.map(MinecraftTexturesPayload::getTextures).ifPresent(it -> it.forEach(textures::putIfAbsent));
-            if (textures.size() == Type.values().length) {
-                break;
+            try {
+                server.loadProfileData(profile).getTextures().forEach(textures::putIfAbsent);
+                if (textures.size() == Type.values().length) {
+                    break;
+                }
+            } catch (IOException e) {
+                LogManager.getLogger().trace(e);
             }
 
         }
@@ -263,8 +255,8 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         this.enabled = enabled;
     }
 
-    public static PreviewTextureManager getPreviewTextureManager(GameProfile profile) {
-        return new PreviewTextureManager(INSTANCE.getGatewayServer().getPreviewTextures(profile));
+    public static CompletableFuture<PreviewTextureManager> getPreviewTextureManager(GameProfile profile) {
+        return INSTANCE.getGatewayServer().getPreviewTextures(profile).thenApply(PreviewTextureManager::new);
     }
 
     public void addClearListener(ISkinCacheClearListener listener) {
