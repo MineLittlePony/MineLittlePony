@@ -41,11 +41,11 @@ public class EntityPlayerModel extends EntityLivingBase {
             EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY
     ));
 
-    private PreviewTexture remoteSkinTexture;
+    private volatile PreviewTexture remoteSkinTexture;
     private ResourceLocation remoteSkinResource;
     protected ResourceLocation localSkinResource;
     private DynamicTexture localSkinTexture;
-    private PreviewTexture remoteElytraTexture;
+    private volatile PreviewTexture remoteElytraTexture;
     private ResourceLocation remoteElytraResource;
     private ResourceLocation localElytraResource;
     private DynamicTexture localElytraTexture;
