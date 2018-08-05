@@ -2,7 +2,7 @@ package com.voxelmodpack.hdskins;
 
 import com.google.common.collect.Maps;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import net.minecraft.client.Minecraft;
+import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.util.ResourceLocation;
@@ -20,8 +20,8 @@ public class PreviewTextureManager {
 
     private final Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> textures;
 
-    PreviewTextureManager(Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> textures) {
-        this.textures = textures;
+    PreviewTextureManager(MinecraftTexturesPayload payload) {
+        this.textures = payload.getTextures();
     }
 
     @Nullable
@@ -47,7 +47,8 @@ public class PreviewTextureManager {
                         }
                     }
                 } : null);
-        Minecraft.getMinecraft().getTextureManager().loadTexture(location, skinTexture);
+
+        TextureLoader.loadTexture(location, skinTexture);
 
         return skinTexture;
     }

@@ -18,11 +18,9 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Nullable;
@@ -45,30 +43,25 @@ public class LegacySkinServer implements SkinServer {
     }
 
     @Override
-    public Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> getPreviewTextures(GameProfile profile) {
+    public CompletableFuture<MinecraftTexturesPayload> getPreviewTextures(GameProfile profile) {
         if (Strings.isNullOrEmpty(this.gateway)) {
-            return Collections.emptyMap();
+            return CallableFutures.failedFuture(gatewayUnsupported());
         }
         Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = new EnumMap<>(MinecraftProfileTexture.Type.class);
         for (MinecraftProfileTexture.Type type : MinecraftProfileTexture.Type.values()) {
             map.put(type, new MinecraftProfileTexture(getPath(gateway, type, profile), null));
         }
-        return map;
+        return CompletableFuture.completedFuture(TexturesPayloadBuilder.createTexturesPayload(profile, map));
     }
 
     @Override
-    public Optional<MinecraftTexturesPayload> loadProfileData(GameProfile profile) {
+    public MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException {
         ImmutableMap.Builder<MinecraftProfileTexture.Type, MinecraftProfileTexture> builder = ImmutableMap.builder();
         for (MinecraftProfileTexture.Type type : MinecraftProfileTexture.Type.values()) {
 
             String url = getPath(this.address, type, profile);
             try {
-                HttpURLConnection urlConnection = (HttpURLConnection) new URL(url).openConnection();
-                if (urlConnection.getResponseCode() / 100 != 2) {
-                    throw new IOException("Bad response code: " + urlConnection.getResponseCode());
-                }
-                builder.put(type, new MinecraftProfileTexture(url, null));
-                logger.debug("Found skin for {} at {}", profile.getName(), url);
+                builder.put(type, loadProfileTexture(profile, url));
             } catch (IOException e) {
                 logger.trace("Couldn't find texture for {} at {}. Does it exist?", profile.getName(), url, e);
             }
@@ -76,21 +69,32 @@ public class LegacySkinServer implements SkinServer {
 
         Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = builder.build();
         if (map.isEmpty()) {
-            logger.debug("No textures found for {} at {}", profile, this.address);
-            return Optional.empty();
+            throw new IOException(String.format("No textures found for %s at %s", profile, this.address));
         }
+        return TexturesPayloadBuilder.createTexturesPayload(profile, map);
+    }
 
-        return Optional.of(TexturesPayloadBuilder.createTexturesPayload(profile, map));
+    private MinecraftProfileTexture loadProfileTexture(GameProfile profile, String url) throws IOException {
+        HttpURLConnection urlConnection = (HttpURLConnection) new URL(url).openConnection();
+        if (urlConnection.getResponseCode() / 100 != 2) {
+            throw new IOException("Bad response code: " + urlConnection.getResponseCode() + ". URL: " + url);
+        }
+        logger.debug("Found skin for {} at {}", profile.getName(), url);
+        return new MinecraftProfileTexture(url, null);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable URI image, MinecraftProfileTexture.Type type, Map<String, String> metadata) {
+    public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, SkinUpload skin) {
         if (Strings.isNullOrEmpty(this.gateway)) {
-            return CallableFutures.failedFuture(new NullPointerException("gateway url is blank"));
+            return CallableFutures.failedFuture(gatewayUnsupported());
         }
 
         return CallableFutures.asyncFailableFuture(() -> {
+            URI image = skin.getImage();
+            MinecraftProfileTexture.Type type = skin.getType();
+            Map<String, String> metadata = skin.getMetadata();
+
             SkinServer.verifyServerConnection(session, SERVER_ID);
             String model = metadata.getOrDefault("model", "default");
             Map<String, ?> data = image == null ? getClearData(session, type) : getUploadData(session, type, model, image);
@@ -99,11 +103,16 @@ public class LegacySkinServer implements SkinServer {
             if (response.startsWith("ERROR: ")) {
                 response = response.substring(7);
             }
-            if (!response.equalsIgnoreCase("OK") && !response.endsWith("OK"))
+            if (!response.equalsIgnoreCase("OK") && !response.endsWith("OK")) {
                 throw new IOException(response);
+            }
             return new SkinUploadResponse(response);
 
         }, HDSkinManager.skinUploadExecutor);
+    }
+
+    private UnsupportedOperationException gatewayUnsupported() {
+        return new UnsupportedOperationException("Server does not have a gateway.");
     }
 
     private static Map<String, ?> getData(Session session, MinecraftProfileTexture.Type type, String model, String param, Object val) {

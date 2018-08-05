@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
@@ -16,8 +17,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+
+import javax.annotation.Nullable;
 
 @ServerType("bethlehem")
 public class BethlehemSkinServer implements SkinServer {
@@ -32,24 +34,24 @@ public class BethlehemSkinServer implements SkinServer {
     }
 
     @Override
-    public Optional<MinecraftTexturesPayload> loadProfileData(GameProfile profile) {
-        NetClient client = new NetClient("GET", getPath(profile));
+    public MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException {
+        try (MoreHttpResponses response = new NetClient("GET", getPath(profile)).send()) {
 
-        String json = client.getResponseText();
+            JsonObject s = response.json(JsonObject.class);
 
-        JsonObject s = gson.fromJson(json, JsonObject.class);
-
-        if (s.has("success") && s.get("success").getAsBoolean()) {
-            s = s.get("data").getAsJsonObject();
-
-            return Optional.ofNullable(gson.fromJson(s, MinecraftTexturesPayload.class));
+            if (s.has("success") && s.get("success").getAsBoolean()) {
+                s = s.get("data").getAsJsonObject();
+                return gson.fromJson(s, MinecraftTexturesPayload.class);
+            }
+            throw new IOException(s.get("error").getAsString());
         }
-
-        return Optional.empty();
     }
 
     @Override
-    public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, URI image, Type type, Map<String, String> metadata) {
+    public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, SkinUpload skin) {
+        URI image = skin.getImage();
+        Map<String, String> metadata = skin.getMetadata();
+        MinecraftProfileTexture.Type type = skin.getType();
         return CallableFutures.asyncFailableFuture(() -> {
             SkinServer.verifyServerConnection(session, SERVER_ID);
 
@@ -59,15 +61,17 @@ public class BethlehemSkinServer implements SkinServer {
                 client.putFile(type.toString().toLowerCase(Locale.US), "image/png", image);
             }
 
-            if (!client.send()) {
-                throw new IOException(client.getResponseText());
+            try (MoreHttpResponses response = client.send()) {
+                if (!response.ok()) {
+                    throw new IOException(response.text());
+                }
+                return new SkinUploadResponse(response.text());
             }
 
-            return new SkinUploadResponse(client.getResponseText());
         }, HDSkinManager.skinUploadExecutor);
     }
 
-    protected Map<String, ?> createHeaders(Session session, Type type, URI image, Map<String, String> metadata) {
+    protected Map<String, ?> createHeaders(Session session, Type type, @Nullable URI image, Map<String, String> metadata) {
         Builder<String, Object> builder = ImmutableMap.<String, Object>builder()
                 .put("accessToken", session.getToken())
                 .put("user", session.getUsername())

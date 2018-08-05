@@ -8,7 +8,6 @@ import com.voxelmodpack.hdskins.DynamicTextureImage;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.ImageBufferDownloadHD;
 import com.voxelmodpack.hdskins.PreviewTexture;
-import com.voxelmodpack.hdskins.PreviewTextureManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -25,6 +24,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+
 import javax.imageio.ImageIO;
 
 @SuppressWarnings("EntityConstructor")
@@ -41,11 +41,11 @@ public class EntityPlayerModel extends EntityLivingBase {
             EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY
     ));
 
-    private PreviewTexture remoteSkinTexture;
+    private volatile PreviewTexture remoteSkinTexture;
     private ResourceLocation remoteSkinResource;
     protected ResourceLocation localSkinResource;
     private DynamicTexture localSkinTexture;
-    private PreviewTexture remoteElytraTexture;
+    private volatile PreviewTexture remoteElytraTexture;
     private ResourceLocation remoteElytraResource;
     private ResourceLocation localElytraResource;
     private DynamicTexture localElytraTexture;
@@ -77,10 +77,11 @@ public class EntityPlayerModel extends EntityLivingBase {
             this.textureManager.deleteTexture(this.remoteElytraResource);
         }
 
-        PreviewTextureManager ptm = HDSkinManager.getPreviewTextureManager(this.profile);
+        HDSkinManager.getPreviewTextureManager(this.profile).thenAccept(ptm -> {
+            this.remoteSkinTexture = ptm.getPreviewTexture(this.remoteSkinResource, Type.SKIN, getBlankSkin(), listener);
+            this.remoteElytraTexture = ptm.getPreviewTexture(this.remoteElytraResource, Type.ELYTRA, getBlankElytra(), null);
+        });
 
-        this.remoteSkinTexture = ptm.getPreviewTexture(this.remoteSkinResource, Type.SKIN, getBlankSkin(), listener);
-        this.remoteElytraTexture = ptm.getPreviewTexture(this.remoteElytraResource, Type.ELYTRA, getBlankElytra(), null);
 
     }
 

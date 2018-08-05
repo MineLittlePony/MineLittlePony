@@ -12,6 +12,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.skins.SkinServer;
+import com.voxelmodpack.hdskins.skins.SkinUpload;
 import com.voxelmodpack.hdskins.skins.SkinUploadResponse;
 import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
 import net.minecraft.client.Minecraft;
@@ -567,7 +568,7 @@ public class GuiSkins extends GuiScreen {
         this.uploadingSkin = true;
         this.skinUploadMessage = I18n.format("hdskins.request");
         HDSkinManager.INSTANCE.getGatewayServer()
-                .uploadSkin(session, null, this.textureType, getMetadata())
+                .uploadSkin(session, new SkinUpload(this.textureType, null, getMetadata()))
                 .thenAccept(this::onUploadComplete)
                 .exceptionally(this::onFailure);
     }
@@ -577,7 +578,7 @@ public class GuiSkins extends GuiScreen {
         this.skinUploadMessage = I18n.format("hdskins.upload");
         URI path = skinFile == null ? null : skinFile.toURI();
         HDSkinManager.INSTANCE.getGatewayServer()
-                .uploadSkin(session, path, this.textureType, getMetadata())
+                .uploadSkin(session, new SkinUpload(this.textureType, path, getMetadata()))
                 .thenAccept(this::onUploadComplete)
                 .exceptionally(this::onFailure);
     }
@@ -590,7 +591,6 @@ public class GuiSkins extends GuiScreen {
         this.uploadError = error;
         this.btnUpload.enabled = true;
     }
-
 
     private Void onFailure(Throwable t) {
         t = Throwables.getRootCause(t);
