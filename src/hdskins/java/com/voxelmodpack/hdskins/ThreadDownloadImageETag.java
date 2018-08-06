@@ -2,6 +2,7 @@ package com.voxelmodpack.hdskins;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import com.voxelmodpack.hdskins.skins.MoreHttpResponses;
 import com.voxelmodpack.hdskins.skins.NetClient;
 
 import net.minecraft.client.renderer.IImageBuffer;
@@ -12,9 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -97,9 +96,9 @@ public class ThreadDownloadImageETag extends SimpleTexture {
 
     private void loadTexture() {
         try (NetClient client = new NetClient("GET", imageUrl)) {
-            CloseableHttpResponse response = client.getResponse();
+            MoreHttpResponses response = client.getResponse();
 
-            if (client.getResponseCode() == HttpStatus.SC_NOT_FOUND) {
+            if (client.getResponse().getResponseCode() == HttpStatus.SC_NOT_FOUND) {
                 // delete the cache files in case we can't connect in the future
                 clearCache();
             } else if (checkETag(response)) {
@@ -147,11 +146,11 @@ public class ThreadDownloadImageETag extends SimpleTexture {
         FileUtils.deleteQuietly(eTagFile);
     }
 
-    private boolean checkETag(HttpResponse response) {
+    private boolean checkETag(MoreHttpResponses response) {
         try {
             if (cacheFile.isFile()) {
                 String localETag = Files.readFirstLine(eTagFile, Charsets.UTF_8);
-                Header remoteETag = response.getFirstHeader(HttpHeaders.ETAG);
+                Header remoteETag = response.getResponse().getFirstHeader(HttpHeaders.ETAG);
 
                 // true if no remote etag or does match
                 return remoteETag == null || localETag.equals(remoteETag.getValue());
@@ -163,18 +162,18 @@ public class ThreadDownloadImageETag extends SimpleTexture {
         return false; // it failed, so re-fetch.
     }
 
-    private void loadTextureFromServer(HttpResponse response) {
+    private void loadTextureFromServer(MoreHttpResponses response) {
         LOGGER.debug("Downloading http texture from {} to {}", imageUrl, cacheFile);
         try {
-            if (response.getStatusLine().getStatusCode() / 100 == 2) {
+            if (response.getResponseCode() / 100 == 2) {
                 BufferedImage bufferedimage;
 
                 // write the image to disk
-                FileUtils.copyInputStreamToFile(response.getEntity().getContent(), cacheFile);
+                FileUtils.copyInputStreamToFile(response.getInputStream(), cacheFile);
                 bufferedimage = ImageIO.read(cacheFile);
 
                 // maybe write the etag to disk
-                Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
+                Header eTag = response.getResponse().getFirstHeader(HttpHeaders.ETAG);
                 if (eTag != null) {
                     FileUtils.write(eTagFile, eTag.getValue(), Charsets.UTF_8);
                 }

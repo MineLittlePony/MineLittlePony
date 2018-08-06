@@ -8,6 +8,7 @@ import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.LocalTexture;
 import com.voxelmodpack.hdskins.LocalTexture.IBlankSkinSupplier;
 import com.voxelmodpack.hdskins.PreviewTextureManager;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,6 +19,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.io.File;
 import java.util.Map;
+
 
 @SuppressWarnings("EntityConstructor")
 public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSupplier {

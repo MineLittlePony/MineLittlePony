@@ -16,6 +16,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.skins.SkinUpload;
 import com.voxelmodpack.hdskins.skins.SkinUploadResponse;
 import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
 
@@ -544,7 +545,7 @@ public class GuiSkins extends GameGui {
         btnUpload.enabled = canUpload();
 
         HDSkinManager.INSTANCE.getGatewayServer()
-                .uploadSkin(mc.getSession(), path, textureType, getMetadata())
+                .uploadSkin(mc.getSession(), new SkinUpload(textureType, path, getMetadata()))
                 .thenAccept(this::onUploadComplete)
                 .exceptionally(this::onUploadFailure);
     }

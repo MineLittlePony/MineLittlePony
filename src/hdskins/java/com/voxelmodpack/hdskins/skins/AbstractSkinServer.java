@@ -1,12 +1,9 @@
 package com.voxelmodpack.hdskins.skins;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-
-import javax.annotation.Nullable;
 
 import org.apache.logging.log4j.util.Strings;
 
@@ -32,19 +29,23 @@ public abstract class AbstractSkinServer implements SkinServer {
 
     @Override
     public Map<Type, MinecraftProfileTexture> getProfileTextures(GameProfile profile) {
-        MinecraftTexturesPayload payload = getProfileData(profile);
+        try {
+            MinecraftTexturesPayload payload = getProfileData(profile);
 
-        if (payload != null && payload.getTextures() != null) {
-            return payload.getTextures();
+            if (payload != null && payload.getTextures() != null) {
+                return payload.getTextures();
+            }
+        } catch (IOException ignored) {
+
         }
 
         return Collections.emptyMap();
     }
 
     @Override
-    public final CompletableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable URI image, Type type, Map<String, String> metadata) {
+    public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, SkinUpload upload) {
         return CallableFutures.asyncFailableFuture(() -> {
-            return doUpload(session, image, type, metadata);
+            return doUpload(session, upload);
         }, HDSkinManager.skinUploadExecutor);
     }
 
@@ -55,7 +56,9 @@ public abstract class AbstractSkinServer implements SkinServer {
         }
     }
 
-    protected abstract SkinUploadResponse doUpload(Session session, URI image, Type type, Map<String, String> metadata) throws AuthenticationException, IOException;
+    protected abstract MinecraftTexturesPayload getProfileData(GameProfile profile) throws IOException;
+
+    protected abstract SkinUploadResponse doUpload(Session session, SkinUpload upload) throws AuthenticationException, IOException;
 
     @Override
     public String toString() {

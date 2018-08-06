@@ -11,16 +11,18 @@ import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 
 import net.minecraft.util.Session;
-import org.apache.http.HttpStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Map;
+
 import javax.annotation.Nullable;
 
 @ServerType("legacy")
@@ -49,21 +51,14 @@ public class LegacySkinServer extends AbstractSkinServer {
         return map;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public MinecraftTexturesPayload getProfileData(GameProfile profile) {
+    public MinecraftTexturesPayload getProfileData(GameProfile profile) throws IOException {
         ImmutableMap.Builder<Type, MinecraftProfileTexture> builder = ImmutableMap.builder();
-
         for (Type type : Type.values()) {
+
             String url = getPath(address, type, profile);
-
-            try (NetClient client = new NetClient("GET", url)) {
-                if (client.getResponseCode() != HttpStatus.SC_OK) {
-                    throw new IOException("Bad response code: " + client.getResponseCode());
-                }
-
-                builder.put(type, new MinecraftProfileTexture(url, null));
-                logger.debug("Found skin for {} at {}", profile.getName(), url);
+            try {
+                builder.put(type, loadProfileTexture(profile, url));
             } catch (IOException e) {
                 logger.trace("Couldn't find texture for {} at {}. Does it exist?", profile.getName(), url, e);
             }
@@ -72,25 +67,32 @@ public class LegacySkinServer extends AbstractSkinServer {
         Map<Type, MinecraftProfileTexture> map = builder.build();
 
         if (map.isEmpty()) {
-            logger.debug("No textures found for {} at {}", profile, address);
-            return null;
+            throw new IOException(String.format("No textures found for %s at %s", profile, address));
         }
-
         return TexturesPayloadBuilder.createTexturesPayload(profile, map);
     }
 
+    private MinecraftProfileTexture loadProfileTexture(GameProfile profile, String url) throws IOException {
+        HttpURLConnection urlConnection = (HttpURLConnection) new URL(url).openConnection();
+        if (urlConnection.getResponseCode() / 100 != 2) {
+            throw new IOException("Bad response code: " + urlConnection.getResponseCode() + ". URL: " + url);
+        }
+        logger.debug("Found skin for {} at {}", profile.getName(), url);
+        return new MinecraftProfileTexture(url, null);
+    }
+
     @Override
-    protected SkinUploadResponse doUpload(Session session, URI image, Type type, Map<String, String> metadata) throws AuthenticationException, IOException {
+    protected SkinUploadResponse doUpload(Session session, SkinUpload skin) throws AuthenticationException, IOException {
         SkinServer.verifyServerConnection(session, SERVER_ID);
 
         try (NetClient client = new NetClient("POST", address)) {
-            client.putHeaders(createHeaders(session, type, image, metadata));
+            client.putHeaders(createHeaders(session, skin.getType(), skin.getImage(), skin.getMetadata()));
 
-            if (image != null) {
-                client.putFile(type.toString().toLowerCase(Locale.US), "image/png", image);
+            if (skin.getImage() != null) {
+                client.putFile(skin.getType().toString().toLowerCase(Locale.US), "image/png", skin.getImage());
             }
 
-            String response = client.getResponseText();
+            String response = client.getResponse().text();
 
             if (response.startsWith("ERROR: ")) { // lol @ "ERROR: OK"
                 response = response.substring(7);
@@ -103,7 +105,6 @@ public class LegacySkinServer extends AbstractSkinServer {
             return new SkinUploadResponse(response);
         }
     }
-
 
     protected Map<String, ?> createHeaders(Session session, Type type, URI image, Map<String, String> metadata) {
         Builder<String, Object> builder = ImmutableMap.<String, Object>builder()
