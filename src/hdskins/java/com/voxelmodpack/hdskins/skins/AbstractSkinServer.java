@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.util.Strings;
 
 import com.google.gson.JsonParseException;
@@ -35,8 +36,8 @@ public abstract class AbstractSkinServer implements SkinServer {
             if (payload != null && payload.getTextures() != null) {
                 return payload.getTextures();
             }
-        } catch (IOException ignored) {
-
+        } catch (IOException e) {
+            LogManager.getLogger().trace(e);
         }
 
         return Collections.emptyMap();

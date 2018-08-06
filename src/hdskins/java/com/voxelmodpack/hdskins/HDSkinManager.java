@@ -206,6 +206,9 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
         for (SkinServer server : skinServers) {
             server.getProfileTextures(profile).forEach(textures::putIfAbsent);
+            if (textures.size() == Type.values().length) {
+                return textures;
+            }
         }
 
         return textures;
