@@ -31,7 +31,7 @@ public class PreviewTextureManager {
     public CompletableFuture<PreviewTexture> getPreviewTexture(ResourceLocation location, MinecraftProfileTexture.Type type, ResourceLocation def, @Nullable SkinAvailableCallback callback) {
         return CallableFutures.asyncFailableFuture(() ->
             loadPreviewTexture(location, type, def, callback)
-        , HDSkinManager.skinUploadExecutor);
+        , HDSkinManager.skinDownloadExecutor);
     }
 
     @Nullable
