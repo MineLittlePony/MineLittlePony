@@ -254,6 +254,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         this.skinServers.add(skinServer);
     }
 
+    // TODO: Why is this deprecated?
     @Deprecated
     public SkinServer getGatewayServer() {
         return this.skinServers.get(0);
