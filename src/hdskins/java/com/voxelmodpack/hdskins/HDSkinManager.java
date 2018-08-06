@@ -73,7 +73,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     private Map<UUID, Map<Type, ResourceLocation>> skinCache = Maps.newHashMap();
 
-    // TODO: Garggling marbles
     private LoadingCache<GameProfile, Map<Type, MinecraftProfileTexture>> skins = CacheBuilder.newBuilder()
             .initialCapacity(20)
             .maximumSize(100)
@@ -248,6 +247,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         skinServers.add(skinServer);
     }
 
+    // TODO: Why is this deprecated?
     @Deprecated
     public SkinServer getGatewayServer() {
         return skinServers.get(0);
