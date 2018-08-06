@@ -8,20 +8,15 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
-import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.mumfrey.liteloader.modconfig.Exposable;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-
-import javax.annotation.Nullable;
 
 public interface SkinServer extends Exposable {
 
@@ -33,15 +28,13 @@ public interface SkinServer extends Exposable {
             "http://skins.voxelmodpack.com",
             "http://skinmanager.voxelmodpack.com"));
 
-    MinecraftTexturesPayload getProfileData(GameProfile profile);
-
     Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> getProfileTextures(GameProfile profile);
 
-    CompletableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable URI image, MinecraftProfileTexture.Type type, Map<String, String> metadata);
+    CompletableFuture<SkinUploadResponse> uploadSkin(Session session, SkinUpload upload);
 
     void validate() throws JsonParseException;
 
-    public static void verifyServerConnection(Session session, String serverId) throws AuthenticationException {
+    static void verifyServerConnection(Session session, String serverId) throws AuthenticationException {
         MinecraftSessionService service = Minecraft.getMinecraft().getSessionService();
         service.joinServer(session.getProfile(), session.getToken(), serverId);
     }

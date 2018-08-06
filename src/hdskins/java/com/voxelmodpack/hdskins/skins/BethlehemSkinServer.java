@@ -1,16 +1,13 @@
 package com.voxelmodpack.hdskins.skins;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.Locale;
 import java.util.Map;
-import org.apache.http.HttpStatus;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 
@@ -26,47 +23,45 @@ public class BethlehemSkinServer extends AbstractSkinServer {
     }
 
     @Override
-    public MinecraftTexturesPayload getProfileData(GameProfile profile) {
+    public MinecraftTexturesPayload getProfileData(GameProfile profile) throws IOException {
         try (NetClient client = new NetClient("GET", getPath(profile))) {
-            if (client.getResponseCode() == HttpStatus.SC_OK) {
-                return gson.fromJson(client.getResponseText(), MinecraftTexturesPayload.class);
+            if (client.getResponse().ok()) {
+                return client.getResponse().json(MinecraftTexturesPayload.class);
             }
-        } catch (IOException e) {
-
         }
         return null;
     }
 
     @Override
-    protected SkinUploadResponse doUpload(Session session, URI image, Type type, Map<String, String> metadata) throws AuthenticationException, IOException {
+    protected SkinUploadResponse doUpload(Session session, SkinUpload upload) throws AuthenticationException, IOException {
         SkinServer.verifyServerConnection(session, SERVER_ID);
 
         try (NetClient client = new NetClient("POST", address)) {
-            client.putHeaders(createHeaders(session, type, image, metadata));
+            client.putHeaders(createHeaders(session, upload));
 
-            if (image != null) {
-                client.putFile(type.toString().toLowerCase(Locale.US), "image/png", image);
+            if (upload.getImage() != null) {
+                client.putFile(upload.getType().toString().toLowerCase(Locale.US), "image/png", upload.getImage());
             }
 
-            if (client.getResponseCode() == HttpStatus.SC_OK) {
-                return new SkinUploadResponse(client.getResponseText());
+            if (client.getResponse().ok()) {
+                return new SkinUploadResponse(client.getResponse().text());
             }
 
-            throw new IOException(client.getResponseText());
+            throw new IOException(client.getResponse().text());
         }
     }
 
-    protected Map<String, ?> createHeaders(Session session, Type type, URI image, Map<String, String> metadata) {
+    protected Map<String, ?> createHeaders(Session session, SkinUpload upload) {
         Builder<String, Object> builder = ImmutableMap.<String, Object>builder()
                 .put("accessToken", session.getToken())
                 .put("user", session.getUsername())
                 .put("uuid", UUIDTypeAdapter.fromUUID(session.getProfile().getId()))
-                .put("type", type.toString().toLowerCase(Locale.US));
+                .put("type", upload.getType().toString().toLowerCase(Locale.US));
 
-        if (image == null) {
+        if (upload.getImage() == null) {
             builder.put("clear", "1");
         } else {
-            builder.put("model", metadata.getOrDefault("mode", "default"));
+            builder.put("model", upload.getMetadata().getOrDefault("mode", "default"));
         }
 
         return builder.build();

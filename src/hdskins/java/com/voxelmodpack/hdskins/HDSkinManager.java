@@ -9,8 +9,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
+
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
@@ -58,10 +57,10 @@ import javax.annotation.Nonnull;
 
 public final class HDSkinManager implements IResourceManagerReloadListener {
 
-    private static final ResourceLocation LOADING = new ResourceLocation("LOADING");
+    public static final ExecutorService skinUploadExecutor = Executors.newSingleThreadExecutor();
+    public static final ExecutorService skinDownloadExecutor = Executors.newFixedThreadPool(8);
 
-    private static final ExecutorService skinDownloadExecutor = Executors.newFixedThreadPool(8);
-    public static final ListeningExecutorService skinUploadExecutor = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
+    private static final ResourceLocation LOADING = new ResourceLocation("LOADING");
 
     public static final HDSkinManager INSTANCE = new HDSkinManager();
 

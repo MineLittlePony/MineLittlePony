@@ -1,23 +1,19 @@
 package com.voxelmodpack.hdskins.skins;
 
-import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.Map;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 
 /**
  * Ew. Why so many builders? >.<
@@ -26,11 +22,19 @@ public class NetClient implements Closeable {
 
     private static CloseableHttpClient client = null;
 
+    public static CloseableHttpClient nativeClient() {
+        if (client == null) {
+            client = HttpClients.createSystem();
+        }
+
+        return client;
+    }
+
     private RequestBuilder rqBuilder;
 
     private Map<String, ?> headers;
 
-    private CloseableHttpResponse response = null;
+    private MoreHttpResponses response;
 
     public NetClient(String method, String uri) {
         start(method, uri);
@@ -49,7 +53,9 @@ public class NetClient implements Closeable {
         headers = null;
 
         if (response != null) {
-            EntityUtils.consumeQuietly(response.getEntity());
+            try {
+                response.close();
+            } catch (IOException ignored) {}
             response = null;
         }
 
@@ -97,49 +103,18 @@ public class NetClient implements Closeable {
             }
         }
 
-        if (client == null) {
-            client = HttpClients.createSystem();
-        }
-
-        response = client.execute(request);
+        response = MoreHttpResponses.execute(nativeClient(), request);
     }
 
     /**
      * Gets or obtains the http response body.
      */
-    public CloseableHttpResponse getResponse() throws IOException {
+    public MoreHttpResponses getResponse() throws IOException {
         if (response == null) {
             send();
         }
 
         return response;
-    }
-
-    /**
-     * Gets or obtains a response status code.
-     */
-    public int getResponseCode() throws IOException {
-        return getResponse().getStatusLine().getStatusCode();
-    }
-
-    /**
-     * Consumes and returns the entire response body.
-     */
-    public String getResponseText() throws IOException {
-        if (getResponse().getEntity() == null) {
-            return "";
-        }
-
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(getResponse().getEntity().getContent()))) {
-            StringBuilder builder = new StringBuilder();
-
-            int ch;
-            while ((ch = reader.read()) != -1) {
-                builder.append((char)ch);
-            }
-
-            return builder.toString();
-        }
     }
 
     @Override
