@@ -96,7 +96,7 @@ public class GuiSkinsMineLP extends GuiSkins {
     protected void onSetLocalSkin(Type type) {
         MineLittlePony.logger.debug("Invalidating old local skin, checking updated local skin");
         if (type == Type.SKIN) {
-            ponyManager.removePony(localPlayer.getSkinTexture());
+            ponyManager.removePony(localPlayer.getLocal(Type.SKIN).getTexture());
         }
     }
 
