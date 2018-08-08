@@ -55,7 +55,7 @@ public class LiteModHDSkins implements InitCompleteListener, ViewportListener, C
 
     @Override
     public void upgradeSettings(String version, File configPath, File oldConfigPath) {
-        HDSkinManager.clearSkinCache();
+        HDSkinManager.INSTANCE.clearSkinCache();
     }
 
     @Override
