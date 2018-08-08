@@ -62,7 +62,7 @@ public class PonyData implements IPonyData {
 
     @Override
     public PonySize getSize() {
-        return MineLittlePony.getConfig().sizes ? size : PonySize.NORMAL;
+        return MineLittlePony.getConfig().getSizes().get() ? size : PonySize.NORMAL;
     }
 
     @Override

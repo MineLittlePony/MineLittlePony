@@ -1,17 +1,16 @@
 package com.minelittlepony.gui;
 
-import java.io.IOException;
-
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyConfig;
 import com.minelittlepony.PonyConfig.PonySettings;
 import com.minelittlepony.pony.data.PonyLevel;
 import com.minelittlepony.render.ponies.MobRenderers;
 import com.mumfrey.liteloader.core.LiteLoader;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
+
+import java.io.IOException;
 
 /**
  * In-Game options menu.
@@ -46,7 +45,7 @@ public class GuiPonySettings extends GuiScreen {
         addButton(new Slider(LEFT, row += 15, 0, 2, config.getPonyLevel().ordinal(), (int id, String name, float value) -> {
             return I18n.format(PONY_LEVEL + "." + PonyLevel.valueFor(value).name().toLowerCase());
         }, v -> {
-            PonyLevel level = PonyLevel.valueFor(v);
+            PonyLevel level = PonyLevel.valueFor((float) v);
             config.setPonyLevel(level);
             return (float)level.ordinal();
         }));
@@ -54,7 +53,7 @@ public class GuiPonySettings extends GuiScreen {
         row += 15;
         addButton(new Label(LEFT, row += 15, OPTIONS_PREFIX + "options", -1));
         for (PonySettings i : PonySettings.values()) {
-            addButton(new Checkbox(LEFT, row += 15, OPTIONS_PREFIX + i.name().toLowerCase(), i.get(), i));
+            addButton(new Checkbox(LEFT, row += 15, OPTIONS_PREFIX + i.name().toLowerCase(), i));
         }
 
         if (mustScroll()) {
@@ -65,7 +64,7 @@ public class GuiPonySettings extends GuiScreen {
 
         addButton(new Label(RIGHT, row += 15, MOB_PREFIX + "title", -1));
         for (MobRenderers i : MobRenderers.values()) {
-            addButton(new Checkbox(RIGHT, row += 15, MOB_PREFIX + i.name().toLowerCase(), i.get(), i));
+            addButton(new Checkbox(RIGHT, row += 15, MOB_PREFIX + i.name().toLowerCase(), i));
         }
     }
 
