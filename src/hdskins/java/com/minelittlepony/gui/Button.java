@@ -9,13 +9,13 @@ import net.minecraft.client.gui.GuiButton;
 
 public class Button extends GuiButton implements IActionable, IGuiTooltipped {
 
-    private IGuiAction<Button> action;
+    protected IGuiAction<Button> action;
 
     private List<String> tooltip = null;
 
     @SuppressWarnings("unchecked")
     public Button(int x, int y, int width, int height, String label, IGuiAction<? extends Button> callback) {
-        super(0, x, y, width, height, GameGui.format(label));
+        super(5000, x, y, width, height, GameGui.format(label));
         action = (IGuiAction<Button>)callback;
     }
 

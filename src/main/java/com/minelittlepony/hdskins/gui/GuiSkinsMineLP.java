@@ -3,11 +3,11 @@ package com.minelittlepony.hdskins.gui;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyManager;
 import com.minelittlepony.gui.Button;
+import com.minelittlepony.gui.IconicButton;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
-import com.voxelmodpack.hdskins.gui.GuiItemStackButton;
 import com.voxelmodpack.hdskins.gui.GuiSkins;
 
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -43,13 +43,13 @@ public class GuiSkinsMineLP extends GuiSkins {
     public void initGui() {
         super.initGui();
 
-        addButton(btnModeWet = new GuiItemStackButton(width - 25, 137, new ItemStack(Items.WATER_BUCKET), sender -> {
+        addButton(btnModeWet = new IconicButton(width - 25, 137, sender -> {
             setWet(true);
-        })).setEnabled(!isWet).setTooltip("minelp.mode.wet");
+        }).setIcon(new ItemStack(Items.WATER_BUCKET))).setEnabled(!isWet).setTooltip("minelp.mode.wet");
 
-        addButton(btnModeDry = new GuiItemStackButton(width - 25, 118, new ItemStack(Items.BUCKET), sender -> {
+        addButton(btnModeDry = new IconicButton(width - 25, 118, sender -> {
             setWet(false);
-        })).setEnabled(isWet).setTooltip("minelp.mode.dry");
+        }).setIcon(new ItemStack(Items.BUCKET))).setEnabled(isWet).setTooltip("minelp.mode.dry");
     }
 
     @Override
