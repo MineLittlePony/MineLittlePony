@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.Locale;
 import java.util.Map;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.http.HttpStatus;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
@@ -32,14 +33,13 @@ public class BethlehemSkinServer extends AbstractSkinServer {
     @Override
     protected MinecraftTexturesPayload getProfileData(GameProfile profile) {
         try (NetClient client = new NetClient("GET", getPath(profile))) {
-            if (!client.send()) {
-                return null;
+            if (client.getResponseCode() == HttpStatus.SC_OK) {
+                return gson.fromJson(client.getResponseText(), MinecraftTexturesPayload.class);
             }
-
-            return gson.fromJson(client.getResponseText(), MinecraftTexturesPayload.class);
         } catch (IOException e) {
-            return null;
+
         }
+        return null;
     }
 
     @Override
@@ -53,11 +53,11 @@ public class BethlehemSkinServer extends AbstractSkinServer {
                 client.putFile(type.toString().toLowerCase(Locale.US), "image/png", image);
             }
 
-            if (!client.send()) {
-                throw new IOException(client.getResponseText());
+            if (client.getResponseCode() == HttpStatus.SC_OK) {
+                return new SkinUploadResponse(client.getResponseText());
             }
 
-            return new SkinUploadResponse(client.getResponseText());
+            throw new IOException(client.getResponseText());
         }
     }
 
