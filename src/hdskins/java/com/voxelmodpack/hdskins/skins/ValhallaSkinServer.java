@@ -37,12 +37,10 @@ public class ValhallaSkinServer extends AbstractSkinServer {
         super(address);
     }
 
-
     @Override
     public MinecraftTexturesPayload getProfileData(GameProfile profile) throws IOException {
 
         try (MoreHttpResponses response = MoreHttpResponses.execute(NetClient.nativeClient(), new HttpGet(getTexturesURI(profile)))) {
-
             if (response.ok()) {
                 return readJson(response, MinecraftTexturesPayload.class);
             }
