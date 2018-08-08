@@ -2,16 +2,16 @@ package com.voxelmodpack.hdskins.skins;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
-import com.voxelmodpack.hdskins.HDSkinManager;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpGet;
@@ -27,27 +27,20 @@ import java.net.URI;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-
-import javax.annotation.Nullable;
 
 @ServerType("valhalla")
-public class ValhallaSkinServer implements SkinServer {
-
-    @Expose
-    private final String address;
+public class ValhallaSkinServer extends AbstractSkinServer {
 
     private transient String accessToken;
 
     public ValhallaSkinServer(String address) {
-        this.address = address;
+        super(address);
     }
 
     @Override
-    public MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException {
+    public MinecraftTexturesPayload getProfileData(GameProfile profile) throws IOException {
 
-        try (MoreHttpResponses response = MoreHttpResponses.execute(HDSkinManager.httpClient, new HttpGet(getTexturesURI(profile)))) {
-
+        try (MoreHttpResponses response = MoreHttpResponses.execute(NetClient.nativeClient(), new HttpGet(getTexturesURI(profile)))) {
             if (response.ok()) {
                 return readJson(response, MinecraftTexturesPayload.class);
             }
@@ -56,25 +49,23 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     @Override
-    public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, SkinUpload skin) {
+    protected SkinUploadResponse doUpload(Session session, SkinUpload skin) throws AuthenticationException, IOException {
         URI image = skin.getImage();
         Map<String, String> metadata = skin.getMetadata();
         MinecraftProfileTexture.Type type = skin.getType();
 
-        return CallableFutures.asyncFailableFuture(() -> {
-                authorize(session);
+        authorize(session);
 
-                try {
-                    return upload(session, image, type, metadata);
-                } catch (IOException e) {
-                    if (e.getMessage().equals("Authorization failed")) {
-                        accessToken = null;
-                        authorize(session);
-                        return upload(session, image, type, metadata);
-                    }
-                    throw e;
-                }
-        }, HDSkinManager.skinUploadExecutor);
+        try {
+            return upload(session, image, type, metadata);
+        } catch (IOException e) {
+            if (e.getMessage().equals("Authorization failed")) {
+                accessToken = null;
+                authorize(session);
+                return upload(session, image, type, metadata);
+            }
+            throw e;
+        }
     }
 
     private SkinUploadResponse upload(Session session, @Nullable URI image,
@@ -129,7 +120,7 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     private SkinUploadResponse upload(HttpUriRequest request) throws IOException {
-        try (MoreHttpResponses response = MoreHttpResponses.execute(HDSkinManager.httpClient, request)) {
+        try (MoreHttpResponses response = MoreHttpResponses.execute(NetClient.nativeClient(), request)) {
             return readJson(response, SkinUploadResponse.class);
         }
     }
@@ -138,8 +129,9 @@ public class ValhallaSkinServer implements SkinServer {
         if (this.accessToken != null) {
             return;
         }
+
         GameProfile profile = session.getProfile();
-        String token = session.getToken();
+
         AuthHandshake handshake = authHandshake(profile.getName());
 
         if (handshake.offline) {
@@ -147,13 +139,14 @@ public class ValhallaSkinServer implements SkinServer {
         }
 
         // join the session server
-        Minecraft.getMinecraft().getSessionService().joinServer(profile, token, handshake.serverId);
+        Minecraft.getMinecraft().getSessionService().joinServer(profile, session.getToken(), handshake.serverId);
 
         AuthResponse response = authResponse(profile.getName(), handshake.verifyToken);
         if (!response.userId.equals(profile.getId())) {
             throw new IOException("UUID mismatch!"); // probably won't ever throw
         }
-        this.accessToken = response.accessToken;
+
+        accessToken = response.accessToken;
     }
 
     private <T> T readJson(MoreHttpResponses resp, Class<T> cl) throws IOException {
@@ -161,6 +154,7 @@ public class ValhallaSkinServer implements SkinServer {
         if (!"application/json".equals(type)) {
             throw new IOException("Server returned a non-json response!");
         }
+
         if (resp.ok()) {
             return resp.json(cl);
         }
@@ -169,7 +163,7 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     private AuthHandshake authHandshake(String name) throws IOException {
-        try (MoreHttpResponses resp = MoreHttpResponses.execute(HDSkinManager.httpClient, RequestBuilder.post()
+        try (MoreHttpResponses resp = MoreHttpResponses.execute(NetClient.nativeClient(), RequestBuilder.post()
                 .setUri(getHandshakeURI())
                 .addParameter("name", name)
                 .build())) {
@@ -178,7 +172,7 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     private AuthResponse authResponse(String name, long verifyToken) throws IOException {
-        try (MoreHttpResponses resp = MoreHttpResponses.execute(HDSkinManager.httpClient, RequestBuilder.post()
+        try (MoreHttpResponses resp = MoreHttpResponses.execute(NetClient.nativeClient(), RequestBuilder.post()
                 .setUri(getResponseURI())
                 .addParameter("name", name)
                 .addParameter("verifyToken", String.valueOf(verifyToken))
@@ -190,27 +184,20 @@ public class ValhallaSkinServer implements SkinServer {
     private URI buildUserTextureUri(GameProfile profile, MinecraftProfileTexture.Type textureType) {
         String user = UUIDTypeAdapter.fromUUID(profile.getId());
         String skinType = textureType.name().toLowerCase(Locale.US);
-        return URI.create(String.format("%s/user/%s/%s", this.address, user, skinType));
+        return URI.create(String.format("%s/user/%s/%s", address, user, skinType));
     }
 
     private URI getTexturesURI(GameProfile profile) {
         Preconditions.checkNotNull(profile.getId(), "profile id required for skins");
-        return URI.create(String.format("%s/user/%s", this.address, UUIDTypeAdapter.fromUUID(profile.getId())));
+        return URI.create(String.format("%s/user/%s", address, UUIDTypeAdapter.fromUUID(profile.getId())));
     }
 
     private URI getHandshakeURI() {
-        return URI.create(String.format("%s/auth/handshake", this.address));
+        return URI.create(String.format("%s/auth/handshake", address));
     }
 
     private URI getResponseURI() {
-        return URI.create(String.format("%s/auth/response", this.address));
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this, IndentedToStringStyle.INSTANCE)
-                .append("address", this.address)
-                .toString();
+        return URI.create(String.format("%s/auth/response", address));
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -226,6 +213,5 @@ public class ValhallaSkinServer implements SkinServer {
 
         private String accessToken;
         private UUID userId;
-
     }
 }

@@ -9,9 +9,9 @@ import javax.annotation.Nullable;
 
 public class SkinUpload {
 
-    private URI image;
-    private Map<String, String> metadata;
-    private MinecraftProfileTexture.Type type;
+    private final URI image;
+    private final Map<String, String> metadata;
+    private final MinecraftProfileTexture.Type type;
 
     public SkinUpload(MinecraftProfileTexture.Type type, @Nullable URI image, Map<String, String> metadata) {
         this.image = image;
