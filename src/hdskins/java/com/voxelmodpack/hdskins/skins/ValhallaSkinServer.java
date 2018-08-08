@@ -6,9 +6,12 @@ import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
-import com.voxelmodpack.hdskins.HDSkinManager;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -34,14 +37,10 @@ import java.io.Reader;
 import java.net.URI;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-
-import javax.annotation.Nullable;
 
 @ServerType("valhalla")
-public class ValhallaSkinServer implements SkinServer {
+public class ValhallaSkinServer extends AbstractSkinServer {
 
     @Expose
     private final String address;
@@ -53,44 +52,39 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     @Override
-    public Optional<MinecraftTexturesPayload> loadProfileData(GameProfile profile) {
-
+    protected MinecraftTexturesPayload getProfileData(GameProfile profile) {
         try (CloseableHttpClient client = HttpClients.createSystem();
                 CloseableHttpResponse response = client.execute(new HttpGet(getTexturesURI(profile)))) {
-
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-
-                return Optional.of(readJson(response, MinecraftTexturesPayload.class));
+                return readJson(response, MinecraftTexturesPayload.class);
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return Optional.empty();
+
+        return null;
     }
 
     @Override
-    public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, @Nullable URI image, MinecraftProfileTexture.Type type, Map<String, String> metadata) {
-        return CallableFutures.asyncFailableFuture(() -> {
-            try (CloseableHttpClient client = HttpClients.createSystem()) {
-                authorize(client, session);
+    protected SkinUploadResponse doUpload(Session session, URI image, Type type, Map<String, String> metadata) throws AuthenticationException, IOException {
+        try (CloseableHttpClient client = HttpClients.createSystem()) {
+            authorize(client, session);
 
-                try {
+            try {
+                return upload(client, session, image, type, metadata);
+            } catch (IOException e) {
+                if (e.getMessage().equals("Authorization failed")) {
+                    accessToken = null;
+                    authorize(client, session);
                     return upload(client, session, image, type, metadata);
-                } catch (IOException e) {
-                    if (e.getMessage().equals("Authorization failed")) {
-                        accessToken = null;
-                        authorize(client, session);
-                        return upload(client, session, image, type, metadata);
-                    }
-                    throw e;
                 }
+                throw e;
             }
-        }, HDSkinManager.skinUploadExecutor);
+        }
     }
 
-    private SkinUploadResponse upload(CloseableHttpClient client, Session session, @Nullable URI image,
-            MinecraftProfileTexture.Type type, Map<String, String> metadata)
-            throws IOException {
+    private SkinUploadResponse upload(CloseableHttpClient client, Session session, @Nullable URI image, MinecraftProfileTexture.Type type, Map<String, String> metadata) throws IOException {
         GameProfile profile = session.getProfile();
 
         if (image == null) {
@@ -128,7 +122,6 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     private SkinUploadResponse uploadUrl(CloseableHttpClient client, URI uri, GameProfile profile, MinecraftProfileTexture.Type type, Map<String, String> metadata) throws IOException {
-
         return upload(client, RequestBuilder.post()
                 .setUri(buildUserTextureUri(profile, type))
                 .addHeader(HttpHeaders.AUTHORIZATION, this.accessToken)
@@ -147,11 +140,12 @@ public class ValhallaSkinServer implements SkinServer {
 
 
     private void authorize(CloseableHttpClient client, Session session) throws IOException, AuthenticationException {
-        if (this.accessToken != null) {
+        if (accessToken != null) {
             return;
         }
+
         GameProfile profile = session.getProfile();
-        String token = session.getToken();
+
         AuthHandshake handshake = authHandshake(client, profile.getName());
 
         if (handshake.offline) {
@@ -159,17 +153,19 @@ public class ValhallaSkinServer implements SkinServer {
         }
 
         // join the session server
-        Minecraft.getMinecraft().getSessionService().joinServer(profile, token, handshake.serverId);
+        Minecraft.getMinecraft().getSessionService().joinServer(profile, session.getToken(), handshake.serverId);
 
         AuthResponse response = authResponse(client, profile.getName(), handshake.verifyToken);
         if (!response.userId.equals(profile.getId())) {
             throw new IOException("UUID mismatch!"); // probably won't ever throw
         }
-        this.accessToken = response.accessToken;
+
+        accessToken = response.accessToken;
     }
 
     private <T> T readJson(HttpResponse resp, Class<T> cl) throws IOException {
         String type = resp.getEntity().getContentType().getValue();
+
         if (!"application/json".equals(type)) {
             try {
                 throw new IOException("Server returned a non-json response!");
@@ -177,11 +173,13 @@ public class ValhallaSkinServer implements SkinServer {
                 EntityUtils.consumeQuietly(resp.getEntity());
             }
         }
+
         try (Reader r = new InputStreamReader(resp.getEntity().getContent())) {
             if (resp.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 // TODO specific error handling
                 throw new IOException(gson.fromJson(r, JsonObject.class).get("message").getAsString());
             }
+
             return gson.fromJson(r, cl);
         }
     }
@@ -208,27 +206,27 @@ public class ValhallaSkinServer implements SkinServer {
     private URI buildUserTextureUri(GameProfile profile, MinecraftProfileTexture.Type textureType) {
         String user = UUIDTypeAdapter.fromUUID(profile.getId());
         String skinType = textureType.name().toLowerCase(Locale.US);
-        return URI.create(String.format("%s/user/%s/%s", this.address, user, skinType));
+        return URI.create(String.format("%s/user/%s/%s", address, user, skinType));
     }
 
     private URI getTexturesURI(GameProfile profile) {
         Preconditions.checkNotNull(profile.getId(), "profile id required for skins");
-        return URI.create(String.format("%s/user/%s", this.address, UUIDTypeAdapter.fromUUID(profile.getId())));
+        return URI.create(String.format("%s/user/%s", address, UUIDTypeAdapter.fromUUID(profile.getId())));
     }
 
     private URI getHandshakeURI() {
-        return URI.create(String.format("%s/auth/handshake", this.address));
+        return URI.create(String.format("%s/auth/handshake", address));
     }
 
     private URI getResponseURI() {
-        return URI.create(String.format("%s/auth/response", this.address));
+        return URI.create(String.format("%s/auth/response", address));
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this, IndentedToStringStyle.INSTANCE)
-                .append("address", this.address)
-                .toString();
+                .append("address", address)
+                .build();
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -244,6 +242,5 @@ public class ValhallaSkinServer implements SkinServer {
 
         private String accessToken;
         private UUID userId;
-
     }
 }
