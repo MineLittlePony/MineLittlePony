@@ -254,7 +254,7 @@ public class GLWindow extends DropTarget {
         }
     }
 
-    public synchronized void setDropTargetListener(DropTargetListener dtl) {
+    public synchronized void setDropTargetListener(FileDropListener dtl) {
         try {
             clearDropTargetListener();
 
