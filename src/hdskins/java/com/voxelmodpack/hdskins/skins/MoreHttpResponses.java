@@ -10,7 +10,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
@@ -52,13 +51,13 @@ public interface MoreHttpResponses extends AutoCloseable {
     }
 
     default <T> T json(Class<T> type) throws IOException {
-        try (Reader reader = new InputStreamReader(getResponse().getEntity().getContent())) {
+        try (BufferedReader reader = getReader()) {
             return SkinServer.gson.fromJson(reader, type);
         }
     }
 
     default <T> T json(Type type) throws IOException {
-        try (Reader reader = new InputStreamReader(getResponse().getEntity().getContent())) {
+        try (BufferedReader reader = getReader()) {
             return SkinServer.gson.fromJson(reader, type);
         }
     }
