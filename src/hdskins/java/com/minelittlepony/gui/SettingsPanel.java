@@ -7,18 +7,20 @@ import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.resources.I18n;
+
 
 /**
- * Boilerplate because LiteLoader has to be such a 'special flower' -_-
+ * A GuiScreen that doubles as a liteloader panel. What is this madness!?
  */
-public class PonySettingsPanel extends GuiPonySettings implements ConfigPanel {
+public abstract class SettingsPanel extends GameGui implements ConfigPanel {
+
+    private boolean isInPanel = false;
 
     private int contentHeight;
 
     @Override
     public String getPanelTitle() {
-        return I18n.format(getTitle());
+        return format(getTitle());
     }
 
     @Override
@@ -40,6 +42,7 @@ public class PonySettingsPanel extends GuiPonySettings implements ConfigPanel {
         width = host.getWidth();
         buttonList.clear();
         initGui();
+        isInPanel = true;
     }
 
     @Override
@@ -51,6 +54,7 @@ public class PonySettingsPanel extends GuiPonySettings implements ConfigPanel {
 
     @Override
     public void onPanelHidden() {
+        isInPanel = false;
         onGuiClosed();
     }
 
@@ -94,11 +98,14 @@ public class PonySettingsPanel extends GuiPonySettings implements ConfigPanel {
 
     @Override
     public void drawWorldBackground(int tint) {
-
+        if (!isInPanel) {
+            super.drawWorldBackground(tint);
+        }
     }
 
     protected boolean mustScroll() {
-        return true;
+        return isInPanel;
     }
 
+    protected abstract String getTitle();
 }

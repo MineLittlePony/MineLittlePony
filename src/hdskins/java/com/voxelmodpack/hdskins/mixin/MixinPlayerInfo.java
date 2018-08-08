@@ -12,32 +12,27 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Optional;
-
 @Mixin(NetworkPlayerInfo.class)
 public abstract class MixinPlayerInfo {
 
     @Shadow
     public abstract GameProfile getGameProfile();
 
-    @Inject(
-            method = "getLocationSkin",
+    @Inject(method = "getLocationSkin",
             cancellable = true,
             at = @At("RETURN"))
     private void getLocationSkin(CallbackInfoReturnable<ResourceLocation> ci) {
         getTextureLocation(ci, Type.SKIN);
     }
 
-    @Inject(
-            method = "getLocationCape",
+    @Inject(method = "getLocationCape",
             cancellable = true,
             at = @At("RETURN"))
     private void getLocationCape(CallbackInfoReturnable<ResourceLocation> ci) {
         getTextureLocation(ci, Type.CAPE);
     }
 
-    @Inject(
-            method = "getLocationElytra",
+    @Inject(method = "getLocationElytra",
             cancellable = true,
             at = @At("RETURN"))
     private void getLocationElytra(CallbackInfoReturnable<ResourceLocation> ci) {
@@ -45,24 +40,20 @@ public abstract class MixinPlayerInfo {
     }
 
     private void getTextureLocation(CallbackInfoReturnable<ResourceLocation> ci, Type type) {
-        Optional<ResourceLocation> texture = HDSkinManager.INSTANCE.getSkinLocation(getGameProfile(), type, true);
-        texture.ifPresent(ci::setReturnValue);
+        HDSkinManager.INSTANCE.getSkinLocation(getGameProfile(), type, true).ifPresent(ci::setReturnValue);
     }
 
-    @Inject(
-            method = "getSkinType",
+    @Inject(method = "getSkinType",
             cancellable = true,
             at = @At("RETURN"))
     private void getSkinType(CallbackInfoReturnable<String> ci) {
         MinecraftProfileTexture skin = HDSkinManager.INSTANCE.getProfileData(getGameProfile()).get(Type.SKIN);
         if (skin != null) {
-            String type = skin.getMetadata("model");
-            if (type == null)
-                type = "default";
-            String type1 = type;
-            Optional<ResourceLocation> texture = HDSkinManager.INSTANCE.getSkinLocation(getGameProfile(), Type.SKIN, false);
+            HDSkinManager.INSTANCE.getSkinLocation(getGameProfile(), Type.SKIN, false).ifPresent(res -> {
+                String type = skin.getMetadata("model");
 
-            texture.ifPresent((res) -> ci.setReturnValue(type1));
+                ci.setReturnValue(type == null ? "default" : type);
+            });
         }
     }
 }

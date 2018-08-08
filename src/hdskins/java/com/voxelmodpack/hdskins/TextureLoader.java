@@ -6,9 +6,11 @@ import net.minecraft.util.ResourceLocation;
 
 public class TextureLoader {
 
-    private static Minecraft mc = Minecraft.getMinecraft();
+    private static final Minecraft mc = Minecraft.getMinecraft();
 
-    public static void loadTexture(final ResourceLocation textureLocation, final ITextureObject textureObj) {
-        mc.addScheduledTask((Runnable) () -> mc.getTextureManager().loadTexture(textureLocation, textureObj));
+    public static void loadTexture(ResourceLocation textureLocation, ITextureObject textureObj) {
+        mc.addScheduledTask(() -> {
+            mc.getTextureManager().loadTexture(textureLocation, textureObj);
+        });
     }
 }

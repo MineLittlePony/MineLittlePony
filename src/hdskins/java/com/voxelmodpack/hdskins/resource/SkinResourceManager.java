@@ -17,6 +17,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -25,6 +26,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class SkinResourceManager implements IResourceManagerReloadListener {
+    private final Gson GSON = new Gson();
 
     private ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -41,15 +43,16 @@ public class SkinResourceManager implements IResourceManagerReloadListener {
         executor = Executors.newSingleThreadExecutor();
         inProgress.clear();
         converted.clear();
+
         for (String domain : resourceManager.getResourceDomains()) {
             try {
                 for (IResource res : resourceManager.getAllResources(new ResourceLocation(domain, "textures/skins/skins.json"))) {
                     try {
-                        SkinData data = getSkinData(res.getInputStream());
-                        for (Skin s : data.skins) {
+                        for (Skin s : getSkinData(res.getInputStream())) {
                             if (s.uuid != null) {
                                 uuidSkins.put(s.uuid, s);
                             }
+
                             if (s.name != null) {
                                 namedSkins.put(s.name, s);
                             }
@@ -58,16 +61,13 @@ public class SkinResourceManager implements IResourceManagerReloadListener {
                         LiteLoaderLogger.warning(je, "Invalid skins.json in %s", res.getResourcePackName());
                     }
                 }
-            } catch (IOException e) {
-                // ignore
-            }
+            } catch (IOException ignored) { }
         }
-
     }
 
-    private SkinData getSkinData(InputStream stream) {
+    private List<Skin> getSkinData(InputStream stream) {
         try {
-            return new Gson().fromJson(new InputStreamReader(stream), SkinData.class);
+            return GSON.fromJson(new InputStreamReader(stream), SkinData.class).skins;
         } finally {
             IOUtils.closeQuietly(stream);
         }
@@ -75,16 +75,14 @@ public class SkinResourceManager implements IResourceManagerReloadListener {
 
     @Nullable
     public ResourceLocation getPlayerTexture(GameProfile profile, Type type) {
-        if (type != Type.SKIN)
-            // not supported
-            return null;
-
-        Skin skin = getSkin(profile);
-        if (skin != null) {
-            final ResourceLocation res = skin.getTexture();
-            return getConvertedResource(res);
+        if (type == Type.SKIN) {
+            Skin skin = getSkin(profile);
+            if (skin != null) {
+                return getConvertedResource(skin.getTexture());
+            }
         }
-        return null;
+
+        return null; // not supported
     }
 
     /**
@@ -99,31 +97,35 @@ public class SkinResourceManager implements IResourceManagerReloadListener {
         return converted.get(res);
     }
 
-    private void loadSkinResource(@Nullable final ResourceLocation res) {
+    /**
+     * read and convert in a new thread
+     */
+    private void loadSkinResource(@Nullable ResourceLocation res) {
         if (res != null) {
-            // read and convert in a new thread
-            this.inProgress.computeIfAbsent(res, r -> CompletableFuture.supplyAsync(new ImageLoader(r), executor)
-                    .whenComplete((loc, t) -> {
-                        if (loc != null)
-                            converted.put(res, loc);
-                        else {
-                            LogManager.getLogger().warn("Errored while processing {}. Using original.", res, t);
-                            converted.put(res, res);
-                        }
-                    }));
-
-
+            if (!inProgress.containsKey(res)) {
+                inProgress.put(res, scheduleConvertion(res));
+            }
         }
+    }
 
+    private Future<ResourceLocation> scheduleConvertion(ResourceLocation res) {
+        return CompletableFuture.supplyAsync(new ImageLoader(res), executor).whenComplete((result, error) -> {
+            if (result == null) {
+                result = res;
+                LogManager.getLogger().warn("Errored while processing {}. Using original.", res, error);
+            }
+
+            converted.put(res, result);
+        });
     }
 
     @Nullable
     private Skin getSkin(GameProfile profile) {
-        Skin skin = this.uuidSkins.get(profile.getId());
-        if (skin == null) {
-            skin = this.namedSkins.get(profile.getName());
+        Skin skin = uuidSkins.get(profile.getId());
+        if (skin != null) {
+            return skin;
         }
-        return skin;
-    }
 
+        return namedSkins.get(profile.getName());
+    }
 }

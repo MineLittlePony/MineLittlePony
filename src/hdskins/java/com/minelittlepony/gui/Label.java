@@ -2,8 +2,13 @@ package com.minelittlepony.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.resources.I18n;
 
+/**
+ * A simple label for drawing text to a gui screen.
+ *
+ * @author Sollace
+ *
+ */
 public class Label extends GuiButton {
 
     private boolean center;
@@ -29,9 +34,9 @@ public class Label extends GuiButton {
 
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         if (center) {
-            drawCenteredString(mc.fontRenderer, I18n.format(text), x, y, color);
+            drawCenteredString(mc.fontRenderer, GameGui.format(text), x, y, color);
         } else {
-            drawString(mc.fontRenderer, I18n.format(text), x, y, color);
+            drawString(mc.fontRenderer, GameGui.format(text), x, y, color);
         }
     }
 }

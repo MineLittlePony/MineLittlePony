@@ -7,6 +7,9 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
+import com.voxelmodpack.hdskins.LiteModHDSkins;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Base class for "open file" dialog threads
  *
@@ -21,12 +24,7 @@ public abstract class ThreadOpenFile extends Thread {
      */
     protected final IOpenFileCallback parentScreen;
 
-    private JFileChooser fileDialog;
-
-    private static String lastChosenFile = null;
-
-    protected ThreadOpenFile(Minecraft minecraft, String dialogTitle, IOpenFileCallback callback)
-            throws IllegalStateException {
+    protected ThreadOpenFile(Minecraft minecraft, String dialogTitle, IOpenFileCallback callback) throws IllegalStateException {
         if (minecraft.isFullScreen()) {
             throw new IllegalStateException("Cannot open an awt window whilst minecraft is in full screen mode!");
         }
@@ -37,23 +35,25 @@ public abstract class ThreadOpenFile extends Thread {
 
     @Override
     public void run() {
-        fileDialog = new JFileChooser();
-        fileDialog.setDialogTitle(this.dialogTitle);
+        JFileChooser fileDialog = new JFileChooser();
+        fileDialog.setDialogTitle(dialogTitle);
 
-        if (lastChosenFile != null) {
-            fileDialog.setSelectedFile(new File(lastChosenFile));
+        String last = LiteModHDSkins.instance().lastChosenFile;
+        if (!StringUtils.isBlank(last)) {
+            fileDialog.setSelectedFile(new File(last));
         }
-        fileDialog.setFileFilter(this.getFileFilter());
+        fileDialog.setFileFilter(getFileFilter());
 
         int dialogResult = fileDialog.showOpenDialog(InternalDialog.getAWTContext());
 
         File f = fileDialog.getSelectedFile();
 
         if (f != null) {
-            lastChosenFile = f.getAbsolutePath();
+            LiteModHDSkins.instance().lastChosenFile = f.getAbsolutePath();
+            LiteModHDSkins.instance().writeConfig();
         }
 
-        this.parentScreen.onFileOpenDialogClosed(fileDialog, dialogResult);
+        parentScreen.onFileOpenDialogClosed(fileDialog, dialogResult);
     }
 
     /**
