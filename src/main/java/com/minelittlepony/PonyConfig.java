@@ -2,54 +2,42 @@ package com.minelittlepony;
 
 import com.google.gson.annotations.Expose;
 import com.minelittlepony.pony.data.PonyLevel;
-import com.minelittlepony.settings.SensibleConfig;
+import com.minelittlepony.settings.ValueConfig;
 import com.mumfrey.liteloader.modconfig.ConfigStrategy;
-import com.mumfrey.liteloader.modconfig.Exposable;
 import com.mumfrey.liteloader.modconfig.ExposableOptions;
 
 /**
  * Storage container for MineLP client settings.
- *
  */
 @ExposableOptions(filename = "minelittlepony", strategy = ConfigStrategy.Unversioned)
-public class PonyConfig extends SensibleConfig implements Exposable {
+public class PonyConfig extends ValueConfig {
 
-    @Expose private PonyLevel ponylevel = PonyLevel.PONIES;
+    @Expose
+    private PonyLevel ponylevel = PonyLevel.PONIES;
 
-    @Expose public boolean sizes = true;
-    @Expose public boolean snuzzles = true;
-    @Expose public boolean hd = true;
-    @Expose public boolean showscale = true;
-    @Expose public boolean fpsmagic = true;
-    @Expose public boolean ponyskulls = true;
-
-    public enum PonySettings implements Setting {
+    public enum PonySettings implements ValueConfig.Flag {
         SIZES,
         SNUZZLES,
         HD,
         SHOWSCALE,
         FPSMAGIC,
         PONYSKULLS;
-    }
 
-    @Expose public boolean villagers = true;
-    @Expose public boolean zombies = true;
-    @Expose public boolean pigzombies = true;
-    @Expose public boolean skeletons = true;
-    @Expose public boolean illagers = true;
-    @Expose public boolean guardians = true;
+        @Override
+        public ValueConfig config() {
+            return MineLittlePony.getConfig();
+        }
+    }
 
     /**
      * Gets the current PonyLevel. That is the level of ponies you would like to see.
+     *
      * @param ignorePony true to ignore whatever value the setting has.
      */
     public PonyLevel getEffectivePonyLevel(boolean ignorePony) {
         return ignorePony ? PonyLevel.BOTH : getPonyLevel();
     }
 
-    /**
-     * Actually gets the pony level value. No option to ignore reality here.
-     */
     public PonyLevel getPonyLevel() {
         if (ponylevel == null) {
             ponylevel = PonyLevel.PONIES;
@@ -59,9 +47,11 @@ public class PonyConfig extends SensibleConfig implements Exposable {
 
     /**
      * Sets the pony level. Want MOAR PONEHS? Well here you go.
+     *
      * @param ponylevel
      */
-    public void setPonyLevel(PonyLevel ponylevel) {
-        this.ponylevel = ponylevel;
+    public void setPonyLevel(PonyLevel newlevel) {
+        ponylevel = newlevel;
+        write();
     }
 }

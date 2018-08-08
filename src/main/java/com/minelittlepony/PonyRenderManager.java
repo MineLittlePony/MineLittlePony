@@ -55,7 +55,7 @@ public class PonyRenderManager {
     /**
      * Registers all entity model replacements. (except for players).
      */
-    public void initializeMobRenderers(RenderManager manager, PonyConfig config) {
+    public void initializeMobRenderers(RenderManager manager) {
         for (MobRenderers i : MobRenderers.values()) {
             i.apply(this, manager);
         }

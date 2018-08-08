@@ -1,7 +1,7 @@
 package com.minelittlepony.pony.data;
 
 import com.google.common.base.MoreObjects;
-import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.PonyConfig.PonySettings;
 import com.minelittlepony.model.anim.BasicEasingInterpolator;
 import com.minelittlepony.model.anim.IInterpolator;
 
@@ -62,7 +62,7 @@ public class PonyData implements IPonyData {
 
     @Override
     public PonySize getSize() {
-        return MineLittlePony.getConfig().sizes ? size : PonySize.NORMAL;
+        return PonySettings.SIZES.get() ? size : PonySize.NORMAL;
     }
 
     @Override

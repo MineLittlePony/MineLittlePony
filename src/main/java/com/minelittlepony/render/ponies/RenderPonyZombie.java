@@ -22,7 +22,7 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
     public static final ISkull SKULL = new PonySkull() {
         @Override
         public boolean canRender(PonyConfig config) {
-            return config.zombies;
+            return MobRenderers.ZOMBIES.get();
         }
 
         @Override

@@ -25,7 +25,7 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
     public static final ISkull SKULL = new PonySkull() {
         @Override
         public boolean canRender(PonyConfig config) {
-            return config.skeletons;
+            return MobRenderers.SKELETONS.get();
         }
 
         @Override
@@ -73,7 +73,7 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
         public static final ISkull SKULL = new PonySkull() {
             @Override
             public boolean canRender(PonyConfig config) {
-                return config.skeletons;
+                return MobRenderers.SKELETONS.get();
             }
 
             @Override
