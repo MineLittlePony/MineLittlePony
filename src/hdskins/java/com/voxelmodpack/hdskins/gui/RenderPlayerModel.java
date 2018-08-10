@@ -16,6 +16,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+
 import java.util.Set;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
@@ -31,7 +33,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
     private static final ModelPlayer THIN = new ModelPlayer(0, true);
 
     public RenderPlayerModel(RenderManager renderer) {
-        super(renderer, FAT, 0.0F);
+        super(renderer, FAT, 0);
         this.addLayer(this.getElytraLayer());
     }
 
@@ -44,14 +46,14 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
                 ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
                 if (itemstack.getItem() == Items.ELYTRA) {
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                    GlStateManager.color(1, 1, 1, 1);
                     GlStateManager.enableBlend();
                     GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
-                    bindTexture(entity.getElytraTexture());
+                    bindTexture(entity.getLocal(Type.ELYTRA).getTexture());
 
                     GlStateManager.pushMatrix();
-                    GlStateManager.translate(0.0F, 0.0F, 0.125F);
+                    GlStateManager.translate(0, 0, 0.125F);
 
                     modelElytra.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
                     modelElytra.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
@@ -69,18 +71,18 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(M var1) {
-        return var1.getSkinTexture();
+    protected ResourceLocation getEntityTexture(M entity) {
+        return entity.getLocal(Type.SKIN).getTexture();
     }
 
     @Override
-    protected boolean canRenderName(M targetEntity) {
-        return Minecraft.getMinecraft().player != null && super.canRenderName(targetEntity);
+    protected boolean canRenderName(M entity) {
+        return Minecraft.getMinecraft().player != null && super.canRenderName(entity);
     }
 
     @Override
-    protected boolean setBrightness(M entitylivingbaseIn, float partialTicks, boolean p_177092_3_) {
-        return Minecraft.getMinecraft().world != null && super.setBrightness(entitylivingbaseIn, partialTicks, p_177092_3_);
+    protected boolean setBrightness(M entity, float partialTicks, boolean combineTextures) {
+        return Minecraft.getMinecraft().world != null && super.setBrightness(entity, partialTicks, combineTextures);
     }
 
     public ModelPlayer getEntityModel(M entity) {
