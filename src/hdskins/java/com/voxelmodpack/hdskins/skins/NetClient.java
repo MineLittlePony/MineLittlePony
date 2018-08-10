@@ -40,6 +40,7 @@ public class NetClient {
         return this;
     }
 
+    // TODO: Fix this
     public MoreHttpResponses send() throws IOException {
         HttpUriRequest request = rqBuilder.build();
 

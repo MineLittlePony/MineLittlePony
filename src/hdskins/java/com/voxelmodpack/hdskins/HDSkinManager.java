@@ -63,6 +63,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     public static final ExecutorService skinUploadExecutor = Executors.newSingleThreadExecutor();
     public static final ExecutorService skinDownloadExecutor = Executors.newFixedThreadPool(8);
+    // TODO: This doesn't belong here
     public static final CloseableHttpClient httpClient = HttpClients.createSystem();
 
     private static final ResourceLocation LOADING = new ResourceLocation("LOADING");
@@ -254,6 +255,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         this.skinServers.add(skinServer);
     }
 
+    // TODO: Why is this deprecated?
     @Deprecated
     public SkinServer getGatewayServer() {
         return this.skinServers.get(0);
