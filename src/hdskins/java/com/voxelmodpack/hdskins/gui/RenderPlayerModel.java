@@ -120,13 +120,4 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
 
         popAttrib();
     }
-
-    @Override
-    protected void preRenderCallback(M par1EntityLiving, float par2) {
-        this.renderCloak(par1EntityLiving, par2);
-    }
-
-    protected void renderCloak(M entity, float par2) {
-        super.preRenderCallback(entity, par2);
-    }
 }
