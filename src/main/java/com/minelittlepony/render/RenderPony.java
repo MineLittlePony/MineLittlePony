@@ -13,7 +13,7 @@ public class RenderPony<T extends EntityLivingBase> {
 
     public ModelWrapper playerModel;
 
-    private AbstractPonyModel ponyModel;
+    protected AbstractPonyModel ponyModel;
 
     private Pony pony;
 
