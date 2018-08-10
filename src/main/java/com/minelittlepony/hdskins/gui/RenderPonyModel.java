@@ -13,6 +13,7 @@ import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelElytra;
 import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
