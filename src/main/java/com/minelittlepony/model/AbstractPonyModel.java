@@ -33,11 +33,11 @@ import static com.minelittlepony.model.PonyModelConstants.*;
  */
 public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
-    private boolean isSleeping;
-    private boolean isFlying;
-    private boolean isElytraFlying;
-    private boolean isSwimming;
-    private boolean headGear;
+    public boolean isSleeping;
+    public boolean isFlying;
+    public boolean isElytraFlying;
+    public boolean isSwimming;
+    public boolean headGear;
 
     /**
      * Associcated pony data.
