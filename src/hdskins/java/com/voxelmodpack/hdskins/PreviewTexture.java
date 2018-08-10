@@ -6,26 +6,31 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+
 public class PreviewTexture extends ThreadDownloadImageData {
 
     private boolean uploaded;
 
     private String model;
 
-    public PreviewTexture(@Nullable String model, String url, ResourceLocation fallbackTexture, @Nullable IImageBuffer imageBuffer) {
-        super(null, url, fallbackTexture, imageBuffer);
+    public PreviewTexture(MinecraftProfileTexture texture, ResourceLocation fallbackTexture, @Nullable IImageBuffer imageBuffer) {
+        super(null,  texture.getUrl(), fallbackTexture, imageBuffer);
 
-        this.model = model == null ? "default" : model;
+        model = texture.getMetadata("model");
+        if (model == null) {
+            model = "default";
+        }
     }
 
     public boolean isTextureUploaded() {
-        return uploaded && this.getGlTextureId() > -1;
+        return uploaded && getGlTextureId() > -1;
     }
 
     @Override
     public void deleteGlTexture() {
         super.deleteGlTexture();
-        this.uploaded = true;
+        uploaded = true;
     }
 
     public boolean hasModel() {
@@ -34,5 +39,9 @@ public class PreviewTexture extends ThreadDownloadImageData {
 
     public boolean usesThinArms() {
         return "thin".equals(model);
+    }
+
+    public String getModel() {
+        return model;
     }
 }
