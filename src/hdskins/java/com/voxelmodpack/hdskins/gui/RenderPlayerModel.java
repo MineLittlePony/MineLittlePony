@@ -15,6 +15,8 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 import java.util.Set;
