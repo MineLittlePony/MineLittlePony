@@ -1,7 +1,6 @@
 package com.minelittlepony.render.player;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.PonyConfig;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.model.components.ModelDeadMau5Ears;
@@ -15,6 +14,7 @@ import com.minelittlepony.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.render.layer.LayerPonyCape;
 import com.minelittlepony.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.render.layer.LayerPonyElytra;
+import com.minelittlepony.settings.PonyConfig;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;

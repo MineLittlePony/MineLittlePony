@@ -1,9 +1,9 @@
 package com.minelittlepony.pony.data;
 
 import com.google.common.base.MoreObjects;
-import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.model.anim.BasicEasingInterpolator;
 import com.minelittlepony.model.anim.IInterpolator;
+import com.minelittlepony.settings.PonySettings;
 
 import java.awt.image.BufferedImage;
 import javax.annotation.concurrent.Immutable;
@@ -62,7 +62,7 @@ public class PonyData implements IPonyData {
 
     @Override
     public PonySize getSize() {
-        return MineLittlePony.getConfig().getSizes().get() ? size : PonySize.NORMAL;
+        return PonySettings.SIZES.get() ? size : PonySize.NORMAL;
     }
 
     @Override

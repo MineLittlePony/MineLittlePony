@@ -9,7 +9,8 @@ import com.minelittlepony.hdskins.gui.RenderPonyModel;
 import com.minelittlepony.model.player.PlayerModels;
 import com.minelittlepony.render.LevitatingItemRenderer;
 import com.minelittlepony.render.player.RenderPonyPlayer;
-import com.minelittlepony.render.ponies.MobRenderers;
+import com.minelittlepony.settings.MobRenderers;
+import com.minelittlepony.settings.PonyConfig;
 import com.mumfrey.liteloader.util.ModUtilities;
 
 import net.minecraft.client.renderer.entity.Render;

@@ -1,10 +1,10 @@
 package com.minelittlepony.gui;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.PonyConfig;
-import com.minelittlepony.PonyConfig.PonySettings;
 import com.minelittlepony.pony.data.PonyLevel;
-import com.minelittlepony.render.ponies.MobRenderers;
+import com.minelittlepony.settings.MobRenderers;
+import com.minelittlepony.settings.PonyConfig;
+import com.minelittlepony.settings.PonySettings;
 import com.mumfrey.liteloader.core.LiteLoader;
 
 /**

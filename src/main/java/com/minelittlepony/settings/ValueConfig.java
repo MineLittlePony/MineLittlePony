@@ -13,6 +13,7 @@ import java.io.File;
  */
 // Mumfrey pls.
 public class ValueConfig implements AdvancedExposable {
+
     @Override
     public void setupGsonSerialiser(GsonBuilder gsonBuilder) {
         gsonBuilder.registerTypeAdapter(Value.class, new ValueSerializer());
@@ -21,5 +22,20 @@ public class ValueConfig implements AdvancedExposable {
     @Override
     public File getConfigFile(File configFile, File configFileLocation, String defaultFileName) {
         return null;
+    }
+
+    public interface Setting extends Value<Boolean> {
+
+        Value<Boolean> setting();
+
+        @Override
+        default Boolean get() {
+            return setting().get();
+        }
+
+        @Override
+        default void set(Boolean value) {
+            setting().set(value);
+        }
     }
 }

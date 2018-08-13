@@ -1,11 +1,12 @@
 package com.minelittlepony.render.ponies;
 
-import com.minelittlepony.PonyConfig;
 import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.render.RenderPonyMob;
 import com.minelittlepony.render.PonySkull;
 import com.minelittlepony.render.PonySkullRenderer.ISkull;
 import com.minelittlepony.render.layer.LayerPonyStrayOverlay;
+import com.minelittlepony.settings.MobRenderers;
+import com.minelittlepony.settings.PonyConfig;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.client.renderer.GlStateManager;
@@ -25,7 +26,7 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
     public static final ISkull SKULL = new PonySkull() {
         @Override
         public boolean canRender(PonyConfig config) {
-            return config.getSkeletons().get();
+            return MobRenderers.SKELETONS.get();
         }
 
         @Override
@@ -73,7 +74,7 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
         public static final ISkull SKULL = new PonySkull() {
             @Override
             public boolean canRender(PonyConfig config) {
-                return config.getSkeletons().get();
+                return MobRenderers.SKELETONS.get();
             }
 
             @Override

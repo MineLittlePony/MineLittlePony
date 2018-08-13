@@ -5,6 +5,7 @@ import com.minelittlepony.hdskins.gui.GuiSkinsMineLP;
 import com.minelittlepony.pony.data.IPonyData;
 import com.minelittlepony.pony.data.PonyDataSerialzier;
 import com.minelittlepony.render.PonySkullRenderer;
+import com.minelittlepony.settings.PonyConfig;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.skins.LegacySkinServer;

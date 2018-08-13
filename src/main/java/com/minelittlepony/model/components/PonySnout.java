@@ -2,10 +2,11 @@ package com.minelittlepony.model.components;
 
 import static com.minelittlepony.model.PonyModelConstants.*;
 
-import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.model.capabilities.ICapitated;
 import com.minelittlepony.pony.data.PonyGender;
 import com.minelittlepony.render.plane.PlaneRenderer;
+import com.minelittlepony.settings.PonySettings;
+
 import net.minecraft.client.model.ModelBase;
 
 public class PonySnout {
@@ -57,7 +58,7 @@ public class PonySnout {
     }
 
     public void setGender(PonyGender gender) {
-        boolean show = !head.hasHeadGear() && !isHidden && MineLittlePony.getConfig().getSnuzzles().get();
+        boolean show = !head.hasHeadGear() && !isHidden && PonySettings.HD.get();
 
         mare.isHidden = !show || gender == PonyGender.STALLION;
         stallion.isHidden = !show || gender == PonyGender.MARE;

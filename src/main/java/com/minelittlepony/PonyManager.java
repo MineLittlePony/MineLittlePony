@@ -7,6 +7,7 @@ import com.google.gson.JsonParseException;
 import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyLevel;
+import com.minelittlepony.settings.PonyConfig;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.ISkinCacheClearListener;
 
