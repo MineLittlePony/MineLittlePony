@@ -101,7 +101,7 @@ public class LayerPonyCustomHead<T extends EntityLivingBase> implements LayerRen
     }
 
     private ModelWrapper getModel() {
-        return ((IRenderPony) renderer).getModelWrapper();
+        return ((IRenderPony<?>) renderer).getModelWrapper();
     }
 
     @Override
