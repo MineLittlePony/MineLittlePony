@@ -13,7 +13,6 @@ import java.io.File;
  */
 // Mumfrey pls.
 public class ValueConfig implements AdvancedExposable {
-
     @Override
     public void setupGsonSerialiser(GsonBuilder gsonBuilder) {
         gsonBuilder.registerTypeAdapter(Value.class, new ValueSerializer());

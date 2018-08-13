@@ -24,8 +24,6 @@ public class HDSkinsConfigPanel extends SettingsPanel {
             } else {
                 GLWindow.dispose();
             }
-
-            return checked;
         }));
     }
 

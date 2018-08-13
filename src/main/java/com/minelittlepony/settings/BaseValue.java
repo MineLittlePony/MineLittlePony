@@ -4,8 +4,8 @@ public class BaseValue<T> implements Value<T> {
 
     private T value;
 
-    public BaseValue(T value) {
-        this.value = value;
+    public BaseValue(T initial) {
+        value = initial;
     }
 
     @Override
