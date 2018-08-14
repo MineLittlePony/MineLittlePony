@@ -870,6 +870,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     public ModelRenderer getRandomModelBox(Random rand) {
         // grab one at random, but cycle through the list until you find one that's filled.
         // Return if you find one, or if you get back to where you started in which case there isn't any.
+
         int randomI = rand.nextInt(boxList.size());
         int index = randomI;
 
@@ -880,6 +881,14 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
             index = (index + 1) % boxList.size();
         } while (index != randomI);
+
+        if (result.cubeList.isEmpty()) {
+            result.addBox(0, 0, 0, 0, 0, 0);
+        }
+
+        if (result.cubeList.isEmpty()) {
+            throw new IllegalStateException("This model contains absolutely no boxes and a box could not be added!");
+        }
 
         return result;
     }
