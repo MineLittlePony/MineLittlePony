@@ -107,6 +107,35 @@ public enum PonyTransformation {
                     break;
             }
         }
+    },
+    YEARLING {
+        @Override
+        public void transform(IModel model, BodyPart part) {
+            if (model.isCrouching()) translate(0, -0.15F, 0);
+            if (model.isSleeping()) translate(0, -0.5F, 0.25F);
+
+            switch (part) {
+                case NECK:
+                    translate(0, -0.09F, -0.01F);
+                    scale(1, 1.1F, 1);
+                    if (model.isCrouching()) translate(-0.02F, -0.02F, 0.1F);
+                    break;
+                case HEAD:
+                    translate(0, -0.15F, 0.01F);
+                    if (model.isCrouching()) translate(0, 0.04F, 0);
+                    scale(1.15F, 1.15F, 1.15F);
+                    break;
+                case BODY:
+                case TAIL:
+                    translate(0, -0.1F, 0);
+                    break;
+                case LEGS:
+                    translate(0, -0.25F, 0.03F);
+                    scale(1, 1.18F, 1);
+                    if (model.isGoingFast()) translate(0, 0.05F, 0);
+                    break;
+            }
+        }
     };
 
     public abstract void transform(IModel model, BodyPart part);
