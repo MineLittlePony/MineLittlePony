@@ -14,7 +14,7 @@ public enum PonyRace implements ITriggerPixelMapped<PonyRace> {
     REFORMED_CHANGELING(0xcaed5a, PlayerModels.ALICORN, true, true),
     GRIFFIN(0xae9145, PlayerModels.PEGASUS, true, false),
     HIPPOGRIFF(0xd6ddac, PlayerModels.PEGASUS, true, false),
-    SEAPONY(0x333333, PlayerModels.SEAPONY, false, true);
+    SEAPONY(0x3655dd, PlayerModels.SEAPONY, false, true);
 
     private boolean wings;
     private boolean horn;
