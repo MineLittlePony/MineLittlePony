@@ -29,13 +29,10 @@ public class Button extends GuiButton implements IActionable, IGuiTooltipped {
         return this;
     }
 
+    @Override
     public Button setTooltip(List<String> tooltip) {
         this.tooltip = tooltip;
         return this;
-    }
-
-    public Button setTooltip(String tooltip) {
-        return setTooltip(Splitter.on("\r\n").splitToList(GameGui.format(tooltip)));
     }
 
     @Override

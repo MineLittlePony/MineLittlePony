@@ -26,7 +26,7 @@ public class HDSkinsConfigPanel extends SettingsPanel {
             }
 
             return checked;
-        }));
+        })).setTooltip(formatMultiLine("hdskins.warning.experimental", 250));
     }
 
     @Override

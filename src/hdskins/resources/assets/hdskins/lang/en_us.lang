@@ -30,3 +30,5 @@ hdskins.options.browse=Browse
 
 hdskins.options.skindrops=Experimental Skin Drop
 hdskins.options.cache=Clear Skin Cache
+
+hdskins.warning.experimental=§6WARNING: This feature is §4experimental§6, meaning things may break or derp or even slurp. Enabling this means you accept responsibility for what may happen to your chickens.

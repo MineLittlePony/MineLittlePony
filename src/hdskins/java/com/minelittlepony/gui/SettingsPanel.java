@@ -2,11 +2,15 @@ package com.minelittlepony.gui;
 
 import java.io.IOException;
 
+import com.mumfrey.liteloader.gl.GLClippingPlanes;
 import com.mumfrey.liteloader.modconfig.ConfigPanel;
 import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
+
+import org.lwjgl.opengl.GL11;
 
 
 /**
@@ -65,7 +69,14 @@ public abstract class SettingsPanel extends GameGui implements ConfigPanel {
 
     @Override
     public void drawPanel(ConfigPanelHost host, int mouseX, int mouseY, float partialTicks) {
-        drawScreen(mouseX, mouseY, partialTicks);
+        drawContents(mouseX, mouseY, partialTicks);
+
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        GLClippingPlanes.glDisableClipping();
+
+        postDrawContents(mouseX, mouseY, partialTicks);
+
+        GlStateManager.popAttrib();
     }
 
     @Override
