@@ -22,7 +22,7 @@ public class RenderPonyGuardian extends RenderGuardian {
         super(manager);
         mainModel = PMAPI.seapony.getBody();
 
-        ponyRenderer = new RenderPonyMob.Proxy<EntityGuardian>(manager, PMAPI.seapony) {
+        ponyRenderer = new RenderPonyMob.Proxy<EntityGuardian>(layerRenderers, manager, PMAPI.seapony) {
             @Override
             protected ResourceLocation getTexture(EntityGuardian entity) {
                 return RenderPonyGuardian.this.getTexture(entity);

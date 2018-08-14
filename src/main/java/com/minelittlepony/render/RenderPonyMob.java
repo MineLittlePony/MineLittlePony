@@ -15,10 +15,13 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerArrow;
+import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
+
+import java.util.List;
 
 // TODO: A lot of this duplicates RenderPonyPlayer
 //       and is the whole reason we had this scaling bug in the first place.
@@ -86,13 +89,16 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
     public abstract static class Proxy<T extends EntityLiving> extends RenderPonyMob<T> {
 
-        public Proxy(RenderManager manager, ModelWrapper model) {
+        public Proxy(List<LayerRenderer<T>> exportedLayers, RenderManager manager, ModelWrapper model) {
             super(manager, model);
+
+            exportedLayers.addAll(layerRenderers);
         }
 
         @Override
         protected void addLayers() {
-
+            layerRenderers.clear();
+            super.addLayers();
         }
 
         public final ResourceLocation getTextureFor(T entity) {
