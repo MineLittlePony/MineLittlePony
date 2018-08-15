@@ -18,7 +18,7 @@ minelp.mobs.pigzombies=Понифицировать свинозомби
 minelp.mobs.skeletons=Понифицировать скелетов
 minelp.mobs.illagers=Понифицировать обитателей Особняка
 minelp.mobs.guardians=Понифицировать Стражей
-minelp.mobs.endermen=Понифицировать Эндермен
+minelp.mobs.endermen=Понифицировать Странников Края
 
-minelp.mode.dry=Земля пони
-minelp.mode.wet=Морской пони
+minelp.mode.dry=Пони на земле
+minelp.mode.wet=Пони под водой
