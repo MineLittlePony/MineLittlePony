@@ -7,7 +7,6 @@ import com.minelittlepony.model.armour.IEquestrianArmor;
 import com.minelittlepony.model.armour.ModelPonyArmor;
 import com.minelittlepony.model.capabilities.IModelArmor;
 import com.minelittlepony.util.coordinates.Color;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
@@ -24,10 +23,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 
-import javax.annotation.Nullable;
-
 import java.io.IOException;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLayer<T> {
 
@@ -149,11 +148,11 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
 
     private static ResourceLocation getPonyResource(ResourceLocation human) {
         return PONY_ARMOUR.computeIfAbsent(human, key -> {
-            String domain = human.getResourceDomain();
+            String domain = human.getNamespace();
             if ("minecraft".equals(domain)) {
                 domain = "minelittlepony"; // it's a vanilla armor. I provide these.
             }
-            String path = human.getResourcePath().replace(".png", "_pony.png");
+            String path = human.getPath().replace(".png", "_pony.png");
             return new ResourceLocation(domain, path);
         });
     }

@@ -6,13 +6,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.util.ResourceLocation;
 
-import javax.annotation.Nullable;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
 
 public class ImageLoader implements Supplier<ResourceLocation> {
 
@@ -60,7 +61,7 @@ public class ImageLoader implements Supplier<ResourceLocation> {
     @Nullable
     private ResourceLocation loadSkin(BufferedImage image) {
 
-        ResourceLocation conv = new ResourceLocation(original.getResourceDomain() + "-converted", original.getResourcePath());
+        ResourceLocation conv = new ResourceLocation(original.getNamespace() + "-converted", original.getPath());
         boolean success = mc.getTextureManager().loadTexture(conv, new DynamicTextureImage(image));
         return success ? conv : null;
     }

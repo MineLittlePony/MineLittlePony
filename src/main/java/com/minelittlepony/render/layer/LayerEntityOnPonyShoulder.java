@@ -34,13 +34,13 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientP
 
         NBTTagCompound leftTag = player.getLeftShoulderEntity();
 
-        if (!leftTag.hasNoTags()) {
+        if (!leftTag.isEmpty()) {
             leftEntity = renderShoulderEntity(player, leftEntity, leftTag, headYaw, headPitch, true);
         }
 
         NBTTagCompound rightTag = player.getRightShoulderEntity();
 
-        if (!rightTag.hasNoTags()) {
+        if (!rightTag.isEmpty()) {
             rightEntity = renderShoulderEntity(player, rightEntity, rightTag, headYaw, headPitch, false);
         }
 
