@@ -42,24 +42,29 @@ public class ModelSkeletonPony extends ModelMobPony {
         super.setLivingAnimations(entity, move, swing, ticks);
     }
 
+    @Override
     protected float getLegOutset() {
         if (isSleeping()) return 2.6f;
         if (isCrouching()) return 0;
         return 4;
     }
 
+    @Override
     protected int getArmWidth() {
         return 2;
     }
 
+    @Override
     protected int getArmDepth() {
         return 2;
     }
 
+    @Override
     protected float getLegRotationX() {
         return 3;
     }
 
+    @Override
     protected float getArmRotationY() {
         return 8;
     }
