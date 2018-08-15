@@ -8,15 +8,14 @@ import com.minelittlepony.render.layer.LayerHeldPonyItem;
 import com.minelittlepony.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.render.layer.LayerEyeGlow.IGlowingRenderer;
 
-import java.util.Random;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerArrow;
 import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.Random;
 
 public class RenderEnderStallion extends RenderPonyMob<EntityEnderman> implements IGlowingRenderer {
 
