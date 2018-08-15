@@ -5,7 +5,6 @@ import com.voxelmodpack.hdskins.upload.awt.FileDropper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.DefaultResourcePack;
-import net.minecraft.launchwrapper.injector.VanillaTweakInjector;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
@@ -21,7 +20,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.TooManyListenersException;

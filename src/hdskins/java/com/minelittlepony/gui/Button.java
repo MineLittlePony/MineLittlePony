@@ -2,8 +2,6 @@ package com.minelittlepony.gui;
 
 import java.util.List;
 
-import com.google.common.base.Splitter;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 
