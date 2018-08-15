@@ -17,8 +17,6 @@ public class PonyTail extends PlaneRenderer implements IModelPart {
 
     private int tailStop = 0;
 
-    public boolean isHidden = false;
-
     public PonyTail(AbstractPonyModel model) {
         super(model);
         theModel = model;
@@ -115,7 +113,7 @@ public class PonyTail extends PlaneRenderer implements IModelPart {
 
         @Override
         public void render(float scale) {
-            if (!isHidden && index < tailStop) {
+            if (index < tailStop) {
                 super.render(scale);
             }
         }
