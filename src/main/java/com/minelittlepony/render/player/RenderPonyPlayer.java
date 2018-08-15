@@ -1,8 +1,5 @@
 package com.minelittlepony.render.player;
 
-import java.util.Map;
-import java.util.Optional;
-
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyConfig;
 import com.minelittlepony.ducks.IRenderPony;
@@ -11,10 +8,11 @@ import com.minelittlepony.model.components.ModelDeadMau5Ears;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyLevel;
 import com.minelittlepony.render.PonySkull;
-import com.minelittlepony.render.RenderPony;
 import com.minelittlepony.render.PonySkullRenderer.ISkull;
+import com.minelittlepony.render.RenderPony;
 import com.minelittlepony.render.layer.LayerEntityOnPonyShoulder;
 import com.minelittlepony.render.layer.LayerHeldPonyItemMagical;
+import com.minelittlepony.render.layer.LayerPonyArmor;
 import com.minelittlepony.render.layer.LayerPonyCape;
 import com.minelittlepony.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.render.layer.LayerPonyElytra;
@@ -22,19 +20,20 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.HDSkinManager;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
-
+import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.entity.layers.LayerArrow;
 import net.minecraft.client.resources.DefaultPlayerSkin;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.entity.layers.LayerArrow;
-import net.minecraft.entity.Entity;
+
+import java.util.Map;
+import java.util.Optional;
 
 public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<AbstractClientPlayer> {
 
@@ -95,6 +94,7 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
     protected void addLayers() {
         layerRenderers.clear();
 
+        addLayer(new LayerPonyArmor<>(this));
         addLayer(new LayerArrow(this));
         addLayer(new LayerPonyCustomHead<>(this));
         addLayer(new LayerPonyElytra<>(this));
