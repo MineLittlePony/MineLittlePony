@@ -20,16 +20,23 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
         super(livingPony);
     }
 
+    protected ItemStack getLeftItem(T entity) {
+        boolean main = entity.getPrimaryHand() == EnumHandSide.LEFT;
+
+        return main ? entity.getHeldItemMainhand() : entity.getHeldItemOffhand();
+    }
+
+    protected ItemStack getRightItem(T entity) {
+        boolean main = entity.getPrimaryHand() == EnumHandSide.RIGHT;
+
+        return main ? entity.getHeldItemMainhand() : entity.getHeldItemOffhand();
+    }
+
     @Override
     public void doPonyRender(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
 
-        boolean mainRight = entity.getPrimaryHand() == EnumHandSide.RIGHT;
-
-        ItemStack itemMain = entity.getHeldItemMainhand();
-        ItemStack itemOff = entity.getHeldItemOffhand();
-
-        ItemStack left = mainRight ? itemOff : itemMain;
-        ItemStack right = mainRight ? itemMain : itemOff;
+        ItemStack left = getLeftItem(entity);
+        ItemStack right = getRightItem(entity);
 
         if (!left.isEmpty() || !right.isEmpty()) {
             ModelBase model = getMainModel();

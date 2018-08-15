@@ -38,6 +38,7 @@ public class PonyConfig extends SensibleConfig implements Exposable {
     @Expose public boolean skeletons = true;
     @Expose public boolean illagers = true;
     @Expose public boolean guardians = true;
+    @Expose public boolean endermen = true;
 
     /**
      * Gets the current PonyLevel. That is the level of ponies you would like to see.

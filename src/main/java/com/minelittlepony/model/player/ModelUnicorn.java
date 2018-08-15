@@ -139,7 +139,7 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
         super.renderHead(entity, move, swing, ticks, headYaw, headPitch, scale);
 
         if (canCast()) {
-            horn.render(scale);
+            horn.renderPart(scale);
             if (isCasting()) {
                 horn.renderMagic(getMagicColor(), scale);
             }
@@ -152,7 +152,20 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
         unicornArmLeft = new PonyRenderer(this, 40, 32).size(64, 64);
         unicornArmRight = new PonyRenderer(this, 40, 32).size(64, 64);
 
-        unicornArmLeft .box(FIRSTP_ARM_CENTRE_X, THIRDP_ARM_CENTRE_Y, THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + .25F).around(5, yOffset + 2, 0);
-        unicornArmRight.box(FIRSTP_ARM_CENTRE_X, THIRDP_ARM_CENTRE_Y, THIRDP_ARM_CENTRE_Z, 4, 12, 4, stretch + .25F).around(-5, yOffset + 2, 0);
+        int armLength = getArmLength();
+        int armWidth = getArmWidth();
+        int armDepth = getArmDepth();
+
+        float rarmX = getLegRotationX();
+        float rarmY = getArmRotationY();
+
+        float armX = THIRDP_ARM_CENTRE_X;
+        float armY = THIRDP_ARM_CENTRE_Y;
+        float armZ = BODY_CENTRE_Z / 2 - 1 - armDepth;
+
+        unicornArmLeft .box(armX, armY, armZ, armWidth, armLength, armDepth, stretch + .25F)
+                        .around(rarmX, yOffset + rarmY, 0);
+        unicornArmRight.box(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch + .25F)
+                        .around(-rarmX, yOffset + rarmY, 0);
     }
 }

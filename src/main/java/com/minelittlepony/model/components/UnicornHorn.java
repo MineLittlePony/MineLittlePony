@@ -1,6 +1,7 @@
 package com.minelittlepony.model.components;
 
 import com.minelittlepony.model.capabilities.ICapitated;
+import com.minelittlepony.model.capabilities.IModelPart;
 import com.minelittlepony.render.HornGlowRenderer;
 import com.minelittlepony.render.PonyRenderer;
 
@@ -10,10 +11,12 @@ import static org.lwjgl.opengl.GL11.*;
 import static net.minecraft.client.renderer.GlStateManager.*;
 import static com.minelittlepony.model.PonyModelConstants.*;
 
-public class UnicornHorn {
+public class UnicornHorn implements IModelPart {
 
-    private PonyRenderer horn;
-    private HornGlowRenderer glow;
+    protected PonyRenderer horn;
+    protected HornGlowRenderer glow;
+
+    protected boolean isVisible;
 
     public <T extends ModelBase & ICapitated> UnicornHorn(T pony, float yOffset, float stretch) {
         this(pony, yOffset, stretch, 0, 0, 0);
@@ -34,24 +37,32 @@ public class UnicornHorn {
             .setAlpha(0.2f).box(0, 0, 0, 1, 3, 1, stretch + 0.8F);
     }
 
-    public void render(float scale) {
-        horn.render(scale);
+    @Override
+    public void renderPart(float scale) {
+        if (isVisible) {
+            horn.render(scale);
+        }
     }
 
     public void renderMagic(int tint, float scale) {
-        glPushAttrib(24577);
-        disableTexture2D();
-        disableLighting();
-        enableBlend();
-        blendFunc(GL_SRC_ALPHA, GL_ONE);
+        if (isVisible) {
+            glPushAttrib(24577);
+            disableTexture2D();
+            disableLighting();
+            enableBlend();
+            blendFunc(GL_SRC_ALPHA, GL_ONE);
 
-        horn.postRender(scale);
+            horn.postRender(scale);
+            glow.setTint(tint).render(scale);
 
-        glow.setTint(tint).render(scale);
+            enableTexture2D();
+            enableLighting();
+            disableBlend();
+            popAttrib();
+        }
+    }
 
-        enableTexture2D();
-        enableLighting();
-        disableBlend();
-        popAttrib();
+    public void setVisible(boolean visible) {
+        isVisible = visible;
     }
 }

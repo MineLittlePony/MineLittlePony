@@ -60,6 +60,12 @@ public enum MobRenderers implements Setting {
             pony.switchRenderer(state, manager, EntityGuardian.class, new RenderPonyGuardian(manager));
             pony.switchRenderer(state, manager, EntityElderGuardian.class, new RenderPonyGuardian.Elder(manager));
         }
+    },
+    ENDERMEN {
+        @Override
+        public void register(boolean state, PonyRenderManager pony, RenderManager manager) {
+            pony.switchRenderer(state, manager, EntityEnderman.class, new RenderEnderStallion(manager));
+        }
     };
 
     @Override

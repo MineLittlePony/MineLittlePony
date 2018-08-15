@@ -5,6 +5,7 @@ import com.minelittlepony.model.player.ModelEarthPony;
 import com.minelittlepony.model.player.ModelPegasus;
 import com.minelittlepony.model.player.ModelUnicorn;
 import com.minelittlepony.model.player.ModelZebra;
+import com.minelittlepony.model.ponies.ModelEnderStallion;
 import com.minelittlepony.model.ponies.ModelIllagerPony;
 import com.minelittlepony.model.ponies.ModelSeapony;
 import com.minelittlepony.model.ponies.ModelSkeletonPony;
@@ -43,6 +44,7 @@ public final class PMAPI {
     public static final ModelWrapper villager = new ModelWrapper(new ModelVillagerPony());
     public static final ModelWrapper illager = new ModelWrapper(new ModelIllagerPony());
     public static final ModelWrapper witch = new ModelWrapper(new ModelWitchPony());
+    public static final ModelWrapper enderman = new ModelWrapper(new ModelEnderStallion());
 
     public static void init() {
         for (Field field : PMAPI.class.getFields()) {

@@ -60,6 +60,5 @@ public class ModelMobPony extends ModelAlicorn {
 
         arm.rotateAngleY = direction * (0.1F - swing * 0.6F);
         arm.rotateAngleZ = cos;
-
     }
 }
