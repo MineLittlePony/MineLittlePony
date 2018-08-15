@@ -1,5 +1,12 @@
 package com.minelittlepony.render.layer;
 
+import static net.minecraft.client.renderer.GlStateManager.color;
+import static net.minecraft.client.renderer.GlStateManager.popMatrix;
+import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
+import static net.minecraft.client.renderer.GlStateManager.rotate;
+import static net.minecraft.client.renderer.GlStateManager.scale;
+import static net.minecraft.client.renderer.GlStateManager.translate;
+
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
@@ -22,8 +29,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.EnumFacing;
-
-import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class LayerPonyCustomHead<T extends EntityLivingBase> implements LayerRenderer<T> {
 
@@ -92,7 +97,7 @@ public class LayerPonyCustomHead<T extends EntityLivingBase> implements LayerRen
             if (nbt.hasKey("SkullOwner", 10)) {
                 profile = NBTUtil.readGameProfileFromNBT(nbt.getCompoundTag("SkullOwner"));
             } else if (nbt.hasKey("SkullOwner", 8)) {
-                profile = TileEntitySkull.updateGameprofile(new GameProfile(null, nbt.getString("SkullOwner")));
+                profile = TileEntitySkull.updateGameProfile(new GameProfile(null, nbt.getString("SkullOwner")));
                 nbt.setTag("SkullOwner", NBTUtil.writeGameProfile(new NBTTagCompound(), profile));
             }
         }
