@@ -57,8 +57,6 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
 
         if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemArmor) {
 
-            ItemArmor itemarmor = (ItemArmor) itemstack.getItem();
-
             ModelPonyArmor armour = getArmorModel(entity, itemstack, armorSlot, layer, pony.getArmor().getArmorForLayer(layer));
 
             if (armour.prepareToRender(armorSlot, layer)) {
@@ -70,6 +68,8 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
                 Tuple<ResourceLocation, Boolean> armourTexture = getArmorTexture(entity, itemstack, armorSlot, layer, null);
 
                 getRenderer().bindTexture(armourTexture.getFirst());
+
+                ItemArmor itemarmor = (ItemArmor) itemstack.getItem();
 
                 if (itemarmor.getArmorMaterial() == ArmorMaterial.LEATHER) {
                     Color.glColor(itemarmor.getColor(itemstack), 1);
