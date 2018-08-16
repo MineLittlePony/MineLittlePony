@@ -128,7 +128,7 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
 
         switch (slot) {
             case HEAD:
-                model.showHead(isPony);
+                model.showHead(true);
                 break;
             case FEET:
                 model.showFeet(true);
