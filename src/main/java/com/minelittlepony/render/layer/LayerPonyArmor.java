@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.minelittlepony.ForgeProxy;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.model.armour.IEquestrianArmor;
+import com.minelittlepony.model.armour.IEquestrianArmor.ArmorLayer;
 import com.minelittlepony.model.armour.ModelPonyArmor;
 import com.minelittlepony.model.capabilities.IModelArmor;
 import com.minelittlepony.util.coordinates.Color;
@@ -45,45 +46,49 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
 
         for (EntityEquipmentSlot i : EntityEquipmentSlot.values()) {
             if (i.getSlotType() == Type.ARMOR) {
-                renderArmor(entity, move, swing, partialTicks, ticks, headYaw, headPitch, scale, i);
+                renderArmor(entity, move, swing, partialTicks, ticks, headYaw, headPitch, scale, i, ArmorLayer.INNER);
+                renderArmor(entity, move, swing, partialTicks, ticks, headYaw, headPitch, scale, i, ArmorLayer.OUTER);
             }
         }
     }
 
-    private <V extends ModelBiped & IModelArmor> void renderArmor(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale, EntityEquipmentSlot armorSlot) {
+    private <V extends ModelBiped & IModelArmor> void renderArmor(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale, EntityEquipmentSlot armorSlot, ArmorLayer layer) {
         ItemStack itemstack = entity.getItemStackFromSlot(armorSlot);
 
         if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemArmor) {
 
             ItemArmor itemarmor = (ItemArmor) itemstack.getItem();
 
-            ModelPonyArmor armour = getArmorModel(entity, itemstack, armorSlot, pony.getArmor().getArmorForSlot(armorSlot));
-            armour.setModelAttributes(pony.getBody());
-            armour.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
-            armour.synchroniseLegs(pony.getBody());
+            ModelPonyArmor armour = getArmorModel(entity, itemstack, armorSlot, layer, pony.getArmor().getArmorForLayer(layer));
 
-            Tuple<ResourceLocation, Boolean> armors = getArmorTexture(entity, itemstack, armorSlot, null);
-            prepareToRender(armour, armorSlot, armors.getSecond());
+            if (armour.prepareToRender(armorSlot, layer)) {
 
-            getRenderer().bindTexture(armors.getFirst());
+                armour.setModelAttributes(pony.getBody());
+                armour.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
+                armour.synchroniseLegs(pony.getBody());
 
-            if (itemarmor.getArmorMaterial() == ArmorMaterial.LEATHER) {
-                Color.glColor(itemarmor.getColor(itemstack), 1);
+                Tuple<ResourceLocation, Boolean> armourTexture = getArmorTexture(entity, itemstack, armorSlot, layer, null);
+
+                getRenderer().bindTexture(armourTexture.getFirst());
+
+                if (itemarmor.getArmorMaterial() == ArmorMaterial.LEATHER) {
+                    Color.glColor(itemarmor.getColor(itemstack), 1);
+                    armour.render(entity, move, swing, ticks, headYaw, headPitch, scale);
+                    armourTexture = getArmorTexture(entity, itemstack, armorSlot, layer, "overlay");
+                    getRenderer().bindTexture(armourTexture.getFirst());
+                }
+
+                GlStateManager.color(1, 1, 1, 1);
                 armour.render(entity, move, swing, ticks, headYaw, headPitch, scale);
-                armors = getArmorTexture(entity, itemstack, armorSlot, "overlay");
-                getRenderer().bindTexture(armors.getFirst());
-            }
 
-            GlStateManager.color(1, 1, 1, 1);
-            armour.render(entity, move, swing, ticks, headYaw, headPitch, scale);
-
-            if (itemstack.isItemEnchanted()) {
-                LayerArmorBase.renderEnchantedGlint(getRenderer(), entity, armour, move, swing, partialTicks, ticks, headYaw, headPitch, scale);
+                if (itemstack.isItemEnchanted()) {
+                    LayerArmorBase.renderEnchantedGlint(getRenderer(), entity, armour, move, swing, partialTicks, ticks, headYaw, headPitch, scale);
+                }
             }
         }
     }
 
-    private Tuple<ResourceLocation, Boolean> getArmorTexture(T entity, ItemStack itemstack, EntityEquipmentSlot slot, @Nullable String type) {
+    private Tuple<ResourceLocation, Boolean> getArmorTexture(T entity, ItemStack itemstack, EntityEquipmentSlot slot, ArmorLayer layer,  @Nullable String type) {
         ItemArmor item = (ItemArmor) itemstack.getItem();
         String texture = item.getArmorMaterial().getName();
 
@@ -97,56 +102,41 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
 
         type = type == null ? "" : String.format("_%s", type);
 
-        String ponyRes = String.format("%s:textures/models/armor/%s_layer_%d%s.png", domain, texture, slot == EntityEquipmentSlot.LEGS ? 2 : 1, type);
+        String ponyRes = String.format("%s:textures/models/armor/%s_layer_%s%s.png", domain, texture, layer.name().toLowerCase(), type);
+        String oldPonyRes = String.format("%s:textures/models/armor/%s_layer_%d%s.png", domain, texture, layer == ArmorLayer.INNER ? 2 : 1, type);
 
-        ponyRes = getArmorTexture(entity, itemstack, ponyRes, slot, type);
-
-        ResourceLocation human = getHumanResource(ponyRes);
-        ResourceLocation pony = getPonyResource(human);
+        ResourceLocation human = getArmorTexture(entity, itemstack, ponyRes, slot, type);
+        ResourceLocation oldPony = ponifyResource(getArmorTexture(entity, itemstack, oldPonyRes, slot, type));
+        ResourceLocation pony = ponifyResource(human);
 
         // check resource packs for either texture.
         for (ResourcePackRepository.Entry entry : Minecraft.getMinecraft().getResourcePackRepository().getRepositoryEntries()) {
             if (entry.getResourcePack().resourceExists(pony)) {
                 // ponies are more important
                 return new Tuple<>(pony, true);
+            } else if (entry.getResourcePack().resourceExists(oldPony)) {
+                return new Tuple<>(oldPony, true);
             } else if (entry.getResourcePack().resourceExists(human)) {
                 // but I guess I'll take a human
                 return new Tuple<>(human, false);
             }
         }
+
         // the default pack
         try {
             Minecraft.getMinecraft().getResourceManager().getResource(pony);
             return new Tuple<>(pony, true);
         } catch (IOException e) {
-            return new Tuple<>(human, false);
+            try {
+                Minecraft.getMinecraft().getResourceManager().getResource(oldPony);
+                return new Tuple<>(oldPony, true);
+            } catch (IOException r) {
+                return new Tuple<>(human, false);
+            }
         }
     }
 
-    private <V extends ModelBiped & IModelArmor> void prepareToRender(V model, EntityEquipmentSlot slot, boolean isPony) {
-        model.setVisible(false);
-
-        switch (slot) {
-            case HEAD:
-                model.showHead(isPony);
-                break;
-            case FEET:
-                model.showFeet(true);
-                break;
-            case LEGS:
-                model.showFeet(true);
-                model.showLegs(isPony);
-            case CHEST:
-                model.showSaddle(isPony);
-            default:
-        }
-    }
-
-    private static ResourceLocation getHumanResource(String resource) {
-        return HUMAN_ARMOUR.computeIfAbsent(resource, ResourceLocation::new);
-    }
-
-    private static ResourceLocation getPonyResource(ResourceLocation human) {
+    private static ResourceLocation ponifyResource(ResourceLocation human) {
         return PONY_ARMOUR.computeIfAbsent(human, key -> {
             String domain = human.getNamespace();
             if ("minecraft".equals(domain)) {
@@ -157,11 +147,11 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
         });
     }
 
-    private static String getArmorTexture(EntityLivingBase entity, ItemStack item, String def, EntityEquipmentSlot slot, @Nullable String type) {
-        return ForgeProxy.getArmorTexture(entity, item, def, slot, type);
+    private static ResourceLocation getArmorTexture(EntityLivingBase entity, ItemStack item, String def, EntityEquipmentSlot slot, @Nullable String type) {
+        return HUMAN_ARMOUR.computeIfAbsent(ForgeProxy.getArmorTexture(entity, item, def, slot, type), ResourceLocation::new);
     }
 
-    private static ModelPonyArmor getArmorModel(EntityLivingBase entity, ItemStack itemstack, EntityEquipmentSlot slot, ModelPonyArmor def) {
+    private static ModelPonyArmor getArmorModel(EntityLivingBase entity, ItemStack itemstack, EntityEquipmentSlot slot, ArmorLayer layer, ModelPonyArmor def) {
         ModelBase model = ForgeProxy.getArmorModel(entity, itemstack, slot, def);
 
         if (model instanceof ModelPonyArmor) {
@@ -169,7 +159,7 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
         }
 
         if (model instanceof IEquestrianArmor) {
-            return ((IEquestrianArmor) model).getArmorForSlot(slot);
+            return ((IEquestrianArmor) model).getArmorForLayer(layer);
         }
 
         return def;

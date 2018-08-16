@@ -3,18 +3,16 @@ package com.minelittlepony.model.armour;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 
-import static com.minelittlepony.model.PonyModelConstants.*;
-
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.capabilities.IModel;
 import com.minelittlepony.model.capabilities.IModelArmor;
 import com.minelittlepony.render.PonyRenderer;
 
+import static com.minelittlepony.model.PonyModelConstants.*;
+
 public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
 
     public PonyRenderer flankGuard;
-
-    public PonyRenderer saddle;
 
     public ModelPonyArmor() {
         super(false);
@@ -28,27 +26,15 @@ public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
         flankGuard.rotateAngleX = rotateAngleX;
         flankGuard.rotationPointY = rotationPointY;
         flankGuard.rotationPointZ = rotationPointZ;
-
-        saddle.rotateAngleX = rotateAngleX;
-        saddle.rotationPointY = rotationPointY;
-        saddle.rotationPointZ = rotationPointZ;
     }
 
     @Override
     protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         flankGuard.render(scale);
-        saddle.render(scale);
     }
 
     @Override
     protected void renderLegs(float scale) {
-        if (!isSneak) {
-            boolean isLegs = saddle.showModel;
-            saddle.showModel = true;
-            saddle.postRender(scale);
-            saddle.showModel = isLegs;
-        }
-
         super.renderLegs(scale);
     }
 
@@ -71,10 +57,7 @@ public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
     protected void initBody(float yOffset, float stretch) {
         super.initBody(yOffset, stretch);
 
-        flankGuard = new PonyRenderer(this, 0, 0)
-                .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-                 .box(-4, 4,  6, 8, 8, 8, stretch);
-        saddle = new PonyRenderer(this, 16, 8)
+        flankGuard = new PonyRenderer(this, 16, 8)
                 .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                  .box(-4, 4, -2, 8, 8, 16, stretch);
     }
@@ -89,34 +72,41 @@ public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
     }
 
     @Override
-    public void setVisible(boolean invisible) {
-        super.setVisible(invisible);
-        flankGuard.showModel = invisible;
-        saddle.showModel = invisible;
-        bipedHead.showModel = invisible;
+    public void setInVisible() {
+        setVisible(false);
+        flankGuard.showModel = false;
+        bipedHead.showModel = false;
         tail.setVisible(false);
         neck.isHidden = true;
         upperTorso.isHidden = true;
         snout.isHidden = true;
     }
 
-    public void showFeet(boolean show) {
-        bipedRightArm.showModel = show;
-        bipedLeftArm.showModel = show;
-        bipedRightLeg.showModel = show;
-        bipedLeftLeg.showModel = show;
+    @Override
+    public void showBoots() {
+        bipedRightArm.showModel = true;
+        bipedLeftArm.showModel = true;
+        bipedRightLeg.showModel = true;
+        bipedLeftLeg.showModel = true;
     }
 
-    public void showLegs(boolean isPony) {
-        bipedBody.showModel =  true;
+    @Override
+    public void showLeggings() {
+        showBoots();
     }
 
-    public void showSaddle(boolean isPony) {
-        flankGuard.showModel = !isPony;
-        saddle.showModel = isPony;
+    @Override
+    public void showChestplate() {
+        flankGuard.showModel = true;
     }
 
-    public void showHead(boolean show) {
-        bipedHead.showModel = show;
+    @Override
+    public void showSaddle() {
+        flankGuard.showModel = true;
+    }
+
+    @Override
+    public void showHelmet() {
+        bipedHead.showModel = true;
     }
 }

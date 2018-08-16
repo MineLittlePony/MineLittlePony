@@ -44,8 +44,8 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
         addLayer(new LayerBipedArmor(this) {
             @Override
             protected void initArmor() {
-                modelLeggings = getModelWrapper().getArmor().leggings;
-                modelArmor = getModelWrapper().getArmor().chestplate;
+                modelLeggings = getModelWrapper().getArmor().innerLayer;
+                modelArmor = getModelWrapper().getArmor().outerLayer;
             }
         });
     }

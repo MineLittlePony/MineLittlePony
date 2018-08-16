@@ -1,7 +1,10 @@
 package com.minelittlepony.model.armour;
 
-import net.minecraft.inventory.EntityEquipmentSlot;
-
 public interface IEquestrianArmor {
-    ModelPonyArmor getArmorForSlot(EntityEquipmentSlot slot);
+    ModelPonyArmor getArmorForLayer(ArmorLayer layer);
+
+    enum ArmorLayer {
+        INNER,
+        OUTER
+    }
 }

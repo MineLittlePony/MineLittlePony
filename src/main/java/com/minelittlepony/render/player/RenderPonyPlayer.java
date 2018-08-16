@@ -15,6 +15,7 @@ import com.minelittlepony.render.RenderPony;
 import com.minelittlepony.render.PonySkullRenderer.ISkull;
 import com.minelittlepony.render.layer.LayerEntityOnPonyShoulder;
 import com.minelittlepony.render.layer.LayerHeldPonyItemMagical;
+import com.minelittlepony.render.layer.LayerPonyArmor;
 import com.minelittlepony.render.layer.LayerPonyCape;
 import com.minelittlepony.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.render.layer.LayerPonyElytra;
@@ -95,6 +96,7 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
     protected void addLayers() {
         layerRenderers.clear();
 
+        addLayer(new LayerPonyArmor<>(this));
         addLayer(new LayerArrow(this));
         addLayer(new LayerPonyCustomHead<>(this));
         addLayer(new LayerPonyElytra<>(this));

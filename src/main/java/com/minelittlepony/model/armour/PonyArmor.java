@@ -3,36 +3,34 @@ package com.minelittlepony.model.armour;
 import com.minelittlepony.model.capabilities.IModelWrapper;
 import com.minelittlepony.pony.data.IPonyData;
 
-import net.minecraft.inventory.EntityEquipmentSlot;
-
 public class PonyArmor implements IModelWrapper, IEquestrianArmor {
 
-    public final ModelPonyArmor chestplate;
-    public final ModelPonyArmor leggings;
+    public final ModelPonyArmor outerLayer;
+    public final ModelPonyArmor innerLayer;
 
-    public PonyArmor(ModelPonyArmor chest, ModelPonyArmor body) {
-        chestplate = chest;
-        leggings = body;
+    public PonyArmor(ModelPonyArmor outer, ModelPonyArmor inner) {
+        outerLayer = outer;
+        innerLayer = inner;
     }
 
     @Override
     public void apply(IPonyData meta) {
-        chestplate.metadata = meta;
-        leggings.metadata = meta;
+        outerLayer.metadata = meta;
+        innerLayer.metadata = meta;
     }
 
     @Override
     public void init() {
-        chestplate.init(0, 1);
-        leggings.init(0, 0.5f);
+        outerLayer.init(0, 1);
+        innerLayer.init(0, 0.5F);
     }
 
     @Override
-    public ModelPonyArmor getArmorForSlot(EntityEquipmentSlot slot) {
-        if (slot == EntityEquipmentSlot.LEGS) {
-            return leggings;
+    public ModelPonyArmor getArmorForLayer(ArmorLayer layer) {
+        if (layer == ArmorLayer.INNER) {
+            return innerLayer;
         }
 
-        return chestplate;
+        return outerLayer;
     }
 }
