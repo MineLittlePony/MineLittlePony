@@ -10,7 +10,6 @@ import com.mojang.authlib.GameProfile;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
 import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.entity.monster.EntityStray;
 import net.minecraft.entity.monster.EntityWitherSkeleton;
@@ -36,18 +35,6 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
 
     public RenderPonySkeleton(RenderManager manager) {
         super(manager, PMAPI.skeleton);
-    }
-
-    @Override
-    protected void addLayers() {
-        super.addLayers();
-        addLayer(new LayerBipedArmor(this) {
-            @Override
-            protected void initArmor() {
-                modelLeggings = getModelWrapper().getArmor().innerLayer;
-                modelArmor = getModelWrapper().getArmor().outerLayer;
-            }
-        });
     }
 
     @Override

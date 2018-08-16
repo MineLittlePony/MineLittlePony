@@ -1,5 +1,6 @@
 package com.minelittlepony.model;
 
+import com.minelittlepony.model.armour.IEquestrianArmor;
 import com.minelittlepony.model.armour.PonyArmor;
 import com.minelittlepony.model.capabilities.IModelWrapper;
 import com.minelittlepony.pony.data.IPonyData;
@@ -29,7 +30,7 @@ public class ModelWrapper implements IModelWrapper {
      * Returns the contained armour model.
      * @return
      */
-    public PonyArmor getArmor() {
+    public IEquestrianArmor getArmor() {
         return armor;
     }
 
