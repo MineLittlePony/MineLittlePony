@@ -34,7 +34,7 @@ public class ModelEnderStallion extends ModelSkeletonPony {
         leftArmPose = rightArmPose;
 
         isAlicorn = entity.getUniqueID().getLeastSignificantBits() % 3 == 0;
-        isBoss = !isAlicorn && entity.getUniqueID().getLeastSignificantBits() % 20 == 0;
+        isBoss = !isAlicorn && entity.getUniqueID().getLeastSignificantBits() % 90 == 0;
 
         leftHorn.isHidden = rightHorn.isHidden = !isBoss;
         horn.setVisible(!isBoss);
