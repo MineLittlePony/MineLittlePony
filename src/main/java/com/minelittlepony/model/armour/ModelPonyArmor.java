@@ -76,6 +76,7 @@ public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
         setVisible(false);
         chestPiece.showModel = false;
         bipedHead.showModel = false;
+        neck.showModel = false;
         tail.setVisible(false);
         upperTorso.isHidden = true;
         snout.isHidden = true;
@@ -97,6 +98,7 @@ public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
     @Override
     public void showChestplate() {
         chestPiece.showModel = true;
+        neck.showModel = true;
     }
 
     @Override
