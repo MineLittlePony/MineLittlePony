@@ -4,7 +4,6 @@ import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.capabilities.IModel;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -39,14 +38,13 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
         ItemStack right = getRightItem(entity);
 
         if (!left.isEmpty() || !right.isEmpty()) {
-            ModelBase model = getMainModel();
+            IModel model = getMainModel();
 
             pushMatrix();
-            if (model instanceof IModel) {
-                ((IModel) model).transform(BodyPart.LEGS);
-            }
 
-            if (model.isChild) {
+            model.transform(BodyPart.LEGS);
+
+            if (model.isChild()) {
                 translate(0, 0.625, 0);
                 rotate(-20, -1, 0, 0);
                 scale(.5, .5, .5);

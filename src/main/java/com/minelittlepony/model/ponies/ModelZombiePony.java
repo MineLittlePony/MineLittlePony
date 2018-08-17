@@ -4,9 +4,19 @@ import com.minelittlepony.model.ModelMobPony;
 import com.minelittlepony.render.AbstractPonyRenderer;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
 
 public class ModelZombiePony extends ModelMobPony {
+
+    public boolean isPegasus;
+
+    @Override
+    public void setLivingAnimations(EntityLivingBase entity, float move, float swing, float ticks) {
+        isPegasus = entity.getUniqueID().getLeastSignificantBits() % 30 == 0;
+        isFlying = !entity.onGround;
+    }
+
     @Override
     protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
         super.rotateLegs(move, swing, ticks, entity);
@@ -23,5 +33,10 @@ public class ModelZombiePony extends ModelMobPony {
 
     public boolean islookAngleRight(float move) {
         return MathHelper.sin(move / 20) < 0;
+    }
+
+    @Override
+    public boolean canFly() {
+        return isPegasus;
     }
 }
