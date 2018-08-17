@@ -10,8 +10,13 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 
 public class ModelSkeletonPony extends ModelMobPony {
+
+    public boolean isUnicorn;
+
     @Override
     public void setLivingAnimations(EntityLivingBase entity, float move, float swing, float ticks) {
+        isUnicorn = entity.getUniqueID().getLeastSignificantBits() % 3 != 0;
+
         rightArmPose = ArmPose.EMPTY;
         leftArmPose = ArmPose.EMPTY;
 
@@ -40,6 +45,11 @@ public class ModelSkeletonPony extends ModelMobPony {
 
 
         super.setLivingAnimations(entity, move, swing, ticks);
+    }
+
+    @Override
+    public boolean canCast() {
+        return isUnicorn;
     }
 
     @Override

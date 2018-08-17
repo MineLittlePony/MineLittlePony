@@ -33,6 +33,7 @@ public class ModelEnderStallion extends ModelSkeletonPony {
         rightArmPose = isCarrying ? ArmPose.BLOCK : ArmPose.EMPTY;
         leftArmPose = rightArmPose;
 
+        isUnicorn = true;
         isAlicorn = entity.getUniqueID().getLeastSignificantBits() % 3 == 0;
         isBoss = !isAlicorn && entity.getUniqueID().getLeastSignificantBits() % 90 == 0;
 
@@ -72,11 +73,6 @@ public class ModelEnderStallion extends ModelSkeletonPony {
         GlStateManager.translate(0, -1.15F, 0);
         super.render(entity, move, swing, ticks, headYaw, headPitch, scale);
         GlStateManager.popMatrix();
-    }
-
-    @Override
-    public boolean canCast() {
-        return true;
     }
 
     @Override
