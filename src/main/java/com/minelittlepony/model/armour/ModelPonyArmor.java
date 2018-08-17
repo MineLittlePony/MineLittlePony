@@ -12,7 +12,7 @@ import static com.minelittlepony.model.PonyModelConstants.*;
 
 public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
 
-    public PonyRenderer flankGuard;
+    public PonyRenderer chestPiece;
 
     public ModelPonyArmor() {
         super(false);
@@ -23,14 +23,14 @@ public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
     protected void adjustBodyComponents(float rotateAngleX, float rotationPointY, float rotationPointZ) {
         super.adjustBodyComponents(rotateAngleX, rotationPointY, rotationPointZ);
 
-        flankGuard.rotateAngleX = rotateAngleX;
-        flankGuard.rotationPointY = rotationPointY;
-        flankGuard.rotationPointZ = rotationPointZ;
+        chestPiece.rotateAngleX = rotateAngleX;
+        chestPiece.rotationPointY = rotationPointY;
+        chestPiece.rotationPointZ = rotationPointZ;
     }
 
     @Override
     protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        flankGuard.render(scale);
+        chestPiece.render(scale);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
     protected void initBody(float yOffset, float stretch) {
         super.initBody(yOffset, stretch);
 
-        flankGuard = new PonyRenderer(this, 16, 8)
+        chestPiece = new PonyRenderer(this, 16, 8)
                 .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                  .box(-4, 4, -2, 8, 8, 16, stretch);
     }
@@ -74,7 +74,7 @@ public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
     @Override
     public void setInVisible() {
         setVisible(false);
-        flankGuard.showModel = false;
+        chestPiece.showModel = false;
         bipedHead.showModel = false;
         tail.setVisible(false);
         neck.isHidden = true;
@@ -97,12 +97,12 @@ public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
 
     @Override
     public void showChestplate() {
-        flankGuard.showModel = true;
+        chestPiece.showModel = true;
     }
 
     @Override
     public void showSaddle() {
-        flankGuard.showModel = true;
+        chestPiece.showModel = true;
     }
 
     @Override
