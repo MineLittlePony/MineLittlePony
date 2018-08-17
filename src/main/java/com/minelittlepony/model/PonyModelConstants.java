@@ -1,8 +1,8 @@
 package com.minelittlepony.model;
 
-public final class PonyModelConstants {
+public interface PonyModelConstants {
 
-    public static final float
+    float
         PI = (float)Math.PI,
 
         BODY_CENTRE_X = 0,
