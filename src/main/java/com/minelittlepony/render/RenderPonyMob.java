@@ -23,8 +23,6 @@ import javax.annotation.Nonnull;
 
 import java.util.List;
 
-// TODO: A lot of this duplicates RenderPonyPlayer
-//       and is the whole reason we had this scaling bug in the first place.
 public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving<T> implements IRenderPony<T> {
 
     protected RenderPony<T> renderPony = new RenderPony<T>(this);

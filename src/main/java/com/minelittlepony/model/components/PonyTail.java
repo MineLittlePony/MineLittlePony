@@ -58,7 +58,7 @@ public class PonyTail extends PlaneRenderer implements IModelPart {
             rotationPointZ++;
         }
 
-        tailStop = theModel.metadata.getTail().ordinal();
+        tailStop = theModel.getMetadata().getTail().ordinal();
     }
 
     private void swingX(float ticks) {

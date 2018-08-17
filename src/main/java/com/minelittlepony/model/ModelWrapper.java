@@ -19,7 +19,7 @@ public class ModelWrapper implements IModelWrapper {
     public ModelWrapper(AbstractPonyModel model) {
         body = model;
         armor = model.createArmour();
-        armor.apply(model.metadata);
+        armor.apply(model.getMetadata());
     }
 
     public AbstractPonyModel getBody() {
@@ -28,7 +28,6 @@ public class ModelWrapper implements IModelWrapper {
 
     /**
      * Returns the contained armour model.
-     * @return
      */
     public IEquestrianArmor getArmor() {
         return armor;

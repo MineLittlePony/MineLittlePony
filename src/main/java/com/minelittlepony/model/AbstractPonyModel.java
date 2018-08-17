@@ -104,8 +104,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
 
         super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
 
-        float headRotateAngleY = isSleeping ? 1.4f : headYaw / 57.29578F;
-        float headRotateAngleX = isSleeping ? 0.1f : headPitch / 57.29578F;
+        float headRotateAngleY = isSleeping() ? 1.4f : headYaw / 57.29578F;
+        float headRotateAngleX = isSleeping() ? 0.1f : headPitch / 57.29578F;
 
         headRotateAngleX = Math.min(headRotateAngleX, (float) (0.5f - Math.toRadians(motionPitch)));
         headRotateAngleX = Math.max(headRotateAngleX, (float) (-1.25f - Math.toRadians(motionPitch)));
@@ -115,7 +115,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         shakeBody(move, swing, getWobbleAmount(), ticks);
         rotateLegs(move, swing, ticks, entity);
 
-        if (!isSwimming && !rainboom) {
+        if (!isSwimming() && !rainboom) {
             holdItem(swing);
         }
         swingItem(entity);
@@ -178,7 +178,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      * @param ticks       Total whole and partial ticks since the entity's existance. Used in animations together with {@code swing} and {@code move}.
      */
     protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
-        tail.setRotationAndAngles(isSwimming || rainboom, move, swing, bodySwing * 5, ticks);
+        tail.setRotationAndAngles(isSwimming() || rainboom, move, swing, bodySwing * 5, ticks);
 
         upperTorso.rotateAngleY = bodySwing;
         bipedBody.rotateAngleY = bodySwing;
@@ -349,7 +349,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     }
 
     protected float getLegOutset() {
-        if (isSleeping) return 3.6f;
+        if (isSleeping()) return 3.6f;
         if (isCrouching()) return 1;
         return 5;
     }
@@ -382,13 +382,13 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
         switch (pose) {
             case ITEM:
                 float swag = 1;
-                if (!isFlying && both) {
+                if (!isFlying() && both) {
                     swag -= (float)Math.pow(swing, 2);
                 }
                 float mult = 1 - swag/2;
                 arm.rotateAngleX = arm.rotateAngleX * mult - (PI / 10) * swag;
                 arm.rotateAngleZ = -reflect * (PI / 15);
-                if (isSneak) {
+                if (isCrouching()) {
                     arm.rotationPointX -= reflect * 2;
                 }
             case EMPTY:
@@ -399,7 +399,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
                 arm.rotateAngleY = reflect * PI / 9;
                 arm.rotationPointX += reflect;
                 arm.rotationPointZ += 3;
-                if (isSneak) {
+                if (isCrouching()) {
                     arm.rotationPointY += 4;
                 }
                 break;
@@ -426,7 +426,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      * @param entity     The entity we are being called for.
      */
     protected void swingItem(Entity entity) {
-        if (swingProgress > 0 && !isSleeping) {
+        if (swingProgress > 0 && !isSleeping()) {
             EnumHandSide mainSide = getMainHand(entity);
 
             swingArm(getArmForSide(mainSide));
@@ -457,7 +457,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
      * @param ticks       Total whole and partial ticks since the entity's existance. Used in animations together with {@code swing} and {@code move}.
      */
     protected void swingArms(float ticks) {
-        if (isSleeping) return;
+        if (isSleeping()) return;
 
         float cos = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
         float sin = MathHelper.sin(ticks * 0.067F) * 0.05F;
@@ -841,7 +841,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
     public void transform(BodyPart part) {
         if (isRiding()) translate(0, -0.4F, -0.2F);
 
-        if (isSleeping) {
+        if (isSleeping()) {
             rotate(90, 1, 0, 0);
             rotate(180, 0, 1, 0);
         }
