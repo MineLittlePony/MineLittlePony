@@ -58,14 +58,13 @@ public interface PonyModelConstants {
         TAIL_RP_Z_NOTSNEAK = 14,
         TAIL_RP_Z_SNEAK = 15,
 
-        FIRSTP_ARM_CENTRE_X = -3,
-
         THIRDP_ARM_CENTRE_X = 0,
         THIRDP_ARM_CENTRE_Y = 4,
-        THIRDP_ARM_CENTRE_Z = -1,
 
         WING_FOLDED_RP_Y = 13,
         WING_FOLDED_RP_Z = -3,
 
-        NECK_ROT_X = 0.166F;
+        NECK_ROT_X = 0.166F,
+
+        FIN_ROT_Y = PI / 6;
 }

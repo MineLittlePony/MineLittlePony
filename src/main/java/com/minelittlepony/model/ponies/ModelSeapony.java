@@ -11,8 +11,6 @@ import net.minecraft.util.math.MathHelper;
 
 public class ModelSeapony extends ModelUnicorn {
 
-    private static final float FIN_ROTY = PI / 6;
-
     PonyRenderer bodyCenter;
 
     PlaneRenderer leftFin;
@@ -38,11 +36,11 @@ public class ModelSeapony extends ModelUnicorn {
                 .addEastPlane(0, -6, 0, 12, 6, stretch);
 
         leftFin = new PlaneRenderer(this, 56, 16)
-                .rotate(0, FIN_ROTY, 0).around(3, -6, 3)
+                .rotate(0, FIN_ROT_Y, 0).around(3, -6, 3)
                .flipZ().addEastPlane(0, 0, 0, 12, 8, stretch);
 
         rightFin = new PlaneRenderer(this, 56, 16)
-                .rotate(0, -FIN_ROTY, 0).around(-3, -6, 3)
+                .rotate(0, -FIN_ROT_Y, 0).around(-3, -6, 3)
                 .addWestPlane(0, 0, 0, 12, 8, stretch);
     }
 
@@ -64,7 +62,7 @@ public class ModelSeapony extends ModelUnicorn {
     public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
         super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
 
-        float finAngle = FIN_ROTY + MathHelper.cos(ticks / 10) / 5;
+        float finAngle = FIN_ROT_Y + MathHelper.cos(ticks / 10) / 5;
 
         leftFin.rotateAngleY = finAngle;
         rightFin.rotateAngleY = -finAngle;
