@@ -16,7 +16,7 @@ public class UnicornHorn implements IModelPart {
     protected PonyRenderer horn;
     protected HornGlowRenderer glow;
 
-    protected boolean isVisible;
+    protected boolean isVisible = true;
 
     public <T extends ModelBase & ICapitated> UnicornHorn(T pony, float yOffset, float stretch) {
         this(pony, yOffset, stretch, 0, 0, 0);
