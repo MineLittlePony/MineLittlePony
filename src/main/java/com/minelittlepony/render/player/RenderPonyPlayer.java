@@ -152,8 +152,10 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
     protected void renderArm(AbstractClientPlayer player, EnumHandSide side) {
         renderPony.updateModel(player);
         bindEntityTexture(player);
+
         GlStateManager.pushMatrix();
-        GlStateManager.translate(side == EnumHandSide.LEFT ? 0.2 : -0.2, -0.65, 0);
+        GlStateManager.translate(side == EnumHandSide.LEFT ? 0.35 : -0.35, -0.6, 0);
+        GlStateManager.rotate(side == EnumHandSide.LEFT ? -90 : 90, 0, 1, 0);
 
         if (side == EnumHandSide.LEFT) {
             super.renderLeftArm(player);
