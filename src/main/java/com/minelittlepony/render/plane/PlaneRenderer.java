@@ -60,10 +60,10 @@ public class PlaneRenderer extends AbstractPonyRenderer<PlaneRenderer> {
     }
 
     public PlaneRenderer addFrontPlane(float offX, float offY, float offZ, int width, int height, float scale) {
-        return addPlane(offX, offY, offZ, width, height, 0, scale, Face.NORTH);
+        return addPlane(offX, offY, offZ - scale * 2, width, height, 0, scale, Face.NORTH);
     }
 
     public PlaneRenderer addBackPlane(float offX, float offY, float offZ, int width, int height, float scale) {
-        return addPlane(offX, offY, offZ, width, height, 0, scale, Face.SOUTH);
+        return addPlane(offX, offY, offZ + scale * 2, width, height, 0, scale, Face.SOUTH);
     }
 }
