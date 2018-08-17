@@ -77,7 +77,6 @@ public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
         chestPiece.showModel = false;
         bipedHead.showModel = false;
         tail.setVisible(false);
-        neck.isHidden = true;
         upperTorso.isHidden = true;
         snout.isHidden = true;
     }
