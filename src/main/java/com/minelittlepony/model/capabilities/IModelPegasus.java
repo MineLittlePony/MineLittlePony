@@ -1,6 +1,6 @@
 package com.minelittlepony.model.capabilities;
 
-import static com.minelittlepony.model.PonyModelConstants.LEFT_WING_ROTATE_ANGLE_Z_SNEAK;
+import static com.minelittlepony.model.PonyModelConstants.WING_ROT_Z_SNEAK;
 import static com.minelittlepony.model.PonyModelConstants.ROTATE_270;
 
 import net.minecraft.util.math.MathHelper;
@@ -22,7 +22,7 @@ public interface IModelPegasus extends IModel {
         if (isFlying()) {
             return MathHelper.sin(ticks * 0.536f) + ROTATE_270 + 0.4f;
         }
-        return LEFT_WING_ROTATE_ANGLE_Z_SNEAK;
+        return WING_ROT_Z_SNEAK;
     }
 
 }

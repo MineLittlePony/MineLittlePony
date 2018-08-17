@@ -36,9 +36,9 @@ public class PonyTail extends PlaneRenderer implements IModelPart {
 
         if (theModel.isCrouching() && !rainboom) {
             rotateSneak();
-        } else if (theModel.isRiding) {
-            rotationPointZ = 13;
-            rotationPointY = 3;
+        } else if (theModel.isRiding()) {
+            rotationPointZ = TAIL_RP_Z_RIDING;
+            rotationPointY = TAIL_RP_Y_RIDING;
             rotateAngleX = PI / 5;
         } else {
             setRotationPoint(TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_NOTSNEAK);
@@ -46,9 +46,7 @@ public class PonyTail extends PlaneRenderer implements IModelPart {
                 rotateAngleX = ROTATE_90 + MathHelper.sin(move) / 10;
             } else {
                 rotateAngleX = swing / 2;
-            }
 
-            if (!rainboom) {
                 swingX(ticks);
             }
         }
@@ -69,7 +67,7 @@ public class PonyTail extends PlaneRenderer implements IModelPart {
 
     private void rotateSneak() {
         setRotationPoint(TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_SNEAK);
-        rotateAngleX = -BODY_ROTATE_ANGLE_X_SNEAK + 0.1F;
+        rotateAngleX = -BODY_ROT_X_SNEAK + 0.1F;
     }
 
     @Override
@@ -98,7 +96,7 @@ public class PonyTail extends PlaneRenderer implements IModelPart {
         public void init(float yOffset, float stretch) {
             int texX = (index % 2) * 4;
 
-            around(TAIL_RP_X, TAIL_RP_Y + yOffset, TAIL_RP_Z);
+            around(TAIL_RP_X, TAIL_RP_Y + yOffset, 0);
 
             if (index == 0) {
                 tex(32, 0).addTopPlane(-2, 0, 2, 4, 4, stretch);

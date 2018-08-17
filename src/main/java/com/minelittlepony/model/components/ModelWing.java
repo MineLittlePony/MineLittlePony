@@ -38,7 +38,7 @@ public class ModelWing {
     private void addFeathers(boolean right, boolean l, float rotationPointY, float scale) {
         float r = right ? -1 : 1;
 
-        extended.around(r * LEFT_WING_EXT_RP_X, LEFT_WING_EXT_RP_Y + rotationPointY, LEFT_WING_EXT_RP_Z)
+        extended.around(r * EXT_WING_RP_X, EXT_WING_RP_Y + rotationPointY, EXT_WING_RP_Z)
                 .rotateAngleY = r * 3;
         addFeather(0, l,  6,     0,    8, scale + 0.1F);
         addFeather(1, l, -1,    -0.3F, 8, scale + 0.1F) .rotateAngleX = -0.85F;

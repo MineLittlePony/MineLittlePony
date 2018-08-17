@@ -147,6 +147,6 @@ public class ModelEnderStallion extends ModelSkeletonPony {
 
     @Override
     public float getWingRotationFactor(float ticks) {
-        return MathHelper.sin(ticks) + LEFT_WING_ROTATE_ANGLE_Z_SNEAK;
+        return MathHelper.sin(ticks) + WING_ROT_Z_SNEAK;
     }
 }

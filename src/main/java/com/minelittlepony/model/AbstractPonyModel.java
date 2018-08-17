@@ -120,7 +120,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         swingItem(entity);
 
         if (isCrouching()) {
-            adjustBody(BODY_ROTATE_ANGLE_X_SNEAK, BODY_RP_Y_SNEAK, BODY_RP_Z_SNEAK);
+            adjustBody(BODY_ROT_X_SNEAK, BODY_RP_Y_SNEAK, BODY_RP_Z_SNEAK);
             sneakLegs();
             setHead(0, 6, -2);
         } else if (isRiding) {
@@ -138,7 +138,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
             bipedLeftArm.rotateAngleZ = -PI * 0.06f;
             bipedRightArm.rotateAngleZ = PI * 0.06f;
         } else {
-            adjustBody(BODY_ROTATE_ANGLE_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
+            adjustBody(BODY_ROT_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
 
             bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
             bipedLeftLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
@@ -163,8 +163,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
     }
 
     protected void adjustBodyRiding() {
-        adjustBodyComponents(BODY_ROTATE_ANGLE_X_RIDING, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
-        adjustNeck(BODY_ROTATE_ANGLE_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
+        adjustBodyComponents(BODY_ROT_X_RIDING, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
+        adjustNeck(BODY_ROT_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
         setHead(0, 0, 0);
     }
 
@@ -495,8 +495,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
      * Aligns legs to a sneaky position.
      */
     protected void sneakLegs() {
-        bipedRightArm.rotateAngleX -= SNEAK_LEG_X_ROTATION_ADJUSTMENT;
-        bipedLeftArm.rotateAngleX -= SNEAK_LEG_X_ROTATION_ADJUSTMENT;
+        bipedRightArm.rotateAngleX -= LEG_ROT_X_SNEAK_ADJ;
+        bipedLeftArm.rotateAngleX -= LEG_ROT_X_SNEAK_ADJ;
 
         bipedLeftLeg.rotationPointY = bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_SNEAK;
     }
