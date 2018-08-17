@@ -42,9 +42,10 @@ public class DefaultPonyArmorTextureResolver<T extends EntityLivingBase> impleme
         ResourceLocation human = getArmorTexture(entity, itemstack, ponyRes, slot, type);
         ResourceLocation pony = ponifyResource(human);
 
-        ResourceLocation oldPony = ponifyResource(getArmorTexture(entity, itemstack, oldPonyRes, slot, type));
+        ResourceLocation oldHuman = getArmorTexture(entity, itemstack, oldPonyRes, slot, type);
+        ResourceLocation oldPony = ponifyResource(oldHuman);
 
-        return resolve(pony, oldPony, human);
+        return resolve(pony, oldPony, oldHuman, human);
     }
 
     private ResourceLocation resolve(ResourceLocation... resources) {
