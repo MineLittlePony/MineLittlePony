@@ -29,6 +29,7 @@ import net.minecraft.client.renderer.entity.layers.LayerArrow;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Map;
@@ -81,11 +82,9 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
     }.register(ISkull.PLAYER);
 
     protected final RenderPony<AbstractClientPlayer> renderPony = new RenderPony<>(this);
-    private final RenderPlayer renderPlayer;
 
     public RenderPonyPlayer(RenderManager manager, boolean useSmallArms, ModelWrapper model) {
         super(manager, useSmallArms);
-        renderPlayer = new RenderPlayer(manager, useSmallArms);
 
         mainModel = renderPony.setPonyModel(model);
 
@@ -142,13 +141,28 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
 
     @Override
     public final void renderRightArm(AbstractClientPlayer player) {
-        renderPlayer.renderRightArm(player);
+        renderArm(player, EnumHandSide.RIGHT);
     }
 
     @Override
     public final void renderLeftArm(AbstractClientPlayer player) {
-        renderPlayer.renderLeftArm(player);
+        renderArm(player, EnumHandSide.LEFT);
     }
+
+    protected void renderArm(AbstractClientPlayer player, EnumHandSide side) {
+        renderPony.updateModel(player);
+        bindEntityTexture(player);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(side == EnumHandSide.LEFT ? 0.2 : -0.2, -0.65, 0);
+
+        if (side == EnumHandSide.LEFT) {
+            super.renderLeftArm(player);
+        } else {
+            super.renderRightArm(player);
+        }
+
+        GlStateManager.popMatrix();
+     }
 
     @Override
     protected void applyRotations(AbstractClientPlayer player, float yaw, float pitch, float ticks) {
