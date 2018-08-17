@@ -14,9 +14,9 @@ public class ModelWrapper implements IModelWrapper {
     private final PonyArmor armor;
 
     /**
-     * Created a new model wrapper to contain the given pony.
+     * Creates a new model wrapper to contain the given pony.
      */
-    public ModelWrapper(AbstractPonyModel model) {
+    ModelWrapper(AbstractPonyModel model) {
         body = model;
         armor = model.createArmour();
         armor.apply(model.getMetadata());

@@ -8,29 +8,29 @@ import com.minelittlepony.model.ponies.*;
  *
  * TODO: Remove this, move the models to where they're being used.
  */
-public final class PMAPI {
+public interface PMAPI {
 
-    public static final ModelWrapper earthpony = new ModelWrapper(new ModelEarthPony(false));
-    public static final ModelWrapper earthponySmall = new ModelWrapper(new ModelEarthPony(true));
+    ModelWrapper earthpony = new ModelWrapper(new ModelEarthPony(false));
+    ModelWrapper earthponySmall = new ModelWrapper(new ModelEarthPony(true));
 
-    public static final ModelWrapper pegasus = new ModelWrapper(new ModelPegasus(false));
-    public static final ModelWrapper pegasusSmall = new ModelWrapper(new ModelPegasus(true));
+    ModelWrapper pegasus = new ModelWrapper(new ModelPegasus(false));
+    ModelWrapper pegasusSmall = new ModelWrapper(new ModelPegasus(true));
 
-    public static final ModelWrapper unicorn = new ModelWrapper(new ModelUnicorn(false));
-    public static final ModelWrapper unicornSmall = new ModelWrapper(new ModelUnicorn(true));
+    ModelWrapper unicorn = new ModelWrapper(new ModelUnicorn(false));
+    ModelWrapper unicornSmall = new ModelWrapper(new ModelUnicorn(true));
 
-    public static final ModelWrapper alicorn = new ModelWrapper(new ModelAlicorn(false));
-    public static final ModelWrapper alicornSmall = new ModelWrapper(new ModelAlicorn(true));
+    ModelWrapper alicorn = new ModelWrapper(new ModelAlicorn(false));
+    ModelWrapper alicornSmall = new ModelWrapper(new ModelAlicorn(true));
 
-    public static final ModelWrapper zebra = new ModelWrapper(new ModelZebra(false));
-    public static final ModelWrapper zebraSmall = new ModelWrapper(new ModelZebra(true));
+    ModelWrapper zebra = new ModelWrapper(new ModelZebra(false));
+    ModelWrapper zebraSmall = new ModelWrapper(new ModelZebra(true));
 
-    public static final ModelWrapper seapony = new ModelWrapper(new ModelSeapony());
+    ModelWrapper seapony = new ModelWrapper(new ModelSeapony());
 
-    public static final ModelWrapper zombie = new ModelWrapper(new ModelZombiePony());
-    public static final ModelWrapper skeleton = new ModelWrapper(new ModelSkeletonPony());
-    public static final ModelWrapper villager = new ModelWrapper(new ModelVillagerPony());
-    public static final ModelWrapper illager = new ModelWrapper(new ModelIllagerPony());
-    public static final ModelWrapper witch = new ModelWrapper(new ModelWitchPony());
-    public static final ModelWrapper enderman = new ModelWrapper(new ModelEnderStallion());
+    ModelWrapper zombie = new ModelWrapper(new ModelZombiePony());
+    ModelWrapper skeleton = new ModelWrapper(new ModelSkeletonPony());
+    ModelWrapper villager = new ModelWrapper(new ModelVillagerPony());
+    ModelWrapper illager = new ModelWrapper(new ModelIllagerPony());
+    ModelWrapper witch = new ModelWrapper(new ModelWitchPony());
+    ModelWrapper enderman = new ModelWrapper(new ModelEnderStallion());
 }
