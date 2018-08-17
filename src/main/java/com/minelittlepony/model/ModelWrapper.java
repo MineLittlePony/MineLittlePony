@@ -20,6 +20,12 @@ public class ModelWrapper implements IModelWrapper {
         body = model;
         armor = model.createArmour();
         armor.apply(model.getMetadata());
+
+        try {
+            init();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public AbstractPonyModel getBody() {

@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyLevel;
 import com.voxelmodpack.hdskins.HDSkinManager;
@@ -50,13 +49,6 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
 
     public PonyManager(PonyConfig config) {
         this.config = config;
-        initmodels();
-    }
-
-    private void initmodels() {
-        MineLittlePony.logger.info("Initializing models...");
-        PMAPI.init();
-        MineLittlePony.logger.info("Done initializing models.");
     }
 
     /**

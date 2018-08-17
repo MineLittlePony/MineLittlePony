@@ -1,19 +1,7 @@
 package com.minelittlepony.model;
 
-import com.minelittlepony.model.player.ModelAlicorn;
-import com.minelittlepony.model.player.ModelEarthPony;
-import com.minelittlepony.model.player.ModelPegasus;
-import com.minelittlepony.model.player.ModelUnicorn;
-import com.minelittlepony.model.player.ModelZebra;
-import com.minelittlepony.model.ponies.ModelEnderStallion;
-import com.minelittlepony.model.ponies.ModelIllagerPony;
-import com.minelittlepony.model.ponies.ModelSeapony;
-import com.minelittlepony.model.ponies.ModelSkeletonPony;
-import com.minelittlepony.model.ponies.ModelVillagerPony;
-import com.minelittlepony.model.ponies.ModelWitchPony;
-import com.minelittlepony.model.ponies.ModelZombiePony;
-
-import java.lang.reflect.Field;
+import com.minelittlepony.model.player.*;
+import com.minelittlepony.model.ponies.*;
 
 /**
  * PMAPI - Pony Models API?
@@ -45,15 +33,4 @@ public final class PMAPI {
     public static final ModelWrapper illager = new ModelWrapper(new ModelIllagerPony());
     public static final ModelWrapper witch = new ModelWrapper(new ModelWitchPony());
     public static final ModelWrapper enderman = new ModelWrapper(new ModelEnderStallion());
-
-    public static void init() {
-        for (Field field : PMAPI.class.getFields()) {
-            try {
-                ModelWrapper model = (ModelWrapper) field.get(null);
-                model.init();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }
