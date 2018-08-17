@@ -96,6 +96,7 @@ public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
     @Override
     public void showChestplate() {
         chestPiece.showModel = true;
+        neck.showModel = true;
     }
 
     @Override
