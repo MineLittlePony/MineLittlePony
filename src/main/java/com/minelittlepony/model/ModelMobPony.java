@@ -1,7 +1,5 @@
 package com.minelittlepony.model;
 
-import static com.minelittlepony.model.PonyModelConstants.PI;
-
 import com.minelittlepony.model.player.ModelAlicorn;
 
 import net.minecraft.client.model.ModelRenderer;

@@ -8,8 +8,6 @@ import com.minelittlepony.model.capabilities.IModel;
 import com.minelittlepony.model.capabilities.IModelArmor;
 import com.minelittlepony.render.PonyRenderer;
 
-import static com.minelittlepony.model.PonyModelConstants.*;
-
 public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
 
     public PonyRenderer chestPiece;

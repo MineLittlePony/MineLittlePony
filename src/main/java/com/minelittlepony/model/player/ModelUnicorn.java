@@ -9,8 +9,6 @@ import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.model.capabilities.IModelUnicorn;
 
-import static com.minelittlepony.model.PonyModelConstants.*;
-
 /**
  * Used for both unicorns and alicorns since there's no logical way to keep them distinct and not duplicate stuff.
  */

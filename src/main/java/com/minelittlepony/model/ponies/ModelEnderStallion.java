@@ -9,14 +9,6 @@ import net.minecraft.util.math.MathHelper;
 import com.minelittlepony.model.components.PonySnout;
 import com.minelittlepony.render.PonyRenderer;
 
-import static com.minelittlepony.model.PonyModelConstants.HEAD_CENTRE_X;
-import static com.minelittlepony.model.PonyModelConstants.HEAD_CENTRE_Y;
-import static com.minelittlepony.model.PonyModelConstants.HEAD_CENTRE_Z;
-import static com.minelittlepony.model.PonyModelConstants.HEAD_RP_X;
-import static com.minelittlepony.model.PonyModelConstants.HEAD_RP_Y;
-import static com.minelittlepony.model.PonyModelConstants.HEAD_RP_Z;
-import static com.minelittlepony.model.PonyModelConstants.LEFT_WING_ROTATE_ANGLE_Z_SNEAK;
-
 public class ModelEnderStallion extends ModelSkeletonPony {
 
     public boolean isCarrying;

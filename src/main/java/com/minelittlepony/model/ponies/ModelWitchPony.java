@@ -8,11 +8,6 @@ import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-import static com.minelittlepony.model.PonyModelConstants.HEAD_RP_X;
-import static com.minelittlepony.model.PonyModelConstants.HEAD_RP_Y;
-import static com.minelittlepony.model.PonyModelConstants.HEAD_RP_Z;
-import static com.minelittlepony.model.PonyModelConstants.PI;
-
 import com.minelittlepony.model.player.ModelZebra;
 import com.minelittlepony.render.PonyRenderer;
 

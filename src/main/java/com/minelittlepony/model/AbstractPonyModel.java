@@ -26,12 +26,11 @@ import net.minecraft.util.math.MathHelper;
 import java.util.Random;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
-import static com.minelittlepony.model.PonyModelConstants.*;
 
 /**
  * Foundation class for all types of ponies.
  */
-public abstract class AbstractPonyModel extends ModelPlayer implements IModel {
+public abstract class AbstractPonyModel extends ModelPlayer implements IModel, PonyModelConstants {
 
     public boolean isSleeping;
     public boolean isFlying;

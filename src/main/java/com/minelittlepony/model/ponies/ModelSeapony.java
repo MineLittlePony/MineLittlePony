@@ -9,8 +9,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
-import static com.minelittlepony.model.PonyModelConstants.*;
-
 public class ModelSeapony extends ModelUnicorn {
 
     private static final float FIN_ROTY = PI / 6;

@@ -4,7 +4,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityZombieVillager;
 import net.minecraft.entity.passive.EntityVillager;
-import static com.minelittlepony.model.PonyModelConstants.*;
 
 import com.minelittlepony.model.components.SaddleBags;
 import com.minelittlepony.model.player.ModelAlicorn;
