@@ -88,12 +88,12 @@ public enum PonyTransformation {
 
             switch (part) {
                 case NECK:
-                    translate(0, -0.09F, -0.01F);
+                    translate(0, -0.09F, 0);
                     scale(1, 1.1F, 1);
                     if (model.isCrouching()) translate(-0.02F, -0.02F, 0.1F);
                     break;
                 case HEAD:
-                    translate(0, -0.15F, 0.01F);
+                    translate(0.01F, -0.15F, 0);
                     if (model.isCrouching()) translate(0, 0.04F, 0);
                     break;
                 case BODY:
