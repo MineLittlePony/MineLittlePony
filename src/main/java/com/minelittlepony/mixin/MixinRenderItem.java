@@ -1,6 +1,7 @@
 package com.minelittlepony.mixin;
 
 import com.minelittlepony.ducks.IRenderItem;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
@@ -12,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(RenderItem.class)
@@ -28,6 +30,21 @@ public abstract class MixinRenderItem implements IResourceManagerReloadListener,
     private void onRenderItem(ItemStack stack, IBakedModel model, CallbackInfo info) {
         if (transparency) {
             GlStateManager.tryBlendFuncSeparate(SourceFactor.CONSTANT_COLOR, DestFactor.ONE, SourceFactor.ONE, DestFactor.ZERO);
+        }
+    }
+
+    @ModifyArg(method = "renderQuads(Lnet/minecraft/client/renderer/BufferBuilder;ILjava/util/List;Lnet/minecraft/item/Itemstack;)V",
+            at = @At(value = "INVOKE",
+                    target = "renderQuad(Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/client/renderer/block/model/BakedQuad;I)V"),
+            index = 2)
+    private int modifyItemRenderTint(int color) {
+        return transparency ? -1 : color;
+    }
+
+    @Inject(method = "renderEffect(Lnet/minecraft/client/renderer/block/model/IBakedQuad;)V", at = @At("HEAD"), cancellable = true)
+    private void renderEffect(IBakedModel model, CallbackInfo info) {
+        if (transparency) {
+            info.cancel();
         }
     }
 }

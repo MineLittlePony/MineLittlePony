@@ -25,10 +25,6 @@ public class LevitatingItemRenderer {
      * Renders a magical overlay over an item in third person.
      */
     public void renderItemGlow(EntityLivingBase entity, ItemStack drop, TransformType transform, EnumHandSide hand, int glowColor) {
-
-        // enchantments mess up the rendering
-        drop = stackWithoutEnchantment(drop);
-
         pushMatrix();
         disableLighting();
         setColor(glowColor);
@@ -65,7 +61,6 @@ public class LevitatingItemRenderer {
      * Renders an item in first person optionally with a magical overlay.
      */
     public void renderItemInFirstPerson(ItemRenderer renderer, AbstractClientPlayer entity, ItemStack stack, TransformType transform, boolean left) {
-
         Pony pony = MineLittlePony.getInstance().getManager().getPony(entity);
 
         pushMatrix();
@@ -79,7 +74,6 @@ public class LevitatingItemRenderer {
         renderer.renderItemSide(entity, stack, transform, left);
 
         if (doMagic) {
-
             disableLighting();
 
             IRenderItem renderItem = (IRenderItem)Minecraft.getMinecraft().getRenderItem();
@@ -90,9 +84,9 @@ public class LevitatingItemRenderer {
 
             scale(1.1, 1.1, 1.1);
 
-            translate(0, 0.01F, 0.01F);
+            translate(-0.015F, 0.01F, 0.01F);
             renderer.renderItemSide(entity, stack, transform, left);
-            translate(0.01F, -0.01F, -0.02F);
+            translate(0.03F, -0.01F, -0.02F);
             renderer.renderItemSide(entity, stack, transform, left);
 
             renderItem.useTransparency(false);
@@ -134,14 +128,5 @@ public class LevitatingItemRenderer {
                 }
             }
         }
-    }
-
-    private ItemStack stackWithoutEnchantment(ItemStack original) {
-        if (original.isItemEnchanted()) {
-            original = original.copy();
-            original.getTagCompound().removeTag("ench");
-        }
-
-        return original;
     }
 }
