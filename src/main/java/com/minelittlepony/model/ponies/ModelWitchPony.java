@@ -1,6 +1,7 @@
 package com.minelittlepony.model.ponies;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -8,7 +9,10 @@ import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
+import org.lwjgl.opengl.GL11;
+
 import com.minelittlepony.model.player.ModelZebra;
+import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.render.PonyRenderer;
 
 public class ModelWitchPony extends ModelZebra {
@@ -21,7 +25,9 @@ public class ModelWitchPony extends ModelZebra {
         super(false);
     }
 
-    public void setLivingAnimations(EntityLivingBase entity, float move, float swing, float ticks) {
+    @Override
+    public void updateLivingState(EntityLivingBase entity, Pony pony) {
+        super.updateLivingState(entity, pony);
         EntityWitch witch = ((EntityWitch) entity);
 
         leftArmPose = ArmPose.EMPTY;
@@ -68,14 +74,21 @@ public class ModelWitchPony extends ModelZebra {
     }
 
     @Override
-    public void render(Entity entityIn, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        super.render(entityIn, move, swing, ticks, headYaw, headPitch, scale);
+    public boolean isChild() {
+        return isChild;
+    }
 
-        copyModelAngles(bipedHead, witchHat);
+    @Override
+    protected void renderHead(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        super.renderHead(entity, move, swing, ticks, headYaw, headPitch, scale);
+
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
 
         TextureManager tex = Minecraft.getMinecraft().getRenderManager().renderEngine;
         tex.bindTexture(WITCH_TEXTURES);
-        witchHat.render(scale * 1.3f);
+        witchHat.render(scale * 1.3F);
+
+        GlStateManager.popAttrib();
     }
 
     @Override

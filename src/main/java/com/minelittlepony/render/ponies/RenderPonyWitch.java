@@ -3,7 +3,6 @@ package com.minelittlepony.render.ponies;
 import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.render.RenderPonyMob;
 import com.minelittlepony.render.layer.LayerHeldPonyItem;
-import com.minelittlepony.render.layer.LayerHeldPonyItemMagical;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -23,16 +22,11 @@ public class RenderPonyWitch extends RenderPonyMob<EntityWitch> {
 
     @Override
     protected LayerHeldPonyItem<EntityWitch> createItemHoldingLayer() {
-        return new LayerHeldPonyItemMagical<EntityWitch>(this) {
+        return new LayerHeldPonyItem<EntityWitch>(this) {
             @Override
             protected void preItemRender(EntityWitch entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
-                if (isUnicorn()) {
-                    GlStateManager.translate(-0.1F, 0.7F, 0);
-                    GlStateManager.rotate(110, 1, 0, 0);
-                } else {
-                    GlStateManager.translate(0, -0.3F, -0.8F);
-                    GlStateManager.rotate(10, 1, 0, 0);
-                }
+                GlStateManager.translate(0, -0.3F, -0.8F);
+                GlStateManager.rotate(10, 1, 0, 0);
             }
         };
     }
