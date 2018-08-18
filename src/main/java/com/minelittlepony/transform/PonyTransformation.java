@@ -66,6 +66,7 @@ public enum PonyTransformation {
 
             switch (part) {
                 case NECK:
+                    translate(0, 0, 0.04F);
                     scale(1.3F, 1.3F, 1.3F);
                     if (model.isCrouching()) translate(0, -0.01F, 0.15F);
                     break;
