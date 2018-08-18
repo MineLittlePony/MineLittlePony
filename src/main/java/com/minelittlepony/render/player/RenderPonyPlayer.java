@@ -10,6 +10,7 @@ import com.minelittlepony.pony.data.PonyLevel;
 import com.minelittlepony.render.PonySkull;
 import com.minelittlepony.render.PonySkullRenderer.ISkull;
 import com.minelittlepony.render.RenderPony;
+import com.minelittlepony.render.layer.LayerDJPon3Head;
 import com.minelittlepony.render.layer.LayerEntityOnPonyShoulder;
 import com.minelittlepony.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.render.layer.LayerPonyArmor;
@@ -94,6 +95,7 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
     protected void addLayers() {
         layerRenderers.clear();
 
+        addLayer(new LayerDJPon3Head(this));
         addLayer(new LayerPonyArmor<>(this));
         addLayer(new LayerArrow(this));
         addLayer(new LayerPonyCustomHead<>(this));
@@ -164,7 +166,7 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
         }
 
         GlStateManager.popMatrix();
-     }
+    }
 
     @Override
     protected void applyRotations(AbstractClientPlayer player, float yaw, float pitch, float ticks) {
