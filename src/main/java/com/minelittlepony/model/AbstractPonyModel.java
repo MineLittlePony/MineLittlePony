@@ -864,6 +864,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
             isElytraFlying = pony.isElytraFlying;
             isSwimming = pony.isSwimming;
             isSleeping = pony.isSleeping;
+            headGear = pony.headGear;
             metadata = pony.metadata;
             motionPitch = pony.motionPitch;
             rainboom = pony.rainboom;

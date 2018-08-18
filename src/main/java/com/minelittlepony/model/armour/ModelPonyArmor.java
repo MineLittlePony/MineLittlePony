@@ -32,11 +32,8 @@ public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
     }
 
     @Override
-    protected void renderLegs(float scale) {
-        super.renderLegs(scale);
-    }
-
     public <T extends ModelBiped & IModel> void synchroniseLegs(T mainModel) {
+        copyModelAngles(mainModel.bipedBody, bipedBody);
         copyModelAngles(mainModel.bipedRightArm, bipedRightArm);
         copyModelAngles(mainModel.bipedLeftArm, bipedLeftArm);
         copyModelAngles(mainModel.bipedRightLeg, bipedRightLeg);
@@ -72,6 +69,7 @@ public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
     @Override
     public void setInVisible() {
         setVisible(false);
+        bipedBody.showModel = true;
         chestPiece.showModel = false;
         bipedHead.showModel = false;
         neck.showModel = false;
