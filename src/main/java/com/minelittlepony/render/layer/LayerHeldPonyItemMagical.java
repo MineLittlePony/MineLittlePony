@@ -22,7 +22,7 @@ public class LayerHeldPonyItemMagical<T extends EntityLivingBase> extends LayerH
     @Override
     protected void preItemRender(T entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
         if (isUnicorn()) {
-            GlStateManager.translate(hand == EnumHandSide.LEFT ? -0.6F : 0.1F, 1, -0.5F);
+            GlStateManager.translate(hand == EnumHandSide.LEFT ? -0.6F : 0, 0.5F, -0.3F);
         } else {
             super.preItemRender(entity, drop, transform, hand);
         }

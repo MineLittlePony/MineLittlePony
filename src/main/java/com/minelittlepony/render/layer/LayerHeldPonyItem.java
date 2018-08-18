@@ -67,7 +67,7 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
             }
 
             GlStateManager.rotate(-90, 1, 0, 0);
-            GlStateManager.rotate(180, 0, 1, 0);
+            GlStateManager.rotate(hand == EnumHandSide.LEFT ? 185 : -185, 0, 1, 0);
 
             preItemRender(entity, drop, transform, hand);
             Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, drop, transform, hand == EnumHandSide.LEFT);
