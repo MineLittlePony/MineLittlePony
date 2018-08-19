@@ -1,40 +1,45 @@
 package com.voxelmodpack.hdskins;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
+import com.voxelmodpack.hdskins.skins.MoreHttpResponses;
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import org.apache.commons.io.FileUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ThreadDownloadImageETag extends SimpleTexture {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final AtomicInteger THREAD_ID = new AtomicInteger(0);
+    private static CloseableHttpClient client = HttpClients.createSystem();
 
     @Nonnull
-    private final File cacheFile;
-    private final File eTagFile;
+    private final Path cacheFile;
+    private final Path eTagFile;
     private final String imageUrl;
     @Nullable
     private final IImageBuffer imageBuffer;
@@ -47,8 +52,8 @@ public class ThreadDownloadImageETag extends SimpleTexture {
 
     public ThreadDownloadImageETag(@Nonnull File cacheFileIn, String imageUrlIn, ResourceLocation defLocation, @Nullable IImageBuffer imageBufferIn) {
         super(defLocation);
-        this.cacheFile = cacheFileIn;
-        this.eTagFile = new File(cacheFile.getParentFile(), cacheFile.getName() + ".etag");
+        this.cacheFile = cacheFileIn.toPath();
+        this.eTagFile = cacheFile.resolveSibling(cacheFile.getFileName() + ".etag");
         this.imageUrl = imageUrlIn;
         this.imageBuffer = imageBufferIn;
     }
@@ -66,6 +71,7 @@ public class ThreadDownloadImageETag extends SimpleTexture {
         }
     }
 
+    @Override
     public int getGlTextureId() {
         this.checkTextureUploaded();
         return super.getGlTextureId();
@@ -84,6 +90,7 @@ public class ThreadDownloadImageETag extends SimpleTexture {
         return bufferedImage;
     }
 
+    @Override
     public void loadTexture(IResourceManager resourceManager) throws IOException {
         if (this.bufferedImage == null && this.textureLocation != null) {
             super.loadTexture(resourceManager);
@@ -97,66 +104,76 @@ public class ThreadDownloadImageETag extends SimpleTexture {
     }
 
     private void loadTexture() {
-        HttpResponse response = null;
-        try {
-            HttpClient client = HttpClientBuilder.create().build();
-            response = client.execute(new HttpGet(imageUrl));
-            int status = response.getStatusLine().getStatusCode();
-            if (status == HttpStatus.SC_NOT_FOUND) {
-                // delete the cache files in case we can't connect in the future
+        switch(checkLocalCache()) {
+            case GONE:
                 clearCache();
-            } else if (checkETag(response)) {
+                break;
+            case OK:
+            case NOPE:
                 LOGGER.debug("Loading http texture from local cache ({})", cacheFile);
-
                 try {
                     // e-tag check passed. Load the local file
                     setLocalCache();
-                } catch (IOException ioexception) {
+                    break;
+                } catch (IOException e) {
                     // Nope. Local cache is corrupt. Re-download it.
-                    LOGGER.error("Couldn't load skin {}", cacheFile, ioexception);
-                    loadTextureFromServer(response);
+                    // fallthrough to load from network
+                    LOGGER.error("Couldn't load skin {}", cacheFile, e);
                 }
-            } else {
-                // there's an updated file. Download it again.
-                loadTextureFromServer(response);
-            }
-
-        } catch (IOException e) {
-            // connection failed
-            if (cacheFile.isFile()) {
-                try {
-                    // try to load from cache anyway
-                    setLocalCache();
-                    return;
-                } catch (IOException ignored) {
-                }
-            }
-            LOGGER.error("Couldn't load skin {} ", imageUrl, e);
-        } finally {
-            if (response != null)
-                EntityUtils.consumeQuietly(response.getEntity());
+            case OUTDATED:
+                loadTextureFromServer();
         }
     }
 
+
     private void setLocalCache() throws IOException {
-        if (cacheFile.isFile()) {
-            BufferedImage image = ImageIO.read(cacheFile);
-            if (imageBuffer != null) {
-                image = imageBuffer.parseUserSkin(image);
+        if (Files.isRegularFile(cacheFile)) {
+            try (InputStream in = Files.newInputStream(cacheFile)) {
+                BufferedImage image = ImageIO.read(in);
+                if (imageBuffer != null) {
+                    image = imageBuffer.parseUserSkin(image);
+                }
+                setBufferedImage(image);
             }
-            setBufferedImage(image);
         }
     }
 
     private void clearCache() {
-        FileUtils.deleteQuietly(this.cacheFile);
-        FileUtils.deleteQuietly(this.eTagFile);
+        try {
+            Files.deleteIfExists(this.cacheFile);
+            Files.deleteIfExists(this.eTagFile);
+        } catch (IOException e) {
+            // ignore
+        }
+    }
+
+    private enum State {
+        OUTDATED,
+        GONE,
+        NOPE,
+        OK
+    }
+
+    private State checkLocalCache() {
+        try (CloseableHttpResponse response = client.execute(new HttpHead(imageUrl))) {
+            int code = response.getStatusLine().getStatusCode();
+            if (code == HttpStatus.SC_NOT_FOUND) {
+                return State.GONE;
+            }
+            if (code != HttpStatus.SC_OK) {
+                return State.NOPE;
+            }
+            return checkETag(response) ? State.OK : State.OUTDATED;
+        } catch (IOException e) {
+            LOGGER.error("Couldn't load skin {} ", imageUrl, e);
+            return State.NOPE;
+        }
     }
 
     private boolean checkETag(HttpResponse response) {
         try {
-            if (cacheFile.isFile()) {
-                String localETag = Files.readFirstLine(eTagFile, Charsets.UTF_8);
+            if (Files.isRegularFile(cacheFile)) {
+                String localETag = Files.lines(eTagFile).limit(1).findFirst().orElse("");
                 Header remoteETag = response.getFirstHeader(HttpHeaders.ETAG);
                 // true if no remote etag or does match
                 return remoteETag == null || localETag.equals(remoteETag.getValue());
@@ -168,20 +185,19 @@ public class ThreadDownloadImageETag extends SimpleTexture {
         }
     }
 
-    private void loadTextureFromServer(HttpResponse response) {
+    private void loadTextureFromServer() {
         LOGGER.debug("Downloading http texture from {} to {}", imageUrl, cacheFile);
-        try {
-            if (response.getStatusLine().getStatusCode() / 100 == 2) {
-                BufferedImage bufferedimage;
-
+        try (MoreHttpResponses resp = MoreHttpResponses.execute(client, new HttpGet(imageUrl))) {
+            if (resp.ok()) {
                 // write the image to disk
-                FileUtils.copyInputStreamToFile(response.getEntity().getContent(), cacheFile);
-                bufferedimage = ImageIO.read(cacheFile);
+                Files.copy(resp.getInputStream(), cacheFile);
+
+                BufferedImage bufferedimage = ImageIO.read(Files.newInputStream(cacheFile));
 
                 // maybe write the etag to disk
-                Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
+                Header eTag = resp.getResponse().getFirstHeader(HttpHeaders.ETAG);
                 if (eTag != null) {
-                    FileUtils.write(eTagFile, eTag.getValue(), Charsets.UTF_8);
+                    Files.write(eTagFile, Collections.singleton(eTag.getValue()));
                 }
 
                 if (imageBuffer != null) {
