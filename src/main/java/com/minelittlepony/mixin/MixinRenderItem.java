@@ -33,15 +33,15 @@ public abstract class MixinRenderItem implements IResourceManagerReloadListener,
         }
     }
 
-    @ModifyArg(method = "renderQuads(Lnet/minecraft/client/renderer/BufferBuilder;ILjava/util/List;Lnet/minecraft/item/Itemstack;)V",
+    @ModifyArg(method = "renderQuads(Lnet/minecraft/client/renderer/BufferBuilder;Ljava/util/List;ILnet/minecraft/item/ItemStack;)V",
             at = @At(value = "INVOKE",
-                    target = "renderQuad(Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/client/renderer/block/model/BakedQuad;I)V"),
+                    target = "Lnet/minecraft/client/renderer/RenderItem;renderQuad(Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/client/renderer/block/model/BakedQuad;I)V"),
             index = 2)
     private int modifyItemRenderTint(int color) {
         return transparency ? -1 : color;
     }
 
-    @Inject(method = "renderEffect(Lnet/minecraft/client/renderer/block/model/IBakedQuad;)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "renderEffect(Lnet/minecraft/client/renderer/block/model/IBakedModel;)V", at = @At("HEAD"), cancellable = true)
     private void renderEffect(IBakedModel model, CallbackInfo info) {
         if (transparency) {
             info.cancel();
