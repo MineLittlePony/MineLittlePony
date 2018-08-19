@@ -190,6 +190,7 @@ public class ThreadDownloadImageETag extends SimpleTexture {
         try (MoreHttpResponses resp = MoreHttpResponses.execute(client, new HttpGet(imageUrl))) {
             if (resp.ok()) {
                 // write the image to disk
+                Files.createDirectories(cacheFile.getParent());
                 Files.copy(resp.getInputStream(), cacheFile);
 
                 BufferedImage bufferedimage = ImageIO.read(Files.newInputStream(cacheFile));
