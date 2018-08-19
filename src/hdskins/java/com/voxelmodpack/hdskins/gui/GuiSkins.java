@@ -102,8 +102,6 @@ public class GuiSkins extends GameGui {
 
     private int lastMouseX = 0;
 
-    private GuiSkins instance;
-
     protected CubeMap panorama;
 
     private MinecraftProfileTexture.Type textureType = SKIN;
@@ -118,8 +116,6 @@ public class GuiSkins extends GameGui {
     }
 
     public GuiSkins(List<SkinServer> servers) {
-        instance = this;
-
         // Generate a cycled iterator that will never run out of entries.
         this.skinServers = cycle(servers, SkinServer::verifyGateway);
         if (this.skinServers.hasNext()) {
