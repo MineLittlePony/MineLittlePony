@@ -2,6 +2,10 @@ package com.minelittlepony.render.player;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyConfig;
+import com.minelittlepony.avatar.ServiceManager;
+import com.minelittlepony.avatar.texture.TextureData;
+import com.minelittlepony.avatar.texture.TextureService;
+import com.minelittlepony.avatar.texture.TextureType;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.model.components.ModelDeadMau5Ears;
@@ -20,7 +24,6 @@ import com.minelittlepony.render.layer.LayerPonyElytra;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-import com.voxelmodpack.hdskins.HDSkinManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -57,7 +60,11 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
             if (profile != null) {
                 deadMau5.setVisible("deadmau5".equals(profile.getName()));
 
-                Optional<ResourceLocation> skin = HDSkinManager.INSTANCE.getSkinLocation(profile, Type.SKIN, true);
+                Optional<ResourceLocation> skin = ServiceManager.get(TextureService.class).map(service ->
+                        service.getTextures(profile))
+                        .map(m -> m.get(TextureType.SKIN))
+                        .map(TextureData::getLocation);
+
                 if (skin.isPresent()) {
                     return skin.get();
                 }
@@ -109,7 +116,7 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
     public float prepareScale(AbstractClientPlayer player, float ticks) {
 
         if (!player.isRiding() && !player.isPlayerSleeping()) {
-            float x = player.width/2;
+            float x = player.width / 2;
             float y = 0;
 
             if (player.isSneaking()) {
@@ -136,7 +143,7 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
 
     @Override
     public void doRenderShadowAndFire(Entity player, double x, double y, double z, float yaw, float ticks) {
-        if (player.isRiding() && ((AbstractClientPlayer)player).isPlayerSleeping()) {
+        if (player.isRiding() && ((AbstractClientPlayer) player).isPlayerSleeping()) {
             super.doRenderShadowAndFire(player, x, y, z, yaw, ticks);
         }
     }

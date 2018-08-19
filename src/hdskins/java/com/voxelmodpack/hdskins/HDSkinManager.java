@@ -6,11 +6,14 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.minelittlepony.avatar.texture.TextureData;
+import com.minelittlepony.avatar.texture.TextureProfile;
+import com.minelittlepony.avatar.texture.TextureType;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
@@ -31,7 +34,6 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
-import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -55,6 +57,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -76,9 +79,10 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     private BiMap<String, Class<? extends SkinServer>> skinServerTypes = HashBiMap.create(2);
     private List<SkinServer> skinServers = Lists.newArrayList();
 
-    private Map<UUID, Map<Type, ResourceLocation>> skinCache = Maps.newHashMap();
+    private Map<UUID, Map<TextureType, ResourceLocation>> skinCache = Maps.newHashMap();
 
-    private LoadingCache<GameProfile, Map<Type, MinecraftProfileTexture>> skins = CacheBuilder.newBuilder()
+    @Deprecated
+    private LoadingCache<GameProfile, Map<TextureType, TextureProfile>> skins = CacheBuilder.newBuilder()
             .initialCapacity(20)
             .maximumSize(100)
             .expireAfterWrite(4, TimeUnit.HOURS)
@@ -115,7 +119,8 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         return new GuiSkins();
     }
 
-    public Optional<ResourceLocation> getSkinLocation(GameProfile profile1, final Type type, boolean loadIfAbsent) {
+    @Deprecated
+    public Optional<ResourceLocation> getSkinLocation(GameProfile profile1, final TextureType type, boolean loadIfAbsent) {
         if (!enabled) {
             return Optional.empty();
         }
@@ -161,7 +166,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         if (skin == null) {
             if (loadIfAbsent && getProfileData(profile).containsKey(type)) {
                 skinCache.get(profile.getId()).put(type, LOADING);
-                loadTexture(profile, type, (t, loc, tex) -> skinCache.get(profile.getId()).put(t, loc));
+                loadTexture(profile, type, (t, loc) -> skinCache.get(profile.getId()).put(t, loc.getLocation()));
             }
             return Optional.empty();
         }
@@ -172,18 +177,19 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         return url + (url.indexOf('?') > -1 ? '&' : '?') + Long.toString(new Date().getTime() / 1000);
     }
 
-    private void loadTexture(GameProfile profile, final Type type, final SkinAvailableCallback callback) {
+    @Deprecated
+    private void loadTexture(GameProfile profile, final TextureType type, final BiConsumer<TextureType, TextureData> callback) {
         if (profile.getId() != null) {
-            Map<Type, MinecraftProfileTexture> data = getProfileData(profile);
-            final MinecraftProfileTexture texture = data.get(type);
+            Map<TextureType, TextureProfile> data = getProfileData(profile);
+            final TextureProfile texture = data.get(type);
 
             String skinDir = type.toString().toLowerCase() + "s/";
             final ResourceLocation skin = new ResourceLocation("hdskins", skinDir + texture.getHash());
             File file2 = new File(LiteLoader.getAssetsDirectory(), "hd/" + skinDir + texture.getHash().substring(0, 2) + "/" + texture.getHash());
 
-            final IImageBuffer imagebufferdownload = type == Type.SKIN ? new ImageBufferDownloadHD() : null;
+            final IImageBuffer imagebufferdownload = type == TextureType.SKIN ? new ImageBufferDownloadHD() : null;
 
-            ITextureObject texObject = new ThreadDownloadImageETag(file2, bustCache(texture.getUrl()),
+            ITextureObject texObject = new ThreadDownloadImageETag(file2, bustCache(texture.getUrl().toString()),
                     DefaultPlayerSkin.getDefaultSkinLegacy(),
                     new IImageBuffer() {
                         @Nonnull
@@ -201,7 +207,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                             if (imagebufferdownload != null) {
                                 imagebufferdownload.skinAvailable();
                             }
-                            callback.skinAvailable(type, skin, texture);
+                            callback.accept(type, new TextureData(skin, texture));
                         }
                     });
 
@@ -210,8 +216,9 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         }
     }
 
-    private Map<Type, MinecraftProfileTexture> loadProfileData(GameProfile profile) {
-        Map<Type, MinecraftProfileTexture> textures = Maps.newEnumMap(Type.class);
+    @Deprecated
+    private Map<TextureType, TextureProfile> loadProfileData(GameProfile profile) {
+        Map<TextureType, TextureProfile> textures = Maps.newHashMap();
         for (SkinServer server : skinServers) {
             try {
                 server.loadProfileData(profile).getTextures().forEach(textures::putIfAbsent);
@@ -226,9 +233,10 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         return textures;
     }
 
-    public Map<Type, MinecraftProfileTexture> getProfileData(GameProfile profile) {
+    @Deprecated
+    public Map<TextureType, TextureProfile> getProfileData(GameProfile profile) {
         boolean was = !skins.asMap().containsKey(profile);
-        Map<Type, MinecraftProfileTexture> textures = skins.getUnchecked(profile);
+        Map<TextureType, TextureProfile> textures = skins.getUnchecked(profile);
         // This is the initial value. Refreshing will load it asynchronously.
         if (was) {
             skins.refresh(profile);
@@ -259,12 +267,16 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         return this.skinServers.get(0);
     }
 
+    public List<SkinServer> getSkinServers() {
+        return ImmutableList.copyOf(skinServers);
+    }
+
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
     public static CompletableFuture<PreviewTextureManager> getPreviewTextureManager(GameProfile profile) {
-        return INSTANCE.getGatewayServer().getPreviewTextures(profile).thenApply(PreviewTextureManager::new);
+        return INSTANCE.getGatewayServer().getPreviewTextures(profile).thenApply(p -> new PreviewTextureManager(p.getTextures()));
     }
 
     public void addClearListener(ISkinCacheClearListener listener) {

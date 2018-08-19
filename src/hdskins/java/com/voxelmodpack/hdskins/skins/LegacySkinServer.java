@@ -3,9 +3,9 @@ package com.voxelmodpack.hdskins.skins;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.annotations.Expose;
+import com.minelittlepony.avatar.texture.TextureProfile;
+import com.minelittlepony.avatar.texture.TextureType;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.upload.ThreadMultipartPostUpload;
@@ -16,8 +16,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URL;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -42,23 +41,23 @@ public class LegacySkinServer implements SkinServer {
     }
 
     @Override
-    public CompletableFuture<MinecraftTexturesPayload> getPreviewTextures(GameProfile profile) {
+    public CompletableFuture<TexturesPayload> getPreviewTextures(GameProfile profile) {
         if (Strings.isNullOrEmpty(this.gateway)) {
             return CallableFutures.failedFuture(gatewayUnsupported());
         }
-        Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = new EnumMap<>(MinecraftProfileTexture.Type.class);
-        for (MinecraftProfileTexture.Type type : MinecraftProfileTexture.Type.values()) {
-            map.put(type, new MinecraftProfileTexture(getPath(gateway, type, profile), null));
+        Map<TextureType, TextureProfile> map = new HashMap<>();
+        for (TextureType type : TextureType.values()) {
+            map.put(type, new TextureProfile(getPath(gateway, type, profile), null));
         }
-        return CompletableFuture.completedFuture(TexturesPayloadBuilder.createTexturesPayload(profile, map));
+        return CompletableFuture.completedFuture(new TexturesPayload(profile, map));
     }
 
     @Override
-    public MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException {
-        ImmutableMap.Builder<MinecraftProfileTexture.Type, MinecraftProfileTexture> builder = ImmutableMap.builder();
-        for (MinecraftProfileTexture.Type type : MinecraftProfileTexture.Type.values()) {
+    public TexturesPayload loadProfileData(GameProfile profile) throws IOException {
+        ImmutableMap.Builder<TextureType, TextureProfile> builder = ImmutableMap.builder();
+        for (TextureType type : TextureType.values()) {
 
-            String url = getPath(this.address, type, profile);
+            URI url = getPath(this.address, type, profile);
             try {
                 builder.put(type, loadProfileTexture(profile, url));
             } catch (IOException e) {
@@ -66,20 +65,20 @@ public class LegacySkinServer implements SkinServer {
             }
         }
 
-        Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = builder.build();
+        Map<TextureType, TextureProfile> map = builder.build();
         if (map.isEmpty()) {
             throw new IOException(String.format("No textures found for %s at %s", profile, this.address));
         }
-        return TexturesPayloadBuilder.createTexturesPayload(profile, map);
+        return new TexturesPayload(profile, map);
     }
 
-    private MinecraftProfileTexture loadProfileTexture(GameProfile profile, String url) throws IOException {
-        HttpURLConnection urlConnection = (HttpURLConnection) new URL(url).openConnection();
+    private TextureProfile loadProfileTexture(GameProfile profile, URI url) throws IOException {
+        HttpURLConnection urlConnection = (HttpURLConnection) url.toURL().openConnection();
         if (urlConnection.getResponseCode() / 100 != 2) {
             throw new IOException("Bad response code: " + urlConnection.getResponseCode() + ". URL: " + url);
         }
         logger.debug("Found skin for {} at {}", profile.getName(), url);
-        return new MinecraftProfileTexture(url, null);
+        return new TextureProfile(url, null);
     }
 
     @SuppressWarnings("deprecation")
@@ -91,7 +90,7 @@ public class LegacySkinServer implements SkinServer {
 
         return CallableFutures.asyncFailableFuture(() -> {
             URI image = skin.getImage();
-            MinecraftProfileTexture.Type type = skin.getType();
+            TextureType type = skin.getType();
             Map<String, String> metadata = skin.getMetadata();
 
             SkinServer.verifyServerConnection(session, SERVER_ID);
@@ -114,7 +113,7 @@ public class LegacySkinServer implements SkinServer {
         return new UnsupportedOperationException("Server does not have a gateway.");
     }
 
-    private static Map<String, ?> getData(Session session, MinecraftProfileTexture.Type type, String model, String param, Object val) {
+    private static Map<String, ?> getData(Session session, TextureType type, String model, String param, Object val) {
         return ImmutableMap.of(
                 "user", session.getUsername(),
                 "uuid", UUIDTypeAdapter.fromUUID(session.getProfile().getId()),
@@ -123,18 +122,18 @@ public class LegacySkinServer implements SkinServer {
                 param, val);
     }
 
-    private static Map<String, ?> getClearData(Session session, MinecraftProfileTexture.Type type) {
+    private static Map<String, ?> getClearData(Session session, TextureType type) {
         return getData(session, type, "default", "clear", "1");
     }
 
-    private static Map<String, ?> getUploadData(Session session, MinecraftProfileTexture.Type type, String model, URI skinFile) {
+    private static Map<String, ?> getUploadData(Session session, TextureType type, String model, URI skinFile) {
         return getData(session, type, model, type.toString().toLowerCase(Locale.US), skinFile);
     }
 
-    private static String getPath(String address, MinecraftProfileTexture.Type type, GameProfile profile) {
+    private static URI getPath(String address, TextureType type, GameProfile profile) {
         String uuid = UUIDTypeAdapter.fromUUID(profile.getId());
         String path = type.toString().toLowerCase() + "s";
-        return String.format("%s/%s/%s.png", address, path, uuid);
+        return URI.create(String.format("%s/%s/%s.png", address, path, uuid));
     }
 
     @Override

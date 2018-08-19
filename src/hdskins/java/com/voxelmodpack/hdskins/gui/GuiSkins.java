@@ -1,25 +1,20 @@
 package com.voxelmodpack.hdskins.gui;
 
-import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.ELYTRA;
-import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.SKIN;
-import static net.minecraft.client.renderer.GlStateManager.*;
-
 import com.google.common.base.Splitter;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
+import com.minelittlepony.avatar.texture.TextureData;
+import com.minelittlepony.avatar.texture.TextureType;
 import com.minelittlepony.gui.Button;
 import com.minelittlepony.gui.GameGui;
 import com.minelittlepony.gui.IconicButton;
 import com.minelittlepony.gui.Label;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.skins.SkinUpload;
 import com.voxelmodpack.hdskins.skins.SkinUploadResponse;
 import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.Gui;
@@ -32,9 +27,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.lwjgl.BufferUtils;
@@ -51,6 +44,21 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.swing.UIManager;
+
+import static com.minelittlepony.avatar.texture.TextureType.ELYTRA;
+import static com.minelittlepony.avatar.texture.TextureType.SKIN;
+import static net.minecraft.client.renderer.GlStateManager.depthMask;
+import static net.minecraft.client.renderer.GlStateManager.disableColorMaterial;
+import static net.minecraft.client.renderer.GlStateManager.disableDepth;
+import static net.minecraft.client.renderer.GlStateManager.enableBlend;
+import static net.minecraft.client.renderer.GlStateManager.enableColorMaterial;
+import static net.minecraft.client.renderer.GlStateManager.enableDepth;
+import static net.minecraft.client.renderer.GlStateManager.popAttrib;
+import static net.minecraft.client.renderer.GlStateManager.popMatrix;
+import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
+import static net.minecraft.client.renderer.GlStateManager.rotate;
+import static net.minecraft.client.renderer.GlStateManager.scale;
+import static net.minecraft.client.renderer.GlStateManager.translate;
 
 public class GuiSkins extends GameGui {
 
@@ -94,14 +102,13 @@ public class GuiSkins extends GameGui {
     private File selectedSkin;
 
 
-
     private int lastMouseX = 0;
 
     private static GuiSkins instance;
 
     protected CubeMap panorama;
 
-    private MinecraftProfileTexture.Type textureType = SKIN;
+    private TextureType textureType = SKIN;
     private boolean thinArmType = false;
 
     static {
@@ -186,10 +193,10 @@ public class GuiSkins extends GameGui {
 
     }
 
-    protected void onSetRemoteSkin(Type type, ResourceLocation location, MinecraftProfileTexture profileTexture) {
+    protected void onSetRemoteSkin(TextureType type, TextureData texture) {
     }
 
-    protected void onSetLocalSkin(Type type) {
+    protected void onSetLocalSkin(TextureType type) {
     }
 
     private void reloadRemoteSkin() {
@@ -216,7 +223,7 @@ public class GuiSkins extends GameGui {
         addButton(new Label(34, 34, "hdskins.local", 0xffffff));
         addButton(new Label(width / 2 + 34, 34, "hdskins.server", 0xffffff));
 
-        addButton(new Button(width / 2 - 150, height - 27, 90, 20, "hdskins.options.browse", sender ->{
+        addButton(new Button(width / 2 - 150, height - 27, 90, 20, "hdskins.options.browse", sender -> {
             selectedSkin = null;
             localPlayer.releaseTextures();
             openFileThread = new ThreadOpenFilePNG(mc, format("hdskins.open.title"), (fileDialog, dialogResult) -> {
@@ -255,11 +262,12 @@ public class GuiSkins extends GameGui {
 
         addButton(btnModeSkin = new IconicButton(width - 25, 75, sender -> {
             switchSkinType(sender, SKIN);
-        }).setIcon(new ItemStack(Items.LEATHER_CHESTPLATE))).setEnabled(textureType == ELYTRA).setTooltip(format("hdskins.mode.skin", toTitleCase(SKIN.name())));
+        }).setIcon(new ItemStack(Items.LEATHER_CHESTPLATE))).setEnabled(textureType == ELYTRA)
+                .setTooltip(format("hdskins.mode.skin", toTitleCase(SKIN.toString())));
 
         addButton(btnModeElytra = new IconicButton(width - 25, 94, sender -> {
             switchSkinType(sender, ELYTRA);
-        }).setIcon(new ItemStack(Items.ELYTRA))).setEnabled(textureType == SKIN).setTooltip(format("hdskins.mode.skin", toTitleCase(ELYTRA.name())));
+        }).setIcon(new ItemStack(Items.ELYTRA))).setEnabled(textureType == SKIN).setTooltip(format("hdskins.mode.skin", toTitleCase(ELYTRA.toString())));
 
 
         addButton(new Button(width - 25, height - 65, 20, 20, "?", sender -> {
@@ -308,7 +316,7 @@ public class GuiSkins extends GameGui {
         return isPowerOfTwo(w) && w == h * 2 || w == h && w <= MAX_SKIN_DIMENSION && h <= MAX_SKIN_DIMENSION;
     }
 
-    protected void switchSkinType(Button sender, Type newType) {
+    protected void switchSkinType(Button sender, TextureType newType) {
         mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_BREWING_STAND_BREW, 1));
 
         textureType = newType;
@@ -436,7 +444,7 @@ public class GuiSkins extends GameGui {
 
         if (!localPlayer.isUsingLocalTexture()) {
             Gui.drawRect(40, height / 2 - 12, width / 2 - 40, height / 2 + 12, 0xB0000000);
-            drawCenteredString(fontRenderer, localMessage, (int)xPos1, height / 2 - 4, 0xffffff);
+            drawCenteredString(fontRenderer, localMessage, (int) xPos1, height / 2 - 4, 0xffffff);
         }
 
         if (fetchingSkin) {
@@ -446,10 +454,10 @@ public class GuiSkins extends GameGui {
             Gui.drawRect((int) (xPos2 - width / 4 + 40), height / 2 - lineHeight, width - 40, height / 2 + lineHeight, 0xB0000000);
 
             if (throttledByMojang) {
-                drawCenteredString(fontRenderer, format("hdskins.error.mojang"), (int)xPos2, height / 2 - 10, 0xffffff);
-                drawCenteredString(fontRenderer, format("hdskins.error.mojang.wait"), (int)xPos2, height / 2 + 2, 0xffffff);
+                drawCenteredString(fontRenderer, format("hdskins.error.mojang"), (int) xPos2, height / 2 - 10, 0xffffff);
+                drawCenteredString(fontRenderer, format("hdskins.error.mojang.wait"), (int) xPos2, height / 2 + 2, 0xffffff);
             } else {
-                drawCenteredString(fontRenderer, format("hdskins.fetch"), (int)xPos2, height / 2 - 4, 0xffffff);
+                drawCenteredString(fontRenderer, format("hdskins.fetch"), (int) xPos2, height / 2 - 4, 0xffffff);
             }
         }
 
@@ -482,8 +490,9 @@ public class GuiSkins extends GameGui {
         enableDepth();
     }
 
-    private void renderPlayerModel(EntityPlayerModel thePlayer, float xPosition, float yPosition, float scale, float mouseY, float mouseX, float partialTick) {
-        mc.getTextureManager().bindTexture(thePlayer.getLocal(Type.SKIN).getTexture());
+    private void renderPlayerModel(EntityPlayerModel thePlayer, float xPosition, float yPosition, float scale, float mouseY, float mouseX,
+            float partialTick) {
+        mc.getTextureManager().bindTexture(thePlayer.getLocal(SKIN).getTexture());
 
         enableColorMaterial();
         pushMatrix();
@@ -496,8 +505,8 @@ public class GuiSkins extends GameGui {
 
         rotate(((updateCounter + partialTick) * 2.5F) % 360, 0, 1, 0);
 
-        thePlayer.rotationYawHead = (float)Math.atan(mouseX / 20) * 30;
-        thePlayer.rotationPitch = (float)Math.atan(mouseY / 40) * -20;
+        thePlayer.rotationYawHead = (float) Math.atan(mouseX / 20) * 30;
+        thePlayer.rotationPitch = (float) Math.atan(mouseY / 40) * -20;
 
         mc.getRenderManager().renderEntity(thePlayer, 0, 0, 0, 0, 1, false);
 

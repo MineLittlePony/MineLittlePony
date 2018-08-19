@@ -2,19 +2,17 @@ package com.minelittlepony.hdskins.gui;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyManager;
+import com.minelittlepony.avatar.texture.TextureData;
+import com.minelittlepony.avatar.texture.TextureType;
 import com.minelittlepony.gui.Button;
 import com.minelittlepony.gui.IconicButton;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
 import com.voxelmodpack.hdskins.gui.GuiSkins;
-
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 
 /**
  * Skin uploading GUI. Usually displayed over the main menu.
@@ -77,18 +75,18 @@ public class GuiSkinsMineLP extends GuiSkins {
     }
 
     @Override
-    protected void onSetLocalSkin(Type type) {
+    protected void onSetLocalSkin(TextureType type) {
         MineLittlePony.logger.debug("Invalidating old local skin, checking updated local skin");
-        if (type == Type.SKIN) {
-            ponyManager.removePony(localPlayer.getLocal(Type.SKIN).getTexture());
+        if (type == TextureType.SKIN) {
+            ponyManager.removePony(localPlayer.getLocal(TextureType.SKIN).getTexture());
         }
     }
 
     @Override
-    protected void onSetRemoteSkin(Type type, ResourceLocation resource, MinecraftProfileTexture profileTexture) {
+    protected void onSetRemoteSkin(TextureType type, TextureData texture) {
         MineLittlePony.logger.debug("Invalidating old remote skin, checking updated remote skin");
-        if (type == Type.SKIN) {
-            ponyManager.removePony(resource);
+        if (type == TextureType.SKIN) {
+            ponyManager.removePony(texture.getLocation());
         }
     }
 }

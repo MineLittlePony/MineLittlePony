@@ -1,14 +1,14 @@
 package com.voxelmodpack.hdskins;
 
-import com.google.common.collect.Maps;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
+import com.minelittlepony.avatar.texture.TextureData;
+import com.minelittlepony.avatar.texture.TextureProfile;
+import com.minelittlepony.avatar.texture.TextureType;
 import net.minecraft.client.renderer.IImageBuffer;
-import net.minecraft.client.resources.SkinManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.image.BufferedImage;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import javax.annotation.Nullable;
 
@@ -18,22 +18,22 @@ import javax.annotation.Nullable;
  */
 public class PreviewTextureManager {
 
-    private final Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> textures;
+    private final Map<TextureType, TextureProfile> textures;
 
-    PreviewTextureManager(MinecraftTexturesPayload payload) {
-        this.textures = payload.getTextures();
+    PreviewTextureManager(Map<TextureType, TextureProfile> textures) {
+        this.textures = textures;
     }
 
     @Nullable
-    public PreviewTexture getPreviewTexture(ResourceLocation location, MinecraftProfileTexture.Type type, ResourceLocation def,
-            @Nullable SkinManager.SkinAvailableCallback callback) {
+    public PreviewTexture getPreviewTexture(ResourceLocation location, TextureType type, ResourceLocation def,
+            @Nullable BiConsumer<TextureType, TextureData> callback) {
         if (!textures.containsKey(type)) {
             return null;
         }
-        MinecraftProfileTexture texture = textures.get(type);
+        TextureProfile texture = textures.get(type);
         IImageBuffer buffer = new ImageBufferDownloadHD();
-        PreviewTexture skinTexture = new PreviewTexture(texture.getMetadata("model"), texture.getUrl(), def,
-                type == MinecraftProfileTexture.Type.SKIN ? new IImageBuffer() {
+        PreviewTexture skinTexture = new PreviewTexture(texture, def,
+                type == TextureType.SKIN ? new IImageBuffer() {
                     @Override
                     @Nullable
                     public BufferedImage parseUserSkin(BufferedImage image) {
@@ -43,7 +43,7 @@ public class PreviewTextureManager {
                     @Override
                     public void skinAvailable() {
                         if (callback != null) {
-                            callback.skinAvailable(type, location, new MinecraftProfileTexture(texture.getUrl(), Maps.newHashMap()));
+                            callback.accept(type, new TextureData(location, texture));
                         }
                     }
                 } : null);
@@ -52,4 +52,5 @@ public class PreviewTextureManager {
 
         return skinTexture;
     }
+
 }

@@ -45,12 +45,16 @@ sourceSets {
         ext.refMap = 'minelp.mixin.refmap.json'
     }
 }
+repositories {
+    mavenLocal()
+}
 
 dependencies {
     // use the same version as httpclient
     compile('org.apache.httpcomponents:httpmime:4.3.2') {
         transitive = false
     }
+    deobfCompile 'com.minelittlepony:AvatarAPI:1.0-SNAPSHOT'
 }
 
 litemod {

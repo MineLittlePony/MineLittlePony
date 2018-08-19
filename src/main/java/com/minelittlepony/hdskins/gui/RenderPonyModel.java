@@ -1,16 +1,15 @@
 package com.minelittlepony.hdskins.gui;
 
 import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.avatar.texture.TextureType;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.model.player.PlayerModels;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyRace;
-import com.minelittlepony.render.layer.LayerPonyElytra;
 import com.minelittlepony.render.RenderPony;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+import com.minelittlepony.render.layer.LayerPonyElytra;
 import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
-
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelElytra;
 import net.minecraft.client.model.ModelPlayer;
@@ -79,7 +78,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> implemen
             return super.getEntityModel(playermodel);
         }
 
-        boolean canWet = playermodel.wet && (loc == playermodel.getBlankSkin(Type.SKIN) || race == PonyRace.SEAPONY);
+        boolean canWet = playermodel.wet && (loc == playermodel.getBlankSkin(TextureType.SKIN) || race == PonyRace.SEAPONY);
 
         playerModel = canWet ? PlayerModels.SEAPONY.getModel(slim) : thePony.getModel(true);
         playerModel.apply(thePony.getMetadata());
@@ -110,7 +109,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> implemen
 
             @Override
             protected ResourceLocation getElytraTexture(EntityPonyModel entity) {
-                return entity.getLocal(Type.ELYTRA).getTexture();
+                return entity.getLocal(TextureType.ELYTRA).getTexture();
             }
         };
     }

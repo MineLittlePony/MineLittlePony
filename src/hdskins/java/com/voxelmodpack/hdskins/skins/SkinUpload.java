@@ -1,6 +1,6 @@
 package com.voxelmodpack.hdskins.skins;
 
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.minelittlepony.avatar.texture.TextureType;
 
 import java.net.URI;
 import java.util.Map;
@@ -11,9 +11,9 @@ public class SkinUpload {
 
     private URI image;
     private Map<String, String> metadata;
-    private MinecraftProfileTexture.Type type;
+    private TextureType type;
 
-    public SkinUpload(MinecraftProfileTexture.Type type, @Nullable URI image, Map<String, String> metadata) {
+    public SkinUpload(TextureType type, @Nullable URI image, Map<String, String> metadata) {
         this.image = image;
         this.metadata = metadata;
         this.type = type;
@@ -28,7 +28,7 @@ public class SkinUpload {
         return metadata;
     }
 
-    public MinecraftProfileTexture.Type getType() {
+    public TextureType getType() {
         return type;
     }
 }
