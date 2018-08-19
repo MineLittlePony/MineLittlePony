@@ -6,6 +6,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -37,6 +38,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -51,15 +53,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
 public final class HDSkinManager implements IResourceManagerReloadListener {
+
+    private static final Logger logger = LogManager.getLogger();
 
     public static final ExecutorService skinUploadExecutor = Executors.newSingleThreadExecutor();
     public static final ExecutorService skinDownloadExecutor = Executors.newFixedThreadPool(8);
@@ -89,7 +93,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     private SkinResourceManager resources = new SkinResourceManager();
     //    private ExecutorService executor = Executors.newCachedThreadPool();
 
-    private Class<? extends GuiSkins> skinsClass = null;
+    private Function<List<SkinServer>, GuiSkins> skinsGuiFunc = GuiSkins::new;
 
     private HDSkinManager() {
 
@@ -99,20 +103,13 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         addSkinServerType(BethlehemSkinServer.class);
     }
 
-    public void setPrefferedSkinsGuiClass(Class<? extends GuiSkins> clazz) {
-        skinsClass = clazz;
+    public void setSkinsGui(Function<List<SkinServer>, GuiSkins> skinsGuiFunc) {
+        Preconditions.checkNotNull(skinsGuiFunc, "skinsGuiFunc");
+        this.skinsGuiFunc = skinsGuiFunc;
     }
 
     public GuiSkins createSkinsGui() {
-        if (skinsClass != null) {
-            try {
-                return skinsClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return new GuiSkins();
+        return skinsGuiFunc.apply(ImmutableList.copyOf(this.skinServers));
     }
 
     public Optional<ResourceLocation> getSkinLocation(GameProfile profile1, final Type type, boolean loadIfAbsent) {
@@ -219,7 +216,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                     break;
                 }
             } catch (IOException e) {
-                LogManager.getLogger().trace(e);
+                logger.trace(e);
             }
 
         }
@@ -254,17 +251,8 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         this.skinServers.add(skinServer);
     }
 
-    @Deprecated
-    public SkinServer getGatewayServer() {
-        return this.skinServers.get(0);
-    }
-
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public static CompletableFuture<PreviewTextureManager> getPreviewTextureManager(GameProfile profile) {
-        return INSTANCE.getGatewayServer().getPreviewTextures(profile).thenApply(PreviewTextureManager::new);
     }
 
     public void addClearListener(ISkinCacheClearListener listener) {
@@ -296,8 +284,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         try {
             return callback.onSkinCacheCleared();
         } catch (Exception e) {
-            LiteLoaderLogger.warning("Exception ancountered calling skin listener '{}'. It will be removed.", callback.getClass().getName());
-            e.printStackTrace();
+            logger.warn("Exception encountered calling skin listener '{}'. It will be removed.", callback.getClass().getName(), e);
             return false;
         }
     }

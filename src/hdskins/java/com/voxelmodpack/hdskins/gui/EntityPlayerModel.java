@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.LocalTexture;
 import com.voxelmodpack.hdskins.LocalTexture.IBlankSkinSupplier;
 import net.minecraft.client.Minecraft;
@@ -35,12 +34,15 @@ public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSup
     protected final LocalTexture skin;
     protected final LocalTexture elytra;
 
-    public final GameProfile profile;
+
+    private final GameProfile profile;
+    private final GuiSkins skins;
 
     protected boolean previewThinArms = false;
 
-    public EntityPlayerModel(GameProfile gameprofile) {
+    public EntityPlayerModel(GuiSkins skins, GameProfile gameprofile) {
         super(new DummyWorld());
+        this.skins = skins;
         profile = gameprofile;
 
         skin = new LocalTexture(profile, Type.SKIN, this);
@@ -48,10 +50,10 @@ public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSup
     }
 
     public void reloadRemoteSkin(SkinManager.SkinAvailableCallback listener) {
-        HDSkinManager.getPreviewTextureManager(profile).thenAccept(ptm -> {
+        this.skins.loadTextures(profile).thenAcceptAsync(ptm -> {
             skin.setRemote(ptm, listener);
             elytra.setRemote(ptm, listener);
-        });
+        }, Minecraft.getMinecraft()::addScheduledTask); // run on main thread
     }
 
     public void setLocalTexture(File skinTextureFile, Type type) {

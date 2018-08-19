@@ -1,12 +1,9 @@
 package com.voxelmodpack.hdskins.gui;
 
-import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.ELYTRA;
-import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.SKIN;
-import static net.minecraft.client.renderer.GlStateManager.*;
-
 import com.google.common.base.Splitter;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.minelittlepony.gui.Button;
 import com.minelittlepony.gui.GameGui;
 import com.minelittlepony.gui.IconicButton;
@@ -16,10 +13,11 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.PreviewTextureManager;
+import com.voxelmodpack.hdskins.skins.SkinServer;
 import com.voxelmodpack.hdskins.skins.SkinUpload;
 import com.voxelmodpack.hdskins.skins.SkinUploadResponse;
 import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.Gui;
@@ -34,7 +32,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.lwjgl.BufferUtils;
@@ -46,16 +43,26 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.DoubleBuffer;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.swing.UIManager;
+
+import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.ELYTRA;
+import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.SKIN;
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class GuiSkins extends GameGui {
 
     private static final int MAX_SKIN_DIMENSION = 1024;
     private int updateCounter = 0;
+
+    private final Iterator<SkinServer> skinServers;
+    private SkinServer gateway;
 
     private Button btnUpload;
     private Button btnClear;
@@ -93,11 +100,9 @@ public class GuiSkins extends GameGui {
     private File pendingSkinFile;
     private File selectedSkin;
 
-
-
     private int lastMouseX = 0;
 
-    private static GuiSkins instance;
+    private GuiSkins instance;
 
     protected CubeMap panorama;
 
@@ -112,8 +117,16 @@ public class GuiSkins extends GameGui {
         }
     }
 
-    public GuiSkins() {
+    public GuiSkins(List<SkinServer> servers) {
         instance = this;
+
+        // Generate a cycled iterator that will never run out of entries.
+        this.skinServers = cycle(servers, SkinServer::verifyGateway);
+        if (this.skinServers.hasNext()) {
+            this.gateway = this.skinServers.next();
+        } else {
+            this.uploadError = "There are no valid skin servers available! Check your config.";
+        }
 
         Minecraft minecraft = Minecraft.getMinecraft();
         GameProfile profile = minecraft.getSession().getProfile();
@@ -126,12 +139,17 @@ public class GuiSkins extends GameGui {
         rm.options = minecraft.gameSettings;
         rm.renderViewEntity = localPlayer;
 
-        reloadRemoteSkin();
-
-        fetchingSkin = true;
+        if (gateway != null) {
+            reloadRemoteSkin();
+            fetchingSkin = true;
+        }
 
         panorama = new CubeMap(this);
         initPanorama();
+    }
+
+    private static <T> Iterator<T> cycle(List<T> list, Predicate<T> filter) {
+        return Iterables.cycle(Iterables.filter(list, filter::test)).iterator();
     }
 
     protected void initPanorama() {
@@ -139,7 +157,7 @@ public class GuiSkins extends GameGui {
     }
 
     protected EntityPlayerModel getModel(GameProfile profile) {
-        return new EntityPlayerModel(profile);
+        return new EntityPlayerModel(this, profile);
     }
 
     @Override
@@ -207,7 +225,7 @@ public class GuiSkins extends GameGui {
     @Override
     public void initGui() {
         GLWindow.current().setDropTargetListener(files -> {
-            files.stream().findFirst().ifPresent(instance::loadLocalFile);
+            files.stream().findFirst().ifPresent(this::loadLocalFile);
         });
 
         panorama.init();
@@ -216,7 +234,7 @@ public class GuiSkins extends GameGui {
         addButton(new Label(34, 34, "hdskins.local", 0xffffff));
         addButton(new Label(width / 2 + 34, 34, "hdskins.server", 0xffffff));
 
-        addButton(new Button(width / 2 - 150, height - 27, 90, 20, "hdskins.options.browse", sender ->{
+        addButton(new Button(width / 2 - 150, height - 27, 90, 20, "hdskins.options.browse", sender -> {
             selectedSkin = null;
             localPlayer.releaseTextures();
             openFileThread = new ThreadOpenFilePNG(mc, format("hdskins.open.title"), (fileDialog, dialogResult) -> {
@@ -262,9 +280,18 @@ public class GuiSkins extends GameGui {
         }).setIcon(new ItemStack(Items.ELYTRA))).setEnabled(textureType == SKIN).setTooltip(format("hdskins.mode.skin", toTitleCase(ELYTRA.name())));
 
 
-        addButton(new Button(width - 25, height - 65, 20, 20, "?", sender -> {
-            mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_VILLAGER_YES, 1));
-        })).setTooltip(Splitter.on("\r\n").splitToList(HDSkinManager.INSTANCE.getGatewayServer().toString()));
+        addButton(new Button(width - 25, height - 65, 20, 20, "?", this::switchServer))
+                .setTooltip(Splitter.on("\r\n").splitToList(gateway == null ? "" : gateway.toString()));
+    }
+
+    private void switchServer(Button sender) {
+        mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_VILLAGER_YES, 1));
+        gateway = skinServers.next();
+        if (gateway != null) {
+            sender.setTooltip(Splitter.on("\r\n").splitToList(gateway.toString()));
+            reloadRemoteSkin();
+            fetchingSkin = true;
+        }
     }
 
     @Override
@@ -346,6 +373,7 @@ public class GuiSkins extends GameGui {
 
     @Override
     protected void actionPerformed(GuiButton guiButton) {
+
         if (openFileThread == null && !uploadingSkin && clearMessage()) {
             super.actionPerformed(guiButton);
         }
@@ -353,6 +381,10 @@ public class GuiSkins extends GameGui {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
+        if (this.gateway == null) {
+            // doing things might break everything if there is no gateway
+            return;
+        }
         if (clearMessage()) {
             super.mouseClicked(mouseX, mouseY, button);
 
@@ -436,7 +468,7 @@ public class GuiSkins extends GameGui {
 
         if (!localPlayer.isUsingLocalTexture()) {
             Gui.drawRect(40, height / 2 - 12, width / 2 - 40, height / 2 + 12, 0xB0000000);
-            drawCenteredString(fontRenderer, localMessage, (int)xPos1, height / 2 - 4, 0xffffff);
+            drawCenteredString(fontRenderer, localMessage, (int) xPos1, height / 2 - 4, 0xffffff);
         }
 
         if (fetchingSkin) {
@@ -446,10 +478,10 @@ public class GuiSkins extends GameGui {
             Gui.drawRect((int) (xPos2 - width / 4 + 40), height / 2 - lineHeight, width - 40, height / 2 + lineHeight, 0xB0000000);
 
             if (throttledByMojang) {
-                drawCenteredString(fontRenderer, format("hdskins.error.mojang"), (int)xPos2, height / 2 - 10, 0xffffff);
-                drawCenteredString(fontRenderer, format("hdskins.error.mojang.wait"), (int)xPos2, height / 2 + 2, 0xffffff);
+                drawCenteredString(fontRenderer, format("hdskins.error.mojang"), (int) xPos2, height / 2 - 10, 0xffffff);
+                drawCenteredString(fontRenderer, format("hdskins.error.mojang.wait"), (int) xPos2, height / 2 + 2, 0xffffff);
             } else {
-                drawCenteredString(fontRenderer, format("hdskins.fetch"), (int)xPos2, height / 2 - 4, 0xffffff);
+                drawCenteredString(fontRenderer, format("hdskins.fetch"), (int) xPos2, height / 2 - 4, 0xffffff);
             }
         }
 
@@ -496,8 +528,8 @@ public class GuiSkins extends GameGui {
 
         rotate(((updateCounter + partialTick) * 2.5F) % 360, 0, 1, 0);
 
-        thePlayer.rotationYawHead = (float)Math.atan(mouseX / 20) * 30;
-        thePlayer.rotationPitch = (float)Math.atan(mouseY / 40) * -20;
+        thePlayer.rotationYawHead = (float) Math.atan(mouseX / 20) * 30;
+        thePlayer.rotationPitch = (float) Math.atan(mouseY / 40) * -20;
 
         mc.getRenderManager().renderEntity(thePlayer, 0, 0, 0, 0, 1, false);
 
@@ -543,8 +575,7 @@ public class GuiSkins extends GameGui {
         uploadMessage = format(uploadMsg);
         btnUpload.enabled = canUpload();
 
-        HDSkinManager.INSTANCE.getGatewayServer()
-                .uploadSkin(mc.getSession(), new SkinUpload(textureType, path, getMetadata()))
+        gateway.uploadSkin(mc.getSession(), new SkinUpload(textureType, path, getMetadata()))
                 .thenAccept(this::onUploadComplete)
                 .exceptionally(this::onUploadFailure);
     }
@@ -574,4 +605,9 @@ public class GuiSkins extends GameGui {
     protected boolean canUpload() {
         return selectedSkin != null && !uploadingSkin && !pendingRemoteSkinRefresh;
     }
+
+    CompletableFuture<PreviewTextureManager> loadTextures(GameProfile profile) {
+        return PreviewTextureManager.load(this.gateway, profile);
+    }
+
 }

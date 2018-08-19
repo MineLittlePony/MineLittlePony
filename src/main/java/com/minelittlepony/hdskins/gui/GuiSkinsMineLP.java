@@ -9,12 +9,14 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
 import com.voxelmodpack.hdskins.gui.GuiSkins;
-
+import com.voxelmodpack.hdskins.skins.SkinServer;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.List;
 
 /**
  * Skin uploading GUI. Usually displayed over the main menu.
@@ -28,15 +30,18 @@ public class GuiSkinsMineLP extends GuiSkins {
 
     private boolean isWet = false;
 
-
     private static final String[] panoramas = new String[] {
         "minelp:textures/cubemap/sugarcubecorner_%d.png",
         "minelp:textures/cubemap/quillsandsofas_%d.png"
     };
 
+    public GuiSkinsMineLP(List<SkinServer> servers) {
+        super(servers);
+    }
+
     @Override
     protected EntityPlayerModel getModel(GameProfile profile) {
-        return new EntityPonyModel(profile);
+        return new EntityPonyModel(this, profile);
     }
 
     @Override

@@ -1,19 +1,17 @@
 package com.voxelmodpack.hdskins;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.util.ResourceLocation;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 public class LocalTexture {
 
@@ -33,7 +31,7 @@ public class LocalTexture {
         this.blank = blank;
         this.type = type;
 
-        String file =  type.name().toLowerCase() + "s/preview_${profile.getName()}.png";
+        String file = String.format("%s/preview_%s.png", type.name().toLowerCase(), profile.getName());
 
         remoteResource = new ResourceLocation(file);
         textureManager.deleteTexture(remoteResource);
@@ -113,6 +111,7 @@ public class LocalTexture {
     }
 
     public interface IBlankSkinSupplier {
+
         ResourceLocation getBlankSkin(Type type);
     }
 }

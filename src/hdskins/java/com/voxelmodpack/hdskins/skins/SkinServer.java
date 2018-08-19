@@ -36,6 +36,10 @@ public interface SkinServer extends Exposable {
         return CallableFutures.asyncFailableFuture(() -> loadProfileData(profile), HDSkinManager.skinDownloadExecutor);
     }
 
+    default boolean verifyGateway() {
+        return true;
+    }
+
     static void verifyServerConnection(Session session, String serverId) throws AuthenticationException {
         MinecraftSessionService service = Minecraft.getMinecraft().getSessionService();
         service.joinServer(session.getProfile(), session.getToken(), serverId);

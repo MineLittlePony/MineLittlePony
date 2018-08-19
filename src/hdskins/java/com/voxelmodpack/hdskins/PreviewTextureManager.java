@@ -1,14 +1,17 @@
 package com.voxelmodpack.hdskins;
 
 import com.google.common.collect.Maps;
+import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
+import com.voxelmodpack.hdskins.skins.SkinServer;
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.image.BufferedImage;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Nullable;
 
@@ -20,7 +23,7 @@ public class PreviewTextureManager {
 
     private final Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> textures;
 
-    PreviewTextureManager(MinecraftTexturesPayload payload) {
+    private PreviewTextureManager(MinecraftTexturesPayload payload) {
         this.textures = payload.getTextures();
     }
 
@@ -51,5 +54,9 @@ public class PreviewTextureManager {
         TextureLoader.loadTexture(location, skinTexture);
 
         return skinTexture;
+    }
+
+    public static CompletableFuture<PreviewTextureManager> load(SkinServer server, GameProfile profile) {
+        return server.getPreviewTextures(profile).thenApply(PreviewTextureManager::new);
     }
 }

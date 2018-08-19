@@ -77,7 +77,7 @@ public class MineLittlePony {
 //        logger.info("Set MineLP skin server URL.");
         manager.addClearListener(ponyManager);
 
-        manager.setPrefferedSkinsGuiClass(GuiSkinsMineLP.class);
+        manager.setSkinsGui(GuiSkinsMineLP::new);
 
         RenderManager rm = minecraft.getRenderManager();
         renderManager.initialisePlayerRenderers(rm);
