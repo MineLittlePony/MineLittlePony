@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import net.minecraft.util.Session;
@@ -26,14 +27,14 @@ public class BethlehemSkinServer implements SkinServer {
     }
 
     @Override
-    public TexturesPayload loadProfileData(GameProfile profile) throws IOException {
+    public MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException {
         // TODO: Fix this
         try (MoreHttpResponses response = new NetClient("GET", getPath(profile)).send()) {
             if (!response.ok()) {
                 throw new IOException(response.getResponse().getStatusLine().getReasonPhrase());
             }
 
-            return response.json(TexturesPayload.class);
+            return response.json(MinecraftTexturesPayload.class);
         }
     }
 

@@ -3,8 +3,8 @@ package com.voxelmodpack.hdskins.resource;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-import com.minelittlepony.avatar.texture.TextureType;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
@@ -13,6 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,8 +23,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
-import javax.annotation.Nullable;
 
 public class SkinResourceManager implements IResourceManagerReloadListener {
 
@@ -75,8 +74,8 @@ public class SkinResourceManager implements IResourceManagerReloadListener {
     }
 
     @Nullable
-    public ResourceLocation getPlayerTexture(GameProfile profile, TextureType type) {
-        if (type != TextureType.SKIN)
+    public ResourceLocation getPlayerTexture(GameProfile profile, Type type) {
+        if (type != Type.SKIN)
             // not supported
             return null;
 

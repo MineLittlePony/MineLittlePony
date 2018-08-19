@@ -1,6 +1,5 @@
 package com.voxelmodpack.hdskins;
 
-import com.minelittlepony.avatar.texture.TextureProfile;
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.util.ResourceLocation;
@@ -13,10 +12,10 @@ public class PreviewTexture extends ThreadDownloadImageData {
 
     private String model;
 
-    public PreviewTexture(TextureProfile profile, ResourceLocation fallbackTexture, @Nullable IImageBuffer imageBuffer) {
-        super(null, profile.getUrl().toString(), fallbackTexture, imageBuffer);
+    public PreviewTexture(@Nullable String model, String url, ResourceLocation fallbackTexture, @Nullable IImageBuffer imageBuffer) {
+        super(null, url, fallbackTexture, imageBuffer);
 
-        this.model = profile.getMetadata("model").orElse("default");
+        this.model = model == null ? "default" : model;
     }
 
     public boolean isTextureUploaded() {

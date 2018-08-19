@@ -1,20 +1,22 @@
 package com.minelittlepony.mixin;
 
-import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.PonyManager;
-import com.minelittlepony.avatar.impl.INetworkPlayerInfo;
-import com.minelittlepony.avatar.texture.TextureData;
-import com.minelittlepony.avatar.texture.TextureType;
-import com.minelittlepony.ducks.IPlayerInfo;
-import net.minecraft.client.network.NetworkPlayerInfo;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.PonyManager;
+import com.minelittlepony.ducks.IPlayerInfo;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+import com.voxelmodpack.hdskins.HDSkinManager;
+
+import net.minecraft.client.network.NetworkPlayerInfo;
+
 @Mixin(NetworkPlayerInfo.class)
-public abstract class MixinNetworkPlayerInfo implements IPlayerInfo, INetworkPlayerInfo {
+public abstract class MixinNetworkPlayerInfo implements IPlayerInfo {
 
     @Shadow
     private String skinType;
@@ -27,10 +29,10 @@ public abstract class MixinNetworkPlayerInfo implements IPlayerInfo, INetworkPla
     @Override
     public boolean usesSlimArms() {
         if (skinType == null) {
-            TextureData skin = this.getPlayerTexture(TextureType.SKIN).orElse(null);
+            MinecraftProfileTexture skin = HDSkinManager.INSTANCE.getProfileData(unwrap().getGameProfile()).get(Type.SKIN);
 
             if (skin != null) {
-                return "slim".equals(skin.getProfile().getMetadata("model").orElse(null));
+                return "slim".equals(skin.getMetadata("model"));
             }
 
             return PonyManager.isSlimSkin(unwrap().getGameProfile().getId());

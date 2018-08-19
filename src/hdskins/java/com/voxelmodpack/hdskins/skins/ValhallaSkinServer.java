@@ -3,9 +3,10 @@ package com.voxelmodpack.hdskins.skins;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
-import com.minelittlepony.avatar.texture.TextureType;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import net.minecraft.client.Minecraft;
@@ -42,12 +43,12 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     @Override
-    public TexturesPayload loadProfileData(GameProfile profile) throws IOException {
+    public MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException {
 
         try (MoreHttpResponses response = MoreHttpResponses.execute(HDSkinManager.httpClient, new HttpGet(getTexturesURI(profile)))) {
 
             if (response.ok()) {
-                return readJson(response, TexturesPayload.class);
+                return readJson(response, MinecraftTexturesPayload.class);
             }
             throw new IOException("Server sent non-ok response code: " + response.getResponseCode());
         }
@@ -57,7 +58,7 @@ public class ValhallaSkinServer implements SkinServer {
     public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, SkinUpload skin) {
         URI image = skin.getImage();
         Map<String, String> metadata = skin.getMetadata();
-        TextureType type = skin.getType();
+        MinecraftProfileTexture.Type type = skin.getType();
 
         return CallableFutures.asyncFailableFuture(() -> {
                 authorize(session);
@@ -76,7 +77,7 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     private SkinUploadResponse upload(Session session, @Nullable URI image,
-            TextureType type, Map<String, String> metadata)
+            MinecraftProfileTexture.Type type, Map<String, String> metadata)
             throws IOException {
         GameProfile profile = session.getProfile();
 
@@ -95,14 +96,14 @@ public class ValhallaSkinServer implements SkinServer {
 
     }
 
-    private SkinUploadResponse resetSkin(GameProfile profile, TextureType type) throws IOException {
+    private SkinUploadResponse resetSkin(GameProfile profile, MinecraftProfileTexture.Type type) throws IOException {
         return upload(RequestBuilder.delete()
                 .setUri(buildUserTextureUri(profile, type))
                 .addHeader(HttpHeaders.AUTHORIZATION, this.accessToken)
                 .build());
     }
 
-    private SkinUploadResponse uploadFile(File file, GameProfile profile, TextureType type, Map<String, String> metadata) throws IOException {
+    private SkinUploadResponse uploadFile(File file, GameProfile profile, MinecraftProfileTexture.Type type, Map<String, String> metadata) throws IOException {
         MultipartEntityBuilder b = MultipartEntityBuilder.create();
         b.addBinaryBody("file", file, ContentType.create("image/png"), file.getName());
         metadata.forEach(b::addTextBody);
@@ -114,7 +115,7 @@ public class ValhallaSkinServer implements SkinServer {
                 .build());
     }
 
-    private SkinUploadResponse uploadUrl(URI uri, GameProfile profile, TextureType type, Map<String, String> metadata) throws IOException {
+    private SkinUploadResponse uploadUrl(URI uri, GameProfile profile, MinecraftProfileTexture.Type type, Map<String, String> metadata) throws IOException {
 
         return upload(RequestBuilder.post()
                 .setUri(buildUserTextureUri(profile, type))
@@ -185,9 +186,9 @@ public class ValhallaSkinServer implements SkinServer {
         }
     }
 
-    private URI buildUserTextureUri(GameProfile profile, TextureType textureType) {
+    private URI buildUserTextureUri(GameProfile profile, MinecraftProfileTexture.Type textureType) {
         String user = UUIDTypeAdapter.fromUUID(profile.getId());
-        String skinType = textureType.toString().toLowerCase(Locale.US);
+        String skinType = textureType.name().toLowerCase(Locale.US);
         return URI.create(String.format("%s/user/%s/%s", this.address, user, skinType));
     }
 

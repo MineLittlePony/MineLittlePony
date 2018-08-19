@@ -1,6 +1,5 @@
 package com.voxelmodpack.hdskins.gui;
 
-import com.minelittlepony.avatar.texture.TextureType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.client.model.ModelElytra;
@@ -15,18 +14,14 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
+
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 import java.util.Set;
 
-import static net.minecraft.client.renderer.GlStateManager.color;
-import static net.minecraft.client.renderer.GlStateManager.disableBlend;
-import static net.minecraft.client.renderer.GlStateManager.enableBlend;
-import static net.minecraft.client.renderer.GlStateManager.popAttrib;
-import static net.minecraft.client.renderer.GlStateManager.popMatrix;
-import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
-import static net.minecraft.client.renderer.GlStateManager.scale;
-import static net.minecraft.client.renderer.GlStateManager.translate;
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLivingBase<M> {
 
@@ -56,7 +51,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
                     GlStateManager.enableBlend();
                     GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
-                    bindTexture(entity.getLocal(TextureType.ELYTRA).getTexture());
+                    bindTexture(entity.getLocal(Type.ELYTRA).getTexture());
 
                     GlStateManager.pushMatrix();
                     GlStateManager.translate(0, 0, 0.125F);
@@ -78,7 +73,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
 
     @Override
     protected ResourceLocation getEntityTexture(M entity) {
-        return entity.getLocal(TextureType.SKIN).getTexture();
+        return entity.getLocal(Type.SKIN).getTexture();
     }
 
     @Override

@@ -1,19 +1,19 @@
 package com.voxelmodpack.hdskins;
 
-import com.minelittlepony.avatar.texture.TextureData;
-import com.minelittlepony.avatar.texture.TextureType;
-import com.mojang.authlib.GameProfile;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.util.ResourceLocation;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.function.BiConsumer;
 
 import javax.imageio.ImageIO;
+
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
+import net.minecraft.util.ResourceLocation;
 
 public class LocalTexture {
 
@@ -27,13 +27,13 @@ public class LocalTexture {
 
     private final IBlankSkinSupplier blank;
 
-    private final TextureType type;
+    private final Type type;
 
-    public LocalTexture(GameProfile profile, TextureType type, IBlankSkinSupplier blank) {
+    public LocalTexture(GameProfile profile, Type type, IBlankSkinSupplier blank) {
         this.blank = blank;
         this.type = type;
 
-        String file =  type.toString().toLowerCase() + "s/preview_${profile.getName()}.png";
+        String file =  type.name().toLowerCase() + "s/preview_${profile.getName()}.png";
 
         remoteResource = new ResourceLocation(file);
         textureManager.deleteTexture(remoteResource);
@@ -73,7 +73,7 @@ public class LocalTexture {
         return remote;
     }
 
-    public void setRemote(PreviewTextureManager ptm, BiConsumer<TextureType, TextureData> callback) {
+    public void setRemote(PreviewTextureManager ptm, SkinAvailableCallback callback) {
         clearRemote();
 
         remote = ptm.getPreviewTexture(remoteResource, type, blank.getBlankSkin(type), callback);
@@ -113,6 +113,6 @@ public class LocalTexture {
     }
 
     public interface IBlankSkinSupplier {
-        ResourceLocation getBlankSkin(TextureType type);
+        ResourceLocation getBlankSkin(Type type);
     }
 }
