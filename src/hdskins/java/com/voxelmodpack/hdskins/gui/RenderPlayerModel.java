@@ -124,7 +124,9 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         color(1, 1, 1, 1);
         disableBlend();
         popMatrix();
+        popAttrib();
 
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         pushMatrix();
         scale(1, -1, 1);
         translate(0, offset, 0);
