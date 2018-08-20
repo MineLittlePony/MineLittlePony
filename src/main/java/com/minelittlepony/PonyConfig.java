@@ -65,4 +65,8 @@ public class PonyConfig extends SensibleConfig implements Exposable {
     public void setPonyLevel(PonyLevel ponylevel) {
         this.ponylevel = ponylevel;
     }
+
+    public float getGlobalScaleFactor() {
+        return showscale ? 1F : 1.3F;
+    }
 }
