@@ -50,6 +50,7 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
         @Override
         public void preRender(boolean transparency) {
             GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
+            RenderPony.enableModelRenderProfile();
         }
 
         @Override

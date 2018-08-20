@@ -8,6 +8,8 @@ import com.minelittlepony.render.plane.PlaneRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 
+import org.lwjgl.opengl.GL11;
+
 import static com.minelittlepony.model.PonyModelConstants.*;
 
 public class SeaponyTail implements IModelPart {
@@ -54,9 +56,11 @@ public class SeaponyTail implements IModelPart {
 
     @Override
     public void renderPart(float scale) {
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         GlStateManager.enableBlend();
         tailBase.render(scale);
         GlStateManager.disableBlend();
+        GlStateManager.popAttrib();
     }
 
 }

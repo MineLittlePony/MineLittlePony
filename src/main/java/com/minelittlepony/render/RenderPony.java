@@ -19,6 +19,16 @@ public class RenderPony<T extends EntityLivingBase> {
 
     private IRenderPony<T> renderer;
 
+    public static void enableModelRenderProfile() {
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.alphaFunc(516, 0.003921569F);
+    }
+
+    public static void disableModelRenderProfile() {
+        GlStateManager.disableBlend();
+    }
+
     public RenderPony(IRenderPony<T> renderer) {
         this.renderer = renderer;
     }
@@ -30,6 +40,7 @@ public class RenderPony<T extends EntityLivingBase> {
 
         float s = getScaleFactor();
         GlStateManager.scale(s, s, s);
+        enableModelRenderProfile();
     }
 
     @SuppressWarnings("unchecked")
