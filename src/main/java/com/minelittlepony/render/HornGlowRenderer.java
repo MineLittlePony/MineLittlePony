@@ -4,7 +4,10 @@ import static net.minecraft.client.renderer.GlStateManager.color;
 
 import com.minelittlepony.util.coordinates.Color;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
+
+import org.lwjgl.opengl.GL11;
 
 public class HornGlowRenderer extends AbstractPonyRenderer<HornGlowRenderer> {
 
@@ -38,8 +41,10 @@ public class HornGlowRenderer extends AbstractPonyRenderer<HornGlowRenderer> {
 
     @Override
     public void render(float scale) {
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        Minecraft.getMinecraft().entityRenderer.disableLightmap();
         super.render(scale);
-        color(1, 1, 1, 1);
+        GL11.glPopAttrib();
     }
 
     @Override

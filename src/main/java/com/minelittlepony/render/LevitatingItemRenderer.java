@@ -1,5 +1,6 @@
 package com.minelittlepony.render;
 
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
 import com.minelittlepony.MineLittlePony;
@@ -10,8 +11,12 @@ import com.mumfrey.liteloader.client.overlays.IMinecraft;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.EnumAction;
@@ -20,6 +25,12 @@ import net.minecraft.util.EnumHandSide;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class LevitatingItemRenderer {
+
+    public static void enableItemGlowRenderProfile() {
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(SourceFactor.CONSTANT_COLOR, DestFactor.ONE, SourceFactor.ONE, DestFactor.ZERO);
+        Minecraft.getMinecraft().entityRenderer.disableLightmap();
+    }
 
     /**
      * Renders a magical overlay over an item in third person.
