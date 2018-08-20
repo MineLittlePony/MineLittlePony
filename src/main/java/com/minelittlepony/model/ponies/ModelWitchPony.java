@@ -30,7 +30,6 @@ public class ModelWitchPony extends ModelZebra {
         super.updateLivingState(entity, pony);
         EntityWitch witch = ((EntityWitch) entity);
 
-        isChild = entity.getUniqueID().getLeastSignificantBits() % 300 == 0;
         leftArmPose = ArmPose.EMPTY;
         rightArmPose = witch.getHeldItemMainhand().isEmpty() ? ArmPose.EMPTY : ArmPose.ITEM;
     }
