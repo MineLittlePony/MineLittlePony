@@ -20,6 +20,7 @@ import java.util.concurrent.Executor;
 public class NetClient {
 
     private final RequestBuilder rqBuilder;
+    private MultipartEntityBuilder entityBuilder;
 
     private Map<String, ?> headers;
 
@@ -28,11 +29,26 @@ public class NetClient {
     }
 
     public NetClient putFile(String key, String contentType, URI file) {
+        if (entityBuilder == null) {
+            entityBuilder= MultipartEntityBuilder.create();
+        }
+
         File f = new File(file);
-        HttpEntity entity = MultipartEntityBuilder.create().addBinaryBody(key, f, ContentType.create(contentType), f.getName()).build();
+        HttpEntity entity = entityBuilder.addBinaryBody(key, f, ContentType.create(contentType), f.getName()).build();
 
         rqBuilder.setEntity(entity);
 
+        return this;
+    }
+
+    public NetClient putFormData(Map<String, ?> data, String contentTypes) {
+        if (entityBuilder == null) {
+            entityBuilder= MultipartEntityBuilder.create();
+        }
+
+        for (Map.Entry<String, ?> i : data.entrySet()) {
+            entityBuilder.addTextBody(i.getKey(), i.getValue().toString());
+        }
         return this;
     }
 
@@ -43,6 +59,10 @@ public class NetClient {
     }
 
     public MoreHttpResponses send() throws IOException {
+        if (entityBuilder != null) {
+            rqBuilder.setEntity(entityBuilder.build());
+        }
+
         HttpUriRequest request = rqBuilder.build();
 
         if (headers != null) {

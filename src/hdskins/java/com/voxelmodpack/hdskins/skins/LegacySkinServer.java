@@ -9,7 +9,6 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
-import com.voxelmodpack.hdskins.upload.ThreadMultipartPostUpload;
 
 import net.minecraft.util.Session;
 import org.apache.logging.log4j.LogManager;
@@ -93,7 +92,15 @@ public class LegacySkinServer implements SkinServer {
         return CallableFutures.asyncFailableFuture(() -> {
             SkinServer.verifyServerConnection(session, SERVER_ID);
 
-            String response = new ThreadMultipartPostUpload(gateway, createHeaders(session, upload)).uploadMultipart();
+            NetClient client = new NetClient("POST", gateway);
+
+            client.putFormData(createHeaders(session, upload), "image/png");
+
+            if (upload.getImage() != null) {
+                client.putFile(upload.getType().toString().toLowerCase(Locale.US), "image/png", upload.getImage());
+            }
+
+            String response = client.send().text();
 
             if (response.startsWith("ERROR: ")) {
                 response = response.substring(7);
@@ -119,8 +126,6 @@ public class LegacySkinServer implements SkinServer {
 
         if (upload.getImage() == null) {
             builder.put("clear", "1");
-        } else {
-            builder.put(upload.getType().toString().toLowerCase(Locale.US), upload.getImage());
         }
 
         return builder.build();
