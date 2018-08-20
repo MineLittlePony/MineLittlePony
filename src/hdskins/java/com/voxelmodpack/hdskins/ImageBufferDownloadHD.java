@@ -64,6 +64,11 @@ public class ImageBufferDownloadHD implements ISkinAvailableCallback {
         HDSkinManager.INSTANCE.convertSkin(image, graphics);
 
         graphics.dispose();
+
+        if (callback != null) {
+            return callback.parseUserSkin(image);
+        }
+
         return image;
     }
 
