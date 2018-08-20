@@ -70,7 +70,7 @@ public class BethlehemSkinServer implements SkinServer {
         if (upload.getImage() == null) {
             builder.put("clear", "1");
         } else {
-            builder.put("model", upload.getMetadata().getOrDefault("mode", "default"));
+            builder.put("model", upload.getMetadata().getOrDefault("model", "default"));
         }
 
         return builder.build();
