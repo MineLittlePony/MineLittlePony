@@ -95,7 +95,7 @@ public class LegacySkinServer implements SkinServer {
 
             client.putHeaders(createHeaders(session, upload));
 
-            if (upload.getImage() == null) {
+            if (upload.getImage() != null) {
                 client.putFile(upload.getType().toString().toLowerCase(Locale.US), "image/png", upload.getImage());
             }
 
