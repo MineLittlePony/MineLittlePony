@@ -44,12 +44,6 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
 
             model.transform(BodyPart.LEGS);
 
-            if (model.isChild()) {
-                translate(0, 0.625, 0);
-                rotate(-20, -1, 0, 0);
-                scale(.5, .5, .5);
-            }
-
             renderHeldItem(entity, right, TransformType.THIRD_PERSON_RIGHT_HAND, EnumHandSide.RIGHT);
             renderHeldItem(entity, left, TransformType.THIRD_PERSON_LEFT_HAND, EnumHandSide.LEFT);
 
