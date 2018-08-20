@@ -46,11 +46,11 @@ public class ImageBufferDownloadHD implements ISkinAvailableCallback {
 
         // copy layers
         // leg
-        drawImage(24, 48, 20, 52, 4, 16, 8, 20); // top
-        drawImage(28, 48, 24, 52, 8, 16, 12, 20); // bottom
-        drawImage(20, 52, 16, 64, 8, 20, 12, 32); // inside
-        drawImage(24, 52, 20, 64, 4, 20, 8, 32); // front
-        drawImage(28, 52, 24, 64, 0, 20, 4, 32); // outside
+        drawImage(24, 48, 20, 52,  4, 16,  8, 20); // top
+        drawImage(28, 48, 24, 52,  8, 16, 12, 20); // bottom
+        drawImage(20, 52, 16, 64,  8, 20, 12, 32); // inside
+        drawImage(24, 52, 20, 64,  4, 20,  8, 32); // front
+        drawImage(28, 52, 24, 64,  0, 20,  4, 32); // outside
         drawImage(32, 52, 28, 64, 12, 20, 16, 32); // back
         // arm
         drawImage(40, 48, 36, 52, 44, 16, 48, 20); // top

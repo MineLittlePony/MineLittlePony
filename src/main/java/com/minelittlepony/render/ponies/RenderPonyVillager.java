@@ -18,6 +18,8 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
             new ResourceLocation("minelittlepony", "textures/entity/villager/butcher_pony.png"),
             new ResourceLocation("minelittlepony", "textures/entity/villager/villager_pony.png")
     };
+    private static final ResourceLocation EGG = new ResourceLocation("minelittlepony", "textures/entity/villager/silly_pony.png");
+    private static final ResourceLocation EGG_2 = new ResourceLocation("minelittlepony", "textures/entity/villager/tiny_silly_pony.png");
 
     public RenderPonyVillager(RenderManager manager) {
         super(manager, PMAPI.villager);
@@ -31,6 +33,12 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
 
     @Override
     protected ResourceLocation getTexture(EntityVillager entity) {
+        if ("Derpy".equals(entity.getCustomNameTag())) {
+            if (entity.isChild()) {
+                return EGG_2;
+            }
+            return EGG;
+        }
         return PROFESSIONS[entity.getProfession() % PROFESSIONS.length];
     }
 }

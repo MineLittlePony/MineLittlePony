@@ -16,6 +16,8 @@ public class ModelVillagerPony extends ModelAlicorn {
 
     private int profession;
 
+    private boolean special;
+
     public ModelVillagerPony() {
         super(false);
     }
@@ -30,23 +32,26 @@ public class ModelVillagerPony extends ModelAlicorn {
     @Override
     public void setLivingAnimations(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTickTime) {
         profession = getProfession(entity);
+        special = "Derpy".equals(entity.getCustomNameTag());
     }
 
     @Override
     protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         super.renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
 
-        if (profession == 2) {
-            trinket.render(scale);
-        } else if (profession > 2) {
-            apron.render(scale);
+        if (!special) {
+            if (profession == 2) {
+                trinket.render(scale);
+            } else if (profession > 2) {
+                apron.render(scale);
+            }
         }
     }
 
     @Override
     public boolean isWearing(PonyWearable wearable) {
         if (wearable == PonyWearable.SADDLE_BAGS) {
-            return profession > -1 && profession < 2;
+            return !special && profession > -1 && profession < 2;
         }
 
         return super.isWearing(wearable);
