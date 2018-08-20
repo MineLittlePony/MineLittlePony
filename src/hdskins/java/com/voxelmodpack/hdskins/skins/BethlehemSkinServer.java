@@ -28,7 +28,6 @@ public class BethlehemSkinServer implements SkinServer {
 
     @Override
     public MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException {
-        // TODO: Fix this
         try (MoreHttpResponses response = new NetClient("GET", getPath(profile)).send()) {
             if (!response.ok()) {
                 throw new IOException(response.getResponse().getStatusLine().getReasonPhrase());
@@ -43,7 +42,6 @@ public class BethlehemSkinServer implements SkinServer {
         return CallableFutures.asyncFailableFuture(() -> {
             SkinServer.verifyServerConnection(session, SERVER_ID);
 
-            // TODO: Fix this
             NetClient client = new NetClient("POST", address);
 
             client.putHeaders(createHeaders(session, upload));

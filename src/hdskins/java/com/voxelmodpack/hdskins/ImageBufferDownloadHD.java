@@ -1,24 +1,39 @@
 package com.voxelmodpack.hdskins;
 
-import net.minecraft.client.renderer.IImageBuffer;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 import javax.annotation.Nullable;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-public class ImageBufferDownloadHD implements IImageBuffer {
+public class ImageBufferDownloadHD implements ISkinAvailableCallback {
 
     private int scale;
     private Graphics graphics;
     private BufferedImage image;
 
+    private ISkinAvailableCallback callback = null;
+
+    private Type skinType = Type.SKIN;
+
+    public ImageBufferDownloadHD() {
+
+    }
+
+    public ImageBufferDownloadHD(Type type, ISkinAvailableCallback callback) {
+        this.callback = callback;
+        this.skinType = type;
+    }
+
     @Override
     @Nullable
     @SuppressWarnings({"SuspiciousNameCombination", "NullableProblems"})
     public BufferedImage parseUserSkin(@Nullable BufferedImage downloadedImage) {
-        if (downloadedImage == null) {
-            return null;
+        // TODO: Do we want to convert other skin types?
+        if (downloadedImage == null || skinType != Type.SKIN) {
+            return downloadedImage;
         }
+
         int imageWidth = downloadedImage.getWidth();
         int imageHeight = downloadedImage.getHeight();
         if (imageHeight == imageWidth) {
@@ -61,5 +76,8 @@ public class ImageBufferDownloadHD implements IImageBuffer {
 
     @Override
     public void skinAvailable() {
+        if (callback != null) {
+            callback.skinAvailable();
+        }
     }
 }

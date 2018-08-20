@@ -603,7 +603,7 @@ public class GuiSkins extends GameGui {
     }
 
     CompletableFuture<PreviewTextureManager> loadTextures(GameProfile profile) {
-        return PreviewTextureManager.load(this.gateway, profile);
+        return gateway.getPreviewTextures(profile).thenApply(PreviewTextureManager::new);
     }
 
 }

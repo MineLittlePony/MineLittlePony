@@ -26,8 +26,6 @@ import com.voxelmodpack.hdskins.skins.ServerType;
 import com.voxelmodpack.hdskins.skins.SkinServer;
 import com.voxelmodpack.hdskins.skins.ValhallaSkinServer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IImageBuffer;
-import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.IResourceManager;
@@ -58,8 +56,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
 
 public final class HDSkinManager implements IResourceManagerReloadListener {
 
@@ -170,41 +166,25 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     private void loadTexture(GameProfile profile, final Type type, final SkinAvailableCallback callback) {
-        if (profile.getId() != null) {
-            Map<Type, MinecraftProfileTexture> data = getProfileData(profile);
-            final MinecraftProfileTexture texture = data.get(type);
-
-            String skinDir = type.toString().toLowerCase() + "s/";
-            final ResourceLocation skin = new ResourceLocation("hdskins", skinDir + texture.getHash());
-            File file2 = new File(LiteLoader.getAssetsDirectory(), "hd/" + skinDir + texture.getHash().substring(0, 2) + "/" + texture.getHash());
-
-            final IImageBuffer imagebufferdownload = type == Type.SKIN ? new ImageBufferDownloadHD() : null;
-
-            ITextureObject texObject = new ThreadDownloadImageETag(file2, bustCache(texture.getUrl()),
-                    DefaultPlayerSkin.getDefaultSkinLegacy(),
-                    new IImageBuffer() {
-                        @Nonnull
-                        @Override
-                        public BufferedImage parseUserSkin(@Nonnull BufferedImage image) {
-                            BufferedImage image1 = image;
-                            if (imagebufferdownload != null) {
-                                image1 = imagebufferdownload.parseUserSkin(image);
-                            }
-                            return image1 == null ? image : image1;
-                        }
-
-                        @Override
-                        public void skinAvailable() {
-                            if (imagebufferdownload != null) {
-                                imagebufferdownload.skinAvailable();
-                            }
-                            callback.skinAvailable(type, skin, texture);
-                        }
-                    });
-
-            // schedule texture loading on the main thread.
-            TextureLoader.loadTexture(skin, texObject);
+        if (profile.getId() == null) {
+            return;
         }
+
+        String skinDir = type.toString().toLowerCase() + "s/";
+
+        final MinecraftProfileTexture texture = getProfileData(profile).get(type);
+        final ResourceLocation resource = new ResourceLocation("hdskins", skinDir + texture.getHash());
+
+        ISkinAvailableCallback buffs = new ImageBufferDownloadHD(type, () -> {
+            callback.skinAvailable(type, resource, texture);
+        });
+
+        // schedule texture loading on the main thread.
+        TextureLoader.loadTexture(resource, new ThreadDownloadImageETag(
+                new File(LiteLoader.getAssetsDirectory(), "hd/" + skinDir + texture.getHash().substring(0, 2) + "/" + texture.getHash()),
+                bustCache(texture.getUrl()),
+                DefaultPlayerSkin.getDefaultSkinLegacy(),
+                buffs));
     }
 
     private Map<Type, MinecraftProfileTexture> loadProfileData(GameProfile profile) {
