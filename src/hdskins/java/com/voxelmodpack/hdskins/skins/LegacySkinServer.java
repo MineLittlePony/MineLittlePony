@@ -2,20 +2,19 @@ package com.voxelmodpack.hdskins.skins;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
-import com.voxelmodpack.hdskins.upload.ThreadMultipartPostUpload;
 import net.minecraft.util.Session;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.util.EnumMap;
 import java.util.Locale;
@@ -33,6 +32,7 @@ public class LegacySkinServer implements SkinServer {
 
     @Expose
     private final String address;
+
     @Expose
     private final String gateway;
 
@@ -43,7 +43,7 @@ public class LegacySkinServer implements SkinServer {
 
     @Override
     public CompletableFuture<MinecraftTexturesPayload> getPreviewTextures(GameProfile profile) {
-        if (Strings.isNullOrEmpty(this.gateway)) {
+        if (Strings.isNullOrEmpty(gateway)) {
             return CallableFutures.failedFuture(gatewayUnsupported());
         }
         Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = new EnumMap<>(MinecraftProfileTexture.Type.class);
@@ -58,7 +58,7 @@ public class LegacySkinServer implements SkinServer {
         ImmutableMap.Builder<MinecraftProfileTexture.Type, MinecraftProfileTexture> builder = ImmutableMap.builder();
         for (MinecraftProfileTexture.Type type : MinecraftProfileTexture.Type.values()) {
 
-            String url = getPath(this.address, type, profile);
+            String url = getPath(address, type, profile);
             try {
                 builder.put(type, loadProfileTexture(profile, url));
             } catch (IOException e) {
@@ -82,23 +82,25 @@ public class LegacySkinServer implements SkinServer {
         return new MinecraftProfileTexture(url, null);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, SkinUpload skin) {
-        if (Strings.isNullOrEmpty(this.gateway)) {
+    public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, SkinUpload upload) {
+        if (Strings.isNullOrEmpty(gateway)) {
             return CallableFutures.failedFuture(gatewayUnsupported());
         }
 
         return CallableFutures.asyncFailableFuture(() -> {
-            URI image = skin.getImage();
-            MinecraftProfileTexture.Type type = skin.getType();
-            Map<String, String> metadata = skin.getMetadata();
-
             SkinServer.verifyServerConnection(session, SERVER_ID);
-            String model = metadata.getOrDefault("model", "default");
-            Map<String, ?> data = image == null ? getClearData(session, type) : getUploadData(session, type, model, image);
-            ThreadMultipartPostUpload upload = new ThreadMultipartPostUpload(this.gateway, data);
-            String response = upload.uploadMultipart();
+
+            NetClient client = new NetClient("POST", gateway);
+
+            client.putHeaders(createHeaders(session, upload));
+
+            if (upload.getImage() == null) {
+                client.putFile(upload.getType().toString().toLowerCase(Locale.US), "image/png", upload.getImage());
+            }
+
+            String response = client.send().text();
+
             if (response.startsWith("ERROR: ")) {
                 response = response.substring(7);
             }
@@ -114,21 +116,19 @@ public class LegacySkinServer implements SkinServer {
         return new UnsupportedOperationException("Server does not have a gateway.");
     }
 
-    private static Map<String, ?> getData(Session session, MinecraftProfileTexture.Type type, String model, String param, Object val) {
-        return ImmutableMap.of(
-                "user", session.getUsername(),
-                "uuid", UUIDTypeAdapter.fromUUID(session.getProfile().getId()),
-                "type", type.toString().toLowerCase(Locale.US),
-                "model", model,
-                param, val);
-    }
+    protected Map<String, ?> createHeaders(Session session, SkinUpload upload) {
+        Builder<String, Object> builder = ImmutableMap.<String, Object>builder()
+                .put("user", session.getUsername())
+                .put("uuid", UUIDTypeAdapter.fromUUID(session.getProfile().getId()))
+                .put("type", upload.getType().toString().toLowerCase(Locale.US));
 
-    private static Map<String, ?> getClearData(Session session, MinecraftProfileTexture.Type type) {
-        return getData(session, type, "default", "clear", "1");
-    }
+        if (upload.getImage() == null) {
+            builder.put("clear", "1");
+        } else {
+            builder.put("model", upload.getMetadata().getOrDefault("mode", "default"));
+        }
 
-    private static Map<String, ?> getUploadData(Session session, MinecraftProfileTexture.Type type, String model, URI skinFile) {
-        return getData(session, type, model, type.toString().toLowerCase(Locale.US), skinFile);
+        return builder.build();
     }
 
     private static String getPath(String address, MinecraftProfileTexture.Type type, GameProfile profile) {
@@ -139,7 +139,7 @@ public class LegacySkinServer implements SkinServer {
 
     @Override
     public boolean verifyGateway() {
-        return !Strings.isNullOrEmpty(this.gateway);
+        return !Strings.isNullOrEmpty(gateway);
     }
 
     @Override
