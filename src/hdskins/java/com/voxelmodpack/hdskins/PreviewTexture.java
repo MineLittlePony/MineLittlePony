@@ -12,14 +12,21 @@ public class PreviewTexture extends ThreadDownloadImageData {
 
     private String model;
 
+    private String fileUrl;
+
     public PreviewTexture(@Nullable String model, String url, ResourceLocation fallbackTexture, @Nullable IImageBuffer imageBuffer) {
         super(null, url, fallbackTexture, imageBuffer);
 
         this.model = model == null ? "default" : model;
+        this.fileUrl = url;
     }
 
     public boolean isTextureUploaded() {
         return uploaded && this.getGlTextureId() > -1;
+    }
+
+    public String getUrl() {
+        return fileUrl;
     }
 
     @Override

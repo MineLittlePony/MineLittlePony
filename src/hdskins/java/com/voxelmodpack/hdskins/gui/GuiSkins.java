@@ -14,9 +14,12 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.PreviewTextureManager;
+import com.voxelmodpack.hdskins.skins.NetClient;
 import com.voxelmodpack.hdskins.skins.SkinServer;
 import com.voxelmodpack.hdskins.skins.SkinUpload;
 import com.voxelmodpack.hdskins.skins.SkinUploadResponse;
+import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFile;
+import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFileFolder;
 import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -32,6 +35,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.lwjgl.BufferUtils;
@@ -65,6 +70,7 @@ public class GuiSkins extends GameGui {
     private SkinServer gateway;
 
     private Button btnUpload;
+    private Button btnDownload;
     private Button btnClear;
 
     private Button btnModeSteve;
@@ -93,7 +99,7 @@ public class GuiSkins extends GameGui {
 
     private int refreshCounter = 0;
 
-    private ThreadOpenFilePNG openFileThread;
+    private ThreadOpenFile openFileThread;
 
     private final Object skinLock = new Object();
 
@@ -180,6 +186,7 @@ public class GuiSkins extends GameGui {
                 selectedSkin = pendingSkinFile;
                 pendingSkinFile = null;
                 btnUpload.enabled = true;
+                btnDownload.enabled = true;
                 onSetLocalSkin(textureType);
             }
         }
@@ -244,9 +251,13 @@ public class GuiSkins extends GameGui {
             sender.enabled = false;
         })).setEnabled(!mc.isFullScreen());
 
-        addButton(btnUpload = new Button(width / 2 - 24, height / 2 - 10, 48, 20, "hdskins.options.chevy", sender -> {
+        addButton(btnUpload = new Button(width / 2 - 24, height / 2 - 20, 48, 20, "hdskins.options.chevy", sender -> {
             punchServer("hdskins.upload", selectedSkin.toURI());
         })).setEnabled(canUpload()).setTooltip("hdskins.options.chevy.title");
+
+        addButton(btnDownload = new Button(width / 2 - 24, height / 2 + 20, 48, 20, "hdskins.options.download", sender -> {
+            launchSkinDownload(sender);
+        })).setEnabled(canDownload()).setTooltip("hdskins.options.download.title");
 
         addButton(btnClear = new Button(width / 2 + 60, height - 27, 90, 20, "hdskins.options.clear", sender -> {
             if (remotePlayer.isTextureSetupComplete()) {
@@ -570,10 +581,35 @@ public class GuiSkins extends GameGui {
         uploadingSkin = true;
         uploadMessage = format(uploadMsg);
         btnUpload.enabled = canUpload();
+        btnDownload.enabled = canDownload();
 
         gateway.uploadSkin(mc.getSession(), new SkinUpload(textureType, path, getMetadata()))
                 .thenAccept(this::onUploadComplete)
                 .exceptionally(this::onUploadFailure);
+    }
+
+    private void launchSkinDownload(Button sender) {
+        sender.enabled = false;
+        String loc = remotePlayer.getLocal(textureType).getRemote().getUrl();
+
+        new NetClient("GET", loc).async(HDSkinManager.skinDownloadExecutor).thenAccept(response -> {
+            openFileThread = new ThreadOpenFileFolder(mc, format("hdskins.open.title"), (fileDialog, dialogResult) -> {
+                openFileThread = null;
+                sender.enabled = true;
+                if (dialogResult == 0) {
+                    File out = fileDialog.getSelectedFile();
+
+                    try {
+                        out.createNewFile();
+
+                        FileUtils.copyInputStreamToFile(response.getInputStream(), out);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            openFileThread.start();
+        });
     }
 
     private Map<String, String> getMetadata() {
@@ -587,6 +623,7 @@ public class GuiSkins extends GameGui {
         showMessage = true;
         uploadingSkin = false;
         btnUpload.enabled = canUpload();
+        btnDownload.enabled = canDownload();
 
         return null;
     }
@@ -596,10 +633,15 @@ public class GuiSkins extends GameGui {
         pendingRemoteSkinRefresh = true;
         uploadingSkin = false;
         btnUpload.enabled = canUpload();
+        btnDownload.enabled = canDownload();
     }
 
     protected boolean canUpload() {
         return selectedSkin != null && !uploadingSkin && !pendingRemoteSkinRefresh;
+    }
+
+    protected boolean canDownload() {
+        return remotePlayer.getLocal(textureType).hasRemote();
     }
 
     CompletableFuture<PreviewTextureManager> loadTextures(GameProfile profile) {

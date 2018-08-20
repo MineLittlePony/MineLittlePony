@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 /**
  * Ew. Why so many builders? >.<
@@ -43,10 +45,16 @@ public class NetClient {
     public MoreHttpResponses send() throws IOException {
         HttpUriRequest request = rqBuilder.build();
 
-        for (Map.Entry<String, ?> parameter : headers.entrySet()) {
-            request.addHeader(parameter.getKey(), parameter.getValue().toString());
+        if (headers != null) {
+            for (Map.Entry<String, ?> parameter : headers.entrySet()) {
+                request.addHeader(parameter.getKey(), parameter.getValue().toString());
+            }
         }
 
         return MoreHttpResponses.execute(HDSkinManager.httpClient, request);
+    }
+
+    public CompletableFuture<MoreHttpResponses> async(Executor exec) {
+        return CallableFutures.asyncFailableFuture(this::send, exec);
     }
 }
