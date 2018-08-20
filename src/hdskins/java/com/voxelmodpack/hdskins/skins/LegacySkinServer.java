@@ -9,6 +9,8 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.upload.ThreadMultipartPostUpload;
+
 import net.minecraft.util.Session;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -91,15 +93,7 @@ public class LegacySkinServer implements SkinServer {
         return CallableFutures.asyncFailableFuture(() -> {
             SkinServer.verifyServerConnection(session, SERVER_ID);
 
-            NetClient client = new NetClient("POST", gateway);
-
-            client.putHeaders(createHeaders(session, upload));
-
-            if (upload.getImage() != null) {
-                client.putFile(upload.getType().toString().toLowerCase(Locale.US), "image/png", upload.getImage());
-            }
-
-            String response = client.send().text();
+            String response = new ThreadMultipartPostUpload(gateway, createHeaders(session, upload)).uploadMultipart();
 
             if (response.startsWith("ERROR: ")) {
                 response = response.substring(7);
@@ -120,12 +114,13 @@ public class LegacySkinServer implements SkinServer {
         Builder<String, Object> builder = ImmutableMap.<String, Object>builder()
                 .put("user", session.getUsername())
                 .put("uuid", UUIDTypeAdapter.fromUUID(session.getProfile().getId()))
-                .put("type", upload.getType().toString().toLowerCase(Locale.US));
+                .put("type", upload.getType().toString().toLowerCase(Locale.US))
+                .put("model", upload.getMetadata().getOrDefault("model", "default"));
 
         if (upload.getImage() == null) {
             builder.put("clear", "1");
         } else {
-            builder.put("model", upload.getMetadata().getOrDefault("mode", "default"));
+            builder.put(upload.getType().toString().toLowerCase(Locale.US), upload.getImage());
         }
 
         return builder.build();
