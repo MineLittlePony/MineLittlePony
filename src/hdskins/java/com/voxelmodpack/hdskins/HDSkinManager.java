@@ -245,15 +245,16 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         try {
             FileUtils.deleteDirectory(new File(LiteLoader.getAssetsDirectory(), "skins"));
             FileUtils.deleteDirectory(new File(LiteLoader.getAssetsDirectory(), "hd"));
-            TextureManager textures = Minecraft.getMinecraft().getTextureManager();
-            skinCache.values().stream()
-                    .flatMap(m -> m.values().stream())
-                    .forEach(textures::deleteTexture);
-            skinCache.clear();
-            skins.invalidateAll();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        TextureManager textures = Minecraft.getMinecraft().getTextureManager();
+        skinCache.values().stream()
+                .flatMap(m -> m.values().stream())
+                .forEach(textures::deleteTexture);
+        skinCache.clear();
+        skins.invalidateAll();
 
         clearListeners = clearListeners.stream()
                 .filter(this::onSkinCacheCleared)
