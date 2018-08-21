@@ -294,10 +294,9 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
         float xPos1 = width / 4;
         float xPos2 = width * 0.75F;
         float scale = height / 4;
-        float lookX = mid - mouseX;
 
-        renderPlayerModel(localPlayer, xPos1, yPos, scale, horizon - mouseY, lookX, partialTick);
-        renderPlayerModel(remotePlayer, xPos2, yPos, scale, horizon - mouseY, lookX, partialTick);
+        renderPlayerModel(localPlayer, xPos1, yPos, scale, horizon - mouseY, mouseX, partialTick);
+        renderPlayerModel(remotePlayer, xPos2, yPos, scale, horizon - mouseY, mouseX, partialTick);
 
         disableClipping();
 
@@ -368,9 +367,14 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
 
         RenderHelper.enableStandardItemLighting();
 
-        rotate(((updateCounter + partialTick) * 2.5F) % 360, 0, 1, 0);
+        float rot = ((updateCounter + partialTick) * 2.5F) % 360;
 
-        thePlayer.rotationYawHead = (float) Math.atan(mouseX / 20) * 30;
+        rotate(rot, 0, 1, 0);
+
+        float lookFactor = (float)Math.sin((rot * (Math.PI / 180)) + 45);
+        float lookX = (float) Math.atan((xPosition - mouseX) / 20) * 30;
+
+        thePlayer.rotationYawHead = lookX * lookFactor;
         thePlayer.rotationPitch = (float) Math.atan(mouseY / 40) * -20;
 
         mc.getRenderManager().renderEntity(thePlayer, 0, 0, 0, 0, 1, false);
@@ -379,6 +383,16 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
         RenderHelper.disableStandardItemLighting();
         disableColorMaterial();
     }
+
+/*
+ *       /   |
+ *     1/    |o      Q = t + q
+ *     /q    |       x = xPosition - mouseX
+ *     *-----*       sin(q) = o             cos(q) = x        tan(q) = o/x
+ *   --|--x------------------------------------
+ *     |
+ *      mouseX
+ */
 
     private void enableClipping(int yBottom) {
         popAttrib();
