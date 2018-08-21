@@ -1,13 +1,13 @@
 #HD Skins ru_ru.lang file
 hdskins.choose=Выберите файл
 hdskins.manager=Помощник по работе со скинами
-hdskins.error.unreadable=Нечитаемый файл
-hdskins.error.ext=Файл не в формате .png
+hdskins.error.unreadable=Не удалось прочитать файл
+hdskins.error.ext=Файл должен быть в формате .png
 hdskins.error.open=Ошибка при открытии файла скина
 hdskins.error.invalid=Неверный файл скина
 hdskins.error.select=Пожалуйста, сначала выберите скин
 hdskins.error.mojang=Ошибка Mojang API
-hdskins.error.mojang.wait=Пожалуйста, подождите 1 минуту...
+hdskins.error.mojang.wait=Пожалуйста, подождите %d минут(ы)...
 hdskins.open.title=Выберите ваш скин
 hdskins.fetch=Скачивание скина...
 hdskins.failed=Загрузка скина не удалась
@@ -22,15 +22,15 @@ hdskins.mode.skinny=Скин (Тонкие ноги)
 hdskins.mode.elytra=Надкрылья
 
 hdskins.options.chevy=>>
-hdskins.options.chevy.title=Upload Skin
+hdskins.options.chevy.title=Загрузить скин
 hdskins.options.download=<<
-hdskins.options.download.title=Save Skin
+hdskins.options.download.title=Скачать скин
 
-hdskins.options.close=Close
-hdskins.options.clear=Clear
-hdskins.options.browse=Browse
+hdskins.options.close=Закрыть
+hdskins.options.clear=Удалить скин
+hdskins.options.browse=Выбрать
 
-hdskins.options.skindrops=Experimental Skin Drop
-hdskins.options.cache=Clear Skin Cache
+hdskins.options.skindrops=Экспериментальное перетаскивание скина
+hdskins.options.cache=Очистить локальное хранилище скинов
 
-hdskins.warning.experimental=§6WARNING: This feature is §4experimental§6, meaning things may break or derp or even slurp. Enabling this means you accept responsibility for what may happen to your chickens.
+hdskins.warning.experimental=§6ВНИМАНИЕ: Эта функция §4экспериментальная§6, что означает, что вещи могут начать ломаться, извиваться или даже захлёбываться. При её включении авторы сего текста не несут ответственности за возможные последствия.
