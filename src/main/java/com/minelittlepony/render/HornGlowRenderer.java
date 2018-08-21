@@ -1,7 +1,5 @@
 package com.minelittlepony.render;
 
-import static net.minecraft.client.renderer.GlStateManager.color;
-
 import com.minelittlepony.util.coordinates.Color;
 
 import net.minecraft.client.Minecraft;

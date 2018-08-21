@@ -62,8 +62,8 @@ public class ModelPonyArmor extends AbstractPonyModel implements IModelArmor {
         bipedLeftArm = new PonyRenderer(this, 0, 16).flip();
         bipedRightArm = new PonyRenderer(this, 0, 16);
 
-        bipedLeftLeg = new PonyRenderer(this, 0, 16).flip();
-        bipedRightLeg = new PonyRenderer(this, 0, 16);
+        bipedLeftLeg = new PonyRenderer(this, 48, 8).flip();
+        bipedRightLeg = new PonyRenderer(this, 48, 8);
     }
 
     @Override
