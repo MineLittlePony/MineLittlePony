@@ -40,7 +40,7 @@ public interface SkinServer extends Exposable {
         return true;
     }
 
-    static void verifyServerConnection(Session session, String serverId) throws AuthenticationException {
+    public static void verifyServerConnection(Session session, String serverId) throws AuthenticationException {
         MinecraftSessionService service = Minecraft.getMinecraft().getSessionService();
         service.joinServer(session.getProfile(), session.getToken(), serverId);
     }

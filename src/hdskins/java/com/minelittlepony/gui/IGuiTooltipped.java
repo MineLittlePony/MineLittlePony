@@ -10,6 +10,8 @@ public interface IGuiTooltipped {
 
     IGuiTooltipped setTooltip(List<String> tooltip);
 
+    IGuiTooltipped setTooltipOffset(int x, int y);
+
     default IGuiTooltipped setTooltip(String tooltip) {
         return setTooltip(Splitter.onPattern("\r?\n|\\\\n").splitToList(GameGui.format(tooltip)));
     }

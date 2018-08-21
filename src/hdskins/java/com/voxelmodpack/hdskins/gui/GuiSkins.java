@@ -1,73 +1,42 @@
 package com.voxelmodpack.hdskins.gui;
 
-import com.google.common.base.Splitter;
-import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
 import com.minelittlepony.gui.Button;
 import com.minelittlepony.gui.GameGui;
 import com.minelittlepony.gui.IconicButton;
 import com.minelittlepony.gui.Label;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.HDSkinManager;
-import com.voxelmodpack.hdskins.PreviewTextureManager;
-import com.voxelmodpack.hdskins.skins.NetClient;
+import com.voxelmodpack.hdskins.SkinChooser;
+import com.voxelmodpack.hdskins.SkinUploader;
+import com.voxelmodpack.hdskins.SkinUploader.ISkinUploadHandler;
+import com.voxelmodpack.hdskins.skins.CallableFutures;
 import com.voxelmodpack.hdskins.skins.SkinServer;
-import com.voxelmodpack.hdskins.skins.SkinUpload;
-import com.voxelmodpack.hdskins.skins.SkinUploadResponse;
-import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFile;
-import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFileFolder;
-import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.logging.log4j.LogManager;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.DoubleBuffer;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Predicate;
-import javax.annotation.Nullable;
-import javax.imageio.ImageIO;
-import javax.swing.UIManager;
 
-import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.ELYTRA;
-import static com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.SKIN;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
-public class GuiSkins extends GameGui {
+public class GuiSkins extends GameGui implements ISkinUploadHandler {
 
-    private static final int MAX_SKIN_DIMENSION = 1024;
     private int updateCounter = 0;
-
-    private final Iterator<SkinServer> skinServers;
-    private SkinServer gateway;
 
     private Button btnUpload;
     private Button btnDownload;
@@ -84,74 +53,31 @@ public class GuiSkins extends GameGui {
 
     private DoubleBuffer doubleBuffer;
 
-    private boolean showMessage;
-    private float uploadOpacity = 0;
-
-    private String uploadError = "";
-    private String uploadMessage = format("hdskins.request");
-
-    private volatile String localMessage = format("hdskins.choose");
-
-    private volatile boolean fetchingSkin;
-    private volatile boolean uploadingSkin;
-    private volatile boolean pendingRemoteSkinRefresh;
-    private volatile boolean throttledByMojang;
-
-    private int refreshCounter = 0;
-
-    private ThreadOpenFile openFileThread;
-
-    private final Object skinLock = new Object();
-
-    private File pendingSkinFile;
-    private File selectedSkin;
+    private float msgFadeOpacity = 0;
 
     private int lastMouseX = 0;
 
-    protected CubeMap panorama;
+    protected final SkinUploader uploader;
+    protected final SkinChooser chooser;
 
-    private MinecraftProfileTexture.Type textureType = SKIN;
-    private boolean thinArmType = false;
-
-    static {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    protected final CubeMap panorama;
 
     public GuiSkins(List<SkinServer> servers) {
-        // Generate a cycled iterator that will never run out of entries.
-        this.skinServers = cycle(servers, SkinServer::verifyGateway);
-        if (this.skinServers.hasNext()) {
-            this.gateway = this.skinServers.next();
-        } else {
-            this.uploadError = "There are no valid skin servers available! Check your config.";
-        }
-
-        Minecraft minecraft = Minecraft.getMinecraft();
-        GameProfile profile = minecraft.getSession().getProfile();
+        mc = Minecraft.getMinecraft();
+        GameProfile profile = mc.getSession().getProfile();
 
         localPlayer = getModel(profile);
         remotePlayer = getModel(profile);
 
-        RenderManager rm = minecraft.getRenderManager();
-        rm.renderEngine = minecraft.getTextureManager();
-        rm.options = minecraft.gameSettings;
+        RenderManager rm = mc.getRenderManager();
+        rm.renderEngine = mc.getTextureManager();
+        rm.options = mc.gameSettings;
         rm.renderViewEntity = localPlayer;
 
-        if (gateway != null) {
-            reloadRemoteSkin();
-            fetchingSkin = true;
-        }
-
+        uploader = new SkinUploader(servers, localPlayer, remotePlayer, this);
+        chooser = new SkinChooser(uploader);
         panorama = new CubeMap(this);
         initPanorama();
-    }
-
-    private static <T> Iterator<T> cycle(List<T> list, Predicate<T> filter) {
-        return Iterables.cycle(Iterables.filter(list, filter::test)).iterator();
     }
 
     protected void initPanorama() {
@@ -159,7 +85,7 @@ public class GuiSkins extends GameGui {
     }
 
     protected EntityPlayerModel getModel(GameProfile profile) {
-        return new EntityPlayerModel(this, profile);
+        return new EntityPlayerModel(profile);
     }
 
     @Override
@@ -170,65 +96,19 @@ public class GuiSkins extends GameGui {
         }
 
         panorama.update();
+        uploader.update();
 
-        localPlayer.updateModel();
-        remotePlayer.updateModel();
-
-        if (fetchingSkin && remotePlayer.isTextureSetupComplete()) {
-            fetchingSkin = false;
-            btnClear.enabled = true;
-        }
-
-        synchronized (skinLock) {
-            if (pendingSkinFile != null) {
-                System.out.println("Set " + textureType + " " + pendingSkinFile);
-                localPlayer.setLocalTexture(pendingSkinFile, textureType);
-                selectedSkin = pendingSkinFile;
-                pendingSkinFile = null;
-                btnUpload.enabled = true;
-                btnDownload.enabled = true;
-                onSetLocalSkin(textureType);
-            }
-        }
-
-        if (pendingRemoteSkinRefresh) {
-            pendingRemoteSkinRefresh = false;
-            fetchingSkin = true;
-            btnClear.enabled = false;
-            reloadRemoteSkin();
-        }
-
-        if (throttledByMojang) {
-            refreshCounter = (refreshCounter + 1) % 200;
-            if (refreshCounter == 0) {
-                reloadRemoteSkin();
-            }
-        }
-
-    }
-
-    protected void onSetRemoteSkin(Type type, ResourceLocation location, MinecraftProfileTexture profileTexture) {
-    }
-
-    protected void onSetLocalSkin(Type type) {
-    }
-
-    private void reloadRemoteSkin() {
-        throttledByMojang = false;
-
-        try {
-            remotePlayer.reloadRemoteSkin(this::onSetRemoteSkin);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throttledByMojang = true;
-        }
-
+        btnClear.enabled = uploader.canClear();
+        btnDownload.enabled = uploader.canClear();
     }
 
     @Override
     public void initGui() {
         GLWindow.current().setDropTargetListener(files -> {
-            files.stream().findFirst().ifPresent(this::loadLocalFile);
+            files.stream().findFirst().ifPresent(file -> {
+                chooser.selectFile(file);
+                updateButtons();
+            });
         });
 
         panorama.init();
@@ -238,161 +118,111 @@ public class GuiSkins extends GameGui {
         addButton(new Label(width / 2 + 34, 34, "hdskins.server", 0xffffff));
 
         addButton(new Button(width / 2 - 150, height - 27, 90, 20, "hdskins.options.browse", sender -> {
-            selectedSkin = null;
-            localPlayer.releaseTextures();
-            openFileThread = new ThreadOpenFilePNG(mc, format("hdskins.open.title"), (fileDialog, dialogResult) -> {
-                openFileThread = null;
-                sender.enabled = true;
-                if (dialogResult == 0) {
-                    loadLocalFile(fileDialog.getSelectedFile());
-                }
-            });
-            openFileThread.start();
             sender.enabled = false;
+            chooser.openBrowsePNG(mc, format("hdskins.open.title"), () -> {
+                sender.enabled = true;
+                updateButtons();
+            });
         })).setEnabled(!mc.isFullScreen());
 
         addButton(btnUpload = new Button(width / 2 - 24, height / 2 - 20, 48, 20, "hdskins.options.chevy", sender -> {
-            punchServer("hdskins.upload", selectedSkin.toURI());
-        })).setEnabled(canUpload()).setTooltip("hdskins.options.chevy.title");
+            if (uploader.canUpload()) {
+                punchServer("hdskins.upload");
+            }
+        })).setEnabled(uploader.canUpload()).setTooltip("hdskins.options.chevy.title");
 
         addButton(btnDownload = new Button(width / 2 - 24, height / 2 + 20, 48, 20, "hdskins.options.download", sender -> {
-            launchSkinDownload(sender);
-        })).setEnabled(canDownload()).setTooltip("hdskins.options.download.title");
+            if (uploader.canClear()) {
+                sender.enabled = false;
+                chooser.openSavePNG(mc, format("hdskins.open.title"), () -> {
+                    sender.enabled = true;
+                });
+            }
+        })).setEnabled(uploader.canClear()).setTooltip("hdskins.options.download.title");
 
         addButton(btnClear = new Button(width / 2 + 60, height - 27, 90, 20, "hdskins.options.clear", sender -> {
-            if (remotePlayer.isTextureSetupComplete()) {
-                punchServer("hdskins.request", null);
+            if (uploader.canClear()) {
+                punchServer("hdskins.request");
             }
-        })).setEnabled(!fetchingSkin);
+        })).setEnabled(uploader.canClear());
 
         addButton(new Button(width / 2 - 50, height - 25, 100, 20, "hdskins.options.close", sender -> {
             mc.displayGuiScreen(new GuiMainMenu());
         }));
 
         addButton(btnModeSteve = new IconicButton(width - 25, 32, sender -> {
-            switchSkinMode(false);
-        }).setIcon(new ItemStack(Items.LEATHER_LEGGINGS), 0x3c5dcb)).setEnabled(thinArmType).setTooltip("hdskins.mode.steve");
+            switchSkinMode("default");
+        }).setIcon(new ItemStack(Items.LEATHER_LEGGINGS), 0x3c5dcb)).setEnabled("slim".equals(uploader.getMetadataField("model"))).setTooltip("hdskins.mode.steve").setTooltipOffset(0, 10);
 
         addButton(btnModeAlex = new IconicButton(width - 25, 51, sender -> {
-            switchSkinMode(true);
-        }).setIcon(new ItemStack(Items.LEATHER_LEGGINGS), 0xfff500)).setEnabled(!thinArmType).setTooltip("hdskins.mode.alex");
+            switchSkinMode("slim");
+        }).setIcon(new ItemStack(Items.LEATHER_LEGGINGS), 0xfff500)).setEnabled("default".equals(uploader.getMetadataField("model"))).setTooltip("hdskins.mode.alex").setTooltipOffset(0, 10);
 
 
         addButton(btnModeSkin = new IconicButton(width - 25, 75, sender -> {
-            switchSkinType(sender, SKIN);
-        }).setIcon(new ItemStack(Items.LEATHER_CHESTPLATE))).setEnabled(textureType == ELYTRA).setTooltip(format("hdskins.mode.skin", toTitleCase(SKIN.name())));
+            uploader.setSkinType(Type.SKIN);
+        }).setIcon(new ItemStack(Items.LEATHER_CHESTPLATE))).setEnabled(uploader.getSkinType() == Type.ELYTRA).setTooltip(format("hdskins.mode.skin", toTitleCase(Type.SKIN.name()))).setTooltipOffset(0, 10);
 
         addButton(btnModeElytra = new IconicButton(width - 25, 94, sender -> {
-            switchSkinType(sender, ELYTRA);
-        }).setIcon(new ItemStack(Items.ELYTRA))).setEnabled(textureType == SKIN).setTooltip(format("hdskins.mode.skin", toTitleCase(ELYTRA.name())));
+            uploader.setSkinType(Type.ELYTRA);
+        }).setIcon(new ItemStack(Items.ELYTRA))).setEnabled(uploader.getSkinType() == Type.SKIN).setTooltip(format("hdskins.mode.skin", toTitleCase(Type.ELYTRA.name()))).setTooltipOffset(0, 10);
 
-
-        addButton(new Button(width - 25, height - 65, 20, 20, "?", this::switchServer))
-                .setTooltip(Splitter.on("\r\n").splitToList(gateway == null ? "" : gateway.toString()));
-    }
-
-    private void switchServer(Button sender) {
-        mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_VILLAGER_YES, 1));
-        gateway = skinServers.next();
-        if (gateway != null) {
-            sender.setTooltip(Splitter.on("\r\n").splitToList(gateway.toString()));
-            reloadRemoteSkin();
-            fetchingSkin = true;
-        }
+        addButton(new Button(width - 25, height - 65, 20, 20, "?", sender -> {
+            uploader.cycleGateway();
+            playSound(SoundEvents.ENTITY_VILLAGER_YES);
+            sender.setTooltip(uploader.getGateway());
+        })).setTooltip(uploader.getGateway()).setTooltipOffset(0, 10);
     }
 
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
-        localPlayer.releaseTextures();
-        remotePlayer.releaseTextures();
+        try {
+            uploader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         HDSkinManager.INSTANCE.clearSkinCache();
 
         GLWindow.current().clearDropTargetListener();
     }
 
-    private void loadLocalFile(File skinFile) {
-        mc.addScheduledTask(localPlayer::releaseTextures);
+    @Override
+    public void onSkinTypeChanged(Type newType) {
+        playSound(SoundEvents.BLOCK_BREWING_STAND_BREW);
 
-        if (!skinFile.exists()) {
-            localMessage = format("hdskins.error.unreadable");
-        } else if (!FilenameUtils.isExtension(skinFile.getName(), new String[]{"png", "PNG"})) {
-            localMessage = format("hdskins.error.ext");
-        } else {
-            try {
-                BufferedImage chosenImage = ImageIO.read(skinFile);
-
-                if (chosenImage == null) {
-                    localMessage = format("hdskins.error.open");
-                } else if (!acceptsSkinDimensions(chosenImage.getWidth(), chosenImage.getHeight())) {
-                    localMessage = format("hdskins.error.invalid");
-                } else {
-                    synchronized (skinLock) {
-                        pendingSkinFile = skinFile;
-                    }
-                }
-            } catch (IOException e) {
-                localMessage = format("hdskins.error.open");
-                e.printStackTrace();
-            }
-        }
+        btnModeSkin.enabled = newType == Type.ELYTRA;
+        btnModeElytra.enabled = newType == Type.SKIN;
     }
 
-    protected boolean acceptsSkinDimensions(int w, int h) {
-        return isPowerOfTwo(w) && w == h * 2 || w == h && w <= MAX_SKIN_DIMENSION && h <= MAX_SKIN_DIMENSION;
-    }
+    protected void switchSkinMode(String model) {
+        playSound(SoundEvents.BLOCK_BREWING_STAND_BREW);
 
-    protected void switchSkinType(Button sender, Type newType) {
-        mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_BREWING_STAND_BREW, 1));
-
-        textureType = newType;
-
-        btnModeSkin.enabled = textureType == ELYTRA;
-        btnModeElytra.enabled = textureType == SKIN;
-
-        ItemStack stack = newType == ELYTRA ? new ItemStack(Items.ELYTRA) : ItemStack.EMPTY;
-        // put on or take off the elytra
-        localPlayer.setItemStackToSlot(EntityEquipmentSlot.CHEST, stack);
-        remotePlayer.setItemStackToSlot(EntityEquipmentSlot.CHEST, stack);
-    }
-
-    protected void switchSkinMode(boolean thin) {
-        mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_BREWING_STAND_BREW, 1));
-
-        thinArmType = thin;
+        boolean thinArmType = model == "slim";
 
         btnModeSteve.enabled = thinArmType;
         btnModeAlex.enabled = !thinArmType;
 
-        // clear currently selected skin
-        selectedSkin = null;
-        localPlayer.releaseTextures();
-
+        uploader.setMetadataField("model", model);
         localPlayer.setPreviewThinArms(thinArmType);
         remotePlayer.setPreviewThinArms(thinArmType);
     }
 
-    protected boolean clearMessage() {
-        showMessage = false;
-
-        return uploadOpacity == 0;
+    protected boolean canTakeEvents() {
+        return !chooser.pickingInProgress() && uploader.tryClearStatus() && msgFadeOpacity == 0;
     }
 
     @Override
     protected void actionPerformed(GuiButton guiButton) {
-
-        if (openFileThread == null && !uploadingSkin && clearMessage()) {
+        if (canTakeEvents()) {
             super.actionPerformed(guiButton);
         }
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
-        if (this.gateway == null) {
-            // doing things might break everything if there is no gateway
-            return;
-        }
-        if (clearMessage()) {
+        if (canTakeEvents()) {
             super.mouseClicked(mouseX, mouseY, button);
 
             int bottom = height - 40;
@@ -409,7 +239,7 @@ public class GuiSkins extends GameGui {
 
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-        if (clearMessage()) {
+        if (canTakeEvents()) {
             updateCounter -= (lastMouseX - mouseX);
         }
         lastMouseX = mouseX;
@@ -417,14 +247,14 @@ public class GuiSkins extends GameGui {
 
     @Override
     protected void keyTyped(char keyChar, int keyCode) throws IOException {
-        if (clearMessage()) {
+        if (canTakeEvents()) {
             if (keyCode == Keyboard.KEY_LEFT) {
                 updateCounter -= 5;
             } else if (keyCode == Keyboard.KEY_RIGHT) {
                 updateCounter += 5;
             }
 
-            if (openFileThread == null && !uploadingSkin) {
+            if (!chooser.pickingInProgress() && !uploader.uploadInProgress()) {
                 super.keyTyped(keyChar, keyCode);
             }
         }
@@ -432,8 +262,6 @@ public class GuiSkins extends GameGui {
 
     @Override
     protected void drawContents(int mouseX, int mouseY, float partialTick) {
-
-
         boolean sneak = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
 
         localPlayer.setSneaking(sneak);
@@ -452,8 +280,8 @@ public class GuiSkins extends GameGui {
 
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
 
-        Gui.drawRect(30, 30, mid - 30, bottom, Integer.MIN_VALUE);
-        Gui.drawRect(mid + 30, 30, width - 30, bottom, Integer.MIN_VALUE);
+        drawRect(30, 30, mid - 30, bottom, Integer.MIN_VALUE);
+        drawRect(mid + 30, 30, width - 30, bottom, Integer.MIN_VALUE);
 
         drawGradientRect(30, horizon, mid - 30, bottom, 0x80FFFFFF, 0xffffff);
         drawGradientRect(mid + 30, horizon, width - 30, bottom, 0x80FFFFFF, 0xffffff);
@@ -473,47 +301,54 @@ public class GuiSkins extends GameGui {
 
         disableClipping();
 
-        if (!localPlayer.isUsingLocalTexture()) {
-            Gui.drawRect(40, height / 2 - 12, width / 2 - 40, height / 2 + 12, 0xB0000000);
-            drawCenteredString(fontRenderer, localMessage, (int) xPos1, height / 2 - 4, 0xffffff);
+        if (chooser.getStatus() != null && !uploader.canUpload()) {
+            drawRect(40, height / 2 - 12, width / 2 - 40, height / 2 + 12, 0xB0000000);
+            drawCenteredString(fontRenderer, format(chooser.getStatus()), (int) xPos1, height / 2 - 4, 0xffffff);
         }
 
-        if (fetchingSkin) {
+        if (uploader.downloadInProgress() || uploader.isThrottled() || uploader.isOffline()) {
 
-            int lineHeight = throttledByMojang ? 18 : 12;
+            int lineHeight = uploader.isThrottled() ? 18 : 12;
 
-            Gui.drawRect((int) (xPos2 - width / 4 + 40), height / 2 - lineHeight, width - 40, height / 2 + lineHeight, 0xB0000000);
+            drawRect((int) (xPos2 - width / 4 + 40), height / 2 - lineHeight, width - 40, height / 2 + lineHeight, 0xB0000000);
 
-            if (throttledByMojang) {
-                drawCenteredString(fontRenderer, format("hdskins.error.mojang"), (int) xPos2, height / 2 - 10, 0xffffff);
-                drawCenteredString(fontRenderer, format("hdskins.error.mojang.wait"), (int) xPos2, height / 2 + 2, 0xffffff);
+            if (uploader.isThrottled()) {
+                drawCenteredString(fontRenderer, format(SkinUploader.ERR_MOJANG), (int) xPos2, height / 2 - 10, 0xff5555);
+                drawCenteredString(fontRenderer, format(SkinUploader.ERR_WAIT, uploader.getRetries()), (int) xPos2, height / 2 + 2, 0xff5555);
+            } else if (uploader.isOffline()) {
+                drawCenteredString(fontRenderer, format(SkinUploader.ERR_OFFLINE), (int) xPos2, height / 2 - 4, 0xff5555);
             } else {
-                drawCenteredString(fontRenderer, format("hdskins.fetch"), (int) xPos2, height / 2 - 4, 0xffffff);
+                drawCenteredString(fontRenderer, format(SkinUploader.STATUS_FETCH), (int) xPos2, height / 2 - 4, 0xffffff);
             }
         }
 
-        if (uploadingSkin || showMessage || uploadOpacity > 0) {
-            if (!uploadingSkin && !showMessage) {
-                uploadOpacity -= deltaTime / 10;
-            } else if (uploadOpacity < 1) {
-                uploadOpacity += deltaTime / 10;
+        boolean uploadInProgress = uploader.uploadInProgress();
+        boolean showError = uploader.hasStatus();
+
+        if (uploadInProgress || showError || msgFadeOpacity > 0) {
+            if (!uploadInProgress && !showError) {
+                msgFadeOpacity -= deltaTime / 10;
+            } else if (msgFadeOpacity < 1) {
+                msgFadeOpacity += deltaTime / 10;
             }
 
-            uploadOpacity = MathHelper.clamp(uploadOpacity, 0, 1);
+            msgFadeOpacity = MathHelper.clamp(msgFadeOpacity, 0, 1);
         }
 
-        if (uploadOpacity > 0) {
-            int opacity = (Math.min(180, (int) (uploadOpacity * 180)) & 255) << 24;
+        if (msgFadeOpacity > 0) {
+            int opacity = (Math.min(180, (int) (msgFadeOpacity * 180)) & 255) << 24;
 
-            Gui.drawRect(0, 0, width, height, opacity);
+            drawRect(0, 0, width, height, opacity);
 
-            if (uploadingSkin) {
-                drawCenteredString(fontRenderer, uploadMessage, width / 2, height / 2, 0xffffff);
-            } else if (showMessage) {
-                int blockHeight = (height - fontRenderer.getWordWrappedHeight(uploadError, width - 10)) / 2;
+            String errorMsg = uploader.getStatusMessage();
+
+            if (uploadInProgress) {
+                drawCenteredString(fontRenderer, errorMsg, width / 2, height / 2, 0xffffff);
+            } else if (showError) {
+                int blockHeight = (height - fontRenderer.getWordWrappedHeight(errorMsg, width - 10)) / 2;
 
                 drawCenteredString(fontRenderer, format("hdskins.failed"), width / 2, blockHeight - fontRenderer.FONT_HEIGHT * 2, 0xffff55);
-                fontRenderer.drawSplitString(uploadError, 5, blockHeight, width - 10, 0xff5555);
+                fontRenderer.drawSplitString(errorMsg, 5, blockHeight, width - 10, 0xff5555);
             }
         }
 
@@ -573,79 +408,14 @@ public class GuiSkins extends GameGui {
         depthMask(false);
     }
 
-    private static boolean isPowerOfTwo(int number) {
-        return number != 0 && (number & number - 1) == 0;
+    private void punchServer(String uploadMsg) {
+        uploader.uploadSkin(format(uploadMsg)).handle(CallableFutures.callback(this::updateButtons));
+
+        updateButtons();
     }
 
-    private void punchServer(String uploadMsg, @Nullable URI path) {
-        uploadingSkin = true;
-        uploadMessage = format(uploadMsg);
-        btnUpload.enabled = canUpload();
-        btnDownload.enabled = canDownload();
-
-        gateway.uploadSkin(mc.getSession(), new SkinUpload(textureType, path, getMetadata()))
-                .thenAccept(this::onUploadComplete)
-                .exceptionally(this::onUploadFailure);
+    private void updateButtons() {
+        btnUpload.enabled = uploader.canUpload();
+        btnDownload.enabled = uploader.canUpload();
     }
-
-    private void launchSkinDownload(Button sender) {
-        sender.enabled = false;
-        String loc = remotePlayer.getLocal(textureType).getRemote().getUrl();
-
-        new NetClient("GET", loc).async(HDSkinManager.skinDownloadExecutor).thenAccept(response -> {
-            openFileThread = new ThreadOpenFileFolder(mc, format("hdskins.open.title"), (fileDialog, dialogResult) -> {
-                openFileThread = null;
-                sender.enabled = true;
-                if (dialogResult == 0) {
-                    File out = fileDialog.getSelectedFile();
-
-                    try {
-                        out.createNewFile();
-
-                        FileUtils.copyInputStreamToFile(response.getInputStream(), out);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            openFileThread.start();
-        });
-    }
-
-    private Map<String, String> getMetadata() {
-        return ImmutableMap.of("model", thinArmType ? "slim" : "default");
-    }
-
-    private Void onUploadFailure(Throwable t) {
-        t = Throwables.getRootCause(t);
-        LogManager.getLogger().warn("Upload failed", t);
-        uploadError = t.toString();
-        showMessage = true;
-        uploadingSkin = false;
-        btnUpload.enabled = canUpload();
-        btnDownload.enabled = canDownload();
-
-        return null;
-    }
-
-    private void onUploadComplete(SkinUploadResponse response) {
-        LiteLoaderLogger.info("Upload completed with: %s", response);
-        pendingRemoteSkinRefresh = true;
-        uploadingSkin = false;
-        btnUpload.enabled = canUpload();
-        btnDownload.enabled = canDownload();
-    }
-
-    protected boolean canUpload() {
-        return selectedSkin != null && !uploadingSkin && !pendingRemoteSkinRefresh;
-    }
-
-    protected boolean canDownload() {
-        return remotePlayer.getLocal(textureType).hasRemote();
-    }
-
-    CompletableFuture<PreviewTextureManager> loadTextures(GameProfile profile) {
-        return gateway.getPreviewTextures(profile).thenApply(PreviewTextureManager::new);
-    }
-
 }

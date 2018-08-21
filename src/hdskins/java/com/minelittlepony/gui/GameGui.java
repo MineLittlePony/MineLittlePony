@@ -5,10 +5,12 @@ import org.apache.commons.lang3.text.WordUtils;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.SoundEvent;
 
 public abstract class GameGui extends GuiScreen {
 
@@ -20,7 +22,7 @@ public abstract class GameGui extends GuiScreen {
     }
 
     protected static String format(String string, Object... pars) {
-        return I18n.format(string, pars);
+        return string == null ? null : I18n.format(string, pars);
     }
 
     /**
@@ -35,6 +37,10 @@ public abstract class GameGui extends GuiScreen {
         }
 
         return fr.listFormattedStringToWidth(format(string, pars), width);
+    }
+
+    protected void playSound(SoundEvent event) {
+        mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(event, 1));
     }
 
     /**

@@ -15,6 +15,9 @@ import net.minecraft.client.resources.I18n;
  */
 public class Checkbox extends GuiCheckbox implements IActionable, IGuiTooltipped {
 
+    private int tipX = 0;
+    private int tipY = 0;
+
     private List<String> tooltip = null;
 
     private final IGuiCallback<Boolean> action;
@@ -39,7 +42,14 @@ public class Checkbox extends GuiCheckbox implements IActionable, IGuiTooltipped
     @Override
     public void renderToolTip(Minecraft mc, int mouseX, int mouseY) {
         if (visible && isMouseOver() && tooltip != null) {
-            mc.currentScreen.drawHoveringText(tooltip, mouseX, mouseY);
+            mc.currentScreen.drawHoveringText(tooltip, mouseX + tipX, mouseY + tipY);
         }
+    }
+
+    @Override
+    public IGuiTooltipped setTooltipOffset(int x, int y) {
+        tipX = x;
+        tipY = y;
+        return this;
     }
 }

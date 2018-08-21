@@ -41,7 +41,7 @@ public class GuiSkinsMineLP extends GuiSkins {
 
     @Override
     protected EntityPlayerModel getModel(GameProfile profile) {
-        return new EntityPonyModel(this, profile);
+        return new EntityPonyModel(profile);
     }
 
     @Override
@@ -50,11 +50,11 @@ public class GuiSkinsMineLP extends GuiSkins {
 
         addButton(btnModeWet = new IconicButton(width - 25, 137, sender -> {
             setWet(true);
-        }).setIcon(new ItemStack(Items.WATER_BUCKET))).setEnabled(!isWet).setTooltip("minelp.mode.wet");
+        }).setIcon(new ItemStack(Items.WATER_BUCKET))).setEnabled(!isWet).setTooltip("minelp.mode.wet").setTooltipOffset(0, 10);
 
         addButton(btnModeDry = new IconicButton(width - 25, 118, sender -> {
             setWet(false);
-        }).setIcon(new ItemStack(Items.BUCKET))).setEnabled(isWet).setTooltip("minelp.mode.dry");
+        }).setIcon(new ItemStack(Items.BUCKET))).setEnabled(isWet).setTooltip("minelp.mode.dry").setTooltipOffset(0, 10);
     }
 
     @Override
@@ -82,7 +82,8 @@ public class GuiSkinsMineLP extends GuiSkins {
     }
 
     @Override
-    protected void onSetLocalSkin(Type type) {
+    public void onSetLocalSkin(Type type) {
+        super.onSetLocalSkin(type);
         MineLittlePony.logger.debug("Invalidating old local skin, checking updated local skin");
         if (type == Type.SKIN) {
             ponyManager.removePony(localPlayer.getLocal(Type.SKIN).getTexture());
@@ -90,10 +91,12 @@ public class GuiSkinsMineLP extends GuiSkins {
     }
 
     @Override
-    protected void onSetRemoteSkin(Type type, ResourceLocation resource, MinecraftProfileTexture profileTexture) {
+    public void onSetRemoteSkin(Type type, ResourceLocation location, MinecraftProfileTexture profileTexture) {
+        super.onSetRemoteSkin(type, location, profileTexture);
+
         MineLittlePony.logger.debug("Invalidating old remote skin, checking updated remote skin");
         if (type == Type.SKIN) {
-            ponyManager.removePony(resource);
+            ponyManager.removePony(location);
         }
     }
 }

@@ -10,6 +10,7 @@ import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,6 +45,12 @@ public class LegacySkinServer implements SkinServer {
 
     @Override
     public CompletableFuture<MinecraftTexturesPayload> getPreviewTextures(GameProfile profile) {
+        try {
+            SkinServer.verifyServerConnection(Minecraft.getMinecraft().getSession(), SERVER_ID);
+        } catch (Exception e) {
+            return CallableFutures.failedFuture(e);
+        }
+
         if (Strings.isNullOrEmpty(gateway)) {
             return CallableFutures.failedFuture(gatewayUnsupported());
         }

@@ -3,6 +3,7 @@ package com.voxelmodpack.hdskins.skins;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.function.BiFunction;
 
 public class CallableFutures {
 
@@ -22,5 +23,12 @@ public class CallableFutures {
         CompletableFuture<T> ret = new CompletableFuture<>();
         ret.completeExceptionally(e);
         return ret;
+    }
+
+    public static <U, T> BiFunction<? super T, Throwable, ? extends U> callback(Runnable c) {
+        return (o, t) -> {
+            c.run();
+            return null;
+        };
     }
 }

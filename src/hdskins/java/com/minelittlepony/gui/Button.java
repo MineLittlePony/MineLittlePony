@@ -7,6 +7,9 @@ import net.minecraft.client.gui.GuiButton;
 
 public class Button extends GuiButton implements IActionable, IGuiTooltipped {
 
+    private int tipX = 0;
+    private int tipY = 0;
+
     protected IGuiAction<Button> action;
 
     private List<String> tooltip = null;
@@ -36,7 +39,14 @@ public class Button extends GuiButton implements IActionable, IGuiTooltipped {
     @Override
     public void renderToolTip(Minecraft mc, int mouseX, int mouseY) {
         if (visible && isMouseOver() && tooltip != null) {
-            mc.currentScreen.drawHoveringText(tooltip, mouseX, mouseY);
+            mc.currentScreen.drawHoveringText(tooltip, mouseX + tipX, mouseY + tipY);
         }
+    }
+
+    @Override
+    public IGuiTooltipped setTooltipOffset(int x, int y) {
+        tipX = x;
+        tipY = y;
+        return this;
     }
 }

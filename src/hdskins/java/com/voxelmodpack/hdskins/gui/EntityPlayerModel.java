@@ -6,6 +6,8 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.LocalTexture;
 import com.voxelmodpack.hdskins.LocalTexture.IBlankSkinSupplier;
+import com.voxelmodpack.hdskins.SkinUploader;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.entity.EntityLivingBase;
@@ -16,6 +18,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.io.File;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @SuppressWarnings("EntityConstructor")
 public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSupplier {
@@ -36,21 +39,20 @@ public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSup
 
 
     private final GameProfile profile;
-    private final GuiSkins skins;
 
     protected boolean previewThinArms = false;
 
-    public EntityPlayerModel(GuiSkins skins, GameProfile gameprofile) {
+    public EntityPlayerModel(GameProfile gameprofile) {
         super(new DummyWorld());
-        this.skins = skins;
+
         profile = gameprofile;
 
         skin = new LocalTexture(profile, Type.SKIN, this);
         elytra = new LocalTexture(profile, Type.ELYTRA, this);
     }
 
-    public void reloadRemoteSkin(SkinManager.SkinAvailableCallback listener) {
-        this.skins.loadTextures(profile).thenAcceptAsync(ptm -> {
+    public CompletableFuture<Void> reloadRemoteSkin(SkinUploader uploader, SkinManager.SkinAvailableCallback listener) {
+        return uploader.loadTextures(profile).thenAcceptAsync(ptm -> {
             skin.setRemote(ptm, listener);
             elytra.setRemote(ptm, listener);
         }, Minecraft.getMinecraft()::addScheduledTask); // run on main thread
