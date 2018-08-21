@@ -1,4 +1,5 @@
 #HD Skins en_US.lang file
+
 hdskins.choose=Choose a file
 hdskins.manager=Skin Manager
 hdskins.error.unreadable=File not readable
@@ -7,7 +8,10 @@ hdskins.error.open=Error opening skin file
 hdskins.error.invalid=Not a valid skin file
 hdskins.error.select=Please select a skin first
 hdskins.error.mojang=Mojang API Error
-hdskins.error.mojang.wait=Please wait 1 minute
+hdskins.error.mojang.wait=Please wait %d minutes
+hdskins.error.noserver=There was no valid skin server available
+hdskins.error.offline=- Server Offline -
+
 hdskins.open.title=Choose skin
 hdskins.fetch=Fetching skin...
 hdskins.failed=Uploading skin failed
