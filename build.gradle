@@ -17,20 +17,41 @@ buildscript {
     }
 }
 
+plugins {
+    id 'org.ajoberstar.grgit' version '1.7.2'
+}
+
 apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.github.johnrengelman.shadow'
 
+ext {
+    revision = grgit.log().size()
+    hash = grgit.head().abbreviatedId
+    if (file('.git/shallow').exists()) {
+        // don't clone with --depth
+        revision = -1
+        hash += " shallow"
+    }
+}
+
+if (project.release != 'RELEASE') {
+    version += "-${project.release}"
+}
+if (project.release == 'SNAPSHOT') {
+    version += "-${project.revision}-${project.hash}"
+}
+
 group = 'com.minelittlepony'
-version = '1.12.2.2-SNAPSHOT'
 description = 'Mine Little Pony'
 
 targetCompatibility = 1.8
 sourceCompatibility = 1.8
 
+
 minecraft {
-    version = "1.12.2"
-    mappings = 'stable_39'
+    version = project.minecraft_version
+    mappings = project.mappings_version
     runDir = 'run'
     replace '@VERSION@', project.version
 }
@@ -52,25 +73,29 @@ dependencies {
         transitive = false
     }
 }
+manifest {
+    attributes 'Implementation-Version': "${project.version} (git-${project.hash})"
+}
 
-litemod {
-    doFirst {
-        json {
-            mcversion = '1.12.r2'
-            author = 'Verdana, Rene_Z, Mumfrey, Killjoy1221'
-            description = 'Mine Little Pony turns players and mobs into ponies'
-            description.minelittlepony = '''\
-				Mine Little Pony turns players and mobs into ponies
-				Press F9 ingame to access settings'''
-            description.hdskinsmod = '''\
-				Separate skin server for Mine Little Pony that also supports HD skins.
-				Access via button on the main menu.'''
-            mixinConfigs += [
-                    'minelp.mixin.json',
-                    'hdskins.mixin.json'
-            ]
-        }
-    }
+litemod.json {
+    mcversion = '1.12.r2'
+    displayName = "Mine Little Pony"
+    author = 'Verdana, Rene_Z, Mumfrey, Killjoy1221, Sollace'
+    revision = project.revision
+    description = 'Mine Little Pony turns players and mobs into ponies'
+    description.minelittlepony = '''\
+        Mine Little Pony turns players and mobs into ponies
+        Press F9 ingame to access settings'''.stripIndent()
+    description.hdskinsmod = '''\
+        Separate skin server for Mine Little Pony that also supports HD skins.
+        Access via button on the main menu.'''.stripIndent()
+    mixinConfigs += [
+            'minelp.mixin.json',
+            'hdskins.mixin.json'
+    ]
+}
+afterEvaluate {
+    file('build.number').delete()
 }
 
 jar {
@@ -120,7 +145,7 @@ reobf {
     srgJar {
         mappingType = 'SEARGE'
     }
-    shadowJar {}
+    shadowJar{}
 
 }
 mixin {
