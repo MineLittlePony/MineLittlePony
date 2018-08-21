@@ -204,6 +204,7 @@ public class SkinUploader implements Closeable {
     protected void fetchRemote() {
         fetchingSkin = true;
         throttlingNeck = false;
+        offline = false;
 
         remotePlayer.reloadRemoteSkin(this, this::onSetRemoteSkin).exceptionally(throwable -> {
             throwable = throwable.getCause();
