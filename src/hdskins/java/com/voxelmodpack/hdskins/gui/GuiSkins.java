@@ -339,7 +339,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
 
             drawRect(0, 0, width, height, opacity);
 
-            String errorMsg = uploader.getStatusMessage();
+            String errorMsg = format(uploader.getStatusMessage());
 
             if (uploadInProgress) {
                 drawCenteredString(fontRenderer, errorMsg, width / 2, height / 2, 0xffffff);
@@ -423,7 +423,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
     }
 
     private void punchServer(String uploadMsg) {
-        uploader.uploadSkin(format(uploadMsg)).handle(CallableFutures.callback(this::updateButtons));
+        uploader.uploadSkin(uploadMsg).handle(CallableFutures.callback(this::updateButtons));
 
         updateButtons();
     }
