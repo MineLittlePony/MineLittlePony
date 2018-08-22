@@ -206,20 +206,21 @@ public class SkinUploader implements Closeable {
         throttlingNeck = false;
         offline = false;
 
-        remotePlayer.reloadRemoteSkin(this, this::onSetRemoteSkin).exceptionally(throwable -> {
-            throwable = throwable.getCause();
-
-            throwable.printStackTrace();
-
+        remotePlayer.reloadRemoteSkin(this, this::onSetRemoteSkin).handle((a, throwable) -> {
             fetchingSkin = false;
 
+            if (throwable != null) {
+                throwable = throwable.getCause();
 
-            if (throwable instanceof AuthenticationUnavailableException) {
-                offline = true;
-            } else {
-                throttlingNeck = true;
+                throwable.printStackTrace();
+
+                if (throwable instanceof AuthenticationUnavailableException) {
+                    offline = true;
+                } else {
+                    throttlingNeck = true;
+                }
             }
-            return null;
+            return a;
         });
     }
 
