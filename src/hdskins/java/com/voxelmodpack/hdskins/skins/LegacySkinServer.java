@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Map;
@@ -141,7 +142,7 @@ public class LegacySkinServer implements SkinServer {
     private static String getPath(String address, MinecraftProfileTexture.Type type, GameProfile profile) {
         String uuid = UUIDTypeAdapter.fromUUID(profile.getId());
         String path = type.toString().toLowerCase() + "s";
-        return String.format("%s/%s/%s.png", address, path, uuid);
+        return String.format("%s/%s/%s.png?%s", address, path, uuid, Long.toString(new Date().getTime() / 1000));
     }
 
     @Override

@@ -46,7 +46,6 @@ import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -161,10 +160,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         return skin == LOADING ? Optional.empty() : Optional.of(skin);
     }
 
-    public static String bustCache(String url) {
-        return url + (url.indexOf('?') > -1 ? '&' : '?') + Long.toString(new Date().getTime() / 1000);
-    }
-
     private void loadTexture(GameProfile profile, final Type type, final SkinAvailableCallback callback) {
         if (profile.getId() == null) {
             return;
@@ -182,7 +177,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         // schedule texture loading on the main thread.
         TextureLoader.loadTexture(resource, new ThreadDownloadImageETag(
                 new File(LiteLoader.getAssetsDirectory(), "hd/" + skinDir + texture.getHash().substring(0, 2) + "/" + texture.getHash()),
-                bustCache(texture.getUrl()),
+                texture.getUrl(),
                 DefaultPlayerSkin.getDefaultSkinLegacy(),
                 buffs));
     }

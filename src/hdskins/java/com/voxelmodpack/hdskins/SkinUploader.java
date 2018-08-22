@@ -192,7 +192,7 @@ public class SkinUploader implements Closeable {
     }
 
     public CompletableFuture<MoreHttpResponses> downloadSkin() {
-        String loc = HDSkinManager.bustCache(remotePlayer.getLocal(skinType).getRemote().getUrl());
+        String loc = remotePlayer.getLocal(skinType).getRemote().getUrl();
 
         return new NetClient("GET", loc).async(HDSkinManager.skinDownloadExecutor);
     }

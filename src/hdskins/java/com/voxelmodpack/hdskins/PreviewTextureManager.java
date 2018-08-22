@@ -29,14 +29,13 @@ public class PreviewTextureManager {
         }
 
         MinecraftProfileTexture texture = textures.get(type);
-        String url = HDSkinManager.bustCache(texture.getUrl());
         ISkinAvailableCallback buff = new ImageBufferDownloadHD(type, () -> {
             if (callback != null) {
-                callback.skinAvailable(type, location, new MinecraftProfileTexture(url, Maps.newHashMap()));
+                callback.skinAvailable(type, location, new MinecraftProfileTexture(texture.getUrl(), Maps.newHashMap()));
             }
         });
 
-        PreviewTexture skinTexture = new PreviewTexture(texture.getMetadata("model"), url, def, buff);
+        PreviewTexture skinTexture = new PreviewTexture(texture.getMetadata("model"), texture.getUrl(), def, buff);
 
         TextureLoader.loadTexture(location, skinTexture);
 
