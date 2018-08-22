@@ -141,7 +141,7 @@ public class SkinUploader implements Closeable {
     }
 
     public boolean canClear() {
-        return !isOffline() && !hasStatus() && !downloadInProgress() && remotePlayer.isTextureSetupComplete();
+        return !isOffline() && !hasStatus() && !downloadInProgress() && remotePlayer.isUsingRemoteTexture();
     }
 
     public boolean hasStatus() {

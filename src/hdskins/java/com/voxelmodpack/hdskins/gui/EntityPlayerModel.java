@@ -79,6 +79,10 @@ public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSup
         return skin.uploadComplete() && elytra.uploadComplete();
     }
 
+    public boolean isUsingRemoteTexture() {
+        return skin.hasRemoteTexture() || elytra.hasRemoteTexture();
+    }
+
     public void releaseTextures() {
         skin.clearLocal();
         elytra.clearLocal();
