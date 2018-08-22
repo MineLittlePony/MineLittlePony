@@ -45,20 +45,20 @@ public class LegacySkinServer implements SkinServer {
 
     @Override
     public CompletableFuture<MinecraftTexturesPayload> getPreviewTextures(GameProfile profile) {
-        try {
+        return CallableFutures.asyncFailableFuture(() -> {
             SkinServer.verifyServerConnection(Minecraft.getMinecraft().getSession(), SERVER_ID);
-        } catch (Exception e) {
-            return CallableFutures.failedFuture(e);
-        }
 
-        if (Strings.isNullOrEmpty(gateway)) {
-            return CallableFutures.failedFuture(gatewayUnsupported());
-        }
-        Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = new EnumMap<>(MinecraftProfileTexture.Type.class);
-        for (MinecraftProfileTexture.Type type : MinecraftProfileTexture.Type.values()) {
-            map.put(type, new MinecraftProfileTexture(getPath(gateway, type, profile), null));
-        }
-        return CompletableFuture.completedFuture(TexturesPayloadBuilder.createTexturesPayload(profile, map));
+            if (Strings.isNullOrEmpty(gateway)) {
+                throw gatewayUnsupported();
+            }
+
+            Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = new EnumMap<>(MinecraftProfileTexture.Type.class);
+            for (MinecraftProfileTexture.Type type : MinecraftProfileTexture.Type.values()) {
+                map.put(type, new MinecraftProfileTexture(getPath(gateway, type, profile), null));
+            }
+
+            return TexturesPayloadBuilder.createTexturesPayload(profile, map);
+        }, HDSkinManager.skinDownloadExecutor);
     }
 
     @Override
