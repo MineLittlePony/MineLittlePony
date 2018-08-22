@@ -42,12 +42,11 @@ if (project.release == 'SNAPSHOT') {
     version += "-${project.revision}-${project.hash}"
 }
 
-group = 'com.minelittlepony'
-description = 'Mine Little Pony'
+group = project.group
+description = project.displayname
 
 targetCompatibility = 1.8
 sourceCompatibility = 1.8
-
 
 minecraft {
     version = project.minecraft_version
@@ -73,27 +72,25 @@ dependencies {
         transitive = false
     }
 }
+
 manifest {
     attributes 'Implementation-Version': "${project.version} (git-${project.hash})"
 }
 
 litemod.json {
-    mcversion = '1.12.r2'
-    displayName = "Mine Little Pony"
-    author = 'Verdana, Rene_Z, Mumfrey, Killjoy1221, Sollace'
+    mcversion = project.minecraft_version
+    displayName = project.displayname
+    author = project.authors
     revision = project.revision
-    description = 'Mine Little Pony turns players and mobs into ponies'
-    description.minelittlepony = '''\
-        Mine Little Pony turns players and mobs into ponies
-        Press F9 ingame to access settings'''.stripIndent()
-    description.hdskinsmod = '''\
-        Separate skin server for Mine Little Pony that also supports HD skins.
-        Access via button on the main menu.'''.stripIndent()
+    description = project.description
+    description.minelittlepony = project.description_mlp
+    description.hdskinsmod = project.description_hd
     mixinConfigs += [
-            'minelp.mixin.json',
-            'hdskins.mixin.json'
+      'minelp.mixin.json',
+      'hdskins.mixin.json'
     ]
 }
+
 afterEvaluate {
     file('build.number').delete()
 }
@@ -104,33 +101,42 @@ jar {
     classifier 'base'
     extension 'jar'
 }
+
+def jarName = "mod-${project.name.toLowerCase()}"
+
 shadowJar {
     extension 'litemod'
     classifier "mc$minecraft.version"
-    baseName "mod-${project.name.toLowerCase()}"
+    baseName jarName
 
     from sourceSets.hdskins.output
     from litemod
+
     dependencies {
         exclude dependency('deobf.com.mumfrey:liteloader:')
         exclude dependency('deobf.org.ow2.asm:')
         exclude 'META-INF/**'
     }
+
     relocate 'org.apache.http.entity.mime', 'com.voxelmodpack.repack.org.apache.http.entity.mime'
     exclude 'dummyThing'
-
 }
+
 sourceJar {
     // add hdskins sources
     from sourceSets.hdskins.allSource
 }
+
 task srgJar(type: Jar) {
     from sourceSets.main.output
     from sourceSets.hdskins.output
     from litemod
+
     classifier "mc$minecraft.version-srg"
-    baseName "mod-${project.name.toLowerCase()}"
+
+    baseName jarName
 }
+
 task skinZip(type: Zip) {
     from fileTree('skins')
     baseName 'Pony Skin Resources'
@@ -145,9 +151,10 @@ reobf {
     srgJar {
         mappingType = 'SEARGE'
     }
-    shadowJar{}
 
+    shadowJar{}
 }
+
 mixin {
     defaultObfuscationEnv notch
 }
@@ -155,5 +162,6 @@ mixin {
 // windows only
 task deploy(type: Copy, dependsOn: build) {
     from jar.archivePath
+
     into file("$System.env.APPDATA/.minecraft/mods")
 }
