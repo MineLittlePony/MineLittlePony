@@ -69,7 +69,7 @@ public class GuiSkinsMineLP extends GuiSkins {
             return;
         }
 
-        mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_BREWING_STAND_BREW, 1));
+        playSound(SoundEvents.BLOCK_BREWING_STAND_BREW);
 
         isWet = wet;
         localPlayer.releaseTextures();
@@ -84,8 +84,9 @@ public class GuiSkinsMineLP extends GuiSkins {
     @Override
     public void onSetLocalSkin(Type type) {
         super.onSetLocalSkin(type);
+
         MineLittlePony.logger.debug("Invalidating old local skin, checking updated local skin");
-        if (ponyManager != null && type == Type.SKIN) {
+        if (type == Type.SKIN) {
             ponyManager.removePony(localPlayer.getLocal(Type.SKIN).getTexture());
         }
     }
@@ -95,7 +96,7 @@ public class GuiSkinsMineLP extends GuiSkins {
         super.onSetRemoteSkin(type, location, profileTexture);
 
         MineLittlePony.logger.debug("Invalidating old remote skin, checking updated remote skin");
-        if (ponyManager != null && type == Type.SKIN) {
+        if (type == Type.SKIN) {
             ponyManager.removePony(location);
         }
     }
