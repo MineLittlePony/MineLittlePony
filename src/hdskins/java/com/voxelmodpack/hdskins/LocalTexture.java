@@ -60,7 +60,7 @@ public class LocalTexture {
     }
 
     public boolean hasRemoteTexture() {
-        return hasRemote() && remote.isTextureUploaded() && getTexture() != blank.getBlankSkin(type);
+        return hasRemote() && remote.isTextureUploaded();
     }
 
     public boolean usingLocal() {
