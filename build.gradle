@@ -45,9 +45,6 @@ if (project.release == 'SNAPSHOT') {
 group = project.group
 description = project.displayname
 
-targetCompatibility = 1.8
-sourceCompatibility = 1.8
-
 minecraft {
     version = project.minecraft_version
     mappings = project.mappings_version
@@ -55,6 +52,12 @@ minecraft {
     replace '@VERSION@', project.version
 }
 
+mixin {
+    defaultObfuscationEnv notch
+}
+
+targetCompatibility = 1.8
+sourceCompatibility = 1.8
 sourceSets {
     hdskins {
         compileClasspath += main.compileClasspath
@@ -101,8 +104,9 @@ jar {
     classifier 'base'
     extension 'jar'
 }
+jar.enabled = false
 
-archivesBasename = "mod-${project.name.toLowerCase()}"
+archivesBaseName = "mod-${project.name.toLowerCase()}"
 
 shadowJar {
     extension 'litemod'
@@ -140,10 +144,6 @@ task skinZip(type: Zip) {
     version 'v1'
 }
 
-artifacts {
-    archives shadowJar
-}
-
 reobf {
     srgJar {
         mappingType = 'SEARGE'
@@ -151,10 +151,7 @@ reobf {
 
     shadowJar{}
 }
-
-mixin {
-    defaultObfuscationEnv notch
-}
+reobf.jar.task.enabled = false
 
 // windows only
 task deploy(type: Copy, dependsOn: build) {
