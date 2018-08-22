@@ -396,6 +396,9 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
             case BLOCK:
                 arm.rotateAngleX = (arm.rotateAngleX / 2 - 0.9424779F) - 0.3F;
                 arm.rotateAngleY = reflect * PI / 9;
+                if (complement == pose) {
+                    arm.rotateAngleY -= reflect * PI / 18;
+                }
                 arm.rotationPointX += reflect;
                 arm.rotationPointZ += 3;
                 if (isCrouching()) {
