@@ -198,7 +198,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
     protected void switchSkinMode(String model) {
         playSound(SoundEvents.BLOCK_BREWING_STAND_BREW);
 
-        boolean thinArmType = model == "slim";
+        boolean thinArmType = "slim".equals(model);
 
         btnModeSteve.enabled = thinArmType;
         btnModeAlex.enabled = !thinArmType;
