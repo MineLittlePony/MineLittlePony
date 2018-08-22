@@ -27,6 +27,8 @@ public class LocalTexture {
 
     private final Type type;
 
+    private boolean remoteLoaded = false;
+
     public LocalTexture(GameProfile profile, Type type, IBlankSkinSupplier blank) {
         this.blank = blank;
         this.type = type;
@@ -35,6 +37,7 @@ public class LocalTexture {
 
         remoteResource = new ResourceLocation(file);
         textureManager.deleteTexture(remoteResource);
+
 
         reset();
     }
@@ -60,7 +63,7 @@ public class LocalTexture {
     }
 
     public boolean hasRemoteTexture() {
-        return hasRemote() && remote.isTextureUploaded();
+        return uploadComplete() && remoteLoaded;
     }
 
     public boolean usingLocal() {
@@ -78,7 +81,12 @@ public class LocalTexture {
     public void setRemote(PreviewTextureManager ptm, SkinAvailableCallback callback) {
         clearRemote();
 
-        remote = ptm.getPreviewTexture(remoteResource, type, blank.getBlankSkin(type), callback);
+        remote = ptm.getPreviewTexture(remoteResource, type, blank.getBlankSkin(type), (type, location, profileTexture) -> {
+            if (callback != null) {
+                callback.skinAvailable(type, location, profileTexture);
+            }
+            remoteLoaded = true;
+        });
     }
 
     public void setLocal(File file) {
@@ -100,6 +108,7 @@ public class LocalTexture {
     }
 
     private void clearRemote() {
+        remoteLoaded = false;
         if (hasRemote()) {
             remote = null;
             textureManager.deleteTexture(remoteResource);
