@@ -224,7 +224,7 @@ public class SkinUploader implements Closeable {
     }
 
     private void onSetRemoteSkin(Type type, ResourceLocation location, MinecraftProfileTexture profileTexture) {
-        if (fetchingSkin && remotePlayer.isTextureSetupComplete()) {
+        if (fetchingSkin) {
             fetchingSkin = false;
             listener.onSetRemoteSkin(type, location, profileTexture);
         }
