@@ -7,7 +7,6 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.LocalTexture;
 import com.voxelmodpack.hdskins.LocalTexture.IBlankSkinSupplier;
 import com.voxelmodpack.hdskins.SkinUploader;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.entity.EntityLivingBase;
@@ -43,7 +42,7 @@ public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSup
     protected boolean previewThinArms = false;
 
     public EntityPlayerModel(GameProfile gameprofile) {
-        super(new DummyWorld());
+        super(DummyWorld.INSTANCE);
 
         profile = gameprofile;
 

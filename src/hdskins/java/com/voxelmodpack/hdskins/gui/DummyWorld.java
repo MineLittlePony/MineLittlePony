@@ -13,34 +13,38 @@ import net.minecraft.world.storage.WorldInfo;
 
 public class DummyWorld extends World {
 
-	public DummyWorld() {
-		super(null, new WorldInfo(
-				new WorldSettings(0, GameType.NOT_SET, false, false, WorldType.DEFAULT), "MpServer"),
-				new WorldProviderSurface(), null, true);
-	}
+    public static final World INSTANCE = new DummyWorld();
 
-	@Override
-	protected IChunkProvider createChunkProvider() {
-		return null;
-	}
+    private DummyWorld() {
+        super(null,
+                new WorldInfo(new WorldSettings(0, GameType.NOT_SET, false, false, WorldType.DEFAULT), "MpServer"),
+                new WorldProviderSurface(),
+                null,
+                true);
+    }
 
-	@Override
-	protected boolean isChunkLoaded(int x, int z, boolean allowEmpty) {
-		return true;
-	}
+    @Override
+    protected IChunkProvider createChunkProvider() {
+        return null;
+    }
 
-	@Override
-	public IBlockState getBlockState(BlockPos pos) {
-	    return Blocks.AIR.getDefaultState();
-	}
+    @Override
+    protected boolean isChunkLoaded(int x, int z, boolean allowEmpty) {
+        return true;
+    }
 
-	@Override
-	public float getLightBrightness(BlockPos pos) {
-		return 1;
-	}
+    @Override
+    public IBlockState getBlockState(BlockPos pos) {
+        return Blocks.AIR.getDefaultState();
+    }
 
-	@Override
-	public BlockPos getSpawnPoint() {
-		return BlockPos.ORIGIN;
-	}
+    @Override
+    public float getLightBrightness(BlockPos pos) {
+        return 1;
+    }
+
+    @Override
+    public BlockPos getSpawnPoint() {
+        return BlockPos.ORIGIN;
+    }
 }
