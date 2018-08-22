@@ -104,7 +104,6 @@ jar {
     classifier 'base'
     extension 'jar'
 }
-jar.enabled = false
 
 archivesBaseName = "mod-${project.name.toLowerCase()}"
 
@@ -150,12 +149,4 @@ reobf {
     }
 
     shadowJar{}
-}
-reobf.jar.task.enabled = false
-
-// windows only
-task deploy(type: Copy, dependsOn: build) {
-    from jar.archivePath
-
-    into file("$System.env.APPDATA/.minecraft/mods")
 }
