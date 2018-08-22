@@ -119,7 +119,6 @@ public class LevitatingItemRenderer {
         EnumAction action = stack.getItemUseAction();
 
         boolean doNormal = entity.getItemInUseCount() <= 0 || action == EnumAction.NONE;
-        boolean doBow = doNormal && stack.getItemUseAction() == EnumAction.BOW;
 
         if (doNormal) { // eating, blocking, and drinking are not transformed. Only held items.
             float ticks = ((IMinecraft)Minecraft.getMinecraft()).getTimer().elapsedPartialTicks - entity.ticksExisted;
@@ -127,9 +126,12 @@ public class LevitatingItemRenderer {
             float floatAmount = (float)Math.sin(ticks / 9) / 40;
             float driftAmount = (float)Math.cos(ticks / 6) / 40;
 
-            translate(driftAmount - floatAmount / 4, floatAmount, doBow ? -0.3F : -0.6F);
+            boolean handHeldTool = stack.getItemUseAction() == EnumAction.BOW
+                    || stack.getItemUseAction() == EnumAction.BLOCK;
 
-            if (!stack.getItem().isFull3D() && !doBow) { // bows have to point forwards
+            translate(driftAmount - floatAmount / 4, floatAmount, handHeldTool ? -0.3F : -0.6F);
+
+            if (!stack.getItem().isFull3D() && !handHeldTool) { // bows have to point forwards
                 if (left) {
                     rotate(-60, 0, 1, 0);
                     rotate(30, 0, 0, 1);
