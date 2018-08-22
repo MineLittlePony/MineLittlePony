@@ -102,12 +102,11 @@ jar {
     extension 'jar'
 }
 
-def jarName = "mod-${project.name.toLowerCase()}"
+archivesBasename = "mod-${project.name.toLowerCase()}"
 
 shadowJar {
     extension 'litemod'
     classifier "mc$minecraft.version"
-    baseName jarName
 
     from sourceSets.hdskins.output
     from litemod
@@ -133,8 +132,6 @@ task srgJar(type: Jar) {
     from litemod
 
     classifier "mc$minecraft.version-srg"
-
-    baseName jarName
 }
 
 task skinZip(type: Zip) {
