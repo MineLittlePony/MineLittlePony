@@ -1,6 +1,5 @@
 package com.minelittlepony.render;
 
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
 import com.minelittlepony.MineLittlePony;
@@ -13,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
