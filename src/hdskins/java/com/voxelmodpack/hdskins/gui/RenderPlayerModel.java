@@ -102,6 +102,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         player.bipedRightLegwear.isHidden = !parts.contains(EnumPlayerModelParts.RIGHT_PANTS_LEG);
         player.bipedLeftArmwear.isHidden = !parts.contains(EnumPlayerModelParts.LEFT_SLEEVE);
         player.bipedRightArmwear.isHidden = !parts.contains(EnumPlayerModelParts.RIGHT_SLEEVE);
+        player.isSneak = entity.isSneaking();
 
         player.leftArmPose = ArmPose.EMPTY;
         player.rightArmPose = ArmPose.EMPTY;
@@ -110,7 +111,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
 
         double offset = entity.getYOffset() + entity.posY + 0.01;
 
-        if (entity.isSneaking()) {
+        if (player.isSneak) {
             y -= 0.125D;
         }
 
