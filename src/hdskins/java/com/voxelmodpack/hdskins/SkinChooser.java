@@ -74,22 +74,24 @@ public class SkinChooser {
 
     public void openSavePNG(Minecraft mc, String title, Runnable callback) {
         uploader.downloadSkin().thenAccept(response -> {
-            openFileThread = new ThreadOpenFileFolder(mc, title, (fileDialog, dialogResult) -> {
-                openFileThread = null;
-                callback.run();
-                if (dialogResult == 0) {
-                    File out = fileDialog.getSelectedFile();
+            if (response.ok()) {
+                openFileThread = new ThreadOpenFileFolder(mc, title, (fileDialog, dialogResult) -> {
+                    openFileThread = null;
+                    callback.run();
+                    if (dialogResult == 0) {
+                        File out = fileDialog.getSelectedFile();
 
-                    try {
-                        out.createNewFile();
+                        try {
+                            out.createNewFile();
 
-                        FileUtils.copyInputStreamToFile(response.getInputStream(), out);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                            FileUtils.copyInputStreamToFile(response.getInputStream(), out);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            });
-            openFileThread.start();
+                });
+                openFileThread.start();
+            }
         });
     }
 
