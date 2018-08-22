@@ -59,8 +59,11 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
         return setTextureOffset(x, y);
     }
 
-    public T size(int x, int y) {
-        return (T) setTextureSize(x, y);
+    /**
+     * Sets the texture size for this renderer.
+     */
+    public T size(int w, int h) {
+        return (T) setTextureSize(w, h);
     }
 
     /**

@@ -5,7 +5,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityZombieVillager;
 import net.minecraft.entity.passive.EntityVillager;
 
-import com.minelittlepony.model.components.SaddleBags;
+import com.minelittlepony.model.capabilities.IModelPart;
+import com.minelittlepony.model.components.Muffin;
 import com.minelittlepony.model.player.ModelAlicorn;
 import com.minelittlepony.pony.data.PonyWearable;
 import com.minelittlepony.render.plane.PlaneRenderer;
@@ -14,9 +15,11 @@ public class ModelVillagerPony extends ModelAlicorn {
 
     public PlaneRenderer apron, trinket;
 
+    public IModelPart muffin;
+
     private int profession;
 
-    private boolean special;
+    public boolean special;
 
     public ModelVillagerPony() {
         super(false);
@@ -49,6 +52,15 @@ public class ModelVillagerPony extends ModelAlicorn {
     }
 
     @Override
+    protected void renderHead(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        super.renderHead(entity, move, swing, ticks, headYaw, headPitch, scale);
+
+        if (special && entity.getUniqueID().getLeastSignificantBits() % 20 == 0) {
+            muffin.renderPart(scale);
+        }
+    }
+
+    @Override
     public boolean isWearing(PonyWearable wearable) {
         if (wearable == PonyWearable.SADDLE_BAGS) {
             return !special && profession > -1 && profession < 2;
@@ -70,8 +82,9 @@ public class ModelVillagerPony extends ModelAlicorn {
     @Override
     public void init(float yOffset, float stretch) {
         super.init(yOffset, stretch);
-        saddlebags = new SaddleBags(this);
-        saddlebags.init(yOffset, stretch);
+
+        muffin = new Muffin(this);
+        muffin.init(yOffset, stretch);
 
         apron = new PlaneRenderer(this, 56, 16)
              .offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
