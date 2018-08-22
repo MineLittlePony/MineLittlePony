@@ -18,7 +18,6 @@ import com.voxelmodpack.hdskins.skins.MoreHttpResponses;
 import com.voxelmodpack.hdskins.skins.NetClient;
 import com.voxelmodpack.hdskins.skins.SkinServer;
 import com.voxelmodpack.hdskins.skins.SkinUpload;
-import com.voxelmodpack.hdskins.skins.SkinUploadResponse;
 
 import java.io.Closeable;
 import java.io.File;
@@ -179,20 +178,15 @@ public class SkinUploader implements Closeable {
         sendingSkin = true;
         status = statusMsg;
 
-        return gateway.uploadSkin(mc.getSession(), new SkinUpload(skinType, localSkin.toURI(), skinMetadata))
-            .thenAccept(this::onUploadCompleted)
-            .exceptionally(this::onUploadFailure);
-    }
-
-    private void onUploadCompleted(SkinUploadResponse response) {
-        LiteLoaderLogger.info("Upload completed with: %s", response);
-        sendingSkin = false;
-    }
-
-    private Void onUploadFailure(Throwable response) {
-        response = Throwables.getRootCause(response);
-        setError(response.toString());
-        return null;
+        return gateway.uploadSkin(mc.getSession(), new SkinUpload(skinType, localSkin == null ? null : localSkin.toURI(), skinMetadata)).handle((response, throwable) -> {
+            if (throwable == null) {
+                LiteLoaderLogger.info("Upload completed with: %s", response);
+                setError(null);
+            } else {
+                setError(Throwables.getRootCause(throwable).toString());
+            }
+            return null;
+        });
     }
 
     public CompletableFuture<MoreHttpResponses> downloadSkin() {
@@ -206,7 +200,10 @@ public class SkinUploader implements Closeable {
         throttlingNeck = false;
         offline = false;
 
-        remotePlayer.reloadRemoteSkin(this, this::onSetRemoteSkin).handle((a, throwable) -> {
+        remotePlayer.reloadRemoteSkin(this, (type, location, profileTexture) -> {
+            fetchingSkin = false;
+            listener.onSetRemoteSkin(type, location, profileTexture);
+        }).handle((a, throwable) -> {
             fetchingSkin = false;
 
             if (throwable != null) {
@@ -222,13 +219,6 @@ public class SkinUploader implements Closeable {
             }
             return a;
         });
-    }
-
-    private void onSetRemoteSkin(Type type, ResourceLocation location, MinecraftProfileTexture profileTexture) {
-        if (fetchingSkin) {
-            fetchingSkin = false;
-            listener.onSetRemoteSkin(type, location, profileTexture);
-        }
     }
 
     @Override
