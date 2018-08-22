@@ -2,11 +2,13 @@ package com.minelittlepony.model.ponies;
 
 import com.minelittlepony.model.components.SeaponyTail;
 import com.minelittlepony.model.player.ModelUnicorn;
+import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.render.PonyRenderer;
 import com.minelittlepony.render.plane.PlaneRenderer;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
 
 public class ModelSeapony extends ModelUnicorn {
@@ -20,6 +22,14 @@ public class ModelSeapony extends ModelUnicorn {
     public ModelSeapony() {
         super(false);
         textureHeight = 64;
+    }
+
+    @Override
+    public void updateLivingState(EntityLivingBase entity, Pony pony) {
+        super.updateLivingState(entity, pony);
+
+        // Seaponies can't sneak, silly
+        isSneak = false;
     }
 
     @Override
