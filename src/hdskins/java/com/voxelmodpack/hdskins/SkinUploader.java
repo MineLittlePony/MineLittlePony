@@ -185,6 +185,8 @@ public class SkinUploader implements Closeable {
             } else {
                 setError(Throwables.getRootCause(throwable).toString());
             }
+
+            fetchRemote();
             return null;
         });
     }
