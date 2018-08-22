@@ -98,8 +98,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
         panorama.update();
         uploader.update();
 
-        btnClear.enabled = uploader.canClear();
-        btnDownload.enabled = uploader.canClear();
+        updateButtons();
     }
 
     @Override
@@ -429,7 +428,8 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
     }
 
     private void updateButtons() {
+        btnClear.enabled = uploader.canClear();
         btnUpload.enabled = uploader.canUpload();
-        btnDownload.enabled = uploader.canUpload();
+        btnDownload.enabled = uploader.canClear();
     }
 }
