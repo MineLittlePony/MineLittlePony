@@ -60,6 +60,10 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
                 GlStateManager.translate(0, 0.2F, 0);
             }
 
+            if (entity.isRiding()) {
+                GlStateManager.translate(0, -0.2F, -0.5F);
+            }
+
             GlStateManager.rotate(-90, 1, 0, 0);
             GlStateManager.rotate(hand == EnumHandSide.LEFT ? 185 : -185, 0, 1, 0);
 
