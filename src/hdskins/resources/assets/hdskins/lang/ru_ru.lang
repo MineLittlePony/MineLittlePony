@@ -18,8 +18,6 @@ hdskins.local=Локальный скин
 hdskins.server=Скин на сервере
 
 hdskins.mode.skin=%s
-hdskins.mode.skinny=Скин (Тонкие ноги)
-hdskins.mode.elytra=Надкрылья
 
 hdskins.options.chevy=>>
 hdskins.options.chevy.title=Загрузить скин
@@ -31,6 +29,6 @@ hdskins.options.clear=Удалить скин
 hdskins.options.browse=Выбрать
 
 hdskins.options.skindrops=Экспериментальное перетаскивание скина
-hdskins.options.cache=Очистить локальное хранилище скинов
+hdskins.options.cache=Очистить кеш скинов
 
 hdskins.warning.experimental=§6ВНИМАНИЕ: Эта функция §4экспериментальная§6, что означает, что вещи могут начать ломаться, извиваться или даже захлёбываться. При её включении авторы сего текста не несут ответственности за возможные последствия.
