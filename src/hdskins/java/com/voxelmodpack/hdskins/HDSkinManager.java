@@ -161,7 +161,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         return skin == LOADING ? Optional.empty() : Optional.of(skin);
     }
 
-    private String bustCache(String url) {
+    public static String bustCache(String url) {
         return url + (url.indexOf('?') > -1 ? '&' : '?') + Long.toString(new Date().getTime() / 1000);
     }
 
