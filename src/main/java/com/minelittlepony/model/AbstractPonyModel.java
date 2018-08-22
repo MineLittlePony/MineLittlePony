@@ -126,12 +126,12 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         } else if (isRiding) {
             adjustBodyRiding();
             bipedLeftLeg.rotationPointZ = 15;
-            bipedLeftLeg.rotationPointY = 10;
+            bipedLeftLeg.rotationPointY = 9;
             bipedLeftLeg.rotateAngleX = -PI / 4;
             bipedLeftLeg.rotateAngleY = -PI / 5;
 
             bipedRightLeg.rotationPointZ = 15;
-            bipedRightLeg.rotationPointY = 10;
+            bipedRightLeg.rotationPointY = 9;
             bipedRightLeg.rotateAngleX = -PI / 4;
             bipedRightLeg.rotateAngleY =  PI / 5;
 
@@ -838,8 +838,6 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
 
     @Override
     public void transform(BodyPart part) {
-        if (isRiding()) translate(0, -0.4F, -0.2F);
-
         if (isSleeping()) {
             rotate(90, 1, 0, 0);
             rotate(180, 0, 1, 0);

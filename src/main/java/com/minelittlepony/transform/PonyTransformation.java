@@ -13,6 +13,7 @@ public enum PonyTransformation {
         public void transform(IModel model, BodyPart part) {
             if (model.isCrouching()) translate(0, -0.2F, 0);
             if (model.isSleeping()) translate(0, -0.61F, 0);
+            if (model.isRiding()) translate(0, -0.2F, -0.2F);
 
             switch (part) {
                 case NECK:
@@ -30,6 +31,7 @@ public enum PonyTransformation {
         public void transform(IModel model, BodyPart part) {
             if (model.isCrouching()) translate(0, -0.15F, 0);
             if (model.isSleeping()) translate(0, -0.98F, 0.2F);
+            if (model.isRiding()) translate(0, 0, -0.2F);
 
             switch (part) {
                 case NECK:
@@ -60,7 +62,7 @@ public enum PonyTransformation {
         public void transform(IModel model, BodyPart part) {
             if (model.isCrouching()) translate(0, -0.3F, 0);
             if (model.isSleeping()) translate(0, -0.6F, -0.5F);
-            if (model.isRiding()) translate(0, -0.4F, 0);
+            if (model.isRiding()) translate(0, -0.6F, -0.2F);
 
             translate(0, 0.2F, 0);
 
@@ -86,6 +88,7 @@ public enum PonyTransformation {
         public void transform(IModel model, BodyPart part) {
             if (model.isCrouching()) translate(0, -0.15F, 0);
             if (model.isSleeping()) translate(0, -0.5F, 0.25F);
+            if (model.isRiding()) translate(0, 0.1F, -0.2F);
 
             switch (part) {
                 case NECK:
@@ -114,6 +117,7 @@ public enum PonyTransformation {
         public void transform(IModel model, BodyPart part) {
             if (model.isCrouching()) translate(0, -0.15F, 0);
             if (model.isSleeping()) translate(0, -0.5F, 0.25F);
+            if (model.isRiding()) translate(0, -0.4F, -0.2F);
 
             switch (part) {
                 case NECK:
