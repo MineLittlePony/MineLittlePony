@@ -1,4 +1,5 @@
 #HD Skins ru_ru.lang file
+
 hdskins.choose=Выберите файл
 hdskins.manager=Помощник по работе со скинами
 hdskins.error.unreadable=Не удалось прочитать файл
@@ -8,6 +9,9 @@ hdskins.error.invalid=Неверный файл скина
 hdskins.error.select=Пожалуйста, сначала выберите скин
 hdskins.error.mojang=Ошибка Mojang API
 hdskins.error.mojang.wait=Пожалуйста, подождите %d минут(ы)...
+hdskins.error.noserver=Не найдено ни одного скин-сервера
+hdskins.error.offline=- Сервер не в сети -
+
 hdskins.open.title=Выберите ваш скин
 hdskins.fetch=Скачивание скина...
 hdskins.failed=Загрузка скина не удалась
@@ -16,6 +20,9 @@ hdskins.upload=Загрузка скина, пожалуйста, подожди
 
 hdskins.local=Локальный скин
 hdskins.server=Скин на сервере
+
+hdskins.mode.steve=Стандартная модель
+hdskins.mode.alex=Тонконогая модель
 
 hdskins.mode.skin=%s
 
