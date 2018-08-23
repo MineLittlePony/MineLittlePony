@@ -1,23 +1,23 @@
 package com.voxelmodpack.hdskins;
 
-import net.minecraft.client.Minecraft;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-
+import com.voxelmodpack.hdskins.skins.MoreHttpResponses;
 import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFile;
 import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFileFolder;
 import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
-
-import javax.annotation.Nullable;
-import javax.imageio.ImageIO;
-import javax.swing.UIManager;
+import net.minecraft.client.Minecraft;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import javax.annotation.Nullable;
+import javax.imageio.ImageIO;
+import javax.swing.UIManager;
 
 public class SkinChooser {
+
     public static final int MAX_SKIN_DIMENSION = 1024;
 
     public static final String ERR_UNREADABLE = "hdskins.error.unreadable";
@@ -59,40 +59,32 @@ public class SkinChooser {
         return status;
     }
 
-    public void openBrowsePNG(Minecraft mc, String title, Runnable callback) {
+    public void openBrowsePNG(Minecraft mc, String title) {
         openFileThread = new ThreadOpenFilePNG(mc, title, (fileDialog, dialogResult) -> {
             openFileThread = null;
             if (dialogResult == 0) {
                 selectFile(fileDialog.getSelectedFile());
-                callback.run();
-            } else {
-                callback.run();
             }
         });
         openFileThread.start();
     }
 
-    public void openSavePNG(Minecraft mc, String title, Runnable callback) {
-        uploader.downloadSkin().thenAccept(response -> {
-            if (response.ok()) {
-                openFileThread = new ThreadOpenFileFolder(mc, title, (fileDialog, dialogResult) -> {
-                    openFileThread = null;
-                    callback.run();
-                    if (dialogResult == 0) {
-                        File out = fileDialog.getSelectedFile();
-
-                        try {
-                            out.createNewFile();
-
-                            FileUtils.copyInputStreamToFile(response.getInputStream(), out);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+    public void openSavePNG(Minecraft mc, String title) {
+        openFileThread = new ThreadOpenFileFolder(mc, title, (fileDialog, dialogResult) -> {
+            if (dialogResult == 0) {
+                File out = fileDialog.getSelectedFile();
+                try (MoreHttpResponses response = uploader.downloadSkin().get()) {
+                    if (response.ok()) {
+                        FileUtils.copyInputStreamToFile(response.getInputStream(), out);
                     }
-                });
-                openFileThread.start();
+                } catch (IOException | InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
             }
+            openFileThread = null;
+
         });
+        openFileThread.start();
     }
 
     public void selectFile(File skinFile) {

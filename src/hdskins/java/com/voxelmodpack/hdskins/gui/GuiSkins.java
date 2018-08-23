@@ -38,6 +38,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
 
     private int updateCounter = 0;
 
+    private Button btnBrowse;
     private Button btnUpload;
     private Button btnDownload;
     private Button btnClear;
@@ -116,12 +117,8 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
         addButton(new Label(34, 34, "hdskins.local", 0xffffff));
         addButton(new Label(width / 2 + 34, 34, "hdskins.server", 0xffffff));
 
-        addButton(new Button(width / 2 - 150, height - 27, 90, 20, "hdskins.options.browse", sender -> {
-            sender.enabled = false;
-            chooser.openBrowsePNG(mc, format("hdskins.open.title"), () -> {
-                sender.enabled = true;
-                updateButtons();
-            });
+        addButton(btnBrowse = new Button(width / 2 - 150, height - 27, 90, 20, "hdskins.options.browse", sender -> {
+            chooser.openBrowsePNG(mc, format("hdskins.open.title"));
         })).setEnabled(!mc.isFullScreen());
 
         addButton(btnUpload = new Button(width / 2 - 24, height / 2 - 20, 48, 20, "hdskins.options.chevy", sender -> {
@@ -132,10 +129,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
 
         addButton(btnDownload = new Button(width / 2 - 24, height / 2 + 20, 48, 20, "hdskins.options.download", sender -> {
             if (uploader.canClear()) {
-                sender.enabled = false;
-                chooser.openSavePNG(mc, format("hdskins.open.title"), () -> {
-                    sender.enabled = true;
-                });
+                chooser.openSavePNG(mc, format("hdskins.open.title"));
             }
         })).setEnabled(uploader.canClear()).setTooltip("hdskins.options.download.title");
 
@@ -430,6 +424,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
     private void updateButtons() {
         btnClear.enabled = uploader.canClear();
         btnUpload.enabled = uploader.canUpload();
-        btnDownload.enabled = uploader.canClear();
+        btnDownload.enabled = uploader.canClear() && !chooser.pickingInProgress();
+        btnBrowse.enabled = !chooser.pickingInProgress();
     }
 }
