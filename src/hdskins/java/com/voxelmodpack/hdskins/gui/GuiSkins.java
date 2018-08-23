@@ -129,7 +129,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
 
         addButton(btnDownload = new Button(width / 2 - 24, height / 2 + 20, 48, 20, "hdskins.options.download", sender -> {
             if (uploader.canClear()) {
-                chooser.openSavePNG(mc, format("hdskins.open.title"));
+                chooser.openSavePNG(mc, format("hdskins.save.title"));
             }
         })).setEnabled(uploader.canClear()).setTooltip("hdskins.options.download.title");
 

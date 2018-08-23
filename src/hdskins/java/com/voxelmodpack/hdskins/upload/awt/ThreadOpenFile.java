@@ -15,16 +15,16 @@ import com.voxelmodpack.hdskins.LiteModHDSkins;
  *
  * @author Adam Mummery-Smith
  */
-public abstract class ThreadOpenFile extends Thread {
+public abstract class ThreadOpenFile extends Thread implements IFileDialog {
 
     protected String dialogTitle;
 
     /**
      * Delegate to call back when the dialog box is closed
      */
-    protected final IOpenFileCallback parentScreen;
+    protected final IFileCallback parentScreen;
 
-    protected ThreadOpenFile(Minecraft minecraft, String dialogTitle, IOpenFileCallback callback) throws IllegalStateException {
+    protected ThreadOpenFile(Minecraft minecraft, String dialogTitle, IFileCallback callback) throws IllegalStateException {
         if (minecraft.isFullScreen()) {
             throw new IllegalStateException("Cannot open an awt window whilst minecraft is in full screen mode!");
         }
@@ -44,20 +44,32 @@ public abstract class ThreadOpenFile extends Thread {
         }
         fileDialog.setFileFilter(getFileFilter());
 
-        int dialogResult = fileDialog.showOpenDialog(InternalDialog.getAWTContext());
+        int dialogResult = showDialog(fileDialog);
 
         File f = fileDialog.getSelectedFile();
 
         if (f != null) {
             LiteModHDSkins.instance().lastChosenFile = f.getAbsolutePath();
             LiteModHDSkins.instance().writeConfig();
+
+            if (!f.exists() && f.getName().indexOf('.') == -1) {
+                f = appendMissingExtension(f);
+            }
         }
 
-        parentScreen.onFileOpenDialogClosed(fileDialog, dialogResult);
+        parentScreen.onDialogClosed(f, dialogResult);
+    }
+
+    protected int showDialog(JFileChooser chooser) {
+        return chooser.showOpenDialog(InternalDialog.getAWTContext());
     }
 
     /**
      * Subclasses should override this to return a file filter
      */
     protected abstract FileFilter getFileFilter();
+
+    protected File appendMissingExtension(File file) {
+        return file;
+    }
 }

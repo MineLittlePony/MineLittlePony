@@ -1,8 +1,8 @@
 package com.voxelmodpack.hdskins;
 
 import com.voxelmodpack.hdskins.skins.MoreHttpResponses;
-import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFile;
-import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFileFolder;
+import com.voxelmodpack.hdskins.upload.awt.IFileDialog;
+import com.voxelmodpack.hdskins.upload.awt.ThreadSaveFilePNG;
 import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
 import net.minecraft.client.Minecraft;
 import org.apache.commons.io.FileUtils;
@@ -39,7 +39,7 @@ public class SkinChooser {
         return number != 0 && (number & number - 1) == 0;
     }
 
-    private ThreadOpenFile openFileThread;
+    private IFileDialog openFileThread;
 
     private final SkinUploader uploader;
 
@@ -60,29 +60,27 @@ public class SkinChooser {
     }
 
     public void openBrowsePNG(Minecraft mc, String title) {
-        openFileThread = new ThreadOpenFilePNG(mc, title, (fileDialog, dialogResult) -> {
+        openFileThread = new ThreadOpenFilePNG(mc, title, (file, dialogResult) -> {
             openFileThread = null;
             if (dialogResult == 0) {
-                selectFile(fileDialog.getSelectedFile());
+                selectFile(file);
             }
         });
         openFileThread.start();
     }
 
     public void openSavePNG(Minecraft mc, String title) {
-        openFileThread = new ThreadOpenFileFolder(mc, title, (fileDialog, dialogResult) -> {
+        openFileThread = new ThreadSaveFilePNG(mc, title, mc.getSession().getUsername() + ".png", (file, dialogResult) -> {
             if (dialogResult == 0) {
-                File out = fileDialog.getSelectedFile();
                 try (MoreHttpResponses response = uploader.downloadSkin().get()) {
                     if (response.ok()) {
-                        FileUtils.copyInputStreamToFile(response.getInputStream(), out);
+                        FileUtils.copyInputStreamToFile(response.getInputStream(), file);
                     }
                 } catch (IOException | InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             }
             openFileThread = null;
-
         });
         openFileThread.start();
     }

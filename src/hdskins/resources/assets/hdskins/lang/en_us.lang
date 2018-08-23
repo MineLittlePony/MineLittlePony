@@ -13,6 +13,7 @@ hdskins.error.noserver=There was no valid skin server available
 hdskins.error.offline=- Server Offline -
 
 hdskins.open.title=Choose skin
+hdskins.save.title=Choose save location
 hdskins.fetch=Fetching skin...
 hdskins.failed=Uploading skin failed
 hdskins.request=Sending request to server please wait...

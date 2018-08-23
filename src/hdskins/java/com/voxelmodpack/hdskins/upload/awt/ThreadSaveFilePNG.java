@@ -3,17 +3,13 @@ package com.voxelmodpack.hdskins.upload.awt;
 import net.minecraft.client.Minecraft;
 
 import javax.swing.filechooser.FileFilter;
+
 import java.io.File;
 
-/**
- * Opens an awt "Open File" dialog with a PNG file filter
- *
- * @author Adam Mummery-Smith
- */
-public class ThreadOpenFilePNG extends ThreadOpenFile {
+public class ThreadSaveFilePNG extends ThreadSaveFile {
 
-    public ThreadOpenFilePNG(Minecraft minecraft, String dialogTitle, IFileCallback callback) throws IllegalStateException {
-        super(minecraft, dialogTitle, callback);
+    public ThreadSaveFilePNG(Minecraft minecraft, String dialogTitle, String filename, IFileCallback callback) {
+        super(minecraft, dialogTitle, filename, callback);
     }
 
     @Override
@@ -29,5 +25,10 @@ public class ThreadOpenFilePNG extends ThreadOpenFile {
                 return f.isDirectory() || f.getName().toLowerCase().endsWith(".png");
             }
         };
+    }
+
+    @Override
+    protected File appendMissingExtension(File file) {
+        return new File(file.getParentFile(), file.getName() + ".png");
     }
 }
