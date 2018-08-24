@@ -16,6 +16,9 @@ public interface PMAPI {
     ModelWrapper pegasus = new ModelWrapper(new ModelPegasus(false));
     ModelWrapper pegasusSmall = new ModelWrapper(new ModelPegasus(true));
 
+    ModelWrapper bat = new ModelWrapper(new ModelBatpony(false));
+    ModelWrapper batSmall = new ModelWrapper(new ModelBatpony(true));
+
     ModelWrapper unicorn = new ModelWrapper(new ModelUnicorn(false));
     ModelWrapper unicornSmall = new ModelWrapper(new ModelUnicorn(true));
 
