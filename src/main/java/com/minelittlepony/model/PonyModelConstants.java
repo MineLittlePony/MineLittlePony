@@ -64,7 +64,7 @@ public interface PonyModelConstants {
         THIRDP_ARM_CENTRE_Y = 4,
 
         WING_FOLDED_RP_Y = 13,
-        WING_FOLDED_RP_Z = -3,
+        WING_FOLDED_RP_Z = -2,
 
         NECK_ROT_X = 0.166F,
 

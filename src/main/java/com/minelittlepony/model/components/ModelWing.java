@@ -53,7 +53,7 @@ public class ModelWing {
     }
 
     public void rotateWalking(float swing) {
-        folded.rotateAngleY = swing * 0.2F;
+        folded.rotateAngleY = swing * 0.15F;
     }
 
     public void rotateFlying(float angle) {
