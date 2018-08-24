@@ -15,7 +15,7 @@ public enum PlayerModels {
     DEFAULT("default", "slim", () -> PMAPI.earthpony, () -> PMAPI.earthponySmall),
     EARTH("earthpony", "slimearthpony", () -> PMAPI.earthpony, () -> PMAPI.earthponySmall),
     PEGASUS("pegasus", "slimpegasus", () -> PMAPI.pegasus, () -> PMAPI.pegasusSmall),
-    BATPONY("batpony", "slimbatpont", () -> PMAPI.bat, () -> PMAPI.batSmall),
+    BATPONY("batpony", "slimbatpony", () -> PMAPI.bat, () -> PMAPI.batSmall),
     UNICORN("unicorn", "slimunicorn", () -> PMAPI.unicorn, () -> PMAPI.unicornSmall),
     ALICORN("alicorn", "slimalicorn", () -> PMAPI.alicorn, () -> PMAPI.alicornSmall),
     ZEBRA("zebra", "slimzebra", () -> PMAPI.zebra, () -> PMAPI.zebraSmall),
