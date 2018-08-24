@@ -528,14 +528,11 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
     }
 
     protected void initHead(float yOffset, float stretch) {
-
-
         bipedHead = new PonyRenderer(this, 0, 0)
                                  .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
                                  .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
-                                 .box(-4, -4, -4, 8, 8, 8, stretch)
-                     .tex(12, 16).box(-4, -6, 1, 2, 2, 2, stretch)
-                          .flip().box( 2, -6, 1, 2, 2, 2, stretch);
+                                 .box(-4, -4, -4, 8, 8, 8, stretch);
+        initEars(((PonyRenderer)bipedHead), yOffset, stretch);
 
         bipedHeadwear = new PonyRenderer(this, 32, 0)
                                      .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
@@ -544,6 +541,11 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
 
         snout = new PonySnout(this);
         snout.init(yOffset, stretch);
+    }
+
+    protected void initEars(PonyRenderer head, float yOffset, float stretch) {
+        head.tex(12, 16).box(-4, -6, 1, 2, 2, 2, stretch)  // right ear
+                 .flip().box( 2, -6, 1, 2, 2, 2, stretch); // left ear
     }
 
     protected void initTail(float yOffset, float stretch) {
@@ -786,6 +788,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         transform(BodyPart.LEGS);
         renderLegs(scale);
         popMatrix();
+
     }
 
     /**
