@@ -16,7 +16,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,12 +50,14 @@ public abstract class MixinPlayerInfo implements INetworkPlayerInfo {
         return getResourceLocation(type).orElseGet(() -> playerTextures.get(type));
     }
 
-    @Inject(method = "getSkinType", at = @At("RETURN"), cancellable = true)
-    private void getTextureModel(CallbackInfoReturnable<String> cir) {
-        getProfileTexture(Type.SKIN).ifPresent(profile -> {
+    @Redirect(method = "getSkinType()Ljava/lang/String;",
+            at = @At(value = "FIELD", target = "Lnet/minecraft/client/network/NetworkPlayerInfo;skinType:Ljava/lang/String;"))
+
+    private String getTextureModel(NetworkPlayerInfo self) {
+        return getProfileTexture(Type.SKIN).map(profile -> {
             String model = profile.getMetadata("model");
-            cir.setReturnValue(model != null ? model : "default");
-        });
+            return model != null ? model : "default";
+        }).orElse(this.skinType);
     }
 
     @Inject(method = "loadPlayerTextures",
