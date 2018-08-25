@@ -11,12 +11,12 @@ import com.minelittlepony.pony.data.PonyWearable;
 
 public class PegasusWings<T extends AbstractPonyModel & IModelPegasus> implements IModelPart {
 
-    private final T pegasus;
+    protected final T pegasus;
 
-    private ModelWing leftWing;
-    private ModelWing rightWing;
+    protected ModelWing<T> leftWing;
+    protected ModelWing<T> rightWing;
 
-    private ModelWing legacyWing;
+    protected ModelWing<T> legacyWing;
 
     public PegasusWings(T model, float yOffset, float stretch) {
         pegasus = model;
@@ -28,17 +28,17 @@ public class PegasusWings<T extends AbstractPonyModel & IModelPegasus> implement
     public void init(float yOffset, float stretch) {
         int x = 57;
 
-        leftWing = new ModelWing(pegasus, false, false, yOffset, stretch, x, 32);
-        rightWing = new ModelWing(pegasus, true, false, yOffset, stretch, x - 1, 16);
+        leftWing = new ModelWing<>(pegasus, false, false, yOffset, stretch, x, 32);
+        rightWing = new ModelWing<>(pegasus, true, false, yOffset, stretch, x - 1, 16);
 
-        legacyWing = new ModelWing(pegasus, true, true, yOffset, stretch, x, 32);
+        legacyWing = new ModelWing<>(pegasus, true, true, yOffset, stretch, x, 32);
     }
 
-    public ModelWing getLeft() {
+    public ModelWing<T> getLeft() {
         return leftWing;
     }
 
-    public ModelWing getRight() {
+    public ModelWing<T> getRight() {
         return pegasus.isWearing(PonyWearable.SADDLE_BAGS) ? legacyWing : rightWing;
     }
 

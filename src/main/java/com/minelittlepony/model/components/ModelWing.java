@@ -8,14 +8,14 @@ import com.minelittlepony.pony.data.PonyWearable;
 import com.minelittlepony.render.PonyRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 
-public class ModelWing {
+public class ModelWing<T extends AbstractPonyModel & IModelPegasus> {
 
-    private final IModelPegasus pegasus;
+    protected final T pegasus;
 
-    private final PonyRenderer extended;
-    private final PonyRenderer folded;
+    protected final PonyRenderer extended;
+    protected final PonyRenderer folded;
 
-    public <T extends AbstractPonyModel & IModelPegasus> ModelWing(T pegasus, boolean right, boolean legacy, float y, float scale, int texX, int texY) {
+    public ModelWing(T pegasus, boolean right, boolean legacy, float y, float scale, int texX, int texY) {
         this.pegasus = pegasus;
 
         folded = new PonyRenderer(pegasus, 56, texY).mirror(legacy);
@@ -25,7 +25,7 @@ public class ModelWing {
         addFeathers(right, legacy, y, scale);
     }
 
-    private void addClosedWing(boolean right, float y, float scale) {
+    protected void addClosedWing(boolean right, float y, float scale) {
         float x = right ? -6 : 4;
 
         folded.around(HEAD_RP_X, WING_FOLDED_RP_Y + y, WING_FOLDED_RP_Z)
@@ -35,7 +35,7 @@ public class ModelWing {
               .rotateAngleX = ROTATE_90;
     }
 
-    private void addFeathers(boolean right, boolean l, float rotationPointY, float scale) {
+    protected void addFeathers(boolean right, boolean l, float rotationPointY, float scale) {
         float r = right ? -1 : 1;
 
         extended.around(r * EXT_WING_RP_X, EXT_WING_RP_Y + rotationPointY, EXT_WING_RP_Z)
