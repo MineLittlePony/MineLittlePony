@@ -193,7 +193,8 @@ public class ThreadDownloadImageETag extends SimpleTexture {
                 Files.createDirectories(cacheFile.getParent());
                 Files.copy(resp.getInputStream(), cacheFile);
 
-                BufferedImage bufferedimage = ImageIO.read(Files.newInputStream(cacheFile));
+                try (InputStream in = Files.newInputStream(cacheFile)) {
+                    BufferedImage bufferedimage = ImageIO.read(in);
 
                 // maybe write the etag to disk
                 Header eTag = resp.getResponse().getFirstHeader(HttpHeaders.ETAG);
@@ -201,10 +202,11 @@ public class ThreadDownloadImageETag extends SimpleTexture {
                     Files.write(eTagFile, Collections.singleton(eTag.getValue()));
                 }
 
-                if (imageBuffer != null) {
-                    bufferedimage = imageBuffer.parseUserSkin(bufferedimage);
+                    if (imageBuffer != null) {
+                        bufferedimage = imageBuffer.parseUserSkin(bufferedimage);
+                    }
+                    setBufferedImage(bufferedimage);
                 }
-                setBufferedImage(bufferedimage);
             }
         } catch (Exception exception) {
             LOGGER.error("Couldn\'t download http texture", exception);
