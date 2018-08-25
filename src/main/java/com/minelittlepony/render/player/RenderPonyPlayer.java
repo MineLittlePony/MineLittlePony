@@ -34,7 +34,6 @@ import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Map;
-import java.util.Optional;
 
 public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<AbstractClientPlayer> {
 
@@ -58,9 +57,9 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
             if (profile != null) {
                 deadMau5.setVisible("deadmau5".equals(profile.getName()));
 
-                Optional<ResourceLocation> skin = HDSkinManager.INSTANCE.getSkinLocation(profile, Type.SKIN, true);
-                if (skin.isPresent()) {
-                    return skin.get();
+                ResourceLocation skin = HDSkinManager.INSTANCE.getTextures(profile).get(Type.SKIN);
+                if (skin != null) {
+                    return skin;
                 }
 
                 Minecraft minecraft = Minecraft.getMinecraft();
