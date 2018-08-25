@@ -21,17 +21,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Mixin(NetworkPlayerInfo.class)
 public abstract class MixinPlayerInfo implements INetworkPlayerInfo {
-
 
     private Map<Type, ResourceLocation> customTextures = new HashMap<>();
     private Map<Type, MinecraftProfileTexture> customProfiles = new HashMap<>();
 
     @Shadow @Final private GameProfile gameProfile;
-
-    @Shadow public abstract String getSkinType();
+    @Shadow Map<Type, ResourceLocation> playerTextures;
+    @Shadow private boolean playerTexturesLoaded;
+    @Shadow private String skinType;
 
     @SuppressWarnings("InvalidMemberReference") // mc-dev bug?
     @Redirect(
@@ -88,8 +89,14 @@ public abstract class MixinPlayerInfo implements INetworkPlayerInfo {
     @Override
     public void deleteTextures() {
         TextureManager tm = Minecraft.getMinecraft().getTextureManager();
-        this.customTextures.values().forEach(tm::deleteTexture);
+        Stream.concat(this.customTextures.values().stream(), this.playerTextures.values().stream())
+                .forEach(tm::deleteTexture);
         this.customTextures.clear();
         this.customProfiles.clear();
+        this.playerTextures.clear();
+
+        this.skinType = null;
+
+        this.playerTexturesLoaded = false;
     }
 }
