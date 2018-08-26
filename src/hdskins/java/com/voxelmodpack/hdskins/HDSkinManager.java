@@ -24,6 +24,7 @@ import com.voxelmodpack.hdskins.skins.LegacySkinServer;
 import com.voxelmodpack.hdskins.skins.ServerType;
 import com.voxelmodpack.hdskins.skins.SkinServer;
 import com.voxelmodpack.hdskins.skins.ValhallaSkinServer;
+import com.voxelmodpack.hdskins.util.ProfileTextureUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -79,6 +80,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             .build(CacheLoader.from(this::loadProfileData));
 
     private List<ISkinModifier> skinModifiers = Lists.newArrayList();
+    private List<ISkinParser> skinParsers = Lists.newArrayList();
 
     private SkinResourceManager resources = new SkinResourceManager();
     //    private ExecutorService executor = Executors.newCachedThreadPool();
@@ -210,13 +212,8 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
         FileUtils.deleteQuietly(new File(LiteLoader.getAssetsDirectory(), "hd"));
 
-        NetHandlerPlayClient connection = Minecraft.getMinecraft().getConnection();
-
-        if (connection != null) {
-            connection.getPlayerInfoMap().forEach(this::clearNetworkSkin);
-        }
-
         skins.invalidateAll();
+        reloadSkins();
 
         clearListeners = clearListeners.stream()
                 .filter(this::onSkinCacheCleared)
@@ -224,7 +221,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     private void clearNetworkSkin(NetworkPlayerInfo player) {
-        ((INetworkPlayerInfo) player).deleteTextures();
+        ((INetworkPlayerInfo) player).reloadTextures();
     }
 
     private boolean onSkinCacheCleared(ISkinCacheClearListener callback) {
@@ -240,6 +237,10 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         skinModifiers.add(modifier);
     }
 
+    public void addSkinParser(ISkinParser parser) {
+        skinParsers.add(parser);
+    }
+
     public ResourceLocation getConvertedSkin(ResourceLocation res) {
         ResourceLocation loc = resources.getConvertedResource(res);
         return loc == null ? res : loc;
@@ -250,6 +251,30 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             skin.convertSkin(image, dest);
         }
     }
+
+    public void reloadSkins() {
+
+        NetHandlerPlayClient playClient = Minecraft.getMinecraft().getConnection();
+        if (playClient != null) {
+            playClient.getPlayerInfoMap().forEach(this::clearNetworkSkin);
+        }
+    }
+
+    public void parseSkin(Type type, ResourceLocation resource, MinecraftProfileTexture texture) {
+        // grab the metadata object via reflection. Object is live.
+        Map<String, String> metadata = ProfileTextureUtil.getMetadata(texture);
+        boolean wasNull = metadata == null;
+        if (wasNull) {
+            metadata = new HashMap<>();
+        }
+        for (ISkinParser parser : skinParsers) {
+            parser.parse(type, resource, metadata);
+        }
+        if (wasNull && !metadata.isEmpty()) {
+            ProfileTextureUtil.setMetadata(texture, metadata);
+        }
+    }
+
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {

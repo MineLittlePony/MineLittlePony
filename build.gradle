@@ -74,6 +74,9 @@ dependencies {
     compile('org.apache.httpcomponents:httpmime:4.3.2') {
         transitive = false
     }
+    compile('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
+        transitive = false
+    }
 }
 
 manifest {
@@ -117,6 +120,7 @@ shadowJar {
     dependencies {
         exclude dependency('deobf.com.mumfrey:liteloader:')
         exclude dependency('deobf.org.ow2.asm:')
+        exclude dependency('org.spongepowered:mixin:')
         exclude 'META-INF/**'
     }
 

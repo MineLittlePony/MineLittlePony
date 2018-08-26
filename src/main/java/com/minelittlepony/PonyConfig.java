@@ -6,6 +6,7 @@ import com.minelittlepony.settings.SensibleConfig;
 import com.mumfrey.liteloader.modconfig.ConfigStrategy;
 import com.mumfrey.liteloader.modconfig.Exposable;
 import com.mumfrey.liteloader.modconfig.ExposableOptions;
+import com.voxelmodpack.hdskins.HDSkinManager;
 
 /**
  * Storage container for MineLP client settings.
@@ -64,6 +65,7 @@ public class PonyConfig extends SensibleConfig implements Exposable {
      */
     public void setPonyLevel(PonyLevel ponylevel) {
         this.ponylevel = ponylevel;
+        HDSkinManager.INSTANCE.reloadSkins();
     }
 
     public float getGlobalScaleFactor() {

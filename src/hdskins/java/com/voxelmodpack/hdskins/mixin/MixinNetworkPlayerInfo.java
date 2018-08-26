@@ -1,5 +1,6 @@
 package com.voxelmodpack.hdskins.mixin;
 
+import com.google.common.util.concurrent.Runnables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
@@ -7,7 +8,6 @@ import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.INetworkPlayerInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,16 +20,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.concurrent.CompletableFuture;
 
 @Mixin(NetworkPlayerInfo.class)
-public abstract class MixinPlayerInfo implements INetworkPlayerInfo {
+public abstract class MixinNetworkPlayerInfo implements INetworkPlayerInfo {
 
     private Map<Type, ResourceLocation> customTextures = new HashMap<>();
     private Map<Type, MinecraftProfileTexture> customProfiles = new HashMap<>();
 
     @Shadow @Final private GameProfile gameProfile;
-    @Shadow Map<Type, ResourceLocation> playerTextures;
     @Shadow private boolean playerTexturesLoaded;
     @Shadow private String skinType;
 
@@ -52,7 +51,6 @@ public abstract class MixinPlayerInfo implements INetworkPlayerInfo {
 
     @Redirect(method = "getSkinType()Ljava/lang/String;",
             at = @At(value = "FIELD", target = "Lnet/minecraft/client/network/NetworkPlayerInfo;skinType:Ljava/lang/String;"))
-
     private String getTextureModel(NetworkPlayerInfo self) {
         return getProfileTexture(Type.SKIN).map(profile -> {
             String model = profile.getMetadata("model");
@@ -71,6 +69,11 @@ public abstract class MixinPlayerInfo implements INetworkPlayerInfo {
         HDSkinManager.INSTANCE.loadProfileTextures(this.gameProfile)
                 .thenAcceptAsync(m -> m.forEach((type, profile) -> {
                     HDSkinManager.INSTANCE.loadTexture(type, profile, (typeIn, location, profileTexture) -> {
+                        CompletableFuture.runAsync(Runnables.doNothing())
+                                // schedule parsing next tick
+                                .thenAcceptAsync((v) -> {
+                                    HDSkinManager.INSTANCE.parseSkin(typeIn, location, profileTexture);
+                                }, Minecraft.getMinecraft()::addScheduledTask);
                         customTextures.put(type, location);
                         customProfiles.put(type, profileTexture);
                     });
@@ -88,16 +91,14 @@ public abstract class MixinPlayerInfo implements INetworkPlayerInfo {
     }
 
     @Override
-    public void deleteTextures() {
-        TextureManager tm = Minecraft.getMinecraft().getTextureManager();
-        Stream.concat(this.customTextures.values().stream(), this.playerTextures.values().stream())
-                .forEach(tm::deleteTexture);
-        this.customTextures.clear();
-        this.customProfiles.clear();
-        this.playerTextures.clear();
+    public void reloadTextures() {
+        synchronized (this) {
+            this.playerTexturesLoaded = false;
+        }
+    }
 
-        this.skinType = null;
-
-        this.playerTexturesLoaded = false;
+    @Override
+    public void setSkinType(String skinType) {
+        this.skinType = skinType;
     }
 }

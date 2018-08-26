@@ -11,5 +11,7 @@ public interface INetworkPlayerInfo {
 
     Optional<MinecraftProfileTexture> getProfileTexture(MinecraftProfileTexture.Type type);
 
-    void deleteTextures();
+    void reloadTextures();
+
+    void setSkinType(String type);
 }

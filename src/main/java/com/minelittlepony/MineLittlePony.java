@@ -74,6 +74,7 @@ public class MineLittlePony {
 //        manager.setSkinUrl(SKIN_SERVER_URL);
 //        manager.setGatewayURL(GATEWAY_URL);
         manager.addSkinModifier(new PonySkinModifier());
+        manager.addSkinParser(new PonySkinParser());
 //        logger.info("Set MineLP skin server URL.");
         manager.addClearListener(ponyManager);
 

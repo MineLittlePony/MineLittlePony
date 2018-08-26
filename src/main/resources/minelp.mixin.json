@@ -6,7 +6,6 @@
     "compatibilityLevel": "JAVA_8",
     "mixins": [
         "MixinThreadDownloadImageData",
-        "MixinNetworkPlayerInfo",
         "MixinRenderItem",
         "MixinItemRenderer",
         "MixinRenderManager",

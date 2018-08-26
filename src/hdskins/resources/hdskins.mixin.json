@@ -1,13 +1,14 @@
 {
-  "required": true,
-  "minVersion": "0.7",
-  "package": "com.voxelmodpack.hdskins.mixin",
-  "refmap": "hdskins.mixin.refmap.json",
-  "mixins": [
-    "MixinMinecraft",
-    "MixinGuiMainMenu",
-    "MixinImageBufferDownload",
-    "MixinPlayerInfo",
-    "MixinSkullRenderer"
-  ]
+    "required": true,
+    "minVersion": "0.7",
+    "package": "com.voxelmodpack.hdskins.mixin",
+    "refmap": "hdskins.mixin.refmap.json",
+    "mixins": [
+        "MixinMinecraft",
+        "MixinGuiMainMenu",
+        "MixinImageBufferDownload",
+        "MixinNetworkPlayerInfo",
+        "MixinNetworkPlayerInfo$1",
+        "MixinSkullRenderer"
+    ]
 }
