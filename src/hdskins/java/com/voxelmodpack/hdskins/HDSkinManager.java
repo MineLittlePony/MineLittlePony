@@ -124,25 +124,33 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     public CompletableFuture<Map<Type, MinecraftProfileTexture>> loadProfileTextures(GameProfile profile) {
-        // try to recreate a broken gameprofile
-        // happens when server sends a random profile with skin and displayname
-        Property textures = Iterables.getFirst(profile.getProperties().get("textures"), null);
-        if (textures != null) {
-            String json = new String(Base64.getDecoder().decode(textures.getValue()), StandardCharsets.UTF_8);
-            MinecraftTexturesPayload texturePayload = SkinServer.gson.fromJson(json, MinecraftTexturesPayload.class);
-            if (texturePayload != null) {
-                // name is optional
-                String name = texturePayload.getProfileName();
-                UUID uuid = texturePayload.getProfileId();
-                // uuid is required
-                if (uuid != null) {
-                    profile = new GameProfile(uuid, name);
-                }
+        try {
+            // try to recreate a broken gameprofile
+            // happens when server sends a random profile with skin and displayname
+            Property textures = Iterables.getFirst(profile.getProperties().get("textures"), null);
+            if (textures != null) {
+                String json = new String(Base64.getDecoder().decode(textures.getValue()), StandardCharsets.UTF_8);
+                MinecraftTexturesPayload texturePayload = SkinServer.gson.fromJson(json, MinecraftTexturesPayload.class);
+                if (texturePayload != null) {
+                    // name is optional
+                    String name = texturePayload.getProfileName();
+                    UUID uuid = texturePayload.getProfileId();
+                    // uuid is required
+                    if (uuid != null) {
+                        profile = new GameProfile(uuid, name);
+                    }
 
-                // probably uses this texture for a reason. Don't mess with it.
-                if (!texturePayload.getTextures().isEmpty() && texturePayload.getProfileId() == null) {
-                    return CompletableFuture.completedFuture(Collections.emptyMap());
+                    // probably uses this texture for a reason. Don't mess with it.
+                    if (!texturePayload.getTextures().isEmpty() && texturePayload.getProfileId() == null) {
+                        return CompletableFuture.completedFuture(Collections.emptyMap());
+                    }
                 }
+            }
+        } catch (Exception e) {
+            if (profile.getId() == null) {
+                // Something broke server-side probably
+                logger.warn("{} had a null UUID and was unable to recreate it from texture profile.", profile.getName(), e);
+                return CompletableFuture.completedFuture(Collections.emptyMap());
             }
         }
         return skins.getUnchecked(profile);
