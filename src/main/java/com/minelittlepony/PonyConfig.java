@@ -10,7 +10,6 @@ import com.voxelmodpack.hdskins.HDSkinManager;
 
 /**
  * Storage container for MineLP client settings.
- *
  */
 @ExposableOptions(filename = "minelittlepony", strategy = ConfigStrategy.Unversioned)
 public class PonyConfig extends SensibleConfig implements Exposable {
@@ -43,6 +42,7 @@ public class PonyConfig extends SensibleConfig implements Exposable {
 
     /**
      * Gets the current PonyLevel. That is the level of ponies you would like to see.
+     *
      * @param ignorePony true to ignore whatever value the setting has.
      */
     public PonyLevel getEffectivePonyLevel(boolean ignorePony) {
@@ -61,11 +61,15 @@ public class PonyConfig extends SensibleConfig implements Exposable {
 
     /**
      * Sets the pony level. Want MOAR PONEHS? Well here you go.
+     *
      * @param ponylevel
      */
     public void setPonyLevel(PonyLevel ponylevel) {
-        this.ponylevel = ponylevel;
-        HDSkinManager.INSTANCE.reloadSkins();
+        // only trigger reloads when the value actually changes
+        if (ponylevel != this.ponylevel) {
+            this.ponylevel = ponylevel;
+            HDSkinManager.INSTANCE.reloadSkins();
+        }
     }
 
     public float getGlobalScaleFactor() {
