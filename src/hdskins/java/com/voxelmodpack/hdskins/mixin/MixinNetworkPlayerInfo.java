@@ -96,6 +96,10 @@ public abstract class MixinNetworkPlayerInfo implements INetworkPlayerInfo {
     public void reloadTextures() {
         synchronized (this) {
             this.playerTexturesLoaded = false;
+            if (this.gameProfile.getId().equals(Minecraft.getMinecraft().getSession().getProfile().getId())) {
+                // local client skin doesn't have a signature.
+                this.gameProfile.getProperties().removeAll("textures");
+            }
         }
     }
 
