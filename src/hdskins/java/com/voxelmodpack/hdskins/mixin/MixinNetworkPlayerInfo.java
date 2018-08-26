@@ -33,12 +33,14 @@ public abstract class MixinNetworkPlayerInfo implements INetworkPlayerInfo {
     @Shadow private String skinType;
 
     @SuppressWarnings("InvalidMemberReference") // mc-dev bug?
-    @Redirect(
-            method = {
-                    "getLocationSkin",
-                    "getLocationCape",
-                    "getLocationElytra"
-            }, at = @At(value = "INVOKE", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;"))
+    @Redirect(method = {
+            "getLocationSkin",
+            "getLocationCape",
+            "getLocationElytra"
+    },
+            at = @At(value = "INVOKE",
+                    target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;",
+                    remap = false))
     // synthetic
     private Object getSkin(Map<Type, ResourceLocation> playerTextures, Object key) {
         return getSkin(playerTextures, (Type) key);
@@ -49,7 +51,7 @@ public abstract class MixinNetworkPlayerInfo implements INetworkPlayerInfo {
         return getResourceLocation(type).orElseGet(() -> playerTextures.get(type));
     }
 
-    @Redirect(method = "getSkinType()Ljava/lang/String;",
+    @Redirect(method = "getSkinType",
             at = @At(value = "FIELD", target = "Lnet/minecraft/client/network/NetworkPlayerInfo;skinType:Ljava/lang/String;"))
     private String getTextureModel(NetworkPlayerInfo self) {
         return getProfileTexture(Type.SKIN).map(profile -> {

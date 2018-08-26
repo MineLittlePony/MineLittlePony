@@ -20,9 +20,14 @@ import java.util.concurrent.CompletableFuture;
 @Mixin(targets = "net.minecraft.client.network.NetworkPlayerInfo$1")
 public abstract class MixinNetworkPlayerInfo$1 implements SkinManager.SkinAvailableCallback {
 
-    @Shadow(aliases = {"this$0", "field_177224_a", "a"}) @Final private NetworkPlayerInfo player;
+    @Shadow(remap = false, aliases = {"this$0", "field_177224_a", "a"}) @Final private NetworkPlayerInfo player;
 
-    @Inject(method = "skinAvailable", at = @At(value = "HEAD"))
+    @Inject(method = "skinAvailable("
+            + "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;"
+            + "Lnet/minecraft/util/ResourceLocation;"
+            + "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;"
+            + ")V",
+            at = @At(value = "HEAD"))
     private void skinAvailable(MinecraftProfileTexture.Type typeIn, ResourceLocation location, MinecraftProfileTexture profileTexture,
             CallbackInfo ci) {
         CompletableFuture.runAsync(Runnables.doNothing())
