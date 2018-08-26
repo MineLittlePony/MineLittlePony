@@ -57,7 +57,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 public final class HDSkinManager implements IResourceManagerReloadListener {
@@ -215,9 +214,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         skins.invalidateAll();
         reloadSkins();
 
-        clearListeners = clearListeners.stream()
-                .filter(this::onSkinCacheCleared)
-                .collect(Collectors.toList());
     }
 
     private void clearNetworkSkin(NetworkPlayerInfo player) {
@@ -258,6 +254,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         if (playClient != null) {
             playClient.getPlayerInfoMap().forEach(this::clearNetworkSkin);
         }
+        clearListeners.removeIf(this::onSkinCacheCleared);
     }
 
     public void parseSkin(Type type, ResourceLocation resource, MinecraftProfileTexture texture) {

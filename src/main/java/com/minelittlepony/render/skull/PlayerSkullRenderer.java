@@ -2,6 +2,7 @@ package com.minelittlepony.render.skull;
 
 import com.minelittlepony.PonyConfig;
 import com.minelittlepony.model.components.ModelDeadMau5Ears;
+import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyLevel;
 import com.minelittlepony.render.PonySkull;
 import com.minelittlepony.render.RenderPony;
@@ -41,7 +42,7 @@ public class PlayerSkullRenderer extends PonySkull {
             deadMau5.setVisible("deadmau5".equals(profile.getName()));
 
             ResourceLocation skin = HDSkinManager.INSTANCE.getTextures(profile).get(MinecraftProfileTexture.Type.SKIN);
-            if (skin != null) {
+            if (skin != null && Pony.getBufferedImage(skin) != null) {
                 return skin;
             }
 

@@ -4,7 +4,7 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 
 import java.awt.image.BufferedImage;
 
-public class DynamicTextureImage extends DynamicTexture {
+public class DynamicTextureImage extends DynamicTexture implements IBufferedTexture {
 
     private BufferedImage image;
 
@@ -13,7 +13,8 @@ public class DynamicTextureImage extends DynamicTexture {
         this.image = bufferedImage;
     }
 
-    public BufferedImage getImage() {
+    @Override
+    public BufferedImage getBufferedImage() {
         return image;
     }
 

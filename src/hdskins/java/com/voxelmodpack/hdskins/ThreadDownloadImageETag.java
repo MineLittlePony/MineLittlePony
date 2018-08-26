@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 
-public class ThreadDownloadImageETag extends SimpleTexture {
+public class ThreadDownloadImageETag extends SimpleTexture implements IBufferedTexture {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final AtomicInteger THREAD_ID = new AtomicInteger(0);
@@ -84,6 +84,7 @@ public class ThreadDownloadImageETag extends SimpleTexture {
         }
     }
 
+    @Override
     @Nullable
     public BufferedImage getBufferedImage() {
         return bufferedImage;

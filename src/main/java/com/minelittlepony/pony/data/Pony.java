@@ -2,9 +2,7 @@ package com.minelittlepony.pony.data;
 
 import com.google.common.base.MoreObjects;
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.mixin.MixinThreadDownloadImageData;
-import com.voxelmodpack.hdskins.DynamicTextureImage;
-import com.voxelmodpack.hdskins.ThreadDownloadImageETag;
+import com.voxelmodpack.hdskins.IBufferedTexture;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.ITextureObject;
@@ -69,7 +67,7 @@ public class Pony {
     }
 
     @Nullable
-    private BufferedImage getBufferedImage(@Nonnull ResourceLocation resource) {
+    public static BufferedImage getBufferedImage(@Nonnull ResourceLocation resource) {
         try {
             IResource skin = Minecraft.getMinecraft().getResourceManager().getResource(resource);
             BufferedImage skinImage = TextureUtil.readBufferedImage(skin.getInputStream());
@@ -78,22 +76,16 @@ public class Pony {
             return skinImage;
         } catch (IOException ignored) { }
 
-        try {
-            ITextureObject texture = Minecraft.getMinecraft().getTextureManager().getTexture(resource);
+        ITextureObject texture = Minecraft.getMinecraft().getTextureManager().getTexture(resource);
 
-            if (texture instanceof MixinThreadDownloadImageData) {
-                return ((MixinThreadDownloadImageData) texture).getBufferedImage();
-            } else if (texture instanceof ThreadDownloadImageETag) {
-                return ((ThreadDownloadImageETag) texture).getBufferedImage();
-            } else if (texture instanceof DynamicTextureImage) {
-                return ((DynamicTextureImage) texture).getImage();
-            }
-        } catch (Exception ignored) { }
+        if (texture instanceof IBufferedTexture) {
+            return ((IBufferedTexture) texture).getBufferedImage();
+        }
 
         return null;
     }
 
-    private IPonyData checkSkin(BufferedImage bufferedimage) {
+    private IPonyData checkSkin(@Nullable BufferedImage bufferedimage) {
         if (bufferedimage == null) return new PonyData();
         MineLittlePony.logger.debug("\tStart skin check for pony #{} with image {}.", ponyId, bufferedimage);
         return PonyData.parse(bufferedimage);
