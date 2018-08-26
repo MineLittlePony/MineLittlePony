@@ -54,15 +54,8 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
      *
      * @param resource A texture resource
      */
-    public Pony getPony(ResourceLocation resource, boolean slim) {
-        Pony pony = poniesCache.computeIfAbsent(resource, res -> new Pony(res, slim));
-
-        if (pony.usesThinArms() != slim) {
-            pony = new Pony(resource, slim);
-            poniesCache.put(resource,  pony);
-        }
-
-        return pony;
+    public Pony getPony(ResourceLocation resource) {
+        return poniesCache.computeIfAbsent(resource, Pony::new);
     }
 
     /**
@@ -101,7 +94,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
      * @param uuid id of a player or entity
      */
     public Pony getPony(ResourceLocation resource, UUID uuid) {
-        Pony pony = getPony(resource, isSlimSkin(uuid));
+        Pony pony = getPony(resource);
 
         if (config.getPonyLevel() == PonyLevel.PONIES && pony.getMetadata().getRace().isHuman()) {
             return getBackgroundPony(uuid);
@@ -117,7 +110,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
      */
     public Pony getDefaultPony(UUID uuid) {
         if (config.getPonyLevel() != PonyLevel.PONIES) {
-            return getPony(DefaultPlayerSkin.getDefaultSkin(uuid), isSlimSkin(uuid));
+            return getPony(DefaultPlayerSkin.getDefaultSkin(uuid));
         }
 
         return getBackgroundPony(uuid);
@@ -125,13 +118,13 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
 
     private Pony getBackgroundPony(UUID uuid) {
         if (getNumberOfPonies() == 0 || isUser(uuid)) {
-            return getPony(getDefaultSkin(uuid), isSlimSkin(uuid));
+            return getPony(getDefaultSkin(uuid));
         }
 
         int bgi = uuid.hashCode() % getNumberOfPonies();
         while (bgi < 0) bgi += getNumberOfPonies();
 
-        return getPony(backgroundPonyList.get(bgi), false);
+        return getPony(backgroundPonyList.get(bgi));
     }
 
     private boolean isUser(UUID uuid) {

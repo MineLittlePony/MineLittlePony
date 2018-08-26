@@ -15,7 +15,7 @@ public class PonySkinParser implements ISkinParser {
             // TODO use proper model metadata system
 
             metadata.put("model", MineLittlePony.getInstance().getManager()
-                    .getPony(resource, slim)
+                    .getPony(resource)
                     .getRace(false)
                     .getModel()
                     .getId(slim));

@@ -3,10 +3,8 @@ package com.minelittlepony.pony.data;
 import com.google.common.base.MoreObjects;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.mixin.MixinThreadDownloadImageData;
-import com.minelittlepony.model.ModelWrapper;
 import com.voxelmodpack.hdskins.DynamicTextureImage;
 import com.voxelmodpack.hdskins.ThreadDownloadImageETag;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.ITextureObject;
@@ -39,12 +37,9 @@ public class Pony {
     private final ResourceLocation texture;
     private final IPonyData metadata;
 
-    private final boolean smallArms;
-
-    public Pony(ResourceLocation resource, boolean slim) {
+    public Pony(ResourceLocation resource) {
         texture = resource;
         metadata = checkSkin(texture);
-        smallArms = slim;
     }
 
     private IPonyData checkSkin(ResourceLocation resource) {
@@ -135,16 +130,8 @@ public class Pony {
         return !(item instanceof ItemArmor) || ((ItemArmor)item).getEquipmentSlot() != EntityEquipmentSlot.HEAD;
     }
 
-    public ModelWrapper getModel(boolean ignorePony) {
-        return getRace(ignorePony).getModel().getModel(smallArms);
-    }
-
     public PonyRace getRace(boolean ignorePony) {
         return metadata.getRace().getEffectiveRace(MineLittlePony.getConfig().getEffectivePonyLevel(ignorePony));
-    }
-
-    public boolean usesThinArms() {
-        return smallArms;
     }
 
     public ResourceLocation getTexture() {

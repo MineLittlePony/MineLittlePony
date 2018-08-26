@@ -45,7 +45,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> implemen
         boolean slim = entity.usesThinSkin();
         ResourceLocation loc = getEntityTexture(entity);
 
-        return MineLittlePony.getInstance().getManager().getPony(loc, slim);
+        return MineLittlePony.getInstance().getManager().getPony(loc);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> implemen
 
         boolean slim = playermodel.usesThinSkin();
 
-        Pony thePony = MineLittlePony.getInstance().getManager().getPony(loc, slim);
+        Pony thePony = MineLittlePony.getInstance().getManager().getPony(loc);
 
         PonyRace race = thePony.getRace(false);
 
@@ -80,7 +80,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> implemen
 
         boolean canWet = playermodel.wet && (loc == playermodel.getBlankSkin(Type.SKIN) || race == PonyRace.SEAPONY);
 
-        playerModel = canWet ? PlayerModels.SEAPONY.getModel(slim) : thePony.getModel(true);
+        playerModel = canWet ? PlayerModels.SEAPONY.getModel(slim) : thePony.getRace(true).getModel().getModel(slim);
         playerModel.apply(thePony.getMetadata());
 
         renderPony.setPonyModel(playerModel);

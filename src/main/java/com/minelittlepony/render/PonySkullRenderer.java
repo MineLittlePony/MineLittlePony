@@ -101,7 +101,7 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
         } else {
             ResourceLocation skin = skull.getSkinResource(profile);
 
-            skull.bindPony(MineLittlePony.getInstance().getManager().getPony(skin, false));
+            skull.bindPony(MineLittlePony.getInstance().getManager().getPony(skin));
 
             bindTexture(skin);
         }

@@ -10,7 +10,6 @@ import com.minelittlepony.render.layer.LayerPonyArmor;
 import com.minelittlepony.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.render.layer.LayerPonyElytra;
 import com.voxelmodpack.hdskins.HDSkinManager;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -19,9 +18,8 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 
-import javax.annotation.Nonnull;
-
 import java.util.List;
+import javax.annotation.Nonnull;
 
 public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving<T> implements IRenderPony<T> {
 
@@ -78,7 +76,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
 
     @Override
     public Pony getEntityPony(T entity) {
-        return MineLittlePony.getInstance().getManager().getPony(getEntityTexture(entity), false);
+        return MineLittlePony.getInstance().getManager().getPony(getEntityTexture(entity));
     }
 
     @Override
