@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 @Mixin(TileEntitySkullRenderer.class)
 public abstract class MixinSkullRenderer extends TileEntitySpecialRenderer<TileEntitySkull> {
@@ -24,16 +23,15 @@ public abstract class MixinSkullRenderer extends TileEntitySpecialRenderer<TileE
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/renderer/tileentity/TileEntitySkullRenderer;bindTexture(Lnet/minecraft/util/ResourceLocation;)V",
                     ordinal = 4))
-    private void onBindTexture(TileEntitySkullRenderer tesr, ResourceLocation rl, float x, float y, float z, EnumFacing facing, float rotation, int meta,
-                               @Nullable GameProfile profile, int p_180543_8_, float ticks) {
+    private void onBindTexture(TileEntitySkullRenderer tesr, ResourceLocation rl, float x, float y, float z, EnumFacing facing, float rotation,
+            int meta,
+            @Nullable GameProfile profile, int p_180543_8_, float ticks) {
         if (profile != null) {
-            Optional<ResourceLocation> skin = HDSkinManager.INSTANCE.getSkinLocation(profile, Type.SKIN, true);
-            if (skin.isPresent())
-                // rebind
-                bindTexture(skin.get());
-            else
-                bindTexture(rl);
-        } else
-            bindTexture(rl);
+            ResourceLocation skin = HDSkinManager.INSTANCE.getTextures(profile).get(Type.SKIN);
+            if (skin != null) {
+                rl = skin;
+            }
+        }
+        bindTexture(rl);
     }
 }

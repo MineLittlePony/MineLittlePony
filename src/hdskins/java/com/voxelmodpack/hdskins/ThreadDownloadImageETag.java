@@ -26,7 +26,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
@@ -104,7 +103,7 @@ public class ThreadDownloadImageETag extends SimpleTexture {
     }
 
     private void loadTexture() {
-        switch(checkLocalCache()) {
+        switch (checkLocalCache()) {
             case GONE:
                 clearCache();
                 break;
@@ -193,18 +192,20 @@ public class ThreadDownloadImageETag extends SimpleTexture {
                 Files.createDirectories(cacheFile.getParent());
                 Files.copy(resp.getInputStream(), cacheFile);
 
-                BufferedImage bufferedimage = ImageIO.read(Files.newInputStream(cacheFile));
+                try (InputStream in = Files.newInputStream(cacheFile)) {
+                    BufferedImage bufferedimage = ImageIO.read(in);
 
-                // maybe write the etag to disk
-                Header eTag = resp.getResponse().getFirstHeader(HttpHeaders.ETAG);
-                if (eTag != null) {
-                    Files.write(eTagFile, Collections.singleton(eTag.getValue()));
-                }
+                    // maybe write the etag to disk
+                    Header eTag = resp.getResponse().getFirstHeader(HttpHeaders.ETAG);
+                    if (eTag != null) {
+                        Files.write(eTagFile, Collections.singleton(eTag.getValue()));
+                    }
 
-                if (imageBuffer != null) {
-                    bufferedimage = imageBuffer.parseUserSkin(bufferedimage);
+                    if (imageBuffer != null) {
+                        bufferedimage = imageBuffer.parseUserSkin(bufferedimage);
+                    }
+                    setBufferedImage(bufferedimage);
                 }
-                setBufferedImage(bufferedimage);
             }
         } catch (Exception exception) {
             LOGGER.error("Couldn\'t download http texture", exception);

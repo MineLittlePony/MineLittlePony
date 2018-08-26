@@ -19,18 +19,19 @@ import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.gui.GuiSkins;
 import com.voxelmodpack.hdskins.resource.SkinResourceManager;
-import com.voxelmodpack.hdskins.skins.AsyncCacheLoader;
 import com.voxelmodpack.hdskins.skins.BethlehemSkinServer;
 import com.voxelmodpack.hdskins.skins.LegacySkinServer;
 import com.voxelmodpack.hdskins.skins.ServerType;
 import com.voxelmodpack.hdskins.skins.SkinServer;
 import com.voxelmodpack.hdskins.skins.ValhallaSkinServer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
-import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
+import net.minecraft.client.resources.SkinManager;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -46,15 +47,17 @@ import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 
 public final class HDSkinManager implements IResourceManagerReloadListener {
 
@@ -64,24 +67,16 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     public static final ExecutorService skinDownloadExecutor = Executors.newFixedThreadPool(8);
     public static final CloseableHttpClient httpClient = HttpClients.createSystem();
 
-    private static final ResourceLocation LOADING = new ResourceLocation("LOADING");
-
     public static final HDSkinManager INSTANCE = new HDSkinManager();
-
-    private boolean enabled = true;
 
     private List<ISkinCacheClearListener> clearListeners = Lists.newArrayList();
 
     private BiMap<String, Class<? extends SkinServer>> skinServerTypes = HashBiMap.create(2);
     private List<SkinServer> skinServers = Lists.newArrayList();
 
-    private Map<UUID, Map<Type, ResourceLocation>> skinCache = Maps.newHashMap();
-
-    private LoadingCache<GameProfile, Map<Type, MinecraftProfileTexture>> skins = CacheBuilder.newBuilder()
-            .initialCapacity(20)
-            .maximumSize(100)
-            .expireAfterWrite(4, TimeUnit.HOURS)
-            .build(AsyncCacheLoader.create(CacheLoader.from(this::loadProfileData), Collections.emptyMap(), skinDownloadExecutor));
+    private LoadingCache<GameProfile, CompletableFuture<Map<Type, MinecraftProfileTexture>>> skins = CacheBuilder.newBuilder()
+            .expireAfterAccess(15, TimeUnit.SECONDS)
+            .build(CacheLoader.from(this::loadProfileData));
 
     private List<ISkinModifier> skinModifiers = Lists.newArrayList();
 
@@ -107,19 +102,30 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         return skinsGuiFunc.apply(ImmutableList.copyOf(this.skinServers));
     }
 
-    public Optional<ResourceLocation> getSkinLocation(GameProfile profile1, final Type type, boolean loadIfAbsent) {
-        if (!enabled) {
-            return Optional.empty();
-        }
+    private CompletableFuture<Map<Type, MinecraftProfileTexture>> loadProfileData(GameProfile profile) {
 
-        ResourceLocation skin = this.resources.getPlayerTexture(profile1, type);
-        if (skin != null) {
-            return Optional.of(skin);
-        }
+        return CompletableFuture.supplyAsync(() -> {
+            Map<Type, MinecraftProfileTexture> textureMap = Maps.newEnumMap(Type.class);
 
+            for (SkinServer server : skinServers) {
+                try {
+                    server.loadProfileData(profile).getTextures().forEach(textureMap::putIfAbsent);
+                    if (textureMap.size() == Type.values().length) {
+                        break;
+                    }
+                } catch (IOException e) {
+                    logger.trace(e);
+                }
+
+            }
+            return textureMap;
+        }, skinDownloadExecutor);
+    }
+
+    public CompletableFuture<Map<Type, MinecraftProfileTexture>> loadProfileTextures(GameProfile profile) {
         // try to recreate a broken gameprofile
         // happens when server sends a random profile with skin and displayname
-        Property textures = Iterables.getFirst(profile1.getProperties().get("textures"), null);
+        Property textures = Iterables.getFirst(profile.getProperties().get("textures"), null);
         if (textures != null) {
             String json = new String(Base64.getDecoder().decode(textures.getValue()), StandardCharsets.UTF_8);
             MinecraftTexturesPayload texturePayload = SkinServer.gson.fromJson(json, MinecraftTexturesPayload.class);
@@ -129,86 +135,55 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                 UUID uuid = texturePayload.getProfileId();
                 // uuid is required
                 if (uuid != null) {
-                    profile1 = new GameProfile(uuid, name);
+                    profile = new GameProfile(uuid, name);
                 }
 
                 // probably uses this texture for a reason. Don't mess with it.
                 if (!texturePayload.getTextures().isEmpty() && texturePayload.getProfileId() == null) {
-                    return Optional.empty();
+                    return CompletableFuture.completedFuture(Collections.emptyMap());
                 }
             }
         }
-        final GameProfile profile = profile1;
-
-        // cannot get texture without id!
-        if (profile.getId() == null) {
-            return Optional.empty();
-        }
-
-        if (!this.skinCache.containsKey(profile.getId())) {
-            this.skinCache.put(profile.getId(), Maps.newHashMap());
-        }
-
-        skin = this.skinCache.get(profile.getId()).get(type);
-        if (skin == null) {
-            if (loadIfAbsent && getProfileData(profile).containsKey(type)) {
-                skinCache.get(profile.getId()).put(type, LOADING);
-                loadTexture(profile, type, (t, loc, tex) -> skinCache.get(profile.getId()).put(t, loc));
-            }
-            return Optional.empty();
-        }
-        return skin == LOADING ? Optional.empty() : Optional.of(skin);
+        return skins.getUnchecked(profile);
     }
 
-    private void loadTexture(GameProfile profile, final Type type, final SkinAvailableCallback callback) {
-        if (profile.getId() == null) {
-            return;
-        }
-
+    public ResourceLocation loadTexture(Type type, MinecraftProfileTexture texture, @Nullable SkinManager.SkinAvailableCallback callback) {
         String skinDir = type.toString().toLowerCase() + "s/";
 
-        final MinecraftProfileTexture texture = getProfileData(profile).get(type);
         final ResourceLocation resource = new ResourceLocation("hdskins", skinDir + texture.getHash());
+        ITextureObject texObj = Minecraft.getMinecraft().getTextureManager().getTexture(resource);
 
-        ISkinAvailableCallback buffs = new ImageBufferDownloadHD(type, () -> {
-            callback.skinAvailable(type, resource, texture);
-        });
-
-        // schedule texture loading on the main thread.
-        TextureLoader.loadTexture(resource, new ThreadDownloadImageETag(
-                new File(LiteLoader.getAssetsDirectory(), "hd/" + skinDir + texture.getHash().substring(0, 2) + "/" + texture.getHash()),
-                texture.getUrl(),
-                DefaultPlayerSkin.getDefaultSkinLegacy(),
-                buffs));
-    }
-
-    private Map<Type, MinecraftProfileTexture> loadProfileData(GameProfile profile) {
-        Map<Type, MinecraftProfileTexture> textures = Maps.newEnumMap(Type.class);
-        for (SkinServer server : skinServers) {
-            try {
-                server.loadProfileData(profile).getTextures().forEach(textures::putIfAbsent);
-                if (textures.size() == Type.values().length) {
-                    break;
-                }
-            } catch (IOException e) {
-                logger.trace(e);
+        //noinspection ConstantConditions
+        if (texObj != null) {
+            if (callback != null) {
+                callback.skinAvailable(type, resource, texture);
             }
-
+        } else {
+            // schedule texture loading on the main thread.
+            TextureLoader.loadTexture(resource, new ThreadDownloadImageETag(
+                    new File(LiteLoader.getAssetsDirectory(), "hd/" + skinDir + texture.getHash().substring(0, 2) + "/" + texture.getHash()),
+                    texture.getUrl(),
+                    DefaultPlayerSkin.getDefaultSkinLegacy(),
+                    new ImageBufferDownloadHD(type, () -> {
+                        if (callback != null) {
+                            callback.skinAvailable(type, resource, texture);
+                        }
+                    })));
         }
-        return textures;
+        return resource;
     }
 
-    public Map<Type, MinecraftProfileTexture> getProfileData(GameProfile profile) {
-        boolean was = !skins.asMap().containsKey(profile);
-        Map<Type, MinecraftProfileTexture> textures = skins.getUnchecked(profile);
-        // This is the initial value. Refreshing will load it asynchronously.
-        if (was) {
-            skins.refresh(profile);
+    public Map<Type, ResourceLocation> getTextures(GameProfile profile) {
+
+        Map<Type, ResourceLocation> map = new HashMap<>();
+        for (Map.Entry<Type, MinecraftProfileTexture> e : loadProfileTextures(profile).getNow(Collections.emptyMap()).entrySet()) {
+            map.put(e.getKey(), loadTexture(e.getKey(), e.getValue(), null));
         }
-        return textures;
+        return map;
+
     }
 
-    public void addSkinServerType(Class<? extends SkinServer> type) {
+    private void addSkinServerType(Class<? extends SkinServer> type) {
         Preconditions.checkArgument(!type.isInterface(), "type cannot be an interface");
         Preconditions.checkArgument(!Modifier.isAbstract(type.getModifiers()), "type cannot be abstract");
         ServerType st = type.getAnnotation(ServerType.class);
@@ -222,12 +197,8 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         return this.skinServerTypes.get(type);
     }
 
-    public void addSkinServer(SkinServer skinServer) {
+    void addSkinServer(SkinServer skinServer) {
         this.skinServers.add(skinServer);
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 
     public void addClearListener(ISkinCacheClearListener listener) {
@@ -237,23 +208,23 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     public void clearSkinCache() {
         LiteLoaderLogger.info("Clearing local player skin cache");
 
-        try {
-            FileUtils.deleteDirectory(new File(LiteLoader.getAssetsDirectory(), "skins"));
-            FileUtils.deleteDirectory(new File(LiteLoader.getAssetsDirectory(), "hd"));
-        } catch (IOException e) {
-            e.printStackTrace();
+        FileUtils.deleteQuietly(new File(LiteLoader.getAssetsDirectory(), "hd"));
+
+        NetHandlerPlayClient connection = Minecraft.getMinecraft().getConnection();
+
+        if (connection != null) {
+            connection.getPlayerInfoMap().forEach(this::clearNetworkSkin);
         }
 
-        TextureManager textures = Minecraft.getMinecraft().getTextureManager();
-        skinCache.values().stream()
-                .flatMap(m -> m.values().stream())
-                .forEach(textures::deleteTexture);
-        skinCache.clear();
         skins.invalidateAll();
 
         clearListeners = clearListeners.stream()
                 .filter(this::onSkinCacheCleared)
                 .collect(Collectors.toList());
+    }
+
+    private void clearNetworkSkin(NetworkPlayerInfo player) {
+        ((INetworkPlayerInfo) player).deleteTextures();
     }
 
     private boolean onSkinCacheCleared(ISkinCacheClearListener callback) {

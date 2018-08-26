@@ -4,65 +4,100 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.INetworkPlayerInfo;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Mixin(NetworkPlayerInfo.class)
-public abstract class MixinPlayerInfo {
+public abstract class MixinPlayerInfo implements INetworkPlayerInfo {
 
-    @Shadow
-    public abstract GameProfile getGameProfile();
+    private Map<Type, ResourceLocation> customTextures = new HashMap<>();
+    private Map<Type, MinecraftProfileTexture> customProfiles = new HashMap<>();
 
-    @Inject(
-            method = "getLocationSkin",
-            cancellable = true,
-            at = @At("RETURN"))
-    private void getLocationSkin(CallbackInfoReturnable<ResourceLocation> ci) {
-        getTextureLocation(ci, Type.SKIN);
+    @Shadow @Final private GameProfile gameProfile;
+    @Shadow Map<Type, ResourceLocation> playerTextures;
+    @Shadow private boolean playerTexturesLoaded;
+    @Shadow private String skinType;
+
+    @SuppressWarnings("InvalidMemberReference") // mc-dev bug?
+    @Redirect(
+            method = {
+                    "getLocationSkin",
+                    "getLocationCape",
+                    "getLocationElytra"
+            }, at = @At(value = "INVOKE", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;"))
+    // synthetic
+    private Object getSkin(Map<Type, ResourceLocation> playerTextures, Object key) {
+        return getSkin(playerTextures, (Type) key);
     }
 
-    @Inject(
-            method = "getLocationCape",
-            cancellable = true,
-            at = @At("RETURN"))
-    private void getLocationCape(CallbackInfoReturnable<ResourceLocation> ci) {
-        getTextureLocation(ci, Type.CAPE);
+    // with generics
+    private ResourceLocation getSkin(Map<Type, ResourceLocation> playerTextures, Type type) {
+        return getResourceLocation(type).orElseGet(() -> playerTextures.get(type));
     }
 
-    @Inject(
-            method = "getLocationElytra",
-            cancellable = true,
-            at = @At("RETURN"))
-    private void getLocationElytra(CallbackInfoReturnable<ResourceLocation> ci) {
-        getTextureLocation(ci, Type.ELYTRA);
+    @Redirect(method = "getSkinType()Ljava/lang/String;",
+            at = @At(value = "FIELD", target = "Lnet/minecraft/client/network/NetworkPlayerInfo;skinType:Ljava/lang/String;"))
+
+    private String getTextureModel(NetworkPlayerInfo self) {
+        return getProfileTexture(Type.SKIN).map(profile -> {
+            String model = profile.getMetadata("model");
+            return model != null ? model : "default";
+        }).orElse(this.skinType);
     }
 
-    private void getTextureLocation(CallbackInfoReturnable<ResourceLocation> ci, Type type) {
-        Optional<ResourceLocation> texture = HDSkinManager.INSTANCE.getSkinLocation(getGameProfile(), type, true);
-        texture.ifPresent(ci::setReturnValue);
+    @Inject(method = "loadPlayerTextures",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/client/resources/SkinManager;loadProfileTextures("
+                            + "Lcom/mojang/authlib/GameProfile;"
+                            + "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"
+                            + "Z)V",
+                    shift = At.Shift.BEFORE))
+    private void onLoadTexture(CallbackInfo ci) {
+        HDSkinManager.INSTANCE.loadProfileTextures(this.gameProfile)
+                .thenAcceptAsync(m -> m.forEach((type, profile) -> {
+                    HDSkinManager.INSTANCE.loadTexture(type, profile, (typeIn, location, profileTexture) -> {
+                        customTextures.put(type, location);
+                        customProfiles.put(type, profileTexture);
+                    });
+                }), Minecraft.getMinecraft()::addScheduledTask);
     }
 
-    @Inject(
-            method = "getSkinType",
-            cancellable = true,
-            at = @At("RETURN"))
-    private void getSkinType(CallbackInfoReturnable<String> ci) {
-        MinecraftProfileTexture skin = HDSkinManager.INSTANCE.getProfileData(getGameProfile()).get(Type.SKIN);
-        if (skin != null) {
-            String type = skin.getMetadata("model");
-            if (type == null)
-                type = "default";
-            String type1 = type;
-            Optional<ResourceLocation> texture = HDSkinManager.INSTANCE.getSkinLocation(getGameProfile(), Type.SKIN, false);
+    @Override
+    public Optional<ResourceLocation> getResourceLocation(Type type) {
+        return Optional.ofNullable(this.customTextures.get(type));
+    }
 
-            texture.ifPresent((res) -> ci.setReturnValue(type1));
-        }
+    @Override
+    public Optional<MinecraftProfileTexture> getProfileTexture(Type type) {
+        return Optional.ofNullable(this.customProfiles.get(type));
+    }
+
+    @Override
+    public void deleteTextures() {
+        TextureManager tm = Minecraft.getMinecraft().getTextureManager();
+        Stream.concat(this.customTextures.values().stream(), this.playerTextures.values().stream())
+                .forEach(tm::deleteTexture);
+        this.customTextures.clear();
+        this.customProfiles.clear();
+        this.playerTextures.clear();
+
+        this.skinType = null;
+
+        this.playerTexturesLoaded = false;
     }
 }
