@@ -17,21 +17,19 @@ import javax.annotation.Nullable;
 @Mixin(TileEntitySkullRenderer.class)
 public abstract class MixinSkullRenderer extends TileEntitySpecialRenderer<TileEntitySkull> {
 
-    @Redirect(
-            method = "renderSkull",
-            at = @At(
-                    value = "INVOKE",
+    @Redirect(method = "renderSkull",
+            at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/client/renderer/tileentity/TileEntitySkullRenderer;bindTexture(Lnet/minecraft/util/ResourceLocation;)V",
                     ordinal = 4))
-    private void onBindTexture(TileEntitySkullRenderer tesr, ResourceLocation rl, float x, float y, float z, EnumFacing facing, float rotation,
-            int meta,
-            @Nullable GameProfile profile, int p_180543_8_, float ticks) {
+    private void onBindTexture(TileEntitySkullRenderer tesr, ResourceLocation rl, float x, float y, float z, EnumFacing facing, float rotation, int meta, @Nullable GameProfile profile, int p_180543_8_, float ticks) {
         if (profile != null) {
             ResourceLocation skin = HDSkinManager.INSTANCE.getTextures(profile).get(Type.SKIN);
+
             if (skin != null) {
                 rl = skin;
             }
         }
+
         bindTexture(rl);
     }
 }
