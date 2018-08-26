@@ -18,6 +18,8 @@ import net.minecraft.util.ResourceLocation;
 import java.util.Map;
 import javax.annotation.Nullable;
 
+import static com.mojang.authlib.minecraft.MinecraftProfileTexture.*;
+
 public class PlayerSkullRenderer extends PonySkull {
 
     private final ModelDeadMau5Ears deadMau5 = new ModelDeadMau5Ears();
@@ -41,19 +43,22 @@ public class PlayerSkullRenderer extends PonySkull {
         if (profile != null) {
             deadMau5.setVisible("deadmau5".equals(profile.getName()));
 
-            ResourceLocation skin = HDSkinManager.INSTANCE.getTextures(profile).get(MinecraftProfileTexture.Type.SKIN);
+            ResourceLocation skin = HDSkinManager.INSTANCE.getTextures(profile).get(Type.SKIN);
             if (skin != null && Pony.getBufferedImage(skin) != null) {
                 return skin;
             }
 
             Minecraft minecraft = Minecraft.getMinecraft();
-            Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = minecraft.getSkinManager().loadSkinFromCache(profile);
+            Map<Type, MinecraftProfileTexture> map = minecraft.getSkinManager().loadSkinFromCache(profile);
 
-            if (map.containsKey(MinecraftProfileTexture.Type.SKIN)) {
-                return minecraft.getSkinManager().loadSkin(map.get(MinecraftProfileTexture.Type.SKIN), MinecraftProfileTexture.Type.SKIN);
-            } else {
-                return DefaultPlayerSkin.getDefaultSkin(EntityPlayer.getUUID(profile));
+            if (map.containsKey(Type.SKIN)) {
+                ResourceLocation loc = minecraft.getSkinManager().loadSkin(map.get(Type.SKIN), Type.SKIN);
+                if (Pony.getBufferedImage(loc) != null) {
+                    return loc;
+                }
             }
+            return DefaultPlayerSkin.getDefaultSkin(EntityPlayer.getUUID(profile));
+
         }
 
         return DefaultPlayerSkin.getDefaultSkinLegacy();

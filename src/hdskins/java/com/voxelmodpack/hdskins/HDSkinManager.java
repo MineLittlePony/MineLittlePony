@@ -257,7 +257,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         clearListeners.removeIf(this::onSkinCacheCleared);
     }
 
-    public void parseSkin(Type type, ResourceLocation resource, MinecraftProfileTexture texture) {
+    public void parseSkin(GameProfile profile, Type type, ResourceLocation resource, MinecraftProfileTexture texture) {
         // grab the metadata object via reflection. Object is live.
         Map<String, String> metadata = ProfileTextureUtil.getMetadata(texture);
         boolean wasNull = metadata == null;
@@ -265,7 +265,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             metadata = new HashMap<>();
         }
         for (ISkinParser parser : skinParsers) {
-            parser.parse(type, resource, metadata);
+            parser.parse(profile, type, resource, metadata);
         }
         if (wasNull && !metadata.isEmpty()) {
             ProfileTextureUtil.setMetadata(texture, metadata);

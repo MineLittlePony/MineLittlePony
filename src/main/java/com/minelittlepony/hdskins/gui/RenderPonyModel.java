@@ -64,7 +64,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> implemen
         renderingAsHuman = true;
 
         ResourceLocation loc = getEntityTexture(playermodel);
-        if (loc == null) {
+        if (loc == null || Pony.getBufferedImage(loc) == null) {
             return super.getEntityModel(playermodel);
         }
 

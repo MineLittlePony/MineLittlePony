@@ -1,6 +1,7 @@
 package com.minelittlepony.pony.data;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
 import com.minelittlepony.MineLittlePony;
 import com.voxelmodpack.hdskins.IBufferedTexture;
 import net.minecraft.block.material.Material;
@@ -42,9 +43,11 @@ public class Pony {
 
     private IPonyData checkSkin(ResourceLocation resource) {
         IPonyData data = checkPonyMeta(resource);
-        if (data != null) return data;
+        if (data != null) {
+            return data;
+        }
 
-        BufferedImage skinImage = getBufferedImage(resource);
+        BufferedImage skinImage = Preconditions.checkNotNull(getBufferedImage(resource), "bufferedImage: " + resource);
         return this.checkSkin(skinImage);
     }
 
@@ -74,7 +77,8 @@ public class Pony {
             MineLittlePony.logger.debug("Obtained skin from resource location {}", resource);
 
             return skinImage;
-        } catch (IOException ignored) { }
+        } catch (IOException ignored) {
+        }
 
         ITextureObject texture = Minecraft.getMinecraft().getTextureManager().getTexture(resource);
 
@@ -85,8 +89,7 @@ public class Pony {
         return null;
     }
 
-    private IPonyData checkSkin(@Nullable BufferedImage bufferedimage) {
-        if (bufferedimage == null) return new PonyData();
+    private IPonyData checkSkin(BufferedImage bufferedimage) {
         MineLittlePony.logger.debug("\tStart skin check for pony #{} with image {}.", ponyId, bufferedimage);
         return PonyData.parse(bufferedimage);
     }
@@ -101,13 +104,14 @@ public class Pony {
     }
 
     public boolean isFullySubmerged(EntityLivingBase entity) {
-        return entity.isInWater() && entity.getEntityWorld().getBlockState(new BlockPos(getVisualEyePosition(entity))).getMaterial() == Material.WATER;
+        return entity.isInWater()
+                && entity.getEntityWorld().getBlockState(new BlockPos(getVisualEyePosition(entity))).getMaterial() == Material.WATER;
     }
 
     protected Vec3d getVisualEyePosition(EntityLivingBase entity) {
         PonySize size = entity.isChild() ? PonySize.FOAL : metadata.getSize();
 
-        return new Vec3d(entity.posX, entity.posY + (double)entity.getEyeHeight() * size.getScaleFactor(), entity.posZ);
+        return new Vec3d(entity.posX, entity.posY + (double) entity.getEyeHeight() * size.getScaleFactor(), entity.posZ);
     }
 
     public boolean isWearingHeadgear(EntityLivingBase entity) {
@@ -119,7 +123,7 @@ public class Pony {
 
         Item item = stack.getItem();
 
-        return !(item instanceof ItemArmor) || ((ItemArmor)item).getEquipmentSlot() != EntityEquipmentSlot.HEAD;
+        return !(item instanceof ItemArmor) || ((ItemArmor) item).getEquipmentSlot() != EntityEquipmentSlot.HEAD;
     }
 
     public PonyRace getRace(boolean ignorePony) {

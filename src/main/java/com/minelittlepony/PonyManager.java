@@ -68,7 +68,9 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         ResourceLocation skin = player.getLocationSkin();
         UUID uuid = player.getGameProfile().getId();
 
-        if (skin == null) return getDefaultPony(uuid);
+        if (Pony.getBufferedImage(skin) == null) {
+            return getDefaultPony(uuid);
+        }
 
         return getPony(skin, uuid);
     }
@@ -78,7 +80,9 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         ResourceLocation skin = playerInfo.getLocationSkin();
         UUID uuid = playerInfo.getGameProfile().getId();
 
-        if (skin == null) return getDefaultPony(uuid);
+        if (Pony.getBufferedImage(skin) == null) {
+            return getDefaultPony(uuid);
+        }
 
         return getPony(skin, uuid);
     }

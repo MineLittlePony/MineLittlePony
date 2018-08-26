@@ -74,7 +74,7 @@ public abstract class MixinNetworkPlayerInfo implements INetworkPlayerInfo {
                         CompletableFuture.runAsync(Runnables.doNothing())
                                 // schedule parsing next tick
                                 .thenAcceptAsync((v) -> {
-                                    HDSkinManager.INSTANCE.parseSkin(typeIn, location, profileTexture);
+                                    HDSkinManager.INSTANCE.parseSkin(gameProfile, typeIn, location, profileTexture);
                                 }, Minecraft.getMinecraft()::addScheduledTask);
                         customTextures.put(type, location);
                         customProfiles.put(type, profileTexture);

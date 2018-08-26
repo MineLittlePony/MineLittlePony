@@ -33,7 +33,7 @@ public abstract class MixinNetworkPlayerInfo$1 implements SkinManager.SkinAvaila
         CompletableFuture.runAsync(Runnables.doNothing())
                 .thenAcceptAsync((v) -> {
                     // schedule parsing next tick, texture may not be uploaded at this point
-                    HDSkinManager.INSTANCE.parseSkin(typeIn, location, profileTexture);
+                    HDSkinManager.INSTANCE.parseSkin(player.getGameProfile(), typeIn, location, profileTexture);
 
                     // re-set the skin-type because vanilla has already set it
                     String model = profileTexture.getMetadata("model");
