@@ -45,11 +45,12 @@ public class ModelBatWing<T extends AbstractPonyModel & IModelPegasus> extends M
                 .child().tex(60, 16)
                     .rotate(-0.5F, 0, 0)
                     .around(0, -1, -2)
-                    .box(0, 0, 2, 1, 7, 1, scale)
-                    .child().tex(60, 24)
-                        .rotate(-0.5F, 0, 0)
-                        .around(0, -2, -1)
-                        .box(0, 0, 3, 1, 7, 1, scale);
+                    .box(0, 0, 2, 1, 7, 1, scale);
+        extended.child(0)
+                .child().tex(60, 24)
+                    .rotate(-0.5F, 0, 0)
+                    .around(0, 4, -2.4F)
+                    .box(0, 0, 3, 1, 7, 1, scale);
 
         PlaneRenderer skin = new PlaneRenderer(pegasus)
                 .tex(56, 32);
@@ -57,9 +58,9 @@ public class ModelBatWing<T extends AbstractPonyModel & IModelPegasus> extends M
         extended.child(0).child(skin);
 
         if (right) {
-            skin       .addWestPlane(0.5F, -1, -6, 8, 8, scale);
+            skin       .addWestPlane(0.5F, -1, -7, 16, 8, scale);
         } else {
-            skin.flip().addWestPlane(0.5F, -1, -6, 8, 8, scale);
+            skin.flip().addWestPlane(0.5F, -1, -7, 16, 8, scale);
         }
     }
 
