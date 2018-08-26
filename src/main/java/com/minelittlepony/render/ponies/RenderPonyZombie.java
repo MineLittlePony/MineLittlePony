@@ -1,12 +1,7 @@
 package com.minelittlepony.render.ponies;
 
-import com.minelittlepony.PonyConfig;
 import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.render.RenderPonyMob;
-import com.minelittlepony.render.PonySkull;
-import com.minelittlepony.render.PonySkullRenderer.ISkull;
-import com.mojang.authlib.GameProfile;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.monster.EntityGiantZombie;
@@ -18,18 +13,6 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
 
     public static final ResourceLocation ZOMBIE = new ResourceLocation("minelittlepony", "textures/entity/zombie/zombie_pony.png");
     public static final ResourceLocation HUSK = new ResourceLocation("minelittlepony", "textures/entity/zombie/husk_pony.png");
-
-    public static final ISkull SKULL = new PonySkull() {
-        @Override
-        public boolean canRender(PonyConfig config) {
-            return config.zombies;
-        }
-
-        @Override
-        public ResourceLocation getSkinResource(GameProfile profile) {
-            return RenderPonyZombie.ZOMBIE;
-        }
-    }.register(ISkull.ZOMBIE);
 
     public RenderPonyZombie(RenderManager manager) {
         super(manager, PMAPI.zombie);

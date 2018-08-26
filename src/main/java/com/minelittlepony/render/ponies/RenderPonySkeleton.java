@@ -1,13 +1,8 @@
 package com.minelittlepony.render.ponies;
 
-import com.minelittlepony.PonyConfig;
 import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.render.RenderPonyMob;
-import com.minelittlepony.render.PonySkull;
-import com.minelittlepony.render.PonySkullRenderer.ISkull;
 import com.minelittlepony.render.layer.LayerPonyStrayOverlay;
-import com.mojang.authlib.GameProfile;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.monster.AbstractSkeleton;
@@ -20,18 +15,6 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
     public static final ResourceLocation SKELETON = new ResourceLocation("minelittlepony", "textures/entity/skeleton/skeleton_pony.png");
     public static final ResourceLocation WITHER = new ResourceLocation("minelittlepony", "textures/entity/skeleton/skeleton_wither_pony.png");
     public static final ResourceLocation STRAY = new ResourceLocation("minelittlepony", "textures/entity/skeleton/stray_pony.png");
-
-    public static final ISkull SKULL = new PonySkull() {
-        @Override
-        public boolean canRender(PonyConfig config) {
-            return config.skeletons;
-        }
-
-        @Override
-        public ResourceLocation getSkinResource(GameProfile profile) {
-            return RenderPonySkeleton.SKELETON;
-        }
-    }.register(ISkull.SKELETON);
 
     public RenderPonySkeleton(RenderManager manager) {
         super(manager, PMAPI.skeleton);
@@ -56,18 +39,6 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
     }
 
     public static class Wither extends RenderPonySkeleton<EntityWitherSkeleton> {
-
-        public static final ISkull SKULL = new PonySkull() {
-            @Override
-            public boolean canRender(PonyConfig config) {
-                return config.skeletons;
-            }
-
-            @Override
-            public ResourceLocation getSkinResource(GameProfile profile) {
-                return RenderPonySkeleton.WITHER;
-            }
-        }.register(ISkull.WITHER);
 
         public Wither(RenderManager rm) {
             super(rm);

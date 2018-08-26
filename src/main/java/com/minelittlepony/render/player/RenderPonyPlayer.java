@@ -1,14 +1,9 @@
 package com.minelittlepony.render.player;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.PonyConfig;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.ModelWrapper;
-import com.minelittlepony.model.components.ModelDeadMau5Ears;
 import com.minelittlepony.pony.data.Pony;
-import com.minelittlepony.pony.data.PonyLevel;
-import com.minelittlepony.render.PonySkull;
-import com.minelittlepony.render.PonySkullRenderer.ISkull;
 import com.minelittlepony.render.RenderPony;
 import com.minelittlepony.render.layer.LayerDJPon3Head;
 import com.minelittlepony.render.layer.LayerEntityOnPonyShoulder;
@@ -17,73 +12,16 @@ import com.minelittlepony.render.layer.LayerPonyArmor;
 import com.minelittlepony.render.layer.LayerPonyCape;
 import com.minelittlepony.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.render.layer.LayerPonyElytra;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-import com.voxelmodpack.hdskins.HDSkinManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerArrow;
-import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.Map;
-
 public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<AbstractClientPlayer> {
-
-    public static final ISkull SKULL = new PonySkull() {
-
-        private final ModelDeadMau5Ears deadMau5 = new ModelDeadMau5Ears();
-
-        @Override
-        public boolean canRender(PonyConfig config) {
-            return config.getPonyLevel() != PonyLevel.HUMANS;
-        }
-
-        @Override
-        public void preRender(boolean transparency) {
-            GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
-
-            if (!transparency) {
-                RenderPony.enableModelRenderProfile();
-            }
-        }
-
-        @Override
-        public ResourceLocation getSkinResource(GameProfile profile) {
-            if (profile != null) {
-                deadMau5.setVisible("deadmau5".equals(profile.getName()));
-
-                ResourceLocation skin = HDSkinManager.INSTANCE.getTextures(profile).get(Type.SKIN);
-                if (skin != null) {
-                    return skin;
-                }
-
-                Minecraft minecraft = Minecraft.getMinecraft();
-                Map<Type, MinecraftProfileTexture> map = minecraft.getSkinManager().loadSkinFromCache(profile);
-
-                if (map.containsKey(Type.SKIN)) {
-                    return minecraft.getSkinManager().loadSkin(map.get(Type.SKIN), Type.SKIN);
-                } else {
-                    return DefaultPlayerSkin.getDefaultSkin(EntityPlayer.getUUID(profile));
-                }
-            }
-
-            return DefaultPlayerSkin.getDefaultSkinLegacy();
-        }
-
-        @Override
-        public void render(float animateTicks, float rotation, float scale) {
-            super.render(animateTicks, rotation, scale);
-            deadMau5.render(null, animateTicks, 0, 0, rotation, 0, scale);
-        }
-    }.register(ISkull.PLAYER);
 
     protected final RenderPony<AbstractClientPlayer> renderPony = new RenderPony<>(this);
 
@@ -192,4 +130,5 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
     public Pony getEntityPony(AbstractClientPlayer player) {
         return MineLittlePony.getInstance().getManager().getPony(player);
     }
+
 }
