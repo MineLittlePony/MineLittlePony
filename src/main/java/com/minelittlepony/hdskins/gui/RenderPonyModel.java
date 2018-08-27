@@ -42,10 +42,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> implemen
 
     @Override
     public Pony getEntityPony(EntityPonyModel entity) {
-        boolean slim = entity.usesThinSkin();
-        ResourceLocation loc = getEntityTexture(entity);
-
-        return MineLittlePony.getInstance().getManager().getPony(loc);
+        return MineLittlePony.getInstance().getManager().getPony(getEntityTexture(entity));
     }
 
     @Override
