@@ -26,12 +26,12 @@ import javax.annotation.Nullable;
  */
 public class PonySkullRenderer extends TileEntitySkullRenderer implements IRenderItem {
 
-    private static final int SKELETON = 0;
-    private static final int WITHER = 1;
-    private static final int ZOMBIE = 2;
-    private static final int PLAYER = 3;
-    private static final int CREEPER = 4;
-    private static final int DRAGON = 5;
+    public static final int SKELETON = 0;
+    public static final int WITHER = 1;
+    public static final int ZOMBIE = 2;
+    public static final int PLAYER = 3;
+    public static final int CREEPER = 4;
+    public static final int DRAGON = 5;
 
     public static PonySkullRenderer ponyInstance = new PonySkullRenderer();
     private static TileEntitySkullRenderer backup = null;

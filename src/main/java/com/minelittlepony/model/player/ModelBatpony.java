@@ -4,7 +4,6 @@ import com.minelittlepony.model.components.BatWings;
 import com.minelittlepony.model.components.PegasusWings;
 import com.minelittlepony.render.PonyRenderer;
 
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 
 import com.minelittlepony.model.capabilities.IModelPegasus;
