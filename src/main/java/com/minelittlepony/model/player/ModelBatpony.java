@@ -2,6 +2,7 @@ package com.minelittlepony.model.player;
 
 import com.minelittlepony.model.components.BatWings;
 import com.minelittlepony.model.components.PegasusWings;
+import com.minelittlepony.pony.data.PonyWearable;
 import com.minelittlepony.render.PonyRenderer;
 
 import net.minecraft.entity.Entity;
@@ -48,5 +49,14 @@ public class ModelBatpony extends ModelEarthPony implements IModelPegasus {
             .tex(14, 16).box( 3, -6, 0.5F, 1, 2, 2, stretch)  // left ear
               .tex(0, 3).box( 3, -6.49F, 2.49F, 1, 1, 1, stretch)
               .tex(0, 5).box( 2, -5, 1.5F, 1, 1, 1, stretch);
+    }
+
+    @Override
+    public boolean isWearing(PonyWearable wearable) {
+        if (wearable == PonyWearable.SADDLE_BAGS) {
+            return false;
+        }
+
+        return super.isWearing(wearable);
     }
 }
