@@ -24,10 +24,10 @@ public class ModelBatWing<T extends AbstractPonyModel & IModelPegasus> extends M
 
         folded.around(HEAD_RP_X, WING_FOLDED_RP_Y + y - 1, WING_FOLDED_RP_Z - 2)
               .mirror(right)
-              .tex(60, 16).box(x, 5, 4, 1, 7, 1, scale)
+              .tex(56, 16).box(x, 5, 4, 1, 7, 1, scale)
               .tex(56, 16).box(x, 5, 6, 1, 8, 1, scale)
                           .box(x, 5, 5, 1, 8, 1, scale)
-              .tex(60, 24).box(x, 5, 7, 1, 7, 1, scale)
+              .tex(56, 16).box(x, 5, 7, 1, 7, 1, scale)
               .rotateAngleX = ROTATE_90;
     }
 
@@ -39,7 +39,7 @@ public class ModelBatWing<T extends AbstractPonyModel & IModelPegasus> extends M
                 .mirror(right)
                 .rotateAngleY = r * 3;
 
-        extended.child().tex(56, 16)
+        extended.child().tex(60, 16)
                 .rotate(0.1F, 0, 0)
                 .box(0, -1, 0, 1, 8, 1, scale)
                 .child().tex(60, 16)
@@ -47,7 +47,7 @@ public class ModelBatWing<T extends AbstractPonyModel & IModelPegasus> extends M
                     .around(0, -1, -2)
                     .box(0, 0, 2, 1, 7, 1, scale);
         extended.child(0)
-                .child().tex(60, 24)
+                .child().tex(60, 16)
                     .rotate(-0.5F, 0, 0)
                     .around(0, 4, -2.4F)
                     .box(0, 0, 3, 1, 7, 1, scale);
