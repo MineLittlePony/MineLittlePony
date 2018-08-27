@@ -3,7 +3,7 @@ package com.minelittlepony;
 import com.minelittlepony.gui.GuiPonySettings;
 import com.minelittlepony.hdskins.gui.GuiSkinsMineLP;
 import com.minelittlepony.pony.data.IPonyData;
-import com.minelittlepony.pony.data.PonyDataSerialzier;
+import com.minelittlepony.pony.data.PonyDataSerialiser;
 import com.minelittlepony.render.PonySkullRenderer;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.voxelmodpack.hdskins.HDSkinManager;
@@ -58,7 +58,7 @@ public class MineLittlePony {
         irrm.registerReloadListener(ponyManager);
 
         MetadataSerializer ms = Minecraft.getMinecraft().getResourcePackRepository().rprMetadataSerializer;
-        ms.registerMetadataSectionType(new PonyDataSerialzier(), IPonyData.class);
+        ms.registerMetadataSectionType(new PonyDataSerialiser(), IPonyData.class);
 
         // This also makes it the default gateway server.
         SkinServer.defaultServers.add(new LegacySkinServer(MINELP_LEGACY_SERVER, MINELP_LEGACY_GATEWAY));

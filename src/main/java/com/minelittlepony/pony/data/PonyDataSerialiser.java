@@ -7,7 +7,7 @@ import net.minecraft.client.resources.data.IMetadataSectionSerializer;
 
 import java.lang.reflect.Type;
 
-public class PonyDataSerialzier implements IMetadataSectionSerializer<IPonyData> {
+public class PonyDataSerialiser implements IMetadataSectionSerializer<IPonyData> {
 
     public static final String NAME = "pony";
 
@@ -20,6 +20,5 @@ public class PonyDataSerialzier implements IMetadataSectionSerializer<IPonyData>
     public PonyData deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         return context.deserialize(json, PonyData.class);
     }
-
 }
 

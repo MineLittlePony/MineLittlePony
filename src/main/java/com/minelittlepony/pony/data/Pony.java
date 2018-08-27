@@ -56,7 +56,7 @@ public class Pony {
         try {
             IResource res = Minecraft.getMinecraft().getResourceManager().getResource(resource);
             if (res.hasMetadata()) {
-                PonyData data = res.getMetadata(PonyDataSerialzier.NAME);
+                PonyData data = res.getMetadata(PonyDataSerialiser.NAME);
                 if (data != null) {
                     return data;
                 }
