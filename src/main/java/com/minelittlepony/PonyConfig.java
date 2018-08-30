@@ -73,6 +73,6 @@ public class PonyConfig extends SensibleConfig implements Exposable {
     }
 
     public float getGlobalScaleFactor() {
-        return showscale ? 1F : 1.3F;
+        return showscale ? 0.9F : 1;
     }
 }
