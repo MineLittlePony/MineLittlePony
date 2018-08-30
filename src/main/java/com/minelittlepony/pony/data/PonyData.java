@@ -1,7 +1,6 @@
 package com.minelittlepony.pony.data;
 
 import com.google.common.base.MoreObjects;
-import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.model.anim.BasicEasingInterpolator;
 import com.minelittlepony.model.anim.IInterpolator;
 

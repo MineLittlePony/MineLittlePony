@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyLevel;
 import com.voxelmodpack.hdskins.ISkinCacheClearListener;
@@ -43,7 +44,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
 
     private PonyConfig config;
 
-    private Map<ResourceLocation, Pony> poniesCache = Maps.newHashMap();
+    private Map<ResourceLocation, IPony> poniesCache = Maps.newHashMap();
 
     public PonyManager(PonyConfig config) {
         this.config = config;
@@ -54,7 +55,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
      *
      * @param resource A texture resource
      */
-    public Pony getPony(ResourceLocation resource) {
+    public IPony getPony(ResourceLocation resource) {
         return poniesCache.computeIfAbsent(resource, Pony::new);
     }
 
@@ -64,7 +65,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
      *
      * @param player the player
      */
-    public Pony getPony(AbstractClientPlayer player) {
+    public IPony getPony(AbstractClientPlayer player) {
         ResourceLocation skin = player.getLocationSkin();
         UUID uuid = player.getGameProfile().getId();
 
@@ -75,7 +76,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         return getPony(skin, uuid);
     }
 
-    public Pony getPony(NetworkPlayerInfo playerInfo) {
+    public IPony getPony(NetworkPlayerInfo playerInfo) {
 
         ResourceLocation skin = playerInfo.getLocationSkin();
         UUID uuid = playerInfo.getGameProfile().getId();
@@ -97,8 +98,8 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
      * @param resource A texture resource
      * @param uuid id of a player or entity
      */
-    public Pony getPony(ResourceLocation resource, UUID uuid) {
-        Pony pony = getPony(resource);
+    public IPony getPony(ResourceLocation resource, UUID uuid) {
+        IPony pony = getPony(resource);
 
         if (config.getPonyLevel() == PonyLevel.PONIES && pony.getMetadata().getRace().isHuman()) {
             return getBackgroundPony(uuid);
@@ -112,7 +113,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
      *
      * @param uuid id of a player or entity
      */
-    public Pony getDefaultPony(UUID uuid) {
+    public IPony getDefaultPony(UUID uuid) {
         if (config.getPonyLevel() != PonyLevel.PONIES) {
             return getPony(DefaultPlayerSkin.getDefaultSkin(uuid));
         }
@@ -120,7 +121,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         return getBackgroundPony(uuid);
     }
 
-    private Pony getBackgroundPony(UUID uuid) {
+    private IPony getBackgroundPony(UUID uuid) {
         if (getNumberOfPonies() == 0 || isUser(uuid)) {
             return getPony(getDefaultSkin(uuid));
         }
@@ -138,7 +139,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
     /**
      * De-registers a pony from the cache.
      */
-    public Pony removePony(ResourceLocation resource) {
+    public IPony removePony(ResourceLocation resource) {
         return poniesCache.remove(resource);
     }
 

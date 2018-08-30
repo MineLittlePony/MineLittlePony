@@ -3,7 +3,7 @@ package com.minelittlepony.render;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.ModelWrapper;
-import com.minelittlepony.pony.data.Pony;
+import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.transform.PonyPosture;
 
 import net.minecraft.client.renderer.GlStateManager;
@@ -15,7 +15,7 @@ public class RenderPony<T extends EntityLivingBase> {
 
     protected AbstractPonyModel ponyModel;
 
-    private Pony pony;
+    private IPony pony;
 
     private IRenderPony<T> renderer;
 
@@ -84,7 +84,7 @@ public class RenderPony<T extends EntityLivingBase> {
         playerModel.apply(pony.getMetadata());
     }
 
-    public Pony getPony(T entity) {
+    public IPony getPony(T entity) {
         updateModel(entity);
         return pony;
     }

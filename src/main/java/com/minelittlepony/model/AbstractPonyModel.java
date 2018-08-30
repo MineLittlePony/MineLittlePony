@@ -6,8 +6,8 @@ import com.minelittlepony.model.capabilities.IModel;
 import com.minelittlepony.model.capabilities.IModelPart;
 import com.minelittlepony.model.components.PonySnout;
 import com.minelittlepony.model.components.PonyTail;
+import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.pony.data.IPonyData;
-import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyData;
 import com.minelittlepony.pony.data.PonySize;
 import com.minelittlepony.render.AbstractPonyRenderer;
@@ -76,7 +76,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         rainboom &= Math.sqrt(entity.motionX * entity.motionX + entity.motionZ * entity.motionZ) > 0.4F;
     }
 
-    public void updateLivingState(EntityLivingBase entity, Pony pony) {
+    public void updateLivingState(EntityLivingBase entity, IPony pony) {
         isChild = entity.isChild();
         isSneak = entity.isSneaking();
         isSleeping = entity.isPlayerSleeping();

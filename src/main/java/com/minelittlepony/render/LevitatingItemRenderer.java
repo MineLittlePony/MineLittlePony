@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL14;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IRenderItem;
-import com.minelittlepony.pony.data.Pony;
+import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.util.coordinates.Color;
 import com.mumfrey.liteloader.client.overlays.IMinecraft;
 
@@ -70,7 +70,7 @@ public class LevitatingItemRenderer {
      * Renders an item in first person optionally with a magical overlay.
      */
     public void renderItemInFirstPerson(ItemRenderer renderer, AbstractClientPlayer entity, ItemStack stack, TransformType transform, boolean left) {
-        Pony pony = MineLittlePony.getInstance().getManager().getPony(entity);
+        IPony pony = MineLittlePony.getInstance().getManager().getPony(entity);
 
         pushMatrix();
 

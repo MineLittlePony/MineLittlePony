@@ -1,7 +1,7 @@
 package com.minelittlepony.render;
 
 import com.minelittlepony.model.components.ModelPonyHead;
-import com.minelittlepony.pony.data.Pony;
+import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.render.PonySkullRenderer.ISkull;
 
 public abstract class PonySkull implements ISkull {
@@ -14,7 +14,7 @@ public abstract class PonySkull implements ISkull {
     }
 
     @Override
-    public void bindPony(Pony pony) {
+    public void bindPony(IPony pony) {
         ponyHead.metadata = pony.getMetadata();
     }
 

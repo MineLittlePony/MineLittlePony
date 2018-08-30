@@ -2,7 +2,7 @@ package com.minelittlepony.model.ponies;
 
 import com.minelittlepony.model.components.SeaponyTail;
 import com.minelittlepony.model.player.ModelUnicorn;
-import com.minelittlepony.pony.data.Pony;
+import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.render.PonyRenderer;
 import com.minelittlepony.render.plane.PlaneRenderer;
 
@@ -25,7 +25,7 @@ public class ModelSeapony extends ModelUnicorn {
     }
 
     @Override
-    public void updateLivingState(EntityLivingBase entity, Pony pony) {
+    public void updateLivingState(EntityLivingBase entity, IPony pony) {
         super.updateLivingState(entity, pony);
 
         // Seaponies can't sneak, silly

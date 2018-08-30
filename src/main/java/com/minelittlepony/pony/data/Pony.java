@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 @Immutable
-public class Pony {
+public class Pony implements IPony {
 
     private static final AtomicInteger ponyCount = new AtomicInteger();
 
@@ -94,15 +94,18 @@ public class Pony {
         return PonyData.parse(bufferedimage);
     }
 
+    @Override
     public boolean isPegasusFlying(EntityLivingBase entity) {
         return getRace(false).hasWings() &&
                 !(entity.onGround || entity.isRiding() || entity.isOnLadder() || entity.isInWater());
     }
 
+    @Override
     public boolean isSwimming(EntityLivingBase entity) {
         return isFullySubmerged(entity) && !(entity.onGround || entity.isOnLadder());
     }
 
+    @Override
     public boolean isFullySubmerged(EntityLivingBase entity) {
         return entity.isInWater()
                 && entity.getEntityWorld().getBlockState(new BlockPos(getVisualEyePosition(entity))).getMaterial() == Material.WATER;
@@ -114,6 +117,7 @@ public class Pony {
         return new Vec3d(entity.posX, entity.posY + (double) entity.getEyeHeight() * size.getScaleFactor(), entity.posZ);
     }
 
+    @Override
     public boolean isWearingHeadgear(EntityLivingBase entity) {
         ItemStack stack = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
 
@@ -126,14 +130,17 @@ public class Pony {
         return !(item instanceof ItemArmor) || ((ItemArmor) item).getEquipmentSlot() != EntityEquipmentSlot.HEAD;
     }
 
+    @Override
     public PonyRace getRace(boolean ignorePony) {
         return metadata.getRace().getEffectiveRace(ignorePony);
     }
 
+    @Override
     public ResourceLocation getTexture() {
         return texture;
     }
 
+    @Override
     public IPonyData getMetadata() {
         return metadata;
     }

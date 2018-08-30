@@ -12,7 +12,7 @@ import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 import com.minelittlepony.model.player.ModelZebra;
-import com.minelittlepony.pony.data.Pony;
+import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.render.PonyRenderer;
 
 public class ModelWitchPony extends ModelZebra {
@@ -26,7 +26,7 @@ public class ModelWitchPony extends ModelZebra {
     }
 
     @Override
-    public void updateLivingState(EntityLivingBase entity, Pony pony) {
+    public void updateLivingState(EntityLivingBase entity, IPony pony) {
         super.updateLivingState(entity, pony);
         EntityWitch witch = ((EntityWitch) entity);
 

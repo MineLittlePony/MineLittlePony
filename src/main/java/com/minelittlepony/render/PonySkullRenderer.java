@@ -3,7 +3,7 @@ package com.minelittlepony.render;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyConfig;
 import com.minelittlepony.ducks.IRenderItem;
-import com.minelittlepony.pony.data.Pony;
+import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.render.skull.PlayerSkullRenderer;
 import com.minelittlepony.render.skull.SkeletonSkullRenderer;
 import com.minelittlepony.render.skull.WitherSkullRenderer;
@@ -175,6 +175,6 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
 
         ResourceLocation getSkinResource(@Nullable GameProfile profile);
 
-        void bindPony(Pony pony);
+        void bindPony(IPony pony);
     }
 }

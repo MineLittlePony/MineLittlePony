@@ -3,7 +3,7 @@ package com.minelittlepony.render;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.ModelWrapper;
-import com.minelittlepony.pony.data.Pony;
+import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.render.layer.LayerHeldPonyItem;
 import com.minelittlepony.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.render.layer.LayerPonyArmor;
@@ -75,7 +75,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     }
 
     @Override
-    public Pony getEntityPony(T entity) {
+    public IPony getEntityPony(T entity) {
         return MineLittlePony.getInstance().getManager().getPony(getEntityTexture(entity));
     }
 

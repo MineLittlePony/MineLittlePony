@@ -4,6 +4,7 @@ import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.model.player.PlayerModels;
+import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyRace;
 import com.minelittlepony.render.layer.LayerPonyElytra;
@@ -41,7 +42,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> implemen
     }
 
     @Override
-    public Pony getEntityPony(EntityPonyModel entity) {
+    public IPony getEntityPony(EntityPonyModel entity) {
         return MineLittlePony.getInstance().getManager().getPony(getEntityTexture(entity));
     }
 
@@ -67,7 +68,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> implemen
 
         boolean slim = playermodel.usesThinSkin();
 
-        Pony thePony = MineLittlePony.getInstance().getManager().getPony(loc);
+        IPony thePony = MineLittlePony.getInstance().getManager().getPony(loc);
 
         PonyRace race = thePony.getRace(false);
 

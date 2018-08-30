@@ -1,7 +1,7 @@
 package com.minelittlepony.ducks;
 
 import com.minelittlepony.model.ModelWrapper;
-import com.minelittlepony.pony.data.Pony;
+import com.minelittlepony.pony.data.IPony;
 
 import net.minecraft.entity.EntityLivingBase;
 
@@ -15,5 +15,5 @@ public interface IRenderPony<T extends EntityLivingBase> {
      */
     ModelWrapper getModelWrapper();
 
-    Pony getEntityPony(T entity);
+    IPony getEntityPony(T entity);
 }

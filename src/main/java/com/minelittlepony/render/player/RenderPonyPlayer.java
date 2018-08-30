@@ -3,7 +3,7 @@ package com.minelittlepony.render.player;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.ModelWrapper;
-import com.minelittlepony.pony.data.Pony;
+import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.render.RenderPony;
 import com.minelittlepony.render.layer.LayerDJPon3Head;
 import com.minelittlepony.render.layer.LayerEntityOnPonyShoulder;
@@ -127,7 +127,7 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
     }
 
     @Override
-    public Pony getEntityPony(AbstractClientPlayer player) {
+    public IPony getEntityPony(AbstractClientPlayer player) {
         return MineLittlePony.getInstance().getManager().getPony(player);
     }
 
