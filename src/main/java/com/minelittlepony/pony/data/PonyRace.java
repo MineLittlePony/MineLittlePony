@@ -1,5 +1,6 @@
 package com.minelittlepony.pony.data;
 
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.model.player.PlayerModels;
 
 public enum PonyRace implements ITriggerPixelMapped<PonyRace> {
@@ -67,8 +68,8 @@ public enum PonyRace implements ITriggerPixelMapped<PonyRace> {
      * PonyLevel.BOTH is no change.
      * PonyLevel.PONIES (should) return a pony if this is a human. Don't be fooled, though. It doesn't.
      */
-    public PonyRace getEffectiveRace(PonyLevel level) {
-        if (level == PonyLevel.HUMANS) return HUMAN;
+    public PonyRace getEffectiveRace(boolean ignorePony) {
+        if (MineLittlePony.getConfig().getEffectivePonyLevel(ignorePony) == PonyLevel.HUMANS) return HUMAN;
         return this;
     }
 

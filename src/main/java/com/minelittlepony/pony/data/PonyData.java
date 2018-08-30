@@ -62,7 +62,7 @@ public class PonyData implements IPonyData {
 
     @Override
     public PonySize getSize() {
-        return MineLittlePony.getConfig().sizes ? size : PonySize.NORMAL;
+        return size.getEffectiveSize();
     }
 
     @Override
@@ -72,7 +72,7 @@ public class PonyData implements IPonyData {
 
     @Override
     public boolean hasMagic() {
-        return race != null && getRace().hasHorn() && getGlowColor() != 0;
+        return race != null && getRace().getEffectiveRace(false).hasHorn() && getGlowColor() != 0;
     }
 
     @Override

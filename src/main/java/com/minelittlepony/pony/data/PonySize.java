@@ -40,4 +40,8 @@ public enum PonySize implements ITriggerPixelMapped<PonySize> {
     public int getTriggerPixel() {
         return triggerValue;
     }
+
+    public PonySize getEffectiveSize() {
+        return MineLittlePony.getConfig().sizes ? this : PonySize.NORMAL;
+    }
 }
