@@ -271,25 +271,22 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     public void reloadSkins() {
+        Stream<NetworkPlayerInfo> playerList = Stream.empty();
 
         Minecraft mc = Minecraft.getMinecraft();
+        if (mc.world != null) {
+            playerList = mc.world.playerEntities.stream()
+                    .filter(AbstractClientPlayer.class::isInstance)
+                    .map(AbstractClientPlayer.class::cast)
+                    .map(PlayerUtil::getInfo);
+        }
 
         NetHandlerPlayClient playClient = mc.getConnection();
+        if (playClient != null) {
+            playerList = Stream.concat(playerList, playClient.getPlayerInfoMap().stream());
+        }
 
-        Stream<NetworkPlayerInfo> playerList = playClient == null ?
-                Stream.empty() :
-                playClient.getPlayerInfoMap().stream();
-
-        Stream<NetworkPlayerInfo> world = mc.world == null ?
-                Stream.empty() :
-                mc.world.playerEntities.stream()
-                        .filter(AbstractClientPlayer.class::isInstance)
-                        .map(AbstractClientPlayer.class::cast)
-                        .map(PlayerUtil::getInfo);
-
-        Stream.concat(playerList, world)
-                .filter(Objects::nonNull)
-                .distinct()
+        playerList.filter(Objects::nonNull).distinct()
                 .forEach(this::clearNetworkSkin);
 
         clearListeners.removeIf(this::onSkinCacheCleared);
@@ -297,6 +294,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     public void parseSkin(GameProfile profile, Type type, ResourceLocation resource, MinecraftProfileTexture texture) {
 
+        // TODO: Infinite loop
         // The texture needs to be loaded in order to be parsed.
         ITextureObject ito = null;
         while (ito == null) {
