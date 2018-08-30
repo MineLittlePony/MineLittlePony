@@ -24,8 +24,11 @@ import com.voxelmodpack.hdskins.skins.LegacySkinServer;
 import com.voxelmodpack.hdskins.skins.ServerType;
 import com.voxelmodpack.hdskins.skins.SkinServer;
 import com.voxelmodpack.hdskins.skins.ValhallaSkinServer;
+import com.voxelmodpack.hdskins.util.PlayerUtil;
 import com.voxelmodpack.hdskins.util.ProfileTextureUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.texture.ITextureObject;
@@ -33,6 +36,7 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.SkinManager;
+import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -57,6 +61,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
 public final class HDSkinManager implements IResourceManagerReloadListener {
@@ -230,10 +235,10 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     private boolean onSkinCacheCleared(ISkinCacheClearListener callback) {
         try {
-            return callback.onSkinCacheCleared();
+            return !callback.onSkinCacheCleared();
         } catch (Exception e) {
             logger.warn("Exception encountered calling skin listener '{}'. It will be removed.", callback.getClass().getName(), e);
-            return false;
+            return true;
         }
     }
 
@@ -258,14 +263,25 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     public void reloadSkins() {
 
-        NetHandlerPlayClient playClient = Minecraft.getMinecraft().getConnection();
+        Stream<NetworkPlayerInfo> stream = Stream.empty();
+
+        Minecraft mc = Minecraft.getMinecraft();
+        NetHandlerPlayClient playClient = mc.getConnection();
         if (playClient != null) {
-            playClient.getPlayerInfoMap().forEach(this::clearNetworkSkin);
+            stream = playClient.getPlayerInfoMap().stream();
         }
+        // NPCs might not be in the player list
+        WorldClient world = mc.world;
+        if (world != null) {
+            stream = Stream.concat(stream, world.getPlayers(AbstractClientPlayer.class, EntitySelectors.IS_ALIVE).stream().map(PlayerUtil::getInfo));
+        }
+        stream.distinct().forEach(this::clearNetworkSkin);
+
         clearListeners.removeIf(this::onSkinCacheCleared);
     }
 
     public void parseSkin(GameProfile profile, Type type, ResourceLocation resource, MinecraftProfileTexture texture) {
+
         // grab the metadata object via reflection. Object is live.
         Map<String, String> metadata = ProfileTextureUtil.getMetadata(texture);
         boolean wasNull = metadata == null;
@@ -279,7 +295,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             ProfileTextureUtil.setMetadata(texture, metadata);
         }
     }
-
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
