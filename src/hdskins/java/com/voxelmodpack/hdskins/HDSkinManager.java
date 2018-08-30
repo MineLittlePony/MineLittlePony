@@ -28,7 +28,6 @@ import com.voxelmodpack.hdskins.util.PlayerUtil;
 import com.voxelmodpack.hdskins.util.ProfileTextureUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.texture.ITextureObject;
@@ -36,7 +35,6 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.SkinManager;
-import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -55,6 +53,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -263,19 +262,25 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     public void reloadSkins() {
 
-        Stream<NetworkPlayerInfo> stream = Stream.empty();
-
         Minecraft mc = Minecraft.getMinecraft();
+
         NetHandlerPlayClient playClient = mc.getConnection();
-        if (playClient != null) {
-            stream = playClient.getPlayerInfoMap().stream();
-        }
-        // NPCs might not be in the player list
-        WorldClient world = mc.world;
-        if (world != null) {
-            stream = Stream.concat(stream, world.getPlayers(AbstractClientPlayer.class, EntitySelectors.IS_ALIVE).stream().map(PlayerUtil::getInfo));
-        }
-        stream.distinct().forEach(this::clearNetworkSkin);
+
+        Stream<NetworkPlayerInfo> playerList = playClient == null ?
+                Stream.empty() :
+                playClient.getPlayerInfoMap().stream();
+
+        Stream<NetworkPlayerInfo> world = mc.world == null ?
+                Stream.empty() :
+                mc.world.playerEntities.stream()
+                        .filter(AbstractClientPlayer.class::isInstance)
+                        .map(AbstractClientPlayer.class::cast)
+                        .map(PlayerUtil::getInfo);
+
+        Stream.concat(playerList, world)
+                .filter(Objects::nonNull)
+                .distinct()
+                .forEach(this::clearNetworkSkin);
 
         clearListeners.removeIf(this::onSkinCacheCleared);
     }
