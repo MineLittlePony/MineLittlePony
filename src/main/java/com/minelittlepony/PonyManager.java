@@ -164,7 +164,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         MineLittlePony.logger.info("Detected {} background ponies installed.", getNumberOfPonies());
     }
 
-    private ResourceLocation getDefaultSkin(UUID uuid) {
+    public static ResourceLocation getDefaultSkin(UUID uuid) {
         return isSlimSkin(uuid) ? ALEX : STEVE;
     }
 

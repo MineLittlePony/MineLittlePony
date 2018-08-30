@@ -5,10 +5,11 @@
     "refmap": "minelp.mixin.refmap.json",
     "compatibilityLevel": "JAVA_8",
     "mixins": [
-        "MixinThreadDownloadImageData",
-        "MixinRenderItem",
+        "MixinDefaultPlayerSkin",
+        "MixinGlStateManager",
         "MixinItemRenderer",
+        "MixinRenderItem",
         "MixinRenderManager",
-        "MixinGlStateManager"
+        "MixinThreadDownloadImageData"
     ]
 }
