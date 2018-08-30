@@ -40,9 +40,9 @@ public class PlayerSkullRenderer extends PonySkull {
 
     @Override
     public ResourceLocation getSkinResource(@Nullable GameProfile profile) {
-        if (profile != null) {
-            deadMau5.setVisible("deadmau5".equals(profile.getName()));
+        deadMau5.setVisible(profile != null && "deadmau5".equals(profile.getName()));
 
+        if (profile != null) {
             ResourceLocation skin = HDSkinManager.INSTANCE.getTextures(profile).get(Type.SKIN);
             if (skin != null && Pony.getBufferedImage(skin) != null) {
                 return skin;
