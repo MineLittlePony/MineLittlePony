@@ -38,7 +38,9 @@ public interface IPony {
 
     /**
      * Returns true if an entity is wearing any headgear. This is used to hide things like the snout when wearing items
-     * such as the jack-o-lantern, helmet, or player's head.
+     * such as the pumpkin, a player's head, or any other types of blocks.
+     *
+     * In this case the helmet does <i>not</i> count as headgear because those generally don't interfere with snuzzle rendering.
      */
     boolean isWearingHeadgear(EntityLivingBase entity);
 
