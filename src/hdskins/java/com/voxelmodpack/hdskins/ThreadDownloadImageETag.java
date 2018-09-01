@@ -30,6 +30,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 
+/**
+ * @deprecated Now that legacy includes the etag in the hash, it is no longer required to save it to disk.
+ */
+@Deprecated
 public class ThreadDownloadImageETag extends SimpleTexture implements IBufferedTexture {
 
     private static final Logger LOGGER = LogManager.getLogger();
