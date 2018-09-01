@@ -137,12 +137,11 @@ public class LegacySkinServer implements SkinServer {
         return new UnsupportedOperationException("Server does not have a gateway.");
     }
 
-    protected Map<String, ?> createHeaders(Session session, SkinUpload upload) {
+    private Map<String, ?> createHeaders(Session session, SkinUpload upload) {
         Builder<String, Object> builder = ImmutableMap.<String, Object>builder()
                 .put("user", session.getUsername())
                 .put("uuid", UUIDTypeAdapter.fromUUID(session.getProfile().getId()))
-                .put("type", upload.getType().toString().toLowerCase(Locale.US))
-                .put("model", upload.getMetadata().getOrDefault("model", "default"));
+                .put("type", upload.getType().toString().toLowerCase(Locale.US));
 
         if (upload.getImage() == null) {
             builder.put("clear", "1");
