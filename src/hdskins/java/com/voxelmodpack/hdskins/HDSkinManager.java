@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Streams;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
@@ -32,6 +33,7 @@ import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.ITextureObject;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
@@ -55,12 +57,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
@@ -294,12 +301,13 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     public void parseSkin(GameProfile profile, Type type, ResourceLocation resource, MinecraftProfileTexture texture) {
+        TextureManager tm = Minecraft.getMinecraft().getTextureManager();
 
-        // TODO: Infinite loop
-        // The texture needs to be loaded in order to be parsed.
-        ITextureObject ito = null;
-        while (ito == null) {
-            ito = Minecraft.getMinecraft().getTextureManager().getTexture(resource);
+        try {
+            // this runs in a separate thread anyway, so just get with a timeout.
+            getUntilNonnull(() -> tm.getTexture(resource)).get(1, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new CompletionException(e);
         }
 
         // grab the metadata object via reflection. Object is live.
@@ -322,7 +330,19 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         if (wasNull && !metadata.isEmpty()) {
             ProfileTextureUtil.setMetadata(texture, metadata);
         }
+    }
 
+    /**
+     * Continuously gets a item in a new thread until it returns nonnull.
+     */
+    private static <T> CompletableFuture<T> getUntilNonnull(Supplier<T> getter) {
+        return CompletableFuture.supplyAsync(() -> {
+            T res = null;
+            while (res == null) {
+                res = getter.get();
+            }
+            return res;
+        });
     }
 
     @Override
