@@ -9,21 +9,21 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpHeaders;
-import org.apache.http.client.methods.HttpHead;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+
 import javax.annotation.Nullable;
 
 @ServerType("legacy")
@@ -83,24 +83,12 @@ public class LegacySkinServer implements SkinServer {
     }
 
     private MinecraftProfileTexture loadProfileTexture(GameProfile profile, String url) throws IOException {
-        try (MoreHttpResponses resp = MoreHttpResponses.execute(HDSkinManager.httpClient, new HttpHead(url))) {
-            if (!resp.ok()) {
-                throw new IOException("Bad response code: " + resp.getResponseCode() + ". URL: " + url);
-            }
-            logger.debug("Found skin for {} at {}", profile.getName(), url);
-
-            Header eTagHeader = resp.getResponse().getFirstHeader(HttpHeaders.ETAG);
-            final String eTag = eTagHeader == null ? "" : StringUtils.strip(eTagHeader.getValue(), "\"");
-
-            // Add the ETag onto the end of the texture hash. Should properly cache the textures.
-            return new MinecraftProfileTexture(url, null) {
-
-                @Override
-                public String getHash() {
-                    return super.getHash() + eTag;
-                }
-            };
+        HttpURLConnection urlConnection = (HttpURLConnection) new URL(url).openConnection();
+        if (urlConnection.getResponseCode() / 100 != 2) {
+            throw new IOException("Bad response code: " + urlConnection.getResponseCode() + ". URL: " + url);
         }
+        logger.debug("Found skin for {} at {}", profile.getName(), url);
+        return new MinecraftProfileTexture(url, null);
     }
 
     @Override
@@ -168,5 +156,4 @@ public class LegacySkinServer implements SkinServer {
                 .append("gateway", gateway)
                 .build();
     }
-
 }
