@@ -1,6 +1,5 @@
-package com.voxelmodpack.hdskins.skins;
+package com.voxelmodpack.hdskins.util;
 
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.authlib.GameProfile;
@@ -9,6 +8,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -23,7 +23,10 @@ public class TexturesPayloadBuilder {
     private static Gson gson = new GsonBuilder().registerTypeAdapter(UUID.class, new UUIDTypeAdapter()).create();
 
     public static MinecraftTexturesPayload createTexturesPayload(GameProfile profile, Map<Type, MinecraftProfileTexture> textures) {
-        return gson.fromJson(gson.toJson(new TexturesPayloadBuilder(profile, textures)), MinecraftTexturesPayload.class);
+        // This worked fine as is before I started using sub-classes.
+        MinecraftTexturesPayload payload = gson.fromJson(gson.toJson(new TexturesPayloadBuilder(profile)), MinecraftTexturesPayload.class);
+        payload.getTextures().putAll(textures);
+        return payload;
     }
 
     private long timestamp;
@@ -35,13 +38,13 @@ public class TexturesPayloadBuilder {
 
     private Map<Type, MinecraftProfileTexture> textures;
 
-    public TexturesPayloadBuilder(GameProfile profile, Map<Type, MinecraftProfileTexture> textures) {
+    private TexturesPayloadBuilder(GameProfile profile) {
         profileId = profile.getId();
         profileName = profile.getName();
         timestamp = System.currentTimeMillis();
 
         isPublic = true;
 
-        this.textures = textures;
+        this.textures = new HashMap<>();
     }
 }
