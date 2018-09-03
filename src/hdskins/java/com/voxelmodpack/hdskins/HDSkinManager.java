@@ -29,7 +29,6 @@ import com.voxelmodpack.hdskins.util.PlayerUtil;
 import com.voxelmodpack.hdskins.util.ProfileTextureUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.ITextureObject;
@@ -279,22 +278,21 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     public void reloadSkins() {
-        Stream<NetworkPlayerInfo> playerList = Stream.empty();
 
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.world != null) {
-            playerList = mc.world.playerEntities.stream()
-                    .filter(AbstractClientPlayer.class::isInstance)
-                    .map(AbstractClientPlayer.class::cast)
-                    .map(PlayerUtil::getInfo);
-        }
 
-        NetHandlerPlayClient playClient = mc.getConnection();
-        if (playClient != null) {
-            playerList = Stream.concat(playerList, playClient.getPlayerInfoMap().stream());
-        }
-
-        playerList.filter(Objects::nonNull).distinct()
+        Stream.concat(
+                // in-world players (+NPCs)
+                Streams.stream(Optional.ofNullable(mc.world))
+                        .flatMap(w -> w.playerEntities.stream())
+                        .filter(AbstractClientPlayer.class::isInstance)
+                        .map(p -> PlayerUtil.getInfo((AbstractClientPlayer) p)),
+                // tab list players
+                Streams.stream(Optional.ofNullable(mc.getConnection()))
+                        .flatMap(c -> c.getPlayerInfoMap().stream()))
+                // filter nulls and clear skins
+                .filter(Objects::nonNull)
+                .distinct()
                 .forEach(this::clearNetworkSkin);
 
         clearListeners.removeIf(this::onSkinCacheCleared);
