@@ -18,7 +18,9 @@ import java.util.concurrent.CompletableFuture;
 @Mixin(targets = "net.minecraft.client.network.NetworkPlayerInfo$1")
 public abstract class MixinNetworkPlayerInfo$1 implements SkinManager.SkinAvailableCallback {
 
-    @Shadow(remap = false, aliases = {"this$0", "field_177224_a", "a"}) @Final private NetworkPlayerInfo player;
+    @Shadow(remap = false, aliases = {"this$0", "field_177224_a", "a"})
+    @Final
+    private NetworkPlayerInfo player;
 
     @Inject(method = "skinAvailable("
             + "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;"
@@ -26,16 +28,14 @@ public abstract class MixinNetworkPlayerInfo$1 implements SkinManager.SkinAvaila
             + "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;"
             + ")V",
             at = @At(value = "HEAD"))
-    private void skinAvailable(MinecraftProfileTexture.Type typeIn, ResourceLocation location, MinecraftProfileTexture profileTexture,
-            CallbackInfo ci) {
+    private void skinAvailable(MinecraftProfileTexture.Type typeIn, ResourceLocation location, MinecraftProfileTexture profileTexture, CallbackInfo ci) {
         CompletableFuture.runAsync(() -> {
             // schedule parsing next tick, texture may not be uploaded at this point
             HDSkinManager.INSTANCE.parseSkin(player.getGameProfile(), typeIn, location, profileTexture);
 
-            // re-set the skin-type because vanilla has already set it
+            // reset the skin type because vanilla has already set it
             String model = profileTexture.getMetadata("model");
             ((INetworkPlayerInfo) player).setSkinType(model != null ? model : "default");
-
         });
     }
 }
