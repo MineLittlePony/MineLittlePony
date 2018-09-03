@@ -295,8 +295,12 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     public void parseSkin(GameProfile profile, Type type, ResourceLocation resource, MinecraftProfileTexture texture) {
 
+        // TODO: Infinite loop
         // The texture needs to be loaded in order to be parsed.
-        Minecraft.getMinecraft().getTextureManager().getTexture(resource);
+        ITextureObject ito = null;
+        while (ito == null) {
+            ito = Minecraft.getMinecraft().getTextureManager().getTexture(resource);
+        }
 
         // grab the metadata object via reflection. Object is live.
         Map<String, String> metadata = ProfileTextureUtil.getMetadata(texture);
