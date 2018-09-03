@@ -1,10 +1,8 @@
 package com.voxelmodpack.hdskins.mixin;
 
-import com.google.common.util.concurrent.Runnables;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.INetworkPlayerInfo;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.util.ResourceLocation;
@@ -30,15 +28,14 @@ public abstract class MixinNetworkPlayerInfo$1 implements SkinManager.SkinAvaila
             at = @At(value = "HEAD"))
     private void skinAvailable(MinecraftProfileTexture.Type typeIn, ResourceLocation location, MinecraftProfileTexture profileTexture,
             CallbackInfo ci) {
-        CompletableFuture.runAsync(Runnables.doNothing())
-                .thenAcceptAsync((v) -> {
-                    // schedule parsing next tick, texture may not be uploaded at this point
-                    HDSkinManager.INSTANCE.parseSkin(player.getGameProfile(), typeIn, location, profileTexture);
+        CompletableFuture.runAsync(() -> {
+            // schedule parsing next tick, texture may not be uploaded at this point
+            HDSkinManager.INSTANCE.parseSkin(player.getGameProfile(), typeIn, location, profileTexture);
 
-                    // re-set the skin-type because vanilla has already set it
-                    String model = profileTexture.getMetadata("model");
-                    ((INetworkPlayerInfo) player).setSkinType(model != null ? model : "default");
+            // re-set the skin-type because vanilla has already set it
+            String model = profileTexture.getMetadata("model");
+            ((INetworkPlayerInfo) player).setSkinType(model != null ? model : "default");
 
-                }, Minecraft.getMinecraft()::addScheduledTask);
+        });
     }
 }

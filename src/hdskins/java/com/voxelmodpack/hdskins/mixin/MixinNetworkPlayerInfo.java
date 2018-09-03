@@ -1,6 +1,5 @@
 package com.voxelmodpack.hdskins.mixin;
 
-import com.google.common.util.concurrent.Runnables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
@@ -73,11 +72,9 @@ public abstract class MixinNetworkPlayerInfo implements INetworkPlayerInfo {
         HDSkinManager.INSTANCE.loadProfileTextures(this.gameProfile)
                 .thenAcceptAsync(m -> m.forEach((type, profile) -> {
                     HDSkinManager.INSTANCE.loadTexture(type, profile, (typeIn, location, profileTexture) -> {
-                        CompletableFuture.runAsync(Runnables.doNothing())
-                                // schedule parsing next tick
-                                .thenAcceptAsync((v) -> {
+                        CompletableFuture.runAsync(() -> {
                                     HDSkinManager.INSTANCE.parseSkin(gameProfile, typeIn, location, profileTexture);
-                                }, Minecraft.getMinecraft()::addScheduledTask);
+                        });
                         customTextures.put(type, location);
                         customProfiles.put(type, profileTexture);
                     });
