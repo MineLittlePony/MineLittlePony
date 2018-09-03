@@ -30,6 +30,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.IResourceManager;
@@ -183,7 +184,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             }
         } else {
             // schedule texture loading on the main thread.
-            TextureLoader.loadTexture(resource, new ThreadDownloadImageETag(
+            TextureLoader.loadTexture(resource, new ThreadDownloadImageData(
                     new File(LiteLoader.getAssetsDirectory(), "hd/" + skinDir + texture.getHash().substring(0, 2) + "/" + texture.getHash()),
                     texture.getUrl(),
                     DefaultPlayerSkin.getDefaultSkinLegacy(),
