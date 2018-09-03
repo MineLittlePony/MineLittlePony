@@ -5,6 +5,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.INetworkPlayerInfo;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.util.ResourceLocation;
@@ -18,8 +19,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 @Mixin(NetworkPlayerInfo.class)
 public abstract class MixinNetworkPlayerInfo implements INetworkPlayerInfo {
@@ -34,14 +33,8 @@ public abstract class MixinNetworkPlayerInfo implements INetworkPlayerInfo {
     @Shadow private Map<Type, ResourceLocation> playerTextures;
 
     @SuppressWarnings("InvalidMemberReference") // mc-dev bug?
-    @Redirect(method = {
-            "getLocationSkin",
-            "getLocationCape",
-            "getLocationElytra"
-    },
-            at = @At(value = "INVOKE",
-                    target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;",
-                    remap = false))
+    @Redirect(method = { "getLocationSkin", "getLocationCape", "getLocationElytra" },
+            at = @At(value = "INVOKE", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;", remap = false))
     // synthetic
     private Object getSkin(Map<Type, ResourceLocation> playerTextures, Object key) {
         return getSkin(playerTextures, (Type) key);
@@ -49,16 +42,23 @@ public abstract class MixinNetworkPlayerInfo implements INetworkPlayerInfo {
 
     // with generics
     private ResourceLocation getSkin(Map<Type, ResourceLocation> playerTextures, Type type) {
-        return getResourceLocation(type).orElseGet(() -> playerTextures.get(type));
+        if (this.customTextures.containsKey(type)) {
+            return this.customTextures.get(type);
+        }
+
+        return playerTextures.get(type);
     }
 
     @Redirect(method = "getSkinType",
             at = @At(value = "FIELD", target = "Lnet/minecraft/client/network/NetworkPlayerInfo;skinType:Ljava/lang/String;"))
     private String getTextureModel(NetworkPlayerInfo self) {
-        return getProfileTexture(Type.SKIN).map(profile -> {
-            String model = profile.getMetadata("model");
+        if (customProfiles.containsKey(Type.SKIN)) {
+            String model = customProfiles.get(Type.SKIN).getMetadata("model");
+
             return model != null ? model : "default";
-        }).orElse(this.skinType);
+        }
+
+        return skinType;
     }
 
     @Inject(method = "loadPlayerTextures",
@@ -69,26 +69,10 @@ public abstract class MixinNetworkPlayerInfo implements INetworkPlayerInfo {
                             + "Z)V",
                     shift = At.Shift.BEFORE))
     private void onLoadTexture(CallbackInfo ci) {
-        HDSkinManager.INSTANCE.loadProfileTextures(this.gameProfile)
-                .thenAcceptAsync(m -> m.forEach((type, profile) -> {
-                    HDSkinManager.INSTANCE.loadTexture(type, profile, (typeIn, location, profileTexture) -> {
-                        CompletableFuture.runAsync(() -> {
-                                    HDSkinManager.INSTANCE.parseSkin(gameProfile, typeIn, location, profileTexture);
-                        });
-                        customTextures.put(type, location);
-                        customProfiles.put(type, profileTexture);
-                    });
-                }), Minecraft.getMinecraft()::addScheduledTask);
-    }
-
-    @Override
-    public Optional<ResourceLocation> getResourceLocation(Type type) {
-        return Optional.ofNullable(this.customTextures.get(type));
-    }
-
-    @Override
-    public Optional<MinecraftProfileTexture> getProfileTexture(Type type) {
-        return Optional.ofNullable(this.customProfiles.get(type));
+        HDSkinManager.INSTANCE.fetchAndLoadSkins(gameProfile, (type, location, profileTexture) -> {
+            customTextures.put(type, location);
+            customProfiles.put(type, profileTexture);
+        });
     }
 
     @Override

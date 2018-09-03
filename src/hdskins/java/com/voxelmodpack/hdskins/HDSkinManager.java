@@ -160,6 +160,16 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         return skins.getUnchecked(profile);
     }
 
+    public void fetchAndLoadSkins(GameProfile profile, SkinManager.SkinAvailableCallback callback) {
+        loadProfileTextures(profile).thenAcceptAsync(m -> m.forEach((type, pp) -> {
+            loadTexture(type, pp, (typeIn, location, profileTexture) -> {
+                parseSkin(profile, typeIn, location, profileTexture);
+
+                callback.skinAvailable(typeIn, location, profileTexture);
+            });
+        }), Minecraft.getMinecraft()::addScheduledTask);
+    }
+
     public ResourceLocation loadTexture(Type type, MinecraftProfileTexture texture, @Nullable SkinManager.SkinAvailableCallback callback) {
         String skinDir = type.toString().toLowerCase() + "s/";
 
@@ -295,10 +305,13 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
         // grab the metadata object via reflection. Object is live.
         Map<String, String> metadata = ProfileTextureUtil.getMetadata(texture);
+
         boolean wasNull = metadata == null;
+
         if (wasNull) {
             metadata = new HashMap<>();
         }
+
         for (ISkinParser parser : skinParsers) {
             try {
                 parser.parse(profile, type, resource, metadata);
@@ -306,6 +319,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                 logger.error("Exception thrown while parsing skin: ", t);
             }
         }
+
         if (wasNull && !metadata.isEmpty()) {
             ProfileTextureUtil.setMetadata(texture, metadata);
         }
