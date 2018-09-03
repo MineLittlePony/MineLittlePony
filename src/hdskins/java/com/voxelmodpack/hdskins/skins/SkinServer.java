@@ -10,6 +10,7 @@ import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.mumfrey.liteloader.modconfig.Exposable;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.util.CallableFutures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 

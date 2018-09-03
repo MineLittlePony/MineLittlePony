@@ -14,8 +14,8 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
-import com.voxelmodpack.hdskins.skins.MoreHttpResponses;
-import com.voxelmodpack.hdskins.skins.NetClient;
+import com.voxelmodpack.hdskins.util.MoreHttpResponses;
+import com.voxelmodpack.hdskins.util.NetClient;
 import com.voxelmodpack.hdskins.skins.SkinServer;
 import com.voxelmodpack.hdskins.skins.SkinUpload;
 

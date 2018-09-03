@@ -7,6 +7,10 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.util.CallableFutures;
+import com.voxelmodpack.hdskins.util.IndentedToStringStyle;
+import com.voxelmodpack.hdskins.util.MoreHttpResponses;
+import com.voxelmodpack.hdskins.util.NetClient;
 import net.minecraft.util.Session;
 
 import java.io.IOException;

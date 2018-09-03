@@ -1,6 +1,6 @@
 package com.voxelmodpack.hdskins;
 
-import com.voxelmodpack.hdskins.skins.MoreHttpResponses;
+import com.voxelmodpack.hdskins.util.MoreHttpResponses;
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;

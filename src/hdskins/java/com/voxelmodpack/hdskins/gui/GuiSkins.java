@@ -10,7 +10,7 @@ import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.SkinChooser;
 import com.voxelmodpack.hdskins.SkinUploader;
 import com.voxelmodpack.hdskins.SkinUploader.ISkinUploadHandler;
-import com.voxelmodpack.hdskins.skins.CallableFutures;
+import com.voxelmodpack.hdskins.util.CallableFutures;
 import com.voxelmodpack.hdskins.skins.SkinServer;
 
 import net.minecraft.client.Minecraft;

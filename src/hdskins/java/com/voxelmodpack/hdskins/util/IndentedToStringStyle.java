@@ -1,4 +1,4 @@
-package com.voxelmodpack.hdskins.skins;
+package com.voxelmodpack.hdskins.util;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;

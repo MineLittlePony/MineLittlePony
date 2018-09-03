@@ -1,4 +1,4 @@
-package com.voxelmodpack.hdskins.skins;
+package com.voxelmodpack.hdskins.util;
 
 import com.voxelmodpack.hdskins.HDSkinManager;
 import org.apache.http.HttpEntity;

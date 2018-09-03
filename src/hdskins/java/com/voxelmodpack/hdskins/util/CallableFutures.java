@@ -1,4 +1,4 @@
-package com.voxelmodpack.hdskins.skins;
+package com.voxelmodpack.hdskins.util;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;

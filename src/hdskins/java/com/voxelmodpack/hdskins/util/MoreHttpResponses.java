@@ -1,6 +1,7 @@
-package com.voxelmodpack.hdskins.skins;
+package com.voxelmodpack.hdskins.util;
 
 import com.google.common.io.CharStreams;
+import com.voxelmodpack.hdskins.skins.SkinServer;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
