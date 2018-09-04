@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Streams;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
@@ -25,12 +26,11 @@ import com.voxelmodpack.hdskins.skins.ServerType;
 import com.voxelmodpack.hdskins.skins.SkinServer;
 import com.voxelmodpack.hdskins.skins.ValhallaSkinServer;
 import com.voxelmodpack.hdskins.util.CallableFutures;
+import com.voxelmodpack.hdskins.util.Flow;
 import com.voxelmodpack.hdskins.util.PlayerUtil;
 import com.voxelmodpack.hdskins.util.ProfileTextureUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.ITextureObject;
@@ -39,6 +39,7 @@ import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.util.ResourceLocation;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -64,6 +65,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
 import javax.annotation.Nullable;
 
 public final class HDSkinManager implements IResourceManagerReloadListener {
@@ -245,10 +247,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     }
 
-    private void clearNetworkSkin(NetworkPlayerInfo player) {
-        ((INetworkPlayerInfo) player).reloadTextures();
-    }
-
     private boolean onSkinCacheCleared(ISkinCacheClearListener callback) {
         try {
             return !callback.onSkinCacheCleared();
@@ -278,36 +276,32 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     public void reloadSkins() {
-
         Minecraft mc = Minecraft.getMinecraft();
 
-        Stream.concat(
-                // in-world players (+NPCs)
-                getWorldPlayers(mc.world),
-                // tab list players
-                getServerPlayers(mc.getConnection()))
-                // filter nulls and clear skins
-                .filter(Objects::nonNull)
-                .distinct()
-                .forEach(this::clearNetworkSkin);
+        Streams.concat(getNPCs(mc), getPlayers(mc))
+
+            // filter nulls
+            .filter(Objects::nonNull)
+            .map(INetworkPlayerInfo.class::cast)
+            .distinct()
+
+            // and clear skins
+            .forEach(INetworkPlayerInfo::reloadTextures);
 
         clearListeners.removeIf(this::onSkinCacheCleared);
     }
 
-    private static Stream<NetworkPlayerInfo> getWorldPlayers(@Nullable WorldClient world) {
-        return nullableStream(world)
+    private Stream<NetworkPlayerInfo> getNPCs(Minecraft mc) {
+        return Flow.from(mc.world)
                 .flatMap(w -> w.playerEntities.stream())
                 .filter(AbstractClientPlayer.class::isInstance)
                 .map(AbstractClientPlayer.class::cast)
                 .map(PlayerUtil::getInfo);
     }
 
-    private static Stream<NetworkPlayerInfo> getServerPlayers(@Nullable NetHandlerPlayClient server) {
-        return nullableStream(server).flatMap(p -> p.getPlayerInfoMap().stream());
-    }
-
-    private static <T> Stream<T> nullableStream(@Nullable T t) {
-        return t == null ? Stream.empty() : Stream.of(t);
+    private Stream<NetworkPlayerInfo> getPlayers(Minecraft mc) {
+        return Flow.from(mc.getConnection())
+                .flatMap(a -> a.getPlayerInfoMap().stream());
     }
 
     public void parseSkin(GameProfile profile, Type type, ResourceLocation resource, MinecraftProfileTexture texture) {
