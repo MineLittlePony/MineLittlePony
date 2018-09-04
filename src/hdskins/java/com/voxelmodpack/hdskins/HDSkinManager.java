@@ -26,7 +26,6 @@ import com.voxelmodpack.hdskins.skins.ServerType;
 import com.voxelmodpack.hdskins.skins.SkinServer;
 import com.voxelmodpack.hdskins.skins.ValhallaSkinServer;
 import com.voxelmodpack.hdskins.util.CallableFutures;
-import com.voxelmodpack.hdskins.util.Flow;
 import com.voxelmodpack.hdskins.util.PlayerUtil;
 import com.voxelmodpack.hdskins.util.ProfileTextureUtil;
 import net.minecraft.client.Minecraft;
@@ -39,7 +38,6 @@ import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.util.ResourceLocation;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -65,7 +63,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
 import javax.annotation.Nullable;
 
 public final class HDSkinManager implements IResourceManagerReloadListener {
@@ -243,8 +240,8 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         FileUtils.deleteQuietly(new File(LiteLoader.getAssetsDirectory(), "hd"));
 
         skins.invalidateAll();
-        reloadSkins();
-
+        parseSkins();
+        clearListeners.removeIf(this::onSkinCacheCleared);
     }
 
     private boolean onSkinCacheCleared(ISkinCacheClearListener callback) {
@@ -275,7 +272,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         }
     }
 
-    public void reloadSkins() {
+    public void parseSkins() {
         Minecraft mc = Minecraft.getMinecraft();
 
         Streams.concat(getNPCs(mc), getPlayers(mc))
@@ -288,11 +285,10 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             // and clear skins
             .forEach(INetworkPlayerInfo::reloadTextures);
 
-        clearListeners.removeIf(this::onSkinCacheCleared);
     }
 
     private Stream<NetworkPlayerInfo> getNPCs(Minecraft mc) {
-        return Flow.from(mc.world)
+        return nullableStream(mc.world)
                 .flatMap(w -> w.playerEntities.stream())
                 .filter(AbstractClientPlayer.class::isInstance)
                 .map(AbstractClientPlayer.class::cast)
@@ -300,8 +296,12 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     private Stream<NetworkPlayerInfo> getPlayers(Minecraft mc) {
-        return Flow.from(mc.getConnection())
+        return nullableStream(mc.getConnection())
                 .flatMap(a -> a.getPlayerInfoMap().stream());
+    }
+
+    private static <T> Stream<T> nullableStream(@Nullable T t) {
+        return t == null ? Stream.empty() : Stream.of(t);
     }
 
     public void parseSkin(GameProfile profile, Type type, ResourceLocation resource, MinecraftProfileTexture texture) {

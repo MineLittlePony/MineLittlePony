@@ -68,7 +68,7 @@ public class PonyConfig extends SensibleConfig implements Exposable {
         // only trigger reloads when the value actually changes
         if (ponylevel != this.ponylevel) {
             this.ponylevel = ponylevel;
-            HDSkinManager.INSTANCE.reloadSkins();
+            HDSkinManager.INSTANCE.parseSkins();
         }
     }
 
