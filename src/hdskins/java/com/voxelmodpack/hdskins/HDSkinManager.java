@@ -10,7 +10,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Streams;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
@@ -29,10 +28,11 @@ import com.voxelmodpack.hdskins.util.PlayerUtil;
 import com.voxelmodpack.hdskins.util.ProfileTextureUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.ITextureObject;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
@@ -56,17 +56,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
@@ -287,19 +282,31 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
         Stream.concat(
                 // in-world players (+NPCs)
-                Streams.stream(Optional.ofNullable(mc.world))
-                        .flatMap(w -> w.playerEntities.stream())
-                        .filter(AbstractClientPlayer.class::isInstance)
-                        .map(p -> PlayerUtil.getInfo((AbstractClientPlayer) p)),
+                getWorldPlayers(mc.world),
                 // tab list players
-                Streams.stream(Optional.ofNullable(mc.getConnection()))
-                        .flatMap(c -> c.getPlayerInfoMap().stream()))
+                getServerPlayers(mc.getConnection()))
                 // filter nulls and clear skins
                 .filter(Objects::nonNull)
                 .distinct()
                 .forEach(this::clearNetworkSkin);
 
         clearListeners.removeIf(this::onSkinCacheCleared);
+    }
+
+    private static Stream<NetworkPlayerInfo> getWorldPlayers(@Nullable WorldClient world) {
+        return nullableStream(world)
+                .flatMap(w -> w.playerEntities.stream())
+                .filter(AbstractClientPlayer.class::isInstance)
+                .map(AbstractClientPlayer.class::cast)
+                .map(PlayerUtil::getInfo);
+    }
+
+    private static Stream<NetworkPlayerInfo> getServerPlayers(@Nullable NetHandlerPlayClient server) {
+        return nullableStream(server).flatMap(p -> p.getPlayerInfoMap().stream());
+    }
+
+    private static <T> Stream<T> nullableStream(@Nullable T t) {
+        return t == null ? Stream.empty() : Stream.of(t);
     }
 
     public void parseSkin(GameProfile profile, Type type, ResourceLocation resource, MinecraftProfileTexture texture) {
