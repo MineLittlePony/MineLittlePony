@@ -26,6 +26,7 @@ import com.voxelmodpack.hdskins.skins.ServerType;
 import com.voxelmodpack.hdskins.skins.SkinServer;
 import com.voxelmodpack.hdskins.skins.ValhallaSkinServer;
 import com.voxelmodpack.hdskins.util.CallableFutures;
+import com.voxelmodpack.hdskins.util.MoreStreams;
 import com.voxelmodpack.hdskins.util.PlayerUtil;
 import com.voxelmodpack.hdskins.util.ProfileTextureUtil;
 import net.minecraft.client.Minecraft;
@@ -277,18 +278,18 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
         Streams.concat(getNPCs(mc), getPlayers(mc))
 
-            // filter nulls
-            .filter(Objects::nonNull)
-            .map(INetworkPlayerInfo.class::cast)
-            .distinct()
+                // filter nulls
+                .filter(Objects::nonNull)
+                .map(INetworkPlayerInfo.class::cast)
+                .distinct()
 
-            // and clear skins
-            .forEach(INetworkPlayerInfo::reloadTextures);
+                // and clear skins
+                .forEach(INetworkPlayerInfo::reloadTextures);
 
     }
 
     private Stream<NetworkPlayerInfo> getNPCs(Minecraft mc) {
-        return nullableStream(mc.world)
+        return MoreStreams.ofNullable(mc.world)
                 .flatMap(w -> w.playerEntities.stream())
                 .filter(AbstractClientPlayer.class::isInstance)
                 .map(AbstractClientPlayer.class::cast)
@@ -296,12 +297,8 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     private Stream<NetworkPlayerInfo> getPlayers(Minecraft mc) {
-        return nullableStream(mc.getConnection())
+        return MoreStreams.ofNullable(mc.getConnection())
                 .flatMap(a -> a.getPlayerInfoMap().stream());
-    }
-
-    private static <T> Stream<T> nullableStream(@Nullable T t) {
-        return t == null ? Stream.empty() : Stream.of(t);
     }
 
     public void parseSkin(GameProfile profile, Type type, ResourceLocation resource, MinecraftProfileTexture texture) {
