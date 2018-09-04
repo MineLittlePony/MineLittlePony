@@ -26,11 +26,17 @@ public abstract class MixinNetworkPlayerInfo implements INetworkPlayerInfo {
     private Map<Type, ResourceLocation> customTextures = new HashMap<>();
     private Map<Type, MinecraftProfileTexture> customProfiles = new HashMap<>();
 
-    @Shadow @Final private GameProfile gameProfile;
-    @Shadow private boolean playerTexturesLoaded;
-    @Shadow private String skinType;
+    @Shadow @Final
+    private GameProfile gameProfile;
 
-    @Shadow private Map<Type, ResourceLocation> playerTextures;
+    @Shadow
+    private boolean playerTexturesLoaded;
+
+    @Shadow
+    private String skinType;
+
+    @Shadow
+    private Map<Type, ResourceLocation> playerTextures;
 
     @SuppressWarnings("InvalidMemberReference") // mc-dev bug?
     @Redirect(method = { "getLocationSkin", "getLocationCape", "getLocationElytra" },

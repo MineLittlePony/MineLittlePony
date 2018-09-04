@@ -93,7 +93,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     private List<ISkinParser> skinParsers = Lists.newArrayList();
 
     private SkinResourceManager resources = new SkinResourceManager();
-    //    private ExecutorService executor = Executors.newCachedThreadPool();
 
     private Function<List<SkinServer>, GuiSkins> skinsGuiFunc = GuiSkins::new;
 
@@ -189,6 +188,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                 callback.skinAvailable(type, resource, texture);
             }
         } else {
+
             // schedule texture loading on the main thread.
             TextureLoader.loadTexture(resource, new ThreadDownloadImageData(
                     new File(LiteLoader.getAssetsDirectory(), "hd/" + skinDir + texture.getHash().substring(0, 2) + "/" + texture.getHash()),
@@ -200,26 +200,30 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                         }
                     })));
         }
+
         return resource;
     }
 
     public Map<Type, ResourceLocation> getTextures(GameProfile profile) {
-
         Map<Type, ResourceLocation> map = new HashMap<>();
+
         for (Map.Entry<Type, MinecraftProfileTexture> e : loadProfileTextures(profile).getNow(Collections.emptyMap()).entrySet()) {
             map.put(e.getKey(), loadTexture(e.getKey(), e.getValue(), null));
         }
-        return map;
 
+        return map;
     }
 
     private void addSkinServerType(Class<? extends SkinServer> type) {
         Preconditions.checkArgument(!type.isInterface(), "type cannot be an interface");
         Preconditions.checkArgument(!Modifier.isAbstract(type.getModifiers()), "type cannot be abstract");
+
         ServerType st = type.getAnnotation(ServerType.class);
+
         if (st == null) {
             throw new IllegalArgumentException("class is not annotated with @ServerType");
         }
+
         this.skinServerTypes.put(st.value(), type);
     }
 
@@ -336,9 +340,11 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     private static <T> CompletableFuture<T> getUntilNonnull(Supplier<T> getter) {
         return CompletableFuture.supplyAsync(() -> {
             T res = null;
+
             while (res == null) {
                 res = getter.get();
             }
+
             return res;
         });
     }
