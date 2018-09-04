@@ -24,6 +24,7 @@ import com.voxelmodpack.hdskins.skins.LegacySkinServer;
 import com.voxelmodpack.hdskins.skins.ServerType;
 import com.voxelmodpack.hdskins.skins.SkinServer;
 import com.voxelmodpack.hdskins.skins.ValhallaSkinServer;
+import com.voxelmodpack.hdskins.util.CallableFutures;
 import com.voxelmodpack.hdskins.util.PlayerUtil;
 import com.voxelmodpack.hdskins.util.ProfileTextureUtil;
 import net.minecraft.client.Minecraft;
@@ -310,49 +311,29 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     public void parseSkin(GameProfile profile, Type type, ResourceLocation resource, MinecraftProfileTexture texture) {
-        TextureManager tm = Minecraft.getMinecraft().getTextureManager();
 
-        try {
-            // this runs in a separate thread anyway, so just get with a timeout.
-            getUntilNonnull(() -> tm.getTexture(resource)).get(1, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new CompletionException(e);
-        }
+        CallableFutures.scheduleTask(() -> {
 
-        // grab the metadata object via reflection. Object is live.
-        Map<String, String> metadata = ProfileTextureUtil.getMetadata(texture);
+            // grab the metadata object via reflection. Object is live.
+            Map<String, String> metadata = ProfileTextureUtil.getMetadata(texture);
 
-        boolean wasNull = metadata == null;
+            boolean wasNull = metadata == null;
 
-        if (wasNull) {
-            metadata = new HashMap<>();
-        }
-
-        for (ISkinParser parser : skinParsers) {
-            try {
-                parser.parse(profile, type, resource, metadata);
-            } catch (Throwable t) {
-                logger.error("Exception thrown while parsing skin: ", t);
-            }
-        }
-
-        if (wasNull && !metadata.isEmpty()) {
-            ProfileTextureUtil.setMetadata(texture, metadata);
-        }
-    }
-
-    /**
-     * Continuously gets a item in a new thread until it returns nonnull.
-     */
-    private static <T> CompletableFuture<T> getUntilNonnull(Supplier<T> getter) {
-        return CompletableFuture.supplyAsync(() -> {
-            T res = null;
-
-            while (res == null) {
-                res = getter.get();
+            if (wasNull) {
+                metadata = new HashMap<>();
             }
 
-            return res;
+            for (ISkinParser parser : skinParsers) {
+                try {
+                    parser.parse(profile, type, resource, metadata);
+                } catch (Throwable t) {
+                    logger.error("Exception thrown while parsing skin: ", t);
+                }
+            }
+
+            if (wasNull && !metadata.isEmpty()) {
+                ProfileTextureUtil.setMetadata(texture, metadata);
+            }
         });
     }
 
