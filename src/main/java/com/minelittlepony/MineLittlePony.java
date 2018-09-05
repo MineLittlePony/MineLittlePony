@@ -4,6 +4,7 @@ import com.minelittlepony.gui.GuiPonySettings;
 import com.minelittlepony.hdskins.gui.GuiSkinsMineLP;
 import com.minelittlepony.pony.data.IPonyData;
 import com.minelittlepony.pony.data.PonyDataSerialiser;
+import com.minelittlepony.pony.data.PonyLevel;
 import com.minelittlepony.render.PonySkullRenderer;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.voxelmodpack.hdskins.HDSkinManager;
@@ -37,22 +38,25 @@ public class MineLittlePony {
 
     private static MineLittlePony instance;
 
-    private final PonyConfig config;
+    private static PonyConfig pconfig;
+    private static IPonyConfig config = new IPonyConfig() {
+		@Override
+		public PonyLevel getPonyLevel() {
+			return PonyLevel.BOTH;
+		}};
     private final PonyManager ponyManager;
 
-    private final PonyRenderManager renderManager;
+    private static final PonyRenderManager renderManager = new PonyRenderManager();
 
     MineLittlePony() {
         instance = this;
 
         LiteLoader.getInput().registerKeyBinding(SETTINGS_GUI);
 
-        config = new PonyConfig();
+        config = (IPonyConfig)(Object) (pconfig = new PonyConfig());
         ponyManager = new PonyManager(config);
 
-        renderManager = new PonyRenderManager();
-
-        LiteLoader.getInstance().registerExposable(config, null);
+        LiteLoader.getInstance().registerExposable(pconfig, null);
 
         IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
         irrm.registerReloadListener(ponyManager);
@@ -110,15 +114,21 @@ public class MineLittlePony {
     /**
      * Gets the static pony render manager responsible for all entity renderers.
      */
-    public PonyRenderManager getRenderManager() {
+    public static PonyRenderManager getRenderManager() {
         return renderManager;
     }
 
     /**
      * Gets the global MineLP client configuration.
      */
-    public static PonyConfig getConfig() {
-        return getInstance().config;
+    public static IPonyConfig getConfig() {
+        return config;
     }
 
+    /**
+     * Gets the Exposable MineLP client config, which is only present if MineLP is loaded for LiteLoader
+     */
+    public static PonyConfig getInstalledConfig() {
+    	return pconfig;
+    }
 }

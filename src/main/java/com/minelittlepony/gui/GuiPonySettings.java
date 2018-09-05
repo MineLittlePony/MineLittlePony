@@ -22,7 +22,7 @@ public class GuiPonySettings extends SettingsPanel {
     private PonyConfig config;
 
     public GuiPonySettings() {
-        config = MineLittlePony.getConfig();
+        config = MineLittlePony.getInstalledConfig();
     }
 
     @Override

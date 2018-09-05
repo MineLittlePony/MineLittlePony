@@ -42,11 +42,11 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
      */
     private List<ResourceLocation> backgroundPonyList = Lists.newArrayList();
 
-    private PonyConfig config;
+    private IPonyConfig config;
 
     private Map<ResourceLocation, IPony> poniesCache = Maps.newHashMap();
 
-    public PonyManager(PonyConfig config) {
+    public PonyManager(IPonyConfig config) {
         this.config = config;
     }
 

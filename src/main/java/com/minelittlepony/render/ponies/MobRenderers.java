@@ -71,7 +71,7 @@ public enum MobRenderers implements Setting {
     @Override
     public void set(boolean value) {
         Setting.super.set(value);
-        apply(MineLittlePony.getInstance().getRenderManager(), Minecraft.getMinecraft().getRenderManager());
+        apply(MineLittlePony.getRenderManager(), Minecraft.getMinecraft().getRenderManager());
     }
 
     public void apply(PonyRenderManager pony, RenderManager manager) {
