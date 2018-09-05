@@ -9,7 +9,7 @@ import com.minelittlepony.model.capabilities.IModelPart;
 import com.minelittlepony.model.components.Muffin;
 import com.minelittlepony.model.player.ModelAlicorn;
 import com.minelittlepony.pony.data.PonyWearable;
-import com.minelittlepony.render.plane.PlaneRenderer;
+import com.minelittlepony.render.model.PlaneRenderer;
 
 public class ModelVillagerPony extends ModelAlicorn {
 
@@ -87,9 +87,9 @@ public class ModelVillagerPony extends ModelAlicorn {
         muffin.init(yOffset, stretch);
 
         apron = new PlaneRenderer(this, 56, 16)
-             .offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
-             .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-             .addBackPlane(-4, -4, -9, 8, 10, stretch);
+               .offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
+               .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
+               .addBackPlane(-4, -4, -9, 8, 10, stretch);
         trinket = new PlaneRenderer(this, 0, 3)
                .offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
                .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)

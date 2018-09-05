@@ -1,19 +1,21 @@
-package com.minelittlepony.render;
+package com.minelittlepony.render.model;
 
 import net.minecraft.client.renderer.BufferBuilder;
 
-import com.minelittlepony.util.coordinates.*;
+import com.minelittlepony.util.render.Box;
+import com.minelittlepony.util.render.Quad;
+import com.minelittlepony.util.render.Vertex;
 
 /**
  * Like a normal box, but with the top narrowed a bit.
  */
-public class HornGlow extends Box<HornGlowRenderer> {
+public class ModelGlow extends Box<GlowRenderer> {
 
     private final float alpha;
 
     private Quad[] quadList;
 
-    public HornGlow(HornGlowRenderer renderer, int texX, int texY, float xMin, float yMin, float zMin, int w, int h, int d, float scale, float alpha) {
+    public ModelGlow(GlowRenderer renderer, int texX, int texY, float xMin, float yMin, float zMin, int w, int h, int d, float scale, float alpha) {
         super(renderer, texX, texY, xMin, yMin, zMin, w, h, d, scale);
 
         this.alpha = alpha;

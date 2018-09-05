@@ -1,4 +1,4 @@
-package com.minelittlepony.util.coordinates;
+package com.minelittlepony.util.render;
 
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;

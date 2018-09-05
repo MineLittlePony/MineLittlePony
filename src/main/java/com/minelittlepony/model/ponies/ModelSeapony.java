@@ -3,8 +3,8 @@ package com.minelittlepony.model.ponies;
 import com.minelittlepony.model.components.SeaponyTail;
 import com.minelittlepony.model.player.ModelUnicorn;
 import com.minelittlepony.pony.data.IPony;
-import com.minelittlepony.render.PonyRenderer;
-import com.minelittlepony.render.plane.PlaneRenderer;
+import com.minelittlepony.render.model.PlaneRenderer;
+import com.minelittlepony.render.model.PonyRenderer;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;

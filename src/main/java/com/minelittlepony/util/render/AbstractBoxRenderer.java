@@ -1,4 +1,4 @@
-package com.minelittlepony.render;
+package com.minelittlepony.util.render;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
@@ -6,7 +6,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.TextureOffset;
 
 @SuppressWarnings("unchecked")
-public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> extends ModelRenderer {
+public abstract class AbstractBoxRenderer<T extends AbstractBoxRenderer<T>> extends ModelRenderer {
 
     protected final ModelBase baseModel;
 
@@ -17,12 +17,12 @@ public abstract class AbstractPonyRenderer<T extends AbstractPonyRenderer<T>> ex
     protected float modelOffsetY;
     protected float modelOffsetZ;
 
-    public AbstractPonyRenderer(ModelBase model) {
+    public AbstractBoxRenderer(ModelBase model) {
         super(model);
         baseModel = model;
     }
 
-    public AbstractPonyRenderer(ModelBase model, int texX, int texY) {
+    public AbstractBoxRenderer(ModelBase model, int texX, int texY) {
         super(model, texX, texY);
         baseModel = model;
     }

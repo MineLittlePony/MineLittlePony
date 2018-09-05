@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.capabilities.IModelPart;
-import com.minelittlepony.render.PonyRenderer;
+import com.minelittlepony.render.model.PonyRenderer;
 
 public class Muffin implements IModelPart {
 

@@ -4,7 +4,6 @@ import com.minelittlepony.PonyConfig;
 import com.minelittlepony.model.components.ModelDeadMau5Ears;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyLevel;
-import com.minelittlepony.render.PonySkull;
 import com.minelittlepony.render.RenderPony;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;

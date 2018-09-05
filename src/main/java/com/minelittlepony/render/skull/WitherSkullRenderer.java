@@ -1,7 +1,6 @@
 package com.minelittlepony.render.skull;
 
 import com.minelittlepony.PonyConfig;
-import com.minelittlepony.render.PonySkull;
 import com.minelittlepony.render.ponies.RenderPonySkeleton;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.util.ResourceLocation;

@@ -3,7 +3,7 @@ package com.minelittlepony.model.components;
 import com.minelittlepony.model.capabilities.ICapitated;
 import com.minelittlepony.pony.data.IPonyData;
 import com.minelittlepony.pony.data.PonyData;
-import com.minelittlepony.render.PonyRenderer;
+import com.minelittlepony.render.model.PonyRenderer;
 
 import net.minecraft.client.model.ModelHumanoidHead;
 import net.minecraft.client.model.ModelRenderer;

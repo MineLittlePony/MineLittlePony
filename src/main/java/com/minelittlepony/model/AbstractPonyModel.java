@@ -10,9 +10,9 @@ import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.pony.data.IPonyData;
 import com.minelittlepony.pony.data.PonyData;
 import com.minelittlepony.pony.data.PonySize;
-import com.minelittlepony.render.AbstractPonyRenderer;
-import com.minelittlepony.render.PonyRenderer;
-import com.minelittlepony.render.plane.PlaneRenderer;
+import com.minelittlepony.render.model.PlaneRenderer;
+import com.minelittlepony.render.model.PonyRenderer;
+import com.minelittlepony.util.render.AbstractBoxRenderer;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
@@ -512,10 +512,10 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
 
         setHead(1, 2, isSneak ? -1 : 1);
 
-        AbstractPonyRenderer.shiftRotationPoint(bipedRightArm, 0, 2, 6);
-        AbstractPonyRenderer.shiftRotationPoint(bipedLeftArm, 0, 2, 6);
-        AbstractPonyRenderer.shiftRotationPoint(bipedRightLeg, 0, 2, -8);
-        AbstractPonyRenderer.shiftRotationPoint(bipedLeftLeg, 0, 2, -8);
+        AbstractBoxRenderer.shiftRotationPoint(bipedRightArm, 0, 2, 6);
+        AbstractBoxRenderer.shiftRotationPoint(bipedLeftArm, 0, 2, 6);
+        AbstractBoxRenderer.shiftRotationPoint(bipedRightLeg, 0, 2, -8);
+        AbstractBoxRenderer.shiftRotationPoint(bipedLeftLeg, 0, 2, -8);
     }
 
     public void init(float yOffset, float stretch) {

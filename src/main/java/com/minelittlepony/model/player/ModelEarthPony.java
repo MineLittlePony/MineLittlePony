@@ -3,7 +3,8 @@ package com.minelittlepony.model.player;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.components.SaddleBags;
 import com.minelittlepony.pony.data.PonyWearable;
-import com.minelittlepony.render.PonyRenderer;
+import com.minelittlepony.render.model.PonyRenderer;
+
 import net.minecraft.entity.Entity;
 
 public class ModelEarthPony extends AbstractPonyModel {

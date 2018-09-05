@@ -2,8 +2,8 @@ package com.minelittlepony.model.components;
 
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.capabilities.IModelPart;
-import com.minelittlepony.render.PonyRenderer;
-import com.minelittlepony.render.plane.PlaneRenderer;
+import com.minelittlepony.render.model.PlaneRenderer;
+import com.minelittlepony.render.model.PonyRenderer;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
@@ -39,7 +39,7 @@ public class SeaponyTail implements IModelPart {
                 .box(0, 0, 0, 2, 6, 1, stretch);
 
         tailFins.offset(1, 0, 4).rotate(-TAIL_ROTX, 0, 0)
-                    .addTopPlane(-8, 0, 0, 8, 8, stretch)
+                 .addTopPlane(-8, 0, 0, 8, 8, stretch)
           .flip().addTopPlane( 0, 0, 0, 8, 8, stretch);
     }
 

@@ -8,7 +8,7 @@ import com.minelittlepony.model.armour.IArmorTextureResolver;
 import com.minelittlepony.model.armour.ModelPonyArmor;
 import com.minelittlepony.model.armour.DefaultPonyArmorTextureResolver;
 import com.minelittlepony.model.capabilities.IModelArmor;
-import com.minelittlepony.util.coordinates.Color;
+import com.minelittlepony.util.render.Color;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;

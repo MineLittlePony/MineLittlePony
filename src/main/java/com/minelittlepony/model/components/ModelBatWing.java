@@ -2,7 +2,7 @@ package com.minelittlepony.model.components;
 
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.capabilities.IModelPegasus;
-import com.minelittlepony.render.plane.PlaneRenderer;
+import com.minelittlepony.render.model.PlaneRenderer;
 
 import static com.minelittlepony.model.PonyModelConstants.EXT_WING_RP_X;
 import static com.minelittlepony.model.PonyModelConstants.EXT_WING_RP_Y;

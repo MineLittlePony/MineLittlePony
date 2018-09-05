@@ -11,7 +11,7 @@ import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.ModelWrapper;
-import com.minelittlepony.render.PonySkullRenderer;
+import com.minelittlepony.render.skull.PonySkullRenderer;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;

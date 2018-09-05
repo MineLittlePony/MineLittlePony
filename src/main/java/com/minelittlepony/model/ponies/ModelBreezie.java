@@ -6,9 +6,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 
-import static com.minelittlepony.model.PonyModelConstants.PI;
+import com.minelittlepony.render.model.PonyRenderer;
 
-import com.minelittlepony.render.PonyRenderer;
+import static com.minelittlepony.model.PonyModelConstants.PI;
 
 public class ModelBreezie extends ModelBiped {
 

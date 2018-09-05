@@ -1,13 +1,13 @@
 package com.minelittlepony.model.components;
 
-import com.minelittlepony.render.PonyRenderer;
-
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.Vec3d;
+
+import com.minelittlepony.render.model.PonyRenderer;
 
 import static com.minelittlepony.model.PonyModelConstants.*;
 

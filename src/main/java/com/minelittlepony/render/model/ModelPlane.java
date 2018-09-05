@@ -1,10 +1,12 @@
-package com.minelittlepony.render.plane;
+package com.minelittlepony.render.model;
 
 import net.minecraft.client.renderer.BufferBuilder;
 
-import javax.annotation.Nonnull;
+import com.minelittlepony.util.render.Box;
+import com.minelittlepony.util.render.Quad;
+import com.minelittlepony.util.render.Vertex;
 
-import com.minelittlepony.util.coordinates.*;
+import javax.annotation.Nonnull;
 
 public class ModelPlane extends Box<PlaneRenderer> {
 
@@ -12,7 +14,7 @@ public class ModelPlane extends Box<PlaneRenderer> {
 
     public boolean hidden = false;
 
-    public ModelPlane(PlaneRenderer renderer, int textureX, int textureY, float xMin, float yMin, float zMin, int w, int h, int d, float scale, Face face) {
+    public ModelPlane(PlaneRenderer renderer, int textureX, int textureY, float xMin, float yMin, float zMin, int w, int h, int d, float scale, Plane face) {
         super(renderer, textureX, textureY, xMin, yMin, zMin, w, h, d, scale, false);
 
         float xMax = xMin + w + scale;
@@ -51,22 +53,22 @@ public class ModelPlane extends Box<PlaneRenderer> {
         Vertex eun = vert(xMax, yMax, zMax, 8, 8);
         Vertex wun = vert(xMin, yMax, zMax, 8, 0);
 
-        if (face == Face.EAST) {
+        if (face == Plane.EAST) {
             quad = quad(textureX, d, textureY, h, edn, eds, eus, eun);
         }
-        if (face == Face.WEST) {
+        if (face == Plane.WEST) {
             quad = quad(textureX, d, textureY, h, wds, wdn, wun, wus);
         }
-        if (face == Face.UP) {
+        if (face == Plane.UP) {
             quad = quad(textureX, w, textureY, d, edn, wdn, wds, eds);
         }
-        if (face == Face.DOWN) {
+        if (face == Plane.DOWN) {
             quad = quad(textureX, w, textureY, d, eus, wus, wun, eun);
         }
-        if (face == Face.SOUTH) {
+        if (face == Plane.SOUTH) {
             quad = quad(textureX, w, textureY, h, eds, wds, wus, eus);
         }
-        if (face == Face.NORTH) {
+        if (face == Plane.NORTH) {
             quad = quad(textureX, w, textureY, h, wdn, edn, eun, wun);
         }
 

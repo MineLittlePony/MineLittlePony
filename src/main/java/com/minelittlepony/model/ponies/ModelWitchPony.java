@@ -13,7 +13,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.minelittlepony.model.player.ModelZebra;
 import com.minelittlepony.pony.data.IPony;
-import com.minelittlepony.render.PonyRenderer;
+import com.minelittlepony.render.model.PonyRenderer;
 
 public class ModelWitchPony extends ModelZebra {
 

@@ -1,7 +1,7 @@
 package com.minelittlepony.model.ponies;
 
 import com.minelittlepony.model.ModelMobPony;
-import com.minelittlepony.render.AbstractPonyRenderer;
+import com.minelittlepony.util.render.AbstractBoxRenderer;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -24,10 +24,10 @@ public class ModelZombiePony extends ModelMobPony {
 
         if (islookAngleRight(move)) {
             rotateArmHolding(bipedRightArm, 1, swingProgress, ticks);
-            AbstractPonyRenderer.shiftRotationPoint(bipedRightArm, 0.5F, 1.5F, 3);
+            AbstractBoxRenderer.shiftRotationPoint(bipedRightArm, 0.5F, 1.5F, 3);
         } else {
             rotateArmHolding(bipedLeftArm, -1, swingProgress, ticks);
-            AbstractPonyRenderer.shiftRotationPoint(bipedLeftArm, -0.5F, 1.5F, 3);
+            AbstractBoxRenderer.shiftRotationPoint(bipedLeftArm, -0.5F, 1.5F, 3);
         }
     }
 

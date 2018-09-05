@@ -5,7 +5,7 @@ import static com.minelittlepony.model.PonyModelConstants.*;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.capabilities.IModelPart;
 import com.minelittlepony.model.capabilities.IModelPegasus;
-import com.minelittlepony.render.plane.PlaneRenderer;
+import com.minelittlepony.render.model.PlaneRenderer;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
@@ -43,9 +43,9 @@ public class SaddleBags implements IModelPart {
                    .addBackPlane(0, 0, 2, 8, 1, stretch)
                   .addFrontPlane(0, 0, 0, 8, 1, stretch)
                 .child(0).offset(0, -3, -0.305F).tex(56, 31)
-                   .addWestPlane(4.0002F, 0, 0, 1, 3, stretch)  // 0.0001 is there
-                   .addWestPlane(4.0002F, -1, 0, 1, 3, stretch)  // otherwise straps
-                   .addWestPlane(-4.0002F, 0, 0, 1, 3, stretch)  // clip into the body
+                   .addWestPlane( 4.0002F,  0, 0, 1, 3, stretch)  // 0.0001 is there
+                   .addWestPlane( 4.0002F, -1, 0, 1, 3, stretch)  // otherwise straps
+                   .addWestPlane(-4.0002F,  0, 0, 1, 3, stretch)  // clip into the body
                    .addWestPlane(-4.0002F, -1, 0, 1, 3, stretch)
                 .rotateAngleX = ROTATE_270;
 

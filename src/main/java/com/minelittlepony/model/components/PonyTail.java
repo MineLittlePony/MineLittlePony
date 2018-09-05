@@ -7,7 +7,7 @@ import static com.minelittlepony.model.PonyModelConstants.*;
 
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.capabilities.IModelPart;
-import com.minelittlepony.render.plane.PlaneRenderer;
+import com.minelittlepony.render.model.PlaneRenderer;
 
 public class PonyTail extends PlaneRenderer implements IModelPart {
 
@@ -106,7 +106,7 @@ public class PonyTail extends PlaneRenderer implements IModelPart {
                          .addWestPlane(-2, 0, 2, 4, 4, stretch);
             tex(32, texX).addBackPlane(-2, 0, 2, 4, 4, stretch)
                         .addFrontPlane(-2, 0, 6, 4, 4, stretch);
-             tex(32, 0).addBottomPlane(-2, 4, 2, 4, 4, stretch);
+            tex(32, 0) .addBottomPlane(-2, 4, 2, 4, 4, stretch);
         }
 
         @Override

@@ -1,13 +1,9 @@
-package com.minelittlepony.render;
+package com.minelittlepony.render.skull;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyConfig;
 import com.minelittlepony.ducks.IRenderItem;
 import com.minelittlepony.pony.data.IPony;
-import com.minelittlepony.render.skull.PlayerSkullRenderer;
-import com.minelittlepony.render.skull.SkeletonSkullRenderer;
-import com.minelittlepony.render.skull.WitherSkullRenderer;
-import com.minelittlepony.render.skull.ZombieSkullRenderer;
 import com.mojang.authlib.GameProfile;
 import com.mumfrey.liteloader.util.ModUtilities;
 import net.minecraft.client.renderer.GlStateManager;

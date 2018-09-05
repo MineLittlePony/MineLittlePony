@@ -3,7 +3,7 @@ package com.minelittlepony.model.player;
 import com.minelittlepony.model.components.BatWings;
 import com.minelittlepony.model.components.PegasusWings;
 import com.minelittlepony.pony.data.PonyWearable;
-import com.minelittlepony.render.PonyRenderer;
+import com.minelittlepony.render.model.PonyRenderer;
 
 import net.minecraft.entity.Entity;
 

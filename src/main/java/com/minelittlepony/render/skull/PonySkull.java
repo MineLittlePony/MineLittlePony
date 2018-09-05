@@ -1,8 +1,8 @@
-package com.minelittlepony.render;
+package com.minelittlepony.render.skull;
 
 import com.minelittlepony.model.components.ModelPonyHead;
 import com.minelittlepony.pony.data.IPony;
-import com.minelittlepony.render.PonySkullRenderer.ISkull;
+import com.minelittlepony.render.skull.PonySkullRenderer.ISkull;
 
 public abstract class PonySkull implements ISkull {
 

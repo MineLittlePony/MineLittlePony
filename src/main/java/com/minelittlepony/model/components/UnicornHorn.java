@@ -2,8 +2,8 @@ package com.minelittlepony.model.components;
 
 import com.minelittlepony.model.capabilities.ICapitated;
 import com.minelittlepony.model.capabilities.IModelPart;
-import com.minelittlepony.render.HornGlowRenderer;
-import com.minelittlepony.render.PonyRenderer;
+import com.minelittlepony.render.model.GlowRenderer;
+import com.minelittlepony.render.model.PonyRenderer;
 
 import net.minecraft.client.model.ModelBase;
 
@@ -14,7 +14,7 @@ import static com.minelittlepony.model.PonyModelConstants.*;
 public class UnicornHorn implements IModelPart {
 
     protected PonyRenderer horn;
-    protected HornGlowRenderer glow;
+    protected GlowRenderer glow;
 
     protected boolean isVisible = true;
 
@@ -24,7 +24,7 @@ public class UnicornHorn implements IModelPart {
 
     public <T extends ModelBase & ICapitated> UnicornHorn(T pony, float yOffset, float stretch, int x, int y, int z) {
         horn = new PonyRenderer(pony, 0, 3);
-        glow = new HornGlowRenderer(pony, 0, 3);
+        glow = new GlowRenderer(pony, 0, 3);
 
         horn.offset(HORN_X + x, HORN_Y + y, HORN_Z + z)
             .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)

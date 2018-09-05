@@ -1,7 +1,7 @@
 package com.minelittlepony.model.components;
 
 import com.minelittlepony.pony.data.PonyGender;
-import com.minelittlepony.render.plane.PlaneRenderer;
+import com.minelittlepony.render.model.PlaneRenderer;
 
 import net.minecraft.client.model.ModelBase;
 

@@ -1,8 +1,8 @@
 package com.minelittlepony.model.capabilities;
 
-import com.minelittlepony.render.PonyRenderer;
-
 import net.minecraft.util.EnumHandSide;
+
+import com.minelittlepony.render.model.PonyRenderer;
 
 public interface IModelUnicorn extends IModel {
     PonyRenderer getUnicornArmForSide(EnumHandSide side);

@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.minelittlepony.render.LevitatingItemRenderer;
-import com.minelittlepony.render.PonySkullRenderer;
+import com.minelittlepony.render.skull.PonySkullRenderer;
 
 import net.minecraft.client.renderer.GlStateManager;
 

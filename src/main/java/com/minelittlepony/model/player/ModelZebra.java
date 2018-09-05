@@ -1,9 +1,9 @@
 package com.minelittlepony.model.player;
 
-import com.minelittlepony.render.PonyRenderer;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+
+import com.minelittlepony.render.model.PonyRenderer;
 
 public class ModelZebra extends ModelEarthPony {
 

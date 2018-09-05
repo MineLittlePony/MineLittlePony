@@ -1,28 +1,29 @@
-package com.minelittlepony.render;
-
-import com.minelittlepony.util.coordinates.Color;
+package com.minelittlepony.render.model;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 
 import org.lwjgl.opengl.GL11;
 
-public class HornGlowRenderer extends AbstractPonyRenderer<HornGlowRenderer> {
+import com.minelittlepony.util.render.AbstractBoxRenderer;
+import com.minelittlepony.util.render.Color;
+
+public class GlowRenderer extends AbstractBoxRenderer<GlowRenderer> {
 
     int tint;
     float alpha = 1;
 
-    public HornGlowRenderer(ModelBase model, int x, int y) {
+    public GlowRenderer(ModelBase model, int x, int y) {
         super(model, x, y);
     }
 
-    public HornGlowRenderer setAlpha(float alpha) {
+    public GlowRenderer setAlpha(float alpha) {
         this.alpha = alpha;
 
         return this;
     }
 
-    public HornGlowRenderer setTint(int tint) {
+    public GlowRenderer setTint(int tint) {
         this.tint = tint;
 
         return this;
@@ -34,7 +35,7 @@ public class HornGlowRenderer extends AbstractPonyRenderer<HornGlowRenderer> {
 
     @Override
     public void createBox(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor, boolean mirrored) {
-        cubeList.add(new HornGlow(this, textureOffsetX, textureOffsetY, offX, offY, offZ, width, height, depth, scaleFactor, alpha));
+        cubeList.add(new ModelGlow(this, textureOffsetX, textureOffsetY, offX, offY, offZ, width, height, depth, scaleFactor, alpha));
     }
 
     @Override
@@ -46,7 +47,7 @@ public class HornGlowRenderer extends AbstractPonyRenderer<HornGlowRenderer> {
     }
 
     @Override
-    protected HornGlowRenderer copySelf() {
-        return new HornGlowRenderer(baseModel, textureOffsetX, textureOffsetY);
+    protected GlowRenderer copySelf() {
+        return new GlowRenderer(baseModel, textureOffsetX, textureOffsetY);
     }
 }

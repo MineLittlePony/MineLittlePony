@@ -1,6 +1,6 @@
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-package com.minelittlepony.render.plane;
+package com.minelittlepony.render.model;
 
 import mcp.MethodsReturnNonnullByDefault;
 

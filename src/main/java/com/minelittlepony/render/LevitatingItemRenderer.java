@@ -5,7 +5,8 @@ import org.lwjgl.opengl.GL14;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IRenderItem;
 import com.minelittlepony.pony.data.IPony;
-import com.minelittlepony.util.coordinates.Color;
+import com.minelittlepony.render.skull.PonySkullRenderer;
+import com.minelittlepony.util.render.Color;
 import com.mumfrey.liteloader.client.overlays.IMinecraft;
 
 import net.minecraft.client.Minecraft;
