@@ -12,16 +12,16 @@ import com.voxelmodpack.hdskins.HDSkinManager;
  * Storage container for MineLP client settings.
  */
 @ExposableOptions(filename = "minelittlepony", strategy = ConfigStrategy.Unversioned)
-public class PonyConfig extends SensibleConfig implements Exposable {
+public class PonyConfig extends SensibleConfig implements Exposable, IPonyConfig {
 
     @Expose private PonyLevel ponylevel = PonyLevel.PONIES;
 
-    @Expose public boolean sizes = true;
-    @Expose public boolean snuzzles = true;
-    @Expose public boolean hd = true;
-    @Expose public boolean showscale = true;
-    @Expose public boolean fpsmagic = true;
-    @Expose public boolean ponyskulls = true;
+    @Expose public boolean sizes = IPonyConfig.super.getSizes();
+    @Expose public boolean snuzzles = IPonyConfig.super.getSnuzzles();
+    @Expose public boolean hd = IPonyConfig.super.getHD();
+    @Expose public boolean showscale = IPonyConfig.super.getShowScale();
+    @Expose public boolean fpsmagic = IPonyConfig.super.getFPSMagic();
+    @Expose public boolean ponyskulls = IPonyConfig.super.getPonySkulls();
 
     public enum PonySettings implements Setting {
         SIZES,
@@ -40,18 +40,32 @@ public class PonyConfig extends SensibleConfig implements Exposable {
     @Expose public boolean guardians = true;
     @Expose public boolean endermen = true;
 
-    /**
-     * Gets the current PonyLevel. That is the level of ponies you would like to see.
-     *
-     * @param ignorePony true to ignore whatever value the setting has.
-     */
-    public PonyLevel getEffectivePonyLevel(boolean ignorePony) {
-        return ignorePony ? PonyLevel.BOTH : getPonyLevel();
+    @Override
+    public boolean getSizes() {
+        return sizes;
+    }
+    @Override
+    public boolean getSnuzzles() {
+        return snuzzles;
+    }
+    @Override
+    public boolean getHD() {
+        return hd;
+    }
+    @Override
+    public boolean getShowScale() {
+        return showscale;
+    }
+    @Override
+    public boolean getFPSMagic() {
+        return fpsmagic;
+    }
+    @Override
+    public boolean getPonySkulls() {
+        return ponyskulls;
     }
 
-    /**
-     * Actually gets the pony level value. No option to ignore reality here.
-     */
+    @Override
     public PonyLevel getPonyLevel() {
         if (ponylevel == null) {
             ponylevel = PonyLevel.PONIES;
@@ -70,9 +84,5 @@ public class PonyConfig extends SensibleConfig implements Exposable {
             this.ponylevel = ponylevel;
             HDSkinManager.INSTANCE.parseSkins();
         }
-    }
-
-    public float getGlobalScaleFactor() {
-        return showscale ? 0.9F : 1;
     }
 }
