@@ -58,9 +58,9 @@ public class ModelBatWing<T extends AbstractPonyModel & IModelPegasus> extends M
         extended.child(0).child(skin);
 
         if (right) {
-            skin       .addWestPlane(0.5F, -1, -7, 16, 8, scale);
+            skin       .west(0.5F, -1, -7, 16, 8, scale);
         } else {
-            skin.flip().addWestPlane(0.5F, -1, -7, 16, 8, scale);
+            skin.flip().west(0.5F, -1, -7, 16, 8, scale);
         }
     }
 

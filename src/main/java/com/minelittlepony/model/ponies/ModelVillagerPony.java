@@ -89,10 +89,10 @@ public class ModelVillagerPony extends ModelAlicorn {
         apron = new PlaneRenderer(this, 56, 16)
                .offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
                .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-               .addBackPlane(-4, -4, -9, 8, 10, stretch);
+               .south(-4, -4, -9, 8, 10, stretch);
         trinket = new PlaneRenderer(this, 0, 3)
                .offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
                .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-               .addBackPlane(-2, -4, -9, 4, 5, stretch);
+               .south(-2, -4, -9, 4, 5, stretch);
     }
 }

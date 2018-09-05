@@ -572,31 +572,31 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         upperTorso = new PlaneRenderer(this, 24, 0);
         upperTorso.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
                   .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-                    .tex(24, 0)    .addEastPlane( 4, -4, -4, 8, 8, stretch)
-                    .tex(4,  0)    .addEastPlane( 4, -4,  4, 8, 4, stretch)
-                    .tex(56, 0)  .addBottomPlane(-4,  4, -4, 8, 8, stretch)
-                    .tex(36, 16)   .addBackPlane(-4, -4,  8, 8, 4, stretch)
-                                   .addBackPlane(-4,  0,  8, 8, 4, stretch)
-                                 .addBottomPlane(-4,  4,  4, 8, 4, stretch)
-                .flipZ().tex(32, 20).addTopPlane(-4, -4, -4, 8, 12, stretch)
-                        .tex(24, 0).addWestPlane(-4, -4, -4, 8, 8, stretch)
-                        .tex(4, 0) .addWestPlane(-4, -4,  4, 8, 4, stretch)
+                    .tex(24, 0)    .east( 4, -4, -4, 8, 8, stretch)
+                    .tex(4,  0)    .east( 4, -4,  4, 8, 4, stretch)
+                    .tex(56, 0)  .bottom(-4,  4, -4, 8, 8, stretch)
+                    .tex(36, 16)  .south(-4, -4,  8, 8, 4, stretch)
+                                  .south(-4,  0,  8, 8, 4, stretch)
+                                 .bottom(-4,  4,  4, 8, 4, stretch)
+                .flipZ().tex(32, 20).top(-4, -4, -4, 8, 12, stretch)
+                        .tex(24, 0).west(-4, -4, -4, 8, 8, stretch)
+                        .tex(4, 0) .west(-4, -4,  4, 8, 4, stretch)
                 // Tail stub
               .child(0)
-                .tex(32, 0).addTopPlane(-1, 2, 2, 2, 6, stretch)
-                        .addBottomPlane(-1, 4, 2, 2, 6, stretch)
-                          .addEastPlane( 1, 2, 2, 2, 6, stretch)
-                          .addBackPlane(-1, 2, 8, 2, 2, stretch)
-                  .flipZ().addWestPlane(-1, 2, 2, 2, 6, stretch)
+                .tex(32, 0).top(-1, 2, 2, 2, 6, stretch)
+                        .bottom(-1, 4, 2, 2, 6, stretch)
+                          .east( 1, 2, 2, 2, 6, stretch)
+                         .south(-1, 2, 8, 2, 2, stretch)
+                  .flipZ().west(-1, 2, 2, 2, 6, stretch)
                   .rotate(0.5F, 0, 0);
 
         neck = new PlaneRenderer(this, 0, 16)
             .at(NECK_CENTRE_X, NECK_CENTRE_Y, NECK_CENTRE_Z)
             .rotate(NECK_ROT_X, 0, 0).around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-            .addFrontPlane(0, 0, 0, 4, 4, stretch)
-            .addBackPlane(0, 0, 4, 4, 4, stretch)
-            .addEastPlane(4, 0, 0, 4, 4, stretch)
-            .addWestPlane(0, 0, 0, 4, 4, stretch);
+            .north(0, 0, 0, 4, 4, stretch)
+            .south(0, 0, 4, 4, 4, stretch)
+             .east(4, 0, 0, 4, 4, stretch)
+             .west(0, 0, 0, 4, 4, stretch);
     }
 
     protected void preInitLegs() {

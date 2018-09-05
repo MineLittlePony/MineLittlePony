@@ -43,27 +43,27 @@ public class PlaneRenderer extends AbstractBoxRenderer<PlaneRenderer> {
         return this;
     }
 
-    public PlaneRenderer addTopPlane(float offX, float offY, float offZ, int width, int depth, float scale) {
+    public PlaneRenderer top(float offX, float offY, float offZ, int width, int depth, float scale) {
         return addPlane(offX, offY, offZ, width, 0, depth, scale, Plane.UP);
     }
 
-    public PlaneRenderer addBottomPlane(float offX, float offY, float offZ, int width, int depth, float scale) {
+    public PlaneRenderer bottom(float offX, float offY, float offZ, int width, int depth, float scale) {
         return addPlane(offX, offY, offZ, width, 0, depth, scale, Plane.DOWN);
     }
 
-    public PlaneRenderer addWestPlane(float offX, float offY, float offZ, int height, int depth, float scale) {
+    public PlaneRenderer west(float offX, float offY, float offZ, int height, int depth, float scale) {
         return addPlane(offX, offY, offZ, 0, height, depth, scale, Plane.WEST);
     }
 
-    public PlaneRenderer addEastPlane(float offX, float offY, float offZ, int height, int depth, float scale) {
+    public PlaneRenderer east(float offX, float offY, float offZ, int height, int depth, float scale) {
         return addPlane(offX, offY, offZ, 0, height, depth, scale, Plane.EAST);
     }
 
-    public PlaneRenderer addFrontPlane(float offX, float offY, float offZ, int width, int height, float scale) {
+    public PlaneRenderer north(float offX, float offY, float offZ, int width, int height, float scale) {
         return addPlane(offX, offY, offZ - scale * 2, width, height, 0, scale, Plane.NORTH);
     }
 
-    public PlaneRenderer addBackPlane(float offX, float offY, float offZ, int width, int height, float scale) {
+    public PlaneRenderer south(float offX, float offY, float offZ, int width, int height, float scale) {
         return addPlane(offX, offY, offZ + scale * 2, width, height, 0, scale, Plane.SOUTH);
     }
 }
