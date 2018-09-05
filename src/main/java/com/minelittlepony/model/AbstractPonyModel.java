@@ -755,6 +755,11 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         }
     }
 
+    @Override
+    public float getModelHeight() {
+        return 2;
+    }
+
     /**
      * Sets the model's various rotation angles.
      *

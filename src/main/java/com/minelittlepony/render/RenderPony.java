@@ -102,15 +102,11 @@ public class RenderPony<T extends EntityLivingBase> {
         // We start by negating the height calculation done by mohjong.
         float y = -(entity.height + 0.5F - (entity.isSneaking() ? 0.25F : 0));
 
-        if (entity.isChild()) {
-            y += 0.5F;
-        }
-
         // Then we add our own offsets.
-        y += entity.height * getScaleFactor() + 0.25F;
+        y += ponyModel.getModelHeight() * getScaleFactor() + 0.25F;
 
         if (entity.isSneaking()) {
-            y -= 0.125F;
+            y -= 0.25F;
         }
 
         return initial + y;

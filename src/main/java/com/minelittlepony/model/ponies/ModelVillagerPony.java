@@ -20,6 +20,7 @@ public class ModelVillagerPony extends ModelAlicorn {
     private int profession;
 
     public boolean special;
+    public boolean special2;
 
     public ModelVillagerPony() {
         super(false);
@@ -36,6 +37,7 @@ public class ModelVillagerPony extends ModelAlicorn {
     public void setLivingAnimations(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTickTime) {
         profession = getProfession(entity);
         special = "Derpy".equals(entity.getCustomNameTag());
+        special2 = special && entity.getUniqueID().getLeastSignificantBits() % 20 == 0;
     }
 
     @Override
@@ -55,9 +57,14 @@ public class ModelVillagerPony extends ModelAlicorn {
     protected void renderHead(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         super.renderHead(entity, move, swing, ticks, headYaw, headPitch, scale);
 
-        if (special && entity.getUniqueID().getLeastSignificantBits() % 20 == 0) {
+        if (special2) {
             muffin.renderPart(scale);
         }
+    }
+
+    @Override
+    public float getModelHeight() {
+        return special2 ? 2.3F : 2;
     }
 
     @Override

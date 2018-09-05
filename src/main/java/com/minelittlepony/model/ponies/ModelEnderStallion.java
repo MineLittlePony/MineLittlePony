@@ -146,6 +146,11 @@ public class ModelEnderStallion extends ModelSkeletonPony {
     }
 
     @Override
+    public float getModelHeight() {
+        return 3;
+    }
+
+    @Override
     public float getWingRotationFactor(float ticks) {
         return MathHelper.sin(ticks) + WING_ROT_Z_SNEAK;
     }

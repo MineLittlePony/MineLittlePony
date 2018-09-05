@@ -4,6 +4,7 @@ import com.minelittlepony.model.ModelMobPony;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.AbstractSkeleton;
+import net.minecraft.entity.monster.EntityWitherSkeleton;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
@@ -13,9 +14,12 @@ public class ModelSkeletonPony extends ModelMobPony {
 
     public boolean isUnicorn;
 
+    public boolean isWithered;
+
     @Override
     public void setLivingAnimations(EntityLivingBase entity, float move, float swing, float ticks) {
         isUnicorn = entity.getUniqueID().getLeastSignificantBits() % 3 != 0;
+        isWithered = entity instanceof EntityWitherSkeleton;
 
         rightArmPose = ArmPose.EMPTY;
         leftArmPose = ArmPose.EMPTY;
@@ -72,6 +76,11 @@ public class ModelSkeletonPony extends ModelMobPony {
     @Override
     protected float getLegRotationX() {
         return 3;
+    }
+
+    @Override
+    public float getModelHeight() {
+        return isWithered ? 2.5F : 2;
     }
 
     @Override

@@ -82,6 +82,11 @@ public class ModelWitchPony extends ModelZebra {
     }
 
     @Override
+    public float getModelHeight() {
+        return 2.5F;
+    }
+
+    @Override
     protected void renderHead(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         super.renderHead(entity, move, swing, ticks, headYaw, headPitch, scale);
 
