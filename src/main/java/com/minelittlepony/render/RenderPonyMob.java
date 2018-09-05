@@ -80,6 +80,11 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     }
 
     @Override
+    protected void renderLivingLabel(T entity, String name, double x, double y, double z, int maxDistance) {
+        super.renderLivingLabel(entity, name, x, renderPony.getNamePlateYOffset(entity, y), z, maxDistance);
+    }
+
+    @Override
     @Nonnull
     protected final ResourceLocation getEntityTexture(T entity) {
         return HDSkinManager.INSTANCE.getConvertedSkin(getTexture(entity));

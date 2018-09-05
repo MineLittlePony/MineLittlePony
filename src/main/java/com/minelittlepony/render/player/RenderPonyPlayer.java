@@ -76,6 +76,11 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
     }
 
     @Override
+    protected void renderLivingLabel(AbstractClientPlayer entity, String name, double x, double y, double z, int maxDistance) {
+        super.renderLivingLabel(entity, name, x, renderPony.getNamePlateYOffset(entity, y), z, maxDistance);
+    }
+
+    @Override
     public void doRenderShadowAndFire(Entity player, double x, double y, double z, float yaw, float ticks) {
         if (player.isRiding() && ((AbstractClientPlayer)player).isPlayerSleeping()) {
             super.doRenderShadowAndFire(player, x, y, z, yaw, ticks);
