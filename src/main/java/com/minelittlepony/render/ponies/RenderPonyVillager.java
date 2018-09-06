@@ -2,12 +2,8 @@ package com.minelittlepony.render.ponies;
 
 import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.render.RenderPonyMob;
+import com.minelittlepony.util.render.ITextureSupplier;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.passive.EntityVillager;
@@ -15,19 +11,17 @@ import net.minecraft.util.ResourceLocation;
 
 public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
 
-    private static final ResourceLocation[] PROFESSIONS = {
+    private static final ITextureSupplier<Integer> PROFESSIONS = new VillagerProfessionTextureCache(
+            "textures/entity/villager/%d_pony.png",
             new ResourceLocation("minelittlepony", "textures/entity/villager/farmer_pony.png"),
             new ResourceLocation("minelittlepony", "textures/entity/villager/librarian_pony.png"),
             new ResourceLocation("minelittlepony", "textures/entity/villager/priest_pony.png"),
             new ResourceLocation("minelittlepony", "textures/entity/villager/smith_pony.png"),
             new ResourceLocation("minelittlepony", "textures/entity/villager/butcher_pony.png"),
             new ResourceLocation("minelittlepony", "textures/entity/villager/villager_pony.png")
-    };
+    );
     private static final ResourceLocation EGG = new ResourceLocation("minelittlepony", "textures/entity/villager/silly_pony.png");
     private static final ResourceLocation EGG_2 = new ResourceLocation("minelittlepony", "textures/entity/villager/tiny_silly_pony.png");
-
-
-    private static final Map<Integer, ResourceLocation> MOD_PROFESSIONS = new HashMap<>();
 
     public RenderPonyVillager(RenderManager manager) {
         super(manager, PMAPI.villager);
@@ -41,18 +35,6 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
 
     @Override
     protected ResourceLocation getTexture(EntityVillager entity) {
-        ResourceLocation texture = getVillagerTexture(entity);
-
-        try {
-            Minecraft.getMinecraft().getResourceManager().getResource(texture);
-        } catch (IOException e) {
-            return PROFESSIONS[5];
-        }
-
-        return texture;
-    }
-
-    private ResourceLocation getVillagerTexture(EntityVillager entity) {
         if ("Derpy".equals(entity.getCustomNameTag())) {
             if (entity.isChild()) {
                 return EGG_2;
@@ -60,16 +42,6 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
             return EGG;
         }
 
-        int profession = entity.getProfession();
-
-        if (profession >= PROFESSIONS.length) {
-            return MOD_PROFESSIONS.computeIfAbsent(profession, this::getModProfessionResource);
-        }
-
-        return PROFESSIONS[profession];
-    }
-
-    protected ResourceLocation getModProfessionResource(int professionId) {
-        return new ResourceLocation("minelittlepony", String.format("textures/entity/villager/%d_pony.png", professionId));
+        return PROFESSIONS.supplyTexture(entity.getProfession());
     }
 }

@@ -2,6 +2,7 @@ package com.minelittlepony.render.ponies;
 
 import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.render.RenderPonyMob;
+import com.minelittlepony.util.render.ITextureSupplier;
 
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.monster.EntityZombieVillager;
@@ -9,14 +10,15 @@ import net.minecraft.util.ResourceLocation;
 
 public class RenderPonyZombieVillager extends RenderPonyMob<EntityZombieVillager> {
 
-    private static final ResourceLocation[] PROFESSIONS = {
+    private static final ITextureSupplier<Integer> PROFESSIONS = new VillagerProfessionTextureCache(
+            "textures/entity/zombie_villager/zombie_%d_pony.png",
             new ResourceLocation("minelittlepony", "textures/entity/zombie_villager/zombie_farmer_pony.png"),
             new ResourceLocation("minelittlepony", "textures/entity/zombie_villager/zombie_librarian_pony.png"),
             new ResourceLocation("minelittlepony", "textures/entity/zombie_villager/zombie_priest_pony.png"),
             new ResourceLocation("minelittlepony", "textures/entity/zombie_villager/zombie_smith_pony.png"),
             new ResourceLocation("minelittlepony", "textures/entity/zombie_villager/zombie_butcher_pony.png"),
             new ResourceLocation("minelittlepony", "textures/entity/zombie_villager/zombie_villager_pony.png")
-    };
+    );
 
     public RenderPonyZombieVillager(RenderManager manager) {
         super(manager, PMAPI.villager);
@@ -24,7 +26,7 @@ public class RenderPonyZombieVillager extends RenderPonyMob<EntityZombieVillager
 
     @Override
     protected ResourceLocation getTexture(EntityZombieVillager entity) {
-        return PROFESSIONS[entity.getProfession() % PROFESSIONS.length];
+        return PROFESSIONS.supplyTexture(entity.getProfession());
     }
 
     @Override
