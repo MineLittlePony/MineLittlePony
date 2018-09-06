@@ -31,4 +31,8 @@ public class SkinUpload {
     public MinecraftProfileTexture.Type getType() {
         return type;
     }
+
+    public String getSchemaAction() {
+        return image == null ? "delete" : image.getScheme();
+    }
 }

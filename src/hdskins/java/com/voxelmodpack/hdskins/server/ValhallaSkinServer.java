@@ -9,7 +9,6 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
-import com.voxelmodpack.hdskins.util.CallableFutures;
 import com.voxelmodpack.hdskins.util.IndentedToStringStyle;
 import com.voxelmodpack.hdskins.util.MoreHttpResponses;
 import net.minecraft.client.Minecraft;
@@ -29,7 +28,6 @@ import java.net.URI;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Nullable;
 
@@ -58,30 +56,26 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     @Override
-    public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, SkinUpload skin) {
-        URI image = skin.getImage();
-        Map<String, String> metadata = skin.getMetadata();
-        MinecraftProfileTexture.Type type = skin.getType();
+    public SkinUploadResponse performSkinUpload(Session session, SkinUpload upload) throws IOException, AuthenticationException {
+        URI image = upload.getImage();
+        Map<String, String> metadata = upload.getMetadata();
+        MinecraftProfileTexture.Type type = upload.getType();
 
-        return CallableFutures.asyncFailableFuture(() -> {
+        authorize(session);
+
+        try {
+            return upload(session, image, type, metadata);
+        } catch (IOException e) {
+            if (e.getMessage().equals("Authorization failed")) {
+                accessToken = null;
                 authorize(session);
-
-                try {
-                    return upload(session, image, type, metadata);
-                } catch (IOException e) {
-                    if (e.getMessage().equals("Authorization failed")) {
-                        accessToken = null;
-                        authorize(session);
-                        return upload(session, image, type, metadata);
-                    }
-                    throw e;
-                }
-        }, HDSkinManager.skinUploadExecutor);
+                return upload(session, image, type, metadata);
+            }
+            throw e;
+        }
     }
 
-    private SkinUploadResponse upload(Session session, @Nullable URI image,
-            MinecraftProfileTexture.Type type, Map<String, String> metadata)
-            throws IOException {
+    private SkinUploadResponse upload(Session session, @Nullable URI image, MinecraftProfileTexture.Type type, Map<String, String> metadata) throws IOException {
         GameProfile profile = session.getProfile();
 
         if (image == null) {

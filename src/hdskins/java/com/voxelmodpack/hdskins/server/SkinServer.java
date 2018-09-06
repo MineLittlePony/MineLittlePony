@@ -32,7 +32,11 @@ public interface SkinServer extends Exposable {
 
     MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException;
 
-    CompletableFuture<SkinUploadResponse> uploadSkin(Session session, SkinUpload upload);
+    SkinUploadResponse performSkinUpload(Session session, SkinUpload upload) throws IOException, AuthenticationException;
+
+    default CompletableFuture<SkinUploadResponse> uploadSkin(Session session, SkinUpload upload) {
+        return CallableFutures.asyncFailableFuture(() -> performSkinUpload(session, upload), HDSkinManager.skinUploadExecutor);
+    }
 
     default CompletableFuture<MinecraftTexturesPayload> getPreviewTextures(GameProfile profile) {
         return CallableFutures.asyncFailableFuture(() -> loadProfileData(profile), HDSkinManager.skinDownloadExecutor);

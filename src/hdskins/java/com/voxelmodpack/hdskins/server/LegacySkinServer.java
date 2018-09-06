@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
@@ -99,7 +100,6 @@ public class LegacySkinServer implements SkinServer {
 
             // Add the ETag onto the end of the texture hash. Should properly cache the textures.
             return new MinecraftProfileTexture(url, null) {
-
                 @Override
                 public String getHash() {
                     return super.getHash() + eTag;
@@ -109,33 +109,32 @@ public class LegacySkinServer implements SkinServer {
     }
 
     @Override
-    public CompletableFuture<SkinUploadResponse> uploadSkin(Session session, SkinUpload upload) {
+    public SkinUploadResponse performSkinUpload(Session session, SkinUpload upload) throws IOException, AuthenticationException {
         if (Strings.isNullOrEmpty(gateway)) {
-            return CallableFutures.failedFuture(gatewayUnsupported());
+            throw gatewayUnsupported();
         }
 
-        return CallableFutures.asyncFailableFuture(() -> {
-            SkinServer.verifyServerConnection(session, SERVER_ID);
+        SkinServer.verifyServerConnection(session, SERVER_ID);
 
-            NetClient client = new NetClient("POST", gateway);
+        NetClient client = new NetClient("POST", gateway);
 
-            client.putFormData(createHeaders(session, upload), "image/png");
+        client.putFormData(createHeaders(session, upload), "image/png");
 
-            if (upload.getImage() != null) {
-                client.putFile(upload.getType().toString().toLowerCase(Locale.US), "image/png", upload.getImage());
-            }
+        if (upload.getImage() != null) {
+            client.putFile(upload.getType().toString().toLowerCase(Locale.US), "image/png", upload.getImage());
+        }
 
-            String response = client.send().text();
+        String response = client.send().text();
 
-            if (response.startsWith("ERROR: ")) {
-                response = response.substring(7);
-            }
-            if (!response.equalsIgnoreCase("OK") && !response.endsWith("OK")) {
-                throw new IOException(response);
-            }
-            return new SkinUploadResponse(response);
+        if (response.startsWith("ERROR: ")) {
+            response = response.substring(7);
+        }
 
-        }, HDSkinManager.skinUploadExecutor);
+        if (!response.equalsIgnoreCase("OK") && !response.endsWith("OK")) {
+            throw new IOException(response);
+        }
+
+        return new SkinUploadResponse(response);
     }
 
     private UnsupportedOperationException gatewayUnsupported() {
