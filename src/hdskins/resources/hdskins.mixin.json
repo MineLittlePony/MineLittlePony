@@ -8,7 +8,6 @@
         "MixinGuiMainMenu",
         "MixinImageBufferDownload",
         "MixinNetworkPlayerInfo",
-        "MixinNetworkPlayerInfo$1",
         "MixinSkullRenderer"
     ]
 }

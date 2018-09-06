@@ -8,6 +8,7 @@ import com.voxelmodpack.hdskins.INetworkPlayerInfo;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.client.resources.SkinManager;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -80,6 +81,20 @@ public abstract class MixinNetworkPlayerInfo implements INetworkPlayerInfo {
             customProfiles.put(type, profileTexture);
         });
     }
+
+    @Redirect(method = "loadPlayerTextures",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/client/resources/SkinManager;loadProfileTextures("
+                            + "Lcom/mojang/authlib/GameProfile;"
+                            + "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"
+                            + "Z)V"))
+    private void redirectLoadPlayerTextures(SkinManager skinManager, GameProfile profile, SkinManager.SkinAvailableCallback callback,
+            boolean requireSecure) {
+        skinManager.loadProfileTextures(profile, (typeIn, location, profileTexture) -> {
+            HDSkinManager.INSTANCE.parseSkin(profile, typeIn, location, profileTexture, callback);
+        }, requireSecure);
+    }
+
 
     @Override
     public void reloadTextures() {

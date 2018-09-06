@@ -1,5 +1,6 @@
 package com.voxelmodpack.hdskins.util;
 
+import com.google.common.util.concurrent.Runnables;
 import net.minecraft.client.Minecraft;
 
 import java.util.concurrent.Callable;
@@ -32,17 +33,24 @@ public class CallableFutures {
         return ret;
     }
 
-    public static <U, T> BiFunction<? super T, Throwable, ? extends U> callback(Runnable c) {
+    public static <T> BiFunction<? super T, Throwable, Void> callback(Runnable c) {
         return (o, t) -> {
-            c.run();
+            if (t != null) {
+                t.printStackTrace();
+            } else {
+                c.run();
+            }
             return null;
         };
     }
 
-    public static void scheduleTask(Runnable task) {
+    public static CompletableFuture<Void> scheduleTask(Runnable task) {
         // schedule a task for next tick.
-        executor.schedule(() -> {
-            Minecraft.getMinecraft().addScheduledTask(task);
-        }, 50, TimeUnit.MILLISECONDS);
+        return CompletableFuture.runAsync(Runnables.doNothing(), delayed(50, TimeUnit.MILLISECONDS))
+                .handleAsync(callback(task), Minecraft.getMinecraft()::addScheduledTask);
+    }
+
+    private static Executor delayed(long time, TimeUnit unit) {
+        return (task) -> executor.schedule(task, time, unit);
     }
 }

@@ -38,6 +38,7 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.SkinManager;
+import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -165,9 +166,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     public void fetchAndLoadSkins(GameProfile profile, SkinManager.SkinAvailableCallback callback) {
         loadProfileTextures(profile).thenAcceptAsync(m -> m.forEach((type, pp) -> {
             loadTexture(type, pp, (typeIn, location, profileTexture) -> {
-                parseSkin(profile, typeIn, location, profileTexture);
-
-                callback.skinAvailable(typeIn, location, profileTexture);
+                parseSkin(profile, typeIn, location, profileTexture, callback);
             });
         }), Minecraft.getMinecraft()::addScheduledTask);
     }
@@ -301,7 +300,8 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                 .flatMap(a -> a.getPlayerInfoMap().stream());
     }
 
-    public void parseSkin(GameProfile profile, Type type, ResourceLocation resource, MinecraftProfileTexture texture) {
+    public void parseSkin(GameProfile profile, Type type, ResourceLocation resource, MinecraftProfileTexture texture,
+            SkinAvailableCallback callback) {
 
         CallableFutures.scheduleTask(() -> {
 
@@ -325,6 +325,8 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             if (wasNull && !metadata.isEmpty()) {
                 ProfileTextureUtil.setMetadata(texture, metadata);
             }
+
+            callback.skinAvailable(type, resource, texture);
         });
     }
 
