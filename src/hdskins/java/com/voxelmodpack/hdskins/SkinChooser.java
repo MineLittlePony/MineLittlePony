@@ -1,9 +1,10 @@
 package com.voxelmodpack.hdskins;
 
+import com.voxelmodpack.hdskins.upload.IFileDialog;
+import com.voxelmodpack.hdskins.upload.ThreadOpenFilePNG;
+import com.voxelmodpack.hdskins.upload.ThreadSaveFilePNG;
 import com.voxelmodpack.hdskins.util.MoreHttpResponses;
-import com.voxelmodpack.hdskins.upload.awt.IFileDialog;
-import com.voxelmodpack.hdskins.upload.awt.ThreadSaveFilePNG;
-import com.voxelmodpack.hdskins.upload.awt.ThreadOpenFilePNG;
+
 import net.minecraft.client.Minecraft;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;

@@ -5,6 +5,7 @@ import com.minelittlepony.gui.Checkbox;
 import com.minelittlepony.gui.SettingsPanel;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.LiteModHDSkins;
+import com.voxelmodpack.hdskins.upload.GLWindow;
 
 public class HDSkinsConfigPanel extends SettingsPanel {
     @Override

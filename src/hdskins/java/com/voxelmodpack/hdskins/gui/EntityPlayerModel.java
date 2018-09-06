@@ -4,9 +4,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-import com.voxelmodpack.hdskins.LocalTexture;
-import com.voxelmodpack.hdskins.LocalTexture.IBlankSkinSupplier;
 import com.voxelmodpack.hdskins.SkinUploader;
+import com.voxelmodpack.hdskins.resources.LocalTexture;
+import com.voxelmodpack.hdskins.resources.LocalTexture.IBlankSkinSupplier;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.entity.EntityLivingBase;

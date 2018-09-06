@@ -12,11 +12,12 @@ import com.mumfrey.liteloader.modconfig.ConfigStrategy;
 import com.mumfrey.liteloader.modconfig.ExposableOptions;
 import com.mumfrey.liteloader.util.ModUtilities;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
-import com.voxelmodpack.hdskins.gui.GLWindow;
 import com.voxelmodpack.hdskins.gui.HDSkinsConfigPanel;
 import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
-import com.voxelmodpack.hdskins.skins.SkinServer;
-import com.voxelmodpack.hdskins.skins.SkinServerSerializer;
+import com.voxelmodpack.hdskins.server.SkinServer;
+import com.voxelmodpack.hdskins.server.SkinServerSerializer;
+import com.voxelmodpack.hdskins.upload.GLWindow;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.resources.IReloadableResourceManager;

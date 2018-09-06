@@ -14,10 +14,11 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
+import com.voxelmodpack.hdskins.resources.PreviewTextureManager;
+import com.voxelmodpack.hdskins.server.SkinServer;
+import com.voxelmodpack.hdskins.server.SkinUpload;
 import com.voxelmodpack.hdskins.util.MoreHttpResponses;
 import com.voxelmodpack.hdskins.util.NetClient;
-import com.voxelmodpack.hdskins.skins.SkinServer;
-import com.voxelmodpack.hdskins.skins.SkinUpload;
 
 import java.io.Closeable;
 import java.io.File;

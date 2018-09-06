@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.voxelmodpack.hdskins.gui.GLWindow;
+import com.voxelmodpack.hdskins.upload.GLWindow;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.crash.CrashReport;

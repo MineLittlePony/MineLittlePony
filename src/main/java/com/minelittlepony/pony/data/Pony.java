@@ -3,7 +3,8 @@ package com.minelittlepony.pony.data;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.minelittlepony.MineLittlePony;
-import com.voxelmodpack.hdskins.IBufferedTexture;
+import com.voxelmodpack.hdskins.resources.texture.IBufferedTexture;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.ITextureObject;
