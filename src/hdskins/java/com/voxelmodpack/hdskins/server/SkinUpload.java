@@ -1,22 +1,33 @@
 package com.voxelmodpack.hdskins.server;
 
+import net.minecraft.util.Session;
+
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 import java.net.URI;
 import java.util.Map;
 
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 
+@Immutable
 public class SkinUpload {
 
-    private URI image;
-    private Map<String, String> metadata;
-    private MinecraftProfileTexture.Type type;
+    private final Session session;
+    private final URI image;
+    private final Map<String, String> metadata;
+    private final Type type;
 
-    public SkinUpload(MinecraftProfileTexture.Type type, @Nullable URI image, Map<String, String> metadata) {
+    public SkinUpload(Session session, Type type, @Nullable URI image, Map<String, String> metadata) {
+        this.session = session;
         this.image = image;
         this.metadata = metadata;
         this.type = type;
+    }
+
+    public Session getSession() {
+        return session;
     }
 
     @Nullable

@@ -179,7 +179,7 @@ public class SkinUploader implements Closeable {
         sendingSkin = true;
         status = statusMsg;
 
-        return gateway.uploadSkin(mc.getSession(), new SkinUpload(skinType, localSkin == null ? null : localSkin.toURI(), skinMetadata)).handle((response, throwable) -> {
+        return gateway.uploadSkin(new SkinUpload(mc.getSession(), skinType, localSkin == null ? null : localSkin.toURI(), skinMetadata)).handle((response, throwable) -> {
             if (throwable == null) {
                 LiteLoaderLogger.info("Upload completed with: %s", response);
                 setError(null);

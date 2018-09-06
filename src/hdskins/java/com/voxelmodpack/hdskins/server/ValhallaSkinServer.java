@@ -1,7 +1,6 @@
 package com.voxelmodpack.hdskins.server;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
@@ -14,22 +13,17 @@ import com.voxelmodpack.hdskins.util.MoreHttpResponses;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 import org.apache.http.HttpHeaders;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.message.BasicNameValuePair;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Locale;
-import java.util.Map;
 import java.util.UUID;
-
-import javax.annotation.Nullable;
 
 @ServerType("valhalla")
 public class ValhallaSkinServer implements SkinServer {
@@ -45,88 +39,80 @@ public class ValhallaSkinServer implements SkinServer {
 
     @Override
     public MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException {
-
         try (MoreHttpResponses response = MoreHttpResponses.execute(HDSkinManager.httpClient, new HttpGet(getTexturesURI(profile)))) {
 
             if (response.ok()) {
-                return readJson(response, MinecraftTexturesPayload.class);
+                return response.unwrapAsJson(MinecraftTexturesPayload.class);
             }
+
             throw new IOException("Server sent non-ok response code: " + response.getResponseCode());
         }
     }
 
     @Override
-    public SkinUploadResponse performSkinUpload(Session session, SkinUpload upload) throws IOException, AuthenticationException {
-        URI image = upload.getImage();
-        Map<String, String> metadata = upload.getMetadata();
-        MinecraftProfileTexture.Type type = upload.getType();
-
-        authorize(session);
-
+    public SkinUploadResponse performSkinUpload(SkinUpload upload) throws IOException, AuthenticationException {
         try {
-            return upload(session, image, type, metadata);
+            return uploadPlayerSkin(upload);
         } catch (IOException e) {
             if (e.getMessage().equals("Authorization failed")) {
                 accessToken = null;
-                authorize(session);
-                return upload(session, image, type, metadata);
+                return uploadPlayerSkin(upload);
             }
+
             throw e;
         }
     }
 
-    private SkinUploadResponse upload(Session session, @Nullable URI image, MinecraftProfileTexture.Type type, Map<String, String> metadata) throws IOException {
-        GameProfile profile = session.getProfile();
+    private SkinUploadResponse uploadPlayerSkin(SkinUpload upload) throws IOException, AuthenticationException {
+        authorize(upload.getSession());
 
-        if (image == null) {
-            return resetSkin(profile, type);
-        }
-        switch (image.getScheme()) {
+        switch (upload.getSchemaAction()) {
+            case "none":
+                return resetSkin(upload);
             case "file":
-                return uploadFile(new File(image), profile, type, metadata);
+                return uploadFile(upload);
             case "http":
             case "https":
-                return uploadUrl(image, profile, type, metadata);
+                return uploadUrl(upload);
             default:
-                throw new IOException("Unsupported URI scheme: " + image.getScheme());
+                throw new IOException("Unsupported URI scheme: " + upload.getSchemaAction());
         }
-
     }
 
-    private SkinUploadResponse resetSkin(GameProfile profile, MinecraftProfileTexture.Type type) throws IOException {
+    private SkinUploadResponse resetSkin(SkinUpload upload) throws IOException {
         return upload(RequestBuilder.delete()
-                .setUri(buildUserTextureUri(profile, type))
+                .setUri(buildUserTextureUri(upload.getSession().getProfile(), upload.getType()))
                 .addHeader(HttpHeaders.AUTHORIZATION, this.accessToken)
                 .build());
     }
 
-    private SkinUploadResponse uploadFile(File file, GameProfile profile, MinecraftProfileTexture.Type type, Map<String, String> metadata) throws IOException {
-        MultipartEntityBuilder b = MultipartEntityBuilder.create();
-        b.addBinaryBody("file", file, ContentType.create("image/png"), file.getName());
-        metadata.forEach(b::addTextBody);
+    private SkinUploadResponse uploadFile(SkinUpload upload) throws IOException {
+        final File file = new File(upload.getImage());
+
+        MultipartEntityBuilder b = MultipartEntityBuilder.create()
+                .addBinaryBody("file", file, ContentType.create("image/png"), file.getName());
+
+        upload.getMetadata().forEach(b::addTextBody);
 
         return upload(RequestBuilder.put()
-                .setUri(buildUserTextureUri(profile, type))
+                .setUri(buildUserTextureUri(upload.getSession().getProfile(), upload.getType()))
                 .addHeader(HttpHeaders.AUTHORIZATION, this.accessToken)
                 .setEntity(b.build())
                 .build());
     }
 
-    private SkinUploadResponse uploadUrl(URI uri, GameProfile profile, MinecraftProfileTexture.Type type, Map<String, String> metadata) throws IOException {
-
+    private SkinUploadResponse uploadUrl(SkinUpload upload) throws IOException {
         return upload(RequestBuilder.post()
-                .setUri(buildUserTextureUri(profile, type))
+                .setUri(buildUserTextureUri(upload.getSession().getProfile(), upload.getType()))
                 .addHeader(HttpHeaders.AUTHORIZATION, this.accessToken)
-                .addParameter("file", uri.toString())
-                .addParameters(metadata.entrySet().stream()
-                        .map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
-                        .toArray(NameValuePair[]::new))
+                .addParameter("file", upload.getImage().toString())
+                .addParameters(MoreHttpResponses.mapAsParameters(upload.getMetadata()))
                 .build());
     }
 
     private SkinUploadResponse upload(HttpUriRequest request) throws IOException {
         try (MoreHttpResponses response = MoreHttpResponses.execute(HDSkinManager.httpClient, request)) {
-            return readJson(response, SkinUploadResponse.class);
+            return response.unwrapAsJson(SkinUploadResponse.class);
         }
     }
 
@@ -152,24 +138,12 @@ public class ValhallaSkinServer implements SkinServer {
         this.accessToken = response.accessToken;
     }
 
-    private <T> T readJson(MoreHttpResponses resp, Class<T> cl) throws IOException {
-        String type = resp.getResponse().getEntity().getContentType().getValue();
-        if (!"application/json".equals(type)) {
-            throw new IOException("Server returned a non-json response!");
-        }
-        if (resp.ok()) {
-            return resp.json(cl);
-        }
-        throw new IOException(resp.json(JsonObject.class).get("message").getAsString());
-
-    }
-
     private AuthHandshake authHandshake(String name) throws IOException {
         try (MoreHttpResponses resp = MoreHttpResponses.execute(HDSkinManager.httpClient, RequestBuilder.post()
                 .setUri(getHandshakeURI())
                 .addParameter("name", name)
                 .build())) {
-            return readJson(resp, AuthHandshake.class);
+            return resp.unwrapAsJson(AuthHandshake.class);
         }
     }
 
@@ -179,7 +153,7 @@ public class ValhallaSkinServer implements SkinServer {
                 .addParameter("name", name)
                 .addParameter("verifyToken", String.valueOf(verifyToken))
                 .build())) {
-            return readJson(resp, AuthResponse.class);
+            return resp.unwrapAsJson(AuthResponse.class);
         }
     }
 

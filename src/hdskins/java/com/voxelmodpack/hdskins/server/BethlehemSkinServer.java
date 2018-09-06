@@ -10,7 +10,6 @@ import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.util.IndentedToStringStyle;
 import com.voxelmodpack.hdskins.util.MoreHttpResponses;
 import com.voxelmodpack.hdskins.util.NetClient;
-import net.minecraft.util.Session;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -40,12 +39,12 @@ public class BethlehemSkinServer implements SkinServer {
     }
 
     @Override
-    public SkinUploadResponse performSkinUpload(Session session, SkinUpload upload) throws IOException, AuthenticationException {
-        SkinServer.verifyServerConnection(session, SERVER_ID);
+    public SkinUploadResponse performSkinUpload(SkinUpload upload) throws IOException, AuthenticationException {
+        SkinServer.verifyServerConnection(upload.getSession(), SERVER_ID);
 
         NetClient client = new NetClient("POST", address);
 
-        client.putHeaders(createHeaders(session, upload));
+        client.putHeaders(createHeaders(upload));
 
         if (upload.getImage() != null) {
             client.putFile(upload.getType().toString().toLowerCase(Locale.US), "image/png", upload.getImage());
@@ -59,11 +58,11 @@ public class BethlehemSkinServer implements SkinServer {
         }
     }
 
-    protected Map<String, ?> createHeaders(Session session, SkinUpload upload) {
+    protected Map<String, ?> createHeaders(SkinUpload upload) {
         Builder<String, Object> builder = ImmutableMap.<String, Object>builder()
-                .put("accessToken", session.getToken())
-                .put("user", session.getUsername())
-                .put("uuid", UUIDTypeAdapter.fromUUID(session.getProfile().getId()))
+                .put("accessToken", upload.getSession().getToken())
+                .put("user", upload.getSession().getUsername())
+                .put("uuid", UUIDTypeAdapter.fromUUID(upload.getSession().getProfile().getId()))
                 .put("type", upload.getType().toString().toLowerCase(Locale.US));
 
         if (upload.getImage() == null) {
