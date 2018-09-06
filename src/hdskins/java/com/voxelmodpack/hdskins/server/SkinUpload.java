@@ -44,6 +44,6 @@ public class SkinUpload {
     }
 
     public String getSchemaAction() {
-        return image == null ? "delete" : image.getScheme();
+        return image == null ? "none" : image.getScheme();
     }
 }
