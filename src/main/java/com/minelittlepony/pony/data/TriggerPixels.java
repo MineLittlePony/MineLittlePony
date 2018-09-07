@@ -44,6 +44,10 @@ public enum TriggerPixels {
      * @param image Image to read
      */
     public <T extends Enum<T> & ITriggerPixelMapped<T>> T readValue(BufferedImage image) {
+        if (Channel.ALPHA.readValue(x, y, image) < 255) {
+            return (T)def;
+        }
+
         return ITriggerPixelMapped.getByTriggerPixel((T)def, readColor(image));
     }
 
@@ -60,16 +64,23 @@ public enum TriggerPixels {
     }
 
     private <T extends Enum<T> & ITriggerPixelMapped<T>> void readFlag(boolean[] out, Channel channel, BufferedImage image) {
+
+        if (Channel.ALPHA.readValue(x, y, image) < 255) {
+            return;
+        }
+
         T value = ITriggerPixelMapped.getByTriggerPixel((T)def, channel.readValue(x, y, image));
-        if (value != def) out[value.ordinal()] = true;
+
+        out[value.ordinal()] |= value != def;
     }
 
     enum Channel {
         RAW(-1, 0),
-        ALL(0xffffff, 0),
-        RED(0xff0000, 16),
-        GREEN(0x00ff00, 8),
-        BLUE(0x0000ff, 0);
+        ALL  (0xffffff, 0),
+        ALPHA(0xff, 24),
+        RED  (0xff, 16),
+        GREEN(0xff, 8),
+        BLUE (0xff, 0);
 
         private int mask;
         private int offset;
@@ -80,7 +91,7 @@ public enum TriggerPixels {
         }
 
         public int readValue(int x, int y, BufferedImage image) {
-            return (image.getRGB(x, y) & mask) >> offset;
+            return (image.getRGB(x, y) >> offset) & mask;
         }
     }
 }
