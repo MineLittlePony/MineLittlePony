@@ -6,9 +6,8 @@ import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import org.apache.http.Header;
-import org.apache.http.HttpHeaders;
-import org.apache.http.HttpResponse;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -19,22 +18,21 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 
 /**
- * @deprecated Now that legacy includes the etag in the hash, it is no longer required to save it to disk.
+ * even if legacy has the etag in the hash - we still need our client cache encryption
  */
-@Deprecated
-public class ThreadDownloadImageETag extends SimpleTexture implements IBufferedTexture {
+public class ThreadDownloadImageEncrypt extends SimpleTexture implements IBufferedTexture {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final AtomicInteger THREAD_ID = new AtomicInteger(0);
@@ -42,7 +40,6 @@ public class ThreadDownloadImageETag extends SimpleTexture implements IBufferedT
 
     @Nonnull
     private final Path cacheFile;
-    private final Path eTagFile;
     private final String imageUrl;
     @Nullable
     private final IImageBuffer imageBuffer;
@@ -53,10 +50,9 @@ public class ThreadDownloadImageETag extends SimpleTexture implements IBufferedT
     private Thread imageThread;
     private boolean textureUploaded;
 
-    public ThreadDownloadImageETag(@Nonnull File cacheFileIn, String imageUrlIn, ResourceLocation defLocation, @Nullable IImageBuffer imageBufferIn) {
+    public ThreadDownloadImageEncrypt(@Nonnull File cacheFileIn, String imageUrlIn, ResourceLocation defLocation, @Nullable IImageBuffer imageBufferIn) {
         super(defLocation);
         this.cacheFile = cacheFileIn.toPath();
-        this.eTagFile = cacheFile.resolveSibling(cacheFile.getFileName() + ".etag");
         this.imageUrl = imageUrlIn;
         this.imageBuffer = imageBufferIn;
     }
@@ -116,36 +112,40 @@ public class ThreadDownloadImageETag extends SimpleTexture implements IBufferedT
             case NOPE:
                 LOGGER.debug("Loading http texture from local cache ({})", cacheFile);
                 try {
-                    // e-tag check passed. Load the local file
-                    setLocalCache();
-                    break;
+                    if (setLocalCache()) {// since setLocalCache doesn't throw anything - had to make it return a result
+                        break;
+                    }
                 } catch (IOException e) {
                     // Nope. Local cache is corrupt. Re-download it.
                     // fallthrough to load from network
                     LOGGER.error("Couldn't load skin {}", cacheFile, e);
                 }
-            case OUTDATED:
                 loadTextureFromServer();
         }
     }
 
 
-    private void setLocalCache() throws IOException {
+    private boolean setLocalCache() throws IOException {
         if (Files.isRegularFile(cacheFile)) {
-            try (InputStream in = Files.newInputStream(cacheFile)) {
-                BufferedImage image = ImageIO.read(in);
-                if (imageBuffer != null) {
-                    image = imageBuffer.parseUserSkin(image);
-                }
-                setBufferedImage(image);
+            byte[] fileBytes = FileUtils.readFileToByteArray(cacheFile.toFile());
+            // decryption placeholder
+            byte[] imageBytes = new byte[fileBytes.length];
+            System.arraycopy(fileBytes, 0, imageBytes, 0, imageBytes.length);
+            // end decryption placeholder
+            InputStream in = new ByteArrayInputStream(imageBytes);
+            BufferedImage image = ImageIO.read(in);
+            if (imageBuffer != null) {
+                image = imageBuffer.parseUserSkin(image);
             }
+            setBufferedImage(image);
+            return true;
         }
+        return false;
     }
 
     private void clearCache() {
         try {
             Files.deleteIfExists(this.cacheFile);
-            Files.deleteIfExists(this.eTagFile);
         } catch (IOException e) {
             // ignore
         }
@@ -167,25 +167,10 @@ public class ThreadDownloadImageETag extends SimpleTexture implements IBufferedT
             if (code != HttpStatus.SC_OK) {
                 return State.NOPE;
             }
-            return checkETag(response) ? State.OK : State.OUTDATED;
+            return State.OK;
         } catch (IOException e) {
             LOGGER.error("Couldn't load skin {} ", imageUrl, e);
             return State.NOPE;
-        }
-    }
-
-    private boolean checkETag(HttpResponse response) {
-        try {
-            if (Files.isRegularFile(cacheFile)) {
-                String localETag = Files.lines(eTagFile).limit(1).findFirst().orElse("");
-                Header remoteETag = response.getFirstHeader(HttpHeaders.ETAG);
-                // true if no remote etag or does match
-                return remoteETag == null || localETag.equals(remoteETag.getValue());
-            }
-            return false;
-        } catch (IOException e) {
-            // it failed, so re-fetch.
-            return false;
         }
     }
 
@@ -195,22 +180,19 @@ public class ThreadDownloadImageETag extends SimpleTexture implements IBufferedT
             if (resp.ok()) {
                 // write the image to disk
                 Files.createDirectories(cacheFile.getParent());
-                Files.copy(resp.getInputStream(), cacheFile);
-
-                try (InputStream in = Files.newInputStream(cacheFile)) {
-                    BufferedImage bufferedimage = ImageIO.read(in);
-
-                    // maybe write the etag to disk
-                    Header eTag = resp.getResponse().getFirstHeader(HttpHeaders.ETAG);
-                    if (eTag != null) {
-                        Files.write(eTagFile, Collections.singleton(eTag.getValue()));
-                    }
-
-                    if (imageBuffer != null) {
-                        bufferedimage = imageBuffer.parseUserSkin(bufferedimage);
-                    }
-                    setBufferedImage(bufferedimage);
+                // Files.copy(resp.getInputStream(), cacheFile);
+                byte[] imageBytes = IOUtils.toByteArray(resp.getInputStream());
+                // encryption placeholder
+                byte[] outputBytes = new byte[imageBytes.length];
+                System.arraycopy(imageBytes, 0, outputBytes, 0, imageBytes.length);
+                // encryption placeholder end
+                FileUtils.writeByteArrayToFile(cacheFile.toFile(), outputBytes);
+                InputStream in = new ByteArrayInputStream(imageBytes);
+                BufferedImage bufferedimage = ImageIO.read(in);
+                if (imageBuffer != null) {
+                    bufferedimage = imageBuffer.parseUserSkin(bufferedimage);
                 }
+                setBufferedImage(bufferedimage);
             }
         } catch (Exception exception) {
             LOGGER.error("Couldn\'t download http texture", exception);
