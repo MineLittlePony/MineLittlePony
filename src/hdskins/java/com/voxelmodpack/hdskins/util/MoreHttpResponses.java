@@ -1,5 +1,6 @@
 package com.voxelmodpack.hdskins.util;
 
+import com.google.common.io.ByteStreams;
 import com.google.common.io.CharStreams;
 import com.google.gson.JsonObject;
 import com.voxelmodpack.hdskins.server.SkinServer;
@@ -46,6 +47,12 @@ public interface MoreHttpResponses extends AutoCloseable {
 
     default BufferedReader getReader() throws IOException {
         return new BufferedReader(new InputStreamReader(getInputStream(), StandardCharsets.UTF_8));
+    }
+
+    default byte[] bytes() throws IOException {
+        try (InputStream input = getInputStream()) {
+            return ByteStreams.toByteArray(input);
+        }
     }
 
     default String text() throws IOException {
