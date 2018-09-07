@@ -28,12 +28,14 @@ public class RenderEnderStallion extends RenderPonyMob<EntityEnderman> implement
         super(manager, PMAPI.enderman);
     }
 
+    @Override
     protected void addLayers() {
         addLayer(createItemHoldingLayer());
         addLayer(new LayerArrow(this));
         addLayer(new LayerEyeGlow<>(this));
     }
 
+    @Override
     protected LayerHeldPonyItem<EntityEnderman> createItemHoldingLayer() {
         return new LayerHeldPonyItemMagical<EntityEnderman>(this) {
             @Override

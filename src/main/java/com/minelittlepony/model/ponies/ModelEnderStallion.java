@@ -44,6 +44,7 @@ public class ModelEnderStallion extends ModelSkeletonPony {
         rightHorn.rotateAngleX = 0.5F;
     }
 
+    @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
 

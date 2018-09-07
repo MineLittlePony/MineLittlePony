@@ -37,6 +37,7 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
         unicornArmLeft.rotateAngleY = 0;
     }
 
+    @Override
     protected float getWobbleAmount() {
         if (isCasting()) {
             return 0;

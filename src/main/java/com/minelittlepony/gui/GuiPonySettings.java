@@ -74,6 +74,7 @@ public class GuiPonySettings extends SettingsPanel {
         LiteLoader.getInstance().writeConfig(config);
     }
 
+    @Override
     protected String getTitle() {
         return OPTIONS_PREFIX + "title";
     }

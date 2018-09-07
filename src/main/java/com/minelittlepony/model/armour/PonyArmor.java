@@ -3,10 +3,10 @@ package com.minelittlepony.model.armour;
 import com.minelittlepony.model.capabilities.IModelWrapper;
 import com.minelittlepony.pony.data.IPonyData;
 
-public class PonyArmor implements IModelWrapper, IEquestrianArmor {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-    public final ModelPonyArmor outerLayer;
-    public final ModelPonyArmor innerLayer;
+public class PonyArmor implements IModelWrapper, IEquestrianArmor {
 
     public PonyArmor(ModelPonyArmor outer, ModelPonyArmor inner) {
         outerLayer = outer;
@@ -25,12 +25,20 @@ public class PonyArmor implements IModelWrapper, IEquestrianArmor {
         innerLayer.init(0, 0.5F);
     }
 
-    @Override
-    public ModelPonyArmor getArmorForLayer(ArmorLayer layer) {
-        if (layer == ArmorLayer.INNER) {
+
+    @Nullable
+    public ModelPonyArmor outerLayer;
+    @Nullable
+    public ModelPonyArmor innerLayer;
+
+
+    @Override @Nonnull
+    public ModelPonyArmor getArmorForLayer(@Nullable ArmorLayer layer) {
+
+        if (layer.ordinal() == ArmorLayer.INNER.ordinal()) {
             return innerLayer;
         }
 
-        return outerLayer;
+        return null;
     }
 }

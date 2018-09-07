@@ -27,6 +27,7 @@ public class IndentedToStringStyle extends ToStringStyle {
             super(o, IndentedToStringStyle.INSTANCE);
         }
 
+        @Override
         public String build() {
             return YELLOW + super.build();
         }

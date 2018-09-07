@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 
 @FunctionalInterface
 public interface ISkinAvailableCallback extends IImageBuffer {
+    @Override
     default BufferedImage parseUserSkin(BufferedImage image) {
         return image;
     }

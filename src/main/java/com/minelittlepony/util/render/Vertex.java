@@ -14,6 +14,7 @@ public class Vertex extends PositionTextureVertex {
 
     // The MCP name is misleading.
     // This is meant to return a COPY with the given texture position
+    @Override
     public Vertex setTexturePosition(float texX, float texY) {
         return new Vertex(this, texX, texY);
     }

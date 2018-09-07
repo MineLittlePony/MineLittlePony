@@ -62,6 +62,7 @@ public class UnicornHorn implements IModelPart {
         }
     }
 
+    @Override
     public void setVisible(boolean visible) {
         isVisible = visible;
     }

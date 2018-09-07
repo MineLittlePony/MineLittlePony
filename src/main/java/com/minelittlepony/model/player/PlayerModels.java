@@ -20,6 +20,7 @@ public enum PlayerModels {
     ALICORN("alicorn", "slimalicorn", () -> PMAPI.alicorn, () -> PMAPI.alicornSmall),
     ZEBRA("zebra", "slimzebra", () -> PMAPI.zebra, () -> PMAPI.zebraSmall),
     SEAPONY("seapony", "slimseapony", () -> PMAPI.seapony, () -> PMAPI.seapony) {
+        @Override
         public RenderPonyPlayer createRenderer(RenderManager manager, boolean slimArms) {
             return new RenderSeaponyPlayer(manager, slimArms, PlayerModels.UNICORN.getModel(slimArms), getModel(slimArms));
         }

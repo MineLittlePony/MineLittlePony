@@ -22,6 +22,7 @@ public class DefaultPonyArmorTextureResolver<T extends EntityLivingBase> impleme
     private final Map<String, ResourceLocation> HUMAN_ARMOUR = Maps.newHashMap();
     private final Map<ResourceLocation, ResourceLocation> PONY_ARMOUR = Maps.newHashMap();
 
+    @Override
     public ResourceLocation getArmorTexture(T entity, ItemStack itemstack, EntityEquipmentSlot slot, ArmorLayer layer,  @Nullable String type) {
         ItemArmor item = (ItemArmor) itemstack.getItem();
         String texture = item.getArmorMaterial().getName();

@@ -21,6 +21,7 @@ class VillagerProfessionTextureCache implements ITextureSupplier<Integer> {
         this.pool = pool;
     }
 
+    @Override
     public ResourceLocation supplyTexture(Integer profession) {
         ResourceLocation texture = getVillagerTexture(profession);
 

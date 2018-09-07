@@ -518,6 +518,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         AbstractBoxRenderer.shiftRotationPoint(bipedLeftLeg, 0, 2, -8);
     }
 
+    @Override
     public void init(float yOffset, float stretch) {
         boxList.clear();
 
