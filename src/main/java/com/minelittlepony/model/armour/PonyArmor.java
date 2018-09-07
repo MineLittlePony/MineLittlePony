@@ -21,8 +21,8 @@ public class PonyArmor implements IModelWrapper, IEquestrianArmor {
 
     @Override
     public void init() {
-        outerLayer.init(0, 1);
-        innerLayer.init(0, 0.55F);
+        outerLayer.init(0, 1.05F);
+        innerLayer.init(0, 0.5F);
     }
 
     @Override
