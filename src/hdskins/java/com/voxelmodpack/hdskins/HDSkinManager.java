@@ -116,6 +116,10 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     private CompletableFuture<Map<Type, MinecraftProfileTexture>> loadProfileData(GameProfile profile) {
 
         return CompletableFuture.supplyAsync(() -> {
+            if (profile.getId() == null) {
+                return Collections.emptyMap();
+            }
+
             Map<Type, MinecraftProfileTexture> textureMap = Maps.newEnumMap(Type.class);
 
             for (SkinServer server : skinServers) {
