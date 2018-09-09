@@ -7,6 +7,7 @@ import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.render.RenderPony;
 import com.minelittlepony.render.layer.LayerDJPon3Head;
 import com.minelittlepony.render.layer.LayerEntityOnPonyShoulder;
+import com.minelittlepony.render.layer.LayerGear;
 import com.minelittlepony.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.render.layer.LayerPonyArmor;
 import com.minelittlepony.render.layer.LayerPonyCape;
@@ -44,6 +45,7 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
         addLayer(new LayerHeldPonyItemMagical<>(this));
         addLayer(new LayerPonyCape(this));
         addLayer(new LayerEntityOnPonyShoulder(renderManager, this));
+        addLayer(new LayerGear<>(this));
     }
 
     @Override

@@ -38,7 +38,7 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
     }
 
     @Override
-    protected float getWobbleAmount() {
+    public float getWobbleAmount() {
         if (isCasting()) {
             return 0;
         }

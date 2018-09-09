@@ -1,8 +1,8 @@
 package com.minelittlepony.model.player;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
 
+import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.render.model.PonyRenderer;
 
 public class ModelZebra extends ModelEarthPony {
@@ -14,15 +14,14 @@ public class ModelZebra extends ModelEarthPony {
     }
 
     @Override
-    protected void renderHead(Entity entity, float move, float swing, float age, float headYaw, float headPitch, float scale) {
-        GlStateManager.translate(0, -0.1F, 0);
-        super.renderHead(entity, move, swing, age, headYaw, headPitch, scale);
-    }
-
-    @Override
-    protected void renderNeck(float scale) {
-        GlStateManager.scale(1, 1.1F, 1);
-        super.renderNeck(scale);
+    public void transform(BodyPart part) {
+        if (part == BodyPart.HEAD) {
+            GlStateManager.translate(0, -0.1F, 0);
+        }
+        if (part == BodyPart.NECK) {
+             GlStateManager.scale(1, 1.1F, 1);
+        }
+        super.transform(part);
     }
 
     @Override

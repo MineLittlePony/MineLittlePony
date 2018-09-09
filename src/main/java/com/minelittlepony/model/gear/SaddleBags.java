@@ -1,16 +1,17 @@
-package com.minelittlepony.model.components;
+package com.minelittlepony.model.gear;
 
-import static com.minelittlepony.model.PonyModelConstants.*;
-
-import com.minelittlepony.model.AbstractPonyModel;
-import com.minelittlepony.model.capabilities.IModelPart;
+import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.capabilities.IModel;
 import com.minelittlepony.model.capabilities.IModelPegasus;
+import com.minelittlepony.pony.data.PonyWearable;
 import com.minelittlepony.render.model.PlaneRenderer;
 
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-public class SaddleBags implements IModelPart {
+public class SaddleBags extends AbstractGear {
 
     private PlaneRenderer leftBag;
     private PlaneRenderer rightBag;
@@ -21,18 +22,15 @@ public class SaddleBags implements IModelPart {
 
     float dropAmount = 0;
 
-    AbstractPonyModel model;
 
-    public SaddleBags(AbstractPonyModel model) {
-        this.model = model;
-
-        leftBag = new PlaneRenderer(model, 56, 19);
-        rightBag = new PlaneRenderer(model, 56, 19);
-        strap = new PlaneRenderer(model, 56, 19);
-    }
+    private IModel model;
 
     @Override
     public void init(float yOffset, float stretch) {
+        leftBag = new PlaneRenderer(this, 56, 19);
+        rightBag = new PlaneRenderer(this, 56, 19);
+        strap = new PlaneRenderer(this, 56, 19);
+
         float y = -0.5F;
         int x = 4;
         int z = -1;
@@ -70,8 +68,17 @@ public class SaddleBags implements IModelPart {
                             .flipZ().top(0, 0, -3, 8, 3, stretch)
              .tex(56, 22).flipZ().bottom(0, 6, -3, 8, 3, stretch)
                  .rotateAngleY = ROTATE_270;
+    }
 
+    @Override
+    public void setLivingAnimations(IModel model, Entity entity) {
+        this.model = model;
 
+        hangLow = false;
+
+        if (model instanceof IModelPegasus) {
+            hangLow = model.canFly() && ((IModelPegasus)model).wingsAreOpen();
+        }
     }
 
     @Override
@@ -97,6 +104,7 @@ public class SaddleBags implements IModelPart {
         dropAmount = hangLow ? 0.15F : 0;
     }
 
+
     public void sethangingLow(boolean veryLow) {
         hangLow = veryLow;
     }
@@ -114,6 +122,22 @@ public class SaddleBags implements IModelPart {
 
         GlStateManager.popMatrix();
         strap.render(scale);
+    }
+
+    @Override
+    public boolean canRender(IModel model, Entity entity) {
+        return model.isWearing(PonyWearable.SADDLE_BAGS);
+    }
+
+    @Override
+    public BodyPart getGearLocation() {
+        return BodyPart.BODY;
+    }
+
+    @Override
+    public ResourceLocation getTexture(Entity entity) {
+        // use the default
+        return null;
     }
 
 }

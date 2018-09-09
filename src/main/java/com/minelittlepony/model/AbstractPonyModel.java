@@ -153,7 +153,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         snout.setGender(metadata.getGender());
     }
 
-    protected float getWobbleAmount() {
+    public float getWobbleAmount() {
 
         if (swingProgress <= 0) {
             return 0;

@@ -27,7 +27,6 @@ public class ModelBatpony extends ModelEarthPony implements IModelPegasus {
     public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
         super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
         wings.setRotationAndAngles(rainboom, move, swing, 0, ticks);
-        saddlebags.sethangingLow(wingsAreOpen());
     }
 
     @Override

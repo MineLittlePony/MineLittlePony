@@ -1,5 +1,6 @@
 package com.minelittlepony.model.ponies;
 
+import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.components.SeaponyTail;
 import com.minelittlepony.model.player.ModelUnicorn;
 import com.minelittlepony.pony.data.IPony;
@@ -108,10 +109,12 @@ public class ModelSeapony extends ModelUnicorn {
     public void render(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         setVisible(bipedLeftArmwear.showModel);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0, 0.6F, 0);
         super.render(entity, move, swing, ticks, headYaw, headPitch, scale);
-        GlStateManager.popMatrix();
+    }
+
+    @Override
+    public void transform(BodyPart part) {
+        GlStateManager.translate(0, 0.6F, 0);
     }
 
     @Override
