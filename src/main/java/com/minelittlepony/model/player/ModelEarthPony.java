@@ -1,7 +1,6 @@
 package com.minelittlepony.model.player;
 
 import com.minelittlepony.model.AbstractPonyModel;
-import com.minelittlepony.pony.data.PonyWearable;
 import com.minelittlepony.render.model.PonyRenderer;
 
 import net.minecraft.entity.Entity;
@@ -23,15 +22,6 @@ public class ModelEarthPony extends AbstractPonyModel {
 
         if (bipedCape != null) {
             bipedCape.rotationPointY = isSneak ? 2 : isRiding ? -4 : 0;
-        }
-    }
-
-    @Override
-    protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        super.renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
-
-        if (isWearing(PonyWearable.SADDLE_BAGS)) {
-           // saddlebags.renderPart(scale);
         }
     }
 
