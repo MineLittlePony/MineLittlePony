@@ -5,14 +5,11 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.model.gear.IGear;
-import com.minelittlepony.model.gear.WitchHat;
 import com.minelittlepony.model.player.ModelZebra;
 import com.minelittlepony.pony.data.IPony;
+import com.minelittlepony.pony.data.PonyWearable;
 
 public class ModelWitchPony extends ModelZebra {
-
-    private IGear witchHat;
 
     public ModelWitchPony() {
         super(false);
@@ -80,15 +77,10 @@ public class ModelWitchPony extends ModelZebra {
     }
 
     @Override
-    protected void renderHead(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        super.renderHead(entity, move, swing, ticks, headYaw, headPitch, scale);
-        // FIXME: Wearables don't show on witches unless it's holding an item/drinking something
-        witchHat.renderSeparately(entity, scale);
-    }
-
-    @Override
-    public void init(float yOffset, float stretch) {
-        super.init(yOffset, stretch);
-        witchHat = new WitchHat();
+    public boolean isWearing(PonyWearable wearable) {
+        if (wearable == PonyWearable.HAT) {
+            return true;
+        }
+        return super.isWearing(wearable);
     }
 }
