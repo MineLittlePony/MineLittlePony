@@ -42,8 +42,6 @@ public class Stetson extends AbstractGear {
 
     @Override
     public void renderPart(float scale) {
-        this.boxList.clear();
-        this.init(0, 0);
         rimshot.render(scale);
     }
 
