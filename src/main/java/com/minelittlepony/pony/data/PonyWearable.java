@@ -7,7 +7,8 @@ public enum PonyWearable implements ITriggerPixelMapped<PonyWearable> {
     NONE(0),
     SADDLE_BAGS(200),
     MUFFIN(50),
-    HAT(100);
+    HAT(100),
+    STETSON(250);
 
     private int triggerValue;
 

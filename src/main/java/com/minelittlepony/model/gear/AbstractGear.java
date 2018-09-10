@@ -25,9 +25,9 @@ public abstract class AbstractGear extends ModelBase implements IGear, PonyModel
     public ModelRenderer getOriginBodyPart(AbstractPonyModel model) {
         switch (getGearLocation()) {
             default:
-            case HEAD: return model.bipedHead;
+            case HEAD: return model.getHead();
+            case NECK: return model.neck;
             case TAIL:
-            case NECK:
             case LEGS:
             case BODY: return model.bipedBody;
         }

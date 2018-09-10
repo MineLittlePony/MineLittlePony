@@ -31,10 +31,6 @@ public class Muffin extends AbstractGear {
     }
 
     @Override
-    public void setLivingAnimations(IModel model, Entity entity) {
-    }
-
-    @Override
     public boolean canRender(IModel model, Entity entity) {
         return model.isWearing(PonyWearable.MUFFIN);
     }

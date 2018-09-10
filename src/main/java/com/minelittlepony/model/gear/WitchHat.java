@@ -20,11 +20,6 @@ public class WitchHat extends AbstractGear {
     }
 
     @Override
-    public void setLivingAnimations(IModel model, Entity entity) {
-
-    }
-
-    @Override
     public void init(float yOffset, float stretch) {
         witchHat = new PonyRenderer(this).size(64, 128);
         witchHat.around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)

@@ -45,7 +45,9 @@ public interface IGear extends IModelPart {
     /**
      * Orients this wearable.
      */
-    void setLivingAnimations(IModel model, Entity entity);
+    default void setLivingAnimations(IModel model, Entity entity) {
+
+    }
 
     /**
      * Renders this wearable separately. (used outside of the gear render layer)

@@ -12,6 +12,7 @@ import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.model.gear.Muffin;
 import com.minelittlepony.model.gear.SaddleBags;
+import com.minelittlepony.model.gear.Stetson;
 import com.minelittlepony.model.gear.WitchHat;
 
 import java.util.List;
@@ -21,7 +22,8 @@ public class LayerGear<T extends EntityLivingBase> extends AbstractPonyLayer<T> 
     private static List<IGear> gears = Lists.newArrayList(
             new SaddleBags(),
             new WitchHat(),
-            new Muffin()
+            new Muffin(),
+            new Stetson()
     );
 
     public LayerGear(RenderLivingBase<T> renderer) {
