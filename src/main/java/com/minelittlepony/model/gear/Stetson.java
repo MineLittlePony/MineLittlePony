@@ -5,6 +5,7 @@ import net.minecraft.util.ResourceLocation;
 
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.capabilities.IModel;
+import com.minelittlepony.pony.data.PonyWearable;
 import com.minelittlepony.render.model.PlaneRenderer;
 import com.minelittlepony.render.model.PonyRenderer;
 
@@ -48,7 +49,6 @@ public class Stetson extends AbstractGear {
 
     @Override
     public boolean canRender(IModel model, Entity entity) {
-        return true;//model.isWearing(PonyWearable.STETSON);
+        return model.isWearing(PonyWearable.STETSON);
     }
-
 }
