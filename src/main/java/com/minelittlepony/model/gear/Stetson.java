@@ -9,7 +9,7 @@ import com.minelittlepony.pony.data.PonyWearable;
 import com.minelittlepony.render.model.PlaneRenderer;
 import com.minelittlepony.render.model.PonyRenderer;
 
-public class Stetson extends AbstractGear {
+public class Stetson extends AbstractGear implements IStackable {
     private static final ResourceLocation TEXTURE = new ResourceLocation("minelittlepony", "textures/models/stetson.png");
 
     private PlaneRenderer rimshot;
@@ -48,5 +48,10 @@ public class Stetson extends AbstractGear {
     @Override
     public boolean canRender(IModel model, Entity entity) {
         return model.isWearing(PonyWearable.STETSON);
+    }
+
+    @Override
+    public float getStackingOffset() {
+        return 0;
     }
 }

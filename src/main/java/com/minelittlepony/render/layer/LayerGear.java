@@ -9,13 +9,17 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
 import com.minelittlepony.model.AbstractPonyModel;
+import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.gear.IGear;
+import com.minelittlepony.model.gear.IStackable;
 import com.minelittlepony.model.gear.Muffin;
 import com.minelittlepony.model.gear.SaddleBags;
 import com.minelittlepony.model.gear.Stetson;
 import com.minelittlepony.model.gear.WitchHat;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LayerGear<T extends EntityLivingBase> extends AbstractPonyLayer<T> {
 
@@ -34,19 +38,34 @@ public class LayerGear<T extends EntityLivingBase> extends AbstractPonyLayer<T> 
     protected void doPonyRender(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
         AbstractPonyModel model = getPlayerModel();
 
+        Map<BodyPart, Float> renderStackingOffsets = new HashMap<>();
+
         for (IGear gear : gears) {
             if (gear.canRender(model, entity)) {
+                GlStateManager.pushMatrix();
+                model.transform(gear.getGearLocation());
+                gear.getOriginBodyPart(model).postRender(scale);
+
+                if (gear instanceof IStackable) {
+                    BodyPart part = gear.getGearLocation();
+                    renderStackingOffsets.compute(part, (k, v) -> {
+                        float offset = ((IStackable)gear).getStackingOffset();
+                       if (v != null) {
+                           GlStateManager.translate(0, -v, 0);
+                           offset += v;
+                       }
+                       return offset;
+                    });
+                }
+
                 renderGear(model, entity, gear, move, swing, scale, ticks);
+                GlStateManager.popMatrix();
             }
         }
     }
 
     private void renderGear(AbstractPonyModel model, T entity, IGear gear, float move, float swing, float scale, float ticks) {
-        GlStateManager.pushMatrix();
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-
-        model.transform(gear.getGearLocation());
-        gear.getOriginBodyPart(model).postRender(scale);
 
         ResourceLocation texture = gear.getTexture(entity);
         if (texture != null) {
@@ -58,6 +77,5 @@ public class LayerGear<T extends EntityLivingBase> extends AbstractPonyLayer<T> 
         gear.renderPart(scale);
 
         GlStateManager.popAttrib();
-        GlStateManager.popMatrix();
     }
 }

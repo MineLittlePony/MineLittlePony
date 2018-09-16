@@ -8,7 +8,7 @@ import com.minelittlepony.model.capabilities.IModel;
 import com.minelittlepony.pony.data.PonyWearable;
 import com.minelittlepony.render.model.PonyRenderer;
 
-public class Muffin extends AbstractGear {
+public class Muffin extends AbstractGear implements IStackable {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation("minelittlepony", "textures/models/muffin.png");
 
@@ -43,5 +43,10 @@ public class Muffin extends AbstractGear {
     @Override
     public ResourceLocation getTexture(Entity entity) {
         return TEXTURE;
+    }
+
+    @Override
+    public float getStackingOffset() {
+        return 0.5F;
     }
 }

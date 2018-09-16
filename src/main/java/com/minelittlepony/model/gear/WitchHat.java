@@ -8,7 +8,7 @@ import com.minelittlepony.model.capabilities.IModel;
 import com.minelittlepony.pony.data.PonyWearable;
 import com.minelittlepony.render.model.PonyRenderer;
 
-public class WitchHat extends AbstractGear {
+public class WitchHat extends AbstractGear implements IStackable {
 
     private static final ResourceLocation WITCH_TEXTURES = new ResourceLocation("textures/entity/witch.png");
 
@@ -49,5 +49,10 @@ public class WitchHat extends AbstractGear {
     @Override
     public ResourceLocation getTexture(Entity entity) {
         return WITCH_TEXTURES;
+    }
+
+    @Override
+    public float getStackingOffset() {
+        return 0.7F;
     }
 }
