@@ -24,10 +24,10 @@ public class ModelBatWing<T extends AbstractPonyModel & IModelPegasus> extends M
 
         folded.around(HEAD_RP_X, WING_FOLDED_RP_Y + y - 1, WING_FOLDED_RP_Z - 2)
               .mirror(right)
-              .tex(56, 16).box(x, 5, 4, 1, 7, 1, scale)
-              .tex(56, 16).box(x, 5, 6, 1, 8, 1, scale)
-                          .box(x, 5, 5, 1, 8, 1, scale)
-              .tex(56, 16).box(x, 5, 7, 1, 7, 1, scale)
+              .tex(56, 16).box(x * 0.9F, 5, 4, 1, 4, 1, scale)
+              .tex(56, 16).box(x, 5, 6, 1, 7, 1, scale)
+                          .box(x, 5, 5, 1, 6, 1, scale)
+              .tex(56, 16).box(x * 0.9F, 5, 7, 1, 7, 1, scale)
               .rotateAngleX = ROTATE_90;
     }
 
