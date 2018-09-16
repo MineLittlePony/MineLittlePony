@@ -35,22 +35,22 @@ public class ModelBatWing<T extends AbstractPonyModel & IModelPegasus> extends M
     protected void addFeathers(boolean right, boolean l, float rotationPointY, float scale) {
         float r = right ? -1 : 1;
 
-        extended.around(r * (EXT_WING_RP_X - 1.5F), EXT_WING_RP_Y + rotationPointY - r/3, EXT_WING_RP_Z - 2)
+        extended.around((r * (EXT_WING_RP_X - 2)), EXT_WING_RP_Y + rotationPointY, EXT_WING_RP_Z - 2)
                 .mirror(right)
                 .rotateAngleY = r * 3;
 
         extended.child().tex(60, 16)
                 .rotate(0.1F, 0, 0)
-                .box(0, -1, 0, 1, 8, 1, scale)
+                .box(-0.5F, 0, 0, 1, 8, 1, scale)
                 .child().tex(60, 16)
                     .rotate(-0.5F, 0, 0)
                     .around(0, -1, -2)
-                    .box(0, 0, 2, 1, 7, 1, scale);
+                    .box(-0.5F, 0, 2, 1, 7, 1, scale);
         extended.child(0)
                 .child().tex(60, 16)
                     .rotate(-0.5F, 0, 0)
                     .around(0, 4, -2.4F)
-                    .box(0, 0, 3, 1, 7, 1, scale);
+                    .box(-0.5F, 0, 3, 1, 7, 1, scale);
 
         PlaneRenderer skin = new PlaneRenderer(pegasus)
                 .tex(56, 32);
@@ -58,9 +58,9 @@ public class ModelBatWing<T extends AbstractPonyModel & IModelPegasus> extends M
         extended.child(0).child(skin);
 
         if (right) {
-            skin       .west(0.5F, -1, -7, 16, 8, scale);
+            skin       .west(0, 0, -7, 16, 8, scale);
         } else {
-            skin.flip().west(0.5F, -1, -7, 16, 8, scale);
+            skin.flip().west(0, 0, -7, 16, 8, scale);
         }
     }
 
