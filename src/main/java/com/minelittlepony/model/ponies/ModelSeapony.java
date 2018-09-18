@@ -12,6 +12,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
 
+import org.lwjgl.opengl.GL11;
+
 public class ModelSeapony extends ModelUnicorn {
 
     PonyRenderer bodyCenter;
@@ -125,6 +127,7 @@ public class ModelSeapony extends ModelUnicorn {
 
         tail.renderPart(scale);
 
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         GlStateManager.enableBlend();
 
 
@@ -133,6 +136,7 @@ public class ModelSeapony extends ModelUnicorn {
         rightFin.render(scale);
 
         GlStateManager.disableBlend();
+        GL11.glPopAttrib();
 
     }
 
