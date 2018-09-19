@@ -97,7 +97,11 @@ public class PonyRenderManager {
 
     @SuppressWarnings("unchecked")
     @Nullable
-    public <T extends EntityLivingBase, R extends RenderLivingBase<T> & IRenderPony<T>> R getPonyRenderer(T entity) {
+    public <T extends EntityLivingBase, R extends RenderLivingBase<T> & IRenderPony<T>> R getPonyRenderer(@Nullable Entity entity) {
+        if (entity == null || !(entity instanceof EntityLivingBase)) {
+            return null;
+        }
+
         Render<Entity> renderer = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(entity);
 
         if (renderer instanceof RenderLivingBase && renderer instanceof IRenderPony) {

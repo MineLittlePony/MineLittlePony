@@ -29,7 +29,7 @@ public interface IRenderPony<T extends EntityLivingBase> {
         if (!passengerPony.getRace(false).isHuman()) {
             float yaw = MathUtil.interpolateDegress(entity.prevRenderYawOffset, entity.renderYawOffset, ticks);
 
-            GlStateManager.translate(0, 0, 0.8F);
+            GlStateManager.translate(0, 0, 0.3F);
 
             getInternalRenderer().applyPostureRiding(entity, entity.ticksExisted + ticks, yaw, ticks);
         }

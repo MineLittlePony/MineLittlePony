@@ -36,6 +36,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
     public boolean isFlying;
     public boolean isElytraFlying;
     public boolean isSwimming;
+    public boolean isRidingInteractive;
     public boolean headGear;
 
     /**
@@ -84,6 +85,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         isElytraFlying = entity.isElytraFlying();
         isSwimming = pony.isSwimming(entity);
         headGear = pony.isWearingHeadgear(entity);
+        isRidingInteractive = pony.isRidingInteractive(entity);
     }
 
     /**
@@ -137,6 +139,27 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
 
             bipedLeftArm.rotateAngleZ = -PI * 0.06f;
             bipedRightArm.rotateAngleZ = PI * 0.06f;
+
+            if (isRidingInteractive) {
+                bipedLeftLeg.rotateAngleY = PI / 15;
+                bipedLeftLeg.rotateAngleX = PI / 9;
+
+                bipedLeftLeg.rotationPointZ = 10;
+                bipedLeftLeg.rotationPointY = 7;
+
+                bipedRightLeg.rotateAngleY = -PI / 15;
+                bipedRightLeg.rotateAngleX = PI / 9;
+
+                bipedRightLeg.rotationPointZ = 10;
+                bipedRightLeg.rotationPointY = 7;
+
+
+                bipedLeftArm.rotateAngleX = PI / 6;
+                bipedRightArm.rotateAngleX = PI / 6;
+
+                bipedLeftArm.rotateAngleZ *= 2;
+                bipedRightArm.rotateAngleZ *= 2;
+            }
         } else {
             adjustBody(BODY_ROT_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
 
@@ -163,9 +186,17 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
     }
 
     protected void adjustBodyRiding() {
-        adjustBodyComponents(BODY_ROT_X_RIDING, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
-        adjustNeck(BODY_ROT_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
-        setHead(0, 0, 0);
+        if (isRidingInteractive) {
+            adjustBodyComponents(BODY_ROT_X_RIDING * 2, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
+            adjustNeck(BODY_ROT_X_NOTSNEAK * 2, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK - 4);
+            setHead(0, -2, -5);
+        } else {
+            adjustBodyComponents(BODY_ROT_X_RIDING, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
+            adjustNeck(BODY_ROT_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
+            setHead(0, 0, 0);
+        }
+
+
     }
 
     /**

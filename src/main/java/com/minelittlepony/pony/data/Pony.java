@@ -3,6 +3,7 @@ package com.minelittlepony.pony.data;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.ducks.IRenderPony;
 import com.voxelmodpack.hdskins.resources.texture.IBufferedTexture;
 
 import net.minecraft.block.material.Material;
@@ -10,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResource;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
@@ -144,6 +146,20 @@ public class Pony implements IPony {
     @Override
     public IPonyData getMetadata() {
         return metadata;
+    }
+
+    @Override
+    public boolean isRidingInteractive(EntityLivingBase entity) {
+        return MineLittlePony.getInstance().getRenderManager().getPonyRenderer(entity.getRidingEntity()) != null;
+    }
+
+    @Override
+    public IPony getMountedPony(EntityLivingBase entity) {
+        Entity mount = entity.getRidingEntity();
+
+        IRenderPony<EntityLivingBase> render = MineLittlePony.getInstance().getRenderManager().getPonyRenderer(mount);
+
+        return render == null ? null : render.getEntityPony((EntityLivingBase)mount);
     }
 
     @Override

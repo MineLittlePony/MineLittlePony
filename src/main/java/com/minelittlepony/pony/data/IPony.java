@@ -52,6 +52,18 @@ public interface IPony {
     PonyRace getRace(boolean ignorePony);
 
     /**
+     * Returns true if an entity is riding a pony or other sentient life-form.
+     *
+     * Boats do not count.
+     */
+    boolean isRidingInteractive(EntityLivingBase entity);
+
+    /**
+     * Returns the pony this entity is currently riding if any.
+     */
+    IPony getMountedPony(EntityLivingBase entity);
+
+    /**
      * Gets the texture used for rendering this pony.
      * @return
      */
