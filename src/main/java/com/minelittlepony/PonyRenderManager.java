@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 import com.minelittlepony.mixin.MixinRenderManager;
+import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.hdskins.gui.EntityPonyModel;
 import com.minelittlepony.hdskins.gui.RenderPonyModel;
 import com.minelittlepony.model.player.PlayerModels;
@@ -12,9 +13,14 @@ import com.minelittlepony.render.player.RenderPonyPlayer;
 import com.minelittlepony.render.ponies.MobRenderers;
 import com.mumfrey.liteloader.util.ModUtilities;
 
+import javax.annotation.Nullable;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 
 /**
  * Render manager responsible for replacing and restoring entity renderers when the client settings change.
@@ -87,5 +93,17 @@ public class PonyRenderManager {
 
     public LevitatingItemRenderer getMagicRenderer() {
         return magicRenderer;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Nullable
+    public <T extends EntityLivingBase, R extends RenderLivingBase<T> & IRenderPony<T>> R getPonyRenderer(T entity) {
+        Render<Entity> renderer = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(entity);
+
+        if (renderer instanceof RenderLivingBase && renderer instanceof IRenderPony) {
+            return (R)(Object)renderer;
+        }
+
+        return null;
     }
 }

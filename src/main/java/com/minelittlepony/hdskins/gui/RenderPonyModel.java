@@ -111,4 +111,9 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> implemen
             }
         };
     }
+
+    @Override
+    public RenderPony<EntityPonyModel> getInternalRenderer() {
+        return renderPony;
+    }
 }

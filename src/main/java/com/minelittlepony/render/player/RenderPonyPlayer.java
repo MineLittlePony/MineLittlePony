@@ -138,4 +138,8 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
         return MineLittlePony.getInstance().getManager().getPony(player);
     }
 
+    @Override
+    public RenderPony<AbstractClientPlayer> getInternalRenderer() {
+        return renderPony;
+    }
 }

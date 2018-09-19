@@ -11,6 +11,7 @@ import com.minelittlepony.render.layer.LayerPonyArmor;
 import com.minelittlepony.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.render.layer.LayerPonyElytra;
 import com.voxelmodpack.hdskins.HDSkinManager;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -90,6 +91,11 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     @Nonnull
     protected final ResourceLocation getEntityTexture(T entity) {
         return HDSkinManager.INSTANCE.getConvertedSkin(getTexture(entity));
+    }
+
+    @Override
+    public RenderPony<T> getInternalRenderer() {
+        return renderPony;
     }
 
     protected abstract ResourceLocation getTexture(T entity);

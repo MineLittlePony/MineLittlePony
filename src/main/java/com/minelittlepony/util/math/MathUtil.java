@@ -16,4 +16,13 @@ public class MathUtil {
 
         return angle;
     }
+
+    public static float interpolateDegress(float prev, float current, float partialTicks) {
+        float difference = current - prev;
+
+        while (difference < -180) difference += 360;
+        while (difference >= 180) difference -= 360;
+
+        return prev + partialTicks * difference;
+    }
 }
