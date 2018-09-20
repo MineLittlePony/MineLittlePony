@@ -3,6 +3,8 @@ package com.minelittlepony.pony.data;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 
 import com.minelittlepony.MineLittlePony;
 
@@ -65,7 +67,6 @@ public interface IPony {
 
     /**
      * Gets the texture used for rendering this pony.
-     * @return
      */
     ResourceLocation getTexture();
 
@@ -73,4 +74,14 @@ public interface IPony {
      * Gets the metadata associated with this pony's model texture.
      */
     IPonyData getMetadata();
+
+    /**
+     * Gets the riding offset of this entity relative to its lowermost mount.
+     */
+    Vec3d getAbsoluteRidingOffset(EntityLivingBase entity);
+
+    /**
+     * Gets the actual bounding box of this entity as a pony.
+     */
+    AxisAlignedBB getComputedBoundingBox(EntityLivingBase entity);
 }

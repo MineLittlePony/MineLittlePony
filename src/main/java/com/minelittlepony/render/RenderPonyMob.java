@@ -13,6 +13,7 @@ import com.minelittlepony.render.layer.LayerPonyElytra;
 import com.voxelmodpack.hdskins.HDSkinManager;
 
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerArrow;
@@ -53,7 +54,15 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
         if (entity.isSneaking()) {
             yPosition -= 0.125D;
         }
+
         super.doRender(entity, xPosition, yPosition, zPosition, yaw, ticks);
+
+        DebugBoundingBoxRenderer.instance.render(renderPony.getPony(entity), entity, ticks);
+    }
+
+    @Override
+    public boolean shouldRender(T entity, ICamera camera, double camX, double camY, double camZ) {
+        return super.shouldRender(entity, renderPony.getFrustrum(entity, camera), camX, camY, camZ);
     }
 
     @Override

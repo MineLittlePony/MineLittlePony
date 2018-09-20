@@ -8,6 +8,7 @@ import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.transform.PonyPosture;
 
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 
@@ -21,6 +22,8 @@ public class RenderPony<T extends EntityLivingBase> {
 
     private IRenderPony<T> renderer;
 
+    private FrustrumCheck<T> frustrum = new FrustrumCheck<>(this);
+
     public static void enableModelRenderProfile() {
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -33,6 +36,13 @@ public class RenderPony<T extends EntityLivingBase> {
 
     public RenderPony(IRenderPony<T> renderer) {
         this.renderer = renderer;
+    }
+
+    public ICamera getFrustrum(T entity, ICamera vanilla) {
+        if (!MineLittlePony.getConfig().frustrum) {
+            return vanilla;
+        }
+        return frustrum.withCamera(entity, vanilla);
     }
 
     public void preRenderCallback(T entity, float ticks) {

@@ -3,12 +3,14 @@ package com.minelittlepony.transform;
 import static net.minecraft.client.renderer.GlStateManager.scale;
 import static net.minecraft.client.renderer.GlStateManager.translate;
 
+import net.minecraft.util.math.Vec3d;
+
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.capabilities.IModel;
 
 public enum PonyTransformation {
 
-    NORMAL {
+    NORMAL(0, 3, 0.5F) {
         @Override
         public void transform(IModel model, BodyPart part) {
             if (model.isCrouching()) translate(0, -0.2F, 0);
@@ -23,13 +25,13 @@ public enum PonyTransformation {
                     if (model.isCrouching()) translate(0, 0.1F, 0);
                     break;
                 case BACK:
-                    translate(0, 3, 0.5F);
+                    translateVec(riderOffset);
                     break;
                 default:
             }
         }
     },
-    LARGE {
+    LARGE(0, 2.3F, 0.3F) {
         @Override
         public void transform(IModel model, BodyPart part) {
             if (model.isCrouching()) translate(0, -0.15F, 0);
@@ -58,12 +60,12 @@ public enum PonyTransformation {
                     scale(1.15F, 1.12F, 1.15F);
                     break;
                 case BACK:
-                    translate(0, 2.3F, 0.3F);
+                    translateVec(riderOffset);
                     break;
             }
         }
     },
-    FOAL {
+    FOAL(0, 4.5F, 0.6F) {
         @Override
         public void transform(IModel model, BodyPart part) {
             if (model.isCrouching()) translate(0, -0.3F, 0);
@@ -86,13 +88,13 @@ public enum PonyTransformation {
                     scale(1, 0.81F, 1);
                     break;
                 case BACK:
-                    translate(0, 4.5F, 0.6F);
+                    translateVec(riderOffset);
                     break;
                 default:
             }
         }
     },
-    TALL {
+    TALL(0, 2F, 0.6F) {
         @Override
         public void transform(IModel model, BodyPart part) {
             if (model.isCrouching()) translate(0, -0.15F, 0);
@@ -119,12 +121,12 @@ public enum PonyTransformation {
                     if (model.isGoingFast()) translate(0, 0.05F, 0);
                     break;
                 case BACK:
-                    translate(0, 2F, 0.6F);
+                    translateVec(riderOffset);
                     break;
             }
         }
     },
-    YEARLING {
+    YEARLING(0, 4.3F, 0.6F) {
         @Override
         public void transform(IModel model, BodyPart part) {
             if (model.isCrouching()) translate(0, -0.15F, 0);
@@ -152,15 +154,25 @@ public enum PonyTransformation {
                     if (model.isGoingFast()) translate(0, 0.05F, 0);
                     break;
                 case BACK:
-                    translate(0, 4.3F, 0.6F);
+                    translateVec(riderOffset);
                     break;
             }
         }
     };
 
+    protected final Vec3d riderOffset;
 
+    PonyTransformation(float rX, float rY, float rZ) {
+        riderOffset = new Vec3d(rX, rY, rZ);
+    }
 
+    public static void translateVec(Vec3d offset) {
+        translate(offset.x, offset.y, offset.z);
+    }
 
+    public Vec3d getRiderOffset() {
+        return riderOffset;
+    }
 
     public abstract void transform(IModel model, BodyPart part);
 }

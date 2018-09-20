@@ -22,6 +22,7 @@ public class PonyConfig extends SensibleConfig implements Exposable {
     @Expose public boolean showscale = true;
     @Expose public boolean fpsmagic = true;
     @Expose public boolean ponyskulls = true;
+    @Expose public boolean frustrum = true;
 
     public enum PonySettings implements Setting {
         SIZES,
@@ -29,7 +30,8 @@ public class PonyConfig extends SensibleConfig implements Exposable {
         HD,
         SHOWSCALE,
         FPSMAGIC,
-        PONYSKULLS;
+        PONYSKULLS,
+        FRUSTRUM;
     }
 
     @Expose public boolean villagers = true;

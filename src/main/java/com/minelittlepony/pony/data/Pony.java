@@ -18,6 +18,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -160,6 +161,31 @@ public class Pony implements IPony {
         IRenderPony<EntityLivingBase> render = MineLittlePony.getInstance().getRenderManager().getPonyRenderer(mount);
 
         return render == null ? null : render.getEntityPony((EntityLivingBase)mount);
+    }
+
+    @Override
+    public Vec3d getAbsoluteRidingOffset(EntityLivingBase entity) {
+        IPony ridingPony = getMountedPony(entity);
+
+        if (ridingPony != null) {
+            EntityLivingBase ridee = (EntityLivingBase)entity.getRidingEntity();
+
+            Vec3d offset = ridingPony.getMetadata().getSize().getTranformation().getRiderOffset();
+            return ridingPony.getAbsoluteRidingOffset(ridee).add(-offset.x / 4, offset.y / 5, -offset.z / 4);
+        }
+
+        return entity.getPositionVector();
+    }
+
+    @Override
+    public AxisAlignedBB getComputedBoundingBox(EntityLivingBase entity) {
+        float scale = getMetadata().getSize().getScaleFactor();
+
+        Vec3d pos = getAbsoluteRidingOffset(entity);
+
+        return new AxisAlignedBB(
+                - entity.width / 2, (entity.height * scale), -entity.width / 2,
+                  entity.width / 2, 0,                        entity.width / 2).offset(pos);
     }
 
     @Override
