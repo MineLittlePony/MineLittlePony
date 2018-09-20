@@ -22,6 +22,9 @@ public enum PonyTransformation {
                 case HEAD:
                     if (model.isCrouching()) translate(0, 0.1F, 0);
                     break;
+                case BACK:
+                    translate(0, 3, 0.5F);
+                    break;
                 default:
             }
         }
@@ -54,6 +57,9 @@ public enum PonyTransformation {
                     translate(0, -0.14F, 0);
                     scale(1.15F, 1.12F, 1.15F);
                     break;
+                case BACK:
+                    translate(0, 2.3F, 0.3F);
+                    break;
             }
         }
     },
@@ -78,6 +84,9 @@ public enum PonyTransformation {
                 case LEGS:
                     translate(0, 0.1F, 0);
                     scale(1, 0.81F, 1);
+                    break;
+                case BACK:
+                    translate(0, 4.5F, 0.6F);
                     break;
                 default:
             }
@@ -109,6 +118,9 @@ public enum PonyTransformation {
                     scale(1, 1.18F, 1);
                     if (model.isGoingFast()) translate(0, 0.05F, 0);
                     break;
+                case BACK:
+                    translate(0, 2F, 0.6F);
+                    break;
             }
         }
     },
@@ -139,9 +151,16 @@ public enum PonyTransformation {
                     scale(1, 1.18F, 1);
                     if (model.isGoingFast()) translate(0, 0.05F, 0);
                     break;
+                case BACK:
+                    translate(0, 4.3F, 0.6F);
+                    break;
             }
         }
     };
+
+
+
+
 
     public abstract void transform(IModel model, BodyPart part);
 }

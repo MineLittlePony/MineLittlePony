@@ -1,11 +1,12 @@
 package com.minelittlepony.ducks;
 
+import com.minelittlepony.model.AbstractPonyModel;
+import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.render.RenderPony;
 import com.minelittlepony.util.math.MathUtil;
 
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.EntityLivingBase;
 
 /**
@@ -29,7 +30,10 @@ public interface IRenderPony<T extends EntityLivingBase> {
         if (!passengerPony.getRace(false).isHuman()) {
             float yaw = MathUtil.interpolateDegress(entity.prevRenderYawOffset, entity.renderYawOffset, ticks);
 
-            GlStateManager.translate(0, 0, 0.3F);
+            getModelWrapper().apply(entityPony.getMetadata());
+            AbstractPonyModel model = getModelWrapper().getBody();
+
+            model.transform(BodyPart.BACK);
 
             getInternalRenderer().applyPostureRiding(entity, entity.ticksExisted + ticks, yaw, ticks);
         }

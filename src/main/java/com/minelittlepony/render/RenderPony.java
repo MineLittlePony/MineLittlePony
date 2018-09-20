@@ -44,16 +44,21 @@ public class RenderPony<T extends EntityLivingBase> {
         GlStateManager.scale(s, s, s);
         enableModelRenderProfile();
 
+        translateRider(entity, ticks);
+    }
+
+    protected void translateRider(EntityLivingBase entity, float ticks) {
         if (entity.isRiding()) {
             Entity ridingEntity = entity.getRidingEntity();
 
             if (ridingEntity instanceof EntityLivingBase) {
+                translateRider((EntityLivingBase)ridingEntity, ticks);
 
                 IRenderPony<EntityLivingBase> renderer = MineLittlePony.getInstance().getRenderManager().getPonyRenderer((EntityLivingBase)ridingEntity);
 
                 if (renderer != null) {
                     // negate vanilla translations so the rider begins at the ridees feet.
-                    GlStateManager.translate(0, entity.getYOffset() + ridingEntity.getMountedYOffset(), 0);
+                    GlStateManager.translate(0, (ridingEntity.posY - entity.posY), 0);
 
                     @SuppressWarnings("unchecked")
                     IPony riderPony = renderer.getEntityPony((EntityLivingBase)ridingEntity);
