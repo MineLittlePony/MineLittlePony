@@ -19,9 +19,16 @@ public class DebugBoundingBoxRenderer {
     }
 
     public void render(IPony pony, EntityLivingBase entity, float ticks) {
+        Minecraft mc = Minecraft.getMinecraft();
+        EntityPlayer player = mc.player;
+
+        if (!mc.getRenderManager().isDebugBoundingBox() || entity.getDistanceSq(player) > 70) {
+            return;
+        }
+
         AxisAlignedBB boundingBox = pony.getComputedBoundingBox(entity);
 
-        EntityPlayer player = Minecraft.getMinecraft().player;
+
         double renderPosX = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double)ticks;
         double renderPosY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double)ticks;
         double renderPosZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double)ticks;
@@ -32,7 +39,7 @@ public class DebugBoundingBoxRenderer {
         disableTexture2D();
         depthMask(false);
 
-        RenderGlobal.drawSelectionBoundingBox(boundingBox.grow(0.002D).offset(-renderPosX, -renderPosY, -renderPosZ), 1, 1, 1, 1);
+        RenderGlobal.drawSelectionBoundingBox(boundingBox.grow(0.003D).offset(-renderPosX, -renderPosY, -renderPosZ), 1, 1, 0, 1);
 
         depthMask(true);
         enableTexture2D();
