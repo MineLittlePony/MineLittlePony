@@ -4,6 +4,7 @@ import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.pony.data.IPony;
+import com.minelittlepony.render.DebugBoundingBoxRenderer;
 import com.minelittlepony.render.RenderPony;
 import com.minelittlepony.render.layer.LayerDJPon3Head;
 import com.minelittlepony.render.layer.LayerEntityOnPonyShoulder;
@@ -15,6 +16,7 @@ import com.minelittlepony.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.render.layer.LayerPonyElytra;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerArrow;
@@ -75,6 +77,18 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
         if (player.isRiding()) {
             GlStateManager.translate(0, player.getYOffset(), 0);
         }
+    }
+
+    @Override
+    public void doRender(AbstractClientPlayer entity, double xPosition, double yPosition, double zPosition, float yaw, float ticks) {
+        super.doRender(entity, xPosition, yPosition, zPosition, yaw, ticks);
+
+        DebugBoundingBoxRenderer.instance.render(renderPony.getPony(entity), entity, ticks);
+    }
+
+    @Override
+    public boolean shouldRender(AbstractClientPlayer entity, ICamera camera, double camX, double camY, double camZ) {
+        return super.shouldRender(entity, renderPony.getFrustrum(entity, camera), camX, camY, camZ);
     }
 
     @Override
