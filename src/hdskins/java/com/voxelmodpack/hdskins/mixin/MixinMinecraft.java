@@ -18,7 +18,7 @@ import net.minecraft.crash.CrashReport;
  * That means you, Killjoy.
  *
  */
-@Mixin(Minecraft.class)
+@Mixin(value = Minecraft.class, priority = 9000)
 public abstract class MixinMinecraft {
     //
     // Due to how JFrame works the only way to know for sure when the game hash crashed
