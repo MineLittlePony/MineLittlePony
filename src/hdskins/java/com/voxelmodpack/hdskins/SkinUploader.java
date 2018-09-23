@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
@@ -216,8 +217,10 @@ public class SkinUploader implements Closeable {
 
                 if (throwable instanceof AuthenticationUnavailableException) {
                     offline = true;
-                } else {
+                } else if (throwable instanceof AuthenticationException) {
                     throttlingNeck = true;
+                } else {
+                    setError(throwable.toString());
                 }
             }
             return a;
