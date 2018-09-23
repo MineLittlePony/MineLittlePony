@@ -25,4 +25,8 @@ public class MathUtil {
 
         return prev + partialTicks * difference;
     }
+
+    public static float interpolateRadians(float prev, float current, float partialTicks) {
+        return (float)Math.toRadians(interpolateDegress(prev, current, partialTicks));
+    }
 }

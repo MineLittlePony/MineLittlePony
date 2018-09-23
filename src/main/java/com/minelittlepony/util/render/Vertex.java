@@ -4,7 +4,7 @@ import net.minecraft.client.model.PositionTextureVertex;
 
 public class Vertex extends PositionTextureVertex {
 
-    Vertex(float x, float y, float z, int texX, int texY) {
+    public Vertex(float x, float y, float z, float texX, float texY) {
         super(x, y, z, texX, texY);
     }
 
