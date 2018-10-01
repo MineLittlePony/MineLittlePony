@@ -1,5 +1,6 @@
 package com.minelittlepony.model;
 
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.model.armour.IEquestrianArmor;
 import com.minelittlepony.model.armour.PonyArmor;
 import com.minelittlepony.model.capabilities.IModelWrapper;
@@ -12,6 +13,8 @@ public class ModelWrapper implements IModelWrapper {
 
     private final AbstractPonyModel body;
     private final PonyArmor armor;
+
+    private int lastModelUpdate = 0;
 
     /**
      * Creates a new model wrapper to contain the given pony.
@@ -41,6 +44,13 @@ public class ModelWrapper implements IModelWrapper {
 
     @Override
     public void apply(IPonyData meta) {
+        int modelRevision = MineLittlePony.getModelRevisionNumber();
+
+        if (modelRevision != lastModelUpdate) {
+            lastModelUpdate = modelRevision;
+            init();
+        }
+
         body.metadata = meta;
         armor.apply(meta);
     }

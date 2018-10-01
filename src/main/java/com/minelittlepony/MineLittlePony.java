@@ -16,6 +16,11 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.data.MetadataSerializer;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
@@ -42,6 +47,9 @@ public class MineLittlePony {
     private final PonyManager ponyManager;
 
     private final PonyRenderManager renderManager;
+
+    private static int modelUpdateCounter = 0;
+    private static boolean reloadingModels = false;
 
     MineLittlePony() {
         instance = this;
@@ -87,8 +95,29 @@ public class MineLittlePony {
     }
 
     void onTick(Minecraft minecraft, boolean inGame) {
-        if (inGame && minecraft.currentScreen == null && SETTINGS_GUI.isPressed()) {
-            minecraft.displayGuiScreen(new GuiPonySettings());
+        if (inGame && minecraft.currentScreen == null) {
+            if (SETTINGS_GUI.isPressed()) {
+                minecraft.displayGuiScreen(new GuiPonySettings());
+            } else {
+
+                if ((Minecraft.getSystemTime() % 10) == 0) {
+                    if (Keyboard.isKeyDown(Keyboard.KEY_F3) && Keyboard.isKeyDown(Keyboard.KEY_M)) {
+                        if (!reloadingModels) {
+                            minecraft.ingameGUI.getChatGUI().printChatMessage(
+                                    (new TextComponentString("")).appendSibling(
+                                    new TextComponentTranslation("debug.prefix")
+                                        .setStyle(new Style().setColor(TextFormatting.YELLOW).setBold(true)))
+                                    .appendText(" ")
+                                    .appendSibling(new TextComponentTranslation("minelp.debug.reload_models.message")));
+
+                            reloadingModels = true;
+                            modelUpdateCounter++;
+                        }
+                    } else {
+                        reloadingModels = false;
+                    }
+                }
+            }
         }
 
         PonySkullRenderer.resolve();
@@ -113,6 +142,10 @@ public class MineLittlePony {
      */
     public PonyRenderManager getRenderManager() {
         return renderManager;
+    }
+
+    public static int getModelRevisionNumber() {
+        return modelUpdateCounter;
     }
 
     /**

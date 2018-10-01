@@ -23,3 +23,5 @@ minelp.mobs.endermen=Ponify endermen
 
 minelp.mode.dry=Land pony
 minelp.mode.wet=Sea pony
+
+minelp.debug.reload_models.message=Reloading pony models...
