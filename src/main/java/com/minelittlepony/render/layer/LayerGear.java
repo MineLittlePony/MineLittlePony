@@ -36,6 +36,11 @@ public class LayerGear<T extends EntityLivingBase> extends AbstractPonyLayer<T> 
 
     @Override
     protected void doPonyRender(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
+
+        if (entity.isInvisible()) {
+            return;
+        }
+
         AbstractPonyModel model = getPlayerModel();
 
         Map<BodyPart, Float> renderStackingOffsets = new HashMap<>();
