@@ -41,7 +41,6 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.SkinManager;
-import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -173,7 +172,8 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     public void fetchAndLoadSkins(GameProfile profile, SkinManager.SkinAvailableCallback callback) {
         loadProfileTextures(profile).thenAcceptAsync(m -> m.forEach((type, pp) -> {
             loadTexture(type, pp, (typeIn, location, profileTexture) -> {
-                parseSkin(profile, typeIn, location, profileTexture, callback);
+                parseSkin(profile, typeIn, location, profileTexture)
+                        .thenRun(() -> callback.skinAvailable(typeIn, location, profileTexture));
             });
         }), Minecraft.getMinecraft()::addScheduledTask);
     }
@@ -307,10 +307,9 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                 .flatMap(a -> a.getPlayerInfoMap().stream());
     }
 
-    public void parseSkin(GameProfile profile, Type type, ResourceLocation resource, MinecraftProfileTexture texture,
-            SkinAvailableCallback callback) {
+    public CompletableFuture<Void> parseSkin(GameProfile profile, Type type, ResourceLocation resource, MinecraftProfileTexture texture) {
 
-        CallableFutures.scheduleTask(() -> {
+        return CallableFutures.scheduleTask(() -> {
 
             // grab the metadata object via reflection. Object is live.
             Map<String, String> metadata = ProfileTextureUtil.getMetadata(texture);
@@ -319,6 +318,9 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
             if (wasNull) {
                 metadata = new HashMap<>();
+            } else if (metadata.containsKey("model")) {
+                // try to reset the model.
+                metadata.put("model", metadata.get("model").contains("slim") ? "slim" : "default");
             }
 
             for (ISkinParser parser : skinParsers) {
@@ -333,7 +335,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                 ProfileTextureUtil.setMetadata(texture, metadata);
             }
 
-            callback.skinAvailable(type, resource, texture);
         });
     }
 

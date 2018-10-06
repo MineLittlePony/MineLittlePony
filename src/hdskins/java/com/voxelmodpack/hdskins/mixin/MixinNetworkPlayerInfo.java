@@ -5,8 +5,6 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.ducks.INetworkPlayerInfo;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.util.ResourceLocation;
@@ -20,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 @Mixin(NetworkPlayerInfo.class)
 public abstract class MixinNetworkPlayerInfo implements INetworkPlayerInfo {
@@ -27,20 +26,15 @@ public abstract class MixinNetworkPlayerInfo implements INetworkPlayerInfo {
     private Map<Type, ResourceLocation> customTextures = new HashMap<>();
     private Map<Type, MinecraftProfileTexture> customProfiles = new HashMap<>();
 
+    private Map<Type, MinecraftProfileTexture> vanillaProfiles = new HashMap<>();
+
     @Shadow @Final
     private GameProfile gameProfile;
 
-    @Shadow
-    private boolean playerTexturesLoaded;
-
-    @Shadow
-    private String skinType;
-
-    @Shadow
-    private Map<Type, ResourceLocation> playerTextures;
+    @Shadow Map<Type, ResourceLocation> playerTextures;
 
     @SuppressWarnings("InvalidMemberReference") // mc-dev bug?
-    @Redirect(method = { "getLocationSkin", "getLocationCape", "getLocationElytra" },
+    @Redirect(method = {"getLocationSkin", "getLocationCape", "getLocationElytra"},
             at = @At(value = "INVOKE", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;", remap = false))
     // synthetic
     private Object getSkin(Map<Type, ResourceLocation> playerTextures, Object key) {
@@ -56,16 +50,25 @@ public abstract class MixinNetworkPlayerInfo implements INetworkPlayerInfo {
         return playerTextures.get(type);
     }
 
+    @Nullable
     @Redirect(method = "getSkinType",
             at = @At(value = "FIELD", target = "Lnet/minecraft/client/network/NetworkPlayerInfo;skinType:Ljava/lang/String;"))
     private String getTextureModel(NetworkPlayerInfo self) {
-        if (customProfiles.containsKey(Type.SKIN)) {
-            String model = customProfiles.get(Type.SKIN).getMetadata("model");
+        String model = getModelFrom(customProfiles);
+        if (model != null) {
+            return model;
+        }
+        return getModelFrom(vanillaProfiles);
+    }
+
+    @Nullable
+    private static String getModelFrom(Map<Type, MinecraftProfileTexture> texture) {
+        if (texture.containsKey(Type.SKIN)) {
+            String model = texture.get(Type.SKIN).getMetadata("model");
 
             return model != null ? model : "default";
         }
-
-        return skinType;
+        return null;
     }
 
     @Inject(method = "loadPlayerTextures",
@@ -91,24 +94,23 @@ public abstract class MixinNetworkPlayerInfo implements INetworkPlayerInfo {
     private void redirectLoadPlayerTextures(SkinManager skinManager, GameProfile profile, SkinManager.SkinAvailableCallback callback,
             boolean requireSecure) {
         skinManager.loadProfileTextures(profile, (typeIn, location, profileTexture) -> {
-            HDSkinManager.INSTANCE.parseSkin(profile, typeIn, location, profileTexture, callback);
+            HDSkinManager.INSTANCE.parseSkin(profile, typeIn, location, profileTexture)
+                    .thenAccept(v -> {
+                        playerTextures.put(typeIn, location);
+                        vanillaProfiles.put(typeIn, profileTexture);
+                    });
         }, requireSecure);
     }
-
 
     @Override
     public void reloadTextures() {
         synchronized (this) {
-            this.playerTexturesLoaded = false;
-            if (this.gameProfile.getId().equals(Minecraft.getMinecraft().getSession().getProfile().getId())) {
-                // local client skin doesn't have a signature.
-                this.gameProfile.getProperties().removeAll("textures");
+            for (Map.Entry<Type, MinecraftProfileTexture> entry : customProfiles.entrySet()) {
+                HDSkinManager.INSTANCE.parseSkin(gameProfile, entry.getKey(), customTextures.get(entry.getKey()), entry.getValue());
+            }
+            for (Map.Entry<Type, MinecraftProfileTexture> entry : vanillaProfiles.entrySet()) {
+                HDSkinManager.INSTANCE.parseSkin(gameProfile, entry.getKey(), playerTextures.get(entry.getKey()), entry.getValue());
             }
         }
-    }
-
-    @Override
-    public void setSkinType(String skinType) {
-        this.skinType = skinType;
     }
 }
