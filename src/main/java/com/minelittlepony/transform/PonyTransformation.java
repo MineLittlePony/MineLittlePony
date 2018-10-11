@@ -56,7 +56,7 @@ public enum PonyTransformation {
                     translate(0, -0.2F, 0.08F);
                     break;
                 case LEGS:
-                    translate(0, -0.14F, 0);
+                    translate(0, -0.18F, 0);
                     scale(1.15F, 1.12F, 1.15F);
                     break;
                 case BACK:
@@ -84,7 +84,7 @@ public enum PonyTransformation {
                     scale(1.3F, 1.3F, 1.3F);
                     break;
                 case LEGS:
-                    translate(0, 0.1F, 0);
+                    translate(0, 0.15F, 0);
                     scale(1, 0.81F, 1);
                     break;
                 case BACK:
@@ -116,7 +116,7 @@ public enum PonyTransformation {
                     translate(0, -0.1F, 0);
                     break;
                 case LEGS:
-                    translate(0, -0.25F, 0.03F);
+                    translate(0, -0.27F, 0.03F);
                     scale(1, 1.18F, 1);
                     if (model.isGoingFast()) translate(0, 0.05F, 0);
                     break;
@@ -149,7 +149,7 @@ public enum PonyTransformation {
                     translate(0, -0.1F, 0);
                     break;
                 case LEGS:
-                    translate(0, -0.25F, 0.03F);
+                    translate(0, -0.265F, 0.03F);
                     scale(1, 1.18F, 1);
                     if (model.isGoingFast()) translate(0, 0.05F, 0);
                     break;

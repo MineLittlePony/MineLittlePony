@@ -109,7 +109,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
 
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
 
-        double offset = entity.getYOffset() + entity.posY + 0.01;
+        double offset = entity.getYOffset() + entity.posY;
 
         if (player.isSneak) {
             y -= 0.125D;
@@ -130,7 +130,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         pushMatrix();
         scale(1, -1, 1);
-        translate(0, offset, 0);
+        translate(0.001, offset, 0.001);
 
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
         popMatrix();
