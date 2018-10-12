@@ -5,6 +5,9 @@ import net.minecraft.util.EnumHandSide;
 import com.minelittlepony.render.model.PonyRenderer;
 
 public interface IModelUnicorn extends IModel {
+    /**
+     * Gets the arm used for holding items in their magic.
+     */
     PonyRenderer getUnicornArmForSide(EnumHandSide side);
 
     /**

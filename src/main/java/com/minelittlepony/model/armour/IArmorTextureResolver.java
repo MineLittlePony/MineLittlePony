@@ -11,5 +11,8 @@ import javax.annotation.Nullable;
 
 public interface IArmorTextureResolver<T extends EntityLivingBase> {
 
+    /**
+     * Gets the armour texture to be used for the given entity, armour piece, slot, and render layer.
+     */
     ResourceLocation getArmorTexture(T entity, ItemStack itemstack, EntityEquipmentSlot slot, ArmorLayer layer,  @Nullable String type);
 }

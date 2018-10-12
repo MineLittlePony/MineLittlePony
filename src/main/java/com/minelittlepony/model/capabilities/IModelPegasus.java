@@ -14,7 +14,11 @@ public interface IModelPegasus extends IModel {
         return (isSwimming() || isFlying() || isCrouching()) && !isElytraFlying();
     }
 
-
+    /**
+     * Determines angle used to animate wing flaps whilst flying/swimming.
+     *
+     * @param ticks Partial render ticks
+     */
     default float getWingRotationFactor(float ticks) {
         if (isSwimming()) {
             return (MathHelper.sin(ticks * 0.136f) / 2) + ROTATE_270;

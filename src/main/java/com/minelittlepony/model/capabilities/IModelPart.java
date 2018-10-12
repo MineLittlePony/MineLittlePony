@@ -17,7 +17,7 @@ public interface IModelPart {
      */
     default void setRotationAndAngles(boolean rainboom, float move, float swing, float bodySwing, float ticks) {
 
-    };
+    }
 
     /**
      * Renders this model component.

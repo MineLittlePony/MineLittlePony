@@ -20,6 +20,9 @@ public interface IModel extends ICapitated {
      */
     void transform(BodyPart part);
 
+    /**
+     * Gets the active scaling profile used to lay out this model's parts.
+     */
     PonySize getSize();
 
     /**
@@ -27,6 +30,9 @@ public interface IModel extends ICapitated {
      */
     IEquestrianArmor<?> createArmour();
 
+    /**
+     * Gets the skin metadata associated with this model.
+     */
     IPonyData getMetadata();
 
     /**
@@ -77,12 +83,24 @@ public interface IModel extends ICapitated {
      */
     boolean isChild();
 
+    /**
+     * Gets the current leg swing amount.
+     */
     float getSwingAmount();
 
+    /**
+     * Gets the y-offset applied to entities riding this one.
+     */
     float getRiderYOffset();
 
+    /**
+     * Gets the actual, visible height of this model when rendered.
+     */
     float getModelHeight();
 
+    /**
+     * Tests if this model is wearing the given piece of gear.
+     */
     default boolean isWearing(PonyWearable wearable) {
         return getMetadata().isWearing(wearable);
     }
