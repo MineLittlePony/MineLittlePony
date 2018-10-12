@@ -5,7 +5,6 @@ import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.model.armour.IEquestrianArmor;
 import com.minelittlepony.model.armour.IEquestrianArmor.ArmorLayer;
 import com.minelittlepony.model.armour.IArmorTextureResolver;
-import com.minelittlepony.model.armour.ModelPonyArmor;
 import com.minelittlepony.model.armour.DefaultPonyArmorTextureResolver;
 import com.minelittlepony.model.capabilities.IModelArmor;
 import com.minelittlepony.util.render.Color;
@@ -50,7 +49,8 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
 
         if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemArmor) {
 
-            ModelPonyArmor armour = getArmorModel(entity, itemstack, armorSlot, layer, pony.getArmor().getArmorForLayer(layer));
+            @SuppressWarnings("unchecked")
+            V armour = getArmorModel(entity, itemstack, armorSlot, layer, (V)pony.getArmor().getArmorForLayer(layer));
 
             if (armour.prepareToRender(armorSlot, layer)) {
 
@@ -84,15 +84,16 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
         }
     }
 
-    private static ModelPonyArmor getArmorModel(EntityLivingBase entity, ItemStack itemstack, EntityEquipmentSlot slot, ArmorLayer layer, ModelPonyArmor def) {
+    @SuppressWarnings("unchecked")
+    private static <V extends ModelBiped & IModelArmor> V getArmorModel(EntityLivingBase entity, ItemStack itemstack, EntityEquipmentSlot slot, ArmorLayer layer, V def) {
         ModelBase model = ForgeProxy.getArmorModel(entity, itemstack, slot, def);
 
-        if (model instanceof ModelPonyArmor) {
-            return (ModelPonyArmor)model;
+        if (model instanceof IModelArmor) {
+            return (V)model;
         }
 
         if (model instanceof IEquestrianArmor) {
-            return ((IEquestrianArmor) model).getArmorForLayer(layer);
+            return ((IEquestrianArmor<V>) model).getArmorForLayer(layer);
         }
 
         return def;

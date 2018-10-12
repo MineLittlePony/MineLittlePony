@@ -1,12 +1,11 @@
 package com.minelittlepony.model.armour;
 
-import com.minelittlepony.model.capabilities.IModelWrapper;
 import com.minelittlepony.pony.data.IPonyData;
 
-public class PonyArmor implements IModelWrapper, IEquestrianArmor {
+public class PonyArmor implements IEquestrianArmor<ModelPonyArmor> {
 
-    public ModelPonyArmor outerLayer;
-    public ModelPonyArmor innerLayer;
+    private final ModelPonyArmor outerLayer;
+    private final ModelPonyArmor innerLayer;
 
     public PonyArmor(ModelPonyArmor outer, ModelPonyArmor inner) {
         outerLayer = outer;

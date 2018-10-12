@@ -1,7 +1,7 @@
 package com.minelittlepony.model.capabilities;
 
 import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.armour.PonyArmor;
+import com.minelittlepony.model.armour.IEquestrianArmor;
 import com.minelittlepony.pony.data.IPonyData;
 import com.minelittlepony.pony.data.PonySize;
 import com.minelittlepony.pony.data.PonyWearable;
@@ -25,7 +25,7 @@ public interface IModel extends ICapitated {
     /**
      * Returns a new pony armour to go with this model. Called on startup by a model wrapper.
      */
-    PonyArmor createArmour();
+    IEquestrianArmor<?> createArmour();
 
     IPonyData getMetadata();
 

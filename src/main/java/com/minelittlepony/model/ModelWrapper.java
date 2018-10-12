@@ -2,7 +2,6 @@ package com.minelittlepony.model;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.model.armour.IEquestrianArmor;
-import com.minelittlepony.model.armour.PonyArmor;
 import com.minelittlepony.model.capabilities.IModelWrapper;
 import com.minelittlepony.pony.data.IPonyData;
 
@@ -12,7 +11,8 @@ import com.minelittlepony.pony.data.IPonyData;
 public class ModelWrapper implements IModelWrapper {
 
     private final AbstractPonyModel body;
-    private final PonyArmor armor;
+
+    private final IEquestrianArmor<?> armor;
 
     private int lastModelUpdate = 0;
 
@@ -38,7 +38,7 @@ public class ModelWrapper implements IModelWrapper {
     /**
      * Returns the contained armour model.
      */
-    public IEquestrianArmor getArmor() {
+    public IEquestrianArmor<?> getArmor() {
         return armor;
     }
 

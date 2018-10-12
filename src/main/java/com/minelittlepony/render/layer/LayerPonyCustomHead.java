@@ -11,6 +11,7 @@ import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.ModelWrapper;
+import com.minelittlepony.model.capabilities.IModel;
 import com.minelittlepony.render.skull.PonySkullRenderer;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
@@ -42,13 +43,13 @@ public class LayerPonyCustomHead<T extends EntityLivingBase> implements LayerRen
     public void doRenderLayer(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
         ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
         if (!itemstack.isEmpty()) {
-            AbstractPonyModel model = getModel().getBody();
+            IModel model = getModel().getBody();
             Item item = itemstack.getItem();
 
             pushMatrix();
 
             model.transform(BodyPart.HEAD);
-            model.bipedHead.postRender(0.0625f);
+            model.getHead().postRender(0.0625f);
 
             if (model instanceof AbstractPonyModel) {
                 translate(0, 0.2F, 0);

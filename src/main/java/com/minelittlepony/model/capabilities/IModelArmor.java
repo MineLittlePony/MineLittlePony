@@ -5,7 +5,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 
 import com.minelittlepony.model.armour.IEquestrianArmor.ArmorLayer;
 
-public interface IModelArmor extends IModel {
+public interface IModelArmor {
     /**
      * Called to synchronise this model's legs with that of another.
      *

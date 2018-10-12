@@ -1,8 +1,8 @@
 package com.minelittlepony.ducks;
 
-import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.ModelWrapper;
+import com.minelittlepony.model.capabilities.IModel;
 import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.render.RenderPony;
 import com.minelittlepony.util.math.MathUtil;
@@ -31,7 +31,7 @@ public interface IRenderPony<T extends EntityLivingBase> {
             float yaw = MathUtil.interpolateDegress(entity.prevRenderYawOffset, entity.renderYawOffset, ticks);
 
             getModelWrapper().apply(entityPony.getMetadata());
-            AbstractPonyModel model = getModelWrapper().getBody();
+            IModel model = getModelWrapper().getBody();
 
             model.transform(BodyPart.BACK);
 
