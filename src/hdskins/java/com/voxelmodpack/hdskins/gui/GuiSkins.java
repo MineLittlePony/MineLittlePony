@@ -13,6 +13,7 @@ import com.voxelmodpack.hdskins.SkinUploader.ISkinUploadHandler;
 import com.voxelmodpack.hdskins.server.SkinServer;
 import com.voxelmodpack.hdskins.upload.GLWindow;
 import com.voxelmodpack.hdskins.util.CallableFutures;
+import com.voxelmodpack.hdskins.util.Edge;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -59,10 +60,32 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
 
     private int lastMouseX = 0;
 
+    private boolean jumpState = false;
+    private boolean sneakState = false;
+
     protected final SkinUploader uploader;
     protected final SkinChooser chooser;
 
     protected final CubeMap panorama;
+
+    private final Edge ctrlKey = new Edge(this::ctrlToggled) {
+        @Override
+        protected boolean nextState() {
+            return Keyboard.isKeyDown(Keyboard.KEY_FUNCTION) || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL);
+        }
+    };
+    private final Edge jumpKey = new Edge(this::jumpToggled) {
+        @Override
+        protected boolean nextState() {
+            return Keyboard.isKeyDown(Keyboard.KEY_SPACE);
+        }
+    };
+    private final Edge sneakKey = new Edge(this::sneakToggled) {
+        @Override
+        protected boolean nextState() {
+            return Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
+        }
+    };
 
     public GuiSkins(List<SkinServer> servers) {
         mc = Minecraft.getMinecraft();
@@ -254,16 +277,45 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
         }
     }
 
+    private void jumpToggled(boolean jumping) {
+        if (jumping && ctrlKey.getState()) {
+            jumpState = !jumpState;
+        }
+
+        jumping |= jumpState;
+
+        localPlayer.setJumping(jumping);
+        remotePlayer.setJumping(jumping);
+    }
+
+    private void sneakToggled(boolean sneaking) {
+        if (sneaking && ctrlKey.getState()) {
+            sneakState = !sneakState;
+        }
+
+        sneaking |= sneakState;
+
+        localPlayer.setSneaking(sneaking);
+        remotePlayer.setSneaking(sneaking);
+    }
+
+    private void ctrlToggled(boolean ctrl) {
+        if (ctrl) {
+            if (sneakKey.getState()) {
+                sneakState = !sneakState;
+            }
+
+            if (jumpKey.getState()) {
+                jumpState = !jumpState;
+            }
+        }
+    }
+
     @Override
     protected void drawContents(int mouseX, int mouseY, float partialTick) {
-        boolean sneak = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
-
-        localPlayer.setSneaking(sneak);
-        remotePlayer.setSneaking(sneak);
-
-        boolean jump = Keyboard.isKeyDown(Keyboard.KEY_SPACE);
-        localPlayer.setJumping(jump);
-        remotePlayer.setJumping(jump);
+        ctrlKey.update();
+        jumpKey.update();
+        sneakKey.update();
 
         float deltaTime = panorama.getDelta(partialTick);
         panorama.render(partialTick, zLevel);
