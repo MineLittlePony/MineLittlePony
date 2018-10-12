@@ -31,8 +31,8 @@ public class GuiSkinsMineLP extends GuiSkins {
     private boolean isWet = false;
 
     private static final String[] panoramas = new String[] {
-        "minelp:textures/cubemap/sugarcubecorner_%d.png",
-        "minelp:textures/cubemap/quillsandsofas_%d.png"
+        "minelittlepony:textures/cubemap/sugarcubecorner_%d.png",
+        "minelittlepony:textures/cubemap/quillsandsofas_%d.png"
     };
 
     public GuiSkinsMineLP(List<SkinServer> servers) {
