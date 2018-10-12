@@ -71,7 +71,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
     private final Edge ctrlKey = new Edge(this::ctrlToggled) {
         @Override
         protected boolean nextState() {
-            return Keyboard.isKeyDown(Keyboard.KEY_FUNCTION) || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL);
+            return Keyboard.isKeyDown(Keyboard.KEY_FUNCTION) || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL);
         }
     };
     private final Edge jumpKey = new Edge(this::jumpToggled) {
