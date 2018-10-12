@@ -84,7 +84,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
     private final Edge sneakKey = new Edge(this::sneakToggled) {
         @Override
         protected boolean nextState() {
-            return Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
+            return GuiScreen.isShiftKeyDown();
         }
     };
 
