@@ -32,7 +32,8 @@ public class GuiSkinsMineLP extends GuiSkins {
 
     private static final String[] panoramas = new String[] {
         "minelittlepony:textures/cubemap/sugarcubecorner_%d.png",
-        "minelittlepony:textures/cubemap/quillsandsofas_%d.png"
+        "minelittlepony:textures/cubemap/quillsandsofas_%d.png",
+        "minelittlepony:textures/cubemap/sweetappleacres_%d.png"
     };
 
     public GuiSkinsMineLP(List<SkinServer> servers) {
