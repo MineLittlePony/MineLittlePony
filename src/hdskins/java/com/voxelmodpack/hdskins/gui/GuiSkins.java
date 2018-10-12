@@ -18,6 +18,7 @@ import com.voxelmodpack.hdskins.util.Edge;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.init.Items;
@@ -71,7 +72,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
     private final Edge ctrlKey = new Edge(this::ctrlToggled) {
         @Override
         protected boolean nextState() {
-            return Keyboard.isKeyDown(Keyboard.KEY_FUNCTION) || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL);
+            return GuiScreen.isCtrlKeyDown();
         }
     };
     private final Edge jumpKey = new Edge(this::jumpToggled) {
