@@ -7,6 +7,7 @@ import com.minelittlepony.model.player.PlayerModels;
 import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyRace;
+import com.minelittlepony.render.layer.LayerGear;
 import com.minelittlepony.render.layer.LayerPonyElytra;
 import com.minelittlepony.render.RenderPony;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
@@ -32,6 +33,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> implemen
 
     public RenderPonyModel(RenderManager manager) {
         super(manager);
+        addLayer(new LayerGear<>(this));
     }
 
     private ModelWrapper playerModel;
