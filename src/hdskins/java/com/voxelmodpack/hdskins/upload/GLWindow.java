@@ -91,6 +91,9 @@ public class GLWindow extends DropTarget {
         return frame;
     }
 
+    private int frameFactorX;
+    private int frameFactorY;
+
     private synchronized void open() throws LWJGLException {
         // Dimensions from LWJGL may have a non 1:1 scale on high DPI monitors.
         int x = getScaledPixelUnit(Display.getX());
@@ -128,8 +131,8 @@ public class GLWindow extends DropTarget {
             public void windowOpened(WindowEvent e) {
                 // Once the window has opened compare the content and window dimensions to get
                 // the OS's frame size then reassign adjusted dimensions to match LWJGL's window.
-                int frameFactorX = frame.getWidth() - frame.getContentPane().getWidth();
-                int frameFactorY = frame.getHeight() - frame.getContentPane().getHeight();
+                frameFactorX = frame.getWidth() - frame.getContentPane().getWidth();
+                frameFactorY = frame.getHeight() - frame.getContentPane().getHeight();
 
                 frame.setSize(w + frameFactorX, h + frameFactorY);
             }
@@ -176,7 +179,7 @@ public class GLWindow extends DropTarget {
                     Display.setDisplayMode(Display.getDesktopDisplayMode());
                 } else {
                     Display.setDisplayMode(new DisplayMode(frame.getContentPane().getWidth(), frame.getContentPane().getHeight()));
-                    Display.setLocation(Math.max(0, frame.getX()), Math.max(0, frame.getY()));
+                    Display.setLocation(Math.max(0, frame.getX() + frameFactorX/3), Math.max(0, frame.getY() + frameFactorX/3));
                 }
 
                 // https://bugs.mojang.com/browse/MC-68754
