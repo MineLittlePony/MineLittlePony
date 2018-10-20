@@ -5,6 +5,7 @@ import com.minelittlepony.gui.GameGui;
 import com.minelittlepony.gui.IconicButton;
 import com.minelittlepony.gui.IconicToggle;
 import com.minelittlepony.gui.Label;
+import com.minelittlepony.gui.Style;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.HDSkinManager;
@@ -194,15 +195,21 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
                 .setTooltip(format("hdskins.mode.skin", toTitleCase(Type.ELYTRA.name())))
                 .setTooltipOffset(0, 10);
 
-        addButton(new IconicToggle(width - 25, 118, sender -> {
+        addButton(new IconicToggle(width - 25, 118, 3, sender -> {
             playSound(SoundEvents.BLOCK_BREWING_STAND_BREW);
 
-            localPlayer.setSleeping(sender.getValue());
-            remotePlayer.setSleeping(sender.getValue());
+            boolean sleep = sender.getValue() == 1;
+            boolean ride = sender.getValue() == 2;
+            localPlayer.setSleeping(sleep);
+            remotePlayer.setSleeping(sleep);
+
+            localPlayer.setRiding(ride);
+            remotePlayer.setRiding(ride);
         }))
-                .setValue(localPlayer.isPlayerSleeping())
-                .setStyle(new IconicToggle.Style().setIcon(new ItemStack(Items.IRON_BOOTS, 1)).setTooltip("Standing"), false)
-                .setStyle(new IconicToggle.Style().setIcon(new ItemStack(Items.CLOCK, 1)).setTooltip("Sleeping"), true)
+                .setValue(localPlayer.isPlayerSleeping() ? 1 : 0)
+                .setStyle(new Style().setIcon(new ItemStack(Items.IRON_BOOTS, 1)).setTooltip("Standing"), 0)
+                .setStyle(new Style().setIcon(new ItemStack(Items.CLOCK, 1)).setTooltip("Sleeping"), 1)
+                .setStyle(new Style().setIcon(new ItemStack(Items.BOAT, 1)).setTooltip("Riding"), 2)
                 .setTooltipOffset(0, 10);
 
         addButton(new Button(width - 25, height - 65, 20, 20, "?", sender -> {

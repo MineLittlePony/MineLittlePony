@@ -105,7 +105,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
 
         super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
 
-        float headRotateAngleY = isSleeping() ? 1.4f : headYaw / 57.29578F;
+        float headRotateAngleY = isSleeping() ? (Math.abs(entity.getUniqueID().getMostSignificantBits()) % 2.8F) - 1.9F : headYaw / 57.29578F;
         float headRotateAngleX = isSleeping() ? 0.1f : headPitch / 57.29578F;
 
         headRotateAngleX = Math.min(headRotateAngleX, (float) (0.5f - Math.toRadians(motionPitch)));

@@ -3,6 +3,7 @@ package com.minelittlepony.hdskins.gui;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyManager;
 import com.minelittlepony.gui.IconicToggle;
+import com.minelittlepony.gui.Style;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
@@ -45,10 +46,10 @@ public class GuiSkinsMineLP extends GuiSkins {
     public void initGui() {
         super.initGui();
 
-        addButton(new IconicToggle(width - 25, 142, sender -> setWet(sender.getValue()))
-                .setStyle(new IconicToggle.Style().setIcon(new ItemStack(Items.WATER_BUCKET)).setTooltip("minelp.mode.wet"), true)
-                .setStyle(new IconicToggle.Style().setIcon(new ItemStack(Items.BUCKET)).setTooltip("minelp.mode.dry"), false)
-                .setValue(isWet)
+        addButton(new IconicToggle(width - 25, 142, 2, sender -> setWet(sender.getValue() == 1))
+                .setStyle(new Style().setIcon(new ItemStack(Items.WATER_BUCKET)).setTooltip("minelp.mode.wet"), 1)
+                .setStyle(new Style().setIcon(new ItemStack(Items.BUCKET)).setTooltip("minelp.mode.dry"), 0)
+                .setValue(isWet ? 1 : 0)
                 .setTooltipOffset(0, 10));
     }
 
