@@ -20,7 +20,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.TooManyListenersException;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
@@ -210,7 +210,7 @@ public class GLWindow extends DropTarget {
             //
             DefaultResourcePack pack = (DefaultResourcePack) mc.getResourcePackRepository().rprDefaultResourcePack;
 
-            ArrayList<Image> images = Lists.newArrayList(
+            List<Image> images = Lists.newArrayList(
                     ImageIO.read(pack.getInputStreamAssets(new ResourceLocation("icons/icon_16x16.png"))),
                     ImageIO.read(pack.getInputStreamAssets(new ResourceLocation("icons/icon_32x32.png")))
             );

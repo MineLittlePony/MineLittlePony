@@ -21,13 +21,13 @@ import net.minecraft.crash.CrashReport;
 @Mixin(value = Minecraft.class, priority = 9000)
 public abstract class MixinMinecraft {
     //
-    // Due to how JFrame works the only way to know for sure when the game hash crashed
-    // is to have it call us explicitly.
+    // Due to how JFrame works the only way to know for sure when the game has crashed
+    // is to have it call us directly.
     //
     // ShutdownListener.onShutDown is unlikely to be called as it depends on the
     // Minecraft.running flag to be unset, which is unlikely to happen if the game crashes.
     //
-    // Runtime.current().addShutdownHook won't be called it waits for all
+    // Runtime.current().addShutdownHook won't be called as it waits for all
     // non-daemon threads to end, one of which is depending on the JFrame being
     // disposed to tell it when to end.
     //
@@ -68,7 +68,7 @@ public abstract class MixinMinecraft {
     //  [!!!DO NOT REMOVE!!!]
     //
     //  I'm serious, do not remove.
-    //  I don't care how much of a vendeta you have aginst mixins.
+    //  I don't care how much of a vendeta you have against mixins.
     //
     //public void displayCrashReport(CrashReport crashReportIn)
     @Inject(method = "displayCrashReport(Lnet/minecraft/crash/CrashReport;)V", at = @At("HEAD"))
