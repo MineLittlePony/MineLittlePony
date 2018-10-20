@@ -41,7 +41,7 @@ public class ModelWing<T extends AbstractPonyModel & IModelPegasus> {
 
         extended.around(r * EXT_WING_RP_X, EXT_WING_RP_Y + rotationPointY, EXT_WING_RP_Z)
                 .rotateAngleY = r * 3;
-        addFeather(0, l,  6,     0,    8, scale + 0.1F);
+        addFeather(0, l,  6,     0,    9, scale + 0.1F);
         addFeather(1, l, -1,    -0.3F, 8, scale + 0.1F) .rotateAngleX = -0.85F;
         addFeather(2, l,  1.8F,  1.3F, 8, scale - 0.1F) .rotateAngleX = -0.75F;
         addFeather(3, l,  5,     2,    8, scale)        .rotateAngleX = -0.5F;
