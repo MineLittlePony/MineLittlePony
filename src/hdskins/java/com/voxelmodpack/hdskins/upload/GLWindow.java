@@ -66,7 +66,7 @@ public class GLWindow extends DropTarget {
     }
 
     private static int getScaledPixelUnit(int i) {
-        return Math.max((int)Math.floor(i * Display.getPixelScaleFactor()), 0);
+        return Math.max((int)Math.round(i * Display.getPixelScaleFactor()), 0);
     }
 
     private final Minecraft mc = Minecraft.getMinecraft();
