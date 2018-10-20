@@ -146,11 +146,6 @@ public class ModelSeapony extends ModelUnicorn {
     }
 
     @Override
-    public float getRiderYOffset() {
-        return 1.05F;
-    }
-
-    @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
 
