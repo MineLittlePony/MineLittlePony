@@ -569,7 +569,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         bipedHeadwear = new PonyRenderer(this, 32, 0)
                                      .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
                                      .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
-                                     .box(-4, -4, -4, 8, 8, 8, stretch + 0.5F);
+                                     .box(-4, -4, -4, 8, 8, 8, stretch + 0.7504F);
 
         snout = new PonySnout(this);
         snout.init(yOffset, stretch);

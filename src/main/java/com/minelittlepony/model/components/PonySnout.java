@@ -26,7 +26,7 @@ public class PonySnout {
     public <T extends ModelBase & ICapitated> PonySnout(T pony, int x, int y, int z) {
         head = pony;
 
-        mare = new PlaneRenderer(pony).offset(HEAD_CENTRE_X + x, HEAD_CENTRE_Y + y, HEAD_CENTRE_Z + z);
+        mare = new PlaneRenderer(pony).offset(HEAD_CENTRE_X + x, HEAD_CENTRE_Y + y, HEAD_CENTRE_Z + z + 0.25F);
         stallion = new PlaneRenderer(pony).offset(HEAD_CENTRE_X + x, HEAD_CENTRE_Y + y, HEAD_CENTRE_Z + z);
 
         pony.getHead().addChild(stallion);
