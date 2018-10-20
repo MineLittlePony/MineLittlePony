@@ -31,7 +31,41 @@ public enum PonyTransformation {
             }
         }
     },
-    LARGE(0, 2.3F, 0.3F) {
+    LANKY(0, 2.3F, 0.3F) {
+        @Override
+        public void transform(IModel model, BodyPart part) {
+            if (model.isCrouching()) translate(0, -0.15F, 0);
+            if (model.isSleeping()) translate(0, -0.98F, 0.2F);
+            if (model.isRiding()) translate(0, 0, -0.2F);
+
+            switch (part) {
+                case NECK:
+                    translate(0, -0.15F, -0.07F);
+                    if (model.isCrouching()) translate(-0.03F, 0.16F, 0.07F);
+                    break;
+                case HEAD:
+                    translate(0, -0.17F, -0.04F);
+                    if (model.isSleeping()) translate(0, 0, -0.1F);
+                    if (model.isCrouching()) translate(0, 0.15F, 0);
+                    break;
+                case BODY:
+                    translate(0, -0.2F, -0.04F);
+                    scale(0.9F, 1.2F, 0.9F);
+                    break;
+                case TAIL:
+                    translate(0, -0.2F, 0.08F);
+                    break;
+                case LEGS:
+                    translate(0, -0.18F, 0);
+                    scale(0.9F, 1.12F, 0.9F);
+                    break;
+                case BACK:
+                    translateVec(riderOffset);
+                    break;
+            }
+        }
+    },
+    BULKY(0, 2.3F, 0.3F) {
         @Override
         public void transform(IModel model, BodyPart part) {
             if (model.isCrouching()) translate(0, -0.15F, 0);

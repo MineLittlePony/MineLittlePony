@@ -782,7 +782,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
             case NORMAL: return 0.4F;
             case FOAL:
             case TALL:
-            case LARGE:
+            case BULKY:
             default: return 0.25F;
         }
     }
