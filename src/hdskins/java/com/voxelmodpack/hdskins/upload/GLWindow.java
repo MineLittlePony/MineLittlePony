@@ -66,7 +66,7 @@ public class GLWindow extends DropTarget {
     }
 
     private static int getScaledPixelUnit(int i) {
-        return (int)Math.floor(i * Display.getPixelScaleFactor());
+        return Math.max((int)Math.floor(i * Display.getPixelScaleFactor()), 0);
     }
 
     private final Minecraft mc = Minecraft.getMinecraft();
@@ -128,10 +128,10 @@ public class GLWindow extends DropTarget {
             public void windowOpened(WindowEvent e) {
                 // Once the window has opened compare the content and window dimensions to get
                 // the OS's frame size then reassign adjusted dimensions to match LWJGL's window.
-                float frameFactorX = frame.getWidth() - frame.getContentPane().getWidth();
-                float frameFactorY = frame.getHeight() - frame.getContentPane().getHeight();
+                int frameFactorX = frame.getWidth() - frame.getContentPane().getWidth();
+                int frameFactorY = frame.getHeight() - frame.getContentPane().getHeight();
 
-                frame.setSize((int)Math.floor(w + frameFactorX), (int)Math.floor(h + frameFactorY));
+                frame.setSize(w + frameFactorX, h + frameFactorY);
             }
         });
         frame.addComponentListener(new ComponentAdapter() {
@@ -176,7 +176,7 @@ public class GLWindow extends DropTarget {
                     Display.setDisplayMode(Display.getDesktopDisplayMode());
                 } else {
                     Display.setDisplayMode(new DisplayMode(frame.getContentPane().getWidth(), frame.getContentPane().getHeight()));
-                    Display.setLocation(frame.getX(), frame.getY());
+                    Display.setLocation(Math.max(0, frame.getX()), Math.max(0, frame.getY()));
                 }
 
                 // https://bugs.mojang.com/browse/MC-68754
