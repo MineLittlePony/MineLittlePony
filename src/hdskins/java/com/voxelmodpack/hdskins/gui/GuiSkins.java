@@ -207,9 +207,9 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
             remotePlayer.setRiding(ride);
         }))
                 .setValue(localPlayer.isPlayerSleeping() ? 1 : 0)
-                .setStyle(new Style().setIcon(new ItemStack(Items.IRON_BOOTS, 1)).setTooltip("Standing"), 0)
-                .setStyle(new Style().setIcon(new ItemStack(Items.CLOCK, 1)).setTooltip("Sleeping"), 1)
-                .setStyle(new Style().setIcon(new ItemStack(Items.BOAT, 1)).setTooltip("Riding"), 2)
+                .setStyle(new Style().setIcon(new ItemStack(Items.IRON_BOOTS, 1)).setTooltip("hdskins.mode.stand"), 0)
+                .setStyle(new Style().setIcon(new ItemStack(Items.CLOCK, 1)).setTooltip("hdskins.mode.sleep"), 1)
+                .setStyle(new Style().setIcon(new ItemStack(Items.BOAT, 1)).setTooltip("hdskins.mode.ride"), 2)
                 .setTooltipOffset(0, 10);
 
         addButton(new Button(width - 25, height - 65, 20, 20, "?", sender -> {
