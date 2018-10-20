@@ -5,7 +5,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 
-public class Button extends GuiButton implements IActionable, IGuiTooltipped {
+public class Button extends GuiButton implements IActionable, IGuiTooltipped<Button> {
 
     private int tipX = 0;
     private int tipY = 0;
@@ -44,7 +44,7 @@ public class Button extends GuiButton implements IActionable, IGuiTooltipped {
     }
 
     @Override
-    public IGuiTooltipped setTooltipOffset(int x, int y) {
+    public Button setTooltipOffset(int x, int y) {
         tipX = x;
         tipY = y;
         return this;

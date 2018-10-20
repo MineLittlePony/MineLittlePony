@@ -63,7 +63,7 @@ public abstract class GameGui extends GuiScreen {
     protected void postDrawContents(int mouseX, int mouseY, float partialTicks) {
         buttonList.forEach(button -> {
             if (button instanceof IGuiTooltipped) {
-                ((IGuiTooltipped)button).renderToolTip(mc, mouseX, mouseY);
+                ((IGuiTooltipped<?>)button).renderToolTip(mc, mouseX, mouseY);
             }
         });
     }

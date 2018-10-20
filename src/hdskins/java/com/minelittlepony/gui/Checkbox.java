@@ -13,7 +13,7 @@ import net.minecraft.client.resources.I18n;
  * @author Sollace
  *
  */
-public class Checkbox extends GuiCheckbox implements IActionable, IGuiTooltipped {
+public class Checkbox extends GuiCheckbox implements IActionable, IGuiTooltipped<Checkbox> {
 
     private int tipX = 0;
     private int tipY = 0;
@@ -47,7 +47,7 @@ public class Checkbox extends GuiCheckbox implements IActionable, IGuiTooltipped
     }
 
     @Override
-    public IGuiTooltipped setTooltipOffset(int x, int y) {
+    public Checkbox setTooltipOffset(int x, int y) {
         tipX = x;
         tipY = y;
         return this;

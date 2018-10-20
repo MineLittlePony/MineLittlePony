@@ -2,8 +2,7 @@ package com.minelittlepony.hdskins.gui;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyManager;
-import com.minelittlepony.gui.Button;
-import com.minelittlepony.gui.IconicButton;
+import com.minelittlepony.gui.IconicToggle;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
@@ -24,9 +23,6 @@ import java.util.List;
 public class GuiSkinsMineLP extends GuiSkins {
 
     private PonyManager ponyManager = MineLittlePony.getInstance().getManager();
-
-    private Button btnModeWet;
-    private Button btnModeDry;
 
     private boolean isWet = false;
 
@@ -49,13 +45,11 @@ public class GuiSkinsMineLP extends GuiSkins {
     public void initGui() {
         super.initGui();
 
-        addButton(btnModeWet = new IconicButton(width - 25, 137, sender -> {
-            setWet(true);
-        }).setIcon(new ItemStack(Items.WATER_BUCKET))).setEnabled(!isWet).setTooltip("minelp.mode.wet").setTooltipOffset(0, 10);
-
-        addButton(btnModeDry = new IconicButton(width - 25, 118, sender -> {
-            setWet(false);
-        }).setIcon(new ItemStack(Items.BUCKET))).setEnabled(isWet).setTooltip("minelp.mode.dry").setTooltipOffset(0, 10);
+        addButton(new IconicToggle(width - 25, 142, sender -> setWet(sender.getValue()))
+                .setStyle(new IconicToggle.Style().setIcon(new ItemStack(Items.WATER_BUCKET)).setTooltip("minelp.mode.wet"), true)
+                .setStyle(new IconicToggle.Style().setIcon(new ItemStack(Items.BUCKET)).setTooltip("minelp.mode.dry"), false)
+                .setValue(isWet)
+                .setTooltipOffset(0, 10));
     }
 
     @Override
@@ -66,17 +60,10 @@ public class GuiSkinsMineLP extends GuiSkins {
     }
 
     protected void setWet(boolean wet) {
-        if (wet == isWet) {
-            return;
-        }
-
         playSound(SoundEvents.BLOCK_BREWING_STAND_BREW);
 
         isWet = wet;
         localPlayer.releaseTextures();
-
-        btnModeDry.enabled = isWet;
-        btnModeWet.enabled = !isWet;
 
         ((EntityPonyModel)localPlayer).setWet(isWet);
         ((EntityPonyModel)remotePlayer).setWet(isWet);

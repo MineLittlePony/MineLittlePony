@@ -3,6 +3,7 @@ package com.voxelmodpack.hdskins.gui;
 import com.minelittlepony.gui.Button;
 import com.minelittlepony.gui.GameGui;
 import com.minelittlepony.gui.IconicButton;
+import com.minelittlepony.gui.IconicToggle;
 import com.minelittlepony.gui.Label;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
@@ -142,21 +143,23 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
         addButton(new Label(34, 34, "hdskins.local", 0xffffff));
         addButton(new Label(width / 2 + 34, 34, "hdskins.server", 0xffffff));
 
-        addButton(btnBrowse = new Button(width / 2 - 150, height - 27, 90, 20, "hdskins.options.browse", sender -> {
-            chooser.openBrowsePNG(mc, format("hdskins.open.title"));
-        })).setEnabled(!mc.isFullScreen());
+        addButton(btnBrowse = new Button(width / 2 - 150, height - 27, 90, 20, "hdskins.options.browse", sender ->
+                    chooser.openBrowsePNG(mc, format("hdskins.open.title"))))
+                .setEnabled(!mc.isFullScreen());
 
         addButton(btnUpload = new Button(width / 2 - 24, height / 2 - 20, 48, 20, "hdskins.options.chevy", sender -> {
             if (uploader.canUpload()) {
                 punchServer("hdskins.upload");
             }
-        })).setEnabled(uploader.canUpload()).setTooltip("hdskins.options.chevy.title");
+        })).setEnabled(uploader.canUpload())
+                .setTooltip("hdskins.options.chevy.title");
 
         addButton(btnDownload = new Button(width / 2 - 24, height / 2 + 20, 48, 20, "hdskins.options.download", sender -> {
             if (uploader.canClear()) {
                 chooser.openSavePNG(mc, format("hdskins.save.title"));
             }
-        })).setEnabled(uploader.canClear()).setTooltip("hdskins.options.download.title");
+        })).setEnabled(uploader.canClear())
+                .setTooltip("hdskins.options.download.title");
 
         addButton(btnClear = new Button(width / 2 + 60, height - 27, 90, 20, "hdskins.options.clear", sender -> {
             if (uploader.canClear()) {
@@ -164,32 +167,51 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
             }
         })).setEnabled(uploader.canClear());
 
-        addButton(new Button(width / 2 - 50, height - 25, 100, 20, "hdskins.options.close", sender -> {
-            mc.displayGuiScreen(new GuiMainMenu());
-        }));
+        addButton(new Button(width / 2 - 50, height - 25, 100, 20, "hdskins.options.close", sender ->
+                    mc.displayGuiScreen(new GuiMainMenu())));
 
-        addButton(btnModeSteve = new IconicButton(width - 25, 32, sender -> {
-            switchSkinMode("default");
-        }).setIcon(new ItemStack(Items.LEATHER_LEGGINGS), 0x3c5dcb)).setEnabled("slim".equals(uploader.getMetadataField("model"))).setTooltip("hdskins.mode.steve").setTooltipOffset(0, 10);
+        addButton(btnModeSteve = new IconicButton(width - 25, 32, sender -> switchSkinMode("default"))
+                .setIcon(new ItemStack(Items.LEATHER_LEGGINGS), 0x3c5dcb))
+                .setEnabled("slim".equals(uploader.getMetadataField("model")))
+                .setTooltip("hdskins.mode.steve")
+                .setTooltipOffset(0, 10);
 
-        addButton(btnModeAlex = new IconicButton(width - 25, 51, sender -> {
-            switchSkinMode("slim");
-        }).setIcon(new ItemStack(Items.LEATHER_LEGGINGS), 0xfff500)).setEnabled("default".equals(uploader.getMetadataField("model"))).setTooltip("hdskins.mode.alex").setTooltipOffset(0, 10);
+        addButton(btnModeAlex = new IconicButton(width - 25, 51, sender -> switchSkinMode("slim"))
+                .setIcon(new ItemStack(Items.LEATHER_LEGGINGS), 0xfff500))
+                .setEnabled("default".equals(uploader.getMetadataField("model")))
+                .setTooltip("hdskins.mode.alex")
+                .setTooltipOffset(0, 10);
 
+        addButton(btnModeSkin = new IconicButton(width - 25, 75, sender -> uploader.setSkinType(Type.SKIN))
+                .setIcon(new ItemStack(Items.LEATHER_CHESTPLATE)))
+                .setEnabled(uploader.getSkinType() == Type.ELYTRA)
+                .setTooltip(format("hdskins.mode.skin", toTitleCase(Type.SKIN.name())))
+                .setTooltipOffset(0, 10);
 
-        addButton(btnModeSkin = new IconicButton(width - 25, 75, sender -> {
-            uploader.setSkinType(Type.SKIN);
-        }).setIcon(new ItemStack(Items.LEATHER_CHESTPLATE))).setEnabled(uploader.getSkinType() == Type.ELYTRA).setTooltip(format("hdskins.mode.skin", toTitleCase(Type.SKIN.name()))).setTooltipOffset(0, 10);
+        addButton(btnModeElytra = new IconicButton(width - 25, 94, sender -> uploader.setSkinType(Type.ELYTRA))
+                .setIcon(new ItemStack(Items.ELYTRA)))
+                .setEnabled(uploader.getSkinType() == Type.SKIN)
+                .setTooltip(format("hdskins.mode.skin", toTitleCase(Type.ELYTRA.name())))
+                .setTooltipOffset(0, 10);
 
-        addButton(btnModeElytra = new IconicButton(width - 25, 94, sender -> {
-            uploader.setSkinType(Type.ELYTRA);
-        }).setIcon(new ItemStack(Items.ELYTRA))).setEnabled(uploader.getSkinType() == Type.SKIN).setTooltip(format("hdskins.mode.skin", toTitleCase(Type.ELYTRA.name()))).setTooltipOffset(0, 10);
+        addButton(new IconicToggle(width - 25, 118, sender -> {
+            playSound(SoundEvents.BLOCK_BREWING_STAND_BREW);
+
+            localPlayer.setSleeping(sender.getValue());
+            remotePlayer.setSleeping(sender.getValue());
+        }))
+                .setValue(localPlayer.isPlayerSleeping())
+                .setStyle(new IconicToggle.Style().setIcon(new ItemStack(Items.IRON_BOOTS, 1)).setTooltip("Standing"), false)
+                .setStyle(new IconicToggle.Style().setIcon(new ItemStack(Items.CLOCK, 1)).setTooltip("Sleeping"), true)
+                .setTooltipOffset(0, 10);
 
         addButton(new Button(width - 25, height - 65, 20, 20, "?", sender -> {
             uploader.cycleGateway();
             playSound(SoundEvents.ENTITY_VILLAGER_YES);
             sender.setTooltip(uploader.getGateway());
-        })).setTooltip(uploader.getGateway()).setTooltipOffset(0, 10);
+        }))
+                .setTooltip(uploader.getGateway())
+                .setTooltipOffset(0, 10);
     }
 
     @Override

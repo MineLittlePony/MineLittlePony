@@ -111,7 +111,12 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
 
         double offset = entity.getYOffset() + entity.posY;
 
-        if (player.isSneak) {
+
+
+        if (entity.isPlayerSleeping()) {
+            y--;
+            z += 0.5F;
+        } else if (player.isSneak) {
             y -= 0.125D;
         }
 
@@ -119,6 +124,10 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         enableBlend();
         color(1, 1, 1, 0.3F);
         translate(0, offset, 0);
+
+        if (entity.isPlayerSleeping()) {
+            GlStateManager.rotate(-90, 1, 0, 0);
+        }
 
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
 
@@ -131,6 +140,10 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         pushMatrix();
         scale(1, -1, 1);
         translate(0.001, offset, 0.001);
+
+        if (entity.isPlayerSleeping()) {
+            GlStateManager.rotate(-90, 1, 0, 0);
+        }
 
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
         popMatrix();

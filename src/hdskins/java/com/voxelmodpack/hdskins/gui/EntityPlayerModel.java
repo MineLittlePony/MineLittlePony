@@ -41,6 +41,7 @@ public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSup
     private final GameProfile profile;
 
     protected boolean previewThinArms = false;
+    protected boolean previewSleeping = false;
 
     public EntityPlayerModel(GameProfile gameprofile) {
         super(DummyWorld.INSTANCE);
@@ -104,6 +105,20 @@ public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSup
         return previewThinArms;
     }
 
+    public void setSleeping(boolean sleep) {
+        previewSleeping = sleep;
+    }
+
+    @Override
+    public boolean isPlayerSleeping() {
+        return previewSleeping;
+    }
+
+    @Override
+    public boolean isSneaking() {
+        return !previewSleeping && super.isSneaking();
+    }
+
     public void updateModel() {
         prevSwingProgress = swingProgress;
         if (isSwingInProgress) {
@@ -123,7 +138,7 @@ public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSup
             motionY = 0;
         }
 
-        if (posY == 0 && isJumping) {
+        if (posY == 0 && isJumping && !previewSleeping) {
             jump();
         }
 

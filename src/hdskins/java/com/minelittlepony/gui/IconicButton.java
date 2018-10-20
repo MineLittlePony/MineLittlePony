@@ -8,7 +8,7 @@ public class IconicButton extends Button {
 
     private ItemStack itemStack = ItemStack.EMPTY;
 
-    public IconicButton(int x, int y, IGuiAction<IconicButton> callback) {
+    public IconicButton(int x, int y, IGuiAction<? extends IconicButton> callback) {
         super(x, y, 20, 20, "", callback);
     }
 

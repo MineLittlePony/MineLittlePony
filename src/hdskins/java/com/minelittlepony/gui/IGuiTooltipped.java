@@ -6,13 +6,13 @@ import com.google.common.base.Splitter;
 
 import java.util.List;
 
-public interface IGuiTooltipped {
+public interface IGuiTooltipped<T extends IGuiTooltipped<T>> {
 
-    IGuiTooltipped setTooltip(List<String> tooltip);
+    T setTooltip(List<String> tooltip);
 
-    IGuiTooltipped setTooltipOffset(int x, int y);
+    T setTooltipOffset(int x, int y);
 
-    default IGuiTooltipped setTooltip(String tooltip) {
+    default T setTooltip(String tooltip) {
         return setTooltip(Splitter.onPattern("\r?\n|\\\\n").splitToList(GameGui.format(tooltip)));
     }
 
