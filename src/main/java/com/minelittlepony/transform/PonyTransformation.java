@@ -118,7 +118,7 @@ public enum PonyTransformation {
                     scale(1.3F, 1.3F, 1.3F);
                     break;
                 case LEGS:
-                    translate(0, 0.15F, 0);
+                    translate(0, 0.09F, 0);
                     scale(1, 0.81F, 1);
                     break;
                 case BACK:
