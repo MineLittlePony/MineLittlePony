@@ -8,6 +8,7 @@ import com.minelittlepony.render.RenderPony;
 import com.minelittlepony.util.math.MathUtil;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * I Render Pony now, oky?
@@ -22,6 +23,8 @@ public interface IRenderPony<T extends EntityLivingBase> {
     IPony getEntityPony(T entity);
 
     RenderPony<T> getInternalRenderer();
+
+    ResourceLocation getTexture(T entity);
 
     /**
      * Called by riders to have their transportation adjust their position.

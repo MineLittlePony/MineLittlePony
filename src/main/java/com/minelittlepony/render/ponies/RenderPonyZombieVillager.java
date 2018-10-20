@@ -25,7 +25,7 @@ public class RenderPonyZombieVillager extends RenderPonyMob<EntityZombieVillager
     }
 
     @Override
-    protected ResourceLocation getTexture(EntityZombieVillager entity) {
+    public ResourceLocation getTexture(EntityZombieVillager entity) {
         return PROFESSIONS.supplyTexture(entity.getProfession());
     }
 

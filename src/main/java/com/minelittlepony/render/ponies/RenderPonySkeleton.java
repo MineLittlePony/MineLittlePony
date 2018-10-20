@@ -21,7 +21,7 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
     }
 
     @Override
-    protected ResourceLocation getTexture(Skeleton entity) {
+    public ResourceLocation getTexture(Skeleton entity) {
         return SKELETON;
     }
 
@@ -33,7 +33,7 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
         }
 
         @Override
-        protected ResourceLocation getTexture(EntityStray entity) {
+        public ResourceLocation getTexture(EntityStray entity) {
             return STRAY;
         }
     }
@@ -45,7 +45,7 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends Rende
         }
 
         @Override
-        protected ResourceLocation getTexture(EntityWitherSkeleton entity) {
+        public ResourceLocation getTexture(EntityWitherSkeleton entity) {
             return WITHER;
         }
 

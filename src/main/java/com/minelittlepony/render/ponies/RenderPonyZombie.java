@@ -19,7 +19,7 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
     }
 
     @Override
-    protected ResourceLocation getTexture(Zombie entity) {
+    public ResourceLocation getTexture(Zombie entity) {
         return ZOMBIE;
     }
 
@@ -36,7 +36,7 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
         }
 
         @Override
-        protected ResourceLocation getTexture(EntityHusk entity) {
+        public ResourceLocation getTexture(EntityHusk entity) {
             return HUSK;
         }
 
@@ -55,7 +55,7 @@ public class RenderPonyZombie<Zombie extends EntityZombie> extends RenderPonyMob
 	    }
 
 		@Override
-	    protected ResourceLocation getTexture(EntityGiantZombie entity) {
+	    public ResourceLocation getTexture(EntityGiantZombie entity) {
 	        return ZOMBIE;
 	    }
     }

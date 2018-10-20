@@ -42,7 +42,7 @@ public abstract class RenderPonyIllager<T extends AbstractIllager> extends Rende
         }
 
         @Override
-        protected ResourceLocation getTexture(EntityVindicator entity) {
+        public ResourceLocation getTexture(EntityVindicator entity) {
             return VINDICATOR;
         }
     }
@@ -54,7 +54,7 @@ public abstract class RenderPonyIllager<T extends AbstractIllager> extends Rende
         }
 
         @Override
-        protected ResourceLocation getTexture(EntityEvoker entity) {
+        public ResourceLocation getTexture(EntityEvoker entity) {
             return EVOKER;
         }
     }
@@ -66,7 +66,7 @@ public abstract class RenderPonyIllager<T extends AbstractIllager> extends Rende
         }
 
         @Override
-        protected ResourceLocation getTexture(EntityIllusionIllager entity) {
+        public ResourceLocation getTexture(EntityIllusionIllager entity) {
             return ILLUSIONIST;
         }
 

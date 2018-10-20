@@ -38,7 +38,7 @@ public class RenderPonyWitch extends RenderPonyMob<EntityWitch> {
     }
 
     @Override
-    protected ResourceLocation getTexture(EntityWitch entity) {
+    public ResourceLocation getTexture(EntityWitch entity) {
         return WITCH_TEXTURES;
     }
 }

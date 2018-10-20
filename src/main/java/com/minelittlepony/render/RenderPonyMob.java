@@ -107,8 +107,6 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
         return renderPony;
     }
 
-    protected abstract ResourceLocation getTexture(T entity);
-
     public abstract static class Proxy<T extends EntityLiving> extends RenderPonyMob<T> {
 
         public Proxy(List<LayerRenderer<T>> exportedLayers, RenderManager manager, ModelWrapper model) {

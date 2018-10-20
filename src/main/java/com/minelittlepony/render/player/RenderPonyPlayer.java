@@ -143,6 +143,11 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
     }
 
     @Override
+    public ResourceLocation getTexture(AbstractClientPlayer entity) {
+        return getEntityTexture(entity);
+    }
+
+    @Override
     public ModelWrapper getModelWrapper() {
         return renderPony.playerModel;
     }
@@ -156,4 +161,5 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
     public RenderPony<AbstractClientPlayer> getInternalRenderer() {
         return renderPony;
     }
+
 }

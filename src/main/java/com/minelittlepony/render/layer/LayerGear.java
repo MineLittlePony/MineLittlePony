@@ -8,6 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
+import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.gear.IGear;
@@ -30,7 +31,7 @@ public class LayerGear<T extends EntityLivingBase> extends AbstractPonyLayer<T> 
             new Stetson()
     );
 
-    public LayerGear(RenderLivingBase<T> renderer) {
+    public <R extends RenderLivingBase<T> & IRenderPony<T>> LayerGear(R renderer) {
         super(renderer);
     }
 
@@ -73,9 +74,11 @@ public class LayerGear<T extends EntityLivingBase> extends AbstractPonyLayer<T> 
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
 
         ResourceLocation texture = gear.getTexture(entity);
-        if (texture != null) {
-            getRenderer().bindTexture(texture);
+        if (texture == null) {
+            texture = getPonyRenderer().getTexture(entity);
         }
+
+        getRenderer().bindTexture(texture);
 
         gear.setLivingAnimations(model, entity);
         gear.setRotationAndAngles(model.isGoingFast(), move, swing, model.getWobbleAmount(), ticks);

@@ -118,4 +118,9 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> implemen
     public RenderPony<EntityPonyModel> getInternalRenderer() {
         return renderPony;
     }
+
+    @Override
+    public ResourceLocation getTexture(EntityPonyModel entity) {
+        return getEntityTexture(entity);
+    }
 }

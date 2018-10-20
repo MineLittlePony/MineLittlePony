@@ -50,7 +50,7 @@ public class RenderEnderStallion extends RenderPonyMob<EntityEnderman> implement
     }
 
     @Override
-    protected ResourceLocation getTexture(EntityEnderman entity) {
+    public ResourceLocation getTexture(EntityEnderman entity) {
         return ENDERMAN;
     }
 
