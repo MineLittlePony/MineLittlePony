@@ -74,7 +74,7 @@ public class GLWindow extends DropTarget {
     private JFrame frame;
     private Canvas canvas;
 
-    private DropTargetListener dropListener = null;
+    private volatile DropTargetListener dropListener = null;
 
     private int windowState = 0;
 
@@ -241,21 +241,29 @@ public class GLWindow extends DropTarget {
     }
 
     public synchronized void clearDropTargetListener() {
+        SwingUtilities.invokeLater(this::syncClearDropTargetListener);
+    }
+
+    private void syncClearDropTargetListener() {
         if (dropListener != null) {
             if (!ready) {
                 FileDropper.getAWTContext().hide(dropListener);
-                return;
             } else {
                 frame.setDropTarget(null);
                 removeDropTargetListener(dropListener);
             }
+
             dropListener = null;
         }
     }
 
     public synchronized void setDropTargetListener(FileDropListener dtl) {
+        SwingUtilities.invokeLater(() -> syncSetDropTargetListener(dtl));
+    }
+
+    private void syncSetDropTargetListener(FileDropListener dtl) {
         try {
-            clearDropTargetListener();
+            syncClearDropTargetListener();
 
             dropListener = dtl;
 
