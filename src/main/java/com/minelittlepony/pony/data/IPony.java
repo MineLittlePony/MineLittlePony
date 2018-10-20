@@ -18,6 +18,14 @@ public interface IPony {
     }
 
     /**
+     * Gets or creates a new pony associated with the provided resource location.
+     * The results of this method should not be cached.
+     */
+    static IPony forResource(ResourceLocation texture) {
+        return MineLittlePony.getInstance().getManager().getPony(texture);
+    }
+
+    /**
      * Returns true if the provided entity is flying like a pegasus.
      * True if the entity is off the ground, has race with wings.
      * Creative flight counts only if the entity is <i>not</i> on the ground.
