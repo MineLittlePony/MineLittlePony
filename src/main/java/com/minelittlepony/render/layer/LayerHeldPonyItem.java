@@ -60,14 +60,15 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
                 GlStateManager.translate(0, 0.2F, 0);
             }
 
-            boolean left = hand == EnumHandSide.LEFT;
+            float left = hand == EnumHandSide.LEFT ? 1 : -1;
 
             if (entity.isRiding()) {
-                GlStateManager.translate(left ? 0.1F : -0.1F, -0.2F, -0.5F);
+                GlStateManager.translate(left / 10, -0.2F, -0.5F);
             }
 
             GlStateManager.rotate(-90, 1, 0, 0);
-            GlStateManager.rotate(left ? 185 : -185, 0, 1, 0);
+            GlStateManager.rotate(left * 180, 0, 1, 0);
+            GlStateManager.translate(left * -0.2F, 0, 0);
 
             preItemRender(entity, drop, transform, hand);
             Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, drop, transform, hand == EnumHandSide.LEFT);
@@ -78,7 +79,7 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
     }
 
     protected void preItemRender(T entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
-        GlStateManager.translate(0.0425F, 0.125F, -1);
+        GlStateManager.translate(0, 0.125F, -1);
     }
 
     protected void postItemRender(T entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
