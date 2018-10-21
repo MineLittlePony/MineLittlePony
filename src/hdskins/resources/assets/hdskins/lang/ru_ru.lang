@@ -26,6 +26,10 @@ hdskins.mode.alex=Тонконогая модель
 
 hdskins.mode.skin=%s
 
+hdskins.mode.stand=Обычная поза
+hdskins.mode.sleep=Поза сна
+hdskins.mode.ride=Сидячая поза
+
 hdskins.options.chevy=>>
 hdskins.options.chevy.title=Загрузить скин
 hdskins.options.download=<<
