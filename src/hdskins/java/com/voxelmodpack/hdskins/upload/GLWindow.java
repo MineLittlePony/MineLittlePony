@@ -179,7 +179,7 @@ public class GLWindow extends DropTarget {
                     Display.setDisplayMode(Display.getDesktopDisplayMode());
                 } else {
                     Display.setDisplayMode(new DisplayMode(frame.getContentPane().getWidth(), frame.getContentPane().getHeight()));
-                    Display.setLocation(Math.max(0, frame.getX() + frameFactorX/3), Math.max(0, frame.getY() + frameFactorX/3));
+                    Display.setLocation(Math.max(0, frame.getX() + frameFactorX/3), Math.max(0, frame.getY() + frameFactorY/7));
                 }
 
                 // https://bugs.mojang.com/browse/MC-68754
