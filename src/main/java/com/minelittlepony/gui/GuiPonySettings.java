@@ -45,6 +45,22 @@ public class GuiPonySettings extends SettingsPanel {
             return (float)level.ordinal();
         }));
 
+        if (isCtrlKeyDown() && isShiftKeyDown()) {
+            addButton(new Label(LEFT, row += 30, OPTIONS_PREFIX + "global_scale", -1));
+            addButton(new Slider(LEFT, row += 15, 0.1F, 1, config.getGlobalScaleFactor(), (int id, String name, float value) -> {
+                if (value >= 1) {
+                    return "Scale: Default";
+                }
+                if (value == 0.9F) {
+                    return "Scale: Show Accurate";
+                }
+                return String.format("Scale: %f", value);
+            }, v -> {
+                config.setGlobalScaleFactor(v);
+                return config.getGlobalScaleFactor();
+            }));
+        }
+
         row += 15;
         addButton(new Label(LEFT, row += 15, OPTIONS_PREFIX + "options", -1));
         for (PonySettings i : PonySettings.values()) {

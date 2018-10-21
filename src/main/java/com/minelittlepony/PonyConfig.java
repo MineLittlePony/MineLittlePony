@@ -1,5 +1,7 @@
 package com.minelittlepony;
 
+import net.minecraft.util.math.MathHelper;
+
 import com.google.gson.annotations.Expose;
 import com.minelittlepony.pony.data.PonyLevel;
 import com.minelittlepony.settings.SensibleConfig;
@@ -42,6 +44,8 @@ public class PonyConfig extends SensibleConfig implements Exposable {
     @Expose public boolean guardians = true;
     @Expose public boolean endermen = true;
 
+    @Expose private float globalScaleFactor = 0.9F;
+
     /**
      * Gets the current PonyLevel. That is the level of ponies you would like to see.
      *
@@ -74,7 +78,14 @@ public class PonyConfig extends SensibleConfig implements Exposable {
         }
     }
 
+    public void setGlobalScaleFactor(float f) {
+        globalScaleFactor = Math.round(MathHelper.clamp(f, 0.1F, 1) * 100) / 100F;
+    }
+
+    /**
+     * Gets the universal scale factor used to determine how tall ponies are.
+     */
     public float getGlobalScaleFactor() {
-        return showscale ? 0.9F : 1;
+        return showscale ? globalScaleFactor : 1;
     }
 }
