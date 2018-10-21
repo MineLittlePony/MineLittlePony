@@ -8,6 +8,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.minelittlepony.ForgeProxy;
 import com.minelittlepony.model.armour.IEquestrianArmor.ArmorLayer;
@@ -35,10 +36,10 @@ public class DefaultPonyArmorTextureResolver<T extends EntityLivingBase> impleme
             texture = texture.substring(idx + 1);
         }
 
-        type = type == null ? "" : String.format("_%s", type);
+        String customType = type == null ? "" : String.format("_%s", type);
 
-        String ponyRes = String.format("%s:textures/models/armor/%s_layer_%s%s.png", domain, texture, layer.name().toLowerCase(), type);
-        String oldPonyRes = String.format("%s:textures/models/armor/%s_layer_%d%s.png", domain, texture, layer == ArmorLayer.INNER ? 2 : 1, type);
+        String ponyRes = String.format("%s:textures/models/armor/%s_layer_%s%s.png", domain, texture, layer.name().toLowerCase(), customType);
+        String oldPonyRes = String.format("%s:textures/models/armor/%s_layer_%d%s.png", domain, texture, layer == ArmorLayer.INNER ? 2 : 1, customType);
 
         ResourceLocation human = getArmorTexture(entity, itemstack, ponyRes, slot, type);
         ResourceLocation pony = ponifyResource(human);
