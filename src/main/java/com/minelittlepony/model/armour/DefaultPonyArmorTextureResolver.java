@@ -8,7 +8,6 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.minelittlepony.ForgeProxy;
 import com.minelittlepony.model.armour.IEquestrianArmor.ArmorLayer;
