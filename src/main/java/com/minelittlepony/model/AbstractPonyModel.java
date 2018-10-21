@@ -263,9 +263,6 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
             rotateLegsOnGround(move, swing, ticks, entity);
         }
 
-        bipedRightArm.rotateAngleZ = 0;
-        bipedLeftArm.rotateAngleZ = 0;
-
         float sin = MathHelper.sin(bipedBody.rotateAngleY) * 5;
         float cos = MathHelper.cos(bipedBody.rotateAngleY) * 5;
 
@@ -309,13 +306,16 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         float leftY = -forward - MathHelper.sin((move / 3) + 2*PI/3);
 
         float rightX = down + MathHelper.sin(move / 3) / 2;
+        float rightY = down - MathHelper.sin((move / 3) + 2);
 
 
-        bipedLeftArm.rotateAngleX = leftX;
-        bipedLeftArm.rotateAngleY = leftY;
+        bipedLeftArm.rotateAngleX = -leftX;
+        bipedLeftArm.rotateAngleY = -rightY/4 - leftX/3;
+        bipedLeftArm.rotateAngleZ = -leftY/10 - leftX/3;
 
-        bipedRightArm.rotateAngleY = -leftY;
-        bipedRightArm.rotateAngleX = leftX;
+        bipedRightArm.rotateAngleX = -rightX;
+        bipedRightArm.rotateAngleY = -leftY/4 - leftX/3;
+        bipedRightArm.rotateAngleZ = -rightY/10 - leftX/3;
 
         bipedLeftLeg.rotateAngleX = leftX;
         bipedRightLeg.rotateAngleX = rightX;
@@ -348,6 +348,9 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
 
         bipedRightArm.rotateAngleY = 0.2F;
         bipedRightLeg.rotateAngleY = -0.2F;
+
+        bipedRightArm.rotateAngleZ = 0;
+        bipedLeftArm.rotateAngleZ = 0;
     }
 
     /**
@@ -376,6 +379,9 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
 
         bipedLeftLeg.rotateAngleY = 0;
         bipedRightLeg.rotateAngleY = 0;
+
+        bipedRightArm.rotateAngleZ = 0;
+        bipedLeftArm.rotateAngleZ = 0;
     }
 
     protected float getLegOutset() {
