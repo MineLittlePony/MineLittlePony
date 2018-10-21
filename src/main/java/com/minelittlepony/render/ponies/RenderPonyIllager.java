@@ -3,6 +3,8 @@ package com.minelittlepony.render.ponies;
 import com.minelittlepony.model.PMAPI;
 import com.minelittlepony.render.RenderPonyMob;
 import com.minelittlepony.render.layer.LayerHeldItemIllager;
+import com.minelittlepony.render.layer.LayerHeldPonyItem;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.monster.AbstractIllager;
@@ -24,8 +26,8 @@ public abstract class RenderPonyIllager<T extends AbstractIllager> extends Rende
     }
 
     @Override
-    protected void addLayers() {
-        addLayer(new LayerHeldItemIllager<>(this));
+    protected LayerHeldPonyItem<T> createItemHoldingLayer() {
+        return new LayerHeldItemIllager<>(this);
     }
 
     @Override
