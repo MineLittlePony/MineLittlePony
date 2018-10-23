@@ -7,6 +7,7 @@ import com.google.gson.JsonParseException;
 import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyLevel;
+import com.minelittlepony.util.math.MathUtil;
 import com.voxelmodpack.hdskins.ISkinCacheClearListener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -121,13 +122,19 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         return getBackgroundPony(uuid);
     }
 
-    private IPony getBackgroundPony(UUID uuid) {
+    /**
+     * Gets a random background pony determined by the given uuid.
+     *
+     * Useful for mods that offer customisation, especially ones that have a whole lot of NPCs.
+     *
+     * @param uuid  A UUID. Either a user or an entity.
+     */
+    public IPony getBackgroundPony(UUID uuid) {
         if (getNumberOfPonies() == 0 || isUser(uuid)) {
             return getPony(getDefaultSkin(uuid));
         }
 
-        int bgi = uuid.hashCode() % getNumberOfPonies();
-        while (bgi < 0) bgi += getNumberOfPonies();
+        int bgi = MathUtil.mod(uuid.hashCode(), getNumberOfPonies());
 
         return getPony(backgroundPonyList.get(bgi));
     }

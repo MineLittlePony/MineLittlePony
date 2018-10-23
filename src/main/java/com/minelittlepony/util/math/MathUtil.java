@@ -8,6 +8,14 @@ public class MathUtil {
         return MathHelper.clamp(num, -limit, limit);
     }
 
+    public static int mod(int value, int mod) {
+        value %= mod;
+
+        while (value < 0) value += mod;
+
+        return value;
+    }
+
     public static float sensibleAngle(float angle) {
         angle %= 360;
 
