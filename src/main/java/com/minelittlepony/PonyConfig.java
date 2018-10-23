@@ -79,7 +79,8 @@ public class PonyConfig extends SensibleConfig implements Exposable {
     }
 
     public void setGlobalScaleFactor(float f) {
-        globalScaleFactor = Math.round(MathHelper.clamp(f, 0.1F, 1) * 100) / 100F;
+        globalScaleFactor = Math.round(MathHelper.clamp(f, 0.1F, 3) * 100) / 100F;
+        showscale = globalScaleFactor != 1;
     }
 
     /**

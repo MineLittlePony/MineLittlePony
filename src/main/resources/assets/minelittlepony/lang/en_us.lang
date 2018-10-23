@@ -25,3 +25,10 @@ minelp.mode.dry=Land pony
 minelp.mode.wet=Sea pony
 
 minelp.debug.reload_models.message=Reloading pony models...
+minelp.debug.scale=Scaling Factor
+minelp.debug.scale.value=Scale: %s
+minelp.debug.scale.meg=Mega
+minelp.debug.scale.max=Double
+minelp.debug.scale.mid=Default
+minelp.debug.scale.sa=Show Accurate
+minelp.debug.scale.min=Miniscule

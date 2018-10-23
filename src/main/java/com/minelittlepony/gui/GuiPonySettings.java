@@ -46,15 +46,9 @@ public class GuiPonySettings extends SettingsPanel {
         }));
 
         if (isCtrlKeyDown() && isShiftKeyDown()) {
-            addButton(new Label(LEFT, row += 30, OPTIONS_PREFIX + "global_scale", -1));
-            addButton(new Slider(LEFT, row += 15, 0.1F, 1, config.getGlobalScaleFactor(), (int id, String name, float value) -> {
-                if (value >= 1) {
-                    return "Scale: Default";
-                }
-                if (value == 0.9F) {
-                    return "Scale: Show Accurate";
-                }
-                return String.format("Scale: %f", value);
+            addButton(new Label(LEFT, row += 30, "minelp.debug.scale", -1));
+            addButton(new Slider(LEFT, row += 15, 0.1F, 3, config.getGlobalScaleFactor(), (int id, String name, float value) -> {
+                return format("minelp.debug.scale.value", format(describeCurrentScale(value)));
             }, v -> {
                 config.setGlobalScaleFactor(v);
                 return config.getGlobalScaleFactor();
@@ -77,6 +71,25 @@ public class GuiPonySettings extends SettingsPanel {
         for (MobRenderers i : MobRenderers.values()) {
             addButton(new Checkbox(RIGHT, row += 15, MOB_PREFIX + i.name().toLowerCase(), i.get(), i));
         }
+    }
+
+    public String describeCurrentScale(float value) {
+        if (value >= 3) {
+            return format("minelp.debug.scale.meg");
+        }
+        if (value == 2) {
+            return format("minelp.debug.scale.max");
+        }
+        if (value == 1) {
+            return format("minelp.debug.scale.mid");
+        }
+        if (value == 0.9F) {
+            return format("minelp.debug.scale.sa");
+        }
+        if (value <= 0.1F) {
+            return format("minelp.debug.scale.min");
+        }
+        return String.format("%f", value);
     }
 
     @Override
