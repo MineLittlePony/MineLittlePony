@@ -75,7 +75,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
     /**
      * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
      */
-    protected void checkRainboom(Entity entity, float swing) {
+    private void checkRainboom(Entity entity, float swing) {
         double zMotion = Math.sqrt(entity.motionX * entity.motionX + entity.motionZ * entity.motionZ);
 
         rainboom = (isFlying() && canFly()) || isElytraFlying();
