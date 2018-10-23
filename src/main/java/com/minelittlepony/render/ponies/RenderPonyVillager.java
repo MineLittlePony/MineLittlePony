@@ -35,7 +35,8 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
 
     @Override
     public ResourceLocation getTexture(EntityVillager entity) {
-        if ("Derpy".equals(entity.getCustomNameTag())) {
+        String name = entity.getCustomNameTag();
+        if ("Derpy".equals(name) || (entity.isChild() && "Dinky".equals(name))) {
             if (entity.isChild()) {
                 return EGG_2;
             }
