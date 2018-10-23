@@ -12,6 +12,7 @@ import com.minelittlepony.pony.data.PonyData;
 import com.minelittlepony.pony.data.PonySize;
 import com.minelittlepony.render.model.PlaneRenderer;
 import com.minelittlepony.render.model.PonyRenderer;
+import com.minelittlepony.util.math.MathUtil;
 import com.minelittlepony.util.render.AbstractBoxRenderer;
 
 import net.minecraft.client.model.ModelBase;
@@ -54,6 +55,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
      */
     protected boolean rainboom;
 
+    protected double motionLerp;
+
     public PlaneRenderer upperTorso;
     public PlaneRenderer neck;
 
@@ -73,8 +76,12 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
      * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
      */
     protected void checkRainboom(Entity entity, float swing) {
+        double zMotion = Math.sqrt(entity.motionX * entity.motionX + entity.motionZ * entity.motionZ);
+
         rainboom = (isFlying() && canFly()) || isElytraFlying();
-        rainboom &= Math.sqrt(entity.motionX * entity.motionX + entity.motionZ * entity.motionZ) > 0.4F;
+        rainboom &= zMotion > 0.4F;
+
+        motionLerp = MathUtil.clampLimit(zMotion * 30, 1);
     }
 
     public void updateLivingState(EntityLivingBase entity, IPony pony) {
@@ -299,26 +306,21 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
      */
     protected void rotateLegsSwimming(float move, float swing, float ticks, Entity entity) {
 
-        float forward = ROTATE_270 - ROTATE_90/3;
-        float down = ROTATE_90;
+        float legLeft = (ROTATE_90 + MathHelper.sin((move / 3) + 2 * PI/3) / 2) * (float)motionLerp;
 
-        float leftX = down + MathHelper.sin((move / 3) + 2*PI/3) / 2;
-        float leftY = -forward - MathHelper.sin((move / 3) + 2*PI/3);
+        float left = (ROTATE_90 + MathHelper.sin((move / 3) + 2 * PI) / 2) * (float)motionLerp;
+        float right = (ROTATE_90 + MathHelper.sin(move / 3) / 2) * (float)motionLerp;
 
-        float rightX = down + MathHelper.sin(move / 3) / 2;
-        float rightY = down - MathHelper.sin((move / 3) + 2);
+        bipedLeftArm.rotateAngleX = -left;
+        bipedLeftArm.rotateAngleY = -left/2;
+        bipedLeftArm.rotateAngleZ = left/2;
 
+        bipedRightArm.rotateAngleX = -right;
+        bipedRightArm.rotateAngleY = right/2;
+        bipedRightArm.rotateAngleZ = -right/2;
 
-        bipedLeftArm.rotateAngleX = -leftX;
-        bipedLeftArm.rotateAngleY = -rightY/4 - leftX/3;
-        bipedLeftArm.rotateAngleZ = -leftY/10 - leftX/3;
-
-        bipedRightArm.rotateAngleX = -rightX;
-        bipedRightArm.rotateAngleY = -leftY/4 - leftX/3;
-        bipedRightArm.rotateAngleZ = -rightY/10 - leftX/3;
-
-        bipedLeftLeg.rotateAngleX = leftX;
-        bipedRightLeg.rotateAngleX = rightX;
+        bipedLeftLeg.rotateAngleX = legLeft;
+        bipedRightLeg.rotateAngleX = right;
 
         bipedLeftLeg.rotateAngleY = 0;
         bipedRightLeg.rotateAngleY = 0;
@@ -724,7 +726,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
 
     @Override
     public boolean isCrouching() {
-        return !rainboom && isSneak && !isFlying;
+        return !rainboom && !isSwimming && isSneak && !isFlying;
     }
 
     @Override
