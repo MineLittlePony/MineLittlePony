@@ -2,7 +2,8 @@ package com.minelittlepony.pony.data;
 
 public enum PonyGender implements ITriggerPixelMapped<PonyGender> {
     MARE(0),
-    STALLION(0xffffff);
+    STALLION(0xffffff),
+    ABOMONATION(0x888888);
 
     private int triggerValue;
 
@@ -13,5 +14,13 @@ public enum PonyGender implements ITriggerPixelMapped<PonyGender> {
     @Override
     public int getTriggerPixel() {
         return triggerValue;
+    }
+
+    public boolean isMare() {
+        return this == MARE;
+    }
+
+    public boolean isStallion() {
+        return this == STALLION;
     }
 }

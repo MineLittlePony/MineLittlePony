@@ -61,7 +61,7 @@ public class PonySnout {
     public void setGender(PonyGender gender) {
         boolean show = !head.hasHeadGear() && !isHidden && MineLittlePony.getConfig().snuzzles;
 
-        mare.isHidden = !show || gender == PonyGender.STALLION;
-        stallion.isHidden = !show || gender == PonyGender.MARE;
+        mare.isHidden = !(show && gender.isMare());
+        stallion.isHidden = !(show && gender.isStallion());
     }
 }
