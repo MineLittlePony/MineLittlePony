@@ -88,7 +88,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         isChild = entity.isChild();
         isSneak = entity.isSneaking();
         isSleeping = entity.isPlayerSleeping();
-        isFlying = pony.isPegasusFlying(entity);
+        isFlying = pony.isFlying(entity);
         isElytraFlying = entity.isElytraFlying();
         isSwimming = pony.isSwimming(entity);
         headGear = pony.isWearingHeadgear(entity);

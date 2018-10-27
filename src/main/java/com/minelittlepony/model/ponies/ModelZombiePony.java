@@ -14,7 +14,6 @@ public class ModelZombiePony extends ModelMobPony {
     @Override
     public void setLivingAnimations(EntityLivingBase entity, float move, float swing, float ticks) {
         isPegasus = entity.getUniqueID().getLeastSignificantBits() % 30 == 0;
-        isFlying = !entity.onGround;
     }
 
     @Override

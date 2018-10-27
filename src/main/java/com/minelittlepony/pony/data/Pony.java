@@ -99,9 +99,8 @@ public class Pony implements IPony {
     }
 
     @Override
-    public boolean isPegasusFlying(EntityLivingBase entity) {
-        return getRace(false).hasWings() &&
-                !(entity.onGround || entity.isRiding() || entity.isOnLadder() || entity.isInWater());
+    public boolean isFlying(EntityLivingBase entity) {
+        return !(entity.onGround || entity.isRiding() || entity.isOnLadder() || entity.isInWater());
     }
 
     @Override

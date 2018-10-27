@@ -27,12 +27,12 @@ public interface IPony {
 
     /**
      * Returns true if the provided entity is flying like a pegasus.
-     * True if the entity is off the ground, has race with wings.
+     * True if the entity is off the ground.
      * Creative flight counts only if the entity is <i>not</i> on the ground.
      *
      * Entities that are riding, climbing a ladder, or swimming are <i>not</i> flying.
      */
-    boolean isPegasusFlying(EntityLivingBase entity);
+    boolean isFlying(EntityLivingBase entity);
 
     /**
      * Returns true if the provided antity is actively wimming.
