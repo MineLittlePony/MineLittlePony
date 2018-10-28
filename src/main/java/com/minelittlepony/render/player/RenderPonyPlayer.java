@@ -14,6 +14,8 @@ import com.minelittlepony.render.layer.LayerPonyArmor;
 import com.minelittlepony.render.layer.LayerPonyCape;
 import com.minelittlepony.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.render.layer.LayerPonyElytra;
+
+import net.minecraft.block.BlockBed;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.culling.ICamera;
@@ -93,6 +95,13 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
 
     @Override
     protected void renderLivingLabel(AbstractClientPlayer entity, String name, double x, double y, double z, int maxDistance) {
+        if (entity.isPlayerSleeping()) {
+            if (entity.bedLocation != null && entity.getEntityWorld().getBlockState(entity.bedLocation).getBlock() instanceof BlockBed) {
+                double bedRad = Math.toRadians(entity.getBedOrientationInDegrees());
+                x += Math.cos(bedRad);
+                z -= Math.sin(bedRad);
+            }
+        }
         super.renderLivingLabel(entity, name, x, renderPony.getNamePlateYOffset(entity, y), z, maxDistance);
     }
 
