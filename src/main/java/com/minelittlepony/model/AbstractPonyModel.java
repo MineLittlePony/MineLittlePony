@@ -278,7 +278,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         bipedRightArm.rotationPointZ = spread + sin;
         bipedLeftArm.rotationPointZ = spread - sin;
 
-        float legRPX = cos - getLegOutset();
+        float legRPX = cos - getLegOutset() - 0.001F;
 
         legRPX = metadata.getInterpolator().interpolate("legOffset", legRPX, 3);
 
