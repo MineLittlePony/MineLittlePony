@@ -100,7 +100,7 @@ public class Pony implements IPony {
 
     @Override
     public boolean isFlying(EntityLivingBase entity) {
-        return !(entity.onGround || entity.isRiding() || entity.isOnLadder() || entity.isInWater());
+        return !(entity.onGround || entity.isRiding() || entity.isOnLadder() || entity.isInWater() || entity.isPlayerSleeping());
     }
 
     @Override
