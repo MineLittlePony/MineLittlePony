@@ -157,6 +157,14 @@ public class RenderPony<T extends EntityLivingBase> {
             y -= 0.25F;
         }
 
+        if (entity.isRiding()) {
+            y += entity.getRidingEntity().getEyeHeight();
+        }
+
+        if (entity.isPlayerSleeping()) {
+            y /= 2;
+        }
+
         return initial + y;
     }
 }
