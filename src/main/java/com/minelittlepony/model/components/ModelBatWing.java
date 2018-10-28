@@ -4,14 +4,6 @@ import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.capabilities.IModelPegasus;
 import com.minelittlepony.render.model.PlaneRenderer;
 
-import static com.minelittlepony.model.PonyModelConstants.EXT_WING_RP_X;
-import static com.minelittlepony.model.PonyModelConstants.EXT_WING_RP_Y;
-import static com.minelittlepony.model.PonyModelConstants.EXT_WING_RP_Z;
-import static com.minelittlepony.model.PonyModelConstants.HEAD_RP_X;
-import static com.minelittlepony.model.PonyModelConstants.ROTATE_90;
-import static com.minelittlepony.model.PonyModelConstants.WING_FOLDED_RP_Y;
-import static com.minelittlepony.model.PonyModelConstants.WING_FOLDED_RP_Z;
-
 public class ModelBatWing<T extends AbstractPonyModel & IModelPegasus> extends ModelWing<T> {
 
     public ModelBatWing(T pegasus, boolean right, boolean legacy, float y, float scale, int texX, int texY) {
@@ -53,15 +45,11 @@ public class ModelBatWing<T extends AbstractPonyModel & IModelPegasus> extends M
                     .box(-0.4997F, 0, 3, 1, 7, 1, scale);
 
         PlaneRenderer skin = new PlaneRenderer(pegasus)
-                .tex(56, 32);
+                .tex(56, 32)
+                .mirror(right)
+                .west(0, 0, -7, 16, 8, scale);
 
         extended.child(0).child(skin);
-
-        if (right) {
-            skin       .west(0, 0, -7, 16, 8, scale);
-        } else {
-            skin.flip().west(0, 0, -7, 16, 8, scale);
-        }
     }
 
     @Override

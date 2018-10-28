@@ -28,6 +28,9 @@ public interface PMAPI {
     ModelWrapper zebra = new ModelWrapper(new ModelZebra(false));
     ModelWrapper zebraSmall = new ModelWrapper(new ModelZebra(true));
 
+    ModelWrapper bug = new ModelWrapper(new ModelChangeling(false));
+    ModelWrapper bugSmall = new ModelWrapper(new ModelChangeling(true));
+
     ModelWrapper seapony = new ModelWrapper(new ModelSeapony());
 
     ModelWrapper zombie = new ModelWrapper(new ModelZombiePony());

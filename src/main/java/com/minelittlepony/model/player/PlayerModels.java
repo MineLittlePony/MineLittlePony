@@ -13,13 +13,14 @@ public enum PlayerModels {
      * The default non-pony model. This is typically handled my the vanilla renderer.
      */
     DEFAULT("default", "slim", () -> PMAPI.earthpony, () -> PMAPI.earthponySmall),
-    EARTH("earthpony", "slimearthpony", () -> PMAPI.earthpony, () -> PMAPI.earthponySmall),
-    PEGASUS("pegasus", "slimpegasus", () -> PMAPI.pegasus, () -> PMAPI.pegasusSmall),
-    BATPONY("batpony", "slimbatpony", () -> PMAPI.bat, () -> PMAPI.batSmall),
-    UNICORN("unicorn", "slimunicorn", () -> PMAPI.unicorn, () -> PMAPI.unicornSmall),
-    ALICORN("alicorn", "slimalicorn", () -> PMAPI.alicorn, () -> PMAPI.alicornSmall),
-    ZEBRA("zebra", "slimzebra", () -> PMAPI.zebra, () -> PMAPI.zebraSmall),
-    SEAPONY("seapony", "slimseapony", () -> PMAPI.seapony, () -> PMAPI.seapony) {
+    EARTH("earthpony", () -> PMAPI.earthpony, () -> PMAPI.earthponySmall),
+    PEGASUS("pegasus", () -> PMAPI.pegasus, () -> PMAPI.pegasusSmall),
+    BATPONY("batpony", () -> PMAPI.bat, () -> PMAPI.batSmall),
+    UNICORN("unicorn", () -> PMAPI.unicorn, () -> PMAPI.unicornSmall),
+    ALICORN("alicorn", () -> PMAPI.alicorn, () -> PMAPI.alicornSmall),
+    CHANGELING("changeling", () -> PMAPI.bug, () -> PMAPI.bugSmall),
+    ZEBRA("zebra", () -> PMAPI.zebra, () -> PMAPI.zebraSmall),
+    SEAPONY("seapony", () -> PMAPI.seapony, () -> PMAPI.seapony) {
         @Override
         public RenderPonyPlayer createRenderer(RenderManager manager, boolean slimArms) {
             return new RenderSeaponyPlayer(manager, slimArms, PlayerModels.UNICORN.getModel(slimArms), getModel(slimArms));
@@ -30,9 +31,13 @@ public enum PlayerModels {
 
     private final String normalKey, slimKey;
 
+    PlayerModels(String key, ModelResolver normal, ModelResolver slim) {
+        this(key, "slim" + key, normal, slim);
+    }
+
     PlayerModels(String normalKey, String slimKey, ModelResolver normal, ModelResolver slim) {
         this.normalKey = normalKey;
-        this.slimKey = slimKey;
+        this.slimKey = normalKey;
 
         this.normal = normal;
         this.slim = slim;

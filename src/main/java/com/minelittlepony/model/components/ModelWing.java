@@ -1,15 +1,14 @@
 package com.minelittlepony.model.components;
 
-import static com.minelittlepony.model.PonyModelConstants.*;
-
 import com.minelittlepony.model.AbstractPonyModel;
+import com.minelittlepony.model.PonyModelConstants;
 import com.minelittlepony.model.capabilities.IModelPegasus;
 import com.minelittlepony.pony.data.PonyWearable;
 import com.minelittlepony.render.model.PonyRenderer;
 
 import net.minecraft.client.renderer.GlStateManager;
 
-public class ModelWing<T extends AbstractPonyModel & IModelPegasus> {
+public class ModelWing<T extends AbstractPonyModel & IModelPegasus> implements PonyModelConstants {
 
     protected final T pegasus;
 

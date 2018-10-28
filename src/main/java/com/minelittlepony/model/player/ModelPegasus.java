@@ -16,6 +16,10 @@ public class ModelPegasus extends ModelEarthPony implements IModelPegasus {
     @Override
     public void init(float yOffset, float stretch) {
         super.init(yOffset, stretch);
+        initWings(yOffset, stretch);
+    }
+
+    protected void initWings(float yOffset, float stretch) {
         wings = new PegasusWings<>(this, yOffset, stretch);
     }
 

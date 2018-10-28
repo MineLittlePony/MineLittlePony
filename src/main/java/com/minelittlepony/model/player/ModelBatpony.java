@@ -1,41 +1,19 @@
 package com.minelittlepony.model.player;
 
 import com.minelittlepony.model.components.BatWings;
-import com.minelittlepony.model.components.PegasusWings;
 import com.minelittlepony.pony.data.PonyWearable;
 import com.minelittlepony.render.model.PonyRenderer;
 
-import net.minecraft.entity.Entity;
-
-import com.minelittlepony.model.capabilities.IModelPegasus;
-
-public class ModelBatpony extends ModelEarthPony implements IModelPegasus {
-
-    public PegasusWings<ModelBatpony> wings;
+public class ModelBatpony extends ModelPegasus {
 
     public ModelBatpony(boolean smallArms) {
         super(smallArms);
     }
 
     @Override
-    public void init(float yOffset, float stretch) {
-        super.init(yOffset, stretch);
+    protected void initWings(float yOffset, float stretch) {
         wings = new BatWings<>(this, yOffset, stretch);
     }
-
-    @Override
-    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
-        super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
-        wings.setRotationAndAngles(rainboom, move, swing, 0, ticks);
-    }
-
-    @Override
-    protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        super.renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
-
-        wings.renderPart(scale);
-    }
-
 
     @Override
     protected void initEars(PonyRenderer head, float yOffset, float stretch) {
