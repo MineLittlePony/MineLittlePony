@@ -39,7 +39,7 @@ public class RenderPony<T extends EntityLivingBase> {
     }
 
     public ICamera getFrustrum(T entity, ICamera vanilla) {
-        if (!MineLittlePony.getConfig().frustrum) {
+        if (entity.isPlayerSleeping() || !MineLittlePony.getConfig().frustrum) {
             return vanilla;
         }
         return frustrum.withCamera(entity, vanilla);
