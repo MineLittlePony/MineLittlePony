@@ -2,6 +2,7 @@ package com.minelittlepony.model;
 
 import com.minelittlepony.model.armour.ModelPonyArmor;
 import com.minelittlepony.model.armour.PonyArmor;
+import com.minelittlepony.model.capabilities.ICapitated;
 import com.minelittlepony.model.capabilities.IModel;
 import com.minelittlepony.model.capabilities.IModelPart;
 import com.minelittlepony.model.components.PonySnout;
@@ -15,6 +16,7 @@ import com.minelittlepony.render.model.PonyRenderer;
 import com.minelittlepony.util.math.MathUtil;
 import com.minelittlepony.util.render.AbstractBoxRenderer;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
@@ -814,10 +816,12 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
     @Override
     public void render(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
 
-        pushMatrix();
-        transform(BodyPart.HEAD);
-        renderHead(entity, move, swing, ticks, headYaw, headPitch, scale);
-        popMatrix();
+        if (!(entity instanceof EntityLivingBase && ((EntityLivingBase)entity).isPlayerSleeping() && entity == Minecraft.getMinecraft().player)) {
+            pushMatrix();
+            transform(BodyPart.HEAD);
+            renderHead(entity, move, swing, ticks, headYaw, headPitch, scale);
+            popMatrix();
+        }
 
         pushMatrix();
         transform(BodyPart.NECK);
