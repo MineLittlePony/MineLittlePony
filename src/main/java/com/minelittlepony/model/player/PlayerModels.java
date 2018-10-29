@@ -37,7 +37,7 @@ public enum PlayerModels {
 
     PlayerModels(String normalKey, String slimKey, ModelResolver normal, ModelResolver slim) {
         this.normalKey = normalKey;
-        this.slimKey = normalKey;
+        this.slimKey = slimKey;
 
         this.normal = normal;
         this.slim = slim;
