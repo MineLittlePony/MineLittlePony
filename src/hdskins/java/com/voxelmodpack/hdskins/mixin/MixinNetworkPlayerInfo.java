@@ -28,10 +28,12 @@ public abstract class MixinNetworkPlayerInfo implements INetworkPlayerInfo {
 
     private Map<Type, MinecraftProfileTexture> vanillaProfiles = new HashMap<>();
 
-    @Shadow @Final
+    @Shadow
+    @Final
     private GameProfile gameProfile;
 
-    @Shadow Map<Type, ResourceLocation> playerTextures;
+    @Shadow
+    Map<Type, ResourceLocation> playerTextures;
 
     @SuppressWarnings("InvalidMemberReference") // mc-dev bug?
     @Redirect(method = {"getLocationSkin", "getLocationCape", "getLocationElytra"},
@@ -91,14 +93,12 @@ public abstract class MixinNetworkPlayerInfo implements INetworkPlayerInfo {
                             + "Lcom/mojang/authlib/GameProfile;"
                             + "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"
                             + "Z)V"))
-    private void redirectLoadPlayerTextures(SkinManager skinManager, GameProfile profile, SkinManager.SkinAvailableCallback callback,
-            boolean requireSecure) {
+    private void redirectLoadPlayerTextures(SkinManager skinManager, GameProfile profile, SkinManager.SkinAvailableCallback callback, boolean requireSecure) {
         skinManager.loadProfileTextures(profile, (typeIn, location, profileTexture) -> {
-            HDSkinManager.INSTANCE.parseSkin(profile, typeIn, location, profileTexture)
-                    .thenAccept(v -> {
-                        playerTextures.put(typeIn, location);
-                        vanillaProfiles.put(typeIn, profileTexture);
-                    });
+            HDSkinManager.INSTANCE.parseSkin(profile, typeIn, location, profileTexture).thenAccept(v -> {
+                playerTextures.put(typeIn, location);
+                vanillaProfiles.put(typeIn, profileTexture);
+            });
         }, requireSecure);
     }
 

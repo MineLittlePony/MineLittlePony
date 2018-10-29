@@ -16,6 +16,7 @@ import com.minelittlepony.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.render.layer.LayerPonyElytra;
 
 import net.minecraft.block.BlockBed;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.culling.ICamera;
@@ -90,6 +91,9 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
 
     @Override
     public boolean shouldRender(AbstractClientPlayer entity, ICamera camera, double camX, double camY, double camZ) {
+        if (entity.isPlayerSleeping() && entity == Minecraft.getMinecraft().player) {
+            return true;
+        }
         return super.shouldRender(entity, renderPony.getFrustrum(entity, camera), camX, camY, camZ);
     }
 
