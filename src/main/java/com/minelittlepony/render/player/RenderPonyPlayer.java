@@ -144,10 +144,11 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
     }
 
     @Override
-    protected void applyRotations(AbstractClientPlayer player, float yaw, float pitch, float ticks) {
-        super.applyRotations(player, yaw, pitch, ticks);
+    protected void applyRotations(AbstractClientPlayer player, float age, float yaw, float ticks) {
+        yaw = renderPony.getRenderYaw(player, yaw, ticks);
+        super.applyRotations(player, age, yaw, ticks);
 
-        renderPony.applyPostureTransform(player, yaw, pitch, ticks);
+        renderPony.applyPostureTransform(player, yaw, ticks);
     }
 
     @Override

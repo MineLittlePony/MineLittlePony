@@ -10,7 +10,7 @@ import com.minelittlepony.model.capabilities.IModel;
 
 public enum PonyTransformation {
 
-    NORMAL(0, 3, 0.5F) {
+    NORMAL(0, 3F, 0.75F) {
         @Override
         public void transform(IModel model, BodyPart part) {
             if (model.isCrouching()) translate(0, -0.2F, 0);
@@ -31,7 +31,7 @@ public enum PonyTransformation {
             }
         }
     },
-    LANKY(0, 2.3F, 0.3F) {
+    LANKY(0, 2.6F, 0.75F) {
         @Override
         public void transform(IModel model, BodyPart part) {
             if (model.isCrouching()) translate(0, -0.15F, 0);
@@ -65,7 +65,7 @@ public enum PonyTransformation {
             }
         }
     },
-    BULKY(0, 2.3F, 0.3F) {
+    BULKY(0, 2.3F, 0.75F) {
         @Override
         public void transform(IModel model, BodyPart part) {
             if (model.isCrouching()) translate(0, -0.15F, 0);
@@ -99,7 +99,7 @@ public enum PonyTransformation {
             }
         }
     },
-    FOAL(0, 4.5F, 0.6F) {
+    FOAL(0, 3.8F, 0.75F) {
         @Override
         public void transform(IModel model, BodyPart part) {
             if (model.isCrouching()) translate(0, -0.3F, 0);
@@ -128,7 +128,7 @@ public enum PonyTransformation {
             }
         }
     },
-    TALL(0, 2F, 0.6F) {
+    TALL(0, 2.2F, 0.75F) {
         @Override
         public void transform(IModel model, BodyPart part) {
             if (model.isCrouching()) translate(0, -0.15F, 0);
@@ -155,12 +155,13 @@ public enum PonyTransformation {
                     if (model.isGoingFast()) translate(0, 0.05F, 0);
                     break;
                 case BACK:
+                    riderOffset = new Vec3d(0, 2.2F, 0.75F);
                     translateVec(riderOffset);
                     break;
             }
         }
     },
-    YEARLING(0, 4.3F, 0.6F) {
+    YEARLING(0, 3.8F, 0.75F) {
         @Override
         public void transform(IModel model, BodyPart part) {
             if (model.isCrouching()) translate(0, -0.15F, 0);
@@ -194,7 +195,7 @@ public enum PonyTransformation {
         }
     };
 
-    protected final Vec3d riderOffset;
+    protected Vec3d riderOffset;
 
     PonyTransformation(float rX, float rY, float rZ) {
         riderOffset = new Vec3d(rX, rY, rZ);

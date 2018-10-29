@@ -6,6 +6,7 @@ import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.transform.PonyPosture;
+import com.minelittlepony.util.math.MathUtil;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.culling.ICamera;
@@ -57,18 +58,27 @@ public class RenderPony<T extends EntityLivingBase> {
         translateRider(entity, ticks);
     }
 
+    public float getRenderYaw(T entity, float rotationYaw, float partialTicks) {
+        if (entity.isRiding()) {
+            Entity mount = entity.getRidingEntity();
+            if (mount  instanceof EntityLivingBase) {
+                return MathUtil.interpolateDegress(((EntityLivingBase)mount).prevRenderYawOffset, ((EntityLivingBase)mount).renderYawOffset, partialTicks);
+            }
+        }
+
+        return rotationYaw;
+    }
+
     protected void translateRider(EntityLivingBase entity, float ticks) {
         if (entity.isRiding()) {
             Entity ridingEntity = entity.getRidingEntity();
 
             if (ridingEntity instanceof EntityLivingBase) {
-                translateRider((EntityLivingBase)ridingEntity, ticks);
-
                 IRenderPony<EntityLivingBase> renderer = MineLittlePony.getInstance().getRenderManager().getPonyRenderer((EntityLivingBase)ridingEntity);
 
                 if (renderer != null) {
                     // negate vanilla translations so the rider begins at the ridees feet.
-                    GlStateManager.translate(0, (ridingEntity.posY - entity.posY), 0);
+                    GlStateManager.translate(0, -ridingEntity.height, 0);
 
                     @SuppressWarnings("unchecked")
                     IPony riderPony = renderer.getEntityPony((EntityLivingBase)ridingEntity);
@@ -80,25 +90,25 @@ public class RenderPony<T extends EntityLivingBase> {
     }
 
     @SuppressWarnings("unchecked")
-    public void applyPostureTransform(T player, float pitch, float yaw, float ticks) {
+    public void applyPostureTransform(T player, float yaw, float ticks) {
         PonyPosture<?> posture = getPosture(player);
         if (posture != null && posture.applies(player)) {
             double motionX = player.posX - player.prevPosX;
             double motionY = player.onGround ? 0 : player.posY - player.prevPosY;
             double motionZ = player.posZ - player.prevPosZ;
-            ((PonyPosture<EntityLivingBase>)posture).transform(ponyModel, player, motionX, motionY, motionZ, pitch, yaw, ticks);
+            ((PonyPosture<EntityLivingBase>)posture).transform(ponyModel, player, motionX, motionY, motionZ, yaw, ticks);
         }
     }
 
     @SuppressWarnings("unchecked")
-    public void applyPostureRiding(T player, float pitch, float yaw, float ticks) {
+    public void applyPostureRiding(T player, float yaw, float ticks) {
         PonyPosture<?> posture = getPosture(player);
         if (posture != null && posture.applies(player)) {
             double motionX = player.posX - player.prevPosX;
             double motionY = player.onGround ? 0 : player.posY - player.prevPosY;
             double motionZ = player.posZ - player.prevPosZ;
 
-            ((PonyPosture<EntityLivingBase>)posture).transform(ponyModel, player, motionX, -motionY, motionZ, pitch, yaw, ticks);
+            ((PonyPosture<EntityLivingBase>)posture).transform(ponyModel, player, motionX, -motionY, motionZ, yaw, ticks);
         }
     }
 

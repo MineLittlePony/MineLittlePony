@@ -61,6 +61,12 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     }
 
     @Override
+    protected void applyRotations(T entity, float ageInTicks, float rotationYaw, float partialTicks) {
+        rotationYaw = renderPony.getRenderYaw(entity, rotationYaw, partialTicks);
+        super.applyRotations(entity, ageInTicks, rotationYaw, partialTicks);
+    }
+
+    @Override
     public boolean shouldRender(T entity, ICamera camera, double camX, double camY, double camZ) {
         return super.shouldRender(entity, renderPony.getFrustrum(entity, camera), camX, camY, camZ);
     }

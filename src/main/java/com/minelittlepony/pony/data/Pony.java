@@ -166,11 +166,16 @@ public class Pony implements IPony {
     public Vec3d getAbsoluteRidingOffset(EntityLivingBase entity) {
         IPony ridingPony = getMountedPony(entity);
 
+
+
         if (ridingPony != null) {
             EntityLivingBase ridee = (EntityLivingBase)entity.getRidingEntity();
 
             Vec3d offset = ridingPony.getMetadata().getSize().getTranformation().getRiderOffset();
-            return ridingPony.getAbsoluteRidingOffset(ridee).add(-offset.x / 4, offset.y / 5, -offset.z / 4);
+            float scale = ridingPony.getMetadata().getSize().getScaleFactor();
+
+            return ridingPony.getAbsoluteRidingOffset(ridee)
+                    .add(0, offset.y - ridee.height * 1/scale, 0);
         }
 
         return entity.getPositionVector();
@@ -178,13 +183,15 @@ public class Pony implements IPony {
 
     @Override
     public AxisAlignedBB getComputedBoundingBox(EntityLivingBase entity) {
-        float scale = getMetadata().getSize().getScaleFactor();
+        float scale = getMetadata().getSize().getScaleFactor() + 0.1F;
 
         Vec3d pos = getAbsoluteRidingOffset(entity);
 
+        float width = entity.width * scale;
+
         return new AxisAlignedBB(
-                - entity.width / 2, (entity.height * scale), -entity.width / 2,
-                  entity.width / 2, 0,                        entity.width / 2).offset(pos);
+                - width, (entity.height * scale), -width,
+                  width, 0,                                 width).offset(pos);
     }
 
     @Override

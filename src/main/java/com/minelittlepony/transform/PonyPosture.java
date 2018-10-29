@@ -14,5 +14,5 @@ public interface PonyPosture<T extends EntityLivingBase> {
         return true;
     }
 
-    void transform(AbstractPonyModel model, T entity, double motionX, double motionY, double motionZ, float pitch, float yaw, float ticks);
+    void transform(AbstractPonyModel model, T entity, double motionX, double motionY, double motionZ, float yaw, float ticks);
 }

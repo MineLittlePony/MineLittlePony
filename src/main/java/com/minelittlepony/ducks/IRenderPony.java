@@ -38,7 +38,7 @@ public interface IRenderPony<T extends EntityLivingBase> {
 
             model.transform(BodyPart.BACK);
 
-            getInternalRenderer().applyPostureRiding(entity, entity.ticksExisted + ticks, yaw, ticks);
+            getInternalRenderer().applyPostureRiding(entity, yaw, ticks);
         }
     }
 }
