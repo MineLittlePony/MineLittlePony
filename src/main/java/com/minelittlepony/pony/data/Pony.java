@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -100,7 +101,11 @@ public class Pony implements IPony {
 
     @Override
     public boolean isFlying(EntityLivingBase entity) {
-        return !(entity.onGround || entity.isRiding() || entity.isOnLadder() || entity.isInWater() || entity.isPlayerSleeping());
+        return !(entity.onGround
+                || entity.isRiding()
+                || (entity.isOnLadder() && !(entity instanceof EntityPlayer && ((EntityPlayer)entity).capabilities.isFlying))
+                || entity.isInWater()
+                || entity.isPlayerSleeping());
     }
 
     @Override
