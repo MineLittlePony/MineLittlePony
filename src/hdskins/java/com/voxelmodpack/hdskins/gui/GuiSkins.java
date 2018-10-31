@@ -189,13 +189,13 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
         addButton(btnModeSkin = new FeatureSwitch(width - 25, 75, sender -> uploader.setSkinType(Type.SKIN)))
                 .setIcon(new ItemStack(Items.LEATHER_CHESTPLATE))
                 .setEnabled(uploader.getSkinType() == Type.ELYTRA)
-                .setTooltip(format("hdskins.mode.skin", toTitleCase(Type.SKIN.name())))
+                .setTooltip(format("hdskins.mode." + Type.SKIN.name().toLowerCase()))
                 .setTooltipOffset(0, 10);
 
         addButton(btnModeElytra = new FeatureSwitch(width - 25, 94, sender -> uploader.setSkinType(Type.ELYTRA)))
                 .setIcon(new ItemStack(Items.ELYTRA))
                 .setEnabled(uploader.getSkinType() == Type.SKIN)
-                .setTooltip(format("hdskins.mode.skin", toTitleCase(Type.ELYTRA.name())))
+                .setTooltip(format("hdskins.mode." + Type.ELYTRA.name().toLowerCase()))
                 .setTooltipOffset(0, 10);
 
         addButton(new IconicToggle(width - 25, 118, 3, sender -> {

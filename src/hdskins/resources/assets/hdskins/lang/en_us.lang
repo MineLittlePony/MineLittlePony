@@ -25,7 +25,9 @@ hdskins.server=Server Skin
 hdskins.mode.steve=Steve Model
 hdskins.mode.alex=Alex Model
 
-hdskins.mode.skin=%s Texture
+hdskins.mode.skin=Player Texture
+hdskins.mode.cape=Cape Texture
+hdskins.mode.elytra=Elytra Texture
 
 hdskins.mode.stand=Standing
 hdskins.mode.sleep=Sleeping
