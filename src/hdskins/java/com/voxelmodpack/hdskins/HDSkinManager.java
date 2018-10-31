@@ -320,7 +320,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                 metadata = new HashMap<>();
             } else if (metadata.containsKey("model")) {
                 // try to reset the model.
-                metadata.put("model", metadata.get("model").contains("slim") ? "slim" : "default");
+                metadata.put("model", VanillaModels.of(metadata.get("model")));
             }
 
             for (ISkinParser parser : skinParsers) {

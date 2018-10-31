@@ -7,12 +7,13 @@ import com.minelittlepony.render.player.RenderSeaponyPlayer;
 import net.minecraft.client.renderer.entity.RenderManager;
 
 import com.minelittlepony.model.ModelWrapper;
+import com.voxelmodpack.hdskins.VanillaModels;
 
 public enum PlayerModels {
     /**
      * The default non-pony model. This is typically handled my the vanilla renderer.
      */
-    DEFAULT("default", "slim", () -> PMAPI.earthpony, () -> PMAPI.earthponySmall),
+    DEFAULT(VanillaModels.DEFAULT, VanillaModels.SLIM, () -> PMAPI.earthpony, () -> PMAPI.earthponySmall),
     EARTH("earthpony", () -> PMAPI.earthpony, () -> PMAPI.earthponySmall),
     PEGASUS("pegasus", () -> PMAPI.pegasus, () -> PMAPI.pegasusSmall),
     BATPONY("batpony", () -> PMAPI.bat, () -> PMAPI.batSmall),
@@ -32,7 +33,7 @@ public enum PlayerModels {
     private final String normalKey, slimKey;
 
     PlayerModels(String key, ModelResolver normal, ModelResolver slim) {
-        this(key, "slim" + key, normal, slim);
+        this(key, VanillaModels.SLIM + key, normal, slim);
     }
 
     PlayerModels(String normalKey, String slimKey, ModelResolver normal, ModelResolver slim) {

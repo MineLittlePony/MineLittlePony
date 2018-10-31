@@ -4,6 +4,8 @@ import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.util.ResourceLocation;
 
+import com.voxelmodpack.hdskins.VanillaModels;
+
 import javax.annotation.Nullable;
 
 public class PreviewTexture extends ThreadDownloadImageData {
@@ -17,7 +19,7 @@ public class PreviewTexture extends ThreadDownloadImageData {
     public PreviewTexture(@Nullable String model, String url, ResourceLocation fallbackTexture, @Nullable IImageBuffer imageBuffer) {
         super(null, url, fallbackTexture, imageBuffer);
 
-        this.model = model == null ? "default" : model;
+        this.model = VanillaModels.nonNull(model);
         this.fileUrl = url;
     }
 
@@ -40,6 +42,6 @@ public class PreviewTexture extends ThreadDownloadImageData {
     }
 
     public boolean usesThinArms() {
-        return "slim".equals(model);
+        return VanillaModels.isSlim(model);
     }
 }

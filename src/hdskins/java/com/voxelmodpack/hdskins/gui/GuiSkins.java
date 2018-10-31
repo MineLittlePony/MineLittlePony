@@ -14,6 +14,7 @@ import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.SkinChooser;
 import com.voxelmodpack.hdskins.SkinUploader;
 import com.voxelmodpack.hdskins.SkinUploader.ISkinUploadHandler;
+import com.voxelmodpack.hdskins.VanillaModels;
 import com.voxelmodpack.hdskins.server.SkinServer;
 import com.voxelmodpack.hdskins.upload.GLWindow;
 import com.voxelmodpack.hdskins.util.CallableFutures;
@@ -173,15 +174,15 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
         addButton(new Button(width / 2 - 50, height - 25, 100, 20, "hdskins.options.close", sender ->
                     mc.displayGuiScreen(new GuiMainMenu())));
 
-        addButton(btnModeSteve = new FeatureSwitch(width - 25, 32, sender -> switchSkinMode("default")))
+        addButton(btnModeSteve = new FeatureSwitch(width - 25, 32, sender -> switchSkinMode(VanillaModels.DEFAULT)))
                 .setIcon(new ItemStack(Items.LEATHER_LEGGINGS), 0x3c5dcb)
-                .setEnabled("slim".equals(uploader.getMetadataField("model")))
+                .setEnabled(VanillaModels.isSlim(uploader.getMetadataField("model")))
                 .setTooltip("hdskins.mode.steve")
                 .setTooltipOffset(0, 10);
 
-        addButton(btnModeAlex = new FeatureSwitch(width - 25, 51, sender -> switchSkinMode("slim")))
+        addButton(btnModeAlex = new FeatureSwitch(width - 25, 51, sender -> switchSkinMode(VanillaModels.SLIM)))
                 .setIcon(new ItemStack(Items.LEATHER_LEGGINGS), 0xfff500)
-                .setEnabled("default".equals(uploader.getMetadataField("model")))
+                .setEnabled(VanillaModels.isFat(uploader.getMetadataField("model")))
                 .setTooltip("hdskins.mode.alex")
                 .setTooltipOffset(0, 10);
 
@@ -248,7 +249,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
     protected void switchSkinMode(String model) {
         playSound(SoundEvents.BLOCK_BREWING_STAND_BREW);
 
-        boolean thinArmType = "slim".equals(model);
+        boolean thinArmType = VanillaModels.isSlim(model);
 
         btnModeSteve.enabled = thinArmType;
         btnModeAlex.enabled = !thinArmType;
