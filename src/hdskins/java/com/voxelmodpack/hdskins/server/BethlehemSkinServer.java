@@ -7,6 +7,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
+import com.voxelmodpack.hdskins.gui.Feature;
 import com.voxelmodpack.hdskins.util.IndentedToStringStyle;
 import com.voxelmodpack.hdskins.util.MoreHttpResponses;
 import com.voxelmodpack.hdskins.util.NetClient;
@@ -83,5 +84,18 @@ public class BethlehemSkinServer implements SkinServer {
         return new IndentedToStringStyle.Builder(this)
                 .append("address", address)
                 .build();
+    }
+
+    @Override
+    public boolean supportsFeature(Feature feature) {
+        switch (feature) {
+            case DOWNLOAD_USER_SKIN:
+            case UPLOAD_USER_SKIN:
+            case MODEL_VARIANTS:
+            case MODEL_TYPES:
+            case LINK_PROFILE:
+                return true;
+            default: return false;
+        }
     }
 }

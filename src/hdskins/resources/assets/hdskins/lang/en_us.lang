@@ -25,7 +25,7 @@ hdskins.server=Server Skin
 hdskins.mode.steve=Steve Model
 hdskins.mode.alex=Alex Model
 
-hdskins.mode.skin=%s
+hdskins.mode.skin=%s Texture
 
 hdskins.mode.stand=Standing
 hdskins.mode.sleep=Sleeping
@@ -44,3 +44,5 @@ hdskins.options.skindrops=Experimental Skin Drop
 hdskins.options.cache=Clear Skin Cache
 
 hdskins.warning.experimental=§6WARNING: This feature is §4experimental§6, meaning things may break or derp or even slurp. Enabling this means you accept responsibility for what may happen to your chickens.
+hdskins.warning.disabled.title=§c%s %s
+hdskins.warning.disabled.description=§4(DISABLED)\n§7This feature is not supported by your current skin server.\n§7Please choose a different one to proceed.

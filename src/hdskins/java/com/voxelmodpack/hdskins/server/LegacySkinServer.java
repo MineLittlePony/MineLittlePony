@@ -10,6 +10,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.gui.Feature;
 import com.voxelmodpack.hdskins.util.CallableFutures;
 import com.voxelmodpack.hdskins.util.IndentedToStringStyle;
 import com.voxelmodpack.hdskins.util.MoreHttpResponses;
@@ -162,6 +163,17 @@ public class LegacySkinServer implements SkinServer {
     @Override
     public boolean verifyGateway() {
         return !Strings.isNullOrEmpty(gateway);
+    }
+
+    @Override
+    public boolean supportsFeature(Feature feature) {
+        switch (feature) {
+            case DOWNLOAD_USER_SKIN:
+            case UPLOAD_USER_SKIN:
+            case DELETE_USER_SKIN:
+                return true;
+            default: return false;
+        }
     }
 
     @Override

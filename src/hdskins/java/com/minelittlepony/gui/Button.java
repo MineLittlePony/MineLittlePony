@@ -36,8 +36,14 @@ public class Button extends GuiButton implements IActionable, IGuiTooltipped<But
         return this;
     }
 
+    protected List<String> getTooltip() {
+        return tooltip;
+    }
+
     @Override
     public void renderToolTip(Minecraft mc, int mouseX, int mouseY) {
+        List<String> tooltip = getTooltip();
+
         if (visible && isMouseOver() && tooltip != null) {
             mc.currentScreen.drawHoveringText(tooltip, mouseX + tipX, mouseY + tipY);
         }

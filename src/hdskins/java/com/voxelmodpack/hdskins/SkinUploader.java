@@ -15,6 +15,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
+import com.voxelmodpack.hdskins.gui.Feature;
 import com.voxelmodpack.hdskins.resources.PreviewTextureManager;
 import com.voxelmodpack.hdskins.server.SkinServer;
 import com.voxelmodpack.hdskins.server.SkinUpload;
@@ -100,6 +101,10 @@ public class SkinUploader implements Closeable {
 
     public String getGateway() {
         return gateway == null ? "" : gateway.toString();
+    }
+
+    public boolean supportsFeature(Feature feature) {
+        return gateway != null && gateway.supportsFeature(feature);
     }
 
     protected void setError(String er) {

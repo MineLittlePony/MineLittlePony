@@ -8,6 +8,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.gui.Feature;
 import com.voxelmodpack.hdskins.util.IndentedToStringStyle;
 import com.voxelmodpack.hdskins.util.MoreHttpResponses;
 import net.minecraft.client.Minecraft;
@@ -174,6 +175,19 @@ public class ValhallaSkinServer implements SkinServer {
 
     private URI getResponseURI() {
         return URI.create(String.format("%s/auth/response", this.address));
+    }
+
+    @Override
+    public boolean supportsFeature(Feature feature) {
+        switch (feature) {
+            case DOWNLOAD_USER_SKIN:
+            case UPLOAD_USER_SKIN:
+            case DELETE_USER_SKIN:
+            case MODEL_VARIANTS:
+            case MODEL_TYPES:
+                return true;
+            default: return false;
+        }
     }
 
     @Override
