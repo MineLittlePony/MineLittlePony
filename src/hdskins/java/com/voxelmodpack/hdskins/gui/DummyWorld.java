@@ -8,12 +8,15 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderSurface;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldType;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.storage.WorldInfo;
 
 public class DummyWorld extends World {
 
     public static final World INSTANCE = new DummyWorld();
+
+    private final Chunk chunk = new Chunk(this, 0, 0);
 
     private DummyWorld() {
         super(null,
@@ -31,6 +34,11 @@ public class DummyWorld extends World {
     @Override
     protected boolean isChunkLoaded(int x, int z, boolean allowEmpty) {
         return true;
+    }
+
+    @Override
+    public Chunk getChunk(int chunkX, int chunkZ) {
+        return chunk;
     }
 
     @Override
