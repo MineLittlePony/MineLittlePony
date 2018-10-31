@@ -40,6 +40,6 @@ public class PreviewTexture extends ThreadDownloadImageData {
     }
 
     public boolean usesThinArms() {
-        return "thin".equals(model);
+        return "slim".equals(model);
     }
 }
