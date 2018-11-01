@@ -1,7 +1,6 @@
 package com.voxelmodpack.hdskins.upload;
 
 import com.google.common.collect.Lists;
-import com.mumfrey.liteloader.util.ModUtilities;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.DefaultResourcePack;
@@ -170,22 +169,7 @@ public class GLWindow extends DropTarget {
     private synchronized void close() {
         if (frame == null) {
             String msg = "GLClose was called in an illegal state! You cannot close the GLWindow before it has been opened.";
-
-            if (ModUtilities.fmlIsPresent()) {
-                logger.fatal("========================================================");
-                logger.fatal("!!!!!! MINECRAFT FORGE / FORGE MODLOADER DETECTED !!!!!!");
-                logger.fatal("FML was detected! Forge is known to cause severe incompatibilities and instability with other mods"
-                        + " above and beyond interfering with the normal functioning of existing game registries,"
-                        + " blocking system calls / AWT functions,"
-                        + " obfuscating/deobfuscating parts of minecraft and mod code."
-                        + " .jar signature invalidation"
-                        + " and/or deep and irreversible core modifications to the game.");
-                logger.fatal("A full stacktrace is provided below for debugging purposes.");
-                logger.fatal(msg, new IllegalStateException(msg));
-                logger.fatal("========================================================");
-            } else {
-                logger.fatal(msg);
-            }
+            logger.fatal(new IllegalStateException(msg));
             return;
         }
 
