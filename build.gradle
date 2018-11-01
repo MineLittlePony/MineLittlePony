@@ -141,12 +141,6 @@ task srgJar(type: Jar) {
     classifier "mc$minecraft.version-srg"
 }
 
-task skinZip(type: Zip) {
-    from fileTree('skins')
-    baseName 'Pony Skin Resources'
-    version 'v1'
-}
-
 reobf {
     srgJar {
         mappingType = 'SEARGE'
