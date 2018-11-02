@@ -11,6 +11,7 @@ import com.minelittlepony.util.math.MathUtil;
 import com.voxelmodpack.hdskins.ISkinCacheClearListener;
 import com.voxelmodpack.hdskins.util.MoreStreams;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.resources.DefaultPlayerSkin;
@@ -143,7 +144,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
     }
 
     private boolean isUser(UUID uuid) {
-        return false;//Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().player.getUniqueID().equals(uuid);
+        return Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().player.getUniqueID().equals(uuid);
     }
 
     /**
