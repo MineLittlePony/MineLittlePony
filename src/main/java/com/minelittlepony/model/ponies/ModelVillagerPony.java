@@ -5,11 +5,11 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityZombieVillager;
 import net.minecraft.entity.passive.EntityVillager;
 
-import com.minelittlepony.model.player.ModelAlicorn;
+import com.minelittlepony.model.ModelMobPony;
 import com.minelittlepony.pony.data.PonyWearable;
 import com.minelittlepony.render.model.PlaneRenderer;
 
-public class ModelVillagerPony extends ModelAlicorn {
+public class ModelVillagerPony extends ModelMobPony {
 
     public PlaneRenderer apron, trinket;
 
@@ -17,10 +17,6 @@ public class ModelVillagerPony extends ModelAlicorn {
 
     public boolean special;
     public boolean special2;
-
-    public ModelVillagerPony() {
-        super(false);
-    }
 
     @Override
     protected void shakeBody(float move, float swing, float bodySwing, float ticks) {

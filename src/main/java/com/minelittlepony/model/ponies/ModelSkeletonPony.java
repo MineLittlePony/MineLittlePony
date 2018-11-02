@@ -2,6 +2,7 @@ package com.minelittlepony.model.ponies;
 
 import com.minelittlepony.model.ModelMobPony;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.entity.monster.EntityWitherSkeleton;
@@ -49,6 +50,26 @@ public class ModelSkeletonPony extends ModelMobPony {
 
 
         super.setLivingAnimations(entity, move, swing, ticks);
+    }
+
+    @Override
+    protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
+        super.rotateLegs(move, swing, ticks, entity);
+        if (rightArmPose != ArmPose.EMPTY) {
+            if (canCast()) {
+                rotateArmHolding(unicornArmRight, -1, swingProgress, ticks);
+            } else {
+                rotateArmHolding(bipedRightArm, -1, swingProgress, ticks);
+            }
+        }
+
+        if (leftArmPose != ArmPose.EMPTY) {
+            if (canCast()) {
+                rotateArmHolding(unicornArmLeft, -1, swingProgress, ticks);
+            } else {
+                rotateArmHolding(bipedLeftArm, -1, swingProgress, ticks);
+            }
+        }
     }
 
     @Override

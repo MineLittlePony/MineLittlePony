@@ -1,6 +1,6 @@
 package com.minelittlepony.model.ponies;
 
-import com.minelittlepony.model.player.ModelAlicorn;
+import com.minelittlepony.model.ModelMobPony;
 
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -9,11 +9,7 @@ import net.minecraft.entity.monster.AbstractIllager.IllagerArmPose;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 
-public class ModelIllagerPony extends ModelAlicorn {
-
-    public ModelIllagerPony() {
-        super(false);
-    }
+public class ModelIllagerPony extends ModelMobPony {
 
     @Override
     public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {

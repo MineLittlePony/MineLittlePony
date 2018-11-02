@@ -19,13 +19,23 @@ public class RenderPonyZombieVillager extends RenderPonyMob<EntityZombieVillager
             new ResourceLocation("minelittlepony", "textures/entity/zombie_villager/zombie_butcher_pony.png"),
             new ResourceLocation("minelittlepony", "textures/entity/zombie_villager/zombie_villager_pony.png")
     );
+    private static final ResourceLocation EGG = new ResourceLocation("minelittlepony", "textures/entity/zombie_villager/zombie_silly_pony.png");
+    private static final ResourceLocation EGG_2 = new ResourceLocation("minelittlepony", "textures/entity/zombie_villager/zombie_tiny_silly_pony.png");
 
     public RenderPonyZombieVillager(RenderManager manager) {
-        super(manager, PMAPI.villager);
+        super(manager, PMAPI.zombieVillager);
     }
 
     @Override
     public ResourceLocation getTexture(EntityZombieVillager entity) {
+        String name = entity.getCustomNameTag();
+        if ("Derpy".equals(name) || (entity.isChild() && "Dinky".equals(name))) {
+            if (entity.isChild()) {
+                return EGG_2;
+            }
+            return EGG;
+        }
+
         return PROFESSIONS.supplyTexture(entity.getProfession());
     }
 

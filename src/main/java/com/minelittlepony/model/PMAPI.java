@@ -36,6 +36,7 @@ public interface PMAPI {
     ModelWrapper zombie = new ModelWrapper(new ModelZombiePony());
     ModelWrapper skeleton = new ModelWrapper(new ModelSkeletonPony());
     ModelWrapper villager = new ModelWrapper(new ModelVillagerPony());
+    ModelWrapper zombieVillager = new ModelWrapper(new ModelZombieVillagerPony());
     ModelWrapper illager = new ModelWrapper(new ModelIllagerPony());
     ModelWrapper witch = new ModelWrapper(new ModelWitchPony());
     ModelWrapper enderman = new ModelWrapper(new ModelEnderStallion());

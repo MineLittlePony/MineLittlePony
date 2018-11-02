@@ -3,38 +3,16 @@ package com.minelittlepony.model;
 import com.minelittlepony.model.player.ModelAlicorn;
 
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
 /**
  * Common class for all humanoid (ponioid?) non-player enemies.
  *
  */
-public class ModelMobPony extends ModelAlicorn {
+public abstract class ModelMobPony extends ModelAlicorn {
 
     public ModelMobPony() {
         super(false);
-    }
-
-    @Override
-    protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
-        super.rotateLegs(move, swing, ticks, entity);
-
-        if (rightArmPose != ArmPose.EMPTY) {
-            if (canCast()) {
-                rotateArmHolding(unicornArmRight, -1, swingProgress, ticks);
-            } else {
-                rotateArmHolding(bipedRightArm, -1, swingProgress, ticks);
-            }
-        }
-
-        if (leftArmPose != ArmPose.EMPTY) {
-            if (canCast()) {
-                rotateArmHolding(unicornArmLeft, -1, swingProgress, ticks);
-            } else {
-                rotateArmHolding(bipedLeftArm, -1, swingProgress, ticks);
-            }
-        }
     }
 
     /**
