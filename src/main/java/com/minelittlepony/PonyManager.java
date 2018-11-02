@@ -198,7 +198,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         }
 
         private ResourceLocation apply(String input) {
-            return new ResourceLocation("minelittlepony", String.format("textures/entity/pony/%s.png", input));
+            return new CasedResourceLocation("minelittlepony", String.format("textures/entity/pony/%s.png", input));
         }
 
         public List<ResourceLocation> getPonies() {
