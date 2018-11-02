@@ -1,7 +1,9 @@
 package com.voxelmodpack.hdskins.util;
 
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.google.common.collect.Lists;
@@ -19,5 +21,17 @@ public class MoreStreams {
                 .stream()
                 .map(converter)
                 .toArray(collector);
+    }
+
+    public static <T, V> List<V> map(List<T> items, Function<T, V> converter) {
+        return items.stream()
+                .map(converter)
+                .collect(Collectors.toList());
+    }
+
+    public static <T> List<T> distinct(List<T> input) {
+        return input.stream()
+                .distinct()
+                .collect(Collectors.toList());
     }
 }

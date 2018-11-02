@@ -9,7 +9,8 @@ import com.minelittlepony.pony.data.Pony;
 import com.minelittlepony.pony.data.PonyLevel;
 import com.minelittlepony.util.math.MathUtil;
 import com.voxelmodpack.hdskins.ISkinCacheClearListener;
-import net.minecraft.client.Minecraft;
+import com.voxelmodpack.hdskins.util.MoreStreams;
+
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.resources.DefaultPlayerSkin;
@@ -21,10 +22,12 @@ import net.minecraft.util.ResourceLocation;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * The PonyManager is responsible for reading and recoding all the pony data associated with an entity of skin.
@@ -34,7 +37,8 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
 
     public static final ResourceLocation STEVE = new ResourceLocation("minelittlepony", "textures/entity/steve_pony.png");
     public static final ResourceLocation ALEX = new ResourceLocation("minelittlepony", "textures/entity/alex_pony.png");
-    public static final ResourceLocation BGPONIES_JSON = new ResourceLocation("minelittlepony", "textures/entity/pony/bgponies.json");
+
+    public static final String BGPONIES_JSON = "textures/entity/pony/bgponies.json";
 
     private static final Gson GSON = new Gson();
 
@@ -78,7 +82,6 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
     }
 
     public IPony getPony(NetworkPlayerInfo playerInfo) {
-
         ResourceLocation skin = playerInfo.getLocationSkin();
         UUID uuid = playerInfo.getGameProfile().getId();
 
@@ -140,7 +143,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
     }
 
     private boolean isUser(UUID uuid) {
-        return Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().player.getUniqueID().equals(uuid);
+        return false;//Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().player.getUniqueID().equals(uuid);
     }
 
     /**
@@ -154,14 +157,55 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
     public void onResourceManagerReload(IResourceManager resourceManager) {
         poniesCache.clear();
         backgroundPonyList.clear();
+
+        List<ResourceLocation> collectedPaths = new LinkedList<>();
+        List<BackgroundPonies> collectedPonies = new LinkedList<>();
+
+        Queue<BackgroundPonies> processingQueue = new LinkedList<>();
+
+        for (String domain : resourceManager.getResourceDomains()) {
+            processingQueue.addAll(loadBgPonies(resourceManager, new ResourceLocation(domain, BGPONIES_JSON)));
+        }
+
+        BackgroundPonies item;
+        while ((item = processingQueue.poll()) != null) {
+            for (ResourceLocation imp : item.getImports()) {
+                if (!collectedPaths.contains(imp)) {
+                    collectedPaths.add(imp);
+                    processingQueue.addAll(loadBgPonies(resourceManager, imp));
+                }
+            }
+
+            collectedPonies.add(item);
+        }
+
+        for (BackgroundPonies i : collectedPonies) {
+            if (i.override) {
+                backgroundPonyList.clear();
+            }
+
+            backgroundPonyList.addAll(i.getPonies());
+        }
+
+        backgroundPonyList = MoreStreams.distinct(backgroundPonyList);
+
+        MineLittlePony.logger.info("Detected {} background ponies installed.", getNumberOfPonies());
+    }
+
+    private Queue<BackgroundPonies> loadBgPonies(IResourceManager resourceManager, ResourceLocation location) {
+        Queue<BackgroundPonies> collectedPonies = new LinkedList<>();
+
         try {
-            for (IResource res : resourceManager.getAllResources(BGPONIES_JSON)) {
+            String path = location.getPath().replace("bgponies.json", "");
+
+            for (IResource res : resourceManager.getAllResources(location)) {
                 try (Reader reader = new InputStreamReader((res.getInputStream()))) {
                     BackgroundPonies ponies = GSON.fromJson(reader, BackgroundPonies.class);
-                    if (ponies.override) {
-                        backgroundPonyList.clear();
-                    }
-                    backgroundPonyList.addAll(ponies.getPonies());
+
+                    ponies.domain = location.getNamespace();
+                    ponies.path = path;
+
+                    collectedPonies.add(ponies);
                 } catch (JsonParseException e) {
                     MineLittlePony.logger.error("Invalid bgponies.json in " + res.getResourcePackName(), e);
                 }
@@ -169,7 +213,8 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         } catch (IOException ignored) {
             // this isn't the exception you're looking for.
         }
-        MineLittlePony.logger.info("Detected {} background ponies installed.", getNumberOfPonies());
+
+        return collectedPonies;
     }
 
     public static ResourceLocation getDefaultSkin(UUID uuid) {
@@ -190,19 +235,28 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
     private static class BackgroundPonies {
 
         private boolean override;
+
         private List<String> ponies;
 
-        private BackgroundPonies(List<String> ponies, boolean override) {
-            this.ponies = ponies;
-            this.override = override;
-        }
+        private List<String> imports = new ArrayList<>();
+
+        private String domain;
+        private String path;
 
         private ResourceLocation apply(String input) {
-            return new CasedResourceLocation("minelittlepony", String.format("textures/entity/pony/%s.png", input));
+            return new CasedResourceLocation(domain, String.format("%s%s.png", path, input));
+        }
+
+        private ResourceLocation makeImport(String input) {
+            return new ResourceLocation(domain, String.format("%s%s/bgponies.json", path, input));
         }
 
         public List<ResourceLocation> getPonies() {
-            return ponies.stream().map(this::apply).collect(Collectors.toList());
+            return MoreStreams.map(ponies, this::apply);
+        }
+
+        public List<ResourceLocation> getImports() {
+            return MoreStreams.map(imports, this::makeImport);
         }
     }
 
