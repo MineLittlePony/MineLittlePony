@@ -1,8 +1,13 @@
 package com.voxelmodpack.hdskins.util;
 
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+
+import net.minecraft.client.renderer.texture.DynamicTexture;
+
 import org.apache.commons.lang3.reflect.FieldUtils;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.lang.reflect.Field;
 import java.util.Map;
 
@@ -25,5 +30,17 @@ public class ProfileTextureUtil {
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Unable to write metadata field", e);
         }
+    }
+
+    public static BufferedImage getDynamicBufferedImage(int width, int height, DynamicTexture texture) {
+        BufferedImage image = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+
+        final int[] src = texture.getTextureData();
+
+        final int[] dst = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
+
+        System.arraycopy(src, 0, dst, 0, src.length);
+
+        return image;
     }
 }

@@ -1,10 +1,11 @@
 package com.minelittlepony.pony.data;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Preconditions;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IRenderPony;
+import com.voxelmodpack.hdskins.resources.texture.DynamicTextureImage;
 import com.voxelmodpack.hdskins.resources.texture.IBufferedTexture;
+import com.voxelmodpack.hdskins.util.ProfileTextureUtil;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -52,16 +53,25 @@ public class Pony implements IPony {
             return data;
         }
 
-        BufferedImage skinImage = Preconditions.checkNotNull(getBufferedImage(resource), "bufferedImage: " + resource);
-        return this.checkSkin(skinImage);
+        BufferedImage ponyTexture = getBufferedImage(resource);
+
+        if (ponyTexture == null) {
+            ponyTexture = ProfileTextureUtil.getDynamicBufferedImage(16, 16, TextureUtil.MISSING_TEXTURE);
+
+            Minecraft.getMinecraft().getTextureManager().loadTexture(resource, new DynamicTextureImage(ponyTexture));
+        }
+
+        return checkSkin(ponyTexture);
     }
 
     @Nullable
     private IPonyData checkPonyMeta(ResourceLocation resource) {
         try {
             IResource res = Minecraft.getMinecraft().getResourceManager().getResource(resource);
+
             if (res.hasMetadata()) {
                 PonyData data = res.getMetadata(PonyDataSerialiser.NAME);
+
                 if (data != null) {
                     return data;
                 }
@@ -71,6 +81,7 @@ public class Pony implements IPony {
         } catch (IOException e) {
             MineLittlePony.logger.warn("Unable to read {} metadata", resource, e);
         }
+
         return null;
     }
 
