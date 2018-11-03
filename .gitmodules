@@ -1,0 +1,4 @@
+[submodule "skins"]
+	path = skins
+	url = https://github.com/MineLittlePony/Community-Skin-Pack.git
+	branch = master
