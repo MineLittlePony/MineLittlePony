@@ -245,7 +245,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         private String path;
 
         private ResourceLocation apply(String input) {
-            return new CasedResourceLocation(domain, String.format("%s%s.png", path, input));
+            return new ResourceLocation(domain, String.format("%s%s.png", path, input));
         }
 
         private ResourceLocation makeImport(String input) {
