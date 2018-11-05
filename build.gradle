@@ -113,8 +113,8 @@ archivesBaseName = "mod-${project.name.toLowerCase()}"
 task copyBGPones(type: Copy) {
     delete "${buildDir}/skins/assets/minelittlepony/textures/entity/pony"
     
-		// use the same rejex for both filenames and the bgponies.json
-		// Otherwise there could be errors because of the names in the json not matching the ones on disk
+    // use the same rejex for both filenames and the bgponies.json
+    // Otherwise there could be errors because of the names in the json not matching the ones on disk
     def permittedChars = /[^0-9a-z_-\",\t\{\}\[\]\(\):\'\.\/ ]/
     
     from("skins/Background Ponies") {
@@ -131,7 +131,7 @@ task copyBGPones(type: Copy) {
         
         filter { line -> 
             line.toLowerCase()
-                .replaceAll(permittedCharsJSON, '')
+                .replaceAll(permittedChars, '')
         }
     }
     
