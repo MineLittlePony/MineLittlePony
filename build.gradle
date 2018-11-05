@@ -110,6 +110,33 @@ jar {
 
 archivesBaseName = "mod-${project.name.toLowerCase()}"
 
+task copyBGPones(type: Copy) {
+    delete "${buildDir}/skins/assets/minelittlepony/textures/entity/pony"
+    
+    def permittedChars = /[^0-9a-z\",\{\}\[\]\(\):\'\.\/ ]/
+    
+    from("skins/Background Ponies") {
+        exclude "bgponies.json"
+        
+        rename { filename -> 
+            filename.toLowerCase()
+                    .replaceAll(permittedChars, '')
+        }
+    }
+    
+    from("skins/Background Ponies") {
+        include "bgponies.json"
+        
+        filter { line -> 
+            line.toLowerCase()
+                .replaceAll('\t', '  ')
+                .replaceAll(permittedChars, '')
+        }
+    }
+    
+    into "${buildDir}/skins/assets/minelittlepony/textures/entity/pony"
+}
+
 shadowJar {
     extension 'litemod'
     classifier "mc$minecraft.version"
@@ -117,6 +144,11 @@ shadowJar {
     from sourceSets.hdskins.output
     from litemod
 
+    exclude "/assets/minelittlepony/textures/entity/pony"
+    from(copyBGPones) {
+        into "/assets/minelittlepony/textures/entity/pony"
+    }
+    
     dependencies {
         exclude dependency('deobf.com.mumfrey:liteloader:')
         exclude dependency('deobf.org.ow2.asm:')
@@ -139,6 +171,16 @@ task srgJar(type: Jar) {
     from litemod
 
     classifier "mc$minecraft.version-srg"
+}
+
+task zipCommunityPack(type: Zip) {
+    baseName = "Pony Skin Pack"
+    destinationDir = new File(buildDir, "libs")
+    from("skins") {
+        // TODO: Later packs will have their folders excluded.
+        //       For now we just zip everything.
+        exclude "README.md"
+    }
 }
 
 reobf {
