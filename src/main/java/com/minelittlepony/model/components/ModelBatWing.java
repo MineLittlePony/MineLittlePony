@@ -27,22 +27,25 @@ public class ModelBatWing<T extends AbstractPonyModel & IModelPegasus> extends M
     protected void addFeathers(boolean right, boolean l, float rotationPointY, float scale) {
         float r = right ? -1 : 1;
 
-        extended.around((r * (EXT_WING_RP_X - 2)), EXT_WING_RP_Y + rotationPointY, EXT_WING_RP_Z - 2)
+        extended.around((r * (EXT_WING_RP_X - 2)), EXT_WING_RP_Y + rotationPointY - 1, EXT_WING_RP_Z - 3)
                 .mirror(right)
                 .rotateAngleY = r * 3;
 
         extended.child().tex(60, 16)
+                .mirror(right)  // children are unaware of their parents being mirrored, sadly
                 .rotate(0.1F, 0, 0)
-                .box(-0.4999F, -1, 0, 1, 8, 1, scale)
+                .box(-0.5F, -1, 0, 1, 8, 1, scale + 0.001F)  // this was enough to fix z-fighting
                 .child().tex(60, 16)
+                    .mirror(right)
                     .rotate(-0.5F, 0, 0)
                     .around(0, -1, -2)
-                    .box(-0.4998F, 0, 2, 1, 7, 1, scale);
+                    .box(-0.5F, 0, 2, 1, 7, 1, scale);
         extended.child(0)
                 .child().tex(60, 16)
+                    .mirror(right)
                     .rotate(-0.5F, 0, 0)
                     .around(0, 4, -2.4F)
-                    .box(-0.4997F, 0, 3, 1, 7, 1, scale);
+                    .box(-0.5F, 0, 3, 1, 7, 1, scale);
 
         PlaneRenderer skin = new PlaneRenderer(pegasus)
                 .tex(56, 32)
