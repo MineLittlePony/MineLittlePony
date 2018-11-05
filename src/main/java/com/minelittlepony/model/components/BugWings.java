@@ -11,10 +11,8 @@ public class BugWings<T extends AbstractPonyModel & IModelPegasus> extends Pegas
 
     @Override
     public void init(float yOffset, float stretch) {
-        int x = 57;
-
-        leftWing = new ModelBugWing<T>(pegasus, false, false, yOffset, stretch, x, 16);
-        rightWing = new ModelBugWing<T>(pegasus, true, false, yOffset, stretch, x - 1, 16);
+        leftWing = new ModelBugWing<>(pegasus, false, false, yOffset, stretch, 16);
+        rightWing = new ModelBugWing<>(pegasus, true, false, yOffset, stretch, 16);
     }
 
     @Override

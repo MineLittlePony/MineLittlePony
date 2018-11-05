@@ -13,10 +13,8 @@ public class BatWings<T extends AbstractPonyModel & IModelPegasus> extends Pegas
 
     @Override
     public void init(float yOffset, float stretch) {
-        int x = 57;
-
-        leftWing = new ModelBatWing<T>(pegasus, false, false, yOffset, stretch, x, 16);
-        rightWing = new ModelBatWing<T>(pegasus, true, false, yOffset, stretch, x - 1, 16);
+        leftWing = new ModelBatWing<>(pegasus, false, false, yOffset, stretch, 16);
+        rightWing = new ModelBatWing<>(pegasus, true, false, yOffset, stretch, 16);
     }
 
     @Override

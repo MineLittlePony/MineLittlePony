@@ -26,12 +26,10 @@ public class PegasusWings<T extends AbstractPonyModel & IModelPegasus> implement
 
     @Override
     public void init(float yOffset, float stretch) {
-        int x = 57;
+        leftWing = new ModelWing<>(pegasus, false, false, yOffset, stretch, 32);
+        rightWing = new ModelWing<>(pegasus, true, false, yOffset, stretch, 16);
 
-        leftWing = new ModelWing<>(pegasus, false, false, yOffset, stretch, x, 32);
-        rightWing = new ModelWing<>(pegasus, true, false, yOffset, stretch, x - 1, 16);
-
-        legacyWing = new ModelWing<>(pegasus, true, true, yOffset, stretch, x, 32);
+        legacyWing = new ModelWing<>(pegasus, true, true, yOffset, stretch, 32);
     }
 
     public ModelWing<T> getLeft() {

@@ -6,8 +6,8 @@ import com.minelittlepony.render.model.PlaneRenderer;
 
 public class ModelBatWing<T extends AbstractPonyModel & IModelPegasus> extends ModelWing<T> {
 
-    public ModelBatWing(T pegasus, boolean right, boolean legacy, float y, float scale, int texX, int texY) {
-        super(pegasus, right, legacy, y, scale, texX, texY);
+    public ModelBatWing(T pegasus, boolean right, boolean legacy, float y, float scale, int texY) {
+        super(pegasus, right, legacy, y, scale, texY);
     }
 
     @Override
