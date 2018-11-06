@@ -111,31 +111,40 @@ jar {
 archivesBaseName = "mod-${project.name.toLowerCase()}"
 
 task copyBGPones(type: Copy) {
-    delete "${buildDir}/skins/assets/minelittlepony/textures/entity/pony"
-    
-    // use the same rejex for both filenames and the bgponies.json
-    // Otherwise there could be errors because of the names in the json not matching the ones on disk
-    def permittedChars = /[^0-9a-z_-\",\t\{\}\[\]\(\):\'\.\/ ]/
-    
-    from("skins/Background Ponies") {
-        exclude "bgponies.json"
-        
-        rename { filename -> 
-            filename.toLowerCase()
-                    .replaceAll(permittedChars, '')
+
+    def illegals = /[^a-z0-9_\/.-]/
+
+    from "skins/background_ponies"
+    into temporaryDir
+
+    include '**/*.png'
+
+    eachFile {
+        if (it.name =~ illegals){
+            logger.warn("Sanitizing file with illegal characters: ${it.path}")
+            it.name = it.name.replaceAll(/\s/, '_').replaceAll(illegals, '')
         }
     }
-    
-    from("skins/Background Ponies") {
-        include "bgponies.json"
-        
-        filter { line -> 
-            line.toLowerCase()
-                .replaceAll(permittedChars, '')
-        }
+}
+
+import groovy.json.JsonBuilder
+
+task genPoniesJson(dependsOn: copyBGPones) {
+    // loop through the background ponies to create the bgponies.json
+
+    def bgponies = 'bgponies.json'
+
+    def json = file("$temporaryDir/$bgponies")
+
+    inputs.dir copyBGPones.outputs
+    outputs.file json
+
+    doFirst {
+        json.text = new JsonBuilder(
+            override: false,
+            ponies: fileTree(copyBGPones.outputs.files.singleFile).filter { it.file }.collect { it.name.replace(".png", "") }
+        ).toPrettyString()
     }
-    
-    into "${buildDir}/skins/assets/minelittlepony/textures/entity/pony"
 }
 
 shadowJar {
@@ -147,6 +156,9 @@ shadowJar {
 
     exclude "/assets/minelittlepony/textures/entity/pony"
     from(copyBGPones) {
+        into "/assets/minelittlepony/textures/entity/pony"
+    }
+    from (genPoniesJson){
         into "/assets/minelittlepony/textures/entity/pony"
     }
     
@@ -172,16 +184,6 @@ task srgJar(type: Jar) {
     from litemod
 
     classifier "mc$minecraft.version-srg"
-}
-
-task zipCommunityPack(type: Zip) {
-    baseName = "Pony Skin Pack"
-    destinationDir = new File(buildDir, "libs")
-    from("skins") {
-        // TODO: Later packs will have their folders excluded.
-        //       For now we just zip everything.
-        exclude "README.md"
-    }
 }
 
 reobf {
