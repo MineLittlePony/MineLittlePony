@@ -59,8 +59,8 @@ public class SaddleBags extends AbstractGear {
 
         x += 3;
 
-        rightBag.offset(-x, y, z).around(0, 4, 4)
-                .tex(56, 25).flip().south(0, 0, 0, 3, 6, stretch)
+        rightBag.offset(-x, y, z).around(0, 4, 4).flip()
+                .tex(56, 25).south(0, 0, 0, 3, 6, stretch)
                 .tex(59, 25).south(0, 0, 8, 3, 6, stretch)
                 .tex(56, 19).west(3, 0, 0, 6, 8, stretch)
                             .west(0, 0, 0, 6, 8, stretch)
