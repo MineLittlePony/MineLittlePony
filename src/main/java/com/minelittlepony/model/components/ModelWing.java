@@ -15,11 +15,11 @@ public class ModelWing<T extends AbstractPonyModel & IModelPegasus> implements P
     protected final PonyRenderer extended;
     protected final PonyRenderer folded;
 
-    public ModelWing(T pegasus, boolean right, boolean legacy, float y, float scale, int texX, int texY) {
+    public ModelWing(T pegasus, boolean right, boolean legacy, float y, float scale, int texY) {
         this.pegasus = pegasus;
 
         folded = new PonyRenderer(pegasus, 56, texY).mirror(legacy);
-        extended = new PonyRenderer(pegasus, texX, texY + 3);
+        extended = new PonyRenderer(pegasus, 56 + ((!right || legacy) ? 1 : 0), texY + 3);
 
         addClosedWing(right, y, scale);
         addFeathers(right, legacy, y, scale);
