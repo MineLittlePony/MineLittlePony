@@ -115,36 +115,14 @@ task copyBGPones(type: Copy) {
     def illegals = /[^a-z0-9_\/.-]/
 
     from "skins/Background Ponies"
+		// TODO: What is tempDir????
     into temporaryDir
-
-    include '**/*.png'
 
     eachFile {
         if (it.name =~ illegals){
             logger.warn("Sanitizing file with illegal characters: ${it.path}")
             it.name = it.name.replaceAll(/\s/, '_').replaceAll(illegals, '')
         }
-    }
-}
-
-import groovy.json.JsonBuilder
-
-task genPoniesJson(dependsOn: copyBGPones) {
-    // loop through the background ponies to create the bgponies.json
-
-    def bgponies = 'bgponies.json'
-
-    def json = file("$temporaryDir/$bgponies")
-
-    inputs.dir copyBGPones.outputs
-    outputs.file json
-
-    doFirst {
-        json.text = new JsonBuilder(
-            override: false,
-            imports: [],
-            ponies: fileTree(copyBGPones.outputs.files.singleFile).filter { it.file }.collect { it.name.replace(".png", "") }
-        ).toPrettyString()
     }
 }
 
@@ -157,9 +135,6 @@ shadowJar {
 
     exclude "/assets/minelittlepony/textures/entity/pony"
     from(copyBGPones) {
-        into "/assets/minelittlepony/textures/entity/pony"
-    }
-    from (genPoniesJson){
         into "/assets/minelittlepony/textures/entity/pony"
     }
     
