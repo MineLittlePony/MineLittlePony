@@ -97,6 +97,8 @@ litemod.json {
     ]
 }
 
+archivesBaseName = "mod-${project.name.toLowerCase()}"
+
 afterEvaluate {
     file('build.number').delete()
 }
@@ -108,14 +110,12 @@ jar {
     extension 'jar'
 }
 
-archivesBaseName = "mod-${project.name.toLowerCase()}"
-
 task copyBGPones(type: Copy) {
 
     def illegals = /[^a-z0-9_\/.-]/
 
     from "skins/Background Ponies"
-		// TODO: What is tempDir????
+    // TODO: What is tempDir????
     into temporaryDir
 
     eachFile {
@@ -147,11 +147,9 @@ shadowJar {
 
     relocate 'org.apache.http.entity.mime', 'com.voxelmodpack.repack.org.apache.http.entity.mime'
     exclude 'dummyThing'
-}
-
-sourceJar {
-    // add hdskins sources
-    from sourceSets.hdskins.allSource
+    doLast {
+        file('build/libs/' + archivesBaseName + '-' + version + '-base.jar').delete();
+    }
 }
 
 task srgJar(type: Jar) {
@@ -161,6 +159,8 @@ task srgJar(type: Jar) {
 
     classifier "mc$minecraft.version-srg"
 }
+
+sourceJar.enabled = false
 
 reobf {
     srgJar {
