@@ -114,7 +114,7 @@ task copyBGPones(type: Copy) {
 
     def illegals = /[^a-z0-9_\/.-]/
 
-    from "skins/background_ponies"
+    from "skins/Background Ponies"
     into temporaryDir
 
     include '**/*.png'
