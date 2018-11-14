@@ -142,6 +142,7 @@ task genPoniesJson(dependsOn: copyBGPones) {
     doFirst {
         json.text = new JsonBuilder(
             override: false,
+            imports: [],
             ponies: fileTree(copyBGPones.outputs.files.singleFile).filter { it.file }.collect { it.name.replace(".png", "") }
         ).toPrettyString()
     }
