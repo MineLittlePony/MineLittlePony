@@ -28,7 +28,7 @@ class VillagerProfessionTextureCache implements ITextureSupplier<Integer> {
         try {
             Minecraft.getMinecraft().getResourceManager().getResource(texture);
         } catch (IOException e) {
-            return pool[5];
+            return pool[pool.length - 1];
         }
 
         return texture;
