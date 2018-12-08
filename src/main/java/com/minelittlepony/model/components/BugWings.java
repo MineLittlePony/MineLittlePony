@@ -17,8 +17,6 @@ public class BugWings<T extends AbstractPonyModel & IModelPegasus> extends Pegas
 
     @Override
     public ModelWing<T> getRight() {
-        //pegasus.boxList.clear();
-        //init(0, 0);
         return rightWing;
     }
 }
