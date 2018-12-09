@@ -49,7 +49,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
 
     private PonyConfig config;
 
-    private Map<ResourceLocation, IPony> poniesCache = Maps.newHashMap();
+    private final Map<ResourceLocation, Pony> poniesCache = Maps.newHashMap();
 
     public PonyManager(PonyConfig config) {
         this.config = config;
@@ -61,7 +61,11 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
      * @param resource A texture resource
      */
     public IPony getPony(ResourceLocation resource) {
-        return poniesCache.computeIfAbsent(resource, Pony::new);
+        IPony result = poniesCache.computeIfAbsent(resource, Pony::new).touch();
+
+        poniesCache.entrySet().removeIf(entry -> entry.getValue().hasExpired());
+
+        return result;
     }
 
     /**

@@ -42,9 +42,20 @@ public class Pony implements IPony {
     private final ResourceLocation texture;
     private final IPonyData metadata;
 
+    private long expirationPeriod;
+
     public Pony(ResourceLocation resource) {
         texture = resource;
         metadata = checkSkin(texture);
+    }
+
+    boolean hasExpired() {
+        return expirationPeriod <= System.currentTimeMillis();
+    }
+
+    Pony touch() {
+        expirationPeriod = System.currentTimeMillis() + 30000;
+        return this;
     }
 
     private IPonyData checkSkin(ResourceLocation resource) {
