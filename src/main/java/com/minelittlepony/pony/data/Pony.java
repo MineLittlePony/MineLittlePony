@@ -125,6 +125,12 @@ public class Pony implements IPony {
     }
 
     @Override
+    public boolean isPartiallySubmerged(EntityLivingBase entity) {
+        return entity.isInWater()
+                || entity.getEntityWorld().getBlockState(new BlockPos(entity.posX, entity.posY, entity.posZ)).getMaterial() == Material.WATER;
+    }
+
+    @Override
     public boolean isFullySubmerged(EntityLivingBase entity) {
         return entity.isInWater()
                 && entity.getEntityWorld().getBlockState(new BlockPos(getVisualEyePosition(entity))).getMaterial() == Material.WATER;

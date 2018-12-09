@@ -47,6 +47,11 @@ public interface IPony {
     boolean isFullySubmerged(EntityLivingBase entity);
 
     /**
+     * Returns true if the provided entity is partially submerged. That is if any part of it is in contact with water.
+     */
+    boolean isPartiallySubmerged(EntityLivingBase entity);
+
+    /**
      * Returns true if an entity is wearing any headgear. This is used to hide things like the snout when wearing items
      * such as the pumpkin, a player's head, or any other types of blocks.
      *

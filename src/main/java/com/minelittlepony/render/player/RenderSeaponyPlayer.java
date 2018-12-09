@@ -22,7 +22,7 @@ public class RenderSeaponyPlayer extends RenderPonyPlayer {
     public IPony getEntityPony(AbstractClientPlayer player) {
         IPony pony = super.getEntityPony(player);
 
-        boolean wet = pony.isFullySubmerged(player);
+        boolean wet = pony.isPartiallySubmerged(player);
 
         mainModel = renderPony.setPonyModel(wet ? seapony : normalPony);
 
