@@ -1,6 +1,7 @@
 package com.minelittlepony.model.components;
 
 import com.minelittlepony.model.AbstractPonyModel;
+import com.minelittlepony.model.capabilities.IModel;
 import com.minelittlepony.model.capabilities.IModelPart;
 import com.minelittlepony.render.model.PlaneRenderer;
 import com.minelittlepony.render.model.PonyRenderer;
@@ -21,7 +22,11 @@ public class SeaponyTail implements IModelPart {
     private PlaneRenderer tailTip;
     private PlaneRenderer tailFins;
 
+    private IModel model;
+
     public SeaponyTail(AbstractPonyModel model) {
+        this.model = model;
+
         tailBase = new PonyRenderer(model, 0, 38);
         tailTip = new PlaneRenderer(model, 24, 0);
         tailFins = new PlaneRenderer(model, 56, 20);
@@ -32,8 +37,11 @@ public class SeaponyTail implements IModelPart {
 
     @Override
     public void init(float yOffset, float stretch) {
-        tailBase.rotate(TAIL_ROTX, 0, 0).around(-2, 14, 8)
-                .box( 0,  0, 0, 4, 6, 4, stretch).flip();
+        tailBase.rotate(TAIL_ROTX, 0, 0)
+                .offset(0, -4, -2)
+                .around(-2, 10, 8)
+                .box( 0,  0, 0, 4, 6, 4, stretch)
+                .flip();
 
         tailTip.rotate(0, 0, 0).around(1, 5, 1)
                 .box(0, 0, 0, 2, 6, 1, stretch);
@@ -45,9 +53,7 @@ public class SeaponyTail implements IModelPart {
 
     @Override
     public void setRotationAndAngles(boolean rainboom, float move, float swing, float bodySwing, float ticks) {
-        float rotation = MathHelper.sin(ticks * 0.536f) / 4;
-
-        tailBase.offset(0, -4, -2).around(-2, 10, 8);
+        float rotation = model.isSleeping() ? 0 : MathHelper.sin(ticks * 0.536f) / 4;
 
         tailBase.rotateAngleX = TAIL_ROTX + rotation;
         tailTip.rotateAngleX = rotation;

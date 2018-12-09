@@ -1,6 +1,8 @@
 package com.minelittlepony.model.ponies;
 
 import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.armour.ModelPonyArmor;
+import com.minelittlepony.model.armour.PonyArmor;
 import com.minelittlepony.model.components.SeaponyTail;
 import com.minelittlepony.model.player.ModelUnicorn;
 import com.minelittlepony.pony.data.IPony;
@@ -28,11 +30,26 @@ public class ModelSeapony extends ModelUnicorn {
     }
 
     @Override
+    public PonyArmor createArmour() {
+        return new PonyArmor(new Armour(), new Armour());
+    }
+
+    @Override
     public void updateLivingState(EntityLivingBase entity, IPony pony) {
         super.updateLivingState(entity, pony);
 
         // Seaponies can't sneak, silly
         isSneak = false;
+    }
+
+    @Override
+    protected void ponySleep() {
+       // noop
+    }
+
+    @Override
+    protected void ponyRide() {
+        // noop
     }
 
     @Override
@@ -75,11 +92,20 @@ public class ModelSeapony extends ModelUnicorn {
     public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
         super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
 
-        float finAngle = FIN_ROT_Y + MathHelper.cos(ticks / 10) / 5;
+        float flapMotion = MathHelper.cos(ticks / 10) / 5;
+
+        if (isSleeping()) {
+            flapMotion /= 2;
+        }
+
+        float finAngle = FIN_ROT_Y + flapMotion;
 
         leftFin.rotateAngleY = finAngle;
         rightFin.rotateAngleY = -finAngle;
-        centerFin.rotateAngleZ = MathHelper.cos(ticks / 10) / 5;
+
+        if (!isSleeping()) {
+            centerFin.rotateAngleZ = flapMotion;
+        }
 
         if (!entity.isInWater()) {
             bipedLeftArm.rotateAngleX -= 0.5F;
@@ -101,7 +127,6 @@ public class ModelSeapony extends ModelUnicorn {
         bipedRightArm.rotateAngleY += 0.3F;
     }
 
-
     @Override
     protected void rotateLegsSwimming(float move, float swing, float ticks, Entity entity) {
         super.rotateLegsOnGround(move, swing, ticks, entity);
@@ -117,6 +142,8 @@ public class ModelSeapony extends ModelUnicorn {
     @Override
     public void transform(BodyPart part) {
         GlStateManager.translate(0, 0.6F, 0);
+
+        super.transform(part);
     }
 
     @Override
@@ -154,5 +181,34 @@ public class ModelSeapony extends ModelUnicorn {
         bipedRightLeg.showModel = false;
         bipedLeftLegwear.showModel = false;
         bipedRightLegwear.showModel = false;
+    }
+
+    class Armour extends ModelPonyArmor {
+
+        @Override
+        public void showBoots() {
+            bipedRightArm.showModel = true;
+            bipedLeftArm.showModel = true;
+        }
+
+        @Override
+        public void updateLivingState(EntityLivingBase entity, IPony pony) {
+            super.updateLivingState(entity, pony);
+
+            // Seaponies can't sneak, silly
+            isSneak = false;
+        }
+
+        @Override
+        protected void rotateLegsSwimming(float move, float swing, float ticks, Entity entity) {
+            super.rotateLegsOnGround(move, swing, ticks, entity);
+        }
+
+        @Override
+        public void transform(BodyPart part) {
+            GlStateManager.translate(0, 0.6F, 0);
+
+            super.transform(part);
+        }
     }
 }

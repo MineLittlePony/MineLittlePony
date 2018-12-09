@@ -89,6 +89,11 @@ public interface IModel extends ICapitated {
     float getSwingAmount();
 
     /**
+     * Gets the step woddle used for various hair bits and animations.
+     */
+    float getWobbleAmount();
+
+    /**
      * Gets the y-offset applied to entities riding this one.
      */
     float getRiderYOffset();

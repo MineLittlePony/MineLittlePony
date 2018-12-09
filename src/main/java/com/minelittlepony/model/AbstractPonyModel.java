@@ -129,44 +129,9 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         swingItem(entity);
 
         if (isCrouching()) {
-            adjustBody(BODY_ROT_X_SNEAK, BODY_RP_Y_SNEAK, BODY_RP_Z_SNEAK);
-            sneakLegs();
-            setHead(0, 6, -2);
+            ponyCrouch();
         } else if (isRiding) {
-            adjustBodyRiding();
-            bipedLeftLeg.rotationPointZ = 15;
-            bipedLeftLeg.rotationPointY = 9;
-            bipedLeftLeg.rotateAngleX = -PI / 4;
-            bipedLeftLeg.rotateAngleY = -PI / 5;
-
-            bipedRightLeg.rotationPointZ = 15;
-            bipedRightLeg.rotationPointY = 9;
-            bipedRightLeg.rotateAngleX = -PI / 4;
-            bipedRightLeg.rotateAngleY =  PI / 5;
-
-            bipedLeftArm.rotateAngleZ = -PI * 0.06f;
-            bipedRightArm.rotateAngleZ = PI * 0.06f;
-
-            if (isRidingInteractive) {
-                bipedLeftLeg.rotateAngleY = PI / 15;
-                bipedLeftLeg.rotateAngleX = PI / 9;
-
-                bipedLeftLeg.rotationPointZ = 10;
-                bipedLeftLeg.rotationPointY = 7;
-
-                bipedRightLeg.rotateAngleY = -PI / 15;
-                bipedRightLeg.rotateAngleX = PI / 9;
-
-                bipedRightLeg.rotationPointZ = 10;
-                bipedRightLeg.rotationPointY = 7;
-
-
-                bipedLeftArm.rotateAngleX = PI / 6;
-                bipedRightArm.rotateAngleX = PI / 6;
-
-                bipedLeftArm.rotateAngleZ *= 2;
-                bipedRightArm.rotateAngleZ *= 2;
-            }
+            ponyRide();
         } else {
             adjustBody(BODY_ROT_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
 
@@ -176,13 +141,16 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
             setHead(0, 0, 0);
         }
 
-        if (isSleeping) ponySleep();
+        if (isSleeping) {
+            ponySleep();
+        }
 
         animateWears();
 
         snout.setGender(metadata.getGender());
     }
 
+    @Override
     public float getWobbleAmount() {
 
         if (swingProgress <= 0) {
@@ -192,7 +160,36 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         return MathHelper.sin(MathHelper.sqrt(swingProgress) * PI * 2) * 0.04F;
     }
 
-    protected void adjustBodyRiding() {
+    /**
+     * Aligns legs to a sneaky position.
+     */
+    protected void ponyCrouch() {
+        adjustBody(BODY_ROT_X_SNEAK, BODY_RP_Y_SNEAK, BODY_RP_Z_SNEAK);
+        setHead(0, 6, -2);
+
+        bipedRightArm.rotateAngleX -= LEG_ROT_X_SNEAK_ADJ;
+        bipedLeftArm.rotateAngleX -= LEG_ROT_X_SNEAK_ADJ;
+
+        bipedLeftLeg.rotationPointY = FRONT_LEG_RP_Y_SNEAK;
+        bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_SNEAK;
+    }
+
+    protected void ponySleep() {
+        bipedRightArm.rotateAngleX = ROTATE_270;
+        bipedLeftArm.rotateAngleX = ROTATE_270;
+
+        bipedRightLeg.rotateAngleX = ROTATE_90;
+        bipedLeftLeg.rotateAngleX = ROTATE_90;
+
+        setHead(1, 2, isSneak ? -1 : 1);
+
+        AbstractBoxRenderer.shiftRotationPoint(bipedRightArm, 0, 2, 6);
+        AbstractBoxRenderer.shiftRotationPoint(bipedLeftArm, 0, 2, 6);
+        AbstractBoxRenderer.shiftRotationPoint(bipedRightLeg, 0, 2, -8);
+        AbstractBoxRenderer.shiftRotationPoint(bipedLeftLeg, 0, 2, -8);
+    }
+
+    protected void ponyRide() {
         if (isRidingInteractive) {
             adjustBodyComponents(BODY_ROT_X_RIDING * 2, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
             adjustNeck(BODY_ROT_X_NOTSNEAK * 2, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK - 4);
@@ -203,7 +200,38 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
             setHead(0, 0, 0);
         }
 
+        bipedLeftLeg.rotationPointZ = 15;
+        bipedLeftLeg.rotationPointY = 9;
+        bipedLeftLeg.rotateAngleX = -PI / 4;
+        bipedLeftLeg.rotateAngleY = -PI / 5;
 
+        bipedRightLeg.rotationPointZ = 15;
+        bipedRightLeg.rotationPointY = 9;
+        bipedRightLeg.rotateAngleX = -PI / 4;
+        bipedRightLeg.rotateAngleY =  PI / 5;
+
+        bipedLeftArm.rotateAngleZ = -PI * 0.06f;
+        bipedRightArm.rotateAngleZ = PI * 0.06f;
+
+        if (isRidingInteractive) {
+            bipedLeftLeg.rotateAngleY = PI / 15;
+            bipedLeftLeg.rotateAngleX = PI / 9;
+
+            bipedLeftLeg.rotationPointZ = 10;
+            bipedLeftLeg.rotationPointY = 7;
+
+            bipedRightLeg.rotateAngleY = -PI / 15;
+            bipedRightLeg.rotateAngleX = PI / 9;
+
+            bipedRightLeg.rotationPointZ = 10;
+            bipedRightLeg.rotationPointY = 7;
+
+            bipedLeftArm.rotateAngleX = PI / 6;
+            bipedRightArm.rotateAngleX = PI / 6;
+
+            bipedLeftArm.rotateAngleZ *= 2;
+            bipedRightArm.rotateAngleZ *= 2;
+        }
     }
 
     /**
@@ -387,8 +415,14 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
     }
 
     protected float getLegOutset() {
-        if (isSleeping()) return 3.6f;
-        if (isCrouching()) return 1;
+        if (isSleeping()) {
+            return 3.6f;
+        }
+
+        if (isCrouching()) {
+            return 1;
+        }
+
         return 5;
     }
 
@@ -455,6 +489,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         arm.rotateAngleX = ROTATE_270 + bipedHead.rotateAngleX + (MathHelper.sin(ticks * 0.067F) * 0.05F);
         arm.rotateAngleY = bipedHead.rotateAngleY - 0.06F;
         arm.rotateAngleZ = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
+
         if (isSneak) {
             arm.rotationPointY += 4;
         }
@@ -498,7 +533,9 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
      * @param ticks       Total whole and partial ticks since the entity's existance. Used in animations together with {@code swing} and {@code move}.
      */
     protected void swingArms(float ticks) {
-        if (isSleeping()) return;
+        if (isSleeping()) {
+            return;
+        }
 
         float cos = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
         float sin = MathHelper.sin(ticks * 0.067F) * 0.05F;
@@ -531,30 +568,6 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
 
     protected void adjustNeck(float rotateAngleX, float rotationPointY, float rotationPointZ) {
         neck.setRotationPoint(NECK_ROT_X + rotateAngleX, rotationPointY, rotationPointZ);
-    }
-
-    /**
-     * Aligns legs to a sneaky position.
-     */
-    protected void sneakLegs() {
-        bipedRightArm.rotateAngleX -= LEG_ROT_X_SNEAK_ADJ;
-        bipedLeftArm.rotateAngleX -= LEG_ROT_X_SNEAK_ADJ;
-
-        bipedLeftLeg.rotationPointY = bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_SNEAK;
-    }
-
-    protected void ponySleep() {
-        bipedRightArm.rotateAngleX = ROTATE_270;
-        bipedLeftArm.rotateAngleX = ROTATE_270;
-        bipedRightLeg.rotateAngleX = ROTATE_90;
-        bipedLeftLeg.rotateAngleX = ROTATE_90;
-
-        setHead(1, 2, isSneak ? -1 : 1);
-
-        AbstractBoxRenderer.shiftRotationPoint(bipedRightArm, 0, 2, 6);
-        AbstractBoxRenderer.shiftRotationPoint(bipedLeftArm, 0, 2, 6);
-        AbstractBoxRenderer.shiftRotationPoint(bipedRightLeg, 0, 2, -8);
-        AbstractBoxRenderer.shiftRotationPoint(bipedLeftLeg, 0, 2, -8);
     }
 
     @Override
