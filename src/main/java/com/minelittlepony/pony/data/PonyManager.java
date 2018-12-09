@@ -1,12 +1,11 @@
-package com.minelittlepony;
+package com.minelittlepony.pony.data;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-import com.minelittlepony.pony.data.IPony;
-import com.minelittlepony.pony.data.Pony;
-import com.minelittlepony.pony.data.PonyLevel;
+import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.PonyConfig;
 import com.minelittlepony.util.math.MathUtil;
 import com.voxelmodpack.hdskins.ISkinCacheClearListener;
 import com.voxelmodpack.hdskins.util.MoreStreams;

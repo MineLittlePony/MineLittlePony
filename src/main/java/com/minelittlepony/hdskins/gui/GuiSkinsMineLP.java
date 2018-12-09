@@ -1,9 +1,9 @@
 package com.minelittlepony.hdskins.gui;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.PonyManager;
 import com.minelittlepony.gui.IconicToggle;
 import com.minelittlepony.gui.Style;
+import com.minelittlepony.pony.data.PonyManager;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;

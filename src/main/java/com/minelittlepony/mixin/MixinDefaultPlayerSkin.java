@@ -1,8 +1,9 @@
 package com.minelittlepony.mixin;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.PonyManager;
 import com.minelittlepony.pony.data.PonyLevel;
+import com.minelittlepony.pony.data.PonyManager;
+
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
