@@ -104,7 +104,6 @@ public class SaddleBags extends AbstractGear {
         dropAmount = hangLow ? 0.15F : 0;
     }
 
-
     public void sethangingLow(boolean veryLow) {
         hangLow = veryLow;
     }

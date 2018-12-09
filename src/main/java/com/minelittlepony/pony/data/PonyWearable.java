@@ -5,9 +5,10 @@ import java.util.List;
 
 public enum PonyWearable implements ITriggerPixelMapped<PonyWearable> {
     NONE(0),
-    SADDLE_BAGS(200),
     MUFFIN(50),
     HAT(100),
+    ANTLERS(150),
+    SADDLE_BAGS(200),
     STETSON(250);
 
     private int triggerValue;

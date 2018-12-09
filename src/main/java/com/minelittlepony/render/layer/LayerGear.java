@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.gear.ChristmasHat;
 import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.model.gear.IStackable;
 import com.minelittlepony.model.gear.Muffin;
@@ -28,7 +29,8 @@ public class LayerGear<T extends EntityLivingBase> extends AbstractPonyLayer<T> 
             new SaddleBags(),
             new WitchHat(),
             new Muffin(),
-            new Stetson()
+            new Stetson(),
+            new ChristmasHat()
     );
 
     public <R extends RenderLivingBase<T> & IRenderPony<T>> LayerGear(R renderer) {
