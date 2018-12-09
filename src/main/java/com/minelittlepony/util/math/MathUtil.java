@@ -37,4 +37,8 @@ public class MathUtil {
     public static float interpolateRadians(float prev, float current, float partialTicks) {
         return (float)Math.toRadians(interpolateDegress(prev, current, partialTicks));
     }
+
+    public static boolean compareFloats(float a, float b) {
+        return Math.abs(a - b) <= 0.001F;
+    }
 }

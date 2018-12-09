@@ -2,9 +2,11 @@ package com.minelittlepony.render.player;
 
 import com.minelittlepony.model.ModelWrapper;
 import com.minelittlepony.pony.data.IPony;
+import com.minelittlepony.util.math.MathUtil;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.util.EnumParticleTypes;
 
 public class RenderSeaponyPlayer extends RenderPonyPlayer {
 
@@ -26,7 +28,17 @@ public class RenderSeaponyPlayer extends RenderPonyPlayer {
 
         mainModel = renderPony.setPonyModel(wet ? seapony : normalPony);
 
+        float state = wet ? 100 : 0;
+        float interpolated = pony.getMetadata().getInterpolator().interpolate("seapony_state", state, 5);
+
+        if (!MathUtil.compareFloats(interpolated, state)) {
+            double x = player.posX + (player.getEntityWorld().rand.nextFloat() * 2) - 1;
+            double y = player.posY + (player.getEntityWorld().rand.nextFloat() * 2);
+            double z = player.posZ + (player.getEntityWorld().rand.nextFloat() * 2) - 1;
+
+            player.getEntityWorld().spawnParticle(EnumParticleTypes.END_ROD, x, y, z, 0, 0, 0);
+        }
+
         return pony;
     }
-
 }
