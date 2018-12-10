@@ -474,7 +474,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
  */
 
     private void enableClipping(int yBottom) {
-        popAttrib();
+        GL11.glPopAttrib();
 
         if (doubleBuffer == null) {
             doubleBuffer = BufferUtils.createByteBuffer(32).asDoubleBuffer();

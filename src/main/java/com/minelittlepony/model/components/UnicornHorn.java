@@ -58,7 +58,7 @@ public class UnicornHorn implements IModelPart {
             enableTexture2D();
             enableLighting();
             disableBlend();
-            popAttrib();
+            glPopAttrib();
         }
     }
 

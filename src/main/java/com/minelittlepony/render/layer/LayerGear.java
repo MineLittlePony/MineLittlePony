@@ -86,6 +86,6 @@ public class LayerGear<T extends EntityLivingBase> extends AbstractPonyLayer<T> 
         gear.setRotationAndAngles(model.isGoingFast(), move, swing, model.getWobbleAmount(), ticks);
         gear.renderPart(scale);
 
-        GlStateManager.popAttrib();
+        GL11.glPopAttrib();
     }
 }

@@ -149,7 +149,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         color(1, 1, 1, 1);
         disableBlend();
         popMatrix();
-        popAttrib();
+        GL11.glPopAttrib();
 
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         pushMatrix();
@@ -162,8 +162,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
 
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
         popMatrix();
-        popAttrib();
-
+        GL11.glPopAttrib();
     }
 
     static class BedHead extends TileEntityBed {
@@ -192,7 +191,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
             dispatcher.getRenderer(this).render(BedHead.instance, -0.5F, 0, 0, 0, -1, 1);
 
             popMatrix();
-            popAttrib();
+            GL11.glPopAttrib();
         }
     }
 
@@ -214,7 +213,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
             render.doRender(this, 0, 0, 0, 0, 0);
 
             popMatrix();
-            popAttrib();
+            GL11.glPopAttrib();
         }
     }
 }

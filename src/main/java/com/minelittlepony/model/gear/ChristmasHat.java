@@ -1,9 +1,10 @@
 package com.minelittlepony.model.gear;
 
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+
+import org.lwjgl.opengl.GL11;
 
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.capabilities.IModel;
@@ -88,7 +89,8 @@ public class ChristmasHat extends AbstractGear {
 
     @Override
     public void renderPart(float scale) {
-        GlStateManager.pushAttrib();
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+
         if (tint != 0) {
             Color.glColor(tint, 1);
         }
@@ -96,7 +98,7 @@ public class ChristmasHat extends AbstractGear {
         left.render(scale);
         right.render(scale);
 
-        GlStateManager.popAttrib();
+        GL11.glPopAttrib();
     }
 
 }

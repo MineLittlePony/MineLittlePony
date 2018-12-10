@@ -8,7 +8,6 @@ import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
 
 import org.lwjgl.opengl.GL11;
 
@@ -76,7 +75,7 @@ public abstract class SettingsPanel extends GameGui implements ConfigPanel {
 
         postDrawContents(mouseX, mouseY, partialTicks);
 
-        GlStateManager.popAttrib();
+        GL11.glPopAttrib();
     }
 
     @Override

@@ -66,7 +66,7 @@ public class SeaponyTail implements IModelPart {
         GlStateManager.enableBlend();
         tailBase.render(scale);
         GlStateManager.disableBlend();
-        GlStateManager.popAttrib();
+        GL11.glPopAttrib();
     }
 
 }
