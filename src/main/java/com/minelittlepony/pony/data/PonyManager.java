@@ -73,7 +73,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         ResourceLocation skin = player.getLocationSkin();
         UUID uuid = player.getGameProfile().getId();
 
-        if (true || Pony.getBufferedImage(skin) == null) {
+        if (Pony.getBufferedImage(skin) == null) {
             return getDefaultPony(uuid);
         }
 
@@ -84,7 +84,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         ResourceLocation skin = playerInfo.getLocationSkin();
         UUID uuid = playerInfo.getGameProfile().getId();
 
-        if (true || Pony.getBufferedImage(skin) == null) {
+        if (Pony.getBufferedImage(skin) == null) {
             return getDefaultPony(uuid);
         }
 
@@ -132,7 +132,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
      * @param uuid  A UUID. Either a user or an entity.
      */
     public IPony getBackgroundPony(UUID uuid) {
-        if (true || getNumberOfPonies() == 0 || isUser(uuid)) {
+        if (getNumberOfPonies() == 0 || isUser(uuid)) {
             return getPony(getDefaultSkin(uuid));
         }
 
@@ -224,7 +224,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
      * Returns true if the given uuid is of a player would would use the ALEX skin type.
      */
     public static boolean isSlimSkin(UUID uuid) {
-        return true || (uuid.hashCode() & 1) == 1;
+        return (uuid.hashCode() & 1) == 1;
     }
 
     private int getNumberOfPonies() {
