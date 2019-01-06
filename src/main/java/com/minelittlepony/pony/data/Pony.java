@@ -3,6 +3,7 @@ package com.minelittlepony.pony.data;
 import com.google.common.base.MoreObjects;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.ducks.IRenderPony;
+import com.minelittlepony.util.chron.Touchable;
 import com.voxelmodpack.hdskins.resources.texture.DynamicTextureImage;
 import com.voxelmodpack.hdskins.resources.texture.IBufferedTexture;
 import com.voxelmodpack.hdskins.util.ProfileTextureUtil;
@@ -33,7 +34,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 @Immutable
-public class Pony implements IPony {
+public class Pony extends Touchable<Pony> implements IPony {
 
     private static final AtomicInteger ponyCount = new AtomicInteger();
 
@@ -42,20 +43,9 @@ public class Pony implements IPony {
     private final ResourceLocation texture;
     private final IPonyData metadata;
 
-    private long expirationPeriod;
-
     public Pony(ResourceLocation resource) {
         texture = resource;
         metadata = checkSkin(texture);
-    }
-
-    boolean hasExpired() {
-        return expirationPeriod <= System.currentTimeMillis();
-    }
-
-    Pony touch() {
-        expirationPeriod = System.currentTimeMillis() + 30000;
-        return this;
     }
 
     private IPonyData checkSkin(ResourceLocation resource) {

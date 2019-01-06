@@ -5,6 +5,8 @@ import com.minelittlepony.model.anim.BasicEasingInterpolator;
 import com.minelittlepony.model.anim.IInterpolator;
 
 import java.awt.image.BufferedImage;
+import java.util.UUID;
+
 import javax.annotation.concurrent.Immutable;
 
 
@@ -21,8 +23,6 @@ public class PonyData implements IPonyData {
     private final int glowColor;
 
     private final boolean[] wearables;
-
-    private final IInterpolator interpolator = new BasicEasingInterpolator();
 
     public PonyData() {
         race = PonyRace.HUMAN;
@@ -92,8 +92,8 @@ public class PonyData implements IPonyData {
     }
 
     @Override
-    public IInterpolator getInterpolator() {
-        return interpolator;
+    public IInterpolator getInterpolator(UUID interpolatorId) {
+        return BasicEasingInterpolator.getInstance(interpolatorId);
     }
 
     /**

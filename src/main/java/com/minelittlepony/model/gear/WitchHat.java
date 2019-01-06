@@ -8,6 +8,8 @@ import com.minelittlepony.model.capabilities.IModel;
 import com.minelittlepony.pony.data.PonyWearable;
 import com.minelittlepony.render.model.PonyRenderer;
 
+import java.util.UUID;
+
 public class WitchHat extends AbstractGear implements IStackable {
 
     private static final ResourceLocation WITCH_TEXTURES = new ResourceLocation("textures/entity/witch.png");
@@ -15,7 +17,7 @@ public class WitchHat extends AbstractGear implements IStackable {
     private PonyRenderer witchHat;
 
     @Override
-    public void renderPart(float scale) {
+    public void renderPart(float scale, UUID interpolatorId) {
         witchHat.render(scale * 1.3F);
     }
 

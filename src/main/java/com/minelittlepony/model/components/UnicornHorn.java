@@ -5,6 +5,8 @@ import com.minelittlepony.model.capabilities.IModelPart;
 import com.minelittlepony.render.model.GlowRenderer;
 import com.minelittlepony.render.model.PonyRenderer;
 
+import java.util.UUID;
+
 import net.minecraft.client.model.ModelBase;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -38,7 +40,7 @@ public class UnicornHorn implements IModelPart {
     }
 
     @Override
-    public void renderPart(float scale) {
+    public void renderPart(float scale, UUID interpolatorId) {
         if (isVisible) {
             horn.render(scale);
         }

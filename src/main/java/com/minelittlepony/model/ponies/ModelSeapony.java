@@ -152,7 +152,7 @@ public class ModelSeapony extends ModelUnicorn {
         bodyCenter.render(scale);
         bipedBody.postRender(scale);
 
-        tail.renderPart(scale);
+        tail.renderPart(scale, entity.getUniqueID());
 
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         GlStateManager.enableBlend();

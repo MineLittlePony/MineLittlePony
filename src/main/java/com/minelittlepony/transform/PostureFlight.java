@@ -20,7 +20,7 @@ public class PostureFlight extends MotionCompositor implements PonyPosture<Abstr
 
         float roll = (float)calculateRoll(player, motionX,  motionY, motionZ);
 
-        roll = model.getMetadata().getInterpolator().interpolate("pegasusRoll", roll, 10);
+        roll = model.getMetadata().getInterpolator(player.getUniqueID()).interpolate("pegasusRoll", roll, 10);
 
         GlStateManager.rotate((float)roll, 0, 0, 1);
     }

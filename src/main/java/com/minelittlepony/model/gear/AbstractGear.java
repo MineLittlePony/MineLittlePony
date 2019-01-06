@@ -39,7 +39,7 @@ public abstract class AbstractGear extends ModelBase implements IGear, PonyModel
         TextureManager tex = Minecraft.getMinecraft().getRenderManager().renderEngine;
         tex.bindTexture(getTexture(entity));
 
-        renderPart(scale);
+        renderPart(scale, entity.getUniqueID());
 
         GL11.glPopAttrib();
     }

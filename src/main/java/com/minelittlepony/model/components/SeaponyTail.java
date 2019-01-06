@@ -6,6 +6,8 @@ import com.minelittlepony.model.capabilities.IModelPart;
 import com.minelittlepony.render.model.PlaneRenderer;
 import com.minelittlepony.render.model.PonyRenderer;
 
+import java.util.UUID;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 
@@ -52,7 +54,7 @@ public class SeaponyTail implements IModelPart {
     }
 
     @Override
-    public void setRotationAndAngles(boolean rainboom, float move, float swing, float bodySwing, float ticks) {
+    public void setRotationAndAngles(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
         float rotation = model.isSleeping() ? 0 : MathHelper.sin(ticks * 0.536f) / 4;
 
         tailBase.rotateAngleX = TAIL_ROTX + rotation;
@@ -61,7 +63,7 @@ public class SeaponyTail implements IModelPart {
     }
 
     @Override
-    public void renderPart(float scale) {
+    public void renderPart(float scale, UUID interpolatorId) {
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         GlStateManager.enableBlend();
         tailBase.render(scale);

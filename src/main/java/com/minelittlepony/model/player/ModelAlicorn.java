@@ -28,7 +28,7 @@ public class ModelAlicorn extends ModelUnicorn implements IModelPegasus {
         super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
 
         if (canFly()) {
-            wings.setRotationAndAngles(rainboom, move, swing, 0, ticks);
+            wings.setRotationAndAngles(rainboom, entity.getUniqueID(), move, swing, 0, ticks);
         }
     }
 
@@ -36,7 +36,7 @@ public class ModelAlicorn extends ModelUnicorn implements IModelPegasus {
     protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         super.renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
         if (canFly()) {
-            wings.renderPart(scale);
+            wings.renderPart(scale, entity.getUniqueID());
         }
     }
 }

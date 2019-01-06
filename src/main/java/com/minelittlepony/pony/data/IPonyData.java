@@ -2,6 +2,8 @@ package com.minelittlepony.pony.data;
 
 import com.minelittlepony.model.anim.IInterpolator;
 
+import java.util.UUID;
+
 import net.minecraft.client.resources.data.IMetadataSection;
 
 /**
@@ -46,5 +48,5 @@ public interface IPonyData extends IMetadataSection {
     /**
      * Gets an interpolator for interpolating values.
      */
-    IInterpolator getInterpolator();
+    IInterpolator getInterpolator(UUID interpolatorId);
 }

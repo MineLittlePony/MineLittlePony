@@ -9,6 +9,8 @@ import com.minelittlepony.model.capabilities.IModelPart;
 import com.minelittlepony.model.capabilities.IModelPegasus;
 import com.minelittlepony.pony.data.PonyWearable;
 
+import java.util.UUID;
+
 public class PegasusWings<T extends AbstractPonyModel & IModelPegasus> implements IModelPart {
 
     protected final T pegasus;
@@ -41,7 +43,7 @@ public class PegasusWings<T extends AbstractPonyModel & IModelPegasus> implement
     }
 
     @Override
-    public void setRotationAndAngles(boolean rainboom, float move, float swing, float bodySwing, float ticks) {
+    public void setRotationAndAngles(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
         float flap = 0;
         float progress = pegasus.getSwingAmount();
 
@@ -69,7 +71,7 @@ public class PegasusWings<T extends AbstractPonyModel & IModelPegasus> implement
         }
 
         if (!pegasus.isFlying()) {
-            flapAngle = pegasus.getMetadata().getInterpolator().interpolate("wingFlap", flapAngle, 10);
+            flapAngle = pegasus.getMetadata().getInterpolator(interpolatorId).interpolate("wingFlap", flapAngle, 10);
         }
 
         getLeft().rotateFlying(flapAngle);
@@ -78,7 +80,7 @@ public class PegasusWings<T extends AbstractPonyModel & IModelPegasus> implement
     }
 
     @Override
-    public void renderPart(float scale) {
+    public void renderPart(float scale, UUID interpolatorId) {
         getLeft().render(scale);
         getRight().render(scale);
     }

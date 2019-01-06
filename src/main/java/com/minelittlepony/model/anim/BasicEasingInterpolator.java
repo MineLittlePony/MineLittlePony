@@ -1,9 +1,30 @@
 package com.minelittlepony.model.anim;
 
+import com.minelittlepony.util.chron.ChronicCache;
+import com.minelittlepony.util.chron.Touchable;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
-public class BasicEasingInterpolator implements IInterpolator {
+public class BasicEasingInterpolator extends Touchable<BasicEasingInterpolator> implements IInterpolator {
+
+    private static ChronicCache<UUID, BasicEasingInterpolator> instanceCache = new ChronicCache<>();
+
+    /**
+     * Gets or creates a new basic, linear interpolator for the provided id.
+     */
+    public static IInterpolator getInstance(UUID id) {
+        return instanceCache.retrieve(id, BasicEasingInterpolator::new);
+    }
+
+    public BasicEasingInterpolator() {
+
+    }
+
+    private BasicEasingInterpolator(UUID id) {
+
+    }
 
     private final Map<String, Float> properties = new HashMap<String, Float>();
 

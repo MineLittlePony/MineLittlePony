@@ -5,6 +5,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.capabilities.IModelPegasus;
 
+import java.util.UUID;
+
 public class BatWings<T extends AbstractPonyModel & IModelPegasus> extends PegasusWings<T> {
 
     public BatWings(T model, float yOffset, float stretch) {
@@ -23,12 +25,12 @@ public class BatWings<T extends AbstractPonyModel & IModelPegasus> extends Pegas
     }
 
     @Override
-    public void renderPart(float scale) {
+    public void renderPart(float scale, UUID interpolatorId) {
 
         GlStateManager.pushMatrix();
         GlStateManager.scale(1.3F, 1.3F, 1.3F);
 
-        super.renderPart(scale);
+        super.renderPart(scale, interpolatorId);
 
         GlStateManager.popMatrix();
     }

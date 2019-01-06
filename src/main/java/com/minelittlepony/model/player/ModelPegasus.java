@@ -26,12 +26,12 @@ public class ModelPegasus extends ModelEarthPony implements IModelPegasus {
     @Override
     public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
         super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
-        wings.setRotationAndAngles(rainboom, move, swing, 0, ticks);
+        wings.setRotationAndAngles(rainboom, entity.getUniqueID(), move, swing, 0, ticks);
     }
 
     @Override
     protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         super.renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
-        wings.renderPart(scale);
+        wings.renderPart(scale, entity.getUniqueID());
     }
 }

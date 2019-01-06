@@ -9,6 +9,8 @@ import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.capabilities.IModelPart;
 import com.minelittlepony.render.model.PlaneRenderer;
 
+import java.util.UUID;
+
 public class PonyTail extends PlaneRenderer implements IModelPart {
 
     private static final int SEGMENTS = 4;
@@ -30,7 +32,7 @@ public class PonyTail extends PlaneRenderer implements IModelPart {
     }
 
     @Override
-    public void setRotationAndAngles(boolean rainboom, float move, float swing, float bodySwing, float ticks) {
+    public void setRotationAndAngles(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
         rotateAngleZ = rainboom ? 0 : MathHelper.cos(move * 0.8F) * 0.2f * swing;
         rotateAngleY = bodySwing;
 
@@ -76,7 +78,7 @@ public class PonyTail extends PlaneRenderer implements IModelPart {
     }
 
     @Override
-    public void renderPart(float scale) {
+    public void renderPart(float scale, UUID interpolatorId) {
         render(scale);
     }
 

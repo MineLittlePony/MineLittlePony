@@ -13,6 +13,7 @@ import com.minelittlepony.render.model.PonyRenderer;
 import com.minelittlepony.util.render.Color;
 
 import java.util.Calendar;
+import java.util.UUID;
 
 public class ChristmasHat extends AbstractGear {
 
@@ -57,7 +58,7 @@ public class ChristmasHat extends AbstractGear {
     }
 
     @Override
-    public void setRotationAndAngles(boolean rainboom, float move, float swing, float bodySwing, float ticks) {
+    public void setRotationAndAngles(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
         float pi = PI * (float) Math.pow(swing, 16);
 
         float mve = move * 0.6662f;
@@ -88,7 +89,7 @@ public class ChristmasHat extends AbstractGear {
     }
 
     @Override
-    public void renderPart(float scale) {
+    public void renderPart(float scale, UUID interpolatorId) {
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
 
         if (tint != 0) {

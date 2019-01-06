@@ -55,7 +55,7 @@ public class ModelPonyHead extends ModelHumanoidHead implements ICapitated {
 
         if (metadata.hasMagic()) {
             skeletonHead.postRender(scale);
-            horn.renderPart(scale);
+            horn.renderPart(scale, entity.getUniqueID());
         }
     }
 

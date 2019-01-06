@@ -25,6 +25,7 @@ import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.Random;
+import java.util.UUID;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
@@ -63,6 +64,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
     public IModelPart tail;
     public PonySnout snout;
 
+    public UUID interpolatorId;
+
     public AbstractPonyModel(boolean arms) {
         super(0, arms);
     }
@@ -93,6 +96,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         isSwimming = pony.isSwimming(entity);
         headGear = pony.isWearingHeadgear(entity);
         isRidingInteractive = pony.isRidingInteractive(entity);
+        interpolatorId = entity.getUniqueID();
     }
 
     /**
@@ -243,7 +247,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
      * @param ticks       Total whole and partial ticks since the entity's existance. Used in animations together with {@code swing} and {@code move}.
      */
     protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
-        tail.setRotationAndAngles(isSwimming() || rainboom, move, swing, bodySwing * 5, ticks);
+        tail.setRotationAndAngles(isSwimming() || rainboom, interpolatorId, move, swing, bodySwing * 5, ticks);
 
         upperTorso.rotateAngleY = bodySwing;
         bipedBody.rotateAngleY = bodySwing;
@@ -308,7 +312,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
 
         float legRPX = cos - getLegOutset() - 0.001F;
 
-        legRPX = metadata.getInterpolator().interpolate("legOffset", legRPX, 3);
+        legRPX = metadata.getInterpolator(entity.getUniqueID()).interpolate("legOffset", legRPX, 3);
 
         bipedRightArm.rotationPointX = -legRPX;
         bipedRightLeg.rotationPointX = -legRPX;
@@ -881,7 +885,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         }
         upperTorso.render(scale);
         bipedBody.postRender(scale);
-        tail.renderPart(scale);
+        tail.renderPart(scale, entity.getUniqueID());
     }
 
     protected void renderLegs(float scale) {

@@ -1,11 +1,11 @@
 package com.minelittlepony.pony.data;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyConfig;
+import com.minelittlepony.util.chron.ChronicCache;
 import com.minelittlepony.util.math.MathUtil;
 import com.voxelmodpack.hdskins.ISkinCacheClearListener;
 import com.voxelmodpack.hdskins.util.MoreStreams;
@@ -25,7 +25,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
 
@@ -49,7 +48,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
 
     private PonyConfig config;
 
-    private final Map<ResourceLocation, Pony> poniesCache = Maps.newHashMap();
+    private final ChronicCache<ResourceLocation, Pony> poniesCache = new ChronicCache<>();
 
     public PonyManager(PonyConfig config) {
         this.config = config;
@@ -61,11 +60,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
      * @param resource A texture resource
      */
     public IPony getPony(ResourceLocation resource) {
-        IPony result = poniesCache.computeIfAbsent(resource, Pony::new).touch();
-
-        poniesCache.entrySet().removeIf(entry -> entry.getValue().hasExpired());
-
-        return result;
+        return poniesCache.retrieve(resource, Pony::new);
     }
 
     /**
@@ -78,7 +73,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         ResourceLocation skin = player.getLocationSkin();
         UUID uuid = player.getGameProfile().getId();
 
-        if (Pony.getBufferedImage(skin) == null) {
+        if (true || Pony.getBufferedImage(skin) == null) {
             return getDefaultPony(uuid);
         }
 
@@ -89,7 +84,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         ResourceLocation skin = playerInfo.getLocationSkin();
         UUID uuid = playerInfo.getGameProfile().getId();
 
-        if (Pony.getBufferedImage(skin) == null) {
+        if (true || Pony.getBufferedImage(skin) == null) {
             return getDefaultPony(uuid);
         }
 
@@ -137,7 +132,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
      * @param uuid  A UUID. Either a user or an entity.
      */
     public IPony getBackgroundPony(UUID uuid) {
-        if (getNumberOfPonies() == 0 || isUser(uuid)) {
+        if (true || getNumberOfPonies() == 0 || isUser(uuid)) {
             return getPony(getDefaultSkin(uuid));
         }
 
@@ -229,7 +224,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
      * Returns true if the given uuid is of a player would would use the ALEX skin type.
      */
     public static boolean isSlimSkin(UUID uuid) {
-        return (uuid.hashCode() & 1) == 1;
+        return true || (uuid.hashCode() & 1) == 1;
     }
 
     private int getNumberOfPonies() {

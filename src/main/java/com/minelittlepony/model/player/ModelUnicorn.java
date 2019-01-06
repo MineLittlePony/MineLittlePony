@@ -138,7 +138,7 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
         super.renderHead(entity, move, swing, ticks, headYaw, headPitch, scale);
 
         if (canCast()) {
-            horn.renderPart(scale);
+            horn.renderPart(scale, entity.getUniqueID());
             if (isCasting()) {
                 horn.renderMagic(getMagicColor(), scale);
             }

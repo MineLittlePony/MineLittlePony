@@ -6,6 +6,8 @@ import com.minelittlepony.model.capabilities.IModelPegasus;
 import com.minelittlepony.pony.data.PonyWearable;
 import com.minelittlepony.render.model.PlaneRenderer;
 
+import java.util.UUID;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -82,7 +84,7 @@ public class SaddleBags extends AbstractGear {
     }
 
     @Override
-    public void setRotationAndAngles(boolean rainboom, float move, float swing, float bodySwing, float ticks) {
+    public void setRotationAndAngles(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
         float pi = PI * (float) Math.pow(swing, 16);
 
         float mve = move * 0.6662f;
@@ -109,8 +111,8 @@ public class SaddleBags extends AbstractGear {
     }
 
     @Override
-    public void renderPart(float scale) {
-        dropAmount = model.getMetadata().getInterpolator().interpolate("dropAmount", dropAmount, 3);
+    public void renderPart(float scale, UUID interpolatorId) {
+        dropAmount = model.getMetadata().getInterpolator(interpolatorId).interpolate("dropAmount", dropAmount, 3);
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(0, dropAmount, 0);

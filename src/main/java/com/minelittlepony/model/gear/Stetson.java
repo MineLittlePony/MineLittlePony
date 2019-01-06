@@ -9,6 +9,8 @@ import com.minelittlepony.pony.data.PonyWearable;
 import com.minelittlepony.render.model.PlaneRenderer;
 import com.minelittlepony.render.model.PonyRenderer;
 
+import java.util.UUID;
+
 public class Stetson extends AbstractGear implements IStackable {
     private static final ResourceLocation TEXTURE = new ResourceLocation("minelittlepony", "textures/models/stetson.png");
 
@@ -41,7 +43,7 @@ public class Stetson extends AbstractGear implements IStackable {
     }
 
     @Override
-    public void renderPart(float scale) {
+    public void renderPart(float scale, UUID interpolatorId) {
         rimshot.render(scale);
     }
 

@@ -29,7 +29,7 @@ public class RenderSeaponyPlayer extends RenderPonyPlayer {
         mainModel = renderPony.setPonyModel(wet ? seapony : normalPony);
 
         float state = wet ? 100 : 0;
-        float interpolated = pony.getMetadata().getInterpolator().interpolate("seapony_state", state, 5);
+        float interpolated = pony.getMetadata().getInterpolator(player.getUniqueID()).interpolate("seapony_state", state, 5);
 
         if (!MathUtil.compareFloats(interpolated, state)) {
             double x = player.posX + (player.getEntityWorld().rand.nextFloat() * 2) - 1;

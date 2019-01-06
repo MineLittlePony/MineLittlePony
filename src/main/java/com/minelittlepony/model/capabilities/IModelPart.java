@@ -1,5 +1,7 @@
 package com.minelittlepony.model.capabilities;
 
+import java.util.UUID;
+
 public interface IModelPart {
     /**
      * Initialises all of the boxes in this modelpart.
@@ -15,14 +17,14 @@ public interface IModelPart {
      *
      * See {@link AbstractPonyMode.setRotationAndAngle} for an explanation of the various parameters.
      */
-    default void setRotationAndAngles(boolean rainboom, float move, float swing, float bodySwing, float ticks) {
+    default void setRotationAndAngles(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
 
     }
 
     /**
      * Renders this model component.
      */
-    void renderPart(float scale);
+    void renderPart(float scale, UUID interpolatorId);
 
     /**
      * Sets whether this part should be rendered.
