@@ -1,5 +1,7 @@
 package com.minelittlepony.render.skull;
 
+import net.minecraft.client.Minecraft;
+
 import com.minelittlepony.model.components.ModelPonyHead;
 import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.render.skull.PonySkullRenderer.ISkull;
@@ -20,6 +22,6 @@ public abstract class PonySkull implements ISkull {
 
     @Override
     public void render(float animateTicks, float rotation, float scale) {
-        ponyHead.render(null, animateTicks, 0, 0, rotation, 0, scale);
+        ponyHead.render(Minecraft.getMinecraft().player, animateTicks, 0, 0, rotation, 0, scale);
     }
 }
