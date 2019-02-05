@@ -5,6 +5,8 @@ public interface PonyModelConstants {
     float
         PI = (float)Math.PI,
 
+        BASE_MODEL_SCALE = 15/16F,
+
         BODY_CENTRE_X = 0,
         BODY_CENTRE_Y = 8,
         BODY_CENTRE_Z = 6,

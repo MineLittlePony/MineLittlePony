@@ -34,7 +34,7 @@ public class RenderPonyWitch extends RenderPonyMob<EntityWitch> {
     @Override
     public void preRenderCallback(EntityWitch entity, float ticks) {
         super.preRenderCallback(entity, ticks);
-        GlStateManager.scale(0.9375F, 0.9375F, 0.9375F);
+        GlStateManager.scale(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
     }
 
     @Override

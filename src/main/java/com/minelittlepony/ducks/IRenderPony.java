@@ -2,6 +2,7 @@ package com.minelittlepony.ducks;
 
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.ModelWrapper;
+import com.minelittlepony.model.PonyModelConstants;
 import com.minelittlepony.model.capabilities.IModel;
 import com.minelittlepony.pony.data.IPony;
 import com.minelittlepony.render.RenderPony;
@@ -13,7 +14,7 @@ import net.minecraft.util.ResourceLocation;
 /**
  * I Render Pony now, oky?
  */
-public interface IRenderPony<T extends EntityLivingBase> {
+public interface IRenderPony<T extends EntityLivingBase> extends PonyModelConstants {
 
     /**
      * Gets the wrapped pony model for this renderer.

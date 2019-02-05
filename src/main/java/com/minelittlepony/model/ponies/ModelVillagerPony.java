@@ -11,7 +11,8 @@ import com.minelittlepony.render.model.PlaneRenderer;
 
 public class ModelVillagerPony extends ModelMobPony {
 
-    public PlaneRenderer apron, trinket;
+    public PlaneRenderer apron;
+    public PlaneRenderer trinket;
 
     private int profession;
 
