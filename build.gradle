@@ -35,6 +35,8 @@ ext {
     }
 }
 
+version = "${project.minecraft_version}.${project.version}"
+
 if (project.release != 'RELEASE') {
     version += "-${project.release}"
 }
@@ -137,7 +139,7 @@ shadowJar {
     from(copyBGPones) {
         into "/assets/minelittlepony/textures/entity/pony"
     }
-    
+
     dependencies {
         exclude dependency('deobf.com.mumfrey:liteloader:')
         exclude dependency('deobf.org.ow2.asm:')
