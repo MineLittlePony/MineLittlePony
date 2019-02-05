@@ -3,46 +3,57 @@ package com.minelittlepony.render.ponies;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.util.render.ITextureSupplier;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
+/**
+ * Cached pool of villager textures.
+ */
 class VillagerProfessionTextureCache implements ITextureSupplier<Integer> {
 
-    private final ResourceLocation[] pool;
-    private final String path;
+    private final ITextureSupplier<String> formatter;
+
+    private final Function<Integer, String> keyMapper;
+
+    private final ResourceLocation fallback;
 
     private final Map<Integer, ResourceLocation> cache = new HashMap<>();
 
-    public VillagerProfessionTextureCache(String path, ResourceLocation... pool) {
-        this.path = path;
-        this.pool = pool;
+    /**
+     * Creates a new profession cache
+     *
+     * @param formatter Formatter used when creating new textures
+     * @param keyMapper Mapper to convert integer ids into a string value for format insertion
+     * @param fallback  The default if any generated textures fail to load. This is stored in place of failing textures.
+     */
+    public VillagerProfessionTextureCache(ITextureSupplier<String> formatter, Function<Integer, String> keyMapper, ResourceLocation fallback) {
+        this.formatter = formatter;
+        this.fallback = fallback;
+        this.keyMapper = keyMapper;
     }
 
     @Override
     public ResourceLocation supplyTexture(Integer profession) {
-        ResourceLocation texture = getVillagerTexture(profession);
-
-        try {
-            Minecraft.getMinecraft().getResourceManager().getResource(texture);
-        } catch (IOException e) {
-            return pool[pool.length - 1];
-        }
-
-        return texture;
-    }
-
-    private ResourceLocation getVillagerTexture(int profession) {
-        if (profession >= pool.length) {
-            return cache.computeIfAbsent(profession, this::getModProfessionResource);
-        }
-
-        return pool[profession];
+        return cache.computeIfAbsent(profession, this::getModProfessionResource);
     }
 
     private ResourceLocation getModProfessionResource(int professionId) {
-        return new ResourceLocation("minelittlepony", String.format(path, professionId));
+        ResourceLocation generated = formatter.supplyTexture(keyMapper.apply(professionId));
+
+        try {
+            Minecraft.getMinecraft().getResourceManager().getResource(generated);
+        } catch (IOException e) {
+            MineLittlePony.logger.error("Error loading villager texture `" + generated + "`.", e);
+
+            // if texture loading fails, use the fallback.
+            return fallback;
+        }
+
+        return generated;
     }
 }
