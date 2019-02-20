@@ -13,7 +13,7 @@ import net.minecraft.client.resources.I18n;
  * @author Sollace
  *
  */
-public class Checkbox extends GuiCheckbox implements IActionable, IGuiTooltipped<Checkbox> {
+public class Checkbox extends GuiCheckbox implements IGuiTooltipped<Checkbox> {
 
     private int tipX = 0;
     private int tipY = 0;
@@ -28,7 +28,6 @@ public class Checkbox extends GuiCheckbox implements IActionable, IGuiTooltipped
         checked = value;
     }
 
-    @Override
     public void perform() {
         checked = action.perform(!checked);
     }
@@ -51,5 +50,16 @@ public class Checkbox extends GuiCheckbox implements IActionable, IGuiTooltipped
         tipX = x;
         tipY = y;
         return this;
+    }
+
+    @Override
+    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+        if (super.mousePressed(mc, mouseX, mouseY)) {
+            perform();
+
+            return false;
+        }
+
+        return false;
     }
 }

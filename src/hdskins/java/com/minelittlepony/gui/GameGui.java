@@ -7,19 +7,11 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.SoundEvent;
 
 public abstract class GameGui extends GuiScreen {
-
-    @Override
-    protected void actionPerformed(GuiButton button) {
-        if (button instanceof IActionable) {
-            ((IActionable)button).perform();
-        }
-    }
 
     protected static String format(String string, Object... pars) {
         return string == null ? null : I18n.format(string, pars);

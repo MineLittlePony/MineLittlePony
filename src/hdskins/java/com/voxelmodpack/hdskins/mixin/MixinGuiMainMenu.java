@@ -1,10 +1,8 @@
 package com.voxelmodpack.hdskins.mixin;
 
 import com.minelittlepony.gui.IconicButton;
-import com.minelittlepony.gui.IActionable;
 import com.voxelmodpack.hdskins.HDSkinManager;
 
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.init.Items;
@@ -22,12 +20,5 @@ public class MixinGuiMainMenu extends GuiScreen {
         addButton(new IconicButton(width - 50, height - 50, sender -> {
             mc.displayGuiScreen(HDSkinManager.INSTANCE.createSkinsGui());
         }).setIcon(new ItemStack(Items.LEATHER_LEGGINGS), 0x3c5dcb));
-    }
-
-    @Inject(method = "actionPerformed(Lnet/minecraft/client/gui/GuiButton;)V", at = @At("RETURN"))
-    private void onActionPerformed(GuiButton button, CallbackInfo ci) {
-        if (button instanceof IActionable) {
-            ((IActionable)button).perform();
-        }
     }
 }

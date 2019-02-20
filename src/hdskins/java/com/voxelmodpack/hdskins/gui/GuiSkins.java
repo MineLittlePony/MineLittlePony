@@ -264,7 +264,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
     }
 
     @Override
-    protected void actionPerformed(GuiButton guiButton) {
+    protected void actionPerformed(GuiButton guiButton) throws IOException {
         if (canTakeEvents()) {
             super.actionPerformed(guiButton);
         }

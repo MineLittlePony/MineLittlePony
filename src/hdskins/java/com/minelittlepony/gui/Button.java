@@ -5,7 +5,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 
-public class Button extends GuiButton implements IActionable, IGuiTooltipped<Button> {
+public class Button extends GuiButton implements IGuiTooltipped<Button> {
 
     private int tipX = 0;
     private int tipY = 0;
@@ -14,13 +14,16 @@ public class Button extends GuiButton implements IActionable, IGuiTooltipped<But
 
     private List<String> tooltip = null;
 
+    public Button(int x, int y, String label, IGuiAction<? extends Button> callback) {
+        this(x, y, 200, 20, label, callback);
+    }
+
     @SuppressWarnings("unchecked")
     public Button(int x, int y, int width, int height, String label, IGuiAction<? extends Button> callback) {
         super(5000, x, y, width, height, GameGui.format(label));
         action = (IGuiAction<Button>)callback;
     }
 
-    @Override
     public void perform() {
         action.perform(this);
     }
@@ -54,5 +57,16 @@ public class Button extends GuiButton implements IActionable, IGuiTooltipped<But
         tipX = x;
         tipY = y;
         return this;
+    }
+
+    @Override
+    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+        if (super.mousePressed(mc, mouseX, mouseY)) {
+            perform();
+
+            return true;
+        }
+
+        return false;
     }
 }
