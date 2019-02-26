@@ -1,0 +1,50 @@
+#HD Skins de_DE.lang file
+
+hdskins.choose=Suche die datei aus
+hdskins.manager=Skin Verwalter
+hdskins.error.unreadable=Datei nicht lesbar
+hdskins.error.ext=Keine PNG Datei
+hdskins.error.open=Fehler beim öffnen der skin Datei
+hdskins.error.invalid=Das ist doch kein skin du scherzkeks
+hdskins.error.select=Bitte erst den skin auswählen
+hdskins.error.mojang=Mojang API Fehler
+hdskins.error.mojang.wait=Bitte warte %d minuten
+hdskins.error.noserver=Es ist kein gültiges Skin Server verfügbar
+hdskins.error.offline=- Server Offline -
+
+hdskins.open.title=Suche dir ein skin aus
+hdskins.save.title=Wo soll dieses gegen gespeichert werden
+hdskins.fetch=Rufe Skin ab...
+hdskins.failed=Hochladen des Skins fehlgeschlagen
+hdskins.request=Sende Anfrage zu Server bitte warten...
+hdskins.upload=Skin wird hochgeladen bitte warten...
+
+hdskins.local=Lokaler Skin
+hdskins.server=Server Skin
+
+hdskins.mode.steve=Steve Model
+hdskins.mode.alex=Alex Model
+
+hdskins.mode.skin=Spieler Texture
+hdskins.mode.cape=Cape Texture
+hdskins.mode.elytra=Elytra Texture
+
+hdskins.mode.stand=Stehen
+hdskins.mode.sleep=Schlafen
+hdskins.mode.ride=Reiten
+
+hdskins.options.chevy=>>
+hdskins.options.chevy.title=Skin Hochladen
+hdskins.options.download=<<
+hdskins.options.download.title=Skin Speichern
+
+hdskins.options.close=Zurück
+hdskins.options.clear=Entfernen
+hdskins.options.browse=Suchen
+
+hdskins.options.skindrops=Experimental Skin Drop
+hdskins.options.cache=Bereinige Temporären Skin speicher (cache)
+
+hdskins.warning.experimental=§6WARNUNG: diese Funktion ist §4experimental§6, Das heißt falls es passt nicht richtig funktioniert, oder kaputt geht bist du selber verantwortlich
+hdskins.warning.disabled.title=§c%s %s
+hdskins.warning.disabled.description=§4(DEAKTIVIERT)\n§7diese Funktion wird von deinem aktuellen Skin Server nicht unterstützt.\n§7Bitte suche dir einen anderen Server um Fortzufahren
