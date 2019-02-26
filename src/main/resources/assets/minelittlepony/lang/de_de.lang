@@ -1,0 +1,34 @@
+minelp.options.title=Mine Little Pony Einstelungen
+minelp.options.ponylevel=Pony Level
+minelp.options.ponylevel.ponies=Nur Ponies
+minelp.options.ponylevel.humans=Nur Menschen
+minelp.options.ponylevel.both=Beides
+minelp.options.options=Pony Einstellungen
+minelp.options.hd=Enable MineLP skin server
+minelp.options.sizes=Alle größen erlauben
+minelp.options.snuzzles=Zeige Schnauze auf Pony's
+minelp.options.showscale=Nutze Größe aus der Serie
+minelp.options.fpsmagic=Ponies nutzen Magie in eigener Perspective
+minelp.options.ponyskulls=Zeige mob Köpfe als Pony's
+minelp.options.frustrum=Aktiviere Frustum Überprüfung
+
+minelp.mobs.title=Mob Einstellungen
+minelp.mobs.villagers=Ponifizirte Villager
+minelp.mobs.zombies=Ponifizirte Zombies
+minelp.mobs.pigzombies=Ponifizirte Pigmen
+minelp.mobs.skeletons=Ponifizirte Skelette
+minelp.mobs.illagers=Ponifizirte Illager
+minelp.mobs.guardians=Ponifizirte Guardian
+minelp.mobs.endermen=Ponifizirte Endermänner
+
+minelp.mode.dry=Pony
+minelp.mode.wet=See Pony
+
+minelp.debug.reload_models.message=Pony texturen neu Laden...
+minelp.debug.scale=Gößenfaktor
+minelp.debug.scale.value=Größe: %s
+minelp.debug.scale.meg=Mega
+minelp.debug.scale.max=Doppelt
+minelp.debug.scale.mid=Normal
+minelp.debug.scale.sa=Genau anzeigen
+minelp.debug.scale.min=Miniscule
