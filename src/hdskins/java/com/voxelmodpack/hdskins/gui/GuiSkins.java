@@ -566,6 +566,8 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
 
         public FeatureSwitch(int x, int y, IGuiAction<? extends IconicButton> callback) {
             super(x, y, callback);
+
+            setLocked(true);
         }
 
         @Override
@@ -586,8 +588,8 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
         }
 
         public void setLocked(boolean lock) {
-            locked = lock;
-            enabled &= !lock;
+            locked = true;
+            enabled = false;
         }
     }
 }

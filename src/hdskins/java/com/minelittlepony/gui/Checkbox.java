@@ -26,6 +26,7 @@ public class Checkbox extends GuiCheckbox implements IGuiTooltipped<Checkbox> {
         super(0, x, y, I18n.format(displayString));
         action = callback;
         checked = value;
+        enabled = false;
     }
 
     public void perform() {

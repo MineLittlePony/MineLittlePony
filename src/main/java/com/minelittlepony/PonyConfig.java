@@ -8,7 +8,6 @@ import com.minelittlepony.settings.SensibleConfig;
 import com.mumfrey.liteloader.modconfig.ConfigStrategy;
 import com.mumfrey.liteloader.modconfig.Exposable;
 import com.mumfrey.liteloader.modconfig.ExposableOptions;
-import com.voxelmodpack.hdskins.HDSkinManager;
 
 /**
  * Storage container for MineLP client settings.
@@ -59,10 +58,7 @@ public class PonyConfig extends SensibleConfig implements Exposable {
      * Actually gets the pony level value. No option to ignore reality here.
      */
     public PonyLevel getPonyLevel() {
-        if (ponylevel == null) {
-            ponylevel = PonyLevel.PONIES;
-        }
-        return ponylevel;
+        return PonyLevel.PONIES;
     }
 
     /**
@@ -72,10 +68,10 @@ public class PonyConfig extends SensibleConfig implements Exposable {
      */
     public void setPonyLevel(PonyLevel ponylevel) {
         // only trigger reloads when the value actually changes
-        if (ponylevel != this.ponylevel) {
+        /*if (ponylevel != this.ponylevel) {
             this.ponylevel = ponylevel;
             HDSkinManager.INSTANCE.parseSkins();
-        }
+        }*/
     }
 
     public void setGlobalScaleFactor(float f) {

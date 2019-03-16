@@ -1,26 +1,26 @@
 # Mine Little Pony fr_FR.lang file
 # Provided by Dalfio (PinkishPie)
-minelp.options.title=Options Mine Little Pony 
-minelp.options.ponylevel=Niveau Poney
-minelp.options.ponylevel.ponies=Seuls Poneys
-minelp.options.ponylevel.humans=Seuls Humains
-minelp.options.ponylevel.both=Deux
+minelp.options.title=Options Mine Biggest Ducky 
+minelp.options.ponylevel=Niveau Canard
+minelp.options.ponylevel.ponies=Niveau Canard
+minelp.options.ponylevel.humans=Niveau Canard
+minelp.options.ponylevel.both=Niveau Canard
 minelp.options.options=Options Poney
-minelp.options.hd=Activer MineLP serveur de skin
-minelp.options.sizes=Autoriser tous les différentes tailles de poney
-minelp.options.snuzzles=Afficher museau sur les poneys
-minelp.options.showscale=Utiliser échelle fidéle á MLP
+minelp.options.hd=Activer MineBD serveur de skin
+minelp.options.sizes=Autoriser tous les différentes tailles de canard
+minelp.options.snuzzles=Afficher museau sur les canard
+minelp.options.showscale=Utiliser échelle fidéle á Disney
 minelp.options.fpsmagic=Ponies use magic in first-person
-minelp.options.ponyskulls=Render mob heads as ponies
+minelp.options.ponyskulls=Render mob heads as ducks
 
-minelp.mobs.title=Options de mobs
-minelp.mobs.villagers=Ponifier villageois
-minelp.mobs.zombies=Ponifier zombies
-minelp.mobs.pigzombies=Ponifier cochon-zombie
-minelp.mobs.skeletons=Ponifier squelettes
-minelp.mobs.illagers=Ponifier illagers
-minelp.mobs.guardians=Ponifier gardien
-minelp.mobs.endermen=Ponifier endermen
+minelp.mobs.title=Options de canarde
+minelp.mobs.villagers=Canardifier villageois
+minelp.mobs.zombies=Canardifier zombies
+minelp.mobs.pigzombies=Canardifier cochon-zombie
+minelp.mobs.skeletons=Canardifier squelettes
+minelp.mobs.illagers=Canardifier illagers
+minelp.mobs.guardians=Canardifier gardien
+minelp.mobs.endermen=Canardifier endermen
 
-minelp.mode.dry=Poney terrestre
-minelp.mode.wet=Poney de mer
+minelp.mode.dry=Canard terrestre
+minelp.mode.wet=Canard de mer

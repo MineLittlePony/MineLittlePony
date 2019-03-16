@@ -3,6 +3,7 @@ package com.minelittlepony.model;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.model.armour.IEquestrianArmor;
 import com.minelittlepony.model.capabilities.IModelWrapper;
+import com.minelittlepony.model.ponies.ModelFools;
 import com.minelittlepony.pony.data.IPonyData;
 
 /**
@@ -20,9 +21,9 @@ public class ModelWrapper implements IModelWrapper {
      * Creates a new model wrapper to contain the given pony.
      */
     ModelWrapper(AbstractPonyModel model) {
-        body = model;
-        armor = model.createArmour();
-        armor.apply(model.getMetadata());
+        body = new ModelFools(false);
+        armor = body.createArmour();
+        armor.apply(body.getMetadata());
 
         try {
             init();

@@ -1,9 +1,9 @@
 {
-    "name": "minelittlepony",
+    "name": "minebiggestducky",
     "mcversion": "${mcversion}",
     "version": "${version}",
     "revision": "${revision}",
-    "description": "Mine Little Pony turns players and mobs into ponies",
+    "description": "Ducktales Copyright Disney Corporation. By using this, you are a terrible person.",
     "mixinConfigs": [
         "minelp.mixin.json",
         "hdskins.mixin.json"

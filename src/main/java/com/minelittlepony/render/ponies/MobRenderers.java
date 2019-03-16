@@ -69,8 +69,13 @@ public enum MobRenderers implements Setting {
     };
 
     @Override
+    public boolean get() {
+        return true;
+    }
+
+    @Override
     public void set(boolean value) {
-        Setting.super.set(value);
+        value = true;
         apply(MineLittlePony.getInstance().getRenderManager(), Minecraft.getMinecraft().getRenderManager());
     }
 
@@ -78,9 +83,9 @@ public enum MobRenderers implements Setting {
         boolean state = get();
         register(state, pony, manager);
         if (state) {
-            MineLittlePony.logger.info(name() + " are now ponies.");
+            MineLittlePony.logger.info(name() + " are now ducks.");
         } else {
-            MineLittlePony.logger.info(name() + " are no longer ponies.");
+            MineLittlePony.logger.info(name() + " are no longer ducks.");
         }
     }
 

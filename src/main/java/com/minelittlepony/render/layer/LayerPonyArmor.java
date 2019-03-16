@@ -34,6 +34,8 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
 
     @Override
     public void doPonyRender(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
+        if (true) return;
+
         pony = getPonyRenderer().getModelWrapper();
 
         for (EntityEquipmentSlot i : EntityEquipmentSlot.values()) {
