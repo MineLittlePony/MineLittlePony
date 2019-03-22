@@ -15,6 +15,8 @@ import com.minelittlepony.render.model.PonyRenderer;
 import com.minelittlepony.util.math.MathUtil;
 import com.minelittlepony.util.render.AbstractBoxRenderer;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
@@ -38,11 +40,12 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
     public boolean isFlying;
     public boolean isElytraFlying;
     public boolean isSwimming;
+    public boolean isCrouching;
     public boolean isRidingInteractive;
     public boolean headGear;
 
     /**
-     * Associcated pony data.
+     * Associated pony data.
      */
     public IPonyData metadata = new PonyData();
 
@@ -90,6 +93,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
     public void updateLivingState(EntityLivingBase entity, IPony pony) {
         isChild = entity.isChild();
         isSneak = entity.isSneaking();
+        isCrouching = pony.isCrouching(entity);
         isSleeping = entity.isPlayerSleeping();
         isFlying = pony.isFlying(entity);
         isElytraFlying = entity.isElytraFlying();
@@ -265,6 +269,22 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
     @Override
     public ModelRenderer getHead() {
         return bipedHead;
+    }
+
+    @Nullable
+    @Override
+    public ModelRenderer getBody() {
+        return bipedBody;
+    }
+
+    @Override
+    public void setPitch(float pitch) {
+        motionPitch = pitch;
+    }
+
+    @Override
+    public float getPitch() {
+        return motionPitch;
     }
 
     /**
@@ -743,7 +763,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
 
     @Override
     public boolean isCrouching() {
-        return !rainboom && !isSwimming && isSneak && !isFlying;
+        return isCrouching;
     }
 
     @Override
@@ -788,7 +808,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
 
     @Override
     public PonySize getSize() {
-        return isChild ? PonySize.FOAL : metadata.getSize();
+        return isChild ? PonySize.FOAL : getMetadata().getSize();
     }
 
     @Override
@@ -927,6 +947,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         if (model instanceof AbstractPonyModel) {
             AbstractPonyModel pony = (AbstractPonyModel) model;
             isFlying = pony.isFlying;
+            isCrouching = pony.isCrouching;
             isElytraFlying = pony.isElytraFlying;
             isSwimming = pony.isSwimming;
             isSleeping = pony.isSleeping;

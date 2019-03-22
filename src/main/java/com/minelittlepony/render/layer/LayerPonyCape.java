@@ -33,7 +33,7 @@ public class LayerPonyCape extends AbstractPonyLayer<AbstractClientPlayer> {
 
             model.transform(BodyPart.BODY);
             translate(0, 0.24F, 0);
-            model.bipedBody.postRender(scale);
+            model.getBody().postRender(scale);
 
             double capeX = player.prevChasingPosX + (player.chasingPosX - player.prevChasingPosX) * scale - (player.prevPosX + (player.posX - player.prevPosX) * scale);
             double capeY = player.prevChasingPosY + (player.chasingPosY - player.prevChasingPosY) * scale - (player.prevPosY + (player.posY - player.prevPosY) * scale);

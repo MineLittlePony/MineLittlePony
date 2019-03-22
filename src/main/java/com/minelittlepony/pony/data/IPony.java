@@ -26,6 +26,26 @@ public interface IPony {
     }
 
     /**
+     * Returns true if this pony has wings and the will to use them.
+     */
+    default boolean canFly() {
+        return getMetadata().getRace().hasWings();
+    }
+
+    /**
+     * Checks the required conditions for whether the given entity can perform a sonic rainboom.
+     */
+    boolean isPerformingRainboom(EntityLivingBase entity);
+
+    /**
+     * Unlike sneaking, crouching is a more specific animation parameter that controls whether the player is visible
+     * nose to the ground, crouching the sand.
+     *
+     * You cannot crouch whilst flying or swimming.
+     */
+    boolean isCrouching(EntityLivingBase entity);
+
+    /**
      * Returns true if the provided entity is flying like a pegasus.
      * True if the entity is off the ground.
      * Creative flight counts only if the entity is <i>not</i> on the ground.
@@ -35,7 +55,7 @@ public interface IPony {
     boolean isFlying(EntityLivingBase entity);
 
     /**
-     * Returns true if the provided antity is actively wimming.
+     * Returns true if the provided entity is actively swimming.
      * That is, it should be fully submerged (isFullySubmerged returns true)
      * and is not standing on the (river) bed or riding a ladder or any other entity.
      */

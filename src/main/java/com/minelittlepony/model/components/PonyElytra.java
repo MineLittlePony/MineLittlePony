@@ -15,6 +15,9 @@ import static com.minelittlepony.model.PonyModelConstants.*;
  * Modified from ModelElytra.
  */
 public class PonyElytra extends ModelBase {
+
+    public boolean isSneaking;
+
     private PonyRenderer rightWing = new PonyRenderer(this, 22, 0);
     private PonyRenderer leftWing = new PonyRenderer(this, 22, 0);
 
@@ -55,13 +58,13 @@ public class PonyElytra extends ModelBase {
             float velY = 1;
 
             if (entity.motionY < 0) {
-                Vec3d motion = (new Vec3d(entity.motionX, entity.motionY, entity.motionZ)).normalize();
+                Vec3d motion = new Vec3d(entity.motionX, entity.motionY, entity.motionZ).normalize();
                 velY = 1 - (float) Math.pow(-motion.y, 1.5);
             }
 
             rotateX = velY * PI * (2 / 3F) + (1 - velY) * rotateX;
             rotateY = velY * (PI / 2) + (1 - velY) * rotateY;
-        } else if (entity.isSneaking()) {
+        } else if (isSneaking) {
             rotateX = PI * 1.175F;
             rotateY = PI / 2;
             rotateZ = PI / 4;

@@ -2,6 +2,8 @@ package com.minelittlepony.model.capabilities;
 
 import net.minecraft.client.model.ModelRenderer;
 
+import javax.annotation.Nullable;
+
 public interface ICapitated {
     /**
      * Gets the head of this capitated object.
@@ -9,7 +11,13 @@ public interface ICapitated {
     ModelRenderer getHead();
 
     /**
-     * Returns true if we're wearing any uconventional headgear (ie. a Pumpkin)
+     * Gets the main body
+     */
+    @Nullable
+    ModelRenderer getBody();
+
+    /**
+     * Returns true if we're wearing any unconventional headgear (ie. a Pumpkin)
      */
     boolean hasHeadGear();
 

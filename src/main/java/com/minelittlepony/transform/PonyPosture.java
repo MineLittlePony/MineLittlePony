@@ -1,6 +1,6 @@
 package com.minelittlepony.transform;
 
-import com.minelittlepony.model.AbstractPonyModel;
+import com.minelittlepony.model.capabilities.IModel;
 
 import net.minecraft.entity.EntityLivingBase;
 
@@ -14,5 +14,5 @@ public interface PonyPosture<T extends EntityLivingBase> {
         return true;
     }
 
-    void transform(AbstractPonyModel model, T entity, double motionX, double motionY, double motionZ, float yaw, float ticks);
+    void transform(IModel model, T entity, double motionX, double motionY, double motionZ, float yaw, float ticks);
 }

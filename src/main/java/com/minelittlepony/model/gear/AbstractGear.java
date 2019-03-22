@@ -28,7 +28,7 @@ public abstract class AbstractGear extends ModelBase implements IGear, PonyModel
             case NECK: return model.neck;
             case TAIL:
             case LEGS:
-            case BODY: return model.bipedBody;
+            case BODY: return model.getBody();
         }
     }
 

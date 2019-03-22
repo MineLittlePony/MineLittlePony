@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.capabilities.IModel;
 import com.minelittlepony.model.gear.ChristmasHat;
 import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.model.gear.IStackable;
@@ -72,7 +73,7 @@ public class LayerGear<T extends EntityLivingBase> extends AbstractPonyLayer<T> 
         }
     }
 
-    private void renderGear(AbstractPonyModel model, T entity, IGear gear, float move, float swing, float scale, float ticks) {
+    private void renderGear(IModel model, T entity, IGear gear, float move, float swing, float scale, float ticks) {
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
 
         ResourceLocation texture = gear.getTexture(entity);

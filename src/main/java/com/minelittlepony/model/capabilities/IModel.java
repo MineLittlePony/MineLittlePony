@@ -20,6 +20,10 @@ public interface IModel extends ICapitated {
      */
     void transform(BodyPart part);
 
+    void setPitch(float pitch);
+
+    float getPitch();
+
     /**
      * Gets the active scaling profile used to lay out this model's parts.
      */

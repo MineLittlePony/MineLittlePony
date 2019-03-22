@@ -112,6 +112,23 @@ public class Pony extends Touchable<Pony> implements IPony {
     }
 
     @Override
+    public boolean isPerformingRainboom(EntityLivingBase entity) {
+        double zMotion = Math.sqrt(entity.motionX * entity.motionX + entity.motionZ * entity.motionZ);
+
+        return (isFlying(entity) && canFly()) || entity.isElytraFlying() & zMotion > 0.4F;
+    }
+
+    @Override
+    public boolean isCrouching(EntityLivingBase entity) {
+
+        boolean isSneak = entity.isSneaking();
+        boolean isFlying = isFlying(entity);
+        boolean isSwimming = isSwimming(entity);
+
+        return !isPerformingRainboom(entity) && !isSwimming && isSneak && !isFlying;
+    }
+
+    @Override
     public boolean isFlying(EntityLivingBase entity) {
         return !(entity.onGround
                 || entity.isRiding()

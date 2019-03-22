@@ -5,6 +5,8 @@ import com.minelittlepony.pony.data.IPonyData;
 import com.minelittlepony.pony.data.PonyData;
 import com.minelittlepony.render.model.PonyRenderer;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.client.model.ModelHumanoidHead;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -39,6 +41,12 @@ public class ModelPonyHead extends ModelHumanoidHead implements ICapitated {
         return skeletonHead;
     }
 
+    @Nullable
+    @Override
+    public ModelRenderer getBody() {
+        return null;
+    }
+
     @Override
     public boolean hasHeadGear() {
         return false;
@@ -58,5 +66,4 @@ public class ModelPonyHead extends ModelHumanoidHead implements ICapitated {
             horn.renderPart(scale, entity.getUniqueID());
         }
     }
-
 }

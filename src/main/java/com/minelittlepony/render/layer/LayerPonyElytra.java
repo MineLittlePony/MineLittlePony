@@ -20,7 +20,8 @@ import javax.annotation.Nonnull;
 public class LayerPonyElytra<T extends EntityLivingBase> extends AbstractPonyLayer<T> {
 
     private static final ResourceLocation TEXTURE_ELYTRA = new ResourceLocation("textures/entity/elytra.png");
-    private PonyElytra modelElytra = new PonyElytra();
+
+    private final PonyElytra modelElytra = new PonyElytra();
 
     public LayerPonyElytra(RenderLivingBase<T> rp) {
         super(rp);
@@ -38,11 +39,17 @@ public class LayerPonyElytra<T extends EntityLivingBase> extends AbstractPonyLay
             GlStateManager.pushMatrix();
             preRenderCallback();
 
-            getElytraModel().setRotationAngles(move, swing, ticks, yaw, head, scale, entity);
-            getElytraModel().render(entity, move, swing, ticks, yaw, head, scale);
+            ModelBase elytra = getElytraModel();
+
+            if (elytra instanceof PonyElytra) {
+                ((PonyElytra)elytra).isSneaking = getPonyRenderer().getEntityPony(entity).isCrouching(entity);
+            }
+
+            elytra.setRotationAngles(move, swing, ticks, yaw, head, scale, entity);
+            elytra.render(entity, move, swing, ticks, yaw, head, scale);
 
             if (itemstack.isItemEnchanted()) {
-                LayerArmorBase.renderEnchantedGlint(getRenderer(), entity, getElytraModel(), move, swing, partialTicks, ticks, yaw, head, scale);
+                LayerArmorBase.renderEnchantedGlint(getRenderer(), entity, elytra, move, swing, partialTicks, ticks, yaw, head, scale);
             }
 
             GlStateManager.popMatrix();
