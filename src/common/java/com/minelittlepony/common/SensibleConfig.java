@@ -1,6 +1,6 @@
 package com.minelittlepony.common;
 
-import com.minelittlepony.common.gui.IGuiCallback;
+import com.minelittlepony.common.client.gui.IGuiCallback;
 
 /**
  * A sensible config container that actually lets us programmatically index values by a key.

@@ -5,13 +5,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -25,6 +25,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class SkinResourceManager implements IResourceManagerReloadListener {
+
+    private static final Logger logger = LogManager.getLogger();
 
     private ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -55,7 +57,7 @@ public class SkinResourceManager implements IResourceManagerReloadListener {
                             }
                         }
                     } catch (JsonParseException je) {
-                        LiteLoaderLogger.warning(je, "Invalid skins.json in %s", res.getResourcePackName());
+                        logger.warn("Invalid skins.json in " + res.getResourcePackName(), je);
                     }
                 }
             } catch (IOException e) {

@@ -1,13 +1,13 @@
 package com.minelittlepony.hdskins.gui;
 
 import com.google.common.base.Splitter;
-import com.minelittlepony.common.gui.Button;
-import com.minelittlepony.common.gui.GameGui;
-import com.minelittlepony.common.gui.IGuiAction;
-import com.minelittlepony.common.gui.IconicButton;
-import com.minelittlepony.common.gui.IconicToggle;
-import com.minelittlepony.common.gui.Label;
-import com.minelittlepony.common.gui.Style;
+import com.minelittlepony.common.client.gui.Button;
+import com.minelittlepony.common.client.gui.GameGui;
+import com.minelittlepony.common.client.gui.IGuiAction;
+import com.minelittlepony.common.client.gui.IconicButton;
+import com.minelittlepony.common.client.gui.IconicToggle;
+import com.minelittlepony.common.client.gui.Label;
+import com.minelittlepony.common.client.gui.Style;
 import com.minelittlepony.hdskins.HDSkinManager;
 import com.minelittlepony.hdskins.SkinChooser;
 import com.minelittlepony.hdskins.SkinUploader;

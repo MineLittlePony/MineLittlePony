@@ -2,23 +2,31 @@ package com.minelittlepony.client;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.gui.GuiPonySettings;
+import com.minelittlepony.common.client.gui.GuiLiteHost;
 import com.minelittlepony.settings.PonyConfig;
 import com.mumfrey.liteloader.Configurable;
 import com.mumfrey.liteloader.InitCompleteListener;
 import com.mumfrey.liteloader.Tickable;
+import com.mumfrey.liteloader.client.overlays.IMinecraft;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.modconfig.ConfigPanel;
 import com.mumfrey.liteloader.modconfig.ConfigStrategy;
 import com.mumfrey.liteloader.modconfig.Exposable;
 import com.mumfrey.liteloader.modconfig.ExposableOptions;
+import com.mumfrey.liteloader.util.ModUtilities;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Timer;
 
 import java.io.File;
 
-public class LiteModMineLittlePony implements InitCompleteListener, Tickable, Configurable {
+public class LiteModMineLittlePony implements IModUtilities, InitCompleteListener, Tickable, Configurable {
 
-    private final MineLPClient mlp = new MineLPClient();
+    private final MineLPClient mlp = new MineLPClient(this);
 
     @Override
     public String getName() {
@@ -56,7 +64,33 @@ public class LiteModMineLittlePony implements InitCompleteListener, Tickable, Co
 
     @Override
     public Class<? extends ConfigPanel> getConfigPanelClass() {
-        return GuiPonySettings.class;
+        return Panel.class;
+    }
+
+    @Override
+    public <T extends TileEntity> void addRenderer(Class<T> type, TileEntitySpecialRenderer<T> renderer) {
+        ModUtilities.addRenderer(type, renderer);
+    }
+
+    @Override
+    public <T extends Entity> void addRenderer(Class<T> type, Render<T> renderer) {
+        ModUtilities.addRenderer(type, renderer);
+    }
+
+    @Override
+    public boolean hasFml() {
+        return ModUtilities.fmlIsPresent();
+    }
+
+    @Override
+    public Timer getGameTimer() {
+        return ((IMinecraft)Minecraft.getMinecraft()).getTimer();
+    }
+
+    public static class Panel extends GuiLiteHost {
+        public Panel() {
+            super(new GuiPonySettings());
+        }
     }
 
     @ExposableOptions(filename = "minelittlepony", strategy = ConfigStrategy.Unversioned)

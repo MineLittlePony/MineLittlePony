@@ -1,11 +1,11 @@
 package com.minelittlepony.client.render.tileentities.skull;
 
 import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.client.MineLPClient;
 import com.minelittlepony.client.ducks.IRenderItem;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.settings.PonyConfig;
 import com.mojang.authlib.GameProfile;
-import com.mumfrey.liteloader.util.ModUtilities;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
 import net.minecraft.tileentity.TileEntitySkull;
@@ -51,7 +51,7 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
         if (MineLittlePony.getInstance().getConfig().ponyskulls) {
             if (!(instance instanceof PonySkullRenderer)) {
                 backup = instance;
-                ModUtilities.addRenderer(TileEntitySkull.class, ponyInstance);
+                MineLPClient.getInstance().getModUtilities().addRenderer(TileEntitySkull.class, ponyInstance);
                 instance = ponyInstance;
             }
         } else {
@@ -60,7 +60,7 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
                 if (backup == null) {
                     backup = new TileEntitySkullRenderer();
                 }
-                ModUtilities.addRenderer(TileEntitySkull.class, backup);
+                MineLPClient.getInstance().getModUtilities().addRenderer(TileEntitySkull.class, backup);
                 instance = backup;
             }
         }

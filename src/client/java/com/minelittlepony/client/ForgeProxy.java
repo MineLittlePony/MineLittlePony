@@ -1,6 +1,5 @@
 package com.minelittlepony.client;
 
-import com.mumfrey.liteloader.util.ModUtilities;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -16,11 +15,6 @@ import javax.annotation.Nullable;
 public class ForgeProxy {
 
     /**
-     * True if forge is present.
-     */
-    private static boolean forgeLoaded = ModUtilities.fmlIsPresent();
-
-    /**
      * Gets the mod armour texture for an associated item and slot.
      *
      * @param entity    The entity to get armour for.
@@ -31,7 +25,7 @@ public class ForgeProxy {
      * @return
      */
     public static String getArmorTexture(Entity entity, ItemStack item, String def, EntityEquipmentSlot slot, @Nullable String type) {
-        if (forgeLoaded)
+        if (MineLPClient.getInstance().getModUtilities().hasFml())
             return ForgeHooksClient.getArmorTexture(entity, item, def, slot, type);
         return def;
     }
@@ -45,8 +39,9 @@ public class ForgeProxy {
      * @param def       Default return value if no mods present
      */
     public static ModelBiped getArmorModel(EntityLivingBase entity, ItemStack item, EntityEquipmentSlot slot, ModelBiped def) {
-        if (forgeLoaded)
+        if (MineLPClient.getInstance().getModUtilities().hasFml()) {
             return ForgeHooksClient.getArmorModel(entity, item, slot, def);
+        }
         return def;
     }
 }

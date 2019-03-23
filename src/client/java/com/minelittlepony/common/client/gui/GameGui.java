@@ -1,4 +1,4 @@
-package com.minelittlepony.common.gui;
+package com.minelittlepony.common.client.gui;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -13,7 +13,7 @@ import net.minecraft.util.SoundEvent;
 
 public abstract class GameGui extends GuiScreen {
 
-    protected static String format(String string, Object... pars) {
+    public static String format(String string, Object... pars) {
         return string == null ? null : I18n.format(string, pars);
     }
 
@@ -21,7 +21,7 @@ public abstract class GameGui extends GuiScreen {
      * Formats a translation string and returns it in a list wrapped to a given width.
      * This can be safely used in initGui, where the fontRenderer is often still null.
      */
-    protected List<String> formatMultiLine(String string, int width, Object...pars) {
+    public List<String> formatMultiLine(String string, int width, Object...pars) {
         FontRenderer fr = fontRenderer;
 
         if (fr == null) {

@@ -1,13 +1,12 @@
-package com.minelittlepony.hdskins;
+package com.minelittlepony.hdskins.litemod;
 
 import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
-import com.minelittlepony.hdskins.gui.EntityPlayerModel;
+import com.minelittlepony.common.client.gui.GuiLiteHost;
+import com.minelittlepony.hdskins.HDSkinManager;
+import com.minelittlepony.hdskins.HDSkins;
 import com.minelittlepony.hdskins.gui.HDSkinsConfigPanel;
-import com.minelittlepony.hdskins.gui.RenderPlayerModel;
 import com.minelittlepony.hdskins.server.SkinServer;
 import com.minelittlepony.hdskins.server.SkinServerSerializer;
-import com.minelittlepony.hdskins.upload.GLWindow;
 import com.mumfrey.liteloader.Configurable;
 import com.mumfrey.liteloader.InitCompleteListener;
 import com.mumfrey.liteloader.ViewportListener;
@@ -20,44 +19,28 @@ import com.mumfrey.liteloader.util.ModUtilities;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.Entity;
 
 import java.io.File;
-import java.util.List;
+import java.util.function.Function;
 
 @ExposableOptions(strategy = ConfigStrategy.Unversioned, filename = "hdskins")
-public class LiteModHDSkins implements InitCompleteListener, ViewportListener, Configurable, AdvancedExposable {
-
-    private static LiteModHDSkins instance;
-
-    public static LiteModHDSkins instance() {
-        return instance;
-    }
-
-    @Expose
-    public List<SkinServer> skin_servers = SkinServer.defaultServers;
-
-    @Expose
-    public boolean experimentalSkinDrop = false;
-
-    @Expose
-    public String lastChosenFile = "";
-
-    public LiteModHDSkins() {
-        instance = this;
-    }
+public class LiteModHDSkins extends HDSkins implements InitCompleteListener, ViewportListener, Configurable, AdvancedExposable {
 
     @Override
     public String getName() {
-        return "HD Skins";
+        return HDSkins.MOD_NAME;
     }
 
     @Override
     public String getVersion() {
-        return "4.0.0";
+        return HDSkins.VERSION;
     }
 
-    public void writeConfig() {
+    @Override
+    public void saveConfig() {
         LiteLoader.getInstance().writeConfig(this);
     }
 
@@ -66,9 +49,7 @@ public class LiteModHDSkins implements InitCompleteListener, ViewportListener, C
 
         // register config
         LiteLoader.getInstance().registerExposable(this, null);
-
-        IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
-        irrm.registerReloadListener(HDSkinManager.INSTANCE);
+        super.init();
     }
 
     @Override
@@ -88,19 +69,12 @@ public class LiteModHDSkins implements InitCompleteListener, ViewportListener, C
 
     @Override
     public Class<? extends ConfigPanel> getConfigPanelClass() {
-        return HDSkinsConfigPanel.class;
+        return Panel.class;
     }
 
     @Override
     public void onInitCompleted(Minecraft minecraft, LiteLoader loader) {
-        ModUtilities.addRenderer(EntityPlayerModel.class, new RenderPlayerModel<>(minecraft.getRenderManager()));
-
-        // register skin servers.
-        skin_servers.forEach(HDSkinManager.INSTANCE::addSkinServer);
-
-        if (experimentalSkinDrop) {
-            GLWindow.create();
-        }
+        initComplete();
     }
 
     @Override
@@ -110,6 +84,22 @@ public class LiteModHDSkins implements InitCompleteListener, ViewportListener, C
 
     @Override
     public void onFullScreenToggled(boolean fullScreen) {
-        GLWindow.current().refresh(fullScreen);
+        super.onToggledFullScreen(fullScreen);
+    }
+
+    @Override
+    protected <T extends Entity> void addRenderer(Class<T> type, Function<RenderManager, Render<T>> renderer) {
+        ModUtilities.addRenderer(type, renderer.apply(Minecraft.getMinecraft().getRenderManager()));
+    }
+
+    @Override
+    public File getAssetsDirectory() {
+        return LiteLoader.getAssetsDirectory();
+    }
+
+    public static class Panel extends GuiLiteHost {
+        public Panel() {
+            super(new HDSkinsConfigPanel());
+        }
     }
 }

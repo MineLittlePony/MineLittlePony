@@ -12,7 +12,6 @@ import com.minelittlepony.client.render.entities.MobRenderers;
 import com.minelittlepony.client.render.entities.player.RenderPonyPlayer;
 import com.minelittlepony.hdskins.entity.EntityPonyModel;
 import com.minelittlepony.settings.PonyConfig;
-import com.mumfrey.liteloader.util.ModUtilities;
 
 import javax.annotation.Nullable;
 
@@ -48,7 +47,7 @@ public class PonyRenderManager {
      */
     public void initialisePlayerRenderers(RenderManager manager) {
         // Preview on the select skin gui
-        ModUtilities.addRenderer(EntityPonyModel.class, new RenderPonyModel(manager));
+        MineLPClient.getInstance().getModUtilities().addRenderer(EntityPonyModel.class, new RenderPonyModel(manager));
 
         PlayerModels[] models = PlayerModels.values();
 
@@ -93,10 +92,10 @@ public class PonyRenderManager {
             if (!renderMap.containsKey(type)) {
                 renderMap.put(type, manager.getEntityClassRenderObject(type));
             }
-            ModUtilities.addRenderer((Class<T>)type, renderer);
+            MineLPClient.getInstance().getModUtilities().addRenderer((Class<T>)type, renderer);
         } else {
             if (renderMap.containsKey(type)) {
-                ModUtilities.addRenderer(type, (Render<V>)renderMap.get(type));
+                MineLPClient.getInstance().getModUtilities().addRenderer(type, (Render<V>)renderMap.get(type));
             }
         }
     }

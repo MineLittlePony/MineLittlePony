@@ -1,25 +1,25 @@
-package com.minelittlepony.common.gui;
-
-import java.io.IOException;
-
-import com.mumfrey.liteloader.gl.GLClippingPlanes;
-import com.mumfrey.liteloader.modconfig.ConfigPanel;
-import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
+package com.minelittlepony.common.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 
 import org.lwjgl.opengl.GL11;
 
+import com.mumfrey.liteloader.gl.GLClippingPlanes;
+import com.mumfrey.liteloader.modconfig.ConfigPanel;
+import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
 
-/**
- * A GuiScreen that doubles as a liteloader panel. What is this madness!?
- */
-public abstract class SettingsPanel extends GameGui implements ConfigPanel {
+import java.io.IOException;
+
+public class GuiLiteHost extends GuiHost implements ConfigPanel {
 
     private boolean isInPanel = false;
 
     private int contentHeight;
+
+    public GuiLiteHost(IGuiGuest guest) {
+        super(guest);
+    }
 
     @Override
     public String getPanelTitle() {
@@ -32,7 +32,7 @@ public abstract class SettingsPanel extends GameGui implements ConfigPanel {
     }
 
     @Override
-    protected <T extends GuiButton> T addButton(T button) {
+    public <T extends GuiButton> T addButton(T button) {
         if (button.y > contentHeight) {
             contentHeight = button.y;
         }
@@ -113,9 +113,8 @@ public abstract class SettingsPanel extends GameGui implements ConfigPanel {
         }
     }
 
-    protected boolean mustScroll() {
+    @Override
+    public boolean mustScroll() {
         return isInPanel;
     }
-
-    protected abstract String getTitle();
 }

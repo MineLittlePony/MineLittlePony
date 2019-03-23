@@ -7,6 +7,7 @@ import com.minelittlepony.client.pony.PonyData;
 import com.minelittlepony.client.pony.PonyDataSerialiser;
 import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
+import com.minelittlepony.common.client.gui.GuiHost;
 import com.minelittlepony.hdskins.HDSkinManager;
 import com.minelittlepony.hdskins.server.LegacySkinServer;
 import com.minelittlepony.hdskins.server.SkinServer;
@@ -42,7 +43,17 @@ public class MineLPClient extends MineLittlePony {
     private PonyConfig config;
     private PonyManager ponyManager;
 
+    private final IModUtilities utilities;
+
     private final PonyRenderManager renderManager = PonyRenderManager.getInstance();
+
+    public static MineLPClient getInstance() {
+        return (MineLPClient)MineLittlePony.getInstance();
+    }
+
+    public MineLPClient(IModUtilities utils) {
+        utilities = utils;
+    }
 
     void init(PonyConfig newConfig) {
         config = newConfig;
@@ -83,7 +94,7 @@ public class MineLPClient extends MineLittlePony {
     void onTick(Minecraft minecraft, boolean inGame) {
         if (inGame && minecraft.currentScreen == null) {
             if (SETTINGS_GUI.isPressed()) {
-                minecraft.displayGuiScreen(new GuiPonySettings());
+                minecraft.displayGuiScreen(new GuiHost(new GuiPonySettings()));
             } else {
 
                 if ((Minecraft.getSystemTime() % 10) == 0) {
@@ -125,5 +136,9 @@ public class MineLPClient extends MineLittlePony {
     @Override
     public PonyConfig getConfig() {
         return config;
+    }
+
+    public IModUtilities getModUtilities() {
+        return utilities;
     }
 }

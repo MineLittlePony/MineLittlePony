@@ -1,6 +1,6 @@
 package com.minelittlepony.hdskins.mixin;
 
-import com.minelittlepony.common.gui.IconicButton;
+import com.minelittlepony.common.client.gui.IconicButton;
 import com.minelittlepony.hdskins.HDSkinManager;
 
 import net.minecraft.client.gui.GuiMainMenu;

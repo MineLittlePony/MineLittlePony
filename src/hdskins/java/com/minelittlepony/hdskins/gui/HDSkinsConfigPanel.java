@@ -1,19 +1,20 @@
 package com.minelittlepony.hdskins.gui;
 
-import com.minelittlepony.common.gui.Checkbox;
-import com.minelittlepony.common.gui.SettingsPanel;
-import com.minelittlepony.hdskins.LiteModHDSkins;
+import com.minelittlepony.common.client.gui.Checkbox;
+import com.minelittlepony.common.client.gui.GuiHost;
+import com.minelittlepony.common.client.gui.IGuiGuest;
+import com.minelittlepony.hdskins.HDSkins;
 import com.minelittlepony.hdskins.upload.GLWindow;
 
-public class HDSkinsConfigPanel extends SettingsPanel {
+public class HDSkinsConfigPanel implements IGuiGuest {
     @Override
-    public void initGui() {
-        final LiteModHDSkins mod = LiteModHDSkins.instance();
+    public void initGui(GuiHost host) {
+        final HDSkins mod = HDSkins.getInstance();
 
-        addButton(new Checkbox(40, 40, "hdskins.options.skindrops", mod.experimentalSkinDrop, checked -> {
+        host.addButton(new Checkbox(40, 40, "hdskins.options.skindrops", mod.experimentalSkinDrop, checked -> {
             mod.experimentalSkinDrop = checked;
 
-            mod.writeConfig();
+            mod.saveConfig();
 
             if (checked) {
                 GLWindow.create();
@@ -22,11 +23,11 @@ public class HDSkinsConfigPanel extends SettingsPanel {
             }
 
             return checked;
-        })).setTooltip(formatMultiLine("hdskins.warning.experimental", 250));
+        })).setTooltip(host.formatMultiLine("hdskins.warning.experimental", 250));
     }
 
     @Override
-    protected String getTitle() {
+    public String getTitle() {
         return "HD Skins Settings";
     }
 }

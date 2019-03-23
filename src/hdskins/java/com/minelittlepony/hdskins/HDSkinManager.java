@@ -30,8 +30,6 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
-import com.mumfrey.liteloader.core.LiteLoader;
-import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -194,7 +192,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
             // schedule texture loading on the main thread.
             TextureLoader.loadTexture(resource, new ThreadDownloadImageData(
-                    new File(LiteLoader.getAssetsDirectory(), "hd/" + skinDir + texture.getHash().substring(0, 2) + "/" + texture.getHash()),
+                    new File(HDSkins.getInstance().getAssetsDirectory(), "hd/" + skinDir + texture.getHash().substring(0, 2) + "/" + texture.getHash()),
                     texture.getUrl(),
                     DefaultPlayerSkin.getDefaultSkinLegacy(),
                     new ImageBufferDownloadHD(type, () -> {
@@ -243,9 +241,9 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     public void clearSkinCache() {
-        LiteLoaderLogger.info("Clearing local player skin cache");
+        logger.info("Clearing local player skin cache");
 
-        FileUtils.deleteQuietly(new File(LiteLoader.getAssetsDirectory(), "hd"));
+        FileUtils.deleteQuietly(new File(HDSkins.getInstance().getAssetsDirectory(), "hd"));
 
         skins.invalidateAll();
         parseSkins();

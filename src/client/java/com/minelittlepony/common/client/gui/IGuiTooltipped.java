@@ -1,4 +1,4 @@
-package com.minelittlepony.common.gui;
+package com.minelittlepony.common.client.gui;
 
 import net.minecraft.client.Minecraft;
 

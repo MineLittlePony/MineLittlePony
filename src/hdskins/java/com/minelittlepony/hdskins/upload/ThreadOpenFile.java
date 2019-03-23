@@ -9,7 +9,7 @@ import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.minelittlepony.hdskins.LiteModHDSkins;
+import com.minelittlepony.hdskins.HDSkins;
 
 /**
  * Base class for "open file" dialog threads
@@ -39,7 +39,7 @@ public abstract class ThreadOpenFile extends Thread implements IFileDialog {
         JFileChooser fileDialog = new JFileChooser();
         fileDialog.setDialogTitle(dialogTitle);
 
-        String last = LiteModHDSkins.instance().lastChosenFile;
+        String last = HDSkins.getInstance().lastChosenFile;
         if (!StringUtils.isBlank(last)) {
             fileDialog.setSelectedFile(new File(last));
         }
@@ -50,8 +50,8 @@ public abstract class ThreadOpenFile extends Thread implements IFileDialog {
         File f = fileDialog.getSelectedFile();
 
         if (f != null) {
-            LiteModHDSkins.instance().lastChosenFile = f.getAbsolutePath();
-            LiteModHDSkins.instance().writeConfig();
+            HDSkins.getInstance().lastChosenFile = f.getAbsolutePath();
+            HDSkins.getInstance().saveConfig();
 
             if (!f.exists() && f.getName().indexOf('.') == -1) {
                 f = appendMissingExtension(f);
