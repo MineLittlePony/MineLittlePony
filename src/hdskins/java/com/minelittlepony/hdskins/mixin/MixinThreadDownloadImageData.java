@@ -1,4 +1,4 @@
-package com.minelittlepony.client.mixin;
+package com.minelittlepony.hdskins.mixin;
 
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import org.spongepowered.asm.mixin.Mixin;

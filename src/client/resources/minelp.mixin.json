@@ -9,7 +9,6 @@
         "MixinGlStateManager",
         "MixinItemRenderer",
         "MixinRenderItem",
-        "MixinRenderManager",
-        "MixinThreadDownloadImageData"
+        "MixinRenderManager"
     ]
 }
