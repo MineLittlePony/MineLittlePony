@@ -1,6 +1,7 @@
 package com.minelittlepony.render;
 
 import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.PonyRenderManager;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.ModelWrapper;
@@ -40,7 +41,7 @@ public class RenderPony<T extends EntityLivingBase> {
     }
 
     public ICamera getFrustrum(T entity, ICamera vanilla) {
-        if (entity.isPlayerSleeping() || !MineLittlePony.getConfig().frustrum) {
+        if (entity.isPlayerSleeping() || !MineLittlePony.getInstance().getConfig().frustrum) {
             return vanilla;
         }
         return frustrum.withCamera(entity, vanilla);
@@ -74,7 +75,7 @@ public class RenderPony<T extends EntityLivingBase> {
             Entity ridingEntity = entity.getRidingEntity();
 
             if (ridingEntity instanceof EntityLivingBase) {
-                IRenderPony<EntityLivingBase> renderer = MineLittlePony.getInstance().getRenderManager().getPonyRenderer((EntityLivingBase)ridingEntity);
+                IRenderPony<EntityLivingBase> renderer = PonyRenderManager.getInstance().getPonyRenderer((EntityLivingBase)ridingEntity);
 
                 if (renderer != null) {
                     // negate vanilla translations so the rider begins at the ridees feet.

@@ -2,6 +2,7 @@ package com.minelittlepony.pony.data;
 
 import com.google.common.base.MoreObjects;
 import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.PonyRenderManager;
 import com.minelittlepony.ducks.IRenderPony;
 import com.minelittlepony.util.chron.Touchable;
 import com.voxelmodpack.hdskins.resources.texture.DynamicTextureImage;
@@ -190,14 +191,14 @@ public class Pony extends Touchable<Pony> implements IPony {
 
     @Override
     public boolean isRidingInteractive(EntityLivingBase entity) {
-        return MineLittlePony.getInstance().getRenderManager().getPonyRenderer(entity.getRidingEntity()) != null;
+        return PonyRenderManager.getInstance().getPonyRenderer(entity.getRidingEntity()) != null;
     }
 
     @Override
     public IPony getMountedPony(EntityLivingBase entity) {
         Entity mount = entity.getRidingEntity();
 
-        IRenderPony<EntityLivingBase> render = MineLittlePony.getInstance().getRenderManager().getPonyRenderer(mount);
+        IRenderPony<EntityLivingBase> render = PonyRenderManager.getInstance().getPonyRenderer(mount);
 
         return render == null ? null : render.getEntityPony((EntityLivingBase)mount);
     }

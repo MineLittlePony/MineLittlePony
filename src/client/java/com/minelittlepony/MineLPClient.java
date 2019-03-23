@@ -21,19 +21,12 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
 /**
  * Static MineLittlePony singleton class. Everything's controlled from up here.
  */
-public class MineLittlePony {
-
-    public static final Logger logger = LogManager.getLogger("MineLittlePony");
-
-    public static final String MOD_NAME = "Mine Little Pony";
-    public static final String MOD_VERSION = "@VERSION@";
+public class MineLPClient extends MineLittlePony {
 
     private static final String MINELP_VALHALLA_SERVER = "http://skins.minelittlepony-mod.com";
     private static final String MINELP_LEGACY_SERVER = "http://minelpskins.voxelmodpack.com";
@@ -41,15 +34,13 @@ public class MineLittlePony {
 
     static final KeyBinding SETTINGS_GUI = new KeyBinding("Settings", Keyboard.KEY_F9, "Mine Little Pony");
 
-    private static final MineLittlePony instance = new MineLittlePony();
-
     private static int modelUpdateCounter = 0;
     private static boolean reloadingModels = false;
 
     private PonyConfig config;
     private PonyManager ponyManager;
 
-    private final PonyRenderManager renderManager = new PonyRenderManager();
+    private final PonyRenderManager renderManager = PonyRenderManager.getInstance();
 
     void init(PonyConfig newConfig) {
         config = newConfig;
@@ -82,6 +73,7 @@ public class MineLittlePony {
         manager.setSkinsGui(GuiSkinsMineLP::new);
 
         RenderManager rm = minecraft.getRenderManager();
+
         renderManager.initialisePlayerRenderers(rm);
         renderManager.initializeMobRenderers(rm, config);
     }
@@ -115,36 +107,21 @@ public class MineLittlePony {
         PonySkullRenderer.resolve();
     }
 
-
-    /**
-     * Gets the global MineLP instance.
-     */
-    public static MineLittlePony getInstance() {
-        return MineLittlePony.instance;
-    }
-
-    /**
-     * Gets the static pony manager instance.
-     */
+    @Override
     public PonyManager getManager() {
         return ponyManager;
     }
 
-    /**
-     * Gets the static pony render manager responsible for all entity renderers.
-     */
-    public PonyRenderManager getRenderManager() {
-        return renderManager;
-    }
-
-    public static int getModelRevisionNumber() {
+    @Override
+    public int getModelRevisionNumber() {
         return modelUpdateCounter;
     }
 
     /**
      * Gets the global MineLP client configuration.
      */
-    public static PonyConfig getConfig() {
-        return getInstance().config;
+    @Override
+    public PonyConfig getConfig() {
+        return config;
     }
 }

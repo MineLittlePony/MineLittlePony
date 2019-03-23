@@ -16,6 +16,8 @@ import java.io.File;
 
 public class LiteModMineLittlePony implements InitCompleteListener, Tickable, Configurable {
 
+    private final MineLPClient mlp = new MineLPClient();
+
     @Override
     public String getName() {
         return MineLittlePony.MOD_NAME;
@@ -34,20 +36,20 @@ public class LiteModMineLittlePony implements InitCompleteListener, Tickable, Co
     public void init(File configPath) {
         Config config = new Config();
 
-        MineLittlePony.getInstance().init(config);
+        mlp.init(config);
 
-        LiteLoader.getInput().registerKeyBinding(MineLittlePony.SETTINGS_GUI);
+        LiteLoader.getInput().registerKeyBinding(MineLPClient.SETTINGS_GUI);
         LiteLoader.getInstance().registerExposable(config, null);
     }
 
     @Override
     public void onInitCompleted(Minecraft minecraft, LiteLoader loader) {
-        MineLittlePony.getInstance().postInit(minecraft);
+        mlp.postInit(minecraft);
     }
 
     @Override
     public void onTick(Minecraft minecraft, float partialTicks, boolean inGame, boolean clock) {
-        MineLittlePony.getInstance().onTick(minecraft, inGame);
+        mlp.onTick(minecraft, inGame);
     }
 
     @Override

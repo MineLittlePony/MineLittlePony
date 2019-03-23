@@ -10,6 +10,8 @@ import com.minelittlepony.util.math.MathUtil;
 import com.voxelmodpack.hdskins.ISkinCacheClearListener;
 import com.voxelmodpack.hdskins.util.MoreStreams;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -17,6 +19,7 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
@@ -32,12 +35,7 @@ import java.util.UUID;
  * The PonyManager is responsible for reading and recoding all the pony data associated with an entity of skin.
  *
  */
-public class PonyManager implements IResourceManagerReloadListener, ISkinCacheClearListener {
-
-    public static final ResourceLocation STEVE = new ResourceLocation("minelittlepony", "textures/entity/steve_pony.png");
-    public static final ResourceLocation ALEX = new ResourceLocation("minelittlepony", "textures/entity/alex_pony.png");
-
-    public static final String BGPONIES_JSON = "textures/entity/pony/bgponies.json";
+public class PonyManager implements IPonyManager, IResourceManagerReloadListener, ISkinCacheClearListener {
 
     private static final Gson GSON = new Gson();
 
@@ -54,23 +52,14 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         this.config = config;
     }
 
-    /**
-     * Gets or creates a pony for the given skin resource and vanilla model type.
-     *
-     * @param resource A texture resource
-     */
+    @Override
     public IPony getPony(ResourceLocation resource) {
         return poniesCache.retrieve(resource, Pony::new);
     }
 
-    /**
-     * Gets or creates a pony for the given player.
-     * Delegates to the background-ponies registry if no pony skins were available and client settings allows it.
-     *
-     * @param player the player
-     */
-    public IPony getPony(AbstractClientPlayer player) {
-        ResourceLocation skin = player.getLocationSkin();
+    @Override
+    public IPony getPony(EntityPlayer player) {
+        ResourceLocation skin = getSkin(player);
         UUID uuid = player.getGameProfile().getId();
 
         if (Pony.getBufferedImage(skin) == null) {
@@ -78,6 +67,15 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         }
 
         return getPony(skin, uuid);
+    }
+
+    @Nullable
+    ResourceLocation getSkin(EntityPlayer player) {
+        if (player instanceof AbstractClientPlayer) {
+            return ((AbstractClientPlayer)player).getLocationSkin();
+        }
+
+        return null;
     }
 
     public IPony getPony(NetworkPlayerInfo playerInfo) {
@@ -91,16 +89,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         return getPony(skin, uuid);
     }
 
-    /**
-     * Gets or creates a pony for the given skin resource and entity id.
-     *
-     * Whether is has slim arms is determined by the id.
-     *
-     * Delegates to the background-ponies registry if no pony skins were available and client settings allows it.
-     *
-     * @param resource A texture resource
-     * @param uuid id of a player or entity
-     */
+    @Override
     public IPony getPony(ResourceLocation resource, UUID uuid) {
         IPony pony = getPony(resource);
 
@@ -111,11 +100,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         return pony;
     }
 
-    /**
-     * Gets the default pony. Either STEVE/ALEX, or a background pony based on client settings.
-     *
-     * @param uuid id of a player or entity
-     */
+    @Override
     public IPony getDefaultPony(UUID uuid) {
         if (config.getPonyLevel() != PonyLevel.PONIES) {
             return getPony(DefaultPlayerSkin.getDefaultSkin(uuid));
@@ -124,16 +109,10 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         return getBackgroundPony(uuid);
     }
 
-    /**
-     * Gets a random background pony determined by the given uuid.
-     *
-     * Useful for mods that offer customisation, especially ones that have a whole lot of NPCs.
-     *
-     * @param uuid  A UUID. Either a user or an entity.
-     */
+    @Override
     public IPony getBackgroundPony(UUID uuid) {
         if (getNumberOfPonies() == 0 || isUser(uuid)) {
-            return getPony(getDefaultSkin(uuid));
+            return getPony(IPonyManager.getDefaultSkin(uuid));
         }
 
         int bgi = MathUtil.mod(uuid.hashCode(), getNumberOfPonies());
@@ -145,9 +124,7 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         return Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().player.getUniqueID().equals(uuid);
     }
 
-    /**
-     * De-registers a pony from the cache.
-     */
+    @Override
     public IPony removePony(ResourceLocation resource) {
         return poniesCache.remove(resource);
     }
@@ -214,17 +191,6 @@ public class PonyManager implements IResourceManagerReloadListener, ISkinCacheCl
         }
 
         return collectedPonies;
-    }
-
-    public static ResourceLocation getDefaultSkin(UUID uuid) {
-        return isSlimSkin(uuid) ? ALEX : STEVE;
-    }
-
-    /**
-     * Returns true if the given uuid is of a player would would use the ALEX skin type.
-     */
-    public static boolean isSlimSkin(UUID uuid) {
-        return (uuid.hashCode() & 1) == 1;
     }
 
     private int getNumberOfPonies() {

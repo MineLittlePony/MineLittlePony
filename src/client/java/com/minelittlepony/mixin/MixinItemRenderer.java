@@ -4,7 +4,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.PonyRenderManager;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -27,6 +27,6 @@ public class MixinItemRenderer {
              at = @At(value = "INVOKE",
                       target = "Lnet/minecraft/client/renderer/ItemRenderer;renderItemSide(" + EntityLivingBase + ItemStack + TransformType + "Z)V"))
     private void redirectRenderItemSide(ItemRenderer self, EntityLivingBase entity, ItemStack stack, TransformType transform, boolean left) {
-        MineLittlePony.getInstance().getRenderManager().getMagicRenderer().renderItemInFirstPerson(self, (AbstractClientPlayer)entity, stack, transform, left);
+        PonyRenderManager.getInstance().getMagicRenderer().renderItemInFirstPerson(self, (AbstractClientPlayer)entity, stack, transform, left);
     }
 }

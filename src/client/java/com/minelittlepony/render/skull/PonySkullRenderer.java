@@ -48,7 +48,7 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
      * Original/Existing renderer is stored to a backup variable as a fallback in case of mods.
      */
     public static TileEntitySkullRenderer resolve() {
-        if (MineLittlePony.getConfig().ponyskulls) {
+        if (MineLittlePony.getInstance().getConfig().ponyskulls) {
             if (!(instance instanceof PonySkullRenderer)) {
                 backup = instance;
                 ModUtilities.addRenderer(TileEntitySkull.class, ponyInstance);
@@ -75,7 +75,7 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
 
         ISkull skull = skullMap.get(skullType);
 
-        if (skull == null || !skull.canRender(MineLittlePony.getConfig())) {
+        if (skull == null || !skull.canRender(MineLittlePony.getInstance().getConfig())) {
             if (backup != null) {
                 backup.renderSkull(x, y, z, facing, rotation, skullType, profile, destroyStage, animateTicks);
             } else {

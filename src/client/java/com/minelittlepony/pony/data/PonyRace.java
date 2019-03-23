@@ -69,7 +69,10 @@ public enum PonyRace implements ITriggerPixelMapped<PonyRace> {
      * PonyLevel.PONIES (should) return a pony if this is a human. Don't be fooled, though. It doesn't.
      */
     public PonyRace getEffectiveRace(boolean ignorePony) {
-        if (MineLittlePony.getConfig().getEffectivePonyLevel(ignorePony) == PonyLevel.HUMANS) return HUMAN;
+        if (MineLittlePony.getInstance().getConfig().getEffectivePonyLevel(ignorePony) == PonyLevel.HUMANS) {
+            return HUMAN;
+        }
+
         return this;
     }
 

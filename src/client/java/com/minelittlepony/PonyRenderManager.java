@@ -28,6 +28,15 @@ import net.minecraft.entity.EntityLivingBase;
  */
 public class PonyRenderManager {
 
+    private static final PonyRenderManager renderManager = new PonyRenderManager();
+
+    /**
+     * Gets the static pony render manager responsible for all entity renderers.
+     */
+    public static PonyRenderManager getInstance() {
+        return renderManager;
+    }
+
     private LevitatingItemRenderer magicRenderer = new LevitatingItemRenderer();
 
 

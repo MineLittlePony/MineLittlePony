@@ -44,7 +44,7 @@ public class ModelWrapper implements IModelWrapper {
 
     @Override
     public void apply(IPonyData meta) {
-        int modelRevision = MineLittlePony.getModelRevisionNumber();
+        int modelRevision = MineLittlePony.getInstance().getModelRevisionNumber();
 
         if (modelRevision != lastModelUpdate) {
             lastModelUpdate = modelRevision;

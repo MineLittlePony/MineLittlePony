@@ -3,7 +3,7 @@ package com.minelittlepony.hdskins.gui;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.gui.IconicToggle;
 import com.minelittlepony.gui.Style;
-import com.minelittlepony.pony.data.PonyManager;
+import com.minelittlepony.pony.data.IPonyManager;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class GuiSkinsMineLP extends GuiSkins {
 
-    private PonyManager ponyManager = MineLittlePony.getInstance().getManager();
+    private IPonyManager ponyManager = MineLittlePony.getInstance().getManager();
 
     private boolean isWet = false;
 

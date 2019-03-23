@@ -26,11 +26,11 @@ public enum PonySize implements ITriggerPixelMapped<PonySize> {
     }
 
     public float getShadowSize() {
-        return shadowSize * MineLittlePony.getConfig().getGlobalScaleFactor();
+        return shadowSize * MineLittlePony.getInstance().getConfig().getGlobalScaleFactor();
     }
 
     public float getScaleFactor() {
-        return scale * MineLittlePony.getConfig().getGlobalScaleFactor();
+        return scale * MineLittlePony.getInstance().getConfig().getGlobalScaleFactor();
     }
 
     public PonyTransformation getTranformation() {
@@ -43,6 +43,6 @@ public enum PonySize implements ITriggerPixelMapped<PonySize> {
     }
 
     public PonySize getEffectiveSize() {
-        return MineLittlePony.getConfig().sizes ? this : PonySize.NORMAL;
+        return MineLittlePony.getInstance().getConfig().sizes ? this : PonySize.NORMAL;
     }
 }

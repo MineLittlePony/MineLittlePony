@@ -59,7 +59,7 @@ public class PonySnout {
     }
 
     public void setGender(PonyGender gender) {
-        boolean show = !head.hasHeadGear() && !isHidden && MineLittlePony.getConfig().snuzzles;
+        boolean show = !head.hasHeadGear() && !isHidden && MineLittlePony.getInstance().getConfig().snuzzles;
 
         mare.isHidden = !(show && gender.isMare());
         stallion.isHidden = !(show && gender.isStallion());
