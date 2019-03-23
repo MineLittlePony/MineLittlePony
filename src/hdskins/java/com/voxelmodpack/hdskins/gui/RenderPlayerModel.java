@@ -45,7 +45,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         this.addLayer(this.getElytraLayer());
     }
 
-    protected LayerRenderer<EntityLivingBase> getElytraLayer() {
+    protected LayerRenderer<? extends EntityLivingBase> getElytraLayer() {
         final ModelElytra modelElytra = new ModelElytra();
         return new LayerRenderer<EntityLivingBase>() {
             @Override
