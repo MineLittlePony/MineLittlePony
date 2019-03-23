@@ -6,8 +6,8 @@ import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.model.races.ModelZebra;
-import com.minelittlepony.common.pony.IPony;
-import com.minelittlepony.common.pony.meta.Wearable;
+import com.minelittlepony.pony.IPony;
+import com.minelittlepony.pony.meta.Wearable;
 
 public class ModelWitchPony extends ModelZebra {
 

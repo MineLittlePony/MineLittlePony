@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.layer;
 
 import com.minelittlepony.client.model.IClientModel;
-import com.minelittlepony.common.model.BodyPart;
+import com.minelittlepony.model.BodyPart;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;

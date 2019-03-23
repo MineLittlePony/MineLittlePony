@@ -10,8 +10,8 @@ import net.minecraft.util.ResourceLocation;
 
 import com.google.common.collect.Maps;
 import com.minelittlepony.client.ForgeProxy;
-import com.minelittlepony.common.model.armour.ArmourLayer;
-import com.minelittlepony.common.model.armour.IArmourTextureResolver;
+import com.minelittlepony.model.armour.ArmourLayer;
+import com.minelittlepony.model.armour.IArmourTextureResolver;
 
 import javax.annotation.Nullable;
 

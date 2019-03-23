@@ -2,11 +2,11 @@ package com.minelittlepony.client.render;
 
 import org.lwjgl.opengl.GL14;
 
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.ducks.IRenderItem;
 import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
 import com.minelittlepony.client.util.render.Color;
-import com.minelittlepony.common.MineLittlePony;
-import com.minelittlepony.common.pony.IPony;
+import com.minelittlepony.pony.IPony;
 import com.mumfrey.liteloader.client.overlays.IMinecraft;
 
 import net.minecraft.client.Minecraft;

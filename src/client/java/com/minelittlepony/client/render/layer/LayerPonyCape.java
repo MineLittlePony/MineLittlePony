@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.layer;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.common.model.BodyPart;
+import com.minelittlepony.model.BodyPart;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
@@ -12,7 +12,7 @@ import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nonnull;
 
-import static com.minelittlepony.common.model.PonyModelConstants.PI;
+import static com.minelittlepony.model.PonyModelConstants.PI;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class LayerPonyCape extends AbstractPonyLayer<AbstractClientPlayer> {

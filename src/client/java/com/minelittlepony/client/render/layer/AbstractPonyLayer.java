@@ -2,7 +2,7 @@ package com.minelittlepony.client.render.layer;
 
 import com.minelittlepony.client.ducks.IRenderPony;
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.common.model.IModel;
+import com.minelittlepony.model.IModel;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderLivingBase;

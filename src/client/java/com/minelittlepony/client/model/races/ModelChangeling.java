@@ -3,7 +3,7 @@ package com.minelittlepony.client.model.races;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.model.components.BugWings;
-import com.minelittlepony.common.pony.meta.Wearable;
+import com.minelittlepony.pony.meta.Wearable;
 
 public class ModelChangeling extends ModelAlicorn {
 

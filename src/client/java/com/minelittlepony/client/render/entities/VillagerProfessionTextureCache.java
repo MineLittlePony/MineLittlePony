@@ -3,7 +3,7 @@ package com.minelittlepony.client.render.entities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
-import com.minelittlepony.common.MineLittlePony;
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.util.resources.ITextureSupplier;
 
 import java.io.IOException;

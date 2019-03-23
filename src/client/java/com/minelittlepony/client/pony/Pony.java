@@ -1,18 +1,18 @@
 package com.minelittlepony.client.pony;
 
 import com.google.common.base.MoreObjects;
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.PonyRenderManager;
 import com.minelittlepony.client.ducks.IRenderPony;
 import com.minelittlepony.client.transform.PonyTransformation;
-import com.minelittlepony.common.MineLittlePony;
-import com.minelittlepony.common.pony.IPony;
-import com.minelittlepony.common.pony.IPonyData;
-import com.minelittlepony.common.pony.meta.Race;
-import com.minelittlepony.common.pony.meta.Size;
+import com.minelittlepony.hdskins.resources.texture.DynamicTextureImage;
+import com.minelittlepony.hdskins.resources.texture.IBufferedTexture;
+import com.minelittlepony.hdskins.util.ProfileTextureUtil;
+import com.minelittlepony.pony.IPony;
+import com.minelittlepony.pony.IPonyData;
+import com.minelittlepony.pony.meta.Race;
+import com.minelittlepony.pony.meta.Size;
 import com.minelittlepony.util.chron.Touchable;
-import com.voxelmodpack.hdskins.resources.texture.DynamicTextureImage;
-import com.voxelmodpack.hdskins.resources.texture.IBufferedTexture;
-import com.voxelmodpack.hdskins.util.ProfileTextureUtil;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;

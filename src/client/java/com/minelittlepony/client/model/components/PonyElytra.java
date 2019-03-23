@@ -10,7 +10,7 @@ import net.minecraft.util.math.Vec3d;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.util.render.PonyRenderer;
 
-import static com.minelittlepony.common.model.PonyModelConstants.*;
+import static com.minelittlepony.model.PonyModelConstants.*;
 
 /**
  * Modified from ModelElytra.

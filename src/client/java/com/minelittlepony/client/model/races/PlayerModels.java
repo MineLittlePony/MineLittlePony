@@ -6,11 +6,10 @@ import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.entities.ModelSeapony;
 import com.minelittlepony.client.render.entities.player.RenderPonyPlayer;
 import com.minelittlepony.client.render.entities.player.RenderSeaponyPlayer;
-import com.minelittlepony.common.pony.meta.Race;
+import com.minelittlepony.hdskins.VanillaModels;
+import com.minelittlepony.pony.meta.Race;
 
 import net.minecraft.client.renderer.entity.RenderManager;
-
-import com.voxelmodpack.hdskins.VanillaModels;
 
 import java.util.Map;
 

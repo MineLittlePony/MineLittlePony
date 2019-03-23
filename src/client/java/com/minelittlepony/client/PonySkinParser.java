@@ -1,11 +1,11 @@
 package com.minelittlepony.client;
 
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.model.races.PlayerModels;
-import com.minelittlepony.common.MineLittlePony;
+import com.minelittlepony.hdskins.ISkinParser;
+import com.minelittlepony.hdskins.VanillaModels;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.voxelmodpack.hdskins.ISkinParser;
-import com.voxelmodpack.hdskins.VanillaModels;
 
 import net.minecraft.util.ResourceLocation;
 

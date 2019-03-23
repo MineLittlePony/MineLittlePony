@@ -1,14 +1,14 @@
 package com.minelittlepony.client.gui;
 
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.render.entities.MobRenderers;
-import com.minelittlepony.common.MineLittlePony;
-import com.minelittlepony.common.settings.PonyConfig;
-import com.minelittlepony.common.settings.PonyLevel;
-import com.minelittlepony.common.settings.PonyConfig.PonySettings;
-import com.minelittlepony.gui.Checkbox;
-import com.minelittlepony.gui.Label;
-import com.minelittlepony.gui.SettingsPanel;
-import com.minelittlepony.gui.Slider;
+import com.minelittlepony.common.gui.Checkbox;
+import com.minelittlepony.common.gui.Label;
+import com.minelittlepony.common.gui.SettingsPanel;
+import com.minelittlepony.common.gui.Slider;
+import com.minelittlepony.settings.PonyConfig;
+import com.minelittlepony.settings.PonyLevel;
+import com.minelittlepony.settings.PonyConfig.PonySettings;
 
 /**
  * In-Game options menu.

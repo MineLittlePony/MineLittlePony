@@ -4,7 +4,7 @@ import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.AxisAlignedBB;
 
-import com.minelittlepony.common.pony.IPony;
+import com.minelittlepony.pony.IPony;
 
 public class FrustrumCheck<T extends EntityLivingBase> implements ICamera {
 

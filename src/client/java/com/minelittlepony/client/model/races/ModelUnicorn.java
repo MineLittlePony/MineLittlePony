@@ -2,7 +2,7 @@ package com.minelittlepony.client.model.races;
 
 import com.minelittlepony.client.model.components.UnicornHorn;
 import com.minelittlepony.client.util.render.PonyRenderer;
-import com.minelittlepony.common.model.IUnicorn;
+import com.minelittlepony.model.IUnicorn;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumHandSide;

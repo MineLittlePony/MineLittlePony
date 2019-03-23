@@ -9,7 +9,7 @@ import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.common.model.PonyModelConstants;
+import com.minelittlepony.model.PonyModelConstants;
 
 public abstract class AbstractGear extends ModelBase implements IGear, PonyModelConstants {
 

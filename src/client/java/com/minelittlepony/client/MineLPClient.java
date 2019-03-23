@@ -1,17 +1,17 @@
 package com.minelittlepony.client;
 
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.gui.GuiPonySettings;
+import com.minelittlepony.client.gui.hdskins.GuiSkinsMineLP;
 import com.minelittlepony.client.pony.PonyData;
 import com.minelittlepony.client.pony.PonyDataSerialiser;
 import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
-import com.minelittlepony.common.MineLittlePony;
-import com.minelittlepony.common.settings.PonyConfig;
-import com.minelittlepony.hdskins.client.gui.GuiSkinsMineLP;
-import com.voxelmodpack.hdskins.HDSkinManager;
-import com.voxelmodpack.hdskins.server.LegacySkinServer;
-import com.voxelmodpack.hdskins.server.SkinServer;
-import com.voxelmodpack.hdskins.server.ValhallaSkinServer;
+import com.minelittlepony.hdskins.HDSkinManager;
+import com.minelittlepony.hdskins.server.LegacySkinServer;
+import com.minelittlepony.hdskins.server.SkinServer;
+import com.minelittlepony.hdskins.server.ValhallaSkinServer;
+import com.minelittlepony.settings.PonyConfig;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;

@@ -1,14 +1,14 @@
 package com.minelittlepony.client.model.components;
 
-import static com.minelittlepony.common.model.PonyModelConstants.*;
-
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
-import com.minelittlepony.common.MineLittlePony;
-import com.minelittlepony.common.model.ICapitated;
-import com.minelittlepony.common.pony.meta.Gender;
+import com.minelittlepony.model.ICapitated;
+import com.minelittlepony.pony.meta.Gender;
+
+import static com.minelittlepony.model.PonyModelConstants.*;
 
 public class PonySnout {
 

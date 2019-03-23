@@ -3,11 +3,12 @@ package com.minelittlepony.client.render.tileentities.skull;
 import com.minelittlepony.client.model.components.ModelDeadMau5Ears;
 import com.minelittlepony.client.pony.Pony;
 import com.minelittlepony.client.render.RenderPony;
-import com.minelittlepony.common.settings.PonyConfig;
-import com.minelittlepony.common.settings.PonyLevel;
+import com.minelittlepony.hdskins.HDSkinManager;
+import com.minelittlepony.settings.PonyConfig;
+import com.minelittlepony.settings.PonyLevel;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.voxelmodpack.hdskins.HDSkinManager;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;

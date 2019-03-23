@@ -18,7 +18,7 @@ import com.minelittlepony.client.model.gear.Muffin;
 import com.minelittlepony.client.model.gear.SaddleBags;
 import com.minelittlepony.client.model.gear.Stetson;
 import com.minelittlepony.client.model.gear.WitchHat;
-import com.minelittlepony.common.model.BodyPart;
+import com.minelittlepony.model.BodyPart;
 
 import java.util.HashMap;
 import java.util.List;

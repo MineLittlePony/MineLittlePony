@@ -3,15 +3,15 @@ package com.minelittlepony.client.pony;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-import com.minelittlepony.common.MineLittlePony;
-import com.minelittlepony.common.pony.IPony;
-import com.minelittlepony.common.pony.IPonyManager;
-import com.minelittlepony.common.settings.PonyConfig;
-import com.minelittlepony.common.settings.PonyLevel;
+import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.hdskins.ISkinCacheClearListener;
+import com.minelittlepony.hdskins.util.MoreStreams;
+import com.minelittlepony.pony.IPony;
+import com.minelittlepony.pony.IPonyManager;
+import com.minelittlepony.settings.PonyConfig;
+import com.minelittlepony.settings.PonyLevel;
 import com.minelittlepony.util.chron.ChronicCache;
 import com.minelittlepony.util.math.MathUtil;
-import com.voxelmodpack.hdskins.ISkinCacheClearListener;
-import com.voxelmodpack.hdskins.util.MoreStreams;
 
 import javax.annotation.Nullable;
 

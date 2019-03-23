@@ -1,6 +1,6 @@
 package com.minelittlepony.model.capabilities;
 
-import com.minelittlepony.common.pony.IPonyData;
+import com.minelittlepony.pony.IPonyData;
 
 public interface IModelWrapper {
     /**

@@ -10,7 +10,7 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.minelittlepony.common.model.BodyPart;
+import com.minelittlepony.model.BodyPart;
 
 import javax.annotation.Nullable;
 

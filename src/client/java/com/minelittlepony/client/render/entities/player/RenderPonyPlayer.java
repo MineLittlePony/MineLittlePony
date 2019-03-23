@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.entities.player;
 
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.ducks.IRenderPony;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.render.DebugBoundingBoxRenderer;
@@ -12,8 +13,7 @@ import com.minelittlepony.client.render.layer.LayerPonyArmor;
 import com.minelittlepony.client.render.layer.LayerPonyCape;
 import com.minelittlepony.client.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.client.render.layer.LayerPonyElytra;
-import com.minelittlepony.common.MineLittlePony;
-import com.minelittlepony.common.pony.IPony;
+import com.minelittlepony.pony.IPony;
 
 import net.minecraft.block.BlockBed;
 import net.minecraft.client.Minecraft;

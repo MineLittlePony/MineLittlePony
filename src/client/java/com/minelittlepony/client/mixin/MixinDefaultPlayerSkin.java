@@ -1,9 +1,9 @@
 package com.minelittlepony.client.mixin;
 
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.model.races.PlayerModels;
-import com.minelittlepony.common.MineLittlePony;
-import com.minelittlepony.common.pony.IPonyManager;
-import com.minelittlepony.common.settings.PonyLevel;
+import com.minelittlepony.pony.IPonyManager;
+import com.minelittlepony.settings.PonyLevel;
 
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.util.ResourceLocation;

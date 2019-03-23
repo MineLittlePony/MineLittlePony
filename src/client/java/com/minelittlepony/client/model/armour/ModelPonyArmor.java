@@ -5,8 +5,8 @@ import net.minecraft.entity.Entity;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.util.render.PonyRenderer;
-import com.minelittlepony.common.model.IModel;
-import com.minelittlepony.common.model.armour.IArmour;
+import com.minelittlepony.model.IModel;
+import com.minelittlepony.model.armour.IArmour;
 
 public class ModelPonyArmor extends AbstractPonyModel implements IArmour {
 

@@ -9,8 +9,8 @@ import org.lwjgl.opengl.GL11;
 import com.minelittlepony.client.model.IClientModel;
 import com.minelittlepony.client.util.render.Color;
 import com.minelittlepony.client.util.render.PonyRenderer;
-import com.minelittlepony.common.model.BodyPart;
-import com.minelittlepony.common.pony.meta.Wearable;
+import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.pony.meta.Wearable;
 
 import java.util.Calendar;
 import java.util.UUID;

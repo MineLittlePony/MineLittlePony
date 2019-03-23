@@ -6,9 +6,9 @@ import com.minelittlepony.client.model.components.SeaponyTail;
 import com.minelittlepony.client.model.races.ModelUnicorn;
 import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
-import com.minelittlepony.common.model.BodyPart;
-import com.minelittlepony.common.model.armour.IEquestrianArmour;
-import com.minelittlepony.common.pony.IPony;
+import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.armour.IEquestrianArmour;
+import com.minelittlepony.pony.IPony;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;

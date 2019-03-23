@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.layer;
 
 import com.minelittlepony.client.model.components.PonyElytra;
-import com.minelittlepony.common.model.BodyPart;
+import com.minelittlepony.model.BodyPart;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;

@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.tileentities.skull;
 
 import com.minelittlepony.client.render.entities.RenderPonySkeleton;
-import com.minelittlepony.common.settings.PonyConfig;
+import com.minelittlepony.settings.PonyConfig;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.util.ResourceLocation;
 

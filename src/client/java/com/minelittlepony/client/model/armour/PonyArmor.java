@@ -1,8 +1,8 @@
 package com.minelittlepony.client.model.armour;
 
-import com.minelittlepony.common.model.armour.ArmourLayer;
-import com.minelittlepony.common.model.armour.IEquestrianArmour;
-import com.minelittlepony.common.pony.IPonyData;
+import com.minelittlepony.model.armour.ArmourLayer;
+import com.minelittlepony.model.armour.IEquestrianArmour;
+import com.minelittlepony.pony.IPonyData;
 
 public class PonyArmor implements IEquestrianArmour<ModelPonyArmor> {
 

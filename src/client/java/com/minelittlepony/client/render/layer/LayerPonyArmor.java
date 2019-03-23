@@ -4,10 +4,10 @@ import com.minelittlepony.client.ForgeProxy;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.armour.DefaultPonyArmorTextureResolver;
 import com.minelittlepony.client.util.render.Color;
-import com.minelittlepony.common.model.armour.ArmourLayer;
-import com.minelittlepony.common.model.armour.IArmour;
-import com.minelittlepony.common.model.armour.IArmourTextureResolver;
-import com.minelittlepony.common.model.armour.IEquestrianArmour;
+import com.minelittlepony.model.armour.ArmourLayer;
+import com.minelittlepony.model.armour.IArmour;
+import com.minelittlepony.model.armour.IArmourTextureResolver;
+import com.minelittlepony.model.armour.IEquestrianArmour;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;

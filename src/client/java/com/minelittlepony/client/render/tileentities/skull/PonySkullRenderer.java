@@ -1,9 +1,9 @@
 package com.minelittlepony.client.render.tileentities.skull;
 
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.ducks.IRenderItem;
-import com.minelittlepony.common.MineLittlePony;
-import com.minelittlepony.common.pony.IPony;
-import com.minelittlepony.common.settings.PonyConfig;
+import com.minelittlepony.pony.IPony;
+import com.minelittlepony.settings.PonyConfig;
 import com.mojang.authlib.GameProfile;
 import com.mumfrey.liteloader.util.ModUtilities;
 import net.minecraft.client.renderer.GlStateManager;

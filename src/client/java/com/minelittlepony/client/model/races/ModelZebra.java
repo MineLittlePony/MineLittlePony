@@ -5,8 +5,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import com.minelittlepony.client.model.armour.ModelPonyArmor;
 import com.minelittlepony.client.model.armour.PonyArmor;
 import com.minelittlepony.client.util.render.PonyRenderer;
-import com.minelittlepony.common.model.BodyPart;
-import com.minelittlepony.common.model.armour.IEquestrianArmour;
+import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.armour.IEquestrianArmour;
 
 public class ModelZebra extends ModelEarthPony {
 

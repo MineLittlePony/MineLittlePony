@@ -2,12 +2,12 @@ package com.minelittlepony.client.model.components;
 
 import com.minelittlepony.client.util.render.GlowRenderer;
 import com.minelittlepony.client.util.render.PonyRenderer;
-import com.minelittlepony.common.model.ICapitated;
-import com.minelittlepony.common.model.IPart;
+import com.minelittlepony.model.ICapitated;
+import com.minelittlepony.model.IPart;
 
 import java.util.UUID;
 
-import static com.minelittlepony.common.model.PonyModelConstants.*;
+import static com.minelittlepony.model.PonyModelConstants.*;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;

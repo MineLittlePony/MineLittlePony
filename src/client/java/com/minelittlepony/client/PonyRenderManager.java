@@ -4,14 +4,14 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 import com.minelittlepony.client.ducks.IRenderPony;
+import com.minelittlepony.client.gui.hdskins.RenderPonyModel;
 import com.minelittlepony.client.mixin.MixinRenderManager;
 import com.minelittlepony.client.model.races.PlayerModels;
 import com.minelittlepony.client.render.LevitatingItemRenderer;
 import com.minelittlepony.client.render.entities.MobRenderers;
 import com.minelittlepony.client.render.entities.player.RenderPonyPlayer;
-import com.minelittlepony.common.settings.PonyConfig;
-import com.minelittlepony.hdskins.client.gui.RenderPonyModel;
 import com.minelittlepony.hdskins.entity.EntityPonyModel;
+import com.minelittlepony.settings.PonyConfig;
 import com.mumfrey.liteloader.util.ModUtilities;
 
 import javax.annotation.Nullable;

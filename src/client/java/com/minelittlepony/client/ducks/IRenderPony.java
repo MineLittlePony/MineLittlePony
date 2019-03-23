@@ -3,9 +3,9 @@ package com.minelittlepony.client.ducks;
 import com.minelittlepony.client.model.IClientModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.render.RenderPony;
-import com.minelittlepony.common.model.BodyPart;
-import com.minelittlepony.common.model.PonyModelConstants;
-import com.minelittlepony.common.pony.IPony;
+import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.PonyModelConstants;
+import com.minelittlepony.pony.IPony;
 import com.minelittlepony.util.math.MathUtil;
 
 import net.minecraft.entity.EntityLivingBase;

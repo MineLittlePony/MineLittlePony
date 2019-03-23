@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 
 import com.minelittlepony.client.model.components.ModelPonyHead;
 import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer.ISkull;
-import com.minelittlepony.common.pony.IPony;
+import com.minelittlepony.pony.IPony;
 
 public abstract class PonySkull implements ISkull {
 

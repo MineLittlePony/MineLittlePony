@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render;
 
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.ducks.IRenderPony;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.render.layer.LayerGear;
@@ -8,9 +9,8 @@ import com.minelittlepony.client.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.client.render.layer.LayerPonyArmor;
 import com.minelittlepony.client.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.client.render.layer.LayerPonyElytra;
-import com.minelittlepony.common.MineLittlePony;
-import com.minelittlepony.common.pony.IPony;
-import com.voxelmodpack.hdskins.HDSkinManager;
+import com.minelittlepony.hdskins.HDSkinManager;
+import com.minelittlepony.pony.IPony;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.culling.ICamera;

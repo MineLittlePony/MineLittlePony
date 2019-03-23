@@ -2,8 +2,8 @@ package com.minelittlepony.client.model.components;
 
 import com.minelittlepony.client.pony.PonyData;
 import com.minelittlepony.client.util.render.PonyRenderer;
-import com.minelittlepony.common.model.ICapitated;
-import com.minelittlepony.common.pony.IPonyData;
+import com.minelittlepony.model.ICapitated;
+import com.minelittlepony.pony.IPonyData;
 
 import javax.annotation.Nullable;
 

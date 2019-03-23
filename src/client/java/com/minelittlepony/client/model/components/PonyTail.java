@@ -5,11 +5,11 @@ import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
-import com.minelittlepony.common.model.IPart;
+import com.minelittlepony.model.IPart;
 
 import java.util.UUID;
 
-import static com.minelittlepony.common.model.PonyModelConstants.*;
+import static com.minelittlepony.model.PonyModelConstants.*;
 
 public class PonyTail extends PlaneRenderer implements IPart {
 

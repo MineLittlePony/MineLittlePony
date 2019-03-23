@@ -1,8 +1,8 @@
 package com.minelittlepony.client;
 
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.gui.GuiPonySettings;
-import com.minelittlepony.common.MineLittlePony;
-import com.minelittlepony.common.settings.PonyConfig;
+import com.minelittlepony.settings.PonyConfig;
 import com.mumfrey.liteloader.Configurable;
 import com.mumfrey.liteloader.InitCompleteListener;
 import com.mumfrey.liteloader.Tickable;

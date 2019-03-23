@@ -8,7 +8,7 @@ import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.util.render.PonyRenderer;
 
-import static com.minelittlepony.common.model.PonyModelConstants.PI;
+import static com.minelittlepony.model.PonyModelConstants.PI;
 
 public class ModelBreezie extends ModelBiped {
 

@@ -2,9 +2,9 @@ package com.minelittlepony.client.model.components;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.util.render.PonyRenderer;
-import com.minelittlepony.common.model.IPegasus;
-import com.minelittlepony.common.model.PonyModelConstants;
-import com.minelittlepony.common.pony.meta.Wearable;
+import com.minelittlepony.model.IPegasus;
+import com.minelittlepony.model.PonyModelConstants;
+import com.minelittlepony.pony.meta.Wearable;
 
 import net.minecraft.client.renderer.GlStateManager;
 

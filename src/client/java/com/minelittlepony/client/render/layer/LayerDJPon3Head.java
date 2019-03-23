@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 
 import com.minelittlepony.client.model.components.ModelDeadMau5Ears;
-import com.minelittlepony.common.model.BodyPart;
+import com.minelittlepony.model.BodyPart;
 
 public class LayerDJPon3Head extends AbstractPonyLayer<AbstractClientPlayer> {
 

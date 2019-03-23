@@ -3,7 +3,7 @@ package com.minelittlepony.client.model.components;
 import net.minecraft.client.renderer.GlStateManager;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.common.model.IPegasus;
+import com.minelittlepony.model.IPegasus;
 
 import java.util.UUID;
 

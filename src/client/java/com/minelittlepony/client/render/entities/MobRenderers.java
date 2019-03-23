@@ -1,8 +1,8 @@
 package com.minelittlepony.client.render.entities;
 
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.PonyRenderManager;
-import com.minelittlepony.common.MineLittlePony;
-import com.minelittlepony.common.settings.SensibleConfig.Setting;
+import com.minelittlepony.common.SensibleConfig.Setting;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;

@@ -1,7 +1,7 @@
 package com.minelittlepony.client.model.races;
 
 import com.minelittlepony.client.model.components.PegasusWings;
-import com.minelittlepony.common.model.IPegasus;
+import com.minelittlepony.model.IPegasus;
 
 import net.minecraft.entity.Entity;
 

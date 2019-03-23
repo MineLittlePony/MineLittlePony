@@ -3,13 +3,13 @@ package com.minelittlepony.client.pony;
 import net.minecraft.client.resources.data.IMetadataSection;
 
 import com.google.common.base.MoreObjects;
-import com.minelittlepony.common.pony.IPonyData;
-import com.minelittlepony.common.pony.meta.Gender;
-import com.minelittlepony.common.pony.meta.Race;
-import com.minelittlepony.common.pony.meta.Wearable;
-import com.minelittlepony.common.pony.meta.Size;
-import com.minelittlepony.common.pony.meta.TailLength;
-import com.minelittlepony.common.pony.meta.TriggerPixels;
+import com.minelittlepony.pony.IPonyData;
+import com.minelittlepony.pony.meta.Gender;
+import com.minelittlepony.pony.meta.Race;
+import com.minelittlepony.pony.meta.Size;
+import com.minelittlepony.pony.meta.TailLength;
+import com.minelittlepony.pony.meta.TriggerPixels;
+import com.minelittlepony.pony.meta.Wearable;
 import com.minelittlepony.util.animation.BasicEasingInterpolator;
 import com.minelittlepony.util.animation.IInterpolator;
 

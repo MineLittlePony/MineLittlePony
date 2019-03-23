@@ -1,9 +1,9 @@
 package com.minelittlepony.client.model;
 
-import com.minelittlepony.common.MineLittlePony;
-import com.minelittlepony.common.model.armour.IEquestrianArmour;
-import com.minelittlepony.common.pony.IPonyData;
+import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.model.capabilities.IModelWrapper;
+import com.minelittlepony.pony.IPonyData;
 
 /**
  * Container class for the various models and their associated piece of armour.

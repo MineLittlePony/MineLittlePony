@@ -7,7 +7,7 @@ import net.minecraft.entity.passive.EntityVillager;
 
 import com.minelittlepony.client.model.ModelMobPony;
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
-import com.minelittlepony.common.pony.meta.Wearable;
+import com.minelittlepony.pony.meta.Wearable;
 
 public class ModelVillagerPony extends ModelMobPony {
 

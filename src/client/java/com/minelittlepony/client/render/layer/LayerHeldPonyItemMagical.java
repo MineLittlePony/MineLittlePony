@@ -2,7 +2,7 @@ package com.minelittlepony.client.render.layer;
 
 import com.minelittlepony.client.PonyRenderManager;
 import com.minelittlepony.client.util.render.PonyRenderer;
-import com.minelittlepony.common.model.IUnicorn;
+import com.minelittlepony.model.IUnicorn;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;

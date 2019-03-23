@@ -1,6 +1,6 @@
 package com.minelittlepony.client;
 
-import com.voxelmodpack.hdskins.ISkinModifier;
+import com.minelittlepony.hdskins.ISkinModifier;
 
 import java.awt.Graphics;
 import java.awt.Image;

@@ -1,8 +1,8 @@
 package com.minelittlepony.hdskins.entity;
 
+import com.minelittlepony.hdskins.gui.EntityPlayerModel;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
 
 import net.minecraft.util.ResourceLocation;
 

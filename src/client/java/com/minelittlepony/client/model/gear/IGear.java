@@ -6,8 +6,8 @@ import net.minecraft.util.ResourceLocation;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.IClientModel;
-import com.minelittlepony.common.model.BodyPart;
-import com.minelittlepony.common.model.IPart;
+import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.IPart;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

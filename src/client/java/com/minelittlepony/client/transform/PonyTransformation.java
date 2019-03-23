@@ -6,9 +6,9 @@ import static net.minecraft.client.renderer.GlStateManager.translate;
 import net.minecraft.util.math.Vec3d;
 
 import com.google.common.collect.Maps;
-import com.minelittlepony.common.model.BodyPart;
-import com.minelittlepony.common.model.IModel;
-import com.minelittlepony.common.pony.meta.Size;
+import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.IModel;
+import com.minelittlepony.pony.meta.Size;
 
 import java.util.Map;
 

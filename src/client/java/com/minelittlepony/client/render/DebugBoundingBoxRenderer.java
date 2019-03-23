@@ -7,7 +7,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 
-import com.minelittlepony.common.pony.IPony;
+import com.minelittlepony.pony.IPony;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 

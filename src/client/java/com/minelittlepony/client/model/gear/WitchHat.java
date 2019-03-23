@@ -5,8 +5,8 @@ import net.minecraft.util.ResourceLocation;
 
 import com.minelittlepony.client.model.IClientModel;
 import com.minelittlepony.client.util.render.PonyRenderer;
-import com.minelittlepony.common.model.BodyPart;
-import com.minelittlepony.common.pony.meta.Wearable;
+import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.pony.meta.Wearable;
 
 import java.util.UUID;
 

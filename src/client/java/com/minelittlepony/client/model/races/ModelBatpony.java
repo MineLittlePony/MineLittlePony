@@ -2,7 +2,7 @@ package com.minelittlepony.client.model.races;
 
 import com.minelittlepony.client.model.components.BatWings;
 import com.minelittlepony.client.util.render.PonyRenderer;
-import com.minelittlepony.common.pony.meta.Wearable;
+import com.minelittlepony.pony.meta.Wearable;
 
 public class ModelBatpony extends ModelPegasus {
 

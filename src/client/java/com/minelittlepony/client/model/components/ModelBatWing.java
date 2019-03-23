@@ -2,7 +2,7 @@ package com.minelittlepony.client.model.components;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
-import com.minelittlepony.common.model.IPegasus;
+import com.minelittlepony.model.IPegasus;
 
 public class ModelBatWing<T extends AbstractPonyModel & IPegasus> extends ModelWing<T> {
 

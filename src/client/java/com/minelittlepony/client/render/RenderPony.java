@@ -1,12 +1,12 @@
 package com.minelittlepony.client.render;
 
+import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.PonyRenderManager;
 import com.minelittlepony.client.ducks.IRenderPony;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.transform.PonyPosture;
-import com.minelittlepony.common.MineLittlePony;
-import com.minelittlepony.common.pony.IPony;
+import com.minelittlepony.pony.IPony;
 import com.minelittlepony.util.math.MathUtil;
 
 import net.minecraft.client.renderer.GlStateManager;

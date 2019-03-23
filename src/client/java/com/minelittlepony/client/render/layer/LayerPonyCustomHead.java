@@ -12,7 +12,7 @@ import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.IClientModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
-import com.minelittlepony.common.model.BodyPart;
+import com.minelittlepony.model.BodyPart;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;

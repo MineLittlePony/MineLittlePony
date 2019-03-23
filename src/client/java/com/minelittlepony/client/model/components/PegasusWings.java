@@ -3,13 +3,13 @@ package com.minelittlepony.client.model.components;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.common.model.IPart;
-import com.minelittlepony.common.model.IPegasus;
-import com.minelittlepony.common.pony.meta.Wearable;
+import com.minelittlepony.model.IPart;
+import com.minelittlepony.model.IPegasus;
+import com.minelittlepony.pony.meta.Wearable;
 
 import java.util.UUID;
 
-import static com.minelittlepony.common.model.PonyModelConstants.*;
+import static com.minelittlepony.model.PonyModelConstants.*;
 
 public class PegasusWings<T extends AbstractPonyModel & IPegasus> implements IPart {
 

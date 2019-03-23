@@ -2,9 +2,9 @@ package com.minelittlepony.client.model.gear;
 
 import com.minelittlepony.client.model.IClientModel;
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
-import com.minelittlepony.common.model.BodyPart;
-import com.minelittlepony.common.model.IPegasus;
-import com.minelittlepony.common.pony.meta.Wearable;
+import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.IPegasus;
+import com.minelittlepony.pony.meta.Wearable;
 
 import java.util.UUID;
 
