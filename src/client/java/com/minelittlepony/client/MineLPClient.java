@@ -23,6 +23,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 
+import org.lwjgl.glfw.GLFW;
+
 /**
  * Static MineLittlePony singleton class. Everything's controlled from up here.
  */
@@ -32,10 +34,7 @@ public class MineLPClient extends MineLittlePony {
     private static final String MINELP_LEGACY_SERVER = "http://minelpskins.voxelmodpack.com";
     private static final String MINELP_LEGACY_GATEWAY = "http://minelpskinmanager.voxelmodpack.com";
 
-    public static final int KEY_M = 0x32;
-    public static final int KEY_F3 = 0x3D;
-    public static final int KEY_F9 = 0x43;
-    static final KeyBinding SETTINGS_GUI = new KeyBinding("Settings", KEY_F9, "Mine Little Pony");
+    static final KeyBinding SETTINGS_GUI = new KeyBinding("Settings", GLFW.GLFW_KEY_F9, "Mine Little Pony");
 
     private static int modelUpdateCounter = 0;
     private static boolean reloadingModels = false;
@@ -95,7 +94,7 @@ public class MineLPClient extends MineLittlePony {
             } else {
 
                 if ((Util.milliTime() % 10) == 0) {
-                    if (InputMappings.isKeyDown(KEY_F3) && InputMappings.isKeyDown(KEY_M)) {
+                    if (InputMappings.isKeyDown(GLFW.GLFW_KEY_F3) && InputMappings.isKeyDown(GLFW.GLFW_KEY_M)) {
                         if (!reloadingModels) {
                             minecraft.ingameGUI.getChatGUI().printChatMessage(
                                     (new TextComponentString("")).appendSibling(
