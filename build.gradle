@@ -52,31 +52,6 @@ group = project.group
 description = project.displayname
 archivesBaseName = project.name
 
-minecraft {
-    mappings channel: 'snapshot', version: project.mappings_version
-
-    runs {
-        client {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
-
-            mods {
-                minelittlepony {
-                    source sourceSets.common
-                    source sourceSets.hdskins
-                    source sourceSets.client
-                    source sourceSets.main
-
-                    replace '@VERSION@', project.version
-                }
-            }
-        }
-    }
-
-}
-
 sourceSets {
     common {
         // code shared between HDSkins and MineLP mods
@@ -132,6 +107,36 @@ sourceSets {
     }
 }
 
+minecraft {
+    mappings channel: 'snapshot', version: project.mappings_version
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+
+            // replace '@VERSION@', project.version
+
+            mods {
+                minelittlepony {
+                    source sourceSets.common
+                    source sourceSets.hdskins
+                    source sourceSets.client
+                    source sourceSets.main
+
+                    // replace '@VERSION@', project.version
+                }
+
+                // replace '@VERSION@', project.version
+            }
+        }
+    }
+
+    // replace '@VERSION@', project.version
+}
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.13.2-25.0.90'
 
@@ -157,6 +162,8 @@ jar {
 
     from sourceSets.client.output
     from sourceSets.fml.output
+
+    replace '@VERSION@', project.version
 
     classifier 'base'
     extension 'jar'
@@ -194,6 +201,8 @@ shadowJar {
         into "/assets/minelittlepony/textures/entity/pony"
     }
 
+    replace '@VERSION@', project.version
+
     dependencies {
         exclude dependency('deobf.org.ow2.asm:')
         exclude dependency('org.spongepowered:mixin:')
@@ -219,6 +228,8 @@ task srgJar(type: Jar) {
 
     from sourceSets.hdskins.output
 
+    replace '@VERSION@', project.version
+
     classifier "mc$minecraft.version-srg"
 }
 
@@ -226,6 +237,8 @@ task horseLib(type: Jar) {
     from sourceSets.common.output
 
     from sourceSets.main.output
+
+    replace '@VERSION@', project.version
 
     baseName = "HoarseLib"
 }
