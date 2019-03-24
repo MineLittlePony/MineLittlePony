@@ -100,7 +100,7 @@ sourceSets {
         compileClasspath += client.output
     }
 
-    hdskinfml {
+    hdskinsfml {
         compileClasspath += main.compileClasspath
         compileClasspath += litemod.output
         compileClasspath += hdskins.output
