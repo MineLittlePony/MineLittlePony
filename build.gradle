@@ -11,7 +11,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
         classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
     }
@@ -21,9 +21,15 @@ plugins {
     id 'org.ajoberstar.grgit' version '1.7.2'
 }
 
-apply plugin: 'net.minecraftforge.gradle.liteloader'
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.github.johnrengelman.shadow'
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+compileJava.sourceCompatibility = '1.8'
+compileJava.targetCompatibility = '1.8'
 
 ext {
     revision = grgit.log().size()
@@ -49,9 +55,28 @@ description = project.displayname
 
 minecraft {
     version = project.minecraft_version
-    mappings = project.mappings_version
-    runDir = 'run'
-    replace '@VERSION@', project.version
+    mappings channel: 'snapshot', version: project.mappings_version
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+
+            replace '@VERSION@', project.version
+
+            mods {
+                minelittlepony {
+                    source sourceSets.common
+                    source sourceSets.hdskins
+                    source sourceSets.client
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+
 }
 
 mixin {
@@ -101,9 +126,23 @@ sourceSets {
         compileClasspath += litemod.output
         compileClasspath += hdskins.output
     }
+
+    fml {
+        compileClasspath += main.compileClasspath
+        compileClasspath += main.output
+        compileClasspath += client.output
+    }
+
+    hdskinfml {
+        compileClasspath += main.compileClasspath
+        compileClasspath += litemod.output
+        compileClasspath += hdskins.output
+    }
 }
 
 dependencies {
+    minecraft 'net.minecraftforge:forge:1.13.2-25.0.90'
+
     // use the same version as httpclient
     compile('org.apache.httpcomponents:httpmime:4.3.2') {
         transitive = false
@@ -138,8 +177,15 @@ afterEvaluate {
 }
 
 jar {
+    from sourceSets.common.output
+    from sourceSets.main.output
+
     from sourceSets.hdskins.output
-    from litemod
+    from sourceSets.hdskinsfml.output
+
+    from sourceSets.client.output
+    from sourceSets.fml.output
+
     classifier 'base'
     extension 'jar'
 }
@@ -161,17 +207,15 @@ task copyBGPones(type: Copy) {
 }
 
 shadowJar {
-    extension 'litemod'
     classifier "mc$minecraft.version"
 
     from sourceSets.common.output
 
     from sourceSets.hdskins.output
-    from sourceSets.hdskinslitemod.output
+    from sourceSets.hdskinsfml.output
 
     from sourceSets.client.output
-    from sourceSets.litemod.output
-    from litemod
+    from sourceSets.fml.output
 
     exclude "/assets/minelittlepony/textures/entity/pony"
     from(copyBGPones) {
@@ -179,7 +223,6 @@ shadowJar {
     }
 
     dependencies {
-        exclude dependency('deobf.com.mumfrey:liteloader:')
         exclude dependency('deobf.org.ow2.asm:')
         exclude dependency('org.spongepowered:mixin:')
         exclude 'META-INF/**'
@@ -196,14 +239,13 @@ task srgJar(type: Jar) {
     from sourceSets.common.output
 
     from sourceSets.hdskins.output
-    from sourceSets.hdskinslitemod.output
+    from sourceSets.hdskinsfml.output
 
     from sourceSets.main.output
     from sourceSets.client.output
-    from sourceSets.litemod.output
+    from sourceSets.fml.output
 
     from sourceSets.hdskins.output
-    from litemod
 
     classifier "mc$minecraft.version-srg"
 }
