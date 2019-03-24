@@ -52,6 +52,7 @@ if (project.release == 'SNAPSHOT') {
 
 group = project.group
 description = project.displayname
+archivesBaseName = project.name
 
 minecraft {
     version = project.minecraft_version
@@ -83,8 +84,6 @@ mixin {
     defaultObfuscationEnv notch
 }
 
-targetCompatibility = 1.8
-sourceCompatibility = 1.8
 sourceSets {
     common {
         // code shared between HDSkins and MineLP mods
@@ -154,26 +153,6 @@ dependencies {
 
 manifest {
     attributes 'Implementation-Version': "${project.version} (git-${project.hash})"
-}
-
-litemod.json {
-    mcversion = project.minecraft_version
-    displayName = project.displayname
-    author = project.authors
-    revision = project.revision
-    description = project.description
-    description.minelittlepony = project.description_mlp
-    description.hdskinsmod = project.description_hd
-    mixinConfigs += [
-      'minelp.mixin.json',
-      'hdskins.mixin.json'
-    ]
-}
-
-archivesBaseName = "mod-${project.name.toLowerCase()}"
-
-afterEvaluate {
-    file('build.number').delete()
 }
 
 jar {
