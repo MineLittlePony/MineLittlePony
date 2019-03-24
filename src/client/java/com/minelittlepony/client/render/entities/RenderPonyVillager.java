@@ -39,7 +39,8 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
         GlStateManager.scalef(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
     }
 
-    @SuppressWarnings("deprecation")
+
+    @SuppressWarnings("deprecation") // let me use getProfession in peace. I don't care that forge has their own one.
     @Override
     public ResourceLocation getTexture(EntityVillager entity) {
         String name = entity.getCustomName().getUnformattedComponentText();

@@ -64,7 +64,7 @@ public class ModelVillagerPony extends ModelMobPony {
         return super.isWearing(wearable);
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("deprecation") // let me use getProfession in peace. I don't care that forge has their own one.
     protected int getProfession(Entity entity) {
         if (entity instanceof EntityVillager) {
             return ((EntityVillager) entity).getProfession();

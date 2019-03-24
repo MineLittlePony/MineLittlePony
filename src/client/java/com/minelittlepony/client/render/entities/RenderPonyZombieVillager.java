@@ -33,7 +33,7 @@ public class RenderPonyZombieVillager extends RenderPonyMob<EntityZombieVillager
         super(manager, MODEL_WRAPPER);
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("deprecation") // let me use getProfession in peace. I don't care that forge has their own one.
     @Override
     public ResourceLocation getTexture(EntityZombieVillager entity) {
         String name = entity.getCustomName().getUnformattedComponentText();
