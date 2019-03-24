@@ -1,7 +1,7 @@
 package com.minelittlepony.client.util.render;
 
-import net.minecraft.client.model.ModelBox;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.ModelBox;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
 
 public abstract class Box<T extends ModelRenderer> extends ModelBox {
 

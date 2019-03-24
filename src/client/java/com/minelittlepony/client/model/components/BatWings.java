@@ -28,7 +28,7 @@ public class BatWings<T extends AbstractPonyModel & IPegasus> extends PegasusWin
     public void renderPart(float scale, UUID interpolatorId) {
 
         GlStateManager.pushMatrix();
-        GlStateManager.scale(1.3F, 1.3F, 1.3F);
+        GlStateManager.scalef(1.3F, 1.3F, 1.3F);
 
         super.renderPart(scale, interpolatorId);
 

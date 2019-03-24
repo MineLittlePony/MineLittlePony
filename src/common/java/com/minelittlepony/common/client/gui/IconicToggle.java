@@ -54,8 +54,8 @@ public class IconicToggle extends IconicButton {
     }
 
     @Override
-    public void perform() {
+    public void onClick(double mouseX, double mouseY) {
         setValue(value + 1);
-        super.perform();
+        super.onClick(mouseX, mouseY);
     }
 }

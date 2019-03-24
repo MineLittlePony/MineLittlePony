@@ -16,16 +16,16 @@ public class LayerDJPon3Head extends AbstractPonyLayer<AbstractClientPlayer> {
     }
 
     @Override
-    public void doRenderLayer(AbstractClientPlayer entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
-        if ("deadmau5".equals(entity.getName())) {
+    public void render(AbstractClientPlayer entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
+        if ("deadmau5".equals(entity.getName().getUnformattedComponentText())) {
             getRenderer().bindTexture(entity.getLocationSkin());
 
             GlStateManager.pushMatrix();
             getPlayerModel().transform(BodyPart.HEAD);
             getPlayerModel().bipedHead.postRender(scale);
 
-            GlStateManager.scale(1.3333334F, 1.3333334F, 1.3333334F);
-            GlStateManager.translate(0, 0.3F, 0);
+            GlStateManager.scalef(1.3333334F, 1.3333334F, 1.3333334F);
+            GlStateManager.translatef(0, 0.3F, 0);
 
             deadMau5.setVisible(true);
             deadMau5.render(entity, move, swing, partialTicks, 0, 0, scale);

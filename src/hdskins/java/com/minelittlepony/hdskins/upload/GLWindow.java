@@ -33,6 +33,7 @@ import javax.swing.*;
  * Experimental window to control file drop. It kind of sucks.
  *
  */
+@Deprecated
 public class GLWindow extends DropTarget {
 
     // Serial version because someone decided to extend DropTarget

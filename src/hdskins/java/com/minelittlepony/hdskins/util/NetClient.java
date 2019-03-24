@@ -31,7 +31,7 @@ public class NetClient {
 
     public NetClient putFile(String key, String contentType, URI file) {
         if (entityBuilder == null) {
-            entityBuilder= MultipartEntityBuilder.create();
+            entityBuilder = MultipartEntityBuilder.create();
         }
 
         File f = new File(file);
@@ -44,7 +44,7 @@ public class NetClient {
 
     public NetClient putFormData(Map<String, ?> data, String contentTypes) {
         if (entityBuilder == null) {
-            entityBuilder= MultipartEntityBuilder.create();
+            entityBuilder = MultipartEntityBuilder.create();
         }
 
         for (Map.Entry<String, ?> i : data.entrySet()) {

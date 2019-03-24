@@ -19,9 +19,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.client.resources.IResource;
-import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.client.resources.IResourceManagerReloadListener;
+import net.minecraft.resources.IResource;
+import net.minecraft.resources.IResourceManager;
+import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
@@ -124,7 +124,7 @@ public class PonyManager implements IPonyManager, IResourceManagerReloadListener
     }
 
     private boolean isUser(UUID uuid) {
-        return Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().player.getUniqueID().equals(uuid);
+        return Minecraft.getInstance().player != null && Minecraft.getInstance().player.getUniqueID().equals(uuid);
     }
 
     @Override
@@ -142,7 +142,7 @@ public class PonyManager implements IPonyManager, IResourceManagerReloadListener
 
         Queue<BackgroundPonies> processingQueue = new LinkedList<>();
 
-        for (String domain : resourceManager.getResourceDomains()) {
+        for (String domain : resourceManager.getResourceNamespaces()) {
             processingQueue.addAll(loadBgPonies(resourceManager, new ResourceLocation(domain, BGPONIES_JSON)));
         }
 
@@ -186,7 +186,7 @@ public class PonyManager implements IPonyManager, IResourceManagerReloadListener
 
                     collectedPonies.add(ponies);
                 } catch (JsonParseException e) {
-                    MineLittlePony.logger.error("Invalid bgponies.json in " + res.getResourcePackName(), e);
+                    MineLittlePony.logger.error("Invalid bgponies.json in " + res.getPackName(), e);
                 }
             }
         } catch (IOException ignored) {

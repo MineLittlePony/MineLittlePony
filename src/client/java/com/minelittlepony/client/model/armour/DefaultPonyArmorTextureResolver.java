@@ -1,11 +1,12 @@
 package com.minelittlepony.client.model.armour;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.ResourcePackRepository;
+import net.minecraft.client.resources.ResourcePackInfoClient;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
 
 import com.google.common.collect.Maps;
@@ -52,9 +53,9 @@ public class DefaultPonyArmorTextureResolver<T extends EntityLivingBase> impleme
 
     private ResourceLocation resolve(ResourceLocation... resources) {
         // check resource packs for either texture.
-        for (ResourcePackRepository.Entry entry : Minecraft.getMinecraft().getResourcePackRepository().getRepositoryEntries()) {
+        for (ResourcePackInfoClient entry : Minecraft.getInstance().getResourcePackList().getPackInfos()) {
             for (ResourceLocation candidate : resources) {
-                if (entry.getResourcePack().resourceExists(candidate)) {
+                if (entry.getResourcePack().resourceExists(ResourcePackType.CLIENT_RESOURCES, candidate)) {
                     // ponies are more important
                     return candidate;
                 }
@@ -64,7 +65,7 @@ public class DefaultPonyArmorTextureResolver<T extends EntityLivingBase> impleme
         // the default pack
         for (ResourceLocation candidate : resources) {
             try {
-                Minecraft.getMinecraft().getResourceManager().getResource(candidate);
+                Minecraft.getInstance().getResourceManager().getResource(candidate);
                 return candidate;
             } catch (IOException e) { }
         }

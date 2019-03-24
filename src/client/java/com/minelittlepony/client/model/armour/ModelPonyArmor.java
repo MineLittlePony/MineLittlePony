@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model.armour;
 
-import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.entity.model.ModelBiped;
 import net.minecraft.entity.Entity;
 
 import com.minelittlepony.client.model.AbstractPonyModel;

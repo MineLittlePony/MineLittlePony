@@ -1,13 +1,12 @@
 package com.minelittlepony.hdskins.resources.texture;
 
 import net.minecraft.client.renderer.IImageBuffer;
-
-import java.awt.image.BufferedImage;
+import net.minecraft.client.renderer.texture.NativeImage;
 
 @FunctionalInterface
 public interface ISkinAvailableCallback extends IImageBuffer {
     @Override
-    default BufferedImage parseUserSkin(BufferedImage image) {
+    default NativeImage parseUserSkin(NativeImage image) {
         return image;
     }
 }

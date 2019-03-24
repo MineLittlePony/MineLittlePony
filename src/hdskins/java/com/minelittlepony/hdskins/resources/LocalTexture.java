@@ -7,18 +7,18 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.util.ResourceLocation;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import javax.imageio.ImageIO;
 
 public class LocalTexture {
 
-    private final TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
+    private final TextureManager textureManager = Minecraft.getInstance().getTextureManager();
 
     private DynamicTexture local;
     private PreviewTexture remote;
@@ -86,7 +86,7 @@ public class LocalTexture {
 
         remote = ptm.getPreviewTexture(remoteResource, type, blank.getBlankSkin(type), (type, location, profileTexture) -> {
             if (callback != null) {
-                callback.skinAvailable(type, location, profileTexture);
+                callback.onSkinTextureAvailable(type, location, profileTexture);
             }
             remoteLoaded = true;
         });
@@ -99,9 +99,9 @@ public class LocalTexture {
 
         clearLocal();
 
-        try {
-            BufferedImage image = ImageIO.read(file);
-            BufferedImage bufferedImage = new ImageBufferDownloadHD().parseUserSkin(image);
+        try (FileInputStream input = new FileInputStream(file)) {
+            NativeImage image = NativeImage.read(input);
+            NativeImage bufferedImage = new ImageBufferDownloadHD().parseUserSkin(image);
 
             local = new DynamicTextureImage(bufferedImage);
             localResource = textureManager.getDynamicTextureLocation("localSkinPreview", local);

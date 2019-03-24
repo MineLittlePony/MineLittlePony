@@ -48,7 +48,7 @@ public class PlayerSkullRenderer extends PonySkull {
                 return skin;
             }
 
-            Minecraft minecraft = Minecraft.getMinecraft();
+            Minecraft minecraft = Minecraft.getInstance();
             Map<Type, MinecraftProfileTexture> map = minecraft.getSkinManager().loadSkinFromCache(profile);
 
             if (map.containsKey(Type.SKIN)) {

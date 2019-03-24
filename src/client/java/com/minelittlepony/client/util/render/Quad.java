@@ -1,6 +1,6 @@
 package com.minelittlepony.client.util.render;
 
-import net.minecraft.client.model.TexturedQuad;
+import net.minecraft.client.renderer.entity.model.TexturedQuad;
 
 public class Quad extends TexturedQuad {
 

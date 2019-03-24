@@ -67,7 +67,7 @@ public class ModelWing<T extends AbstractPonyModel & IPegasus> implements PonyMo
             boolean bags = pegasus.isWearing(Wearable.SADDLE_BAGS);
             if (bags) {
                 GlStateManager.pushMatrix();
-                GlStateManager.translate(0, 0, 0.198F);
+                GlStateManager.translatef(0, 0, 0.198F);
             }
             folded.render(scale);
             if (bags) {

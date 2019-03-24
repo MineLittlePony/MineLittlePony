@@ -9,6 +9,8 @@ import com.minelittlepony.client.transform.PonyPosture;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.util.math.MathUtil;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.entity.Entity;
@@ -53,14 +55,14 @@ public class RenderPony<T extends EntityLivingBase> {
         ponyModel.updateLivingState(entity, pony);
 
         float s = getScaleFactor();
-        GlStateManager.scale(s, s, s);
+        GlStateManager.scalef(s, s, s);
         enableModelRenderProfile();
 
         translateRider(entity, ticks);
     }
 
     public float getRenderYaw(T entity, float rotationYaw, float partialTicks) {
-        if (entity.isRiding()) {
+        if (entity.getRidingEntity() != null) {
             Entity mount = entity.getRidingEntity();
             if (mount  instanceof EntityLivingBase) {
                 return MathUtil.interpolateDegress(((EntityLivingBase)mount).prevRenderYawOffset, ((EntityLivingBase)mount).renderYawOffset, partialTicks);
@@ -71,7 +73,7 @@ public class RenderPony<T extends EntityLivingBase> {
     }
 
     protected void translateRider(EntityLivingBase entity, float ticks) {
-        if (entity.isRiding()) {
+        if (entity.getRidingEntity() != null) {
             Entity ridingEntity = entity.getRidingEntity();
 
             if (ridingEntity instanceof EntityLivingBase) {
@@ -79,7 +81,7 @@ public class RenderPony<T extends EntityLivingBase> {
 
                 if (renderer != null) {
                     // negate vanilla translations so the rider begins at the ridees feet.
-                    GlStateManager.translate(0, -ridingEntity.height, 0);
+                    GlStateManager.translatef(0, -ridingEntity.height, 0);
 
                     @SuppressWarnings("unchecked")
                     IPony riderPony = renderer.getEntityPony((EntityLivingBase)ridingEntity);
@@ -113,12 +115,15 @@ public class RenderPony<T extends EntityLivingBase> {
         }
     }
 
+    @Nullable
     private PonyPosture<?> getPosture(T entity) {
         if (entity.isElytraFlying()) {
             return PonyPosture.ELYTRA;
         }
 
-        if (entity.isEntityAlive() && entity.isPlayerSleeping()) return null;
+        if (entity.isAlive() && entity.isPlayerSleeping()) {
+            return null;
+        }
 
         if (ponyModel.isSwimming()) {
             return PonyPosture.SWIMMING;
@@ -168,7 +173,7 @@ public class RenderPony<T extends EntityLivingBase> {
             y -= 0.25F;
         }
 
-        if (entity.isRiding()) {
+        if (entity.getRidingEntity() != null) {
             y += entity.getRidingEntity().getEyeHeight();
         }
 

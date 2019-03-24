@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiPageButtonList.GuiResponder;
  * @author Sollace
  *
  */
+// TODO: They tuk it. I's gone, capt'n!
 public class Slider extends GuiSlider {
 
     private static Responder callback;

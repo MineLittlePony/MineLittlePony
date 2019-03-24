@@ -1,24 +1,24 @@
 package com.minelittlepony.client.pony;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import net.minecraft.client.resources.data.IMetadataSectionSerializer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import net.minecraft.resources.data.IMetadataSectionSerializer;
 
-import java.lang.reflect.Type;
+class PonyDataSerialiser implements IMetadataSectionSerializer<PonyData> {
 
-public class PonyDataSerialiser implements IMetadataSectionSerializer<PonyData> {
-
-    public static final String NAME = "pony";
+    private static final Gson gson = new GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation()
+            .create();
 
     @Override
     public String getSectionName() {
-        return NAME;
+        return "pony";
     }
 
     @Override
-    public PonyData deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        return context.deserialize(json, PonyData.class);
+    public PonyData deserialize(JsonObject json) {
+        return gson.fromJson(json, PonyData.class);
     }
 }
 

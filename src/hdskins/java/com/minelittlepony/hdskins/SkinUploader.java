@@ -75,7 +75,7 @@ public class SkinUploader implements Closeable {
 
     private final ISkinUploadHandler listener;
 
-    private final Minecraft mc = Minecraft.getMinecraft();
+    private final Minecraft mc = Minecraft.getInstance();
 
     private static <T> Iterator<T> cycle(List<T> list, Predicate<T> filter) {
         return Iterables.cycle(Iterables.filter(list, filter::test)).iterator();

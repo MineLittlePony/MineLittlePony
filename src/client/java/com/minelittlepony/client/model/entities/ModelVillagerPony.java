@@ -29,7 +29,7 @@ public class ModelVillagerPony extends ModelMobPony {
     @Override
     public void setLivingAnimations(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTickTime) {
         profession = getProfession(entity);
-        special = "Derpy".equals(entity.getCustomNameTag());
+        special = "Derpy".equals(entity.getCustomName().getUnformattedComponentText());
         special2 = special && entity.getUniqueID().getLeastSignificantBits() % 20 == 0;
     }
 
@@ -64,6 +64,7 @@ public class ModelVillagerPony extends ModelMobPony {
         return super.isWearing(wearable);
     }
 
+    @SuppressWarnings("deprecation")
     protected int getProfession(Entity entity) {
         if (entity instanceof EntityVillager) {
             return ((EntityVillager) entity).getProfession();

@@ -42,11 +42,12 @@ public class RenderEnderStallion extends RenderPonyMob<EntityEnderman> implement
         return new LayerHeldPonyItemMagical<EntityEnderman>(this) {
             @Override
             protected ItemStack getRightItem(EntityEnderman entity) {
-                IBlockState state = entity.getHeldBlockState();
+                IBlockState state = entity.func_195405_dq();
                 if (state == null) {
                     return ItemStack.EMPTY;
                 }
-                return new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
+
+                return new ItemStack(state.getBlock().asItem());
             }
         };
     }
@@ -60,7 +61,7 @@ public class RenderEnderStallion extends RenderPonyMob<EntityEnderman> implement
     public void doRender(EntityEnderman entity, double x, double y, double z, float entityYaw, float partialTicks) {
         ModelEnderStallion modelenderman = (ModelEnderStallion)getMainModel();
 
-        modelenderman.isCarrying = entity.getHeldBlockState() != null;
+        modelenderman.isCarrying = entity.func_195405_dq() != null;
         modelenderman.isAttacking = entity.isScreaming();
 
         if (entity.isScreaming()) {

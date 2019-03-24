@@ -149,7 +149,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
 
         addButton(btnBrowse = new Button(width / 2 - 150, height - 27, 90, 20, "hdskins.options.browse", sender ->
                     chooser.openBrowsePNG(mc, format("hdskins.open.title"))))
-                .setEnabled(!mc.isFullScreen());
+                .setEnabled(!mc.mainWindow.isFullscreen());
 
         addButton(btnUpload = new FeatureButton(width / 2 - 24, height / 2 - 20, 48, 20, "hdskins.options.chevy", sender -> {
             if (uploader.canUpload()) {
@@ -212,7 +212,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
                 .setValue(localPlayer.isPlayerSleeping() ? 1 : 0)
                 .setStyle(new Style().setIcon(new ItemStack(Items.IRON_BOOTS, 1)).setTooltip("hdskins.mode.stand"), 0)
                 .setStyle(new Style().setIcon(new ItemStack(Items.CLOCK, 1)).setTooltip("hdskins.mode.sleep"), 1)
-                .setStyle(new Style().setIcon(new ItemStack(Items.BOAT, 1)).setTooltip("hdskins.mode.ride"), 2)
+                .setStyle(new Style().setIcon(new ItemStack(Items.OAK_BOAT, 1)).setTooltip("hdskins.mode.ride"), 2)
                 .setTooltipOffset(0, 10);
 
         addButton(new Button(width - 25, height - 65, 20, 20, "?", sender -> {

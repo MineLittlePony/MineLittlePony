@@ -24,10 +24,10 @@ public class ModelZebra extends ModelEarthPony {
     @Override
     public void transform(BodyPart part) {
         if (part == BodyPart.HEAD || part == BodyPart.NECK) {
-            GlStateManager.translate(0, -0.1F, 0);
+            GlStateManager.translatef(0, -0.1F, 0);
         }
         if (part == BodyPart.NECK) {
-             GlStateManager.scale(1, 1.3F, 1);
+             GlStateManager.scalef(1, 1.3F, 1);
         }
         super.transform(part);
     }
@@ -55,10 +55,10 @@ public class ModelZebra extends ModelEarthPony {
         @Override
         public void transform(BodyPart part) {
             if (part == BodyPart.HEAD || part == BodyPart.NECK) {
-                GlStateManager.translate(0, -0.1F, 0);
+                GlStateManager.translatef(0, -0.1F, 0);
             }
             if (part == BodyPart.NECK) {
-                 GlStateManager.scale(1, 1.3F, 1);
+                 GlStateManager.scalef(1, 1.3F, 1);
             }
             super.transform(part);
         }

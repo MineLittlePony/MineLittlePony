@@ -13,10 +13,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
@@ -26,9 +25,9 @@ import static net.minecraft.client.renderer.GlStateManager.*;
 public class LevitatingItemRenderer {
 
     public static void enableItemGlowRenderProfile() {
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(SourceFactor.CONSTANT_COLOR, DestFactor.ONE, SourceFactor.ONE, DestFactor.ZERO);
-        Minecraft.getMinecraft().entityRenderer.disableLightmap();
+        enableBlend();
+        blendFuncSeparate(SourceFactor.CONSTANT_COLOR, DestFactor.ONE, SourceFactor.ONE, DestFactor.ZERO);
+        Minecraft.getInstance().entityRenderer.disableLightmap();
     }
 
     /**
@@ -39,15 +38,15 @@ public class LevitatingItemRenderer {
         disableLighting();
         setColor(glowColor);
 
-        RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+        ItemRenderer renderItem = Minecraft.getInstance().getItemRenderer();
         ((IRenderItem) renderItem).useTransparency(true);
         PonySkullRenderer.ponyInstance.useTransparency(true);
 
-        scale(1.1, 1.1, 1.1);
+        scalef(1.1F, 1.1F, 1.1F);
 
-        translate(0, 0.01F, 0.01F);
+        translatef(0, 0.01F, 0.01F);
         renderItem.renderItem(drop, entity, transform, hand == EnumHandSide.LEFT);
-        translate(0.01F, -0.01F, -0.02F);
+        translatef(0.01F, -0.01F, -0.02F);
         renderItem.renderItem(drop, entity, transform, hand == EnumHandSide.LEFT);
 
         ((IRenderItem) renderItem).useTransparency(false);
@@ -78,28 +77,28 @@ public class LevitatingItemRenderer {
         boolean doMagic = MineLittlePony.getInstance().getConfig().fpsmagic && pony.getMetadata().hasMagic();
 
         if (doMagic) {
-            setupPerspective(entity, stack, left);
+            setupPerspective(renderer, entity, stack, left);
         }
 
-        renderer.renderItemSide(entity, stack, transform, left);
+        renderer.renderItem(stack, entity, transform, left);
 
         if (doMagic) {
             disableLighting();
 
-            IRenderItem renderItem = (IRenderItem)Minecraft.getMinecraft().getRenderItem();
-            renderItem.useTransparency(true);
+            ((IRenderItem)renderer).useTransparency(true);
             PonySkullRenderer.ponyInstance.useTransparency(true);
 
             setColor(pony.getMetadata().getGlowColor());
 
-            scale(1.1, 1.1, 1.1);
+            scalef(1.1F, 1.1F, 1.1F);
 
-            translate(-0.015F, 0.01F, 0.01F);
-            renderer.renderItemSide(entity, stack, transform, left);
-            translate(0.03F, -0.01F, -0.02F);
-            renderer.renderItemSide(entity, stack, transform, left);
+            translatef(-0.015F, 0.01F, 0.01F);
+            renderer.renderItem(stack, entity, transform, left);
+            translatef(0.03F, -0.01F, -0.02F);
+            renderer.renderItem(stack, entity, transform, left);
 
-            renderItem.useTransparency(false);
+            ((IRenderItem)renderer).useTransparency(false);
+
             PonySkullRenderer.ponyInstance.useTransparency(false);
 
             unsetColor();
@@ -114,8 +113,8 @@ public class LevitatingItemRenderer {
     /**
      * Moves held items to look like they're floating in the player's field.
      */
-    private void setupPerspective(EntityLivingBase entity, ItemStack stack, boolean left) {
-        EnumAction action = stack.getItemUseAction();
+    private void setupPerspective(ItemRenderer renderer, EntityLivingBase entity, ItemStack stack, boolean left) {
+        EnumAction action = stack.getUseAction();
 
         boolean doNormal = entity.getItemInUseCount() <= 0 || action == EnumAction.NONE;
 
@@ -125,18 +124,18 @@ public class LevitatingItemRenderer {
             float floatAmount = (float)Math.sin(ticks / 9) / 40;
             float driftAmount = (float)Math.cos(ticks / 6) / 40;
 
-            boolean handHeldTool = stack.getItemUseAction() == EnumAction.BOW
-                    || stack.getItemUseAction() == EnumAction.BLOCK;
+            boolean handHeldTool = stack.getUseAction() == EnumAction.BOW
+                    || stack.getUseAction() == EnumAction.BLOCK;
 
-            translate(driftAmount - floatAmount / 4, floatAmount, handHeldTool ? -0.3F : -0.6F);
+            translatef(driftAmount - floatAmount / 4, floatAmount, handHeldTool ? -0.3F : -0.6F);
 
-            if (!stack.getItem().isFull3D() && !handHeldTool) { // bows have to point forwards
+            if (!renderer.shouldRenderItemIn3D(stack) && !handHeldTool) { // bows have to point forwards
                 if (left) {
-                    rotate(-60, 0, 1, 0);
-                    rotate(30, 0, 0, 1);
+                    rotatef(-60, 0, 1, 0);
+                    rotatef(30, 0, 0, 1);
                 } else {
-                    rotate(60, 0, 1, 0);
-                    rotate(-30, 0, 0, 1);
+                    rotatef(60, 0, 1, 0);
+                    rotatef(-30, 0, 0, 1);
                 }
             }
         }

@@ -1,8 +1,9 @@
 package com.minelittlepony.client.pony;
 
-import net.minecraft.client.resources.data.IMetadataSection;
+import net.minecraft.client.renderer.texture.NativeImage;
 
 import com.google.common.base.MoreObjects;
+import com.google.gson.annotations.Expose;
 import com.minelittlepony.pony.IPonyData;
 import com.minelittlepony.pony.meta.Gender;
 import com.minelittlepony.pony.meta.Race;
@@ -13,24 +14,35 @@ import com.minelittlepony.pony.meta.Wearable;
 import com.minelittlepony.util.animation.BasicEasingInterpolator;
 import com.minelittlepony.util.animation.IInterpolator;
 
-import java.awt.image.BufferedImage;
 import java.util.UUID;
 
 import javax.annotation.concurrent.Immutable;
-
 
 /**
  * Implementation for IPonyData.
  *
  */
 @Immutable
-public class PonyData implements IPonyData, IMetadataSection {
+public class PonyData implements IPonyData {
+
+    public static final PonyDataSerialiser SERIALISER = new PonyDataSerialiser();
+
+    @Expose
     private final Race race;
+
+    @Expose
     private final TailLength tailSize;
+
+    @Expose
     private final Gender gender;
+
+    @Expose
     private final Size size;
+
+    @Expose
     private final int glowColor;
 
+    @Expose
     private final boolean[] wearables;
 
     public PonyData() {
@@ -43,7 +55,7 @@ public class PonyData implements IPonyData, IMetadataSection {
         wearables = new boolean[Wearable.values().length];
     }
 
-    private PonyData(BufferedImage image) {
+    private PonyData(NativeImage image) {
         race = TriggerPixels.RACE.readValue(image);
         tailSize = TriggerPixels.TAIL.readValue(image);
         size = TriggerPixels.SIZE.readValue(image);
@@ -108,7 +120,7 @@ public class PonyData implements IPonyData, IMetadataSection {
     /**
      * Parses an image buffer into a new IPonyData representing the values stored in it's individual trigger pixels.
      */
-    public static IPonyData parse(BufferedImage image) {
+    public static IPonyData parse(NativeImage image) {
         return new PonyData(image);
     }
 }

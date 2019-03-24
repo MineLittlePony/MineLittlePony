@@ -93,7 +93,7 @@ public interface SkinServer {
      * @throws AuthenticationException if authentication failed or the session is invalid.
      */
     static void verifyServerConnection(Session session, String serverId) throws AuthenticationException {
-        MinecraftSessionService service = Minecraft.getMinecraft().getSessionService();
+        MinecraftSessionService service = Minecraft.getInstance().getSessionService();
         service.joinServer(session.getProfile(), session.getToken(), serverId);
     }
 }

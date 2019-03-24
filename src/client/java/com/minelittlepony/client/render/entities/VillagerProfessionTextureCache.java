@@ -46,7 +46,7 @@ class VillagerProfessionTextureCache implements ITextureSupplier<Integer> {
         ResourceLocation generated = formatter.supplyTexture(keyMapper.apply(professionId));
 
         try {
-            Minecraft.getMinecraft().getResourceManager().getResource(generated);
+            Minecraft.getInstance().getResourceManager().getResource(generated);
         } catch (IOException e) {
             MineLittlePony.logger.error("Error loading villager texture `" + generated + "`.", e);
 

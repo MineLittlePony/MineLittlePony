@@ -5,10 +5,11 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -16,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import javax.annotation.Nullable;
 
 @Mixin(TileEntitySkullRenderer.class)
-public abstract class MixinSkullRenderer extends TileEntitySpecialRenderer<TileEntitySkull> {
+public abstract class MixinSkullRenderer extends TileEntityRenderer<TileEntitySkull> {
 
     @Redirect(method = "renderSkull",
             at = @At(value = "INVOKE",

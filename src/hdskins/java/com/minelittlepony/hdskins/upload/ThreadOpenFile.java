@@ -26,7 +26,7 @@ public abstract class ThreadOpenFile extends Thread implements IFileDialog {
     protected final IFileCallback parentScreen;
 
     protected ThreadOpenFile(Minecraft minecraft, String dialogTitle, IFileCallback callback) throws IllegalStateException {
-        if (minecraft.isFullScreen()) {
+        if (minecraft.mainWindow.isFullscreen()) {
             throw new IllegalStateException("Cannot open an awt window whilst minecraft is in full screen mode!");
         }
 

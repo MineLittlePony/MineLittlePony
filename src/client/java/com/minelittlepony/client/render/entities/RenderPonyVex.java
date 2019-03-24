@@ -22,7 +22,7 @@ public class RenderPonyVex extends RenderBiped<EntityVex> {
 
     @Override
     protected void preRenderCallback(EntityVex entity, float ticks) {
-        GlStateManager.scale(0.4F, 0.4F, 0.4F);
+        GlStateManager.scalef(0.4F, 0.4F, 0.4F);
     }
 
     @Override

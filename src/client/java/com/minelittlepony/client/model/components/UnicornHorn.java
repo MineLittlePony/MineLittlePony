@@ -9,8 +9,8 @@ import java.util.UUID;
 
 import static com.minelittlepony.model.PonyModelConstants.*;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
 
 import static org.lwjgl.opengl.GL11.*;
 import static net.minecraft.client.renderer.GlStateManager.*;

@@ -1,7 +1,7 @@
 package com.minelittlepony.hdskins.resources;
 
 import net.minecraft.client.renderer.IImageBuffer;
-import net.minecraft.client.renderer.ThreadDownloadImageData;
+import net.minecraft.client.renderer.texture.ThreadDownloadImageData;
 import net.minecraft.util.ResourceLocation;
 
 import com.minelittlepony.hdskins.VanillaModels;
@@ -24,7 +24,7 @@ public class PreviewTexture extends ThreadDownloadImageData {
     }
 
     public boolean isTextureUploaded() {
-        return uploaded && this.getGlTextureId() > -1;
+        return uploaded && getGlTextureId() > -1;
     }
 
     public String getUrl() {
@@ -34,7 +34,7 @@ public class PreviewTexture extends ThreadDownloadImageData {
     @Override
     public void deleteGlTexture() {
         super.deleteGlTexture();
-        this.uploaded = true;
+        uploaded = true;
     }
 
     public boolean hasModel() {

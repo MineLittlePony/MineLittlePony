@@ -41,5 +41,4 @@ public abstract class MixinDefaultPlayerSkin {
                     .getId(IPonyManager.isSlimSkin(uuid)));
         }
     }
-
 }

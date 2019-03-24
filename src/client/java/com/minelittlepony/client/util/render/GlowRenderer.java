@@ -1,7 +1,7 @@
 package com.minelittlepony.client.util.render;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelBase;
 
 import org.lwjgl.opengl.GL11;
 
@@ -38,7 +38,7 @@ public class GlowRenderer extends AbstractRenderer<GlowRenderer> {
     @Override
     public void render(float scale) {
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-        Minecraft.getMinecraft().entityRenderer.disableLightmap();
+        Minecraft.getInstance().entityRenderer.disableLightmap();
         super.render(scale);
         GL11.glPopAttrib();
     }

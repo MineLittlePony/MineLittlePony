@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model;
 
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
 
 import com.minelittlepony.model.ICapitated;
 import com.minelittlepony.model.IModel;

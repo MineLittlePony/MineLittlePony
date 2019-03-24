@@ -6,7 +6,7 @@ import com.minelittlepony.client.render.RenderPonyMob;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItem;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.item.ItemStack;
@@ -28,8 +28,8 @@ public class RenderPonyWitch extends RenderPonyMob<EntityWitch> {
         return new LayerHeldPonyItem<EntityWitch>(this) {
             @Override
             protected void preItemRender(EntityWitch entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
-                GlStateManager.translate(0, -0.3F, -0.8F);
-                GlStateManager.rotate(10, 1, 0, 0);
+                GlStateManager.translatef(0, -0.3F, -0.8F);
+                GlStateManager.rotatef(10, 1, 0, 0);
             }
         };
     }
@@ -37,7 +37,7 @@ public class RenderPonyWitch extends RenderPonyMob<EntityWitch> {
     @Override
     public void preRenderCallback(EntityWitch entity, float ticks) {
         super.preRenderCallback(entity, ticks);
-        GlStateManager.scale(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
+        GlStateManager.scalef(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
     }
 
     @Override

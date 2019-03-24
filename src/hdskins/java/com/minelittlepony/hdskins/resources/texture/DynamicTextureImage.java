@@ -1,20 +1,19 @@
 package com.minelittlepony.hdskins.resources.texture;
 
 import net.minecraft.client.renderer.texture.DynamicTexture;
-
-import java.awt.image.BufferedImage;
+import net.minecraft.client.renderer.texture.NativeImage;
 
 public class DynamicTextureImage extends DynamicTexture implements IBufferedTexture {
 
-    private BufferedImage image;
+    private NativeImage image;
 
-    public DynamicTextureImage(BufferedImage bufferedImage) {
+    public DynamicTextureImage(NativeImage bufferedImage) {
         super(bufferedImage);
         this.image = bufferedImage;
     }
 
     @Override
-    public BufferedImage getBufferedImage() {
+    public NativeImage getBufferedImage() {
         return image;
     }
 

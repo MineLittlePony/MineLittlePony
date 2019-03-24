@@ -115,7 +115,7 @@ public class SaddleBags extends AbstractGear {
         dropAmount = model.getMetadata().getInterpolator(interpolatorId).interpolate("dropAmount", dropAmount, 3);
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0, dropAmount, 0);
+        GlStateManager.translatef(0, dropAmount, 0);
 
         leftBag.render(scale);
         rightBag.render(scale);

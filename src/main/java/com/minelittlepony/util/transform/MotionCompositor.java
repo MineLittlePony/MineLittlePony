@@ -40,7 +40,7 @@ public abstract class MotionCompositor {
         double dist = Math.sqrt(motionX * motionX + motionZ * motionZ);
         double angle = Math.atan2(motionY, dist);
 
-        if (!player.capabilities.isFlying) {
+        if (!player.abilities.isFlying) {
             angle /= 2;
         }
 

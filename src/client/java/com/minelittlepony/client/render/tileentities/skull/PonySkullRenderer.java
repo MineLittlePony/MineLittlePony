@@ -6,6 +6,9 @@ import com.minelittlepony.client.ducks.IRenderItem;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.settings.PonyConfig;
 import com.mojang.authlib.GameProfile;
+
+import net.minecraft.block.BlockSkull;
+import net.minecraft.block.BlockSkull.ISkullType;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
 import net.minecraft.tileentity.TileEntitySkull;
@@ -32,13 +35,13 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
     public static PonySkullRenderer ponyInstance = new PonySkullRenderer();
     private static TileEntitySkullRenderer backup = null;
 
-    private final Map<Integer, ISkull> skullMap = new HashMap<>();
+    private final Map<ISkullType, ISkull> skullMap = new HashMap<>();
 
     private PonySkullRenderer() {
-        skullMap.put(SKELETON, new SkeletonSkullRenderer());
-        skullMap.put(WITHER, new WitherSkullRenderer());
-        skullMap.put(ZOMBIE, new ZombieSkullRenderer());
-        skullMap.put(PLAYER, new PlayerSkullRenderer());
+        skullMap.put(BlockSkull.Types.SKELETON, new SkeletonSkullRenderer());
+        skullMap.put(BlockSkull.Types.WITHER_SKELETON, new WitherSkullRenderer());
+        skullMap.put(BlockSkull.Types.ZOMBIE, new ZombieSkullRenderer());
+        skullMap.put(BlockSkull.Types.PLAYER, new PlayerSkullRenderer());
     }
 
     /**
@@ -71,15 +74,15 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
     protected boolean transparency = false;
 
     @Override
-    public void renderSkull(float x, float y, float z, EnumFacing facing, float rotation, int skullType, @Nullable GameProfile profile, int destroyStage, float animateTicks) {
+    public void render(float x, float y, float z, EnumFacing facing, float rotation, ISkullType skullType, @Nullable GameProfile profile, int destroyStage, float animateTicks) {
 
         ISkull skull = skullMap.get(skullType);
 
         if (skull == null || !skull.canRender(MineLittlePony.getInstance().getConfig())) {
             if (backup != null) {
-                backup.renderSkull(x, y, z, facing, rotation, skullType, profile, destroyStage, animateTicks);
+                backup.render(x, y, z, facing, rotation, skullType, profile, destroyStage, animateTicks);
             } else {
-                super.renderSkull(x, y, z, facing, rotation, skullType, profile, destroyStage, animateTicks);
+                super.render(x, y, z, facing, rotation, skullType, profile, destroyStage, animateTicks);
             }
 
             return;
@@ -91,8 +94,8 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
             bindTexture(DESTROY_STAGES[destroyStage]);
             GlStateManager.matrixMode(GL11.GL_TEXTURE);
             GlStateManager.pushMatrix();
-            GlStateManager.scale(4, 2, 1);
-            GlStateManager.translate(scale, scale, scale);
+            GlStateManager.scalef(4, 2, 1);
+            GlStateManager.translatef(scale, scale, scale);
             GlStateManager.matrixMode(GL11.GL_MODELVIEW);
         } else {
             ResourceLocation skin = skull.getSkinResource(profile);
@@ -108,8 +111,8 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
         rotation = handleRotation(x, y, z, facing, rotation);
 
         GlStateManager.enableRescaleNormal();
-        GlStateManager.scale(-1, -1, 1);
-        GlStateManager.enableAlpha();
+        GlStateManager.scalef(-1, -1, 1);
+        GlStateManager.enableAlphaTest();
 
         skull.preRender(transparency);
         skull.render(animateTicks, rotation, scale);
@@ -127,19 +130,19 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
         switch (facing) {
             case EAST:
             default:
-                GlStateManager.translate(x + 0.26F, y + 0.25F, z + 0.5F);
+                GlStateManager.translatef(x + 0.26F, y + 0.25F, z + 0.5F);
                 return 90;
             case UP:
-                GlStateManager.translate(x + 0.5F, y, z + 0.5F);
+                GlStateManager.translatef(x + 0.5F, y, z + 0.5F);
                 break;
             case NORTH:
-                GlStateManager.translate(x + 0.5F, y + 0.25F, z + 0.74F);
+                GlStateManager.translatef(x + 0.5F, y + 0.25F, z + 0.74F);
                 break;
             case SOUTH:
-                GlStateManager.translate(x + 0.5F, y + 0.25F, z + 0.26F);
+                GlStateManager.translatef(x + 0.5F, y + 0.25F, z + 0.26F);
                 return 180;
             case WEST:
-                GlStateManager.translate(x + 0.74F, y + 0.25F, z + 0.5F);
+                GlStateManager.translatef(x + 0.74F, y + 0.25F, z + 0.5F);
                 return 270;
         }
 

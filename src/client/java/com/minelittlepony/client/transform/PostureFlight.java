@@ -17,12 +17,12 @@ public class PostureFlight extends MotionCompositor implements PonyPosture<Abstr
     public void transform(IClientModel model, AbstractClientPlayer player, double motionX, double motionY, double motionZ, float yaw, float ticks) {
         model.setPitch((float) calculateIncline(player, motionX, motionY, motionZ));
 
-        GlStateManager.rotate(model.getPitch(), 1, 0, 0);
+        GlStateManager.rotatef(model.getPitch(), 1, 0, 0);
 
         float roll = (float)calculateRoll(player, motionX,  motionY, motionZ);
 
         roll = model.getMetadata().getInterpolator(player.getUniqueID()).interpolate("pegasusRoll", roll, 10);
 
-        GlStateManager.rotate((float)roll, 0, 0, 1);
+        GlStateManager.rotatef((float)roll, 0, 0, 1);
     }
 }

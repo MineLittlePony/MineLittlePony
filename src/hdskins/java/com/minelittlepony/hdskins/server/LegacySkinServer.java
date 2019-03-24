@@ -54,7 +54,7 @@ public class LegacySkinServer implements SkinServer {
     @Override
     public CompletableFuture<MinecraftTexturesPayload> getPreviewTextures(GameProfile profile) {
         return CallableFutures.asyncFailableFuture(() -> {
-            SkinServer.verifyServerConnection(Minecraft.getMinecraft().getSession(), SERVER_ID);
+            SkinServer.verifyServerConnection(Minecraft.getInstance().getSession(), SERVER_ID);
 
             if (Strings.isNullOrEmpty(gateway)) {
                 throw gatewayUnsupported();

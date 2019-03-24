@@ -18,25 +18,25 @@ public class LayerEyeGlow<T extends EntityLiving> extends AbstractPonyLayer<T> {
     }
 
     @Override
-    public void doRenderLayer(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
         getRenderer().bindTexture(eyeTexture);
 
         enableBlend();
-        disableAlpha();
+        disableAlphaTest();
         blendFunc(SourceFactor.ONE, DestFactor.ONE);
 
         disableLighting();
         depthMask(!entity.isInvisible());
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 61680, 0);
+        OpenGlHelper.glMultiTexCoord2f(OpenGlHelper.GL_TEXTURE1, 61680, 0);
         enableLighting();
 
-        color(1, 1, 1, 1);
+        color4f(1, 1, 1, 1);
 
-        Minecraft.getMinecraft().entityRenderer.setupFogColor(true);
+        Minecraft.getInstance().entityRenderer.setupFogColor(true);
 
         getMainModel().render(entity, move, swing, ticks, headYaw, headPitch, scale);
 
-        Minecraft.getMinecraft().entityRenderer.setupFogColor(false);
+        Minecraft.getInstance().entityRenderer.setupFogColor(false);
 
         ((RenderLiving<T>)getRenderer()).setLightmap(entity);
 
@@ -44,7 +44,7 @@ public class LayerEyeGlow<T extends EntityLiving> extends AbstractPonyLayer<T> {
 
         blendFunc(SourceFactor.ONE, DestFactor.ZERO);
         disableBlend();
-        enableAlpha();
+        enableAlphaTest();
     }
 
     public interface IGlowingRenderer {

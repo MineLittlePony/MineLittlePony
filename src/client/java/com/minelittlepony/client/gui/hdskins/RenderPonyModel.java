@@ -13,9 +13,9 @@ import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.meta.Race;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelElytra;
-import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.renderer.entity.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelElytra;
+import net.minecraft.client.renderer.entity.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
@@ -55,7 +55,7 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> implemen
         } else {
             renderPony.preRenderCallback(entity, ticks);
 
-            GlStateManager.translate(0, 0, -entity.width / 2); // move us to the center of the shadow
+            GlStateManager.translatef(0, 0, -entity.width / 2); // move us to the center of the shadow
         }
     }
 

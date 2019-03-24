@@ -10,7 +10,9 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.SkinManager;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
@@ -45,7 +47,7 @@ public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSup
     protected boolean previewRiding = false;
 
     public EntityPlayerModel(GameProfile gameprofile) {
-        super(DummyWorld.INSTANCE);
+        super(EntityType.PLAYER, DummyWorld.INSTANCE);
 
         profile = gameprofile;
 
@@ -57,7 +59,7 @@ public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSup
         return uploader.loadTextures(profile).thenAcceptAsync(ptm -> {
             skin.setRemote(ptm, listener);
             elytra.setRemote(ptm, listener);
-        }, Minecraft.getMinecraft()::addScheduledTask); // run on main thread
+        }, Minecraft.getInstance()::addScheduledTask); // run on main thread
     }
 
     public void setLocalTexture(File skinTextureFile, Type type) {
@@ -115,8 +117,8 @@ public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSup
     }
 
     @Override
-    public boolean isRiding() {
-        return previewRiding;
+    public Entity getRidingEntity() {
+        return previewRiding ? this : null;
     }
 
     @Override
@@ -168,7 +170,7 @@ public class EntityPlayerModel extends EntityLivingBase implements IBlankSkinSup
 
     @Override
     public EnumHandSide getPrimaryHand() {
-        return Minecraft.getMinecraft().gameSettings.mainHand;
+        return Minecraft.getInstance().gameSettings.mainHand;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.minelittlepony.client.render.layer;
 
-import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.monster.EntityStray;
 import net.minecraft.util.ResourceLocation;

@@ -1,8 +1,8 @@
 package com.minelittlepony.client.model.gear;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.Entity;
 
@@ -36,7 +36,7 @@ public abstract class AbstractGear extends ModelBase implements IGear, PonyModel
     public void renderSeparately(Entity entity, float scale) {
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
 
-        TextureManager tex = Minecraft.getMinecraft().getRenderManager().renderEngine;
+        TextureManager tex = Minecraft.getInstance().getRenderManager().textureManager;
         tex.bindTexture(getTexture(entity));
 
         renderPart(scale, entity.getUniqueID());

@@ -20,9 +20,9 @@ import com.minelittlepony.util.math.MathUtil;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelPlayer;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -890,7 +890,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
     }
 
     protected void renderNeck(float scale) {
-        GlStateManager.scale(0.9, 0.9, 0.9);
+        GlStateManager.scalef(0.9F, 0.9F, 0.9F);
         neck.render(scale);
     }
 
@@ -930,12 +930,12 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
     @Override
     public void transform(BodyPart part) {
         if (isSleeping()) {
-            rotate(90, 1, 0, 0);
-            rotate(180, 0, 1, 0);
+            rotatef(90, 1, 0, 0);
+            rotatef(180, 0, 1, 0);
         }
 
         if (part == BodyPart.HEAD) {
-            rotate(motionPitch, 1, 0, 0);
+            rotatef(motionPitch, 1, 0, 0);
         }
 
         PonyTransformation.forSize(getSize()).transform(this, part);

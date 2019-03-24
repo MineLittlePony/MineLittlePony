@@ -1,6 +1,6 @@
 package com.minelittlepony.client.render.layer;
 
-import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLiving;
@@ -21,7 +21,7 @@ public abstract class LayerOverlayBase<T extends EntityLiving> implements LayerR
     }
 
     @Override
-    public void doRenderLayer(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
         ModelBase overlayModel = getOverlayModel();
 
         overlayModel.setModelAttributes(renderer.getMainModel());

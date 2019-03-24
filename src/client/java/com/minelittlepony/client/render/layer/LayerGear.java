@@ -39,7 +39,7 @@ public class LayerGear<T extends EntityLivingBase> extends AbstractPonyLayer<T> 
     }
 
     @Override
-    public void doRenderLayer(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
 
         if (entity.isInvisible()) {
             return;
@@ -60,7 +60,7 @@ public class LayerGear<T extends EntityLivingBase> extends AbstractPonyLayer<T> 
                     renderStackingOffsets.compute(part, (k, v) -> {
                         float offset = ((IStackable)gear).getStackingOffset();
                        if (v != null) {
-                           GlStateManager.translate(0, -v, 0);
+                           GlStateManager.translatef(0, -v, 0);
                            offset += v;
                        }
                        return offset;

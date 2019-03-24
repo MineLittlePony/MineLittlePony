@@ -1,10 +1,11 @@
 package com.minelittlepony.hdskins.resources.texture;
 
-import java.awt.image.BufferedImage;
+import net.minecraft.client.renderer.texture.NativeImage;
+
 import javax.annotation.Nullable;
 
 public interface IBufferedTexture {
 
     @Nullable
-    BufferedImage getBufferedImage();
+    NativeImage getBufferedImage();
 }

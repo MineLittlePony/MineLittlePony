@@ -1,24 +1,6 @@
 package com.minelittlepony.hdskins.gui;
 
-import static net.minecraft.client.renderer.GlStateManager.color;
-import static net.minecraft.client.renderer.GlStateManager.colorMask;
-import static net.minecraft.client.renderer.GlStateManager.depthMask;
-import static net.minecraft.client.renderer.GlStateManager.disableAlpha;
-import static net.minecraft.client.renderer.GlStateManager.disableCull;
-import static net.minecraft.client.renderer.GlStateManager.disableFog;
-import static net.minecraft.client.renderer.GlStateManager.enableAlpha;
-import static net.minecraft.client.renderer.GlStateManager.enableBlend;
-import static net.minecraft.client.renderer.GlStateManager.enableCull;
-import static net.minecraft.client.renderer.GlStateManager.enableDepth;
-import static net.minecraft.client.renderer.GlStateManager.glTexParameteri;
-import static net.minecraft.client.renderer.GlStateManager.loadIdentity;
-import static net.minecraft.client.renderer.GlStateManager.matrixMode;
-import static net.minecraft.client.renderer.GlStateManager.popMatrix;
-import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
-import static net.minecraft.client.renderer.GlStateManager.rotate;
-import static net.minecraft.client.renderer.GlStateManager.translate;
-import static net.minecraft.client.renderer.GlStateManager.tryBlendFuncSeparate;
-import static net.minecraft.client.renderer.GlStateManager.viewport;
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.Project;
@@ -46,13 +28,12 @@ public class CubeMap {
 
     private ResourceLocation[] cubemapTextures;
 
-    private Minecraft mc;
+    private final Minecraft mc = Minecraft.getInstance();
 
     private final GuiScreen owner;
 
     public CubeMap(GuiScreen owner) {
         this.owner = owner;
-        mc = Minecraft.getMinecraft();
     }
 
     public float getDelta(float partialTick) {
@@ -84,9 +65,9 @@ public class CubeMap {
 
         disableFog();
         mc.entityRenderer.disableLightmap();
-        disableAlpha();
+        disableAlphaTest();
         renderPanorama(partialTick);
-        enableAlpha();
+        enableAlphaTest();
     }
 
     private void setupCubemapCamera() {
@@ -108,14 +89,14 @@ public class CubeMap {
 
     private void renderCubeMapTexture(float partialTick) {
         this.setupCubemapCamera();
-        color(1, 1, 1, 1);
-        rotate(180, 1, 0, 0);
+        color4f(1, 1, 1, 1);
+        rotatef(180, 1, 0, 0);
 
         enableBlend();
-        disableAlpha();
+        disableAlphaTest();
         disableCull();
         depthMask(false);
-        tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
+        blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
         byte blendIterations = 8;
 
         Tessellator tessellator = Tessellator.getInstance();
@@ -126,30 +107,30 @@ public class CubeMap {
             float offsetX = ((float) (blendPass % blendIterations) / (float) blendIterations - 0.5F) / 64;
             float offsetY = ((float) (blendPass / blendIterations) / (float) blendIterations - 0.5F) / 64;
 
-            translate(offsetX, offsetY, 0);
-            rotate(MathHelper.sin(lastPartialTick / 400) * 25 + 20, 1, 0, 0);
-            rotate(-lastPartialTick / 10, 0, 1, 0);
+            translatef(offsetX, offsetY, 0);
+            rotatef(MathHelper.sin(lastPartialTick / 400) * 25 + 20, 1, 0, 0);
+            rotatef(-lastPartialTick / 10, 0, 1, 0);
 
             for (int cubeSide = 0; cubeSide < 6; ++cubeSide) {
                 pushMatrix();
                 if (cubeSide == 1) {
-                    rotate(90, 0, 1, 0);
+                    rotatef(90, 0, 1, 0);
                 }
 
                 if (cubeSide == 2) {
-                    rotate(180, 0, 1, 0);
+                    rotatef(180, 0, 1, 0);
                 }
 
                 if (cubeSide == 3) {
-                    rotate(-90, 0, 1, 0);
+                    rotatef(-90, 0, 1, 0);
                 }
 
                 if (cubeSide == 4) {
-                    rotate(90, 1, 0, 0);
+                    rotatef(90, 1, 0, 0);
                 }
 
                 if (cubeSide == 5) {
-                    rotate(-90, 1, 0, 0);
+                    rotatef(-90, 1, 0, 0);
                 }
 
                 mc.getTextureManager().bindTexture(cubemapTextures[cubeSide]);
@@ -175,9 +156,9 @@ public class CubeMap {
         colorMask(true, true, true, true);
         depthMask(true);
         enableCull();
-        enableAlpha();
-        enableDepth();
-        this.revertPanoramaMatrix();
+        enableAlphaTest();
+        enableDepthTest();
+        revertPanoramaMatrix();
     }
 
     private void rotateAndBlurCubemap() {
@@ -187,13 +168,13 @@ public class CubeMap {
         glTexParameteri(3553, 10240, 9729);
         GL11.glCopyTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, 0, 0, 256, 256);
         enableBlend();
-        tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
+        blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
         colorMask(true, true, true, false);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder vb = tessellator.getBuffer();
         vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-        disableAlpha();
+        disableAlphaTest();
 
         byte blurPasses = 3;
 
@@ -208,7 +189,7 @@ public class CubeMap {
         }
 
         tessellator.draw();
-        enableAlpha();
+        enableAlphaTest();
         colorMask(true, true, true, true);
     }
 
@@ -224,7 +205,7 @@ public class CubeMap {
 
         mc.getFramebuffer().bindFramebuffer(true);
 
-        viewport(0, 0, mc.displayWidth, mc.displayHeight);
+        viewport(0, 0, mc.mainWindow.getWidth(), mc.mainWindow.getHeight());
 
         float aspect = owner.width > owner.height ? 120F / owner.width : 120F / owner.height;
         float uSample = owner.height * aspect / 256F;

@@ -5,9 +5,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-import net.minecraft.client.resources.IResource;
-import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.client.resources.IResourceManagerReloadListener;
+import net.minecraft.resources.IResource;
+import net.minecraft.resources.IResourceManager;
+import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -43,7 +43,7 @@ public class SkinResourceManager implements IResourceManagerReloadListener {
         executor = Executors.newSingleThreadExecutor();
         inProgress.clear();
         converted.clear();
-        for (String domain : resourceManager.getResourceDomains()) {
+        for (String domain : resourceManager.getResourceNamespaces()) {
             try {
                 for (IResource res : resourceManager.getAllResources(new ResourceLocation(domain, "textures/skins/skins.json"))) {
                     try {
@@ -57,7 +57,7 @@ public class SkinResourceManager implements IResourceManagerReloadListener {
                             }
                         }
                     } catch (JsonParseException je) {
-                        logger.warn("Invalid skins.json in " + res.getResourcePackName(), je);
+                        logger.warn("Invalid skins.json in " + res.getPackName(), je);
                     }
                 }
             } catch (IOException e) {

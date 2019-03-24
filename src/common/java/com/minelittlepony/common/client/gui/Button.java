@@ -24,10 +24,6 @@ public class Button extends GuiButton implements IGuiTooltipped<Button> {
         action = (IGuiAction<Button>)callback;
     }
 
-    public void perform() {
-        action.perform(this);
-    }
-
     public Button setEnabled(boolean enable) {
         enabled = enable;
         return this;
@@ -60,13 +56,8 @@ public class Button extends GuiButton implements IGuiTooltipped<Button> {
     }
 
     @Override
-    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        if (super.mousePressed(mc, mouseX, mouseY)) {
-            perform();
-
-            return true;
-        }
-
-        return false;
+    public void onClick(double mouseX, double mouseY) {
+        super.onClick(mouseX, mouseY);
+        action.perform(this);
     }
 }

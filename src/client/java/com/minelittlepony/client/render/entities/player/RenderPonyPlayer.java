@@ -56,7 +56,7 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
     @Override
     public float prepareScale(AbstractClientPlayer player, float ticks) {
 
-        if (!player.isRiding() && !player.isPlayerSleeping()) {
+        if (player.getRidingEntity() == null && !player.isPlayerSleeping()) {
             float x = player.width/2;
             float y = 0;
 
@@ -77,8 +77,8 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
         renderPony.preRenderCallback(player, ticks);
         shadowSize = renderPony.getShadowScale();
 
-        if (player.isRiding()) {
-            GlStateManager.translate(0, player.getYOffset(), 0);
+        if (player.getRidingEntity() != null) {
+            GlStateManager.translated(0, player.getYOffset(), 0);
         }
     }
 
@@ -91,7 +91,7 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
 
     @Override
     public boolean shouldRender(AbstractClientPlayer entity, ICamera camera, double camX, double camY, double camZ) {
-        if (entity.isPlayerSleeping() && entity == Minecraft.getMinecraft().player) {
+        if (entity.isPlayerSleeping() && entity == Minecraft.getInstance().player) {
             return true;
         }
         return super.shouldRender(entity, renderPony.getFrustrum(entity, camera), camX, camY, camZ);
@@ -111,7 +111,7 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
 
     @Override
     public void doRenderShadowAndFire(Entity player, double x, double y, double z, float yaw, float ticks) {
-        if (player.isRiding() && ((AbstractClientPlayer)player).isPlayerSleeping()) {
+        if (player.getRidingEntity() != null && ((AbstractClientPlayer)player).isPlayerSleeping()) {
             super.doRenderShadowAndFire(player, x, y, z, yaw, ticks);
         }
     }
@@ -131,8 +131,8 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
         bindEntityTexture(player);
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(side == EnumHandSide.LEFT ? 0.35 : -0.35, -0.6, 0);
-        GlStateManager.rotate(side == EnumHandSide.LEFT ? -90 : 90, 0, 1, 0);
+        GlStateManager.translatef(side == EnumHandSide.LEFT ? 0.35F : -0.35F, -0.6F, 0);
+        GlStateManager.rotatef(side == EnumHandSide.LEFT ? -90 : 90, 0, 1, 0);
 
         if (side == EnumHandSide.LEFT) {
             super.renderLeftArm(player);

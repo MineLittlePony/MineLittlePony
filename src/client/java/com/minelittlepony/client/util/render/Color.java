@@ -48,6 +48,6 @@ public interface Color {
      * @param alpha The opacity to use
      */
     static void glColor(int color, float alpha) {
-        GlStateManager.color(r(color), g(color), b(color), alpha);
+        GlStateManager.color4f(r(color), g(color), b(color), alpha);
     }
 }

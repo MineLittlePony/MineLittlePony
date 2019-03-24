@@ -2,9 +2,9 @@ package com.minelittlepony.hdskins.gui;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBiped.ArmPose;
-import net.minecraft.client.model.ModelElytra;
-import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.renderer.entity.model.ModelBiped.ArmPose;
+import net.minecraft.client.renderer.entity.model.ModelElytra;
+import net.minecraft.client.renderer.entity.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
@@ -49,19 +49,19 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         final ModelElytra modelElytra = new ModelElytra();
         return new LayerRenderer<EntityLivingBase>() {
             @Override
-            public void doRenderLayer(EntityLivingBase entityBase, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+            public void render(EntityLivingBase entityBase, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
                 EntityPlayerModel entity = (EntityPlayerModel) entityBase;
                 ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
                 if (itemstack.getItem() == Items.ELYTRA) {
-                    GlStateManager.color(1, 1, 1, 1);
+                    GlStateManager.color4f(1, 1, 1, 1);
                     GlStateManager.enableBlend();
                     GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
                     bindTexture(entity.getLocal(Type.ELYTRA).getTexture());
 
                     GlStateManager.pushMatrix();
-                    GlStateManager.translate(0, 0, 0.125F);
+                    GlStateManager.translatef(0, 0, 0.125F);
 
                     modelElytra.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
                     modelElytra.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
@@ -85,12 +85,12 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
 
     @Override
     protected boolean canRenderName(M entity) {
-        return Minecraft.getMinecraft().player != null && super.canRenderName(entity);
+        return Minecraft.getInstance().player != null && super.canRenderName(entity);
     }
 
     @Override
     protected boolean setBrightness(M entity, float partialTicks, boolean combineTextures) {
-        return Minecraft.getMinecraft().world != null && super.setBrightness(entity, partialTicks, combineTextures);
+        return Minecraft.getInstance().world != null && super.setBrightness(entity, partialTicks, combineTextures);
     }
 
     public ModelPlayer getEntityModel(M entity) {
@@ -110,7 +110,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         ModelPlayer player = getEntityModel(entity);
         mainModel = player;
 
-        Set<EnumPlayerModelParts> parts = Minecraft.getMinecraft().gameSettings.getModelParts();
+        Set<EnumPlayerModelParts> parts = Minecraft.getInstance().gameSettings.getModelParts();
         player.bipedHeadwear.isHidden = !parts.contains(EnumPlayerModelParts.HAT);
         player.bipedBodyWear.isHidden = !parts.contains(EnumPlayerModelParts.JACKET);
         player.bipedLeftLegwear.isHidden = !parts.contains(EnumPlayerModelParts.LEFT_PANTS_LEG);
@@ -137,27 +137,27 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
 
         pushMatrix();
         enableBlend();
-        color(1, 1, 1, 0.3F);
-        translate(0, offset, 0);
+        color4f(1, 1, 1, 0.3F);
+        translated(0, offset, 0);
 
         if (entity.isPlayerSleeping()) {
-            GlStateManager.rotate(-90, 1, 0, 0);
+            rotatef(-90, 1, 0, 0);
         }
 
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
 
-        color(1, 1, 1, 1);
+        color4f(1, 1, 1, 1);
         disableBlend();
         popMatrix();
         GL11.glPopAttrib();
 
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         pushMatrix();
-        scale(1, -1, 1);
-        translate(0.001, offset, 0.001);
+        scalef(1, -1, 1);
+        translated(0.001, offset, 0.001);
 
         if (entity.isPlayerSleeping()) {
-            GlStateManager.rotate(-90, 1, 0, 0);
+            rotatef(-90, 1, 0, 0);
         }
 
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
@@ -183,11 +183,11 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
             GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
             pushMatrix();
 
-            scale(-1, -1, -1);
+            scalef(-1, -1, -1);
 
             TileEntityRendererDispatcher dispatcher = TileEntityRendererDispatcher.instance;
 
-            dispatcher.prepare(entity.getEntityWorld(), Minecraft.getMinecraft().getTextureManager(), Minecraft.getMinecraft().getRenderManager().getFontRenderer(), entity, null, 0);
+            dispatcher.prepare(entity.getEntityWorld(), Minecraft.getInstance().getTextureManager(), Minecraft.getMinecraft().getRenderManager().getFontRenderer(), entity, null, 0);
             dispatcher.getRenderer(this).render(BedHead.instance, -0.5F, 0, 0, 0, -1, 1);
 
             popMatrix();
@@ -206,9 +206,9 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
             GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
             pushMatrix();
 
-            scale(-1, -1, -1);
+            scalef(-1, -1, -1);
 
-            Render<EntityBoat> render = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(this);
+            Render<EntityBoat> render = Minecraft.getInstance().getRenderManager().getEntityRenderObject(this);
 
             render.doRender(this, 0, 0, 0, 0, 0);
 

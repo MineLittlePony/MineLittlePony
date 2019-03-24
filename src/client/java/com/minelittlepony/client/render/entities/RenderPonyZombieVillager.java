@@ -33,9 +33,10 @@ public class RenderPonyZombieVillager extends RenderPonyMob<EntityZombieVillager
         super(manager, MODEL_WRAPPER);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public ResourceLocation getTexture(EntityZombieVillager entity) {
-        String name = entity.getCustomNameTag();
+        String name = entity.getCustomName().getUnformattedComponentText();
         if ("Derpy".equals(name) || (entity.isChild() && "Dinky".equals(name))) {
             if (entity.isChild()) {
                 return EGG_2;

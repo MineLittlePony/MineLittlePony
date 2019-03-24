@@ -14,9 +14,9 @@ public class LayerHeldItemIllager<T extends AbstractIllager> extends LayerHeldPo
     }
 
     @Override
-    public void doRenderLayer(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
         if (shouldRender(entity)) {
-            super.doRenderLayer(entity, move, swing, partialTicks, ticks, headYaw, headPitch, scale);
+            super.render(entity, move, swing, partialTicks, ticks, headYaw, headPitch, scale);
         }
     }
 

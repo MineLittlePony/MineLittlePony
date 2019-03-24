@@ -1,8 +1,6 @@
 package com.minelittlepony.client.transform;
 
-import static net.minecraft.client.renderer.GlStateManager.scale;
-import static net.minecraft.client.renderer.GlStateManager.translate;
-
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.Vec3d;
 
 import com.google.common.collect.Maps;
@@ -217,7 +215,15 @@ public enum PonyTransformation {
     }
 
     public static void translateVec(Vec3d offset) {
-        translate(offset.x, offset.y, offset.z);
+        GlStateManager.translated(offset.x, offset.y, offset.z);
+    }
+
+    protected void scale(float x, float y, float z) {
+        GlStateManager.scalef(x, y, z);
+    }
+
+    protected void translate(float x, float y, float z) {
+        GlStateManager.translatef(x, y, z);
     }
 
     public Vec3d getRiderOffset() {

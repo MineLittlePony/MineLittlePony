@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model.entities;
 
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -63,7 +63,7 @@ public class ModelEnderStallion extends ModelSkeletonPony {
     public void render(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0, -1.15F, 0);
+        GlStateManager.translatef(0, -1.15F, 0);
         super.render(entity, move, swing, ticks, headYaw, headPitch, scale);
         GlStateManager.popMatrix();
     }

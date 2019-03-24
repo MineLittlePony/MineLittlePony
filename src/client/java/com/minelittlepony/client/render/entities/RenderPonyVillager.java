@@ -36,12 +36,13 @@ public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
     @Override
     public void preRenderCallback(EntityVillager villager, float ticks) {
         super.preRenderCallback(villager, ticks);
-        GlStateManager.scale(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
+        GlStateManager.scalef(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public ResourceLocation getTexture(EntityVillager entity) {
-        String name = entity.getCustomNameTag();
+        String name = entity.getCustomName().getUnformattedComponentText();
         if ("Derpy".equals(name) || (entity.isChild() && "Dinky".equals(name))) {
             if (entity.isChild()) {
                 return EGG_2;

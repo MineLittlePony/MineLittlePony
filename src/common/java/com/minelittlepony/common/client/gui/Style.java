@@ -1,7 +1,6 @@
 package com.minelittlepony.common.client.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public class Style implements IGuiTooltipped<Style> {
     }
 
     public Style setIcon(ItemStack stack, int colour) {
-        Items.LEATHER_LEGGINGS.setColor(stack, colour);
+        stack.getOrCreateChildTag("display").setInt("color", colour);
         return setIcon(stack);
     }
 

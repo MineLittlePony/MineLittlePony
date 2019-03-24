@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model.components;
 
-import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelBase;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.model.AbstractPonyModel;

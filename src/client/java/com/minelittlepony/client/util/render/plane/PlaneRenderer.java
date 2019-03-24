@@ -1,6 +1,6 @@
 package com.minelittlepony.client.util.render.plane;
 
-import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelBase;
 
 import com.minelittlepony.client.util.render.AbstractRenderer;
 

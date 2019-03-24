@@ -34,11 +34,11 @@ import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.network.NetworkPlayerInfo;
-import net.minecraft.client.renderer.ThreadDownloadImageData;
+import net.minecraft.client.renderer.texture.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.client.resources.IResourceManagerReloadListener;
+import net.minecraft.resources.IResourceManager;
+import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
@@ -47,8 +47,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -112,7 +110,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     }
 
     private CompletableFuture<Map<Type, MinecraftProfileTexture>> loadProfileData(GameProfile profile) {
-
         return CompletableFuture.supplyAsync(() -> {
             if (profile.getId() == null) {
                 return Collections.emptyMap();
@@ -140,16 +137,19 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             // try to recreate a broken gameprofile
             // happens when server sends a random profile with skin and displayname
             Property textures = Iterables.getFirst(profile.getProperties().get("textures"), null);
+
             if (textures != null) {
                 String json = new String(Base64.getDecoder().decode(textures.getValue()), StandardCharsets.UTF_8);
+
                 MinecraftTexturesPayload texturePayload = SkinServer.gson.fromJson(json, MinecraftTexturesPayload.class);
+
                 if (texturePayload != null) {
-                    // name is optional
-                    String name = texturePayload.getProfileName();
+
+                    String name = texturePayload.getProfileName(); // name is optional
                     UUID uuid = texturePayload.getProfileId();
-                    // uuid is required
+
                     if (uuid != null) {
-                        profile = new GameProfile(uuid, name);
+                        profile = new GameProfile(uuid, name); // uuid is required
                     }
 
                     // probably uses this texture for a reason. Don't mess with it.
@@ -159,8 +159,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                 }
             }
         } catch (Exception e) {
-            if (profile.getId() == null) {
-                // Something broke server-side probably
+            if (profile.getId() == null) { // Something broke server-side probably
                 logger.warn("{} had a null UUID and was unable to recreate it from texture profile.", profile.getName(), e);
                 return CompletableFuture.completedFuture(Collections.emptyMap());
             }
@@ -172,21 +171,21 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         loadProfileTextures(profile).thenAcceptAsync(m -> m.forEach((type, pp) -> {
             loadTexture(type, pp, (typeIn, location, profileTexture) -> {
                 parseSkin(profile, typeIn, location, profileTexture)
-                        .thenRun(() -> callback.skinAvailable(typeIn, location, profileTexture));
+                        .thenRun(() -> callback.onSkinTextureAvailable(typeIn, location, profileTexture));
             });
-        }), Minecraft.getMinecraft()::addScheduledTask);
+        }), Minecraft.getInstance()::addScheduledTask);
     }
 
     public ResourceLocation loadTexture(Type type, MinecraftProfileTexture texture, @Nullable SkinManager.SkinAvailableCallback callback) {
         String skinDir = type.toString().toLowerCase() + "s/";
 
         final ResourceLocation resource = new ResourceLocation("hdskins", skinDir + texture.getHash());
-        ITextureObject texObj = Minecraft.getMinecraft().getTextureManager().getTexture(resource);
+        ITextureObject texObj = Minecraft.getInstance().getTextureManager().getTexture(resource);
 
         //noinspection ConstantConditions
         if (texObj != null) {
             if (callback != null) {
-                callback.skinAvailable(type, resource, texture);
+                callback.onSkinTextureAvailable(type, resource, texture);
             }
         } else {
 
@@ -197,7 +196,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
                     DefaultPlayerSkin.getDefaultSkinLegacy(),
                     new ImageBufferDownloadHD(type, () -> {
                         if (callback != null) {
-                            callback.skinAvailable(type, resource, texture);
+                            callback.onSkinTextureAvailable(type, resource, texture);
                         }
                     })));
         }
@@ -272,14 +271,14 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         return loc == null ? res : loc;
     }
 
-    public void convertSkin(BufferedImage image, Graphics dest) {
+    public void convertSkin(ISkinModifier.IDrawer drawer) {
         for (ISkinModifier skin : skinModifiers) {
-            skin.convertSkin(image, dest);
+            skin.convertSkin(drawer);
         }
     }
 
     public void parseSkins() {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
 
         Streams.concat(getNPCs(mc), getPlayers(mc))
 

@@ -7,20 +7,22 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import com.minelittlepony.client.PonyRenderManager;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.renderer.FirstPersonRenderer;
 import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
-@Mixin(ItemRenderer.class)
+@Mixin(FirstPersonRenderer.class)
 public class MixinItemRenderer {
 
     private static final String AbstractClientPlayer = "Lnet/minecraft/client/entity/AbstractClientPlayer;";
     private static final String ItemStack = "Lnet/minecraft/item/ItemStack;";
     private static final String EnumHand = "Lnet/minecraft/util/EnumHand;";
     private static final String EntityLivingBase = "Lnet/minecraft/entity/EntityLivingBase;";
-    private static final String TransformType = "Lnet/minecraft/client/renderer/block/model/ItemCameraTransforms$TransformType;";
+    private static final String TransformType = "Lnet/minecraft/client/renderer/block/ItemCameraTransforms$TransformType;";
 
+    // TODO: This has moved to mc.getFirstPersonRenderer()
     //public void renderItemInFirstPerson(AbstractClientPlayer player, float p_187457_2_, float p_187457_3_, EnumHand hand, float p_187457_5_, ItemStack stack, float p_187457_7_)
     //public void renderItemSide(EntityLivingBase entitylivingbaseIn, ItemStack heldStack, ItemCameraTransforms.TransformType transform, boolean leftHanded)
     @Redirect(method = "renderItemInFirstPerson(" + AbstractClientPlayer + "FF" + EnumHand + "F" + ItemStack + "F)V",

@@ -36,7 +36,7 @@ public abstract class RenderPonyIllager<T extends AbstractIllager> extends Rende
     @Override
     public void preRenderCallback(T entity, float ticks) {
         super.preRenderCallback(entity, ticks);
-        GlStateManager.scale(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
+        GlStateManager.scalef(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
     }
 
     public static class Vindicator extends RenderPonyIllager<EntityVindicator> {

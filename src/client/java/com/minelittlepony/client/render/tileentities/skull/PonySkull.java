@@ -22,6 +22,6 @@ public abstract class PonySkull implements ISkull {
 
     @Override
     public void render(float animateTicks, float rotation, float scale) {
-        ponyHead.render(Minecraft.getMinecraft().player, animateTicks, 0, 0, rotation, 0, scale);
+        ponyHead.render(Minecraft.getInstance().player, animateTicks, 0, 0, rotation, 0, scale);
     }
 }

@@ -1,13 +1,12 @@
 package com.minelittlepony.hdskins.resources;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.util.ResourceLocation;
 
 import com.minelittlepony.hdskins.resources.texture.DynamicTextureImage;
 import com.minelittlepony.hdskins.resources.texture.ImageBufferDownloadHD;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Callable;
@@ -18,7 +17,7 @@ import javax.annotation.Nullable;
 
 public class ImageLoader implements Supplier<ResourceLocation> {
 
-    private static Minecraft mc = Minecraft.getMinecraft();
+    private static Minecraft mc = Minecraft.getInstance();
 
     private final ResourceLocation original;
 
@@ -29,8 +28,8 @@ public class ImageLoader implements Supplier<ResourceLocation> {
     @Override
     @Nullable
     public ResourceLocation get() {
-        BufferedImage image = getImage(original);
-        final BufferedImage updated = new ImageBufferDownloadHD().parseUserSkin(image);
+        NativeImage image = getImage(original);
+        final NativeImage updated = new ImageBufferDownloadHD().parseUserSkin(image);
         if (updated == null) {
             return null;
         }
@@ -50,17 +49,17 @@ public class ImageLoader implements Supplier<ResourceLocation> {
     }
 
     @Nullable
-    private static BufferedImage getImage(ResourceLocation res) {
+    private static NativeImage getImage(ResourceLocation res) {
 
         try (InputStream in = mc.getResourceManager().getResource(res).getInputStream()) {
-            return TextureUtil.readBufferedImage(in);
+            return NativeImage.read(in);
         } catch (IOException e) {
             return null;
         }
     }
 
     @Nullable
-    private ResourceLocation loadSkin(BufferedImage image) {
+    private ResourceLocation loadSkin(NativeImage image) {
 
         ResourceLocation conv = new ResourceLocation(original.getNamespace() + "-converted", original.getPath());
         boolean success = mc.getTextureManager().loadTexture(conv, new DynamicTextureImage(image));

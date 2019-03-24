@@ -1,7 +1,6 @@
 package com.minelittlepony.common.client.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 public class IconicButton extends Button {
@@ -18,14 +17,14 @@ public class IconicButton extends Button {
     }
 
     public IconicButton setIcon(ItemStack stack, int colour) {
-        Items.LEATHER_LEGGINGS.setColor(stack, colour);
+        stack.getOrCreateChildTag("display").setInt("color", colour);
         return setIcon(stack);
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-        super.drawButton(mc, mouseX, mouseY, partialTicks);
+    public void render(int mouseX, int mouseY, float partialTicks) {
+        super.render(mouseX, mouseY, partialTicks);
 
-        mc.getRenderItem().renderItemIntoGUI(itemStack, x + 2, y + 2);
+        Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(itemStack, x + 2, y + 2);
     }
 }

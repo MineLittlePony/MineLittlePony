@@ -34,7 +34,7 @@ public class PreviewTextureManager {
         MinecraftProfileTexture texture = textures.get(type);
         ISkinAvailableCallback buff = new ImageBufferDownloadHD(type, () -> {
             if (callback != null) {
-                callback.skinAvailable(type, location, new MinecraftProfileTexture(texture.getUrl(), Maps.newHashMap()));
+                callback.onSkinTextureAvailable(type, location, new MinecraftProfileTexture(texture.getUrl(), Maps.newHashMap()));
             }
         });
 

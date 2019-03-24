@@ -5,7 +5,7 @@ import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.model.IUnicorn;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -24,7 +24,7 @@ public class LayerHeldPonyItemMagical<T extends EntityLivingBase> extends LayerH
     @Override
     protected void preItemRender(T entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
         if (isUnicorn()) {
-            GlStateManager.translate(hand == EnumHandSide.LEFT ? -0.6F : 0, 0.5F, -0.3F);
+            GlStateManager.translatef(hand == EnumHandSide.LEFT ? -0.6F : 0, 0.5F, -0.3F);
         } else {
             super.preItemRender(entity, drop, transform, hand);
         }

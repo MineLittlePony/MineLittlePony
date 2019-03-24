@@ -131,7 +131,7 @@ public class ValhallaSkinServer implements SkinServer {
         }
 
         // join the session server
-        Minecraft.getMinecraft().getSessionService().joinServer(profile, token, handshake.serverId);
+        Minecraft.getInstance().getSessionService().joinServer(profile, token, handshake.serverId);
 
         AuthResponse response = authResponse(profile.getName(), handshake.verifyToken);
         if (!response.userId.equals(profile.getId())) {

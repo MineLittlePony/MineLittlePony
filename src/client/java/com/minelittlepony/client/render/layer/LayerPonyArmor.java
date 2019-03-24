@@ -9,8 +9,8 @@ import com.minelittlepony.model.armour.IArmour;
 import com.minelittlepony.model.armour.IArmourTextureResolver;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.entity.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
@@ -18,7 +18,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.EntityEquipmentSlot.Type;
 import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemArmor.ArmorMaterial;
+import net.minecraft.item.ItemArmorDyeable;
+import net.minecraft.item.IArmorMaterial;
+import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -33,7 +35,7 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
     }
 
     @Override
-    public void doRenderLayer(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
         pony = getPonyRenderer().getModelWrapper();
 
         for (EntityEquipmentSlot i : EntityEquipmentSlot.values()) {
@@ -68,16 +70,19 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
                 ItemArmor itemarmor = (ItemArmor) itemstack.getItem();
 
                 if (itemarmor.getArmorMaterial() == ArmorMaterial.LEATHER) {
-                    Color.glColor(itemarmor.getColor(itemstack), 1);
+                    if (itemarmor instanceof ItemArmorDyeable) {
+                        Color.glColor(((ItemArmorDyeable)itemarmor).getColor(itemstack), 1);
+                    }
+
                     armour.render(entity, move, swing, ticks, headYaw, headPitch, scale);
                     armourTexture = resolver.getArmourTexture(entity, itemstack, armorSlot, layer, "overlay");
                     getRenderer().bindTexture(armourTexture);
                 }
 
-                GlStateManager.color(1, 1, 1, 1);
+                GlStateManager.color4f(1, 1, 1, 1);
                 armour.render(entity, move, swing, ticks, headYaw, headPitch, scale);
 
-                if (itemstack.isItemEnchanted()) {
+                if (itemstack.isEnchanted()) {
                     LayerArmorBase.renderEnchantedGlint(getRenderer(), entity, armour, move, swing, partialTicks, ticks, headYaw, headPitch, scale);
                 }
             }

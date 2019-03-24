@@ -3,7 +3,7 @@ package com.minelittlepony.hdskins;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.entity.Entity;
 
 import com.google.gson.annotations.Expose;
@@ -40,8 +40,8 @@ public abstract class HDSkins {
     public String lastChosenFile = "";
 
     public void init() {
-        IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
-        irrm.registerReloadListener(HDSkinManager.INSTANCE);
+        IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getInstance().getResourceManager();
+        irrm.addReloadListener(HDSkinManager.INSTANCE);
     }
 
     public abstract File getAssetsDirectory();

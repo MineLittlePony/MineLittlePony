@@ -7,8 +7,8 @@ import com.minelittlepony.pony.IPonyData;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.model.ModelHumanoidHead;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.ModelHumanoidHead;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
 public class ModelPonyHead extends ModelHumanoidHead implements ICapitated<ModelRenderer> {

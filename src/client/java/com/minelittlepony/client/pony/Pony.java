@@ -17,8 +17,9 @@ import com.minelittlepony.util.chron.Touchable;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.ITextureObject;
-import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.client.resources.IResource;
+import net.minecraft.client.renderer.texture.MissingTextureSprite;
+import net.minecraft.client.renderer.texture.NativeImage;
+import net.minecraft.resources.IResource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,7 +32,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -60,12 +60,12 @@ public class Pony extends Touchable<Pony> implements IPony {
             return data;
         }
 
-        BufferedImage ponyTexture = getBufferedImage(resource);
+        NativeImage ponyTexture = getBufferedImage(resource);
 
         if (ponyTexture == null) {
-            ponyTexture = ProfileTextureUtil.getDynamicBufferedImage(16, 16, TextureUtil.MISSING_TEXTURE);
+            ponyTexture = ProfileTextureUtil.getDynamicBufferedImage(16, 16, MissingTextureSprite.getDynamicTexture());
 
-            Minecraft.getMinecraft().getTextureManager().loadTexture(resource, new DynamicTextureImage(ponyTexture));
+            Minecraft.getInstance().getTextureManager().loadTexture(resource, new DynamicTextureImage(ponyTexture));
         }
 
         return checkSkin(ponyTexture);
@@ -74,10 +74,10 @@ public class Pony extends Touchable<Pony> implements IPony {
     @Nullable
     private IPonyData checkPonyMeta(ResourceLocation resource) {
         try {
-            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(resource);
+            IResource res = Minecraft.getInstance().getResourceManager().getResource(resource);
 
             if (res.hasMetadata()) {
-                PonyData data = res.getMetadata(PonyDataSerialiser.NAME);
+                PonyData data = res.getMetadata(PonyData.SERIALISER);
 
                 if (data != null) {
                     return data;
@@ -93,17 +93,17 @@ public class Pony extends Touchable<Pony> implements IPony {
     }
 
     @Nullable
-    public static BufferedImage getBufferedImage(@Nonnull ResourceLocation resource) {
+    public static NativeImage getBufferedImage(@Nonnull ResourceLocation resource) {
         try {
-            IResource skin = Minecraft.getMinecraft().getResourceManager().getResource(resource);
-            BufferedImage skinImage = TextureUtil.readBufferedImage(skin.getInputStream());
+            IResource skin = Minecraft.getInstance().getResourceManager().getResource(resource);
+            NativeImage skinImage = NativeImage.read(skin.getInputStream());
             MineLittlePony.logger.debug("Obtained skin from resource location {}", resource);
 
             return skinImage;
         } catch (IOException ignored) {
         }
 
-        ITextureObject texture = Minecraft.getMinecraft().getTextureManager().getTexture(resource);
+        ITextureObject texture = Minecraft.getInstance().getTextureManager().getTexture(resource);
 
         if (texture instanceof IBufferedTexture) {
             return ((IBufferedTexture) texture).getBufferedImage();
@@ -112,7 +112,7 @@ public class Pony extends Touchable<Pony> implements IPony {
         return null;
     }
 
-    private IPonyData checkSkin(BufferedImage bufferedimage) {
+    private IPonyData checkSkin(NativeImage bufferedimage) {
         MineLittlePony.logger.debug("\tStart skin check for pony #{} with image {}.", ponyId, bufferedimage);
         return PonyData.parse(bufferedimage);
     }
@@ -137,8 +137,8 @@ public class Pony extends Touchable<Pony> implements IPony {
     @Override
     public boolean isFlying(EntityLivingBase entity) {
         return !(entity.onGround
-                || entity.isRiding()
-                || (entity.isOnLadder() && !(entity instanceof EntityPlayer && ((EntityPlayer)entity).capabilities.isFlying))
+                || entity.getRidingEntity() != null
+                || (entity.isOnLadder() && !(entity instanceof EntityPlayer && ((EntityPlayer)entity).abilities.isFlying))
                 || entity.isInWater()
                 || entity.isPlayerSleeping());
     }

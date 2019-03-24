@@ -1,8 +1,8 @@
 package com.minelittlepony.pony.meta;
 
-import com.minelittlepony.pony.ITriggerPixelMapped;
+import net.minecraft.client.renderer.texture.NativeImage;
 
-import java.awt.image.BufferedImage;
+import com.minelittlepony.pony.ITriggerPixelMapped;
 
 /**
  * Individual trigger pixels for a pony skin.
@@ -36,7 +36,7 @@ public enum TriggerPixels {
      *
      * @param image Image to read
      */
-    public int readColor(BufferedImage image) {
+    public int readColor(NativeImage image) {
         return channel.readValue(x, y, image);
     }
 
@@ -45,7 +45,7 @@ public enum TriggerPixels {
      *
      * @param image Image to read
      */
-    public <T extends Enum<T> & ITriggerPixelMapped<T>> T readValue(BufferedImage image) {
+    public <T extends Enum<T> & ITriggerPixelMapped<T>> T readValue(NativeImage image) {
         if (Channel.ALPHA.readValue(x, y, image) < 255) {
             return (T)def;
         }
@@ -53,19 +53,19 @@ public enum TriggerPixels {
         return ITriggerPixelMapped.getByTriggerPixel((T)def, readColor(image));
     }
 
-    public <T extends Enum<T> & ITriggerPixelMapped<T>> boolean[] readFlags(BufferedImage image) {
+    public <T extends Enum<T> & ITriggerPixelMapped<T>> boolean[] readFlags(NativeImage image) {
         boolean[] out = new boolean[def.getClass().getEnumConstants().length];
         readFlags(out, image);
         return out;
     }
 
-    public <T extends Enum<T> & ITriggerPixelMapped<T>> void readFlags(boolean[] out,  BufferedImage image) {
+    public <T extends Enum<T> & ITriggerPixelMapped<T>> void readFlags(boolean[] out, NativeImage image) {
         readFlag(out, Channel.RED, image);
         readFlag(out, Channel.GREEN, image);
         readFlag(out, Channel.BLUE, image);
     }
 
-    private <T extends Enum<T> & ITriggerPixelMapped<T>> void readFlag(boolean[] out, Channel channel, BufferedImage image) {
+    private <T extends Enum<T> & ITriggerPixelMapped<T>> void readFlag(boolean[] out, Channel channel, NativeImage image) {
 
         if (Channel.ALPHA.readValue(x, y, image) < 255) {
             return;
@@ -92,8 +92,8 @@ public enum TriggerPixels {
             this.offset = offset;
         }
 
-        public int readValue(int x, int y, BufferedImage image) {
-            return (image.getRGB(x, y) >> offset) & mask;
+        public int readValue(int x, int y, NativeImage image) {
+            return (image.getPixelRGBA(x, y) >> offset) & mask;
         }
     }
 }

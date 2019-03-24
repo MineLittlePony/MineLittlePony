@@ -111,7 +111,7 @@ public class PonyRenderManager {
             return null;
         }
 
-        Render<Entity> renderer = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(entity);
+        Render<Entity> renderer = Minecraft.getInstance().getRenderManager().getEntityRenderObject(entity);
 
         if (renderer instanceof RenderLivingBase && renderer instanceof IRenderPony) {
             return (R)(Object)renderer;

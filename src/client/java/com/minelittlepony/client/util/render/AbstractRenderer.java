@@ -1,9 +1,9 @@
 package com.minelittlepony.client.util.render;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelBox;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.model.TextureOffset;
+import net.minecraft.client.renderer.entity.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelBox;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.TextureOffset;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractRenderer<T extends AbstractRenderer<T>> extends ModelRenderer {
@@ -194,15 +194,17 @@ public abstract class AbstractRenderer<T extends AbstractRenderer<T>> extends Mo
         addBox(offX, offY, offZ, width, height, depth, scaleFactor, mirror);
     }
 
+    @Override
+    public void addBox(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor, boolean mirrored) {
+        createBox(modelOffsetX + offX, modelOffsetY + offY, modelOffsetZ + offZ, width, height, depth, scaleFactor, mirrored);
+    }
+
     /**
      * Creates a textured box.
      */
     public T box(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor) {
-        return addBox(offX, offY, offZ, width, height, depth, scaleFactor, mirror);
-    }
+        addBox(offX, offY, offZ, width, height, depth, scaleFactor, mirror);
 
-    private T addBox(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor, boolean mirrored) {
-        createBox(modelOffsetX + offX, modelOffsetY + offY, modelOffsetZ + offZ, width, height, depth, scaleFactor, mirrored);
         return (T)this;
     }
 

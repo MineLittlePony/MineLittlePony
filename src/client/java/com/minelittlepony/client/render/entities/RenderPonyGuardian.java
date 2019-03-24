@@ -70,7 +70,7 @@ public class RenderPonyGuardian extends RenderGuardian {
         @Override
         protected void preRenderCallback(EntityGuardian entity, float ticks) {
             super.preRenderCallback(entity, ticks);
-            GlStateManager.scale(2.35F, 2.35F, 2.35F);
+            GlStateManager.scalef(2.35F, 2.35F, 2.35F);
         }
     }
 }

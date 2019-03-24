@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model;
 
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.model.races.ModelAlicorn;

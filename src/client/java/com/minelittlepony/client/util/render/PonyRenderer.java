@@ -1,6 +1,6 @@
 package com.minelittlepony.client.util.render;
 
-import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelBase;
 
 public class PonyRenderer extends AbstractRenderer<PonyRenderer> {
 

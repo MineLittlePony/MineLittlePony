@@ -17,7 +17,7 @@ import com.mumfrey.liteloader.util.ModUtilities;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Timer;
@@ -68,7 +68,7 @@ public class LiteModMineLittlePony implements IModUtilities, InitCompleteListene
     }
 
     @Override
-    public <T extends TileEntity> void addRenderer(Class<T> type, TileEntitySpecialRenderer<T> renderer) {
+    public <T extends TileEntity> void addRenderer(Class<T> type, TileEntityRenderer<T> renderer) {
         ModUtilities.addRenderer(type, renderer);
     }
 
@@ -84,7 +84,7 @@ public class LiteModMineLittlePony implements IModUtilities, InitCompleteListene
 
     @Override
     public Timer getGameTimer() {
-        return ((IMinecraft)Minecraft.getMinecraft()).getTimer();
+        return ((IMinecraft)Minecraft.getInstance()).getTimer();
     }
 
     public static class Panel extends GuiLiteHost {

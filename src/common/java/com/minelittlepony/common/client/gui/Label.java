@@ -29,12 +29,14 @@ public class Label extends GuiButton {
     }
 
     @Override
-    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+    protected boolean isPressable(double mouseX, double mouseY) {
         return false;
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
+        Minecraft mc = Minecraft.getInstance();
+
         if (center) {
             drawCenteredString(mc.fontRenderer, GameGui.format(text), x, y, color);
         } else {

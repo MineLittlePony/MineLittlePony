@@ -1,6 +1,6 @@
 package com.minelittlepony.client.util.render;
 
-import net.minecraft.client.model.PositionTextureVertex;
+import net.minecraft.client.renderer.entity.model.PositionTextureVertex;
 
 public class Vertex extends PositionTextureVertex {
 

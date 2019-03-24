@@ -6,8 +6,8 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.minelittlepony.model.BodyPart;
@@ -27,10 +27,10 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientP
     }
 
     @Override
-    public void doRenderLayer(AbstractClientPlayer player, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(AbstractClientPlayer player, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
 
         GlStateManager.enableRescaleNormal();
-        GlStateManager.color(1, 1, 1, 1);
+        GlStateManager.color4f(1, 1, 1, 1);
 
         NBTTagCompound leftTag = player.getLeftShoulderEntity();
 
@@ -51,7 +51,7 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientP
     private EntityLivingBase renderShoulderEntity(AbstractClientPlayer player, @Nullable EntityLivingBase entity, NBTTagCompound shoulderTag, float headYaw, float headPitch, boolean left) {
 
         if (entity == null || !entity.getUniqueID().equals(shoulderTag.getUniqueId("UUID"))) {
-            entity = (EntityLivingBase) EntityList.createEntityFromNBT(shoulderTag, player.world);
+            entity = (EntityLivingBase) EntityType.create(shoulderTag, player.world);
             // this isn't an entity.
             if (entity == null) {
                 return null;
@@ -69,9 +69,9 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientP
         getPonyModel().transform(BodyPart.BODY);
 
         // render on the haunches
-        GlStateManager.translate(left ? 0.25F : -0.25F, 0.25F, 0.35F);
-        GlStateManager.scale(1, -1, -1);
-        GlStateManager.rotate(left ? -5 : 5, 0, 0, 1);
+        GlStateManager.translatef(left ? 0.25F : -0.25F, 0.25F, 0.35F);
+        GlStateManager.scalef(1, -1, -1);
+        GlStateManager.rotatef(left ? -5 : 5, 0, 0, 1);
 
         // look where the player is looking
         entity.prevRotationYawHead = headYaw;

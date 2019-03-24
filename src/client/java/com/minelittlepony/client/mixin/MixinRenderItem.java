@@ -3,9 +3,10 @@ package com.minelittlepony.client.mixin;
 import com.minelittlepony.client.ducks.IRenderItem;
 import com.minelittlepony.client.render.LevitatingItemRenderer;
 
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.resources.IResourceManagerReloadListener;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.item.ItemStack;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(RenderItem.class)
+@Mixin(ItemRenderer.class)
 public abstract class MixinRenderItem implements IResourceManagerReloadListener, IRenderItem {
 
     private boolean transparency;

@@ -142,7 +142,7 @@ public class ModelSeapony extends ModelUnicorn {
 
     @Override
     public void transform(BodyPart part) {
-        GlStateManager.translate(0, 0.6F, 0);
+        GlStateManager.translatef(0, 0.6F, 0);
 
         super.transform(part);
     }
@@ -207,7 +207,7 @@ public class ModelSeapony extends ModelUnicorn {
 
         @Override
         public void transform(BodyPart part) {
-            GlStateManager.translate(0, 0.6F, 0);
+            GlStateManager.translatef(0, 0.6F, 0);
 
             super.transform(part);
         }

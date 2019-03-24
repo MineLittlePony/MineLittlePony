@@ -1,7 +1,7 @@
 package com.minelittlepony.client.model.components;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;

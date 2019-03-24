@@ -1,6 +1,7 @@
 package com.minelittlepony.hdskins.upload;
 
-import org.lwjgl.opengl.Display;
+import net.minecraft.client.MainWindow;
+import net.minecraft.client.Minecraft;
 
 import java.awt.Color;
 import java.awt.dnd.DropTarget;
@@ -64,7 +65,10 @@ public class FileDropper extends JFrame {
         dt.addDropTargetListener(dtl);
         setVisible(true);
         requestFocusInWindow();
-        setLocation(Display.getX(), Display.getY());
+
+        MainWindow window = Minecraft.getInstance().mainWindow;
+
+        setLocation(window.getWindowX(), window.getWindowY());
     }
 
     public void hide(DropTargetListener dtl) {

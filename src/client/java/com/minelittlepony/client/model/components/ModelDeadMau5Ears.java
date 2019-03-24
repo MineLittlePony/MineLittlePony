@@ -1,7 +1,7 @@
 package com.minelittlepony.client.model.components;
 
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.model.ModelSkeletonHead;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.ModelSkeletonHead;
 
 public class ModelDeadMau5Ears extends ModelSkeletonHead {
 

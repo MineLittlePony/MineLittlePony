@@ -3,8 +3,6 @@ package com.minelittlepony.client;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.gui.GuiPonySettings;
 import com.minelittlepony.client.gui.hdskins.GuiSkinsMineLP;
-import com.minelittlepony.client.pony.PonyData;
-import com.minelittlepony.client.pony.PonyDataSerialiser;
 import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
 import com.minelittlepony.common.client.gui.GuiHost;
@@ -16,15 +14,14 @@ import com.minelittlepony.settings.PonyConfig;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.resources.IReloadableResourceManager;
-import net.minecraft.client.resources.data.MetadataSerializer;
+import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-
-import org.lwjgl.input.Keyboard;
 
 /**
  * Static MineLittlePony singleton class. Everything's controlled from up here.
@@ -35,7 +32,10 @@ public class MineLPClient extends MineLittlePony {
     private static final String MINELP_LEGACY_SERVER = "http://minelpskins.voxelmodpack.com";
     private static final String MINELP_LEGACY_GATEWAY = "http://minelpskinmanager.voxelmodpack.com";
 
-    static final KeyBinding SETTINGS_GUI = new KeyBinding("Settings", Keyboard.KEY_F9, "Mine Little Pony");
+    public static final int KEY_M = 0x32;
+    public static final int KEY_F3 = 0x3D;
+    public static final int KEY_F9 = 0x43;
+    static final KeyBinding SETTINGS_GUI = new KeyBinding("Settings", KEY_F9, "Mine Little Pony");
 
     private static int modelUpdateCounter = 0;
     private static boolean reloadingModels = false;
@@ -59,11 +59,8 @@ public class MineLPClient extends MineLittlePony {
         config = newConfig;
         ponyManager = new PonyManager(config);
 
-        IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
-        irrm.registerReloadListener(ponyManager);
-
-        MetadataSerializer ms = Minecraft.getMinecraft().getResourcePackRepository().rprMetadataSerializer;
-        ms.registerMetadataSectionType(new PonyDataSerialiser(), PonyData.class);
+        IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getInstance().getResourceManager();
+        irrm.addReloadListener(ponyManager);
 
         // This also makes it the default gateway server.
         SkinServer.defaultServers.add(new LegacySkinServer(MINELP_LEGACY_SERVER, MINELP_LEGACY_GATEWAY));
@@ -97,8 +94,8 @@ public class MineLPClient extends MineLittlePony {
                 minecraft.displayGuiScreen(new GuiHost(new GuiPonySettings()));
             } else {
 
-                if ((Minecraft.getSystemTime() % 10) == 0) {
-                    if (Keyboard.isKeyDown(Keyboard.KEY_F3) && Keyboard.isKeyDown(Keyboard.KEY_M)) {
+                if ((Util.milliTime() % 10) == 0) {
+                    if (InputMappings.isKeyDown(KEY_F3) && InputMappings.isKeyDown(KEY_M)) {
                         if (!reloadingModels) {
                             minecraft.ingameGUI.getChatGUI().printChatMessage(
                                     (new TextComponentString("")).appendSibling(

@@ -4,9 +4,9 @@ import com.minelittlepony.client.model.IClientModel;
 import com.minelittlepony.model.BodyPart;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.entity.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -32,7 +32,7 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
     }
 
     @Override
-    public void doRenderLayer(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
 
         ItemStack left = getLeftItem(entity);
         ItemStack right = getRightItem(entity);
@@ -57,21 +57,21 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
             renderArm(hand);
 
             if (entity.isSneaking()) {
-                GlStateManager.translate(0, 0.2F, 0);
+                GlStateManager.translatef(0, 0.2F, 0);
             }
 
             float left = hand == EnumHandSide.LEFT ? 1 : -1;
 
-            if (entity.isRiding()) {
-                GlStateManager.translate(left / 10, -0.2F, -0.5F);
+            if (entity.getRidingEntity() != null) {
+                GlStateManager.translatef(left / 10, -0.2F, -0.5F);
             }
 
-            GlStateManager.rotate(-90, 1, 0, 0);
-            GlStateManager.rotate(left * 180, 0, 1, 0);
-            GlStateManager.translate(left * -0.2F, 0, 0);
+            GlStateManager.rotatef(-90, 1, 0, 0);
+            GlStateManager.rotatef(left * 180, 0, 1, 0);
+            GlStateManager.translatef(left * -0.2F, 0, 0);
 
             preItemRender(entity, drop, transform, hand);
-            Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, drop, transform, hand == EnumHandSide.LEFT);
+            Minecraft.getInstance().getItemRenderer().renderItem(drop, entity, transform, hand == EnumHandSide.LEFT);
             postItemRender(entity, drop, transform, hand);
 
             GlStateManager.popMatrix();
@@ -79,7 +79,7 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
     }
 
     protected void preItemRender(T entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
-        GlStateManager.translate(0, 0.125F, -1);
+        GlStateManager.translatef(0, 0.125F, -1);
     }
 
     protected void postItemRender(T entity, ItemStack drop, TransformType transform, EnumHandSide hand) {

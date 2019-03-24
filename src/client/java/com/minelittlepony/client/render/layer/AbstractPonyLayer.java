@@ -4,7 +4,7 @@ import com.minelittlepony.client.ducks.IRenderPony;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.model.IModel;
 
-import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
@@ -30,7 +30,7 @@ public abstract class AbstractPonyLayer<T extends EntityLivingBase> implements L
      * @param scale        Scaling factor used to render this model. Determined by the return value of {@link RenderLivingBase.prepareScale}. Usually {@code 0.0625F}.
      */
     @Override
-    public abstract void doRenderLayer(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale);
+    public abstract void render(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale);
 
     protected RenderLivingBase<T> getRenderer() {
         return renderer;
