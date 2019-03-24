@@ -11,8 +11,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
-        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
     }
 }
@@ -23,7 +22,6 @@ plugins {
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
-apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 sourceCompatibility = '1.8'
@@ -78,10 +76,6 @@ minecraft {
         }
     }
 
-}
-
-mixin {
-    defaultObfuscationEnv notch
 }
 
 sourceSets {
