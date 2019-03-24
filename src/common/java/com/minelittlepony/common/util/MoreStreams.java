@@ -1,4 +1,4 @@
-package com.minelittlepony.hdskins.util;
+package com.minelittlepony.common.util;
 
 import java.util.List;
 import java.util.function.Function;

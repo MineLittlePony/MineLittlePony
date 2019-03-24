@@ -1,6 +1,6 @@
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-package com.minelittlepony.hdskins.entity;
+package com.minelittlepony.client.settings;
 
 import mcp.MethodsReturnNonnullByDefault;
 

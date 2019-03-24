@@ -3,7 +3,6 @@ package com.minelittlepony.client.gui.hdskins;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.common.client.gui.IconicToggle;
 import com.minelittlepony.common.client.gui.Style;
-import com.minelittlepony.hdskins.entity.EntityPonyModel;
 import com.minelittlepony.hdskins.gui.EntityPlayerModel;
 import com.minelittlepony.hdskins.gui.GuiSkins;
 import com.minelittlepony.hdskins.server.SkinServer;

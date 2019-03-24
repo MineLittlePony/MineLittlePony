@@ -4,7 +4,6 @@ import net.minecraft.util.math.MathHelper;
 
 import com.google.gson.annotations.Expose;
 import com.minelittlepony.common.SensibleConfig;
-import com.minelittlepony.hdskins.HDSkinManager;
 
 /**
  * Storage container for MineLP client settings.
@@ -66,11 +65,7 @@ public abstract class PonyConfig extends SensibleConfig {
      * @param ponylevel
      */
     public void setPonyLevel(PonyLevel ponylevel) {
-        // only trigger reloads when the value actually changes
-        if (ponylevel != this.ponylevel) {
-            this.ponylevel = ponylevel;
-            HDSkinManager.INSTANCE.parseSkins();
-        }
+        this.ponylevel = ponylevel;
     }
 
     public void setGlobalScaleFactor(float f) {

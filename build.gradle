@@ -61,13 +61,45 @@ mixin {
 targetCompatibility = 1.8
 sourceCompatibility = 1.8
 sourceSets {
-    hdskins {
+    common {
+        // code shared between HDSkins and MineLP mods
+        // TODO: Make this into a library? I mean, it's not a lot.
         compileClasspath += main.compileClasspath
+    }
+
+    hdskins {
+        // HDSkins.
+        // TODO: Move to a separate project
+        compileClasspath += main.compileClasspath
+        compileClasspath += common.output
         ext.refMap = 'hdskins.mixin.refmap.json'
     }
-    main {
+    client {
+        // Client-only code
+        compileClasspath += main.compileClasspath
+        compileClasspath += main.output
+        compileClasspath += common.output
         compileClasspath += hdskins.output
         ext.refMap = 'minelp.mixin.refmap.json'
+    }
+    main {
+        // Non-client code. Called main because gradle calls it that
+        // TODO: HorseLib.java
+
+        compileClasspath += common.output
+    }
+
+    // Litemod stuff, separated for future removal
+    litemod {
+        compileClasspath += main.compileClasspath
+        compileClasspath += main.output
+        compileClasspath += client.output
+    }
+
+    hdskinslitemod {
+        compileClasspath += main.compileClasspath
+        compileClasspath += litemod.output
+        compileClasspath += hdskins.output
     }
 }
 
@@ -132,7 +164,13 @@ shadowJar {
     extension 'litemod'
     classifier "mc$minecraft.version"
 
+    from sourceSets.common.output
+
     from sourceSets.hdskins.output
+    from sourceSets.hdskinslitemod.output
+
+    from sourceSets.client.output
+    from sourceSets.litemod.output
     from litemod
 
     exclude "/assets/minelittlepony/textures/entity/pony"
@@ -155,11 +193,27 @@ shadowJar {
 }
 
 task srgJar(type: Jar) {
+    from sourceSets.common.output
+
+    from sourceSets.hdskins.output
+    from sourceSets.hdskinslitemod.output
+
     from sourceSets.main.output
+    from sourceSets.client.output
+    from sourceSets.litemod.output
+
     from sourceSets.hdskins.output
     from litemod
 
     classifier "mc$minecraft.version-srg"
+}
+
+task horseLib(type: Jar) {
+    from sourceSets.common.output
+
+    from sourceSets.main.output
+
+    baseName = "HoarseLib"
 }
 
 sourceJar.enabled = false

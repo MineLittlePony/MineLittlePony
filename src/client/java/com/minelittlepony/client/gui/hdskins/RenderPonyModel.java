@@ -8,7 +8,6 @@ import com.minelittlepony.client.pony.Pony;
 import com.minelittlepony.client.render.RenderPony;
 import com.minelittlepony.client.render.layer.LayerGear;
 import com.minelittlepony.client.render.layer.LayerPonyElytra;
-import com.minelittlepony.hdskins.entity.EntityPonyModel;
 import com.minelittlepony.hdskins.gui.RenderPlayerModel;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.meta.Race;

@@ -2,8 +2,8 @@ package com.minelittlepony.client;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.gui.GuiPonySettings;
+import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.common.client.gui.GuiLiteHost;
-import com.minelittlepony.settings.PonyConfig;
 import com.mumfrey.liteloader.Configurable;
 import com.mumfrey.liteloader.InitCompleteListener;
 import com.mumfrey.liteloader.Tickable;
@@ -94,7 +94,7 @@ public class LiteModMineLittlePony implements IModUtilities, InitCompleteListene
     }
 
     @ExposableOptions(filename = "minelittlepony", strategy = ConfigStrategy.Unversioned)
-    class Config extends PonyConfig implements Exposable {
+    class Config extends ClientPonyConfig implements Exposable {
         @Override
         public void save() {
             LiteLoader.getInstance().writeConfig(this);

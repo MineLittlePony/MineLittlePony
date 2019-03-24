@@ -1,6 +1,6 @@
 package com.minelittlepony.common.client.gui;
 
-import com.minelittlepony.hdskins.util.MoreStreams;
+import com.minelittlepony.common.util.MoreStreams;
 
 public class IconicToggle extends IconicButton {
 

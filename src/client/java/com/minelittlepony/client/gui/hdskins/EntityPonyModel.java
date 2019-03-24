@@ -1,4 +1,4 @@
-package com.minelittlepony.hdskins.entity;
+package com.minelittlepony.client.gui.hdskins;
 
 import com.minelittlepony.hdskins.gui.EntityPlayerModel;
 import com.mojang.authlib.GameProfile;
