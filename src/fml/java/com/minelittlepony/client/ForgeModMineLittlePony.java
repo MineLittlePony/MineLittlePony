@@ -14,11 +14,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-
-import com.minelittlepony.client.IModUtilities;
-import com.minelittlepony.client.MineLPClient;
-
-import java.io.File;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 @Mod("minelittlepony")
 public class ForgeModMineLittlePony implements IModUtilities {
@@ -33,12 +29,7 @@ public class ForgeModMineLittlePony implements IModUtilities {
 
     private void init(final FMLCommonSetupEvent event) {
 
-        // TODO: I don't know what forge did with `event.getModConfigurationDirectory()` but it's not where it used to be.
-
-        File configDirectory = new File(Minecraft.getInstance().getFileResourcePacks().getParentFile(), "config");
-        File configFile = new File(configDirectory, "minelittlepony.json");
-
-        mlp.init(Config.of(configFile));
+        mlp.init(Config.of(FMLPaths.CONFIGDIR.get().resolve("minelittlepony.json")));
     }
 
     private void posInit(FMLClientSetupEvent event) {

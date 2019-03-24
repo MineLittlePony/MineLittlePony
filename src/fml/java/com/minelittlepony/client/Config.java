@@ -2,16 +2,13 @@ package com.minelittlepony.client;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.minelittlepony.client.settings.ClientPonyConfig;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 class Config extends ClientPonyConfig {
     static final Gson gson = new GsonBuilder()
@@ -19,19 +16,16 @@ class Config extends ClientPonyConfig {
             .excludeFieldsWithoutExposeAnnotation()
             .create();
 
-    private final File configFile;
+    private final Path configFile;
 
-    Config(File file) {
+    Config(Path file) {
         configFile = file;
     }
 
     @Override
     public void save() {
-        if (configFile.exists()) {
-            configFile.delete();
-        }
 
-        try (JsonWriter writer = new JsonWriter(new OutputStreamWriter(new FileOutputStream(configFile)))) {
+        try (JsonWriter writer = new JsonWriter(Files.newBufferedWriter(configFile))) {
             writer.setIndent("    ");
 
             gson.toJson(this, Config.class, writer);
@@ -40,12 +34,12 @@ class Config extends ClientPonyConfig {
         }
     }
 
-    static Config of(File file) {
+    static Config of(Path file) {
         Config result = null;
 
-        if (file.exists()) {
-            try (FileInputStream s = new FileInputStream(file)) {
-                result = gson.fromJson(new JsonReader(new InputStreamReader(s)), Config.class);
+        if (Files.exists(file)) {
+            try (BufferedReader s = Files.newBufferedReader(file)) {
+                result = gson.fromJson(s, Config.class);
             } catch (IOException ignored) {
                 result = null;
             }
