@@ -44,9 +44,7 @@ public class LiteModMineLittlePony implements IModUtilities, InitCompleteListene
 
     @Override
     public void init(File configPath) {
-        Config config = new Config();
-
-        mlp.init(config);
+        mlp.init(new Config());
 
         LiteLoader.getInput().registerKeyBinding(MineLPClient.SETTINGS_GUI);
         LiteLoader.getInstance().registerExposable(config, null);
@@ -83,8 +81,8 @@ public class LiteModMineLittlePony implements IModUtilities, InitCompleteListene
     }
 
     @Override
-    public Timer getGameTimer() {
-        return ((IMinecraft)Minecraft.getInstance()).getTimer();
+    public float getRenderPartialTicks() {
+        return ((IMinecraft)Minecraft.getInstance()).getTimer().renderPartialTicks;
     }
 
     public static class Panel extends GuiLiteHost {

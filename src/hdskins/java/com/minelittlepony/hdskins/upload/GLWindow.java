@@ -3,14 +3,10 @@ package com.minelittlepony.hdskins.upload;
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.DefaultResourcePack;
 import net.minecraft.util.ResourceLocation;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
 
 import java.awt.Canvas;
 import java.awt.Frame;
@@ -32,6 +28,7 @@ import javax.swing.*;
 /**
  * Experimental window to control file drop. It kind of sucks.
  *
+ * @deprecated TODO: Merge GLFW branch
  */
 @Deprecated
 public class GLWindow extends DropTarget {
@@ -75,7 +72,7 @@ public class GLWindow extends DropTarget {
         return Math.max((int)Math.round(i * Display.getPixelScaleFactor()), 0);
     }
 
-    private final Minecraft mc = Minecraft.getMinecraft();
+    private final Minecraft mc = Minecraft.getInstance();
 
     private JFrame frame;
     private Canvas canvas;

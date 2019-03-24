@@ -103,7 +103,7 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
         if (entity.isPlayerSleeping()) {
             BedHead.instance.render(entity);
         }
-        if (entity.isRiding()) {
+        if (entity.getRidingEntity() != null) {
             MrBoaty.instance.render();
         }
 
@@ -166,17 +166,17 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
     }
 
     static class BedHead extends TileEntityBed {
-        public static BedHead instance = new BedHead(Blocks.BED.getDefaultState());
+        public static BedHead instance = new BedHead(Blocks.RED_BED.getDefaultState());
 
-        public int metadata;
+        public IBlockState state;
 
         public BedHead(IBlockState state) {
-            state.getBlock().getMetaFromState(state);
+            this.state = state;
         }
 
         @Override
-        public int getBlockMetadata() {
-            return metadata;
+        public IBlockState getBlockState() {
+            return state;
         }
 
         public void render(Entity entity) {
@@ -187,8 +187,8 @@ public class RenderPlayerModel<M extends EntityPlayerModel> extends RenderLiving
 
             TileEntityRendererDispatcher dispatcher = TileEntityRendererDispatcher.instance;
 
-            dispatcher.prepare(entity.getEntityWorld(), Minecraft.getInstance().getTextureManager(), Minecraft.getMinecraft().getRenderManager().getFontRenderer(), entity, null, 0);
-            dispatcher.getRenderer(this).render(BedHead.instance, -0.5F, 0, 0, 0, -1, 1);
+            dispatcher.prepare(entity.getEntityWorld(), Minecraft.getInstance().getTextureManager(), Minecraft.getInstance().getRenderManager().getFontRenderer(), entity, null, 0);
+            dispatcher.getRenderer(this).render(BedHead.instance, -0.5F, 0, 0, 0, -1);
 
             popMatrix();
             GL11.glPopAttrib();

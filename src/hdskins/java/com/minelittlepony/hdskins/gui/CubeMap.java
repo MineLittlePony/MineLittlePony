@@ -3,7 +3,6 @@ package com.minelittlepony.hdskins.gui;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.Project;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -16,6 +15,10 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
+/**
+ * @deprecated Replace with RenderSkybox
+ */
+@Deprecated
 public class CubeMap {
 
     private int updateCounter = 0;
@@ -52,7 +55,7 @@ public class CubeMap {
     }
 
     public void init() {
-        viewportTexture = mc.getTextureManager().getDynamicTextureLocation("skinpanorama", new DynamicTexture(256, 256));
+        viewportTexture = mc.getTextureManager().getDynamicTextureLocation("skinpanorama", new DynamicTexture(256, 256, true));
     }
 
     public void update() {
@@ -74,7 +77,8 @@ public class CubeMap {
         matrixMode(GL11.GL_PROJECTION);
         pushMatrix();
         loadIdentity();
-        Project.gluPerspective(120, 1, 0.05F, 10);
+
+        // Project.gluPerspective(120, 1, 0.05F, 10);
         matrixMode(GL11.GL_MODELVIEW);
         pushMatrix();
         loadIdentity();
@@ -164,8 +168,8 @@ public class CubeMap {
     private void rotateAndBlurCubemap() {
         mc.getTextureManager().bindTexture(viewportTexture);
 
-        glTexParameteri(3553, 10241, 9729);
-        glTexParameteri(3553, 10240, 9729);
+        GL11.glTexParameteri(3553, 10241, 9729);
+        GL11.glTexParameteri(3553, 10240, 9729);
         GL11.glCopyTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, 0, 0, 256, 256);
         enableBlend();
         blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);

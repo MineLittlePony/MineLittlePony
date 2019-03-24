@@ -21,11 +21,11 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -33,7 +33,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.MathHelper;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
@@ -64,7 +64,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
 
     private float msgFadeOpacity = 0;
 
-    private int lastMouseX = 0;
+    private double lastMouseX = 0;
 
     private boolean jumpState = false;
     private boolean sneakState = false;
@@ -83,7 +83,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
     private final Edge jumpKey = new Edge(this::jumpToggled) {
         @Override
         protected boolean nextState() {
-            return Keyboard.isKeyDown(Keyboard.KEY_SPACE);
+            return InputMappings.isKeyDown(GLFW.GLFW_KEY_SPACE);
         }
     };
     private final Edge sneakKey = new Edge(this::sneakToggled) {
@@ -94,14 +94,14 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
     };
 
     public GuiSkins(List<SkinServer> servers) {
-        mc = Minecraft.getMinecraft();
+        mc = Minecraft.getInstance();
         GameProfile profile = mc.getSession().getProfile();
 
         localPlayer = getModel(profile);
         remotePlayer = getModel(profile);
 
         RenderManager rm = mc.getRenderManager();
-        rm.renderEngine = mc.getTextureManager();
+        rm.textureManager = mc.getTextureManager();
         rm.options = mc.gameSettings;
         rm.renderViewEntity = localPlayer;
 
@@ -120,9 +120,9 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
     }
 
     @Override
-    public void updateScreen() {
+    public void tick() {
 
-        if (!(Keyboard.isKeyDown(Keyboard.KEY_LEFT) || Keyboard.isKeyDown(Keyboard.KEY_RIGHT))) {
+        if (!(InputMappings.isKeyDown(GLFW.GLFW_KEY_LEFT) || InputMappings.isKeyDown(GLFW.GLFW_KEY_RIGHT))) {
             updateCounter++;
         }
 
@@ -264,17 +264,10 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
     }
 
     @Override
-    protected void actionPerformed(GuiButton guiButton) throws IOException {
-        if (canTakeEvents()) {
-            super.actionPerformed(guiButton);
-        }
-    }
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        lastMouseX = mouseX;
 
-    @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
-        if (canTakeEvents()) {
-            super.mouseClicked(mouseX, mouseY, button);
-
+        if (canTakeEvents() && super.mouseClicked(mouseX, mouseY, button)) {
             int bottom = height - 40;
             int mid = width / 2;
 
@@ -282,32 +275,41 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
                 localPlayer.swingArm(EnumHand.MAIN_HAND);
                 remotePlayer.swingArm(EnumHand.MAIN_HAND);
             }
+
+            return true;
         }
 
-        lastMouseX = mouseX;
+        return false;
     }
 
     @Override
-    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-        if (canTakeEvents()) {
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double changeX, double changeY) {
+        lastMouseX = mouseX;
+
+        if (canTakeEvents() && super.mouseDragged(mouseX, mouseY, button, changeX, changeY)) {
             updateCounter -= (lastMouseX - mouseX);
+
+            return true;
         }
-        lastMouseX = mouseX;
+
+        return false;
     }
 
     @Override
-    protected void keyTyped(char keyChar, int keyCode) throws IOException {
+    public boolean keyPressed(int mouseX, int mouseY, int keyCode) {
         if (canTakeEvents()) {
-            if (keyCode == Keyboard.KEY_LEFT) {
+            if (keyCode == GLFW.GLFW_KEY_LEFT) {
                 updateCounter -= 5;
-            } else if (keyCode == Keyboard.KEY_RIGHT) {
+            } else if (keyCode == GLFW.GLFW_KEY_RIGHT) {
                 updateCounter += 5;
             }
 
             if (!chooser.pickingInProgress() && !uploader.uploadInProgress()) {
-                super.keyTyped(keyChar, keyCode);
+                return super.keyPressed(mouseX, mouseY, keyCode);
             }
         }
+
+        return false;
     }
 
     private void jumpToggled(boolean jumping) {
@@ -431,7 +433,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
         }
 
         depthMask(true);
-        enableDepth();
+        enableDepthTest();
     }
 
     private void renderPlayerModel(EntityPlayerModel thePlayer, float xPosition, float yPosition, float scale, float mouseY, float mouseX, float partialTick) {
@@ -439,16 +441,16 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
 
         enableColorMaterial();
         pushMatrix();
-        translate(xPosition, yPosition, 300);
+        translatef(xPosition, yPosition, 300);
 
-        scale(scale, scale, scale);
-        rotate(-15, 1, 0, 0);
+        scalef(scale, scale, scale);
+        rotatef(-15, 1, 0, 0);
 
         RenderHelper.enableStandardItemLighting();
 
         float rot = ((updateCounter + partialTick) * 2.5F) % 360;
 
-        rotate(rot, 0, 1, 0);
+        rotatef(rot, 0, 1, 0);
 
         float lookFactor = (float)Math.sin((rot * (Math.PI / 180)) + 45);
         float lookX = (float) Math.atan((xPosition - mouseX) / 20) * 30;
@@ -496,7 +498,7 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
         GL11.glDisable(GL11.GL_CLIP_PLANE1);
         GL11.glDisable(GL11.GL_CLIP_PLANE0);
 
-        disableDepth();
+        disableDepthTest();
         enableBlend();
         depthMask(false);
     }

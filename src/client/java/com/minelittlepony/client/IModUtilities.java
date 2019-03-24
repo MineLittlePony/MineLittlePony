@@ -4,7 +4,6 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Timer;
 
 public interface IModUtilities {
     <T extends TileEntity> void addRenderer(Class<T> type, TileEntityRenderer<T> renderer);
@@ -13,5 +12,5 @@ public interface IModUtilities {
 
     boolean hasFml();
 
-    Timer getGameTimer();
+    float getRenderPartialTicks();
 }
