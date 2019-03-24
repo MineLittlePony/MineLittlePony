@@ -108,7 +108,7 @@ sourceSets {
 }
 
 minecraft {
-    mappings channel: 'snapshot', version: project.mappings_version
+    mappings channel: project.mappings_channel, version: project.mappings_version + "-" + project.minecraft_version
 
     runs {
         client {
@@ -137,6 +137,13 @@ minecraft {
     // replace '@VERSION@', project.version
 }
 
+repositories {
+//    jcenter()
+    maven {
+        url = 'https://repo.spongepowered.org/maven'
+    }
+}
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.13.2-25.0.90'
 
@@ -163,7 +170,7 @@ jar {
     from sourceSets.client.output
     from sourceSets.fml.output
 
-    replace '@VERSION@', project.version
+//    replace '@VERSION@', project.version
 
     classifier 'base'
     extension 'jar'
@@ -185,8 +192,9 @@ task copyBGPones(type: Copy) {
     }
 }
 
+/*
 shadowJar {
-    classifier "mc$minecraft.version"
+//    classifier "mc$minecraft.version"
 
     from sourceSets.common.output
 
@@ -201,7 +209,7 @@ shadowJar {
         into "/assets/minelittlepony/textures/entity/pony"
     }
 
-    replace '@VERSION@', project.version
+//    replace '@VERSION@', project.version
 
     dependencies {
         exclude dependency('deobf.org.ow2.asm:')
@@ -228,27 +236,28 @@ task srgJar(type: Jar) {
 
     from sourceSets.hdskins.output
 
-    replace '@VERSION@', project.version
+//    replace '@VERSION@', project.version
 
     classifier "mc$minecraft.version-srg"
 }
+*/
 
 task horseLib(type: Jar) {
     from sourceSets.common.output
 
     from sourceSets.main.output
 
-    replace '@VERSION@', project.version
+//    replace '@VERSION@', project.version
 
     baseName = "HoarseLib"
 }
 
-sourceJar.enabled = false
+//sourceJar.enabled = false
 
-reobf {
-    srgJar {
-        mappingType = 'SEARGE'
-    }
-
-    shadowJar{}
-}
+//reobf {
+//    srgJar {
+//        mappingType = 'SEARGE'
+//    }
+//
+//    shadowJar{}
+//}
