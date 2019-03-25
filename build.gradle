@@ -59,11 +59,19 @@ sourceSets {
         compileClasspath += main.compileClasspath
     }
 
+    hdskins {
+        // HDSkins.
+        // TODO: Move to a separate project
+        compileClasspath += main.compileClasspath
+        compileClasspath += common.output
+        ext.refMap = 'hdskins.mixin.refmap.json'
+    }
     client {
         // Client-only code
         compileClasspath += main.compileClasspath
         compileClasspath += main.output
         compileClasspath += common.output
+        compileClasspath += hdskins.output
         ext.refMap = 'minelp.mixin.refmap.json'
     }
     main {
@@ -79,13 +87,24 @@ sourceSets {
         compileClasspath += main.output
         compileClasspath += client.output
     }
-    
+
+    hdskinslitemod {
+        compileClasspath += main.compileClasspath
+        compileClasspath += litemod.output
+        compileClasspath += hdskins.output
+    }
+
     fml {
         compileClasspath += main.compileClasspath
         compileClasspath += main.output
         compileClasspath += client.output
     }
 
+    hdskinsfml {
+        compileClasspath += main.compileClasspath
+        compileClasspath += litemod.output
+        compileClasspath += hdskins.output
+    }
 }
 
 minecraft {
@@ -103,6 +122,7 @@ minecraft {
             mods {
                 minelittlepony {
                     source sourceSets.common
+                    source sourceSets.hdskins
                     source sourceSets.client
                     source sourceSets.main
 
@@ -127,6 +147,10 @@ repositories {
 dependencies {
     minecraft 'net.minecraftforge:forge:1.13.2-25.0.90'
 
+    // use the same version as httpclient
+    compile('org.apache.httpcomponents:httpmime:4.3.2') {
+        transitive = false
+    }
     compile('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
         transitive = false
     }
@@ -139,6 +163,9 @@ manifest {
 jar {
     from sourceSets.common.output
     from sourceSets.main.output
+
+    from sourceSets.hdskins.output
+    from sourceSets.hdskinsfml.output
 
     from sourceSets.client.output
     from sourceSets.fml.output
