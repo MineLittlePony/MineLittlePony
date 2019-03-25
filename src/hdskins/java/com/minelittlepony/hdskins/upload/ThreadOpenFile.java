@@ -16,6 +16,8 @@ import com.minelittlepony.hdskins.HDSkins;
  *
  * @author Adam Mummery-Smith
  */
+//TODO: No more swing
+@Deprecated
 public abstract class ThreadOpenFile extends Thread implements IFileDialog {
 
     protected String dialogTitle;

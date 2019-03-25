@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.SwingConstants;
 
+// TODO: No more swing
+@Deprecated
 public class FileDropper extends JFrame {
     private static final long serialVersionUID = -2945117328826695659L;
 
