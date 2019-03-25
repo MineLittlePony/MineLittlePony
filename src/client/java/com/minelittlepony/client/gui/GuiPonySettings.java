@@ -4,12 +4,12 @@ import net.minecraft.client.gui.GuiScreen;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.render.entities.MobRenderers;
-import com.minelittlepony.common.client.gui.Checkbox;
 import com.minelittlepony.common.client.gui.GameGui;
 import com.minelittlepony.common.client.gui.GuiHost;
 import com.minelittlepony.common.client.gui.IGuiGuest;
 import com.minelittlepony.common.client.gui.Label;
 import com.minelittlepony.common.client.gui.Slider;
+import com.minelittlepony.common.client.gui.Toggle;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
 import com.minelittlepony.settings.PonyConfig.PonySettings;
@@ -44,28 +44,28 @@ public class GuiPonySettings implements IGuiGuest {
         }
 
         host.addButton(new Label(LEFT, row += 15, PONY_LEVEL, -1));
-        host.addButton(new Slider(LEFT, row += 15, 0, 2, config.getPonyLevel().ordinal(), (int id, String name, float value) -> {
-            return GameGui.format(PONY_LEVEL + "." + PonyLevel.valueFor(value).name().toLowerCase());
-        }, v -> {
+        host.addButton(new Slider(LEFT, row += 15, 0, 2, config.getPonyLevel().ordinal(), v -> {
             PonyLevel level = PonyLevel.valueFor(v);
             config.setPonyLevel(level);
             return (float)level.ordinal();
+        }).setFormatter(value -> {
+            return GameGui.format(PONY_LEVEL + "." + PonyLevel.valueFor(value).name().toLowerCase());
         }));
 
         if (GuiScreen.isCtrlKeyDown() && GuiScreen.isShiftKeyDown()) {
             host.addButton(new Label(LEFT, row += 30, "minelp.debug.scale", -1));
-            host.addButton(new Slider(LEFT, row += 15, 0.1F, 3, config.getGlobalScaleFactor(), (int id, String name, float value) -> {
-                return GameGui.format("minelp.debug.scale.value", GameGui.format(describeCurrentScale(value)));
-            }, v -> {
+            host.addButton(new Slider(LEFT, row += 15, 0.1F, 3, config.getGlobalScaleFactor(), v -> {
                 config.setGlobalScaleFactor(v);
                 return config.getGlobalScaleFactor();
+            }).setFormatter(value -> {
+                return GameGui.format("minelp.debug.scale.value", GameGui.format(describeCurrentScale(value)));
             }));
         }
 
         row += 15;
         host.addButton(new Label(LEFT, row += 15, OPTIONS_PREFIX + "options", -1));
         for (PonySettings i : PonySettings.values()) {
-            host.addButton(new Checkbox(LEFT, row += 20, OPTIONS_PREFIX + i.name().toLowerCase(), i.get(), i));
+            host.addButton(new Toggle(LEFT, row += 20, i.get(), OPTIONS_PREFIX + i.name().toLowerCase(), i));
         }
 
         if (host.mustScroll()) {
@@ -76,7 +76,7 @@ public class GuiPonySettings implements IGuiGuest {
 
         host.addButton(new Label(RIGHT, row += 15, MOB_PREFIX + "title", -1));
         for (MobRenderers i : MobRenderers.values()) {
-            host.addButton(new Checkbox(RIGHT, row += 20, MOB_PREFIX + i.name().toLowerCase(), i.get(), i));
+            host.addButton(new Toggle(RIGHT, row += 20, i.get(), MOB_PREFIX + i.name().toLowerCase(), i));
         }
     }
 
