@@ -119,7 +119,7 @@ public class LevitatingItemRenderer {
         boolean doNormal = entity.getItemInUseCount() <= 0 || action == EnumAction.NONE;
 
         if (doNormal) { // eating, blocking, and drinking are not transformed. Only held items.
-            float ticks = MineLPClient.getInstance().getModUtilities().getGameTimer().elapsedPartialTicks - entity.ticksExisted;
+            float ticks = MineLPClient.getInstance().getModUtilities().getRenderPartialTicks() - entity.ticksExisted;
 
             float floatAmount = (float)Math.sin(ticks / 9) / 40;
             float driftAmount = (float)Math.cos(ticks / 6) / 40;
