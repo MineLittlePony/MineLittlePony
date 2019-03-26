@@ -56,7 +56,7 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
     @Override
     public float prepareScale(AbstractClientPlayer player, float ticks) {
 
-        if (player.getRidingEntity() == null && !player.isPlayerSleeping()) {
+        if (!player.isPassenger() && !player.isPlayerSleeping()) {
             float x = player.width/2;
             float y = 0;
 
@@ -77,7 +77,7 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
         renderPony.preRenderCallback(player, ticks);
         shadowSize = renderPony.getShadowScale();
 
-        if (player.getRidingEntity() != null) {
+        if (player.isPassenger()) {
             GlStateManager.translated(0, player.getYOffset(), 0);
         }
     }
@@ -111,7 +111,7 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
 
     @Override
     public void doRenderShadowAndFire(Entity player, double x, double y, double z, float yaw, float ticks) {
-        if (player.getRidingEntity() != null && ((AbstractClientPlayer)player).isPlayerSleeping()) {
+        if (player.isPassenger() && ((AbstractClientPlayer)player).isPlayerSleeping()) {
             super.doRenderShadowAndFire(player, x, y, z, yaw, ticks);
         }
     }

@@ -137,7 +137,7 @@ public class Pony extends Touchable<Pony> implements IPony {
     @Override
     public boolean isFlying(EntityLivingBase entity) {
         return !(entity.onGround
-                || entity.getRidingEntity() != null
+                || entity.isPassenger()
                 || (entity.isOnLadder() && !(entity instanceof EntityPlayer && ((EntityPlayer)entity).abilities.isFlying))
                 || entity.isInWater()
                 || entity.isPlayerSleeping());

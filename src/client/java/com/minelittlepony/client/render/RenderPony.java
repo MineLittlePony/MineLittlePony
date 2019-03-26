@@ -62,7 +62,7 @@ public class RenderPony<T extends EntityLivingBase> {
     }
 
     public float getRenderYaw(T entity, float rotationYaw, float partialTicks) {
-        if (entity.getRidingEntity() != null) {
+        if (entity.isPassenger()) {
             Entity mount = entity.getRidingEntity();
             if (mount  instanceof EntityLivingBase) {
                 return MathUtil.interpolateDegress(((EntityLivingBase)mount).prevRenderYawOffset, ((EntityLivingBase)mount).renderYawOffset, partialTicks);
@@ -73,7 +73,7 @@ public class RenderPony<T extends EntityLivingBase> {
     }
 
     protected void translateRider(EntityLivingBase entity, float ticks) {
-        if (entity.getRidingEntity() != null) {
+        if (entity.isPassenger()) {
             Entity ridingEntity = entity.getRidingEntity();
 
             if (ridingEntity instanceof EntityLivingBase) {
@@ -173,7 +173,7 @@ public class RenderPony<T extends EntityLivingBase> {
             y -= 0.25F;
         }
 
-        if (entity.getRidingEntity() != null) {
+        if (entity.isPassenger()) {
             y += entity.getRidingEntity().getEyeHeight();
         }
 

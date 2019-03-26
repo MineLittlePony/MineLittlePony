@@ -62,7 +62,7 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
 
             float left = hand == EnumHandSide.LEFT ? 1 : -1;
 
-            if (entity.getRidingEntity() != null) {
+            if (entity.isPassenger()) {
                 GlStateManager.translatef(left / 10, -0.2F, -0.5F);
             }
 

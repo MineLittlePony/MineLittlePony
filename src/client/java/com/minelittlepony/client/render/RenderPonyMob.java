@@ -80,7 +80,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
             shadowSize *= 3; // undo vanilla shadow scaling
         }
 
-        if (entity.getRidingEntity() == null) {
+        if (!entity.isPassenger()) {
             GlStateManager.translatef(0, 0, -entity.width / 2); // move us to the center of the shadow
         } else {
             GlStateManager.translated(0, entity.getYOffset(), 0);

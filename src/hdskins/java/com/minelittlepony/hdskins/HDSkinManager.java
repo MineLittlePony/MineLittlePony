@@ -338,6 +338,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
-        this.resources.onResourceManagerReload(resourceManager);
+        resources.onResourceManagerReload(resourceManager);
     }
 }
