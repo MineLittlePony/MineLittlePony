@@ -10,7 +10,6 @@ import com.google.gson.annotations.Expose;
 import com.minelittlepony.hdskins.gui.EntityPlayerModel;
 import com.minelittlepony.hdskins.gui.RenderPlayerModel;
 import com.minelittlepony.hdskins.server.SkinServer;
-import com.minelittlepony.hdskins.upload.GLWindow;
 
 import java.io.File;
 import java.util.List;
@@ -34,9 +33,6 @@ public abstract class HDSkins {
     public List<SkinServer> skin_servers = SkinServer.defaultServers;
 
     @Expose
-    public boolean experimentalSkinDrop = false;
-
-    @Expose
     public String lastChosenFile = "";
 
     public void init() {
@@ -55,14 +51,5 @@ public abstract class HDSkins {
 
         // register skin servers.
         skin_servers.forEach(HDSkinManager.INSTANCE::addSkinServer);
-
-        if (experimentalSkinDrop) {
-            GLWindow.create();
-        }
     }
-
-    public void onToggledFullScreen(boolean fullScreen) {
-        GLWindow.current().refresh(fullScreen);
-    }
-
 }

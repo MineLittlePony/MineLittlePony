@@ -27,7 +27,7 @@ import java.io.File;
 import java.util.function.Function;
 
 @ExposableOptions(strategy = ConfigStrategy.Unversioned, filename = "hdskins")
-public class LiteModHDSkins extends HDSkins implements InitCompleteListener, ViewportListener, Configurable, AdvancedExposable {
+public class LiteModHDSkins extends HDSkins implements InitCompleteListener, AdvancedExposable {
 
     @Override
     public String getName() {
@@ -68,28 +68,13 @@ public class LiteModHDSkins extends HDSkins implements InitCompleteListener, Vie
     }
 
     @Override
-    public Class<? extends ConfigPanel> getConfigPanelClass() {
-        return Panel.class;
-    }
-
-    @Override
     public void onInitCompleted(Minecraft minecraft, LiteLoader loader) {
         initComplete();
     }
 
     @Override
-    public void onViewportResized(ScaledResolution resolution, int displayWidth, int displayHeight) {
-
-    }
-
-    @Override
-    public void onFullScreenToggled(boolean fullScreen) {
-        super.onToggledFullScreen(fullScreen);
-    }
-
-    @Override
     protected <T extends Entity> void addRenderer(Class<T> type, Function<RenderManager, Render<T>> renderer) {
-        ModUtilities.addRenderer(type, renderer.apply(Minecraft.getMinecraft().getRenderManager()));
+        ModUtilities.addRenderer(type, renderer.apply(Minecraft.getInstance().getRenderManager()));
     }
 
     @Override
@@ -97,9 +82,4 @@ public class LiteModHDSkins extends HDSkins implements InitCompleteListener, Vie
         return LiteLoader.getAssetsDirectory();
     }
 
-    public static class Panel extends GuiLiteHost {
-        public Panel() {
-            super(new HDSkinsConfigPanel());
-        }
-    }
 }
