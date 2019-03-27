@@ -19,7 +19,6 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.EntityEquipmentSlot.Type;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemArmorDyeable;
-import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;

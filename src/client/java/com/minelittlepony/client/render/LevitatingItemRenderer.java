@@ -11,7 +11,6 @@ import com.minelittlepony.pony.IPony;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
@@ -22,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
+@SuppressWarnings("deprecation") // ItemCameraTransforms is deprecated by forge but we still need it.
 public class LevitatingItemRenderer {
 
     public static void enableItemGlowRenderProfile() {

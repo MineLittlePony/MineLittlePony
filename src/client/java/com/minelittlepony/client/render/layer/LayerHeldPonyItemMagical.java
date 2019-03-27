@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
 
+@SuppressWarnings("deprecation") // ItemCameraTransforms is deprecated by forge but we still need it.
 public class LayerHeldPonyItemMagical<T extends EntityLivingBase> extends LayerHeldPonyItem<T> {
 
     public LayerHeldPonyItemMagical(RenderLivingBase<T> livingPony) {

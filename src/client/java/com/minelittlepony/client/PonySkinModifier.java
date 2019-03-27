@@ -6,7 +6,7 @@ public class PonySkinModifier implements ISkinModifier {
 
     @Override
     public void convertSkin(ISkinModifier.IDrawer drawer) {
-        int scale = drawer.getImage().getWidth() / 64;
+        // int scale = drawer.getImage().getWidth() / 64;
 
         // TODO: What are these numbers!?
 

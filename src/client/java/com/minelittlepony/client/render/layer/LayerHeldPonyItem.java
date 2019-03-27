@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
+@SuppressWarnings("deprecation") // ItemCameraTransforms is deprecated by forge but we still need it.
 public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyLayer<T> {
 
     public LayerHeldPonyItem(RenderLivingBase<T> livingPony) {

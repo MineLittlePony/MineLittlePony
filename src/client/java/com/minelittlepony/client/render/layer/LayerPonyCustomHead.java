@@ -13,9 +13,9 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.block.BlockAbstractSkull;
 import net.minecraft.block.BlockSkull.ISkullType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityZombieVillager;
 import net.minecraft.entity.passive.EntityVillager;
@@ -29,6 +29,7 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.EnumFacing;
 
+@SuppressWarnings("deprecation") // ItemCameraTransforms is deprecated by forge but we still need it.
 public class LayerPonyCustomHead<T extends EntityLivingBase> implements LayerRenderer<T> {
 
     private RenderLivingBase<T> renderer;

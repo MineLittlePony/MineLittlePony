@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 
+@SuppressWarnings("deprecation") // ItemCameraTransforms is deprecated by forge but we still need it.
 public class RenderPonyWitch extends RenderPonyMob<EntityWitch> {
 
     private static final ResourceLocation WITCH_TEXTURES = new ResourceLocation("minelittlepony", "textures/entity/witch_pony.png");
