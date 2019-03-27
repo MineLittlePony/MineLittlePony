@@ -64,7 +64,6 @@ sourceSets {
         compileClasspath += main.compileClasspath
         compileClasspath += main.output
         compileClasspath += common.output
-        compileClasspath += hdskins.output
         ext.refMap = 'minelp.mixin.refmap.json'
     }
     main {
@@ -104,7 +103,6 @@ minecraft {
             mods {
                 minelittlepony {
                     source sourceSets.common
-                    source sourceSets.hdskins
                     source sourceSets.client
                     source sourceSets.main
 
@@ -207,8 +205,6 @@ task srgJar(type: Jar) {
     from sourceSets.main.output
     from sourceSets.client.output
     from sourceSets.fml.output
-
-    from sourceSets.hdskins.output
 
 //    replace '@VERSION@', project.version
 
