@@ -1,34 +1,49 @@
 package com.minelittlepony.client.mixin;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import com.minelittlepony.client.ducks.IRenderItem;
+import com.minelittlepony.client.render.LevitatingItemRenderer;
 
-import com.minelittlepony.client.PonyRenderManager;
-
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.renderer.FirstPersonRenderer;
 import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.item.ItemStack;
 
-@Mixin(FirstPersonRenderer.class)
-public class MixinItemRenderer {
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-    private static final String AbstractClientPlayer = "Lnet/minecraft/client/entity/AbstractClientPlayer;";
-    private static final String ItemStack = "Lnet/minecraft/item/ItemStack;";
-    private static final String EnumHand = "Lnet/minecraft/util/EnumHand;";
-    private static final String EntityLivingBase = "Lnet/minecraft/entity/EntityLivingBase;";
-    private static final String TransformType = "Lnet/minecraft/client/renderer/block/ItemCameraTransforms$TransformType;";
+@SuppressWarnings("deprecation") // IResourceManagerReloadListener is deprecated by forge but it's part of the signature. We can't remove it.
+@Mixin(ItemRenderer.class)
+public abstract class MixinItemRenderer implements IResourceManagerReloadListener, IRenderItem {
 
-    // TODO: This has moved to mc.getFirstPersonRenderer()
-    //public void renderItemInFirstPerson(AbstractClientPlayer player, float p_187457_2_, float p_187457_3_, EnumHand hand, float p_187457_5_, ItemStack stack, float p_187457_7_)
-    //public void renderItemSide(EntityLivingBase entitylivingbaseIn, ItemStack heldStack, ItemCameraTransforms.TransformType transform, boolean leftHanded)
-    @Redirect(method = "renderItemInFirstPerson(" + AbstractClientPlayer + "FF" + EnumHand + "F" + ItemStack + "F)V",
-             at = @At(value = "INVOKE",
-                      target = "Lnet/minecraft/client/renderer/ItemRenderer;renderItemSide(" + EntityLivingBase + ItemStack + TransformType + "Z)V"))
-    private void redirectRenderItemSide(ItemRenderer self, EntityLivingBase entity, ItemStack stack, TransformType transform, boolean left) {
-        PonyRenderManager.getInstance().getMagicRenderer().renderItemInFirstPerson(self, (AbstractClientPlayer)entity, stack, transform, left);
+    private boolean transparency;
+
+    @Override
+    public void useTransparency(boolean transparency) {
+        this.transparency = transparency;
+    }
+
+    @Inject(method = "renderItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/renderer/block/model/IBakedModel;)V", at = @At("HEAD"))
+    private void onRenderItem(ItemStack stack, IBakedModel model, CallbackInfo info) {
+        if (transparency) {
+            LevitatingItemRenderer.enableItemGlowRenderProfile();
+        }
+    }
+
+    @ModifyArg(method = "renderQuads(Lnet/minecraft/client/renderer/BufferBuilder;Ljava/util/List;ILnet/minecraft/item/ItemStack;)V",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/client/renderer/RenderItem;renderQuad(Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/client/renderer/block/model/BakedQuad;I)V"),
+            index = 2)
+    private int modifyItemRenderTint(int color) {
+        return transparency ? -1 : color;
+    }
+
+    @Inject(method = "renderEffect(Lnet/minecraft/client/renderer/block/model/IBakedModel;)V", at = @At("HEAD"), cancellable = true)
+    private void renderEffect(IBakedModel model, CallbackInfo info) {
+        if (transparency) {
+            info.cancel();
+        }
     }
 }

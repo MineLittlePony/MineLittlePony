@@ -6,9 +6,9 @@
     "compatibilityLevel": "JAVA_8",
     "mixins": [
         "MixinDefaultPlayerSkin",
+        "MixinFirstPersonRenderer",
         "MixinGlStateManager",
         "MixinItemRenderer",
-        "MixinRenderItem",
         "MixinRenderManager"
     ]
 }
