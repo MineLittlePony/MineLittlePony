@@ -9,7 +9,7 @@ import com.minelittlepony.client.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.client.render.layer.LayerPonyArmor;
 import com.minelittlepony.client.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.client.render.layer.LayerPonyElytra;
-import com.minelittlepony.hdskins.HDSkinManager;
+import com.minelittlepony.hdskins.HDSkins;
 import com.minelittlepony.pony.IPony;
 
 import net.minecraft.client.renderer.GlStateManager;
@@ -105,7 +105,7 @@ public abstract class RenderPonyMob<T extends EntityLiving> extends RenderLiving
     @Override
     @Nonnull
     protected final ResourceLocation getEntityTexture(T entity) {
-        return HDSkinManager.INSTANCE.getConvertedSkin(getTexture(entity));
+        return HDSkins.getInstance().getConvertedSkin(getTexture(entity));
     }
 
     @Override

@@ -6,10 +6,10 @@ import com.minelittlepony.client.gui.hdskins.GuiSkinsMineLP;
 import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
 import com.minelittlepony.common.client.gui.GuiHost;
-import com.minelittlepony.hdskins.HDSkinManager;
-import com.minelittlepony.hdskins.server.LegacySkinServer;
-import com.minelittlepony.hdskins.server.SkinServer;
-import com.minelittlepony.hdskins.server.ValhallaSkinServer;
+import com.minelittlepony.hdskins.HDSkins;
+import com.minelittlepony.hdskins.net.LegacySkinServer;
+import com.minelittlepony.hdskins.net.SkinServer;
+import com.minelittlepony.hdskins.net.ValhallaSkinServer;
 import com.minelittlepony.settings.PonyConfig;
 
 import net.minecraft.client.Minecraft;
@@ -71,7 +71,7 @@ public class MineLPClient extends MineLittlePony {
      */
     void postInit(Minecraft minecraft) {
 
-        HDSkinManager manager = HDSkinManager.INSTANCE;
+        HDSkins manager = HDSkins.getInstance();
 //        manager.setSkinUrl(SKIN_SERVER_URL);
 //        manager.setGatewayURL(GATEWAY_URL);
         manager.addSkinModifier(new PonySkinModifier());
