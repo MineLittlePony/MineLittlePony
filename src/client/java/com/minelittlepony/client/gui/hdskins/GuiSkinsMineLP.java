@@ -54,10 +54,10 @@ public class GuiSkinsMineLP extends GuiSkins {
     }
 
     @Override
-    protected void initPanorama() {
+    protected ResourceLocation getBackground() {
         int i = (int)Math.floor(Math.random() * panoramas.length);
 
-        panorama.setSource(panoramas[i]);
+        return new ResourceLocation(panoramas[i]);
     }
 
     protected void setWet(boolean wet) {
