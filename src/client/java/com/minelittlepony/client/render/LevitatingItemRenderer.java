@@ -27,7 +27,7 @@ public class LevitatingItemRenderer {
     public static void enableItemGlowRenderProfile() {
         enableBlend();
         blendFuncSeparate(SourceFactor.CONSTANT_COLOR, DestFactor.ONE, SourceFactor.ONE, DestFactor.ZERO);
-        Minecraft.getInstance().entityRenderer.disableLightmap();
+        Minecraft.getInstance().gameRenderer.disableLightmap();
     }
 
     /**

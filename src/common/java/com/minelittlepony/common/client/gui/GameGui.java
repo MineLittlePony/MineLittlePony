@@ -30,7 +30,7 @@ public abstract class GameGui extends GuiScreen {
     }
 
     protected void playSound(SoundEvent event) {
-        mc.getSoundHandler().play(SimpleSound.getMasterRecord(event, 1));
+        mc.getSoundHandler().play(SimpleSound.master(event, 1));
     }
 
     /**

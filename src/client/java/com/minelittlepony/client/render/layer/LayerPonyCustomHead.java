@@ -98,7 +98,7 @@ public class LayerPonyCustomHead<T extends EntityLivingBase> implements LayerRen
                 profile = NBTUtil.readGameProfile(nbt.getCompound("SkullOwner"));
             } else if (nbt.contains("SkullOwner", 8)) {
                 profile = TileEntitySkull.updateGameProfile(new GameProfile(null, nbt.getString("SkullOwner")));
-                nbt.setTag("SkullOwner", NBTUtil.writeGameProfile(new NBTTagCompound(), profile));
+                nbt.put("SkullOwner", NBTUtil.writeGameProfile(new NBTTagCompound(), profile));
             }
         }
 

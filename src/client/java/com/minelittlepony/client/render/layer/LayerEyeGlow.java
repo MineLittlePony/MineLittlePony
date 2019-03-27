@@ -32,11 +32,11 @@ public class LayerEyeGlow<T extends EntityLiving> extends AbstractPonyLayer<T> {
 
         color4f(1, 1, 1, 1);
 
-        Minecraft.getInstance().entityRenderer.setupFogColor(true);
+        Minecraft.getInstance().gameRenderer.setupFogColor(true);
 
         getMainModel().render(entity, move, swing, ticks, headYaw, headPitch, scale);
 
-        Minecraft.getInstance().entityRenderer.setupFogColor(false);
+        Minecraft.getInstance().gameRenderer.setupFogColor(false);
 
         ((RenderLiving<T>)getRenderer()).setLightmap(entity);
 

@@ -36,7 +36,7 @@ public class RenderSeaponyPlayer extends RenderPonyPlayer {
             double y = player.posY + (player.getEntityWorld().rand.nextFloat() * 2);
             double z = player.posZ + (player.getEntityWorld().rand.nextFloat() * 2) - 1;
 
-            player.getEntityWorld().spawnParticle(Particles.END_ROD, x, y, z, 0, 0, 0);
+            player.getEntityWorld().addParticle(Particles.END_ROD, x, y, z, 0, 0, 0);
         }
 
         return pony;

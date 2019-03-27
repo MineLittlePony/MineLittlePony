@@ -17,7 +17,7 @@ public class IconicButton extends Button {
     }
 
     public IconicButton setIcon(ItemStack stack, int colour) {
-        stack.getOrCreateChildTag("display").setInt("color", colour);
+        stack.getOrCreateChildTag("display").putInt("color", colour);
         return setIcon(stack);
     }
 

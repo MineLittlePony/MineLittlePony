@@ -53,7 +53,7 @@ public class DefaultPonyArmorTextureResolver<T extends EntityLivingBase> impleme
 
     private ResourceLocation resolve(ResourceLocation... resources) {
         // check resource packs for either texture.
-        for (ResourcePackInfoClient entry : Minecraft.getInstance().getResourcePackList().getPackInfos()) {
+        for (ResourcePackInfoClient entry : Minecraft.getInstance().getResourcePackList().getAllPacks()) {
             for (ResourceLocation candidate : resources) {
                 if (entry.getResourcePack().resourceExists(ResourcePackType.CLIENT_RESOURCES, candidate)) {
                     // ponies are more important

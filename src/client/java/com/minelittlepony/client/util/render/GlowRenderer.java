@@ -38,7 +38,7 @@ public class GlowRenderer extends AbstractRenderer<GlowRenderer> {
     @Override
     public void render(float scale) {
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-        Minecraft.getInstance().entityRenderer.disableLightmap();
+        Minecraft.getInstance().gameRenderer.disableLightmap();
         super.render(scale);
         GL11.glPopAttrib();
     }
