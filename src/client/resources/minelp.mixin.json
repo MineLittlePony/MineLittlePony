@@ -9,6 +9,7 @@
         "MixinFirstPersonRenderer",
         "MixinGlStateManager",
         "MixinItemRenderer",
-        "MixinRenderManager"
+        "MixinRenderManager",
+        "MixinThreadDownloadImageData"
     ]
 }

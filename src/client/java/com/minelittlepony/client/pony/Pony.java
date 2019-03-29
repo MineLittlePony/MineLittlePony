@@ -3,10 +3,9 @@ package com.minelittlepony.client.pony;
 import com.google.common.base.MoreObjects;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.PonyRenderManager;
+import com.minelittlepony.client.ducks.IBufferedTexture;
 import com.minelittlepony.client.ducks.IRenderPony;
 import com.minelittlepony.client.transform.PonyTransformation;
-import com.minelittlepony.hdskins.resources.texture.DynamicTextureImage;
-import com.minelittlepony.hdskins.resources.texture.IBufferedTexture;
 import com.minelittlepony.hdskins.util.ProfileTextureUtil;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.IPonyData;
@@ -16,6 +15,7 @@ import com.minelittlepony.util.chron.Touchable;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.NativeImage;
@@ -65,7 +65,7 @@ public class Pony extends Touchable<Pony> implements IPony {
         if (ponyTexture == null) {
             ponyTexture = ProfileTextureUtil.getDynamicBufferedImage(16, 16, MissingTextureSprite.getDynamicTexture());
 
-            Minecraft.getInstance().getTextureManager().loadTexture(resource, new DynamicTextureImage(ponyTexture));
+            Minecraft.getInstance().getTextureManager().loadTexture(resource, new DynamicTexture(ponyTexture));
         }
 
         return checkSkin(ponyTexture);
@@ -104,6 +104,10 @@ public class Pony extends Touchable<Pony> implements IPony {
         }
 
         ITextureObject texture = Minecraft.getInstance().getTextureManager().getTexture(resource);
+
+        if (texture instanceof DynamicTexture) {
+            return ((DynamicTexture)texture).getTextureData();
+        }
 
         if (texture instanceof IBufferedTexture) {
             return ((IBufferedTexture) texture).getBufferedImage();

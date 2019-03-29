@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 
 @Mixin(RenderManager.class)
 public interface MixinRenderManager {
-    @Accessor
-    Map<String, RenderPlayer> getSkinMap();
+    // There is a method to get it, but it's made mutable my Forge.
+    @Accessor("skinMap")
+    Map<String, RenderPlayer> getMutableSkinMap();
 }

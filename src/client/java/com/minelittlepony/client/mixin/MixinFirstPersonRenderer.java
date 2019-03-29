@@ -17,18 +17,15 @@ import net.minecraft.item.ItemStack;
 @Mixin(FirstPersonRenderer.class)
 public class MixinFirstPersonRenderer {
 
-    private static final String AbstractClientPlayer = "Lnet/minecraft/client/entity/AbstractClientPlayer;";
-    private static final String ItemStack = "Lnet/minecraft/item/ItemStack;";
-    private static final String EnumHand = "Lnet/minecraft/util/EnumHand;";
-    private static final String EntityLivingBase = "Lnet/minecraft/entity/EntityLivingBase;";
-    private static final String TransformType = "Lnet/minecraft/client/renderer/block/ItemCameraTransforms$TransformType;";
-
-    // TODO: This has moved to mc.getFirstPersonRenderer()
-    //public void renderItemInFirstPerson(AbstractClientPlayer player, float p_187457_2_, float p_187457_3_, EnumHand hand, float p_187457_5_, ItemStack stack, float p_187457_7_)
-    //public void renderItemSide(EntityLivingBase entitylivingbaseIn, ItemStack heldStack, ItemCameraTransforms.TransformType transform, boolean leftHanded)
-    @Redirect(method = "renderItemInFirstPerson(" + AbstractClientPlayer + "FF" + EnumHand + "F" + ItemStack + "F)V",
+    @Redirect(method = "renderItemInFirstPerson("
+                + "Lnet/minecraft/client/entity/AbstractClientPlayer;FF"
+                + "Lnet/minecraft/util/EnumHand;F"
+                + "Lnet/minecraft/item/ItemStack;F)V",
              at = @At(value = "INVOKE",
-                      target = "Lnet/minecraft/client/renderer/ItemRenderer;renderItemSide(" + EntityLivingBase + ItemStack + TransformType + "Z)V"))
+                      target = "Lnet/minecraft/client/renderer/FirstPersonRenderer;renderItemSide("
+                                  + "Lnet/minecraft/entity/EntityLivingBase;"
+                                  + "Lnet/minecraft/item/ItemStack;"
+                                  + "Lnet/minecraft/client/renderer/model/ItemCameraTransforms$TransformType;Z)V"))
     private void redirectRenderItemSide(ItemRenderer self, EntityLivingBase entity, ItemStack stack, TransformType transform, boolean left) {
         PonyRenderManager.getInstance().getMagicRenderer().renderItemInFirstPerson(self, (AbstractClientPlayer)entity, stack, transform, left);
     }
