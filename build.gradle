@@ -102,8 +102,11 @@ minecraft {
 
             mods {
                 minelittlepony {
-                    // Remember to add /bin/default to the Environment configs
+                    // TODO: Remember to add /bin/default to the Environment configs
                     // minelittlepony%%C:/.../bin/default
+                    source sourceSets.common
+                    source sourceSets.client
+                    source sourceSets.main
                     source sourceSets.fml
 
                     // replace '@VERSION@', project.version
