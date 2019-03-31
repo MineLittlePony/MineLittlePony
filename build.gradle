@@ -102,9 +102,9 @@ minecraft {
 
             mods {
                 minelittlepony {
-                    source sourceSets.common
-                    source sourceSets.client
-                    source sourceSets.main
+                    // Remember to add /bin/default to the Environment configs
+                    // minelittlepony%%C:/.../bin/default
+                    source sourceSets.fml
 
                     // replace '@VERSION@', project.version
                 }
