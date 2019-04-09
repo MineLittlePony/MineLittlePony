@@ -17,6 +17,7 @@ import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
 import com.voxelmodpack.hdskins.gui.Feature;
 import com.voxelmodpack.hdskins.resources.PreviewTextureManager;
+import com.voxelmodpack.hdskins.server.HttpException;
 import com.voxelmodpack.hdskins.server.SkinServer;
 import com.voxelmodpack.hdskins.server.SkinUpload;
 import com.voxelmodpack.hdskins.util.MoreHttpResponses;
@@ -224,6 +225,18 @@ public class SkinUploader implements Closeable {
                     offline = true;
                 } else if (throwable instanceof AuthenticationException) {
                     throttlingNeck = true;
+                } else if (throwable instanceof HttpException) {
+                    HttpException ex = (HttpException)throwable;
+
+                    HDSkinManager.logger.error(ex.getReasonPhrase(), ex);
+
+                    int code = ex.getStatusCode();
+
+                    if (code >= 500) {
+                        setError(String.format("A fatal server error has ocurred (check logs for details): \n%s", ex.getReasonPhrase()));
+                    } else if (code >= 400 && code != 403 && code != 404) {
+                        setError(ex.getReasonPhrase());
+                    }
                 } else {
                     setError(throwable.toString());
                 }

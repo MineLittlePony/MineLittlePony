@@ -83,7 +83,7 @@ public class LegacySkinServer implements SkinServer {
 
         Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = builder.build();
         if (map.isEmpty()) {
-            throw new IOException(String.format("No textures found for %s at %s", profile, this.address));
+            throw new HttpException(String.format("No textures found for %s at %s", profile, this.address), 404, null);
         }
         return TexturesPayloadBuilder.createTexturesPayload(profile, map);
     }
@@ -91,7 +91,7 @@ public class LegacySkinServer implements SkinServer {
     private MinecraftProfileTexture loadProfileTexture(GameProfile profile, String url) throws IOException {
         try (MoreHttpResponses resp = MoreHttpResponses.execute(HDSkinManager.httpClient, new HttpHead(url))) {
             if (!resp.ok()) {
-                throw new IOException("Bad response code: " + resp.getResponseCode() + ". URL: " + url);
+                throw new HttpException(resp.getResponse());
             }
             logger.debug("Found skin for {} at {}", profile.getName(), url);
 
@@ -124,14 +124,15 @@ public class LegacySkinServer implements SkinServer {
             client.putFile(upload.getType().toString().toLowerCase(Locale.US), "image/png", upload.getImage());
         }
 
-        String response = client.send().text();
+        MoreHttpResponses resp = client.send();
+        String response = resp.text();
 
         if (response.startsWith("ERROR: ")) {
             response = response.substring(7);
         }
 
         if (!response.equalsIgnoreCase("OK") && !response.endsWith("OK")) {
-            throw new IOException(response);
+            throw new HttpException(response, resp.getResponseCode(), null);
         }
 
         return new SkinUploadResponse(response);

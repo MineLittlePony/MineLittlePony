@@ -32,7 +32,7 @@ public class BethlehemSkinServer implements SkinServer {
     public MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException {
         try (MoreHttpResponses response = new NetClient("GET", getPath(profile)).send()) {
             if (!response.ok()) {
-                throw new IOException(response.getResponse().getStatusLine().getReasonPhrase());
+                throw new HttpException(response.getResponse());
             }
 
             return response.json(MinecraftTexturesPayload.class);
@@ -53,8 +53,9 @@ public class BethlehemSkinServer implements SkinServer {
 
         try (MoreHttpResponses response = client.send()) {
             if (!response.ok()) {
-                throw new IOException(response.text());
+                throw new HttpException(response.getResponse());
             }
+
             return new SkinUploadResponse(response.text());
         }
     }

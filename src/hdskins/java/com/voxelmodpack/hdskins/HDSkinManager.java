@@ -71,7 +71,7 @@ import javax.annotation.Nullable;
 
 public final class HDSkinManager implements IResourceManagerReloadListener {
 
-    private static final Logger logger = LogManager.getLogger();
+    public static final Logger logger = LogManager.getLogger();
 
     public static final ExecutorService skinUploadExecutor = Executors.newSingleThreadExecutor();
     public static final ExecutorService skinDownloadExecutor = Executors.newFixedThreadPool(8);

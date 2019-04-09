@@ -41,7 +41,7 @@ public interface SkinServer extends Exposable {
      *
      * @return The parsed server response as a textures payload.
      *
-     * @throws IOException  If any authenticaiton or network error occurs.
+     * @throws IOException  If any authentication or network error occurs.
      */
     MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException;
 
@@ -52,7 +52,7 @@ public interface SkinServer extends Exposable {
      *
      * @return A server response object.
      *
-     * @throws IOException
+     * @throws IOException  If any authentication or network error occurs.
      * @throws AuthenticationException
      */
     SkinUploadResponse performSkinUpload(SkinUpload upload) throws IOException, AuthenticationException;

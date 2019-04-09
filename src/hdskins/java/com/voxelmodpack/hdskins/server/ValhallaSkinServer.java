@@ -46,7 +46,7 @@ public class ValhallaSkinServer implements SkinServer {
                 return response.unwrapAsJson(MinecraftTexturesPayload.class);
             }
 
-            throw new IOException("Server sent non-ok response code: " + response.getResponseCode());
+            throw new HttpException(response.getResponse());
         }
     }
 
