@@ -38,14 +38,7 @@ public class ModelBugWing<T extends AbstractPonyModel & IPegasus> extends ModelW
     }
 
     @Override
-    public void rotateWalking(float swing) {
-        folded.rotateAngleY = swing * 0.05F;
-    }
-
-    @Override
     public void render(float scale) {
-        if (pegasus.wingsAreOpen()) {
-            extended.render(scale);
-        }
+        extended.render(scale);
     }
 }
