@@ -57,8 +57,6 @@ sourceSets {
         // Client-only code
         compileClasspath += main.compileClasspath
         compileClasspath += main.output
-        compileClasspath += common.output
-        ext.refMap = 'minelp.mixin.refmap.json'
     }
     main {
     }
@@ -80,10 +78,8 @@ minecraft {
         client {
             workingDirectory project.file('run')
 
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'SCAN'
             property 'forge.logging.console.level', 'debug'
-
-            // replace '@VERSION@', project.version
 
             mods {
                 minelittlepony {
@@ -93,20 +89,13 @@ minecraft {
                     source sourceSets.client
                     source sourceSets.main
                     source sourceSets.fml
-
-                    // replace '@VERSION@', project.version
                 }
-
-                // replace '@VERSION@', project.version
             }
         }
     }
-
-    // replace '@VERSION@', project.version
 }
 
 repositories {
-//    jcenter()
     maven {
         url = 'https://repo.spongepowered.org/maven'
     }
@@ -116,37 +105,37 @@ dependencies {
     // TODO: Add HDSkins as a dependency. It won't compile without it.
     // TODO: Add KirinUI as a dependency.
 
-    minecraft 'net.minecraftforge:forge:1.13.2-25.0.90'
+    minecraft "net.minecraftforge:forge:" + project.minecraft_version + "-" + project.forge_version
 
-    // use the same version as httpclient
     compile('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
         transitive = false
     }
 }
 
 manifest {
-    attributes 'Implementation-Version': "${project.version} (git-${project.hash})"
+    attributes(
+        "Implementation-Version": "${version} (git-${project.hash})",
+        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+    )
 }
 
 jar {
-    from sourceSets.common.output
     from sourceSets.main.output
-
     from sourceSets.client.output
     from sourceSets.fml.output
-
-//    replace '@VERSION@', project.version
 
     classifier 'base'
     extension 'jar'
 }
 
+//
+// Imports the Background Ponies from the MLP Community Skin Pack
+//
 task copyBGPones(type: Copy) {
 
     def illegals = /[^a-z0-9_\/.-]/
 
     from "skins/Background Ponies"
-    // TODO: What is tempDir????
     into temporaryDir
 
     eachFile {
@@ -157,66 +146,13 @@ task copyBGPones(type: Copy) {
     }
 }
 
-/*
-shadowJar {
-//    classifier "mc$minecraft.version"
-
-    // TODO: Remember, we still have to include HDSkins in our build litemod, even if it's a separate repository now
-
-    from sourceSets.common.output
-
-    from sourceSets.client.output
-    from sourceSets.fml.output
-
-    exclude "/assets/minelittlepony/textures/entity/pony"
-    from(copyBGPones) {
-        into "/assets/minelittlepony/textures/entity/pony"
-    }
-
-//    replace '@VERSION@', project.version
-
-    dependencies {
-        exclude dependency('deobf.org.ow2.asm:')
-        exclude dependency('org.spongepowered:mixin:')
-        exclude 'META-INF/**'
-    }
-
-    relocate 'org.apache.http.entity.mime', 'com.voxelmodpack.repack.org.apache.http.entity.mime'
-    exclude 'dummyThing'
-    doLast {
-        file('build/libs/' + archivesBaseName + '-' + version + '-base.jar').delete();
-    }
-}
-
-task srgJar(type: Jar) {
-    from sourceSets.common.output
-
-    from sourceSets.main.output
-    from sourceSets.client.output
-    from sourceSets.fml.output
-
-//    replace '@VERSION@', project.version
-
-    classifier "mc$minecraft.version-srg"
-}
-*/
-
-task horseLib(type: Jar) {
-    from sourceSets.common.output
-
-    from sourceSets.main.output
-
-//    replace '@VERSION@', project.version
-
-    baseName = "HoarseLib"
-}
-
-//sourceJar.enabled = false
-
-//reobf {
-//    srgJar {
-//        mappingType = 'SEARGE'
-//    }
 //
-//    shadowJar{}
-//}
+// Creates HorseLib
+//  A common library for mods to load MineLP features on the server without
+//  any client components
+task horseLib(type: Jar) {
+    // TODO: Add KirinUI as a dependency.
+    from sourceSets.main.output
+
+    baseName = "HorseLib"
+}
