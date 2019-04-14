@@ -15,8 +15,12 @@ import com.minelittlepony.client.ForgeModMineLittlePony;
  */
 @Mod("minelittlepony")
 public class PonyMod {
+    public PonyMod() {
+        FMLJavaModLoadingContext.get().getModEventBus().register(this);
+    }
+
     @SubscribeEvent
     public void initOnClient(FMLClientSetupEvent event) {
-        FMLJavaModLoadingContext.get().getModEventBus().register(new ForgeModMineLittlePony());
+        new ForgeModMineLittlePony();
     }
 }
