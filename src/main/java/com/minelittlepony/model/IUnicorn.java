@@ -11,7 +11,9 @@ public interface IUnicorn<Arm> extends IModel {
     /**
      * Returns true if this model is being applied to a race that can use magic.
      */
-    boolean canCast();
+    default boolean canCast() {
+        return getMetadata().hasMagic();
+    }
 
     /**
      * Returns true if this model is currently using magic (horn is lit).
@@ -22,5 +24,7 @@ public interface IUnicorn<Arm> extends IModel {
     /**
      * Gets the preferred magic color for this mode.
      */
-    int getMagicColor();
+    default int getMagicColor() {
+        return getMetadata().getGlowColor();
+    }
 }

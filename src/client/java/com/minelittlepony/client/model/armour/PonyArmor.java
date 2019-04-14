@@ -16,8 +16,8 @@ public class PonyArmor implements IEquestrianArmour<ModelPonyArmor> {
 
     @Override
     public void apply(IPonyData meta) {
-        outerLayer.metadata = meta;
-        innerLayer.metadata = meta;
+        outerLayer.apply(meta);
+        innerLayer.apply(meta);
     }
 
     @Override

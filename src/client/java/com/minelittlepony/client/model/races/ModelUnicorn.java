@@ -111,18 +111,8 @@ public class ModelUnicorn extends ModelEarthPony implements IUnicorn<PonyRendere
     }
 
     @Override
-    public boolean canCast() {
-        return metadata.hasMagic();
-    }
-
-    @Override
     public boolean isCasting() {
         return rightArmPose != ArmPose.EMPTY || leftArmPose != ArmPose.EMPTY;
-    }
-
-    @Override
-    public int getMagicColor() {
-        return metadata.getGlowColor();
     }
 
     @Override

@@ -18,8 +18,6 @@ import com.minelittlepony.pony.IPonyData;
 import com.minelittlepony.pony.meta.Size;
 import com.minelittlepony.util.math.MathUtil;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.client.renderer.entity.model.ModelBase;
 import net.minecraft.client.renderer.entity.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.model.ModelRenderer;
@@ -50,7 +48,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
     /**
      * Associated pony data.
      */
-    public IPonyData metadata = new PonyData();
+    private IPonyData metadata = new PonyData();
 
     /**
      * Vertical pitch whilst flying.
@@ -274,12 +272,6 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
         return bipedHead;
     }
 
-    @Nullable
-    @Override
-    public ModelRenderer getBody() {
-        return bipedBody;
-    }
-
     @Override
     public void setPitch(float pitch) {
         motionPitch = pitch;
@@ -467,6 +459,18 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
 
         alignArmForAction(bipedLeftArm, leftArmPose, rightArmPose, both, swing, 1);
         alignArmForAction(bipedRightArm, rightArmPose, leftArmPose, both, swing, -1);
+    }
+
+    @Override
+    public ModelRenderer getBodyPart(BodyPart part) {
+        switch (part) {
+            default:
+            case HEAD: return bipedHead;
+            case NECK: return neck;
+            case TAIL:
+            case LEGS:
+            case BODY: return bipedBody;
+        }
     }
 
     /**
@@ -762,6 +766,11 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
     @Override
     public IPonyData getMetadata() {
         return metadata;
+    }
+
+    @Override
+    public void apply(IPonyData meta) {
+        metadata = meta;
     }
 
     @Override

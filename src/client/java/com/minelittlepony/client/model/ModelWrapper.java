@@ -51,7 +51,7 @@ public class ModelWrapper implements IModelWrapper {
             init();
         }
 
-        body.metadata = meta;
+        body.apply(meta);
         armor.apply(meta);
     }
 

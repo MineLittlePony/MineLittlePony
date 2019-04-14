@@ -40,6 +40,11 @@ public interface IModel {
     IPonyData getMetadata();
 
     /**
+     * Sets the pony metadata object associated with this model.
+     */
+    void apply(IPonyData meta);
+
+    /**
      * Returns true if this model is on the ground and crouching.
      */
     boolean isCrouching();

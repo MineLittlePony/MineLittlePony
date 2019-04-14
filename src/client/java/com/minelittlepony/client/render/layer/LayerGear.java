@@ -53,7 +53,7 @@ public class LayerGear<T extends EntityLivingBase> extends AbstractPonyLayer<T> 
             if (gear.canRender(model, entity)) {
                 GlStateManager.pushMatrix();
                 model.transform(gear.getGearLocation());
-                gear.getOriginBodyPart(model).postRender(scale);
+                model.getBodyPart(gear.getGearLocation()).postRender(scale);
 
                 if (gear instanceof IStackable) {
                     BodyPart part = gear.getGearLocation();

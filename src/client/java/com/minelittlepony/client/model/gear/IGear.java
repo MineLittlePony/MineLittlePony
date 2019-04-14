@@ -1,15 +1,12 @@
 package com.minelittlepony.client.model.gear;
 
-import net.minecraft.client.renderer.entity.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
-import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.IClientModel;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IPart;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public interface IGear extends IPart {
@@ -35,12 +32,6 @@ public interface IGear extends IPart {
      */
     @Nullable
     ResourceLocation getTexture(Entity entity);
-
-    /**
-     * Gets the actual body part this wearable will latch onto.
-     */
-    @Nonnull
-    ModelRenderer getOriginBodyPart(AbstractPonyModel model);
 
     /**
      * Orients this wearable.
