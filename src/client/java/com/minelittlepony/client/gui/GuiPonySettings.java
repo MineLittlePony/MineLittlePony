@@ -7,9 +7,9 @@ import com.minelittlepony.client.render.entities.MobRenderers;
 import com.minelittlepony.common.client.gui.GameGui;
 import com.minelittlepony.common.client.gui.GuiHost;
 import com.minelittlepony.common.client.gui.IGuiGuest;
-import com.minelittlepony.common.client.gui.Label;
-import com.minelittlepony.common.client.gui.Slider;
-import com.minelittlepony.common.client.gui.Toggle;
+import com.minelittlepony.common.client.gui.element.Label;
+import com.minelittlepony.common.client.gui.element.Slider;
+import com.minelittlepony.common.client.gui.element.Toggle;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
 import com.minelittlepony.settings.PonyConfig.PonySettings;
@@ -40,32 +40,34 @@ public class GuiPonySettings implements IGuiGuest {
         int row = host.mustScroll() ? 0 : 32;
 
         if (!host.mustScroll()) {
-            host.addButton(new Label(host.width / 2, 12, getTitle(), -1, true));
+            host.addButton(new Label(host.width / 2, 12).setCentered()).getStyle().setText(getTitle());
         }
 
-        host.addButton(new Label(LEFT, row += 15, PONY_LEVEL, -1));
-        host.addButton(new Slider(LEFT, row += 15, 0, 2, config.getPonyLevel().ordinal(), v -> {
-            PonyLevel level = PonyLevel.valueFor(v);
-            config.setPonyLevel(level);
-            return (float)level.ordinal();
-        }).setFormatter(value -> {
-            return GameGui.format(PONY_LEVEL + "." + PonyLevel.valueFor(value).name().toLowerCase());
-        }));
+        host.addButton(new Label(LEFT, row += 15)).getStyle().setText(PONY_LEVEL);
+        host.addButton(new Slider(LEFT, row += 15, 0, 2, config.getPonyLevel().ordinal())
+                .onChange(v -> {
+                    PonyLevel level = PonyLevel.valueFor(v);
+                    config.setPonyLevel(level);
+                    return (float)level.ordinal();
+                })
+                .setFormatter(value -> GameGui.format(PONY_LEVEL + "." + PonyLevel.valueFor(value).name().toLowerCase())));
 
         if (GuiScreen.isCtrlKeyDown() && GuiScreen.isShiftKeyDown()) {
-            host.addButton(new Label(LEFT, row += 30, "minelp.debug.scale", -1));
-            host.addButton(new Slider(LEFT, row += 15, 0.1F, 3, config.getGlobalScaleFactor(), v -> {
-                config.setGlobalScaleFactor(v);
-                return config.getGlobalScaleFactor();
-            }).setFormatter(value -> {
-                return GameGui.format("minelp.debug.scale.value", GameGui.format(describeCurrentScale(value)));
-            }));
+            host.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.scale");
+            host.addButton(new Slider(LEFT, row += 15, 0.1F, 3, config.getGlobalScaleFactor())
+                    .onChange(v -> {
+                        config.setGlobalScaleFactor(v);
+                        return config.getGlobalScaleFactor();
+                    })
+                    .setFormatter(value -> GameGui.format("minelp.debug.scale.value", GameGui.format(describeCurrentScale(value)))));
         }
 
         row += 15;
-        host.addButton(new Label(LEFT, row += 15, OPTIONS_PREFIX + "options", -1));
+        host.addButton(new Label(LEFT, row += 15)).getStyle().setText(OPTIONS_PREFIX + "options");
         for (PonySettings i : PonySettings.values()) {
-            host.addButton(new Toggle(LEFT, row += 20, i.get(), OPTIONS_PREFIX + i.name().toLowerCase(), i));
+            host.addButton(new Toggle(LEFT, row += 20, i.get()))
+                .onChange(i)
+                .getStyle().setText(OPTIONS_PREFIX + i.name().toLowerCase());
         }
 
         if (host.mustScroll()) {
@@ -74,9 +76,11 @@ public class GuiPonySettings implements IGuiGuest {
             row = 32;
         }
 
-        host.addButton(new Label(RIGHT, row += 15, MOB_PREFIX + "title", -1));
+        host.addButton(new Label(RIGHT, row += 15)).getStyle().setText(MOB_PREFIX + "title");
         for (MobRenderers i : MobRenderers.values()) {
-            host.addButton(new Toggle(RIGHT, row += 20, i.get(), MOB_PREFIX + i.name().toLowerCase(), i));
+            host.addButton(new Toggle(RIGHT, row += 20, i.get()))
+                .onChange(i)
+                .getStyle().setText(MOB_PREFIX + i.name().toLowerCase());
         }
     }
 

@@ -53,12 +53,6 @@ description = project.displayname
 archivesBaseName = project.name
 
 sourceSets {
-    common {
-        // code shared between HDSkins and MineLP mods
-        // TODO: Make this into a library? I mean, it's not a lot.
-        compileClasspath += main.compileClasspath
-    }
-
     client {
         // Client-only code
         compileClasspath += main.compileClasspath
@@ -67,17 +61,6 @@ sourceSets {
         ext.refMap = 'minelp.mixin.refmap.json'
     }
     main {
-        // Non-client code. Called main because gradle calls it that
-        // TODO: HorseLib.java
-
-        compileClasspath += common.output
-    }
-
-    // Litemod stuff, separated for future removal
-    litemod {
-        compileClasspath += main.compileClasspath
-        compileClasspath += main.output
-        compileClasspath += client.output
     }
 
     fml {
@@ -86,6 +69,8 @@ sourceSets {
         compileClasspath += client.output
     }
 
+    // TODO: Disable the hidden "test" sourceset
+    // TODO: Disable the resources folders for sourcesets that don't need them
 }
 
 minecraft {
@@ -129,6 +114,7 @@ repositories {
 
 dependencies {
     // TODO: Add HDSkins as a dependency. It won't compile without it.
+    // TODO: Add KirinUI as a dependency.
 
     minecraft 'net.minecraftforge:forge:1.13.2-25.0.90'
 
