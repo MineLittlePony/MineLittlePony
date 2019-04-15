@@ -110,7 +110,7 @@ dependencies {
         transitive = false
     }
 
-    compile project(':HDSkins') {
+    compile(project(':HDSkins')) {
         transitive = false
     }
 }
