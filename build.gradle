@@ -85,7 +85,6 @@ minecraft {
                 minelittlepony {
                     // TODO: Remember to add /bin/default to the Environment configs
                     // minelittlepony%%C:/.../bin/default
-                    source sourceSets.common
                     source sourceSets.client
                     source sourceSets.main
                     source sourceSets.fml
@@ -111,7 +110,7 @@ dependencies {
         transitive = false
     }
 
-    compile project(':hdskins') {
+    compile project(':HDSkins') {
         transitive = false
     }
 }
