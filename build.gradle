@@ -110,6 +110,10 @@ dependencies {
     compile('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
         transitive = false
     }
+
+    compile project(':hdskins') {
+        transitive = false
+    }
 }
 
 manifest {
