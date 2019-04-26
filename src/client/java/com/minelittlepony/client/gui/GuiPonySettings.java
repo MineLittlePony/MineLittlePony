@@ -1,10 +1,10 @@
 package com.minelittlepony.client.gui;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.render.entities.MobRenderers;
-import com.minelittlepony.common.client.gui.GameGui;
 import com.minelittlepony.common.client.gui.GuiHost;
 import com.minelittlepony.common.client.gui.IGuiGuest;
 import com.minelittlepony.common.client.gui.element.Label;
@@ -50,7 +50,7 @@ public class GuiPonySettings implements IGuiGuest {
                     config.setPonyLevel(level);
                     return (float)level.ordinal();
                 })
-                .setFormatter(value -> GameGui.format(PONY_LEVEL + "." + PonyLevel.valueFor(value).name().toLowerCase())));
+                .setFormatter(value -> I18n.format(PONY_LEVEL + "." + PonyLevel.valueFor(value).name().toLowerCase())));
 
         if (GuiScreen.isCtrlKeyDown() && GuiScreen.isShiftKeyDown()) {
             host.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.scale");
@@ -59,7 +59,7 @@ public class GuiPonySettings implements IGuiGuest {
                         config.setGlobalScaleFactor(v);
                         return config.getGlobalScaleFactor();
                     })
-                    .setFormatter(value -> GameGui.format("minelp.debug.scale.value", GameGui.format(describeCurrentScale(value)))));
+                    .setFormatter(value -> I18n.format("minelp.debug.scale.value", I18n.format(describeCurrentScale(value)))));
         }
 
         row += 15;
@@ -86,25 +86,25 @@ public class GuiPonySettings implements IGuiGuest {
 
     public String describeCurrentScale(float value) {
         if (value >= 3) {
-            return GameGui.format("minelp.debug.scale.meg");
+            return I18n.format("minelp.debug.scale.meg");
         }
         if (value == 2) {
-            return GameGui.format("minelp.debug.scale.max");
+            return I18n.format("minelp.debug.scale.max");
         }
         if (value == 1) {
-            return GameGui.format("minelp.debug.scale.mid");
+            return I18n.format("minelp.debug.scale.mid");
         }
         if (value == 0.9F) {
-            return GameGui.format("minelp.debug.scale.sa");
+            return I18n.format("minelp.debug.scale.sa");
         }
         if (value <= 0.1F) {
-            return GameGui.format("minelp.debug.scale.min");
+            return I18n.format("minelp.debug.scale.min");
         }
         return String.format("%f", value);
     }
 
     @Override
-    public boolean drawContents(GuiHost host, int mouseX, int mouseY, float partialTicks) {
+    public boolean render(GuiHost host, int mouseX, int mouseY, float partialTicks) {
         host.drawDefaultBackground();
         return true;
     }
