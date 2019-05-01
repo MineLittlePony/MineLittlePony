@@ -1,2 +1,3 @@
 rootProject.name = 'MineLittlePony'
-include 'HDSkins'
+// Checkout to parent dir to dev both
+includeBuild '../HDSkins'

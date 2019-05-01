@@ -5,29 +5,25 @@ buildscript {
             name 'forge'
             url 'http://files.minecraftforge.net/maven'
         }
-        maven {
-            name = 'sponge'
-            url = 'https://repo.spongepowered.org/maven'
-        }
+//        maven {
+//            name = 'sponge'
+//            url = 'https://repo.spongepowered.org/maven'
+//        }
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
+        classpath 'org.ajoberstar.grgit:grgit-gradle:3.1.1'
     }
-}
-
-plugins {
-    id 'org.ajoberstar.grgit' version '1.7.2'
 }
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'org.ajoberstar.grgit'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
-compileJava.sourceCompatibility = '1.8'
-compileJava.targetCompatibility = '1.8'
 
 ext {
     revision = grgit.log().size()
@@ -85,8 +81,6 @@ minecraft {
                 minelittlepony {
                     // TODO: Remember to add /bin/default to the Environment configs
                     // minelittlepony%%C:/.../bin/default
-                    source sourceSets.client
-                    source sourceSets.main
                     source sourceSets.fml
                 }
             }
@@ -97,6 +91,9 @@ minecraft {
 repositories {
     maven {
         url = 'https://repo.spongepowered.org/maven'
+    }
+    maven {
+        url = 'https://jitpack.io'
     }
 }
 
@@ -110,10 +107,15 @@ dependencies {
         transitive = false
     }
 
-    compile(project(':HDSkins')) {
-        transitive = false
-    }
+    compile "com.github.MineLittlePony:Kirin:master-SNAPSHOT:base"
+    compile "com.github.MineLittlePony:HDSkins:1.13-SNAPSHOT:base"
+//
+//    compile(project(':HDSkins')) {
+//        transitive = false
+//    }
 }
+
+compileJava.options.compilerArgs += '-proc:none'
 
 manifest {
     attributes(
