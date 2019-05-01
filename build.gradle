@@ -22,8 +22,9 @@ apply plugin: 'eclipse'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'org.ajoberstar.grgit'
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+// From the forge MDK: Need this here so eclipse task generates correctly.
+targetCompatibility = compileJava.targetCompatibility = 1.8
+sourceCompatibility = compileJava.sourceCompatibility = 1.8
 
 ext {
     revision = grgit.log().size()
