@@ -101,11 +101,14 @@ dependencies {
     }
 
     compile fg.deobf("com.github.MineLittlePony:Kirin:master-SNAPSHOT")
-    compile fg.deobf("com.github.MineLittlePony:HDSkins:1.13-SNAPSHOT")
+    compile fg.deobf(project.dependencies.create("com.github.MineLittlePony:HDSkins:1.13-SNAPSHOT") {
+        transitive = false
+    })
 }
 
-compileJava.options.compilerArgs += '-proc:none'
-
+tasks.withType(JavaCompile) {
+    it.options.compilerArgs += '-proc:none'
+}
 manifest {
     attributes(
         "Implementation-Version": "${version} (git-${project.hash})",
