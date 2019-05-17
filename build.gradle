@@ -55,17 +55,12 @@ sourceSets {
         compileClasspath += main.compileClasspath
         compileClasspath += main.output
     }
-    main {
-    }
 
     fml {
         compileClasspath += main.compileClasspath
         compileClasspath += main.output
         compileClasspath += client.output
     }
-
-    // TODO: Disable the hidden "test" sourceset
-    // TODO: Disable the resources folders for sourcesets that don't need them
 }
 
 minecraft {
@@ -80,11 +75,10 @@ minecraft {
 
             mods {
                 minelittlepony {
-                    // TODO: Remember to add /bin/default to the Environment configs
-                    // minelittlepony%%C:/.../bin/default
                     source sourceSets.fml
                 }
             }
+            ideaModule = "${project.name}.fml"
         }
     }
 }
@@ -99,8 +93,6 @@ repositories {
 }
 
 dependencies {
-    // TODO: Add HDSkins as a dependency. It won't compile without it.
-    // TODO: Add KirinUI as a dependency.
 
     minecraft "net.minecraftforge:forge:" + project.minecraft_version + "-" + project.forge_version
 
@@ -108,12 +100,8 @@ dependencies {
         transitive = false
     }
 
-    compile "com.github.MineLittlePony:Kirin:master-SNAPSHOT:base"
-    compile "com.github.MineLittlePony:HDSkins:1.13-SNAPSHOT:base"
-//
-//    compile(project(':HDSkins')) {
-//        transitive = false
-//    }
+    compile fg.deobf("com.github.MineLittlePony:Kirin:master-SNAPSHOT")
+    compile fg.deobf("com.github.MineLittlePony:HDSkins:1.13-SNAPSHOT")
 }
 
 compileJava.options.compilerArgs += '-proc:none'
@@ -129,9 +117,6 @@ jar {
     from sourceSets.main.output
     from sourceSets.client.output
     from sourceSets.fml.output
-
-    classifier 'base'
-    extension 'jar'
 }
 
 //
