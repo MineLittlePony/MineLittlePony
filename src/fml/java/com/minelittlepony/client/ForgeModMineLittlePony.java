@@ -10,8 +10,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 
@@ -19,19 +17,12 @@ public class ForgeModMineLittlePony implements IModUtilities {
 
     private final MineLPClient mlp = new MineLPClient(this);
 
-    public ForgeModMineLittlePony() {
+    public ForgeModMineLittlePony(Minecraft mc) {
         FMLJavaModLoadingContext.get().getModEventBus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
-    }
 
-    @SubscribeEvent
-    private void init(final FMLCommonSetupEvent event) {
         mlp.init(Config.of(FMLPaths.CONFIGDIR.get().resolve("minelittlepony.json")));
-    }
-
-    @SubscribeEvent
-    private void posInit(FMLClientSetupEvent event) {
-        mlp.postInit(event.getMinecraftSupplier().get());
+        mlp.postInit(mc);
     }
 
     @SubscribeEvent

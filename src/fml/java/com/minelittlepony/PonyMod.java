@@ -21,6 +21,6 @@ public class PonyMod {
 
     @SubscribeEvent
     public void initOnClient(FMLClientSetupEvent event) {
-        new ForgeModMineLittlePony();
+        new ForgeModMineLittlePony(event.getMinecraftSupplier().get());
     }
 }
