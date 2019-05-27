@@ -2,7 +2,6 @@ package com.minelittlepony.client.render;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.PonyRenderManager;
-import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.transform.PonyPosture;
 import com.minelittlepony.model.IPonyModel;
@@ -10,7 +9,7 @@ import com.minelittlepony.pony.IPony;
 import com.minelittlepony.util.math.MathUtil;
 import com.mojang.blaze3d.platform.GlStateManager;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 import net.minecraft.client.render.VisibleRegion;
 import net.minecraft.client.render.entity.model.EntityModel;
@@ -21,13 +20,13 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
 
     public ModelWrapper<T, M> playerModel;
 
-    protected AbstractPonyModel<T> ponyModel;
+    private M ponyModel;
 
     private IPony pony;
 
-    private IPonyRender<T, M> renderer;
+    private final IPonyRender<T, M> renderer;
 
-    private FrustrumCheck<T> frustrum = new FrustrumCheck<>(this);
+    private final FrustrumCheck<T> frustrum = new FrustrumCheck<>(this);
 
     public static void enableModelRenderProfile() {
         GlStateManager.enableBlend();
@@ -95,54 +94,44 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
 
     @SuppressWarnings("unchecked")
     public void applyPostureTransform(T player, float yaw, float ticks) {
-        PonyPosture<?> posture = getPosture(player);
-        if (posture != null && posture.applies(player)) {
-            double motionX = player.x - player.prevX;
-            double motionY = player.onGround ? 0 : player.y - player.prevY;
-            double motionZ = player.x - player.prevZ;
-            ((PonyPosture<LivingEntity>)posture).transform(ponyModel, player, motionX, motionY, motionZ, yaw, ticks);
-        }
+        ((PonyPosture<T>)getPosture(player)).apply(player, ponyModel, yaw, ticks, 1);
     }
 
     @SuppressWarnings("unchecked")
     public void applyPostureRiding(T player, float yaw, float ticks) {
-        PonyPosture<?> posture = getPosture(player);
-        if (posture != null && posture.applies(player)) {
-            double motionX = player.x - player.prevX;
-            double motionY = player.onGround ? 0 : player.y - player.prevY;
-            double motionZ = player.z - player.prevZ;
-
-            ((PonyPosture<LivingEntity>)posture).transform(ponyModel, player, motionX, -motionY, motionZ, yaw, ticks);
-        }
+        ((PonyPosture<T>)getPosture(player)).apply(player, ponyModel, yaw, ticks, -1);
     }
 
-    @Nullable
+    @Nonnull
     private PonyPosture<?> getPosture(T entity) {
         if (entity.isFallFlying()) {
             return PonyPosture.ELYTRA;
         }
 
         if (entity.isAlive() && entity.isSleeping()) {
-            return null;
+            return PonyPosture.DEFAULT;
         }
 
-        if (ponyModel.isSwimming()) {
+        if (getModel().isSwimming()) {
             return PonyPosture.SWIMMING;
         }
 
-        if (ponyModel.isGoingFast()) {
+        if (getModel().isGoingFast()) {
             return PonyPosture.FLIGHT;
         }
 
         return PonyPosture.FALLING;
     }
 
-    @SuppressWarnings("unchecked")
+    public M getModel() {
+        return playerModel.getBody();
+    }
+
     public M setPonyModel(ModelWrapper<T, M> model) {
         playerModel = model;
-        ponyModel = (AbstractPonyModel<T>)playerModel.getBody();
+        ponyModel = playerModel.getBody();
 
-        return (M)ponyModel;
+        return ponyModel;
     }
 
     public void updateModel(T entity) {
@@ -156,11 +145,11 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
     }
 
     public float getShadowScale() {
-        return ponyModel.getSize().getShadowSize();
+        return getModel().getSize().getShadowSize();
     }
 
     public float getScaleFactor() {
-        return ponyModel.getSize().getScaleFactor();
+        return getModel().getSize().getScaleFactor();
     }
 
     public double getNamePlateYOffset(T entity, double initial) {

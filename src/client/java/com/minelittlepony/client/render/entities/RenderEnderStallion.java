@@ -1,8 +1,6 @@
 package com.minelittlepony.client.render.entities;
 
-import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.entities.ModelEnderStallion;
-import com.minelittlepony.client.render.RenderPonyMob;
 import com.minelittlepony.client.render.layer.LayerEyeGlow;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItem;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItemMagical;
@@ -24,10 +22,8 @@ public class RenderEnderStallion extends RenderPonyMob<EndermanEntity, ModelEnde
 
     private final Random rnd = new Random();
 
-    private static final ModelWrapper<EndermanEntity, ModelEnderStallion> MODEL_WRAPPER = new ModelWrapper<>(new ModelEnderStallion());
-
     public RenderEnderStallion(EntityRenderDispatcher manager) {
-        super(manager, MODEL_WRAPPER);
+        super(manager, new ModelEnderStallion());
     }
 
     @Override

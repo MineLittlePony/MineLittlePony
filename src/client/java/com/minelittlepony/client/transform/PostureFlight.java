@@ -1,6 +1,6 @@
 package com.minelittlepony.client.transform;
 
-import com.minelittlepony.client.model.ClientPonyModel;
+import com.minelittlepony.model.IModel;
 import com.minelittlepony.util.transform.MotionCompositor;
 import com.mojang.blaze3d.platform.GlStateManager;
 
@@ -14,7 +14,7 @@ public class PostureFlight extends MotionCompositor implements PonyPosture<Playe
     }
 
     @Override
-    public void transform(ClientPonyModel<?> model, PlayerEntity player, double motionX, double motionY, double motionZ, float yaw, float ticks) {
+    public void transform(IModel model, PlayerEntity player, double motionX, double motionY, double motionZ, float yaw, float ticks) {
         model.setPitch((float) calculateIncline(player, motionX, motionY, motionZ));
 
         GlStateManager.rotatef(model.getPitch(), 1, 0, 0);

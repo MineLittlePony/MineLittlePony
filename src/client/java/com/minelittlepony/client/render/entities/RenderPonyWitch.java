@@ -1,8 +1,6 @@
 package com.minelittlepony.client.render.entities;
 
-import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.entities.ModelWitchPony;
-import com.minelittlepony.client.render.RenderPonyMob;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItem;
 import com.mojang.blaze3d.platform.GlStateManager;
 
@@ -18,7 +16,7 @@ public class RenderPonyWitch extends RenderPonyMob<WitchEntity, ModelWitchPony> 
     private static final Identifier WITCH_TEXTURES = new Identifier("minelittlepony", "textures/entity/witch_pony.png");
 
     public RenderPonyWitch(EntityRenderDispatcher manager) {
-        super(manager, new ModelWrapper<>(new ModelWitchPony()));
+        super(manager, new ModelWitchPony());
     }
 
     @Override

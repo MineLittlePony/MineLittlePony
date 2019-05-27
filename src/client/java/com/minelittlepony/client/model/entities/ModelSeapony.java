@@ -24,9 +24,13 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
     PlaneRenderer centerFin;
     PlaneRenderer rightFin;
 
-    public ModelSeapony() {
-        super(false);
+    public ModelSeapony(boolean smallArms) {
+        super(smallArms);
         textureHeight = 64;
+    }
+
+    public ModelSeapony() {
+        this(false);
     }
 
     @Override

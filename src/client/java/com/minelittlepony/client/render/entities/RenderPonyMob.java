@@ -1,8 +1,11 @@
-package com.minelittlepony.client.render;
+package com.minelittlepony.client.render.entities;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
+import com.minelittlepony.client.render.DebugBoundingBoxRenderer;
+import com.minelittlepony.client.render.IPonyRender;
+import com.minelittlepony.client.render.RenderPony;
 import com.minelittlepony.client.render.layer.LayerGear;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItem;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItemMagical;
@@ -31,10 +34,10 @@ public abstract class RenderPonyMob<T extends LivingEntity, M extends EntityMode
 
     protected RenderPony<T, M> renderPony = new RenderPony<T, M>(this);
 
-    public RenderPonyMob(EntityRenderDispatcher manager, ModelWrapper<T, M> model) {
-        super(manager, model.getBody(), 0.5F);
+    public RenderPonyMob(EntityRenderDispatcher manager, M model) {
+        super(manager, model, 0.5F);
 
-        renderPony.setPonyModel(model);
+        this.model = renderPony.setPonyModel(new ModelWrapper<>(model));
 
         addLayers();
     }
@@ -95,11 +98,6 @@ public abstract class RenderPonyMob<T extends LivingEntity, M extends EntityMode
     }
 
     @Override
-    public IPony getEntityPony(T entity) {
-        return MineLittlePony.getInstance().getManager().getPony(findTexture(entity));
-    }
-
-    @Override
     protected void renderLabel(T entity, String name, double x, double y, double z, int maxDistance) {
         super.renderLabel(entity, name, x, renderPony.getNamePlateYOffset(entity, y), z, maxDistance);
     }
@@ -116,9 +114,14 @@ public abstract class RenderPonyMob<T extends LivingEntity, M extends EntityMode
         return renderPony;
     }
 
+    @Override
+    public IPony getEntityPony(T entity) {
+        return MineLittlePony.getInstance().getManager().getPony(findTexture(entity));
+    }
+
     public abstract static class Caster<T extends LivingEntity, M extends ClientPonyModel<T> & IUnicorn<PonyRenderer>> extends RenderPonyMob<T, M> {
 
-        public Caster(EntityRenderDispatcher manager, ModelWrapper<T, M> model) {
+        public Caster(EntityRenderDispatcher manager, M model) {
             super(manager, model);
         }
 
@@ -131,7 +134,7 @@ public abstract class RenderPonyMob<T extends LivingEntity, M extends EntityMode
     public abstract static class Proxy<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends RenderPonyMob<T, M> {
 
         @SuppressWarnings({"rawtypes", "unchecked"})
-        public  Proxy(List exportedLayers, EntityRenderDispatcher manager, ModelWrapper<T, M> model) {
+        public  Proxy(List exportedLayers, EntityRenderDispatcher manager, M model) {
             super(manager, model);
 
             exportedLayers.addAll(features);

@@ -18,8 +18,6 @@ public interface IModUtilities {
         return false;
     }
 
-    float getRenderPartialTicks();
-
     Path getConfigDirectory();
 
     Path getAssetsDirectory();

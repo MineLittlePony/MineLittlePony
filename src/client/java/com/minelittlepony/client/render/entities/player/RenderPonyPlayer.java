@@ -36,10 +36,10 @@ public class RenderPonyPlayer extends PlayerEntityRenderer implements IPonyRende
 
     protected final RenderPony<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> renderPony = new RenderPony<>(this);
 
-    public RenderPonyPlayer(EntityRenderDispatcher manager, boolean useSmallArms, ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> model) {
+    public RenderPonyPlayer(EntityRenderDispatcher manager, boolean useSmallArms, ClientPonyModel<AbstractClientPlayerEntity> model) {
         super(manager, useSmallArms);
 
-        this.model = renderPony.setPonyModel(model);
+        this.model = renderPony.setPonyModel(new ModelWrapper<>(model));
 
         addLayers();
     }
@@ -171,11 +171,6 @@ public class RenderPonyPlayer extends PlayerEntityRenderer implements IPonyRende
     }
 
     @Override
-    public IPony getEntityPony(AbstractClientPlayerEntity player) {
-        return MineLittlePony.getInstance().getManager().getPony(player);
-    }
-
-    @Override
     public RenderPony<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> getInternalRenderer() {
         return renderPony;
     }
@@ -183,6 +178,11 @@ public class RenderPonyPlayer extends PlayerEntityRenderer implements IPonyRende
     @Override
     public Identifier findTexture(AbstractClientPlayerEntity entity) {
         return getTexture(entity);
+    }
+
+    @Override
+    public IPony getEntityPony(AbstractClientPlayerEntity entity) {
+        return MineLittlePony.getInstance().getManager().getPony(entity);
     }
 
 }

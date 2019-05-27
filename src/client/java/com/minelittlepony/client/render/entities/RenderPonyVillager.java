@@ -1,8 +1,6 @@
 package com.minelittlepony.client.render.entities;
 
-import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.entities.ModelVillagerPony;
-import com.minelittlepony.client.render.RenderPonyMob;
 import com.minelittlepony.util.resources.FormattedTextureSupplier;
 import com.minelittlepony.util.resources.ITextureSupplier;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -23,7 +21,7 @@ public class RenderPonyVillager extends RenderPonyMob.Caster<VillagerEntity, Mod
     private static final ITextureSupplier<VillagerData> PROFESSIONS = new VillagerProfessionTextureCache(FORMATTER, DEFAULT);
 
     public RenderPonyVillager(EntityRenderDispatcher manager) {
-        super(manager, new ModelWrapper<>(new ModelVillagerPony<>()));
+        super(manager, new ModelVillagerPony<>());
     }
 
     @Override

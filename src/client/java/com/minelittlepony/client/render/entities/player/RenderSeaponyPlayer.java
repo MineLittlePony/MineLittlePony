@@ -11,16 +11,16 @@ import net.minecraft.particle.ParticleTypes;
 
 public class RenderSeaponyPlayer extends RenderPonyPlayer {
 
-    protected ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> seapony;
-    protected ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> normalPony;
+    protected final ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> seapony;
+    protected final ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> normalPony;
 
     public RenderSeaponyPlayer(EntityRenderDispatcher manager, boolean useSmallArms,
-            ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> model,
-            ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> alternate) {
+            ClientPonyModel<AbstractClientPlayerEntity> model,
+            ClientPonyModel<AbstractClientPlayerEntity> alternate) {
         super(manager, useSmallArms, model);
 
-        seapony = alternate;
-        normalPony = model;
+        seapony = new ModelWrapper<>(alternate);
+        normalPony = new ModelWrapper<>(model);
     }
 
     @Override

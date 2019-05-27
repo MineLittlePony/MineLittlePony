@@ -3,7 +3,6 @@ package com.minelittlepony.client.render;
 import org.lwjgl.opengl.GL14;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.client.MineLPClient;
 import com.minelittlepony.client.ducks.IRenderItem;
 import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
 import com.minelittlepony.client.util.render.Color;
@@ -20,7 +19,6 @@ import net.minecraft.util.UseAction;
 
 import static com.mojang.blaze3d.platform.GlStateManager.*;
 
-@SuppressWarnings("deprecation") // ItemCameraTransforms is deprecated by forge but we still need it.
 public class LevitatingItemRenderer {
 
     public static void enableItemGlowRenderProfile() {
@@ -118,7 +116,7 @@ public class LevitatingItemRenderer {
         boolean doNormal = entity.getItemUseTime() <= 0 || action == UseAction.NONE;
 
         if (doNormal) { // eating, blocking, and drinking are not transformed. Only held items.
-            float ticks = MineLPClient.getInstance().getModUtilities().getRenderPartialTicks() - entity.age;
+            float ticks = MinecraftClient.getInstance().getTickDelta() - entity.age;
 
             float floatAmount = (float)Math.sin(ticks / 9) / 40;
             float driftAmount = (float)Math.cos(ticks / 6) / 40;

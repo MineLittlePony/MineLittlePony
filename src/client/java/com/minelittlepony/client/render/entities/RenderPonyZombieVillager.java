@@ -1,8 +1,6 @@
 package com.minelittlepony.client.render.entities;
 
-import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.entities.ModelZombieVillagerPony;
-import com.minelittlepony.client.render.RenderPonyMob;
 import com.minelittlepony.util.resources.FormattedTextureSupplier;
 import com.minelittlepony.util.resources.ITextureSupplier;
 
@@ -22,7 +20,7 @@ public class RenderPonyZombieVillager extends RenderPonyMob.Caster<ZombieVillage
     private static final ITextureSupplier<VillagerData> PROFESSIONS = new VillagerProfessionTextureCache(FORMATTER, DEFAULT);
 
     public RenderPonyZombieVillager(EntityRenderDispatcher manager) {
-        super(manager, new ModelWrapper<>(new ModelZombieVillagerPony()));
+        super(manager, new ModelZombieVillagerPony());
     }
 
     @Override

@@ -1,8 +1,6 @@
 package com.minelittlepony.client.render.entities;
 
-import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.entities.ModelSkeletonPony;
-import com.minelittlepony.client.render.RenderPonyMob;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItem;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.client.render.layer.LayerPonyStrayOverlay;
@@ -21,7 +19,7 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeletonEntity> extends
     public static final Identifier STRAY = new Identifier("minelittlepony", "textures/entity/skeleton/stray_pony.png");
 
     public RenderPonySkeleton(EntityRenderDispatcher manager) {
-        super(manager, new ModelWrapper<>(new ModelSkeletonPony<>()));
+        super(manager, new ModelSkeletonPony<>());
     }
 
     @Override

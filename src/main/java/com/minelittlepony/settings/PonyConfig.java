@@ -3,12 +3,11 @@ package com.minelittlepony.settings;
 import net.minecraft.util.math.MathHelper;
 
 import com.google.gson.annotations.Expose;
-import com.minelittlepony.common.SensibleConfig;
 
 /**
  * Storage container for MineLP client settings.
  */
-public abstract class PonyConfig extends SensibleConfig {
+public abstract class PonyConfig extends SensibleJsonConfig {
 
     @Expose private PonyLevel ponylevel = PonyLevel.PONIES;
 

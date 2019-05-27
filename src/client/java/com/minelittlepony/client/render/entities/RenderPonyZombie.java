@@ -1,8 +1,6 @@
 package com.minelittlepony.client.render.entities;
 
-import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.entities.ModelZombiePony;
-import com.minelittlepony.client.render.RenderPonyMob;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
@@ -19,7 +17,7 @@ public class RenderPonyZombie<Zombie extends ZombieEntity> extends RenderPonyMob
     public static final Identifier PIGMAN = new Identifier("minelittlepony", "textures/entity/zombie/zombie_pigman_pony.png");
 
     public RenderPonyZombie(EntityRenderDispatcher manager) {
-        super(manager, new ModelWrapper<>(new ModelZombiePony<>()));
+        super(manager, new ModelZombiePony<>());
     }
 
     @Override
@@ -61,7 +59,7 @@ public class RenderPonyZombie<Zombie extends ZombieEntity> extends RenderPonyMob
     public static class Giant extends RenderPonyMob.Caster<GiantEntity, ModelZombiePony<GiantEntity>> {
 
 		public Giant(EntityRenderDispatcher manager) {
-			super(manager, new ModelWrapper<>(new ModelZombiePony<>()));
+			super(manager, new ModelZombiePony<>());
 		}
 
 		@Override

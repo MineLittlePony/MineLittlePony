@@ -1,8 +1,6 @@
 package com.minelittlepony.client.model.races;
 
 import com.google.common.collect.Maps;
-import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.entities.ModelSeapony;
 import com.minelittlepony.client.render.entities.player.RenderPonyPlayer;
 import com.minelittlepony.client.render.entities.player.RenderSeaponyPlayer;
@@ -10,31 +8,34 @@ import com.minelittlepony.hdskins.VanillaModels;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.pony.meta.Race;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.entity.LivingEntity;
 
 import java.util.Map;
+import java.util.function.Function;
 
 public enum PlayerModels {
     /**
      * The default non-pony model. This is typically handled my the vanilla renderer.
      */
-    HUMAN(VanillaModels.DEFAULT, Race.HUMAN, ModelEarthPony::new),
-    EARTH("earthpony", Race.EARTH, ModelEarthPony::new),
-    PEGASUS("pegasus", Race.PEGASUS, ModelPegasus::new),
-    BATPONY("batpony", Race.BATPONY, ModelBatpony::new),
-    UNICORN("unicorn", Race.UNICORN, ModelUnicorn::new),
-    ALICORN("alicorn", Race.ALICORN, ModelAlicorn::new),
-    CHANGELING("changeling", Race.CHANGELING, ModelChangeling::new),
-    ZEBRA("zebra", Race.ZEBRA, ModelZebra::new),
-    SEAPONY("seapony", Race.SEAPONY, a -> new ModelSeapony<>()) {
+    DEFAULT(VanillaModels.DEFAULT, VanillaModels.SLIM, Race.HUMAN, ModelEarthPony::new),
+    EARTHPONY(Race.EARTH, ModelEarthPony::new),
+    PEGASUS(Race.PEGASUS, ModelPegasus::new),
+    BATPONY(Race.BATPONY, ModelBatpony::new),
+    UNICORN(Race.UNICORN, ModelUnicorn::new),
+    ALICORN(Race.ALICORN, ModelAlicorn::new),
+    CHANGELING(Race.CHANGELING, ModelChangeling::new),
+    ZEBRA(Race.ZEBRA, ModelZebra::new),
+    SEAPONY(Race.SEAPONY, ModelSeapony::new) {
         @Override
         public RenderPonyPlayer createRenderer(EntityRenderDispatcher manager, boolean slimArms) {
             return new RenderSeaponyPlayer(manager, slimArms, PlayerModels.UNICORN.getModel(slimArms), getModel(slimArms));
         }
     };
 
-    private static Map<Race, PlayerModels> raceModelsMap = Maps.newEnumMap(Race.class);
+    private static final Map<Race, PlayerModels> raceModelsMap = Maps.newEnumMap(Race.class);
 
     static {
         for (PlayerModels i : values()) {
@@ -42,48 +43,41 @@ public enum PlayerModels {
         }
     }
 
-    private final ModelResolver resolver;
+    private final Function<Boolean, IModel> resolver;
 
-    private ModelWrapper<?, ?> normal;
-    private ModelWrapper<?, ?> slim;
-
-    private final String normalKey, slimKey;
+    private final PendingModel normal;
+    private final PendingModel slim;
 
     private final Race race;
 
-    PlayerModels(String key, Race race, ModelResolver resolver) {
-        this(key, VanillaModels.SLIM + key, race, resolver);
-    }
-
-    PlayerModels(String normalKey, String slimKey, Race race, ModelResolver resolver) {
-        this.normalKey = normalKey;
-        this.slimKey = slimKey;
+    PlayerModels(Race race, Function<Boolean, IModel> resolver) {
+        normal = new PendingModel(name().toLowerCase());
+        slim = new PendingModel(VanillaModels.SLIM + normal.key);
 
         this.resolver = resolver;
 
         this.race = race;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends LivingEntity, M extends IModel> ModelWrapper<T, M> getModel(boolean isSlim) {
+    PlayerModels(String normalKey, String slimKey, Race race, Function<Boolean, IModel> resolver) {
+        normal = new PendingModel(normalKey);
+        slim = new PendingModel(slimKey);
 
-        if (isSlim) {
-            if (slim == null) {
-                slim = new ModelWrapper<>(resolver.resolve(isSlim));
-            }
+        this.resolver = resolver;
 
-            return (ModelWrapper<T, M>)slim;
-        }
-
-        if (normal == null) {
-            normal = new ModelWrapper<>(resolver.resolve(isSlim));
-        }
-
-        return (ModelWrapper<T, M>)normal;
+        this.race = race;
     }
 
-    public String getId(boolean useSlimArms) {
-        return useSlimArms ? slimKey : normalKey;
+    public PendingModel getPendingModel(boolean isSlim) {
+        return isSlim ? slim : normal;
+    }
+
+    public <T extends LivingEntity, M extends IModel> M getModel(boolean isSlim) {
+        return getPendingModel(isSlim).getModel(isSlim);
+    }
+
+    public String getId(boolean isSlim) {
+        return getPendingModel(isSlim).key;
     }
 
     public RenderPonyPlayer createRenderer(EntityRenderDispatcher manager, boolean slimArms) {
@@ -91,14 +85,26 @@ public enum PlayerModels {
     }
 
     public static PlayerModels forRace(Race race) {
-        return raceModelsMap.getOrDefault(race.getAlias(), HUMAN);
+        return raceModelsMap.getOrDefault(race.getAlias(), DEFAULT);
     }
 
-    /**
-     * FIXME: PMAPI fields are null when the game starts.
-     */
-    @FunctionalInterface
-    static interface ModelResolver {
-        AbstractPonyModel<?> resolve(boolean slim);
+    private final class PendingModel {
+        @Nullable
+        private IModel model;
+
+        private final String key;
+
+        PendingModel(String key) {
+            this.key = key;
+        }
+
+        @SuppressWarnings("unchecked")
+        public <T extends LivingEntity, M extends IModel> M getModel(boolean isSlim) {
+            if (model == null) {
+                model = resolver.apply(isSlim);
+            }
+
+            return (M)model;
+        }
     }
 }

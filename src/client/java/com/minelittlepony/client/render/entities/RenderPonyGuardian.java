@@ -3,9 +3,8 @@ package com.minelittlepony.client.render.entities;
 import javax.annotation.Nonnull;
 
 import com.minelittlepony.client.mixin.IResizeable;
-import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.entities.ModelGuardianPony;
-import com.minelittlepony.client.render.RenderPonyMob.Proxy;
+import com.minelittlepony.client.render.entities.RenderPonyMob.Proxy;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItem;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItemMagical;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -27,7 +26,7 @@ public class RenderPonyGuardian extends GuardianEntityRenderer {
         super(manager);
 
         features.clear();
-        ponyRenderer = new Proxy<GuardianEntity, ModelGuardianPony>(features, manager, new ModelWrapper<>(new ModelGuardianPony())) {
+        ponyRenderer = new Proxy<GuardianEntity, ModelGuardianPony>(features, manager, new ModelGuardianPony()) {
             @Override
             public Identifier findTexture(GuardianEntity entity) {
                 return SEAPONY;

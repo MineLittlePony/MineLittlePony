@@ -9,7 +9,9 @@ import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
 
+import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.hdskins.mixin.MixinEntityRenderDispatcher;
+import com.minelittlepony.settings.SensibleJsonConfig;
 
 import java.nio.file.Path;
 import java.util.function.Function;
@@ -20,7 +22,7 @@ public class FabMod implements ClientModInitializer, IModUtilities {
 
     @Override
     public void onInitializeClient() {
-        mlp.init(Config.of(getConfigDirectory()));
+        mlp.init(SensibleJsonConfig.of(getConfigDirectory(), ClientPonyConfig::new));
         mlp.postInit(MinecraftClient.getInstance());
     }
 
@@ -32,10 +34,6 @@ public class FabMod implements ClientModInitializer, IModUtilities {
     public <T extends Entity> void addRenderer(Class<T> type, Function<EntityRenderDispatcher, EntityRenderer<T>> renderer) {
         EntityRenderDispatcher mx = MinecraftClient.getInstance().getEntityRenderManager();
         ((MixinEntityRenderDispatcher)mx).getRenderers().put(type, renderer.apply(mx));
-    }
-
-    public float getRenderPartialTicks() {
-        return MinecraftClient.getInstance().getTickDelta();
     }
 
     @Override

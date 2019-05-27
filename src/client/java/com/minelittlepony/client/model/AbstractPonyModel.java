@@ -89,6 +89,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         motionLerp = MathUtil.clampLimit(zMotion * 30, 1);
     }
 
+    @Override
     public void updateLivingState(T entity, IPony pony) {
         isChild = entity.isBaby();
         isSneaking = entity.isSneaking();

@@ -1,8 +1,6 @@
 package com.minelittlepony.client.render.entities;
 
-import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.entities.ModelIllagerPony;
-import com.minelittlepony.client.render.RenderPonyMob;
 import com.minelittlepony.client.render.layer.LayerHeldItemIllager;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItem;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -23,7 +21,7 @@ public abstract class RenderPonyIllager<T extends IllagerEntity> extends RenderP
     public static final Identifier VINDICATOR = new Identifier("minelittlepony", "textures/entity/illager/vindicator_pony.png");
 
     public RenderPonyIllager(EntityRenderDispatcher manager) {
-        super(manager, new ModelWrapper<>(new ModelIllagerPony<>()));
+        super(manager, new ModelIllagerPony<>());
     }
 
     @Override
