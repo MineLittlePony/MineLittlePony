@@ -11,31 +11,28 @@ import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IPart;
-import com.minelittlepony.model.PonyModelConstants;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.IPonyData;
 import com.minelittlepony.pony.meta.Size;
 import com.minelittlepony.util.math.MathUtil;
 
-import net.minecraft.client.renderer.entity.model.ModelBase;
-import net.minecraft.client.renderer.entity.model.ModelPlayer;
-import net.minecraft.client.renderer.entity.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.model.Cuboid;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.EnumHandSide;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.AbsoluteHand;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 
-import java.util.Random;
 import java.util.UUID;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
+import static com.mojang.blaze3d.platform.GlStateManager.*;
 
 /**
  * Foundation class for all types of ponies.
  */
-public abstract class AbstractPonyModel extends ModelPlayer implements IClientModel, PonyModelConstants {
+public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPonyModel<T> {
 
     public boolean isSleeping;
     public boolean isFlying;
@@ -76,14 +73,15 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
 
     @Override
     public IEquestrianArmour<?> createArmour() {
-        return new PonyArmor(new ModelPonyArmor(), new ModelPonyArmor());
+        return new PonyArmor<>(new ModelPonyArmor<>(), new ModelPonyArmor<>());
     }
 
     /**
      * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
      */
-    private void checkRainboom(Entity entity, float swing) {
-        double zMotion = Math.sqrt(entity.motionX * entity.motionX + entity.motionZ * entity.motionZ);
+    private void checkRainboom(T entity, float swing) {
+        Vec3d motion = entity.getVelocity();
+        double zMotion = Math.sqrt(motion.x * motion.x + motion.z * motion.z);
 
         rainboom = (isFlying() && canFly()) || isElytraFlying();
         rainboom &= zMotion > 0.4F;
@@ -91,17 +89,17 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
         motionLerp = MathUtil.clampLimit(zMotion * 30, 1);
     }
 
-    public void updateLivingState(EntityLivingBase entity, IPony pony) {
-        isChild = entity.isChild();
-        isSneak = entity.isSneaking();
+    public void updateLivingState(T entity, IPony pony) {
+        isChild = entity.isBaby();
+        isSneaking = entity.isSneaking();
         isCrouching = pony.isCrouching(entity);
-        isSleeping = entity.isPlayerSleeping();
+        isSleeping = entity.isSleeping();
         isFlying = pony.isFlying(entity);
-        isElytraFlying = entity.isElytraFlying();
+        isElytraFlying = entity.isFallFlying();
         isSwimming = pony.isSwimming(entity);
         headGear = pony.isWearingHeadgear(entity);
         isRidingInteractive = pony.isRidingInteractive(entity);
-        interpolatorId = entity.getUniqueID();
+        interpolatorId = entity.getUuid();
     }
 
     /**
@@ -116,12 +114,12 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
      * @param entity    The entity we're being called for.
      */
     @Override
-    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
+    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         checkRainboom(entity, swing);
 
-        super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
+        super.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
 
-        float headRotateAngleY = isSleeping() ? (Math.abs(entity.getUniqueID().getMostSignificantBits()) % 2.8F) - 1.9F : headYaw / 57.29578F;
+        float headRotateAngleY = isSleeping() ? (Math.abs(entity.getUuid().getMostSignificantBits()) % 2.8F) - 1.9F : headYaw / 57.29578F;
         float headRotateAngleX = isSleeping() ? 0.1f : headPitch / 57.29578F;
 
         headRotateAngleX = Math.min(headRotateAngleX, (float) (0.5f - Math.toRadians(motionPitch)));
@@ -144,8 +142,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
         } else {
             adjustBody(BODY_ROT_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
 
-            bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
-            bipedLeftLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
+            rightLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
+            leftLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
             swingArms(ticks);
             setHead(0, 0, 0);
         }
@@ -162,11 +160,11 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
     @Override
     public float getWobbleAmount() {
 
-        if (swingProgress <= 0) {
+        if (getSwingAmount() <= 0) {
             return 0;
         }
 
-        return MathHelper.sin(MathHelper.sqrt(swingProgress) * PI * 2) * 0.04F;
+        return MathHelper.sin(MathHelper.sqrt(getSwingAmount()) * PI * 2) * 0.04F;
     }
 
     /**
@@ -176,26 +174,26 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
         adjustBody(BODY_ROT_X_SNEAK, BODY_RP_Y_SNEAK, BODY_RP_Z_SNEAK);
         setHead(0, 6, -2);
 
-        bipedRightArm.rotateAngleX -= LEG_ROT_X_SNEAK_ADJ;
-        bipedLeftArm.rotateAngleX -= LEG_ROT_X_SNEAK_ADJ;
+        rightArm.pitch -= LEG_ROT_X_SNEAK_ADJ;
+        leftArm.pitch -= LEG_ROT_X_SNEAK_ADJ;
 
-        bipedLeftLeg.rotationPointY = FRONT_LEG_RP_Y_SNEAK;
-        bipedRightLeg.rotationPointY = FRONT_LEG_RP_Y_SNEAK;
+        leftLeg.rotationPointY = FRONT_LEG_RP_Y_SNEAK;
+        rightLeg.rotationPointY = FRONT_LEG_RP_Y_SNEAK;
     }
 
     protected void ponySleep() {
-        bipedRightArm.rotateAngleX = ROTATE_270;
-        bipedLeftArm.rotateAngleX = ROTATE_270;
+        rightArm.pitch = ROTATE_270;
+        leftArm.pitch = ROTATE_270;
 
-        bipedRightLeg.rotateAngleX = ROTATE_90;
-        bipedLeftLeg.rotateAngleX = ROTATE_90;
+        rightLeg.pitch = ROTATE_90;
+        leftLeg.pitch = ROTATE_90;
 
-        setHead(1, 2, isSneak ? -1 : 1);
+        setHead(1, 2, isSneaking ? -1 : 1);
 
-        AbstractRenderer.shiftRotationPoint(bipedRightArm, 0, 2, 6);
-        AbstractRenderer.shiftRotationPoint(bipedLeftArm, 0, 2, 6);
-        AbstractRenderer.shiftRotationPoint(bipedRightLeg, 0, 2, -8);
-        AbstractRenderer.shiftRotationPoint(bipedLeftLeg, 0, 2, -8);
+        AbstractRenderer.shiftRotationPoint(rightArm, 0, 2, 6);
+        AbstractRenderer.shiftRotationPoint(leftArm, 0, 2, 6);
+        AbstractRenderer.shiftRotationPoint(rightLeg, 0, 2, -8);
+        AbstractRenderer.shiftRotationPoint(leftLeg, 0, 2, -8);
     }
 
     protected void ponyRide() {
@@ -209,37 +207,37 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
             setHead(0, 0, 0);
         }
 
-        bipedLeftLeg.rotationPointZ = 15;
-        bipedLeftLeg.rotationPointY = 9;
-        bipedLeftLeg.rotateAngleX = -PI / 4;
-        bipedLeftLeg.rotateAngleY = -PI / 5;
+        leftLeg.rotationPointZ = 15;
+        leftLeg.rotationPointY = 9;
+        leftLeg.pitch = -PI / 4;
+        leftLeg.yaw = -PI / 5;
 
-        bipedRightLeg.rotationPointZ = 15;
-        bipedRightLeg.rotationPointY = 9;
-        bipedRightLeg.rotateAngleX = -PI / 4;
-        bipedRightLeg.rotateAngleY =  PI / 5;
+        rightLeg.rotationPointZ = 15;
+        rightLeg.rotationPointY = 9;
+        rightLeg.pitch = -PI / 4;
+        rightLeg.yaw =  PI / 5;
 
-        bipedLeftArm.rotateAngleZ = -PI * 0.06f;
-        bipedRightArm.rotateAngleZ = PI * 0.06f;
+        leftArm.roll = -PI * 0.06f;
+        rightArm.roll = PI * 0.06f;
 
         if (isRidingInteractive) {
-            bipedLeftLeg.rotateAngleY = PI / 15;
-            bipedLeftLeg.rotateAngleX = PI / 9;
+            leftLeg.yaw = PI / 15;
+            leftLeg.pitch = PI / 9;
 
-            bipedLeftLeg.rotationPointZ = 10;
-            bipedLeftLeg.rotationPointY = 7;
+            leftLeg.rotationPointZ = 10;
+            leftLeg.rotationPointY = 7;
 
-            bipedRightLeg.rotateAngleY = -PI / 15;
-            bipedRightLeg.rotateAngleX = PI / 9;
+            rightLeg.yaw = -PI / 15;
+            rightLeg.pitch = PI / 9;
 
-            bipedRightLeg.rotationPointZ = 10;
-            bipedRightLeg.rotationPointY = 7;
+            rightLeg.rotationPointZ = 10;
+            rightLeg.rotationPointY = 7;
 
-            bipedLeftArm.rotateAngleX = PI / 6;
-            bipedRightArm.rotateAngleX = PI / 6;
+            leftArm.pitch = PI / 6;
+            rightArm.pitch = PI / 6;
 
-            bipedLeftArm.rotateAngleZ *= 2;
-            bipedRightArm.rotateAngleZ *= 2;
+            leftArm.roll *= 2;
+            rightArm.roll *= 2;
         }
     }
 
@@ -254,22 +252,22 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
     protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
         tail.setRotationAndAngles(isSwimming() || rainboom, interpolatorId, move, swing, bodySwing * 5, ticks);
 
-        upperTorso.rotateAngleY = bodySwing;
-        bipedBody.rotateAngleY = bodySwing;
-        neck.rotateAngleY = bodySwing;
+        upperTorso.yaw = bodySwing;
+        body.yaw = bodySwing;
+        neck.yaw = bodySwing;
     }
 
     private void animateWears() {
-        copyModelAngles(bipedLeftArm, bipedLeftArmwear);
-        copyModelAngles(bipedRightArm, bipedRightArmwear);
-        copyModelAngles(bipedLeftLeg, bipedLeftLegwear);
-        copyModelAngles(bipedRightLeg, bipedRightLegwear);
-        copyModelAngles(bipedBody, bipedBodyWear);
+        leftArmOverlay.copyRotation(leftArm);
+        rightArmOverlay.copyRotation(rightArm);
+        leftLegOverlay.copyRotation(leftLeg);
+        rightLegOverlay.copyRotation(rightLeg);
+        bodyOverlay.copyRotation(body);
     }
 
     @Override
-    public ModelRenderer getHead() {
-        return bipedHead;
+    public Cuboid getHead() {
+        return head;
     }
 
     @Override
@@ -286,8 +284,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
      * Sets the head rotation point.
      */
     protected void setHead(float posX, float posY, float posZ) {
-        bipedHead.setRotationPoint(posX, posY, posZ);
-        bipedHeadwear.setRotationPoint(posX, posY, posZ);
+        head.setRotationPoint(posX, posY, posZ);
+        headwear.setRotationPoint(posX, posY, posZ);
     }
 
     /**
@@ -297,8 +295,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
      * @param y     New rotation Y
      */
     protected void updateHeadRotation(float x, float y) {
-        bipedHeadwear.rotateAngleY = bipedHead.rotateAngleY = y;
-        bipedHeadwear.rotateAngleX = bipedHead.rotateAngleX = x;
+        headwear.yaw = head.yaw = y;
+        headwear.pitch = head.pitch = x;
     }
 
     /**
@@ -308,7 +306,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
     * Takes the same parameters as {@link AbstractPonyModel.setRotationAndAngles}
     *
     */
-    protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
+    protected void rotateLegs(float move, float swing, float ticks, T entity) {
         if (isSwimming()) {
             rotateLegsSwimming(move, swing, ticks, entity);
         } else if (isGoingFast()) {
@@ -317,29 +315,29 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
             rotateLegsOnGround(move, swing, ticks, entity);
         }
 
-        float sin = MathHelper.sin(bipedBody.rotateAngleY) * 5;
-        float cos = MathHelper.cos(bipedBody.rotateAngleY) * 5;
+        float sin = MathHelper.sin(body.yaw) * 5;
+        float cos = MathHelper.cos(body.yaw) * 5;
 
         float spread = getLegSpread();
 
-        bipedRightArm.rotationPointZ = spread + sin;
-        bipedLeftArm.rotationPointZ = spread - sin;
+        rightArm.rotationPointZ = spread + sin;
+        leftArm.rotationPointZ = spread - sin;
 
         float legRPX = cos - getLegOutset() - 0.001F;
 
-        legRPX = metadata.getInterpolator(entity.getUniqueID()).interpolate("legOffset", legRPX, 3);
+        legRPX = metadata.getInterpolator(entity.getUuid()).interpolate("legOffset", legRPX, 3);
 
-        bipedRightArm.rotationPointX = -legRPX;
-        bipedRightLeg.rotationPointX = -legRPX;
+        rightArm.rotationPointX = -legRPX;
+        rightLeg.rotationPointX = -legRPX;
 
-        bipedLeftArm.rotationPointX = legRPX;
-        bipedLeftLeg.rotationPointX = legRPX;
+        leftArm.rotationPointX = legRPX;
+        leftLeg.rotationPointX = legRPX;
 
-        bipedRightArm.rotateAngleY += bipedBody.rotateAngleY;
-        bipedLeftArm.rotateAngleY += bipedBody.rotateAngleY;
+        rightArm.yaw += body.yaw;
+        leftArm.yaw += body.yaw;
 
-        bipedRightArm.rotationPointY = bipedLeftArm.rotationPointY = 8;
-        bipedRightLeg.rotationPointZ = bipedLeftLeg.rotationPointZ = 10;
+        rightArm.rotationPointY = leftArm.rotationPointY = 8;
+        rightLeg.rotationPointZ = leftLeg.rotationPointZ = 10;
     }
 
     /**
@@ -351,26 +349,26 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
      * @param entity    The entity we're being called for.
      *
      */
-    protected void rotateLegsSwimming(float move, float swing, float ticks, Entity entity) {
+    protected void rotateLegsSwimming(float move, float swing, float ticks, T entity) {
 
         float legLeft = (ROTATE_90 + MathHelper.sin((move / 3) + 2 * PI/3) / 2) * (float)motionLerp;
 
         float left = (ROTATE_90 + MathHelper.sin((move / 3) + 2 * PI) / 2) * (float)motionLerp;
         float right = (ROTATE_90 + MathHelper.sin(move / 3) / 2) * (float)motionLerp;
 
-        bipedLeftArm.rotateAngleX = -left;
-        bipedLeftArm.rotateAngleY = -left/2;
-        bipedLeftArm.rotateAngleZ = left/2;
+        leftArm.pitch = -left;
+        leftArm.yaw = -left/2;
+        leftArm.roll = left/2;
 
-        bipedRightArm.rotateAngleX = -right;
-        bipedRightArm.rotateAngleY = right/2;
-        bipedRightArm.rotateAngleZ = -right/2;
+        rightArm.pitch = -right;
+        rightArm.yaw = right/2;
+        rightArm.roll = -right/2;
 
-        bipedLeftLeg.rotateAngleX = legLeft;
-        bipedRightLeg.rotateAngleX = right;
+        leftLeg.pitch = legLeft;
+        rightLeg.pitch = right;
 
-        bipedLeftLeg.rotateAngleY = 0;
-        bipedRightLeg.rotateAngleY = 0;
+        leftLeg.yaw = 0;
+        rightLeg.yaw = 0;
     }
 
     /**
@@ -386,20 +384,20 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
         float armX = rainboom ? ROTATE_270 : MathHelper.sin(-swing / 2);
         float legX = rainboom ? ROTATE_90 : MathHelper.sin(swing / 2);
 
-        bipedLeftArm.rotateAngleX = armX;
-        bipedRightArm.rotateAngleX = armX;
+        leftArm.pitch = armX;
+        rightArm.pitch = armX;
 
-        bipedLeftLeg.rotateAngleX = legX;
-        bipedRightLeg.rotateAngleX = legX;
+        leftLeg.pitch = legX;
+        rightLeg.pitch = legX;
 
-        bipedLeftArm.rotateAngleY = -0.2F;
-        bipedLeftLeg.rotateAngleY = 0.2F;
+        leftArm.yaw = -0.2F;
+        leftLeg.yaw = 0.2F;
 
-        bipedRightArm.rotateAngleY = 0.2F;
-        bipedRightLeg.rotateAngleY = -0.2F;
+        rightArm.yaw = 0.2F;
+        rightLeg.yaw = -0.2F;
 
-        bipedRightArm.rotateAngleZ = 0;
-        bipedLeftArm.rotateAngleZ = 0;
+        rightArm.roll = 0;
+        leftArm.roll = 0;
     }
 
     /**
@@ -411,26 +409,26 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
      * @param entity    The entity we're being called for.
      *
      */
-    protected void rotateLegsOnGround(float move, float swing, float ticks, Entity entity) {
+    protected void rotateLegsOnGround(float move, float swing, float ticks, T entity) {
         float angle = PI * (float) Math.pow(swing, 16);
 
         float baseRotation = move * 0.6662F; // magic number ahoy
         float scale = swing / 4;
 
-        bipedLeftArm.rotateAngleX =  MathHelper.cos(baseRotation + angle) * scale;
-        bipedRightArm.rotateAngleX = MathHelper.cos(baseRotation + PI + angle / 2) * scale;
+        leftArm.pitch =  MathHelper.cos(baseRotation + angle) * scale;
+        rightArm.pitch = MathHelper.cos(baseRotation + PI + angle / 2) * scale;
 
-        bipedLeftLeg.rotateAngleX =  MathHelper.cos(baseRotation + PI - (angle * 0.4f)) * scale;
-        bipedRightLeg.rotateAngleX = MathHelper.cos(baseRotation + angle / 5) * scale;
+        leftLeg.pitch =  MathHelper.cos(baseRotation + PI - (angle * 0.4f)) * scale;
+        rightLeg.pitch = MathHelper.cos(baseRotation + angle / 5) * scale;
 
-        bipedLeftArm.rotateAngleY = 0;
-        bipedRightArm.rotateAngleY = 0;
+        leftArm.yaw = 0;
+        rightArm.yaw = 0;
 
-        bipedLeftLeg.rotateAngleY = 0;
-        bipedRightLeg.rotateAngleY = 0;
+        leftLeg.yaw = 0;
+        rightLeg.yaw = 0;
 
-        bipedRightArm.rotateAngleZ = 0;
-        bipedLeftArm.rotateAngleZ = 0;
+        rightArm.roll = 0;
+        leftArm.roll = 0;
     }
 
     protected float getLegOutset() {
@@ -457,19 +455,19 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
     protected void holdItem(float swing) {
         boolean both = leftArmPose == ArmPose.ITEM && rightArmPose == ArmPose.ITEM;
 
-        alignArmForAction(bipedLeftArm, leftArmPose, rightArmPose, both, swing, 1);
-        alignArmForAction(bipedRightArm, rightArmPose, leftArmPose, both, swing, -1);
+        alignArmForAction(leftArm, leftArmPose, rightArmPose, both, swing, 1);
+        alignArmForAction(rightArm, rightArmPose, leftArmPose, both, swing, -1);
     }
 
     @Override
-    public ModelRenderer getBodyPart(BodyPart part) {
+    public Cuboid getBodyPart(BodyPart part) {
         switch (part) {
             default:
-            case HEAD: return bipedHead;
+            case HEAD: return head;
             case NECK: return neck;
             case TAIL:
             case LEGS:
-            case BODY: return bipedBody;
+            case BODY: return body;
         }
     }
 
@@ -481,7 +479,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
      * @param both  True if we have something in both hands
      * @param swing     Degree to which each 'limb' swings.
      */
-    protected void alignArmForAction(ModelRenderer arm, ArmPose pose, ArmPose complement, boolean both, float swing, float reflect) {
+    protected void alignArmForAction(Cuboid arm, ArmPose pose, ArmPose complement, boolean both, float swing, float reflect) {
         switch (pose) {
             case ITEM:
                 float swag = 1;
@@ -489,19 +487,19 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
                     swag -= (float)Math.pow(swing, 2);
                 }
                 float mult = 1 - swag/2;
-                arm.rotateAngleX = arm.rotateAngleX * mult - (PI / 10) * swag;
-                arm.rotateAngleZ = -reflect * (PI / 15);
+                arm.pitch = arm.pitch * mult - (PI / 10) * swag;
+                arm.roll = -reflect * (PI / 15);
                 if (isCrouching()) {
                     arm.rotationPointX -= reflect * 2;
                 }
             case EMPTY:
-                arm.rotateAngleY = 0;
+                arm.yaw = 0;
                 break;
             case BLOCK:
-                arm.rotateAngleX = (arm.rotateAngleX / 2 - 0.9424779F) - 0.3F;
-                arm.rotateAngleY = reflect * PI / 9;
+                arm.pitch = (arm.pitch / 2 - 0.9424779F) - 0.3F;
+                arm.yaw = reflect * PI / 9;
                 if (complement == pose) {
-                    arm.rotateAngleY -= reflect * PI / 18;
+                    arm.yaw -= reflect * PI / 18;
                 }
                 arm.rotationPointX += reflect;
                 arm.rotationPointZ += 3;
@@ -516,12 +514,12 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
         }
     }
 
-    protected void aimBow(ModelRenderer arm, float ticks) {
-        arm.rotateAngleX = ROTATE_270 + bipedHead.rotateAngleX + (MathHelper.sin(ticks * 0.067F) * 0.05F);
-        arm.rotateAngleY = bipedHead.rotateAngleY - 0.06F;
-        arm.rotateAngleZ = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
+    protected void aimBow(Cuboid arm, float ticks) {
+        arm.pitch = ROTATE_270 + head.pitch + (MathHelper.sin(ticks * 0.067F) * 0.05F);
+        arm.yaw = head.yaw - 0.06F;
+        arm.roll = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
 
-        if (isSneak) {
+        if (isSneaking) {
             arm.rotationPointY += 4;
         }
     }
@@ -532,11 +530,11 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
      *
      * @param entity     The entity we are being called for.
      */
-    protected void swingItem(Entity entity) {
-        if (swingProgress > 0 && !isSleeping()) {
-            EnumHandSide mainSide = getMainHand(entity);
+    protected void swingItem(T entity) {
+        if (getSwingAmount() > 0 && !isSleeping()) {
+            AbsoluteHand mainSide = getPreferedHand(entity);
 
-            swingArm(getArmForSide(mainSide));
+            swingArm(getArm(mainSide));
         }
     }
 
@@ -545,17 +543,17 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
      *
      * @param arm       The arm to swing
      */
-    protected void swingArm(ModelRenderer arm) {
-        float swing = 1 - (float)Math.pow(1 - swingProgress, 3);
+    protected void swingArm(Cuboid arm) {
+        float swing = 1 - (float)Math.pow(1 - getSwingAmount(), 3);
 
         float deltaX = MathHelper.sin(swing * PI);
-        float deltaZ = MathHelper.sin(swingProgress * PI);
+        float deltaZ = MathHelper.sin(getSwingAmount() * PI);
 
-        float deltaAim = deltaZ * (0.7F - bipedHead.rotateAngleX) * 0.75F;
+        float deltaAim = deltaZ * (0.7F - head.pitch) * 0.75F;
 
-        arm.rotateAngleX -= deltaAim + deltaX * 1.2F;
-        arm.rotateAngleY += bipedBody.rotateAngleY * 2;
-        arm.rotateAngleZ = -deltaZ * 0.4F;
+        arm.pitch -= deltaAim + deltaX * 1.2F;
+        arm.yaw += body.yaw * 2;
+        arm.roll = -deltaZ * 0.4F;
     }
 
     /**
@@ -572,13 +570,13 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
         float sin = MathHelper.sin(ticks * 0.067F) * 0.05F;
 
         if (rightArmPose != ArmPose.EMPTY) {
-            bipedRightArm.rotateAngleZ += cos;
-            bipedRightArm.rotateAngleX += sin;
+            rightArm.roll += cos;
+            rightArm.pitch += sin;
         }
 
         if (leftArmPose != ArmPose.EMPTY) {
-            bipedLeftArm.rotateAngleZ += cos;
-            bipedLeftArm.rotateAngleX += sin;
+            leftArm.roll += cos;
+            leftArm.pitch += sin;
         }
     }
 
@@ -588,11 +586,11 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
     }
 
     protected void adjustBodyComponents(float rotateAngleX, float rotationPointY, float rotationPointZ) {
-        bipedBody.rotateAngleX = rotateAngleX;
-        bipedBody.rotationPointY = rotationPointY;
-        bipedBody.rotationPointZ = rotationPointZ;
+        body.pitch = rotateAngleX;
+        body.rotationPointY = rotationPointY;
+        body.rotationPointZ = rotationPointZ;
 
-        upperTorso.rotateAngleX = rotateAngleX;
+        upperTorso.pitch = rotateAngleX;
         upperTorso.rotationPointY = rotationPointY;
         upperTorso.rotationPointZ = rotationPointZ;
     }
@@ -603,7 +601,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
 
     @Override
     public void init(float yOffset, float stretch) {
-        boxList.clear();
+        cuboidList.clear();
 
         initHead(yOffset, stretch);
         initBody(yOffset, stretch);
@@ -612,13 +610,13 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
     }
 
     protected void initHead(float yOffset, float stretch) {
-        bipedHead = new PonyRenderer(this, 0, 0)
+        head = new PonyRenderer(this, 0, 0)
                                  .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
                                  .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
                                  .box(-4, -4, -4, 8, 8, 8, stretch);
-        initEars(((PonyRenderer)bipedHead), yOffset, stretch);
+        initEars(((PonyRenderer)head), yOffset, stretch);
 
-        bipedHeadwear = new PonyRenderer(this, 32, 0)
+        headwear = new PonyRenderer(this, 32, 0)
                                      .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
                                      .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
                                      .box(-4, -4, -4, 8, 8, 8, stretch + 0.7504F);
@@ -643,15 +641,16 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
      */
     protected void initBody(float yOffset, float stretch) {
         if (textureHeight == 64) {
-            bipedBodyWear = new ModelRenderer(this, 16, 32);
+            bodyOverlay.boxes.clear();
+            cuboidList.add(bodyOverlay);
         }
 
-        bipedBody = new PonyRenderer(this, 16, 16)
+        body = new PonyRenderer(this, 16, 16)
                     .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                     .box(-4, 4, -2, 8, 8, 4, stretch);
 
-        bipedBodyWear.addBox(-4, 4, -2, 8, 8, 4, stretch + 0.25F);
-        bipedBodyWear.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
+        bodyOverlay.addBox(-4, 4, -2, 8, 8, 4, stretch + 0.25F);
+        bodyOverlay.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
 
         upperTorso = new PlaneRenderer(this, 24, 0);
         upperTorso.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
@@ -684,19 +683,27 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
     }
 
     protected void preInitLegs() {
-        bipedLeftArm = new ModelRenderer(this, 32, 48);
-        bipedRightArm = new ModelRenderer(this, 40, 16);
+        leftArm = new Cuboid(this, 32, 48);
+        rightArm = new Cuboid(this, 40, 16);
 
-        bipedLeftLeg = new ModelRenderer(this, 16, 48);
-        bipedRightLeg = new ModelRenderer(this, 0, 16);
+        leftLeg = new Cuboid(this, 16, 48);
+        rightLeg = new Cuboid(this, 0, 16);
     }
 
     protected void preInitLegwear() {
-        bipedLeftArmwear = new ModelRenderer(this, 48, 48);
-        bipedRightArmwear = new ModelRenderer(this, 40, 32);
+        leftArmOverlay.boxes.clear();
+        cuboidList.add(leftArmOverlay);
 
-        bipedLeftLegwear = new ModelRenderer(this, 0, 48);
-        bipedRightLegwear = new ModelRenderer(this, 0, 32);
+        rightArmOverlay.boxes.clear();
+        cuboidList.add(rightArmOverlay);
+
+        leftLegOverlay.boxes.clear();
+        cuboidList.add(leftLegOverlay);
+        leftLegOverlay.setTextureOffset(0, 48);
+
+        rightLegOverlay.boxes.clear();
+        cuboidList.add(rightLegOverlay);
+        rightLegOverlay.setTextureOffset(0, 32);
     }
 
     protected void initLegs(float yOffset, float stretch) {
@@ -714,29 +721,29 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
         float armY = THIRDP_ARM_CENTRE_Y;
         float armZ = BODY_CENTRE_Z / 2 - 1 - armDepth;
 
-        bipedLeftArm .addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch);
-        bipedRightArm.addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch);
+        leftArm .addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch);
+        rightArm.addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch);
 
-        bipedLeftLeg .addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch);
-        bipedRightLeg.addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch);
+        leftLeg .addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch);
+        rightLeg.addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch);
 
-        bipedLeftArm .setRotationPoint( rarmX, yOffset + rarmY, 0);
-        bipedRightArm.setRotationPoint(-rarmX, yOffset + rarmY, 0);
+        leftArm .setRotationPoint( rarmX, yOffset + rarmY, 0);
+        rightArm.setRotationPoint(-rarmX, yOffset + rarmY, 0);
 
-        bipedLeftLeg .setRotationPoint( rarmX, yOffset, 0);
-        bipedRightLeg.setRotationPoint(-rarmX, yOffset, 0);
+        leftLeg .setRotationPoint( rarmX, yOffset, 0);
+        rightLeg.setRotationPoint(-rarmX, yOffset, 0);
 
-        bipedLeftArmwear.addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
-        bipedLeftArmwear.setRotationPoint(rarmX, yOffset + rarmY, 0);
+        leftArmOverlay.addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
+        leftArmOverlay.setRotationPoint(rarmX, yOffset + rarmY, 0);
 
-        bipedRightArmwear.addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
-        bipedRightArmwear.setRotationPoint(-rarmX, yOffset + rarmY, 0);
+        rightArmOverlay.addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
+        rightArmOverlay.setRotationPoint(-rarmX, yOffset + rarmY, 0);
 
-        bipedLeftLegwear.addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
-        bipedRightLegwear.setRotationPoint(rarmX, yOffset, 0);
+        leftArmOverlay.addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
+        rightLegOverlay.setRotationPoint(rarmX, yOffset, 0);
 
-        bipedRightLegwear.addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
-        bipedRightLegwear.setRotationPoint(-rarmX, yOffset, 0);
+        rightLegOverlay.addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
+        rightLegOverlay.setRotationPoint(-rarmX, yOffset, 0);
     }
 
     protected int getArmWidth() {
@@ -759,8 +766,8 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
         return 8;
     }
 
-    public ArmPose getArmPoseForSide(EnumHandSide side) {
-        return side == EnumHandSide.RIGHT ? rightArmPose : leftArmPose;
+    public ArmPose getArmPoseForSide(AbsoluteHand side) {
+        return side == AbsoluteHand.RIGHT ? rightArmPose : leftArmPose;
     }
 
     @Override
@@ -825,7 +832,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
 
     @Override
     public float getSwingAmount() {
-        return swingProgress;
+        return handSwingProgress;
     }
 
     @Override
@@ -861,7 +868,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
      * @param scale     Scaling factor used to render this model. Determined by the return value of {@link RenderLivingBase.prepareScale}. Usually {@code 0.0625F}.
      */
     @Override
-    public void render(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
 
         pushMatrix();
         transform(BodyPart.HEAD);
@@ -892,14 +899,14 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
      * Takes the same parameters as {@link AbstractPonyModel.setRotationAndAngles}
      *
      */
-    protected void renderHead(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        bipedHead.render(scale);
-        bipedHeadwear.render(scale);
-        bipedHead.postRender(scale);
+    protected void renderHead(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        head.render(scale);
+        headwear.render(scale);
+        head.applyTransform(scale);
     }
 
     protected void renderNeck(float scale) {
-        GlStateManager.scalef(0.9F, 0.9F, 0.9F);
+        scalef(0.9F, 0.9F, 0.9F);
         neck.render(scale);
     }
 
@@ -910,29 +917,29 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
     * Takes the same parameters as {@link AbstractPonyModel.setRotationAndAngles}
     *
     */
-    protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        bipedBody.render(scale);
+    protected void renderBody(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        body.render(scale);
         if (textureHeight == 64) {
-            bipedBodyWear.render(scale);
+            bodyOverlay.render(scale);
         }
         upperTorso.render(scale);
-        bipedBody.postRender(scale);
-        tail.renderPart(scale, entity.getUniqueID());
+        body.applyTransform(scale);
+        tail.renderPart(scale, entity.getUuid());
     }
 
     protected void renderLegs(float scale) {
-        if (!isSneak) bipedBody.postRender(scale);
+        if (!isSneaking) body.applyTransform(scale);
 
-        bipedLeftArm.render(scale);
-        bipedRightArm.render(scale);
-        bipedLeftLeg.render(scale);
-        bipedRightLeg.render(scale);
+        leftArm.render(scale);
+        rightArm.render(scale);
+        leftLeg.render(scale);
+        rightLeg.render(scale);
 
         if (textureHeight == 64) {
-            bipedLeftArmwear.render(scale);
-            bipedRightArmwear.render(scale);
-            bipedLeftLegwear.render(scale);
-            bipedRightLegwear.render(scale);
+            leftArmOverlay.render(scale);
+            rightArmOverlay.render(scale);
+            leftLegOverlay.render(scale);
+            rightArmOverlay.render(scale);
         }
     }
 
@@ -954,10 +961,11 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
      * Copies this model's attributes from some other.
      */
     @Override
-    public void setModelAttributes(ModelBase model) {
-        super.setModelAttributes(model);
+    public void setAttributes(BipedEntityModel<T> model) {
+        super.setAttributes(model);
+
         if (model instanceof AbstractPonyModel) {
-            AbstractPonyModel pony = (AbstractPonyModel) model;
+            AbstractPonyModel<T> pony = (AbstractPonyModel<T>) model;
             isFlying = pony.isFlying;
             isCrouching = pony.isCrouching;
             isElytraFlying = pony.isElytraFlying;
@@ -968,32 +976,5 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IClientMo
             motionPitch = pony.motionPitch;
             rainboom = pony.rainboom;
         }
-    }
-
-    @Override
-    public ModelRenderer getRandomModelBox(Random rand) {
-        // grab one at random, but cycle through the list until you find one that's filled.
-        // Return if you find one, or if you get back to where you started in which case there isn't any.
-
-        int randomI = rand.nextInt(boxList.size());
-        int index = randomI;
-
-        ModelRenderer result;
-        do {
-            result = boxList.get(randomI);
-            if (!result.cubeList.isEmpty()) return result;
-
-            index = (index + 1) % boxList.size();
-        } while (index != randomI);
-
-        if (result.cubeList.isEmpty()) {
-            result.addBox(0, 0, 0, 0, 0, 0);
-        }
-
-        if (result.cubeList.isEmpty()) {
-            throw new IllegalStateException("This model contains absolutely no boxes and a box could not be added!");
-        }
-
-        return result;
     }
 }

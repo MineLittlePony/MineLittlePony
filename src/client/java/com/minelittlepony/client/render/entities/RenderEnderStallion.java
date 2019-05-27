@@ -8,41 +8,41 @@ import com.minelittlepony.client.render.layer.LayerHeldPonyItem;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.client.render.layer.LayerEyeGlow.IGlowingRenderer;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.layers.LayerArrow;
-import net.minecraft.entity.monster.EntityEnderman;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
+import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 import java.util.Random;
 
-public class RenderEnderStallion extends RenderPonyMob<EntityEnderman> implements IGlowingRenderer {
+public class RenderEnderStallion extends RenderPonyMob<EndermanEntity, ModelEnderStallion> implements IGlowingRenderer {
 
-    public static final ResourceLocation ENDERMAN = new ResourceLocation("minelittlepony", "textures/entity/enderman/enderman_pony.png");
-    private static final ResourceLocation EYES = new ResourceLocation("minelittlepony", "textures/entity/enderman/enderman_pony_eyes.png");
+    public static final Identifier ENDERMAN = new Identifier("minelittlepony", "textures/entity/enderman/enderman_pony.png");
+    private static final Identifier EYES = new Identifier("minelittlepony", "textures/entity/enderman/enderman_pony_eyes.png");
 
     private final Random rnd = new Random();
 
-    private static final ModelWrapper MODEL_WRAPPER = new ModelWrapper(new ModelEnderStallion());
+    private static final ModelWrapper<EndermanEntity, ModelEnderStallion> MODEL_WRAPPER = new ModelWrapper<>(new ModelEnderStallion());
 
-    public RenderEnderStallion(RenderManager manager) {
+    public RenderEnderStallion(EntityRenderDispatcher manager) {
         super(manager, MODEL_WRAPPER);
     }
 
     @Override
     protected void addLayers() {
-        addLayer(createItemHoldingLayer());
-        addLayer(new LayerArrow(this));
-        addLayer(new LayerEyeGlow<>(this));
+        addFeature(createItemHoldingLayer());
+        addFeature(new StuckArrowsFeatureRenderer<>(this));
+        addFeature(new LayerEyeGlow<>(this));
     }
 
     @Override
-    protected LayerHeldPonyItem<EntityEnderman> createItemHoldingLayer() {
-        return new LayerHeldPonyItemMagical<EntityEnderman>(this) {
+    protected LayerHeldPonyItem<EndermanEntity, ModelEnderStallion> createItemHoldingLayer() {
+        return new LayerHeldPonyItemMagical<EndermanEntity, ModelEnderStallion>(this) {
             @Override
-            protected ItemStack getRightItem(EntityEnderman entity) {
-                IBlockState state = entity.getHeldBlockState();
+            protected ItemStack getRightItem(EndermanEntity entity) {
+                BlockState state = entity.getCarriedBlock();
                 if (state == null) {
                     return ItemStack.EMPTY;
                 }
@@ -53,27 +53,27 @@ public class RenderEnderStallion extends RenderPonyMob<EntityEnderman> implement
     }
 
     @Override
-    public ResourceLocation getTexture(EntityEnderman entity) {
+    public Identifier findTexture(EndermanEntity entity) {
         return ENDERMAN;
     }
 
     @Override
-    public void doRender(EntityEnderman entity, double x, double y, double z, float entityYaw, float partialTicks) {
-        ModelEnderStallion modelenderman = (ModelEnderStallion)getMainModel();
+    public void render(EndermanEntity entity, double x, double y, double z, float entityYaw, float partialTicks) {
+        ModelEnderStallion modelenderman = getModel();
 
-        modelenderman.isCarrying = entity.getHeldBlockState() != null;
-        modelenderman.isAttacking = entity.isScreaming();
+        modelenderman.isCarrying = entity.getCarriedBlock() != null;
+        modelenderman.isAttacking = entity.isAngry();
 
-        if (entity.isScreaming()) {
+        if (entity.isAngry()) {
             x += rnd.nextGaussian() / 50;
             z += rnd.nextGaussian() / 50;
         }
 
-        super.doRender(entity, x, y, z, entityYaw, partialTicks);
+        super.render(entity, x, y, z, entityYaw, partialTicks);
     }
 
     @Override
-    public ResourceLocation getEyeTexture() {
+    public Identifier getEyeTexture() {
         return EYES;
     }
 }

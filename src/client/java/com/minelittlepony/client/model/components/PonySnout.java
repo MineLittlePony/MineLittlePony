@@ -1,7 +1,7 @@
 package com.minelittlepony.client.model.components;
 
-import net.minecraft.client.renderer.entity.model.ModelBase;
-import net.minecraft.client.renderer.entity.model.ModelRenderer;
+import net.minecraft.client.model.Cuboid;
+import net.minecraft.client.model.Model;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
@@ -17,13 +17,13 @@ public class PonySnout {
     private PlaneRenderer mare;
     private PlaneRenderer stallion;
 
-    private final ICapitated<ModelRenderer> head;
+    private final ICapitated<Cuboid> head;
 
-    public <T extends ModelBase & ICapitated<ModelRenderer>> PonySnout(T pony) {
+    public <T extends Model & ICapitated<Cuboid>> PonySnout(T pony) {
         this(pony, 0, 0, 0);
     }
 
-    public <T extends ModelBase & ICapitated<ModelRenderer>> PonySnout(T pony, int x, int y, int z) {
+    public <T extends Model & ICapitated<Cuboid>> PonySnout(T pony, int x, int y, int z) {
         head = pony;
 
         mare = new PlaneRenderer(pony).offset(HEAD_CENTRE_X + x, HEAD_CENTRE_Y + y, HEAD_CENTRE_Z + z + 0.25F);
@@ -61,7 +61,7 @@ public class PonySnout {
     public void setGender(Gender gender) {
         boolean show = !head.hasHeadGear() && !isHidden && MineLittlePony.getInstance().getConfig().snuzzles;
 
-        mare.isHidden = !(show && gender.isMare());
-        stallion.isHidden = !(show && gender.isStallion());
+        mare.field_3664 = !(show && gender.isMare());
+        stallion.field_3664 = !(show && gender.isStallion());
     }
 }

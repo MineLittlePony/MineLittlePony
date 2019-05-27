@@ -1,20 +1,21 @@
 package com.minelittlepony.client.render.layer;
 
-import com.minelittlepony.client.ducks.IRenderPony;
-import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.model.IModel;
+import com.minelittlepony.client.render.IPonyRender;
+import com.minelittlepony.model.IPonyModel;
 
-import net.minecraft.client.renderer.entity.model.ModelBase;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.render.entity.feature.FeatureRenderer;
+import net.minecraft.client.render.entity.feature.FeatureRendererContext;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.entity.LivingEntity;
 
-public abstract class AbstractPonyLayer<T extends EntityLivingBase> implements LayerRenderer<T> {
+public abstract class AbstractPonyLayer<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends FeatureRenderer<T, M> {
 
-    private final RenderLivingBase<T> renderer;
+    private final IPonyRender<T, M> context;
 
-    public AbstractPonyLayer(RenderLivingBase<T> renderer) {
-        this.renderer = renderer;
+    @SuppressWarnings("unchecked")
+    public AbstractPonyLayer(IPonyRender<T, M> context) {
+        super((FeatureRendererContext<T, M>)context);
+        this.context = context;
     }
 
     /**
@@ -32,31 +33,21 @@ public abstract class AbstractPonyLayer<T extends EntityLivingBase> implements L
     @Override
     public abstract void render(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale);
 
-    protected RenderLivingBase<T> getRenderer() {
-        return renderer;
-    }
-
     @SuppressWarnings("unchecked")
-    protected IRenderPony<T> getPonyRenderer() {
-        return (IRenderPony<T>)renderer;
+    protected <C extends IPonyRender<T, M> & FeatureRendererContext<T, M>> C getContext() {
+        return (C)context;
     }
 
-    public AbstractPonyModel getPlayerModel() {
-        return getPonyRenderer().getModelWrapper().getBody();
+    public M getPlayerModel() {
+        return getContext().getModelWrapper().getBody();
     }
 
-    @SuppressWarnings("unchecked")
-    public <M extends IModel> M getPonyModel() {
-        return (M)getMainModel();
-    }
-
-    @SuppressWarnings("unchecked")
-    public <M extends ModelBase> M getMainModel() {
-        return (M)getRenderer().getMainModel();
+    public M getMainModel() {
+        return getContext().getModel();
     }
 
     @Override
-    public boolean shouldCombineTextures() {
+    public boolean hasHurtOverlay() {
         return false;
     }
 }

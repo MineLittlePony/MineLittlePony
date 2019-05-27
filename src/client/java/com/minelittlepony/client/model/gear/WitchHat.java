@@ -1,18 +1,19 @@
 package com.minelittlepony.client.model.gear;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
-import com.minelittlepony.client.model.IClientModel;
 import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.IPonyModel;
+import com.minelittlepony.model.gear.IStackable;
 import com.minelittlepony.pony.meta.Wearable;
 
 import java.util.UUID;
 
 public class WitchHat extends AbstractGear implements IStackable {
 
-    private static final ResourceLocation WITCH_TEXTURES = new ResourceLocation("textures/entity/witch.png");
+    private static final Identifier WITCH_TEXTURES = new Identifier("textures/entity/witch.png");
 
     private PonyRenderer witchHat;
 
@@ -39,7 +40,7 @@ public class WitchHat extends AbstractGear implements IStackable {
 
 
     @Override
-    public boolean canRender(IClientModel model, Entity entity) {
+    public boolean canRender(IPonyModel<?> model, Entity entity) {
         return model.isWearing(Wearable.HAT);
     }
 
@@ -49,7 +50,7 @@ public class WitchHat extends AbstractGear implements IStackable {
     }
 
     @Override
-    public ResourceLocation getTexture(Entity entity) {
+    public Identifier getTexture(Entity entity) {
         return WITCH_TEXTURES;
     }
 

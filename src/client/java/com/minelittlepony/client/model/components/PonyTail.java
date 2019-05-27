@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model.components;
 
-import net.minecraft.client.renderer.entity.model.ModelBase;
+import net.minecraft.client.model.Model;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
@@ -9,17 +9,15 @@ import com.minelittlepony.model.IPart;
 
 import java.util.UUID;
 
-import static com.minelittlepony.model.PonyModelConstants.*;
-
 public class PonyTail extends PlaneRenderer implements IPart {
 
     private static final int SEGMENTS = 4;
 
-    private final AbstractPonyModel theModel;
+    private final AbstractPonyModel<?> theModel;
 
     private int tailStop = 0;
 
-    public PonyTail(AbstractPonyModel model) {
+    public PonyTail(AbstractPonyModel<?> model) {
         super(model);
         theModel = model;
     }
@@ -33,21 +31,21 @@ public class PonyTail extends PlaneRenderer implements IPart {
 
     @Override
     public void setRotationAndAngles(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
-        rotateAngleZ = rainboom ? 0 : MathHelper.cos(move * 0.8F) * 0.2f * swing;
-        rotateAngleY = bodySwing;
+        roll = rainboom ? 0 : MathHelper.cos(move * 0.8F) * 0.2f * swing;
+        yaw = bodySwing;
 
         if (theModel.isCrouching() && !rainboom) {
             rotateSneak();
         } else if (theModel.isRiding()) {
             rotationPointZ = TAIL_RP_Z_RIDING;
             rotationPointY = TAIL_RP_Y_RIDING;
-            rotateAngleX = PI / 5;
+            pitch = PI / 5;
         } else {
             setRotationPoint(TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_NOTSNEAK);
             if (rainboom) {
-                rotateAngleX = ROTATE_90 + MathHelper.sin(move) / 10;
+                pitch = ROTATE_90 + MathHelper.sin(move) / 10;
             } else {
-                rotateAngleX = swing / 2;
+                pitch = swing / 2;
 
                 swingX(ticks);
             }
@@ -63,18 +61,18 @@ public class PonyTail extends PlaneRenderer implements IPart {
 
     private void swingX(float ticks) {
         float sinTickFactor = MathHelper.sin(ticks * 0.067f) * 0.05f;
-        rotateAngleX += sinTickFactor;
-        rotateAngleY += sinTickFactor;
+        pitch += sinTickFactor;
+        yaw += sinTickFactor;
     }
 
     private void rotateSneak() {
         setRotationPoint(TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_SNEAK);
-        rotateAngleX = -BODY_ROT_X_SNEAK + 0.1F;
+        pitch = -BODY_ROT_X_SNEAK + 0.1F;
     }
 
     @Override
     public void setVisible(boolean visible) {
-        isHidden = !visible;
+        field_3664 = !visible;
     }
 
     @Override
@@ -86,11 +84,11 @@ public class PonyTail extends PlaneRenderer implements IPart {
 
         private final int index;
 
-        public TailSegment(ModelBase model, int index, float yOffset, float stretch) {
+        public TailSegment(Model model, int index, float yOffset, float stretch) {
             super(model);
             this.index = index;
 
-            offsetY = ((float)index)/4 + 0.063f;
+            y = ((float)index)/4 + 0.063f;
 
             init(yOffset, stretch);
         }

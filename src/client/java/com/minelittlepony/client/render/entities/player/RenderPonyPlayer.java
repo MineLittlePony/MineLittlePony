@@ -1,9 +1,10 @@
 package com.minelittlepony.client.render.entities.player;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.client.ducks.IRenderPony;
+import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.render.DebugBoundingBoxRenderer;
+import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.client.render.RenderPony;
 import com.minelittlepony.client.render.layer.LayerDJPon3Head;
 import com.minelittlepony.client.render.layer.LayerEntityOnPonyShoulder;
@@ -14,127 +15,135 @@ import com.minelittlepony.client.render.layer.LayerPonyCape;
 import com.minelittlepony.client.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.client.render.layer.LayerPonyElytra;
 import com.minelittlepony.pony.IPony;
+import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.minecraft.block.BlockBed;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.culling.ICamera;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.entity.layers.LayerArrow;
+import java.util.List;
+
+import net.minecraft.block.BedBlock;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.VisibleRegion;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.PlayerEntityRenderer;
+import net.minecraft.client.render.entity.feature.FeatureRenderer;
+import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumHandSide;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.AbsoluteHand;
+import net.minecraft.util.Identifier;
 
-public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<AbstractClientPlayer> {
+public class RenderPonyPlayer extends PlayerEntityRenderer implements IPonyRender<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> {
 
-    protected final RenderPony<AbstractClientPlayer> renderPony = new RenderPony<>(this);
+    protected final RenderPony<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> renderPony = new RenderPony<>(this);
 
-    public RenderPonyPlayer(RenderManager manager, boolean useSmallArms, ModelWrapper model) {
+    public RenderPonyPlayer(EntityRenderDispatcher manager, boolean useSmallArms, ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> model) {
         super(manager, useSmallArms);
 
-        mainModel = renderPony.setPonyModel(model);
+        this.model = renderPony.setPonyModel(model);
 
         addLayers();
     }
 
     protected void addLayers() {
-        layerRenderers.clear();
+        features.clear();
 
-        addLayer(new LayerDJPon3Head(this));
+        addLayer(new LayerDJPon3Head<>(this));
         addLayer(new LayerPonyArmor<>(this));
-        addLayer(new LayerArrow(this));
+        addFeature(new StuckArrowsFeatureRenderer<>(this));
         addLayer(new LayerPonyCustomHead<>(this));
         addLayer(new LayerPonyElytra<>(this));
         addLayer(new LayerHeldPonyItemMagical<>(this));
-        addLayer(new LayerPonyCape(this));
-        addLayer(new LayerEntityOnPonyShoulder(renderManager, this));
+        addLayer(new LayerPonyCape<>(this));
+        addLayer(new LayerEntityOnPonyShoulder<>(renderManager, this));
         addLayer(new LayerGear<>(this));
     }
 
-    @Override
-    public float prepareScale(AbstractClientPlayer player, float ticks) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    protected boolean addLayer(FeatureRenderer<AbstractClientPlayerEntity, ? extends ClientPonyModel<AbstractClientPlayerEntity>> feature) {
+        return ((List)features).add(feature);
+    }
 
-        if (!player.isPassenger() && !player.isPlayerSleeping()) {
-            float x = player.width/2;
+    @Override
+    public float scaleAndTranslate(AbstractClientPlayerEntity player, float ticks) {
+        if (!player.hasVehicle() && !player.isSleeping()) {
+            float x = player.getWidth() / 2;
             float y = 0;
 
             if (player.isSneaking()) {
                 // Sneaking makes the player 1/15th shorter.
                 // This should be compatible with height-changing mods.
-                y += player.height / 15;
+                y += player.getHeight() / 15;
             }
 
-            super.doRenderShadowAndFire(player, 0, y, x, 0, ticks);
+            super.postRender(player, 0, y, x, 0, ticks);
         }
 
-        return super.prepareScale(player, ticks);
+        return super.scaleAndTranslate(player, ticks);
     }
 
     @Override
-    protected void preRenderCallback(AbstractClientPlayer player, float ticks) {
+    protected void scale(AbstractClientPlayerEntity player, float ticks) {
         renderPony.preRenderCallback(player, ticks);
-        shadowSize = renderPony.getShadowScale();
+        field_4673 = renderPony.getShadowScale();
 
-        if (player.isPassenger()) {
-            GlStateManager.translated(0, player.getYOffset(), 0);
+        if (player.hasVehicle()) {
+            GlStateManager.translated(0, player.getHeightOffset(), 0);
         }
     }
 
     @Override
-    public void doRender(AbstractClientPlayer entity, double xPosition, double yPosition, double zPosition, float yaw, float ticks) {
-        super.doRender(entity, xPosition, yPosition, zPosition, yaw, ticks);
+    public void render(AbstractClientPlayerEntity entity, double xPosition, double yPosition, double zPosition, float yaw, float ticks) {
+        super.render(entity, xPosition, yPosition, zPosition, yaw, ticks);
 
         DebugBoundingBoxRenderer.instance.render(renderPony.getPony(entity), entity, ticks);
     }
 
     @Override
-    public boolean shouldRender(AbstractClientPlayer entity, ICamera camera, double camX, double camY, double camZ) {
-        if (entity.isPlayerSleeping() && entity == Minecraft.getInstance().player) {
+    public boolean isVisible(AbstractClientPlayerEntity entity, VisibleRegion camera, double camX, double camY, double camZ) {
+        if (entity.isSleeping() && entity == MinecraftClient.getInstance().player) {
             return true;
         }
-        return super.shouldRender(entity, renderPony.getFrustrum(entity, camera), camX, camY, camZ);
+        return super.isVisible(entity, renderPony.getFrustrum(entity, camera), camX, camY, camZ);
     }
 
     @Override
-    protected void renderLivingLabel(AbstractClientPlayer entity, String name, double x, double y, double z, int maxDistance) {
-        if (entity.isPlayerSleeping()) {
-            if (entity.bedLocation != null && entity.getEntityWorld().getBlockState(entity.bedLocation).getBlock() instanceof BlockBed) {
-                double bedRad = Math.toRadians(entity.getBedOrientationInDegrees());
+    protected void renderLabel(AbstractClientPlayerEntity entity, String name, double x, double y, double z, int maxDistance) {
+        if (entity.isSleeping()) {
+            if (entity.getSleepingPosition().isPresent() && entity.getEntityWorld().getBlockState(entity.getSleepingPosition().get()).getBlock() instanceof BedBlock) {
+                double bedRad = Math.toRadians(entity.getSleepingDirection().asRotation());
                 x += Math.cos(bedRad);
                 z -= Math.sin(bedRad);
             }
         }
-        super.renderLivingLabel(entity, name, x, renderPony.getNamePlateYOffset(entity, y), z, maxDistance);
+        super.renderLabel(entity, name, x, renderPony.getNamePlateYOffset(entity, y), z, maxDistance);
     }
 
     @Override
-    public void doRenderShadowAndFire(Entity player, double x, double y, double z, float yaw, float ticks) {
-        if (player.isPassenger() && ((AbstractClientPlayer)player).isPlayerSleeping()) {
-            super.doRenderShadowAndFire(player, x, y, z, yaw, ticks);
+    public void postRender(Entity player, double x, double y, double z, float yaw, float ticks) {
+        if (player.hasVehicle() && ((LivingEntity)player).isSleeping()) {
+            super.postRender(player, x, y, z, yaw, ticks);
         }
     }
 
     @Override
-    public final void renderRightArm(AbstractClientPlayer player) {
-        renderArm(player, EnumHandSide.RIGHT);
+    public final void renderRightArm(AbstractClientPlayerEntity player) {
+        renderArm(player, AbsoluteHand.RIGHT);
     }
 
     @Override
-    public final void renderLeftArm(AbstractClientPlayer player) {
-        renderArm(player, EnumHandSide.LEFT);
+    public final void renderLeftArm(AbstractClientPlayerEntity player) {
+        renderArm(player, AbsoluteHand.LEFT);
     }
 
-    protected void renderArm(AbstractClientPlayer player, EnumHandSide side) {
+    protected void renderArm(AbstractClientPlayerEntity player, AbsoluteHand side) {
         renderPony.updateModel(player);
         bindEntityTexture(player);
 
         GlStateManager.pushMatrix();
-        GlStateManager.translatef(side == EnumHandSide.LEFT ? 0.35F : -0.35F, -0.6F, 0);
-        GlStateManager.rotatef(side == EnumHandSide.LEFT ? -90 : 90, 0, 1, 0);
+        GlStateManager.translatef(side == AbsoluteHand.LEFT ? 0.35F : -0.35F, -0.6F, 0);
+        GlStateManager.rotatef(side == AbsoluteHand.LEFT ? -90 : 90, 0, 1, 0);
 
-        if (side == EnumHandSide.LEFT) {
+        if (side == AbsoluteHand.LEFT) {
             super.renderLeftArm(player);
         } else {
             super.renderRightArm(player);
@@ -144,36 +153,36 @@ public class RenderPonyPlayer extends RenderPlayer implements IRenderPony<Abstra
     }
 
     @Override
-    protected void applyRotations(AbstractClientPlayer player, float age, float yaw, float ticks) {
+    protected void setupTransforms(AbstractClientPlayerEntity player, float age, float yaw, float ticks) {
         yaw = renderPony.getRenderYaw(player, yaw, ticks);
-        super.applyRotations(player, age, yaw, ticks);
+        super.setupTransforms(player, age, yaw, ticks);
 
         renderPony.applyPostureTransform(player, yaw, ticks);
     }
 
     @Override
-    public ResourceLocation getEntityTexture(AbstractClientPlayer player) {
+    public Identifier getTexture(AbstractClientPlayerEntity player) {
         return renderPony.getPony(player).getTexture();
     }
 
     @Override
-    public ResourceLocation getTexture(AbstractClientPlayer entity) {
-        return getEntityTexture(entity);
-    }
-
-    @Override
-    public ModelWrapper getModelWrapper() {
+    public ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> getModelWrapper() {
         return renderPony.playerModel;
     }
 
     @Override
-    public IPony getEntityPony(AbstractClientPlayer player) {
+    public IPony getEntityPony(AbstractClientPlayerEntity player) {
         return MineLittlePony.getInstance().getManager().getPony(player);
     }
 
     @Override
-    public RenderPony<AbstractClientPlayer> getInternalRenderer() {
+    public RenderPony<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> getInternalRenderer() {
         return renderPony;
+    }
+
+    @Override
+    public Identifier findTexture(AbstractClientPlayerEntity entity) {
+        return getTexture(entity);
     }
 
 }

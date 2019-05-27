@@ -6,14 +6,14 @@ import com.minelittlepony.client.ducks.IRenderItem;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.settings.PonyConfig;
 import com.mojang.authlib.GameProfile;
+import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.minecraft.block.BlockSkull;
-import net.minecraft.block.BlockSkull.ISkullType;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
-import net.minecraft.tileentity.TileEntitySkull;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.block.SkullBlock;
+import net.minecraft.block.entity.SkullBlockEntity;
+import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
+
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 /**
  * PonySkullRenderer! It renders ponies as skulls, or something...
  */
-public class PonySkullRenderer extends TileEntitySkullRenderer implements IRenderItem {
+public class PonySkullRenderer extends SkullBlockEntityRenderer implements IRenderItem {
 
     public static final int SKELETON = 0;
     public static final int WITHER = 1;
@@ -33,15 +33,15 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
     public static final int DRAGON = 5;
 
     public static PonySkullRenderer ponyInstance = new PonySkullRenderer();
-    private static TileEntitySkullRenderer backup = null;
+    private static SkullBlockEntityRenderer backup = null;
 
-    private final Map<ISkullType, ISkull> skullMap = new HashMap<>();
+    private final Map<SkullBlock.SkullType, ISkull> skullMap = new HashMap<>();
 
     private PonySkullRenderer() {
-        skullMap.put(BlockSkull.Types.SKELETON, new SkeletonSkullRenderer());
-        skullMap.put(BlockSkull.Types.WITHER_SKELETON, new WitherSkullRenderer());
-        skullMap.put(BlockSkull.Types.ZOMBIE, new ZombieSkullRenderer());
-        skullMap.put(BlockSkull.Types.PLAYER, new PlayerSkullRenderer());
+        skullMap.put(SkullBlock.Type.SKELETON, new SkeletonSkullRenderer());
+        skullMap.put(SkullBlock.Type.WITHER_SKELETON, new WitherSkullRenderer());
+        skullMap.put(SkullBlock.Type.ZOMBIE, new ZombieSkullRenderer());
+        skullMap.put(SkullBlock.Type.PLAYER, new PlayerSkullRenderer());
     }
 
     /**
@@ -50,31 +50,31 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
      *
      * Original/Existing renderer is stored to a backup variable as a fallback in case of mods.
      */
-    public static TileEntitySkullRenderer resolve() {
+    public static SkullBlockEntityRenderer resolve() {
         if (MineLittlePony.getInstance().getConfig().ponyskulls) {
-            if (!(instance instanceof PonySkullRenderer)) {
-                backup = instance;
-                MineLPClient.getInstance().getModUtilities().addRenderer(TileEntitySkull.class, ponyInstance);
-                instance = ponyInstance;
+            if (!(INSTANCE instanceof PonySkullRenderer)) {
+                backup = INSTANCE;
+                MineLPClient.getInstance().getModUtilities().addRenderer(SkullBlockEntity.class, ponyInstance);
+                INSTANCE = ponyInstance;
             }
         } else {
-            if ((instance instanceof PonySkullRenderer)) {
-                ponyInstance = (PonySkullRenderer) instance;
+            if ((INSTANCE instanceof PonySkullRenderer)) {
+                ponyInstance = (PonySkullRenderer) INSTANCE;
                 if (backup == null) {
-                    backup = new TileEntitySkullRenderer();
+                    backup = new SkullBlockEntityRenderer();
                 }
-                MineLPClient.getInstance().getModUtilities().addRenderer(TileEntitySkull.class, backup);
-                instance = backup;
+                MineLPClient.getInstance().getModUtilities().addRenderer(SkullBlockEntity.class, backup);
+                INSTANCE = backup;
             }
         }
 
-        return instance;
+        return INSTANCE;
     }
 
     protected boolean transparency = false;
 
     @Override
-    public void render(float x, float y, float z, EnumFacing facing, float rotation, ISkullType skullType, @Nullable GameProfile profile, int destroyStage, float animateTicks) {
+    public void render(float x, float y, float z, @Nullable Direction facing, float rotation, SkullBlock.SkullType skullType, @Nullable GameProfile profile, int destroyStage, float animateTicks) {
 
         ISkull skull = skullMap.get(skullType);
 
@@ -91,14 +91,14 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
         float scale = 0.0625F;
 
         if (destroyStage >= 0) {
-            bindTexture(DESTROY_STAGES[destroyStage]);
+            bindTexture(DESTROY_STAGE_TEXTURES[destroyStage]);
             GlStateManager.matrixMode(GL11.GL_TEXTURE);
             GlStateManager.pushMatrix();
             GlStateManager.scalef(4, 2, 1);
             GlStateManager.translatef(scale, scale, scale);
             GlStateManager.matrixMode(GL11.GL_MODELVIEW);
         } else {
-            ResourceLocation skin = skull.getSkinResource(profile);
+            Identifier skin = skull.getSkinResource(profile);
 
             skull.bindPony(MineLittlePony.getInstance().getManager().getPony(skin));
 
@@ -126,7 +126,7 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
         }
     }
 
-    protected float handleRotation(float x, float y, float z, EnumFacing facing, float rotation) {
+    protected float handleRotation(float x, float y, float z, @Nullable Direction facing, float rotation) {
         switch (facing) {
             case EAST:
             default:
@@ -171,7 +171,7 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
 
         boolean canRender(PonyConfig config);
 
-        ResourceLocation getSkinResource(@Nullable GameProfile profile);
+        Identifier getSkinResource(@Nullable GameProfile profile);
 
         void bindPony(IPony pony);
     }

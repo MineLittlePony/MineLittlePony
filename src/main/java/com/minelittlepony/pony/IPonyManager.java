@@ -1,7 +1,7 @@
 package com.minelittlepony.pony;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Identifier;
 
 import java.util.UUID;
 
@@ -11,8 +11,8 @@ import java.util.UUID;
  */
 public interface IPonyManager  {
 
-    public static final ResourceLocation STEVE = new ResourceLocation("minelittlepony", "textures/entity/steve_pony.png");
-    public static final ResourceLocation ALEX = new ResourceLocation("minelittlepony", "textures/entity/alex_pony.png");
+    public static final Identifier STEVE = new Identifier("minelittlepony", "textures/entity/steve_pony.png");
+    public static final Identifier ALEX = new Identifier("minelittlepony", "textures/entity/alex_pony.png");
 
     public static final String BGPONIES_JSON = "textures/entity/pony/bgponies.json";
 
@@ -22,14 +22,14 @@ public interface IPonyManager  {
      *
      * @param player the player
      */
-    public IPony getPony(EntityPlayer player);
+    public IPony getPony(PlayerEntity player);
 
     /**
      * Gets or creates a pony for the given skin resource and vanilla model type.
      *
      * @param resource A texture resource
      */
-    public IPony getPony(ResourceLocation resource);
+    public IPony getPony(Identifier resource);
 
     /**
      * Gets or creates a pony for the given skin resource and entity id.
@@ -41,7 +41,7 @@ public interface IPonyManager  {
      * @param resource A texture resource
      * @param uuid id of a player or entity
      */
-    IPony getPony(ResourceLocation resource, UUID uuid);
+    IPony getPony(Identifier resource, UUID uuid);
 
     /**
      * Gets the default pony. Either STEVE/ALEX, or a background pony based on client settings.
@@ -62,9 +62,9 @@ public interface IPonyManager  {
     /**
      * De-registers a pony from the cache.
      */
-    IPony removePony(ResourceLocation resource);
+    IPony removePony(Identifier resource);
 
-    public static ResourceLocation getDefaultSkin(UUID uuid) {
+    public static Identifier getDefaultSkin(UUID uuid) {
         return isSlimSkin(uuid) ? ALEX : STEVE;
     }
 

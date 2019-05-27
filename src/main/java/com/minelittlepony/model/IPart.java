@@ -2,7 +2,7 @@ package com.minelittlepony.model;
 
 import java.util.UUID;
 
-public interface IPart {
+public interface IPart extends PonyModelConstants {
     /**
      * Initialises all of the boxes in this modelpart.
      * @param yOffset

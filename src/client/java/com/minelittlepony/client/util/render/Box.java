@@ -1,9 +1,8 @@
 package com.minelittlepony.client.util.render;
 
-import net.minecraft.client.renderer.entity.model.ModelBox;
-import net.minecraft.client.renderer.entity.model.ModelRenderer;
+import net.minecraft.client.model.Cuboid;
 
-public abstract class Box<T extends ModelRenderer> extends ModelBox {
+public class Box<T extends Cuboid> extends net.minecraft.client.model.Box {
 
     protected final T parent;
 

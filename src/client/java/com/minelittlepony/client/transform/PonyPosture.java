@@ -1,18 +1,19 @@
 package com.minelittlepony.client.transform;
 
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 
-import com.minelittlepony.client.model.IClientModel;
+import com.minelittlepony.client.model.ClientPonyModel;
 
-public interface PonyPosture<T extends EntityLivingBase> {
-    PonyPosture<EntityLivingBase> ELYTRA = new PostureElytra();
-    PonyPosture<? extends EntityLivingBase> FLIGHT = new PostureFlight();
-    PonyPosture<? extends EntityLivingBase> SWIMMING = new PostureSwimming();
-    PonyPosture<EntityLivingBase> FALLING = new PostureFalling();
+public interface PonyPosture<T extends LivingEntity> {
+    PonyPosture<LivingEntity> ELYTRA = new PostureElytra();
+    PonyPosture<PlayerEntity> FLIGHT = new PostureFlight();
+    PonyPosture<PlayerEntity> SWIMMING = new PostureSwimming();
+    PonyPosture<LivingEntity> FALLING = new PostureFalling();
 
-    default boolean applies(EntityLivingBase entity) {
+    default boolean applies(LivingEntity entity) {
         return true;
     }
 
-    void transform(IClientModel model, T entity, double motionX, double motionY, double motionZ, float yaw, float ticks);
+    void transform(ClientPonyModel<?> model, T entity, double motionX, double motionY, double motionZ, float yaw, float ticks);
 }

@@ -1,13 +1,13 @@
 package com.minelittlepony.client.transform;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 
-import com.minelittlepony.client.model.IClientModel;
+import com.minelittlepony.client.model.ClientPonyModel;
+import com.mojang.blaze3d.platform.GlStateManager;
 
-public class PostureElytra implements PonyPosture<EntityLivingBase> {
+public class PostureElytra implements PonyPosture<LivingEntity> {
     @Override
-    public void transform(IClientModel model, EntityLivingBase entity, double motionX, double motionY, double motionZ, float yaw, float ticks) {
+    public void transform(ClientPonyModel<?> model, LivingEntity entity, double motionX, double motionY, double motionZ, float yaw, float ticks) {
         GlStateManager.rotatef(90, 1, 0, 0);
         GlStateManager.translatef(0, entity.isSneaking() ? 0.2F : -1, 0);
     }

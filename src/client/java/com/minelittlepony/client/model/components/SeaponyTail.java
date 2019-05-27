@@ -1,16 +1,14 @@
 package com.minelittlepony.client.model.components;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.client.model.IClientModel;
 import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
 import com.minelittlepony.model.IPart;
+import com.minelittlepony.model.IPonyModel;
+import com.mojang.blaze3d.platform.GlStateManager;
 
 import java.util.UUID;
 
-import static com.minelittlepony.model.PonyModelConstants.*;
-
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 
 import org.lwjgl.opengl.GL11;
@@ -24,9 +22,9 @@ public class SeaponyTail implements IPart {
     private PlaneRenderer tailTip;
     private PlaneRenderer tailFins;
 
-    private IClientModel model;
+    private IPonyModel<?> model;
 
-    public SeaponyTail(AbstractPonyModel model) {
+    public SeaponyTail(AbstractPonyModel<?> model) {
         this.model = model;
 
         tailBase = new PonyRenderer(model, 0, 38);
@@ -57,9 +55,9 @@ public class SeaponyTail implements IPart {
     public void setRotationAndAngles(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
         float rotation = model.isSleeping() ? 0 : MathHelper.sin(ticks * 0.536f) / 4;
 
-        tailBase.rotateAngleX = TAIL_ROTX + rotation;
-        tailTip.rotateAngleX = rotation;
-        tailFins.rotateAngleX = rotation - TAIL_ROTX;
+        tailBase.pitch = TAIL_ROTX + rotation;
+        tailTip.pitch = rotation;
+        tailFins.pitch = rotation - TAIL_ROTX;
     }
 
     @Override

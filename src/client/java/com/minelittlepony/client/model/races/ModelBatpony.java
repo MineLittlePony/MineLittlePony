@@ -1,10 +1,12 @@
 package com.minelittlepony.client.model.races;
 
+import net.minecraft.entity.LivingEntity;
+
 import com.minelittlepony.client.model.components.BatWings;
 import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.pony.meta.Wearable;
 
-public class ModelBatpony extends ModelPegasus {
+public class ModelBatpony<T extends LivingEntity> extends ModelPegasus<T> {
 
     public ModelBatpony(boolean smallArms) {
         super(smallArms);

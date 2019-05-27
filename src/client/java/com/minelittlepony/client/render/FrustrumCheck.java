@@ -1,40 +1,40 @@
 package com.minelittlepony.client.render;
 
-import net.minecraft.client.renderer.culling.ICamera;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.client.render.VisibleRegion;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.math.BoundingBox;
 
 import com.minelittlepony.pony.IPony;
 
-public class FrustrumCheck<T extends EntityLivingBase> implements ICamera {
+public class FrustrumCheck<T extends LivingEntity> implements VisibleRegion {
 
     private T entity;
 
-    private ICamera vanilla;
+    private VisibleRegion vanilla;
 
-    private final RenderPony<T> renderer;
+    private final RenderPony<T, ?> renderer;
 
-    public FrustrumCheck(RenderPony<T> render) {
+    public FrustrumCheck(RenderPony<T, ?> render) {
         renderer = render;
     }
 
-    public ICamera withCamera(T entity, ICamera vanillaFrustrum) {
+    public VisibleRegion withCamera(T entity, VisibleRegion vanillaFrustrum) {
         this.entity = entity;
         vanilla = vanillaFrustrum;
         return this;
     }
 
     @Override
-    public boolean isBoundingBoxInFrustum(AxisAlignedBB bounds) {
+    public boolean intersects(BoundingBox bounds) {
         IPony pony = renderer.getPony(entity);
 
-        AxisAlignedBB boundingBox = pony.getComputedBoundingBox(entity);
+        BoundingBox boundingBox = pony.getComputedBoundingBox(entity);
 
-        return vanilla.isBoundingBoxInFrustum(boundingBox);
+        return vanilla.intersects(boundingBox);
     }
 
     @Override
-    public void setPosition(double x, double y, double z) {
-        vanilla.setPosition(x, y, z);
+    public void setOrigin(double x, double y, double z) {
+        vanilla.setOrigin(x, y, z);
     }
 }

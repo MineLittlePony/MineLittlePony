@@ -1,20 +1,19 @@
 package com.minelittlepony.client.model.entities;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityZombieVillager;
-import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.village.VillagerDataContainer;
+import net.minecraft.village.VillagerProfession;
 
 import com.minelittlepony.client.model.ModelMobPony;
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
 import com.minelittlepony.pony.meta.Wearable;
 
-public class ModelVillagerPony extends ModelMobPony {
+public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> extends ModelMobPony<T> {
 
     public PlaneRenderer apron;
     public PlaneRenderer trinket;
 
-    private int profession;
+    private VillagerProfession profession;
 
     public boolean special;
     public boolean special2;
@@ -22,25 +21,25 @@ public class ModelVillagerPony extends ModelMobPony {
     @Override
     protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
         super.shakeBody(move, swing, bodySwing, ticks);
-        apron.rotateAngleY = bodySwing;
-        trinket.rotateAngleY = bodySwing;
+        apron.yaw = bodySwing;
+        trinket.yaw = bodySwing;
     }
 
     @Override
-    public void setLivingAnimations(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTickTime) {
-        profession = getProfession(entity);
-        special = "Derpy".equals(entity.getCustomName().getUnformattedComponentText());
-        special2 = special && entity.getUniqueID().getLeastSignificantBits() % 20 == 0;
+    public void animateModel(T entity, float limbSwing, float limbSwingAmount, float partialTickTime) {
+        profession = entity.getVillagerData().getProfession();
+        special = "Derpy".equals(entity.getCustomName().getString());
+        special2 = special && entity.getUuid().getLeastSignificantBits() % 20 == 0;
     }
 
     @Override
-    protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+    protected void renderBody(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         super.renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
 
-        if (!special) {
-            if (profession == 2) {
+        if (!special && profession != VillagerProfession.NONE && profession != VillagerProfession.NITWIT) {
+            if (profession == VillagerProfession.BUTCHER) {
                 trinket.render(scale);
-            } else if (profession > 2) {
+            } else {
                 apron.render(scale);
             }
         }
@@ -54,7 +53,7 @@ public class ModelVillagerPony extends ModelMobPony {
     @Override
     public boolean isWearing(Wearable wearable) {
         if (wearable == Wearable.SADDLE_BAGS) {
-            return !special && profession > -1 && profession < 2;
+            return !special && profession != VillagerProfession.NONE && profession == VillagerProfession.NITWIT;
         }
 
         if (wearable == Wearable.MUFFIN) {
@@ -62,17 +61,6 @@ public class ModelVillagerPony extends ModelMobPony {
         }
 
         return super.isWearing(wearable);
-    }
-
-    @SuppressWarnings("deprecation") // let me use getProfession in peace. I don't care that forge has their own one.
-    protected int getProfession(Entity entity) {
-        if (entity instanceof EntityVillager) {
-            return ((EntityVillager) entity).getProfession();
-        }
-        if (entity instanceof EntityZombieVillager) {
-            return ((EntityZombieVillager) entity).getProfession();
-        }
-        return -1;
     }
 
     @Override

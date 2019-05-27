@@ -1,12 +1,12 @@
 package com.minelittlepony.client.transform;
 
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.Vec3d;
 
 import com.google.common.collect.Maps;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.pony.meta.Size;
+import com.mojang.blaze3d.platform.GlStateManager;
 
 import java.util.Map;
 

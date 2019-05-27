@@ -1,41 +1,43 @@
 package com.minelittlepony.client.render.layer;
 
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.entity.model.EntityModel;
 
 import com.minelittlepony.client.model.components.ModelDeadMau5Ears;
+import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.IPonyModel;
+import com.mojang.blaze3d.platform.GlStateManager;
 
-public class LayerDJPon3Head extends AbstractPonyLayer<AbstractClientPlayer> {
+public class LayerDJPon3Head<T extends AbstractClientPlayerEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyLayer<T, M> {
 
     private final ModelDeadMau5Ears deadMau5 = new ModelDeadMau5Ears();
 
-    public LayerDJPon3Head(RenderLivingBase<AbstractClientPlayer> entity) {
-        super(entity);
+    public LayerDJPon3Head(IPonyRender<T, M> context) {
+        super(context);
     }
 
     @Override
-    public void render(AbstractClientPlayer entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
-        if ("deadmau5".equals(entity.getName().getUnformattedComponentText())) {
-            getRenderer().bindTexture(entity.getLocationSkin());
+    public void render(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
+        if ("deadmau5".equals(entity.getName().getString())) {
+            getContext().bindTexture(entity.getSkinTexture());
 
             GlStateManager.pushMatrix();
             getPlayerModel().transform(BodyPart.HEAD);
-            getPlayerModel().bipedHead.postRender(scale);
+            getPlayerModel().getHead().applyTransform(scale);
 
             GlStateManager.scalef(1.3333334F, 1.3333334F, 1.3333334F);
             GlStateManager.translatef(0, 0.3F, 0);
 
             deadMau5.setVisible(true);
-            deadMau5.render(entity, move, swing, partialTicks, 0, 0, scale);
+            deadMau5.setRotationAngles(move, swing, partialTicks, 0, 0, scale);
 
             GlStateManager.popMatrix();
         }
     }
 
     @Override
-    public boolean shouldCombineTextures() {
+    public boolean hasHurtOverlay() {
         return true;
     }
 }

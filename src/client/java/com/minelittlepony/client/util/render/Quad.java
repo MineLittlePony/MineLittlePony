@@ -1,8 +1,6 @@
 package com.minelittlepony.client.util.render;
 
-import net.minecraft.client.renderer.entity.model.TexturedQuad;
-
-public class Quad extends TexturedQuad {
+public class Quad extends net.minecraft.client.model.Quad {
 
     Quad(Vertex[] vertices, int texcoordU1, int texcoordV1, int texcoordU2, int texcoordV2, float textureWidth, float textureHeight) {
         super(vertices, texcoordU1, texcoordV1, texcoordU2, texcoordV2, textureWidth, textureHeight);
@@ -31,7 +29,7 @@ public class Quad extends TexturedQuad {
      * </pre>
      */
     @Override
-    public void flipFace() {
-       super.flipFace();
+    public void flip() {
+       super.flip();
     }
 }

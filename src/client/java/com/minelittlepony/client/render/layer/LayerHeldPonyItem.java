@@ -1,35 +1,34 @@
 package com.minelittlepony.client.render.layer;
 
-import com.minelittlepony.client.model.IClientModel;
+import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.IPonyModel;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.model.ModelBiped;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHandSide;
-import static net.minecraft.client.renderer.GlStateManager.*;
+import net.minecraft.util.AbsoluteHand;
 
-@SuppressWarnings("deprecation") // ItemCameraTransforms is deprecated by forge but we still need it.
-public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyLayer<T> {
+import static com.mojang.blaze3d.platform.GlStateManager.*;
 
-    public LayerHeldPonyItem(RenderLivingBase<T> livingPony) {
+public class LayerHeldPonyItem<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyLayer<T, M> {
+
+    public LayerHeldPonyItem(IPonyRender<T, M> livingPony) {
         super(livingPony);
     }
 
     protected ItemStack getLeftItem(T entity) {
-        boolean main = entity.getPrimaryHand() == EnumHandSide.LEFT;
+        boolean main = entity.getMainHand() == AbsoluteHand.LEFT;
 
-        return main ? entity.getHeldItemMainhand() : entity.getHeldItemOffhand();
+        return main ? entity.getMainHandStack() : entity.getOffHandStack();
     }
 
     protected ItemStack getRightItem(T entity) {
-        boolean main = entity.getPrimaryHand() == EnumHandSide.RIGHT;
+        boolean main = entity.getMainHand() == AbsoluteHand.RIGHT;
 
-        return main ? entity.getHeldItemMainhand() : entity.getHeldItemOffhand();
+        return main ? entity.getMainHandStack() : entity.getOffHandStack();
     }
 
     @Override
@@ -39,62 +38,57 @@ public class LayerHeldPonyItem<T extends EntityLivingBase> extends AbstractPonyL
         ItemStack right = getRightItem(entity);
 
         if (!left.isEmpty() || !right.isEmpty()) {
-            IClientModel model = getMainModel();
+            M model = getModel();
 
             pushMatrix();
 
             model.transform(BodyPart.LEGS);
 
-            renderHeldItem(entity, right, TransformType.THIRD_PERSON_RIGHT_HAND, EnumHandSide.RIGHT);
-            renderHeldItem(entity, left, TransformType.THIRD_PERSON_LEFT_HAND, EnumHandSide.LEFT);
+            renderHeldItem(entity, right, ModelTransformation.Type.THIRD_PERSON_RIGHT_HAND, AbsoluteHand.RIGHT);
+            renderHeldItem(entity, left, ModelTransformation.Type.THIRD_PERSON_LEFT_HAND, AbsoluteHand.LEFT);
 
             popMatrix();
         }
     }
 
-    private void renderHeldItem(T entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
+    private void renderHeldItem(T entity, ItemStack drop, ModelTransformation.Type transform, AbsoluteHand hand) {
         if (!drop.isEmpty()) {
-            GlStateManager.pushMatrix();
+            pushMatrix();
             renderArm(hand);
 
             if (entity.isSneaking()) {
-                GlStateManager.translatef(0, 0.2F, 0);
+                translatef(0, 0.2F, 0);
             }
 
-            float left = hand == EnumHandSide.LEFT ? 1 : -1;
+            float left = hand == AbsoluteHand.LEFT ? 1 : -1;
 
-            if (entity.isPassenger()) {
-                GlStateManager.translatef(left / 10, -0.2F, -0.5F);
+            if (entity.hasVehicle()) {
+                translatef(left / 10, -0.2F, -0.5F);
             }
 
-            GlStateManager.rotatef(-90, 1, 0, 0);
-            GlStateManager.rotatef(left * 180, 0, 1, 0);
-            GlStateManager.translatef(left * -0.2F, 0, 0);
+            rotatef(-90, 1, 0, 0);
+            rotatef(left * 180, 0, 1, 0);
+            translatef(left * -0.2F, 0, 0);
 
             preItemRender(entity, drop, transform, hand);
-            Minecraft.getInstance().getItemRenderer().renderItem(drop, entity, transform, hand == EnumHandSide.LEFT);
+            MinecraftClient.getInstance().getItemRenderer().renderHeldItem(drop, entity, transform, hand == AbsoluteHand.LEFT);
             postItemRender(entity, drop, transform, hand);
 
-            GlStateManager.popMatrix();
+            popMatrix();
         }
     }
 
-    protected void preItemRender(T entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
-        GlStateManager.translatef(0, 0.125F, -1);
+    protected void preItemRender(T entity, ItemStack drop, ModelTransformation.Type transform, AbsoluteHand hand) {
+        translatef(0, 0.125F, -1);
     }
 
-    protected void postItemRender(T entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
+    protected void postItemRender(T entity, ItemStack drop, ModelTransformation.Type transform, AbsoluteHand hand) {
     }
 
     /**
      * Renders the main arm
      */
-    protected void renderArm(EnumHandSide side) {
-        this.<ModelBiped>getMainModel().postRenderArm(0.0625F, side);
-    }
-
-    @Override
-    public boolean shouldCombineTextures() {
-        return false;
+    protected void renderArm(AbsoluteHand side) {
+        getModel().setArmAngle(0.0625F, side);
     }
 }

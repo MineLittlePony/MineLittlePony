@@ -1,18 +1,19 @@
 package com.minelittlepony.client.model.gear;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
-import com.minelittlepony.client.model.IClientModel;
 import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
 import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.IPonyModel;
+import com.minelittlepony.model.gear.IStackable;
 import com.minelittlepony.pony.meta.Wearable;
 
 import java.util.UUID;
 
 public class Stetson extends AbstractGear implements IStackable {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("minelittlepony", "textures/models/stetson.png");
+    private static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/models/stetson.png");
 
     private PlaneRenderer rimshot;
 
@@ -38,7 +39,7 @@ public class Stetson extends AbstractGear implements IStackable {
     }
 
     @Override
-    public ResourceLocation getTexture(Entity entity) {
+    public Identifier getTexture(Entity entity) {
         return TEXTURE;
     }
 
@@ -48,7 +49,7 @@ public class Stetson extends AbstractGear implements IStackable {
     }
 
     @Override
-    public boolean canRender(IClientModel model, Entity entity) {
+    public boolean canRender(IPonyModel<?> model, Entity entity) {
         return model.isWearing(Wearable.STETSON);
     }
 

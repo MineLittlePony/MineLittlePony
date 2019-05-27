@@ -1,59 +1,56 @@
 package com.minelittlepony.client.model.entities;
 
-import net.minecraft.client.renderer.entity.model.ModelRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.monster.AbstractIllager;
-import net.minecraft.entity.monster.AbstractIllager.IllagerArmPose;
-import net.minecraft.util.EnumHandSide;
+import net.minecraft.client.model.Cuboid;
+import net.minecraft.entity.mob.IllagerEntity;
+import net.minecraft.util.AbsoluteHand;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.model.ModelMobPony;
 
-public class ModelIllagerPony extends ModelMobPony {
+public class ModelIllagerPony<T extends IllagerEntity> extends ModelMobPony<T> {
 
     @Override
-    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
-        super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
+    public void setAngles(T illager, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        super.setAngles(illager, move, swing, ticks, headYaw, headPitch, scale);
 
-        AbstractIllager illager = (AbstractIllager) entity;
-        IllagerArmPose pose = illager.getArmPose();
+        IllagerEntity.State pose = illager.getState();
 
-        boolean rightHanded = illager.getPrimaryHand() == EnumHandSide.RIGHT;
+        boolean rightHanded = illager.getMainHand() == AbsoluteHand.RIGHT;
         float mult = rightHanded ? 1 : -1;
-        ModelRenderer arm = getArm(illager.getPrimaryHand());
+        Cuboid arm = getArm(illager.getMainHand());
 
-        if (pose == IllagerArmPose.ATTACKING) {
+        if (pose == IllagerEntity.State.ATTACKING) {
             // vindicator attacking
-            float f = MathHelper.sin(swingProgress * (float) Math.PI);
-            float f1 = MathHelper.sin((1.0F - (1.0F - swingProgress) * (1.0F - swingProgress)) * (float) Math.PI);
-
+            float f = MathHelper.sin(getSwingAmount() * (float) Math.PI);
+            float f1 = MathHelper.sin((1 - (1 - getSwingAmount()) * (1 - getSwingAmount())) * (float) Math.PI);
 
             float cos = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
             float sin = MathHelper.sin(ticks * 0.067F) * 0.05F;
 
-            bipedRightArm.rotateAngleZ = cos;
-            bipedLeftArm.rotateAngleZ  = cos;
+            rightArm.roll = cos;
+            leftArm.roll  = cos;
 
-            bipedRightArm.rotateAngleY = 0.15707964F;
-            bipedLeftArm.rotateAngleY = -0.15707964F;
+            rightArm.yaw = 0.15707964F;
+            leftArm.yaw = -0.15707964F;
 
-            arm.rotateAngleX = -1.8849558F + MathHelper.cos(ticks * 0.09F) * 0.15F;
-            arm.rotateAngleX += f * 2.2F - f1 * 0.4F;
+            arm.pitch = -1.8849558F + MathHelper.cos(ticks * 0.09F) * 0.15F;
+            arm.pitch += f * 2.2F - f1 * 0.4F;
 
-            bipedRightArm.rotateAngleX += sin;
-            bipedLeftArm.rotateAngleX  -= sin;
-        } else if (pose == IllagerArmPose.SPELLCASTING) {
+            rightArm.pitch += sin;
+            leftArm.pitch  -= sin;
+        } else if (pose == IllagerEntity.State.SPELLCASTING) {
             // waving arms!
-//          this.bipedRightArm.rotationPointZ = 0;
-            arm.rotateAngleX = (float) (-.75F * Math.PI);
-            arm.rotateAngleZ = mult * MathHelper.cos(ticks * 0.6662F) / 4;
-            arm.rotateAngleY = mult * 1.1F;
-        } else if (pose == IllagerArmPose.BOW_AND_ARROW) {
+            // rightArm.rotationPointZ = 0;
+            arm.pitch = (float) (-.75F * Math.PI);
+            arm.roll = mult * MathHelper.cos(ticks * 0.6662F) / 4;
+            arm.yaw = mult * 1.1F;
+        } else if (pose == IllagerEntity.State.BOW_AND_ARROW) {
             aimBow(arm, ticks);
         }
     }
 
-    public ModelRenderer getArm(EnumHandSide side) {
-        return canCast() ? getUnicornArmForSide(side) : getArmForSide(side);
+    @Override
+    public Cuboid getArm(AbsoluteHand side) {
+        return canCast() ? getUnicornArmForSide(side) : super.getArm(side);
     }
 }

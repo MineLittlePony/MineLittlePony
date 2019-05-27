@@ -1,55 +1,56 @@
 package com.minelittlepony.client.render.layer;
 
 import com.minelittlepony.client.model.components.PonyElytra;
+import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.IPonyModel;
+import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.renderer.entity.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EnumPlayerModelParts;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.entity.PlayerModelPart;
+import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.Items;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 import javax.annotation.Nonnull;
 
-public class LayerPonyElytra<T extends EntityLivingBase> extends AbstractPonyLayer<T> {
+public class LayerPonyElytra<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyLayer<T, M> {
 
-    private static final ResourceLocation TEXTURE_ELYTRA = new ResourceLocation("textures/entity/elytra.png");
+    private static final Identifier TEXTURE_ELYTRA = new Identifier("textures/entity/elytra.png");
 
-    private final PonyElytra modelElytra = new PonyElytra();
+    private final PonyElytra<T> modelElytra = new PonyElytra<>();
 
-    public LayerPonyElytra(RenderLivingBase<T> rp) {
+    public LayerPonyElytra(IPonyRender<T, M> rp) {
         super(rp);
     }
 
     @Override
     public void render(@Nonnull T entity, float move, float swing, float partialTicks, float ticks, float yaw, float head, float scale) {
-        ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+        ItemStack itemstack = entity.getEquippedStack(EquipmentSlot.CHEST);
 
         if (itemstack.getItem() == Items.ELYTRA) {
             GlStateManager.color4f(1, 1, 1, 1);
 
-            getRenderer().bindTexture(getElytraTexture(entity));
+            getContext().bindTexture(getElytraTexture(entity));
 
             GlStateManager.pushMatrix();
             preRenderCallback();
 
-            ModelBase elytra = getElytraModel();
+            EntityModel<T> elytra = getElytraModel();
 
             if (elytra instanceof PonyElytra) {
-                ((PonyElytra)elytra).isSneaking = getPonyRenderer().getEntityPony(entity).isCrouching(entity);
+                ((PonyElytra<T>)elytra).isSneaking = getContext().getEntityPony(entity).isCrouching(entity);
             }
 
-            elytra.setRotationAngles(move, swing, ticks, yaw, head, scale, entity);
+            elytra.setAngles(entity, move, swing, ticks, yaw, head, scale);
             elytra.render(entity, move, swing, ticks, yaw, head, scale);
 
-            if (itemstack.isEnchanted()) {
-                LayerArmorBase.renderEnchantedGlint(getRenderer(), entity, elytra, move, swing, partialTicks, ticks, yaw, head, scale);
+            if (itemstack.hasEnchantmentGlint()) {
+                ArmorFeatureRenderer.renderEnchantedGlint(this::bindTexture, entity, elytra, move, swing, partialTicks, ticks, yaw, head, scale);
             }
 
             GlStateManager.popMatrix();
@@ -61,24 +62,24 @@ public class LayerPonyElytra<T extends EntityLivingBase> extends AbstractPonyLay
         getPlayerModel().transform(BodyPart.BODY);
     }
 
-    protected ModelBase getElytraModel() {
+    protected EntityModel<T> getElytraModel() {
         return modelElytra;
     }
 
-    protected ResourceLocation getElytraTexture(T entity) {
-        if (entity instanceof AbstractClientPlayer) {
-            AbstractClientPlayer player = (AbstractClientPlayer) entity;
+    protected Identifier getElytraTexture(T entity) {
+        if (entity instanceof AbstractClientPlayerEntity) {
+            AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) entity;
 
-            ResourceLocation result;
+            Identifier result;
 
-            if (player.isPlayerInfoSet()) {
-                result = player.getLocationElytra();
+            if (player.hasSkinTexture()) {
+                result = player.getElytraTexture();
 
                 if (result != null) return result;
             }
 
-            if (player.hasPlayerInfo() && player.isWearing(EnumPlayerModelParts.CAPE)) {
-                result = player.getLocationCape();
+            if (player.hasSkinTexture() && player.isSkinOverlayVisible(PlayerModelPart.CAPE)) {
+                result = player.getCapeTexture();
 
                 if (result != null) return result;
             }
@@ -86,10 +87,4 @@ public class LayerPonyElytra<T extends EntityLivingBase> extends AbstractPonyLay
 
         return TEXTURE_ELYTRA;
     }
-
-    @Override
-    public boolean shouldCombineTextures() {
-        return false;
-    }
-
 }

@@ -7,14 +7,14 @@ import com.minelittlepony.hdskins.VanillaModels;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 import java.util.Map;
 
 public class PonySkinParser implements ISkinParser {
 
     @Override
-    public void parse(GameProfile profile, MinecraftProfileTexture.Type type, ResourceLocation resource,
+    public void parse(GameProfile profile, MinecraftProfileTexture.Type type, Identifier resource,
             Map<String, String> metadata) {
         if (type == MinecraftProfileTexture.Type.SKIN) {
             boolean slim = VanillaModels.isSlim(metadata.get("model"));

@@ -1,15 +1,14 @@
 package com.minelittlepony.client.render;
 
-import net.minecraft.client.Minecraft;
-
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BoundingBox;
 
 import com.minelittlepony.pony.IPony;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
+import static com.mojang.blaze3d.platform.GlStateManager.*;
 
 public class DebugBoundingBoxRenderer {
 
@@ -18,31 +17,31 @@ public class DebugBoundingBoxRenderer {
     private DebugBoundingBoxRenderer() {
     }
 
-    public void render(IPony pony, EntityLivingBase entity, float ticks) {
-        Minecraft mc = Minecraft.getInstance();
-        EntityPlayer player = mc.player;
+    public void render(IPony pony, LivingEntity entity, float ticks) {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        PlayerEntity player = mc.player;
 
-        if (!mc.getRenderManager().isDebugBoundingBox() || entity.getDistanceSq(player) > 70) {
+        if (!mc.getEntityRenderManager().shouldRenderHitboxes() || entity.squaredDistanceTo(player) > 70) {
             return;
         }
 
-        AxisAlignedBB boundingBox = pony.getComputedBoundingBox(entity);
+        BoundingBox boundingBox = pony.getComputedBoundingBox(entity);
 
 
-        double renderPosX = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double)ticks;
-        double renderPosY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double)ticks;
-        double renderPosZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double)ticks;
+        double renderPosX = player.prevX + (player.x - player.prevX) * (double)ticks;
+        double renderPosY = player.prevY + (player.y - player.prevY) * (double)ticks;
+        double renderPosZ = player.prevZ + (player.z - player.prevZ) * (double)ticks;
 
         enableBlend();
         blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
         lineWidth(2);
-        disableTexture2D();
+        disableTexture();
         depthMask(false);
 
-        WorldRenderer.drawSelectionBoundingBox(boundingBox.grow(0.003D).offset(-renderPosX, -renderPosY, -renderPosZ), 1, 1, 0, 1);
+        WorldRenderer.drawBoxOutline(boundingBox.expand(0.003D).offset(-renderPosX, -renderPosY, -renderPosZ), 1, 1, 0, 1);
 
         depthMask(true);
-        enableTexture2D();
+        enableTexture();
         disableBlend();
     }
 }

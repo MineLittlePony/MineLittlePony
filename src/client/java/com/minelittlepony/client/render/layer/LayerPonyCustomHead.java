@@ -1,54 +1,48 @@
 package com.minelittlepony.client.render.layer;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
-
-import com.minelittlepony.client.ducks.IRenderPony;
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.client.model.IClientModel;
-import com.minelittlepony.client.model.ModelWrapper;
+import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
 import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.IPonyModel;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.block.BlockAbstractSkull;
-import net.minecraft.block.BlockSkull.ISkullType;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityZombieVillager;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.block.AbstractSkullBlock;
+import net.minecraft.block.SkullBlock.SkullType;
+import net.minecraft.block.entity.SkullBlockEntity;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.tileentity.TileEntitySkull;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.TagHelper;
+import net.minecraft.util.math.Direction;
+import net.minecraft.village.VillagerDataContainer;
 
-@SuppressWarnings("deprecation") // ItemCameraTransforms is deprecated by forge but we still need it.
-public class LayerPonyCustomHead<T extends EntityLivingBase> implements LayerRenderer<T> {
+import static com.mojang.blaze3d.platform.GlStateManager.*;
 
-    private RenderLivingBase<T> renderer;
+public class LayerPonyCustomHead<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyLayer<T, M> {
 
-    public LayerPonyCustomHead(RenderLivingBase<T> renderPony) {
-        renderer = renderPony;
+    public LayerPonyCustomHead(IPonyRender<T, M> renderPony) {
+        super(renderPony);
     }
 
     @Override
     public void render(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
-        ItemStack itemstack = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+        ItemStack itemstack = entity.getEquippedStack(EquipmentSlot.HEAD);
         if (!itemstack.isEmpty()) {
-            IClientModel model = getModel().getBody();
+            M model = getContext().getModelWrapper().getBody();
             Item item = itemstack.getItem();
 
             pushMatrix();
 
             model.transform(BodyPart.HEAD);
-            model.getHead().postRender(0.0625f);
+            model.getHead().applyTransform(0.0625f);
 
             if (model instanceof AbstractPonyModel) {
                 translatef(0, 0.2F, 0);
@@ -58,11 +52,11 @@ public class LayerPonyCustomHead<T extends EntityLivingBase> implements LayerRen
 
             color4f(1, 1, 1, 1);
 
-            if (item instanceof ItemBlock && ((ItemBlock) item).getBlock() instanceof BlockAbstractSkull) {
-                boolean isVillager = entity instanceof EntityVillager || entity instanceof EntityZombieVillager;
+            if (item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof AbstractSkullBlock) {
+                boolean isVillager = entity instanceof VillagerDataContainer;
 
                 renderSkull(itemstack, isVillager, move);
-            } else if (!(item instanceof ItemArmor) || ((ItemArmor)item).getEquipmentSlot() != EntityEquipmentSlot.HEAD) {
+            } else if (!(item instanceof ArmorItem) || ((ArmorItem)item).getSlotType() != EquipmentSlot.HEAD) {
                 renderBlock(entity, itemstack);
             }
 
@@ -76,7 +70,7 @@ public class LayerPonyCustomHead<T extends EntityLivingBase> implements LayerRen
         scalef(0.625F, -0.625F, -0.625F);
         translatef(0, 0.4F, -0.21F);
 
-        Minecraft.getInstance().getFirstPersonRenderer().renderItem(entity, itemstack, TransformType.HEAD);
+        MinecraftClient.getInstance().getFirstPersonRenderer().renderItem(entity, itemstack, ModelTransformation.Type.HEAD);
     }
 
     private void renderSkull(ItemStack itemstack, boolean isVillager, float limbSwing) {
@@ -90,29 +84,25 @@ public class LayerPonyCustomHead<T extends EntityLivingBase> implements LayerRen
         GameProfile profile = null;
 
         if (itemstack.hasTag()) {
-            NBTTagCompound nbt = itemstack.getTag();
+            CompoundTag nbt = itemstack.getTag();
 
             assert nbt != null;
 
-            if (nbt.contains("SkullOwner", 10)) {
-                profile = NBTUtil.readGameProfile(nbt.getCompound("SkullOwner"));
-            } else if (nbt.contains("SkullOwner", 8)) {
-                profile = TileEntitySkull.updateGameProfile(new GameProfile(null, nbt.getString("SkullOwner")));
-                nbt.put("SkullOwner", NBTUtil.writeGameProfile(new NBTTagCompound(), profile));
+            if (nbt.containsKey("SkullOwner", 10)) {
+                profile = TagHelper.deserializeProfile(nbt.getCompound("SkullOwner"));
+            } else if (nbt.containsKey("SkullOwner", 8)) {
+                profile = SkullBlockEntity.loadProperties(new GameProfile(null, nbt.getString("SkullOwner")));
+                nbt.put("SkullOwner", TagHelper.serializeProfile(new CompoundTag(), profile));
             }
         }
 
-        ISkullType type = ((BlockAbstractSkull) ((ItemBlock) itemstack.getItem()).getBlock()).getSkullType();
+        SkullType type = ((AbstractSkullBlock) ((BlockItem) itemstack.getItem()).getBlock()).getSkullType();
 
-        PonySkullRenderer.resolve().render(-0.5F, 0, -0.45F, EnumFacing.UP, 180, type, profile, -1, limbSwing);
-    }
-
-    private ModelWrapper getModel() {
-        return ((IRenderPony<?>) renderer).getModelWrapper();
+        PonySkullRenderer.resolve().render(-0.5F, 0, -0.45F, Direction.UP, 180, type, profile, -1, limbSwing);
     }
 
     @Override
-    public boolean shouldCombineTextures() {
+    public boolean hasHurtOverlay() {
         return true;
     }
 

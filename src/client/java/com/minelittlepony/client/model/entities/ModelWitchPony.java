@@ -1,38 +1,35 @@
 package com.minelittlepony.client.model.entities;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityWitch;
+import net.minecraft.entity.mob.WitchEntity;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.model.races.ModelZebra;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.meta.Wearable;
 
-public class ModelWitchPony extends ModelZebra {
+public class ModelWitchPony extends ModelZebra<WitchEntity> {
 
     public ModelWitchPony() {
         super(false);
     }
 
     @Override
-    public void updateLivingState(EntityLivingBase entity, IPony pony) {
+    public void updateLivingState(WitchEntity entity, IPony pony) {
         super.updateLivingState(entity, pony);
-        EntityWitch witch = ((EntityWitch) entity);
 
-        if ("Filly".equals(entity.getCustomName().getUnformattedComponentText())) {
+        if ("Filly".equals(entity.getCustomName().getString())) {
             isChild = true;
         }
         leftArmPose = ArmPose.EMPTY;
-        rightArmPose = witch.getHeldItemMainhand().isEmpty() ? ArmPose.EMPTY : ArmPose.ITEM;
+        rightArmPose = entity.getMainHandStack().isEmpty() ? ArmPose.EMPTY : ArmPose.ITEM;
     }
 
     @Override
-    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
-        super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
+    public void setAngles(WitchEntity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        super.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
 
-        if (((EntityWitch)entity).isDrinkingPotion()) {
-            float noseRot = MathHelper.sin(entity.ticksExisted);
+        if (entity.isDrinking()) {
+            float noseRot = MathHelper.sin(entity.age);
 
             snout.rotate(noseRot * 4.5F * 0.02F, 0, noseRot * 2.5F * 0.02F);
         } else {
@@ -47,20 +44,20 @@ public class ModelWitchPony extends ModelZebra {
 
             float legDrinkingAngle = -1 * PI/3 + rot;
 
-            bipedRightArm.rotateAngleX = legDrinkingAngle;
-            bipedRightArmwear.rotateAngleX = legDrinkingAngle;
-            bipedRightArm.rotateAngleY = 0.1F;
-            bipedRightArmwear.rotateAngleY = 0.1F;
-            bipedRightArm.offsetZ = 0.1f;
-            bipedRightArmwear.offsetZ = 0.1f;
+            rightArm.pitch = legDrinkingAngle;
+            rightArmOverlay.pitch = legDrinkingAngle;
+            rightArm.yaw = 0.1F;
+            rightArmOverlay.yaw = 0.1F;
+            rightArm.z = 0.1f;
+            rightArmOverlay.z = 0.1f;
 
             if (rot > 0) rot = 0;
 
-            bipedHead.rotateAngleX = -rot / 2;
-            bipedHeadwear.rotateAngleX = -rot / 2;
+            head.pitch = -rot / 2;
+            headwear.pitch = -rot / 2;
         } else {
-            bipedRightArm.offsetZ = 0;
-            bipedRightArmwear.offsetZ = 0;
+            rightArm.z = 0;
+            rightArmOverlay.z = 0;
         }
 
 

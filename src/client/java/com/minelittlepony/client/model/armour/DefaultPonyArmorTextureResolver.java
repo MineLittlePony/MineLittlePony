@@ -1,13 +1,14 @@
 package com.minelittlepony.client.model.armour;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.ResourcePackInfoClient;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemArmor;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.resource.ClientResourcePackContainer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.resources.ResourcePackType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourceType;
+import net.minecraft.util.Identifier;
 
 import com.google.common.collect.Maps;
 import com.minelittlepony.client.ForgeProxy;
@@ -19,15 +20,15 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Map;
 
-public class DefaultPonyArmorTextureResolver<T extends EntityLivingBase> implements IArmourTextureResolver<T> {
+public class DefaultPonyArmorTextureResolver<T extends LivingEntity> implements IArmourTextureResolver<T> {
 
-    private final Map<String, ResourceLocation> HUMAN_ARMOUR = Maps.newHashMap();
-    private final Map<ResourceLocation, ResourceLocation> PONY_ARMOUR = Maps.newHashMap();
+    private final Map<String, Identifier> HUMAN_ARMOUR = Maps.newHashMap();
+    private final Map<Identifier, Identifier> PONY_ARMOUR = Maps.newHashMap();
 
     @Override
-    public ResourceLocation getArmourTexture(T entity, ItemStack itemstack, EntityEquipmentSlot slot, ArmourLayer layer,  @Nullable String type) {
-        ItemArmor item = (ItemArmor) itemstack.getItem();
-        String texture = item.getArmorMaterial().getName();
+    public Identifier getArmourTexture(T entity, ItemStack itemstack, EquipmentSlot slot, ArmourLayer layer,  @Nullable String type) {
+        ArmorItem item = (ArmorItem) itemstack.getItem();
+        String texture = item.getMaterial().getName();
 
         String domain = "minecraft";
 
@@ -42,20 +43,21 @@ public class DefaultPonyArmorTextureResolver<T extends EntityLivingBase> impleme
         String ponyRes = String.format("%s:textures/models/armor/%s_layer_%s%s.png", domain, texture, layer.name().toLowerCase(), customType);
         String oldPonyRes = String.format("%s:textures/models/armor/%s_layer_%d%s.png", domain, texture, layer == ArmourLayer.INNER ? 2 : 1, customType);
 
-        ResourceLocation human = getArmorTexture(entity, itemstack, ponyRes, slot, type);
-        ResourceLocation pony = ponifyResource(human);
+        Identifier human = getArmorTexture(entity, itemstack, ponyRes, slot, type);
+        Identifier pony = ponifyResource(human);
 
-        ResourceLocation oldHuman = getArmorTexture(entity, itemstack, oldPonyRes, slot, type);
-        ResourceLocation oldPony = ponifyResource(oldHuman);
+        Identifier oldHuman = getArmorTexture(entity, itemstack, oldPonyRes, slot, type);
+        Identifier oldPony = ponifyResource(oldHuman);
 
         return resolve(pony, oldPony, oldHuman, human);
     }
 
-    private ResourceLocation resolve(ResourceLocation... resources) {
+    private Identifier resolve(Identifier... resources) {
         // check resource packs for either texture.
-        for (ResourcePackInfoClient entry : Minecraft.getInstance().getResourcePackList().getAllPacks()) {
-            for (ResourceLocation candidate : resources) {
-                if (entry.getResourcePack().resourceExists(ResourcePackType.CLIENT_RESOURCES, candidate)) {
+        for (ClientResourcePackContainer entry : MinecraftClient.getInstance().getResourcePackContainerManager().getEnabledContainers()) {
+            ResourcePack pack = entry.createResourcePack();
+            for (Identifier candidate : resources) {
+                if (pack.contains(ResourceType.CLIENT_RESOURCES, candidate)) {
                     // ponies are more important
                     return candidate;
                 }
@@ -63,9 +65,9 @@ public class DefaultPonyArmorTextureResolver<T extends EntityLivingBase> impleme
         }
 
         // the default pack
-        for (ResourceLocation candidate : resources) {
+        for (Identifier candidate : resources) {
             try {
-                Minecraft.getInstance().getResourceManager().getResource(candidate);
+                MinecraftClient.getInstance().getResourceManager().getResource(candidate);
                 return candidate;
             } catch (IOException e) { }
         }
@@ -73,19 +75,19 @@ public class DefaultPonyArmorTextureResolver<T extends EntityLivingBase> impleme
         return resources[resources.length - 1];
     }
 
-    private ResourceLocation ponifyResource(ResourceLocation human) {
+    private Identifier ponifyResource(Identifier human) {
         return PONY_ARMOUR.computeIfAbsent(human, key -> {
             String domain = human.getNamespace();
             if ("minecraft".equals(domain)) {
                 domain = "minelittlepony"; // it's a vanilla armor. I provide these.
             }
 
-            return new ResourceLocation(domain, human.getPath().replace(".png", "_pony.png"));
+            return new Identifier(domain, human.getPath().replace(".png", "_pony.png"));
         });
     }
 
-    private ResourceLocation getArmorTexture(T entity, ItemStack item, String def, EntityEquipmentSlot slot, @Nullable String type) {
-        return HUMAN_ARMOUR.computeIfAbsent(ForgeProxy.getArmorTexture(entity, item, def, slot, type), ResourceLocation::new);
+    private Identifier getArmorTexture(T entity, ItemStack item, String def, EquipmentSlot slot, @Nullable String type) {
+        return HUMAN_ARMOUR.computeIfAbsent(ForgeProxy.getArmorTexture(entity, item, def, slot, type), Identifier::new);
     }
 }
 

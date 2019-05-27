@@ -3,21 +3,22 @@ package com.minelittlepony.client.pony;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.data.IMetadataSectionSerializer;
 
-class PonyDataSerialiser implements IMetadataSectionSerializer<PonyData> {
+import net.minecraft.resource.metadata.ResourceMetadataReader;
+
+class PonyDataSerialiser implements ResourceMetadataReader<PonyData> {
 
     private static final Gson gson = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
             .create();
 
     @Override
-    public String getSectionName() {
+    public String getKey() {
         return "pony";
     }
 
     @Override
-    public PonyData deserialize(JsonObject json) {
+    public PonyData fromJson(JsonObject json) {
         return gson.fromJson(json, PonyData.class);
     }
 }

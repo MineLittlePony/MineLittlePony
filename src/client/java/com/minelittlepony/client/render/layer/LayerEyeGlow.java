@@ -1,25 +1,28 @@
 package com.minelittlepony.client.render.layer;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.Identifier;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
+import com.minelittlepony.client.render.IPonyRender;
+import com.minelittlepony.model.IPonyModel;
+import com.mojang.blaze3d.platform.GLX;
 
-public class LayerEyeGlow<T extends EntityLiving> extends AbstractPonyLayer<T> {
+import static com.mojang.blaze3d.platform.GlStateManager.*;
 
-    private final ResourceLocation eyeTexture;
+public class LayerEyeGlow<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyLayer<T, M> {
 
-    public <V extends RenderLiving<T> & IGlowingRenderer> LayerEyeGlow(V renderer) {
+    private final Identifier eyeTexture;
+
+    public <V extends IPonyRender<T, M> & IGlowingRenderer> LayerEyeGlow(V renderer) {
         super(renderer);
         eyeTexture = renderer.getEyeTexture();
     }
 
     @Override
     public void render(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
-        getRenderer().bindTexture(eyeTexture);
+        getContext().bindTexture(eyeTexture);
 
         enableBlend();
         disableAlphaTest();
@@ -27,18 +30,18 @@ public class LayerEyeGlow<T extends EntityLiving> extends AbstractPonyLayer<T> {
 
         disableLighting();
         depthMask(!entity.isInvisible());
-        OpenGlHelper.glMultiTexCoord2f(OpenGlHelper.GL_TEXTURE1, 61680, 0);
+        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 61680, 0);
         enableLighting();
 
         color4f(1, 1, 1, 1);
 
-        Minecraft.getInstance().gameRenderer.setupFogColor(true);
+        MinecraftClient.getInstance().gameRenderer.setFogBlack(true);
 
-        getMainModel().render(entity, move, swing, ticks, headYaw, headPitch, scale);
+        getModel().render(entity, move, swing, ticks, headYaw, headPitch, scale);
 
-        Minecraft.getInstance().gameRenderer.setupFogColor(false);
+        MinecraftClient.getInstance().gameRenderer.setFogBlack(false);
 
-        ((RenderLiving<T>)getRenderer()).setLightmap(entity);
+        getContext().applyLightmapCoordinates(entity);
 
         depthMask(true);
 
@@ -48,6 +51,6 @@ public class LayerEyeGlow<T extends EntityLiving> extends AbstractPonyLayer<T> {
     }
 
     public interface IGlowingRenderer {
-        ResourceLocation getEyeTexture();
+        Identifier getEyeTexture();
     }
 }

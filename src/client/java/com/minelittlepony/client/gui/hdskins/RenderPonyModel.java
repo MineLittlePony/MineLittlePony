@@ -1,10 +1,11 @@
 package com.minelittlepony.client.gui.hdskins;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.client.ducks.IRenderPony;
+import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.races.PlayerModels;
 import com.minelittlepony.client.pony.Pony;
+import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.client.render.RenderPony;
 import com.minelittlepony.client.render.layer.LayerGear;
 import com.minelittlepony.client.render.layer.LayerPonyElytra;
@@ -12,58 +13,57 @@ import com.minelittlepony.hdskins.gui.RenderPlayerModel;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.meta.Race;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.minecraft.client.renderer.entity.model.ModelBase;
-import net.minecraft.client.renderer.entity.model.ModelElytra;
-import net.minecraft.client.renderer.entity.model.ModelPlayer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.feature.FeatureRenderer;
+import net.minecraft.client.render.entity.model.ElytraEntityModel;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.util.Identifier;
 
 /**
  * Renderer used for the dummy pony model when selecting a skin.
  */
-public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> implements IRenderPony<EntityPonyModel> {
+public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel, ClientPonyModel<EntityPonyModel>> implements IPonyRender<EntityPonyModel, ClientPonyModel<EntityPonyModel>> {
 
     boolean renderingAsHuman = false;
 
-    protected final RenderPony<EntityPonyModel> renderPony = new RenderPony<>(this);
+    protected final RenderPony<EntityPonyModel, ClientPonyModel<EntityPonyModel>> renderPony = new RenderPony<>(this);
 
-    public RenderPonyModel(RenderManager manager) {
+    public RenderPonyModel(EntityRenderDispatcher manager) {
         super(manager);
-        addLayer(new LayerGear<>(this));
+        addFeature(new LayerGear<>(this));
     }
 
-    private ModelWrapper playerModel;
+    private ModelWrapper<EntityPonyModel, ClientPonyModel<EntityPonyModel>> playerModel;
 
     @Override
-    public ModelWrapper getModelWrapper() {
+    public ModelWrapper<EntityPonyModel, ClientPonyModel<EntityPonyModel>> getModelWrapper() {
         return playerModel;
     }
 
     @Override
     public IPony getEntityPony(EntityPonyModel entity) {
-        return MineLittlePony.getInstance().getManager().getPony(getEntityTexture(entity));
+        return MineLittlePony.getInstance().getManager().getPony(getTexture(entity));
     }
 
     @Override
-    protected void preRenderCallback(EntityPonyModel entity, float ticks) {
+    protected void scale(EntityPonyModel entity, float ticks) {
         if (renderingAsHuman) {
-            super.preRenderCallback(entity, ticks);
+            super.scale(entity, ticks);
         } else {
             renderPony.preRenderCallback(entity, ticks);
 
-            GlStateManager.translatef(0, 0, -entity.width / 2); // move us to the center of the shadow
+            GlStateManager.translatef(0, 0, -entity.getWidth() / 2); // move us to the center of the shadow
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public ModelPlayer getEntityModel(EntityPonyModel playermodel) {
+    public ClientPonyModel<EntityPonyModel> getEntityModel(EntityPonyModel playermodel) {
         renderingAsHuman = true;
 
-        ResourceLocation loc = getEntityTexture(playermodel);
+        Identifier loc = getTexture(playermodel);
         if (loc == null || Pony.getBufferedImage(loc) == null) {
             return super.getEntityModel(playermodel);
         }
@@ -91,9 +91,9 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> implemen
     }
 
     @Override
-    protected LayerRenderer<? extends EntityLivingBase> getElytraLayer() {
-        return new LayerPonyElytra<EntityPonyModel>(this) {
-            private final ModelElytra modelElytra = new ModelElytra();
+    protected FeatureRenderer<EntityPonyModel, ClientPonyModel<EntityPonyModel>> getElytraLayer() {
+        return new LayerPonyElytra<EntityPonyModel, ClientPonyModel<EntityPonyModel>>(this) {
+            private final ElytraEntityModel<EntityPonyModel> modelElytra = new ElytraEntityModel<>();
 
             @Override
             protected void preRenderCallback() {
@@ -103,24 +103,24 @@ public class RenderPonyModel extends RenderPlayerModel<EntityPonyModel> implemen
             }
 
             @Override
-            protected ModelBase getElytraModel() {
+            protected EntityModel<EntityPonyModel> getElytraModel() {
                 return renderingAsHuman ? modelElytra : super.getElytraModel();
             }
 
             @Override
-            protected ResourceLocation getElytraTexture(EntityPonyModel entity) {
+            protected Identifier getElytraTexture(EntityPonyModel entity) {
                 return entity.getLocal(Type.ELYTRA).getTexture();
             }
         };
     }
 
     @Override
-    public RenderPony<EntityPonyModel> getInternalRenderer() {
+    public RenderPony<EntityPonyModel, ClientPonyModel<EntityPonyModel>> getInternalRenderer() {
         return renderPony;
     }
 
     @Override
-    public ResourceLocation getTexture(EntityPonyModel entity) {
-        return getEntityTexture(entity);
+    public Identifier findTexture(EntityPonyModel entity) {
+        return getTexture(entity);
     }
 }

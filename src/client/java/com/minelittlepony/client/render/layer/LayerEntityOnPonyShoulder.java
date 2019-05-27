@@ -1,44 +1,44 @@
 package com.minelittlepony.client.render.layer;
 
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.entity.EntityType;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.nbt.CompoundTag;
 
+import com.minelittlepony.client.model.ClientPonyModel;
+import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.model.BodyPart;
+import com.mojang.blaze3d.platform.GlStateManager;
 
 import javax.annotation.Nullable;
 
-public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientPlayer> {
+public class LayerEntityOnPonyShoulder<M extends ClientPonyModel<AbstractClientPlayerEntity>> extends AbstractPonyLayer<AbstractClientPlayerEntity, M> {
 
-    private final RenderManager renderManager;
+    private final EntityRenderDispatcher renderManager;
 
-    private EntityLivingBase leftEntity;
-    private EntityLivingBase rightEntity;
+    private LivingEntity leftEntity;
+    private LivingEntity rightEntity;
 
-    public LayerEntityOnPonyShoulder(RenderManager manager, RenderLivingBase<AbstractClientPlayer> renderer) {
-        super(renderer);
+    public LayerEntityOnPonyShoulder(EntityRenderDispatcher manager, IPonyRender<AbstractClientPlayerEntity, M> context) {
+        super(context);
         renderManager = manager;
     }
 
     @Override
-    public void render(AbstractClientPlayer player, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(AbstractClientPlayerEntity player, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
 
         GlStateManager.enableRescaleNormal();
         GlStateManager.color4f(1, 1, 1, 1);
 
-        NBTTagCompound leftTag = player.getLeftShoulderEntity();
+        CompoundTag leftTag = player.getShoulderEntityLeft();
 
         if (!leftTag.isEmpty()) {
             leftEntity = renderShoulderEntity(player, leftEntity, leftTag, headYaw, headPitch, true);
         }
 
-        NBTTagCompound rightTag = player.getRightShoulderEntity();
+        CompoundTag rightTag = player.getShoulderEntityRight();
 
         if (!rightTag.isEmpty()) {
             rightEntity = renderShoulderEntity(player, rightEntity, rightTag, headYaw, headPitch, false);
@@ -48,17 +48,17 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientP
     }
 
     @Nullable
-    private EntityLivingBase renderShoulderEntity(AbstractClientPlayer player, @Nullable EntityLivingBase entity, NBTTagCompound shoulderTag, float headYaw, float headPitch, boolean left) {
+    private LivingEntity renderShoulderEntity(AbstractClientPlayerEntity player, @Nullable LivingEntity entity, CompoundTag shoulderTag, float headYaw, float headPitch, boolean left) {
 
-        if (entity == null || !entity.getUniqueID().equals(shoulderTag.getUniqueId("UUID"))) {
-            entity = (EntityLivingBase) EntityType.create(shoulderTag, player.world);
+        if (entity == null || !entity.getUuid().equals(shoulderTag.getUuid("UUID"))) {
+            entity = (LivingEntity) EntityType.getEntityFromTag(shoulderTag, player.world).orElse(null);
             // this isn't an entity.
             if (entity == null) {
                 return null;
             }
         }
 
-        Render<Entity> render = renderManager.getEntityRenderObject(entity);
+        EntityRenderer<LivingEntity> render = renderManager.getRenderer(entity);
 
         if (render == null) {
             return entity;
@@ -66,7 +66,7 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientP
 
         GlStateManager.pushMatrix();
 
-        getPonyModel().transform(BodyPart.BODY);
+        getModel().transform(BodyPart.BODY);
 
         // render on the haunches
         GlStateManager.translatef(left ? 0.25F : -0.25F, 0.25F, 0.35F);
@@ -74,12 +74,12 @@ public class LayerEntityOnPonyShoulder extends AbstractPonyLayer<AbstractClientP
         GlStateManager.rotatef(left ? -5 : 5, 0, 0, 1);
 
         // look where the player is looking
-        entity.prevRotationYawHead = headYaw;
-        entity.rotationYawHead = headYaw;
-        entity.rotationPitch = headPitch;
-        entity.prevRotationPitch = headPitch;
+        entity.prevHeadYaw = headYaw;
+        entity.headYaw = headYaw;
+        entity.pitch = headPitch;
+        entity.prevPitch = headPitch;
 
-        render.doRender(entity, 0, 0, 0, 0, 0);
+        render.render(entity, 0, 0, 0, 0, 0);
 
         GlStateManager.popMatrix();
         return entity;

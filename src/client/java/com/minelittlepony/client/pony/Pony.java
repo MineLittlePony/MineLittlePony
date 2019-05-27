@@ -4,7 +4,7 @@ import com.google.common.base.MoreObjects;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.PonyRenderManager;
 import com.minelittlepony.client.ducks.IBufferedTexture;
-import com.minelittlepony.client.ducks.IRenderPony;
+import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.hdskins.util.ProfileTextureUtil;
 import com.minelittlepony.pony.IPony;
@@ -13,22 +13,22 @@ import com.minelittlepony.pony.meta.Race;
 import com.minelittlepony.pony.meta.Size;
 import com.minelittlepony.util.chron.Touchable;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.client.renderer.texture.ITextureObject;
-import net.minecraft.client.renderer.texture.MissingTextureSprite;
-import net.minecraft.client.renderer.texture.NativeImage;
-import net.minecraft.resources.IResource;
+import net.minecraft.block.Material;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.texture.Texture;
+import net.minecraft.client.texture.MissingSprite;
+import net.minecraft.client.texture.NativeImage;
+import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.resource.Resource;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BoundingBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -46,15 +46,15 @@ public class Pony extends Touchable<Pony> implements IPony {
 
     private final int ponyId = ponyCount.getAndIncrement();
 
-    private final ResourceLocation texture;
+    private final Identifier texture;
     private final IPonyData metadata;
 
-    public Pony(ResourceLocation resource) {
+    public Pony(Identifier resource) {
         texture = resource;
         metadata = checkSkin(texture);
     }
 
-    private IPonyData checkSkin(ResourceLocation resource) {
+    private IPonyData checkSkin(Identifier resource) {
         IPonyData data = checkPonyMeta(resource);
         if (data != null) {
             return data;
@@ -63,25 +63,23 @@ public class Pony extends Touchable<Pony> implements IPony {
         NativeImage ponyTexture = getBufferedImage(resource);
 
         if (ponyTexture == null) {
-            ponyTexture = ProfileTextureUtil.getDynamicBufferedImage(16, 16, MissingTextureSprite.getDynamicTexture());
+            ponyTexture = ProfileTextureUtil.getDynamicBufferedImage(16, 16, MissingSprite.getMissingSpriteTexture());
 
-            Minecraft.getInstance().getTextureManager().loadTexture(resource, new DynamicTexture(ponyTexture));
+            MinecraftClient.getInstance().getTextureManager().registerTexture(resource, new NativeImageBackedTexture(ponyTexture));
         }
 
         return checkSkin(ponyTexture);
     }
 
     @Nullable
-    private IPonyData checkPonyMeta(ResourceLocation resource) {
+    private IPonyData checkPonyMeta(Identifier resource) {
         try {
-            IResource res = Minecraft.getInstance().getResourceManager().getResource(resource);
+            Resource res = MinecraftClient.getInstance().getResourceManager().getResource(resource);
 
-            if (res.hasMetadata()) {
-                PonyData data = res.getMetadata(PonyData.SERIALISER);
+            PonyData data = res.getMetadata(PonyData.SERIALISER);
 
-                if (data != null) {
-                    return data;
-                }
+            if (data != null) {
+                return data;
             }
         } catch (FileNotFoundException e) {
             // Ignore uploaded texture
@@ -93,20 +91,20 @@ public class Pony extends Touchable<Pony> implements IPony {
     }
 
     @Nullable
-    public static NativeImage getBufferedImage(@Nonnull ResourceLocation resource) {
+    public static NativeImage getBufferedImage(@Nonnull Identifier resource) {
         try {
-            IResource skin = Minecraft.getInstance().getResourceManager().getResource(resource);
-            NativeImage skinImage = NativeImage.read(skin.getInputStream());
+            Resource skin = MinecraftClient.getInstance().getResourceManager().getResource(resource);
+            NativeImage skinImage = NativeImage.fromInputStream(skin.getInputStream());
             MineLittlePony.logger.debug("Obtained skin from resource location {}", resource);
 
             return skinImage;
         } catch (IOException ignored) {
         }
 
-        ITextureObject texture = Minecraft.getInstance().getTextureManager().getTexture(resource);
+        Texture texture = MinecraftClient.getInstance().getTextureManager().getTexture(resource);
 
-        if (texture instanceof DynamicTexture) {
-            return ((DynamicTexture)texture).getTextureData();
+        if (texture instanceof NativeImageBackedTexture) {
+            return ((NativeImageBackedTexture)texture).getImage();
         }
 
         if (texture instanceof IBufferedTexture) {
@@ -122,14 +120,15 @@ public class Pony extends Touchable<Pony> implements IPony {
     }
 
     @Override
-    public boolean isPerformingRainboom(EntityLivingBase entity) {
-        double zMotion = Math.sqrt(entity.motionX * entity.motionX + entity.motionZ * entity.motionZ);
+    public boolean isPerformingRainboom(LivingEntity entity) {
+        Vec3d velocity = entity.getVelocity();
+        double zMotion = Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z);
 
-        return (isFlying(entity) && canFly()) || entity.isElytraFlying() & zMotion > 0.4F;
+        return (isFlying(entity) && canFly()) || entity.isFallFlying() & zMotion > 0.4F;
     }
 
     @Override
-    public boolean isCrouching(EntityLivingBase entity) {
+    public boolean isCrouching(LivingEntity entity) {
 
         boolean isSneak = entity.isSneaking();
         boolean isFlying = isFlying(entity);
@@ -139,40 +138,40 @@ public class Pony extends Touchable<Pony> implements IPony {
     }
 
     @Override
-    public boolean isFlying(EntityLivingBase entity) {
+    public boolean isFlying(LivingEntity entity) {
         return !(entity.onGround
-                || entity.isPassenger()
-                || (entity.isOnLadder() && !(entity instanceof EntityPlayer && ((EntityPlayer)entity).abilities.isFlying))
+                || entity.hasVehicle()
+                || (entity.isClimbing() && !(entity instanceof PlayerEntity && ((PlayerEntity)entity).abilities.allowFlying))
                 || entity.isInWater()
-                || entity.isPlayerSleeping());
+                || entity.isSleeping());
     }
 
     @Override
-    public boolean isSwimming(EntityLivingBase entity) {
-        return isFullySubmerged(entity) && !(entity.onGround || entity.isOnLadder());
+    public boolean isSwimming(LivingEntity entity) {
+        return isFullySubmerged(entity) && !(entity.onGround || entity.isClimbing());
     }
 
     @Override
-    public boolean isPartiallySubmerged(EntityLivingBase entity) {
+    public boolean isPartiallySubmerged(LivingEntity entity) {
         return entity.isInWater()
-                || entity.getEntityWorld().getBlockState(new BlockPos(entity.posX, entity.posY, entity.posZ)).getMaterial() == Material.WATER;
+                || entity.getEntityWorld().getBlockState(entity.getBlockPos()).getMaterial() == Material.WATER;
     }
 
     @Override
-    public boolean isFullySubmerged(EntityLivingBase entity) {
+    public boolean isFullySubmerged(LivingEntity entity) {
         return entity.isInWater()
                 && entity.getEntityWorld().getBlockState(new BlockPos(getVisualEyePosition(entity))).getMaterial() == Material.WATER;
     }
 
-    protected Vec3d getVisualEyePosition(EntityLivingBase entity) {
-        Size size = entity.isChild() ? Size.FOAL : metadata.getSize();
+    protected Vec3d getVisualEyePosition(LivingEntity entity) {
+        Size size = entity.isBaby() ? Size.FOAL : metadata.getSize();
 
-        return new Vec3d(entity.posX, entity.posY + (double) entity.getEyeHeight() * size.getScaleFactor(), entity.posZ);
+        return new Vec3d(entity.x, entity.y + (double) entity.getEyeHeight(entity.getPose()) * size.getScaleFactor(), entity.z);
     }
 
     @Override
-    public boolean isWearingHeadgear(EntityLivingBase entity) {
-        ItemStack stack = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+    public boolean isWearingHeadgear(LivingEntity entity) {
+        ItemStack stack = entity.getEquippedStack(EquipmentSlot.HEAD);
 
         if (stack.isEmpty()) {
             return false;
@@ -180,7 +179,7 @@ public class Pony extends Touchable<Pony> implements IPony {
 
         Item item = stack.getItem();
 
-        return !(item instanceof ItemArmor) || ((ItemArmor) item).getEquipmentSlot() != EntityEquipmentSlot.HEAD;
+        return !(item instanceof ArmorItem) || ((ArmorItem) item).getSlotType() != EquipmentSlot.HEAD;
     }
 
     @Override
@@ -189,7 +188,7 @@ public class Pony extends Touchable<Pony> implements IPony {
     }
 
     @Override
-    public ResourceLocation getTexture() {
+    public Identifier getTexture() {
         return texture;
     }
 
@@ -199,48 +198,48 @@ public class Pony extends Touchable<Pony> implements IPony {
     }
 
     @Override
-    public boolean isRidingInteractive(EntityLivingBase entity) {
-        return PonyRenderManager.getInstance().getPonyRenderer(entity.getRidingEntity()) != null;
+    public boolean isRidingInteractive(LivingEntity entity) {
+        return PonyRenderManager.getInstance().getPonyRenderer(entity.getVehicle()) != null;
     }
 
     @Override
-    public IPony getMountedPony(EntityLivingBase entity) {
-        Entity mount = entity.getRidingEntity();
+    public IPony getMountedPony(LivingEntity entity) {
+        Entity mount = entity.getVehicle();
 
-        IRenderPony<EntityLivingBase> render = PonyRenderManager.getInstance().getPonyRenderer(mount);
+        IPonyRender<LivingEntity, ?> render = PonyRenderManager.getInstance().getPonyRenderer(mount);
 
-        return render == null ? null : render.getEntityPony((EntityLivingBase)mount);
+        return render == null ? null : render.getEntityPony((LivingEntity)mount);
     }
 
     @Override
-    public Vec3d getAbsoluteRidingOffset(EntityLivingBase entity) {
+    public Vec3d getAbsoluteRidingOffset(LivingEntity entity) {
         IPony ridingPony = getMountedPony(entity);
 
 
 
         if (ridingPony != null) {
-            EntityLivingBase ridee = (EntityLivingBase)entity.getRidingEntity();
+            LivingEntity ridee = (LivingEntity)entity.getVehicle();
 
             Vec3d offset = PonyTransformation.forSize(ridingPony.getMetadata().getSize()).getRiderOffset();
             float scale = ridingPony.getMetadata().getSize().getScaleFactor();
 
             return ridingPony.getAbsoluteRidingOffset(ridee)
-                    .add(0, offset.y - ridee.height * 1/scale, 0);
+                    .add(0, offset.y - ridee.getHeight() * 1/scale, 0);
         }
 
-        return entity.getPositionVector();
+        return entity.getPosVector();
     }
 
     @Override
-    public AxisAlignedBB getComputedBoundingBox(EntityLivingBase entity) {
+    public BoundingBox getComputedBoundingBox(LivingEntity entity) {
         float scale = getMetadata().getSize().getScaleFactor() + 0.1F;
 
         Vec3d pos = getAbsoluteRidingOffset(entity);
 
-        float width = entity.width * scale;
+        float width = entity.getWidth() * scale;
 
-        return new AxisAlignedBB(
-                - width, (entity.height * scale), -width,
+        return new BoundingBox(
+                - width, (entity.getHeight() * scale), -width,
                   width, 0,                        width).offset(pos);
     }
 

@@ -1,16 +1,26 @@
 package com.minelittlepony.client;
 
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.tileentity.TileEntity;
+
+import java.nio.file.Path;
+import java.util.function.Function;
 
 public interface IModUtilities {
-    <T extends TileEntity> void addRenderer(Class<T> type, TileEntityRenderer<T> renderer);
+    <T extends BlockEntity> void addRenderer(Class<T> type, BlockEntityRenderer<T> renderer);
 
-    <T extends Entity> void addRenderer(Class<T> type, Render<T> renderer);
+    <T extends Entity> void addRenderer(Class<T> type, Function<EntityRenderDispatcher, EntityRenderer<T>> renderer);
 
-    boolean hasFml();
+    default boolean hasFml() {
+        return false;
+    }
 
     float getRenderPartialTicks();
+
+    Path getConfigDirectory();
+
+    Path getAssetsDirectory();
 }

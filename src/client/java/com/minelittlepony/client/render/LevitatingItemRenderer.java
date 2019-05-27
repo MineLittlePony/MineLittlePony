@@ -9,17 +9,16 @@ import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
 import com.minelittlepony.client.util.render.Color;
 import com.minelittlepony.pony.IPony;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.EnumAction;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHandSide;
-import static net.minecraft.client.renderer.GlStateManager.*;
+import net.minecraft.util.AbsoluteHand;
+import net.minecraft.util.UseAction;
+
+import static com.mojang.blaze3d.platform.GlStateManager.*;
 
 @SuppressWarnings("deprecation") // ItemCameraTransforms is deprecated by forge but we still need it.
 public class LevitatingItemRenderer {
@@ -27,27 +26,27 @@ public class LevitatingItemRenderer {
     public static void enableItemGlowRenderProfile() {
         enableBlend();
         blendFuncSeparate(SourceFactor.CONSTANT_COLOR, DestFactor.ONE, SourceFactor.ONE, DestFactor.ZERO);
-        Minecraft.getInstance().gameRenderer.disableLightmap();
+        MinecraftClient.getInstance().gameRenderer.disableLightmap();
     }
 
     /**
      * Renders a magical overlay over an item in third person.
      */
-    public void renderItemGlow(EntityLivingBase entity, ItemStack drop, TransformType transform, EnumHandSide hand, int glowColor) {
+    public void renderItemGlow(LivingEntity entity, ItemStack drop, ModelTransformation.Type transform, AbsoluteHand hand, int glowColor) {
         pushMatrix();
         disableLighting();
         setColor(glowColor);
 
-        ItemRenderer renderItem = Minecraft.getInstance().getItemRenderer();
+        ItemRenderer renderItem = MinecraftClient.getInstance().getItemRenderer();
         ((IRenderItem) renderItem).useTransparency(true);
         PonySkullRenderer.ponyInstance.useTransparency(true);
 
         scalef(1.1F, 1.1F, 1.1F);
 
         translatef(0, 0.01F, 0.01F);
-        renderItem.renderItem(drop, entity, transform, hand == EnumHandSide.LEFT);
+        renderItem.renderHeldItem(drop, entity, transform, hand == AbsoluteHand.LEFT);
         translatef(0.01F, -0.01F, -0.02F);
-        renderItem.renderItem(drop, entity, transform, hand == EnumHandSide.LEFT);
+        renderItem.renderHeldItem(drop, entity, transform, hand == AbsoluteHand.LEFT);
 
         ((IRenderItem) renderItem).useTransparency(false);
         PonySkullRenderer.ponyInstance.useTransparency(false);
@@ -69,7 +68,7 @@ public class LevitatingItemRenderer {
     /**
      * Renders an item in first person optionally with a magical overlay.
      */
-    public void renderItemInFirstPerson(ItemRenderer renderer, AbstractClientPlayer entity, ItemStack stack, TransformType transform, boolean left) {
+    public void renderItemInFirstPerson(ItemRenderer renderer, AbstractClientPlayerEntity entity, ItemStack stack, ModelTransformation.Type transform, boolean left) {
         IPony pony = MineLittlePony.getInstance().getManager().getPony(entity);
 
         pushMatrix();
@@ -80,7 +79,7 @@ public class LevitatingItemRenderer {
             setupPerspective(renderer, entity, stack, left);
         }
 
-        renderer.renderItem(stack, entity, transform, left);
+        renderer.renderHeldItem(stack, entity, transform, left);
 
         if (doMagic) {
             disableLighting();
@@ -93,9 +92,9 @@ public class LevitatingItemRenderer {
             scalef(1.1F, 1.1F, 1.1F);
 
             translatef(-0.015F, 0.01F, 0.01F);
-            renderer.renderItem(stack, entity, transform, left);
+            renderer.renderHeldItem(stack, entity, transform, left);
             translatef(0.03F, -0.01F, -0.02F);
-            renderer.renderItem(stack, entity, transform, left);
+            renderer.renderHeldItem(stack, entity, transform, left);
 
             ((IRenderItem)renderer).useTransparency(false);
 
@@ -113,23 +112,23 @@ public class LevitatingItemRenderer {
     /**
      * Moves held items to look like they're floating in the player's field.
      */
-    private void setupPerspective(ItemRenderer renderer, EntityLivingBase entity, ItemStack stack, boolean left) {
-        EnumAction action = stack.getUseAction();
+    private void setupPerspective(ItemRenderer renderer, LivingEntity entity, ItemStack stack, boolean left) {
+        UseAction action = stack.getUseAction();
 
-        boolean doNormal = entity.getItemInUseCount() <= 0 || action == EnumAction.NONE;
+        boolean doNormal = entity.getItemUseTime() <= 0 || action == UseAction.NONE;
 
         if (doNormal) { // eating, blocking, and drinking are not transformed. Only held items.
-            float ticks = MineLPClient.getInstance().getModUtilities().getRenderPartialTicks() - entity.ticksExisted;
+            float ticks = MineLPClient.getInstance().getModUtilities().getRenderPartialTicks() - entity.age;
 
             float floatAmount = (float)Math.sin(ticks / 9) / 40;
             float driftAmount = (float)Math.cos(ticks / 6) / 40;
 
-            boolean handHeldTool = stack.getUseAction() == EnumAction.BOW
-                    || stack.getUseAction() == EnumAction.BLOCK;
+            boolean handHeldTool = stack.getUseAction() == UseAction.BOW
+                    || stack.getUseAction() == UseAction.BLOCK;
 
             translatef(driftAmount - floatAmount / 4, floatAmount, handHeldTool ? -0.3F : -0.6F);
 
-            if (!renderer.shouldRenderItemIn3D(stack) && !handHeldTool) { // bows have to point forwards
+            if (!renderer.hasDepthInGui(stack) && !handHeldTool) { // bows have to point forwards
                 if (left) {
                     rotatef(-60, 0, 1, 0);
                     rotatef(30, 0, 0, 1);

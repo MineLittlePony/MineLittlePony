@@ -1,15 +1,15 @@
 package com.minelittlepony.client.model.gear;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 import org.lwjgl.opengl.GL11;
 
-import com.minelittlepony.client.model.IClientModel;
 import com.minelittlepony.client.util.render.Color;
 import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.IPonyModel;
 import com.minelittlepony.pony.meta.Wearable;
 
 import java.util.Calendar;
@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class ChristmasHat extends AbstractGear {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation("minelittlepony", "textures/models/antlers.png");
+    private static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/models/antlers.png");
 
     private PonyRenderer left;
     private PonyRenderer right;
@@ -26,7 +26,7 @@ public class ChristmasHat extends AbstractGear {
 
     @Override
     public void init(float yOffset, float stretch) {
-        this.boxList.clear();
+        this.cuboidList.clear();
 
         left = new PonyRenderer(this, 0, 0).size(16, 8)
                 .around(-7, 0.5F, 0.5F)
@@ -48,12 +48,12 @@ public class ChristmasHat extends AbstractGear {
     }
 
     @Override
-    public boolean canRender(IClientModel model, Entity entity) {
+    public boolean canRender(IPonyModel<?> model, Entity entity) {
         return isChristmasDay() || model.isWearing(Wearable.ANTLERS);
     }
 
     @Override
-    public void setLivingAnimations(IClientModel model, Entity entity) {
+    public void setLivingAnimations(IPonyModel<?> model, Entity entity) {
         tint = model.getMetadata().getGlowColor();
     }
 
@@ -68,8 +68,8 @@ public class ChristmasHat extends AbstractGear {
 
         bodySwing += 0.1F;
 
-        left.rotateAngleZ = bodySwing;
-        right.rotateAngleZ = -bodySwing;
+        left.roll = bodySwing;
+        right.roll = -bodySwing;
     }
 
     private boolean isChristmasDay() {
@@ -84,7 +84,7 @@ public class ChristmasHat extends AbstractGear {
     }
 
     @Override
-    public ResourceLocation getTexture(Entity entity) {
+    public Identifier getTexture(Entity entity) {
         return TEXTURE;
     }
 

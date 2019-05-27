@@ -1,10 +1,11 @@
 package com.minelittlepony.client.model.components;
 
-import com.minelittlepony.client.model.AbstractPonyModel;
+import net.minecraft.client.model.Model;
+
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
 import com.minelittlepony.model.IPegasus;
 
-public class BugWings<T extends AbstractPonyModel & IPegasus> extends PegasusWings<T> {
+public class BugWings<T extends Model & IPegasus> extends PegasusWings<T> {
 
     public BugWings(T model, float yOffset, float stretch) {
         super(model, yOffset, stretch);
@@ -34,7 +35,7 @@ public class BugWings<T extends AbstractPonyModel & IPegasus> extends PegasusWin
 
             extended.around((r * (EXT_WING_RP_X - 2)), EXT_WING_RP_Y + rotationPointY, EXT_WING_RP_Z - 2)
                     .mirror(right)
-                    .rotateAngleY = r * 3;
+                    .yaw = r * 3;
 
             PlaneRenderer primary = new PlaneRenderer(pegasus)
                     .tex(56, 16)

@@ -2,29 +2,30 @@ package com.minelittlepony.client.render;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.PonyRenderManager;
-import com.minelittlepony.client.ducks.IRenderPony;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.transform.PonyPosture;
+import com.minelittlepony.model.IPonyModel;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.util.math.MathUtil;
+import com.mojang.blaze3d.platform.GlStateManager;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.culling.ICamera;
+import net.minecraft.client.render.VisibleRegion;
+import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 
-public class RenderPony<T extends EntityLivingBase> {
+public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> {
 
-    public ModelWrapper playerModel;
+    public ModelWrapper<T, M> playerModel;
 
-    protected AbstractPonyModel ponyModel;
+    protected AbstractPonyModel<T> ponyModel;
 
     private IPony pony;
 
-    private IRenderPony<T> renderer;
+    private IPonyRender<T, M> renderer;
 
     private FrustrumCheck<T> frustrum = new FrustrumCheck<>(this);
 
@@ -38,12 +39,12 @@ public class RenderPony<T extends EntityLivingBase> {
         GlStateManager.disableBlend();
     }
 
-    public RenderPony(IRenderPony<T> renderer) {
+    public RenderPony(IPonyRender<T, M> renderer) {
         this.renderer = renderer;
     }
 
-    public ICamera getFrustrum(T entity, ICamera vanilla) {
-        if (entity.isPlayerSleeping() || !MineLittlePony.getInstance().getConfig().frustrum) {
+    public VisibleRegion getFrustrum(T entity, VisibleRegion vanilla) {
+        if (entity.isSleeping() || !MineLittlePony.getInstance().getConfig().frustrum) {
             return vanilla;
         }
         return frustrum.withCamera(entity, vanilla);
@@ -62,31 +63,31 @@ public class RenderPony<T extends EntityLivingBase> {
     }
 
     public float getRenderYaw(T entity, float rotationYaw, float partialTicks) {
-        if (entity.isPassenger()) {
-            Entity mount = entity.getRidingEntity();
-            if (mount  instanceof EntityLivingBase) {
-                return MathUtil.interpolateDegress(((EntityLivingBase)mount).prevRenderYawOffset, ((EntityLivingBase)mount).renderYawOffset, partialTicks);
+        if (entity.hasVehicle()) {
+            Entity mount = entity.getVehicle();
+            if (mount  instanceof LivingEntity) {
+                return MathUtil.interpolateDegress(((LivingEntity)mount).field_6220, ((LivingEntity)mount).field_6283, partialTicks);
             }
         }
 
         return rotationYaw;
     }
 
-    protected void translateRider(EntityLivingBase entity, float ticks) {
-        if (entity.isPassenger()) {
-            Entity ridingEntity = entity.getRidingEntity();
+    protected void translateRider(LivingEntity entity, float ticks) {
+        if (entity.hasVehicle()) {
+            Entity ridingEntity = entity.getVehicle();
 
-            if (ridingEntity instanceof EntityLivingBase) {
-                IRenderPony<EntityLivingBase> renderer = PonyRenderManager.getInstance().getPonyRenderer((EntityLivingBase)ridingEntity);
+            if (ridingEntity instanceof LivingEntity) {
+                IPonyRender<LivingEntity, ?> renderer = PonyRenderManager.getInstance().getPonyRenderer((LivingEntity)ridingEntity);
 
                 if (renderer != null) {
                     // negate vanilla translations so the rider begins at the ridees feet.
-                    GlStateManager.translatef(0, -ridingEntity.height, 0);
+                    GlStateManager.translatef(0, -ridingEntity.getHeight(), 0);
 
                     @SuppressWarnings("unchecked")
-                    IPony riderPony = renderer.getEntityPony((EntityLivingBase)ridingEntity);
+                    IPony riderPony = renderer.getEntityPony((LivingEntity)ridingEntity);
 
-                    renderer.translateRider((EntityLivingBase)ridingEntity, riderPony, entity, pony, ticks);
+                    renderer.translateRider((LivingEntity)ridingEntity, riderPony, entity, pony, ticks);
                 }
             }
         }
@@ -96,10 +97,10 @@ public class RenderPony<T extends EntityLivingBase> {
     public void applyPostureTransform(T player, float yaw, float ticks) {
         PonyPosture<?> posture = getPosture(player);
         if (posture != null && posture.applies(player)) {
-            double motionX = player.posX - player.prevPosX;
-            double motionY = player.onGround ? 0 : player.posY - player.prevPosY;
-            double motionZ = player.posZ - player.prevPosZ;
-            ((PonyPosture<EntityLivingBase>)posture).transform(ponyModel, player, motionX, motionY, motionZ, yaw, ticks);
+            double motionX = player.x - player.prevX;
+            double motionY = player.onGround ? 0 : player.y - player.prevY;
+            double motionZ = player.x - player.prevZ;
+            ((PonyPosture<LivingEntity>)posture).transform(ponyModel, player, motionX, motionY, motionZ, yaw, ticks);
         }
     }
 
@@ -107,21 +108,21 @@ public class RenderPony<T extends EntityLivingBase> {
     public void applyPostureRiding(T player, float yaw, float ticks) {
         PonyPosture<?> posture = getPosture(player);
         if (posture != null && posture.applies(player)) {
-            double motionX = player.posX - player.prevPosX;
-            double motionY = player.onGround ? 0 : player.posY - player.prevPosY;
-            double motionZ = player.posZ - player.prevPosZ;
+            double motionX = player.x - player.prevX;
+            double motionY = player.onGround ? 0 : player.y - player.prevY;
+            double motionZ = player.z - player.prevZ;
 
-            ((PonyPosture<EntityLivingBase>)posture).transform(ponyModel, player, motionX, -motionY, motionZ, yaw, ticks);
+            ((PonyPosture<LivingEntity>)posture).transform(ponyModel, player, motionX, -motionY, motionZ, yaw, ticks);
         }
     }
 
     @Nullable
     private PonyPosture<?> getPosture(T entity) {
-        if (entity.isElytraFlying()) {
+        if (entity.isFallFlying()) {
             return PonyPosture.ELYTRA;
         }
 
-        if (entity.isAlive() && entity.isPlayerSleeping()) {
+        if (entity.isAlive() && entity.isSleeping()) {
             return null;
         }
 
@@ -136,11 +137,12 @@ public class RenderPony<T extends EntityLivingBase> {
         return PonyPosture.FALLING;
     }
 
-    public AbstractPonyModel setPonyModel(ModelWrapper model) {
+    @SuppressWarnings("unchecked")
+    public M setPonyModel(ModelWrapper<T, M> model) {
         playerModel = model;
-        ponyModel = playerModel.getBody();
+        ponyModel = (AbstractPonyModel<T>)playerModel.getBody();
 
-        return ponyModel;
+        return (M)ponyModel;
     }
 
     public void updateModel(T entity) {
@@ -164,7 +166,7 @@ public class RenderPony<T extends EntityLivingBase> {
     public double getNamePlateYOffset(T entity, double initial) {
 
         // We start by negating the height calculation done by mohjong.
-        float y = -(entity.height + 0.5F - (entity.isSneaking() ? 0.25F : 0));
+        float y = -(entity.getHeight() + 0.5F - (entity.isSneaking() ? 0.25F : 0));
 
         // Then we add our own offsets.
         y += ponyModel.getModelHeight() * getScaleFactor() + 0.25F;
@@ -173,11 +175,11 @@ public class RenderPony<T extends EntityLivingBase> {
             y -= 0.25F;
         }
 
-        if (entity.isPassenger()) {
-            y += entity.getRidingEntity().getEyeHeight();
+        if (entity.hasVehicle()) {
+            y += entity.getVehicle().getEyeHeight(entity.getPose());
         }
 
-        if (entity.isPlayerSleeping()) {
+        if (entity.isSleeping()) {
             y /= 2;
         }
 

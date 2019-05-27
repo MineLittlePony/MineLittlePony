@@ -1,6 +1,6 @@
 package com.minelittlepony.client.pony;
 
-import net.minecraft.client.renderer.texture.NativeImage;
+import net.minecraft.client.texture.NativeImage;
 
 import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.Expose;

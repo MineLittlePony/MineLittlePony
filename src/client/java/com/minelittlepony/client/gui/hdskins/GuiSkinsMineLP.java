@@ -11,10 +11,10 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Items;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 import java.util.List;
 
@@ -43,8 +43,8 @@ public class GuiSkinsMineLP extends GuiSkins {
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
+    public void init() {
+        super.init();
 
         addButton(new IconicToggle(width - 25, 142))
                 .setStyles(
@@ -56,10 +56,10 @@ public class GuiSkinsMineLP extends GuiSkins {
     }
 
     @Override
-    protected ResourceLocation getBackground() {
+    protected Identifier getBackground() {
         int i = (int)Math.floor(Math.random() * panoramas.length);
 
-        return new ResourceLocation(panoramas[i]);
+        return new Identifier(panoramas[i]);
     }
 
     protected int setWet(int wet) {
@@ -85,7 +85,7 @@ public class GuiSkinsMineLP extends GuiSkins {
     }
 
     @Override
-    public void onSetRemoteSkin(Type type, ResourceLocation location, MinecraftProfileTexture profileTexture) {
+    public void onSetRemoteSkin(Type type, Identifier location, MinecraftProfileTexture profileTexture) {
         super.onSetRemoteSkin(type, location, profileTexture);
 
         MineLittlePony.logger.debug("Invalidating old remote skin, checking updated remote skin");

@@ -1,14 +1,12 @@
 package com.minelittlepony.client.util.render;
 
-import net.minecraft.client.renderer.entity.model.ModelBase;
-import net.minecraft.client.renderer.entity.model.ModelBox;
-import net.minecraft.client.renderer.entity.model.ModelRenderer;
-import net.minecraft.client.renderer.entity.model.TextureOffset;
+import net.minecraft.client.model.Cuboid;
+import net.minecraft.client.model.Model;
 
 @SuppressWarnings("unchecked")
-public abstract class AbstractRenderer<T extends AbstractRenderer<T>> extends ModelRenderer {
+public abstract class AbstractRenderer<T extends AbstractRenderer<T>> extends Cuboid {
 
-    protected final ModelBase baseModel;
+    protected final Model baseModel;
 
     protected int textureOffsetX;
     protected int textureOffsetY;
@@ -17,12 +15,12 @@ public abstract class AbstractRenderer<T extends AbstractRenderer<T>> extends Mo
     protected float modelOffsetY;
     protected float modelOffsetZ;
 
-    public AbstractRenderer(ModelBase model) {
+    public AbstractRenderer(Model model) {
         super(model);
         baseModel = model;
     }
 
-    public AbstractRenderer(ModelBase model, int texX, int texY) {
+    public AbstractRenderer(Model model, int texX, int texY) {
         super(model, texX, texY);
         baseModel = model;
     }
@@ -86,7 +84,7 @@ public abstract class AbstractRenderer<T extends AbstractRenderer<T>> extends Mo
     /**
      * Adjusts the rotation center of the given renderer by the given amounts in each direction.
      */
-    public static void shiftRotationPoint(ModelRenderer renderer, float x, float y, float z) {
+    public static void shiftRotationPoint(Cuboid renderer, float x, float y, float z) {
         renderer.rotationPointX += x;
         renderer.rotationPointY += y;
         renderer.rotationPointZ += z;
@@ -96,9 +94,9 @@ public abstract class AbstractRenderer<T extends AbstractRenderer<T>> extends Mo
      * Sets this renderer's rotation angles.
      */
     public T rotate(float x, float y, float z) {
-        rotateAngleX = x;
-        rotateAngleY = y;
-        rotateAngleZ = z;
+        pitch = x;
+        yaw = y;
+        roll = z;
         return (T) this;
     }
 
@@ -106,24 +104,24 @@ public abstract class AbstractRenderer<T extends AbstractRenderer<T>> extends Mo
      * Positions a given model in space by setting its offset values divided
      * by 16 to account for scaling applied inside the model.
      */
-    public static <T extends ModelRenderer> T at(T renderer, float x, float y, float z) {
-        renderer.offsetX = x / 16;
-        renderer.offsetY = y / 16;
-        renderer.offsetZ = z / 16;
+    public static <T extends Cuboid> T at(T renderer, float x, float y, float z) {
+        renderer.x = x / 16;
+        renderer.y = y / 16;
+        renderer.z = z / 16;
         return renderer;
     }
 
     /**
      * Rotates this model to align itself with the angles of another.
      */
-    public void rotateTo(ModelRenderer other) {
-        rotate(other.rotateAngleX, other.rotateAngleY, other.rotateAngleZ);
+    public void rotateTo(Cuboid other) {
+        rotate(other.pitch, other.yaw, other.roll);
     }
 
     /**
      * Shifts this model to align its center with the center of another.
      */
-    public T rotateAt(ModelRenderer other) {
+    public T rotateAt(Cuboid other) {
         return around(other.rotationPointX, other.rotationPointY, other.rotationPointZ);
     }
 
@@ -140,10 +138,10 @@ public abstract class AbstractRenderer<T extends AbstractRenderer<T>> extends Mo
      * New children will be of the same type and inherit the same textures and offsets of the original.
      */
     public T child(int index) {
-        if (childModels == null || index >= childModels.size()) {
+        if (children == null || index >= children.size()) {
             return child();
         }
-        return (T)childModels.get(index);
+        return (T)children.get(index);
     }
 
     /**
@@ -160,19 +158,18 @@ public abstract class AbstractRenderer<T extends AbstractRenderer<T>> extends Mo
     /**
      * Adds a new child renderer and returns itself for chaining.
      */
-    public <K extends ModelRenderer> T child(K child) {
+    public <K extends Cuboid> T child(K child) {
         addChild(child);
         return (T)this;
     }
 
     @Override
-    public T addBox(String partName, float offX, float offY, float offZ, int width, int height, int depth) {
-        partName = boxName + "." + partName;
+    public T addBox(String partName, float offX, float offY, float offZ, int width, int height, int depth, float unknown, int texX, int texY) {
+        partName = name + "." + partName;
 
-        TextureOffset tex = baseModel.getTextureOffset(partName);
-
-        setTextureOffset(tex.textureOffsetX, tex.textureOffsetY).addBox(offX, offY, offZ, width, height, depth);
-        cubeList.get(cubeList.size() - 1).setBoxName(partName);
+        setTextureOffset(texX, texY);
+        addBox(offX, offY, offZ, width, height, depth);
+        boxes.get(boxes.size() - 1).setName(partName);
 
         return (T) this;
     }
@@ -209,6 +206,6 @@ public abstract class AbstractRenderer<T extends AbstractRenderer<T>> extends Mo
     }
 
     protected void createBox(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor, boolean mirrored) {
-        cubeList.add(new ModelBox(this, textureOffsetX, textureOffsetY, offX, offY, offZ, width, height, depth, scaleFactor, mirrored));
+        boxes.add(new Box<>(this, textureOffsetX, textureOffsetY, offX, offY, offZ, width, height, depth, scaleFactor, mirrored));
     }
 }

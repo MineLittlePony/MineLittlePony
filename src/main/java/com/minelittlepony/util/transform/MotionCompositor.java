@@ -1,6 +1,6 @@
 package com.minelittlepony.util.transform;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.util.math.MathUtil;
@@ -12,12 +12,12 @@ import com.minelittlepony.util.math.MathUtil;
  */
 public abstract class MotionCompositor {
 
-    protected double calculateRoll(EntityPlayer player, double motionX, double motionY, double motionZ) {
+    protected double calculateRoll(PlayerEntity player, double motionX, double motionY, double motionZ) {
 
         // since model roll should probably be calculated from model rotation rather than entity rotation...
-        double roll = MathUtil.sensibleAngle(player.prevRenderYawOffset - player.renderYawOffset);
+        double roll = MathUtil.sensibleAngle(player.field_6220 - player.field_6283);
         double horMotion = Math.sqrt(motionX * motionX + motionZ * motionZ);
-        float modelYaw = MathUtil.sensibleAngle(player.renderYawOffset);
+        float modelYaw = MathUtil.sensibleAngle(player.field_6283);
 
         // detecting that we're flying backwards and roll must be inverted
         if (Math.abs(MathUtil.sensibleAngle((float) Math.toDegrees(Math.atan2(motionX, motionZ)) + modelYaw)) > 90) {
@@ -36,11 +36,11 @@ public abstract class MotionCompositor {
         return MathHelper.clamp(roll, -54, 54);
     }
 
-    protected double calculateIncline(EntityPlayer player, double motionX, double motionY, double motionZ) {
+    protected double calculateIncline(PlayerEntity player, double motionX, double motionY, double motionZ) {
         double dist = Math.sqrt(motionX * motionX + motionZ * motionZ);
         double angle = Math.atan2(motionY, dist);
 
-        if (!player.abilities.isFlying) {
+        if (!player.abilities.allowFlying) {
             angle /= 2;
         }
 

@@ -9,15 +9,14 @@ import com.minelittlepony.client.util.render.plane.PlaneRenderer;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.pony.IPony;
+import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
 
 import org.lwjgl.opengl.GL11;
 
-public class ModelSeapony extends ModelUnicorn {
+public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
 
     PonyRenderer bodyCenter;
 
@@ -32,15 +31,15 @@ public class ModelSeapony extends ModelUnicorn {
 
     @Override
     public IEquestrianArmour<?> createArmour() {
-        return new PonyArmor(new Armour(), new Armour());
+        return new PonyArmor<>(new Armour(), new Armour());
     }
 
     @Override
-    public void updateLivingState(EntityLivingBase entity, IPony pony) {
+    public void updateLivingState(T entity, IPony pony) {
         super.updateLivingState(entity, pony);
 
         // Seaponies can't sneak, silly
-        isSneak = false;
+        isSneaking = false;
     }
 
     @Override
@@ -57,10 +56,10 @@ public class ModelSeapony extends ModelUnicorn {
     protected void initLegs(float yOffset, float stretch) {
         super.initLegs(yOffset, stretch);
         // hide the back legs
-        bipedLeftLeg.showModel = false;
-        bipedRightLeg.showModel = false;
-        bipedLeftLegwear.showModel = false;
-        bipedRightLegwear.showModel = false;
+        leftLeg.visible = false;
+        rightLeg.visible = false;
+        leftLegOverlay.visible = false;
+        rightLegOverlay.visible = false;
 
         centerFin = new PlaneRenderer(this, 58, 28)
                 .rotate(PI / 2 - 0.1F, 0, 0).around(0, 6, 9)
@@ -90,8 +89,8 @@ public class ModelSeapony extends ModelUnicorn {
     }
 
     @Override
-    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
-        super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
+    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        super.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
 
         float flapMotion = MathHelper.cos(ticks / 10) / 5;
 
@@ -101,41 +100,41 @@ public class ModelSeapony extends ModelUnicorn {
 
         float finAngle = FIN_ROT_Y + flapMotion;
 
-        leftFin.rotateAngleY = finAngle;
-        rightFin.rotateAngleY = -finAngle;
+        leftFin.yaw = finAngle;
+        rightFin.yaw = -finAngle;
 
         if (!isSleeping()) {
-            centerFin.rotateAngleZ = flapMotion;
+            centerFin.roll = flapMotion;
         }
 
         if (!entity.isInWater()) {
-            bipedLeftArm.rotateAngleX -= 0.5F;
-            bipedRightArm.rotateAngleX -= 0.5F;
+            leftArm.pitch -= 0.5F;
+            rightArm.pitch -= 0.5F;
         }
 
         if (!entity.isInWater() || entity.onGround) {
-            bipedLeftArm.rotateAngleY -= 0.5F;
-            bipedRightArm.rotateAngleY += 0.5F;
+            leftArm.yaw -= 0.5F;
+            rightArm.yaw += 0.5F;
         }
     }
 
     @Override
-    protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
+    protected void rotateLegs(float move, float swing, float ticks, T entity) {
         super.rotateLegs(move, swing, ticks, entity);
-        bipedLeftArm.rotateAngleX -= 1.4F;
-        bipedLeftArm.rotateAngleY -= 0.3F;
-        bipedRightArm.rotateAngleX -= 1.4F;
-        bipedRightArm.rotateAngleY += 0.3F;
+        leftArm.pitch -= 1.4F;
+        leftArm.yaw -= 0.3F;
+        rightArm.pitch -= 1.4F;
+        rightArm.yaw += 0.3F;
     }
 
     @Override
-    protected void rotateLegsSwimming(float move, float swing, float ticks, Entity entity) {
+    protected void rotateLegsSwimming(float move, float swing, float ticks, T entity) {
         super.rotateLegsOnGround(move, swing, ticks, entity);
     }
 
     @Override
-    public void render(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        setVisible(bipedLeftArmwear.showModel);
+    public void render(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        setVisible(leftArmOverlay.visible);
 
         super.render(entity, move, swing, ticks, headYaw, headPitch, scale);
     }
@@ -148,12 +147,12 @@ public class ModelSeapony extends ModelUnicorn {
     }
 
     @Override
-    protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        bipedBody.render(scale);
+    protected void renderBody(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        body.render(scale);
         bodyCenter.render(scale);
-        bipedBody.postRender(scale);
+        body.applyTransform(scale);
 
-        tail.renderPart(scale, entity.getUniqueID());
+        tail.renderPart(scale, entity.getUuid());
 
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         GlStateManager.enableBlend();
@@ -178,30 +177,30 @@ public class ModelSeapony extends ModelUnicorn {
         super.setVisible(visible);
 
         // hide the back legs
-        bipedLeftLeg.showModel = false;
-        bipedRightLeg.showModel = false;
-        bipedLeftLegwear.showModel = false;
-        bipedRightLegwear.showModel = false;
+        leftLeg.visible = false;
+        rightLeg.visible = false;
+        leftLegOverlay.visible = false;
+        rightLegOverlay.visible = false;
     }
 
-    class Armour extends ModelPonyArmor {
+    class Armour extends ModelPonyArmor<T> {
 
         @Override
         public void showBoots() {
-            bipedRightArm.showModel = true;
-            bipedLeftArm.showModel = true;
+            rightArm.visible = true;
+            leftArm.visible = true;
         }
 
         @Override
-        public void updateLivingState(EntityLivingBase entity, IPony pony) {
+        public void updateLivingState(T entity, IPony pony) {
             super.updateLivingState(entity, pony);
 
             // Seaponies can't sneak, silly
-            isSneak = false;
+            isSneaking = false;
         }
 
         @Override
-        protected void rotateLegsSwimming(float move, float swing, float ticks, Entity entity) {
+        protected void rotateLegsSwimming(float move, float swing, float ticks, T entity) {
             super.rotateLegsOnGround(move, swing, ticks, entity);
         }
 

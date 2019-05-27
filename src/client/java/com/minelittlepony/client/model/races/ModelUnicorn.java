@@ -4,14 +4,14 @@ import com.minelittlepony.client.model.components.UnicornHorn;
 import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.model.IUnicorn;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumHandSide;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.AbsoluteHand;
 import net.minecraft.util.math.MathHelper;
 
 /**
  * Used for both unicorns and alicorns since there's no logical way to keep them distinct and not duplicate stuff.
  */
-public class ModelUnicorn extends ModelEarthPony implements IUnicorn<PonyRenderer> {
+public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> implements IUnicorn<PonyRenderer> {
 
     public PonyRenderer unicornArmRight;
     public PonyRenderer unicornArmLeft;
@@ -29,11 +29,11 @@ public class ModelUnicorn extends ModelEarthPony implements IUnicorn<PonyRendere
     }
 
     @Override
-    protected void rotateLegsOnGround(float move, float swing, float ticks, Entity entity) {
+    protected void rotateLegsOnGround(float move, float swing, float ticks, T entity) {
         super.rotateLegsOnGround(move, swing, ticks, entity);
 
-        unicornArmRight.rotateAngleY = 0;
-        unicornArmLeft.rotateAngleY = 0;
+        unicornArmRight.yaw = 0;
+        unicornArmLeft.yaw = 0;
     }
 
     @Override
@@ -45,17 +45,17 @@ public class ModelUnicorn extends ModelEarthPony implements IUnicorn<PonyRendere
     }
 
     @Override
-    protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
+    protected void rotateLegs(float move, float swing, float ticks, T entity) {
         super.rotateLegs(move, swing, ticks, entity);
 
         unicornArmRight.setRotationPoint(-7, 12, -2);
         unicornArmLeft.setRotationPoint(-7, 12, -2);
 
-        unicornArmLeft.rotateAngleZ = 0;
-        unicornArmRight.rotateAngleZ = 0;
+        unicornArmLeft.roll = 0;
+        unicornArmRight.roll = 0;
 
-        unicornArmLeft.rotateAngleX = 0;
-        unicornArmRight.rotateAngleX = 0;
+        unicornArmLeft.pitch = 0;
+        unicornArmRight.pitch = 0;
     }
 
     @Override
@@ -71,11 +71,11 @@ public class ModelUnicorn extends ModelEarthPony implements IUnicorn<PonyRendere
     }
 
     @Override
-    protected void swingItem(Entity entity) {
-        EnumHandSide mainSide = getMainHand(entity);
+    protected void swingItem(T entity) {
+        AbsoluteHand mainSide = getPreferedHand(entity);
 
         if (canCast() && getArmPoseForSide(mainSide) != ArmPose.EMPTY) {
-            if (swingProgress > -9990.0F && !isSleeping()) {
+            if (getSwingAmount() > -9990 && !isSleeping()) {
                 swingArm(getUnicornArmForSide(mainSide));
             }
         } else {
@@ -92,13 +92,13 @@ public class ModelUnicorn extends ModelEarthPony implements IUnicorn<PonyRendere
             float sin = MathHelper.sin(ticks * 0.067F) * 0.05F;
 
             if (rightArmPose != ArmPose.EMPTY) {
-                unicornArmRight.rotateAngleZ += cos;
-                unicornArmRight.rotateAngleX += sin;
+                unicornArmRight.roll += cos;
+                unicornArmRight.pitch += sin;
             }
 
             if (leftArmPose != ArmPose.EMPTY) {
-                unicornArmLeft.rotateAngleZ += cos;
-                unicornArmLeft.rotateAngleX += sin;
+                unicornArmLeft.roll += cos;
+                unicornArmLeft.pitch += sin;
             }
         } else {
             super.swingArms(ticks);
@@ -106,8 +106,8 @@ public class ModelUnicorn extends ModelEarthPony implements IUnicorn<PonyRendere
     }
 
     @Override
-    public PonyRenderer getUnicornArmForSide(EnumHandSide side) {
-        return side == EnumHandSide.LEFT ? unicornArmLeft : unicornArmRight;
+    public PonyRenderer getUnicornArmForSide(AbsoluteHand side) {
+        return side == AbsoluteHand.LEFT ? unicornArmLeft : unicornArmRight;
     }
 
     @Override
@@ -118,16 +118,16 @@ public class ModelUnicorn extends ModelEarthPony implements IUnicorn<PonyRendere
     @Override
     protected void ponyCrouch() {
         super.ponyCrouch();
-        unicornArmRight.rotateAngleX -= LEG_ROT_X_SNEAK_ADJ;
-        unicornArmLeft.rotateAngleX -= LEG_ROT_X_SNEAK_ADJ;
+        unicornArmRight.pitch -= LEG_ROT_X_SNEAK_ADJ;
+        unicornArmLeft.pitch -= LEG_ROT_X_SNEAK_ADJ;
     }
 
     @Override
-    protected void renderHead(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+    protected void renderHead(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         super.renderHead(entity, move, swing, ticks, headYaw, headPitch, scale);
 
         if (canCast()) {
-            horn.renderPart(scale, entity.getUniqueID());
+            horn.renderPart(scale, entity.getUuid());
             if (isCasting()) {
                 horn.renderMagic(getMagicColor(), scale);
             }

@@ -1,14 +1,14 @@
 package com.minelittlepony.client.model.armour;
 
-import net.minecraft.client.renderer.entity.model.ModelBiped;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.entity.LivingEntity;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.armour.IArmour;
 
-public class ModelPonyArmor extends AbstractPonyModel implements IArmour {
+public class ModelPonyArmor<T extends LivingEntity> extends AbstractPonyModel<T> implements IArmour {
 
     public PonyRenderer chestPiece;
 
@@ -21,26 +21,27 @@ public class ModelPonyArmor extends AbstractPonyModel implements IArmour {
     protected void adjustBodyComponents(float rotateAngleX, float rotationPointY, float rotationPointZ) {
         super.adjustBodyComponents(rotateAngleX, rotationPointY, rotationPointZ);
 
-        chestPiece.rotateAngleX = rotateAngleX;
+        chestPiece.pitch = rotateAngleX;
         chestPiece.rotationPointY = rotationPointY;
         chestPiece.rotationPointZ = rotationPointZ;
     }
 
     @Override
-    protected void renderBody(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+    protected void renderBody(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         chestPiece.render(scale);
     }
 
     @Override
     public void synchroniseLegs(IModel model) {
 
-        if (model instanceof ModelBiped) {
-            ModelBiped mainModel = (ModelBiped)model;
-            copyModelAngles(mainModel.bipedBody, bipedBody);
-            copyModelAngles(mainModel.bipedRightArm, bipedRightArm);
-            copyModelAngles(mainModel.bipedLeftArm, bipedLeftArm);
-            copyModelAngles(mainModel.bipedRightLeg, bipedRightLeg);
-            copyModelAngles(mainModel.bipedLeftLeg, bipedLeftLeg);
+        if (model instanceof BipedEntityModel) {
+            @SuppressWarnings("unchecked")
+            BipedEntityModel<T> mainModel = (BipedEntityModel<T>)model;
+            body.copyRotation(mainModel.body);
+            rightArm.copyRotation(mainModel.rightArm);
+            leftArm.copyRotation(mainModel.leftArm);
+            rightLeg.copyRotation(mainModel.rightLeg);
+            leftLeg.copyRotation(mainModel.leftLeg);
         }
     }
 
@@ -62,31 +63,31 @@ public class ModelPonyArmor extends AbstractPonyModel implements IArmour {
 
     @Override
     protected void preInitLegs() {
-        bipedLeftArm = new PonyRenderer(this, 0, 16).flip();
-        bipedRightArm = new PonyRenderer(this, 0, 16);
+        leftArm = new PonyRenderer(this, 0, 16).flip();
+        rightArm = new PonyRenderer(this, 0, 16);
 
-        bipedLeftLeg = new PonyRenderer(this, 48, 8).flip();
-        bipedRightLeg = new PonyRenderer(this, 48, 8);
+        leftLeg = new PonyRenderer(this, 48, 8).flip();
+        rightLeg = new PonyRenderer(this, 48, 8);
     }
 
     @Override
     public void setInVisible() {
         setVisible(false);
-        bipedBody.showModel = true;
-        chestPiece.showModel = false;
-        bipedHead.showModel = false;
-        neck.showModel = false;
+        body.visible = true;
+        chestPiece.visible = false;
+        head.visible = false;
+        neck.visible = false;
         tail.setVisible(false);
-        upperTorso.isHidden = true;
+        upperTorso.field_3664 = true;
         snout.isHidden = true;
     }
 
     @Override
     public void showBoots() {
-        bipedRightArm.showModel = true;
-        bipedLeftArm.showModel = true;
-        bipedRightLeg.showModel = true;
-        bipedLeftLeg.showModel = true;
+        rightArm.visible = true;
+        leftArm.visible = true;
+        rightLeg.visible = true;
+        leftLeg.visible = true;
     }
 
     @Override
@@ -96,18 +97,18 @@ public class ModelPonyArmor extends AbstractPonyModel implements IArmour {
 
     @Override
     public void showChestplate() {
-        chestPiece.showModel = true;
-        neck.showModel = true;
+        chestPiece.visible = true;
+        neck.visible = true;
     }
 
     @Override
     public void showSaddle() {
-        chestPiece.showModel = true;
-        neck.showModel = true;
+        chestPiece.visible = true;
+        neck.visible = true;
     }
 
     @Override
     public void showHelmet() {
-        bipedHead.showModel = true;
+        head.visible = true;
     }
 }

@@ -1,6 +1,6 @@
 package com.minelittlepony.client.util.render.plane;
 
-import net.minecraft.client.renderer.entity.model.ModelBase;
+import net.minecraft.client.model.Model;
 
 import com.minelittlepony.client.util.render.AbstractRenderer;
 
@@ -8,11 +8,11 @@ public class PlaneRenderer extends AbstractRenderer<PlaneRenderer> {
 
     public boolean mirrory, mirrorz;
 
-    public PlaneRenderer(ModelBase model) {
+    public PlaneRenderer(Model model) {
         super(model);
     }
 
-    public PlaneRenderer(ModelBase model, int x, int y) {
+    public PlaneRenderer(Model model, int x, int y) {
         super(model, x, y);
     }
 
@@ -23,7 +23,6 @@ public class PlaneRenderer extends AbstractRenderer<PlaneRenderer> {
         mirrorz = !mirrorz;
         return this;
     }
-
 
     /**
      * Flips the Y bit. Any calls to add a plane will be mirrored until this is called again.
@@ -39,7 +38,7 @@ public class PlaneRenderer extends AbstractRenderer<PlaneRenderer> {
     }
 
     private PlaneRenderer addPlane(float offX, float offY, float offZ, int width, int height, int depth, float scale, Plane face) {
-        cubeList.add(new ModelPlane(this, textureOffsetX, textureOffsetY, modelOffsetX + offX, modelOffsetY + offY, modelOffsetZ + offZ, width, height, depth, scale, face));
+        boxes.add(new ModelPlane(this, textureOffsetX, textureOffsetY, modelOffsetX + offX, modelOffsetY + offY, modelOffsetZ + offZ, width, height, depth, scale, face));
         return this;
     }
 

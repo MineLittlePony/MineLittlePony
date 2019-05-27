@@ -1,6 +1,6 @@
 package com.minelittlepony.client.util.render;
 
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.render.BufferBuilder;
 
 /**
  * Like a normal box, but with the top narrowed a bit.
@@ -58,7 +58,7 @@ public class HornGlow extends Box<GlowRenderer> {
 
         if (renderer.mirror) {
             for (Quad i : quadList) {
-                i.flipFace();
+                i.flip();
             }
         }
     }
@@ -68,7 +68,7 @@ public class HornGlow extends Box<GlowRenderer> {
         parent.applyTint(alpha);
 
         for (Quad i : quadList) {
-            i.draw(buffer, scale);
+            i.render(buffer, scale);
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.minelittlepony.client.util.render;
 
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 
 /**
  * Colouration Utilities

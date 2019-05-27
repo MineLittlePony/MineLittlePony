@@ -5,52 +5,43 @@ import com.minelittlepony.client.model.entities.ModelVillagerPony;
 import com.minelittlepony.client.render.RenderPonyMob;
 import com.minelittlepony.util.resources.FormattedTextureSupplier;
 import com.minelittlepony.util.resources.ITextureSupplier;
-import com.minelittlepony.util.resources.IntStringMapper;
+import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.util.Identifier;
+import net.minecraft.village.VillagerData;
 
-public class RenderPonyVillager extends RenderPonyMob<EntityVillager> {
-
-    /**
-     * Key mapping from a villager profession id to a human readable name
-     */
-    public static final IntStringMapper MAPPER = new IntStringMapper("farmer", "librarian", "priest", "smith", "butcher", "villager");
+public class RenderPonyVillager extends RenderPonyMob.Caster<VillagerEntity, ModelVillagerPony<VillagerEntity>> {
 
     private static final ITextureSupplier<String> FORMATTER = new FormattedTextureSupplier("minelittlepony", "textures/entity/villager/%s_pony.png");
 
-    private static final ResourceLocation DEFAULT = FORMATTER.supplyTexture("villager");
-    private static final ResourceLocation EGG = FORMATTER.supplyTexture("silly");
-    private static final ResourceLocation EGG_2 = FORMATTER.supplyTexture("tiny_silly");
+    private static final Identifier DEFAULT = FORMATTER.supplyTexture("villager");
+    private static final Identifier EGG = FORMATTER.supplyTexture("silly");
+    private static final Identifier EGG_2 = FORMATTER.supplyTexture("tiny_silly");
 
-    private static final ITextureSupplier<Integer> PROFESSIONS = new VillagerProfessionTextureCache(FORMATTER, MAPPER, DEFAULT);
+    private static final ITextureSupplier<VillagerData> PROFESSIONS = new VillagerProfessionTextureCache(FORMATTER, DEFAULT);
 
-    private static final ModelWrapper MODEL_WRAPPER = new ModelWrapper(new ModelVillagerPony());
-
-    public RenderPonyVillager(RenderManager manager) {
-        super(manager, MODEL_WRAPPER);
+    public RenderPonyVillager(EntityRenderDispatcher manager) {
+        super(manager, new ModelWrapper<>(new ModelVillagerPony<>()));
     }
 
     @Override
-    public void preRenderCallback(EntityVillager villager, float ticks) {
-        super.preRenderCallback(villager, ticks);
+    public void scale(VillagerEntity villager, float ticks) {
+        super.scale(villager, ticks);
         GlStateManager.scalef(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
     }
 
-
-    @SuppressWarnings("deprecation") // let me use getProfession in peace. I don't care that forge has their own one.
     @Override
-    public ResourceLocation getTexture(EntityVillager entity) {
-        String name = entity.getCustomName().getUnformattedComponentText();
-        if ("Derpy".equals(name) || (entity.isChild() && "Dinky".equals(name))) {
-            if (entity.isChild()) {
+    public Identifier findTexture(VillagerEntity entity) {
+        String name = entity.getCustomName().getString();
+        if ("Derpy".equals(name) || (entity.isBaby() && "Dinky".equals(name))) {
+            if (entity.isBaby()) {
                 return EGG_2;
             }
             return EGG;
         }
 
-        return PROFESSIONS.supplyTexture(entity.getProfession());
+        return PROFESSIONS.supplyTexture(entity.getVillagerData());
     }
 }

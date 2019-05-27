@@ -1,15 +1,17 @@
 package com.minelittlepony.client.model.armour;
 
+import net.minecraft.entity.LivingEntity;
+
 import com.minelittlepony.model.armour.ArmourLayer;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.pony.IPonyData;
 
-public class PonyArmor implements IEquestrianArmour<ModelPonyArmor> {
+public class PonyArmor<T extends LivingEntity> implements IEquestrianArmour<ModelPonyArmor<T>> {
 
-    private final ModelPonyArmor outerLayer;
-    private final ModelPonyArmor innerLayer;
+    private final ModelPonyArmor<T> outerLayer;
+    private final ModelPonyArmor<T> innerLayer;
 
-    public PonyArmor(ModelPonyArmor outer, ModelPonyArmor inner) {
+    public PonyArmor(ModelPonyArmor<T> outer, ModelPonyArmor<T> inner) {
         outerLayer = outer;
         innerLayer = inner;
     }
@@ -27,7 +29,7 @@ public class PonyArmor implements IEquestrianArmour<ModelPonyArmor> {
     }
 
     @Override
-    public ModelPonyArmor getArmorForLayer(ArmourLayer layer) {
+    public ModelPonyArmor<T> getArmorForLayer(ArmourLayer layer) {
 
         if (layer == ArmourLayer.INNER) {
             return innerLayer;

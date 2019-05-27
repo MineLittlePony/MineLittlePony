@@ -1,34 +1,32 @@
 package com.minelittlepony.client.model.entities;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.AbstractSkeleton;
-import net.minecraft.entity.monster.EntityWitherSkeleton;
-import net.minecraft.init.Items;
+import net.minecraft.entity.mob.WitherSkeletonEntity;
+import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.AbsoluteHand;
+import net.minecraft.util.Hand;
 
 import com.minelittlepony.client.model.ModelMobPony;
 
-public class ModelSkeletonPony extends ModelMobPony {
+public class ModelSkeletonPony<T extends HostileEntity> extends ModelMobPony<T> {
 
     public boolean isUnicorn;
 
     public boolean isWithered;
 
     @Override
-    public void setLivingAnimations(EntityLivingBase entity, float move, float swing, float ticks) {
-        isUnicorn = entity.getUniqueID().getLeastSignificantBits() % 3 != 0;
-        isWithered = entity instanceof EntityWitherSkeleton;
+    public void animateModel(T entity, float move, float swing, float ticks) {
+        isUnicorn = entity.getUuid().getLeastSignificantBits() % 3 != 0;
+        isWithered = entity instanceof WitherSkeletonEntity;
 
         rightArmPose = ArmPose.EMPTY;
         leftArmPose = ArmPose.EMPTY;
 
-        ItemStack mainHand = entity.getHeldItem(EnumHand.MAIN_HAND);
-        ItemStack offHand = entity.getHeldItem(EnumHand.OFF_HAND);
+        ItemStack mainHand = entity.getStackInHand(Hand.MAIN_HAND);
+        ItemStack offHand = entity.getStackInHand(Hand.OFF_HAND);
 
-        boolean right = entity.getPrimaryHand() == EnumHandSide.RIGHT;
+        boolean right = entity.getMainHand() == AbsoluteHand.RIGHT;
 
         if (!offHand.isEmpty()) {
             if (right) {
@@ -39,7 +37,7 @@ public class ModelSkeletonPony extends ModelMobPony {
         }
 
         if (!mainHand.isEmpty()) {
-            ArmPose pose = mainHand.getItem() == Items.BOW && ((AbstractSkeleton)entity).isSwingingArms() ? ArmPose.BOW_AND_ARROW : ArmPose.ITEM;
+            ArmPose pose = mainHand.getItem() == Items.BOW && entity.isAttacking() ? ArmPose.BOW_AND_ARROW : ArmPose.ITEM;
 
             if (right) {
                 rightArmPose = pose;
@@ -49,25 +47,25 @@ public class ModelSkeletonPony extends ModelMobPony {
         }
 
 
-        super.setLivingAnimations(entity, move, swing, ticks);
+        super.animateModel(entity, move, swing, ticks);
     }
 
     @Override
-    protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
+    protected void rotateLegs(float move, float swing, float ticks, T entity) {
         super.rotateLegs(move, swing, ticks, entity);
         if (rightArmPose != ArmPose.EMPTY) {
             if (canCast()) {
-                rotateArmHolding(unicornArmRight, -1, swingProgress, ticks);
+                rotateArmHolding(unicornArmRight, -1, getSwingAmount(), ticks);
             } else {
-                rotateArmHolding(bipedRightArm, -1, swingProgress, ticks);
+                rotateArmHolding(rightArm, -1, getSwingAmount(), ticks);
             }
         }
 
         if (leftArmPose != ArmPose.EMPTY) {
             if (canCast()) {
-                rotateArmHolding(unicornArmLeft, -1, swingProgress, ticks);
+                rotateArmHolding(unicornArmLeft, -1, getSwingAmount(), ticks);
             } else {
-                rotateArmHolding(bipedLeftArm, -1, swingProgress, ticks);
+                rotateArmHolding(leftArm, -1, getSwingAmount(), ticks);
             }
         }
     }

@@ -1,12 +1,13 @@
 package com.minelittlepony.client.render.entities;
 
+import com.google.common.collect.Lists;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.PonyRenderManager;
 import com.minelittlepony.common.SensibleConfig.Setting;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.monster.*;
+import java.util.List;
+
+import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.*;
 
 /**
@@ -17,66 +18,68 @@ import net.minecraft.entity.passive.*;
 public enum MobRenderers implements Setting {
     VILLAGERS {
         @Override
-        public void register(boolean state, PonyRenderManager pony, RenderManager manager) {
-            pony.switchRenderer(state, manager, EntityVillager.class, new RenderPonyVillager(manager));
-            pony.switchRenderer(state, manager, EntityWitch.class, new RenderPonyWitch(manager));
-            pony.switchRenderer(state, manager, EntityZombieVillager.class, new RenderPonyZombieVillager(manager));
+        void register(boolean state, PonyRenderManager pony) {
+            pony.switchRenderer(state, VillagerEntity.class, RenderPonyVillager::new);
+            pony.switchRenderer(state, WitchEntity.class, RenderPonyWitch::new);
+            pony.switchRenderer(state, ZombieVillagerEntity.class, RenderPonyZombieVillager::new);
         }
     },
     ZOMBIES {
         @Override
-        public void register(boolean state, PonyRenderManager pony, RenderManager manager) {
-            pony.switchRenderer(state, manager, EntityZombie.class, new RenderPonyZombie<>(manager));
-            pony.switchRenderer(state, manager, EntityHusk.class, new RenderPonyZombie.Husk(manager));
-            pony.switchRenderer(state, manager, EntityGiantZombie.class, new RenderPonyZombie.Giant(manager));
+        void register(boolean state, PonyRenderManager pony) {
+            pony.switchRenderer(state, ZombieEntity.class, RenderPonyZombie::new);
+            pony.switchRenderer(state, HuskEntity.class, RenderPonyZombie.Husk::new);
+            pony.switchRenderer(state, GiantEntity.class, RenderPonyZombie.Giant::new);
         }
     },
     PIGZOMBIES {
         @Override
-        public void register(boolean state, PonyRenderManager pony, RenderManager manager) {
-            pony.switchRenderer(state, manager, EntityPigZombie.class, new RenderPonyZombie.Pigman(manager));
+        void register(boolean state, PonyRenderManager pony) {
+            pony.switchRenderer(state, ZombiePigmanEntity.class, RenderPonyZombie.Pigman::new);
         }
     },
     SKELETONS {
         @Override
-        public void register(boolean state, PonyRenderManager pony, RenderManager manager) {
-            pony.switchRenderer(state, manager, EntitySkeleton.class, new RenderPonySkeleton<>(manager));
-            pony.switchRenderer(state, manager, EntityStray.class, new RenderPonySkeleton.Stray(manager));
-            pony.switchRenderer(state, manager, EntityWitherSkeleton.class, new RenderPonySkeleton.Wither(manager));
+        void register(boolean state, PonyRenderManager pony) {
+            pony.switchRenderer(state, SkeletonEntity.class, RenderPonySkeleton::new);
+            pony.switchRenderer(state, StrayEntity.class, RenderPonySkeleton.Stray::new);
+            pony.switchRenderer(state, WitherSkeletonEntity.class, RenderPonySkeleton.Wither::new);
         }
     },
     ILLAGERS {
         @Override
-        public void register(boolean state, PonyRenderManager pony, RenderManager manager) {
-            pony.switchRenderer(state, manager, EntityVex.class, new RenderPonyVex(manager));
-            pony.switchRenderer(state, manager, EntityEvoker.class, new RenderPonyIllager.Evoker(manager));
-            pony.switchRenderer(state, manager, EntityVindicator.class, new RenderPonyIllager.Vindicator(manager));
-            pony.switchRenderer(state, manager, EntityIllusionIllager.class, new RenderPonyIllager.Illusionist(manager));
+        void register(boolean state, PonyRenderManager pony) {
+            pony.switchRenderer(state, VexEntity.class, RenderPonyVex::new);
+            pony.switchRenderer(state, EvokerEntity.class, RenderPonyIllager.Evoker::new);
+            pony.switchRenderer(state, VindicatorEntity.class, RenderPonyIllager.Vindicator::new);
+            pony.switchRenderer(state, IllusionerEntity.class, RenderPonyIllager.Illusionist::new);
         }
     },
     GUARDIANS {
         @Override
-        public void register(boolean state, PonyRenderManager pony, RenderManager manager) {
-            pony.switchRenderer(state, manager, EntityGuardian.class, new RenderPonyGuardian(manager));
-            pony.switchRenderer(state, manager, EntityElderGuardian.class, new RenderPonyGuardian.Elder(manager));
+        void register(boolean state, PonyRenderManager pony) {
+            pony.switchRenderer(state, GuardianEntity.class, RenderPonyGuardian::new);
+            pony.switchRenderer(state, ElderGuardianEntity.class, RenderPonyGuardian::new);
         }
     },
     ENDERMEN {
         @Override
-        public void register(boolean state, PonyRenderManager pony, RenderManager manager) {
-            pony.switchRenderer(state, manager, EntityEnderman.class, new RenderEnderStallion(manager));
+        void register(boolean state, PonyRenderManager pony) {
+            pony.switchRenderer(state, EndermanEntity.class, RenderEnderStallion::new);
         }
     };
+
+    public static final List<MobRenderers> registry = Lists.newArrayList(values());
 
     @Override
     public void set(boolean value) {
         Setting.super.set(value);
-        apply(PonyRenderManager.getInstance(), Minecraft.getInstance().getRenderManager());
+        apply(PonyRenderManager.getInstance());
     }
 
-    public void apply(PonyRenderManager pony, RenderManager manager) {
+    public void apply(PonyRenderManager pony) {
         boolean state = get();
-        register(state, pony, manager);
+        register(state, pony);
         if (state) {
             MineLittlePony.logger.info(name() + " are now ponies.");
         } else {
@@ -84,5 +87,5 @@ public enum MobRenderers implements Setting {
         }
     }
 
-    public abstract void register(boolean state, PonyRenderManager pony, RenderManager manager);
+    abstract void register(boolean state, PonyRenderManager pony);
 }

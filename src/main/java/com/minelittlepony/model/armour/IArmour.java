@@ -1,6 +1,6 @@
 package com.minelittlepony.model.armour;
 
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.EquipmentSlot;
 
 import com.minelittlepony.model.IModel;
 
@@ -25,7 +25,7 @@ public interface IArmour {
      *
      * @return false to skip this render pass.
      */
-    default boolean prepareToRender(EntityEquipmentSlot slot, ArmourLayer layer) {
+    default boolean prepareToRender(EquipmentSlot slot, ArmourLayer layer) {
         setInVisible();
 
         switch (layer) {

@@ -1,11 +1,11 @@
-package com.minelittlepony.client.model.gear;
+package com.minelittlepony.model.gear;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
-import com.minelittlepony.client.model.IClientModel;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IPart;
+import com.minelittlepony.model.IPonyModel;
 
 import javax.annotation.Nullable;
 
@@ -19,7 +19,7 @@ public interface IGear extends IPart {
      *
      * @return True to render this wearable
      */
-    boolean canRender(IClientModel model, Entity entity);
+    boolean canRender(IPonyModel<?> model, Entity entity);
 
     /**
      * Gets the body location that this wearable appears on.
@@ -31,12 +31,12 @@ public interface IGear extends IPart {
      * Return null to use the same as the primary model.
      */
     @Nullable
-    ResourceLocation getTexture(Entity entity);
+    Identifier getTexture(Entity entity);
 
     /**
      * Orients this wearable.
      */
-    default void setLivingAnimations(IClientModel model, Entity entity) {
+    default void setLivingAnimations(IPonyModel<?> model, Entity entity) {
 
     }
 

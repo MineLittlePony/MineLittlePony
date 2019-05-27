@@ -1,12 +1,14 @@
 package com.minelittlepony.model;
 
+import net.minecraft.client.render.entity.model.ModelWithArms;
+
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.pony.IPonyData;
 import com.minelittlepony.pony.meta.Size;
 import com.minelittlepony.pony.meta.Wearable;
 
-public interface IModel {
+public interface IModel extends ModelWithArms {
 
     /**
      * Sets up this model's initial values, like a constructor...

@@ -1,10 +1,12 @@
 package com.minelittlepony.client.render.entities;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.Identifier;
+import net.minecraft.village.VillagerData;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.util.resources.ITextureSupplier;
+import com.minelittlepony.util.resources.ProfessionStringMapper;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -14,15 +16,15 @@ import java.util.function.Function;
 /**
  * Cached pool of villager textures.
  */
-class VillagerProfessionTextureCache implements ITextureSupplier<Integer> {
+class VillagerProfessionTextureCache implements ITextureSupplier<VillagerData> {
 
     private final ITextureSupplier<String> formatter;
 
-    private final Function<Integer, String> keyMapper;
+    private final Function<VillagerData, String> keyMapper = new ProfessionStringMapper();
 
-    private final ResourceLocation fallback;
+    private final Identifier fallback;
 
-    private final Map<Integer, ResourceLocation> cache = new HashMap<>();
+    private final Map<String, Identifier> cache = new HashMap<>();
 
     /**
      * Creates a new profession cache
@@ -31,22 +33,21 @@ class VillagerProfessionTextureCache implements ITextureSupplier<Integer> {
      * @param keyMapper Mapper to convert integer ids into a string value for format insertion
      * @param fallback  The default if any generated textures fail to load. This is stored in place of failing textures.
      */
-    public VillagerProfessionTextureCache(ITextureSupplier<String> formatter, Function<Integer, String> keyMapper, ResourceLocation fallback) {
+    public VillagerProfessionTextureCache(ITextureSupplier<String> formatter, Identifier fallback) {
         this.formatter = formatter;
         this.fallback = fallback;
-        this.keyMapper = keyMapper;
     }
 
     @Override
-    public ResourceLocation supplyTexture(Integer profession) {
-        return cache.computeIfAbsent(profession, this::getModProfessionResource);
+    public Identifier supplyTexture(VillagerData data) {
+        return cache.computeIfAbsent(keyMapper.apply(data), this::getModProfessionResource);
     }
 
-    private ResourceLocation getModProfessionResource(int professionId) {
-        ResourceLocation generated = formatter.supplyTexture(keyMapper.apply(professionId));
+    private Identifier getModProfessionResource(String professionId) {
+        Identifier generated = formatter.supplyTexture(professionId);
 
         try {
-            Minecraft.getInstance().getResourceManager().getResource(generated);
+            MinecraftClient.getInstance().getResourceManager().getResource(generated);
         } catch (IOException e) {
             MineLittlePony.logger.error("Error loading villager texture `" + generated + "`.", e);
 

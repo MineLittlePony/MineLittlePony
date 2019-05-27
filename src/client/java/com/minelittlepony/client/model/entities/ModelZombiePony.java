@@ -3,30 +3,29 @@ package com.minelittlepony.client.model.entities;
 import com.minelittlepony.client.model.ModelMobPony;
 import com.minelittlepony.client.util.render.AbstractRenderer;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.util.math.MathHelper;
 
-public class ModelZombiePony extends ModelMobPony {
+public class ModelZombiePony<Zombie extends HostileEntity> extends ModelMobPony<Zombie> {
 
     public boolean isPegasus;
 
     @Override
-    public void setLivingAnimations(EntityLivingBase entity, float move, float swing, float ticks) {
-        isPegasus = entity.getUniqueID().getLeastSignificantBits() % 30 == 0;
+    public void animateModel(Zombie entity, float move, float swing, float ticks) {
+        isPegasus = entity.getUuid().getLeastSignificantBits() % 30 == 0;
     }
 
     @Override
-    protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
+    protected void rotateLegs(float move, float swing, float ticks, Zombie entity) {
         super.rotateLegs(move, swing, ticks, entity);
         if (rightArmPose != ArmPose.EMPTY) return;
 
         if (islookAngleRight(move)) {
-            rotateArmHolding(bipedRightArm, 1, swingProgress, ticks);
-            AbstractRenderer.shiftRotationPoint(bipedRightArm, 0.5F, 1.5F, 3);
+            rotateArmHolding(rightArm, 1, getSwingAmount(), ticks);
+            AbstractRenderer.shiftRotationPoint(rightArm, 0.5F, 1.5F, 3);
         } else {
-            rotateArmHolding(bipedLeftArm, -1, swingProgress, ticks);
-            AbstractRenderer.shiftRotationPoint(bipedLeftArm, -0.5F, 1.5F, 3);
+            rotateArmHolding(leftArm, -1, getSwingAmount(), ticks);
+            AbstractRenderer.shiftRotationPoint(leftArm, -0.5F, 1.5F, 3);
         }
     }
 

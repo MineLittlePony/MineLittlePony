@@ -1,6 +1,6 @@
 package com.minelittlepony.client.util.render.plane;
 
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.render.BufferBuilder;
 
 import com.minelittlepony.client.util.render.Box;
 import com.minelittlepony.client.util.render.Quad;
@@ -73,12 +73,14 @@ public class ModelPlane extends Box<PlaneRenderer> {
         }
 
         if (renderer.mirror || renderer.mirrory || renderer.mirrorz) {
-            quad.flipFace();
+            quad.flip();
         }
     }
 
     @Override
     public void render(@Nonnull BufferBuilder buffer, float scale) {
-        if (!hidden) quad.draw(buffer, scale);
+        if (!hidden) {
+            quad.render(buffer, scale);
+        }
     }
 }

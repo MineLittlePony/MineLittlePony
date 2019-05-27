@@ -1,14 +1,15 @@
 package com.minelittlepony.client.model.components;
 
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.model.Model;
 
-import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
 import com.minelittlepony.model.IPegasus;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import java.util.UUID;
 
-public class BatWings<T extends AbstractPonyModel & IPegasus> extends PegasusWings<T> {
+public class BatWings<T extends Model & IPegasus> extends PegasusWings<T> {
 
     public BatWings(T model, float yOffset, float stretch) {
         super(model, yOffset, stretch);
@@ -48,7 +49,7 @@ public class BatWings<T extends AbstractPonyModel & IPegasus> extends PegasusWin
                   .tex(56, 16).box(x, 5, 6, 1, 7, 1, scale)
                               .box(x, 5, 5, 1, 6, 1, scale)
                   .tex(56, 16).box(x * 0.9F, 5, 7, 1, 7, 1, scale)
-                  .rotateAngleX = ROTATE_90;
+                  .pitch = ROTATE_90;
         }
 
         @Override
@@ -57,7 +58,7 @@ public class BatWings<T extends AbstractPonyModel & IPegasus> extends PegasusWin
 
             extended.around((r * (EXT_WING_RP_X - 2)), EXT_WING_RP_Y + rotationPointY - 1, EXT_WING_RP_Z - 3)
                     .mirror(right)
-                    .rotateAngleY = r * 3;
+                    .yaw = r * 3;
 
             extended.child().tex(60, 16)
                     .mirror(right)  // children are unaware of their parents being mirrored, sadly
@@ -85,7 +86,7 @@ public class BatWings<T extends AbstractPonyModel & IPegasus> extends PegasusWin
 
         @Override
         public void rotateWalking(float swing) {
-            folded.rotateAngleY = swing * 0.05F;
+            folded.yaw = swing * 0.05F;
         }
     }
 }

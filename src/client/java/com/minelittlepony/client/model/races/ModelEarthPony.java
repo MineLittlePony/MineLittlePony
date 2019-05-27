@@ -3,9 +3,9 @@ package com.minelittlepony.client.model.races;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.util.render.PonyRenderer;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 
-public class ModelEarthPony extends AbstractPonyModel {
+public class ModelEarthPony<T extends LivingEntity> extends AbstractPonyModel<T> {
 
     private final boolean smallArms;
 
@@ -17,11 +17,11 @@ public class ModelEarthPony extends AbstractPonyModel {
     }
 
     @Override
-    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
-        super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
+    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        super.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
 
         if (bipedCape != null) {
-            bipedCape.rotationPointY = isSneak ? 2 : isRiding ? -4 : 0;
+            bipedCape.rotationPointY = isSneaking ? 2 : isRiding ? -4 : 0;
         }
     }
 

@@ -3,94 +3,92 @@ package com.minelittlepony.client.render.layer;
 import com.minelittlepony.client.ForgeProxy;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.armour.DefaultPonyArmorTextureResolver;
+import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.client.util.render.Color;
+import com.minelittlepony.model.IPonyModel;
 import com.minelittlepony.model.armour.ArmourLayer;
 import com.minelittlepony.model.armour.IArmour;
 import com.minelittlepony.model.armour.IArmourTextureResolver;
 import com.minelittlepony.model.armour.IEquestrianArmour;
+import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.minecraft.client.renderer.entity.model.ModelBase;
-import net.minecraft.client.renderer.entity.model.ModelBiped;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.inventory.EntityEquipmentSlot.Type;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemArmorDyeable;
-import net.minecraft.item.ArmorMaterial;
+import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.ArmorMaterials;
+import net.minecraft.item.DyeableArmorItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
-public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLayer<T> {
+public class LayerPonyArmor<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyLayer<T, M> {
 
-    private static final IArmourTextureResolver<EntityLivingBase> textures = new DefaultPonyArmorTextureResolver<>();
+    private static final IArmourTextureResolver<LivingEntity> textures = new DefaultPonyArmorTextureResolver<>();
 
-    private ModelWrapper pony;
+    private ModelWrapper<T, M> pony;
 
-    public LayerPonyArmor(RenderLivingBase<T> renderer) {
+    public LayerPonyArmor(IPonyRender<T, M> renderer) {
         super(renderer);
     }
 
     @Override
     public void render(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
-        pony = getPonyRenderer().getModelWrapper();
+        pony = getContext().getModelWrapper();
 
-        for (EntityEquipmentSlot i : EntityEquipmentSlot.values()) {
-            if (i.getSlotType() == Type.ARMOR) {
+        for (EquipmentSlot i : EquipmentSlot.values()) {
+            if (i.getType() == EquipmentSlot.Type.ARMOR) {
                 renderArmor(entity, move, swing, partialTicks, ticks, headYaw, headPitch, scale, i, ArmourLayer.INNER);
                 renderArmor(entity, move, swing, partialTicks, ticks, headYaw, headPitch, scale, i, ArmourLayer.OUTER);
             }
         }
     }
 
-    private <V extends ModelBiped & IArmour> void renderArmor(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale, EntityEquipmentSlot armorSlot, ArmourLayer layer) {
-        ItemStack itemstack = entity.getItemStackFromSlot(armorSlot);
+    @SuppressWarnings("unchecked")
+    private <V extends BipedEntityModel<T> & IArmour> void renderArmor(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale, EquipmentSlot armorSlot, ArmourLayer layer) {
+        ItemStack itemstack = entity.getEquippedStack(armorSlot);
 
-        if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemArmor) {
+        if (!itemstack.isEmpty() && itemstack.getItem() instanceof ArmorItem) {
 
-            @SuppressWarnings("unchecked")
-            V armour = getArmorModel(entity, itemstack, armorSlot, layer, (V)pony.getArmor().getArmorForLayer(layer));
+            V armour = LayerPonyArmor.getArmorModel(entity, itemstack, armorSlot, layer, pony.<V>getArmor().getArmorForLayer(layer));
 
             if (armour.prepareToRender(armorSlot, layer)) {
-
-                armour.setModelAttributes(pony.getBody());
-                armour.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale, entity);
+                ((BipedEntityModel<T>)pony.getBody()).setAttributes(armour);
+                armour.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
                 armour.synchroniseLegs(pony.getBody());
 
-                @SuppressWarnings("unchecked")
                 IArmourTextureResolver<T> resolver = armour instanceof IArmourTextureResolver ? (IArmourTextureResolver<T>)armour : (IArmourTextureResolver<T>)textures;
 
-                ResourceLocation armourTexture = resolver.getArmourTexture(entity, itemstack, armorSlot, layer, null);
+                Identifier armourTexture = resolver.getArmourTexture(entity, itemstack, armorSlot, layer, null);
 
-                getRenderer().bindTexture(armourTexture);
+                getContext().bindTexture(armourTexture);
 
-                ItemArmor itemarmor = (ItemArmor) itemstack.getItem();
+                ArmorItem itemarmor = (ArmorItem) itemstack.getItem();
 
-                if (itemarmor.getArmorMaterial() == ArmorMaterial.LEATHER) {
-                    if (itemarmor instanceof ItemArmorDyeable) {
-                        Color.glColor(((ItemArmorDyeable)itemarmor).getColor(itemstack), 1);
+                if (itemarmor.getMaterial() == ArmorMaterials.LEATHER) {
+                    if (itemarmor instanceof DyeableArmorItem) {
+                        Color.glColor(((DyeableArmorItem)itemarmor).getColor(itemstack), 1);
                     }
 
                     armour.render(entity, move, swing, ticks, headYaw, headPitch, scale);
                     armourTexture = resolver.getArmourTexture(entity, itemstack, armorSlot, layer, "overlay");
-                    getRenderer().bindTexture(armourTexture);
+                    getContext().bindTexture(armourTexture);
                 }
 
                 GlStateManager.color4f(1, 1, 1, 1);
                 armour.render(entity, move, swing, ticks, headYaw, headPitch, scale);
 
-                if (itemstack.isEnchanted()) {
-                    LayerArmorBase.renderEnchantedGlint(getRenderer(), entity, armour, move, swing, partialTicks, ticks, headYaw, headPitch, scale);
+                if (itemstack.hasEnchantmentGlint()) {
+                    ArmorFeatureRenderer.renderEnchantedGlint(this::bindTexture, entity, armour, move, swing, partialTicks, ticks, headYaw, headPitch, scale);
                 }
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    private static <V extends ModelBiped & IArmour> V getArmorModel(EntityLivingBase entity, ItemStack itemstack, EntityEquipmentSlot slot, ArmourLayer layer, V def) {
-        ModelBase model = ForgeProxy.getArmorModel(entity, itemstack, slot, def);
+    private static <T extends LivingEntity, V extends BipedEntityModel<T> & IArmour> V getArmorModel(T entity, ItemStack itemstack, EquipmentSlot slot, ArmourLayer layer, V def) {
+        BipedEntityModel<T> model = ForgeProxy.getArmorModel(entity, itemstack, slot, def);
 
         if (model instanceof IArmour) {
             return (V)model;

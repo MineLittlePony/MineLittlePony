@@ -1,18 +1,19 @@
 package com.minelittlepony.client.model.gear;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
-import com.minelittlepony.client.model.IClientModel;
 import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.IPonyModel;
+import com.minelittlepony.model.gear.IStackable;
 import com.minelittlepony.pony.meta.Wearable;
 
 import java.util.UUID;
 
 public class Muffin extends AbstractGear implements IStackable {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation("minelittlepony", "textures/models/muffin.png");
+    private static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/models/muffin.png");
 
     private PonyRenderer crown;
 
@@ -33,7 +34,7 @@ public class Muffin extends AbstractGear implements IStackable {
     }
 
     @Override
-    public boolean canRender(IClientModel model, Entity entity) {
+    public boolean canRender(IPonyModel<?> model, Entity entity) {
         return model.isWearing(Wearable.MUFFIN);
     }
 
@@ -43,7 +44,7 @@ public class Muffin extends AbstractGear implements IStackable {
     }
 
     @Override
-    public ResourceLocation getTexture(Entity entity) {
+    public Identifier getTexture(Entity entity) {
         return TEXTURE;
     }
 

@@ -12,16 +12,16 @@ import com.minelittlepony.hdskins.net.SkinServer;
 import com.minelittlepony.hdskins.net.ValhallaSkinServer;
 import com.minelittlepony.settings.PonyConfig;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormat;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.util.InputUtil;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resource.ReloadableResourceManager;
+import net.minecraft.util.SystemUtil;
 
 import org.lwjgl.glfw.GLFW;
 
@@ -58,8 +58,8 @@ public class MineLPClient extends MineLittlePony {
         config = newConfig;
         ponyManager = new PonyManager(config);
 
-        IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getInstance().getResourceManager();
-        irrm.addReloadListener(ponyManager);
+        ReloadableResourceManager irrm = (ReloadableResourceManager) MinecraftClient.getInstance().getResourceManager();
+        irrm.registerListener(ponyManager);
 
         // This also makes it the default gateway server.
         SkinServer.defaultServers.add(new LegacySkinServer(MINELP_LEGACY_SERVER, MINELP_LEGACY_GATEWAY));
@@ -69,7 +69,7 @@ public class MineLPClient extends MineLittlePony {
     /**
      * Called when the game is ready.
      */
-    void postInit(Minecraft minecraft) {
+    void postInit(MinecraftClient minecraft) {
 
         HDSkins manager = HDSkins.getInstance();
 //        manager.setSkinUrl(SKIN_SERVER_URL);
@@ -81,27 +81,27 @@ public class MineLPClient extends MineLittlePony {
 
         manager.setSkinsGui(GuiSkinsMineLP::new);
 
-        RenderManager rm = minecraft.getRenderManager();
+        EntityRenderDispatcher rm = minecraft.getEntityRenderManager();
 
-        renderManager.initialisePlayerRenderers(rm);
-        renderManager.initializeMobRenderers(rm, config);
+        renderManager.initialiseRenderers(rm);
     }
 
-    void onTick(Minecraft minecraft, boolean inGame) {
+    void onTick(MinecraftClient minecraft, boolean inGame) {
         if (inGame && minecraft.currentScreen == null) {
             if (SETTINGS_GUI.isPressed()) {
-                minecraft.displayGuiScreen(new GuiHost(new GuiPonySettings()));
+                minecraft.disconnect(new GuiHost(new GuiPonySettings()));
             } else {
+                long handle = minecraft.window.getHandle();
 
-                if ((Util.milliTime() % 10) == 0) {
-                    if (InputMappings.isKeyDown(GLFW.GLFW_KEY_F3) && InputMappings.isKeyDown(GLFW.GLFW_KEY_M)) {
+                if ((SystemUtil.getMeasuringTimeMs() % 10) == 0) {
+                    if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_F3) && InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_M)) {
                         if (!reloadingModels) {
-                            minecraft.ingameGUI.getChatGUI().printChatMessage(
-                                    (new TextComponentString("")).appendSibling(
-                                    new TextComponentTranslation("debug.prefix")
-                                        .setStyle(new Style().setColor(TextFormatting.YELLOW).setBold(true)))
-                                    .appendText(" ")
-                                    .appendSibling(new TextComponentTranslation("minelp.debug.reload_models.message")));
+                            minecraft.inGameHud.getChatHud().addMessage(
+                                    (new TextComponent("")).append(
+                                    new TranslatableComponent("debug.prefix")
+                                        .setStyle(new Style().setColor(ChatFormat.YELLOW).setBold(true)))
+                                    .append(" ")
+                                    .append(new TranslatableComponent("minelp.debug.reload_models.message")));
 
                             reloadingModels = true;
                             modelUpdateCounter++;

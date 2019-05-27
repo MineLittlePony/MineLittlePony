@@ -1,18 +1,18 @@
 package com.minelittlepony.client.model.components;
 
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.model.Model;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.model.IPegasus;
 import com.minelittlepony.model.PonyModelConstants;
 import com.minelittlepony.pony.meta.Wearable;
+import com.mojang.blaze3d.platform.GlStateManager;
 
 import java.util.UUID;
 
-public class PegasusWings<T extends AbstractPonyModel & IPegasus> implements IPart, PonyModelConstants {
+public class PegasusWings<T extends Model & IPegasus> implements IPart, PonyModelConstants {
 
     protected final T pegasus;
 
@@ -110,20 +110,20 @@ public class PegasusWings<T extends AbstractPonyModel & IPegasus> implements IPa
                   .box(x, 5, 2, 2, 6, 2, scale)
                   .box(x, 5, 4, 2, 8, 2, scale)
                   .box(x, 5, 6, 2, 6, 2, scale)
-                  .rotateAngleX = ROTATE_90;
+                  .pitch = ROTATE_90;
         }
 
         protected void addFeathers(boolean right, boolean l, float rotationPointY, float scale) {
             float r = right ? -1 : 1;
 
             extended.around(r * EXT_WING_RP_X, EXT_WING_RP_Y + rotationPointY, EXT_WING_RP_Z)
-                    .rotateAngleY = r * 3;
+                    .pitch = r * 3;
             addFeather(0, l,  6,     0,    9, scale + 0.1F);
-            addFeather(1, l, -1,    -0.3F, 8, scale + 0.1F) .rotateAngleX = -0.85F;
-            addFeather(2, l,  1.8F,  1.3F, 8, scale - 0.1F) .rotateAngleX = -0.75F;
-            addFeather(3, l,  5,     2,    8, scale)        .rotateAngleX = -0.5F;
+            addFeather(1, l, -1,    -0.3F, 8, scale + 0.1F) .pitch = -0.85F;
+            addFeather(2, l,  1.8F,  1.3F, 8, scale - 0.1F) .pitch = -0.75F;
+            addFeather(3, l,  5,     2,    8, scale)        .pitch = -0.5F;
             addFeather(4, l,  0,   -0.2F,  6, scale + 0.3F);
-            addFeather(5, l,  0,     0,    3, scale + 0.19F).rotateAngleX = -0.85F;
+            addFeather(5, l,  0,     0,    3, scale + 0.19F).pitch = -0.85F;
         }
 
         private PonyRenderer addFeather(int i, boolean l, float y, float z, int h, float scale) {
@@ -131,11 +131,11 @@ public class PegasusWings<T extends AbstractPonyModel & IPegasus> implements IPa
         }
 
         public void rotateWalking(float swing) {
-            folded.rotateAngleY = swing * 0.15F;
+            folded.yaw = swing * 0.15F;
         }
 
         public void rotateFlying(float angle) {
-            extended.rotateAngleZ = angle;
+            extended.roll = angle;
         }
 
         public void render(float scale) {

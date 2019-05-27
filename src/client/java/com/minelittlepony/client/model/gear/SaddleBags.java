@@ -1,16 +1,16 @@
 package com.minelittlepony.client.model.gear;
 
-import com.minelittlepony.client.model.IClientModel;
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IPegasus;
+import com.minelittlepony.model.IPonyModel;
 import com.minelittlepony.pony.meta.Wearable;
+import com.mojang.blaze3d.platform.GlStateManager;
 
 import java.util.UUID;
 
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 public class SaddleBags extends AbstractGear {
@@ -25,7 +25,7 @@ public class SaddleBags extends AbstractGear {
     float dropAmount = 0;
 
 
-    private IClientModel model;
+    private IPonyModel<?> model;
 
     @Override
     public void init(float yOffset, float stretch) {
@@ -47,7 +47,7 @@ public class SaddleBags extends AbstractGear {
                    .west( 4.0002F, -1, 0, 1, 3, stretch)  // otherwise straps
                    .west(-4.0002F,  0, 0, 1, 3, stretch)  // clip into the body
                    .west(-4.0002F, -1, 0, 1, 3, stretch)
-                .rotateAngleX = ROTATE_270;
+                .pitch = ROTATE_270;
 
         leftBag.offset(x, y, z).around(0, 4, 4)
                 .tex(56, 25).south(0, 0, 0, 3, 6, stretch)
@@ -57,7 +57,7 @@ public class SaddleBags extends AbstractGear {
                 .child(0).offset(z, y, -x).tex(56, 16)
                                      .top(0, 0, -3, 8, 3, stretch)
               .tex(56, 22).flipZ().bottom(0, 6, -3, 8, 3, stretch)
-                         .rotateAngleY = ROTATE_270;
+                         .yaw = ROTATE_270;
 
         x += 3;
 
@@ -69,11 +69,11 @@ public class SaddleBags extends AbstractGear {
                    .child(0).offset(z, y, x).tex(56, 16)
                             .flipZ().top(0, 0, -3, 8, 3, stretch)
              .tex(56, 22).flipZ().bottom(0, 6, -3, 8, 3, stretch)
-                 .rotateAngleY = ROTATE_270;
+                 .yaw = ROTATE_270;
     }
 
     @Override
-    public void setLivingAnimations(IClientModel model, Entity entity) {
+    public void setLivingAnimations(IPonyModel<?> model, Entity entity) {
         this.model = model;
 
         hangLow = false;
@@ -92,16 +92,16 @@ public class SaddleBags extends AbstractGear {
 
         bodySwing = MathHelper.cos(mve + pi) * srt;
 
-        leftBag.rotateAngleX = bodySwing;
-        rightBag.rotateAngleX = bodySwing;
+        leftBag.pitch = bodySwing;
+        rightBag.pitch = bodySwing;
 
         if (model instanceof IPegasus && model.isFlying()) {
             bodySwing = ((IPegasus)model).getWingRotationFactor(ticks) - ROTATE_270;
             bodySwing /= 10;
         }
 
-        leftBag.rotateAngleZ = bodySwing;
-        rightBag.rotateAngleZ = -bodySwing;
+        leftBag.roll = bodySwing;
+        rightBag.roll = -bodySwing;
 
         dropAmount = hangLow ? 0.15F : 0;
     }
@@ -126,7 +126,7 @@ public class SaddleBags extends AbstractGear {
     }
 
     @Override
-    public boolean canRender(IClientModel model, Entity entity) {
+    public boolean canRender(IPonyModel<?> model, Entity entity) {
         return model.isWearing(Wearable.SADDLE_BAGS);
     }
 
@@ -136,7 +136,7 @@ public class SaddleBags extends AbstractGear {
     }
 
     @Override
-    public ResourceLocation getTexture(Entity entity) {
+    public Identifier getTexture(Entity entity) {
         // use the default
         return null;
     }

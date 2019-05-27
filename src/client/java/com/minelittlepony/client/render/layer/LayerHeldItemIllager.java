@@ -1,15 +1,14 @@
 package com.minelittlepony.client.render.layer;
 
-import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.entity.monster.AbstractIllager;
-import net.minecraft.entity.monster.AbstractIllager.IllagerArmPose;
-import net.minecraft.util.EnumHandSide;
+import net.minecraft.entity.mob.IllagerEntity;
+import net.minecraft.util.AbsoluteHand;
 
 import com.minelittlepony.client.model.entities.ModelIllagerPony;
+import com.minelittlepony.client.render.IPonyRender;
 
-public class LayerHeldItemIllager<T extends AbstractIllager> extends LayerHeldPonyItem<T> {
+public class LayerHeldItemIllager<T extends IllagerEntity> extends LayerHeldPonyItem<T, ModelIllagerPony<T>> {
 
-    public LayerHeldItemIllager(RenderLivingBase<T> livingPony) {
+    public LayerHeldItemIllager(IPonyRender<T, ModelIllagerPony<T>> livingPony) {
         super(livingPony);
     }
 
@@ -21,11 +20,11 @@ public class LayerHeldItemIllager<T extends AbstractIllager> extends LayerHeldPo
     }
 
     @Override
-    protected void renderArm(EnumHandSide side) {
-        ((ModelIllagerPony)getPonyModel()).getArm(side).postRender(0.0625F);
+    protected void renderArm(AbsoluteHand side) {
+        getModel().getArm(side).applyTransform(0.0625F);
     }
 
     public boolean shouldRender(T entity) {
-        return entity.getArmPose() != IllagerArmPose.CROSSED;
+        return entity.getState() != IllagerEntity.State.CROSSED;
     }
 }

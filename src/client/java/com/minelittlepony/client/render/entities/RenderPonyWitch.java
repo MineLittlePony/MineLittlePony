@@ -4,31 +4,28 @@ import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.entities.ModelWitchPony;
 import com.minelittlepony.client.render.RenderPonyMob;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItem;
+import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.monster.EntityWitch;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.entity.mob.WitchEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHandSide;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.AbsoluteHand;
+import net.minecraft.util.Identifier;
 
-@SuppressWarnings("deprecation") // ItemCameraTransforms is deprecated by forge but we still need it.
-public class RenderPonyWitch extends RenderPonyMob<EntityWitch> {
+public class RenderPonyWitch extends RenderPonyMob<WitchEntity, ModelWitchPony> {
 
-    private static final ResourceLocation WITCH_TEXTURES = new ResourceLocation("minelittlepony", "textures/entity/witch_pony.png");
+    private static final Identifier WITCH_TEXTURES = new Identifier("minelittlepony", "textures/entity/witch_pony.png");
 
-    private static final ModelWrapper MODEL_WRAPPER = new ModelWrapper(new ModelWitchPony());
-
-    public RenderPonyWitch(RenderManager manager) {
-        super(manager, MODEL_WRAPPER);
+    public RenderPonyWitch(EntityRenderDispatcher manager) {
+        super(manager, new ModelWrapper<>(new ModelWitchPony()));
     }
 
     @Override
-    protected LayerHeldPonyItem<EntityWitch> createItemHoldingLayer() {
-        return new LayerHeldPonyItem<EntityWitch>(this) {
+    protected LayerHeldPonyItem<WitchEntity, ModelWitchPony> createItemHoldingLayer() {
+        return new LayerHeldPonyItem<WitchEntity, ModelWitchPony>(this) {
             @Override
-            protected void preItemRender(EntityWitch entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
+            protected void preItemRender(WitchEntity entity, ItemStack drop, ModelTransformation.Type transform, AbsoluteHand hand) {
                 GlStateManager.translatef(0, -0.3F, -0.8F);
                 GlStateManager.rotatef(10, 1, 0, 0);
             }
@@ -36,13 +33,13 @@ public class RenderPonyWitch extends RenderPonyMob<EntityWitch> {
     }
 
     @Override
-    public void preRenderCallback(EntityWitch entity, float ticks) {
-        super.preRenderCallback(entity, ticks);
+    public void scale(WitchEntity entity, float ticks) {
+        super.scale(entity, ticks);
         GlStateManager.scalef(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
     }
 
     @Override
-    public ResourceLocation getTexture(EntityWitch entity) {
+    public Identifier findTexture(WitchEntity entity) {
         return WITCH_TEXTURES;
     }
 }

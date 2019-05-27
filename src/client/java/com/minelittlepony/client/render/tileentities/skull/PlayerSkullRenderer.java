@@ -8,12 +8,12 @@ import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.util.DefaultSkinHelper;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Identifier;
 
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -31,7 +31,7 @@ public class PlayerSkullRenderer extends PonySkull {
 
     @Override
     public void preRender(boolean transparency) {
-        GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
+        GlStateManager.setProfile(GlStateManager.RenderMode.PLAYER_SKIN);
 
         if (!transparency) {
             RenderPony.enableModelRenderProfile();
@@ -39,34 +39,35 @@ public class PlayerSkullRenderer extends PonySkull {
     }
 
     @Override
-    public ResourceLocation getSkinResource(@Nullable GameProfile profile) {
+    public Identifier getSkinResource(@Nullable GameProfile profile) {
         deadMau5.setVisible(profile != null && "deadmau5".equals(profile.getName()));
 
         if (profile != null) {
-            ResourceLocation skin = HDSkins.getInstance().getTextures(profile).get(Type.SKIN);
+            Identifier skin = HDSkins.getInstance().getTextures(profile).get(Type.SKIN);
             if (skin != null && Pony.getBufferedImage(skin) != null) {
                 return skin;
             }
 
-            Minecraft minecraft = Minecraft.getInstance();
-            Map<Type, MinecraftProfileTexture> map = minecraft.getSkinManager().loadSkinFromCache(profile);
+            MinecraftClient minecraft = MinecraftClient.getInstance();
+            Map<Type, MinecraftProfileTexture> map = minecraft.getSkinProvider().getTextures(profile);
 
             if (map.containsKey(Type.SKIN)) {
-                ResourceLocation loc = minecraft.getSkinManager().loadSkin(map.get(Type.SKIN), Type.SKIN);
+                Identifier loc = minecraft.getSkinProvider().loadSkin(map.get(Type.SKIN), Type.SKIN);
                 if (Pony.getBufferedImage(loc) != null) {
                     return loc;
                 }
             }
-            return DefaultPlayerSkin.getDefaultSkin(EntityPlayer.getUUID(profile));
+            return DefaultSkinHelper.getTexture(PlayerEntity.getUuidFromProfile(profile));
 
         }
 
-        return DefaultPlayerSkin.getDefaultSkinLegacy();
+        return DefaultSkinHelper.getTexture();
     }
 
     @Override
     public void render(float animateTicks, float rotation, float scale) {
         super.render(animateTicks, rotation, scale);
-        deadMau5.render(null, animateTicks, 0, 0, rotation, 0, scale);
+                /*render*/
+        deadMau5.setRotationAngles(animateTicks, 0, 0, rotation, 0, scale);
     }
 }

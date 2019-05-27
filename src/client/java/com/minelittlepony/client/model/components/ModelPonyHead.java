@@ -5,11 +5,10 @@ import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.model.ICapitated;
 import com.minelittlepony.pony.IPonyData;
 
-import net.minecraft.client.renderer.entity.model.ModelHumanoidHead;
-import net.minecraft.client.renderer.entity.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.model.Cuboid;
+import net.minecraft.client.render.entity.model.SkullOverlayEntityModel;
 
-public class ModelPonyHead extends ModelHumanoidHead implements ICapitated<ModelRenderer> {
+public class ModelPonyHead extends SkullOverlayEntityModel implements ICapitated<Cuboid> {
 
     private PonySnout snout;
 
@@ -32,12 +31,12 @@ public class ModelPonyHead extends ModelHumanoidHead implements ICapitated<Model
                 .tex(12, 16).box(-3.999F, -6, 1, 2, 2, 2, 0)
                      .flip().box( 1.999F, -6, 1, 2, 2, 2, 0);
 
-        skeletonHead.addChild(ears);
+        getHead().addChild(ears);
     }
 
     @Override
-    public ModelRenderer getHead() {
-        return skeletonHead;
+    public Cuboid getHead() {
+        return field_3564;
     }
 
     @Override
@@ -46,17 +45,17 @@ public class ModelPonyHead extends ModelHumanoidHead implements ICapitated<Model
     }
 
     @Override
-    public void render(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         snout.isHidden = metadata.getRace().isHuman();
-        ears.isHidden = snout.isHidden;
+        ears.field_3664 = snout.isHidden;
 
         snout.setGender(metadata.getGender());
 
-        super.render(entity, move, swing, ticks, headYaw, headPitch, scale);
+        super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale);
 
         if (metadata.hasMagic()) {
-            skeletonHead.postRender(scale);
-            horn.renderPart(scale, entity.getUniqueID());
+            getHead().applyTransform(scale);
+            horn.renderPart(scale, null);
         }
     }
 }

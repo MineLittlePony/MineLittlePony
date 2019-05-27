@@ -3,59 +3,64 @@ package com.minelittlepony.client.render.entities;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.entities.ModelSkeletonPony;
 import com.minelittlepony.client.render.RenderPonyMob;
+import com.minelittlepony.client.render.layer.LayerHeldPonyItem;
+import com.minelittlepony.client.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.client.render.layer.LayerPonyStrayOverlay;
+import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.monster.AbstractSkeleton;
-import net.minecraft.entity.monster.EntityStray;
-import net.minecraft.entity.monster.EntityWitherSkeleton;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.entity.mob.AbstractSkeletonEntity;
+import net.minecraft.entity.mob.StrayEntity;
+import net.minecraft.entity.mob.WitherSkeletonEntity;
+import net.minecraft.util.Identifier;
 
-public class RenderPonySkeleton<Skeleton extends AbstractSkeleton> extends RenderPonyMob<Skeleton> {
+public class RenderPonySkeleton<Skeleton extends AbstractSkeletonEntity> extends RenderPonyMob<Skeleton, ModelSkeletonPony<Skeleton>> {
 
-    public static final ResourceLocation SKELETON = new ResourceLocation("minelittlepony", "textures/entity/skeleton/skeleton_pony.png");
-    public static final ResourceLocation WITHER = new ResourceLocation("minelittlepony", "textures/entity/skeleton/skeleton_wither_pony.png");
-    public static final ResourceLocation STRAY = new ResourceLocation("minelittlepony", "textures/entity/skeleton/stray_pony.png");
+    public static final Identifier SKELETON = new Identifier("minelittlepony", "textures/entity/skeleton/skeleton_pony.png");
+    public static final Identifier WITHER = new Identifier("minelittlepony", "textures/entity/skeleton/skeleton_wither_pony.png");
+    public static final Identifier STRAY = new Identifier("minelittlepony", "textures/entity/skeleton/stray_pony.png");
 
-    private static final ModelWrapper MODEL_WRAPPER = new ModelWrapper(new ModelSkeletonPony());
-
-    public RenderPonySkeleton(RenderManager manager) {
-        super(manager, MODEL_WRAPPER);
+    public RenderPonySkeleton(EntityRenderDispatcher manager) {
+        super(manager, new ModelWrapper<>(new ModelSkeletonPony<>()));
     }
 
     @Override
-    public ResourceLocation getTexture(Skeleton entity) {
+    public Identifier findTexture(Skeleton entity) {
         return SKELETON;
     }
 
-    public static class Stray extends RenderPonySkeleton<EntityStray> {
+    @Override
+    protected LayerHeldPonyItem<Skeleton, ModelSkeletonPony<Skeleton>> createItemHoldingLayer() {
+        return new LayerHeldPonyItemMagical<>(this);
+    }
 
-        public Stray(RenderManager rm) {
+    public static class Stray extends RenderPonySkeleton<StrayEntity> {
+
+        public Stray(EntityRenderDispatcher rm) {
             super(rm);
-            addLayer(new LayerPonyStrayOverlay(this));
+            addFeature(new LayerPonyStrayOverlay<>(this));
         }
 
         @Override
-        public ResourceLocation getTexture(EntityStray entity) {
+        public Identifier findTexture(StrayEntity entity) {
             return STRAY;
         }
     }
 
-    public static class Wither extends RenderPonySkeleton<EntityWitherSkeleton> {
+    public static class Wither extends RenderPonySkeleton<WitherSkeletonEntity> {
 
-        public Wither(RenderManager rm) {
+        public Wither(EntityRenderDispatcher rm) {
             super(rm);
         }
 
         @Override
-        public ResourceLocation getTexture(EntityWitherSkeleton entity) {
+        public Identifier findTexture(WitherSkeletonEntity entity) {
             return WITHER;
         }
 
         @Override
-        public void preRenderCallback(EntityWitherSkeleton skeleton, float ticks) {
-            super.preRenderCallback(skeleton, ticks);
+        public void scale(WitherSkeletonEntity skeleton, float ticks) {
+            super.scale(skeleton, ticks);
             GlStateManager.scalef(1.2F, 1.2F, 1.2F);
         }
 

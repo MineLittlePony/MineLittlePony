@@ -5,96 +5,94 @@ import com.minelittlepony.client.model.entities.ModelIllagerPony;
 import com.minelittlepony.client.render.RenderPonyMob;
 import com.minelittlepony.client.render.layer.LayerHeldItemIllager;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItem;
+import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.monster.AbstractIllager;
-import net.minecraft.entity.monster.EntityEvoker;
-import net.minecraft.entity.monster.EntityIllusionIllager;
-import net.minecraft.entity.monster.EntityVindicator;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.entity.mob.EvokerEntity;
+import net.minecraft.entity.mob.IllagerEntity;
+import net.minecraft.entity.mob.IllusionerEntity;
+import net.minecraft.entity.mob.VindicatorEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-public abstract class RenderPonyIllager<T extends AbstractIllager> extends RenderPonyMob<T> {
+public abstract class RenderPonyIllager<T extends IllagerEntity> extends RenderPonyMob<T, ModelIllagerPony<T>> {
 
-    public static final ResourceLocation ILLUSIONIST = new ResourceLocation("minelittlepony", "textures/entity/illager/illusionist_pony.png");
-    public static final ResourceLocation EVOKER = new ResourceLocation("minelittlepony", "textures/entity/illager/evoker_pony.png");
-    public static final ResourceLocation VINDICATOR = new ResourceLocation("minelittlepony", "textures/entity/illager/vindicator_pony.png");
+    public static final Identifier ILLUSIONIST = new Identifier("minelittlepony", "textures/entity/illager/illusionist_pony.png");
+    public static final Identifier EVOKER = new Identifier("minelittlepony", "textures/entity/illager/evoker_pony.png");
+    public static final Identifier VINDICATOR = new Identifier("minelittlepony", "textures/entity/illager/vindicator_pony.png");
 
-    private static final ModelWrapper MODEL_WRAPPER = new ModelWrapper(new ModelIllagerPony());
-
-    public RenderPonyIllager(RenderManager manager) {
-        super(manager, MODEL_WRAPPER);
+    public RenderPonyIllager(EntityRenderDispatcher manager) {
+        super(manager, new ModelWrapper<>(new ModelIllagerPony<>()));
     }
 
     @Override
-    protected LayerHeldPonyItem<T> createItemHoldingLayer() {
+    protected LayerHeldPonyItem<T, ModelIllagerPony<T>> createItemHoldingLayer() {
         return new LayerHeldItemIllager<>(this);
     }
 
     @Override
-    public void preRenderCallback(T entity, float ticks) {
-        super.preRenderCallback(entity, ticks);
+    public void scale(T entity, float ticks) {
+        super.scale(entity, ticks);
         GlStateManager.scalef(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
     }
 
-    public static class Vindicator extends RenderPonyIllager<EntityVindicator> {
+    public static class Vindicator extends RenderPonyIllager<VindicatorEntity> {
 
-        public Vindicator(RenderManager manager) {
+        public Vindicator(EntityRenderDispatcher manager) {
             super(manager);
 
         }
 
         @Override
-        public ResourceLocation getTexture(EntityVindicator entity) {
+        public Identifier findTexture(VindicatorEntity entity) {
             return VINDICATOR;
         }
     }
 
-    public static class Evoker extends RenderPonyIllager<EntityEvoker> {
+    public static class Evoker extends RenderPonyIllager<EvokerEntity> {
 
-        public Evoker(RenderManager manager) {
+        public Evoker(EntityRenderDispatcher manager) {
             super(manager);
         }
 
         @Override
-        public ResourceLocation getTexture(EntityEvoker entity) {
+        public Identifier findTexture(EvokerEntity entity) {
             return EVOKER;
         }
     }
 
-    public static class Illusionist extends RenderPonyIllager<EntityIllusionIllager> {
+    public static class Illusionist extends RenderPonyIllager<IllusionerEntity> {
 
-        public Illusionist(RenderManager manager) {
+        public Illusionist(EntityRenderDispatcher manager) {
             super(manager);
         }
 
         @Override
-        public ResourceLocation getTexture(EntityIllusionIllager entity) {
+        public Identifier findTexture(IllusionerEntity entity) {
             return ILLUSIONIST;
         }
 
         @Override
-        public void doRender(EntityIllusionIllager entity, double x, double y, double z, float yaw, float ticks) {
+        public void render(IllusionerEntity entity, double x, double y, double z, float yaw, float ticks) {
             if (entity.isInvisible()) {
-                Vec3d[] clones = entity.getRenderLocations(ticks);
-                float rotation = handleRotationFloat(entity, ticks);
+                Vec3d[] clones = entity.method_7065(ticks);
+                float rotation = getAge(entity, ticks);
 
                 for (int i = 0; i < clones.length; ++i) {
-                    super.doRender(entity,
+                    super.render(entity,
                             x + clones[i].x + MathHelper.cos(i + rotation * 0.5F) * 0.025D,
                             y + clones[i].y + MathHelper.cos(i + rotation * 0.75F) * 0.0125D,
                             z + clones[i].z + MathHelper.cos(i + rotation * 0.7F) * 0.025D,
                             yaw, ticks);
                 }
             } else {
-                super.doRender(entity, x, y, z, yaw, ticks);
+                super.render(entity, x, y, z, yaw, ticks);
             }
         }
 
         @Override
-        protected boolean isVisible(EntityIllusionIllager entity) {
+        protected boolean method_4056(IllusionerEntity entity) {
             return true;
         }
     }

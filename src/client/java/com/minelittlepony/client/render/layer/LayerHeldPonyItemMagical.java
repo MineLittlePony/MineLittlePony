@@ -1,47 +1,49 @@
 package com.minelittlepony.client.render.layer;
 
 import com.minelittlepony.client.PonyRenderManager;
+import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.client.util.render.PonyRenderer;
+import com.minelittlepony.model.IPonyModel;
 import com.minelittlepony.model.IUnicorn;
+import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.AbsoluteHand;
 
-@SuppressWarnings("deprecation") // ItemCameraTransforms is deprecated by forge but we still need it.
-public class LayerHeldPonyItemMagical<T extends EntityLivingBase> extends LayerHeldPonyItem<T> {
+public class LayerHeldPonyItemMagical<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends LayerHeldPonyItem<T, M> {
 
-    public LayerHeldPonyItemMagical(RenderLivingBase<T> livingPony) {
-        super(livingPony);
+    public LayerHeldPonyItemMagical(IPonyRender<T, M> context) {
+        super(context);
     }
 
     protected boolean isUnicorn() {
-        return getMainModel() instanceof IUnicorn && this.<IUnicorn<?>>getPonyModel().canCast();
+        return getModel() instanceof IUnicorn<?> && ((IUnicorn<?>)getModel()).canCast();
     }
 
     @Override
-    protected void preItemRender(T entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
+    protected void preItemRender(T entity, ItemStack drop, ModelTransformation.Type transform, AbsoluteHand hand) {
         if (isUnicorn()) {
-            GlStateManager.translatef(hand == EnumHandSide.LEFT ? -0.6F : 0, 0.5F, -0.3F);
+            GlStateManager.translatef(hand == AbsoluteHand.LEFT ? -0.6F : 0, 0.5F, -0.3F);
         } else {
             super.preItemRender(entity, drop, transform, hand);
         }
     }
 
     @Override
-    protected void postItemRender(T entity, ItemStack drop, TransformType transform, EnumHandSide hand) {
+    protected void postItemRender(T entity, ItemStack drop, ModelTransformation.Type transform, AbsoluteHand hand) {
         if (isUnicorn()) {
-            PonyRenderManager.getInstance().getMagicRenderer().renderItemGlow(entity, drop, transform, hand, this.<IUnicorn<?>>getPonyModel().getMagicColor());
+            PonyRenderManager.getInstance().getMagicRenderer().renderItemGlow(entity, drop, transform, hand, ((IUnicorn<?>)getModel()).getMagicColor());
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    protected void renderArm(EnumHandSide side) {
+    protected void renderArm(AbsoluteHand side) {
         if (isUnicorn()) {
-            this.<IUnicorn<PonyRenderer>>getPonyModel().getUnicornArmForSide(side).postRender(0.0625F);
+            ((IUnicorn<PonyRenderer>)getModel()).getUnicornArmForSide(side).applyTransform(0.0625F);
         } else {
             super.renderArm(side);
         }
