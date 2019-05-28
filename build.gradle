@@ -71,15 +71,6 @@ dependencies {
     include "com.github.MineLittlePony:HDSkins:${hd_skins_version}"
 }
 
-sourceSets {
-	main {}
-    client {
-        // Client-only code
-        compileClasspath += main.compileClasspath
-        compileClasspath += main.output
-    }
-}
-
 processResources {
 	inputs.property "version", project.version
 
@@ -105,8 +96,6 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 }
 
 jar {
-    from sourceSets.main.output
-    from sourceSets.client.output
     from "LICENSE"
 }
 
@@ -126,15 +115,4 @@ task copyBGPones(type: Copy) {
             it.name = it.name.replaceAll(/\s/, '_').replaceAll(illegals, '')
         }
     }
-}
-
-//
-// Creates HorseLib
-//  A common library for mods to load MineLP features on the server without
-//  any client components
-task horseLib(type: Jar) {
-    // TODO: Add KirinUI as a dependency.
-    from sourceSets.main.output
-
-    baseName = "HorseLib"
 }
