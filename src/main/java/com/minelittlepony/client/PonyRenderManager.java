@@ -4,8 +4,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 import com.google.common.collect.Maps;
-import com.minelittlepony.client.gui.hdskins.EntityPonyModel;
-import com.minelittlepony.client.gui.hdskins.RenderPonyModel;
+import com.minelittlepony.client.gui.hdskins.DummyPony;
+import com.minelittlepony.client.gui.hdskins.RenderDummyPony;
 import com.minelittlepony.client.mixin.MixinRenderManager;
 import com.minelittlepony.client.model.races.PlayerModels;
 import com.minelittlepony.client.render.LevitatingItemRenderer;
@@ -49,7 +49,7 @@ public class PonyRenderManager {
      */
     public void initialiseRenderers(EntityRenderDispatcher manager) {
         // Preview on the select skin gui
-        MineLPClient.getInstance().getModUtilities().addRenderer(EntityPonyModel.class, RenderPonyModel::new);
+        MineLPClient.getInstance().getModUtilities().addRenderer(DummyPony.class, RenderDummyPony::new);
 
         PlayerModels[] models = PlayerModels.values();
 

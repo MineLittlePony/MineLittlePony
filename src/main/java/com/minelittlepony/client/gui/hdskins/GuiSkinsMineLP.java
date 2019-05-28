@@ -3,8 +3,8 @@ package com.minelittlepony.client.gui.hdskins;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.common.client.gui.element.IconicToggle;
 import com.minelittlepony.common.client.gui.style.Style;
+import com.minelittlepony.hdskins.dummy.PlayerPreview;
 import com.minelittlepony.hdskins.gui.GuiSkins;
-import com.minelittlepony.hdskins.gui.PlayerPreview;
 import com.minelittlepony.hdskins.net.SkinServer;
 import com.minelittlepony.pony.IPonyManager;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -66,7 +66,7 @@ public class GuiSkinsMineLP extends GuiSkins {
 
         isWet = wet == 1;
 
-        previewer.getLocal().releaseTextures();
+        previewer.getLocal().getTextures().release();;
 
         if (previewer instanceof PonyPreview) {
             ((PonyPreview)previewer).setWet(isWet);
@@ -80,7 +80,7 @@ public class GuiSkinsMineLP extends GuiSkins {
 
         MineLittlePony.logger.debug("Invalidating old local skin, checking updated local skin");
         if (type == Type.SKIN) {
-            ponyManager.removePony(previewer.getLocal().getTexture(Type.SKIN).getTexture());
+            ponyManager.removePony(previewer.getLocal().getTextures().get(Type.SKIN).getId());
         }
     }
 
