@@ -1,7 +1,7 @@
 package com.minelittlepony.client.model;
 
-import com.minelittlepony.client.model.armour.ModelPonyArmor;
-import com.minelittlepony.client.model.armour.PonyArmor;
+import com.minelittlepony.client.model.armour.ModelPonyArmour;
+import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.client.model.components.PonySnout;
 import com.minelittlepony.client.model.components.PonyTail;
 import com.minelittlepony.client.pony.PonyData;
@@ -73,7 +73,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     @Override
     public IEquestrianArmour<?> createArmour() {
-        return new PonyArmor<>(new ModelPonyArmor<>(), new ModelPonyArmor<>());
+        return new ArmourWrapper<>(new ModelPonyArmour<>(), new ModelPonyArmour<>());
     }
 
     /**

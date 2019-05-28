@@ -2,7 +2,7 @@ package com.minelittlepony.client.render.layer;
 
 import com.minelittlepony.client.ForgeProxy;
 import com.minelittlepony.client.model.ModelWrapper;
-import com.minelittlepony.client.model.armour.DefaultPonyArmorTextureResolver;
+import com.minelittlepony.client.model.armour.DefaultArmourTextureResolver;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.client.util.render.Color;
 import com.minelittlepony.model.IPonyModel;
@@ -25,7 +25,7 @@ import net.minecraft.util.Identifier;
 
 public class LayerPonyArmor<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyLayer<T, M> {
 
-    private static final IArmourTextureResolver<LivingEntity> textures = new DefaultPonyArmorTextureResolver<>();
+    private static final IArmourTextureResolver<LivingEntity> textures = new DefaultArmourTextureResolver<>();
 
     private ModelWrapper<T, M> pony;
 

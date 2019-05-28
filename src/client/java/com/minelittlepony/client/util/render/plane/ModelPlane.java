@@ -1,6 +1,7 @@
 package com.minelittlepony.client.util.render.plane;
 
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.util.math.Direction;
 
 import com.minelittlepony.client.util.render.Box;
 import com.minelittlepony.client.util.render.Quad;
@@ -14,7 +15,7 @@ public class ModelPlane extends Box<PlaneRenderer> {
 
     public boolean hidden = false;
 
-    public ModelPlane(PlaneRenderer renderer, int textureX, int textureY, float xMin, float yMin, float zMin, int w, int h, int d, float scale, Plane face) {
+    public ModelPlane(PlaneRenderer renderer, int textureX, int textureY, float xMin, float yMin, float zMin, int w, int h, int d, float scale, Direction face) {
         super(renderer, textureX, textureY, xMin, yMin, zMin, w, h, d, scale, false);
 
         float xMax = xMin + w + scale;
@@ -53,22 +54,22 @@ public class ModelPlane extends Box<PlaneRenderer> {
         Vertex eun = vert(xMax, yMax, zMax, 8, 8);
         Vertex wun = vert(xMin, yMax, zMax, 8, 0);
 
-        if (face == Plane.EAST) {
+        if (face == Direction.EAST) {
             quad = quad(textureX, d, textureY, h, edn, eds, eus, eun);
         }
-        if (face == Plane.WEST) {
+        if (face == Direction.WEST) {
             quad = quad(textureX, d, textureY, h, wds, wdn, wun, wus);
         }
-        if (face == Plane.UP) {
+        if (face == Direction.UP) {
             quad = quad(textureX, w, textureY, d, edn, wdn, wds, eds);
         }
-        if (face == Plane.DOWN) {
+        if (face == Direction.DOWN) {
             quad = quad(textureX, w, textureY, d, eus, wus, wun, eun);
         }
-        if (face == Plane.SOUTH) {
+        if (face == Direction.SOUTH) {
             quad = quad(textureX, w, textureY, h, eds, wds, wus, eus);
         }
-        if (face == Plane.NORTH) {
+        if (face == Direction.NORTH) {
             quad = quad(textureX, w, textureY, h, wdn, edn, eun, wun);
         }
 

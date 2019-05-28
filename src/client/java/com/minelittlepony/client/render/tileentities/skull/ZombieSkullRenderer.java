@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.tileentities.skull;
 
+import com.minelittlepony.client.render.entities.MobRenderers;
 import com.minelittlepony.client.render.entities.RenderPonyZombie;
 import com.minelittlepony.settings.PonyConfig;
 import com.mojang.authlib.GameProfile;
@@ -11,7 +12,7 @@ public class ZombieSkullRenderer extends PonySkull {
 
     @Override
     public boolean canRender(PonyConfig config) {
-        return config.zombies;
+        return MobRenderers.ZOMBIES.get();
     }
 
     @Override

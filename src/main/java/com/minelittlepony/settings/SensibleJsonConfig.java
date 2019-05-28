@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import com.minelittlepony.client.settings.ClientPonyConfig;
-import com.minelittlepony.common.SensibleConfig;
 
 import java.io.BufferedReader;
 import java.io.IOException;

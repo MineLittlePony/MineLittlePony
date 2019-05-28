@@ -9,7 +9,7 @@ public class HornGlow extends Box<GlowRenderer> {
 
     private final float alpha;
 
-    private Quad[] quadList;
+    private Quad[] polygons;
 
     public HornGlow(GlowRenderer renderer, int texX, int texY, float xMin, float yMin, float zMin, int w, int h, int d, float scale, float alpha) {
         super(renderer, texX, texY, xMin, yMin, zMin, w, h, d, scale);
@@ -47,7 +47,7 @@ public class HornGlow extends Box<GlowRenderer> {
         Vertex eun = vert(xMax,    yMax, zMax,    8, 8);
         Vertex wun = vert(xMin,    yMax, zMax,    8, 0);
 
-        quadList = new Quad[] {
+        polygons = new Quad[] {
             quad(texX + d + w,     d, texY + d,  h, edn, eds, eus, eun),
             quad(texX,             d, texY + d,  h, wds, wdn, wun, wus),
             quad(texX + d,         w, texY,      d, edn, wdn, wds, eds),
@@ -57,7 +57,7 @@ public class HornGlow extends Box<GlowRenderer> {
         };
 
         if (renderer.mirror) {
-            for (Quad i : quadList) {
+            for (Quad i : polygons) {
                 i.flip();
             }
         }
@@ -67,7 +67,7 @@ public class HornGlow extends Box<GlowRenderer> {
     public void render(BufferBuilder buffer, float scale) {
         parent.applyTint(alpha);
 
-        for (Quad i : quadList) {
+        for (Quad i : polygons) {
             i.render(buffer, scale);
         }
     }

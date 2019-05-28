@@ -8,11 +8,11 @@ import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.armour.IArmour;
 
-public class ModelPonyArmor<T extends LivingEntity> extends AbstractPonyModel<T> implements IArmour {
+public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T> implements IArmour {
 
     public PonyRenderer chestPiece;
 
-    public ModelPonyArmor() {
+    public ModelPonyArmour() {
         super(false);
         textureHeight = 32;
     }

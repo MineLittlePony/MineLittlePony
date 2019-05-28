@@ -11,31 +11,21 @@ public abstract class PonyConfig extends SensibleJsonConfig {
 
     @Expose private PonyLevel ponylevel = PonyLevel.PONIES;
 
-    @Expose public boolean sizes = true;
-    @Expose public boolean snuzzles = true;
-    @Expose public boolean hd = true;
-    @Expose public boolean showscale = true;
-    @Expose public boolean fpsmagic = true;
-    @Expose public boolean ponyskulls = true;
-    @Expose public boolean frustrum = true;
+    @Expose boolean sizes = true;
+    @Expose boolean snuzzles = true;
+    @Expose boolean hd = true;
+    @Expose boolean showscale = true;
+    @Expose boolean fpsmagic = true;
+    @Expose boolean ponyskulls = true;
+    @Expose boolean frustrum = true;
 
-    public enum PonySettings implements Setting {
-        SIZES,
-        SNUZZLES,
-        HD,
-        SHOWSCALE,
-        FPSMAGIC,
-        PONYSKULLS,
-        FRUSTRUM;
-    }
-
-    @Expose public boolean villagers = true;
-    @Expose public boolean zombies = true;
-    @Expose public boolean pigzombies = true;
-    @Expose public boolean skeletons = true;
-    @Expose public boolean illagers = true;
-    @Expose public boolean guardians = true;
-    @Expose public boolean endermen = true;
+    @Expose boolean villagers = true;
+    @Expose boolean zombies = true;
+    @Expose boolean pigzombies = true;
+    @Expose boolean skeletons = true;
+    @Expose boolean illagers = true;
+    @Expose boolean guardians = true;
+    @Expose boolean endermen = true;
 
     @Expose private float globalScaleFactor = 0.9F;
 

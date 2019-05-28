@@ -2,6 +2,7 @@ package com.minelittlepony.pony.meta;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.pony.ITriggerPixelMapped;
+import com.minelittlepony.settings.PonySettings;
 
 public enum Size implements ITriggerPixelMapped<Size> {
     TALL(0x534b76, 0.45f, 1.1F),
@@ -36,6 +37,6 @@ public enum Size implements ITriggerPixelMapped<Size> {
     }
 
     public Size getEffectiveSize() {
-        return MineLittlePony.getInstance().getConfig().sizes ? this : Size.NORMAL;
+        return PonySettings.SIZES.get() ? this : Size.NORMAL;
     }
 }

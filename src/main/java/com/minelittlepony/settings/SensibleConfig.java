@@ -11,12 +11,6 @@ import com.minelittlepony.common.client.gui.IField.IChangeCallback;
 // Mumfrey pls.
 public abstract class SensibleConfig {
 
-    private static SensibleConfig instance;
-
-    public SensibleConfig() {
-        instance = this;
-    }
-
     public abstract void save();
 
     public interface Setting extends IChangeCallback<Boolean> {
@@ -26,15 +20,17 @@ public abstract class SensibleConfig {
          * Gets the config value associated with this entry.
          */
         default boolean get() {
-            return instance.getValue(this);
+            return config().getValue(this);
         }
 
         /**
          * Sets the config value associated with this entry.
          */
         default void set(boolean value) {
-            instance.setValue(this, value);
+            config().setValue(this, value);
         }
+
+        SensibleConfig config();
 
         @Override
         default Boolean perform(Boolean v) {

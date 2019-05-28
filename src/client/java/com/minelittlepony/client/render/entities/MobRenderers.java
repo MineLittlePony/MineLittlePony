@@ -3,7 +3,8 @@ package com.minelittlepony.client.render.entities;
 import com.google.common.collect.Lists;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.PonyRenderManager;
-import com.minelittlepony.common.SensibleConfig.Setting;
+import com.minelittlepony.settings.SensibleConfig;
+import com.minelittlepony.settings.SensibleConfig.Setting;
 
 import java.util.List;
 
@@ -75,6 +76,11 @@ public enum MobRenderers implements Setting {
     public void set(boolean value) {
         Setting.super.set(value);
         apply(PonyRenderManager.getInstance());
+    }
+
+    @Override
+    public SensibleConfig config() {
+        return MineLittlePony.getInstance().getConfig();
     }
 
     public void apply(PonyRenderManager pony) {

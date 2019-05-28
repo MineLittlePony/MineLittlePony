@@ -1,6 +1,7 @@
 package com.minelittlepony.client.util.render.plane;
 
 import net.minecraft.client.model.Model;
+import net.minecraft.util.math.Direction;
 
 import com.minelittlepony.client.util.render.AbstractRenderer;
 
@@ -37,32 +38,32 @@ public class PlaneRenderer extends AbstractRenderer<PlaneRenderer> {
         return new PlaneRenderer(baseModel, textureOffsetX, textureOffsetY);
     }
 
-    private PlaneRenderer addPlane(float offX, float offY, float offZ, int width, int height, int depth, float scale, Plane face) {
+    private PlaneRenderer addPlane(float offX, float offY, float offZ, int width, int height, int depth, float scale, Direction face) {
         boxes.add(new ModelPlane(this, textureOffsetX, textureOffsetY, modelOffsetX + offX, modelOffsetY + offY, modelOffsetZ + offZ, width, height, depth, scale, face));
         return this;
     }
 
     public PlaneRenderer top(float offX, float offY, float offZ, int width, int depth, float scale) {
-        return addPlane(offX, offY, offZ, width, 0, depth, scale, Plane.UP);
+        return addPlane(offX, offY, offZ, width, 0, depth, scale, Direction.UP);
     }
 
     public PlaneRenderer bottom(float offX, float offY, float offZ, int width, int depth, float scale) {
-        return addPlane(offX, offY, offZ, width, 0, depth, scale, Plane.DOWN);
+        return addPlane(offX, offY, offZ, width, 0, depth, scale, Direction.DOWN);
     }
 
     public PlaneRenderer west(float offX, float offY, float offZ, int height, int depth, float scale) {
-        return addPlane(offX, offY, offZ, 0, height, depth, scale, Plane.WEST);
+        return addPlane(offX, offY, offZ, 0, height, depth, scale, Direction.WEST);
     }
 
     public PlaneRenderer east(float offX, float offY, float offZ, int height, int depth, float scale) {
-        return addPlane(offX, offY, offZ, 0, height, depth, scale, Plane.EAST);
+        return addPlane(offX, offY, offZ, 0, height, depth, scale, Direction.EAST);
     }
 
     public PlaneRenderer north(float offX, float offY, float offZ, int width, int height, float scale) {
-        return addPlane(offX, offY, offZ - scale * 2, width, height, 0, scale, Plane.NORTH);
+        return addPlane(offX, offY, offZ - scale * 2, width, height, 0, scale, Direction.NORTH);
     }
 
     public PlaneRenderer south(float offX, float offY, float offZ, int width, int height, float scale) {
-        return addPlane(offX, offY, offZ + scale * 2, width, height, 0, scale, Plane.SOUTH);
+        return addPlane(offX, offY, offZ + scale * 2, width, height, 0, scale, Direction.SOUTH);
     }
 }

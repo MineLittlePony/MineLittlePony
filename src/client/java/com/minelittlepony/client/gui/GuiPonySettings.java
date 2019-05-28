@@ -12,7 +12,7 @@ import com.minelittlepony.common.client.gui.element.Slider;
 import com.minelittlepony.common.client.gui.element.Toggle;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
-import com.minelittlepony.settings.PonyConfig.PonySettings;
+import com.minelittlepony.settings.PonySettings;
 
 /**
  * In-Game options menu.
@@ -77,7 +77,7 @@ public class GuiPonySettings implements IGuiGuest {
         }
 
         host.addButton(new Label(RIGHT, row += 15)).getStyle().setText(MOB_PREFIX + "title");
-        for (MobRenderers i : MobRenderers.values()) {
+        for (MobRenderers i : MobRenderers.registry) {
             host.addButton(new Toggle(RIGHT, row += 20, i.get()))
                 .onChange(i)
                 .getStyle().setText(MOB_PREFIX + i.name().toLowerCase());

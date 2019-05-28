@@ -6,12 +6,12 @@ import com.minelittlepony.model.armour.ArmourLayer;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.pony.IPonyData;
 
-public class PonyArmor<T extends LivingEntity> implements IEquestrianArmour<ModelPonyArmor<T>> {
+public class ArmourWrapper<T extends LivingEntity> implements IEquestrianArmour<ModelPonyArmour<T>> {
 
-    private final ModelPonyArmor<T> outerLayer;
-    private final ModelPonyArmor<T> innerLayer;
+    private final ModelPonyArmour<T> outerLayer;
+    private final ModelPonyArmour<T> innerLayer;
 
-    public PonyArmor(ModelPonyArmor<T> outer, ModelPonyArmor<T> inner) {
+    public ArmourWrapper(ModelPonyArmour<T> outer, ModelPonyArmour<T> inner) {
         outerLayer = outer;
         innerLayer = inner;
     }
@@ -29,7 +29,7 @@ public class PonyArmor<T extends LivingEntity> implements IEquestrianArmour<Mode
     }
 
     @Override
-    public ModelPonyArmor<T> getArmorForLayer(ArmourLayer layer) {
+    public ModelPonyArmour<T> getArmorForLayer(ArmourLayer layer) {
 
         if (layer == ArmourLayer.INNER) {
             return innerLayer;

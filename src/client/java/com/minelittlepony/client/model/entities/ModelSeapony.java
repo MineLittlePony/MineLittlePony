@@ -1,7 +1,7 @@
 package com.minelittlepony.client.model.entities;
 
-import com.minelittlepony.client.model.armour.ModelPonyArmor;
-import com.minelittlepony.client.model.armour.PonyArmor;
+import com.minelittlepony.client.model.armour.ModelPonyArmour;
+import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.client.model.components.SeaponyTail;
 import com.minelittlepony.client.model.races.ModelUnicorn;
 import com.minelittlepony.client.util.render.PonyRenderer;
@@ -35,7 +35,7 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
 
     @Override
     public IEquestrianArmour<?> createArmour() {
-        return new PonyArmor<>(new Armour(), new Armour());
+        return new ArmourWrapper<>(new Armour(), new Armour());
     }
 
     @Override
@@ -187,7 +187,7 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
         rightLegOverlay.visible = false;
     }
 
-    class Armour extends ModelPonyArmor<T> {
+    class Armour extends ModelPonyArmour<T> {
 
         @Override
         public void showBoots() {

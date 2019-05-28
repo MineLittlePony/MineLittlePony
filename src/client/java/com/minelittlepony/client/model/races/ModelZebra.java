@@ -2,8 +2,8 @@ package com.minelittlepony.client.model.races;
 
 import net.minecraft.entity.LivingEntity;
 
-import com.minelittlepony.client.model.armour.ModelPonyArmor;
-import com.minelittlepony.client.model.armour.PonyArmor;
+import com.minelittlepony.client.model.armour.ModelPonyArmour;
+import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.armour.IEquestrianArmour;
@@ -19,7 +19,7 @@ public class ModelZebra<T extends LivingEntity> extends ModelEarthPony<T> {
 
     @Override
     public IEquestrianArmour<?> createArmour() {
-        return new PonyArmor<>(new Armour(), new Armour());
+        return new ArmourWrapper<>(new Armour(), new Armour());
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ModelZebra<T extends LivingEntity> extends ModelEarthPony<T> {
                 .pitch = -1F;
     }
 
-    class Armour extends ModelPonyArmor<T> {
+    class Armour extends ModelPonyArmour<T> {
 
         @Override
         public void transform(BodyPart part) {

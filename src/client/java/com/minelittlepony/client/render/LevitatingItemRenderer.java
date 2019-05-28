@@ -7,6 +7,7 @@ import com.minelittlepony.client.ducks.IRenderItem;
 import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
 import com.minelittlepony.client.util.render.Color;
 import com.minelittlepony.pony.IPony;
+import com.minelittlepony.settings.PonySettings;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -71,7 +72,7 @@ public class LevitatingItemRenderer {
 
         pushMatrix();
 
-        boolean doMagic = MineLittlePony.getInstance().getConfig().fpsmagic && pony.getMetadata().hasMagic();
+        boolean doMagic = PonySettings.FPSMAGIC.get() && pony.getMetadata().hasMagic();
 
         if (doMagic) {
             setupPerspective(renderer, entity, stack, left);

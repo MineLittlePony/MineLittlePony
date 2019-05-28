@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Map;
 
-public class DefaultPonyArmorTextureResolver<T extends LivingEntity> implements IArmourTextureResolver<T> {
+public class DefaultArmourTextureResolver<T extends LivingEntity> implements IArmourTextureResolver<T> {
 
     private final Map<String, Identifier> HUMAN_ARMOUR = Maps.newHashMap();
     private final Map<Identifier, Identifier> PONY_ARMOUR = Maps.newHashMap();
@@ -54,6 +54,7 @@ public class DefaultPonyArmorTextureResolver<T extends LivingEntity> implements 
 
     private Identifier resolve(Identifier... resources) {
         // check resource packs for either texture.
+        // TODO: We need another way to iterate loaded resourcepacks
         for (ClientResourcePackContainer entry : MinecraftClient.getInstance().getResourcePackContainerManager().getEnabledContainers()) {
             ResourcePack pack = entry.createResourcePack();
             for (Identifier candidate : resources) {
