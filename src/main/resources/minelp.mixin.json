@@ -10,6 +10,7 @@
         "MixinFirstPersonRenderer",
         "MixinGlStateManager",
         "MixinItemRenderer",
+        "MixinMinecraftClient",
         "MixinRenderManager",
         "MixinThreadDownloadImageData"
     ]

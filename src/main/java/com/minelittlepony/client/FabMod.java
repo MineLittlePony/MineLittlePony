@@ -9,6 +9,7 @@ import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
 
+import com.minelittlepony.client.gui.hdskins.MineLPHDSkins;
 import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.hdskins.mixin.MixinEntityRenderDispatcher;
 import com.minelittlepony.settings.SensibleJsonConfig;
@@ -18,12 +19,17 @@ import java.util.function.Function;
 
 public class FabMod implements ClientModInitializer, IModUtilities {
 
-    private final MineLPClient mlp = new MineLPClient(this);
-
     @Override
     public void onInitializeClient() {
-        mlp.init(SensibleJsonConfig.of(getConfigDirectory(), ClientPonyConfig::new));
-        mlp.postInit(MinecraftClient.getInstance());
+        MineLPClient mlp;
+
+        if (FabricLoader.getInstance().isModLoaded("hdskins")) {
+            mlp = new MineLPHDSkins(this);
+        } else {
+            mlp = new MineLPClient(this);
+        }
+
+        mlp.init(SensibleJsonConfig.of(getConfigDirectory().resolve("minelp.json"), ClientPonyConfig::new));
     }
 
     @Override

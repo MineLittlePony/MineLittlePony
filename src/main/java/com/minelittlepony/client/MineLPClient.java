@@ -2,14 +2,9 @@ package com.minelittlepony.client;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.gui.GuiPonySettings;
-import com.minelittlepony.client.gui.hdskins.GuiSkinsMineLP;
 import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
 import com.minelittlepony.common.client.gui.GuiHost;
-import com.minelittlepony.hdskins.HDSkins;
-import com.minelittlepony.hdskins.net.LegacySkinServer;
-import com.minelittlepony.hdskins.net.SkinServer;
-import com.minelittlepony.hdskins.net.ValhallaSkinServer;
 import com.minelittlepony.settings.PonyConfig;
 
 import net.minecraft.ChatFormat;
@@ -30,9 +25,6 @@ import org.lwjgl.glfw.GLFW;
  */
 public class MineLPClient extends MineLittlePony {
 
-    private static final String MINELP_VALHALLA_SERVER = "http://skins.minelittlepony-mod.com";
-    private static final String MINELP_LEGACY_SERVER = "http://minelpskins.voxelmodpack.com";
-    private static final String MINELP_LEGACY_GATEWAY = "http://minelpskinmanager.voxelmodpack.com";
 
     static final KeyBinding SETTINGS_GUI = new KeyBinding("Settings", GLFW.GLFW_KEY_F9, "Mine Little Pony");
 
@@ -54,36 +46,20 @@ public class MineLPClient extends MineLittlePony {
         utilities = utils;
     }
 
-    void init(PonyConfig newConfig) {
+    protected void init(PonyConfig newConfig) {
         config = newConfig;
         ponyManager = new PonyManager(config);
-
-        ReloadableResourceManager irrm = (ReloadableResourceManager) MinecraftClient.getInstance().getResourceManager();
-        irrm.registerListener(ponyManager);
-
-        // This also makes it the default gateway server.
-        SkinServer.defaultServers.add(new LegacySkinServer(MINELP_LEGACY_SERVER, MINELP_LEGACY_GATEWAY));
-        SkinServer.defaultServers.add(0, new ValhallaSkinServer(MINELP_VALHALLA_SERVER));
     }
 
     /**
      * Called when the game is ready.
      */
-    void postInit(MinecraftClient minecraft) {
-
-        HDSkins manager = HDSkins.getInstance();
-//        manager.setSkinUrl(SKIN_SERVER_URL);
-//        manager.setGatewayURL(GATEWAY_URL);
-        manager.addSkinModifier(new PonySkinModifier());
-        manager.addSkinParser(new PonySkinParser());
-//        logger.info("Set MineLP skin server URL.");
-        manager.addClearListener(ponyManager);
-
-        manager.setSkinsGui(GuiSkinsMineLP::new);
-
+    public void postInit(MinecraftClient minecraft) {
         EntityRenderDispatcher rm = minecraft.getEntityRenderManager();
-
         renderManager.initialiseRenderers(rm);
+
+        ReloadableResourceManager irrm = (ReloadableResourceManager) MinecraftClient.getInstance().getResourceManager();
+        irrm.registerListener(ponyManager);
     }
 
     void onTick(MinecraftClient minecraft, boolean inGame) {
