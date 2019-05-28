@@ -3,11 +3,10 @@ package com.minelittlepony.client.gui.hdskins;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.common.client.gui.element.IconicToggle;
 import com.minelittlepony.common.client.gui.style.Style;
-import com.minelittlepony.hdskins.gui.EntityPlayerModel;
 import com.minelittlepony.hdskins.gui.GuiSkins;
+import com.minelittlepony.hdskins.gui.PlayerPreview;
 import com.minelittlepony.hdskins.net.SkinServer;
 import com.minelittlepony.pony.IPonyManager;
-import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
@@ -38,8 +37,8 @@ public class GuiSkinsMineLP extends GuiSkins {
     }
 
     @Override
-    protected EntityPlayerModel getModel(GameProfile profile) {
-        return new EntityPonyModel(profile);
+    public PlayerPreview createPreviewer() {
+        return new PonyPreview();
     }
 
     @Override
@@ -66,11 +65,12 @@ public class GuiSkinsMineLP extends GuiSkins {
         playSound(SoundEvents.BLOCK_BREWING_STAND_BREW);
 
         isWet = wet == 1;
-        localPlayer.releaseTextures();
 
-        ((EntityPonyModel)localPlayer).setWet(isWet);
-        ((EntityPonyModel)remotePlayer).setWet(isWet);
+        previewer.getLocal().releaseTextures();
 
+        if (previewer instanceof PonyPreview) {
+            ((PonyPreview)previewer).setWet(isWet);
+        }
         return wet;
     }
 
@@ -80,7 +80,7 @@ public class GuiSkinsMineLP extends GuiSkins {
 
         MineLittlePony.logger.debug("Invalidating old local skin, checking updated local skin");
         if (type == Type.SKIN) {
-            ponyManager.removePony(localPlayer.getLocal(Type.SKIN).getTexture());
+            ponyManager.removePony(previewer.getLocal().getTexture(Type.SKIN).getTexture());
         }
     }
 
