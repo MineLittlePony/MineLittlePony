@@ -67,8 +67,8 @@ dependencies {
     include "com.github.MineLittlePony:Kirin:${project.kirin_version}"
     
     // TODO: HD Skins can be made optional later
-    modCompile "com.github.MineLittlePony:HDSkins:${hd_skins_version}"
-    include "com.github.MineLittlePony:HDSkins:${hd_skins_version}"
+    modCompile "com.github.MineLittlePony:HDSkins:${project.hd_skins_version}"
+    include "com.github.MineLittlePony:HDSkins:${project.hd_skins_version}"
 }
 
 processResources {

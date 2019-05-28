@@ -17,7 +17,7 @@ import java.util.UUID;
 @Mixin(DefaultSkinHelper.class)
 public abstract class MixinDefaultPlayerSkin {
 
-    @Inject(method = "getTexture",
+    @Inject(method = "getTexture()Lnet/minecraft/util/Identifier;",
             at = @At("HEAD"),
             cancellable = true)
     private static void legacySkin(CallbackInfoReturnable<Identifier> cir) {
@@ -26,7 +26,7 @@ public abstract class MixinDefaultPlayerSkin {
         }
     }
 
-    @Inject(method = "getTexture",
+    @Inject(method = "getTexture(Ljava/util/UUID;)Lnet/minecraft/util/Identifier;",
             at = @At("HEAD"),
             cancellable = true)
     private static void defaultSkin(UUID uuid, CallbackInfoReturnable<Identifier> cir) {
@@ -35,7 +35,7 @@ public abstract class MixinDefaultPlayerSkin {
         }
     }
 
-    @Inject(method = "getModel",
+    @Inject(method = "getModel(Ljava/util/UUID;)Ljava/lang/String;",
             at = @At("HEAD"),
             cancellable = true)
     private static void skinType(UUID uuid, CallbackInfoReturnable<String> cir) {
