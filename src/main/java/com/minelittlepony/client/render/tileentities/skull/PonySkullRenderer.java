@@ -148,6 +148,7 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer implements IRend
         transparency = use;
     }
 
+    @Override
     public boolean usesTransparency() {
         return transparency;
     }

@@ -34,6 +34,21 @@ public abstract class MixinItemRenderer implements SynchronousResourceReloadList
         }
     }
 
+    @Inject(method = "renderItemAndGlow("
+            + "Lnet/minecraft/item/ItemStack;"
+            + "Lnet/minecraft/client/render/model/BakedModel;)V",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/client/render/item/ItemRenderer;renderGlint("
+                            + "Lnet/minecraft/client/texture/TextureManager;"
+                            + "Ljava/lang/Runnable;I)V"),
+            cancellable = true)
+    private void beforeRenderEffect(ItemStack stack, BakedModel model, CallbackInfo info) {
+        if (transparency) {
+            info.cancel();
+        }
+    }
+
+
     @ModifyArg(method = "renderQuads("
             + "Lnet/minecraft/client/render/BufferBuilder;"
             + "Ljava/util/List;I"
@@ -45,15 +60,5 @@ public abstract class MixinItemRenderer implements SynchronousResourceReloadList
             index = 2)
     private int modifyItemRenderTint(int color) {
         return transparency ? -1 : color;
-    }
-
-    @Inject(method = "renderEffect("
-            + "Lnet/minecraft/client/render/model/BakedModel;)V",
-            at = @At("HEAD"),
-            cancellable = true)
-    private void renderEffect(BakedModel model, CallbackInfo info) {
-        if (transparency) {
-            info.cancel();
-        }
     }
 }
