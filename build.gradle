@@ -33,12 +33,14 @@ targetCompatibility = JavaVersion.VERSION_1_8
 sourceCompatibility = JavaVersion.VERSION_1_8
 
 ext {
-    revision = grgit.log().size()
-    hash = grgit.head().abbreviatedId
-    if (file('.git/shallow').exists()) {
-        // don't clone with --depth
-        revision = -1
-        hash += " shallow"
+    if (grgit == null) {
+        revision = "nogit"
+    } else {
+        revision = "${grgit.log().size()}-${grgit.head().abbreviatedId}"
+        if (file('.git/shallow').exists()) {
+            // don't clone with --depth
+            revision = "-1-${shallow}"
+        }
     }
 }
 
@@ -48,7 +50,7 @@ if (project.release != 'RELEASE') {
     version += "-${project.release}"
 }
 if (project.release == 'SNAPSHOT') {
-    version += "-${project.revision}-${project.hash}"
+    version += "-${project.revision}"
 }
 
 group = project.group
