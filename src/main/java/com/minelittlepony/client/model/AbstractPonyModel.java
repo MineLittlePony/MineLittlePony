@@ -892,7 +892,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         popMatrix();
 
         pushMatrix();
-        transform(BodyPart.BODY);
+        transform(BodyPart.HEAD);
         renderHelmet(scale);
         popMatrix();
 
@@ -914,12 +914,9 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      */
     protected void renderHead(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         head.render(scale);
-
-        headwear.render(scale);
     }
 
     protected void renderHelmet(float scale) {
-        head.applyTransform(scale);
         headwear.render(scale);
     }
 
