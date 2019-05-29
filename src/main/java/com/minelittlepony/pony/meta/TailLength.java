@@ -4,11 +4,11 @@ import com.minelittlepony.pony.ITriggerPixelMapped;
 
 public enum TailLength implements ITriggerPixelMapped<TailLength> {
 
-    STUB(0x425844),
-    QUARTER(0xd19fe4),
-    HALF(0x534b76),
-    THREE_QUARTERS(0x8a6b7f),
-    FULL(0);
+    STUB            (0x445842),
+    QUARTER         (0xe49fd1),
+    HALF            (0x764b53),
+    THREE_QUARTERS  (0x7f6b8a),
+    FULL            (0x000000);
 
     private int triggerValue;
 

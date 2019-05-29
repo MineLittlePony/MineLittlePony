@@ -77,12 +77,12 @@ public enum TriggerPixels {
     }
 
     enum Channel {
-        RAW(-1, 0),
-        ALL  (0xffffff, 0),
-        ALPHA(0xff, 24),
-        RED  (0xff, 16),
-        GREEN(0xff, 8),
-        BLUE (0xff, 0);
+        RAW  (0xFFFFFFFF, 0),
+        ALL  (0x00FFFFFF, 0),
+        ALPHA(0x000000FF, 24),
+        RED  (0x000000FF, 0),
+        GREEN(0x000000FF, 8),
+        BLUE (0x000000FF, 16);
 
         private int mask;
         private int offset;
@@ -93,6 +93,7 @@ public enum TriggerPixels {
         }
 
         public int readValue(int x, int y, NativeImage image) {
+                        /*getPixelABGR*/
             return (image.getPixelRGBA(x, y) >> offset) & mask;
         }
     }

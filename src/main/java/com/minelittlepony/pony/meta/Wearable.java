@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum Wearable implements ITriggerPixelMapped<Wearable> {
-    NONE(0),
-    MUFFIN(50),
-    HAT(100),
-    ANTLERS(150),
-    SADDLE_BAGS(200),
-    STETSON(250);
+    NONE        (0x00),
+    MUFFIN      (0x32),
+    HAT         (0x64),
+    ANTLERS     (0x96),
+    SADDLE_BAGS (0xC8),
+    STETSON     (0xFA);
 
     private int triggerValue;
 

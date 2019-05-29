@@ -22,8 +22,11 @@ public interface ITriggerPixelMapped<T extends Enum<T> & ITriggerPixelMapped<T>>
     @SuppressWarnings("unchecked")
     static <T extends Enum<T> & ITriggerPixelMapped<T>> T getByTriggerPixel(T type, int pixelValue) {
         for (T i : (T[])type.getClass().getEnumConstants()) {
-            if (i.getTriggerPixel() == pixelValue) return i;
+            if (i.getTriggerPixel() == pixelValue) {
+                return i;
+            }
         }
+
         return type;
     }
 }
