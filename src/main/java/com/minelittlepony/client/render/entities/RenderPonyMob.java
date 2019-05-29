@@ -21,16 +21,16 @@ import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.render.VisibleRegion;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.render.entity.LivingEntityRenderer;
+import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
 import javax.annotation.Nonnull;
 
-public abstract class RenderPonyMob<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends LivingEntityRenderer<T, M> implements IPonyRender<T, M> {
+public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T> & IPonyModel<T>> extends MobEntityRenderer<T, M> implements IPonyRender<T, M> {
 
     protected RenderPony<T, M> renderPony = new RenderPony<T, M>(this);
 
@@ -119,7 +119,7 @@ public abstract class RenderPonyMob<T extends LivingEntity, M extends EntityMode
         return MineLittlePony.getInstance().getManager().getPony(findTexture(entity));
     }
 
-    public abstract static class Caster<T extends LivingEntity, M extends ClientPonyModel<T> & IUnicorn<PonyRenderer>> extends RenderPonyMob<T, M> {
+    public abstract static class Caster<T extends MobEntity, M extends ClientPonyModel<T> & IUnicorn<PonyRenderer>> extends RenderPonyMob<T, M> {
 
         public Caster(EntityRenderDispatcher manager, M model) {
             super(manager, model);
@@ -131,7 +131,7 @@ public abstract class RenderPonyMob<T extends LivingEntity, M extends EntityMode
         }
     }
 
-    public abstract static class Proxy<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends RenderPonyMob<T, M> {
+    public abstract static class Proxy<T extends MobEntity, M extends EntityModel<T> & IPonyModel<T>> extends RenderPonyMob<T, M> {
 
         @SuppressWarnings({"rawtypes", "unchecked"})
         public  Proxy(List exportedLayers, EntityRenderDispatcher manager, M model) {
