@@ -872,8 +872,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     public void render(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
 
         pushMatrix();
-        transform(BodyPart.HEAD);
-        renderHead(entity, move, swing, ticks, headYaw, headPitch, scale);
+        transform(BodyPart.BODY);
+        renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
         popMatrix();
 
         pushMatrix();
@@ -882,14 +882,26 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         popMatrix();
 
         pushMatrix();
-        transform(BodyPart.BODY);
-        renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
+        transform(BodyPart.HEAD);
+        renderHead(entity, move, swing, ticks, headYaw, headPitch, scale);
         popMatrix();
 
         pushMatrix();
         transform(BodyPart.LEGS);
         renderLegs(scale);
         popMatrix();
+
+        pushMatrix();
+        transform(BodyPart.BODY);
+        renderHelmet(scale);
+        popMatrix();
+
+        if (textureHeight == 64) {
+            pushMatrix();
+            transform(BodyPart.LEGS);
+            renderSleeves(scale);
+            popMatrix();
+        }
 
     }
 
@@ -902,8 +914,13 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      */
     protected void renderHead(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         head.render(scale);
+
         headwear.render(scale);
+    }
+
+    protected void renderHelmet(float scale) {
         head.applyTransform(scale);
+        headwear.render(scale);
     }
 
     protected void renderNeck(float scale) {
@@ -920,28 +937,29 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     */
     protected void renderBody(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         body.render(scale);
-        if (textureHeight == 64) {
-            bodyOverlay.render(scale);
-        }
+
         upperTorso.render(scale);
         body.applyTransform(scale);
         tail.renderPart(scale, entity.getUuid());
     }
 
     protected void renderLegs(float scale) {
-        if (!isSneaking) body.applyTransform(scale);
+        if (!isSneaking) {
+            body.applyTransform(scale);
+        }
 
         leftArm.render(scale);
         rightArm.render(scale);
         leftLeg.render(scale);
         rightLeg.render(scale);
+    }
 
-        if (textureHeight == 64) {
-            leftArmOverlay.render(scale);
-            rightArmOverlay.render(scale);
-            leftLegOverlay.render(scale);
-            rightArmOverlay.render(scale);
-        }
+    protected void renderSleeves(float scale) {
+        leftArmOverlay.render(scale);
+        rightArmOverlay.render(scale);
+        leftLegOverlay.render(scale);
+        rightArmOverlay.render(scale);
+        bodyOverlay.render(scale);
     }
 
     @Override
