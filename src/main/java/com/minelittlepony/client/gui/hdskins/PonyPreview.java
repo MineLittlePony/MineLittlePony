@@ -15,18 +15,20 @@ public class PonyPreview extends PlayerPreview {
     public static final Identifier NO_SKIN_PONY = new Identifier("minelittlepony", "textures/mob/noskin.png");
     public static final Identifier NO_SKIN_SEAPONY = new Identifier("minelittlepony", "textures/mob/noskin_seapony.png");
 
-    private final DummyPony localPlayer = new DummyPony(localTextures);
-    private final DummyPony remotePlayer = new DummyPony(remoteTextures);
+    private final DummyPony localPony = new DummyPony(localTextures);
+    private final DummyPony remotePony = new DummyPony(remoteTextures);
 
     public void setWet(boolean isWet) {
-        localPlayer.setWet(isWet);
-        remotePlayer.setWet(isWet);
+        localPony.setWet(isWet);
+        remotePony.setWet(isWet);
     }
 
     @Override
     public Identifier getBlankSkin(Type type) {
         if (type == Type.SKIN) {
-            return localPlayer.wet ? NO_SKIN_SEAPONY : NO_SKIN_PONY;
+            // Initialization order means this method might be called before class members have been initialized.
+            // This is something that needs to be fixed in HDSkins
+            return localPony != null && localPony.wet ? NO_SKIN_SEAPONY : NO_SKIN_PONY;
         }
         return super.getBlankSkin(type);
     }
@@ -40,7 +42,7 @@ public class PonyPreview extends PlayerPreview {
 
         IPony thePony = MineLittlePony.getInstance().getManager().getPony(loc);
 
-        Race race = thePony.getRace(false);
+        Race race = thePony.getRace(true);
 
         if (race.isHuman()) {
             return human;
@@ -51,12 +53,12 @@ public class PonyPreview extends PlayerPreview {
 
     @Override
     public DummyPlayer getRemote() {
-        return ponify(super.getRemote(), remotePlayer);
+        return ponify(super.getRemote(), remotePony);
     }
 
 
     @Override
     public DummyPlayer getLocal() {
-        return ponify(super.getLocal(), localPlayer);
+        return ponify(super.getLocal(), localPony);
     }
 }
