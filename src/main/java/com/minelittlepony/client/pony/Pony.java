@@ -121,8 +121,8 @@ public class Pony extends Touchable<Pony> implements IPony {
 
     @Override
     public boolean isPerformingRainboom(LivingEntity entity) {
-        Vec3d velocity = entity.getVelocity();
-        double zMotion = Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z);
+        Vec3d motion = entity.getVelocity();
+        double zMotion = Math.sqrt(motion.x * motion.x + motion.z * motion.z);
 
         return (isFlying(entity) && canFly()) || entity.isFallFlying() & zMotion > 0.4F;
     }
@@ -148,7 +148,7 @@ public class Pony extends Touchable<Pony> implements IPony {
 
     @Override
     public boolean isSwimming(LivingEntity entity) {
-        return isFullySubmerged(entity) && !(entity.onGround || entity.isClimbing());
+        return entity.isSwimming();
     }
 
     @Override
