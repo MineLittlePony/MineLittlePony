@@ -117,7 +117,7 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, PonyMode
             float r = right ? -1 : 1;
 
             extended.around(r * EXT_WING_RP_X, EXT_WING_RP_Y + rotationPointY, EXT_WING_RP_Z)
-                    .pitch = r * 3;
+                    .yaw = r * 3;
             addFeather(0, l,  6,     0,    9, scale + 0.1F);
             addFeather(1, l, -1,    -0.3F, 8, scale + 0.1F) .pitch = -0.85F;
             addFeather(2, l,  1.8F,  1.3F, 8, scale - 0.1F) .pitch = -0.75F;
