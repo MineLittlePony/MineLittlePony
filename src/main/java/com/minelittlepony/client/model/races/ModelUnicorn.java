@@ -127,6 +127,7 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
         super.renderHead(entity, move, swing, ticks, headYaw, headPitch, scale);
 
         if (canCast()) {
+            head.applyTransform(scale);
             horn.renderPart(scale, entity.getUuid());
             if (isCasting()) {
                 horn.renderMagic(getMagicColor(), scale);
