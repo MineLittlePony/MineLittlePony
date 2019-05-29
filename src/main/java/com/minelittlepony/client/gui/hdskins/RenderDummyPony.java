@@ -62,7 +62,7 @@ public class RenderDummyPony extends RenderDummyPlayer<DummyPony, ClientPonyMode
 
         boolean canWet = playermodel.wet && (loc == playermodel.getTextures().getBlankSkin(Type.SKIN) || race == Race.SEAPONY);
 
-        playerModel = new ModelWrapper<>(canWet ? PlayerModels.SEAPONY.getModel(slim) : PlayerModels.forRace(thePony.getRace(true)).getModel(slim));
+        playerModel = canWet ? PlayerModels.SEAPONY.getWrappedModel(slim) : PlayerModels.forRace(thePony.getRace(true)).getWrappedModel(slim);
         playerModel.apply(thePony.getMetadata());
 
         renderPony.setPonyModel(playerModel);

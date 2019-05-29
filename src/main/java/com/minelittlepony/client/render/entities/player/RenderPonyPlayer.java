@@ -36,10 +36,10 @@ public class RenderPonyPlayer extends PlayerEntityRenderer implements IPonyRende
 
     protected final RenderPony<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> renderPony = new RenderPony<>(this);
 
-    public RenderPonyPlayer(EntityRenderDispatcher manager, boolean useSmallArms, ClientPonyModel<AbstractClientPlayerEntity> model) {
+    public RenderPonyPlayer(EntityRenderDispatcher manager, boolean useSmallArms, ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> model) {
         super(manager, useSmallArms);
 
-        this.model = renderPony.setPonyModel(new ModelWrapper<>(model));
+        this.model = renderPony.setPonyModel(model);
 
         addLayers();
     }

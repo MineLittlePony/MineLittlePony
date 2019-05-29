@@ -15,12 +15,12 @@ public class RenderSeaponyPlayer extends RenderPonyPlayer {
     protected final ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> normalPony;
 
     public RenderSeaponyPlayer(EntityRenderDispatcher manager, boolean useSmallArms,
-            ClientPonyModel<AbstractClientPlayerEntity> model,
-            ClientPonyModel<AbstractClientPlayerEntity> alternate) {
+            ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> model,
+            ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> alternate) {
         super(manager, useSmallArms, model);
 
-        seapony = new ModelWrapper<>(alternate);
-        normalPony = new ModelWrapper<>(model);
+        seapony = alternate;
+        normalPony = model;
     }
 
     @Override

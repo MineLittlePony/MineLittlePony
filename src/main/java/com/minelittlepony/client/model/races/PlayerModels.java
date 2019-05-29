@@ -1,6 +1,7 @@
 package com.minelittlepony.client.model.races;
 
 import com.google.common.collect.Maps;
+import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.entities.ModelSeapony;
 import com.minelittlepony.client.render.entities.player.RenderPonyPlayer;
 import com.minelittlepony.client.render.entities.player.RenderSeaponyPlayer;
@@ -31,7 +32,7 @@ public enum PlayerModels {
     SEAPONY(Race.SEAPONY, ModelSeapony::new) {
         @Override
         public RenderPonyPlayer createRenderer(EntityRenderDispatcher manager, boolean slimArms) {
-            return new RenderSeaponyPlayer(manager, slimArms, PlayerModels.UNICORN.getModel(slimArms), getModel(slimArms));
+            return new RenderSeaponyPlayer(manager, slimArms, PlayerModels.UNICORN.getWrappedModel(slimArms), getWrappedModel(slimArms));
         }
     };
 
@@ -72,8 +73,8 @@ public enum PlayerModels {
         return isSlim ? slim : normal;
     }
 
-    public <T extends LivingEntity, M extends IModel> M getModel(boolean isSlim) {
-        return getPendingModel(isSlim).getModel(isSlim);
+    public <T extends LivingEntity, M extends IModel> ModelWrapper<T, M> getWrappedModel(boolean isSlim) {
+        return getPendingModel(isSlim).getWrappedModel(isSlim);
     }
 
     public String getId(boolean isSlim) {
@@ -81,7 +82,7 @@ public enum PlayerModels {
     }
 
     public RenderPonyPlayer createRenderer(EntityRenderDispatcher manager, boolean slimArms) {
-        return new RenderPonyPlayer(manager, slimArms, getModel(slimArms));
+        return new RenderPonyPlayer(manager, slimArms, getWrappedModel(slimArms));
     }
 
     public static PlayerModels forRace(Race race) {
@@ -90,7 +91,7 @@ public enum PlayerModels {
 
     private final class PendingModel {
         @Nullable
-        private IModel model;
+        private ModelWrapper<?, IModel> model;
 
         private final String key;
 
@@ -99,12 +100,12 @@ public enum PlayerModels {
         }
 
         @SuppressWarnings("unchecked")
-        public <T extends LivingEntity, M extends IModel> M getModel(boolean isSlim) {
+        public <T extends LivingEntity, M extends IModel> ModelWrapper<T, M> getWrappedModel(boolean isSlim) {
             if (model == null) {
-                model = resolver.apply(isSlim);
+                model = new ModelWrapper<>(resolver.apply(isSlim));
             }
 
-            return (M)model;
+            return (ModelWrapper<T, M>)model;
         }
     }
 }
