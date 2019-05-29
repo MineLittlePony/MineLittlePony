@@ -28,7 +28,7 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
     @Override
     public void animateModel(T entity, float limbSwing, float limbSwingAmount, float partialTickTime) {
         profession = entity.getVillagerData().getProfession();
-        special = "Derpy".equals(entity.getCustomName().getString());
+        special = entity.hasCustomName() && "Derpy".equals(entity.getCustomName().getString());
         special2 = special && entity.getUuid().getLeastSignificantBits() % 20 == 0;
     }
 

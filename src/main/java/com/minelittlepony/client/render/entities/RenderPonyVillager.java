@@ -32,12 +32,14 @@ public class RenderPonyVillager extends RenderPonyMob.Caster<VillagerEntity, Mod
 
     @Override
     public Identifier findTexture(VillagerEntity entity) {
-        String name = entity.getCustomName().getString();
-        if ("Derpy".equals(name) || (entity.isBaby() && "Dinky".equals(name))) {
-            if (entity.isBaby()) {
-                return EGG_2;
+        if (entity.hasCustomName()) {
+            String name = entity.getCustomName().getString();
+            if ("Derpy".equals(name) || (entity.isBaby() && "Dinky".equals(name))) {
+                if (entity.isBaby()) {
+                    return EGG_2;
+                }
+                return EGG;
             }
-            return EGG;
         }
 
         return PROFESSIONS.supplyTexture(entity.getVillagerData());

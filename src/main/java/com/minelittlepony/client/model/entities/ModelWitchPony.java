@@ -17,7 +17,7 @@ public class ModelWitchPony extends ModelZebra<WitchEntity> {
     public void updateLivingState(WitchEntity entity, IPony pony) {
         super.updateLivingState(entity, pony);
 
-        if ("Filly".equals(entity.getCustomName().getString())) {
+        if (entity.hasCustomName() && "Filly".equals(entity.getCustomName().getString())) {
             isChild = true;
         }
         leftArmPose = ArmPose.EMPTY;
