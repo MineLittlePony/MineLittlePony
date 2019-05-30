@@ -19,6 +19,12 @@ public abstract class MixinMinecraftClient extends NonBlockingThreadExecutor<Run
 
     @Inject(method = "init()V", at = @At("RETURN"))
     private void onInit(CallbackInfo info) {
-        MineLPClient.getInstance().postInit(MinecraftClient.getInstance());
+        MineLPClient.getInstance().postInit((MinecraftClient)(Object)this);
+    }
+
+    @Inject(method = "tick()V", at = @At("RETURN"))
+    private void onTick(CallbackInfo info) {
+        MinecraftClient self = (MinecraftClient)(Object)this;
+        MineLPClient.getInstance().onTick(self, self.world != null && self.player != null);
     }
 }

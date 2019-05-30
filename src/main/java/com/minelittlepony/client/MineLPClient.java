@@ -25,9 +25,6 @@ import org.lwjgl.glfw.GLFW;
  */
 public class MineLPClient extends MineLittlePony {
 
-
-    static final KeyBinding SETTINGS_GUI = new KeyBinding("Settings", GLFW.GLFW_KEY_F9, "Mine Little Pony");
-
     private static int modelUpdateCounter = 0;
     private static boolean reloadingModels = false;
 
@@ -37,6 +34,8 @@ public class MineLPClient extends MineLittlePony {
     private final IModUtilities utilities;
 
     private final PonyRenderManager renderManager = PonyRenderManager.getInstance();
+
+    private KeyBinding keyBinding;
 
     public static MineLPClient getInstance() {
         return (MineLPClient)MineLittlePony.getInstance();
@@ -49,6 +48,7 @@ public class MineLPClient extends MineLittlePony {
     protected void init(PonyConfig newConfig) {
         config = newConfig;
         ponyManager = new PonyManager(config);
+        keyBinding = utilities.registerKeybind("Settings", GLFW.GLFW_KEY_F9, "key.minelittlepony.settings");
     }
 
     /**
@@ -62,9 +62,9 @@ public class MineLPClient extends MineLittlePony {
         irrm.registerListener(ponyManager);
     }
 
-    void onTick(MinecraftClient minecraft, boolean inGame) {
+    public void onTick(MinecraftClient minecraft, boolean inGame) {
         if (inGame && minecraft.currentScreen == null) {
-            if (SETTINGS_GUI.isPressed()) {
+            if (keyBinding.isPressed()) {
                 minecraft.disconnect(new GuiHost(new GuiPonySettings()));
             } else {
                 long handle = minecraft.window.getHandle();

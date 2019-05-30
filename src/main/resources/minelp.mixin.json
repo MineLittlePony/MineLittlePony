@@ -6,6 +6,7 @@
     "compatibilityLevel": "JAVA_8",
     "mixins": [
     	"IResizeable",
+        "MixinBlockEntityRenderDispatcher",
         "MixinDefaultPlayerSkin",
         "MixinFirstPersonRenderer",
         "MixinGlStateManager",
