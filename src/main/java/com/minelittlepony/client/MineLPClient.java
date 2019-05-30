@@ -49,7 +49,7 @@ public class MineLPClient extends MineLittlePony {
     protected void init(PonyConfig newConfig) {
         config = newConfig;
         ponyManager = new PonyManager(config);
-        keyBinding = utilities.registerKeybind("Settings", GLFW.GLFW_KEY_F9, "key.minelittlepony.settings");
+        keyBinding = utilities.registerKeybind("key.categories.misc", GLFW.GLFW_KEY_F9, "key.minelittlepony.settings");
     }
 
     /**
