@@ -3,8 +3,8 @@ package com.minelittlepony.client.render.entities;
 import com.google.common.collect.Lists;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.PonyRenderManager;
-import com.minelittlepony.settings.SensibleConfig;
-import com.minelittlepony.settings.SensibleConfig.Setting;
+import com.minelittlepony.settings.Config;
+import com.minelittlepony.settings.Config.Setting;
 
 import java.util.List;
 
@@ -13,10 +13,8 @@ import net.minecraft.entity.passive.*;
 
 /**
  * Central location where new entity renderers are registered and applied.
- *
- * Due to the limitations in Mumfrey's framework, needs to be paired with a field in PonyConfig.
  */
-public enum MobRenderers implements Setting {
+public enum MobRenderers implements Setting<Boolean> {
     VILLAGERS {
         @Override
         void register(boolean state, PonyRenderManager pony) {
@@ -73,13 +71,18 @@ public enum MobRenderers implements Setting {
     public static final List<MobRenderers> registry = Lists.newArrayList(values());
 
     @Override
-    public void set(boolean value) {
+    public Boolean getDefault() {
+        return true;
+    }
+
+    @Override
+    public void set(Boolean value) {
         Setting.super.set(value);
         apply(PonyRenderManager.getInstance());
     }
 
     @Override
-    public SensibleConfig config() {
+    public Config config() {
         return MineLittlePony.getInstance().getConfig();
     }
 

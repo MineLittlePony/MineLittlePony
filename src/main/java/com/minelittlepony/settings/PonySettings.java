@@ -1,9 +1,12 @@
 package com.minelittlepony.settings;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.settings.SensibleConfig.Setting;
+import com.minelittlepony.settings.Config.Setting;
 
-public enum PonySettings implements Setting {
+/**
+ * Mod settings.
+ */
+public enum PonySettings implements Setting<Boolean> {
     SIZES,
     SNUZZLES,
     HD,
@@ -13,7 +16,12 @@ public enum PonySettings implements Setting {
     FRUSTRUM;
 
     @Override
-    public SensibleConfig config() {
+    public Boolean getDefault() {
+        return true;
+    }
+
+    @Override
+    public Config config() {
         return MineLittlePony.getInstance().getConfig();
     }
 }

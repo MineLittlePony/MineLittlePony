@@ -19,7 +19,7 @@ import com.minelittlepony.client.gui.hdskins.MineLPHDSkins;
 import com.minelittlepony.client.mixin.MixinBlockEntityRenderDispatcher;
 import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.hdskins.mixin.MixinEntityRenderDispatcher;
-import com.minelittlepony.settings.SensibleJsonConfig;
+import com.minelittlepony.settings.JsonConfig;
 
 import java.nio.file.Path;
 import java.util.function.Function;
@@ -36,7 +36,7 @@ public class FabMod implements ClientModInitializer, IModUtilities {
             mlp = new MineLPClient(this);
         }
 
-        mlp.init(SensibleJsonConfig.of(getConfigDirectory().resolve("minelp.json"), ClientPonyConfig::new));
+        mlp.init(JsonConfig.of(getConfigDirectory().resolve("minelp.json"), ClientPonyConfig::new));
     }
 
     @Override
