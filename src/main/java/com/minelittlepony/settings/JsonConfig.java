@@ -2,6 +2,7 @@ package com.minelittlepony.settings;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.BufferedReader;
@@ -9,7 +10,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Supplier;
 
 public class JsonConfig extends Config {
@@ -41,11 +41,15 @@ public class JsonConfig extends Config {
         try {
             if (Files.exists(file)) {
                 try (BufferedReader s = Files.newBufferedReader(file)) {
-                    Map<String, Object> parsed = gson.fromJson(s, HashMap.class);
+                    gson.fromJson(s, JsonObject.class).entrySet().forEach(entry -> {
+                        String key = entry.getKey().toLowerCase();
 
-                    if (parsed != null) {
-                        entries = parsed;
-                    }
+                        if (entries.containsKey(key)) {
+                            Object value = gson.getAdapter(entries.get(key).getClass()).fromJsonTree(entry.getValue());
+
+                            entries.put(key, value);
+                        }
+                    });
                 } catch (IOException ignored) { }
             }
             configFile = file;

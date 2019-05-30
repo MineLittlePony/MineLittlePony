@@ -17,7 +17,7 @@ public abstract class Config {
 
     protected void initWith(Setting<?>... settings) {
         for (Setting<?> s : settings) {
-            entries.putIfAbsent(s.name(), s.getDefault());
+            entries.putIfAbsent(s.name().toLowerCase(), s.getDefault());
         }
     }
 
@@ -34,7 +34,7 @@ public abstract class Config {
             this.name = name;
             this.def = def;
 
-            entries.putIfAbsent(name(), def);
+            entries.putIfAbsent(name().toLowerCase(), def);
         }
 
         @Override
@@ -76,7 +76,7 @@ public abstract class Config {
         @Nonnull
         @SuppressWarnings("unchecked")
         default T get() {
-            T t = (T)config().entries.computeIfAbsent(name(), k -> getDefault());
+            T t = (T)config().entries.computeIfAbsent(name().toLowerCase(), k -> getDefault());
 
             if (t == null) {
                 t = getDefault();
@@ -92,7 +92,7 @@ public abstract class Config {
          */
         default void set(@Nullable T value) {
             value = value == null ? getDefault() : value;
-            config().entries.put(name(), value);
+            config().entries.put(name().toLowerCase(), value);
         }
 
         @Override
