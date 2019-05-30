@@ -40,7 +40,7 @@ public class SeaponyTail implements IPart {
         tailBase.rotate(TAIL_ROTX, 0, 0)
                 .offset(0, -4, -2)
                 .around(-2, 10, 8)
-                .box( 0,  0, 0, 4, 6, 4, stretch)
+                .box(0,  4, 2, 4, 6, 4, stretch)
                 .flip();
 
         tailTip.rotate(0, 0, 0).around(1, 5, 1)
