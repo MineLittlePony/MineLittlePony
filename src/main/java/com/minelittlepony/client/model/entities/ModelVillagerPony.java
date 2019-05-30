@@ -1,5 +1,6 @@
 package com.minelittlepony.client.model.entities;
 
+import net.minecraft.client.render.entity.model.ModelWithHat;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
@@ -8,7 +9,7 @@ import com.minelittlepony.client.model.ModelMobPony;
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
 import com.minelittlepony.pony.meta.Wearable;
 
-public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> extends ModelMobPony<T> {
+public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> extends ModelMobPony<T> implements ModelWithHat {
 
     public PlaneRenderer apron;
     public PlaneRenderer trinket;
@@ -75,5 +76,10 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
                .offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
                .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                .south(-2, -4, -9, 4, 5, stretch);
+    }
+
+    @Override
+    public void setHatVisible(boolean visible) {
+
     }
 }

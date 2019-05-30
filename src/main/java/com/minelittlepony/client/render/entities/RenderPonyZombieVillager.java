@@ -4,38 +4,44 @@ import com.minelittlepony.client.model.entities.ModelZombieVillagerPony;
 import com.minelittlepony.util.resources.FormattedTextureSupplier;
 import com.minelittlepony.util.resources.ITextureSupplier;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.feature.VillagerClothingFeatureRenderer;
 import net.minecraft.entity.mob.ZombieVillagerEntity;
+import net.minecraft.resource.ReloadableResourceManager;
 import net.minecraft.util.Identifier;
-import net.minecraft.village.VillagerData;
 
 public class RenderPonyZombieVillager extends RenderPonyMob.Caster<ZombieVillagerEntity, ModelZombieVillagerPony> {
 
-    private static final ITextureSupplier<String> FORMATTER = new FormattedTextureSupplier("minelittlepony", "textures/entity/zombie_villager/zombie_%s_pony.png");
+    private static final ITextureSupplier<String> FORMATTER = new FormattedTextureSupplier("minelittlepony", "textures/entity/zombie_villager/zombie_%s.png");
 
-    private static final Identifier DEFAULT = FORMATTER.supplyTexture("villager");
-    private static final Identifier EGG = FORMATTER.supplyTexture("silly");
-    private static final Identifier EGG_2 = FORMATTER.supplyTexture("tiny_silly");
-
-    private static final ITextureSupplier<VillagerData> PROFESSIONS = new VillagerProfessionTextureCache(FORMATTER, DEFAULT);
+    private static final ITextureSupplier<ZombieVillagerEntity> PROFESSIONS = new VillagerProfessionTextureCache<>(FORMATTER);
 
     public RenderPonyZombieVillager(EntityRenderDispatcher manager) {
         super(manager, new ModelZombieVillagerPony());
     }
 
     @Override
-    public Identifier findTexture(ZombieVillagerEntity entity) {
-        if (entity.hasCustomName()) {
-            String name = entity.getCustomName().getString();
-            if ("Derpy".equals(name) || (entity.isBaby() && "Dinky".equals(name))) {
-                if (entity.isBaby()) {
-                    return EGG_2;
-                }
-                return EGG;
-            }
+    protected void addLayers() {
+        ReloadableResourceManager resManager = (ReloadableResourceManager)MinecraftClient.getInstance().getResourceManager();
+
+        addFeature(new VillagerClothingFeatureRenderer<>(this, resManager, "zombie_villager"));
+    }
+
+    @Override
+    public void bindTexture(Identifier texture) {
+
+        if (!"minelittlepony".contentEquals(texture.getNamespace())) {
+            texture = new Identifier("minelittlepony", texture.getPath());
         }
 
-        return PROFESSIONS.supplyTexture(entity.getVillagerData());
+        super.bindTexture(texture);
+    }
+
+
+    @Override
+    public Identifier findTexture(ZombieVillagerEntity entity) {
+        return PROFESSIONS.supplyTexture(entity);
     }
 
     @Override
