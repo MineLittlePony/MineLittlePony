@@ -9,6 +9,7 @@ import com.minelittlepony.settings.PonyConfig;
 
 import net.minecraft.ChatFormat;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.MainMenuScreen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.InputUtil;
@@ -63,28 +64,35 @@ public class MineLPClient extends MineLittlePony {
     }
 
     public void onTick(MinecraftClient minecraft, boolean inGame) {
-        if (inGame && minecraft.currentScreen == null) {
-            if (keyBinding.isPressed()) {
-                minecraft.openScreen(new GuiHost(new GuiPonySettings()));
-            } else {
-                long handle = minecraft.window.getHandle();
 
-                if ((SystemUtil.getMeasuringTimeMs() % 10) == 0) {
-                    if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_F3) && InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_M)) {
-                        if (!reloadingModels) {
-                            minecraft.inGameHud.getChatHud().addMessage(
-                                    (new TextComponent("")).append(
-                                    new TranslatableComponent("debug.prefix")
-                                        .setStyle(new Style().setColor(ChatFormat.YELLOW).setBold(true)))
-                                    .append(" ")
-                                    .append(new TranslatableComponent("minelp.debug.reload_models.message")));
+        inGame &= minecraft.currentScreen == null;
 
-                            reloadingModels = true;
-                            modelUpdateCounter++;
-                        }
-                    } else {
-                        reloadingModels = false;
+        boolean mainMenu = minecraft.currentScreen instanceof MainMenuScreen;
+
+        if (!inGame && mainMenu) {
+            KeyBinding.updatePressedStates();
+        }
+
+        if ((mainMenu || inGame) && keyBinding.isPressed()) {
+            minecraft.openScreen(new GuiHost(new GuiPonySettings()));
+        } else if (inGame) {
+            long handle = minecraft.window.getHandle();
+
+            if ((SystemUtil.getMeasuringTimeMs() % 10) == 0) {
+                if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_F3) && InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_M)) {
+                    if (!reloadingModels) {
+                        minecraft.inGameHud.getChatHud().addMessage(
+                                (new TextComponent("")).append(
+                                new TranslatableComponent("debug.prefix")
+                                    .setStyle(new Style().setColor(ChatFormat.YELLOW).setBold(true)))
+                                .append(" ")
+                                .append(new TranslatableComponent("minelp.debug.reload_models.message")));
+
+                        reloadingModels = true;
+                        modelUpdateCounter++;
                     }
+                } else {
+                    reloadingModels = false;
                 }
             }
         }
