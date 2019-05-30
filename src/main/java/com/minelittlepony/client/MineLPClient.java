@@ -65,7 +65,7 @@ public class MineLPClient extends MineLittlePony {
     public void onTick(MinecraftClient minecraft, boolean inGame) {
         if (inGame && minecraft.currentScreen == null) {
             if (keyBinding.isPressed()) {
-                minecraft.disconnect(new GuiHost(new GuiPonySettings()));
+                minecraft.openScreen(new GuiHost(new GuiPonySettings()));
             } else {
                 long handle = minecraft.window.getHandle();
 
