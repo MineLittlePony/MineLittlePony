@@ -44,6 +44,7 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
 
         // Seaponies can't sneak, silly
         isSneaking = false;
+        isCrouching = false;
     }
 
     @Override
