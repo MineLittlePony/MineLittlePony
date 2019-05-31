@@ -1,0 +1,69 @@
+package com.minelittlepony.client.util.render.plane;
+
+import net.minecraft.client.model.Model;
+import net.minecraft.util.math.Direction;
+
+import com.minelittlepony.client.util.render.AbstractRenderer;
+
+public class PlaneRenderer extends AbstractRenderer<PlaneRenderer> {
+
+    public boolean mirrory, mirrorz;
+
+    public PlaneRenderer(Model model) {
+        super(model);
+    }
+
+    public PlaneRenderer(Model model, int x, int y) {
+        super(model, x, y);
+    }
+
+    /**
+     * Flips the Z bit. Any calls to add a plane will be mirrored until this is called again.
+     */
+    public PlaneRenderer flipZ() {
+        mirrorz = !mirrorz;
+        return this;
+    }
+
+    /**
+     * Flips the Y bit. Any calls to add a plane will be mirrored until this is called again.
+     */
+    public PlaneRenderer flipY() {
+        mirrory = !mirrory;
+        return this;
+    }
+
+    @Override
+    protected PlaneRenderer copySelf() {
+        return new PlaneRenderer(baseModel, textureOffsetX, textureOffsetY);
+    }
+
+    private PlaneRenderer addPlane(float offX, float offY, float offZ, int width, int height, int depth, float scale, Direction face) {
+        boxes.add(new ModelPlane(this, textureOffsetX, textureOffsetY, modelOffsetX + offX, modelOffsetY + offY, modelOffsetZ + offZ, width, height, depth, scale, face));
+        return this;
+    }
+
+    public PlaneRenderer top(float offX, float offY, float offZ, int width, int depth, float scale) {
+        return addPlane(offX, offY, offZ, width, 0, depth, scale, Direction.UP);
+    }
+
+    public PlaneRenderer bottom(float offX, float offY, float offZ, int width, int depth, float scale) {
+        return addPlane(offX, offY, offZ, width, 0, depth, scale, Direction.DOWN);
+    }
+
+    public PlaneRenderer west(float offX, float offY, float offZ, int height, int depth, float scale) {
+        return addPlane(offX, offY, offZ, 0, height, depth, scale, Direction.WEST);
+    }
+
+    public PlaneRenderer east(float offX, float offY, float offZ, int height, int depth, float scale) {
+        return addPlane(offX, offY, offZ, 0, height, depth, scale, Direction.EAST);
+    }
+
+    public PlaneRenderer north(float offX, float offY, float offZ, int width, int height, float scale) {
+        return addPlane(offX, offY, offZ - scale * 2, width, height, 0, scale, Direction.NORTH);
+    }
+
+    public PlaneRenderer south(float offX, float offY, float offZ, int width, int height, float scale) {
+        return addPlane(offX, offY, offZ + scale * 2, width, height, 0, scale, Direction.SOUTH);
+    }
+}

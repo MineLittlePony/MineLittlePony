@@ -1,37 +1,46 @@
+// Frabric build script
+// 24/05/2019
+// https://github.com/FabricMC/fabric-example-mod/blob/master/build.gradle
+
 buildscript {
-    repositories {
-        jcenter()
-        maven {
-            name 'forge'
-            url 'http://files.minecraftforge.net/maven'
-        }
-        maven {
-            name = 'sponge'
-            url = 'https://repo.spongepowered.org/maven'
-        }
-    }
+	repositories {
+	    jcenter()
+	    maven {
+	        name = 'Fabric'
+	        url = 'https://maven.fabricmc.net/'
+	    }
+	    gradlePluginPortal()
+	}
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
+    	classpath 'fabric-loom:fabric-loom.gradle.plugin:0.2.2-SNAPSHOT'
+    	classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
+        classpath 'org.ajoberstar.grgit:grgit-gradle:3.1.1'
     }
 }
 
-plugins {
-    id 'org.ajoberstar.grgit' version '1.7.2'
+repositories {
+	maven {
+    	name = 'Jit'
+     	url = 'https://jitpack.io'
+ 	}
 }
 
-apply plugin: 'net.minecraftforge.gradle.liteloader'
-apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'fabric-loom'
 apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'org.ajoberstar.grgit'
+
+targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_1_8
 
 ext {
-    revision = grgit.log().size()
-    hash = grgit.head().abbreviatedId
-    if (file('.git/shallow').exists()) {
-        // don't clone with --depth
-        revision = -1
-        hash += " shallow"
+    if (grgit == null) {
+        revision = "nogit"
+    } else {
+        revision = "${grgit.log().size()}-${grgit.head().abbreviatedId}"
+        if (file('.git/shallow').exists()) {
+            // don't clone with --depth
+            revision = "-1-${shallow}"
+        }
     }
 }
 
@@ -41,83 +50,64 @@ if (project.release != 'RELEASE') {
     version += "-${project.release}"
 }
 if (project.release == 'SNAPSHOT') {
-    version += "-${project.revision}-${project.hash}"
+    version += "-${project.revision}"
 }
 
 group = project.group
 description = project.displayname
-
-minecraft {
-    version = project.minecraft_version
-    mappings = project.mappings_version
-    runDir = 'run'
-    replace '@VERSION@', project.version
-}
-
-mixin {
-    defaultObfuscationEnv notch
-}
-
-targetCompatibility = 1.8
-sourceCompatibility = 1.8
-sourceSets {
-    hdskins {
-        compileClasspath += main.compileClasspath
-        ext.refMap = 'hdskins.mixin.refmap.json'
-    }
-    main {
-        compileClasspath += hdskins.output
-        ext.refMap = 'minelp.mixin.refmap.json'
-    }
-}
+archivesBaseName = project.name
 
 dependencies {
-    // use the same version as httpclient
-    compile('org.apache.httpcomponents:httpmime:4.3.2') {
-        transitive = false
-    }
-    compile('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
-        transitive = false
-    }
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}"
+	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
+	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+	
+    modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    modCompile "com.github.MineLittlePony:Kirin:${project.kirin_version}"
+    include "com.github.MineLittlePony:Kirin:${project.kirin_version}"
+    
+    // TODO: HD Skins can be made optional later
+    modCompile "com.github.MineLittlePony:HDSkins:${project.hd_skins_version}"
+    include "com.github.MineLittlePony:HDSkins:${project.hd_skins_version}"
 }
 
-manifest {
-    attributes 'Implementation-Version': "${project.version} (git-${project.hash})"
+processResources {
+	inputs.property "version", project.version
+
+	from(sourceSets.main.resources.srcDirs) {
+		include "fabric.mod.json"
+		expand "version": project.version
+	}
+
+	from(sourceSets.main.resources.srcDirs) {
+		exclude "fabric.mod.json"
+	}
 }
 
-litemod.json {
-    mcversion = project.minecraft_version
-    displayName = project.displayname
-    author = project.authors
-    revision = project.revision
-    description = project.description
-    description.minelittlepony = project.description_mlp
-    description.hdskinsmod = project.description_hd
-    mixinConfigs += [
-      'minelp.mixin.json',
-      'hdskins.mixin.json'
-    ]
+tasks.withType(JavaCompile) {
+	options.encoding = "UTF-8"
 }
 
-archivesBaseName = "mod-${project.name.toLowerCase()}"
 
-afterEvaluate {
-    file('build.number').delete()
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = "sources"
+	from sourceSets.main.allSource
 }
 
 jar {
-    from sourceSets.hdskins.output
-    from litemod
-    classifier 'base'
-    extension 'jar'
+    from "LICENSE"
 }
 
+//
+// Imports the Background Ponies from the MLP Community Skin Pack
+//
 task copyBGPones(type: Copy) {
 
     def illegals = /[^a-z0-9_\/.-]/
 
     from "skins/Background Ponies"
-    // TODO: What is tempDir????
     into temporaryDir
 
     eachFile {
@@ -126,48 +116,4 @@ task copyBGPones(type: Copy) {
             it.name = it.name.replaceAll(/\s/, '_').replaceAll(illegals, '')
         }
     }
-}
-
-shadowJar {
-    extension 'litemod'
-    classifier "mc$minecraft.version"
-
-    from sourceSets.hdskins.output
-    from litemod
-
-    exclude "/assets/minelittlepony/textures/entity/pony"
-    from(copyBGPones) {
-        into "/assets/minelittlepony/textures/entity/pony"
-    }
-
-    dependencies {
-        exclude dependency('deobf.com.mumfrey:liteloader:')
-        exclude dependency('deobf.org.ow2.asm:')
-        exclude dependency('org.spongepowered:mixin:')
-        exclude 'META-INF/**'
-    }
-
-    relocate 'org.apache.http.entity.mime', 'com.voxelmodpack.repack.org.apache.http.entity.mime'
-    exclude 'dummyThing'
-    doLast {
-        file('build/libs/' + archivesBaseName + '-' + version + '-base.jar').delete();
-    }
-}
-
-task srgJar(type: Jar) {
-    from sourceSets.main.output
-    from sourceSets.hdskins.output
-    from litemod
-
-    classifier "mc$minecraft.version-srg"
-}
-
-sourceJar.enabled = false
-
-reobf {
-    srgJar {
-        mappingType = 'SEARGE'
-    }
-
-    shadowJar{}
 }

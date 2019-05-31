@@ -1,18 +1,15 @@
 package com.minelittlepony.model.gear;
 
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
-import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.capabilities.IModel;
-import com.minelittlepony.model.capabilities.IModelPart;
+import com.minelittlepony.model.IPart;
+import com.minelittlepony.model.IPonyModel;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public interface IGear extends IModelPart {
+public interface IGear extends IPart {
 
     /**
      * Determines if this wearable can and is worn by the selected entity.
@@ -22,7 +19,7 @@ public interface IGear extends IModelPart {
      *
      * @return True to render this wearable
      */
-    boolean canRender(IModel model, Entity entity);
+    boolean canRender(IPonyModel<?> model, Entity entity);
 
     /**
      * Gets the body location that this wearable appears on.
@@ -34,18 +31,12 @@ public interface IGear extends IModelPart {
      * Return null to use the same as the primary model.
      */
     @Nullable
-    ResourceLocation getTexture(Entity entity);
-
-    /**
-     * Gets the actual body part this wearable will latch onto.
-     */
-    @Nonnull
-    ModelRenderer getOriginBodyPart(AbstractPonyModel model);
+    Identifier getTexture(Entity entity);
 
     /**
      * Orients this wearable.
      */
-    default void setLivingAnimations(IModel model, Entity entity) {
+    default void setLivingAnimations(IPonyModel<?> model, Entity entity) {
 
     }
 
