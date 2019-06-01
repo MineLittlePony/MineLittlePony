@@ -45,7 +45,7 @@ public class GuiSkinsMineLP extends GuiSkins {
     public void init() {
         super.init();
 
-        addButton(new IconicToggle(width - 25, 142))
+        addButton(new IconicToggle(width - 25, 142, 20, 20))
                 .setStyles(
                         new Style().setIcon(new ItemStack(Items.BUCKET)).setTooltip("minelp.mode.dry", 0, 10),
                         new Style().setIcon(new ItemStack(Items.WATER_BUCKET)).setTooltip("minelp.mode.wet", 0, 10)
