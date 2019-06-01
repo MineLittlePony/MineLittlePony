@@ -9,6 +9,7 @@ import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.render.entities.MobRenderers;
 import com.minelittlepony.common.client.gui.GameGui;
 import com.minelittlepony.common.client.gui.ScrollContainer;
+import com.minelittlepony.common.client.gui.dimension.IBounded;
 import com.minelittlepony.common.client.gui.element.Button;
 import com.minelittlepony.common.client.gui.element.Label;
 import com.minelittlepony.common.client.gui.element.Slider;
@@ -16,6 +17,7 @@ import com.minelittlepony.common.client.gui.element.Toggle;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
 import com.minelittlepony.settings.PonySettings;
+import com.mojang.blaze3d.platform.GlStateManager;
 
 import java.util.List;
 
@@ -53,6 +55,8 @@ public class GuiPonySettings extends GameGui {
         content.buttons().clear();
         content.children().clear();
 
+        content.padding.left = 10;
+
         int LEFT = content.width / 2 - 210;
         int RIGHT = content.width / 2 + 10;
 
@@ -65,14 +69,14 @@ public class GuiPonySettings extends GameGui {
 
         ((List<Element>)children()).add(content);
 
-        addButton(new Label(width / 2, 12).setCentered()).getStyle().setText(getTitle().getString());
+        addButton(new Label(width / 2, 5).setCentered()).getStyle().setText(getTitle().getString());
         addButton(new Button(width / 2 - 100, height - 25))
             .onClick(sender -> onClose())
             .getStyle()
                 .setText("gui.done");
 
-        content.addButton(new Label(LEFT, row += 15)).getStyle().setText(PONY_LEVEL);
-        content.addButton(new Slider(LEFT, row += 15, 0, 2, config.getPonyLevel().ordinal())
+        content.addButton(new Label(LEFT, row)).getStyle().setText(PONY_LEVEL);
+        content.addButton(new Slider(LEFT, row += 20, 0, 2, config.getPonyLevel().ordinal())
                 .onChange(v -> {
                     PonyLevel level = PonyLevel.valueFor(v);
                     config.setPonyLevel(level);
@@ -90,8 +94,8 @@ public class GuiPonySettings extends GameGui {
                     .setFormatter(value -> I18n.translate("minelp.debug.scale.value", I18n.translate(describeCurrentScale(value)))));
         }
 
-        row += 15;
-        content.addButton(new Label(LEFT, row += 15)).getStyle().setText(OPTIONS_PREFIX + "options");
+        row += 20;
+        content.addButton(new Label(LEFT, row)).getStyle().setText(OPTIONS_PREFIX + "options");
         for (PonySettings i : PonySettings.values()) {
             content.addButton(new Toggle(LEFT, row += 20, i.get()))
                 .onChange(i)
@@ -104,7 +108,7 @@ public class GuiPonySettings extends GameGui {
             row += 15;
         }
 
-        content.addButton(new Label(RIGHT, row += 15)).getStyle().setText(MOB_PREFIX + "title");
+        content.addButton(new Label(RIGHT, row)).getStyle().setText(MOB_PREFIX + "title");
         for (MobRenderers i : MobRenderers.registry) {
             content.addButton(new Toggle(RIGHT, row += 20, i.get()))
                 .onChange(i)
@@ -137,6 +141,25 @@ public class GuiPonySettings extends GameGui {
         renderBackground();
         super.render(mouseX, mouseY, partialTicks);
         content.render(mouseX, mouseY, partialTicks);
+
+        GlStateManager.pushMatrix();
+        GlStateManager.translated(-content.getMouseXOffset(), -content.getMouseYOffset(), 0);
+        content.getContentBounds()
+            .debugMeasure();
+
+        for (Element i : content.children()) {
+            if (i instanceof IBounded) {
+                ((IBounded)i).getBounds().draw(0x80FFFF00);
+            }
+        }
+
+        GlStateManager.popMatrix();
+
+        for (Element i : children()) {
+            if (i instanceof IBounded) {
+                ((IBounded)i).getBounds().draw(0x800000FF);
+            }
+        }
     }
 
     @Override
