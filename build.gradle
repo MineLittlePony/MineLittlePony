@@ -39,7 +39,7 @@ ext {
         revision = "${grgit.log().size()}-${grgit.head().abbreviatedId}"
         if (file('.git/shallow').exists()) {
             // don't clone with --depth
-            revision = "-1-${shallow}"
+            revision = "-1-shallow"
         }
     }
 }
