@@ -136,12 +136,12 @@ public class PonyManager implements IPonyManager, ResourceReloadListener, ISkinC
     }
 
     @Override
-    public CompletableFuture<Void> reload(Synchronizer sync, ResourceManager sender, Profiler profiler, Profiler profile2, Executor executor, Executor executor2) {
+    public CompletableFuture<Void> reload(Synchronizer sync, ResourceManager sender, Profiler profiler, Profiler profile2, Executor backendExecutor, Executor mainThreadExecutor) {
         return CompletableFuture.runAsync(() -> {
             profiler.push("Reloading all background ponies");
             reloadAll(sender);
             profiler.endTick();
-        });
+        }, backendExecutor);
     }
 
     public void reloadAll(ResourceManager resourceManager) {
