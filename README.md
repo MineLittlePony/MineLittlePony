@@ -1,5 +1,7 @@
 # Mine Little Pony
 
+[![Build Status](https://travis-ci.org/MineLittlePony/MineLittlePony.svg?branch=master)](https://travis-ci.org/MineLittlePony/MineLittlePony)
+
 Turns players and mobs into ponies.
 
 http://minelittlepony-mod.com
