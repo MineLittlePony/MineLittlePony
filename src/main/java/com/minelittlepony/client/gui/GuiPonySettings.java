@@ -1,12 +1,15 @@
 package com.minelittlepony.client.gui;
 
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Screen;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.render.entities.MobRenderers;
-import com.minelittlepony.common.client.gui.GuiHost;
-import com.minelittlepony.common.client.gui.IGuiGuest;
+import com.minelittlepony.common.client.gui.GameGui;
+import com.minelittlepony.common.client.gui.ScrollContainer;
+import com.minelittlepony.common.client.gui.element.Button;
 import com.minelittlepony.common.client.gui.element.Label;
 import com.minelittlepony.common.client.gui.element.Slider;
 import com.minelittlepony.common.client.gui.element.Toggle;
@@ -14,11 +17,13 @@ import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
 import com.minelittlepony.settings.PonySettings;
 
+import java.util.List;
+
 /**
  * In-Game options menu.
  *
  */
-public class GuiPonySettings implements IGuiGuest {
+public class GuiPonySettings extends GameGui {
 
     private static final String OPTIONS_PREFIX = "minelp.options.";
 
@@ -28,23 +33,46 @@ public class GuiPonySettings implements IGuiGuest {
 
     private PonyConfig config;
 
+    private final ScrollContainer content = new ScrollContainer();
+
     public GuiPonySettings() {
+        super(new TranslatableComponent(OPTIONS_PREFIX + "title"));
+
         config = MineLittlePony.getInstance().getConfig();
+
+        content.margin.top = 30;
+        content.margin.bottom = 30;
+        content.padding.top = 10;
+        content.padding.right = 10;
+        content.padding.bottom = 20;
     }
 
     @Override
-    public void initGui(GuiHost host) {
-        final int LEFT = host.width / 10;
-        final int RIGHT = host.mustScroll() ? LEFT : host.width - host.width / 3 - 16;
+    protected void init() {
+        content.init();
+        content.buttons().clear();
+        content.children().clear();
 
-        int row = host.mustScroll() ? 0 : 32;
+        int LEFT = content.width / 2 - 210;
+        int RIGHT = content.width / 2 + 10;
 
-        if (!host.mustScroll()) {
-            host.addButton(new Label(host.width / 2, 12).setCentered()).getStyle().setText(getTitle());
+        if (LEFT < 0) {
+            LEFT = content.width / 2 - 100;
+            RIGHT = LEFT;
         }
 
-        host.addButton(new Label(LEFT, row += 15)).getStyle().setText(PONY_LEVEL);
-        host.addButton(new Slider(LEFT, row += 15, 0, 2, config.getPonyLevel().ordinal())
+        int row = 0;
+
+        ((List<Element>)children()).add(content);
+
+        addButton(new Label(width / 2, 12).setCentered()).getStyle().setText(getTitle().getString());
+        addButton(new Button(width / 2 - 100, height - 25))
+            .onClick(sender -> onClose())
+            .getStyle()
+                .setText("gui.done");
+
+        content.addButton(new Label(LEFT, row += 15)).getStyle().setText(PONY_LEVEL);
+        content.addButton(new Slider(LEFT, row += 15, 0, 2, config.getPonyLevel().ordinal())
                 .onChange(v -> {
                     PonyLevel level = PonyLevel.valueFor(v);
                     config.setPonyLevel(level);
@@ -53,8 +81,8 @@ public class GuiPonySettings implements IGuiGuest {
                 .setFormatter(value -> I18n.translate(PONY_LEVEL + "." + PonyLevel.valueFor(value).name().toLowerCase())));
 
         if (Screen.hasControlDown() && Screen.hasShiftDown()) {
-            host.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.scale");
-            host.addButton(new Slider(LEFT, row += 15, 0.1F, 3, config.getGlobalScaleFactor())
+            content.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.scale");
+            content.addButton(new Slider(LEFT, row += 15, 0.1F, 3, config.getGlobalScaleFactor())
                     .onChange(v -> {
                         config.setGlobalScaleFactor(v);
                         return config.getGlobalScaleFactor();
@@ -63,25 +91,26 @@ public class GuiPonySettings implements IGuiGuest {
         }
 
         row += 15;
-        host.addButton(new Label(LEFT, row += 15)).getStyle().setText(OPTIONS_PREFIX + "options");
+        content.addButton(new Label(LEFT, row += 15)).getStyle().setText(OPTIONS_PREFIX + "options");
         for (PonySettings i : PonySettings.values()) {
-            host.addButton(new Toggle(LEFT, row += 20, i.get()))
+            content.addButton(new Toggle(LEFT, row += 20, i.get()))
                 .onChange(i)
                 .getStyle().setText(OPTIONS_PREFIX + i.name().toLowerCase());
         }
 
-        if (host.mustScroll()) {
-            row += 15;
+        if (RIGHT != LEFT) {
+            row = 0;
         } else {
-            row = 32;
+            row += 15;
         }
 
-        host.addButton(new Label(RIGHT, row += 15)).getStyle().setText(MOB_PREFIX + "title");
+        content.addButton(new Label(RIGHT, row += 15)).getStyle().setText(MOB_PREFIX + "title");
         for (MobRenderers i : MobRenderers.registry) {
-            host.addButton(new Toggle(RIGHT, row += 20, i.get()))
+            content.addButton(new Toggle(RIGHT, row += 20, i.get()))
                 .onChange(i)
                 .getStyle().setText(MOB_PREFIX + i.name().toLowerCase());
         }
+        content.init();
     }
 
     public String describeCurrentScale(float value) {
@@ -104,18 +133,15 @@ public class GuiPonySettings implements IGuiGuest {
     }
 
     @Override
-    public boolean render(GuiHost host, int mouseX, int mouseY, float partialTicks) {
-        host.renderBackground();
-        return true;
+    public void render(int mouseX, int mouseY, float partialTicks) {
+        renderBackground();
+        super.render(mouseX, mouseY, partialTicks);
+        content.render(mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void onGuiClosed(GuiHost host) {
+    public void onClose() {
+        super.onClose();
         config.save();
-    }
-
-    @Override
-    public String getTitle() {
-        return OPTIONS_PREFIX + "title";
     }
 }

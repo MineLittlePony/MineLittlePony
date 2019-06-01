@@ -4,7 +4,6 @@ import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.gui.GuiPonySettings;
 import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
-import com.minelittlepony.common.client.gui.GuiHost;
 import com.minelittlepony.settings.PonyConfig;
 
 import net.minecraft.ChatFormat;
@@ -74,7 +73,7 @@ public class MineLPClient extends MineLittlePony {
         }
 
         if ((mainMenu || inGame) && keyBinding.isPressed()) {
-            minecraft.openScreen(new GuiHost(new GuiPonySettings()));
+            minecraft.openScreen(new GuiPonySettings());
         } else if (inGame) {
             long handle = minecraft.window.getHandle();
 
