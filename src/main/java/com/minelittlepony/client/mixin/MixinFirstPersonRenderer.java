@@ -13,12 +13,11 @@ import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 
-@SuppressWarnings("deprecation") // ItemCameraTransforms is deprecated by forge but we still need it.
 @Mixin(FirstPersonRenderer.class)
 public class MixinFirstPersonRenderer {
 
     @Redirect(method = "renderFirstPersonItem("
-                + "Lnet/minecraft/client/entity/AbstractClientPlayer;FF"
+                + "Lnet/minecraft/client/network/AbstractClientPlayerEntity;FF"
                 + "Lnet/minecraft/util/Hand;F"
                 + "Lnet/minecraft/item/ItemStack;F)V",
              at = @At(value = "INVOKE",
