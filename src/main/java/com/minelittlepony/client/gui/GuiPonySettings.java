@@ -1,7 +1,7 @@
 package com.minelittlepony.client.gui;
 
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Screen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.network.chat.TranslatableComponent;
 

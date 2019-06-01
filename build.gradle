@@ -1,33 +1,8 @@
-// Frabric build script
-// 24/05/2019
-// https://github.com/FabricMC/fabric-example-mod/blob/master/build.gradle
-
-buildscript {
-	repositories {
-	    jcenter()
-	    maven {
-	        name = 'Fabric'
-	        url = 'https://maven.fabricmc.net/'
-	    }
-	    gradlePluginPortal()
-	}
-    dependencies {
-    	classpath 'fabric-loom:fabric-loom.gradle.plugin:0.2.2-SNAPSHOT'
-    	classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
-        classpath 'org.ajoberstar.grgit:grgit-gradle:3.1.1'
-    }
+plugins {
+	id 'fabric-loom' version '0.2.2-SNAPSHOT'
+	id 'org.ajoberstar.grgit' version '3.1.1'
+	id 'com.github.johnrengelman.plugin-shadow' version '2.0.3'
 }
-
-repositories {
-	maven {
-    	name = 'Jit'
-     	url = 'https://jitpack.io'
- 	}
-}
-
-apply plugin: 'fabric-loom'
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'org.ajoberstar.grgit'
 
 targetCompatibility = JavaVersion.VERSION_1_8
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -57,6 +32,13 @@ group = project.group
 description = project.displayname
 archivesBaseName = project.name
 
+repositories {
+    maven {
+        name = 'Jit'
+        url = 'https://jitpack.io'
+    }
+}
+
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}"
@@ -67,7 +49,7 @@ dependencies {
 
     modCompile "com.github.MineLittlePony:Kirin:${project.kirin_version}"
     include "com.github.MineLittlePony:Kirin:${project.kirin_version}"
-    
+
     // TODO: HD Skins can be made optional later
     modCompile "com.github.MineLittlePony:HDSkins:${project.hd_skins_version}"
     include "com.github.MineLittlePony:HDSkins:${project.hd_skins_version}"
@@ -84,6 +66,7 @@ processResources {
 	from(sourceSets.main.resources.srcDirs) {
 		exclude "fabric.mod.json"
 	}
+    from 'LICENSE'
 }
 
 tasks.withType(JavaCompile) {
@@ -94,10 +77,6 @@ tasks.withType(JavaCompile) {
 task sourcesJar(type: Jar, dependsOn: classes) {
 	classifier = "sources"
 	from sourceSets.main.allSource
-}
-
-jar {
-    from "LICENSE"
 }
 
 //

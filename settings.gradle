@@ -1,1 +1,13 @@
+pluginManagement {
+    repositories {
+        jcenter()
+        maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
+        gradlePluginPortal()
+    }
+}
 rootProject.name = 'MineLittlePony'
+//includeBuild '../Kirin'
+//includeBuild '../HDSkins'

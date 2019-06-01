@@ -8,7 +8,7 @@ import com.minelittlepony.settings.PonyConfig;
 
 import net.minecraft.ChatFormat;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.MainMenuScreen;
+import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.InputUtil;
@@ -66,7 +66,7 @@ public class MineLPClient extends MineLittlePony {
 
         inGame &= minecraft.currentScreen == null;
 
-        boolean mainMenu = minecraft.currentScreen instanceof MainMenuScreen;
+        boolean mainMenu = minecraft.currentScreen instanceof TitleScreen;
 
         if (!inGame && mainMenu) {
             KeyBinding.updatePressedStates();
