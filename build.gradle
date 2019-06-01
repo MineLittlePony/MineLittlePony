@@ -32,6 +32,10 @@ group = project.group
 description = project.displayname
 archivesBaseName = project.name
 
+minecraft {
+    refmapName = 'minelp.mixin.refmap.json'
+}
+
 repositories {
     maven {
         name = 'Jit'
