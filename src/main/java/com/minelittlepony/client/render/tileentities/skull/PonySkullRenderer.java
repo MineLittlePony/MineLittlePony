@@ -121,14 +121,13 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer implements IRend
     }
 
     protected float handleRotation(float x, float y, float z, @Nullable Direction facing, float rotation) {
+        if (facing == null) {
+            translatef(x + 0.5F, y, z + 0.5F);
+
+            return rotation;
+        }
+
         switch (facing) {
-            case EAST:
-            default:
-                translatef(x + 0.26F, y + 0.25F, z + 0.5F);
-                return 90;
-            case UP:
-                translatef(x + 0.5F, y, z + 0.5F);
-                break;
             case NORTH:
                 translatef(x + 0.5F, y + 0.25F, z + 0.74F);
                 break;
@@ -138,6 +137,10 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer implements IRend
             case WEST:
                 translatef(x + 0.74F, y + 0.25F, z + 0.5F);
                 return 270;
+            case EAST:
+            default:
+                translatef(x + 0.26F, y + 0.25F, z + 0.5F);
+                break;
         }
 
         return rotation;
