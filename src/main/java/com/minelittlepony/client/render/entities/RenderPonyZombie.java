@@ -4,6 +4,7 @@ import com.minelittlepony.client.model.entities.ModelZombiePony;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.entity.mob.DrownedEntity;
 import net.minecraft.entity.mob.GiantEntity;
 import net.minecraft.entity.mob.HuskEntity;
 import net.minecraft.entity.mob.ZombieEntity;
@@ -15,6 +16,7 @@ public class RenderPonyZombie<Zombie extends ZombieEntity> extends RenderPonyMob
     public static final Identifier ZOMBIE = new Identifier("minelittlepony", "textures/entity/zombie/zombie_pony.png");
     public static final Identifier HUSK = new Identifier("minelittlepony", "textures/entity/zombie/husk_pony.png");
     public static final Identifier PIGMAN = new Identifier("minelittlepony", "textures/entity/zombie/zombie_pigman_pony.png");
+    public static final Identifier DROWNED = new Identifier("minelittlepony", "textures/entity/zombie/drowned_pony.png");
 
     public RenderPonyZombie(EntityRenderDispatcher manager) {
         super(manager, new ModelZombiePony<>());
@@ -23,6 +25,19 @@ public class RenderPonyZombie<Zombie extends ZombieEntity> extends RenderPonyMob
     @Override
     public Identifier findTexture(Zombie entity) {
         return ZOMBIE;
+    }
+
+
+    public static class Drowned extends RenderPonyZombie<DrownedEntity> {
+
+        public Drowned(EntityRenderDispatcher manager) {
+            super(manager);
+        }
+
+        @Override
+        public Identifier findTexture(DrownedEntity entity) {
+            return DROWNED;
+        }
     }
 
     public static class Pigman extends RenderPonyZombie<ZombiePigmanEntity> {
@@ -73,6 +88,4 @@ public class RenderPonyZombie<Zombie extends ZombieEntity> extends RenderPonyMob
 	        return ZOMBIE;
 	    }
     }
-
-  //TODO: MC1.13 EntityDrowned
 }
