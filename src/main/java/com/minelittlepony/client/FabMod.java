@@ -3,6 +3,7 @@ package com.minelittlepony.client;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
+import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -21,14 +22,21 @@ import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.hdskins.mixin.MixinEntityRenderDispatcher;
 import com.minelittlepony.settings.JsonConfig;
 
+import javax.annotation.Nullable;
+
 import java.nio.file.Path;
 import java.util.function.Function;
 
-public class FabMod implements ClientModInitializer, IModUtilities {
+public class FabMod implements ClientModInitializer, ClientTickCallback, IModUtilities {
+
+    @Nullable
+    private MineLPClient mlp;
+
+    private boolean firstTick = true;
 
     @Override
     public void onInitializeClient() {
-        MineLPClient mlp;
+        ClientTickCallback.EVENT.register(this);
 
         if (FabricLoader.getInstance().isModLoaded("hdskins")) {
             mlp = new MineLPHDSkins(this);
@@ -37,6 +45,21 @@ public class FabMod implements ClientModInitializer, IModUtilities {
         }
 
         mlp.init(JsonConfig.of(getConfigDirectory().resolve("minelp.json"), ClientPonyConfig::new));
+    }
+
+    @Override
+    public void tick(MinecraftClient client) {
+        if (mlp == null) {
+            return;
+        }
+
+        if (firstTick) {
+            firstTick = false;
+
+            mlp.postInit(client);
+        } else {
+            mlp.onTick(client, client.world != null && client.player != null);
+        }
     }
 
     @Override
