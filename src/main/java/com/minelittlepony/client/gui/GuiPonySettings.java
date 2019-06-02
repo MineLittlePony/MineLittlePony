@@ -9,7 +9,6 @@ import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.render.entities.MobRenderers;
 import com.minelittlepony.common.client.gui.GameGui;
 import com.minelittlepony.common.client.gui.ScrollContainer;
-import com.minelittlepony.common.client.gui.dimension.IBounded;
 import com.minelittlepony.common.client.gui.element.Button;
 import com.minelittlepony.common.client.gui.element.Label;
 import com.minelittlepony.common.client.gui.element.Slider;
@@ -17,7 +16,6 @@ import com.minelittlepony.common.client.gui.element.Toggle;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
 import com.minelittlepony.settings.PonySettings;
-import com.mojang.blaze3d.platform.GlStateManager;
 
 import java.util.List;
 
@@ -37,6 +35,8 @@ public class GuiPonySettings extends GameGui {
 
     private final ScrollContainer content = new ScrollContainer();
 
+    private final boolean hiddenOptions;
+
     public GuiPonySettings() {
         super(new TranslatableComponent(OPTIONS_PREFIX + "title"));
 
@@ -47,6 +47,8 @@ public class GuiPonySettings extends GameGui {
         content.padding.top = 10;
         content.padding.right = 10;
         content.padding.bottom = 20;
+
+        hiddenOptions = Screen.hasControlDown() && Screen.hasShiftDown();
     }
 
     @Override
@@ -84,7 +86,7 @@ public class GuiPonySettings extends GameGui {
                 })
                 .setFormatter(value -> I18n.translate(PONY_LEVEL + "." + PonyLevel.valueFor(value).name().toLowerCase())));
 
-        if (Screen.hasControlDown() && Screen.hasShiftDown()) {
+        if (hiddenOptions) {
             content.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.scale");
             content.addButton(new Slider(LEFT, row += 15, 0.1F, 3, config.getGlobalScaleFactor())
                     .onChange(v -> {
