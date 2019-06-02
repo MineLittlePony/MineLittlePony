@@ -21,6 +21,7 @@ public enum MobRenderers implements Setting<Boolean> {
             pony.switchRenderer(state, VillagerEntity.class, RenderPonyVillager::new);
             pony.switchRenderer(state, WitchEntity.class, RenderPonyWitch::new);
             pony.switchRenderer(state, ZombieVillagerEntity.class, RenderPonyZombieVillager::new);
+            pony.switchRenderer(state, WanderingTraderEntity.class, RenderPonyTrader::new);
         }
     },
     ZOMBIES {
