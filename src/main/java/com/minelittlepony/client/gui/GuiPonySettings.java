@@ -141,25 +141,6 @@ public class GuiPonySettings extends GameGui {
         renderBackground();
         super.render(mouseX, mouseY, partialTicks);
         content.render(mouseX, mouseY, partialTicks);
-
-        GlStateManager.pushMatrix();
-        GlStateManager.translated(-content.getMouseXOffset(), -content.getMouseYOffset(), 0);
-        content.getContentBounds()
-            .debugMeasure();
-
-        for (Element i : content.children()) {
-            if (i instanceof IBounded) {
-                ((IBounded)i).getBounds().draw(0x80FFFF00);
-            }
-        }
-
-        GlStateManager.popMatrix();
-
-        for (Element i : children()) {
-            if (i instanceof IBounded) {
-                ((IBounded)i).getBounds().draw(0x800000FF);
-            }
-        }
     }
 
     @Override
