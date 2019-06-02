@@ -8,7 +8,6 @@ import com.minelittlepony.client.PonyRenderManager;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.FirstPersonRenderer;
-import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -25,7 +24,7 @@ public class MixinFirstPersonRenderer {
                                   + "Lnet/minecraft/entity/LivingEntity;"
                                   + "Lnet/minecraft/item/ItemStack;"
                                   + "Lnet/minecraft/client/render/model/json/ModelTransformation$Type;Z)V"))
-    private void redirectRenderItemSide(ItemRenderer self, LivingEntity entity, ItemStack stack, ModelTransformation.Type transform, boolean left) {
+    private void redirectRenderItemSide(FirstPersonRenderer self, LivingEntity entity, ItemStack stack, ModelTransformation.Type transform, boolean left) {
         PonyRenderManager.getInstance().getMagicRenderer().renderItemInFirstPerson(self, (AbstractClientPlayerEntity)entity, stack, transform, left);
     }
 }

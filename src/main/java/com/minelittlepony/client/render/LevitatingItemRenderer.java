@@ -11,6 +11,7 @@ import com.minelittlepony.settings.PonySettings;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.FirstPersonRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.entity.LivingEntity;
@@ -67,23 +68,25 @@ public class LevitatingItemRenderer {
     /**
      * Renders an item in first person optionally with a magical overlay.
      */
-    public void renderItemInFirstPerson(ItemRenderer renderer, AbstractClientPlayerEntity entity, ItemStack stack, ModelTransformation.Type transform, boolean left) {
+    public void renderItemInFirstPerson(FirstPersonRenderer renderer, AbstractClientPlayerEntity entity, ItemStack stack, ModelTransformation.Type transform, boolean left) {
         IPony pony = MineLittlePony.getInstance().getManager().getPony(entity);
 
         pushMatrix();
 
         boolean doMagic = PonySettings.FPSMAGIC.get() && pony.getMetadata().hasMagic();
 
+        ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
+
         if (doMagic) {
-            setupPerspective(renderer, entity, stack, left);
+            setupPerspective(itemRenderer, entity, stack, left);
         }
 
-        renderer.renderHeldItem(stack, entity, transform, left);
+        renderer.renderItemFromSide(entity, stack, transform, left);
 
         if (doMagic) {
             disableLighting();
 
-            ((IRenderItem)renderer).useTransparency(true);
+            ((IRenderItem)itemRenderer).useTransparency(true);
             PonySkullRenderer.ponyInstance.useTransparency(true);
 
             setColor(pony.getMetadata().getGlowColor());
@@ -91,11 +94,11 @@ public class LevitatingItemRenderer {
             scalef(1.1F, 1.1F, 1.1F);
 
             translatef(-0.015F, 0.01F, 0.01F);
-            renderer.renderHeldItem(stack, entity, transform, left);
+            renderer.renderItemFromSide(entity, stack, transform, left);
             translatef(0.03F, -0.01F, -0.02F);
-            renderer.renderHeldItem(stack, entity, transform, left);
+            renderer.renderItemFromSide(entity, stack, transform, left);
 
-            ((IRenderItem)renderer).useTransparency(false);
+            ((IRenderItem)itemRenderer).useTransparency(false);
 
             PonySkullRenderer.ponyInstance.useTransparency(false);
 
