@@ -1,31 +1,16 @@
 plugins {
-	id 'fabric-loom' version '0.2.2-SNAPSHOT'
-	id 'org.ajoberstar.grgit' version '3.1.1'
-	id 'com.github.johnrengelman.plugin-shadow' version '2.0.3'
+    id 'fabric-loom' version '0.2.4-SNAPSHOT'
+    id 'com.github.johnrengelman.plugin-shadow' version '2.0.3'
+    id 'maven-publish'
 }
 
 targetCompatibility = JavaVersion.VERSION_1_8
 sourceCompatibility = JavaVersion.VERSION_1_8
 
-ext {
-    if (grgit == null) {
-        revision = "nogit"
-    } else {
-        revision = "${grgit.log().size()}-${grgit.head().abbreviatedId}"
-        if (file('.git/shallow').exists()) {
-            // don't clone with --depth
-            revision = "-1-shallow"
-        }
-    }
-}
-
-version = "${project.minecraft_version}.${project.version}"
+version = "${project.minecraft_version}-${project.version}"
 
 if (project.release != 'RELEASE') {
     version += "-${project.release}"
-}
-if (project.release == 'SNAPSHOT') {
-    version += "-${project.revision}"
 }
 
 group = project.group
@@ -38,49 +23,48 @@ minecraft {
 
 repositories {
     maven {
-        name = 'Jit'
-        url = 'https://jitpack.io'
+        name = 'minelp'
+        url = 'http://repo.minelittlepony-mod.com/maven/snapshot'
     }
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}"
-	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
-	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-	
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}"
+    modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
+    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+
     modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    modCompile "com.github.MineLittlePony:Kirin:${project.kirin_version}"
-    include "com.github.MineLittlePony:Kirin:${project.kirin_version}"
+    modCompile "com.minelittlepony:Kirin:${project.kirin_version}"
+    include "com.minelittlepony:Kirin:${project.kirin_version}"
 
     // TODO: HD Skins can be made optional later
-    modCompile "com.github.MineLittlePony:HDSkins:${project.hd_skins_version}"
-    include "com.github.MineLittlePony:HDSkins:${project.hd_skins_version}"
+    modCompile "com.minelittlepony:HDSkins:${project.hd_skins_version}"
+    include "com.minelittlepony:HDSkins:${project.hd_skins_version}"
 }
 
 processResources {
-	inputs.property "version", project.version
+    inputs.property "version", project.version
 
-	from(sourceSets.main.resources.srcDirs) {
-		include "fabric.mod.json"
-		expand "version": project.version
-	}
+    from(sourceSets.main.resources.srcDirs) {
+        include "fabric.mod.json"
+        expand "version": project.version
+    }
 
-	from(sourceSets.main.resources.srcDirs) {
-		exclude "fabric.mod.json"
-	}
+    from(sourceSets.main.resources.srcDirs) {
+        exclude "fabric.mod.json"
+    }
     from 'LICENSE'
 }
 
 tasks.withType(JavaCompile) {
-	options.encoding = "UTF-8"
+    options.encoding = "UTF-8"
 }
 
-
 task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = "sources"
-	from sourceSets.main.allSource
+    classifier = "sources"
+    from sourceSets.main.allSource
 }
 
 //
@@ -94,9 +78,62 @@ task copyBGPones(type: Copy) {
     into temporaryDir
 
     eachFile {
-        if (it.name =~ illegals){
+        if (it.name =~ illegals) {
             logger.warn("Sanitizing file with illegal characters: ${it.path}")
             it.name = it.name.replaceAll(/\s/, '_').replaceAll(illegals, '')
+        }
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            afterEvaluate {
+                artifact(remapJar.output)
+            }
+            artifact(sourcesJar) {
+                builtBy remapSourcesJar
+            }
+
+            pom {
+                name = "MineLittlePony"
+                description = "HD Skins support for Minecraft"
+                url = "http://minelittlepony-mod.com"
+                licenses {
+                    license {
+                        name = "MIT Public License"
+                        url = "https://tlo.mit.edu/learn-about-intellectual-property/software-and-open-source-licensing"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "killjoy1221"
+                        name = "Matthew Messinger"
+                        email = "mattmess1221@gmail.com"
+                    }
+                    developer {
+                        id = "sollace"
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/MineLittlePony/MineLittlePony.git'
+                    developerConnection = 'scm:git:ssh://github.com/MineLittlePony/MineLittlePony.git'
+                    url = 'https://github.com/MineLittlePony/MineLittlePony'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "MineLittlePony"
+            def mvn = 's3://repo.minelittlepony-mod.com/maven'
+            url = release == 'SNAPSHOT' ? "$mvn/snapshot" : "$mvn/release"
+
+            credentials(AwsCredentials) {
+                accessKey = System.env.ACCESS_KEY
+                secretKey = System.env.SECRET_KEY
+            }
         }
     }
 }
