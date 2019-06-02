@@ -4,6 +4,9 @@ import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.gui.GuiPonySettings;
 import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
+import com.minelittlepony.client.settings.ClientPonyConfig;
+import com.minelittlepony.common.client.IModUtilities;
+import com.minelittlepony.settings.JsonConfig;
 import com.minelittlepony.settings.PonyConfig;
 
 import net.minecraft.ChatFormat;
@@ -43,10 +46,8 @@ public class MineLPClient extends MineLittlePony {
 
     public MineLPClient(IModUtilities utils) {
         utilities = utils;
-    }
 
-    protected void init(PonyConfig newConfig) {
-        config = newConfig;
+        config = JsonConfig.of(utils.getConfigDirectory().resolve("minelp.json"), ClientPonyConfig::new);
         ponyManager = new PonyManager(config);
         keyBinding = utilities.registerKeybind("key.categories.misc", GLFW.GLFW_KEY_F9, "key.minelittlepony.settings");
     }

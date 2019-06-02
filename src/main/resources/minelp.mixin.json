@@ -6,12 +6,10 @@
     "compatibilityLevel": "JAVA_8",
     "client": [
         "IResizeable",
-        "MixinBlockEntityRenderDispatcher",
         "MixinDefaultPlayerSkin",
         "MixinFirstPersonRenderer",
         "MixinGlStateManager",
         "MixinItemRenderer",
-        "MixinRenderManager",
         "MixinThreadDownloadImageData"
     ]
 }

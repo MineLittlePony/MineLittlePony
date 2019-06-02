@@ -6,7 +6,6 @@ import java.util.function.Function;
 import com.google.common.collect.Maps;
 import com.minelittlepony.client.gui.hdskins.DummyPony;
 import com.minelittlepony.client.gui.hdskins.RenderDummyPony;
-import com.minelittlepony.client.mixin.MixinRenderManager;
 import com.minelittlepony.client.model.races.PlayerModels;
 import com.minelittlepony.client.render.LevitatingItemRenderer;
 import com.minelittlepony.client.render.IPonyRender;
@@ -68,7 +67,7 @@ public class PonyRenderManager {
     private void addPlayerSkin(EntityRenderDispatcher manager, boolean slimArms, PlayerModels playerModel) {
         RenderPonyPlayer renderer = playerModel.createRenderer(manager, slimArms);
 
-        ((MixinRenderManager)manager).getMutableSkinMap().put(playerModel.getId(slimArms), renderer);
+        MineLPClient.getInstance().getModUtilities().addRenderer(playerModel.getId(slimArms), renderer);
     }
 
     /**

@@ -2,7 +2,7 @@ package com.minelittlepony.client.gui.hdskins;
 
 import net.minecraft.client.MinecraftClient;
 
-import com.minelittlepony.client.IModUtilities;
+import com.minelittlepony.common.client.IModUtilities;
 import com.minelittlepony.client.MineLPClient;
 import com.minelittlepony.client.PonySkinModifier;
 import com.minelittlepony.client.PonySkinParser;
@@ -11,7 +11,6 @@ import com.minelittlepony.hdskins.HDSkins;
 import com.minelittlepony.hdskins.net.LegacySkinServer;
 import com.minelittlepony.hdskins.net.SkinServer;
 import com.minelittlepony.hdskins.net.ValhallaSkinServer;
-import com.minelittlepony.settings.PonyConfig;
 
 /**
  * All the interactions with HD Skins.
@@ -24,11 +23,6 @@ public class MineLPHDSkins extends MineLPClient {
 
     public MineLPHDSkins(IModUtilities utils) {
         super(utils);
-    }
-
-    @Override
-    protected void init(PonyConfig newConfig) {
-        super.init(newConfig);
 
         // Register pony servers
         SkinServer.defaultServers.add(new LegacySkinServer(MINELP_LEGACY_SERVER, MINELP_LEGACY_GATEWAY));
