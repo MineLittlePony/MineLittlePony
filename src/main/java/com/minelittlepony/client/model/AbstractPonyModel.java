@@ -511,7 +511,21 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             case BOW_AND_ARROW:
                 aimBow(arm, swing);
                 break;
-            default:
+            case CROSSBOW_HOLD:
+                aimBow(arm, swing);
+
+                arm.pitch = head.pitch - ROTATE_90;
+                arm.yaw = head.yaw + 0.06F;
+                break;
+            case CROSSBOW_CHARGE:
+                aimBow(arm, swing);
+
+                arm.pitch = -0.8F;
+                arm.yaw = head.yaw + 0.06F;
+                break;
+            case THROW_SPEAR:
+                arm.pitch = ROTATE_90 * 2;
+                break;
         }
     }
 
