@@ -37,7 +37,7 @@ dependencies {
     modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     modCompile "com.minelittlepony:Kirin:${project.kirin_version}"
-    include "com.minelittlepony:Kirin:${project.kirin_version}"
+//    include "com.minelittlepony:Kirin:${project.kirin_version}"
 
     // TODO: HD Skins can be made optional later
     modCompile "com.minelittlepony:HDSkins:${project.hd_skins_version}"
