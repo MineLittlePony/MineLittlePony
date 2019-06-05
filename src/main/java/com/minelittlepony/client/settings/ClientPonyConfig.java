@@ -1,5 +1,8 @@
 package com.minelittlepony.client.settings;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerEntity;
+
 import com.minelittlepony.client.render.entities.MobRenderers;
 import com.minelittlepony.hdskins.HDSkins;
 import com.minelittlepony.settings.PonyConfig;
@@ -19,5 +22,14 @@ public class ClientPonyConfig extends PonyConfig {
         }
 
         super.setPonyLevel(ponylevel);
+    }
+
+    @Override
+    public void save() {
+        super.save();
+        PlayerEntity player = MinecraftClient.getInstance().player;
+        if (player != null) {
+            player.refreshSize();
+        }
     }
 }

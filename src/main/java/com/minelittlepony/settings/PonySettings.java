@@ -10,6 +10,7 @@ public enum PonySettings implements Setting<Boolean> {
     SIZES,
     SNUZZLES,
     HD,
+    FILLYCAM,
     SHOWSCALE,
     FPSMAGIC,
     PONYSKULLS,

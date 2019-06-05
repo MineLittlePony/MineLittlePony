@@ -35,7 +35,6 @@ import net.minecraft.util.math.Vec3d;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
@@ -91,7 +90,12 @@ public class Pony extends Touchable<Pony> implements IPony {
     }
 
     @Nullable
-    public static NativeImage getBufferedImage(@Nonnull Identifier resource) {
+    public static NativeImage getBufferedImage(@Nullable Identifier resource) {
+
+        if (resource == null) {
+            return null;
+        }
+
         try {
             Resource skin = MinecraftClient.getInstance().getResourceManager().getResource(resource);
             NativeImage skinImage = NativeImage.fromInputStream(skin.getInputStream());

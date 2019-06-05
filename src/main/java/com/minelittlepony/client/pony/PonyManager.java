@@ -65,6 +65,10 @@ public class PonyManager implements IPonyManager, ResourceReloadListener, ISkinC
 
     @Override
     public IPony getPony(PlayerEntity player) {
+        if (player == null || player.getGameProfile() == null) {
+            return getDefaultPony(player.getUuid());
+        }
+
         Identifier skin = getSkin(player);
         UUID uuid = player.getGameProfile().getId();
 
