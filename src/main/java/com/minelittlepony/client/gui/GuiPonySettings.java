@@ -13,6 +13,7 @@ import com.minelittlepony.common.client.gui.element.Button;
 import com.minelittlepony.common.client.gui.element.Label;
 import com.minelittlepony.common.client.gui.element.Slider;
 import com.minelittlepony.common.client.gui.element.Toggle;
+import com.minelittlepony.pony.meta.Size;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
 import com.minelittlepony.settings.PonySettings;
@@ -89,11 +90,12 @@ public class GuiPonySettings extends GameGui {
         if (hiddenOptions) {
             content.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.scale");
             content.addButton(new Slider(LEFT, row += 15, 0.1F, 3, config.getGlobalScaleFactor())
-                    .onChange(v -> {
-                        config.setGlobalScaleFactor(v);
-                        return config.getGlobalScaleFactor();
-                    })
+                    .onChange(config::setGlobalScaleFactor)
                     .setFormatter(value -> I18n.translate("minelp.debug.scale.value", I18n.translate(describeCurrentScale(value)))));
+            content.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.size");
+            content.addButton(new Slider(LEFT, row += 15, 0, Size.REGISTRY.length - 1, config.getOverrideSize().ordinal())
+                    .onChange(config::setSizeOverride)
+                    .setFormatter(value -> value < Size.REGISTRY.length ? Size.REGISTRY[(int)(float)value].name() : "Unset"));
         }
 
         row += 20;

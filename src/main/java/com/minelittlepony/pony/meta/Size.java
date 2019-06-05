@@ -10,7 +10,10 @@ public enum Size implements ITriggerPixelMapped<Size> {
     LANKY   (0xce5432, 0.45F, 0.85F, 0.9F),
     NORMAL  (0x000000, 0.4f,  0.8F,  0.8F),
     YEARLING(0xffbe53, 0.4F,  0.6F,  0.65F),
-    FOAL    (0x53beff, 0.25f, 0.6F,  0.5F);
+    FOAL    (0x53beff, 0.25f, 0.6F,  0.5F),
+    UNSET   (0x000000, 1,     1,     1);
+
+    public static final Size[] REGISTRY = values();
 
     private int triggerValue;
 
@@ -53,6 +56,16 @@ public enum Size implements ITriggerPixelMapped<Size> {
     }
 
     public Size getEffectiveSize() {
-        return PonySettings.SIZES.get() ? this : Size.NORMAL;
+        Size sz = MineLittlePony.getInstance().getConfig().getOverrideSize();
+
+        if (sz != UNSET) {
+            return sz;
+        }
+
+        if (this == UNSET || !PonySettings.SIZES.get()) {
+            return NORMAL;
+        }
+
+        return this;
     }
 }

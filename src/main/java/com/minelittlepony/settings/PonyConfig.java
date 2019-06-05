@@ -2,6 +2,8 @@ package com.minelittlepony.settings;
 
 import net.minecraft.util.math.MathHelper;
 
+import com.minelittlepony.pony.meta.Size;
+
 /**
  * Storage container for MineLP client settings.
  */
@@ -9,6 +11,7 @@ public class PonyConfig extends JsonConfig {
 
     private final Setting<PonyLevel> ponyLevel = new Value<>("ponylevel", PonyLevel.PONIES);
     private final Setting<Float> scaleFactor = new Value<>("globalScaleFactor", 0.9F);
+    private final Setting<Size> sizeOverride = new Value<>("sieOverride", Size.UNSET);
 
     public PonyConfig() {
         initWith(PonySettings.values());
@@ -39,11 +42,13 @@ public class PonyConfig extends JsonConfig {
         ponyLevel.set(ponylevel);
     }
 
-    public void setGlobalScaleFactor(float f) {
+    public float setGlobalScaleFactor(float f) {
         f = Math.round(MathHelper.clamp(f, 0.1F, 3) * 100) / 100F;
 
         scaleFactor.set(f);
         PonySettings.SHOWSCALE.set(f != 1);
+
+        return getGlobalScaleFactor();
     }
 
     /**
@@ -51,5 +56,17 @@ public class PonyConfig extends JsonConfig {
      */
     public float getGlobalScaleFactor() {
         return PonySettings.SHOWSCALE.get() ? scaleFactor.get() : 1;
+    }
+
+    public Size getOverrideSize() {
+        return sizeOverride.get();
+    }
+
+    public float setSizeOverride(float value) {
+        value = Math.round(value);
+        Size size = Size.REGISTRY[(int) value % Size.REGISTRY.length];
+
+        sizeOverride.set(size);
+        return size.ordinal();
     }
 }

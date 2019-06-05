@@ -31,5 +31,6 @@
   "minelp.debug.scale.max": "Double",
   "minelp.debug.scale.mid": "Default",
   "minelp.debug.scale.sa": "Show Accurate",
-  "minelp.debug.scale.min": "Miniscule"
+  "minelp.debug.scale.min": "Miniscule",
+  "minelp.debug.size": "Size Override"
 }
