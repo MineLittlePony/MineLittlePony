@@ -16,8 +16,7 @@ public abstract class MixinGlStateManager {
     @Inject(method = "setProfile("
             + "Lcom/mojang/blaze3d/platform/GlStateManager$RenderMode;)V",
             at = @At("HEAD"),
-            cancellable = true,
-            remap = false)
+            cancellable = true)
     private static void enableBlendProfile(GlStateManager.RenderMode profile, CallbackInfo info) {
         if (profile == GlStateManager.RenderMode.PLAYER_SKIN && PonySkullRenderer.ponyInstance.usesTransparency()) {
             LevitatingItemRenderer.enableItemGlowRenderProfile();
