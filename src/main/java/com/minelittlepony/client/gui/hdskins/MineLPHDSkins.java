@@ -24,10 +24,15 @@ public class MineLPHDSkins extends MineLPClient {
     public MineLPHDSkins(IModUtilities utils) {
         super(utils);
 
+        SkinServer legacy = new LegacySkinServer(MINELP_LEGACY_SERVER, MINELP_LEGACY_GATEWAY);
+        SkinServer valhalla = new ValhallaSkinServer(MINELP_VALHALLA_SERVER);
         // Register pony servers
-        SkinServer.defaultServers.add(new LegacySkinServer(MINELP_LEGACY_SERVER, MINELP_LEGACY_GATEWAY));
+        HDSkins.getInstance().addSkinServer(legacy);
+        HDSkins.getInstance().addSkinServer(valhalla);
+
+        SkinServer.defaultServers.add(legacy);
         // And make valhalla the default
-        SkinServer.defaultServers.add(0, new ValhallaSkinServer(MINELP_VALHALLA_SERVER));
+        SkinServer.defaultServers.add(0, valhalla);
     }
 
     /**
