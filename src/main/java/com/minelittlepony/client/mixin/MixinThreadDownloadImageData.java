@@ -7,6 +7,7 @@ import net.minecraft.client.texture.ResourceTexture;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.minelittlepony.client.ducks.IBufferedTexture;
 
@@ -25,7 +26,8 @@ public abstract class MixinThreadDownloadImageData extends ResourceTexture imple
     @Inject(method = "method_4534("
             + "Lnet/minecraft/client/texture/NativeImage;)V",
             at = @At("HEAD"))
-    private void onSetImage(NativeImage nativeImageIn) {
-        cachedImage = nativeImageIn;
+    private void onSetImage(NativeImage skin, CallbackInfo info) {
+        cachedImage = new NativeImage(skin.getFormat(), skin.getWidth(), skin.getHeight(), false);
+        cachedImage.copyFrom(skin);
     }
 }
