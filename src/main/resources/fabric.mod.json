@@ -9,7 +9,8 @@
   ],
   "contact": {
     "homepage": "https://minelittlepony-mod.com/",
-    "sources": "http://github.com/MineLittlePony/MineLittlePony"
+    "sources": "http://github.com/MineLittlePony/MineLittlePony",
+    "issues": "https://github.com/MineLittlePony/MineLittlePony/issues"
   },
   "license": "MIT",
   "icon": "minelp_logo.png",
