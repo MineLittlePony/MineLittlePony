@@ -43,9 +43,9 @@ public class LevitatingItemRenderer {
 
         scalef(1.1F, 1.1F, 1.1F);
 
-        translatef(0, 0.01F, 0.01F);
+        translatef(0.01F, 0.01F, 0.01F);
         renderItem.renderHeldItem(drop, entity, transform, hand == AbsoluteHand.LEFT);
-        translatef(0.01F, -0.01F, -0.02F);
+        translatef(-0.02F, -0.02F, -0.02F);
         renderItem.renderHeldItem(drop, entity, transform, hand == AbsoluteHand.LEFT);
 
         ((IRenderItem) renderItem).useTransparency(false);
@@ -93,9 +93,9 @@ public class LevitatingItemRenderer {
 
             scalef(1.1F, 1.1F, 1.1F);
 
-            translatef(-0.015F, 0.01F, 0.01F);
+            translatef(0.01F, 0.01F, 0.01F);
             renderer.renderItemFromSide(entity, stack, transform, left);
-            translatef(0.03F, -0.01F, -0.02F);
+            translatef(-0.02F, -0.02F, -0.02F);
             renderer.renderItemFromSide(entity, stack, transform, left);
 
             ((IRenderItem)itemRenderer).useTransparency(false);
@@ -117,7 +117,7 @@ public class LevitatingItemRenderer {
     private void setupPerspective(ItemRenderer renderer, LivingEntity entity, ItemStack stack, boolean left) {
         UseAction action = stack.getUseAction();
 
-        boolean doNormal = entity.getItemUseTime() <= 0 || action == UseAction.NONE;
+        boolean doNormal = entity.getItemUseTime() <= 0 || action == UseAction.NONE || action == UseAction.CROSSBOW;
 
         if (doNormal) { // eating, blocking, and drinking are not transformed. Only held items.
             float ticks = MinecraftClient.getInstance().getTickDelta() - entity.age;
@@ -125,8 +125,9 @@ public class LevitatingItemRenderer {
             float floatAmount = (float)Math.sin(ticks / 9) / 40;
             float driftAmount = (float)Math.cos(ticks / 6) / 40;
 
-            boolean handHeldTool = stack.getUseAction() == UseAction.BOW
-                    || stack.getUseAction() == UseAction.BLOCK;
+            boolean handHeldTool = action == UseAction.BOW
+                    || action == UseAction.CROSSBOW
+                    || action == UseAction.BLOCK;
 
             translatef(driftAmount - floatAmount / 4, floatAmount, handHeldTool ? -0.3F : -0.6F);
 
