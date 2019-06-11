@@ -29,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BoundingBox;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -231,7 +232,12 @@ public class Pony extends Touchable<Pony> implements IPony {
                     .add(0, offset.y - ridee.getHeight() * 1/scale, 0);
         }
 
-        return entity.getPosVector();
+        float delta = MinecraftClient.getInstance().getTickDelta();
+
+        return new Vec3d(
+                MathHelper.lerp(delta, entity.prevRenderX, entity.x),
+                MathHelper.lerp(delta, entity.prevRenderY, entity.y),
+                MathHelper.lerp(delta, entity.prevRenderZ, entity.z));
     }
 
     @Override
