@@ -140,8 +140,9 @@ public class RenderPonyPlayer extends PlayerEntityRenderer implements IPonyRende
         bindEntityTexture(player);
 
         GlStateManager.pushMatrix();
-        GlStateManager.translatef(side == AbsoluteHand.LEFT ? 0.35F : -0.35F, -0.6F, 0);
-        GlStateManager.rotatef(side == AbsoluteHand.LEFT ? -90 : 90, 0, 1, 0);
+        float reflect = side == AbsoluteHand.LEFT ? 1 : -1;
+
+        GlStateManager.translatef(reflect * -0.1F, -0.74F, 0);
 
         if (side == AbsoluteHand.LEFT) {
             super.renderLeftArm(player);
