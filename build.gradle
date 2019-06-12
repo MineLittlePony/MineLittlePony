@@ -55,29 +55,6 @@ dependencies {
     include "com.minelittlepony:HDSkins:${project.hd_skins_version}"
 }
 
-processResources {
-    inputs.property "version", project.version
-
-    from(sourceSets.main.resources.srcDirs) {
-        include "fabric.mod.json"
-        expand "version": project.version
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "fabric.mod.json"
-    }
-    from 'LICENSE'
-}
-
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = "sources"
-    from sourceSets.main.allSource
-}
-
 //
 // Imports the Background Ponies from the MLP Community Skin Pack
 //
@@ -94,6 +71,35 @@ task copyBGPones(type: Copy) {
             it.name = it.name.replaceAll(/\s/, '_').replaceAll(illegals, '')
         }
     }
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include "fabric.mod.json"
+        expand "version": project.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude "fabric.mod.json"
+    }
+
+    from 'LICENSE'
+
+    exclude "/assets/minelittlepony/textures/entity/pony"
+    from(copyBGPones) {
+        into "/assets/minelittlepony/textures/entity/pony"
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = "sources"
+    from sourceSets.main.allSource
 }
 
 publishing {
