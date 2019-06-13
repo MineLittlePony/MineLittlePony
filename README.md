@@ -32,4 +32,5 @@ Once you have fabric installed, simply download the -version.jar below and place
 ## Installation (Modders):
 
 Maven: `http://repo.minelittlepony-mod.com/maven/snapshot`
+
 Dependency: `com.minelittlepony:MineLittlePony:1.14.2-3.+`
