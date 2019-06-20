@@ -896,14 +896,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         transform(BodyPart.HEAD);
         renderHelmet(scale);
         popMatrix();
-
-        if (textureHeight == 64) {
-            pushMatrix();
-            transform(BodyPart.LEGS);
-            renderSleeves(scale);
-            popMatrix();
-        }
-
     }
 
     /**
@@ -939,6 +931,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         upperTorso.render(scale);
         body.applyTransform(scale);
         tail.renderPart(scale, entity.getUuid());
+
+        if (textureHeight == 64) {
+            bodyOverlay.render(scale);
+        }
     }
 
     protected void renderLegs(float scale) {
@@ -950,6 +946,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         rightArm.render(scale);
         leftLeg.render(scale);
         rightLeg.render(scale);
+
+        if (textureHeight == 64) {
+            renderSleeves(scale);
+        }
     }
 
     protected void renderSleeves(float scale) {
@@ -957,7 +957,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         rightArmOverlay.render(scale);
         leftLegOverlay.render(scale);
         rightArmOverlay.render(scale);
-        bodyOverlay.render(scale);
     }
 
     @Override
