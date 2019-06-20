@@ -927,14 +927,14 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     */
     protected void renderBody(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         body.render(scale);
+        if (textureHeight == 64) {
+            bodyOverlay.render(scale);
+        }
 
         upperTorso.render(scale);
         body.applyTransform(scale);
         tail.renderPart(scale, entity.getUuid());
 
-        if (textureHeight == 64) {
-            bodyOverlay.render(scale);
-        }
     }
 
     protected void renderLegs(float scale) {
