@@ -707,18 +707,9 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     protected void preInitLegwear() {
         leftArmOverlay.boxes.clear();
-        cuboidList.add(leftArmOverlay);
-
         rightArmOverlay.boxes.clear();
-        cuboidList.add(rightArmOverlay);
-
         leftLegOverlay.boxes.clear();
-        cuboidList.add(leftLegOverlay);
-        leftLegOverlay.setTextureOffset(0, 48);
-
         rightLegOverlay.boxes.clear();
-        cuboidList.add(rightLegOverlay);
-        rightLegOverlay.setTextureOffset(0, 32);
     }
 
     protected void initLegs(float yOffset, float stretch) {
@@ -736,29 +727,25 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         float armY = THIRDP_ARM_CENTRE_Y;
         float armZ = BODY_CENTRE_Z / 2 - 1 - armDepth;
 
-        leftArm .addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch);
-        rightArm.addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch);
-
-        leftLeg .addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch);
-        rightLeg.addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch);
-
-        leftArm .setRotationPoint( rarmX, yOffset + rarmY, 0);
-        rightArm.setRotationPoint(-rarmX, yOffset + rarmY, 0);
-
-        leftLeg .setRotationPoint( rarmX, yOffset, 0);
-        rightLeg.setRotationPoint(-rarmX, yOffset, 0);
-
-        leftArmOverlay.addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
-        leftArmOverlay.setRotationPoint(rarmX, yOffset + rarmY, 0);
-
-        rightArmOverlay.addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
+        leftArm        .setRotationPoint( rarmX, yOffset + rarmY, 0);
+        rightArm       .setRotationPoint(-rarmX, yOffset + rarmY, 0);
+        leftArmOverlay .setRotationPoint(rarmX, yOffset + rarmY, 0);
         rightArmOverlay.setRotationPoint(-rarmX, yOffset + rarmY, 0);
 
-        leftArmOverlay.addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
-        rightLegOverlay.setRotationPoint(rarmX, yOffset, 0);
-
-        rightLegOverlay.addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
+        leftLeg        .setRotationPoint( rarmX, yOffset, 0);
+        rightLeg       .setRotationPoint(-rarmX, yOffset, 0);
+        leftLegOverlay .setRotationPoint(rarmX, yOffset, 0);
         rightLegOverlay.setRotationPoint(-rarmX, yOffset, 0);
+
+        leftArm        .addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch);
+        rightArm       .addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch);
+        leftArmOverlay .addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
+        rightArmOverlay.addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
+
+        leftLeg        .addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch);
+        rightLeg       .addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch);
+        leftLegOverlay .addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
+        rightLegOverlay.addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
     }
 
     protected int getArmWidth() {
