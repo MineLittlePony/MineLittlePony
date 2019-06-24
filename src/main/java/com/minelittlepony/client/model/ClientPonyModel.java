@@ -92,8 +92,8 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends PlayerEnti
         super.setAttributes(model);
 
         if (model instanceof ClientPonyModel) {
-            attributes = ((ClientPonyModel<T>)model).attributes;
-            metadata = ((ClientPonyModel<T>)model).metadata;
+            ((ClientPonyModel<T>)model).attributes = attributes;
+            ((ClientPonyModel<T>)model).metadata = metadata;
         }
     }
 
