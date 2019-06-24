@@ -1,8 +1,8 @@
 package com.minelittlepony.client.render;
 
+import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.IPonyModel;
 import com.minelittlepony.model.PonyModelConstants;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.util.math.MathUtil;

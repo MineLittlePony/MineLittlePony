@@ -15,16 +15,16 @@ public enum PonyTransformation {
     NORMAL(Size.NORMAL, 0, 3F, 0.75F) {
         @Override
         public void transform(IModel model, BodyPart part) {
-            if (model.isCrouching()) translate(0, -0.2F, 0);
-            if (model.isSleeping()) translate(0, -0.61F, 0.1F);
+            if (model.getAttributes().isCrouching) translate(0, -0.2F, 0);
+            if (model.getAttributes().isSleeping) translate(0, -0.61F, 0.1F);
             if (model.isRiding()) translate(0, -0.2F, -0.2F);
 
             switch (part) {
                 case NECK:
-                    if (model.isCrouching()) translate(-0.03F, 0.03F, 0.1F);
+                    if (model.getAttributes().isCrouching) translate(-0.03F, 0.03F, 0.1F);
                     break;
                 case HEAD:
-                    if (model.isCrouching()) translate(0, 0.1F, 0);
+                    if (model.getAttributes().isCrouching) translate(0, 0.1F, 0);
                     break;
                 case BACK:
                     translateVec(riderOffset);
@@ -36,19 +36,19 @@ public enum PonyTransformation {
     LANKY(Size.LANKY, 0, 2.6F, 0.75F) {
         @Override
         public void transform(IModel model, BodyPart part) {
-            if (model.isCrouching()) translate(0, -0.15F, 0);
-            if (model.isSleeping()) translate(0, -0.6F, 0.15F);
+            if (model.getAttributes().isCrouching) translate(0, -0.15F, 0);
+            if (model.getAttributes().isSleeping) translate(0, -0.6F, 0.15F);
             if (model.isRiding()) translate(0, 0, -0.2F);
 
             switch (part) {
                 case NECK:
                     translate(0, -0.15F, -0.07F);
-                    if (model.isCrouching()) translate(-0.03F, 0.16F, 0.07F);
+                    if (model.getAttributes().isCrouching) translate(-0.03F, 0.16F, 0.07F);
                     break;
                 case HEAD:
                     translate(0, -0.17F, -0.04F);
-                    if (model.isSleeping()) translate(0, 0, -0.1F);
-                    if (model.isCrouching()) translate(0, 0.15F, 0);
+                    if (model.getAttributes().isSleeping) translate(0, 0, -0.1F);
+                    if (model.getAttributes().isCrouching) translate(0, 0.15F, 0);
                     break;
                 case BODY:
                     translate(0, -0.2F, -0.04F);
@@ -70,19 +70,19 @@ public enum PonyTransformation {
     BULKY(Size.BULKY, 0, 2.3F, 0.75F) {
         @Override
         public void transform(IModel model, BodyPart part) {
-            if (model.isCrouching()) translate(0, -0.15F, 0);
-            if (model.isSleeping()) translate(0, -0.6F, 0.25F);
+            if (model.getAttributes().isCrouching) translate(0, -0.15F, 0);
+            if (model.getAttributes().isSleeping) translate(0, -0.6F, 0.25F);
             if (model.isRiding()) translate(0, 0, -0.2F);
 
             switch (part) {
                 case NECK:
                     translate(0, -0.15F, -0.07F);
-                    if (model.isCrouching()) translate(-0.03F, 0.16F, 0.07F);
+                    if (model.getAttributes().isCrouching) translate(-0.03F, 0.16F, 0.07F);
                     break;
                 case HEAD:
                     translate(0, -0.17F, -0.04F);
-                    if (model.isSleeping()) translate(0, 0, -0.1F);
-                    if (model.isCrouching()) translate(0, 0.15F, 0);
+                    if (model.getAttributes().isSleeping) translate(0, 0, -0.1F);
+                    if (model.getAttributes().isCrouching) translate(0, 0.15F, 0);
                     break;
                 case BODY:
                     translate(0, -0.2F, -0.04F);
@@ -104,8 +104,8 @@ public enum PonyTransformation {
     FOAL(Size.FOAL, 0, 3.8F, 0.75F) {
         @Override
         public void transform(IModel model, BodyPart part) {
-            if (model.isCrouching()) translate(0, -0.3F, 0);
-            if (model.isSleeping()) translate(0, -0.65F, -0.3F);
+            if (model.getAttributes().isCrouching) translate(0, -0.3F, 0);
+            if (model.getAttributes().isSleeping) translate(0, -0.65F, -0.3F);
             if (model.isRiding()) translate(0, -0.6F, -0.2F);
 
             translate(0, 0.2F, 0);
@@ -114,7 +114,7 @@ public enum PonyTransformation {
                 case NECK:
                     translate(0, 0, 0.04F);
                     scale(1.3F, 1.3F, 1.3F);
-                    if (model.isCrouching()) translate(0, -0.01F, 0.15F);
+                    if (model.getAttributes().isCrouching) translate(0, -0.01F, 0.15F);
                     break;
                 case HEAD:
                     scale(1.3F, 1.3F, 1.3F);
@@ -133,19 +133,19 @@ public enum PonyTransformation {
     TALL(Size.TALL, 0, 2.2F, 0.75F) {
         @Override
         public void transform(IModel model, BodyPart part) {
-            if (model.isCrouching()) translate(0, -0.15F, 0);
-            if (model.isSleeping()) translate(0, -0.5F, 0.35F);
+            if (model.getAttributes().isCrouching) translate(0, -0.15F, 0);
+            if (model.getAttributes().isSleeping) translate(0, -0.5F, 0.35F);
             if (model.isRiding()) translate(0, 0.1F, -0.2F);
 
             switch (part) {
                 case NECK:
                     translate(0, -0.09F, 0);
                     scale(1, 1.1F, 1);
-                    if (model.isCrouching()) translate(-0.02F, -0.02F, 0.1F);
+                    if (model.getAttributes().isCrouching) translate(-0.02F, -0.02F, 0.1F);
                     break;
                 case HEAD:
                     translate(0.01F, -0.15F, 0);
-                    if (model.isCrouching()) translate(0, 0.04F, 0);
+                    if (model.getAttributes().isCrouching) translate(0, 0.04F, 0);
                     break;
                 case BODY:
                 case TAIL:
@@ -154,7 +154,7 @@ public enum PonyTransformation {
                 case LEGS:
                     translate(0, -0.27F, 0.03F);
                     scale(1, 1.18F, 1);
-                    if (model.isGoingFast()) translate(0, 0.05F, 0);
+                    if (model.getAttributes().isGoingFast) translate(0, 0.05F, 0);
                     break;
                 case BACK:
                     riderOffset = new Vec3d(0, 2.2F, 0.75F);
@@ -166,19 +166,19 @@ public enum PonyTransformation {
     YEARLING(Size.YEARLING, 0, 3.8F, 0.75F) {
         @Override
         public void transform(IModel model, BodyPart part) {
-            if (model.isCrouching()) translate(0, -0.15F, 0);
-            if (model.isSleeping()) translate(0, -0.4F, -0.3F);
+            if (model.getAttributes().isCrouching) translate(0, -0.15F, 0);
+            if (model.getAttributes().isSleeping) translate(0, -0.4F, -0.3F);
             if (model.isRiding()) translate(0, -0.4F, -0.2F);
 
             switch (part) {
                 case NECK:
                     translate(0, -0.09F, -0.01F);
                     scale(1, 1.1F, 1);
-                    if (model.isCrouching()) translate(-0.02F, -0.02F, 0.1F);
+                    if (model.getAttributes().isCrouching) translate(-0.02F, -0.02F, 0.1F);
                     break;
                 case HEAD:
                     translate(0, -0.15F, 0.01F);
-                    if (model.isCrouching()) translate(0, 0.04F, 0);
+                    if (model.getAttributes().isCrouching) translate(0, 0.04F, 0);
                     scale(1.15F, 1.15F, 1.15F);
                     break;
                 case BODY:
@@ -188,7 +188,7 @@ public enum PonyTransformation {
                 case LEGS:
                     translate(0, -0.265F, 0.03F);
                     scale(1, 1.18F, 1);
-                    if (model.isGoingFast()) translate(0, 0.05F, 0);
+                    if (model.getAttributes().isGoingFast) translate(0, 0.05F, 0);
                     break;
                 case BACK:
                     translateVec(riderOffset);

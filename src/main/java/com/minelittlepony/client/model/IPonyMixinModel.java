@@ -1,9 +1,12 @@
-package com.minelittlepony.model;
+package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.Cuboid;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.AbsoluteHand;
 
+import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.IUnicorn;
+import com.minelittlepony.model.ModelAttributes;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.pony.IPonyData;
 import com.minelittlepony.pony.meta.Size;
@@ -23,13 +26,13 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     }
 
     @Override
-    default void setPitch(float pitch) {
-        mixin().setPitch(pitch);
+    default IPonyData getMetadata() {
+        return mixin().getMetadata();
     }
 
     @Override
-    default float getPitch() {
-        return mixin().getPitch();
+    default ModelAttributes<?> getAttributes() {
+        return mixin().getAttributes();
     }
 
     @Override
@@ -43,53 +46,13 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     }
 
     @Override
-    default IPonyData getMetadata() {
-        return mixin().getMetadata();
-    }
-
-    @Override
     default void apply(IPonyData meta) {
         mixin().apply(meta);
     }
 
     @Override
-    default boolean isCrouching() {
-        return mixin().isCrouching();
-    }
-
-    @Override
-    default boolean isFlying() {
-        return mixin().isFlying();
-    }
-
-    @Override
-    default boolean isElytraFlying() {
-        return mixin().isElytraFlying();
-    }
-
-    @Override
-    default boolean isSleeping() {
-        return mixin().isSleeping();
-    }
-
-    @Override
-    default boolean isSwimming() {
-        return mixin().isSwimming();
-    }
-
-    @Override
     default boolean isRiding() {
         return mixin().isRiding();
-    }
-
-    @Override
-    default boolean isGoingFast() {
-        return mixin().isGoingFast();
-    }
-
-    @Override
-    default boolean isChild() {
-        return mixin().isChild();
     }
 
     @Override
@@ -108,11 +71,6 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     }
 
     @Override
-    default float getModelHeight() {
-        return mixin().getModelHeight();
-    }
-
-    @Override
     default void setArmAngle(float var1, AbsoluteHand var2) {
         mixin().setArmAngle(var1, var2);
     }
@@ -120,11 +78,6 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     @Override
     default Cuboid getHead() {
         return mixin().getHead();
-    }
-
-    @Override
-    default boolean hasHeadGear() {
-        return mixin().hasHeadGear();
     }
 
     @Override

@@ -28,16 +28,16 @@ public class ModelAlicorn<T extends LivingEntity> extends ModelUnicorn<T> implem
         super.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
 
         if (canFly()) {
-            wings.setRotationAndAngles(rainboom, entity.getUuid(), move, swing, 0, ticks);
+            wings.setRotationAndAngles(attributes.isGoingFast, attributes.interpolatorId, move, swing, 0, ticks);
         }
     }
 
     @Override
-    protected void renderBody(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        super.renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
+    protected void renderBody(float scale) {
+        super.renderBody(scale);
 
         if (canFly()) {
-            wings.renderPart(scale, entity.getUuid());
+            wings.renderPart(scale, attributes.interpolatorId);
         }
     }
 }

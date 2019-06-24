@@ -44,7 +44,7 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
 
         // Seaponies can't sneak, silly
         isSneaking = false;
-        isCrouching = false;
+        attributes.isCrouching = false;
     }
 
     @Override
@@ -99,7 +99,7 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
 
         float flapMotion = MathHelper.cos(ticks / 10) / 5;
 
-        if (isSleeping()) {
+        if (attributes.isSleeping) {
             flapMotion /= 2;
         }
 
@@ -108,7 +108,7 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
         leftFin.yaw = finAngle;
         rightFin.yaw = -finAngle;
 
-        if (!isSleeping()) {
+        if (!attributes.isSleeping) {
             centerFin.roll = flapMotion;
         }
 
@@ -152,12 +152,12 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
     }
 
     @Override
-    protected void renderBody(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+    protected void renderBody(float scale) {
         body.render(scale);
         bodyCenter.render(scale);
         body.applyTransform(scale);
 
-        tail.renderPart(scale, entity.getUuid());
+        tail.renderPart(scale, attributes.interpolatorId);
 
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         GlStateManager.enableBlend();
@@ -169,7 +169,6 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
 
         GlStateManager.disableBlend();
         GL11.glPopAttrib();
-
     }
 
     @Override

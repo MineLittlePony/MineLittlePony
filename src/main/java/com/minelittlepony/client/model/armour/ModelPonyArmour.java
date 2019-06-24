@@ -27,7 +27,7 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
     }
 
     @Override
-    protected void renderBody(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+    protected void renderBody(float scale) {
         chestPiece.render(scale);
     }
 

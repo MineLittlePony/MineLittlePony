@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 import com.minelittlepony.client.util.render.Color;
 import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.IPonyModel;
+import com.minelittlepony.model.IModel;
 import com.minelittlepony.pony.meta.Wearable;
 
 import java.util.Calendar;
@@ -48,12 +48,12 @@ public class ChristmasHat extends AbstractGear {
     }
 
     @Override
-    public boolean canRender(IPonyModel<?> model, Entity entity) {
+    public boolean canRender(IModel model, Entity entity) {
         return isChristmasDay() || model.isWearing(Wearable.ANTLERS);
     }
 
     @Override
-    public void setLivingAnimations(IPonyModel<?> model, Entity entity) {
+    public void setLivingAnimations(IModel model, Entity entity) {
         tint = model.getMetadata().getGlowColor();
     }
 

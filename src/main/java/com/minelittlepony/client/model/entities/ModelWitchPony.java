@@ -11,6 +11,7 @@ public class ModelWitchPony extends ModelZebra<WitchEntity> {
 
     public ModelWitchPony() {
         super(false);
+        attributes.visualHeight = 2.5F;
     }
 
     @Override
@@ -48,10 +49,12 @@ public class ModelWitchPony extends ModelZebra<WitchEntity> {
             rightArmOverlay.pitch = legDrinkingAngle;
             rightArm.yaw = 0.1F;
             rightArmOverlay.yaw = 0.1F;
-            rightArm.z = 0.1f;
-            rightArmOverlay.z = 0.1f;
+            rightArm.z = 0.1F;
+            rightArmOverlay.z = 0.1F;
 
-            if (rot > 0) rot = 0;
+            if (rot > 0) {
+                rot = 0;
+            }
 
             head.pitch = -rot / 2;
             headwear.pitch = -rot / 2;
@@ -59,18 +62,6 @@ public class ModelWitchPony extends ModelZebra<WitchEntity> {
             rightArm.z = 0;
             rightArmOverlay.z = 0;
         }
-
-
-    }
-
-    @Override
-    public boolean isChild() {
-        return isChild;
-    }
-
-    @Override
-    public float getModelHeight() {
-        return 2.5F;
     }
 
     @Override

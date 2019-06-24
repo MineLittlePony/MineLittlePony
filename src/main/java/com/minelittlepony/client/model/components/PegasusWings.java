@@ -66,7 +66,7 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, PonyMode
 
         if (pegasus.wingsAreOpen()) {
             flapAngle = pegasus.getWingRotationFactor(ticks);
-            if (!pegasus.isCrouching() && pegasus.isWearing(Wearable.SADDLE_BAGS)) {
+            if (!pegasus.getAttributes().isCrouching && pegasus.isWearing(Wearable.SADDLE_BAGS)) {
                 flapAngle -= 1F;
             }
         }

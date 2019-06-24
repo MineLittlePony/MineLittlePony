@@ -1,9 +1,9 @@
 package com.minelittlepony.client.render;
 
 import com.minelittlepony.client.PonyRenderManager;
+import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.transform.PonyPosture;
-import com.minelittlepony.model.IPonyModel;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.settings.PonySettings;
 import com.minelittlepony.util.math.MathUtil;
@@ -19,8 +19,6 @@ import net.minecraft.entity.LivingEntity;
 public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> {
 
     public ModelWrapper<T, M> playerModel;
-
-    private M ponyModel;
 
     private IPony pony;
 
@@ -52,7 +50,7 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
     public void preRenderCallback(T entity, float ticks) {
         updateModel(entity);
 
-        ponyModel.updateLivingState(entity, pony);
+        getModel().updateLivingState(entity, pony);
 
         float s = getScaleFactor();
         GlStateManager.scalef(s, s, s);
@@ -94,12 +92,12 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
 
     @SuppressWarnings("unchecked")
     public void applyPostureTransform(T player, float yaw, float ticks) {
-        ((PonyPosture<T>)getPosture(player)).apply(player, ponyModel, yaw, ticks, 1);
+        ((PonyPosture<T>)getPosture(player)).apply(player, getModel(), yaw, ticks, 1);
     }
 
     @SuppressWarnings("unchecked")
     public void applyPostureRiding(T player, float yaw, float ticks) {
-        ((PonyPosture<T>)getPosture(player)).apply(player, ponyModel, yaw, ticks, -1);
+        ((PonyPosture<T>)getPosture(player)).apply(player, getModel(), yaw, ticks, -1);
     }
 
     @Nonnull
@@ -112,11 +110,11 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
             return PonyPosture.DEFAULT;
         }
 
-        if (getModel().isSwimming()) {
+        if (getModel().getAttributes().isSwimming) {
             return PonyPosture.SWIMMING;
         }
 
-        if (getModel().isGoingFast()) {
+        if (getModel().getAttributes().isGoingFast) {
             return PonyPosture.FLIGHT;
         }
 
@@ -129,9 +127,8 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
 
     public M setPonyModel(ModelWrapper<T, M> model) {
         playerModel = model;
-        ponyModel = playerModel.getBody();
 
-        return ponyModel;
+        return getModel();
     }
 
     public void updateModel(T entity) {
@@ -154,11 +151,11 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
 
     public double getNamePlateYOffset(T entity, double initial) {
 
-        // We start by negating the height calculation done by mohjong.
+        // We start by negating the height calculation done by mahjong.
         float y = -(entity.getHeight() + 0.5F - (entity.isSneaking() ? 0.25F : 0));
 
         // Then we add our own offsets.
-        y += ponyModel.getModelHeight() * getScaleFactor() + 0.25F;
+        y += getModel().getAttributes().visualHeight * getScaleFactor() + 0.25F;
 
         if (entity.isSneaking()) {
             y -= 0.25F;

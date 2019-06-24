@@ -1,17 +1,94 @@
 package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.Cuboid;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.entity.LivingEntity;
 
-import com.minelittlepony.model.IPonyModel;
+import com.minelittlepony.client.pony.PonyData;
+import com.minelittlepony.model.ModelAttributes;
+import com.minelittlepony.pony.IPony;
+import com.minelittlepony.pony.IPonyData;
+import com.minelittlepony.pony.meta.Size;
 
 import java.util.Random;
 
+/**
+ * The raw pony model without any implementations.
+ * Will act effectively the same as a normal player model without any hints
+ * of being cute and adorable.
+ *
+ * Modders can extend this class to make their own pony models if they wish.
+ */
 public abstract class ClientPonyModel<T extends LivingEntity> extends PlayerEntityModel<T> implements IPonyModel<T> {
+
+    /**
+     * The model attributes.
+     */
+    protected ModelAttributes<T> attributes = new ModelAttributes<>();
+
+    /**
+     * Associated pony data.
+     */
+    protected IPonyData metadata = new PonyData();
 
     public ClientPonyModel(float float_1, boolean boolean_1) {
         super(float_1, boolean_1);
+    }
+
+    @Override
+    public void updateLivingState(T entity, IPony pony) {
+        isChild = entity.isBaby();
+        isSneaking = entity.isSneaking();
+        attributes.updateLivingState(entity, pony);
+    }
+
+    @Override
+    public ModelAttributes<?> getAttributes() {
+        return attributes;
+    }
+
+    @Override
+    public IPonyData getMetadata() {
+        return metadata;
+    }
+
+    @Override
+    public Size getSize() {
+        return isChild ? Size.FOAL : getMetadata().getSize();
+    }
+
+    @Override
+    public void apply(IPonyData meta) {
+        metadata = meta;
+    }
+
+    @Override
+    public Cuboid getHead() {
+        return head;
+    }
+
+    @Override
+    public boolean isRiding() {
+        return isRiding;
+    }
+
+    @Override
+    public float getSwingAmount() {
+        return handSwingProgress;
+    }
+
+    /**
+     * Copies this model's attributes from some other.
+     */
+    @Override
+    public void setAttributes(BipedEntityModel<T> model) {
+        super.setAttributes(model);
+
+        if (model instanceof ClientPonyModel) {
+            attributes = ((ClientPonyModel<T>)model).attributes;
+            metadata = ((ClientPonyModel<T>)model).metadata;
+        }
     }
 
     @Override

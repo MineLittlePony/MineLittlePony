@@ -1,9 +1,9 @@
 package com.minelittlepony.client.render.layer;
 
+import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.components.PonyElytra;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.IPonyModel;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;

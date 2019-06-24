@@ -4,8 +4,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.IPart;
-import com.minelittlepony.model.IPonyModel;
 
 import javax.annotation.Nullable;
 
@@ -19,7 +19,7 @@ public interface IGear extends IPart {
      *
      * @return True to render this wearable
      */
-    boolean canRender(IPonyModel<?> model, Entity entity);
+    boolean canRender(IModel model, Entity entity);
 
     /**
      * Gets the body location that this wearable appears on.
@@ -36,7 +36,7 @@ public interface IGear extends IPart {
     /**
      * Orients this wearable.
      */
-    default void setLivingAnimations(IPonyModel<?> model, Entity entity) {
+    default void setLivingAnimations(IModel model, Entity entity) {
 
     }
 

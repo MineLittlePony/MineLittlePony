@@ -19,7 +19,7 @@ public class ModelChangeling<T extends LivingEntity> extends ModelAlicorn<T> {
 
     @Override
     public boolean wingsAreOpen() {
-        return (isFlying() || isCrouching()) && !isElytraFlying();
+        return (isFlying() || attributes.isCrouching) && !getAttributes().isGliding;
     }
 
     @Override

@@ -5,8 +5,8 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 
+import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.render.IPonyRender;
-import com.minelittlepony.model.IPonyModel;
 import com.mojang.blaze3d.platform.GLX;
 
 import static com.mojang.blaze3d.platform.GlStateManager.*;

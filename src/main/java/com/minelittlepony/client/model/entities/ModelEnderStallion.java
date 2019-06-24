@@ -20,6 +20,14 @@ public class ModelEnderStallion extends ModelSkeletonPony<EndermanEntity> {
     private PonyRenderer leftHorn;
     private PonyRenderer rightHorn;
 
+    public ModelEnderStallion() {
+        super();
+        attributes.armRotationX = 3;
+        attributes.armRotationY = 14;
+        attributes.armLength = 30;
+        attributes.visualHeight = 3;
+    }
+
     @Override
     public void animateModel(EndermanEntity entity, float move, float swing, float ticks) {
         rightArmPose = isCarrying ? ArmPose.BLOCK : ArmPose.EMPTY;
@@ -42,12 +50,6 @@ public class ModelEnderStallion extends ModelSkeletonPony<EndermanEntity> {
 
         leftHorn.pitch = 0.5F;
         rightHorn.pitch = 0.5F;
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
-
     }
 
     @Override
@@ -128,26 +130,6 @@ public class ModelEnderStallion extends ModelSkeletonPony<EndermanEntity> {
     @Override
     public boolean wingsAreOpen() {
         return isAttacking;
-    }
-
-    @Override
-    protected float getLegRotationX() {
-        return 3;
-    }
-
-    @Override
-    protected float getArmRotationY() {
-        return 14;
-    }
-
-    @Override
-    protected int getArmLength() {
-        return 30;
-    }
-
-    @Override
-    public float getModelHeight() {
-        return 3;
     }
 
     @Override

@@ -14,6 +14,12 @@ public class ModelEarthPony<T extends LivingEntity> extends AbstractPonyModel<T>
     public ModelEarthPony(boolean smallArms) {
         super(smallArms);
         this.smallArms = smallArms;
+
+        if (smallArms) {
+            attributes.armWidth = 3;
+            attributes.armRotationX = 2F;
+            attributes.armRotationY = 8.5F;
+        }
     }
 
     @Override
@@ -28,26 +34,11 @@ public class ModelEarthPony<T extends LivingEntity> extends AbstractPonyModel<T>
     @Override
     protected float getLegOutset() {
         if (smallArms) {
-            if (isSleeping()) return 2.6f;
-            if (isCrouching()) return 1;
+            if (attributes.isSleeping) return 2.6f;
+            if (attributes.isCrouching) return 1;
             return 4;
         }
         return super.getLegOutset();
-    }
-
-    @Override
-    protected int getArmWidth() {
-        return smallArms ? 3 : super.getArmWidth();
-    }
-
-    @Override
-    protected float getLegRotationX() {
-        return smallArms ? 2 : super.getLegRotationX();
-    }
-
-    @Override
-    protected float getArmRotationY() {
-        return smallArms ? 8.5f : super.getArmRotationY();
     }
 
     @Override

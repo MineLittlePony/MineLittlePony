@@ -15,9 +15,9 @@ public class PostureFlight extends MotionCompositor implements PonyPosture<Playe
 
     @Override
     public void transform(IModel model, PlayerEntity player, double motionX, double motionY, double motionZ, float yaw, float ticks) {
-        model.setPitch((float) calculateIncline(player, motionX, motionY, motionZ));
+        model.getAttributes().motionPitch = (float) calculateIncline(player, motionX, motionY, motionZ);
 
-        GlStateManager.rotatef(model.getPitch(), 1, 0, 0);
+        GlStateManager.rotatef(model.getAttributes().motionPitch, 1, 0, 0);
 
         float roll = (float)calculateRoll(player, motionX,  motionY, motionZ);
 

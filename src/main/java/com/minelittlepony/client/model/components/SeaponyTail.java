@@ -1,10 +1,10 @@
 package com.minelittlepony.client.model.components;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
+import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
 import com.minelittlepony.model.IPart;
-import com.minelittlepony.model.IPonyModel;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import java.util.UUID;
@@ -53,7 +53,7 @@ public class SeaponyTail implements IPart {
 
     @Override
     public void setRotationAndAngles(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
-        float rotation = model.isSleeping() ? 0 : MathHelper.sin(ticks * 0.536f) / 4;
+        float rotation = model.getAttributes().isSleeping ? 0 : MathHelper.sin(ticks * 0.536f) / 4;
 
         tailBase.pitch = TAIL_ROTX + rotation;
         tailTip.pitch = rotation;

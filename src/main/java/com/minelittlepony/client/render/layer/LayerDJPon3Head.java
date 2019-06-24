@@ -3,10 +3,10 @@ package com.minelittlepony.client.render.layer;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.model.EntityModel;
 
+import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.components.ModelDeadMau5Ears;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.IPonyModel;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 public class LayerDJPon3Head<T extends AbstractClientPlayerEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyLayer<T, M> {

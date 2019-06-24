@@ -34,7 +34,7 @@ public class PonyTail extends PlaneRenderer implements IPart {
         roll = rainboom ? 0 : MathHelper.cos(move * 0.8F) * 0.2f * swing;
         yaw = bodySwing;
 
-        if (theModel.isCrouching() && !rainboom) {
+        if (theModel.getAttributes().isCrouching && !rainboom) {
             rotateSneak();
         } else if (theModel.isRiding()) {
             rotationPointZ = TAIL_RP_Z_RIDING;

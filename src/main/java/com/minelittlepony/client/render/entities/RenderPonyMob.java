@@ -2,6 +2,7 @@ package com.minelittlepony.client.render.entities;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.model.ClientPonyModel;
+import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.render.DebugBoundingBoxRenderer;
 import com.minelittlepony.client.render.IPonyRender;
@@ -14,7 +15,6 @@ import com.minelittlepony.client.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.client.render.layer.LayerPonyElytra;
 import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.hdskins.HDSkins;
-import com.minelittlepony.model.IPonyModel;
 import com.minelittlepony.model.IUnicorn;
 import com.minelittlepony.pony.IPony;
 import com.mojang.blaze3d.platform.GlStateManager;

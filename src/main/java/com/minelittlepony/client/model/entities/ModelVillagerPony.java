@@ -31,11 +31,12 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
         profession = entity.getVillagerData().getProfession();
         special = entity.hasCustomName() && "Derpy".equals(entity.getCustomName().getString());
         special2 = special && entity.getUuid().getLeastSignificantBits() % 20 == 0;
+        attributes.visualHeight = special2 ? 2.3F : 2;
     }
 
     @Override
-    protected void renderBody(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        super.renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
+    protected void renderBody(float scale) {
+        super.renderBody(scale);
 
         if (!special && profession != VillagerProfession.NONE && profession != VillagerProfession.NITWIT) {
             if (profession == VillagerProfession.BUTCHER) {
@@ -44,11 +45,6 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
                 apron.render(scale);
             }
         }
-    }
-
-    @Override
-    public float getModelHeight() {
-        return special2 ? 2.3F : 2;
     }
 
     @Override

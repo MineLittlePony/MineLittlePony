@@ -6,12 +6,12 @@ import java.util.function.Function;
 import com.google.common.collect.Maps;
 import com.minelittlepony.client.gui.hdskins.DummyPony;
 import com.minelittlepony.client.gui.hdskins.RenderDummyPony;
+import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.races.PlayerModels;
 import com.minelittlepony.client.render.LevitatingItemRenderer;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.client.render.entities.MobRenderers;
 import com.minelittlepony.client.render.entities.player.RenderPonyPlayer;
-import com.minelittlepony.model.IPonyModel;
 
 import javax.annotation.Nullable;
 

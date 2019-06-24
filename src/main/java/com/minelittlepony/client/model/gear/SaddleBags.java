@@ -2,8 +2,8 @@ package com.minelittlepony.client.model.gear;
 
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
 import com.minelittlepony.model.BodyPart;
+import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.IPegasus;
-import com.minelittlepony.model.IPonyModel;
 import com.minelittlepony.pony.meta.Wearable;
 import com.mojang.blaze3d.platform.GlStateManager;
 
@@ -25,7 +25,7 @@ public class SaddleBags extends AbstractGear {
     float dropAmount = 0;
 
 
-    private IPonyModel<?> model;
+    private IModel model;
 
     @Override
     public void init(float yOffset, float stretch) {
@@ -73,7 +73,7 @@ public class SaddleBags extends AbstractGear {
     }
 
     @Override
-    public void setLivingAnimations(IPonyModel<?> model, Entity entity) {
+    public void setLivingAnimations(IModel model, Entity entity) {
         this.model = model;
 
         hangLow = false;
@@ -126,7 +126,7 @@ public class SaddleBags extends AbstractGear {
     }
 
     @Override
-    public boolean canRender(IPonyModel<?> model, Entity entity) {
+    public boolean canRender(IModel model, Entity entity) {
         return model.isWearing(Wearable.SADDLE_BAGS);
     }
 

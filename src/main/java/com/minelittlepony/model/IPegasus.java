@@ -11,7 +11,7 @@ public interface IPegasus extends IModel {
      * Returns true if the wings are spread.
      */
     default boolean wingsAreOpen() {
-        return (isSwimming() || isFlying() || isCrouching()) && !isElytraFlying();
+        return (getAttributes().isSwimming || isFlying() || getAttributes().isCrouching) && !getAttributes().isGliding;
     }
 
     /**
@@ -20,7 +20,7 @@ public interface IPegasus extends IModel {
      * @param ticks Partial render ticks
      */
     default float getWingRotationFactor(float ticks) {
-        if (isSwimming()) {
+        if (getAttributes().isSwimming) {
             return (MathHelper.sin(ticks * 0.136f) / 2) + ROTATE_270;
         }
         if (isFlying()) {

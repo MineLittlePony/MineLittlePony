@@ -15,10 +15,19 @@ public class ModelSkeletonPony<T extends HostileEntity> extends ModelMobPony<T> 
 
     public boolean isWithered;
 
+    public ModelSkeletonPony() {
+        super();
+        attributes.armWidth = 2;
+        attributes.armDepth = 2;
+        attributes.armRotationX = 3F;
+        attributes.armRotationY = 8F;
+    }
+
     @Override
     public void animateModel(T entity, float move, float swing, float ticks) {
         isUnicorn = entity.getUuid().getLeastSignificantBits() % 3 != 0;
         isWithered = entity instanceof WitherSkeletonEntity;
+        attributes.visualHeight = isWithered ? 2.5F : 2;
 
         rightArmPose = ArmPose.EMPTY;
         leftArmPose = ArmPose.EMPTY;
@@ -77,33 +86,8 @@ public class ModelSkeletonPony<T extends HostileEntity> extends ModelMobPony<T> 
 
     @Override
     protected float getLegOutset() {
-        if (isSleeping()) return 2.6f;
-        if (isCrouching()) return 0;
+        if (attributes.isSleeping) return 2.6f;
+        if (attributes.isCrouching) return 0;
         return 4;
-    }
-
-    @Override
-    protected int getArmWidth() {
-        return 2;
-    }
-
-    @Override
-    protected int getArmDepth() {
-        return 2;
-    }
-
-    @Override
-    protected float getLegRotationX() {
-        return 3;
-    }
-
-    @Override
-    public float getModelHeight() {
-        return isWithered ? 2.5F : 2;
-    }
-
-    @Override
-    protected float getArmRotationY() {
-        return 8;
     }
 }

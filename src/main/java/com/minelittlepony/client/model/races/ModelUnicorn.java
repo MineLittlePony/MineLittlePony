@@ -75,7 +75,7 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
         AbsoluteHand mainSide = getPreferedHand(entity);
 
         if (canCast() && getArmPoseForSide(mainSide) != ArmPose.EMPTY) {
-            if (getSwingAmount() > -9990 && !isSleeping()) {
+            if (getSwingAmount() > -9990 && !attributes.isSleeping) {
                 swingArm(getUnicornArmForSide(mainSide));
             }
         } else {
@@ -83,9 +83,15 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
         }
     }
 
+    public ArmPose getArmPoseForSide(AbsoluteHand side) {
+        return side == AbsoluteHand.RIGHT ? rightArmPose : leftArmPose;
+    }
+
     @Override
-    protected void swingArms(float ticks) {
-        if (isSleeping()) return;
+    protected void animateBreathing(float ticks) {
+        if (attributes.isSleeping) {
+            return;
+        }
 
         if (canCast()) {
             float cos = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
@@ -101,7 +107,7 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
                 unicornArmLeft.pitch += sin;
             }
         } else {
-            super.swingArms(ticks);
+            super.animateBreathing(ticks);
         }
     }
 
@@ -123,12 +129,12 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
     }
 
     @Override
-    protected void renderHead(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        super.renderHead(entity, move, swing, ticks, headYaw, headPitch, scale);
+    protected void renderHead(float scale) {
+        super.renderHead(scale);
 
         if (canCast()) {
             head.applyTransform(scale);
-            horn.renderPart(scale, entity.getUuid());
+            horn.renderPart(scale, attributes.interpolatorId);
             if (isCasting()) {
                 horn.renderMagic(getMagicColor(), scale);
             }
@@ -141,12 +147,12 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
         unicornArmLeft = new PonyRenderer(this, 40, 32).size(64, 64);
         unicornArmRight = new PonyRenderer(this, 40, 32).size(64, 64);
 
-        int armLength = getArmLength();
-        int armWidth = getArmWidth();
-        int armDepth = getArmDepth();
+        int armLength = attributes.armLength;
+        int armWidth = attributes.armWidth;
+        int armDepth = attributes.armDepth;
 
-        float rarmX = getLegRotationX();
-        float rarmY = getArmRotationY();
+        float rarmX = attributes.armRotationX;
+        float rarmY = attributes.armRotationY;
 
         float armX = THIRDP_ARM_CENTRE_X;
         float armY = THIRDP_ARM_CENTRE_Y;

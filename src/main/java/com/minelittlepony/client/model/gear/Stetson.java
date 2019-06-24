@@ -6,7 +6,7 @@ import net.minecraft.util.Identifier;
 import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
 import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.IPonyModel;
+import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.gear.IStackable;
 import com.minelittlepony.pony.meta.Wearable;
 
@@ -49,7 +49,7 @@ public class Stetson extends AbstractGear implements IStackable {
     }
 
     @Override
-    public boolean canRender(IPonyModel<?> model, Entity entity) {
+    public boolean canRender(IModel model, Entity entity) {
         return model.isWearing(Wearable.STETSON);
     }
 

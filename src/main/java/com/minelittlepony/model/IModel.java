@@ -1,8 +1,8 @@
 package com.minelittlepony.model;
 
 import net.minecraft.client.render.entity.model.ModelWithArms;
+import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.pony.IPonyData;
 import com.minelittlepony.pony.meta.Size;
@@ -22,10 +22,6 @@ public interface IModel extends ModelWithArms {
      */
     void transform(BodyPart part);
 
-    void setPitch(float pitch);
-
-    float getPitch();
-
     /**
      * Gets the active scaling profile used to lay out this model's parts.
      */
@@ -35,6 +31,11 @@ public interface IModel extends ModelWithArms {
      * Returns a new pony armour to go with this model. Called on startup by a model wrapper.
      */
     IEquestrianArmour<?> createArmour();
+
+    /**
+     * Gets the transitive properties of this model.
+     */
+    ModelAttributes<?> getAttributes();
 
     /**
      * Gets the skin metadata associated with this model.
@@ -47,40 +48,16 @@ public interface IModel extends ModelWithArms {
     void apply(IPonyData meta);
 
     /**
-     * Returns true if this model is on the ground and crouching.
-     */
-    boolean isCrouching();
-
-    /**
      * Returns true if the model is flying.
      */
-    boolean isFlying();
-
-    /**
-     * Returns true if the model is elytra flying. Elytra flying is different
-     * from regular flying in that there are actual "wings" involved.
-     */
-    boolean isElytraFlying();
-
-    /**
-     * Returns true if this model is lying on a bed or bed-like object.
-     */
-    boolean isSleeping();
-
-    /**
-     * Returns true if this model is wimming underwater.
-     */
-    boolean isSwimming();
+    default boolean isFlying() {
+        return getAttributes().isFlying && canFly();
+    }
 
     /**
      * Returns true if this model is riding a boat, horse, or other animals.
      */
     boolean isRiding();
-
-    /**
-     * Returns true if we're flying really fast.
-     */
-    boolean isGoingFast();
 
     /**
      * Returns true if this model is being applied to a race that has wings.
@@ -92,7 +69,9 @@ public interface IModel extends ModelWithArms {
     /**
      * Returns true if the current model is a child or a child-like foal.
      */
-    boolean isChild();
+    default boolean isChild() {
+        return getSize() == Size.FOAL;
+    }
 
     /**
      * Gets the current leg swing amount.
@@ -100,19 +79,21 @@ public interface IModel extends ModelWithArms {
     float getSwingAmount();
 
     /**
-     * Gets the step woddle used for various hair bits and animations.
+     * Gets the step wobble used for various hair bits and animations.
      */
-    float getWobbleAmount();
+    default float getWobbleAmount() {
+
+        if (getSwingAmount() <= 0) {
+            return 0;
+        }
+
+        return MathHelper.sin(MathHelper.sqrt(getSwingAmount()) * PonyModelConstants.PI * 2) * 0.04F;
+    }
 
     /**
      * Gets the y-offset applied to entities riding this one.
      */
     float getRiderYOffset();
-
-    /**
-     * Gets the actual, visible height of this model when rendered.
-     */
-    float getModelHeight();
 
     /**
      * Tests if this model is wearing the given piece of gear.

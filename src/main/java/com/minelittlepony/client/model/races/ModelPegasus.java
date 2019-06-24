@@ -26,12 +26,12 @@ public class ModelPegasus<T extends LivingEntity> extends ModelEarthPony<T> impl
     @Override
     public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         super.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
-        wings.setRotationAndAngles(rainboom, entity.getUuid(), move, swing, 0, ticks);
+        wings.setRotationAndAngles(attributes.isGoingFast, entity.getUuid(), move, swing, 0, ticks);
     }
 
     @Override
-    protected void renderBody(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        super.renderBody(entity, move, swing, ticks, headYaw, headPitch, scale);
-        wings.renderPart(scale, entity.getUuid());
+    protected void renderBody(float scale) {
+        super.renderBody(scale);
+        wings.renderPart(scale, attributes.interpolatorId);
     }
 }

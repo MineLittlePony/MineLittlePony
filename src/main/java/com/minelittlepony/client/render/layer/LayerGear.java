@@ -7,6 +7,7 @@ import net.minecraft.util.Identifier;
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
+import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.gear.ChristmasHat;
 import com.minelittlepony.client.model.gear.Muffin;
 import com.minelittlepony.client.model.gear.SaddleBags;
@@ -14,7 +15,6 @@ import com.minelittlepony.client.model.gear.Stetson;
 import com.minelittlepony.client.model.gear.WitchHat;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.IPonyModel;
 import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.model.gear.IStackable;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -83,7 +83,7 @@ public class LayerGear<T extends LivingEntity, M extends EntityModel<T> & IPonyM
         getContext().bindTexture(texture);
 
         gear.setLivingAnimations(model, entity);
-        gear.setRotationAndAngles(model.isGoingFast(), entity.getUuid(), move, swing, model.getWobbleAmount(), ticks);
+        gear.setRotationAndAngles(model.getAttributes().isGoingFast, entity.getUuid(), move, swing, model.getWobbleAmount(), ticks);
         gear.renderPart(scale, entity.getUuid());
 
         GL11.glPopAttrib();

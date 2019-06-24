@@ -1,11 +1,11 @@
 package com.minelittlepony.client.render.layer;
 
 import com.minelittlepony.client.ForgeProxy;
+import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.armour.DefaultArmourTextureResolver;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.client.util.render.Color;
-import com.minelittlepony.model.IPonyModel;
 import com.minelittlepony.model.armour.ArmourLayer;
 import com.minelittlepony.model.armour.IArmour;
 import com.minelittlepony.model.armour.IArmourTextureResolver;

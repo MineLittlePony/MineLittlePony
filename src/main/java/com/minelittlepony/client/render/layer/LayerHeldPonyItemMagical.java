@@ -1,9 +1,9 @@
 package com.minelittlepony.client.render.layer;
 
 import com.minelittlepony.client.PonyRenderManager;
+import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.client.util.render.PonyRenderer;
-import com.minelittlepony.model.IPonyModel;
 import com.minelittlepony.model.IUnicorn;
 import com.mojang.blaze3d.platform.GlStateManager;
 
