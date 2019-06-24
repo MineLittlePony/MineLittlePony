@@ -85,7 +85,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends PlayerEnti
     }
 
     /**
-     * Copies this model's attributes from some other.
+     * Copies this model's attributes into the passed model.
      */
     @Override
     public void setAttributes(BipedEntityModel<T> model) {
