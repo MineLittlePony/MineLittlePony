@@ -711,7 +711,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     }
 
     protected void renderVest(float scale) {
-        body.applyTransform(scale);
         bodyOverlay.render(scale);
     }
 
