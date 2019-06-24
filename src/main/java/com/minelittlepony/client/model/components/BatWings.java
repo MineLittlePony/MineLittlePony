@@ -29,6 +29,7 @@ public class BatWings<T extends Model & IPegasus> extends PegasusWings<T> {
         GlStateManager.scalef(1.3F, 1.3F, 1.3F);
 
         super.renderPart(scale, interpolatorId);
+        this.init(0, 0);
 
         GlStateManager.popMatrix();
     }
@@ -41,9 +42,9 @@ public class BatWings<T extends Model & IPegasus> extends PegasusWings<T> {
 
         @Override
         protected void addClosedWing(boolean right, float y, float scale) {
-            float x = right ? -4 : 3;
+            float x = right ? -3.5F : 3.5F;
 
-            folded.around(HEAD_RP_X, WING_FOLDED_RP_Y + y - 1, WING_FOLDED_RP_Z - 2)
+            folded.around(HEAD_RP_X - 0.5F, WING_FOLDED_RP_Y + y - 1, WING_FOLDED_RP_Z - 2)
                   .mirror(right)
                   .tex(56, 16).box(x * 0.9F, 5, 4, 1, 4, 1, scale)
                   .tex(56, 16).box(x, 5, 6, 1, 7, 1, scale)
