@@ -729,7 +729,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         leftArmOverlay.render(scale);
         rightArmOverlay.render(scale);
         leftLegOverlay.render(scale);
-        rightArmOverlay.render(scale);
+        rightLegOverlay.render(scale);
     }
 
     @Override
