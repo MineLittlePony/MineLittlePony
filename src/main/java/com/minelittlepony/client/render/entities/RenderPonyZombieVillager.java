@@ -7,6 +7,7 @@ import com.minelittlepony.util.resources.ITextureSupplier;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.feature.VillagerClothingFeatureRenderer;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.entity.mob.ZombieVillagerEntity;
 import net.minecraft.resource.ReloadableResourceManager;
 import net.minecraft.util.Identifier;
@@ -31,8 +32,10 @@ public class RenderPonyZombieVillager extends RenderPonyMob.Caster<ZombieVillage
     @Override
     public void bindTexture(Identifier texture) {
 
-        if (!"minelittlepony".contentEquals(texture.getNamespace())) {
-            texture = new Identifier("minelittlepony", texture.getPath());
+        if (texture != SpriteAtlasTexture.BLOCK_ATLAS_TEX) {
+            if (!"minelittlepony".contentEquals(texture.getNamespace())) {
+                texture = new Identifier("minelittlepony", texture.getPath());
+            }
         }
 
         super.bindTexture(texture);
