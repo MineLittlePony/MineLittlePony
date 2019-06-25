@@ -1,5 +1,8 @@
 package com.minelittlepony.client.pony;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
@@ -10,7 +13,6 @@ import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.IPonyManager;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
-import com.minelittlepony.util.chron.ChronicCache;
 import com.minelittlepony.util.math.MathUtil;
 
 import javax.annotation.Nullable;
@@ -36,6 +38,7 @@ import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The PonyManager is responsible for reading and recoding all the pony data associated with an entity of skin.
@@ -52,7 +55,9 @@ public class PonyManager implements IPonyManager, ResourceReloadListener, ISkinC
 
     private final PonyConfig config;
 
-    private final ChronicCache<Identifier, Pony> poniesCache = new ChronicCache<>();
+    private final LoadingCache<Identifier, Pony> poniesCache = CacheBuilder.newBuilder()
+            .expireAfterAccess(30, TimeUnit.SECONDS)
+            .build(CacheLoader.from(Pony::new));
 
     public PonyManager(PonyConfig config) {
         this.config = config;
@@ -60,7 +65,7 @@ public class PonyManager implements IPonyManager, ResourceReloadListener, ISkinC
 
     @Override
     public IPony getPony(Identifier resource) {
-        return poniesCache.retrieve(resource, Pony::new);
+        return poniesCache.getUnchecked(resource);
     }
 
     @Override
@@ -135,8 +140,8 @@ public class PonyManager implements IPonyManager, ResourceReloadListener, ISkinC
     }
 
     @Override
-    public IPony removePony(Identifier resource) {
-        return poniesCache.remove(resource);
+    public void removePony(Identifier resource) {
+        poniesCache.invalidate(resource);
     }
 
     @Override
@@ -155,7 +160,7 @@ public class PonyManager implements IPonyManager, ResourceReloadListener, ISkinC
     }
 
     public void reloadAll(ResourceManager resourceManager) {
-        poniesCache.clear();
+        poniesCache.invalidateAll();
         backgroundPonyList.clear();
 
         List<Identifier> collectedPaths = new LinkedList<>();
@@ -252,7 +257,7 @@ public class PonyManager implements IPonyManager, ResourceReloadListener, ISkinC
     @Override
     public boolean onSkinCacheCleared() {
         MineLittlePony.logger.info("Flushed {} cached ponies.", poniesCache.size());
-        poniesCache.clear();
+        poniesCache.invalidateAll();
         return true;
     }
 }

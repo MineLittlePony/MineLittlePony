@@ -11,7 +11,6 @@ import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.IPonyData;
 import com.minelittlepony.pony.meta.Race;
 import com.minelittlepony.pony.meta.Size;
-import com.minelittlepony.util.chron.Touchable;
 
 import net.minecraft.block.Material;
 import net.minecraft.client.MinecraftClient;
@@ -40,7 +39,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 @Immutable
-public class Pony extends Touchable<Pony> implements IPony {
+public class Pony implements IPony {
 
     private static final AtomicInteger ponyCount = new AtomicInteger();
 

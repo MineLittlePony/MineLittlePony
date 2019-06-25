@@ -62,7 +62,7 @@ public interface IPonyManager  {
     /**
      * De-registers a pony from the cache.
      */
-    IPony removePony(Identifier resource);
+    void removePony(Identifier resource);
 
     public static Identifier getDefaultSkin(UUID uuid) {
         return isSlimSkin(uuid) ? ALEX : STEVE;
