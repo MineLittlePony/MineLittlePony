@@ -152,7 +152,7 @@ public class Pony implements IPony {
 
     @Override
     public boolean isSwimming(LivingEntity entity) {
-        return entity.isSwimming();
+        return entity.isSwimming() || entity.isInSwimmingPose();
     }
 
     @Override

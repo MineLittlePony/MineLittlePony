@@ -207,6 +207,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         headPitch = Math.min(headPitch, (float) (0.5f - Math.toRadians(attributes.motionPitch)));
         headPitch = Math.max(headPitch, (float) (-1.25f - Math.toRadians(attributes.motionPitch)));
 
+        if (attributes.isSwimming) {
+            headPitch += 0.9F;
+        }
+
         head.pitch = headPitch;
     }
 
@@ -258,10 +262,12 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      */
     protected void rotateLegsSwimming(float move, float swing, float ticks, T entity) {
 
-        float legLeft = (ROTATE_90 + MathHelper.sin((move / 3) + 2 * PI/3) / 2) * (float)attributes.motionLerp;
+        float lerp = entity.isSwimming() ? (float)attributes.motionLerp : 1;
 
-        float left = (ROTATE_90 + MathHelper.sin((move / 3) + 2 * PI) / 2) * (float)attributes.motionLerp;
-        float right = (ROTATE_90 + MathHelper.sin(move / 3) / 2) * (float)attributes.motionLerp;
+        float legLeft = (ROTATE_90 + MathHelper.sin((move / 3) + 2 * PI/3) / 2) * lerp;
+
+        float left = (ROTATE_90 + MathHelper.sin((move / 3) + 2 * PI) / 2) * lerp;
+        float right = (ROTATE_90 + MathHelper.sin(move / 3) / 2) * lerp;
 
         leftArm.pitch = -left;
         leftArm.yaw = -left/2;
