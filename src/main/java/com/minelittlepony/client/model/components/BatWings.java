@@ -24,12 +24,10 @@ public class BatWings<T extends Model & IPegasus> extends PegasusWings<T> {
 
     @Override
     public void renderPart(float scale, UUID interpolatorId) {
-
         GlStateManager.pushMatrix();
         GlStateManager.scalef(1.3F, 1.3F, 1.3F);
 
         super.renderPart(scale, interpolatorId);
-        this.init(0, 0);
 
         GlStateManager.popMatrix();
     }

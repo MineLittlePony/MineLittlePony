@@ -26,8 +26,6 @@ public class ChristmasHat extends AbstractGear {
 
     @Override
     public void init(float yOffset, float stretch) {
-        this.cuboidList.clear();
-
         left = new PonyRenderer(this, 0, 0).size(16, 8)
                 .around(-7, 0.5F, 0.5F)
                 .offset(-7, 0, 0)
