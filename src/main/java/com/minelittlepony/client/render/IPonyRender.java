@@ -11,9 +11,6 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 
-/**
- * I Render Pony now, oky?
- */
 public interface IPonyRender<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends PonyModelConstants {
 
     /**
