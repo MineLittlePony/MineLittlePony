@@ -1,4 +1,4 @@
-package com.minelittlepony.client.gui.hdskins;
+package com.minelittlepony.client.hdskins;
 
 import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.hdskins.HDSkins;

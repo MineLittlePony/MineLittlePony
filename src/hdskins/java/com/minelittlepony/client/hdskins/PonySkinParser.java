@@ -1,4 +1,4 @@
-package com.minelittlepony.client.gui.hdskins;
+package com.minelittlepony.client.hdskins;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.model.races.PlayerModels;
@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.Map;
 
-class PonySkinParser implements ISkinParser {
+public class PonySkinParser implements ISkinParser {
 
     @Override
     public void parse(GameProfile profile, MinecraftProfileTexture.Type type, Identifier resource,

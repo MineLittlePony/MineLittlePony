@@ -1,4 +1,4 @@
-package com.minelittlepony.client.gui.hdskins;
+package com.minelittlepony.client.hdskins.gui;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.model.ClientPonyModel;
@@ -22,7 +22,7 @@ import net.minecraft.util.Identifier;
 /**
  * Renderer used for the dummy pony model when selecting a skin.
  */
-class RenderDummyPony extends RenderDummyPlayer<DummyPony, ClientPonyModel<DummyPony>> implements IPonyRender<DummyPony, ClientPonyModel<DummyPony>> {
+public class RenderDummyPony extends RenderDummyPlayer<DummyPony, ClientPonyModel<DummyPony>> implements IPonyRender<DummyPony, ClientPonyModel<DummyPony>> {
 
     protected final RenderPony<DummyPony, ClientPonyModel<DummyPony>> renderPony = new RenderPony<>(this);
 

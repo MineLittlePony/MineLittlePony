@@ -1,14 +1,17 @@
-package com.minelittlepony.client.gui.hdskins;
+package com.minelittlepony.client.hdskins;
 
+import com.minelittlepony.client.hdskins.gui.DummyPony;
+import com.minelittlepony.client.hdskins.gui.GuiSkinsMineLP;
+import com.minelittlepony.client.hdskins.gui.RenderDummyPony;
 import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.MineLPClient;
+
 import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.client.LegacySkinConverter;
 import com.minelittlepony.hdskins.HDSkins;
-import com.minelittlepony.hdskins.ISkinCacheClearListener;
 import com.minelittlepony.hdskins.net.LegacySkinServer;
 import com.minelittlepony.hdskins.net.SkinServer;
 import com.minelittlepony.hdskins.net.ValhallaSkinServer;
@@ -22,7 +25,7 @@ import java.util.Map;
 /**
  * All the interactions with HD Skins.
  */
-class MineLPHDSkins extends MineLPClient implements ISkinCacheClearListener {
+public class MineLPHDSkins extends MineLPClient {
     private static final String MINELP_VALHALLA_SERVER = "http://skins.minelittlepony-mod.com";
 
     private static final String MINELP_LEGACY_SERVER = "http://minelpskins.voxelmodpack.com";
@@ -38,12 +41,6 @@ class MineLPHDSkins extends MineLPClient implements ISkinCacheClearListener {
         SkinServer.defaultServers.add(legacy);
         // And make valhalla the default
         SkinServer.defaultServers.add(0, valhalla);
-    }
-
-    @Override
-    public boolean onSkinCacheCleared() {
-        getManager().clearCache();
-        return true;
     }
 
     /**
@@ -63,7 +60,7 @@ class MineLPHDSkins extends MineLPClient implements ISkinCacheClearListener {
         // Parse trigger pixel data
         manager.addSkinParser(new PonySkinParser());
         // Clear ponies when skins are cleared
-        manager.addClearListener(this);
+        manager.addClearListener(getManager()::onSkinCacheCleared);
         // Ponify the skins GUI.
         manager.setSkinsGui(GuiSkinsMineLP::new);
     }

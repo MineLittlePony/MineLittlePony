@@ -1,4 +1,4 @@
-package com.minelittlepony.client.gui.hdskins;
+package com.minelittlepony.client.hdskins.gui;
 
 import net.minecraft.util.Identifier;
 

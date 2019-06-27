@@ -1,4 +1,4 @@
-package com.minelittlepony.client.gui.hdskins;
+package com.minelittlepony.client.hdskins.gui;
 
 import com.minelittlepony.hdskins.dummy.DummyPlayer;
 import com.minelittlepony.hdskins.dummy.TextureProxy;
@@ -8,7 +8,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 /**
  * Dummy model used for the skin uploading screen.
  */
-class DummyPony extends DummyPlayer {
+public class DummyPony extends DummyPlayer {
 
     public boolean wet = false;
 

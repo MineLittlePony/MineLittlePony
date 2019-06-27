@@ -1,4 +1,4 @@
-package com.minelittlepony.client.gui.hdskins;
+package com.minelittlepony.client.hdskins.gui;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.common.client.gui.element.IconicToggle;
@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Skin uploading GUI. Usually displayed over the main menu.
  */
-class GuiSkinsMineLP extends GuiSkins {
+public class GuiSkinsMineLP extends GuiSkins {
 
     private IPonyManager ponyManager = MineLittlePony.getInstance().getManager();
 

@@ -264,4 +264,10 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
             return MoreStreams.map(imports, this::makeImport);
         }
     }
+
+    public boolean onSkinCacheCleared() {
+        MineLittlePony.logger.info("Flushed {} cached ponies.", poniesCache.size());
+        poniesCache.invalidateAll();
+        return true;
+    }
 }
