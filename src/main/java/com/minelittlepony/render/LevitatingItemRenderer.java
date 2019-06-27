@@ -99,9 +99,9 @@ public class LevitatingItemRenderer {
 
             scale(1.1F, 1.1F, 1.1F);
 
-            translate(0.01F, 0.01F, 0.01F);
+            translate(0.015F, 0.01F, 0.01F);
             renderer.renderItemSide(entity, stack, transform, left);
-            translate(-0.02F, -0.02F, -0.02F);
+            translate(-0.03F, -0.02F, -0.02F);
             renderer.renderItemSide(entity, stack, transform, left);
 
             usingTransparency = false;
