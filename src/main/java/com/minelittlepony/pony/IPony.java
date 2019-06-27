@@ -2,7 +2,7 @@ package com.minelittlepony.pony;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BoundingBox;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
 import com.minelittlepony.MineLittlePony;
@@ -109,5 +109,5 @@ public interface IPony {
     /**
      * Gets the actual bounding box of this entity as a pony.
      */
-    BoundingBox getComputedBoundingBox(LivingEntity entity);
+    Box getComputedBoundingBox(LivingEntity entity);
 }

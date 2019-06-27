@@ -3,7 +3,7 @@ package com.minelittlepony.client.gui;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.text.LiteralText;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.render.entities.MobRenderers;
@@ -39,7 +39,7 @@ public class GuiPonySettings extends GameGui {
     private final boolean hiddenOptions;
 
     public GuiPonySettings() {
-        super(new TranslatableComponent(OPTIONS_PREFIX + "title"));
+        super(new LiteralText(OPTIONS_PREFIX + "title"));
 
         config = MineLittlePony.getInstance().getConfig();
 

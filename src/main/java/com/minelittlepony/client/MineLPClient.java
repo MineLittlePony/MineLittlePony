@@ -9,16 +9,16 @@ import com.minelittlepony.common.client.IModUtilities;
 import com.minelittlepony.settings.JsonConfig;
 import com.minelittlepony.settings.PonyConfig;
 
-import net.minecraft.ChatFormat;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resource.ReloadableResourceManager;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Style;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.SystemUtil;
 
 import org.lwjgl.glfw.GLFW;
@@ -82,11 +82,11 @@ public class MineLPClient extends MineLittlePony {
                 if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_F3) && InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_M)) {
                     if (!reloadingModels) {
                         minecraft.inGameHud.getChatHud().addMessage(
-                                (new TextComponent("")).append(
-                                new TranslatableComponent("debug.prefix")
-                                    .setStyle(new Style().setColor(ChatFormat.YELLOW).setBold(true)))
+                                new LiteralText("").append(
+                                new TranslatableText("debug.prefix")
+                                    .setStyle(new Style().setColor(Formatting.YELLOW).setBold(true)))
                                 .append(" ")
-                                .append(new TranslatableComponent("minelp.debug.reload_models.message")));
+                                .append(new TranslatableText("minelp.debug.reload_models.message")));
 
                         reloadingModels = true;
                         modelUpdateCounter++;

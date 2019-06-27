@@ -30,7 +30,7 @@ public class LayerDJPon3Head<T extends AbstractClientPlayerEntity, M extends Ent
             GlStateManager.translatef(0, 0.3F, 0);
 
             deadMau5.setVisible(true);
-            deadMau5.setRotationAngles(move, swing, partialTicks, 0, 0, scale);
+            deadMau5.render(move, swing, partialTicks, 0, 0, scale);
 
             GlStateManager.popMatrix();
         }

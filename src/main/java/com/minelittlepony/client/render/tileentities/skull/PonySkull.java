@@ -20,6 +20,6 @@ public abstract class PonySkull implements ISkull {
 
     @Override
     public void render(float animateTicks, float rotation, float scale) {
-        ponyHead.setRotationAngles(animateTicks, 0, 0, rotation, 0, scale);
+        ponyHead.render(animateTicks, 0, 0, rotation, 0, scale);
     }
 }

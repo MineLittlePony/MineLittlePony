@@ -3,7 +3,7 @@ package com.minelittlepony.client.render;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.BoundingBox;
+import net.minecraft.util.math.Box;
 
 import com.minelittlepony.pony.IPony;
 
@@ -23,7 +23,7 @@ public class DebugBoundingBoxRenderer {
             return;
         }
 
-        BoundingBox boundingBox = pony.getComputedBoundingBox(entity);
+        Box boundingBox = pony.getComputedBoundingBox(entity);
 
         enableBlend();
         blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);

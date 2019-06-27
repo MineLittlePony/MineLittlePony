@@ -11,7 +11,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.GuardianEntityRenderer;
-import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.mob.ElderGuardianEntity;
 import net.minecraft.entity.mob.GuardianEntity;
 import net.minecraft.util.Identifier;
@@ -54,10 +54,10 @@ public class RenderPonyGuardian extends GuardianEntityRenderer {
     @Override
     public void render(GuardianEntity entity, double x, double y, double z, float entityYaw, float partialTicks) {
         IResizeable resize = (IResizeable)entity;
-        EntitySize origin = resize.getCurrentSize();
+        EntityDimensions origin = resize.getCurrentSize();
 
         // aligns the beam to their horns
-        resize.setCurrentSize(EntitySize.resizeable(origin.width, entity instanceof ElderGuardianEntity ? 6 : 3));
+        resize.setCurrentSize(EntityDimensions.changing(origin.width, entity instanceof ElderGuardianEntity ? 6 : 3));
 
         super.render(entity, x, y, z, entityYaw, partialTicks);
 

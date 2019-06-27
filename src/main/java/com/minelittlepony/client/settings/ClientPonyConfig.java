@@ -29,7 +29,7 @@ public class ClientPonyConfig extends PonyConfig {
         super.save();
         PlayerEntity player = MinecraftClient.getInstance().player;
         if (player != null) {
-            player.refreshSize();
+            player.calculateDimensions();
         }
     }
 }

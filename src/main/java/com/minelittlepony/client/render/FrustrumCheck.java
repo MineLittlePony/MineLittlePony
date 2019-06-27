@@ -2,7 +2,7 @@ package com.minelittlepony.client.render;
 
 import net.minecraft.client.render.VisibleRegion;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.BoundingBox;
+import net.minecraft.util.math.Box;
 
 import com.minelittlepony.pony.IPony;
 
@@ -25,10 +25,10 @@ public class FrustrumCheck<T extends LivingEntity> implements VisibleRegion {
     }
 
     @Override
-    public boolean intersects(BoundingBox bounds) {
+    public boolean intersects(Box bounds) {
         IPony pony = renderer.getPony(entity);
 
-        BoundingBox boundingBox = pony.getComputedBoundingBox(entity);
+        Box boundingBox = pony.getComputedBoundingBox(entity);
 
         return vanilla.intersects(boundingBox);
     }

@@ -36,7 +36,7 @@ public class ModelPonyHead extends SkullOverlayEntityModel implements ICapitated
 
     @Override
     public Cuboid getHead() {
-        return field_3564;
+        return skull;
     }
 
     @Override
@@ -45,13 +45,13 @@ public class ModelPonyHead extends SkullOverlayEntityModel implements ICapitated
     }
 
     @Override
-    public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         snout.isHidden = metadata.getRace().isHuman();
         ears.field_3664 = snout.isHidden;
 
         snout.setGender(metadata.getGender());
 
-        super.setRotationAngles(move, swing, ticks, headYaw, headPitch, scale);
+        super.render(move, swing, ticks, headYaw, headPitch, scale);
 
         if (metadata.hasMagic()) {
             getHead().applyTransform(scale);

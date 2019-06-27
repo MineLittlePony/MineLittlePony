@@ -9,7 +9,7 @@ import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.pony.IPony;
 
 import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 
@@ -18,10 +18,10 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 
     private MixinPlayerEntity() {super(null, null);}
 
-    @Inject(method = "getActiveEyeHeight(Lnet/minecraft/entity/EntityPose;Lnet/minecraft/entity/EntitySize;)F",
+    @Inject(method = "getActiveEyeHeight(Lnet/minecraft/entity/EntityPose;Lnet/minecraft/entity/EntityDimensions;)F",
             at = @At("RETURN"),
             cancellable = true)
-    protected void redirectGetActiveEyeHeight(EntityPose pose, EntitySize size, CallbackInfoReturnable<Float> info) {
+    protected void redirectGetActiveEyeHeight(EntityPose pose, EntityDimensions size, CallbackInfoReturnable<Float> info) {
         float value = info.getReturnValueF();
 
         IPony pony = MineLittlePony.getInstance().getManager().getPony((PlayerEntity)(Object)this);

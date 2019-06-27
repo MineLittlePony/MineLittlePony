@@ -27,7 +27,7 @@ import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BoundingBox;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -240,14 +240,14 @@ public class Pony implements IPony {
     }
 
     @Override
-    public BoundingBox getComputedBoundingBox(LivingEntity entity) {
+    public Box getComputedBoundingBox(LivingEntity entity) {
         float scale = getMetadata().getSize().getScaleFactor() + 0.1F;
 
         Vec3d pos = getAbsoluteRidingOffset(entity);
 
         float width = entity.getWidth() * scale;
 
-        return new BoundingBox(
+        return new Box(
                 - width, (entity.getHeight() * scale), -width,
                   width, 0,                        width).offset(pos);
     }
