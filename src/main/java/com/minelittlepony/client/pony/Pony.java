@@ -3,39 +3,41 @@ package com.minelittlepony.client.pony;
 import com.google.common.base.MoreObjects;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.PonyRenderManager;
-import com.minelittlepony.client.ducks.IBufferedTexture;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.IPonyData;
 import com.minelittlepony.pony.meta.Race;
 import com.minelittlepony.pony.meta.Size;
-
 import net.minecraft.block.Material;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.Texture;
 import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.NativeImageBackedTexture;
+import net.minecraft.client.texture.TextureManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ArmorItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import org.lwjgl.BufferUtils;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.mojang.blaze3d.platform.GlStateManager.getTexLevelParameter;
+import static org.lwjgl.opengl.GL11.*;
 
 @Immutable
 public class Pony implements IPony {
@@ -61,14 +63,6 @@ public class Pony implements IPony {
         }
 
         NativeImage ponyTexture = getBufferedImage(resource);
-
-        if (ponyTexture == null) {
-            ponyTexture = new NativeImage(16, 16, true);
-            ponyTexture.copyFrom(MissingSprite.getMissingSpriteTexture().getImage());
-
-            MinecraftClient.getInstance().getTextureManager().registerTexture(resource, new NativeImageBackedTexture(ponyTexture));
-        }
-
         return checkSkin(ponyTexture);
     }
 
@@ -99,33 +93,35 @@ public class Pony implements IPony {
         return null;
     }
 
-    @Nullable
     public static NativeImage getBufferedImage(@Nullable Identifier resource) {
 
         if (resource == null) {
-            return null;
+            return MissingSprite.getMissingSpriteTexture().getImage();
         }
+
+        MinecraftClient mc = MinecraftClient.getInstance();
+        TextureManager textures = mc.getTextureManager();
+
+        // recreate NativeImage from the GL matrix
+        textures.bindTexture(resource);
+
+        int format = getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT);
+        int width = getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH);
+        int height = getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT);
+
+        int channels = 4;
+        if (format == GL_RGB) {
+            channels = 3;
+        }
+
+        ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * channels);
+        glGetTexImage(GL_TEXTURE_2D, 0, format, GL_UNSIGNED_BYTE, buffer);
 
         try {
-            Resource skin = MinecraftClient.getInstance().getResourceManager().getResource(resource);
-            NativeImage skinImage = NativeImage.fromInputStream(skin.getInputStream());
-            MineLittlePony.logger.debug("Obtained skin from resource location {}", resource);
-
-            return skinImage;
-        } catch (IOException ignored) {
+            return NativeImage.fromByteBuffer(buffer);
+        } catch (IOException e) {
+            return MissingSprite.getMissingSpriteTexture().getImage();
         }
-
-        Texture texture = MinecraftClient.getInstance().getTextureManager().getTexture(resource);
-
-        if (texture instanceof NativeImageBackedTexture) {
-            return ((NativeImageBackedTexture)texture).getImage();
-        }
-
-        if (texture instanceof IBufferedTexture) {
-            return ((IBufferedTexture) texture).getBufferedImage();
-        }
-
-        return null;
     }
 
     private IPonyData checkSkin(NativeImage bufferedimage) {
