@@ -53,7 +53,7 @@ public class LevitatingItemRenderer {
 
         scale(1.1F, 1.1F, 1.1F);
 
-        translate(0.1F, 0.01F, 0.01F);
+        translate(0.01F, 0.01F, 0.01F);
         renderItem.renderItem(drop, entity, transform, hand == EnumHandSide.LEFT);
         translate(-0.02F, -0.02F, -0.02F);
         renderItem.renderItem(drop, entity, transform, hand == EnumHandSide.LEFT);
@@ -97,7 +97,7 @@ public class LevitatingItemRenderer {
 
             setColor(pony.getMetadata().getGlowColor());
 
-            scale(1.1, 1.1, 1.1);
+            scale(1.1F, 1.1F, 1.1F);
 
             translate(0.01F, 0.01F, 0.01F);
             renderer.renderItemSide(entity, stack, transform, left);
