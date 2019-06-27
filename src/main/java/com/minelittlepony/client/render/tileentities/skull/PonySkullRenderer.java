@@ -3,7 +3,7 @@ package com.minelittlepony.client.render.tileentities.skull;
 import com.google.common.collect.Maps;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.MineLPClient;
-import com.minelittlepony.client.ducks.IRenderItem;
+import com.minelittlepony.client.render.LevitatingItemRenderer;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonySettings;
@@ -26,12 +26,10 @@ import static com.mojang.blaze3d.platform.GlStateManager.*;
 /**
  * PonySkullRenderer! It renders ponies as skulls, or something...
  */
-public class PonySkullRenderer extends SkullBlockEntityRenderer implements IRenderItem {
+public class PonySkullRenderer extends SkullBlockEntityRenderer {
 
     public static PonySkullRenderer ponyInstance = new PonySkullRenderer();
     private static SkullBlockEntityRenderer backup = null;
-
-    private boolean transparency = false;
 
     private static final Map<SkullBlock.SkullType, ISkull> skullMap = SystemUtil.consume(Maps.newHashMap(), (skullMap) -> {
         skullMap.put(SkullBlock.Type.SKELETON, new SkeletonSkullRenderer());
@@ -108,7 +106,7 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer implements IRend
         scalef(-1, -1, 1);
         enableAlphaTest();
 
-        skull.preRender(usesTransparency());
+        skull.preRender(LevitatingItemRenderer.usesTransparency());
         skull.render(animateTicks, rotation, scale);
 
         popMatrix();
@@ -144,16 +142,6 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer implements IRend
         }
 
         return rotation;
-    }
-
-    @Override
-    public void useTransparency(boolean use) {
-        transparency = use;
-    }
-
-    @Override
-    public boolean usesTransparency() {
-        return transparency;
     }
 
     /**

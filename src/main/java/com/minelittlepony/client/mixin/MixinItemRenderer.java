@@ -1,6 +1,5 @@
 package com.minelittlepony.client.mixin;
 
-import com.minelittlepony.client.ducks.IRenderItem;
 import com.minelittlepony.client.render.LevitatingItemRenderer;
 
 import net.minecraft.client.render.item.ItemRenderer;
@@ -15,23 +14,14 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ItemRenderer.class)
-public abstract class MixinItemRenderer implements SynchronousResourceReloadListener, IRenderItem {
-
-    private boolean transparency;
-
-    @Override
-    public void useTransparency(boolean transparency) {
-        this.transparency = transparency;
-    }
+public abstract class MixinItemRenderer implements SynchronousResourceReloadListener {
 
     @Inject(method = "renderItemAndGlow("
             + "Lnet/minecraft/item/ItemStack;"
             + "Lnet/minecraft/client/render/model/BakedModel;)V",
             at = @At("HEAD"))
     private void onRenderItem(ItemStack stack, BakedModel model, CallbackInfo info) {
-        if (transparency) {
-            LevitatingItemRenderer.enableItemGlowRenderProfile();
-        }
+        LevitatingItemRenderer.enableItemGlowRenderProfile();
     }
 
     @Inject(method = "renderItemAndGlow("
@@ -43,11 +33,10 @@ public abstract class MixinItemRenderer implements SynchronousResourceReloadList
                             + "Ljava/lang/Runnable;I)V"),
             cancellable = true)
     private void beforeRenderEffect(ItemStack stack, BakedModel model, CallbackInfo info) {
-        if (transparency) {
+        if (LevitatingItemRenderer.usesTransparency()) {
             info.cancel();
         }
     }
-
 
     @ModifyArg(method = "renderQuads("
             + "Lnet/minecraft/client/render/BufferBuilder;"
@@ -59,6 +48,6 @@ public abstract class MixinItemRenderer implements SynchronousResourceReloadList
                             + "Lnet/minecraft/client/render/model/BakedQuad;I)V"),
             index = 2)
     private int modifyItemRenderTint(int color) {
-        return transparency ? -1 : color;
+        return LevitatingItemRenderer.usesTransparency() ? -1 : color;
     }
 }
