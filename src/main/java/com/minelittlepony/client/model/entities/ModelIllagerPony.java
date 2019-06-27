@@ -48,9 +48,4 @@ public class ModelIllagerPony<T extends IllagerEntity> extends ModelMobPony<T> {
             aimBow(arm, ticks);
         }
     }
-
-    @Override
-    public Cuboid getArm(AbsoluteHand side) {
-        return canCast() ? getUnicornArmForSide(side) : super.getArm(side);
-    }
 }

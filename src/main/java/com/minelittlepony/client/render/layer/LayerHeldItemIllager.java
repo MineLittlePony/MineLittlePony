@@ -3,12 +3,12 @@ package com.minelittlepony.client.render.layer;
 import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.util.AbsoluteHand;
 
-import com.minelittlepony.client.model.entities.ModelIllagerPony;
+import com.minelittlepony.client.model.races.ModelAlicorn;
 import com.minelittlepony.client.render.IPonyRender;
 
-public class LayerHeldItemIllager<T extends IllagerEntity> extends LayerHeldPonyItem<T, ModelIllagerPony<T>> {
+public class LayerHeldItemIllager<T extends IllagerEntity, M extends ModelAlicorn<T>> extends LayerHeldPonyItem<T, M> {
 
-    public LayerHeldItemIllager(IPonyRender<T, ModelIllagerPony<T>> livingPony) {
+    public LayerHeldItemIllager(IPonyRender<T,M> livingPony) {
         super(livingPony);
     }
 

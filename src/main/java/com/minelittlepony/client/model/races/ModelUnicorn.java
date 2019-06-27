@@ -4,6 +4,7 @@ import com.minelittlepony.client.model.components.UnicornHorn;
 import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.model.IUnicorn;
 
+import net.minecraft.client.model.Cuboid;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.AbsoluteHand;
 import net.minecraft.util.math.MathHelper;
@@ -162,5 +163,10 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
                         .around(rarmX, yOffset + rarmY, 0);
         unicornArmRight.box(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch + .25F)
                         .around(-rarmX, yOffset + rarmY, 0);
+    }
+
+    @Override
+    public Cuboid getArm(AbsoluteHand side) {
+        return canCast() ? getUnicornArmForSide(side) : super.getArm(side);
     }
 }

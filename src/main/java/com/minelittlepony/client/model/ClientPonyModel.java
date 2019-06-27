@@ -4,6 +4,7 @@ import net.minecraft.client.model.Cuboid;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.AbsoluteHand;
 
 import com.minelittlepony.client.pony.PonyData;
 import com.minelittlepony.model.ModelAttributes;
@@ -82,6 +83,12 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends PlayerEnti
     @Override
     public float getSwingAmount() {
         return handSwingProgress;
+    }
+
+
+    @Override
+    public Cuboid getArm(AbsoluteHand side) {
+        return super.getArm(side);
     }
 
     /**

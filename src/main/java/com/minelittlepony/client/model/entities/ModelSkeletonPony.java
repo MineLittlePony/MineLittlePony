@@ -54,9 +54,6 @@ public class ModelSkeletonPony<T extends HostileEntity> extends ModelMobPony<T> 
                 leftArmPose = pose;
             }
         }
-
-
-        super.animateModel(entity, move, swing, ticks);
     }
 
     @Override
