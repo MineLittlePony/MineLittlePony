@@ -3,9 +3,7 @@ package com.minelittlepony.render;
 import org.lwjgl.opengl.GL14;
 
 import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.ducks.IRenderItem;
 import com.minelittlepony.pony.data.IPony;
-import com.minelittlepony.render.skull.PonySkullRenderer;
 import com.minelittlepony.util.render.Color;
 import com.mumfrey.liteloader.client.overlays.IMinecraft;
 
@@ -25,10 +23,20 @@ import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class LevitatingItemRenderer {
 
-    public static void enableItemGlowRenderProfile() {
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(SourceFactor.CONSTANT_COLOR, DestFactor.ONE, SourceFactor.ONE, DestFactor.ZERO);
-        Minecraft.getMinecraft().entityRenderer.disableLightmap();
+    private static boolean usingTransparency;
+
+    public static boolean enableItemGlowRenderProfile() {
+        if (usesTransparency()) {
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(SourceFactor.CONSTANT_COLOR, DestFactor.ONE, SourceFactor.ONE, DestFactor.ZERO);
+            Minecraft.getMinecraft().entityRenderer.disableLightmap();
+        }
+
+        return usesTransparency();
+    }
+
+    public static boolean usesTransparency() {
+        return usingTransparency;
     }
 
     /**
@@ -40,18 +48,17 @@ public class LevitatingItemRenderer {
         setColor(glowColor);
 
         RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
-        ((IRenderItem) renderItem).useTransparency(true);
-        PonySkullRenderer.ponyInstance.useTransparency(true);
 
-        scale(1.1, 1.1, 1.1);
+        usingTransparency = true;
 
-        translate(0, 0.01F, 0.01F);
+        scale(1.1F, 1.1F, 1.1F);
+
+        translate(0.1F, 0.01F, 0.01F);
         renderItem.renderItem(drop, entity, transform, hand == EnumHandSide.LEFT);
-        translate(0.01F, -0.01F, -0.02F);
+        translate(-0.02F, -0.02F, -0.02F);
         renderItem.renderItem(drop, entity, transform, hand == EnumHandSide.LEFT);
 
-        ((IRenderItem) renderItem).useTransparency(false);
-        PonySkullRenderer.ponyInstance.useTransparency(false);
+        usingTransparency = false;
         unsetColor();
         enableLighting();
         popMatrix();
@@ -86,21 +93,18 @@ public class LevitatingItemRenderer {
         if (doMagic) {
             disableLighting();
 
-            IRenderItem renderItem = (IRenderItem)Minecraft.getMinecraft().getRenderItem();
-            renderItem.useTransparency(true);
-            PonySkullRenderer.ponyInstance.useTransparency(true);
+            usingTransparency = true;
 
             setColor(pony.getMetadata().getGlowColor());
 
             scale(1.1, 1.1, 1.1);
 
-            translate(-0.015F, 0.01F, 0.01F);
+            translate(0.01F, 0.01F, 0.01F);
             renderer.renderItemSide(entity, stack, transform, left);
-            translate(0.03F, -0.01F, -0.02F);
+            translate(-0.02F, -0.02F, -0.02F);
             renderer.renderItemSide(entity, stack, transform, left);
 
-            renderItem.useTransparency(false);
-            PonySkullRenderer.ponyInstance.useTransparency(false);
+            usingTransparency = false;
 
             unsetColor();
             enableLighting();

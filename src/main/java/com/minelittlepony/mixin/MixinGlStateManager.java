@@ -6,7 +6,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.minelittlepony.render.LevitatingItemRenderer;
-import com.minelittlepony.render.skull.PonySkullRenderer;
 
 import net.minecraft.client.renderer.GlStateManager;
 
@@ -15,8 +14,7 @@ public abstract class MixinGlStateManager {
 
     @Inject(method = "enableBlendProfile(Lnet/minecraft/client/renderer/GlStateManager$Profile;)V", at = @At("HEAD"), cancellable = true)
     private static void enableBlendProfile(GlStateManager.Profile profile, CallbackInfo info) {
-        if (profile == GlStateManager.Profile.PLAYER_SKIN && PonySkullRenderer.ponyInstance.usesTransparency()) {
-            LevitatingItemRenderer.enableItemGlowRenderProfile();
+        if (profile == GlStateManager.Profile.PLAYER_SKIN && LevitatingItemRenderer.enableItemGlowRenderProfile()) {
             info.cancel();
         }
     }

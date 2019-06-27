@@ -2,8 +2,8 @@ package com.minelittlepony.render.skull;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.PonyConfig;
-import com.minelittlepony.ducks.IRenderItem;
 import com.minelittlepony.pony.data.IPony;
+import com.minelittlepony.render.LevitatingItemRenderer;
 import com.mojang.authlib.GameProfile;
 import com.mumfrey.liteloader.util.ModUtilities;
 import net.minecraft.client.renderer.GlStateManager;
@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 /**
  * PonySkullRenderer! It renders ponies as skulls, or something...
  */
-public class PonySkullRenderer extends TileEntitySkullRenderer implements IRenderItem {
+public class PonySkullRenderer extends TileEntitySkullRenderer {
 
     public static final int SKELETON = 0;
     public static final int WITHER = 1;
@@ -68,8 +68,6 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
         return instance;
     }
 
-    protected boolean transparency = false;
-
     @Override
     public void renderSkull(float x, float y, float z, EnumFacing facing, float rotation, int skullType, @Nullable GameProfile profile, int destroyStage, float animateTicks) {
 
@@ -111,7 +109,7 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
         GlStateManager.scale(-1, -1, 1);
         GlStateManager.enableAlpha();
 
-        skull.preRender(transparency);
+        skull.preRender(LevitatingItemRenderer.usesTransparency());
         skull.render(animateTicks, rotation, scale);
 
         GlStateManager.popMatrix();
@@ -144,15 +142,6 @@ public class PonySkullRenderer extends TileEntitySkullRenderer implements IRende
         }
 
         return rotation;
-    }
-
-    @Override
-    public void useTransparency(boolean use) {
-        transparency = use;
-    }
-
-    public boolean usesTransparency() {
-        return transparency;
     }
 
     /**

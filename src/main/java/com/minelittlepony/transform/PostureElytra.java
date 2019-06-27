@@ -1,6 +1,5 @@
 package com.minelittlepony.transform;
 
-import com.minelittlepony.model.AbstractPonyModel;
 import com.minelittlepony.model.capabilities.IModel;
 
 import net.minecraft.client.renderer.GlStateManager;
