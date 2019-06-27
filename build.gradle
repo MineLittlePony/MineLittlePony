@@ -50,11 +50,11 @@ dependencies {
     modApi "net.fabricmc.fabric-api:fabric-resource-loader-v0:0.1.0+"
 
     modApi "com.minelittlepony:Kirin:${project.kirin_version}"
-//    include "com.minelittlepony:Kirin:${project.kirin_version}"
+    include "com.minelittlepony:Kirin:${project.kirin_version}"
 
     // TODO: HD Skins can be made optional later
-    modImplementation "com.minelittlepony:HDSkins:${project.hd_skins_version}"
-    include "com.minelittlepony:HDSkins:${project.hd_skins_version}"
+//    modCompile "com.minelittlepony:HDSkins:${project.hd_skins_version}"
+//    include "com.minelittlepony:HDSkins:${project.hd_skins_version}"
 }
 
 //
