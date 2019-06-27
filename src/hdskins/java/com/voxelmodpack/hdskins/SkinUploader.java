@@ -6,6 +6,9 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.common.base.Throwables;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
@@ -13,7 +16,6 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
 import com.voxelmodpack.hdskins.gui.Feature;
 import com.voxelmodpack.hdskins.resources.PreviewTextureManager;
@@ -34,6 +36,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 
 public class SkinUploader implements Closeable {
+
+    private static final Logger logger = LogManager.getLogger();
 
     private final Iterator<SkinServer> skinServers;
 
@@ -188,7 +192,7 @@ public class SkinUploader implements Closeable {
 
         return gateway.uploadSkin(new SkinUpload(mc.getSession(), skinType, localSkin == null ? null : localSkin.toURI(), skinMetadata)).handle((response, throwable) -> {
             if (throwable == null) {
-                LiteLoaderLogger.info("Upload completed with: %s", response);
+                logger.info("Upload completed with: %s", response);
                 setError(null);
             } else {
                 setError(Throwables.getRootCause(throwable).toString());
@@ -219,8 +223,6 @@ public class SkinUploader implements Closeable {
             if (throwable != null) {
                 throwable = throwable.getCause();
 
-                throwable.printStackTrace();
-
                 if (throwable instanceof AuthenticationUnavailableException) {
                     offline = true;
                 } else if (throwable instanceof AuthenticationException) {
@@ -228,7 +230,7 @@ public class SkinUploader implements Closeable {
                 } else if (throwable instanceof HttpException) {
                     HttpException ex = (HttpException)throwable;
 
-                    HDSkinManager.logger.error(ex.getReasonPhrase(), ex);
+                    logger.error(ex.getReasonPhrase(), ex);
 
                     int code = ex.getStatusCode();
 
@@ -238,6 +240,7 @@ public class SkinUploader implements Closeable {
                         setError(ex.getReasonPhrase());
                     }
                 } else {
+                    logger.error("Unhandled exception", throwable);
                     setError(throwable.toString());
                 }
             }
@@ -265,7 +268,7 @@ public class SkinUploader implements Closeable {
 
         synchronized (skinLock) {
             if (pendingLocalSkin != null) {
-                System.out.println("Set " + skinType + " " + pendingLocalSkin);
+                logger.debug("Set %s %s", skinType, pendingLocalSkin);
                 localPlayer.setLocalTexture(pendingLocalSkin, skinType);
                 localSkin = pendingLocalSkin;
                 pendingLocalSkin = null;
