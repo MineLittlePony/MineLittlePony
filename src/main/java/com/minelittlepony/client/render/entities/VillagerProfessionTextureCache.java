@@ -11,9 +11,9 @@ import net.minecraft.village.VillagerType;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.util.resources.ITextureSupplier;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Cached pool of villager textures.
@@ -55,33 +55,43 @@ class VillagerProfessionTextureCache<T extends LivingEntity & VillagerDataContai
             }
         }
 
-        if (entity.getVillagerData().getProfession() == VillagerProfession.NONE) {
-            return fallback;
-        }
-
-        return cache.computeIfAbsent(formatTexture(entity), this::getTexture);
-    }
-
-    public String formatTexture(T entity) {
         VillagerData t = entity.getVillagerData();
-        VillagerType type = t.getType();
-        VillagerProfession profession = t.getProfession();
 
-        return String.format("pony/%s/%s", type, profession.toString());
+        return getTexture(t.getType(), t.getProfession());
     }
 
-    private Identifier getTexture(String professionId) {
-        Identifier generated = formatter.supplyTexture(professionId);
+    private Identifier getTexture(final VillagerType type, final VillagerProfession profession) {
 
-        try {
-            MinecraftClient.getInstance().getResourceManager().getResource(generated);
-        } catch (IOException e) {
-            MineLittlePony.logger.error("Error loading villager texture `" + generated + "`.", e);
-
-            // if texture loading fails, use the fallback.
+        if (profession == VillagerProfession.NONE) {
             return fallback;
         }
 
-        return generated;
+        String key = String.format("pony/%s/%s", type, profession);
+
+        if (cache.containsKey(key)) {
+            return cache.get(key); // People often complain that villagers cause lag,
+                                   // so let's do better than Mojang and rather NOT go
+                                   // through all the lambda generations if we can avoid it.
+        }
+
+        return cache.computeIfAbsent(key, k -> {
+            return verifyTexture(formatter.supplyTexture(k)).orElseGet(() -> {
+                if (type == VillagerType.PLAINS) {
+                    // if texture loading fails, use the fallback.
+                    return fallback;
+                }
+
+                return getTexture(VillagerType.PLAINS, profession);
+            });
+        });
+    }
+
+    protected Optional<Identifier> verifyTexture(Identifier texture) {
+        if (!MinecraftClient.getInstance().getResourceManager().containsResource(texture)) {
+            MineLittlePony.logger.warn("Villager texture `" + texture + "` was not found.");
+            return Optional.empty();
+        }
+
+        return Optional.of(texture);
     }
 }
