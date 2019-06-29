@@ -40,9 +40,9 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
 
         if (!special && profession != VillagerProfession.NONE && profession != VillagerProfession.NITWIT) {
             if (profession == VillagerProfession.BUTCHER) {
-                trinket.render(scale);
-            } else {
                 apron.render(scale);
+            } else {
+                trinket.render(scale);
             }
         }
     }
@@ -50,7 +50,10 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
     @Override
     public boolean isWearing(Wearable wearable) {
         if (wearable == Wearable.SADDLE_BAGS) {
-            return !special && profession != VillagerProfession.NONE && profession == VillagerProfession.NITWIT;
+            return !special && profession != VillagerProfession.NONE && (
+                       profession == VillagerProfession.FARMER
+                    || profession == VillagerProfession.FISHERMAN
+                    || profession == VillagerProfession.SHEPHERD);
         }
 
         if (wearable == Wearable.MUFFIN) {
