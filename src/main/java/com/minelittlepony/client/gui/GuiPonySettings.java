@@ -54,10 +54,10 @@ public class GuiPonySettings extends GameGui {
 
     @Override
     protected void init() {
-        content.init();
-        content.buttons().clear();
-        content.children().clear();
+        content.init(this::rebuildContent);
+    }
 
+    private void rebuildContent() {
         content.padding.left = 10;
 
         int LEFT = content.width / 2 - 210;
@@ -118,7 +118,6 @@ public class GuiPonySettings extends GameGui {
                 .onChange(i)
                 .getStyle().setText(MOB_PREFIX + i.name().toLowerCase());
         }
-        content.init();
     }
 
     public String describeCurrentScale(float value) {
