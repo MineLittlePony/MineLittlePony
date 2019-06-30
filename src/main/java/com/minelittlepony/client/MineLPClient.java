@@ -76,10 +76,9 @@ public class MineLPClient extends MineLittlePony {
         renderManager.initialiseRenderers(rm);
     }
 
-    public void onTick(MinecraftClient minecraft, boolean inGame) {
+    public void onTick(MinecraftClient minecraft) {
 
-        inGame &= minecraft.currentScreen == null;
-
+        boolean inGame = minecraft.world != null && minecraft.player != null && minecraft.currentScreen == null;
         boolean mainMenu = minecraft.currentScreen instanceof TitleScreen;
 
         if (!inGame && mainMenu) {
@@ -111,15 +110,6 @@ public class MineLPClient extends MineLittlePony {
         }
 
         PonySkullRenderer.resolve();
-    }
-
-    public Map<MinecraftProfileTexture.Type, Identifier> getProfileTextures(@Nullable GameProfile profile) {
-        PlayerSkinProvider provider = MinecraftClient.getInstance().getSkinProvider();
-
-        return provider.getTextures(profile)
-            .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> {
-                return provider.loadSkin(entry.getValue(), entry.getKey());
-            }));
     }
 
     @Override

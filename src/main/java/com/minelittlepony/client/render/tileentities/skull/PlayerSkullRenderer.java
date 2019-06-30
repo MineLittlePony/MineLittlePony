@@ -1,24 +1,18 @@
 package com.minelittlepony.client.render.tileentities.skull;
 
-import com.minelittlepony.client.MineLPClient;
+import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.client.model.components.ModelDeadMau5Ears;
-import com.minelittlepony.client.pony.Pony;
 import com.minelittlepony.client.render.RenderPony;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 
-import java.util.Map;
 import javax.annotation.Nullable;
-
-import static com.mojang.authlib.minecraft.MinecraftProfileTexture.*;
 
 public class PlayerSkullRenderer extends PonySkull {
 
@@ -43,22 +37,12 @@ public class PlayerSkullRenderer extends PonySkull {
         deadMau5.setVisible(profile != null && "deadmau5".equals(profile.getName()));
 
         if (profile != null) {
-            Identifier skin = MineLPClient.getInstance().getProfileTextures(profile).get(Type.SKIN);
-            if (skin != null && Pony.getBufferedImage(skin) != null) {
+
+            Identifier skin = SkinsProxy.instance.getSkinTexture(profile);
+            if (skin != null) {
                 return skin;
             }
-
-            MinecraftClient minecraft = MinecraftClient.getInstance();
-            Map<Type, MinecraftProfileTexture> map = minecraft.getSkinProvider().getTextures(profile);
-
-            if (map.containsKey(Type.SKIN)) {
-                Identifier loc = minecraft.getSkinProvider().loadSkin(map.get(Type.SKIN), Type.SKIN);
-                if (Pony.getBufferedImage(loc) != null) {
-                    return loc;
-                }
-            }
             return DefaultSkinHelper.getTexture(PlayerEntity.getUuidFromProfile(profile));
-
         }
 
         return DefaultSkinHelper.getTexture();
@@ -67,6 +51,7 @@ public class PlayerSkullRenderer extends PonySkull {
     @Override
     public void render(float animateTicks, float rotation, float scale) {
         super.render(animateTicks, rotation, scale);
+        /*render*/
         deadMau5.render(animateTicks, 0, 0, rotation, 0, scale);
     }
 }

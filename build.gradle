@@ -58,7 +58,6 @@ dependencies {
     compile "com.minelittlepony:Kirin:${project.kirin_version}"
     include "com.minelittlepony:Kirin:${project.kirin_version}"
 
-
     hdskinsCompile sourceSets.main.output
     hdskinsCompile "com.minelittlepony:HDSkins:${project.hd_skins_version}"
 }

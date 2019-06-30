@@ -11,6 +11,6 @@
         "MixinFirstPersonRenderer",
         "MixinGlStateManager",
         "MixinItemRenderer",
-        "MixinPlayerEntity"
+        "MixinClientPlayerEntity"
     ]
 }
