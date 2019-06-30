@@ -1,4 +1,4 @@
-package com.minelittlepony.client;
+package com.minelittlepony.client.gui.hdskins;
 
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.model.races.PlayerModels;

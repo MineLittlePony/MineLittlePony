@@ -1,9 +1,9 @@
 package com.minelittlepony.client.render.tileentities.skull;
 
+import com.minelittlepony.client.MineLPClient;
 import com.minelittlepony.client.model.components.ModelDeadMau5Ears;
 import com.minelittlepony.client.pony.Pony;
 import com.minelittlepony.client.render.RenderPony;
-import com.minelittlepony.hdskins.HDSkins;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
 import com.mojang.authlib.GameProfile;
@@ -43,7 +43,7 @@ public class PlayerSkullRenderer extends PonySkull {
         deadMau5.setVisible(profile != null && "deadmau5".equals(profile.getName()));
 
         if (profile != null) {
-            Identifier skin = HDSkins.getInstance().getTextures(profile).get(Type.SKIN);
+            Identifier skin = MineLPClient.getInstance().getProfileTextures(profile).get(Type.SKIN);
             if (skin != null && Pony.getBufferedImage(skin) != null) {
                 return skin;
             }

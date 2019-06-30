@@ -6,7 +6,6 @@ import com.minelittlepony.client.PonyRenderManager;
 import com.minelittlepony.client.ducks.IBufferedTexture;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.client.transform.PonyTransformation;
-import com.minelittlepony.hdskins.util.ProfileTextureUtil;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.IPonyData;
 import com.minelittlepony.pony.meta.Race;
@@ -62,7 +61,8 @@ public class Pony implements IPony {
         NativeImage ponyTexture = getBufferedImage(resource);
 
         if (ponyTexture == null) {
-            ponyTexture = ProfileTextureUtil.getDynamicBufferedImage(16, 16, MissingSprite.getMissingSpriteTexture());
+            ponyTexture = new NativeImage(16, 16, true);
+            ponyTexture.copyFrom(MissingSprite.getMissingSpriteTexture().getImage());
 
             MinecraftClient.getInstance().getTextureManager().registerTexture(resource, new NativeImageBackedTexture(ponyTexture));
         }

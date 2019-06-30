@@ -5,7 +5,6 @@ import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.entities.ModelSeapony;
 import com.minelittlepony.client.render.entities.player.RenderPonyPlayer;
 import com.minelittlepony.client.render.entities.player.RenderSeaponyPlayer;
-import com.minelittlepony.hdskins.VanillaModels;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.pony.meta.Race;
 
@@ -21,7 +20,7 @@ public enum PlayerModels {
     /**
      * The default non-pony model. This is typically handled my the vanilla renderer.
      */
-    DEFAULT(VanillaModels.DEFAULT, VanillaModels.SLIM, Race.HUMAN, ModelEarthPony::new),
+    DEFAULT("default", "slim", Race.HUMAN, ModelEarthPony::new),
     EARTHPONY(Race.EARTH, ModelEarthPony::new),
     PEGASUS(Race.PEGASUS, ModelPegasus::new),
     BATPONY(Race.BATPONY, ModelBatpony::new),
@@ -53,7 +52,7 @@ public enum PlayerModels {
 
     PlayerModels(Race race, Function<Boolean, IModel> resolver) {
         normal = new PendingModel(name().toLowerCase());
-        slim = new PendingModel(VanillaModels.SLIM + normal.key);
+        slim = new PendingModel("slim" + normal.key);
 
         this.resolver = resolver;
 

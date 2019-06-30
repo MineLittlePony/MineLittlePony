@@ -8,7 +8,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.common.util.MoreStreams;
-import com.minelittlepony.hdskins.ISkinCacheClearListener;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.IPonyManager;
 import com.minelittlepony.settings.PonyConfig;
@@ -44,7 +43,7 @@ import java.util.concurrent.TimeUnit;
  * The PonyManager is responsible for reading and recoding all the pony data associated with an entity of skin.
  *
  */
-public class PonyManager implements IPonyManager, ResourceReloadListener, ISkinCacheClearListener {
+public class PonyManager implements IPonyManager, ResourceReloadListener {
 
     private static final Gson GSON = new Gson();
 
@@ -159,6 +158,11 @@ public class PonyManager implements IPonyManager, ResourceReloadListener, ISkinC
         }, clientExecutor);
     }
 
+    public void clearCache() {
+        MineLittlePony.logger.info("Flushed {} cached ponies.", poniesCache.size());
+        poniesCache.invalidateAll();
+    }
+
     public void reloadAll(ResourceManager resourceManager) {
         poniesCache.invalidateAll();
         backgroundPonyList.clear();
@@ -252,12 +256,5 @@ public class PonyManager implements IPonyManager, ResourceReloadListener, ISkinC
         public List<Identifier> getImports() {
             return MoreStreams.map(imports, this::makeImport);
         }
-    }
-
-    @Override
-    public boolean onSkinCacheCleared() {
-        MineLittlePony.logger.info("Flushed {} cached ponies.", poniesCache.size());
-        poniesCache.invalidateAll();
-        return true;
     }
 }

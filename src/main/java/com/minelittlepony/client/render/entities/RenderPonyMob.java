@@ -14,7 +14,6 @@ import com.minelittlepony.client.render.layer.LayerPonyArmor;
 import com.minelittlepony.client.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.client.render.layer.LayerPonyElytra;
 import com.minelittlepony.client.util.render.PonyRenderer;
-import com.minelittlepony.hdskins.HDSkins;
 import com.minelittlepony.model.IUnicorn;
 import com.minelittlepony.pony.IPony;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -106,7 +105,7 @@ public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T
     @Override
     @Nonnull
     public final Identifier getTexture(T entity) {
-        return HDSkins.getInstance().getConvertedSkin(findTexture(entity));
+        return findTexture(entity);
     }
 
     @Override
@@ -134,7 +133,7 @@ public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T
     public abstract static class Proxy<T extends MobEntity, M extends EntityModel<T> & IPonyModel<T>> extends RenderPonyMob<T, M> {
 
         @SuppressWarnings({"rawtypes", "unchecked"})
-        public  Proxy(List exportedLayers, EntityRenderDispatcher manager, M model) {
+        public Proxy(List exportedLayers, EntityRenderDispatcher manager, M model) {
             super(manager, model);
 
             exportedLayers.addAll(features);

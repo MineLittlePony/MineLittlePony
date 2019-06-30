@@ -8,17 +8,26 @@ import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.common.client.IModUtilities;
 import com.minelittlepony.settings.JsonConfig;
 import com.minelittlepony.settings.PonyConfig;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+
+import javax.annotation.Nullable;
+
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.texture.PlayerSkinProvider;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.resource.ReloadableResourceManager;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.SystemUtil;
 
 import org.lwjgl.glfw.GLFW;
@@ -47,9 +56,13 @@ public class MineLPClient extends MineLittlePony {
     public MineLPClient(IModUtilities utils) {
         utilities = utils;
 
-        config = JsonConfig.of(utils.getConfigDirectory().resolve("minelp.json"), ClientPonyConfig::new);
+        config = JsonConfig.of(utils.getConfigDirectory().resolve("minelp.json"), this::createConfig);
         ponyManager = new PonyManager(config);
         keyBinding = utilities.registerKeybind("key.categories.misc", "minelittlepony:settings", GLFW.GLFW_KEY_F9);
+    }
+
+    protected ClientPonyConfig createConfig() {
+        return new ClientPonyConfig();
     }
 
     /**
@@ -98,6 +111,15 @@ public class MineLPClient extends MineLittlePony {
         }
 
         PonySkullRenderer.resolve();
+    }
+
+    public Map<MinecraftProfileTexture.Type, Identifier> getProfileTextures(@Nullable GameProfile profile) {
+        PlayerSkinProvider provider = MinecraftClient.getInstance().getSkinProvider();
+
+        return provider.getTextures(profile)
+            .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> {
+                return provider.loadSkin(entry.getValue(), entry.getKey());
+            }));
     }
 
     @Override

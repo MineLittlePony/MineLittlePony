@@ -4,8 +4,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import com.google.common.collect.Maps;
-import com.minelittlepony.client.gui.hdskins.DummyPony;
-import com.minelittlepony.client.gui.hdskins.RenderDummyPony;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.races.PlayerModels;
 import com.minelittlepony.client.render.LevitatingItemRenderer;
@@ -47,9 +45,6 @@ public class PonyRenderManager {
      * Registers all new player skin types. (currently only pony and slimpony).
      */
     public void initialiseRenderers(EntityRenderDispatcher manager) {
-        // Preview on the select skin gui
-        MineLPClient.getInstance().getModUtilities().addRenderer(DummyPony.class, RenderDummyPony::new);
-
         PlayerModels[] models = PlayerModels.values();
 
         for (int i = 1; i < models.length; i++) {
