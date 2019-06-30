@@ -4,6 +4,7 @@ import com.minelittlepony.client.render.LevitatingItemRenderer;
 
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resource.SynchronousResourceReloadListener;
 
@@ -24,15 +25,12 @@ public abstract class MixinItemRenderer implements SynchronousResourceReloadList
         LevitatingItemRenderer.enableItemGlowRenderProfile();
     }
 
-    @Inject(method = "renderItemAndGlow("
-            + "Lnet/minecraft/item/ItemStack;"
-            + "Lnet/minecraft/client/render/model/BakedModel;)V",
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/client/render/item/ItemRenderer;renderGlint("
+    @Inject(method = "Lnet/minecraft/client/render/item/ItemRenderer;renderGlint("
                             + "Lnet/minecraft/client/texture/TextureManager;"
-                            + "Ljava/lang/Runnable;I)V"),
-            cancellable = true)
-    private void beforeRenderEffect(ItemStack stack, BakedModel model, CallbackInfo info) {
+                            + "Ljava/lang/Runnable;I)V",
+                            at = @At("HEAD"),
+                            cancellable = true)
+    private static void onRenderGlint(TextureManager manager, Runnable task, int i, CallbackInfo info) {
         if (LevitatingItemRenderer.usesTransparency()) {
             info.cancel();
         }
