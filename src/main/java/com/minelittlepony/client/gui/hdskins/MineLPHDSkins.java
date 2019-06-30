@@ -5,7 +5,7 @@ import net.minecraft.util.Identifier;
 
 import com.minelittlepony.common.client.IModUtilities;
 import com.minelittlepony.client.MineLPClient;
-import com.minelittlepony.client.PonySkinModifier;
+import com.minelittlepony.client.LegacySkinConverter;
 import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.hdskins.HDSkins;
 import com.minelittlepony.hdskins.ISkinCacheClearListener;
@@ -61,7 +61,7 @@ public class MineLPHDSkins extends MineLPClient implements ISkinCacheClearListen
         HDSkins manager = HDSkins.getInstance();
 
         // Convert legacy pony skins
-        manager.addSkinModifier(new PonySkinModifier());
+        manager.addSkinModifier(new LegacySkinConverter());
         // Parse trigger pixel data
         manager.addSkinParser(new PonySkinParser());
         // Clear ponies when skins are cleared
