@@ -4,7 +4,7 @@ import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.hdskins.HDSkins;
 import com.minelittlepony.settings.PonyLevel;
 
-public class ClientPonyConfigHDSkins extends ClientPonyConfig {
+class ClientPonyConfigHDSkins extends ClientPonyConfig {
 
     @Override
     public void setPonyLevel(PonyLevel ponylevel) {
@@ -15,5 +15,4 @@ public class ClientPonyConfigHDSkins extends ClientPonyConfig {
 
         super.setPonyLevel(ponylevel);
     }
-
 }

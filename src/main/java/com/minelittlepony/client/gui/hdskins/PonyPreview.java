@@ -10,7 +10,7 @@ import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.meta.Race;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
-public class PonyPreview extends PlayerPreview {
+class PonyPreview extends PlayerPreview {
 
     public static final Identifier NO_SKIN_PONY = new Identifier("minelittlepony", "textures/mob/noskin.png");
     public static final Identifier NO_SKIN_SEAPONY = new Identifier("minelittlepony", "textures/mob/noskin_seapony.png");

@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * All the interactions with HD Skins.
  */
-public class MineLPHDSkins extends MineLPClient implements ISkinCacheClearListener {
+class MineLPHDSkins extends MineLPClient implements ISkinCacheClearListener {
     private static final String MINELP_VALHALLA_SERVER = "http://skins.minelittlepony-mod.com";
 
     private static final String MINELP_LEGACY_SERVER = "http://minelpskins.voxelmodpack.com";

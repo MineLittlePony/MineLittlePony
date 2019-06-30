@@ -4,7 +4,8 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import com.minelittlepony.client.gui.hdskins.MineLPHDSkins;
+
+import com.minelittlepony.client.gui.hdskins.IndirectHDSkins;
 import com.minelittlepony.common.client.IModUtilities;
 
 import javax.annotation.Nullable;
@@ -21,7 +22,7 @@ public class FabMod implements ClientModInitializer, ClientTickCallback, IModUti
         ClientTickCallback.EVENT.register(this);
 
         if (FabricLoader.getInstance().isModLoaded("hdskins")) {
-            mlp = new MineLPHDSkins(this);
+            mlp = IndirectHDSkins.getConstructor().apply(this);
         } else {
             mlp = new MineLPClient(this);
         }

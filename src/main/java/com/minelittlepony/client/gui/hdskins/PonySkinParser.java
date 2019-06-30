@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.Map;
 
-public class PonySkinParser implements ISkinParser {
+class PonySkinParser implements ISkinParser {
 
     @Override
     public void parse(GameProfile profile, MinecraftProfileTexture.Type type, Identifier resource,

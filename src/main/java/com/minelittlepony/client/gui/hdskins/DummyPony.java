@@ -8,7 +8,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 /**
  * Dummy model used for the skin uploading screen.
  */
-public class DummyPony extends DummyPlayer {
+class DummyPony extends DummyPlayer {
 
     public boolean wet = false;
 

@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Skin uploading GUI. Usually displayed over the main menu.
  */
-public class GuiSkinsMineLP extends GuiSkins {
+class GuiSkinsMineLP extends GuiSkins {
 
     private IPonyManager ponyManager = MineLittlePony.getInstance().getManager();
 

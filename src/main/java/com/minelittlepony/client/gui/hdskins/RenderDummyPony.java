@@ -21,7 +21,7 @@ import net.minecraft.util.Identifier;
 /**
  * Renderer used for the dummy pony model when selecting a skin.
  */
-public class RenderDummyPony extends RenderDummyPlayer<DummyPony, ClientPonyModel<DummyPony>> implements IPonyRender<DummyPony, ClientPonyModel<DummyPony>> {
+class RenderDummyPony extends RenderDummyPlayer<DummyPony, ClientPonyModel<DummyPony>> implements IPonyRender<DummyPony, ClientPonyModel<DummyPony>> {
 
     protected final RenderPony<DummyPony, ClientPonyModel<DummyPony>> renderPony = new RenderPony<>(this);
 
