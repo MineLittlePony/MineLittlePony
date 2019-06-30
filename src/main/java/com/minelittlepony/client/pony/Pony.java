@@ -27,13 +27,11 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import org.lwjgl.BufferUtils;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.mojang.blaze3d.platform.GlStateManager.getTexLevelParameter;
@@ -109,19 +107,15 @@ public class Pony implements IPony {
         int width = getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH);
         int height = getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT);
 
-        int channels = 4;
+        NativeImage.Format channels = NativeImage.Format.RGBA;
         if (format == GL_RGB) {
-            channels = 3;
+            channels = NativeImage.Format.RGB;
         }
 
-        ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * channels);
-        glGetTexImage(GL_TEXTURE_2D, 0, format, GL_UNSIGNED_BYTE, buffer);
+        NativeImage image = new NativeImage(channels, width, height, false);
+        image.loadFromTextureImage(0, false);
+        return image;
 
-        try {
-            return NativeImage.fromByteBuffer(buffer);
-        } catch (IOException e) {
-            return MissingSprite.getMissingSpriteTexture().getImage();
-        }
     }
 
     private IPonyData checkSkin(NativeImage bufferedimage) {
