@@ -41,6 +41,7 @@ public class MineLPHDSkins {
 
         ClientReadyCallback.EVENT.register(this::postInit);
 
+        // Preview on the select skin gui
         EntityRendererRegistry.INSTANCE.register(DummyPony.class, RenderDummyPony::new);
     }
 
