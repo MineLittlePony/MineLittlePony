@@ -691,7 +691,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     protected void renderStage(BodyPart part, float scale, Consumer<Float> action) {
         pushMatrix();
-        transform(BodyPart.BODY);
+        transform(part);
         action.accept(scale);
         popMatrix();
     }
