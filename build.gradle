@@ -45,7 +45,8 @@ dependencies {
     modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 
-    modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    modCompile "net.fabricmc.fabric-api:fabric-api-base:0.1.0+"
+    modCompile "net.fabricmc.fabric-api:fabric-events-lifecycle-v0:0.1.0+"
 
     modCompile "com.minelittlepony:Kirin:${project.kirin_version}"
 //    include "com.minelittlepony:Kirin:${project.kirin_version}"

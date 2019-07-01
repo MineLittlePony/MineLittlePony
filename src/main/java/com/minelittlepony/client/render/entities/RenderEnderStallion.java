@@ -6,7 +6,6 @@ import com.minelittlepony.client.render.layer.LayerHeldPonyItem;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.client.render.layer.LayerEyeGlow.IGlowingRenderer;
 
-import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
@@ -23,7 +22,7 @@ public class RenderEnderStallion extends RenderPonyMob<EndermanEntity, ModelEnde
 
     private final Random rnd = new Random();
 
-    public RenderEnderStallion(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
+    public RenderEnderStallion(EntityRenderDispatcher manager) {
         super(manager, new ModelEnderStallion());
     }
 

@@ -1,6 +1,5 @@
 package com.minelittlepony.client.gui.hdskins;
 
-import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 
@@ -57,7 +56,7 @@ class MineLPHDSkins extends MineLPClient implements ISkinCacheClearListener {
         super.postInit(minecraft);
 
         // Preview on the select skin gui
-        EntityRendererRegistry.INSTANCE.register(DummyPony.class, RenderDummyPony::new);
+        getModUtilities().addRenderer(DummyPony.class, RenderDummyPony::new);
 
         HDSkins manager = HDSkins.getInstance();
 

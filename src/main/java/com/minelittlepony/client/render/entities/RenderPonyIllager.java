@@ -5,7 +5,6 @@ import com.minelittlepony.client.render.layer.LayerHeldItemIllager;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItem;
 import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.entity.mob.EvokerEntity;
 import net.minecraft.entity.mob.IllagerEntity;
@@ -21,7 +20,7 @@ public abstract class RenderPonyIllager<T extends IllagerEntity> extends RenderP
     public static final Identifier EVOKER = new Identifier("minelittlepony", "textures/entity/illager/evoker_pony.png");
     public static final Identifier VINDICATOR = new Identifier("minelittlepony", "textures/entity/illager/vindicator_pony.png");
 
-    public RenderPonyIllager(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
+    public RenderPonyIllager(EntityRenderDispatcher manager) {
         super(manager, new ModelIllagerPony<>());
     }
 
@@ -38,8 +37,8 @@ public abstract class RenderPonyIllager<T extends IllagerEntity> extends RenderP
 
     public static class Vindicator extends RenderPonyIllager<VindicatorEntity> {
 
-        public Vindicator(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
-            super(manager, context);
+        public Vindicator(EntityRenderDispatcher manager) {
+            super(manager);
 
         }
 
@@ -51,8 +50,8 @@ public abstract class RenderPonyIllager<T extends IllagerEntity> extends RenderP
 
     public static class Evoker extends RenderPonyIllager<EvokerEntity> {
 
-        public Evoker(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
-            super(manager, context);
+        public Evoker(EntityRenderDispatcher manager) {
+            super(manager);
         }
 
         @Override
@@ -63,8 +62,8 @@ public abstract class RenderPonyIllager<T extends IllagerEntity> extends RenderP
 
     public static class Illusionist extends RenderPonyIllager<IllusionerEntity> {
 
-        public Illusionist(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
-            super(manager, context);
+        public Illusionist(EntityRenderDispatcher manager) {
+            super(manager);
         }
 
         @Override

@@ -2,13 +2,13 @@ package com.minelittlepony.client.render.tileentities.skull;
 
 import com.google.common.collect.Maps;
 import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.client.MineLPClient;
 import com.minelittlepony.client.render.LevitatingItemRenderer;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonySettings;
 import com.mojang.authlib.GameProfile;
 
-import net.fabricmc.fabric.api.client.render.BlockEntityRendererRegistry;
 import net.minecraft.block.SkullBlock;
 import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
@@ -48,7 +48,7 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
         if (PonySettings.PONYSKULLS.get()) {
             if (!(INSTANCE instanceof PonySkullRenderer)) {
                 backup = INSTANCE;
-                BlockEntityRendererRegistry.INSTANCE.register(SkullBlockEntity.class, ponyInstance);
+                MineLPClient.getInstance().getModUtilities().addRenderer(SkullBlockEntity.class, ponyInstance);
                 INSTANCE = ponyInstance;
             }
         } else {
@@ -57,7 +57,7 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
                 if (backup == null) {
                     backup = new SkullBlockEntityRenderer();
                 }
-                BlockEntityRendererRegistry.INSTANCE.register(SkullBlockEntity.class, backup);
+                MineLPClient.getInstance().getModUtilities().addRenderer(SkullBlockEntity.class, backup);
                 INSTANCE = backup;
             }
         }

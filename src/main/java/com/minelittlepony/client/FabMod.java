@@ -6,11 +6,11 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 
 import com.minelittlepony.client.gui.hdskins.IndirectHDSkins;
-import com.minelittlepony.common.client.IModUtilities;
+import com.minelittlepony.vendor.fabricmc.ModImpl;
 
 import javax.annotation.Nullable;
 
-public class FabMod implements ClientModInitializer, ClientTickCallback, IModUtilities {
+public class FabMod implements ClientModInitializer, ClientTickCallback, ModImpl {
 
     @Nullable
     private MineLPClient mlp;

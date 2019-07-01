@@ -1,6 +1,5 @@
 package com.minelittlepony.client.render.entities;
 
-import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.entity.mob.PillagerEntity;
 import net.minecraft.util.Identifier;
@@ -13,7 +12,7 @@ public class RenderPonyPillager extends RenderPonyMob<PillagerEntity, ModelPilla
 
     private static final Identifier TEXTURES = new Identifier("minelittlepony", "textures/entity/illager/pillager_pony.png");
 
-    public RenderPonyPillager(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
+    public RenderPonyPillager(EntityRenderDispatcher manager) {
         super(manager, new ModelPillagerPony<PillagerEntity>());
     }
 
