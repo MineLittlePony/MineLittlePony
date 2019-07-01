@@ -3,6 +3,7 @@ package com.minelittlepony.client.render.entities;
 import com.minelittlepony.client.model.entities.ModelZombiePony;
 import com.mojang.blaze3d.platform.GlStateManager;
 
+import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.entity.mob.DrownedEntity;
 import net.minecraft.entity.mob.GiantEntity;
@@ -18,7 +19,7 @@ public class RenderPonyZombie<Zombie extends ZombieEntity> extends RenderPonyMob
     public static final Identifier PIGMAN = new Identifier("minelittlepony", "textures/entity/zombie/zombie_pigman_pony.png");
     public static final Identifier DROWNED = new Identifier("minelittlepony", "textures/entity/zombie/drowned_pony.png");
 
-    public RenderPonyZombie(EntityRenderDispatcher manager) {
+    public RenderPonyZombie(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
         super(manager, new ModelZombiePony<>());
     }
 
@@ -30,8 +31,8 @@ public class RenderPonyZombie<Zombie extends ZombieEntity> extends RenderPonyMob
 
     public static class Drowned extends RenderPonyZombie<DrownedEntity> {
 
-        public Drowned(EntityRenderDispatcher manager) {
-            super(manager);
+        public Drowned(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
+            super(manager, context);
         }
 
         @Override
@@ -42,8 +43,8 @@ public class RenderPonyZombie<Zombie extends ZombieEntity> extends RenderPonyMob
 
     public static class Pigman extends RenderPonyZombie<ZombiePigmanEntity> {
 
-        public Pigman(EntityRenderDispatcher manager) {
-            super(manager);
+        public Pigman(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
+            super(manager, context);
         }
 
         @Override
@@ -54,8 +55,8 @@ public class RenderPonyZombie<Zombie extends ZombieEntity> extends RenderPonyMob
 
     public static class Husk extends RenderPonyZombie<HuskEntity> {
 
-        public Husk(EntityRenderDispatcher manager) {
-            super(manager);
+        public Husk(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
+            super(manager, context);
         }
 
         @Override
@@ -73,7 +74,7 @@ public class RenderPonyZombie<Zombie extends ZombieEntity> extends RenderPonyMob
 
     public static class Giant extends RenderPonyMob.Caster<GiantEntity, ModelZombiePony<GiantEntity>> {
 
-		public Giant(EntityRenderDispatcher manager) {
+		public Giant(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
 			super(manager, new ModelZombiePony<>());
 		}
 

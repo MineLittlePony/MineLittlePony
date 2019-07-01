@@ -14,6 +14,7 @@ import com.minelittlepony.pony.meta.Race;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.blaze3d.platform.GlStateManager;
 
+import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.util.Identifier;
@@ -25,8 +26,8 @@ class RenderDummyPony extends RenderDummyPlayer<DummyPony, ClientPonyModel<Dummy
 
     protected final RenderPony<DummyPony, ClientPonyModel<DummyPony>> renderPony = new RenderPony<>(this);
 
-    public RenderDummyPony(EntityRenderDispatcher manager) {
-        super(manager);
+    public RenderDummyPony(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
+        super(manager, context);
         addFeature(new LayerGear<>(this));
     }
 

@@ -5,6 +5,7 @@ import com.minelittlepony.util.resources.FormattedTextureSupplier;
 import com.minelittlepony.util.resources.ITextureSupplier;
 import com.mojang.blaze3d.platform.GlStateManager;
 
+import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.feature.VillagerClothingFeatureRenderer;
@@ -19,7 +20,7 @@ public class RenderPonyVillager extends RenderPonyMob.Caster<VillagerEntity, Mod
 
     private static final ITextureSupplier<VillagerEntity> PROFESSIONS = new VillagerProfessionTextureCache<>(FORMATTER);
 
-    public RenderPonyVillager(EntityRenderDispatcher manager) {
+    public RenderPonyVillager(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
         super(manager, new ModelVillagerPony<>());
     }
 

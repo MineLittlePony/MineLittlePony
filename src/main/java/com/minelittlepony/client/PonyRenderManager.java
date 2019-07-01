@@ -13,6 +13,7 @@ import com.minelittlepony.client.render.entities.player.RenderPonyPlayer;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -71,19 +72,19 @@ public class PonyRenderManager {
      *
      * @param state   True if we want ponies (the original will be stored)
      * @param type    The type to replace
-     * @param renderer The replacement value
+     * @param factory The replacement value
      * @param <T> The entity type
      */
     @SuppressWarnings("unchecked")
-    public <T extends Entity, V extends T> void switchRenderer(boolean state, Class<V> type, Function<EntityRenderDispatcher, EntityRenderer<T>> func) {
+    public <T extends Entity, V extends T> void switchRenderer(boolean state, Class<V> type, EntityRendererRegistry.Factory factory) {
         if (state) {
             if (!renderMap.containsKey(type)) {
                 renderMap.put(type, MinecraftClient.getInstance().getEntityRenderManager().getRenderer(type));
             }
-            MineLPClient.getInstance().getModUtilities().addRenderer((Class<T>)type, func);
+            EntityRendererRegistry.INSTANCE.register(type, factory);
         } else {
             if (renderMap.containsKey(type)) {
-                MineLPClient.getInstance().getModUtilities().addRenderer(type, m -> (EntityRenderer<V>)renderMap.get(type));
+                EntityRendererRegistry.INSTANCE.register(type, (m1, c) -> ((Function<EntityRenderDispatcher, EntityRenderer<V>>) m -> (EntityRenderer<V>) renderMap.get(type)).apply(m1));
             }
         }
     }

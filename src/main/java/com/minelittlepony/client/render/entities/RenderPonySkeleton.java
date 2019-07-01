@@ -6,6 +6,7 @@ import com.minelittlepony.client.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.client.render.layer.LayerPonyStrayOverlay;
 import com.mojang.blaze3d.platform.GlStateManager;
 
+import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.entity.mob.AbstractSkeletonEntity;
 import net.minecraft.entity.mob.StrayEntity;
@@ -18,7 +19,7 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeletonEntity> extends
     public static final Identifier WITHER = new Identifier("minelittlepony", "textures/entity/skeleton/skeleton_wither_pony.png");
     public static final Identifier STRAY = new Identifier("minelittlepony", "textures/entity/skeleton/stray_pony.png");
 
-    public RenderPonySkeleton(EntityRenderDispatcher manager) {
+    public RenderPonySkeleton(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
         super(manager, new ModelSkeletonPony<>());
     }
 
@@ -34,8 +35,8 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeletonEntity> extends
 
     public static class Stray extends RenderPonySkeleton<StrayEntity> {
 
-        public Stray(EntityRenderDispatcher rm) {
-            super(rm);
+        public Stray(EntityRenderDispatcher rm, EntityRendererRegistry.Context context) {
+            super(rm, context);
             addFeature(new LayerPonyStrayOverlay<>(this));
         }
 
@@ -47,8 +48,8 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeletonEntity> extends
 
     public static class Wither extends RenderPonySkeleton<WitherSkeletonEntity> {
 
-        public Wither(EntityRenderDispatcher rm) {
-            super(rm);
+        public Wither(EntityRenderDispatcher rm, EntityRendererRegistry.Context context) {
+            super(rm, context);
         }
 
         @Override
