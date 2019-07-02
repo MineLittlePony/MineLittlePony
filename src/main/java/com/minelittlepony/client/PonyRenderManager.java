@@ -1,7 +1,6 @@
 package com.minelittlepony.client;
 
 import java.util.Map;
-import java.util.function.Function;
 
 import com.google.common.collect.Maps;
 import com.minelittlepony.client.model.IPonyModel;
@@ -13,10 +12,13 @@ import com.minelittlepony.client.render.entities.player.RenderPonyPlayer;
 
 import javax.annotation.Nullable;
 
+import com.minelittlepony.common.mixin.MixinEntityRenderDispatcher;
+import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
+import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -62,7 +64,12 @@ public class PonyRenderManager {
     private void addPlayerSkin(EntityRenderDispatcher manager, boolean slimArms, PlayerModels playerModel) {
         RenderPonyPlayer renderer = playerModel.createRenderer(manager, slimArms);
 
-        MineLPClient.getInstance().getModUtilities().addRenderer(playerModel.getId(slimArms), renderer);
+        addPlayerRenderer(playerModel.getId(slimArms), renderer);
+    }
+
+    private static void addPlayerRenderer(String modelType, PlayerEntityRenderer renderer) {
+        EntityRenderDispatcher mx = MinecraftClient.getInstance().getEntityRenderManager();
+        ((MixinEntityRenderDispatcher)mx).getPlayerRenderers().put(modelType, renderer);
     }
 
     /**
@@ -74,16 +81,15 @@ public class PonyRenderManager {
      * @param factory The replacement value
      * @param <T> The entity type
      */
-    @SuppressWarnings({"unchecked"})
-    public <T extends Entity, V extends T> void switchRenderer(boolean state, Class<V> type, Function<EntityRenderDispatcher, EntityRenderer<T>> factory) {
+    public <T extends Entity, V extends T> void switchRenderer(boolean state, Class<V> type, EntityRendererRegistry.Factory factory) {
         if (state) {
             if (!renderMap.containsKey(type)) {
                 renderMap.put(type, MinecraftClient.getInstance().getEntityRenderManager().getRenderer(type));
             }
-            MineLPClient.getInstance().getModUtilities().addRenderer((Class<T>)type, factory);
+            EntityRendererRegistry.INSTANCE.register(type, factory);
         } else {
             if (renderMap.containsKey(type)) {
-                MineLPClient.getInstance().getModUtilities().addRenderer(type, m -> (EntityRenderer<V>)renderMap.get(type));
+                EntityRendererRegistry.INSTANCE.register(type, (m, c) -> renderMap.get(type));
             }
         }
     }

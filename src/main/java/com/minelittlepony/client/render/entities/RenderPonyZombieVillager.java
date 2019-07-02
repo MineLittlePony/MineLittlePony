@@ -4,6 +4,7 @@ import com.minelittlepony.client.model.entities.ModelZombieVillagerPony;
 import com.minelittlepony.util.resources.FormattedTextureSupplier;
 import com.minelittlepony.util.resources.ITextureSupplier;
 
+import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.feature.VillagerClothingFeatureRenderer;
@@ -18,7 +19,7 @@ public class RenderPonyZombieVillager extends RenderPonyMob.Caster<ZombieVillage
 
     private static final ITextureSupplier<ZombieVillagerEntity> PROFESSIONS = new VillagerProfessionTextureCache<>(FORMATTER);
 
-    public RenderPonyZombieVillager(EntityRenderDispatcher manager) {
+    public RenderPonyZombieVillager(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
         super(manager, new ModelZombieVillagerPony());
     }
 

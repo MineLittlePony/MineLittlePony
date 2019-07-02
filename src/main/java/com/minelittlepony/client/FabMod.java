@@ -6,11 +6,10 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 
 import com.minelittlepony.client.gui.hdskins.IndirectHDSkins;
-import com.minelittlepony.vendor.fabricmc.ModImpl;
 
 import javax.annotation.Nullable;
 
-public class FabMod implements ClientModInitializer, ClientTickCallback, ModImpl {
+public class FabMod implements ClientModInitializer, ClientTickCallback {
 
     @Nullable
     private MineLPClient mlp;
@@ -22,9 +21,9 @@ public class FabMod implements ClientModInitializer, ClientTickCallback, ModImpl
         ClientTickCallback.EVENT.register(this);
 
         if (FabricLoader.getInstance().isModLoaded("hdskins")) {
-            mlp = IndirectHDSkins.getConstructor().apply(this);
+            mlp = IndirectHDSkins.getConstructor().get();
         } else {
-            mlp = new MineLPClient(this);
+            mlp = new MineLPClient();
         }
     }
 

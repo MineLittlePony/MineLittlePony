@@ -5,7 +5,7 @@ import com.minelittlepony.client.gui.GuiPonySettings;
 import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
 import com.minelittlepony.client.settings.ClientPonyConfig;
-import com.minelittlepony.common.client.IModUtilities;
+import com.minelittlepony.common.util.GamePaths;
 import com.minelittlepony.settings.JsonConfig;
 import com.minelittlepony.settings.PonyConfig;
 import com.mojang.authlib.GameProfile;
@@ -16,6 +16,8 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
+import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.options.KeyBinding;
@@ -43,22 +45,21 @@ public class MineLPClient extends MineLittlePony {
     private PonyConfig config;
     private PonyManager ponyManager;
 
-    private final IModUtilities utilities;
-
     private final PonyRenderManager renderManager = PonyRenderManager.getInstance();
 
-    private KeyBinding keyBinding;
+    private FabricKeyBinding keyBinding;
 
     public static MineLPClient getInstance() {
         return (MineLPClient)MineLittlePony.getInstance();
     }
 
-    public MineLPClient(IModUtilities utils) {
-        utilities = utils;
+    public MineLPClient() {
 
-        config = JsonConfig.of(utils.getConfigDirectory().resolve("minelp.json"), this::createConfig);
+        config = JsonConfig.of(GamePaths.getConfigDirectory().resolve("minelp.json"), this::createConfig);
         ponyManager = new PonyManager(config);
-        keyBinding = utilities.registerKeybind("key.categories.misc", "minelittlepony:settings", GLFW.GLFW_KEY_F9);
+
+        keyBinding = FabricKeyBinding.Builder.create(new Identifier("minelittlepony", "settings"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F9, "key.categories.misc").build();
+        KeyBindingRegistry.INSTANCE.register(keyBinding);
     }
 
     protected ClientPonyConfig createConfig() {
@@ -140,7 +141,4 @@ public class MineLPClient extends MineLittlePony {
         return config;
     }
 
-    public IModUtilities getModUtilities() {
-        return utilities;
-    }
 }

@@ -1,12 +1,11 @@
 package com.minelittlepony.client.gui.hdskins;
 
+import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 
-import com.minelittlepony.common.client.IModUtilities;
 import com.minelittlepony.client.MineLPClient;
 import com.minelittlepony.client.LegacySkinConverter;
-import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.hdskins.HDSkins;
 import com.minelittlepony.hdskins.ISkinCacheClearListener;
 import com.minelittlepony.hdskins.net.LegacySkinServer;
@@ -28,9 +27,7 @@ class MineLPHDSkins extends MineLPClient implements ISkinCacheClearListener {
     private static final String MINELP_LEGACY_SERVER = "http://minelpskins.voxelmodpack.com";
     private static final String MINELP_LEGACY_GATEWAY = "http://minelpskinmanager.voxelmodpack.com";
 
-    public MineLPHDSkins(IModUtilities utils) {
-        super(utils);
-
+    public MineLPHDSkins() {
         SkinServer legacy = new LegacySkinServer(MINELP_LEGACY_SERVER, MINELP_LEGACY_GATEWAY);
         SkinServer valhalla = new ValhallaSkinServer(MINELP_VALHALLA_SERVER);
         // Register pony servers
@@ -56,7 +53,7 @@ class MineLPHDSkins extends MineLPClient implements ISkinCacheClearListener {
         super.postInit(minecraft);
 
         // Preview on the select skin gui
-        getModUtilities().addRenderer(DummyPony.class, RenderDummyPony::new);
+        EntityRendererRegistry.INSTANCE.register(DummyPony.class, RenderDummyPony::new);
 
         HDSkins manager = HDSkins.getInstance();
 
@@ -68,11 +65,6 @@ class MineLPHDSkins extends MineLPClient implements ISkinCacheClearListener {
         manager.addClearListener(this);
         // Ponify the skins GUI.
         manager.setSkinsGui(GuiSkinsMineLP::new);
-    }
-
-    @Override
-    protected ClientPonyConfig createConfig() {
-        return new ClientPonyConfigHDSkins();
     }
 
     @Override

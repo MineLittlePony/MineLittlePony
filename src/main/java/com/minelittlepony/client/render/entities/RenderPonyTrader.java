@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.entities;
 
+import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.entity.passive.WanderingTraderEntity;
 import net.minecraft.util.Identifier;
@@ -11,7 +12,7 @@ public class RenderPonyTrader extends RenderPonyMob.Caster<WanderingTraderEntity
 
     public static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/entity/wandering_trader_pony.png");
 
-    public RenderPonyTrader(EntityRenderDispatcher manager) {
+    public RenderPonyTrader(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
         super(manager, new ModelAlicorn<>(false));
     }
 

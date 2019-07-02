@@ -9,6 +9,7 @@ import com.minelittlepony.client.render.layer.LayerHeldPonyItem;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItemMagical;
 import com.mojang.blaze3d.platform.GlStateManager;
 
+import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.GuardianEntityRenderer;
 import net.minecraft.entity.EntityDimensions;
@@ -22,7 +23,7 @@ public class RenderPonyGuardian extends GuardianEntityRenderer {
 
     private final Proxy<GuardianEntity, ModelGuardianPony> ponyRenderer;
 
-    public RenderPonyGuardian(EntityRenderDispatcher manager) {
+    public RenderPonyGuardian(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
         super(manager);
 
         features.clear();
@@ -68,8 +69,8 @@ public class RenderPonyGuardian extends GuardianEntityRenderer {
 
     public static class Elder extends RenderPonyGuardian {
 
-        public Elder(EntityRenderDispatcher manager) {
-            super(manager);
+        public Elder(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
+            super(manager, context);
         }
 
         @Override
