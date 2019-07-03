@@ -5,6 +5,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.MineLPClient;
+import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.client.LegacySkinConverter;
 import com.minelittlepony.hdskins.HDSkins;
 import com.minelittlepony.hdskins.ISkinCacheClearListener;
@@ -65,6 +66,11 @@ class MineLPHDSkins extends MineLPClient implements ISkinCacheClearListener {
         manager.addClearListener(this);
         // Ponify the skins GUI.
         manager.setSkinsGui(GuiSkinsMineLP::new);
+    }
+
+    @Override
+    protected ClientPonyConfig createConfig() {
+        return new ClientPonyConfigHDSkins();
     }
 
     @Override
