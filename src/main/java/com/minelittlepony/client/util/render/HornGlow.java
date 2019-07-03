@@ -7,14 +7,10 @@ import net.minecraft.client.render.BufferBuilder;
  */
 public class HornGlow extends Box<GlowRenderer> {
 
-    private final float alpha;
-
     private Quad[] polygons;
 
     public HornGlow(GlowRenderer renderer, int texX, int texY, float xMin, float yMin, float zMin, int w, int h, int d, float scale, float alpha) {
         super(renderer, texX, texY, xMin, yMin, zMin, w, h, d, scale);
-
-        this.alpha = alpha;
 
         float xMax = xMin + w + scale;
         float yMax = yMin + h + scale;
@@ -65,8 +61,6 @@ public class HornGlow extends Box<GlowRenderer> {
 
     @Override
     public void render(BufferBuilder buffer, float scale) {
-        parent.applyTint(alpha);
-
         for (Quad i : polygons) {
             i.render(buffer, scale);
         }
