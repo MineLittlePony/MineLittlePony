@@ -1,5 +1,6 @@
 package com.minelittlepony.pony;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
@@ -17,6 +18,11 @@ public interface IPony {
     static IPony forResource(Identifier texture) {
         return MineLittlePony.getInstance().getManager().getPony(texture);
     }
+
+    /**
+     * Triggers state updates on the passed entity.
+     */
+    void updateForEntity(Entity entity);
 
     /**
      * Returns true if this pony has wings and the will to use them.

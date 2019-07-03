@@ -56,7 +56,7 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
 
     private final PonyConfig config;
 
-    private final LoadingCache<Identifier, Pony> poniesCache = CacheBuilder.newBuilder()
+    private final LoadingCache<Identifier, IPony> poniesCache = CacheBuilder.newBuilder()
             .expireAfterAccess(30, TimeUnit.SECONDS)
             .build(CacheLoader.from(Pony::new));
 

@@ -134,6 +134,7 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
     public void updateModel(T entity) {
         pony = renderer.getEntityPony(entity);
         playerModel.apply(pony.getMetadata());
+        pony.updateForEntity(entity);
     }
 
     public IPony getPony(T entity) {

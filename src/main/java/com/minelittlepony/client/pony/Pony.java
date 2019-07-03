@@ -47,6 +47,8 @@ public class Pony implements IPony {
     private final Identifier texture;
     private final IPonyData metadata;
 
+    private boolean initialized = false;
+
     public Pony(Identifier resource) {
         texture = resource;
         metadata = checkSkin(texture);
@@ -68,6 +70,14 @@ public class Pony implements IPony {
         }
 
         return checkSkin(ponyTexture);
+    }
+
+    @Override
+    public void updateForEntity(Entity entity) {
+        if (!initialized) {
+            initialized = true;
+            entity.calculateDimensions();
+        }
     }
 
     @Nullable
@@ -218,8 +228,6 @@ public class Pony implements IPony {
     @Override
     public Vec3d getAbsoluteRidingOffset(LivingEntity entity) {
         IPony ridingPony = getMountedPony(entity);
-
-
 
         if (ridingPony != null) {
             LivingEntity ridee = (LivingEntity)entity.getVehicle();
