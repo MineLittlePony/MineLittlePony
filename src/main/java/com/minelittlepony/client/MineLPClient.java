@@ -18,13 +18,14 @@ import java.util.stream.Collectors;
 
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.texture.PlayerSkinProvider;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.resource.ReloadableResourceManager;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.text.TranslatableText;
@@ -54,12 +55,13 @@ public class MineLPClient extends MineLittlePony {
     }
 
     public MineLPClient() {
-
         config = JsonConfig.of(GamePaths.getConfigDirectory().resolve("minelp.json"), this::createConfig);
         ponyManager = new PonyManager(config);
 
         keyBinding = FabricKeyBinding.Builder.create(new Identifier("minelittlepony", "settings"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F9, "key.categories.misc").build();
         KeyBindingRegistry.INSTANCE.register(keyBinding);
+
+        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(ponyManager);
     }
 
     protected ClientPonyConfig createConfig() {
@@ -72,9 +74,6 @@ public class MineLPClient extends MineLittlePony {
     public void postInit(MinecraftClient minecraft) {
         EntityRenderDispatcher rm = minecraft.getEntityRenderManager();
         renderManager.initialiseRenderers(rm);
-
-        ReloadableResourceManager irrm = (ReloadableResourceManager) MinecraftClient.getInstance().getResourceManager();
-        irrm.registerListener(ponyManager);
     }
 
     public void onTick(MinecraftClient minecraft, boolean inGame) {

@@ -16,13 +16,13 @@ import com.minelittlepony.util.math.MathUtil;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceReloadListener;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
@@ -43,7 +43,9 @@ import java.util.concurrent.TimeUnit;
  * The PonyManager is responsible for reading and recoding all the pony data associated with an entity of skin.
  *
  */
-public class PonyManager implements IPonyManager, ResourceReloadListener {
+public class PonyManager implements IPonyManager, IdentifiableResourceReloadListener {
+
+    private static final Identifier ID = new Identifier("minelittlepony", "background_ponies");
 
     private static final Gson GSON = new Gson();
 
@@ -156,6 +158,11 @@ public class PonyManager implements IPonyManager, ResourceReloadListener {
             clientProfiler.pop();
             clientProfiler.endTick();
         }, clientExecutor);
+    }
+
+    @Override
+    public Identifier getFabricId() {
+        return ID;
     }
 
     public void clearCache() {
