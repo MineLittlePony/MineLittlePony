@@ -45,15 +45,15 @@ dependencies {
     modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 
-    modCompile "net.fabricmc.fabric-api:fabric-api-base:0.1.0+"
-    modCompile "net.fabricmc.fabric-api:fabric-events-lifecycle-v0:0.1.0+"
-    modCompile "net.fabricmc.fabric-api:fabric-resource-loader-v0:0.1.0+"
+    modApi "net.fabricmc.fabric-api:fabric-api-base:0.1.0+"
+    modApi "net.fabricmc.fabric-api:fabric-events-lifecycle-v0:0.1.0+"
+    modApi "net.fabricmc.fabric-api:fabric-resource-loader-v0:0.1.0+"
 
-    modCompile "com.minelittlepony:Kirin:${project.kirin_version}"
+    modApi "com.minelittlepony:Kirin:${project.kirin_version}"
 //    include "com.minelittlepony:Kirin:${project.kirin_version}"
 
     // TODO: HD Skins can be made optional later
-    modCompile "com.minelittlepony:HDSkins:${project.hd_skins_version}"
+    modImplementation "com.minelittlepony:HDSkins:${project.hd_skins_version}"
     include "com.minelittlepony:HDSkins:${project.hd_skins_version}"
 }
 
