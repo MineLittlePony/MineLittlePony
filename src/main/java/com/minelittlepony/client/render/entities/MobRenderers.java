@@ -61,7 +61,7 @@ public enum MobRenderers implements Setting<Boolean> {
         @Override
         void register(boolean state, PonyRenderManager pony) {
             pony.switchRenderer(state, GuardianEntity.class, RenderPonyGuardian::new);
-            pony.switchRenderer(state, ElderGuardianEntity.class, RenderPonyGuardian::new);
+            pony.switchRenderer(state, ElderGuardianEntity.class, RenderPonyGuardian.Elder::new);
         }
     },
     ENDERMEN {
