@@ -10,9 +10,8 @@ import com.minelittlepony.model.PonyModelConstants;
 import com.minelittlepony.pony.IPony;
 
 public interface IPonyModel<T extends LivingEntity> extends PonyModelConstants, IModel, ICapitated<Cuboid>, ICompartmented<Cuboid> {
-    default void updateLivingState(T entity, IPony pony) {
 
-    }
+    void updateLivingState(T entity, IPony pony);
 
     @Override
     default boolean hasHeadGear() {
