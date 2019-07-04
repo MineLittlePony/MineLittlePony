@@ -50,8 +50,6 @@ public class MineLPHDSkins {
 
         // Convert legacy pony skins
         manager.addSkinModifier(new LegacySkinConverter());
-        // Parse trigger pixel data
-        manager.addSkinParser(new PonySkinParser());
         // Clear ponies when skins are cleared
         PonyManager ponyManager = (PonyManager) MineLittlePony.getInstance().getManager();
         manager.addClearListener(ponyManager::onSkinCacheCleared);

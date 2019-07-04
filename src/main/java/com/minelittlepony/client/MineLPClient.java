@@ -5,17 +5,10 @@ import com.minelittlepony.client.gui.GuiPonySettings;
 import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
 import com.minelittlepony.client.settings.ClientPonyConfig;
+import com.minelittlepony.common.event.SkinAvailableCallback;
 import com.minelittlepony.common.util.GamePaths;
 import com.minelittlepony.settings.JsonConfig;
 import com.minelittlepony.settings.PonyConfig;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-
-import javax.annotation.Nullable;
-
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -23,7 +16,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.texture.PlayerSkinProvider;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.LiteralText;
@@ -32,7 +24,6 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.SystemUtil;
-
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -62,6 +53,9 @@ public class MineLPClient extends MineLittlePony {
         KeyBindingRegistry.INSTANCE.register(keyBinding);
 
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(ponyManager);
+
+        // Parse trigger pixel data
+        SkinAvailableCallback.EVENT.register(new PonySkinParser());
     }
 
     protected ClientPonyConfig createConfig() {
