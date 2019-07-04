@@ -18,7 +18,7 @@ import com.minelittlepony.hdskins.net.ValhallaSkinServer;
 /**
  * All the interactions with HD Skins.
  */
-public class MineLPHDSkins {
+class MineLPHDSkins {
     private static final String MINELP_VALHALLA_SERVER = "http://skins.minelittlepony-mod.com";
 
     private static final String MINELP_LEGACY_SERVER = "http://minelpskins.voxelmodpack.com";

@@ -7,7 +7,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import net.minecraft.util.Identifier;
 
-public class HDSkinsProxy extends SkinsProxy {
+class HDSkinsProxy extends SkinsProxy {
 
     @Override
     public Identifier getSkinTexture(GameProfile profile) {

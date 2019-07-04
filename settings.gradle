@@ -9,5 +9,5 @@ pluginManagement {
     }
 }
 rootProject.name = 'MineLittlePony'
-includeBuild '../Kirin'
-includeBuild '../HDSkins'
+//includeBuild '../Kirin'
+//includeBuild '../HDSkins'

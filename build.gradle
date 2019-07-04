@@ -39,27 +39,21 @@ if (System.env.CI) {
     }
 }
 
-sourceSets {
-    hdskins
-}
-
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}"
-    modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
+    modApi "net.fabricmc:fabric-loader:${project.loader_version}"
 
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-    hdskinsCompileOnly "com.google.code.findbugs:jsr305:3.0.2"
 
     modApi "net.fabricmc.fabric-api:fabric-api-base:0.1.0+"
     modApi "net.fabricmc.fabric-api:fabric-events-lifecycle-v0:0.1.0+"
     modApi "net.fabricmc.fabric-api:fabric-resource-loader-v0:0.1.0+"
 
-    compile "com.minelittlepony:Kirin:${project.kirin_version}"
+    modCompile "com.minelittlepony:Kirin:${project.kirin_version}"
     include "com.minelittlepony:Kirin:${project.kirin_version}"
 
-    hdskinsCompile sourceSets.main.output
-    hdskinsCompile "com.minelittlepony:HDSkins:${project.hd_skins_version}"
+    modImplementation "com.minelittlepony:HDSkins:${project.hd_skins_version}"
 }
 
 //
