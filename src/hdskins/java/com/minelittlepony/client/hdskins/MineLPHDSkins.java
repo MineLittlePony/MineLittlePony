@@ -57,9 +57,4 @@ public class MineLPHDSkins {
         // Ponify the skins GUI.
         manager.setSkinsGui(GuiSkinsMineLP::new);
     }
-
-//    @Override
-    protected ClientPonyConfig createConfig() {
-        return new ClientPonyConfigHDSkins();
-    }
 }

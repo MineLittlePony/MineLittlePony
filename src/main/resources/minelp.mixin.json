@@ -8,6 +8,7 @@
         "IResizeable",
         "MixinCamera",
         "MixinDefaultPlayerSkin",
+        "MixinEntityRenderDispatcher",
         "MixinFirstPersonRenderer",
         "MixinGlStateManager",
         "MixinItemRenderer",

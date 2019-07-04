@@ -5,7 +5,6 @@ import com.minelittlepony.client.gui.GuiPonySettings;
 import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
 import com.minelittlepony.client.settings.ClientPonyConfig;
-import com.minelittlepony.common.event.SkinAvailableCallback;
 import com.minelittlepony.common.util.GamePaths;
 import com.minelittlepony.settings.JsonConfig;
 import com.minelittlepony.settings.PonyConfig;
@@ -53,9 +52,6 @@ public class MineLPClient extends MineLittlePony {
         KeyBindingRegistry.INSTANCE.register(keyBinding);
 
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(ponyManager);
-
-        // Parse trigger pixel data
-        SkinAvailableCallback.EVENT.register(new PonySkinParser());
     }
 
     protected ClientPonyConfig createConfig() {

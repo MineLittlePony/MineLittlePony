@@ -71,14 +71,14 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
 
     @Override
     public IPony getPony(PlayerEntity player) {
-        if (player == null || player.getGameProfile() == null) {
+        if (player.getGameProfile() == null) {
             return getDefaultPony(player.getUuid());
         }
 
         Identifier skin = getSkin(player);
         UUID uuid = player.getGameProfile().getId();
 
-        if (Pony.getBufferedImage(skin) == null) {
+        if (skin == null) {
             return getDefaultPony(uuid);
         }
 
@@ -86,7 +86,7 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
     }
 
     @Nullable
-    Identifier getSkin(PlayerEntity player) {
+    private Identifier getSkin(PlayerEntity player) {
         if (player instanceof AbstractClientPlayerEntity) {
             return ((AbstractClientPlayerEntity)player).getSkinTexture();
         }
