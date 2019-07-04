@@ -9,8 +9,6 @@ import com.minelittlepony.client.hdskins.gui.RenderDummyPony;
 import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 
-import com.minelittlepony.client.settings.ClientPonyConfig;
-import com.minelittlepony.client.LegacySkinConverter;
 import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.hdskins.HDSkins;
 import com.minelittlepony.hdskins.net.LegacySkinServer;
@@ -48,8 +46,6 @@ public class MineLPHDSkins {
     private void postInit(MinecraftClient minecraft) {
         HDSkins manager = HDSkins.getInstance();
 
-        // Convert legacy pony skins
-        manager.addSkinModifier(new LegacySkinConverter());
         // Clear ponies when skins are cleared
         PonyManager ponyManager = (PonyManager) MineLittlePony.getInstance().getManager();
         manager.addClearListener(ponyManager::onSkinCacheCleared);
