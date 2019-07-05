@@ -12,6 +12,9 @@ import com.minelittlepony.util.math.MathUtil;
  */
 public abstract class MotionCompositor {
 
+    /**
+     * Gets the angle of horizontal roll in degrees based on the player's vertical and horizontal motion.
+     */
     protected double calculateRoll(PlayerEntity player, double motionX, double motionY, double motionZ) {
 
         // since model roll should probably be calculated from model rotation rather than entity rotation...
@@ -36,6 +39,9 @@ public abstract class MotionCompositor {
         return MathHelper.clamp(roll, -54, 54);
     }
 
+    /**
+     * Gets the angle of inclination in degrees based on the player's vertical and horizontal motion.
+     */
     protected double calculateIncline(PlayerEntity player, double motionX, double motionY, double motionZ) {
         double dist = Math.sqrt(motionX * motionX + motionZ * motionZ);
         double angle = Math.atan2(motionY, dist);
