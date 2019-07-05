@@ -1,7 +1,6 @@
 package com.minelittlepony.client.hdskins;
 
 import com.minelittlepony.client.SkinsProxy;
-import com.minelittlepony.client.pony.Pony;
 import com.minelittlepony.hdskins.HDSkins;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;

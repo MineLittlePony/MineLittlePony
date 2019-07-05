@@ -21,7 +21,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.TagHelper;
-import net.minecraft.util.math.Direction;
 import net.minecraft.village.VillagerDataContainer;
 
 import static com.mojang.blaze3d.platform.GlStateManager.*;
