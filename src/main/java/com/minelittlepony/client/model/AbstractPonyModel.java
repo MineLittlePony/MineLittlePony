@@ -82,7 +82,12 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             rightLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
             leftLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
             animateBreathing(ticks);
-            head.setRotationPoint(0, 0, 0);
+
+            if (attributes.isSwimming) {
+                head.setRotationPoint(0, -2, -2);
+            } else {
+                head.setRotationPoint(0, 0, 0);
+            }
         }
 
         if (attributes.isSleeping) {
@@ -204,14 +209,14 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         head.yaw = attributes.isSleeping ? (Math.abs(attributes.interpolatorId.getMostSignificantBits()) % 2.8F) - 1.9F : headYaw / 57.29578F;
 
         headPitch = attributes.isSleeping ? 0.1f : headPitch / 57.29578F;
-        headPitch = Math.min(headPitch, (float) (0.5f - Math.toRadians(attributes.motionPitch)));
-        headPitch = Math.max(headPitch, (float) (-1.25f - Math.toRadians(attributes.motionPitch)));
 
         if (attributes.isSwimming) {
-            headPitch += 0.9F;
+            headPitch -= 0.9F;
         }
 
-        head.pitch = headPitch;
+        float pitch = (float)Math.toRadians(attributes.motionPitch);
+
+        head.pitch = MathHelper.clamp(headPitch, -1.25f - pitch, 0.5f - pitch);
     }
 
     /**
