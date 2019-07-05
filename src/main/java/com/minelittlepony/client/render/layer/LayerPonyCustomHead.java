@@ -45,7 +45,7 @@ public class LayerPonyCustomHead<T extends LivingEntity, M extends EntityModel<T
             model.getHead().applyTransform(0.0625f);
 
             if (model instanceof AbstractPonyModel) {
-                translatef(0, 0.2F, 0);
+                translatef(0, 0.225F, 0);
             } else {
                 translatef(0, 0, 0.15F);
             }
@@ -80,7 +80,7 @@ public class LayerPonyCustomHead<T extends LivingEntity, M extends EntityModel<T
         if (isVillager) {
             translatef(0, 0.0625F, 0);
         }
-        translatef(0, 0, -0.05F);
+
         GameProfile profile = null;
 
         if (itemstack.hasTag()) {
@@ -98,12 +98,12 @@ public class LayerPonyCustomHead<T extends LivingEntity, M extends EntityModel<T
 
         SkullType type = ((AbstractSkullBlock) ((BlockItem) itemstack.getItem()).getBlock()).getSkullType();
 
-        PonySkullRenderer.resolve().render(-0.5F, 0, -0.45F, Direction.UP, 180, type, profile, -1, limbSwing);
+        PonySkullRenderer.resolve().render(-0.5F, 0, -0.5F, null, 180, type, profile, -1, limbSwing);
     }
 
     @Override
     public boolean hasHurtOverlay() {
-        return true;
+        return false;
     }
 
 }
