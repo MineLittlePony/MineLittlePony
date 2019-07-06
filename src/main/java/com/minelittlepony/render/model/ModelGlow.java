@@ -11,14 +11,10 @@ import com.minelittlepony.util.render.Vertex;
  */
 public class ModelGlow extends Box<GlowRenderer> {
 
-    private final float alpha;
-
     private Quad[] quadList;
 
-    public ModelGlow(GlowRenderer renderer, int texX, int texY, float xMin, float yMin, float zMin, int w, int h, int d, float scale, float alpha) {
+    public ModelGlow(GlowRenderer renderer, int texX, int texY, float xMin, float yMin, float zMin, int w, int h, int d, float scale) {
         super(renderer, texX, texY, xMin, yMin, zMin, w, h, d, scale);
-
-        this.alpha = alpha;
 
         float xMax = xMin + w + scale;
         float yMax = yMin + h + scale;
@@ -69,8 +65,6 @@ public class ModelGlow extends Box<GlowRenderer> {
 
     @Override
     public void render(BufferBuilder buffer, float scale) {
-        parent.applyTint(alpha);
-
         for (Quad i : quadList) {
             i.draw(buffer, scale);
         }

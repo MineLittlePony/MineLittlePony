@@ -34,9 +34,10 @@ public class UnicornHorn implements IModelPart {
             .rotateAngleX = 0.5F;
 
         glow.offset(HORN_X + x, HORN_Y + y, HORN_Z + z)
+            .setAlpha(0.4F)
             .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-            .setAlpha(0.4f).box(0, 0, 0, 1, 4, 1, stretch + 0.5F)
-            .setAlpha(0.2f).box(0, 0, 0, 1, 3, 1, stretch + 0.8F);
+            .box(0, 0, 0, 1, 4, 1, stretch + 0.5F)
+            .box(0, 0, 0, 1, 3, 1, stretch + 0.8F);
     }
 
     @Override

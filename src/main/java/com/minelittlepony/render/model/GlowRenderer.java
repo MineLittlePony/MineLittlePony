@@ -3,8 +3,6 @@ package com.minelittlepony.render.model;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 
-import org.lwjgl.opengl.GL11;
-
 import com.minelittlepony.util.render.AbstractBoxRenderer;
 import com.minelittlepony.util.render.Color;
 
@@ -29,21 +27,17 @@ public class GlowRenderer extends AbstractBoxRenderer<GlowRenderer> {
         return this;
     }
 
-    public void applyTint(float alpha) {
-        Color.glColor(tint, alpha);
-    }
-
     @Override
     public void createBox(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor, boolean mirrored) {
-        cubeList.add(new ModelGlow(this, textureOffsetX, textureOffsetY, offX, offY, offZ, width, height, depth, scaleFactor, alpha));
+        cubeList.add(new ModelGlow(this, textureOffsetX, textureOffsetY, offX, offY, offZ, width, height, depth, scaleFactor));
     }
 
     @Override
     public void render(float scale) {
-        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         Minecraft.getMinecraft().entityRenderer.disableLightmap();
+        Color.glColor(tint, alpha);
         super.render(scale);
-        GL11.glPopAttrib();
+        Minecraft.getMinecraft().entityRenderer.enableLightmap();
     }
 
     @Override
