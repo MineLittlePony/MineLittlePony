@@ -23,12 +23,12 @@
   "mixins": [
     "minelp.mixin.json"
   ],
-  "requires": {
-    "fabricloader": ">=0.4.0",
-    "fabric": "*"
-  },
   "depends": {
-  	"hdskins": "*",
-  	"kirin": "*"
-   }
+    "fabricloader": ">=0.4.0",
+    "fabric": "*",
+    "kirin": "*"
+  },
+  "suggests": {
+  	"hdskins": "*"
+  }
 }
