@@ -100,6 +100,9 @@ public class Pony implements IPony {
         MinecraftClient mc = MinecraftClient.getInstance();
         TextureManager textures = mc.getTextureManager();
 
+        if (!mc.isOnThread()) {
+            throw new RuntimeException("This can only be called from the main thread.");
+        }
         // recreate NativeImage from the GL matrix
         textures.bindTexture(resource);
 
