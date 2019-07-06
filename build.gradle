@@ -53,6 +53,7 @@ dependencies {
     include "com.minelittlepony:Kirin:${project.kirin_version}"
 
     modImplementation "com.minelittlepony:HDSkins:${project.hd_skins_version}"
+    modImplementation "io.github.prospector.modmenu:ModMenu:1.6.2-93"
 }
 
 //
