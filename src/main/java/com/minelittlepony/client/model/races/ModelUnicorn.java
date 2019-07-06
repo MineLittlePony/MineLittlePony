@@ -90,10 +90,6 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
 
     @Override
     protected void animateBreathing(float ticks) {
-        if (attributes.isSleeping) {
-            return;
-        }
-
         if (canCast()) {
             float cos = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
             float sin = MathHelper.sin(ticks * 0.067F) * 0.05F;

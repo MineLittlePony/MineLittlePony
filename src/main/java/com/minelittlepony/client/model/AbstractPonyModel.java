@@ -81,7 +81,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
             rightLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
             leftLeg.rotationPointY = FRONT_LEG_RP_Y_NOTSNEAK;
-            animateBreathing(ticks);
+
+            if (!attributes.isSleeping) {
+                animateBreathing(ticks);
+            }
 
             if (attributes.isSwimming) {
                 head.setRotationPoint(0, -2, -2);
@@ -388,16 +391,24 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     protected void alignArmForAction(Cuboid arm, ArmPose pose, ArmPose complement, boolean both, float swing, float reflect) {
         switch (pose) {
             case ITEM:
-                float swag = 1;
-                if (!isFlying() && both) {
-                    swag -= (float)Math.pow(swing, 2);
+                arm.yaw = 0;
+
+                if ((!both || reflect == (attributes.isLeftHanded ? 1 : -1)) && complement != ArmPose.BLOCK) {
+                    float swag = 1;
+                    if (!isFlying() && both) {
+                        swag -= (float)Math.pow(swing, 2);
+                    }
+
+                    float mult = 1 - swag/2;
+                    arm.pitch = arm.pitch * mult - (PI / 10) * swag;
+                    arm.roll = -reflect * (PI / 15);
+
+                    if (attributes.isCrouching) {
+                        arm.rotationPointX -= reflect * 2;
+                    }
                 }
-                float mult = 1 - swag/2;
-                arm.pitch = arm.pitch * mult - (PI / 10) * swag;
-                arm.roll = -reflect * (PI / 15);
-                if (attributes.isCrouching) {
-                    arm.rotationPointX -= reflect * 2;
-                }
+
+                break;
             case EMPTY:
                 arm.yaw = 0;
                 break;
@@ -482,19 +493,22 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      *                    Used in animations together with {@code swing} and {@code move}.
      */
     protected void animateBreathing(float ticks) {
-        if (attributes.isSleeping) {
-            return;
-        }
-
         float cos = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
         float sin = MathHelper.sin(ticks * 0.067F) * 0.05F;
 
-        if (rightArmPose != ArmPose.EMPTY) {
+        boolean animateLeft =
+                (leftArmPose != ArmPose.EMPTY && (leftArmPose != rightArmPose || attributes.isLeftHanded))
+                && rightArmPose != ArmPose.BLOCK;
+        boolean animateRight =
+                (rightArmPose != ArmPose.EMPTY && (leftArmPose != rightArmPose || !attributes.isLeftHanded))
+                && leftArmPose != ArmPose.BLOCK;
+
+        if (animateRight) {
             rightArm.roll += cos;
             rightArm.pitch += sin;
         }
 
-        if (leftArmPose != ArmPose.EMPTY) {
+        if (animateLeft) {
             leftArm.roll += cos;
             leftArm.pitch += sin;
         }
