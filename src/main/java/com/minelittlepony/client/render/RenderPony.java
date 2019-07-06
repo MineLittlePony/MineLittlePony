@@ -50,8 +50,6 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
     public void preRenderCallback(T entity, float ticks) {
         updateModel(entity);
 
-        getModel().updateLivingState(entity, pony);
-
         float s = getScaleFactor();
         GlStateManager.scalef(s, s, s);
         enableModelRenderProfile();
@@ -135,6 +133,8 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
         pony = renderer.getEntityPony(entity);
         playerModel.apply(pony.getMetadata());
         pony.updateForEntity(entity);
+
+        getModel().updateLivingState(entity, pony);
     }
 
     public IPony getPony(T entity) {
