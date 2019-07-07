@@ -22,7 +22,7 @@ public class BasicEasingInterpolator implements IInterpolator {
         return instanceCache.getUnchecked(id);
     }
 
-    private final Map<String, Float> properties = new HashMap<String, Float>();
+    private final Map<String, Float> properties = new HashMap<>();
 
     private float getLast(String key, float to) {
         if (properties.containsKey(key)) {

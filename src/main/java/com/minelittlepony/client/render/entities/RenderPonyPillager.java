@@ -14,7 +14,7 @@ public class RenderPonyPillager extends RenderPonyMob<PillagerEntity, ModelPilla
     private static final Identifier TEXTURES = new Identifier("minelittlepony", "textures/entity/illager/pillager_pony.png");
 
     public RenderPonyPillager(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
-        super(manager, new ModelPillagerPony<PillagerEntity>());
+        super(manager, new ModelPillagerPony<>());
     }
 
     @Override

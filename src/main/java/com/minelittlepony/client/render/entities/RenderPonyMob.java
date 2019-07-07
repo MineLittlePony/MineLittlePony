@@ -31,7 +31,7 @@ import javax.annotation.Nonnull;
 
 public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T> & IPonyModel<T>> extends MobEntityRenderer<T, M> implements IPonyRender<T, M> {
 
-    protected RenderPony<T, M> renderPony = new RenderPony<T, M>(this);
+    protected RenderPony<T, M> renderPony = new RenderPony<>(this);
 
     public RenderPonyMob(EntityRenderDispatcher manager, M model) {
         super(manager, model, 0.5F);

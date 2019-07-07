@@ -25,11 +25,11 @@ public enum Wearable implements ITriggerPixelMapped<Wearable> {
     }
 
     public static Wearable[] flags(boolean[] flags) {
-        List<Wearable> wears = new ArrayList<Wearable>();
+        List<Wearable> wears = new ArrayList<>();
         Wearable[] values = values();
         for (int i = 0; i < values.length; i++) {
             if (flags[i]) wears.add(values[i]);
         }
-        return wears.toArray(new Wearable[wears.size()]);
+        return wears.stream().toArray(Wearable[]::new);
     }
 }
