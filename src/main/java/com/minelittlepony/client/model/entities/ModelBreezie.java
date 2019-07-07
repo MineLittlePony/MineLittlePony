@@ -75,7 +75,6 @@ public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> {
         rightWing.render(scale);
     }
 
-    @SuppressWarnings("incomplete-switch")
     @Override
     public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
 
