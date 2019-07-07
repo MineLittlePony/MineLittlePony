@@ -31,6 +31,7 @@ public interface ClientReadyCallback {
             }
         }
 
+        @Override
         public void tick(MinecraftClient client) {
             if (firstTick) {
                 ClientReadyCallback.EVENT.invoker().onClientPostInit(client);
