@@ -79,7 +79,6 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
                     // negate vanilla translations so the rider begins at the ridees feet.
                     GlStateManager.translatef(0, -ridingEntity.getHeight(), 0);
 
-                    @SuppressWarnings("unchecked")
                     IPony riderPony = renderer.getEntityPony((LivingEntity)ridingEntity);
 
                     renderer.translateRider((LivingEntity)ridingEntity, riderPony, entity, pony, ticks);
