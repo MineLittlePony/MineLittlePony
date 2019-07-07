@@ -50,7 +50,6 @@ public class RenderDummyPony extends RenderDummyPlayer<DummyPony, ClientPonyMode
         GlStateManager.translatef(0, 0, -entity.getWidth() / 2); // move us to the center of the shadow
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ClientPonyModel<DummyPony> getEntityModel(DummyPony playermodel) {
         Identifier loc = getTexture(playermodel);
