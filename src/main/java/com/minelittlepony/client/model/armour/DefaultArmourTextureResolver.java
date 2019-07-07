@@ -1,13 +1,11 @@
 package com.minelittlepony.client.model.armour;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.ClientResourcePackContainer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.resource.ResourcePack;
-import net.minecraft.resource.ResourceType;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 import com.google.common.collect.Maps;
@@ -17,7 +15,7 @@ import com.minelittlepony.model.armour.IArmourTextureResolver;
 
 import javax.annotation.Nullable;
 
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 
 public class DefaultArmourTextureResolver<T extends LivingEntity> implements IArmourTextureResolver<T> {
@@ -54,26 +52,13 @@ public class DefaultArmourTextureResolver<T extends LivingEntity> implements IAr
 
     private Identifier resolve(Identifier... resources) {
         // check resource packs for either texture.
-        // TODO: We need another way to iterate loaded resourcepacks
-        for (ClientResourcePackContainer entry : MinecraftClient.getInstance().getResourcePackContainerManager().getEnabledContainers()) {
-            ResourcePack pack = entry.createResourcePack();
-            for (Identifier candidate : resources) {
-                if (pack.contains(ResourceType.CLIENT_RESOURCES, candidate)) {
-                    // ponies are more important
-                    return candidate;
-                }
-            }
-        }
 
-        // the default pack
-        for (Identifier candidate : resources) {
-            try {
-                MinecraftClient.getInstance().getResourceManager().getResource(candidate);
-                return candidate;
-            } catch (IOException e) { }
-        }
+        ResourceManager manager = MinecraftClient.getInstance().getResourceManager();
 
-        return resources[resources.length - 1];
+        return Arrays.stream(resources)
+                .filter(manager::containsResource)
+                .findFirst()
+                .orElse(resources[resources.length - 1]);
     }
 
     private Identifier ponifyResource(Identifier human) {
