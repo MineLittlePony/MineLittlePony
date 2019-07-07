@@ -206,16 +206,22 @@ public class Pony implements IPony {
 
     @Override
     public boolean isRidingInteractive(LivingEntity entity) {
-        return PonyRenderManager.getInstance().getPonyRenderer(entity.getVehicle()) != null;
+        if (entity.hasVehicle() && entity.getVehicle() instanceof LivingEntity) {
+            return PonyRenderManager.getInstance().getPonyRenderer((LivingEntity) entity.getVehicle()) != null;
+        }
+        return false;
     }
 
     @Override
     public IPony getMountedPony(LivingEntity entity) {
-        Entity mount = entity.getVehicle();
+        if (entity.hasVehicle() && entity.getVehicle() instanceof LivingEntity) {
+            LivingEntity mount = (LivingEntity) entity.getVehicle();
 
-        IPonyRender<LivingEntity, ?> render = PonyRenderManager.getInstance().getPonyRenderer(mount);
+            IPonyRender<LivingEntity, ?> render = PonyRenderManager.getInstance().getPonyRenderer(mount);
 
-        return render == null ? null : render.getEntityPony((LivingEntity)mount);
+            return render == null ? null : render.getEntityPony(mount);
+        }
+        return null;
     }
 
     @Override

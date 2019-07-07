@@ -70,7 +70,7 @@ public class GuiPonySettings extends GameGui {
 
         int row = 0;
 
-        ((List<Element>)children()).add(content);
+        children().add(content);
 
         addButton(new Label(width / 2, 5).setCentered()).getStyle().setText(getTitle().getString());
         addButton(new Button(width / 2 - 100, height - 25))

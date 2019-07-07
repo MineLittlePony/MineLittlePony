@@ -17,7 +17,6 @@ import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.Entity;
@@ -100,15 +99,15 @@ public class PonyRenderManager {
 
     @SuppressWarnings("unchecked")
     @Nullable
-    public <T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>, R extends LivingEntityRenderer<T, M> & IPonyRender<T, M>> R getPonyRenderer(@Nullable Entity entity) {
-        if (entity == null || !(entity instanceof LivingEntity)) {
+    public <T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> IPonyRender<T, M> getPonyRenderer(@Nullable T entity) {
+        if (entity == null) {
             return null;
         }
 
-        EntityRenderer<Entity> renderer = MinecraftClient.getInstance().getEntityRenderManager().getRenderer(entity);
+        EntityRenderer<T> renderer = MinecraftClient.getInstance().getEntityRenderManager().getRenderer(entity);
 
         if (renderer instanceof IPonyRender) {
-            return (R)(Object)renderer;
+            return (IPonyRender<T, M>) renderer;
         }
 
         return null;

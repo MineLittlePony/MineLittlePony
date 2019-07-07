@@ -30,6 +30,6 @@ public enum Wearable implements ITriggerPixelMapped<Wearable> {
         for (int i = 0; i < values.length; i++) {
             if (flags[i]) wears.add(values[i]);
         }
-        return wears.stream().toArray(Wearable[]::new);
+        return wears.toArray(new Wearable[0]);
     }
 }

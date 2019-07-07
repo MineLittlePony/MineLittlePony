@@ -60,41 +60,39 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
     public float getRenderYaw(T entity, float rotationYaw, float partialTicks) {
         if (entity.hasVehicle()) {
             Entity mount = entity.getVehicle();
-            if (mount  instanceof LivingEntity) {
-                return MathUtil.interpolateDegress(((LivingEntity)mount).field_6220, ((LivingEntity)mount).field_6283, partialTicks);
+            if (mount instanceof LivingEntity) {
+                return MathUtil.interpolateDegress(((LivingEntity) mount).field_6220, ((LivingEntity) mount).field_6283, partialTicks);
             }
         }
 
         return rotationYaw;
     }
 
-    protected void translateRider(LivingEntity entity, float ticks) {
-        if (entity.hasVehicle()) {
-            Entity ridingEntity = entity.getVehicle();
+    protected void translateRider(T entity, float ticks) {
+        if (entity.hasVehicle() && entity.getVehicle() instanceof LivingEntity) {
 
-            if (ridingEntity instanceof LivingEntity) {
-                IPonyRender<LivingEntity, ?> renderer = PonyRenderManager.getInstance().getPonyRenderer((LivingEntity)ridingEntity);
+            LivingEntity ridingEntity = (LivingEntity) entity.getVehicle();
+            IPonyRender<LivingEntity, ?> renderer = PonyRenderManager.getInstance().getPonyRenderer(ridingEntity);
 
-                if (renderer != null) {
-                    // negate vanilla translations so the rider begins at the ridees feet.
-                    GlStateManager.translatef(0, -ridingEntity.getHeight(), 0);
+            if (renderer != null) {
+                // negate vanilla translations so the rider begins at the ridees feet.
+                GlStateManager.translatef(0, -ridingEntity.getHeight(), 0);
 
-                    IPony riderPony = renderer.getEntityPony((LivingEntity)ridingEntity);
+                IPony riderPony = renderer.getEntityPony(ridingEntity);
 
-                    renderer.translateRider((LivingEntity)ridingEntity, riderPony, entity, pony, ticks);
-                }
+                renderer.translateRider(ridingEntity, riderPony, entity, pony, ticks);
             }
         }
     }
 
     @SuppressWarnings("unchecked")
     public void applyPostureTransform(T player, float yaw, float ticks) {
-        ((PonyPosture<T>)getPosture(player)).apply(player, getModel(), yaw, ticks, 1);
+        ((PonyPosture<T>) getPosture(player)).apply(player, getModel(), yaw, ticks, 1);
     }
 
     @SuppressWarnings("unchecked")
     public void applyPostureRiding(T player, float yaw, float ticks) {
-        ((PonyPosture<T>)getPosture(player)).apply(player, getModel(), yaw, ticks, -1);
+        ((PonyPosture<T>) getPosture(player)).apply(player, getModel(), yaw, ticks, -1);
     }
 
     @Nonnull
