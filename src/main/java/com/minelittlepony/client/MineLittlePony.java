@@ -37,7 +37,7 @@ import org.apache.logging.log4j.Logger;
 import com.minelittlepony.settings.PonyConfig;
 import org.lwjgl.glfw.GLFW;
 
-public abstract class MineLittlePony implements ClientModInitializer {
+public class MineLittlePony implements ClientModInitializer {
 
     private static MineLittlePony instance;
 
