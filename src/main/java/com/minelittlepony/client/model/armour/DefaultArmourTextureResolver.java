@@ -15,7 +15,6 @@ import com.minelittlepony.model.armour.IArmourTextureResolver;
 
 import javax.annotation.Nullable;
 
-import java.util.Arrays;
 import java.util.Map;
 
 public class DefaultArmourTextureResolver<T extends LivingEntity> implements IArmourTextureResolver<T> {
@@ -55,10 +54,13 @@ public class DefaultArmourTextureResolver<T extends LivingEntity> implements IAr
 
         ResourceManager manager = MinecraftClient.getInstance().getResourceManager();
 
-        return Arrays.stream(resources)
-                .filter(manager::containsResource)
-                .findFirst()
-                .orElse(resources[resources.length - 1]);
+        for (Identifier i : resources) {
+            if (manager.containsResource(i)) {
+                return i;
+            }
+        }
+
+        return resources[resources.length - 1];
     }
 
     private Identifier ponifyResource(Identifier human) {
@@ -76,11 +78,3 @@ public class DefaultArmourTextureResolver<T extends LivingEntity> implements IAr
         return HUMAN_ARMOUR.computeIfAbsent(ForgeProxy.getArmorTexture(entity, item, def, slot, type), Identifier::new);
     }
 }
-
-
-
-
-
-
-
-
