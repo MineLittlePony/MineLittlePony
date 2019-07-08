@@ -1,6 +1,6 @@
 package com.minelittlepony.client.render.entities;
 
-import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;

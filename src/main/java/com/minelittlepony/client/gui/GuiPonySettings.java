@@ -1,11 +1,10 @@
 package com.minelittlepony.client.gui;
 
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.LiteralText;
 
-import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.entities.MobRenderers;
 import com.minelittlepony.common.client.gui.GameGui;
 import com.minelittlepony.common.client.gui.ScrollContainer;
@@ -17,8 +16,6 @@ import com.minelittlepony.pony.meta.Size;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
 import com.minelittlepony.settings.PonySettings;
-
-import java.util.List;
 
 /**
  * In-Game options menu.

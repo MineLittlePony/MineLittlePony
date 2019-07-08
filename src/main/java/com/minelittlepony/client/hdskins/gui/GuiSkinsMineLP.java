@@ -1,6 +1,6 @@
 package com.minelittlepony.client.hdskins.gui;
 
-import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.common.client.gui.element.IconicToggle;
 import com.minelittlepony.common.client.gui.style.Style;
 import com.minelittlepony.hdskins.dummy.PlayerPreview;

@@ -2,7 +2,7 @@ package com.minelittlepony.client.model;
 
 import net.minecraft.entity.LivingEntity;
 
-import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.armour.IArmour;
 import com.minelittlepony.model.armour.IEquestrianArmour;

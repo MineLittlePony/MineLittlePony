@@ -6,7 +6,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.common.util.MoreStreams;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.IPonyManager;

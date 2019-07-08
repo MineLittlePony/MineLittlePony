@@ -1,18 +1,25 @@
 package com.minelittlepony.client;
 
-import com.minelittlepony.MineLittlePony;
 import com.minelittlepony.client.gui.GuiPonySettings;
+import com.minelittlepony.client.hdskins.IndirectHDSkins;
 import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
 import com.minelittlepony.client.settings.ClientPonyConfig;
+import com.minelittlepony.common.client.gui.element.Button;
+import com.minelittlepony.common.client.gui.sprite.TextureSprite;
+import com.minelittlepony.common.event.ClientReadyCallback;
+import com.minelittlepony.common.event.ScreenInitCallback;
 import com.minelittlepony.common.event.SkinFilterCallback;
 import com.minelittlepony.common.util.GamePaths;
 import com.minelittlepony.settings.JsonConfig;
-import com.minelittlepony.settings.PonyConfig;
+import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
+import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
@@ -24,42 +31,58 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.SystemUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.minelittlepony.settings.PonyConfig;
 import org.lwjgl.glfw.GLFW;
 
-/**
- * Static MineLittlePony singleton class. Everything's controlled from up here.
- */
-public class MineLPClient extends MineLittlePony {
+public abstract class MineLittlePony implements ClientModInitializer {
+
+    private static MineLittlePony instance;
+
+    public static final Logger logger = LogManager.getLogger("MineLittlePony");
 
     private static int modelUpdateCounter = 0;
     private static boolean reloadingModels = false;
-
+    private final PonyRenderManager renderManager = PonyRenderManager.getInstance();
     private PonyConfig config;
     private PonyManager ponyManager;
-
-    private final PonyRenderManager renderManager = PonyRenderManager.getInstance();
-
     private FabricKeyBinding keyBinding;
 
-    public static MineLPClient getInstance() {
-        return (MineLPClient)MineLittlePony.getInstance();
+    public MineLittlePony() {
+        instance = this;
     }
 
-    public MineLPClient() {
-        config = JsonConfig.of(GamePaths.getConfigDirectory().resolve("minelp.json"), this::createConfig);
-        ponyManager = new PonyManager(config);
+    /**
+     * Gets the global MineLP instance.
+     */
+    public static MineLittlePony getInstance() {
+        return instance;
+    }
 
+    @Override
+    public void onInitializeClient() {
+        config = JsonConfig.of(GamePaths.getConfigDirectory().resolve("minelp.json"), ClientPonyConfig::new);
+        ponyManager = new PonyManager(config);
         keyBinding = FabricKeyBinding.Builder.create(new Identifier("minelittlepony", "settings"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F9, "key.categories.misc").build();
+
         KeyBindingRegistry.INSTANCE.register(keyBinding);
 
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(ponyManager);
 
         // convert legacy pony skins
         SkinFilterCallback.EVENT.register(new LegacySkinConverter());
-    }
 
-    protected ClientPonyConfig createConfig() {
-        return new ClientPonyConfig();
+        // general events
+        ClientReadyCallback.Handler.register();
+        ClientTickCallback.EVENT.register(this::onTick);
+        ClientReadyCallback.EVENT.register(this::postInit);
+        ScreenInitCallback.EVENT.register(this::onScreenInit);
+
+        if (FabricLoader.getInstance().isModLoaded("hdskins")) {
+            IndirectHDSkins.initialize();
+        }
     }
 
     /**
@@ -106,22 +129,35 @@ public class MineLPClient extends MineLittlePony {
         PonySkullRenderer.resolve();
     }
 
-    @Override
-    public PonyManager getManager() {
-        return ponyManager;
-    }
+    private void onScreenInit(Screen screen, ScreenInitCallback.ButtonList buttons) {
+        if (screen instanceof TitleScreen) {
+            int y = FabricLoader.getInstance().isModLoaded("hdskins") ? 80 : 50;
 
-    @Override
-    public int getModelRevisionNumber() {
-        return modelUpdateCounter;
+            buttons.add(new Button(screen.width - 50, screen.height - y, 20, 20).onClick(sender -> {
+                MinecraftClient.getInstance().openScreen(new GuiPonySettings());
+            }).setStyle(new com.minelittlepony.common.client.gui.style.Style()
+                    .setIcon(new TextureSprite()
+                            .setPosition(2, 2)
+                            .setTexture(new Identifier("minelittlepony", "textures/gui/pony.png"))
+                            .setTextureSize(16, 16)
+                            .setSize(16, 16))
+            ));
+        }
     }
 
     /**
      * Gets the global MineLP client configuration.
      */
-    @Override
     public PonyConfig getConfig() {
         return config;
     }
 
+    public PonyManager getManager() {
+        return ponyManager;
+    }
+
+    public int getModelRevisionNumber() {
+        return modelUpdateCounter;
+    }
 }
+

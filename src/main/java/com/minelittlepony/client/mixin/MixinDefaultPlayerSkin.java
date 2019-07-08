@@ -1,6 +1,6 @@
 package com.minelittlepony.client.mixin;
 
-import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.races.PlayerModels;
 import com.minelittlepony.pony.IPonyManager;
 import com.minelittlepony.settings.PonyLevel;

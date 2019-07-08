@@ -8,7 +8,7 @@ import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.village.VillagerType;
 
-import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.util.resources.ITextureSupplier;
 
 import java.util.HashMap;

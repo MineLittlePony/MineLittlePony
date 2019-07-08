@@ -1,11 +1,11 @@
 package com.minelittlepony.client.hdskins;
 
-import com.minelittlepony.MineLittlePony;
-import com.minelittlepony.client.ClientReadyCallback;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.client.hdskins.gui.DummyPony;
 import com.minelittlepony.client.hdskins.gui.GuiSkinsMineLP;
 import com.minelittlepony.client.hdskins.gui.RenderDummyPony;
+import com.minelittlepony.common.event.ClientReadyCallback;
 import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 

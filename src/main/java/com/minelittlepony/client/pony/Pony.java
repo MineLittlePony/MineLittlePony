@@ -1,7 +1,7 @@
 package com.minelittlepony.client.pony;
 
 import com.google.common.base.MoreObjects;
-import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.PonyRenderManager;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.client.transform.PonyTransformation;

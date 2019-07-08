@@ -2,7 +2,7 @@ package com.minelittlepony.client.hdskins.gui;
 
 import net.minecraft.util.Identifier;
 
-import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.pony.Pony;
 import com.minelittlepony.hdskins.dummy.DummyPlayer;
 import com.minelittlepony.hdskins.dummy.PlayerPreview;

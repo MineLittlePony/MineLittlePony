@@ -17,7 +17,7 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "com.minelittlepony.client.FabMod"
+      "com.minelittlepony.client.MineLittlePony"
     ],
     "modmenu": [
       "com.minelittlepony.client.modmenu.MineLPModMenuFactory"

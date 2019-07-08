@@ -2,7 +2,7 @@ package com.minelittlepony.client.render;
 
 import org.lwjgl.opengl.GL14;
 
-import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.util.render.Color;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.settings.PonySettings;

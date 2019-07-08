@@ -1,6 +1,6 @@
 package com.minelittlepony.client.hdskins.gui;
 
-import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.races.PlayerModels;

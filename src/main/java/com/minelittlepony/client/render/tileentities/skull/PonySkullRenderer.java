@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.tileentities.skull;
 
 import com.google.common.collect.Maps;
-import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.LevitatingItemRenderer;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.settings.PonyConfig;

@@ -1,6 +1,6 @@
 package com.minelittlepony.settings;
 
-import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.settings.Config.Setting;
 
 /**

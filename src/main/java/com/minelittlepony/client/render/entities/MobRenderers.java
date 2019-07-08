@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.entities;
 
 import com.google.common.collect.Lists;
-import com.minelittlepony.MineLittlePony;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.PonyRenderManager;
 import com.minelittlepony.settings.Config;
 import com.minelittlepony.settings.Config.Setting;
