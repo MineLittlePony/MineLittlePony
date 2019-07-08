@@ -49,7 +49,7 @@ public class ModelWrapper<T extends LivingEntity, M extends IModel> implements I
 
     @Override
     public void apply(IPonyData meta) {
-        int modelRevision = MineLittlePony.getInstance().getModelRevisionNumber();
+        int modelRevision = MineLittlePony.getInstance().getModelRevision();
 
         if (modelRevision != lastModelUpdate) {
             lastModelUpdate = modelRevision;

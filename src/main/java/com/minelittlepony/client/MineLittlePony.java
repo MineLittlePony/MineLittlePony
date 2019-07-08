@@ -11,7 +11,10 @@ import com.minelittlepony.common.event.ClientReadyCallback;
 import com.minelittlepony.common.event.ScreenInitCallback;
 import com.minelittlepony.common.event.SkinFilterCallback;
 import com.minelittlepony.common.util.GamePaths;
+import com.minelittlepony.pony.IPonyManager;
 import com.minelittlepony.settings.JsonConfig;
+import com.minelittlepony.settings.PonyConfig;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
@@ -22,7 +25,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.LiteralText;
@@ -31,23 +33,28 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.SystemUtil;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.minelittlepony.settings.PonyConfig;
 import org.lwjgl.glfw.GLFW;
 
+/**
+ * Client Mod implementation
+ */
 public class MineLittlePony implements ClientModInitializer {
 
     private static MineLittlePony instance;
 
     public static final Logger logger = LogManager.getLogger("MineLittlePony");
 
-    private static int modelUpdateCounter = 0;
-    private static boolean reloadingModels = false;
+    private int modelUpdateCounter = 0;
+    private boolean reloadingModels = false;
+
     private final PonyRenderManager renderManager = PonyRenderManager.getInstance();
+
     private PonyConfig config;
     private PonyManager ponyManager;
+
     private FabricKeyBinding keyBinding;
 
     public MineLittlePony() {
@@ -77,7 +84,7 @@ public class MineLittlePony implements ClientModInitializer {
         // general events
         ClientReadyCallback.Handler.register();
         ClientTickCallback.EVENT.register(this::onTick);
-        ClientReadyCallback.EVENT.register(this::postInit);
+        ClientReadyCallback.EVENT.register(this::onClientReady);
         ScreenInitCallback.EVENT.register(this::onScreenInit);
 
         if (FabricLoader.getInstance().isModLoaded("hdskins")) {
@@ -85,32 +92,28 @@ public class MineLittlePony implements ClientModInitializer {
         }
     }
 
-    /**
-     * Called when the game is ready.
-     */
-    public void postInit(MinecraftClient minecraft) {
-        EntityRenderDispatcher rm = minecraft.getEntityRenderManager();
-        renderManager.initialiseRenderers(rm);
+    private void onClientReady(MinecraftClient client) {
+        renderManager.initialiseRenderers(client.getEntityRenderManager());
     }
 
-    public void onTick(MinecraftClient minecraft) {
+    private void onTick(MinecraftClient client) {
 
-        boolean inGame = minecraft.world != null && minecraft.player != null && minecraft.currentScreen == null;
-        boolean mainMenu = minecraft.currentScreen instanceof TitleScreen;
+        boolean inGame = client.world != null && client.player != null && client.currentScreen == null;
+        boolean mainMenu = client.currentScreen instanceof TitleScreen;
 
         if (!inGame && mainMenu) {
             KeyBinding.updatePressedStates();
         }
 
         if ((mainMenu || inGame) && keyBinding.isPressed()) {
-            minecraft.openScreen(new GuiPonySettings());
+            client.openScreen(new GuiPonySettings());
         } else if (inGame) {
-            long handle = minecraft.window.getHandle();
+            long handle = client.window.getHandle();
 
             if ((SystemUtil.getMeasuringTimeMs() % 10) == 0) {
                 if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_F3) && InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_M)) {
                     if (!reloadingModels) {
-                        minecraft.inGameHud.getChatHud().addMessage(
+                        client.inGameHud.getChatHud().addMessage(
                                 new LiteralText("").append(
                                 new TranslatableText("debug.prefix")
                                     .setStyle(new Style().setColor(Formatting.YELLOW).setBold(true)))
@@ -152,11 +155,11 @@ public class MineLittlePony implements ClientModInitializer {
         return config;
     }
 
-    public PonyManager getManager() {
+    public IPonyManager getManager() {
         return ponyManager;
     }
 
-    public int getModelRevisionNumber() {
+    public int getModelRevision() {
         return modelUpdateCounter;
     }
 }
