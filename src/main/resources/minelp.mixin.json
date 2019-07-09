@@ -12,6 +12,8 @@
         "MixinFirstPersonRenderer",
         "MixinGlStateManager",
         "MixinItemRenderer",
-        "MixinClientPlayerEntity"
+        "MixinClientPlayerEntity",
+        "MixinPlayerMoveC2SPacket_Both",
+        "MixinPlayerMoveC2SPacket_LookOnly"
     ]
 }
