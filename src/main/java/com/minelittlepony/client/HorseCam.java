@@ -67,7 +67,7 @@ public class HorseCam {
 
         // Small angles aren't worth changing.
         // Helps with bows, arrows, and projectiles.
-        if (Math.abs(originalPitch) < 10) {
+        if (Math.abs(originalPitch) < 2) {
             return originalPitch;
         }
 
