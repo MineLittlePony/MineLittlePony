@@ -87,8 +87,6 @@ public class HorseCam {
         // Preserve up/down direction.
         float newPitch = (90 - theta) * Math.signum(originalPitch);
 
-        System.out.println("From " + originalPitch + " to " + newPitch);
-
         return newPitch;
     }
 }
