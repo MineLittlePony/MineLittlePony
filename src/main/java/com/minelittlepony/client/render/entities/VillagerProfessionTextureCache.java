@@ -74,16 +74,17 @@ class VillagerProfessionTextureCache<T extends LivingEntity & VillagerDataContai
                                    // through all the lambda generations if we can avoid it.
         }
 
-        return cache.computeIfAbsent(key, k -> {
-            return verifyTexture(formatter.supplyTexture(k)).orElseGet(() -> {
-                if (type == VillagerType.PLAINS) {
-                    // if texture loading fails, use the fallback.
-                    return fallback;
-                }
+        Identifier result = verifyTexture(formatter.supplyTexture(key)).orElseGet(() -> {
+            if (type == VillagerType.PLAINS) {
+                // if texture loading fails, use the fallback.
+                return fallback;
+            }
 
-                return getTexture(VillagerType.PLAINS, profession);
-            });
+            return getTexture(VillagerType.PLAINS, profession);
         });
+
+        cache.put(key, result);
+        return result;
     }
 
     protected Optional<Identifier> verifyTexture(Identifier texture) {
