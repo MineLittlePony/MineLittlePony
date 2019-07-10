@@ -34,6 +34,7 @@
     "kirin": "*"
   },
   "suggests": {
-  	"hdskins": "*"
+    "hdskins": "*",
+    "modmenu": "*"
   }
 }
