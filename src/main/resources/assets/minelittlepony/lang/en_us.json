@@ -14,6 +14,7 @@
   "minelp.options.fpsmagic": "Ponies use magic in first-person",
   "minelp.options.ponyskulls": "Render mob heads as ponies",
   "minelp.options.frustrum": "Enable Frustum checks",
+  "minelp.options.button": "Display On Title Screen",
   "minelp.mobs.title": "Mob Settings",
   "minelp.mobs.villagers": "Ponify villagers",
   "minelp.mobs.zombies": "Ponify zombies",

@@ -62,11 +62,8 @@ public class PonyConfig extends JsonConfig {
         return sizeOverride.get();
     }
 
-    public float setSizeOverride(float value) {
-        value = Math.round(value);
-        Size size = Size.REGISTRY[(int) value % Size.REGISTRY.length];
-
-        sizeOverride.set(size);
-        return size.ordinal();
+    public Size setSizeOverride(Size value) {
+        sizeOverride.set(value);
+        return value;
     }
 }

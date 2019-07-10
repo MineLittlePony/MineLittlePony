@@ -5,6 +5,7 @@ import com.minelittlepony.client.hdskins.IndirectHDSkins;
 import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
 import com.minelittlepony.client.settings.ClientPonyConfig;
+import com.minelittlepony.common.client.gui.VisibilityMode;
 import com.minelittlepony.common.client.gui.element.Button;
 import com.minelittlepony.common.client.gui.sprite.TextureSprite;
 import com.minelittlepony.common.event.ClientReadyCallback;
@@ -52,10 +53,13 @@ public class MineLittlePony implements ClientModInitializer {
 
     private final PonyRenderManager renderManager = PonyRenderManager.getInstance();
 
-    private PonyConfig config;
+    private ClientPonyConfig config;
     private PonyManager ponyManager;
 
     private FabricKeyBinding keyBinding;
+
+    private boolean hasHdSkins;
+    private boolean hasModMenu;
 
     public MineLittlePony() {
         instance = this;
@@ -70,6 +74,9 @@ public class MineLittlePony implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        hasHdSkins = FabricLoader.getInstance().isModLoaded("hdskins");
+        hasModMenu = FabricLoader.getInstance().isModLoaded("modmenu");
+
         config = JsonConfig.of(GamePaths.getConfigDirectory().resolve("minelp.json"), ClientPonyConfig::new);
         ponyManager = new PonyManager(config);
         keyBinding = FabricKeyBinding.Builder.create(new Identifier("minelittlepony", "settings"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F9, "key.categories.misc").build();
@@ -134,17 +141,23 @@ public class MineLittlePony implements ClientModInitializer {
 
     private void onScreenInit(Screen screen, ScreenInitCallback.ButtonList buttons) {
         if (screen instanceof TitleScreen) {
-            int y = FabricLoader.getInstance().isModLoaded("hdskins") ? 80 : 50;
-
-            buttons.add(new Button(screen.width - 50, screen.height - y, 20, 20).onClick(sender -> {
-                MinecraftClient.getInstance().openScreen(new GuiPonySettings());
-            }).setStyle(new com.minelittlepony.common.client.gui.style.Style()
-                    .setIcon(new TextureSprite()
-                            .setPosition(2, 2)
-                            .setTexture(new Identifier("minelittlepony", "textures/gui/pony.png"))
-                            .setTextureSize(16, 16)
-                            .setSize(16, 16))
+            VisibilityMode mode = config.getHorseButtonMode();
+            boolean show = mode == VisibilityMode.ON || (mode == VisibilityMode.AUTO
+                && !(hasHdSkins || hasModMenu
             ));
+
+            if (show) {
+                int y = hasHdSkins ? 80 : 50;
+                buttons.add(new Button(screen.width - 50, screen.height - y, 20, 20).onClick(sender -> {
+                    MinecraftClient.getInstance().openScreen(new GuiPonySettings());
+                }).setStyle(new com.minelittlepony.common.client.gui.style.Style()
+                        .setIcon(new TextureSprite()
+                                .setPosition(2, 2)
+                                .setTexture(new Identifier("minelittlepony", "textures/gui/pony.png"))
+                                .setTextureSize(16, 16)
+                                .setSize(16, 16))
+                ));
+            }
         }
     }
 
