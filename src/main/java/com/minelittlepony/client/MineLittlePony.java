@@ -12,8 +12,8 @@ import com.minelittlepony.common.event.ClientReadyCallback;
 import com.minelittlepony.common.event.ScreenInitCallback;
 import com.minelittlepony.common.event.SkinFilterCallback;
 import com.minelittlepony.common.util.GamePaths;
+import com.minelittlepony.common.util.settings.JsonConfig;
 import com.minelittlepony.pony.IPonyManager;
-import com.minelittlepony.settings.JsonConfig;
 import com.minelittlepony.settings.PonyConfig;
 
 import net.fabricmc.api.ClientModInitializer;

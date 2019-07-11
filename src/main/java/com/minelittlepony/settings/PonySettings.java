@@ -1,12 +1,12 @@
 package com.minelittlepony.settings;
 
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.settings.Config.Setting;
+import com.minelittlepony.common.util.settings.Config;
 
 /**
  * Mod settings.
  */
-public enum PonySettings implements Setting<Boolean> {
+public enum PonySettings implements Config.Setting<Boolean> {
     SIZES,
     SNUZZLES,
     FILLYCAM,
