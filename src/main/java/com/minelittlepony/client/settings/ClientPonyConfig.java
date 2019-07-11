@@ -5,11 +5,15 @@ import net.minecraft.entity.player.PlayerEntity;
 
 import com.minelittlepony.client.render.entities.MobRenderers;
 import com.minelittlepony.common.client.gui.VisibilityMode;
+import com.minelittlepony.common.util.settings.Setting;
 import com.minelittlepony.settings.PonyConfig;
 
 public class ClientPonyConfig extends PonyConfig {
 
-    private final Setting<VisibilityMode> buttonMode = new Value<>("horseButton", VisibilityMode.AUTO);
+    /**
+     * Visibility mode for the horse button.
+     */
+    public final Setting<VisibilityMode> horseButton = value("horseButton", VisibilityMode.AUTO);
 
     public ClientPonyConfig() {
         initWith(MobRenderers.values());
@@ -22,14 +26,5 @@ public class ClientPonyConfig extends PonyConfig {
         if (player != null) {
             player.calculateDimensions();
         }
-    }
-
-    public VisibilityMode getHorseButtonMode() {
-        return buttonMode.get();
-    }
-
-    public VisibilityMode setHorseButtonMode(VisibilityMode value) {
-        buttonMode.set(value);
-        return value;
     }
 }

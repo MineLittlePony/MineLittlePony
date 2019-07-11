@@ -56,7 +56,7 @@ public enum Size implements ITriggerPixelMapped<Size> {
     }
 
     public Size getEffectiveSize() {
-        Size sz = MineLittlePony.getInstance().getConfig().getOverrideSize();
+        Size sz = MineLittlePony.getInstance().getConfig().sizeOverride.get();
 
         if (sz != UNSET) {
             return sz;

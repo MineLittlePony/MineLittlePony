@@ -76,10 +76,10 @@ public class GuiPonySettings extends GameGui {
                 .setText("gui.done");
 
         content.addButton(new Label(LEFT, row)).getStyle().setText(PONY_LEVEL);
-        content.addButton(new Slider(LEFT, row += 20, 0, 2, config.getPonyLevel().ordinal())
+        content.addButton(new Slider(LEFT, row += 20, 0, 2, config.ponyLevel.get().ordinal())
                 .onChange(v -> {
                     PonyLevel level = PonyLevel.valueFor(v);
-                    config.setPonyLevel(level);
+                    config.ponyLevel.set(level);
                     return (float)level.ordinal();
                 })
                 .setFormatter(value -> I18n.translate(PONY_LEVEL + "." + PonyLevel.valueFor(value).name().toLowerCase())));
@@ -90,8 +90,8 @@ public class GuiPonySettings extends GameGui {
                     .onChange(config::setGlobalScaleFactor)
                     .setFormatter(value -> I18n.translate("minelp.debug.scale.value", I18n.translate(describeCurrentScale(value)))));
             content.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.size");
-            content.addButton(new EnumSlider<>(LEFT, row += 15, config.getOverrideSize())
-                    .onChange(config::setSizeOverride));
+            content.addButton(new EnumSlider<>(LEFT, row += 15, config.sizeOverride.get())
+                    .onChange(config.sizeOverride::set));
         }
 
         row += 20;
@@ -104,8 +104,8 @@ public class GuiPonySettings extends GameGui {
 
         content.addButton(new Label(LEFT, row += 20)).getStyle().setText(OPTIONS_PREFIX + "button");
 
-        content.addButton(new EnumSlider<>(LEFT, row += 20, config.getHorseButtonMode())
-                .onChange(config::setHorseButtonMode));
+        content.addButton(new EnumSlider<>(LEFT, row += 20, config.horseButton.get())
+                .onChange(config.horseButton::set));
 
         if (RIGHT != LEFT) {
             row = 0;

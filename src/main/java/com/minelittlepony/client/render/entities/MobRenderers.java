@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.PonyRenderManager;
 import com.minelittlepony.common.util.settings.Config;
+import com.minelittlepony.common.util.settings.Setting;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import net.minecraft.entity.passive.*;
 /**
  * Central location where new entity renderers are registered and applied.
  */
-public enum MobRenderers implements Config.Setting<Boolean> {
+public enum MobRenderers implements Setting<Boolean> {
     VILLAGERS {
         @Override
         void register(boolean state, PonyRenderManager pony) {
@@ -78,9 +79,10 @@ public enum MobRenderers implements Config.Setting<Boolean> {
     }
 
     @Override
-    public void set(Boolean value) {
-        Config.Setting.super.set(value);
+    public Boolean set(Boolean value) {
+        value = Setting.super.set(value);
         apply(PonyRenderManager.getInstance());
+        return value;
     }
 
     @Override

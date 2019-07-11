@@ -20,7 +20,7 @@ public class PlayerSkullRenderer extends PonySkull {
 
     @Override
     public boolean canRender(PonyConfig config) {
-        return config.getPonyLevel() != PonyLevel.HUMANS;
+        return config.ponyLevel.get() != PonyLevel.HUMANS;
     }
 
     @Override

@@ -21,7 +21,7 @@ public abstract class MixinDefaultPlayerSkin {
             at = @At("HEAD"),
             cancellable = true)
     private static void legacySkin(CallbackInfoReturnable<Identifier> cir) {
-        if (MineLittlePony.getInstance().getConfig().getPonyLevel() == PonyLevel.PONIES) {
+        if (MineLittlePony.getInstance().getConfig().ponyLevel.get() == PonyLevel.PONIES) {
             cir.setReturnValue(IPonyManager.STEVE);
         }
     }
@@ -30,7 +30,7 @@ public abstract class MixinDefaultPlayerSkin {
             at = @At("HEAD"),
             cancellable = true)
     private static void defaultSkin(UUID uuid, CallbackInfoReturnable<Identifier> cir) {
-        if (MineLittlePony.getInstance().getConfig().getPonyLevel() == PonyLevel.PONIES) {
+        if (MineLittlePony.getInstance().getConfig().ponyLevel.get() == PonyLevel.PONIES) {
             cir.setReturnValue(IPonyManager.getDefaultSkin(uuid));
         }
     }
@@ -39,7 +39,7 @@ public abstract class MixinDefaultPlayerSkin {
             at = @At("HEAD"),
             cancellable = true)
     private static void skinType(UUID uuid, CallbackInfoReturnable<String> cir) {
-        if (MineLittlePony.getInstance().getConfig().getPonyLevel() == PonyLevel.PONIES) {
+        if (MineLittlePony.getInstance().getConfig().ponyLevel.get() == PonyLevel.PONIES) {
 
             cir.setReturnValue(PlayerModels.forRace(MineLittlePony.getInstance().getManager()
                     .getPony(IPonyManager.getDefaultSkin(uuid), uuid)

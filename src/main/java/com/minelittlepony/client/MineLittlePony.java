@@ -141,7 +141,7 @@ public class MineLittlePony implements ClientModInitializer {
 
     private void onScreenInit(Screen screen, ScreenInitCallback.ButtonList buttons) {
         if (screen instanceof TitleScreen) {
-            VisibilityMode mode = config.getHorseButtonMode();
+            VisibilityMode mode = config.horseButton.get();
             boolean show = mode == VisibilityMode.ON || (mode == VisibilityMode.AUTO
                 && !(hasHdSkins || hasModMenu
             ));
