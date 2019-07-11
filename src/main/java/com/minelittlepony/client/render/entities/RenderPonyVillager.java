@@ -26,6 +26,7 @@ public class RenderPonyVillager extends RenderPonyMob.Caster<VillagerEntity, Mod
 
     @Override
     protected void addLayers() {
+        super.addLayers();
         ReloadableResourceManager resManager = (ReloadableResourceManager)MinecraftClient.getInstance().getResourceManager();
 
         addFeature(new VillagerClothingFeatureRenderer<>(this, resManager, "villager"));

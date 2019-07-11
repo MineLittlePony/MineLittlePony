@@ -25,6 +25,7 @@ public class RenderPonyZombieVillager extends RenderPonyMob.Caster<ZombieVillage
 
     @Override
     protected void addLayers() {
+        super.addLayers();
         ReloadableResourceManager resManager = (ReloadableResourceManager)MinecraftClient.getInstance().getResourceManager();
 
         addFeature(new VillagerClothingFeatureRenderer<>(this, resManager, "zombie_villager"));
