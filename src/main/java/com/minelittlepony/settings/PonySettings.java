@@ -9,7 +9,6 @@ import com.minelittlepony.settings.Config.Setting;
 public enum PonySettings implements Setting<Boolean> {
     SIZES,
     SNUZZLES,
-    HD,
     FILLYCAM,
     SHOWSCALE,
     FPSMAGIC,

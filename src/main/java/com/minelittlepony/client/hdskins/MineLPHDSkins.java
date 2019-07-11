@@ -11,31 +11,14 @@ import net.minecraft.client.MinecraftClient;
 
 import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.hdskins.HDSkins;
-import com.minelittlepony.hdskins.net.LegacySkinServer;
-import com.minelittlepony.hdskins.net.SkinServer;
-import com.minelittlepony.hdskins.net.ValhallaSkinServer;
 
 /**
  * All the interactions with HD Skins.
  */
 class MineLPHDSkins {
-    private static final String MINELP_VALHALLA_SERVER = "http://skins.minelittlepony-mod.com";
 
-    private static final String MINELP_LEGACY_SERVER = "http://minelpskins.voxelmodpack.com";
-    private static final String MINELP_LEGACY_GATEWAY = "http://minelpskinmanager.voxelmodpack.com";
-
-    public MineLPHDSkins() {
+    MineLPHDSkins() {
         SkinsProxy.instance = new HDSkinsProxy();
-
-        SkinServer legacy = new LegacySkinServer(MINELP_LEGACY_SERVER, MINELP_LEGACY_GATEWAY);
-        SkinServer valhalla = new ValhallaSkinServer(MINELP_VALHALLA_SERVER);
-        // Register pony servers
-        HDSkins.getInstance().addSkinServer(legacy);
-        HDSkins.getInstance().addSkinServer(valhalla);
-
-        SkinServer.defaultServers.add(legacy);
-        // And make valhalla the default
-        SkinServer.defaultServers.add(0, valhalla);
 
         ClientReadyCallback.EVENT.register(this::postInit);
 
@@ -51,6 +34,6 @@ class MineLPHDSkins {
         manager.addClearListener(ponyManager::onSkinCacheCleared);
 
         // Ponify the skins GUI.
-        manager.setSkinsGui(GuiSkinsMineLP::new);
+        manager.getSkinServerList().setSkinsGui(GuiSkinsMineLP::new);
     }
 }
