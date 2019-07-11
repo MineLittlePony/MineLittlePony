@@ -6,6 +6,7 @@ import com.minelittlepony.client.hdskins.gui.DummyPony;
 import com.minelittlepony.client.hdskins.gui.GuiSkinsMineLP;
 import com.minelittlepony.client.hdskins.gui.RenderDummyPony;
 import com.minelittlepony.common.event.ClientReadyCallback;
+import com.minelittlepony.hdskins.SkinCacheClearCallback;
 import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 
@@ -31,7 +32,7 @@ class MineLPHDSkins {
 
         // Clear ponies when skins are cleared
         PonyManager ponyManager = (PonyManager) MineLittlePony.getInstance().getManager();
-        manager.addClearListener(ponyManager::onSkinCacheCleared);
+        SkinCacheClearCallback.EVENT.register(ponyManager::onSkinCacheCleared);
 
         // Ponify the skins GUI.
         manager.getSkinServerList().setSkinsGui(GuiSkinsMineLP::new);

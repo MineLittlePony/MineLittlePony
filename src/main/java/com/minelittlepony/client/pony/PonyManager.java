@@ -265,9 +265,8 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
         }
     }
 
-    public boolean onSkinCacheCleared() {
+    public void onSkinCacheCleared() {
         MineLittlePony.logger.info("Flushed {} cached ponies.", poniesCache.size());
         poniesCache.invalidateAll();
-        return true;
     }
 }
