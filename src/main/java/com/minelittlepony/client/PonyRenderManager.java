@@ -46,12 +46,7 @@ public class PonyRenderManager {
      * Registers all new player skin types. (currently only pony and slimpony).
      */
     public void initialiseRenderers(EntityRenderDispatcher manager) {
-        PlayerModels[] models = PlayerModels.values();
-
-        for (int i = 1; i < models.length; i++) {
-            registerPlayerSkin(manager, models[i]);
-        }
-
+        PlayerModels.registry.forEach(i -> registerPlayerSkin(manager, i));
         MobRenderers.registry.forEach(i -> i.apply(this));
     }
 

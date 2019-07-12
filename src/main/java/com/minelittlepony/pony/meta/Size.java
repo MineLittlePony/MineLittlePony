@@ -2,7 +2,6 @@ package com.minelittlepony.pony.meta;
 
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.pony.ITriggerPixelMapped;
-import com.minelittlepony.settings.PonySettings;
 
 public enum Size implements ITriggerPixelMapped<Size> {
     TALL    (0x764b53, 0.45f, 1.1F,  1.15F),
@@ -37,14 +36,14 @@ public enum Size implements ITriggerPixelMapped<Size> {
     }
 
     public float getEyeHeightFactor() {
-        if (!PonySettings.FILLYCAM.get()) {
+        if (!MineLittlePony.getInstance().getConfig().fillycam.get()) {
             return 1;
         }
         return camera * MineLittlePony.getInstance().getConfig().getGlobalScaleFactor();
     }
 
     public float getEyeDistanceFactor() {
-        if (!PonySettings.FILLYCAM.get()) {
+        if (!MineLittlePony.getInstance().getConfig().fillycam.get()) {
             return 1;
         }
         return camera * MineLittlePony.getInstance().getConfig().getGlobalScaleFactor();
@@ -62,7 +61,7 @@ public enum Size implements ITriggerPixelMapped<Size> {
             return sz;
         }
 
-        if (this == UNSET || !PonySettings.SIZES.get()) {
+        if (this == UNSET || !MineLittlePony.getInstance().getConfig().sizes.get()) {
             return NORMAL;
         }
 

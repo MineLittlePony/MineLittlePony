@@ -16,7 +16,7 @@ public class ClientPonyConfig extends PonyConfig {
     public final Setting<VisibilityMode> horseButton = value("horseButton", VisibilityMode.AUTO);
 
     public ClientPonyConfig() {
-        initWith(MobRenderers.values());
+        MobRenderers.registry.forEach(r -> value(r.name().toLowerCase(), true));
     }
 
     @Override

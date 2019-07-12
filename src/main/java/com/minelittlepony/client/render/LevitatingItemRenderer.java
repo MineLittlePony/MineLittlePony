@@ -5,7 +5,6 @@ import org.lwjgl.opengl.GL14;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.util.render.Color;
 import com.minelittlepony.pony.IPony;
-import com.minelittlepony.settings.PonySettings;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -80,7 +79,7 @@ public class LevitatingItemRenderer {
 
         pushMatrix();
 
-        boolean doMagic = PonySettings.FPSMAGIC.get() && pony.getMetadata().hasMagic();
+        boolean doMagic = MineLittlePony.getInstance().getConfig().fpsmagic.get() && pony.getMetadata().hasMagic();
 
         ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 

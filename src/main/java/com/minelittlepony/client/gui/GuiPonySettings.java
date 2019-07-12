@@ -14,8 +14,8 @@ import com.minelittlepony.common.client.gui.element.EnumSlider;
 import com.minelittlepony.common.client.gui.element.Label;
 import com.minelittlepony.common.client.gui.element.Slider;
 import com.minelittlepony.common.client.gui.element.Toggle;
+import com.minelittlepony.common.util.settings.Setting;
 import com.minelittlepony.settings.PonyLevel;
-import com.minelittlepony.settings.PonySettings;
 
 /**
  * In-Game options menu.
@@ -54,6 +54,7 @@ public class GuiPonySettings extends GameGui {
         content.init(this::rebuildContent);
     }
 
+    @SuppressWarnings("unchecked")
     private void rebuildContent() {
         content.padding.left = 10;
 
@@ -96,9 +97,10 @@ public class GuiPonySettings extends GameGui {
 
         row += 20;
         content.addButton(new Label(LEFT, row)).getStyle().setText(OPTIONS_PREFIX + "options");
-        for (PonySettings i : PonySettings.values()) {
-            content.addButton(new Toggle(LEFT, row += 20, i.get()))
-                .onChange(i)
+
+        for (Setting<?> i : MineLittlePony.getInstance().getConfig().getByCategory("settings")) {
+            content.addButton(new Toggle(LEFT, row += 20, ((Setting<Boolean>)i).get()))
+                .onChange((Setting<Boolean>)i)
                 .getStyle().setText(OPTIONS_PREFIX + i.name().toLowerCase());
         }
 
@@ -116,7 +118,7 @@ public class GuiPonySettings extends GameGui {
         content.addButton(new Label(RIGHT, row)).getStyle().setText(MOB_PREFIX + "title");
         for (MobRenderers i : MobRenderers.registry) {
             content.addButton(new Toggle(RIGHT, row += 20, i.get()))
-                .onChange(i)
+                .onChange(i::set)
                 .getStyle().setText(MOB_PREFIX + i.name().toLowerCase());
         }
     }

@@ -13,6 +13,8 @@ import javax.annotation.Nullable;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.entity.LivingEntity;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -35,6 +37,7 @@ public enum PlayerModels {
         }
     };
 
+    public static final List<PlayerModels> registry = Arrays.asList(values());
     private static final Map<Race, PlayerModels> raceModelsMap = Maps.newEnumMap(Race.class);
 
     static {

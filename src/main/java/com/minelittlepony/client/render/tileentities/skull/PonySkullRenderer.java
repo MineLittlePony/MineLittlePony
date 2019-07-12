@@ -5,7 +5,6 @@ import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.LevitatingItemRenderer;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.settings.PonyConfig;
-import com.minelittlepony.settings.PonySettings;
 import com.mojang.authlib.GameProfile;
 
 import net.fabricmc.fabric.api.client.render.BlockEntityRendererRegistry;
@@ -45,7 +44,7 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
      * Original/Existing renderer is stored to a backup variable as a fallback in case of mods.
      */
     public static SkullBlockEntityRenderer resolve() {
-        if (PonySettings.PONYSKULLS.get()) {
+        if (MineLittlePony.getInstance().getConfig().ponyskulls.get()) {
             if (!(INSTANCE instanceof PonySkullRenderer)) {
                 backup = INSTANCE;
                 BlockEntityRendererRegistry.INSTANCE.register(SkullBlockEntity.class, ponyInstance);

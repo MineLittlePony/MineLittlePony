@@ -6,7 +6,6 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 
 import com.minelittlepony.pony.IPony;
-import com.minelittlepony.settings.PonySettings;
 
 public class HorseCam {
     /**
@@ -14,7 +13,7 @@ public class HorseCam {
      */
     public static float transformCameraAngle(float pitch) {
 
-        if (!PonySettings.FILLYCAM.get()) {
+        if (!MineLittlePony.getInstance().getConfig().fillycam.get()) {
             return pitch;
         }
 

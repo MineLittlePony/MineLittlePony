@@ -17,14 +17,18 @@ public class PonyConfig extends JsonConfig {
     public final Setting<PonyLevel> ponyLevel = value("ponylevel", PonyLevel.PONIES);
     private final Setting<Float> scaleFactor = value("globalScaleFactor", 0.9F);
 
+    public final Setting<Boolean> sizes =      value("settings", "sizes", false);
+    public final Setting<Boolean> snuzzles =   value("settings", "snuzzles", false);
+    public final Setting<Boolean> fillycam =   value("settings", "fillycam", false);
+    private final Setting<Boolean> showscale = value("settings", "showscale", false);
+    public final Setting<Boolean> fpsmagic =   value("settings", "fpsmagic", false);
+    public final Setting<Boolean> ponyskulls = value("settings", "ponyskulls", false);
+    public final Setting<Boolean> frustrum =   value("settings", "frustrum", false);
+
     /**
      * Debug override for pony sizes.
      */
     public final Setting<Size> sizeOverride = value("sizeOverride", Size.UNSET);
-
-    public PonyConfig() {
-        initWith(PonySettings.values());
-    }
 
     /**
      * Gets the current PonyLevel. That is the level of ponies you would like to see.
@@ -39,7 +43,7 @@ public class PonyConfig extends JsonConfig {
         f = Math.round(MathHelper.clamp(f, 0.1F, 3) * 100) / 100F;
 
         scaleFactor.set(f);
-        PonySettings.SHOWSCALE.set(f != 1);
+        showscale.set(f != 1);
 
         return getGlobalScaleFactor();
     }
@@ -48,6 +52,6 @@ public class PonyConfig extends JsonConfig {
      * Gets the universal scale factor used to determine how tall ponies are.
      */
     public float getGlobalScaleFactor() {
-        return PonySettings.SHOWSCALE.get() ? scaleFactor.get() : 1;
+        return showscale.get() ? scaleFactor.get() : 1;
     }
 }
