@@ -19,8 +19,8 @@ public class PlayerSkullRenderer extends PonySkull {
     private final ModelDeadMau5Ears deadMau5 = new ModelDeadMau5Ears();
 
     @Override
-    public boolean canRender(PonyConfig config) {
-        return config.ponyLevel.get() != PonyLevel.HUMANS;
+    public boolean canRender() {
+        return PonyConfig.INSTANCE.ponyLevel.get() != PonyLevel.HUMANS;
     }
 
     @Override

@@ -44,7 +44,7 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
      * Original/Existing renderer is stored to a backup variable as a fallback in case of mods.
      */
     public static SkullBlockEntityRenderer resolve() {
-        if (MineLittlePony.getInstance().getConfig().ponyskulls.get()) {
+        if (PonyConfig.INSTANCE.ponyskulls.get()) {
             if (!(INSTANCE instanceof PonySkullRenderer)) {
                 backup = INSTANCE;
                 BlockEntityRendererRegistry.INSTANCE.register(SkullBlockEntity.class, ponyInstance);
@@ -69,7 +69,7 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
 
         ISkull skull = skullMap.get(skullType);
 
-        if (skull == null || !skull.canRender(MineLittlePony.getInstance().getConfig())) {
+        if (skull == null || !skull.canRender()) {
             if (backup != null) {
                 backup.render(x, y, z, facing, rotation, skullType, profile, destroyStage, animateTicks);
             } else {
@@ -154,7 +154,7 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
 
         void render(float animateTicks, float rotation, float scale);
 
-        boolean canRender(PonyConfig config);
+        boolean canRender();
 
         Identifier getSkinResource(@Nullable GameProfile profile);
 

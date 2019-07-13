@@ -1,7 +1,7 @@
 package com.minelittlepony.pony.meta;
 
-import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.pony.ITriggerPixelMapped;
+import com.minelittlepony.settings.PonyConfig;
 
 public enum Size implements ITriggerPixelMapped<Size> {
     TALL    (0x764b53, 0.45f, 1.1F,  1.15F),
@@ -28,25 +28,25 @@ public enum Size implements ITriggerPixelMapped<Size> {
     }
 
     public float getShadowSize() {
-        return shadowSize * MineLittlePony.getInstance().getConfig().getGlobalScaleFactor();
+        return shadowSize * PonyConfig.INSTANCE.getGlobalScaleFactor();
     }
 
     public float getScaleFactor() {
-        return scale * MineLittlePony.getInstance().getConfig().getGlobalScaleFactor();
+        return scale * PonyConfig.INSTANCE.getGlobalScaleFactor();
     }
 
     public float getEyeHeightFactor() {
-        if (!MineLittlePony.getInstance().getConfig().fillycam.get()) {
+        if (!PonyConfig.INSTANCE.fillycam.get()) {
             return 1;
         }
-        return camera * MineLittlePony.getInstance().getConfig().getGlobalScaleFactor();
+        return camera * PonyConfig.INSTANCE.getGlobalScaleFactor();
     }
 
     public float getEyeDistanceFactor() {
-        if (!MineLittlePony.getInstance().getConfig().fillycam.get()) {
+        if (!PonyConfig.INSTANCE.fillycam.get()) {
             return 1;
         }
-        return camera * MineLittlePony.getInstance().getConfig().getGlobalScaleFactor();
+        return camera * PonyConfig.INSTANCE.getGlobalScaleFactor();
     }
 
     @Override
@@ -55,13 +55,13 @@ public enum Size implements ITriggerPixelMapped<Size> {
     }
 
     public Size getEffectiveSize() {
-        Size sz = MineLittlePony.getInstance().getConfig().sizeOverride.get();
+        Size sz = PonyConfig.INSTANCE.sizeOverride.get();
 
         if (sz != UNSET) {
             return sz;
         }
 
-        if (this == UNSET || !MineLittlePony.getInstance().getConfig().sizes.get()) {
+        if (this == UNSET || !PonyConfig.INSTANCE.sizes.get()) {
             return NORMAL;
         }
 

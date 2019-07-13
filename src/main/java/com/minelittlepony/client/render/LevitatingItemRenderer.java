@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render;
 
+import com.minelittlepony.settings.PonyConfig;
 import org.lwjgl.opengl.GL14;
 
 import com.minelittlepony.client.MineLittlePony;
@@ -79,7 +80,7 @@ public class LevitatingItemRenderer {
 
         pushMatrix();
 
-        boolean doMagic = MineLittlePony.getInstance().getConfig().fpsmagic.get() && pony.getMetadata().hasMagic();
+        boolean doMagic = PonyConfig.INSTANCE.fpsmagic.get() && pony.getMetadata().hasMagic();
 
         ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 

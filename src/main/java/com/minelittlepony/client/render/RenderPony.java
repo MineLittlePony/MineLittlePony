@@ -1,11 +1,11 @@
 package com.minelittlepony.client.render;
 
-import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.PonyRenderManager;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.transform.PonyPosture;
 import com.minelittlepony.pony.IPony;
+import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.util.math.MathUtil;
 import com.mojang.blaze3d.platform.GlStateManager;
 
@@ -41,7 +41,7 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
     }
 
     public VisibleRegion getFrustrum(T entity, VisibleRegion vanilla) {
-        if (entity.isSleeping() || !MineLittlePony.getInstance().getConfig().frustrum.get()) {
+        if (entity.isSleeping() || !PonyConfig.INSTANCE.frustrum.get()) {
             return vanilla;
         }
         return frustrum.withCamera(entity, vanilla);

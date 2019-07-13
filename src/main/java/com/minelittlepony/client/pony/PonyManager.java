@@ -54,15 +54,9 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
      */
     private List<Identifier> backgroundPonyList = Lists.newArrayList();
 
-    private final PonyConfig config;
-
     private final LoadingCache<Identifier, IPony> poniesCache = CacheBuilder.newBuilder()
             .expireAfterAccess(30, TimeUnit.SECONDS)
             .build(CacheLoader.from(Pony::new));
-
-    public PonyManager(PonyConfig config) {
-        this.config = config;
-    }
 
     @Override
     public IPony getPony(Identifier resource) {
@@ -109,7 +103,7 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
     public IPony getPony(Identifier resource, UUID uuid) {
         IPony pony = getPony(resource);
 
-        if (config.ponyLevel.get() == PonyLevel.PONIES && pony.getMetadata().getRace().isHuman()) {
+        if (PonyConfig.INSTANCE.ponyLevel.get() == PonyLevel.PONIES && pony.getMetadata().getRace().isHuman()) {
             return getBackgroundPony(uuid);
         }
 
@@ -118,7 +112,7 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
 
     @Override
     public IPony getDefaultPony(UUID uuid) {
-        if (config.ponyLevel.get() != PonyLevel.PONIES) {
+        if (PonyConfig.INSTANCE.ponyLevel.get() != PonyLevel.PONIES) {
             return getPony(DefaultSkinHelper.getTexture(uuid));
         }
 

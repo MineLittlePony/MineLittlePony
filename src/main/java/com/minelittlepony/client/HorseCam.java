@@ -1,5 +1,6 @@
 package com.minelittlepony.client;
 
+import com.minelittlepony.settings.PonyConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.HitResult;
@@ -13,7 +14,7 @@ public class HorseCam {
      */
     public static float transformCameraAngle(float pitch) {
 
-        if (!MineLittlePony.getInstance().getConfig().fillycam.get()) {
+        if (!PonyConfig.INSTANCE.fillycam.get()) {
             return pitch;
         }
 

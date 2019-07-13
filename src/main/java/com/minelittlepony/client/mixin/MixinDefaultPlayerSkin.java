@@ -3,6 +3,7 @@ package com.minelittlepony.client.mixin;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.races.PlayerModels;
 import com.minelittlepony.pony.IPonyManager;
+import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
 
 import net.minecraft.client.util.DefaultSkinHelper;
@@ -21,7 +22,7 @@ public abstract class MixinDefaultPlayerSkin {
             at = @At("HEAD"),
             cancellable = true)
     private static void legacySkin(CallbackInfoReturnable<Identifier> cir) {
-        if (MineLittlePony.getInstance().getConfig().ponyLevel.get() == PonyLevel.PONIES) {
+        if (PonyConfig.INSTANCE.ponyLevel.get() == PonyLevel.PONIES) {
             cir.setReturnValue(IPonyManager.STEVE);
         }
     }
@@ -30,7 +31,7 @@ public abstract class MixinDefaultPlayerSkin {
             at = @At("HEAD"),
             cancellable = true)
     private static void defaultSkin(UUID uuid, CallbackInfoReturnable<Identifier> cir) {
-        if (MineLittlePony.getInstance().getConfig().ponyLevel.get() == PonyLevel.PONIES) {
+        if (PonyConfig.INSTANCE.ponyLevel.get() == PonyLevel.PONIES) {
             cir.setReturnValue(IPonyManager.getDefaultSkin(uuid));
         }
     }
@@ -39,7 +40,7 @@ public abstract class MixinDefaultPlayerSkin {
             at = @At("HEAD"),
             cancellable = true)
     private static void skinType(UUID uuid, CallbackInfoReturnable<String> cir) {
-        if (MineLittlePony.getInstance().getConfig().ponyLevel.get() == PonyLevel.PONIES) {
+        if (PonyConfig.INSTANCE.ponyLevel.get() == PonyLevel.PONIES) {
 
             cir.setReturnValue(PlayerModels.forRace(MineLittlePony.getInstance().getManager()
                     .getPony(IPonyManager.getDefaultSkin(uuid), uuid)

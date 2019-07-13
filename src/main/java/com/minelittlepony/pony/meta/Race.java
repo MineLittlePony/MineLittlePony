@@ -1,7 +1,7 @@
 package com.minelittlepony.pony.meta;
 
-import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.pony.ITriggerPixelMapped;
+import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
 
 import javax.annotation.Nonnull;
@@ -94,7 +94,7 @@ public enum Race implements ITriggerPixelMapped<Race> {
      * PonyLevel.PONIES (should) return a pony if this is a human. Don't be fooled, though. It doesn't.
      */
     public Race getEffectiveRace(boolean ignorePony) {
-        if (MineLittlePony.getInstance().getConfig().getEffectivePonyLevel(ignorePony) == PonyLevel.HUMANS) {
+        if (PonyConfig.INSTANCE.getEffectivePonyLevel(ignorePony) == PonyLevel.HUMANS) {
             return HUMAN;
         }
 

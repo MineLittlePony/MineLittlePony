@@ -4,15 +4,13 @@ import com.minelittlepony.client.gui.GuiPonySettings;
 import com.minelittlepony.client.hdskins.IndirectHDSkins;
 import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
-import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.common.client.gui.VisibilityMode;
 import com.minelittlepony.common.client.gui.element.Button;
 import com.minelittlepony.common.client.gui.sprite.TextureSprite;
+import com.minelittlepony.common.config.ConfigManager;
 import com.minelittlepony.common.event.ClientReadyCallback;
 import com.minelittlepony.common.event.ScreenInitCallback;
 import com.minelittlepony.common.event.SkinFilterCallback;
-import com.minelittlepony.common.util.GamePaths;
-import com.minelittlepony.common.util.settings.JsonConfig;
 import com.minelittlepony.pony.IPonyManager;
 import com.minelittlepony.settings.PonyConfig;
 
@@ -53,7 +51,6 @@ public class MineLittlePony implements ClientModInitializer {
 
     private final PonyRenderManager renderManager = PonyRenderManager.getInstance();
 
-    private ClientPonyConfig config;
     private PonyManager ponyManager;
 
     private FabricKeyBinding keyBinding;
@@ -63,6 +60,7 @@ public class MineLittlePony implements ClientModInitializer {
 
     public MineLittlePony() {
         instance = this;
+        ConfigManager.register("minelp.json", PonyConfig.INSTANCE);
     }
 
     /**
@@ -77,8 +75,8 @@ public class MineLittlePony implements ClientModInitializer {
         hasHdSkins = FabricLoader.getInstance().isModLoaded("hdskins");
         hasModMenu = FabricLoader.getInstance().isModLoaded("modmenu");
 
-        config = JsonConfig.of(GamePaths.getConfigDirectory().resolve("minelp.json"), ClientPonyConfig::new);
-        ponyManager = new PonyManager(config);
+
+        ponyManager = new PonyManager();
         keyBinding = FabricKeyBinding.Builder.create(new Identifier("minelittlepony", "settings"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F9, "key.categories.misc").build();
 
         KeyBindingRegistry.INSTANCE.register(keyBinding);
@@ -141,7 +139,7 @@ public class MineLittlePony implements ClientModInitializer {
 
     private void onScreenInit(Screen screen, ScreenInitCallback.ButtonList buttons) {
         if (screen instanceof TitleScreen) {
-            VisibilityMode mode = config.horseButton.get();
+            VisibilityMode mode = PonyConfig.INSTANCE.horseButton.get();
             boolean show = mode == VisibilityMode.ON || (mode == VisibilityMode.AUTO
                 && !(hasHdSkins || hasModMenu
             ));
@@ -159,13 +157,6 @@ public class MineLittlePony implements ClientModInitializer {
                 ));
             }
         }
-    }
-
-    /**
-     * Gets the global MineLP client configuration.
-     */
-    public PonyConfig getConfig() {
-        return config;
     }
 
     public IPonyManager getManager() {
