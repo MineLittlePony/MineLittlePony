@@ -17,13 +17,13 @@ public class PonyConfig extends JsonConfig {
     public final Setting<PonyLevel> ponyLevel = value("ponylevel", PonyLevel.PONIES);
     private final Setting<Float> scaleFactor = value("globalScaleFactor", 0.9F);
 
-    public final Setting<Boolean> sizes =      value("settings", "sizes", false);
-    public final Setting<Boolean> snuzzles =   value("settings", "snuzzles", false);
-    public final Setting<Boolean> fillycam =   value("settings", "fillycam", false);
-    private final Setting<Boolean> showscale = value("settings", "showscale", false);
-    public final Setting<Boolean> fpsmagic =   value("settings", "fpsmagic", false);
-    public final Setting<Boolean> ponyskulls = value("settings", "ponyskulls", false);
-    public final Setting<Boolean> frustrum =   value("settings", "frustrum", false);
+    public final Setting<Boolean> sizes =      value("settings", "sizes", true);
+    public final Setting<Boolean> snuzzles =   value("settings", "snuzzles", true);
+    public final Setting<Boolean> fillycam =   value("settings", "fillycam", true);
+    private final Setting<Boolean> showscale = value("settings", "showscale", true);
+    public final Setting<Boolean> fpsmagic =   value("settings", "fpsmagic", true);
+    public final Setting<Boolean> ponyskulls = value("settings", "ponyskulls", true);
+    public final Setting<Boolean> frustrum =   value("settings", "frustrum", true);
 
     /**
      * Debug override for pony sizes.
