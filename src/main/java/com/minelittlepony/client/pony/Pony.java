@@ -92,9 +92,10 @@ public class Pony implements IPony {
         return null;
     }
 
+    @Nullable
     private static NativeImage getBufferedImage(@Nullable Identifier resource) {
         if (resource == null) {
-            return MissingSprite.getMissingSpriteTexture().getImage();
+            return null;
         }
 
         MinecraftClient mc = MinecraftClient.getInstance();
@@ -126,7 +127,7 @@ public class Pony implements IPony {
             // or buffer contained no/invalid image
             MineLittlePony.logger.fatal("Could not load texture from GL memory", e);
 
-            return MissingSprite.getMissingSpriteTexture().getImage();
+            return null;
         }
         return image;
     }
