@@ -11,7 +11,6 @@ import com.minelittlepony.pony.meta.Race;
 import com.minelittlepony.pony.meta.Size;
 import net.minecraft.block.Material;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.entity.Entity;
@@ -132,7 +131,10 @@ public class Pony implements IPony {
         return image;
     }
 
-    private IPonyData checkSkin(NativeImage bufferedimage) {
+    private IPonyData checkSkin(@Nullable NativeImage bufferedimage) {
+        if (bufferedimage == null) {
+            return new PonyData();
+        }
         MineLittlePony.logger.debug("\tStart skin check for pony #{} with image {}.", ponyId, bufferedimage);
         return PonyData.parse(bufferedimage);
     }
