@@ -30,14 +30,6 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
     }
 
     @Override
-    protected void rotateLegsOnGround(float move, float swing, float ticks, T entity) {
-        super.rotateLegsOnGround(move, swing, ticks, entity);
-
-        unicornArmRight.yaw = 0;
-        unicornArmLeft.yaw = 0;
-    }
-
-    @Override
     public float getWobbleAmount() {
         if (isCasting()) {
             return 0;
@@ -49,17 +41,8 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
     protected void rotateLegs(float move, float swing, float ticks, T entity) {
         super.rotateLegs(move, swing, ticks, entity);
 
-        unicornArmRight.setRotationPoint(-7, 12, -2);
-        unicornArmLeft.setRotationPoint(-7, 12, -2);
-
-        unicornArmLeft.roll = 0;
-        unicornArmRight.roll = 0;
-
-        unicornArmLeft.pitch = 0;
-        unicornArmRight.pitch = 0;
-
-        unicornArmLeft.yaw = 0;
-        unicornArmRight.yaw = 0;
+        unicornArmRight.rotate(0, 0, 0).around(-7, 12, -2);
+        unicornArmLeft.rotate(0, 0, 0).around(-7, 12, -2);
     }
 
     @Override
