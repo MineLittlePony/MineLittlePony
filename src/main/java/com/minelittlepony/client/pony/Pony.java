@@ -115,7 +115,6 @@ public class Pony implements IPony {
             } catch (ExecutionException e) {
                 MineLittlePony.logger.fatal("Error fetching native image from gl buffer", e);
             }
-
         }
 
         return MissingSprite.getMissingSpriteTexture().getImage();
@@ -144,7 +143,15 @@ public class Pony implements IPony {
 
         // This allocates a new array to store the image every time.
         // Don't do this every time. Keep a cache and store it so we don't destroy memory.
-        image.loadFromTextureImage(0, false);
+        try {
+            image.loadFromTextureImage(0, false);
+        } catch (IllegalStateException e) {
+            // Out of memory
+            // or buffer contained no/invalid image
+            MineLittlePony.logger.fatal("Could not load texture from GL memory", e);
+
+            return MissingSprite.getMissingSpriteTexture().getImage();
+        }
         return image;
     }
 
