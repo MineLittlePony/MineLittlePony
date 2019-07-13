@@ -71,8 +71,9 @@ public class Pony implements IPony {
             return data;
         }
 
-        NativeImage ponyTexture = getBufferedImage(resource);
-        return checkSkin(ponyTexture);
+        try (NativeImage ponyTexture = getBufferedImage(resource)) {
+            return checkSkin(ponyTexture);
+        }
     }
 
     @Override
@@ -102,7 +103,7 @@ public class Pony implements IPony {
         return null;
     }
 
-    public static NativeImage getBufferedImage(@Nullable Identifier resource) {
+    private static NativeImage getBufferedImage(@Nullable Identifier resource) {
         if (resource != null) {
             try {
                 Texture texture = MinecraftClient.getInstance().getTextureManager().getTexture(resource);

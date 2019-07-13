@@ -20,7 +20,6 @@ import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
@@ -99,7 +98,7 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
         Identifier skin = playerInfo.getSkinTexture();
         UUID uuid = playerInfo.getProfile().getId();
 
-        if (Pony.getBufferedImage(skin) == MissingSprite.getMissingSpriteTexture().getImage()) {
+        if (skin == null) {
             return getDefaultPony(uuid);
         }
 

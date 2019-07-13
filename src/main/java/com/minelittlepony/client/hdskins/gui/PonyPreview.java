@@ -1,10 +1,8 @@
 package com.minelittlepony.client.hdskins.gui;
 
-import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.client.pony.Pony;
 import com.minelittlepony.hdskins.dummy.DummyPlayer;
 import com.minelittlepony.hdskins.dummy.PlayerPreview;
 import com.minelittlepony.pony.IPony;
@@ -37,7 +35,7 @@ class PonyPreview extends PlayerPreview {
     protected DummyPlayer ponify(DummyPlayer human, DummyPlayer pony) {
         Identifier loc = human.getTextures().get(Type.SKIN).getId();
 
-        if (loc == null || Pony.getBufferedImage(loc) == MissingSprite.getMissingSpriteTexture().getImage()) {
+        if (loc == null) {
             return pony;
         }
 
