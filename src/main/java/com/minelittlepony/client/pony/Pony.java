@@ -41,6 +41,8 @@ public class Pony implements IPony {
 
     private static final AtomicInteger ponyCount = new AtomicInteger();
 
+    private static final NativeImage.Format[] formats = NativeImage.Format.values();
+
     private final int ponyId = ponyCount.getAndIncrement();
 
     private final Identifier texture;
@@ -91,6 +93,16 @@ public class Pony implements IPony {
         return null;
     }
 
+    private static NativeImage.Format getFormat(int glFormat) {
+        for (NativeImage.Format i : formats) {
+            if (i.getPixelDataFormat() == glFormat) {
+                return i;
+            }
+        }
+
+        throw new RuntimeException("Unsupported image format");
+    }
+
     @Nullable
     private static NativeImage getBufferedImage(@Nullable Identifier resource) {
         if (resource == null) {
@@ -110,10 +122,11 @@ public class Pony implements IPony {
         int width = getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH);
         int height = getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT);
 
-        NativeImage.Format channels = NativeImage.Format.RGBA;
-        if (format == GL_RGB) {
-            channels = NativeImage.Format.RGB;
+        if (width == 0 || height == 0) {
+            return null;
         }
+
+        NativeImage.Format channels = getFormat(format);
 
         NativeImage image = new NativeImage(channels, width, height, false);
 
