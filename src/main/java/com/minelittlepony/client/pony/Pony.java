@@ -1,6 +1,9 @@
 package com.minelittlepony.client.pony;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.PonyRenderManager;
 import com.minelittlepony.client.render.IPonyRender;
@@ -13,6 +16,8 @@ import net.minecraft.block.Material;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.NativeImage;
+import net.minecraft.client.texture.NativeImageBackedTexture;
+import net.minecraft.client.texture.Texture;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
@@ -32,6 +37,8 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.mojang.blaze3d.platform.GlStateManager.getTexLevelParameter;
@@ -41,6 +48,10 @@ import static org.lwjgl.opengl.GL11.*;
 public class Pony implements IPony {
 
     private static final AtomicInteger ponyCount = new AtomicInteger();
+
+    private static final LoadingCache<Identifier, NativeImage> nativeCache = CacheBuilder.newBuilder()
+            .expireAfterAccess(30, TimeUnit.SECONDS)
+            .build(CacheLoader.from(Pony::constructFromGlBuffer));
 
     private final int ponyId = ponyCount.getAndIncrement();
 
@@ -92,11 +103,25 @@ public class Pony implements IPony {
     }
 
     public static NativeImage getBufferedImage(@Nullable Identifier resource) {
+        if (resource != null) {
+            try {
+                Texture texture = MinecraftClient.getInstance().getTextureManager().getTexture(resource);
 
-        if (resource == null) {
-            return MissingSprite.getMissingSpriteTexture().getImage();
+                if (texture instanceof NativeImageBackedTexture) {
+                    return ((NativeImageBackedTexture)texture).getImage();
+                }
+
+                return nativeCache.get(resource);
+            } catch (ExecutionException e) {
+                MineLittlePony.logger.fatal("Error fetching native image from gl buffer", e);
+            }
+
         }
 
+        return MissingSprite.getMissingSpriteTexture().getImage();
+    }
+
+    private static NativeImage constructFromGlBuffer(Identifier resource) {
         MinecraftClient mc = MinecraftClient.getInstance();
         TextureManager textures = mc.getTextureManager();
 
@@ -116,9 +141,11 @@ public class Pony implements IPony {
         }
 
         NativeImage image = new NativeImage(channels, width, height, false);
+
+        // This allocates a new array to store the image every time.
+        // Don't do this every time. Keep a cache and store it so we don't destroy memory.
         image.loadFromTextureImage(0, false);
         return image;
-
     }
 
     private IPonyData checkSkin(NativeImage bufferedimage) {
