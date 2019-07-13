@@ -57,6 +57,9 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
 
         unicornArmLeft.pitch = 0;
         unicornArmRight.pitch = 0;
+
+        unicornArmLeft.yaw = 0;
+        unicornArmRight.yaw = 0;
     }
 
     @Override
@@ -68,19 +71,6 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
             alignArmForAction(unicornArmRight, rightArmPose, leftArmPose, both, swing, -1);
         } else {
             super.holdItem(swing);
-        }
-    }
-
-    @Override
-    protected void swingItem(T entity) {
-        AbsoluteHand mainSide = getPreferedHand(entity);
-
-        if (canCast() && getArmPoseForSide(mainSide) != ArmPose.EMPTY) {
-            if (getSwingAmount() > -9990 && !attributes.isSleeping) {
-                swingArm(getUnicornArmForSide(mainSide));
-            }
-        } else {
-            super.swingItem(entity);
         }
     }
 
