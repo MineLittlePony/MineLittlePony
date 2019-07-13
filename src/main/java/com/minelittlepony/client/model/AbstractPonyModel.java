@@ -364,8 +364,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     protected void holdItem(float swing) {
         boolean both = leftArmPose == ArmPose.ITEM && rightArmPose == ArmPose.ITEM;
 
-        alignArmForAction(leftArm, leftArmPose, rightArmPose, both, swing, 1);
-        alignArmForAction(rightArm, rightArmPose, leftArmPose, both, swing, -1);
+        alignArmForAction(getArm(AbsoluteHand.LEFT), leftArmPose, rightArmPose, both, swing, 1);
+        alignArmForAction(getArm(AbsoluteHand.RIGHT), rightArmPose, leftArmPose, both, swing, -1);
     }
 
     @Override

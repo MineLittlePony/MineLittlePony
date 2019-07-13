@@ -45,18 +45,6 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
         unicornArmLeft.rotate(0, 0, 0).around(-7, 12, -2);
     }
 
-    @Override
-    protected void holdItem(float swing) {
-        if (canCast()) {
-            boolean both = leftArmPose == ArmPose.ITEM && rightArmPose == ArmPose.ITEM;
-
-            alignArmForAction(unicornArmLeft, leftArmPose, rightArmPose, both, swing, 1);
-            alignArmForAction(unicornArmRight, rightArmPose, leftArmPose, both, swing, -1);
-        } else {
-            super.holdItem(swing);
-        }
-    }
-
     public ArmPose getArmPoseForSide(AbsoluteHand side) {
         return side == AbsoluteHand.RIGHT ? rightArmPose : leftArmPose;
     }
