@@ -7,6 +7,7 @@ import com.minelittlepony.client.model.races.PlayerModels;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.client.render.RenderPony;
 import com.minelittlepony.client.render.layer.LayerGear;
+import com.minelittlepony.client.render.layer.LayerPonyArmor;
 import com.minelittlepony.client.render.layer.LayerPonyElytra;
 import com.minelittlepony.hdskins.dummy.RenderDummyPlayer;
 import com.minelittlepony.pony.IPony;
@@ -29,6 +30,8 @@ public class RenderDummyPony extends RenderDummyPlayer<DummyPony, ClientPonyMode
     public RenderDummyPony(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
         super(manager, context);
         addFeature(new LayerGear<>(this));
+
+        renderPony.setSkipBlend();
     }
 
     private ModelWrapper<DummyPony, ClientPonyModel<DummyPony>> playerModel;
@@ -68,6 +71,11 @@ public class RenderDummyPony extends RenderDummyPlayer<DummyPony, ClientPonyMode
         renderPony.setPonyModel(playerModel);
 
         return playerModel.getBody();
+    }
+
+    @Override
+    protected FeatureRenderer<DummyPony, ClientPonyModel<DummyPony>> getArmourLayer() {
+        return new LayerPonyArmor<>(this);
     }
 
     @Override
