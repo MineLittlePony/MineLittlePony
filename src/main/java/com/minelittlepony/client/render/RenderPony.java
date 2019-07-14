@@ -24,11 +24,15 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
 
     private final IPonyRender<T, M> renderer;
 
+    private boolean skipBlend;
+
     private final FrustrumCheck<T> frustrum = new FrustrumCheck<>(this);
 
-    public static void enableModelRenderProfile() {
+    public static void enableModelRenderProfile(boolean skipBlend) {
         GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        if (!skipBlend) {
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        }
         GlStateManager.alphaFunc(516, 0.003921569F);
     }
 
@@ -38,6 +42,10 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
 
     public RenderPony(IPonyRender<T, M> renderer) {
         this.renderer = renderer;
+    }
+
+    public void setSkipBlend() {
+        skipBlend = true;
     }
 
     public VisibleRegion getFrustrum(T entity, VisibleRegion vanilla) {
@@ -52,7 +60,7 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
 
         float s = getScaleFactor();
         GlStateManager.scalef(s, s, s);
-        enableModelRenderProfile();
+        enableModelRenderProfile(skipBlend);
 
         translateRider(entity, ticks);
     }

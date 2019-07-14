@@ -28,7 +28,7 @@ public class PlayerSkullRenderer extends PonySkull {
         GlStateManager.setProfile(GlStateManager.RenderMode.PLAYER_SKIN);
 
         if (!transparency) {
-            RenderPony.enableModelRenderProfile();
+            RenderPony.enableModelRenderProfile(false);
         }
     }
 
