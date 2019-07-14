@@ -10,6 +10,7 @@ import com.mojang.authlib.GameProfile;
 import net.fabricmc.fabric.api.client.render.BlockEntityRendererRegistry;
 import net.minecraft.block.SkullBlock;
 import net.minecraft.block.entity.SkullBlockEntity;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.SystemUtil;
@@ -60,6 +61,8 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
                 INSTANCE = backup;
             }
         }
+
+        INSTANCE.setRenderManager(BlockEntityRenderDispatcher.INSTANCE);
 
         return INSTANCE;
     }
