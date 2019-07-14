@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
@@ -66,7 +67,11 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
 
     @Override
     public IPony getPony(Identifier resource) {
-        return poniesCache.getUnchecked(resource);
+        try {
+            return poniesCache.get(resource);
+        } catch (ExecutionException e) {
+            return new Pony(resource, new PonyData());
+        }
     }
 
     @Override

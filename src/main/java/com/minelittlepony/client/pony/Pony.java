@@ -50,7 +50,12 @@ public class Pony implements IPony {
 
     private boolean initialized = false;
 
-    public Pony(Identifier resource) {
+    Pony(Identifier resource, IPonyData data) {
+        texture = resource;
+        metadata = data;
+    }
+
+    Pony(Identifier resource) {
         texture = resource;
         metadata = checkSkin(texture);
     }
@@ -122,8 +127,8 @@ public class Pony implements IPony {
         int width = getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH);
         int height = getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT);
 
-        if (width == 0 || height == 0) {
-            return null;
+        if (width * height == 0) {
+            throw new IllegalStateException("GL texture not uploaded yet");
         }
 
         NativeImage.Format channels = getFormat(format);
@@ -135,11 +140,8 @@ public class Pony implements IPony {
         try {
             image.loadFromTextureImage(0, false);
         } catch (IllegalStateException e) {
-            // Out of memory
-            // or buffer contained no/invalid image
-            MineLittlePony.logger.fatal("Could not load texture from GL memory", e);
-
-            return null;
+            image.close();
+            throw e;
         }
         return image;
     }
