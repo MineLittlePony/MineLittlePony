@@ -52,21 +52,36 @@ public class HorseCam {
          *  B-   \
          *  |y -  \
          *  |    - \         Tan(?) = horDist / toHeight
-         *  |-------C            ?  = arcTan(horDist / toHeight);
+         *==|-------C===         ?  = arcTan(horDist / toHeight);
          *   horDist
+         *
+         *   horDist
+         *  |-------C
+         *  |      /.
+         *  |     /.
+         *  |    / .
+         *  |   / .
+         *  |  /  .
+         *  |?/  .
+         *  A/  .
+         *  |   .
+         *  |  .
+         *  |  .
+         *  | .
+         *  B
+         *  |
+         *  |
+         *==o===========
          */
+
         MinecraftClient client = MinecraftClient.getInstance();
         PlayerEntity player = client.player;
+        client.gameRenderer.updateTargetedEntity(1);
         HitResult hit = client.hitResult;
 
         // noop
-        if (hit == null || player == null) {
-            return originalPitch;
-        }
-
-        // Small angles aren't worth changing.
-        // Helps with bows, arrows, and projectiles.
-        if (Math.abs(originalPitch) < 2) {
+        // Ignore misses, helps with bows, arrows, and projectiles
+        if (hit == null || hit.getType() != HitResult.Type.BLOCK || player == null) {
             return originalPitch;
         }
 
@@ -75,17 +90,22 @@ public class HorseCam {
 
         double diffX = Math.abs(hitPos.x - pos.x);
         double diffZ = Math.abs(hitPos.z - pos.z);
+
         double horDist = Math.sqrt(diffX * diffX + diffZ * diffZ);
 
-        float theta = (float)Math.atan(horDist / toHeight);
+        double toEyePos = pos.y + toHeight;
+
+        double verDist = Math.abs(hitPos.y - toEyePos);
+
+        double theta = Math.atan(horDist / verDist);
 
         // convert to degress
-        theta /= Math.PI / 180;
+        theta /= Math.PI / 180D;
 
         // convert to vertical pitch (-90 to 90).
         // Preserve up/down direction.
-        float newPitch = (90 - theta) * Math.signum(originalPitch);
+        double newPitch = Math.abs(90 - theta) * Math.signum(originalPitch);
 
-        return newPitch;
+        return (float)newPitch;
     }
 }
