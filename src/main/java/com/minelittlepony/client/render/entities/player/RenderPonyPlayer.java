@@ -66,7 +66,7 @@ public class RenderPonyPlayer extends PlayerEntityRenderer implements IPonyRende
     @Override
     public float scaleAndTranslate(AbstractClientPlayerEntity player, float ticks) {
         if (!player.hasVehicle() && !player.isSleeping()) {
-            float x = player.getWidth() / 2;
+            float x = player.getWidth() / 2 * renderPony.getPony(player).getMetadata().getSize().getScaleFactor();
             float y = 0;
 
             if (player.isInSneakingPose()) {
