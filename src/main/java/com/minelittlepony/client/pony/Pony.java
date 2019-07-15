@@ -165,7 +165,7 @@ public class Pony implements IPony {
     @Override
     public boolean isCrouching(LivingEntity entity) {
 
-        boolean isSneak = entity.isSneaking();
+        boolean isSneak = entity.isInSneakingPose();
         boolean isFlying = isFlying(entity);
         boolean isSwimming = isSwimming(entity);
 

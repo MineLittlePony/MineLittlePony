@@ -40,13 +40,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends PlayerEnti
     @Override
     public void updateLivingState(T entity, IPony pony) {
         isChild = entity.isBaby();
-        /*This was a bug, but I'm calling it a feature
-         * isSneaking = entity.isInSneakingPose()
-         *If a pony is able to get into a 1.5 tall gap whilst sneaking and releases the sneak key,
-         *they will stop crouching. Vanilla behaviour would have them continue to crouch, but that
-         *would look weird, especially with winged pegasi and bat ponies.
-         */
-        isSneaking = entity.isSneaking();
+        isSneaking = entity.isInSneakingPose();
         attributes.updateLivingState(entity, pony);
     }
 

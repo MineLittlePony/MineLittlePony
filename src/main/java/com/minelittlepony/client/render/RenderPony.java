@@ -158,7 +158,7 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
     public double getNamePlateYOffset(T entity, double initial) {
 
         // We start by negating the height calculation done by mahjong.
-        float y = -(entity.getHeight() + 0.5F - (entity.isSneaking() ? 0.25F : 0));
+        float y = -(entity.getHeight() + 0.5F - (entity.isInSneakingPose() ? 0.25F : 0));
 
         // Then we add our own offsets.
         y += getModel().getAttributes().visualHeight * getScaleFactor() + 0.25F;

@@ -54,7 +54,7 @@ public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T
 
     @Override
     public void render(T entity, double xPosition, double yPosition, double zPosition, float yaw, float ticks) {
-        if (entity.isSneaking()) {
+        if (entity.isInSneakingPose()) {
             yPosition -= 0.125D;
         }
 

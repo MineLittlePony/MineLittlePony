@@ -56,7 +56,7 @@ public class LayerHeldPonyItem<T extends LivingEntity, M extends EntityModel<T> 
             pushMatrix();
             renderArm(hand);
 
-            if (entity.isSneaking()) {
+            if (getMainModel().getAttributes().isCrouching) {
                 translatef(0, 0.2F, 0);
             }
 

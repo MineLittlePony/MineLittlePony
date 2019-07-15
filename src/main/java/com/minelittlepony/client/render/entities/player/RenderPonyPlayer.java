@@ -69,7 +69,7 @@ public class RenderPonyPlayer extends PlayerEntityRenderer implements IPonyRende
             float x = player.getWidth() / 2;
             float y = 0;
 
-            if (player.isSneaking()) {
+            if (player.isInSneakingPose()) {
                 // Sneaking makes the player 1/15th shorter.
                 // This should be compatible with height-changing mods.
                 y += player.getHeight() / 15;
