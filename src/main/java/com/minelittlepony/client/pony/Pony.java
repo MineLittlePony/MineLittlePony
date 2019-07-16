@@ -1,7 +1,6 @@
 package com.minelittlepony.client.pony;
 
 import com.google.common.base.MoreObjects;
-import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.PonyRenderManager;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.client.transform.PonyTransformation;
@@ -11,8 +10,6 @@ import com.minelittlepony.pony.meta.Race;
 import com.minelittlepony.pony.meta.Size;
 import net.minecraft.block.Material;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.TextureManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -20,30 +17,16 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.mojang.blaze3d.platform.GlStateManager.getTexLevelParameter;
-import static org.lwjgl.opengl.GL11.*;
 
 @Immutable
 public class Pony implements IPony {
-
-    private static final AtomicInteger ponyCount = new AtomicInteger();
-
-    private static final NativeImage.Format[] formats = NativeImage.Format.values();
-
-    private final int ponyId = ponyCount.getAndIncrement();
 
     private final Identifier texture;
     private final IPonyData metadata;
@@ -56,19 +39,7 @@ public class Pony implements IPony {
     }
 
     Pony(Identifier resource) {
-        texture = resource;
-        metadata = checkSkin(texture);
-    }
-
-    private IPonyData checkSkin(Identifier resource) {
-        IPonyData data = checkPonyMeta(resource);
-        if (data != null) {
-            return data;
-        }
-
-        try (NativeImage ponyTexture = getBufferedImage(resource)) {
-            return checkSkin(ponyTexture);
-        }
+        this(resource, PonyData.parse(resource));
     }
 
     @Override
@@ -77,81 +48,6 @@ public class Pony implements IPony {
             initialized = true;
             entity.calculateDimensions();
         }
-    }
-
-    @Nullable
-    private IPonyData checkPonyMeta(Identifier resource) {
-        try {
-            Resource res = MinecraftClient.getInstance().getResourceManager().getResource(resource);
-
-            PonyData data = res.getMetadata(PonyData.SERIALISER);
-
-            if (data != null) {
-                return data;
-            }
-        } catch (FileNotFoundException e) {
-            // Ignore uploaded texture
-        } catch (IOException e) {
-            MineLittlePony.logger.warn("Unable to read {} metadata", resource, e);
-        }
-
-        return null;
-    }
-
-    private static NativeImage.Format getFormat(int glFormat) {
-        for (NativeImage.Format i : formats) {
-            if (i.getPixelDataFormat() == glFormat) {
-                return i;
-            }
-        }
-
-        throw new RuntimeException("Unsupported image format");
-    }
-
-    @Nullable
-    private static NativeImage getBufferedImage(@Nullable Identifier resource) {
-        if (resource == null) {
-            return null;
-        }
-
-        MinecraftClient mc = MinecraftClient.getInstance();
-        TextureManager textures = mc.getTextureManager();
-
-        if (!mc.isOnThread()) {
-            throw new RuntimeException("This can only be called from the main thread.");
-        }
-        // recreate NativeImage from the GL matrix
-        textures.bindTexture(resource);
-
-        int format = getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT);
-        int width = getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH);
-        int height = getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT);
-
-        if (width * height == 0) {
-            throw new IllegalStateException("GL texture not uploaded yet");
-        }
-
-        NativeImage.Format channels = getFormat(format);
-
-        NativeImage image = new NativeImage(channels, width, height, false);
-
-        // This allocates a new array to store the image every time.
-        // Don't do this every time. Keep a cache and store it so we don't destroy memory.
-        try {
-            image.loadFromTextureImage(0, false);
-        } catch (IllegalStateException e) {
-            image.close();
-            throw e;
-        }
-        return image;
-    }
-
-    private IPonyData checkSkin(@Nullable NativeImage bufferedimage) {
-        if (bufferedimage == null) {
-            return new PonyData();
-        }
-        MineLittlePony.logger.debug("\tStart skin check for pony #{} with image {}.", ponyId, bufferedimage);
-        return PonyData.parse(bufferedimage);
     }
 
     @Override

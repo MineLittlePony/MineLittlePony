@@ -1,9 +1,14 @@
 package com.minelittlepony.client.pony;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
+import net.minecraft.resource.Resource;
+import net.minecraft.util.Identifier;
 
 import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.Expose;
+import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.client.util.render.NativeUtil;
 import com.minelittlepony.pony.IPonyData;
 import com.minelittlepony.pony.meta.Gender;
 import com.minelittlepony.pony.meta.Race;
@@ -14,8 +19,11 @@ import com.minelittlepony.pony.meta.Wearable;
 import com.minelittlepony.util.animation.BasicEasingInterpolator;
 import com.minelittlepony.util.animation.IInterpolator;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -25,7 +33,33 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class PonyData implements IPonyData {
 
-    public static final PonyDataSerialiser SERIALISER = new PonyDataSerialiser();
+    private static final PonyDataSerialiser SERIALISER = new PonyDataSerialiser();
+
+    /**
+     * Parses the given resource into a new IPonyData.
+     * This may either come from an attached json file or the image itself.
+     */
+    public static IPonyData parse(@Nullable Identifier identifier) {
+        if (identifier == null) {
+            return new PonyData();
+        }
+
+        try {
+            Resource res = MinecraftClient.getInstance().getResourceManager().getResource(identifier);
+
+            PonyData data = res.getMetadata(SERIALISER);
+
+            if (data != null) {
+                return data;
+            }
+        } catch (FileNotFoundException e) {
+            // Ignore uploaded texture
+        } catch (IOException e) {
+            MineLittlePony.logger.warn("Unable to read {} metadata", identifier, e);
+        }
+
+        return NativeUtil.parseImage(identifier, PonyData::new);
+    }
 
     @Expose
     private final Race race;
@@ -101,6 +135,11 @@ public class PonyData implements IPonyData {
     }
 
     @Override
+    public IInterpolator getInterpolator(UUID interpolatorId) {
+        return BasicEasingInterpolator.getInstance(interpolatorId);
+    }
+
+    @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("race", race)
@@ -110,17 +149,5 @@ public class PonyData implements IPonyData {
                 .add("wearables", Wearable.flags(wearables))
                 .add("glowColor", "#" + Integer.toHexString(glowColor))
                 .toString();
-    }
-
-    @Override
-    public IInterpolator getInterpolator(UUID interpolatorId) {
-        return BasicEasingInterpolator.getInstance(interpolatorId);
-    }
-
-    /**
-     * Parses an image buffer into a new IPonyData representing the values stored in it's individual trigger pixels.
-     */
-    public static IPonyData parse(NativeImage image) {
-        return new PonyData(image);
     }
 }
