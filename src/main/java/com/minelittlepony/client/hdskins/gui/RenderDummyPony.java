@@ -50,7 +50,9 @@ public class RenderDummyPony extends RenderDummyPlayer<DummyPony, ClientPonyMode
     protected void scale(DummyPony entity, float ticks) {
         renderPony.preRenderCallback(entity, ticks);
 
-        GlStateManager.translatef(0, 0, -entity.getWidth() / 2); // move us to the center of the shadow
+        if (entity.hasVehicle()) {
+            GlStateManager.translated(0, entity.getHeightOffset(), 0);
+        }
     }
 
     @Override

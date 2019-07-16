@@ -69,7 +69,6 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
 
     @Override
     public void render(float x, float y, float z, @Nullable Direction facing, float rotation, SkullBlock.SkullType skullType, @Nullable GameProfile profile, int destroyStage, float animateTicks) {
-
         ISkull skull = skullMap.get(skullType);
 
         if (skull == null || !skull.canRender(MineLittlePony.getInstance().getConfig())) {
