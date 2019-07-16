@@ -17,6 +17,8 @@ import com.minelittlepony.common.client.gui.element.Toggle;
 import com.minelittlepony.common.util.settings.Setting;
 import com.minelittlepony.settings.PonyLevel;
 
+import javax.annotation.Nullable;
+
 /**
  * In-Game options menu.
  *
@@ -35,8 +37,8 @@ public class GuiPonySettings extends GameGui {
 
     private final boolean hiddenOptions;
 
-    public GuiPonySettings() {
-        super(new LiteralText(OPTIONS_PREFIX + "title"));
+    public GuiPonySettings(@Nullable Screen parent) {
+        super(new LiteralText(OPTIONS_PREFIX + "title"), parent);
 
         config = (ClientPonyConfig)MineLittlePony.getInstance().getConfig();
 
@@ -72,7 +74,7 @@ public class GuiPonySettings extends GameGui {
 
         addButton(new Label(width / 2, 5).setCentered()).getStyle().setText(getTitle().getString());
         addButton(new Button(width / 2 - 100, height - 25))
-            .onClick(sender -> onClose())
+            .onClick(sender -> finish())
             .getStyle()
                 .setText("gui.done");
 

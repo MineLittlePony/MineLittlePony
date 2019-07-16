@@ -15,6 +15,6 @@ public class MineLPModMenuFactory implements ModMenuApi {
 
     @Override
     public Function<Screen, ? extends Screen> getConfigScreenFactory() {
-        return screen -> new GuiPonySettings();
+        return GuiPonySettings::new;
     }
 }

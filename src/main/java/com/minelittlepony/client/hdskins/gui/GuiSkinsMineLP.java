@@ -5,17 +5,16 @@ import com.minelittlepony.common.client.gui.element.IconicToggle;
 import com.minelittlepony.common.client.gui.style.Style;
 import com.minelittlepony.hdskins.dummy.PlayerPreview;
 import com.minelittlepony.hdskins.gui.GuiSkins;
-import com.minelittlepony.hdskins.net.SkinServer;
+import com.minelittlepony.hdskins.net.SkinServerList;
 import com.minelittlepony.pony.IPonyManager;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
-
-import java.util.List;
 
 /**
  * Skin uploading GUI. Usually displayed over the main menu.
@@ -32,8 +31,8 @@ public class GuiSkinsMineLP extends GuiSkins {
         "minelittlepony:textures/cubemap/sweetappleacres"
     };
 
-    public GuiSkinsMineLP(List<SkinServer> servers) {
-        super(servers);
+    public GuiSkinsMineLP(Screen parent, SkinServerList servers) {
+        super(parent, servers);
     }
 
     @Override
