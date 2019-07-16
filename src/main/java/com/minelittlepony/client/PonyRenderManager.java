@@ -51,8 +51,10 @@ public class PonyRenderManager {
     }
 
     private void registerPlayerSkin(EntityRenderDispatcher manager, PlayerModels playerModel) {
-        addPlayerSkin(manager, false, playerModel);
-        addPlayerSkin(manager, true, playerModel);
+        if (playerModel != PlayerModels.DEFAULT) {
+            addPlayerSkin(manager, false, playerModel);
+            addPlayerSkin(manager, true, playerModel);
+        }
     }
 
     private void addPlayerSkin(EntityRenderDispatcher manager, boolean slimArms, PlayerModels playerModel) {
