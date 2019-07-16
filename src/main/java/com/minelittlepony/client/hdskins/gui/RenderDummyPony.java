@@ -50,6 +50,16 @@ public class RenderDummyPony extends RenderDummyPlayer<DummyPony, ClientPonyMode
     protected void scale(DummyPony entity, float ticks) {
         renderPony.preRenderCallback(entity, ticks);
 
+        if (entity.isSwimming()) {
+            if (entity.getVelocity().x < 100) {
+                entity.addVelocity(100, 0, 0);
+            }
+
+            model.getAttributes().motionPitch = 70;
+        } else {
+            model.getAttributes().motionPitch = 0;
+        }
+
         if (entity.hasVehicle()) {
             GlStateManager.translated(0, entity.getHeightOffset(), 0);
         }
