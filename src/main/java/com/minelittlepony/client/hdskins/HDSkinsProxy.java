@@ -12,9 +12,11 @@ class HDSkinsProxy extends SkinsProxy {
     public Identifier getSkinTexture(GameProfile profile) {
 
         Identifier skin = HDSkins.getInstance().getTextures(profile).get(MinecraftProfileTexture.Type.SKIN);
+
         if (skin != null) {
             return skin;
         }
+
         return super.getSkinTexture(profile);
     }
 }

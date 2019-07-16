@@ -37,11 +37,12 @@ public class PlayerSkullRenderer extends PonySkull {
         deadMau5.setVisible(profile != null && "deadmau5".equals(profile.getName()));
 
         if (profile != null) {
-
             Identifier skin = SkinsProxy.instance.getSkinTexture(profile);
+
             if (skin != null) {
                 return skin;
             }
+
             return DefaultSkinHelper.getTexture(PlayerEntity.getUuidFromProfile(profile));
         }
 

@@ -16,7 +16,13 @@ public class SkinsProxy {
     public Identifier getSkinTexture(GameProfile profile) {
         PlayerSkinProvider skins = MinecraftClient.getInstance().getSkinProvider();
 
+        @Nullable
         MinecraftProfileTexture texture = skins.getTextures(profile).get(MinecraftProfileTexture.Type.SKIN);
+
+        if (texture == null) {
+            return null;
+        }
+
         return skins.loadSkin(texture, MinecraftProfileTexture.Type.SKIN);
     }
 }
