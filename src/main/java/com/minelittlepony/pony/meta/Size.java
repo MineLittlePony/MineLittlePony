@@ -4,12 +4,12 @@ import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.pony.ITriggerPixelMapped;
 
 public enum Size implements ITriggerPixelMapped<Size> {
-    TALL    (0x764b53, 0.45f, 1.1F,  1.15F),
-    BULKY   (0x5432ce, 0.5f,  1,     1.05F),
-    LANKY   (0xce5432, 0.45F, 0.85F, 0.9F),
+    TALL    (0x534b76, 0.45f, 1.1F,  1.15F),
+    BULKY   (0xce3254, 0.5f,  1,     1.05F),
+    LANKY   (0x3254ce, 0.45F, 0.85F, 0.9F),
     NORMAL  (0x000000, 0.4f,  0.8F,  0.8F),
-    YEARLING(0xffbe53, 0.4F,  0.6F,  0.65F),
-    FOAL    (0x53beff, 0.25f, 0.6F,  0.5F),
+    YEARLING(0x53beff, 0.4F,  0.6F,  0.65F),
+    FOAL    (0xffbe53, 0.25f, 0.6F,  0.5F),
     UNSET   (0x000000, 1,     1,     1);
 
     public static final Size[] REGISTRY = values();

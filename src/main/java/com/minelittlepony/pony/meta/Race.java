@@ -9,18 +9,18 @@ import javax.annotation.Nonnull;
 public enum Race implements ITriggerPixelMapped<Race> {
 
     HUMAN       (0x000000, false, false),
-    EARTH       (0x31b1f9, false, false),
-    PEGASUS     (0xf0ca88, true,  false),
-    UNICORN     (0xe49fd1, false, true),
-    ALICORN     (0xfcf9fe, true,  true),
-    CHANGELING  (0x292b28, true,  true),
-    ZEBRA       (0xcfccd0, false, false),
-    CHANGEDLING (0x5aedca, CHANGELING),
-    GRIFFIN     (0x4591ae, PEGASUS),
-    HIPPOGRIFF  (0xacddd6, PEGASUS),
-    KIRIN       (0xaf88fa, UNICORN),
+    EARTH       (0xf9b131, false, false),
+    PEGASUS     (0x88caf0, true,  false),
+    UNICORN     (0xd19fe4, false, true),
+    ALICORN     (0xfef9fc, true,  true),
+    CHANGELING  (0x282b29, true,  true),
+    ZEBRA       (0xd0cccf, false, false),
+    CHANGEDLING (0xcaed5a, CHANGELING),
+    GRIFFIN     (0xae9145, PEGASUS),
+    HIPPOGRIFF  (0xd6ddac, PEGASUS),
+    KIRIN       (0xfa88af, UNICORN),
     BATPONY     (0xeeeeee, true,  false),
-    SEAPONY     (0xdd5536, false, true);
+    SEAPONY     (0x3655dd, false, true);
 
     private boolean wings;
     private boolean horn;

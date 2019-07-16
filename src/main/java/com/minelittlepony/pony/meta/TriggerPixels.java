@@ -2,6 +2,7 @@ package com.minelittlepony.pony.meta;
 
 import net.minecraft.client.texture.NativeImage;
 
+import com.minelittlepony.client.util.render.Color;
 import com.minelittlepony.pony.ITriggerPixelMapped;
 
 /**
@@ -93,8 +94,8 @@ public enum TriggerPixels {
         }
 
         public int readValue(int x, int y, NativeImage image) {
-                        /*getPixelABGR*/
-            return (image.getPixelRGBA(x, y) >> offset) & mask;
+                                         /*getPixelABGR*/
+            return Color.abgrToArgb((image.getPixelRGBA(x, y) >> offset) & mask);
         }
     }
 }

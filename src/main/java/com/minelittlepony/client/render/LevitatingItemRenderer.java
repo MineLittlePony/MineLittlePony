@@ -64,7 +64,7 @@ public class LevitatingItemRenderer {
     }
 
     private void setColor(int glowColor) {
-        GL14.glBlendColor(Color.r(glowColor), Color.g(glowColor), Color.b(glowColor), 0.2F);
+        Color.glBlendColour(glowColor, 0.2F);
     }
 
     private void unsetColor() {
