@@ -147,16 +147,16 @@ public class MineLittlePony implements ClientModInitializer {
             ));
 
             if (show) {
-                int y = hasHdSkins ? 80 : 50;
-                buttons.add(new Button(screen.width - 50, screen.height - y, 20, 20).onClick(sender -> {
-                    MinecraftClient.getInstance().openScreen(new GuiPonySettings());
-                }).setStyle(new com.minelittlepony.common.client.gui.style.Style()
+                int y = hasHdSkins ? 75 : 50;
+                Button button = buttons.add(new Button(screen.width - 50, screen.height - y, 20, 20))
+                    .onClick(sender -> MinecraftClient.getInstance().openScreen(new GuiPonySettings()));
+                button.getStyle()
                         .setIcon(new TextureSprite()
                                 .setPosition(2, 2)
                                 .setTexture(new Identifier("minelittlepony", "textures/gui/pony.png"))
                                 .setTextureSize(16, 16)
-                                .setSize(16, 16))
-                ));
+                                .setSize(16, 16));
+                button.y = screen.height - y; // ModMenu
             }
         }
     }
