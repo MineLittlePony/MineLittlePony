@@ -44,9 +44,7 @@ public class PonyData implements IPonyData {
             return new PonyData();
         }
 
-        try {
-            Resource res = MinecraftClient.getInstance().getResourceManager().getResource(identifier);
-
+        try (Resource res = MinecraftClient.getInstance().getResourceManager().getResource(identifier)) {
             PonyData data = res.getMetadata(SERIALISER);
 
             if (data != null) {
