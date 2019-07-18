@@ -45,10 +45,6 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
         unicornArmLeft.rotate(0, 0, 0).around(-7, 12, -2);
     }
 
-    public ArmPose getArmPoseForSide(AbsoluteHand side) {
-        return side == AbsoluteHand.RIGHT ? rightArmPose : leftArmPose;
-    }
-
     @Override
     protected void animateBreathing(float ticks) {
         if (canCast()) {
@@ -124,6 +120,9 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
 
     @Override
     public Cuboid getArm(AbsoluteHand side) {
-        return canCast() ? getUnicornArmForSide(side) : super.getArm(side);
+        if (canCast() && getArmPoseForSide(side) != ArmPose.EMPTY) {
+            return getUnicornArmForSide(side);
+        }
+        return super.getArm(side);
     }
 }
