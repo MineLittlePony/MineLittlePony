@@ -7,9 +7,10 @@ import com.minelittlepony.client.model.races.PlayerModels;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.client.render.RenderPony;
 import com.minelittlepony.client.render.layer.LayerGear;
+import com.minelittlepony.client.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.client.render.layer.LayerPonyArmor;
 import com.minelittlepony.client.render.layer.LayerPonyElytra;
-import com.minelittlepony.hdskins.dummy.RenderDummyPlayer;
+import com.minelittlepony.hdskins.dummy.DummyPlayerRenderer;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.meta.Race;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
@@ -23,11 +24,11 @@ import net.minecraft.util.Identifier;
 /**
  * Renderer used for the dummy pony model when selecting a skin.
  */
-public class RenderDummyPony extends RenderDummyPlayer<DummyPony, ClientPonyModel<DummyPony>> implements IPonyRender<DummyPony, ClientPonyModel<DummyPony>> {
+public class DummyPonyRenderer extends DummyPlayerRenderer<DummyPony, ClientPonyModel<DummyPony>> implements IPonyRender<DummyPony, ClientPonyModel<DummyPony>> {
 
     protected final RenderPony<DummyPony, ClientPonyModel<DummyPony>> renderPony = new RenderPony<>(this);
 
-    public RenderDummyPony(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
+    public DummyPonyRenderer(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
         super(manager, context);
         addFeature(new LayerGear<>(this));
 
@@ -88,6 +89,11 @@ public class RenderDummyPony extends RenderDummyPlayer<DummyPony, ClientPonyMode
     @Override
     protected FeatureRenderer<DummyPony, ClientPonyModel<DummyPony>> getArmourLayer() {
         return new LayerPonyArmor<>(this);
+    }
+
+    @Override
+    protected FeatureRenderer<DummyPony, ClientPonyModel<DummyPony>> getHeldItemLayer() {
+        return new LayerHeldPonyItemMagical<>(this);
     }
 
     @Override

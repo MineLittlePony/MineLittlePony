@@ -3,7 +3,6 @@ package com.minelittlepony.client.model;
 import net.minecraft.client.model.Cuboid;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
-import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.AbsoluteHand;
 
