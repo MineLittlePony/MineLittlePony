@@ -29,6 +29,10 @@ repositories {
         name = 'minelp'
         url = 'http://repo.minelittlepony-mod.com/maven/snapshot'
     }
+    maven {
+        name = 'minelp-release'
+        url = 'http://repo.minelittlepony-mod.com/maven/release'
+    }
 }
 
 // check for updates every build when on CI
