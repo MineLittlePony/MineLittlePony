@@ -13,7 +13,7 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AbsoluteHand;
+import net.minecraft.util.Arm;
 import net.minecraft.util.UseAction;
 
 import static com.mojang.blaze3d.platform.GlStateManager.*;
@@ -39,7 +39,7 @@ public class LevitatingItemRenderer {
     /**
      * Renders a magical overlay over an item in third person.
      */
-    public void renderItemGlow(LivingEntity entity, ItemStack drop, ModelTransformation.Type transform, AbsoluteHand hand, int glowColor) {
+    public void renderItemGlow(LivingEntity entity, ItemStack drop, ModelTransformation.Type transform, Arm hand, int glowColor) {
         pushMatrix();
         disableLighting();
         setColor(glowColor);
@@ -51,9 +51,9 @@ public class LevitatingItemRenderer {
         scalef(1.1F, 1.1F, 1.1F);
 
         translatef(0.01F, 0.01F, 0.01F);
-        renderItem.renderHeldItem(drop, entity, transform, hand == AbsoluteHand.LEFT);
+        renderItem.renderHeldItem(drop, entity, transform, hand == Arm.LEFT);
         translatef(-0.02F, -0.02F, -0.02F);
-        renderItem.renderHeldItem(drop, entity, transform, hand == AbsoluteHand.LEFT);
+        renderItem.renderHeldItem(drop, entity, transform, hand == Arm.LEFT);
 
         usingTransparency = false;
         unsetColor();

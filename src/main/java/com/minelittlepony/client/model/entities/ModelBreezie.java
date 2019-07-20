@@ -3,7 +3,7 @@ package com.minelittlepony.client.model.entities;
 import net.minecraft.client.model.Cuboid;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.AbsoluteHand;
+import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.util.render.PonyRenderer;
@@ -100,7 +100,7 @@ public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> {
         rotateArm(rightArm, rightArmPose, 1);
 
         if (handSwingProgress > 0) {
-            swingArms(getPreferedHand(entity));
+            swingArms(getPreferredArm(entity));
         }
 
         float rotX = MathHelper.sin(ticks * 0.067F) * 0.05F;
@@ -123,10 +123,10 @@ public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> {
         leg.rotate(-1.4137167F, factor * PI / 10, factor * 0.07853982F);
     }
 
-    protected void swingArms(AbsoluteHand mainHand) {
+    protected void swingArms(Arm mainHand) {
         body.yaw = MathHelper.sin(MathHelper.sqrt(handSwingProgress) * PI * 2) / 5;
 
-        if (mainHand == AbsoluteHand.LEFT) {
+        if (mainHand == Arm.LEFT) {
             body.yaw *= -1;
         }
 

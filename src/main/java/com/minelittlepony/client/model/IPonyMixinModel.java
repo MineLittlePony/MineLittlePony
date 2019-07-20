@@ -2,7 +2,7 @@ package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.Cuboid;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.AbsoluteHand;
+import net.minecraft.util.Arm;
 
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IUnicorn;
@@ -77,8 +77,8 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     }
 
     @Override
-    default void setArmAngle(float var1, AbsoluteHand var2) {
-        mixin().setArmAngle(var1, var2);
+    default void setArmAngle(float angle, Arm side) {
+        mixin().setArmAngle(angle, side);
     }
 
     @Override
@@ -91,10 +91,10 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
         return mixin().getBodyPart(part);
     }
 
-    interface Caster<T extends LivingEntity, M extends IPonyModel<T> & IUnicorn<Arm>, Arm> extends IPonyMixinModel<T, M>, IUnicorn<Arm> {
+    interface Caster<T extends LivingEntity, M extends IPonyModel<T> & IUnicorn<ArmModel>, ArmModel> extends IPonyMixinModel<T, M>, IUnicorn<ArmModel> {
 
         @Override
-        default Arm getUnicornArmForSide(AbsoluteHand side) {
+        default ArmModel getUnicornArmForSide(Arm side) {
             return mixin().getUnicornArmForSide(side);
         }
 

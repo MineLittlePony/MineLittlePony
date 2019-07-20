@@ -63,8 +63,7 @@ public class LayerPonyCape<M extends ClientPonyModel<AbstractClientPlayerEntity>
 
             float camera = MathHelper.lerp(partialTicks, player.field_7505, player.field_7483);
             //float camera = player.prevCameraYaw + (player.cameraYaw - player.prevCameraYaw) * scale;
-            capeMotionY += MathHelper.sin(MathHelper.lerp(partialTicks, player.field_6039, player.field_5973) * 6) * 32 * camera;
-            //capeMotionY += MathHelper.sin((player.prevDistanceWalkedModified + (player.distanceWalkedModified - player.prevDistanceWalkedModified) * scale) * 6) * 32 * camera;
+            capeMotionY += MathHelper.sin(MathHelper.lerp(partialTicks, player.prevHorizontalSpeed, player.horizontalSpeed) * 6) * 32 * camera;
 
             rotatef(2 + capeMotionX / 12 + capeMotionY, 1, 0, 0);
             rotatef( diagMotion / 2, 0, 0, 1);

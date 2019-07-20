@@ -6,7 +6,7 @@ import com.minelittlepony.model.IUnicorn;
 
 import net.minecraft.client.model.Cuboid;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.AbsoluteHand;
+import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
 /**
@@ -66,8 +66,8 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
     }
 
     @Override
-    public PonyRenderer getUnicornArmForSide(AbsoluteHand side) {
-        return side == AbsoluteHand.LEFT ? unicornArmLeft : unicornArmRight;
+    public PonyRenderer getUnicornArmForSide(Arm side) {
+        return side == Arm.LEFT ? unicornArmLeft : unicornArmRight;
     }
 
     @Override
@@ -119,7 +119,7 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
     }
 
     @Override
-    public Cuboid getArm(AbsoluteHand side) {
+    public Cuboid getArm(Arm side) {
         if (canCast() && getArmPoseForSide(side) != ArmPose.EMPTY) {
             return getUnicornArmForSide(side);
         }

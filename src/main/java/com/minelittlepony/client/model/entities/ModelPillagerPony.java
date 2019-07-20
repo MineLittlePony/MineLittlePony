@@ -2,7 +2,7 @@ package com.minelittlepony.client.model.entities;
 
 import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.entity.mob.PillagerEntity;
-import net.minecraft.util.AbsoluteHand;
+import net.minecraft.util.Arm;
 
 import com.minelittlepony.client.model.races.ModelChangeling;
 
@@ -17,7 +17,7 @@ public class ModelPillagerPony<T extends PillagerEntity> extends ModelChangeling
         ArmPose holdingPose = getHoldingPose(entity.getState());
 
         if (holdingPose != ArmPose.EMPTY) {
-            boolean rightHanded = entity.getMainHand() == AbsoluteHand.RIGHT;
+            boolean rightHanded = entity.getMainArm() == Arm.RIGHT;
 
             leftArmPose = rightHanded ? ArmPose.EMPTY : holdingPose;
             rightArmPose = rightHanded ? holdingPose : ArmPose.EMPTY;

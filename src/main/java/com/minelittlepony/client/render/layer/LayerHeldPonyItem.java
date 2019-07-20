@@ -9,7 +9,7 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AbsoluteHand;
+import net.minecraft.util.Arm;
 
 import static com.mojang.blaze3d.platform.GlStateManager.*;
 
@@ -20,13 +20,13 @@ public class LayerHeldPonyItem<T extends LivingEntity, M extends EntityModel<T> 
     }
 
     protected ItemStack getLeftItem(T entity) {
-        boolean main = entity.getMainHand() == AbsoluteHand.LEFT;
+        boolean main = entity.getMainArm() == Arm.LEFT;
 
         return main ? entity.getMainHandStack() : entity.getOffHandStack();
     }
 
     protected ItemStack getRightItem(T entity) {
-        boolean main = entity.getMainHand() == AbsoluteHand.RIGHT;
+        boolean main = entity.getMainArm() == Arm.RIGHT;
 
         return main ? entity.getMainHandStack() : entity.getOffHandStack();
     }
@@ -44,14 +44,14 @@ public class LayerHeldPonyItem<T extends LivingEntity, M extends EntityModel<T> 
 
             model.transform(BodyPart.LEGS);
 
-            renderHeldItem(entity, right, ModelTransformation.Type.THIRD_PERSON_RIGHT_HAND, AbsoluteHand.RIGHT);
-            renderHeldItem(entity, left, ModelTransformation.Type.THIRD_PERSON_LEFT_HAND, AbsoluteHand.LEFT);
+            renderHeldItem(entity, right, ModelTransformation.Type.THIRD_PERSON_RIGHT_HAND, Arm.RIGHT);
+            renderHeldItem(entity, left, ModelTransformation.Type.THIRD_PERSON_LEFT_HAND, Arm.LEFT);
 
             popMatrix();
         }
     }
 
-    private void renderHeldItem(T entity, ItemStack drop, ModelTransformation.Type transform, AbsoluteHand hand) {
+    private void renderHeldItem(T entity, ItemStack drop, ModelTransformation.Type transform, Arm hand) {
         if (!drop.isEmpty()) {
             pushMatrix();
             renderArm(hand);
@@ -60,7 +60,7 @@ public class LayerHeldPonyItem<T extends LivingEntity, M extends EntityModel<T> 
                 translatef(0, 0.2F, 0);
             }
 
-            float left = hand == AbsoluteHand.LEFT ? 1 : -1;
+            float left = hand == Arm.LEFT ? 1 : -1;
 
             if (entity.hasVehicle()) {
                 translatef(left / 10, -0.2F, -0.5F);
@@ -71,24 +71,24 @@ public class LayerHeldPonyItem<T extends LivingEntity, M extends EntityModel<T> 
             translatef(left * -0.2F, 0, 0);
 
             preItemRender(entity, drop, transform, hand);
-            MinecraftClient.getInstance().getItemRenderer().renderHeldItem(drop, entity, transform, hand == AbsoluteHand.LEFT);
+            MinecraftClient.getInstance().getItemRenderer().renderHeldItem(drop, entity, transform, hand == Arm.LEFT);
             postItemRender(entity, drop, transform, hand);
 
             popMatrix();
         }
     }
 
-    protected void preItemRender(T entity, ItemStack drop, ModelTransformation.Type transform, AbsoluteHand hand) {
+    protected void preItemRender(T entity, ItemStack drop, ModelTransformation.Type transform, Arm hand) {
         translatef(0, 0.125F, -1);
     }
 
-    protected void postItemRender(T entity, ItemStack drop, ModelTransformation.Type transform, AbsoluteHand hand) {
+    protected void postItemRender(T entity, ItemStack drop, ModelTransformation.Type transform, Arm hand) {
     }
 
     /**
      * Renders the main arm
      */
-    protected void renderArm(AbsoluteHand side) {
+    protected void renderArm(Arm side) {
         getModel().setArmAngle(0.0625F, side);
     }
 }

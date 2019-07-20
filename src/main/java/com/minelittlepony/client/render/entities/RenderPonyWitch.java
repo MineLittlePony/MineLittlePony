@@ -9,7 +9,7 @@ import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.entity.mob.WitchEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AbsoluteHand;
+import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
 
 public class RenderPonyWitch extends RenderPonyMob<WitchEntity, ModelWitchPony> {
@@ -24,7 +24,7 @@ public class RenderPonyWitch extends RenderPonyMob<WitchEntity, ModelWitchPony> 
     protected LayerHeldPonyItem<WitchEntity, ModelWitchPony> createItemHoldingLayer() {
         return new LayerHeldPonyItem<WitchEntity, ModelWitchPony>(this) {
             @Override
-            protected void preItemRender(WitchEntity entity, ItemStack drop, ModelTransformation.Type transform, AbsoluteHand hand) {
+            protected void preItemRender(WitchEntity entity, ItemStack drop, ModelTransformation.Type transform, Arm hand) {
                 GlStateManager.translatef(0, -0.3F, -0.8F);
                 GlStateManager.rotatef(10, 1, 0, 0);
             }

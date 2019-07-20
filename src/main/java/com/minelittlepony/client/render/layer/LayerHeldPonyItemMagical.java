@@ -11,7 +11,7 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AbsoluteHand;
+import net.minecraft.util.Arm;
 
 public class LayerHeldPonyItemMagical<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends LayerHeldPonyItem<T, M> {
 
@@ -24,16 +24,16 @@ public class LayerHeldPonyItemMagical<T extends LivingEntity, M extends EntityMo
     }
 
     @Override
-    protected void preItemRender(T entity, ItemStack drop, ModelTransformation.Type transform, AbsoluteHand hand) {
+    protected void preItemRender(T entity, ItemStack drop, ModelTransformation.Type transform, Arm hand) {
         if (isUnicorn()) {
-            GlStateManager.translatef(hand == AbsoluteHand.LEFT ? -0.6F : 0, 0.5F, -0.3F);
+            GlStateManager.translatef(hand == Arm.LEFT ? -0.6F : 0, 0.5F, -0.3F);
         } else {
             super.preItemRender(entity, drop, transform, hand);
         }
     }
 
     @Override
-    protected void postItemRender(T entity, ItemStack drop, ModelTransformation.Type transform, AbsoluteHand hand) {
+    protected void postItemRender(T entity, ItemStack drop, ModelTransformation.Type transform, Arm hand) {
         if (isUnicorn()) {
             PonyRenderManager.getInstance().getMagicRenderer().renderItemGlow(entity, drop, transform, hand, ((IUnicorn<?>)getModel()).getMagicColor());
         }
@@ -41,7 +41,7 @@ public class LayerHeldPonyItemMagical<T extends LivingEntity, M extends EntityMo
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void renderArm(AbsoluteHand side) {
+    protected void renderArm(Arm side) {
         if (isUnicorn()) {
             ((IUnicorn<PonyRenderer>)getModel()).getUnicornArmForSide(side).applyTransform(0.0625F);
         } else {

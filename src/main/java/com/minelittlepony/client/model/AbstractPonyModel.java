@@ -15,7 +15,7 @@ import com.minelittlepony.model.armour.IEquestrianArmour;
 import net.minecraft.client.model.Cuboid;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.AbsoluteHand;
+import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.function.Consumer;
@@ -364,8 +364,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     protected void holdItem(float swing) {
         boolean both = leftArmPose == ArmPose.ITEM && rightArmPose == ArmPose.ITEM;
 
-        alignArmForAction(getArm(AbsoluteHand.LEFT), leftArmPose, rightArmPose, both, swing, 1);
-        alignArmForAction(getArm(AbsoluteHand.RIGHT), rightArmPose, leftArmPose, both, swing, -1);
+        alignArmForAction(getArm(Arm.LEFT), leftArmPose, rightArmPose, both, swing, 1);
+        alignArmForAction(getArm(Arm.RIGHT), rightArmPose, leftArmPose, both, swing, -1);
     }
 
     @Override
@@ -462,7 +462,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      */
     protected void swingItem(T entity) {
         if (getSwingAmount() > 0 && !attributes.isSleeping) {
-            AbsoluteHand mainSide = getPreferedHand(entity);
+            Arm mainSide = getPreferredArm(entity);
 
             swingArm(getArm(mainSide));
         }

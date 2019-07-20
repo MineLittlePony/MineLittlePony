@@ -1,12 +1,12 @@
 package com.minelittlepony.model;
 
-import net.minecraft.util.AbsoluteHand;
+import net.minecraft.util.Arm;
 
-public interface IUnicorn<Arm> extends IModel {
+public interface IUnicorn<ArmModel> extends IModel {
     /**
      * Gets the arm used for holding items in their magic.
      */
-    Arm getUnicornArmForSide(AbsoluteHand side);
+    ArmModel getUnicornArmForSide(Arm side);
 
     /**
      * Returns true if this model is being applied to a race that can use magic.

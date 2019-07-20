@@ -29,7 +29,7 @@ import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.AbsoluteHand;
+import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
 
 public class RenderPonyPlayer extends PlayerEntityRenderer implements IPonyRender<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> {
@@ -127,24 +127,24 @@ public class RenderPonyPlayer extends PlayerEntityRenderer implements IPonyRende
 
     @Override
     public final void renderRightArm(AbstractClientPlayerEntity player) {
-        renderArm(player, AbsoluteHand.RIGHT);
+        renderArm(player, Arm.RIGHT);
     }
 
     @Override
     public final void renderLeftArm(AbstractClientPlayerEntity player) {
-        renderArm(player, AbsoluteHand.LEFT);
+        renderArm(player, Arm.LEFT);
     }
 
-    protected void renderArm(AbstractClientPlayerEntity player, AbsoluteHand side) {
+    protected void renderArm(AbstractClientPlayerEntity player, Arm side) {
         renderPony.updateModel(player);
         bindEntityTexture(player);
 
         GlStateManager.pushMatrix();
-        float reflect = side == AbsoluteHand.LEFT ? 1 : -1;
+        float reflect = side == Arm.LEFT ? 1 : -1;
 
         GlStateManager.translatef(reflect * -0.1F, -0.74F, 0);
 
-        if (side == AbsoluteHand.LEFT) {
+        if (side == Arm.LEFT) {
             super.renderLeftArm(player);
         } else {
             super.renderRightArm(player);

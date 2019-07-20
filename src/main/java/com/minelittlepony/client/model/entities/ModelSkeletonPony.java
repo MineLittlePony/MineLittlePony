@@ -4,7 +4,7 @@ import net.minecraft.entity.mob.WitherSkeletonEntity;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AbsoluteHand;
+import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
 
 import com.minelittlepony.client.model.ModelMobPony;
@@ -35,7 +35,7 @@ public class ModelSkeletonPony<T extends HostileEntity> extends ModelMobPony<T> 
         ItemStack mainHand = entity.getStackInHand(Hand.MAIN_HAND);
         ItemStack offHand = entity.getStackInHand(Hand.OFF_HAND);
 
-        boolean right = entity.getMainHand() == AbsoluteHand.RIGHT;
+        boolean right = entity.getMainArm() == Arm.RIGHT;
 
         if (!offHand.isEmpty()) {
             if (right) {

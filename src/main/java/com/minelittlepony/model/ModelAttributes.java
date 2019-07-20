@@ -3,7 +3,7 @@ package com.minelittlepony.model;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.util.math.MathUtil;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.AbsoluteHand;
+import net.minecraft.util.Arm;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.UUID;
@@ -99,6 +99,6 @@ public class ModelAttributes<T extends LivingEntity> {
         hasHeadGear = pony.isWearingHeadgear(entity);
         isSitting = pony.isRidingInteractive(entity);
         interpolatorId = entity.getUuid();
-        isLeftHanded = entity.getMainHand() == AbsoluteHand.LEFT;
+        isLeftHanded = entity.getMainArm() == Arm.LEFT;
     }
 }

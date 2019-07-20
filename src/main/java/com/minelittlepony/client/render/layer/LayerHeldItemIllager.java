@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.layer;
 
 import net.minecraft.entity.mob.IllagerEntity;
-import net.minecraft.util.AbsoluteHand;
+import net.minecraft.util.Arm;
 
 import com.minelittlepony.client.model.races.ModelAlicorn;
 import com.minelittlepony.client.render.IPonyRender;
@@ -20,7 +20,7 @@ public class LayerHeldItemIllager<T extends IllagerEntity, M extends ModelAlicor
     }
 
     @Override
-    protected void renderArm(AbsoluteHand side) {
+    protected void renderArm(Arm side) {
         getModel().getArm(side).applyTransform(0.0625F);
     }
 

@@ -4,7 +4,7 @@ import net.minecraft.client.model.Cuboid;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.AbsoluteHand;
+import net.minecraft.util.Arm;
 
 import com.minelittlepony.client.pony.PonyData;
 import com.minelittlepony.model.ModelAttributes;
@@ -81,12 +81,12 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends PlayerEnti
 
 
     @Override
-    public Cuboid getArm(AbsoluteHand side) {
+    public Cuboid getArm(Arm side) {
         return super.getArm(side);
     }
 
-    public ArmPose getArmPoseForSide(AbsoluteHand side) {
-        return side == AbsoluteHand.RIGHT ? rightArmPose : leftArmPose;
+    public ArmPose getArmPoseForSide(Arm side) {
+        return side == Arm.RIGHT ? rightArmPose : leftArmPose;
     }
 
     /**
