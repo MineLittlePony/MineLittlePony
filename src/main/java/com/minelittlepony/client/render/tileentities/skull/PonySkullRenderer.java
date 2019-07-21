@@ -28,7 +28,7 @@ import static com.mojang.blaze3d.platform.GlStateManager.*;
  */
 public class PonySkullRenderer extends SkullBlockEntityRenderer {
 
-    public static PonySkullRenderer ponyInstance = new PonySkullRenderer();
+    private static final PonySkullRenderer ponyInstance = new PonySkullRenderer();
     private static SkullBlockEntityRenderer backup = null;
 
     private static final Map<SkullBlock.SkullType, ISkull> skullMap = SystemUtil.consume(Maps.newHashMap(), (skullMap) -> {
@@ -44,27 +44,20 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
      *
      * Original/Existing renderer is stored to a backup variable as a fallback in case of mods.
      */
-    public static SkullBlockEntityRenderer resolve() {
+    public static void resolve() {
         if (MineLittlePony.getInstance().getConfig().ponyskulls.get()) {
             if (!(INSTANCE instanceof PonySkullRenderer)) {
                 backup = INSTANCE;
                 BlockEntityRendererRegistry.INSTANCE.register(SkullBlockEntity.class, ponyInstance);
-                INSTANCE = ponyInstance;
             }
         } else {
             if ((INSTANCE instanceof PonySkullRenderer)) {
-                ponyInstance = (PonySkullRenderer) INSTANCE;
                 if (backup == null) {
                     backup = new SkullBlockEntityRenderer();
                 }
                 BlockEntityRendererRegistry.INSTANCE.register(SkullBlockEntity.class, backup);
-                INSTANCE = backup;
             }
         }
-
-        INSTANCE.setRenderManager(BlockEntityRenderDispatcher.INSTANCE);
-
-        return INSTANCE;
     }
 
     @Override

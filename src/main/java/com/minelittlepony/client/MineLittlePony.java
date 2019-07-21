@@ -93,6 +93,9 @@ public class MineLittlePony implements ClientModInitializer {
         ClientTickCallback.EVENT.register(this::onTick);
         ClientReadyCallback.EVENT.register(this::onClientReady);
         ScreenInitCallback.EVENT.register(this::onScreenInit);
+        if (config.ponyskulls.get()) {
+            PonySkullRenderer.resolve();
+        }
 
         if (FabricLoader.getInstance().isModLoaded("hdskins")) {
             IndirectHDSkins.initialize();
@@ -135,8 +138,6 @@ public class MineLittlePony implements ClientModInitializer {
                 }
             }
         }
-
-        PonySkullRenderer.resolve();
     }
 
     private void onScreenInit(Screen screen, ScreenInitCallback.ButtonList buttons) {

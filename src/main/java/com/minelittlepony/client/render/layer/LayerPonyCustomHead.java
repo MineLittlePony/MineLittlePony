@@ -3,7 +3,6 @@ package com.minelittlepony.client.render.layer;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.render.IPonyRender;
-import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
 import com.minelittlepony.model.BodyPart;
 import com.mojang.authlib.GameProfile;
 
@@ -11,6 +10,7 @@ import net.minecraft.block.AbstractSkullBlock;
 import net.minecraft.block.SkullBlock.SkullType;
 import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.entity.EquipmentSlot;
@@ -97,7 +97,7 @@ public class LayerPonyCustomHead<T extends LivingEntity, M extends EntityModel<T
 
         SkullType type = ((AbstractSkullBlock) ((BlockItem) itemstack.getItem()).getBlock()).getSkullType();
 
-        PonySkullRenderer.resolve().render(-0.5F, 0, -0.5F, null, 180, type, profile, -1, limbSwing);
+        SkullBlockEntityRenderer.INSTANCE.render(-0.5F, 0, -0.5F, null, 180, type, profile, -1, limbSwing);
     }
 
     @Override
