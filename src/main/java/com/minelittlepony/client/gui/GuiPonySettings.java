@@ -75,7 +75,7 @@ public class GuiPonySettings extends GameGui {
 
         addButton(new Label(width / 2, 5).setCentered()).getStyle().setText(getTitle().getString());
         addButton(new Button(width / 2 - 100, height - 25))
-            .onClick(sender -> finish())
+            .onClick(sender -> onClose())
             .getStyle()
                 .setText("gui.done");
 
@@ -153,8 +153,7 @@ public class GuiPonySettings extends GameGui {
     }
 
     @Override
-    public void onClose() {
-        super.onClose();
+    public void removed() {
         config.save();
 
         PonySkullRenderer.resolve();
