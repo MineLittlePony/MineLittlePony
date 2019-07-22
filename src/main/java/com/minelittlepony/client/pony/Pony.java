@@ -8,7 +8,10 @@ import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.IPonyData;
 import com.minelittlepony.pony.meta.Race;
 import com.minelittlepony.pony.meta.Size;
+
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
+import net.minecraft.block.StairsBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
@@ -70,11 +73,37 @@ public class Pony implements IPony {
 
     @Override
     public boolean isFlying(LivingEntity entity) {
-        return !(entity.onGround
+        return !(isOnGround(entity)
                 || entity.hasVehicle()
                 || (entity.isClimbing() && !(entity instanceof PlayerEntity && ((PlayerEntity)entity).abilities.allowFlying))
                 || entity.isInWater()
                 || entity.isSleeping());
+    }
+
+    /**
+     * Checks if the entity is on the ground, or close enough to be "effectively" grounded.
+     * this is to keep Pegasus wings from flapping in odd situations (Hypixel).
+     */
+    private boolean isOnGround(LivingEntity entity) {
+        if (entity.onGround) {
+            return true;
+        }
+
+        BlockState below = entity.getEntityWorld()
+                .getBlockState(entity.getBlockPos().down());
+
+        // Check for stairs so we can keep Pegasi from flailing their wings as they descend
+        double offsetAmount = below.getBlock() instanceof StairsBlock ? 1 : 0.05;
+
+        Vec3d pos = entity.getPos();
+        BlockPos blockpos = new BlockPos(
+                Math.floor(pos.x),
+                Math.floor(pos.y - offsetAmount),
+                Math.floor(pos.z));
+
+        BlockState state = entity.getEntityWorld()
+                .getBlockState(blockpos);
+        return !state.isAir();
     }
 
     @Override
