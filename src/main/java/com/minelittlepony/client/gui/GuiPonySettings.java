@@ -75,7 +75,7 @@ public class GuiPonySettings extends GameGui {
 
         addButton(new Label(width / 2, 5).setCentered()).getStyle().setText(getTitle().getString());
         addButton(new Button(width / 2 - 100, height - 25))
-            .onClick(sender -> onClose())
+            .onClick(sender -> finish())
             .getStyle()
                 .setText("gui.done");
 
