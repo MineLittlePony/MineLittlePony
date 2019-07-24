@@ -16,6 +16,13 @@ public interface IUnicorn<ArmModel> extends IModel {
     }
 
     /**
+     * Returns true if this model has an visible horns.
+     */
+    default boolean hasHorn() {
+        return getMetadata().hasHorn();
+    }
+
+    /**
      * Returns true if this model is currently using magic (horn is lit).
      * @return
      */

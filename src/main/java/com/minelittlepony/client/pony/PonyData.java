@@ -123,8 +123,13 @@ public class PonyData implements IPonyData {
     }
 
     @Override
+    public boolean hasHorn() {
+        return getRace() != null && getRace().getEffectiveRace(false).hasHorn();
+    }
+
+    @Override
     public boolean hasMagic() {
-        return getRace() != null && getRace().getEffectiveRace(false).hasHorn() && getGlowColor() != 0;
+        return hasHorn() && getGlowColor() != 0;
     }
 
     @Override

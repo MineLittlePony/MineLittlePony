@@ -39,6 +39,11 @@ public interface IPonyData {
     int getGlowColor();
 
     /**
+     * Returns true if and only if this metadata represents a pony that has a horn.
+     */
+    boolean hasHorn();
+
+    /**
      * Returns true if and only if this metadata represents a pony that can cast magic.
      */
     boolean hasMagic();

@@ -86,10 +86,10 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
     protected void renderHead(float scale) {
         super.renderHead(scale);
 
-        if (canCast()) {
+        if (hasHorn()) {
             head.applyTransform(scale);
             horn.renderPart(scale, attributes.interpolatorId);
-            if (isCasting()) {
+            if (canCast() && isCasting()) {
                 horn.renderMagic(getMagicColor(), scale);
             }
         }

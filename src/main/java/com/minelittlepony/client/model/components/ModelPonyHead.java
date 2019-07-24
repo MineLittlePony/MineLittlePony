@@ -53,7 +53,7 @@ public class ModelPonyHead extends SkullOverlayEntityModel implements ICapitated
 
         super.render(move, swing, ticks, headYaw, headPitch, scale);
 
-        if (metadata.hasMagic()) {
+        if (metadata.hasHorn()) {
             getHead().applyTransform(scale);
             horn.renderPart(scale, null);
         }
