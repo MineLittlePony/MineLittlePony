@@ -93,9 +93,9 @@ public class MineLittlePony implements ClientModInitializer {
         ClientTickCallback.EVENT.register(this::onTick);
         ClientReadyCallback.EVENT.register(this::onClientReady);
         ScreenInitCallback.EVENT.register(this::onScreenInit);
-        if (config.ponyskulls.get()) {
-            PonySkullRenderer.resolve();
-        }
+        config.ponyskulls.onChanged(PonySkullRenderer::resolve);
+        // TODO Config is loaded too early for listeners
+        PonySkullRenderer.resolve(config.ponyskulls.get());
 
         if (FabricLoader.getInstance().isModLoaded("hdskins")) {
             IndirectHDSkins.initialize();

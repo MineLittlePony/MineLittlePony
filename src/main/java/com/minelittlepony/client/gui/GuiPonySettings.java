@@ -155,7 +155,5 @@ public class GuiPonySettings extends GameGui {
     @Override
     public void removed() {
         config.save();
-
-        PonySkullRenderer.resolve();
     }
 }

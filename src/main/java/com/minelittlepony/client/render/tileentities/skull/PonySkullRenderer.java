@@ -43,8 +43,8 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
      *
      * Original/Existing renderer is stored to a backup variable as a fallback in case of mods.
      */
-    public static void resolve() {
-        if (MineLittlePony.getInstance().getConfig().ponyskulls.get()) {
+    public static void resolve(boolean ponySkulls) {
+        if (ponySkulls) {
             if (!(INSTANCE instanceof PonySkullRenderer)) {
                 backup = INSTANCE;
                 BlockEntityRendererRegistry.INSTANCE.register(SkullBlockEntity.class, ponyInstance);
