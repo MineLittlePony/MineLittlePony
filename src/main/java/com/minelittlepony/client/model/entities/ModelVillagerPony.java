@@ -2,6 +2,8 @@ package com.minelittlepony.client.model.entities;
 
 import net.minecraft.client.render.entity.model.ModelWithHat;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.AbstractTraderEntity;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
 
@@ -80,5 +82,28 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
     @Override
     public void setHatVisible(boolean visible) {
 
+    }
+
+    @Override
+    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        super.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
+
+        boolean isHeadRolling = false;
+        if (entity instanceof AbstractTraderEntity) {
+            isHeadRolling = ((AbstractTraderEntity)entity).getHeadRollingTimeLeft() > 0;
+        }
+
+        if (isHeadRolling) {
+            float roll = 0.3F * MathHelper.sin(0.45F * ticks);
+
+            this.head.roll = roll;
+            this.headwear.roll = roll;
+
+            this.head.pitch = 0.4F;
+            this.headwear.pitch = 0.4F;
+        } else {
+            this.head.roll = 0.0F;
+            this.headwear.roll = 0.0F;
+        }
     }
 }
