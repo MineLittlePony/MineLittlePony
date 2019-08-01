@@ -26,7 +26,6 @@ public class LevitatingItemRenderer {
         if (usesTransparency()) {
             enableBlend();
             blendFuncSeparate(SourceFactor.CONSTANT_COLOR, DestFactor.ONE, SourceFactor.ONE, DestFactor.ZERO);
-            MinecraftClient.getInstance().gameRenderer.disableLightmap();
         }
 
         return usesTransparency();
