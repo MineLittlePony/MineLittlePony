@@ -1,6 +1,5 @@
 package com.minelittlepony.client.gui;
 
-import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.LiteralText;
