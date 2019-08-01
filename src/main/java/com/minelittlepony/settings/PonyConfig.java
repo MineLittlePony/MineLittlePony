@@ -40,6 +40,14 @@ public class PonyConfig extends JsonConfig {
     }
 
     public float setGlobalScaleFactor(float f) {
+
+        if (f < 0.15F) {
+            f = 0.1F;
+        }
+        if (f > 2.95) {
+            f = 3;
+        }
+
         f = Math.round(MathHelper.clamp(f, 0.1F, 3) * 100) / 100F;
 
         scaleFactor.set(f);
