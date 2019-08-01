@@ -91,7 +91,7 @@ public class GuiPonySettings extends GameGui {
             content.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.scale");
             content.addButton(new Slider(LEFT, row += 15, 0.1F, 3, config.getGlobalScaleFactor())
                     .onChange(config::setGlobalScaleFactor)
-                    .setFormatter(value -> I18n.translate("minelp.debug.scale.value", I18n.translate(describeCurrentScale(value)))));
+                    .setFormatter(value -> describeCurrentScale(value)));
             content.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.size");
             content.addButton(new EnumSlider<>(LEFT, row += 15, config.sizeOverride.get())
                     .onChange(config.sizeOverride::set));
@@ -127,21 +127,26 @@ public class GuiPonySettings extends GameGui {
 
     public String describeCurrentScale(float value) {
         if (value >= 3) {
-            return I18n.translate("minelp.debug.scale.meg");
+            return "minelp.debug.scale.meg";
         }
         if (value == 2) {
-            return I18n.translate("minelp.debug.scale.max");
+            return "minelp.debug.scale.max";
         }
         if (value == 1) {
-            return I18n.translate("minelp.debug.scale.mid");
+            return "minelp.debug.scale.mid";
         }
         if (value == 0.9F) {
-            return I18n.translate("minelp.debug.scale.sa");
+            return "minelp.debug.scale.sa";
         }
         if (value <= 0.1F) {
-            return I18n.translate("minelp.debug.scale.min");
+            return "minelp.debug.scale.min";
         }
-        return String.format("%f", value);
+
+        value *= 100F;
+        value = Math.round(value);
+        value /= 100F;
+
+        return I18n.translate("minelp.debug.scale.value", value);
     }
 
     @Override

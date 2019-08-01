@@ -23,10 +23,10 @@
   "minelp.mode.wet": "Пони под водой",
   "minelp.debug.reload_models.message": "Перезагрузка моделей пони...",
   "minelp.debug.scale": "Коэффициент масштабирования",
-  "minelp.debug.scale.value": "Масштаб: %s",
-  "minelp.debug.scale.meg": "Мега",
-  "minelp.debug.scale.max": "Удвоенный",
-  "minelp.debug.scale.mid": "Стандартный",
-  "minelp.debug.scale.sa": "Каноничный",
-  "minelp.debug.scale.min": "Миниатюрный"
+  "minelp.debug.scale.value": "Масштаб: %.2f",
+  "minelp.debug.scale.meg": "Масштаб: Мега",
+  "minelp.debug.scale.max": "Масштаб: Удвоенный",
+  "minelp.debug.scale.mid": "Масштаб: Стандартный",
+  "minelp.debug.scale.sa": "Масштаб: Каноничный",
+  "minelp.debug.scale.min": "Масштаб: Миниатюрный"
 }

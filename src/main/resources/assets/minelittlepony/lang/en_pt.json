@@ -26,11 +26,11 @@
   "minelp.mode.wet": "Maremaid",
   "minelp.debug.reload_models.message": "Plunderin' yer horsies...",
   "minelp.debug.scale": "Sailing Factor",
-  "minelp.debug.scale.value": "Ship Size: %s",
-  "minelp.debug.scale.meg": "Enormous",
-  "minelp.debug.scale.max": "Huge",
-  "minelp.debug.scale.mid": "Big",
-  "minelp.debug.scale.sa": "Normal",
-  "minelp.debug.scale.min": "Miniscule",
+  "minelp.debug.scale.value": "Ship Size: %.2f",
+  "minelp.debug.scale.meg": "Ship Size: Enormous",
+  "minelp.debug.scale.max": "Ship Size: Huge",
+  "minelp.debug.scale.mid": "Ship Size: Big",
+  "minelp.debug.scale.sa": "Ship Size: Normal",
+  "minelp.debug.scale.min": "Ship Size: Miniscule",
   "minelp.debug.size": "Bow Width"
 }

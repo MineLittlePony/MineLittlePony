@@ -47,8 +47,17 @@ public class PonyConfig extends JsonConfig {
         if (f > 2.95) {
             f = 3;
         }
+        if (f > 1.97 && f < 2.03) {
+            f = 2;
+        }
+        if (f > 0.97 && f < 1.03) {
+            f = 1;
+        }
+        if (f > 0.87 && f < 0.93) {
+            f = 0.9F;
+        }
 
-        f = Math.round(MathHelper.clamp(f, 0.1F, 3) * 100) / 100F;
+        f = Math.round(MathHelper.clamp(f, 0.1F, 3) * 100F) / 100F;
 
         scaleFactor.set(f);
         showscale.set(f != 1);
