@@ -8,6 +8,8 @@ import com.minelittlepony.common.client.gui.VisibilityMode;
 import com.minelittlepony.common.util.settings.Setting;
 import com.minelittlepony.settings.PonyConfig;
 
+import java.nio.file.Path;
+
 public class ClientPonyConfig extends PonyConfig {
 
     /**
@@ -15,7 +17,8 @@ public class ClientPonyConfig extends PonyConfig {
      */
     public final Setting<VisibilityMode> horseButton = value("horseButton", VisibilityMode.AUTO);
 
-    public ClientPonyConfig() {
+    public ClientPonyConfig(Path path) {
+        super(path);
         MobRenderers.registry.forEach(r -> value(r.name().toLowerCase(), true));
     }
 

@@ -12,7 +12,6 @@ import com.minelittlepony.common.event.ClientReadyCallback;
 import com.minelittlepony.common.event.ScreenInitCallback;
 import com.minelittlepony.common.event.SkinFilterCallback;
 import com.minelittlepony.common.util.GamePaths;
-import com.minelittlepony.common.util.settings.JsonConfig;
 import com.minelittlepony.pony.IPonyManager;
 import com.minelittlepony.settings.PonyConfig;
 
@@ -77,7 +76,7 @@ public class MineLittlePony implements ClientModInitializer {
         hasHdSkins = FabricLoader.getInstance().isModLoaded("hdskins");
         hasModMenu = FabricLoader.getInstance().isModLoaded("modmenu");
 
-        config = JsonConfig.of(GamePaths.getConfigDirectory().resolve("minelp.json"), ClientPonyConfig::new);
+        config = new ClientPonyConfig(GamePaths.getConfigDirectory().resolve("minelp.json"));
         ponyManager = new PonyManager(config);
         keyBinding = FabricKeyBinding.Builder.create(new Identifier("minelittlepony", "settings"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F9, "key.categories.misc").build();
 
@@ -94,8 +93,8 @@ public class MineLittlePony implements ClientModInitializer {
         ClientReadyCallback.EVENT.register(this::onClientReady);
         ScreenInitCallback.EVENT.register(this::onScreenInit);
         config.ponyskulls.onChanged(PonySkullRenderer::resolve);
-        // TODO Config is loaded too early for listeners
-        PonySkullRenderer.resolve(config.ponyskulls.get());
+
+        config.load();
 
         if (FabricLoader.getInstance().isModLoaded("hdskins")) {
             IndirectHDSkins.initialize();

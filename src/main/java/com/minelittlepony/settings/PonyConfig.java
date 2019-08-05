@@ -6,6 +6,8 @@ import com.minelittlepony.common.util.settings.JsonConfig;
 import com.minelittlepony.common.util.settings.Setting;
 import com.minelittlepony.pony.meta.Size;
 
+import java.nio.file.Path;
+
 /**
  * Storage container for MineLP client settings.
  */
@@ -29,6 +31,10 @@ public class PonyConfig extends JsonConfig {
      * Debug override for pony sizes.
      */
     public final Setting<Size> sizeOverride = value("sizeOverride", Size.UNSET);
+
+    public PonyConfig(Path path) {
+        super(path);
+    }
 
     /**
      * Gets the current PonyLevel. That is the level of ponies you would like to see.
