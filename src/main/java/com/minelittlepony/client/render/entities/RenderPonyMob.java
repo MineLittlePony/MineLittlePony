@@ -67,6 +67,8 @@ public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T
     protected void setupTransforms(T entity, float ageInTicks, float rotationYaw, float partialTicks) {
         rotationYaw = renderPony.getRenderYaw(entity, rotationYaw, partialTicks);
         super.setupTransforms(entity, ageInTicks, rotationYaw, partialTicks);
+
+        renderPony.applyPostureTransform(entity, rotationYaw, partialTicks);
     }
 
     @Override

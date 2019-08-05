@@ -86,7 +86,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
                 animateBreathing(ticks);
             }
 
-            if (attributes.isSwimming) {
+            if (attributes.isSwimmingRotated) {
                 head.setRotationPoint(0, -2, -2);
             } else {
                 head.setRotationPoint(0, 0, 0);
@@ -213,7 +213,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
         headPitch = attributes.isSleeping ? 0.1f : headPitch / 57.29578F;
 
-        if (attributes.isSwimming) {
+        if (attributes.isSwimming && attributes.motionPitch != 0) {
             headPitch -= 0.9F;
         }
 
@@ -765,7 +765,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         }
 
         if (part == BodyPart.HEAD) {
-            rotatef(attributes.motionPitch, 1, 0, 0);
+           rotatef(attributes.motionPitch, 1, 0, 0);
         }
 
         PonyTransformation.forSize(getSize()).transform(this, part);

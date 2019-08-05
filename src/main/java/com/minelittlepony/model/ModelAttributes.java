@@ -3,6 +3,7 @@ package com.minelittlepony.model;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.util.math.MathUtil;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.Vec3d;
 
@@ -27,6 +28,11 @@ public class ModelAttributes<T extends LivingEntity> {
      * True if the model is swimming under water.
      */
     public boolean isSwimming;
+    /**
+     * True if the model is swimming, and rotated 90degs (players)
+     */
+    public boolean isSwimmingRotated;
+
     /**
      * True if the pony is crouching.
      */
@@ -96,6 +102,7 @@ public class ModelAttributes<T extends LivingEntity> {
         isFlying = pony.isFlying(entity);
         isGliding = entity.isFallFlying();
         isSwimming = pony.isSwimming(entity);
+        isSwimmingRotated = isSwimming && entity instanceof PlayerEntity;
         hasHeadGear = pony.isWearingHeadgear(entity);
         isSitting = pony.isRidingInteractive(entity);
         interpolatorId = entity.getUuid();
