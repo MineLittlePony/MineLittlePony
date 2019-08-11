@@ -208,12 +208,20 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      * @param y     New rotation Y
      */
     private void updateHeadRotation(float headYaw, float headPitch) {
-        head.yaw = attributes.isSleeping ? (Math.abs(attributes.interpolatorId.getMostSignificantBits()) % 2.8F) - 1.9F : headYaw / 57.29578F;
-
+        headYaw = attributes.isSleeping ? (Math.abs(attributes.interpolatorId.getMostSignificantBits()) % 2.8F) - 1.9F : headYaw / 57.29578F;
         headPitch = attributes.isSleeping ? 0.1f : headPitch / 57.29578F;
 
         if (attributes.isSwimming && attributes.motionPitch != 0) {
             headPitch -= 0.9F;
+        }
+
+        head.yaw = 0;
+        head.roll = 0;
+
+        if (attributes.isSwimmingRotated) {
+            head.roll = -headYaw;
+        } else {
+            head.yaw = headYaw;
         }
 
         float pitch = (float)Math.toRadians(attributes.motionPitch);
