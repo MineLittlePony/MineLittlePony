@@ -17,6 +17,8 @@ public interface IArmour {
      */
     void setInVisible();
 
+    void setVariant(ArmourVariant variant);
+
     /**
      * Prepares an armour model for rendering, first hiding all the pieces and then incrementally showing them as appropriate.
      *

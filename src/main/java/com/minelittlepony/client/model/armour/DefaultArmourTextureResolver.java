@@ -11,6 +11,7 @@ import net.minecraft.util.Identifier;
 import com.google.common.collect.Maps;
 import com.minelittlepony.client.ForgeProxy;
 import com.minelittlepony.model.armour.ArmourLayer;
+import com.minelittlepony.model.armour.ArmourVariant;
 import com.minelittlepony.model.armour.IArmourTextureResolver;
 
 import javax.annotation.Nullable;
@@ -76,5 +77,13 @@ public class DefaultArmourTextureResolver<T extends LivingEntity> implements IAr
 
     private Identifier getArmorTexture(T entity, ItemStack item, String def, EquipmentSlot slot, @Nullable String type) {
         return HUMAN_ARMOUR.computeIfAbsent(ForgeProxy.getArmorTexture(entity, item, def, slot, type), Identifier::new);
+    }
+
+    @Override
+    public ArmourVariant getArmourVariant(ArmourLayer layer, Identifier resolvedTexture) {
+        if (resolvedTexture.getPath().endsWith("_pony.png")) {
+            return ArmourVariant.NORMAL;
+        }
+        return ArmourVariant.LEGACY;
     }
 }

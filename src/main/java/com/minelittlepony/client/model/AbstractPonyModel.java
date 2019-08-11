@@ -39,7 +39,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     @Override
     public IEquestrianArmour<?> createArmour() {
-        return new ArmourWrapper<>(new ModelPonyArmour<>(), new ModelPonyArmour<>());
+        return new ArmourWrapper<>(ModelPonyArmour::new);
     }
 
     /**
@@ -208,7 +208,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      * @param y     New rotation Y
      */
     private void updateHeadRotation(float headYaw, float headPitch) {
-
         head.yaw = attributes.isSleeping ? (Math.abs(attributes.interpolatorId.getMostSignificantBits()) % 2.8F) - 1.9F : headYaw / 57.29578F;
 
         headPitch = attributes.isSleeping ? 0.1f : headPitch / 57.29578F;
@@ -647,22 +646,22 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
         leftArm        .setRotationPoint( rarmX, yOffset + rarmY, 0);
         rightArm       .setRotationPoint(-rarmX, yOffset + rarmY, 0);
-        leftArmOverlay .setRotationPoint(rarmX, yOffset + rarmY, 0);
+        leftArmOverlay .setRotationPoint( rarmX, yOffset + rarmY, 0);
         rightArmOverlay.setRotationPoint(-rarmX, yOffset + rarmY, 0);
 
         leftLeg        .setRotationPoint( rarmX, yOffset, 0);
         rightLeg       .setRotationPoint(-rarmX, yOffset, 0);
-        leftLegOverlay .setRotationPoint(rarmX, yOffset, 0);
+        leftLegOverlay .setRotationPoint( rarmX, yOffset, 0);
         rightLegOverlay.setRotationPoint(-rarmX, yOffset, 0);
 
-        leftArm        .addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch);
+        leftArm        .addBox(armX,            armY, armZ, armWidth, armLength, armDepth, stretch);
         rightArm       .addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch);
-        leftArmOverlay .addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
+        leftArmOverlay .addBox(armX,            armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
         rightArmOverlay.addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
 
-        leftLeg        .addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch);
+        leftLeg        .addBox(armX,            armY, armZ, armWidth, armLength, armDepth, stretch);
         rightLeg       .addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch);
-        leftLegOverlay .addBox(armX, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
+        leftLegOverlay .addBox(armX,            armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
         rightLegOverlay.addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
     }
 

@@ -61,6 +61,7 @@ public class LayerPonyArmor<T extends LivingEntity, M extends EntityModel<T> & I
                 IArmourTextureResolver<T> resolver = armour instanceof IArmourTextureResolver ? (IArmourTextureResolver<T>)armour : (IArmourTextureResolver<T>)textures;
 
                 Identifier armourTexture = resolver.getArmourTexture(entity, itemstack, armorSlot, layer, null);
+                armour.setVariant(resolver.getArmourVariant(layer, armourTexture));
 
                 getContext().bindTexture(armourTexture);
 
@@ -73,6 +74,8 @@ public class LayerPonyArmor<T extends LivingEntity, M extends EntityModel<T> & I
 
                     armour.render(entity, move, swing, ticks, headYaw, headPitch, scale);
                     armourTexture = resolver.getArmourTexture(entity, itemstack, armorSlot, layer, "overlay");
+                    armour.setVariant(resolver.getArmourVariant(layer, armourTexture));
+
                     getContext().bindTexture(armourTexture);
                 }
 

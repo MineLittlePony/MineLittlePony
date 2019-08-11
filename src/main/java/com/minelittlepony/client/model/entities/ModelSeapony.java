@@ -35,7 +35,7 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
 
     @Override
     public IEquestrianArmour<?> createArmour() {
-        return new ArmourWrapper<>(new Armour(), new Armour());
+        return new ArmourWrapper<>(Armour::new);
     }
 
     @Override

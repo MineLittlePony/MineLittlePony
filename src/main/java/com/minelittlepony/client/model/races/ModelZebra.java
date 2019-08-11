@@ -19,7 +19,7 @@ public class ModelZebra<T extends LivingEntity> extends ModelEarthPony<T> {
 
     @Override
     public IEquestrianArmour<?> createArmour() {
-        return new ArmourWrapper<>(new Armour(), new Armour());
+        return new ArmourWrapper<>(Armour::new);
     }
 
     @Override
