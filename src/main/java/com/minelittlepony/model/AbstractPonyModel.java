@@ -43,6 +43,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
     public boolean isCrouching;
     public boolean isRidingInteractive;
     public boolean headGear;
+    private boolean isLeftHanded;
 
     /**
      * Associated pony data.
@@ -101,6 +102,7 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         headGear = pony.isWearingHeadgear(entity);
         isRidingInteractive = pony.isRidingInteractive(entity);
         interpolatorId = entity.getUniqueID();
+        isLeftHanded = entity.getPrimaryHand() == EnumHandSide.LEFT;
     }
 
     /**
@@ -477,16 +479,24 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
     protected void alignArmForAction(ModelRenderer arm, ArmPose pose, ArmPose complement, boolean both, float swing, float reflect) {
         switch (pose) {
             case ITEM:
-                float swag = 1;
-                if (!isFlying() && both) {
-                    swag -= (float)Math.pow(swing, 2);
+                arm.rotateAngleY = 0;
+
+                if ((!both || reflect == (isLeftHanded ? 1 : -1)) && complement != ArmPose.BLOCK) {
+                    float swag = 1;
+                    if (!isFlying() && both) {
+                        swag -= (float)Math.pow(swing, 2);
+                    }
+
+                    float mult = 1 - swag/2;
+                    arm.rotateAngleX = arm.rotateAngleX * mult - (PI / 10) * swag;
+                    arm.rotateAngleZ = -reflect * (PI / 15);
+
+                    if (isCrouching()) {
+                        arm.rotationPointX -= reflect * 2;
+                    }
                 }
-                float mult = 1 - swag/2;
-                arm.rotateAngleX = arm.rotateAngleX * mult - (PI / 10) * swag;
-                arm.rotateAngleZ = -reflect * (PI / 15);
-                if (isCrouching()) {
-                    arm.rotationPointX -= reflect * 2;
-                }
+
+                break;
             case EMPTY:
                 arm.rotateAngleY = 0;
                 break;
@@ -564,12 +574,19 @@ public abstract class AbstractPonyModel extends ModelPlayer implements IModel, P
         float cos = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
         float sin = MathHelper.sin(ticks * 0.067F) * 0.05F;
 
-        if (rightArmPose != ArmPose.EMPTY) {
+        boolean animateLeft =
+                (leftArmPose != ArmPose.EMPTY && (leftArmPose != rightArmPose || isLeftHanded))
+                && rightArmPose != ArmPose.BLOCK;
+        boolean animateRight =
+                (rightArmPose != ArmPose.EMPTY && (leftArmPose != rightArmPose || !isLeftHanded))
+                && leftArmPose != ArmPose.BLOCK;
+
+        if (animateRight) {
             bipedRightArm.rotateAngleZ += cos;
             bipedRightArm.rotateAngleX += sin;
         }
 
-        if (leftArmPose != ArmPose.EMPTY) {
+        if (animateLeft) {
             bipedLeftArm.rotateAngleZ += cos;
             bipedLeftArm.rotateAngleX += sin;
         }
