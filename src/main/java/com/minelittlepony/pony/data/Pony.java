@@ -8,13 +8,18 @@ import com.voxelmodpack.hdskins.resources.texture.DynamicTextureImage;
 import com.voxelmodpack.hdskins.resources.texture.IBufferedTexture;
 import com.voxelmodpack.hdskins.util.ProfileTextureUtil;
 
+import net.minecraft.block.BlockStairs;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.StairsBlock;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
@@ -130,11 +135,35 @@ public class Pony extends Touchable<Pony> implements IPony {
 
     @Override
     public boolean isFlying(EntityLivingBase entity) {
-        return !(entity.onGround
+        return !(isOnGround(entity)
                 || entity.isRiding()
                 || (entity.isOnLadder() && !(entity instanceof EntityPlayer && ((EntityPlayer)entity).capabilities.isFlying))
                 || entity.isInWater()
                 || entity.isPlayerSleeping());
+    }
+
+    /**
+     * Checks if the entity is on the ground, or close enough to be "effectively" grounded.
+     * this is to keep Pegasus wings from flapping in odd situations (Hypixel).
+     */
+    private boolean isOnGround(EntityLivingBase entity) {
+        if (entity.onGround) {
+            return true;
+        }
+
+        IBlockState below = entity.getEntityWorld()
+                .getBlockState(entity.getPosition().down());
+
+        // Check for stairs so we can keep Pegasi from flailing their wings as they descend
+        double offsetAmount = below.getBlock() instanceof BlockStairs ? 1 : 0.05;
+
+        Vec3d pos = entity.getPositionVector();
+        BlockPos blockpos = new BlockPos(
+                Math.floor(pos.x),
+                Math.floor(pos.y - offsetAmount),
+                Math.floor(pos.z));
+
+        return !entity.getEntityWorld().isAirBlock(blockpos);
     }
 
     @Override
