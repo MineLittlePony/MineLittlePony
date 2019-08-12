@@ -101,9 +101,7 @@ public class Pony implements IPony {
                 Math.floor(pos.y - offsetAmount),
                 Math.floor(pos.z));
 
-        BlockState state = entity.getEntityWorld()
-                .getBlockState(blockpos);
-        return !state.isAir();
+        return !entity.getEntityWorld().isAir(blockpos);
     }
 
     @Override
