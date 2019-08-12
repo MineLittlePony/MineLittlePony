@@ -3,6 +3,7 @@ package com.minelittlepony.model.capabilities;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.inventory.EntityEquipmentSlot;
 
+import com.minelittlepony.model.armour.ArmourVariant;
 import com.minelittlepony.model.armour.IEquestrianArmor.ArmorLayer;
 
 public interface IModelArmor {
@@ -17,6 +18,8 @@ public interface IModelArmor {
      * Resets the state of this model to all invisible.
      */
     void setInVisible();
+
+    void setVariant(ArmourVariant variant);
 
     /**
      * Prepares an armour model for rendering, first hiding all the pieces and then incrementally showing them as appropriate.

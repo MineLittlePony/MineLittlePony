@@ -107,6 +107,14 @@ public class DefaultPonyArmorTextureResolver<T extends EntityLivingBase> impleme
             return modId;
         });
     }
+
+    @Override
+    public ArmourVariant getArmourVariant(ArmorLayer layer, ResourceLocation resolvedTexture) {
+        if (resolvedTexture.getPath().endsWith("_pony.png")) {
+            return ArmourVariant.NORMAL;
+        }
+        return ArmourVariant.LEGACY;
+    }
 }
 
 

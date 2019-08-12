@@ -62,6 +62,7 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
                 IArmorTextureResolver<T> resolver = armour instanceof IArmorTextureResolver ? (IArmorTextureResolver<T>)armour : (IArmorTextureResolver<T>)textures;
 
                 ResourceLocation armourTexture = resolver.getArmorTexture(entity, itemstack, armorSlot, layer, null);
+                armour.setVariant(resolver.getArmourVariant(layer, armourTexture));
 
                 getRenderer().bindTexture(armourTexture);
 
@@ -71,6 +72,8 @@ public class LayerPonyArmor<T extends EntityLivingBase> extends AbstractPonyLaye
                     Color.glColor(itemarmor.getColor(itemstack), 1);
                     armour.render(entity, move, swing, ticks, headYaw, headPitch, scale);
                     armourTexture = resolver.getArmorTexture(entity, itemstack, armorSlot, layer, "overlay");
+                    armour.setVariant(resolver.getArmourVariant(layer, armourTexture));
+
                     getRenderer().bindTexture(armourTexture);
                 }
 
