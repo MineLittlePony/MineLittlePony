@@ -117,6 +117,11 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
     }
 
     @Override
+    public boolean hasHorn() {
+        return metadata.hasHorn();
+    }
+
+    @Override
     public boolean isCasting() {
         return rightArmPose != ArmPose.EMPTY || leftArmPose != ArmPose.EMPTY;
     }
@@ -137,9 +142,9 @@ public class ModelUnicorn extends ModelEarthPony implements IModelUnicorn {
     protected void renderHead(Entity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         super.renderHead(entity, move, swing, ticks, headYaw, headPitch, scale);
 
-        if (canCast()) {
+        if (hasHorn()) {
             horn.renderPart(scale, entity.getUniqueID());
-            if (isCasting()) {
+            if (canCast() && isCasting()) {
                 horn.renderMagic(getMagicColor(), scale);
             }
         }

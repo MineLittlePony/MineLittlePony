@@ -16,6 +16,11 @@ public interface IModelUnicorn extends IModel {
     boolean canCast();
 
     /**
+     * Returns true if this model has an visible horns.
+     */
+    boolean hasHorn();
+
+    /**
      * Returns true if this model is currently using magic (horn is lit).
      * @return
      */

@@ -61,7 +61,7 @@ public class ModelPonyHead extends ModelHumanoidHead implements ICapitated {
 
         super.render(entity, move, swing, ticks, headYaw, headPitch, scale);
 
-        if (metadata.hasMagic()) {
+        if (metadata.hasHorn()) {
             skeletonHead.postRender(scale);
             horn.renderPart(scale, entity.getUniqueID());
         }
