@@ -1,13 +1,13 @@
 package com.minelittlepony.model.armour;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.ResourcePackRepository;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.minelittlepony.ForgeProxy;
 import com.minelittlepony.model.armour.IEquestrianArmor.ArmorLayer;
@@ -15,6 +15,8 @@ import com.minelittlepony.model.armour.IEquestrianArmor.ArmorLayer;
 import javax.annotation.Nullable;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 public class DefaultPonyArmorTextureResolver<T extends EntityLivingBase> implements IArmorTextureResolver<T> {
@@ -50,40 +52,60 @@ public class DefaultPonyArmorTextureResolver<T extends EntityLivingBase> impleme
     }
 
     private ResourceLocation resolve(ResourceLocation... resources) {
-        // check resource packs for either texture.
-        for (ResourcePackRepository.Entry entry : Minecraft.getMinecraft().getResourcePackRepository().getRepositoryEntries()) {
-            for (ResourceLocation candidate : resources) {
-                if (entry.getResourcePack().resourceExists(candidate)) {
-                    // ponies are more important
-                    return candidate;
-                }
-            }
-        }
-
-        // the default pack
         for (ResourceLocation candidate : resources) {
-            try {
-                Minecraft.getMinecraft().getResourceManager().getResource(candidate);
+            if (resourceExists(candidate)) {
                 return candidate;
-            } catch (IOException e) { }
+            }
         }
 
         return resources[resources.length - 1];
     }
 
+    private boolean resourceExists(ResourceLocation resource) {
+        try {
+            return Minecraft.getMinecraft().getResourceManager().getResource(resource) != null;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
     private ResourceLocation ponifyResource(ResourceLocation human) {
         return PONY_ARMOUR.computeIfAbsent(human, key -> {
-            String domain = human.getNamespace();
+            String domain = key.getNamespace();
             if ("minecraft".equals(domain)) {
                 domain = "minelittlepony"; // it's a vanilla armor. I provide these.
             }
 
-            return new ResourceLocation(domain, human.getPath().replace(".png", "_pony.png"));
+            return new ResourceLocation(domain, key.getPath().replace(".png", "_pony.png"));
         });
     }
 
     private ResourceLocation getArmorTexture(T entity, ItemStack item, String def, EntityEquipmentSlot slot, @Nullable String type) {
-        return HUMAN_ARMOUR.computeIfAbsent(ForgeProxy.getArmorTexture(entity, item, def, slot, type), ResourceLocation::new);
+
+        String modTexture = Strings.nullToEmpty(ForgeProxy.getArmorTexture(entity, item, def, slot, type));
+
+        if (modTexture.isEmpty() || modTexture.equals(def)) {
+            return HUMAN_ARMOUR.computeIfAbsent(def, ResourceLocation::new);
+        }
+
+        return HUMAN_ARMOUR.computeIfAbsent(modTexture, s -> {
+            ResourceLocation modId = new ResourceLocation(s);
+            ResourceLocation defId = new ResourceLocation(def);
+
+            Path defPath = Paths.get(defId.getPath());
+
+            String domain = modId.getNamespace();
+
+            String path = Paths.get(modId.getPath()).getParent().resolve(defPath.getFileName()).toString().replace('\\', '/');;
+
+            ResourceLocation interemId = new ResourceLocation(domain, path);
+
+            if (resourceExists(interemId)) {
+                return interemId;
+            }
+
+            return modId;
+        });
     }
 }
 
