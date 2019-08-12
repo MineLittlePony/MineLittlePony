@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.minelittlepony.client.ForgeProxy;
 import com.minelittlepony.model.armour.ArmourLayer;
@@ -16,6 +17,8 @@ import com.minelittlepony.model.armour.IArmourTextureResolver;
 
 import javax.annotation.Nullable;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 public class DefaultArmourTextureResolver<T extends LivingEntity> implements IArmourTextureResolver<T> {
@@ -66,17 +69,41 @@ public class DefaultArmourTextureResolver<T extends LivingEntity> implements IAr
 
     private Identifier ponifyResource(Identifier human) {
         return PONY_ARMOUR.computeIfAbsent(human, key -> {
-            String domain = human.getNamespace();
+            String domain = key.getNamespace();
             if ("minecraft".equals(domain)) {
                 domain = "minelittlepony"; // it's a vanilla armor. I provide these.
             }
 
-            return new Identifier(domain, human.getPath().replace(".png", "_pony.png"));
+            return new Identifier(domain, key.getPath().replace(".png", "_pony.png"));
         });
     }
 
     private Identifier getArmorTexture(T entity, ItemStack item, String def, EquipmentSlot slot, @Nullable String type) {
-        return HUMAN_ARMOUR.computeIfAbsent(ForgeProxy.getArmorTexture(entity, item, def, slot, type), Identifier::new);
+
+        String modTexture = Strings.nullToEmpty(ForgeProxy.getArmorTexture(entity, item, def, slot, type));
+
+        if (modTexture.isEmpty() || modTexture.equals(def)) {
+            return HUMAN_ARMOUR.computeIfAbsent(def, Identifier::new);
+        }
+
+        return HUMAN_ARMOUR.computeIfAbsent(modTexture, s -> {
+            Identifier modId = new Identifier(s);
+            Identifier defId = new Identifier(def);
+
+            Path defPath = Paths.get(defId.getPath());
+
+            String domain = modId.getNamespace();
+
+            String path = Paths.get(modId.getPath()).getParent().resolve(defPath.getFileName()).toString();
+
+            Identifier interemId = new Identifier(domain, path);
+
+            if (MinecraftClient.getInstance().getResourceManager().containsResource(interemId)) {
+                return interemId;
+            }
+
+            return modId;
+        });
     }
 
     @Override
