@@ -94,7 +94,7 @@ public class DefaultArmourTextureResolver<T extends LivingEntity> implements IAr
 
             String domain = modId.getNamespace();
 
-            String path = Paths.get(modId.getPath()).getParent().resolve(defPath.getFileName()).toString();
+            String path = Paths.get(modId.getPath()).getParent().resolve(defPath.getFileName()).toString().replace('\\', '/');
 
             Identifier interemId = new Identifier(domain, path);
 
