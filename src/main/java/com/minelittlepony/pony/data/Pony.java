@@ -9,8 +9,6 @@ import com.voxelmodpack.hdskins.resources.texture.IBufferedTexture;
 import com.voxelmodpack.hdskins.util.ProfileTextureUtil;
 
 import net.minecraft.block.BlockStairs;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.StairsBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -19,7 +17,6 @@ import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
