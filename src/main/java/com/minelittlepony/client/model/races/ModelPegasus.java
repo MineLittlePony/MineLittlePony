@@ -34,4 +34,10 @@ public class ModelPegasus<T extends LivingEntity> extends ModelEarthPony<T> impl
         super.renderBody(scale);
         wings.renderPart(scale, attributes.interpolatorId);
     }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        wings.setVisible(visible);
+    }
 }

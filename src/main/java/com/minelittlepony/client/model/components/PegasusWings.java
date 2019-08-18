@@ -6,13 +6,12 @@ import net.minecraft.util.math.MathHelper;
 import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.model.IPegasus;
-import com.minelittlepony.model.PonyModelConstants;
 import com.minelittlepony.pony.meta.Wearable;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import java.util.UUID;
 
-public class PegasusWings<T extends Model & IPegasus> implements IPart, PonyModelConstants {
+public class PegasusWings<T extends Model & IPegasus> implements IPart {
 
     protected final T pegasus;
 

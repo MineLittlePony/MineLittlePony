@@ -11,7 +11,6 @@ import com.minelittlepony.client.util.render.plane.PlaneRenderer;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.model.armour.IEquestrianArmour;
-
 import net.minecraft.client.model.Cuboid;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -767,7 +766,9 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     protected void renderVest(float scale) {
         bodyOverlay.render(scale);
-        upperTorsoOverlay.render(scale);
+        if (bodyOverlay.visible) {
+            upperTorsoOverlay.render(scale);
+        }
     }
 
     protected void renderLegs(float scale) {
@@ -786,6 +787,18 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         rightArmOverlay.render(scale);
         leftLegOverlay.render(scale);
         rightLegOverlay.render(scale);
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+
+        upperTorso.visible = visible;
+        upperTorsoOverlay.visible = visible;
+
+        neck.visible = visible;
+
+        tail.setVisible(visible);
     }
 
     @Override

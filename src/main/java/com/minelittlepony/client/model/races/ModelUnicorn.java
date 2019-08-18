@@ -125,4 +125,10 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
         }
         return super.getArm(side);
     }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        horn.setVisible(visible);
+    }
 }

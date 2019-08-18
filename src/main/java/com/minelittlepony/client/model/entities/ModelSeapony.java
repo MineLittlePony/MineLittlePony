@@ -185,6 +185,12 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
         rightLeg.visible = false;
         leftLegOverlay.visible = false;
         rightLegOverlay.visible = false;
+
+        bodyCenter.visible = visible;
+
+        leftFin.visible = visible;
+        centerFin.visible = visible;
+        rightFin.visible = visible;
     }
 
     class Armour extends ModelPonyArmour<T> {

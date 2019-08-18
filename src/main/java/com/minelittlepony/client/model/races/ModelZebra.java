@@ -51,6 +51,13 @@ public class ModelZebra<T extends LivingEntity> extends ModelEarthPony<T> {
                 .pitch = -1F;
     }
 
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        bristles.visible = visible;
+    }
+
     class Armour extends ModelPonyArmour<T> {
 
         @Override

@@ -40,4 +40,10 @@ public class ModelAlicorn<T extends LivingEntity> extends ModelUnicorn<T> implem
             wings.renderPart(scale, attributes.interpolatorId);
         }
     }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        wings.setVisible(visible);
+    }
 }

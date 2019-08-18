@@ -128,6 +128,14 @@ public class ModelEnderStallion extends ModelSkeletonPony<EndermanEntity> {
     }
 
     @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+
+        leftHorn.visible = visible;
+        rightHorn.visible = visible;
+    }
+
+    @Override
     public boolean wingsAreOpen() {
         return isAttacking;
     }
