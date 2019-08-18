@@ -28,6 +28,8 @@ import static com.mojang.blaze3d.platform.GlStateManager.*;
 public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPonyModel<T> {
 
     protected PlaneRenderer upperTorso;
+    protected PlaneRenderer upperTorsoOverlay;
+
     protected PlaneRenderer neck;
 
     protected IPart tail;
@@ -199,6 +201,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         rightLegOverlay.copyRotation(rightLeg);
         bodyOverlay.copyRotation(body);
         headwear.copyRotation(head);
+        upperTorsoOverlay.copyRotation(upperTorso);
     }
 
     /**
@@ -589,21 +592,18 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
                     .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                     .box(-4, 4, -2, 8, 8, 4, stretch);
 
-        bodyOverlay.addBox(-4, 4, -2, 8, 8, 4, stretch + 0.25F);
-        bodyOverlay.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-
         upperTorso = new PlaneRenderer(this, 24, 0);
         upperTorso.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
                   .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-                    .tex(24, 0)    .east( 4, -4, -4, 8, 8, stretch)
-                    .tex(4,  0)    .east( 4, -4,  4, 8, 4, stretch)
-                    .tex(56, 0)  .bottom(-4,  4, -4, 8, 8, stretch)
-                    .tex(36, 16)  .north(-4, -4,  8, 8, 4, stretch)
-                                  .north(-4,  0,  8, 8, 4, stretch)
-                                 .bottom(-4,  4,  4, 8, 4, stretch)
-                .flipZ().tex(32, 20).top(-4, -4, -4, 8, 12, stretch)
-                        .tex(24, 0).west(-4, -4, -4, 8, 8, stretch)
-                        .tex(4, 0) .west(-4, -4,  4, 8, 4, stretch)
+                    .tex(24, 0)  .east( 4, -4, -4, 8,  8, stretch)  // body sides
+                    .tex(4,  0)  .east( 4, -4,  4, 8,  4, stretch)  // qt mark
+                    .tex(56, 0).bottom(-4,  4, -4, 8,  8, stretch)  // stomach
+                    .tex(36, 16).south(-4, -4,  8, 8,  4, stretch)  // bottom b
+                                .south(-4,  0,  8, 8,  4, stretch)  // bottom b
+                               .bottom(-4,  4,  4, 8,  4, stretch)  // bottom b
+              .flipZ().tex(32, 20).top(-4, -4, -4, 8, 12, stretch) // t body (back)
+                      .tex(24, 0).west(-4, -4, -4, 8,  8, stretch)  // body sides
+                      .tex(4, 0) .west(-4, -4,  4, 8,  4, stretch)  // qt mark
                 // Tail stub
               .child(0)
                 .tex(32, 0).top(-1, 2, 2, 2, 6, stretch)
@@ -620,6 +620,29 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             .south(0, 0, 4, 4, 4, stretch)
              .east(4, 0, 0, 4, 4, stretch)
              .west(0, 0, 0, 4, 4, stretch);
+
+        stretch += 0.25F;
+
+        bodyOverlay.addBox(-4, 4, -2, 8, 8, 4, stretch);
+        bodyOverlay.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
+
+        upperTorsoOverlay = new PlaneRenderer(this, 24, 0);
+        upperTorsoOverlay.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
+                         .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
+                          .tex(12, 32)  .east( 4, -4, -4, 4,  8, stretch) // body sides a
+                          .tex(12, 48)  .east( 4,  0, -4, 4,  8, stretch) // body sides b
+                          .tex(0, 32)   .east( 4, -4,  4, 4,  4, stretch) // qt mark a
+                          .tex(0, 48)   .east( 4,  0,  4, 4,  4, stretch) // qt mark b
+                          .tex(28, 48).bottom(-4,  4, -4, 8,  4, stretch) // stomach a
+                          .tex(44, 48).bottom(-4,  4,  0, 8,  4, stretch) // stomach b
+                          .tex(36, 32) .south(-4, -4,  8, 8,  4, stretch) // bottom b
+                                       .south(-4,  0,  8, 8,  4, stretch) // bottom b
+                          .tex(36, 32).bottom(-4,  4,  4, 8,  4, stretch) // bottom b
+                     .flipZ().tex(32, 36).top(-4, -4, -4, 8, 12, stretch) // t body (back)
+                            .tex(12, 32).west(-4, -4, -4, 4,  8, stretch) // body sides a
+                            .tex(12, 48).west(-4,  0, -4, 4,  8, stretch) // body sides b
+                             .tex(0, 32).west(-4, -4,  4, 4,  4, stretch) // qt mark a
+                             .tex(0, 48).west(-4,  0,  4, 4,  4, stretch);// qt mark b
     }
 
     protected void preInitLegs() {
@@ -744,6 +767,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     protected void renderVest(float scale) {
         bodyOverlay.render(scale);
+        upperTorsoOverlay.render(scale);
     }
 
     protected void renderLegs(float scale) {
