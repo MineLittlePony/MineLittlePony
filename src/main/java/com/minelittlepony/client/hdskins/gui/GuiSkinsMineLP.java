@@ -6,9 +6,9 @@ import com.minelittlepony.common.client.gui.style.Style;
 import com.minelittlepony.hdskins.dummy.PlayerPreview;
 import com.minelittlepony.hdskins.gui.GuiSkins;
 import com.minelittlepony.hdskins.net.SkinServerList;
+import com.minelittlepony.hdskins.profile.SkinType;
 import com.minelittlepony.pony.IPonyManager;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvents;
@@ -74,21 +74,21 @@ public class GuiSkinsMineLP extends GuiSkins {
     }
 
     @Override
-    public void onSetLocalSkin(Type type) {
+    public void onSetLocalSkin(SkinType type) {
         super.onSetLocalSkin(type);
 
         MineLittlePony.logger.debug("Invalidating old local skin, checking updated local skin");
-        if (type == Type.SKIN) {
-            ponyManager.removePony(previewer.getLocal().getTextures().get(Type.SKIN).getId());
+        if (type == SkinType.SKIN) {
+            ponyManager.removePony(previewer.getLocal().getTextures().get(SkinType.SKIN).getId());
         }
     }
 
     @Override
-    public void onSetRemoteSkin(Type type, Identifier location, MinecraftProfileTexture profileTexture) {
+    public void onSetRemoteSkin(SkinType type, Identifier location, MinecraftProfileTexture profileTexture) {
         super.onSetRemoteSkin(type, location, profileTexture);
 
         MineLittlePony.logger.debug("Invalidating old remote skin, checking updated remote skin");
-        if (type == Type.SKIN) {
+        if (type == SkinType.SKIN) {
             ponyManager.removePony(location);
         }
     }

@@ -11,9 +11,9 @@ import com.minelittlepony.client.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.client.render.layer.LayerPonyArmor;
 import com.minelittlepony.client.render.layer.LayerPonyElytra;
 import com.minelittlepony.hdskins.dummy.DummyPlayerRenderer;
+import com.minelittlepony.hdskins.profile.SkinType;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.meta.Race;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
@@ -76,7 +76,7 @@ public class DummyPonyRenderer extends DummyPlayerRenderer<DummyPony, ClientPony
 
         Race race = thePony.getRace(false);
 
-        boolean canWet = playermodel.wet && (loc == playermodel.getTextures().getBlankSkin(Type.SKIN) || race == Race.SEAPONY);
+        boolean canWet = playermodel.wet && (loc == playermodel.getTextures().getBlankSkin(SkinType.SKIN) || race == Race.SEAPONY);
 
         playerModel = canWet ? PlayerModels.SEAPONY.getWrappedModel(slim) : PlayerModels.forRace(thePony.getRace(true)).getWrappedModel(slim);
         playerModel.apply(thePony.getMetadata());
@@ -101,7 +101,7 @@ public class DummyPonyRenderer extends DummyPlayerRenderer<DummyPony, ClientPony
         return new LayerPonyElytra<DummyPony, ClientPonyModel<DummyPony>>(this) {
             @Override
             protected Identifier getElytraTexture(DummyPony entity) {
-                return entity.getTextures().get(Type.ELYTRA).getId();
+                return entity.getTextures().get(SkinType.ELYTRA).getId();
             }
         };
     }
