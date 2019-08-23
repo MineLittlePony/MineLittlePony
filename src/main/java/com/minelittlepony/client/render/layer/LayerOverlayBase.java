@@ -27,7 +27,7 @@ public abstract class LayerOverlayBase<T extends LivingEntity, M extends BipedEn
     public void render(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
         M overlayModel = getOverlayModel();
 
-        overlayModel.setAttributes(renderer.getModel());
+        renderer.getModel().setAttributes(overlayModel);
         overlayModel.animateModel(entity, move, swing, partialTicks);
         overlayModel.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
 
