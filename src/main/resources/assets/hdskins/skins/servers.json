@@ -1,7 +1,0 @@
-{
-  "servers": [{
-    "type": "legacy",
-    "address": "http://minelpskins.voxelmodpack.com",
-    "gateway": "http://minelpskinmanager.voxelmodpack.com"
-  }]
-}
