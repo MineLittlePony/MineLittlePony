@@ -1,16 +1,13 @@
 package com.minelittlepony.client.render.entities;
 
 import com.minelittlepony.client.model.entities.ModelZombieVillagerPony;
+import com.minelittlepony.client.render.layer.LayerVillagerClothing;
 import com.minelittlepony.util.resources.FormattedTextureSupplier;
 import com.minelittlepony.util.resources.ITextureSupplier;
 
 import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.render.entity.feature.VillagerClothingFeatureRenderer;
-import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.entity.mob.ZombieVillagerEntity;
-import net.minecraft.resource.ReloadableResourceManager;
 import net.minecraft.util.Identifier;
 
 public class RenderPonyZombieVillager extends RenderPonyMob.Caster<ZombieVillagerEntity, ModelZombieVillagerPony> {
@@ -26,23 +23,8 @@ public class RenderPonyZombieVillager extends RenderPonyMob.Caster<ZombieVillage
     @Override
     protected void addLayers() {
         super.addLayers();
-        ReloadableResourceManager resManager = (ReloadableResourceManager)MinecraftClient.getInstance().getResourceManager();
-
-        addFeature(new VillagerClothingFeatureRenderer<>(this, resManager, "zombie_villager"));
+        addFeature(new LayerVillagerClothing<>(this, "zombie_villager"));
     }
-
-    @Override
-    public void bindTexture(Identifier texture) {
-
-        if (texture != SpriteAtlasTexture.BLOCK_ATLAS_TEX) {
-            if (!"minelittlepony".contentEquals(texture.getNamespace())) {
-                texture = new Identifier("minelittlepony", texture.getPath());
-            }
-        }
-
-        super.bindTexture(texture);
-    }
-
 
     @Override
     public Identifier findTexture(ZombieVillagerEntity entity) {
