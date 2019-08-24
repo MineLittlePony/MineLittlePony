@@ -11,23 +11,23 @@ public class ModelGuardianPony extends GuardianEntityModel implements IPonyMixin
     private final ModelSeapony<GuardianEntity> mixin = new ModelSeapony<>();
 
     @Override
-    public void setAngles(GuardianEntity entity_1, float float_1, float float_2, float float_3, float float_4, float float_5, float float_6) {
-        mixin().setAngles(entity_1, float_1, float_2, float_3, float_4, float_5, float_6);
+    public void setAngles(GuardianEntity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        mixin().setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
     }
 
     @Override
-    public void render(GuardianEntity var1, float var2, float var3, float var4, float var5, float var6, float var7) {
-        mixin().render(var1, var2, var3, var4, var5, var6, var7);
+    public void render(GuardianEntity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+        mixin().render(entity, move, swing, ticks, headYaw, headPitch, scale);
     }
 
     @Override
-    public void animateModel(GuardianEntity entity_1, float float_1, float float_2, float float_3) {
-        mixin().animateModel(entity_1, float_1, float_2, float_3);
+    public void animateModel(GuardianEntity entity, float move, float swing, float float_3) {
+        mixin().animateModel(entity, move, swing, float_3);
     }
 
     @Override
-    public void copyStateTo(EntityModel<GuardianEntity> entityModel_1) {
-        mixin().copyStateTo(entityModel_1);
+    public void copyStateTo(EntityModel<GuardianEntity> model) {
+        mixin().copyStateTo(model);
     }
 
     @Override

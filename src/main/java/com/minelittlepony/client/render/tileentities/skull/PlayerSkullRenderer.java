@@ -52,7 +52,6 @@ public class PlayerSkullRenderer extends PonySkull {
     @Override
     public void render(float animateTicks, float rotation, float scale) {
         super.render(animateTicks, rotation, scale);
-        /*render*/
         deadMau5.render(animateTicks, 0, 0, rotation, 0, scale);
     }
 }
