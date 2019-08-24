@@ -31,8 +31,8 @@ public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> {
                     .tex(24, 0).addBox(-3, -7,  1, 1, 1, 1)
                     .tex(24, 9).addBox(-1, -2, -4, 2, 2, 1))
                 .child(new PonyRenderer(this)
-                    .tex(28, 2).addBox( 1, -11, -2, 1, 6, 1)
-                    .tex(24, 2).addBox(-2, -11, -2, 1, 6, 1)
+                    .tex(28, 2).addBox( 1, -11, -3, 1, 6, 1)
+                    .tex(24, 2).addBox(-2, -11, -3, 1, 6, 1)
                     .rotate(-0.2617994F, 0, 0));
 
         body = new PonyRenderer(this, 2, 12)
