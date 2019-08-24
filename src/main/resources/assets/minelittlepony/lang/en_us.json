@@ -27,11 +27,11 @@
   "minelp.mode.wet": "Sea pony",
   "minelp.debug.reload_models.message": "Reloading pony models...",
   "minelp.debug.scale": "Scaling Factor",
-  "minelp.debug.scale.value": "Scale: %.2f",
-  "minelp.debug.scale.meg": "Scale: Mega",
-  "minelp.debug.scale.max": "Scale: Double",
-  "minelp.debug.scale.mid": "Scale: Default",
-  "minelp.debug.scale.sa": "Scale: Show Accurate",
-  "minelp.debug.scale.min": "Scale: Miniscule",
+  "minelp.debug.scale.value": "%.2f",
+  "minelp.debug.scale.meg": "Mega",
+  "minelp.debug.scale.max": "Double",
+  "minelp.debug.scale.mid": "Default",
+  "minelp.debug.scale.sa": "Show Accurate",
+  "minelp.debug.scale.min": "Miniscule",
   "minelp.debug.size": "Size Override"
 }

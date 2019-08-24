@@ -26,11 +26,10 @@
   "minelp.mode.wet": "Seepony",
   "minelp.debug.reload_models.message": "Pony texturen neu Laden...",
   "minelp.debug.scale": "Skalierungsfaktor",
-  "minelp.debug.scale.value": "Größe: %.2f",
-  "minelp.debug.scale.meg": "Größe: Enorm",
-  "minelp.debug.scale.max": "Größe: Doppelt",
-  "minelp.debug.scale.mid": "Größe: Normal",
-  "minelp.debug.scale.sa": "Größe: Genau anzeigen",
-  "minelp.debug.scale.min": "Größe: Kleinst",
+  "minelp.debug.scale.meg": "Enorm",
+  "minelp.debug.scale.max": "Doppelt",
+  "minelp.debug.scale.mid": "Normal",
+  "minelp.debug.scale.sa": "Genau anzeigen",
+  "minelp.debug.scale.min": "Kleinst",
   "minelp.debug.size": "Größenüberschreibung"
 }

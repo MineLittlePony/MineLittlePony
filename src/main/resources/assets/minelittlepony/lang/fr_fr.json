@@ -26,11 +26,10 @@
   "minelp.mode.wet": "Poney de mer",
   "minelp.debug.reload_models.message": "Rechargement modèles de poney ...",
   "minelp.debug.scale": "Facteur D'échelle",
-  "minelp.debug.scale.value": "Échelle: %.2f",
-  "minelp.debug.scale.meg": "Échelle: Énorme",
-  "minelp.debug.scale.max": "Échelle: Double",
-  "minelp.debug.scale.mid": "Échelle: Défaut",
-  "minelp.debug.scale.sa": "Échelle: Montrer Précis",
-  "minelp.debug.scale.min": "Échelle: Tout Petit",
+  "minelp.debug.scale.meg": "Énorme",
+  "minelp.debug.scale.max": "Double",
+  "minelp.debug.scale.mid": "Défaut",
+  "minelp.debug.scale.sa": "Montrer Précis",
+  "minelp.debug.scale.min": "Tout Petit",
   "minelp.debug.size": "Ignorer la Taille"
 }

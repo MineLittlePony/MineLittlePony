@@ -26,7 +26,6 @@
   "minelp.mode.wet": "Морской пони",
   "minelp.debug.reload_models.message": "Перезагрузка понифицированных моделей...",
   "minelp.debug.scale": "Масштаб",
-  "minelp.debug.scale.value": "%.2f",
   "minelp.debug.scale.meg": "Мега",
   "minelp.debug.scale.max": "Удвоенный",
   "minelp.debug.scale.mid": "Стандартный",
