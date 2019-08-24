@@ -21,14 +21,12 @@ public enum MobRenderers {
         pony.switchRenderer(state, ZombieVillagerEntity.class, RenderPonyZombieVillager::new);
         pony.switchRenderer(state, WanderingTraderEntity.class, RenderPonyTrader::new);
     }),
-    PILLAGERS((state, pony) -> {
-        pony.switchRenderer(state, PillagerEntity.class, RenderPonyPillager::new);
-    }),
     ILLAGERS((state, pony) -> {
         pony.switchRenderer(state, VexEntity.class, RenderPonyVex::new);
         pony.switchRenderer(state, EvokerEntity.class, RenderPonyIllager.Evoker::new);
         pony.switchRenderer(state, VindicatorEntity.class, RenderPonyIllager.Vindicator::new);
         pony.switchRenderer(state, IllusionerEntity.class, RenderPonyIllager.Illusionist::new);
+        pony.switchRenderer(state, PillagerEntity.class, RenderPonyPillager::new);
     }),
     ZOMBIES((state, pony) -> {
         pony.switchRenderer(state, ZombieEntity.class, RenderPonyZombie::new);
