@@ -2,7 +2,6 @@ package com.minelittlepony.client.render.layer;
 
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Identifier;
 
 import org.lwjgl.opengl.GL11;
 
@@ -12,6 +11,7 @@ import com.minelittlepony.client.model.gear.ChristmasHat;
 import com.minelittlepony.client.model.gear.Muffin;
 import com.minelittlepony.client.model.gear.SaddleBags;
 import com.minelittlepony.client.model.gear.Stetson;
+import com.minelittlepony.client.model.gear.VillagerHat;
 import com.minelittlepony.client.model.gear.WitchHat;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.model.BodyPart;
@@ -25,12 +25,20 @@ import java.util.Map;
 
 public class LayerGear<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyLayer<T, M> {
 
+    public static final IGear SADDLE_BAGS = new SaddleBags();
+    public static final IGear WITCH_HAT = new WitchHat();
+    public static final IGear MUFFIN = new Muffin();
+    public static final IGear STETSON = new Stetson();
+    public static final IGear ANTLERS = new ChristmasHat();
+    public static final IGear VILLAGER_HAT = new VillagerHat();
+
     private static List<IGear> gears = Lists.newArrayList(
-            new SaddleBags(),
-            new WitchHat(),
-            new Muffin(),
-            new Stetson(),
-            new ChristmasHat()
+            SADDLE_BAGS,
+            WITCH_HAT,
+            MUFFIN,
+            STETSON,
+            ANTLERS,
+            VILLAGER_HAT
     );
 
     public LayerGear(IPonyRender<T, M> renderer) {
@@ -75,12 +83,7 @@ public class LayerGear<T extends LivingEntity, M extends EntityModel<T> & IPonyM
     private void renderGear(M model, T entity, IGear gear, float move, float swing, float scale, float ticks) {
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
 
-        Identifier texture = gear.getTexture(entity);
-        if (texture == null) {
-            texture = getContext().findTexture(entity);
-        }
-
-        getContext().bindTexture(texture);
+        getContext().bindTexture(gear.getTexture(entity, getContext()));
 
         gear.setLivingAnimations(model, entity);
         gear.setRotationAndAngles(model.getAttributes().isGoingFast, entity.getUuid(), move, swing, model.getWobbleAmount(), ticks);

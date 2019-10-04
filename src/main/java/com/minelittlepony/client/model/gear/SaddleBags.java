@@ -136,9 +136,8 @@ public class SaddleBags extends AbstractGear {
     }
 
     @Override
-    public Identifier getTexture(Entity entity) {
-        // use the default
-        return null;
+    public <T extends Entity> Identifier getTexture(T entity, IGearRenderContext<T> context) {
+        return context.getDefaultTexture(entity, this);
     }
 
 }

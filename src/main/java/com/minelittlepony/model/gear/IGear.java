@@ -3,11 +3,10 @@ package com.minelittlepony.model.gear;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 
+import com.minelittlepony.client.model.gear.IGearRenderContext;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.IPart;
-
-import javax.annotation.Nullable;
 
 public interface IGear extends IPart {
 
@@ -30,8 +29,7 @@ public interface IGear extends IPart {
      * Gets the texture to use for this wearable.
      * Return null to use the same as the primary model.
      */
-    @Nullable
-    Identifier getTexture(Entity entity);
+    <T extends Entity> Identifier getTexture(T entity, IGearRenderContext<T> context);
 
     /**
      * Orients this wearable.
@@ -39,9 +37,4 @@ public interface IGear extends IPart {
     default void setLivingAnimations(IModel model, Entity entity) {
 
     }
-
-    /**
-     * Renders this wearable separately. (used outside of the gear render layer)
-     */
-    void renderSeparately(Entity entity, float scale);
 }

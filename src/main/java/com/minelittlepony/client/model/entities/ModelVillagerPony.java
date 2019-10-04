@@ -16,10 +16,13 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
     public PlaneRenderer apron;
     public PlaneRenderer trinket;
 
+
     private VillagerProfession profession;
 
     public boolean special;
     public boolean special2;
+
+    public boolean hatVisible;
 
     @Override
     protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
@@ -51,15 +54,21 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
 
     @Override
     public boolean isWearing(Wearable wearable) {
+
         if (wearable == Wearable.SADDLE_BAGS) {
             return !special && profession != VillagerProfession.NONE && (
-                       profession == VillagerProfession.FARMER
+                       profession == VillagerProfession.CARTOGRAPHER
+                    || profession == VillagerProfession.FARMER
                     || profession == VillagerProfession.FISHERMAN
+                    || profession == VillagerProfession.LIBRARIAN
                     || profession == VillagerProfession.SHEPHERD);
         }
 
         if (wearable == Wearable.MUFFIN) {
             return special2;
+        }
+        if (wearable == Wearable.VILLAGER) {
+            return hatVisible;
         }
 
         return super.isWearing(wearable);
@@ -81,7 +90,7 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
 
     @Override
     public void setHatVisible(boolean visible) {
-
+        hatVisible = visible;
     }
 
     @Override

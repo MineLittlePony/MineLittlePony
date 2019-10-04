@@ -1,30 +1,21 @@
 package com.minelittlepony.client.render.entities;
 
 import com.minelittlepony.client.model.entities.ModelVillagerPony;
-import com.minelittlepony.client.render.layer.LayerVillagerClothing;
-import com.minelittlepony.util.resources.FormattedTextureSupplier;
+import com.minelittlepony.client.render.entities.villager.AbstractVillagerRenderer;
 import com.minelittlepony.util.resources.ITextureSupplier;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.util.Identifier;
 
-public class RenderPonyVillager extends RenderPonyMob.Caster<VillagerEntity, ModelVillagerPony<VillagerEntity>> {
+public class RenderPonyVillager extends AbstractVillagerRenderer<VillagerEntity, ModelVillagerPony<VillagerEntity>> {
 
-    private static final ITextureSupplier<String> FORMATTER = new FormattedTextureSupplier("minelittlepony", "textures/entity/villager/%s.png");
-
-    private static final ITextureSupplier<VillagerEntity> PROFESSIONS = new VillagerProfessionTextureCache<>(FORMATTER);
+    private static final String TYPE = "villager";
+    private static final ITextureSupplier<String> FORMATTER = ITextureSupplier.formatted("minelittlepony", "textures/entity/villager/%s.png");
 
     public RenderPonyVillager(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
-        super(manager, new ModelVillagerPony<>());
-    }
-
-    @Override
-    protected void addLayers() {
-        super.addLayers();
-        addFeature(new LayerVillagerClothing<>(this, "villager"));
+        super(manager, new ModelVillagerPony<>(), TYPE, FORMATTER);
     }
 
     @Override
@@ -33,8 +24,4 @@ public class RenderPonyVillager extends RenderPonyMob.Caster<VillagerEntity, Mod
         GlStateManager.scalef(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
     }
 
-    @Override
-    public Identifier findTexture(VillagerEntity entity) {
-        return PROFESSIONS.supplyTexture(entity);
-    }
 }

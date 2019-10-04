@@ -2,8 +2,10 @@ package com.minelittlepony.client.render;
 
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
+import com.minelittlepony.client.model.gear.IGearRenderContext;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.PonyModelConstants;
+import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.util.math.MathUtil;
 
@@ -11,7 +13,7 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 
-public interface IPonyRender<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends PonyModelConstants {
+public interface IPonyRender<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends PonyModelConstants, IGearRenderContext<T> {
 
     /**
      * Gets the wrapped pony model for this renderer.
@@ -23,6 +25,11 @@ public interface IPonyRender<T extends LivingEntity, M extends EntityModel<T> & 
     RenderPony<T, M> getInternalRenderer();
 
     Identifier findTexture(T entity);
+
+    @Override
+    default Identifier getDefaultTexture(T entity, IGear gear) {
+        return findTexture(entity);
+    }
 
     /**
      * Called by riders to have their transportation adjust their position.

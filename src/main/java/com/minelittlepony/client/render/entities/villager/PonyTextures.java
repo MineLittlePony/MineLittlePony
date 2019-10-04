@@ -1,7 +1,8 @@
-package com.minelittlepony.client.render.entities;
+package com.minelittlepony.client.render.entities.villager;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.VillagerData;
 import net.minecraft.village.VillagerDataContainer;
@@ -18,7 +19,7 @@ import java.util.Optional;
 /**
  * Cached pool of villager textures.
  */
-class VillagerProfessionTextureCache<T extends LivingEntity & VillagerDataContainer> implements ITextureSupplier<T> {
+class PonyTextures<T extends LivingEntity & VillagerDataContainer> implements ITextureSupplier<T> {
 
     private final ITextureSupplier<String> formatter;
 
@@ -36,7 +37,7 @@ class VillagerProfessionTextureCache<T extends LivingEntity & VillagerDataContai
      * @param keyMapper Mapper to convert integer ids into a string value for format insertion
      * @param fallback  The default if any generated textures fail to load. This is stored in place of failing textures.
      */
-    public VillagerProfessionTextureCache(ITextureSupplier<String> formatter) {
+    public PonyTextures(ITextureSupplier<String> formatter) {
         this.formatter = formatter;
         this.fallback = formatter.supplyTexture("villager_pony");
         this.egg = formatter.supplyTexture("silly_pony");
@@ -55,6 +56,9 @@ class VillagerProfessionTextureCache<T extends LivingEntity & VillagerDataContai
             }
         }
 
+        if (entity instanceof VillagerEntity) {
+            ((VillagerEntity)entity).setVillagerData(entity.getVillagerData().withProfession(VillagerProfession.LIBRARIAN));
+        }
         VillagerData t = entity.getVillagerData();
 
         return getTexture(t.getType(), t.getProfession());

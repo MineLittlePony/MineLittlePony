@@ -39,7 +39,7 @@ public class Stetson extends AbstractGear implements IStackable {
     }
 
     @Override
-    public Identifier getTexture(Entity entity) {
+    public <T extends Entity> Identifier getTexture(T entity, IGearRenderContext<T> context) {
         return TEXTURE;
     }
 

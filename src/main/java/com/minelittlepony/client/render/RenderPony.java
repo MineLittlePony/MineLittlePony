@@ -15,6 +15,7 @@ import net.minecraft.client.render.VisibleRegion;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.Identifier;
 
 public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> {
 
@@ -132,6 +133,11 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
         playerModel = model;
 
         return getModel();
+    }
+
+    public void updateMetadata(Identifier texture) {
+        pony = MineLittlePony.getInstance().getManager().getPony(texture);
+        playerModel.apply(pony.getMetadata());
     }
 
     public void updateModel(T entity) {
