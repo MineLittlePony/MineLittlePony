@@ -56,7 +56,12 @@ public class PonyData implements IPonyData {
             MineLittlePony.logger.warn("Unable to read {} metadata", identifier, e);
         }
 
-        return NativeUtil.parseImage(identifier, PonyData::new);
+        try {
+            return NativeUtil.parseImage(identifier, PonyData::new);
+        } catch (IllegalStateException e) {
+            MineLittlePony.logger.fatal("Unable to read {} metadata", identifier, e);
+            return new PonyData();
+        }
     }
 
     @Expose
