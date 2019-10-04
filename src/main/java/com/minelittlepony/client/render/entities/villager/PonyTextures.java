@@ -56,9 +56,6 @@ class PonyTextures<T extends LivingEntity & VillagerDataContainer> implements IT
             }
         }
 
-        if (entity instanceof VillagerEntity) {
-            ((VillagerEntity)entity).setVillagerData(entity.getVillagerData().withProfession(VillagerProfession.LIBRARIAN));
-        }
         VillagerData t = entity.getVillagerData();
 
         return getTexture(t.getType(), t.getProfession());
