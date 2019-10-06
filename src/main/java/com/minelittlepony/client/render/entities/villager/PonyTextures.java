@@ -2,7 +2,6 @@ package com.minelittlepony.client.render.entities.villager;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.VillagerData;
 import net.minecraft.village.VillagerDataContainer;
