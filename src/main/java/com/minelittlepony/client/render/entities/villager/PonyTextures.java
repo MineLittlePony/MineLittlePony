@@ -2,6 +2,9 @@ package com.minelittlepony.client.render.entities.villager;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.resource.ReloadableResourceManager;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.SynchronousResourceReloadListener;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.VillagerData;
 import net.minecraft.village.VillagerDataContainer;
@@ -18,7 +21,7 @@ import java.util.Optional;
 /**
  * Cached pool of villager textures.
  */
-public class PonyTextures<T extends LivingEntity & VillagerDataContainer> implements ITextureSupplier<T> {
+public class PonyTextures<T extends LivingEntity & VillagerDataContainer> implements ITextureSupplier<T>, SynchronousResourceReloadListener {
 
     private final ITextureSupplier<String> formatter;
 
@@ -29,6 +32,8 @@ public class PonyTextures<T extends LivingEntity & VillagerDataContainer> implem
     private final Identifier egg;
     private final Identifier egg2;
 
+    private final ReloadableResourceManager resourceManager;
+
     /**
      * Creates a new profession cache
      *
@@ -37,10 +42,18 @@ public class PonyTextures<T extends LivingEntity & VillagerDataContainer> implem
      * @param fallback  The default if any generated textures fail to load. This is stored in place of failing textures.
      */
     public PonyTextures(ITextureSupplier<String> formatter) {
+        this.resourceManager = (ReloadableResourceManager)MinecraftClient.getInstance().getResourceManager();
         this.formatter = formatter;
         this.fallback = formatter.supplyTexture("villager_pony");
         this.egg = formatter.supplyTexture("silly_pony");
         this.egg2 = formatter.supplyTexture("tiny_silly_pony");
+
+        resourceManager.registerListener(this);
+    }
+
+    @Override
+    public void apply(ResourceManager manager) {
+        cache.clear();
     }
 
     @Override
@@ -82,7 +95,7 @@ public class PonyTextures<T extends LivingEntity & VillagerDataContainer> implem
     }
 
     protected Optional<Identifier> verifyTexture(Identifier texture) {
-        if (!MinecraftClient.getInstance().getResourceManager().containsResource(texture)) {
+        if (!resourceManager.containsResource(texture)) {
             MineLittlePony.logger.warn("Villager texture `" + texture + "` was not found.");
             return Optional.empty();
         }

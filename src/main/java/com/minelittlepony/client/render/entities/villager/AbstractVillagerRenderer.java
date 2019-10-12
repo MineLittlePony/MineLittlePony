@@ -19,7 +19,7 @@ abstract class AbstractVillagerRenderer<
     T extends MobEntity & VillagerDataContainer,
     M extends ClientPonyModel<T> & IUnicorn<PonyRenderer> & ModelWithHat> extends RenderPonyMob.Caster<T, M> {
 
-    private final ITextureSupplier<T> professions;
+    private final ITextureSupplier<T> baseTextures;
 
     private final String entityType;
 
@@ -27,7 +27,7 @@ abstract class AbstractVillagerRenderer<
         super(manager, model);
 
         entityType = type;
-        professions = new PonyTextures<>(formatter);
+        baseTextures = new PonyTextures<>(formatter);
         addFeature(new ClothingLayer<>(this, entityType));
     }
 
@@ -63,6 +63,6 @@ abstract class AbstractVillagerRenderer<
 
     @Override
     public Identifier findTexture(T villager) {
-        return professions.supplyTexture(villager);
+        return baseTextures.supplyTexture(villager);
     }
 }
