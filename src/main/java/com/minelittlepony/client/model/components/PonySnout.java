@@ -6,11 +6,12 @@ import net.minecraft.client.model.Model;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
 import com.minelittlepony.model.ICapitated;
+import com.minelittlepony.model.IPart;
 import com.minelittlepony.pony.meta.Gender;
 
-import static com.minelittlepony.model.PonyModelConstants.*;
+import java.util.UUID;
 
-public class PonySnout {
+public class PonySnout implements IPart {
 
     public boolean isHidden = false;
 
@@ -38,6 +39,7 @@ public class PonySnout {
         stallion.rotate(x, y, z);
     }
 
+    @Override
     public void init(float yOffset, float stretch) {
         mare.around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
             .tex(10, 14).south(-2, 2, -5, 4, 2, stretch)
@@ -56,6 +58,10 @@ public class PonySnout {
                 .tex(18, 7).bottom(-2, 4, -5, 4, 1, stretch)
                 .tex(10, 13) .west(-2, 1, -5, 3, 1, stretch)
                 .tex(13, 13) .east( 2, 1, -5, 3, 1, stretch);
+    }
+
+    @Override
+    public void renderPart(float scale, UUID interpolatorId) {
     }
 
     public void setGender(Gender gender) {

@@ -50,7 +50,7 @@ public class WitchHat extends AbstractGear implements IStackable {
     }
 
     @Override
-    public <T extends Entity> Identifier getTexture(T entity, IGearRenderContext<T> context) {
+    public <T extends Entity> Identifier getTexture(T entity, IRenderContext<T, ?> context) {
         return WITCH_TEXTURES;
     }
 

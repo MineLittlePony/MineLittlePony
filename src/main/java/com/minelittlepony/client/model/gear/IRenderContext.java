@@ -1,0 +1,18 @@
+package com.minelittlepony.client.model.gear;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.util.Identifier;
+
+import com.minelittlepony.model.IModel;
+import com.minelittlepony.model.gear.IGear;
+
+public interface IRenderContext<T extends Entity, M extends IModel> {
+
+    IRenderContext<?, ?> NULL = (e, g) -> null;
+
+    default boolean shouldRender(M model, T entity, IGear gear) {
+        return gear.canRender(model, entity);
+    }
+
+    Identifier getDefaultTexture(T entity, IGear gear);
+}

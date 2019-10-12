@@ -1,20 +1,14 @@
 package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.Cuboid;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.client.model.races.ModelAlicorn;
+import com.minelittlepony.model.PonyModelConstants;
 
 /**
- * Common class for all humanoid (ponioid?) non-player enemies.
- *
+ * Common interface for all undead enemies.
  */
-public abstract class ModelMobPony<T extends LivingEntity> extends ModelAlicorn<T> {
-
-    public ModelMobPony() {
-        super(false);
-    }
+public interface IMobModel {
 
     /**
      * Rotates the provided arm to the correct orientation for holding an item.
@@ -24,9 +18,9 @@ public abstract class ModelMobPony<T extends LivingEntity> extends ModelAlicorn<
      * @param swingProgress How far we are through the current swing
      * @param ticks         Render partial ticks
      */
-    protected void rotateArmHolding(Cuboid arm, float direction, float swingProgress, float ticks) {
-        float swing = MathHelper.sin(swingProgress * PI);
-        float roll = MathHelper.sin((1 - (1 - swingProgress) * (1 - swingProgress)) * PI);
+    default void rotateArmHolding(Cuboid arm, float direction, float swingProgress, float ticks) {
+        float swing = MathHelper.sin(swingProgress * PonyModelConstants.PI);
+        float roll = MathHelper.sin((1 - (1 - swingProgress) * (1 - swingProgress)) * PonyModelConstants.PI);
 
         float cos = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
         float sin = MathHelper.sin(ticks * 0.067F) / 10;

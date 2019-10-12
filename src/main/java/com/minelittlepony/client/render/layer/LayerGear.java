@@ -11,7 +11,6 @@ import com.minelittlepony.client.model.gear.ChristmasHat;
 import com.minelittlepony.client.model.gear.Muffin;
 import com.minelittlepony.client.model.gear.SaddleBags;
 import com.minelittlepony.client.model.gear.Stetson;
-import com.minelittlepony.client.model.gear.VillagerHat;
 import com.minelittlepony.client.model.gear.WitchHat;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.model.BodyPart;
@@ -30,15 +29,13 @@ public class LayerGear<T extends LivingEntity, M extends EntityModel<T> & IPonyM
     public static final IGear MUFFIN = new Muffin();
     public static final IGear STETSON = new Stetson();
     public static final IGear ANTLERS = new ChristmasHat();
-    public static final IGear VILLAGER_HAT = new VillagerHat();
 
     private static List<IGear> gears = Lists.newArrayList(
             SADDLE_BAGS,
             WITCH_HAT,
             MUFFIN,
             STETSON,
-            ANTLERS,
-            VILLAGER_HAT
+            ANTLERS
     );
 
     public LayerGear(IPonyRender<T, M> renderer) {
@@ -57,7 +54,7 @@ public class LayerGear<T extends LivingEntity, M extends EntityModel<T> & IPonyM
         Map<BodyPart, Float> renderStackingOffsets = new HashMap<>();
 
         for (IGear gear : gears) {
-            if (gear.canRender(model, entity)) {
+            if (getContext().shouldRender(model, entity, gear)) {
                 GlStateManager.pushMatrix();
                 model.transform(gear.getGearLocation());
                 model.getBodyPart(gear.getGearLocation()).applyTransform(scale);

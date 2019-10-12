@@ -82,7 +82,7 @@ public class ChristmasHat extends AbstractGear {
     }
 
     @Override
-    public <T extends Entity> Identifier getTexture(T entity, IGearRenderContext<T> context) {
+    public <T extends Entity> Identifier getTexture(T entity, IRenderContext<T, ?> context) {
         return TEXTURE;
     }
 

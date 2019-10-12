@@ -5,9 +5,13 @@ import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.client.model.ModelMobPony;
+import com.minelittlepony.client.model.races.ModelAlicorn;
 
-public class ModelIllagerPony<T extends IllagerEntity> extends ModelMobPony<T> {
+public class ModelIllagerPony<T extends IllagerEntity> extends ModelAlicorn<T> {
+
+    public ModelIllagerPony() {
+        super(false);
+    }
 
     @Override
     public void setAngles(T illager, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {

@@ -7,22 +7,45 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
 
-import com.minelittlepony.client.model.ModelMobPony;
+import com.minelittlepony.client.model.components.BatWings;
+import com.minelittlepony.client.model.components.PonyEars;
+import com.minelittlepony.client.model.races.ModelAlicorn;
+import com.minelittlepony.client.render.entities.villager.PonyTextures;
+import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.client.util.render.plane.PlaneRenderer;
-import com.minelittlepony.pony.meta.Wearable;
+import com.minelittlepony.model.IPart;
+import com.minelittlepony.pony.meta.Race;
 
-public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> extends ModelMobPony<T> implements ModelWithHat {
+public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> extends ModelAlicorn<T> implements ModelWithHat {
 
-    public PlaneRenderer apron;
-    public PlaneRenderer trinket;
+    private PlaneRenderer apron;
+    private PlaneRenderer trinket;
 
+    private IPart batWings;
 
-    private VillagerProfession profession;
+    public ModelVillagerPony() {
+        super(false);
+    }
 
-    public boolean special;
-    public boolean special2;
+    @Override
+    public IPart getWings() {
+        if (getMetadata().getRace() == Race.BATPONY) {
+            return batWings;
+        }
+        return super.getWings();
+    }
 
-    public boolean hatVisible;
+    @Override
+    protected void initWings(float yOffset, float stretch) {
+        super.initWings(yOffset, stretch);
+        batWings = new BatWings<>(this, yOffset, stretch);
+    }
+
+    @Override
+    protected void initEars(PonyRenderer head, float yOffset, float stretch) {
+        ears = new PonyEars(head, true);
+        ears.init(yOffset, stretch);
+    }
 
     @Override
     protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
@@ -33,45 +56,20 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
 
     @Override
     public void animateModel(T entity, float limbSwing, float limbSwingAmount, float partialTickTime) {
-        profession = entity.getVillagerData().getProfession();
-        special = entity.hasCustomName() && "Derpy".equals(entity.getCustomName().getString());
-        special2 = special && entity.getUuid().getLeastSignificantBits() % 20 == 0;
-        attributes.visualHeight = special2 ? 2.3F : 2;
+        boolean special = PonyTextures.isBestPony(entity);
+
+        VillagerProfession profession = entity.getVillagerData().getProfession();
+
+        attributes.visualHeight = PonyTextures.isCrownPony(entity) ? 2.3F : 2;
+        apron.visible = !special && profession == VillagerProfession.BUTCHER;
+        trinket.visible = !special && !apron.visible && profession != VillagerProfession.NONE && profession != VillagerProfession.NITWIT;
     }
 
     @Override
     protected void renderBody(float scale) {
         super.renderBody(scale);
-
-        if (!special && profession != VillagerProfession.NONE && profession != VillagerProfession.NITWIT) {
-            if (profession == VillagerProfession.BUTCHER) {
-                apron.render(scale);
-            } else {
-                trinket.render(scale);
-            }
-        }
-    }
-
-    @Override
-    public boolean isWearing(Wearable wearable) {
-
-        if (wearable == Wearable.SADDLE_BAGS) {
-            return !special && profession != VillagerProfession.NONE && (
-                       profession == VillagerProfession.CARTOGRAPHER
-                    || profession == VillagerProfession.FARMER
-                    || profession == VillagerProfession.FISHERMAN
-                    || profession == VillagerProfession.LIBRARIAN
-                    || profession == VillagerProfession.SHEPHERD);
-        }
-
-        if (wearable == Wearable.MUFFIN) {
-            return special2;
-        }
-        if (wearable == Wearable.VILLAGER) {
-            return hatVisible;
-        }
-
-        return super.isWearing(wearable);
+        apron.render(scale);
+        //trinket.render(scale);
     }
 
     @Override
@@ -90,17 +88,14 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
 
     @Override
     public void setHatVisible(boolean visible) {
-        hatVisible = visible;
     }
 
     @Override
     public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
         super.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
 
-        boolean isHeadRolling = false;
-        if (entity instanceof AbstractTraderEntity) {
-            isHeadRolling = ((AbstractTraderEntity)entity).getHeadRollingTimeLeft() > 0;
-        }
+        boolean isHeadRolling = entity instanceof AbstractTraderEntity
+                && ((AbstractTraderEntity)entity).getHeadRollingTimeLeft() > 0;
 
         if (isHeadRolling) {
             float roll = 0.3F * MathHelper.sin(0.45F * ticks);

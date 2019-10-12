@@ -18,7 +18,7 @@ import java.util.Optional;
 /**
  * Cached pool of villager textures.
  */
-class PonyTextures<T extends LivingEntity & VillagerDataContainer> implements ITextureSupplier<T> {
+public class PonyTextures<T extends LivingEntity & VillagerDataContainer> implements ITextureSupplier<T> {
 
     private final ITextureSupplier<String> formatter;
 
@@ -45,14 +45,8 @@ class PonyTextures<T extends LivingEntity & VillagerDataContainer> implements IT
 
     @Override
     public Identifier supplyTexture(T entity) {
-        if (entity.hasCustomName()) {
-            String name = entity.getCustomName().getString();
-            if ("Derpy".equals(name) || (entity.isBaby() && "Dinky".equals(name))) {
-                if (entity.isBaby()) {
-                    return egg2;
-                }
-                return egg;
-            }
+        if (isBestPony(entity)) {
+            return entity.isBaby() ? egg2 : egg;
         }
 
         VillagerData t = entity.getVillagerData();
@@ -94,5 +88,17 @@ class PonyTextures<T extends LivingEntity & VillagerDataContainer> implements IT
         }
 
         return Optional.of(texture);
+    }
+
+    public static boolean isBestPony(LivingEntity entity) {
+        if (!entity.hasCustomName()) {
+            return false;
+        }
+        String name = entity.getCustomName().getString();
+        return "Derpy".equals(name) || (entity.isBaby() && "Dinky".equals(name));
+    }
+
+    public static boolean isCrownPony(LivingEntity entity) {
+        return isBestPony(entity) && entity.getUuid().getLeastSignificantBits() % 20 == 0;
     }
 }

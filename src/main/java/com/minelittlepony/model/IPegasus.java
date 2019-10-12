@@ -15,6 +15,11 @@ public interface IPegasus extends IModel {
     }
 
     /**
+     * Gets the wings of this pegasus/flying creature
+     */
+    IPart getWings();
+
+    /**
      * Determines angle used to animate wing flaps whilst flying/swimming.
      *
      * @param ticks Partial render ticks

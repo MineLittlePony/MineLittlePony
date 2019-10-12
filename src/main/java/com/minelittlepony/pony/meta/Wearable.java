@@ -11,7 +11,6 @@ public enum Wearable implements ITriggerPixelMapped<Wearable> {
     HAT         (0x64),
     ANTLERS     (0x96),
     SADDLE_BAGS (0xC8),
-    VILLAGER    (0x11),
     STETSON     (0xFA);
 
     private int triggerValue;

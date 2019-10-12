@@ -7,16 +7,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
 
-import com.minelittlepony.client.model.ModelMobPony;
+import com.minelittlepony.client.model.IMobModel;
+import com.minelittlepony.client.model.races.ModelAlicorn;
 
-public class ModelSkeletonPony<T extends HostileEntity> extends ModelMobPony<T> {
+public class ModelSkeletonPony<T extends HostileEntity> extends ModelAlicorn<T> implements IMobModel {
 
     public boolean isUnicorn;
 
     public boolean isWithered;
 
     public ModelSkeletonPony() {
-        super();
+        super(false);
         attributes.armWidth = 2;
         attributes.armDepth = 2;
         attributes.armRotationX = 3F;

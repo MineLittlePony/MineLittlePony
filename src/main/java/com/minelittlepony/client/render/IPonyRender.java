@@ -2,7 +2,7 @@ package com.minelittlepony.client.render;
 
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
-import com.minelittlepony.client.model.gear.IGearRenderContext;
+import com.minelittlepony.client.model.gear.IRenderContext;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.PonyModelConstants;
 import com.minelittlepony.model.gear.IGear;
@@ -13,7 +13,7 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 
-public interface IPonyRender<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends PonyModelConstants, IGearRenderContext<T> {
+public interface IPonyRender<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends PonyModelConstants, IRenderContext<T, M> {
 
     /**
      * Gets the wrapped pony model for this renderer.

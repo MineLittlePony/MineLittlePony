@@ -1,16 +1,22 @@
 package com.minelittlepony.client.model.races;
 
 import com.minelittlepony.client.model.components.PegasusWings;
+import com.minelittlepony.model.IPart;
 import com.minelittlepony.model.IPegasus;
 
 import net.minecraft.entity.LivingEntity;
 
 public class ModelAlicorn<T extends LivingEntity> extends ModelUnicorn<T> implements IPegasus {
 
-    public PegasusWings<ModelAlicorn<T>> wings;
+    protected IPart wings;
 
     public ModelAlicorn(boolean smallArms) {
         super(smallArms);
+    }
+
+    @Override
+    public IPart getWings() {
+        return wings;
     }
 
     @Override
@@ -28,7 +34,7 @@ public class ModelAlicorn<T extends LivingEntity> extends ModelUnicorn<T> implem
         super.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
 
         if (canFly()) {
-            wings.setRotationAndAngles(attributes.isGoingFast, attributes.interpolatorId, move, swing, 0, ticks);
+            getWings().setRotationAndAngles(attributes.isGoingFast, attributes.interpolatorId, move, swing, 0, ticks);
         }
     }
 
@@ -37,13 +43,13 @@ public class ModelAlicorn<T extends LivingEntity> extends ModelUnicorn<T> implem
         super.renderBody(scale);
 
         if (canFly()) {
-            wings.renderPart(scale, attributes.interpolatorId);
+            getWings().renderPart(scale, attributes.interpolatorId);
         }
     }
 
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        wings.setVisible(visible);
+        getWings().setVisible(visible);
     }
 }

@@ -113,7 +113,7 @@ public class ModelEnderStallion extends ModelSkeletonPony<EndermanEntity> {
     }
 
     @Override
-    protected void rotateArmHolding(Cuboid arm, float direction, float swingProgress, float ticks) {
+    public void rotateArmHolding(Cuboid arm, float direction, float swingProgress, float ticks) {
         arm.pitch = -0.3707964F;
         arm.pitch += 0.4F + MathHelper.sin(ticks * 0.067F) / 10;
     }

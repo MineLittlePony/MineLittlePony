@@ -1,14 +1,19 @@
 package com.minelittlepony.client.model.entities;
 
-import com.minelittlepony.client.model.ModelMobPony;
+import com.minelittlepony.client.model.IMobModel;
+import com.minelittlepony.client.model.races.ModelAlicorn;
 import com.minelittlepony.client.util.render.AbstractRenderer;
 
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.util.math.MathHelper;
 
-public class ModelZombiePony<Zombie extends HostileEntity> extends ModelMobPony<Zombie> {
+public class ModelZombiePony<Zombie extends HostileEntity> extends ModelAlicorn<Zombie> implements IMobModel {
 
     public boolean isPegasus;
+
+    public ModelZombiePony() {
+        super(false);
+    }
 
     @Override
     public void animateModel(Zombie entity, float move, float swing, float ticks) {

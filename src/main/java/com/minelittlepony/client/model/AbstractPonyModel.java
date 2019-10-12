@@ -2,6 +2,7 @@ package com.minelittlepony.client.model;
 
 import com.minelittlepony.client.model.armour.ModelPonyArmour;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
+import com.minelittlepony.client.model.components.PonyEars;
 import com.minelittlepony.client.model.components.PonySnout;
 import com.minelittlepony.client.model.components.PonyTail;
 import com.minelittlepony.client.transform.PonyTransformation;
@@ -33,6 +34,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     protected IPart tail;
     protected PonySnout snout;
+    protected IPart ears;
 
     public AbstractPonyModel(boolean arms) {
         super(0, arms);
@@ -569,8 +571,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     }
 
     protected void initEars(PonyRenderer head, float yOffset, float stretch) {
-        head.tex(12, 16).box(-4, -6, 1, 2, 2, 2, stretch)  // right ear
-                 .flip().box( 2, -6, 1, 2, 2, 2, stretch); // left ear
+        ears = new PonyEars(head, false);
+        ears.init(yOffset, stretch);
     }
 
     protected void initTail(float yOffset, float stretch) {
