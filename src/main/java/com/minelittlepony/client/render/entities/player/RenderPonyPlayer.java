@@ -3,6 +3,7 @@ package com.minelittlepony.client.render.entities.player;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
+import com.minelittlepony.client.model.gear.SaddleBags;
 import com.minelittlepony.client.render.DebugBoundingBoxRenderer;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.client.render.RenderPony;
@@ -14,7 +15,9 @@ import com.minelittlepony.client.render.layer.LayerPonyArmor;
 import com.minelittlepony.client.render.layer.LayerPonyCape;
 import com.minelittlepony.client.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.client.render.layer.LayerPonyElytra;
+import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.pony.IPony;
+import com.minelittlepony.pony.meta.Race;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import java.util.List;
@@ -186,4 +189,14 @@ public class RenderPonyPlayer extends PlayerEntityRenderer implements IPonyRende
         return MineLittlePony.getInstance().getManager().getPony(entity);
     }
 
+    @Override
+    public Identifier getDefaultTexture(AbstractClientPlayerEntity entity, IGear gear) {
+        if (gear == LayerGear.SADDLE_BAGS) {
+            if (getInternalRenderer().getModel().getMetadata().getRace() == Race.BATPONY) {
+                return SaddleBags.TEXTURE;
+            }
+        }
+
+        return IPonyRender.super.getDefaultTexture(entity, gear);
+    }
 }

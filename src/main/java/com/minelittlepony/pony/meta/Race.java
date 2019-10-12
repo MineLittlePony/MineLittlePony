@@ -88,6 +88,13 @@ public enum Race implements ITriggerPixelMapped<Race> {
     }
 
     /**
+     * Returns true if both races resolve to the same value.
+     */
+    public boolean isEquivalentTo(Race other) {
+        return getAlias() == other.getAlias();
+    }
+
+    /**
      * Gets the actual race determined by the given pony level.
      * PonyLevel.HUMANS would force all races to be humans.
      * PonyLevel.BOTH is no change.

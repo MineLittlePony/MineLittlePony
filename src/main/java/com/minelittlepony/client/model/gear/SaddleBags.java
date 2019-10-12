@@ -4,6 +4,7 @@ import com.minelittlepony.client.util.render.plane.PlaneRenderer;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.IPegasus;
+import com.minelittlepony.pony.meta.Race;
 import com.minelittlepony.pony.meta.Wearable;
 import com.mojang.blaze3d.platform.GlStateManager;
 
@@ -14,6 +15,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 public class SaddleBags extends AbstractGear {
+
+    public static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/models/saddlebags.png");
 
     private PlaneRenderer leftBag;
     private PlaneRenderer rightBag;
@@ -137,7 +140,9 @@ public class SaddleBags extends AbstractGear {
 
     @Override
     public <T extends Entity> Identifier getTexture(T entity, IRenderContext<T, ?> context) {
+        if (context.getEntityModel() != null && context.getEntityModel().getMetadata().getRace().isEquivalentTo(Race.CHANGELING)) {
+            return TEXTURE;
+        }
         return context.getDefaultTexture(entity, this);
     }
-
 }
