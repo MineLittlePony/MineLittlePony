@@ -1,7 +1,6 @@
-package com.minelittlepony.client.render.entities;
+package com.minelittlepony.client.render.entities.villager;
 
 import com.minelittlepony.client.model.entities.ModelZombieVillagerPony;
-import com.minelittlepony.client.render.entities.villager.AbstractVillagerRenderer;
 import com.minelittlepony.util.resources.ITextureSupplier;
 
 import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;

@@ -15,7 +15,7 @@ import com.minelittlepony.model.IUnicorn;
 import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.util.resources.ITextureSupplier;
 
-public abstract class AbstractVillagerRenderer<
+abstract class AbstractVillagerRenderer<
     T extends MobEntity & VillagerDataContainer,
     M extends ClientPonyModel<T> & IUnicorn<PonyRenderer> & ModelWithHat> extends RenderPonyMob.Caster<T, M> {
 

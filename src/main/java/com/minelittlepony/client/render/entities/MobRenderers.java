@@ -2,6 +2,8 @@ package com.minelittlepony.client.render.entities;
 
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.PonyRenderManager;
+import com.minelittlepony.client.render.entities.villager.RenderPonyVillager;
+import com.minelittlepony.client.render.entities.villager.RenderPonyZombieVillager;
 import com.minelittlepony.common.util.settings.Setting;
 
 import java.util.Arrays;

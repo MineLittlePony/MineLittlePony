@@ -18,7 +18,7 @@ import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.client.render.RenderPony;
 
-public class ClothingLayer<
+class ClothingLayer<
     T extends LivingEntity & VillagerDataContainer,
     M extends EntityModel<T> & IPonyModel<T> & ModelWithHat,
     C extends FeatureRendererContext<T, M> & IPonyRender<T, M>> extends VillagerClothingFeatureRenderer<T, M> {
