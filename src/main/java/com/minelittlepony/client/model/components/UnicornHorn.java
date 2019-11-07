@@ -1,8 +1,10 @@
 package com.minelittlepony.client.model.components;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.Cuboid;
 import net.minecraft.client.model.Model;
 
+import com.minelittlepony.client.util.render.Color;
 import com.minelittlepony.client.util.render.GlowRenderer;
 import com.minelittlepony.client.util.render.PonyRenderer;
 import com.minelittlepony.model.ICapitated;
@@ -37,7 +39,6 @@ public class UnicornHorn implements IPart {
             .pitch = 0.5F;
 
         glow.offset(HORN_X + x, HORN_Y + y, HORN_Z + z)
-            .setAlpha(0.4f)
             .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
             .box(0, 0, 0, 1, 4, 1, stretch + 0.5F)
             .box(0, 0, 0, 1, 3, 1, stretch + 0.8F);
@@ -58,8 +59,13 @@ public class UnicornHorn implements IPart {
             enableBlend();
             blendFunc(GL_SRC_ALPHA, GL_ONE);
 
+            MinecraftClient.getInstance().gameRenderer.disableLightmap();
+            Color.glColor(tint, 0.4F);
+
             horn.applyTransform(scale);
-            glow.setTint(tint).render(scale);
+            glow.render(scale);
+
+            MinecraftClient.getInstance().gameRenderer.enableLightmap();
 
             enableTexture();
             enableLighting();

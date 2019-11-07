@@ -9,7 +9,7 @@ public class HornGlow extends Box<GlowRenderer> {
 
     private Quad[] polygons;
 
-    public HornGlow(GlowRenderer renderer, int texX, int texY, float xMin, float yMin, float zMin, int w, int h, int d, float scale, float alpha) {
+    public HornGlow(GlowRenderer renderer, int texX, int texY, float xMin, float yMin, float zMin, int w, int h, int d, float scale) {
         super(renderer, texX, texY, xMin, yMin, zMin, w, h, d, scale);
 
         float xMax = xMin + w + scale;
