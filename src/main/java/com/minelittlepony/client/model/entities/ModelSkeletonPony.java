@@ -25,6 +25,12 @@ public class ModelSkeletonPony<T extends HostileEntity> extends ModelAlicorn<T> 
     }
 
     @Override
+    protected void renderVest(float scale) { }
+
+    @Override
+    protected void renderSleeves(float scale) { }
+
+    @Override
     public void animateModel(T entity, float move, float swing, float ticks) {
         isUnicorn = entity.getUuid().getLeastSignificantBits() % 3 != 0;
         isWithered = entity instanceof WitherSkeletonEntity;
