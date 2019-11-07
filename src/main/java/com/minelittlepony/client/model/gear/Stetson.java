@@ -3,8 +3,7 @@ package com.minelittlepony.client.model.gear;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 
-import com.minelittlepony.client.util.render.PonyRenderer;
-import com.minelittlepony.client.util.render.plane.PlaneRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.gear.IStackable;
@@ -15,15 +14,15 @@ import java.util.UUID;
 public class Stetson extends AbstractGear implements IStackable {
     private static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/models/stetson.png");
 
-    private PlaneRenderer rimshot;
+    private Part rimshot;
 
     @Override
     public void init(float yOffset, float stretch) {
-        rimshot = new PlaneRenderer(this).size(64, 64)
+        rimshot = new Part(this).size(64, 64)
                 .tex(16, 33).top(-9, yOffset - 4, -12, 16, 17, stretch)
                 .tex(0, 33).bottom(-9, yOffset - 3.999F, -12, 16, 17, stretch)
                 .rotate(-0.3F, 0, 0.1F)
-                .child(new PonyRenderer(this).size(64, 64)
+                .child(new Part(this).size(64, 64)
                     .tex(0, 0).box(-5, yOffset - 8, -6, 9, 4, 9, stretch)
                     .tex(0, 13).box(-6, yOffset - 6, -7, 11, 2, 11, stretch));
 

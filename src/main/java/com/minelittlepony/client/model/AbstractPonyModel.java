@@ -6,9 +6,7 @@ import com.minelittlepony.client.model.components.PonyEars;
 import com.minelittlepony.client.model.components.PonySnout;
 import com.minelittlepony.client.model.components.PonyTail;
 import com.minelittlepony.client.transform.PonyTransformation;
-import com.minelittlepony.client.util.render.AbstractRenderer;
-import com.minelittlepony.client.util.render.PonyRenderer;
-import com.minelittlepony.client.util.render.plane.PlaneRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.model.armour.IEquestrianArmour;
@@ -27,10 +25,10 @@ import static com.mojang.blaze3d.platform.GlStateManager.*;
  */
 public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPonyModel<T> {
 
-    protected PlaneRenderer upperTorso;
-    protected PlaneRenderer upperTorsoOverlay;
+    protected Part upperTorso;
+    protected Part upperTorsoOverlay;
 
-    protected PlaneRenderer neck;
+    protected Part neck;
 
     protected IPart tail;
     protected PonySnout snout;
@@ -128,10 +126,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
         head.setRotationPoint(1, 2, isSneaking ? -1 : 1);
 
-        AbstractRenderer.shiftRotationPoint(rightArm, 0, 2,  6);
-        AbstractRenderer.shiftRotationPoint(leftArm,  0, 2,  6);
-        AbstractRenderer.shiftRotationPoint(rightLeg, 0, 2, -8);
-        AbstractRenderer.shiftRotationPoint(leftLeg,  0, 2, -8);
+        Part.shiftRotationPoint(rightArm, 0, 2,  6);
+        Part.shiftRotationPoint(leftArm,  0, 2,  6);
+        Part.shiftRotationPoint(rightLeg, 0, 2, -8);
+        Part.shiftRotationPoint(leftLeg,  0, 2, -8);
     }
 
     protected void ponyRide() {
@@ -555,13 +553,13 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     }
 
     protected void initHead(float yOffset, float stretch) {
-        head = new PonyRenderer(this, 0, 0)
+        head = new Part(this, 0, 0)
                                  .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
                                  .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
                                  .box(-4, -4, -4, 8, 8, 8, stretch);
-        initEars(((PonyRenderer)head), yOffset, stretch);
+        initEars(((Part)head), yOffset, stretch);
 
-        headwear = new PonyRenderer(this, 32, 0)
+        headwear = new Part(this, 32, 0)
                                      .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
                                      .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
                                      .box(-4, -4, -4, 8, 8, 8, stretch + 0.5F);
@@ -570,7 +568,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         snout.init(yOffset, stretch);
     }
 
-    protected void initEars(PonyRenderer head, float yOffset, float stretch) {
+    protected void initEars(Part head, float yOffset, float stretch) {
         ears = new PonyEars(head, false);
         ears.init(yOffset, stretch);
     }
@@ -589,11 +587,11 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             cuboidList.add(bodyOverlay);
         }
 
-        body = new PonyRenderer(this, 16, 16)
+        body = new Part(this, 16, 16)
                     .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                     .box(-4, 4, -2, 8, 8, 4, stretch);
 
-        upperTorso = new PlaneRenderer(this, 24, 0);
+        upperTorso = new Part(this, 24, 0);
         upperTorso.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
                   .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                     .tex(24, 0)  .east( 4, -4, -4, 8,  8, stretch)  // body sides
@@ -614,7 +612,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
                   .flipZ().west(-1, 2, 2, 2, 6, stretch)
                   .rotate(0.5F, 0, 0);
 
-        neck = new PlaneRenderer(this, 0, 16)
+        neck = new Part(this, 0, 16)
             .at(NECK_CENTRE_X, NECK_CENTRE_Y, NECK_CENTRE_Z)
             .rotate(NECK_ROT_X, 0, 0).around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
             .north(0, 0, 0, 4, 4, stretch)
@@ -627,7 +625,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         bodyOverlay.addBox(-4, 4, -2, 8, 8, 4, stretch);
         bodyOverlay.setRotationPoint(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
 
-        upperTorsoOverlay = new PlaneRenderer(this, 24, 0);
+        upperTorsoOverlay = new Part(this, 24, 0);
         upperTorsoOverlay.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
                          .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                           .tex(12, 32)  .east( 4, -4, -4, 4,  8, stretch) // body sides a

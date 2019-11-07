@@ -2,7 +2,7 @@ package com.minelittlepony.client.model.components;
 
 import net.minecraft.client.model.Model;
 
-import com.minelittlepony.client.util.render.plane.PlaneRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IPegasus;
 
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -75,7 +75,7 @@ public class BatWings<T extends Model & IPegasus> extends PegasusWings<T> {
                         .around(0, 4, -2.4F)
                         .box(-0.5F, 0, 3, 1, 7, 1, scale);
 
-            PlaneRenderer skin = new PlaneRenderer(pegasus)
+            Part skin = new Part(pegasus)
                     .tex(56, 32)
                     .mirror(right)
                     .west(0, 0, -7, 16, 8, scale);

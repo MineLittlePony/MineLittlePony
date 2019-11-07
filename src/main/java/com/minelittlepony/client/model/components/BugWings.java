@@ -2,7 +2,7 @@ package com.minelittlepony.client.model.components;
 
 import net.minecraft.client.model.Model;
 
-import com.minelittlepony.client.util.render.plane.PlaneRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IPegasus;
 
 public class BugWings<T extends Model & IPegasus> extends PegasusWings<T> {
@@ -37,11 +37,11 @@ public class BugWings<T extends Model & IPegasus> extends PegasusWings<T> {
                     .mirror(right)
                     .yaw = r * 3;
 
-            PlaneRenderer primary = new PlaneRenderer(pegasus)
+            Part primary = new Part(pegasus)
                     .tex(56, 16)
                     .mirror(right)
                     .west(r * -0.5F, 0, -7, 16, 8, scale);
-            PlaneRenderer secondary = new PlaneRenderer(pegasus)
+            Part secondary = new Part(pegasus)
                     .tex(56, 32)
                     .rotate(-0.5F, r * 0.3F, r / 3)
                     .mirror(right)

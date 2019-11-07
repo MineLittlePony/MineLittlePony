@@ -5,7 +5,7 @@ import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.model.components.PonySnout;
-import com.minelittlepony.client.util.render.PonyRenderer;
+import com.minelittlepony.client.util.render.Part;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 
@@ -17,8 +17,8 @@ public class ModelEnderStallion extends ModelSkeletonPony<EndermanEntity> {
     public boolean isAlicorn;
     public boolean isBoss;
 
-    private PonyRenderer leftHorn;
-    private PonyRenderer rightHorn;
+    private Part leftHorn;
+    private Part rightHorn;
 
     public ModelEnderStallion() {
         super();
@@ -76,14 +76,14 @@ public class ModelEnderStallion extends ModelSkeletonPony<EndermanEntity> {
 
     @Override
     protected void initHead(float yOffset, float stretch) {
-        head = new PonyRenderer(this, 0, 0)
+        head = new Part(this, 0, 0)
                                  .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
                                  .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
                                  .box(-4, -4, -4, 8, 8, 8, stretch)
                      .tex(12, 16).box(-4, -6, 1, 2, 2, 2, stretch)
                           .flip().box( 2, -6, 1, 2, 2, 2, stretch);
 
-        leftHorn = ((PonyRenderer)head).child().tex(0, 52);
+        leftHorn = ((Part)head).child().tex(0, 52);
         leftHorn.tex(0, 52)
                 .rotate(0.1F, 0, -0.8F)
                 .offset(-2, -10, -3)
@@ -93,7 +93,7 @@ public class ModelEnderStallion extends ModelSkeletonPony<EndermanEntity> {
                     .around(-3.9F, -6, 0.001F)
                     .box(0, 0, 0, 2, 6, 2, stretch);
 
-        rightHorn = ((PonyRenderer)head).child().tex(0, 52);
+        rightHorn = ((Part)head).child().tex(0, 52);
         rightHorn.tex(8, 52)
                 .rotate(0.1F, 0, 0.8F)
                 .offset(0, -10, -3)
@@ -103,7 +103,7 @@ public class ModelEnderStallion extends ModelSkeletonPony<EndermanEntity> {
                     .around(3.9F, -6, 0.001F)
                     .box(0, 0, 0, 2, 6, 2, stretch);
 
-        headwear = new PonyRenderer(this, 32, 0)
+        headwear = new Part(this, 32, 0)
                                      .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
                                      .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
                                      .box(-4, -4, -4, 8, 8, 8, stretch - 0.5F);

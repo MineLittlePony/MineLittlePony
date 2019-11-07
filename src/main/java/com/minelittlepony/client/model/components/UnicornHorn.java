@@ -5,8 +5,7 @@ import net.minecraft.client.model.Cuboid;
 import net.minecraft.client.model.Model;
 
 import com.minelittlepony.client.util.render.Color;
-import com.minelittlepony.client.util.render.GlowRenderer;
-import com.minelittlepony.client.util.render.PonyRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.ICapitated;
 import com.minelittlepony.model.IPart;
 
@@ -20,8 +19,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class UnicornHorn implements IPart {
 
-    protected PonyRenderer horn;
-    protected GlowRenderer glow;
+    protected Part horn;
+    protected Part glow;
 
     protected boolean isVisible = true;
 
@@ -30,8 +29,8 @@ public class UnicornHorn implements IPart {
     }
 
     public <T extends Model & ICapitated<Cuboid>> UnicornHorn(T pony, float yOffset, float stretch, int x, int y, int z) {
-        horn = new PonyRenderer(pony, 0, 3);
-        glow = new GlowRenderer(pony, 0, 3);
+        horn = new Part(pony, 0, 3);
+        glow = new Part(pony, 0, 3);
 
         horn.offset(HORN_X + x, HORN_Y + y, HORN_Z + z)
             .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
@@ -40,8 +39,8 @@ public class UnicornHorn implements IPart {
 
         glow.offset(HORN_X + x, HORN_Y + y, HORN_Z + z)
             .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-            .box(0, 0, 0, 1, 4, 1, stretch + 0.5F)
-            .box(0, 0, 0, 1, 3, 1, stretch + 0.8F);
+            .cone(0, 0, 0, 1, 4, 1, stretch + 0.5F)
+            .cone(0, 0, 0, 1, 3, 1, stretch + 0.8F);
     }
 
     @Override
@@ -59,10 +58,11 @@ public class UnicornHorn implements IPart {
             enableBlend();
             blendFunc(GL_SRC_ALPHA, GL_ONE);
 
+            horn.applyTransform(scale);
+
             MinecraftClient.getInstance().gameRenderer.disableLightmap();
             Color.glColor(tint, 0.4F);
 
-            horn.applyTransform(scale);
             glow.render(scale);
 
             MinecraftClient.getInstance().gameRenderer.enableLightmap();

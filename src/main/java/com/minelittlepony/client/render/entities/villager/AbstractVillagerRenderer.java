@@ -10,14 +10,14 @@ import net.minecraft.village.VillagerProfession;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entities.RenderPonyMob;
 import com.minelittlepony.client.render.layer.LayerGear;
-import com.minelittlepony.client.util.render.PonyRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IUnicorn;
 import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.util.resources.ITextureSupplier;
 
 abstract class AbstractVillagerRenderer<
     T extends MobEntity & VillagerDataContainer,
-    M extends ClientPonyModel<T> & IUnicorn<PonyRenderer> & ModelWithHat> extends RenderPonyMob.Caster<T, M> {
+    M extends ClientPonyModel<T> & IUnicorn<Part> & ModelWithHat> extends RenderPonyMob.Caster<T, M> {
 
     private final ITextureSupplier<T> baseTextures;
 

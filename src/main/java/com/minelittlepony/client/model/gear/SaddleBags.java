@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model.gear;
 
-import com.minelittlepony.client.util.render.plane.PlaneRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.IPegasus;
@@ -18,10 +18,10 @@ public class SaddleBags extends AbstractGear {
 
     public static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/models/saddlebags.png");
 
-    private PlaneRenderer leftBag;
-    private PlaneRenderer rightBag;
+    private Part leftBag;
+    private Part rightBag;
 
-    private PlaneRenderer strap;
+    private Part strap;
 
     private boolean hangLow = false;
 
@@ -32,9 +32,9 @@ public class SaddleBags extends AbstractGear {
 
     @Override
     public void init(float yOffset, float stretch) {
-        leftBag = new PlaneRenderer(this, 56, 19);
-        rightBag = new PlaneRenderer(this, 56, 19);
-        strap = new PlaneRenderer(this, 56, 19);
+        leftBag = new Part(this, 56, 19);
+        rightBag = new Part(this, 56, 19);
+        strap = new Part(this, 56, 19);
 
         float y = -0.5F;
         int x = 4;

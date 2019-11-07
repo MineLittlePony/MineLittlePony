@@ -5,15 +5,14 @@ import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.LivingEntity;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.client.util.render.PonyRenderer;
-import com.minelittlepony.client.util.render.plane.PlaneRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.armour.ArmourVariant;
 import com.minelittlepony.model.armour.IArmour;
 
 public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T> implements IArmour {
 
-    public PonyRenderer chestPiece;
+    public Part chestPiece;
 
     public Cuboid steveRightLeg;
     public Cuboid steveLeftLeg;
@@ -74,7 +73,7 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
     }
 
     @Override
-    protected void initEars(PonyRenderer head, float yOffset, float stretch) {
+    protected void initEars(Part head, float yOffset, float stretch) {
         stretch /= 2;
         head.tex(0, 0).box(-4, -6, 1, 2, 2, 2, stretch)  // right ear
             .tex(0, 4).box( 2, -6, 1, 2, 2, 2, stretch); // left ear
@@ -84,12 +83,12 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
     protected void initBody(float yOffset, float stretch) {
         super.initBody(yOffset, stretch);
 
-        chestPiece = new PonyRenderer(this, 16, 8)
+        chestPiece = new Part(this, 16, 8)
                 .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                  .box(-4, 4, -2, 8, 8, 16, stretch);
 
         // fits the legacy player's torso to our pony bod.
-        upperTorso = new PlaneRenderer(this, 24, 0);
+        upperTorso = new Part(this, 24, 0);
         upperTorso.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
                   .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                   .tex(32, 23).east( 4, -4, -4, 8, 8, stretch)
@@ -101,14 +100,14 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
 
     @Override
     protected void preInitLegs() {
-        leftArm = new PonyRenderer(this, 0, 16).flip();
-        rightArm = new PonyRenderer(this, 0, 16);
+        leftArm = new Part(this, 0, 16).flip();
+        rightArm = new Part(this, 0, 16);
 
-        leftLeg = new PonyRenderer(this, 48, 8).flip();
-        rightLeg = new PonyRenderer(this, 48, 8);
+        leftLeg = new Part(this, 48, 8).flip();
+        rightLeg = new Part(this, 48, 8);
 
-        steveLeftLeg = new PonyRenderer(this, 0, 16).flip();
-        steveRightLeg = new PonyRenderer(this, 0, 16);
+        steveLeftLeg = new Part(this, 0, 16).flip();
+        steveRightLeg = new Part(this, 0, 16);
     }
 
     @Override

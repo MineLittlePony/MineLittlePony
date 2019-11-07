@@ -4,12 +4,12 @@ import net.minecraft.client.model.Model;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.client.util.render.plane.PlaneRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IPart;
 
 import java.util.UUID;
 
-public class PonyTail extends PlaneRenderer implements IPart {
+public class PonyTail extends Part implements IPart {
 
     private static final int SEGMENTS = 4;
 
@@ -80,7 +80,7 @@ public class PonyTail extends PlaneRenderer implements IPart {
         render(scale);
     }
 
-    private class TailSegment extends PlaneRenderer {
+    private class TailSegment extends Part {
 
         private final int index;
 

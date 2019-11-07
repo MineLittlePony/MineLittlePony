@@ -4,7 +4,7 @@ import net.minecraft.client.model.Cuboid;
 import net.minecraft.client.model.Model;
 
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.client.util.render.plane.PlaneRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.ICapitated;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.pony.meta.Gender;
@@ -15,8 +15,8 @@ public class PonySnout implements IPart {
 
     public boolean isHidden = false;
 
-    private PlaneRenderer mare;
-    private PlaneRenderer stallion;
+    private Part mare;
+    private Part stallion;
 
     private final ICapitated<Cuboid> head;
 
@@ -27,8 +27,8 @@ public class PonySnout implements IPart {
     public <T extends Model & ICapitated<Cuboid>> PonySnout(T pony, int x, int y, int z) {
         head = pony;
 
-        mare = new PlaneRenderer(pony).offset(HEAD_CENTRE_X + x, HEAD_CENTRE_Y + y, HEAD_CENTRE_Z + z + 0.25F);
-        stallion = new PlaneRenderer(pony).offset(HEAD_CENTRE_X + x, HEAD_CENTRE_Y + y, HEAD_CENTRE_Z + z);
+        mare = new Part(pony).offset(HEAD_CENTRE_X + x, HEAD_CENTRE_Y + y, HEAD_CENTRE_Z + z + 0.25F);
+        stallion = new Part(pony).offset(HEAD_CENTRE_X + x, HEAD_CENTRE_Y + y, HEAD_CENTRE_Z + z);
 
         pony.getHead().addChild(stallion);
         pony.getHead().addChild(mare);

@@ -1,7 +1,7 @@
 package com.minelittlepony.client.model.components;
 
 import com.minelittlepony.client.pony.PonyData;
-import com.minelittlepony.client.util.render.PonyRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.ICapitated;
 import com.minelittlepony.pony.IPonyData;
 
@@ -14,7 +14,7 @@ public class ModelPonyHead extends SkullOverlayEntityModel implements ICapitated
 
     private final UnicornHorn horn;
 
-    private final PonyRenderer ears;
+    private final Part ears;
 
     public IPonyData metadata = new PonyData();
 
@@ -26,7 +26,7 @@ public class ModelPonyHead extends SkullOverlayEntityModel implements ICapitated
 
         snout.init(0, 0);
 
-        ears = new PonyRenderer(this, 0, 0)
+        ears = new Part(this, 0, 0)
                 .offset(0, -3, 2).around(0, 0, -2)
                 .tex(12, 16).box(-3.999F, -6, 1, 2, 2, 2, 0)
                      .flip().box( 1.999F, -6, 1, 2, 2, 2, 0);

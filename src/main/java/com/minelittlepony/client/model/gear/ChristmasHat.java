@@ -7,7 +7,7 @@ import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 import com.minelittlepony.client.util.render.Color;
-import com.minelittlepony.client.util.render.PonyRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.pony.meta.Wearable;
@@ -19,14 +19,14 @@ public class ChristmasHat extends AbstractGear {
 
     private static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/models/antlers.png");
 
-    private PonyRenderer left;
-    private PonyRenderer right;
+    private Part left;
+    private Part right;
 
     private int tint;
 
     @Override
     public void init(float yOffset, float stretch) {
-        left = new PonyRenderer(this, 0, 0).size(16, 8)
+        left = new Part(this, 0, 0).size(16, 8)
                 .around(-7, 0.5F, 0.5F)
                 .offset(-7, 0, 0)
                 .at(3, -4, 0)
@@ -35,7 +35,7 @@ public class ChristmasHat extends AbstractGear {
                 .tex(4, 2).box(2, -1, 0, 1, 1, 1, stretch)
                 .tex(8, 2).box(4, -1, 0, 1, 1, 1, stretch);
 
-        right = new PonyRenderer(this, 0, 4).size(16, 8)
+        right = new Part(this, 0, 4).size(16, 8)
                 .around(7, 0.5F, 0.5F)
                 .offset(0, 0, 0)
                 .at(-3, -4, 0)

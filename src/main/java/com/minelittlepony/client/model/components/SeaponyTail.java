@@ -2,8 +2,7 @@ package com.minelittlepony.client.model.components;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.IPonyModel;
-import com.minelittlepony.client.util.render.PonyRenderer;
-import com.minelittlepony.client.util.render.plane.PlaneRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IPart;
 import com.mojang.blaze3d.platform.GlStateManager;
 
@@ -17,19 +16,19 @@ public class SeaponyTail implements IPart {
 
     private static final float TAIL_ROTX = PI / 2;
 
-    private PonyRenderer tailBase;
+    private Part tailBase;
 
-    private PlaneRenderer tailTip;
-    private PlaneRenderer tailFins;
+    private Part tailTip;
+    private Part tailFins;
 
     private IPonyModel<?> model;
 
     public SeaponyTail(AbstractPonyModel<?> model) {
         this.model = model;
 
-        tailBase = new PonyRenderer(model, 0, 38);
-        tailTip = new PlaneRenderer(model, 24, 0);
-        tailFins = new PlaneRenderer(model, 56, 20);
+        tailBase = new Part(model, 0, 38);
+        tailTip = new Part(model, 24, 0);
+        tailFins = new Part(model, 56, 20);
 
         tailBase.addChild(tailTip);
         tailTip.addChild(tailFins);

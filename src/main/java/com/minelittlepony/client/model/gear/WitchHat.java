@@ -3,7 +3,7 @@ package com.minelittlepony.client.model.gear;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 
-import com.minelittlepony.client.util.render.PonyRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.gear.IStackable;
@@ -15,7 +15,7 @@ public class WitchHat extends AbstractGear implements IStackable {
 
     private static final Identifier WITCH_TEXTURES = new Identifier("textures/entity/witch.png");
 
-    private PonyRenderer witchHat;
+    private Part witchHat;
 
     @Override
     public void renderPart(float scale, UUID interpolatorId) {
@@ -24,7 +24,7 @@ public class WitchHat extends AbstractGear implements IStackable {
 
     @Override
     public void init(float yOffset, float stretch) {
-        witchHat = new PonyRenderer(this).size(64, 128);
+        witchHat = new Part(this).size(64, 128);
         witchHat.around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                 .tex(0, 64).box(-5, -6, -7, 10, 2, 10, stretch)
                 .child(0).around(1.75F, -4, 2)

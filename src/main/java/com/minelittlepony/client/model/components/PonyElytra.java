@@ -6,7 +6,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Vec3d;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.client.util.render.PonyRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import static com.minelittlepony.model.PonyModelConstants.*;
@@ -18,8 +18,8 @@ public class PonyElytra<T extends LivingEntity> extends EntityModel<T> {
 
     public boolean isSneaking;
 
-    private PonyRenderer rightWing = new PonyRenderer(this, 22, 0);
-    private PonyRenderer leftWing = new PonyRenderer(this, 22, 0);
+    private Part rightWing = new Part(this, 22, 0);
+    private Part leftWing = new Part(this, 22, 0);
 
     public PonyElytra() {
         leftWing        .box(-10, 0, 0, 10, 20, 2, 1);

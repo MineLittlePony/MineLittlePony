@@ -5,9 +5,9 @@ import net.minecraft.client.render.entity.model.GuardianEntityModel;
 import net.minecraft.entity.mob.GuardianEntity;
 
 import com.minelittlepony.client.model.IPonyMixinModel;
-import com.minelittlepony.client.util.render.PonyRenderer;
+import com.minelittlepony.client.util.render.Part;
 
-public class ModelGuardianPony extends GuardianEntityModel implements IPonyMixinModel.Caster<GuardianEntity, ModelSeapony<GuardianEntity>, PonyRenderer> {
+public class ModelGuardianPony extends GuardianEntityModel implements IPonyMixinModel.Caster<GuardianEntity, ModelSeapony<GuardianEntity>, Part> {
     private final ModelSeapony<GuardianEntity> mixin = new ModelSeapony<>();
 
     @Override

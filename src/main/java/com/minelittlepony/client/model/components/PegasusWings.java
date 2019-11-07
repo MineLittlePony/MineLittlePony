@@ -3,7 +3,7 @@ package com.minelittlepony.client.model.components;
 import net.minecraft.client.model.Model;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.client.util.render.PonyRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.model.IPegasus;
 import com.minelittlepony.pony.meta.Wearable;
@@ -89,14 +89,14 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart {
 
         protected final T pegasus;
 
-        protected final PonyRenderer extended;
-        protected final PonyRenderer folded;
+        protected final Part extended;
+        protected final Part folded;
 
         public Wing(T pegasus, boolean right, boolean legacy, float y, float scale, int texY) {
             this.pegasus = pegasus;
 
-            folded = new PonyRenderer(pegasus, 56, texY).mirror(legacy);
-            extended = new PonyRenderer(pegasus, 56 + ((!right || legacy) ? 1 : 0), texY + 3);
+            folded = new Part(pegasus, 56, texY).mirror(legacy);
+            extended = new Part(pegasus, 56 + ((!right || legacy) ? 1 : 0), texY + 3);
 
             addClosedWing(right, y, scale);
             addFeathers(right, legacy, y, scale);
@@ -125,7 +125,7 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart {
             addFeather(5, l,  0,     0,    3, scale + 0.19F).pitch = -0.85F;
         }
 
-        private PonyRenderer addFeather(int i, boolean l, float y, float z, int h, float scale) {
+        private Part addFeather(int i, boolean l, float y, float z, int h, float scale) {
             return extended.child(i).around(0, 0, 0).mirror(l).box(-0.5F, y, z, 1, h, 2, scale);
         }
 

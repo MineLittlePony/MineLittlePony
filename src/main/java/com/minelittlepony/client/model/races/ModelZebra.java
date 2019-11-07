@@ -4,14 +4,14 @@ import net.minecraft.entity.LivingEntity;
 
 import com.minelittlepony.client.model.armour.ModelPonyArmour;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
-import com.minelittlepony.client.util.render.PonyRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 public class ModelZebra<T extends LivingEntity> extends ModelEarthPony<T> {
 
-    public PonyRenderer bristles;
+    public Part bristles;
 
     public ModelZebra(boolean useSmallArms) {
         super(useSmallArms);
@@ -37,7 +37,7 @@ public class ModelZebra<T extends LivingEntity> extends ModelEarthPony<T> {
     protected void initHead(float yOffset, float stretch) {
         super.initHead(yOffset, stretch);
 
-        bristles = new PonyRenderer(this, 56, 32);
+        bristles = new Part(this, 56, 32);
         head.addChild(bristles);
 
         bristles.offset(-1, -1, -3)

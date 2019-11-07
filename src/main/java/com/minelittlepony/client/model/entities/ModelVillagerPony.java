@@ -11,15 +11,14 @@ import com.minelittlepony.client.model.components.BatWings;
 import com.minelittlepony.client.model.components.PonyEars;
 import com.minelittlepony.client.model.races.ModelAlicorn;
 import com.minelittlepony.client.render.entities.villager.PonyTextures;
-import com.minelittlepony.client.util.render.PonyRenderer;
-import com.minelittlepony.client.util.render.plane.PlaneRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.pony.meta.Race;
 
 public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> extends ModelAlicorn<T> implements ModelWithHat {
 
-    private PlaneRenderer apron;
-    private PlaneRenderer trinket;
+    private Part apron;
+    private Part trinket;
 
     private IPart batWings;
 
@@ -42,7 +41,7 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
     }
 
     @Override
-    protected void initEars(PonyRenderer head, float yOffset, float stretch) {
+    protected void initEars(Part head, float yOffset, float stretch) {
         ears = new PonyEars(head, true);
         ears.init(yOffset, stretch);
     }
@@ -76,11 +75,11 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
     public void init(float yOffset, float stretch) {
         super.init(yOffset, stretch);
 
-        apron = new PlaneRenderer(this, 56, 16)
+        apron = new Part(this, 56, 16)
                .offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
                .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                .south(-4, -4, -9, 8, 10, stretch);
-        trinket = new PlaneRenderer(this, 0, 3)
+        trinket = new Part(this, 0, 3)
                .offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
                .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                .south(-2, -4, -9, 4, 5, stretch);

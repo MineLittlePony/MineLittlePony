@@ -4,7 +4,7 @@ import net.minecraft.entity.LivingEntity;
 
 import com.minelittlepony.client.model.components.BatWings;
 import com.minelittlepony.client.model.components.PonyEars;
-import com.minelittlepony.client.util.render.PonyRenderer;
+import com.minelittlepony.client.util.render.Part;
 
 public class ModelBatpony<T extends LivingEntity> extends ModelPegasus<T> {
 
@@ -18,7 +18,7 @@ public class ModelBatpony<T extends LivingEntity> extends ModelPegasus<T> {
     }
 
     @Override
-    protected void initEars(PonyRenderer head, float yOffset, float stretch) {
+    protected void initEars(Part head, float yOffset, float stretch) {
         ears = new PonyEars(head, true);
         ears.init(yOffset, stretch);
     }

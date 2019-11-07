@@ -4,7 +4,7 @@ import net.minecraft.entity.mob.ZombieVillagerEntity;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.model.IMobModel;
-import com.minelittlepony.client.util.render.AbstractRenderer;
+import com.minelittlepony.client.util.render.Part;
 
 public class ModelZombieVillagerPony extends ModelVillagerPony<ZombieVillagerEntity> implements IMobModel {
 
@@ -15,10 +15,10 @@ public class ModelZombieVillagerPony extends ModelVillagerPony<ZombieVillagerEnt
 
         if (islookAngleRight(move)) {
             rotateArmHolding(rightArm, 1, getSwingAmount(), ticks);
-            AbstractRenderer.shiftRotationPoint(rightArm, 0.5F, 1.5F, 3);
+            Part.shiftRotationPoint(rightArm, 0.5F, 1.5F, 3);
         } else {
             rotateArmHolding(leftArm, -1, getSwingAmount(), ticks);
-            AbstractRenderer.shiftRotationPoint(leftArm, -0.5F, 1.5F, 3);
+            Part.shiftRotationPoint(leftArm, -0.5F, 1.5F, 3);
         }
     }
 

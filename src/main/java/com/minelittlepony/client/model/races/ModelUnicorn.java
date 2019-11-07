@@ -1,7 +1,7 @@
 package com.minelittlepony.client.model.races;
 
 import com.minelittlepony.client.model.components.UnicornHorn;
-import com.minelittlepony.client.util.render.PonyRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IUnicorn;
 
 import net.minecraft.client.model.Cuboid;
@@ -12,10 +12,10 @@ import net.minecraft.util.math.MathHelper;
 /**
  * Used for both unicorns and alicorns since there's no logical way to keep them distinct and not duplicate stuff.
  */
-public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> implements IUnicorn<PonyRenderer> {
+public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> implements IUnicorn<Part> {
 
-    public PonyRenderer unicornArmRight;
-    public PonyRenderer unicornArmLeft;
+    public Part unicornArmRight;
+    public Part unicornArmLeft;
 
     public UnicornHorn horn;
 
@@ -66,7 +66,7 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
     }
 
     @Override
-    public PonyRenderer getUnicornArmForSide(Arm side) {
+    public Part getUnicornArmForSide(Arm side) {
         return side == Arm.LEFT ? unicornArmLeft : unicornArmRight;
     }
 
@@ -98,8 +98,8 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
     @Override
     protected void initLegs(float yOffset, float stretch) {
         super.initLegs(yOffset, stretch);
-        unicornArmLeft = new PonyRenderer(this, 40, 32).size(64, 64);
-        unicornArmRight = new PonyRenderer(this, 40, 32).size(64, 64);
+        unicornArmLeft = new Part(this, 40, 32).size(64, 64);
+        unicornArmRight = new Part(this, 40, 32).size(64, 64);
 
         int armLength = attributes.armLength;
         int armWidth = attributes.armWidth;

@@ -2,7 +2,7 @@ package com.minelittlepony.client.model.entities;
 
 import com.minelittlepony.client.model.IMobModel;
 import com.minelittlepony.client.model.races.ModelAlicorn;
-import com.minelittlepony.client.util.render.AbstractRenderer;
+import com.minelittlepony.client.util.render.Part;
 
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.util.math.MathHelper;
@@ -27,10 +27,10 @@ public class ModelZombiePony<Zombie extends HostileEntity> extends ModelAlicorn<
 
         if (islookAngleRight(move)) {
             rotateArmHolding(rightArm, 1, getSwingAmount(), ticks);
-            AbstractRenderer.shiftRotationPoint(rightArm, 0.5F, 1.5F, 3);
+            Part.shiftRotationPoint(rightArm, 0.5F, 1.5F, 3);
         } else {
             rotateArmHolding(leftArm, -1, getSwingAmount(), ticks);
-            AbstractRenderer.shiftRotationPoint(leftArm, -0.5F, 1.5F, 3);
+            Part.shiftRotationPoint(leftArm, -0.5F, 1.5F, 3);
         }
     }
 

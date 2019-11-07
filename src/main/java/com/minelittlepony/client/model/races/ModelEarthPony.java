@@ -1,7 +1,7 @@
 package com.minelittlepony.client.model.races;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.client.util.render.PonyRenderer;
+import com.minelittlepony.client.util.render.Part;
 
 import net.minecraft.entity.LivingEntity;
 
@@ -9,7 +9,7 @@ public class ModelEarthPony<T extends LivingEntity> extends AbstractPonyModel<T>
 
     private final boolean smallArms;
 
-    public PonyRenderer bipedCape;
+    public Part bipedCape;
 
     public ModelEarthPony(boolean smallArms) {
         super(smallArms);
@@ -44,7 +44,7 @@ public class ModelEarthPony<T extends LivingEntity> extends AbstractPonyModel<T>
     @Override
     protected void initHead(float yOffset, float stretch) {
         super.initHead(yOffset, stretch);
-        bipedCape = new PonyRenderer(this, 0, 0)
+        bipedCape = new Part(this, 0, 0)
                 .size(64, 32).box(-5, 0, -1, 10, 16, 1, stretch);
     }
 

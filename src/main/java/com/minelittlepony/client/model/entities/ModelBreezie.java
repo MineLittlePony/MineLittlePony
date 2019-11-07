@@ -6,59 +6,59 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.client.util.render.PonyRenderer;
+import com.minelittlepony.client.util.render.Part;
 
 import static com.minelittlepony.model.PonyModelConstants.PI;
 
 public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> {
 
-    PonyRenderer neck;
-    PonyRenderer tail;
-    PonyRenderer tailStub;
+    Part neck;
+    Part tail;
+    Part tailStub;
 
-    PonyRenderer leftWing;
-    PonyRenderer rightWing;
+    Part leftWing;
+    Part rightWing;
 
     public ModelBreezie() {
         textureWidth = 64;
         textureHeight = 64;
 
         headwear.visible = false;
-        head = new PonyRenderer(this)
-                .child(new PonyRenderer(this)
+        head = new Part(this)
+                .child(new Part(this)
                     .addBox(-3, -6, -3, 6, 6, 6).around(0, 0, -4)
                     .tex(28, 0).addBox( 2, -7,  1, 1, 1, 1)
                     .tex(24, 0).addBox(-3, -7,  1, 1, 1, 1)
                     .tex(24, 9).addBox(-1, -2, -4, 2, 2, 1))
-                .child(new PonyRenderer(this)
+                .child(new Part(this)
                     .tex(28, 2).addBox( 1, -11, -3, 1, 6, 1)
                     .tex(24, 2).addBox(-2, -11, -3, 1, 6, 1)
                     .rotate(-0.2617994F, 0, 0));
 
-        body = new PonyRenderer(this, 2, 12)
+        body = new Part(this, 2, 12)
                 .addBox(0, 0, 0, 6, 7, 14).rotate(-0.5235988F, 0, 0).around(-3, 1, -3);
 
-        leftArm =  new PonyRenderer(this, 28, 12).addBox(0, 0, 0, 2, 12, 2).around( 1, 8, -5);
-        rightArm = new PonyRenderer(this, 36, 12).addBox(0, 0, 0, 2, 12, 2).around(-3, 8, -5);
-        leftLeg =  new PonyRenderer(this, 8, 12) .addBox(0, 0, 0, 2, 12, 2).around( 1, 12, 3);
-        rightLeg = new PonyRenderer(this, 0, 12) .addBox(0, 0, 0, 2, 12, 2).around(-3, 12, 3);
+        leftArm =  new Part(this, 28, 12).addBox(0, 0, 0, 2, 12, 2).around( 1, 8, -5);
+        rightArm = new Part(this, 36, 12).addBox(0, 0, 0, 2, 12, 2).around(-3, 8, -5);
+        leftLeg =  new Part(this, 8, 12) .addBox(0, 0, 0, 2, 12, 2).around( 1, 12, 3);
+        rightLeg = new Part(this, 0, 12) .addBox(0, 0, 0, 2, 12, 2).around(-3, 12, 3);
 
-        neck = new PonyRenderer(this, 40, 0)
+        neck = new Part(this, 40, 0)
                 .addBox(0, 0, 0, 2, 5, 2)
                 .rotate(0.0872665F, 0, 0).around(-1, -2, -4);
 
-        tailStub = new PonyRenderer(this, 40, 7)
+        tailStub = new Part(this, 40, 7)
                 .addBox(0, 0, 0, 1, 1, 3).around(-0.5F, 8, 8);
 
-        tail = new PonyRenderer(this, 32, 0)
+        tail = new Part(this, 32, 0)
                 .addBox(0, 0, 1, 2, 9, 2).around(-1, 7, 10);
 
-        leftWing = new PonyRenderer(this, 0, 40)
+        leftWing = new Part(this, 0, 40)
                 .addBox(0, -12, 0, 24, 24, 0)
                 .rotate(0, -0.6981317F, 0).around(2, 3, 1);
         leftWing.setTextureSize(64, 32);
 
-        rightWing = new PonyRenderer(this, 0, 40)
+        rightWing = new Part(this, 0, 40)
                 .addBox(-24, -12, 0, 24, 24, 0, true)
                 .rotate(0, 0.6981317F, 0).around(-2, 3, 1);
         rightWing.setTextureSize(64, 32);
@@ -84,16 +84,16 @@ public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> {
         leftArm.pitch = MathHelper.cos(move * 0.6662F) * swing;
         leftArm.roll = 0;
 
-        ((PonyRenderer)rightArm).rotate(swing * MathHelper.cos(move * 0.6662F + PI),        0, 0);
-        ((PonyRenderer)leftLeg) .rotate(swing * MathHelper.cos(move * 0.6662F + PI) * 1.4F, 0, 0);
-        ((PonyRenderer)rightLeg).rotate(swing * MathHelper.cos(move * 0.6662F)      * 1.4F, 0, 0);
+        ((Part)rightArm).rotate(swing * MathHelper.cos(move * 0.6662F + PI),        0, 0);
+        ((Part)leftLeg) .rotate(swing * MathHelper.cos(move * 0.6662F + PI) * 1.4F, 0, 0);
+        ((Part)rightLeg).rotate(swing * MathHelper.cos(move * 0.6662F)      * 1.4F, 0, 0);
 
         if (isRiding) {
             leftArm.pitch += -PI / 5;
             rightArm.pitch += -PI / 5;
 
-            rotateLegRiding(((PonyRenderer)leftLeg), -1);
-            rotateLegRiding(((PonyRenderer)rightLeg), 1);
+            rotateLegRiding(((Part)leftLeg), -1);
+            rotateLegRiding(((Part)rightLeg), 1);
         }
 
         rotateArm(leftArm, leftArmPose, 1);
@@ -119,7 +119,7 @@ public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> {
         }
     }
 
-    protected void rotateLegRiding(PonyRenderer leg, float factor) {
+    protected void rotateLegRiding(Part leg, float factor) {
         leg.rotate(-1.4137167F, factor * PI / 10, factor * 0.07853982F);
     }
 

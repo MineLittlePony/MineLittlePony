@@ -3,7 +3,7 @@ package com.minelittlepony.client.render.layer;
 import com.minelittlepony.client.PonyRenderManager;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.render.IPonyRender;
-import com.minelittlepony.client.util.render.PonyRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IUnicorn;
 import com.mojang.blaze3d.platform.GlStateManager;
 
@@ -43,7 +43,7 @@ public class LayerHeldPonyItemMagical<T extends LivingEntity, M extends EntityMo
     @Override
     protected void renderArm(Arm side) {
         if (isUnicorn()) {
-            ((IUnicorn<PonyRenderer>)getModel()).getUnicornArmForSide(side).applyTransform(0.0625F);
+            ((IUnicorn<Part>)getModel()).getUnicornArmForSide(side).applyTransform(0.0625F);
         } else {
             super.renderArm(side);
         }

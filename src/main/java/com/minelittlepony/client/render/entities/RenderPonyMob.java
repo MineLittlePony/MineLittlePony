@@ -13,7 +13,7 @@ import com.minelittlepony.client.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.client.render.layer.LayerPonyArmor;
 import com.minelittlepony.client.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.client.render.layer.LayerPonyElytra;
-import com.minelittlepony.client.util.render.PonyRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IUnicorn;
 import com.minelittlepony.pony.IPony;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -120,7 +120,7 @@ public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T
         return MineLittlePony.getInstance().getManager().getPony(findTexture(entity));
     }
 
-    public abstract static class Caster<T extends MobEntity, M extends ClientPonyModel<T> & IUnicorn<PonyRenderer>> extends RenderPonyMob<T, M> {
+    public abstract static class Caster<T extends MobEntity, M extends ClientPonyModel<T> & IUnicorn<Part>> extends RenderPonyMob<T, M> {
 
         public Caster(EntityRenderDispatcher manager, M model) {
             super(manager, model);

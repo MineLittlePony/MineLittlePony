@@ -3,7 +3,7 @@ package com.minelittlepony.client.model.components;
 import net.minecraft.client.model.Cuboid;
 import net.minecraft.client.model.Model;
 
-import com.minelittlepony.client.util.render.PonyRenderer;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.ICapitated;
 import com.minelittlepony.model.IPart;
 
@@ -11,13 +11,13 @@ import java.util.UUID;
 
 public class PonyEars implements IPart {
 
-    private final PonyRenderer head;
+    private final Part head;
     private final boolean bat;
 
-    private PonyRenderer right;
-    private PonyRenderer left;
+    private Part right;
+    private Part left;
 
-    public <T extends Model & ICapitated<Cuboid>> PonyEars(PonyRenderer head, boolean bat) {
+    public <T extends Model & ICapitated<Cuboid>> PonyEars(Part head, boolean bat) {
         this.head = head;
         this.bat = bat;
     }
