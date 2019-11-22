@@ -12,8 +12,6 @@ import java.util.function.Function;
 import static com.mojang.blaze3d.platform.GlStateManager.getTexLevelParameter;
 import static org.lwjgl.opengl.GL11.*;
 
-import com.minelittlepony.client.util.render.NativeUtil.InternalFormat;
-
 public class NativeUtil {
     enum InternalFormat {
         RGB(NativeImage.Format.RGB),
@@ -100,7 +98,7 @@ public class NativeUtil {
         }
 
         // recreate NativeImage from the GL matrix
-        textures.bindTextureInner(resource);
+        textures.bindTexture(resource);
 
                                                  // TODO: This returns values that are too specific.
                                                  //       Can we change the level (0) here to something
