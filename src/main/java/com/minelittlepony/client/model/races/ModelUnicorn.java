@@ -3,8 +3,7 @@ package com.minelittlepony.client.model.races;
 import com.minelittlepony.client.model.components.UnicornHorn;
 import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IUnicorn;
-
-import net.minecraft.client.model.Cuboid;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
@@ -119,7 +118,7 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
     }
 
     @Override
-    public Cuboid getArm(Arm side) {
+    public ModelPart getArm(Arm side) {
         if (canCast() && getArmPoseForSide(side) != ArmPose.EMPTY) {
             return getUnicornArmForSide(side);
         }

@@ -100,13 +100,13 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
             float roll = 0.3F * MathHelper.sin(0.45F * ticks);
 
             this.head.roll = roll;
-            this.headwear.roll = roll;
+            this.helmet.roll = roll;
 
             this.head.pitch = 0.4F;
-            this.headwear.pitch = 0.4F;
+            this.helmet.pitch = 0.4F;
         } else {
             this.head.roll = 0.0F;
-            this.headwear.roll = 0.0F;
+            this.helmet.roll = 0.0F;
         }
     }
 }

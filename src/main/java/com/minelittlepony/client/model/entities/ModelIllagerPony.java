@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model.entities;
 
-import net.minecraft.client.model.Cuboid;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
@@ -21,7 +21,7 @@ public class ModelIllagerPony<T extends IllagerEntity> extends ModelAlicorn<T> {
 
         boolean rightHanded = illager.getMainArm() == Arm.RIGHT;
         float mult = rightHanded ? 1 : -1;
-        Cuboid arm = getArm(illager.getMainArm());
+        ModelPart arm = getArm(illager.getMainArm());
 
         if (pose == IllagerEntity.State.ATTACKING) {
             // vindicator attacking

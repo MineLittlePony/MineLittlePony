@@ -5,7 +5,8 @@ import org.lwjgl.opengl.GL14;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.util.render.Color;
 import com.minelittlepony.pony.IPony;
-
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.FirstPersonRenderer;
@@ -16,7 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
 import net.minecraft.util.UseAction;
 
-import static com.mojang.blaze3d.platform.GlStateManager.*;
+import static com.mojang.blaze3d.systems.RenderSystem.*;
 
 public class LevitatingItemRenderer {
 

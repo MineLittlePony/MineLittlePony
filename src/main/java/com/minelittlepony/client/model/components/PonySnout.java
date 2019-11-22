@@ -1,8 +1,7 @@
 package com.minelittlepony.client.model.components;
 
-import net.minecraft.client.model.Cuboid;
 import net.minecraft.client.model.Model;
-
+import net.minecraft.client.model.ModelPart;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.ICapitated;
@@ -18,13 +17,13 @@ public class PonySnout implements IPart {
     private Part mare;
     private Part stallion;
 
-    private final ICapitated<Cuboid> head;
+    private final ICapitated<ModelPart> head;
 
-    public <T extends Model & ICapitated<Cuboid>> PonySnout(T pony) {
+    public <T extends Model & ICapitated<ModelPart>> PonySnout(T pony) {
         this(pony, 0, 0, 0);
     }
 
-    public <T extends Model & ICapitated<Cuboid>> PonySnout(T pony, int x, int y, int z) {
+    public <T extends Model & ICapitated<ModelPart>> PonySnout(T pony, int x, int y, int z) {
         head = pony;
 
         mare = new Part(pony).offset(HEAD_CENTRE_X + x, HEAD_CENTRE_Y + y, HEAD_CENTRE_Z + z + 0.25F);

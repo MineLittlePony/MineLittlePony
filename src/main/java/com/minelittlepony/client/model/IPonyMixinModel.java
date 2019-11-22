@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model;
 
-import net.minecraft.client.model.Cuboid;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 
@@ -82,12 +82,12 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     }
 
     @Override
-    default Cuboid getHead() {
+    default ModelPart getHead() {
         return mixin().getHead();
     }
 
     @Override
-    default Cuboid getBodyPart(BodyPart part) {
+    default ModelPart getBodyPart(BodyPart part) {
         return mixin().getBodyPart(part);
     }
 

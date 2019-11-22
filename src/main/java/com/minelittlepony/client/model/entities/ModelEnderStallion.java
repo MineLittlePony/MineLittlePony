@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model.entities;
 
-import net.minecraft.client.model.Cuboid;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.util.math.MathHelper;
 
@@ -42,11 +42,11 @@ public class ModelEnderStallion extends ModelSkeletonPony<EndermanEntity> {
 
         tail.setVisible(false);
         snout.isHidden = true;
-        leftArmOverlay.field_3664 = true;
-        rightArmOverlay.field_3664 = true;
+        leftSleeve.field_3664 = true;
+        rightSleeve.field_3664 = true;
 
-        leftLegOverlay.field_3664 = true;
-        rightLegOverlay.field_3664 = true;
+        leftPantLeg.field_3664 = true;
+        rightPantLeg.field_3664 = true;
 
         leftHorn.pitch = 0.5F;
         rightHorn.pitch = 0.5F;
@@ -57,7 +57,7 @@ public class ModelEnderStallion extends ModelSkeletonPony<EndermanEntity> {
         super.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
 
         if (isAttacking) {
-            head.rotationPointY -= 5;
+            head.pivotY -= 5;
         }
     }
 
@@ -103,7 +103,7 @@ public class ModelEnderStallion extends ModelSkeletonPony<EndermanEntity> {
                     .around(3.9F, -6, 0.001F)
                     .box(0, 0, 0, 2, 6, 2, stretch);
 
-        headwear = new Part(this, 32, 0)
+        helmet = new Part(this, 32, 0)
                                      .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
                                      .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
                                      .box(-4, -4, -4, 8, 8, 8, stretch - 0.5F);
@@ -113,18 +113,18 @@ public class ModelEnderStallion extends ModelSkeletonPony<EndermanEntity> {
     }
 
     @Override
-    public void rotateArmHolding(Cuboid arm, float direction, float swingProgress, float ticks) {
+    public void rotateArmHolding(ModelPart arm, float direction, float swingProgress, float ticks) {
         arm.pitch = -0.3707964F;
         arm.pitch += 0.4F + MathHelper.sin(ticks * 0.067F) / 10;
     }
 
     @Override
     protected void preInitLegs() {
-        leftArm = new Cuboid(this, 0, 20);
-        rightArm = new Cuboid(this, 0, 20);
+        leftArm = new ModelPart(this, 0, 20);
+        rightArm = new ModelPart(this, 0, 20);
 
-        leftLeg = new Cuboid(this, 0, 20);
-        rightLeg = new Cuboid(this, 0, 20);
+        leftLeg = new ModelPart(this, 0, 20);
+        rightLeg = new ModelPart(this, 0, 20);
     }
 
     @Override

@@ -37,11 +37,11 @@ public class PonyTail extends Part implements IPart {
         if (theModel.getAttributes().isCrouching && !rainboom) {
             rotateSneak();
         } else if (theModel.isRiding()) {
-            rotationPointZ = TAIL_RP_Z_RIDING;
-            rotationPointY = TAIL_RP_Y_RIDING;
+            pivotZ = TAIL_RP_Z_RIDING;
+            pivotY = TAIL_RP_Y_RIDING;
             pitch = PI / 5;
         } else {
-            setRotationPoint(TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_NOTSNEAK);
+            setPivot(TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_NOTSNEAK);
             if (rainboom) {
                 pitch = ROTATE_90 + MathHelper.sin(move) / 10;
             } else {
@@ -52,8 +52,8 @@ public class PonyTail extends Part implements IPart {
         }
 
         if (rainboom) {
-            rotationPointY += 6;
-            rotationPointZ++;
+            pivotY += 6;
+            pivotZ++;
         }
 
         tailStop = theModel.getMetadata().getTail().ordinal();
@@ -66,7 +66,7 @@ public class PonyTail extends Part implements IPart {
     }
 
     private void rotateSneak() {
-        setRotationPoint(TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_SNEAK);
+        setPivot(TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_SNEAK);
         pitch = -BODY_ROT_X_SNEAK + 0.1F;
     }
 

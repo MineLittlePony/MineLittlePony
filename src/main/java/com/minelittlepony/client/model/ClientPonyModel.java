@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model;
 
-import net.minecraft.client.model.Cuboid;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.entity.LivingEntity;
@@ -65,7 +65,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends PlayerEnti
     }
 
     @Override
-    public Cuboid getHead() {
+    public ModelPart getHead() {
         return head;
     }
 
@@ -81,7 +81,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends PlayerEnti
 
 
     @Override
-    public Cuboid getArm(Arm side) {
+    public ModelPart getArm(Arm side) {
         return super.getArm(side);
     }
 
@@ -103,26 +103,26 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends PlayerEnti
     }
 
     @Override
-    public Cuboid getRandomCuboid(Random rand) {
+    public ModelPart getRandomCuboid(Random rand) {
         // grab one at random, but cycle through the list until you find one that's filled.
         // Return if you find one, or if you get back to where you started in which case there isn't any.
 
         int randomI = rand.nextInt(cuboidList.size());
         int index = randomI;
 
-        Cuboid result;
+        ModelPart result;
         do {
             result = cuboidList.get(randomI);
-            if (!result.boxes.isEmpty()) return result;
+            if (!result.cuboids.isEmpty()) return result;
 
             index = (index + 1) % cuboidList.size();
         } while (index != randomI);
 
-        if (result.boxes.isEmpty()) {
-            result.addBox(0, 0, 0, 0, 0, 0);
+        if (result.cuboids.isEmpty()) {
+            result.addCuboid(0, 0, 0, 0, 0, 0);
         }
 
-        if (result.boxes.isEmpty()) {
+        if (result.cuboids.isEmpty()) {
             throw new IllegalStateException("This model contains absolutely no boxes and a box could not be added!");
         }
 

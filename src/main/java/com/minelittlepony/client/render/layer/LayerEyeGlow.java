@@ -8,6 +8,8 @@ import net.minecraft.util.Identifier;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.render.IPonyRender;
 import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 
 import static com.mojang.blaze3d.platform.GlStateManager.*;
 
@@ -37,7 +39,7 @@ public class LayerEyeGlow<T extends LivingEntity, M extends EntityModel<T> & IPo
 
         MinecraftClient.getInstance().gameRenderer.setFogBlack(true);
 
-        getModel().render(entity, move, swing, ticks, headYaw, headPitch, scale);
+        getModel().setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
 
         MinecraftClient.getInstance().gameRenderer.setFogBlack(false);
 

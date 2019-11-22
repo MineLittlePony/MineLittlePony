@@ -1,9 +1,8 @@
 package com.minelittlepony.client.model.components;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.model.Cuboid;
 import net.minecraft.client.model.Model;
-
+import net.minecraft.client.model.ModelPart;
 import com.minelittlepony.client.util.render.Color;
 import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.ICapitated;
@@ -24,11 +23,11 @@ public class UnicornHorn implements IPart {
 
     protected boolean isVisible = true;
 
-    public <T extends Model & ICapitated<Cuboid>> UnicornHorn(T pony, float yOffset, float stretch) {
+    public <T extends Model & ICapitated<ModelPart>> UnicornHorn(T pony, float yOffset, float stretch) {
         this(pony, yOffset, stretch, 0, 0, 0);
     }
 
-    public <T extends Model & ICapitated<Cuboid>> UnicornHorn(T pony, float yOffset, float stretch, int x, int y, int z) {
+    public <T extends Model & ICapitated<ModelPart>> UnicornHorn(T pony, float yOffset, float stretch, int x, int y, int z) {
         horn = new Part(pony, 0, 3);
         glow = new Part(pony, 0, 3);
 

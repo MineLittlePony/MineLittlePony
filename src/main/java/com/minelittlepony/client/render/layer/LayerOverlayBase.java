@@ -33,7 +33,7 @@ public abstract class LayerOverlayBase<T extends LivingEntity, M extends BipedEn
 
         renderer.bindTexture(getOverlayTexture());
 
-        overlayModel.render(entity, move, swing, ticks, headYaw, headPitch, scale);
+        overlayModel.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
     }
 
     protected abstract M getOverlayModel();

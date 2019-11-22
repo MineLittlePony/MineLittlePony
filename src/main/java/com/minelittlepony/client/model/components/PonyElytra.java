@@ -71,8 +71,8 @@ public class PonyElytra<T extends LivingEntity> extends EntityModel<T> {
             rpY = BODY_RP_Y_SNEAK;
         }
 
-        leftWing.rotationPointX = 5;
-        leftWing.rotationPointY = rpY;
+        leftWing.pivotX = 5;
+        leftWing.pivotY = rpY;
 
         if (entity instanceof AbstractClientPlayerEntity) {
             AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) entity;
@@ -90,8 +90,8 @@ public class PonyElytra<T extends LivingEntity> extends EntityModel<T> {
             leftWing.roll = rotateY;
         }
 
-        rightWing.rotationPointX = -leftWing.rotationPointX;
-        rightWing.rotationPointY = leftWing.rotationPointY;
+        rightWing.pivotX = -leftWing.pivotX;
+        rightWing.pivotY = leftWing.pivotY;
         rightWing.pitch = leftWing.pitch;
         rightWing.yaw = -leftWing.yaw;
         rightWing.roll = -leftWing.roll;

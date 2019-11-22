@@ -70,7 +70,7 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
         if (entity.hasVehicle()) {
             Entity mount = entity.getVehicle();
             if (mount instanceof LivingEntity) {
-                return MathUtil.interpolateDegress(((LivingEntity) mount).field_6220, ((LivingEntity) mount).field_6283, partialTicks);
+                return MathUtil.interpolateDegress(((LivingEntity) mount).prevBodyYaw, ((LivingEntity) mount).bodyYaw, partialTicks);
             }
         }
 

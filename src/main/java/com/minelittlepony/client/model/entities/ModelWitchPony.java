@@ -46,21 +46,21 @@ public class ModelWitchPony extends ModelZebra<WitchEntity> {
             float legDrinkingAngle = -1 * PI/3 + rot;
 
             rightArm.pitch = legDrinkingAngle;
-            rightArmOverlay.pitch = legDrinkingAngle;
+            rightSleeve.pitch = legDrinkingAngle;
             rightArm.yaw = 0.1F;
-            rightArmOverlay.yaw = 0.1F;
+            rightSleeve.yaw = 0.1F;
             rightArm.z = 0.1F;
-            rightArmOverlay.z = 0.1F;
+            rightSleeve.z = 0.1F;
 
             if (rot > 0) {
                 rot = 0;
             }
 
             head.pitch = -rot / 2;
-            headwear.pitch = -rot / 2;
+            helmet.pitch = -rot / 2;
         } else {
             rightArm.z = 0;
-            rightArmOverlay.z = 0;
+            rightSleeve.z = 0;
         }
     }
 

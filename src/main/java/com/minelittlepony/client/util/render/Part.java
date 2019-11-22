@@ -1,13 +1,13 @@
 package com.minelittlepony.client.util.render;
 
 import net.minecraft.client.model.Box;
-import net.minecraft.client.model.Cuboid;
 import net.minecraft.client.model.Model;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.model.Quad;
 import net.minecraft.client.model.Vertex;
 import net.minecraft.util.math.Direction;
 
-public class Part extends Cuboid {
+public class Part extends ModelPart {
 
     protected final Model baseModel;
 
@@ -92,10 +92,10 @@ public class Part extends Cuboid {
     /**
      * Adjusts the rotation center of the given renderer by the given amounts in each direction.
      */
-    public static void shiftRotationPoint(Cuboid renderer, float x, float y, float z) {
-        renderer.rotationPointX += x;
-        renderer.rotationPointY += y;
-        renderer.rotationPointZ += z;
+    public static void shiftRotationPoint(ModelPart renderer, float x, float y, float z) {
+        renderer.pivotX += x;
+        renderer.pivotY += y;
+        renderer.pivotZ += z;
     }
 
     /**
@@ -112,7 +112,7 @@ public class Part extends Cuboid {
      * Positions a given model in space by setting its offset values divided
      * by 16 to account for scaling applied inside the model.
      */
-    public static <T extends Cuboid> T at(T renderer, float x, float y, float z) {
+    public static <T extends ModelPart> T at(T renderer, float x, float y, float z) {
         renderer.x = x / 16;
         renderer.y = y / 16;
         renderer.z = z / 16;
@@ -122,22 +122,22 @@ public class Part extends Cuboid {
     /**
      * Rotates this model to align itself with the angles of another.
      */
-    public void rotateTo(Cuboid other) {
+    public void rotateTo(ModelPart other) {
         rotate(other.pitch, other.yaw, other.roll);
     }
 
     /**
      * Shifts this model to align its center with the center of another.
      */
-    public Part rotateAt(Cuboid other) {
-        return around(other.rotationPointX, other.rotationPointY, other.rotationPointZ);
+    public Part rotateAt(ModelPart other) {
+        return around(other.pivotX, other.pivotY, other.pivotZ);
     }
 
     /**
      * Sets the rotation point.
      */
     public Part around(float x, float y, float z) {
-        setRotationPoint(x, y, z);
+        setPivot(x, y, z);
         return  this;
     }
 
@@ -166,7 +166,7 @@ public class Part extends Cuboid {
     /**
      * Adds a new child renderer and returns itself for chaining.
      */
-    public <K extends Cuboid> Part child(K child) {
+    public <K extends ModelPart> Part child(K child) {
         addChild(child);
         return  this;
     }
@@ -189,7 +189,7 @@ public class Part extends Cuboid {
     }
 
     private Part addPlane(float offX, float offY, float offZ, int width, int height, int depth, float scale, Direction face) {
-        boxes.add(new Plane(this, textureOffsetX, textureOffsetY, modelOffsetX + offX, modelOffsetY + offY, modelOffsetZ + offZ, width, height, depth, scale, face));
+        cuboids.add(new Plane(this, textureOffsetX, textureOffsetY, modelOffsetX + offX, modelOffsetY + offY, modelOffsetZ + offZ, width, height, depth, scale, face));
         return  this;
     }
 
@@ -223,30 +223,30 @@ public class Part extends Cuboid {
 
         setTextureOffset(texX, texY);
         addBox(offX, offY, offZ, width, height, depth);
-        boxes.get(boxes.size() - 1).setName(partName);
+        cuboids.get(cuboids.size() - 1).setName(partName);
 
         return  this;
     }
 
     @Override
     public Part addBox(float offX, float offY, float offZ, int width, int height, int depth) {
-        addBox(offX, offY, offZ, width, height, depth, 0);
+        addCuboid(offX, offY, offZ, width, height, depth, 0);
         return  this;
     }
 
     @Override
     public Part addBox(float offX, float offY, float offZ, int width, int height, int depth, boolean mirrored) {
-        addBox(offX, offY, offZ, width, height, depth, 0, mirrored);
+        addCuboid(offX, offY, offZ, width, height, depth, 0, mirrored);
         return this;
     }
 
     @Override
-    public void addBox(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor) {
-        addBox(offX, offY, offZ, width, height, depth, scaleFactor, mirror);
+    public void addCuboid(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor) {
+        addCuboid(offX, offY, offZ, width, height, depth, scaleFactor, mirror);
     }
 
     @Override
-    public void addBox(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor, boolean mirrored) {
+    public void addCuboid(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor, boolean mirrored) {
         createBox(offX, offY, offZ, width, height, depth, scaleFactor, mirrored);
     }
 
@@ -254,19 +254,19 @@ public class Part extends Cuboid {
      * Creates a textured box.
      */
     public Part box(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor) {
-        addBox(offX, offY, offZ, width, height, depth, scaleFactor, mirror);
+        addCuboid(offX, offY, offZ, width, height, depth, scaleFactor, mirror);
 
         return this;
     }
 
     public Part cone(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor) {
-        boxes.add(new Cone(this, textureOffsetX, textureOffsetY, modelOffsetX + offX, modelOffsetY + offY, modelOffsetZ + offZ, width, height, depth, scaleFactor));
+        cuboids.add(new Cone(this, textureOffsetX, textureOffsetY, modelOffsetX + offX, modelOffsetY + offY, modelOffsetZ + offZ, width, height, depth, scaleFactor));
 
         return this;
     }
 
     protected void createBox(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor, boolean mirrored) {
-        boxes.add(new Box(this, textureOffsetX, textureOffsetY, modelOffsetX + offX, modelOffsetY + offY, modelOffsetZ + offZ, width, height, depth, scaleFactor, mirrored));
+        cuboids.add(new Box(this, textureOffsetX, textureOffsetY, modelOffsetX + offX, modelOffsetY + offY, modelOffsetZ + offZ, width, height, depth, scaleFactor, mirrored));
     }
 
     /**

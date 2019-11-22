@@ -3,6 +3,7 @@ package com.minelittlepony.client.model.entities;
 import com.minelittlepony.client.model.armour.ModelPonyArmour;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.client.model.components.SeaponyTail;
+import com.minelittlepony.client.model.entities.ModelSeapony.Armour;
 import com.minelittlepony.client.model.races.ModelUnicorn;
 import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.BodyPart;
@@ -62,8 +63,8 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
         // hide the back legs
         leftLeg.visible = false;
         rightLeg.visible = false;
-        leftLegOverlay.visible = false;
-        rightLegOverlay.visible = false;
+        leftPantLeg.visible = false;
+        rightPantLeg.visible = false;
 
         centerFin = new Part(this, 58, 28)
                 .rotate(PI / 2 - 0.1F, 0, 0).around(0, 6, 9)
@@ -138,7 +139,7 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
 
     @Override
     public void render(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        setVisible(leftArmOverlay.visible);
+        setVisible(leftSleeve.visible);
 
         super.render(entity, move, swing, ticks, headYaw, headPitch, scale);
     }
@@ -152,9 +153,9 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
 
     @Override
     protected void renderBody(float scale) {
-        body.render(scale);
+        torso.render(scale);
         bodyCenter.render(scale);
-        body.applyTransform(scale);
+        torso.applyTransform(scale);
 
         tail.renderPart(scale, attributes.interpolatorId);
 
@@ -182,8 +183,8 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
         // hide the back legs
         leftLeg.visible = false;
         rightLeg.visible = false;
-        leftLegOverlay.visible = false;
-        rightLegOverlay.visible = false;
+        leftPantLeg.visible = false;
+        rightPantLeg.visible = false;
 
         bodyCenter.visible = visible;
 

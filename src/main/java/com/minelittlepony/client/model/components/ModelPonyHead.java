@@ -4,11 +4,10 @@ import com.minelittlepony.client.pony.PonyData;
 import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.ICapitated;
 import com.minelittlepony.pony.IPonyData;
-
-import net.minecraft.client.model.Cuboid;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.SkullOverlayEntityModel;
 
-public class ModelPonyHead extends SkullOverlayEntityModel implements ICapitated<Cuboid> {
+public class ModelPonyHead extends SkullOverlayEntityModel implements ICapitated<ModelPart> {
 
     private PonySnout snout;
 
@@ -35,7 +34,7 @@ public class ModelPonyHead extends SkullOverlayEntityModel implements ICapitated
     }
 
     @Override
-    public Cuboid getHead() {
+    public ModelPart getHead() {
         return skull;
     }
 

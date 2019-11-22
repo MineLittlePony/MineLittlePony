@@ -6,8 +6,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Box;
 
 import com.minelittlepony.pony.IPony;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 
-import static com.mojang.blaze3d.platform.GlStateManager.*;
+import static com.mojang.blaze3d.systems.RenderSystem.*;
 
 public class DebugBoundingBoxRenderer {
 

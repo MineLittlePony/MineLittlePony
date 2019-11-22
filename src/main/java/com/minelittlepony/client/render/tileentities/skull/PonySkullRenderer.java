@@ -12,7 +12,7 @@ import net.minecraft.block.SkullBlock;
 import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.SystemUtil;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.Direction;
 
 import org.lwjgl.opengl.GL11;
@@ -30,7 +30,7 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
     private static final PonySkullRenderer ponyInstance = new PonySkullRenderer();
     private static SkullBlockEntityRenderer backup = null;
 
-    private static final Map<SkullBlock.SkullType, ISkull> skullMap = SystemUtil.consume(Maps.newHashMap(), (skullMap) -> {
+    private static final Map<SkullBlock.SkullType, ISkull> skullMap = Util.create(Maps.newHashMap(), (skullMap) -> {
         skullMap.put(SkullBlock.Type.SKELETON, new SkeletonSkullRenderer());
         skullMap.put(SkullBlock.Type.WITHER_SKELETON, new WitherSkullRenderer());
         skullMap.put(SkullBlock.Type.ZOMBIE, new ZombieSkullRenderer());

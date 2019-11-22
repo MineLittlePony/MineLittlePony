@@ -32,8 +32,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.SystemUtil;
-
+import net.minecraft.util.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
@@ -119,7 +118,7 @@ public class MineLittlePony implements ClientModInitializer {
         } else if (inGame) {
             long handle = client.window.getHandle();
 
-            if ((SystemUtil.getMeasuringTimeMs() % 10) == 0) {
+            if ((Util.getMeasuringTimeMs() % 10) == 0) {
                 if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_F3) && InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_M)) {
                     if (!reloadingModels) {
                         client.inGameHud.getChatHud().addMessage(

@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model.entities;
 
-import net.minecraft.client.model.Cuboid;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
@@ -23,7 +23,7 @@ public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> {
         textureWidth = 64;
         textureHeight = 64;
 
-        headwear.visible = false;
+        helmet.visible = false;
         head = new Part(this)
                 .child(new Part(this)
                     .addBox(-3, -6, -3, 6, 6, 6).around(0, 0, -4)
@@ -35,7 +35,7 @@ public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> {
                     .tex(24, 2).addBox(-2, -11, -3, 1, 6, 1)
                     .rotate(-0.2617994F, 0, 0));
 
-        body = new Part(this, 2, 12)
+        torso = new Part(this, 2, 12)
                 .addBox(0, 0, 0, 6, 7, 14).rotate(-0.5235988F, 0, 0).around(-3, 1, -3);
 
         leftArm =  new Part(this, 28, 12).addBox(0, 0, 0, 2, 12, 2).around( 1, 8, -5);
@@ -67,7 +67,7 @@ public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> {
 
     @Override
     public void render(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        super.render(entity, move, swing, ticks, headYaw, headPitch, scale);
+        super.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
         neck.render(scale);
         tailStub.render(scale);
         tail.render(scale);
@@ -124,36 +124,36 @@ public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> {
     }
 
     protected void swingArms(Arm mainHand) {
-        body.yaw = MathHelper.sin(MathHelper.sqrt(handSwingProgress) * PI * 2) / 5;
+        torso.yaw = MathHelper.sin(MathHelper.sqrt(handSwingProgress) * PI * 2) / 5;
 
         if (mainHand == Arm.LEFT) {
-            body.yaw *= -1;
+            torso.yaw *= -1;
         }
 
-        float sin = MathHelper.sin(body.yaw) * 5;
-        float cos = MathHelper.cos(body.yaw) * 5;
+        float sin = MathHelper.sin(torso.yaw) * 5;
+        float cos = MathHelper.cos(torso.yaw) * 5;
 
-        leftArm.pitch += body.yaw;
-        leftArm.yaw += body.yaw;
-        leftArm.rotationPointX = cos;
-        leftArm.rotationPointZ = -sin;
+        leftArm.pitch += torso.yaw;
+        leftArm.yaw += torso.yaw;
+        leftArm.pivotX = cos;
+        leftArm.pivotZ = -sin;
 
-        rightArm.yaw += body.yaw;
-        rightArm.rotationPointX = -cos;
-        rightArm.rotationPointZ = sin;
+        rightArm.yaw += torso.yaw;
+        rightArm.pivotX = -cos;
+        rightArm.pivotZ = sin;
 
         float swingAmount = 1 - (float)Math.pow(1 - handSwingProgress, 4);
 
         float swingFactorX = MathHelper.sin(swingAmount * PI);
         float swingX = MathHelper.sin(handSwingProgress * PI) * (0.7F - head.pitch) * 0.75F;
 
-        Cuboid mainArm = getArm(mainHand);
+        ModelPart mainArm = getArm(mainHand);
         mainArm.pitch -= swingFactorX * 1.2F + swingX;
-        mainArm.yaw += body.yaw * 2;
+        mainArm.yaw += torso.yaw * 2;
         mainArm.roll -= MathHelper.sin(handSwingProgress * PI) * 0.4F;
     }
 
-    protected void rotateArm(Cuboid arm, ArmPose pose, float factor) {
+    protected void rotateArm(ModelPart arm, ArmPose pose, float factor) {
         switch (pose) {
             case EMPTY:
                 arm.yaw = 0;
@@ -169,7 +169,7 @@ public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> {
         }
     }
 
-    protected void raiseArm(Cuboid up, Cuboid down, float factor) {
+    protected void raiseArm(ModelPart up, ModelPart down, float factor) {
         up.yaw = head.yaw + (factor / 10);
         up.pitch = head.pitch - (PI / 2);
 

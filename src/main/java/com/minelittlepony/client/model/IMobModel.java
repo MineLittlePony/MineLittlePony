@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model;
 
-import net.minecraft.client.model.Cuboid;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.model.PonyModelConstants;
@@ -18,7 +18,7 @@ public interface IMobModel {
      * @param swingProgress How far we are through the current swing
      * @param ticks         Render partial ticks
      */
-    default void rotateArmHolding(Cuboid arm, float direction, float swingProgress, float ticks) {
+    default void rotateArmHolding(ModelPart arm, float direction, float swingProgress, float ticks) {
         float swing = MathHelper.sin(swingProgress * PonyModelConstants.PI);
         float roll = MathHelper.sin((1 - (1 - swingProgress) * (1 - swingProgress)) * PonyModelConstants.PI);
 

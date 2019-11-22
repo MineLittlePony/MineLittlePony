@@ -20,7 +20,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.TagHelper;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.village.VillagerDataContainer;
 
 import static com.mojang.blaze3d.platform.GlStateManager.*;
@@ -87,11 +87,11 @@ public class LayerPonyCustomHead<T extends LivingEntity, M extends EntityModel<T
 
             assert nbt != null;
 
-            if (nbt.containsKey("SkullOwner", 10)) {
-                profile = TagHelper.deserializeProfile(nbt.getCompound("SkullOwner"));
-            } else if (nbt.containsKey("SkullOwner", 8)) {
+            if (nbt.contains("SkullOwner", 10)) {
+                profile = NbtHelper.toGameProfile(nbt.getCompound("SkullOwner"));
+            } else if (nbt.contains("SkullOwner", 8)) {
                 profile = SkullBlockEntity.loadProperties(new GameProfile(null, nbt.getString("SkullOwner")));
-                nbt.put("SkullOwner", TagHelper.serializeProfile(new CompoundTag(), profile));
+                nbt.put("SkullOwner", NbtHelper.fromGameProfile(new CompoundTag(), profile));
             }
         }
 

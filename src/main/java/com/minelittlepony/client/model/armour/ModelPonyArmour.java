@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model.armour;
 
-import net.minecraft.client.model.Cuboid;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.LivingEntity;
 
@@ -14,8 +14,8 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
 
     public Part chestPiece;
 
-    public Cuboid steveRightLeg;
-    public Cuboid steveLeftLeg;
+    public ModelPart steveRightLeg;
+    public ModelPart steveLeftLeg;
 
     private ArmourVariant variant = ArmourVariant.NORMAL;
 
@@ -29,14 +29,14 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
         super.adjustBodyComponents(rotateAngleX, rotationPointY, rotationPointZ);
 
         chestPiece.pitch = rotateAngleX;
-        chestPiece.rotationPointY = rotationPointY;
-        chestPiece.rotationPointZ = rotationPointZ;
+        chestPiece.pivotY = rotationPointY;
+        chestPiece.pivotZ = rotationPointZ;
     }
 
     @Override
     protected void renderBody(float scale) {
         if (variant == ArmourVariant.LEGACY) {
-            body.render(scale);
+            torso.render(scale);
             upperTorso.render(scale);
         } else {
             chestPiece.render(scale);
@@ -61,14 +61,14 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
         if (model instanceof BipedEntityModel) {
             @SuppressWarnings("unchecked")
             BipedEntityModel<T> mainModel = (BipedEntityModel<T>)model;
-            body.copyRotation(mainModel.body);
-            rightArm.copyRotation(mainModel.rightArm);
-            leftArm.copyRotation(mainModel.leftArm);
-            rightLeg.copyRotation(mainModel.rightLeg);
-            leftLeg.copyRotation(mainModel.leftLeg);
+            torso.copyPositionAndRotation(mainModel.torso);
+            rightArm.copyPositionAndRotation(mainModel.rightArm);
+            leftArm.copyPositionAndRotation(mainModel.leftArm);
+            rightLeg.copyPositionAndRotation(mainModel.rightLeg);
+            leftLeg.copyPositionAndRotation(mainModel.leftLeg);
 
-            steveLeftLeg.copyRotation(mainModel.leftLeg);
-            steveRightLeg.copyRotation(mainModel.rightLeg);
+            steveLeftLeg.copyPositionAndRotation(mainModel.leftLeg);
+            steveRightLeg.copyPositionAndRotation(mainModel.rightLeg);
         }
     }
 
@@ -124,22 +124,22 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
         float armY = THIRDP_ARM_CENTRE_Y;
         float armZ = BODY_CENTRE_Z / 2 - 1 - armDepth;
 
-        steveLeftLeg .setRotationPoint( rarmX, yOffset, 0);
-        steveRightLeg.setRotationPoint(-rarmX, yOffset, 0);
+        steveLeftLeg .setPivot( rarmX, yOffset, 0);
+        steveRightLeg.setPivot(-rarmX, yOffset, 0);
 
-        steveLeftLeg .addBox(armX,            armY, armZ, armWidth, armLength, armDepth, stretch);
-        steveRightLeg.addBox(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch);
+        steveLeftLeg .addCuboid(armX,            armY, armZ, armWidth, armLength, armDepth, stretch);
+        steveRightLeg.addCuboid(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch);
     }
 
     @Override
     public void setInVisible() {
         setVisible(false);
-        body.visible = true;
+        torso.visible = true;
         chestPiece.visible = false;
         head.visible = false;
         neck.visible = false;
         tail.setVisible(false);
-        upperTorso.field_3664 = true;
+        upperTorso.visible = false;
         snout.isHidden = true;
         steveLeftLeg.visible = false;
         steveRightLeg.visible = false;
@@ -172,7 +172,6 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
         neck.visible = true;
 
         if (variant == ArmourVariant.LEGACY) {
-            upperTorso.field_3664 = false;
             upperTorso.visible = true;
         }
     }

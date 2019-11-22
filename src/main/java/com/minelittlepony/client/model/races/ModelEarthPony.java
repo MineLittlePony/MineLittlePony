@@ -27,7 +27,7 @@ public class ModelEarthPony<T extends LivingEntity> extends AbstractPonyModel<T>
         super.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
 
         if (bipedCape != null) {
-            bipedCape.rotationPointY = isSneaking ? 2 : isRiding ? -4 : 0;
+            bipedCape.pivotY = isSneaking ? 2 : isRiding ? -4 : 0;
         }
     }
 

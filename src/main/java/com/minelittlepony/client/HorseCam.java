@@ -77,7 +77,7 @@ public class HorseCam {
         MinecraftClient client = MinecraftClient.getInstance();
         PlayerEntity player = client.player;
         client.gameRenderer.updateTargetedEntity(1);
-        HitResult hit = client.hitResult;
+        HitResult hit = client.crosshairTarget;
 
         // noop
         // Ignore misses, helps with bows, arrows, and projectiles
