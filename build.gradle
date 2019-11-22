@@ -4,7 +4,7 @@
 
 plugins {
     id 'java-library'
-    id 'fabric-loom' version '0.2.5-SNAPSHOT'
+    id 'fabric-loom' version '0.2.6-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -50,15 +50,15 @@ dependencies {
 
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 
-    modApi "net.fabricmc.fabric-api:fabric-api-base:0.1.0+"
-    modApi "net.fabricmc.fabric-api:fabric-events-lifecycle-v0:0.1.0+"
-    modApi "net.fabricmc.fabric-api:fabric-resource-loader-v0:0.1.0+"
+    modApi "net.fabricmc.fabric-api:fabric-api-base:0.1.2+"
+    modApi "net.fabricmc.fabric-api:fabric-events-lifecycle-v0:0.1.2+"
+    modApi "net.fabricmc.fabric-api:fabric-resource-loader-v0:0.1.8+"
 
     modApi "com.minelittlepony:Kirin:${project.kirin_version}"
     include "com.minelittlepony:Kirin:${project.kirin_version}"
 
     modImplementation "com.minelittlepony:HDSkins:${project.hd_skins_version}"
-    modImplementation "io.github.prospector.modmenu:ModMenu:1.6.2-93"
+    //modImplementation "io.github.prospector.modmenu:ModMenu:1.7.15-unstable"
 }
 
 //
