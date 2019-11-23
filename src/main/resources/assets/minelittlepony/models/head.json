@@ -1,0 +1,34 @@
+{
+	"texture": {"u": 32, "w": 64, "h": 64},
+	"locals": {
+		"snout_x": -3,
+		"snout_z": 2,
+		"horn_x": -1,
+		"horn_z": 4
+	},
+	"head": {
+		"cubes": [
+			{"from": [-4, -8, -4], "size": [8, 8, 8], "stretch": 0.25}
+		],
+		"children": [
+			{
+				"type": "mson:slot",
+				"name": "snout",
+				"implementation": "com.minelittlepony.client.model.part.PonySnout",
+				"content: "minelitlepony:components/snout"
+			},
+			{
+				"type": "mson:slot",
+				"name": "ears",
+				"implementation": "com.minelittlepony.client.model.part.PonyEars",
+				"content": "minelittlepony:components/ears"
+			},
+			{
+				"type": "mson:slot",
+				"name": "horn",
+				"implementation": "com.minelittlepony.client.model.part.UnicornHorn",
+				"content": "minelittlepony:components/horn"
+			}
+		]
+	}
+}

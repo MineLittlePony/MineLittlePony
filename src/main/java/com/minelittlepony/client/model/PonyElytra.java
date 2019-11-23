@@ -2,14 +2,11 @@ package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.AnimalModel;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Vec3d;
 
 import com.google.common.collect.ImmutableList;
-import com.minelittlepony.client.util.render.Part;
 
 import static com.minelittlepony.model.PonyModelConstants.*;
 
@@ -20,13 +17,8 @@ public class PonyElytra<T extends LivingEntity> extends AnimalModel<T> {
 
     public boolean isSneaking;
 
-    private Part rightWing = new Part(this, 22, 0);
-    private Part leftWing = new Part(this, 22, 0);
-
-    public PonyElytra() {
-        leftWing        .box(-10, 0, 0, 10, 20, 2, 1);
-        rightWing.flip().box( 0,  0, 0, 10, 20, 2, 1);
-    }
+    private ModelPart rightWing;
+    private ModelPart leftWing;
 
     @Override
     protected Iterable<ModelPart> getHeadParts() {

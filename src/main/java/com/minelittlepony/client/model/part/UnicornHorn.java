@@ -29,23 +29,23 @@ public class UnicornHorn implements IPart {
 
     protected boolean isVisible = true;
 
-    public <T extends Model & ICapitated<ModelPart>> UnicornHorn(T pony, float yOffset, float stretch) {
-        this(pony, yOffset, stretch, 0, 0, 0);
+    public <T extends Model & ICapitated<ModelPart>> UnicornHorn(T pony) {
+        this(pony, 0, 0);
     }
 
-    public <T extends Model & ICapitated<ModelPart>> UnicornHorn(T pony, float yOffset, float stretch, int x, int y, int z) {
+    public <T extends Model & ICapitated<ModelPart>> UnicornHorn(T pony, int y, int z) {
         horn = new Part(pony, 0, 3);
         glow = new Part(pony, 0, 3);
 
-        horn.offset(HORN_X + x, HORN_Y + y, HORN_Z + z)
-            .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-            .box(0, 0, 0, 1, 4, 1, stretch)
+        horn.offset(HORN_X, HORN_Y + y, HORN_Z + z)
+            .around(HEAD_RP_X, HEAD_RP_Y, HEAD_RP_Z)
+            .box(0, 0, 0, 1, 4, 1, 0)
             .pitch = 0.5F;
 
-        glow.offset(HORN_X + x, HORN_Y + y, HORN_Z + z)
-            .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-            .cone(0, 0, 0, 1, 4, 1, stretch + 0.5F)
-            .cone(0, 0, 0, 1, 3, 1, stretch + 0.8F);
+        glow.offset(HORN_X, HORN_Y + y, HORN_Z + z)
+            .around(HEAD_RP_X, HEAD_RP_Y , HEAD_RP_Z)
+            .cone(0, 0, 0, 1, 4, 1, 0.5F)
+            .cone(0, 0, 0, 1, 3, 1, 0.8F);
     }
 
     @Override

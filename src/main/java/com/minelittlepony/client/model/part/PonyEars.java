@@ -13,18 +13,18 @@ import java.util.UUID;
 
 public class PonyEars implements IPart {
 
-    private final Part head;
+    private final ModelPart head;
     private final boolean bat;
 
-    private Part right;
-    private Part left;
+    private ModelPart right;
+    private ModelPart left;
 
-    public <T extends Model & ICapitated<ModelPart>> PonyEars(Part head, boolean bat) {
+    public <T extends Model & ICapitated<ModelPart>> PonyEars(ModelPart head, boolean bat) {
         this.head = head;
         this.bat = bat;
     }
 
-    @Override
+    @Deprecated
     public void init(float yOffset, float stretch) {
         right = head.child().tex(12, 16).box(-4, -6, 1, 2, 2, 2, stretch);
 

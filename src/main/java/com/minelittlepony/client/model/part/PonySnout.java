@@ -24,14 +24,14 @@ public class PonySnout implements IPart {
     private final ICapitated<ModelPart> head;
 
     public <T extends Model & ICapitated<ModelPart>> PonySnout(T pony) {
-        this(pony, 0, 0, 0);
+        this(pony, 0, 0);
     }
 
-    public <T extends Model & ICapitated<ModelPart>> PonySnout(T pony, int x, int y, int z) {
+    public <T extends Model & ICapitated<ModelPart>> PonySnout(T pony, int y, int z) {
         head = pony;
 
-        mare = new Part(pony).offset(HEAD_CENTRE_X + x, HEAD_CENTRE_Y + y, HEAD_CENTRE_Z + z + 0.25F);
-        stallion = new Part(pony).offset(HEAD_CENTRE_X + x, HEAD_CENTRE_Y + y, HEAD_CENTRE_Z + z);
+        mare = new Part(pony).offset(HEAD_CENTRE_X, HEAD_CENTRE_Y + y, HEAD_CENTRE_Z + z + 0.25F);
+        stallion = new Part(pony).offset(HEAD_CENTRE_X, HEAD_CENTRE_Y + y, HEAD_CENTRE_Z + z);
 
         pony.getHead().addChild(stallion);
         pony.getHead().addChild(mare);
