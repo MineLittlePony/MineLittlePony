@@ -2,10 +2,14 @@ package com.minelittlepony.client.model.components;
 
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.util.math.MatrixStack;
+
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.ICapitated;
 import com.minelittlepony.model.IPart;
+import com.minelittlepony.mson.api.model.MsonPart;
 import com.minelittlepony.pony.meta.Gender;
 
 import java.util.UUID;
@@ -14,8 +18,8 @@ public class PonySnout implements IPart {
 
     public boolean isHidden = false;
 
-    private Part mare;
-    private Part stallion;
+    private ModelPart mare;
+    private ModelPart stallion;
 
     private final ICapitated<ModelPart> head;
 
@@ -34,8 +38,8 @@ public class PonySnout implements IPart {
     }
 
     public void rotate(float x, float y, float z) {
-        mare.rotate(x, y, z);
-        stallion.rotate(x, y, z);
+        ((MsonPart)mare).rotate(x, y, z);
+        ((MsonPart)stallion).rotate(x, y, z);
     }
 
     @Override
@@ -60,13 +64,13 @@ public class PonySnout implements IPart {
     }
 
     @Override
-    public void renderPart(float scale, UUID interpolatorId) {
+    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
     }
 
     public void setGender(Gender gender) {
         boolean show = !head.hasHeadGear() && !isHidden && MineLittlePony.getInstance().getConfig().snuzzles.get();
 
-        mare.field_3664 = !(show && gender.isMare());
-        stallion.field_3664 = !(show && gender.isStallion());
+        mare.visible = (show && gender.isMare());
+        stallion.visible = (show && gender.isStallion());
     }
 }

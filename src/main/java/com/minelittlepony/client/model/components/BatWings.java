@@ -1,8 +1,9 @@
 package com.minelittlepony.client.model.components;
 
 import net.minecraft.client.model.Model;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.util.math.MatrixStack;
 
-import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IPegasus;
 
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -15,7 +16,7 @@ public class BatWings<T extends Model & IPegasus> extends PegasusWings<T> {
         super(model, yOffset, stretch);
     }
 
-    @Override
+    @Deprecated
     public void init(float yOffset, float stretch) {
         leftWing = new Wing(pegasus, false, false, yOffset, stretch, 16);
         rightWing = new Wing(pegasus, true, false, yOffset, stretch, 16);
@@ -23,22 +24,22 @@ public class BatWings<T extends Model & IPegasus> extends PegasusWings<T> {
     }
 
     @Override
-    public void renderPart(float scale, UUID interpolatorId) {
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(1.3F, 1.3F, 1.3F);
+    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
+        stack.push();
+        stack.scale(1.3F, 1.3F, 1.3F);
 
-        super.renderPart(scale, interpolatorId);
+        super.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, interpolatorId);
 
-        GlStateManager.popMatrix();
+        stack.pop();
     }
 
-    public class Wing extends PegasusWings<T>.Wing {
+    public class Wing extends PegasusWings.Wing {
 
         public Wing(T pegasus, boolean right, boolean legacy, float y, float scale, int texY) {
             super(pegasus, right, legacy, y, scale, texY);
         }
 
-        @Override
+        @Deprecated
         protected void addClosedWing(boolean right, float y, float scale) {
             float x = right ? -3.5F : 3.5F;
 
@@ -51,7 +52,7 @@ public class BatWings<T extends Model & IPegasus> extends PegasusWings<T> {
                   .pitch = ROTATE_90;
         }
 
-        @Override
+        @Deprecated
         protected void addFeathers(boolean right, boolean l, float rotationPointY, float scale) {
             float r = right ? -1 : 1;
 

@@ -1,0 +1,44 @@
+{
+	"parent": "minelittlepony:steve_pony",
+	"head": {
+		"offset": [ 0, -1, -2 ],
+		"center": [ 0, 0, -2 ],
+		"cubes": [
+			{ "from": [-4, -4, -4], "size": [ 8,  8,  8] }
+		],
+		"children": [
+			{
+				"type": "mson:slot",
+				"name": "snout",
+				"implementation": "com.minelittlepony.client.model.components.PonySnout",
+				"content: "minelitlepony:components/snout"
+			},
+			{
+				"type": "mson:slot",
+				"name": "ears",
+				"implementation": "com.minelittlepony.client.model.components.PonyEars",
+				"content": "minelittlepony:components/ears"
+			},
+			{
+				"name": "bristles",
+				"rotate": [0.3, 0, 0],
+				"offset": [-1, -1, -3],
+				"cubes": [
+					{ "from": [ 0, -10, 2], "size": [2, 6, 2]},
+					{ "from": [ 0, -10, 4], "size": [2, 8, 2]},
+					{ "from": [ 0,  -8, 6], "size": [2, 6, 2]}
+				],
+				"children": [
+					{
+						"rotate": [-1, 0, 0],
+						"offset": [-1.01, 2, -7],
+						"cubes": [
+							{ "from": [ 0, -10, 4], "size": [2, 8, 2]},
+							{ "from": [ 0,  -8, 6], "size": [2, 6, 2]}
+						]
+					}
+				]
+			}
+		]
+	}
+}

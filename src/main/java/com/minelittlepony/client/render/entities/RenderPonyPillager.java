@@ -1,6 +1,6 @@
 package com.minelittlepony.client.render.entities;
 
-import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.entity.mob.PillagerEntity;
 import net.minecraft.util.Identifier;

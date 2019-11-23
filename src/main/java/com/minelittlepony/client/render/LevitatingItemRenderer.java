@@ -7,15 +7,23 @@ import com.minelittlepony.client.util.render.Color;
 import com.minelittlepony.pony.IPony;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.FirstPersonRenderer;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
 import net.minecraft.util.UseAction;
+import net.minecraft.world.World;
 
 import static com.mojang.blaze3d.systems.RenderSystem.*;
 
@@ -39,8 +47,8 @@ public class LevitatingItemRenderer {
     /**
      * Renders a magical overlay over an item in third person.
      */
-    public void renderItemGlow(LivingEntity entity, ItemStack drop, ModelTransformation.Type transform, Arm hand, int glowColor) {
-        pushMatrix();
+    public void renderItemGlow(LivingEntity entity, ItemStack drop, ModelTransformation.Type transform, Arm hand, int glowColor, MatrixStack stack, VertexConsumerProvider renderContext) {
+        stack.push();
         disableLighting();
         setColor(glowColor);
 
@@ -48,17 +56,17 @@ public class LevitatingItemRenderer {
 
         usingTransparency = true;
 
-        scalef(1.1F, 1.1F, 1.1F);
+        stack.scale(1.1F, 1.1F, 1.1F);
 
-        translatef(0.01F, 0.01F, 0.01F);
-        renderItem.renderHeldItem(drop, entity, transform, hand == Arm.LEFT);
-        translatef(-0.02F, -0.02F, -0.02F);
-        renderItem.renderHeldItem(drop, entity, transform, hand == Arm.LEFT);
+        stack.translate(0.01F, 0.01F, 0.01F);
+        renderItem.method_23177(entity, drop, transform, hand == Arm.LEFT, stack, renderContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV);
+        stack.translate(-0.02F, -0.02F, -0.02F);
+        renderItem.method_23177(entity, drop, transform, hand == Arm.LEFT, stack, renderContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV);
 
         usingTransparency = false;
         unsetColor();
         enableLighting();
-        popMatrix();
+        stack.pop();
 
         // I hate rendering
     }
@@ -74,20 +82,20 @@ public class LevitatingItemRenderer {
     /**
      * Renders an item in first person optionally with a magical overlay.
      */
-    public void renderItemInFirstPerson(FirstPersonRenderer renderer, AbstractClientPlayerEntity entity, ItemStack stack, ModelTransformation.Type transform, boolean left) {
+    public void renderItemInFirstPerson(FirstPersonRenderer renderer, @Nullable AbstractClientPlayerEntity entity, ItemStack stack, ModelTransformation.Type transform, boolean left, MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world, int lightUv) {
         IPony pony = MineLittlePony.getInstance().getManager().getPony(entity);
 
-        pushMatrix();
+        matrix.push();
 
         boolean doMagic = MineLittlePony.getInstance().getConfig().fpsmagic.get() && pony.getMetadata().hasMagic();
 
         ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 
         if (doMagic) {
-            setupPerspective(itemRenderer, entity, stack, left);
+            setupPerspective(itemRenderer, entity, stack, left, matrix);
         }
 
-        renderer.renderItemFromSide(entity, stack, transform, left);
+        itemRenderer.method_23177(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
 
         if (doMagic) {
             disableLighting();
@@ -96,12 +104,12 @@ public class LevitatingItemRenderer {
 
             setColor(pony.getMetadata().getGlowColor());
 
-            scalef(1.1F, 1.1F, 1.1F);
+            matrix.scale(1.1F, 1.1F, 1.1F);
 
-            translatef(0.015F, 0.01F, 0.01F);
-            renderer.renderItemFromSide(entity, stack, transform, left);
-            translatef(-0.03F, -0.02F, -0.02F);
-            renderer.renderItemFromSide(entity, stack, transform, left);
+            matrix.translate(0.015F, 0.01F, 0.01F);
+            itemRenderer.method_23177(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
+            matrix.translate(-0.03F, -0.02F, -0.02F);
+            itemRenderer.method_23177(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
 
             usingTransparency = false;
 
@@ -109,7 +117,7 @@ public class LevitatingItemRenderer {
             enableLighting();
         }
 
-        popMatrix();
+        matrix.pop();
 
         // I hate rendering
     }
@@ -117,8 +125,8 @@ public class LevitatingItemRenderer {
     /**
      * Moves held items to look like they're floating in the player's field.
      */
-    private void setupPerspective(ItemRenderer renderer, LivingEntity entity, ItemStack stack, boolean left) {
-        UseAction action = stack.getUseAction();
+    private void setupPerspective(ItemRenderer renderer, LivingEntity entity, ItemStack item, boolean left, MatrixStack stack) {
+        UseAction action = item.getUseAction();
 
         boolean doNormal = entity.getItemUseTime() <= 0 || action == UseAction.NONE || action == UseAction.CROSSBOW;
 
@@ -128,20 +136,17 @@ public class LevitatingItemRenderer {
             float floatAmount = (float)Math.sin(ticks / 9) / 40;
             float driftAmount = (float)Math.cos(ticks / 6) / 40;
 
-            boolean handHeldTool = action == UseAction.BOW
+            boolean handHeldTool =
+                       action == UseAction.BOW
                     || action == UseAction.CROSSBOW
                     || action == UseAction.BLOCK;
 
-            translatef(driftAmount - floatAmount / 4, floatAmount, handHeldTool ? -0.3F : -0.6F);
+            stack.translate(driftAmount - floatAmount / 4, floatAmount, handHeldTool ? -0.3F : -0.6F);
 
-            if (!renderer.hasDepthInGui(stack) && !handHeldTool) { // bows have to point forwards
-                if (left) {
-                    rotatef(-60, 0, 1, 0);
-                    rotatef(30, 0, 0, 1);
-                } else {
-                    rotatef(60, 0, 1, 0);
-                    rotatef(-30, 0, 0, 1);
-                }
+            if (/*!renderer.hasDepthInGui(item) && */!handHeldTool) { // bows have to point forwards
+                int sign = left ? 1 : -1;
+                stack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(sign * -60));
+                stack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(sign * 30));
             }
         }
     }

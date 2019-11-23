@@ -14,11 +14,11 @@ import com.minelittlepony.hdskins.dummy.DummyPlayerRenderer;
 import com.minelittlepony.hdskins.profile.SkinType;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.meta.Race;
-import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 /**
@@ -48,8 +48,8 @@ public class DummyPonyRenderer extends DummyPlayerRenderer<DummyPony, ClientPony
     }
 
     @Override
-    protected void scale(DummyPony entity, float ticks) {
-        renderPony.preRenderCallback(entity, ticks);
+    protected void scale(DummyPony entity, MatrixStack stack, float ticks) {
+        renderPony.preRenderCallback(entity, stack, ticks);
 
         if (entity.isSwimming()) {
             if (entity.getVelocity().x < 100) {
@@ -62,7 +62,7 @@ public class DummyPonyRenderer extends DummyPlayerRenderer<DummyPony, ClientPony
         }
 
         if (entity.hasVehicle()) {
-            GlStateManager.translated(0, entity.getHeightOffset(), 0);
+            stack.translate(0, entity.getHeightOffset(), 0);
         }
     }
 

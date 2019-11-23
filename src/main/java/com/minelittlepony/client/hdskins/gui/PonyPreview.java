@@ -23,13 +23,13 @@ class PonyPreview extends PlayerPreview {
     }
 
     @Override
-    public Identifier getBlankSkin(SkinType type) {
+    public Identifier getBlankSteveSkin(SkinType type) {
         if (type == SkinType.SKIN) {
             // Initialization order means this method might be called before class members have been initialized.
             // This is something that needs to be fixed in HDSkins
             return localPony != null && localPony.wet ? NO_SKIN_SEAPONY : NO_SKIN_PONY;
         }
-        return super.getBlankSkin(type);
+        return super.getBlankSteveSkin(type);
     }
 
     protected DummyPlayer ponify(DummyPlayer human, DummyPlayer pony) {

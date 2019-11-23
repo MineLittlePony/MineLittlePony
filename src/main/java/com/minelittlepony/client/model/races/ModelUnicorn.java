@@ -1,9 +1,12 @@
 package com.minelittlepony.client.model.races;
 
 import com.minelittlepony.client.model.components.UnicornHorn;
-import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IUnicorn;
+import com.minelittlepony.mson.api.model.MsonPart;
+
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
@@ -11,21 +14,15 @@ import net.minecraft.util.math.MathHelper;
 /**
  * Used for both unicorns and alicorns since there's no logical way to keep them distinct and not duplicate stuff.
  */
-public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> implements IUnicorn<Part> {
+public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> implements IUnicorn<ModelPart> {
 
-    public Part unicornArmRight;
-    public Part unicornArmLeft;
+    public ModelPart unicornArmRight;
+    public ModelPart unicornArmLeft;
 
     public UnicornHorn horn;
 
     public ModelUnicorn(boolean smallArms) {
         super(smallArms);
-    }
-
-    @Override
-    public void init(float yOffset, float stretch) {
-        super.init(yOffset, stretch);
-        horn = new UnicornHorn(this, yOffset, stretch);
     }
 
     @Override
@@ -40,8 +37,8 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
     protected void rotateLegs(float move, float swing, float ticks, T entity) {
         super.rotateLegs(move, swing, ticks, entity);
 
-        unicornArmRight.rotate(0, 0, 0).around(-7, 12, -2);
-        unicornArmLeft.rotate(0, 0, 0).around(-7, 12, -2);
+        ((MsonPart)unicornArmRight).rotate(0, 0, 0).around(-7, 12, -2);
+        ((MsonPart)unicornArmLeft).rotate(0, 0, 0).around(-7, 12, -2);
     }
 
     @Override
@@ -65,7 +62,7 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
     }
 
     @Override
-    public Part getUnicornArmForSide(Arm side) {
+    public ModelPart getUnicornArmForSide(Arm side) {
         return side == Arm.LEFT ? unicornArmLeft : unicornArmRight;
     }
 
@@ -82,39 +79,16 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
     }
 
     @Override
-    protected void renderHead(float scale) {
-        super.renderHead(scale);
+    protected void renderHead(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+        super.renderHead(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
 
         if (hasHorn()) {
-            head.applyTransform(scale);
-            horn.renderPart(scale, attributes.interpolatorId);
+            head.rotate(stack);
+            horn.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, attributes.interpolatorId);
             if (canCast() && isCasting()) {
-                horn.renderMagic(getMagicColor(), scale);
+                horn.renderMagic(stack, getMagicColor());
             }
         }
-    }
-
-    @Override
-    protected void initLegs(float yOffset, float stretch) {
-        super.initLegs(yOffset, stretch);
-        unicornArmLeft = new Part(this, 40, 32).size(64, 64);
-        unicornArmRight = new Part(this, 40, 32).size(64, 64);
-
-        int armLength = attributes.armLength;
-        int armWidth = attributes.armWidth;
-        int armDepth = attributes.armDepth;
-
-        float rarmX = attributes.armRotationX;
-        float rarmY = attributes.armRotationY;
-
-        float armX = THIRDP_ARM_CENTRE_X;
-        float armY = THIRDP_ARM_CENTRE_Y;
-        float armZ = BODY_CENTRE_Z / 2 - 1 - armDepth;
-
-        unicornArmLeft .box(armX, armY, armZ, armWidth, armLength, armDepth, stretch + .25F)
-                        .around(rarmX, yOffset + rarmY, 0);
-        unicornArmRight.box(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch + .25F)
-                        .around(-rarmX, yOffset + rarmY, 0);
     }
 
     @Override

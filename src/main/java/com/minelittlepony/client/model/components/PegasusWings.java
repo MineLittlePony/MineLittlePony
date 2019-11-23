@@ -1,13 +1,14 @@
 package com.minelittlepony.client.model.components;
 
 import net.minecraft.client.model.Model;
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.model.IPegasus;
 import com.minelittlepony.pony.meta.Wearable;
-import com.mojang.blaze3d.platform.GlStateManager;
 
 import java.util.UUID;
 
@@ -22,16 +23,6 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart {
 
     public PegasusWings(T model, float yOffset, float stretch) {
         pegasus = model;
-
-        init(yOffset, stretch);
-    }
-
-    @Override
-    public void init(float yOffset, float stretch) {
-        leftWing = new Wing(pegasus, false, false, yOffset, stretch, 32);
-        rightWing = new Wing(pegasus, true, false, yOffset, stretch, 16);
-
-        legacyWing = new Wing(pegasus, true, true, yOffset, stretch, 32);
     }
 
     public Wing getLeft() {
@@ -80,53 +71,20 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart {
     }
 
     @Override
-    public void renderPart(float scale, UUID interpolatorId) {
-        getLeft().render(scale);
-        getRight().render(scale);
+    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
+        getLeft().render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        getRight().render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
-    public class Wing {
+    public static class Wing {
 
-        protected final T pegasus;
+        private IPegasus pegasus;
 
-        protected final Part extended;
-        protected final Part folded;
+        private ModelPart extended;
+        private ModelPart folded;
 
-        public Wing(T pegasus, boolean right, boolean legacy, float y, float scale, int texY) {
+        public Wing(IPegasus pegasus) {
             this.pegasus = pegasus;
-
-            folded = new Part(pegasus, 56, texY).mirror(legacy);
-            extended = new Part(pegasus, 56 + ((!right || legacy) ? 1 : 0), texY + 3);
-
-            addClosedWing(right, y, scale);
-            addFeathers(right, legacy, y, scale);
-        }
-
-        protected void addClosedWing(boolean right, float y, float scale) {
-            float x = right ? -6 : 4;
-
-            folded.around(HEAD_RP_X, WING_FOLDED_RP_Y + y, WING_FOLDED_RP_Z)
-                  .box(x, 5, 2, 2, 6, 2, scale)
-                  .box(x, 5, 4, 2, 8, 2, scale)
-                  .box(x, 5, 6, 2, 6, 2, scale)
-                  .pitch = ROTATE_90;
-        }
-
-        protected void addFeathers(boolean right, boolean l, float rotationPointY, float scale) {
-            float r = right ? -1 : 1;
-
-            extended.around(r * EXT_WING_RP_X, EXT_WING_RP_Y + rotationPointY, EXT_WING_RP_Z)
-                    .yaw = r * 3;
-            addFeather(0, l,  6,     0,    9, scale + 0.1F);
-            addFeather(1, l, -1,    -0.3F, 8, scale + 0.1F) .pitch = -0.85F;
-            addFeather(2, l,  1.8F,  1.3F, 8, scale - 0.1F) .pitch = -0.75F;
-            addFeather(3, l,  5,     2,    8, scale)        .pitch = -0.5F;
-            addFeather(4, l,  0,   -0.2F,  6, scale + 0.3F);
-            addFeather(5, l,  0,     0,    3, scale + 0.19F).pitch = -0.85F;
-        }
-
-        private Part addFeather(int i, boolean l, float y, float z, int h, float scale) {
-            return extended.child(i).around(0, 0, 0).mirror(l).box(-0.5F, y, z, 1, h, 2, scale);
         }
 
         public void rotateWalking(float swing) {
@@ -137,18 +95,18 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart {
             extended.roll = angle;
         }
 
-        public void render(float scale) {
+        public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
             if (pegasus.wingsAreOpen()) {
-                extended.render(scale);
+                extended.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
             } else {
                 boolean bags = pegasus.isWearing(Wearable.SADDLE_BAGS);
                 if (bags) {
-                    GlStateManager.pushMatrix();
-                    GlStateManager.translatef(0, 0, 0.198F);
+                    stack.push();
+                    stack.translate(0, 0, 0.198F);
                 }
-                folded.render(scale);
+                folded.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
                 if (bags) {
-                    GlStateManager.popMatrix();
+                    stack.pop();
                 }
             }
         }

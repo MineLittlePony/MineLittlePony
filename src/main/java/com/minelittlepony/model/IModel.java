@@ -1,6 +1,7 @@
 package com.minelittlepony.model;
 
 import net.minecraft.client.render.entity.model.ModelWithArms;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.model.armour.IEquestrianArmour;
@@ -11,16 +12,9 @@ import com.minelittlepony.pony.meta.Wearable;
 public interface IModel extends ModelWithArms {
 
     /**
-     * Sets up this model's initial values, like a constructor...
-     * @param yOffset   YPosition for this model. Always 0.
-     * @param stretch   Scaling factor for this model. Ranges above or below 0 (no change).
-     */
-    void init(float yOffset, float stretch);
-
-    /**
      * Applies a transform particular to a certain body part.
      */
-    void transform(BodyPart part);
+    void transform(BodyPart part, MatrixStack stack);
 
     /**
      * Gets the active scaling profile used to lay out this model's parts.

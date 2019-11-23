@@ -90,7 +90,7 @@ public class Pony implements IPony {
         }
 
         BlockState below = entity.getEntityWorld()
-                .getBlockState(entity.getBlockPos().down());
+                .getBlockState(entity.getBlockPos().down(1));
 
         // Check for stairs so we can keep Pegasi from flailing their wings as they descend
         double offsetAmount = below.getBlock() instanceof StairsBlock ? 1 : 0.05;
@@ -124,7 +124,7 @@ public class Pony implements IPony {
     protected Vec3d getVisualEyePosition(LivingEntity entity) {
         Size size = entity.isBaby() ? Size.FOAL : metadata.getSize();
 
-        return new Vec3d(entity.x, entity.y + (double) entity.getEyeHeight(entity.getPose()) * size.getScaleFactor(), entity.z);
+        return new Vec3d(entity.getX(), entity.getY() + (double) entity.getEyeHeight(entity.getPose()) * size.getScaleFactor(), entity.getZ());
     }
 
     @Override
@@ -192,9 +192,10 @@ public class Pony implements IPony {
         float delta = MinecraftClient.getInstance().getTickDelta();
 
         return new Vec3d(
-                MathHelper.lerp(delta, entity.prevRenderX, entity.x),
-                MathHelper.lerp(delta, entity.prevRenderY, entity.y),
-                MathHelper.lerp(delta, entity.prevRenderZ, entity.z));
+                MathHelper.lerp(delta, entity.prevRenderX, entity.getX()),
+                MathHelper.lerp(delta, entity.prevRenderY, entity.getY()),
+                MathHelper.lerp(delta, entity.prevRenderZ, entity.getZ())
+        );
     }
 
     @Override

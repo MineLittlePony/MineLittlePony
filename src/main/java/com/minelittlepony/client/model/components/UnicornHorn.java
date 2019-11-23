@@ -3,6 +3,12 @@ package com.minelittlepony.client.model.components;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.MatrixStack;
+
 import com.minelittlepony.client.util.render.Color;
 import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.ICapitated;
@@ -43,33 +49,18 @@ public class UnicornHorn implements IPart {
     }
 
     @Override
-    public void renderPart(float scale, @Nullable UUID interpolatorId) {
+    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, @Nullable UUID interpolatorId) {
         if (isVisible) {
-            horn.render(scale);
+            horn.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         }
     }
 
-    public void renderMagic(int tint, float scale) {
+    public void renderMagic(MatrixStack stack, int tint) {
         if (isVisible) {
-            glPushAttrib(24577);
-            disableTexture();
-            disableLighting();
-            enableBlend();
-            blendFunc(GL_SRC_ALPHA, GL_ONE);
+            horn.rotate(stack);
 
-            horn.applyTransform(scale);
-
-            MinecraftClient.getInstance().gameRenderer.disableLightmap();
-            Color.glColor(tint, 0.4F);
-
-            glow.render(scale);
-
-            MinecraftClient.getInstance().gameRenderer.enableLightmap();
-
-            enableTexture();
-            enableLighting();
-            disableBlend();
-            glPopAttrib();
+            VertexConsumer vertices = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers().getBuffer(RenderLayer.getTranslucentNoCrumbling());
+            glow.render(stack, vertices, OverlayTexture.DEFAULT_UV, 0x0F00F0, Color.r(tint), Color.g(tint), Color.b(tint), 0.4F);
         }
     }
 

@@ -1,13 +1,13 @@
 package com.minelittlepony.client.render.entities;
 
-import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.render.entity.BipedEntityRenderer;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.model.entities.ModelBreezie;
-import com.mojang.blaze3d.platform.GlStateManager;
 
 /**
  * AKA a breezie :D
@@ -22,12 +22,12 @@ public class RenderPonyVex extends BipedEntityRenderer<VexEntity, ModelBreezie<V
     }
 
     @Override
-    protected void scale(VexEntity entity, float ticks) {
-        GlStateManager.scalef(0.4F, 0.4F, 0.4F);
+    protected void scale(VexEntity entity, MatrixStack stack, float ticks) {
+        stack.scale(0.4F, 0.4F, 0.4F);
     }
 
     @Override
-    protected Identifier getTexture(VexEntity entity) {
+    public Identifier getTexture(VexEntity entity) {
         return entity.isCharging() ? VEX_CHARGING : VEX;
     }
 

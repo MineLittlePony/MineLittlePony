@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.entities.villager;
 
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.model.ModelWithHat;
 import net.minecraft.entity.mob.MobEntity;
@@ -10,14 +11,13 @@ import net.minecraft.village.VillagerProfession;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entities.RenderPonyMob;
 import com.minelittlepony.client.render.layer.LayerGear;
-import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IUnicorn;
 import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.util.resources.ITextureSupplier;
 
 abstract class AbstractVillagerRenderer<
     T extends MobEntity & VillagerDataContainer,
-    M extends ClientPonyModel<T> & IUnicorn<Part> & ModelWithHat> extends RenderPonyMob.Caster<T, M> {
+    M extends ClientPonyModel<T> & IUnicorn<ModelPart> & ModelWithHat> extends RenderPonyMob.Caster<T, M> {
 
     private final ITextureSupplier<T> baseTextures;
 

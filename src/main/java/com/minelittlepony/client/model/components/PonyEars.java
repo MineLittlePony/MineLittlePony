@@ -2,6 +2,9 @@ package com.minelittlepony.client.model.components;
 
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.util.math.MatrixStack;
+
 import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.ICapitated;
 import com.minelittlepony.model.IPart;
@@ -39,7 +42,7 @@ public class PonyEars implements IPart {
     }
 
     @Override
-    public void renderPart(float scale, UUID interpolatorId) {
+    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
     }
 
     @Override

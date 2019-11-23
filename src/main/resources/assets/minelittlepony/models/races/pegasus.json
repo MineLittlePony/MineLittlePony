@@ -1,0 +1,9 @@
+{
+	"parent": "minelittlepony:steve_pony",
+	"wings": {
+		"type": "mson:slot",
+		"name": "wings",
+		"implementation": "com.minelittlepony.client.model.components.PegasusWings",
+		"content: "minelitlepony:components/pegasus_wings"
+	}
+}

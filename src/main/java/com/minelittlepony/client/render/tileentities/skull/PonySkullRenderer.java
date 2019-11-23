@@ -7,8 +7,9 @@ import com.minelittlepony.pony.IPony;
 import com.minelittlepony.settings.PonyConfig;
 import com.mojang.authlib.GameProfile;
 
-import net.fabricmc.fabric.api.client.render.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.minecraft.block.SkullBlock;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
 import net.minecraft.util.Identifier;
@@ -47,14 +48,14 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
         if (ponySkulls) {
             if (!(INSTANCE instanceof PonySkullRenderer)) {
                 backup = INSTANCE;
-                BlockEntityRendererRegistry.INSTANCE.register(SkullBlockEntity.class, ponyInstance);
+                BlockEntityRendererRegistry.INSTANCE.register(BlockEntityType.SKULL, ponyInstance);
             }
         } else {
             if ((INSTANCE instanceof PonySkullRenderer)) {
                 if (backup == null) {
                     backup = new SkullBlockEntityRenderer();
                 }
-                BlockEntityRendererRegistry.INSTANCE.register(SkullBlockEntity.class, backup);
+                BlockEntityRendererRegistry.INSTANCE.register(BlockEntityType.SKULL, backup);
             }
         }
     }

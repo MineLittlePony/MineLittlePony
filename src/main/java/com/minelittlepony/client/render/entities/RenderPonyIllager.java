@@ -3,10 +3,11 @@ package com.minelittlepony.client.render.entities;
 import com.minelittlepony.client.model.entities.ModelIllagerPony;
 import com.minelittlepony.client.render.layer.LayerHeldItemIllager;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItem;
-import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.EvokerEntity;
 import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.entity.mob.IllusionerEntity;
@@ -31,9 +32,9 @@ public abstract class RenderPonyIllager<T extends IllagerEntity> extends RenderP
     }
 
     @Override
-    public void scale(T entity, float ticks) {
-        super.scale(entity, ticks);
-        GlStateManager.scalef(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
+    public void scale(T entity, MatrixStack stack, float ticks) {
+        super.scale(entity, stack, ticks);
+        stack.scale(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
     }
 
     public static class Vindicator extends RenderPonyIllager<VindicatorEntity> {
@@ -73,25 +74,28 @@ public abstract class RenderPonyIllager<T extends IllagerEntity> extends RenderP
         }
 
         @Override
-        public void render(IllusionerEntity entity, double x, double y, double z, float yaw, float ticks) {
+        public void render(IllusionerEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
             if (entity.isInvisible()) {
-                Vec3d[] clones = entity.method_7065(ticks);
-                float rotation = getAge(entity, ticks);
+                Vec3d[] clones = entity.method_7065(tickDelta);
+                float rotation = getAge(entity, tickDelta);
 
                 for (int i = 0; i < clones.length; ++i) {
-                    super.render(entity,
-                            x + clones[i].x + MathHelper.cos(i + rotation * 0.5F) * 0.025D,
-                            y + clones[i].y + MathHelper.cos(i + rotation * 0.75F) * 0.0125D,
-                            z + clones[i].z + MathHelper.cos(i + rotation * 0.7F) * 0.025D,
-                            yaw, ticks);
+                    stack.push();
+                    stack.translate(
+                            clones[i].x + MathHelper.cos(i + rotation * 0.5F) * 0.025D,
+                            clones[i].y + MathHelper.cos(i + rotation * 0.75F) * 0.0125D,
+                            clones[i].z + MathHelper.cos(i + rotation * 0.7F) * 0.025D
+                    );
+                    super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
+                    stack.pop();
                 }
             } else {
-                super.render(entity, x, y, z, yaw, ticks);
+                super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
             }
         }
 
         @Override
-        protected boolean method_4056(IllusionerEntity entity) {
+        protected boolean method_4056(IllusionerEntity entity, boolean xray) {
             return true;
         }
     }

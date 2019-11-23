@@ -1,5 +1,8 @@
 package com.minelittlepony.client.model.gear;
 
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -26,23 +29,23 @@ public class ChristmasHat extends AbstractGear {
 
     @Override
     public void init(float yOffset, float stretch) {
-        left = new Part(this, 0, 0).size(16, 8)
+        accept(left = new Part(this, 0, 0).size(16, 8)
                 .around(-7, 0.5F, 0.5F)
                 .offset(-7, 0, 0)
                 .at(3, -4, 0)
                 .box(0, 0, 0, 7, 1, 1, stretch)
                 .tex(0, 2).box(0, -1, 0, 1, 1, 1, stretch)
                 .tex(4, 2).box(2, -1, 0, 1, 1, 1, stretch)
-                .tex(8, 2).box(4, -1, 0, 1, 1, 1, stretch);
+                .tex(8, 2).box(4, -1, 0, 1, 1, 1, stretch));
 
-        right = new Part(this, 0, 4).size(16, 8)
+        accept(right = new Part(this, 0, 4).size(16, 8)
                 .around(7, 0.5F, 0.5F)
                 .offset(0, 0, 0)
                 .at(-3, -4, 0)
                 .box(0, 0, 0, 7, 1, 1, stretch)
                 .tex(0, 6).box(6, -1, 0, 1, 1, 1, stretch)
                 .tex(4, 6).box(4, -1, 0, 1, 1, 1, stretch)
-                .tex(8, 6).box(2, -1, 0, 1, 1, 1, stretch);
+                .tex(8, 6).box(2, -1, 0, 1, 1, 1, stretch));
     }
 
     @Override
@@ -87,17 +90,15 @@ public class ChristmasHat extends AbstractGear {
     }
 
     @Override
-    public void renderPart(float scale, UUID interpolatorId) {
+    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
 
         if (tint != 0) {
             Color.glColor(tint, 1);
         }
 
-        left.render(scale);
-        right.render(scale);
+        super.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
 
         GL11.glPopAttrib();
     }
-
 }

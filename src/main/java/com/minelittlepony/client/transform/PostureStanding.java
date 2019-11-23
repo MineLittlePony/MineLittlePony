@@ -1,5 +1,6 @@
 package com.minelittlepony.client.transform;
 
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
 import com.minelittlepony.model.IModel;
@@ -11,6 +12,6 @@ public class PostureStanding implements PonyPosture<LivingEntity> {
     }
 
     @Override
-    public void transform(IModel model, LivingEntity entity, double motionX, double motionY, double motionZ, float yaw, float ticks) {
+    public void transform(IModel model, LivingEntity entity, MatrixStack stack, double motionX, double motionY, double motionZ, float yaw, float ticks) {
     }
 }

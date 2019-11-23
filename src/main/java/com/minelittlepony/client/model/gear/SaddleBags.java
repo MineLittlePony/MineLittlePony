@@ -10,6 +10,9 @@ import com.mojang.blaze3d.platform.GlStateManager;
 
 import java.util.UUID;
 
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -18,10 +21,10 @@ public class SaddleBags extends AbstractGear {
 
     public static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/models/saddlebags.png");
 
-    private Part leftBag;
-    private Part rightBag;
+    private ModelPart leftBag;
+    private ModelPart rightBag;
 
-    private Part strap;
+    private ModelPart strap;
 
     private boolean hangLow = false;
 
@@ -64,7 +67,7 @@ public class SaddleBags extends AbstractGear {
 
         x += 3;
 
-        rightBag.offset(-x, y, z).around(0, 4, 4).flip()
+        rightBag.offset(-x, y, z).around(0, 4, 4).flipX()
                 .tex(56, 25).south(0, 0, 0, 3, 6, stretch)
                 .tex(59, 25).south(0, 0, 8, 3, 6, stretch)
                 .tex(56, 19).west(3, 0, 0, 6, 8, stretch)
@@ -114,18 +117,17 @@ public class SaddleBags extends AbstractGear {
     }
 
     @Override
-    public void renderPart(float scale, UUID interpolatorId) {
+    public void renderPart(MatrixStack stack, VertexConsumer renderContext, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
         dropAmount = model.getMetadata().getInterpolator(interpolatorId).interpolate("dropAmount", dropAmount, 3);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(0, dropAmount, 0);
+        stack.push();
+        stack.translate(0, dropAmount, 0);
 
-        leftBag.render(scale);
-        rightBag.render(scale);
+        leftBag.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
+        rightBag.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
 
-
-        GlStateManager.popMatrix();
-        strap.render(scale);
+        stack.pop();
+        strap.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
     }
 
     @Override

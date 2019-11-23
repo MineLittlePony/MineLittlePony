@@ -6,10 +6,12 @@ import com.minelittlepony.client.render.layer.LayerHeldPonyItem;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.client.render.layer.LayerEyeGlow.IGlowingRenderer;
 
-import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -55,18 +57,17 @@ public class RenderEnderStallion extends RenderPonyMob<EndermanEntity, ModelEnde
     }
 
     @Override
-    public void render(EndermanEntity entity, double x, double y, double z, float entityYaw, float partialTicks) {
+    public void render(EndermanEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
         ModelEnderStallion modelenderman = getModel();
 
         modelenderman.isCarrying = entity.getCarriedBlock() != null;
         modelenderman.isAttacking = entity.isAngry();
 
         if (entity.isAngry()) {
-            x += rnd.nextGaussian() / 50;
-            z += rnd.nextGaussian() / 50;
+            stack.translate(rnd.nextGaussian() / 50, 0, rnd.nextGaussian() / 50);
         }
 
-        super.render(entity, x, y, z, entityYaw, partialTicks);
+        super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
     }
 
     @Override

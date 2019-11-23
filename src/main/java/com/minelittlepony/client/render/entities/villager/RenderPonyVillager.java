@@ -2,10 +2,10 @@ package com.minelittlepony.client.render.entities.villager;
 
 import com.minelittlepony.client.model.entities.ModelVillagerPony;
 import com.minelittlepony.util.resources.ITextureSupplier;
-import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.passive.VillagerEntity;
 
 public class RenderPonyVillager extends AbstractVillagerRenderer<VillagerEntity, ModelVillagerPony<VillagerEntity>> {
@@ -18,9 +18,9 @@ public class RenderPonyVillager extends AbstractVillagerRenderer<VillagerEntity,
     }
 
     @Override
-    public void scale(VillagerEntity villager, float ticks) {
-        super.scale(villager, ticks);
-        GlStateManager.scalef(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
+    public void scale(VillagerEntity villager, MatrixStack stack, float ticks) {
+        super.scale(villager, stack, ticks);
+        stack.scale(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
     }
 
 }

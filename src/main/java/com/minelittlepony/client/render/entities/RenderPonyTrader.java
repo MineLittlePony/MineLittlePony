@@ -1,12 +1,12 @@
 package com.minelittlepony.client.render.entities;
 
-import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.passive.WanderingTraderEntity;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.model.races.ModelAlicorn;
-import com.mojang.blaze3d.platform.GlStateManager;
 
 public class RenderPonyTrader extends RenderPonyMob.Caster<WanderingTraderEntity, ModelAlicorn<WanderingTraderEntity>> {
 
@@ -22,8 +22,8 @@ public class RenderPonyTrader extends RenderPonyMob.Caster<WanderingTraderEntity
     }
 
     @Override
-    public void scale(WanderingTraderEntity entity, float ticks) {
-        super.scale(entity, ticks);
-        GlStateManager.scalef(0.9375F, 0.9375F, 0.9375F);
+    public void scale(WanderingTraderEntity entity, MatrixStack stack, float ticks) {
+        super.scale(entity, stack, ticks);
+        stack.scale(0.9375F, 0.9375F, 0.9375F);
     }
 }

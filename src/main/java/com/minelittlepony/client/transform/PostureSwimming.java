@@ -1,9 +1,9 @@
 package com.minelittlepony.client.transform;
 
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 
 import com.minelittlepony.model.IModel;
-import com.mojang.blaze3d.platform.GlStateManager;
 
 public class PostureSwimming extends PostureFlight {
 
@@ -21,8 +21,8 @@ public class PostureSwimming extends PostureFlight {
     }
 
     @Override
-    public void transform(IModel model, PlayerEntity player, double motionX, double motionY, double motionZ, float yaw, float ticks) {
-        GlStateManager.translated(0, 0.9, -1);
-        super.transform(model, player, motionX, motionY, motionZ, yaw, ticks);
+    public void transform(IModel model, PlayerEntity player, MatrixStack stack, double motionX, double motionY, double motionZ, float yaw, float ticks) {
+        stack.translate(0, 0.9, -1);
+        super.transform(model, player, stack, motionX, motionY, motionZ, yaw, ticks);
     }
 }

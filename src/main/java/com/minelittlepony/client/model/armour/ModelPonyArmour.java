@@ -1,21 +1,23 @@
 package com.minelittlepony.client.model.armour;
 
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.armour.ArmourVariant;
 import com.minelittlepony.model.armour.IArmour;
+import com.minelittlepony.mson.api.model.MsonPart;
 
 public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T> implements IArmour {
 
-    public Part chestPiece;
+    private ModelPart chestPiece;
 
-    public ModelPart steveRightLeg;
-    public ModelPart steveLeftLeg;
+    private ModelPart steveRightLeg;
+    private ModelPart steveLeftLeg;
 
     private ArmourVariant variant = ArmourVariant.NORMAL;
 
@@ -34,20 +36,20 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
     }
 
     @Override
-    protected void renderBody(float scale) {
+    protected void renderBody(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float limbDistance, float limbAngle, float tickDelta, float alpha) {
         if (variant == ArmourVariant.LEGACY) {
-            torso.render(scale);
-            upperTorso.render(scale);
+            torso.render(stack, vertices, overlayUv, lightUv, limbDistance, limbAngle, tickDelta, alpha);
+            upperTorso.render(stack, vertices, overlayUv, lightUv, limbDistance, limbAngle, tickDelta, alpha);
         } else {
-            chestPiece.render(scale);
+            chestPiece.render(stack, vertices, overlayUv, lightUv, limbDistance, limbAngle, tickDelta, alpha);
         }
     }
 
     @Override
-    protected void renderLegs(float scale) {
-        super.renderLegs(scale);
-        steveLeftLeg.render(scale);
-        steveRightLeg.render(scale);
+    protected void renderLegs(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+        super.renderLegs(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        steveLeftLeg.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        steveRightLeg.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
     @Override
@@ -72,24 +74,24 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
         }
     }
 
-    @Override
-    protected void initEars(Part head, float yOffset, float stretch) {
+    @Deprecated
+    protected void initEars(ModelPart head, float yOffset, float stretch) {
         stretch /= 2;
         head.tex(0, 0).box(-4, -6, 1, 2, 2, 2, stretch)  // right ear
             .tex(0, 4).box( 2, -6, 1, 2, 2, 2, stretch); // left ear
     }
 
-    @Override
+    @Deprecated
     protected void initBody(float yOffset, float stretch) {
         super.initBody(yOffset, stretch);
 
-        chestPiece = new Part(this, 16, 8)
+        chestPiece = new com.minelittlepony.client.util.render.Part(this, 16, 8)
                 .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                  .box(-4, 4, -2, 8, 8, 16, stretch);
 
         // fits the legacy player's torso to our pony bod.
-        upperTorso = new Part(this, 24, 0);
-        upperTorso.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
+        upperTorso = new com.minelittlepony.client.util.render.Part(this, 24, 0);
+        ((MsonPart)upperTorso).offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
                   .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                   .tex(32, 23).east( 4, -4, -4, 8, 8, stretch)
                               .west(-4, -4, -4, 8, 8, stretch)
@@ -98,19 +100,19 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
         // it's a little short, so the butt tends to show. :/
     }
 
-    @Override
+    @Deprecated
     protected void preInitLegs() {
-        leftArm = new Part(this, 0, 16).flip();
-        rightArm = new Part(this, 0, 16);
+        leftArm = (ModelPart)new com.minelittlepony.client.util.render.Part(this, 0, 16).mirror(true, false, false);
+        rightArm = new com.minelittlepony.client.util.render.Part(this, 0, 16);
 
-        leftLeg = new Part(this, 48, 8).flip();
-        rightLeg = new Part(this, 48, 8);
+        leftLeg = (ModelPart)new com.minelittlepony.client.util.render.Part(this, 48, 8).mirror(true, false, false);
+        rightLeg = new com.minelittlepony.client.util.render.Part(this, 48, 8);
 
-        steveLeftLeg = new Part(this, 0, 16).flip();
-        steveRightLeg = new Part(this, 0, 16);
+        steveLeftLeg = (ModelPart)new com.minelittlepony.client.util.render.Part(this, 0, 16).mirror(true, false, false);
+        steveRightLeg = new com.minelittlepony.client.util.render.Part(this, 0, 16);
     }
 
-    @Override
+    @Deprecated
     protected void initLegs(float yOffset, float stretch) {
         super.initLegs(yOffset, stretch);
 

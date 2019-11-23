@@ -5,12 +5,16 @@ import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.model.BodyPart;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.PlayerModelPart;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.Items;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.util.math.MathHelper;
-
-import javax.annotation.Nonnull;
 
 import static com.minelittlepony.model.PonyModelConstants.PI;
 import static com.mojang.blaze3d.platform.GlStateManager.*;
@@ -22,7 +26,7 @@ public class LayerPonyCape<M extends ClientPonyModel<AbstractClientPlayerEntity>
     }
 
     @Override
-    public void render(@Nonnull AbstractClientPlayerEntity player, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, AbstractClientPlayerEntity player, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
         M model = getModel();
 
         if (player.hasSkinTexture() && !player.isInvisible()
@@ -31,15 +35,15 @@ public class LayerPonyCape<M extends ClientPonyModel<AbstractClientPlayerEntity>
 
             pushMatrix();
 
-            model.transform(BodyPart.BODY);
-            translatef(0, 0.24F, 0);
-            model.getBodyPart(BodyPart.BODY).applyTransform(scale);
+            model.transform(BodyPart.BODY, stack);
+            stack.translate(0, 0.24F, 0);
+            model.getBodyPart(BodyPart.BODY).rotate(stack);
 
-            double capeX = MathHelper.lerp(partialTicks, player.field_7524, player.field_7500) - MathHelper.lerp(partialTicks, player.prevX, player.x);
-            double capeY = MathHelper.lerp(partialTicks, player.field_7502, player.field_7521) - MathHelper.lerp(partialTicks, player.prevY, player.y);
-            double capeZ = MathHelper.lerp(partialTicks, player.field_7522, player.field_7499) - MathHelper.lerp(partialTicks, player.prevZ, player.z);
+            double capeX = MathHelper.lerp(tickDelta, player.field_7524, player.field_7500) - MathHelper.lerp(tickDelta, player.prevX, player.getX());
+            double capeY = MathHelper.lerp(tickDelta, player.field_7502, player.field_7521) - MathHelper.lerp(tickDelta, player.prevY, player.getY());
+            double capeZ = MathHelper.lerp(tickDelta, player.field_7522, player.field_7499) - MathHelper.lerp(tickDelta, player.prevZ, player.getZ());
 
-            float motionYaw = player.prevBodyYaw + (player.bodyYaw - player.prevBodyYaw) * scale;
+            float motionYaw = player.prevBodyYaw + (player.bodyYaw - player.prevBodyYaw);
 
             //double capeX = player.prevRenderX + (player.x - player.prevRenderX) * scale - (player.prevX + (player.x - player.prevX) * scale);
             //double capeY = player.prevRenderY + (player.y - player.prevRenderY) * scale - (player.prevY + (player.y - player.prevY) * scale);
@@ -61,18 +65,19 @@ public class LayerPonyCape<M extends ClientPonyModel<AbstractClientPlayerEntity>
 
             if (capeMotionX < 0) capeMotionX = 0;
 
-            float camera = MathHelper.lerp(partialTicks, player.field_7505, player.field_7483);
+            float camera = MathHelper.lerp(tickDelta, player.field_7505, player.field_7483);
             //float camera = player.prevCameraYaw + (player.cameraYaw - player.prevCameraYaw) * scale;
-            capeMotionY += MathHelper.sin(MathHelper.lerp(partialTicks, player.prevHorizontalSpeed, player.horizontalSpeed) * 6) * 32 * camera;
+            capeMotionY += MathHelper.sin(MathHelper.lerp(tickDelta, player.prevHorizontalSpeed, player.horizontalSpeed) * 6) * 32 * camera;
 
-            rotatef(2 + capeMotionX / 12 + capeMotionY, 1, 0, 0);
-            rotatef( diagMotion / 2, 0, 0, 1);
-            rotatef(-diagMotion / 2, 0, 1, 0);
-            rotatef(180, 0, 0, 1);
-            rotatef(90, 1, 0, 0);
-            getContext().bindTexture(player.getCapeTexture());
-            model.renderCape(0.0625F);
-            popMatrix();
+            stack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(2 + capeMotionX / 12 + capeMotionY));
+            stack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion( diagMotion / 2));
+            stack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-diagMotion / 2));
+            stack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(180));
+            stack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(90));
+
+            VertexConsumer vertices = renderContext.getBuffer(RenderLayer.getEntitySolid(player.getCapeTexture()));
+            model.renderCape(stack, vertices, lightUv, OverlayTexture.DEFAULT_UV);
+            stack.pop();
         }
     }
 }

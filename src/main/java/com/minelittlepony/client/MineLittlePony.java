@@ -27,12 +27,7 @@ import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.resource.ResourceType;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Style;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
@@ -45,9 +40,6 @@ public class MineLittlePony implements ClientModInitializer {
     private static MineLittlePony instance;
 
     public static final Logger logger = LogManager.getLogger("MineLittlePony");
-
-    private int modelUpdateCounter = 0;
-    private boolean reloadingModels = false;
 
     private final PonyRenderManager renderManager = PonyRenderManager.getInstance();
 
@@ -115,26 +107,6 @@ public class MineLittlePony implements ClientModInitializer {
 
         if ((mainMenu || inGame) && keyBinding.isPressed()) {
             client.openScreen(new GuiPonySettings(client.currentScreen));
-        } else if (inGame) {
-            long handle = client.window.getHandle();
-
-            if ((Util.getMeasuringTimeMs() % 10) == 0) {
-                if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_F3) && InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_M)) {
-                    if (!reloadingModels) {
-                        client.inGameHud.getChatHud().addMessage(
-                                new LiteralText("").append(
-                                new TranslatableText("debug.prefix")
-                                    .setStyle(new Style().setColor(Formatting.YELLOW).setBold(true)))
-                                .append(" ")
-                                .append(new TranslatableText("minelp.debug.reload_models.message")));
-
-                        reloadingModels = true;
-                        modelUpdateCounter++;
-                    }
-                } else {
-                    reloadingModels = false;
-                }
-            }
         }
     }
 
@@ -169,10 +141,6 @@ public class MineLittlePony implements ClientModInitializer {
 
     public IPonyManager getManager() {
         return ponyManager;
-    }
-
-    public int getModelRevision() {
-        return modelUpdateCounter;
     }
 }
 

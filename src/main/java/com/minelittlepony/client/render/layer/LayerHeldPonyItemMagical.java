@@ -3,12 +3,13 @@ package com.minelittlepony.client.render.layer;
 import com.minelittlepony.client.PonyRenderManager;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.render.IPonyRender;
-import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IUnicorn;
-import com.mojang.blaze3d.platform.GlStateManager;
 
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
@@ -24,28 +25,28 @@ public class LayerHeldPonyItemMagical<T extends LivingEntity, M extends EntityMo
     }
 
     @Override
-    protected void preItemRender(T entity, ItemStack drop, ModelTransformation.Type transform, Arm hand) {
+    protected void preItemRender(T entity, ItemStack drop, ModelTransformation.Type transform, Arm hand, MatrixStack stack) {
         if (isUnicorn()) {
-            GlStateManager.translatef(hand == Arm.LEFT ? -0.6F : 0, 0.5F, -0.3F);
+            stack.translate(hand == Arm.LEFT ? -0.6F : 0, 0.5F, -0.3F);
         } else {
-            super.preItemRender(entity, drop, transform, hand);
+            super.preItemRender(entity, drop, transform, hand, stack);
         }
     }
 
     @Override
-    protected void postItemRender(T entity, ItemStack drop, ModelTransformation.Type transform, Arm hand) {
+    protected void postItemRender(T entity, ItemStack drop, ModelTransformation.Type transform, Arm hand, MatrixStack stack, VertexConsumerProvider renderContext) {
         if (isUnicorn()) {
-            PonyRenderManager.getInstance().getMagicRenderer().renderItemGlow(entity, drop, transform, hand, ((IUnicorn<?>)getModel()).getMagicColor());
+            PonyRenderManager.getInstance().getMagicRenderer().renderItemGlow(entity, drop, transform, hand, ((IUnicorn<?>)getModel()).getMagicColor(), stack, renderContext);
         }
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void renderArm(Arm side) {
+    protected void renderArm(Arm arm, MatrixStack stack) {
         if (isUnicorn()) {
-            ((IUnicorn<Part>)getModel()).getUnicornArmForSide(side).applyTransform(0.0625F);
+            ((IUnicorn<ModelPart>)getModel()).getUnicornArmForSide(arm).rotate(stack);
         } else {
-            super.renderArm(side);
+            super.renderArm(arm, stack);
         }
     }
 }

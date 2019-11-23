@@ -7,16 +7,18 @@ import com.minelittlepony.model.BodyPart;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.PlayerModelPart;
-import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Items;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
-
-import javax.annotation.Nonnull;
 
 public class LayerPonyElytra<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyLayer<T, M> {
 
@@ -29,16 +31,14 @@ public class LayerPonyElytra<T extends LivingEntity, M extends EntityModel<T> & 
     }
 
     @Override
-    public void render(@Nonnull T entity, float move, float swing, float partialTicks, float ticks, float yaw, float head, float scale) {
+    public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
         ItemStack itemstack = entity.getEquippedStack(EquipmentSlot.CHEST);
 
         if (itemstack.getItem() == Items.ELYTRA) {
             GlStateManager.color4f(1, 1, 1, 1);
 
-            getContext().bindTexture(getElytraTexture(entity));
-
-            GlStateManager.pushMatrix();
-            preRenderCallback();
+            stack.push();
+            preRenderCallback(stack);
 
             EntityModel<T> elytra = getElytraModel();
 
@@ -46,20 +46,17 @@ public class LayerPonyElytra<T extends LivingEntity, M extends EntityModel<T> & 
                 ((PonyElytra<T>)elytra).isSneaking = getContext().getEntityPony(entity).isCrouching(entity);
             }
 
-            elytra.setAngles(entity, move, swing, ticks, yaw, head, scale);
-            elytra.render(entity, move, swing, ticks, yaw, head, scale);
+            elytra.setAngles(entity, limbDistance, limbAngle, age, headYaw, headPitch);
+            VertexConsumer vertexConsumer = ItemRenderer.getArmorVertexConsumer(renderContext, modelElytra.getLayer(getElytraTexture(entity)), false, itemstack.hasEnchantmentGlint());
+            modelElytra.render(stack, vertexConsumer, lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
 
-            if (itemstack.hasEnchantmentGlint()) {
-                ArmorFeatureRenderer.renderEnchantedGlint(this::bindTexture, entity, elytra, move, swing, partialTicks, ticks, yaw, head, scale);
-            }
-
-            GlStateManager.popMatrix();
+            stack.pop();
         }
     }
 
-    protected void preRenderCallback() {
-        GlStateManager.translatef(0, getPlayerModel().getRiderYOffset(), 0.125F);
-        getPlayerModel().transform(BodyPart.BODY);
+    protected void preRenderCallback(MatrixStack stack) {
+        stack.translate(0, getPlayerModel().getRiderYOffset(), 0.125F);
+        getPlayerModel().transform(BodyPart.BODY, stack);
     }
 
     protected EntityModel<T> getElytraModel() {

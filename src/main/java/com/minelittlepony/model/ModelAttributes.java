@@ -69,13 +69,13 @@ public class ModelAttributes<T extends LivingEntity> {
      */
     public UUID interpolatorId;
 
-    public int armWidth = 4;
-    public int armDepth = 4;
+    @Deprecated public int armWidth = 4;
+    @Deprecated public int armDepth = 4;
 
-    public int armLength = 12;
+    @Deprecated public int armLength = 12;
 
-    public float armRotationX = 3F;
-    public float armRotationY = 8F;
+    @Deprecated public float armRotationX = 3F;
+    @Deprecated public float armRotationY = 8F;
 
     /**
      * The actual, visible height of this model when rendered.

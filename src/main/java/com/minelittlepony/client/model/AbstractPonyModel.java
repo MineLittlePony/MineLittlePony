@@ -2,33 +2,31 @@ package com.minelittlepony.client.model;
 
 import com.minelittlepony.client.model.armour.ModelPonyArmour;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
-import com.minelittlepony.client.model.components.PonyEars;
 import com.minelittlepony.client.model.components.PonySnout;
-import com.minelittlepony.client.model.components.PonyTail;
 import com.minelittlepony.client.transform.PonyTransformation;
-import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.model.armour.IEquestrianArmour;
+import com.minelittlepony.mson.api.model.MsonPart;
+
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
-
-import java.util.function.Consumer;
-
-import static com.mojang.blaze3d.platform.GlStateManager.*;
 
 /**
  * Foundation class for all types of ponies.
  */
 public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPonyModel<T> {
 
-    protected Part upperTorso;
-    protected Part upperTorsoOverlay;
+    protected ModelPart upperTorso;
+    protected ModelPart upperTorsoOverlay;
 
-    protected Part neck;
+    protected ModelPart neck;
 
     protected IPart tail;
     protected PonySnout snout;
@@ -59,10 +57,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      * @param entity    The entity we're being called for.
      */
     @Override
-    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
         attributes.checkRainboom(entity, swing, canFly());
 
-        super.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
+        super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
 
         updateHeadRotation(headYaw, headPitch);
         shakeBody(move, swing, getWobbleAmount(), ticks);
@@ -126,10 +124,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
         head.setPivot(1, 2, isSneaking ? -1 : 1);
 
-        Part.shiftRotationPoint(rightArm, 0, 2,  6);
-        Part.shiftRotationPoint(leftArm,  0, 2,  6);
-        Part.shiftRotationPoint(rightLeg, 0, 2, -8);
-        Part.shiftRotationPoint(leftLeg,  0, 2, -8);
+        ((MsonPart)rightArm).shift(0, 2,  6);
+        ((MsonPart)leftArm).shift(0, 2,  6);
+        ((MsonPart)rightLeg).shift(0, 2, -8);
+        ((MsonPart)leftLeg).shift(0, 2, -8);
     }
 
     protected void ponyRide() {
@@ -543,159 +541,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     }
 
     @Override
-    public void init(float yOffset, float stretch) {
-        cuboidList.clear();
-
-        initHead(yOffset, stretch);
-        initBody(yOffset, stretch);
-        initLegs(yOffset, stretch);
-        initTail(yOffset, stretch);
-    }
-
-    protected void initHead(float yOffset, float stretch) {
-        head = new Part(this, 0, 0)
-                                 .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
-                                 .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
-                                 .box(-4, -4, -4, 8, 8, 8, stretch);
-        initEars(((Part)head), yOffset, stretch);
-
-        helmet = new Part(this, 32, 0)
-                                     .offset(HEAD_CENTRE_X, HEAD_CENTRE_Y, HEAD_CENTRE_Z)
-                                     .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z - 2)
-                                     .box(-4, -4, -4, 8, 8, 8, stretch + 0.5F);
-
-        snout = new PonySnout(this);
-        snout.init(yOffset, stretch);
-    }
-
-    protected void initEars(Part head, float yOffset, float stretch) {
-        ears = new PonyEars(head, false);
-        ears.init(yOffset, stretch);
-    }
-
-    protected void initTail(float yOffset, float stretch) {
-        tail = new PonyTail(this);
-        tail.init(yOffset, stretch);
-    }
-
-    /**
-     * Creates the main torso and neck.
-     */
-    protected void initBody(float yOffset, float stretch) {
-        if (textureHeight == 64) {
-            jacket.cuboids.clear();
-            cuboidList.add(jacket);
-        }
-
-        torso = new Part(this, 16, 16)
-                    .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-                    .box(-4, 4, -2, 8, 8, 4, stretch);
-
-        upperTorso = new Part(this, 24, 0);
-        upperTorso.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
-                  .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-                    .tex(24, 0)  .east( 4, -4, -4, 8,  8, stretch)  // body sides
-                    .tex(4,  0)  .east( 4, -4,  4, 8,  4, stretch)  // qt mark
-                    .tex(56, 0).bottom(-4,  4, -4, 8,  8, stretch)  // stomach
-                    .tex(36, 16).south(-4, -4,  8, 8,  4, stretch)  // bottom b
-                                .south(-4,  0,  8, 8,  4, stretch)  // bottom b
-                               .bottom(-4,  4,  4, 8,  4, stretch)  // bottom b
-              .flipZ().tex(32, 20).top(-4, -4, -4, 8, 12, stretch) // t body (back)
-                      .tex(24, 0).west(-4, -4, -4, 8,  8, stretch)  // body sides
-                      .tex(4, 0) .west(-4, -4,  4, 8,  4, stretch)  // qt mark
-                // Tail stub
-              .child(0)
-                .tex(32, 0).top(-1, 2, 2, 2, 6, stretch)
-                        .bottom(-1, 4, 2, 2, 6, stretch)
-                          .east( 1, 2, 2, 2, 6, stretch)
-                         .south(-1, 2, 8, 2, 2, stretch)
-                  .flipZ().west(-1, 2, 2, 2, 6, stretch)
-                  .rotate(0.5F, 0, 0);
-
-        neck = new Part(this, 0, 16)
-            .at(NECK_CENTRE_X, NECK_CENTRE_Y, NECK_CENTRE_Z)
-            .rotate(NECK_ROT_X, 0, 0).around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-            .north(0, 0, 0, 4, 4, stretch)
-            .south(0, 0, 4, 4, 4, stretch)
-             .east(4, 0, 0, 4, 4, stretch)
-             .west(0, 0, 0, 4, 4, stretch);
-
-        stretch += 0.25F;
-
-        jacket.addCuboid(-4, 4, -2, 8, 8, 4, stretch);
-        jacket.setPivot(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z);
-
-        upperTorsoOverlay = new Part(this, 24, 0);
-        upperTorsoOverlay.offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
-                         .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-                          .tex(12, 32)  .east( 4, -4, -4, 4,  8, stretch) // body sides a
-                          .tex(12, 48)  .east( 4,  0, -4, 4,  8, stretch) // body sides b
-                          .tex(0, 32)   .east( 4, -4,  4, 4,  4, stretch) // qt mark a
-                          .tex(0, 48)   .east( 4,  0,  4, 4,  4, stretch) // qt mark b
-                          .tex(28, 48).bottom(-4,  4, -4, 8,  4, stretch) // stomach a
-                          .tex(44, 48).bottom(-4,  4,  0, 8,  4, stretch) // stomach b
-                          .tex(36, 32) .south(-4, -4,  8, 8,  4, stretch) // bottom b
-                                       .south(-4,  0,  8, 8,  4, stretch) // bottom b
-                          .tex(36, 32).bottom(-4,  4,  4, 8,  4, stretch) // bottom b
-                     .flipZ().tex(32, 36).top(-4, -4, -4, 8, 12, stretch) // t body (back)
-                            .tex(12, 32).west(-4, -4, -4, 4,  8, stretch) // body sides a
-                            .tex(12, 48).west(-4,  0, -4, 4,  8, stretch) // body sides b
-                             .tex(0, 32).west(-4, -4,  4, 4,  4, stretch) // qt mark a
-                             .tex(0, 48).west(-4,  0,  4, 4,  4, stretch);// qt mark b
-    }
-
-    protected void preInitLegs() {
-        leftArm = new ModelPart(this, 32, 48);
-        rightArm = new ModelPart(this, 40, 16);
-
-        leftLeg = new ModelPart(this, 16, 48);
-        rightLeg = new ModelPart(this, 0, 16);
-    }
-
-    protected void preInitLegwear() {
-        leftSleeve.cuboids.clear();
-        rightSleeve.cuboids.clear();
-        leftPantLeg.cuboids.clear();
-        rightPantLeg.cuboids.clear();
-    }
-
-    protected void initLegs(float yOffset, float stretch) {
-        preInitLegs();
-        preInitLegwear();
-
-        int armLength = attributes.armLength;
-        int armWidth = attributes.armWidth;
-        int armDepth = attributes.armDepth;
-
-        float rarmX = attributes.armRotationX;
-        float rarmY = attributes.armRotationY;
-
-        float armX = THIRDP_ARM_CENTRE_X;
-        float armY = THIRDP_ARM_CENTRE_Y;
-        float armZ = BODY_CENTRE_Z / 2 - 1 - armDepth;
-
-        leftArm        .setPivot( rarmX, yOffset + rarmY, 0);
-        rightArm       .setPivot(-rarmX, yOffset + rarmY, 0);
-        leftSleeve .setPivot( rarmX, yOffset + rarmY, 0);
-        rightSleeve.setPivot(-rarmX, yOffset + rarmY, 0);
-
-        leftLeg        .setPivot( rarmX, yOffset, 0);
-        rightLeg       .setPivot(-rarmX, yOffset, 0);
-        leftPantLeg .setPivot( rarmX, yOffset, 0);
-        rightPantLeg.setPivot(-rarmX, yOffset, 0);
-
-        leftArm        .addCuboid(armX,            armY, armZ, armWidth, armLength, armDepth, stretch);
-        rightArm       .addCuboid(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch);
-        leftSleeve .addCuboid(armX,            armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
-        rightSleeve.addCuboid(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
-
-        leftLeg        .addCuboid(armX,            armY, armZ, armWidth, armLength, armDepth, stretch);
-        rightLeg       .addCuboid(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch);
-        leftPantLeg .addCuboid(armX,            armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
-        rightPantLeg.addCuboid(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch + 0.25f);
-    }
-
-    @Override
     public float getRiderYOffset() {
 
         if (isChild()) {
@@ -711,82 +556,69 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         }
     }
 
-    /**
-     * Sets the model's various rotation angles.
-     *
-     * @param entity    The entity we're being called for.
-     * @param move      Entity motion parameter - i.e. velocity in no specific direction used in bipeds to calculate step amount.
-     * @param swing     Degree to which each 'limb' swings.
-     * @param ticks       Total whole and partial ticks since the entity's existance. Used in animations together with {@code swing} and {@code move}.
-     * @param headYaw   Horizontal head motion in radians.
-     * @param headPitch Vertical head motion in radians.
-     * @param scale     Scaling factor used to render this model. Determined by the return value of {@link RenderLivingBase.prepareScale}. Usually {@code 0.0625F}.
-     */
     @Override
-    public void render(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        renderStage(BodyPart.BODY, scale, this::renderBody);
-        renderStage(BodyPart.NECK, scale, this::renderNeck);
-        renderStage(BodyPart.HEAD, scale, this::renderHead);
-        renderStage(BodyPart.LEGS, scale, this::renderLegs);
+    public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+        renderStage(BodyPart.BODY, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderBody);
+        renderStage(BodyPart.NECK, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderNeck);
+        renderStage(BodyPart.HEAD, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderHead);
+        renderStage(BodyPart.LEGS, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderLegs);
 
         if (textureHeight == 64) {
-            renderStage(BodyPart.LEGS, scale, this::renderSleeves);
-            renderStage(BodyPart.BODY, scale, this::renderVest);
+            renderStage(BodyPart.LEGS, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderSleeves);
+            renderStage(BodyPart.BODY, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderVest);
         }
 
-        renderStage(BodyPart.HEAD, scale, this::renderHelmet);
+        renderStage(BodyPart.HEAD, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderHelmet);
     }
 
-    protected void renderStage(BodyPart part, float scale, Consumer<Float> action) {
-        pushMatrix();
-        transform(part);
-        action.accept(scale);
-        popMatrix();
+    protected void renderStage(BodyPart part, MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, RenderStage action) {
+        stack.push();
+        transform(part, stack);
+        action.accept(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        stack.pop();
     }
 
-    protected void renderHead(float scale) {
-        head.render(scale);
+    protected void renderHead(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+        head.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
-    protected void renderHelmet(float scale) {
-        helmet.render(scale);
+    protected void renderHelmet(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+        helmet.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
-    protected void renderNeck(float scale) {
-        scalef(0.9F, 0.9F, 0.9F);
-        neck.render(scale);
+    protected void renderNeck(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+        stack.scale(0.9F, 0.9F, 0.9F);
+        neck.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
-    protected void renderBody(float scale) {
-        torso.render(scale);
-        upperTorso.render(scale);
-        torso.applyTransform(scale);
-        tail.renderPart(scale, attributes.interpolatorId);
+    protected void renderBody(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+        torso.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        upperTorso.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        torso.rotate(stack);
+        tail.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, attributes.interpolatorId);
     }
 
-    protected void renderVest(float scale) {
-        jacket.render(scale);
-        if (jacket.visible) {
-            upperTorsoOverlay.render(scale);
-        }
+    protected void renderVest(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+        jacket.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        upperTorsoOverlay.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
-    protected void renderLegs(float scale) {
+    protected void renderLegs(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
         if (!isSneaking) {
-            torso.applyTransform(scale);
+            torso.rotate(stack);
         }
 
-        leftArm.render(scale);
-        rightArm.render(scale);
-        leftLeg.render(scale);
-        rightLeg.render(scale);
+        leftArm.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        rightArm.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        leftLeg.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        rightLeg.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
-    protected void renderSleeves(float scale) {
-        leftSleeve.render(scale);
-        rightSleeve.render(scale);
-        leftPantLeg.render(scale);
-        rightPantLeg.render(scale);
+    protected void renderSleeves(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+        leftSleeve.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        rightSleeve.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        leftPantLeg.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        rightPantLeg.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
     @Override
@@ -802,16 +634,20 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     }
 
     @Override
-    public void transform(BodyPart part) {
+    public void transform(BodyPart part, MatrixStack stack) {
         if (attributes.isSleeping) {
-            rotatef(90, 1, 0, 0);
-            rotatef(180, 0, 1, 0);
+            stack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(90));
+            stack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180));
         }
 
         if (part == BodyPart.HEAD) {
-           rotatef(attributes.motionPitch, 1, 0, 0);
+           stack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(attributes.motionPitch));
         }
 
         PonyTransformation.forSize(getSize()).transform(this, part);
+    }
+
+    interface RenderStage {
+        void accept(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha);
     }
 }

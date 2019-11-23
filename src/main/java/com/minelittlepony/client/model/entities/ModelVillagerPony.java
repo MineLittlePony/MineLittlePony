@@ -1,6 +1,9 @@
 package com.minelittlepony.client.model.entities;
 
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.ModelWithHat;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.AbstractTraderEntity;
 import net.minecraft.util.math.MathHelper;
@@ -11,14 +14,13 @@ import com.minelittlepony.client.model.components.BatWings;
 import com.minelittlepony.client.model.components.PonyEars;
 import com.minelittlepony.client.model.races.ModelAlicorn;
 import com.minelittlepony.client.render.entities.villager.PonyTextures;
-import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.pony.meta.Race;
 
 public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> extends ModelAlicorn<T> implements ModelWithHat {
 
-    private Part apron;
-    private Part trinket;
+    private ModelPart apron;
+    private ModelPart trinket;
 
     private IPart batWings;
 
@@ -65,10 +67,10 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
     }
 
     @Override
-    protected void renderBody(float scale) {
-        super.renderBody(scale);
-        apron.render(scale);
-        //trinket.render(scale);
+    protected void renderBody(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+        super.renderBody(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        apron.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        //trinket.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
     @Override
@@ -90,8 +92,8 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
     }
 
     @Override
-    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        super.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
+    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
+        super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
 
         boolean isHeadRolling = entity instanceof AbstractTraderEntity
                 && ((AbstractTraderEntity)entity).getHeadRollingTimeLeft() > 0;

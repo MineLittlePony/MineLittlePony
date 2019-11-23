@@ -7,12 +7,15 @@ import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.transform.PonyPosture;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.util.math.MathUtil;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.client.render.VisibleRegion;
+import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
@@ -30,15 +33,15 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
     private final FrustrumCheck<T> frustrum = new FrustrumCheck<>(this);
 
     public static void enableModelRenderProfile(boolean skipBlend) {
-        GlStateManager.enableBlend();
+        RenderSystem.enableBlend();
         if (!skipBlend) {
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         }
-        GlStateManager.alphaFunc(516, 0.003921569F);
+        RenderSystem.alphaFunc(516, 0.003921569F);
     }
 
     public static void disableModelRenderProfile() {
-        GlStateManager.disableBlend();
+        RenderSystem.disableBlend();
     }
 
     public RenderPony(IPonyRender<T, M> renderer) {
@@ -49,21 +52,21 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
         skipBlend = true;
     }
 
-    public VisibleRegion getFrustrum(T entity, VisibleRegion vanilla) {
+    public Frustum getFrustrum(T entity, Frustum vanilla) {
         if (entity.isSleeping() || !MineLittlePony.getInstance().getConfig().frustrum.get()) {
             return vanilla;
         }
         return frustrum.withCamera(entity, vanilla);
     }
 
-    public void preRenderCallback(T entity, float ticks) {
+    public void preRenderCallback(T entity, MatrixStack stack, float ticks) {
         updateModel(entity);
 
         float s = getScaleFactor();
-        GlStateManager.scalef(s, s, s);
+        stack.scale(s, s, s);
         enableModelRenderProfile(skipBlend);
 
-        translateRider(entity, ticks);
+        translateRider(entity, stack, ticks);
     }
 
     public float getRenderYaw(T entity, float rotationYaw, float partialTicks) {
@@ -77,7 +80,7 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
         return rotationYaw;
     }
 
-    protected void translateRider(T entity, float ticks) {
+    protected void translateRider(T entity, MatrixStack stack, float ticks) {
         if (entity.hasVehicle() && entity.getVehicle() instanceof LivingEntity) {
 
             LivingEntity ridingEntity = (LivingEntity) entity.getVehicle();
@@ -85,23 +88,23 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
 
             if (renderer != null) {
                 // negate vanilla translations so the rider begins at the ridees feet.
-                GlStateManager.translatef(0, -ridingEntity.getHeight(), 0);
+                stack.translate(0, -ridingEntity.getHeight(), 0);
 
                 IPony riderPony = renderer.getEntityPony(ridingEntity);
 
-                renderer.translateRider(ridingEntity, riderPony, entity, pony, ticks);
+                renderer.translateRider(ridingEntity, riderPony, entity, pony, stack, ticks);
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    public void applyPostureTransform(T player, float yaw, float ticks) {
-        ((PonyPosture<T>) getPosture(player)).apply(player, getModel(), yaw, ticks, 1);
+    public void applyPostureTransform(T player, MatrixStack stack, float yaw, float ticks) {
+        ((PonyPosture<T>) getPosture(player)).apply(player, getModel(), stack, yaw, ticks, 1);
     }
 
     @SuppressWarnings("unchecked")
-    public void applyPostureRiding(T player, float yaw, float ticks) {
-        ((PonyPosture<T>) getPosture(player)).apply(player, getModel(), yaw, ticks, -1);
+    public void applyPostureRiding(T player, MatrixStack stack, float yaw, float ticks) {
+        ((PonyPosture<T>) getPosture(player)).apply(player, getModel(), stack, yaw, ticks, -1);
     }
 
     @Nonnull
@@ -161,7 +164,7 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
         return getModel().getSize().getScaleFactor();
     }
 
-    public double getNamePlateYOffset(T entity, double initial) {
+    public double getNamePlateYOffset(T entity) {
 
         // We start by negating the height calculation done by mahjong.
         float y = -(entity.getHeight() + 0.5F - (entity.isInSneakingPose() ? 0.25F : 0));
@@ -181,6 +184,6 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
             y /= 2;
         }
 
-        return initial + y;
+        return y;
     }
 }

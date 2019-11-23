@@ -13,16 +13,16 @@ import com.minelittlepony.client.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.client.render.layer.LayerPonyArmor;
 import com.minelittlepony.client.render.layer.LayerPonyCustomHead;
 import com.minelittlepony.client.render.layer.LayerPonyElytra;
-import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IUnicorn;
 import com.minelittlepony.pony.IPony;
-import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.minecraft.client.render.VisibleRegion;
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.Frustum;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.util.Identifier;
 
@@ -44,7 +44,7 @@ public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T
     protected void addLayers() {
         addFeature(new LayerPonyArmor<>(this));
         addFeature(createItemHoldingLayer());
-        addFeature(new StuckArrowsFeatureRenderer<>(this));
+        //addFeature(new StuckArrowsFeatureRenderer<>(this));
         addFeature(new LayerPonyCustomHead<>(this));
         addFeature(new LayerPonyElytra<>(this));
         addFeature(new LayerGear<>(this));
@@ -53,32 +53,32 @@ public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T
     protected abstract LayerHeldPonyItem<T, M> createItemHoldingLayer();
 
     @Override
-    public void render(T entity, double xPosition, double yPosition, double zPosition, float yaw, float ticks) {
+    public void render(T entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
         if (entity.isInSneakingPose()) {
-            yPosition -= 0.125D;
+            stack.translate(0, 0.125D, 0);
         }
 
-        super.render(entity, xPosition, yPosition, zPosition, yaw, ticks);
+        super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
 
-        DebugBoundingBoxRenderer.instance.render(renderPony.getPony(entity), entity, ticks);
+        DebugBoundingBoxRenderer.instance.render(renderPony.getPony(entity), entity, stack, renderContext);
     }
 
     @Override
-    protected void setupTransforms(T entity, float ageInTicks, float rotationYaw, float partialTicks) {
+    protected void setupTransforms(T entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
         rotationYaw = renderPony.getRenderYaw(entity, rotationYaw, partialTicks);
-        super.setupTransforms(entity, ageInTicks, rotationYaw, partialTicks);
+        super.setupTransforms(entity, stack, ageInTicks, rotationYaw, partialTicks);
 
-        renderPony.applyPostureTransform(entity, rotationYaw, partialTicks);
+        renderPony.applyPostureTransform(entity, stack, rotationYaw, partialTicks);
     }
 
     @Override
-    public boolean isVisible(T entity, VisibleRegion camera, double camX, double camY, double camZ) {
-        return super.isVisible(entity, renderPony.getFrustrum(entity, camera), camX, camY, camZ);
+    public boolean isVisible(T entity, Frustum visibleRegion, double camX, double camY, double camZ) {
+        return super.isVisible(entity, renderPony.getFrustrum(entity, visibleRegion), camX, camY, camZ);
     }
 
     @Override
-    public void scale(T entity, float ticks) {
-        renderPony.preRenderCallback(entity, ticks);
+    public void scale(T entity, MatrixStack stack, float ticks) {
+        renderPony.preRenderCallback(entity, stack, ticks);
         // shadowRadius
         field_4673 = renderPony.getShadowScale();
 
@@ -87,9 +87,9 @@ public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T
         }
 
         if (!entity.hasVehicle()) {
-            GlStateManager.translatef(0, 0, -entity.getWidth() / 2); // move us to the center of the shadow
+            stack.translate(0, 0, -entity.getWidth() / 2); // move us to the center of the shadow
         } else {
-            GlStateManager.translated(0, entity.getHeightOffset(), 0);
+            stack.translate(0, entity.getHeightOffset(), 0);
         }
     }
 
@@ -99,8 +99,9 @@ public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T
     }
 
     @Override
-    protected void renderLabel(T entity, String name, double x, double y, double z, int maxDistance) {
-        super.renderLabel(entity, name, x, renderPony.getNamePlateYOffset(entity, y), z, maxDistance);
+    protected void renderLabelIfPresent(T entity, String name, MatrixStack stack, VertexConsumerProvider renderContext, int maxDistance) {
+        stack.translate(0, renderPony.getNamePlateYOffset(entity), 0);
+        super.renderLabelIfPresent(entity, name, stack, renderContext, maxDistance);
     }
 
     @Deprecated
@@ -120,7 +121,7 @@ public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T
         return MineLittlePony.getInstance().getManager().getPony(findTexture(entity));
     }
 
-    public abstract static class Caster<T extends MobEntity, M extends ClientPonyModel<T> & IUnicorn<Part>> extends RenderPonyMob<T, M> {
+    public abstract static class Caster<T extends MobEntity, M extends ClientPonyModel<T> & IUnicorn<ModelPart>> extends RenderPonyMob<T, M> {
 
         public Caster(EntityRenderDispatcher manager, M model) {
             super(manager, model);

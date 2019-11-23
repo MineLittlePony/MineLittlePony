@@ -11,6 +11,9 @@ import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.pony.IPony;
 import com.mojang.blaze3d.platform.GlStateManager;
 
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
 
@@ -18,11 +21,11 @@ import org.lwjgl.opengl.GL11;
 
 public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
 
-    Part bodyCenter;
+    private ModelPart bodyCenter;
 
-    Part leftFin;
-    Part centerFin;
-    Part rightFin;
+    private ModelPart leftFin;
+    private ModelPart centerFin;
+    private ModelPart rightFin;
 
     public ModelSeapony(boolean smallArms) {
         super(smallArms);
@@ -57,7 +60,7 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
         // noop
     }
 
-    @Override
+    @Deprecated
     protected void initLegs(float yOffset, float stretch) {
         super.initLegs(yOffset, stretch);
         // hide the back legs
@@ -79,13 +82,13 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
                 .west(0, 0, 0, 12, 8, stretch);
     }
 
-    @Override
+    @Deprecated
     protected void initTail(float yOffset, float stretch) {
         tail = new SeaponyTail(this);
         tail.init(yOffset, stretch);
     }
 
-    @Override
+    @Deprecated
     protected void initBody(float yOffset, float stretch) {
         super.initBody(yOffset, stretch);
         bodyCenter = new Part(this, 0, 48)
@@ -94,8 +97,8 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
     }
 
     @Override
-    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        super.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
+    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
+        super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
 
         float flapMotion = MathHelper.cos(ticks / 10) / 5;
 
@@ -138,37 +141,34 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
     }
 
     @Override
-    public void render(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
         setVisible(leftSleeve.visible);
 
-        super.render(entity, move, swing, ticks, headYaw, headPitch, scale);
+        super.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
     @Override
-    public void transform(BodyPart part) {
-        GlStateManager.translatef(0, 0.6F, 0);
-
-        super.transform(part);
+    public void transform(BodyPart part, MatrixStack stack) {
+        stack.translate(0, 0.6F, 0);
+        super.transform(part, stack);
     }
 
     @Override
-    protected void renderBody(float scale) {
-        torso.render(scale);
-        bodyCenter.render(scale);
-        torso.applyTransform(scale);
+    protected void renderBody(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+        torso.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        bodyCenter.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        torso.rotate(stack);
 
-        tail.renderPart(scale, attributes.interpolatorId);
+        tail.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, attributes.interpolatorId);
 
-        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         GlStateManager.enableBlend();
 
 
-        leftFin.render(scale);
-        centerFin.render(scale);
-        rightFin.render(scale);
+        leftFin.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        centerFin.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        rightFin.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
 
         GlStateManager.disableBlend();
-        GL11.glPopAttrib();
     }
 
     @Override
@@ -215,10 +215,10 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
         }
 
         @Override
-        public void transform(BodyPart part) {
-            GlStateManager.translatef(0, 0.6F, 0);
+        public void transform(BodyPart part, MatrixStack stack) {
+            stack.translate(0, 0.6F, 0);
 
-            super.transform(part);
+            super.transform(part, stack);
         }
     }
 }

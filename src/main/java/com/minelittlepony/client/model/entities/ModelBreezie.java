@@ -76,7 +76,7 @@ public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> {
     }
 
     @Override
-    public void method_17087(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
 
         head.yaw = headYaw * 0.017453292F;
         head.pitch = headPitch * 0.017453292F;

@@ -10,11 +10,15 @@ import com.minelittlepony.model.armour.ArmourLayer;
 import com.minelittlepony.model.armour.IArmour;
 import com.minelittlepony.model.armour.IArmourTextureResolver;
 import com.minelittlepony.model.armour.IEquestrianArmour;
-import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ArmorItem;
@@ -34,19 +38,19 @@ public class LayerPonyArmor<T extends LivingEntity, M extends EntityModel<T> & I
     }
 
     @Override
-    public void render(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
         pony = getContext().getModelWrapper();
 
         for (EquipmentSlot i : EquipmentSlot.values()) {
             if (i.getType() == EquipmentSlot.Type.ARMOR) {
-                renderArmor(entity, move, swing, partialTicks, ticks, headYaw, headPitch, scale, i, ArmourLayer.INNER);
-                renderArmor(entity, move, swing, partialTicks, ticks, headYaw, headPitch, scale, i, ArmourLayer.OUTER);
+                renderArmor(stack, renderContext, lightUv, entity, limbDistance, limbAngle, tickDelta, age, headYaw, headPitch, i, ArmourLayer.INNER);
+                renderArmor(stack, renderContext, lightUv, entity, limbDistance, limbAngle, tickDelta, age, headYaw, headPitch, i, ArmourLayer.OUTER);
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    private <V extends BipedEntityModel<T> & IArmour> void renderArmor(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale, EquipmentSlot armorSlot, ArmourLayer layer) {
+    private <V extends BipedEntityModel<T> & IArmour> void renderArmor(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch, EquipmentSlot armorSlot, ArmourLayer layer) {
         ItemStack itemstack = entity.getEquippedStack(armorSlot);
 
         if (!itemstack.isEmpty() && itemstack.getItem() instanceof ArmorItem) {
@@ -55,7 +59,7 @@ public class LayerPonyArmor<T extends LivingEntity, M extends EntityModel<T> & I
 
             if (armour.prepareToRender(armorSlot, layer)) {
                 ((BipedEntityModel<T>)pony.getBody()).setAttributes(armour);
-                armour.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
+                armour.setAngles(entity, limbAngle, limbDistance, age, headYaw, headPitch);
                 armour.synchroniseLegs(pony.getBody());
 
                 IArmourTextureResolver<T> resolver = armour instanceof IArmourTextureResolver ? (IArmourTextureResolver<T>)armour : (IArmourTextureResolver<T>)textures;
@@ -63,28 +67,32 @@ public class LayerPonyArmor<T extends LivingEntity, M extends EntityModel<T> & I
                 Identifier armourTexture = resolver.getArmourTexture(entity, itemstack, armorSlot, layer, null);
                 armour.setVariant(resolver.getArmourVariant(layer, armourTexture));
 
-                getContext().bindTexture(armourTexture);
+                boolean glint = itemstack.hasEnchantmentGlint();
 
                 ArmorItem itemarmor = (ArmorItem) itemstack.getItem();
 
                 if (itemarmor.getMaterial() == ArmorMaterials.LEATHER) {
+
+                    float red = 1;
+                    float green = 1;
+                    float blue = 1;
+
                     if (itemarmor instanceof DyeableArmorItem) {
-                        Color.glColor(((DyeableArmorItem)itemarmor).getColor(itemstack), 1);
+                        int color = ((DyeableArmorItem)itemarmor).getColor(itemstack);
+                        red = Color.r(color);
+                        green = Color.g(color);
+                        blue = Color.b(color);
                     }
 
-                    armour.render(entity, move, swing, ticks, headYaw, headPitch, scale);
+                    VertexConsumer vertices = ItemRenderer.getArmorVertexConsumer(renderContext, RenderLayer.getEntityCutoutNoCull(armourTexture), false, glint);
+
+                    armour.render(stack, vertices, lightUv, OverlayTexture.DEFAULT_UV, red, green, blue, 1);
                     armourTexture = resolver.getArmourTexture(entity, itemstack, armorSlot, layer, "overlay");
                     armour.setVariant(resolver.getArmourVariant(layer, armourTexture));
-
-                    getContext().bindTexture(armourTexture);
                 }
 
-                GlStateManager.color4f(1, 1, 1, 1);
-                armour.render(entity, move, swing, ticks, headYaw, headPitch, scale);
-
-                if (itemstack.hasEnchantmentGlint()) {
-                    ArmorFeatureRenderer.renderEnchantedGlint(this::bindTexture, entity, armour, move, swing, partialTicks, ticks, headYaw, headPitch, scale);
-                }
+                VertexConsumer vertices = ItemRenderer.getArmorVertexConsumer(renderContext, RenderLayer.getEntityCutoutNoCull(armourTexture), false, glint);
+                armour.render(stack, vertices, lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
             }
         }
     }

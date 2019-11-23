@@ -1,8 +1,13 @@
 package com.minelittlepony.client.render.layer;
 
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 
@@ -19,21 +24,15 @@ public abstract class LayerOverlayBase<T extends LivingEntity, M extends BipedEn
     }
 
     @Override
-    public boolean hasHurtOverlay() {
-        return false;
-    }
-
-    @Override
-    public void render(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
         M overlayModel = getOverlayModel();
 
         renderer.getModel().setAttributes(overlayModel);
-        overlayModel.animateModel(entity, move, swing, partialTicks);
-        overlayModel.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
+        overlayModel.animateModel(entity, limbDistance, limbAngle, tickDelta);
+        overlayModel.setAngles(entity, limbDistance, limbAngle, age, headYaw, headPitch);
 
-        renderer.bindTexture(getOverlayTexture());
-
-        overlayModel.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
+        VertexConsumer vertexConsumer = ItemRenderer.getArmorVertexConsumer(renderContext, overlayModel.getLayer(getOverlayTexture()), false, false);
+        overlayModel.render(stack, vertexConsumer, lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
     }
 
     protected abstract M getOverlayModel();

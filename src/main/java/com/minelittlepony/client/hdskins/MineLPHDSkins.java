@@ -2,12 +2,13 @@ package com.minelittlepony.client.hdskins;
 
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.SkinsProxy;
-import com.minelittlepony.client.hdskins.gui.DummyPony;
 import com.minelittlepony.client.hdskins.gui.GuiSkinsMineLP;
 import com.minelittlepony.client.hdskins.gui.DummyPonyRenderer;
 import com.minelittlepony.common.event.ClientReadyCallback;
 import com.minelittlepony.hdskins.SkinCacheClearCallback;
-import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
+import com.minelittlepony.hdskins.dummy.DummyPlayer;
+
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 
 import com.minelittlepony.client.pony.PonyManager;
@@ -24,7 +25,7 @@ class MineLPHDSkins {
         ClientReadyCallback.EVENT.register(this::postInit);
 
         // Preview on the select skin gui
-        EntityRendererRegistry.INSTANCE.register(DummyPony.class, DummyPonyRenderer::new);
+        EntityRendererRegistry.INSTANCE.register(DummyPlayer.TYPE, DummyPonyRenderer::new);
     }
 
     private void postInit(MinecraftClient minecraft) {

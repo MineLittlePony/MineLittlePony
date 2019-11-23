@@ -13,13 +13,15 @@ import com.minelittlepony.client.render.entities.player.RenderPonyPlayer;
 import javax.annotation.Nullable;
 
 import com.minelittlepony.common.mixin.MixinEntityRenderDispatcher;
-import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
+
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 
 /**
@@ -77,7 +79,7 @@ public class PonyRenderManager {
      * @param factory The replacement value
      * @param <T> The entity type
      */
-    public <T extends Entity, V extends T> void switchRenderer(boolean state, Class<V> type, EntityRendererRegistry.Factory factory) {
+    public <T extends Entity, V extends T> void switchRenderer(boolean state, EntityType<V> type, EntityRendererRegistry.Factory factory) {
         if (state) {
             if (!renderMap.containsKey(type)) {
                 renderMap.put(type, MinecraftClient.getInstance().getEntityRenderManager().getRenderer(type));
@@ -101,7 +103,7 @@ public class PonyRenderManager {
             return null;
         }
 
-        EntityRenderer<T> renderer = MinecraftClient.getInstance().getEntityRenderManager().getRenderer(entity);
+        EntityRenderer<T> renderer = (EntityRenderer<T>)MinecraftClient.getInstance().getEntityRenderManager().getRenderer(entity);
 
         if (renderer instanceof IPonyRender) {
             return (IPonyRender<T, M>) renderer;

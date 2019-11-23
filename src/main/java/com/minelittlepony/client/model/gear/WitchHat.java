@@ -1,5 +1,6 @@
 package com.minelittlepony.client.model.gear;
 
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 
@@ -15,16 +16,11 @@ public class WitchHat extends AbstractGear implements IStackable {
 
     private static final Identifier WITCH_TEXTURES = new Identifier("textures/entity/witch.png");
 
-    private Part witchHat;
-
-    @Override
-    public void renderPart(float scale, UUID interpolatorId) {
-        witchHat.render(scale * 1.3F);
-    }
+    private ModelPart witchHat;
 
     @Override
     public void init(float yOffset, float stretch) {
-        witchHat = new Part(this).size(64, 128);
+        accept(witchHat = new Part(this).size(64, 128));
         witchHat.around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                 .tex(0, 64).box(-5, -6, -7, 10, 2, 10, stretch)
                 .child(0).around(1.75F, -4, 2)

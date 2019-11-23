@@ -1,87 +1,49 @@
 package com.minelittlepony.client.render.layer;
 
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.ParrotEntityRenderer;
+import net.minecraft.client.render.entity.model.ParrotEntityModel;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.model.BodyPart;
-import com.mojang.blaze3d.platform.GlStateManager;
 
-import javax.annotation.Nullable;
+public class LayerEntityOnPonyShoulder<T extends PlayerEntity, M extends ClientPonyModel<T>> extends AbstractPonyLayer<T, M> {
 
-public class LayerEntityOnPonyShoulder<M extends ClientPonyModel<AbstractClientPlayerEntity>> extends AbstractPonyLayer<AbstractClientPlayerEntity, M> {
+    private final ParrotEntityModel model = new ParrotEntityModel();
 
-    private final EntityRenderDispatcher renderManager;
-
-    private LivingEntity leftEntity;
-    private LivingEntity rightEntity;
-
-    public LayerEntityOnPonyShoulder(EntityRenderDispatcher manager, IPonyRender<AbstractClientPlayerEntity, M> context) {
+    public LayerEntityOnPonyShoulder(IPonyRender<T, M> context) {
         super(context);
-        renderManager = manager;
     }
 
     @Override
-    public void render(AbstractClientPlayerEntity player, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
-
-        GlStateManager.enableRescaleNormal();
-        GlStateManager.color4f(1, 1, 1, 1);
-
-        CompoundTag leftTag = player.getShoulderEntityLeft();
-
-        if (!leftTag.isEmpty()) {
-            leftEntity = renderShoulderEntity(player, leftEntity, leftTag, headYaw, headPitch, true);
-        }
-
-        CompoundTag rightTag = player.getShoulderEntityRight();
-
-        if (!rightTag.isEmpty()) {
-            rightEntity = renderShoulderEntity(player, rightEntity, rightTag, headYaw, headPitch, false);
-        }
-
-        GlStateManager.disableRescaleNormal();
+    public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
+        renderShoulderParrot(stack, renderContext, lightUv, entity, limbDistance, limbAngle, headYaw, headPitch, true);
+        renderShoulderParrot(stack, renderContext, lightUv, entity, limbDistance, limbAngle, headYaw, headPitch, false);
     }
 
-    @Nullable
-    private LivingEntity renderShoulderEntity(AbstractClientPlayerEntity player, @Nullable LivingEntity entity, CompoundTag shoulderTag, float headYaw, float headPitch, boolean left) {
+    private void renderShoulderParrot(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float headYaw, float headPitch, boolean left) {
 
-        if (entity == null || !entity.getUuid().equals(shoulderTag.getUuid("UUID"))) {
-            entity = (LivingEntity) EntityType.getEntityFromTag(shoulderTag, player.world).orElse(null);
-            // this isn't an entity.
-            if (entity == null) {
-                return null;
-            }
-        }
+        CompoundTag riderTag = left ? entity.getShoulderEntityLeft() : entity.getShoulderEntityRight();
 
-        EntityRenderer<LivingEntity> render = renderManager.getRenderer(entity);
+        EntityType.get(riderTag.getString("id")).filter(p -> p == EntityType.PARROT).ifPresent((entityType) -> {
+           stack.push();
 
-        if (render == null) {
-            return entity;
-        }
+           getModel().transform(BodyPart.BODY, stack);
 
-        GlStateManager.pushMatrix();
+           stack.translate(left ? 0.25 : -0.25, entity.isInSneakingPose() ? -0.5 : -0.25, 0.35);
+           stack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(left ? -5 : 5));
 
-        getModel().transform(BodyPart.BODY);
-
-        // render on the haunches
-        GlStateManager.translatef(left ? 0.25F : -0.25F, 0.25F, 0.35F);
-        GlStateManager.scalef(1, -1, -1);
-        GlStateManager.rotatef(left ? -5 : 5, 0, 0, 1);
-
-        // look where the player is looking
-        entity.prevHeadYaw = headYaw;
-        entity.headYaw = headYaw;
-        entity.pitch = headPitch;
-        entity.prevPitch = headPitch;
-
-        render.render(entity, 0, 0, 0, 0, 0);
-
-        GlStateManager.popMatrix();
-        return entity;
+           VertexConsumer vertexConsumer = renderContext.getBuffer(model.getLayer(ParrotEntityRenderer.SKINS[riderTag.getInt("Variant")]));
+           model.method_17106(stack, vertexConsumer, lightUv, OverlayTexture.DEFAULT_UV, limbDistance, limbAngle, headYaw, headPitch, entity.age);
+           stack.pop();
+        });
     }
 }

@@ -1,20 +1,23 @@
 package com.minelittlepony.client.model.components;
 
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.entity.model.AnimalModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Vec3d;
 
+import com.google.common.collect.ImmutableList;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.util.render.Part;
-import com.mojang.blaze3d.platform.GlStateManager;
 
 import static com.minelittlepony.model.PonyModelConstants.*;
 
 /**
  * Modified from ModelElytra.
  */
-public class PonyElytra<T extends LivingEntity> extends EntityModel<T> {
+public class PonyElytra<T extends LivingEntity> extends AnimalModel<T> {
 
     public boolean isSneaking;
 
@@ -26,17 +29,25 @@ public class PonyElytra<T extends LivingEntity> extends EntityModel<T> {
         rightWing.flip().box( 0,  0, 0, 10, 20, 2, 1);
     }
 
-    /**
-     * Sets the model's various rotation angles.
-     *
-     * See {@link AbstractPonyModel.render} for an explanation of the various parameters.
-     */
     @Override
-    public void render(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        GlStateManager.disableRescaleNormal();
-        GlStateManager.disableCull();
-        leftWing.render(scale);
-        rightWing.render(scale);
+    protected Iterable<ModelPart> getHeadParts() {
+        return ImmutableList.of();
+    }
+
+    @Override
+    protected Iterable<ModelPart> getBodyParts() {
+        return ImmutableList.of(leftWing, rightWing);
+    }
+
+    // broken bridge
+    @Override
+    public void accept(ModelPart t) {
+        super.method_22696(t);
+    }
+
+    @Override
+    public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float limbDistance, float limbAngle, float tickDelta, float alpha) {
+        super.render(stack, vertices, overlayUv, lightUv, limbDistance, limbAngle, tickDelta, alpha);
     }
 
     /**
@@ -45,9 +56,7 @@ public class PonyElytra<T extends LivingEntity> extends EntityModel<T> {
      * See {@link AbstractPonyModel.setRotationAngles} for an explanation of the various parameters.
      */
     @Override
-    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        super.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
-
+    public void setAngles(T entity, float limbDistance, float limbAngle, float age, float headYaw, float headPitch) {
         float rotateX = PI / 2;
         float rotateY = PI / 8;
         float rotateZ = PI / 12;
@@ -96,5 +105,4 @@ public class PonyElytra<T extends LivingEntity> extends EntityModel<T> {
         rightWing.yaw = -leftWing.yaw;
         rightWing.roll = -leftWing.roll;
     }
-
 }

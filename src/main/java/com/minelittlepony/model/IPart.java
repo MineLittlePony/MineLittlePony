@@ -1,17 +1,11 @@
 package com.minelittlepony.model;
 
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.util.math.MatrixStack;
+
 import java.util.UUID;
 
 public interface IPart extends PonyModelConstants {
-    /**
-     * Initialises all of the boxes in this modelpart.
-     * @param yOffset
-     * @param stretch
-     */
-    default void init(float yOffset, float stretch) {
-
-    }
-
     /**
      * Sets the model's various rotation angles.
      *
@@ -24,7 +18,7 @@ public interface IPart extends PonyModelConstants {
     /**
      * Renders this model component.
      */
-    void renderPart(float scale, UUID interpolatorId);
+    void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId);
 
     /**
      * Sets whether this part should be rendered.

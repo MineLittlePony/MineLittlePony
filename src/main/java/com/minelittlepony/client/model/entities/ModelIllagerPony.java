@@ -14,8 +14,8 @@ public class ModelIllagerPony<T extends IllagerEntity> extends ModelAlicorn<T> {
     }
 
     @Override
-    public void setAngles(T illager, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        super.setAngles(illager, move, swing, ticks, headYaw, headPitch, scale);
+    public void setAngles(T illager, float move, float swing, float ticks, float headYaw, float headPitch) {
+        super.setAngles(illager, move, swing, ticks, headYaw, headPitch);
 
         IllagerEntity.State pose = illager.getState();
 

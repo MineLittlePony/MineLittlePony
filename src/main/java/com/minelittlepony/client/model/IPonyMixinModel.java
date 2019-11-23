@@ -1,6 +1,7 @@
 package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 
@@ -22,13 +23,8 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     }
 
     @Override
-    default void init(float yOffset, float stretch) {
-        mixin().init(yOffset, stretch);
-    }
-
-    @Override
-    default void transform(BodyPart part) {
-        mixin().transform(part);
+    default void transform(BodyPart part, MatrixStack stack) {
+        mixin().transform(part, stack);
     }
 
     @Override
@@ -77,8 +73,8 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     }
 
     @Override
-    default void setArmAngle(float angle, Arm side) {
-        mixin().setArmAngle(angle, side);
+    default void setArmAngle(Arm arm, MatrixStack stack) {
+        mixin().setArmAngle(arm, stack);
     }
 
     @Override

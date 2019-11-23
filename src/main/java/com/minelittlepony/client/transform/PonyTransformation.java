@@ -6,7 +6,7 @@ import com.google.common.collect.Maps;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.pony.meta.Size;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import java.util.Map;
 
@@ -227,15 +227,15 @@ public enum PonyTransformation {
     }
 
     public static void translateVec(Vec3d offset) {
-        GlStateManager.translated(offset.x, offset.y, offset.z);
+        RenderSystem.translated(offset.x, offset.y, offset.z);
     }
 
     protected void scale(float x, float y, float z) {
-        GlStateManager.scalef(x, y, z);
+        RenderSystem.scalef(x, y, z);
     }
 
     protected void translate(float x, float y, float z) {
-        GlStateManager.translatef(x, y, z);
+        RenderSystem.translatef(x, y, z);
     }
 
     public Vec3d getRiderOffset() {

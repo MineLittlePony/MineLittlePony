@@ -12,8 +12,6 @@ import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.IPonyData;
 import com.minelittlepony.pony.meta.Size;
 
-import java.util.Random;
-
 /**
  * The raw pony model without any implementations.
  * Will act effectively the same as a normal player model without any hints
@@ -42,6 +40,12 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends PlayerEnti
         isChild = entity.isBaby();
         isSneaking = entity.isInSneakingPose();
         attributes.updateLivingState(entity, pony);
+    }
+
+    // Broken bridge
+    @Override
+    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
+        super.method_17087(entity, move, swing, ticks, headYaw, headPitch);
     }
 
     @Override
@@ -102,7 +106,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends PlayerEnti
         }
     }
 
-    @Override
+    /*@Override
     public ModelPart getRandomCuboid(Random rand) {
         // grab one at random, but cycle through the list until you find one that's filled.
         // Return if you find one, or if you get back to where you started in which case there isn't any.
@@ -127,5 +131,5 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends PlayerEnti
         }
 
         return result;
-    }
+    }*/
 }

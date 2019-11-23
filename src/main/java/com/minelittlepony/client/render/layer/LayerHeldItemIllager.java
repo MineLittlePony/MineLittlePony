@@ -1,5 +1,7 @@
 package com.minelittlepony.client.render.layer;
 
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.util.Arm;
 
@@ -13,15 +15,15 @@ public class LayerHeldItemIllager<T extends IllagerEntity, M extends ModelAlicor
     }
 
     @Override
-    public void render(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
         if (shouldRender(entity)) {
-            super.render(entity, move, swing, partialTicks, ticks, headYaw, headPitch, scale);
+            super.render(stack, renderContext, lightUv, entity, limbDistance, limbAngle, tickDelta, age, headYaw, headPitch);
         }
     }
 
     @Override
-    protected void renderArm(Arm side) {
-        getModel().getArm(side).applyTransform(0.0625F);
+    protected void renderArm(Arm arm, MatrixStack stack) {
+        getModel().getArm(arm).rotate(stack);
     }
 
     public boolean shouldRender(T entity) {

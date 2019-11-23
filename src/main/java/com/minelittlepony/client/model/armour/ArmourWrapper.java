@@ -25,12 +25,6 @@ public class ArmourWrapper<T extends LivingEntity> implements IEquestrianArmour<
     }
 
     @Override
-    public void init() {
-        outerLayer.init(0, 1.05F);
-        innerLayer.init(0, 0.5F);
-    }
-
-    @Override
     public ModelPonyArmour<T> getArmorForLayer(ArmourLayer layer) {
 
         if (layer == ArmourLayer.INNER) {

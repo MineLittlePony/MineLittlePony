@@ -10,9 +10,12 @@ import net.minecraft.block.AbstractSkullBlock;
 import net.minecraft.block.SkullBlock.SkullType;
 import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ArmorItem;
@@ -32,21 +35,21 @@ public class LayerPonyCustomHead<T extends LivingEntity, M extends EntityModel<T
     }
 
     @Override
-    public void render(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
         ItemStack itemstack = entity.getEquippedStack(EquipmentSlot.HEAD);
         if (!itemstack.isEmpty()) {
             M model = getContext().getModelWrapper().getBody();
             Item item = itemstack.getItem();
 
-            pushMatrix();
+            stack.push();
 
-            model.transform(BodyPart.HEAD);
-            model.getHead().applyTransform(0.0625f);
+            model.transform(BodyPart.HEAD, stack);
+            model.getHead().rotate(stack);
 
             if (model instanceof AbstractPonyModel) {
-                translatef(0, 0.225F, 0);
+                stack.translate(0, 0.225F, 0);
             } else {
-                translatef(0, 0, 0.15F);
+                stack.translate(0, 0, 0.15F);
             }
 
             color4f(1, 1, 1, 1);
@@ -54,25 +57,25 @@ public class LayerPonyCustomHead<T extends LivingEntity, M extends EntityModel<T
             if (item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof AbstractSkullBlock) {
                 boolean isVillager = entity instanceof VillagerDataContainer;
 
-                renderSkull(itemstack, isVillager, move);
+                renderSkull(stack, renderContext, itemstack, isVillager, limbDistance, lightUv);
             } else if (!(item instanceof ArmorItem) || ((ArmorItem)item).getSlotType() != EquipmentSlot.HEAD) {
-                renderBlock(entity, itemstack);
+                renderBlock(stack, renderContext, entity, itemstack, lightUv);
             }
 
-            popMatrix();
+            stack.pop();
         }
 
     }
 
-    private void renderBlock(T entity, ItemStack itemstack) {
-        rotatef(180, 0, 1, 0);
-        scalef(0.625F, -0.625F, -0.625F);
-        translatef(0, 0.4F, -0.21F);
+    private void renderBlock(MatrixStack stack, VertexConsumerProvider renderContext, T entity, ItemStack itemstack, int lightUv) {
+        stack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180));
+        stack.scale(0.625F, -0.625F, -0.625F);
+        stack.translate(0, 0.4F, -0.21F);
 
-        MinecraftClient.getInstance().getFirstPersonRenderer().renderItem(entity, itemstack, ModelTransformation.Type.HEAD);
+        MinecraftClient.getInstance().getFirstPersonRenderer().renderItem(entity, itemstack, ModelTransformation.Type.HEAD, false, stack, renderContext, lightUv);
     }
 
-    private void renderSkull(ItemStack itemstack, boolean isVillager, float limbSwing) {
+    private void renderSkull(MatrixStack stack, VertexConsumerProvider renderContext, ItemStack itemstack, boolean isVillager, float limbDistance, int lightUv) {
         translatef(0, 0, -0.14F);
         float f = 1.1875f;
         scalef(f, -f, -f);
@@ -97,12 +100,6 @@ public class LayerPonyCustomHead<T extends LivingEntity, M extends EntityModel<T
 
         SkullType type = ((AbstractSkullBlock) ((BlockItem) itemstack.getItem()).getBlock()).getSkullType();
 
-        SkullBlockEntityRenderer.INSTANCE.render(-0.5F, 0, -0.5F, null, 180, type, profile, -1, limbSwing);
+        SkullBlockEntityRenderer.render(null, 180, type, profile, limbDistance, stack, renderContext, lightUv);
     }
-
-    @Override
-    public boolean hasHurtOverlay() {
-        return false;
-    }
-
 }

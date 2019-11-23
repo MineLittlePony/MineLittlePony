@@ -1,6 +1,8 @@
 package com.minelittlepony.client.model.entities;
 
 import net.minecraft.entity.mob.WitherSkeletonEntity;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
@@ -18,17 +20,13 @@ public class ModelSkeletonPony<T extends HostileEntity> extends ModelAlicorn<T> 
 
     public ModelSkeletonPony() {
         super(false);
-        attributes.armWidth = 2;
-        attributes.armDepth = 2;
-        attributes.armRotationX = 3F;
-        attributes.armRotationY = 8F;
     }
 
     @Override
-    protected void renderVest(float scale) { }
+    protected void renderVest(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) { }
 
     @Override
-    protected void renderSleeves(float scale) { }
+    protected void renderSleeves(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) { }
 
     @Override
     public void animateModel(T entity, float move, float swing, float ticks) {

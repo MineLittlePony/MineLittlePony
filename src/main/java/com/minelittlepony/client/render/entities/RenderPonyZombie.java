@@ -1,10 +1,10 @@
 package com.minelittlepony.client.render.entities;
 
 import com.minelittlepony.client.model.entities.ModelZombiePony;
-import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.DrownedEntity;
 import net.minecraft.entity.mob.GiantEntity;
 import net.minecraft.entity.mob.HuskEntity;
@@ -27,7 +27,6 @@ public class RenderPonyZombie<Zombie extends ZombieEntity> extends RenderPonyMob
     public Identifier findTexture(Zombie entity) {
         return ZOMBIE;
     }
-
 
     public static class Drowned extends RenderPonyZombie<DrownedEntity> {
 
@@ -60,9 +59,9 @@ public class RenderPonyZombie<Zombie extends ZombieEntity> extends RenderPonyMob
         }
 
         @Override
-        public void scale(HuskEntity entity, float ticks) {
-            super.scale(entity, ticks);
-            GlStateManager.scalef(1.0625F, 1.0625F, 1.0625F);
+        public void scale(HuskEntity entity, MatrixStack stack, float ticks) {
+            super.scale(entity, stack, ticks);
+            stack.scale(1.0625F, 1.0625F, 1.0625F);
         }
 
         @Override
@@ -79,9 +78,9 @@ public class RenderPonyZombie<Zombie extends ZombieEntity> extends RenderPonyMob
 		}
 
 		@Override
-		public void scale(GiantEntity entity, float ticks) {
-	        super.scale(entity, ticks);
-	        GlStateManager.scalef(3, 3, 3);
+		public void scale(GiantEntity entity, MatrixStack stack, float ticks) {
+	        super.scale(entity, stack, ticks);
+	        stack.scale(3, 3, 3);
 	    }
 
 		@Override

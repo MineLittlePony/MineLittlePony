@@ -1,6 +1,8 @@
 package com.minelittlepony.client.model.components;
 
 import net.minecraft.client.model.Model;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
@@ -72,12 +74,12 @@ public class PonyTail extends Part implements IPart {
 
     @Override
     public void setVisible(boolean visible) {
-        field_3664 = !visible;
+        this.visible = visible;
     }
 
     @Override
-    public void renderPart(float scale, UUID interpolatorId) {
-        render(scale);
+    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
+        render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
     private class TailSegment extends Part {

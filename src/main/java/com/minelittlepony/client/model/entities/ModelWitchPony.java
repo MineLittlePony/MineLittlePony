@@ -26,8 +26,8 @@ public class ModelWitchPony extends ModelZebra<WitchEntity> {
     }
 
     @Override
-    public void setAngles(WitchEntity entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        super.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
+    public void setAngles(WitchEntity entity, float move, float swing, float ticks, float headYaw, float headPitch) {
+        super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
 
         if (entity.isDrinking()) {
             float noseRot = MathHelper.sin(entity.age);
@@ -49,8 +49,8 @@ public class ModelWitchPony extends ModelZebra<WitchEntity> {
             rightSleeve.pitch = legDrinkingAngle;
             rightArm.yaw = 0.1F;
             rightSleeve.yaw = 0.1F;
-            rightArm.z = 0.1F;
-            rightSleeve.z = 0.1F;
+            rightArm.pivotX = 0.1F;
+            rightSleeve.pivotX = 0.1F;
 
             if (rot > 0) {
                 rot = 0;
@@ -59,8 +59,8 @@ public class ModelWitchPony extends ModelZebra<WitchEntity> {
             head.pitch = -rot / 2;
             helmet.pitch = -rot / 2;
         } else {
-            rightArm.z = 0;
-            rightSleeve.z = 0;
+            rightArm.pivotX = 0;
+            rightSleeve.pivotX = 0;
         }
     }
 

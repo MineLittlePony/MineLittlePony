@@ -2,7 +2,6 @@ package com.minelittlepony.client.model;
 
 import net.minecraft.entity.LivingEntity;
 
-import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.armour.IArmour;
 import com.minelittlepony.model.armour.IEquestrianArmour;
@@ -18,8 +17,6 @@ public class ModelWrapper<T extends LivingEntity, M extends IModel> implements I
 
     private final IEquestrianArmour<?> armor;
 
-    private int lastModelUpdate = 0;
-
     /**
      * Creates a new model wrapper to contain the given pony.
      */
@@ -27,12 +24,6 @@ public class ModelWrapper<T extends LivingEntity, M extends IModel> implements I
         body = model;
         armor = model.createArmour();
         armor.apply(model.getMetadata());
-
-        try {
-            init();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public M getBody() {
@@ -49,20 +40,7 @@ public class ModelWrapper<T extends LivingEntity, M extends IModel> implements I
 
     @Override
     public void apply(IPonyData meta) {
-        int modelRevision = MineLittlePony.getInstance().getModelRevision();
-
-        if (modelRevision != lastModelUpdate) {
-            lastModelUpdate = modelRevision;
-            init();
-        }
-
         body.apply(meta);
         armor.apply(meta);
-    }
-
-    @Override
-    public void init() {
-        body.init(0, 0);
-        armor.init();
     }
 }

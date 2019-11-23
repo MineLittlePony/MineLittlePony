@@ -1,13 +1,16 @@
 package com.minelittlepony.client.render.layer;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.util.math.MatrixStack;
 
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.components.ModelDeadMau5Ears;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.model.BodyPart;
-import com.mojang.blaze3d.platform.GlStateManager;
 
 public class LayerDJPon3Head<T extends AbstractClientPlayerEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyLayer<T, M> {
 
@@ -18,26 +21,22 @@ public class LayerDJPon3Head<T extends AbstractClientPlayerEntity, M extends Ent
     }
 
     @Override
-    public void render(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
         if ("deadmau5".equals(entity.getName().getString())) {
-            getContext().bindTexture(entity.getSkinTexture());
+            stack.push();
+            getPlayerModel().transform(BodyPart.HEAD, stack);
+            getPlayerModel().getHead().rotate(stack);
 
-            GlStateManager.pushMatrix();
-            getPlayerModel().transform(BodyPart.HEAD);
-            getPlayerModel().getHead().applyTransform(scale);
-
-            GlStateManager.scalef(1.3333334F, 1.3333334F, 1.3333334F);
-            GlStateManager.translatef(0, 0.3F, 0);
+            stack.scale(1.3333334F, 1.3333334F, 1.3333334F);
+            stack.translate(0, 0.3F, 0);
 
             deadMau5.setVisible(true);
-            deadMau5.render(move, swing, partialTicks, 0, 0, scale);
 
-            GlStateManager.popMatrix();
+            VertexConsumer vertices = renderContext.getBuffer(deadMau5.getLayer(entity.getSkinTexture()));
+
+            deadMau5.render(stack, vertices, OverlayTexture.DEFAULT_UV, lightUv, limbDistance, limbAngle, tickDelta, 1);
+
+            stack.pop();
         }
-    }
-
-    @Override
-    public boolean hasHurtOverlay() {
-        return true;
     }
 }

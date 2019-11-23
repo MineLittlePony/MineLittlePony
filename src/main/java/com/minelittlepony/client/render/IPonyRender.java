@@ -10,6 +10,7 @@ import com.minelittlepony.pony.IPony;
 import com.minelittlepony.util.math.MathUtil;
 
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 
@@ -34,17 +35,17 @@ public interface IPonyRender<T extends LivingEntity, M extends EntityModel<T> & 
     /**
      * Called by riders to have their transportation adjust their position.
      */
-    default void translateRider(T entity, IPony entityPony, LivingEntity passenger, IPony passengerPony, float ticks) {
+    default void translateRider(T entity, IPony entityPony, LivingEntity passenger, IPony passengerPony, MatrixStack stack, float ticks) {
         if (!passengerPony.getRace(false).isHuman()) {
             //float yaw = MathUtil.interpolateDegress(entity.prevRenderYawOffset, entity.renderYawOffset, ticks);
-            float yaw = MathUtil.interpolateDegress((float)entity.prevRenderY, (float)entity.y, ticks);
+            float yaw = MathUtil.interpolateDegress((float)entity.prevRenderY, (float)entity.getY(), ticks);
 
             getModelWrapper().apply(entityPony.getMetadata());
             M model = getModelWrapper().getBody();
 
-            model.transform(BodyPart.BACK);
+            model.transform(BodyPart.BACK, stack);
 
-            getInternalRenderer().applyPostureRiding(entity, yaw, ticks);
+            getInternalRenderer().applyPostureRiding(entity, stack, yaw, ticks);
         }
     }
 }

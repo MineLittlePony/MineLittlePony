@@ -8,6 +8,8 @@ import com.mojang.blaze3d.platform.GlStateManager;
 
 import java.util.UUID;
 
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 import org.lwjgl.opengl.GL11;
@@ -60,10 +62,10 @@ public class SeaponyTail implements IPart {
     }
 
     @Override
-    public void renderPart(float scale, UUID interpolatorId) {
+    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         GlStateManager.enableBlend();
-        tailBase.render(scale);
+        tailBase.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         GlStateManager.disableBlend();
         GL11.glPopAttrib();
     }

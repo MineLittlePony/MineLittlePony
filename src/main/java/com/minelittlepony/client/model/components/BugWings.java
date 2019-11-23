@@ -5,31 +5,27 @@ import net.minecraft.client.model.Model;
 import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IPegasus;
 
+@Deprecated
 public class BugWings<T extends Model & IPegasus> extends PegasusWings<T> {
 
     public BugWings(T model, float yOffset, float stretch) {
         super(model, yOffset, stretch);
     }
 
-    @Override
+    @Deprecated
     public void init(float yOffset, float stretch) {
         leftWing = new Wing(pegasus, false, false, yOffset, stretch, 16);
         rightWing = new Wing(pegasus, true, false, yOffset, stretch, 16);
         legacyWing = rightWing;
     }
 
-    public class Wing extends PegasusWings<T>.Wing {
+    public class Wing extends PegasusWings.Wing {
 
         public Wing(T pegasus, boolean right, boolean legacy, float y, float scale, int texY) {
             super(pegasus, right, legacy, y, scale, texY);
         }
 
-        @Override
-        protected void addClosedWing(boolean right, float y, float scale) {
-
-        }
-
-        @Override
+        @Deprecated
         protected void addFeathers(boolean right, boolean l, float rotationPointY, float scale) {
             float r = right ? -1 : 1;
 
@@ -49,11 +45,6 @@ public class BugWings<T extends Model & IPegasus> extends PegasusWings<T> {
 
             extended.child(primary);
             extended.child(secondary);
-        }
-
-        @Override
-        public void render(float scale) {
-            extended.render(scale);
         }
     }
 }

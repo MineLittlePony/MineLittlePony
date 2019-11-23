@@ -4,10 +4,10 @@ import com.minelittlepony.client.model.entities.ModelSkeletonPony;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItem;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItemMagical;
 import com.minelittlepony.client.render.layer.LayerPonyStrayOverlay;
-import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.AbstractSkeletonEntity;
 import net.minecraft.entity.mob.StrayEntity;
 import net.minecraft.entity.mob.WitherSkeletonEntity;
@@ -58,9 +58,9 @@ public class RenderPonySkeleton<Skeleton extends AbstractSkeletonEntity> extends
         }
 
         @Override
-        public void scale(WitherSkeletonEntity skeleton, float ticks) {
-            super.scale(skeleton, ticks);
-            GlStateManager.scalef(1.2F, 1.2F, 1.2F);
+        public void scale(WitherSkeletonEntity skeleton, MatrixStack stack, float ticks) {
+            super.scale(skeleton, stack, ticks);
+            stack.scale(1.2F, 1.2F, 1.2F);
         }
 
     }

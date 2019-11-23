@@ -35,9 +35,9 @@ public class RenderSeaponyPlayer extends RenderPonyPlayer {
         float interpolated = pony.getMetadata().getInterpolator(player.getUuid()).interpolate("seapony_state", state, 5);
 
         if (!MathUtil.compareFloats(interpolated, state)) {
-            double x = player.x + (player.getEntityWorld().getRandom().nextFloat() * 2) - 1;
-            double y = player.y + (player.getEntityWorld().getRandom().nextFloat() * 2);
-            double z = player.z + (player.getEntityWorld().getRandom().nextFloat() * 2) - 1;
+            double x = player.getX() + (player.getEntityWorld().getRandom().nextFloat() * 2) - 1;
+            double y = player.getY() + (player.getEntityWorld().getRandom().nextFloat() * 2);
+            double z = player.getZ() + (player.getEntityWorld().getRandom().nextFloat() * 2) - 1;
 
             player.getEntityWorld().addParticle(ParticleTypes.END_ROD, x, y, z, 0, 0, 0);
         }

@@ -14,7 +14,6 @@ public class LayerPonyStrayOverlay<Skeleton extends AbstractSkeletonEntity> exte
 
     public LayerPonyStrayOverlay(LivingEntityRenderer<Skeleton, ModelSkeletonPony<Skeleton>> render) {
         super(render);
-        overlayModel.init(0, 0.25F);
     }
 
     @Override

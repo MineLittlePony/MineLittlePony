@@ -18,20 +18,19 @@ import com.minelittlepony.client.render.layer.LayerPonyElytra;
 import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.meta.Race;
-import com.mojang.blaze3d.platform.GlStateManager;
 
 import java.util.List;
 
 import net.minecraft.block.BedBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.VisibleRegion;
+import net.minecraft.client.render.Frustum;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
 
@@ -57,7 +56,7 @@ public class RenderPonyPlayer extends PlayerEntityRenderer implements IPonyRende
         addLayer(new LayerPonyElytra<>(this));
         addLayer(new LayerHeldPonyItemMagical<>(this));
         addLayer(new LayerPonyCape<>(this));
-        addLayer(new LayerEntityOnPonyShoulder<>(renderManager, this));
+        addLayer(new LayerEntityOnPonyShoulder<>(this));
         addLayer(new LayerGear<>(this));
     }
 
@@ -67,42 +66,40 @@ public class RenderPonyPlayer extends PlayerEntityRenderer implements IPonyRende
     }
 
     @Override
-    public float scaleAndTranslate(AbstractClientPlayerEntity player, float ticks) {
-        if (!player.hasVehicle() && !player.isSleeping()) {
-            float x = player.getWidth() / 2 * renderPony.getPony(player).getMetadata().getSize().getScaleFactor();
-            float y = 0;
-
-            if (player.isInSneakingPose()) {
-                // Sneaking makes the player 1/15th shorter.
-                // This should be compatible with height-changing mods.
-                y += player.getHeight() / 15;
-            }
-
-            super.postRender(player, 0, y, x, 0, ticks);
-        }
-
-        return super.scaleAndTranslate(player, ticks);
-    }
-
-    @Override
-    protected void scale(AbstractClientPlayerEntity player, float ticks) {
-        renderPony.preRenderCallback(player, ticks);
-        field_4673 = renderPony.getShadowScale();
+    protected void scale(AbstractClientPlayerEntity player, MatrixStack stack, float ticks) {
+        renderPony.preRenderCallback(player, stack, ticks);
 
         if (player.hasVehicle()) {
-            GlStateManager.translated(0, player.getHeightOffset(), 0);
+            stack.translate(0, player.getHeightOffset(), 0);
         }
     }
 
     @Override
-    public void render(AbstractClientPlayerEntity entity, double xPosition, double yPosition, double zPosition, float yaw, float ticks) {
-        super.render(entity, xPosition, yPosition, zPosition, yaw, ticks);
+    public void render(AbstractClientPlayerEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
+        field_4673 = renderPony.getShadowScale();
+        super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
 
-        DebugBoundingBoxRenderer.instance.render(renderPony.getPony(entity), entity, ticks);
+        DebugBoundingBoxRenderer.instance.render(renderPony.getPony(entity), entity, stack, renderContext);
+
+        // Translate the shadow position after everything is done
+        // (shadows are drawn after us)
+        if (!entity.hasVehicle() && !entity.isSleeping()) {
+            float x = entity.getWidth() / 2 * renderPony.getPony(entity).getMetadata().getSize().getScaleFactor();
+            float y = 0;
+
+            if (entity.isInSneakingPose()) {
+                // Sneaking makes the player 1/15th shorter.
+                // This should be compatible with height-changing mods.
+                y += entity.getHeight() / 15;
+            }
+
+            stack.translate(x, y, 0);
+        }
+
     }
 
     @Override
-    public boolean isVisible(AbstractClientPlayerEntity entity, VisibleRegion camera, double camX, double camY, double camZ) {
+    public boolean isVisible(AbstractClientPlayerEntity entity, Frustum camera, double camX, double camY, double camZ) {
         if (entity.isSleeping() && entity == MinecraftClient.getInstance().player) {
             return true;
         }
@@ -110,58 +107,51 @@ public class RenderPonyPlayer extends PlayerEntityRenderer implements IPonyRende
     }
 
     @Override
-    protected void renderLabel(AbstractClientPlayerEntity entity, String name, double x, double y, double z, int maxDistance) {
+    protected void renderLabelIfPresent(AbstractClientPlayerEntity entity, String name, MatrixStack stack, VertexConsumerProvider renderContext, int maxDistance) {
         if (entity.isSleeping()) {
             if (entity.getSleepingPosition().isPresent() && entity.getEntityWorld().getBlockState(entity.getSleepingPosition().get()).getBlock() instanceof BedBlock) {
                 double bedRad = Math.toRadians(entity.getSleepingDirection().asRotation());
-                x += Math.cos(bedRad);
-                z -= Math.sin(bedRad);
+
+                stack.translate(Math.cos(bedRad), 0, -Math.sin(bedRad));
             }
         }
-        super.renderLabel(entity, name, x, renderPony.getNamePlateYOffset(entity, y), z, maxDistance);
+        stack.translate(0, renderPony.getNamePlateYOffset(entity), 0);
+        super.renderLabelIfPresent(entity, name, stack, renderContext, maxDistance);
     }
 
     @Override
-    public void postRender(Entity player, double x, double y, double z, float yaw, float ticks) {
-        if (player.hasVehicle() && ((LivingEntity)player).isSleeping()) {
-            super.postRender(player, x, y, z, yaw, ticks);
-        }
+    public final void renderRightArm(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, AbstractClientPlayerEntity player) {
+        renderArm(stack, renderContext, lightUv, player, Arm.RIGHT);
     }
 
     @Override
-    public final void renderRightArm(AbstractClientPlayerEntity player) {
-        renderArm(player, Arm.RIGHT);
+    public final void renderLeftArm(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, AbstractClientPlayerEntity player) {
+        renderArm(stack, renderContext, lightUv, player, Arm.LEFT);
     }
 
-    @Override
-    public final void renderLeftArm(AbstractClientPlayerEntity player) {
-        renderArm(player, Arm.LEFT);
-    }
-
-    protected void renderArm(AbstractClientPlayerEntity player, Arm side) {
+    protected void renderArm(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, AbstractClientPlayerEntity player, Arm side) {
         renderPony.updateModel(player);
-        bindEntityTexture(player);
 
-        GlStateManager.pushMatrix();
+        stack.push();
         float reflect = side == Arm.LEFT ? 1 : -1;
 
-        GlStateManager.translatef(reflect * -0.1F, -0.74F, 0);
+        stack.translate(reflect * -0.1F, -0.74F, 0);
 
         if (side == Arm.LEFT) {
-            super.renderLeftArm(player);
+            super.renderLeftArm(stack, renderContext, lightUv, player);
         } else {
-            super.renderRightArm(player);
+            super.renderRightArm(stack, renderContext, lightUv, player);
         }
 
-        GlStateManager.popMatrix();
+        stack.pop();
     }
 
     @Override
-    protected void setupTransforms(AbstractClientPlayerEntity player, float age, float yaw, float ticks) {
-        yaw = renderPony.getRenderYaw(player, yaw, ticks);
-        super.setupTransforms(player, age, yaw, ticks);
+    protected void setupTransforms(AbstractClientPlayerEntity entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
+        rotationYaw = renderPony.getRenderYaw(entity, rotationYaw, partialTicks);
+        super.setupTransforms(entity, stack, ageInTicks, rotationYaw, partialTicks);
 
-        renderPony.applyPostureTransform(player, yaw, ticks);
+        renderPony.applyPostureTransform(entity, stack, rotationYaw, partialTicks);
     }
 
     @Override

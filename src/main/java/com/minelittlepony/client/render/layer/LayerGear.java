@@ -1,9 +1,12 @@
 package com.minelittlepony.client.render.layer;
 
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
-
-import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
 import com.minelittlepony.client.model.IPonyModel;
@@ -16,7 +19,6 @@ import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.model.gear.IStackable;
-import com.mojang.blaze3d.platform.GlStateManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +45,7 @@ public class LayerGear<T extends LivingEntity, M extends EntityModel<T> & IPonyM
     }
 
     @Override
-    public void render(T entity, float move, float swing, float partialTicks, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
 
         if (entity.isInvisible()) {
             return;
@@ -55,37 +57,34 @@ public class LayerGear<T extends LivingEntity, M extends EntityModel<T> & IPonyM
 
         for (IGear gear : gears) {
             if (getContext().shouldRender(model, entity, gear)) {
-                GlStateManager.pushMatrix();
-                model.transform(gear.getGearLocation());
-                model.getBodyPart(gear.getGearLocation()).applyTransform(scale);
+                stack.push();
+                model.transform(gear.getGearLocation(), stack);
+                model.getBodyPart(gear.getGearLocation()).rotate(stack);
 
                 if (gear instanceof IStackable) {
                     BodyPart part = gear.getGearLocation();
                     renderStackingOffsets.compute(part, (k, v) -> {
                         float offset = ((IStackable)gear).getStackingOffset();
                         if (v != null) {
-                            GlStateManager.translatef(0, -v, 0);
+                            stack.translate(0, -v, 0);
                             offset += v;
                         }
                         return offset;
                     });
                 }
 
-                renderGear(model, entity, gear, move, swing, scale, ticks);
-                GlStateManager.popMatrix();
+                renderGear(model, entity, gear, stack, renderContext, lightUv, limbDistance, limbAngle, tickDelta);
+                stack.pop();
             }
         }
     }
 
-    private void renderGear(M model, T entity, IGear gear, float move, float swing, float scale, float ticks) {
-        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-
-        getContext().bindTexture(gear.getTexture(entity, getContext()));
+    private void renderGear(M model, T entity, IGear gear, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, float limbDistance, float limbAngle, float tickDelta) {
 
         gear.setLivingAnimations(model, entity);
-        gear.setRotationAndAngles(model.getAttributes().isGoingFast, entity.getUuid(), move, swing, model.getWobbleAmount(), ticks);
-        gear.renderPart(scale, entity.getUuid());
+        gear.setRotationAndAngles(model.getAttributes().isGoingFast, entity.getUuid(), limbDistance, limbAngle, model.getWobbleAmount(), tickDelta);
 
-        GL11.glPopAttrib();
+        VertexConsumer vertexConsumer = renderContext.getBuffer(RenderLayer.getEntitySolid(gear.getTexture(entity, getContext())));
+        gear.renderPart(stack, vertexConsumer, OverlayTexture.DEFAULT_UV, lightUv, limbDistance, limbAngle, tickDelta, 1F, entity.getUuid());
     }
 }

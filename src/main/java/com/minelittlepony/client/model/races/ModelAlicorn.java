@@ -1,9 +1,10 @@
 package com.minelittlepony.client.model.races;
 
-import com.minelittlepony.client.model.components.PegasusWings;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.model.IPegasus;
 
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
 public class ModelAlicorn<T extends LivingEntity> extends ModelUnicorn<T> implements IPegasus {
@@ -20,18 +21,8 @@ public class ModelAlicorn<T extends LivingEntity> extends ModelUnicorn<T> implem
     }
 
     @Override
-    public void init(float yOffset, float stretch) {
-        super.init(yOffset, stretch);
-        initWings(yOffset, stretch);
-    }
-
-    protected void initWings(float yOffset, float stretch) {
-        wings = new PegasusWings<>(this, yOffset, stretch);
-    }
-
-    @Override
-    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        super.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
+    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
+        super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
 
         if (canFly()) {
             getWings().setRotationAndAngles(attributes.isGoingFast, attributes.interpolatorId, move, swing, 0, ticks);
@@ -39,11 +30,11 @@ public class ModelAlicorn<T extends LivingEntity> extends ModelUnicorn<T> implem
     }
 
     @Override
-    protected void renderBody(float scale) {
-        super.renderBody(scale);
+    protected void renderBody(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+        super.renderBody(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
 
         if (canFly()) {
-            getWings().renderPart(scale, attributes.interpolatorId);
+            getWings().renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, attributes.interpolatorId);
         }
     }
 

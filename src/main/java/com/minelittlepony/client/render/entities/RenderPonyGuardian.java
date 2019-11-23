@@ -7,11 +7,13 @@ import com.minelittlepony.client.model.entities.ModelGuardianPony;
 import com.minelittlepony.client.render.entities.RenderPonyMob.Proxy;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItem;
 import com.minelittlepony.client.render.layer.LayerHeldPonyItemMagical;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.GuardianEntityRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.mob.ElderGuardianEntity;
 import net.minecraft.entity.mob.GuardianEntity;
@@ -43,27 +45,27 @@ public class RenderPonyGuardian extends GuardianEntityRenderer {
 
     @Override
     @Nonnull
-    protected final Identifier getTexture(GuardianEntity entity) {
+    public final Identifier getTexture(GuardianEntity entity) {
         return ponyRenderer.getTextureFor(entity);
     }
 
     @Override
-    protected void scale(GuardianEntity entity, float ticks) {
-        ponyRenderer.scale(entity, ticks);
+    protected void scale(GuardianEntity entity, MatrixStack stack, float ticks) {
+        ponyRenderer.scale(entity, stack, ticks);
     }
 
     @Override
-    public void render(GuardianEntity entity, double x, double y, double z, float entityYaw, float partialTicks) {
+    public void render(GuardianEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
         IResizeable resize = (IResizeable)entity;
         EntityDimensions origin = resize.getCurrentSize();
 
         // aligns the beam to their horns
         resize.setCurrentSize(EntityDimensions.changing(origin.width, entity instanceof ElderGuardianEntity ? 6 : 3));
 
-        super.render(entity, x, y, z, entityYaw, partialTicks);
+        super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
 
         // The beams in RenderGuardian leave lighting disabled, so we need to change it back. #MojangPls
-        GlStateManager.enableLighting();
+        RenderSystem.enableLighting();
         resize.setCurrentSize(origin);
     }
 
@@ -74,9 +76,9 @@ public class RenderPonyGuardian extends GuardianEntityRenderer {
         }
 
         @Override
-        protected void scale(GuardianEntity entity, float ticks) {
-            super.scale(entity, ticks);
-            GlStateManager.scalef(2.35F, 2.35F, 2.35F);
+        protected void scale(GuardianEntity entity, MatrixStack stack, float ticks) {
+            super.scale(entity, stack, ticks);
+            stack.scale(2.35F, 2.35F, 2.35F);
         }
     }
 }
