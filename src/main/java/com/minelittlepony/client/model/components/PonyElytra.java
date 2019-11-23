@@ -45,11 +45,6 @@ public class PonyElytra<T extends LivingEntity> extends AnimalModel<T> {
         super.method_22696(t);
     }
 
-    @Override
-    public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float limbDistance, float limbAngle, float tickDelta, float alpha) {
-        super.render(stack, vertices, overlayUv, lightUv, limbDistance, limbAngle, tickDelta, alpha);
-    }
-
     /**
      * Sets the model's various rotation angles.
      *

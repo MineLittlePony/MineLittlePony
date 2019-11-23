@@ -83,7 +83,7 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
 
     @Deprecated
     protected void initBody(float yOffset, float stretch) {
-        super.initBody(yOffset, stretch);
+        //super.initBody(yOffset, stretch);
 
         chestPiece = new com.minelittlepony.client.util.render.Part(this, 16, 8)
                 .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
@@ -114,7 +114,7 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
 
     @Deprecated
     protected void initLegs(float yOffset, float stretch) {
-        super.initLegs(yOffset, stretch);
+        //super.initLegs(yOffset, stretch);
 
         int armLength = attributes.armLength;
         int armWidth = attributes.armWidth;

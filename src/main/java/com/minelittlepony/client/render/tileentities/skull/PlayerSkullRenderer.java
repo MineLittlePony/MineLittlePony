@@ -2,13 +2,13 @@ package com.minelittlepony.client.render.tileentities.skull;
 
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.client.model.components.ModelDeadMau5Ears;
-import com.minelittlepony.client.render.RenderPony;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
 import com.mojang.authlib.GameProfile;
-import com.mojang.blaze3d.platform.GlStateManager;
 
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.DefaultSkinHelper;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 
@@ -21,15 +21,6 @@ public class PlayerSkullRenderer extends PonySkull {
     @Override
     public boolean canRender(PonyConfig config) {
         return config.ponyLevel.get() != PonyLevel.HUMANS;
-    }
-
-    @Override
-    public void preRender(boolean transparency) {
-        GlStateManager.setProfile(GlStateManager.RenderMode.PLAYER_SKIN);
-
-        if (!transparency) {
-            RenderPony.enableModelRenderProfile(false);
-        }
     }
 
     @Override
@@ -50,8 +41,8 @@ public class PlayerSkullRenderer extends PonySkull {
     }
 
     @Override
-    public void render(float animateTicks, float rotation, float scale) {
-        super.render(animateTicks, rotation, scale);
-        deadMau5.render(animateTicks, 0, 0, rotation, 0, scale);
+    public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+        super.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        deadMau5.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 }

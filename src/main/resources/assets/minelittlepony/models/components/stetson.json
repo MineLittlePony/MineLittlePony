@@ -1,0 +1,41 @@
+{
+	"texture": {"w": 64, "h": 64},
+	"rim": {
+		"texture": {"u": 16, "v": 33},
+		"rotate": [-0.3, 0, 0.1],
+		"cubes": [
+			{
+				"type": "mson:plane",
+				"face": "up",
+				"texture": {"u": 16, "v": 33},
+				"position": [-9, -4, -12], "size": [16, 17]
+			},
+			{
+				"type": "mson:plane",
+				"face": "down",
+				"texture": {"u": 0, "v": 33},
+				"position": [-9, -3.999, -12], "size": [16, 17]
+			}
+		],
+		"children": [
+			{
+				"cubes": [
+					{"from": [-5, -8, -6], "size": [9, 4, 9]},
+					{"from": [-6, -6, -7], "size": [11, 2, 11], "texture": {"u": 0, "v": 13}}
+				]
+			},
+			{
+				"center": [-9, -4, -12 ],
+				"rotate": [0.4, 0, 0],
+				"cubes": [
+					{
+						"type": "mson:plane",
+						"face": "south",
+						"texture": {"u": 0, "v": 27},
+						"position": [0, -6, 0], "size": [16, 6]
+					}
+				]
+			}
+		]
+	}
+}

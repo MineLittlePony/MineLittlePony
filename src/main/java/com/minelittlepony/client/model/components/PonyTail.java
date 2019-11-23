@@ -1,6 +1,7 @@
 package com.minelittlepony.client.model.components;
 
 import net.minecraft.client.model.Model;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
@@ -22,12 +23,9 @@ public class PonyTail extends Part implements IPart {
     public PonyTail(AbstractPonyModel<?> model) {
         super(model);
         theModel = model;
-    }
 
-    @Override
-    public void init(float yOffset, float stretch) {
         for (int i = 0; i < SEGMENTS; i++) {
-            addChild(new TailSegment(theModel, i, yOffset, stretch));
+            addChild(new TailSegment(theModel, i));
         }
     }
 
@@ -82,39 +80,35 @@ public class PonyTail extends Part implements IPart {
         render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
-    private class TailSegment extends Part {
+    private class TailSegment extends ModelPart {
 
         private final int index;
 
-        public TailSegment(Model model, int index, float yOffset, float stretch) {
+        public TailSegment(Model model, int index) {
             super(model);
             this.index = index;
 
-            y = ((float)index)/4 + 0.063f;
+            pivotY = ((float)index)/4 + 0.063f;
 
-            init(yOffset, stretch);
-        }
-
-        public void init(float yOffset, float stretch) {
             int texX = (index % 2) * 4;
 
-            around(TAIL_RP_X, TAIL_RP_Y + yOffset, 0);
+            around(TAIL_RP_X, TAIL_RP_Y, 0);
 
             if (index == 0) {
-                tex(32, 0).top(-2, 0, 2, 4, 4, stretch);
+                tex(32, 0).top(-2, 0, 2, 4, 4, 0);
             }
 
-            tex(36, texX) .east( 2, 0, 2, 4, 4, stretch)
-                          .west(-2, 0, 2, 4, 4, stretch);
-            tex(32, texX).south(-2, 0, 2, 4, 4, stretch)
-                         .north(-2, 0, 6, 4, 4, stretch);
-            tex(32, 0)  .bottom(-2, 4, 2, 4, 4, stretch);
+            tex(36, texX) .east( 2, 0, 2, 4, 4, 0)
+                          .west(-2, 0, 2, 4, 4, 0);
+            tex(32, texX).south(-2, 0, 2, 4, 4, 0)
+                         .north(-2, 0, 6, 4, 4, 0);
+            tex(32, 0)  .bottom(-2, 4, 2, 4, 4, 0);
         }
 
         @Override
-        public void render(float scale) {
+        public void render(MatrixStack stack, VertexConsumer renderContext, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
             if (index < tailStop) {
-                super.render(scale);
+                super.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
             }
         }
     }

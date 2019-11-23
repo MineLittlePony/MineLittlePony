@@ -5,15 +5,17 @@ import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.ICapitated;
 import com.minelittlepony.pony.IPonyData;
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.SkullOverlayEntityModel;
+import net.minecraft.client.util.math.MatrixStack;
 
 public class ModelPonyHead extends SkullOverlayEntityModel implements ICapitated<ModelPart> {
 
     private PonySnout snout;
 
-    private final UnicornHorn horn;
+    private UnicornHorn horn;
 
-    private final Part ears;
+    private ModelPart ears;
 
     public IPonyData metadata = new PonyData();
 
@@ -44,17 +46,17 @@ public class ModelPonyHead extends SkullOverlayEntityModel implements ICapitated
     }
 
     @Override
-    public void render(float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
+    public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
         snout.isHidden = metadata.getRace().isHuman();
-        ears.field_3664 = snout.isHidden;
+        ears.visible = !snout.isHidden;
 
         snout.setGender(metadata.getGender());
 
-        super.render(move, swing, ticks, headYaw, headPitch, scale);
+        super.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
 
         if (metadata.hasHorn()) {
-            getHead().applyTransform(scale);
-            horn.renderPart(scale, null);
+            getHead().rotate(stack);
+            horn.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, null);
         }
     }
 }

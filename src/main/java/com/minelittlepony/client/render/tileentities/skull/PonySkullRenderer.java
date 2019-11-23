@@ -8,28 +8,30 @@ import com.minelittlepony.settings.PonyConfig;
 import com.mojang.authlib.GameProfile;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.minecraft.block.AbstractSkullBlock;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SkullBlock;
+import net.minecraft.block.WallSkullBlock;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.SkullBlockEntity;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Direction;
 
-import org.lwjgl.opengl.GL11;
-
 import java.util.Map;
 import javax.annotation.Nullable;
-
-import static com.mojang.blaze3d.platform.GlStateManager.*;
 
 /**
  * PonySkullRenderer! It renders ponies as skulls, or something...
  */
 public class PonySkullRenderer extends SkullBlockEntityRenderer {
-
-    private static final PonySkullRenderer ponyInstance = new PonySkullRenderer();
-    private static SkullBlockEntityRenderer backup = null;
 
     private static final Map<SkullBlock.SkullType, ISkull> skullMap = Util.create(Maps.newHashMap(), (skullMap) -> {
         skullMap.put(SkullBlock.Type.SKELETON, new SkeletonSkullRenderer());
@@ -39,103 +41,91 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
     });
 
     /**
-     * Resolves the games skull renderer to either a specialised pony skull renderer
-     * or some other skull renderer depending on the ponyskulls state.
-     *
-     * Original/Existing renderer is stored to a backup variable as a fallback in case of mods.
+     * Resolves the games skull renderer to either a special pony skull renderer
+     * or some other skull renderer depending on the ponyskull's state.
      */
     public static void resolve(boolean ponySkulls) {
         if (ponySkulls) {
-            if (!(INSTANCE instanceof PonySkullRenderer)) {
-                backup = INSTANCE;
-                BlockEntityRendererRegistry.INSTANCE.register(BlockEntityType.SKULL, ponyInstance);
-            }
+            BlockEntityRendererRegistry.INSTANCE.register(BlockEntityType.SKULL, new PonySkullRenderer(BlockEntityRenderDispatcher.INSTANCE));
         } else {
-            if ((INSTANCE instanceof PonySkullRenderer)) {
-                if (backup == null) {
-                    backup = new SkullBlockEntityRenderer();
-                }
-                BlockEntityRendererRegistry.INSTANCE.register(BlockEntityType.SKULL, backup);
-            }
+            BlockEntityRendererRegistry.INSTANCE.register(BlockEntityType.SKULL, new SkullBlockEntityRenderer(BlockEntityRenderDispatcher.INSTANCE));
         }
     }
 
+    public PonySkullRenderer(BlockEntityRenderDispatcher dispatcher) {
+        super(dispatcher);
+    }
+
     @Override
-    public void render(float x, float y, float z, @Nullable Direction facing, float rotation, SkullBlock.SkullType skullType, @Nullable GameProfile profile, int destroyStage, float animateTicks) {
+    public void render(SkullBlockEntity skullBlockEntity, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j) {
+        float poweredTicks = skullBlockEntity.getTicksPowered(f);
+        BlockState state = skullBlockEntity.getCachedState();
+
+        boolean onWalll = state.getBlock() instanceof WallSkullBlock;
+
+        Direction direction = onWalll ? (Direction)state.get(WallSkullBlock.FACING) : null;
+
+        float angle = 22.5F * (direction != null ? (2 + direction.getHorizontal()) * 4F : (Integer)state.get(SkullBlock.ROTATION));
+
+        render(direction,
+                angle,
+                ((AbstractSkullBlock)state.getBlock()).getSkullType(),
+                skullBlockEntity.getOwner(), poweredTicks,
+                matrixStack, vertexConsumerProvider, i);
+    }
+
+    public static void render(@Nullable Direction direction, float angle,
+            SkullBlock.SkullType skullType, @Nullable GameProfile profile, float poweredTicks,
+            MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
+
         ISkull skull = skullMap.get(skullType);
 
         if (skull == null || !skull.canRender(MineLittlePony.getInstance().getConfig())) {
-            if (backup != null) {
-                backup.render(x, y, z, facing, rotation, skullType, profile, destroyStage, animateTicks);
-            } else {
-                super.render(x, y, z, facing, rotation, skullType, profile, destroyStage, animateTicks);
-            }
+            SkullBlockEntityRenderer.render(direction, angle, skullType, profile, poweredTicks, stack, renderContext, lightUv);
 
             return;
         }
 
-        float scale = 0.0625F;
+        Identifier skin = skull.getSkinResource(profile);
 
-        if (destroyStage >= 0) {
-            bindTexture(DESTROY_STAGE_TEXTURES[destroyStage]);
-            matrixMode(GL11.GL_TEXTURE);
-            pushMatrix();
-            scalef(4, 2, 1);
-            translatef(scale, scale, scale);
-            matrixMode(GL11.GL_MODELVIEW);
-        } else {
-            Identifier skin = skull.getSkinResource(profile);
+        skull.bindPony(MineLittlePony.getInstance().getManager().getPony(skin));
 
-            skull.bindPony(MineLittlePony.getInstance().getManager().getPony(skin));
+        stack.push();
 
-            bindTexture(skin);
-        }
+        handleRotation(stack, direction);
 
-        pushMatrix();
-        disableCull();
-
-        rotation = handleRotation(x, y, z, facing, rotation);
-
-        enableRescaleNormal();
-        scalef(-1, -1, 1);
-        enableAlphaTest();
-
+        stack.scale(-1, -1, 1);
         skull.preRender(LevitatingItemRenderer.usesTransparency());
-        skull.render(animateTicks, rotation, scale);
 
-        popMatrix();
 
-        if (destroyStage >= 0) {
-            matrixMode(GL11.GL_TEXTURE);
-            popMatrix();
-            matrixMode(GL11.GL_MODELVIEW);
-        }
+        VertexConsumer vertices = renderContext.getBuffer(RenderLayer.getEntityTranslucent(skin));
+
+        skull.render(stack, vertices, lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
+
+        stack.pop();
     }
 
-    protected float handleRotation(float x, float y, float z, @Nullable Direction facing, float rotation) {
-        if (facing == null) {
-            translatef(x + 0.5F, y, z + 0.5F);
-
-            return rotation;
+    static void handleRotation(MatrixStack stack, @Nullable Direction direction) {
+        if (direction == null) {
+            stack.translate(0.5, 0, 0.5);
+            return;
         }
 
-        switch (facing) {
+        switch (direction) {
             case NORTH:
-                translatef(x + 0.5F, y + 0.25F, z + 0.74F);
+                stack.translate(0.5, 0.25, 0.74);
                 break;
             case SOUTH:
-                translatef(x + 0.5F, y + 0.25F, z + 0.26F);
-                return 180;
+                stack.translate(0.5, 0.25, 0.26);
+                break;
             case WEST:
-                translatef(x + 0.74F, y + 0.25F, z + 0.5F);
-                return 270;
+                stack.translate(0.74, 0.25, 0.5);
+                break;
             case EAST:
             default:
-                translatef(x + 0.26F, y + 0.25F, z + 0.5F);
+                stack.translate(0.26, 0.25, 0.5);
                 break;
         }
-
-        return rotation;
     }
 
     /**
@@ -147,7 +137,7 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
 
         void preRender(boolean transparency);
 
-        void render(float animateTicks, float rotation, float scale);
+        void render(MatrixStack stack, VertexConsumer vertices, int lightUv, int overlayUv, float red, float green, float blue, float alpha);
 
         boolean canRender(PonyConfig config);
 
