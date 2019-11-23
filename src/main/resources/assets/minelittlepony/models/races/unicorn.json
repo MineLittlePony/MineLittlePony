@@ -11,7 +11,7 @@
 				"type": "mson:slot",
 				"name": "snout",
 				"implementation": "com.minelittlepony.client.model.part.PonySnout",
-				"content: "minelitlepony:components/snout"
+				"content": "minelitlepony:components/snout"
 			},
 			{
 				"type": "mson:slot",
