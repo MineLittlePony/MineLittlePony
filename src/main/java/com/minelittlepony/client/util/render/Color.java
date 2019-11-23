@@ -1,9 +1,5 @@
 package com.minelittlepony.client.util.render;
 
-import org.lwjgl.opengl.GL14;
-
-import com.mojang.blaze3d.platform.GlStateManager;
-
 /**
  * Colouration Utilities
  */
@@ -56,43 +52,5 @@ public interface Color {
      */
     static int abgrToArgb(int color) {
         return argbToHex(a(color), b(color), g(color), r(color));
-    }
-
-    /**
-     * Applies a GLTint based on the given colour hex code.
-     *
-     * @param hex The colour to apply
-     */
-    static void glColor(int hex) {
-        glColor(hex, a(hex));
-    }
-
-    /**
-     * Applies a GLTint based on the given colour hex code.
-     *
-     * @param hex The colour to apply
-     * @param alpha The opacity to use
-     */
-    static void glColor(int hex, float alpha) {
-        GlStateManager.color4f(r(hex), g(hex), b(hex), alpha);
-    }
-
-    /**
-     * Applies a GLBlendTint based on the given colour hex code.
-     *
-     * @param hex The colour to apply
-     */
-    static void glBlendColour(int hex) {
-        glBlendColour(hex, a(hex));
-    }
-
-    /**
-     * Applies a GLBlendTint based on the given colour hex code.
-     *
-     * @param hex The colour to apply
-     * @param alpha The opacity to use
-     */
-    static void glBlendColour(int hex, float alpha) {
-        GL14.glBlendColor(r(hex), g(hex), b(hex), alpha);
     }
 }

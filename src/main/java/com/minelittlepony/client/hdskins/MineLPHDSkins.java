@@ -2,8 +2,6 @@ package com.minelittlepony.client.hdskins;
 
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.SkinsProxy;
-import com.minelittlepony.client.hdskins.gui.GuiSkinsMineLP;
-import com.minelittlepony.client.hdskins.gui.DummyPonyRenderer;
 import com.minelittlepony.common.event.ClientReadyCallback;
 import com.minelittlepony.hdskins.SkinCacheClearCallback;
 import com.minelittlepony.hdskins.dummy.DummyPlayer;

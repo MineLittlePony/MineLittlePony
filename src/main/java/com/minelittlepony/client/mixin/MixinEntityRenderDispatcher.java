@@ -1,7 +1,8 @@
 package com.minelittlepony.client.mixin;
 
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.client.model.races.PlayerModels;
+import com.minelittlepony.client.model.entity.race.PlayerModels;
+
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.entity.Entity;

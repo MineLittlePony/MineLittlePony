@@ -12,7 +12,7 @@ import static com.minelittlepony.common.event.SkinFilterCallback.copy;
  * do is copy the wing across.
  *
  */
-public class LegacySkinConverter implements SkinFilterCallback {
+class LegacySkinConverter implements SkinFilterCallback {
 
     @Override
     public void processImage(NativeImage image, boolean legacy) {

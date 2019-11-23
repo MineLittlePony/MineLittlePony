@@ -1,8 +1,8 @@
 package com.minelittlepony.client.model;
 
 import com.minelittlepony.client.model.armour.ModelPonyArmour;
+import com.minelittlepony.client.model.part.PonySnout;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
-import com.minelittlepony.client.model.components.PonySnout;
 import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IPart;

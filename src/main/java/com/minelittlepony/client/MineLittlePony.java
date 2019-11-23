@@ -1,9 +1,8 @@
 package com.minelittlepony.client;
 
-import com.minelittlepony.client.gui.GuiPonySettings;
 import com.minelittlepony.client.hdskins.IndirectHDSkins;
 import com.minelittlepony.client.pony.PonyManager;
-import com.minelittlepony.client.render.tileentities.skull.PonySkullRenderer;
+import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
 import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.common.client.gui.VisibilityMode;
 import com.minelittlepony.common.client.gui.element.Button;

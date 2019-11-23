@@ -1,7 +1,7 @@
 package com.minelittlepony.client.model;
 
-import com.minelittlepony.client.model.components.PonySnout;
-import com.minelittlepony.client.model.components.UnicornHorn;
+import com.minelittlepony.client.model.part.PonySnout;
+import com.minelittlepony.client.model.part.UnicornHorn;
 import com.minelittlepony.client.pony.PonyData;
 import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.ICapitated;

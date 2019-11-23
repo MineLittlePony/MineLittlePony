@@ -4,11 +4,11 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 import com.minelittlepony.client.model.IPonyModel;
-import com.minelittlepony.client.model.races.PlayerModels;
+import com.minelittlepony.client.model.entity.race.PlayerModels;
 import com.minelittlepony.client.render.LevitatingItemRenderer;
+import com.minelittlepony.client.render.entity.MobRenderers;
+import com.minelittlepony.client.render.entity.RenderPonyPlayer;
 import com.minelittlepony.client.render.IPonyRender;
-import com.minelittlepony.client.render.entities.MobRenderers;
-import com.minelittlepony.client.render.entities.player.RenderPonyPlayer;
 
 import javax.annotation.Nullable;
 
