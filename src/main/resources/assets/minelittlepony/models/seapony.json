@@ -1,0 +1,38 @@
+{
+	"parent": "minelittlepony:races/alicorn",
+	"left_fin": {
+		"type": "mson:planar",
+		"texture": {"u": 56, "v": 16},
+		"mirror": [false, false, true],
+		"rotate": [0, 0.52, 0],
+		"center": [3, -6, 3],
+		"east": [0, 0, 0, 12, 8]
+	},
+	"right_fin": {
+		"type": "mson:planar",
+		"texture": {"u": 56, "v": 16},
+		"rotate": [0, -0.52, 0],
+		"center": [-3, -6, 3],
+		"west": [0, 0, 0, 12, 8]
+	},
+	"center_fin": {
+		"type": "mson:planar",
+		"texture": {"u": 58, "v": 28},
+		"rotate": [1.47, 0, 0],
+		"center": [0, 6, 9],
+		"east": [0, -6, 0, 12, 6]
+	},
+	"abdomin": {
+		"texture": {"u": 0, "v": 48},
+		"center": [0, 6, 1],
+		"cubes": [
+			{ "from": [-3, -1, 0], "size": [6, 7, 9] }
+		]
+	},
+	"tail": {
+		"type": "mson:slot",
+		"name": "tail",
+		"implementation": "com.minelittlepony.client.model.components.SeaponyTail",
+		"content": "minelittlepony:components/fish_tail"
+	}
+}

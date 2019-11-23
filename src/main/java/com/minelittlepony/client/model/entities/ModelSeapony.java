@@ -2,10 +2,7 @@ package com.minelittlepony.client.model.entities;
 
 import com.minelittlepony.client.model.armour.ModelPonyArmour;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
-import com.minelittlepony.client.model.components.SeaponyTail;
-import com.minelittlepony.client.model.entities.ModelSeapony.Armour;
 import com.minelittlepony.client.model.races.ModelUnicorn;
-import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.pony.IPony;
@@ -16,8 +13,6 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
-
-import org.lwjgl.opengl.GL11;
 
 public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
 
@@ -51,50 +46,10 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
     }
 
     @Override
-    protected void ponySleep() {
-       // noop
-    }
+    protected void ponySleep() {}
 
     @Override
-    protected void ponyRide() {
-        // noop
-    }
-
-    @Deprecated
-    protected void initLegs(float yOffset, float stretch) {
-        super.initLegs(yOffset, stretch);
-        // hide the back legs
-        leftLeg.visible = false;
-        rightLeg.visible = false;
-        leftPantLeg.visible = false;
-        rightPantLeg.visible = false;
-
-        centerFin = new Part(this, 58, 28)
-                .rotate(PI / 2 - 0.1F, 0, 0).around(0, 6, 9)
-                .east(0, -6, 0, 12, 6, stretch);
-
-        leftFin = new Part(this, 56, 16)
-                .rotate(0, FIN_ROT_Y, 0).around(3, -6, 3)
-               .flipZ().east(0, 0, 0, 12, 8, stretch);
-
-        rightFin = new Part(this, 56, 16)
-                .rotate(0, -FIN_ROT_Y, 0).around(-3, -6, 3)
-                .west(0, 0, 0, 12, 8, stretch);
-    }
-
-    @Deprecated
-    protected void initTail(float yOffset, float stretch) {
-        tail = new SeaponyTail(this);
-        tail.init(yOffset, stretch);
-    }
-
-    @Deprecated
-    protected void initBody(float yOffset, float stretch) {
-        super.initBody(yOffset, stretch);
-        bodyCenter = new Part(this, 0, 48)
-                .around(0, 6, 1)
-                .box(-3, -1, 0, 6, 7, 9, stretch).flip();
-    }
+    protected void ponyRide() {}
 
     @Override
     public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {

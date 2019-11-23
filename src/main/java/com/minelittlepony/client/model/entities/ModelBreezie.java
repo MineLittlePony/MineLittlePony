@@ -6,73 +6,35 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.client.util.render.Part;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+import com.minelittlepony.mson.api.model.MsonPart;
 
 import static com.minelittlepony.model.PonyModelConstants.PI;
 
 public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> {
 
-    Part neck;
-    Part tail;
-    Part tailStub;
+    private ModelPart neck;
+    private ModelPart tail;
+    private ModelPart tailStub;
 
-    Part leftWing;
-    Part rightWing;
+    private ModelPart leftWing;
+    private ModelPart rightWing;
 
     public ModelBreezie() {
-        textureWidth = 64;
+        super(1);
         textureHeight = 64;
-
-        helmet.visible = false;
-        head = new Part(this)
-                .child(new Part(this)
-                    .addBox(-3, -6, -3, 6, 6, 6).around(0, 0, -4)
-                    .tex(28, 0).addBox( 2, -7,  1, 1, 1, 1)
-                    .tex(24, 0).addBox(-3, -7,  1, 1, 1, 1)
-                    .tex(24, 9).addBox(-1, -2, -4, 2, 2, 1))
-                .child(new Part(this)
-                    .tex(28, 2).addBox( 1, -11, -3, 1, 6, 1)
-                    .tex(24, 2).addBox(-2, -11, -3, 1, 6, 1)
-                    .rotate(-0.2617994F, 0, 0));
-
-        torso = new Part(this, 2, 12)
-                .addBox(0, 0, 0, 6, 7, 14).rotate(-0.5235988F, 0, 0).around(-3, 1, -3);
-
-        leftArm =  new Part(this, 28, 12).addBox(0, 0, 0, 2, 12, 2).around( 1, 8, -5);
-        rightArm = new Part(this, 36, 12).addBox(0, 0, 0, 2, 12, 2).around(-3, 8, -5);
-        leftLeg =  new Part(this, 8, 12) .addBox(0, 0, 0, 2, 12, 2).around( 1, 12, 3);
-        rightLeg = new Part(this, 0, 12) .addBox(0, 0, 0, 2, 12, 2).around(-3, 12, 3);
-
-        neck = new Part(this, 40, 0)
-                .addBox(0, 0, 0, 2, 5, 2)
-                .rotate(0.0872665F, 0, 0).around(-1, -2, -4);
-
-        tailStub = new Part(this, 40, 7)
-                .addBox(0, 0, 0, 1, 1, 3).around(-0.5F, 8, 8);
-
-        tail = new Part(this, 32, 0)
-                .addBox(0, 0, 1, 2, 9, 2).around(-1, 7, 10);
-
-        leftWing = new Part(this, 0, 40)
-                .addBox(0, -12, 0, 24, 24, 0)
-                .rotate(0, -0.6981317F, 0).around(2, 3, 1);
-        leftWing.setTextureSize(64, 32);
-
-        rightWing = new Part(this, 0, 40)
-                .addBox(-24, -12, 0, 24, 24, 0, true)
-                .rotate(0, 0.6981317F, 0).around(-2, 3, 1);
-        rightWing.setTextureSize(64, 32);
-
     }
 
     @Override
-    public void render(T entity, float move, float swing, float ticks, float headYaw, float headPitch, float scale) {
-        super.setAngles(entity, move, swing, ticks, headYaw, headPitch, scale);
-        neck.render(scale);
-        tailStub.render(scale);
-        tail.render(scale);
-        leftWing.render(scale);
-        rightWing.render(scale);
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        helmet.visible = false;
+    }
+
+    @Override
+    protected Iterable<ModelPart> getBodyParts() {
+        return Iterables.concat(super.getBodyParts(), ImmutableList.of(neck, tailStub, tail, leftWing, rightWing));
     }
 
     @Override
@@ -84,16 +46,16 @@ public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> {
         leftArm.pitch = MathHelper.cos(move * 0.6662F) * swing;
         leftArm.roll = 0;
 
-        ((Part)rightArm).rotate(swing * MathHelper.cos(move * 0.6662F + PI),        0, 0);
-        ((Part)leftLeg) .rotate(swing * MathHelper.cos(move * 0.6662F + PI) * 1.4F, 0, 0);
-        ((Part)rightLeg).rotate(swing * MathHelper.cos(move * 0.6662F)      * 1.4F, 0, 0);
+        ((MsonPart)rightArm).rotate(swing * MathHelper.cos(move * 0.6662F + PI),        0, 0);
+        ((MsonPart)leftLeg) .rotate(swing * MathHelper.cos(move * 0.6662F + PI) * 1.4F, 0, 0);
+        ((MsonPart)rightLeg).rotate(swing * MathHelper.cos(move * 0.6662F)      * 1.4F, 0, 0);
 
         if (isRiding) {
             leftArm.pitch += -PI / 5;
             rightArm.pitch += -PI / 5;
 
-            rotateLegRiding(((Part)leftLeg), -1);
-            rotateLegRiding(((Part)rightLeg), 1);
+            rotateLegRiding((MsonPart)leftLeg, -1);
+            rotateLegRiding((MsonPart)rightLeg, 1);
         }
 
         rotateArm(leftArm, leftArmPose, 1);
@@ -119,7 +81,7 @@ public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> {
         }
     }
 
-    protected void rotateLegRiding(Part leg, float factor) {
+    protected void rotateLegRiding(MsonPart leg, float factor) {
         leg.rotate(-1.4137167F, factor * PI / 10, factor * 0.07853982F);
     }
 

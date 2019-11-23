@@ -10,8 +10,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
 
-import com.minelittlepony.client.model.components.BatWings;
-import com.minelittlepony.client.model.components.PonyEars;
 import com.minelittlepony.client.model.races.ModelAlicorn;
 import com.minelittlepony.client.render.entities.villager.PonyTextures;
 import com.minelittlepony.model.IPart;
@@ -37,18 +35,6 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
     }
 
     @Override
-    protected void initWings(float yOffset, float stretch) {
-        super.initWings(yOffset, stretch);
-        batWings = new BatWings<>(this, yOffset, stretch);
-    }
-
-    @Override
-    protected void initEars(Part head, float yOffset, float stretch) {
-        ears = new PonyEars(head, true);
-        ears.init(yOffset, stretch);
-    }
-
-    @Override
     protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
         super.shakeBody(move, swing, bodySwing, ticks);
         apron.yaw = bodySwing;
@@ -71,20 +57,6 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
         super.renderBody(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         apron.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         //trinket.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-    }
-
-    @Override
-    public void init(float yOffset, float stretch) {
-        super.init(yOffset, stretch);
-
-        apron = new Part(this, 56, 16)
-               .offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
-               .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-               .south(-4, -4, -9, 8, 10, stretch);
-        trinket = new Part(this, 0, 3)
-               .offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
-               .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-               .south(-2, -4, -9, 4, 5, stretch);
     }
 
     @Override
