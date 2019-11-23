@@ -3,8 +3,8 @@ package com.minelittlepony.client.render;
 import org.lwjgl.opengl.GL14;
 
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.client.util.render.Color;
 import com.minelittlepony.pony.IPony;
+import com.minelittlepony.util.math.Color;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 

@@ -5,11 +5,11 @@ import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.armour.DefaultArmourTextureResolver;
 import com.minelittlepony.client.render.IPonyRender;
-import com.minelittlepony.client.util.render.Color;
 import com.minelittlepony.model.armour.ArmourLayer;
 import com.minelittlepony.model.armour.IArmour;
 import com.minelittlepony.model.armour.IArmourTextureResolver;
 import com.minelittlepony.model.armour.IEquestrianArmour;
+import com.minelittlepony.util.math.Color;
 
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;

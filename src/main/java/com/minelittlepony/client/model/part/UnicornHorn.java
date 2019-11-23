@@ -9,10 +9,10 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 
-import com.minelittlepony.client.util.render.Color;
 import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.ICapitated;
 import com.minelittlepony.model.IPart;
+import com.minelittlepony.util.math.Color;
 
 import javax.annotation.Nullable;
 

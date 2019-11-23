@@ -7,10 +7,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.client.util.render.Color;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.pony.meta.Wearable;
+import com.minelittlepony.util.math.Color;
 
 import java.util.Calendar;
 import java.util.UUID;

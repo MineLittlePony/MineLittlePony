@@ -1,4 +1,4 @@
-package com.minelittlepony.client.util.render;
+package com.minelittlepony.util.math;
 
 /**
  * Colouration Utilities
