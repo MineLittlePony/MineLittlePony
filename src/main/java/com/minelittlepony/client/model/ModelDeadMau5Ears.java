@@ -1,4 +1,4 @@
-package com.minelittlepony.client.model.components;
+package com.minelittlepony.client.model;
 
 import net.minecraft.client.render.entity.model.SkullEntityModel;
 

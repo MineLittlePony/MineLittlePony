@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.tileentities.skull;
 
 import com.minelittlepony.client.SkinsProxy;
-import com.minelittlepony.client.model.components.ModelDeadMau5Ears;
+import com.minelittlepony.client.model.ModelDeadMau5Ears;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
 import com.mojang.authlib.GameProfile;

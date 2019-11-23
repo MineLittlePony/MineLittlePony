@@ -1,4 +1,4 @@
-package com.minelittlepony.client.model.components;
+package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -9,7 +9,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Vec3d;
 
 import com.google.common.collect.ImmutableList;
-import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.util.render.Part;
 
 import static com.minelittlepony.model.PonyModelConstants.*;

@@ -8,7 +8,7 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 
 import com.minelittlepony.client.model.IPonyModel;
-import com.minelittlepony.client.model.components.ModelDeadMau5Ears;
+import com.minelittlepony.client.model.ModelDeadMau5Ears;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.model.BodyPart;
 
