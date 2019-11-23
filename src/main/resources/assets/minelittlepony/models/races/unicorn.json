@@ -10,19 +10,19 @@
 			{
 				"type": "mson:slot",
 				"name": "snout",
-				"implementation": "com.minelittlepony.client.model.components.PonySnout",
+				"implementation": "com.minelittlepony.client.model.part.PonySnout",
 				"content: "minelitlepony:components/snout"
 			},
 			{
 				"type": "mson:slot",
 				"name": "ears",
-				"implementation": "com.minelittlepony.client.model.components.PonyEars",
+				"implementation": "com.minelittlepony.client.model.part.PonyEars",
 				"content": "minelittlepony:components/ears"
 			},
 			{
 				"type": "mson:slot",
 				"name": "horn",
-				"implementation": "com.minelittlepony.client.model.components.UnicornHorn",
+				"implementation": "com.minelittlepony.client.model.part.UnicornHorn",
 				"content": "minelittlepony:components/horn"
 			}
 		]

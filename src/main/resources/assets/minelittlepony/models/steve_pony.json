@@ -24,13 +24,13 @@
 			{
 				"type": "mson:slot",
 				"name": "snout",
-				"implementation": "com.minelittlepony.client.model.components.PonySnout",
+				"implementation": "com.minelittlepony.client.model.part.PonySnout",
 				"content: "minelitlepony:components/snout"
 			},
 			{
 				"type": "mson:slot",
 				"name": "ears",
-				"implementation": "com.minelittlepony.client.model.components.PonyEars",
+				"implementation": "com.minelittlepony.client.model.part.PonyEars",
 				"content": "minelittlepony:components/ears"
 			}
 		]
@@ -245,7 +245,7 @@
 	"tail": {
 		"type": "mson:slot",
 		"name": "tail",
-		"implementation": "com.minelittlepony.client.model.components.PonyTail",
+		"implementation": "com.minelittlepony.client.model.part.PonyTail",
 		"content": "minelittlepony:components/tail"
 	},
 	"right_arm": {

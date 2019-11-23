@@ -2,7 +2,7 @@
 	"left_wing": {
 		"type": "mson:slot",
 		"name": "wings",
-		"implementation": "com.minelittlepony.client.model.components.PegasusWings$Wing",
+		"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
 		"content": {
 			"folded": {
 				"texture": {"u": 56, "v": 32},
@@ -32,7 +32,7 @@
 	"right_wing": {
 		"type": "mson:slot",
 		"name": "wings",
-		"implementation": "com.minelittlepony.client.model.components.PegasusWings$Wing",
+		"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
 		"content": {
 			"folded": {
 				"texture": {"u": 56, "v": 16},
@@ -62,7 +62,7 @@
 	"legacy_right_wing": {
 		"type": "mson:slot",
 		"name": "wings",
-		"implementation": "com.minelittlepony.client.model.components.PegasusWings$Wing",
+		"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
 		"content": {
 			"folded": {
 				"texture": {"u": 56, "v": 16},

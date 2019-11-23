@@ -3,7 +3,7 @@
 	"wings": {
 		"type": "mson:slot",
 		"name": "wings",
-		"implementation": "com.minelittlepony.client.model.components.PegasusWings",
+		"implementation": "com.minelittlepony.client.model.part.PegasusWings",
 		"content: "minelitlepony:components/bug_wings"
 	}
 }

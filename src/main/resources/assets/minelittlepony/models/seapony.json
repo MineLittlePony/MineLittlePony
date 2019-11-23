@@ -32,7 +32,7 @@
 	"tail": {
 		"type": "mson:slot",
 		"name": "tail",
-		"implementation": "com.minelittlepony.client.model.components.SeaponyTail",
+		"implementation": "com.minelittlepony.client.model.part.SeaponyTail",
 		"content": "minelittlepony:components/fish_tail"
 	}
 }
