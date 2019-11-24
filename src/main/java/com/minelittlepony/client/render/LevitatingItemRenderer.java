@@ -5,8 +5,6 @@ import org.lwjgl.opengl.GL14;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.util.math.Color;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 
 import javax.annotation.Nullable;
 
@@ -31,15 +29,6 @@ public class LevitatingItemRenderer {
 
     private static boolean usingTransparency;
 
-    public static boolean enableItemGlowRenderProfile() {
-        if (usesTransparency()) {
-            enableBlend();
-            blendFuncSeparate(SourceFactor.CONSTANT_COLOR, DestFactor.ONE, SourceFactor.ONE, DestFactor.ZERO);
-        }
-
-        return usesTransparency();
-    }
-
     public static boolean usesTransparency() {
         return usingTransparency;
     }
@@ -48,13 +37,14 @@ public class LevitatingItemRenderer {
      * Renders a magical overlay over an item in third person.
      */
     public void renderItemGlow(LivingEntity entity, ItemStack drop, ModelTransformation.Type transform, Arm hand, int glowColor, MatrixStack stack, VertexConsumerProvider renderContext) {
+
+        // TODO: mixin into RenderLayer.getItemLayer(itemstack) to enable transparency
+        usingTransparency = true;
+
         stack.push();
-        disableLighting();
         setColor(glowColor);
 
         ItemRenderer renderItem = MinecraftClient.getInstance().getItemRenderer();
-
-        usingTransparency = true;
 
         stack.scale(1.1F, 1.1F, 1.1F);
 
@@ -63,12 +53,11 @@ public class LevitatingItemRenderer {
         stack.translate(-0.02F, -0.02F, -0.02F);
         renderItem.method_23177(entity, drop, transform, hand == Arm.LEFT, stack, renderContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV);
 
-        usingTransparency = false;
+
         unsetColor();
-        enableLighting();
         stack.pop();
 
-        // I hate rendering
+        usingTransparency = false;
     }
 
     private void setColor(int glowColor) {
@@ -118,8 +107,6 @@ public class LevitatingItemRenderer {
         }
 
         matrix.pop();
-
-        // I hate rendering
     }
 
     /**

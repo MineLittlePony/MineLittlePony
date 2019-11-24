@@ -10,7 +10,6 @@
         "MixinDefaultPlayerSkin",
         "MixinEntityRenderDispatcher",
         "MixinFirstPersonRenderer",
-        "MixinGlStateManager",
         "MixinItemRenderer",
         "MixinClientPlayerEntity",
         "MixinPlayerMoveC2SPacket_Both",
