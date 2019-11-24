@@ -1,16 +1,12 @@
 package com.minelittlepony.client.model.part;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 
-import com.minelittlepony.client.util.render.Part;
-import com.minelittlepony.model.ICapitated;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.util.math.Color;
 
@@ -18,45 +14,22 @@ import javax.annotation.Nullable;
 
 import java.util.UUID;
 
-import static com.mojang.blaze3d.platform.GlStateManager.*;
-
-import static org.lwjgl.opengl.GL11.*;
-
 public class UnicornHorn implements IPart {
 
-    protected Part horn;
-    protected Part glow;
+    private ModelPart horn;
+    private ModelPart glow;
 
-    protected boolean isVisible = true;
-
-    public <T extends Model & ICapitated<ModelPart>> UnicornHorn(T pony) {
-        this(pony, 0, 0);
-    }
-
-    public <T extends Model & ICapitated<ModelPart>> UnicornHorn(T pony, int y, int z) {
-        horn = new Part(pony, 0, 3);
-        glow = new Part(pony, 0, 3);
-
-        horn.offset(HORN_X, HORN_Y + y, HORN_Z + z)
-            .around(HEAD_RP_X, HEAD_RP_Y, HEAD_RP_Z)
-            .box(0, 0, 0, 1, 4, 1, 0)
-            .pitch = 0.5F;
-
-        glow.offset(HORN_X, HORN_Y + y, HORN_Z + z)
-            .around(HEAD_RP_X, HEAD_RP_Y , HEAD_RP_Z)
-            .cone(0, 0, 0, 1, 4, 1, 0.5F)
-            .cone(0, 0, 0, 1, 3, 1, 0.8F);
-    }
+    protected boolean visible = true;
 
     @Override
     public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, @Nullable UUID interpolatorId) {
-        if (isVisible) {
+        if (visible) {
             horn.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         }
     }
 
     public void renderMagic(MatrixStack stack, int tint) {
-        if (isVisible) {
+        if (visible) {
             horn.rotate(stack);
 
             VertexConsumer vertices = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers().getBuffer(RenderLayer.getTranslucentNoCrumbling());
@@ -66,6 +39,6 @@ public class UnicornHorn implements IPart {
 
     @Override
     public void setVisible(boolean visible) {
-        isVisible = visible;
+        this.visible = visible;
     }
 }

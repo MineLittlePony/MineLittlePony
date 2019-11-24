@@ -71,8 +71,8 @@ public class ModelEnderStallion extends ModelSkeletonPony<EndermanEntity> {
         super.setVisible(visible);
 
         tail.setVisible(false);
+        snout.setVisible(false);
 
-        snout.isHidden = true;
         leftHorn.visible = visible;
         rightHorn.visible = visible;
 

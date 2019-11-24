@@ -16,16 +16,12 @@ import java.util.UUID;
 
 public class PonySnout implements IPart {
 
-    public boolean isHidden = false;
+    private boolean visible = false;
 
     private ModelPart mare;
     private ModelPart stallion;
 
     private final ICapitated<ModelPart> head;
-
-    public <T extends Model & ICapitated<ModelPart>> PonySnout(T pony) {
-        this(pony, 0, 0);
-    }
 
     public <T extends Model & ICapitated<ModelPart>> PonySnout(T pony, int y, int z) {
         head = pony;
@@ -42,7 +38,7 @@ public class PonySnout implements IPart {
         ((MsonPart)stallion).rotate(x, y, z);
     }
 
-    @Override
+    @Deprecated
     public void init(float yOffset, float stretch) {
         mare.around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
             .tex(10, 14).south(-2, 2, -5, 4, 2, stretch)
@@ -67,8 +63,13 @@ public class PonySnout implements IPart {
     public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
     }
 
+    @Override
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
     public void setGender(Gender gender) {
-        boolean show = !head.hasHeadGear() && !isHidden && MineLittlePony.getInstance().getConfig().snuzzles.get();
+        boolean show = visible && !head.hasHeadGear() && MineLittlePony.getInstance().getConfig().snuzzles.get();
 
         mare.visible = (show && gender.isMare());
         stallion.visible = (show && gender.isStallion());

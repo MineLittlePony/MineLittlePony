@@ -1,0 +1,19 @@
+{
+	"left_wing": {
+		"type": "mson:slot",
+		"name": "wings",
+		"implementation": "com.minelittlepony.client.model.part.BatWings$Wing",
+		"content": {
+			"__comment": "TODO"
+		}
+	},
+	"right_wing": {
+		"type": "mson:slot",
+		"name": "wings",
+		"implementation": "com.minelittlepony.client.model.part.BatWings$Wing",
+		"content": {
+			"__comment": "TODO"
+		}
+	},
+	"legacy_right_wing": "#right_wing"
+}

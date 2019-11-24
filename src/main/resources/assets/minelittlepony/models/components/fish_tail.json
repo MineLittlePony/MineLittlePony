@@ -1,0 +1,48 @@
+{
+	"texture": {"w": 64, "h": 64},
+	"locals": {
+		"tail_rot_x": 1.57,
+		"tail_rot_x_neg": [0, "-", "#tail_rot_x"]
+	},
+	"base": {
+		"texture": {"u": 0, "v": 38},
+		"center": [-2, 10, 8],
+		"rotate": ["#tail_rot_x", 0, 0],
+		"offset": [0, -4, -2],
+		"mirror": true,
+		"cubes": [
+			{"from": [0, 4, 2], "size": [4, 6, 4]}
+		],
+		"children": [
+			{
+				"name": "tip",
+				"texture": {"u": 24, "v": 0},
+				"center": [1, 5, 1],
+				"cubes": [
+					{"size": [2, 6, 1]}
+				],
+				"children": [
+					{
+						"name": "fins",
+						"texture": {"u": 56, "v": 20},
+						"offset": [1, 0, 4],
+						"rotate": ["#tail_rot_x_neg", 0, 0],
+						"cubes": [
+							{
+								"type": "mson:plane",
+								"face": "up",
+								"position": [-8, 0, 0], "size": [8, 8]
+							},
+							{
+								"type": "mson:plane",
+								"face": "up",
+								"mirror": [true, false, false],
+								"position": [0, 0, 0], "size": [8, 8]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

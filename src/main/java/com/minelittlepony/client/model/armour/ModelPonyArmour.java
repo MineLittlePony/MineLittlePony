@@ -142,7 +142,7 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
         neck.visible = false;
         tail.setVisible(false);
         upperTorso.visible = false;
-        snout.isHidden = true;
+        snout.setVisible(false);
         steveLeftLeg.visible = false;
         steveRightLeg.visible = false;
     }

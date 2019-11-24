@@ -14,16 +14,12 @@ import java.util.UUID;
 
 public class PegasusWings<T extends Model & IPegasus> implements IPart {
 
-    protected final T pegasus;
+    protected T pegasus;
 
     protected Wing leftWing;
     protected Wing rightWing;
 
     protected Wing legacyWing;
-
-    public PegasusWings(T model, float yOffset, float stretch) {
-        pegasus = model;
-    }
 
     public Wing getLeft() {
         return leftWing;
@@ -78,14 +74,10 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart {
 
     public static class Wing {
 
-        private IPegasus pegasus;
+        protected IPegasus pegasus;
 
-        private ModelPart extended;
-        private ModelPart folded;
-
-        public Wing(IPegasus pegasus) {
-            this.pegasus = pegasus;
-        }
+        protected ModelPart extended;
+        protected ModelPart folded;
 
         public void rotateWalking(float swing) {
             folded.yaw = swing * 0.15F;

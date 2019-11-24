@@ -1,6 +1,5 @@
 package com.minelittlepony.client.model.entity.race;
 
-import com.minelittlepony.client.model.part.PegasusWings;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.model.IPegasus;
 
@@ -10,7 +9,7 @@ import net.minecraft.entity.LivingEntity;
 
 public class ModelPegasus<T extends LivingEntity> extends ModelEarthPony<T> implements IPegasus {
 
-    protected IPart wings;
+    private IPart wings;
 
     public ModelPegasus(boolean smallArms) {
         super(smallArms);
@@ -19,10 +18,6 @@ public class ModelPegasus<T extends LivingEntity> extends ModelEarthPony<T> impl
     @Override
     public IPart getWings() {
         return wings;
-    }
-
-    protected void initWings(float yOffset, float stretch) {
-        wings = new PegasusWings<>(this, yOffset, stretch);
     }
 
     @Override

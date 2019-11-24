@@ -1,0 +1,33 @@
+{
+	"texture": {"w": 64, "h": 64, "u": 0, "v": 3},
+	"locals": {
+		"horn_x": -0.5,
+		"horn_y": -11,
+		"horn_z": -3.5
+	},
+	"bone": {
+		"offset": ["#horn_x", "#horn_y", "#horn_z"],
+		"rotate": [0.5, 0, 0],
+		"cubes": [
+			{ "size": [1, 4, 1] }
+		]
+	},
+	"corona": {
+		"offset": ["#horn_x", "#horn_y", "#horn_z"],
+		"rotate": [0.5, 0, 0],
+		"cubes": [
+			{
+				"type": "mson:cone",
+				"size": [1, 4, 1],
+				"stretch": 0.5,
+				"taper": 0.4
+			},
+			{
+				"type": "mson:cone",
+				"size": [1, 3, 1],
+				"stretch": 0.8,
+				"taper": 0.4
+			}
+		]
+	}
+}

@@ -33,8 +33,8 @@ public class ModelPonyHead extends SkullOverlayEntityModel implements ICapitated
 
     @Override
     public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        snout.isHidden = metadata.getRace().isHuman();
-        ears.setVisible(!snout.isHidden);
+        snout.setVisible(!metadata.getRace().isHuman());
+        ears.setVisible(!metadata.getRace().isHuman());
 
         snout.setGender(metadata.getGender());
 
