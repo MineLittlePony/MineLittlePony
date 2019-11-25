@@ -8,18 +8,26 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 
 import com.minelittlepony.model.IPart;
+import com.minelittlepony.mson.api.ModelContext;
+import com.minelittlepony.mson.api.MsonModel;
 import com.minelittlepony.util.math.Color;
 
 import javax.annotation.Nullable;
 
 import java.util.UUID;
 
-public class UnicornHorn implements IPart {
+public class UnicornHorn implements IPart, MsonModel {
 
     private ModelPart horn;
     private ModelPart glow;
 
     protected boolean visible = true;
+
+    @Override
+    public void init(ModelContext context) {
+        horn = context.findByName("bone");
+        glow = context.findByName("corona");
+    }
 
     @Override
     public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, @Nullable UUID interpolatorId) {

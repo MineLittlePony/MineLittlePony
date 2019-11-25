@@ -1,8 +1,9 @@
 package com.minelittlepony.client.model.part;
 
-import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.model.IPart;
+import com.minelittlepony.mson.api.ModelContext;
+import com.minelittlepony.mson.api.MsonModel;
 
 import java.util.UUID;
 
@@ -11,7 +12,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
-public class SeaponyTail implements IPart {
+public class SeaponyTail implements IPart, MsonModel {
 
     private static final float TAIL_ROTX = PI / 2;
 
@@ -22,8 +23,12 @@ public class SeaponyTail implements IPart {
 
     private IPonyModel<?> model;
 
-    public SeaponyTail(AbstractPonyModel<?> model) {
-        this.model = model;
+    @Override
+    public void init(ModelContext context) {
+        model = (IPonyModel<?>)context.getModel();
+        tailBase = context.findByName("base");
+        tailTip = context.findByName("tip");
+        tailFins = context.findByName("fins");
     }
 
     @Override

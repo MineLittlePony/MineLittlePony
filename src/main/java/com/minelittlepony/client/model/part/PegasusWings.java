@@ -8,11 +8,13 @@ import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.model.IPegasus;
+import com.minelittlepony.mson.api.ModelContext;
+import com.minelittlepony.mson.api.MsonModel;
 import com.minelittlepony.pony.meta.Wearable;
 
 import java.util.UUID;
 
-public class PegasusWings<T extends Model & IPegasus> implements IPart {
+public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonModel {
 
     protected T pegasus;
 
@@ -20,6 +22,14 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart {
     protected Wing rightWing;
 
     protected Wing legacyWing;
+
+
+    @Override
+    public void init(ModelContext context) {
+        leftWing = context.findByName("left_wing");
+        rightWing = context.findByName("right_wing");
+        legacyWing = context.findByName("legacy_right_wing");
+    }
 
     public Wing getLeft() {
         return leftWing;
@@ -72,12 +82,19 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart {
         getRight().render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
-    public static class Wing {
+    public static class Wing implements MsonModel {
 
         protected IPegasus pegasus;
 
         protected ModelPart extended;
         protected ModelPart folded;
+
+        @Override
+        public void init(ModelContext context) {
+            pegasus = (IPegasus)context.getModel();
+            extended = context.findByName("extended");
+            folded = context.findByName("folded");
+        }
 
         public void rotateWalking(float swing) {
             folded.yaw = swing * 0.15F;

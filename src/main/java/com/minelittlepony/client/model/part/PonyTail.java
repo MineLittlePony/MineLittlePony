@@ -8,10 +8,13 @@ import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.model.IPart;
+import com.minelittlepony.mson.api.ModelContext;
+import com.minelittlepony.mson.api.MsonModel;
 
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
-public class PonyTail extends ModelPart implements IPart {
+public class PonyTail extends ModelPart implements IPart, MsonModel {
 
     private final AbstractPonyModel<?> theModel;
 
@@ -20,6 +23,23 @@ public class PonyTail extends ModelPart implements IPart {
     public PonyTail(AbstractPonyModel<?> model) {
         super(model);
         theModel = model;
+    }
+
+
+    @Override
+    public void init(ModelContext context) {
+        try {
+            int segments = context.getLocals().getValue("segments").get().intValue();
+
+            for (int i = 0; i < segments; i++) {
+                Segment segment = context.findByName("segment_" + i);
+                segment.index = i;
+                addChild(segment);
+            }
+
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -73,19 +93,20 @@ public class PonyTail extends ModelPart implements IPart {
         render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
-    private static class Segment extends ModelPart {
+    private static class Segment extends ModelPart implements MsonModel {
 
         public PonyTail tail;
 
-        int index;
+        public int index;
 
         public Segment(Model model) {
             super(model);
         }
 
-        public void setOwner(int index, PonyTail tail) {
-            this.index = index;
-            this.tail = tail;
+        @Override
+        public void init(ModelContext context) {
+            tail = context.getContext();
+            context.findByName("segment", this);
         }
 
         @Override
