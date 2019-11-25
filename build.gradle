@@ -57,6 +57,9 @@ dependencies {
     modApi "com.minelittlepony:Kirin:${project.kirin_version}"
     include "com.minelittlepony:Kirin:${project.kirin_version}"
 
+    modApi "com.minelittlepony:Mson:${project.mson_version}"
+    include "com.minelittlepony:Mson:${project.mson_version}"
+
     modImplementation "com.minelittlepony:HDSkins:${project.hd_skins_version}"
     //modImplementation "io.github.prospector.modmenu:ModMenu:1.7.15-unstable"
 }
