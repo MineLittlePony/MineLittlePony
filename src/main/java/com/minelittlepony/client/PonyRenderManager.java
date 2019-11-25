@@ -82,7 +82,7 @@ public class PonyRenderManager {
     public <T extends Entity, V extends T> void switchRenderer(boolean state, EntityType<V> type, EntityRendererRegistry.Factory factory) {
         if (state) {
             if (!renderMap.containsKey(type)) {
-                renderMap.put(type, MinecraftClient.getInstance().getEntityRenderManager().getRenderer(type));
+                renderMap.put(type, ((MixinEntityRenderDispatcher)MinecraftClient.getInstance().getEntityRenderManager()).getEntityRenderers().get(type));
             }
             EntityRendererRegistry.INSTANCE.register(type, factory);
         } else {
