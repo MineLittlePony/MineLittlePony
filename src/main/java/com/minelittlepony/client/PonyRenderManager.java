@@ -42,7 +42,7 @@ public class PonyRenderManager {
     private LevitatingItemRenderer magicRenderer = new LevitatingItemRenderer();
 
 
-    private final Map<Class<? extends Entity>, EntityRenderer<?>> renderMap = Maps.newHashMap();
+    private final Map<EntityType<?>, EntityRenderer<?>> renderMap = Maps.newHashMap();
 
     /**
      * Registers all new player skin types. (currently only pony and slimpony).
