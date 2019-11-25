@@ -1,9 +1,9 @@
 package com.minelittlepony.client.render.entity;
 
+import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.ModelWitchPony;
 import com.minelittlepony.client.render.entity.feature.LayerHeldPonyItem;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
@@ -17,8 +17,8 @@ public class RenderPonyWitch extends RenderPonyMob<WitchEntity, ModelWitchPony> 
 
     private static final Identifier WITCH_TEXTURES = new Identifier("minelittlepony", "textures/entity/witch_pony.png");
 
-    public RenderPonyWitch(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
-        super(manager, new ModelWitchPony());
+    public RenderPonyWitch(EntityRenderDispatcher manager) {
+        super(manager, ModelType.WITCH);
     }
 
     @Override

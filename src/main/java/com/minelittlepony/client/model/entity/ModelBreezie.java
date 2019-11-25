@@ -8,11 +8,13 @@ import net.minecraft.util.math.MathHelper;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.minelittlepony.mson.api.ModelContext;
+import com.minelittlepony.mson.api.MsonModel;
 import com.minelittlepony.mson.api.model.MsonPart;
 
 import static com.minelittlepony.model.PonyModelConstants.PI;
 
-public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> {
+public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> implements MsonModel {
 
     private ModelPart neck;
     private ModelPart tail;
@@ -24,6 +26,21 @@ public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> {
     public ModelBreezie() {
         super(1);
         textureHeight = 64;
+    }
+
+    // broken bridge
+    @Override
+    public void accept(ModelPart t) {
+        super.method_22696(t);
+    }
+
+    @Override
+    public void init(ModelContext context) {
+        neck = context.findByName("neck");
+        tail = context.findByName("tail");
+        tailStub = context.findByName("tail_stub");
+        leftWing = context.findByName("left_wing");
+        rightWing = context.findByName("right_wing");
     }
 
     @Override

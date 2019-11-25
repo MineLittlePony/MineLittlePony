@@ -17,7 +17,7 @@ public class RenderSeaponyPlayer extends RenderPonyPlayer {
     public RenderSeaponyPlayer(EntityRenderDispatcher manager, boolean useSmallArms,
             ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> model,
             ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> alternate) {
-        super(manager, useSmallArms, model);
+        super(manager, model);
 
         seapony = alternate;
         normalPony = model;

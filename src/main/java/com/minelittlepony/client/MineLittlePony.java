@@ -1,6 +1,7 @@
 package com.minelittlepony.client;
 
 import com.minelittlepony.client.hdskins.IndirectHDSkins;
+import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
 import com.minelittlepony.client.settings.ClientPonyConfig;
@@ -89,6 +90,8 @@ public class MineLittlePony implements ClientModInitializer {
         if (FabricLoader.getInstance().isModLoaded("hdskins")) {
             IndirectHDSkins.initialize();
         }
+
+        ModelType.bootstrap();
     }
 
     private void onClientReady(MinecraftClient client) {

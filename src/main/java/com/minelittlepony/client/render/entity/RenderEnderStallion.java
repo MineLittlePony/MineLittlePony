@@ -1,12 +1,12 @@
 package com.minelittlepony.client.render.entity;
 
+import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.ModelEnderStallion;
 import com.minelittlepony.client.render.entity.feature.LayerEyeGlow;
 import com.minelittlepony.client.render.entity.feature.LayerHeldPonyItem;
 import com.minelittlepony.client.render.entity.feature.LayerHeldPonyItemMagical;
 import com.minelittlepony.client.render.entity.feature.LayerEyeGlow.IGlowingRenderer;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
@@ -25,8 +25,8 @@ public class RenderEnderStallion extends RenderPonyMob<EndermanEntity, ModelEnde
 
     private final Random rnd = new Random();
 
-    public RenderEnderStallion(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
-        super(manager, new ModelEnderStallion());
+    public RenderEnderStallion(EntityRenderDispatcher manager) {
+        super(manager, ModelType.ENDERMAN);
     }
 
     @Override

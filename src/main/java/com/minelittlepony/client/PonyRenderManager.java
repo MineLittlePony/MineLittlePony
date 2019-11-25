@@ -1,6 +1,7 @@
 package com.minelittlepony.client;
 
 import java.util.Map;
+import java.util.function.Function;
 
 import com.google.common.collect.Maps;
 import com.minelittlepony.client.model.IPonyModel;
@@ -13,6 +14,7 @@ import com.minelittlepony.client.render.IPonyRender;
 import javax.annotation.Nullable;
 
 import com.minelittlepony.common.mixin.MixinEntityRenderDispatcher;
+import com.minelittlepony.mson.api.Mson;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
@@ -79,6 +81,21 @@ public class PonyRenderManager {
      * @param factory The replacement value
      * @param <T> The entity type
      */
+    @SuppressWarnings("unchecked")
+    public <T extends Entity, V extends T> void switchRenderer(boolean state, EntityType<V> type, Function<EntityRenderDispatcher, EntityRenderer<T>> factory) {
+        if (state) {
+            if (!renderMap.containsKey(type)) {
+                renderMap.put(type, ((MixinEntityRenderDispatcher)MinecraftClient.getInstance().getEntityRenderManager()).getEntityRenderers().get(type));
+            }
+            Mson.getInstance().getEntityRendererRegistry().registerEntityRenderer(type, factory);
+        } else {
+            if (renderMap.containsKey(type)) {
+                Mson.getInstance().getEntityRendererRegistry().registerEntityRenderer(type, m -> (EntityRenderer<T>)renderMap.get(type));
+            }
+        }
+    }
+
+    @Deprecated
     public <T extends Entity, V extends T> void switchRenderer(boolean state, EntityType<V> type, EntityRendererRegistry.Factory factory) {
         if (state) {
             if (!renderMap.containsKey(type)) {

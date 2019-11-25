@@ -13,6 +13,7 @@ import com.minelittlepony.client.render.entity.RenderPonyMob;
 import com.minelittlepony.client.render.entity.feature.LayerGear;
 import com.minelittlepony.model.IUnicorn;
 import com.minelittlepony.model.gear.IGear;
+import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.util.resources.ITextureSupplier;
 
 abstract class AbstractVillagerRenderer<
@@ -23,8 +24,8 @@ abstract class AbstractVillagerRenderer<
 
     private final String entityType;
 
-    public AbstractVillagerRenderer(EntityRenderDispatcher manager, M model, String type, ITextureSupplier<String> formatter) {
-        super(manager, model);
+    public AbstractVillagerRenderer(EntityRenderDispatcher manager, ModelKey<? super M> key, String type, ITextureSupplier<String> formatter) {
+        super(manager, key);
 
         entityType = type;
         baseTextures = new PonyTextures<>(formatter);

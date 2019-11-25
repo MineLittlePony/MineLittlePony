@@ -3,13 +3,13 @@ package com.minelittlepony.client.render.entity;
 import javax.annotation.Nonnull;
 
 import com.minelittlepony.client.mixin.IResizeable;
+import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.ModelGuardianPony;
 import com.minelittlepony.client.render.entity.RenderPonyMob.Proxy;
 import com.minelittlepony.client.render.entity.feature.LayerHeldPonyItem;
 import com.minelittlepony.client.render.entity.feature.LayerHeldPonyItemMagical;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.GuardianEntityRenderer;
@@ -25,11 +25,11 @@ public class RenderPonyGuardian extends GuardianEntityRenderer {
 
     private final Proxy<GuardianEntity, ModelGuardianPony> ponyRenderer;
 
-    public RenderPonyGuardian(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
+    public RenderPonyGuardian(EntityRenderDispatcher manager) {
         super(manager);
 
         features.clear();
-        ponyRenderer = new Proxy<GuardianEntity, ModelGuardianPony>(features, manager, new ModelGuardianPony()) {
+        ponyRenderer = new Proxy<GuardianEntity, ModelGuardianPony>(features, manager, ModelType.GUARDIAN) {
             @Override
             public Identifier findTexture(GuardianEntity entity) {
                 return SEAPONY;
@@ -71,8 +71,8 @@ public class RenderPonyGuardian extends GuardianEntityRenderer {
 
     public static class Elder extends RenderPonyGuardian {
 
-        public Elder(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
-            super(manager, context);
+        public Elder(EntityRenderDispatcher manager) {
+            super(manager);
         }
 
         @Override

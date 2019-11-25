@@ -25,7 +25,7 @@ public enum PlayerModels {
     DEFAULT("default", "slim", Race.HUMAN, ModelEarthPony::new),
     EARTHPONY(Race.EARTH, ModelEarthPony::new),
     PEGASUS(Race.PEGASUS, ModelPegasus::new),
-    BATPONY(Race.BATPONY, ModelBatpony::new),
+    BATPONY(Race.BATPONY, ModelPegasus::new),
     UNICORN(Race.UNICORN, ModelUnicorn::new),
     ALICORN(Race.ALICORN, ModelAlicorn::new),
     CHANGELING(Race.CHANGELING, ModelChangeling::new),
@@ -71,10 +71,12 @@ public enum PlayerModels {
         this.race = race;
     }
 
+    @Deprecated
     public PendingModel getPendingModel(boolean isSlim) {
         return isSlim ? slim : normal;
     }
 
+    @Deprecated
     public <T extends LivingEntity, M extends IModel> ModelWrapper<T, M> getWrappedModel(boolean isSlim) {
         return getPendingModel(isSlim).getWrappedModel(isSlim);
     }
@@ -84,13 +86,14 @@ public enum PlayerModels {
     }
 
     public RenderPonyPlayer createRenderer(EntityRenderDispatcher manager, boolean slimArms) {
-        return new RenderPonyPlayer(manager, slimArms, getWrappedModel(slimArms));
+        return new RenderPonyPlayer(manager, getWrappedModel(slimArms));
     }
 
     public static PlayerModels forRace(Race race) {
         return raceModelsMap.getOrDefault(race.getAlias(), DEFAULT);
     }
 
+    @Deprecated
     private final class PendingModel {
         @Nullable
         private ModelWrapper<?, IModel> model;

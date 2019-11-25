@@ -14,6 +14,7 @@ import com.minelittlepony.client.render.entity.feature.LayerPonyArmor;
 import com.minelittlepony.client.render.entity.feature.LayerPonyCustomHead;
 import com.minelittlepony.client.render.entity.feature.LayerPonyElytra;
 import com.minelittlepony.model.IUnicorn;
+import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.pony.IPony;
 
 import net.minecraft.client.model.ModelPart;
@@ -33,8 +34,9 @@ public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T
 
     protected RenderPony<T, M> renderPony = new RenderPony<>(this);
 
-    public RenderPonyMob(EntityRenderDispatcher manager, M model) {
-        super(manager, model, 0.5F);
+    @SuppressWarnings("unchecked")
+    public RenderPonyMob(EntityRenderDispatcher manager, ModelKey<? super M> key) {
+        super(manager, (M)key.createModel(), 0.5F);
 
         this.model = renderPony.setPonyModel(new ModelWrapper<>(model));
 
@@ -123,8 +125,8 @@ public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T
 
     public abstract static class Caster<T extends MobEntity, M extends ClientPonyModel<T> & IUnicorn<ModelPart>> extends RenderPonyMob<T, M> {
 
-        public Caster(EntityRenderDispatcher manager, M model) {
-            super(manager, model);
+        public Caster(EntityRenderDispatcher manager, ModelKey<? super M> key) {
+            super(manager, key);
         }
 
         @Override
@@ -136,8 +138,8 @@ public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T
     public abstract static class Proxy<T extends MobEntity, M extends EntityModel<T> & IPonyModel<T>> extends RenderPonyMob<T, M> {
 
         @SuppressWarnings({"rawtypes", "unchecked"})
-        public Proxy(List exportedLayers, EntityRenderDispatcher manager, M model) {
-            super(manager, model);
+        public Proxy(List exportedLayers, EntityRenderDispatcher manager, ModelKey<M> key) {
+            super(manager, key);
 
             exportedLayers.addAll(features);
         }

@@ -1,10 +1,10 @@
 package com.minelittlepony.client.render.entity;
 
+import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.ModelIllagerPony;
 import com.minelittlepony.client.render.entity.feature.LayerHeldItemIllager;
 import com.minelittlepony.client.render.entity.feature.LayerHeldPonyItem;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;
@@ -23,7 +23,7 @@ public abstract class RenderPonyIllager<T extends IllagerEntity> extends RenderP
     public static final Identifier VINDICATOR = new Identifier("minelittlepony", "textures/entity/illager/vindicator_pony.png");
 
     public RenderPonyIllager(EntityRenderDispatcher manager) {
-        super(manager, new ModelIllagerPony<>());
+        super(manager, ModelType.ILLAGER);
     }
 
     @Override
@@ -39,7 +39,7 @@ public abstract class RenderPonyIllager<T extends IllagerEntity> extends RenderP
 
     public static class Vindicator extends RenderPonyIllager<VindicatorEntity> {
 
-        public Vindicator(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
+        public Vindicator(EntityRenderDispatcher manager) {
             super(manager);
 
         }
@@ -52,7 +52,7 @@ public abstract class RenderPonyIllager<T extends IllagerEntity> extends RenderP
 
     public static class Evoker extends RenderPonyIllager<EvokerEntity> {
 
-        public Evoker(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
+        public Evoker(EntityRenderDispatcher manager) {
             super(manager);
         }
 
@@ -64,7 +64,7 @@ public abstract class RenderPonyIllager<T extends IllagerEntity> extends RenderP
 
     public static class Illusionist extends RenderPonyIllager<IllusionerEntity> {
 
-        public Illusionist(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
+        public Illusionist(EntityRenderDispatcher manager) {
             super(manager);
         }
 
