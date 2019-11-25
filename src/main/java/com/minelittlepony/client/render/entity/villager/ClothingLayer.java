@@ -46,6 +46,8 @@ class ClothingLayer<
         return new Identifier(namespace, String.format("textures/entity/%s/%s/%s.png", entityType, type, profession.getPath()));
     }
 
+    /*
+     * TODO: redirect textures
     @Override
     public void bindTexture(Identifier texture) {
 
@@ -59,4 +61,5 @@ class ClothingLayer<
 
         super.bindTexture(texture);
     }
+    */
 }
