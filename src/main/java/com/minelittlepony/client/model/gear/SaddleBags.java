@@ -6,7 +6,6 @@ import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.IPegasus;
 import com.minelittlepony.pony.meta.Race;
 import com.minelittlepony.pony.meta.Wearable;
-import com.mojang.blaze3d.platform.GlStateManager;
 
 import java.util.UUID;
 
@@ -33,7 +32,7 @@ public class SaddleBags extends AbstractGear {
 
     private IModel model;
 
-    @Override
+    @Deprecated
     public void init(float yOffset, float stretch) {
         leftBag = new Part(this, 56, 19);
         rightBag = new Part(this, 56, 19);
@@ -43,7 +42,7 @@ public class SaddleBags extends AbstractGear {
         int x = 4;
         int z = -1;
 
-        strap.offset(-x, y + 0.2F, z + 3).around(0, 4, 4)
+        ((Part)strap).offset(-x, y + 0.2F, z + 3).around(0, 4, 4)
         .tex(56, 31).top(0, 0, 0, 8, 1, stretch)
                     .top(0, 0, 1, 8, 1, stretch)
                   .south(0, 0, 2, 8, 1, stretch)
@@ -55,7 +54,7 @@ public class SaddleBags extends AbstractGear {
                    .west(-4.0002F, -1, 0, 1, 3, stretch)
                 .pitch = ROTATE_270;
 
-        leftBag.offset(x, y, z).around(0, 4, 4)
+        ((Part)leftBag).offset(x, y, z).around(0, 4, 4)
                 .tex(56, 25).south(0, 0, 0, 3, 6, stretch)
                 .tex(59, 25).south(0, 0, 8, 3, 6, stretch)
                 .tex(56, 19) .west(3, 0, 0, 6, 8, stretch)
@@ -67,7 +66,7 @@ public class SaddleBags extends AbstractGear {
 
         x += 3;
 
-        rightBag.offset(-x, y, z).around(0, 4, 4).flipX()
+        ((Part)rightBag).offset(-x, y, z).around(0, 4, 4).flipX()
                 .tex(56, 25).south(0, 0, 0, 3, 6, stretch)
                 .tex(59, 25).south(0, 0, 8, 3, 6, stretch)
                 .tex(56, 19).west(3, 0, 0, 6, 8, stretch)

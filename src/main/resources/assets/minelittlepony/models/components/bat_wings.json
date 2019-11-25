@@ -4,7 +4,54 @@
 		"name": "wings",
 		"implementation": "com.minelittlepony.client.model.part.BatWings$Wing",
 		"content": {
-			"__comment": "TODO"
+			"folded": {
+				"texture": {"u": 56, "v": 16},
+				"rotate": [1.571, 0, 0],
+				"center": [-0.5, 13, -4],
+				"cubes": [
+					{ "from": [3.15, 5, 4], "size": [1, 4, 1] },
+					{ "from": [ 3.5, 5, 6], "size": [1, 7, 1] },
+					{ "from": [ 3.5, 5, 5], "size": [1, 6, 1] },
+					{ "from": [3.15, 5, 7], "size": [1, 7, 1] }
+				]
+			},
+			"extended": {
+				"texture": {"u": 56, "v": 19},
+				"center": [2.5, 5.3, 3],
+				"rotate": [3, 0, 0],
+				"children": [
+					{
+						"texture": {"u": 60, "v": 16},
+						"rotate": [0.1, 0, 0],
+						"cubes": [
+							{ "from": [-0.5, -1, 0], "size": [1, 8, 1], "stretch": 0.001 }
+						],
+						"children": [
+							{
+								"texture": {"u": 60, "v": 16},
+								"rotate": [-0.5, 0, 0],
+								"center": [0, -1, -2],
+								"cubes": [
+									{ "from": [-0.5, 0, 2], "size": [1, 7, 1] }
+								]
+							},
+							{
+								"texture": {"u": 60, "v": 16},
+								"rotate": [-0.5, 0, 0],
+								"center": [0, 4, -2.4],
+								"cubes": [
+									{ "from": [-0.5, 0, 3], "size": [1, 7, 1] }
+								]
+							},
+							{
+								"type": "mson:planar",
+								"texture": {"u": 56, "v": 32},
+								"west": [0, 0, -7, 16, 8, 0]
+							}
+						]
+					}
+				]
+			}
 		}
 	},
 	"right_wing": {
@@ -12,7 +59,59 @@
 		"name": "wings",
 		"implementation": "com.minelittlepony.client.model.part.BatWings$Wing",
 		"content": {
-			"__comment": "TODO"
+			"folded": {
+				"texture": {"u": 56, "v": 16},
+				"rotate": [1.571, 0, 0],
+				"center": [-0.5, 13, -4],
+				"mirror": true,
+				"cubes": [
+					{ "from": [-3.15, 5, 4], "size": [1, 4, 1] },
+					{ "from": [ -3.5, 5, 6], "size": [1, 7, 1] },
+					{ "from": [ -3.5, 5, 5], "size": [1, 6, 1] },
+					{ "from": [-3.15, 5, 7], "size": [1, 7, 1] }
+				]
+			},
+			"extended": {
+				"texture": {"u": 56, "v": 19},
+				"center": [-2.5, 5.3, 3],
+				"rotate": [-3, 0, 0],
+				"mirror": true,
+				"children": [
+					{
+						"texture": {"u": 60, "v": 16},
+						"rotate": [0.1, 0, 0],
+						"cubes": [
+							{ "from": [-0.5, -1, 0], "size": [1, 8, 1], "stretch": 0.001 }
+						],
+						"children": [
+							{
+								"texture": {"u": 60, "v": 16},
+								"rotate": [-0.5, 0, 0],
+								"center": [0, -1, -2],
+								"mirror": true,
+								"cubes": [
+									{ "from": [-0.5, 0, 2], "size": [1, 7, 1] }
+								]
+							},
+							{
+								"texture": {"u": 60, "v": 16},
+								"rotate": [-0.5, 0, 0],
+								"center": [0, 4, -2.4],
+								"mirror": true,
+								"cubes": [
+									{ "from": [-0.5, 0, 3], "size": [1, 7, 1] }
+								]
+							},
+							{
+								"type": "mson:planar",
+								"texture": {"u": 56, "v": 32},
+								"mirror": true,
+								"west": [0, 0, -7, 16, 8, 0]
+							}
+						]
+					}
+				]
+			}
 		}
 	},
 	"legacy_right_wing": "#right_wing"

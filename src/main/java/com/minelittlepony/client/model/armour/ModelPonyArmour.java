@@ -7,10 +7,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
+import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.armour.ArmourVariant;
 import com.minelittlepony.model.armour.IArmour;
-import com.minelittlepony.mson.api.model.MsonPart;
 
 public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T> implements IArmour {
 
@@ -77,7 +77,7 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
     @Deprecated
     protected void initEars(ModelPart head, float yOffset, float stretch) {
         stretch /= 2;
-        head.tex(0, 0).box(-4, -6, 1, 2, 2, 2, stretch)  // right ear
+        ((Part)head).tex(0, 0).box(-4, -6, 1, 2, 2, 2, stretch)  // right ear
             .tex(0, 4).box( 2, -6, 1, 2, 2, 2, stretch); // left ear
     }
 
@@ -91,7 +91,7 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
 
         // fits the legacy player's torso to our pony bod.
         upperTorso = new com.minelittlepony.client.util.render.Part(this, 24, 0);
-        ((MsonPart)upperTorso).offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
+        ((Part)upperTorso).offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
                   .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                   .tex(32, 23).east( 4, -4, -4, 8, 8, stretch)
                               .west(-4, -4, -4, 8, 8, stretch)

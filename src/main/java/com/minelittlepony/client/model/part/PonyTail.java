@@ -7,14 +7,11 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IPart;
 
 import java.util.UUID;
 
-public class PonyTail extends Part implements IPart {
-
-    private static final int SEGMENTS = 4;
+public class PonyTail extends ModelPart implements IPart {
 
     private final AbstractPonyModel<?> theModel;
 
@@ -23,10 +20,6 @@ public class PonyTail extends Part implements IPart {
     public PonyTail(AbstractPonyModel<?> model) {
         super(model);
         theModel = model;
-
-        for (int i = 0; i < SEGMENTS; i++) {
-            addChild(new TailSegment(theModel, i));
-        }
     }
 
     @Override
@@ -80,34 +73,24 @@ public class PonyTail extends Part implements IPart {
         render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
-    private class TailSegment extends ModelPart {
+    private static class Segment extends ModelPart {
 
-        private final int index;
+        public PonyTail tail;
 
-        public TailSegment(Model model, int index) {
+        int index;
+
+        public Segment(Model model) {
             super(model);
+        }
+
+        public void setOwner(int index, PonyTail tail) {
             this.index = index;
-
-            pivotY = ((float)index)/4 + 0.063f;
-
-            int texX = (index % 2) * 4;
-
-            around(TAIL_RP_X, TAIL_RP_Y, 0);
-
-            if (index == 0) {
-                tex(32, 0).top(-2, 0, 2, 4, 4, 0);
-            }
-
-            tex(36, texX) .east( 2, 0, 2, 4, 4, 0)
-                          .west(-2, 0, 2, 4, 4, 0);
-            tex(32, texX).south(-2, 0, 2, 4, 4, 0)
-                         .north(-2, 0, 6, 4, 4, 0);
-            tex(32, 0)  .bottom(-2, 4, 2, 4, 4, 0);
+            this.tail = tail;
         }
 
         @Override
         public void render(MatrixStack stack, VertexConsumer renderContext, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-            if (index < tailStop) {
+            if (index < tail.tailStop) {
                 super.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
             }
         }

@@ -10,18 +10,16 @@ import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.gear.IStackable;
 import com.minelittlepony.pony.meta.Wearable;
 
-import java.util.UUID;
-
 public class WitchHat extends AbstractGear implements IStackable {
 
     private static final Identifier WITCH_TEXTURES = new Identifier("textures/entity/witch.png");
 
     private ModelPart witchHat;
 
-    @Override
+    @Deprecated
     public void init(float yOffset, float stretch) {
         accept(witchHat = new Part(this).size(64, 128));
-        witchHat.around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
+        ((Part)witchHat).around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
                 .tex(0, 64).box(-5, -6, -7, 10, 2, 10, stretch)
                 .child(0).around(1.75F, -4, 2)
                     .tex(0, 76).box(-5, -5, -7, 7, 4, 7, stretch)
