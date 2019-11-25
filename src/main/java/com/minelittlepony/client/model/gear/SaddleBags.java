@@ -4,6 +4,7 @@ import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.IPegasus;
+import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.pony.meta.Race;
 import com.minelittlepony.pony.meta.Wearable;
 
@@ -31,6 +32,13 @@ public class SaddleBags extends AbstractGear {
 
 
     private IModel model;
+
+    @Override
+    public void init(ModelContext context) {
+        strap = context.findByName("strap");
+        leftBag = context.findByName("left_bag");
+        rightBag = context.findByName("right_bag");
+    }
 
     @Deprecated
     public void init(float yOffset, float stretch) {

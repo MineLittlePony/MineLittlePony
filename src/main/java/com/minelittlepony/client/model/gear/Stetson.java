@@ -6,10 +6,16 @@ import net.minecraft.util.Identifier;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.gear.IStackable;
+import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.pony.meta.Wearable;
 
 public class Stetson extends AbstractGear implements IStackable {
     private static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/models/stetson.png");
+
+    @Override
+    public void init(ModelContext context) {
+        accept(context.findByName("rim"));
+    }
 
     @Override
     public BodyPart getGearLocation() {

@@ -8,6 +8,7 @@ import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.gear.IStackable;
+import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.pony.meta.Wearable;
 
 public class WitchHat extends AbstractGear implements IStackable {
@@ -15,6 +16,12 @@ public class WitchHat extends AbstractGear implements IStackable {
     private static final Identifier WITCH_TEXTURES = new Identifier("textures/entity/witch.png");
 
     private ModelPart witchHat;
+
+
+    @Override
+    public void init(ModelContext context) {
+        witchHat = context.findByName("witch_hat");
+    }
 
     @Deprecated
     public void init(float yOffset, float stretch) {

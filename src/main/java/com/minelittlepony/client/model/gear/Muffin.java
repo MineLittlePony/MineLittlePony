@@ -6,11 +6,17 @@ import net.minecraft.util.Identifier;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.gear.IStackable;
+import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.pony.meta.Wearable;
 
 public class Muffin extends AbstractGear implements IStackable {
 
     private static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/models/muffin.png");
+
+    @Override
+    public void init(ModelContext context) {
+        accept(context.findByName("crown"));
+    }
 
     @Override
     public boolean canRender(IModel model, Entity entity) {

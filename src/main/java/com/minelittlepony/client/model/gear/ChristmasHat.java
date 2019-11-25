@@ -9,6 +9,7 @@ import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
+import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.pony.meta.Wearable;
 import com.minelittlepony.util.math.Color;
 
@@ -37,6 +38,12 @@ public class ChristmasHat extends AbstractGear {
     private ModelPart right;
 
     private int tint;
+
+    @Override
+    public void init(ModelContext context) {
+        left = context.findByName("left");
+        right = context.findByName("right");
+    }
 
     @Override
     public boolean canRender(IModel model, Entity entity) {
