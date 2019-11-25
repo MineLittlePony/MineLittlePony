@@ -5,6 +5,7 @@ import com.minelittlepony.client.model.entity.race.ModelUnicorn;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.armour.IEquestrianArmour;
+import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.pony.IPony;
 import com.mojang.blaze3d.platform.GlStateManager;
 
@@ -29,6 +30,15 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
 
     public ModelSeapony() {
         this(false);
+    }
+
+    @Override
+    public void init(ModelContext context) {
+        super.init(context);
+        bodyCenter = context.findByName("abdomin");
+        leftFin = context.findByName("left_fin");
+        rightFin = context.findByName("right_fin");
+        centerFin = context.findByName("center_fin");
     }
 
     @Override

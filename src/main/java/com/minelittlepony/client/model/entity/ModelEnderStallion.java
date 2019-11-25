@@ -6,6 +6,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.util.math.MathHelper;
 
+import com.minelittlepony.mson.api.ModelContext;
+
 public class ModelEnderStallion extends ModelSkeletonPony<EndermanEntity> {
 
     public boolean isCarrying;
@@ -20,6 +22,13 @@ public class ModelEnderStallion extends ModelSkeletonPony<EndermanEntity> {
     public ModelEnderStallion() {
         super();
         attributes.visualHeight = 3;
+    }
+
+    @Override
+    public void init(ModelContext context) {
+        super.init(context);
+        leftHorn = context.findByName("left_horn");
+        rightHorn = context.findByName("right_horn");
     }
 
     @Override

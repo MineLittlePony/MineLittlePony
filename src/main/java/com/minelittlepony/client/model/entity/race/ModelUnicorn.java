@@ -2,6 +2,7 @@ package com.minelittlepony.client.model.entity.race;
 
 import com.minelittlepony.client.model.part.UnicornHorn;
 import com.minelittlepony.model.IUnicorn;
+import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.model.MsonPart;
 
 import net.minecraft.client.model.ModelPart;
@@ -16,13 +17,21 @@ import net.minecraft.util.math.MathHelper;
  */
 public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> implements IUnicorn<ModelPart> {
 
-    public ModelPart unicornArmRight;
-    public ModelPart unicornArmLeft;
+    protected ModelPart unicornArmRight;
+    protected ModelPart unicornArmLeft;
 
-    public UnicornHorn horn;
+    protected UnicornHorn horn;
 
     public ModelUnicorn(boolean smallArms) {
         super(smallArms);
+    }
+
+    @Override
+    public void init(ModelContext context) {
+        super.init(context);
+        horn = context.findByName("horn");
+        unicornArmRight = context.findByName("right_cast");
+        unicornArmLeft = context.findByName("left_cast");
     }
 
     @Override

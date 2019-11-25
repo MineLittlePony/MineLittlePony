@@ -2,6 +2,7 @@ package com.minelittlepony.client.model.entity.race;
 
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.model.IPegasus;
+import com.minelittlepony.mson.api.ModelContext;
 
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -13,6 +14,12 @@ public class ModelPegasus<T extends LivingEntity> extends ModelEarthPony<T> impl
 
     public ModelPegasus(boolean smallArms) {
         super(smallArms);
+    }
+
+    @Override
+    public void init(ModelContext context) {
+        super.init(context);
+        wings = context.findByName("wings");
     }
 
     @Override

@@ -65,19 +65,11 @@ public class ModelSkeletonPony<T extends HostileEntity> extends ModelAlicorn<T> 
     protected void rotateLegs(float move, float swing, float ticks, T entity) {
         super.rotateLegs(move, swing, ticks, entity);
         if (rightArmPose != ArmPose.EMPTY) {
-            if (canCast()) {
-                rotateArmHolding(unicornArmRight, -1, getSwingAmount(), ticks);
-            } else {
-                rotateArmHolding(rightArm, -1, getSwingAmount(), ticks);
-            }
+            rotateArmHolding(getArm(Arm.RIGHT), -1, getSwingAmount(), ticks);
         }
 
         if (leftArmPose != ArmPose.EMPTY) {
-            if (canCast()) {
-                rotateArmHolding(unicornArmLeft, -1, getSwingAmount(), ticks);
-            } else {
-                rotateArmHolding(leftArm, -1, getSwingAmount(), ticks);
-            }
+            rotateArmHolding(getArm(Arm.LEFT), -1, getSwingAmount(), ticks);
         }
     }
 

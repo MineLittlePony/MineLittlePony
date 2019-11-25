@@ -13,6 +13,7 @@ import net.minecraft.village.VillagerProfession;
 import com.minelittlepony.client.model.entity.race.ModelAlicorn;
 import com.minelittlepony.client.render.entity.villager.PonyTextures;
 import com.minelittlepony.model.IPart;
+import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.pony.meta.Race;
 
 public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> extends ModelAlicorn<T> implements ModelWithHat {
@@ -24,6 +25,13 @@ public class ModelVillagerPony<T extends LivingEntity & VillagerDataContainer> e
 
     public ModelVillagerPony() {
         super(false);
+    }
+
+    @Override
+    public void init(ModelContext context) {
+        super.init(context);
+        apron = context.findByName("apron");
+        trinket = context.findByName("trinket");
     }
 
     @Override
