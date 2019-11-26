@@ -14,8 +14,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
 
-import static com.mojang.blaze3d.platform.GlStateManager.*;
-
 public class LayerHeldPonyItem<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyLayer<T, M> {
 
     public LayerHeldPonyItem(IPonyRender<T, M> livingPony) {
@@ -56,11 +54,11 @@ public class LayerHeldPonyItem<T extends LivingEntity, M extends EntityModel<T> 
 
     private void renderHeldItem(T entity, ItemStack drop, ModelTransformation.Type transform, Arm arm, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
         if (!drop.isEmpty()) {
-            pushMatrix();
+            stack.push();
             renderArm(arm, stack);
 
-            if (getMainModel().getAttributes().isCrouching) {
-                translatef(0, 0.2F, 0);
+            if (getModel().getAttributes().isCrouching) {
+                stack.translate(0, 0.2F, 0);
             }
 
             float left = arm == Arm.LEFT ? 1 : -1;
@@ -77,7 +75,7 @@ public class LayerHeldPonyItem<T extends LivingEntity, M extends EntityModel<T> 
             MinecraftClient.getInstance().getFirstPersonRenderer().renderItem(entity, drop, transform, arm == Arm.LEFT, stack, renderContext, lightUv);
             postItemRender(entity, drop, transform, arm, stack, renderContext);
 
-            popMatrix();
+            stack.pop();
         }
     }
 

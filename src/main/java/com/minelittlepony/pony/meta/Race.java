@@ -16,7 +16,7 @@ public enum Race implements ITriggerPixelMapped<Race> {
     CHANGELING  (0x282b29, true,  true),
     ZEBRA       (0xd0cccf, false, false),
     CHANGEDLING (0xcaed5a, CHANGELING),
-    GRIFFIN     (0xae9145, PEGASUS),
+    GRYPHON     (0xae9145, PEGASUS),
     HIPPOGRIFF  (0xd6ddac, PEGASUS),
     KIRIN       (0xfa88af, UNICORN),
     BATPONY     (0xeeeeee, true,  false),

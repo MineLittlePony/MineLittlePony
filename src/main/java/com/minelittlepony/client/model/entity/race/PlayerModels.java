@@ -1,41 +1,27 @@
 package com.minelittlepony.client.model.entity.race;
 
 import com.google.common.collect.Maps;
-import com.minelittlepony.client.model.ModelWrapper;
-import com.minelittlepony.client.model.entity.ModelSeapony;
-import com.minelittlepony.client.render.entity.RenderPonyPlayer;
-import com.minelittlepony.client.render.entity.RenderSeaponyPlayer;
-import com.minelittlepony.model.IModel;
+import com.minelittlepony.client.model.ModelType;
+import com.minelittlepony.client.model.PlayerModelKey;
 import com.minelittlepony.pony.meta.Race;
-
-import javax.annotation.Nullable;
-
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.entity.LivingEntity;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 public enum PlayerModels {
     /**
      * The default non-pony model. This is typically handled my the vanilla renderer.
      */
-    DEFAULT("default", "slim", Race.HUMAN, ModelEarthPony::new),
-    EARTHPONY(Race.EARTH, ModelEarthPony::new),
-    PEGASUS(Race.PEGASUS, ModelPegasus::new),
-    BATPONY(Race.BATPONY, ModelPegasus::new),
-    UNICORN(Race.UNICORN, ModelUnicorn::new),
-    ALICORN(Race.ALICORN, ModelAlicorn::new),
-    CHANGELING(Race.CHANGELING, ModelChangeling::new),
-    ZEBRA(Race.ZEBRA, ModelZebra::new),
-    SEAPONY(Race.SEAPONY, ModelSeapony::new) {
-        @Override
-        public RenderPonyPlayer createRenderer(EntityRenderDispatcher manager, boolean slimArms) {
-            return new RenderSeaponyPlayer(manager, slimArms, PlayerModels.UNICORN.getWrappedModel(slimArms), getWrappedModel(slimArms));
-        }
-    };
+    DEFAULT("default", "slim", Race.HUMAN),
+    EARTHPONY(Race.EARTH),
+    PEGASUS(Race.PEGASUS),
+    BATPONY(Race.BATPONY),
+    UNICORN(Race.UNICORN),
+    ALICORN(Race.ALICORN),
+    CHANGELING(Race.CHANGELING),
+    ZEBRA(Race.ZEBRA),
+    SEAPONY(Race.SEAPONY);
 
     public static final List<PlayerModels> registry = Arrays.asList(values());
     private static final Map<Race, PlayerModels> raceModelsMap = Maps.newEnumMap(Race.class);
@@ -46,71 +32,34 @@ public enum PlayerModels {
         }
     }
 
-    private final Function<Boolean, IModel> resolver;
-
-    private final PendingModel normal;
-    private final PendingModel slim;
+    private final String normal;
+    private final String slim;
 
     private final Race race;
 
-    PlayerModels(Race race, Function<Boolean, IModel> resolver) {
-        normal = new PendingModel(name().toLowerCase());
-        slim = new PendingModel("slim" + normal.key);
-
-        this.resolver = resolver;
+    PlayerModels(Race race) {
+        normal = name().toLowerCase();
+        slim = "slim" + normal;
 
         this.race = race;
     }
 
-    PlayerModels(String normalKey, String slimKey, Race race, Function<Boolean, IModel> resolver) {
-        normal = new PendingModel(normalKey);
-        slim = new PendingModel(slimKey);
-
-        this.resolver = resolver;
+    PlayerModels(String normalKey, String slimKey, Race race) {
+        normal = normalKey;
+        slim = slimKey;
 
         this.race = race;
     }
 
-    @Deprecated
-    public PendingModel getPendingModel(boolean isSlim) {
-        return isSlim ? slim : normal;
-    }
-
-    @Deprecated
-    public <T extends LivingEntity, M extends IModel> ModelWrapper<T, M> getWrappedModel(boolean isSlim) {
-        return getPendingModel(isSlim).getWrappedModel(isSlim);
+    public PlayerModelKey<?, ?> getModelKey() {
+        return ModelType.getPlayerModel(race);
     }
 
     public String getId(boolean isSlim) {
-        return getPendingModel(isSlim).key;
-    }
-
-    public RenderPonyPlayer createRenderer(EntityRenderDispatcher manager, boolean slimArms) {
-        return new RenderPonyPlayer(manager, getWrappedModel(slimArms));
+        return isSlim ? slim : normal;
     }
 
     public static PlayerModels forRace(Race race) {
         return raceModelsMap.getOrDefault(race.getAlias(), DEFAULT);
-    }
-
-    @Deprecated
-    private final class PendingModel {
-        @Nullable
-        private ModelWrapper<?, IModel> model;
-
-        private final String key;
-
-        PendingModel(String key) {
-            this.key = key;
-        }
-
-        @SuppressWarnings("unchecked")
-        public <T extends LivingEntity, M extends IModel> ModelWrapper<T, M> getWrappedModel(boolean isSlim) {
-            if (model == null) {
-                model = new ModelWrapper<>(resolver.apply(isSlim));
-            }
-
-            return (ModelWrapper<T, M>)model;
-        }
     }
 }

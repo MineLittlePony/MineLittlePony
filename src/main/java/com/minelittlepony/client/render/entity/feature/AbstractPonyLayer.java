@@ -1,6 +1,7 @@
 package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.client.model.IPonyModel;
+import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.render.IPonyRender;
 
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -42,11 +43,7 @@ public abstract class AbstractPonyLayer<T extends LivingEntity, M extends Entity
         return (C)context;
     }
 
-    public M getPlayerModel() {
-        return getContext().getModelWrapper().getBody();
-    }
-
-    public M getMainModel() {
-        return getContext().getModel();
+    public ModelWrapper<T, M> getModelWrapper() {
+        return getContext().getModelWrapper();
     }
 }

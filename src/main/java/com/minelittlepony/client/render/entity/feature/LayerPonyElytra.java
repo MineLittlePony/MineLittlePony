@@ -55,8 +55,9 @@ public class LayerPonyElytra<T extends LivingEntity, M extends EntityModel<T> & 
     }
 
     protected void preRenderCallback(MatrixStack stack) {
-        stack.translate(0, getPlayerModel().getRiderYOffset(), 0.125F);
-        getPlayerModel().transform(BodyPart.BODY, stack);
+        M body = getModelWrapper().getBody();
+        stack.translate(0, body.getRiderYOffset(), 0.125F);
+        body.transform(BodyPart.BODY, stack);
     }
 
     protected EntityModel<T> getElytraModel() {

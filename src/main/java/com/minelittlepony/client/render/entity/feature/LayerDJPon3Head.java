@@ -24,8 +24,11 @@ public class LayerDJPon3Head<T extends AbstractClientPlayerEntity, M extends Ent
     public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
         if ("deadmau5".equals(entity.getName().getString())) {
             stack.push();
-            getPlayerModel().transform(BodyPart.HEAD, stack);
-            getPlayerModel().getHead().rotate(stack);
+
+            M body = getModelWrapper().getBody();
+
+            body.transform(BodyPart.HEAD, stack);
+            body.getHead().rotate(stack);
 
             stack.scale(1.3333334F, 1.3333334F, 1.3333334F);
             stack.translate(0, 0.3F, 0);

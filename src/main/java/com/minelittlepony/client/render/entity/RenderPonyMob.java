@@ -38,7 +38,7 @@ public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T
     public RenderPonyMob(EntityRenderDispatcher manager, ModelKey<? super M> key) {
         super(manager, (M)key.createModel(), 0.5F);
 
-        this.model = renderPony.setPonyModel(new ModelWrapper<>(model));
+        this.model = renderPony.setPonyModel((ModelKey<M>)key).getBody();
 
         addLayers();
     }

@@ -2,8 +2,8 @@ package com.minelittlepony.client.hdskins;
 
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ClientPonyModel;
+import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.ModelWrapper;
-import com.minelittlepony.client.model.entity.race.PlayerModels;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.client.render.RenderPony;
 import com.minelittlepony.client.render.entity.feature.LayerGear;
@@ -12,10 +12,10 @@ import com.minelittlepony.client.render.entity.feature.LayerPonyArmor;
 import com.minelittlepony.client.render.entity.feature.LayerPonyElytra;
 import com.minelittlepony.hdskins.dummy.DummyPlayerRenderer;
 import com.minelittlepony.hdskins.profile.SkinType;
+import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.meta.Race;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -28,18 +28,18 @@ class DummyPonyRenderer extends DummyPlayerRenderer<DummyPony, ClientPonyModel<D
 
     protected final RenderPony<DummyPony, ClientPonyModel<DummyPony>> renderPony = new RenderPony<>(this);
 
-    public DummyPonyRenderer(EntityRenderDispatcher manager, EntityRendererRegistry.Context context) {
-        super(manager, context);
+    @SuppressWarnings("unchecked")
+    public DummyPonyRenderer(EntityRenderDispatcher manager) {
+        super(manager, null);
         addFeature(new LayerGear<>(this));
 
+        renderPony.setPonyModel((ModelKey<ClientPonyModel<DummyPony>>)(Object)ModelType.EARTH_PONY.getKey(false));
         renderPony.setSkipBlend();
     }
 
-    private ModelWrapper<DummyPony, ClientPonyModel<DummyPony>> playerModel;
-
     @Override
     public ModelWrapper<DummyPony, ClientPonyModel<DummyPony>> getModelWrapper() {
-        return playerModel;
+        return renderPony.playerModel;
     }
 
     @Override
@@ -78,12 +78,11 @@ class DummyPonyRenderer extends DummyPlayerRenderer<DummyPony, ClientPonyModel<D
 
         boolean canWet = playermodel.wet && (loc == playermodel.getTextures().getBlankSkin(SkinType.SKIN) || race == Race.SEAPONY);
 
-        playerModel = canWet ? PlayerModels.SEAPONY.getWrappedModel(slim) : PlayerModels.forRace(thePony.getRace(true)).getWrappedModel(slim);
-        playerModel.apply(thePony.getMetadata());
 
-        renderPony.setPonyModel(playerModel);
+        @SuppressWarnings("unchecked")
+        ModelKey<? extends ClientPonyModel<DummyPony>> key = (ModelKey<? extends ClientPonyModel<DummyPony>>)(canWet ? ModelType.SEA_PONY.getKey(slim) : ModelType.getPlayerModel(thePony.getRace(true)).getKey(slim));
 
-        return playerModel.getBody();
+        return renderPony.setPonyModel(key).apply(thePony.getMetadata()).getBody();
     }
 
     @Override

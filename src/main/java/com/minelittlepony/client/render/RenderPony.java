@@ -5,6 +5,7 @@ import com.minelittlepony.client.PonyRenderManager;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.transform.PonyPosture;
+import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.util.math.MathUtil;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
@@ -132,10 +133,10 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
         return playerModel.getBody();
     }
 
-    public M setPonyModel(ModelWrapper<T, M> model) {
-        playerModel = model;
+    public ModelWrapper<T, M> setPonyModel(ModelKey<? extends M> model) {
+        playerModel = new ModelWrapper<>(model.createModel());
 
-        return getModel();
+        return playerModel;
     }
 
     public void updateMetadata(Identifier texture) {

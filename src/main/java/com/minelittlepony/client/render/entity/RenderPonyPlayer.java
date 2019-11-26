@@ -16,6 +16,7 @@ import com.minelittlepony.client.render.entity.feature.LayerPonyCape;
 import com.minelittlepony.client.render.entity.feature.LayerPonyCustomHead;
 import com.minelittlepony.client.render.entity.feature.LayerPonyElytra;
 import com.minelittlepony.model.gear.IGear;
+import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.meta.Race;
 
@@ -38,10 +39,10 @@ public class RenderPonyPlayer extends PlayerEntityRenderer implements IPonyRende
 
     protected final RenderPony<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> renderPony = new RenderPony<>(this);
 
-    public RenderPonyPlayer(EntityRenderDispatcher manager, ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> model) {
-        super(manager, false);
+    public RenderPonyPlayer(EntityRenderDispatcher manager, boolean slim, ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>> key) {
+        super(manager, slim);
 
-        this.model = renderPony.setPonyModel(model);
+        this.model = renderPony.setPonyModel(key).getBody();
 
         addLayers();
     }

@@ -51,7 +51,7 @@ public class LayerGear<T extends LivingEntity, M extends EntityModel<T> & IPonyM
             return;
         }
 
-        M model = getPlayerModel();
+        M model = getModelWrapper().getBody();
 
         Map<BodyPart, Float> renderStackingOffsets = new HashMap<>();
 

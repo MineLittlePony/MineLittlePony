@@ -1,8 +1,10 @@
 package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.client.model.ClientPonyModel;
-import com.minelittlepony.client.model.ModelWrapper;
+import com.minelittlepony.client.model.ModelType;
+import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.pony.IPony;
+import com.minelittlepony.pony.meta.Race;
 import com.minelittlepony.util.math.MathUtil;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -11,16 +13,14 @@ import net.minecraft.particle.ParticleTypes;
 
 public class RenderSeaponyPlayer extends RenderPonyPlayer {
 
-    protected final ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> seapony;
-    protected final ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> normalPony;
+    protected final ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>> seapony;
+    protected final ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>> normalPony;
 
-    public RenderSeaponyPlayer(EntityRenderDispatcher manager, boolean useSmallArms,
-            ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> model,
-            ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> alternate) {
-        super(manager, model);
+    public RenderSeaponyPlayer(EntityRenderDispatcher manager, boolean slim, ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>> key) {
+        super(manager, slim, key);
 
-        seapony = alternate;
-        normalPony = model;
+        seapony = ModelType.<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>>getPlayerModel(Race.UNICORN).getKey(slim);
+        normalPony = key;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class RenderSeaponyPlayer extends RenderPonyPlayer {
 
         boolean wet = pony.isPartiallySubmerged(player);
 
-        model = renderPony.setPonyModel(wet ? seapony : normalPony);
+        model = renderPony.setPonyModel(wet ? seapony : normalPony).getBody();
 
         float state = wet ? 100 : 0;
         float interpolated = pony.getMetadata().getInterpolator(player.getUuid()).interpolate("seapony_state", state, 5);

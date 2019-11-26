@@ -13,7 +13,7 @@ public class RenderPonyTrader extends RenderPonyMob.Caster<WanderingTraderEntity
     public static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/entity/wandering_trader_pony.png");
 
     public RenderPonyTrader(EntityRenderDispatcher manager) {
-        super(manager, ModelType.ALICORN.steveKey);
+        super(manager, ModelType.ALICORN.getKey(false));
     }
 
     @Override

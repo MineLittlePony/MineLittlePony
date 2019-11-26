@@ -19,9 +19,10 @@ public class ArmourWrapper<T extends LivingEntity> implements IEquestrianArmour<
     }
 
     @Override
-    public void apply(IPonyData meta) {
+    public ArmourWrapper<T> apply(IPonyData meta) {
         outerLayer.apply(meta);
         innerLayer.apply(meta);
+        return this;
     }
 
     @Override

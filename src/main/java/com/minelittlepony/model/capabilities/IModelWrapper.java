@@ -6,5 +6,5 @@ public interface IModelWrapper {
     /**
      * Updates metadata values to this wrapper's contained models.
      */
-    void apply(IPonyData meta);
+    IModelWrapper apply(IPonyData meta);
 }

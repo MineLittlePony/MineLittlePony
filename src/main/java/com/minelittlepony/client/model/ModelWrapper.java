@@ -39,8 +39,9 @@ public class ModelWrapper<T extends LivingEntity, M extends IModel> implements I
     }
 
     @Override
-    public void apply(IPonyData meta) {
+    public ModelWrapper<T, M> apply(IPonyData meta) {
         body.apply(meta);
         armor.apply(meta);
+        return this;
     }
 }
