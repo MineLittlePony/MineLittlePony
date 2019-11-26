@@ -1,6 +1,5 @@
 package com.minelittlepony.client.model.part;
 
-import net.minecraft.client.model.Model;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -92,14 +91,14 @@ public class PonyTail implements IPart, MsonModel {
         tail.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
-    private static class Segment extends ModelPart implements MsonModel {
+    public static class Segment extends ModelPart implements MsonModel {
 
         public PonyTail tail;
 
         public int index;
 
-        public Segment(Model model) {
-            super(model);
+        public Segment(ModelContext context) {
+            super(context.getModel());
         }
 
         @Override
