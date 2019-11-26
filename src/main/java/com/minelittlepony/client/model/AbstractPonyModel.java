@@ -8,10 +8,7 @@ import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.mson.api.ModelContext;
-import com.minelittlepony.mson.api.mixin.Extends;
-import com.minelittlepony.mson.api.mixin.MixedMsonModel;
 import com.minelittlepony.mson.api.model.MsonPart;
-import com.minelittlepony.mson.api.model.biped.MsonBiped;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
@@ -25,9 +22,7 @@ import net.minecraft.util.math.MathHelper;
 /**
  * Foundation class for all types of ponies.
  */
-@Extends(MsonBiped.class)
-public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPonyModel<T>
-        implements MixedMsonModel {
+public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPonyModel<T> {
 
     protected ModelPart upperTorso;
     protected ModelPart upperTorsoOverlay;
@@ -38,13 +33,9 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     protected PonySnout snout;
     protected IPart ears;
 
-    public AbstractPonyModel(boolean arms) {
-        super(0, arms);
-    }
-
     @Override
     public void init(ModelContext context) {
-        MixedMsonModel.super.init(context);
+        super.init(context);
         context.findByName("left_sleeve", leftSleeve);
         context.findByName("right_sleeve", rightSleeve);
 

@@ -22,7 +22,6 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
     private ArmourVariant variant = ArmourVariant.NORMAL;
 
     public ModelPonyArmour() {
-        super(false);
         textureHeight = 32;
     }
 

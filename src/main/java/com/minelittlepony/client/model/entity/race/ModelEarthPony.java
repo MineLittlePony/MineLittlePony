@@ -1,26 +1,14 @@
 package com.minelittlepony.client.model.entity.race;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.mson.api.ModelContext;
-
-import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.LivingEntity;
 
 public class ModelEarthPony<T extends LivingEntity> extends AbstractPonyModel<T> {
 
     private final boolean smallArms;
 
-    private ModelPart cape;
-
     public ModelEarthPony(boolean smallArms) {
-        super(smallArms);
         this.smallArms = smallArms;
-    }
-
-    @Override
-    public void init(ModelContext context) {
-        super.init(context);
-        cape = context.findByName("cape");
     }
 
     @Override

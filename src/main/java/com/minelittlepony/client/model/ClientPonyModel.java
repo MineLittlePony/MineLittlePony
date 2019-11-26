@@ -2,12 +2,12 @@ package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 
 import com.minelittlepony.client.pony.PonyData;
 import com.minelittlepony.model.ModelAttributes;
+import com.minelittlepony.mson.api.model.biped.MsonPlayer;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.IPonyData;
 import com.minelittlepony.pony.meta.Size;
@@ -19,7 +19,7 @@ import com.minelittlepony.pony.meta.Size;
  *
  * Modders can extend this class to make their own pony models if they wish.
  */
-public abstract class ClientPonyModel<T extends LivingEntity> extends PlayerEntityModel<T> implements IPonyModel<T> {
+public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer<T> implements IPonyModel<T> {
 
     /**
      * The model attributes.
@@ -30,10 +30,6 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends PlayerEnti
      * Associated pony data.
      */
     protected IPonyData metadata = new PonyData();
-
-    public ClientPonyModel(float float_1, boolean boolean_1) {
-        super(float_1, boolean_1);
-    }
 
     @Override
     public void updateLivingState(T entity, IPony pony) {
