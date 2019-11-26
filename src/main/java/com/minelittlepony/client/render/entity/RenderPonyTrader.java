@@ -24,6 +24,6 @@ public class RenderPonyTrader extends RenderPonyMob.Caster<WanderingTraderEntity
     @Override
     public void scale(WanderingTraderEntity entity, MatrixStack stack, float ticks) {
         super.scale(entity, stack, ticks);
-        stack.scale(0.9375F, 0.9375F, 0.9375F);
+        stack.scale(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
     }
 }

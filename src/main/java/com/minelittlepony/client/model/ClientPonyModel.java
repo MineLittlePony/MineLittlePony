@@ -38,12 +38,6 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
         attributes.updateLivingState(entity, pony);
     }
 
-    // Broken bridge
-    @Override
-    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        super.method_17087(entity, move, swing, ticks, headYaw, headPitch);
-    }
-
     @Override
     public ModelAttributes<?> getAttributes() {
         return attributes;

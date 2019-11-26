@@ -28,12 +28,6 @@ public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> im
         textureHeight = 64;
     }
 
-    // broken bridge
-    @Override
-    public void accept(ModelPart t) {
-        super.method_22696(t);
-    }
-
     @Override
     public void init(ModelContext context) {
         neck = context.findByName("neck");

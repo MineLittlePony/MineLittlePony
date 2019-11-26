@@ -30,12 +30,6 @@ public class PonyElytra<T extends LivingEntity> extends AnimalModel<T> {
         return ImmutableList.of(leftWing, rightWing);
     }
 
-    // broken bridge
-    @Override
-    public void accept(ModelPart t) {
-        super.method_22696(t);
-    }
-
     /**
      * Sets the model's various rotation angles.
      *
