@@ -27,6 +27,12 @@
 				"content": "minelittlepony:components/ears"
 			},
 			{
+				"type": "mson:slot",
+				"name": "horn",
+				"implementation": "com.minelittlepony.client.model.part.UnicornHorn",
+				"content": "minelittlepony:components/horn"
+			},
+			{
 				"name": "left_horn",
 				"texture": {"u": 0, "v": 52},
 				"rotate": [0.1, 0, -0.8],
