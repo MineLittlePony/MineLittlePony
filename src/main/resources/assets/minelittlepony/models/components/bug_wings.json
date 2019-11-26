@@ -1,7 +1,7 @@
 {
 	"left_wing": {
 		"type": "mson:slot",
-		"name": "wings",
+		"name": "left_wing",
 		"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
 		"content": {
 			"folded": { "visible": false },
@@ -27,7 +27,7 @@
 	},
 	"right_wing": {
 		"type": "mson:slot",
-		"name": "wings",
+		"name": "right_wing",
 		"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
 		"content": {
 			"folded": { "visible": false },

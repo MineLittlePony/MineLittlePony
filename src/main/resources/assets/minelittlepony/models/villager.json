@@ -1,5 +1,5 @@
 {
-	"parent": "minelittlepony:races/pegasus",
+	"parent": "minelittlepony:races/alicorn",
 	"head": {
 		"offset": [ 0, -1, -2 ],
 		"center": [ 0, 0, -2 ],
@@ -18,6 +18,12 @@
 				"name": "ears",
 				"implementation": "com.minelittlepony.client.model.part.PonyEars",
 				"content": "minelittlepony:components/bat_ears"
+			},
+			{
+				"type": "mson:slot",
+				"name": "horn",
+				"implementation": "com.minelittlepony.client.model.part.UnicornHorn",
+				"content": "minelittlepony:components/horn"
 			}
 		]
 	},
