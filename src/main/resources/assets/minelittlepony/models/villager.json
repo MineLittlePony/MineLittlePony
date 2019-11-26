@@ -11,7 +11,7 @@
 				"type": "mson:slot",
 				"name": "snout",
 				"implementation": "com.minelittlepony.client.model.part.PonySnout",
-				"content": "minelitlepony:components/snout"
+				"content": "minelittlepony:components/snout"
 			},
 			{
 				"type": "mson:slot",
@@ -25,7 +25,7 @@
 		"type": "mson:slot",
 		"name": "wings",
 		"implementation": "com.minelittlepony.client.model.part.BatWings",
-		"content": "minelitlepony:components/bat_wings"
+		"content": "minelittlepony:components/bat_wings"
 	},
 	"apron": {
 		"type": "mson:planar",

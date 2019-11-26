@@ -4,6 +4,6 @@
 		"type": "mson:slot",
 		"name": "wings",
 		"implementation": "com.minelittlepony.client.model.part.PegasusWings",
-		"content": "minelitlepony:components/pegasus_wings"
+		"content": "minelittlepony:components/pegasus_wings"
 	}
 }
