@@ -17,6 +17,9 @@ public class WitchHat extends AbstractGear implements IStackable {
 
     private ModelPart witchHat;
 
+    public WitchHat() {
+        init(0, 0);
+    }
 
     @Override
     public void init(ModelContext context) {

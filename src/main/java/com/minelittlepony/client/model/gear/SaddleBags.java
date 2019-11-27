@@ -33,6 +33,10 @@ public class SaddleBags extends AbstractGear {
 
     private IModel model;
 
+    public SaddleBags() {
+        init(0, 0);
+    }
+
     @Override
     public void init(ModelContext context) {
         strap = context.findByName("strap");
