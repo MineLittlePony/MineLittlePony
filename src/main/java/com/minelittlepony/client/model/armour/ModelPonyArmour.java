@@ -7,10 +7,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.client.util.render.Part;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.armour.ArmourVariant;
 import com.minelittlepony.model.armour.IArmour;
+import com.minelittlepony.mson.api.ModelContext;
 
 public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T> implements IArmour {
 
@@ -23,6 +23,14 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
 
     public ModelPonyArmour() {
         textureHeight = 32;
+    }
+
+    @Override
+    public void init(ModelContext context) {
+        super.init(context);
+        chestPiece = context.findByName("chestpiece");
+        steveRightLeg = context.findByName("steve_right_leg");
+        steveLeftLeg = context.findByName("steve_left_leg");
     }
 
     @Override
@@ -73,65 +81,6 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
         }
     }
 
-    @Deprecated
-    protected void initEars(ModelPart head, float yOffset, float stretch) {
-        stretch /= 2;
-        ((Part)head).tex(0, 0).box(-4, -6, 1, 2, 2, 2, stretch)  // right ear
-            .tex(0, 4).box( 2, -6, 1, 2, 2, 2, stretch); // left ear
-    }
-
-    @Deprecated
-    protected void initBody(float yOffset, float stretch) {
-        //super.initBody(yOffset, stretch);
-
-        chestPiece = new com.minelittlepony.client.util.render.Part(this, 16, 8)
-                .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-                 .box(-4, 4, -2, 8, 8, 16, stretch);
-
-        // fits the legacy player's torso to our pony bod.
-        upperTorso = new com.minelittlepony.client.util.render.Part(this, 24, 0);
-        ((Part)upperTorso).offset(BODY_CENTRE_X, BODY_CENTRE_Y, BODY_CENTRE_Z)
-                  .around(HEAD_RP_X, HEAD_RP_Y + yOffset, HEAD_RP_Z)
-                  .tex(32, 23).east( 4, -4, -4, 8, 8, stretch)
-                              .west(-4, -4, -4, 8, 8, stretch)
-                  .tex(32, 23).south(-4, -4,  4, 8, 8, stretch)
-                  .tex(32, 23).top(-4, -4, -8, 8, 12, stretch);
-        // it's a little short, so the butt tends to show. :/
-    }
-
-    @Deprecated
-    protected void preInitLegs() {
-        leftArm = (ModelPart)new com.minelittlepony.client.util.render.Part(this, 0, 16).mirror(true, false, false);
-        rightArm = new com.minelittlepony.client.util.render.Part(this, 0, 16);
-
-        leftLeg = (ModelPart)new com.minelittlepony.client.util.render.Part(this, 48, 8).mirror(true, false, false);
-        rightLeg = new com.minelittlepony.client.util.render.Part(this, 48, 8);
-
-        steveLeftLeg = (ModelPart)new com.minelittlepony.client.util.render.Part(this, 0, 16).mirror(true, false, false);
-        steveRightLeg = new com.minelittlepony.client.util.render.Part(this, 0, 16);
-    }
-
-    @Deprecated
-    protected void initLegs(float yOffset, float stretch) {
-        //super.initLegs(yOffset, stretch);
-
-        int armLength = attributes.armLength;
-        int armWidth = attributes.armWidth;
-        int armDepth = attributes.armDepth;
-
-        float rarmX = attributes.armRotationX;
-
-        float armX = THIRDP_ARM_CENTRE_X;
-        float armY = THIRDP_ARM_CENTRE_Y;
-        float armZ = BODY_CENTRE_Z / 2 - 1 - armDepth;
-
-        steveLeftLeg .setPivot( rarmX, yOffset, 0);
-        steveRightLeg.setPivot(-rarmX, yOffset, 0);
-
-        steveLeftLeg .addCuboid(armX,            armY, armZ, armWidth, armLength, armDepth, stretch);
-        steveRightLeg.addCuboid(armX - armWidth, armY, armZ, armWidth, armLength, armDepth, stretch);
-    }
-
     @Override
     public void setInVisible() {
         setVisible(false);
@@ -139,9 +88,7 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
         chestPiece.visible = false;
         head.visible = false;
         neck.visible = false;
-        tail.setVisible(false);
         upperTorso.visible = false;
-        snout.setVisible(false);
         steveLeftLeg.visible = false;
         steveRightLeg.visible = false;
     }

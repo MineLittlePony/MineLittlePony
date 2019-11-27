@@ -1,11 +1,9 @@
 package com.minelittlepony.client.model;
 
 import com.minelittlepony.client.model.armour.ModelPonyArmour;
-import com.minelittlepony.client.model.part.PonySnout;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.IPart;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.model.MsonPart;
@@ -29,10 +27,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     protected ModelPart neck;
 
-    protected IPart tail;
-    protected PonySnout snout;
-    protected IPart ears;
-
     @Override
     public void init(ModelContext context) {
         super.init(context);
@@ -47,9 +41,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         upperTorso = context.findByName("upper_torso");
         upperTorsoOverlay = context.findByName("saddle");
         neck = context.findByName("neck");
-        tail = context.findByName("tail");
-        snout = context.findByName("snout");
-        ears = context.findByName("ears");
     }
 
     @Override
@@ -113,8 +104,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         }
 
         animateWears();
-
-        snout.setGender(getMetadata().getGender());
     }
 
     /**
@@ -200,8 +189,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      * @param ticks       Total whole and partial ticks since the entity's existance. Used in animations together with {@code swing} and {@code move}.
      */
     protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
-        tail.setRotationAndAngles(attributes.isSwimming || attributes.isGoingFast, attributes.interpolatorId, move, swing, bodySwing * 5, ticks);
-
         upperTorso.yaw = bodySwing;
         torso.yaw = bodySwing;
         neck.yaw = bodySwing;
@@ -611,7 +598,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         torso.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         upperTorso.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         torso.rotate(stack);
-        tail.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, attributes.interpolatorId);
     }
 
     protected void renderVest(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
@@ -645,8 +631,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         upperTorsoOverlay.visible = visible;
 
         neck.visible = visible;
-
-        tail.setVisible(visible);
     }
 
     @Override

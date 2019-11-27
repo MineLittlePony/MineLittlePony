@@ -12,6 +12,7 @@ import com.minelittlepony.mson.api.Mson;
 import com.minelittlepony.mson.api.MsonModel;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class PlayerModelKey<T extends LivingEntity, M extends Model & MsonModel> {
 
@@ -58,6 +59,12 @@ public class PlayerModelKey<T extends LivingEntity, M extends Model & MsonModel>
         @SuppressWarnings("unchecked")
         public Function<EntityRenderDispatcher, PlayerEntityRenderer> getFactory() {
             return d -> rendererFactory.create(d, slim, (ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>>)this);
+        }
+
+        @Override
+        public <V extends M> V createModel(Supplier<V> supplier) {
+            PlayerModelKey.this.slim = this.slim;
+            return key.createModel(supplier);
         }
     }
 

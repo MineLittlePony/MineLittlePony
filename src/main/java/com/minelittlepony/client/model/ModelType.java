@@ -5,6 +5,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.util.Identifier;
 
+import com.minelittlepony.client.model.armour.ModelPonyArmour;
 import com.minelittlepony.client.model.entity.ModelBreezie;
 import com.minelittlepony.client.model.entity.ModelEnderStallion;
 import com.minelittlepony.client.model.entity.ModelGuardianPony;
@@ -49,6 +50,9 @@ public final class ModelType {
     public static final ModelKey<ModelGuardianPony> GUARDIAN = register("guardian", ModelGuardianPony::new);
     public static final ModelKey<ModelEnderStallion> ENDERMAN = register("enderman", ModelEnderStallion::new);
     public static final ModelKey<ModelBreezie<VexEntity>> BREEZIE = register("breezie", ModelBreezie::new);
+
+    public static final ModelKey<ModelPonyArmour<?>> ARMOUR_INNER = register("armour_inner", ModelPonyArmour::new);
+    public static final ModelKey<ModelPonyArmour<?>> ARMOUR_OUTER = register("armour_outer", ModelPonyArmour::new);
 
     public static final PlayerModelKey<?, ModelAlicorn<?>> ALICORN = registerPlayer("alicorn", Race.ALICORN, ModelAlicorn::new);
     public static final PlayerModelKey<?, ModelUnicorn<?>> UNICORN = registerPlayer("unicorn", Race.UNICORN, ModelUnicorn::new);
