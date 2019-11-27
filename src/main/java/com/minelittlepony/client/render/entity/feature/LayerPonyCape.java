@@ -17,7 +17,6 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.util.math.MathHelper;
 
 import static com.minelittlepony.model.PonyModelConstants.PI;
-import static com.mojang.blaze3d.platform.GlStateManager.*;
 
 public class LayerPonyCape<M extends ClientPonyModel<AbstractClientPlayerEntity>> extends AbstractPonyLayer<AbstractClientPlayerEntity, M> {
 
@@ -33,7 +32,7 @@ public class LayerPonyCape<M extends ClientPonyModel<AbstractClientPlayerEntity>
                 && player.isSkinOverlayVisible(PlayerModelPart.CAPE) && player.getCapeTexture() != null
                 && player.getEquippedStack(EquipmentSlot.CHEST).getItem() != Items.ELYTRA) {
 
-            pushMatrix();
+            stack.push();
 
             model.transform(BodyPart.BODY, stack);
             stack.translate(0, 0.24F, 0);

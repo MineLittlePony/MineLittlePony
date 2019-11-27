@@ -644,7 +644,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
            stack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(attributes.motionPitch));
         }
 
-        PonyTransformation.forSize(getSize()).transform(this, part);
+        PonyTransformation.forSize(getSize()).transform(this, part, stack);
     }
 
     interface RenderStage {

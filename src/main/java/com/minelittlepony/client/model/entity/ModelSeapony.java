@@ -7,7 +7,6 @@ import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.pony.IPony;
-import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
@@ -126,14 +125,9 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
 
         tail.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, attributes.interpolatorId);
 
-        GlStateManager.enableBlend();
-
-
         leftFin.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         centerFin.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         rightFin.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-
-        GlStateManager.disableBlend();
     }
 
     @Override
