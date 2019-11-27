@@ -1,0 +1,8 @@
+{
+	"parent": "minelittlepony:races/steve/zebra",
+	"locals": {
+		"arm_width": 3,
+		"arm_rotation_x": 2,
+		"arm_rotation_y": 8.5
+	}
+}

@@ -1,5 +1,5 @@
 {
-	"parent": "minelittlepony:races/alicorn",
+	"parent": "minelittlepony:races/steve/alicorn",
 	"left_fin": {
 		"type": "mson:planar",
 		"texture": {"u": 56, "v": 16},

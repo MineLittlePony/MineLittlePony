@@ -12,63 +12,35 @@ import com.minelittlepony.mson.api.Mson;
 import com.minelittlepony.mson.api.MsonModel;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class PlayerModelKey<T extends LivingEntity, M extends Model & MsonModel> {
 
-    private final ModelKey<M> key;
-
-    private boolean slim;
-
-    private final Key steveKey;
-    private final Key alexKey;
+    private final ModelKey<M> steveKey;
+    private final ModelKey<M> alexKey;
 
     private final RendererFactory rendererFactory;
 
-    PlayerModelKey(Identifier id, Function<Boolean, M> factory, RendererFactory rendererFactory) {
-        this.key = Mson.getInstance().registerModel(id, () -> factory.apply(slim));
+    PlayerModelKey(String name, Function<Boolean, M> modelFactory, RendererFactory rendererFactory) {
         this.rendererFactory = rendererFactory;
 
-        steveKey = new Key(false);
-        alexKey = new Key(true);
+        steveKey = Mson.getInstance().registerModel(new Identifier("minelittlepony", "races/steve/" + name), () -> modelFactory.apply(false));
+        alexKey = Mson.getInstance().registerModel(new Identifier("minelittlepony", "races/alex/" + name), () -> modelFactory.apply(true));
     }
 
-    public Key getKey(boolean slimArms) {
+    public ModelKey<M> getKey(boolean slimArms) {
         return slimArms ? alexKey : steveKey;
     }
 
-    public class Key implements ModelKey<M> {
-
-        final boolean slim;
-
-        public Key(boolean slim) {
-            this.slim = slim;
-        }
-
-        @Override
-        public Identifier getId() {
-            return key.getId();
-        }
-
-        @Override
-        public M createModel() {
-            PlayerModelKey.this.slim = this.slim;
-            return key.createModel();
-        }
-
-        @SuppressWarnings("unchecked")
-        public Function<EntityRenderDispatcher, PlayerEntityRenderer> getFactory() {
-            return d -> rendererFactory.create(d, slim, (ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>>)this);
-        }
-
-        @Override
-        public <V extends M> V createModel(Supplier<V> supplier) {
-            PlayerModelKey.this.slim = this.slim;
-            return key.createModel(supplier);
-        }
+    @SuppressWarnings("unchecked")
+    public Function<EntityRenderDispatcher, PlayerEntityRenderer> getRendererFactory(boolean slimArms) {
+        return d -> rendererFactory.create(d, slimArms, (ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>>)getKey(slimArms));
     }
 
     public interface RendererFactory {
-        PlayerEntityRenderer create(EntityRenderDispatcher dispatcher, boolean slim, ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>> key);
+        PlayerEntityRenderer create(
+                EntityRenderDispatcher dispatcher,
+                boolean slim,
+                ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>> key
+        );
     }
 }

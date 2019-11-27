@@ -5,7 +5,6 @@ import java.util.function.Function;
 
 import com.google.common.collect.Maps;
 import com.minelittlepony.client.model.IPonyModel;
-import com.minelittlepony.client.model.PlayerModelKey;
 import com.minelittlepony.client.model.entity.race.PlayerModels;
 import com.minelittlepony.client.render.LevitatingItemRenderer;
 import com.minelittlepony.client.render.entity.MobRenderers;
@@ -60,11 +59,10 @@ public class PonyRenderManager {
     }
 
     private void addPlayerSkin(EntityRenderDispatcher manager, boolean slimArms, PlayerModels playerModel) {
-
-        PlayerModelKey<?, ?>.Key key = playerModel.getModelKey().getKey(slimArms);
-        String id = playerModel.getId(slimArms);
-
-        Mson.getInstance().getEntityRendererRegistry().registerPlayerRenderer(id, key.getFactory());
+        Mson.getInstance().getEntityRendererRegistry().registerPlayerRenderer(
+                playerModel.getId(slimArms),
+                playerModel.getModelKey().getRendererFactory(slimArms)
+        );
     }
 
     /**

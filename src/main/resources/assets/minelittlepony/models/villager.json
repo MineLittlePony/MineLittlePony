@@ -1,5 +1,5 @@
 {
-	"parent": "minelittlepony:races/alicorn",
+	"parent": "minelittlepony:races/steve/alicorn",
 	"head": {
 		"offset": [ 0, -1, -2 ],
 		"center": [ 0, 0, -2 ],

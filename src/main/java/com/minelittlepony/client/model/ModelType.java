@@ -74,7 +74,7 @@ public final class ModelType {
     @SuppressWarnings("unchecked")
     static <E extends LivingEntity, T extends Model & MsonModel> PlayerModelKey<E, T> registerPlayer(String name, Race race, Function<Boolean, T> constructor, PlayerModelKey.RendererFactory rendererFactory) {
         return (PlayerModelKey<E, T>)PLAYER_MODELS.computeIfAbsent(race, r -> {
-            return new PlayerModelKey<>(new Identifier("minelittlepony", "races/" + name), constructor, rendererFactory);
+            return new PlayerModelKey<>(name, constructor, rendererFactory);
         });
     }
 
