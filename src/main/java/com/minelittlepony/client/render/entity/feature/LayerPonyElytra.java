@@ -1,10 +1,10 @@
 package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.client.model.IPonyModel;
+import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.PonyElytra;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.model.BodyPart;
-import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
@@ -24,7 +24,8 @@ public class LayerPonyElytra<T extends LivingEntity, M extends EntityModel<T> & 
 
     private static final Identifier TEXTURE_ELYTRA = new Identifier("textures/entity/elytra.png");
 
-    private final PonyElytra<T> modelElytra = new PonyElytra<>();
+    @SuppressWarnings("unchecked")
+    private final PonyElytra<T> modelElytra = (PonyElytra<T>)ModelType.ELYTRA.createModel();
 
     public LayerPonyElytra(IPonyRender<T, M> rp) {
         super(rp);
@@ -35,8 +36,6 @@ public class LayerPonyElytra<T extends LivingEntity, M extends EntityModel<T> & 
         ItemStack itemstack = entity.getEquippedStack(EquipmentSlot.CHEST);
 
         if (itemstack.getItem() == Items.ELYTRA) {
-            GlStateManager.color4f(1, 1, 1, 1);
-
             stack.push();
             preRenderCallback(stack);
 

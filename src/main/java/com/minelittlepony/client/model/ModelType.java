@@ -51,6 +51,8 @@ public final class ModelType {
     public static final ModelKey<ModelEnderStallion> ENDERMAN = register("enderman", ModelEnderStallion::new);
     public static final ModelKey<ModelBreezie<VexEntity>> BREEZIE = register("breezie", ModelBreezie::new);
 
+    public static final ModelKey<PonyElytra<?>> ELYTRA = register("elytra", PonyElytra::new);
+
     public static final ModelKey<ModelPonyArmour<?>> ARMOUR_INNER = register("armour_inner", ModelPonyArmour::new);
     public static final ModelKey<ModelPonyArmour<?>> ARMOUR_OUTER = register("armour_outer", ModelPonyArmour::new);
 
