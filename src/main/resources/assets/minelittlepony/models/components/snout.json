@@ -1,5 +1,5 @@
 {
-	"texture": {"w": 16, "h": 8},
+	"texture": {"w": 64, "h": 64, "u": 16, "v": 8},
 	"stallion": {
 		"type": "mson:planar",
 		"offset": [0, -1, -2],
