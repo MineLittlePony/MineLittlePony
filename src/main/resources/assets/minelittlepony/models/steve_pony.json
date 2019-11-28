@@ -117,6 +117,7 @@
 			{
 				"type": "mson:planar",
 				"texture": { "u": 32, "v": 0 },
+				"offset": [0, 7, 8],
 				"rotate": [29, 0, 0],
 				"up":   [-1, 2, 2, 2, 6],
 				"down": [-1, 4, 2, 2, 6],
@@ -127,7 +128,7 @@
 						"type": "mson:plane",
 						"mirror": [ false, false, true ],
 						"face": "west",
-						"position": [ -1, -2, -2 ], "size": [ 2, 6 ]
+						"position": [ -1, 2, 2 ], "size": [ 2, 6 ]
 					}
 				]
 			}
