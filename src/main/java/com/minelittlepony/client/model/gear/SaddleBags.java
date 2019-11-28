@@ -105,6 +105,6 @@ public class SaddleBags extends AbstractGear {
         if (context.getEntityModel() != null && context.getEntityModel().getMetadata().getRace().isEquivalentTo(Race.CHANGELING)) {
             return TEXTURE;
         }
-        return context.getDefaultTexture(entity, this);
+        return context.getDefaultTexture(entity, Wearable.SADDLE_BAGS);
     }
 }

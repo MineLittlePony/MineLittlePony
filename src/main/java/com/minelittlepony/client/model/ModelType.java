@@ -29,10 +29,12 @@ import com.minelittlepony.client.model.gear.Stetson;
 import com.minelittlepony.client.model.gear.WitchHat;
 import com.minelittlepony.client.render.entity.RenderPonyPlayer;
 import com.minelittlepony.client.render.entity.RenderSeaponyPlayer;
+import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.mson.api.Mson;
 import com.minelittlepony.mson.api.MsonModel;
 import com.minelittlepony.pony.meta.Race;
+import com.minelittlepony.pony.meta.Wearable;
 
 import javax.annotation.Nullable;
 
@@ -40,10 +42,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public final class ModelType {
 
     private static final Map<Race, PlayerModelKey<?, ?>> PLAYER_MODELS = new HashMap<>();
+    private static final Map<Wearable, ModelKey<? extends IGear>> GEAR_MODELS = new HashMap<>();
 
     public static final ModelKey<ModelVillagerPony<?>> VILLAGER = register("villager", ModelVillagerPony::new);
     public static final ModelKey<ModelWitchPony> WITCH = register("witch", ModelWitchPony::new);
@@ -61,11 +65,11 @@ public final class ModelType {
     public static final ModelKey<ModelPonyArmour<?>> ARMOUR_INNER = register("armour_inner", ModelPonyArmour::new);
     public static final ModelKey<ModelPonyArmour<?>> ARMOUR_OUTER = register("armour_outer", ModelPonyArmour::new);
 
-    public static final ModelKey<Stetson> STETSON = registerGear("stetson", Stetson::new);
-    public static final ModelKey<SaddleBags> SADDLEBAGS = registerGear("saddlebags", SaddleBags::new);
-    public static final ModelKey<Muffin> MUFFIN = registerGear("muffin", Muffin::new);
-    public static final ModelKey<WitchHat> WITCH_HAT = registerGear("witch_hat", WitchHat::new);
-    public static final ModelKey<ChristmasHat> ANTLERS = registerGear("antlers", ChristmasHat::new);
+    public static final ModelKey<Stetson> STETSON = registerGear("stetson", Wearable.STETSON, Stetson::new);
+    public static final ModelKey<SaddleBags> SADDLEBAGS = registerGear("saddlebags", Wearable.SADDLE_BAGS, SaddleBags::new);
+    public static final ModelKey<Muffin> MUFFIN = registerGear("muffin", Wearable.MUFFIN, Muffin::new);
+    public static final ModelKey<WitchHat> WITCH_HAT = registerGear("witch_hat", Wearable.HAT, WitchHat::new);
+    public static final ModelKey<ChristmasHat> ANTLERS = registerGear("antlers", Wearable.ANTLERS, ChristmasHat::new);
 
     public static final PlayerModelKey<?, ModelAlicorn<?>> ALICORN = registerPlayer("alicorn", Race.ALICORN, ModelAlicorn::new);
     public static final PlayerModelKey<?, ModelUnicorn<?>> UNICORN = registerPlayer("unicorn", Race.UNICORN, ModelUnicorn::new);
@@ -91,8 +95,11 @@ public final class ModelType {
         });
     }
 
-    static <T extends Model & MsonModel> ModelKey<T> registerGear(String name, Supplier<T> constructor) {
-        return register("gear/" + name, constructor);
+    @SuppressWarnings("unchecked")
+    static <T extends IGear> ModelKey<T> registerGear(String name, Wearable wearable, Supplier<T> constructor) {
+        return (ModelKey<T>)GEAR_MODELS.computeIfAbsent(wearable, w -> {
+            return Mson.getInstance().registerModel(new Identifier("minelittlepony", "gear/" + name), constructor);
+        });
     }
 
     static <T extends Model & MsonModel> ModelKey<T> register(String name, Supplier<T> constructor) {
@@ -103,6 +110,10 @@ public final class ModelType {
     @Nullable
     public static <E extends LivingEntity, T extends Model & MsonModel> PlayerModelKey<E, T> getPlayerModel(Race race) {
         return (PlayerModelKey<E, T>)PLAYER_MODELS.get(race);
+    }
+
+    public static Stream<Map.Entry<Wearable, ModelKey<? extends IGear>>> getWearables() {
+        return GEAR_MODELS.entrySet().stream();
     }
 
     public static void bootstrap() {};

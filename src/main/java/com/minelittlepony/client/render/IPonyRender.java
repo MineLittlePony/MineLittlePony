@@ -5,8 +5,8 @@ import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.gear.IRenderContext;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.PonyModelConstants;
-import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.pony.IPony;
+import com.minelittlepony.pony.meta.Wearable;
 import com.minelittlepony.util.math.MathUtil;
 
 import net.minecraft.client.render.entity.model.EntityModel;
@@ -28,7 +28,7 @@ public interface IPonyRender<T extends LivingEntity, M extends EntityModel<T> & 
     Identifier findTexture(T entity);
 
     @Override
-    default Identifier getDefaultTexture(T entity, IGear gear) {
+    default Identifier getDefaultTexture(T entity, Wearable wearable) {
         return findTexture(entity);
     }
 

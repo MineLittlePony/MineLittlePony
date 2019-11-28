@@ -7,8 +7,9 @@ import com.minelittlepony.client.model.gear.IRenderContext;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.IPart;
+import com.minelittlepony.mson.api.MsonModel;
 
-public interface IGear extends IPart {
+public interface IGear extends IPart, MsonModel {
 
     /**
      * Determines if this wearable can and is worn by the selected entity.

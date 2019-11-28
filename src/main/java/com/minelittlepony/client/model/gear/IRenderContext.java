@@ -5,6 +5,7 @@ import net.minecraft.util.Identifier;
 
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.gear.IGear;
+import com.minelittlepony.pony.meta.Wearable;
 
 import javax.annotation.Nullable;
 
@@ -12,7 +13,7 @@ public interface IRenderContext<T extends Entity, M extends IModel> {
 
     IRenderContext<?, ?> NULL = (e, g) -> null;
 
-    default boolean shouldRender(M model, T entity, IGear gear) {
+    default boolean shouldRender(M model, T entity, Wearable wearable, IGear gear) {
         return gear.canRender(model, entity);
     }
 
@@ -21,5 +22,5 @@ public interface IRenderContext<T extends Entity, M extends IModel> {
         return null;
     }
 
-    Identifier getDefaultTexture(T entity, IGear gear);
+    Identifier getDefaultTexture(T entity, Wearable wearable);
 }

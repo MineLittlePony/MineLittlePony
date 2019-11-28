@@ -10,10 +10,10 @@ import net.minecraft.village.VillagerProfession;
 
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.RenderPonyMob;
-import com.minelittlepony.client.render.entity.feature.LayerGear;
 import com.minelittlepony.model.IUnicorn;
 import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.mson.api.ModelKey;
+import com.minelittlepony.pony.meta.Wearable;
 import com.minelittlepony.util.resources.ITextureSupplier;
 
 abstract class AbstractVillagerRenderer<
@@ -33,11 +33,11 @@ abstract class AbstractVillagerRenderer<
     }
 
     @Override
-    public boolean shouldRender(M model, T entity, IGear gear) {
+    public boolean shouldRender(M model, T entity, Wearable wearable, IGear gear) {
 
         boolean special = PonyTextures.isBestPony(entity);
 
-        if (gear == LayerGear.SADDLE_BAGS) {
+        if (wearable == Wearable.SADDLE_BAGS) {
             VillagerProfession profession = entity.getVillagerData().getProfession();
             return !special && profession != VillagerProfession.NONE && (
                     profession == VillagerProfession.CARTOGRAPHER
@@ -47,19 +47,19 @@ abstract class AbstractVillagerRenderer<
                  || profession == VillagerProfession.SHEPHERD);
         }
 
-        if (gear == LayerGear.MUFFIN) {
+        if (wearable == Wearable.MUFFIN) {
             return PonyTextures.isCrownPony(entity);
         }
 
-        return super.shouldRender(model, entity, gear);
+        return super.shouldRender(model, entity, wearable, gear);
     }
 
     @Override
-    public Identifier getDefaultTexture(T villager, IGear gear) {
-        if (gear == LayerGear.SADDLE_BAGS) {
+    public Identifier getDefaultTexture(T villager, Wearable wearable) {
+        if (wearable == Wearable.SADDLE_BAGS) {
             return ClothingLayer.getClothingTexture(villager, entityType);
         }
-        return super.getDefaultTexture(villager, gear);
+        return super.getDefaultTexture(villager, wearable);
     }
 
     @Override

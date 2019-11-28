@@ -8,40 +8,29 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
-import com.google.common.collect.Lists;
 import com.minelittlepony.client.model.IPonyModel;
-import com.minelittlepony.client.model.gear.ChristmasHat;
-import com.minelittlepony.client.model.gear.Muffin;
-import com.minelittlepony.client.model.gear.SaddleBags;
-import com.minelittlepony.client.model.gear.Stetson;
-import com.minelittlepony.client.model.gear.WitchHat;
+import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.render.IPonyRender;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.model.gear.IStackable;
+import com.minelittlepony.pony.meta.Wearable;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class LayerGear<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyLayer<T, M> {
 
-    public static final IGear SADDLE_BAGS = new SaddleBags();
-    public static final IGear WITCH_HAT = new WitchHat();
-    public static final IGear MUFFIN = new Muffin();
-    public static final IGear STETSON = new Stetson();
-    public static final IGear ANTLERS = new ChristmasHat();
-
-    private static List<IGear> gears = Lists.newArrayList(
-            SADDLE_BAGS,
-            WITCH_HAT,
-            MUFFIN,
-            STETSON,
-            ANTLERS
-    );
+    private final Map<Wearable, IGear> gears;
 
     public LayerGear(IPonyRender<T, M> renderer) {
         super(renderer);
+
+        gears = ModelType.getWearables().collect(Collectors.toMap(
+                Map.Entry::getKey,
+                e -> e.getValue().createModel()
+        ));
     }
 
     @Override
@@ -55,8 +44,11 @@ public class LayerGear<T extends LivingEntity, M extends EntityModel<T> & IPonyM
 
         Map<BodyPart, Float> renderStackingOffsets = new HashMap<>();
 
-        for (IGear gear : gears) {
-            if (getContext().shouldRender(model, entity, gear)) {
+        for (Map.Entry<Wearable, IGear> entry : gears.entrySet()) {
+            Wearable wearable = entry.getKey();
+            IGear gear = entry.getValue();
+
+            if (getContext().shouldRender(model, entity, wearable, gear)) {
                 stack.push();
                 model.transform(gear.getGearLocation(), stack);
                 model.getBodyPart(gear.getGearLocation()).rotate(stack);

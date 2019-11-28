@@ -15,10 +15,10 @@ import com.minelittlepony.client.render.entity.feature.LayerPonyArmor;
 import com.minelittlepony.client.render.entity.feature.LayerPonyCape;
 import com.minelittlepony.client.render.entity.feature.LayerPonyCustomHead;
 import com.minelittlepony.client.render.entity.feature.LayerPonyElytra;
-import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.meta.Race;
+import com.minelittlepony.pony.meta.Wearable;
 
 import java.util.List;
 
@@ -181,13 +181,13 @@ public class RenderPonyPlayer extends PlayerEntityRenderer implements IPonyRende
     }
 
     @Override
-    public Identifier getDefaultTexture(AbstractClientPlayerEntity entity, IGear gear) {
-        if (gear == LayerGear.SADDLE_BAGS) {
+    public Identifier getDefaultTexture(AbstractClientPlayerEntity entity, Wearable wearable) {
+        if (wearable == Wearable.SADDLE_BAGS) {
             if (getInternalRenderer().getModel().getMetadata().getRace() == Race.BATPONY) {
                 return SaddleBags.TEXTURE;
             }
         }
 
-        return IPonyRender.super.getDefaultTexture(entity, gear);
+        return IPonyRender.super.getDefaultTexture(entity, wearable);
     }
 }
