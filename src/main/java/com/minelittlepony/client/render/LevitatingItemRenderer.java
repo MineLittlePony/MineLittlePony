@@ -23,8 +23,6 @@ import net.minecraft.util.Arm;
 import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
 
-import static com.mojang.blaze3d.systems.RenderSystem.*;
-
 public class LevitatingItemRenderer {
 
     private static boolean usingTransparency;
@@ -61,11 +59,11 @@ public class LevitatingItemRenderer {
     }
 
     private void setColor(int glowColor) {
-        GL14.glBlendColor(Color.r(glowColor), Color.g(glowColor), Color.b(glowColor), 0.2F);
+        //GL14.glBlendColor(Color.r(glowColor), Color.g(glowColor), Color.b(glowColor), 0.2F);
     }
 
     private void unsetColor() {
-        GL14.glBlendColor(255, 255, 255, 1);
+        //GL14.glBlendColor(255, 255, 255, 1);
     }
 
     /**
@@ -87,8 +85,6 @@ public class LevitatingItemRenderer {
         itemRenderer.method_23177(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
 
         if (doMagic) {
-            disableLighting();
-
             usingTransparency = true;
 
             setColor(pony.getMetadata().getGlowColor());
@@ -103,7 +99,6 @@ public class LevitatingItemRenderer {
             usingTransparency = false;
 
             unsetColor();
-            enableLighting();
         }
 
         matrix.pop();

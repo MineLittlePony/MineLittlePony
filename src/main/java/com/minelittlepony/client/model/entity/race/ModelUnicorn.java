@@ -1,6 +1,7 @@
 package com.minelittlepony.client.model.entity.race;
 
 import com.minelittlepony.client.model.part.UnicornHorn;
+import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IUnicorn;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.model.MsonPart;
@@ -94,9 +95,19 @@ public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> impl
         if (hasHorn()) {
             head.rotate(stack);
             horn.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, attributes.interpolatorId);
-            if (canCast() && isCasting()) {
-                horn.renderMagic(stack, getMagicColor());
-            }
+        }
+    }
+
+    @Override
+    public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+        super.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+
+        if (hasHorn() && canCast() && isCasting()) {
+            stack.push();
+            head.rotate(stack);
+            transform(BodyPart.HEAD, stack);
+            horn.renderMagic(stack, vertices, getMagicColor());
+            stack.pop();
         }
     }
 

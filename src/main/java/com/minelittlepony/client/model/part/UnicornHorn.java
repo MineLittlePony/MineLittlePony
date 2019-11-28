@@ -4,9 +4,15 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderPhase;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.VertexConsumerProvider.Immediate;
 import net.minecraft.client.util.math.MatrixStack;
 
+import org.lwjgl.opengl.GL11;
+
+import com.minelittlepony.client.render.MagicGlow;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
@@ -36,11 +42,12 @@ public class UnicornHorn implements IPart, MsonModel {
         }
     }
 
-    public void renderMagic(MatrixStack stack, int tint) {
+    public void renderMagic(MatrixStack stack, VertexConsumer verts, int tint) {
         if (visible) {
-            horn.rotate(stack);
+            Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
 
-            VertexConsumer vertices = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers().getBuffer(RenderLayer.getTranslucentNoCrumbling());
+            VertexConsumer vertices = immediate.getBuffer(MagicGlow.getRenderLayer());
+
             glow.render(stack, vertices, OverlayTexture.DEFAULT_UV, 0x0F00F0, Color.r(tint), Color.g(tint), Color.b(tint), 0.4F);
         }
     }
