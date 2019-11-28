@@ -545,11 +545,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     @Override
     public float getRiderYOffset() {
-
-        if (isChild()) {
-            return 0.25F;
-        }
-
         switch (getSize()) {
             case NORMAL: return 0.4F;
             case FOAL:
