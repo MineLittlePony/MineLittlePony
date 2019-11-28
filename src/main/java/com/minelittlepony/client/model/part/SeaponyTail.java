@@ -25,7 +25,7 @@ public class SeaponyTail implements IPart, MsonModel {
 
     @Override
     public void init(ModelContext context) {
-        model = (IPonyModel<?>)context.getModel();
+        model = context.getModel();
         tailBase = context.findByName("base");
         tailTip = context.findByName("tip");
         tailFins = context.findByName("fins");

@@ -22,15 +22,17 @@ public class PonyTail implements IPart, MsonModel {
 
     @Override
     public void init(ModelContext context) {
-        theModel = (AbstractPonyModel<?>)context.getModel();
+        theModel = context.getModel();
 
         tail = new ModelPart(theModel);
 
         try {
             int segments = context.getLocals().getValue("segments").get().intValue();
 
+            ModelContext subContext = context.resolve(this);
+
             for (int i = 0; i < segments; i++) {
-                Segment segment = context.findByName("segment_" + i);
+                Segment segment = subContext.findByName("segment_" + i);
                 segment.index = i;
                 tail.addChild(segment);
             }

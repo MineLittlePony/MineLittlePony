@@ -23,10 +23,9 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
 
     protected Wing legacyWing;
 
-    @SuppressWarnings("unchecked")
     @Override
     public void init(ModelContext context) {
-        pegasus = (T)context.getModel();
+        pegasus = context.getModel();
         leftWing = context.findByName("left_wing");
         rightWing = context.findByName("right_wing");
         legacyWing = context.findByName("legacy_right_wing");
@@ -92,7 +91,7 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
 
         @Override
         public void init(ModelContext context) {
-            pegasus = (IPegasus)context.getModel();
+            pegasus = context.getModel();
             extended = context.findByName("extended");
             folded = context.findByName("folded");
         }

@@ -23,10 +23,9 @@ public class PonySnout implements IPart, MsonModel {
 
     private ICapitated<ModelPart> head;
 
-    @SuppressWarnings("unchecked")
     @Override
     public void init(ModelContext context) {
-        head = (ICapitated<ModelPart>)context.getModel();
+        head = context.getModel();
         mare = context.findByName("mare");
         stallion = context.findByName("stallion");
     }
