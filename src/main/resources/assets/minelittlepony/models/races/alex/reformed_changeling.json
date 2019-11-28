@@ -1,5 +1,5 @@
 {
-	"parent": "minelittlepony:races/steve/changeling",
+	"parent": "minelittlepony:races/steve/reformed_changeling",
 	"locals": {
 		"arm_width": 3,
 		"arm_rotation_x": 2,
