@@ -36,12 +36,12 @@
 				"name": "left_horn",
 				"texture": {"u": 0, "v": 52},
 				"rotate": [0.1, 0, -0.8],
-				"offset": [-2, -10, -3],
+				"offset": [-6, -213, -172],
 				"cubes": [ {"size": [2, 6, 2]} ],
 				"children": [
 					{
 						"rotate": [0, 0, 0.9],
-						"center": [-3.9, -6, 0.001],
+						"center": [-223, -343, 0.057],
 						"cubes": [ {"size": [2, 6, 2]} ]
 					}
 				]
@@ -50,11 +50,11 @@
 				"name": "right_horn",
 				"texture": {"u": 8, "v": 52},
 				"rotate": [0.1, 0, 0.8],
-				"offset": [0, -10, -3],
+				"offset": [0, -147, -172],
 				"cubes": [ {"size": [2, 6, 2]} ],
 				"children": [
 					{
-						"rotate": [0, 0, -0.9],
+						"rotate": [0, 0, -51],
 						"center": [3.9, -6, 0.001],
 						"cubes": [ {"size": [2, 6, 2]} ]
 					}

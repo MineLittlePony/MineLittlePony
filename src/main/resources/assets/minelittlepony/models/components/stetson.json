@@ -2,7 +2,7 @@
 	"texture": {"w": 64, "h": 64},
 	"rim": {
 		"texture": {"u": 16, "v": 33},
-		"rotate": [-0.3, 0, 0.1],
+		"rotate": [-17, 0, 5.7],
 		"cubes": [
 			{
 				"type": "mson:plane",
@@ -26,7 +26,7 @@
 			},
 			{
 				"center": [-9, -4, -12 ],
-				"rotate": [0.4, 0, 0],
+				"rotate": [23, 0, 0],
 				"cubes": [
 					{
 						"type": "mson:plane",

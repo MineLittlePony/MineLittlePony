@@ -7,14 +7,14 @@
 	},
 	"bone": {
 		"offset": ["#horn_x", "#horn_y", "#horn_z"],
-		"rotate": [0.5, 0, 0],
+		"rotate": [29, 0, 0],
 		"cubes": [
 			{ "size": [1, 4, 1] }
 		]
 	},
 	"corona": {
 		"offset": ["#horn_x", "#horn_y", "#horn_z"],
-		"rotate": [0.5, 0, 0],
+		"rotate": [29, 0, 0],
 		"cubes": [
 			{
 				"type": "mson:cone",

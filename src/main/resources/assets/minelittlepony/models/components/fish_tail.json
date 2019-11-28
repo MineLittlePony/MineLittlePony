@@ -1,7 +1,7 @@
 {
 	"texture": {"w": 64, "h": 64},
 	"locals": {
-		"tail_rot_x": 1.57,
+		"tail_rot_x": 90,
 		"tail_rot_x_neg": [0, "-", "#tail_rot_x"]
 	},
 	"base": {

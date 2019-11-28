@@ -4,21 +4,21 @@
 		"type": "mson:planar",
 		"texture": {"u": 56, "v": 16},
 		"mirror": [false, false, true],
-		"rotate": [0, 0.52, 0],
+		"rotate": [0, 30, 0],
 		"center": [3, -6, 3],
 		"east": [0, 0, 0, 12, 8]
 	},
 	"right_fin": {
 		"type": "mson:planar",
 		"texture": {"u": 56, "v": 16},
-		"rotate": [0, -0.52, 0],
+		"rotate": [0, -30, 0],
 		"center": [-3, -6, 3],
 		"west": [0, 0, 0, 12, 8]
 	},
 	"center_fin": {
 		"type": "mson:planar",
 		"texture": {"u": 58, "v": 28},
-		"rotate": [1.47, 0, 0],
+		"rotate": [84, 0, 0],
 		"center": [0, 6, 9],
 		"east": [0, -6, 0, 12, 6]
 	},
