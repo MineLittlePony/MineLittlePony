@@ -2,12 +2,14 @@ package com.minelittlepony.client.render.blockentity.skull;
 
 import com.google.common.collect.Maps;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.client.render.LevitatingItemRenderer;
+import com.minelittlepony.client.render.entity.MobRenderers;
+import com.minelittlepony.client.render.entity.RenderPonySkeleton;
+import com.minelittlepony.client.render.entity.RenderPonyZombie;
+import com.minelittlepony.mson.api.Mson;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.settings.PonyConfig;
 import com.mojang.authlib.GameProfile;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.minecraft.block.AbstractSkullBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SkullBlock;
@@ -33,24 +35,22 @@ import javax.annotation.Nullable;
  */
 public class PonySkullRenderer extends SkullBlockEntityRenderer {
 
-    private static final Map<SkullBlock.SkullType, ISkull> skullMap = Util.create(Maps.newHashMap(), (skullMap) -> {
-        skullMap.put(SkullBlock.Type.SKELETON, new SkeletonSkullRenderer());
-        skullMap.put(SkullBlock.Type.WITHER_SKELETON, new WitherSkullRenderer());
-        skullMap.put(SkullBlock.Type.ZOMBIE, new ZombieSkullRenderer());
-        skullMap.put(SkullBlock.Type.PLAYER, new PlayerSkullRenderer());
-    });
-
     /**
      * Resolves the games skull renderer to either a special pony skull renderer
      * or some other skull renderer depending on the ponyskull's state.
      */
     public static void resolve(boolean ponySkulls) {
-        if (ponySkulls) {
-            BlockEntityRendererRegistry.INSTANCE.register(BlockEntityType.SKULL, new PonySkullRenderer(BlockEntityRenderDispatcher.INSTANCE));
-        } else {
-            BlockEntityRendererRegistry.INSTANCE.register(BlockEntityType.SKULL, new SkullBlockEntityRenderer(BlockEntityRenderDispatcher.INSTANCE));
-        }
+        Mson.getInstance().getEntityRendererRegistry().registerBlockRenderer(BlockEntityType.SKULL,
+                ponySkulls ? PonySkullRenderer::new : SkullBlockEntityRenderer::new
+        );
     }
+
+    private final Map<SkullBlock.SkullType, ISkull> skullMap = Util.create(Maps.newHashMap(), (skullMap) -> {
+        skullMap.put(SkullBlock.Type.SKELETON, new MobSkull(RenderPonySkeleton.SKELETON, MobRenderers.SKELETONS));
+        skullMap.put(SkullBlock.Type.WITHER_SKELETON, new MobSkull(RenderPonySkeleton.WITHER, MobRenderers.SKELETONS));
+        skullMap.put(SkullBlock.Type.ZOMBIE, new MobSkull(RenderPonyZombie.ZOMBIE, MobRenderers.ZOMBIES));
+        skullMap.put(SkullBlock.Type.PLAYER, new PonySkull());
+    });
 
     public PonySkullRenderer(BlockEntityRenderDispatcher dispatcher) {
         super(dispatcher);
@@ -65,16 +65,16 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
 
         Direction direction = onWalll ? (Direction)state.get(WallSkullBlock.FACING) : null;
 
-        float angle = 22.5F * (direction != null ? (2 + direction.getHorizontal()) * 4F : (Integer)state.get(SkullBlock.ROTATION));
+        float angle = 22.5F * (float)(direction != null ? (2 + direction.getHorizontal()) * 4F : state.get(SkullBlock.ROTATION));
 
-        render(direction,
+        renderSkull(direction,
                 angle,
                 ((AbstractSkullBlock)state.getBlock()).getSkullType(),
                 skullBlockEntity.getOwner(), poweredTicks,
                 matrixStack, vertexConsumerProvider, i);
     }
 
-    public static void render(@Nullable Direction direction, float angle,
+    public void renderSkull(@Nullable Direction direction, float angle,
             SkullBlock.SkullType skullType, @Nullable GameProfile profile, float poweredTicks,
             MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
 
@@ -95,11 +95,10 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
         handleRotation(stack, direction);
 
         stack.scale(-1, -1, 1);
-        skull.preRender(LevitatingItemRenderer.usesTransparency());
-
 
         VertexConsumer vertices = renderContext.getBuffer(RenderLayer.getEntityTranslucent(skin));
 
+        skull.setAngles(angle, poweredTicks);
         skull.render(stack, vertices, lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
 
         stack.pop();
@@ -135,7 +134,7 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
      */
     public interface ISkull {
 
-        void preRender(boolean transparency);
+        void setAngles(float angle, float poweredTicks);
 
         void render(MatrixStack stack, VertexConsumer vertices, int lightUv, int overlayUv, float red, float green, float blue, float alpha);
 

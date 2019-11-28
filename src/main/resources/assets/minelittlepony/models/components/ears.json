@@ -1,13 +1,20 @@
 {
 	"texture": {"w": 64, "h": 64},
+	"locals": {
+		"x": 0,
+		"y": 0,
+		"z": 0
+	},
 	"right": {
 		"texture": {"u": 12, "v": 16},
+		"offset": ["#x", "#y", "#z"],
 		"cubes": [
 			{ "from": [-4, -6, -1], "size": [2, 2, 2] }
 		]
 	},
 	"left": {
 		"texture": {"u": 12, "v": 16},
+		"offset": ["#x", "#y", "#z"],
 		"cubes": [
 			{ "from": [2, -6, -1], "size": [2, 2, 2] }
 		]

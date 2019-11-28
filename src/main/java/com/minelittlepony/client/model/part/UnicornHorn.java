@@ -3,14 +3,9 @@ package com.minelittlepony.client.model.part;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderPhase;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.VertexConsumerProvider.Immediate;
 import net.minecraft.client.util.math.MatrixStack;
-
-import org.lwjgl.opengl.GL11;
 
 import com.minelittlepony.client.render.MagicGlow;
 import com.minelittlepony.model.IPart;
