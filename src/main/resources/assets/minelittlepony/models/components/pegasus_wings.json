@@ -5,7 +5,7 @@
 		"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
 		"content": {
 			"folded": {
-				"texture": {"u": 56, "v": 32},
+				"texture": {"u": 56, "v": 32, "w": 64, "h": 64},
 				"center": [0, 13, -2],
 				"rotate": [90, 0, 0],
 				"cubes": [
@@ -17,7 +17,7 @@
 			"extended": {
 				"texture": {"u": 57, "v": 35, "w": 64, "h": 64},
 				"center": [4.5, 5.3, 6],
-				"rotate": [30, 0, 0],
+				"rotate": [-30, 180, 0],
 				"children": [
 					{ "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "stretch":  0.1 } ] },
 					{ "cubes": [ {"from": [-0.5,-1,  -0.3], "size": [1, 8, 2], "stretch":  0.1 } ],  "rotate": [-48, 0, 0] },
@@ -35,7 +35,7 @@
 		"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
 		"content": {
 			"folded": {
-				"texture": {"u": 56, "v": 16},
+				"texture": {"u": 56, "v": 16, "w": 64, "h": 64},
 				"center": [0, 13, -2],
 				"rotate": [90, 0, 0],
 				"cubes": [
@@ -47,7 +47,7 @@
 			"extended": {
 				"texture": {"u": 56, "v": 19, "w": 64, "h": 64},
 				"center": [-4.5, 5.3, 6],
-				"rotate": [-30, 0, 0],
+				"rotate": [-30, 180, 0],
 				"children": [
 					{ "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "stretch":  0.1 } ] },
 					{ "cubes": [ {"from": [-0.5,-1,  -0.3], "size": [1, 8, 2], "stretch":  0.1 } ],  "rotate": [-48, 0, 0] },
@@ -77,7 +77,7 @@
 			"extended": {
 				"texture": {"u": 57, "v": 19, "w": 64, "h": 64},
 				"center": [-4.5, 5.3, 6],
-				"rotate": [-30, 0, 0],
+				"rotate": [-30, 180, 0],
 				"children": [
 					{ "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "stretch":  0.1 } ],                           "mirror": true },
 					{ "cubes": [ {"from": [-0.5,-1,  -0.3], "size": [1, 8, 2], "stretch":  0.1 } ],  "rotate": [-48, 0, 0], "mirror": true },
