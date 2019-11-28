@@ -22,6 +22,11 @@ import com.minelittlepony.client.model.entity.race.ModelEarthPony;
 import com.minelittlepony.client.model.entity.race.ModelPegasus;
 import com.minelittlepony.client.model.entity.race.ModelUnicorn;
 import com.minelittlepony.client.model.entity.race.ModelZebra;
+import com.minelittlepony.client.model.gear.ChristmasHat;
+import com.minelittlepony.client.model.gear.Muffin;
+import com.minelittlepony.client.model.gear.SaddleBags;
+import com.minelittlepony.client.model.gear.Stetson;
+import com.minelittlepony.client.model.gear.WitchHat;
 import com.minelittlepony.client.render.entity.RenderPonyPlayer;
 import com.minelittlepony.client.render.entity.RenderSeaponyPlayer;
 import com.minelittlepony.mson.api.ModelKey;
@@ -56,6 +61,12 @@ public final class ModelType {
     public static final ModelKey<ModelPonyArmour<?>> ARMOUR_INNER = register("armour_inner", ModelPonyArmour::new);
     public static final ModelKey<ModelPonyArmour<?>> ARMOUR_OUTER = register("armour_outer", ModelPonyArmour::new);
 
+    public static final ModelKey<Stetson> STETSON = registerGear("stetson", Stetson::new);
+    public static final ModelKey<SaddleBags> SADDLEBAGS = registerGear("saddlebags", SaddleBags::new);
+    public static final ModelKey<Muffin> MUFFIN = registerGear("muffin", Muffin::new);
+    public static final ModelKey<WitchHat> WITCH_HAT = registerGear("witch_hat", WitchHat::new);
+    public static final ModelKey<ChristmasHat> ANTLERS = registerGear("antlers", ChristmasHat::new);
+
     public static final PlayerModelKey<?, ModelAlicorn<?>> ALICORN = registerPlayer("alicorn", Race.ALICORN, ModelAlicorn::new);
     public static final PlayerModelKey<?, ModelUnicorn<?>> UNICORN = registerPlayer("unicorn", Race.UNICORN, ModelUnicorn::new);
     public static final PlayerModelKey<?, ModelUnicorn<?>> KIRIN = registerPlayer("kirin", Race.KIRIN, ModelUnicorn::new);
@@ -78,6 +89,10 @@ public final class ModelType {
         return (PlayerModelKey<E, T>)PLAYER_MODELS.computeIfAbsent(race, r -> {
             return new PlayerModelKey<>(name, constructor, rendererFactory);
         });
+    }
+
+    static <T extends Model & MsonModel> ModelKey<T> registerGear(String name, Supplier<T> constructor) {
+        return register("gear/" + name, constructor);
     }
 
     static <T extends Model & MsonModel> ModelKey<T> register(String name, Supplier<T> constructor) {
