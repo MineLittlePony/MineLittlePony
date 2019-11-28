@@ -21,6 +21,7 @@
 				"children": [
 					{
 						"type": "mson:plane",
+						"face": "down",
 						"from": [0, 6, -3], "size": [-3, 8, 3],
 						"mirror": [false, false, true]
 					}
@@ -49,6 +50,7 @@
 				"children": [
 					{
 						"type": "mson:plane",
+						"face": "down",
 						"from": [0, 6, -3], "size": [-3, 8, 3],
 						"mirror": [false, false, true]
 					}
