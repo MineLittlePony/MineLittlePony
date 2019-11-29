@@ -10,6 +10,7 @@ import com.minelittlepony.model.IUnicorn;
 import com.minelittlepony.model.ModelAttributes;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.mson.api.ModelContext;
+import com.minelittlepony.mson.api.model.BoxBuilder.RenderLayerSetter;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.IPonyData;
 import com.minelittlepony.pony.meta.Size;
@@ -21,6 +22,9 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     @Override
     default void init(ModelContext context) {
         mixin().init(context);
+        if (mixin() instanceof RenderLayerSetter && this instanceof RenderLayerSetter) {
+            ((RenderLayerSetter)this).setRenderLayerFactory(((RenderLayerSetter)mixin()).getRenderLayerFactory());
+        }
     }
 
     @Override

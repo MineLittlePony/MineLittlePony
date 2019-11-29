@@ -124,7 +124,6 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
         torso.rotate(stack);
 
         tail.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, attributes.interpolatorId);
-
         leftFin.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         centerFin.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         rightFin.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
@@ -138,6 +137,8 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
+
+        upperTorsoOverlay.visible = false;
 
         // hide the back legs
         leftLeg.visible = false;
