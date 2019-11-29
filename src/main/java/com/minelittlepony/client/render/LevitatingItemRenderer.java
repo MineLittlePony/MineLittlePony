@@ -2,6 +2,7 @@ package com.minelittlepony.client.render;
 
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.pony.IPony;
+import com.minelittlepony.util.math.Color;
 
 import javax.annotation.Nullable;
 
@@ -9,6 +10,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.FirstPersonRenderer;
 import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
@@ -22,22 +24,23 @@ import net.minecraft.world.World;
 
 public class LevitatingItemRenderer {
 
+    static int tint;
     private static boolean usingTransparency;
 
     public static boolean usesTransparency() {
         return usingTransparency;
     }
 
+    public static RenderLayer getRenderLayer() {
+        return MagicGlow.getTintedLayer(Color.r(tint), Color.g(tint), Color.b(tint), 0.8F);
+    }
+
     /**
      * Renders a magical overlay over an item in third person.
      */
     public void renderItemGlow(LivingEntity entity, ItemStack drop, ModelTransformation.Type transform, Arm hand, int glowColor, MatrixStack stack, VertexConsumerProvider renderContext) {
-
-        // TODO: mixin into RenderLayer.getItemLayer(itemstack) to enable transparency
-        usingTransparency = true;
-
-        stack.push();
         setColor(glowColor);
+        stack.push();
 
         ItemRenderer renderItem = MinecraftClient.getInstance().getItemRenderer();
 
@@ -48,19 +51,18 @@ public class LevitatingItemRenderer {
         stack.translate(-0.02F, -0.02F, -0.02F);
         renderItem.method_23177(entity, drop, transform, hand == Arm.LEFT, stack, renderContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV);
 
-
-        unsetColor();
         stack.pop();
-
-        usingTransparency = false;
+        unsetColor();
     }
 
     private void setColor(int glowColor) {
-        //GL14.glBlendColor(Color.r(glowColor), Color.g(glowColor), Color.b(glowColor), 0.2F);
+        usingTransparency = true;
+        tint = glowColor;
     }
 
     private void unsetColor() {
-        //GL14.glBlendColor(255, 255, 255, 1);
+        usingTransparency = false;
+        tint = 0;
     }
 
     /**
@@ -82,8 +84,6 @@ public class LevitatingItemRenderer {
         itemRenderer.method_23177(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
 
         if (doMagic) {
-            usingTransparency = true;
-
             setColor(pony.getMetadata().getGlowColor());
 
             matrix.scale(1.1F, 1.1F, 1.1F);
@@ -92,8 +92,6 @@ public class LevitatingItemRenderer {
             itemRenderer.method_23177(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
             matrix.translate(-0.03F, -0.02F, -0.02F);
             itemRenderer.method_23177(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
-
-            usingTransparency = false;
 
             unsetColor();
         }

@@ -12,6 +12,7 @@
         "MixinSkullBlockEntityRenderer",
         "MixinFirstPersonRenderer",
         "MixinItemRenderer",
+        "MixinClass_4722",
         "MixinClientPlayerEntity",
         "MixinPlayerMoveC2SPacket_Both",
         "MixinPlayerMoveC2SPacket_LookOnly"
