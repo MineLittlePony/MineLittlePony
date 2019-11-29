@@ -12,7 +12,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 
 @Mixin(Camera.class)
-public abstract class MixinCamera {
+abstract class MixinCamera {
     @Inject(method = "clipToSpace(D)D",
             at = @At("RETURN"),
             cancellable = true)

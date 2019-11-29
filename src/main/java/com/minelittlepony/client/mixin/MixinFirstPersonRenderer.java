@@ -18,8 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 @Mixin(FirstPersonRenderer.class)
-public class MixinFirstPersonRenderer {
-
+abstract class MixinFirstPersonRenderer {
     @Redirect(method = "renderFirstPersonItem("
                 + "Lnet/minecraft/client/network/AbstractClientPlayerEntity;FF"
                 + "Lnet/minecraft/util/Hand;F"

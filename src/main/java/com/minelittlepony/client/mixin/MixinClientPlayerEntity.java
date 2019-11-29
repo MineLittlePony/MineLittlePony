@@ -2,20 +2,15 @@ package com.minelittlepony.client.mixin;
 
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.pony.IPony;
-import com.mojang.authlib.GameProfile;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(ClientPlayerEntity.class)
-public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity {
-
-    public MixinClientPlayerEntity(ClientWorld clientWorld_1, GameProfile gameProfile_1) {
-        super(clientWorld_1, gameProfile_1);
-    }
+abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity {
+    public MixinClientPlayerEntity() { super(null, null); }
 
     @Override
     public float getActiveEyeHeight(EntityPose entityPose_1, EntityDimensions entitySize_1) {

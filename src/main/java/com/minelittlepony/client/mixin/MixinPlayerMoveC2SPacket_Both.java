@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.minelittlepony.client.HorseCam;
 
 @Mixin(PlayerMoveC2SPacket.Both.class)
-public abstract class MixinPlayerMoveC2SPacket_Both extends PlayerMoveC2SPacket {
+abstract class MixinPlayerMoveC2SPacket_Both extends PlayerMoveC2SPacket {
     @Inject(method = "<init>(DDDFFZ)V",
             at = @At("RETURN"))
     private void onInit(CallbackInfo info) {

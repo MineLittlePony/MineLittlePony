@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ItemRenderer.class)
-public abstract class MixinItemRenderer implements SynchronousResourceReloadListener {
+abstract class MixinItemRenderer implements SynchronousResourceReloadListener {
 
     @Inject(method = "Lnet/minecraft/client/render/item/ItemRenderer;renderGlint("
                             + "Lnet/minecraft/client/texture/TextureManager;"

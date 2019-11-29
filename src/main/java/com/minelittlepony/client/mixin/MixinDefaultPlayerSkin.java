@@ -15,8 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.UUID;
 
 @Mixin(DefaultSkinHelper.class)
-public abstract class MixinDefaultPlayerSkin {
-
+abstract class MixinDefaultPlayerSkin {
     @Inject(method = "getTexture()Lnet/minecraft/util/Identifier;",
             at = @At("HEAD"),
             cancellable = true)
