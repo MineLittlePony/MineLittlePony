@@ -32,8 +32,10 @@ import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 
 public class RenderPonyPlayer extends PlayerEntityRenderer implements IPonyRender<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> {
 
@@ -84,17 +86,13 @@ public class RenderPonyPlayer extends PlayerEntityRenderer implements IPonyRende
 
         // Translate the shadow position after everything is done
         // (shadows are drawn after us)
+        // TODO: Get a proper shadow renderer going
         if (!entity.hasVehicle() && !entity.isSleeping()) {
-            float x = entity.getWidth() / 2 * renderPony.getPony(entity).getMetadata().getSize().getScaleFactor();
-            float y = 0;
+            float yaw = MathHelper.lerpAngleDegrees(tickDelta, entity.prevBodyYaw, entity.bodyYaw);
+            float l = entity.getWidth() / 2 * renderPony.getPony(entity).getMetadata().getSize().getScaleFactor();
 
-            if (entity.isInSneakingPose()) {
-                // Sneaking makes the player 1/15th shorter.
-                // This should be compatible with height-changing mods.
-                y += entity.getHeight() / 15;
-            }
-
-            stack.translate(x, y, 0);
+            stack.multiply(Vector3f.NEGATIVE_Y.getDegreesQuaternion(yaw));
+            stack.translate(0, 0, -l);
         }
 
     }
