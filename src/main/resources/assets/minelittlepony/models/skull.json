@@ -6,9 +6,9 @@
 		"horn_x": -1,
 		"horn_z": 4
 	},
-	"head": {
+	"skull": {
 		"cubes": [
-			{"from": [-4, -8, -4], "size": [8, 8, 8], "stretch": 0.25}
+			{"from": [-4, -8, -4], "size": [8, 8, 8]}
 		],
 		"children": [
 			{
@@ -44,6 +44,12 @@
 				"implementation": "com.minelittlepony.client.model.part.UnicornHorn",
 				"content": "minelittlepony:components/horn"
 			}
+		]
+	},
+	"hair": {
+		"texture": {"u": 32},
+		"cubes": [
+			{"from": [-4, -8, -4], "size": [8, 8, 8], "stretch": 0.25}
 		]
 	}
 }

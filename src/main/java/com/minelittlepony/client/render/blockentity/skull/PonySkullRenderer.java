@@ -10,12 +10,8 @@ import com.minelittlepony.pony.IPony;
 import com.minelittlepony.settings.PonyConfig;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.block.AbstractSkullBlock;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.SkullBlock;
-import net.minecraft.block.WallSkullBlock;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
@@ -35,10 +31,8 @@ import javax.annotation.Nullable;
  */
 public class PonySkullRenderer extends SkullBlockEntityRenderer {
 
-    /**
-     * Resolves the games skull renderer to either a special pony skull renderer
-     * or some other skull renderer depending on the ponyskull's state.
-     */
+    private static PonySkullRenderer INSTANCE;
+
     public static void resolve(boolean ponySkulls) {
         Mson.getInstance().getEntityRendererRegistry().registerBlockRenderer(BlockEntityType.SKULL,
                 ponySkulls ? PonySkullRenderer::new : SkullBlockEntityRenderer::new
@@ -54,36 +48,27 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
 
     public PonySkullRenderer(BlockEntityRenderDispatcher dispatcher) {
         super(dispatcher);
+
+        INSTANCE = this;
     }
 
-    @Override
-    public void render(SkullBlockEntity skullBlockEntity, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j) {
-        float poweredTicks = skullBlockEntity.getTicksPowered(f);
-        BlockState state = skullBlockEntity.getCachedState();
-
-        boolean onWalll = state.getBlock() instanceof WallSkullBlock;
-
-        Direction direction = onWalll ? (Direction)state.get(WallSkullBlock.FACING) : null;
-
-        float angle = 22.5F * (float)(direction != null ? (2 + direction.getHorizontal()) * 4F : state.get(SkullBlock.ROTATION));
-
-        renderSkull(direction,
-                angle,
-                ((AbstractSkullBlock)state.getBlock()).getSkullType(),
-                skullBlockEntity.getOwner(), poweredTicks,
-                matrixStack, vertexConsumerProvider, i);
+    public static boolean renderPonySkull(@Nullable Direction direction, float angle,
+            SkullBlock.SkullType skullType, @Nullable GameProfile profile, float poweredTicks,
+            MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
+        if (INSTANCE != null) {
+            return INSTANCE.renderSkull(direction, angle, skullType, profile, poweredTicks, stack, renderContext, lightUv);
+        }
+        return false;
     }
 
-    public void renderSkull(@Nullable Direction direction, float angle,
+    boolean renderSkull(@Nullable Direction direction, float angle,
             SkullBlock.SkullType skullType, @Nullable GameProfile profile, float poweredTicks,
             MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
 
         ISkull skull = skullMap.get(skullType);
 
         if (skull == null || !skull.canRender(MineLittlePony.getInstance().getConfig())) {
-            SkullBlockEntityRenderer.render(direction, angle, skullType, profile, poweredTicks, stack, renderContext, lightUv);
-
-            return;
+            return false;
         }
 
         Identifier skin = skull.getSkinResource(profile);
@@ -102,6 +87,8 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
         skull.render(stack, vertices, lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
 
         stack.pop();
+
+        return true;
     }
 
     static void handleRotation(MatrixStack stack, @Nullable Direction direction) {

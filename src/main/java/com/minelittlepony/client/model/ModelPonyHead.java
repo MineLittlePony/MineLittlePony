@@ -21,11 +21,14 @@ public class ModelPonyHead extends SkullOverlayEntityModel implements MsonModel,
 
     private PonyEars ears;
 
+    private ModelPart hair;
+
     public IPonyData metadata = new PonyData();
 
     @Override
     public void init(ModelContext context) {
-        context.findByName("head", skull);
+        context.findByName("skull", skull);
+        hair = context.findByName("hair");
         snout = context.findByName("snout");
         horn = context.findByName("horn");
         ears = context.findByName("ears");
@@ -42,13 +45,21 @@ public class ModelPonyHead extends SkullOverlayEntityModel implements MsonModel,
     }
 
     @Override
+    public void render(float poweredTicks, float yaw, float pitch) {
+        super.render(poweredTicks, yaw, pitch);
+        hair.yaw = skull.yaw;
+        hair.pitch = skull.pitch;
+     }
+
+    @Override
     public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
         snout.setVisible(!metadata.getRace().isHuman());
         ears.setVisible(!metadata.getRace().isHuman());
 
         snout.setGender(metadata.getGender());
 
-        super.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        hair.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        skull.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
 
         if (metadata.hasHorn()) {
             getHead().rotate(stack);
