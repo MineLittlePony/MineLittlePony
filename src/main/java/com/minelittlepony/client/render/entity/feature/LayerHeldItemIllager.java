@@ -6,11 +6,11 @@ import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.util.Arm;
 
 import com.minelittlepony.client.model.entity.race.ModelAlicorn;
-import com.minelittlepony.client.render.IPonyRender;
+import com.minelittlepony.client.render.IPonyRenderContext;
 
 public class LayerHeldItemIllager<T extends IllagerEntity, M extends ModelAlicorn<T>> extends LayerHeldPonyItem<T, M> {
 
-    public LayerHeldItemIllager(IPonyRender<T,M> livingPony) {
+    public LayerHeldItemIllager(IPonyRenderContext<T,M> livingPony) {
         super(livingPony);
     }
 

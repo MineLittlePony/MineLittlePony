@@ -6,6 +6,7 @@ import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.armour.IArmour;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.model.capabilities.IModelWrapper;
+import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.pony.IPonyData;
 
 /**
@@ -20,10 +21,11 @@ public class ModelWrapper<T extends LivingEntity, M extends IModel> implements I
     /**
      * Creates a new model wrapper to contain the given pony.
      */
-    public ModelWrapper(M model) {
-        body = model;
-        armor = model.createArmour();
-        armor.apply(model.getMetadata());
+    @SuppressWarnings("unchecked")
+    public ModelWrapper(ModelKey<?> key) {
+        body = (M)key.createModel();
+        armor = body.createArmour();
+        armor.apply(body.getMetadata());
     }
 
     public M getBody() {

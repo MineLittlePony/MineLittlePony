@@ -2,7 +2,7 @@ package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.IPonyModel;
-import com.minelittlepony.client.render.IPonyRender;
+import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.model.BodyPart;
 import com.mojang.authlib.GameProfile;
 
@@ -30,7 +30,7 @@ import static com.mojang.blaze3d.platform.GlStateManager.*;
 
 public class LayerPonyCustomHead<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyLayer<T, M> {
 
-    public LayerPonyCustomHead(IPonyRender<T, M> renderPony) {
+    public LayerPonyCustomHead(IPonyRenderContext<T, M> renderPony) {
         super(renderPony);
     }
 

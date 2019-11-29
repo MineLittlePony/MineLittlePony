@@ -10,7 +10,7 @@ import net.minecraft.entity.LivingEntity;
 
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.render.IPonyRender;
+import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.model.gear.IStackable;
@@ -24,7 +24,7 @@ public class LayerGear<T extends LivingEntity, M extends EntityModel<T> & IPonyM
 
     private final Map<Wearable, IGear> gears;
 
-    public LayerGear(IPonyRender<T, M> renderer) {
+    public LayerGear(IPonyRenderContext<T, M> renderer) {
         super(renderer);
 
         gears = ModelType.getWearables().collect(Collectors.toMap(

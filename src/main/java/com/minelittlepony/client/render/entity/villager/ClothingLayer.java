@@ -15,15 +15,15 @@ import net.minecraft.village.VillagerProfession;
 import net.minecraft.village.VillagerType;
 
 import com.minelittlepony.client.model.IPonyModel;
-import com.minelittlepony.client.render.IPonyRender;
-import com.minelittlepony.client.render.RenderPony;
+import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.EquineRenderManager;
 
 class ClothingLayer<
     T extends LivingEntity & VillagerDataContainer,
     M extends EntityModel<T> & IPonyModel<T> & ModelWithHat,
-    C extends FeatureRendererContext<T, M> & IPonyRender<T, M>> extends VillagerClothingFeatureRenderer<T, M> {
+    C extends FeatureRendererContext<T, M> & IPonyRenderContext<T, M>> extends VillagerClothingFeatureRenderer<T, M> {
 
-    private final RenderPony<T, M> renderer;
+    private final EquineRenderManager<T, M> renderer;
 
     public ClothingLayer(C context, String type) {
         super(context, (ReloadableResourceManager)MinecraftClient.getInstance().getResourceManager(), type);

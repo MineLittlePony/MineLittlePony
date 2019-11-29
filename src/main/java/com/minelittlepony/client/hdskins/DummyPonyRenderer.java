@@ -4,8 +4,8 @@ import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.ModelWrapper;
-import com.minelittlepony.client.render.IPonyRender;
-import com.minelittlepony.client.render.RenderPony;
+import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.client.render.entity.feature.LayerGear;
 import com.minelittlepony.client.render.entity.feature.LayerHeldPonyItemMagical;
 import com.minelittlepony.client.render.entity.feature.LayerPonyArmor;
@@ -24,22 +24,21 @@ import net.minecraft.util.Identifier;
 /**
  * Renderer used for the dummy pony model when selecting a skin.
  */
-class DummyPonyRenderer extends DummyPlayerRenderer<DummyPony, ClientPonyModel<DummyPony>> implements IPonyRender<DummyPony, ClientPonyModel<DummyPony>> {
+class DummyPonyRenderer extends DummyPlayerRenderer<DummyPony, ClientPonyModel<DummyPony>> implements IPonyRenderContext<DummyPony, ClientPonyModel<DummyPony>> {
 
-    protected final RenderPony<DummyPony, ClientPonyModel<DummyPony>> renderPony = new RenderPony<>(this);
+    protected final EquineRenderManager<DummyPony, ClientPonyModel<DummyPony>> manager = new EquineRenderManager<>(this);
 
-    @SuppressWarnings("unchecked")
-    public DummyPonyRenderer(EntityRenderDispatcher manager) {
-        super(manager, null);
+    public DummyPonyRenderer(EntityRenderDispatcher dispatcher) {
+        super(dispatcher, null);
         addFeature(new LayerGear<>(this));
 
-        renderPony.setPonyModel((ModelKey<ClientPonyModel<DummyPony>>)(Object)ModelType.EARTH_PONY.getKey(false));
-        renderPony.setSkipBlend();
+        manager.setModel(ModelType.EARTH_PONY.getKey(false));
+        manager.setSkipBlend();
     }
 
     @Override
     public ModelWrapper<DummyPony, ClientPonyModel<DummyPony>> getModelWrapper() {
-        return renderPony.playerModel;
+        return manager.playerModel;
     }
 
     @Override
@@ -49,7 +48,7 @@ class DummyPonyRenderer extends DummyPlayerRenderer<DummyPony, ClientPonyModel<D
 
     @Override
     protected void scale(DummyPony entity, MatrixStack stack, float ticks) {
-        renderPony.preRenderCallback(entity, stack, ticks);
+        manager.preRenderCallback(entity, stack, ticks);
 
         if (entity.isSwimming()) {
             if (entity.getVelocity().x < 100) {
@@ -82,7 +81,7 @@ class DummyPonyRenderer extends DummyPlayerRenderer<DummyPony, ClientPonyModel<D
         @SuppressWarnings("unchecked")
         ModelKey<? extends ClientPonyModel<DummyPony>> key = (ModelKey<? extends ClientPonyModel<DummyPony>>)(canWet ? ModelType.SEA_PONY.getKey(slim) : ModelType.getPlayerModel(thePony.getRace(true)).getKey(slim));
 
-        return renderPony.setPonyModel(key).apply(thePony.getMetadata()).getBody();
+        return manager.setModel(key).apply(thePony.getMetadata()).getBody();
     }
 
     @Override
@@ -106,8 +105,8 @@ class DummyPonyRenderer extends DummyPlayerRenderer<DummyPony, ClientPonyModel<D
     }
 
     @Override
-    public RenderPony<DummyPony, ClientPonyModel<DummyPony>> getInternalRenderer() {
-        return renderPony;
+    public EquineRenderManager<DummyPony, ClientPonyModel<DummyPony>> getInternalRenderer() {
+        return manager;
     }
 
     @Override

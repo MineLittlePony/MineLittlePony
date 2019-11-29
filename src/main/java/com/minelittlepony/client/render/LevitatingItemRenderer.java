@@ -1,10 +1,7 @@
 package com.minelittlepony.client.render;
 
-import org.lwjgl.opengl.GL14;
-
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.pony.IPony;
-import com.minelittlepony.util.math.Color;
 
 import javax.annotation.Nullable;
 

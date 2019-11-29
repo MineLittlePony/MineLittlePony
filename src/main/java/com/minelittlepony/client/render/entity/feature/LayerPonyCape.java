@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.client.model.ClientPonyModel;
-import com.minelittlepony.client.render.IPonyRender;
+import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.model.BodyPart;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -20,7 +20,7 @@ import static com.minelittlepony.model.PonyModelConstants.PI;
 
 public class LayerPonyCape<M extends ClientPonyModel<AbstractClientPlayerEntity>> extends AbstractPonyLayer<AbstractClientPlayerEntity, M> {
 
-    public LayerPonyCape(IPonyRender<AbstractClientPlayerEntity, M> context) {
+    public LayerPonyCape(IPonyRenderContext<AbstractClientPlayerEntity, M> context) {
         super(context);
     }
 

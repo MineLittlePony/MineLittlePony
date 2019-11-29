@@ -9,14 +9,14 @@ import net.minecraft.client.util.math.MatrixStack;
 
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelDeadMau5Ears;
-import com.minelittlepony.client.render.IPonyRender;
+import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.model.BodyPart;
 
 public class LayerDJPon3Head<T extends AbstractClientPlayerEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyLayer<T, M> {
 
     private final ModelDeadMau5Ears deadMau5 = new ModelDeadMau5Ears();
 
-    public LayerDJPon3Head(IPonyRender<T, M> context) {
+    public LayerDJPon3Head(IPonyRenderContext<T, M> context) {
         super(context);
     }
 

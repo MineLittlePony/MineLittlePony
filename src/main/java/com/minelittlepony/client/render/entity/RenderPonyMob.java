@@ -5,8 +5,8 @@ import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.render.DebugBoundingBoxRenderer;
-import com.minelittlepony.client.render.IPonyRender;
-import com.minelittlepony.client.render.RenderPony;
+import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.client.render.entity.feature.LayerGear;
 import com.minelittlepony.client.render.entity.feature.LayerHeldPonyItem;
 import com.minelittlepony.client.render.entity.feature.LayerHeldPonyItemMagical;
@@ -31,15 +31,14 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 import javax.annotation.Nonnull;
 
-public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T> & IPonyModel<T>> extends MobEntityRenderer<T, M> implements IPonyRender<T, M> {
+public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T> & IPonyModel<T>> extends MobEntityRenderer<T, M> implements IPonyRenderContext<T, M> {
 
-    protected RenderPony<T, M> renderPony = new RenderPony<>(this);
+    protected EquineRenderManager<T, M> manager = new EquineRenderManager<>(this);
 
-    @SuppressWarnings("unchecked")
-    public RenderPonyMob(EntityRenderDispatcher manager, ModelKey<? super M> key) {
-        super(manager, (M)key.createModel(), 0.5F);
+    public RenderPonyMob(EntityRenderDispatcher dispatcher, ModelKey<? super M> key) {
+        super(dispatcher, null, 0.5F);
 
-        this.model = renderPony.setPonyModel((ModelKey<M>)key).getBody();
+        this.model = manager.setModel(key).getBody();
 
         addLayers();
     }
@@ -63,31 +62,31 @@ public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T
 
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
 
-        DebugBoundingBoxRenderer.instance.render(renderPony.getPony(entity), entity, stack, renderContext);
+        DebugBoundingBoxRenderer.render(manager.getPony(entity), entity, stack, renderContext);
     }
 
     @Override
     protected void setupTransforms(T entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
-        rotationYaw = renderPony.getRenderYaw(entity, rotationYaw, partialTicks);
+        rotationYaw = manager.getRenderYaw(entity, rotationYaw, partialTicks);
         super.setupTransforms(entity, stack, ageInTicks, rotationYaw, partialTicks);
 
-        renderPony.applyPostureTransform(entity, stack, rotationYaw, partialTicks);
+        manager.applyPostureTransform(entity, stack, rotationYaw, partialTicks);
     }
 
     @Override
     public boolean isVisible(T entity, Frustum visibleRegion, double camX, double camY, double camZ) {
-        return super.isVisible(entity, renderPony.getFrustrum(entity, visibleRegion), camX, camY, camZ);
+        return super.isVisible(entity, manager.getFrustrum(entity, visibleRegion), camX, camY, camZ);
     }
 
     @Override
     public void scale(T entity, MatrixStack stack, float ticks) {
-        renderPony.preRenderCallback(entity, stack, ticks);
+        manager.preRenderCallback(entity, stack, ticks);
         if (this.getModel() instanceof PlayerEntityModel) {
             ((PlayerEntityModel<?>)getModel()).setVisible(true);
         }
 
         // shadowRadius
-        field_4673 = renderPony.getShadowScale();
+        field_4673 = manager.getShadowScale();
 
         if (entity.isBaby()) {
             field_4673 *= 3; // undo vanilla shadow scaling
@@ -102,12 +101,12 @@ public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T
 
     @Override
     public ModelWrapper<T, M> getModelWrapper() {
-        return renderPony.playerModel;
+        return manager.playerModel;
     }
 
     @Override
     protected void renderLabelIfPresent(T entity, String name, MatrixStack stack, VertexConsumerProvider renderContext, int maxDistance) {
-        stack.translate(0, renderPony.getNamePlateYOffset(entity), 0);
+        stack.translate(0, manager.getNamePlateYOffset(entity), 0);
         super.renderLabelIfPresent(entity, name, stack, renderContext, maxDistance);
     }
 
@@ -119,8 +118,8 @@ public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T
     }
 
     @Override
-    public RenderPony<T, M> getInternalRenderer() {
-        return renderPony;
+    public EquineRenderManager<T, M> getInternalRenderer() {
+        return manager;
     }
 
     @Override

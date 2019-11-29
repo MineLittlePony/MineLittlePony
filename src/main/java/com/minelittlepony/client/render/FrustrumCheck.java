@@ -13,9 +13,9 @@ public class FrustrumCheck<T extends LivingEntity> extends Frustum {
 
     private Frustum vanilla;
 
-    private final RenderPony<T, ?> renderer;
+    private final EquineRenderManager<T, ?> renderer;
 
-    public FrustrumCheck(RenderPony<T, ?> render) {
+    public FrustrumCheck(EquineRenderManager<T, ?> render) {
         super(new Matrix4f(), new Matrix4f());
         renderer = render;
     }

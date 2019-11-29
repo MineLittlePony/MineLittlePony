@@ -2,7 +2,7 @@ package com.minelittlepony.client.pony;
 
 import com.google.common.base.MoreObjects;
 import com.minelittlepony.client.PonyRenderManager;
-import com.minelittlepony.client.render.IPonyRender;
+import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.IPonyData;
@@ -168,7 +168,7 @@ public class Pony implements IPony {
         if (entity.hasVehicle() && entity.getVehicle() instanceof LivingEntity) {
             LivingEntity mount = (LivingEntity) entity.getVehicle();
 
-            IPonyRender<LivingEntity, ?> render = PonyRenderManager.getInstance().getPonyRenderer(mount);
+            IPonyRenderContext<LivingEntity, ?> render = PonyRenderManager.getInstance().getPonyRenderer(mount);
 
             return render == null ? null : render.getEntityPony(mount);
         }

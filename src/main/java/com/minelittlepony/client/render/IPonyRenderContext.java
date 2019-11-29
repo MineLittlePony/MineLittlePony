@@ -14,7 +14,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 
-public interface IPonyRender<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends PonyModelConstants, IRenderContext<T, M> {
+public interface IPonyRenderContext<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends PonyModelConstants, IRenderContext<T, M> {
 
     /**
      * Gets the wrapped pony model for this renderer.
@@ -23,7 +23,7 @@ public interface IPonyRender<T extends LivingEntity, M extends EntityModel<T> & 
 
     IPony getEntityPony(T entity);
 
-    RenderPony<T, M> getInternalRenderer();
+    EquineRenderManager<T, M> getInternalRenderer();
 
     Identifier findTexture(T entity);
 
@@ -37,7 +37,6 @@ public interface IPonyRender<T extends LivingEntity, M extends EntityModel<T> & 
      */
     default void translateRider(T entity, IPony entityPony, LivingEntity passenger, IPony passengerPony, MatrixStack stack, float ticks) {
         if (!passengerPony.getRace(false).isHuman()) {
-            //float yaw = MathUtil.interpolateDegress(entity.prevRenderYawOffset, entity.renderYawOffset, ticks);
             float yaw = MathUtil.interpolateDegress((float)entity.prevRenderY, (float)entity.getY(), ticks);
 
             getModelWrapper().apply(entityPony.getMetadata());

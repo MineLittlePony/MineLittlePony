@@ -2,7 +2,7 @@ package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
-import com.minelittlepony.client.render.IPonyRender;
+import com.minelittlepony.client.render.IPonyRenderContext;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
@@ -13,10 +13,10 @@ import net.minecraft.entity.LivingEntity;
 
 public abstract class AbstractPonyLayer<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends FeatureRenderer<T, M> {
 
-    private final IPonyRender<T, M> context;
+    private final IPonyRenderContext<T, M> context;
 
     @SuppressWarnings("unchecked")
-    public AbstractPonyLayer(IPonyRender<T, M> context) {
+    public AbstractPonyLayer(IPonyRenderContext<T, M> context) {
         super((FeatureRendererContext<T, M>)context);
         this.context = context;
     }
@@ -39,7 +39,7 @@ public abstract class AbstractPonyLayer<T extends LivingEntity, M extends Entity
     public abstract void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch);
 
     @SuppressWarnings("unchecked")
-    protected <C extends IPonyRender<T, M> & FeatureRendererContext<T, M>> C getContext() {
+    protected <C extends IPonyRenderContext<T, M> & FeatureRendererContext<T, M>> C getContext() {
         return (C)context;
     }
 

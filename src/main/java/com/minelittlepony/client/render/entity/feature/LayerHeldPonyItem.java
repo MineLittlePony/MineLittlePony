@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.client.model.IPonyModel;
-import com.minelittlepony.client.render.IPonyRender;
+import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.model.BodyPart;
 
 import net.minecraft.client.MinecraftClient;
@@ -16,7 +16,7 @@ import net.minecraft.util.Arm;
 
 public class LayerHeldPonyItem<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyLayer<T, M> {
 
-    public LayerHeldPonyItem(IPonyRender<T, M> livingPony) {
+    public LayerHeldPonyItem(IPonyRenderContext<T, M> livingPony) {
         super(livingPony);
     }
 

@@ -4,7 +4,7 @@ import com.minelittlepony.client.ForgeProxy;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.armour.DefaultArmourTextureResolver;
-import com.minelittlepony.client.render.IPonyRender;
+import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.model.armour.ArmourLayer;
 import com.minelittlepony.model.armour.IArmour;
 import com.minelittlepony.model.armour.IArmourTextureResolver;
@@ -33,7 +33,7 @@ public class LayerPonyArmor<T extends LivingEntity, M extends EntityModel<T> & I
 
     private ModelWrapper<T, M> pony;
 
-    public LayerPonyArmor(IPonyRender<T, M> renderer) {
+    public LayerPonyArmor(IPonyRenderContext<T, M> renderer) {
         super(renderer);
     }
 

@@ -13,14 +13,9 @@ import net.minecraft.util.shape.VoxelShapes;
 
 import com.minelittlepony.pony.IPony;
 
-public class DebugBoundingBoxRenderer {
+public final class DebugBoundingBoxRenderer {
 
-    public static final DebugBoundingBoxRenderer instance = new DebugBoundingBoxRenderer();
-
-    private DebugBoundingBoxRenderer() {
-    }
-
-    public void render(IPony pony, LivingEntity entity, MatrixStack stack, VertexConsumerProvider renderContext) {
+    public static void render(IPony pony, LivingEntity entity, MatrixStack stack, VertexConsumerProvider renderContext) {
         MinecraftClient mc = MinecraftClient.getInstance();
 
         if (!mc.getEntityRenderManager().shouldRenderHitboxes() || entity.squaredDistanceTo(mc.player) > 70) {

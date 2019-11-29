@@ -3,7 +3,7 @@ package com.minelittlepony.client.render.entity.feature;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.PonyElytra;
-import com.minelittlepony.client.render.IPonyRender;
+import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.model.BodyPart;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -27,7 +27,7 @@ public class LayerPonyElytra<T extends LivingEntity, M extends EntityModel<T> & 
     @SuppressWarnings("unchecked")
     private final PonyElytra<T> modelElytra = (PonyElytra<T>)ModelType.ELYTRA.createModel();
 
-    public LayerPonyElytra(IPonyRender<T, M> rp) {
+    public LayerPonyElytra(IPonyRenderContext<T, M> rp) {
         super(rp);
     }
 

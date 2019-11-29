@@ -8,7 +8,7 @@ import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.entity.race.PlayerModels;
 import com.minelittlepony.client.render.LevitatingItemRenderer;
 import com.minelittlepony.client.render.entity.MobRenderers;
-import com.minelittlepony.client.render.IPonyRender;
+import com.minelittlepony.client.render.IPonyRenderContext;
 
 import javax.annotation.Nullable;
 
@@ -94,15 +94,15 @@ public class PonyRenderManager {
 
     @SuppressWarnings("unchecked")
     @Nullable
-    public <T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> IPonyRender<T, M> getPonyRenderer(@Nullable T entity) {
+    public <T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> IPonyRenderContext<T, M> getPonyRenderer(@Nullable T entity) {
         if (entity == null) {
             return null;
         }
 
         EntityRenderer<T> renderer = (EntityRenderer<T>)MinecraftClient.getInstance().getEntityRenderManager().getRenderer(entity);
 
-        if (renderer instanceof IPonyRender) {
-            return (IPonyRender<T, M>) renderer;
+        if (renderer instanceof IPonyRenderContext) {
+            return (IPonyRenderContext<T, M>) renderer;
         }
 
         return null;

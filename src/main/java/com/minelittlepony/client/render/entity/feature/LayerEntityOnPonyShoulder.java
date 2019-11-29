@@ -12,14 +12,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 
 import com.minelittlepony.client.model.ClientPonyModel;
-import com.minelittlepony.client.render.IPonyRender;
+import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.model.BodyPart;
 
 public class LayerEntityOnPonyShoulder<T extends PlayerEntity, M extends ClientPonyModel<T>> extends AbstractPonyLayer<T, M> {
 
     private final ParrotEntityModel model = new ParrotEntityModel();
 
-    public LayerEntityOnPonyShoulder(IPonyRender<T, M> context) {
+    public LayerEntityOnPonyShoulder(IPonyRenderContext<T, M> context) {
         super(context);
     }
 

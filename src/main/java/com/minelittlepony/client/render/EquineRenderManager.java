@@ -21,13 +21,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 
-public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> {
+public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> {
 
     public ModelWrapper<T, M> playerModel;
 
     private IPony pony;
 
-    private final IPonyRender<T, M> renderer;
+    private final IPonyRenderContext<T, M> renderer;
 
     private boolean skipBlend;
 
@@ -45,7 +45,7 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
         RenderSystem.disableBlend();
     }
 
-    public RenderPony(IPonyRender<T, M> renderer) {
+    public EquineRenderManager(IPonyRenderContext<T, M> renderer) {
         this.renderer = renderer;
     }
 
@@ -85,7 +85,7 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
         if (entity.hasVehicle() && entity.getVehicle() instanceof LivingEntity) {
 
             LivingEntity ridingEntity = (LivingEntity) entity.getVehicle();
-            IPonyRender<LivingEntity, ?> renderer = PonyRenderManager.getInstance().getPonyRenderer(ridingEntity);
+            IPonyRenderContext<LivingEntity, ?> renderer = PonyRenderManager.getInstance().getPonyRenderer(ridingEntity);
 
             if (renderer != null) {
                 // negate vanilla translations so the rider begins at the ridees feet.
@@ -133,8 +133,8 @@ public class RenderPony<T extends LivingEntity, M extends EntityModel<T> & IPony
         return playerModel.getBody();
     }
 
-    public ModelWrapper<T, M> setPonyModel(ModelKey<? extends M> model) {
-        playerModel = new ModelWrapper<>(model.createModel());
+    public ModelWrapper<T, M> setModel(ModelKey<?> key) {
+        playerModel = new ModelWrapper<>(key);
 
         return playerModel;
     }
