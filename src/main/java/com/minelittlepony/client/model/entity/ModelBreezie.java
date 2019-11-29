@@ -1,7 +1,6 @@
 package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
@@ -11,28 +10,25 @@ import com.google.common.collect.Iterables;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
 import com.minelittlepony.mson.api.model.MsonPart;
+import com.minelittlepony.mson.api.model.biped.MsonBiped;
 
 import static com.minelittlepony.model.PonyModelConstants.PI;
 
-public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> implements MsonModel {
+public class ModelBreezie<T extends LivingEntity> extends MsonBiped<T> implements MsonModel {
 
     private ModelPart neck;
-    private ModelPart tail;
-    private ModelPart tailStub;
 
     private ModelPart leftWing;
     private ModelPart rightWing;
 
     public ModelBreezie() {
-        super(1);
         textureHeight = 64;
     }
 
     @Override
     public void init(ModelContext context) {
+        super.init(context);
         neck = context.findByName("neck");
-        tail = context.findByName("tail");
-        tailStub = context.findByName("tail_stub");
         leftWing = context.findByName("left_wing");
         rightWing = context.findByName("right_wing");
     }
@@ -45,7 +41,7 @@ public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> im
 
     @Override
     protected Iterable<ModelPart> getBodyParts() {
-        return Iterables.concat(super.getBodyParts(), ImmutableList.of(neck, tailStub, tail, leftWing, rightWing));
+        return Iterables.concat(super.getBodyParts(), ImmutableList.of(neck, leftWing, rightWing));
     }
 
     @Override
@@ -84,6 +80,16 @@ public class ModelBreezie<T extends LivingEntity> extends BipedEntityModel<T> im
 
         rightArm.pitch += rotX;
         rightArm.roll += rotZ;
+
+        rotX = MathHelper.sin(ticks * 0.3F) * 0.05F;
+        rotZ = MathHelper.cos(ticks * 0.2F) * 0.05F + 0.05F;
+
+        rotX -= 0.05F;
+
+        leftWing.yaw = rotX * 10;
+        leftWing.pitch = rotZ;
+        rightWing.yaw = -rotX * 10;
+        rightWing.pitch = rotZ;
 
         if (rightArmPose == ArmPose.BOW_AND_ARROW) {
             raiseArm(rightArm, leftArm, -1);
