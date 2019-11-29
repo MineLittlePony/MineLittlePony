@@ -52,6 +52,7 @@ public class ModelEarthPony<T extends LivingEntity> extends AbstractPonyModel<T>
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
+        snout.setVisible(visible);
         tail.setVisible(visible);
     }
 

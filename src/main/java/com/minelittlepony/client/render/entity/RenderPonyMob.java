@@ -23,6 +23,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.util.Identifier;
@@ -81,6 +82,10 @@ public abstract class RenderPonyMob<T extends MobEntity, M extends EntityModel<T
     @Override
     public void scale(T entity, MatrixStack stack, float ticks) {
         renderPony.preRenderCallback(entity, stack, ticks);
+        if (this.getModel() instanceof PlayerEntityModel) {
+            ((PlayerEntityModel<?>)getModel()).setVisible(true);
+        }
+
         // shadowRadius
         field_4673 = renderPony.getShadowScale();
 
