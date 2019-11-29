@@ -4,6 +4,7 @@
 		"name": "left_wing",
 		"implementation": "com.minelittlepony.client.model.part.BatWings$Wing",
 		"content": {
+			"texture": {"w": 64, "h": 64 },
 			"folded": {
 				"texture": {"u": 56, "v": 16},
 				"rotate": [90, 0, 0],
@@ -45,8 +46,7 @@
 							},
 							{
 								"type": "mson:planar",
-								"texture": {"u": 56, "v": 32},
-								"west": [0, 0, -7, 16, 8, 0]
+								"west": [0, 0, -7, 16, 8, 56, 32]
 							}
 						]
 					}
@@ -59,6 +59,7 @@
 		"name": "right_wing",
 		"implementation": "com.minelittlepony.client.model.part.BatWings$Wing",
 		"content": {
+			"texture": {"w": 64, "h": 64 },
 			"folded": {
 				"texture": {"u": 56, "v": 16},
 				"rotate": [90, 0, 0],
@@ -104,9 +105,8 @@
 							},
 							{
 								"type": "mson:planar",
-								"texture": {"u": 56, "v": 32},
 								"mirror": true,
-								"west": [0, 0, -7, 16, 8, 0]
+								"west": [0, 0, -7, 16, 8, 56, 32]
 							}
 						]
 					}
