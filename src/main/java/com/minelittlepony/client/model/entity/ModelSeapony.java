@@ -2,6 +2,7 @@ package com.minelittlepony.client.model.entity;
 
 import com.minelittlepony.client.model.armour.ModelPonyArmour;
 import com.minelittlepony.client.model.entity.race.ModelUnicorn;
+import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.armour.IEquestrianArmour;
@@ -46,8 +47,8 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
     }
 
     @Override
-    public void updateLivingState(T entity, IPony pony) {
-        super.updateLivingState(entity, pony);
+    public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
+        super.updateLivingState(entity, pony, mode);
 
         // Seaponies can't sneak, silly
         isSneaking = false;
@@ -162,8 +163,8 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
         }
 
         @Override
-        public void updateLivingState(T entity, IPony pony) {
-            super.updateLivingState(entity, pony);
+        public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
+            super.updateLivingState(entity, pony, mode);
 
             // Seaponies can't sneak, silly
             isSneaking = false;

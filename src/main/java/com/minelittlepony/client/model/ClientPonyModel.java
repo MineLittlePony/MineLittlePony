@@ -6,6 +6,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 
 import com.minelittlepony.client.pony.PonyData;
+import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.model.ModelAttributes;
 import com.minelittlepony.mson.api.model.biped.MsonPlayer;
 import com.minelittlepony.pony.IPony;
@@ -32,10 +33,10 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
     protected IPonyData metadata = new PonyData();
 
     @Override
-    public void updateLivingState(T entity, IPony pony) {
+    public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
         isChild = entity.isBaby();
         isSneaking = entity.isInSneakingPose();
-        attributes.updateLivingState(entity, pony);
+        attributes.updateLivingState(entity, pony, mode);
     }
 
     @Override

@@ -61,7 +61,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
     }
 
     public void preRenderCallback(T entity, MatrixStack stack, float ticks) {
-        updateModel(entity);
+        updateModel(entity, Mode.THIRD_PERSON);
 
         float s = getScaleFactor();
         stack.scale(s, s, s);
@@ -144,16 +144,16 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         playerModel.apply(pony.getMetadata());
     }
 
-    public void updateModel(T entity) {
+    public void updateModel(T entity, Mode mode) {
         pony = renderer.getEntityPony(entity);
         playerModel.apply(pony.getMetadata());
         pony.updateForEntity(entity);
 
-        getModel().updateLivingState(entity, pony);
+        getModel().updateLivingState(entity, pony, mode);
     }
 
     public IPony getPony(T entity) {
-        updateModel(entity);
+        updateModel(entity, Mode.THIRD_PERSON);
         return pony;
     }
 
@@ -186,5 +186,10 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         }
 
         return y;
+    }
+
+    public enum Mode {
+        FIRST_PERSON,
+        THIRD_PERSON
     }
 }

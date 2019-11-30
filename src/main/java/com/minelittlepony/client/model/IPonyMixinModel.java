@@ -5,6 +5,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 
+import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IUnicorn;
 import com.minelittlepony.model.ModelAttributes;
@@ -28,8 +29,8 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     }
 
     @Override
-    default void updateLivingState(T entity, IPony pony) {
-        mixin().updateLivingState(entity, pony);
+    default void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
+        mixin().updateLivingState(entity, pony, mode);
     }
 
     @Override

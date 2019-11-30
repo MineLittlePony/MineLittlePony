@@ -1,5 +1,7 @@
 package com.minelittlepony.model;
 
+import com.minelittlepony.client.render.EquineRenderManager;
+import com.minelittlepony.client.render.EquineRenderManager.Mode;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.util.math.MathUtil;
 import net.minecraft.entity.LivingEntity;
@@ -96,13 +98,13 @@ public class ModelAttributes<T extends LivingEntity> {
         motionLerp = MathUtil.clampLimit(zMotion * 30, 1);
     }
 
-    public void updateLivingState(T entity, IPony pony) {
-        isCrouching = pony.isCrouching(entity);
+    public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
+        isCrouching = mode == Mode.THIRD_PERSON && pony.isCrouching(entity);
         isSleeping = entity.isSleeping();
-        isFlying = pony.isFlying(entity);
+        isFlying = mode == Mode.THIRD_PERSON && pony.isFlying(entity);
         isGliding = entity.isFallFlying();
-        isSwimming = pony.isSwimming(entity);
-        isSwimmingRotated = isSwimming && entity instanceof PlayerEntity;
+        isSwimming = mode == Mode.THIRD_PERSON && pony.isSwimming(entity);
+        isSwimmingRotated = mode == Mode.THIRD_PERSON && isSwimming && entity instanceof PlayerEntity;
         hasHeadGear = pony.isWearingHeadgear(entity);
         isSitting = pony.isRidingInteractive(entity);
         interpolatorId = entity.getUuid();

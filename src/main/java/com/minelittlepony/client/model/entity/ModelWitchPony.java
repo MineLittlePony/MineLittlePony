@@ -4,6 +4,7 @@ import net.minecraft.entity.mob.WitchEntity;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.model.entity.race.ModelZebra;
+import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.meta.Wearable;
 
@@ -15,8 +16,8 @@ public class ModelWitchPony extends ModelZebra<WitchEntity> {
     }
 
     @Override
-    public void updateLivingState(WitchEntity entity, IPony pony) {
-        super.updateLivingState(entity, pony);
+    public void updateLivingState(WitchEntity entity, IPony pony, EquineRenderManager.Mode mode) {
+        super.updateLivingState(entity, pony, mode);
 
         if (entity.hasCustomName() && "Filly".equals(entity.getCustomName().getString())) {
             isChild = true;
