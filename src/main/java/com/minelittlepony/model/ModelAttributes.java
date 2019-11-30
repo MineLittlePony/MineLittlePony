@@ -70,7 +70,7 @@ public class ModelAttributes<T extends LivingEntity> {
      * Unique id of the interpolator used for this model.
      * Usually the UUID of the entity being rendered.
      */
-    public UUID interpolatorId;
+    public UUID interpolatorId = UUID.randomUUID();
 
     /**
      * The actual, visible height of this model when rendered.

@@ -23,7 +23,7 @@ public class PonySkullModel extends SkullOverlayEntityModel implements MsonModel
 
     private ModelPart hair;
 
-    public IPonyData metadata = new PonyData();
+    public IPonyData metadata = PonyData.NULL;
 
     @Override
     public void init(ModelContext context) {

@@ -35,13 +35,15 @@ public class PonyData implements IPonyData {
 
     private static final PonyDataSerialiser SERIALISER = new PonyDataSerialiser();
 
+    public static final IPonyData NULL = new PonyData(Race.HUMAN);
+
     /**
      * Parses the given resource into a new IPonyData.
      * This may either come from an attached json file or the image itself.
      */
     public static IPonyData parse(@Nullable Identifier identifier) {
         if (identifier == null) {
-            return new PonyData();
+            return NULL;
         }
 
         try (Resource res = MinecraftClient.getInstance().getResourceManager().getResource(identifier)) {
@@ -60,7 +62,7 @@ public class PonyData implements IPonyData {
             return NativeUtil.parseImage(identifier, PonyData::new);
         } catch (IllegalStateException e) {
             MineLittlePony.logger.fatal("Unable to read {} metadata", identifier, e);
-            return new PonyData();
+            return NULL;
         }
     }
 
@@ -82,8 +84,8 @@ public class PonyData implements IPonyData {
     @Expose
     private final boolean[] wearables;
 
-    public PonyData() {
-        race = Race.HUMAN;
+    public PonyData(Race race) {
+        this.race = race;
         tailSize = TailLength.FULL;
         gender = Gender.MARE;
         size = Size.NORMAL;

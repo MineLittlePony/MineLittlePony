@@ -30,7 +30,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
     /**
      * Associated pony data.
      */
-    protected IPonyData metadata = new PonyData();
+    protected IPonyData metadata = PonyData.NULL;
 
     @Override
     public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {

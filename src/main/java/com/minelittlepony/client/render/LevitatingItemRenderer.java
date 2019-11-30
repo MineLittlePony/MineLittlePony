@@ -7,7 +7,6 @@ import com.minelittlepony.util.Color;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -17,6 +16,7 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
@@ -76,33 +76,39 @@ public class LevitatingItemRenderer {
     /**
      * Renders an item in first person optionally with a magical overlay.
      */
-    public void renderItemInFirstPerson(ItemRenderer itemRenderer, @Nullable AbstractClientPlayerEntity entity, ItemStack stack, ModelTransformation.Type transform, boolean left, MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world, int lightUv) {
-        IPony pony = MineLittlePony.getInstance().getManager().getPony(entity);
+    public void renderItemInFirstPerson(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformation.Type transform, boolean left, MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world, int lightUv) {
 
-        matrix.push();
+        if (entity instanceof PlayerEntity) {
 
-        boolean doMagic = MineLittlePony.getInstance().getConfig().fpsmagic.get() && pony.getMetadata().hasMagic();
+            IPony pony = MineLittlePony.getInstance().getManager().getPony((PlayerEntity)entity);
 
-        if (doMagic) {
-            setupPerspective(itemRenderer, entity, stack, left, matrix);
-        }
+            matrix.push();
 
-        itemRenderer.method_23177(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
+            boolean doMagic = MineLittlePony.getInstance().getConfig().fpsmagic.get() && pony.getMetadata().hasMagic();
 
-        if (doMagic) {
-            setColor(pony.getMetadata().getGlowColor());
+            if (doMagic) {
+                setupPerspective(itemRenderer, entity, stack, left, matrix);
+            }
 
-            matrix.scale(1.1F, 1.1F, 1.1F);
-
-            matrix.translate(0.015F, 0.01F, 0.01F);
-            itemRenderer.method_23177(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
-            matrix.translate(-0.03F, -0.02F, -0.02F);
             itemRenderer.method_23177(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
 
-            unsetColor();
-        }
+            if (doMagic) {
+                setColor(pony.getMetadata().getGlowColor());
 
-        matrix.pop();
+                matrix.scale(1.1F, 1.1F, 1.1F);
+
+                matrix.translate(0.015F, 0.01F, 0.01F);
+                itemRenderer.method_23177(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
+                matrix.translate(-0.03F, -0.02F, -0.02F);
+                itemRenderer.method_23177(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
+
+                unsetColor();
+            }
+
+            matrix.pop();
+        } else {
+            itemRenderer.method_23177(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
+        }
     }
 
     /**

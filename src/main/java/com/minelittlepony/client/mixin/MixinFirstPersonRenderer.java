@@ -8,7 +8,6 @@ import com.minelittlepony.client.render.PonyRenderDispatcher;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.FirstPersonRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.model.json.ModelTransformation.Type;
@@ -43,6 +42,6 @@ abstract class MixinFirstPersonRenderer {
             VertexConsumerProvider renderContext,
             @Nullable World world,
             int lightUv, int overlayUv) {
-        PonyRenderDispatcher.getInstance().getMagicRenderer().renderItemInFirstPerson(target, (AbstractClientPlayerEntity)entity, item, transform, left, stack, renderContext, world, lightUv);
+        PonyRenderDispatcher.getInstance().getMagicRenderer().renderItemInFirstPerson(target, entity, item, transform, left, stack, renderContext, world, lightUv);
     }
 }
