@@ -12,8 +12,8 @@
 		"center": [ 0, 0, -2 ],
 		"cubes": [
 			{ "from": [-4, -6, -6], "size": [ 8, 8, 8], "stretch": 0.5 },
-			{ "from": [-4, -8, -1], "size": [ 2, 2, 2], "texture": {"u": 0, "v": 0}, "stretch": -0.125 },
-			{ "from": [ 2, -8, -1], "size": [ 2, 2, 2], "texture": {"u": 0, "v": 4}, "stretch": -0.125 }
+			{ "from": [-4, -8, -1], "size": [ 2, 2, 2], "texture": {"u": 0, "v": 0}, "stretch": -0.0125 },
+			{ "from": [ 2, -8, -1], "size": [ 2, 2, 2], "texture": {"u": 0, "v": 4}, "stretch": -0.0125 }
 		]
 	},
 	"upper_torso": {
