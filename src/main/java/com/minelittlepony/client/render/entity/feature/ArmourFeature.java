@@ -31,26 +31,24 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
 
     private static final IArmourTextureResolver<LivingEntity> textures = new DefaultArmourTextureResolver<>();
 
-    private ModelWrapper<T, M> pony;
-
     public ArmourFeature(IPonyRenderContext<T, M> renderer) {
         super(renderer);
     }
 
     @Override
     public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
-        pony = getContext().getModelWrapper();
+        ModelWrapper<T, M> pony = getContext().getModelWrapper();
 
         for (EquipmentSlot i : EquipmentSlot.values()) {
             if (i.getType() == EquipmentSlot.Type.ARMOR) {
-                renderArmor(stack, renderContext, lightUv, entity, limbDistance, limbAngle, tickDelta, age, headYaw, headPitch, i, ArmourLayer.INNER);
-                renderArmor(stack, renderContext, lightUv, entity, limbDistance, limbAngle, tickDelta, age, headYaw, headPitch, i, ArmourLayer.OUTER);
+                renderArmor(pony, stack, renderContext, lightUv, entity, limbDistance, limbAngle, tickDelta, age, headYaw, headPitch, i, ArmourLayer.INNER);
+                renderArmor(pony, stack, renderContext, lightUv, entity, limbDistance, limbAngle, tickDelta, age, headYaw, headPitch, i, ArmourLayer.OUTER);
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    private <V extends BipedEntityModel<T> & IArmour> void renderArmor(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch, EquipmentSlot armorSlot, ArmourLayer layer) {
+    public static <T extends LivingEntity, V extends BipedEntityModel<T> & IArmour> void renderArmor(ModelWrapper<T, ? extends IPonyModel<T>> pony, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch, EquipmentSlot armorSlot, ArmourLayer layer) {
         ItemStack itemstack = entity.getEquippedStack(armorSlot);
 
         if (!itemstack.isEmpty() && itemstack.getItem() instanceof ArmorItem) {

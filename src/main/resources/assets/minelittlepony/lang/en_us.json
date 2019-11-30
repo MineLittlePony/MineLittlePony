@@ -22,6 +22,7 @@
   "minelp.mobs.illagers": "Ponify Illagers",
   "minelp.mobs.guardians": "Ponify Guardians",
   "minelp.mobs.endermen": "Ponify Endermen",
+  "minelp.mobs.inanimates": "Ponify Objects",
   "minelp.mode.dry": "Land pony",
   "minelp.mode.wet": "Sea pony",
   "minelp.debug.reload_models.message": "Reloading pony models...",

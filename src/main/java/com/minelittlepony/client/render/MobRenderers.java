@@ -51,6 +51,9 @@ public final class MobRenderers {
     public static final MobRenderers ENDERMAN = register("endermen", (state, pony) -> {
         pony.switchRenderer(state, EntityType.ENDERMAN, EnderStallionRenderer::new);
     });
+    public static final MobRenderers INANIMATE = register("inanimates", (state, pony) -> {
+       pony.switchRenderer(state, EntityType.ARMOR_STAND, PonyStandRenderer::new);
+    });
 
     private final BiConsumer<Boolean, PonyRenderDispatcher> changer;
 
