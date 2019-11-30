@@ -15,8 +15,8 @@ public class ArmourWrapper<T extends LivingEntity> implements IEquestrianArmour<
     private final PonyArmourModel<T> innerLayer;
 
     public ArmourWrapper(Supplier<PonyArmourModel<T>> supplier) {
-        outerLayer = ModelType.ARMOUR_INNER.createModel(supplier);
-        innerLayer = ModelType.ARMOUR_OUTER.createModel(supplier);
+        outerLayer = ModelType.ARMOUR_OUTER.createModel(supplier);
+        innerLayer = ModelType.ARMOUR_INNER.createModel(supplier);
     }
 
     @Override
