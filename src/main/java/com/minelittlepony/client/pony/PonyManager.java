@@ -12,7 +12,7 @@ import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.IPonyManager;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
-import com.minelittlepony.util.math.MathUtil;
+import com.minelittlepony.util.MathUtil;
 
 import javax.annotation.Nullable;
 

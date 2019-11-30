@@ -2,18 +2,17 @@ package com.minelittlepony.client.render.entity.npc;
 
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.ZomponyVillagerModel;
-import com.minelittlepony.util.resources.ITextureSupplier;
 
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.ZombieVillagerEntity;
 
-public class RenderPonyZombieVillager extends AbstractVillagerRenderer<ZombieVillagerEntity, ZomponyVillagerModel> {
+public class ZomponyVillagerRenderer extends AbstractNpcRenderer<ZombieVillagerEntity, ZomponyVillagerModel> {
 
     private static final String TYPE = "zombie_villager";
-    private static final ITextureSupplier<String> FORMATTER = ITextureSupplier.formatted("minelittlepony", "textures/entity/zombie_villager/zombie_%s.png");
+    private static final TextureSupplier<String> FORMATTER = TextureSupplier.formatted("minelittlepony", "textures/entity/zombie_villager/zombie_%s.png");
 
-    public RenderPonyZombieVillager(EntityRenderDispatcher manager) {
+    public ZomponyVillagerRenderer(EntityRenderDispatcher manager) {
         super(manager, ModelType.ZOMBIE_VILLAGER, TYPE, FORMATTER);
     }
 

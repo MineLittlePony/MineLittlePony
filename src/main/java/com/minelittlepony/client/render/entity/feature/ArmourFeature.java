@@ -9,7 +9,7 @@ import com.minelittlepony.model.armour.ArmourLayer;
 import com.minelittlepony.model.armour.IArmour;
 import com.minelittlepony.model.armour.IArmourTextureResolver;
 import com.minelittlepony.model.armour.IEquestrianArmour;
-import com.minelittlepony.util.math.Color;
+import com.minelittlepony.util.Color;
 
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;

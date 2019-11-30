@@ -14,22 +14,21 @@ import com.minelittlepony.model.IUnicorn;
 import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.pony.meta.Wearable;
-import com.minelittlepony.util.resources.ITextureSupplier;
 
-abstract class AbstractVillagerRenderer<
+abstract class AbstractNpcRenderer<
     T extends MobEntity & VillagerDataContainer,
     M extends ClientPonyModel<T> & IUnicorn<ModelPart> & ModelWithHat> extends PonyRenderer.Caster<T, M> {
 
-    private final ITextureSupplier<T> baseTextures;
+    private final TextureSupplier<T> baseTextures;
 
     private final String entityType;
 
-    public AbstractVillagerRenderer(EntityRenderDispatcher manager, ModelKey<? super M> key, String type, ITextureSupplier<String> formatter) {
+    public AbstractNpcRenderer(EntityRenderDispatcher manager, ModelKey<? super M> key, String type, TextureSupplier<String> formatter) {
         super(manager, key);
 
         entityType = type;
         baseTextures = new PonyTextures<>(formatter);
-        addFeature(new ClothingLayer<>(this, entityType));
+        addFeature(new NpcClothingFeature<>(this, entityType));
     }
 
     @Override
@@ -57,7 +56,7 @@ abstract class AbstractVillagerRenderer<
     @Override
     public Identifier getDefaultTexture(T villager, Wearable wearable) {
         if (wearable == Wearable.SADDLE_BAGS) {
-            return ClothingLayer.getClothingTexture(villager, entityType);
+            return NpcClothingFeature.getClothingTexture(villager, entityType);
         }
         return super.getDefaultTexture(villager, wearable);
     }

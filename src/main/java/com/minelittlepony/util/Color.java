@@ -1,4 +1,4 @@
-package com.minelittlepony.util.math;
+package com.minelittlepony.util;
 
 /**
  * Colouration Utilities

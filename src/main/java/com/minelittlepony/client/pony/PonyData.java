@@ -16,8 +16,8 @@ import com.minelittlepony.pony.meta.Size;
 import com.minelittlepony.pony.meta.TailLength;
 import com.minelittlepony.pony.meta.TriggerPixels;
 import com.minelittlepony.pony.meta.Wearable;
-import com.minelittlepony.util.animation.BasicEasingInterpolator;
-import com.minelittlepony.util.animation.IInterpolator;
+import com.minelittlepony.util.BasicEasingInterpolator;
+import com.minelittlepony.util.IInterpolator;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

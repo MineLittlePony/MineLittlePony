@@ -1,4 +1,4 @@
-package com.minelittlepony.util.animation;
+package com.minelittlepony.util;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;

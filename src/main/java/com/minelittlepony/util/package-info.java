@@ -1,4 +1,4 @@
 @ParametersAreNonnullByDefault
-package com.minelittlepony.util.animation;
+package com.minelittlepony.util;
 
 import javax.annotation.ParametersAreNonnullByDefault;

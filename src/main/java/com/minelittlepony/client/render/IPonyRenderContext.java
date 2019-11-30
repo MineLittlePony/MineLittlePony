@@ -7,7 +7,7 @@ import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.PonyModelConstants;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.meta.Wearable;
-import com.minelittlepony.util.math.MathUtil;
+import com.minelittlepony.util.MathUtil;
 
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;

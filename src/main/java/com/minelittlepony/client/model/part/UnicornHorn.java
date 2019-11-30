@@ -11,7 +11,7 @@ import com.minelittlepony.client.render.MagicGlow;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
-import com.minelittlepony.util.math.Color;
+import com.minelittlepony.util.Color;
 
 import javax.annotation.Nullable;
 

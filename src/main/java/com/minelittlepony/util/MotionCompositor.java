@@ -1,9 +1,7 @@
-package com.minelittlepony.util.transform;
+package com.minelittlepony.util;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
-
-import com.minelittlepony.util.math.MathUtil;
 
 /**
  * Calculates roll and incline for a player based on their motion vectors.

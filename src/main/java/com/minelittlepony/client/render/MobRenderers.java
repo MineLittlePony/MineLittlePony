@@ -18,9 +18,9 @@ public final class MobRenderers {
     public static final Map<String, MobRenderers> REGISTRY = new HashMap<>();
 
     public static final MobRenderers VILLAGER = register("villagers", (state, pony) -> {
-        pony.switchRenderer(state, EntityType.VILLAGER, RenderPonyVillager::new);
+        pony.switchRenderer(state, EntityType.VILLAGER, VillagerPonyRenderer::new);
         pony.switchRenderer(state, EntityType.WITCH, WitchRenderer::new);
-        pony.switchRenderer(state, EntityType.ZOMBIE_VILLAGER, RenderPonyZombieVillager::new);
+        pony.switchRenderer(state, EntityType.ZOMBIE_VILLAGER, ZomponyVillagerRenderer::new);
         pony.switchRenderer(state, EntityType.WANDERING_TRADER, TraderRenderer::new);
     });
     public static final MobRenderers ILLAGER = register("illagers", (state, pony) -> {

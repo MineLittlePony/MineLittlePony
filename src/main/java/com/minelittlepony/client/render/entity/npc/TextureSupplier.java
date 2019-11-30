@@ -1,4 +1,4 @@
-package com.minelittlepony.util.resources;
+package com.minelittlepony.client.render.entity.npc;
 
 import net.minecraft.util.Identifier;
 
@@ -6,13 +6,13 @@ import net.minecraft.util.Identifier;
  * A texture pool for generating multiple associated textures.
  */
 @FunctionalInterface
-public interface ITextureSupplier<T> {
+public interface TextureSupplier<T> {
     /**
      * Supplies a new texture. May be generated for returned from a pool indexed by the given key.
      */
     Identifier supplyTexture(T key);
 
-    static ITextureSupplier<String> formatted(String domain, String path) {
+    static TextureSupplier<String> formatted(String domain, String path) {
         return key -> new Identifier(domain, String.format(path, key));
     }
 }

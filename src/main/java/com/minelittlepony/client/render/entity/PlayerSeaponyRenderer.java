@@ -5,7 +5,7 @@ import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.meta.Race;
-import com.minelittlepony.util.math.MathUtil;
+import com.minelittlepony.util.MathUtil;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;

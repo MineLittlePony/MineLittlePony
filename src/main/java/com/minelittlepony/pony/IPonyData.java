@@ -5,7 +5,7 @@ import com.minelittlepony.pony.meta.Race;
 import com.minelittlepony.pony.meta.Size;
 import com.minelittlepony.pony.meta.TailLength;
 import com.minelittlepony.pony.meta.Wearable;
-import com.minelittlepony.util.animation.IInterpolator;
+import com.minelittlepony.util.IInterpolator;
 
 import java.util.UUID;
 

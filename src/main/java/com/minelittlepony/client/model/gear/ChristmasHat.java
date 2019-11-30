@@ -11,7 +11,7 @@ import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.pony.meta.Wearable;
-import com.minelittlepony.util.math.Color;
+import com.minelittlepony.util.Color;
 
 import java.util.Calendar;
 import java.util.UUID;

@@ -12,7 +12,6 @@ import net.minecraft.village.VillagerProfession;
 import net.minecraft.village.VillagerType;
 
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.util.resources.ITextureSupplier;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,9 +20,9 @@ import java.util.Optional;
 /**
  * Cached pool of villager textures.
  */
-public class PonyTextures<T extends LivingEntity & VillagerDataContainer> implements ITextureSupplier<T>, SynchronousResourceReloadListener {
+public class PonyTextures<T extends LivingEntity & VillagerDataContainer> implements TextureSupplier<T>, SynchronousResourceReloadListener {
 
-    private final ITextureSupplier<String> formatter;
+    private final TextureSupplier<String> formatter;
 
     private final Identifier fallback;
 
@@ -41,7 +40,7 @@ public class PonyTextures<T extends LivingEntity & VillagerDataContainer> implem
      * @param keyMapper Mapper to convert integer ids into a string value for format insertion
      * @param fallback  The default if any generated textures fail to load. This is stored in place of failing textures.
      */
-    public PonyTextures(ITextureSupplier<String> formatter) {
+    public PonyTextures(TextureSupplier<String> formatter) {
         this.resourceManager = (ReloadableResourceManager)MinecraftClient.getInstance().getResourceManager();
         this.formatter = formatter;
         this.fallback = formatter.supplyTexture("villager_pony");

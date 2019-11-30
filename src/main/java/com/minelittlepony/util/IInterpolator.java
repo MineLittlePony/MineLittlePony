@@ -1,4 +1,4 @@
-package com.minelittlepony.util.animation;
+package com.minelittlepony.util;
 
 /**
  * Interpolator function for handling transitions between animation states.

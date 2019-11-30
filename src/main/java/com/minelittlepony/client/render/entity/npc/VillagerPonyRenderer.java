@@ -2,18 +2,17 @@ package com.minelittlepony.client.render.entity.npc;
 
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.VillagerPonyModel;
-import com.minelittlepony.util.resources.ITextureSupplier;
 
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.passive.VillagerEntity;
 
-public class RenderPonyVillager extends AbstractVillagerRenderer<VillagerEntity, VillagerPonyModel<VillagerEntity>> {
+public class VillagerPonyRenderer extends AbstractNpcRenderer<VillagerEntity, VillagerPonyModel<VillagerEntity>> {
 
     private static final String TYPE = "villager";
-    private static final ITextureSupplier<String> FORMATTER = ITextureSupplier.formatted("minelittlepony", "textures/entity/villager/%s.png");
+    private static final TextureSupplier<String> FORMATTER = TextureSupplier.formatted("minelittlepony", "textures/entity/villager/%s.png");
 
-    public RenderPonyVillager(EntityRenderDispatcher manager) {
+    public VillagerPonyRenderer(EntityRenderDispatcher manager) {
         super(manager, ModelType.VILLAGER, TYPE, FORMATTER);
     }
 

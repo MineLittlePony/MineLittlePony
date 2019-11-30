@@ -3,7 +3,7 @@ package com.minelittlepony.pony.meta;
 import net.minecraft.client.texture.NativeImage;
 
 import com.minelittlepony.pony.ITriggerPixelMapped;
-import com.minelittlepony.util.math.Color;
+import com.minelittlepony.util.Color;
 
 /**
  * Individual trigger pixels for a pony skin.
