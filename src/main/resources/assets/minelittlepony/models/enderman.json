@@ -6,10 +6,9 @@
 		"arm_rotation_y": 14
 	},
 	"head": {
-		"offset": [ 0, -1, -2 ],
 		"center": [ 0, 0, -2 ],
 		"cubes": [
-			{ "from": [-4, -4, -4], "size": [ 8,  8,  8] },
+			{ "from": [-4, -6, -6], "size": [ 8,  8,  8] },
 			{ "from": [-4, -6, 1], "size": [2, 2, 2], "texture": {"u": 12, "v": 16} },
 			{ "from": [ 2, -6, 1], "size": [2, 2, 2], "texture": {"u": 12, "v": 16}, "mirror": true }
 		],
@@ -35,13 +34,12 @@
 			{
 				"name": "left_horn",
 				"texture": {"u": 0, "v": 52},
-				"rotate": [0.1, 0, -0.8],
-				"offset": [-6, -213, -172],
-				"cubes": [ {"size": [2, 6, 2]} ],
+				"rotate": [6, 0, -45],
+				"cubes": [ {"size": [0, -4, -1]} ],
 				"children": [
 					{
-						"rotate": [0, 0, 0.9],
-						"center": [-223, -343, 0.057],
+						"rotate": [0, 0, 51],
+						"center": [-3.9, -6, 0.001],
 						"cubes": [ {"size": [2, 6, 2]} ]
 					}
 				]
@@ -49,9 +47,8 @@
 			{
 				"name": "right_horn",
 				"texture": {"u": 8, "v": 52},
-				"rotate": [0.1, 0, 0.8],
-				"offset": [0, -147, -172],
-				"cubes": [ {"size": [2, 6, 2]} ],
+				"rotate": [6, 0, 45],
+				"cubes": [ {"size": [2, -4, -1]} ],
 				"children": [
 					{
 						"rotate": [0, 0, -51],
@@ -64,10 +61,9 @@
 	},
 	"helmet": {
 		"texture": { "u": 32, "v": 0 },
-		"offset": [0, -1, -2],
 		"center": [0, 0, -2],
 		"cubes": [
-			{ "from": [-4, -4, -4], "size": [ 8, 8, 8], "stretch": -0.5 }
+			{ "from": [-4, -6, -6], "size": [ 8, 8, 8], "stretch": -0.5 }
 		]
 	},
 	"right_arm": {

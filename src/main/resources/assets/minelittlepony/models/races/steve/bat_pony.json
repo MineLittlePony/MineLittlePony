@@ -1,10 +1,9 @@
 {
 	"parent": "minelittlepony:steve_pony",
 	"head": {
-		"offset": [ 0, -1, -2 ],
 		"center": [ 0, 0, -2 ],
 		"cubes": [
-			{ "from": [-4, -4, -4], "size": [ 8,  8,  8] }
+			{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
 		],
 		"children": [
 			{

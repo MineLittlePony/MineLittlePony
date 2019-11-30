@@ -1,12 +1,14 @@
 {
 	"texture": {"w": 16, "h": 8, "u": 64, "h": 128},
 	"witch_hat": {
+		"visible": false,
 		"texture": {"u": 0, "v": 64},
 		"cubes": [
 			{ "from": [-5, -6, -7], "size": [10, 2, 10] }
 		],
 		"children": [
 			{
+				"visible": false,
 				"center": [1.75, -4, 2],
 				"texture": {"u": 0, "v": 76},
 				"rotate": [3, 0, 1.5],
@@ -15,6 +17,7 @@
 				],
 				"children": [
 					{
+						"visible": false,
 						"center": [1.75, -4, 2],
 						"texture": {"u": 0, "v": 87},
 						"rotate": [6, 0, 3],
@@ -23,6 +26,7 @@
 						],
 						"children": [
 							{
+								"visible": false,
 								"center": [1.75, -2, 2],
 								"texture": {"u": 0, "v": 95},
 								"rotate": [12, 0, 6],

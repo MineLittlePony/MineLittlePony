@@ -2,7 +2,7 @@
 	"texture": {"w": 64, "h": 64},
 	"locals": {
 		"segment_index": 0,
-		"segment_y": [["#segment_index", "*", 4], "+", 0.063],
+		"segment_y": [["#segment_index", "*", 4], "+", 1.063],
 		"tex_x": [["#segment_index", "%", 2], "*", 4]
 	},
 	"segment": {

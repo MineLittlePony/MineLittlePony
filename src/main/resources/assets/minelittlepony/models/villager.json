@@ -1,10 +1,9 @@
 {
 	"parent": "minelittlepony:races/steve/alicorn",
 	"head": {
-		"offset": [ 0, -1, -2 ],
 		"center": [ 0, 0, -2 ],
 		"cubes": [
-			{ "from": [-4, -4, -4], "size": [ 8,  8,  8] }
+			{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
 		],
 		"children": [
 			{
@@ -36,13 +35,11 @@
 	"apron": {
 		"type": "mson:planar",
 		"texture": {"u": 56, "v": 16},
-		"offset": [0, 8, 6],
-		"south": [-4, -4, -9, 8, 10]
+		"south": [-4, 4, -3, 8, 10]
 	},
 	"trinket": {
 		"type": "mson:planar",
 		"texture": {"u": 0, "v": 3},
-		"offset": [0, 8, 6],
-		"south": [-2, -4, -9, 4, 5]
+		"south": [-2, 4, -3, 4, 5]
 	}
 }

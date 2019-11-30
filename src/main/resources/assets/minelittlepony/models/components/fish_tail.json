@@ -8,10 +8,9 @@
 		"texture": {"u": 0, "v": 38},
 		"center": [-2, 10, 8],
 		"rotate": ["#tail_rot_x", 0, 0],
-		"offset": [0, -4, -2],
 		"mirror": true,
 		"cubes": [
-			{"from": [0, 4, 2], "size": [4, 6, 4]}
+			{"from": [0, 0, 0], "size": [4, 6, 4]}
 		],
 		"children": [
 			{
@@ -25,19 +24,18 @@
 					{
 						"name": "fins",
 						"texture": {"u": 56, "v": 20},
-						"offset": [1, 0, 4],
 						"rotate": ["#tail_rot_x_neg", 0, 0],
 						"cubes": [
 							{
 								"type": "mson:plane",
 								"face": "up",
-								"position": [-8, 0, 0], "size": [8, 8]
+								"position": [-7, 0, 4], "size": [8, 8]
 							},
 							{
 								"type": "mson:plane",
 								"face": "up",
 								"mirror": [true, false, false],
-								"position": [0, 0, 0], "size": [8, 8]
+								"position": [1, 0, 4], "size": [8, 8]
 							}
 						]
 					}
