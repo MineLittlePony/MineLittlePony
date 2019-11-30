@@ -1,8 +1,8 @@
 package com.minelittlepony.client.pony;
 
 import com.google.common.base.MoreObjects;
-import com.minelittlepony.client.PonyRenderManager;
 import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.PonyRenderDispatcher;
 import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.IPonyData;
@@ -158,7 +158,7 @@ public class Pony implements IPony {
     @Override
     public boolean isRidingInteractive(LivingEntity entity) {
         if (entity.hasVehicle() && entity.getVehicle() instanceof LivingEntity) {
-            return PonyRenderManager.getInstance().getPonyRenderer((LivingEntity) entity.getVehicle()) != null;
+            return PonyRenderDispatcher.getInstance().getPonyRenderer((LivingEntity) entity.getVehicle()) != null;
         }
         return false;
     }
@@ -168,7 +168,7 @@ public class Pony implements IPony {
         if (entity.hasVehicle() && entity.getVehicle() instanceof LivingEntity) {
             LivingEntity mount = (LivingEntity) entity.getVehicle();
 
-            IPonyRenderContext<LivingEntity, ?> render = PonyRenderManager.getInstance().getPonyRenderer(mount);
+            IPonyRenderContext<LivingEntity, ?> render = PonyRenderDispatcher.getInstance().getPonyRenderer(mount);
 
             return render == null ? null : render.getEntityPony(mount);
         }

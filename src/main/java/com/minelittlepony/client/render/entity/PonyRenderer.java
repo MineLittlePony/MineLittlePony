@@ -1,0 +1,161 @@
+package com.minelittlepony.client.render.entity;
+
+import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.client.model.ClientPonyModel;
+import com.minelittlepony.client.model.IPonyModel;
+import com.minelittlepony.client.model.ModelWrapper;
+import com.minelittlepony.client.render.DebugBoundingBoxRenderer;
+import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.EquineRenderManager;
+import com.minelittlepony.client.render.entity.feature.GearFeature;
+import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
+import com.minelittlepony.client.render.entity.feature.GlowingItemFeature;
+import com.minelittlepony.client.render.entity.feature.ArmourFeature;
+import com.minelittlepony.client.render.entity.feature.SkullFeature;
+import com.minelittlepony.client.render.entity.feature.ElytraFeature;
+import com.minelittlepony.model.IUnicorn;
+import com.minelittlepony.mson.api.ModelKey;
+import com.minelittlepony.pony.IPony;
+
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.Frustum;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.MobEntityRenderer;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.util.Identifier;
+
+import java.util.List;
+import javax.annotation.Nonnull;
+
+public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T> & IPonyModel<T>> extends MobEntityRenderer<T, M> implements IPonyRenderContext<T, M> {
+
+    protected EquineRenderManager<T, M> manager = new EquineRenderManager<>(this);
+
+    public PonyRenderer(EntityRenderDispatcher dispatcher, ModelKey<? super M> key) {
+        super(dispatcher, null, 0.5F);
+
+        this.model = manager.setModel(key).getBody();
+
+        addLayers();
+    }
+
+    protected void addLayers() {
+        addFeature(new ArmourFeature<>(this));
+        addFeature(createItemHoldingLayer());
+        //addFeature(new StuckArrowsFeatureRenderer<>(this));
+        addFeature(new SkullFeature<>(this));
+        addFeature(new ElytraFeature<>(this));
+        addFeature(new GearFeature<>(this));
+    }
+
+    protected abstract HeldItemFeature<T, M> createItemHoldingLayer();
+
+    @Override
+    public void render(T entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
+        if (entity.isInSneakingPose()) {
+            stack.translate(0, 0.125D, 0);
+        }
+
+        super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
+
+        DebugBoundingBoxRenderer.render(manager.getPony(entity), entity, stack, renderContext);
+    }
+
+    @Override
+    protected void setupTransforms(T entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
+        rotationYaw = manager.getRenderYaw(entity, rotationYaw, partialTicks);
+        super.setupTransforms(entity, stack, ageInTicks, rotationYaw, partialTicks);
+
+        manager.applyPostureTransform(entity, stack, rotationYaw, partialTicks);
+    }
+
+    @Override
+    public boolean isVisible(T entity, Frustum visibleRegion, double camX, double camY, double camZ) {
+        return super.isVisible(entity, manager.getFrustrum(entity, visibleRegion), camX, camY, camZ);
+    }
+
+    @Override
+    public void scale(T entity, MatrixStack stack, float ticks) {
+        manager.preRenderCallback(entity, stack, ticks);
+        if (this.getModel() instanceof PlayerEntityModel) {
+            ((PlayerEntityModel<?>)getModel()).setVisible(true);
+        }
+
+        // shadowRadius
+        field_4673 = manager.getShadowScale();
+
+        if (entity.isBaby()) {
+            field_4673 *= 3; // undo vanilla shadow scaling
+        }
+
+        if (!entity.hasVehicle()) {
+            stack.translate(0, 0, -entity.getWidth() / 2); // move us to the center of the shadow
+        } else {
+            stack.translate(0, entity.getHeightOffset(), 0);
+        }
+    }
+
+    @Override
+    public ModelWrapper<T, M> getModelWrapper() {
+        return manager.playerModel;
+    }
+
+    @Override
+    protected void renderLabelIfPresent(T entity, String name, MatrixStack stack, VertexConsumerProvider renderContext, int maxDistance) {
+        stack.translate(0, manager.getNamePlateYOffset(entity), 0);
+        super.renderLabelIfPresent(entity, name, stack, renderContext, maxDistance);
+    }
+
+    @Deprecated
+    @Override
+    @Nonnull
+    public final Identifier getTexture(T entity) {
+        return findTexture(entity);
+    }
+
+    @Override
+    public EquineRenderManager<T, M> getInternalRenderer() {
+        return manager;
+    }
+
+    @Override
+    public IPony getEntityPony(T entity) {
+        return MineLittlePony.getInstance().getManager().getPony(findTexture(entity));
+    }
+
+    public abstract static class Caster<T extends MobEntity, M extends ClientPonyModel<T> & IUnicorn<ModelPart>> extends PonyRenderer<T, M> {
+
+        public Caster(EntityRenderDispatcher manager, ModelKey<? super M> key) {
+            super(manager, key);
+        }
+
+        @Override
+        protected HeldItemFeature<T, M> createItemHoldingLayer() {
+            return new GlowingItemFeature<>(this);
+        }
+    }
+
+    public abstract static class Proxy<T extends MobEntity, M extends EntityModel<T> & IPonyModel<T>> extends PonyRenderer<T, M> {
+
+        @SuppressWarnings({"rawtypes", "unchecked"})
+        public Proxy(List exportedLayers, EntityRenderDispatcher manager, ModelKey<M> key) {
+            super(manager, key);
+
+            exportedLayers.addAll(features);
+        }
+
+        @Override
+        protected void addLayers() {
+            features.clear();
+            super.addLayers();
+        }
+
+        public final Identifier getTextureFor(T entity) {
+            return super.getTexture(entity);
+        }
+    }
+}

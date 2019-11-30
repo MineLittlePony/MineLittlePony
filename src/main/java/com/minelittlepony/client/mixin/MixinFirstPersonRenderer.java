@@ -4,7 +4,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import com.minelittlepony.client.PonyRenderManager;
+import com.minelittlepony.client.render.PonyRenderDispatcher;
 
 import javax.annotation.Nullable;
 
@@ -43,6 +43,6 @@ abstract class MixinFirstPersonRenderer {
             VertexConsumerProvider renderContext,
             @Nullable World world,
             int lightUv, int overlayUv) {
-        PonyRenderManager.getInstance().getMagicRenderer().renderItemInFirstPerson(target, (AbstractClientPlayerEntity)entity, item, transform, left, stack, renderContext, world, lightUv);
+        PonyRenderDispatcher.getInstance().getMagicRenderer().renderItemInFirstPerson(target, (AbstractClientPlayerEntity)entity, item, transform, left, stack, renderContext, world, lightUv);
     }
 }

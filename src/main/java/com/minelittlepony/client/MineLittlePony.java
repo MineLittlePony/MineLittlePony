@@ -3,6 +3,7 @@ package com.minelittlepony.client;
 import com.minelittlepony.client.hdskins.IndirectHDSkins;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.pony.PonyManager;
+import com.minelittlepony.client.render.PonyRenderDispatcher;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
 import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.common.client.gui.VisibilityMode;
@@ -41,7 +42,7 @@ public class MineLittlePony implements ClientModInitializer {
 
     public static final Logger logger = LogManager.getLogger("MineLittlePony");
 
-    private final PonyRenderManager renderManager = PonyRenderManager.getInstance();
+    private final PonyRenderDispatcher renderManager = PonyRenderDispatcher.getInstance();
 
     private ClientPonyConfig config;
     private PonyManager ponyManager;
@@ -95,7 +96,7 @@ public class MineLittlePony implements ClientModInitializer {
     }
 
     private void onClientReady(MinecraftClient client) {
-        renderManager.initialiseRenderers(client.getEntityRenderManager());
+        renderManager.initialise(client.getEntityRenderManager());
     }
 
     private void onTick(MinecraftClient client) {

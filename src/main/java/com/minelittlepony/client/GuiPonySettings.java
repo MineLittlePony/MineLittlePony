@@ -4,7 +4,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.LiteralText;
 
-import com.minelittlepony.client.render.entity.MobRenderers;
+import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.common.client.gui.GameGui;
 import com.minelittlepony.common.client.gui.ScrollContainer;
@@ -117,10 +117,10 @@ class GuiPonySettings extends GameGui {
         }
 
         content.addButton(new Label(RIGHT, row)).getStyle().setText(MOB_PREFIX + "title");
-        for (MobRenderers i : MobRenderers.registry) {
+        for (MobRenderers i : MobRenderers.REGISTRY.values()) {
             content.addButton(new Toggle(RIGHT, row += 20, i.get()))
                 .onChange(i::set)
-                .getStyle().setText(MOB_PREFIX + i.name().toLowerCase());
+                .getStyle().setText(MOB_PREFIX + i.name);
         }
     }
 

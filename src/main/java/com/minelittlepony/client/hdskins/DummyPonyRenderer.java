@@ -6,10 +6,10 @@ import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.client.render.EquineRenderManager;
-import com.minelittlepony.client.render.entity.feature.LayerGear;
-import com.minelittlepony.client.render.entity.feature.LayerHeldPonyItemMagical;
-import com.minelittlepony.client.render.entity.feature.LayerPonyArmor;
-import com.minelittlepony.client.render.entity.feature.LayerPonyElytra;
+import com.minelittlepony.client.render.entity.feature.GearFeature;
+import com.minelittlepony.client.render.entity.feature.GlowingItemFeature;
+import com.minelittlepony.client.render.entity.feature.ArmourFeature;
+import com.minelittlepony.client.render.entity.feature.ElytraFeature;
 import com.minelittlepony.hdskins.dummy.DummyPlayerRenderer;
 import com.minelittlepony.hdskins.profile.SkinType;
 import com.minelittlepony.mson.api.ModelKey;
@@ -30,7 +30,7 @@ class DummyPonyRenderer extends DummyPlayerRenderer<DummyPony, ClientPonyModel<D
 
     public DummyPonyRenderer(EntityRenderDispatcher dispatcher) {
         super(dispatcher, null);
-        addFeature(new LayerGear<>(this));
+        addFeature(new GearFeature<>(this));
 
         manager.setModel(ModelType.EARTH_PONY.getKey(false));
         manager.setSkipBlend();
@@ -86,17 +86,17 @@ class DummyPonyRenderer extends DummyPlayerRenderer<DummyPony, ClientPonyModel<D
 
     @Override
     protected FeatureRenderer<DummyPony, ClientPonyModel<DummyPony>> getArmourLayer() {
-        return new LayerPonyArmor<>(this);
+        return new ArmourFeature<>(this);
     }
 
     @Override
     protected FeatureRenderer<DummyPony, ClientPonyModel<DummyPony>> getHeldItemLayer() {
-        return new LayerHeldPonyItemMagical<>(this);
+        return new GlowingItemFeature<>(this);
     }
 
     @Override
     protected FeatureRenderer<DummyPony, ClientPonyModel<DummyPony>> getElytraLayer() {
-        return new LayerPonyElytra<DummyPony, ClientPonyModel<DummyPony>>(this) {
+        return new ElytraFeature<DummyPony, ClientPonyModel<DummyPony>>(this) {
             @Override
             protected Identifier getElytraTexture(DummyPony entity) {
                 return entity.getTextures().get(SkinType.ELYTRA).getId();

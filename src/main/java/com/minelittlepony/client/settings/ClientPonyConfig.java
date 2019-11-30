@@ -3,7 +3,7 @@ package com.minelittlepony.client.settings;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 
-import com.minelittlepony.client.render.entity.MobRenderers;
+import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.common.client.gui.VisibilityMode;
 import com.minelittlepony.common.util.settings.Setting;
 import com.minelittlepony.settings.PonyConfig;
@@ -19,7 +19,7 @@ public class ClientPonyConfig extends PonyConfig {
 
     public ClientPonyConfig(Path path) {
         super(path);
-        MobRenderers.registry.forEach(r -> value(r.name().toLowerCase(), true));
+        MobRenderers.REGISTRY.values().forEach(r -> value(r.name, true));
     }
 
     @Override

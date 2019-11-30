@@ -27,8 +27,8 @@ import com.minelittlepony.client.model.gear.Muffin;
 import com.minelittlepony.client.model.gear.SaddleBags;
 import com.minelittlepony.client.model.gear.Stetson;
 import com.minelittlepony.client.model.gear.WitchHat;
-import com.minelittlepony.client.render.entity.RenderPonyPlayer;
-import com.minelittlepony.client.render.entity.RenderSeaponyPlayer;
+import com.minelittlepony.client.render.entity.PlayerPonyRenderer;
+import com.minelittlepony.client.render.entity.PlayerSeaponyRenderer;
 import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.mson.api.Mson;
@@ -79,14 +79,14 @@ public final class ModelType {
     public static final PlayerModelKey<?, ModelPegasus<?>> GRYPHON = registerPlayer("gryphon", Race.GRYPHON, ModelPegasus::new);
     public static final PlayerModelKey<?, ModelPegasus<?>> HIPPOGRIFF = registerPlayer("hippogriff", Race.HIPPOGRIFF, ModelPegasus::new);
     public static final PlayerModelKey<?, ModelEarthPony<?>> EARTH_PONY = registerPlayer("earth_pony", Race.EARTH, ModelEarthPony::new);
-    public static final PlayerModelKey<?, ModelEarthPony<?>> SEA_PONY = registerPlayer("sea_pony", Race.SEAPONY, ModelEarthPony::new, RenderSeaponyPlayer::new);
+    public static final PlayerModelKey<?, ModelEarthPony<?>> SEA_PONY = registerPlayer("sea_pony", Race.SEAPONY, ModelEarthPony::new, PlayerSeaponyRenderer::new);
     public static final PlayerModelKey<?, ModelPegasus<?>> BAT_PONY = registerPlayer("bat_pony", Race.BATPONY, ModelPegasus::new);
     public static final PlayerModelKey<?, ModelChangeling<?>> CHANGELING = registerPlayer("changeling", Race.CHANGELING, ModelChangeling::new);
     public static final PlayerModelKey<?, ModelChangeling<?>> CHANGEDLING = registerPlayer("reformed_changeling", Race.CHANGEDLING, ModelChangeling::new);
     public static final PlayerModelKey<?, ModelZebra<?>> ZEBRA = registerPlayer("zebra", Race.ZEBRA, ModelZebra::new);
 
     static <E extends LivingEntity, T extends Model & MsonModel> PlayerModelKey<E, T> registerPlayer(String name, Race race, Function<Boolean, T> constructor) {
-        return registerPlayer(name, race, constructor, RenderPonyPlayer::new);
+        return registerPlayer(name, race, constructor, PlayerPonyRenderer::new);
     }
 
     @SuppressWarnings("unchecked")

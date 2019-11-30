@@ -1,7 +1,6 @@
 package com.minelittlepony.client.render;
 
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.client.PonyRenderManager;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.transform.PonyPosture;
@@ -85,7 +84,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         if (entity.hasVehicle() && entity.getVehicle() instanceof LivingEntity) {
 
             LivingEntity ridingEntity = (LivingEntity) entity.getVehicle();
-            IPonyRenderContext<LivingEntity, ?> renderer = PonyRenderManager.getInstance().getPonyRenderer(ridingEntity);
+            IPonyRenderContext<LivingEntity, ?> renderer = PonyRenderDispatcher.getInstance().getPonyRenderer(ridingEntity);
 
             if (renderer != null) {
                 // negate vanilla translations so the rider begins at the ridees feet.

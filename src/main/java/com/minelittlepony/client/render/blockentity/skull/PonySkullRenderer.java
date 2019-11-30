@@ -3,9 +3,9 @@ package com.minelittlepony.client.render.blockentity.skull;
 import com.google.common.collect.Maps;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.LevitatingItemRenderer;
-import com.minelittlepony.client.render.entity.MobRenderers;
-import com.minelittlepony.client.render.entity.RenderPonySkeleton;
-import com.minelittlepony.client.render.entity.RenderPonyZombie;
+import com.minelittlepony.client.render.MobRenderers;
+import com.minelittlepony.client.render.entity.SkeleponyRenderer;
+import com.minelittlepony.client.render.entity.ZomponyRenderer;
 import com.minelittlepony.mson.api.Mson;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.settings.PonyConfig;
@@ -40,9 +40,9 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
     }
 
     private final Map<SkullBlock.SkullType, ISkull> skullMap = Util.create(Maps.newHashMap(), (skullMap) -> {
-        skullMap.put(SkullBlock.Type.SKELETON, new MobSkull(RenderPonySkeleton.SKELETON, MobRenderers.SKELETONS));
-        skullMap.put(SkullBlock.Type.WITHER_SKELETON, new MobSkull(RenderPonySkeleton.WITHER, MobRenderers.SKELETONS));
-        skullMap.put(SkullBlock.Type.ZOMBIE, new MobSkull(RenderPonyZombie.ZOMBIE, MobRenderers.ZOMBIES));
+        skullMap.put(SkullBlock.Type.SKELETON, new MobSkull(SkeleponyRenderer.SKELETON, MobRenderers.SKELETON));
+        skullMap.put(SkullBlock.Type.WITHER_SKELETON, new MobSkull(SkeleponyRenderer.WITHER, MobRenderers.SKELETON));
+        skullMap.put(SkullBlock.Type.ZOMBIE, new MobSkull(ZomponyRenderer.ZOMBIE, MobRenderers.ZOMBIE));
         skullMap.put(SkullBlock.Type.PLAYER, new PonySkull());
     });
 
