@@ -40,6 +40,11 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
     }
 
     @Override
+    public void copyAttributes(BipedEntityModel<T> other) {
+        setAttributes(other);
+    }
+
+    @Override
     public ModelAttributes<?> getAttributes() {
         return attributes;
     }

@@ -58,7 +58,7 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
             V armour = ArmourFeature.getArmorModel(entity, itemstack, armorSlot, layer, pony.<V>getArmor().getArmorForLayer(layer));
 
             if (armour.prepareToRender(armorSlot, layer)) {
-                ((BipedEntityModel<T>)pony.getBody()).setAttributes(armour);
+                pony.getBody().copyAttributes(armour);
                 armour.setAngles(entity, limbAngle, limbDistance, age, headYaw, headPitch);
                 armour.synchroniseLegs(pony.getBody());
 

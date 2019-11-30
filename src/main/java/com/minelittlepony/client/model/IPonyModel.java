@@ -1,6 +1,7 @@
 package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.LivingEntity;
 
 import com.minelittlepony.client.render.EquineRenderManager;
@@ -12,6 +13,8 @@ import com.minelittlepony.mson.api.MsonModel;
 import com.minelittlepony.pony.IPony;
 
 public interface IPonyModel<T extends LivingEntity> extends PonyModelConstants, IModel, ICapitated<ModelPart>, ICompartmented<ModelPart>, MsonModel {
+
+    void copyAttributes(BipedEntityModel<T> other);
 
     void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode);
 

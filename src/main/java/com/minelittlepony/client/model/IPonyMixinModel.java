@@ -1,6 +1,7 @@
 package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
@@ -31,6 +32,11 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     @Override
     default void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
         mixin().updateLivingState(entity, pony, mode);
+    }
+
+    @Override
+    default void copyAttributes(BipedEntityModel<T> other) {
+        mixin().copyAttributes(other);
     }
 
     @Override
