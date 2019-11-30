@@ -3,7 +3,7 @@ package com.minelittlepony.client.render;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderPhase;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.util.Identifier;
 
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
@@ -36,9 +36,9 @@ public class MagicGlow extends RenderPhase {
         return MAGIC;
     }
 
-    public static RenderLayer getTintedLayer(float red, float green, float blue, float alpha) {
+    public static RenderLayer getTintedTexturedLayer(Identifier texture, float red, float green, float blue, float alpha) {
         return RenderLayer.method_24049("mlp_tint_layer", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, 7, 256, true, true, RenderLayer.MultiPhaseData.builder()
-                .texture(new Color(red, green, blue, alpha))
+                .texture(new Color(texture, red, green, blue, alpha))
                 .writeMaskState(COLOR_MASK)
                 .alpha(ONE_TENTH_ALPHA)
                 .transparency(GLOWING_TRANSPARENCY)
@@ -55,8 +55,8 @@ public class MagicGlow extends RenderPhase {
         private final float blue;
         private final float alpha;
 
-        public Color(float red, float green, float blue, float alpha) {
-            super(SpriteAtlasTexture.BLOCK_ATLAS_TEX, false, false);
+        public Color(Identifier texture, float red, float green, float blue, float alpha) {
+            super(texture, false, false);
             this.red = red;
             this.green = green;
             this.blue = blue;

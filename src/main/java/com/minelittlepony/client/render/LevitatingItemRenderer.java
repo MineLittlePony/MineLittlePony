@@ -8,17 +8,18 @@ import javax.annotation.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.FirstPersonRenderer;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
 
@@ -31,8 +32,15 @@ public class LevitatingItemRenderer {
         return usingTransparency;
     }
 
+    public static RenderLayer getRenderLayer(Identifier texture) {
+        if (!usesTransparency()) {
+            return RenderLayer.getEntityTranslucent(texture);
+        }
+        return MagicGlow.getTintedTexturedLayer(texture, Color.r(tint), Color.g(tint), Color.b(tint), 0.8F);
+    }
+
     public static RenderLayer getRenderLayer() {
-        return MagicGlow.getTintedLayer(Color.r(tint), Color.g(tint), Color.b(tint), 0.8F);
+        return getRenderLayer(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
     }
 
     /**
@@ -68,14 +76,12 @@ public class LevitatingItemRenderer {
     /**
      * Renders an item in first person optionally with a magical overlay.
      */
-    public void renderItemInFirstPerson(FirstPersonRenderer renderer, @Nullable AbstractClientPlayerEntity entity, ItemStack stack, ModelTransformation.Type transform, boolean left, MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world, int lightUv) {
+    public void renderItemInFirstPerson(ItemRenderer itemRenderer, @Nullable AbstractClientPlayerEntity entity, ItemStack stack, ModelTransformation.Type transform, boolean left, MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world, int lightUv) {
         IPony pony = MineLittlePony.getInstance().getManager().getPony(entity);
 
         matrix.push();
 
         boolean doMagic = MineLittlePony.getInstance().getConfig().fpsmagic.get() && pony.getMetadata().hasMagic();
-
-        ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 
         if (doMagic) {
             setupPerspective(itemRenderer, entity, stack, left, matrix);

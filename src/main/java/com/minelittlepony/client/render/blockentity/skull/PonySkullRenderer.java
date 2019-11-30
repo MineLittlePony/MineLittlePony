@@ -2,6 +2,7 @@ package com.minelittlepony.client.render.blockentity.skull;
 
 import com.google.common.collect.Maps;
 import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.client.render.LevitatingItemRenderer;
 import com.minelittlepony.client.render.entity.MobRenderers;
 import com.minelittlepony.client.render.entity.RenderPonySkeleton;
 import com.minelittlepony.client.render.entity.RenderPonyZombie;
@@ -13,7 +14,6 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.block.SkullBlock;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
@@ -81,7 +81,7 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
 
         stack.scale(-1, -1, 1);
 
-        VertexConsumer vertices = renderContext.getBuffer(RenderLayer.getEntityTranslucent(skin));
+        VertexConsumer vertices = renderContext.getBuffer(LevitatingItemRenderer.getRenderLayer(skin));
 
         skull.setAngles(angle, poweredTicks);
         skull.render(stack, vertices, lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);

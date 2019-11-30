@@ -11,32 +11,38 @@ import javax.annotation.Nullable;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.FirstPersonRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.json.ModelTransformation.Type;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraft.client.render.item.ItemRenderer;
 
 @Mixin(FirstPersonRenderer.class)
 abstract class MixinFirstPersonRenderer {
-    @Redirect(method = "renderFirstPersonItem("
-                + "Lnet/minecraft/client/network/AbstractClientPlayerEntity;FF"
-                + "Lnet/minecraft/util/Hand;F"
-                + "Lnet/minecraft/item/ItemStack;F)V",
+    private static final String LivingEntity = "Lnet/minecraft/entity/LivingEntity;";
+    private static final String MatrixStack = "Lnet/minecraft/client/util/math/MatrixStack;";
+    private static final String ItemStack = "Lnet/minecraft/item/ItemStack;";
+    private static final String Type = "Lnet/minecraft/client/render/model/json/ModelTransformation$Type;";
+    private static final String VertexConsumerProvider = "Lnet/minecraft/client/render/VertexConsumerProvider;";
+    private static final String World = "Lnet/minecraft/world/World;";
+    private static final String ItemRenderer = "Lnet/minecraft/client/render/item/ItemRenderer;";
+
+    private static final String Boolean = "Z";
+    private static final String Int = "I";
+
+    @Redirect(method = "renderItem(" + LivingEntity + ItemStack + Type + Boolean + MatrixStack + VertexConsumerProvider + Int + ")V",
              at = @At(value = "INVOKE",
-                      target = "Lnet/minecraft/client/render/item/ItemRenderer;method_23177("
-                                  + "Lnet/minecraft/entity/LivingEntity;"
-                                  + "Lnet/minecraft/item/ItemStack;"
-                                  + "Lnet/minecraft/client/render/model/json/ModelTransformation$Type;"
-                                  + "Z"
-                                  + "Lnet/minecraft/client/util/math/MatrixStack;"
-                                  + "Lnet/minecraft/client/render/VertexConsumerProvider;"
-                                  + "Lnet/minecraft/world/World;"
-                                  + "I"
-                                  + "I)V"))
-    private void redirectRenderItemSide(FirstPersonRenderer self,
-            @Nullable LivingEntity entity, ItemStack item, ModelTransformation.Type transform, boolean left,
-            MatrixStack stack, VertexConsumerProvider renderContext, @Nullable World world, int lightUv, int overlayUv) {
-        PonyRenderManager.getInstance().getMagicRenderer().renderItemInFirstPerson(self, (AbstractClientPlayerEntity)entity, item, transform, left, stack, renderContext, world, lightUv);
+                      target = ItemRenderer + "method_23177(" + LivingEntity + ItemStack + Type + Boolean + MatrixStack + VertexConsumerProvider + World + Int + Int + ")V"))
+    private void redirectRenderItem(ItemRenderer target,
+            @Nullable LivingEntity entity,
+            ItemStack item,
+            Type transform,
+            boolean left,
+            MatrixStack stack,
+            VertexConsumerProvider renderContext,
+            @Nullable World world,
+            int lightUv, int overlayUv) {
+        PonyRenderManager.getInstance().getMagicRenderer().renderItemInFirstPerson(target, (AbstractClientPlayerEntity)entity, item, transform, left, stack, renderContext, world, lightUv);
     }
 }

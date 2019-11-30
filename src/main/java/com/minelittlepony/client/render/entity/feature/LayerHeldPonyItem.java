@@ -5,6 +5,7 @@ import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.model.BodyPart;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
@@ -72,7 +73,7 @@ public class LayerHeldPonyItem<T extends LivingEntity, M extends EntityModel<T> 
             stack.translate(left * -0.2F, 0, 0);
 
             preItemRender(entity, drop, transform, arm, stack);
-            MinecraftClient.getInstance().getFirstPersonRenderer().renderItem(entity, drop, transform, arm == Arm.LEFT, stack, renderContext, lightUv);
+            MinecraftClient.getInstance().getItemRenderer().method_23177(entity, drop, transform, arm == Arm.LEFT, stack, renderContext, entity.world, lightUv, OverlayTexture.DEFAULT_UV);
             postItemRender(entity, drop, transform, arm, stack, renderContext);
 
             stack.pop();

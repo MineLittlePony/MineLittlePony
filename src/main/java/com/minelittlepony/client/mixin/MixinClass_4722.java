@@ -12,8 +12,16 @@ import com.minelittlepony.client.render.LevitatingItemRenderer;
 
 @Mixin(class_4722.class)
 abstract class MixinClass_4722 {
+
+    @Inject(method = "method_24074()Lnet/minecraft/client/render/RenderLayer;", at = @At("HEAD"), cancellable = true)
+    private static void onGetItemOpaque(CallbackInfoReturnable<RenderLayer> info) {
+        if (LevitatingItemRenderer.usesTransparency()) {
+            info.setReturnValue(LevitatingItemRenderer.getRenderLayer());
+        }
+    }
+
     @Inject(method = "method_24075()Lnet/minecraft/client/render/RenderLayer;", at = @At("HEAD"), cancellable = true)
-    private static void onGetEntityTranslucent(CallbackInfoReturnable<RenderLayer> info) {
+    private static void onGetItemTranslucent(CallbackInfoReturnable<RenderLayer> info) {
         if (LevitatingItemRenderer.usesTransparency()) {
             info.setReturnValue(LevitatingItemRenderer.getRenderLayer());
         }
