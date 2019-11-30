@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.entity.ModelEnderStallion;
+import com.minelittlepony.client.model.entity.EnderStallionModel;
 import com.minelittlepony.client.render.entity.feature.GlowingEyesFeature;
 import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
 import com.minelittlepony.client.render.entity.feature.GlowingItemFeature;
@@ -18,7 +18,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.Random;
 
-public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, ModelEnderStallion> implements IGlowingRenderer {
+public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderStallionModel> implements IGlowingRenderer {
 
     public static final Identifier ENDERMAN = new Identifier("minelittlepony", "textures/entity/enderman/enderman_pony.png");
     private static final Identifier EYES = new Identifier("minelittlepony", "textures/entity/enderman/enderman_pony_eyes.png");
@@ -37,8 +37,8 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, ModelEnd
     }
 
     @Override
-    protected HeldItemFeature<EndermanEntity, ModelEnderStallion> createItemHoldingLayer() {
-        return new GlowingItemFeature<EndermanEntity, ModelEnderStallion>(this) {
+    protected HeldItemFeature<EndermanEntity, EnderStallionModel> createItemHoldingLayer() {
+        return new GlowingItemFeature<EndermanEntity, EnderStallionModel>(this) {
             @Override
             protected ItemStack getRightItem(EndermanEntity entity) {
                 BlockState state = entity.getCarriedBlock();
@@ -58,7 +58,7 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, ModelEnd
 
     @Override
     public void render(EndermanEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
-        ModelEnderStallion modelenderman = getModel();
+        EnderStallionModel modelenderman = getModel();
 
         modelenderman.isCarrying = entity.getCarriedBlock() != null;
         modelenderman.isAttacking = entity.isAngry();

@@ -1,7 +1,6 @@
-package com.minelittlepony.client.model.entity;
+package com.minelittlepony.client.model.entity.race;
 
-import com.minelittlepony.client.model.armour.ModelPonyArmour;
-import com.minelittlepony.client.model.entity.race.ModelUnicorn;
+import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.model.BodyPart;
@@ -15,7 +14,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
 
-public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
+public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
 
     private ModelPart bodyCenter;
 
@@ -23,12 +22,12 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
     private ModelPart centerFin;
     private ModelPart rightFin;
 
-    public ModelSeapony(boolean smallArms) {
+    public SeaponyModel(boolean smallArms) {
         super(smallArms);
         textureHeight = 64;
     }
 
-    public ModelSeapony() {
+    public SeaponyModel() {
         this(false);
     }
 
@@ -154,7 +153,7 @@ public class ModelSeapony<T extends LivingEntity> extends ModelUnicorn<T> {
         rightFin.visible = visible;
     }
 
-    class Armour extends ModelPonyArmour<T> {
+    class Armour extends PonyArmourModel<T> {
 
         @Override
         public void showBoots() {

@@ -10,9 +10,9 @@ import net.minecraft.entity.mob.ZombiePigmanEntity;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.entity.ModelZombiePony;
+import com.minelittlepony.client.model.entity.ZomponyModel;
 
-public class ZomponyRenderer<Zombie extends ZombieEntity> extends PonyRenderer.Caster<Zombie, ModelZombiePony<Zombie>> {
+public class ZomponyRenderer<Zombie extends ZombieEntity> extends PonyRenderer.Caster<Zombie, ZomponyModel<Zombie>> {
 
     public static final Identifier ZOMBIE = new Identifier("minelittlepony", "textures/entity/zombie/zombie_pony.png");
     public static final Identifier HUSK = new Identifier("minelittlepony", "textures/entity/zombie/husk_pony.png");
@@ -71,7 +71,7 @@ public class ZomponyRenderer<Zombie extends ZombieEntity> extends PonyRenderer.C
 
     }
 
-    public static class Giant extends PonyRenderer.Caster<GiantEntity, ModelZombiePony<GiantEntity>> {
+    public static class Giant extends PonyRenderer.Caster<GiantEntity, ZomponyModel<GiantEntity>> {
 
 		public Giant(EntityRenderDispatcher manager) {
 			super(manager, ModelType.ZOMBIE);

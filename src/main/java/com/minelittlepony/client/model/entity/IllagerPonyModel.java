@@ -5,11 +5,11 @@ import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.client.model.entity.race.ModelAlicorn;
+import com.minelittlepony.client.model.entity.race.AlicornModel;
 
-public class ModelIllagerPony<T extends IllagerEntity> extends ModelAlicorn<T> {
+public class IllagerPonyModel<T extends IllagerEntity> extends AlicornModel<T> {
 
-    public ModelIllagerPony() {
+    public IllagerPonyModel() {
         super(false);
     }
 

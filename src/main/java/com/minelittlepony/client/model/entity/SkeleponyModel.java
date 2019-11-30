@@ -10,15 +10,15 @@ import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
 
 import com.minelittlepony.client.model.IMobModel;
-import com.minelittlepony.client.model.entity.race.ModelAlicorn;
+import com.minelittlepony.client.model.entity.race.AlicornModel;
 
-public class ModelSkeletonPony<T extends HostileEntity> extends ModelAlicorn<T> implements IMobModel {
+public class SkeleponyModel<T extends HostileEntity> extends AlicornModel<T> implements IMobModel {
 
     public boolean isUnicorn;
 
     public boolean isWithered;
 
-    public ModelSkeletonPony() {
+    public SkeleponyModel() {
         super(false);
     }
 

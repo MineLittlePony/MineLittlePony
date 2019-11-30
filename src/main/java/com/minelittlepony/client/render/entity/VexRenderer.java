@@ -7,12 +7,12 @@ import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.entity.ModelBreezie;
+import com.minelittlepony.client.model.entity.BreezieModel;
 
 /**
  * AKA a breezie :D
  */
-public class VexRenderer extends BipedEntityRenderer<VexEntity, ModelBreezie<VexEntity>> {
+public class VexRenderer extends BipedEntityRenderer<VexEntity, BreezieModel<VexEntity>> {
 
     private static final Identifier VEX = new Identifier("minelittlepony", "textures/entity/illager/vex_pony.png");
     private static final Identifier VEX_CHARGING = new Identifier("minelittlepony", "textures/entity/illager/vex_charging_pony.png");

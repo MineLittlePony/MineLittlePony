@@ -13,7 +13,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.SkullOverlayEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 
-public class ModelPonyHead extends SkullOverlayEntityModel implements MsonModel, ICapitated<ModelPart> {
+public class PonySkullModel extends SkullOverlayEntityModel implements MsonModel, ICapitated<ModelPart> {
 
     private PonySnout snout;
 

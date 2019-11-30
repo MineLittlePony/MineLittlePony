@@ -3,9 +3,9 @@ package com.minelittlepony.client.model.entity.race;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
 
-public class ModelChangeling<T extends LivingEntity> extends ModelAlicorn<T> {
+public class ChangelingModel<T extends LivingEntity> extends AlicornModel<T> {
 
-    public ModelChangeling(boolean smallArms) {
+    public ChangelingModel(boolean smallArms) {
         super(smallArms);
     }
 

@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.entity.npc;
 
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.entity.ModelIllagerPony;
+import com.minelittlepony.client.model.entity.IllagerPonyModel;
 import com.minelittlepony.client.render.entity.feature.IllagerHeldItemFeature;
 import com.minelittlepony.client.render.entity.PonyRenderer;
 import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
@@ -17,7 +17,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-public abstract class IllagerPonyRenderer<T extends IllagerEntity> extends PonyRenderer<T, ModelIllagerPony<T>> {
+public abstract class IllagerPonyRenderer<T extends IllagerEntity> extends PonyRenderer<T, IllagerPonyModel<T>> {
 
     public static final Identifier ILLUSIONIST = new Identifier("minelittlepony", "textures/entity/illager/illusionist_pony.png");
     public static final Identifier EVOKER = new Identifier("minelittlepony", "textures/entity/illager/evoker_pony.png");
@@ -28,7 +28,7 @@ public abstract class IllagerPonyRenderer<T extends IllagerEntity> extends PonyR
     }
 
     @Override
-    protected HeldItemFeature<T, ModelIllagerPony<T>> createItemHoldingLayer() {
+    protected HeldItemFeature<T, IllagerPonyModel<T>> createItemHoldingLayer() {
         return new IllagerHeldItemFeature<>(this);
     }
 

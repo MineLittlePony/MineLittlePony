@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 
 import com.minelittlepony.client.mixin.IResizeable;
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.entity.ModelGuardianPony;
+import com.minelittlepony.client.model.entity.GuardianPonyModel;
 import com.minelittlepony.client.render.entity.PonyRenderer.Proxy;
 import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
 import com.minelittlepony.client.render.entity.feature.GlowingItemFeature;
@@ -23,20 +23,20 @@ public class SeaponyRenderer extends GuardianEntityRenderer {
 
     public static final Identifier SEAPONY = new Identifier("minelittlepony", "textures/entity/seapony.png");
 
-    private final Proxy<GuardianEntity, ModelGuardianPony> ponyRenderer;
+    private final Proxy<GuardianEntity, GuardianPonyModel> ponyRenderer;
 
     public SeaponyRenderer(EntityRenderDispatcher manager) {
         super(manager);
 
         features.clear();
-        ponyRenderer = new Proxy<GuardianEntity, ModelGuardianPony>(features, manager, ModelType.GUARDIAN) {
+        ponyRenderer = new Proxy<GuardianEntity, GuardianPonyModel>(features, manager, ModelType.GUARDIAN) {
             @Override
             public Identifier findTexture(GuardianEntity entity) {
                 return SEAPONY;
             }
 
             @Override
-            protected HeldItemFeature<GuardianEntity, ModelGuardianPony> createItemHoldingLayer() {
+            protected HeldItemFeature<GuardianEntity, GuardianPonyModel> createItemHoldingLayer() {
                 return new GlowingItemFeature<>(this);
             }
         };

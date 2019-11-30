@@ -9,12 +9,12 @@ import com.minelittlepony.pony.IPonyData;
 
 import java.util.function.Supplier;
 
-public class ArmourWrapper<T extends LivingEntity> implements IEquestrianArmour<ModelPonyArmour<T>> {
+public class ArmourWrapper<T extends LivingEntity> implements IEquestrianArmour<PonyArmourModel<T>> {
 
-    private final ModelPonyArmour<T> outerLayer;
-    private final ModelPonyArmour<T> innerLayer;
+    private final PonyArmourModel<T> outerLayer;
+    private final PonyArmourModel<T> innerLayer;
 
-    public ArmourWrapper(Supplier<ModelPonyArmour<T>> supplier) {
+    public ArmourWrapper(Supplier<PonyArmourModel<T>> supplier) {
         outerLayer = ModelType.ARMOUR_INNER.createModel(supplier);
         innerLayer = ModelType.ARMOUR_OUTER.createModel(supplier);
     }
@@ -27,7 +27,7 @@ public class ArmourWrapper<T extends LivingEntity> implements IEquestrianArmour<
     }
 
     @Override
-    public ModelPonyArmour<T> getArmorForLayer(ArmourLayer layer) {
+    public PonyArmourModel<T> getArmorForLayer(ArmourLayer layer) {
 
         if (layer == ArmourLayer.INNER) {
             return innerLayer;

@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.entity.ModelWitchPony;
+import com.minelittlepony.client.model.entity.WitchPonyModel;
 import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
 
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
 
-public class WitchRenderer extends PonyRenderer<WitchEntity, ModelWitchPony> {
+public class WitchRenderer extends PonyRenderer<WitchEntity, WitchPonyModel> {
 
     private static final Identifier WITCH_TEXTURES = new Identifier("minelittlepony", "textures/entity/witch_pony.png");
 
@@ -22,8 +22,8 @@ public class WitchRenderer extends PonyRenderer<WitchEntity, ModelWitchPony> {
     }
 
     @Override
-    protected HeldItemFeature<WitchEntity, ModelWitchPony> createItemHoldingLayer() {
-        return new HeldItemFeature<WitchEntity, ModelWitchPony>(this) {
+    protected HeldItemFeature<WitchEntity, WitchPonyModel> createItemHoldingLayer() {
+        return new HeldItemFeature<WitchEntity, WitchPonyModel>(this) {
             @Override
             protected void preItemRender(WitchEntity entity, ItemStack drop, ModelTransformation.Type transform, Arm hand, MatrixStack stack) {
                 stack.translate(0, -0.3F, -0.8F);

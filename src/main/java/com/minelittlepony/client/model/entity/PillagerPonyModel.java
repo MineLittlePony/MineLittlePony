@@ -4,11 +4,11 @@ import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.entity.mob.PillagerEntity;
 import net.minecraft.util.Arm;
 
-import com.minelittlepony.client.model.entity.race.ModelChangeling;
+import com.minelittlepony.client.model.entity.race.ChangelingModel;
 
-public class ModelPillagerPony<T extends PillagerEntity> extends ModelChangeling<T> {
+public class PillagerPonyModel<T extends PillagerEntity> extends ChangelingModel<T> {
 
-    public ModelPillagerPony() {
+    public PillagerPonyModel() {
         super(false);
     }
 

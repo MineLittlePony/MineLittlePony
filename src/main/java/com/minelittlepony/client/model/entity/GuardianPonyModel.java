@@ -8,9 +8,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.GuardianEntity;
 
 import com.minelittlepony.client.model.IPonyMixinModel;
+import com.minelittlepony.client.model.entity.race.SeaponyModel;
 
-public class ModelGuardianPony extends GuardianEntityModel implements IPonyMixinModel.Caster<GuardianEntity, ModelSeapony<GuardianEntity>, ModelPart> {
-    private final ModelSeapony<GuardianEntity> mixin = new ModelSeapony<>();
+public class GuardianPonyModel extends GuardianEntityModel implements IPonyMixinModel.Caster<GuardianEntity, SeaponyModel<GuardianEntity>, ModelPart> {
+    private final SeaponyModel<GuardianEntity> mixin = new SeaponyModel<>();
 
     @Override
     public void setAngles(GuardianEntity entity, float move, float swing, float ticks, float headYaw, float headPitch) {
@@ -33,7 +34,7 @@ public class ModelGuardianPony extends GuardianEntityModel implements IPonyMixin
     }
 
     @Override
-    public ModelSeapony<GuardianEntity> mixin() {
+    public SeaponyModel<GuardianEntity> mixin() {
         return mixin;
     }
 }

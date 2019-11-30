@@ -6,7 +6,7 @@ import net.minecraft.util.math.MathHelper;
 import com.minelittlepony.client.model.IMobModel;
 import com.minelittlepony.mson.api.model.MsonPart;
 
-public class ModelZombieVillagerPony extends ModelVillagerPony<ZombieVillagerEntity> implements IMobModel {
+public class ZomponyVillagerModel extends VillagerPonyModel<ZombieVillagerEntity> implements IMobModel {
 
     @Override
     protected void rotateLegs(float move, float swing, float ticks, ZombieVillagerEntity entity) {

@@ -16,14 +16,14 @@ import net.minecraft.util.math.MathHelper;
 /**
  * Used for both unicorns and alicorns since there's no logical way to keep them distinct and not duplicate stuff.
  */
-public class ModelUnicorn<T extends LivingEntity> extends ModelEarthPony<T> implements IUnicorn<ModelPart> {
+public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> implements IUnicorn<ModelPart> {
 
     protected ModelPart unicornArmRight;
     protected ModelPart unicornArmLeft;
 
     protected UnicornHorn horn;
 
-    public ModelUnicorn(boolean smallArms) {
+    public UnicornModel(boolean smallArms) {
         super(smallArms);
     }
 

@@ -209,11 +209,11 @@ public enum PonyTransformation {
         }
     };
 
-    private static final Map<Size, PonyTransformation> sizeToTransform = Maps.newEnumMap(Size.class);
+    private static final Map<Size, PonyTransformation> REGISTRY = Maps.newEnumMap(Size.class);
 
     static {
         for (PonyTransformation i : values()) {
-            sizeToTransform.put(i.size, i);
+            REGISTRY.put(i.size, i);
         }
     }
 
@@ -233,6 +233,6 @@ public enum PonyTransformation {
     public abstract void transform(IModel model, BodyPart part, MatrixStack stack);
 
     public static PonyTransformation forSize(Size size) {
-        return sizeToTransform.getOrDefault(size, NORMAL);
+        return REGISTRY.getOrDefault(size, NORMAL);
     }
 }

@@ -1,17 +1,17 @@
 package com.minelittlepony.client.model.entity;
 
 import com.minelittlepony.client.model.IMobModel;
-import com.minelittlepony.client.model.entity.race.ModelAlicorn;
+import com.minelittlepony.client.model.entity.race.AlicornModel;
 import com.minelittlepony.mson.api.model.MsonPart;
 
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.util.math.MathHelper;
 
-public class ModelZombiePony<Zombie extends HostileEntity> extends ModelAlicorn<Zombie> implements IMobModel {
+public class ZomponyModel<Zombie extends HostileEntity> extends AlicornModel<Zombie> implements IMobModel {
 
     private boolean isPegasus;
 
-    public ModelZombiePony() {
+    public ZomponyModel() {
         super(false);
     }
 

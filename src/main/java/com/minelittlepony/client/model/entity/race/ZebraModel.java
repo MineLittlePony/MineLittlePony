@@ -3,14 +3,14 @@ package com.minelittlepony.client.model.entity.race;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
-import com.minelittlepony.client.model.armour.ModelPonyArmour;
+import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 
-public class ModelZebra<T extends LivingEntity> extends ModelEarthPony<T> {
+public class ZebraModel<T extends LivingEntity> extends EarthPonyModel<T> {
 
-    public ModelZebra(boolean useSmallArms) {
+    public ZebraModel(boolean useSmallArms) {
         super(useSmallArms);
     }
 
@@ -25,7 +25,7 @@ public class ModelZebra<T extends LivingEntity> extends ModelEarthPony<T> {
         super.transform(part, stack);
     }
 
-    class Armour extends ModelPonyArmour<T> {
+    class Armour extends PonyArmourModel<T> {
         @Override
         public void transform(BodyPart part, MatrixStack stack) {
             applyLongNeck(part, stack);

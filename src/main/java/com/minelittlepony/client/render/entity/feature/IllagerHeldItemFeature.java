@@ -5,10 +5,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.util.Arm;
 
-import com.minelittlepony.client.model.entity.race.ModelAlicorn;
+import com.minelittlepony.client.model.entity.race.AlicornModel;
 import com.minelittlepony.client.render.IPonyRenderContext;
 
-public class IllagerHeldItemFeature<T extends IllagerEntity, M extends ModelAlicorn<T>> extends HeldItemFeature<T, M> {
+public class IllagerHeldItemFeature<T extends IllagerEntity, M extends AlicornModel<T>> extends HeldItemFeature<T, M> {
 
     public IllagerHeldItemFeature(IPonyRenderContext<T,M> livingPony) {
         super(livingPony);

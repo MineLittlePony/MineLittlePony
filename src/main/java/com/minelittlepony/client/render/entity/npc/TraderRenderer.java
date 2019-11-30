@@ -6,11 +6,10 @@ import net.minecraft.entity.passive.WanderingTraderEntity;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.entity.race.ModelAlicorn;
+import com.minelittlepony.client.model.entity.race.AlicornModel;
 import com.minelittlepony.client.render.entity.PonyRenderer;
-import com.minelittlepony.client.render.entity.PonyRenderer.Caster;
 
-public class TraderRenderer extends PonyRenderer.Caster<WanderingTraderEntity, ModelAlicorn<WanderingTraderEntity>> {
+public class TraderRenderer extends PonyRenderer.Caster<WanderingTraderEntity, AlicornModel<WanderingTraderEntity>> {
 
     public static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/entity/wandering_trader_pony.png");
 

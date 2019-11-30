@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.entity.ModelSkeletonPony;
+import com.minelittlepony.client.model.entity.SkeleponyModel;
 import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
 import com.minelittlepony.client.render.entity.feature.GlowingItemFeature;
 import com.minelittlepony.client.render.entity.feature.StrayClothingFeature;
@@ -13,7 +13,7 @@ import net.minecraft.entity.mob.StrayEntity;
 import net.minecraft.entity.mob.WitherSkeletonEntity;
 import net.minecraft.util.Identifier;
 
-public class SkeleponyRenderer<Skeleton extends AbstractSkeletonEntity> extends PonyRenderer<Skeleton, ModelSkeletonPony<Skeleton>> {
+public class SkeleponyRenderer<Skeleton extends AbstractSkeletonEntity> extends PonyRenderer<Skeleton, SkeleponyModel<Skeleton>> {
 
     public static final Identifier SKELETON = new Identifier("minelittlepony", "textures/entity/skeleton/skeleton_pony.png");
     public static final Identifier WITHER = new Identifier("minelittlepony", "textures/entity/skeleton/skeleton_wither_pony.png");
@@ -29,7 +29,7 @@ public class SkeleponyRenderer<Skeleton extends AbstractSkeletonEntity> extends 
     }
 
     @Override
-    protected HeldItemFeature<Skeleton, ModelSkeletonPony<Skeleton>> createItemHoldingLayer() {
+    protected HeldItemFeature<Skeleton, SkeleponyModel<Skeleton>> createItemHoldingLayer() {
         return new GlowingItemFeature<>(this);
     }
 

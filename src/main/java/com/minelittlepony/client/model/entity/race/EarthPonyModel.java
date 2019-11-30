@@ -9,7 +9,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
-public class ModelEarthPony<T extends LivingEntity> extends AbstractPonyModel<T> {
+public class EarthPonyModel<T extends LivingEntity> extends AbstractPonyModel<T> {
 
     private final boolean smallArms;
 
@@ -17,7 +17,7 @@ public class ModelEarthPony<T extends LivingEntity> extends AbstractPonyModel<T>
     protected PonySnout snout;
     protected IPart ears;
 
-    public ModelEarthPony(boolean smallArms) {
+    public EarthPonyModel(boolean smallArms) {
         this.smallArms = smallArms;
     }
 

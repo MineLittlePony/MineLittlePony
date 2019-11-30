@@ -8,7 +8,7 @@ import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.mson.api.ModelContext;
 
-public class ModelEnderStallion extends ModelSkeletonPony<EndermanEntity> {
+public class EnderStallionModel extends SkeleponyModel<EndermanEntity> {
 
     public boolean isCarrying;
     public boolean isAttacking;
@@ -19,7 +19,7 @@ public class ModelEnderStallion extends ModelSkeletonPony<EndermanEntity> {
     private ModelPart leftHorn;
     private ModelPart rightHorn;
 
-    public ModelEnderStallion() {
+    public EnderStallionModel() {
         super();
         attributes.visualHeight = 3;
     }

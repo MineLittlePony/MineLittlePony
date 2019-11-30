@@ -4,9 +4,9 @@ import net.minecraft.client.render.entity.model.SkullEntityModel;
 
 import com.minelittlepony.mson.api.model.BoxBuilder;
 
-public class ModelDeadMau5Ears extends SkullEntityModel {
+public class DJPon3EarsModel extends SkullEntityModel {
 
-    public ModelDeadMau5Ears() {
+    public DJPon3EarsModel() {
         super(24, 0, 64, 64);
         ((BoxBuilder.ContentAccessor)skull).cubes().clear();
         skull.addCuboid(-9, -13, -1, 6, 6, 1, 0);

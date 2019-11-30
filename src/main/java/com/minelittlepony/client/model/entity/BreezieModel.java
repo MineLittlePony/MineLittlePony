@@ -14,14 +14,14 @@ import com.minelittlepony.mson.api.model.biped.MsonBiped;
 
 import static com.minelittlepony.model.PonyModelConstants.PI;
 
-public class ModelBreezie<T extends LivingEntity> extends MsonBiped<T> implements MsonModel {
+public class BreezieModel<T extends LivingEntity> extends MsonBiped<T> implements MsonModel {
 
     private ModelPart neck;
 
     private ModelPart leftWing;
     private ModelPart rightWing;
 
-    public ModelBreezie() {
+    public BreezieModel() {
         textureHeight = 64;
     }
 

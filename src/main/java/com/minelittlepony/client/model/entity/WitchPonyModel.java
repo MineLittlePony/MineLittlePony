@@ -3,14 +3,14 @@ package com.minelittlepony.client.model.entity;
 import net.minecraft.entity.mob.WitchEntity;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.client.model.entity.race.ModelZebra;
+import com.minelittlepony.client.model.entity.race.ZebraModel;
 import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.meta.Wearable;
 
-public class ModelWitchPony extends ModelZebra<WitchEntity> {
+public class WitchPonyModel extends ZebraModel<WitchEntity> {
 
-    public ModelWitchPony() {
+    public WitchPonyModel() {
         super(false);
         attributes.visualHeight = 2.5F;
     }

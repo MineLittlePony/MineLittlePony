@@ -5,12 +5,12 @@ import net.minecraft.entity.mob.PillagerEntity;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.entity.ModelPillagerPony;
+import com.minelittlepony.client.model.entity.PillagerPonyModel;
 import com.minelittlepony.client.render.entity.feature.IllagerHeldItemFeature;
 import com.minelittlepony.client.render.entity.PonyRenderer;
 import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
 
-public class PillagerRenderer extends PonyRenderer<PillagerEntity, ModelPillagerPony<PillagerEntity>> {
+public class PillagerRenderer extends PonyRenderer<PillagerEntity, PillagerPonyModel<PillagerEntity>> {
 
     private static final Identifier TEXTURES = new Identifier("minelittlepony", "textures/entity/illager/pillager_pony.png");
 
@@ -24,7 +24,7 @@ public class PillagerRenderer extends PonyRenderer<PillagerEntity, ModelPillager
     }
 
     @Override
-    protected HeldItemFeature<PillagerEntity, ModelPillagerPony<PillagerEntity>> createItemHoldingLayer() {
+    protected HeldItemFeature<PillagerEntity, PillagerPonyModel<PillagerEntity>> createItemHoldingLayer() {
         return new IllagerHeldItemFeature<>(this);
     }
 }

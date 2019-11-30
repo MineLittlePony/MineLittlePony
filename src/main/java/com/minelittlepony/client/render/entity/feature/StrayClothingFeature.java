@@ -4,20 +4,20 @@ import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.entity.mob.AbstractSkeletonEntity;
 import net.minecraft.util.Identifier;
 
-import com.minelittlepony.client.model.entity.ModelSkeletonPony;
+import com.minelittlepony.client.model.entity.SkeleponyModel;
 
-public class StrayClothingFeature<Skeleton extends AbstractSkeletonEntity> extends AbstractClothingFeature<Skeleton, ModelSkeletonPony<Skeleton>> {
+public class StrayClothingFeature<Skeleton extends AbstractSkeletonEntity> extends AbstractClothingFeature<Skeleton, SkeleponyModel<Skeleton>> {
 
     public static final Identifier STRAY_SKELETON_OVERLAY = new Identifier("minelittlepony", "textures/entity/skeleton/stray_pony_overlay.png");
 
-    private final ModelSkeletonPony<Skeleton> overlayModel = new ModelSkeletonPony<>();
+    private final SkeleponyModel<Skeleton> overlayModel = new SkeleponyModel<>();
 
-    public StrayClothingFeature(LivingEntityRenderer<Skeleton, ModelSkeletonPony<Skeleton>> render) {
+    public StrayClothingFeature(LivingEntityRenderer<Skeleton, SkeleponyModel<Skeleton>> render) {
         super(render);
     }
 
     @Override
-    protected ModelSkeletonPony<Skeleton> getOverlayModel() {
+    protected SkeleponyModel<Skeleton> getOverlayModel() {
         return overlayModel;
     }
 

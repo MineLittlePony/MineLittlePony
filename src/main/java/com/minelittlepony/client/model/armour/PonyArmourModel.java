@@ -12,7 +12,7 @@ import com.minelittlepony.model.armour.ArmourVariant;
 import com.minelittlepony.model.armour.IArmour;
 import com.minelittlepony.mson.api.ModelContext;
 
-public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T> implements IArmour {
+public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T> implements IArmour {
 
     private ModelPart chestPiece;
 
@@ -21,7 +21,7 @@ public class ModelPonyArmour<T extends LivingEntity> extends AbstractPonyModel<T
 
     private ArmourVariant variant = ArmourVariant.NORMAL;
 
-    public ModelPonyArmour() {
+    public PonyArmourModel() {
         textureHeight = 32;
     }
 
