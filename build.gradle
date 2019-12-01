@@ -13,6 +13,10 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 
 version = "${project.minecraft_version}-${project.version}"
 
+if (System.env.TRAVIS_BRANCH != 'master') {
+    version += "-${System.env.TRAVIS_BRANCH}"
+}
+
 if (project.release != 'RELEASE') {
     version += "-${project.release}"
 }
@@ -33,13 +37,6 @@ repositories {
     maven {
         name = 'minelp-release'
         url = 'http://repo.minelittlepony-mod.com/maven/release'
-    }
-}
-
-// check for updates every build when on CI
-if (System.env.CI) {
-    configurations.all {
-        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     }
 }
 
