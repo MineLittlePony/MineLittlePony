@@ -8,9 +8,7 @@
 	"head": {
 		"center": [ 0, 0, -2 ],
 		"cubes": [
-			{ "from": [-4, -6, -6], "size": [ 8,  8,  8] },
-			{ "from": [-4, -6, 1], "size": [2, 2, 2], "texture": {"u": 12, "v": 16} },
-			{ "from": [ 2, -6, 1], "size": [2, 2, 2], "texture": {"u": 12, "v": 16}, "mirror": true }
+			{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
 		],
 		"children": [
 			{
@@ -34,26 +32,37 @@
 			{
 				"name": "left_horn",
 				"texture": {"u": 0, "v": 52},
-				"rotate": [6, 0, -45],
-				"cubes": [ {"size": [0, -4, -1]} ],
+				"center": [-4, -5, -3],
+				"rotate": [200, 0, -45],
+				"cubes": [
+					{ "from": [-1, 0, -1], "size": [2, 6, 2] }
+				],
 				"children": [
 					{
-						"rotate": [0, 0, 51],
-						"center": [-3.9, -6, 0.001],
-						"cubes": [ {"size": [2, 6, 2]} ]
+						"rotate": [0, 0, -51],
+						"center": [-0.5, 5.25, -0.1],
+						"cubes": [
+							{ "from": [-1, 0, -1], "size": [2, 6, 2] }
+						]
 					}
 				]
 			},
 			{
 				"name": "right_horn",
 				"texture": {"u": 8, "v": 52},
-				"rotate": [6, 0, 45],
-				"cubes": [ {"size": [2, -4, -1]} ],
+				"center": [4, -5, -3],
+				"rotate": [200, 0, 45],
+				"cubes": [
+					{ "from": [-1, 0, -1], "size": [2, 6, 2] }
+				],
 				"children": [
 					{
-						"rotate": [0, 0, -51],
-						"center": [3.9, -6, 0.001],
-						"cubes": [ {"size": [2, 6, 2]} ]
+						"rotate": [0, 0, 51],
+						"texture": {"u": 8, "v": 52},
+						"center": [0.5, 5.25, -0.1],
+						"cubes": [
+							{ "from": [-1, 0, -1], "size": [2, 6, 2] }
+						]
 					}
 				]
 			}

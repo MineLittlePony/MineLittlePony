@@ -40,11 +40,8 @@ public class EnderStallionModel extends SkeleponyModel<EndermanEntity> {
         isAlicorn = entity.getUuid().getLeastSignificantBits() % 3 == 0;
         isBoss = !isAlicorn && entity.getUuid().getLeastSignificantBits() % 90 == 0;
 
-        leftHorn.visible = rightHorn.visible = !isBoss;
+        leftHorn.visible = rightHorn.visible = isBoss;
         horn.setVisible(!isBoss);
-
-        leftHorn.pitch = 0.5F;
-        rightHorn.pitch = 0.5F;
     }
 
     @Override
@@ -81,9 +78,6 @@ public class EnderStallionModel extends SkeleponyModel<EndermanEntity> {
 
         tail.setVisible(false);
         snout.setVisible(false);
-
-        leftHorn.visible = visible;
-        rightHorn.visible = visible;
 
         leftSleeve.visible = false;
         rightSleeve.visible = false;
