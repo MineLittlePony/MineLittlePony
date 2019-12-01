@@ -13,10 +13,8 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.ModelWithHat;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.resource.ReloadableResourceManager;
-import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.SynchronousResourceReloadListener;
+import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
@@ -37,7 +35,7 @@ import java.util.Map;
 class NpcClothingFeature<
         T extends LivingEntity & VillagerDataContainer,
         M extends EntityModel<T> & IPonyModel<T> & ModelWithHat,
-        C extends FeatureRendererContext<T, M> & IPonyRenderContext<T, M>> extends AbstractPonyFeature<T, M> implements SynchronousResourceReloadListener {
+        C extends FeatureRendererContext<T, M> & IPonyRenderContext<T, M>> extends AbstractPonyFeature<T, M> {
 
     private static final Int2ObjectMap<Identifier> LEVEL_TO_ID = Util.create(new Int2ObjectOpenHashMap<>(), a -> {
         a.put(1, new Identifier("stone"));
@@ -52,13 +50,11 @@ class NpcClothingFeature<
 
     private final String entityType;
 
-    private final ReloadableResourceManager resourceManager;
+    private final ResourceManager resourceManager = MinecraftClient.getInstance().getResourceManager();
 
     public NpcClothingFeature(C context, String type) {
         super(context);
         entityType = type;
-        resourceManager = (ReloadableResourceManager)MinecraftClient.getInstance().getResourceManager();
-        resourceManager.registerListener(this);
     }
 
     public static Identifier getClothingTexture(VillagerDataContainer entity, String entityType) {
@@ -129,12 +125,6 @@ class NpcClothingFeature<
             } catch (IOException e) { }
             return HatType.NONE;
         });
-    }
-
-    @Override
-    public void apply(ResourceManager manager) {
-        profHatCache.clear();
-        typeHatCache.clear();
     }
 
     public Identifier findTexture(String category, Identifier identifier) {
