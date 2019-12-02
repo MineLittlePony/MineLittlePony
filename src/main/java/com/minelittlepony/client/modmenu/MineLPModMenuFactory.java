@@ -1,4 +1,4 @@
-package com.minelittlepony.client.modmenu;
+/*package com.minelittlepony.client.modmenu;
 
 import com.minelittlepony.client.gui.GuiPonySettings;
 import io.github.prospector.modmenu.api.ModMenuApi;
@@ -18,3 +18,4 @@ public class MineLPModMenuFactory implements ModMenuApi {
         return GuiPonySettings::new;
     }
 }
+*/
