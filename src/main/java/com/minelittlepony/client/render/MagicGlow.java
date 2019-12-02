@@ -24,7 +24,7 @@ public class MagicGlow extends RenderPhase {
         RenderSystem.defaultBlendFunc();
      });
 
-    private static final RenderLayer MAGIC = RenderLayer.method_24048("mlp_magic_glow", VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL, 7, 256, RenderLayer.MultiPhaseData.builder()
+    private static final RenderLayer MAGIC = RenderLayer.of("mlp_magic_glow", VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL, 7, 256, RenderLayer.PhaseData.builder()
             .texture(NO_TEXTURE)
             .writeMaskState(COLOR_MASK)
             .transparency(LIGHTNING_TRANSPARENCY)
@@ -37,7 +37,7 @@ public class MagicGlow extends RenderPhase {
     }
 
     public static RenderLayer getTintedTexturedLayer(Identifier texture, float red, float green, float blue, float alpha) {
-        return RenderLayer.method_24049("mlp_tint_layer", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, 7, 256, true, true, RenderLayer.MultiPhaseData.builder()
+        return RenderLayer.of("mlp_tint_layer", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, 7, 256, true, true, RenderLayer.PhaseData.builder()
                 .texture(new Color(texture, red, green, blue, alpha))
                 .writeMaskState(COLOR_MASK)
                 .alpha(ONE_TENTH_ALPHA)

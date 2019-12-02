@@ -1,9 +1,9 @@
 package com.minelittlepony.client.mixin;
 
-import net.minecraft.class_4730;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,10 +15,10 @@ import com.minelittlepony.client.render.LevitatingItemRenderer;
 
 import java.util.function.Function;
 
-@Mixin(class_4730.class)
-abstract class MixinClass_4730 {
+@Mixin(SpriteIdentifier.class)
+abstract class MixinSpriteIdentifier {
 
-    @Inject(method = "method_24145("
+    @Inject(method = "getVertexConsumer("
                 + "Lnet/minecraft/client/render/VertexConsumerProvider;"
                 + "Ljava/util/function/Function;"
             + ")"
@@ -28,9 +28,9 @@ abstract class MixinClass_4730 {
     )
     public void onGetBuffer(VertexConsumerProvider provider, Function<Identifier, RenderLayer> layerFunction, CallbackInfoReturnable<VertexConsumer> info) {
         if (LevitatingItemRenderer.usesTransparency()) {
-            class_4730 self = (class_4730)(Object)this;
+            SpriteIdentifier self = (SpriteIdentifier)(Object)this;
 
-            info.setReturnValue(self.method_24148().method_24108(provider.getBuffer(LevitatingItemRenderer.getRenderLayer(self.method_24144()))));
+            info.setReturnValue(self.getSprite().getTextureSpecificVertexConsumer(provider.getBuffer(LevitatingItemRenderer.getRenderLayer(self.getAtlasId()))));
         }
     }
 }

@@ -11,8 +11,8 @@
         "MixinEntityRenderDispatcher",
         "MixinSkullBlockEntityRenderer",
         "MixinFirstPersonRenderer",
-        "MixinClass_4722",
-        "MixinClass_4730",
+        "MixinTexturedRenderLayers",
+        "MixinSpriteIdentifier",
         "MixinClientPlayerEntity",
         "MixinPlayerMoveC2SPacket_Both",
         "MixinPlayerMoveC2SPacket_LookOnly"
