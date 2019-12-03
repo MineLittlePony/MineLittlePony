@@ -73,7 +73,7 @@
 				"type": "mson:plane", "__comment": "cutie mark",
 				"texture": { "u": 4, "v": 0 },
 				"mirror": [ false, false, true ],
-				"face": "east",
+				"face": "west",
 				"position": [ -4, 4, 10 ], "size": [ 8, 4 ]
 			},
 			{
