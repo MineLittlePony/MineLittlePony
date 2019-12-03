@@ -14,7 +14,7 @@ public class Stetson extends AbstractGear implements IStackable {
 
     @Override
     public void init(ModelContext context) {
-        accept(context.findByName("rim"));
+        addPart(context.findByName("rim"));
     }
 
     @Override

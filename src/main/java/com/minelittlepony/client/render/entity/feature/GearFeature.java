@@ -76,7 +76,9 @@ public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & IPon
         gear.setLivingAnimations(model, entity);
         gear.setRotationAndAngles(model.getAttributes().isGoingFast, entity.getUuid(), limbDistance, limbAngle, model.getWobbleAmount(), tickDelta);
 
-        VertexConsumer vertexConsumer = renderContext.getBuffer(RenderLayer.getEntitySolid(gear.getTexture(entity, getContext())));
-        gear.renderPart(stack, vertexConsumer, OverlayTexture.DEFAULT_UV, lightUv, limbDistance, limbAngle, tickDelta, 1F, entity.getUuid());
+        RenderLayer layer = RenderLayer.getEntityTranslucent(gear.getTexture(entity, getContext()));
+
+        VertexConsumer vertexConsumer = renderContext.getBuffer(layer);
+        gear.renderPart(stack, vertexConsumer, lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1, entity.getUuid());
     }
 }

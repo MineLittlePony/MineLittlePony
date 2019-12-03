@@ -15,7 +15,7 @@ public class Muffin extends AbstractGear implements IStackable {
 
     @Override
     public void init(ModelContext context) {
-        accept(context.findByName("crown"));
+        addPart(context.findByName("crown"));
     }
 
     @Override

@@ -23,8 +23,7 @@ public abstract class AbstractGear extends Model implements IGear, MsonModel {
         textureHeight = 64;
     }
 
-    @Override
-    public void accept(ModelPart t) {
+    public void addPart(ModelPart t) {
         parts.add(t);
     }
 

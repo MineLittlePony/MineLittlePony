@@ -15,7 +15,7 @@ public class WitchHat extends AbstractGear implements IStackable {
 
     @Override
     public void init(ModelContext context) {
-        accept(context.findByName("witch_hat"));
+        addPart(context.findByName("hat"));
     }
 
     @Override
