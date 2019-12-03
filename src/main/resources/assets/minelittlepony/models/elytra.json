@@ -6,8 +6,9 @@
 		]
 	},
 	"right_wing": {
+		"mirror": true,
 		"cubes": [
-			{"from": [ 0, 0, 0], "size": [10, 20, 2], "stretch": 1, "mirror": true}
+			{"from": [ 0, 0, 0], "size": [10, 20, 2], "stretch": 1}
 		]
 	}
 }

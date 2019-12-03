@@ -41,6 +41,7 @@ public class ElytraFeature<T extends LivingEntity, M extends EntityModel<T> & IP
 
             EntityModel<T> elytra = getElytraModel();
 
+            getModel().copyStateTo(elytra);
             if (elytra instanceof PonyElytra) {
                 ((PonyElytra<T>)elytra).isSneaking = getContext().getEntityPony(entity).isCrouching(entity);
             }
@@ -55,7 +56,7 @@ public class ElytraFeature<T extends LivingEntity, M extends EntityModel<T> & IP
 
     protected void preRenderCallback(MatrixStack stack) {
         M body = getModelWrapper().getBody();
-        stack.translate(0, body.getRiderYOffset(), 0.125F);
+        stack.translate(0, body.getRiderYOffset(), 0.125);
         body.transform(BodyPart.BODY, stack);
     }
 
