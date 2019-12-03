@@ -4,7 +4,6 @@ import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.common.event.ClientReadyCallback;
 import com.minelittlepony.hdskins.SkinCacheClearCallback;
-import com.minelittlepony.hdskins.dummy.DummyPlayer;
 import com.minelittlepony.mson.api.Mson;
 
 import net.minecraft.client.MinecraftClient;
@@ -23,7 +22,7 @@ class MineLPHDSkins {
         ClientReadyCallback.EVENT.register(this::postInit);
 
         // Preview on the select skin gui
-        Mson.getInstance().getEntityRendererRegistry().registerEntityRenderer(DummyPlayer.TYPE, DummyPonyRenderer::new);
+        Mson.getInstance().getEntityRendererRegistry().registerEntityRenderer(DummyPony.TYPE, DummyPonyRenderer::new);
     }
 
     private void postInit(MinecraftClient minecraft) {

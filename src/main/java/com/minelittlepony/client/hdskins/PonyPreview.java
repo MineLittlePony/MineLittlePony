@@ -14,8 +14,8 @@ class PonyPreview extends PlayerPreview {
     public static final Identifier NO_SKIN_PONY = new Identifier("minelittlepony", "textures/mob/noskin.png");
     public static final Identifier NO_SKIN_SEAPONY = new Identifier("minelittlepony", "textures/mob/noskin_seapony.png");
 
-    private final DummyPony localPony = new DummyPony(localTextures);
-    private final DummyPony remotePony = new DummyPony(remoteTextures);
+    private final DummyPony localPony = new DummyPony(DummyPony.TYPE, localTextures);
+    private final DummyPony remotePony = new DummyPony(DummyPony.TYPE, remoteTextures);
 
     public void setWet(boolean isWet) {
         localPony.setWet(isWet);
