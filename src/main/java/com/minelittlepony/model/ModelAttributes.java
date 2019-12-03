@@ -97,7 +97,7 @@ public class ModelAttributes<T extends LivingEntity> {
         isFlying = mode == Mode.THIRD_PERSON && pony.isFlying(entity);
         isGliding = entity.isFallFlying();
         isSwimming = mode == Mode.THIRD_PERSON && pony.isSwimming(entity);
-        isSwimmingRotated = mode == Mode.THIRD_PERSON && isSwimming && entity instanceof PlayerEntity;
+        isSwimmingRotated = mode == Mode.THIRD_PERSON && isSwimming && (entity instanceof PlayerEntity || entity instanceof IRotatedSwimmer);
         hasHeadGear = pony.isWearingHeadgear(entity);
         isSitting = pony.isRidingInteractive(entity);
         interpolatorId = entity.getUuid();

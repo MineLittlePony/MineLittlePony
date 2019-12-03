@@ -7,11 +7,12 @@ import com.minelittlepony.hdskins.dummy.DummyPlayer;
 import com.minelittlepony.hdskins.dummy.TextureProxy;
 import com.minelittlepony.hdskins.profile.SkinType;
 import com.minelittlepony.hdskins.resources.LocalTexture;
+import com.minelittlepony.model.IRotatedSwimmer;
 
 /**
  * Dummy model used for the skin uploading screen.
  */
-class DummyPony extends DummyPlayer {
+class DummyPony extends DummyPlayer implements IRotatedSwimmer {
 
     public static EntityType<DummyPony> TYPE = EntityType.Builder
             .<DummyPony>create((t, w) -> new DummyPony(t, null), EntityCategory.MISC)
@@ -30,11 +31,7 @@ class DummyPony extends DummyPlayer {
 
         LocalTexture skin = getTextures().get(SkinType.SKIN);
 
-        if (wet && skin.getId() == PonyPreview.NO_SKIN_PONY) {
-            skin.reset();
-        }
-
-        if (!wet && skin.getId() == PonyPreview.NO_SKIN_SEAPONY) {
+        if (wet != (skin.getId() == PonyPreview.NO_SKIN_SEAPONY)) {
             skin.reset();
         }
     }

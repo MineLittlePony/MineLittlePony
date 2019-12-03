@@ -93,7 +93,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             }
 
             if (attributes.isSwimmingRotated) {
-                head.setPivot(0, -2, -2);
+                head.setPivot(0, -2, -4);
             } else {
                 head.setPivot(0, 0, 0);
             }

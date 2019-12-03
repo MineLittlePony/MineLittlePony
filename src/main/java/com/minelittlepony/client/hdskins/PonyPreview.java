@@ -11,7 +11,8 @@ import com.minelittlepony.pony.meta.Race;
 
 class PonyPreview extends PlayerPreview {
 
-    public static final Identifier NO_SKIN_PONY = new Identifier("minelittlepony", "textures/mob/noskin.png");
+    public static final Identifier NO_SKIN_STEVE_PONY = new Identifier("minelittlepony", "textures/mob/noskin.png");
+    public static final Identifier NO_SKIN_ALEX_PONY = new Identifier("minelittlepony", "textures/mob/noskin_alex.png");
     public static final Identifier NO_SKIN_SEAPONY = new Identifier("minelittlepony", "textures/mob/noskin_seapony.png");
 
     private final DummyPony localPony = new DummyPony(DummyPony.TYPE, localTextures);
@@ -27,10 +28,19 @@ class PonyPreview extends PlayerPreview {
         if (type == SkinType.SKIN) {
             // Initialization order means this method might be called before class members have been initialized.
             // This is something that needs to be fixed in HDSkins
-            return localPony != null && localPony.wet ? NO_SKIN_SEAPONY : NO_SKIN_PONY;
+            return localPony != null && localPony.wet ? NO_SKIN_SEAPONY : NO_SKIN_STEVE_PONY;
         }
         return super.getBlankSteveSkin(type);
     }
+
+    @Override
+    public Identifier getBlankAlexSkin(SkinType type) {
+        if (type == SkinType.SKIN) {
+            return localPony != null && localPony.wet ? NO_SKIN_SEAPONY : NO_SKIN_ALEX_PONY;
+        }
+        return getBlankSteveSkin(type);
+    }
+
 
     protected DummyPlayer ponify(DummyPlayer human, DummyPlayer pony) {
         Identifier loc = human.getTextures().get(SkinType.SKIN).getId();
