@@ -61,20 +61,21 @@
 				"texture": { "u": 24, "v": 0 },
 				"mirror": [ false, false, true ],
 				"face": "west",
+				"mirror": [ true ],
 				"position": [ -4, 4, 2 ], "size": [ 8, 8 ]
 			},
 			{
 				"type": "mson:plane", "__comment": "cutie mark",
 				"texture": { "u": 4, "v": 0 },
 				"face": "east",
-				"position": [ 4, 4, 10 ], "size": [ 8, 4 ]
+				"position": [ 4, 4, 10 ], "size": [ 4, 8 ]
 			},
 			{
 				"type": "mson:plane", "__comment": "cutie mark",
 				"texture": { "u": 4, "v": 0 },
-				"mirror": [ false, false, true ],
+				"mirror": [ true ],
 				"face": "west",
-				"position": [ -4, 4, 10 ], "size": [ 8, 4 ]
+				"position": [ -4, 4, 10 ], "size": [ 4, 8 ]
 			},
 			{
 				"type": "mson:plane", "__comment": "stomach",
@@ -117,14 +118,14 @@
 				"rotate": [29, 0, 0],
 				"up":   [-1, 10,  10, 2, 6],
 				"down": [-1, 12, 10, 2, 6],
-				"east": [ 1, 10,  10, 2, 6],
+				"east": [ 1, 10,  10, 6, 2],
 				"south":[-1, 10,  16, 2, 2],
 				"cubes": [
 					{
 						"type": "mson:plane",
-						"mirror": [ false, false, true ],
+						"mirror": [ true, false ],
 						"face": "west",
-						"position": [ -1, 10, 10 ], "size": [ 2, 6 ]
+						"position": [ -1, 10, 10 ], "size": [ 6, 2 ]
 					}
 				]
 			}
@@ -153,27 +154,27 @@
 				"type": "mson:plane", "__comment": "body sides a",
 				"texture": { "u": 12, "v": 32 },
 				"face": "east",
-				"position": [ 4, 4, 2 ], "size": [ 4, 8 ], "stretch": 0.25
+				"position": [ 4, 4, 2 ], "size": [ 8, 4 ], "stretch": 0.25
 			},
 			{
 				"type": "mson:plane", "__comment": "body sides a",
 				"texture": { "u": 12, "v": 32 },
 				"mirror": [ false, false, true ],
 				"face": "west",
-				"position": [ -4, 4, 2 ], "size": [ 4, 8 ], "stretch": 0.25
+				"position": [ -4, 4, 2 ], "size": [ 8, 4 ], "stretch": 0.25
 			},
 			{
 				"type": "mson:plane", "__comment": "body sides b",
 				"texture": { "u": 12, "v": 48 },
 				"face": "east",
-				"position": [ 4, 8, 2 ], "size": [ 4, 8 ], "stretch": 0.25
+				"position": [ 4, 8, 2 ], "size": [ 8, 4 ], "stretch": 0.25
 			},
 			{
 				"type": "mson:plane", "__comment": "body sides b",
 				"mirror": [ false, false, true ],
 				"texture": { "u": 12, "v": 48 },
 				"face": "west",
-				"position": [ -4, 8, 2 ], "size": [ 4, 8 ], "stretch": 0.25
+				"position": [ -4, 8, 2 ], "size": [ 8, 4 ], "stretch": 0.25
 			},
 			{
 				"type": "mson:plane", "__comment": "qt mark a",

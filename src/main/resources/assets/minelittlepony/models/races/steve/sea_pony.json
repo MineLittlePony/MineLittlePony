@@ -6,21 +6,21 @@
 		"mirror": [false, false, true],
 		"rotate": [0, 30, 0],
 		"center": [3, -6, 3],
-		"east": [0, 0, 0, 12, 8]
+		"east": [0, 0, 0, 8, 12]
 	},
 	"right_fin": {
 		"type": "mson:planar",
 		"texture": {"u": 56, "v": 16},
 		"rotate": [0, -30, 0],
 		"center": [-3, -6, 3],
-		"west": [0, 0, 0, 12, 8]
+		"west": [0, 0, 0, 8, 12]
 	},
 	"center_fin": {
 		"type": "mson:planar",
 		"texture": {"u": 58, "v": 28},
 		"rotate": [84, 0, 0],
 		"center": [0, 6, 9],
-		"east": [0, -6, 0, 12, 6]
+		"east": [0, -6, 0, 6, 12]
 	},
 	"abdomin": {
 		"texture": {"u": 0, "v": 48},

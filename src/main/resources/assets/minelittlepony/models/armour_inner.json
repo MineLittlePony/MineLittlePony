@@ -20,7 +20,7 @@
 		"type": "mson:planar",
 		"texture": {"u": 24, "v": 0},
 		"east": [4, 4, 2, 8, 8, 32, 32],
-		"west": [-4, 4, 2, 8, 8, 32, 23],
+		"west": [-4, 4, 2, 8, 8, 23, 32],
 		"south": [-4, 4,10, 8, 8, 32, 23],
 		"up": [-4, 4, -2, 8, 12, 32, 23],
 		"__comment": "it's a little short, so the butt tends to show. :/"
