@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
  * In-Game options menu.
  *
  */
-class GuiPonySettings extends GameGui {
+public class GuiPonySettings extends GameGui {
 
     private static final String OPTIONS_PREFIX = "minelp.options.";
 

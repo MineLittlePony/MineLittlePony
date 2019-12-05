@@ -58,7 +58,7 @@ dependencies {
     include "com.minelittlepony:Mson:${project.mson_version}"
 
     modImplementation "com.minelittlepony:HDSkins:${project.hd_skins_version}"
-    //modImplementation "io.github.prospector.modmenu:ModMenu:1.7.15-unstable"
+    modImplementation "io.github.prospector:modmenu:${project.modmenu_version}"
 }
 
 //
