@@ -11,9 +11,13 @@ plugins {
 targetCompatibility = JavaVersion.VERSION_1_8
 sourceCompatibility = JavaVersion.VERSION_1_8
 
-version = "${project.minecraft_version}-${project.version}"
+version = project.version
 
-if (System.env.TRAVIS_BRANCH != 'master') {
+if (System.env.TRAVIS_BRANCH != project.minecraft_version) {
+    version += "-${project.minecraft_version}"
+}
+
+if (System.env.TRAVIS_BRANCH != null && System.env.TRAVIS_BRANCH != 'master') {
     version += "-${System.env.TRAVIS_BRANCH}"
 }
 
