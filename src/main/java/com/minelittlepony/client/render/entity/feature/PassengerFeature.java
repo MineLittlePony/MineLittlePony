@@ -36,7 +36,7 @@ public class PassengerFeature<T extends PlayerEntity, M extends ClientPonyModel<
         EntityType.get(riderTag.getString("id")).filter(p -> p == EntityType.PARROT).ifPresent((entityType) -> {
            stack.push();
 
-           getModel().transform(BodyPart.BODY, stack);
+           getContextModel().transform(BodyPart.BODY, stack);
 
            stack.translate(left ? 0.25 : -0.25, entity.isInSneakingPose() ? -0.5 : -0.25, 0.35);
            stack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(left ? -5 : 5));

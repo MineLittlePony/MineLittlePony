@@ -1,4 +1,4 @@
-package com.minelittlepony.client.modmenu;
+/*package com.minelittlepony.client.modmenu;
 
 import io.github.prospector.modmenu.api.ModMenuApi;
 import net.minecraft.client.gui.screen.Screen;
@@ -19,3 +19,4 @@ public class MineLPModMenuFactory implements ModMenuApi {
         return GuiPonySettings::new;
     }
 }
+*/

@@ -37,7 +37,7 @@ public interface IPonyRenderContext<T extends LivingEntity, M extends EntityMode
      */
     default void translateRider(T entity, IPony entityPony, LivingEntity passenger, IPony passengerPony, MatrixStack stack, float ticks) {
         if (!passengerPony.getRace(false).isHuman()) {
-            float yaw = MathUtil.interpolateDegress((float)entity.prevRenderY, (float)entity.getY(), ticks);
+            float yaw = MathUtil.interpolateDegress((float)entity.prevY, (float)entity.getY(), ticks);
 
             getModelWrapper().apply(entityPony.getMetadata());
             M model = getModelWrapper().getBody();

@@ -80,7 +80,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
 
     @Override
     public void render(AbstractClientPlayerEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
-        field_4673 = manager.getShadowScale();
+        shadowSize = manager.getShadowScale();
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
 
         DebugBoundingBoxRenderer.render(manager.getPony(entity), entity, stack, renderContext);
@@ -99,11 +99,11 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
     }
 
     @Override
-    public boolean isVisible(AbstractClientPlayerEntity entity, Frustum camera, double camX, double camY, double camZ) {
+    public boolean shouldRender(AbstractClientPlayerEntity entity, Frustum camera, double camX, double camY, double camZ) {
         if (entity.isSleeping() && entity == MinecraftClient.getInstance().player) {
             return true;
         }
-        return super.isVisible(entity, manager.getFrustrum(entity, camera), camX, camY, camZ);
+        return super.shouldRender(entity, manager.getFrustrum(entity, camera), camX, camY, camZ);
     }
 
     @Override

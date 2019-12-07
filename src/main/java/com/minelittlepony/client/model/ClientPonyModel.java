@@ -34,7 +34,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
 
     @Override
     public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
-        isChild = entity.isBaby();
+        child = entity.isBaby();
         isSneaking = entity.isInSneakingPose();
         attributes.updateLivingState(entity, pony, mode);
     }
@@ -56,7 +56,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
 
     @Override
     public Size getSize() {
-        return isChild ? Size.FOAL : getMetadata().getSize();
+        return child ? Size.FOAL : getMetadata().getSize();
     }
 
     @Override
@@ -71,7 +71,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
 
     @Override
     public boolean isRiding() {
-        return isRiding;
+        return riding;
     }
 
     @Override

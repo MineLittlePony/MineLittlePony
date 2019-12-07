@@ -20,7 +20,7 @@ public class WitchPonyModel extends ZebraModel<WitchEntity> {
         super.updateLivingState(entity, pony, mode);
 
         if (entity.hasCustomName() && "Filly".equals(entity.getCustomName().getString())) {
-            isChild = true;
+            child = true;
         }
         leftArmPose = ArmPose.EMPTY;
         rightArmPose = entity.getMainHandStack().isEmpty() ? ArmPose.EMPTY : ArmPose.ITEM;

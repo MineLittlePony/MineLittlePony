@@ -37,7 +37,7 @@ class NpcClothingFeature<
         M extends EntityModel<T> & IPonyModel<T> & ModelWithHat,
         C extends FeatureRendererContext<T, M> & IPonyRenderContext<T, M>> extends AbstractPonyFeature<T, M> {
 
-    private static final Int2ObjectMap<Identifier> LEVEL_TO_ID = Util.create(new Int2ObjectOpenHashMap<>(), a -> {
+    private static final Int2ObjectMap<Identifier> LEVEL_TO_ID = Util.make(new Int2ObjectOpenHashMap<>(), a -> {
         a.put(1, new Identifier("stone"));
         a.put(2, new Identifier("iron"));
         a.put(3, new Identifier("gold"));
@@ -77,7 +77,7 @@ class NpcClothingFeature<
 
             HatType typeHatLayer = getHatType(typeHatCache, "type", Registry.VILLAGER_TYPE, type);
             HatType profHatLayer = getHatType(profHatCache, "profession", Registry.VILLAGER_PROFESSION, profession);
-            M entityModel = getModel();
+            M entityModel = getContextModel();
 
             entityModel.setHatVisible(
                        profHatLayer == VillagerResourceMetadata.HatType.NONE

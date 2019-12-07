@@ -39,7 +39,7 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
         );
     }
 
-    private final Map<SkullBlock.SkullType, ISkull> skullMap = Util.create(Maps.newHashMap(), (skullMap) -> {
+    private final Map<SkullBlock.SkullType, ISkull> skullMap = Util.make(Maps.newHashMap(), (skullMap) -> {
         skullMap.put(SkullBlock.Type.SKELETON, new MobSkull(SkeleponyRenderer.SKELETON, MobRenderers.SKELETON));
         skullMap.put(SkullBlock.Type.WITHER_SKELETON, new MobSkull(SkeleponyRenderer.WITHER, MobRenderers.SKELETON));
         skullMap.put(SkullBlock.Type.ZOMBIE, new MobSkull(ZomponyRenderer.ZOMBIE, MobRenderers.ZOMBIE));

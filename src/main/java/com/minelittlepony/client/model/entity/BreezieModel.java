@@ -57,7 +57,7 @@ public class BreezieModel<T extends LivingEntity> extends MsonBiped<T> implement
         ((MsonPart)leftLeg) .rotate(swing * MathHelper.cos(move * 0.6662F + PI) * 1.4F, 0, 0);
         ((MsonPart)rightLeg).rotate(swing * MathHelper.cos(move * 0.6662F)      * 1.4F, 0, 0);
 
-        if (isRiding) {
+        if (riding) {
             leftArm.pitch += -PI / 5;
             rightArm.pitch += -PI / 5;
 

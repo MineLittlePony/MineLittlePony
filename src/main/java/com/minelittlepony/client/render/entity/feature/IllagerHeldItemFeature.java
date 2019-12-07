@@ -23,7 +23,7 @@ public class IllagerHeldItemFeature<T extends IllagerEntity, M extends AlicornMo
 
     @Override
     protected void renderArm(Arm arm, MatrixStack stack) {
-        getModel().getArm(arm).rotate(stack);
+        getContextModel().getArm(arm).rotate(stack);
     }
 
     public boolean shouldRender(T entity) {

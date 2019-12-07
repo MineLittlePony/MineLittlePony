@@ -192,9 +192,9 @@ public class Pony implements IPony {
         float delta = MinecraftClient.getInstance().getTickDelta();
 
         return new Vec3d(
-                MathHelper.lerp(delta, entity.prevRenderX, entity.getX()),
-                MathHelper.lerp(delta, entity.prevRenderY, entity.getY()),
-                MathHelper.lerp(delta, entity.prevRenderZ, entity.getZ())
+                MathHelper.lerp(delta, entity.prevX, entity.getX()),
+                MathHelper.lerp(delta, entity.prevY, entity.getY()),
+                MathHelper.lerp(delta, entity.prevZ, entity.getZ())
         );
     }
 

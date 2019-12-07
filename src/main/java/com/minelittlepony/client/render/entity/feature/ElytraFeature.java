@@ -41,7 +41,7 @@ public class ElytraFeature<T extends LivingEntity, M extends EntityModel<T> & IP
 
             EntityModel<T> elytra = getElytraModel();
 
-            getModel().copyStateTo(elytra);
+            getContextModel().copyStateTo(elytra);
             if (elytra instanceof PonyElytra) {
                 ((PonyElytra<T>)elytra).isSneaking = getContext().getEntityPony(entity).isCrouching(entity);
             }
@@ -76,7 +76,7 @@ public class ElytraFeature<T extends LivingEntity, M extends EntityModel<T> & IP
                 if (result != null) return result;
             }
 
-            if (player.hasSkinTexture() && player.isSkinOverlayVisible(PlayerModelPart.CAPE)) {
+            if (player.hasSkinTexture() && player.isPartVisible(PlayerModelPart.CAPE)) {
                 result = player.getCapeTexture();
 
                 if (result != null) return result;

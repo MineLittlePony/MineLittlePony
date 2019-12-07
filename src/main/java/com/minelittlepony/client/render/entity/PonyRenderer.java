@@ -74,8 +74,8 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
     }
 
     @Override
-    public boolean isVisible(T entity, Frustum visibleRegion, double camX, double camY, double camZ) {
-        return super.isVisible(entity, manager.getFrustrum(entity, visibleRegion), camX, camY, camZ);
+    public boolean shouldRender(T entity, Frustum visibleRegion, double camX, double camY, double camZ) {
+        return super.shouldRender(entity, manager.getFrustrum(entity, visibleRegion), camX, camY, camZ);
     }
 
     @Override
@@ -86,10 +86,10 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
         }
 
         // shadowRadius
-        field_4673 = manager.getShadowScale();
+        shadowSize = manager.getShadowScale();
 
         if (entity.isBaby()) {
-            field_4673 *= 3; // undo vanilla shadow scaling
+            shadowSize *= 3; // undo vanilla shadow scaling
         }
 
         if (!entity.hasVehicle()) {

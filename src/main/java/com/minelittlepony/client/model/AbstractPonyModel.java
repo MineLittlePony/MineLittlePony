@@ -80,7 +80,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
         if (attributes.isCrouching) {
             ponyCrouch();
-        } else if (isRiding) {
+        } else if (riding) {
             ponyRide();
         } else {
             adjustBody(BODY_ROT_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);

@@ -5,8 +5,8 @@ import net.minecraft.client.render.RenderPhase;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.Identifier;
 
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.platform.GlStateManager.DstFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SrcFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 public class MagicGlow extends RenderPhase {
@@ -17,14 +17,14 @@ public class MagicGlow extends RenderPhase {
     protected static final RenderPhase.Transparency GLOWING_TRANSPARENCY = new RenderPhase.Transparency("glowing_transparency", () -> {
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(
-                SourceFactor.CONSTANT_COLOR, DestFactor.ONE,
-                SourceFactor.ONE, DestFactor.ZERO);
+                SrcFactor.CONSTANT_COLOR, DstFactor.ONE,
+                SrcFactor.ONE, DstFactor.ZERO);
      }, () -> {
         RenderSystem.disableBlend();
         RenderSystem.defaultBlendFunc();
      });
 
-    private static final RenderLayer MAGIC = RenderLayer.of("mlp_magic_glow", VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL, 7, 256, RenderLayer.PhaseData.builder()
+    private static final RenderLayer MAGIC = RenderLayer.of("mlp_magic_glow", VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL, 7, 256, RenderLayer.MultiPhaseParameters.builder()
             .texture(NO_TEXTURE)
             .writeMaskState(COLOR_MASK)
             .transparency(LIGHTNING_TRANSPARENCY)
@@ -37,7 +37,7 @@ public class MagicGlow extends RenderPhase {
     }
 
     public static RenderLayer getTintedTexturedLayer(Identifier texture, float red, float green, float blue, float alpha) {
-        return RenderLayer.of("mlp_tint_layer", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, 7, 256, true, true, RenderLayer.PhaseData.builder()
+        return RenderLayer.of("mlp_tint_layer", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, 7, 256, true, true, RenderLayer.MultiPhaseParameters.builder()
                 .texture(new Color(texture, red, green, blue, alpha))
                 .writeMaskState(COLOR_MASK)
                 .alpha(ONE_TENTH_ALPHA)

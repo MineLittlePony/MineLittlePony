@@ -40,7 +40,7 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
         ItemStack right = getRightItem(entity);
 
         if (!left.isEmpty() || !right.isEmpty()) {
-            M model = getModel();
+            M model = getContextModel();
 
             stack.push();
 
@@ -58,7 +58,7 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
             stack.push();
             renderArm(arm, stack);
 
-            if (getModel().getAttributes().isCrouching) {
+            if (getContextModel().getAttributes().isCrouching) {
                 stack.translate(0, 0.2F, 0);
             }
 
@@ -91,6 +91,6 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
      * Renders the main arm
      */
     protected void renderArm(Arm arm, MatrixStack stack) {
-        getModel().setArmAngle(arm, stack);
+        getContextModel().setArmAngle(arm, stack);
     }
 }
