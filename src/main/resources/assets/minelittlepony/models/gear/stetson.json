@@ -19,22 +19,17 @@
 		],
 		"children": [
 			{
+				"__comment": "hat inside",
 				"cubes": [
-					{"from": [-5, -8, -6], "size": [9, 4, 9]},
+					{"from": [-5, -8, -6], "size": [9, 4, 9], "texture": {"u": 0, "v": 0}},
 					{"from": [-6, -6, -7], "size": [11, 2, 11], "texture": {"u": 0, "v": 13}}
 				]
 			},
 			{
+				"type": "mson:planar",
 				"center": [-9, -4, -12 ],
 				"rotate": [23, 0, 0],
-				"cubes": [
-					{
-						"type": "mson:plane",
-						"face": "south",
-						"texture": {"u": 0, "v": 27},
-						"position": [0, -6, 0], "size": [16, 6]
-					}
-				]
+				"south": [0, -6, 0, 16, 6, 0, 27]
 			}
 		]
 	}
