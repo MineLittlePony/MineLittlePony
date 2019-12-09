@@ -19,7 +19,7 @@
     "client": [
       "com.minelittlepony.client.MineLittlePony"
     ],
-    "modmenu": [
+    "__disabled__modmenu": [
       "com.minelittlepony.client.modmenu.MineLPModMenuFactory"
     ]
   },
