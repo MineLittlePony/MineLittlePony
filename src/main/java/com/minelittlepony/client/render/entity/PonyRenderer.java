@@ -62,7 +62,7 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
 
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
 
-        DebugBoundingBoxRenderer.render(manager.getPony(entity), entity, stack, renderContext);
+        DebugBoundingBoxRenderer.render(manager.getPony(entity), this, entity, stack, renderContext, tickDelta);
     }
 
     @Override

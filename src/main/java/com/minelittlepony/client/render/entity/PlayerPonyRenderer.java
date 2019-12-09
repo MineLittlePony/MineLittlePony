@@ -83,7 +83,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
         shadowSize = manager.getShadowScale();
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
 
-        DebugBoundingBoxRenderer.render(manager.getPony(entity), entity, stack, renderContext);
+        DebugBoundingBoxRenderer.render(manager.getPony(entity), this, entity, stack, renderContext, tickDelta);
 
         // Translate the shadow position after everything is done
         // (shadows are drawn after us)
