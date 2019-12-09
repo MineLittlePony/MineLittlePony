@@ -4,9 +4,12 @@ import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.common.event.ClientReadyCallback;
 import com.minelittlepony.hdskins.SkinCacheClearCallback;
+import com.minelittlepony.hdskins.profile.SkinType;
 import com.minelittlepony.mson.api.Mson;
+import com.mojang.authlib.GameProfile;
 
-import net.minecraft.client.MinecraftClient;
+import net.fabricmc.api.ClientModInitializer;
+import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.hdskins.HDSkins;
@@ -14,25 +17,34 @@ import com.minelittlepony.hdskins.HDSkins;
 /**
  * All the interactions with HD Skins.
  */
-class MineLPHDSkins {
+public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
 
-    MineLPHDSkins() {
-        SkinsProxy.instance = new HDSkinsProxy();
+    @Override
+    public void onInitializeClient() {
+        SkinsProxy.instance = this;
 
-        ClientReadyCallback.EVENT.register(this::postInit);
+        ClientReadyCallback.EVENT.register(client -> {
+            // Clear ponies when skins are cleared
+            PonyManager ponyManager = (PonyManager) MineLittlePony.getInstance().getManager();
+            SkinCacheClearCallback.EVENT.register(ponyManager::onSkinCacheCleared);
+
+            // Ponify the skins GUI.
+            HDSkins.getInstance().getSkinServerList().setSkinsGui(GuiSkinsMineLP::new);
+        });
 
         // Preview on the select skin gui
         Mson.getInstance().getEntityRendererRegistry().registerEntityRenderer(DummyPony.TYPE, DummyPonyRenderer::new);
     }
 
-    private void postInit(MinecraftClient minecraft) {
-        HDSkins manager = HDSkins.getInstance();
+    @Override
+    public Identifier getSkinTexture(GameProfile profile) {
 
-        // Clear ponies when skins are cleared
-        PonyManager ponyManager = (PonyManager) MineLittlePony.getInstance().getManager();
-        SkinCacheClearCallback.EVENT.register(ponyManager::onSkinCacheCleared);
+        Identifier skin = HDSkins.getInstance().getProfileRepository().getTextures(profile).get(SkinType.SKIN);
 
-        // Ponify the skins GUI.
-        manager.getSkinServerList().setSkinsGui(GuiSkinsMineLP::new);
+        if (skin != null) {
+            return skin;
+        }
+
+        return super.getSkinTexture(profile);
     }
 }

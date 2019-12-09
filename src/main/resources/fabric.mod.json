@@ -19,6 +19,9 @@
     "client": [
       "com.minelittlepony.client.MineLittlePony"
     ],
+    "hdskins": [
+      "com.minelittlepony.client.hdskins.MineLPHDSkins"
+    ],
     "__disabled__modmenu": [
       "com.minelittlepony.client.modmenu.MineLPModMenuFactory"
     ]
