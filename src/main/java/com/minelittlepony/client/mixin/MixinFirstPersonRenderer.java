@@ -8,7 +8,7 @@ import com.minelittlepony.client.render.PonyRenderDispatcher;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.render.FirstPersonRenderer;
+import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.model.json.ModelTransformation.Type;
 import net.minecraft.client.util.math.MatrixStack;
@@ -17,7 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraft.client.render.item.ItemRenderer;
 
-@Mixin(FirstPersonRenderer.class)
+@Mixin(HeldItemRenderer.class)
 abstract class MixinFirstPersonRenderer {
     private static final String LivingEntity = "Lnet/minecraft/entity/LivingEntity;";
     private static final String MatrixStack = "Lnet/minecraft/client/util/math/MatrixStack;";

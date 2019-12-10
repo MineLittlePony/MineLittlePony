@@ -55,9 +55,9 @@ public class LevitatingItemRenderer {
         stack.scale(1.1F, 1.1F, 1.1F);
 
         stack.translate(0.01F, 0.01F, 0.01F);
-        renderItem.method_23177(entity, drop, transform, hand == Arm.LEFT, stack, renderContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV);
+        renderItem.renderItem(entity, drop, transform, hand == Arm.LEFT, stack, renderContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV);
         stack.translate(-0.02F, -0.02F, -0.02F);
-        renderItem.method_23177(entity, drop, transform, hand == Arm.LEFT, stack, renderContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV);
+        renderItem.renderItem(entity, drop, transform, hand == Arm.LEFT, stack, renderContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV);
 
         stack.pop();
         unsetColor();
@@ -90,7 +90,7 @@ public class LevitatingItemRenderer {
                 setupPerspective(itemRenderer, entity, stack, left, matrix);
             }
 
-            itemRenderer.method_23177(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
+            itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
 
             if (doMagic) {
                 setColor(pony.getMetadata().getGlowColor());
@@ -98,16 +98,16 @@ public class LevitatingItemRenderer {
                 matrix.scale(1.1F, 1.1F, 1.1F);
 
                 matrix.translate(0.015F, 0.01F, 0.01F);
-                itemRenderer.method_23177(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
+                itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
                 matrix.translate(-0.03F, -0.02F, -0.02F);
-                itemRenderer.method_23177(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
+                itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
 
                 unsetColor();
             }
 
             matrix.pop();
         } else {
-            itemRenderer.method_23177(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
+            itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
         }
     }
 
