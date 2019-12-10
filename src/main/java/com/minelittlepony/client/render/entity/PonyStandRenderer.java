@@ -9,6 +9,7 @@ import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
 import net.minecraft.client.render.entity.feature.HeldItemFeatureRenderer;
 import net.minecraft.client.render.entity.model.ArmorStandArmorEntityModel;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -46,7 +47,11 @@ public class PonyStandRenderer extends ArmorStandEntityRenderer {
         public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, ArmorStandEntity entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
             if (entity.hasCustomName() && "Ponita".equals(entity.getCustomName().asString())) {
 
-                pony.getBody().setAngles(entity, limbDistance, limbAngle, tickDelta, headYaw, headPitch);
+                headPitch = 0.017453292F * entity.getHeadRotation().getPitch();
+                headYaw = 0.017453292F * entity.getHeadRotation().getYaw();
+
+                pony.getBody().animateModel(entity, limbDistance, limbAngle, tickDelta);
+                pony.getBody().setAngles(entity, limbDistance, limbAngle, age, headYaw, headPitch);
 
                 for (EquipmentSlot i : EquipmentSlot.values()) {
                     if (i.getType() == EquipmentSlot.Type.ARMOR) {
