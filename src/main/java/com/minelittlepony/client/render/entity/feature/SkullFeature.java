@@ -26,8 +26,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.village.VillagerDataContainer;
 
-import static com.mojang.blaze3d.platform.GlStateManager.*;
-
 public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyFeature<T, M> {
 
     public SkullFeature(IPonyRenderContext<T, M> renderPony) {
@@ -52,8 +50,6 @@ public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & IPo
                 stack.translate(0, 0, 0.15F);
             }
 
-            color4f(1, 1, 1, 1);
-
             if (item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof AbstractSkullBlock) {
                 boolean isVillager = entity instanceof VillagerDataContainer;
 
@@ -76,11 +72,11 @@ public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & IPo
     }
 
     private void renderSkull(MatrixStack stack, VertexConsumerProvider renderContext, ItemStack itemstack, boolean isVillager, float limbDistance, int lightUv) {
-        translatef(0, 0, -0.14F);
+        stack.translate(0, 0, -0.14F);
         float f = 1.1875f;
-        scalef(f, -f, -f);
+        stack.scale(f, -f, -f);
         if (isVillager) {
-            translatef(0, 0.0625F, 0);
+            stack.translate(0, 0.0625F, 0);
         }
 
         GameProfile profile = null;
@@ -100,6 +96,7 @@ public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & IPo
 
         SkullType type = ((AbstractSkullBlock) ((BlockItem) itemstack.getItem()).getBlock()).getSkullType();
 
+        stack.translate(-0.5, 0, -0.5);
         SkullBlockEntityRenderer.render(null, 180, type, profile, limbDistance, stack, renderContext, lightUv);
     }
 }
