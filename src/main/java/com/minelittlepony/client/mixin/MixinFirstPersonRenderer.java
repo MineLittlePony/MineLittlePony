@@ -32,7 +32,7 @@ abstract class MixinFirstPersonRenderer {
 
     @Redirect(method = "renderItem(" + LivingEntity + ItemStack + Type + Boolean + MatrixStack + VertexConsumerProvider + Int + ")V",
              at = @At(value = "INVOKE",
-                      target = ItemRenderer + "method_23177(" + LivingEntity + ItemStack + Type + Boolean + MatrixStack + VertexConsumerProvider + World + Int + Int + ")V"))
+                      target = ItemRenderer + "renderItem(" + LivingEntity + ItemStack + Type + Boolean + MatrixStack + VertexConsumerProvider + World + Int + Int + ")V"))
     private void redirectRenderItem(ItemRenderer target,
             @Nullable LivingEntity entity,
             ItemStack item,
