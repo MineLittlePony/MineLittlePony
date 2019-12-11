@@ -22,7 +22,7 @@
     "hdskins": [
       "com.minelittlepony.client.hdskins.MineLPHDSkins"
     ],
-    "__disabled__modmenu": [
+    "modmenu": [
       "com.minelittlepony.client.modmenu.MineLPModMenuFactory"
     ]
   },
