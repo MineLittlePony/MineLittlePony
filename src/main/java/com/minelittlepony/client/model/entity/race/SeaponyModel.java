@@ -58,7 +58,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
     protected void ponySleep() {}
 
     @Override
-    protected void ponyRide() {}
+    protected void ponySit() {}
 
     @Override
     public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {

@@ -56,7 +56,12 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
 
     @Override
     public void render(T entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
-        if (entity.isInSneakingPose()) {
+        manager.preRenderCallback(entity, stack, tickDelta);
+        if (getModel() instanceof PlayerEntityModel) {
+            ((PlayerEntityModel<?>)getModel()).setVisible(true);
+        }
+
+        if (getModel().getAttributes().isSitting) {
             stack.translate(0, 0.125D, 0);
         }
 
@@ -79,12 +84,7 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
     }
 
     @Override
-    public void scale(T entity, MatrixStack stack, float ticks) {
-        manager.preRenderCallback(entity, stack, ticks);
-        if (this.getModel() instanceof PlayerEntityModel) {
-            ((PlayerEntityModel<?>)getModel()).setVisible(true);
-        }
-
+    public void scale(T entity, MatrixStack stack, float tickDelta) {
         // shadowRadius
         shadowSize = manager.getShadowScale();
 

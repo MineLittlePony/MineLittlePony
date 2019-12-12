@@ -35,8 +35,9 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
     @Override
     public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
         child = entity.isBaby();
-        isSneaking = entity.isInSneakingPose();
         attributes.updateLivingState(entity, pony, mode);
+        isSneaking = attributes.isCrouching;
+        riding = attributes.isSitting;
     }
 
     @Override

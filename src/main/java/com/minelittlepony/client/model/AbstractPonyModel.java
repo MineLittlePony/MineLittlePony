@@ -81,7 +81,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         if (attributes.isCrouching) {
             ponyCrouch();
         } else if (riding) {
-            ponyRide();
+            ponySit();
         } else {
             adjustBody(BODY_ROT_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
 
@@ -135,8 +135,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         ((MsonPart)leftLeg).shift(0, 2, -8);
     }
 
-    protected void ponyRide() {
-        if (attributes.isSitting) {
+    protected void ponySit() {
+        if (attributes.isRidingInteractive) {
             adjustBodyComponents(BODY_ROT_X_RIDING * 2, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
             adjustNeck(BODY_ROT_X_NOTSNEAK * 2, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK - 4);
             head.setPivot(0, -2, -5);
@@ -159,7 +159,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         leftArm.roll = -PI * 0.06f;
         rightArm.roll = PI * 0.06f;
 
-        if (attributes.isSitting) {
+        if (attributes.isRidingInteractive) {
             leftLeg.yaw = PI / 15;
             leftLeg.pitch = PI / 9;
 

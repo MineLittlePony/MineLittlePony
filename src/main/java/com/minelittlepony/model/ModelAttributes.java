@@ -41,13 +41,18 @@ public class ModelAttributes<T extends LivingEntity> {
      */
     public boolean isCrouching;
     /**
+     * True if the pony is sitting.
+     */
+    public boolean isSitting;
+
+    /**
      * True if the entity is left-handed.
      */
     public boolean isLeftHanded;
     /**
      * True if the model is sitting as in boats.
      */
-    public boolean isSitting;
+    public boolean isRidingInteractive;
     /**
      * Flag indicating that this model is performing a rainboom (flight).
      */
@@ -92,14 +97,15 @@ public class ModelAttributes<T extends LivingEntity> {
     }
 
     public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
-        isCrouching = mode == Mode.THIRD_PERSON && pony.isCrouching(entity);
+        isSitting = pony.isSitting(entity);
+        isCrouching = !isSitting && mode == Mode.THIRD_PERSON && pony.isCrouching(entity);
         isSleeping = entity.isSleeping();
         isFlying = mode == Mode.THIRD_PERSON && pony.isFlying(entity);
         isGliding = entity.isFallFlying();
         isSwimming = mode == Mode.THIRD_PERSON && pony.isSwimming(entity);
         isSwimmingRotated = mode == Mode.THIRD_PERSON && isSwimming && (entity instanceof PlayerEntity || entity instanceof IRotatedSwimmer);
+        isRidingInteractive = pony.isRidingInteractive(entity);
         hasHeadGear = pony.isWearingHeadgear(entity);
-        isSitting = pony.isRidingInteractive(entity);
         interpolatorId = entity.getUuid();
         isLeftHanded = entity.getMainArm() == Arm.LEFT;
     }

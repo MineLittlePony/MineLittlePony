@@ -86,6 +86,12 @@ public interface IPony {
     Race getRace(boolean ignorePony);
 
     /**
+     * Returns true if an entity is sitting as when riding a vehicle or
+     * a customized habitually actuated indoors rester (CHAIR)
+     */
+    boolean isSitting(LivingEntity entity);
+
+    /**
      * Returns true if an entity is riding a pony or other sentient life-form.
      *
      * Boats do not count.

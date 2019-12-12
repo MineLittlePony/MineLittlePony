@@ -156,10 +156,20 @@ public class Pony implements IPony {
     }
 
     @Override
+    public boolean isSitting(LivingEntity entity) {
+        return entity.hasVehicle()/*
+                || (entity instanceof PlayerEntity
+                        && entity.getVelocity().x == 0 && entity.getVelocity().z == 0
+                        && !entity.isInsideWaterOrBubbleColumn() && entity.onGround && isCrouching(entity))*/;
+    }
+
+    @Override
     public boolean isRidingInteractive(LivingEntity entity) {
-        if (entity.hasVehicle() && entity.getVehicle() instanceof LivingEntity) {
+
+        if (isSitting(entity) && entity.getVehicle() instanceof LivingEntity) {
             return PonyRenderDispatcher.getInstance().getPonyRenderer((LivingEntity) entity.getVehicle()) != null;
         }
+
         return false;
     }
 
