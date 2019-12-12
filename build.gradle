@@ -11,20 +11,29 @@ plugins {
 targetCompatibility = JavaVersion.VERSION_1_8
 sourceCompatibility = JavaVersion.VERSION_1_8
 
-version = project.version
+def createVersion() {
+    def parts = []
 
-if (System.env.TRAVIS_BRANCH != project.minecraft_version) {
-    version += "-${project.minecraft_version}"
+    if (project.release != 'RELEASE') {
+        parts.push project.release
+    }
+
+    if (System.env.TRAVIS_BRANCH != null && System.env.TRAVIS_BRANCH != 'master') {
+        parts.push System.env.TRAVIS_BRANCH
+    }
+
+    if (System.env.TRAVIS_BRANCH != project.minecraft_version) {
+       parts.push project.minecraft_version
+    }
+
+    def ver = project.version
+    if (parts.size > 0) {
+      return ver + '+' + parts.join('-')
+    }
+    return ver
 }
 
-if (System.env.TRAVIS_BRANCH != null && System.env.TRAVIS_BRANCH != 'master') {
-    version += "-${System.env.TRAVIS_BRANCH}"
-}
-
-if (project.release != 'RELEASE') {
-    version += "-${project.release}"
-}
-
+version = createVersion()
 group = project.group
 description = project.displayname
 archivesBaseName = project.name
