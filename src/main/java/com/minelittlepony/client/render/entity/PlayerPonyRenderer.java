@@ -32,6 +32,7 @@ import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
+import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.Arm;
@@ -70,16 +71,19 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
     }
 
     @Override
-    protected void scale(AbstractClientPlayerEntity player, MatrixStack stack, float ticks) {
-        manager.preRenderCallback(player, stack, ticks);
+    protected void scale(AbstractClientPlayerEntity entity, MatrixStack stack, float tickDelta) {
+        if (getModel() instanceof PlayerEntityModel) {
+            ((PlayerEntityModel<?>)getModel()).setVisible(true);
+        }
 
-        if (player.hasVehicle()) {
-            stack.translate(0, player.getHeightOffset(), 0);
+        if (manager.getModel().getAttributes().isSitting) {
+            stack.translate(0, entity.getHeightOffset(), 0);
         }
     }
 
     @Override
     public void render(AbstractClientPlayerEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
+        manager.preRenderCallback(entity, stack, tickDelta);
         shadowSize = manager.getShadowScale();
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
 

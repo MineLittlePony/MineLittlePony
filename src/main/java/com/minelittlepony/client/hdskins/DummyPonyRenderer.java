@@ -16,8 +16,10 @@ import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.meta.Race;
 
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
+import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
@@ -47,8 +49,10 @@ class DummyPonyRenderer extends DummyPlayerRenderer<DummyPony, ClientPonyModel<D
     }
 
     @Override
-    protected void scale(DummyPony entity, MatrixStack stack, float ticks) {
-        manager.preRenderCallback(entity, stack, ticks);
+    protected void scale(DummyPony entity, MatrixStack stack, float tickDelta) {
+        if (getModel() instanceof PlayerEntityModel) {
+            ((PlayerEntityModel<?>)getModel()).setVisible(true);
+        }
 
         if (entity.isSwimming()) {
             if (entity.getVelocity().x < 100) {
@@ -60,9 +64,15 @@ class DummyPonyRenderer extends DummyPlayerRenderer<DummyPony, ClientPonyModel<D
             model.getAttributes().motionPitch = 0;
         }
 
-        if (entity.hasVehicle()) {
+        if (getModel().getAttributes().isSitting) {
             stack.translate(0, entity.getHeightOffset(), 0);
         }
+    }
+
+    @Override
+    public void render(DummyPony entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
+        manager.preRenderCallback(entity, stack, tickDelta);
+        super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
     }
 
     @Override
