@@ -85,7 +85,6 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
 
     @Override
     public void scale(T entity, MatrixStack stack, float tickDelta) {
-        // shadowRadius
         shadowSize = manager.getShadowScale();
 
         if (entity.isBaby()) {

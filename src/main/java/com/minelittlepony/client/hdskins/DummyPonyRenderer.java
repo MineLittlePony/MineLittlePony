@@ -50,6 +50,7 @@ class DummyPonyRenderer extends DummyPlayerRenderer<DummyPony, ClientPonyModel<D
 
     @Override
     protected void scale(DummyPony entity, MatrixStack stack, float tickDelta) {
+        manager.preRenderCallback(entity, stack, tickDelta);
         if (getModel() instanceof PlayerEntityModel) {
             ((PlayerEntityModel<?>)getModel()).setVisible(true);
         }
@@ -71,7 +72,6 @@ class DummyPonyRenderer extends DummyPlayerRenderer<DummyPony, ClientPonyModel<D
 
     @Override
     public void render(DummyPony entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
-        manager.preRenderCallback(entity, stack, tickDelta);
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
     }
 
