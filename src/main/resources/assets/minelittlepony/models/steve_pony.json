@@ -81,8 +81,15 @@
 				"type": "mson:plane", "__comment": "stomach",
 				"texture": { "u": 56, "v": 0 },
 				"face": "down",
+				"mirror": [false, true],
 				"position": [ -4, 12, 2 ],
 				"size": [ 8, 8 ]
+			},
+			{
+				"type": "mson:plane", "__comment": "butt",
+				"texture": { "u": 36, "v": 16 },
+				"face": "down",
+				"position": [ -4, 12, 10 ], "size": [ 8, 4 ]
 			},
 			{
 				"type": "mson:plane", "__comment": "butt",
@@ -96,12 +103,6 @@
 				"face": "south",
 				"position": [ -4, 8, 14 ],
 				"size": [ 8, 4 ]
-			},
-			{
-				"type": "mson:plane", "__comment": "butt",
-				"texture": { "u": 36, "v": 16 },
-				"face": "down",
-				"position": [ -4, 12, 10 ], "size": [ 8, 4 ]
 			},
 			{
 				"type": "mson:plane", "__comment": "back",
