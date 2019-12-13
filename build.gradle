@@ -28,7 +28,7 @@ def createVersion() {
 
     def ver = project.version
     if (parts.size > 0) {
-      return ver + '+' + parts.join('-')
+      return ver + '-' + parts.join('-')
     }
     return ver
 }
