@@ -59,7 +59,6 @@
 			{
 				"type": "mson:plane", "__comment": "body sides",
 				"texture": { "u": 24, "v": 0 },
-				"mirror": [ false, false, true ],
 				"face": "west",
 				"mirror": [ true ],
 				"position": [ -4, 4, 2 ], "size": [ 8, 8 ]
