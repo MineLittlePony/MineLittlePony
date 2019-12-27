@@ -1,0 +1,8 @@
+{
+	"parent": "minelittlepony:skeleton",
+	"scale": 0.3,
+	"locals": {
+		"arm_width": 4,
+		"arm_depth": 4
+	}
+}
