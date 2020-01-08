@@ -6,20 +6,20 @@
 		"content": {
 			"folded": { "visible": false },
 			"extended": {
-				"texture": {"u": 56, "v": 19},
-				"center": [143, 303, 229],
+				"texture": {"u": 56, "v": 19, "w": 64, "h": 64},
+				"center": [2.49, 5.28, 4],
 				"rotate": [30, 0, 0],
 				"children": [
 					{
 						"type": "mson:planar",
 						"texture": {"u": 56, "v": 16},
-						"west": [-0.5, 0, -7, 8, 16]
+						"east": [-0.5, 0, -7, 8, 16]
 					},
 					{
 						"type": "mson:planar",
 						"texture": {"u": 56, "v": 32},
 						"rotate": [-0.5, 0.3, 0.3333],
-						"west": [1, 0, -5, 8, 16]
+						"east": [1, 0, -5, 8, 16]
 					}
 				]
 			}
@@ -32,22 +32,19 @@
 		"content": {
 			"folded": { "visible": false },
 			"extended": {
-				"texture": {"u": 56, "v": 19},
-				"center": [-143, 303, 229],
-				"rotate": [-30, 0, 0],
-				"mirror": true,
+				"texture": {"u": 56, "v": 19, "w": 64, "h": 64},
+				"center": [-2.49, 5.28, 4],
+				"rotate": [30, 0, 0],
 				"children": [
 					{
 						"type": "mson:planar",
 						"texture": {"u": 56, "v": 16},
-						"mirror": true,
 						"west": [0.5, 0, -7, 8, 16]
 					},
 					{
 						"type": "mson:planar",
 						"texture": {"u": 56, "v": 32},
 						"rotate": [-0.5, -0.3, -0.3333],
-						"mirror": true,
 						"west": [-1, 0, -5, 8, 16]
 					}
 				]
