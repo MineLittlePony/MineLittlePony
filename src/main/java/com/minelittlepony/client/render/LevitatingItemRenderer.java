@@ -46,7 +46,7 @@ public class LevitatingItemRenderer {
     /**
      * Renders a magical overlay over an item in third person.
      */
-    public void renderItemGlow(LivingEntity entity, ItemStack drop, ModelTransformation.Type transform, Arm hand, int glowColor, MatrixStack stack, VertexConsumerProvider renderContext) {
+    public void renderItemGlow(LivingEntity entity, ItemStack drop, ModelTransformation.Mode transform, Arm hand, int glowColor, MatrixStack stack, VertexConsumerProvider renderContext) {
         setColor(glowColor);
         stack.push();
 
@@ -76,7 +76,7 @@ public class LevitatingItemRenderer {
     /**
      * Renders an item in first person optionally with a magical overlay.
      */
-    public void renderItemInFirstPerson(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformation.Type transform, boolean left, MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world, int lightUv) {
+    public void renderItemInFirstPerson(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformation.Mode transform, boolean left, MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world, int lightUv) {
 
         if (entity instanceof PlayerEntity) {
 

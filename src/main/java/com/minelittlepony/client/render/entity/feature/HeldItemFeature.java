@@ -46,14 +46,14 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
 
             model.transform(BodyPart.LEGS, stack);
 
-            renderHeldItem(entity, right, ModelTransformation.Type.THIRD_PERSON_RIGHT_HAND, Arm.RIGHT, stack, renderContext, lightUv);
-            renderHeldItem(entity, left, ModelTransformation.Type.THIRD_PERSON_LEFT_HAND, Arm.LEFT, stack, renderContext, lightUv);
+            renderHeldItem(entity, right, ModelTransformation.Mode.THIRD_PERSON_RIGHT_HAND, Arm.RIGHT, stack, renderContext, lightUv);
+            renderHeldItem(entity, left, ModelTransformation.Mode.THIRD_PERSON_LEFT_HAND, Arm.LEFT, stack, renderContext, lightUv);
 
             stack.pop();
         }
     }
 
-    private void renderHeldItem(T entity, ItemStack drop, ModelTransformation.Type transform, Arm arm, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
+    private void renderHeldItem(T entity, ItemStack drop, ModelTransformation.Mode transform, Arm arm, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
         if (!drop.isEmpty()) {
             stack.push();
             renderArm(arm, stack);
@@ -80,11 +80,11 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
         }
     }
 
-    protected void preItemRender(T entity, ItemStack drop, ModelTransformation.Type transform, Arm hand, MatrixStack stack) {
+    protected void preItemRender(T entity, ItemStack drop, ModelTransformation.Mode transform, Arm hand, MatrixStack stack) {
         stack.translate(0, 0.125F, -1);
     }
 
-    protected void postItemRender(T entity, ItemStack drop, ModelTransformation.Type transform, Arm hand, MatrixStack stack, VertexConsumerProvider renderContext) {
+    protected void postItemRender(T entity, ItemStack drop, ModelTransformation.Mode transform, Arm hand, MatrixStack stack, VertexConsumerProvider renderContext) {
     }
 
     /**
