@@ -3,9 +3,9 @@ package com.minelittlepony.client.hdskins;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.hdskins.dummy.DummyPlayer;
-import com.minelittlepony.hdskins.dummy.PlayerPreview;
-import com.minelittlepony.hdskins.profile.SkinType;
+import com.minelittlepony.hdskins.client.dummy.DummyPlayer;
+import com.minelittlepony.hdskins.client.dummy.PlayerPreview;
+import com.minelittlepony.hdskins.skins.SkinType;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.meta.Race;
 
