@@ -79,12 +79,12 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
             centerFin.roll = flapMotion;
         }
 
-        if (!entity.isInWater()) {
+        if (!entity.isSubmergedInWater()) {
             leftArm.pitch -= 0.5F;
             rightArm.pitch -= 0.5F;
         }
 
-        if (!entity.isInWater() || entity.onGround) {
+        if (!entity.isSubmergedInWater() || entity.onGround) {
             leftArm.yaw -= 0.5F;
             rightArm.yaw += 0.5F;
         }

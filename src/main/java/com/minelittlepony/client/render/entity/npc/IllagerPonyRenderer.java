@@ -96,7 +96,7 @@ public abstract class IllagerPonyRenderer<T extends IllagerEntity> extends PonyR
         }
 
         @Override
-        protected boolean method_4056(IllusionerEntity entity, boolean xray) {
+        protected boolean method_4056(IllusionerEntity entity) {
             return true;
         }
     }

@@ -76,7 +76,7 @@ public class Pony implements IPony {
         return !(isOnGround(entity)
                 || entity.hasVehicle()
                 || (entity.isClimbing() && !(entity instanceof PlayerEntity && ((PlayerEntity)entity).abilities.allowFlying))
-                || entity.isInWater()
+                || entity.isSubmergedInWater()
                 || entity.isSleeping());
     }
 
@@ -111,13 +111,13 @@ public class Pony implements IPony {
 
     @Override
     public boolean isPartiallySubmerged(LivingEntity entity) {
-        return entity.isInWater()
+        return entity.isSubmergedInWater()
                 || entity.getEntityWorld().getBlockState(entity.getBlockPos()).getMaterial() == Material.WATER;
     }
 
     @Override
     public boolean isFullySubmerged(LivingEntity entity) {
-        return entity.isInWater()
+        return entity.isSubmergedInWater()
                 && entity.getEntityWorld().getBlockState(new BlockPos(getVisualEyePosition(entity))).getMaterial() == Material.WATER;
     }
 
