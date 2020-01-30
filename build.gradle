@@ -1,7 +1,3 @@
-// Fabric build script
-// 03/06/2019
-// https://github.com/FabricMC/fabric-example-mod/blob/master/build.gradle
-
 plugins {
     id 'java-library'
     id 'fabric-loom' version '0.2.6-SNAPSHOT'
@@ -45,11 +41,11 @@ minecraft {
 repositories {
     maven {
         name = 'minelp'
-        url = 'http://repo.minelittlepony-mod.com/maven/snapshot'
+        url = 'https://repo.minelittlepony-mod.com/maven/snapshot'
     }
     maven {
         name = 'minelp-release'
-        url = 'http://repo.minelittlepony-mod.com/maven/release'
+        url = 'https://repo.minelittlepony-mod.com/maven/release'
     }
 }
 
@@ -134,7 +130,7 @@ publishing {
             pom {
                 name = "MineLittlePony"
                 description = "HD Skins support for Minecraft"
-                url = "http://minelittlepony-mod.com"
+                url = "https://minelittlepony-mod.com"
                 licenses {
                     license {
                         name = "MIT Public License"

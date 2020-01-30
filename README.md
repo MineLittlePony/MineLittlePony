@@ -7,7 +7,7 @@
 
 Turns players and mobs into ponies.
 
-http://minelittlepony-mod.com
+https://minelittlepony-mod.com
 
 ## Building
 
@@ -31,6 +31,6 @@ Once you have fabric installed, simply download the MineLittlePony-version.jar f
 
 ## Installation (Modders):
 
-Maven: `http://repo.minelittlepony-mod.com/maven/snapshot`
+Maven: `https://repo.minelittlepony-mod.com/maven/snapshot`
 
-Dependency: `com.minelittlepony:MineLittlePony:4.0.1-1.15`
+Dependency: `com.minelittlepony:MineLittlePony:4.0.4-1.15.2`
