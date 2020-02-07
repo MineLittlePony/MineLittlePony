@@ -105,8 +105,8 @@
 							},
 							{
 								"type": "mson:planar",
-								"mirror": [true, false],
-								"west": [0, 0, -7, 8, 16, 56, 32]
+								"mirror": [true, false, true],
+								"east": [0, 0, -7, 8, 16, 56, 32]
 							}
 						]
 					}
