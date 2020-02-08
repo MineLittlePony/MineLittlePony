@@ -152,19 +152,11 @@
 				"type": "mson:planar",
 				"stretch": 0.26,
 				"__comment": [
-					"body sides a",
-					"body sides b",
-					"qt mark a",
-					"qt mark b",
-					"body sides a",
-					"body sides b",
-					"qt mark a",
-					"qt mark b",
-					"stomach a",
-					"stomach b",
-					"stomach c",
-					"butt",
-					"butt"
+					"body sides a", "body sides b", "qt mark a", "qt mark b",
+					"body sides a", "body sides b", "qt mark a", "qt mark b",
+					"stomach a", "stomach b", "stomach c",
+					"butt", "butt",
+					"back"
 				],
 				"east": [
 					[ 4, 4,  2, 8, 4, 12, 32 ],
