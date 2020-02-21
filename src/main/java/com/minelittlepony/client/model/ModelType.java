@@ -20,6 +20,7 @@ import com.minelittlepony.client.model.entity.race.AlicornModel;
 import com.minelittlepony.client.model.entity.race.ChangelingModel;
 import com.minelittlepony.client.model.entity.race.EarthPonyModel;
 import com.minelittlepony.client.model.entity.race.PegasusModel;
+import com.minelittlepony.client.model.entity.race.SeaponyModel;
 import com.minelittlepony.client.model.entity.race.UnicornModel;
 import com.minelittlepony.client.model.entity.race.ZebraModel;
 import com.minelittlepony.client.model.gear.ChristmasHat;
@@ -80,7 +81,7 @@ public final class ModelType {
     public static final PlayerModelKey<?, PegasusModel<?>> GRYPHON = registerPlayer("gryphon", Race.GRYPHON, PegasusModel::new);
     public static final PlayerModelKey<?, PegasusModel<?>> HIPPOGRIFF = registerPlayer("hippogriff", Race.HIPPOGRIFF, PegasusModel::new);
     public static final PlayerModelKey<?, EarthPonyModel<?>> EARTH_PONY = registerPlayer("earth_pony", Race.EARTH, EarthPonyModel::new);
-    public static final PlayerModelKey<?, EarthPonyModel<?>> SEA_PONY = registerPlayer("sea_pony", Race.SEAPONY, EarthPonyModel::new, PlayerSeaponyRenderer::new);
+    public static final PlayerModelKey<?, SeaponyModel<?>> SEA_PONY = registerPlayer("sea_pony", Race.SEAPONY, SeaponyModel::new, PlayerSeaponyRenderer::new);
     public static final PlayerModelKey<?, PegasusModel<?>> BAT_PONY = registerPlayer("bat_pony", Race.BATPONY, PegasusModel::new);
     public static final PlayerModelKey<?, ChangelingModel<?>> CHANGELING = registerPlayer("changeling", Race.CHANGELING, ChangelingModel::new);
     public static final PlayerModelKey<?, ChangelingModel<?>> CHANGEDLING = registerPlayer("reformed_changeling", Race.CHANGEDLING, ChangelingModel::new);

@@ -132,10 +132,19 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         return playerModel.getBody();
     }
 
+    public ModelWrapper<T, M> getModelWrapper() {
+        return playerModel;
+    }
+
     public ModelWrapper<T, M> setModel(ModelKey<?> key) {
         playerModel = new ModelWrapper<>(key);
 
         return playerModel;
+    }
+
+    public ModelWrapper<T, M> setModel(ModelWrapper<T, M> wrapper) {
+        playerModel = wrapper;
+        return wrapper;
     }
 
     public void updateMetadata(Identifier texture) {
