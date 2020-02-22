@@ -1,6 +1,5 @@
 package com.minelittlepony.client.render.entity.feature;
 
-import com.minelittlepony.client.ForgeProxy;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.armour.DefaultArmourTextureResolver;
@@ -8,7 +7,6 @@ import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.model.armour.ArmourLayer;
 import com.minelittlepony.model.armour.IArmour;
 import com.minelittlepony.model.armour.IArmourTextureResolver;
-import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.util.Color;
 
 import net.minecraft.client.render.OverlayTexture;
@@ -53,7 +51,7 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
 
         if (!itemstack.isEmpty() && itemstack.getItem() instanceof ArmorItem) {
 
-            V armour = ArmourFeature.getArmorModel(entity, itemstack, armorSlot, layer, pony.<V>getArmor().getArmorForLayer(layer));
+            V armour = pony.<V>getArmor().getArmorForLayer(layer);
 
             if (armour.prepareToRender(armorSlot, layer)) {
                 pony.getBody().copyAttributes(armour);
@@ -93,20 +91,5 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
                 armour.render(stack, vertices, lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
             }
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T extends LivingEntity, V extends BipedEntityModel<T> & IArmour> V getArmorModel(T entity, ItemStack itemstack, EquipmentSlot slot, ArmourLayer layer, V def) {
-        BipedEntityModel<T> model = ForgeProxy.getArmorModel(entity, itemstack, slot, def);
-
-        if (model instanceof IArmour) {
-            return (V)model;
-        }
-
-        if (model instanceof IEquestrianArmour) {
-            return ((IEquestrianArmour<V>) model).getArmorForLayer(layer);
-        }
-
-        return def;
     }
 }
