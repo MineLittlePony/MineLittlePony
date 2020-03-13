@@ -66,7 +66,7 @@ public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & IPo
     private void renderBlock(MatrixStack stack, VertexConsumerProvider renderContext, T entity, ItemStack itemstack, int lightUv) {
         stack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180));
         stack.scale(0.625F, -0.625F, -0.625F);
-        stack.translate(0, 0.4F, -0.21F);
+        stack.translate(0, 0.6F, -0.21F);
 
         MinecraftClient.getInstance().getHeldItemRenderer().renderItem(entity, itemstack, ModelTransformation.Mode.HEAD, false, stack, renderContext, lightUv);
     }
