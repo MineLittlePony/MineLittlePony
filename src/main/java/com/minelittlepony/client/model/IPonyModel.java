@@ -17,9 +17,4 @@ public interface IPonyModel<T extends LivingEntity> extends PonyModelConstants, 
     void copyAttributes(BipedEntityModel<T> other);
 
     void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode);
-
-    @Override
-    default boolean hasHeadGear() {
-        return getAttributes().hasHeadGear;
-    }
 }

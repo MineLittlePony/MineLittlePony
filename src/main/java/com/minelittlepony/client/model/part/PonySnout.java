@@ -5,7 +5,6 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.model.ICapitated;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
@@ -22,11 +21,8 @@ public class PonySnout implements IPart, MsonModel {
     private ModelPart mare;
     private ModelPart stallion;
 
-    private ICapitated<ModelPart> head;
-
     @Override
     public void init(ModelContext context) {
-        head = context.getModel();
         mare = context.findByName("mare");
         stallion = context.findByName("stallion");
 
@@ -50,7 +46,7 @@ public class PonySnout implements IPart, MsonModel {
     }
 
     public void setGender(Gender gender) {
-        boolean show = visible && !head.hasHeadGear() && MineLittlePony.getInstance().getConfig().snuzzles.get();
+        boolean show = visible && MineLittlePony.getInstance().getConfig().snuzzles.get();
 
         mare.visible = (show && gender.isMare());
         stallion.visible = (show && gender.isStallion());

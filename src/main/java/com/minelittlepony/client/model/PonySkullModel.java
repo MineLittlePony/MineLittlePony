@@ -40,11 +40,6 @@ public class PonySkullModel extends SkullOverlayEntityModel implements MsonModel
     }
 
     @Override
-    public boolean hasHeadGear() {
-        return false;
-    }
-
-    @Override
     public void render(float poweredTicks, float yaw, float pitch) {
         super.render(poweredTicks, yaw, pitch);
         hair.yaw = skull.yaw;

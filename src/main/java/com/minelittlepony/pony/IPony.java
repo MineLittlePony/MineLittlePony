@@ -71,14 +71,6 @@ public interface IPony {
     boolean isPartiallySubmerged(LivingEntity entity);
 
     /**
-     * Returns true if an entity is wearing any headgear. This is used to hide things like the snout when wearing items
-     * such as the pumpkin, a player's head, or any other types of blocks.
-     *
-     * In this case the helmet does <i>not</i> count as headgear because those generally don't interfere with snuzzle rendering.
-     */
-    boolean isWearingHeadgear(LivingEntity entity);
-
-    /**
      * Gets the race associated with this pony.
      *
      * @param ignorePony    True to ignore the client's current pony level setting.

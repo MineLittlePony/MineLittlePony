@@ -90,7 +90,7 @@ public class GuiPonySettings extends GameGui {
             content.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.scale");
             content.addButton(new Slider(LEFT, row += 15, 0.1F, 3, config.getGlobalScaleFactor())
                     .onChange(config::setGlobalScaleFactor)
-                    .setFormatter(value -> describeCurrentScale(value)));
+                    .setFormatter(this::describeCurrentScale));
             content.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.size");
             content.addButton(new EnumSlider<>(LEFT, row += 15, config.sizeOverride.get())
                     .onChange(config.sizeOverride::set));

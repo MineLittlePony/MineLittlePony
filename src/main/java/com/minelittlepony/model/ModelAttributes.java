@@ -57,10 +57,6 @@ public class ModelAttributes<T extends LivingEntity> {
      * Flag indicating that this model is performing a rainboom (flight).
      */
     public boolean isGoingFast;
-    /**
-     * True if the model is wearing any unconventional headgear (ie. a Pumpkin)
-     */
-    public boolean hasHeadGear;
 
     /**
      * Vertical pitch whilst flying.
@@ -105,7 +101,6 @@ public class ModelAttributes<T extends LivingEntity> {
         isSwimming = mode == Mode.THIRD_PERSON && pony.isSwimming(entity);
         isSwimmingRotated = mode == Mode.THIRD_PERSON && isSwimming && (entity instanceof PlayerEntity || entity instanceof IRotatedSwimmer);
         isRidingInteractive = pony.isRidingInteractive(entity);
-        hasHeadGear = pony.isWearingHeadgear(entity);
         interpolatorId = entity.getUuid();
         isLeftHanded = entity.getMainArm() == Arm.LEFT;
     }

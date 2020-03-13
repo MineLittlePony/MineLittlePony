@@ -14,12 +14,8 @@ import net.minecraft.block.Material;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
@@ -125,19 +121,6 @@ public class Pony implements IPony {
         Size size = entity.isBaby() ? Size.FOAL : metadata.getSize();
 
         return new Vec3d(entity.getX(), entity.getY() + (double) entity.getEyeHeight(entity.getPose()) * size.getScaleFactor(), entity.getZ());
-    }
-
-    @Override
-    public boolean isWearingHeadgear(LivingEntity entity) {
-        ItemStack stack = entity.getEquippedStack(EquipmentSlot.HEAD);
-
-        if (stack.isEmpty()) {
-            return false;
-        }
-
-        Item item = stack.getItem();
-
-        return !(item instanceof ArmorItem) || ((ArmorItem) item).getSlotType() != EquipmentSlot.HEAD;
     }
 
     @Override
