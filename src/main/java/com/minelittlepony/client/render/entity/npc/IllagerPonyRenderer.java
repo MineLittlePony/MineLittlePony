@@ -78,7 +78,7 @@ public abstract class IllagerPonyRenderer<T extends IllagerEntity> extends PonyR
         public void render(IllusionerEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
             if (entity.isInvisible()) {
                 Vec3d[] clones = entity.method_7065(tickDelta);
-                float rotation = getCustomAngle(entity, tickDelta);
+                float rotation = getAnimationProgress(entity, tickDelta);
 
                 for (int i = 0; i < clones.length; ++i) {
                     stack.push();
@@ -96,7 +96,7 @@ public abstract class IllagerPonyRenderer<T extends IllagerEntity> extends PonyR
         }
 
         @Override
-        protected boolean method_4056(IllusionerEntity entity) {
+        protected boolean isFullyVisible(IllusionerEntity entity) {
             return true;
         }
     }

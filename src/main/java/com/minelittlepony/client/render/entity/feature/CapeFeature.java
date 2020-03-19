@@ -38,17 +38,11 @@ public class CapeFeature<M extends ClientPonyModel<AbstractClientPlayerEntity>> 
             stack.translate(0, 0.24F, 0);
             model.getBodyPart(BodyPart.BODY).rotate(stack);
 
-            double capeX = MathHelper.lerp(tickDelta, player.field_7524, player.field_7500) - MathHelper.lerp(tickDelta, player.prevX, player.getX());
-            double capeY = MathHelper.lerp(tickDelta, player.field_7502, player.field_7521) - MathHelper.lerp(tickDelta, player.prevY, player.getY());
-            double capeZ = MathHelper.lerp(tickDelta, player.field_7522, player.field_7499) - MathHelper.lerp(tickDelta, player.prevZ, player.getZ());
+            double capeX = MathHelper.lerp(tickDelta, player.capeX, player.prevCapeX) - MathHelper.lerp(tickDelta, player.prevX, player.getX());
+            double capeY = MathHelper.lerp(tickDelta, player.capeY, player.prevCapeY) - MathHelper.lerp(tickDelta, player.prevY, player.getY());
+            double capeZ = MathHelper.lerp(tickDelta, player.capeZ, player.prevCapeZ) - MathHelper.lerp(tickDelta, player.prevZ, player.getZ());
 
             float motionYaw = player.prevBodyYaw + (player.bodyYaw - player.prevBodyYaw);
-
-            //double capeX = player.prevRenderX + (player.x - player.prevRenderX) * scale - (player.prevX + (player.x - player.prevX) * scale);
-            //double capeY = player.prevRenderY + (player.y - player.prevRenderY) * scale - (player.prevY + (player.y - player.prevY) * scale);
-            //double capeZ = player.prevRenderZ + (player.z - player.prevRenderZ) * scale - (player.prevZ + (player.z - player.prevZ) * scale);
-
-            //float motionYaw = player.prevRenderYawOffset + (player.renderYawOffset - player.prevRenderYawOffset) * scale;
 
             double sin = MathHelper.sin(motionYaw * PI / 180);
             double cos = (-MathHelper.cos(motionYaw * PI / 180));
@@ -64,8 +58,7 @@ public class CapeFeature<M extends ClientPonyModel<AbstractClientPlayerEntity>> 
 
             if (capeMotionX < 0) capeMotionX = 0;
 
-            float camera = MathHelper.lerp(tickDelta, player.field_7505, player.field_7483);
-            //float camera = player.prevCameraYaw + (player.cameraYaw - player.prevCameraYaw) * scale;
+            float camera = MathHelper.lerp(tickDelta, player.prevStrideDistance, player.strideDistance);
             capeMotionY += MathHelper.sin(MathHelper.lerp(tickDelta, player.prevHorizontalSpeed, player.horizontalSpeed) * 6) * 32 * camera;
 
             stack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(2 + capeMotionX / 12 + capeMotionY));

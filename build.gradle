@@ -67,7 +67,9 @@ dependencies {
     include "com.minelittlepony:Mson:${project.mson_version}"
 
     modImplementation "com.minelittlepony:HDSkins:${project.hd_skins_version}"
-    modCompileOnly "io.github.prospector:modmenu:${project.modmenu_version}"
+    modImplementation("io.github.prospector:modmenu:${project.modmenu_version}") {
+        exclude group: "net.fabricmc.fabric-api"
+    }
 }
 
 //
