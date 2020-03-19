@@ -13,8 +13,8 @@ abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity {
     public MixinClientPlayerEntity() { super(null, null); }
 
     @Override
-    public float getActiveEyeHeight(EntityPose entityPose_1, EntityDimensions entitySize_1) {
-        float value = super.getActiveEyeHeight(entityPose_1, entitySize_1);
+    public float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
+        float value = super.getActiveEyeHeight(pose, dimensions);
 
         IPony pony = MineLittlePony.getInstance().getManager().getPony(this);
 

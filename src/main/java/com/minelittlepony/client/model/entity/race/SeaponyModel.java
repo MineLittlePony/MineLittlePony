@@ -84,7 +84,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
             rightArm.pitch -= 0.5F;
         }
 
-        if (!entity.isSubmergedInWater() || entity.onGround) {
+        if (!entity.isSubmergedInWater() || entity.method_24828()) {
             leftArm.yaw -= 0.5F;
             rightArm.yaw += 0.5F;
         }

@@ -6,7 +6,7 @@ import net.minecraft.entity.mob.DrownedEntity;
 import net.minecraft.entity.mob.GiantEntity;
 import net.minecraft.entity.mob.HuskEntity;
 import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.entity.mob.ZombiePigmanEntity;
+import net.minecraft.entity.mob.ZombifiedPiglinEntity;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.model.ModelType;
@@ -40,14 +40,14 @@ public class ZomponyRenderer<Zombie extends ZombieEntity> extends PonyRenderer.C
         }
     }
 
-    public static class Pigman extends ZomponyRenderer<ZombiePigmanEntity> {
+    public static class Piglin extends ZomponyRenderer<ZombifiedPiglinEntity> {
 
-        public Pigman(EntityRenderDispatcher manager) {
+        public Piglin(EntityRenderDispatcher manager) {
             super(manager);
         }
 
         @Override
-        public Identifier findTexture(ZombiePigmanEntity entity) {
+        public Identifier findTexture(ZombifiedPiglinEntity entity) {
             return PIGMAN;
         }
     }
