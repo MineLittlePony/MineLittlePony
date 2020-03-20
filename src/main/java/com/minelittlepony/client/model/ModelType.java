@@ -10,6 +10,7 @@ import com.minelittlepony.client.model.entity.BreezieModel;
 import com.minelittlepony.client.model.entity.EnderStallionModel;
 import com.minelittlepony.client.model.entity.GuardianPonyModel;
 import com.minelittlepony.client.model.entity.IllagerPonyModel;
+import com.minelittlepony.client.model.entity.PiglinPonyModel;
 import com.minelittlepony.client.model.entity.PillagerPonyModel;
 import com.minelittlepony.client.model.entity.SkeleponyModel;
 import com.minelittlepony.client.model.entity.VillagerPonyModel;
@@ -53,6 +54,7 @@ public final class ModelType {
     public static final ModelKey<VillagerPonyModel<?>> VILLAGER = register("villager", VillagerPonyModel::new);
     public static final ModelKey<WitchPonyModel> WITCH = register("witch", WitchPonyModel::new);
     public static final ModelKey<ZomponyModel<?>> ZOMBIE = register("zombie", ZomponyModel::new);
+    public static final ModelKey<PiglinPonyModel> PIGLIN = register("piglin", PiglinPonyModel::new);
     public static final ModelKey<ZomponyVillagerModel> ZOMBIE_VILLAGER = register("zombie_villager", ZomponyVillagerModel::new);
     public static final ModelKey<SkeleponyModel<?>> SKELETON = register("skeleton", SkeleponyModel::new);
     public static final ModelKey<SkeleponyModel<?>> SKELETON_CLOTHES = register("skeleton_clothes", SkeleponyModel::new);
