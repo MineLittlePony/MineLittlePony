@@ -57,7 +57,7 @@ dependencies {
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 
     modApi "net.fabricmc.fabric-api:fabric-api-base:0.1.2+"
-    modApi "net.fabricmc.fabric-api:fabric-events-lifecycle-v0:0.1.2+b7f9825d0a"
+    modApi "net.fabricmc.fabric-api:fabric-events-lifecycle-v0:0.1.2+b7f9825dd1"
     modApi "net.fabricmc.fabric-api:fabric-resource-loader-v0:0.1.8+"
 
     modApi "com.minelittlepony:Kirin:${project.kirin_version}"
@@ -67,8 +67,8 @@ dependencies {
     include "com.minelittlepony:Mson:${project.mson_version}"
 
     modImplementation "com.minelittlepony:HDSkins:${project.hd_skins_version}"
-    modImplementation("io.github.prospector:modmenu:${project.modmenu_version}") {
-        exclude group: "net.fabricmc.fabric-api"
+    modCompileOnly("io.github.prospector:modmenu:${project.modmenu_version}") {
+        transitive = false
     }
 }
 
