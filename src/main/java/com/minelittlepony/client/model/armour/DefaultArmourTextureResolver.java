@@ -79,23 +79,25 @@ public class DefaultArmourTextureResolver<T extends LivingEntity> implements IAr
         });
     }
 
-    private Identifier getArmorTexture(String def, @Nullable String type) {
-
-        if (type.isEmpty() || type.equals(def)) {
-            return HUMAN_ARMOUR.computeIfAbsent(def, Identifier::new);
-        }
-
-        return HUMAN_ARMOUR.computeIfAbsent(type, s -> {
-            Identifier modId = new Identifier(s);
+    private Identifier getArmorTexture(String def, String type) {
+        return HUMAN_ARMOUR.computeIfAbsent(def + "#" + type, s -> {
             Identifier defId = new Identifier(def);
 
-            Path defPath = Paths.get(defId.getPath());
+            if (type.isEmpty() || type.equals(def)) {
+                return defId;
+            }
 
-            String domain = modId.getNamespace();
+            Identifier modId = new Identifier(type);
 
-            String path = Paths.get(modId.getPath()).getParent().resolve(defPath.getFileName()).toString().replace('\\', '/');
+            Path modPath = Paths.get(modId.getPath()).getParent();
 
-            Identifier interemId = new Identifier(domain, path);
+            if (modPath == null) {
+                return defId;
+            }
+
+            Path path = modPath.resolve(Paths.get(defId.getPath()).getFileName());
+
+            Identifier interemId = new Identifier(modId.getNamespace(), path.toString().replace('\\', '/'));
 
             if (MinecraftClient.getInstance().getResourceManager().containsResource(interemId)) {
                 return interemId;
