@@ -6,7 +6,6 @@ import net.minecraft.entity.mob.DrownedEntity;
 import net.minecraft.entity.mob.GiantEntity;
 import net.minecraft.entity.mob.HuskEntity;
 import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.entity.mob.ZombifiedPiglinEntity;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.model.ModelType;
@@ -16,7 +15,6 @@ public class ZomponyRenderer<Zombie extends ZombieEntity> extends PonyRenderer.C
 
     public static final Identifier ZOMBIE = new Identifier("minelittlepony", "textures/entity/zombie/zombie_pony.png");
     public static final Identifier HUSK = new Identifier("minelittlepony", "textures/entity/zombie/husk_pony.png");
-    public static final Identifier PIGMAN = new Identifier("minelittlepony", "textures/entity/zombie/zombie_pigman_pony.png");
     public static final Identifier DROWNED = new Identifier("minelittlepony", "textures/entity/zombie/drowned_pony.png");
 
     public ZomponyRenderer(EntityRenderDispatcher manager) {
@@ -37,18 +35,6 @@ public class ZomponyRenderer<Zombie extends ZombieEntity> extends PonyRenderer.C
         @Override
         public Identifier findTexture(DrownedEntity entity) {
             return DROWNED;
-        }
-    }
-
-    public static class Piglin extends ZomponyRenderer<ZombifiedPiglinEntity> {
-
-        public Piglin(EntityRenderDispatcher manager) {
-            super(manager);
-        }
-
-        @Override
-        public Identifier findTexture(ZombifiedPiglinEntity entity) {
-            return PIGMAN;
         }
     }
 
