@@ -20,7 +20,7 @@ abstract class MixinTexturedRenderLayers {
         }
     }
 
-    @Inject(method = "getEntityTranslucent()Lnet/minecraft/client/render/RenderLayer;", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getEntityTranslucentCull()Lnet/minecraft/client/render/RenderLayer;", at = @At("HEAD"), cancellable = true)
     private static void onGetItemTranslucent(CallbackInfoReturnable<RenderLayer> info) {
         if (LevitatingItemRenderer.usesTransparency()) {
             info.setReturnValue(LevitatingItemRenderer.getRenderLayer());
