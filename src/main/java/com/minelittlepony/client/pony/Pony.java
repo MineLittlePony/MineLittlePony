@@ -81,12 +81,12 @@ public class Pony implements IPony {
      * this is to keep Pegasus wings from flapping in odd situations (Hypixel).
      */
     private boolean isOnGround(LivingEntity entity) {
-        if (entity.method_24828()) {
+        if (entity.isOnGround()) {
             return true;
         }
 
         BlockState below = entity.getEntityWorld()
-                .getBlockState(entity.getSenseCenterPos().down(1));
+                .getBlockState(entity.getBlockPos().down(1));
 
         // Check for stairs so we can keep Pegasi from flailing their wings as they descend
         double offsetAmount = below.getBlock() instanceof StairsBlock ? 1 : 0.05;
@@ -108,7 +108,7 @@ public class Pony implements IPony {
     @Override
     public boolean isPartiallySubmerged(LivingEntity entity) {
         return entity.isSubmergedInWater()
-                || entity.getEntityWorld().getBlockState(entity.getSenseCenterPos()).getMaterial() == Material.WATER;
+                || entity.getEntityWorld().getBlockState(entity.getBlockPos()).getMaterial() == Material.WATER;
     }
 
     @Override

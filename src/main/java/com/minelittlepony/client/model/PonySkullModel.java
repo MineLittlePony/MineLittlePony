@@ -40,8 +40,8 @@ public class PonySkullModel extends SkullOverlayEntityModel implements MsonModel
     }
 
     @Override
-    public void render(float poweredTicks, float yaw, float pitch) {
-        super.render(poweredTicks, yaw, pitch);
+    public void method_2821(float poweredTicks, float yaw, float pitch) {
+        super.method_2821(poweredTicks, yaw, pitch);
         hair.yaw = skull.yaw;
         hair.pitch = skull.pitch;
      }

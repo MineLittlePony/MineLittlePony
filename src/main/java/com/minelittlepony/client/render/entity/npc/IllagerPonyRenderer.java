@@ -96,7 +96,7 @@ public abstract class IllagerPonyRenderer<T extends IllagerEntity> extends PonyR
         }
 
         @Override
-        protected boolean isFullyVisible(IllusionerEntity entity) {
+        protected boolean isVisible(IllusionerEntity entity) {
             return true;
         }
     }

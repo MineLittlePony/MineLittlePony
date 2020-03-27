@@ -21,7 +21,7 @@ public interface PonyPosture<T extends LivingEntity> {
     default void apply(T player, IModel model, MatrixStack stack, float yaw, float ticks, int invert) {
         if (applies(player)) {
             double motionX = player.getX() - player.prevX;
-            double motionY = player.method_24828() ? 0 : player.getY() - player.prevY;
+            double motionY = player.isOnGround() ? 0 : player.getY() - player.prevY;
             double motionZ = player.getZ() - player.prevZ;
 
             transform(model, player, stack, motionX, invert * motionY, motionZ, yaw, ticks);
