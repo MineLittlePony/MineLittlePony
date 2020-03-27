@@ -65,11 +65,13 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
     }
 
     @Override
-    public void synchroniseLegs(IModel model) {
-
+    public void synchroniseAngles(IModel model) {
         if (model instanceof BipedEntityModel) {
             @SuppressWarnings("unchecked")
             BipedEntityModel<T> mainModel = (BipedEntityModel<T>)model;
+            head.copyPositionAndRotation(mainModel.head);
+            helmet.copyPositionAndRotation(mainModel.helmet);
+
             torso.copyPositionAndRotation(mainModel.torso);
             rightArm.copyPositionAndRotation(mainModel.rightArm);
             leftArm.copyPositionAndRotation(mainModel.leftArm);

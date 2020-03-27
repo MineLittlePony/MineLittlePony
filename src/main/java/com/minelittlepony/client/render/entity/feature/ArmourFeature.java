@@ -56,7 +56,7 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
             if (armour.prepareToRender(armorSlot, layer)) {
                 pony.getBody().copyAttributes(armour);
                 armour.setAngles(entity, limbAngle, limbDistance, age, headYaw, headPitch);
-                armour.synchroniseLegs(pony.getBody());
+                armour.synchroniseAngles(pony.getBody());
 
                 IArmourTextureResolver<T> resolver = armour instanceof IArmourTextureResolver ? (IArmourTextureResolver<T>)armour : (IArmourTextureResolver<T>)DEFAULT;
 
