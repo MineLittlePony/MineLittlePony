@@ -6,11 +6,11 @@ import com.minelittlepony.model.IModel;
 
 public interface IArmour {
     /**
-     * Called to synchronise this model's legs with that of another.
+     * Called to synchronise this armour's angles with that of another.
      *
      * @param model The other model to mimic
      */
-    void synchroniseLegs(IModel model);
+    void synchroniseAngles(IModel model);
 
     /**
      * Resets the state of this model to all invisible.
