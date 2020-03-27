@@ -5,7 +5,7 @@ import net.minecraft.entity.EntityType;
 
 import com.minelittlepony.hdskins.client.dummy.DummyPlayer;
 import com.minelittlepony.hdskins.client.dummy.TextureProxy;
-import com.minelittlepony.hdskins.skins.SkinType;
+import com.minelittlepony.hdskins.profile.SkinType;
 import com.minelittlepony.hdskins.client.resources.LocalTexture;
 import com.minelittlepony.model.IRotatedSwimmer;
 

@@ -22,7 +22,7 @@ public class PonyPiglinRenderer extends PonyRenderer.Caster<HostileEntity, Pigli
     }
 
     @Override
-    protected boolean method_25450(HostileEntity entity) {
+    protected boolean isShaking(HostileEntity entity) {
        return entity instanceof PiglinEntity && ((PiglinEntity)entity).canConvert();
     }
 }

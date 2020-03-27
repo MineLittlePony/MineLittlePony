@@ -11,7 +11,7 @@ import com.minelittlepony.client.render.entity.feature.GlowingItemFeature;
 import com.minelittlepony.client.render.entity.feature.ArmourFeature;
 import com.minelittlepony.client.render.entity.feature.ElytraFeature;
 import com.minelittlepony.hdskins.client.dummy.DummyPlayerRenderer;
-import com.minelittlepony.hdskins.skins.SkinType;
+import com.minelittlepony.hdskins.profile.SkinType;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.pony.IPony;
 import com.minelittlepony.pony.meta.Race;

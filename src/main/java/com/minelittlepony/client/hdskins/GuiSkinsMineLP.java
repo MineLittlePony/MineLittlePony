@@ -5,8 +5,8 @@ import com.minelittlepony.common.client.gui.element.IconicToggle;
 import com.minelittlepony.common.client.gui.style.Style;
 import com.minelittlepony.hdskins.client.dummy.PlayerPreview;
 import com.minelittlepony.hdskins.client.gui.GuiSkins;
-import com.minelittlepony.hdskins.skins.SkinServerList;
-import com.minelittlepony.hdskins.skins.SkinType;
+import com.minelittlepony.hdskins.server.SkinServerList;
+import com.minelittlepony.hdskins.profile.SkinType;
 import com.minelittlepony.pony.IPonyManager;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 
