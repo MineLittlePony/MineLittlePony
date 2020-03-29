@@ -1,7 +1,7 @@
 package com.minelittlepony.client.hdskins;
 
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.common.client.gui.element.IconicToggle;
+import com.minelittlepony.common.client.gui.element.Cycler;
 import com.minelittlepony.common.client.gui.style.Style;
 import com.minelittlepony.hdskins.client.dummy.PlayerPreview;
 import com.minelittlepony.hdskins.client.gui.GuiSkins;
@@ -44,7 +44,7 @@ class GuiSkinsMineLP extends GuiSkins {
     public void init() {
         super.init();
 
-        addButton(new IconicToggle(width - 25, 142, 20, 20))
+        addButton(new Cycler(width - 25, 142, 20, 20))
                 .setStyles(
                         new Style().setIcon(new ItemStack(Items.BUCKET)).setTooltip("minelp.mode.dry", 0, 10),
                         new Style().setIcon(new ItemStack(Items.WATER_BUCKET)).setTooltip("minelp.mode.wet", 0, 10)
