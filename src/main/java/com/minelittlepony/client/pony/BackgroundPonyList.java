@@ -1,15 +1,13 @@
 package com.minelittlepony.client.pony;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceReloadListener.Synchronizer;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.profiler.Profiler;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.common.util.MoreStreams;
@@ -23,26 +21,29 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
-public class BackgroundPonyList {
+/**
+ * All currently loaded background ponies.
+ */
+class BackgroundPonyList {
 
     private static final Gson GSON = new Gson();
+
+    private static final String BGPONIES_JSON = "textures/entity/pony/bgponies.json";
 
     /**
      * All currently loaded background ponies.
      */
     private List<Identifier> backgroundPonyList = Lists.newArrayList();
 
-    public IPony getBackgroundPony(UUID uuid) {
-        if (getNumberOfPonies() == 0 || isUser(uuid)) {
-            return getPony(IPonyManager.getDefaultSkin(uuid));
+    public Identifier getId(UUID uuid) {
+        if (size() == 0 || isUser(uuid)) {
+            return IPonyManager.getDefaultSkin(uuid);
         }
 
-        int bgi = MathUtil.mod(uuid.hashCode(), getNumberOfPonies());
+        int bgi = MathUtil.mod(uuid.hashCode(), size());
 
-        return getPony(backgroundPonyList.get(bgi));
+        return backgroundPonyList.get(bgi);
     }
 
     public void reloadAll(ResourceManager resourceManager) {
@@ -79,7 +80,7 @@ public class BackgroundPonyList {
 
         backgroundPonyList = MoreStreams.distinct(backgroundPonyList);
 
-        MineLittlePony.logger.info("Detected {} background ponies installed.", getNumberOfPonies());
+        MineLittlePony.logger.info("Detected {} background ponies installed.", size());
     }
 
 
@@ -108,8 +109,12 @@ public class BackgroundPonyList {
         return collectedPonies;
     }
 
-    private int getNumberOfPonies() {
+    private int size() {
         return backgroundPonyList.size();
+    }
+
+    private static boolean isUser(UUID uuid) {
+        return MinecraftClient.getInstance().player != null && MinecraftClient.getInstance().player.getUuid().equals(uuid);
     }
 
     private static class BackgroundPonies {

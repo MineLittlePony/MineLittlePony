@@ -11,10 +11,8 @@ import java.util.UUID;
  */
 public interface IPonyManager  {
 
-    public static final Identifier STEVE = new Identifier("minelittlepony", "textures/entity/steve_pony.png");
-    public static final Identifier ALEX = new Identifier("minelittlepony", "textures/entity/alex_pony.png");
-
-    public static final String BGPONIES_JSON = "textures/entity/pony/bgponies.json";
+    Identifier STEVE = new Identifier("minelittlepony", "textures/entity/steve_pony.png");
+    Identifier ALEX = new Identifier("minelittlepony", "textures/entity/alex_pony.png");
 
     /**
      * Gets or creates a pony for the given player.
@@ -22,14 +20,14 @@ public interface IPonyManager  {
      *
      * @param player the player
      */
-    public IPony getPony(PlayerEntity player);
+    IPony getPony(PlayerEntity player);
 
     /**
      * Gets or creates a pony for the given skin resource and vanilla model type.
      *
      * @param resource A texture resource
      */
-    public IPony getPony(Identifier resource);
+    IPony getPony(Identifier resource);
 
     /**
      * Gets or creates a pony for the given skin resource and entity id.
@@ -64,14 +62,14 @@ public interface IPonyManager  {
      */
     void removePony(Identifier resource);
 
-    public static Identifier getDefaultSkin(UUID uuid) {
+    static Identifier getDefaultSkin(UUID uuid) {
         return isSlimSkin(uuid) ? ALEX : STEVE;
     }
 
     /**
      * Returns true if the given uuid is of a player would would use the ALEX skin type.
      */
-    public static boolean isSlimSkin(UUID uuid) {
+    static boolean isSlimSkin(UUID uuid) {
         return (uuid.hashCode() & 1) == 1;
     }
 }
