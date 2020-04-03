@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render;
 
+import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.pony.IPony;
 import com.minelittlepony.util.Color;
 
 import javax.annotation.Nullable;

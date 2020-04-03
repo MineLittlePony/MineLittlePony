@@ -5,7 +5,7 @@ import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Box;
 
-import com.minelittlepony.pony.IPony;
+import com.minelittlepony.api.pony.IPony;
 
 public class FrustrumCheck<T extends LivingEntity> extends Frustum {
 

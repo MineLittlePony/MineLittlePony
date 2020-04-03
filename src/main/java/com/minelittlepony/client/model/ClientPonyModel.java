@@ -5,13 +5,13 @@ import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 
+import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.IPonyData;
+import com.minelittlepony.api.pony.meta.Size;
 import com.minelittlepony.client.pony.PonyData;
 import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.model.ModelAttributes;
 import com.minelittlepony.mson.api.model.biped.MsonPlayer;
-import com.minelittlepony.pony.IPony;
-import com.minelittlepony.pony.IPonyData;
-import com.minelittlepony.pony.meta.Size;
 
 /**
  * The raw pony model without any implementations.

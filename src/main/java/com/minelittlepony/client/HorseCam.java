@@ -5,7 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 
-import com.minelittlepony.pony.IPony;
+import com.minelittlepony.api.pony.IPony;
 
 public class HorseCam {
     /**

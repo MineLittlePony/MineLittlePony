@@ -1,5 +1,6 @@
 package com.minelittlepony.client.model;
 
+import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.client.model.part.PonyEars;
 import com.minelittlepony.client.model.part.PonySnout;
 import com.minelittlepony.client.model.part.UnicornHorn;
@@ -7,7 +8,7 @@ import com.minelittlepony.client.pony.PonyData;
 import com.minelittlepony.model.ICapitated;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
-import com.minelittlepony.pony.IPonyData;
+
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.SkullOverlayEntityModel;

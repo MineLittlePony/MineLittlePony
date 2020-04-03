@@ -6,6 +6,9 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 
+import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.IPonyData;
+import com.minelittlepony.api.pony.meta.Size;
 import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IUnicorn;
@@ -13,9 +16,6 @@ import com.minelittlepony.model.ModelAttributes;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.model.BoxBuilder.RenderLayerSetter;
-import com.minelittlepony.pony.IPony;
-import com.minelittlepony.pony.IPonyData;
-import com.minelittlepony.pony.meta.Size;
 
 public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>> extends IPonyModel<T> {
 

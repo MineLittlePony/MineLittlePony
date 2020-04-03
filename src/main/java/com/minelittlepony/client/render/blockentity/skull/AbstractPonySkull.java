@@ -5,8 +5,8 @@ import net.minecraft.client.util.math.MatrixStack;
 
 import com.minelittlepony.client.model.PonySkullModel;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer.ISkull;
+import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.pony.IPony;
 
 public abstract class AbstractPonySkull implements ISkull {
 

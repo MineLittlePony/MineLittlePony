@@ -1,10 +1,10 @@
-package com.minelittlepony.pony;
+package com.minelittlepony.api.pony;
 
-import com.minelittlepony.pony.meta.Gender;
-import com.minelittlepony.pony.meta.Race;
-import com.minelittlepony.pony.meta.Size;
-import com.minelittlepony.pony.meta.TailLength;
-import com.minelittlepony.pony.meta.Wearable;
+import com.minelittlepony.api.pony.meta.Gender;
+import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.api.pony.meta.Size;
+import com.minelittlepony.api.pony.meta.TailLength;
+import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.util.IInterpolator;
 
 import java.util.UUID;

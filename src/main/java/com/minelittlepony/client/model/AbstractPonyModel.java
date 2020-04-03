@@ -1,13 +1,13 @@
 package com.minelittlepony.client.model;
 
 import com.minelittlepony.client.model.armour.PonyArmourModel;
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.model.MsonPart;
-import com.minelittlepony.pony.meta.Race;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;

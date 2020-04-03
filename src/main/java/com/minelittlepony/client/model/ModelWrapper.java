@@ -2,12 +2,12 @@ package com.minelittlepony.client.model;
 
 import net.minecraft.entity.LivingEntity;
 
+import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.armour.IArmour;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.model.capabilities.IModelWrapper;
 import com.minelittlepony.mson.api.ModelKey;
-import com.minelittlepony.pony.IPonyData;
 
 /**
  * Container class for the various models and their associated piece of armour.

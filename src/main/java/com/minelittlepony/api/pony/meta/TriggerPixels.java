@@ -1,8 +1,8 @@
-package com.minelittlepony.pony.meta;
+package com.minelittlepony.api.pony.meta;
 
 import net.minecraft.client.texture.NativeImage;
 
-import com.minelittlepony.pony.ITriggerPixelMapped;
+import com.minelittlepony.api.pony.ITriggerPixelMapped;
 import com.minelittlepony.util.Color;
 
 /**

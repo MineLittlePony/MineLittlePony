@@ -4,8 +4,8 @@ import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.PiglinEntity;
 import net.minecraft.util.math.MathHelper;
 
+import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.render.EquineRenderManager;
-import com.minelittlepony.pony.IPony;
 
 public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
 

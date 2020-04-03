@@ -1,11 +1,11 @@
 package com.minelittlepony.client.render.entity;
 
+import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.mson.api.ModelKey;
-import com.minelittlepony.pony.IPony;
-import com.minelittlepony.pony.meta.Race;
 import com.minelittlepony.util.MathUtil;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;

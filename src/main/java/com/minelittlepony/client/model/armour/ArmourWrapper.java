@@ -2,10 +2,10 @@ package com.minelittlepony.client.model.armour;
 
 import net.minecraft.entity.LivingEntity;
 
+import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.model.armour.ArmourLayer;
 import com.minelittlepony.model.armour.IEquestrianArmour;
-import com.minelittlepony.pony.IPonyData;
 
 import java.util.function.Supplier;
 

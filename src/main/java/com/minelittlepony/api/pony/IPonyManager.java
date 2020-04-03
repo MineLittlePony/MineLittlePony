@@ -1,4 +1,4 @@
-package com.minelittlepony.pony;
+package com.minelittlepony.api.pony;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;

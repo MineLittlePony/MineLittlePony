@@ -3,11 +3,11 @@ package com.minelittlepony.client.model.gear;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 
+import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.gear.IStackable;
 import com.minelittlepony.mson.api.ModelContext;
-import com.minelittlepony.pony.meta.Wearable;
 
 public class Muffin extends AbstractGear implements IStackable {
 
