@@ -1,5 +1,6 @@
 package com.minelittlepony.client.hdskins;
 
+import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.common.client.gui.element.Cycler;
 import com.minelittlepony.common.client.gui.style.Style;
@@ -7,7 +8,6 @@ import com.minelittlepony.hdskins.client.dummy.PlayerPreview;
 import com.minelittlepony.hdskins.client.gui.GuiSkins;
 import com.minelittlepony.hdskins.server.SkinServerList;
 import com.minelittlepony.hdskins.profile.SkinType;
-import com.minelittlepony.pony.IPonyManager;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 
 import net.minecraft.item.Items;

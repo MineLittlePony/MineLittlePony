@@ -3,10 +3,10 @@ package com.minelittlepony.client.model.entity;
 import net.minecraft.entity.mob.WitchEntity;
 import net.minecraft.util.math.MathHelper;
 
+import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.entity.race.ZebraModel;
 import com.minelittlepony.client.render.EquineRenderManager;
-import com.minelittlepony.pony.IPony;
-import com.minelittlepony.pony.meta.Wearable;
 
 public class WitchPonyModel extends ZebraModel<WitchEntity> {
 

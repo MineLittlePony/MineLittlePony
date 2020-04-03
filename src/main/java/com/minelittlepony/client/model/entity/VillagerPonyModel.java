@@ -10,8 +10,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
 
-import com.minelittlepony.pony.IPony;
-import com.minelittlepony.pony.meta.Race;
+import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.model.entity.race.AlicornModel;
 import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.client.render.entity.npc.PonyTextures;

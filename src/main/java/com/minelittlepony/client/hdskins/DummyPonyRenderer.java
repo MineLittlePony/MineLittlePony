@@ -1,5 +1,7 @@
 package com.minelittlepony.client.hdskins;
 
+import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.ModelType;
@@ -13,8 +15,6 @@ import com.minelittlepony.client.render.entity.feature.ElytraFeature;
 import com.minelittlepony.hdskins.client.dummy.DummyPlayerRenderer;
 import com.minelittlepony.hdskins.profile.SkinType;
 import com.minelittlepony.mson.api.ModelKey;
-import com.minelittlepony.pony.IPony;
-import com.minelittlepony.pony.meta.Race;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;

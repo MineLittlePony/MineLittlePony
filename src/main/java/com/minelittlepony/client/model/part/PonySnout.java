@@ -4,13 +4,13 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 
+import com.minelittlepony.api.pony.meta.Gender;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
 import com.minelittlepony.mson.api.model.MsonPart;
 import com.minelittlepony.mson.api.model.BoxBuilder.ContentAccessor;
-import com.minelittlepony.pony.meta.Gender;
 
 import java.util.UUID;
 

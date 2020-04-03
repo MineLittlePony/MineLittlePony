@@ -5,6 +5,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.util.Identifier;
 
+import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.client.model.entity.BreezieModel;
 import com.minelittlepony.client.model.entity.EnderStallionModel;
@@ -35,8 +37,6 @@ import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.mson.api.Mson;
 import com.minelittlepony.mson.api.MsonModel;
-import com.minelittlepony.pony.meta.Race;
-import com.minelittlepony.pony.meta.Wearable;
 
 import javax.annotation.Nullable;
 

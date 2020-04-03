@@ -4,9 +4,9 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
 
 import com.google.common.collect.Maps;
+import com.minelittlepony.api.pony.meta.Size;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
-import com.minelittlepony.pony.meta.Size;
 
 import java.util.Map;
 

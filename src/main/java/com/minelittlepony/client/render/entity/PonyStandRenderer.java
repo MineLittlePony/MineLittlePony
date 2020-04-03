@@ -13,13 +13,13 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.entity.race.EarthPonyModel;
 import com.minelittlepony.client.pony.PonyData;
 import com.minelittlepony.client.render.entity.feature.ArmourFeature;
 import com.minelittlepony.model.armour.ArmourLayer;
-import com.minelittlepony.pony.meta.Race;
 
 public class PonyStandRenderer extends ArmorStandEntityRenderer {
 

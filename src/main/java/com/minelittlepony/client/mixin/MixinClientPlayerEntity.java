@@ -1,7 +1,8 @@
 package com.minelittlepony.client.mixin;
 
+import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.pony.IPony;
+
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.EntityDimensions;

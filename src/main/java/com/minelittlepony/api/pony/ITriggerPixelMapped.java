@@ -1,4 +1,4 @@
-package com.minelittlepony.pony;
+package com.minelittlepony.api.pony;
 
 /**
  * Interface for enums that can be parsed from an image trigger pixel value.

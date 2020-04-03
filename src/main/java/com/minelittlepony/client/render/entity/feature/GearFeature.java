@@ -8,13 +8,13 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
+import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.model.gear.IStackable;
-import com.minelittlepony.pony.meta.Wearable;
 
 import java.util.HashMap;
 import java.util.Map;
