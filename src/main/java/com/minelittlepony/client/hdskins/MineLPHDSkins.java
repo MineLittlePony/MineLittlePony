@@ -27,7 +27,7 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
         ClientReadyCallback.EVENT.register(client -> {
             // Clear ponies when skins are cleared
             PonyManager ponyManager = (PonyManager) MineLittlePony.getInstance().getManager();
-            SkinCacheClearCallback.EVENT.register(ponyManager::onSkinCacheCleared);
+            SkinCacheClearCallback.EVENT.register(ponyManager::clearCache);
 
             // Ponify the skins GUI.
             GuiSkins.setSkinsGui(GuiSkinsMineLP::new);
