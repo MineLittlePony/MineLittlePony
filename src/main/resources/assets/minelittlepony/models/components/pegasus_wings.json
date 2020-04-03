@@ -65,7 +65,7 @@
 		"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
 		"content": {
 			"folded": {
-				"texture": {"u": 56, "v": 16},
+				"texture": {"u": 56, "v": 32},
 				"center": [0, 13, -2],
 				"rotate": [90, 0, 0],
 				"cubes": [
@@ -75,7 +75,7 @@
 				]
 			},
 			"extended": {
-				"texture": {"u": 57, "v": 19, "w": 64, "h": 64},
+				"texture": {"u": 57, "v": 35, "w": 64, "h": 64},
 				"center": [-4.5, 5.3, 6],
 				"rotate": [-30, 180, 0],
 				"children": [
