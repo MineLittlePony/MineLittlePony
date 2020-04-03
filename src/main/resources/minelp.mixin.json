@@ -11,6 +11,7 @@
         "MixinEntityRenderDispatcher",
         "MixinSkullBlockEntityRenderer",
         "MixinFirstPersonRenderer",
+        "MixinItemRenderer",
         "MixinTexturedRenderLayers",
         "MixinSpriteIdentifier",
         "MixinClientPlayerEntity",
