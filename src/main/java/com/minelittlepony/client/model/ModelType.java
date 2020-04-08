@@ -12,6 +12,7 @@ import com.minelittlepony.client.model.entity.BreezieModel;
 import com.minelittlepony.client.model.entity.EnderStallionModel;
 import com.minelittlepony.client.model.entity.GuardianPonyModel;
 import com.minelittlepony.client.model.entity.IllagerPonyModel;
+import com.minelittlepony.client.model.entity.ParaspriteModel;
 import com.minelittlepony.client.model.entity.PiglinPonyModel;
 import com.minelittlepony.client.model.entity.PillagerPonyModel;
 import com.minelittlepony.client.model.entity.SkeleponyModel;
@@ -63,6 +64,7 @@ public final class ModelType {
     public static final ModelKey<GuardianPonyModel> GUARDIAN = register("guardian", GuardianPonyModel::new);
     public static final ModelKey<EnderStallionModel> ENDERMAN = register("enderman", EnderStallionModel::new);
     public static final ModelKey<BreezieModel<VexEntity>> BREEZIE = register("breezie", BreezieModel::new);
+    public static final ModelKey<ParaspriteModel> PARASPRITE = register("parasprite", ParaspriteModel::new);
 
     public static final ModelKey<PonyElytra<?>> ELYTRA = register("elytra", PonyElytra::new);
     public static final ModelKey<PonySkullModel> SKULL = register("skull", PonySkullModel::new);
