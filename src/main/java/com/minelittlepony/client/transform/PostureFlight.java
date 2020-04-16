@@ -1,7 +1,7 @@
 package com.minelittlepony.client.transform;
 
+import com.minelittlepony.common.util.animation.MotionCompositor;
 import com.minelittlepony.model.IModel;
-import com.minelittlepony.util.MotionCompositor;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.client.util.math.MatrixStack;

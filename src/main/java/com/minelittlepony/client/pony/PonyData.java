@@ -16,8 +16,7 @@ import com.minelittlepony.api.pony.meta.TriggerPixels;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.util.render.NativeUtil;
-import com.minelittlepony.util.BasicEasingInterpolator;
-import com.minelittlepony.util.IInterpolator;
+import com.minelittlepony.common.util.animation.Interpolator;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -145,8 +144,8 @@ public class PonyData implements IPonyData {
     }
 
     @Override
-    public IInterpolator getInterpolator(UUID interpolatorId) {
-        return BasicEasingInterpolator.getInstance(interpolatorId);
+    public Interpolator getInterpolator(UUID interpolatorId) {
+        return Interpolator.linear(interpolatorId);
     }
 
     @Override
