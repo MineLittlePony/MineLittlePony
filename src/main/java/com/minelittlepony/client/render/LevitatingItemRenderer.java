@@ -120,22 +120,27 @@ public class LevitatingItemRenderer {
         boolean doNormal = entity.getItemUseTime() <= 0 || action == UseAction.NONE || action == UseAction.CROSSBOW;
 
         if (doNormal) { // eating, blocking, and drinking are not transformed. Only held items.
-            float ticks = MinecraftClient.getInstance().getTickDelta() - entity.age;
+            int sign = left ? 1 : -1;
+            float ticks = entity.age * sign;
 
-            float floatAmount = (float)Math.sin(ticks / 9) / 40;
-            float driftAmount = (float)Math.cos(ticks / 6) / 40;
+            float floatAmount = -(float)Math.sin(ticks / 9F) / 40F;
+            float driftAmount = -(float)Math.cos(ticks / 6F) / 40F;
 
             boolean handHeldTool =
                        action == UseAction.BOW
                     || action == UseAction.CROSSBOW
                     || action == UseAction.BLOCK;
 
-            stack.translate(driftAmount - floatAmount / 4, floatAmount, handHeldTool ? -0.3F : -0.6F);
+            float distanceChange = handHeldTool ? -0.3F : -0.6F;
 
-            if (/*!renderer.hasDepthInGui(item) && */!handHeldTool) { // bows have to point forwards
-                int sign = left ? 1 : -1;
-                stack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(sign * -60));
-                stack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(sign * 30));
+            stack.translate(
+                    driftAmount - floatAmount / 4F + distanceChange / 1.5F * sign,
+                    floatAmount,
+                    distanceChange);
+
+            if (!handHeldTool) { // bows have to point forwards
+                stack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(sign * -60 + floatAmount));
+                stack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(sign * 30 + driftAmount));
             }
         }
     }
