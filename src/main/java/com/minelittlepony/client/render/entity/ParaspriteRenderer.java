@@ -2,7 +2,7 @@ package com.minelittlepony.client.render.entity;
 
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.render.entity.feature.PigSaddleFeatureRenderer;
+import net.minecraft.client.render.entity.feature.SaddleFeatureRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.passive.StriderEntity;
 import net.minecraft.util.Identifier;
@@ -19,12 +19,12 @@ public class ParaspriteRenderer extends MobEntityRenderer<StriderEntity, Paraspr
 
     public ParaspriteRenderer(EntityRenderDispatcher dispatcher) {
         super(dispatcher, ModelType.PARASPRITE.createModel(), 0.5F);
-        addFeature(new PigSaddleFeatureRenderer<>(this, ModelType.PARASPRITE.createModel(), SADDLE));
+        addFeature(new SaddleFeatureRenderer<>(this, ModelType.PARASPRITE.createModel(), SADDLE));
     }
 
     @Override
     public Identifier getTexture(StriderEntity entity) {
-        return entity.method_26348() ? CONFUSED : NORMAL;
+        return entity.isCold() ? CONFUSED : NORMAL;
     }
 
     @Override
@@ -42,6 +42,6 @@ public class ParaspriteRenderer extends MobEntityRenderer<StriderEntity, Paraspr
 
     @Override
     protected boolean isShaking(StriderEntity entity) {
-        return entity.method_26348();
+        return entity.isCold();
     }
 }
