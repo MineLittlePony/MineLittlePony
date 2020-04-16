@@ -55,7 +55,7 @@ public final class MobRenderers {
     public static final MobRenderers INANIMATE = register("inanimates", (state, pony) -> {
        pony.switchRenderer(state, EntityType.ARMOR_STAND, PonyStandRenderer::new);
     });
-    public static final MobRenderers STRIDER = register("strider", (state, pony) -> {
+    public static final MobRenderers STRIDER = register("striders", (state, pony) -> {
         pony.switchRenderer(state, EntityType.STRIDER, ParaspriteRenderer::new);
     });
 
