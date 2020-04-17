@@ -16,6 +16,12 @@
 				"type": "mson:slot",
 				"name": "ears",
 				"implementation": "com.minelittlepony.client.model.part.PonyEars",
+				"content": "minelittlepony:components/ears"
+			},
+			{
+				"type": "mson:slot",
+				"name": "bat_ears",
+				"implementation": "com.minelittlepony.client.model.part.PonyEars",
 				"content": "minelittlepony:components/bat_ears"
 			},
 			{
@@ -28,7 +34,7 @@
 	},
 	"bat_wings": {
 		"type": "mson:slot",
-		"name": "wings",
+		"name": "bat_wings",
 		"implementation": "com.minelittlepony.client.model.part.BatWings",
 		"content": "minelittlepony:components/bat_wings"
 	},

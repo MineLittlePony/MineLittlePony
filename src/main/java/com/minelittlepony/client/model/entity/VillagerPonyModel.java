@@ -10,11 +10,13 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
 
+import com.minelittlepony.pony.IPony;
+import com.minelittlepony.pony.meta.Race;
 import com.minelittlepony.client.model.entity.race.AlicornModel;
+import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.client.render.entity.npc.PonyTextures;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.mson.api.ModelContext;
-import com.minelittlepony.pony.meta.Race;
 
 public class VillagerPonyModel<T extends LivingEntity & VillagerDataContainer> extends AlicornModel<T> implements ModelWithHat {
 
@@ -22,6 +24,7 @@ public class VillagerPonyModel<T extends LivingEntity & VillagerDataContainer> e
     private ModelPart trinket;
 
     private IPart batWings;
+    private IPart batEars;
 
     public VillagerPonyModel() {
         super(false);
@@ -30,8 +33,18 @@ public class VillagerPonyModel<T extends LivingEntity & VillagerDataContainer> e
     @Override
     public void init(ModelContext context) {
         super.init(context);
+        batWings = context.findByName("bat_wings");
+        batEars = context.findByName("bat_ears");
         apron = context.findByName("apron");
         trinket = context.findByName("trinket");
+    }
+
+    @Override
+    public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
+        super.updateLivingState(entity, pony, mode);
+
+        ears.setVisible(pony.getMetadata().getRace() != Race.BATPONY);
+        batEars.setVisible(pony.getMetadata().getRace() == Race.BATPONY);
     }
 
     @Override

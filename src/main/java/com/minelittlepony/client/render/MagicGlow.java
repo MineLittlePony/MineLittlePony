@@ -65,8 +65,8 @@ public class MagicGlow extends RenderPhase {
 
         @Override
         public void startDrawing() {
-            super.startDrawing();
             RenderSystem.blendColor(red, green, blue, alpha);
+            super.startDrawing();
         }
 
         @Override
