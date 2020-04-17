@@ -27,7 +27,7 @@ import net.minecraft.util.Identifier;
 
 public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyFeature<T, M> {
 
-    private static final IArmourTextureResolver<LivingEntity> textures = new DefaultArmourTextureResolver<>();
+    public static final IArmourTextureResolver<LivingEntity> DEFAULT = new DefaultArmourTextureResolver<>();
 
     public ArmourFeature(IPonyRenderContext<T, M> renderer) {
         super(renderer);
@@ -58,7 +58,7 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
                 armour.setAngles(entity, limbAngle, limbDistance, age, headYaw, headPitch);
                 armour.synchroniseLegs(pony.getBody());
 
-                IArmourTextureResolver<T> resolver = armour instanceof IArmourTextureResolver ? (IArmourTextureResolver<T>)armour : (IArmourTextureResolver<T>)textures;
+                IArmourTextureResolver<T> resolver = armour instanceof IArmourTextureResolver ? (IArmourTextureResolver<T>)armour : (IArmourTextureResolver<T>)DEFAULT;
 
                 Identifier armourTexture = resolver.getArmourTexture(entity, itemstack, armorSlot, layer, null);
                 armour.setVariant(resolver.getArmourVariant(layer, armourTexture));

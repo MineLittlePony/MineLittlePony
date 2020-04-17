@@ -12,7 +12,7 @@ public interface IArmourTextureResolver<T extends LivingEntity> {
     /**
      * Gets the armour texture to be used for the given entity, armour piece, slot, and render layer.
      */
-    Identifier getArmourTexture(T entity, ItemStack itemstack, EquipmentSlot slot, ArmourLayer layer,  @Nullable String type);
+    Identifier getArmourTexture(T entity, ItemStack itemstack, EquipmentSlot slot, ArmourLayer layer, @Nullable String type);
 
     /**
      * Gets the armour variant for the identified texture.
