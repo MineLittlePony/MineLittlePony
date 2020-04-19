@@ -83,15 +83,12 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
 
     @Override
     public void render(AbstractClientPlayerEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
-        manager.preRenderCallback(entity, stack, tickDelta);
         shadowSize = manager.getShadowScale();
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
-
         DebugBoundingBoxRenderer.render(manager.getPony(entity), this, entity, stack, renderContext, tickDelta);
 
         // Translate the shadow position after everything is done
         // (shadows are drawn after us)
-        // TODO: Get a proper shadow renderer going
         if (!entity.hasVehicle() && !entity.isSleeping()) {
             float yaw = MathHelper.lerpAngleDegrees(tickDelta, entity.prevBodyYaw, entity.bodyYaw);
             float l = entity.getWidth() / 2 * manager.getPony(entity).getMetadata().getSize().getScaleFactor();
@@ -100,6 +97,15 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
             stack.translate(0, 0, -l);
         }
 
+    }
+
+    @Override
+    protected void setupTransforms(AbstractClientPlayerEntity entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
+        manager.preRenderCallback(entity, stack, partialTicks);
+        rotationYaw = manager.getRenderYaw(entity, rotationYaw, partialTicks);
+        super.setupTransforms(entity, stack, ageInTicks, rotationYaw, partialTicks);
+
+        manager.applyPostureTransform(entity, stack, rotationYaw, partialTicks);
     }
 
     @Override
@@ -149,14 +155,6 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
         }
 
         stack.pop();
-    }
-
-    @Override
-    protected void setupTransforms(AbstractClientPlayerEntity entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
-        rotationYaw = manager.getRenderYaw(entity, rotationYaw, partialTicks);
-        super.setupTransforms(entity, stack, ageInTicks, rotationYaw, partialTicks);
-
-        manager.applyPostureTransform(entity, stack, rotationYaw, partialTicks);
     }
 
     @Override

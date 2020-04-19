@@ -56,7 +56,13 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
 
     @Override
     public void render(T entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
-        manager.preRenderCallback(entity, stack, tickDelta);
+        super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
+        DebugBoundingBoxRenderer.render(manager.getPony(entity), this, entity, stack, renderContext, tickDelta);
+    }
+
+    @Override
+    protected void setupTransforms(T entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
+        manager.preRenderCallback(entity, stack, partialTicks);
         if (getModel() instanceof PlayerEntityModel) {
             ((PlayerEntityModel<?>)getModel()).setVisible(true);
         }
@@ -65,13 +71,6 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
             stack.translate(0, 0.125D, 0);
         }
 
-        super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
-
-        DebugBoundingBoxRenderer.render(manager.getPony(entity), this, entity, stack, renderContext, tickDelta);
-    }
-
-    @Override
-    protected void setupTransforms(T entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
         rotationYaw = manager.getRenderYaw(entity, rotationYaw, partialTicks);
         super.setupTransforms(entity, stack, ageInTicks, rotationYaw, partialTicks);
 

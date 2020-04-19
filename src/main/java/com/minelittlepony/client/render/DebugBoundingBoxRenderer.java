@@ -7,7 +7,6 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -18,9 +17,10 @@ import com.minelittlepony.pony.IPony;
 public final class DebugBoundingBoxRenderer {
 
     public static <T extends LivingEntity> void render(IPony pony, EntityRenderer<T> renderer, T entity, MatrixStack stack, VertexConsumerProvider renderContext, float tickDelta) {
-        MinecraftClient mc = MinecraftClient.getInstance();
 
-        if (!mc.getEntityRenderManager().shouldRenderHitboxes() || entity.squaredDistanceTo(mc.player) > 70) {
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        if (!client.getEntityRenderManager().shouldRenderHitboxes() || entity.isInvisible() || client.hasReducedDebugInfo()) {
             return;
         }
 
@@ -28,10 +28,6 @@ public final class DebugBoundingBoxRenderer {
 
         stack.push();
         stack.translate(-offset.x, -offset.y, -offset.z);
-
-        float yaw = MathHelper.lerp(tickDelta, entity.prevBodyYaw, entity.bodyYaw);
-
-        stack.multiply(Vector3f.NEGATIVE_Y.getDegreesQuaternion(yaw));
 
         Box boundingBox = pony.getComputedBoundingBox(entity);
 
