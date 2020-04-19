@@ -20,7 +20,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ArmorMaterials;
 import net.minecraft.item.DyeableArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -39,57 +38,64 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
 
         for (EquipmentSlot i : EquipmentSlot.values()) {
             if (i.getType() == EquipmentSlot.Type.ARMOR) {
-                renderArmor(pony, stack, renderContext, lightUv, entity, limbDistance, limbAngle, tickDelta, age, headYaw, headPitch, i, ArmourLayer.INNER);
-                renderArmor(pony, stack, renderContext, lightUv, entity, limbDistance, limbAngle, tickDelta, age, headYaw, headPitch, i, ArmourLayer.OUTER);
+                renderArmor(pony, stack, renderContext, lightUv, entity, limbDistance, limbAngle, age, headYaw, headPitch, i, ArmourLayer.INNER);
+                renderArmor(pony, stack, renderContext, lightUv, entity, limbDistance, limbAngle, age, headYaw, headPitch, i, ArmourLayer.OUTER);
             }
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends LivingEntity, V extends BipedEntityModel<T> & IArmour> void renderArmor(ModelWrapper<T, ? extends IPonyModel<T>> pony, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch, EquipmentSlot armorSlot, ArmourLayer layer) {
+    public static <T extends LivingEntity, V extends BipedEntityModel<T> & IArmour> void renderArmor(
+            ModelWrapper<T, ? extends IPonyModel<T>> pony, MatrixStack stack,
+                    VertexConsumerProvider renderContext, int lightUv, T entity,
+                    float limbDistance, float limbAngle,
+                    float age, float headYaw, float headPitch,
+                    EquipmentSlot armorSlot, ArmourLayer layer) {
+
         ItemStack itemstack = entity.getEquippedStack(armorSlot);
 
         if (!itemstack.isEmpty() && itemstack.getItem() instanceof ArmorItem) {
 
-            V armour = pony.<V>getArmor().getArmorForLayer(layer);
+            V model = pony.<V>getArmor().getArmorForLayer(layer);
 
-            if (armour.prepareToRender(armorSlot, layer)) {
-                pony.getBody().copyAttributes(armour);
-                armour.setAngles(entity, limbAngle, limbDistance, age, headYaw, headPitch);
-                armour.synchroniseAngles(pony.getBody());
+            if (model.prepareToRender(armorSlot, layer)) {
+                pony.getBody().copyAttributes(model);
+                model.setAngles(entity, limbAngle, limbDistance, age, headYaw, headPitch);
+                model.synchroniseAngles(pony.getBody());
 
-                IArmourTextureResolver<T> resolver = armour instanceof IArmourTextureResolver ? (IArmourTextureResolver<T>)armour : (IArmourTextureResolver<T>)DEFAULT;
+                ArmorItem item = (ArmorItem) itemstack.getItem();
 
-                Identifier armourTexture = resolver.getArmourTexture(entity, itemstack, armorSlot, layer, null);
-                armour.setVariant(resolver.getArmourVariant(layer, armourTexture));
+                float red = 1;
+                float green = 1;
+                float blue = 1;
+
+                if (item instanceof DyeableArmorItem) {
+                    int color = ((DyeableArmorItem)item).getColor(itemstack);
+                    red = Color.r(color);
+                    green = Color.g(color);
+                    blue = Color.b(color);
+                }
+
+                @SuppressWarnings("unchecked")
+                IArmourTextureResolver<T> resolver = model instanceof IArmourTextureResolver ? (IArmourTextureResolver<T>)model : (IArmourTextureResolver<T>)DEFAULT;
 
                 boolean glint = itemstack.hasEnchantmentGlint();
 
-                ArmorItem itemarmor = (ArmorItem) itemstack.getItem();
+                renderArmourPart(stack, renderContext, lightUv, glint, model, red, green, blue, resolver, layer, resolver.getArmourTexture(entity, itemstack, armorSlot, layer, null));
 
-                if (itemarmor.getMaterial() == ArmorMaterials.LEATHER) {
-
-                    float red = 1;
-                    float green = 1;
-                    float blue = 1;
-
-                    if (itemarmor instanceof DyeableArmorItem) {
-                        int color = ((DyeableArmorItem)itemarmor).getColor(itemstack);
-                        red = Color.r(color);
-                        green = Color.g(color);
-                        blue = Color.b(color);
-                    }
-
-                    VertexConsumer vertices = ItemRenderer.getArmorVertexConsumer(renderContext, RenderLayer.getEntityCutoutNoCull(armourTexture), false, glint);
-
-                    armour.render(stack, vertices, lightUv, OverlayTexture.DEFAULT_UV, red, green, blue, 1);
-                    armourTexture = resolver.getArmourTexture(entity, itemstack, armorSlot, layer, "overlay");
-                    armour.setVariant(resolver.getArmourVariant(layer, armourTexture));
+                if (item instanceof DyeableArmorItem) {
+                    renderArmourPart(stack, renderContext, lightUv, false, model, 1, 1, 1, resolver, layer, resolver.getArmourTexture(entity, itemstack, armorSlot, layer, "overlay"));
                 }
-
-                VertexConsumer vertices = ItemRenderer.getArmorVertexConsumer(renderContext, RenderLayer.getEntityCutoutNoCull(armourTexture), false, glint);
-                armour.render(stack, vertices, lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
             }
         }
+    }
+
+    private static <T extends LivingEntity, V extends BipedEntityModel<T> & IArmour> void renderArmourPart(
+            MatrixStack matrices, VertexConsumerProvider provider,
+            int light, boolean glint, V model, float r, float g, float b, IArmourTextureResolver<T> resolver, ArmourLayer layer, Identifier texture) {
+
+        VertexConsumer vertices = ItemRenderer.getArmorVertexConsumer(provider, RenderLayer.getArmorCutoutNoCull(texture), false, glint);
+
+        model.setVariant(resolver.getArmourVariant(layer, texture));
+        model.render(matrices, vertices, light, OverlayTexture.DEFAULT_UV, r, g, b, 1);
     }
 }
