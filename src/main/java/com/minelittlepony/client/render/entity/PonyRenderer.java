@@ -104,8 +104,10 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
 
     @Override
     protected void renderLabelIfPresent(T entity, String name, MatrixStack stack, VertexConsumerProvider renderContext, int maxDistance) {
+        stack.push();
         stack.translate(0, manager.getNamePlateYOffset(entity), 0);
         super.renderLabelIfPresent(entity, name, stack, renderContext, maxDistance);
+        stack.pop();
     }
 
     @Deprecated

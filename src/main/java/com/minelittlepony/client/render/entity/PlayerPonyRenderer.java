@@ -96,7 +96,6 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
             stack.multiply(Vector3f.NEGATIVE_Y.getDegreesQuaternion(yaw));
             stack.translate(0, 0, -l);
         }
-
     }
 
     @Override
@@ -119,6 +118,8 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
 
     @Override
     protected void renderLabelIfPresent(AbstractClientPlayerEntity entity, String name, MatrixStack stack, VertexConsumerProvider renderContext, int maxDistance) {
+        stack.push();
+
         if (entity.isSleeping()) {
             if (entity.getSleepingPosition().isPresent() && entity.getEntityWorld().getBlockState(entity.getSleepingPosition().get()).getBlock() instanceof BedBlock) {
                 double bedRad = Math.toRadians(entity.getSleepingDirection().asRotation());
@@ -128,6 +129,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
         }
         stack.translate(0, manager.getNamePlateYOffset(entity), 0);
         super.renderLabelIfPresent(entity, name, stack, renderContext, maxDistance);
+        stack.pop();
     }
 
     @Override
