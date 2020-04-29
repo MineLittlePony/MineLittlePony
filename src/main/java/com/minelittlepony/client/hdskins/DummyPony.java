@@ -32,7 +32,7 @@ class DummyPony extends DummyPlayer implements IRotatedSwimmer {
         LocalTexture skin = getTextures().get(SkinType.SKIN);
 
         if (wet != (skin.getId() == PonyPreview.NO_SKIN_SEAPONY)) {
-            skin.reset();
+            skin.clearLocal();
         }
     }
 }
