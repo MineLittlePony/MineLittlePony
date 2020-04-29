@@ -41,8 +41,8 @@ public class PassengerFeature<T extends PlayerEntity, M extends ClientPonyModel<
            stack.translate(left ? 0.25 : -0.25, entity.isInSneakingPose() ? -0.5 : -0.25, 0.35);
            stack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(left ? -5 : 5));
 
-           VertexConsumer vertexConsumer = renderContext.getBuffer(model.getLayer(ParrotEntityRenderer.SKINS[riderTag.getInt("Variant")]));
-           model.method_17106(stack, vertexConsumer, lightUv, OverlayTexture.DEFAULT_UV, limbDistance, limbAngle, headYaw, headPitch, entity.age);
+           VertexConsumer vertexConsumer = renderContext.getBuffer(model.getLayer(ParrotEntityRenderer.TEXTURES[riderTag.getInt("Variant")]));
+           model.poseOnShoulder(stack, vertexConsumer, lightUv, OverlayTexture.DEFAULT_UV, limbDistance, limbAngle, headYaw, headPitch, entity.age);
            stack.pop();
         });
     }

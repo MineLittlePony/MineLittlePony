@@ -2,11 +2,11 @@ package com.minelittlepony.client.model.entity.race;
 
 import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.client.render.EquineRenderManager;
+import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.mson.api.ModelContext;
-import com.minelittlepony.pony.IPony;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
@@ -84,7 +84,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
             rightArm.pitch -= 0.5F;
         }
 
-        if (!entity.isSubmergedInWater() || entity.onGround) {
+        if (!entity.isSubmergedInWater() || entity.isOnGround()) {
             leftArm.yaw -= 0.5F;
             rightArm.yaw += 0.5F;
         }

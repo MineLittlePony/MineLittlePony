@@ -1,6 +1,6 @@
-package com.minelittlepony.pony.meta;
+package com.minelittlepony.api.pony.meta;
 
-import com.minelittlepony.pony.ITriggerPixelMapped;
+import com.minelittlepony.api.pony.ITriggerPixelMapped;
 
 import java.util.ArrayList;
 import java.util.List;

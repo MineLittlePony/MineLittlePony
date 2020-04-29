@@ -5,7 +5,7 @@ import net.minecraft.entity.EntityType;
 
 import com.minelittlepony.hdskins.client.dummy.DummyPlayer;
 import com.minelittlepony.hdskins.client.dummy.TextureProxy;
-import com.minelittlepony.hdskins.skins.SkinType;
+import com.minelittlepony.hdskins.profile.SkinType;
 import com.minelittlepony.hdskins.client.resources.LocalTexture;
 import com.minelittlepony.model.IRotatedSwimmer;
 
@@ -32,7 +32,7 @@ class DummyPony extends DummyPlayer implements IRotatedSwimmer {
         LocalTexture skin = getTextures().get(SkinType.SKIN);
 
         if (wet != (skin.getId() == PonyPreview.NO_SKIN_SEAPONY)) {
-            skin.reset();
+            skin.clearLocal();
         }
     }
 }

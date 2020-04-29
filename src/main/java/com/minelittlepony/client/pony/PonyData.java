@@ -7,17 +7,16 @@ import net.minecraft.util.Identifier;
 
 import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.Expose;
+import com.minelittlepony.api.pony.IPonyData;
+import com.minelittlepony.api.pony.meta.Gender;
+import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.api.pony.meta.Size;
+import com.minelittlepony.api.pony.meta.TailLength;
+import com.minelittlepony.api.pony.meta.TriggerPixels;
+import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.util.render.NativeUtil;
-import com.minelittlepony.pony.IPonyData;
-import com.minelittlepony.pony.meta.Gender;
-import com.minelittlepony.pony.meta.Race;
-import com.minelittlepony.pony.meta.Size;
-import com.minelittlepony.pony.meta.TailLength;
-import com.minelittlepony.pony.meta.TriggerPixels;
-import com.minelittlepony.pony.meta.Wearable;
-import com.minelittlepony.util.BasicEasingInterpolator;
-import com.minelittlepony.util.IInterpolator;
+import com.minelittlepony.common.util.animation.Interpolator;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -145,8 +144,8 @@ public class PonyData implements IPonyData {
     }
 
     @Override
-    public IInterpolator getInterpolator(UUID interpolatorId) {
-        return BasicEasingInterpolator.getInstance(interpolatorId);
+    public Interpolator getInterpolator(UUID interpolatorId) {
+        return Interpolator.linear(interpolatorId);
     }
 
     @Override

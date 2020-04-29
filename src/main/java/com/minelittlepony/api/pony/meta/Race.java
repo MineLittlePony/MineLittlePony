@@ -1,7 +1,7 @@
-package com.minelittlepony.pony.meta;
+package com.minelittlepony.api.pony.meta;
 
+import com.minelittlepony.api.pony.ITriggerPixelMapped;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.pony.ITriggerPixelMapped;
 import com.minelittlepony.settings.PonyLevel;
 
 import javax.annotation.Nonnull;

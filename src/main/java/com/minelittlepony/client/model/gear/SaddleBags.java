@@ -1,11 +1,11 @@
 package com.minelittlepony.client.model.gear;
 
+import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.IPegasus;
 import com.minelittlepony.mson.api.ModelContext;
-import com.minelittlepony.pony.meta.Race;
-import com.minelittlepony.pony.meta.Wearable;
 
 import java.util.UUID;
 

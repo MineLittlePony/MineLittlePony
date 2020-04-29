@@ -17,6 +17,7 @@ public class ZomponyModel<Zombie extends HostileEntity> extends AlicornModel<Zom
 
     @Override
     public void animateModel(Zombie entity, float move, float swing, float ticks) {
+        super.animateModel(entity, move, swing, ticks);
         isPegasus = entity.getUuid().getLeastSignificantBits() % 30 == 0;
     }
 
@@ -24,7 +25,7 @@ public class ZomponyModel<Zombie extends HostileEntity> extends AlicornModel<Zom
     protected void rotateLegs(float move, float swing, float ticks, Zombie entity) {
         super.rotateLegs(move, swing, ticks, entity);
 
-        if (rightArmPose == ArmPose.EMPTY) {
+        if (isZombified(entity)) {
             if (islookAngleRight(move)) {
                 rotateArmHolding(rightArm, 1, getSwingAmount(), ticks);
                 ((MsonPart)rightArm).shift(0.5F, 1.5F, 3);
@@ -33,6 +34,10 @@ public class ZomponyModel<Zombie extends HostileEntity> extends AlicornModel<Zom
                 ((MsonPart)leftArm).shift(-0.5F, 1.5F, 3);
             }
         }
+    }
+
+    protected boolean isZombified(Zombie entity) {
+        return rightArmPose == ArmPose.EMPTY;
     }
 
     public boolean islookAngleRight(float move) {

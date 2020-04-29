@@ -1,6 +1,7 @@
 package com.minelittlepony.client.transform;
 
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 
 import com.minelittlepony.model.IModel;
@@ -8,15 +9,15 @@ import com.minelittlepony.model.IModel;
 public class PostureSwimming extends PostureFlight {
 
     @Override
-    protected double calculateRoll(PlayerEntity player, double motionX, double motionY, double motionZ) {
+    public double calculateRoll(LivingEntity entity, double motionX, double motionY, double motionZ) {
         motionX *= 2;
         motionZ *= 2;
 
-        return super.calculateRoll(player, motionX, motionY, motionZ);
+        return super.calculateRoll(entity, motionX, motionY, motionZ);
     }
 
     @Override
-    protected double calculateIncline(PlayerEntity player, double motionX, double motionY, double motionZ) {
+    public double calculateIncline(LivingEntity entity, double motionX, double motionY, double motionZ) {
         return 90; // mojang handles this
     }
 

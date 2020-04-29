@@ -1,7 +1,7 @@
-package com.minelittlepony.pony.meta;
+package com.minelittlepony.api.pony.meta;
 
+import com.minelittlepony.api.pony.ITriggerPixelMapped;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.pony.ITriggerPixelMapped;
 
 public enum Size implements ITriggerPixelMapped<Size> {
     TALL    (0x534b76, 0.45f, 1.1F,  1.15F),

@@ -36,8 +36,9 @@ public final class MobRenderers {
         pony.switchRenderer(state, EntityType.GIANT, ZomponyRenderer.Giant::new);
         pony.switchRenderer(state, EntityType.DROWNED, ZomponyRenderer.Drowned::new);
     });
-    public static final MobRenderers ZOMBIE_PIGMAN = register("pigzombies", (state, pony) -> {
-        pony.switchRenderer(state, EntityType.ZOMBIE_PIGMAN, ZomponyRenderer.Pigman::new);
+    public static final MobRenderers PIGLIN = register("pigzombies", (state, pony) -> {
+        pony.switchRenderer(state, EntityType.PIGLIN, PonyPiglinRenderer::new);
+        pony.switchRenderer(state, EntityType.ZOMBIFIED_PIGLIN, PonyPiglinRenderer::new);
     });
     public static final MobRenderers SKELETON = register("skeletons", (state, pony) -> {
         pony.switchRenderer(state, EntityType.SKELETON, SkeleponyRenderer::new);
@@ -53,6 +54,9 @@ public final class MobRenderers {
     });
     public static final MobRenderers INANIMATE = register("inanimates", (state, pony) -> {
        pony.switchRenderer(state, EntityType.ARMOR_STAND, PonyStandRenderer::new);
+    });
+    public static final MobRenderers STRIDER = register("striders", (state, pony) -> {
+        pony.switchRenderer(state, EntityType.STRIDER, ParaspriteRenderer::new);
     });
 
     private final BiConsumer<Boolean, PonyRenderDispatcher> changer;

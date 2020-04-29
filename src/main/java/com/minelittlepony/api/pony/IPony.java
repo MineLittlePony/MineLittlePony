@@ -1,4 +1,4 @@
-package com.minelittlepony.pony;
+package com.minelittlepony.api.pony;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -6,8 +6,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.pony.meta.Race;
 
 public interface IPony {
 

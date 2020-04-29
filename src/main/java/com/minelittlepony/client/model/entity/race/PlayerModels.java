@@ -1,9 +1,9 @@
 package com.minelittlepony.client.model.entity.race;
 
 import com.google.common.collect.Maps;
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.PlayerModelKey;
-import com.minelittlepony.pony.meta.Race;
 
 import java.util.Arrays;
 import java.util.List;

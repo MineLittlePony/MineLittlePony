@@ -1,13 +1,13 @@
 package com.minelittlepony.client.pony;
 
 import com.google.common.base.MoreObjects;
+import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.IPonyData;
+import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.api.pony.meta.Size;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.client.render.PonyRenderDispatcher;
 import com.minelittlepony.client.transform.PonyTransformation;
-import com.minelittlepony.pony.IPony;
-import com.minelittlepony.pony.IPonyData;
-import com.minelittlepony.pony.meta.Race;
-import com.minelittlepony.pony.meta.Size;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
@@ -81,7 +81,7 @@ public class Pony implements IPony {
      * this is to keep Pegasus wings from flapping in odd situations (Hypixel).
      */
     private boolean isOnGround(LivingEntity entity) {
-        if (entity.onGround) {
+        if (entity.isOnGround()) {
             return true;
         }
 

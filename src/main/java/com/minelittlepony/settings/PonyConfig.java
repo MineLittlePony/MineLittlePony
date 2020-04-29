@@ -2,9 +2,9 @@ package com.minelittlepony.settings;
 
 import net.minecraft.util.math.MathHelper;
 
+import com.minelittlepony.api.pony.meta.Size;
 import com.minelittlepony.common.util.settings.JsonConfig;
 import com.minelittlepony.common.util.settings.Setting;
-import com.minelittlepony.pony.meta.Size;
 
 import java.nio.file.Path;
 

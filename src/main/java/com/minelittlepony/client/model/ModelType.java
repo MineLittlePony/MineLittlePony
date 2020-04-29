@@ -5,11 +5,15 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.util.Identifier;
 
+import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.client.model.entity.BreezieModel;
 import com.minelittlepony.client.model.entity.EnderStallionModel;
 import com.minelittlepony.client.model.entity.GuardianPonyModel;
 import com.minelittlepony.client.model.entity.IllagerPonyModel;
+import com.minelittlepony.client.model.entity.ParaspriteModel;
+import com.minelittlepony.client.model.entity.PiglinPonyModel;
 import com.minelittlepony.client.model.entity.PillagerPonyModel;
 import com.minelittlepony.client.model.entity.SkeleponyModel;
 import com.minelittlepony.client.model.entity.VillagerPonyModel;
@@ -34,8 +38,6 @@ import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.mson.api.Mson;
 import com.minelittlepony.mson.api.MsonModel;
-import com.minelittlepony.pony.meta.Race;
-import com.minelittlepony.pony.meta.Wearable;
 
 import javax.annotation.Nullable;
 
@@ -53,6 +55,7 @@ public final class ModelType {
     public static final ModelKey<VillagerPonyModel<?>> VILLAGER = register("villager", VillagerPonyModel::new);
     public static final ModelKey<WitchPonyModel> WITCH = register("witch", WitchPonyModel::new);
     public static final ModelKey<ZomponyModel<?>> ZOMBIE = register("zombie", ZomponyModel::new);
+    public static final ModelKey<PiglinPonyModel> PIGLIN = register("piglin", PiglinPonyModel::new);
     public static final ModelKey<ZomponyVillagerModel> ZOMBIE_VILLAGER = register("zombie_villager", ZomponyVillagerModel::new);
     public static final ModelKey<SkeleponyModel<?>> SKELETON = register("skeleton", SkeleponyModel::new);
     public static final ModelKey<SkeleponyModel<?>> SKELETON_CLOTHES = register("skeleton_clothes", SkeleponyModel::new);
@@ -61,6 +64,7 @@ public final class ModelType {
     public static final ModelKey<GuardianPonyModel> GUARDIAN = register("guardian", GuardianPonyModel::new);
     public static final ModelKey<EnderStallionModel> ENDERMAN = register("enderman", EnderStallionModel::new);
     public static final ModelKey<BreezieModel<VexEntity>> BREEZIE = register("breezie", BreezieModel::new);
+    public static final ModelKey<ParaspriteModel> PARASPRITE = register("parasprite", ParaspriteModel::new);
 
     public static final ModelKey<PonyElytra<?>> ELYTRA = register("elytra", PonyElytra::new);
     public static final ModelKey<PonySkullModel> SKULL = register("skull", PonySkullModel::new);

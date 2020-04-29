@@ -1,5 +1,8 @@
 package com.minelittlepony.client.render.entity;
 
+import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
@@ -17,9 +20,6 @@ import com.minelittlepony.client.render.entity.feature.CapeFeature;
 import com.minelittlepony.client.render.entity.feature.SkullFeature;
 import com.minelittlepony.client.render.entity.feature.ElytraFeature;
 import com.minelittlepony.mson.api.ModelKey;
-import com.minelittlepony.pony.IPony;
-import com.minelittlepony.pony.meta.Race;
-import com.minelittlepony.pony.meta.Wearable;
 
 import java.util.List;
 
@@ -83,7 +83,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
 
     @Override
     public void render(AbstractClientPlayerEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
-        shadowSize = manager.getShadowScale();
+        shadowRadius = manager.getShadowScale();
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
         DebugBoundingBoxRenderer.render(manager.getPony(entity), this, entity, stack, renderContext, tickDelta);
 

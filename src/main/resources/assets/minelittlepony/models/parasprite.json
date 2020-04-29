@@ -1,0 +1,47 @@
+{
+	"texture": {
+		"w": 64, "h": 64
+	},
+	"body": {
+		"center": [-4, -4, -4],
+		"cubes": [
+			{"from": [0, 0, 0], "size": [8, 8, 8] }
+		],
+		"children": [
+			{
+				"name": "leftWing",
+				"center": [4, 2, 8],
+				"texture": {"u": 32, "v": 0},
+				"cubes": [
+					{
+						"type": "mson:plane",
+						"face": "east",
+						"position": [0, -16, 0],
+						"size": [ 16, 16 ]
+					}
+				]
+			},
+			{
+				"name": "rightWing",
+				"center": [4, 2, 8],
+				"texture": {"u": 48, "v": 0},
+				"cubes": [
+					{
+						"type": "mson:plane",
+						"face": "west",
+						"position": [0, -16, 0],
+						"size": [ 16, 16 ]
+					}
+				]
+			}
+		]
+	},
+	"saddle": {
+		"center": [-4, -4, -4],
+		"texture": {"u": 0, "v": 16},
+		"visible": true,
+		"cubes": [
+			{"from": [-4, -0.1, -4], "size": [16, 16, 16] }
+		]
+	}
+}

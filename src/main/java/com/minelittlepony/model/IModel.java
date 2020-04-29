@@ -4,10 +4,10 @@ import net.minecraft.client.render.entity.model.ModelWithArms;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
+import com.minelittlepony.api.pony.IPonyData;
+import com.minelittlepony.api.pony.meta.Size;
+import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.model.armour.IEquestrianArmour;
-import com.minelittlepony.pony.IPonyData;
-import com.minelittlepony.pony.meta.Size;
-import com.minelittlepony.pony.meta.Wearable;
 
 public interface IModel extends ModelWithArms {
 

@@ -3,9 +3,9 @@ package com.minelittlepony.client.model.gear;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 
+import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.gear.IGear;
-import com.minelittlepony.pony.meta.Wearable;
 
 import javax.annotation.Nullable;
 

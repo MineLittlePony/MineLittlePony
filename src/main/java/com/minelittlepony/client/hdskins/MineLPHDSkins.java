@@ -5,7 +5,7 @@ import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.common.event.ClientReadyCallback;
 import com.minelittlepony.hdskins.client.SkinCacheClearCallback;
 import com.minelittlepony.hdskins.client.gui.GuiSkins;
-import com.minelittlepony.hdskins.skins.SkinType;
+import com.minelittlepony.hdskins.profile.SkinType;
 import com.minelittlepony.mson.api.Mson;
 import com.mojang.authlib.GameProfile;
 
@@ -27,7 +27,7 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
         ClientReadyCallback.EVENT.register(client -> {
             // Clear ponies when skins are cleared
             PonyManager ponyManager = (PonyManager) MineLittlePony.getInstance().getManager();
-            SkinCacheClearCallback.EVENT.register(ponyManager::onSkinCacheCleared);
+            SkinCacheClearCallback.EVENT.register(ponyManager::clearCache);
 
             // Ponify the skins GUI.
             GuiSkins.setSkinsGui(GuiSkinsMineLP::new);

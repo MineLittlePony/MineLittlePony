@@ -1,8 +1,8 @@
 package com.minelittlepony.model;
 
+import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.client.render.EquineRenderManager.Mode;
-import com.minelittlepony.pony.IPony;
 import com.minelittlepony.util.MathUtil;
 
 import net.minecraft.entity.LivingEntity;
