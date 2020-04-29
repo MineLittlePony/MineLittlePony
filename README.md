@@ -35,6 +35,7 @@ Yer probably lookin' fer a meven, am I right? Well ye have two choices. Pick yer
 
 
 Stable Releases Channel: `https://repo.minelittlepony-mod.com/maven/release`
+
 Unstable Snapshot Channel: `https://repo.minelittlepony-mod.com/maven/snapshot`
 
 Dependency: `com.minelittlepony:MineLittlePony:<version>-1.15.2`
