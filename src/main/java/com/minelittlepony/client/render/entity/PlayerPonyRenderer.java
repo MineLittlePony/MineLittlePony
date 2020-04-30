@@ -35,6 +35,7 @@ import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.text.Text;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -117,7 +118,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
     }
 
     @Override
-    protected void renderLabelIfPresent(AbstractClientPlayerEntity entity, String name, MatrixStack stack, VertexConsumerProvider renderContext, int maxDistance) {
+    protected void renderLabelIfPresent(AbstractClientPlayerEntity entity, Text name, MatrixStack stack, VertexConsumerProvider renderContext, int maxDistance) {
         stack.push();
 
         if (entity.isSleeping()) {

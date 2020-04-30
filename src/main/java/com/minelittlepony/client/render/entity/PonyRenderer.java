@@ -26,6 +26,7 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
@@ -103,7 +104,7 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
     }
 
     @Override
-    protected void renderLabelIfPresent(T entity, String name, MatrixStack stack, VertexConsumerProvider renderContext, int maxDistance) {
+    protected void renderLabelIfPresent(T entity, Text name, MatrixStack stack, VertexConsumerProvider renderContext, int maxDistance) {
         stack.push();
         stack.translate(0, manager.getNamePlateYOffset(entity), 0);
         super.renderLabelIfPresent(entity, name, stack, renderContext, maxDistance);

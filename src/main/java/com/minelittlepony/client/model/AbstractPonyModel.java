@@ -643,7 +643,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         PonyTransformation.forSize(getSize()).transform(this, part, stack);
     }
 
-    interface RenderStage {
+    protected interface RenderStage {
         void accept(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha);
     }
 }
