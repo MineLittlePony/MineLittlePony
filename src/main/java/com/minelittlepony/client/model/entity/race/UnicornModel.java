@@ -104,8 +104,8 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
 
         if (hasHorn() && canCast() && isCasting()) {
             stack.push();
-            head.rotate(stack);
             transform(BodyPart.HEAD, stack);
+            head.rotate(stack);
             horn.renderMagic(stack, vertices, getMagicColor());
             stack.pop();
         }
