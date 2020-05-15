@@ -40,9 +40,14 @@ public class ParaspriteModel extends EntityModel<StriderEntity> implements MsonM
 
     @Override
     public void setAngles(StriderEntity entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        body.yaw = headYaw * 0.017453292F;
-        body.pitch = headPitch * 0.017453292F;
 
+        if (entity.hasPassengers()) {
+            body.yaw = 0;
+            body.pitch = 0;
+        } else {
+            body.yaw = headYaw * 0.017453292F;
+            body.pitch = headPitch * 0.017453292F;
+        }
         saddle.copyPositionAndRotation(body);
 
         float sin = (float)Math.sin(ticks) / 2;
