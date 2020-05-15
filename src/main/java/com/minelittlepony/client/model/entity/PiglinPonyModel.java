@@ -1,15 +1,27 @@
 package com.minelittlepony.client.model.entity;
 
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.PiglinEntity;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.render.EquineRenderManager;
+import com.minelittlepony.mson.api.ModelContext;
 
 public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
 
     private PiglinEntity.Activity activity;
+
+    private ModelPart leftFlap;
+    private ModelPart rightFlap;
+
+    @Override
+    public void init(ModelContext context) {
+        super.init(context);
+        leftFlap = context.findByName("left_flap");
+        rightFlap = context.findByName("right_flap");
+    }
 
     @Override
     public void updateLivingState(HostileEntity entity, IPony pony, EquineRenderManager.Mode mode) {
@@ -51,6 +63,11 @@ public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
 
             helmet.copyPositionAndRotation(head);
         }
+
+        float progress = ticks * 0.1F + move * 0.5F;
+        float range = 0.08F + swing * 0.4F;
+        rightFlap.roll = -0.5235988F - MathHelper.cos(progress * 1.2F) * range;
+        leftFlap.roll =   0.5235988F + MathHelper.cos(progress) * range;
     }
 
     @Override

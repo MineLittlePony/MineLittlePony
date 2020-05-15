@@ -18,7 +18,7 @@ public class ZomponyModel<Zombie extends HostileEntity> extends AlicornModel<Zom
     @Override
     public void animateModel(Zombie entity, float move, float swing, float ticks) {
         super.animateModel(entity, move, swing, ticks);
-        isPegasus = entity.getUuid().getLeastSignificantBits() % 30 == 0;
+        isPegasus = true;//entity.getUuid().getLeastSignificantBits() % 30 == 0;
     }
 
     @Override

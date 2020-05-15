@@ -1,0 +1,18 @@
+{
+    "parent": "minelittlepony:components/snout",
+	"texture": {"w": 64, "h": 64, "u": 16, "v": 8},
+	"locals": {
+		"x": 0,
+		"y": 0,
+		"z": 0
+	},
+	"mare": {
+		"type": "mson:planar",
+		"offset": ["#x", "#y", "#z"],
+		"north": [-2, -1, -7, 4, 3, 10, 13],
+		"up":    [-2, -1, -7, 4, 1, 10, 13],
+		"down":  [-2,  2, -7, 4, 1, 18,  7],
+		"west":  [-2, -1, -7, 1, 3,  9, 13],
+		"east":  [ 2, -1, -7, 1, 3, 14, 13]
+	}
+}
