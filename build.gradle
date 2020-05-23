@@ -163,8 +163,6 @@ task srgJar(type: Jar) {
     classifier "mc$minecraft.version-srg"
 }
 
-sourceJar.enabled = false
-
 reobf {
     srgJar {
         mappingType = 'SEARGE'
