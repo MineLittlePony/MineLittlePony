@@ -4,12 +4,15 @@ jdk:
 
 jobs:
   include:
+    - stage: init
+      script: ./gradlew setupCIWorkspace
     - stage: check
       script: ./gradlew check
     - stage: publish
       script: ./gradlew build publish
 
 stages:
+  - name: init
   - name: check
     if: type IN (pull_request)
   - name: publish
