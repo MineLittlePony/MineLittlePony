@@ -171,3 +171,56 @@ reobf {
 
     shadowJar{}
 }
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            afterEvaluate {
+                artifact(remapJar)
+            }
+            artifact(sourcesJar) {
+                builtBy remapSourcesJar
+            }
+
+            pom {
+                name = "MineLittlePony"
+                description = "HD Skins support for Minecraft"
+                url = "https://minelittlepony-mod.com"
+                licenses {
+                    license {
+                        name = "MIT Public License"
+                        url = "https://tlo.mit.edu/learn-about-intellectual-property/software-and-open-source-licensing"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "killjoy1221"
+                        name = "Matthew Messinger"
+                        email = "mattmess1221@gmail.com"
+                    }
+                    developer {
+                        id = "sollace"
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/MineLittlePony/MineLittlePony.git'
+                    developerConnection = 'scm:git:ssh://github.com/MineLittlePony/MineLittlePony.git'
+                    url = 'https://github.com/MineLittlePony/MineLittlePony'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "MineLittlePony"
+            def mvn = 's3://repo.minelittlepony-mod.com/maven'
+            url = release == 'SNAPSHOT' ? "$mvn/snapshot" : "$mvn/release"
+
+            credentials(AwsCredentials) {
+                accessKey = System.env.ACCESS_KEY
+                secretKey = System.env.SECRET_KEY
+            }
+        }
+    }
+}
