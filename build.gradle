@@ -19,6 +19,7 @@ buildscript {
 
 plugins {
     id 'org.ajoberstar.grgit' version '1.7.2'
+    id 'maven-publish'
 }
 
 apply plugin: 'net.minecraftforge.gradle.liteloader'
