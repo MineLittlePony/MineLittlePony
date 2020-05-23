@@ -177,7 +177,7 @@ publishing {
             afterEvaluate {
                 artifact(remapJar)
             }
-            artifact(sourcesJar) {
+            artifact(shadowJar) {
                 builtBy remapSourcesJar
             }
 
