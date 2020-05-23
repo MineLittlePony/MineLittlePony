@@ -5,6 +5,8 @@ import com.google.common.io.CharStreams;
 import com.google.gson.JsonObject;
 import com.voxelmodpack.hdskins.server.SkinServer;
 
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -19,6 +21,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -37,8 +40,12 @@ public interface MoreHttpResponses extends AutoCloseable {
         return getResponse().getStatusLine().getStatusCode();
     }
 
+    default Optional<HttpEntity> getEntity() {
+        return Optional.ofNullable(getResponse().getEntity());
+    }
+
     default String getContentType() {
-        return getResponse().getEntity().getContentType().getValue();
+        return getEntity().map(HttpEntity::getContentType).map(Header::getValue).orElse("text/plain");
     }
 
     default InputStream getInputStream() throws IOException {
