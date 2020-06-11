@@ -24,7 +24,7 @@ gradlew build
 ## Installation (Users):
 
 Starting in 1.13 Mine Little Pony uses _Fabric_ for it's modding APIs. Refer to their installation instructions [here](https://fabricmc.net).  
-Or read [This Instruction](FABRIC_INSTALLATION_INSTRUCTIONS.md).
+Or read [A more detailed instruction](FABRIC_INSTALLATION_INSTRUCTIONS.md).
 
 Once you have fabric installed, simply download the MineLittlePony-version.jar from releases and place it in your mods folder. 
 **Remember to use the fabric launcher profile when starting the game!**
