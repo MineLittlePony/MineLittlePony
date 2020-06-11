@@ -15,7 +15,6 @@ Follow these instructions to install *MineLittlePony-MOD* on MC 1.13 or later ve
    - Fabric Installer
 
      - Download Page: https://jenkins.modmuss50.me/job/FabricMC/job/fabric-installer/job/master/
-     - Direct Link:https://jenkins.modmuss50.me/job/FabricMC/job/fabric-installer/job/master/lastSuccessfulBuild/artifact/build/libs/fabric-installer-0.5.2.40.jar
 
    - Fabric API
 
