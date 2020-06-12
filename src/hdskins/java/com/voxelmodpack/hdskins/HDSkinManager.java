@@ -11,6 +11,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Streams;
+import com.minelittlepony.gui.IconicButton;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
@@ -34,6 +35,9 @@ import com.voxelmodpack.hdskins.util.PlayerUtil;
 import com.voxelmodpack.hdskins.util.ProfileTextureUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.ITextureObject;
@@ -41,6 +45,8 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.SkinManager;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -65,6 +71,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
@@ -110,6 +117,14 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     public GuiSkins createSkinsGui() {
         return skinsGuiFunc.apply(ImmutableList.copyOf(this.skinServers));
+    }
+
+    public void displaySkinningGui(GuiScreen screen, Consumer<GuiButton> buttons) {
+        if (screen instanceof GuiMainMenu) {
+            buttons.accept(new IconicButton(screen.width - 50, screen.height - 50, sender -> {
+                Minecraft.getMinecraft().displayGuiScreen(HDSkinManager.INSTANCE.createSkinsGui());
+            }).setIcon(new ItemStack(Items.LEATHER_LEGGINGS), 0x3c5dcb));
+        }
     }
 
     private CompletableFuture<Map<Type, MinecraftProfileTexture>> loadProfileData(GameProfile profile) {

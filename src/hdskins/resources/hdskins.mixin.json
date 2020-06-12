@@ -3,9 +3,10 @@
     "minVersion": "0.7",
     "package": "com.voxelmodpack.hdskins.mixin",
     "refmap": "hdskins.mixin.refmap.json",
+    "compatibilityLevel": "JAVA_8",
     "mixins": [
         "MixinMinecraft",
-        "MixinGuiMainMenu",
+        "MixinGuiScreen",
         "MixinImageBufferDownload",
         "MixinNetworkPlayerInfo",
         "MixinSkullRenderer"
