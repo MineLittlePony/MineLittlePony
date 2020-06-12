@@ -40,7 +40,7 @@ public class SeaponyTail implements IModelPart {
     @Override
     public void init(float yOffset, float stretch) {
         tailBase.rotate(TAIL_ROTX, 0, 0)
-                .offset(0, -4, -2)
+                .offset(0, -1, 0)
                 .around(-2, 10, 8)
                 .box( 0,  0, 0, 4, 6, 4, stretch)
                 .flip();

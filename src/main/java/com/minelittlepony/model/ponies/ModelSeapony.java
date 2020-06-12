@@ -40,6 +40,7 @@ public class ModelSeapony extends ModelUnicorn {
 
         // Seaponies can't sneak, silly
         isSneak = false;
+        isCrouching = false;
     }
 
     @Override
@@ -106,6 +107,15 @@ public class ModelSeapony extends ModelUnicorn {
         if (!isSleeping()) {
             centerFin.rotateAngleZ = flapMotion;
         }
+    }
+
+    @Override
+    protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
+        super.rotateLegs(move, swing, ticks, entity);
+        bipedLeftArm.rotateAngleX -= 1.4F;
+        bipedLeftArm.rotateAngleY -= 0.3F;
+        bipedRightArm.rotateAngleX -= 1.4F;
+        bipedRightArm.rotateAngleY += 0.3F;
 
         if (!entity.isInWater()) {
             bipedLeftArm.rotateAngleX -= 0.5F;
@@ -116,15 +126,6 @@ public class ModelSeapony extends ModelUnicorn {
             bipedLeftArm.rotateAngleY -= 0.5F;
             bipedRightArm.rotateAngleY += 0.5F;
         }
-    }
-
-    @Override
-    protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
-        super.rotateLegs(move, swing, ticks, entity);
-        bipedLeftArm.rotateAngleX -= 1.4F;
-        bipedLeftArm.rotateAngleY -= 0.3F;
-        bipedRightArm.rotateAngleX -= 1.4F;
-        bipedRightArm.rotateAngleY += 0.3F;
     }
 
     @Override
@@ -197,6 +198,26 @@ public class ModelSeapony extends ModelUnicorn {
 
             // Seaponies can't sneak, silly
             isSneak = false;
+            isCrouching = false;
+        }
+
+        @Override
+        protected void rotateLegs(float move, float swing, float ticks, Entity entity) {
+            super.rotateLegs(move, swing, ticks, entity);
+            bipedLeftArm.rotateAngleX -= 1.4F;
+            bipedLeftArm.rotateAngleY -= 0.3F;
+            bipedRightArm.rotateAngleX -= 1.4F;
+            bipedRightArm.rotateAngleY += 0.3F;
+
+            if (!entity.isInWater()) {
+                bipedLeftArm.rotateAngleX -= 0.5F;
+                bipedRightArm.rotateAngleX -= 0.5F;
+            }
+
+            if (!entity.isInWater() || entity.onGround) {
+                bipedLeftArm.rotateAngleY -= 0.5F;
+                bipedRightArm.rotateAngleY += 0.5F;
+            }
         }
 
         @Override
