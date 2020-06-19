@@ -6,7 +6,6 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
@@ -31,7 +30,7 @@ public abstract class AbstractClothingFeature<T extends LivingEntity, M extends 
         overlayModel.animateModel(entity, limbDistance, limbAngle, tickDelta);
         overlayModel.setAngles(entity, limbDistance, limbAngle, age, headYaw, headPitch);
 
-        VertexConsumer vertexConsumer = ItemRenderer.getArmorVertexConsumer(renderContext, overlayModel.getLayer(getOverlayTexture()), false, false);
+        VertexConsumer vertexConsumer = renderContext.getBuffer(overlayModel.getLayer(getOverlayTexture()));
         overlayModel.render(stack, vertexConsumer, lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
     }
 
