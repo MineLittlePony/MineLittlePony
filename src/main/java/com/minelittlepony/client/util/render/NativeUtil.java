@@ -14,8 +14,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class NativeUtil {
     enum InternalFormat {
-        RGB(NativeImage.Format.RGB),
-        RGBA(NativeImage.Format.RGBA),
+        RGB(NativeImage.Format.BGR),
+        RGBA(NativeImage.Format.ABGR),
         LUMINANCE_ALPHA(NativeImage.Format.LUMINANCE_ALPHA),
         LUMINANCE(NativeImage.Format.LUMINANCE),
 
@@ -41,21 +41,21 @@ public class NativeUtil {
         INTENSITY12(GL_INTENSITY12, NativeImage.Format.LUMINANCE),
         INTENSITY16(GL_INTENSITY16, NativeImage.Format.LUMINANCE),
 
-        R3_G3_B2(GL_R3_G3_B2, NativeImage.Format.RGB),
-        RGB4(GL_RGB4, NativeImage.Format.RGB),
-        RGB5(GL_RGB5, NativeImage.Format.RGB),
-        RGB8(GL_RGB8, NativeImage.Format.RGB),
-        RGB10(GL_RGB10, NativeImage.Format.RGB),
-        RGB12(GL_RGB12, NativeImage.Format.RGB),
-        RGB16(GL_RGB16, NativeImage.Format.RGB),
+        R3_G3_B2(GL_R3_G3_B2, NativeImage.Format.BGR),
+        RGB4(GL_RGB4, NativeImage.Format.BGR),
+        RGB5(GL_RGB5, NativeImage.Format.BGR),
+        RGB8(GL_RGB8, NativeImage.Format.BGR),
+        RGB10(GL_RGB10, NativeImage.Format.BGR),
+        RGB12(GL_RGB12, NativeImage.Format.BGR),
+        RGB16(GL_RGB16, NativeImage.Format.BGR),
 
-        RGBA2(GL_RGBA2, NativeImage.Format.RGBA),
-        RGBA4(GL_RGBA4, NativeImage.Format.RGBA),
-        RGB5_A1(GL_RGB5_A1, NativeImage.Format.RGBA),
-        RGBA8(GL_RGBA8, NativeImage.Format.RGBA),
-        RGB10_A2(GL_RGB10_A2, NativeImage.Format.RGBA),
-        RGBA12(GL_RGBA12, NativeImage.Format.RGBA),
-        RGBA16(GL_RGBA16, NativeImage.Format.RGBA);
+        RGBA2(GL_RGBA2, NativeImage.Format.ABGR),
+        RGBA4(GL_RGBA4, NativeImage.Format.ABGR),
+        RGB5_A1(GL_RGB5_A1, NativeImage.Format.ABGR),
+        RGBA8(GL_RGBA8, NativeImage.Format.ABGR),
+        RGB10_A2(GL_RGB10_A2, NativeImage.Format.ABGR),
+        RGBA12(GL_RGBA12, NativeImage.Format.ABGR),
+        RGBA16(GL_RGBA16, NativeImage.Format.ABGR);
 
         private final NativeImage.Format formatClass;
         private final int glId;

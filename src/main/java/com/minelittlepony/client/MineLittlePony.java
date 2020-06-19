@@ -16,8 +16,7 @@ import com.minelittlepony.common.util.GamePaths;
 import com.minelittlepony.settings.PonyConfig;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
-import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
@@ -46,7 +45,7 @@ public class MineLittlePony implements ClientModInitializer {
     private ClientPonyConfig config;
     private PonyManager ponyManager;
 
-    private FabricKeyBinding keyBinding;
+    private final KeyBinding keyBinding = new KeyBinding("key.minelittlepony.settings", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F9, "key.categories.misc");
 
     private boolean hasHdSkins;
     private boolean hasModMenu;
@@ -69,9 +68,8 @@ public class MineLittlePony implements ClientModInitializer {
 
         config = new ClientPonyConfig(GamePaths.getConfigDirectory().resolve("minelp.json"));
         ponyManager = new PonyManager(config);
-        keyBinding = FabricKeyBinding.Builder.create(new Identifier("minelittlepony", "settings"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F9, "key.categories.misc").build();
 
-        KeyBindingRegistry.INSTANCE.register(keyBinding);
+        KeyBindingHelper.registerKeyBinding(keyBinding);
 
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(ponyManager);
 

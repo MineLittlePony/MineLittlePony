@@ -3,7 +3,7 @@ package com.minelittlepony.client.render.entity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.ArmorStandEntityRenderer;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.render.entity.feature.ArmorBipedFeatureRenderer;
+import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
 import net.minecraft.client.render.entity.feature.ElytraFeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
@@ -33,7 +33,7 @@ public class PonyStandRenderer extends ArmorStandEntityRenderer {
         addFeature(new HeadFeatureRenderer<>(this));
     }
 
-    class Armour extends ArmorBipedFeatureRenderer<ArmorStandEntity, ArmorStandArmorEntityModel, ArmorStandArmorEntityModel> {
+    class Armour extends ArmorFeatureRenderer<ArmorStandEntity, ArmorStandArmorEntityModel, ArmorStandArmorEntityModel> {
         private final ModelWrapper<ArmorStandEntity, EarthPonyModel<ArmorStandEntity>> pony = new ModelWrapper<>(ModelType.EARTH_PONY.getKey(false));
 
         public Armour(FeatureRendererContext<ArmorStandEntity, ArmorStandArmorEntityModel> context) {
