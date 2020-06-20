@@ -1,8 +1,5 @@
 package com.minelittlepony.client.hdskins;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
-
 import com.minelittlepony.hdskins.client.dummy.DummyPlayer;
 import com.minelittlepony.hdskins.client.dummy.TextureProxy;
 import com.minelittlepony.hdskins.profile.SkinType;
@@ -14,16 +11,10 @@ import com.minelittlepony.model.IRotatedSwimmer;
  */
 class DummyPony extends DummyPlayer implements IRotatedSwimmer {
 
-    public static EntityType<DummyPony> TYPE = EntityType.Builder
-            .<DummyPony>create((t, w) -> new DummyPony(t, null), SpawnGroup.MISC)
-            .disableSaving()
-            .disableSummon()
-            .build("minelittlepony:dummy_pony");
-
     public boolean wet = false;
 
-    public DummyPony(EntityType<DummyPony> type, TextureProxy textures) {
-        super(type, textures);
+    public DummyPony(TextureProxy textures) {
+        super(textures);
     }
 
     public void setWet(boolean wet) {
