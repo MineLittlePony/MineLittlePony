@@ -26,4 +26,11 @@ abstract class MixinItemRenderer {
             info.setReturnValue(provider.getBuffer(LevitatingItemRenderer.getRenderLayer()));
         }
     }
+
+    @Inject(method = "method_29711(" + VertexConsumerProvider + RenderLayer + Boolean + Boolean + ")" + VertexConsumer, at = @At("HEAD"), cancellable = true)
+    private static void onMethod_29711(VertexConsumerProvider provider, RenderLayer layer, boolean solide, boolean glint, CallbackInfoReturnable<VertexConsumer> info) {
+        if (LevitatingItemRenderer.usesTransparency()) {
+            info.setReturnValue(provider.getBuffer(LevitatingItemRenderer.getRenderLayer()));
+        }
+    }
 }
