@@ -12,6 +12,7 @@ import com.google.common.base.Strings;
 import com.minelittlepony.model.armour.ArmourLayer;
 import com.minelittlepony.model.armour.ArmourVariant;
 import com.minelittlepony.model.armour.IArmourTextureResolver;
+import com.minelittlepony.util.ResourceUtil;
 
 import javax.annotation.Nullable;
 
@@ -40,10 +41,10 @@ public class DefaultArmourTextureResolver<T extends LivingEntity> implements IAr
             texture = texture.substring(idx + 1);
         }
 
-        String customType = type.isEmpty() ? "" : String.format("_%s", type);
+        String customType = type.isEmpty() ? "" : "_" + type;
 
-        String res = String.format("%s:textures/models/armor/%s_layer_%s%s.png", domain, texture, layer.name().toLowerCase(), customType);
-        String oldRes = String.format("%s:textures/models/armor/%s_layer_%d%s.png", domain, texture, layer == ArmourLayer.INNER ? 2 : 1, customType);
+        String res = ResourceUtil.format("%s:textures/models/armor/%s_layer_%s%s.png", domain, texture, layer, customType);
+        String oldRes = ResourceUtil.format("%s:textures/models/armor/%s_layer_%d%s.png", domain, texture, layer.getLegacyId(), customType);
 
         Identifier human = getArmorTexture(res, type);
         Identifier pony = ponifyResource(human);

@@ -10,6 +10,7 @@ import net.minecraft.village.VillagerProfession;
 import net.minecraft.village.VillagerType;
 
 import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.util.ResourceUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +63,7 @@ public class PonyTextures<T extends LivingEntity & VillagerDataContainer> implem
             return fallback;
         }
 
-        String key = String.format("pony/%s/%s", type, profession);
+        String key = ResourceUtil.format("pony/%s/%s", type, profession);
 
         if (cache.containsKey(key)) {
             return cache.get(key); // People often complain that villagers cause lag,

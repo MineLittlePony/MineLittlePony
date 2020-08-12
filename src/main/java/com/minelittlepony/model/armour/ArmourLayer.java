@@ -5,11 +5,15 @@ package com.minelittlepony.model.armour;
  */
 public enum ArmourLayer {
     /**
-     * Fits snugly to the player's model.
-     */
-    INNER,
-    /**
      * Hanging loose and sagging free
      */
-    OUTER
+    OUTER,
+    /**
+     * Fits snugly to the player's model.
+     */
+    INNER;
+
+    public int getLegacyId() {
+        return ordinal() + 1;
+    }
 }
