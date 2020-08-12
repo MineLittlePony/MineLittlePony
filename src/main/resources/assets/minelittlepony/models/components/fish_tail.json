@@ -29,12 +29,13 @@
 							{
 								"type": "mson:plane",
 								"face": "up",
+								"mirror": [false, true],
 								"position": [-7, 0, 4], "size": [8, 8]
 							},
 							{
 								"type": "mson:plane",
 								"face": "up",
-								"mirror": [true, false, false],
+								"mirror": [true, true],
 								"position": [1, 0, 4], "size": [8, 8]
 							}
 						]
