@@ -36,7 +36,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
     public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
         child = entity.isBaby();
         attributes.updateLivingState(entity, pony, mode);
-        isSneaking = attributes.isCrouching;
+        sneaking = attributes.isCrouching;
         riding = attributes.isSitting;
     }
 

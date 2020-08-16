@@ -74,7 +74,7 @@ public class PonyRenderDispatcher {
     <T extends Entity, V extends T> void switchRenderer(boolean state, EntityType<V> type, Function<EntityRenderDispatcher, EntityRenderer<T>> factory) {
         if (state) {
             if (!renderMap.containsKey(type)) {
-                renderMap.put(type, ((MixinEntityRenderDispatcher)MinecraftClient.getInstance().getEntityRenderManager()).getEntityRenderers().get(type));
+                renderMap.put(type, ((MixinEntityRenderDispatcher)MinecraftClient.getInstance().getEntityRenderDispatcher()).getEntityRenderers().get(type));
             }
             Mson.getInstance().getEntityRendererRegistry().registerEntityRenderer(type, factory);
         } else {
@@ -95,7 +95,7 @@ public class PonyRenderDispatcher {
             return null;
         }
 
-        EntityRenderer<?> renderer = MinecraftClient.getInstance().getEntityRenderManager().getRenderer(entity);
+        EntityRenderer<?> renderer = MinecraftClient.getInstance().getEntityRenderDispatcher().getRenderer(entity);
 
         if (renderer instanceof IPonyRenderContext) {
             return (IPonyRenderContext<T, M>) renderer;

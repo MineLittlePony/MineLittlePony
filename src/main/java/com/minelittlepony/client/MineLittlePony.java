@@ -89,7 +89,7 @@ public class MineLittlePony implements ClientModInitializer {
     }
 
     private void onClientReady(MinecraftClient client) {
-        renderManager.initialise(client.getEntityRenderManager());
+        renderManager.initialise(client.getEntityRenderDispatcher());
     }
 
     private void onTick(MinecraftClient client) {

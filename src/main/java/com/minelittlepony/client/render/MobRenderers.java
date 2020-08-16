@@ -38,6 +38,7 @@ public final class MobRenderers {
     });
     public static final MobRenderers PIGLIN = register("pigzombies", (state, pony) -> {
         pony.switchRenderer(state, EntityType.PIGLIN, PonyPiglinRenderer::new);
+        pony.switchRenderer(state, EntityType.PIGLIN_BRUTE, PonyPiglinRenderer::new);
         pony.switchRenderer(state, EntityType.ZOMBIFIED_PIGLIN, PonyPiglinRenderer::new);
     });
     public static final MobRenderers SKELETON = register("skeletons", (state, pony) -> {

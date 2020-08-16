@@ -111,7 +111,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
     @Override
     public boolean shouldRender(AbstractClientPlayerEntity entity, Frustum camera, double camX, double camY, double camZ) {
         if (entity.isSleeping() && entity == MinecraftClient.getInstance().player) {
-            return MinecraftClient.getInstance().options.perspective != 0
+            return !MinecraftClient.getInstance().options.getPerspective().isFirstPerson()
                     && super.shouldRender(entity, camera, camX, camY, camZ);
         }
         return super.shouldRender(entity, manager.getFrustrum(entity, camera), camX, camY, camZ);

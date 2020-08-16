@@ -20,7 +20,7 @@ public final class DebugBoundingBoxRenderer {
 
         MinecraftClient client = MinecraftClient.getInstance();
 
-        if (!client.getEntityRenderManager().shouldRenderHitboxes() || entity.isInvisible() || client.hasReducedDebugInfo()) {
+        if (!client.getEntityRenderDispatcher().shouldRenderHitboxes() || entity.isInvisible() || client.hasReducedDebugInfo()) {
             return;
         }
 

@@ -1,16 +1,25 @@
 package com.minelittlepony.client.render.entity;
 
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.mob.AbstractPiglinEntity;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.PiglinEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.PiglinPonyModel;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class PonyPiglinRenderer extends PonyRenderer.Caster<HostileEntity, PiglinPonyModel> {
-    public static final Identifier NORMAL = new Identifier("minelittlepony", "textures/entity/piglin/piglin_pony.png");
-    public static final Identifier ZOMBIFIED = new Identifier("minelittlepony", "textures/entity/piglin/zombified_piglin_pony.png");
+
+    private static final Map<EntityType<?>, Identifier> TEXTURES = Util.make(new HashMap<>(), map -> {
+        map.put(EntityType.PIGLIN, new Identifier("minelittlepony", "textures/entity/piglin/piglin_pony.png"));
+        map.put(EntityType.PIGLIN_BRUTE, new Identifier("minelittlepony", "textures/entity/piglin/piglin_brute_pony.png"));
+        map.put(EntityType.ZOMBIFIED_PIGLIN, new Identifier("minelittlepony", "textures/entity/piglin/zombified_piglin_pony.png"));
+    });
 
     public PonyPiglinRenderer(EntityRenderDispatcher manager) {
         super(manager, ModelType.PIGLIN);
@@ -18,11 +27,11 @@ public class PonyPiglinRenderer extends PonyRenderer.Caster<HostileEntity, Pigli
 
     @Override
     public Identifier findTexture(HostileEntity entity) {
-        return entity instanceof PiglinEntity ? NORMAL : new Identifier("minelittlepony", "textures/entity/piglin/zombified_piglin_pony.png");
+        return TEXTURES.get(entity.getType());
     }
 
     @Override
     protected boolean isShaking(HostileEntity entity) {
-       return entity instanceof PiglinEntity && ((PiglinEntity)entity).canConvert();
+       return entity instanceof AbstractPiglinEntity && ((AbstractPiglinEntity)entity).shouldZombify();
     }
 }

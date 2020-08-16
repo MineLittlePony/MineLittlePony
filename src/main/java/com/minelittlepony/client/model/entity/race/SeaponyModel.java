@@ -50,7 +50,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
         super.updateLivingState(entity, pony, mode);
 
         // Seaponies can't sneak, silly
-        isSneaking = false;
+        sneaking = false;
         attributes.isCrouching = false;
     }
 
@@ -166,7 +166,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
             super.updateLivingState(entity, pony, mode);
 
             // Seaponies can't sneak, silly
-            isSneaking = false;
+            sneaking = false;
         }
 
         @Override

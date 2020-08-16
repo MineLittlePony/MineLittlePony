@@ -2,6 +2,7 @@ package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.mob.PiglinActivity;
 import net.minecraft.entity.mob.PiglinEntity;
 import net.minecraft.util.math.MathHelper;
 
@@ -11,7 +12,7 @@ import com.minelittlepony.mson.api.ModelContext;
 
 public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
 
-    private PiglinEntity.Activity activity;
+    private PiglinActivity activity;
 
     private ModelPart leftFlap;
     private ModelPart rightFlap;
@@ -33,15 +34,15 @@ public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
             PiglinEntity piglinEntity = (PiglinEntity)entity;
             activity = piglinEntity.getActivity();
 
-            if (activity == PiglinEntity.Activity.CROSSBOW_HOLD) {
+            if (activity == PiglinActivity.CROSSBOW_HOLD) {
                 rightArmPose = ArmPose.CROSSBOW_HOLD;
-            } else if (activity == PiglinEntity.Activity.CROSSBOW_CHARGE) {
+            } else if (activity == PiglinActivity.CROSSBOW_CHARGE) {
                 rightArmPose = ArmPose.CROSSBOW_CHARGE;
-            } else if (activity == PiglinEntity.Activity.ADMIRING_ITEM) {
+            } else if (activity == PiglinActivity.ADMIRING_ITEM) {
                 leftArmPose = ArmPose.ITEM;
             }
         } else {
-            activity = PiglinEntity.Activity.DEFAULT;
+            activity = PiglinActivity.DEFAULT;
         }
     }
 
@@ -49,7 +50,7 @@ public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
     public void setAngles(HostileEntity entity, float move, float swing, float ticks, float headYaw, float headPitch) {
         super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
 
-        if (activity == PiglinEntity.Activity.ADMIRING_ITEM) {
+        if (activity == PiglinActivity.ADMIRING_ITEM) {
             leftArm.yaw = 0.5F;
             leftArm.pitch = -1.9F;
             leftArm.pivotY += 4;

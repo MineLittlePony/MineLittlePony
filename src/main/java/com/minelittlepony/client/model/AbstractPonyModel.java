@@ -128,7 +128,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         rightLeg.pitch = ROTATE_90;
         leftLeg.pitch = ROTATE_90;
 
-        head.setPivot(1, 2, isSneaking ? -1 : 1);
+        head.setPivot(1, 2, sneaking ? -1 : 1);
 
         ((MsonPart)rightArm).shift(0, 2,  6);
         ((MsonPart)leftArm).shift(0, 2,  6);
@@ -461,7 +461,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         arm.yaw = head.yaw - 0.06F;
         arm.roll = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
 
-        if (isSneaking) {
+        if (sneaking) {
             arm.pivotY += 4;
         }
     }
@@ -602,7 +602,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     }
 
     protected void renderLegs(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        if (!isSneaking) {
+        if (!sneaking) {
             torso.rotate(stack);
         }
 
