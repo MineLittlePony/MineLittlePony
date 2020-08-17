@@ -1,9 +1,9 @@
 package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.entity.mob.AbstractPiglinEntity;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.PiglinActivity;
-import net.minecraft.entity.mob.PiglinEntity;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.pony.IPony;
@@ -30,9 +30,8 @@ public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
         leftArmPose = ArmPose.EMPTY;
         rightArmPose = entity.getMainHandStack().isEmpty() ? ArmPose.EMPTY : ArmPose.ITEM;
 
-        if (entity instanceof PiglinEntity) {
-            PiglinEntity piglinEntity = (PiglinEntity)entity;
-            activity = piglinEntity.getActivity();
+        if (entity instanceof AbstractPiglinEntity) {
+            activity = ((AbstractPiglinEntity)entity).getActivity();
 
             if (activity == PiglinActivity.CROSSBOW_HOLD) {
                 rightArmPose = ArmPose.CROSSBOW_HOLD;
@@ -73,6 +72,6 @@ public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
 
     @Override
     protected boolean isZombified(HostileEntity entity) {
-        return !(entity instanceof PiglinEntity);
+        return !(entity instanceof AbstractPiglinEntity);
     }
 }

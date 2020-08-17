@@ -1,6 +1,7 @@
 package com.minelittlepony.client.render.entity;
 
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.AbstractPiglinEntity;
 import net.minecraft.entity.mob.HostileEntity;
@@ -23,6 +24,14 @@ public class PonyPiglinRenderer extends PonyRenderer.Caster<HostileEntity, Pigli
 
     public PonyPiglinRenderer(EntityRenderDispatcher manager) {
         super(manager, ModelType.PIGLIN);
+    }
+
+    @Override
+    public void scale(HostileEntity entity, MatrixStack stack, float ticks) {
+        super.scale(entity, stack, ticks);
+        if (entity.getType() == EntityType.PIGLIN_BRUTE) {
+            stack.scale(1.15F, 1.15F, 1.15F);
+        }
     }
 
     @Override
