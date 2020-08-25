@@ -49,6 +49,16 @@ public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
     public void setAngles(HostileEntity entity, float move, float swing, float ticks, float headYaw, float headPitch) {
         super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
 
+        float progress = ticks * 0.1F + move * 0.5F;
+        float range = 0.08F + swing * 0.4F;
+        rightFlap.roll = -0.5235988F - MathHelper.cos(progress * 1.2F) * range;
+        leftFlap.roll =   0.5235988F + MathHelper.cos(progress) * range;
+    }
+
+    @Override
+    protected void rotateLegs(float move, float swing, float ticks, HostileEntity entity) {
+        super.rotateLegs(move, swing, ticks, entity);
+
         if (activity == PiglinActivity.ADMIRING_ITEM) {
             leftArm.yaw = 0.5F;
             leftArm.pitch = -1.9F;
@@ -59,15 +69,30 @@ public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
             head.yaw = 0;
 
             head.roll = MathHelper.sin(ticks / 10) / 3F;
+        } else if (activity == PiglinActivity.DANCING) {
 
+            float speed = ticks / 60;
 
-            helmet.copyPositionAndRotation(head);
+            head.pivotX = MathHelper.sin(speed * 10);
+            head.pivotY = MathHelper.sin(speed * 40) + 0.4F;
+            head.pitch += MathHelper.sin(speed * 40) / 4 + 0.4F;
+
+            float bodyBob = MathHelper.sin(speed * 40) * 0.35F;
+            float legBob = MathHelper.sin(speed * 40) * 0.25F;
+
+            neck.pivotY = bodyBob;
+            torso.pivotY = bodyBob;
+            upperTorso.pivotY = bodyBob;
+
+            leftLeg.pitch += legBob;
+            rightLeg.pitch -= legBob;
+
+            leftArm.roll -= legBob/4;
+            rightArm.roll += legBob/4;
+
+            rightArm.pitch += legBob - 0.4F;
+            leftArm.pitch -= legBob + 0.4F;
         }
-
-        float progress = ticks * 0.1F + move * 0.5F;
-        float range = 0.08F + swing * 0.4F;
-        rightFlap.roll = -0.5235988F - MathHelper.cos(progress * 1.2F) * range;
-        leftFlap.roll =   0.5235988F + MathHelper.cos(progress) * range;
     }
 
     @Override

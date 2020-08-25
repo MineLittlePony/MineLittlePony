@@ -70,7 +70,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
         super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
 
-        updateHeadRotation(headYaw, headPitch);
+        rotateHead(headYaw, headPitch);
         shakeBody(move, swing, getWobbleAmount(), ticks);
         rotateLegs(move, swing, ticks, entity);
 
@@ -211,7 +211,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      * @param x     New rotation X
      * @param y     New rotation Y
      */
-    private void updateHeadRotation(float headYaw, float headPitch) {
+    private void rotateHead(float headYaw, float headPitch) {
         headYaw = attributes.isSleeping ? (Math.abs(attributes.interpolatorId.getMostSignificantBits()) % 2.8F) - 1.9F : headYaw / 57.29578F;
         headPitch = attributes.isSleeping ? 0.1f : headPitch / 57.29578F;
 
