@@ -10,10 +10,13 @@ import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.model.BodyPart;
+
+import java.util.Optional;
 
 public class PassengerFeature<T extends PlayerEntity, M extends ClientPonyModel<T>> extends AbstractPonyFeature<T, M> {
 
@@ -24,26 +27,34 @@ public class PassengerFeature<T extends PlayerEntity, M extends ClientPonyModel<
     }
 
     @Override
-    public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
-        renderShoulderParrot(stack, renderContext, lightUv, entity, limbDistance, limbAngle, headYaw, headPitch, true);
-        renderShoulderParrot(stack, renderContext, lightUv, entity, limbDistance, limbAngle, headYaw, headPitch, false);
+    public void render(MatrixStack stack, VertexConsumerProvider renderContext, int light, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
+        getShoulderParrot(entity.getShoulderEntityLeft()).ifPresent(texture -> {
+            renderShoulderParrot(stack, renderContext, light, entity, limbDistance, limbAngle, headYaw, headPitch, texture, 1);
+        });
+        getShoulderParrot(entity.getShoulderEntityRight()).ifPresent(texture -> {
+            renderShoulderParrot(stack, renderContext, light, entity, limbDistance, limbAngle, headYaw, headPitch, texture, -1);
+        });
     }
 
-    private void renderShoulderParrot(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float headYaw, float headPitch, boolean left) {
+    private Optional<Identifier> getShoulderParrot(CompoundTag tag) {
+        return EntityType.get(tag.getString("id"))
+                .filter(p -> p == EntityType.PARROT)
+                .map(type -> ParrotEntityRenderer.TEXTURES[tag.getInt("Variant")]);
+    }
 
-        CompoundTag riderTag = left ? entity.getShoulderEntityLeft() : entity.getShoulderEntityRight();
+    private void renderShoulderParrot(MatrixStack stack, VertexConsumerProvider renderContext, int light, T entity, float limbDistance, float limbAngle, float headYaw, float headPitch, Identifier texture, int sigma) {
+       stack.push();
 
-        EntityType.get(riderTag.getString("id")).filter(p -> p == EntityType.PARROT).ifPresent((entityType) -> {
-           stack.push();
+       getContextModel().transform(BodyPart.BODY, stack);
 
-           getContextModel().transform(BodyPart.BODY, stack);
+       stack.translate(
+               sigma * 0.25,
+               entity.isInSneakingPose() ? -0.9 : -1.2,
+               0.45);
+       stack.multiply(Vector3f.NEGATIVE_Z.getDegreesQuaternion(sigma * -5));
 
-           stack.translate(left ? 0.25 : -0.25, entity.isInSneakingPose() ? -0.5 : -0.25, 0.35);
-           stack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(left ? -5 : 5));
-
-           VertexConsumer vertexConsumer = renderContext.getBuffer(model.getLayer(ParrotEntityRenderer.TEXTURES[riderTag.getInt("Variant")]));
-           model.poseOnShoulder(stack, vertexConsumer, lightUv, OverlayTexture.DEFAULT_UV, limbDistance, limbAngle, headYaw, headPitch, entity.age);
-           stack.pop();
-        });
+       VertexConsumer buffer = renderContext.getBuffer(model.getLayer(texture));
+       model.poseOnShoulder(stack, buffer, light, OverlayTexture.DEFAULT_UV, limbDistance, limbAngle, headYaw, headPitch, entity.age);
+       stack.pop();
     }
 }
