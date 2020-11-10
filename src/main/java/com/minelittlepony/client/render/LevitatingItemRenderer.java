@@ -40,7 +40,7 @@ public class LevitatingItemRenderer {
     }
 
     public static RenderLayer getRenderLayer() {
-        return getRenderLayer(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+        return getRenderLayer(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
     }
 
     /**

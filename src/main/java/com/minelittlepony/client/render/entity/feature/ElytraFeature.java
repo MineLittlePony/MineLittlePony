@@ -47,7 +47,7 @@ public class ElytraFeature<T extends LivingEntity, M extends EntityModel<T> & IP
             }
 
             elytra.setAngles(entity, limbDistance, limbAngle, age, headYaw, headPitch);
-            VertexConsumer vertexConsumer = ItemRenderer.getDirectGlintVertexConsumer(renderContext, modelElytra.getLayer(getElytraTexture(entity)), false, itemstack.hasGlint());
+            VertexConsumer vertexConsumer = ItemRenderer.getDirectItemGlintConsumer(renderContext, modelElytra.getLayer(getElytraTexture(entity)), false, itemstack.hasGlint());
             modelElytra.render(stack, vertexConsumer, lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
 
             stack.pop();

@@ -5,7 +5,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.ModelWithHat;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.AbstractTraderEntity;
+import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
@@ -88,8 +88,8 @@ public class VillagerPonyModel<T extends LivingEntity & VillagerDataContainer> e
     public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
         super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
 
-        boolean isHeadRolling = entity instanceof AbstractTraderEntity
-                && ((AbstractTraderEntity)entity).getHeadRollingTimeLeft() > 0;
+        boolean isHeadRolling = entity instanceof MerchantEntity
+                && ((MerchantEntity)entity).getHeadRollingTimeLeft() > 0;
 
         if (isHeadRolling) {
             float roll = 0.3F * MathHelper.sin(0.45F * ticks);

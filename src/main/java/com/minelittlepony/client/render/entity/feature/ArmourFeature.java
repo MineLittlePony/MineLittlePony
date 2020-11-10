@@ -93,7 +93,7 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
             MatrixStack matrices, VertexConsumerProvider provider,
             int light, boolean glint, V model, float r, float g, float b, IArmourTextureResolver<T> resolver, ArmourLayer layer, Identifier texture) {
 
-        VertexConsumer vertices = ItemRenderer.getArmorVertexConsumer(provider, RenderLayer.getArmorCutoutNoCull(texture), false, glint);
+        VertexConsumer vertices = ItemRenderer.getArmorGlintConsumer(provider, RenderLayer.getArmorCutoutNoCull(texture), false, glint);
 
         model.setVariant(resolver.getArmourVariant(layer, texture));
         model.render(matrices, vertices, light, OverlayTexture.DEFAULT_UV, r, g, b, 1);
