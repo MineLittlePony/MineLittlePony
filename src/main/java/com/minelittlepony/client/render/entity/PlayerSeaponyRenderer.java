@@ -2,6 +2,7 @@ package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.ModelWrapper;
@@ -11,6 +12,7 @@ import com.minelittlepony.util.MathUtil;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.util.Identifier;
 
 public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
 
@@ -22,6 +24,11 @@ public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
 
         normalPony = new ModelWrapper<>(ModelType.<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>>getPlayerModel(Race.UNICORN).getKey(slim));
         seapony = this.manager.getModelWrapper();
+    }
+
+    @Override
+    public Identifier getTexture(AbstractClientPlayerEntity player) {
+        return SkinsProxy.instance.getSeaponySkin(manager, player);
     }
 
     @Override

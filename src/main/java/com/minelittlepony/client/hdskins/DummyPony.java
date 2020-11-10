@@ -1,29 +1,37 @@
 package com.minelittlepony.client.hdskins;
 
+import com.minelittlepony.client.IPreviewModel;
+import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.client.model.entity.race.PlayerModels;
 import com.minelittlepony.hdskins.client.dummy.DummyPlayer;
 import com.minelittlepony.hdskins.client.dummy.TextureProxy;
-import com.minelittlepony.hdskins.profile.SkinType;
-import com.minelittlepony.hdskins.client.resources.LocalTexture;
 import com.minelittlepony.model.IRotatedSwimmer;
 
 /**
  * Dummy model used for the skin uploading screen.
  */
-class DummyPony extends DummyPlayer implements IRotatedSwimmer {
-
-    public boolean wet = false;
+class DummyPony extends DummyPlayer implements IRotatedSwimmer, IPreviewModel {
 
     public DummyPony(TextureProxy textures) {
         super(textures);
     }
 
     public void setWet(boolean wet) {
-        this.wet = wet;
+    }
 
-        LocalTexture skin = getTextures().get(SkinType.SKIN);
+    @Override
+    public boolean isSubmergedInWater() {
+        return getTextures().getSkinType() == MineLPHDSkins.seaponySkinType || super.isSubmergedInWater();
+    }
 
-        if (wet != (skin.getId() == PonyPreview.NO_SKIN_SEAPONY)) {
-            skin.clearLocal();
+    @Override
+    public String getModel() {
+        if (getTextures().getSkinType() == MineLPHDSkins.seaponySkinType) {
+            return getTextures().usesThinSkin() ? "slimseapony" : "seapony";
         }
+        return PlayerModels.forRace(MineLittlePony.getInstance().getManager()
+                .getPony(this)
+                .getRace(false))
+                .getId(super.getModel().contains("slim"));
     }
 }

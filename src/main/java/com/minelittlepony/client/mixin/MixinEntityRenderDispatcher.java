@@ -1,5 +1,6 @@
 package com.minelittlepony.client.mixin;
 
+import com.minelittlepony.client.IPreviewModel;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.entity.race.PlayerModels;
 
@@ -18,6 +19,9 @@ abstract class MixinEntityRenderDispatcher {
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/network/AbstractClientPlayerEntity;getModel()Ljava/lang/String;"))
     private String getPlayerModel(AbstractClientPlayerEntity player, Entity entity) {
+        if (player instanceof IPreviewModel) {
+            return player.getModel();
+        }
         return PlayerModels.forRace(MineLittlePony.getInstance().getManager()
                 .getPony(player)
                 .getRace(false))
