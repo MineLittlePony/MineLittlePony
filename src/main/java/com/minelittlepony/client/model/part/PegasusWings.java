@@ -23,6 +23,10 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
 
     protected Wing legacyWing;
 
+    public PegasusWings(ModelPart tree) {
+
+    }
+
     @Override
     public void init(ModelContext context) {
         pegasus = context.getModel();
@@ -88,6 +92,10 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
 
         protected ModelPart extended;
         protected ModelPart folded;
+
+        public Wing(ModelPart tree) {
+
+        }
 
         @Override
         public void init(ModelContext context) {

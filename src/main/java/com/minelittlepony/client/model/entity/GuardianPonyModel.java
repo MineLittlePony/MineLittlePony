@@ -11,7 +11,12 @@ import com.minelittlepony.client.model.IPonyMixinModel;
 import com.minelittlepony.client.model.entity.race.SeaponyModel;
 
 public class GuardianPonyModel extends GuardianEntityModel implements IPonyMixinModel.Caster<GuardianEntity, SeaponyModel<GuardianEntity>, ModelPart> {
-    private final SeaponyModel<GuardianEntity> mixin = new SeaponyModel<>();
+    private final SeaponyModel<GuardianEntity> mixin;
+
+    public GuardianPonyModel(ModelPart tree) {
+        super(getTexturedModelData().createModel());
+        mixin = new SeaponyModel<>(tree);
+    }
 
     @Override
     public void setAngles(GuardianEntity entity, float move, float swing, float ticks, float headYaw, float headPitch) {

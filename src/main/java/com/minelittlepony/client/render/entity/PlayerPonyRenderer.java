@@ -28,7 +28,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
@@ -44,25 +44,25 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
 
     protected final EquineRenderManager<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> manager = new EquineRenderManager<>(this);
 
-    public PlayerPonyRenderer(EntityRenderDispatcher dispatcher, boolean slim, ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>> key) {
-        super(dispatcher, slim);
+    public PlayerPonyRenderer(EntityRendererFactory.Context context, boolean slim, ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>> key) {
+        super(context, slim);
 
         this.model = manager.setModel(key).getBody();
 
-        addLayers();
+        addLayers(context);
     }
 
-    protected void addLayers() {
+    protected void addLayers(EntityRendererFactory.Context context) {
         features.clear();
 
         addLayer(new DJPon3Feature<>(this));
         addLayer(new ArmourFeature<>(this));
-        addFeature(new StuckArrowsFeatureRenderer<>(this));
-        addLayer(new SkullFeature<>(this));
+        addFeature(new StuckArrowsFeatureRenderer<>(context, this));
+        addLayer(new SkullFeature<>(this, context.getModelLoader()));
         addLayer(new ElytraFeature<>(this));
         addLayer(new GlowingItemFeature<>(this));
         addLayer(new CapeFeature<>(this));
-        addLayer(new PassengerFeature<>(this));
+        addLayer(new PassengerFeature<>(this, context));
         addLayer(new GearFeature<>(this));
     }
 

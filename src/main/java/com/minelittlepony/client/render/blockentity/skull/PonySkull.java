@@ -2,6 +2,7 @@ package com.minelittlepony.client.render.blockentity.skull;
 
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.client.model.DJPon3EarsModel;
+import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
 import com.mojang.authlib.GameProfile;
@@ -16,7 +17,7 @@ import javax.annotation.Nullable;
 
 public class PonySkull extends AbstractPonySkull {
 
-    private final DJPon3EarsModel deadMau5 = new DJPon3EarsModel();
+    private final DJPon3EarsModel deadMau5 = ModelType.DJ_PON_3.createModel();
 
     @Override
     public boolean canRender(PonyConfig config) {

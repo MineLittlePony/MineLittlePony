@@ -23,7 +23,7 @@
 			}
 		]
 	},
-	"helmet": {
+	"hat": {
 		"children": [
 			{
 				"center": [0, 0, -4],
@@ -41,7 +41,7 @@
 			{"from": [0, 0, 0], "size": [2, 5, 2] }
 		]
 	},
-	"torso": {
+	"body": {
 		"texture": {"u": 2, "v": 12},
 		"center": [-3, 2, -3],
 		"rotate": [-30, 0, 0],

@@ -11,7 +11,6 @@ import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.common.util.Color;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
-import com.minelittlepony.mson.api.ModelContext;
 
 import java.util.Calendar;
 import java.util.UUID;
@@ -34,15 +33,14 @@ public class ChristmasHat extends AbstractGear {
 
     private static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/models/antlers.png");
 
-    private ModelPart left;
-    private ModelPart right;
+    private final ModelPart left;
+    private final ModelPart right;
 
     private int tint;
 
-    @Override
-    public void init(ModelContext context) {
-        left = context.findByName("left");
-        right = context.findByName("right");
+    public ChristmasHat(ModelPart tree) {
+        left = tree.getChild("left");
+        right = tree.getChild("right");
     }
 
     @Override

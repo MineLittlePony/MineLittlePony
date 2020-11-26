@@ -2,6 +2,7 @@ package com.minelittlepony.client.render;
 
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderPhase;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.Identifier;
 
@@ -24,7 +25,7 @@ public class MagicGlow extends RenderPhase {
         RenderSystem.defaultBlendFunc();
      });
 
-    private static final RenderLayer MAGIC = RenderLayer.of("mlp_magic_glow", VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL, 7, 256, RenderLayer.MultiPhaseParameters.builder()
+    private static final RenderLayer MAGIC = RenderLayer.of("mlp_magic_glow", VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS, 256, RenderLayer.MultiPhaseParameters.builder()
             .texture(NO_TEXTURE)
             .writeMaskState(COLOR_MASK)
             .transparency(LIGHTNING_TRANSPARENCY)
@@ -37,7 +38,7 @@ public class MagicGlow extends RenderPhase {
     }
 
     public static RenderLayer getTintedTexturedLayer(Identifier texture, float red, float green, float blue, float alpha) {
-        return RenderLayer.of("mlp_tint_layer", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, 7, 256, true, true, RenderLayer.MultiPhaseParameters.builder()
+        return RenderLayer.of("mlp_tint_layer", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS, 256, true, true, RenderLayer.MultiPhaseParameters.builder()
                 .texture(new Color(texture, red, green, blue, alpha))
                 .writeMaskState(COLOR_MASK)
                 .alpha(ONE_TENTH_ALPHA)

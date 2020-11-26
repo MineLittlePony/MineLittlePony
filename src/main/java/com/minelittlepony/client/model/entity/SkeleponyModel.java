@@ -1,6 +1,7 @@
 package com.minelittlepony.client.model.entity;
 
 import net.minecraft.entity.mob.WitherSkeletonEntity;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.HostileEntity;
@@ -18,8 +19,8 @@ public class SkeleponyModel<T extends HostileEntity> extends AlicornModel<T> imp
 
     public boolean isWithered;
 
-    public SkeleponyModel() {
-        super(false);
+    public SkeleponyModel(ModelPart tree) {
+        super(tree, false);
     }
 
     @Override

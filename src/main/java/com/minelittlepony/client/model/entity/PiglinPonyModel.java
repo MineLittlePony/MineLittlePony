@@ -8,20 +8,18 @@ import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.render.EquineRenderManager;
-import com.minelittlepony.mson.api.ModelContext;
 
 public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
 
     private PiglinActivity activity;
 
-    private ModelPart leftFlap;
-    private ModelPart rightFlap;
+    private final ModelPart leftFlap;
+    private final ModelPart rightFlap;
 
-    @Override
-    public void init(ModelContext context) {
-        super.init(context);
-        leftFlap = context.findByName("left_flap");
-        rightFlap = context.findByName("right_flap");
+    public PiglinPonyModel(ModelPart tree) {
+        super(tree);
+        leftFlap = tree.getChild("left_flap");
+        rightFlap = tree.getChild("right_flap");
     }
 
     @Override

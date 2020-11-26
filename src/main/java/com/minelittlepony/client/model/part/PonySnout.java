@@ -10,7 +10,7 @@ import com.minelittlepony.model.IPart;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
 import com.minelittlepony.mson.api.model.MsonPart;
-import com.minelittlepony.mson.api.model.BoxBuilder.ContentAccessor;
+import com.minelittlepony.mson.api.model.PartBuilder;
 
 import java.util.UUID;
 
@@ -21,19 +21,23 @@ public class PonySnout implements IPart, MsonModel {
     private ModelPart mare;
     private ModelPart stallion;
 
+    public PonySnout(ModelPart tree) {
+
+    }
+
     @Override
     public void init(ModelContext context) {
         mare = context.findByName("mare");
         stallion = context.findByName("stallion");
 
-        ContentAccessor head = context.getContext();
-        head.children().add(mare);
-        head.children().add(stallion);
+        PartBuilder head = context.getContext();
+        head.addChild("mare", mare);
+        head.addChild("stallion", stallion);
     }
 
     public void rotate(float x, float y, float z) {
-        ((MsonPart)mare).rotate(x, y, z);
-        ((MsonPart)stallion).rotate(x, y, z);
+        ((MsonPart)(Object)mare).rotate(x, y, z);
+        ((MsonPart)(Object)stallion).rotate(x, y, z);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.Model;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.util.Identifier;
@@ -27,6 +28,7 @@ import com.minelittlepony.client.model.entity.race.PegasusModel;
 import com.minelittlepony.client.model.entity.race.SeaponyModel;
 import com.minelittlepony.client.model.entity.race.UnicornModel;
 import com.minelittlepony.client.model.entity.race.ZebraModel;
+import com.minelittlepony.client.model.gear.AbstractGear;
 import com.minelittlepony.client.model.gear.ChristmasHat;
 import com.minelittlepony.client.model.gear.Muffin;
 import com.minelittlepony.client.model.gear.SaddleBags;
@@ -43,14 +45,15 @@ import javax.annotation.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 public final class ModelType {
 
     private static final Map<Race, PlayerModelKey<?, ?>> PLAYER_MODELS = new HashMap<>();
     private static final Map<Wearable, ModelKey<? extends IGear>> GEAR_MODELS = new HashMap<>();
+
+    public static final ModelKey<DJPon3EarsModel> DJ_PON_3 = register("dj_pon_three", DJPon3EarsModel::new);
 
     public static final ModelKey<VillagerPonyModel<?>> VILLAGER = register("villager", VillagerPonyModel::new);
     public static final ModelKey<WitchPonyModel> WITCH = register("witch", WitchPonyModel::new);
@@ -91,25 +94,25 @@ public final class ModelType {
     public static final PlayerModelKey<?, ChangelingModel<?>> CHANGEDLING = registerPlayer("reformed_changeling", Race.CHANGEDLING, ChangelingModel::new);
     public static final PlayerModelKey<?, ZebraModel<?>> ZEBRA = registerPlayer("zebra", Race.ZEBRA, ZebraModel::new);
 
-    static <E extends LivingEntity, T extends Model & MsonModel> PlayerModelKey<E, T> registerPlayer(String name, Race race, Function<Boolean, T> constructor) {
+    static <E extends LivingEntity, T extends Model & MsonModel> PlayerModelKey<E, T> registerPlayer(String name, Race race, BiFunction<ModelPart, Boolean, T> constructor) {
         return registerPlayer(name, race, constructor, PlayerPonyRenderer::new);
     }
 
     @SuppressWarnings("unchecked")
-    static <E extends LivingEntity, T extends Model & MsonModel> PlayerModelKey<E, T> registerPlayer(String name, Race race, Function<Boolean, T> constructor, PlayerModelKey.RendererFactory rendererFactory) {
+    static <E extends LivingEntity, T extends Model & MsonModel> PlayerModelKey<E, T> registerPlayer(String name, Race race, BiFunction<ModelPart, Boolean, T> constructor, PlayerModelKey.RendererFactory rendererFactory) {
         return (PlayerModelKey<E, T>)PLAYER_MODELS.computeIfAbsent(race, r -> {
             return new PlayerModelKey<>(name, constructor, rendererFactory);
         });
     }
 
     @SuppressWarnings("unchecked")
-    static <T extends IGear> ModelKey<T> registerGear(String name, Wearable wearable, Supplier<T> constructor) {
+    static <T extends AbstractGear> ModelKey<T> registerGear(String name, Wearable wearable, MsonModel.Factory<T> constructor) {
         return (ModelKey<T>)GEAR_MODELS.computeIfAbsent(wearable, w -> {
             return Mson.getInstance().registerModel(new Identifier("minelittlepony", "gear/" + name), constructor);
         });
     }
 
-    static <T extends Model & MsonModel> ModelKey<T> register(String name, Supplier<T> constructor) {
+    static <T extends Model> ModelKey<T> register(String name, MsonModel.Factory<T> constructor) {
         return Mson.getInstance().registerModel(new Identifier("minelittlepony", name), constructor);
     }
 

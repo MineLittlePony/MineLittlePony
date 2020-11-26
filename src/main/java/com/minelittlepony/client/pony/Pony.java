@@ -71,7 +71,7 @@ public class Pony implements IPony {
     public boolean isFlying(LivingEntity entity) {
         return !(isOnGround(entity)
                 || entity.hasVehicle()
-                || (entity.isClimbing() && !(entity instanceof PlayerEntity && ((PlayerEntity)entity).abilities.allowFlying))
+                || (entity.isClimbing() && !(entity instanceof PlayerEntity && ((PlayerEntity)entity).getAbilities().allowFlying))
                 || entity.isSubmergedInWater()
                 || entity.isSleeping());
     }

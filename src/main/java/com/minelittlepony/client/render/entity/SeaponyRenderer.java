@@ -11,7 +11,7 @@ import com.minelittlepony.client.render.entity.feature.GlowingItemFeature;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.GuardianEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityDimensions;
@@ -25,11 +25,11 @@ public class SeaponyRenderer extends GuardianEntityRenderer {
 
     private final Proxy<GuardianEntity, GuardianPonyModel> ponyRenderer;
 
-    public SeaponyRenderer(EntityRenderDispatcher manager) {
-        super(manager);
+    public SeaponyRenderer(EntityRendererFactory.Context context) {
+        super(context);
 
         features.clear();
-        ponyRenderer = new Proxy<GuardianEntity, GuardianPonyModel>(features, manager, ModelType.GUARDIAN) {
+        ponyRenderer = new Proxy<GuardianEntity, GuardianPonyModel>(features, context, ModelType.GUARDIAN) {
             @Override
             public Identifier findTexture(GuardianEntity entity) {
                 return SEAPONY;
@@ -71,8 +71,8 @@ public class SeaponyRenderer extends GuardianEntityRenderer {
 
     public static class Elder extends SeaponyRenderer {
 
-        public Elder(EntityRenderDispatcher manager) {
-            super(manager);
+        public Elder(EntityRendererFactory.Context context) {
+            super(context);
         }
 
         @Override

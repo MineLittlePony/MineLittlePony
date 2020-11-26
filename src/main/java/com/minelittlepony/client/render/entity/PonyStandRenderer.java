@@ -2,13 +2,14 @@ package com.minelittlepony.client.render.entity;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.ArmorStandEntityRenderer;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
 import net.minecraft.client.render.entity.feature.ElytraFeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
 import net.minecraft.client.render.entity.feature.HeldItemFeatureRenderer;
 import net.minecraft.client.render.entity.model.ArmorStandArmorEntityModel;
+import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -23,21 +24,24 @@ import com.minelittlepony.model.armour.ArmourLayer;
 
 public class PonyStandRenderer extends ArmorStandEntityRenderer {
 
-    public PonyStandRenderer(EntityRenderDispatcher entityRenderDispatcher) {
-        super(entityRenderDispatcher);
+    public PonyStandRenderer(EntityRendererFactory.Context context) {
+        super(context);
 
         features.clear();
-        addFeature(new Armour(this));
+        addFeature(new Armour(this, context));
         addFeature(new HeldItemFeatureRenderer<>(this));
-        addFeature(new ElytraFeatureRenderer<>(this));
-        addFeature(new HeadFeatureRenderer<>(this));
+        addFeature(new ElytraFeatureRenderer<>(this, context.getModelLoader()));
+        addFeature(new HeadFeatureRenderer<>(this, context.getModelLoader()));
     }
 
     class Armour extends ArmorFeatureRenderer<ArmorStandEntity, ArmorStandArmorEntityModel, ArmorStandArmorEntityModel> {
         private final ModelWrapper<ArmorStandEntity, EarthPonyModel<ArmorStandEntity>> pony = new ModelWrapper<>(ModelType.EARTH_PONY.getKey(false));
 
-        public Armour(FeatureRendererContext<ArmorStandEntity, ArmorStandArmorEntityModel> context) {
-            super(context, new ArmorStandArmorEntityModel(0.5F), new ArmorStandArmorEntityModel(1));
+        public Armour(FeatureRendererContext<ArmorStandEntity, ArmorStandArmorEntityModel> renderer, EntityRendererFactory.Context context) {
+            super(renderer,
+                    new ArmorStandArmorEntityModel(context.getPart(EntityModelLayers.ARMOR_STAND_INNER_ARMOR)),
+                    new ArmorStandArmorEntityModel(context.getPart(EntityModelLayers.ARMOR_STAND_OUTER_ARMOR))
+            );
 
             pony.apply(new PonyData(Race.EARTH));
         }

@@ -9,7 +9,7 @@ import com.minelittlepony.client.render.entity.feature.GlowingEyesFeature.IGlowi
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.EndermanEntity;
@@ -25,14 +25,14 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
 
     private final Random rnd = new Random();
 
-    public EnderStallionRenderer(EntityRenderDispatcher manager) {
-        super(manager, ModelType.ENDERMAN);
+    public EnderStallionRenderer(EntityRendererFactory.Context context) {
+        super(context, ModelType.ENDERMAN);
     }
 
     @Override
-    protected void addLayers() {
+    protected void addLayers(EntityRendererFactory.Context context) {
         addFeature(createItemHoldingLayer());
-        addFeature(new StuckArrowsFeatureRenderer<>(this));
+        addFeature(new StuckArrowsFeatureRenderer<>(context, this));
         addFeature(new GlowingEyesFeature<>(this));
     }
 

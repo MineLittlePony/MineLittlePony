@@ -10,6 +10,9 @@ import com.minelittlepony.model.IPart;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -20,11 +23,15 @@ public class PonyTail implements IPart, MsonModel {
 
     private int tailStop = 0;
 
+    private final List<Segment> segments = new ArrayList<>();
+
+    public PonyTail(ModelPart tree) {
+
+    }
+
     @Override
     public void init(ModelContext context) {
         theModel = context.getModel();
-
-        tail = new ModelPart(theModel);
 
         try {
             int segments = context.getLocals().getValue("segments").get().intValue();
@@ -33,13 +40,16 @@ public class PonyTail implements IPart, MsonModel {
 
             for (int i = 0; i < segments; i++) {
                 Segment segment = subContext.findByName("segment_" + i);
+                segment.tail = this;
                 segment.index = i;
-                tail.addChild(segment);
+                this.segments.add(segment);
             }
 
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
+
+        tail = new ModelPart(new ArrayList<>(), new HashMap<>());
     }
 
     @Override
@@ -90,29 +100,28 @@ public class PonyTail implements IPart, MsonModel {
 
     @Override
     public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
-        tail.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        stack.push();
+        tail.rotate(stack);
+
+        segments.forEach(segment -> segment.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha));
+
+        stack.pop();
     }
 
-    public static class Segment extends ModelPart implements MsonModel {
-
+    public static class Segment implements MsonModel {
         public PonyTail tail;
 
         public int index;
 
-        public Segment(ModelContext context) {
-            super(context.getModel());
+        private final ModelPart tree;
+
+        public Segment(ModelPart tree) {
+            this.tree = tree;
         }
 
-        @Override
-        public void init(ModelContext context) {
-            tail = context.getContext();
-            context.findByName("segment", this);
-        }
-
-        @Override
         public void render(MatrixStack stack, VertexConsumer renderContext, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
             if (index < tail.tailStop) {
-                super.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
+                tree.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
             }
         }
     }

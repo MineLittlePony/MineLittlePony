@@ -4,6 +4,7 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
+import net.minecraft.util.Hand;
 
 import com.minelittlepony.model.capabilities.fabric.PonyModelPrepareCallback;
 import com.minelittlepony.api.pony.IPony;
@@ -32,6 +33,15 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
      * Associated pony data.
      */
     protected IPonyData metadata = PonyData.NULL;
+
+    public ClientPonyModel(ModelPart tree) {
+        super(tree);
+    }
+
+    protected Arm getPreferredArm(T livingEntity) {
+        Arm arm = livingEntity.getMainArm();
+        return livingEntity.preferredHand == Hand.MAIN_HAND ? arm : arm.getOpposite();
+    }
 
     @Override
     public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {

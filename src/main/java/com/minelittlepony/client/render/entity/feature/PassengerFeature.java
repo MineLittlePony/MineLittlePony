@@ -3,7 +3,9 @@ package com.minelittlepony.client.render.entity.feature;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.ParrotEntityRenderer;
+import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.ParrotEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
@@ -20,10 +22,11 @@ import java.util.Optional;
 
 public class PassengerFeature<T extends PlayerEntity, M extends ClientPonyModel<T>> extends AbstractPonyFeature<T, M> {
 
-    private final ParrotEntityModel model = new ParrotEntityModel();
+    private final ParrotEntityModel model;
 
-    public PassengerFeature(IPonyRenderContext<T, M> context) {
-        super(context);
+    public PassengerFeature(IPonyRenderContext<T, M> renderer, EntityRendererFactory.Context context) {
+        super(renderer);
+        model = new ParrotEntityModel(context.getPart(EntityModelLayers.PARROT));
     }
 
     @Override

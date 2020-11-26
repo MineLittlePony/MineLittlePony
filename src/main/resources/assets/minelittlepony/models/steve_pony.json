@@ -34,14 +34,14 @@
 			}
 		]
 	},
-	"helmet": {
+	"hat": {
 		"texture": { "u": 32, "v": 0 },
 		"center": [ 0, 0, -2 ],
 		"cubes": [
 			{ "from": [-4, -6, -6], "size": [ 8,  8,  8], "stretch": 0.5 }
 		]
 	},
-	"torso": {
+	"body": {
 		"texture": { "u": 16, "v": 16 },
 		"cubes": [
 			{ "from": [-4, 4, -2], "size": [ 8,  8,  4] }
@@ -253,7 +253,7 @@
 			}
 		]
 	},
-	"right_pant_leg": {
+	"right_pants": {
 		"center": ["#arm_rotation_x_neg", 0, 0],
 		"texture": { "u": 0, "v": 32 },
 		"cubes": [
@@ -264,7 +264,7 @@
 			}
 		]
 	},
-	"left_pant_leg": {
+	"left_pants": {
 		"center": ["#arm_rotation_x", 0, 0],
 		"texture": { "u": 0, "v": 48 },
 		"cubes": [

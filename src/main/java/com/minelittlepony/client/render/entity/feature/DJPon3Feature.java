@@ -8,13 +8,14 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 
 import com.minelittlepony.client.model.IPonyModel;
+import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.DJPon3EarsModel;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.model.BodyPart;
 
 public class DJPon3Feature<T extends AbstractClientPlayerEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyFeature<T, M> {
 
-    private final DJPon3EarsModel deadMau5 = new DJPon3EarsModel();
+    private final DJPon3EarsModel deadMau5 = ModelType.DJ_PON_3.createModel();
 
     public DJPon3Feature(IPonyRenderContext<T, M> context) {
         super(context);

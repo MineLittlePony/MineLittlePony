@@ -20,14 +20,16 @@ import com.minelittlepony.mson.api.ModelContext;
 
 public class VillagerPonyModel<T extends LivingEntity & VillagerDataContainer> extends AlicornModel<T> implements ModelWithHat {
 
-    private ModelPart apron;
-    private ModelPart trinket;
+    private final ModelPart apron;
+    private final ModelPart trinket;
 
     private IPart batWings;
     private IPart batEars;
 
-    public VillagerPonyModel() {
-        super(false);
+    public VillagerPonyModel(ModelPart tree) {
+        super(tree, false);
+        apron = tree.getChild("apron");
+        trinket = tree.getChild("trinket");
     }
 
     @Override
@@ -35,8 +37,6 @@ public class VillagerPonyModel<T extends LivingEntity & VillagerDataContainer> e
         super.init(context);
         batWings = context.findByName("bat_wings");
         batEars = context.findByName("bat_ears");
-        apron = context.findByName("apron");
-        trinket = context.findByName("trinket");
     }
 
     @Override

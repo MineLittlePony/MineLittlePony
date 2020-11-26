@@ -5,7 +5,6 @@ import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.IPegasus;
-import com.minelittlepony.mson.api.ModelContext;
 
 import java.util.UUID;
 
@@ -20,10 +19,10 @@ public class SaddleBags extends AbstractGear {
 
     public static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/models/saddlebags.png");
 
-    private ModelPart leftBag;
-    private ModelPart rightBag;
+    private final ModelPart leftBag;
+    private final ModelPart rightBag;
 
-    private ModelPart strap;
+    private final ModelPart strap;
 
     private boolean hangLow = false;
 
@@ -31,11 +30,10 @@ public class SaddleBags extends AbstractGear {
 
     private IModel model;
 
-    @Override
-    public void init(ModelContext context) {
-        strap = context.findByName("strap");
-        leftBag = context.findByName("left_bag");
-        rightBag = context.findByName("right_bag");
+    public SaddleBags(ModelPart tree) {
+        strap = tree.getChild("strap");
+        leftBag = tree.getChild("left_bag");
+        rightBag = tree.getChild("right_bag");
     }
 
     @Override

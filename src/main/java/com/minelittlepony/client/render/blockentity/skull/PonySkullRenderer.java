@@ -14,9 +14,10 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.block.SkullBlock;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
@@ -31,13 +32,16 @@ import javax.annotation.Nullable;
  */
 public class PonySkullRenderer extends SkullBlockEntityRenderer {
 
-    private static PonySkullRenderer INSTANCE;
+    public static PonySkullRenderer INSTANCE;
 
     public static void resolve(boolean ponySkulls) {
         Mson.getInstance().getEntityRendererRegistry().registerBlockRenderer(BlockEntityType.SKULL,
                 ponySkulls ? PonySkullRenderer::new : SkullBlockEntityRenderer::new
         );
     }
+
+    private ISkull selectedSkull;
+    private Identifier selectedSkin;
 
     private final Map<SkullBlock.SkullType, ISkull> skullMap = Util.make(Maps.newHashMap(), (skullMap) -> {
         skullMap.put(SkullBlock.Type.SKELETON, new MobSkull(SkeleponyRenderer.SKELETON, MobRenderers.SKELETON));
@@ -46,34 +50,36 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
         skullMap.put(SkullBlock.Type.PLAYER, new PonySkull());
     });
 
-    public PonySkullRenderer(BlockEntityRenderDispatcher dispatcher) {
-        super(dispatcher);
-
+    public PonySkullRenderer(BlockEntityRendererFactory.Context context) {
+        super(context);
         INSTANCE = this;
     }
 
-    public static boolean renderPonySkull(@Nullable Direction direction, float angle,
-            SkullBlock.SkullType skullType, @Nullable GameProfile profile, float poweredTicks,
-            MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
-        if (INSTANCE != null) {
-            return INSTANCE.renderSkull(direction, angle, skullType, profile, poweredTicks, stack, renderContext, lightUv);
-        }
-        return false;
-    }
-
-    boolean renderSkull(@Nullable Direction direction, float angle,
-            SkullBlock.SkullType skullType, @Nullable GameProfile profile, float poweredTicks,
-            MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
+    public RenderLayer getRenderLayer(SkullBlock.SkullType skullType, @Nullable GameProfile profile) {
+        selectedSkull = null;
+        selectedSkin = null;
 
         ISkull skull = skullMap.get(skullType);
 
         if (skull == null || !skull.canRender(MineLittlePony.getInstance().getConfig())) {
+            return null;
+        }
+
+        selectedSkull = skull;
+        selectedSkin = skull.getSkinResource(profile);
+        return LevitatingItemRenderer.getRenderLayer(selectedSkin);
+    }
+
+    public boolean renderSkull(@Nullable Direction direction,
+            float angle, float poweredTicks,
+            MatrixStack stack, VertexConsumerProvider renderContext, RenderLayer layer,
+            int lightUv) {
+
+        if (selectedSkull == null || !selectedSkull.canRender(MineLittlePony.getInstance().getConfig())) {
             return false;
         }
 
-        Identifier skin = skull.getSkinResource(profile);
-
-        skull.bindPony(MineLittlePony.getInstance().getManager().getPony(skin));
+        selectedSkull.bindPony(MineLittlePony.getInstance().getManager().getPony(selectedSkin));
 
         stack.push();
 
@@ -81,10 +87,10 @@ public class PonySkullRenderer extends SkullBlockEntityRenderer {
 
         stack.scale(-1, -1, 1);
 
-        VertexConsumer vertices = renderContext.getBuffer(LevitatingItemRenderer.getRenderLayer(skin));
+        VertexConsumer vertices = renderContext.getBuffer(layer);
 
-        skull.setAngles(angle, poweredTicks);
-        skull.render(stack, vertices, lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
+        selectedSkull.setAngles(angle, poweredTicks);
+        selectedSkull.render(stack, vertices, lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
 
         stack.pop();
 

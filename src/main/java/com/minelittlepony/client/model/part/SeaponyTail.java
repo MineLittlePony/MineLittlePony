@@ -23,6 +23,10 @@ public class SeaponyTail implements IPart, MsonModel {
 
     private IPonyModel<?> model;
 
+    public SeaponyTail(ModelPart tree) {
+
+    }
+
     @Override
     public void init(ModelContext context) {
         model = context.getModel();

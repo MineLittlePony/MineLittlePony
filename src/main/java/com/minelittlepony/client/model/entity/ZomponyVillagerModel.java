@@ -1,5 +1,6 @@
 package com.minelittlepony.client.model.entity;
 
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.mob.ZombieVillagerEntity;
 import net.minecraft.util.math.MathHelper;
 
@@ -8,6 +9,10 @@ import com.minelittlepony.mson.api.model.MsonPart;
 
 public class ZomponyVillagerModel extends VillagerPonyModel<ZombieVillagerEntity> implements IMobModel {
 
+    public ZomponyVillagerModel(ModelPart tree) {
+        super(tree);
+    }
+
     @Override
     protected void rotateLegs(float move, float swing, float ticks, ZombieVillagerEntity entity) {
         super.rotateLegs(move, swing, ticks, entity);
@@ -15,10 +20,10 @@ public class ZomponyVillagerModel extends VillagerPonyModel<ZombieVillagerEntity
         if (rightArmPose == ArmPose.EMPTY) {
             if (islookAngleRight(move)) {
                 rotateArmHolding(rightArm, 1, getSwingAmount(), ticks);
-                ((MsonPart)rightArm).shift(0.5F, 1.5F, 3);
+                ((MsonPart)(Object)rightArm).shift(0.5F, 1.5F, 3);
             } else {
                 rotateArmHolding(leftArm, -1, getSwingAmount(), ticks);
-                ((MsonPart)leftArm).shift(-0.5F, 1.5F, 3);
+                ((MsonPart)(Object)leftArm).shift(-0.5F, 1.5F, 3);
             }
         }
     }

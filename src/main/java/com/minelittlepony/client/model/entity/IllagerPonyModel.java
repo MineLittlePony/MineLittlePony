@@ -9,8 +9,8 @@ import com.minelittlepony.client.model.entity.race.AlicornModel;
 
 public class IllagerPonyModel<T extends IllagerEntity> extends AlicornModel<T> {
 
-    public IllagerPonyModel() {
-        super(false);
+    public IllagerPonyModel(ModelPart tree) {
+        super(tree, false);
     }
 
     @Override

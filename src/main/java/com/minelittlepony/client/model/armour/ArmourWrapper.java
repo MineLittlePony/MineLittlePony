@@ -6,15 +6,14 @@ import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.model.armour.ArmourLayer;
 import com.minelittlepony.model.armour.IEquestrianArmour;
-
-import java.util.function.Supplier;
+import com.minelittlepony.mson.api.MsonModel;
 
 public class ArmourWrapper<T extends LivingEntity> implements IEquestrianArmour<PonyArmourModel<T>> {
 
     private final PonyArmourModel<T> outerLayer;
     private final PonyArmourModel<T> innerLayer;
 
-    public ArmourWrapper(Supplier<PonyArmourModel<T>> supplier) {
+    public ArmourWrapper(MsonModel.Factory<PonyArmourModel<T>> supplier) {
         outerLayer = ModelType.ARMOUR_OUTER.createModel(supplier);
         innerLayer = ModelType.ARMOUR_INNER.createModel(supplier);
     }

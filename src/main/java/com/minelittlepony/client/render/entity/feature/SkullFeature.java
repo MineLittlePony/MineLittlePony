@@ -6,13 +6,19 @@ import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.model.BodyPart;
 import com.mojang.authlib.GameProfile;
 
+import java.util.Map;
+
 import net.minecraft.block.AbstractSkullBlock;
+import net.minecraft.block.SkullBlock;
 import net.minecraft.block.SkullBlock.SkullType;
 import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.entity.SkullBlockEntityModel;
 import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.model.EntityModelLoader;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
@@ -28,8 +34,11 @@ import net.minecraft.village.VillagerDataContainer;
 
 public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyFeature<T, M> {
 
-    public SkullFeature(IPonyRenderContext<T, M> renderPony) {
+    private final Map<SkullBlock.SkullType, SkullBlockEntityModel> headModels;
+
+    public SkullFeature(IPonyRenderContext<T, M> renderPony, EntityModelLoader entityModelLoader) {
         super(renderPony);
+        headModels = SkullBlockEntityRenderer.getModels(entityModelLoader);
     }
 
     @Override
@@ -94,9 +103,11 @@ public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & IPo
             }
         }
 
-        SkullType type = ((AbstractSkullBlock) ((BlockItem) itemstack.getItem()).getBlock()).getSkullType();
-
         stack.translate(-0.5, 0, -0.5);
-        SkullBlockEntityRenderer.render(null, 180, type, profile, limbDistance, stack, renderContext, lightUv);
+        SkullType type = ((AbstractSkullBlock) ((BlockItem) itemstack.getItem()).getBlock()).getSkullType();
+        SkullBlockEntityModel skullBlockEntityModel = (SkullBlockEntityModel)this.headModels.get(type);
+        RenderLayer renderLayer = SkullBlockEntityRenderer.method_3578(type, profile);
+
+        SkullBlockEntityRenderer.method_32161(null, 180, f, stack, renderContext, lightUv, skullBlockEntityModel, renderLayer);
     }
 }

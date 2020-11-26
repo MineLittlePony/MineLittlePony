@@ -5,6 +5,7 @@ import com.minelittlepony.client.model.part.PonySnout;
 import com.minelittlepony.model.IPart;
 import com.minelittlepony.mson.api.ModelContext;
 
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
@@ -17,7 +18,8 @@ public class EarthPonyModel<T extends LivingEntity> extends AbstractPonyModel<T>
     protected PonySnout snout;
     protected IPart ears;
 
-    public EarthPonyModel(boolean smallArms) {
+    public EarthPonyModel(ModelPart tree, boolean smallArms) {
+        super(tree);
         this.smallArms = smallArms;
     }
 

@@ -6,8 +6,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.mson.api.ModelContext;
-
 public class EnderStallionModel extends SkeleponyModel<EndermanEntity> {
 
     public boolean isCarrying;
@@ -16,18 +14,13 @@ public class EnderStallionModel extends SkeleponyModel<EndermanEntity> {
     public boolean isAlicorn;
     public boolean isBoss;
 
-    private ModelPart leftHorn;
-    private ModelPart rightHorn;
+    private final ModelPart leftHorn;
+    private final ModelPart rightHorn;
 
-    public EnderStallionModel() {
-        super();
-    }
-
-    @Override
-    public void init(ModelContext context) {
-        super.init(context);
-        leftHorn = context.findByName("left_horn");
-        rightHorn = context.findByName("right_horn");
+    public EnderStallionModel(ModelPart tree) {
+        super(tree);
+        leftHorn = tree.getChild("left_horn");
+        rightHorn = tree.getChild("right_horn");
     }
 
     @Override

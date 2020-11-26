@@ -4,7 +4,7 @@ import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.WitchPonyModel;
 import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
 
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
@@ -17,8 +17,8 @@ public class WitchRenderer extends PonyRenderer<WitchEntity, WitchPonyModel> {
 
     private static final Identifier WITCH_TEXTURES = new Identifier("minelittlepony", "textures/entity/witch_pony.png");
 
-    public WitchRenderer(EntityRenderDispatcher manager) {
-        super(manager, ModelType.WITCH);
+    public WitchRenderer(EntityRendererFactory.Context context) {
+        super(context, ModelType.WITCH);
     }
 
     @Override

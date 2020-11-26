@@ -4,6 +4,7 @@ import com.minelittlepony.model.IPart;
 import com.minelittlepony.model.IPegasus;
 import com.minelittlepony.mson.api.ModelContext;
 
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
@@ -12,8 +13,8 @@ public class PegasusModel<T extends LivingEntity> extends EarthPonyModel<T> impl
 
     private IPart wings;
 
-    public PegasusModel(boolean smallArms) {
-        super(smallArms);
+    public PegasusModel(ModelPart tree, boolean smallArms) {
+        super(tree, smallArms);
     }
 
     @Override

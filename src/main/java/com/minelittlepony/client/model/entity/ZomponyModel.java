@@ -4,6 +4,7 @@ import com.minelittlepony.client.model.IMobModel;
 import com.minelittlepony.client.model.entity.race.AlicornModel;
 import com.minelittlepony.mson.api.model.MsonPart;
 
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.util.math.MathHelper;
 
@@ -11,8 +12,8 @@ public class ZomponyModel<Zombie extends HostileEntity> extends AlicornModel<Zom
 
     private boolean isPegasus;
 
-    public ZomponyModel() {
-        super(false);
+    public ZomponyModel(ModelPart tree) {
+        super(tree, false);
     }
 
     @Override
@@ -28,10 +29,10 @@ public class ZomponyModel<Zombie extends HostileEntity> extends AlicornModel<Zom
         if (isZombified(entity)) {
             if (islookAngleRight(move)) {
                 rotateArmHolding(rightArm, 1, getSwingAmount(), ticks);
-                ((MsonPart)rightArm).shift(0.5F, 1.5F, 3);
+                ((MsonPart)(Object)rightArm).shift(0.5F, 1.5F, 3);
             } else {
                 rotateArmHolding(leftArm, -1, getSwingAmount(), ticks);
-                ((MsonPart)leftArm).shift(-0.5F, 1.5F, 3);
+                ((MsonPart)(Object)leftArm).shift(-0.5F, 1.5F, 3);
             }
         }
     }

@@ -7,20 +7,17 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 
 import com.minelittlepony.model.gear.IGear;
-import com.minelittlepony.mson.api.MsonModel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class AbstractGear extends Model implements IGear, MsonModel {
+public abstract class AbstractGear extends Model implements IGear {
 
     private final List<ModelPart> parts = new ArrayList<>();
 
     public AbstractGear() {
         super(RenderLayer::getEntitySolid);
-        textureWidth = 64;
-        textureHeight = 64;
     }
 
     public void addPart(ModelPart t) {

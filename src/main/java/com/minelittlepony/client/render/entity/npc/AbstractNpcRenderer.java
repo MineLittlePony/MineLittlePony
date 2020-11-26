@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.entity.npc;
 
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.ModelWithHat;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.util.Identifier;
@@ -23,8 +23,8 @@ abstract class AbstractNpcRenderer<
 
     private final String entityType;
 
-    public AbstractNpcRenderer(EntityRenderDispatcher manager, ModelKey<? super M> key, String type, TextureSupplier<String> formatter) {
-        super(manager, key);
+    public AbstractNpcRenderer(EntityRendererFactory.Context context, ModelKey<? super M> key, String type, TextureSupplier<String> formatter) {
+        super(context, key);
 
         entityType = type;
         baseTextures = new PonyTextures<>(formatter);

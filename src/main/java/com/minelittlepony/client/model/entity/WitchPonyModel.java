@@ -1,5 +1,6 @@
 package com.minelittlepony.client.model.entity;
 
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.mob.WitchEntity;
 import net.minecraft.util.math.MathHelper;
 
@@ -10,8 +11,8 @@ import com.minelittlepony.client.render.EquineRenderManager;
 
 public class WitchPonyModel extends ZebraModel<WitchEntity> {
 
-    public WitchPonyModel() {
-        super(false);
+    public WitchPonyModel(ModelPart tree) {
+        super(tree, false);
     }
 
     @Override

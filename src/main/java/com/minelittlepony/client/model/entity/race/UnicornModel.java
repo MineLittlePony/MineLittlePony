@@ -18,21 +18,21 @@ import net.minecraft.util.math.MathHelper;
  */
 public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> implements IUnicorn<ModelPart> {
 
-    protected ModelPart unicornArmRight;
-    protected ModelPart unicornArmLeft;
+    protected final ModelPart unicornArmRight;
+    protected final ModelPart unicornArmLeft;
 
     protected UnicornHorn horn;
 
-    public UnicornModel(boolean smallArms) {
-        super(smallArms);
+    public UnicornModel(ModelPart tree, boolean smallArms) {
+        super(tree, smallArms);
+        unicornArmRight = tree.getChild("right_cast");
+        unicornArmLeft = tree.getChild("left_cast");
     }
 
     @Override
     public void init(ModelContext context) {
         super.init(context);
         horn = context.findByName("horn");
-        unicornArmRight = context.findByName("right_cast");
-        unicornArmLeft = context.findByName("left_cast");
     }
 
     @Override
@@ -47,8 +47,8 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
     protected void rotateLegs(float move, float swing, float ticks, T entity) {
         super.rotateLegs(move, swing, ticks, entity);
 
-        ((MsonPart)unicornArmRight).rotate(0, 0, 0).around(-7, 12, -2);
-        ((MsonPart)unicornArmLeft).rotate(0, 0, 0).around(-7, 12, -2);
+        ((MsonPart)(Object)unicornArmRight).rotate(0, 0, 0).around(-7, 12, -2);
+        ((MsonPart)(Object)unicornArmLeft).rotate(0, 0, 0).around(-7, 12, -2);
     }
 
     @Override

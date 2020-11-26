@@ -7,10 +7,7 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.passive.StriderEntity;
 
-import com.minelittlepony.mson.api.ModelContext;
-import com.minelittlepony.mson.api.MsonModel;
-
-public class ParaspriteModel extends EntityModel<StriderEntity> implements MsonModel {
+public class ParaspriteModel extends EntityModel<StriderEntity> {
 
     private ModelPart body;
     private ModelPart leftWing;
@@ -18,18 +15,13 @@ public class ParaspriteModel extends EntityModel<StriderEntity> implements MsonM
 
     private ModelPart saddle;
 
-    public ParaspriteModel() {
+    public ParaspriteModel(ModelPart tree) {
         super(RenderLayer::getEntityTranslucent);
         child = false;
-        textureHeight = 64;
-    }
-
-    @Override
-    public void init(ModelContext context) {
-        body = context.findByName("body");
-        saddle = context.findByName("saddle");
-        leftWing = context.findByName("leftWing");
-        rightWing = context.findByName("rightWing");
+        body = tree.getChild("body");
+        saddle = tree.getChild("saddle");
+        leftWing = tree.getChild("leftWing");
+        rightWing = tree.getChild("rightWing");
     }
 
     @Override
@@ -48,7 +40,7 @@ public class ParaspriteModel extends EntityModel<StriderEntity> implements MsonM
             body.yaw = headYaw * 0.017453292F;
             body.pitch = headPitch * 0.017453292F;
         }
-        saddle.copyPositionAndRotation(body);
+        saddle.copyTransform(body);
 
         float sin = (float)Math.sin(ticks) / 2;
         float cos = (float)Math.cos(ticks) / 3;

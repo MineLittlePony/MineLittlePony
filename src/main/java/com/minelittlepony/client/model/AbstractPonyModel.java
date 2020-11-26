@@ -8,7 +8,6 @@ import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.armour.IEquestrianArmour;
-import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.model.MsonPart;
 
 import net.minecraft.client.model.ModelPart;
@@ -30,20 +29,12 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     protected ModelPart neck;
 
-    @Override
-    public void init(ModelContext context) {
-        super.init(context);
-        context.findByName("left_sleeve", leftSleeve);
-        context.findByName("right_sleeve", rightSleeve);
+    public AbstractPonyModel(ModelPart tree) {
+        super(tree);
 
-        context.findByName("left_pant_leg", leftPantLeg);
-        context.findByName("right_pant_leg", rightPantLeg);
-
-        context.findByName("jacket", jacket);
-
-        upperTorso = context.findByName("upper_torso");
-        upperTorsoOverlay = context.findByName("saddle");
-        neck = context.findByName("neck");
+        upperTorso = tree.getChild("upper_torso");
+        upperTorsoOverlay = tree.getChild("saddle");
+        neck = tree.getChild("neck");
     }
 
     @Override
@@ -133,10 +124,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
         head.setPivot(1, 2, sneaking ? -1 : 1);
 
-        ((MsonPart)rightArm).shift(0, 2,  6);
-        ((MsonPart)leftArm).shift(0, 2,  6);
-        ((MsonPart)rightLeg).shift(0, 2, -8);
-        ((MsonPart)leftLeg).shift(0, 2, -8);
+        ((MsonPart)(Object)rightArm).shift(0, 2,  6);
+        ((MsonPart)(Object)leftArm).shift(0, 2,  6);
+        ((MsonPart)(Object)rightLeg).shift(0, 2, -8);
+        ((MsonPart)(Object)leftLeg).shift(0, 2, -8);
     }
 
     protected void ponySit() {
@@ -199,13 +190,13 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     }
 
     private void animateWears() {
-        leftSleeve.copyPositionAndRotation(leftArm);
-        rightSleeve.copyPositionAndRotation(rightArm);
-        leftPantLeg.copyPositionAndRotation(leftLeg);
-        rightPantLeg.copyPositionAndRotation(rightLeg);
-        jacket.copyPositionAndRotation(torso);
-        helmet.copyPositionAndRotation(head);
-        upperTorsoOverlay.copyPositionAndRotation(upperTorso);
+        leftSleeve.copyTransform(leftArm);
+        rightSleeve.copyTransform(rightArm);
+        leftPantLeg.copyTransform(leftLeg);
+        rightPantLeg.copyTransform(rightLeg);
+        jacket.copyTransform(torso);
+        helmet.copyTransform(head);
+        upperTorsoOverlay.copyTransform(upperTorso);
     }
 
     /**
@@ -456,6 +447,11 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             case THROW_SPEAR:
                 arm.pitch = ROTATE_90 * 2;
                 break;
+            case SPYGLASS:
+                // TODO: SPYGLASS
+                break;
+            default:
+                break;
         }
     }
 
@@ -565,7 +561,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         renderStage(BodyPart.HEAD, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderHead);
         renderStage(BodyPart.LEGS, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderLegs);
 
-        if (textureHeight == 64 && getMetadata().getRace() != Race.SEAPONY) {
+        if (getMetadata().getRace() != Race.SEAPONY) {
             renderStage(BodyPart.LEGS, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderSleeves);
             renderStage(BodyPart.BODY, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderVest);
         }

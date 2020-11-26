@@ -6,7 +6,6 @@ import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.armour.IEquestrianArmour;
-import com.minelittlepony.mson.api.ModelContext;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
@@ -16,28 +15,22 @@ import net.minecraft.util.math.MathHelper;
 
 public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
 
-    private ModelPart bodyCenter;
+    private final ModelPart bodyCenter;
 
-    private ModelPart leftFin;
-    private ModelPart centerFin;
-    private ModelPart rightFin;
+    private final ModelPart leftFin;
+    private final ModelPart centerFin;
+    private final ModelPart rightFin;
 
-    public SeaponyModel(boolean smallArms) {
-        super(smallArms);
-        textureHeight = 64;
+    public SeaponyModel(ModelPart tree, boolean smallArms) {
+        super(tree, smallArms);
+        bodyCenter = tree.getChild("abdomin");
+        leftFin = tree.getChild("left_fin");
+        rightFin = tree.getChild("right_fin");
+        centerFin = tree.getChild("center_fin");
     }
 
-    public SeaponyModel() {
-        this(false);
-    }
-
-    @Override
-    public void init(ModelContext context) {
-        super.init(context);
-        bodyCenter = context.findByName("abdomin");
-        leftFin = context.findByName("left_fin");
-        rightFin = context.findByName("right_fin");
-        centerFin = context.findByName("center_fin");
+    public SeaponyModel(ModelPart tree) {
+        this(tree, false);
     }
 
     @Override
@@ -154,6 +147,10 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
     }
 
     class Armour extends PonyArmourModel<T> {
+
+        public Armour(ModelPart tree) {
+            super(tree);
+        }
 
         @Override
         public void showBoots() {

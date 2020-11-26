@@ -10,7 +10,7 @@ import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.util.MathUtil;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.Identifier;
 
@@ -19,8 +19,8 @@ public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
     private final ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> seapony;
     private final ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> normalPony;
 
-    public PlayerSeaponyRenderer(EntityRenderDispatcher manager, boolean slim, ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>> key) {
-        super(manager, slim, key);
+    public PlayerSeaponyRenderer(EntityRendererFactory.Context context, boolean slim, ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>> key) {
+        super(context, slim, key);
 
         normalPony = new ModelWrapper<>(ModelType.<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>>getPlayerModel(Race.UNICORN).getKey(slim));
         seapony = this.manager.getModelWrapper();

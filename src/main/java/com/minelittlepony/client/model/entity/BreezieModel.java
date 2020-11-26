@@ -1,36 +1,30 @@
 package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.MathHelper;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import com.minelittlepony.mson.api.ModelContext;
-import com.minelittlepony.mson.api.MsonModel;
 import com.minelittlepony.mson.api.model.MsonPart;
-import com.minelittlepony.mson.api.model.biped.MsonBiped;
 
 import static com.minelittlepony.model.PonyModelConstants.PI;
 
-public class BreezieModel<T extends LivingEntity> extends MsonBiped<T> implements MsonModel {
+public class BreezieModel<T extends LivingEntity> extends BipedEntityModel<T> {
 
     private ModelPart neck;
 
     private ModelPart leftWing;
     private ModelPart rightWing;
 
-    public BreezieModel() {
-        textureHeight = 64;
-    }
-
-    @Override
-    public void init(ModelContext context) {
-        super.init(context);
-        neck = context.findByName("neck");
-        leftWing = context.findByName("left_wing");
-        rightWing = context.findByName("right_wing");
+    public BreezieModel(ModelPart tree) {
+        super(tree);
+        neck = tree.getChild("neck");
+        leftWing = tree.getChild("left_wing");
+        rightWing = tree.getChild("right_wing");
     }
 
     @Override
@@ -53,16 +47,16 @@ public class BreezieModel<T extends LivingEntity> extends MsonBiped<T> implement
         leftArm.pitch = MathHelper.cos(move * 0.6662F) * swing;
         leftArm.roll = 0;
 
-        ((MsonPart)rightArm).rotate(swing * MathHelper.cos(move * 0.6662F + PI),        0, 0);
-        ((MsonPart)leftLeg) .rotate(swing * MathHelper.cos(move * 0.6662F + PI) * 1.4F, 0, 0);
-        ((MsonPart)rightLeg).rotate(swing * MathHelper.cos(move * 0.6662F)      * 1.4F, 0, 0);
+        ((MsonPart)(Object)rightArm).rotate(swing * MathHelper.cos(move * 0.6662F + PI),        0, 0);
+        ((MsonPart)(Object)leftLeg) .rotate(swing * MathHelper.cos(move * 0.6662F + PI) * 1.4F, 0, 0);
+        ((MsonPart)(Object)rightLeg).rotate(swing * MathHelper.cos(move * 0.6662F)      * 1.4F, 0, 0);
 
         if (riding) {
             leftArm.pitch += -PI / 5;
             rightArm.pitch += -PI / 5;
 
-            rotateLegRiding((MsonPart)leftLeg, -1);
-            rotateLegRiding((MsonPart)rightLeg, 1);
+            rotateLegRiding((MsonPart)(Object)leftLeg, -1);
+            rotateLegRiding((MsonPart)(Object)rightLeg, 1);
         }
 
         rotateArm(leftArm, leftArmPose, 1);
@@ -97,6 +91,12 @@ public class BreezieModel<T extends LivingEntity> extends MsonBiped<T> implement
             raiseArm(leftArm, rightArm, 1);
         }
     }
+
+    private Arm getPreferredArm(T livingEntity) {
+       Arm arm = livingEntity.getMainArm();
+       return livingEntity.preferredHand == Hand.MAIN_HAND ? arm : arm.getOpposite();
+    }
+
 
     protected void rotateLegRiding(MsonPart leg, float factor) {
         leg.rotate(-1.4137167F, factor * PI / 10, factor * 0.07853982F);

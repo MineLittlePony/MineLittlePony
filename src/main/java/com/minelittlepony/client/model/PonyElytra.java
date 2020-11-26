@@ -7,25 +7,22 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Vec3d;
 
 import com.google.common.collect.ImmutableList;
-import com.minelittlepony.mson.api.ModelContext;
-import com.minelittlepony.mson.api.MsonModel;
 
 import static com.minelittlepony.model.PonyModelConstants.*;
 
 /**
  * Modified from ModelElytra.
  */
-public class PonyElytra<T extends LivingEntity> extends AnimalModel<T> implements MsonModel {
+public class PonyElytra<T extends LivingEntity> extends AnimalModel<T> {
 
     public boolean isSneaking;
 
-    private ModelPart rightWing;
-    private ModelPart leftWing;
+    private final ModelPart rightWing;
+    private final ModelPart leftWing;
 
-    @Override
-    public void init(ModelContext context) {
-        rightWing = context.findByName("right_wing");
-        leftWing = context.findByName("left_wing");
+    public PonyElytra(ModelPart tree) {
+        rightWing = tree.getChild("right_wing");
+        leftWing = tree.getChild("left_wing");
     }
 
     @Override

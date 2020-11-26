@@ -15,6 +15,7 @@ import com.minelittlepony.mson.api.Mson;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -71,7 +72,7 @@ public class PonyRenderDispatcher {
      * @param <T> The entity type
      */
     @SuppressWarnings("unchecked")
-    <T extends Entity, V extends T> void switchRenderer(boolean state, EntityType<V> type, Function<EntityRenderDispatcher, EntityRenderer<T>> factory) {
+    <T extends Entity, V extends T> void switchRenderer(boolean state, EntityType<V> type, Function<EntityRendererFactory.Context, EntityRenderer<T>> factory) {
         if (state) {
             if (!renderMap.containsKey(type)) {
                 renderMap.put(type, ((MixinEntityRenderDispatcher)MinecraftClient.getInstance().getEntityRenderDispatcher()).getEntityRenderers().get(type));

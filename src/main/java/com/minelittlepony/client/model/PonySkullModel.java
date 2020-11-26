@@ -11,10 +11,10 @@ import com.minelittlepony.mson.api.MsonModel;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.entity.model.SkullOverlayEntityModel;
+import net.minecraft.client.render.entity.model.SkullEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 
-public class PonySkullModel extends SkullOverlayEntityModel implements MsonModel, ICapitated<ModelPart> {
+public class PonySkullModel extends SkullEntityModel implements MsonModel, ICapitated<ModelPart> {
 
     private PonySnout snout;
 
@@ -26,9 +26,12 @@ public class PonySkullModel extends SkullOverlayEntityModel implements MsonModel
 
     public IPonyData metadata = PonyData.NULL;
 
+    public PonySkullModel(ModelPart tree) {
+        super(tree);
+    }
+
     @Override
     public void init(ModelContext context) {
-        context.findByName("skull", skull);
         hair = context.findByName("hair");
         snout = context.findByName("snout");
         horn = context.findByName("horn");

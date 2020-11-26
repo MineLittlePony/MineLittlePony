@@ -1,5 +1,6 @@
 package com.minelittlepony.client.model.entity.race;
 
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
@@ -10,8 +11,8 @@ import com.minelittlepony.model.armour.IEquestrianArmour;
 
 public class ZebraModel<T extends LivingEntity> extends EarthPonyModel<T> {
 
-    public ZebraModel(boolean useSmallArms) {
-        super(useSmallArms);
+    public ZebraModel(ModelPart tree, boolean useSmallArms) {
+        super(tree, useSmallArms);
     }
 
     @Override
@@ -26,6 +27,10 @@ public class ZebraModel<T extends LivingEntity> extends EarthPonyModel<T> {
     }
 
     class Armour extends PonyArmourModel<T> {
+        public Armour(ModelPart tree) {
+            super(tree);
+        }
+
         @Override
         public void transform(BodyPart part, MatrixStack stack) {
             applyLongNeck(part, stack);

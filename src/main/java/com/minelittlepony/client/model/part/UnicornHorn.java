@@ -24,6 +24,10 @@ public class UnicornHorn implements IPart, MsonModel {
 
     protected boolean visible = true;
 
+    public UnicornHorn(ModelPart tree) {
+
+    }
+
     @Override
     public void init(ModelContext context) {
         horn = context.findByName("bone");
