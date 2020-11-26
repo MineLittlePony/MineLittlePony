@@ -13,6 +13,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
+import net.minecraft.util.Hand;
+import net.minecraft.util.UseAction;
 
 public class GlowingItemFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends HeldItemFeature<T, M> {
 
@@ -26,10 +28,24 @@ public class GlowingItemFeature<T extends LivingEntity, M extends EntityModel<T>
 
     @Override
     protected void preItemRender(T entity, ItemStack drop, ModelTransformation.Mode transform, Arm hand, MatrixStack stack) {
+
+        UseAction action = drop.getUseAction();
+
+        if (isUnicorn() && (action == UseAction.SPYGLASS || action == UseAction.BOW) && entity.getItemUseTimeLeft() > 0) {
+            Arm main = entity.getMainArm();
+            if (entity.getActiveHand() == Hand.OFF_HAND) {
+                main = main.getOpposite();
+            }
+            if (main == hand) {
+                stack.translate(0, 1, 0);
+            }
+        }
+
+        super.preItemRender(entity, drop, transform, hand, stack);
+
         if (isUnicorn()) {
+            stack.translate(0, -0.125F, 1);
             stack.translate(hand == Arm.LEFT ? -0.6F : 0, 0.5F, -0.3F);
-        } else {
-            super.preItemRender(entity, drop, transform, hand, stack);
         }
     }
 

@@ -62,16 +62,6 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
                 stack.translate(0, 0.2F, 0);
             }
 
-            float left = arm == Arm.LEFT ? 1 : -1;
-
-            if (entity.hasVehicle()) {
-                stack.translate(left / 10, -0.2F, -0.5F);
-            }
-
-            stack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(-90));
-            stack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(left * 180));
-            stack.translate(left * -0.2F, 0, 0);
-
             preItemRender(entity, drop, transform, arm, stack);
             MinecraftClient.getInstance().getItemRenderer().renderItem(entity, drop, transform, arm == Arm.LEFT, stack, renderContext, entity.world, lightUv, OverlayTexture.DEFAULT_UV);
             postItemRender(entity, drop, transform, arm, stack, renderContext);
@@ -80,8 +70,16 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
         }
     }
 
-    protected void preItemRender(T entity, ItemStack drop, ModelTransformation.Mode transform, Arm hand, MatrixStack stack) {
-        stack.translate(0, 0.125F, -1);
+    protected void preItemRender(T entity, ItemStack drop, ModelTransformation.Mode transform, Arm arm, MatrixStack stack) {
+        float left = arm == Arm.LEFT ? 1 : -1;
+
+        if (entity.hasVehicle()) {
+            stack.translate(left / 10, -0.2F, -0.5F);
+        }
+
+        stack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(-90));
+        stack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(left * 180));
+        stack.translate(left * -0.2F, 0.125F, -1);
     }
 
     protected void postItemRender(T entity, ItemStack drop, ModelTransformation.Mode transform, Arm hand, MatrixStack stack, VertexConsumerProvider renderContext) {

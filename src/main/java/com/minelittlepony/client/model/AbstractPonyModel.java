@@ -12,6 +12,7 @@ import com.minelittlepony.mson.api.model.MsonPart;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.entity.model.CrossbowPosing;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.Entity;
@@ -448,7 +449,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
                 arm.pitch = ROTATE_90 * 2;
                 break;
             case SPYGLASS:
-                // TODO: SPYGLASS
+                arm.pitch = MathHelper.clamp(head.pitch + CrossbowPosing.method_31978(arm), -2.4F, 3.3F);
+                arm.yaw = MathHelper.clamp(head.yaw + (0.7853982F * reflect), -1.1F, 0.0F);
                 break;
             default:
                 break;
