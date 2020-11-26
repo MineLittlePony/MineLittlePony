@@ -120,7 +120,11 @@ public class Pony implements IPony {
     protected Vec3d getVisualEyePosition(LivingEntity entity) {
         Size size = entity.isBaby() ? Size.FOAL : metadata.getSize();
 
-        return new Vec3d(entity.getX(), entity.getY() + (double) entity.getEyeHeight(entity.getPose()) * size.getScaleFactor(), entity.getZ());
+        return new Vec3d(
+                entity.getX(),
+                entity.getY() + (double) entity.getEyeHeight(entity.getPose()) * size.getScaleFactor(),
+                entity.getZ()
+        );
     }
 
     @Override
@@ -184,9 +188,12 @@ public class Pony implements IPony {
 
         float delta = MinecraftClient.getInstance().getTickDelta();
 
+        Entity vehicle = entity.getVehicle();
+        double vehicleOffset = vehicle == null ? 0 : vehicle.getHeight() - vehicle.getMountedHeightOffset();
+
         return new Vec3d(
                 MathHelper.lerp(delta, entity.prevX, entity.getX()),
-                MathHelper.lerp(delta, entity.prevY, entity.getY()),
+                MathHelper.lerp(delta, entity.prevY, entity.getY()) + vehicleOffset,
                 MathHelper.lerp(delta, entity.prevZ, entity.getZ())
         );
     }
