@@ -14,6 +14,7 @@
   "minelp.options.ponyskulls": "Pony Skulls",
   "minelp.options.frustrum": "Frustum checks",
   "minelp.options.button": "Display On Title Screen",
+  "minelp.options.option.disabled": "This option is locked in survival multiplayer.\n\nChange game modes or leave and rejoin\nthe server to change this setting.",
   "minelp.mobs.title": "Mob Settings",
   "minelp.mobs.villagers": "Ponify Villagers",
   "minelp.mobs.zombies": "Ponify Zombies",

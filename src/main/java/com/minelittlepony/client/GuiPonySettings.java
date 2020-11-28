@@ -4,6 +4,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 
 import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.client.settings.ClientPonyConfig;
@@ -87,7 +88,9 @@ public class GuiPonySettings extends GameGui {
                 })
                 .setFormatter(value -> I18n.translate(PONY_LEVEL + "." + PonyLevel.valueFor(value).name().toLowerCase())));
 
-        if (hiddenOptions) {
+        boolean allowCameraChange = client.player == null || client.player.isCreative() || client.player.isSpectator() || client.isInSingleplayer();
+
+        if (hiddenOptions && allowCameraChange) {
             content.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.scale");
             content.addButton(new Slider(LEFT, row += 15, 0.1F, 3, config.getGlobalScaleFactor())
                     .onChange(config::setGlobalScaleFactor)
@@ -100,10 +103,18 @@ public class GuiPonySettings extends GameGui {
         row += 20;
         content.addButton(new Label(LEFT, row)).getStyle().setText(OPTIONS_PREFIX + "options");
 
-        for (Setting<?> i : MineLittlePony.getInstance().getConfig().getByCategory("settings")) {
-            content.addButton(new Toggle(LEFT, row += 20, ((Setting<Boolean>)i).get()))
+        for (Setting<?> i : config.getByCategory("settings")) {
+            boolean enabled = i != config.fillycam || allowCameraChange;
+            Button button = content
+                .addButton(new Toggle(LEFT, row += 20, ((Setting<Boolean>)i).get()))
                 .onChange((Setting<Boolean>)i)
-                .getStyle().setText(OPTIONS_PREFIX + i.name().toLowerCase());
+                .setEnabled(enabled);
+            button.getStyle().setText(OPTIONS_PREFIX + i.name().toLowerCase());
+            if (!enabled) {
+                button.getStyle()
+                    .setTooltip(new TranslatableText(OPTIONS_PREFIX + "option.disabled"))
+                    .setTooltipOffset(0, 0);
+            }
         }
 
         content.addButton(new Label(LEFT, row += 20)).getStyle().setText(OPTIONS_PREFIX + "button");
