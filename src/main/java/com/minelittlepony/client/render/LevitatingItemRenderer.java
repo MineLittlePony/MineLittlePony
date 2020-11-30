@@ -14,7 +14,7 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -55,9 +55,9 @@ public class LevitatingItemRenderer {
         stack.scale(1.1F, 1.1F, 1.1F);
 
         stack.translate(0.01F, 0.01F, 0.01F);
-        renderItem.renderItem(entity, drop, transform, hand == Arm.LEFT, stack, renderContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV);
+        renderItem.renderItem(entity, drop, transform, hand == Arm.LEFT, stack, renderContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV, 0);
         stack.translate(-0.02F, -0.02F, -0.02F);
-        renderItem.renderItem(entity, drop, transform, hand == Arm.LEFT, stack, renderContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV);
+        renderItem.renderItem(entity, drop, transform, hand == Arm.LEFT, stack, renderContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV, 0);
 
         stack.pop();
         unsetColor();
@@ -76,7 +76,7 @@ public class LevitatingItemRenderer {
     /**
      * Renders an item in first person optionally with a magical overlay.
      */
-    public void renderItemInFirstPerson(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformation.Mode transform, boolean left, MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world, int lightUv) {
+    public void renderItemInFirstPerson(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformation.Mode transform, boolean left, MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world, int lightUv, int posLong) {
 
         if (entity instanceof PlayerEntity) {
 
@@ -90,7 +90,7 @@ public class LevitatingItemRenderer {
                 setupPerspective(itemRenderer, entity, stack, left, matrix);
             }
 
-            itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
+            itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
 
             if (doMagic) {
                 setColor(pony.getMetadata().getGlowColor());
@@ -98,16 +98,16 @@ public class LevitatingItemRenderer {
                 matrix.scale(1.1F, 1.1F, 1.1F);
 
                 matrix.translate(0.015F, 0.01F, 0.01F);
-                itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
+                itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
                 matrix.translate(-0.03F, -0.02F, -0.02F);
-                itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
+                itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
 
                 unsetColor();
             }
 
             matrix.pop();
         } else {
-            itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
+            itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
         }
     }
 
@@ -139,8 +139,8 @@ public class LevitatingItemRenderer {
                     distanceChange);
 
             if (!handHeldTool) { // bows have to point forwards
-                stack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(sign * -60 + floatAmount));
-                stack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(sign * 30 + driftAmount));
+                stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(sign * -60 + floatAmount));
+                stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(sign * 30 + driftAmount));
             }
         }
     }

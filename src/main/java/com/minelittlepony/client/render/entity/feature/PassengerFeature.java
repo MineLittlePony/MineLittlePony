@@ -8,7 +8,7 @@ import net.minecraft.client.render.entity.ParrotEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.ParrotEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
@@ -54,7 +54,7 @@ public class PassengerFeature<T extends PlayerEntity, M extends ClientPonyModel<
                sigma * 0.25,
                entity.isInSneakingPose() ? -0.9 : -1.2,
                0.45);
-       stack.multiply(Vector3f.NEGATIVE_Z.getDegreesQuaternion(sigma * -5));
+       stack.multiply(Vec3f.NEGATIVE_Z.getDegreesQuaternion(sigma * -5));
 
        VertexConsumer buffer = renderContext.getBuffer(model.getLayer(texture));
        model.poseOnShoulder(stack, buffer, light, OverlayTexture.DEFAULT_UV, limbDistance, limbAngle, headYaw, headPitch, entity.age);

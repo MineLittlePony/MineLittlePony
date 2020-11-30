@@ -34,7 +34,7 @@ import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.text.Text;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
@@ -94,7 +94,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
             float yaw = MathHelper.lerpAngleDegrees(tickDelta, entity.prevBodyYaw, entity.bodyYaw);
             float l = entity.getWidth() / 2 * manager.getPony(entity).getMetadata().getSize().getScaleFactor();
 
-            stack.multiply(Vector3f.NEGATIVE_Y.getDegreesQuaternion(yaw));
+            stack.multiply(Vec3f.NEGATIVE_Y.getDegreesQuaternion(yaw));
             stack.translate(0, 0, -l);
         }
     }

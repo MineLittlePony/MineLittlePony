@@ -12,9 +12,8 @@ import com.minelittlepony.mson.api.model.MsonPart;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.entity.model.CrossbowPosing;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
@@ -449,7 +448,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
                 arm.pitch = ROTATE_90 * 2;
                 break;
             case SPYGLASS:
-                arm.pitch = MathHelper.clamp(head.pitch + CrossbowPosing.method_31978(arm), -2.4F, 3.3F);
+                arm.pitch = MathHelper.clamp(head.pitch - 1.9198622F - (attributes.isCrouching ? 0.2617994F : 0), -2.4F, 3.3F);
                 arm.yaw = MathHelper.clamp(head.yaw + (0.7853982F * reflect), -1.1F, 0.0F);
                 break;
             default:
@@ -633,12 +632,12 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     @Override
     public void transform(BodyPart part, MatrixStack stack) {
         if (attributes.isSleeping) {
-            stack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(90));
-            stack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180));
+            stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
+            stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
         }
 
         if (part == BodyPart.HEAD) {
-           stack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(attributes.motionPitch));
+           stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(attributes.motionPitch));
         }
 
         PonyTransformation.forSize(getSize()).transform(this, part, stack);

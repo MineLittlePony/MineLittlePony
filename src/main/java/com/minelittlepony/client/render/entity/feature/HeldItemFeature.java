@@ -10,7 +10,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
@@ -63,7 +63,7 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
             }
 
             preItemRender(entity, drop, transform, arm, stack);
-            MinecraftClient.getInstance().getItemRenderer().renderItem(entity, drop, transform, arm == Arm.LEFT, stack, renderContext, entity.world, lightUv, OverlayTexture.DEFAULT_UV);
+            MinecraftClient.getInstance().getItemRenderer().renderItem(entity, drop, transform, arm == Arm.LEFT, stack, renderContext, entity.world, lightUv, 0, OverlayTexture.DEFAULT_UV);
             postItemRender(entity, drop, transform, arm, stack, renderContext);
 
             stack.pop();
@@ -77,8 +77,8 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
             stack.translate(left / 10, -0.2F, -0.5F);
         }
 
-        stack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(-90));
-        stack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(left * 180));
+        stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
+        stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(left * 180));
         stack.translate(left * -0.2F, 0.125F, -1);
     }
 

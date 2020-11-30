@@ -11,7 +11,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.item.Items;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.util.math.MathHelper;
@@ -61,11 +61,11 @@ public class CapeFeature<M extends ClientPonyModel<AbstractClientPlayerEntity>> 
             float camera = MathHelper.lerp(tickDelta, player.prevStrideDistance, player.strideDistance);
             capeMotionY += MathHelper.sin(MathHelper.lerp(tickDelta, player.prevHorizontalSpeed, player.horizontalSpeed) * 6) * 32 * camera;
 
-            stack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(2 + capeMotionX / 12 + capeMotionY));
-            stack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion( diagMotion / 2));
-            stack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-diagMotion / 2));
-            stack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(180));
-            stack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(90));
+            stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(2 + capeMotionX / 12 + capeMotionY));
+            stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion( diagMotion / 2));
+            stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-diagMotion / 2));
+            stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(180));
+            stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
 
             VertexConsumer vertices = renderContext.getBuffer(RenderLayer.getEntitySolid(player.getCapeTexture()));
             model.renderCape(stack, vertices, lightUv, OverlayTexture.DEFAULT_UV);
