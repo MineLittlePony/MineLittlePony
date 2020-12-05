@@ -4,6 +4,7 @@ import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.model.capabilities.fabric.PonyModelPrepareCallback;
 import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.api.pony.meta.Size;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.model.BodyPart;
@@ -367,10 +368,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      * Adjusts legs as if holding an item. Delegates to the correct arm/leg/limb as necessary.
      */
     protected void holdItem(float swing) {
-        boolean both = leftArmPose == ArmPose.ITEM && rightArmPose == ArmPose.ITEM;
-
-        alignArmForAction(getArm(Arm.LEFT), leftArmPose, rightArmPose, both, swing, 1);
-        alignArmForAction(getArm(Arm.RIGHT), rightArmPose, leftArmPose, both, swing, -1);
+        alignArmForAction(getArm(Arm.LEFT), leftArmPose, rightArmPose, swing, 1);
+        alignArmForAction(getArm(Arm.RIGHT), rightArmPose, leftArmPose, swing, -1);
     }
 
     @Override
@@ -385,20 +384,27 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         }
     }
 
+    protected boolean shouldLiftArm(ArmPose pose, ArmPose complement, float sigma) {
+        return pose != ArmPose.EMPTY
+                && (pose != complement || sigma == (attributes.isLeftHanded ? 1 : -1))
+                && (complement != ArmPose.BLOCK && complement != ArmPose.CROSSBOW_HOLD);
+    }
+
     /**
      * Aligns an arm for the appropriate arm pose
      *
      * @param arm   The arm model to align
      * @param pose  The post to align to
-     * @param both  True if we have something in both hands
      * @param swing     Degree to which each 'limb' swings.
      */
-    protected void alignArmForAction(ModelPart arm, ArmPose pose, ArmPose complement, boolean both, float swing, float reflect) {
+    protected void alignArmForAction(ModelPart arm, ArmPose pose, ArmPose complement, float swing, float sigma) {
         switch (pose) {
             case ITEM:
                 arm.yaw = 0;
 
-                if ((!both || reflect == (attributes.isLeftHanded ? 1 : -1)) && complement != ArmPose.BLOCK) {
+                boolean both = pose == complement;
+
+                if (shouldLiftArm(pose, complement, sigma)) {
                     float swag = 1;
                     if (!isFlying() && both) {
                         swag -= (float)Math.pow(swing, 2);
@@ -406,10 +412,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
                     float mult = 1 - swag/2;
                     arm.pitch = arm.pitch * mult - (PI / 10) * swag;
-                    arm.roll = -reflect * (PI / 15);
+                    arm.roll = -sigma * (PI / 15);
 
                     if (attributes.isCrouching) {
-                        arm.pivotX -= reflect * 2;
+                        arm.pivotX -= sigma * 2;
                     }
                 }
 
@@ -419,11 +425,11 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
                 break;
             case BLOCK:
                 arm.pitch = (arm.pitch / 2 - 0.9424779F) - 0.3F;
-                arm.yaw = reflect * PI / 9;
+                arm.yaw = sigma * PI / 9;
                 if (complement == pose) {
-                    arm.yaw -= reflect * PI / 18;
+                    arm.yaw -= sigma * PI / 18;
                 }
-                arm.pivotX += reflect;
+                arm.pivotX += sigma;
                 arm.pivotZ += 3;
                 if (attributes.isCrouching) {
                     arm.pivotY += 4;
@@ -448,8 +454,23 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
                 arm.pitch = ROTATE_90 * 2;
                 break;
             case SPYGLASS:
-                arm.pitch = MathHelper.clamp(head.pitch - 1.9198622F - (attributes.isCrouching ? 0.2617994F : 0), -2.4F, 3.3F);
-                arm.yaw = MathHelper.clamp(head.yaw + (0.7853982F * reflect), -1.1F, 0.0F);
+                float addedPitch = sneaking ? -0.2617994F : 0;
+                float minPitch = sneaking ? -1.8F : -2.4F;
+                arm.pitch = MathHelper.clamp(head.pitch - 1.9198622F - addedPitch, minPitch, 3.3F);
+                arm.yaw = head.yaw;
+
+                if (sneaking) {
+                    arm.pivotY += 9;
+                    arm.pivotX -= 6 * sigma;
+                    arm.pivotZ -= 2;
+                }
+                if (getSize() == Size.TALL) {
+                    arm.pivotY += 1;
+                }
+                if (getSize() == Size.FOAL) {
+                    arm.pivotY -= 2;
+                }
+
                 break;
             default:
                 break;
@@ -507,19 +528,12 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         float cos = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
         float sin = MathHelper.sin(ticks * 0.067F) * 0.05F;
 
-        boolean animateLeft =
-                (leftArmPose != ArmPose.EMPTY && (leftArmPose != rightArmPose || attributes.isLeftHanded))
-                && rightArmPose != ArmPose.BLOCK;
-        boolean animateRight =
-                (rightArmPose != ArmPose.EMPTY && (leftArmPose != rightArmPose || !attributes.isLeftHanded))
-                && leftArmPose != ArmPose.BLOCK;
-
-        if (animateRight) {
+        if (shouldLiftArm(rightArmPose, leftArmPose, -1)) {
             rightArm.roll += cos;
             rightArm.pitch += sin;
         }
 
-        if (animateLeft) {
+        if (shouldLiftArm(leftArmPose, rightArmPose, 1)) {
             leftArm.roll += cos;
             leftArm.pitch += sin;
         }

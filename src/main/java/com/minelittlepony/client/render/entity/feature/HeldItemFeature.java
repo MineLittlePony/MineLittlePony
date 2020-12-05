@@ -14,6 +14,8 @@ import net.minecraft.util.math.Vec3f;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
+import net.minecraft.util.Hand;
+import net.minecraft.util.UseAction;
 
 public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyFeature<T, M> {
 
@@ -72,6 +74,21 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
 
     protected void preItemRender(T entity, ItemStack drop, ModelTransformation.Mode transform, Arm arm, MatrixStack stack) {
         float left = arm == Arm.LEFT ? 1 : -1;
+
+        UseAction action = drop.getUseAction();
+
+        if ((action == UseAction.SPYGLASS || action == UseAction.BOW) && entity.getItemUseTimeLeft() > 0) {
+            Arm main = entity.getMainArm();
+            if (entity.getActiveHand() == Hand.OFF_HAND) {
+                main = main.getOpposite();
+            }
+            if (main == arm) {
+                stack.translate(left * -0.05F, 0.5F, 0.7F);
+                float incline = -60;
+                stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(incline));
+            }
+        }
+
 
         if (entity.hasVehicle()) {
             stack.translate(left / 10, -0.2F, -0.5F);

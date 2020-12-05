@@ -28,6 +28,14 @@ public class GlowingItemFeature<T extends LivingEntity, M extends EntityModel<T>
 
     @Override
     protected void preItemRender(T entity, ItemStack drop, ModelTransformation.Mode transform, Arm hand, MatrixStack stack) {
+        float left = hand == Arm.LEFT ? 1 : -1;
+
+        super.preItemRender(entity, drop, transform, hand, stack);
+
+        if (isUnicorn()) {
+            stack.translate(-0.3F - (0.3F * left), 0.375F, 0.6F);
+        }
+
 
         UseAction action = drop.getUseAction();
 
@@ -37,16 +45,10 @@ public class GlowingItemFeature<T extends LivingEntity, M extends EntityModel<T>
                 main = main.getOpposite();
             }
             if (main == hand) {
-                stack.translate(0, 1, 0);
+                stack.translate(-0.1F + (0.3F * left), -0.1F, -1.1F);
             }
         }
 
-        super.preItemRender(entity, drop, transform, hand, stack);
-
-        if (isUnicorn()) {
-            stack.translate(0, -0.125F, 1);
-            stack.translate(hand == Arm.LEFT ? -0.6F : 0, 0.5F, -0.3F);
-        }
     }
 
     @Override
