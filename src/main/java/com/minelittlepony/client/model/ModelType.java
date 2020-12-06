@@ -2,6 +2,7 @@ package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.entity.model.ArmorStandEntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.util.Identifier;
@@ -16,6 +17,7 @@ import com.minelittlepony.client.model.entity.IllagerPonyModel;
 import com.minelittlepony.client.model.entity.ParaspriteModel;
 import com.minelittlepony.client.model.entity.PiglinPonyModel;
 import com.minelittlepony.client.model.entity.PillagerPonyModel;
+import com.minelittlepony.client.model.entity.PonyArmourStandModel;
 import com.minelittlepony.client.model.entity.SkeleponyModel;
 import com.minelittlepony.client.model.entity.VillagerPonyModel;
 import com.minelittlepony.client.model.entity.WitchPonyModel;
@@ -72,6 +74,7 @@ public final class ModelType {
     public static final ModelKey<PonyElytra<?>> ELYTRA = register("elytra", PonyElytra::new);
     public static final ModelKey<PonySkullModel> SKULL = register("skull", PonySkullModel::new);
 
+    public static final ModelKey<ArmorStandEntityModel> ARMOUR_STAND = register("armour_stand", PonyArmourStandModel::new);
     public static final ModelKey<PonyArmourModel<?>> ARMOUR_INNER = register("armour_inner", PonyArmourModel::new);
     public static final ModelKey<PonyArmourModel<?>> ARMOUR_OUTER = register("armour_outer", PonyArmourModel::new);
 
