@@ -5,10 +5,14 @@ import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Size;
+import com.minelittlepony.api.pony.network.Channel;
+import com.minelittlepony.api.pony.network.MsgPonyData;
+import com.minelittlepony.api.pony.network.PonyDataCallback;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.client.render.PonyRenderDispatcher;
 import com.minelittlepony.client.transform.PonyTransformation;
 
+import net.fabricmc.api.EnvType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.block.StairsBlock;
@@ -31,6 +35,9 @@ public class Pony implements IPony {
     private final IPonyData metadata;
 
     private boolean initialized = false;
+    private boolean defaulted = false;
+
+    private int entityId = -1;
 
     Pony(Identifier resource, IPonyData data) {
         texture = resource;
@@ -41,11 +48,24 @@ public class Pony implements IPony {
         this(resource, PonyData.parse(resource));
     }
 
+    public IPony defaulted() {
+        defaulted = true;
+        return this;
+    }
+
     @Override
     public void updateForEntity(Entity entity) {
-        if (!initialized) {
+        if (!initialized || entityId != entity.getEntityId()) {
+            entityId = entity.getEntityId();
             initialized = true;
             entity.calculateDimensions();
+
+            if (entity == MinecraftClient.getInstance().player) {
+                Channel.CLIENT_PONY_DATA.send(new MsgPonyData(metadata, defaulted));
+            }
+            if (entity instanceof PlayerEntity) {
+                PonyDataCallback.EVENT.invoker().onPonyDataAvailable((PlayerEntity)entity, metadata, defaulted, EnvType.CLIENT);
+            }
         }
     }
 

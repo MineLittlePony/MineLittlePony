@@ -1,6 +1,7 @@
 package com.minelittlepony.client;
 
 import com.minelittlepony.api.pony.IPonyManager;
+import com.minelittlepony.api.pony.network.Channel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.client.render.PonyRenderDispatcher;
@@ -85,6 +86,7 @@ public class MineLittlePony implements ClientModInitializer {
 
         config.load();
 
+        Channel.bootstrap();
         ModelType.bootstrap();
 
         FabricLoader.getInstance().getEntrypoints("minelittlepony", ClientModInitializer.class).forEach(ClientModInitializer::onInitializeClient);

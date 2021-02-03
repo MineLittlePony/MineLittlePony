@@ -92,7 +92,7 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
     @Override
     public IPony getDefaultPony(UUID uuid) {
         if (config.ponyLevel.get() != PonyLevel.PONIES) {
-            return getPony(DefaultSkinHelper.getTexture(uuid));
+            return ((Pony)getPony(DefaultSkinHelper.getTexture(uuid))).defaulted();
         }
 
         return getBackgroundPony(uuid);
@@ -100,7 +100,7 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
 
     @Override
     public IPony getBackgroundPony(UUID uuid) {
-        return getPony(backgroundPonyList.getId(uuid));
+        return ((Pony)getPony(backgroundPonyList.getId(uuid))).defaulted();
     }
 
     @Override
