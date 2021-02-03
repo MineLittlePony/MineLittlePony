@@ -1,7 +1,5 @@
 package com.minelittlepony.api.pony.network;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.fabric.api.network.PacketContext;
 import net.minecraft.network.PacketByteBuf;
 
 import com.minelittlepony.api.pony.IPonyData;
@@ -14,7 +12,7 @@ import com.minelittlepony.common.util.animation.Interpolator;
 
 import java.util.UUID;
 
-public class MsgPonyData implements Channel.Packet, IPonyData {
+public class MsgPonyData implements IPonyData {
 
     private final Race race;
     private final TailLength tailLength;
@@ -26,15 +24,23 @@ public class MsgPonyData implements Channel.Packet, IPonyData {
 
     private final boolean noSkin;
 
-    MsgPonyData(PacketByteBuf buffer) {
+    private final boolean[] wearables;
+
+    public MsgPonyData(PacketByteBuf buffer) {
         race = Race.values()[buffer.readInt()];
         tailLength = TailLength.values()[buffer.readInt()];
         gender = Gender.values()[buffer.readInt()];
-        size = Size.values()[buffer.readInt()];
+        size = new MsgSize(buffer);
         glowColor = buffer.readInt();
         hasHorn = buffer.readBoolean();
         hasMagic = buffer.readBoolean();
         noSkin = buffer.readBoolean();
+        Wearable[] gear = new Wearable[buffer.readInt()];
+        Wearable[] all = Wearable.values();
+        for (int i = 0; i < gear.length; i++) {
+            gear[i] = all[buffer.readInt()];
+        }
+        wearables = Wearable.flags(gear);
     }
 
     public MsgPonyData(IPonyData data, boolean noSkin) {
@@ -45,24 +51,29 @@ public class MsgPonyData implements Channel.Packet, IPonyData {
         glowColor = data.getGlowColor();
         hasHorn = data.hasHorn();
         hasMagic = data.hasMagic();
+        wearables = Wearable.flags(data.getGear());
         this.noSkin = noSkin;
     }
 
-    @Override
-    public void handle(PacketContext context) {
-        PonyDataCallback.EVENT.invoker().onPonyDataAvailable(context.getPlayer(), this, noSkin, EnvType.SERVER);
-    }
-
-    @Override
     public void toBuffer(PacketByteBuf buffer) {
         buffer.writeInt(race.ordinal());
         buffer.writeInt(tailLength.ordinal());
         buffer.writeInt(gender.ordinal());
-        buffer.writeInt(size.ordinal());
+        new MsgSize(size).toBuffer(buffer);
         buffer.writeInt(glowColor);
         buffer.writeBoolean(hasHorn);
         buffer.writeBoolean(hasMagic);
         buffer.writeBoolean(noSkin);
+
+        Wearable[] gear = getGear();
+        buffer.writeInt(gear.length);
+        for (int i = 0; i < gear.length; i++) {
+            buffer.writeInt(gear[i].ordinal());
+        }
+    }
+
+    public boolean isNoSkin() {
+        return noSkin;
     }
 
     @Override
@@ -101,12 +112,89 @@ public class MsgPonyData implements Channel.Packet, IPonyData {
     }
 
     @Override
+    public Wearable[] getGear() {
+        return Wearable.flags(wearables);
+    }
+
+    @Override
     public boolean isWearing(Wearable wearable) {
-        return false;
+        return wearables[wearable.ordinal()];
     }
 
     @Override
     public Interpolator getInterpolator(UUID interpolatorId) {
         return Interpolator.linear(interpolatorId);
+    }
+
+    private static final class MsgSize implements Size {
+
+        private final int ordinal;
+        private final String name;
+        private final float shadow;
+        private final float scale;
+        private final float eyeHeight;
+        private final float eyeDistance;
+
+        MsgSize(Size size) {
+            ordinal = size.ordinal();
+            name = size.name();
+            shadow = size.getShadowSize();
+            scale = size.getScaleFactor();
+            eyeHeight = size.getEyeHeightFactor();
+            eyeDistance = size.getEyeDistanceFactor();
+        }
+
+        MsgSize(PacketByteBuf buffer) {
+            ordinal = buffer.readInt();
+            name = buffer.readString(32767);
+            shadow = buffer.readFloat();
+            scale = buffer.readFloat();
+            eyeHeight = buffer.readFloat();
+            eyeDistance = buffer.readFloat();
+        }
+
+        public void toBuffer(PacketByteBuf buffer) {
+            buffer.writeInt(ordinal);
+            buffer.writeString(name);
+            buffer.writeFloat(shadow);
+            buffer.writeFloat(scale);
+            buffer.writeFloat(eyeHeight);
+            buffer.writeFloat(eyeDistance);
+        }
+
+        @Override
+        public int ordinal() {
+            return ordinal;
+        }
+
+        @Override
+        public String name() {
+            return name;
+        }
+
+        @Override
+        public float getShadowSize() {
+            return shadow;
+        }
+
+        @Override
+        public float getScaleFactor() {
+            return scale;
+        }
+
+        @Override
+        public float getEyeHeightFactor() {
+            return eyeHeight;
+        }
+
+        @Override
+        public float getEyeDistanceFactor() {
+            return eyeDistance;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 }

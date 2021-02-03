@@ -24,6 +24,14 @@ public enum Wearable implements ITriggerPixelMapped<Wearable> {
         return triggerValue;
     }
 
+    public static boolean[] flags(Wearable[] wears) {
+        boolean[] flags = new boolean[values().length];
+        for (int i = 0; i < wears.length; i++) {
+            flags[wears[i].ordinal()] = true;
+        }
+        return flags;
+    }
+
     public static Wearable[] flags(boolean[] flags) {
         List<Wearable> wears = new ArrayList<>();
         Wearable[] values = values();

@@ -2,9 +2,6 @@ package com.minelittlepony.api.pony;
 
 /**
  * Interface for enums that can be parsed from an image trigger pixel value.
- * @author Chris Albers
- *
- * @param <T>
  */
 public interface ITriggerPixelMapped<T extends Enum<T> & ITriggerPixelMapped<T>> {
     /**

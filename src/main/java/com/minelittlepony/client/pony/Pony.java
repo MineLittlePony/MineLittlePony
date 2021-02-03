@@ -5,12 +5,15 @@ import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Size;
-import com.minelittlepony.api.pony.network.Channel;
+import com.minelittlepony.api.pony.meta.Sizes;
 import com.minelittlepony.api.pony.network.MsgPonyData;
-import com.minelittlepony.api.pony.network.PonyDataCallback;
+import com.minelittlepony.api.pony.network.fabric.Channel;
+import com.minelittlepony.api.pony.network.fabric.PonyDataCallback;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.client.render.PonyRenderDispatcher;
 import com.minelittlepony.client.transform.PonyTransformation;
+import com.minelittlepony.settings.PonyLevel;
 
 import net.fabricmc.api.EnvType;
 import net.minecraft.block.BlockState;
@@ -61,7 +64,7 @@ public class Pony implements IPony {
             entity.calculateDimensions();
 
             if (entity == MinecraftClient.getInstance().player) {
-                Channel.CLIENT_PONY_DATA.send(new MsgPonyData(metadata, defaulted));
+                Channel.CLIENT_PONY_DATA.accept(new MsgPonyData(metadata, defaulted));
             }
             if (entity instanceof PlayerEntity) {
                 PonyDataCallback.EVENT.invoker().onPonyDataAvailable((PlayerEntity)entity, metadata, defaulted, EnvType.CLIENT);
@@ -138,7 +141,7 @@ public class Pony implements IPony {
     }
 
     protected Vec3d getVisualEyePosition(LivingEntity entity) {
-        Size size = entity.isBaby() ? Size.FOAL : metadata.getSize();
+        Size size = entity.isBaby() ? Sizes.FOAL : metadata.getSize();
 
         return new Vec3d(
                 entity.getX(),
@@ -149,7 +152,7 @@ public class Pony implements IPony {
 
     @Override
     public Race getRace(boolean ignorePony) {
-        return metadata.getRace().getEffectiveRace(ignorePony);
+        return getEffectiveRace(metadata.getRace(), ignorePony);
     }
 
     @Override
@@ -237,5 +240,19 @@ public class Pony implements IPony {
                 .add("texture", texture)
                 .add("metadata", metadata)
                 .toString();
+    }
+
+    /**
+     * Gets the actual race determined by the given pony level.
+     * PonyLevel.HUMANS would force all races to be humans.
+     * PonyLevel.BOTH is no change.
+     * PonyLevel.PONIES (should) return a pony if this is a human. Don't be fooled, though. It doesn't.
+     */
+    public static Race getEffectiveRace(Race race, boolean ignorePony) {
+        if (MineLittlePony.getInstance().getConfig().getEffectivePonyLevel(ignorePony) == PonyLevel.HUMANS) {
+            return Race.HUMAN;
+        }
+
+        return race;
     }
 }

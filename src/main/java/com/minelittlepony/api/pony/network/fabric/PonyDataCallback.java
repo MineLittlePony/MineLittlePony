@@ -1,4 +1,4 @@
-package com.minelittlepony.api.pony.network;
+package com.minelittlepony.api.pony.network.fabric;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.event.Event;

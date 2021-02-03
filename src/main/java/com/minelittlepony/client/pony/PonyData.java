@@ -10,7 +10,7 @@ import com.google.gson.annotations.Expose;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.meta.Gender;
 import com.minelittlepony.api.pony.meta.Race;
-import com.minelittlepony.api.pony.meta.Size;
+import com.minelittlepony.api.pony.meta.Sizes;
 import com.minelittlepony.api.pony.meta.TailLength;
 import com.minelittlepony.api.pony.meta.TriggerPixels;
 import com.minelittlepony.api.pony.meta.Wearable;
@@ -75,7 +75,7 @@ public class PonyData implements IPonyData {
     private final Gender gender;
 
     @Expose
-    private final Size size;
+    private final Sizes size;
 
     @Expose
     private final int glowColor;
@@ -87,7 +87,7 @@ public class PonyData implements IPonyData {
         this.race = race;
         tailSize = TailLength.FULL;
         gender = Gender.MARE;
-        size = Size.NORMAL;
+        size = Sizes.NORMAL;
         glowColor = 0x4444aa;
 
         wearables = new boolean[Wearable.values().length];
@@ -119,8 +119,18 @@ public class PonyData implements IPonyData {
     }
 
     @Override
-    public Size getSize() {
-        return size.getEffectiveSize();
+    public Sizes getSize() {
+        Sizes sz = MineLittlePony.getInstance().getConfig().sizeOverride.get();
+
+        if (sz != Sizes.UNSET) {
+            return sz;
+        }
+
+        if (size == Sizes.UNSET || !MineLittlePony.getInstance().getConfig().sizes.get()) {
+            return Sizes.NORMAL;
+        }
+
+        return size;
     }
 
     @Override
@@ -130,12 +140,17 @@ public class PonyData implements IPonyData {
 
     @Override
     public boolean hasHorn() {
-        return getRace() != null && getRace().getEffectiveRace(false).hasHorn();
+        return getRace() != null && Pony.getEffectiveRace(getRace(), false).hasHorn();
     }
 
     @Override
     public boolean hasMagic() {
         return hasHorn() && getGlowColor() != 0;
+    }
+
+    @Override
+    public Wearable[] getGear() {
+        return Wearable.flags(wearables);
     }
 
     @Override
@@ -155,7 +170,7 @@ public class PonyData implements IPonyData {
                 .add("tailSize", tailSize)
                 .add("gender", gender)
                 .add("size", size)
-                .add("wearables", Wearable.flags(wearables))
+                .add("wearables", getGear())
                 .add("glowColor", "#" + Integer.toHexString(glowColor))
                 .toString();
     }

@@ -49,6 +49,11 @@ public interface IPonyData {
     boolean hasMagic();
 
     /**
+     * Returns an array of wearables that this pony is carrying.
+     */
+    Wearable[] getGear();
+
+    /**
      * Checks it this pony is wearing the given accessory.
      */
     boolean isWearing(Wearable wearable);

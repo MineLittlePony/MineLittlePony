@@ -14,7 +14,7 @@ public enum TriggerPixels {
     RACE(Race.HUMAN, Channel.ALL, 0, 0),
     TAIL(TailLength.FULL, Channel.ALL, 1, 0),
     GENDER(Gender.MARE, Channel.ALL, 2, 0),
-    SIZE(Size.NORMAL, Channel.ALL, 3, 0),
+    SIZE(Sizes.NORMAL, Channel.ALL, 3, 0),
     GLOW(null, Channel.RAW, 0, 1),
     WEARABLES(Wearable.NONE, Channel.RAW, 1, 1);
 

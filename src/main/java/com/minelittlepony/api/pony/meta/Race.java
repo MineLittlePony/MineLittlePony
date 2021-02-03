@@ -1,8 +1,6 @@
 package com.minelittlepony.api.pony.meta;
 
 import com.minelittlepony.api.pony.ITriggerPixelMapped;
-import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.settings.PonyLevel;
 
 import javax.annotation.Nonnull;
 
@@ -92,20 +90,6 @@ public enum Race implements ITriggerPixelMapped<Race> {
      */
     public boolean isEquivalentTo(Race other) {
         return getAlias() == other.getAlias();
-    }
-
-    /**
-     * Gets the actual race determined by the given pony level.
-     * PonyLevel.HUMANS would force all races to be humans.
-     * PonyLevel.BOTH is no change.
-     * PonyLevel.PONIES (should) return a pony if this is a human. Don't be fooled, though. It doesn't.
-     */
-    public Race getEffectiveRace(boolean ignorePony) {
-        if (MineLittlePony.getInstance().getConfig().getEffectivePonyLevel(ignorePony) == PonyLevel.HUMANS) {
-            return HUMAN;
-        }
-
-        return this;
     }
 
     @Override

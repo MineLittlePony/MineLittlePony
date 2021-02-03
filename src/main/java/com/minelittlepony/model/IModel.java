@@ -6,6 +6,7 @@ import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.meta.Size;
+import com.minelittlepony.api.pony.meta.Sizes;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.model.armour.IEquestrianArmour;
 
@@ -64,7 +65,7 @@ public interface IModel extends ModelWithArms {
      * Returns true if the current model is a child or a child-like foal.
      */
     default boolean isChild() {
-        return getSize() == Size.FOAL;
+        return getSize() == Sizes.FOAL;
     }
 
     /**

@@ -2,7 +2,7 @@ package com.minelittlepony.settings;
 
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.api.pony.meta.Size;
+import com.minelittlepony.api.pony.meta.Sizes;
 import com.minelittlepony.common.util.settings.JsonConfig;
 import com.minelittlepony.common.util.settings.Setting;
 
@@ -12,7 +12,6 @@ import java.nio.file.Path;
  * Storage container for MineLP client settings.
  */
 public class PonyConfig extends JsonConfig {
-
     /**
      * Sets the pony level. Want MOAR PONEHS? Well here you go.
      */
@@ -30,7 +29,7 @@ public class PonyConfig extends JsonConfig {
     /**
      * Debug override for pony sizes.
      */
-    public final Setting<Size> sizeOverride = value("sizeOverride", Size.UNSET);
+    public final Setting<Sizes> sizeOverride = value("sizeOverride", Sizes.UNSET);
 
     public PonyConfig(Path path) {
         super(path);
