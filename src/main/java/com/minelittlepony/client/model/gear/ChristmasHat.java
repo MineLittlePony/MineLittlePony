@@ -11,11 +11,13 @@ import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.common.util.Color;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
+import com.minelittlepony.model.PonyModelConstants;
+import com.minelittlepony.model.gear.IRenderContext;
 
 import java.util.Calendar;
 import java.util.UUID;
 
-public class ChristmasHat extends AbstractGear {
+public class ChristmasHat extends AbstractGear implements PonyModelConstants {
 
     private static boolean dayChecked = false;
     private static boolean dayResult = false;
@@ -49,12 +51,12 @@ public class ChristmasHat extends AbstractGear {
     }
 
     @Override
-    public void setLivingAnimations(IModel model, Entity entity) {
+    public void setModelAttributes(IModel model, Entity entity) {
         tint = model.getMetadata().getGlowColor();
     }
 
     @Override
-    public void setRotationAndAngles(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
+    public void pose(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
         float pi = PI * (float) Math.pow(swing, 16);
 
         float mve = move * 0.6662f;
@@ -79,7 +81,7 @@ public class ChristmasHat extends AbstractGear {
     }
 
     @Override
-    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
+    public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
         if (tint != 0) {
             red = Color.r(tint);
             green = Color.g(tint);

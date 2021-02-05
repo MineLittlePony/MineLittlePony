@@ -8,6 +8,7 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
+import com.google.common.collect.Streams;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelType;
@@ -16,21 +17,27 @@ import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.model.gear.IStackable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyFeature<T, M> {
 
-    private final Map<Wearable, IGear> gears;
+    private static final List<Entry> MOD_GEARS = new ArrayList<>();
+
+    public static IGear addModGear(IGear gear) {
+        MOD_GEARS.add(new Entry(gear, Wearable.NONE));
+        return gear;
+    }
+
+    private final List<Entry> gears;
 
     public GearFeature(IPonyRenderContext<T, M> renderer) {
         super(renderer);
 
-        gears = ModelType.getWearables().collect(Collectors.toMap(
-                Map.Entry::getKey,
-                e -> e.getValue().createModel()
-        ));
+        gears = Streams.concat(ModelType.getWearables().map(e -> new Entry(e.getValue().createModel(), e.getKey())), MOD_GEARS.stream()).collect(Collectors.toList());
     }
 
     @Override
@@ -40,21 +47,20 @@ public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & IPon
             return;
         }
 
-        M model = getModelWrapper().getBody();
+        final M model = getModelWrapper().getBody();
 
-        Map<BodyPart, Float> renderStackingOffsets = new HashMap<>();
+        final Map<BodyPart, Float> renderStackingOffsets = new HashMap<>();
 
-        for (Map.Entry<Wearable, IGear> entry : gears.entrySet()) {
-            Wearable wearable = entry.getKey();
-            IGear gear = entry.getValue();
+        for (Entry entry : gears) {
+            final IGear gear = entry.gear;
 
-            if (getContext().shouldRender(model, entity, wearable, gear)) {
+            if (getContext().shouldRender(model, entity, entry.wearable, gear)) {
                 stack.push();
-                model.transform(gear.getGearLocation(), stack);
-                model.getBodyPart(gear.getGearLocation()).rotate(stack);
+                BodyPart part = gear.getGearLocation();
+                model.transform(part, stack);
+                model.getBodyPart(part).rotate(stack);
 
                 if (gear instanceof IStackable) {
-                    BodyPart part = gear.getGearLocation();
                     renderStackingOffsets.compute(part, (k, v) -> {
                         float offset = ((IStackable)gear).getStackingOffset();
                         if (v != null) {
@@ -73,12 +79,22 @@ public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & IPon
 
     private void renderGear(M model, T entity, IGear gear, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, float limbDistance, float limbAngle, float tickDelta) {
 
-        gear.setLivingAnimations(model, entity);
-        gear.setRotationAndAngles(model.getAttributes().isGoingFast, entity.getUuid(), limbDistance, limbAngle, model.getWobbleAmount(), tickDelta);
+        gear.setModelAttributes(model, entity);
+        gear.pose(model.getAttributes().isGoingFast, entity.getUuid(), limbDistance, limbAngle, model.getWobbleAmount(), tickDelta);
 
         RenderLayer layer = RenderLayer.getEntityTranslucent(gear.getTexture(entity, getContext()));
 
         VertexConsumer vertexConsumer = renderContext.getBuffer(layer);
-        gear.renderPart(stack, vertexConsumer, lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1, entity.getUuid());
+        gear.render(stack, vertexConsumer, lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1, entity.getUuid());
+    }
+
+    static class Entry {
+        IGear gear;
+        Wearable wearable;
+
+        Entry(IGear gear, Wearable wearable) {
+            this.gear = gear;
+            this.wearable = wearable;
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.minelittlepony.model.capabilities;
+package com.minelittlepony.model;
 
 import com.minelittlepony.api.pony.IPonyData;
 

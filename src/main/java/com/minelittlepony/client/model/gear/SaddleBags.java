@@ -5,6 +5,8 @@ import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
 import com.minelittlepony.model.IPegasus;
+import com.minelittlepony.model.PonyModelConstants;
+import com.minelittlepony.model.gear.IRenderContext;
 
 import java.util.UUID;
 
@@ -15,7 +17,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-public class SaddleBags extends AbstractGear {
+public class SaddleBags extends AbstractGear implements PonyModelConstants {
 
     public static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/models/saddlebags.png");
 
@@ -37,7 +39,7 @@ public class SaddleBags extends AbstractGear {
     }
 
     @Override
-    public void setLivingAnimations(IModel model, Entity entity) {
+    public void setModelAttributes(IModel model, Entity entity) {
         this.model = model;
 
         hangLow = false;
@@ -48,7 +50,7 @@ public class SaddleBags extends AbstractGear {
     }
 
     @Override
-    public void setRotationAndAngles(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
+    public void pose(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
         float pi = PI * (float) Math.pow(swing, 16);
 
         float mve = move * 0.6662f;
@@ -75,7 +77,7 @@ public class SaddleBags extends AbstractGear {
     }
 
     @Override
-    public void renderPart(MatrixStack stack, VertexConsumer renderContext, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
+    public void render(MatrixStack stack, VertexConsumer renderContext, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
         dropAmount = model.getMetadata().getInterpolator(interpolatorId).interpolate("dropAmount", dropAmount, 3);
 
         stack.push();

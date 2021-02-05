@@ -6,7 +6,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
 
-import com.minelittlepony.model.capabilities.fabric.PonyModelPrepareCallback;
+import com.minelittlepony.model.fabric.PonyModelPrepareCallback;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.meta.Size;

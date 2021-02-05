@@ -1,6 +1,6 @@
 package com.minelittlepony.model.armour;
 
-import com.minelittlepony.model.capabilities.IModelWrapper;
+import com.minelittlepony.model.IModelWrapper;
 
 public interface IEquestrianArmour<V extends IArmour> extends IModelWrapper {
     /**

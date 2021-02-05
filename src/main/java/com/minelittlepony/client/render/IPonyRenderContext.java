@@ -4,9 +4,9 @@ import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
-import com.minelittlepony.client.model.gear.IRenderContext;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.PonyModelConstants;
+import com.minelittlepony.model.gear.IRenderContext;
 import com.minelittlepony.util.MathUtil;
 
 import net.minecraft.client.render.entity.model.EntityModel;

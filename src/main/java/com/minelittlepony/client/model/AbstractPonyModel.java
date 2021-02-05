@@ -2,7 +2,7 @@ package com.minelittlepony.client.model;
 
 import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.client.render.EquineRenderManager;
-import com.minelittlepony.model.capabilities.fabric.PonyModelPrepareCallback;
+import com.minelittlepony.model.fabric.PonyModelPrepareCallback;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Sizes;
 import com.minelittlepony.client.model.armour.ArmourWrapper;

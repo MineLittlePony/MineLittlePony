@@ -25,7 +25,7 @@ public abstract class AbstractGear extends Model implements IGear {
     }
 
     @Override
-    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
+    public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
         render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 

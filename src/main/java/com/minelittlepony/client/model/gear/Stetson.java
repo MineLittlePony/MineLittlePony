@@ -7,6 +7,7 @@ import net.minecraft.util.Identifier;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.model.BodyPart;
 import com.minelittlepony.model.IModel;
+import com.minelittlepony.model.gear.IRenderContext;
 import com.minelittlepony.model.gear.IStackable;
 
 public class Stetson extends AbstractGear implements IStackable {
