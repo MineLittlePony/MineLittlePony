@@ -30,7 +30,6 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
 
     static SkinType seaponySkinType;
 
-
     @Override
     public void onInitializeClient() {
         SkinsProxy.instance = this;
