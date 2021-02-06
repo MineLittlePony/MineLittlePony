@@ -1,7 +1,7 @@
 package com.minelittlepony.client.model.part;
 
+import com.minelittlepony.api.model.IPart;
 import com.minelittlepony.client.model.IPonyModel;
-import com.minelittlepony.model.IPart;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
 

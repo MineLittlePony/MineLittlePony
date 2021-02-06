@@ -1,12 +1,12 @@
 package com.minelittlepony.client.render;
 
+import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.api.model.PonyModelConstants;
+import com.minelittlepony.api.model.gear.IGear;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
-import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.PonyModelConstants;
-import com.minelittlepony.model.gear.IRenderContext;
 import com.minelittlepony.util.MathUtil;
 
 import net.minecraft.client.render.entity.model.EntityModel;
@@ -14,7 +14,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 
-public interface IPonyRenderContext<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends PonyModelConstants, IRenderContext<T, M> {
+public interface IPonyRenderContext<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends PonyModelConstants, IGear.Context<T, M> {
 
     /**
      * Gets the wrapped pony model for this renderer.
@@ -39,7 +39,7 @@ public interface IPonyRenderContext<T extends LivingEntity, M extends EntityMode
         if (!passengerPony.getRace(false).isHuman()) {
             float yaw = MathUtil.interpolateDegress((float)entity.prevY, (float)entity.getY(), ticks);
 
-            getModelWrapper().apply(entityPony.getMetadata());
+            getModelWrapper().applyMetadata(entityPony.getMetadata());
             M model = getModelWrapper().getBody();
 
             model.transform(BodyPart.BACK, stack);

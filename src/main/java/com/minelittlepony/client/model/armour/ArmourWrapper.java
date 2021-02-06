@@ -2,13 +2,13 @@ package com.minelittlepony.client.model.armour;
 
 import net.minecraft.entity.LivingEntity;
 
+import com.minelittlepony.api.model.armour.ArmourLayer;
+import com.minelittlepony.api.model.armour.IArmour;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.model.armour.ArmourLayer;
-import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.mson.api.MsonModel;
 
-public class ArmourWrapper<T extends LivingEntity> implements IEquestrianArmour<PonyArmourModel<T>> {
+public class ArmourWrapper<T extends LivingEntity> implements IArmour<PonyArmourModel<T>> {
 
     private final PonyArmourModel<T> outerLayer;
     private final PonyArmourModel<T> innerLayer;
@@ -19,14 +19,14 @@ public class ArmourWrapper<T extends LivingEntity> implements IEquestrianArmour<
     }
 
     @Override
-    public ArmourWrapper<T> apply(IPonyData meta) {
-        outerLayer.apply(meta);
-        innerLayer.apply(meta);
+    public ArmourWrapper<T> applyMetadata(IPonyData meta) {
+        outerLayer.setMetadata(meta);
+        innerLayer.setMetadata(meta);
         return this;
     }
 
     @Override
-    public PonyArmourModel<T> getArmorForLayer(ArmourLayer layer) {
+    public PonyArmourModel<T> getModel(ArmourLayer layer) {
 
         if (layer == ArmourLayer.INNER) {
             return innerLayer;

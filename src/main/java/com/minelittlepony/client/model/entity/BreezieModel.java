@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.minelittlepony.mson.api.model.MsonPart;
 
-import static com.minelittlepony.model.PonyModelConstants.PI;
+import static com.minelittlepony.api.model.PonyModelConstants.PI;
 
 public class BreezieModel<T extends LivingEntity> extends BipedEntityModel<T> {
 

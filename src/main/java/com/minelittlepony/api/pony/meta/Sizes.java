@@ -7,6 +7,8 @@ import com.minelittlepony.client.MineLittlePony;
  * Represents the different model sizes that are possible.
  *
  * This is the client-side version.
+ *
+ * For spooky things at a distance, use {@link Size} instead.
  */
 public enum Sizes implements ITriggerPixelMapped<Sizes>, Size {
     TALL    (0x534b76, 0.45f, 1.1F,  1.15F),

@@ -5,8 +5,8 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
+import com.minelittlepony.api.model.IPart;
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.model.IPart;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
 

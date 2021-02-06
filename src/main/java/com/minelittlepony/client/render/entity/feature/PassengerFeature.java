@@ -14,9 +14,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 
+import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.IPonyRenderContext;
-import com.minelittlepony.model.BodyPart;
 
 import java.util.Optional;
 

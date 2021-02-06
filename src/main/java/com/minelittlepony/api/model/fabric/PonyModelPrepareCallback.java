@@ -1,11 +1,11 @@
-package com.minelittlepony.model.fabric;
+package com.minelittlepony.api.model.fabric;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.Entity;
 
-import com.minelittlepony.client.render.EquineRenderManager;
-import com.minelittlepony.model.IModel;
+import com.minelittlepony.api.model.IModel;
+import com.minelittlepony.api.model.ModelAttributes;
 
 public interface PonyModelPrepareCallback {
 
@@ -15,5 +15,5 @@ public interface PonyModelPrepareCallback {
         }
     });
 
-    void onPonyModelPrepared(Entity entity, IModel model, EquineRenderManager.Mode mode);
+    void onPonyModelPrepared(Entity entity, IModel model, ModelAttributes.Mode mode);
 }

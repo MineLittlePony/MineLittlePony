@@ -1,8 +1,8 @@
 package com.minelittlepony.client.model.entity.race;
 
+import com.minelittlepony.api.model.IPart;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.part.PonySnout;
-import com.minelittlepony.model.IPart;
 import com.minelittlepony.mson.api.ModelContext;
 
 import net.minecraft.client.model.ModelPart;

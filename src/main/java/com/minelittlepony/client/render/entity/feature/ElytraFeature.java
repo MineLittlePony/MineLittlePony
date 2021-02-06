@@ -1,10 +1,10 @@
 package com.minelittlepony.client.render.entity.feature;
 
+import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.PonyElytra;
 import com.minelittlepony.client.render.IPonyRenderContext;
-import com.minelittlepony.model.BodyPart;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;

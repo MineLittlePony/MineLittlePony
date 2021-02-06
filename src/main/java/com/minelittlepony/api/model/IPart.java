@@ -1,4 +1,4 @@
-package com.minelittlepony.model;
+package com.minelittlepony.api.model;
 
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;

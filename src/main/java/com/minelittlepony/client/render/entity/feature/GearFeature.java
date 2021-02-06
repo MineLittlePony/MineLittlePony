@@ -9,27 +9,27 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
 import com.google.common.collect.Streams;
+import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.api.model.gear.IGear;
+import com.minelittlepony.api.model.gear.IStackable;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.render.IPonyRenderContext;
-import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.gear.IGear;
-import com.minelittlepony.model.gear.IStackable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyFeature<T, M> {
 
-    private static final List<Entry> MOD_GEARS = new ArrayList<>();
+    private static final List<Supplier<IGear>> MOD_GEARS = new ArrayList<>();
 
-    public static IGear addModGear(IGear gear) {
-        MOD_GEARS.add(new Entry(gear, Wearable.NONE));
-        return gear;
+    public static void addModGear(Supplier<IGear> gear) {
+        MOD_GEARS.add(gear);
     }
 
     private final List<Entry> gears;
@@ -37,7 +37,10 @@ public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & IPon
     public GearFeature(IPonyRenderContext<T, M> renderer) {
         super(renderer);
 
-        gears = Streams.concat(ModelType.getWearables().map(e -> new Entry(e.getValue().createModel(), e.getKey())), MOD_GEARS.stream()).collect(Collectors.toList());
+        gears = Streams.concat(
+                ModelType.getWearables().map(e -> new Entry(e.getValue().createModel(), e.getKey())),
+                MOD_GEARS.stream().map(e -> new Entry(e.get(), Wearable.NONE))
+        ).collect(Collectors.toList());
     }
 
     @Override
@@ -62,7 +65,7 @@ public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & IPon
 
                 if (gear instanceof IStackable) {
                     renderStackingOffsets.compute(part, (k, v) -> {
-                        float offset = ((IStackable)gear).getStackingOffset();
+                        float offset = ((IStackable)gear).getStackingHeight();
                         if (v != null) {
                             stack.translate(0, -v, 0);
                             offset += v;

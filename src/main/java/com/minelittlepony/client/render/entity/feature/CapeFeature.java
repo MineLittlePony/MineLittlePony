@@ -1,8 +1,10 @@
 package com.minelittlepony.client.render.entity.feature;
 
+import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.IPonyRenderContext;
-import com.minelittlepony.model.BodyPart;
+
+import static com.minelittlepony.api.model.PonyModelConstants.PI;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
@@ -15,8 +17,6 @@ import net.minecraft.util.math.Vec3f;
 import net.minecraft.item.Items;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.util.math.MathHelper;
-
-import static com.minelittlepony.model.PonyModelConstants.PI;
 
 public class CapeFeature<M extends ClientPonyModel<AbstractClientPlayerEntity>> extends AbstractPonyFeature<AbstractClientPlayerEntity, M> {
 

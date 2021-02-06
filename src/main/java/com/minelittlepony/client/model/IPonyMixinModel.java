@@ -2,22 +2,22 @@ package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.model.ModelWithArms;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 
+import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.api.model.IUnicorn;
+import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.api.model.armour.IArmour;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.meta.Size;
-import com.minelittlepony.client.render.EquineRenderManager;
-import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.IUnicorn;
-import com.minelittlepony.model.ModelAttributes;
-import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.model.BoxBuilder.RenderLayerSetter;
 
-public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>> extends IPonyModel<T> {
+public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>> extends IPonyModel<T>, ModelWithArms {
 
     M mixin();
 
@@ -30,7 +30,7 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     }
 
     @Override
-    default void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
+    default void updateLivingState(T entity, IPony pony, ModelAttributes.Mode mode) {
         mixin().updateLivingState(entity, pony, mode);
     }
 
@@ -50,7 +50,7 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     }
 
     @Override
-    default ModelAttributes<?> getAttributes() {
+    default ModelAttributes getAttributes() {
         return mixin().getAttributes();
     }
 
@@ -60,13 +60,13 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     }
 
     @Override
-    default IEquestrianArmour<?> createArmour() {
+    default IArmour<?> createArmour() {
         return mixin().createArmour();
     }
 
     @Override
-    default void apply(IPonyData meta) {
-        mixin().apply(meta);
+    default void setMetadata(IPonyData meta) {
+        mixin().setMetadata(meta);
     }
 
     @Override
@@ -91,7 +91,9 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
 
     @Override
     default void setArmAngle(Arm arm, MatrixStack stack) {
-        mixin().setArmAngle(arm, stack);
+        if (mixin() instanceof ModelWithArms) {
+            ((ModelWithArms)mixin()).setArmAngle(arm, stack);
+        }
     }
 
     @Override

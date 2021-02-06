@@ -2,9 +2,10 @@ package com.minelittlepony.client.transform;
 
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3f;
-import net.minecraft.entity.LivingEntity;
 
-import com.minelittlepony.model.IModel;
+import com.minelittlepony.api.model.IModel;
+
+import net.minecraft.entity.LivingEntity;
 
 public class PostureElytra implements PonyPosture<LivingEntity> {
     @Override

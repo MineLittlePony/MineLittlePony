@@ -1,8 +1,8 @@
 package com.minelittlepony.client.model.entity.race;
 
+import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.api.model.IUnicorn;
 import com.minelittlepony.client.model.part.UnicornHorn;
-import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.IUnicorn;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.model.MsonPart;
 

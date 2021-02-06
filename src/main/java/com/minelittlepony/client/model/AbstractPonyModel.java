@@ -1,14 +1,14 @@
 package com.minelittlepony.client.model;
 
 import com.minelittlepony.client.model.armour.PonyArmourModel;
-import com.minelittlepony.client.render.EquineRenderManager;
-import com.minelittlepony.model.fabric.PonyModelPrepareCallback;
+import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.api.model.armour.IArmour;
+import com.minelittlepony.api.model.fabric.PonyModelPrepareCallback;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Sizes;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.client.transform.PonyTransformation;
-import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.mson.api.model.MsonPart;
 
 import net.minecraft.client.model.ModelPart;
@@ -39,7 +39,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     }
 
     @Override
-    public IEquestrianArmour<?> createArmour() {
+    public IArmour<?> createArmour() {
         return new ArmourWrapper<>(PonyArmourModel::new);
     }
 
@@ -61,7 +61,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     @Override
     public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
         attributes.checkRainboom(entity, swing, canFly(), ticks);
-        PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(entity, this, EquineRenderManager.Mode.OTHER);
+        PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(entity, this, ModelAttributes.Mode.OTHER);
 
         super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
 

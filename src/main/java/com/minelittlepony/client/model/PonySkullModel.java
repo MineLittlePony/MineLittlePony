@@ -1,11 +1,11 @@
 package com.minelittlepony.client.model;
 
+import com.minelittlepony.api.model.ICapitated;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.client.model.part.PonyEars;
 import com.minelittlepony.client.model.part.PonySnout;
 import com.minelittlepony.client.model.part.UnicornHorn;
 import com.minelittlepony.client.pony.PonyData;
-import com.minelittlepony.model.ICapitated;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
 

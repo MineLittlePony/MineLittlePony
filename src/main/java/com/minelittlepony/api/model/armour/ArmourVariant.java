@@ -1,4 +1,4 @@
-package com.minelittlepony.model.armour;
+package com.minelittlepony.api.model.armour;
 
 public enum ArmourVariant {
     NORMAL,

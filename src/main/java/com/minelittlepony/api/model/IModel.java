@@ -1,17 +1,14 @@
-package com.minelittlepony.model;
+package com.minelittlepony.api.model;
 
-import net.minecraft.client.render.entity.model.ModelWithArms;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
+import com.minelittlepony.api.model.armour.IArmour;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.meta.Size;
-import com.minelittlepony.api.pony.meta.Sizes;
 import com.minelittlepony.api.pony.meta.Wearable;
-import com.minelittlepony.model.armour.IEquestrianArmour;
 
-public interface IModel extends ModelWithArms {
-
+public interface IModel {
     /**
      * Applies a transform particular to a certain body part.
      */
@@ -25,12 +22,12 @@ public interface IModel extends ModelWithArms {
     /**
      * Returns a new pony armour to go with this model. Called on startup by a model wrapper.
      */
-    IEquestrianArmour<?> createArmour();
+    IArmour<?> createArmour();
 
     /**
      * Gets the transitive properties of this model.
      */
-    ModelAttributes<?> getAttributes();
+    ModelAttributes getAttributes();
 
     /**
      * Gets the skin metadata associated with this model.
@@ -40,7 +37,7 @@ public interface IModel extends ModelWithArms {
     /**
      * Sets the pony metadata object associated with this model.
      */
-    void apply(IPonyData meta);
+    void setMetadata(IPonyData meta);
 
     /**
      * Returns true if the model is flying.
@@ -59,13 +56,6 @@ public interface IModel extends ModelWithArms {
      */
     default boolean canFly() {
         return getMetadata().getRace().hasWings();
-    }
-
-    /**
-     * Returns true if the current model is a child or a child-like foal.
-     */
-    default boolean isChild() {
-        return getSize() == Sizes.FOAL;
     }
 
     /**

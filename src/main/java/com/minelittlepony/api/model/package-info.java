@@ -1,4 +1,4 @@
 @ParametersAreNonnullByDefault
-package com.minelittlepony.model;
+package com.minelittlepony.api.model;
 
 import javax.annotation.ParametersAreNonnullByDefault;

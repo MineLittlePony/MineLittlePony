@@ -1,4 +1,4 @@
-package com.minelittlepony.model;
+package com.minelittlepony.api.model;
 
 public interface PonyModelConstants {
 

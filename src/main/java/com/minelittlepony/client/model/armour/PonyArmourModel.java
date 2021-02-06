@@ -6,12 +6,12 @@ import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
+import com.minelittlepony.api.model.IModel;
+import com.minelittlepony.api.model.armour.ArmourVariant;
+import com.minelittlepony.api.model.armour.IArmourModel;
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.model.IModel;
-import com.minelittlepony.model.armour.ArmourVariant;
-import com.minelittlepony.model.armour.IArmour;
 
-public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T> implements IArmour {
+public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T> implements IArmourModel {
 
     private ModelPart chestPiece;
 

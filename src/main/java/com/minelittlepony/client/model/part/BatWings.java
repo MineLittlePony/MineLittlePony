@@ -5,7 +5,7 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 
-import com.minelittlepony.model.IPegasus;
+import com.minelittlepony.api.model.IPegasus;
 
 import java.util.UUID;
 

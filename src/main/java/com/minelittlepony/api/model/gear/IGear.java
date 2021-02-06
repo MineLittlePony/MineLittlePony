@@ -1,4 +1,4 @@
-package com.minelittlepony.model.gear;
+package com.minelittlepony.api.model.gear;
 
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
@@ -6,11 +6,15 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 
+import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.api.model.IModel;
+import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.render.entity.feature.GearFeature;
-import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.IModel;
+
+import javax.annotation.Nullable;
 
 import java.util.UUID;
+import java.util.function.Supplier;
 
 /**
  * Interface for an accessory on a pony's body.
@@ -21,7 +25,7 @@ public interface IGear {
      * <p>
      * This would be awesome for creating socks.
      */
-    static IGear addModGear(IGear gear) {
+    static Supplier<IGear> register(Supplier<IGear> gear) {
         GearFeature.addModGear(gear);
         return gear;
     }
@@ -46,9 +50,9 @@ public interface IGear {
      *
      * If you need to use the player's own skin, use {@link IRenderContext#getDefaultTexture(entity, wearable)}
      */
-    <T extends Entity> Identifier getTexture(T entity, IRenderContext<T, ?> context);
+    <T extends Entity> Identifier getTexture(T entity, Context<T, ?> context);
 
-    default <T extends Entity> RenderLayer getLayer(T entity, IRenderContext<T, ?> context) {
+    default <T extends Entity> RenderLayer getLayer(T entity, Context<T, ?> context) {
         return RenderLayer.getEntityTranslucent(getTexture(entity, context));
     }
 
@@ -77,5 +81,37 @@ public interface IGear {
      */
     default void setVisible(boolean visible) {
 
+    }
+
+    /**
+     * A render context for instance of IGear.
+     *
+     * @param <T> The type of entity being rendered.
+     * @param <M> The type of the entity's primary model.
+     */
+    public interface Context<T extends Entity, M extends IModel> {
+        /**
+         * The empty context.
+         */
+        Context<?, ?> NULL = (e, g) -> null;
+
+        /**
+         * Checks whether the given wearable and gear are able to render for this specific entity and its renderer.
+         */
+        default boolean shouldRender(M model, T entity, Wearable wearable, IGear gear) {
+            return gear.canRender(model, entity);
+        }
+
+        @Nullable
+        default M getEntityModel() {
+            return null;
+        }
+
+        /**
+         * Gets the default texture to use for this entity and wearable.
+         *
+         * May be the entity's own texture or a specific texture allocated for that wearable.
+         */
+        Identifier getDefaultTexture(T entity, Wearable wearable);
     }
 }

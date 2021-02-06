@@ -1,9 +1,9 @@
 package com.minelittlepony.client.render.entity.feature;
 
+import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.render.IPonyRenderContext;
-import com.minelittlepony.model.BodyPart;
 import com.mojang.authlib.GameProfile;
 
 import java.util.Map;

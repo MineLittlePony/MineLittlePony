@@ -1,12 +1,11 @@
 package com.minelittlepony.client.model.gear;
 
+import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.api.model.IModel;
+import com.minelittlepony.api.model.IPegasus;
+import com.minelittlepony.api.model.PonyModelConstants;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
-import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.IModel;
-import com.minelittlepony.model.IPegasus;
-import com.minelittlepony.model.PonyModelConstants;
-import com.minelittlepony.model.gear.IRenderContext;
 
 import java.util.UUID;
 
@@ -101,7 +100,7 @@ public class SaddleBags extends AbstractGear implements PonyModelConstants {
     }
 
     @Override
-    public <T extends Entity> Identifier getTexture(T entity, IRenderContext<T, ?> context) {
+    public <T extends Entity> Identifier getTexture(T entity, Context<T, ?> context) {
         if (context.getEntityModel() != null && context.getEntityModel().getMetadata().getRace().isEquivalentTo(Race.CHANGELING)) {
             return TEXTURE;
         }

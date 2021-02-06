@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render;
 
+import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.IPonyModel;
@@ -60,7 +61,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
     }
 
     public void preRenderCallback(T entity, MatrixStack stack, float ticks) {
-        updateModel(entity, Mode.THIRD_PERSON);
+        updateModel(entity, ModelAttributes.Mode.THIRD_PERSON);
 
         float s = getScaleFactor();
         stack.scale(s, s, s);
@@ -149,19 +150,19 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
 
     public void updateMetadata(Identifier texture) {
         pony = MineLittlePony.getInstance().getManager().getPony(texture);
-        playerModel.apply(pony.getMetadata());
+        playerModel.applyMetadata(pony.getMetadata());
     }
 
-    public void updateModel(T entity, Mode mode) {
+    public void updateModel(T entity, ModelAttributes.Mode mode) {
         pony = renderer.getEntityPony(entity);
-        playerModel.apply(pony.getMetadata());
+        playerModel.applyMetadata(pony.getMetadata());
         pony.updateForEntity(entity);
 
         getModel().updateLivingState(entity, pony, mode);
     }
 
     public IPony getPony(T entity) {
-        updateModel(entity, Mode.THIRD_PERSON);
+        updateModel(entity, ModelAttributes.Mode.THIRD_PERSON);
         return pony;
     }
 
@@ -194,11 +195,5 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         }
 
         return y;
-    }
-
-    public enum Mode {
-        FIRST_PERSON,
-        THIRD_PERSON,
-        OTHER
     }
 }

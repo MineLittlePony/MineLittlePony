@@ -8,11 +8,11 @@ import net.minecraft.util.Identifier;
 import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
 
+import com.minelittlepony.api.model.IUnicorn;
+import com.minelittlepony.api.model.gear.IGear;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.PonyRenderer;
-import com.minelittlepony.model.IUnicorn;
-import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.mson.api.ModelKey;
 
 abstract class AbstractNpcRenderer<

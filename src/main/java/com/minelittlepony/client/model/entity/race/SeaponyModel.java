@@ -1,11 +1,11 @@
 package com.minelittlepony.client.model.entity.race;
 
 import com.minelittlepony.client.model.armour.PonyArmourModel;
-import com.minelittlepony.client.render.EquineRenderManager;
+import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.api.model.armour.IArmour;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
-import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.armour.IEquestrianArmour;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
@@ -34,12 +34,12 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
     }
 
     @Override
-    public IEquestrianArmour<?> createArmour() {
+    public IArmour<?> createArmour() {
         return new ArmourWrapper<>(Armour::new);
     }
 
     @Override
-    public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
+    public void updateLivingState(T entity, IPony pony, ModelAttributes.Mode mode) {
         super.updateLivingState(entity, pony, mode);
 
         // Seaponies can't sneak, silly
@@ -159,7 +159,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
         }
 
         @Override
-        public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
+        public void updateLivingState(T entity, IPony pony, ModelAttributes.Mode mode) {
             super.updateLivingState(entity, pony, mode);
 
             // Seaponies can't sneak, silly

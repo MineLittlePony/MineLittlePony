@@ -8,7 +8,7 @@ import net.minecraft.util.math.Vec3d;
 
 import com.google.common.collect.ImmutableList;
 
-import static com.minelittlepony.model.PonyModelConstants.*;
+import static com.minelittlepony.api.model.PonyModelConstants.*;
 
 /**
  * Modified from ModelElytra.

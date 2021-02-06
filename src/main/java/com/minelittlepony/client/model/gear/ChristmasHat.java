@@ -7,12 +7,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
+import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.api.model.IModel;
+import com.minelittlepony.api.model.PonyModelConstants;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.common.util.Color;
-import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.IModel;
-import com.minelittlepony.model.PonyModelConstants;
-import com.minelittlepony.model.gear.IRenderContext;
 
 import java.util.Calendar;
 import java.util.UUID;
@@ -76,7 +75,7 @@ public class ChristmasHat extends AbstractGear implements PonyModelConstants {
     }
 
     @Override
-    public <T extends Entity> Identifier getTexture(T entity, IRenderContext<T, ?> context) {
+    public <T extends Entity> Identifier getTexture(T entity, Context<T, ?> context) {
         return TEXTURE;
     }
 

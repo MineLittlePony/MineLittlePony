@@ -1,13 +1,15 @@
 package com.minelittlepony.client.render.entity.feature;
 
+import com.minelittlepony.api.model.armour.ArmourLayer;
+import com.minelittlepony.api.model.armour.ArmourRegistry;
+import com.minelittlepony.api.model.armour.IArmour;
+import com.minelittlepony.api.model.armour.IArmourModel;
+import com.minelittlepony.api.model.armour.IArmourTextureResolver;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.armour.DefaultArmourTextureResolver;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.common.util.Color;
-import com.minelittlepony.model.armour.ArmourLayer;
-import com.minelittlepony.model.armour.IArmour;
-import com.minelittlepony.model.armour.IArmourTextureResolver;
 
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -26,7 +28,7 @@ import net.minecraft.util.Identifier;
 
 public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyFeature<T, M> {
 
-    public static final IArmourTextureResolver<LivingEntity> DEFAULT = new DefaultArmourTextureResolver<>();
+    private static final IArmourTextureResolver DEFAULT = new DefaultArmourTextureResolver();
 
     public ArmourFeature(IPonyRenderContext<T, M> renderer) {
         super(renderer);
@@ -44,7 +46,7 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
         }
     }
 
-    public static <T extends LivingEntity, V extends BipedEntityModel<T> & IArmour> void renderArmor(
+    public static <T extends LivingEntity, V extends BipedEntityModel<T> & IArmourModel> void renderArmor(
             ModelWrapper<T, ? extends IPonyModel<T>> pony, MatrixStack stack,
                     VertexConsumerProvider renderContext, int lightUv, T entity,
                     float limbDistance, float limbAngle,
@@ -55,7 +57,11 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
 
         if (!itemstack.isEmpty() && itemstack.getItem() instanceof ArmorItem) {
 
-            V model = pony.<V>getArmor().getArmorForLayer(layer);
+            IArmour<V> armour = ArmourRegistry.getArmour(itemstack, pony.<V>getArmor());
+
+            armour.applyMetadata(pony.getBody().getMetadata());
+
+            V model = armour.getModel(layer);
 
             if (model.prepareToRender(armorSlot, layer)) {
                 pony.getBody().copyAttributes(model);
@@ -75,27 +81,26 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
                     blue = Color.b(color);
                 }
 
-                @SuppressWarnings("unchecked")
-                IArmourTextureResolver<T> resolver = model instanceof IArmourTextureResolver ? (IArmourTextureResolver<T>)model : (IArmourTextureResolver<T>)DEFAULT;
+                IArmourTextureResolver resolver = armour.getTextureResolver(DEFAULT);
 
                 boolean glint = itemstack.hasGlint();
 
-                renderArmourPart(stack, renderContext, lightUv, glint, model, red, green, blue, resolver, layer, resolver.getArmourTexture(entity, itemstack, armorSlot, layer, null));
+                renderArmourPart(stack, renderContext, lightUv, glint, model, red, green, blue, resolver, layer, resolver.getTexture(entity, itemstack, armorSlot, layer, null));
 
                 if (item instanceof DyeableArmorItem) {
-                    renderArmourPart(stack, renderContext, lightUv, false, model, 1, 1, 1, resolver, layer, resolver.getArmourTexture(entity, itemstack, armorSlot, layer, "overlay"));
+                    renderArmourPart(stack, renderContext, lightUv, false, model, 1, 1, 1, resolver, layer, resolver.getTexture(entity, itemstack, armorSlot, layer, "overlay"));
                 }
             }
         }
     }
 
-    private static <T extends LivingEntity, V extends BipedEntityModel<T> & IArmour> void renderArmourPart(
+    private static <T extends LivingEntity, V extends BipedEntityModel<T> & IArmourModel> void renderArmourPart(
             MatrixStack matrices, VertexConsumerProvider provider,
-            int light, boolean glint, V model, float r, float g, float b, IArmourTextureResolver<T> resolver, ArmourLayer layer, Identifier texture) {
+            int light, boolean glint, V model, float r, float g, float b, IArmourTextureResolver resolver, ArmourLayer layer, Identifier texture) {
 
         VertexConsumer vertices = ItemRenderer.getArmorGlintConsumer(provider, RenderLayer.getArmorCutoutNoCull(texture), false, glint);
 
-        model.setVariant(resolver.getArmourVariant(layer, texture));
+        model.setVariant(resolver.getVariant(layer, texture));
         model.render(matrices, vertices, light, OverlayTexture.DEFAULT_UV, r, g, b, 1);
     }
 }

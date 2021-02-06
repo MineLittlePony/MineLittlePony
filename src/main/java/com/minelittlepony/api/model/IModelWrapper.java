@@ -1,4 +1,4 @@
-package com.minelittlepony.model;
+package com.minelittlepony.api.model;
 
 import com.minelittlepony.api.pony.IPonyData;
 
@@ -6,5 +6,5 @@ public interface IModelWrapper {
     /**
      * Updates metadata values to this wrapper's contained models.
      */
-    IModelWrapper apply(IPonyData meta);
+    IModelWrapper applyMetadata(IPonyData meta);
 }

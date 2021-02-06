@@ -1,9 +1,9 @@
 package com.minelittlepony.client.render.entity.feature;
 
+import com.minelittlepony.api.model.IUnicorn;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.client.render.PonyRenderDispatcher;
-import com.minelittlepony.model.IUnicorn;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumerProvider;

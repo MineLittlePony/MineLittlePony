@@ -1,10 +1,10 @@
-package com.minelittlepony.model.armour;
+package com.minelittlepony.api.model.armour;
 
 import net.minecraft.entity.EquipmentSlot;
 
-import com.minelittlepony.model.IModel;
+import com.minelittlepony.api.model.IModel;
 
-public interface IArmour {
+public interface IArmourModel {
     /**
      * Called to synchronise this armour's angles with that of another.
      *

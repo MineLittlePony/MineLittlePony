@@ -1,13 +1,14 @@
 package com.minelittlepony.client.render.entity.feature;
 
+import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.render.IPonyRenderContext;
-import com.minelittlepony.model.BodyPart;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.model.ModelWithArms;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3f;
@@ -106,6 +107,9 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
      * Renders the main arm
      */
     protected void renderArm(Arm arm, MatrixStack stack) {
-        getContextModel().setArmAngle(arm, stack);
+        M model = getContextModel();
+        if (model instanceof ModelWithArms) {
+            ((ModelWithArms)model).setArmAngle(arm, stack);
+        }
     }
 }

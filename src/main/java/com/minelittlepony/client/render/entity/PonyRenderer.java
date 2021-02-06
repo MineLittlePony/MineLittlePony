@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.entity;
 
+import com.minelittlepony.api.model.IUnicorn;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ClientPonyModel;
@@ -14,7 +15,6 @@ import com.minelittlepony.client.render.entity.feature.GlowingItemFeature;
 import com.minelittlepony.client.render.entity.feature.ArmourFeature;
 import com.minelittlepony.client.render.entity.feature.SkullFeature;
 import com.minelittlepony.client.render.entity.feature.ElytraFeature;
-import com.minelittlepony.model.IUnicorn;
 import com.minelittlepony.mson.api.ModelKey;
 
 import net.minecraft.client.model.ModelPart;

@@ -5,9 +5,9 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
 import com.minelittlepony.client.model.armour.PonyArmourModel;
+import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.api.model.armour.IArmour;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
-import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.armour.IEquestrianArmour;
 
 public class ZebraModel<T extends LivingEntity> extends EarthPonyModel<T> {
 
@@ -16,7 +16,7 @@ public class ZebraModel<T extends LivingEntity> extends EarthPonyModel<T> {
     }
 
     @Override
-    public IEquestrianArmour<?> createArmour() {
+    public IArmour<?> createArmour() {
         return new ArmourWrapper<>(Armour::new);
     }
 

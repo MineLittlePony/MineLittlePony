@@ -7,6 +7,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.util.Identifier;
 
+import com.minelittlepony.api.model.gear.IGear;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.armour.PonyArmourModel;
@@ -38,7 +39,6 @@ import com.minelittlepony.client.model.gear.Stetson;
 import com.minelittlepony.client.model.gear.WitchHat;
 import com.minelittlepony.client.render.entity.PlayerPonyRenderer;
 import com.minelittlepony.client.render.entity.PlayerSeaponyRenderer;
-import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.mson.api.Mson;
 import com.minelittlepony.mson.api.MsonModel;

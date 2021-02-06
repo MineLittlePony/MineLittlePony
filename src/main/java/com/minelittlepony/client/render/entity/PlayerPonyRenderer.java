@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.entity;
 
+import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
@@ -9,7 +10,6 @@ import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.gear.SaddleBags;
 import com.minelittlepony.client.render.DebugBoundingBoxRenderer;
 import com.minelittlepony.client.render.IPonyRenderContext;
-import com.minelittlepony.client.render.EquineRenderManager.Mode;
 import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.client.render.entity.feature.DJPon3Feature;
 import com.minelittlepony.client.render.entity.feature.PassengerFeature;
@@ -144,7 +144,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
     }
 
     protected void renderArm(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, AbstractClientPlayerEntity player, Arm side) {
-        manager.updateModel(player, Mode.FIRST_PERSON);
+        manager.updateModel(player, ModelAttributes.Mode.FIRST_PERSON);
 
         stack.push();
         float reflect = side == Arm.LEFT ? 1 : -1;

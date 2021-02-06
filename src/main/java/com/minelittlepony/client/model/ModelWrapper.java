@@ -2,11 +2,11 @@ package com.minelittlepony.client.model;
 
 import net.minecraft.entity.LivingEntity;
 
+import com.minelittlepony.api.model.IModel;
+import com.minelittlepony.api.model.IModelWrapper;
+import com.minelittlepony.api.model.armour.IArmourModel;
+import com.minelittlepony.api.model.armour.IArmour;
 import com.minelittlepony.api.pony.IPonyData;
-import com.minelittlepony.model.IModel;
-import com.minelittlepony.model.IModelWrapper;
-import com.minelittlepony.model.armour.IArmour;
-import com.minelittlepony.model.armour.IEquestrianArmour;
 import com.minelittlepony.mson.api.ModelKey;
 
 /**
@@ -16,7 +16,7 @@ public class ModelWrapper<T extends LivingEntity, M extends IModel> implements I
 
     private final M body;
 
-    private final IEquestrianArmour<?> armor;
+    private final IArmour<?> armor;
 
     /**
      * Creates a new model wrapper to contain the given pony.
@@ -25,7 +25,7 @@ public class ModelWrapper<T extends LivingEntity, M extends IModel> implements I
     public ModelWrapper(ModelKey<?> key) {
         body = (M)key.createModel();
         armor = body.createArmour();
-        armor.apply(body.getMetadata());
+        armor.applyMetadata(body.getMetadata());
     }
 
     public M getBody() {
@@ -33,17 +33,17 @@ public class ModelWrapper<T extends LivingEntity, M extends IModel> implements I
     }
 
     /**
-     * Returns the contained armour model.
+     * Returns the contained armour models.
      */
     @SuppressWarnings("unchecked")
-    public <V extends IArmour> IEquestrianArmour<V> getArmor() {
-        return (IEquestrianArmour<V>)armor;
+    public <V extends IArmourModel> IArmour<V> getArmor() {
+        return (IArmour<V>)armor;
     }
 
     @Override
-    public ModelWrapper<T, M> apply(IPonyData meta) {
-        body.apply(meta);
-        armor.apply(meta);
+    public ModelWrapper<T, M> applyMetadata(IPonyData meta) {
+        body.setMetadata(meta);
+        armor.applyMetadata(meta);
         return this;
     }
 }

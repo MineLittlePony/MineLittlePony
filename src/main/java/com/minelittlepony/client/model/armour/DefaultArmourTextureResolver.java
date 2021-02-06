@@ -9,9 +9,9 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 import com.google.common.base.Strings;
-import com.minelittlepony.model.armour.ArmourLayer;
-import com.minelittlepony.model.armour.ArmourVariant;
-import com.minelittlepony.model.armour.IArmourTextureResolver;
+import com.minelittlepony.api.model.armour.ArmourLayer;
+import com.minelittlepony.api.model.armour.ArmourVariant;
+import com.minelittlepony.api.model.armour.IArmourTextureResolver;
 import com.minelittlepony.util.ResourceUtil;
 
 import javax.annotation.Nullable;
@@ -21,13 +21,13 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DefaultArmourTextureResolver<T extends LivingEntity> implements IArmourTextureResolver<T> {
+public class DefaultArmourTextureResolver implements IArmourTextureResolver {
 
     private final Map<String, Identifier> HUMAN_ARMOUR = new HashMap<>();
     private final Map<Identifier, Identifier> PONY_ARMOUR = new HashMap<>();
 
     @Override
-    public Identifier getArmourTexture(T entity, ItemStack itemstack, EquipmentSlot slot, ArmourLayer layer,  @Nullable String type) {
+    public Identifier getTexture(LivingEntity entity, ItemStack itemstack, EquipmentSlot slot, ArmourLayer layer,  @Nullable String type) {
         type = Strings.nullToEmpty(type);
 
         ArmorItem item = (ArmorItem) itemstack.getItem();
@@ -109,7 +109,7 @@ public class DefaultArmourTextureResolver<T extends LivingEntity> implements IAr
     }
 
     @Override
-    public ArmourVariant getArmourVariant(ArmourLayer layer, Identifier resolvedTexture) {
+    public ArmourVariant getVariant(ArmourLayer layer, Identifier resolvedTexture) {
         if (resolvedTexture.getPath().endsWith("_pony.png")) {
             return ArmourVariant.NORMAL;
         }
