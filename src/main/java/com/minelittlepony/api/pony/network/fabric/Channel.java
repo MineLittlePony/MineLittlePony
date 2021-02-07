@@ -3,10 +3,10 @@ package com.minelittlepony.api.pony.network.fabric;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
@@ -18,19 +18,19 @@ import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
 public interface Channel {
-    Consumer<MsgPonyData> CLIENT_PONY_DATA = clientToServer(new Identifier("minelittlepony", "pony_data"), MsgPonyData::new, MsgPonyData::toBuffer, (packet, context) -> {
-        PonyDataCallback.EVENT.invoker().onPonyDataAvailable(context.getPlayer(), packet, packet.isNoSkin(), EnvType.SERVER);
+    Consumer<MsgPonyData> CLIENT_PONY_DATA = clientToServer(new Identifier("minelittlepony", "pony_data"), MsgPonyData::new, MsgPonyData::toBuffer, (packet, player) -> {
+        PonyDataCallback.EVENT.invoker().onPonyDataAvailable(player, packet, packet.isNoSkin(), EnvType.SERVER);
     });
 
     static void bootstrap() { }
 
     static <T> Consumer<T> clientToServer(Identifier id, Function<PacketByteBuf, T> factory,
             BiConsumer<T, PacketByteBuf> bufferWriter,
-            BiConsumer<T, PacketContext> handler) {
-        ServerSidePacketRegistry.INSTANCE.register(id, (context, buffer) -> {
+            BiConsumer<T, PlayerEntity> handler) {
+        ServerPlayNetworking.registerGlobalReceiver(id, (server, player, hhandler, buffer, responseSender) -> {
             T packet = factory.apply(buffer);
-            context.getTaskQueue().execute(() -> {
-                handler.accept(packet, context);
+            server.execute(() -> {
+                handler.accept(packet, player);
             });
         });
         return packet -> {
@@ -41,7 +41,7 @@ public interface Channel {
             PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             bufferWriter.accept(packet, buf);
 
-            ClientSidePacketRegistry.INSTANCE.sendToServer(id, buf);
+            ClientPlayNetworking.send(id, buf);
         };
     }
 }

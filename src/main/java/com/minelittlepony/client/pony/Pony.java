@@ -58,8 +58,8 @@ public class Pony implements IPony {
 
     @Override
     public void updateForEntity(Entity entity) {
-        if (!initialized || entityId != entity.getEntityId()) {
-            entityId = entity.getEntityId();
+        if (!initialized || entityId != entity.getId()) {
+            entityId = entity.getId();
             initialized = true;
             entity.calculateDimensions();
 

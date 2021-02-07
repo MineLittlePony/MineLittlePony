@@ -112,9 +112,9 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
 
     @Override
     protected void renderBody(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        torso.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        body.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         bodyCenter.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        torso.rotate(stack);
+        body.rotate(stack);
 
         tail.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, attributes.interpolatorId);
         leftFin.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
@@ -136,8 +136,8 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
         // hide the back legs
         leftLeg.visible = false;
         rightLeg.visible = false;
-        leftPantLeg.visible = false;
-        rightPantLeg.visible = false;
+        leftPants.visible = false;
+        rightPants.visible = false;
 
         bodyCenter.visible = visible;
 

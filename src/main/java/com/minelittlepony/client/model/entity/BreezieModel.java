@@ -30,7 +30,7 @@ public class BreezieModel<T extends LivingEntity> extends BipedEntityModel<T> {
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        helmet.visible = false;
+        hat.visible = false;
     }
 
     @Override
@@ -103,21 +103,21 @@ public class BreezieModel<T extends LivingEntity> extends BipedEntityModel<T> {
     }
 
     protected void swingArms(Arm mainHand) {
-        torso.yaw = MathHelper.sin(MathHelper.sqrt(handSwingProgress) * PI * 2) / 5;
+        body.yaw = MathHelper.sin(MathHelper.sqrt(handSwingProgress) * PI * 2) / 5;
 
         if (mainHand == Arm.LEFT) {
-            torso.yaw *= -1;
+            body.yaw *= -1;
         }
 
-        float sin = MathHelper.sin(torso.yaw) * 5;
-        float cos = MathHelper.cos(torso.yaw) * 5;
+        float sin = MathHelper.sin(body.yaw) * 5;
+        float cos = MathHelper.cos(body.yaw) * 5;
 
-        leftArm.pitch += torso.yaw;
-        leftArm.yaw += torso.yaw;
+        leftArm.pitch += body.yaw;
+        leftArm.yaw += body.yaw;
         leftArm.pivotX = cos;
         leftArm.pivotZ = -sin;
 
-        rightArm.yaw += torso.yaw;
+        rightArm.yaw += body.yaw;
         rightArm.pivotX = -cos;
         rightArm.pivotZ = sin;
 
@@ -128,7 +128,7 @@ public class BreezieModel<T extends LivingEntity> extends BipedEntityModel<T> {
 
         ModelPart mainArm = getArm(mainHand);
         mainArm.pitch -= swingFactorX * 1.2F + swingX;
-        mainArm.yaw += torso.yaw * 2;
+        mainArm.yaw += body.yaw * 2;
         mainArm.roll -= MathHelper.sin(handSwingProgress * PI) * 0.4F;
     }
 

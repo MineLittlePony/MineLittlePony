@@ -106,8 +106,8 @@ public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & IPo
         stack.translate(-0.5, 0, -0.5);
         SkullType type = ((AbstractSkullBlock) ((BlockItem) itemstack.getItem()).getBlock()).getSkullType();
         SkullBlockEntityModel skullBlockEntityModel = (SkullBlockEntityModel)this.headModels.get(type);
-        RenderLayer renderLayer = SkullBlockEntityRenderer.method_3578(type, profile);
+        RenderLayer renderLayer = SkullBlockEntityRenderer.getRenderLayer(type, profile);
 
-        SkullBlockEntityRenderer.method_32161(null, 180, f, stack, renderContext, lightUv, skullBlockEntityModel, renderLayer);
+        SkullBlockEntityRenderer.renderSkull(null, 180, f, stack, renderContext, lightUv, skullBlockEntityModel, renderLayer);
     }
 }

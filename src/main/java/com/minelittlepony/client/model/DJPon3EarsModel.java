@@ -10,6 +10,6 @@ public class DJPon3EarsModel extends SkullEntityModel {
     }
 
     public void setVisible(boolean show) {
-        skull.visible = show;
+        head.visible = show;
     }
 }

@@ -79,7 +79,7 @@ public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
             float legBob = MathHelper.sin(speed * 40) * 0.25F;
 
             neck.pivotY = bodyBob;
-            torso.pivotY = bodyBob;
+            body.pivotY = bodyBob;
             upperTorso.pivotY = bodyBob;
 
             leftLeg.pitch += legBob;

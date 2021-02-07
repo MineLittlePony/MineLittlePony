@@ -28,7 +28,7 @@ public class PonyArmourStandModel extends ArmorStandEntityModel {
 
     public void applyAnglesTo(BipedEntityModel<ArmorStandEntity> dest) {
         MsonPart.of(dest.head).rotateTo(head);
-        MsonPart.of(dest.helmet).rotateTo(helmet);
+        MsonPart.of(dest.hat).rotateTo(hat);
         MsonPart.of(dest.leftLeg).rotateTo(leftLeg);
         MsonPart.of(dest.rightLeg).rotateTo(rightLeg);
         MsonPart.of(dest.leftArm).rotateTo(leftArm);

@@ -39,7 +39,7 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
     @Override
     protected void renderBody(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float limbDistance, float limbAngle, float tickDelta, float alpha) {
         if (variant == ArmourVariant.LEGACY) {
-            torso.render(stack, vertices, overlayUv, lightUv, limbDistance, limbAngle, tickDelta, alpha);
+            body.render(stack, vertices, overlayUv, lightUv, limbDistance, limbAngle, tickDelta, alpha);
             upperTorso.render(stack, vertices, overlayUv, lightUv, limbDistance, limbAngle, tickDelta, alpha);
         } else {
             chestPiece.render(stack, vertices, overlayUv, lightUv, limbDistance, limbAngle, tickDelta, alpha);
@@ -64,9 +64,9 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
             @SuppressWarnings("unchecked")
             BipedEntityModel<T> mainModel = (BipedEntityModel<T>)model;
             head.copyTransform(mainModel.head);
-            helmet.copyTransform(mainModel.helmet);
+            head.copyTransform(mainModel.head);
 
-            torso.copyTransform(mainModel.torso);
+            body.copyTransform(mainModel.body);
             rightArm.copyTransform(mainModel.rightArm);
             leftArm.copyTransform(mainModel.leftArm);
             rightLeg.copyTransform(mainModel.rightLeg);
@@ -80,7 +80,7 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
     @Override
     public void setInVisible() {
         setVisible(false);
-        torso.visible = true;
+        body.visible = true;
         chestPiece.visible = false;
         head.visible = false;
         neck.visible = false;

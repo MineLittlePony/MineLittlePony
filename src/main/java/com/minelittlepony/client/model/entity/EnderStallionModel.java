@@ -74,8 +74,8 @@ public class EnderStallionModel extends SkeleponyModel<EndermanEntity> {
         leftSleeve.visible = false;
         rightSleeve.visible = false;
 
-        leftPantLeg.visible = false;
-        rightPantLeg.visible = false;
+        leftPants.visible = false;
+        rightPants.visible = false;
     }
 
     @Override

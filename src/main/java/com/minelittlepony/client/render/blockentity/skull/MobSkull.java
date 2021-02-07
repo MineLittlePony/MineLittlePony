@@ -19,7 +19,7 @@ public class MobSkull extends AbstractPonySkull {
 
     @Override
     public boolean canRender(PonyConfig config) {
-        return type.get();
+        return config.ponyskulls.get() && type.get();
     }
 
     @Override

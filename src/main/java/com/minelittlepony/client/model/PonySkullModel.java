@@ -40,14 +40,14 @@ public class PonySkullModel extends SkullEntityModel implements MsonModel, ICapi
 
     @Override
     public ModelPart getHead() {
-        return skull;
+        return head;
     }
 
     @Override
-    public void method_2821(float poweredTicks, float yaw, float pitch) {
-        super.method_2821(poweredTicks, yaw, pitch);
-        hair.yaw = skull.yaw;
-        hair.pitch = skull.pitch;
+    public void setHeadRotation(float poweredTicks, float yaw, float pitch) {
+        super.setHeadRotation(poweredTicks, yaw, pitch);
+        hair.yaw = head.yaw;
+        hair.pitch = head.pitch;
      }
 
     @Override
@@ -58,7 +58,7 @@ public class PonySkullModel extends SkullEntityModel implements MsonModel, ICapi
         snout.setGender(metadata.getGender());
 
         hair.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        skull.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        head.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
 
         if (metadata.hasHorn()) {
             getHead().rotate(stack);

@@ -186,17 +186,17 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      */
     protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
         upperTorso.yaw = bodySwing;
-        torso.yaw = bodySwing;
+        body.yaw = bodySwing;
         neck.yaw = bodySwing;
     }
 
     private void animateWears() {
         leftSleeve.copyTransform(leftArm);
         rightSleeve.copyTransform(rightArm);
-        leftPantLeg.copyTransform(leftLeg);
-        rightPantLeg.copyTransform(rightLeg);
-        jacket.copyTransform(torso);
-        helmet.copyTransform(head);
+        leftPants.copyTransform(leftLeg);
+        rightPants.copyTransform(rightLeg);
+        jacket.copyTransform(body);
+        hat.copyTransform(head);
         upperTorsoOverlay.copyTransform(upperTorso);
     }
 
@@ -244,8 +244,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             rotateLegsOnGround(move, swing, ticks, entity);
         }
 
-        float sin = MathHelper.sin(torso.yaw) * 5;
-        float cos = MathHelper.cos(torso.yaw) * 5;
+        float sin = MathHelper.sin(body.yaw) * 5;
+        float cos = MathHelper.cos(body.yaw) * 5;
 
         float spread = attributes.isGoingFast ? 2 : 1;
 
@@ -262,8 +262,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         leftArm.pivotX = legRPX;
         leftLeg.pivotX = legRPX;
 
-        rightArm.yaw += torso.yaw;
-        leftArm.yaw += torso.yaw;
+        rightArm.yaw += body.yaw;
+        leftArm.yaw += body.yaw;
 
         rightArm.pivotY = leftArm.pivotY = 8;
         rightLeg.pivotZ = leftLeg.pivotZ = 10;
@@ -380,7 +380,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             case NECK: return neck;
             case TAIL:
             case LEGS:
-            case BODY: return torso;
+            case BODY: return body;
         }
     }
 
@@ -514,7 +514,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         float deltaAim = deltaZ * (0.7F - head.pitch) * 0.75F;
 
         arm.pitch -= deltaAim + deltaX * 1.2F;
-        arm.yaw += torso.yaw * 2;
+        arm.yaw += body.yaw * 2;
         arm.roll = -deltaZ * 0.4F;
     }
 
@@ -545,9 +545,9 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     }
 
     protected void adjustBodyComponents(float rotateAngleX, float rotationPointY, float rotationPointZ) {
-        torso.pitch = rotateAngleX;
-        torso.pivotY = rotationPointY;
-        torso.pivotZ = rotationPointZ;
+        body.pitch = rotateAngleX;
+        body.pivotY = rotationPointY;
+        body.pivotZ = rotationPointZ;
 
         upperTorso.pitch = rotateAngleX;
         upperTorso.pivotY = rotationPointY;
@@ -596,7 +596,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     }
 
     protected void renderHelmet(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        helmet.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        hat.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
     protected void renderNeck(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
@@ -605,9 +605,9 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     }
 
     protected void renderBody(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        torso.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        body.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         upperTorso.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        torso.rotate(stack);
+        body.rotate(stack);
     }
 
     protected void renderVest(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
@@ -617,7 +617,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     protected void renderLegs(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
         if (!sneaking) {
-            torso.rotate(stack);
+            body.rotate(stack);
         }
 
         leftArm.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
@@ -629,8 +629,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     protected void renderSleeves(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
         leftSleeve.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         rightSleeve.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        leftPantLeg.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        rightPantLeg.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        leftPants.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        rightPants.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
     @Override

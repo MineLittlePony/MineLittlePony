@@ -59,7 +59,7 @@ public class WitchPonyModel extends ZebraModel<WitchEntity> {
             }
 
             head.pitch = -rot / 2;
-            helmet.pitch = -rot / 2;
+            hat.pitch = -rot / 2;
         } else {
             rightArm.pivotX = 0;
             rightSleeve.pivotX = 0;
