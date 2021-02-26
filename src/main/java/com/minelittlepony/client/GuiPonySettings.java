@@ -48,6 +48,7 @@ public class GuiPonySettings extends GameGui {
         content.padding.top = 10;
         content.padding.right = 10;
         content.padding.bottom = 20;
+        content.padding.left = 10;
 
         hiddenOptions = Screen.hasControlDown() && Screen.hasShiftDown();
     }
@@ -59,7 +60,7 @@ public class GuiPonySettings extends GameGui {
 
     @SuppressWarnings("unchecked")
     private void rebuildContent() {
-        content.padding.left = 10;
+
 
         int LEFT = content.width / 2 - 210;
         int RIGHT = content.width / 2 + 10;
