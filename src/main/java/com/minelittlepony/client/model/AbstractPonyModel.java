@@ -1,6 +1,8 @@
 package com.minelittlepony.client.model;
 
 import com.minelittlepony.client.model.armour.PonyArmourModel;
+import com.minelittlepony.client.render.EquineRenderManager;
+import com.minelittlepony.model.capabilities.fabric.PonyModelPrepareCallback;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.client.transform.PonyTransformation;
@@ -67,6 +69,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     @Override
     public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
         attributes.checkRainboom(entity, swing, canFly());
+        PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(entity, this, EquineRenderManager.Mode.OTHER);
 
         super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
 

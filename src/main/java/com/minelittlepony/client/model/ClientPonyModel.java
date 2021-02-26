@@ -5,6 +5,7 @@ import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 
+import com.minelittlepony.model.capabilities.fabric.PonyModelPrepareCallback;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.meta.Size;
@@ -36,6 +37,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
     public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
         child = entity.isBaby();
         attributes.updateLivingState(entity, pony, mode);
+        PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(entity, this, mode);
         sneaking = attributes.isCrouching;
         riding = attributes.isSitting;
     }

@@ -198,6 +198,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
 
     public enum Mode {
         FIRST_PERSON,
-        THIRD_PERSON
+        THIRD_PERSON,
+        OTHER
     }
 }
