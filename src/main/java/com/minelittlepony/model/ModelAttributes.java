@@ -8,9 +8,13 @@ import com.minelittlepony.util.MathUtil;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Arm;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.UUID;
+
+import static com.minelittlepony.model.PonyModelConstants.ROTATE_270;
+import static com.minelittlepony.model.PonyModelConstants.WING_ROT_Z_SNEAK;
 
 public class ModelAttributes<T extends LivingEntity> {
 
@@ -27,6 +31,10 @@ public class ModelAttributes<T extends LivingEntity> {
      * from regular flying in that there are actual "wings" involved.
      */
     public boolean isGliding;
+    /**
+     * True if the model is rotated 90degs (players)
+     */
+    public boolean isHorizontal;
     /**
      * True if the model is swimming under water.
      */
@@ -80,9 +88,14 @@ public class ModelAttributes<T extends LivingEntity> {
     public float visualHeight = 2F;
 
     /**
+     * The angle used to animate wing flaps whilst flying/swimming.
+     */
+    public float wingAngle;
+
+    /**
      * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
      */
-    public void checkRainboom(T entity, float swing, boolean hasWings) {
+    public void checkRainboom(T entity, float swing, boolean hasWings, float ticks) {
         Vec3d motion = entity.getVelocity();
         double zMotion = Math.sqrt(motion.x * motion.x + motion.z * motion.z);
 
@@ -90,6 +103,18 @@ public class ModelAttributes<T extends LivingEntity> {
         isGoingFast &= zMotion > 0.4F;
 
         motionLerp = MathUtil.clampLimit(zMotion * 30, 1);
+
+        wingAngle = calcWingRotationFactor(ticks);
+    }
+
+    private float calcWingRotationFactor(float ticks) {
+        if (isSwimming) {
+            return (MathHelper.sin(ticks * 0.136f) / 2) + ROTATE_270;
+        }
+        if (isFlying) {
+            return MathHelper.sin(ticks * 0.536f) + ROTATE_270 + 0.4f;
+        }
+        return WING_ROT_Z_SNEAK;
     }
 
     public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
@@ -99,7 +124,8 @@ public class ModelAttributes<T extends LivingEntity> {
         isFlying = mode == Mode.THIRD_PERSON && pony.isFlying(entity);
         isGliding = entity.isFallFlying();
         isSwimming = mode == Mode.THIRD_PERSON && pony.isSwimming(entity);
-        isSwimmingRotated = mode == Mode.THIRD_PERSON && isSwimming && (entity instanceof PlayerEntity || entity instanceof IRotatedSwimmer);
+        isSwimmingRotated = isSwimming && (entity instanceof PlayerEntity || entity instanceof IRotatedSwimmer);
+        isHorizontal = isSwimming;
         isRidingInteractive = pony.isRidingInteractive(entity);
         interpolatorId = entity.getUuid();
         isLeftHanded = entity.getMainArm() == Arm.LEFT;

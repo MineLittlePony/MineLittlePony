@@ -114,15 +114,15 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         }
 
         if (entity.isAlive() && entity.isSleeping()) {
-            return PonyPosture.DEFAULT;
+            return PonyPosture.STANDING;
         }
 
-        if (getModel().getAttributes().isSwimming) {
+        if (getModel().getAttributes().isHorizontal) {
             return PonyPosture.SWIMMING;
         }
 
         if (getModel().getAttributes().isGoingFast) {
-            return PonyPosture.FLIGHT;
+            return PonyPosture.FLYING;
         }
 
         return PonyPosture.FALLING;
