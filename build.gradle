@@ -14,13 +14,13 @@ def createVersion() {
         parts.push project.release
     }
 
-    if (System.env.TRAVIS_BRANCH != null && System.env.TRAVIS_BRANCH != 'master') {
-        parts.push System.env.TRAVIS_BRANCH
+    def branch = System.env.TRAVIS_BRANCH
+
+    if (branch != null && branch != 'master' && !project.minecraft_version.startsWith(branch)) {
+        parts.push branch
     }
 
-    if (System.env.TRAVIS_BRANCH != project.minecraft_version) {
-       parts.push project.minecraft_version
-    }
+    parts.push project.minecraft_version
 
     def ver = project.version
     if (parts.size > 0) {
