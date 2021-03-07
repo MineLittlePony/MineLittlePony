@@ -1,10 +1,5 @@
 package com.minelittlepony.model;
 
-import net.minecraft.util.math.MathHelper;
-
-import static com.minelittlepony.model.PonyModelConstants.ROTATE_270;
-import static com.minelittlepony.model.PonyModelConstants.WING_ROT_Z_SNEAK;
-
 public interface IPegasus extends IModel {
 
     /**
@@ -25,13 +20,7 @@ public interface IPegasus extends IModel {
      * @param ticks Partial render ticks
      */
     default float getWingRotationFactor(float ticks) {
-        if (getAttributes().isSwimming) {
-            return (MathHelper.sin(ticks * 0.136f) / 2) + ROTATE_270;
-        }
-        if (isFlying()) {
-            return MathHelper.sin(ticks * 0.536f) + ROTATE_270 + 0.4f;
-        }
-        return WING_ROT_Z_SNEAK;
+        return getAttributes().wingAngle;
     }
 
 }

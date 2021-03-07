@@ -8,9 +8,9 @@ import com.minelittlepony.model.IModel;
 
 public interface PonyPosture<T extends LivingEntity> {
 
-    PonyPosture<LivingEntity> DEFAULT = new PostureStanding();;
+    PonyPosture<LivingEntity> STANDING = new PostureStanding();;
     PonyPosture<LivingEntity> ELYTRA = new PostureElytra();
-    PonyPosture<PlayerEntity> FLIGHT = new PostureFlight();
+    PonyPosture<PlayerEntity> FLYING = new PostureFlight();
     PonyPosture<PlayerEntity> SWIMMING = new PostureSwimming();
     PonyPosture<LivingEntity> FALLING = new PostureFalling();
 

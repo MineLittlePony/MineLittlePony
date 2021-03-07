@@ -68,7 +68,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      */
     @Override
     public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        attributes.checkRainboom(entity, swing, canFly());
+        attributes.checkRainboom(entity, swing, canFly(), ticks);
         PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(entity, this, EquineRenderManager.Mode.OTHER);
 
         super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
