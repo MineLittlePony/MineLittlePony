@@ -32,7 +32,6 @@ public class SkeleponyModel<T extends HostileEntity> extends AlicornModel<T> imp
     public void animateModel(T entity, float move, float swing, float ticks) {
         isUnicorn = entity.getUuid().getLeastSignificantBits() % 3 != 0;
         isWithered = entity instanceof WitherSkeletonEntity;
-        attributes.visualHeight = isWithered ? 2.5F : 2;
 
         rightArmPose = ArmPose.EMPTY;
         leftArmPose = ArmPose.EMPTY;

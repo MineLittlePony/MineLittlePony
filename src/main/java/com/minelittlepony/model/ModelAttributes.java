@@ -118,6 +118,7 @@ public class ModelAttributes<T extends LivingEntity> {
     }
 
     public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
+        visualHeight = entity.getHeight() + 0.125F;
         isSitting = pony.isSitting(entity);
         isCrouching = !isSitting && mode == Mode.THIRD_PERSON && pony.isCrouching(entity);
         isSleeping = entity.isSleeping();

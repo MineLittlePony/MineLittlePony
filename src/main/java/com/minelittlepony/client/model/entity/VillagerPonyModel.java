@@ -68,7 +68,7 @@ public class VillagerPonyModel<T extends LivingEntity & VillagerDataContainer> e
 
         VillagerProfession profession = entity.getVillagerData().getProfession();
 
-        attributes.visualHeight = PonyTextures.isCrownPony(entity) ? 2.3F : 2;
+        attributes.visualHeight += PonyTextures.isCrownPony(entity) ? 0.3F : -0.1F;
         apron.visible = !special && profession == VillagerProfession.BUTCHER;
         trinket.visible = !special && !apron.visible && profession != VillagerProfession.NONE && profession != VillagerProfession.NITWIT;
     }

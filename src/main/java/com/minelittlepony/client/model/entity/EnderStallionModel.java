@@ -21,7 +21,6 @@ public class EnderStallionModel extends SkeleponyModel<EndermanEntity> {
 
     public EnderStallionModel() {
         super();
-        attributes.visualHeight = 3;
     }
 
     @Override

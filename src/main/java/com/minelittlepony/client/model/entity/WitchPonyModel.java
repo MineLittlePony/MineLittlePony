@@ -12,7 +12,6 @@ public class WitchPonyModel extends ZebraModel<WitchEntity> {
 
     public WitchPonyModel() {
         super(false);
-        attributes.visualHeight = 2.5F;
     }
 
     @Override
@@ -22,6 +21,7 @@ public class WitchPonyModel extends ZebraModel<WitchEntity> {
         if (entity.hasCustomName() && "Filly".equals(entity.getCustomName().getString())) {
             child = true;
         }
+        attributes.visualHeight += 0.5F;
         leftArmPose = ArmPose.EMPTY;
         rightArmPose = entity.getMainHandStack().isEmpty() ? ArmPose.EMPTY : ArmPose.ITEM;
     }

@@ -176,7 +176,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
     public double getNamePlateYOffset(T entity) {
 
         // We start by negating the height calculation done by mahjong.
-        float y = -(entity.getHeight() + 0.5F - (entity.isInSneakingPose() ? 0.25F : 0));
+        float y = -(entity.getHeight() + 0.5F);
 
         // Then we add our own offsets.
         y += getModel().getAttributes().visualHeight * getScaleFactor() + 0.25F;
