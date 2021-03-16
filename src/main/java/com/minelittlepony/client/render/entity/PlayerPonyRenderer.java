@@ -99,10 +99,6 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
         }
     }
 
-    protected boolean hasLabel(AbstractClientPlayerEntity entity) {
-        return true;
-    }
-
     @Override
     protected void setupTransforms(AbstractClientPlayerEntity entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
         manager.preRenderCallback(entity, stack, partialTicks);
