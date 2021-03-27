@@ -5,6 +5,8 @@ import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.Identifier;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -93,7 +95,7 @@ public class NativeUtil {
         MinecraftClient mc = MinecraftClient.getInstance();
         TextureManager textures = mc.getTextureManager();
 
-        if (!mc.isOnThread()) {
+        if (!RenderSystem.isOnRenderThread()) {
             throw new IllegalStateException("This can only be called from the main thread.");
         }
 
@@ -119,5 +121,4 @@ public class NativeUtil {
             return consumer.apply(image);
         }
     }
-
 }

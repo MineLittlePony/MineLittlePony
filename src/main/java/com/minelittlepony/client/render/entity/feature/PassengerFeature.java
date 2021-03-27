@@ -11,7 +11,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3f;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.api.model.BodyPart;
@@ -39,7 +39,7 @@ public class PassengerFeature<T extends PlayerEntity, M extends ClientPonyModel<
         });
     }
 
-    private Optional<Identifier> getShoulderParrot(CompoundTag tag) {
+    private Optional<Identifier> getShoulderParrot(NbtCompound tag) {
         return EntityType.get(tag.getString("id"))
                 .filter(p -> p == EntityType.PARROT)
                 .map(type -> ParrotEntityRenderer.TEXTURES[tag.getInt("Variant")]);

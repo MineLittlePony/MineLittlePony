@@ -8,7 +8,6 @@ import com.minelittlepony.client.model.entity.GuardianPonyModel;
 import com.minelittlepony.client.render.entity.PonyRenderer.Proxy;
 import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
 import com.minelittlepony.client.render.entity.feature.GlowingItemFeature;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -64,8 +63,6 @@ public class SeaponyRenderer extends GuardianEntityRenderer {
 
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
 
-        // The beams in RenderGuardian leave lighting disabled, so we need to change it back. #MojangPls
-        RenderSystem.enableLighting();
         resize.setCurrentSize(origin);
     }
 

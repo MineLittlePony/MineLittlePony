@@ -36,6 +36,7 @@ archivesBaseName = project.name
 
 minecraft {
     refmapName = 'minelp.mixin.refmap.json'
+    accessWidener 'src/main/resources/minelp.aw'
 }
 
 repositories {

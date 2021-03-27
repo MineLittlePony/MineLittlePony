@@ -28,7 +28,7 @@ import net.minecraft.item.ArmorItem;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.village.VillagerDataContainer;
 
@@ -91,7 +91,7 @@ public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & IPo
         GameProfile profile = null;
 
         if (itemstack.hasTag()) {
-            CompoundTag nbt = itemstack.getTag();
+            NbtCompound nbt = itemstack.getTag();
 
             assert nbt != null;
 
@@ -99,7 +99,7 @@ public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & IPo
                 profile = NbtHelper.toGameProfile(nbt.getCompound("SkullOwner"));
             } else if (nbt.contains("SkullOwner", 8)) {
                 profile = SkullBlockEntity.loadProperties(new GameProfile(null, nbt.getString("SkullOwner")));
-                nbt.put("SkullOwner", NbtHelper.fromGameProfile(new CompoundTag(), profile));
+                nbt.put("SkullOwner", NbtHelper.writeGameProfile(new NbtCompound(), profile));
             }
         }
 

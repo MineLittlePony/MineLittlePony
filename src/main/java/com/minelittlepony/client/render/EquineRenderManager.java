@@ -38,7 +38,6 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         if (!skipBlend) {
             RenderSystem.blendFunc(SrcFactor.SRC_ALPHA, DstFactor.ONE_MINUS_SRC_ALPHA);
         }
-        RenderSystem.alphaFunc(516, 0.003921569F);
     }
 
     public static void disableModelRenderProfile() {
