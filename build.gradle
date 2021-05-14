@@ -1,11 +1,11 @@
 plugins {
     id 'java-library'
-    id 'fabric-loom' version '0.4-SNAPSHOT'
+    id 'fabric-loom' version '0.8-SNAPSHOT'
     id 'maven-publish'
 }
 
-targetCompatibility = JavaVersion.VERSION_1_8
-sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaVersion.VERSION_16
 
 def createVersion() {
     def parts = []
@@ -91,17 +91,11 @@ task copyBGPones(type: Copy) {
         }
     }
 }
-
 processResources {
     inputs.property "version", project.version
 
-    from(sourceSets.main.resources.srcDirs) {
-        include "fabric.mod.json"
+    filesMatching("fabric.mod.json") {
         expand "version": project.version
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "fabric.mod.json"
     }
 
     from 'LICENSE'

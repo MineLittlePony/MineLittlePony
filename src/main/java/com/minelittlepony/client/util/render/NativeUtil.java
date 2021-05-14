@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.mojang.blaze3d.platform.GlStateManager.getTexLevelParameter;
+import static com.mojang.blaze3d.platform.GlStateManager._getTexLevelParameter;
 import static org.lwjgl.opengl.GL11.*;
 
 public class NativeUtil {
@@ -105,9 +105,9 @@ public class NativeUtil {
                                                  // TODO: This returns values that are too specific.
                                                  //       Can we change the level (0) here to something
                                                  //       else to actually get what we need?
-        int format = getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT);
-        int width  = getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH);
-        int height = getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT);
+        int format = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT);
+        int width  = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH);
+        int height = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT);
 
         if (width * height == 0) {
             throw new IllegalStateException("GL texture not uploaded yet");
