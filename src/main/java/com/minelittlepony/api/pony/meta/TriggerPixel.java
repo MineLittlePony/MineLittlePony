@@ -2,7 +2,9 @@ package com.minelittlepony.api.pony.meta;
 
 import net.minecraft.client.texture.NativeImage;
 
-import com.minelittlepony.api.pony.ITriggerPixelMapped;
+import com.minelittlepony.api.pony.TriggerPixelSet;
+import com.minelittlepony.api.pony.TriggerPixelType;
+import com.minelittlepony.api.pony.TriggerPixelValue;
 import com.minelittlepony.common.util.Color;
 
 /**
@@ -10,7 +12,7 @@ import com.minelittlepony.common.util.Color;
  *
  */
 @SuppressWarnings("unchecked")
-public enum TriggerPixels {
+public enum TriggerPixel {
     RACE(Race.HUMAN, Channel.ALL, 0, 0),
     TAIL(TailLength.FULL, Channel.ALL, 1, 0),
     GENDER(Gender.MARE, Channel.ALL, 2, 0),
@@ -23,9 +25,9 @@ public enum TriggerPixels {
 
     private Channel channel;
 
-    ITriggerPixelMapped<?> def;
+    TriggerPixelType<?> def;
 
-    TriggerPixels(ITriggerPixelMapped<?> def, Channel channel, int x, int y) {
+    TriggerPixel(TriggerPixelType<?> def, Channel channel, int x, int y) {
         this.def = def;
         this.channel = channel;
         this.x = x;
@@ -46,33 +48,35 @@ public enum TriggerPixels {
      *
      * @param image Image to read
      */
-    public <T extends Enum<T> & ITriggerPixelMapped<T>> T readValue(NativeImage image) {
+    public <T extends TriggerPixelType<T>> TriggerPixelValue<T> readValue(NativeImage image) {
+        int color = readColor(image);
+
         if (Channel.ALPHA.readValue(x, y, image) < 255) {
-            return (T)def;
+            return new TriggerPixelValue<>(color, (T)def);
         }
 
-        return ITriggerPixelMapped.getByTriggerPixel((T)def, readColor(image));
+        return new TriggerPixelValue<>(color, TriggerPixelType.getByTriggerPixel((T)def, color));
     }
 
-    public <T extends Enum<T> & ITriggerPixelMapped<T>> boolean[] readFlags(NativeImage image) {
+    public <T extends Enum<T> & TriggerPixelType<T>> TriggerPixelSet<T> readFlags(NativeImage image) {
         boolean[] out = new boolean[def.getClass().getEnumConstants().length];
         readFlags(out, image);
-        return out;
+        return new TriggerPixelSet<>(readColor(image), (T)def, out);
     }
 
-    public <T extends Enum<T> & ITriggerPixelMapped<T>> void readFlags(boolean[] out, NativeImage image) {
+    public <T extends Enum<T> & TriggerPixelType<T>> void readFlags(boolean[] out, NativeImage image) {
         readFlag(out, Channel.RED, image);
         readFlag(out, Channel.GREEN, image);
         readFlag(out, Channel.BLUE, image);
     }
 
-    private <T extends Enum<T> & ITriggerPixelMapped<T>> void readFlag(boolean[] out, Channel channel, NativeImage image) {
+    private <T extends Enum<T> & TriggerPixelType<T>> void readFlag(boolean[] out, Channel channel, NativeImage image) {
 
         if (Channel.ALPHA.readValue(x, y, image) < 255) {
             return;
         }
 
-        T value = ITriggerPixelMapped.getByTriggerPixel((T)def, channel.readValue(x, y, image));
+        T value = TriggerPixelType.getByTriggerPixel((T)def, channel.readValue(x, y, image));
 
         out[value.ordinal()] |= value != def;
     }

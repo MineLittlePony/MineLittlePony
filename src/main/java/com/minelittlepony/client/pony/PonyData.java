@@ -1,18 +1,16 @@
 package com.minelittlepony.client.pony;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.NativeImage;
 import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
-
 import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.Expose;
 import com.minelittlepony.api.pony.IPonyData;
+import com.minelittlepony.api.pony.TriggerPixelType;
 import com.minelittlepony.api.pony.meta.Gender;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Sizes;
 import com.minelittlepony.api.pony.meta.TailLength;
-import com.minelittlepony.api.pony.meta.TriggerPixels;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.util.render.NativeUtil;
@@ -20,6 +18,8 @@ import com.minelittlepony.common.util.animation.Interpolator;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -27,7 +27,6 @@ import javax.annotation.concurrent.Immutable;
 
 /**
  * Implementation for IPonyData.
- *
  */
 @Immutable
 public class PonyData implements IPonyData {
@@ -58,7 +57,7 @@ public class PonyData implements IPonyData {
         }
 
         try {
-            return NativeUtil.parseImage(identifier, PonyData::new);
+            return NativeUtil.parseImage(identifier, NativePonyData::new);
         } catch (IllegalStateException e) {
             MineLittlePony.logger.fatal("Unable to read {} metadata", identifier, e);
             return NULL;
@@ -83,24 +82,22 @@ public class PonyData implements IPonyData {
     @Expose
     private final boolean[] wearables;
 
+    private final Map<String, TriggerPixelType<?>> attributes = new TreeMap<>();
+
     public PonyData(Race race) {
         this.race = race;
         tailSize = TailLength.FULL;
         gender = Gender.MARE;
         size = Sizes.NORMAL;
         glowColor = 0x4444aa;
-
         wearables = new boolean[Wearable.values().length];
-    }
 
-    private PonyData(NativeImage image) {
-        race = TriggerPixels.RACE.readValue(image);
-        tailSize = TriggerPixels.TAIL.readValue(image);
-        size = TriggerPixels.SIZE.readValue(image);
-        gender = TriggerPixels.GENDER.readValue(image);
-        glowColor = TriggerPixels.GLOW.readColor(image);
-
-        wearables = TriggerPixels.WEARABLES.readFlags(image);
+        attributes.put("race", race);
+        attributes.put("tail", tailSize);
+        attributes.put("gender", gender);
+        attributes.put("size", size);
+        attributes.put("magic", TriggerPixelType.of(glowColor));
+        attributes.put("gear", TriggerPixelType.of(0));
     }
 
     @Override
@@ -144,11 +141,6 @@ public class PonyData implements IPonyData {
     }
 
     @Override
-    public boolean hasMagic() {
-        return hasHorn() && getGlowColor() != 0;
-    }
-
-    @Override
     public Wearable[] getGear() {
         return Wearable.flags(wearables);
     }
@@ -163,6 +155,10 @@ public class PonyData implements IPonyData {
         return Interpolator.linear(interpolatorId);
     }
 
+    public Map<String, TriggerPixelType<?>> getTriggerPixels() {
+        return attributes;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -171,7 +167,7 @@ public class PonyData implements IPonyData {
                 .add("gender", gender)
                 .add("size", size)
                 .add("wearables", getGear())
-                .add("glowColor", "#" + Integer.toHexString(glowColor))
+                .add("glowColor", TriggerPixelType.toHex(glowColor))
                 .toString();
     }
 }

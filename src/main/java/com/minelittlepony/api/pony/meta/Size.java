@@ -1,5 +1,7 @@
 package com.minelittlepony.api.pony.meta;
 
+import com.minelittlepony.api.pony.TriggerPixelType;
+
 /**
  * Represents the different model sizes that are possible.
  *
@@ -7,8 +9,7 @@ package com.minelittlepony.api.pony.meta;
  * This interface exists for servers so they can work with this information even though they might not have access to the client config.
  *
  */
-public interface Size {
-
+public interface Size extends TriggerPixelType<Size> {
     /**
      * The Enum index of this size. May be used on the client to convert to an instance of Sizes or use {@link Sizes#of}
      *

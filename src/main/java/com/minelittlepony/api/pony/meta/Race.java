@@ -1,10 +1,10 @@
 package com.minelittlepony.api.pony.meta;
 
-import com.minelittlepony.api.pony.ITriggerPixelMapped;
+import com.minelittlepony.api.pony.TriggerPixelType;
 
 import javax.annotation.Nonnull;
 
-public enum Race implements ITriggerPixelMapped<Race> {
+public enum Race implements TriggerPixelType<Race> {
 
     HUMAN       (0x000000, false, false),
     EARTH       (0xf9b131, false, false),
@@ -93,7 +93,7 @@ public enum Race implements ITriggerPixelMapped<Race> {
     }
 
     @Override
-    public int getTriggerPixel() {
+    public int getColorCode() {
         return triggerPixel;
     }
 }

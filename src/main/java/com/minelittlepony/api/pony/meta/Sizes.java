@@ -1,6 +1,5 @@
 package com.minelittlepony.api.pony.meta;
 
-import com.minelittlepony.api.pony.ITriggerPixelMapped;
 import com.minelittlepony.client.MineLittlePony;
 
 /**
@@ -10,7 +9,7 @@ import com.minelittlepony.client.MineLittlePony;
  *
  * For spooky things at a distance, use {@link Size} instead.
  */
-public enum Sizes implements ITriggerPixelMapped<Sizes>, Size {
+public enum Sizes implements Size {
     TALL    (0x534b76, 0.45f, 1.1F,  1.15F),
     BULKY   (0xce3254, 0.5f,  1,     1.05F),
     LANKY   (0x3254ce, 0.45F, 0.85F, 0.9F),
@@ -61,7 +60,7 @@ public enum Sizes implements ITriggerPixelMapped<Sizes>, Size {
     }
 
     @Override
-    public int getTriggerPixel() {
+    public int getColorCode() {
         return triggerValue;
     }
 

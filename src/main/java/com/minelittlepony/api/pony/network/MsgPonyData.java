@@ -1,8 +1,11 @@
 package com.minelittlepony.api.pony.network;
 
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Lazy;
+import net.minecraft.util.Util;
 
 import com.minelittlepony.api.pony.IPonyData;
+import com.minelittlepony.api.pony.TriggerPixelType;
 import com.minelittlepony.api.pony.meta.Gender;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Size;
@@ -10,6 +13,8 @@ import com.minelittlepony.api.pony.meta.TailLength;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.common.util.animation.Interpolator;
 
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 
 public class MsgPonyData implements IPonyData {
@@ -24,7 +29,18 @@ public class MsgPonyData implements IPonyData {
 
     private final boolean noSkin;
 
+    private final int wearableColor;
     private final boolean[] wearables;
+
+    private final Lazy<Map<String, TriggerPixelType<?>>> triggerPixels = new Lazy<>(() -> Util.make(new TreeMap<>(), this::initTriggerPixels));
+    private void initTriggerPixels(Map<String, TriggerPixelType<?>> map) {
+        map.put("race", race);
+        map.put("tail", tailLength);
+        map.put("gender", gender);
+        map.put("size", size);
+        map.put("magic", TriggerPixelType.of(glowColor));
+        map.put("gear", TriggerPixelType.of(wearableColor));
+    }
 
     public MsgPonyData(PacketByteBuf buffer) {
         race = Race.values()[buffer.readInt()];
@@ -41,6 +57,7 @@ public class MsgPonyData implements IPonyData {
             gear[i] = all[buffer.readInt()];
         }
         wearables = Wearable.flags(gear);
+        wearableColor = buffer.readInt();
     }
 
     public MsgPonyData(IPonyData data, boolean noSkin) {
@@ -52,6 +69,7 @@ public class MsgPonyData implements IPonyData {
         hasHorn = data.hasHorn();
         hasMagic = data.hasMagic();
         wearables = Wearable.flags(data.getGear());
+        wearableColor = data.getTriggerPixels().get("gear").getColorCode();
         this.noSkin = noSkin;
     }
 
@@ -70,6 +88,7 @@ public class MsgPonyData implements IPonyData {
         for (int i = 0; i < gear.length; i++) {
             buffer.writeInt(gear[i].ordinal());
         }
+        buffer.writeInt(wearableColor);
     }
 
     public boolean isNoSkin() {
@@ -126,6 +145,11 @@ public class MsgPonyData implements IPonyData {
         return Interpolator.linear(interpolatorId);
     }
 
+    @Override
+    public Map<String, TriggerPixelType<?>> getTriggerPixels() {
+        return triggerPixels.get();
+    }
+
     private static final class MsgSize implements Size {
 
         private final int ordinal;
@@ -134,6 +158,7 @@ public class MsgPonyData implements IPonyData {
         private final float scale;
         private final float eyeHeight;
         private final float eyeDistance;
+        private final int triggerPixel;
 
         MsgSize(Size size) {
             ordinal = size.ordinal();
@@ -142,6 +167,7 @@ public class MsgPonyData implements IPonyData {
             scale = size.getScaleFactor();
             eyeHeight = size.getEyeHeightFactor();
             eyeDistance = size.getEyeDistanceFactor();
+            triggerPixel = size.getColorCode();
         }
 
         MsgSize(PacketByteBuf buffer) {
@@ -151,6 +177,7 @@ public class MsgPonyData implements IPonyData {
             scale = buffer.readFloat();
             eyeHeight = buffer.readFloat();
             eyeDistance = buffer.readFloat();
+            triggerPixel = buffer.readInt();
         }
 
         public void toBuffer(PacketByteBuf buffer) {
@@ -160,6 +187,7 @@ public class MsgPonyData implements IPonyData {
             buffer.writeFloat(scale);
             buffer.writeFloat(eyeHeight);
             buffer.writeFloat(eyeDistance);
+            buffer.writeFloat(triggerPixel);
         }
 
         @Override
@@ -195,6 +223,11 @@ public class MsgPonyData implements IPonyData {
         @Override
         public String toString() {
             return name;
+        }
+
+        @Override
+        public int getColorCode() {
+            return triggerPixel;
         }
     }
 }
