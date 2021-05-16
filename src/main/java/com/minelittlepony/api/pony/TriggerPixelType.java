@@ -1,7 +1,6 @@
 package com.minelittlepony.api.pony;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Interface for enums that can be parsed from an image trigger pixel value.
