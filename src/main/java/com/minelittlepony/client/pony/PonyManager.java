@@ -66,6 +66,10 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
             return getDefaultPony(uuid);
         }
 
+        if (player instanceof IPonyManager.ForcedPony) {
+            return getPony(skin);
+        }
+
         return getPony(skin, uuid);
     }
 

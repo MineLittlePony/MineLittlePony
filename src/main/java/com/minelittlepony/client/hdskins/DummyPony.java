@@ -1,6 +1,7 @@
 package com.minelittlepony.client.hdskins;
 
 import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.client.IPreviewModel;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.entity.race.PlayerModels;
@@ -10,7 +11,7 @@ import com.minelittlepony.hdskins.client.dummy.TextureProxy;
 /**
  * Dummy model used for the skin uploading screen.
  */
-class DummyPony extends DummyPlayer implements IPreviewModel, ModelAttributes.Swimmer {
+class DummyPony extends DummyPlayer implements IPreviewModel, ModelAttributes.Swimmer, IPonyManager.ForcedPony {
 
     public DummyPony(TextureProxy textures) {
         super(textures);
@@ -31,7 +32,7 @@ class DummyPony extends DummyPlayer implements IPreviewModel, ModelAttributes.Sw
         }
         return PlayerModels.forRace(MineLittlePony.getInstance().getManager()
                 .getPony(this)
-                .getRace(false))
+                .getRace(true))
                 .getId(super.getModel().contains("slim"));
     }
 }
