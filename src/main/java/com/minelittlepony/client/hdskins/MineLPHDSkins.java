@@ -16,6 +16,8 @@ import com.minelittlepony.hdskins.profile.SkinType;
 
 import com.mojang.authlib.GameProfile;
 
+import javax.annotation.Nullable;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -51,9 +53,11 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
     }
 
     @Override
-    public void renderOption(Screen parent, int row, int RIGHT, ScrollContainer content) {
+    public void renderOption(Screen screen, @Nullable Screen parent, int row, int RIGHT, ScrollContainer content) {
         content.addButton(new Button(RIGHT, row += 20, 150, 20))
-            .onClick(button -> MinecraftClient.getInstance().openScreen(GuiSkins.create(parent, HDSkins.getInstance().getSkinServerList())))
+            .onClick(button -> MinecraftClient.getInstance().openScreen(
+                    parent instanceof GuiSkins ? parent : GuiSkins.create(screen, HDSkins.getInstance().getSkinServerList())
+            ))
             .getStyle()
                 .setText("minelp.options.skins.hdskins.open");;
     }

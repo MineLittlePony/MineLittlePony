@@ -136,7 +136,7 @@ public class GuiPonySettings extends GameGui {
         row += 15;
 
         content.addButton(new Label(RIGHT, row)).getStyle().setText("minelp.options.skins");
-        SkinsProxy.instance.renderOption(this, row, RIGHT, content);
+        SkinsProxy.instance.renderOption(this, parent, row, RIGHT, content);
     }
 
     public TranslatableText describeCurrentScale(AbstractSlider<Float> sender) {

@@ -33,7 +33,7 @@ public class SkinsProxy {
         return skins.loadSkin(texture, MinecraftProfileTexture.Type.SKIN);
     }
 
-    public void renderOption(Screen parent, int row, int RIGHT, ScrollContainer content) {
+    public void renderOption(Screen screen, @Nullable Screen parent, int row, int RIGHT, ScrollContainer content) {
         content.addButton(new Button(RIGHT, row += 20, 150, 20))
             .setEnabled(false)
             .getStyle()
