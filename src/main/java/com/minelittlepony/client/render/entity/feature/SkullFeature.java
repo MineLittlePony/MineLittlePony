@@ -11,7 +11,6 @@ import java.util.Map;
 import net.minecraft.block.AbstractSkullBlock;
 import net.minecraft.block.SkullBlock;
 import net.minecraft.block.SkullBlock.SkullType;
-import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -93,13 +92,8 @@ public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & IPo
         if (itemstack.hasTag()) {
             NbtCompound nbt = itemstack.getTag();
 
-            assert nbt != null;
-
             if (nbt.contains("SkullOwner", 10)) {
                 profile = NbtHelper.toGameProfile(nbt.getCompound("SkullOwner"));
-            } else if (nbt.contains("SkullOwner", 8)) {
-                profile = SkullBlockEntity.loadProperties(new GameProfile(null, nbt.getString("SkullOwner")));
-                nbt.put("SkullOwner", NbtHelper.writeGameProfile(new NbtCompound(), profile));
             }
         }
 

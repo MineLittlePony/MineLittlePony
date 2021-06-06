@@ -32,9 +32,11 @@ public interface TriggerPixelType<T> {
     /**
      * Returns a list of possible values this trigger pixel can accept.
      */
+    @SuppressWarnings("unchecked")
     default <Option extends TriggerPixelType<T>> List<Option> getOptions() {
         if (this instanceof Enum) {
-            return List.of(getClass().getEnumConstants());
+            // cast is required because gradle's compiler is more strict
+            return (List<Option>)List.of(getClass().getEnumConstants());
         }
         return List.of();
     }

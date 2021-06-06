@@ -41,6 +41,10 @@ minecraft {
 
 repositories {
     maven {
+        name = 'modmenu'
+        url = 'https://maven.terraformersmc.com/releases'
+    }
+    maven {
         name = 'minelp'
         url = 'https://repo.minelittlepony-mod.com/maven/snapshot'
     }
@@ -69,9 +73,7 @@ dependencies {
     include "com.minelittlepony:Mson:${project.mson_version}"
 
     modImplementation "com.minelittlepony:HDSkins:${project.hd_skins_version}"
-    modCompileOnly("io.github.prospector:modmenu:${project.modmenu_version}") {
-        transitive = false
-    }
+    modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
 }
 
 //

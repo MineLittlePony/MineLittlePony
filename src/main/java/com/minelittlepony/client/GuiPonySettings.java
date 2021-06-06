@@ -45,10 +45,10 @@ public class GuiPonySettings extends GameGui {
 
         content.margin.top = 30;
         content.margin.bottom = 30;
-        content.padding.top = 10;
-        content.padding.right = 10;
-        content.padding.bottom = 20;
-        content.padding.left = 10;
+        content.getContentPadding().top = 10;
+        content.getContentPadding().right = 10;
+        content.getContentPadding().bottom = 20;
+        content.getContentPadding().left = 10;
 
         hiddenOptions = Screen.hasControlDown() && Screen.hasShiftDown();
     }
@@ -71,7 +71,7 @@ public class GuiPonySettings extends GameGui {
 
         int row = 0;
 
-        children().add(content);
+        getChildElements().add(content);
 
         addButton(new Label(width / 2, 5).setCentered()).getStyle().setText(getTitle().getString());
         addButton(new Button(width / 2 - 100, height - 25))
