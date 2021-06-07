@@ -121,7 +121,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
             return PonyPosture.SWIMMING;
         }
 
-        if (getModel().getAttributes().isGoingFast) {
+        if (getModel().getAttributes().isGoingFast && !getModel().getAttributes().isRiptide) {
             return PonyPosture.FLYING;
         }
 

@@ -32,6 +32,8 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
+import net.minecraft.client.render.entity.feature.StuckStingersFeatureRenderer;
+import net.minecraft.client.render.entity.feature.TridentRiptideFeatureRenderer;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3f;
@@ -64,6 +66,8 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
         addLayer(new CapeFeature<>(this));
         addLayer(new PassengerFeature<>(this, context));
         addLayer(new GearFeature<>(this));
+        addFeature(new TridentRiptideFeatureRenderer<>(this, context.getModelLoader()));
+        addFeature(new StuckStingersFeatureRenderer<>(this));
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})

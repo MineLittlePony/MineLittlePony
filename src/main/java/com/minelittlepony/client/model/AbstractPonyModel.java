@@ -645,7 +645,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     @Override
     public void transform(BodyPart part, MatrixStack stack) {
-        if (attributes.isSleeping) {
+        if (attributes.isSleeping || attributes.isRiptide) {
             stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
             stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
         }

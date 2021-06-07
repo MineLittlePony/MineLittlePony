@@ -33,6 +33,10 @@ public class ModelAttributes {
      */
     public boolean isHorizontal;
     /**
+     * True if the model is using riptide (players)
+     */
+    public boolean isRiptide;
+    /**
      * True if the model is swimming under water.
      */
     public boolean isSwimming;
@@ -98,6 +102,7 @@ public class ModelAttributes {
 
         isGoingFast = (isFlying && hasWings) || isGliding;
         isGoingFast &= zMotion > 0.4F;
+        isGoingFast |= entity.isUsingRiptide();
 
         motionLerp = MathUtil.clampLimit(zMotion * 30, 1);
 
@@ -123,6 +128,7 @@ public class ModelAttributes {
         isGliding = entity.isFallFlying();
         isSwimming = mode == Mode.THIRD_PERSON && pony.isSwimming(entity);
         isSwimmingRotated = isSwimming && (entity instanceof PlayerEntity || entity instanceof Swimmer);
+        isRiptide = entity.isUsingRiptide();
         isHorizontal = isSwimming;
         isRidingInteractive = pony.isRidingInteractive(entity);
         interpolatorId = entity.getUuid();
