@@ -21,7 +21,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.Direction;
 
 import java.util.Map;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * PonySkullRenderer! It renders ponies as skulls, or something...

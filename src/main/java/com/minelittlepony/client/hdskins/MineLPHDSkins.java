@@ -16,7 +16,7 @@ import com.minelittlepony.hdskins.profile.SkinType;
 
 import com.mojang.authlib.GameProfile;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;

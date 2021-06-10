@@ -14,7 +14,7 @@ import com.minelittlepony.api.model.armour.ArmourVariant;
 import com.minelittlepony.api.model.armour.IArmourTextureResolver;
 import com.minelittlepony.util.ResourceUtil;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

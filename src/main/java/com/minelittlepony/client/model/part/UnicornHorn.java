@@ -13,7 +13,7 @@ import com.minelittlepony.common.util.Color;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 

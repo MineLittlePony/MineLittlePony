@@ -18,7 +18,7 @@ import com.minelittlepony.common.client.gui.element.Slider;
 import com.minelittlepony.common.client.gui.element.Toggle;
 import com.minelittlepony.common.util.settings.Setting;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * In-Game options menu.

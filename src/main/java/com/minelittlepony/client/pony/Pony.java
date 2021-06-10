@@ -29,9 +29,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-import javax.annotation.concurrent.Immutable;
+import org.jetbrains.annotations.Unmodifiable;
 
-@Immutable
+@Unmodifiable
 public class Pony implements IPony {
 
     private final Identifier texture;

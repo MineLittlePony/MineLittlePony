@@ -22,13 +22,13 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * Implementation for IPonyData.
  */
-@Immutable
+@Unmodifiable
 public class PonyData implements IPonyData {
 
     private static final PonyDataSerialiser SERIALISER = new PonyDataSerialiser();

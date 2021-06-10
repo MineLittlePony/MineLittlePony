@@ -1,6 +1,6 @@
 package com.minelittlepony.client.render.entity;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import com.minelittlepony.client.mixin.IResizeable;
 import com.minelittlepony.client.model.ModelType;
@@ -43,7 +43,7 @@ public class SeaponyRenderer extends GuardianEntityRenderer {
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public final Identifier getTexture(GuardianEntity entity) {
         return ponyRenderer.getTextureFor(entity);
     }

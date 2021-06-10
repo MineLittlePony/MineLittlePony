@@ -21,12 +21,12 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import javax.annotation.concurrent.Immutable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * Implementation for IPonyData.
  */
-@Immutable
+@Unmodifiable
 class NativePonyData implements IPonyData {
     private final TriggerPixelValue<Race> race;
     private final TriggerPixelValue<TailLength> tailSize;

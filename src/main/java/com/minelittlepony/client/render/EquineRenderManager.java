@@ -12,7 +12,7 @@ import com.mojang.blaze3d.platform.GlStateManager.DstFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SrcFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.entity.model.EntityModel;
@@ -107,7 +107,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         ((PonyPosture<T>) getPosture(player)).apply(player, getModel(), stack, yaw, ticks, -1);
     }
 
-    @Nonnull
+    @NotNull
     private PonyPosture<?> getPosture(T entity) {
         if (entity.isFallFlying()) {
             return PonyPosture.ELYTRA;

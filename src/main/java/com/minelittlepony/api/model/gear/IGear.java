@@ -11,7 +11,7 @@ import com.minelittlepony.api.model.IModel;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.render.entity.feature.GearFeature;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 import java.util.function.Supplier;

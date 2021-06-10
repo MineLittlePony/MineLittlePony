@@ -2,7 +2,7 @@ package com.minelittlepony.api.pony.meta;
 
 import com.minelittlepony.api.pony.TriggerPixelType;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public enum Race implements TriggerPixelType<Race> {
 
@@ -73,7 +73,7 @@ public enum Race implements TriggerPixelType<Race> {
      * Gets the original race that this one is an alias for, if one exists.
      * Otherwise returns this race.
      */
-    @Nonnull
+    @NotNull
     public Race getAlias() {
         return original;
     }

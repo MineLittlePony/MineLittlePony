@@ -7,7 +7,7 @@ import com.google.common.collect.Maps;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.entity.race.PlayerModels;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.common.mixin.MixinEntityRenderDispatcher;
 import com.minelittlepony.mson.api.Mson;
