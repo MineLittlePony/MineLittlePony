@@ -16,7 +16,6 @@ public class PonyEars implements IPart, MsonModel {
     private ModelPart left;
 
     public PonyEars(ModelPart tree) {
-
     }
 
     @Override
@@ -25,8 +24,8 @@ public class PonyEars implements IPart, MsonModel {
         left = context.findByName("left");
 
         PartBuilder head = context.getContext();
-        head.addChild("right_ear", right);
-        head.addChild("left_ear", left);
+        head.addChild("right_ear_" + hashCode(), right);
+        head.addChild("left_ear_" + hashCode(), left);
     }
 
     @Override
