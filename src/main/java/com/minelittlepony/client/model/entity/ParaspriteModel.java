@@ -18,7 +18,7 @@ public class ParaspriteModel extends EntityModel<StriderEntity> {
     public ParaspriteModel(ModelPart tree) {
         super(RenderLayer::getEntityTranslucent);
         child = false;
-        body = tree.getChild("body");
+        body = tree;
         saddle = tree.getChild("saddle");
         leftWing = tree.getChild("leftWing");
         rightWing = tree.getChild("rightWing");
@@ -45,6 +45,7 @@ public class ParaspriteModel extends EntityModel<StriderEntity> {
         float sin = (float)Math.sin(ticks) / 2;
         float cos = (float)Math.cos(ticks) / 3;
 
+        leftWing.visible = true;
         leftWing.roll = 0.5F + cos;
         leftWing.yaw = 0.5F - sin;
 
