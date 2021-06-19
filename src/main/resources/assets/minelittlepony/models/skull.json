@@ -10,8 +10,8 @@
 				"name": "snout",
 				"locals": {
 					"x": 0,
-					"y": -2,
-					"z": 2
+					"y": -4,
+					"z": 4
 				},
 				"implementation": "com.minelittlepony.client.model.part.PonySnout",
 				"content": "minelittlepony:components/snout"
@@ -21,8 +21,8 @@
 				"name": "ears",
 				"locals": {
 					"x": 0,
-					"y": -1,
-					"z": 1
+					"y": -2,
+					"z": 2
 				},
 				"implementation": "com.minelittlepony.client.model.part.PonyEars",
 				"content": "minelittlepony:components/ears"
@@ -32,8 +32,8 @@
 				"name": "horn",
 				"locals": {
 					"x": 0,
-					"y": -1,
-					"z":  2
+					"y": -2,
+					"z":  4
 				},
 				"implementation": "com.minelittlepony.client.model.part.UnicornHorn",
 				"content": "minelittlepony:components/horn"

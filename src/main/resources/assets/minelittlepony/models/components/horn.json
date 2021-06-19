@@ -6,15 +6,15 @@
 		"z": 0
 	},
 	"bone": {
-		"offset": ["#x", "#y", "#z"],
 		"rotate": [29, 0, 0],
+		"center": ["#x", "#y", "#z"],
 		"cubes": [
 			{ "from": [-0.5, -11, -3.5], "size": [1, 4, 1] }
 		]
 	},
 	"corona": {
-		"offset": ["#x", "#y", "#z"],
 		"rotate": [29, 0, 0],
+		"center": ["#x", "#y", "#z"],
 		"cubes": [
 			{
 				"type": "mson:cone",
