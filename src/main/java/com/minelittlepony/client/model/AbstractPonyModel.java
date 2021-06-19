@@ -125,10 +125,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
         head.setPivot(1, 2, sneaking ? -1 : 1);
 
-        ((MsonPart)(Object)rightArm).shift(0, 2,  6);
-        ((MsonPart)(Object)leftArm).shift(0, 2,  6);
-        ((MsonPart)(Object)rightLeg).shift(0, 2, -8);
-        ((MsonPart)(Object)leftLeg).shift(0, 2, -8);
+        MsonPart.of(rightArm).shift(0, 2,  6);
+        MsonPart.of(leftArm).shift(0, 2,  6);
+        MsonPart.of(rightLeg).shift(0, 2, -8);
+        MsonPart.of(leftLeg).shift(0, 2, -8);
     }
 
     protected void ponySit() {

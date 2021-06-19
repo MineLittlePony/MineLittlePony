@@ -4,7 +4,6 @@ import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.IUnicorn;
 import com.minelittlepony.client.model.part.UnicornHorn;
 import com.minelittlepony.mson.api.ModelContext;
-import com.minelittlepony.mson.api.model.MsonPart;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
@@ -47,8 +46,11 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
     protected void rotateLegs(float move, float swing, float ticks, T entity) {
         super.rotateLegs(move, swing, ticks, entity);
 
-        ((MsonPart)(Object)unicornArmRight).rotate(0, 0, 0).around(-7, 12, -2);
-        ((MsonPart)(Object)unicornArmLeft).rotate(0, 0, 0).around(-7, 12, -2);
+        unicornArmRight.setAngles(0, 0, 0);
+        unicornArmRight.setPivot(-7, 12, -2);
+
+        unicornArmLeft.setAngles(0, 0, 0);
+        unicornArmLeft.setPivot(-7, 12, -2);
     }
 
     @Override

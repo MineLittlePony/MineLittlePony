@@ -9,7 +9,6 @@ import net.minecraft.util.math.MathHelper;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import com.minelittlepony.mson.api.model.MsonPart;
 
 import static com.minelittlepony.api.model.PonyModelConstants.PI;
 
@@ -47,16 +46,16 @@ public class BreezieModel<T extends LivingEntity> extends BipedEntityModel<T> {
         leftArm.pitch = MathHelper.cos(move * 0.6662F) * swing;
         leftArm.roll = 0;
 
-        ((MsonPart)(Object)rightArm).rotate(swing * MathHelper.cos(move * 0.6662F + PI),        0, 0);
-        ((MsonPart)(Object)leftLeg) .rotate(swing * MathHelper.cos(move * 0.6662F + PI) * 1.4F, 0, 0);
-        ((MsonPart)(Object)rightLeg).rotate(swing * MathHelper.cos(move * 0.6662F)      * 1.4F, 0, 0);
+        rightArm.setAngles(swing * MathHelper.cos(move * 0.6662F + PI),        0, 0);
+        leftLeg .setAngles(swing * MathHelper.cos(move * 0.6662F + PI) * 1.4F, 0, 0);
+        rightLeg.setAngles(swing * MathHelper.cos(move * 0.6662F)      * 1.4F, 0, 0);
 
         if (riding) {
             leftArm.pitch += -PI / 5;
             rightArm.pitch += -PI / 5;
 
-            rotateLegRiding((MsonPart)(Object)leftLeg, -1);
-            rotateLegRiding((MsonPart)(Object)rightLeg, 1);
+            rotateLegRiding(leftLeg, -1);
+            rotateLegRiding(rightLeg, 1);
         }
 
         rotateArm(leftArm, leftArmPose, 1);
@@ -98,8 +97,8 @@ public class BreezieModel<T extends LivingEntity> extends BipedEntityModel<T> {
     }
 
 
-    protected void rotateLegRiding(MsonPart leg, float factor) {
-        leg.rotate(-1.4137167F, factor * PI / 10, factor * 0.07853982F);
+    protected void rotateLegRiding(ModelPart leg, float factor) {
+        leg.setAngles(-1.4137167F, factor * PI / 10, factor * 0.07853982F);
     }
 
     protected void swingArms(Arm mainHand) {

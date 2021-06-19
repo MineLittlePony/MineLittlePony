@@ -29,10 +29,10 @@ public class ZomponyModel<Zombie extends HostileEntity> extends AlicornModel<Zom
         if (isZombified(entity)) {
             if (islookAngleRight(move)) {
                 rotateArmHolding(rightArm, 1, getSwingAmount(), ticks);
-                ((MsonPart)(Object)rightArm).shift(0.5F, 1.5F, 3);
+                MsonPart.of(rightArm).shift(0.5F, 1.5F, 3);
             } else {
                 rotateArmHolding(leftArm, -1, getSwingAmount(), ticks);
-                ((MsonPart)(Object)leftArm).shift(-0.5F, 1.5F, 3);
+                MsonPart.of(leftArm).shift(-0.5F, 1.5F, 3);
             }
         }
     }
