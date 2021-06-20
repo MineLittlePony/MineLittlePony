@@ -5,19 +5,25 @@ import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.client.IPreviewModel;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.entity.race.PlayerModels;
+import com.minelittlepony.client.pony.Pony;
 import com.minelittlepony.hdskins.client.dummy.DummyPlayer;
 import com.minelittlepony.hdskins.client.dummy.TextureProxy;
 
 /**
  * Dummy model used for the skin uploading screen.
  */
-class DummyPony extends DummyPlayer implements IPreviewModel, ModelAttributes.Swimmer, IPonyManager.ForcedPony {
+class DummyPony extends DummyPlayer implements IPreviewModel, ModelAttributes.Swimmer, IPonyManager.ForcedPony, Pony.RegistrationHandler {
 
     public DummyPony(TextureProxy textures) {
         super(textures);
     }
 
     public void setWet(boolean wet) {
+    }
+
+    @Override
+    public boolean shouldUpdateRegistration(Pony pony) {
+        return false;
     }
 
     @Override

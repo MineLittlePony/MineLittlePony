@@ -15,6 +15,8 @@ import com.minelittlepony.client.render.PonyRenderDispatcher;
 import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.settings.PonyLevel;
 
+import java.util.Objects;
+
 import net.fabricmc.api.EnvType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
@@ -37,10 +39,7 @@ public class Pony implements IPony {
     private final Identifier texture;
     private final IPonyData metadata;
 
-    private boolean initialized = false;
     private boolean defaulted = false;
-
-    private int entityId = -1;
 
     Pony(Identifier resource, IPonyData data) {
         texture = resource;
@@ -58,17 +57,16 @@ public class Pony implements IPony {
 
     @Override
     public void updateForEntity(Entity entity) {
-        if (!initialized || entityId != entity.getId()) {
-            entityId = entity.getId();
-            initialized = true;
+        if (entity instanceof RegistrationHandler && ((RegistrationHandler)entity).shouldUpdateRegistration(this)) {
             entity.calculateDimensions();
 
-            if (entity == MinecraftClient.getInstance().player) {
-                Channel.CLIENT_PONY_DATA.accept(new MsgPonyData(metadata, defaulted));
+            PlayerEntity clientPlayer = MinecraftClient.getInstance().player;
+            if (clientPlayer != null) {
+                if (Objects.equals(entity, clientPlayer) || Objects.equals(((PlayerEntity)entity).getGameProfile(), clientPlayer.getGameProfile())) {
+                    Channel.CLIENT_PONY_DATA.accept(new MsgPonyData(metadata, defaulted));
+                }
             }
-            if (entity instanceof PlayerEntity) {
-                PonyDataCallback.EVENT.invoker().onPonyDataAvailable((PlayerEntity)entity, metadata, defaulted, EnvType.CLIENT);
-            }
+            PonyDataCallback.EVENT.invoker().onPonyDataAvailable((PlayerEntity)entity, metadata, defaulted, EnvType.CLIENT);
         }
     }
 
@@ -254,5 +252,9 @@ public class Pony implements IPony {
         }
 
         return race;
+    }
+
+    public interface RegistrationHandler {
+        boolean shouldUpdateRegistration(Pony pony);
     }
 }

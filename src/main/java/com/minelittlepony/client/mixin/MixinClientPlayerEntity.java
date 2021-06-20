@@ -2,6 +2,7 @@ package com.minelittlepony.client.mixin;
 
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.client.pony.Pony;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -14,8 +15,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerEntity.class)
-abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity {
+abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implements Pony.RegistrationHandler {
     public MixinClientPlayerEntity() { super(null, null); }
+
+    private Pony pony;
 
     @Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At("RETURN"))
     public void onStartRiding(Entity entity, boolean bl, CallbackInfoReturnable<Boolean> info) {
@@ -26,6 +29,15 @@ abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity {
     public void stopRiding() {
         super.stopRiding();
         calculateDimensions();
+    }
+
+    @Override
+    public boolean shouldUpdateRegistration(Pony pony) {
+        if (this.pony != pony) {
+            this.pony = pony;
+            return true;
+        }
+        return false;
     }
 
     @Override
