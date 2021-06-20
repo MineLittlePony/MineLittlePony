@@ -106,13 +106,7 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
         return mixin().getBodyPart(part);
     }
 
-    interface Caster<T extends LivingEntity, M extends IPonyModel<T> & IUnicorn<ArmModel>, ArmModel> extends IPonyMixinModel<T, M>, IUnicorn<ArmModel> {
-
-        @Override
-        default ArmModel getUnicornArmForSide(Arm side) {
-            return mixin().getUnicornArmForSide(side);
-        }
-
+    interface Caster<T extends LivingEntity, M extends IPonyModel<T> & IUnicorn, ArmModel> extends IPonyMixinModel<T, M>, IUnicorn {
         @Override
         default boolean isCasting() {
             return mixin().isCasting();

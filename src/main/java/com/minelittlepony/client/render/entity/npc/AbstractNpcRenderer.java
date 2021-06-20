@@ -1,6 +1,5 @@
 package com.minelittlepony.client.render.entity.npc;
 
-import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.ModelWithHat;
 import net.minecraft.entity.mob.MobEntity;
@@ -17,7 +16,7 @@ import com.minelittlepony.mson.api.ModelKey;
 
 abstract class AbstractNpcRenderer<
     T extends MobEntity & VillagerDataContainer,
-    M extends ClientPonyModel<T> & IUnicorn<ModelPart> & ModelWithHat> extends PonyRenderer.Caster<T, M> {
+    M extends ClientPonyModel<T> & IUnicorn & ModelWithHat> extends PonyRenderer.Caster<T, M> {
 
     private final TextureSupplier<T> baseTextures;
 

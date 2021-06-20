@@ -17,7 +17,6 @@ import com.minelittlepony.client.render.entity.feature.SkullFeature;
 import com.minelittlepony.client.render.entity.feature.ElytraFeature;
 import com.minelittlepony.mson.api.ModelKey;
 
-import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -128,7 +127,7 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
         return MineLittlePony.getInstance().getManager().getPony(findTexture(entity));
     }
 
-    public abstract static class Caster<T extends MobEntity, M extends ClientPonyModel<T> & IUnicorn<ModelPart>> extends PonyRenderer<T, M> {
+    public abstract static class Caster<T extends MobEntity, M extends ClientPonyModel<T> & IUnicorn> extends PonyRenderer<T, M> {
 
         public Caster(EntityRendererFactory.Context context, ModelKey<? super M> key) {
             super(context, key);

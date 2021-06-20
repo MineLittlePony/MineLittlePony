@@ -17,6 +17,7 @@
   "minelp.options.fillycam": "Filly Cam",
   "minelp.options.showscale": "Show-accurate scaling",
   "minelp.options.fpsmagic": "Magic in first-person",
+  "minelp.options.tpsmagic": "Magic in third-person",
   "minelp.options.ponyskulls": "Pony Skulls",
   "minelp.options.frustrum": "Frustum checks",
   "minelp.options.button": "Display On Title Screen",

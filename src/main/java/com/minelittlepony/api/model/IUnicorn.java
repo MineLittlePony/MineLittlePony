@@ -1,13 +1,6 @@
 package com.minelittlepony.api.model;
 
-import net.minecraft.util.Arm;
-
-public interface IUnicorn<ArmModel> extends IModel {
-    /**
-     * Gets the arm used for holding items in their magic.
-     */
-    ArmModel getUnicornArmForSide(Arm side);
-
+public interface IUnicorn extends IModel {
     /**
      * Returns true if this model is being applied to a race that can use magic.
      */

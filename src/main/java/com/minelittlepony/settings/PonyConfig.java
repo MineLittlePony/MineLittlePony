@@ -23,6 +23,7 @@ public class PonyConfig extends JsonConfig {
     public final Setting<Boolean> fillycam =   value("settings", "fillycam", true);
     private final Setting<Boolean> showscale = value("settings", "showscale", true);
     public final Setting<Boolean> fpsmagic =   value("settings", "fpsmagic", true);
+    public final Setting<Boolean> tpsmagic =   value("settings", "tpsmagic", true);
     public final Setting<Boolean> ponyskulls = value("settings", "ponyskulls", true);
     public final Setting<Boolean> frustrum =   value("settings", "frustrum", true);
 

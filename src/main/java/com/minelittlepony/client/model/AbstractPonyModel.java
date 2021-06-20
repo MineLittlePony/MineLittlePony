@@ -529,13 +529,15 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         float sin = MathHelper.sin(ticks * 0.067F) * 0.05F;
 
         if (shouldLiftArm(rightArmPose, leftArmPose, -1)) {
-            rightArm.roll += cos;
-            rightArm.pitch += sin;
+            ModelPart arm = getArm(Arm.RIGHT);
+            arm.roll += cos;
+            arm.pitch += sin;
         }
 
         if (shouldLiftArm(leftArmPose, rightArmPose, 1)) {
-            leftArm.roll += cos;
-            leftArm.pitch += sin;
+            ModelPart arm = getArm(Arm.LEFT);
+            arm.roll += cos;
+            arm.pitch += sin;
         }
     }
 
