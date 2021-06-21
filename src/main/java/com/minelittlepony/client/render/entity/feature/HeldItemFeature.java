@@ -66,7 +66,7 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
             }
 
             preItemRender(entity, drop, transform, arm, stack);
-            MinecraftClient.getInstance().getItemRenderer().renderItem(entity, drop, transform, arm == Arm.LEFT, stack, renderContext, entity.world, lightUv, 0, OverlayTexture.DEFAULT_UV);
+            MinecraftClient.getInstance().getItemRenderer().renderItem(entity, drop, transform, arm == Arm.LEFT, stack, renderContext, entity.world, lightUv, OverlayTexture.DEFAULT_UV, 0);
             postItemRender(entity, drop, transform, arm, stack, renderContext);
 
             stack.pop();
