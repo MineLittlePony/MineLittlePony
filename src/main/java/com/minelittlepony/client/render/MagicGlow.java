@@ -8,6 +8,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.minelittlepony.common.util.Color;
 
 import java.util.function.BiFunction;
 
@@ -27,7 +28,7 @@ public abstract class MagicGlow extends RenderPhase {
 
     private static final BiFunction<Identifier, Integer, RenderLayer> TINTED_LAYER = Util.memoize((texture, color) -> {
         return RenderLayer.of("mlp_tint_layer", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS, 256, true, true, RenderLayer.MultiPhaseParameters.builder()
-                .texture(new Color(texture, color))
+                .texture(new Colored(texture, color))
                 .shader(EYES_SHADER)
                 .writeMaskState(COLOR_MASK)
                 .depthTest(LEQUAL_DEPTH_TEST)
@@ -42,22 +43,22 @@ public abstract class MagicGlow extends RenderPhase {
     }
 
     public static RenderLayer getTintedTexturedLayer(Identifier texture, float red, float green, float blue, float alpha) {
-        return TINTED_LAYER.apply(texture, com.minelittlepony.common.util.Color.argbToHex(alpha, red, green, blue));
+        return TINTED_LAYER.apply(texture, Color.argbToHex(alpha, red, green, blue));
     }
 
-    private static class Color extends Texture {
+    private static class Colored extends Texture {
 
         private final float red;
         private final float green;
         private final float blue;
         private final float alpha;
 
-        public Color(Identifier texture, int color) {
+        public Colored(Identifier texture, int color) {
             super(texture, false, false);
-            this.red = com.minelittlepony.common.util.Color.r(color);
-            this.green = com.minelittlepony.common.util.Color.g(color);
-            this.blue = com.minelittlepony.common.util.Color.b(color);
-            this.alpha = com.minelittlepony.common.util.Color.a(color);
+            this.red = Color.r(color);
+            this.green = Color.g(color);
+            this.blue = Color.b(color);
+            this.alpha = Color.a(color);
         }
 
         @Override
@@ -75,10 +76,10 @@ public abstract class MagicGlow extends RenderPhase {
         @Override
         public boolean equals(Object other) {
             return super.equals(other)
-                    && ((Color)other).red == red
-                    && ((Color)other).green == green
-                    && ((Color)other).blue == blue
-                    && ((Color)other).alpha == alpha;
+                    && ((Colored)other).red == red
+                    && ((Colored)other).green == green
+                    && ((Colored)other).blue == blue
+                    && ((Colored)other).alpha == alpha;
         }
     }
 }
