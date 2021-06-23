@@ -43,6 +43,7 @@ minecraft {
 }
 
 repositories {
+    mavenLocal()
     maven {
         name = 'modmenu'
         url = 'https://maven.terraformersmc.com/releases'

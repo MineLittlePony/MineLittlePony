@@ -5,7 +5,7 @@ import net.minecraft.entity.mob.ZombieVillagerEntity;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.model.IMobModel;
-import com.minelittlepony.mson.api.model.MsonPart;
+import com.minelittlepony.mson.util.PartUtil;
 
 public class ZomponyVillagerModel extends VillagerPonyModel<ZombieVillagerEntity> implements IMobModel {
 
@@ -20,10 +20,10 @@ public class ZomponyVillagerModel extends VillagerPonyModel<ZombieVillagerEntity
         if (rightArmPose == ArmPose.EMPTY) {
             if (islookAngleRight(move)) {
                 rotateArmHolding(rightArm, 1, getSwingAmount(), ticks);
-                MsonPart.of(rightArm).shift(0.5F, 1.5F, 3);
+                PartUtil.shift(rightArm, 0.5F, 1.5F, 3);
             } else {
                 rotateArmHolding(leftArm, -1, getSwingAmount(), ticks);
-                MsonPart.of(leftArm).shift(-0.5F, 1.5F, 3);
+                PartUtil.shift(leftArm, -0.5F, 1.5F, 3);
             }
         }
     }

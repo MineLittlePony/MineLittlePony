@@ -9,7 +9,7 @@ import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Sizes;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.client.transform.PonyTransformation;
-import com.minelittlepony.mson.api.model.MsonPart;
+import com.minelittlepony.mson.util.PartUtil;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
@@ -125,10 +125,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
         head.setPivot(1, 2, sneaking ? -1 : 1);
 
-        MsonPart.of(rightArm).shift(0, 2,  6);
-        MsonPart.of(leftArm).shift(0, 2,  6);
-        MsonPart.of(rightLeg).shift(0, 2, -8);
-        MsonPart.of(leftLeg).shift(0, 2, -8);
+        PartUtil.shift(rightArm, 0, 2,  6);
+        PartUtil.shift(leftArm, 0, 2,  6);
+        PartUtil.shift(rightLeg, 0, 2, -8);
+        PartUtil.shift(leftLeg, 0, 2, -8);
     }
 
     protected void ponySit() {

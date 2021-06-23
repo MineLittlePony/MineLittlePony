@@ -34,7 +34,7 @@ public class PonyTail implements IPart, MsonModel {
         theModel = context.getModel();
 
         try {
-            int segments = context.getLocals().getValue("segments").get().intValue();
+            int segments = context.getLocals().getLocal("segments").get().intValue();
 
             ModelContext subContext = context.resolve(this);
 

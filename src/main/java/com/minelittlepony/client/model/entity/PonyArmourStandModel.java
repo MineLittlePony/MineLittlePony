@@ -5,7 +5,7 @@ import net.minecraft.client.render.entity.model.ArmorStandEntityModel;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 
-import com.minelittlepony.mson.api.model.MsonPart;
+import com.minelittlepony.mson.util.PartUtil;
 
 public class PonyArmourStandModel extends ArmorStandEntityModel {
 
@@ -16,22 +16,22 @@ public class PonyArmourStandModel extends ArmorStandEntityModel {
     @Override
     public void setAngles(ArmorStandEntity entity, float move, float swing, float ticks, float headYaw, float headPitch) {
         super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
-        this.leftArm.visible = true;
-        this.rightArm.visible = true;
+        leftArm.visible = true;
+        rightArm.visible = true;
 
-        MsonPart.of(this.leftLeg).rotateTo(this.leftArm);
-        MsonPart.of(this.rightLeg).rotateTo(this.rightArm);
+        PartUtil.copyAngles(leftArm, leftLeg);
+        PartUtil.copyAngles(rightArm, rightLeg);
 
         leftLeg.pitch *= -1;
         rightLeg.pitch *= -1;
     }
 
     public void applyAnglesTo(BipedEntityModel<ArmorStandEntity> dest) {
-        MsonPart.of(dest.head).rotateTo(head);
-        MsonPart.of(dest.hat).rotateTo(hat);
-        MsonPart.of(dest.leftLeg).rotateTo(leftLeg);
-        MsonPart.of(dest.rightLeg).rotateTo(rightLeg);
-        MsonPart.of(dest.leftArm).rotateTo(leftArm);
-        MsonPart.of(dest.rightArm).rotateTo(rightArm);
+        PartUtil.copyAngles(head, dest.head);
+        PartUtil.copyAngles(hat, dest.hat);
+        PartUtil.copyAngles(leftLeg, dest.leftLeg);
+        PartUtil.copyAngles(rightLeg, dest.rightLeg);
+        PartUtil.copyAngles(leftArm, dest.leftArm);
+        PartUtil.copyAngles(rightArm, dest.rightArm);
     }
 }
