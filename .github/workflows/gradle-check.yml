@@ -1,6 +1,6 @@
-name: Build on Push
+name: Build on Pull Request
 on:
-  - push
+  - pull_request
 jobs:
   gradle:
     runs-on: ubuntu-latest

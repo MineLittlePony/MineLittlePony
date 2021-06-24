@@ -1,6 +1,7 @@
-name: Build on Push
+name: Publish To Maven
 on:
-  - push
+  release:
+    types: [created]
 jobs:
   gradle:
     runs-on: ubuntu-latest
@@ -13,7 +14,11 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 16
-      - name: Build Gradle
+      - name: Publish Maven Jar
+        env:
+          ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: eskatos/gradle-command-action@v1
         with:
-          arguments: check
+          arguments: build publish

@@ -2,6 +2,7 @@ plugins {
     id 'java-library'
     id 'fabric-loom' version '0.8-SNAPSHOT'
     id 'maven-publish'
+    id 'org.ajoberstar.reckon' version '0.13.0'
 }
 
 java {
@@ -10,29 +11,6 @@ java {
     }
 }
 
-def createVersion() {
-    def parts = []
-
-    if (project.release != 'RELEASE') {
-        parts.push project.release
-    }
-
-    def branch = System.env.TRAVIS_BRANCH
-
-    if (branch != null && branch != 'master' && !project.minecraft_version.startsWith(branch)) {
-        parts.push branch
-    }
-
-    parts.push project.minecraft_version
-
-    def ver = project.version
-    if (parts.size > 0) {
-      return ver + '-' + parts.join('-')
-    }
-    return ver
-}
-
-version = createVersion()
 group = project.group
 description = project.displayname
 archivesBaseName = project.name
@@ -40,6 +18,11 @@ archivesBaseName = project.name
 minecraft {
     refmapName = 'minelp.mixin.refmap.json'
     accessWidener 'src/main/resources/minelp.aw'
+}
+
+reckon {
+    scopeFromProp()
+    stageFromProp('beta', 'rc', 'final')
 }
 
 repositories {
@@ -68,13 +51,13 @@ dependencies {
     modApi fabricApi.module("fabric-resource-loader-v0", project.fabric_version)
     modApi fabricApi.module("fabric-networking-v0", project.fabric_version)
 
-    modApi "com.minelittlepony:Kirin:${project.kirin_version}"
-    include "com.minelittlepony:Kirin:${project.kirin_version}"
+    modApi "com.minelittlepony:kirin:${project.kirin_version}"
+    include "com.minelittlepony:kirin:${project.kirin_version}"
 
     modApi "com.minelittlepony:mson:${project.mson_version}"
     include "com.minelittlepony:mson:${project.mson_version}"
 
-    modImplementation "com.minelittlepony:HDSkins:${project.hd_skins_version}"
+    modImplementation "com.minelittlepony:hdskins:${project.hd_skins_version}"
     modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
 }
 
@@ -161,9 +144,7 @@ publishing {
     repositories {
         maven {
             name = "MineLittlePony"
-            def mvn = 's3://repo.minelittlepony-mod.com/maven'
-            url = release == 'SNAPSHOT' ? "$mvn/snapshot" : "$mvn/release"
-
+            url = "s3://repo.minelittlepony-mod.com/maven/${version.version.stage.value.name == 'beta' ? 'snapshot' : 'release'}"
             credentials(AwsCredentials) {
                 accessKey = System.env.ACCESS_KEY
                 secretKey = System.env.SECRET_KEY
