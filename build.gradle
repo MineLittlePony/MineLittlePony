@@ -79,10 +79,10 @@ task copyBGPones(type: Copy) {
     }
 }
 processResources {
-    inputs.property "version", project.version
+    inputs.property "version", project.version.toString()
 
     filesMatching("fabric.mod.json") {
-        expand "version": project.version
+        expand "version": project.version.toString()
     }
 
     from 'LICENSE'
