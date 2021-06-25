@@ -144,7 +144,8 @@ publishing {
     repositories {
         maven {
             name = "MineLittlePony"
-            url = "s3://repo.minelittlepony-mod.com/maven/${version.version.stage.value.name == 'beta' ? 'snapshot' : 'release'}"
+            def stage = version.version.stage.value
+            url = "s3://repo.minelittlepony-mod.com/maven/${stage != null && stage.name == 'beta' ? 'snapshot' : 'release'}"
             credentials(AwsCredentials) {
                 accessKey = System.env.ACCESS_KEY
                 secretKey = System.env.SECRET_KEY
