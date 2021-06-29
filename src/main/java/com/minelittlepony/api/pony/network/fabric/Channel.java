@@ -18,7 +18,11 @@ import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
 public interface Channel {
-    Consumer<MsgPonyData> CLIENT_PONY_DATA = clientToServer(new Identifier("minelittlepony", "pony_data"), MsgPonyData::new, MsgPonyData::toBuffer, (packet, player) -> {
+    Consumer<MsgPonyData> CLIENT_PONY_DATA = clientToServer(
+            new Identifier("minelittlepony", "pony_data"),
+            MsgPonyData::new,
+            MsgPonyData::toBuffer,
+            (packet, player) -> {
         PonyDataCallback.EVENT.invoker().onPonyDataAvailable(player, packet, packet.isNoSkin(), EnvType.SERVER);
     });
 
