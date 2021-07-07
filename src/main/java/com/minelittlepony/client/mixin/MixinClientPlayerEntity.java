@@ -12,6 +12,7 @@ import net.minecraft.entity.EntityPose;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerEntity.class)
@@ -21,13 +22,12 @@ abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implem
     private Pony pony;
 
     @Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At("RETURN"))
-    public void onStartRiding(Entity entity, boolean bl, CallbackInfoReturnable<Boolean> info) {
+    private void onStartRiding(Entity entity, boolean bl, CallbackInfoReturnable<Boolean> info) {
         calculateDimensions();
     }
 
-    @Override
-    public void stopRiding() {
-        super.stopRiding();
+    @Inject(method = "dismountVehicle()Z", at = @At("RETURN"))
+    private void onStopRiding(CallbackInfo info) {
         calculateDimensions();
     }
 
