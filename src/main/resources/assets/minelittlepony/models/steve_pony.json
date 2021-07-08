@@ -153,7 +153,6 @@
 				"stretch": 0.26,
 				"__comment": [
 					"body sides a", "body sides b", "qt mark a", "qt mark b",
-					"body sides a", "body sides b", "qt mark a", "qt mark b",
 					"stomach a", "stomach b", "stomach c",
 					"butt", "butt",
 					"back"
@@ -163,12 +162,6 @@
 					[ 4, 8,  2, 8, 4, 12, 48 ],
 					[ 4, 4, 10, 4, 4,  0, 32 ],
 					[ 4, 8, 10, 4, 4,  0, 48 ]
-				],
-				"west": [
-					[ -4, 4,  2, 8, 4, 12, 32 ],
-					[ -4, 8,  2, 8, 4, 12, 48 ],
-					[ -4, 4, 10, 4, 4,  0, 32 ],
-					[ -4, 8, 10, 4, 4,  0, 48 ]
 				],
 				"down": [
 					[ -4, 12,  2, 8, 4, 28, 48 ],
@@ -181,6 +174,20 @@
 				],
 				"up": [
 					[ -4, 4, 2, 8, 12, 32, 36 ]
+				]
+			},
+			{
+				"type": "mson:planar",
+				"stretch": 0.26,
+				"mirror": [ false, false, true ],
+				"__comment": [
+					"body sides a", "body sides b", "qt mark a", "qt mark b"
+				],
+				"west": [
+					[ -4, 4,  2, 8, 4, 12, 32 ],
+					[ -4, 8,  2, 8, 4, 12, 48 ],
+					[ -4, 4, 10, 4, 4,  0, 32 ],
+					[ -4, 8, 10, 4, 4,  0, 48 ]
 				]
 			}
 		]
