@@ -629,6 +629,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     }
 
     protected void renderSleeves(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+        if (!sneaking) {
+            body.rotate(stack);
+        }
+
         leftSleeve.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         rightSleeve.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         leftPants.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
