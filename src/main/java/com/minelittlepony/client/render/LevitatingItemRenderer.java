@@ -76,9 +76,9 @@ public class LevitatingItemRenderer {
     /**
      * Renders an item in first person optionally with a magical overlay.
      */
-    public void renderItemInFirstPerson(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformation.Mode transform, boolean left, MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world, int lightUv, int posLong) {
+    public void renderItemInFirstPerson(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformation.Mode mode, boolean left, MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world, int lightUv, int posLong) {
 
-        if (entity instanceof PlayerEntity) {
+        if (entity instanceof PlayerEntity && (mode.isFirstPerson() || mode == ModelTransformation.Mode.THIRD_PERSON_LEFT_HAND || mode == ModelTransformation.Mode.THIRD_PERSON_RIGHT_HAND)) {
 
             IPony pony = MineLittlePony.getInstance().getManager().getPony((PlayerEntity)entity);
 
@@ -90,7 +90,7 @@ public class LevitatingItemRenderer {
                 setupPerspective(itemRenderer, entity, stack, left, matrix);
             }
 
-            itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
+            itemRenderer.renderItem(entity, stack, mode, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
 
             if (doMagic) {
                 setColor(pony.getMetadata().getGlowColor());
@@ -98,16 +98,16 @@ public class LevitatingItemRenderer {
                 matrix.scale(1.1F, 1.1F, 1.1F);
 
                 matrix.translate(0.015F, 0.01F, 0.01F);
-                itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
+                itemRenderer.renderItem(entity, stack, mode, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
                 matrix.translate(-0.03F, -0.02F, -0.02F);
-                itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
+                itemRenderer.renderItem(entity, stack, mode, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
 
                 unsetColor();
             }
 
             matrix.pop();
         } else {
-            itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
+            itemRenderer.renderItem(entity, stack, mode, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
         }
     }
 
