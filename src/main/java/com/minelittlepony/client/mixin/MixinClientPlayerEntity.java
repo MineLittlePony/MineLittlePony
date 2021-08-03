@@ -26,7 +26,7 @@ abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implem
         calculateDimensions();
     }
 
-    @Inject(method = "dismountVehicle()Z", at = @At("RETURN"))
+    @Inject(method = "dismountVehicle()V", at = @At("RETURN"))
     private void onStopRiding(CallbackInfo info) {
         calculateDimensions();
     }
