@@ -73,7 +73,7 @@ public class MsgPonyData implements IPonyData {
         this.noSkin = noSkin;
     }
 
-    public void toBuffer(PacketByteBuf buffer) {
+    public PacketByteBuf toBuffer(PacketByteBuf buffer) {
         buffer.writeInt(race.ordinal());
         buffer.writeInt(tailLength.ordinal());
         buffer.writeInt(gender.ordinal());
@@ -89,6 +89,7 @@ public class MsgPonyData implements IPonyData {
             buffer.writeInt(gear[i].ordinal());
         }
         buffer.writeInt(wearableColor);
+        return buffer;
     }
 
     public boolean isNoSkin() {

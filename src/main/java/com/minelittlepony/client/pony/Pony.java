@@ -56,6 +56,11 @@ public class Pony implements IPony {
     }
 
     @Override
+    public boolean isDefault() {
+        return defaulted;
+    }
+
+    @Override
     public void updateForEntity(Entity entity) {
         if (entity instanceof RegistrationHandler && ((RegistrationHandler)entity).shouldUpdateRegistration(this)) {
             entity.calculateDimensions();
@@ -63,7 +68,7 @@ public class Pony implements IPony {
             PlayerEntity clientPlayer = MinecraftClient.getInstance().player;
             if (clientPlayer != null) {
                 if (Objects.equals(entity, clientPlayer) || Objects.equals(((PlayerEntity)entity).getGameProfile(), clientPlayer.getGameProfile())) {
-                    Channel.CLIENT_PONY_DATA.accept(new MsgPonyData(metadata, defaulted));
+                    Channel.broadcastPonyData(new MsgPonyData(metadata, defaulted));
                 }
             }
             PonyDataCallback.EVENT.invoker().onPonyDataAvailable((PlayerEntity)entity, metadata, defaulted, EnvType.CLIENT);
