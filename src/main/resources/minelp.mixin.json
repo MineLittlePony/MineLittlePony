@@ -9,6 +9,7 @@
         "MixinCamera",
         "MixinDefaultPlayerSkin",
         "MixinEntityRenderDispatcher",
+        "MixinEntityRenderers",
         "MixinSkullBlockEntityRenderer",
         "MixinFirstPersonRenderer",
         "MixinItemRenderer",
