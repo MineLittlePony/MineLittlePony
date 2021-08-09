@@ -11,8 +11,8 @@
 					"name": "snout",
 					"locals": {
 						"x": 0,
-						"y": -4,
-						"z": 4
+						"y": -2,
+						"z": 2
 					},
 					"implementation": "com.minelittlepony.client.model.part.PonySnout",
 					"data": "minelittlepony:components/snout"
@@ -34,7 +34,7 @@
 					"locals": {
 						"x": 0,
 						"y": -2,
-						"z":  4
+						"z":  2
 					},
 					"implementation": "com.minelittlepony.client.model.part.UnicornHorn",
 					"data": "minelittlepony:components/horn"
