@@ -115,6 +115,15 @@
 					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
 				}
 			]
+		},
+		"tail": {
+			"type": "mson:slot",
+			"name": "tail",
+			"locals": {
+				"segments": 0
+			},
+			"implementation": "com.minelittlepony.client.model.part.PonyTail",
+			"data": "minelittlepony:components/tail"
 		}
 	}
 }
