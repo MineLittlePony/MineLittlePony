@@ -2,44 +2,46 @@
 	"texture": {
 		"w": 64, "h": 64
 	},
-	"body": {
-		"center": [-4, -4, -4],
-		"cubes": [
-			{"from": [0, 0, 0], "size": [8, 8, 8] }
-		]
-	},
-	"leftWing": {
-		"name": "leftWing",
-		"center": [0, -2, 4],
-		"texture": {"u": 48, "v": 0},
-		"cubes": [
-			{
-				"type": "mson:plane",
-				"face": "west",
-				"position": [0, -16, 0],
-				"size": [ 16, 16 ]
-			}
-		]
-	},
-	"rightWing": {
-		"name": "rightWing",
-		"center": [0, -2, 4],
-		"texture": {"u": 48, "v": 0},
-		"cubes": [
-			{
-				"type": "mson:plane",
-				"face": "west",
-				"position": [0, -16, 0],
-				"size": [ 16, 16 ]
-			}
-		]
-	},
-	"saddle": {
-		"center": [-4, -4, -4],
-		"texture": {"u": 0, "v": 16},
-		"visible": true,
-		"cubes": [
-			{"from": [-4, -0.1, -4], "size": [16, 16, 16] }
-		]
+	"data": {
+		"body": {
+			"pivot": [-4, -4, -4],
+			"cubes": [
+				{"from": [0, 0, 0], "size": [8, 8, 8] }
+			]
+		},
+		"leftWing": {
+			"name": "leftWing",
+			"pivot": [0, -2, 4],
+			"texture": {"u": 48, "v": 0},
+			"cubes": [
+				{
+					"type": "mson:plane",
+					"face": "west",
+					"position": [0, -16, 0],
+					"size": [ 16, 16 ]
+				}
+			]
+		},
+		"rightWing": {
+			"name": "rightWing",
+			"pivot": [0, -2, 4],
+			"texture": {"u": 48, "v": 0},
+			"cubes": [
+				{
+					"type": "mson:plane",
+					"face": "west",
+					"position": [0, -16, 0],
+					"size": [ 16, 16 ]
+				}
+			]
+		},
+		"saddle": {
+			"pivot": [-4, -4, -4],
+			"texture": {"u": 0, "v": 16},
+			"visible": true,
+			"cubes": [
+				{"from": [-4, -0.1, -4], "size": [16, 16, 16] }
+			]
+		}
 	}
 }

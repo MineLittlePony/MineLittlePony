@@ -41,6 +41,7 @@ public class PonySnout implements IPart, MsonModel {
 
     @Override
     public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
+        mare.render(stack, vertices, lightUv, overlayUv, red, green, blue, alpha);
     }
 
     @Override

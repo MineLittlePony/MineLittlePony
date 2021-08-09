@@ -1,36 +1,37 @@
 {
 	"texture": {"w": 64, "h": 64},
-	"rim": {
-		"texture": {"u": 16, "v": 33},
-		"rotate": [-17, 0, 5.7],
-		"cubes": [
-			{
-				"type": "mson:plane",
-				"face": "up",
-				"texture": {"u": 16, "v": 33},
-				"position": [-9, -4, -12], "size": [16, 17]
-			},
-			{
-				"type": "mson:plane",
-				"face": "down",
-				"texture": {"u": 0, "v": 33},
-				"position": [-9, -3.999, -12], "size": [16, 17]
+	"data": {
+		"rim": {
+			"texture": {"u": 16, "v": 33},
+			"rotate": [-17, 0, 5.7],
+			"cubes": [
+				{
+					"type": "mson:plane",
+					"face": "up",
+					"texture": {"u": 16, "v": 33},
+					"position": [-9, -4, -12], "size": [16, 17]
+				},
+				{
+					"type": "mson:plane",
+					"face": "down",
+					"texture": {"u": 0, "v": 33},
+					"position": [-9, -3.999, -12], "size": [16, 17]
+				}
+			],
+			"children": {
+				"inside": {
+					"cubes": [
+						{"from": [-5, -8, -6], "size": [9, 4, 9], "texture": {"u": 0, "v": 0}},
+						{"from": [-6, -6, -7], "size": [11, 2, 11], "texture": {"u": 0, "v": 13}}
+					]
+				},
+				"rim": {
+					"type": "mson:planar",
+					"pivot": [-9, -4, -12 ],
+					"rotate": [23, 0, 0],
+					"south": [0, -6, 0, 16, 6, 0, 27]
+				}
 			}
-		],
-		"children": [
-			{
-				"__comment": "hat inside",
-				"cubes": [
-					{"from": [-5, -8, -6], "size": [9, 4, 9], "texture": {"u": 0, "v": 0}},
-					{"from": [-6, -6, -7], "size": [11, 2, 11], "texture": {"u": 0, "v": 13}}
-				]
-			},
-			{
-				"type": "mson:planar",
-				"center": [-9, -4, -12 ],
-				"rotate": [23, 0, 0],
-				"south": [0, -6, 0, 16, 6, 0, 27]
-			}
-		]
+		}
 	}
 }

@@ -1,9 +1,11 @@
 {
 	"parent": "minelittlepony:races/steve/unicorn",
-	"wings": {
-		"type": "mson:slot",
-		"name": "wings",
-		"implementation": "com.minelittlepony.client.model.part.PegasusWings",
-		"content": "minelittlepony:components/pegasus_wings"
+	"data": {
+		"wings": {
+			"type": "mson:slot",
+			"name": "wings",
+			"implementation": "com.minelittlepony.client.model.part.PegasusWings",
+			"data": "minelittlepony:components/pegasus_wings"
+		}
 	}
 }

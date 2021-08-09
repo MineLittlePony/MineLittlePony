@@ -5,19 +5,21 @@
 		"y": 0,
 		"z": 0
 	},
-	"right": {
-		"texture": {"u": 12, "v": 16},
-		"center": ["#x", "#y", "#z"],
-		"cubes": [
-			{ "from": [-4, -8, -1], "size": [2, 2, 2] }
-		]
-	},
-	"left": {
-		"texture": {"u": 12, "v": 16},
-		"center": ["#x", "#y", "#z"],
-		"mirror": [true, false, false],
-		"cubes": [
-			{ "from": [2, -8, -1], "size": [2, 2, 2] }
-		]
+	"data": {
+		"right": {
+			"texture": {"u": 12, "v": 16},
+			"pivot": ["#x", "#y", "#z"],
+			"cubes": [
+				{ "from": [-4, -8, -1], "size": [2, 2, 2] }
+			]
+		},
+		"left": {
+			"texture": {"u": 12, "v": 16},
+			"pivot": ["#x", "#y", "#z"],
+			"mirror": [true, false, false],
+			"cubes": [
+				{ "from": [2, -8, -1], "size": [2, 2, 2] }
+			]
+		}
 	}
 }

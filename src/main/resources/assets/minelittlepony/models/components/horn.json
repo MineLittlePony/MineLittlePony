@@ -5,31 +5,33 @@
 		"y": 0,
 		"z": 0
 	},
-	"bone": {
-		"rotate": [29, 0, 0],
-		"center": ["#x", "#y", "#z"],
-		"cubes": [
-			{ "from": [-0.5, -11, -3.5], "size": [1, 4, 1] }
-		]
-	},
-	"corona": {
-		"rotate": [29, 0, 0],
-		"center": ["#x", "#y", "#z"],
-		"cubes": [
-			{
-				"type": "mson:cone",
-				"size": [1, 4, 1],
-				"from": [-0.5, -11, -3.5], 
-				"stretch": 0.5,
-				"taper": 0.4
-			},
-			{
-				"type": "mson:cone",
-				"size": [1, 3, 1],
-				"from": [-0.5, -11, -3.5], 
-				"stretch": 0.8,
-				"taper": 0.4
-			}
-		]
+	"data": {
+		"bone": {
+			"rotate": [29, 0, 0],
+			"pivot": ["#x", "#y", "#z"],
+			"cubes": [
+				{ "from": [-0.5, -11, -3.5], "size": [1, 4, 1] }
+			]
+		},
+		"corona": {
+			"rotate": [29, 0, 0],
+			"pivot": ["#x", "#y", "#z"],
+			"cubes": [
+				{
+					"type": "mson:cone",
+					"size": [1, 4, 1],
+					"from": [-0.5, -11, -3.5], 
+					"dilate": 0.5,
+					"taper": 0.4
+				},
+				{
+					"type": "mson:cone",
+					"size": [1, 3, 1],
+					"from": [-0.5, -11, -3.5], 
+					"dilate": 0.8,
+					"taper": 0.4
+				}
+			]
+		}
 	}
 }
