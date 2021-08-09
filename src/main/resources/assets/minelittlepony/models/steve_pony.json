@@ -115,6 +115,7 @@
 			"children": {
 				"tail_stub": {
 					"type": "mson:planar",
+					"pivot": [0, 1, -2.25],
 					"texture": { "u": 32, "v": 0 },
 					"rotate": [29, 0, 0],
 					"up":   [-1, 10,  10, 2, 6],
