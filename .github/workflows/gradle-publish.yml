@@ -1,12 +1,16 @@
 name: Publish To Maven
 on:
-  - release
+  push:
+    tags:
+      - '*'
 jobs:
   gradle:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Commit
         uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Fetch Tags
         run: git fetch --unshallow --tags -f
       - name: Set up JDK
