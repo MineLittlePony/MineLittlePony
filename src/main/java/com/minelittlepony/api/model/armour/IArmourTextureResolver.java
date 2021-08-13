@@ -7,6 +7,11 @@ import net.minecraft.util.Identifier;
 
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * A resolver for looking up the texture for a piece of armour.
+ * <p>
+ * This is for modders who want to override the default implementation found in {@link DefaultArmourTextureResolver}.
+ */
 public interface IArmourTextureResolver {
 
     /**

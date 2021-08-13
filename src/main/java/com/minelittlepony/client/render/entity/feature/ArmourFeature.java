@@ -62,6 +62,9 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
             armour.applyMetadata(pony.getBody().getMetadata());
 
             V model = armour.getModel(layer);
+            if (model == null) {
+                model = pony.<V>getArmor().getModel(layer);
+            }
 
             if (model.prepareToRender(armorSlot, layer)) {
                 pony.getBody().copyAttributes(model);

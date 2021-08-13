@@ -21,5 +21,4 @@ public class VillagerPonyRenderer extends AbstractNpcRenderer<VillagerEntity, Vi
         super.scale(villager, stack, ticks);
         stack.scale(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
     }
-
 }

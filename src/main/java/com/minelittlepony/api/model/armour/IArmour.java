@@ -3,8 +3,16 @@ package com.minelittlepony.api.model.armour;
 import net.minecraft.item.Item;
 import net.minecraft.util.registry.Registry;
 
-import com.minelittlepony.api.model.IModelWrapper;
+import org.jetbrains.annotations.Nullable;
 
+import com.minelittlepony.api.model.IModelWrapper;
+import com.minelittlepony.api.pony.IPonyData;
+
+/**
+ * Wrapper for an armour model and texture.
+ *
+ * @param <V> The type of the contained armour model.
+ */
 public interface IArmour<V extends IArmourModel> extends IModelWrapper {
     /**
      * Registers a custom armour for the supplied item.
@@ -19,7 +27,10 @@ public interface IArmour<V extends IArmourModel> extends IModelWrapper {
 
     /**
      * Gets the armour model to render for the given layer.
+     * <p>
+     * Return null to preserve the default behaviour or override and return your custom model.
      */
+    @Nullable
     V getModel(ArmourLayer layer);
 
     /**
@@ -29,5 +40,10 @@ public interface IArmour<V extends IArmourModel> extends IModelWrapper {
      */
     default IArmourTextureResolver getTextureResolver(IArmourTextureResolver defaultResolver) {
         return defaultResolver;
+    }
+
+    @Override
+    default IArmour<V> applyMetadata(IPonyData meta) {
+        return this;
     }
 }
