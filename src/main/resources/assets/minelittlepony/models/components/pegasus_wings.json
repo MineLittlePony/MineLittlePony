@@ -66,7 +66,7 @@
 			"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
 			"data": {
 				"folded": {
-					"texture": {"u": 56, "v": 32},
+					"texture": {"u": 56, "v": 32, "w": 64, "h": 64},
 					"pivot": [0, 13, -2],
 					"rotate": [90, 0, 0],
 					"cubes": [
@@ -80,10 +80,10 @@
 					"pivot": [-4.5, 5.3, 6],
 					"rotate": [-30, 180, 0],
 					"children": {
-						"feather_1": { "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "dilate":  0.1 } ],                           "mirror": true },
+						"feather_1": { "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "dilate":  0.1 } ],                         "mirror": true },
 						"feather_2": { "cubes": [ {"from": [-0.5,-1,  -0.3], "size": [1, 8, 2], "dilate":  0.1 } ],  "rotate": [-48, 0, 0], "mirror": true },
 						"feather_3": { "cubes": [ {"from": [-0.5, 1.8, 1.3], "size": [1, 8, 2], "dilate": -0.1 } ],  "rotate": [-42, 0, 0], "mirror": true },
-						"feather_4": { "cubes": [ {"from": [-0.5, 5,     2], "size": [1, 8, 2] } ],                   "rotate": [-28 , 0, 0], "mirror": true },
+						"feather_4": { "cubes": [ {"from": [-0.5, 5,     2], "size": [1, 8, 2] } ],                  "rotate": [-28, 0, 0], "mirror": true },
 						"feather_5": { "cubes": [ {"from": [-0.5, 0,  -0.2], "size": [1, 6, 2], "dilate":  0.3 } ] },
 						"feather_6": { "cubes": [ {"from": [-0.5, 0,     0], "size": [1, 3, 2], "dilate":  0.19 } ], "rotate": [-48, 0, 0], "mirror": true }
 					}
