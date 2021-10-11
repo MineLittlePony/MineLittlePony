@@ -37,6 +37,7 @@ class PonyPreview extends PlayerPreview {
         if (type == MineLPHDSkins.seaponySkinType) {
             return NO_SKIN_SEAPONY;
         }
+
         return super.getBlankSteveSkin(type);
     }
 
@@ -48,7 +49,8 @@ class PonyPreview extends PlayerPreview {
         if (type == MineLPHDSkins.seaponySkinType) {
             return NO_SKIN_SEAPONY;
         }
-        return getBlankSteveSkin(type);
+
+        return super.getBlankAlexSkin(type);
     }
 
     @Override
