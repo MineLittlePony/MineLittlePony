@@ -86,33 +86,55 @@
 					"size": [ 8, 8 ]
 				},
 				{
-					"type": "mson:plane", "__comment": "butt",
-					"texture": { "u": 36, "v": 16 },
-					"face": "down",
-					"position": [ -4, 12, 10 ], "size": [ 8, 4 ]
-				},
-				{
-					"type": "mson:plane", "__comment": "butt",
-					"texture": { "u": 36, "v": 16 },
-					"face": "south",
-					"position": [ -4, 4, 14 ], "size": [ 8, 4 ]
-				},
-				{
-					"type": "mson:plane", "__comment": "butt",
-					"texture": { "u": 36, "v": 16 },
-					"face": "south",
-					"position": [ -4, 8, 14 ],
-					"size": [ 8, 4 ]
-				},
-				{
 					"type": "mson:plane", "__comment": "back",
 					"texture": { "u": 32, "v": 20 },
-					"mirror": [ false, false ],
 					"face": "up",
 					"position": [ -4, 4, 2 ], "size": [ 8, 12 ]
 				}
 			],
 			"children": {
+			    "butt": {
+			        "pivot": [8, 8, 0],
+			        "rotate": [0, 0, 90],
+			        "cubes": [
+						{
+							"type": "mson:plane", "__comment": "butt",
+							"texture": { "u": 36, "v": 16 },
+							"face": "south",
+							"position": [ -4, 4, 14 ],
+							"size": [ 8, 4 ]
+						},
+						{
+							"type": "mson:plane", "__comment": "butt",
+							"texture": { "u": 36, "v": 16 },
+							"mirror": [false, true],
+							"face": "south",
+							"position": [ -4, 8, 14 ],
+							"size": [ 8, 4 ]
+						}
+			        ]
+			    },
+			    "butt_buttom": {
+			        "pivot": [-2, 12, 14],
+			        "rotate": [0, 90, 0],
+			        "cubes": [
+						{
+							"type": "mson:plane", "__comment": "butt bottom",
+							"texture": { "u": 36, "v": 16 },
+							"face": "down",
+							"position": [ 0, 0, 2 ],
+							"size": [ 4, 4 ]
+						},
+						{
+							"type": "mson:plane", "__comment": "butt bottom",
+							"texture": { "u": 36, "v": 16 },
+							"face": "down",
+							"mirror": [false, true],
+							"position": [ 0, 0, -2 ],
+							"size": [ 4, 4 ]
+						}
+			        ]
+			    },
 				"tail_stub": {
 					"type": "mson:planar",
 					"pivot": [0, 1, -2.25],
@@ -155,8 +177,7 @@
 					"dilate": 0.26,
 					"__comment": [
 						"body sides a", "body sides b", "qt mark a", "qt mark b",
-						"stomach a", "stomach b", "stomach c",
-						"butt", "butt",
+						"stomach a", "stomach b",
 						"back"
 					],
 					"east": [
@@ -167,12 +188,7 @@
 					],
 					"down": [
 						[ -4, 12,  2, 8, 4, 28, 48 ],
-						[ -4, 12,  6, 8, 4, 44, 48 ],
-						[ -4, 12, 10, 8, 4, 36, 32 ]
-					],
-					"south": [
-						[ -4, 4, 14, 8, 4, 36, 32 ],
-						[ -4, 8, 14, 8, 4, 36, 32 ]
+						[ -4, 12,  6, 8, 4, 44, 48 ]
 					],
 					"up": [
 						[ -4, 4, 2, 8, 12, 32, 36 ]
@@ -191,7 +207,54 @@
 						[ -4, 4, 10, 4, 4,  0, 32 ],
 						[ -4, 8, 10, 4, 4,  0, 48 ]
 					]
-				}
+				},
+				"butt": {
+			        "pivot": [8, 8, 0],
+			        "rotate": [0, 0, 90],
+			        "type": "mson:planar",
+			        "cubes": [
+						{
+							"type": "mson:plane", "__comment": "butt",
+							"texture": { "u": 36, "v": 32 },
+							"dilate": 0.26,
+							"face": "south",
+							"position": [ -4, 4, 14 ],
+							"size": [ 8, 4 ]
+						},
+						{
+							"type": "mson:plane", "__comment": "butt",
+							"texture": { "u": 36, "v": 32 },
+							"dilate": 0.26,
+							"mirror": [false, true],
+							"face": "south",
+							"position": [ -4, 8, 14 ],
+							"size": [ 8, 4 ]
+						}
+			        ]
+			    },
+			    "butt_buttom": {
+			        "pivot": [-2, 12, 14],
+			        "rotate": [0, 90, 0],
+			        "cubes": [
+						{
+							"type": "mson:plane", "__comment": "butt bottom",
+							"texture": { "u": 36, "v": 32 },
+							"dilate": 0.26,
+							"face": "down",
+							"position": [ 0, 0, 2 ],
+							"size": [ 4, 4 ]
+						},
+						{
+							"type": "mson:plane", "__comment": "butt bottom",
+							"texture": { "u": 36, "v": 32 },
+							"dilate": 0.26,
+							"face": "down",
+							"mirror": [false, true],
+							"position": [ 0, 0, -2 ],
+							"size": [ 4, 4 ]
+						}
+			        ]
+			    }
 			}
 		},
 		"tail": {
