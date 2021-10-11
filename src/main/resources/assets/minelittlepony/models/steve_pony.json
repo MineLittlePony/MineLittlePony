@@ -171,10 +171,10 @@
 		},
 		"saddle": {
 			"texture": { "u": 24, "v": 0 },
+			"dilate": 0.26,
 			"children": {
 				"left_side": {
 					"type": "mson:planar",
-					"dilate": 0.26,
 					"__comment": [
 						"body sides a", "body sides b", "qt mark a", "qt mark b",
 						"stomach a", "stomach b",
@@ -196,7 +196,6 @@
 				},
 				"right_side": {
 					"type": "mson:planar",
-					"dilate": 0.26,
 					"mirror": [ false, false, true ],
 					"__comment": [
 						"body sides a", "body sides b", "qt mark a", "qt mark b"
@@ -212,47 +211,18 @@
 			        "pivot": [8, 8, 0],
 			        "rotate": [0, 0, 90],
 			        "type": "mson:planar",
-			        "cubes": [
-						{
-							"type": "mson:plane", "__comment": "butt",
-							"texture": { "u": 36, "v": 32 },
-							"dilate": 0.26,
-							"face": "south",
-							"position": [ -4, 4, 14 ],
-							"size": [ 8, 4 ]
-						},
-						{
-							"type": "mson:plane", "__comment": "butt",
-							"texture": { "u": 36, "v": 32 },
-							"dilate": 0.26,
-							"mirror": [false, true],
-							"face": "south",
-							"position": [ -4, 8, 14 ],
-							"size": [ 8, 4 ]
-						}
+			        "south": [
+			            [ -4, 4, 14, 8, 4, 36, 32 ],
+			            [ -4, 8, 14, 8, 4, 36, 32, false, true ]
 			        ]
 			    },
 			    "butt_buttom": {
-			        "pivot": [-2, 12, 14],
+			        "pivot": [-2, 11.9999, 14],
 			        "rotate": [0, 90, 0],
-			        "cubes": [
-						{
-							"type": "mson:plane", "__comment": "butt bottom",
-							"texture": { "u": 36, "v": 32 },
-							"dilate": 0.26,
-							"face": "down",
-							"position": [ 0, 0, 2 ],
-							"size": [ 4, 4 ]
-						},
-						{
-							"type": "mson:plane", "__comment": "butt bottom",
-							"texture": { "u": 36, "v": 32 },
-							"dilate": 0.26,
-							"face": "down",
-							"mirror": [false, true],
-							"position": [ 0, 0, -2 ],
-							"size": [ 4, 4 ]
-						}
+			        "type": "mson:planar",
+			        "down": [
+			            [ 0, 0, 2, 4, 4, 36, 32 ],
+			            [ 0, 0, -2, 4, 4, 36, 32, false, true ]
 			        ]
 			    }
 			}
