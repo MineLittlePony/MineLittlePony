@@ -5,7 +5,6 @@ import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.model.armour.IArmour;
 import com.minelittlepony.api.model.fabric.PonyModelPrepareCallback;
-import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Sizes;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.client.transform.PonyTransformation;
@@ -578,11 +577,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         renderStage(BodyPart.HEAD, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderHead);
         renderStage(BodyPart.LEGS, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderLegs);
 
-        if (getMetadata().getRace() != Race.SEAPONY) {
-            renderStage(BodyPart.LEGS, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderSleeves);
-            renderStage(BodyPart.BODY, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderVest);
-        }
-
+        renderStage(BodyPart.LEGS, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderSleeves);
+        renderStage(BodyPart.BODY, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderVest);
         renderStage(BodyPart.HEAD, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderHelmet);
     }
 

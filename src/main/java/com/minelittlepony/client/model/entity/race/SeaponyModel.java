@@ -98,13 +98,6 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
     }
 
     @Override
-    public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        setVisible(leftSleeve.visible);
-
-        super.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-    }
-
-    @Override
     public void transform(BodyPart part, MatrixStack stack) {
         stack.translate(0, 0.6F, 0);
         super.transform(part, stack);
@@ -132,6 +125,9 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
         super.setVisible(visible);
 
         upperTorsoOverlay.visible = false;
+        leftSleeve.visible = false;
+        rightSleeve.visible = false;
+        jacket.visible = false;
 
         // hide the back legs
         leftLeg.visible = false;
