@@ -104,8 +104,7 @@
 								},
 								"skin": {
 									"type": "mson:planar",
-									"mirror": [true, false, true],
-									"east": [0, 0, -7, 8, 16, 56, 32]
+									"east": [0, 0, -7, 8, 16, 56, 32, true, false]
 								}
 							}
 						}
