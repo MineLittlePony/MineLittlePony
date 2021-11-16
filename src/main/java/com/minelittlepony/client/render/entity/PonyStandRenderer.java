@@ -39,11 +39,13 @@ public class PonyStandRenderer extends ArmorStandEntityRenderer {
         addFeature(new HeadFeatureRenderer<>(this, context.getModelLoader()));
     }
 
+    @Override
     public void render(ArmorStandEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
         this.model = isPonita(entity) ? pony : human;
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
     }
 
+    @Override
     protected void setupTransforms(ArmorStandEntity entity, MatrixStack stack, float f, float g, float h) {
         super.setupTransforms(entity, stack, f, g, h);
         if (isPonita(entity)) {
