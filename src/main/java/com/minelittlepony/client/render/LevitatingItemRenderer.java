@@ -12,12 +12,12 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3f;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.UseAction;
@@ -40,7 +40,7 @@ public class LevitatingItemRenderer {
     }
 
     public static RenderLayer getRenderLayer() {
-        return getRenderLayer(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+        return getRenderLayer(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
     }
 
     /**

@@ -1,9 +1,9 @@
 package com.minelittlepony.api.pony.network;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Lazy;
 import net.minecraft.util.Util;
 
+import com.google.common.base.Suppliers;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.TriggerPixelType;
 import com.minelittlepony.api.pony.meta.Gender;
@@ -16,6 +16,7 @@ import com.minelittlepony.common.util.animation.Interpolator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class MsgPonyData implements IPonyData {
 
@@ -32,7 +33,7 @@ public class MsgPonyData implements IPonyData {
     private final int wearableColor;
     private final boolean[] wearables;
 
-    private final Lazy<Map<String, TriggerPixelType<?>>> triggerPixels = new Lazy<>(() -> Util.make(new TreeMap<>(), this::initTriggerPixels));
+    private final Supplier<Map<String, TriggerPixelType<?>>> triggerPixels = Suppliers.memoize(() -> Util.make(new TreeMap<>(), this::initTriggerPixels));
     private void initTriggerPixels(Map<String, TriggerPixelType<?>> map) {
         map.put("race", race);
         map.put("tail", tailLength);

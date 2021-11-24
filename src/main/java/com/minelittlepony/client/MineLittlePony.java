@@ -104,7 +104,7 @@ public class MineLittlePony implements ClientModInitializer {
         }
 
         if ((mainMenu || inGame) && keyBinding.isPressed()) {
-            client.openScreen(new GuiPonySettings(client.currentScreen));
+            client.setScreen(new GuiPonySettings(client.currentScreen));
         }
     }
 
@@ -118,7 +118,7 @@ public class MineLittlePony implements ClientModInitializer {
             if (show) {
                 int y = hasHdSkins ? 75 : 50;
                 Button button = buttons.addButton(new Button(screen.width - 50, screen.height - y, 20, 20))
-                    .onClick(sender -> MinecraftClient.getInstance().openScreen(new GuiPonySettings(screen)));
+                    .onClick(sender -> MinecraftClient.getInstance().setScreen(new GuiPonySettings(screen)));
                 button.getStyle()
                         .setIcon(new TextureSprite()
                                 .setPosition(2, 2)

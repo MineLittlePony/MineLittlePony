@@ -80,8 +80,8 @@ public class DefaultArmourTextureResolver implements IArmourTextureResolver {
     }
 
     private String getCustom(ItemStack stack) {
-        if (stack.hasTag() && stack.getTag().contains("CustomModelData", NbtElement.NUMBER_TYPE)) {
-            return "custom_" + stack.getTag().getInt("CustomModelData");
+        if (stack.hasNbt() && stack.getNbt().contains("CustomModelData", NbtElement.NUMBER_TYPE)) {
+            return "custom_" + stack.getNbt().getInt("CustomModelData");
         }
         return "none";
     }

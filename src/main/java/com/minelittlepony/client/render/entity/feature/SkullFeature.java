@@ -89,8 +89,8 @@ public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & IPo
 
         GameProfile profile = null;
 
-        if (itemstack.hasTag()) {
-            NbtCompound nbt = itemstack.getTag();
+        if (itemstack.hasNbt()) {
+            NbtCompound nbt = itemstack.getNbt();
 
             if (nbt.contains("SkullOwner", 10)) {
                 profile = NbtHelper.toGameProfile(nbt.getCompound("SkullOwner"));

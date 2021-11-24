@@ -10,7 +10,7 @@ import net.minecraft.entity.EntityType;
 
 @Mixin(EntityRenderers.class)
 public interface MixinEntityRenderers {
-    @Accessor
+    @Accessor("RENDERER_FACTORIES")
     public static Map<EntityType<?>, EntityRendererFactory<?>> getRendererFactories() {
         return null;
     }

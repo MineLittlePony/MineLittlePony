@@ -37,7 +37,7 @@ class GuiSkinsMineLP extends GuiSkins {
 
         if (!(parent instanceof GuiPonySettings)) {
             addButton(new Button(width - 25, height - 90, 20, 20))
-                .onClick(sender -> client.openScreen(new GuiPonySettings(this)))
+                .onClick(sender -> client.setScreen(new GuiPonySettings(this)))
                 .getStyle()
                     .setIcon(new TextureSprite()
                             .setPosition(2, 2)
@@ -66,7 +66,7 @@ class GuiSkinsMineLP extends GuiSkins {
 
         MineLittlePony.logger.debug("Invalidating old local skin, checking updated local skin");
         if (type == SkinType.SKIN) {
-            ponyManager.removePony(previewer.getLocal().getTextures().get(SkinType.SKIN).getId());
+            previewer.getLocal().ifPresent(local -> ponyManager.removePony(local.getTextures().get(SkinType.SKIN).getId()));
         }
     }
 

@@ -98,7 +98,7 @@ public enum TriggerPixel {
         }
 
         public int readValue(int x, int y, NativeImage image) {
-            return (Color.abgrToArgb(image.getPixelColor(x, y)) >> offset) & mask;
+            return (Color.abgrToArgb(image.getColor(x, y)) >> offset) & mask;
         }
     }
 }

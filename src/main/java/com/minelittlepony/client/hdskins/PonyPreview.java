@@ -10,23 +10,25 @@ import com.minelittlepony.api.pony.TriggerPixelType;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.hdskins.client.dummy.DummyPlayer;
 import com.minelittlepony.hdskins.client.dummy.PlayerPreview;
+import com.minelittlepony.hdskins.client.dummy.TextureProxy;
 import com.minelittlepony.hdskins.profile.SkinType;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 class PonyPreview extends PlayerPreview {
-
     public static final Identifier NO_SKIN_STEVE_PONY = new Identifier("minelittlepony", "textures/mob/noskin.png");
     public static final Identifier NO_SKIN_ALEX_PONY = new Identifier("minelittlepony", "textures/mob/noskin_alex.png");
     public static final Identifier NO_SKIN_SEAPONY = new Identifier("minelittlepony", "textures/mob/noskin_seapony.png");
 
-    private final DummyPony localPony = new DummyPony(localTextures);
-    private final DummyPony remotePony = new DummyPony(remoteTextures);
+    @Override
+    protected DummyPlayer createEntity(TextureProxy textures) {
+        return new DummyPony(textures);
+    }
 
     public void setWet(boolean isWet) {
-        localPony.setWet(isWet);
-        remotePony.setWet(isWet);
+        apply(p -> ((DummyPony)p).setWet(isWet));;
     }
 
     @Override
@@ -54,26 +56,17 @@ class PonyPreview extends PlayerPreview {
     }
 
     @Override
-    public DummyPlayer getRemote() {
-        return remotePony;
-    }
-
-    @Override
-    public DummyPlayer getLocal() {
-        return localPony;
-    }
-
-    @Override
-    public void renderWorldAndPlayer(DummyPlayer thePlayer,
+    public void renderWorldAndPlayer(Optional<DummyPlayer> thePlayer,
             int frameLeft, int frameRight, int frameBottom, int frameTop,
             float xPos, float yPos, int horizon, int mouseX, int mouseY, int ticks, float partialTick, float scale,
             MatrixStack matrices) {
         super.renderWorldAndPlayer(thePlayer, frameLeft, frameRight, frameBottom, frameTop, xPos, yPos, horizon, mouseX, mouseY, ticks, partialTick, scale, matrices);
-
-        IPonyData data = MineLittlePony.getInstance().getManager().getPony(thePlayer).getMetadata();
-        int[] index = new int[1];
-        data.getTriggerPixels().forEach((key, value) -> {
-            drawLegendBlock(matrices, index[0]++, frameLeft, frameTop, mouseX, mouseY, key, value);
+        thePlayer.ifPresent(p -> {
+            IPonyData data = MineLittlePony.getInstance().getManager().getPony(p).getMetadata();
+            int[] index = new int[1];
+            data.getTriggerPixels().forEach((key, value) -> {
+                drawLegendBlock(matrices, index[0]++, frameLeft, frameTop, mouseX, mouseY, key, value);
+            });
         });
     }
 
