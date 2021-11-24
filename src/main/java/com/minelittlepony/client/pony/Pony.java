@@ -37,11 +37,11 @@ import org.jetbrains.annotations.Unmodifiable;
 public class Pony implements IPony {
 
     private final Identifier texture;
-    private final IPonyData metadata;
+    private final Memoize<IPonyData> metadata;
 
     private boolean defaulted = false;
 
-    Pony(Identifier resource, IPonyData data) {
+    Pony(Identifier resource, Memoize<IPonyData> data) {
         texture = resource;
         metadata = data;
     }
@@ -62,16 +62,20 @@ public class Pony implements IPony {
 
     @Override
     public void updateForEntity(Entity entity) {
+        if (!metadata.isPresent()) {
+            return;
+        }
+
         if (entity instanceof RegistrationHandler && ((RegistrationHandler)entity).shouldUpdateRegistration(this)) {
             entity.calculateDimensions();
 
             PlayerEntity clientPlayer = MinecraftClient.getInstance().player;
             if (clientPlayer != null) {
                 if (Objects.equals(entity, clientPlayer) || Objects.equals(((PlayerEntity)entity).getGameProfile(), clientPlayer.getGameProfile())) {
-                    Channel.broadcastPonyData(new MsgPonyData(metadata, defaulted));
+                    Channel.broadcastPonyData(new MsgPonyData(getMetadata(), defaulted));
                 }
             }
-            PonyDataCallback.EVENT.invoker().onPonyDataAvailable((PlayerEntity)entity, metadata, defaulted, EnvType.CLIENT);
+            PonyDataCallback.EVENT.invoker().onPonyDataAvailable((PlayerEntity)entity, getMetadata(), defaulted, EnvType.CLIENT);
         }
     }
 
@@ -144,7 +148,7 @@ public class Pony implements IPony {
     }
 
     protected Vec3d getVisualEyePosition(LivingEntity entity) {
-        Size size = entity.isBaby() ? Sizes.FOAL : metadata.getSize();
+        Size size = entity.isBaby() ? Sizes.FOAL : getMetadata().getSize();
 
         return new Vec3d(
                 entity.getX(),
@@ -155,7 +159,7 @@ public class Pony implements IPony {
 
     @Override
     public Race getRace(boolean ignorePony) {
-        return getEffectiveRace(metadata.getRace(), ignorePony);
+        return getEffectiveRace(getMetadata().getRace(), ignorePony);
     }
 
     @Override
@@ -165,15 +169,12 @@ public class Pony implements IPony {
 
     @Override
     public IPonyData getMetadata() {
-        return metadata;
+        return metadata.get(PonyData.NULL);
     }
 
     @Override
     public boolean isSitting(LivingEntity entity) {
-        return entity.hasVehicle()/*
-                || (entity instanceof PlayerEntity
-                        && entity.getVelocity().x == 0 && entity.getVelocity().z == 0
-                        && !entity.isInsideWaterOrBubbleColumn() && entity.onGround && isCrouching(entity))*/;
+        return entity.hasVehicle();
     }
 
     @Override

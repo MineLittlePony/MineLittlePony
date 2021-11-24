@@ -34,21 +34,22 @@ public class PonyData implements IPonyData {
     private static final PonyDataSerialiser SERIALISER = new PonyDataSerialiser();
 
     public static final IPonyData NULL = new PonyData(Race.HUMAN);
+    public static final Memoize<IPonyData> MEM_NULL = Memoize.of(NULL);
 
     /**
      * Parses the given resource into a new IPonyData.
      * This may either come from an attached json file or the image itself.
      */
-    public static IPonyData parse(@Nullable Identifier identifier) {
+    public static Memoize<IPonyData> parse(@Nullable Identifier identifier) {
         if (identifier == null) {
-            return NULL;
+            return MEM_NULL;
         }
 
         try (Resource res = MinecraftClient.getInstance().getResourceManager().getResource(identifier)) {
             PonyData data = res.getMetadata(SERIALISER);
 
             if (data != null) {
-                return data;
+                return Memoize.of(data);
             }
         } catch (FileNotFoundException e) {
             // Ignore uploaded texture
@@ -56,12 +57,14 @@ public class PonyData implements IPonyData {
             MineLittlePony.logger.warn("Unable to read {} metadata", identifier, e);
         }
 
-        try {
-            return NativeUtil.parseImage(identifier, NativePonyData::new);
-        } catch (IllegalStateException e) {
-            MineLittlePony.logger.fatal("Unable to read {} metadata", identifier, e);
-            return NULL;
-        }
+        return Memoize.load(callback -> {
+            NativeUtil.parseImage(identifier, img -> {
+                callback.accept(new NativePonyData(img));
+            }, e -> {
+                MineLittlePony.logger.fatal("Unable to read {} metadata", identifier, e);
+                callback.accept(NULL);
+            });
+        });
     }
 
     @Expose

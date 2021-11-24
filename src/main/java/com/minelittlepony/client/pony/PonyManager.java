@@ -49,7 +49,7 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
         try {
             return poniesCache.get(resource);
         } catch (ExecutionException e) {
-            return new Pony(resource, PonyData.NULL);
+            return new Pony(resource, Memoize.of(PonyData.NULL));
         }
     }
 

@@ -9,7 +9,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 import static com.mojang.blaze3d.platform.GlStateManager._getTexLevelParameter;
 import static org.lwjgl.opengl.GL11.*;
@@ -91,34 +91,38 @@ public class NativeUtil {
         }
     }
 
-    public static <T> T parseImage(Identifier resource, Function<NativeImage, T> consumer) {
-        MinecraftClient mc = MinecraftClient.getInstance();
-        TextureManager textures = mc.getTextureManager();
+    public static void parseImage(Identifier resource, Consumer<NativeImage> consumer, Consumer<Exception> fail) {
+        try {
+            if (!RenderSystem.isOnRenderThread()) {
+                RenderSystem.recordRenderCall(() -> parseImage(resource, consumer, fail));
+                return;
+            }
 
-        if (!RenderSystem.isOnRenderThread()) {
-            throw new IllegalStateException("This can only be called from the main thread.");
-        }
+            MinecraftClient mc = MinecraftClient.getInstance();
+            TextureManager textures = mc.getTextureManager();
 
-        // recreate NativeImage from the GL matrix
-        textures.bindTexture(resource);
+            // recreate NativeImage from the GL matrix
+            textures.bindTexture(resource);
 
-                                                 // TODO: This returns values that are too specific.
-                                                 //       Can we change the level (0) here to something
-                                                 //       else to actually get what we need?
-        int format = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT);
-        int width  = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH);
-        int height = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT);
+                                                     // TODO: This returns values that are too specific.
+                                                     //       Can we change the level (0) here to something
+                                                     //       else to actually get what we need?
+            int format = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT);
+            int width  = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH);
+            int height = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT);
 
-        if (width * height == 0) {
-            throw new IllegalStateException("GL texture not uploaded yet");
-        }
+            if (width * height == 0) {
+                throw new IllegalStateException("GL texture not uploaded yet");
+            }
 
-        try (NativeImage image = new NativeImage(InternalFormat.valueOf(format).getClassification(), width, height, false)) {
-            // This allocates a new array to store the image every time.
-            // Don't do this every time. Keep a cache and store it so we don't destroy memory.
-            image.loadFromTextureImage(0, false);
-
-            return consumer.apply(image);
+            try (NativeImage image = new NativeImage(InternalFormat.valueOf(format).getClassification(), width, height, false)) {
+                // This allocates a new array to store the image every time.
+                // Don't do this every time. Keep a cache and store it so we don't destroy memory.
+                image.loadFromTextureImage(0, false);
+                consumer.accept(image);
+            }
+        } catch (Exception e) {
+            fail.accept(e);
         }
     }
 }
