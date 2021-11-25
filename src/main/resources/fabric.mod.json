@@ -31,8 +31,8 @@
     "minelp.mixin.json"
   ],
   "depends": {
-    "fabricloader": ">=0.11.3",
-    "java": ">=16",
+    "fabricloader": ">=0.12.0",
+    "java": ">=17",
     "fabric-api-base": ">=0.1.0",
     "fabric-lifecycle-events-v1": ">=0.1.0",
     "fabric-resource-loader-v0": ">=0.1.0",
