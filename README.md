@@ -12,7 +12,7 @@ https://minelittlepony-mod.com
 
 ## Building
 
-1. JDK 17 is required. Install it using https://adoptium.net/?variant=openjdk17&jvmVariant=hotspot
+1. JDK 16 is required. Install it using https://adoptium.net/?variant=openjdk17&jvmVariant=hotspot
 
 2. Open a terminal window in the same directory as the sources (git clone or extracted from zip). Run the following command (windows).
 
