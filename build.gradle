@@ -122,6 +122,8 @@ task publishModrinth (type: TaskModrinthUpload){
     token = System.env.MODRINTH_KEY
     projectId = project.modrinth_project_id
     versionNumber = version.toString()
+    versionName = archivesBaseName + '-' + version
+    changelog = "[Changelog](https://github.com/MineLittlePony/MineLittlePony/releases/tag/${version.toString()})"
     uploadFile = jar.outputs.getFiles().asPath // This is the java jar task
     addLoader(project.modrinth_loader_type)
     outlet.mcVersions().each{ver ->
