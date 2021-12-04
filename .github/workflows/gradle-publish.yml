@@ -16,7 +16,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 16
+          java-version: 17
       - name: Publish Maven Jar
         env:
           ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
