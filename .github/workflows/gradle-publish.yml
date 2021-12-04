@@ -1,4 +1,4 @@
-name: Publish To Maven
+name: Publish
 on:
   push:
     tags:
@@ -25,3 +25,10 @@ jobs:
         uses: eskatos/gradle-command-action@v1
         with:
           arguments: build publish
+      - name: Publish Modrinth Jar
+        env:
+          MODRINTH_KEY: ${{ secrets.MODRINTH_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: publishModrinth
