@@ -1,6 +1,6 @@
 # Mine Little Pony
 
-[![Build Status](https://travis-ci.org/MineLittlePony/MineLittlePony.svg?branch=1.17)](https://travis-ci.org/MineLittlePony/MineLittlePony)
+[![Build Status](https://github.com/MineLittlePony/MineLittlePony/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/MineLittlePony/MineLittlePony/actions/workflows/gradle-build.yml)
 ![Downloads](https://img.shields.io/github/downloads/MineLittlePony/MineLittlePony/total.svg?color=yellowgreen)
 [![Discord Server](https://img.shields.io/discord/182490536119107584.svg?color=blueviolet)](https://discord.gg/HbJSFyu)
 ![License](https://img.shields.io/github/license/MineLittlePony/MineLittlePony)
