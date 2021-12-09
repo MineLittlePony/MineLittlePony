@@ -115,7 +115,7 @@ public enum PonyTransformation {
         @Override
         public void transform(IModel model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isSwimming) stack.translate(0, -0.9F, 0);
-            if (model.getAttributes().isCrouching) stack.translate(0, -0.3F, 0);
+            if (model.getAttributes().isCrouching) stack.translate(0, -0.2F, 0);
             if (model.getAttributes().isSleeping) stack.translate(0, -0.65F, -0.3F);
             if (model.isRiding()) stack.translate(0, -0.6F, -0.2F);
 
