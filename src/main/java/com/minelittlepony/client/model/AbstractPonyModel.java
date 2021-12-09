@@ -141,7 +141,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             head.setPivot(0, 0, 0);
         }
 
-        leftLeg.pivotZ = 15;
+        leftLeg.pivotZ = 14;
         leftLeg.pivotY = 9;
         leftLeg.pitch = -PI / 4;
         leftLeg.yaw = -PI / 5;
@@ -246,10 +246,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         float sin = MathHelper.sin(body.yaw) * 5;
         float cos = MathHelper.cos(body.yaw) * 5;
 
-        float spread = attributes.isGoingFast ? 2 : 1;
-
-        rightArm.pivotZ = spread + sin;
-        leftArm.pivotZ = spread - sin;
+        rightArm.pivotZ = 2 + sin;
+        leftArm.pivotZ = 2 - sin;
 
         float legRPX = cos - getLegOutset() - 0.001F;
 
@@ -265,7 +263,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         leftArm.yaw += body.yaw;
 
         rightArm.pivotY = leftArm.pivotY = 8;
-        rightLeg.pivotZ = leftLeg.pivotZ = 10;
+        rightLeg.pivotZ = leftLeg.pivotZ = 11;
     }
 
     /**
