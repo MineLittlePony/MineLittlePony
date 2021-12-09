@@ -64,7 +64,7 @@ public class PonyTail implements IPart, MsonModel {
             tail.pivotY = TAIL_RP_Y_RIDING;
             tail.pitch = PI / 5;
         } else {
-            tail.setPivot(TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_NOTSNEAK);
+            tail.setPivot(0, 0, TAIL_RP_Z);
             if (rainboom) {
                 tail.pitch = ROTATE_90 + MathHelper.sin(move) / 10;
             } else {
@@ -89,7 +89,7 @@ public class PonyTail implements IPart, MsonModel {
     }
 
     private void rotateSneak() {
-        tail.setPivot(TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_SNEAK);
+        tail.setPivot(0, 0, TAIL_RP_Z_SNEAK);
         tail.pitch = -BODY_ROT_X_SNEAK + 0.1F;
     }
 

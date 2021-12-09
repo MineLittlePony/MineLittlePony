@@ -78,17 +78,17 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         } else if (riding) {
             ponySit();
         } else {
-            adjustBody(BODY_ROT_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
+            adjustBody(BODY_ROT_X, BODY_RP_Y, BODY_RP_Z);
 
-            rightLeg.pivotY = FRONT_LEG_RP_Y_NOTSNEAK;
-            leftLeg.pivotY = FRONT_LEG_RP_Y_NOTSNEAK;
+            rightLeg.pivotY = FRONT_LEG_RP_Y;
+            leftLeg.pivotY = FRONT_LEG_RP_Y;
 
             if (!attributes.isSleeping) {
                 animateBreathing(ticks);
             }
 
             if (attributes.isSwimmingRotated) {
-                head.setPivot(0, -2, -4);
+                head.setPivot(0, HEAD_RP_Y_SWIM, HEAD_RP_Z_SWIM);
             } else {
                 head.setPivot(0, 0, 0);
             }
@@ -98,7 +98,13 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             ponySleep();
         }
 
-        animateWears();
+        leftSleeve.copyTransform(leftArm);
+        rightSleeve.copyTransform(rightArm);
+        leftPants.copyTransform(leftLeg);
+        rightPants.copyTransform(rightLeg);
+        jacket.copyTransform(body);
+        hat.copyTransform(head);
+        upperTorsoOverlay.copyTransform(upperTorso);
     }
 
     /**
@@ -106,7 +112,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      */
     protected void ponyCrouch() {
         adjustBody(BODY_ROT_X_SNEAK, BODY_RP_Y_SNEAK, BODY_RP_Z_SNEAK);
-        head.setPivot(0, 6, -2);
+        head.setPivot(HEAD_RP_X_SNEAK, HEAD_RP_Y_SNEAK, HEAD_RP_Z_SNEAK);
 
         rightArm.pitch -= LEG_ROT_X_SNEAK_ADJ;
         leftArm.pitch -= LEG_ROT_X_SNEAK_ADJ;
@@ -122,22 +128,22 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         rightLeg.pitch = ROTATE_90;
         leftLeg.pitch = ROTATE_90;
 
-        head.setPivot(1, 2, sneaking ? -1 : 1);
+        head.setPivot(HEAD_RP_X_SLEEP, HEAD_RP_Y_SLEEP, sneaking ? -1 : 1);
 
-        PartUtil.shift(rightArm, 0, 2,  6);
-        PartUtil.shift(leftArm, 0, 2,  6);
-        PartUtil.shift(rightLeg, 0, 2, -8);
-        PartUtil.shift(leftLeg, 0, 2, -8);
+        PartUtil.shift(rightArm, 0, LEG_SLEEP_OFFSET_Y, FRONT_LEG_SLEEP_OFFSET_Z);
+        PartUtil.shift(leftArm, 0, LEG_SLEEP_OFFSET_Y, FRONT_LEG_SLEEP_OFFSET_Z);
+        PartUtil.shift(rightLeg, 0, LEG_SLEEP_OFFSET_Y, BACK_LEG_SLEEP_OFFSET_Z);
+        PartUtil.shift(leftLeg, 0, LEG_SLEEP_OFFSET_Y, BACK_LEG_SLEEP_OFFSET_Z);
     }
 
     protected void ponySit() {
         if (attributes.isRidingInteractive) {
             adjustBodyComponents(BODY_ROT_X_RIDING * 2, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
-            adjustNeck(BODY_ROT_X_NOTSNEAK * 2, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK - 4);
+            adjustNeck(BODY_ROT_X * 2, BODY_RP_Y, BODY_RP_Z - 4);
             head.setPivot(0, -2, -5);
         } else {
             adjustBodyComponents(BODY_ROT_X_RIDING, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
-            adjustNeck(BODY_ROT_X_NOTSNEAK, BODY_RP_Y_NOTSNEAK, BODY_RP_Z_NOTSNEAK);
+            adjustNeck(BODY_ROT_X, BODY_RP_Y, BODY_RP_Z);
             head.setPivot(0, 0, 0);
         }
 
@@ -189,16 +195,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         neck.yaw = bodySwing;
     }
 
-    private void animateWears() {
-        leftSleeve.copyTransform(leftArm);
-        rightSleeve.copyTransform(rightArm);
-        leftPants.copyTransform(leftLeg);
-        rightPants.copyTransform(rightLeg);
-        jacket.copyTransform(body);
-        hat.copyTransform(head);
-        upperTorsoOverlay.copyTransform(upperTorso);
-    }
-
     /**
      * Called to update the head rotation.
      *
@@ -213,18 +209,12 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             headPitch -= 0.9F;
         }
 
-        head.yaw = 0;
-        head.roll = 0;
-
-        if (attributes.isSwimmingRotated) {
-            head.roll = -headYaw;
-        } else {
-            head.yaw = headYaw;
-        }
-
         float pitch = (float)Math.toRadians(attributes.motionPitch);
-
-        head.pitch = MathHelper.clamp(headPitch, -1.25f - pitch, 0.5f - pitch);
+        head.setAngles(
+                MathHelper.clamp(headPitch, -1.25f - pitch, 0.5f - pitch),
+                attributes.isSwimmingRotated ? 0 : headYaw,
+                attributes.isSwimmingRotated ? -headYaw : 0
+        );
     }
 
     /**
@@ -280,19 +270,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         float left = (ROTATE_90 + MathHelper.sin((move / 3) + 2 * PI) / 2) * lerp;
         float right = (ROTATE_90 + MathHelper.sin(move / 3) / 2) * lerp;
 
-        leftArm.pitch = -left;
-        leftArm.yaw = -left/2;
-        leftArm.roll = left/2;
-
-        rightArm.pitch = -right;
-        rightArm.yaw = right/2;
-        rightArm.roll = -right/2;
-
-        leftLeg.pitch = legLeft;
-        rightLeg.pitch = right;
-
-        leftLeg.yaw = 0;
-        rightLeg.yaw = 0;
+        leftArm.setAngles(-left, -left/2, left/2);
+        rightArm.setAngles(-right, right/2, -right/2);
+        leftLeg.setAngles(legLeft, 0, leftLeg.roll);
+        rightLeg.setAngles(right, 0, rightLeg.roll);
     }
 
     /**
@@ -305,20 +286,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         float armX = attributes.isGoingFast ? ROTATE_270 : MathHelper.sin(-swing / 2);
         float legX = attributes.isGoingFast ? ROTATE_90 : MathHelper.sin(swing / 2);
 
-        leftArm.pitch = armX;
-        rightArm.pitch = armX;
-
-        leftLeg.pitch = legX;
-        rightLeg.pitch = legX;
-
-        leftArm.yaw = -0.2F;
-        leftLeg.yaw = 0.2F;
-
-        rightArm.yaw = 0.2F;
-        rightLeg.yaw = -0.2F;
-
-        rightArm.roll = 0;
-        leftArm.roll = 0;
+        leftArm.setAngles(armX, -0.2F, 0);
+        rightArm.setAngles(armX, 0.2F, 0);
+        leftLeg.setAngles(legX, 0.2F, leftLeg.roll);
+        rightLeg.setAngles(legX, -0.2F, rightLeg.roll);
     }
 
     /**
@@ -333,20 +304,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         float baseRotation = move * 0.6662F; // magic number ahoy
         float scale = swing / 4;
 
-        leftArm.pitch =  MathHelper.cos(baseRotation + angle) * scale;
-        rightArm.pitch = MathHelper.cos(baseRotation + PI + angle / 2) * scale;
-
-        leftLeg.pitch =  MathHelper.cos(baseRotation + PI - (angle * 0.4f)) * scale;
-        rightLeg.pitch = MathHelper.cos(baseRotation + angle / 5) * scale;
-
-        leftArm.yaw = 0;
-        rightArm.yaw = 0;
-
-        leftLeg.yaw = 0;
-        rightLeg.yaw = 0;
-
-        rightArm.roll = 0;
-        leftArm.roll = 0;
+        leftArm.setAngles(MathHelper.cos(baseRotation + angle) * scale, 0, 0);
+        rightArm.setAngles(MathHelper.cos(baseRotation + PI + angle / 2) * scale, 0, 0);
+        leftLeg.setAngles(MathHelper.cos(baseRotation + PI - (angle * 0.4f)) * scale, 0, leftLeg.roll);
+        rightLeg.setAngles(MathHelper.cos(baseRotation + angle / 5) * scale, 0, rightLeg.roll);
     }
 
     protected float getLegOutset() {

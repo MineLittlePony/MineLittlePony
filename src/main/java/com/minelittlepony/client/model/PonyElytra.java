@@ -46,7 +46,7 @@ public class PonyElytra<T extends LivingEntity> extends AnimalModel<T> {
         float rotateY = PI / 8;
         float rotateZ = PI / 12;
 
-        float rpY = BODY_RP_Y_NOTSNEAK;
+        float rpY = BODY_RP_Y;
 
         if (entity.isFallFlying()) {
             float velY = 1;

@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import static com.minelittlepony.api.model.PonyModelConstants.ROTATE_270;
 import static com.minelittlepony.api.model.PonyModelConstants.WING_ROT_Z_SNEAK;
+import static com.minelittlepony.api.model.PonyModelConstants.WING_ROT_Z_FLYING;
 
 public class ModelAttributes {
     /**
@@ -114,7 +115,7 @@ public class ModelAttributes {
             return (MathHelper.sin(ticks * 0.136f) / 2) + ROTATE_270;
         }
         if (isFlying) {
-            return MathHelper.sin(ticks * 0.536f) + ROTATE_270 + 0.4f;
+            return MathHelper.sin(ticks * 0.536f) + WING_ROT_Z_FLYING;
         }
         return WING_ROT_Z_SNEAK;
     }
