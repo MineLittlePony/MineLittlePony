@@ -5,7 +5,7 @@
 			"name": "left_wing",
 			"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
 			"data": {
-				"folded": { "visible": false },
+				"folded": "#extended",
 				"extended": {
 					"texture": {"u": 56, "v": 19, "w": 64, "h": 64},
 					"pivot": [2.49, 5.28, 4],
@@ -31,7 +31,7 @@
 			"name": "right_wing",
 			"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
 			"data": {
-				"folded": { "visible": false },
+				"folded": "#extended",
 				"extended": {
 					"texture": {"u": 56, "v": 19, "w": 64, "h": 64},
 					"pivot": [-2.49, 5.28, 4],
@@ -40,13 +40,15 @@
 						"primary": {
 							"type": "mson:planar",
 							"texture": {"u": 56, "v": 16},
-							"east": [0.5, 0, -7, 8, 16]
+							"mirror": [true, false, false],
+							"west": [0.5, 0, -7, 8, 16]
 						},
 						"secondary": {
 							"type": "mson:planar",
 							"texture": {"u": 56, "v": 32},
+							"mirror": [true, false, false],
 							"rotate": [-0.5, -0.3, -0.3333],
-							"east": [-1, 0, -5, 8, 16]
+							"west": [-1, 0, -5, 8, 16]
 						}
 					}
 				}

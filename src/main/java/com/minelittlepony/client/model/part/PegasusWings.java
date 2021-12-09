@@ -69,6 +69,8 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
             if (!pegasus.getAttributes().isCrouching && pegasus.isWearing(Wearable.SADDLE_BAGS)) {
                 flapAngle -= 1F;
             }
+        } else {
+            flapAngle = ROTATE_270 - 0.9F + (float)Math.sin(ticks / 10) / 15F;
         }
 
         if (!pegasus.isFlying()) {
