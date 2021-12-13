@@ -1,27 +1,28 @@
 package com.minelittlepony.client.model.entity;
 
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.mob.WitchEntity;
 import net.minecraft.util.math.MathHelper;
 
+import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.entity.race.ZebraModel;
-import com.minelittlepony.client.render.EquineRenderManager;
 
 public class WitchPonyModel extends ZebraModel<WitchEntity> {
 
-    public WitchPonyModel() {
-        super(false);
-        attributes.visualHeight = 2.5F;
+    public WitchPonyModel(ModelPart tree) {
+        super(tree, false);
     }
 
     @Override
-    public void updateLivingState(WitchEntity entity, IPony pony, EquineRenderManager.Mode mode) {
+    public void updateLivingState(WitchEntity entity, IPony pony, ModelAttributes.Mode mode) {
         super.updateLivingState(entity, pony, mode);
 
         if (entity.hasCustomName() && "Filly".equals(entity.getCustomName().getString())) {
             child = true;
         }
+        attributes.visualHeight += 0.5F;
         leftArmPose = ArmPose.EMPTY;
         rightArmPose = entity.getMainHandStack().isEmpty() ? ArmPose.EMPTY : ArmPose.ITEM;
     }
@@ -58,7 +59,7 @@ public class WitchPonyModel extends ZebraModel<WitchEntity> {
             }
 
             head.pitch = -rot / 2;
-            helmet.pitch = -rot / 2;
+            hat.pitch = -rot / 2;
         } else {
             rightArm.pivotX = 0;
             rightSleeve.pivotX = 0;

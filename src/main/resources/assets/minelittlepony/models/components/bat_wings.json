@@ -1,118 +1,117 @@
 {
-	"left_wing": {
-		"type": "mson:slot",
-		"name": "left_wing",
-		"implementation": "com.minelittlepony.client.model.part.BatWings$Wing",
-		"content": {
-			"texture": {"w": 64, "h": 64 },
-			"folded": {
-				"texture": {"u": 56, "v": 16},
-				"rotate": [90, 0, 0],
-				"center": [-0.5, 13, -4],
-				"cubes": [
-					{ "from": [3.15, 5, 4], "size": [1, 4, 1] },
-					{ "from": [ 3.5, 5, 6], "size": [1, 7, 1] },
-					{ "from": [ 3.5, 5, 5], "size": [1, 6, 1] },
-					{ "from": [3.15, 5, 7], "size": [1, 7, 1] }
-				]
-			},
-			"extended": {
-				"texture": {"u": 56, "v": 19},
-				"rotate": [3, 180, 0],
-				"center": [2.5, 5.3, 3],
-				"children": [
-					{
-						"texture": {"u": 60, "v": 16},
-						"rotate": [0.1, 0, 0],
-						"cubes": [
-							{ "from": [-0.5, -1, 0], "size": [1, 8, 1], "stretch": 0.001 }
-						],
-						"children": [
-							{
-								"texture": {"u": 60, "v": 16},
-								"rotate": [-28, 0, 0],
-								"center": [0, -1, -2],
-								"cubes": [
-									{ "from": [-0.5, 0, 2], "size": [1, 7, 1] }
-								]
-							},
-							{
-								"texture": {"u": 60, "v": 16},
-								"rotate": [-28, 0, 0],
-								"center": [0, 4, -2.4],
-								"cubes": [
-									{ "from": [-0.5, 0, 3], "size": [1, 7, 1] }
-								]
-							},
-							{
-								"type": "mson:planar",
-								"west": [0, 0, -7, 8, 16, 56, 32]
+	"data": {
+		"left_wing": {
+			"type": "mson:slot",
+			"name": "left_wing",
+			"implementation": "com.minelittlepony.client.model.part.BatWings$Wing",
+			"data": {
+				"folded": {
+					"texture": {"u": 56, "v": 16, "w": 64, "h": 64},
+					"rotate": [90, 0, 0],
+					"pivot": [-0.5, 13, -4],
+					"cubes": [
+						{ "from": [3.15, 5, 4], "size": [1, 4, 1] },
+						{ "from": [ 3.5, 5, 6], "size": [1, 7, 1] },
+						{ "from": [ 3.5, 5, 5], "size": [1, 6, 1] },
+						{ "from": [3.15, 5, 7], "size": [1, 7, 1] }
+					]
+				},
+				"extended": {
+					"texture": {"u": 56, "v": 19, "w": 64, "h": 64},
+					"rotate": [3, 180, 0],
+					"pivot": [2.5, 5.3, 3],
+					"children": {
+						"bones": {
+							"texture": {"u": 60, "v": 16},
+							"rotate": [0.1, 0, 0],
+							"cubes": [
+								{ "from": [-0.5, -1, 0], "size": [1, 8, 1], "dilate": 0.001 }
+							],
+							"children": {
+								"bone_1": {
+									"texture": {"u": 60, "v": 16},
+									"rotate": [-28, 0, 0],
+									"pivot": [0, -1, -2],
+									"cubes": [
+										{ "from": [-0.5, 0, 2], "size": [1, 7, 1] }
+									]
+								},
+								"bone_2": {
+									"texture": {"u": 60, "v": 16},
+									"rotate": [-28, 0, 0],
+									"pivot": [0, 4, -2.4],
+									"cubes": [
+										{ "from": [-0.5, 0, 3], "size": [1, 7, 1] }
+									]
+								},
+								"skin": {
+									"type": "mson:planar",
+									"west": [0, 0, -7, 8, 16, 56, 32]
+								}
 							}
-						]
+						}
 					}
-				]
+				}
 			}
-		}
-	},
-	"right_wing": {
-		"type": "mson:slot",
-		"name": "right_wing",
-		"implementation": "com.minelittlepony.client.model.part.BatWings$Wing",
-		"content": {
-			"texture": {"w": 64, "h": 64 },
-			"folded": {
-				"texture": {"u": 56, "v": 16},
-				"rotate": [90, 0, 0],
-				"center": [-0.5, 13, -4],
-				"mirror": true,
-				"cubes": [
-					{ "from": [-3.15, 5, 4], "size": [1, 4, 1] },
-					{ "from": [ -3.5, 5, 6], "size": [1, 7, 1] },
-					{ "from": [ -3.5, 5, 5], "size": [1, 6, 1] },
-					{ "from": [-3.15, 5, 7], "size": [1, 7, 1] }
-				]
-			},
-			"extended": {
-				"texture": {"u": 56, "v": 19},
-				"center": [-2.5, 5.3, 3],
-				"rotate": [-3, 180, 0],
-				"mirror": true,
-				"children": [
-					{
-						"texture": {"u": 60, "v": 16},
-						"rotate": [5.7, 0, 0],
-						"cubes": [
-							{ "from": [-0.5, -1, 0], "size": [1, 8, 1], "stretch": 0.001 }
-						],
-						"children": [
-							{
-								"texture": {"u": 60, "v": 16},
-								"rotate": [-28, 0, 0],
-								"center": [0, -1, -2],
-								"mirror": true,
-								"cubes": [
-									{ "from": [-0.5, 0, 2], "size": [1, 7, 1] }
-								]
-							},
-							{
-								"texture": {"u": 60, "v": 16},
-								"rotate": [-28, 0, 0],
-								"center": [0, 4, -2.4],
-								"mirror": true,
-								"cubes": [
-									{ "from": [-0.5, 0, 3], "size": [1, 7, 1] }
-								]
-							},
-							{
-								"type": "mson:planar",
-								"mirror": [true, false, true],
-								"east": [0, 0, -7, 8, 16, 56, 32]
+		},
+		"right_wing": {
+			"type": "mson:slot",
+			"name": "right_wing",
+			"implementation": "com.minelittlepony.client.model.part.BatWings$Wing",
+			"data": {
+				"folded": {
+					"texture": {"u": 56, "v": 16, "w": 64, "h": 64},
+					"rotate": [90, 0, 0],
+					"pivot": [-0.5, 13, -4],
+					"mirror": true,
+					"cubes": [
+						{ "from": [-3.15, 5, 4], "size": [1, 4, 1] },
+						{ "from": [ -3.5, 5, 6], "size": [1, 7, 1] },
+						{ "from": [ -3.5, 5, 5], "size": [1, 6, 1] },
+						{ "from": [-3.15, 5, 7], "size": [1, 7, 1] }
+					]
+				},
+				"extended": {
+					"texture": {"u": 56, "v": 19, "w": 64, "h": 64},
+					"pivot": [-2.5, 5.3, 3],
+					"rotate": [-3, 180, 0],
+					"mirror": true,
+					"children": {
+						"bones": {
+							"texture": {"u": 60, "v": 16},
+							"rotate": [5.7, 0, 0],
+							"cubes": [
+								{ "from": [-0.5, -1, 0], "size": [1, 8, 1], "dilate": 0.001 }
+							],
+							"children": {
+								"bone_1": {
+									"texture": {"u": 60, "v": 16},
+									"rotate": [-28, 0, 0],
+									"pivot": [0, -1, -2],
+									"mirror": true,
+									"cubes": [
+										{ "from": [-0.5, 0, 2], "size": [1, 7, 1] }
+									]
+								},
+								"bone_2": {
+									"texture": {"u": 60, "v": 16},
+									"rotate": [-28, 0, 0],
+									"pivot": [0, 4, -2.4],
+									"mirror": true,
+									"cubes": [
+										{ "from": [-0.5, 0, 3], "size": [1, 7, 1] }
+									]
+								},
+								"skin": {
+									"type": "mson:planar",
+									"east": [0, 0, -7, 8, 16, 56, 32, true, false]
+								}
 							}
-						]
+						}
 					}
-				]
+				}
 			}
-		}
-	},
-	"legacy_right_wing": "#right_wing"
+		},
+		"legacy_right_wing": "#right_wing"
+	}
 }

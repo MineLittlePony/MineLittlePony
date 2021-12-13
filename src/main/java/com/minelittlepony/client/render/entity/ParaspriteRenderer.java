@@ -1,6 +1,6 @@
 package com.minelittlepony.client.render.entity;
 
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.feature.SaddleFeatureRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -17,8 +17,8 @@ public class ParaspriteRenderer extends MobEntityRenderer<StriderEntity, Paraspr
 
     private static final Identifier SADDLE = new Identifier("minelittlepony", "textures/entity/strider/strider_saddle_pony.png");
 
-    public ParaspriteRenderer(EntityRenderDispatcher dispatcher) {
-        super(dispatcher, ModelType.PARASPRITE.createModel(), 0.5F);
+    public ParaspriteRenderer(EntityRendererFactory.Context context) {
+        super(context, ModelType.PARASPRITE.createModel(), 0.5F);
         addFeature(new SaddleFeatureRenderer<>(this, ModelType.PARASPRITE.createModel(), SADDLE));
     }
 

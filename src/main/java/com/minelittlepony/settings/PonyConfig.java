@@ -2,7 +2,7 @@ package com.minelittlepony.settings;
 
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.api.pony.meta.Size;
+import com.minelittlepony.api.pony.meta.Sizes;
 import com.minelittlepony.common.util.settings.JsonConfig;
 import com.minelittlepony.common.util.settings.Setting;
 
@@ -12,7 +12,6 @@ import java.nio.file.Path;
  * Storage container for MineLP client settings.
  */
 public class PonyConfig extends JsonConfig {
-
     /**
      * Sets the pony level. Want MOAR PONEHS? Well here you go.
      */
@@ -24,13 +23,19 @@ public class PonyConfig extends JsonConfig {
     public final Setting<Boolean> fillycam =   value("settings", "fillycam", true);
     private final Setting<Boolean> showscale = value("settings", "showscale", true);
     public final Setting<Boolean> fpsmagic =   value("settings", "fpsmagic", true);
+    public final Setting<Boolean> tpsmagic =   value("settings", "tpsmagic", true);
     public final Setting<Boolean> ponyskulls = value("settings", "ponyskulls", true);
     public final Setting<Boolean> frustrum =   value("settings", "frustrum", true);
 
     /**
+     * Temporary flag to enable post-1.18 networking behaviour.
+     */
+    public final Setting<Boolean> passiveNetworking = value("settings", "passiveNetworking", false);
+
+    /**
      * Debug override for pony sizes.
      */
-    public final Setting<Size> sizeOverride = value("sizeOverride", Size.UNSET);
+    public final Setting<Sizes> sizeOverride = value("sizeOverride", Sizes.UNSET);
 
     public PonyConfig(Path path) {
         super(path);

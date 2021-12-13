@@ -7,6 +7,7 @@ import com.minelittlepony.api.pony.meta.TailLength;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.common.util.animation.Interpolator;
 
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -46,7 +47,14 @@ public interface IPonyData {
     /**
      * Returns true if and only if this metadata represents a pony that can cast magic.
      */
-    boolean hasMagic();
+    default boolean hasMagic() {
+        return hasHorn() && getGlowColor() != 0;
+    }
+
+    /**
+     * Returns an array of wearables that this pony is carrying.
+     */
+    Wearable[] getGear();
 
     /**
      * Checks it this pony is wearing the given accessory.
@@ -57,4 +65,9 @@ public interface IPonyData {
      * Gets an interpolator for interpolating values.
      */
     Interpolator getInterpolator(UUID interpolatorId);
+
+    /**
+     * Gets the trigger pixel values as they appeared in the underlying image.
+     */
+    Map<String, TriggerPixelType<?>> getTriggerPixels();
 }

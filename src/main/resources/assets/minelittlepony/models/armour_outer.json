@@ -1,4 +1,4 @@
 {
 	"parent": "minelittlepony:armour_inner",
-	"scale": 0.25
+	"dilate": 0.3
 }

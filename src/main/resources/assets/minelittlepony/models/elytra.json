@@ -1,14 +1,16 @@
 {
 	"texture": {"u": 22, "w": 64, "h": 32},
-	"left_wing": {
-		"cubes": [
-			{"from": [-10, 0, 0], "size": [10, 20, 2], "stretch": 1}
-		]
-	},
-	"right_wing": {
-		"mirror": true,
-		"cubes": [
-			{"from": [ 0, 0, 0], "size": [10, 20, 2], "stretch": 1}
-		]
+	"data": {
+		"left_wing": {
+			"cubes": [
+				{"from": [-10, 0, 0], "size": [10, 20, 2], "dilate": 1}
+			]
+		},
+		"right_wing": {
+			"mirror": true,
+			"cubes": [
+				{"from": [ 0, 0, 0], "size": [10, 20, 2], "dilate": 1}
+			]
+		}
 	}
 }

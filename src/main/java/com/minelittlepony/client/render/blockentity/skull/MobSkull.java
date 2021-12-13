@@ -5,7 +5,7 @@ import com.minelittlepony.settings.PonyConfig;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.util.Identifier;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class MobSkull extends AbstractPonySkull {
 
@@ -19,7 +19,7 @@ public class MobSkull extends AbstractPonySkull {
 
     @Override
     public boolean canRender(PonyConfig config) {
-        return type.get();
+        return config.ponyskulls.get() && type.get();
     }
 
     @Override

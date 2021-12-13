@@ -4,13 +4,12 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 
+import com.minelittlepony.api.model.IPart;
 import com.minelittlepony.api.pony.meta.Gender;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.model.IPart;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
-import com.minelittlepony.mson.api.model.MsonPart;
-import com.minelittlepony.mson.api.model.BoxBuilder.ContentAccessor;
+import com.minelittlepony.mson.api.model.PartBuilder;
 
 import java.util.UUID;
 
@@ -21,23 +20,28 @@ public class PonySnout implements IPart, MsonModel {
     private ModelPart mare;
     private ModelPart stallion;
 
+    public PonySnout(ModelPart tree) {
+
+    }
+
     @Override
     public void init(ModelContext context) {
         mare = context.findByName("mare");
         stallion = context.findByName("stallion");
 
-        ContentAccessor head = context.getContext();
-        head.children().add(mare);
-        head.children().add(stallion);
+        PartBuilder head = context.getContext();
+        head.addChild("mare", mare);
+        head.addChild("stallion", stallion);
     }
 
     public void rotate(float x, float y, float z) {
-        ((MsonPart)mare).rotate(x, y, z);
-        ((MsonPart)stallion).rotate(x, y, z);
+        mare.setAngles(x, y, z);
+        stallion.setAngles(x, y, z);
     }
 
     @Override
     public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
+        mare.render(stack, vertices, lightUv, overlayUv, red, green, blue, alpha);
     }
 
     @Override

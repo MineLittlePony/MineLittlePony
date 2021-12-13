@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render;
 
+import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.IPonyModel;
@@ -11,7 +12,7 @@ import com.mojang.blaze3d.platform.GlStateManager.DstFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SrcFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.entity.model.EntityModel;
@@ -37,7 +38,6 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         if (!skipBlend) {
             RenderSystem.blendFunc(SrcFactor.SRC_ALPHA, DstFactor.ONE_MINUS_SRC_ALPHA);
         }
-        RenderSystem.alphaFunc(516, 0.003921569F);
     }
 
     public static void disableModelRenderProfile() {
@@ -60,7 +60,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
     }
 
     public void preRenderCallback(T entity, MatrixStack stack, float ticks) {
-        updateModel(entity, Mode.THIRD_PERSON);
+        updateModel(entity, ModelAttributes.Mode.THIRD_PERSON);
 
         float s = getScaleFactor();
         stack.scale(s, s, s);
@@ -107,7 +107,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         ((PonyPosture<T>) getPosture(player)).apply(player, getModel(), stack, yaw, ticks, -1);
     }
 
-    @Nonnull
+    @NotNull
     private PonyPosture<?> getPosture(T entity) {
         if (entity.isFallFlying()) {
             return PonyPosture.ELYTRA;
@@ -121,7 +121,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
             return PonyPosture.SWIMMING;
         }
 
-        if (getModel().getAttributes().isGoingFast) {
+        if (getModel().getAttributes().isGoingFast && !getModel().getAttributes().isRiptide) {
             return PonyPosture.FLYING;
         }
 
@@ -149,19 +149,19 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
 
     public void updateMetadata(Identifier texture) {
         pony = MineLittlePony.getInstance().getManager().getPony(texture);
-        playerModel.apply(pony.getMetadata());
+        playerModel.applyMetadata(pony.getMetadata());
     }
 
-    public void updateModel(T entity, Mode mode) {
+    public void updateModel(T entity, ModelAttributes.Mode mode) {
         pony = renderer.getEntityPony(entity);
-        playerModel.apply(pony.getMetadata());
+        playerModel.applyMetadata(pony.getMetadata());
         pony.updateForEntity(entity);
 
         getModel().updateLivingState(entity, pony, mode);
     }
 
     public IPony getPony(T entity) {
-        updateModel(entity, Mode.THIRD_PERSON);
+        updateModel(entity, ModelAttributes.Mode.THIRD_PERSON);
         return pony;
     }
 
@@ -176,7 +176,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
     public double getNamePlateYOffset(T entity) {
 
         // We start by negating the height calculation done by mahjong.
-        float y = -(entity.getHeight() + 0.5F - (entity.isInSneakingPose() ? 0.25F : 0));
+        float y = -(entity.getHeight() + 0.5F);
 
         // Then we add our own offsets.
         y += getModel().getAttributes().visualHeight * getScaleFactor() + 0.25F;
@@ -194,11 +194,5 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         }
 
         return y;
-    }
-
-    public enum Mode {
-        FIRST_PERSON,
-        THIRD_PERSON,
-        OTHER
     }
 }

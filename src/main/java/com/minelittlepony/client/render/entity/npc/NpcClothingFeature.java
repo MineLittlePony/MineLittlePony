@@ -86,7 +86,6 @@ class NpcClothingFeature<
 
             Identifier typeSkin = findTexture("type", Registry.VILLAGER_TYPE.getId(type));
 
-            getContext().getInternalRenderer().updateMetadata(typeSkin);
             renderModel(entityModel, typeSkin, matrixStack, provider, i, entity, 1, 1, 1);
 
             entityModel.setHatVisible(true);
@@ -94,7 +93,6 @@ class NpcClothingFeature<
             if (profession != VillagerProfession.NONE && !entity.isBaby()) {
                 Identifier professionSkin = findTexture("profession", Registry.VILLAGER_PROFESSION.getId(profession));
 
-                getContext().getInternalRenderer().updateMetadata(professionSkin);
                 renderModel(entityModel, professionSkin, matrixStack, provider, i, entity, 1, 1, 1);
 
                 if (profession != VillagerProfession.NITWIT) {

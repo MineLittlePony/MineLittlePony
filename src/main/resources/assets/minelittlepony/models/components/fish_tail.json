@@ -4,44 +4,46 @@
 		"tail_rot_x": 90,
 		"tail_rot_x_neg": [0, "-", "#tail_rot_x"]
 	},
-	"base": {
-		"texture": {"u": 0, "v": 38},
-		"center": [-2, 10, 8],
-		"rotate": ["#tail_rot_x", 0, 0],
-		"mirror": true,
-		"cubes": [
-			{"from": [0, 0, 0], "size": [4, 6, 4]}
-		],
-		"children": [
-			{
-				"name": "tip",
-				"texture": {"u": 24, "v": 0},
-				"center": [1, 5, 1],
-				"cubes": [
-					{"size": [2, 6, 1]}
-				],
-				"children": [
-					{
-						"name": "fins",
-						"texture": {"u": 56, "v": 20},
-						"rotate": ["#tail_rot_x_neg", 0, 0],
-						"cubes": [
-							{
-								"type": "mson:plane",
-								"face": "up",
-								"mirror": [false, true],
-								"position": [-7, 0, 4], "size": [8, 8]
-							},
-							{
-								"type": "mson:plane",
-								"face": "up",
-								"mirror": [true, true],
-								"position": [1, 0, 4], "size": [8, 8]
-							}
-						]
+	"data": {
+		"base": {
+			"texture": {"u": 0, "v": 38},
+			"pivot": [-2, 10, 8],
+			"rotate": ["#tail_rot_x", 0, 0],
+			"mirror": true,
+			"cubes": [
+				{"from": [0, 0, 0], "size": [4, 6, 4]}
+			],
+			"children": {
+				"tip": {
+					"name": "tip",
+					"texture": {"u": 24, "v": 0},
+					"pivot": [1, 5, 1],
+					"cubes": [
+						{"size": [2, 6, 1]}
+					],
+					"children": {
+						"fins": {
+							"name": "fins",
+							"texture": {"u": 56, "v": 20},
+							"rotate": ["#tail_rot_x_neg", 0, 0],
+							"cubes": [
+								{
+									"type": "mson:plane",
+									"face": "up",
+									"mirror": [false, true],
+									"position": [-7, 0, 4], "size": [8, 8]
+								},
+								{
+									"type": "mson:plane",
+									"face": "up",
+									"mirror": [true, true],
+									"position": [1, 0, 4], "size": [8, 8]
+								}
+							]
+						}
 					}
-				]
+				}
 			}
-		]
+		}
 	}
 }

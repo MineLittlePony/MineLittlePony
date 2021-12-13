@@ -14,7 +14,7 @@ public abstract class AbstractPonySkull implements ISkull {
 
     @Override
     public void setAngles(float angle, float poweredTicks) {
-        ponyHead.method_2821(poweredTicks, angle, 0);
+        ponyHead.setHeadRotation(poweredTicks, angle, 0);
     }
 
     @Override

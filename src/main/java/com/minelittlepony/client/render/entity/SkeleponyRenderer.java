@@ -6,7 +6,7 @@ import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
 import com.minelittlepony.client.render.entity.feature.GlowingItemFeature;
 import com.minelittlepony.client.render.entity.feature.StrayClothingFeature;
 
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.AbstractSkeletonEntity;
 import net.minecraft.entity.mob.StrayEntity;
@@ -19,8 +19,8 @@ public class SkeleponyRenderer<Skeleton extends AbstractSkeletonEntity> extends 
     public static final Identifier WITHER = new Identifier("minelittlepony", "textures/entity/skeleton/skeleton_wither_pony.png");
     public static final Identifier STRAY = new Identifier("minelittlepony", "textures/entity/skeleton/stray_pony.png");
 
-    public SkeleponyRenderer(EntityRenderDispatcher manager) {
-        super(manager, ModelType.SKELETON);
+    public SkeleponyRenderer(EntityRendererFactory.Context context) {
+        super(context, ModelType.SKELETON);
     }
 
     @Override
@@ -35,8 +35,8 @@ public class SkeleponyRenderer<Skeleton extends AbstractSkeletonEntity> extends 
 
     public static class Stray extends SkeleponyRenderer<StrayEntity> {
 
-        public Stray(EntityRenderDispatcher manager) {
-            super(manager);
+        public Stray(EntityRendererFactory.Context context) {
+            super(context);
             addFeature(new StrayClothingFeature<>(this));
         }
 
@@ -48,8 +48,8 @@ public class SkeleponyRenderer<Skeleton extends AbstractSkeletonEntity> extends 
 
     public static class Wither extends SkeleponyRenderer<WitherSkeletonEntity> {
 
-        public Wither(EntityRenderDispatcher manager) {
-            super(manager);
+        public Wither(EntityRendererFactory.Context context) {
+            super(context);
         }
 
         @Override

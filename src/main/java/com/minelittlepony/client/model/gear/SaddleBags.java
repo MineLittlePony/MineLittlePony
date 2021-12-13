@@ -1,11 +1,11 @@
 package com.minelittlepony.client.model.gear;
 
+import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.api.model.IModel;
+import com.minelittlepony.api.model.IPegasus;
+import com.minelittlepony.api.model.PonyModelConstants;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
-import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.IModel;
-import com.minelittlepony.model.IPegasus;
-import com.minelittlepony.mson.api.ModelContext;
 
 import java.util.UUID;
 
@@ -16,14 +16,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-public class SaddleBags extends AbstractGear {
+public class SaddleBags extends AbstractGear implements PonyModelConstants {
 
     public static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/models/saddlebags.png");
 
-    private ModelPart leftBag;
-    private ModelPart rightBag;
+    private final ModelPart leftBag;
+    private final ModelPart rightBag;
 
-    private ModelPart strap;
+    private final ModelPart strap;
 
     private boolean hangLow = false;
 
@@ -31,15 +31,14 @@ public class SaddleBags extends AbstractGear {
 
     private IModel model;
 
-    @Override
-    public void init(ModelContext context) {
-        strap = context.findByName("strap");
-        leftBag = context.findByName("left_bag");
-        rightBag = context.findByName("right_bag");
+    public SaddleBags(ModelPart tree) {
+        strap = tree.getChild("strap");
+        leftBag = tree.getChild("left_bag");
+        rightBag = tree.getChild("right_bag");
     }
 
     @Override
-    public void setLivingAnimations(IModel model, Entity entity) {
+    public void setModelAttributes(IModel model, Entity entity) {
         this.model = model;
 
         hangLow = false;
@@ -50,7 +49,7 @@ public class SaddleBags extends AbstractGear {
     }
 
     @Override
-    public void setRotationAndAngles(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
+    public void pose(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
         float pi = PI * (float) Math.pow(swing, 16);
 
         float mve = move * 0.6662f;
@@ -77,7 +76,7 @@ public class SaddleBags extends AbstractGear {
     }
 
     @Override
-    public void renderPart(MatrixStack stack, VertexConsumer renderContext, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
+    public void render(MatrixStack stack, VertexConsumer renderContext, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
         dropAmount = model.getMetadata().getInterpolator(interpolatorId).interpolate("dropAmount", dropAmount, 3);
 
         stack.push();
@@ -101,7 +100,7 @@ public class SaddleBags extends AbstractGear {
     }
 
     @Override
-    public <T extends Entity> Identifier getTexture(T entity, IRenderContext<T, ?> context) {
+    public <T extends Entity> Identifier getTexture(T entity, Context<T, ?> context) {
         if (context.getEntityModel() != null && context.getEntityModel().getMetadata().getRace().isEquivalentTo(Race.CHANGELING)) {
             return TEXTURE;
         }

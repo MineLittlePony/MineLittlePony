@@ -1,7 +1,10 @@
 package com.minelittlepony.client.hdskins;
 
 import com.minelittlepony.api.pony.IPonyManager;
+import com.minelittlepony.client.GuiPonySettings;
 import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.common.client.gui.element.Button;
+import com.minelittlepony.common.client.gui.sprite.TextureSprite;
 import com.minelittlepony.hdskins.client.dummy.PlayerPreview;
 import com.minelittlepony.hdskins.client.gui.GuiSkins;
 import com.minelittlepony.hdskins.server.SkinServerList;
@@ -29,6 +32,23 @@ class GuiSkinsMineLP extends GuiSkins {
     }
 
     @Override
+    public void init() {
+        super.init();
+
+        if (!(parent instanceof GuiPonySettings)) {
+            addButton(new Button(width - 25, height - 90, 20, 20))
+                .onClick(sender -> client.setScreen(new GuiPonySettings(this)))
+                .getStyle()
+                    .setIcon(new TextureSprite()
+                            .setPosition(2, 2)
+                            .setTexture(new Identifier("minelittlepony", "textures/gui/pony.png"))
+                            .setTextureSize(16, 16)
+                            .setSize(16, 16))
+                    .setTooltip("minelp.options.title", 0, 10);
+        }
+    }
+
+    @Override
     public PlayerPreview createPreviewer() {
         return new PonyPreview();
     }
@@ -46,7 +66,7 @@ class GuiSkinsMineLP extends GuiSkins {
 
         MineLittlePony.logger.debug("Invalidating old local skin, checking updated local skin");
         if (type == SkinType.SKIN) {
-            ponyManager.removePony(previewer.getLocal().getTextures().get(SkinType.SKIN).getId());
+            previewer.getLocal().ifPresent(local -> ponyManager.removePony(local.getTextures().get(SkinType.SKIN).getId()));
         }
     }
 

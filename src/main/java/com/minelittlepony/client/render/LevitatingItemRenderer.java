@@ -4,7 +4,7 @@ import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.common.util.Color;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;
@@ -12,12 +12,12 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.UseAction;
@@ -40,7 +40,7 @@ public class LevitatingItemRenderer {
     }
 
     public static RenderLayer getRenderLayer() {
-        return getRenderLayer(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+        return getRenderLayer(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
     }
 
     /**
@@ -55,9 +55,9 @@ public class LevitatingItemRenderer {
         stack.scale(1.1F, 1.1F, 1.1F);
 
         stack.translate(0.01F, 0.01F, 0.01F);
-        renderItem.renderItem(entity, drop, transform, hand == Arm.LEFT, stack, renderContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV);
+        renderItem.renderItem(entity, drop, transform, hand == Arm.LEFT, stack, renderContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV, 0);
         stack.translate(-0.02F, -0.02F, -0.02F);
-        renderItem.renderItem(entity, drop, transform, hand == Arm.LEFT, stack, renderContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV);
+        renderItem.renderItem(entity, drop, transform, hand == Arm.LEFT, stack, renderContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV, 0);
 
         stack.pop();
         unsetColor();
@@ -76,9 +76,9 @@ public class LevitatingItemRenderer {
     /**
      * Renders an item in first person optionally with a magical overlay.
      */
-    public void renderItemInFirstPerson(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformation.Mode transform, boolean left, MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world, int lightUv) {
+    public void renderItemInFirstPerson(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformation.Mode mode, boolean left, MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world, int lightUv, int posLong) {
 
-        if (entity instanceof PlayerEntity) {
+        if (entity instanceof PlayerEntity && (mode.isFirstPerson() || mode == ModelTransformation.Mode.THIRD_PERSON_LEFT_HAND || mode == ModelTransformation.Mode.THIRD_PERSON_RIGHT_HAND)) {
 
             IPony pony = MineLittlePony.getInstance().getManager().getPony((PlayerEntity)entity);
 
@@ -90,7 +90,7 @@ public class LevitatingItemRenderer {
                 setupPerspective(itemRenderer, entity, stack, left, matrix);
             }
 
-            itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
+            itemRenderer.renderItem(entity, stack, mode, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
 
             if (doMagic) {
                 setColor(pony.getMetadata().getGlowColor());
@@ -98,16 +98,16 @@ public class LevitatingItemRenderer {
                 matrix.scale(1.1F, 1.1F, 1.1F);
 
                 matrix.translate(0.015F, 0.01F, 0.01F);
-                itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
+                itemRenderer.renderItem(entity, stack, mode, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
                 matrix.translate(-0.03F, -0.02F, -0.02F);
-                itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
+                itemRenderer.renderItem(entity, stack, mode, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
 
                 unsetColor();
             }
 
             matrix.pop();
         } else {
-            itemRenderer.renderItem(entity, stack, transform, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV);
+            itemRenderer.renderItem(entity, stack, mode, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
         }
     }
 
@@ -139,8 +139,8 @@ public class LevitatingItemRenderer {
                     distanceChange);
 
             if (!handHeldTool) { // bows have to point forwards
-                stack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(sign * -60 + floatAmount));
-                stack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(sign * 30 + driftAmount));
+                stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(sign * -60 + floatAmount));
+                stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(sign * 30 + driftAmount));
             }
         }
     }

@@ -1,20 +1,19 @@
 package com.minelittlepony.client.render;
 
-import java.util.Map;
 import java.util.function.Function;
 
-import com.google.common.collect.Maps;
+import com.minelittlepony.client.mixin.MixinEntityRenderers;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.entity.race.PlayerModels;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
-import com.minelittlepony.common.mixin.MixinEntityRenderDispatcher;
 import com.minelittlepony.mson.api.Mson;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -36,8 +35,6 @@ public class PonyRenderDispatcher {
     }
 
     private LevitatingItemRenderer magicRenderer = new LevitatingItemRenderer();
-
-    private final Map<EntityType<?>, EntityRenderer<?>> renderMap = Maps.newHashMap();
 
     /**
      * Registers all new player skin types. (currently only pony and slimpony).
@@ -70,18 +67,13 @@ public class PonyRenderDispatcher {
      * @param factory The replacement value
      * @param <T> The entity type
      */
-    @SuppressWarnings("unchecked")
-    <T extends Entity, V extends T> void switchRenderer(boolean state, EntityType<V> type, Function<EntityRenderDispatcher, EntityRenderer<T>> factory) {
-        if (state) {
-            if (!renderMap.containsKey(type)) {
-                renderMap.put(type, ((MixinEntityRenderDispatcher)MinecraftClient.getInstance().getEntityRenderDispatcher()).getEntityRenderers().get(type));
+    <T extends Entity, V extends T> void switchRenderer(MobRenderers state, EntityType<V> type, Function<EntityRendererFactory.Context, EntityRenderer<T>> factory) {
+        Mson.getInstance().getEntityRendererRegistry().registerEntityRenderer(type, ctx -> {
+            if (!state.get()) {
+                return MixinEntityRenderers.getRendererFactories().get(type).create(ctx);
             }
-            Mson.getInstance().getEntityRendererRegistry().registerEntityRenderer(type, factory);
-        } else {
-            if (renderMap.containsKey(type)) {
-                Mson.getInstance().getEntityRendererRegistry().registerEntityRenderer(type, m -> (EntityRenderer<T>)renderMap.get(type));
-            }
-        }
+            return factory.apply(ctx);
+        });
     }
 
     public LevitatingItemRenderer getMagicRenderer() {

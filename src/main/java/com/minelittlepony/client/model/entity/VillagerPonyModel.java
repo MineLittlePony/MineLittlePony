@@ -10,24 +10,26 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
 
+import com.minelittlepony.api.model.IPart;
+import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.model.entity.race.AlicornModel;
-import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.client.render.entity.npc.PonyTextures;
-import com.minelittlepony.model.IPart;
 import com.minelittlepony.mson.api.ModelContext;
 
 public class VillagerPonyModel<T extends LivingEntity & VillagerDataContainer> extends AlicornModel<T> implements ModelWithHat {
 
-    private ModelPart apron;
-    private ModelPart trinket;
+    private final ModelPart apron;
+    private final ModelPart trinket;
 
     private IPart batWings;
     private IPart batEars;
 
-    public VillagerPonyModel() {
-        super(false);
+    public VillagerPonyModel(ModelPart tree) {
+        super(tree, false);
+        apron = tree.getChild("apron");
+        trinket = tree.getChild("trinket");
     }
 
     @Override
@@ -35,12 +37,10 @@ public class VillagerPonyModel<T extends LivingEntity & VillagerDataContainer> e
         super.init(context);
         batWings = context.findByName("bat_wings");
         batEars = context.findByName("bat_ears");
-        apron = context.findByName("apron");
-        trinket = context.findByName("trinket");
     }
 
     @Override
-    public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
+    public void updateLivingState(T entity, IPony pony, ModelAttributes.Mode mode) {
         super.updateLivingState(entity, pony, mode);
 
         ears.setVisible(pony.getMetadata().getRace() != Race.BATPONY);
@@ -68,7 +68,7 @@ public class VillagerPonyModel<T extends LivingEntity & VillagerDataContainer> e
 
         VillagerProfession profession = entity.getVillagerData().getProfession();
 
-        attributes.visualHeight = PonyTextures.isCrownPony(entity) ? 2.3F : 2;
+        attributes.visualHeight += PonyTextures.isCrownPony(entity) ? 0.3F : -0.1F;
         apron.visible = !special && profession == VillagerProfession.BUTCHER;
         trinket.visible = !special && !apron.visible && profession != VillagerProfession.NONE && profession != VillagerProfession.NITWIT;
     }
@@ -95,13 +95,13 @@ public class VillagerPonyModel<T extends LivingEntity & VillagerDataContainer> e
             float roll = 0.3F * MathHelper.sin(0.45F * ticks);
 
             this.head.roll = roll;
-            this.helmet.roll = roll;
+            this.hat.roll = roll;
 
             this.head.pitch = 0.4F;
-            this.helmet.pitch = 0.4F;
+            this.hat.pitch = 0.4F;
         } else {
             this.head.roll = 0.0F;
-            this.helmet.roll = 0.0F;
+            this.hat.roll = 0.0F;
         }
     }
 }

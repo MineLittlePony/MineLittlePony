@@ -1,30 +1,29 @@
 package com.minelittlepony.client.render.entity.npc;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.ModelWithHat;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
 
+import com.minelittlepony.api.model.IUnicorn;
+import com.minelittlepony.api.model.gear.IGear;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.PonyRenderer;
-import com.minelittlepony.model.IUnicorn;
-import com.minelittlepony.model.gear.IGear;
 import com.minelittlepony.mson.api.ModelKey;
 
 abstract class AbstractNpcRenderer<
     T extends MobEntity & VillagerDataContainer,
-    M extends ClientPonyModel<T> & IUnicorn<ModelPart> & ModelWithHat> extends PonyRenderer.Caster<T, M> {
+    M extends ClientPonyModel<T> & IUnicorn & ModelWithHat> extends PonyRenderer.Caster<T, M> {
 
     private final TextureSupplier<T> baseTextures;
 
     private final String entityType;
 
-    public AbstractNpcRenderer(EntityRenderDispatcher manager, ModelKey<? super M> key, String type, TextureSupplier<String> formatter) {
-        super(manager, key);
+    public AbstractNpcRenderer(EntityRendererFactory.Context context, ModelKey<? super M> key, String type, TextureSupplier<String> formatter) {
+        super(context, key);
 
         entityType = type;
         baseTextures = new PonyTextures<>(formatter);

@@ -3,7 +3,7 @@ package com.minelittlepony.client.transform;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
-import com.minelittlepony.model.IModel;
+import com.minelittlepony.api.model.IModel;
 
 public class PostureStanding implements PonyPosture<LivingEntity> {
     @Override

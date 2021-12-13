@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.entity;
 
 import net.minecraft.client.render.entity.BipedEntityRenderer;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.util.Identifier;
@@ -17,8 +17,8 @@ public class VexRenderer extends BipedEntityRenderer<VexEntity, BreezieModel<Vex
     private static final Identifier VEX = new Identifier("minelittlepony", "textures/entity/illager/vex_pony.png");
     private static final Identifier VEX_CHARGING = new Identifier("minelittlepony", "textures/entity/illager/vex_charging_pony.png");
 
-    public VexRenderer(EntityRenderDispatcher manager) {
-        super(manager, ModelType.BREEZIE.createModel(), 0.3F);
+    public VexRenderer(EntityRendererFactory.Context context) {
+        super(context, ModelType.BREEZIE.createModel(), 0.3F);
     }
 
     @Override

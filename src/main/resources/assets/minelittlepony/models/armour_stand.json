@@ -1,0 +1,114 @@
+{
+	"texture": { "w": 64, "h": 64 },
+	"data": {
+		"head": {
+			"pivot": [ 0, 5, 0 ],
+			"cubes": [
+				{ "from": [ -1, -7, -1 ], "size": [ 2, 7, 2 ] }
+			]
+		},
+		"hat": {
+			"pivot": [ 0, 5, 0 ],
+			"cubes": [
+				{ "from": [ -1, -7, -1 ], "size": [ 2, 7, 2 ], "dilate": 0.5 }
+			]
+		},
+		"body": {
+			"texture": { "u": 0, "v": 48 },
+			"pivot": [ 0, 0, 1 ],
+			"cubes": [
+				{ "from": [ -4, 10, -1 ], "size": [ 8, 2, 2 ] }
+			]
+		},
+		"right_arm": {
+			"texture": { "u": 8 },
+			"pivot": [ -1.9, 12, 1 ],
+			"cubes": [
+				{ "from": [ -1, 0, -1 ], "size": [ 2, 11, 2 ] }
+			]
+		},
+		"left_arm": {
+			"texture": { "u": 40, "v": 16 },
+			"pivot": [ 1.9, 12, 1 ],
+			"cubes": [
+				{ "from": [ -1, 0, -1 ], "size": [ 2, 11, 2 ] }
+			]
+		},
+		"right_leg": {
+			"texture": { "u": 8 },
+			"pivot": [ -1.9, 12, 10 ],
+			"cubes": [
+				{ "from": [ -1, 0, -1 ], "size": [2, 11, 2 ] }
+			]
+		},
+		"left_leg": {
+			"texture": { "u": 40, "v": 16 },
+			"pivot": [ 1.9, 12, 10 ],
+			"cubes": [
+				{ "from": [ -1, 0, -1 ], "size": [2, 11, 2 ] }
+			]
+		},
+		"right_body_stick": {
+			"texture": { "u": 16 },
+			"children": {
+				"right_body_support": {
+					"rotate": [ 10, 0, 15 ],
+					"cubes": [
+						{ "from": [ -1, 4, -1 ], "size": [ 2, 7, 2 ] }
+					]
+				}
+			},
+			"cubes": [
+				{ "from": [ -3, 3, -1 ], "size": [ 2, 2, 2 ] }
+			]
+		},
+		"left_body_stick": {
+			"texture": { "u": 48, "v": 16 },
+			"children": {
+				"left_body_support": {
+					"rotate": [ 10, 0, -15 ],
+					"cubes": [
+						{ "from": [ -1, 4, -1 ], "size": [ 2, 7, 2 ] }
+					]
+				}
+			},
+			"cubes": [
+				{ "from": [ 1, 3, -1 ], "size": [ 2, 2, 2 ] }
+			]
+		},
+		"shoulder_stick": {
+			"texture": { "v": 48 },
+			"pivot": [ 0, 0, 10 ],
+			"children": {
+				"back_stick": {
+					"texture": { "u": 16, "v": 0 },
+					"rotate": [ 90, 0, 0 ],
+					"pivot": [ -1, 0, 0 ],
+					"children": {
+						"back_stick_support": {
+							"rotate": [ 45, 0, 0 ],
+							"cubes": [
+								{ "from": [ 0, -8, -9 ], "size": [ 2, 7, 2 ] }
+							]
+						}
+					},
+					"cubes": [
+						{ "from": [ 2, -8, -12 ], "size": [ 2, 7, 2 ] },
+						{ "from": [ -2, -8, -12 ], "size": [ 2, 7, 2 ] }
+					]
+				}
+			},
+			"cubes": [
+				{ "from": [ -4, 10, -1 ], "size": [ 8, 2, 2 ] }
+			]
+		},
+		"base_plate": {
+			"texture": { "v": 32 },
+			"pivot": [ 0, 12, 4 ],
+			"cubes": [
+				{ "from": [ -6, 11, -6 ], "size": [ 12, 1, 12 ] }
+			]
+		}
+	}
+}
+

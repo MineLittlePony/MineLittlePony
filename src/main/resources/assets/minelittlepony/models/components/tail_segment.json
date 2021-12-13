@@ -5,14 +5,16 @@
 		"segment_y": [["#segment_index", "*", 4], "+", 1.063],
 		"tex_x": [["#segment_index", "%", 2], "*", 4]
 	},
-	"segment": {
-		"type": "mson:planar",
-		"center": [0, "#segment_y", 0],
-		"up":   [-2, 0, 2, 4, 4, 32, 0],
-		"east": [ 2, 0, 2, 4, 4, 36, "#tex_x"],
-		"west": [-2, 0, 2, 4, 4, 36, "#tex_x"],
-		"south":[-2, 0, 2, 4, 4, 32, "#tex_x"],
-		"north":[-2, 0, 6, 4, 4, 32, "#tex_x"],
-		"down": [-2, 4, 2, 4, 4, 32, 0]
+	"data": {
+		"segment": {
+			"type": "mson:planar",
+			"pivot": [0, "#segment_y", 0],
+			"up":   [-2, 0, 2, 4, 4, 32, 0],
+			"east": [ 2, 0, 2, 4, 4, 36, "#tex_x"],
+			"west": [-2, 0, 2, 4, 4, 36, "#tex_x"],
+			"south":[-2, 0, 6, 4, 4, 32, "#tex_x"],
+			"north":[-2, 0, 2, 4, 4, 32, "#tex_x"],
+			"down": [-2, 4, 2, 4, 4, 32, 0]
+		}
 	}
 }

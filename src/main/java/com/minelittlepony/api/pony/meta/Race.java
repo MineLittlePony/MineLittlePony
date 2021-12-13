@@ -1,12 +1,10 @@
 package com.minelittlepony.api.pony.meta;
 
-import com.minelittlepony.api.pony.ITriggerPixelMapped;
-import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.settings.PonyLevel;
+import com.minelittlepony.api.pony.TriggerPixelType;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
-public enum Race implements ITriggerPixelMapped<Race> {
+public enum Race implements TriggerPixelType<Race> {
 
     HUMAN       (0x000000, false, false),
     EARTH       (0xf9b131, false, false),
@@ -75,7 +73,7 @@ public enum Race implements ITriggerPixelMapped<Race> {
      * Gets the original race that this one is an alias for, if one exists.
      * Otherwise returns this race.
      */
-    @Nonnull
+    @NotNull
     public Race getAlias() {
         return original;
     }
@@ -94,22 +92,8 @@ public enum Race implements ITriggerPixelMapped<Race> {
         return getAlias() == other.getAlias();
     }
 
-    /**
-     * Gets the actual race determined by the given pony level.
-     * PonyLevel.HUMANS would force all races to be humans.
-     * PonyLevel.BOTH is no change.
-     * PonyLevel.PONIES (should) return a pony if this is a human. Don't be fooled, though. It doesn't.
-     */
-    public Race getEffectiveRace(boolean ignorePony) {
-        if (MineLittlePony.getInstance().getConfig().getEffectivePonyLevel(ignorePony) == PonyLevel.HUMANS) {
-            return HUMAN;
-        }
-
-        return this;
-    }
-
     @Override
-    public int getTriggerPixel() {
+    public int getColorCode() {
         return triggerPixel;
     }
 }

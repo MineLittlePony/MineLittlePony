@@ -1,10 +1,10 @@
 package com.minelittlepony.client;
 
 import com.minelittlepony.api.pony.IPonyManager;
+import com.minelittlepony.api.pony.network.fabric.Channel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.client.render.PonyRenderDispatcher;
-import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
 import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.common.client.gui.VisibilityMode;
 import com.minelittlepony.common.client.gui.element.Button;
@@ -23,7 +23,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
@@ -81,10 +81,10 @@ public class MineLittlePony implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(this::onTick);
         ClientReadyCallback.EVENT.register(this::onClientReady);
         ScreenInitCallback.EVENT.register(this::onScreenInit);
-        config.ponyskulls.onChanged(PonySkullRenderer::resolve);
 
         config.load();
 
+        Channel.bootstrap();
         ModelType.bootstrap();
 
         FabricLoader.getInstance().getEntrypoints("minelittlepony", ClientModInitializer.class).forEach(ClientModInitializer::onInitializeClient);
@@ -104,7 +104,7 @@ public class MineLittlePony implements ClientModInitializer {
         }
 
         if ((mainMenu || inGame) && keyBinding.isPressed()) {
-            client.openScreen(new GuiPonySettings(client.currentScreen));
+            client.setScreen(new GuiPonySettings(client.currentScreen));
         }
     }
 
@@ -117,14 +117,15 @@ public class MineLittlePony implements ClientModInitializer {
 
             if (show) {
                 int y = hasHdSkins ? 75 : 50;
-                Button button = buttons.add(new Button(screen.width - 50, screen.height - y, 20, 20))
-                    .onClick(sender -> MinecraftClient.getInstance().openScreen(new GuiPonySettings(screen)));
+                Button button = buttons.addButton(new Button(screen.width - 50, screen.height - y, 20, 20))
+                    .onClick(sender -> MinecraftClient.getInstance().setScreen(new GuiPonySettings(screen)));
                 button.getStyle()
                         .setIcon(new TextureSprite()
                                 .setPosition(2, 2)
                                 .setTexture(new Identifier("minelittlepony", "textures/gui/pony.png"))
                                 .setTextureSize(16, 16)
-                                .setSize(16, 16));
+                                .setSize(16, 16))
+                        .setTooltip("minelp.options.title", 0, 10);
                 button.y = screen.height - y; // ModMenu
             }
         }
