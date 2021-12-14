@@ -27,6 +27,7 @@ import net.minecraft.block.BedBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.Frustum;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
@@ -156,10 +157,18 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
 
         stack.translate(reflect * 0.1F, -0.54F, 0);
 
+        VertexConsumerProvider interceptedContext = layer -> {
+            return renderContext.getBuffer(
+                    layer == RenderLayer.getEntitySolid(player.getSkinTexture())
+                    ? RenderLayer.getEntityTranslucent(player.getSkinTexture())
+                    : layer
+            );
+        };
+
         if (side == Arm.LEFT) {
-            super.renderLeftArm(stack, renderContext, lightUv, player);
+            super.renderLeftArm(stack, interceptedContext, lightUv, player);
         } else {
-            super.renderRightArm(stack, renderContext, lightUv, player);
+            super.renderRightArm(stack, interceptedContext, lightUv, player);
         }
 
         stack.pop();
