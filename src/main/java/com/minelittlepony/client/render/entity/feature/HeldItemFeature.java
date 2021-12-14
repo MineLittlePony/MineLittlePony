@@ -78,18 +78,21 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
 
         UseAction action = drop.getUseAction();
 
-        if ((action == UseAction.SPYGLASS || action == UseAction.BOW) && entity.getItemUseTimeLeft() > 0) {
+        if (action == UseAction.SPYGLASS && entity.getItemUseTimeLeft() > 0) {
             Arm main = entity.getMainArm();
             if (entity.getActiveHand() == Hand.OFF_HAND) {
                 main = main.getOpposite();
             }
             if (main == arm) {
                 stack.translate(left * -0.05F, 0.5F, 0.7F);
-                float incline = -60;
-                stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(incline));
+                stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-60));
+                stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
+                stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(left * 180));
+                stack.translate(left * -0.2F, 0.125F, -1);
+
+                return;
             }
         }
-
 
         if (entity.hasVehicle()) {
             stack.translate(left / 10, -0.2F, -0.5F);
