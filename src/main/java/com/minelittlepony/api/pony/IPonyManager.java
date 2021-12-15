@@ -1,5 +1,6 @@
 package com.minelittlepony.api.pony;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 
@@ -29,6 +30,8 @@ public interface IPonyManager  {
      */
     IPony getPony(Identifier resource);
 
+    IPony getPony(Identifier resource, Entity entity);
+
     /**
      * Gets or creates a pony for the given skin resource and entity id.
      *
@@ -40,6 +43,7 @@ public interface IPonyManager  {
      * @param uuid id of a player or entity
      */
     IPony getPony(Identifier resource, UUID uuid);
+
 
     /**
      * Gets the default pony. Either STEVE/ALEX, or a background pony based on client settings.

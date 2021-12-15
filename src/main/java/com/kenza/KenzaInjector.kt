@@ -1,5 +1,9 @@
 package com.kenza
 
+import com.minelittlepony.api.pony.IPony
+import com.minelittlepony.api.pony.IPonyData
+import com.minelittlepony.api.pony.meta.Race
+import com.minelittlepony.client.pony.Pony
 import com.minelittlepony.common.event.ScreenInitCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents
@@ -22,6 +26,9 @@ import org.apache.logging.log4j.LogManager
 object KenzaInjector {
 
     val LOGGER = LogManager.getLogger()
+
+    val resData = HashMap<String, Identifier>()
+    val pathHashMap = HashMap<Int, String>()
 
 
     private var initTitleCounter = 0
@@ -67,7 +74,7 @@ object KenzaInjector {
     private fun onEntityLoaded() {
 
         ServerEntityEvents.ENTITY_LOAD.register(ServerEntityEvents.Load { entity: Entity?, serverWorld: ServerWorld? ->
-//            entity?.toVillagerSkinContainer()?.initSkin()
+            entity?.toVillagerEntityExtension()?.setCustomName(false)
         })
 //
 //        ServerEntityEvents.ENTITY_UNLOAD.register(ServerEntityEvents.Unload { entity: Entity?, serverWorld: ServerWorld? ->
@@ -88,20 +95,46 @@ object KenzaInjector {
     }
 
     fun findTexturePath(entity: Entity): String {
-        val skidID = entity.toVillagerSkinContainer()?.ponySkinID ?: ""
+        val skidID = entity.toVillagerEntityExtension()?.ponySkinID ?: ""
         return "textures/entity/villager/all/$skidID.png"
     }
 
+    fun getOrCreateIdentifier(path: String): Identifier {
+        val identifier = resData.get(path)
+        identifier?.let {
+            return identifier
+        }
+        Identifier("minelittlepony", path).let {
+            resData.put(path, it)
+            return it
+        }
+    }
 
-    fun findTexture(entity: Entity?): Identifier {
-        return Identifier("minelittlepony", findTexturePath(entity!!))
+
+    fun findTexture(entity: Entity): Identifier {
+        findTexturePath(entity).let { path ->
+            return getOrCreateIdentifier(path)
+        }
     }
 
     fun findTexture(category: String, identifier: Identifier, entityType: String): Identifier {
-        return Identifier(
-            "minelittlepony",
-            "textures/entity/" + entityType + "/" + category + "/" + identifier.path + ".png"
-        )
+        val path = "textures/entity/" + entityType + "/" + category + "/" + identifier.path + ".png"
+        return getOrCreateIdentifier(path)
     }
 
+
+    fun getOverridePonyRaceOfEntity(entity: Entity): Race? {
+
+        return if(entity.canLoadDynamicPonySkin()){
+            entity.toVillagerEntityExtension()?.ponyRace
+        }else{
+            null
+        }
+    }
+
+}
+
+
+fun Entity.canLoadDynamicPonySkin(): Boolean {
+    return (this.toVillagerEntityExtension()?.ponySkinID ?: 0) >= 0
 }

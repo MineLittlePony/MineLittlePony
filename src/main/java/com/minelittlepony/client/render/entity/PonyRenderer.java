@@ -30,7 +30,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
+
+import static com.kenza.KenzaInjectorKt.canLoadDynamicPonySkin;
 
 public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T> & IPonyModel<T>> extends MobEntityRenderer<T, M> implements IPonyRenderContext<T, M> {
 
@@ -65,7 +68,7 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
     protected void setupTransforms(T entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
         manager.preRenderCallback(entity, stack, partialTicks);
         if (getModel() instanceof PlayerEntityModel) {
-            ((PlayerEntityModel<?>)getModel()).setVisible(true);
+            ((PlayerEntityModel<?>) getModel()).setVisible(true);
         }
 
         if (getModel().getAttributes().isSitting) {
@@ -115,7 +118,12 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
     @Override
     @NotNull
     public final Identifier getTexture(T entity) {
-        return  KenzaInjector.INSTANCE.findTexture(entity);
+
+        if (canLoadDynamicPonySkin(entity)) {
+            return KenzaInjector.INSTANCE.findTexture(entity);
+        } else {
+            return findTexture(entity);
+        }
     }
 
     @Override
@@ -125,8 +133,16 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
 
     @Override
     public IPony getEntityPony(T entity) {
-        Identifier identifier = KenzaInjector.INSTANCE.findTexture(entity);
-        return MineLittlePony.getInstance().getManager().getPony(identifier);
+
+        if (canLoadDynamicPonySkin(entity)) {
+            Identifier identifier = KenzaInjector.INSTANCE.findTexture(entity);
+            return MineLittlePony.getInstance().getManager().getPony(identifier, entity);
+
+        } else {
+            return MineLittlePony.getInstance().getManager().getPony(findTexture(entity));
+
+        }
+
     }
 
     public abstract static class Caster<T extends MobEntity, M extends ClientPonyModel<T> & IUnicorn> extends PonyRenderer<T, M> {

@@ -34,6 +34,8 @@ import com.minelittlepony.client.render.entity.feature.AbstractPonyFeature;
 import java.io.IOException;
 import java.util.Map;
 
+import static com.kenza.KenzaInjectorKt.canLoadDynamicPonySkin;
+
 class NpcClothingFeature<
         T extends LivingEntity & VillagerDataContainer,
         M extends EntityModel<T> & IPonyModel<T> & ModelWithHat,
@@ -86,8 +88,8 @@ class NpcClothingFeature<
                             || (profHatLayer == VillagerResourceMetadata.HatType.PARTIAL && typeHatLayer != VillagerResourceMetadata.HatType.FULL)
             );
 
-//            Identifier typeSkin = findTexture("type", Registry.VILLAGER_TYPE.getId(type));
-            Identifier typeSkin = findTexture(entity);
+
+            Identifier typeSkin = findTexture(entity, type);
 
             renderModel(entityModel, typeSkin, matrixStack, provider, i, entity, 1, 1, 1);
 
@@ -130,10 +132,14 @@ class NpcClothingFeature<
     }
 
     public Identifier findTexture(String category, Identifier identifier) {
-        return KenzaInjector.INSTANCE.findTexture(category,  identifier, entityType);
+        return KenzaInjector.INSTANCE.findTexture(category, identifier, entityType);
     }
 
-    public Identifier findTexture(Entity entity) {
-        return KenzaInjector.INSTANCE.findTexture(entity);
+    public Identifier findTexture(Entity entity, VillagerType type) {
+        if (canLoadDynamicPonySkin(entity)) {
+            return KenzaInjector.INSTANCE.findTexture(entity);
+        } else {
+            return findTexture("type", Registry.VILLAGER_TYPE.getId(type));
+        }
     }
 }

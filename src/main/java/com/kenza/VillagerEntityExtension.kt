@@ -1,5 +1,6 @@
 package com.kenza
 
+import com.minelittlepony.api.pony.meta.Race
 import drawer.getFrom
 import drawer.put
 import drawer.readFrom
@@ -12,16 +13,29 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry
 import net.minecraft.entity.passive.VillagerEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.PacketByteBuf
+import net.minecraft.text.LiteralText
+import net.minecraft.village.VillagerData
+import net.minecraft.village.VillagerProfession
 import java.io.File
 
 @Serializable
-data class VillagerEntityExtraData(var ponySkinID: Int = -1)
+data class VillagerEntityExtraData(
+    var ponySkinID: Int = -1,
+    val ponyRace: Race = Race.HUMAN,
+    val firstName: String = "",
+    val secondName: String = ""
+)
 
 interface VillagerEntityExtension {
+    fun setCustomName(force: Boolean)
+
     var ponySkinID: Int
+    var ponyRace: Race
 }
 
 class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension {
+
+    private var flagProfessionWasChanged = false
 
     private var villagerProperty: VillagerEntityExtraData
         set(value) {
@@ -35,6 +49,32 @@ class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension 
         set(value) {
             villagerProperty = villagerProperty.copy(ponySkinID = value)
         }
+    override var ponyRace: Race
+        get() = villagerProperty.ponyRace
+        set(value) {
+            villagerProperty = villagerProperty.copy(ponyRace = value)
+        }
+
+    var firstName: String
+        get() = villagerProperty.firstName
+        set(value) {
+            villagerProperty = villagerProperty.copy(firstName = value)
+        }
+
+    var secondName: String
+        get() = villagerProperty.secondName
+        set(value) {
+            villagerProperty = villagerProperty.copy(secondName = value)
+        }
+
+
+    override fun setCustomName(force: Boolean) {
+        if (!entity.hasCustomName() || force) {
+            entity.customName = LiteralText( generateCustomPonyName())
+            entity.isCustomNameVisible = true
+        }
+    }
+
 
     fun onSpawn() {
         ckeckAndSetSkinId()
@@ -42,7 +82,6 @@ class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension 
 
 
     fun writeNbt(tag: NbtCompound): NbtCompound {
-
         val data = entity.dataTracker.get(VILLAGER_EXTRA_PROPERTY)
         VillagerEntityExtraData.serializer().put(data, inTag = tag, key = NBT_VILLAGER_EXTRA_DATA_KEY)
         return tag
@@ -60,21 +99,70 @@ class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension 
         entity.dataTracker.startTracking(VILLAGER_EXTRA_PROPERTY, VillagerEntityExtraData())
     }
 
-
-    private fun ckeckAndSetSkinId(){
-        if (ponySkinID < 0) {
-            ponySkinID = random(29, PONIES_SKINES_COUNT)
+    fun setVillagerDataBefore(
+        newVillagerData: VillagerData,
+        oldVillagerData: VillagerData,
+    ) {
+        if (newVillagerData.profession !== oldVillagerData.profession) {
+            flagProfessionWasChanged = true
         }
     }
 
-    private fun random(from: Int, to: Int) = (Math.random() * (to - from) + from).toInt()
+    fun setVillagerDataAfter() {
+        if(flagProfessionWasChanged){
+            setCustomName(true)
+            flagProfessionWasChanged = false
+        }
+
+    }
+
+
+
+
+    private fun generateCustomPonyName(): String {
+        val profession = (entity as? VillagerEntity)?.villagerData?.profession
+
+        val professionName = if(profession != VillagerProfession.NONE){
+            "(${profession.toString().upperFirstLetter()})"
+        } else{
+            ""
+        }
+        return "$firstName $secondName $professionName".trim()
+    }
+
+    private fun ckeckAndSetSkinId() {
+        if (ponySkinID < 0) {
+            ponySkinID = random(30, PONIES_SKINS_COUNT)
+        }
+
+        if (ponyRace == Race.HUMAN) {
+            val ponyRaceChance = random(0, 100)
+
+            ponyRace = when (ponyRaceChance) {
+                in 0..20 -> Race.EARTH
+                in 31..60 -> Race.PEGASUS
+                in 61..100 -> Race.UNICORN
+                else -> Race.UNICORN
+            }
+        }
+
+        if(firstName.isEmpty()){
+            firstName = PonyNames.generateFirstName()
+        }
+
+        if(secondName.isEmpty()){
+            secondName = PonyNames.generateSecondName()
+        }
+
+    }
+
 
 
     companion object {
 
         val NBT_VILLAGER_EXTRA_DATA_KEY = "NBT_VILLAGER_EXTRA_DATA_KEY"
 
-        val PONIES_SKINES_COUNT: Int by lazy {
+        val PONIES_SKINS_COUNT: Int by lazy {
             File(this.javaClass.classLoader.getResource(PATH_ASSET_FOLDER_ALL_PONIES_SKINS).toURI()).list().size
         }
 
@@ -102,7 +190,7 @@ class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension 
 }
 
 
-fun Entity.toVillagerSkinContainer(): VillagerEntityExtension? {
+fun Entity.toVillagerEntityExtension(): VillagerEntityExtension? {
     return this as? VillagerEntityExtension
 }
 

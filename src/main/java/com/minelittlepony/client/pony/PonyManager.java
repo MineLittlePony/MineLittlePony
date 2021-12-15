@@ -3,11 +3,16 @@ package com.minelittlepony.client.pony;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.kenza.CachePair;
+import com.kenza.KenzaInjector;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyManager;
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
@@ -26,7 +31,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * The PonyManager is responsible for reading and recoding all the pony data associated with an entity of skin.
- *
  */
 public class PonyManager implements IPonyManager, IdentifiableResourceReloadListener {
 
@@ -36,18 +40,40 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
 
     private final PonyConfig config;
 
+
     private final LoadingCache<Identifier, IPony> poniesCache = CacheBuilder.newBuilder()
             .expireAfterAccess(30, TimeUnit.SECONDS)
             .build(CacheLoader.from(Pony::new));
+
+    private final LoadingCache<CachePair, IPony> differentRacesPoniesCache = CacheBuilder.newBuilder()
+            .expireAfterAccess(30, TimeUnit.SECONDS)
+            .build(CacheLoader.from(Pony::new));
+
 
     public PonyManager(PonyConfig config) {
         this.config = config;
     }
 
     @Override
+    public IPony getPony(Identifier resource, Entity entity) {
+        try {
+            Race race = KenzaInjector.INSTANCE.getOverridePonyRaceOfEntity(entity);
+//            Race race = null;//KenzaInjector.INSTANCE.getOverridePonyRaceOfEntity(entity);
+            if (race != null) {
+                return differentRacesPoniesCache.get(new CachePair(resource, race));
+            } else {
+                return getPony(resource);
+            }
+        } catch (ExecutionException e) {
+            return new Pony(resource, Memoize.of(PonyData.NULL));
+        }
+    }
+
+    @Override
     public IPony getPony(Identifier resource) {
         try {
             return poniesCache.get(resource);
+
         } catch (ExecutionException e) {
             return new Pony(resource, Memoize.of(PonyData.NULL));
         }
@@ -76,7 +102,7 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
     @Nullable
     private Identifier getSkin(PlayerEntity player) {
         if (player instanceof AbstractClientPlayerEntity) {
-            return ((AbstractClientPlayerEntity)player).getSkinTexture();
+            return ((AbstractClientPlayerEntity) player).getSkinTexture();
         }
 
         return null;
@@ -96,7 +122,7 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
     @Override
     public IPony getDefaultPony(UUID uuid) {
         if (config.ponyLevel.get() != PonyLevel.PONIES) {
-            return ((Pony)getPony(DefaultSkinHelper.getTexture(uuid))).defaulted();
+            return ((Pony) getPony(DefaultSkinHelper.getTexture(uuid))).defaulted();
         }
 
         return getBackgroundPony(uuid);
@@ -104,7 +130,7 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
 
     @Override
     public IPony getBackgroundPony(UUID uuid) {
-        return ((Pony)getPony(backgroundPonyList.getId(uuid))).defaulted();
+        return ((Pony) getPony(backgroundPonyList.getId(uuid))).defaulted();
     }
 
     @Override
@@ -119,8 +145,8 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
 
     @Override
     public CompletableFuture<Void> reload(Synchronizer sync, ResourceManager sender,
-            Profiler serverProfiler, Profiler clientProfiler,
-            Executor serverExecutor, Executor clientExecutor) {
+                                          Profiler serverProfiler, Profiler clientProfiler,
+                                          Executor serverExecutor, Executor clientExecutor) {
 
         sync.getClass();
         return sync.whenPrepared(null).thenRunAsync(() -> {

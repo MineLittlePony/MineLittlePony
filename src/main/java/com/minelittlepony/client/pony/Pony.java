@@ -1,6 +1,7 @@
 package com.minelittlepony.client.pony;
 
 import com.google.common.base.MoreObjects;
+import com.kenza.CachePair;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.meta.Race;
@@ -26,6 +27,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -40,6 +42,10 @@ public class Pony implements IPony {
     private final Memoize<IPonyData> metadata;
 
     private boolean defaulted = false;
+
+    public Pony(CachePair pair) {
+        this(pair.getResource(),  PonyData.parse(pair.getResource(), pair.getRace()));
+    }
 
     Pony(Identifier resource, Memoize<IPonyData> data) {
         texture = resource;
