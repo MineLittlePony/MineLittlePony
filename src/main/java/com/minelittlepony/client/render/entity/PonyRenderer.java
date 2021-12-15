@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.entity;
 
+import com.kenza.KenzaInjector;
 import com.minelittlepony.api.model.IUnicorn;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.MineLittlePony;
@@ -114,7 +115,7 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
     @Override
     @NotNull
     public final Identifier getTexture(T entity) {
-        return findTexture(entity);
+        return  KenzaInjector.INSTANCE.findTexture(entity);
     }
 
     @Override
@@ -124,7 +125,8 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
 
     @Override
     public IPony getEntityPony(T entity) {
-        return MineLittlePony.getInstance().getManager().getPony(findTexture(entity));
+        Identifier identifier = KenzaInjector.INSTANCE.findTexture(entity);
+        return MineLittlePony.getInstance().getManager().getPony(identifier);
     }
 
     public abstract static class Caster<T extends MobEntity, M extends ClientPonyModel<T> & IUnicorn> extends PonyRenderer<T, M> {

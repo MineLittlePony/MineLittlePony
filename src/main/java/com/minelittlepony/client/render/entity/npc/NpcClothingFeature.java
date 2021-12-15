@@ -87,7 +87,7 @@ class NpcClothingFeature<
             );
 
 //            Identifier typeSkin = findTexture("type", Registry.VILLAGER_TYPE.getId(type));
-            Identifier typeSkin = findPonyTexture(entity);
+            Identifier typeSkin = findTexture(entity);
 
             renderModel(entityModel, typeSkin, matrixStack, provider, i, entity, 1, 1, 1);
 
@@ -130,10 +130,10 @@ class NpcClothingFeature<
     }
 
     public Identifier findTexture(String category, Identifier identifier) {
-        return new Identifier("minelittlepony", "textures/entity/" + entityType + "/" + category + "/" + identifier.getPath() + ".png");
+        return KenzaInjector.INSTANCE.findTexture(category,  identifier, entityType);
     }
 
-    public Identifier findPonyTexture(Entity entity) {
-        return new Identifier("minelittlepony", KenzaInjector.INSTANCE.findTexturePath(entity));
+    public Identifier findTexture(Entity entity) {
+        return KenzaInjector.INSTANCE.findTexture(entity);
     }
 }
