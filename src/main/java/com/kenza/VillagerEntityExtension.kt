@@ -12,9 +12,10 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry
 import net.minecraft.entity.passive.VillagerEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.PacketByteBuf
+import java.io.File
 
 @Serializable
-data class VillagerEntityProperty(var ponySkinID: Int = -1)
+data class VillagerEntityExtraData(var ponySkinID: Int = -1)
 
 interface VillagerEntityExtension {
     var ponySkinID: Int
@@ -22,7 +23,7 @@ interface VillagerEntityExtension {
 
 class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension {
 
-    private var villagerProperty: VillagerEntityProperty
+    private var villagerProperty: VillagerEntityExtraData
         set(value) {
             entity.dataTracker.set(VILLAGER_EXTRA_PROPERTY, value)
         }
@@ -36,52 +37,59 @@ class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension 
         }
 
     fun onSpawn() {
-        if(ponySkinID < 0){
-            ponySkinID = random(1,20)
-        }
+        ckeckAndSetSkinId()
     }
 
 
     fun writeNbt(tag: NbtCompound): NbtCompound {
 
         val data = entity.dataTracker.get(VILLAGER_EXTRA_PROPERTY)
-        VillagerEntityProperty.serializer().put(data, inTag = tag)
+        VillagerEntityExtraData.serializer().put(data, inTag = tag, key = NBT_VILLAGER_EXTRA_DATA_KEY)
         return tag
     }
 
     fun readNbt(tag: NbtCompound) {
-//        super.fromNbt(tag)
-        // Deserialize
-        VillagerEntityProperty.serializer().getFrom(tag).let { data ->
-            (entity as Entity).dataTracker.set(VILLAGER_EXTRA_PROPERTY, data)
+        VillagerEntityExtraData.serializer().getFrom(tag, key = NBT_VILLAGER_EXTRA_DATA_KEY).let { data ->
+            entity.dataTracker.set(VILLAGER_EXTRA_PROPERTY, data)
+            ckeckAndSetSkinId()
         }
     }
 
     fun initDataTracker() {
         TrackedDataHandlerRegistry.register(VILLAGER_EXTRA_DATA)
-        entity.dataTracker.startTracking(VILLAGER_EXTRA_PROPERTY, VillagerEntityProperty())
+        entity.dataTracker.startTracking(VILLAGER_EXTRA_PROPERTY, VillagerEntityExtraData())
     }
 
 
-
+    private fun ckeckAndSetSkinId(){
+        if (ponySkinID < 0) {
+            ponySkinID = random(29, PONIES_SKINES_COUNT)
+        }
+    }
 
     private fun random(from: Int, to: Int) = (Math.random() * (to - from) + from).toInt()
 
 
     companion object {
 
-        val VILLAGER_EXTRA_DATA: TrackedDataHandler<VillagerEntityProperty> =
-            object : TrackedDataHandler<VillagerEntityProperty> {
+        val NBT_VILLAGER_EXTRA_DATA_KEY = "NBT_VILLAGER_EXTRA_DATA_KEY"
 
-                override fun write(buf: PacketByteBuf, value: VillagerEntityProperty) {
-                    VillagerEntityProperty.serializer().write(value, toBuf = buf)
+        val PONIES_SKINES_COUNT: Int by lazy {
+            File(this.javaClass.classLoader.getResource(PATH_ASSET_FOLDER_ALL_PONIES_SKINS).toURI()).list().size
+        }
+
+        val VILLAGER_EXTRA_DATA: TrackedDataHandler<VillagerEntityExtraData> =
+            object : TrackedDataHandler<VillagerEntityExtraData> {
+
+                override fun write(buf: PacketByteBuf, value: VillagerEntityExtraData) {
+                    VillagerEntityExtraData.serializer().write(value, toBuf = buf)
                 }
 
-                override fun read(buf: PacketByteBuf): VillagerEntityProperty {
-                    return VillagerEntityProperty.serializer().readFrom(buf = buf)
+                override fun read(buf: PacketByteBuf): VillagerEntityExtraData {
+                    return VillagerEntityExtraData.serializer().readFrom(buf = buf)
                 }
 
-                override fun copy(value: VillagerEntityProperty): VillagerEntityProperty {
+                override fun copy(value: VillagerEntityExtraData): VillagerEntityExtraData {
                     return value
                 }
 

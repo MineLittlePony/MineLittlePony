@@ -1,8 +1,12 @@
 package com.kenza
 
+import com.minelittlepony.client.MineLittlePony.logger
 import com.minelittlepony.common.event.ScreenInitCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.OpenToLanScreen
 import net.minecraft.client.gui.screen.SaveLevelScreen
@@ -12,10 +16,18 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen
 import net.minecraft.client.sound.PositionedSoundInstance
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.entity.Entity
+import net.minecraft.resource.ResourceManager
+import net.minecraft.resource.ResourceReloader
+import net.minecraft.resource.ResourceType
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundEvents
 import net.minecraft.text.TranslatableText
+import net.minecraft.util.Identifier
+import net.minecraft.util.profiler.Profiler
 import org.apache.logging.log4j.LogManager
+import java.io.File
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executor
 
 
 object KenzaInjector {
@@ -65,7 +77,6 @@ object KenzaInjector {
 
     private fun onEntityLoaded() {
 
-
         ServerEntityEvents.ENTITY_LOAD.register(ServerEntityEvents.Load { entity: Entity?, serverWorld: ServerWorld? ->
 //            entity?.toVillagerSkinContainer()?.initSkin()
         })
@@ -92,4 +103,9 @@ object KenzaInjector {
         return "textures/entity/villager/all/$skidID.png"
     }
 
+}
+
+
+fun Thread.isRenderThread(): Boolean {
+    return this.name == "Render thread"
 }
