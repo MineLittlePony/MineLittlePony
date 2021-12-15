@@ -10,6 +10,7 @@ plugins {
     id 'maven-publish'
     id 'com.modrinth.minotaur' version '1.1.0'
     id 'org.ajoberstar.reckon' version '0.13.0'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.5.21'
 }
 apply plugin: 'dex.plugins.outlet'
 
@@ -74,6 +75,9 @@ dependencies {
     modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
 
     include("io.netty:netty-all:4.1.24.Final")
+
+    modImplementation("io.github.natanfudge:fabric-drawer:4.1.0-1.17.1")
+    include("io.github.natanfudge:fabric-drawer:4.1.0-1.17.1")
 }
 
 //
@@ -183,5 +187,5 @@ publishing {
     }
 }
 
-compileKotlin.kotlinOptions.jvmTarget = "17"
+compileKotlin.kotlinOptions.jvmTarget = "16"
 

@@ -1,5 +1,6 @@
 package com.minelittlepony.client;
 
+import com.kenza.KenzaInjector;
 import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.api.pony.network.fabric.Channel;
 import com.minelittlepony.client.model.ModelType;
@@ -63,6 +64,8 @@ public class MineLittlePony implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        KenzaInjector.INSTANCE.init();
+
         hasHdSkins = FabricLoader.getInstance().isModLoaded("hdskins");
         hasModMenu = FabricLoader.getInstance().isModLoaded("modmenu");
 

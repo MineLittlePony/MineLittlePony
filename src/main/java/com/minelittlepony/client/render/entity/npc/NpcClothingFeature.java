@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.entity.npc;
 
+import com.kenza.KenzaInjector;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
@@ -12,6 +13,7 @@ import net.minecraft.client.render.entity.feature.VillagerResourceMetadata.HatTy
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.ModelWithHat;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.Resource;
@@ -80,11 +82,12 @@ class NpcClothingFeature<
             M entityModel = getContextModel();
 
             entityModel.setHatVisible(
-                       profHatLayer == VillagerResourceMetadata.HatType.NONE
-                   || (profHatLayer == VillagerResourceMetadata.HatType.PARTIAL && typeHatLayer != VillagerResourceMetadata.HatType.FULL)
+                    profHatLayer == VillagerResourceMetadata.HatType.NONE
+                            || (profHatLayer == VillagerResourceMetadata.HatType.PARTIAL && typeHatLayer != VillagerResourceMetadata.HatType.FULL)
             );
 
-            Identifier typeSkin = findTexture("type", Registry.VILLAGER_TYPE.getId(type));
+//            Identifier typeSkin = findTexture("type", Registry.VILLAGER_TYPE.getId(type));
+            Identifier typeSkin = findPonyTexture(entity);
 
             renderModel(entityModel, typeSkin, matrixStack, provider, i, entity, 1, 1, 1);
 
@@ -107,8 +110,8 @@ class NpcClothingFeature<
     public <K> VillagerResourceMetadata.HatType getHatType(Object2ObjectMap<K, HatType> cache, String type, DefaultedRegistry<K> registry, K key) {
         if (cache.containsKey(key)) {
             return cache.get(key); // People often complain that villagers cause lag,
-                                   // so let's do better than Mojang and rather NOT go
-                                   // through all the lambda generations if we can avoid it.
+            // so let's do better than Mojang and rather NOT go
+            // through all the lambda generations if we can avoid it.
         }
         return loadHatType(cache, type, registry, key);
     }
@@ -120,12 +123,17 @@ class NpcClothingFeature<
                 if (meta != null) {
                     return meta.getHatType();
                 }
-            } catch (IOException e) { }
+            } catch (IOException e) {
+            }
             return HatType.NONE;
         });
     }
 
     public Identifier findTexture(String category, Identifier identifier) {
         return new Identifier("minelittlepony", "textures/entity/" + entityType + "/" + category + "/" + identifier.getPath() + ".png");
+    }
+
+    public Identifier findPonyTexture(Entity entity) {
+        return new Identifier("minelittlepony", KenzaInjector.INSTANCE.findTexturePath(entity));
     }
 }

@@ -5,6 +5,7 @@
     "refmap": "minelp.mixin.refmap.json",
     "compatibilityLevel": "JAVA_16",
     "client": [
+        "MixinVillagerEntity",
         "IResizeable",
         "MixinCamera",
         "MixinDefaultPlayerSkin",
