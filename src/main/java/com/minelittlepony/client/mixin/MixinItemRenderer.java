@@ -28,7 +28,7 @@ abstract class MixinItemRenderer {
           "getDirectItemGlintConsumer" + PARAMS
         }, at = @At("HEAD"), cancellable = true)
     private static void onGetArmorVertexConsumer(VertexConsumerProvider provider, RenderLayer layer, boolean solid, boolean glint, CallbackInfoReturnable<VertexConsumer> info) {
-        if (LevitatingItemRenderer.usesTransparency()) {
+        if (LevitatingItemRenderer.isEnabled()) {
             info.setReturnValue(provider.getBuffer(LevitatingItemRenderer.getRenderLayer()));
         }
     }

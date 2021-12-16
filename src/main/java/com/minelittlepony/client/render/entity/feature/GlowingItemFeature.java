@@ -1,6 +1,8 @@
 package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.IUnicorn;
+import com.minelittlepony.api.pony.meta.Size;
+import com.minelittlepony.api.pony.meta.Sizes;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.render.IPonyRenderContext;
@@ -29,24 +31,41 @@ public class GlowingItemFeature<T extends LivingEntity, M extends EntityModel<T>
     }
 
     @Override
-    protected void preItemRender(T entity, ItemStack drop, ModelTransformation.Mode transform, Arm hand, MatrixStack stack) {
-        super.preItemRender(entity, drop, transform, hand, stack);
+    protected void preItemRender(T entity, ItemStack drop, ModelTransformation.Mode transform, Arm arm, MatrixStack stack) {
+        super.preItemRender(entity, drop, transform, arm, stack);
 
-        float left = hand == Arm.LEFT ? 1 : -1;
-
-        if (isUnicorn()) {
-            stack.translate(-0.3F - (0.3F * left), 0.375F, 0.6F);
+        if (!isUnicorn()) {
+            return;
         }
+
+        float left = arm == Arm.LEFT ? 1 : -1;
+
+        stack.translate(-0.3F - (0.3F * left), 0.375F, 0.6F);
 
         UseAction action = drop.getUseAction();
 
-        if (isUnicorn() && (action == UseAction.SPYGLASS || action == UseAction.BOW) && entity.getItemUseTimeLeft() > 0) {
+        if ((action == UseAction.SPYGLASS || action == UseAction.BOW) && entity.getItemUseTimeLeft() > 0) {
             Arm main = entity.getMainArm();
             if (entity.getActiveHand() == Hand.OFF_HAND) {
                 main = main.getOpposite();
             }
-            if (main == hand) {
-                stack.translate(-0.1F + (0.3F * left), -0.1F, -1.1F);
+            if (main == arm) {
+                if (action == UseAction.SPYGLASS) {
+                    Size size = getContextModel().getSize();
+                    float x = 0.4F;
+                    float z = -0.8F;
+
+                    if (size == Sizes.TALL || size == Sizes.YEARLING) {
+                        z += 0.05F;
+                    } else if (size == Sizes.FOAL) {
+                        x -= 0.1F;
+                        z -= 0.1F;
+                    }
+
+                    stack.translate(x * left, -0.2, z);
+                } else {
+                    stack.translate(0, 0.2, -0.6);
+                }
             }
         }
     }

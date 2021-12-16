@@ -25,15 +25,15 @@ import net.minecraft.world.World;
 
 public class LevitatingItemRenderer {
 
-    static int tint;
-    private static boolean usingTransparency;
+    private static int tint;
+    private static boolean enabled;
 
-    public static boolean usesTransparency() {
-        return usingTransparency;
+    public static boolean isEnabled() {
+        return enabled;
     }
 
     public static RenderLayer getRenderLayer(Identifier texture) {
-        if (!usesTransparency()) {
+        if (!isEnabled()) {
             return RenderLayer.getEntityTranslucent(texture);
         }
         return MagicGlow.getTintedTexturedLayer(texture, Color.r(tint), Color.g(tint), Color.b(tint), 0.8F);
@@ -55,6 +55,7 @@ public class LevitatingItemRenderer {
         stack.scale(1.1F, 1.1F, 1.1F);
 
         stack.translate(0.01F, 0.01F, 0.01F);
+
         renderItem.renderItem(entity, drop, transform, hand == Arm.LEFT, stack, renderContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV, 0);
         stack.translate(-0.02F, -0.02F, -0.02F);
         renderItem.renderItem(entity, drop, transform, hand == Arm.LEFT, stack, renderContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV, 0);
@@ -64,13 +65,12 @@ public class LevitatingItemRenderer {
     }
 
     private void setColor(int glowColor) {
-        usingTransparency = true;
+        enabled = true;
         tint = glowColor;
     }
 
     private void unsetColor() {
-        usingTransparency = false;
-        tint = 0;
+        enabled = false;
     }
 
     /**
@@ -98,6 +98,7 @@ public class LevitatingItemRenderer {
                 matrix.scale(1.1F, 1.1F, 1.1F);
 
                 matrix.translate(0.015F, 0.01F, 0.01F);
+
                 itemRenderer.renderItem(entity, stack, mode, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
                 matrix.translate(-0.03F, -0.02F, -0.02F);
                 itemRenderer.renderItem(entity, stack, mode, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
