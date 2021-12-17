@@ -35,12 +35,12 @@ object KenzaInjector {
 
     fun init() {
 
-        ScreenInitCallback.EVENT.register(ScreenInitCallback { screen: Screen?, buttons: ScreenInitCallback.ButtonList? ->
-            this.onScreenInit(
-                screen,
-                buttons
-            )
-        })
+//        ScreenInitCallback.EVENT.register(ScreenInitCallback { screen: Screen?, buttons: ScreenInitCallback.ButtonList? ->
+//            this.onScreenInit(
+//                screen,
+//                buttons
+//            )
+//        })
 
         onEntityLoaded()
     }
@@ -136,5 +136,5 @@ object KenzaInjector {
 
 
 fun Entity.canLoadDynamicPonySkin(): Boolean {
-    return (this.toVillagerEntityExtension()?.ponySkinID ?: 0) >= 0
+    return (this.toVillagerEntityExtension()?.ponySkinID ?: -1) >= 0
 }

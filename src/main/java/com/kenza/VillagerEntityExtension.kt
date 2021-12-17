@@ -13,6 +13,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry
 import net.minecraft.entity.passive.VillagerEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.PacketByteBuf
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.LiteralText
 import net.minecraft.village.VillagerData
 import net.minecraft.village.VillagerProfession
@@ -69,8 +70,8 @@ class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension 
 
 
     override fun setCustomName(force: Boolean) {
-        if (!entity.hasCustomName() || force) {
-            entity.customName = LiteralText( generateCustomPonyName())
+        if ( (!entity.hasCustomName() || (force)) && (entity as? VillagerEntity)?.isBaby?.not() ?: false)  {
+            entity.customName = LiteralText(generateCustomPonyName())
             entity.isCustomNameVisible = true
         }
     }
@@ -109,22 +110,30 @@ class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension 
     }
 
     fun setVillagerDataAfter() {
-        if(flagProfessionWasChanged){
+        if (flagProfessionWasChanged) {
             setCustomName(true)
             flagProfessionWasChanged = false
         }
-
     }
 
+    fun onGrowUp() {
 
+        val villager = (entity as? VillagerEntity) ?: return
+
+        if (villager.world is ServerWorld) {
+            setCustomName(true)
+        }
+
+
+    }
 
 
     private fun generateCustomPonyName(): String {
         val profession = (entity as? VillagerEntity)?.villagerData?.profession
 
-        val professionName = if(profession != VillagerProfession.NONE){
+        val professionName = if (profession != VillagerProfession.NONE) {
             "(${profession.toString().upperFirstLetter()})"
-        } else{
+        } else {
             ""
         }
         return "$firstName $secondName $professionName".trim()
@@ -146,16 +155,15 @@ class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension 
             }
         }
 
-        if(firstName.isEmpty()){
+        if (firstName.isEmpty()) {
             firstName = PonyNames.generateFirstName()
         }
 
-        if(secondName.isEmpty()){
+        if (secondName.isEmpty()) {
             secondName = PonyNames.generateSecondName()
         }
 
     }
-
 
 
     companion object {

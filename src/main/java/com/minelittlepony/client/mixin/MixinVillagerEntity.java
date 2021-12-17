@@ -73,6 +73,12 @@ public abstract class MixinVillagerEntity extends MerchantEntity implements Inte
     }
 
 
+    @Inject(method = "onGrowUp", at = @At("TAIL"))
+    public void onGrowUp(CallbackInfo ci) {
+        villagerEntityExtension.onGrowUp();
+    }
+
+
     @Override
     public void setCustomName(boolean force) {
         villagerEntityExtension.setCustomName(force);
