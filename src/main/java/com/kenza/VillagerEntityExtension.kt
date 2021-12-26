@@ -171,7 +171,8 @@ class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension 
         val NBT_VILLAGER_EXTRA_DATA_KEY = "NBT_VILLAGER_EXTRA_DATA_KEY"
 
         val PONIES_SKINS_COUNT: Int by lazy {
-            File(this.javaClass.classLoader.getResource(PATH_ASSET_FOLDER_ALL_PONIES_SKINS).toURI()).list().size
+            95
+//            File(this.javaClass.classLoader.getResource(PATH_ASSET_FOLDER_ALL_PONIES_SKINS).toURI()).list().size
         }
 
         val VILLAGER_EXTRA_DATA: TrackedDataHandler<VillagerEntityExtraData> =
