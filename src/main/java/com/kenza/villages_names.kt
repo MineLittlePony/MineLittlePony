@@ -22,7 +22,7 @@ fun String.upperFirstLetter(): String {
 
 val PONY_FIRST_NAMES = listOf<String>(
 //    #food
-    "Apple", "Baked", "Banana", "Berry", "Candy", "Caramel", "Candy Caramel", "Carrot",
+    "Apple", "Baked", "Banana", "Berry", "Candy", "Caramel", "Carrot",
     "Cherry", "Cheese", "Cinnamon", "Cookie", "Cream", "Flurry", "Grape", "Half Baked", "Lemon",
     "Peachy", "Pumpkin", "Strawberry", "Sugar", "Sweet", "Sweetie",
 //    #jewelry and fancy
@@ -34,7 +34,7 @@ val PONY_FIRST_NAMES = listOf<String>(
     "Bright", "Starlight", "Sunlight", "Sunny", "Sunset", "Sunshine", "Sunshower", "Twilight",
 //    #misc
     "Babs", "Bae", "Beauty", "Big", "Big Daddy", "Charity", "Cloud", "Cloudy", "Cotton",
-    "Daisy", "Electric", "Feldspar Granite", "Fluffy", "Hayseed", "Holly", "Igneous Rock", "Limestone",
+    "Daisy", "Electric", "Feldspar", "Granite", "Fluffy", "Hayseed", "Holly", "Igneous Rock", "Limestone",
     "Lotus", "Lucky", "Lyra", "Merry", "Perfect", "Pound", "Magnet", "Marble", "Maud",
     "Stormy", "Tall", "Tender", "Top", "Vidala", "Golden", "Golden", "Golden", "Golden", "Golden",
 )
