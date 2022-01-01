@@ -12,8 +12,9 @@ import java.util.UUID;
  */
 public interface IPonyManager  {
 
-    Identifier STEVE = new Identifier("minelittlepony", "textures/entity/kenza.png");
-    Identifier ALEX = new Identifier("minelittlepony", "textures/entity/kenza.png");
+    Identifier KENZA = new Identifier("minelittlepony", "textures/entity/kenza.png");
+    Identifier STEVE = new Identifier("minelittlepony", "textures/entity/steve_pony.png");
+    Identifier ALEX = new Identifier("minelittlepony", "textures/entity/alex_pony.png");
 
     /**
      * Gets or creates a pony for the given player.

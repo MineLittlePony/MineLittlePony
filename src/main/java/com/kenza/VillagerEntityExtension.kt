@@ -141,7 +141,7 @@ class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension 
 
     private fun ckeckAndSetSkinId() {
         if (ponySkinID < 0) {
-            ponySkinID = random(30, PONIES_SKINS_COUNT)
+            ponySkinID = random(0, PONIES_SKINS_COUNT)
         }
 
         if (ponyRace == Race.HUMAN) {
