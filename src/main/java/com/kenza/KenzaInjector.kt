@@ -1,10 +1,8 @@
 package com.kenza
 
-import com.minelittlepony.api.pony.IPony
-import com.minelittlepony.api.pony.IPonyData
 import com.minelittlepony.api.pony.meta.Race
-import com.minelittlepony.client.pony.Pony
 import com.minelittlepony.common.event.ScreenInitCallback
+import dev.emi.trinkets.api.TrinketsApi
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents
 import net.minecraft.client.MinecraftClient
@@ -16,11 +14,16 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen
 import net.minecraft.client.sound.PositionedSoundInstance
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.entity.Entity
+import net.minecraft.entity.LivingEntity
+import net.minecraft.item.ItemStack
+import net.minecraft.item.Items
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundEvents
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 import org.apache.logging.log4j.LogManager
+import java.util.*
+import java.util.function.Predicate
 
 
 object KenzaInjector {
@@ -125,16 +128,31 @@ object KenzaInjector {
 
     fun getOverridePonyRaceOfEntity(entity: Entity): Race? {
 
-        return if(entity.canLoadDynamicPonySkin()){
+        return if (entity.canLoadDynamicPonySkin()) {
             entity.toVillagerEntityExtension()?.ponyRace
-        }else{
+        } else {
             null
+        }
+    }
+
+
+    fun LivingEntity.entityHasElytraFromTrinkets(): Boolean {
+        return try {
+            TrinketsApi.getTrinketComponent(this).value?.getEquipped { stack: ItemStack ->
+                stack.isOf(
+                    Items.ELYTRA
+                )
+            }?.isNotEmpty() ?: false
+        } catch (e: Exception) {
+            false
         }
     }
 
 }
 
-
 fun Entity.canLoadDynamicPonySkin(): Boolean {
     return (this.toVillagerEntityExtension()?.ponySkinID ?: -1) >= 0
 }
+
+val <T> Optional<T>.value: T?
+    get() = orElse(null)

@@ -1,11 +1,15 @@
 package com.minelittlepony.client.render.entity.feature;
 
+import com.kenza.KenzaInjector;
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.PonyElytra;
 import com.minelittlepony.client.render.IPonyRenderContext;
 
+import dev.emi.trinkets.api.SlotReference;
+import dev.emi.trinkets.api.TrinketComponent;
+import dev.emi.trinkets.api.TrinketsApi;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumer;
@@ -19,13 +23,17 @@ import net.minecraft.item.Items;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
+
+import java.util.List;
+import java.util.Optional;
 
 public class ElytraFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyFeature<T, M> {
 
     private static final Identifier TEXTURE_ELYTRA = new Identifier("textures/entity/elytra.png");
 
     @SuppressWarnings("unchecked")
-    private final PonyElytra<T> modelElytra = (PonyElytra<T>)ModelType.ELYTRA.createModel();
+    private final PonyElytra<T> modelElytra = (PonyElytra<T>) ModelType.ELYTRA.createModel();
 
     public ElytraFeature(IPonyRenderContext<T, M> rp) {
         super(rp);
@@ -35,7 +43,8 @@ public class ElytraFeature<T extends LivingEntity, M extends EntityModel<T> & IP
     public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
         ItemStack itemstack = entity.getEquippedStack(EquipmentSlot.CHEST);
 
-        if (itemstack.getItem() == Items.ELYTRA) {
+
+        if (itemstack.getItem() == Items.ELYTRA || KenzaInjector.INSTANCE.entityHasElytraFromTrinkets(entity)) {
             stack.push();
             preRenderCallback(stack);
 
@@ -43,7 +52,7 @@ public class ElytraFeature<T extends LivingEntity, M extends EntityModel<T> & IP
 
             getContextModel().copyStateTo(elytra);
             if (elytra instanceof PonyElytra) {
-                ((PonyElytra<T>)elytra).isSneaking = getContext().getEntityPony(entity).isCrouching(entity);
+                ((PonyElytra<T>) elytra).isSneaking = getContext().getEntityPony(entity).isCrouching(entity);
             }
 
             elytra.setAngles(entity, limbDistance, limbAngle, age, headYaw, headPitch);
