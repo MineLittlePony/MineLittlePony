@@ -116,7 +116,7 @@ import com.modrinth.minotaur.TaskModrinthUpload
 task publishModrinth (type: TaskModrinthUpload){
     onlyIf {
       def stage = version.version.stage.value
-      stage != null && stage.name != 'beta'
+      stage == null || stage.name != 'beta'
     }
 
     token = System.env.MODRINTH_KEY
