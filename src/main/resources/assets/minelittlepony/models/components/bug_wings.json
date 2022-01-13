@@ -12,15 +12,14 @@
 					"rotate": [30, 0, 0],
 					"children": {
 						"primary": {
+							"visible": false,
 							"type": "mson:planar",
-							"texture": {"u": 56, "v": 16},
-							"east": [-0.5, 0, -7, 8, 16]
+							"east": [-0.5, 0, -7, 8, 16, 56, 16]
 						},
 						"secondary": {
 							"type": "mson:planar",
-							"texture": {"u": 56, "v": 32},
 							"rotate": [-0.5, 0.3, 0.3333],
-							"east": [1, 0, -5, 8, 16]
+							"east": [1, 0, -5, 8, 16, 56, 32]
 						}
 					}
 				}
@@ -38,17 +37,14 @@
 					"rotate": [30, 0, 0],
 					"children": {
 						"primary": {
+						    "visible": false,
 							"type": "mson:planar",
-							"texture": {"u": 56, "v": 16},
-							"mirror": [true, false, false],
-							"west": [0.5, 0, -7, 8, 16]
+							"west": [0.5, 0, -7, 8, 16, 56, 16, true, false]
 						},
 						"secondary": {
 							"type": "mson:planar",
-							"texture": {"u": 56, "v": 32},
-							"mirror": [true, false, false],
 							"rotate": [-0.5, -0.3, -0.3333],
-							"west": [-1, 0, -5, 8, 16]
+							"west": [-1, 0, -5, 8, 16, 56, 32, true, false]
 						}
 					}
 				}
