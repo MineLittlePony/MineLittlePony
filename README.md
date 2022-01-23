@@ -1,41 +1,24 @@
-# Mine Little Pony
+<p><br /><span style="font-size: 18px;">This is my fork of <a href="https://www.curseforge.com/minecraft/mc-mods/mine-little-pony-fabric">MLP mod</a></span><br /><br /></p>
 
-[![Build Status](https://github.com/MineLittlePony/MineLittlePony/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/MineLittlePony/MineLittlePony/actions/workflows/gradle-build.yml)
-![Downloads](https://img.shields.io/github/downloads/MineLittlePony/MineLittlePony/total.svg?color=yellowgreen)
-[![Discord Server](https://img.shields.io/discord/182490536119107584.svg?color=blueviolet)](https://discord.gg/HbJSFyu)
-![License](https://img.shields.io/github/license/MineLittlePony/MineLittlePony)
-![](https://img.shields.io/badge/api-fabric-orange.svg)
+I have added several new features focused on the variety and personality of the pony villagers.
 
-Turns players and mobs into ponies.
-
-https://minelittlepony-mod.com
-
-## Building
-
-1. JDK 17 is required. Install it using https://adoptium.net/?variant=openjdk17&jvmVariant=hotspot
-
-2. Open a terminal window in the same directory as the sources (git clone or extracted from zip). Run the following command (windows).
-
-```
-gradlew build
-```
-
-3. After some time, the built mod will be in `/build/libs`.
-
-## Installation
-
-Fabric (And FabricAPI) are required. Please refer to their installation instructions <a href="https://fabricmc.net">here</a> and come back once you have Fabric functioning.
-
-Once you have fabric installed, simply download the MineLittlePony-version.jar for your particular version from [the releases page](https://github.com/MineLittlePony/MineLittlePony/releases) and place it into your mods folder next to the fabric-api jar and (optionally) the hdskins jar.
-
-**Remember to use the fabric launcher profile when starting the game!**
-
-## Maven
-
-Stable Releases Channel: `https://repo.minelittlepony-mod.com/maven/release`
-
-Unstable Snapshot Channel: `https://repo.minelittlepony-mod.com/maven/snapshot`
-
-Dependency: `com.minelittlepony:MineLittlePony:<version>-1.15.2`
-
-Check [releases](https://github.com/MineLittlePony/MineLittlePony/releases) for the most recent release version or the `gradle.properties` for most recent snapshot version.
+<p><span style="font-size: 14px;"><span class="Y2IQFc" lang="en"><br /><span style="font-size: 18px;"><strong>1) Pony names!</strong></span><br />Every villager now has his own generated pony first and second name.<br /></span></span></p>
+<div class="spoiler">
+<p><img src="https://raw.githubusercontent.com/dmkenza/MineLittlePony/1.18/photos/6.png" alt="" width="500" height="281" /></p>
+</div>
+<p>&nbsp;<br /><span style="font-size: 18px;"><strong>2) Unique villager's skin!</strong></span><br /><span style="font-size: 14px;">Every villager now has his own pony skin,&nbsp;</span><span class="Y2IQFc" lang="en"><span style="font-size: 14px;">regardless of profession. Threre are <strong>95</strong> unique skins for villagers!</span><br /></span></p>
+<div class="spoiler">
+<p><img src="https://raw.githubusercontent.com/dmkenza/MineLittlePony/1.18/photos/7.png" alt="" width="500" height="281" /></p>
+<p>&nbsp;</p>
+<p><img src="https://raw.githubusercontent.com/dmkenza/MineLittlePony/1.18/photos/8.png" alt="" width="500" height="281" /></p>
+</div>
+<p>&nbsp;<br /><span style="font-size: 18px;"><strong>3) Pony villager race.</strong><br /><span style="font-size: 14px;">Every villager now has his own race,&nbsp;<span class="Y2IQFc" lang="en">regardless of </span> skin.</span></span></p>
+<div class="spoiler">
+<p><img src="https://raw.githubusercontent.com/dmkenza/MineLittlePony/1.18/photos/1.png" alt="" width="500" height="281" /></p>
+</div>
+<p>&nbsp;<br /><span style="font-size: 18px;"><strong>4)&nbsp;Elytra&nbsp;</strong><br /> <span style="font-size: 14px;">I added support rendering Elytra with <a title="elytra-trinket-fabric" href="https://www.curseforge.com/minecraft/mc-mods/elytra-trinket-fabric">Elytra Trinket</a></span></span></p>
+<div class="spoiler">
+<p><img src="https://raw.githubusercontent.com/dmkenza/MineLittlePony/1.18/photos/11.png" alt="" width="600" height="337" /></p>
+</div>
+<p>&nbsp;<br /><br /><strong>Mod requires:<br /></strong><br /><a href="https://www.curseforge.com/minecraft/mc-mods/fabric-language-kotlin">Kotlin</a><br /><a title="Fabric" href="https://www.curseforge.com/minecraft/mc-mods/fabric-api">Fabric</a></p>
+<p>&nbsp;</p>

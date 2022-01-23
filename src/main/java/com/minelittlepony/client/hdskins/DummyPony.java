@@ -1,5 +1,7 @@
 package com.minelittlepony.client.hdskins;
 
+import net.minecraft.client.world.ClientWorld;
+
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.client.IPreviewModel;
@@ -14,8 +16,8 @@ import com.minelittlepony.hdskins.client.dummy.TextureProxy;
  */
 class DummyPony extends DummyPlayer implements IPreviewModel, ModelAttributes.Swimmer, IPonyManager.ForcedPony, Pony.RegistrationHandler {
 
-    public DummyPony(TextureProxy textures) {
-        super(textures);
+    public DummyPony(ClientWorld world, TextureProxy textures) {
+        super(world, textures);
     }
 
     public void setWet(boolean wet) {

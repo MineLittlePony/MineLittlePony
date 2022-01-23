@@ -1,6 +1,7 @@
 package com.minelittlepony.client.model.entity.race;
 
 import com.minelittlepony.client.model.armour.PonyArmourModel;
+import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.model.armour.IArmour;
@@ -31,6 +32,12 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
 
     public SeaponyModel(ModelPart tree) {
         this(tree, false);
+    }
+
+    @Override
+    public void init(ModelContext context) {
+        super.init(context);
+        setVisible(true);
     }
 
     @Override

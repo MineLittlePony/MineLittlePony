@@ -1,6 +1,7 @@
 package com.minelittlepony.client.hdskins;
 
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -23,8 +24,8 @@ class PonyPreview extends PlayerPreview {
     public static final Identifier NO_SKIN_SEAPONY = new Identifier("minelittlepony", "textures/mob/noskin_seapony.png");
 
     @Override
-    protected DummyPlayer createEntity(TextureProxy textures) {
-        return new DummyPony(textures);
+    protected DummyPlayer createEntity(ClientWorld world, TextureProxy textures) {
+        return new DummyPony(world, textures);
     }
 
     public void setWet(boolean isWet) {
