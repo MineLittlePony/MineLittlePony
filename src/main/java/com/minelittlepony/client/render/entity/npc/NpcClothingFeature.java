@@ -91,7 +91,7 @@ class NpcClothingFeature<
 
             Identifier typeSkin = findTexture(entity, type);
 
-            renderModel(entityModel, typeSkin, matrixStack, provider, i, entity, 1, 1, 1);
+//            renderModel(entityModel, typeSkin, matrixStack, provider, i, entity, 1, 1, 1);
 
             entityModel.setHatVisible(true);
 
