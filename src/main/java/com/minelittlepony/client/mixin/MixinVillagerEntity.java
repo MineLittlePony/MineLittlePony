@@ -73,6 +73,20 @@ public abstract class MixinVillagerEntity extends MerchantEntity implements Inte
     }
 
 
+    @NotNull
+    @Override
+    public String getPonyName() {
+        return villagerEntityExtension.getPonyName();
+    }
+
+
+    @NotNull
+    @Override
+    public String getProfessionName() {
+        return villagerEntityExtension.getProfessionName();
+    }
+
+
     @Inject(method = "onGrowUp", at = @At("TAIL"))
     public void onGrowUp(CallbackInfo ci) {
         villagerEntityExtension.onGrowUp();

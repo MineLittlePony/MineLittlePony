@@ -30,6 +30,7 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -86,7 +87,6 @@ public class MineLittlePony implements ClientModInitializer {
         ScreenInitCallback.EVENT.register(this::onScreenInit);
 
         config.load();
-
         Channel.bootstrap();
         ModelType.bootstrap();
 

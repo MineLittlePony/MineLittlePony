@@ -1,6 +1,7 @@
 package com.minelittlepony.client.render.entity;
 
 import com.kenza.KenzaInjector;
+import com.kenza.KenzaRenderInjector;
 import com.minelittlepony.api.model.IUnicorn;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.MineLittlePony;
@@ -62,6 +63,8 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
     public void render(T entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
         DebugBoundingBoxRenderer.render(manager.getPony(entity), this, entity, stack, renderContext, tickDelta);
+
+
     }
 
     @Override
@@ -83,7 +86,7 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
 
     @Override
     public boolean shouldRender(T entity, Frustum visibleRegion, double camX, double camY, double camZ) {
-        return super.shouldRender(entity, manager.getFrustrum(entity, visibleRegion), camX, camY, camZ);
+        return true; //super.shouldRender(entity, manager.getFrustrum(entity, visibleRegion), camX, camY, camZ);
     }
 
     @Override
@@ -110,7 +113,11 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
     protected void renderLabelIfPresent(T entity, Text name, MatrixStack stack, VertexConsumerProvider renderContext, int maxDistance) {
         stack.push();
         stack.translate(0, manager.getNamePlateYOffset(entity), 0);
-        super.renderLabelIfPresent(entity, name, stack, renderContext, maxDistance);
+
+        boolean renderSuper = KenzaRenderInjector.renderTextIfNeed(entity, stack);
+        if (renderSuper) {
+            super.renderLabelIfPresent(entity, name, stack, renderContext, maxDistance);
+        }
         stack.pop();
     }
 

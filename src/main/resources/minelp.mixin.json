@@ -1,22 +1,24 @@
 {
-    "required": true,
-    "minVersion": "0.7",
-    "package": "com.minelittlepony.client.mixin",
-    "refmap": "minelp.mixin.refmap.json",
-    "compatibilityLevel": "JAVA_16",
-    "client": [
-        "MixinVillagerEntity",
-        "IResizeable",
-        "MixinCamera",
-        "MixinDefaultPlayerSkin",
-        "MixinEntityRenderDispatcher",
-        "MixinEntityRenderers",
-        "MixinSkullBlockEntityRenderer",
-        "MixinFirstPersonRenderer",
-        "MixinItemRenderer",
-        "MixinTexturedRenderLayers",
-        "MixinSpriteIdentifier",
-        "MixinClientPlayerEntity",
-        "MixinPlayerMoveC2SPacket"
-    ]
+  "required": true,
+  "minVersion": "0.7",
+  "package": "com.minelittlepony.client.mixin",
+  "refmap": "minelp.mixin.refmap.json",
+  "compatibilityLevel": "JAVA_16",
+  "client": [
+    "IResizeable",
+    "MixinCamera",
+    "MixinClientPlayerEntity",
+    "MixinDefaultPlayerSkin",
+    "MixinEntityRenderDispatcher",
+    "MixinEntityRenderers",
+    "MixinFirstPersonRenderer",
+    "MixinItemRenderer",
+    "MixinPlayerMoveC2SPacket",
+    "MixinSkullBlockEntityRenderer",
+    "MixinSpriteIdentifier",
+    "MixinTexturedRenderLayers",
+    "MixinVillagerEntity"
+  ],
+  "mixins": [
+  ]
 }

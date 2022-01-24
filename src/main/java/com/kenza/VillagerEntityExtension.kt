@@ -17,7 +17,6 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.LiteralText
 import net.minecraft.village.VillagerData
 import net.minecraft.village.VillagerProfession
-import java.io.File
 
 @Serializable
 data class VillagerEntityExtraData(
@@ -32,6 +31,8 @@ interface VillagerEntityExtension {
 
     var ponySkinID: Int
     var ponyRace: Race
+    val ponyName: String
+    val professionName: String
 }
 
 class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension {
@@ -56,6 +57,14 @@ class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension 
             villagerProperty = villagerProperty.copy(ponyRace = value)
         }
 
+    override val ponyName: String
+        get() = getPonyCustomName()
+
+    override val professionName: String
+        get() = getProfessionNameValue()
+
+
+
     var firstName: String
         get() = villagerProperty.firstName
         set(value) {
@@ -70,10 +79,13 @@ class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension 
 
 
     override fun setCustomName(force: Boolean) {
-        if ( (!entity.hasCustomName() || (force)) && (entity as? VillagerEntity)?.isBaby?.not() ?: false)  {
-            entity.customName = LiteralText(generateCustomPonyName())
+        if ((!entity.hasCustomName() || (force)) && (entity as? VillagerEntity)?.isBaby?.not() ?: false) {
+            entity.customName = LiteralText(getPonyCustomName())
             entity.isCustomNameVisible = true
         }
+
+        entity.customName = LiteralText(getPonyCustomName())
+        entity.isCustomNameVisible = true
     }
 
 
@@ -93,6 +105,7 @@ class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension 
             entity.dataTracker.set(VILLAGER_EXTRA_PROPERTY, data)
             ckeckAndSetSkinId()
         }
+
     }
 
     fun initDataTracker() {
@@ -110,33 +123,45 @@ class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension 
     }
 
     fun setVillagerDataAfter() {
-        if (flagProfessionWasChanged) {
-            setCustomName(true)
-            flagProfessionWasChanged = false
-        }
+//        if (flagProfessionWasChanged) {
+//            setCustomName(true)
+//            flagProfessionWasChanged = false
+//        }
     }
 
     fun onGrowUp() {
 
         val villager = (entity as? VillagerEntity) ?: return
 
-        if (villager.world is ServerWorld) {
-            setCustomName(true)
-        }
+//        if (villager.world is ServerWorld) {
+//            setCustomName(true)
+//        }
 
 
     }
 
-
-    private fun generateCustomPonyName(): String {
+    private fun getProfessionNameValue(): String {
         val profession = (entity as? VillagerEntity)?.villagerData?.profession
 
         val professionName = if (profession != VillagerProfession.NONE) {
-            "(${profession.toString().upperFirstLetter()})"
+            profession.toString().upperFirstLetter()
         } else {
             ""
         }
-        return "$firstName $secondName $professionName".trim()
+        return professionName
+    }
+
+
+    private fun getPonyCustomName(): String {
+//        val profession = (entity as? VillagerEntity)?.villagerData?.profession
+
+//        val professionName = if (profession != VillagerProfession.NONE) {
+//            "(${profession.toString().upperFirstLetter()})"
+//        } else {
+//            ""
+//        }
+//        return "$firstName $secondName $professionName".trim()
+        return "$firstName $secondName".trim()
     }
 
     private fun ckeckAndSetSkinId() {
