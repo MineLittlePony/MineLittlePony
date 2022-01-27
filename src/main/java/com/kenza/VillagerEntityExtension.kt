@@ -79,7 +79,8 @@ class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension 
 
 
     override fun setCustomName(force: Boolean) {
-        if ((!entity.hasCustomName() || (force)) && (entity as? VillagerEntity)?.isBaby?.not() ?: false) {
+        //&& (entity as? VillagerEntity)?.isBaby?.not() ?: false
+        if ((!entity.hasCustomName() || (force)) ) {
             entity.customName = LiteralText(getPonyCustomName())
             entity.isCustomNameVisible = true
         }
