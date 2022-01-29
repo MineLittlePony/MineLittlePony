@@ -6,7 +6,11 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.feature.VillagerResourceMetadata;
 import net.minecraft.client.render.entity.feature.VillagerResourceMetadata.HatType;
@@ -71,6 +75,12 @@ class NpcClothingFeature<
         return new Identifier(namespace, String.format("textures/entity/%s/%s/%s.png", entityType, type, profession.getPath()));
     }
 
+
+    protected static <T extends LivingEntity> void renderModel(EntityModel<T> model, Identifier texture, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T entity, float red, float green, float blue) {
+        VertexConsumer vertexConsumer = vertexConsumers.getBuffer( RenderLayer.getArmorCutoutNoCull(texture));
+        model.render(matrices, vertexConsumer, light,  LivingEntityRenderer.getOverlay(entity, 0.0F), red, green, blue, 1.0F);
+    }
+
     @Override
     public void render(MatrixStack matrixStack, VertexConsumerProvider provider, int i, T entity, float f, float g, float h, float j, float k, float l) {
         if (!entity.isInvisible()) {
@@ -91,7 +101,7 @@ class NpcClothingFeature<
 
             Identifier typeSkin = findTexture(entity, type);
 
-//            renderModel(entityModel, typeSkin, matrixStack, provider, i, entity, 1, 1, 1);
+            renderModel(entityModel, typeSkin, matrixStack, provider, i, entity, 1, 1, 1);
 
             entityModel.setHatVisible(true);
 
@@ -117,6 +127,10 @@ class NpcClothingFeature<
         }
         return loadHatType(cache, type, registry, key);
     }
+
+
+
+
 
     private <K> VillagerResourceMetadata.HatType loadHatType(Map<K, HatType> cache, String type, DefaultedRegistry<K> registry, K key) {
         return cache.computeIfAbsent(key, k -> {

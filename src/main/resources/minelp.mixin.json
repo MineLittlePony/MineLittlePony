@@ -17,7 +17,9 @@
     "MixinSkullBlockEntityRenderer",
     "MixinSpriteIdentifier",
     "MixinTexturedRenderLayers",
-    "MixinVillagerEntity"
+    "MixinVillagerEntity",
+    "MixinFeatureRenderer"
+
   ],
   "mixins": [
   ]

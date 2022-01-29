@@ -38,12 +38,12 @@ object KenzaInjector {
 
     fun init() {
 
-//        ScreenInitCallback.EVENT.register(ScreenInitCallback { screen: Screen?, buttons: ScreenInitCallback.ButtonList? ->
-//            this.onScreenInit(
-//                screen,
-//                buttons
-//            )
-//        })
+        ScreenInitCallback.EVENT.register(ScreenInitCallback { screen: Screen?, buttons: ScreenInitCallback.ButtonList? ->
+            this.onScreenInit(
+                screen,
+                buttons
+            )
+        })
 
         onEntityLoaded()
     }
