@@ -74,6 +74,17 @@ object KenzaRenderInjector {
         }
         var seeThrough = false
 
+
+        /** extra render text for Iris mod fix transparent problem */
+        mc.textRenderer.draw(
+            matrices,
+            text1,
+            -shiftY,
+            0f,
+            553648127
+        )
+
+
         mc.textRenderer.draw(
             text1,
             offset,
