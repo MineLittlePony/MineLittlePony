@@ -26,6 +26,7 @@ import java.util.*
 import java.util.function.Predicate
 
 
+//summon minecraft:villager ~ ~ ~ {VillagerData:{level:1,profession:"minecraft:nitwit",type:"minecraft:desert"}}
 object KenzaInjector {
 
     val LOGGER = LogManager.getLogger()
@@ -39,10 +40,10 @@ object KenzaInjector {
     fun init() {
 
         ScreenInitCallback.EVENT.register(ScreenInitCallback { screen: Screen?, buttons: ScreenInitCallback.ButtonList? ->
-            this.onScreenInit(
-                screen,
-                buttons
-            )
+//            this.onScreenInit(
+//                screen,
+//                buttons
+//            )
         })
 
         onEntityLoaded()

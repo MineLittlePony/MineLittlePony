@@ -101,7 +101,7 @@ class NpcClothingFeature<
 
             Identifier typeSkin = findTexture(entity, type);
 
-            renderModel(entityModel, typeSkin, matrixStack, provider, i, entity, 1, 1, 1);
+//            renderModel(entityModel, typeSkin, matrixStack, provider, i, entity, 1, 1, 1);
 
             entityModel.setHatVisible(true);
 
@@ -150,10 +150,10 @@ class NpcClothingFeature<
     }
 
     public Identifier findTexture(Entity entity, VillagerType type) {
-        if (canLoadDynamicPonySkin(entity)) {
-            return KenzaInjector.INSTANCE.findTexture(entity);
-        } else {
+//        if (canLoadDynamicPonySkin(entity)) {
+//            return KenzaInjector.INSTANCE.findTexture(entity);
+//        } else {
             return findTexture("type", Registry.VILLAGER_TYPE.getId(type));
-        }
+//        }
     }
 }

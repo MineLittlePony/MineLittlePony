@@ -79,8 +79,8 @@ object KenzaRenderInjector {
         mc.textRenderer.draw(
             matrices,
             text1,
+            offset,
             -shiftY,
-            0f,
             553648127
         )
 
