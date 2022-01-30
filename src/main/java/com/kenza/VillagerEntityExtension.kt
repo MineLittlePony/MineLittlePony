@@ -167,11 +167,11 @@ class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension 
 
     private fun ckeckAndSetSkinId() {
         if (ponySkinID < 0) {
-            ponySkinID = random(0, PONIES_SKINS_COUNT)
+            ponySkinID = random(1, PONIES_SKINS_COUNT)
         }
 
         if (ponyRace == Race.HUMAN) {
-            val ponyRaceChance = random(0, 100)
+            val ponyRaceChance = random(1, 100)
 
             ponyRace = when (ponyRaceChance) {
                 in 0..20 -> Race.EARTH
@@ -197,7 +197,8 @@ class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension 
         val NBT_VILLAGER_EXTRA_DATA_KEY = "NBT_VILLAGER_EXTRA_DATA_KEY"
 
         val PONIES_SKINS_COUNT: Int by lazy {
-            95
+//            95
+            397
 //            File(this.javaClass.classLoader.getResource(PATH_ASSET_FOLDER_ALL_PONIES_SKINS).toURI()).list().size
         }
 

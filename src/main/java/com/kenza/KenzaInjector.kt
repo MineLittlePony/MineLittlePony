@@ -78,8 +78,8 @@ object KenzaInjector {
     private fun onEntityLoaded() {
 
         ServerEntityEvents.ENTITY_LOAD.register(ServerEntityEvents.Load { entity: Entity?, serverWorld: ServerWorld? ->
-//            entity?.toVillagerEntityExtension()?.setCustomName(false)
-            entity?.toVillagerEntityExtension()?.setCustomName(true)
+            entity?.toVillagerEntityExtension()?.setCustomName(false)
+//            entity?.toVillagerEntityExtension()?.setCustomName(true)
         })
 //
 //        ServerEntityEvents.ENTITY_UNLOAD.register(ServerEntityEvents.Unload { entity: Entity?, serverWorld: ServerWorld? ->

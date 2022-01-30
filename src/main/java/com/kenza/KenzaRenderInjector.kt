@@ -55,6 +55,7 @@ object KenzaRenderInjector {
 
         val professionName = passedEntity.toVillagerEntityExtension()?.professionName ?: ""
         val text1 = passedEntity.toVillagerEntityExtension()?.run {
+//            ponyName + ponySkinID
             ponyName
         }
         val text2 = "\"The $professionName\""
