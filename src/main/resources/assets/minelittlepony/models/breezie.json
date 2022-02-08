@@ -3,6 +3,19 @@
 	"texture": {
 		"w": 64, "h": 64
 	},
+	"skeleton": {
+        "body": {
+            "neck": {
+                "head": {}
+            },
+            "left_arm": {},
+            "right_arm": {},
+            "left_leg": {},
+            "right_leg": {},
+            "left_wing": {},
+            "right_wing": {}
+        }
+	},
 	"data": {
 		"head": {
 			"children": {
