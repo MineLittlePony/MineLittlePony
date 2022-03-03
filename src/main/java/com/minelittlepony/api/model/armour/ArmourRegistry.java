@@ -10,7 +10,7 @@ import com.mojang.serialization.Lifecycle;
 
 public final class ArmourRegistry {
     private ArmourRegistry() {}
-    static final Registry<IArmour<?>> REGISTRY = new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("minelittlepony", "armour")), Lifecycle.stable());
+    static final Registry<IArmour<?>> REGISTRY = new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("minelittlepony", "armour")), Lifecycle.stable(), null);
 
     @SuppressWarnings("unchecked")
     public static <T extends IArmourModel> IArmour<T> getArmour(ItemStack stack, IArmour<T> fallback) {
