@@ -59,9 +59,6 @@ public class PonyTextures<T extends LivingEntity & VillagerDataContainer> implem
 
     private Identifier getTexture(final VillagerType type, final VillagerProfession profession) {
 
-        if (profession == VillagerProfession.NONE) {
-            return fallback;
-        }
 
         String key = ResourceUtil.format("pony/%s/%s", type, profession);
 
