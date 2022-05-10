@@ -145,7 +145,7 @@ object KenzaInjector {
                     Items.ELYTRA
                 )
             }?.isNotEmpty() ?: false
-        } catch (e: Exception) {
+        } catch (e: NoClassDefFoundError) {
             false
         }
     }

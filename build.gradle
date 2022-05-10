@@ -25,8 +25,7 @@ outlet.mcVersionRange = project.minecraft_version_range
 
 group = project.group
 description = project.displayname
-archivesBaseName = project.name
-
+archivesBaseName = project.archives_base_name + "-" + mod_version
 loom {
     mixin.defaultRefmapName = 'minelp.mixin.refmap.json'
     accessWidenerPath = file('src/main/resources/minelp.aw')
@@ -151,6 +150,11 @@ task publishModrinth (type: TaskModrinthUpload){
     addLoader(project.modrinth_loader_type)
     outlet.mcVersions().each{ver ->
       addGameVersion ver
+    }
+}
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.archivesBaseName}"}
     }
 }
 
