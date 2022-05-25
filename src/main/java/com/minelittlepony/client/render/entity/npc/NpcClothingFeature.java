@@ -85,7 +85,7 @@ class NpcClothingFeature<
         Identifier typeId = Registry.VILLAGER_TYPE.getId(type);
         Identifier profId = Registry.VILLAGER_PROFESSION.getId(profession);
 
-        Identifier key = new Identifier((typeId + "/" + profId + "/" + level).replace(':', '_'));
+        Identifier key = new Identifier("minelittlepony", (typeId + "/" + profId + "/" + level).replace(':', '_'));
 
         if (MinecraftClient.getInstance().getTextureManager().getOrDefault(key, null) == null) {
             TextureFlattener.flatten(computeTextures(type, profession, typeId, profId, level), (Identifier)key);
