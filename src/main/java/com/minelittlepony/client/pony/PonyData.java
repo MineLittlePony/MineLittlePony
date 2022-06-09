@@ -1,7 +1,6 @@
 package com.minelittlepony.client.pony;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
 import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.Expose;
@@ -16,11 +15,8 @@ import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.util.render.NativeUtil;
 import com.minelittlepony.common.util.animation.Interpolator;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.UUID;
+import java.util.*;
 
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -45,24 +41,21 @@ public class PonyData implements IPonyData {
             return MEM_NULL;
         }
 
-        try (Resource res = MinecraftClient.getInstance().getResourceManager().getResource(identifier)) {
-            PonyData data = res.getMetadata(SERIALISER);
-
-            if (data != null) {
-                return Memoize.of(data);
+        return MinecraftClient.getInstance().getResourceManager().getResource(identifier).flatMap(res -> {
+            try {
+                return res.getMetadata().decode(SERIALISER);
+            } catch (IOException e) {
+                MineLittlePony.logger.warn("Unable to read {} metadata", identifier, e);
             }
-        } catch (FileNotFoundException e) {
-            // Ignore uploaded texture
-        } catch (IOException e) {
-            MineLittlePony.logger.warn("Unable to read {} metadata", identifier, e);
-        }
-
-        return Memoize.load(callback -> {
-            NativeUtil.parseImage(identifier, img -> {
-                callback.accept(new NativePonyData(img));
-            }, e -> {
-                MineLittlePony.logger.fatal("Unable to read {} metadata", identifier, e);
-                callback.accept(NULL);
+            return null;
+        }).map(Memoize::of).orElseGet(() -> {
+            return Memoize.load(callback -> {
+                NativeUtil.parseImage(identifier, img -> {
+                    callback.accept(new NativePonyData(img));
+                }, e -> {
+                    MineLittlePony.logger.fatal("Unable to read {} metadata", identifier, e);
+                    callback.accept(NULL);
+                });
             });
         });
     }

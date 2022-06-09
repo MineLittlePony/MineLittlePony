@@ -10,8 +10,8 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.dynamic.DynamicSerializableUuid;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -35,7 +35,7 @@ public class PonySkull extends AbstractPonySkull {
                 return skin;
             }
 
-            return DefaultSkinHelper.getTexture(PlayerEntity.getUuidFromProfile(profile));
+            return DefaultSkinHelper.getTexture(DynamicSerializableUuid.getUuidFromProfile(profile));
         }
 
         return DefaultSkinHelper.getTexture();

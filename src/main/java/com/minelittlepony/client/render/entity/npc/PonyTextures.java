@@ -82,7 +82,7 @@ public class PonyTextures<T extends LivingEntity & VillagerDataContainer> implem
     }
 
     protected Optional<Identifier> verifyTexture(Identifier texture) {
-        if (!resourceManager.containsResource(texture)) {
+        if (resourceManager.getResource(texture).isEmpty()) {
             MineLittlePony.logger.warn("Villager texture `" + texture + "` was not found.");
             return Optional.empty();
         }

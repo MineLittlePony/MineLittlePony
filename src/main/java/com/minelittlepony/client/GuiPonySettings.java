@@ -2,8 +2,7 @@ package com.minelittlepony.client;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.*;
 
 import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.client.settings.ClientPonyConfig;
@@ -25,12 +24,15 @@ import org.jetbrains.annotations.Nullable;
  *
  */
 public class GuiPonySettings extends GameGui {
-
     private static final String OPTIONS_PREFIX = "minelp.options.";
-
     private static final String PONY_LEVEL = OPTIONS_PREFIX + "ponylevel";
-
     private static final String MOB_PREFIX = "minelp.mobs.";
+
+    public static final Text SCALE_MEGA = Text.translatable("minelp.debug.scale.meg");
+    public static final Text SCALE_MAX = Text.translatable("minelp.debug.scale.max");
+    public static final Text SCALE_MID = Text.translatable("minelp.debug.scale.mid");
+    public static final Text SCALE_SHOW = Text.translatable("minelp.debug.scale.sa");
+    public static final Text SCALE_MIN = Text.translatable("minelp.debug.scale.min");
 
     private ClientPonyConfig config;
 
@@ -39,7 +41,7 @@ public class GuiPonySettings extends GameGui {
     private final boolean hiddenOptions;
 
     public GuiPonySettings(@Nullable Screen parent) {
-        super(new LiteralText(OPTIONS_PREFIX + "title"), parent);
+        super(Text.literal(OPTIONS_PREFIX + "title"), parent);
 
         config = (ClientPonyConfig)MineLittlePony.getInstance().getConfig();
 
@@ -83,7 +85,7 @@ public class GuiPonySettings extends GameGui {
 
         content.addButton(new EnumSlider<>(LEFT, row += 20, config.ponyLevel.get())
                 .onChange(config.ponyLevel::set)
-                .setTextFormat(sender -> new TranslatableText(PONY_LEVEL + "." + sender.getValue().name().toLowerCase()))
+                .setTextFormat(sender -> Text.translatable(PONY_LEVEL + "." + sender.getValue().name().toLowerCase()))
                 .setTooltipFormat(sender -> Tooltip.of(PONY_LEVEL + "." + sender.getValue().name().toLowerCase() + ".tooltip", 200)));
 
         boolean allowCameraChange = client.player == null || client.player.isCreative() || client.player.isSpectator() || client.isInSingleplayer();
@@ -110,7 +112,7 @@ public class GuiPonySettings extends GameGui {
             button.getStyle().setText(OPTIONS_PREFIX + i.name().toLowerCase());
             if (!enabled) {
                 button.getStyle()
-                    .setTooltip(new TranslatableText(OPTIONS_PREFIX + "option.disabled"))
+                    .setTooltip(Text.translatable(OPTIONS_PREFIX + "option.disabled"))
                     .setTooltipOffset(0, 0);
             }
         }
@@ -139,29 +141,29 @@ public class GuiPonySettings extends GameGui {
         SkinsProxy.instance.renderOption(this, parent, row, RIGHT, content);
     }
 
-    public TranslatableText describeCurrentScale(AbstractSlider<Float> sender) {
+    public Text describeCurrentScale(AbstractSlider<Float> sender) {
         float value = sender.getValue();
         if (value >= 3) {
-            return new TranslatableText("minelp.debug.scale.meg");
+            return SCALE_MEGA;
         }
         if (value == 2) {
-            return new TranslatableText("minelp.debug.scale.max");
+            return SCALE_MAX;
         }
         if (value == 1) {
-            return new TranslatableText("minelp.debug.scale.mid");
+            return SCALE_MID;
         }
         if (value == 0.9F) {
-            return new TranslatableText("minelp.debug.scale.sa");
+            return SCALE_SHOW;
         }
         if (value <= 0.1F) {
-            return new TranslatableText("minelp.debug.scale.min");
+            return SCALE_MIN;
         }
 
         value *= 100F;
         value = Math.round(value);
         value /= 100F;
 
-        return new TranslatableText("minelp.debug.scale.value", value);
+        return Text.translatable("minelp.debug.scale.value", value);
     }
 
     @Override

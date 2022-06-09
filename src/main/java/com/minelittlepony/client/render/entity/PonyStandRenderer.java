@@ -34,9 +34,9 @@ public class PonyStandRenderer extends ArmorStandEntityRenderer {
 
         features.clear();
         addFeature(new Armour(this, context));
-        addFeature(new HeldItemFeatureRenderer<>(this));
+        addFeature(new HeldItemFeatureRenderer<>(this, context.getHeldItemRenderer()));
         addFeature(new ElytraFeatureRenderer<>(this, context.getModelLoader()));
-        addFeature(new HeadFeatureRenderer<>(this, context.getModelLoader()));
+        addFeature(new HeadFeatureRenderer<>(this, context.getModelLoader(), context.getHeldItemRenderer()));
     }
 
     @Override
@@ -89,6 +89,6 @@ public class PonyStandRenderer extends ArmorStandEntityRenderer {
     }
 
     static boolean isPonita(ArmorStandEntity entity) {
-        return entity.hasCustomName() && "Ponita".equals(entity.getCustomName().asString());
+        return entity.hasCustomName() && "Ponita".equals(entity.getCustomName().getString());
     }
 }

@@ -12,8 +12,7 @@ import net.minecraft.block.AbstractSkullBlock;
 import net.minecraft.block.SkullBlock;
 import net.minecraft.block.SkullBlock.SkullType;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.SkullBlockEntityModel;
 import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
@@ -76,7 +75,8 @@ public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & IPo
         stack.scale(0.625F, -0.625F, -0.625F);
         stack.translate(0, 0.6F, -0.21F);
 
-        MinecraftClient.getInstance().getHeldItemRenderer().renderItem(entity, itemstack, ModelTransformation.Mode.HEAD, false, stack, renderContext, lightUv);
+        MinecraftClient.getInstance().getItemRenderer()
+            .renderItem(entity, itemstack, ModelTransformation.Mode.HEAD, false, stack, renderContext, entity.world, lightUv, OverlayTexture.DEFAULT_UV, entity.getId() + ModelTransformation.Mode.HEAD.ordinal());
     }
 
     private void renderSkull(MatrixStack stack, VertexConsumerProvider renderContext, ItemStack itemstack, boolean isVillager, float limbDistance, int lightUv) {

@@ -120,7 +120,7 @@ public class DefaultArmourTextureResolver implements IArmourTextureResolver {
     }
 
     private final boolean isValid(Identifier texture) {
-        return MinecraftClient.getInstance().getResourceManager().containsResource(texture);
+        return MinecraftClient.getInstance().getResourceManager().getResource(texture).isPresent();
     }
 
     @Override
