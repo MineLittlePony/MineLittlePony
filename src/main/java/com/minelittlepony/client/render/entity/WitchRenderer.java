@@ -26,7 +26,7 @@ public class WitchRenderer extends PonyRenderer<WitchEntity, WitchPonyModel> {
         return new HeldItemFeature<WitchEntity, WitchPonyModel>(this) {
             @Override
             protected void preItemRender(WitchEntity entity, ItemStack drop, ModelTransformation.Mode transform, Arm hand, MatrixStack stack) {
-                stack.translate(0, -0.3F, -0.8F);
+                super.preItemRender(entity, drop, transform, hand, stack);
                 stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(10));
             }
         };
