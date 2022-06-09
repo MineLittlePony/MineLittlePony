@@ -117,6 +117,15 @@ public class GuiPonySettings extends GameGui {
             }
         }
 
+        if (hiddenOptions) {
+            for (Setting<?> i : config.getByCategory("customisation")) {
+                Button button = content
+                    .addButton(new Toggle(LEFT, row += 20, ((Setting<Boolean>)i).get()))
+                    .onChange((Setting<Boolean>)i);
+                button.getStyle().setText(OPTIONS_PREFIX + i.name().toLowerCase());
+            }
+        }
+
         content.addButton(new Label(LEFT, row += 20)).getStyle().setText(OPTIONS_PREFIX + "button");
         content.addButton(new EnumSlider<>(LEFT, row += 20, config.horseButton.get())
                 .onChange(config.horseButton::set)

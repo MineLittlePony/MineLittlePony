@@ -32,6 +32,8 @@ public class PonyConfig extends JsonConfig {
      */
     public final Setting<Sizes> sizeOverride = value("sizeOverride", Sizes.UNSET);
 
+    public final Setting<Boolean> flappyElytras = value("customisation", "flappyElytras", false);
+
     public PonyConfig(Path path) {
         super(path);
     }

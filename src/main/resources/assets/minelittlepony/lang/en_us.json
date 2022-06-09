@@ -20,6 +20,7 @@
   "minelp.options.tpsmagic": "Magic in third-person",
   "minelp.options.ponyskulls": "Pony Skulls",
   "minelp.options.frustrum": "Frustum checks",
+  "minelp.options.flappyelytras": "Flap Wings whilst Gliding",
   "minelp.options.passivenetworking": "Passive Networking [Beta]",
   "minelp.options.button": "Display On Title Screen",
   "minelp.options.button.on": "Always Display\n\nBoth the pony button and HD Skins button are visible (if installed)",

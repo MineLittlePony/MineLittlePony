@@ -1,12 +1,15 @@
 package com.minelittlepony.api.model;
 
+import com.minelittlepony.client.MineLittlePony;
+
 public interface IPegasus extends IModel {
 
     /**
      * Returns true if the wings are spread.
      */
     default boolean wingsAreOpen() {
-        return (getAttributes().isSwimming || isFlying() || getAttributes().isCrouching) && !getAttributes().isGliding;
+        return (getAttributes().isSwimming || isFlying() || getAttributes().isCrouching)
+            && (MineLittlePony.getInstance().getConfig().flappyElytras.get() || !getAttributes().isGliding);
     }
 
     /**
