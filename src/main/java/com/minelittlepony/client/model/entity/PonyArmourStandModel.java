@@ -4,10 +4,13 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.ArmorStandEntityModel;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.util.math.EulerAngle;
 
 import com.minelittlepony.mson.util.PartUtil;
 
 public class PonyArmourStandModel extends ArmorStandEntityModel {
+    private static final EulerAngle DEFAULT_LEFT_LEG_ROTATION = new EulerAngle(-1, 0, -1);
+    private static final EulerAngle DEFAULT_RIGHT_LEG_ROTATION = new EulerAngle(1, 0, 1);
 
     public PonyArmourStandModel(ModelPart modelPart) {
         super(modelPart);
@@ -19,11 +22,17 @@ public class PonyArmourStandModel extends ArmorStandEntityModel {
         leftArm.visible = true;
         rightArm.visible = true;
 
-        PartUtil.copyAngles(leftArm, leftLeg);
-        PartUtil.copyAngles(rightArm, rightLeg);
 
-        leftLeg.pitch *= -1;
-        rightLeg.pitch *= -1;
+
+        if (entity.getLeftLegRotation().equals(DEFAULT_LEFT_LEG_ROTATION)) {
+            PartUtil.copyAngles(leftArm, leftLeg);
+            leftLeg.pitch *= -1;
+        }
+
+        if (entity.getRightLegRotation().equals(DEFAULT_RIGHT_LEG_ROTATION)) {
+            PartUtil.copyAngles(rightArm, rightLeg);
+            rightLeg.pitch *= -1;
+        }
     }
 
     public void applyAnglesTo(BipedEntityModel<ArmorStandEntity> dest) {
