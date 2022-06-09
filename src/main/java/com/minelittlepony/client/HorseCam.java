@@ -1,7 +1,10 @@
 package com.minelittlepony.client;
 
+import net.minecraft.block.Blocks;
+import net.minecraft.block.Material;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 
@@ -82,6 +85,10 @@ public class HorseCam {
         // noop
         // Ignore misses, helps with bows, arrows, and projectiles
         if (hit == null || hit.getType() != HitResult.Type.BLOCK || player == null) {
+            return originalPitch;
+        }
+
+        if (hit instanceof BlockHitResult && player.world.getBlockState(((BlockHitResult)hit).getBlockPos()).getMaterial() == Material.PORTAL) {
             return originalPitch;
         }
 
