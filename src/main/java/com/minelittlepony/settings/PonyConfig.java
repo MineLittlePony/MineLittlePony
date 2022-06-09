@@ -28,11 +28,6 @@ public class PonyConfig extends JsonConfig {
     public final Setting<Boolean> frustrum =   value("settings", "frustrum", true);
 
     /**
-     * Temporary flag to enable post-1.18 networking behaviour.
-     */
-    public final Setting<Boolean> passiveNetworking = value("settings", "passiveNetworking", false);
-
-    /**
      * Debug override for pony sizes.
      */
     public final Setting<Sizes> sizeOverride = value("sizeOverride", Sizes.UNSET);

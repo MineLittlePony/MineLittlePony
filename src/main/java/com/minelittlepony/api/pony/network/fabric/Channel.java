@@ -55,8 +55,7 @@ public class Channel {
             throw new RuntimeException("Client packet send called by the server");
         }
 
-        if (MineLittlePony.getInstance().getConfig().passiveNetworking.get()
-                && !registered) {
+        if (!registered) {
             if (MinecraftClient.getInstance().isInSingleplayer() || MinecraftClient.getInstance().isIntegratedServerRunning()) {
                 MineLittlePony.logger.info("Sending pony skin data over as we are either in single-player or lan");
             } else {

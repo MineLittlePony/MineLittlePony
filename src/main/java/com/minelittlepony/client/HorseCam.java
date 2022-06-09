@@ -1,6 +1,5 @@
 package com.minelittlepony.client;
 
-import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
