@@ -16,6 +16,7 @@
         "MixinTexturedRenderLayers",
         "MixinSpriteIdentifier",
         "MixinClientPlayerEntity",
-        "MixinPlayerMoveC2SPacket"
+        "MixinPlayerMoveC2SPacket",
+        "MixinPlayerPositionLookS2CPacket"
     ]
 }
