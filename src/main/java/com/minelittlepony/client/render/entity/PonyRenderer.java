@@ -38,7 +38,7 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
     public PonyRenderer(EntityRendererFactory.Context context, ModelKey<? super M> key) {
         super(context, null, 0.5F);
 
-        this.model = manager.setModel(key).getBody();
+        this.model = manager.setModel(key).body();
 
         addLayers(context);
     }

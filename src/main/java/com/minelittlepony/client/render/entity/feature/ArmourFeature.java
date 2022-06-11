@@ -46,6 +46,7 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static <T extends LivingEntity, V extends BipedEntityModel<T> & IArmourModel> void renderArmor(
             ModelWrapper<T, ? extends IPonyModel<T>> pony, MatrixStack stack,
                     VertexConsumerProvider renderContext, int lightUv, T entity,
@@ -56,20 +57,19 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
         ItemStack itemstack = entity.getEquippedStack(armorSlot);
 
         if (!itemstack.isEmpty() && itemstack.getItem() instanceof ArmorItem) {
+            IArmour<V> armour = ArmourRegistry.getArmour(itemstack, (IArmour<V>)pony.armor());
 
-            IArmour<V> armour = ArmourRegistry.getArmour(itemstack, pony.<V>getArmor());
-
-            armour.applyMetadata(pony.getBody().getMetadata());
+            armour.applyMetadata(pony.body().getMetadata());
 
             V model = armour.getModel(layer);
             if (model == null) {
-                model = pony.<V>getArmor().getModel(layer);
+                model = ((IArmour<V>)pony.armor()).getModel(layer);
             }
 
             if (model.prepareToRender(armorSlot, layer)) {
-                pony.getBody().copyAttributes(model);
+                pony.body().copyAttributes(model);
                 model.setAngles(entity, limbAngle, limbDistance, age, headYaw, headPitch);
-                model.synchroniseAngles(pony.getBody());
+                model.synchroniseAngles(pony.body());
 
                 ArmorItem item = (ArmorItem) itemstack.getItem();
 

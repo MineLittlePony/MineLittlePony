@@ -4,7 +4,6 @@ import net.minecraft.entity.LivingEntity;
 
 import com.minelittlepony.api.model.IModel;
 import com.minelittlepony.api.model.IModelWrapper;
-import com.minelittlepony.api.model.armour.IArmourModel;
 import com.minelittlepony.api.model.armour.IArmour;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.mson.api.ModelKey;
@@ -16,7 +15,6 @@ public record ModelWrapper<T extends LivingEntity, M extends IModel> (
         M body,
         IArmour<?> armor
 ) implements IModelWrapper {
-
     /**
      * Creates a new model wrapper to contain the given pony.
      */
@@ -25,18 +23,6 @@ public record ModelWrapper<T extends LivingEntity, M extends IModel> (
         IArmour<?> armor = body.createArmour();
         armor.applyMetadata(body.getMetadata());
         return new ModelWrapper<>(body, armor);
-    }
-
-    public M getBody() {
-        return body();
-    }
-
-    /**
-     * Returns the contained armour models.
-     */
-    @SuppressWarnings("unchecked")
-    public <V extends IArmourModel> IArmour<V> getArmor() {
-        return (IArmour<V>)armor();
     }
 
     @Override

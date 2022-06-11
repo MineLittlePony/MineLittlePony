@@ -72,9 +72,9 @@ public class PonyStandRenderer extends ArmorStandEntityRenderer {
                 headPitch = 0.017453292F * entity.getHeadRotation().getPitch();
                 headYaw = 0.017453292F * entity.getHeadRotation().getYaw();
 
-                pony.getBody().animateModel(entity, limbDistance, limbAngle, tickDelta);
-                pony.getBody().setAngles(entity, limbDistance, limbAngle, age, headYaw, headPitch);
-                PonyStandRenderer.this.pony.applyAnglesTo(pony.getBody());
+                pony.body().animateModel(entity, limbDistance, limbAngle, tickDelta);
+                pony.body().setAngles(entity, limbDistance, limbAngle, age, headYaw, headPitch);
+                PonyStandRenderer.this.pony.applyAnglesTo(pony.body());
 
                 for (EquipmentSlot i : EquipmentSlot.values()) {
                     if (i.getType() == EquipmentSlot.Type.ARMOR) {

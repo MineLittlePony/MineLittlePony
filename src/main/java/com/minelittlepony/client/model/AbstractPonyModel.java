@@ -39,7 +39,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     @Override
     public IArmour<?> createArmour() {
-        return new ArmourWrapper<>(PonyArmourModel::new);
+        return ArmourWrapper.of(PonyArmourModel::new);
     }
 
     /**

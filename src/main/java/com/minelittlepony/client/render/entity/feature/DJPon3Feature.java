@@ -26,7 +26,7 @@ public class DJPon3Feature<T extends AbstractClientPlayerEntity, M extends Entit
         if ("deadmau5".equals(entity.getName().getString())) {
             stack.push();
 
-            M body = getModelWrapper().getBody();
+            M body = getModelWrapper().body();
 
             body.transform(BodyPart.HEAD, stack);
             body.getHead().rotate(stack);

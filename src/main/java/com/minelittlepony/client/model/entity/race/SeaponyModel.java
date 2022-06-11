@@ -42,7 +42,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
 
     @Override
     public IArmour<?> createArmour() {
-        return new ArmourWrapper<>(Armour::new);
+        return ArmourWrapper.of(Armour::new);
     }
 
     @Override

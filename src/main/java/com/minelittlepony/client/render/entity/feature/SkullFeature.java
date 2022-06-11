@@ -43,7 +43,7 @@ public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & IPo
     public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
         ItemStack itemstack = entity.getEquippedStack(EquipmentSlot.HEAD);
         if (!itemstack.isEmpty()) {
-            M model = getContext().getModelWrapper().getBody();
+            M model = getContext().getModelWrapper().body();
             Item item = itemstack.getItem();
 
             stack.push();

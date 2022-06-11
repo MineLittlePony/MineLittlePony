@@ -17,7 +17,7 @@ public class ZebraModel<T extends LivingEntity> extends EarthPonyModel<T> {
 
     @Override
     public IArmour<?> createArmour() {
-        return new ArmourWrapper<>(Armour::new);
+        return ArmourWrapper.of(Armour::new);
     }
 
     @Override

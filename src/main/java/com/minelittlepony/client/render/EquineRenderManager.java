@@ -129,7 +129,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
     }
 
     public M getModel() {
-        return playerModel.getBody();
+        return playerModel.body();
     }
 
     public ModelWrapper<T, M> getModelWrapper() {

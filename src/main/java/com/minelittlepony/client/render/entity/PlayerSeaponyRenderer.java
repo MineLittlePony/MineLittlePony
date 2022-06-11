@@ -37,7 +37,7 @@ public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
 
         boolean wet = pony.isPartiallySubmerged(player);
 
-        model = manager.setModel(wet ? seapony : normalPony).getBody();
+        model = manager.setModel(wet ? seapony : normalPony).body();
 
         float state = wet ? 100 : 0;
         float interpolated = pony.getMetadata().getInterpolator(player.getUuid()).interpolate("seapony_state", state, 5);

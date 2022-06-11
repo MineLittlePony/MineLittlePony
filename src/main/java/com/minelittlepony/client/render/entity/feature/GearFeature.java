@@ -50,7 +50,7 @@ public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & IPon
             return;
         }
 
-        final M model = getModelWrapper().getBody();
+        final M model = getModelWrapper().body();
 
         final Map<BodyPart, Float> renderStackingOffsets = new HashMap<>();
 

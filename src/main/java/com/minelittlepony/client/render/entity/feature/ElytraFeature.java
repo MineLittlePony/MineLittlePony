@@ -55,7 +55,7 @@ public class ElytraFeature<T extends LivingEntity, M extends EntityModel<T> & IP
     }
 
     protected void preRenderCallback(MatrixStack stack) {
-        M body = getModelWrapper().getBody();
+        M body = getModelWrapper().body();
         stack.translate(0, body.getRiderYOffset(), 0.125);
         body.transform(BodyPart.BODY, stack);
     }

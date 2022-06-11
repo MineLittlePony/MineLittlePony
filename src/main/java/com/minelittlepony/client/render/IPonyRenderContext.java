@@ -40,7 +40,7 @@ public interface IPonyRenderContext<T extends LivingEntity, M extends EntityMode
             float yaw = MathUtil.interpolateDegress((float)entity.prevY, (float)entity.getY(), ticks);
 
             getModelWrapper().applyMetadata(entityPony.getMetadata());
-            M model = getModelWrapper().getBody();
+            M model = getModelWrapper().body();
 
             model.transform(BodyPart.BACK, stack);
 

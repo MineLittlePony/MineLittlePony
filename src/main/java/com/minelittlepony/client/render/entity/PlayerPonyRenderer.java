@@ -50,7 +50,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
     public PlayerPonyRenderer(EntityRendererFactory.Context context, boolean slim, ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>> key) {
         super(context, slim);
 
-        this.model = manager.setModel(key).getBody();
+        this.model = manager.setModel(key).body();
 
         addLayers(context);
     }
