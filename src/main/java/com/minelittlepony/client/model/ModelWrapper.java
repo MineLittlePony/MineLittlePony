@@ -19,7 +19,8 @@ public record ModelWrapper<T extends LivingEntity, M extends IModel> (
      * Creates a new model wrapper to contain the given pony.
      */
     public static <T extends LivingEntity, M extends IModel> ModelWrapper<T, M> of(ModelKey<?> key) {
-        M body = key.createModel();
+        @SuppressWarnings("unchecked")
+        M body = (M)key.createModel();
         IArmour<?> armor = body.createArmour();
         armor.applyMetadata(body.getMetadata());
         return new ModelWrapper<>(body, armor);
