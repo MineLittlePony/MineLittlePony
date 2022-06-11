@@ -17,7 +17,7 @@
 						},
 						"secondary": {
 							"type": "mson:planar",
-							"rotate": [-0.5, 0.3, 0.3333],
+							"rotate": [-1, 0.3, -10],
 							"east": [1, 0, -5, 8, 16, 56, 32]
 						}
 					}
@@ -41,7 +41,7 @@
 						},
 						"secondary": {
 							"type": "mson:planar",
-							"rotate": [-0.5, -0.3, -0.3333],
+							"rotate": [-1, -0.3, 10],
 							"west": [-1, 0, -5, 8, 16, 56, 32, true, false]
 						}
 					}
