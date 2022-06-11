@@ -43,6 +43,8 @@ public class BreezieModel<T extends LivingEntity> extends BipedEntityModel<T> {
         head.yaw = headYaw * 0.017453292F;
         head.pitch = headPitch * 0.017453292F;
 
+        hat.copyTransform(head);
+
         leftArm.pitch = MathHelper.cos(move * 0.6662F) * swing;
         leftArm.roll = 0;
 

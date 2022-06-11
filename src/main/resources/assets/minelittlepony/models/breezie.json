@@ -18,16 +18,14 @@
 	},
 	"data": {
 		"head": {
+			"pivot": [0, 1, -4],
+			"cubes": [
+				{"from": [-3, -6, -3], "size": [6, 6, 6] },
+				{"from": [ 2, -7,  1], "size": [1, 1, 1], "texture": {"u": 28, "v": 0} },
+				{"from": [-3, -7,  1], "size": [1, 1, 1], "texture": {"u": 24, "v": 0} },
+				{"from": [-1, -2, -4], "size": [2, 2, 1], "texture": {"u": 24, "v": 9} }
+			],
 			"children": {
-				"head_parts": {
-					"pivot": [0, 0, -4],
-					"cubes": [
-						{"from": [-3, -6, -3], "size": [6, 6, 6] },
-						{"from": [ 2, -7,  1], "size": [1, 1, 1], "texture": {"u": 28, "v": 0} },
-						{"from": [-3, -7,  1], "size": [1, 1, 1], "texture": {"u": 24, "v": 0} },
-						{"from": [-1, -2, -4], "size": [2, 2, 1], "texture": {"u": 24, "v": 9} }
-					]
-				},
 				"antennas": {
 					"rotate": [-15, 0, 0],
 					"cubes": [
@@ -38,11 +36,13 @@
 			}
 		},
 		"hat": {
+		    "texture": { "u": 40, "v": 27 },
+		    "pivot": [0, 1, -4],
 			"children": {
 				"hat_parts": {
-					"pivot": [0, 0, -4],
+					"pivot": [0, 2, 0],
 					"cubes": [
-						{"from": [-3, -6, -3], "size": [6, 6, 6] }
+						{"from": [-3, -8, -3], "size": [6, 6, 6], "dilate": 0.2 }
 					]
 				}
 			}
