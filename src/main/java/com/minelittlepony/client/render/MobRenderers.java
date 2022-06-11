@@ -59,6 +59,9 @@ public final class MobRenderers {
     public static final MobRenderers STRIDER = register("striders", (state, pony) -> {
         pony.switchRenderer(state, EntityType.STRIDER, ParaspriteRenderer::new);
     });
+    public static final MobRenderers ALLAY = register("allays", (state, pony) -> {
+        pony.switchRenderer(state, EntityType.ALLAY, AllayRenderer::new);
+    });
 
     private final BiConsumer<MobRenderers, PonyRenderDispatcher> changer;
 

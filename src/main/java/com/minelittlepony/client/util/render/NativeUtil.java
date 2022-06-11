@@ -112,7 +112,7 @@ public class NativeUtil {
             int height = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT);
 
             if (width * height == 0) {
-                throw new IllegalStateException("GL texture not uploaded yet");
+                throw new IllegalStateException("GL texture not uploaded yet: " + resource);
             }
 
             try (NativeImage image = new NativeImage(InternalFormat.valueOf(format).getClassification(), width, height, false)) {
