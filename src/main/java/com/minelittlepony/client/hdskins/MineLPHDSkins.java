@@ -59,7 +59,7 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
                     parent instanceof GuiSkins ? parent : GuiSkins.create(screen, HDSkins.getInstance().getSkinServerList())
             ))
             .getStyle()
-                .setText("minelp.options.skins.hdskins.open");;
+                .setText("minelp.options.skins.hdskins.open");
     }
 
     @Override

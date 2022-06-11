@@ -14,6 +14,8 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.Identifier;
 
+import org.lwjgl.glfw.GLFW;
+
 /**
  * Skin uploading GUI. Usually displayed over the main menu.
  */
@@ -46,6 +48,15 @@ class GuiSkinsMineLP extends GuiSkins {
                             .setSize(16, 16))
                     .setTooltip("minelp.options.title", 0, 10);
         }
+    }
+
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (modifiers == (GLFW.GLFW_MOD_ALT | GLFW.GLFW_MOD_CONTROL) && keyCode == GLFW.GLFW_KEY_R) {
+            client.reloadResources();
+            return true;
+        }
+
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override

@@ -2,9 +2,10 @@ package com.minelittlepony.client.render;
 
 import java.util.function.Function;
 
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.mixin.MixinEntityRenderers;
 import com.minelittlepony.client.model.IPonyModel;
-import com.minelittlepony.client.model.entity.race.PlayerModels;
+import com.minelittlepony.client.model.ModelType;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -40,21 +41,23 @@ public class PonyRenderDispatcher {
      * Registers all new player skin types. (currently only pony and slimpony).
      */
     public void initialise(EntityRenderDispatcher manager) {
-        PlayerModels.registry.forEach(i -> registerPlayerSkin(manager, i));
+        Race.REGISTRY.forEach(r -> {
+            if (!r.isHuman()) {
+                registerPlayerSkin(manager, r);
+            }
+        });
         MobRenderers.REGISTRY.values().forEach(i -> i.apply(this));
     }
 
-    private void registerPlayerSkin(EntityRenderDispatcher manager, PlayerModels playerModel) {
-        if (playerModel != PlayerModels.DEFAULT) {
-            addPlayerSkin(manager, false, playerModel);
-            addPlayerSkin(manager, true, playerModel);
-        }
+    private void registerPlayerSkin(EntityRenderDispatcher manager, Race race) {
+        addPlayerSkin(manager, false, race);
+        addPlayerSkin(manager, true, race);
     }
 
-    private void addPlayerSkin(EntityRenderDispatcher manager, boolean slimArms, PlayerModels playerModel) {
+    private void addPlayerSkin(EntityRenderDispatcher manager, boolean slimArms, Race race) {
         Mson.getInstance().getEntityRendererRegistry().registerPlayerRenderer(
-                playerModel.getId(slimArms),
-                playerModel.getModelKey().getRendererFactory(slimArms)
+                race.getModelId(slimArms),
+                ModelType.getPlayerModel(race).getRendererFactory(slimArms)
         );
     }
 

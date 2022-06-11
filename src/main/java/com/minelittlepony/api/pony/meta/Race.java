@@ -2,10 +2,10 @@ package com.minelittlepony.api.pony.meta;
 
 import com.minelittlepony.api.pony.TriggerPixelType;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.Arrays;
+import java.util.List;
 
 public enum Race implements TriggerPixelType<Race> {
-
     HUMAN       (0x000000, false, false),
     EARTH       (0xf9b131, false, false),
     PEGASUS     (0x88caf0, true,  false),
@@ -13,10 +13,10 @@ public enum Race implements TriggerPixelType<Race> {
     ALICORN     (0xfef9fc, true,  true),
     CHANGELING  (0x282b29, true,  true),
     ZEBRA       (0xd0cccf, false, false),
-    CHANGEDLING (0xcaed5a, CHANGELING),
-    GRYPHON     (0xae9145, PEGASUS),
-    HIPPOGRIFF  (0xd6ddac, PEGASUS),
-    KIRIN       (0xfa88af, UNICORN),
+    CHANGEDLING (0xcaed5a, true, true),
+    GRYPHON     (0xae9145, true, false),
+    HIPPOGRIFF  (0xd6ddac, true, false),
+    KIRIN       (0xfa88af, false, true),
     BATPONY     (0xeeeeee, true,  false),
     SEAPONY     (0x3655dd, false, true);
 
@@ -25,26 +25,13 @@ public enum Race implements TriggerPixelType<Race> {
 
     private int triggerPixel;
 
-    private final Race original;
+    public static final List<Race> REGISTRY = Arrays.asList(values());
 
     Race(int triggerPixel, boolean wings, boolean horn) {
         this.triggerPixel = triggerPixel;
 
         this.wings = wings;
         this.horn = horn;
-
-        original = this;
-    }
-
-    Race(int triggerPixel, Race cloneOf) {
-        cloneOf = cloneOf.getAlias();
-
-        this.triggerPixel = triggerPixel;
-
-        this.wings = cloneOf.wings;
-        this.horn = cloneOf.horn;
-
-        original = cloneOf;
     }
 
     /**
@@ -69,31 +56,12 @@ public enum Race implements TriggerPixelType<Race> {
         return this == HUMAN;
     }
 
-    /**
-     * Gets the original race that this one is an alias for, if one exists.
-     * Otherwise returns this race.
-     */
-    @NotNull
-    public Race getAlias() {
-        return original;
-    }
-
-    /**
-     * Returns true if this race is a virtual one.
-     */
-    public boolean isVirtual() {
-        return getAlias() != this;
-    }
-
-    /**
-     * Returns true if both races resolve to the same value.
-     */
-    public boolean isEquivalentTo(Race other) {
-        return getAlias() == other.getAlias();
-    }
-
     @Override
     public int getColorCode() {
         return triggerPixel;
+    }
+
+    public String getModelId(boolean isSlim) {
+        return isSlim ? "slim" + name().toLowerCase() : name().toLowerCase();
     }
 }

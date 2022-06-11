@@ -6,7 +6,6 @@ import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.client.IPreviewModel;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.client.model.entity.race.PlayerModels;
 import com.minelittlepony.client.pony.Pony;
 import com.minelittlepony.hdskins.client.dummy.DummyPlayer;
 import com.minelittlepony.hdskins.client.dummy.TextureProxy;
@@ -38,9 +37,9 @@ class DummyPony extends DummyPlayer implements IPreviewModel, ModelAttributes.Sw
         if (getTextures().getSkinType() == MineLPHDSkins.seaponySkinType) {
             return getTextures().usesThinSkin() ? "slimseapony" : "seapony";
         }
-        return PlayerModels.forRace(MineLittlePony.getInstance().getManager()
+        return MineLittlePony.getInstance().getManager()
                 .getPony(this)
-                .getRace(true))
-                .getId(super.getModel().contains("slim"));
+                .getRace(true)
+                .getModelId(super.getModel().contains("slim"));
     }
 }
