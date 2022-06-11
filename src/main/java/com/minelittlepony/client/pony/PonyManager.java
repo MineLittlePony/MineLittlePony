@@ -6,6 +6,7 @@ import com.google.common.cache.LoadingCache;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
 import org.jetbrains.annotations.Nullable;
@@ -128,6 +129,7 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
             clientProfiler.push("Reloading all background ponies");
             poniesCache.invalidateAll();
             backgroundPonyList.reloadAll(sender);
+            PonySkullRenderer.reload();
             clientProfiler.pop();
             clientProfiler.endTick();
         }, clientExecutor);

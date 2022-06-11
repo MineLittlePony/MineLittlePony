@@ -22,7 +22,7 @@ public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
     public PlayerSeaponyRenderer(EntityRendererFactory.Context context, boolean slim, ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>> key) {
         super(context, slim, key);
 
-        normalPony = new ModelWrapper<>(ModelType.<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>>getPlayerModel(Race.UNICORN).getKey(slim));
+        normalPony = ModelWrapper.of(ModelType.<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>>getPlayerModel(Race.UNICORN).getKey(slim));
         seapony = this.manager.getModelWrapper();
     }
 

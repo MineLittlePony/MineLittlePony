@@ -64,7 +64,7 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
     }
 
     @Override
-    protected void renderHead(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+    public void renderHead(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
         super.renderHead(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
 
         if (hasHorn()) {

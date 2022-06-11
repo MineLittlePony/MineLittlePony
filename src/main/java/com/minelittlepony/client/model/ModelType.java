@@ -72,7 +72,6 @@ public final class ModelType {
     public static final ModelKey<ParaspriteModel> PARASPRITE = register("parasprite", ParaspriteModel::new);
 
     public static final ModelKey<PonyElytra<?>> ELYTRA = register("elytra", PonyElytra::new);
-    public static final ModelKey<PonySkullModel> SKULL = register("skull", PonySkullModel::new);
 
     public static final ModelKey<ArmorStandEntityModel> ARMOUR_STAND = register("armour_stand", PonyArmourStandModel::new);
     public static final ModelKey<PonyArmourModel<?>> ARMOUR_INNER = register("armour_inner", PonyArmourModel::new);

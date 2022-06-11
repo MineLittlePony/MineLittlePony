@@ -44,8 +44,8 @@ public class PonySkullModel extends SkullEntityModel implements MsonModel, ICapi
     }
 
     @Override
-    public void setHeadRotation(float poweredTicks, float yaw, float pitch) {
-        super.setHeadRotation(poweredTicks, yaw, pitch);
+    public void setHeadRotation(float animationProgress, float yaw, float pitch) {
+        super.setHeadRotation(animationProgress, yaw, pitch);
         hair.yaw = head.yaw;
         hair.pitch = head.pitch;
      }

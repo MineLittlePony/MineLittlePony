@@ -137,8 +137,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
     }
 
     public ModelWrapper<T, M> setModel(ModelKey<?> key) {
-        playerModel = new ModelWrapper<>(key);
-
+        playerModel = ModelWrapper.of(key);
         return playerModel;
     }
 

@@ -107,6 +107,12 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         upperTorsoOverlay.copyTransform(upperTorso);
     }
 
+    public void setHeadRotation(float animationProgress, float yaw, float pitch) {
+        head.yaw = yaw * ((float)Math.PI / 180);
+        head.pitch = pitch * ((float)Math.PI / 180);
+        hat.copyTransform(head);
+    }
+
     /**
      * Aligns legs to a sneaky position.
      */
@@ -548,11 +554,11 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         stack.pop();
     }
 
-    protected void renderHead(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+    public void renderHead(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
         head.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
-    protected void renderHelmet(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+    public void renderHelmet(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
         hat.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 

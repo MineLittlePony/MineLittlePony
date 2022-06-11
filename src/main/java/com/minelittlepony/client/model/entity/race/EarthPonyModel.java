@@ -40,6 +40,12 @@ public class EarthPonyModel<T extends LivingEntity> extends AbstractPonyModel<T>
     }
 
     @Override
+    public void setHeadRotation(float animationProgress, float yaw, float pitch) {
+        super.setHeadRotation(animationProgress, yaw, pitch);
+        snout.setGender(getMetadata().getGender());
+    }
+
+    @Override
     protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
         super.shakeBody(move, swing, bodySwing, ticks);
         tail.setRotationAndAngles(attributes.isSwimming || attributes.isGoingFast, attributes.interpolatorId, move, swing, bodySwing * 5, ticks);

@@ -12,24 +12,23 @@ import com.minelittlepony.mson.api.ModelKey;
 /**
  * Container class for the various models and their associated piece of armour.
  */
-public class ModelWrapper<T extends LivingEntity, M extends IModel> implements IModelWrapper {
-
-    private final M body;
-
-    private final IArmour<?> armor;
+public record ModelWrapper<T extends LivingEntity, M extends IModel> (
+        M body,
+        IArmour<?> armor
+) implements IModelWrapper {
 
     /**
      * Creates a new model wrapper to contain the given pony.
      */
-    @SuppressWarnings("unchecked")
-    public ModelWrapper(ModelKey<?> key) {
-        body = (M)key.createModel();
-        armor = body.createArmour();
+    public static <T extends LivingEntity, M extends IModel> ModelWrapper<T, M> of(ModelKey<?> key) {
+        M body = key.createModel();
+        IArmour<?> armor = body.createArmour();
         armor.applyMetadata(body.getMetadata());
+        return new ModelWrapper<>(body, armor);
     }
 
     public M getBody() {
-        return body;
+        return body();
     }
 
     /**
@@ -37,7 +36,7 @@ public class ModelWrapper<T extends LivingEntity, M extends IModel> implements I
      */
     @SuppressWarnings("unchecked")
     public <V extends IArmourModel> IArmour<V> getArmor() {
-        return (IArmour<V>)armor;
+        return (IArmour<V>)armor();
     }
 
     @Override
