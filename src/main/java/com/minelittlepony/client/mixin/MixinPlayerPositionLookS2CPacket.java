@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 abstract class MixinPlayerPositionLookS2CPacket implements Packet<ClientPlayPacketListener> {
     @Shadow @Mutable
     private @Final float pitch;
+    @Shadow
     private @Final Set<Flag> flags;
 
     @Inject(method = "apply(Lnet/minecraft/network/listener/ClientPlayPacketListener;)V",
