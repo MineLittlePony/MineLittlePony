@@ -31,4 +31,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: eskatos/gradle-command-action@v1
         with:
-          arguments: publishModrinth
+          arguments: modrinth

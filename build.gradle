@@ -7,7 +7,7 @@ plugins {
     id 'java-library'
     id 'fabric-loom' version '0.12-SNAPSHOT'
     id 'maven-publish'
-    id 'com.modrinth.minotaur' version '1.1.0'
+    id 'com.modrinth.minotaur' version '2.+'
     id 'org.ajoberstar.reckon' version '0.13.0'
 }
 apply plugin: 'dex.plugins.outlet'
@@ -112,22 +112,22 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
 }
 
-import com.modrinth.minotaur.TaskModrinthUpload
-task publishModrinth (type: TaskModrinthUpload){
+tasks.modrinth {
     onlyIf {
       def stage = version.version.stage.value
       stage == null || stage.name != 'beta'
     }
+}
 
+modrinth {
     token = System.env.MODRINTH_KEY
     projectId = project.modrinth_project_id
     versionNumber = version.toString()
     versionName = archivesBaseName + '-' + version
     changelog = "[Changelog](https://github.com/MineLittlePony/MineLittlePony/releases/tag/${version.toString()})"
-    uploadFile = jar.outputs.getFiles().asPath // This is the java jar task
-    addLoader(project.modrinth_loader_type)
+    uploadFile = remapJar
     outlet.mcVersions().each{ver ->
-      addGameVersion ver
+      gameVersions.add ver
     }
 }
 
