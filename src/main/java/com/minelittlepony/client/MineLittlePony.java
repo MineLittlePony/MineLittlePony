@@ -4,6 +4,7 @@ import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.api.pony.network.fabric.Channel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.pony.PonyManager;
+import com.minelittlepony.client.pony.VariatedTextureSupplier;
 import com.minelittlepony.client.render.PonyRenderDispatcher;
 import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.common.client.gui.VisibilityMode;
@@ -44,6 +45,7 @@ public class MineLittlePony implements ClientModInitializer {
 
     private ClientPonyConfig config;
     private PonyManager ponyManager;
+    private VariatedTextureSupplier variatedTextures;
 
     private final KeyBinding keyBinding = new KeyBinding("key.minelittlepony.settings", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F9, "key.categories.misc");
 
@@ -68,10 +70,12 @@ public class MineLittlePony implements ClientModInitializer {
 
         config = new ClientPonyConfig(GamePaths.getConfigDirectory().resolve("minelp.json"));
         ponyManager = new PonyManager(config);
+        variatedTextures = new VariatedTextureSupplier();
 
         KeyBindingHelper.registerKeyBinding(keyBinding);
 
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(ponyManager);
+        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(variatedTextures);
 
         // convert legacy pony skins
         SkinFilterCallback.EVENT.register(new LegacySkinConverter());
@@ -140,6 +144,10 @@ public class MineLittlePony implements ClientModInitializer {
 
     public IPonyManager getManager() {
         return ponyManager;
+    }
+
+    public VariatedTextureSupplier getVariatedTextures() {
+        return variatedTextures;
     }
 }
 

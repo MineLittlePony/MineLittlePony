@@ -11,29 +11,24 @@ import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.profiler.Profiler;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 /**
  * The PonyManager is responsible for reading and recoding all the pony data associated with an entity of skin.
  *
  */
-public class PonyManager implements IPonyManager, IdentifiableResourceReloadListener {
+public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloadListener {
 
     private static final Identifier ID = new Identifier("minelittlepony", "background_ponies");
-
-    private final BackgroundPonyList backgroundPonyList = new BackgroundPonyList();
 
     private final PonyConfig config;
 
@@ -105,7 +100,7 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
 
     @Override
     public IPony getBackgroundPony(UUID uuid) {
-        return ((Pony)getPony(backgroundPonyList.getId(uuid))).defaulted();
+        return ((Pony)getPony(MineLittlePony.getInstance().getVariatedTextures().get(VariatedTextureSupplier.BACKGROUND_PONIES).get(uuid))).defaulted();
     }
 
     @Override
@@ -119,24 +114,14 @@ public class PonyManager implements IPonyManager, IdentifiableResourceReloadList
     }
 
     @Override
-    public CompletableFuture<Void> reload(Synchronizer sync, ResourceManager sender,
-            Profiler serverProfiler, Profiler clientProfiler,
-            Executor serverExecutor, Executor clientExecutor) {
-
-        sync.getClass();
-        return sync.whenPrepared(null).thenRunAsync(() -> {
-            clientProfiler.startTick();
-            clientProfiler.push("Reloading all background ponies");
-            poniesCache.invalidateAll();
-            backgroundPonyList.reloadAll(sender);
-            PonySkullRenderer.reload();
-            clientProfiler.pop();
-            clientProfiler.endTick();
-        }, clientExecutor);
+    public void reload(ResourceManager var1) {
+        clearCache();
+        PonySkullRenderer.reload();
     }
 
     @Override
     public Identifier getFabricId() {
         return ID;
     }
+
 }

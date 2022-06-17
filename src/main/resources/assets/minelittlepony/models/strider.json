@@ -1,0 +1,13 @@
+{
+	"parent": "minelittlepony:vex",
+	"data": {
+		"saddle": {
+			"pivot": [-4, -4, -4],
+			"texture": {"u": 0, "v": 16},
+			"visible": true,
+			"cubes": [
+				{"from": [-4, -0.1, -4], "size": [16, 16, 16] }
+			]
+		}
+	}
+}

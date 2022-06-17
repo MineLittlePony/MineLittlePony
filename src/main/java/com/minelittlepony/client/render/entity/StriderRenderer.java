@@ -10,16 +10,15 @@ import net.minecraft.util.Identifier;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.ParaspriteModel;
 
-public class ParaspriteRenderer extends MobEntityRenderer<StriderEntity, ParaspriteModel> {
-
+public class StriderRenderer extends MobEntityRenderer<StriderEntity, ParaspriteModel<StriderEntity>> {
     private static final Identifier NORMAL = new Identifier("minelittlepony", "textures/entity/strider/strider_pony.png");
     private static final Identifier CONFUSED = new Identifier("minelittlepony", "textures/entity/strider/strider_confused_pony.png");
 
     private static final Identifier SADDLE = new Identifier("minelittlepony", "textures/entity/strider/strider_saddle_pony.png");
 
-    public ParaspriteRenderer(EntityRendererFactory.Context context) {
-        super(context, ModelType.PARASPRITE.createModel(), 0.5F);
-        addFeature(new SaddleFeatureRenderer<>(this, ModelType.PARASPRITE.createModel(), SADDLE));
+    public StriderRenderer(EntityRendererFactory.Context context) {
+        super(context, ModelType.STRIDER.createModel(), 0.5F);
+        addFeature(new SaddleFeatureRenderer<>(this, ModelType.STRIDER.createModel(), SADDLE));
     }
 
     @Override

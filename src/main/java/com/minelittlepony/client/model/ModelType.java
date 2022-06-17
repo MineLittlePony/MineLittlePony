@@ -6,6 +6,7 @@ import net.minecraft.client.render.entity.model.ArmorStandEntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.entity.passive.AllayEntity;
+import net.minecraft.entity.passive.StriderEntity;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.api.model.gear.IGear;
@@ -69,8 +70,8 @@ public final class ModelType {
     public static final ModelKey<IllagerPonyModel<?>> ILLAGER = register("illager", IllagerPonyModel::new);
     public static final ModelKey<GuardianPonyModel> GUARDIAN = register("guardian", GuardianPonyModel::new);
     public static final ModelKey<EnderStallionModel> ENDERMAN = register("enderman", EnderStallionModel::new);
-    public static final ModelKey<BreezieModel<VexEntity>> BREEZIE = register("breezie", BreezieModel::new);
-    public static final ModelKey<ParaspriteModel> PARASPRITE = register("parasprite", ParaspriteModel::new);
+    public static final ModelKey<ParaspriteModel<VexEntity>> VEX = register("vex", ParaspriteModel::new);
+    public static final ModelKey<ParaspriteModel<StriderEntity>> STRIDER = register("strider", ParaspriteModel::new);
     public static final ModelKey<BreezieModel<AllayEntity>> ALLAY = register("allay", BreezieModel::new);
 
     public static final ModelKey<PonyElytra<?>> ELYTRA = register("elytra", PonyElytra::new);

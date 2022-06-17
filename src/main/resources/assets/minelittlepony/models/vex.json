@@ -4,10 +4,25 @@
 	},
 	"data": {
 		"body": {
-			"pivot": [-4, -4, -4],
+			"pivot": [0, 0, 0],
 			"cubes": [
-				{"from": [0, 0, 0], "size": [8, 8, 8] }
-			]
+				{"from": [-4, -4, -4], "size": [8, 5, 8] }
+			],
+			"children": {
+			    "lips": {
+					"pivot": [0, 0, 4],
+					"rotate": [0, 0, 0],
+					"cubes": [
+						{"from": [-4, -1, -8], "size": [8, 5, 8], texture: { "u": 0, "v": 24 }, "dilate": -0.1 }
+					]
+				},
+				"jaw": {
+					"pivot": [0, 0, 4],
+					"cubes": [
+						{"from": [-4, 1, -8], "size": [8, 3, 8], texture: { "u": 0, "v": 13 }, "dilate": -0.001 }
+					]
+				}
+			}
 		},
 		"leftWing": {
 			"name": "leftWing",
@@ -33,14 +48,6 @@
 					"position": [0, -16, 0],
 					"size": [ 16, 16 ]
 				}
-			]
-		},
-		"saddle": {
-			"pivot": [-4, -4, -4],
-			"texture": {"u": 0, "v": 16},
-			"visible": true,
-			"cubes": [
-				{"from": [-4, -0.1, -4], "size": [16, 16, 16] }
 			]
 		}
 	}
