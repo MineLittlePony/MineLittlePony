@@ -16,6 +16,7 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+    withSourcesJar()
 }
 
 outlet.allowSnapshotsForProject = false
@@ -107,11 +108,6 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = "sources"
-    from sourceSets.main.allSource
-}
-
 tasks.modrinth {
     onlyIf {
       def stage = version.version.stage.value
@@ -122,12 +118,18 @@ tasks.modrinth {
 modrinth {
     token = System.env.MODRINTH_KEY
     projectId = project.modrinth_project_id
+    //featured = true
     versionNumber = version.toString()
     versionName = archivesBaseName + '-' + version
     changelog = "[Changelog](https://github.com/MineLittlePony/MineLittlePony/releases/tag/${version.toString()})"
     uploadFile = remapJar
     outlet.mcVersions().each{ver ->
       gameVersions.add ver
+    }
+    dependencies {
+       required.project 'P7dR8mSH'
+       optional.project 'FzE9gshV'
+       optional.project 'h9pJxJR9'
     }
 }
 
