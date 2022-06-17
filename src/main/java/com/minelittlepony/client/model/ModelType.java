@@ -2,10 +2,10 @@ package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.entity.model.AllayEntityModel;
 import net.minecraft.client.render.entity.model.ArmorStandEntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.VexEntity;
+import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.api.model.gear.IGear;
@@ -71,7 +71,7 @@ public final class ModelType {
     public static final ModelKey<EnderStallionModel> ENDERMAN = register("enderman", EnderStallionModel::new);
     public static final ModelKey<BreezieModel<VexEntity>> BREEZIE = register("breezie", BreezieModel::new);
     public static final ModelKey<ParaspriteModel> PARASPRITE = register("parasprite", ParaspriteModel::new);
-    public static final ModelKey<AllayEntityModel> ALLAY = register("allay", AllayEntityModel::new);
+    public static final ModelKey<BreezieModel<AllayEntity>> ALLAY = register("allay", BreezieModel::new);
 
     public static final ModelKey<PonyElytra<?>> ELYTRA = register("elytra", PonyElytra::new);
 
