@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloadListener {
 
     private static final Identifier ID = new Identifier("minelittlepony", "background_ponies");
+    public static final Identifier BACKGROUND_PONIES = new Identifier("minelittlepony", "textures/entity/pony");
 
     private final PonyConfig config;
 
@@ -100,7 +101,7 @@ public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloa
 
     @Override
     public IPony getBackgroundPony(UUID uuid) {
-        return ((Pony)getPony(MineLittlePony.getInstance().getVariatedTextures().get(VariatedTextureSupplier.BACKGROUND_PONIES).get(uuid))).defaulted();
+        return ((Pony)getPony(MineLittlePony.getInstance().getVariatedTextures().get(BACKGROUND_PONIES, uuid))).defaulted();
     }
 
     @Override

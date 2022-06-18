@@ -15,7 +15,7 @@ import java.util.UUID;
 /**
  * All currently loaded background ponies.
  */
-class BackgroundPonyList implements VariatedTextureSupplier.VariatedTexture {
+class BackgroundPonyList {
     /**
      * All currently loaded background ponies.
      */
@@ -25,6 +25,7 @@ class BackgroundPonyList implements VariatedTextureSupplier.VariatedTexture {
 
     public BackgroundPonyList(Identifier id) {
         this.id = id;
+        reloadAll(MinecraftClient.getInstance().getResourceManager());
     }
 
     public Identifier getId(UUID uuid) {
@@ -46,10 +47,5 @@ class BackgroundPonyList implements VariatedTextureSupplier.VariatedTexture {
     static boolean isUser(UUID uuid) {
         return MinecraftClient.getInstance().player != null
             && MinecraftClient.getInstance().player.getUuid().equals(uuid);
-    }
-
-    @Override
-    public Identifier get(UUID uuid) {
-        return getId(uuid);
     }
 }

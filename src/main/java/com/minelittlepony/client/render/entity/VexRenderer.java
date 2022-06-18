@@ -8,9 +8,10 @@ import net.minecraft.util.Identifier;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.ParaspriteModel;
-import com.minelittlepony.client.pony.VariatedTextureSupplier;
 
 public class VexRenderer extends MobEntityRenderer<VexEntity, ParaspriteModel<VexEntity>> {
+    public static final Identifier PARASPRITE_PONIES = new Identifier("minelittlepony", "textures/entity/illager/vex_pony");
+
     public VexRenderer(EntityRendererFactory.Context context) {
         super(context, ModelType.VEX.createModel(), 0.3F);
     }
@@ -22,7 +23,7 @@ public class VexRenderer extends MobEntityRenderer<VexEntity, ParaspriteModel<Ve
 
     @Override
     public Identifier getTexture(VexEntity entity) {
-        return MineLittlePony.getInstance().getVariatedTextures().get(VariatedTextureSupplier.PARASPRITE_PONIES).get(entity);
+        return MineLittlePony.getInstance().getVariatedTextures().get(PARASPRITE_PONIES, entity);
     }
 
 }
