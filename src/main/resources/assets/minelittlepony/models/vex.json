@@ -37,8 +37,8 @@
 				}
 			]
 		},
-		"rightWing": {
-			"name": "rightWing",
+		"leftWing2": {
+			"name": "leftWing",
 			"pivot": [0, -2, 4],
 			"texture": {"u": 48, "v": 0},
 			"cubes": [
@@ -49,6 +49,18 @@
 					"size": [ 16, 16 ]
 				}
 			]
+		},
+		"rightWing": {
+			"name": "rightWing",
+			"pivot": [0, -2, 4],
+			"type": "mson:planar",
+			"east": [0, -16, 0, 16, 16, 48, 0, true, false]
+		},
+		"rightWing2": {
+			"name": "rightWing",
+			"pivot": [0, -2, 4],
+			"type": "mson:planar",
+			"east": [0, -16, 0, 16, 16, 48, 0, true, false]
 		}
 	}
 }

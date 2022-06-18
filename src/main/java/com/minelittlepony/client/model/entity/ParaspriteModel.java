@@ -7,6 +7,7 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.VexEntity;
+import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.common.util.animation.Interpolator;
 
@@ -20,6 +21,9 @@ public class ParaspriteModel<T extends LivingEntity> extends EntityModel<T> {
     private final ModelPart leftWing;
     private final ModelPart rightWing;
 
+    private final ModelPart leftWing2;
+    private final ModelPart rightWing2;
+
     public ParaspriteModel(ModelPart tree) {
         super(RenderLayer::getEntityTranslucent);
         child = false;
@@ -29,6 +33,8 @@ public class ParaspriteModel<T extends LivingEntity> extends EntityModel<T> {
         lips = body.getChild("lips");
         leftWing = tree.getChild("leftWing");
         rightWing = tree.getChild("rightWing");
+        leftWing2 = tree.getChild("leftWing2");
+        rightWing2 = tree.getChild("rightWing2");
     }
 
     @Override
@@ -38,6 +44,8 @@ public class ParaspriteModel<T extends LivingEntity> extends EntityModel<T> {
 
     @Override
     public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
+
+        root.pitch = MathHelper.clamp((float)entity.getVelocity().horizontalLength() / 10F, 0, 0.1F);
         body.pitch = 0;
         lips.visible = false;
 
@@ -49,26 +57,42 @@ public class ParaspriteModel<T extends LivingEntity> extends EntityModel<T> {
             root.pitch = headPitch * 0.017453292F;
         }
 
-        float sin = (float)Math.sin(ticks) / 2;
-        float cos = (float)Math.cos(ticks) / 3;
+        float sin = (float)Math.sin(ticks) / 2F;
+        float cos = (float)Math.cos(ticks) / 3F;
 
         float jawOpenAmount = Interpolator.linear(entity.getUuid()).interpolate("jawOpen", entity instanceof VexEntity vex && vex.isCharging() ? 1 : 0, 10);
 
-        if (jawOpenAmount > 0) {
-            jaw.pivotY = Math.max(0, 2 * jawOpenAmount);
-            lips.pivotY = jaw.pivotY - 1;
-            lips.visible = true;
-            body.pitch += 0.3F * jawOpenAmount;
-            jaw.pitch = 0.6F * jawOpenAmount;
-            lips.pitch = 0.25F * jawOpenAmount;
-        }
+        jaw.pivotY = Math.max(0, 1.2F * jawOpenAmount);
+        lips.pivotY = jaw.pivotY - 0.9F;
+        lips.visible = jawOpenAmount > 0;
+        body.pitch += 0.3F * jawOpenAmount;
+        jaw.pitch = 0.4F * jawOpenAmount;
+        lips.pitch = 0.2F * jawOpenAmount;
+
+        float basWingExpand = 1;
+        float innerWingExpand = basWingExpand / 2F;
 
         leftWing.visible = true;
-        leftWing.roll = 0.5F + cos;
-        leftWing.yaw = 0.5F - sin;
+        leftWing.pitch = 0;
+        leftWing.roll = basWingExpand + cos + 0.3F;
+        leftWing.yaw = basWingExpand - sin;
 
         rightWing.visible = true;
-        rightWing.roll = -0.5F - cos;
-        rightWing.yaw = -0.5F + sin;
+        rightWing.pitch = 0;
+        rightWing.roll = -basWingExpand - cos - 0.3F;
+        rightWing.yaw = -basWingExpand + sin;
+
+        sin = -(float)Math.sin(ticks + Math.PI / 4F) / 2F;
+        cos = (float)Math.cos(ticks + Math.PI / 4F) / 3F;
+
+        leftWing2.visible = true;
+        leftWing2.pitch = 0;
+        leftWing2.roll = innerWingExpand + sin - 0.3F;
+        leftWing2.yaw = innerWingExpand - cos + 0.3F;
+
+        rightWing2.visible = true;
+        rightWing2.pitch = 0;
+        rightWing2.roll = -innerWingExpand - sin + 0.3F;
+        rightWing2.yaw = -innerWingExpand + cos - 0.3F;
     }
 }
