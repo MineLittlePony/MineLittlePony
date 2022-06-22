@@ -17,7 +17,7 @@ public class SaddleModel<T extends LivingEntity> extends EntityModel<T> {
 
     @Override
     public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        root.pivotY = -MathHelper.cos(move * 1.5f) * 2.0f * swing;
+        root.pivotY = 2 - MathHelper.cos(move * 1.5f) * 3.0f * swing;
     }
 
     @Override
