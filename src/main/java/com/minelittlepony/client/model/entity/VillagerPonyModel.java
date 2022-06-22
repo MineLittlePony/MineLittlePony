@@ -21,7 +21,6 @@ import com.minelittlepony.mson.api.ModelContext;
 public class VillagerPonyModel<T extends LivingEntity & VillagerDataContainer> extends AlicornModel<T> implements ModelWithHat {
 
     private final ModelPart apron;
-    private final ModelPart trinket;
 
     private IPart batWings;
     private IPart batEars;
@@ -29,7 +28,6 @@ public class VillagerPonyModel<T extends LivingEntity & VillagerDataContainer> e
     public VillagerPonyModel(ModelPart tree) {
         super(tree, false);
         apron = tree.getChild("apron");
-        trinket = tree.getChild("trinket");
     }
 
     @Override
@@ -59,7 +57,6 @@ public class VillagerPonyModel<T extends LivingEntity & VillagerDataContainer> e
     protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
         super.shakeBody(move, swing, bodySwing, ticks);
         apron.yaw = bodySwing;
-        trinket.yaw = bodySwing;
     }
 
     @Override
@@ -70,14 +67,12 @@ public class VillagerPonyModel<T extends LivingEntity & VillagerDataContainer> e
 
         attributes.visualHeight += PonyTextures.isCrownPony(entity) ? 0.3F : -0.1F;
         apron.visible = !special && profession == VillagerProfession.BUTCHER;
-        trinket.visible = !special && !apron.visible && profession != VillagerProfession.NONE && profession != VillagerProfession.NITWIT;
     }
 
     @Override
     protected void renderBody(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
         super.renderBody(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         apron.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        //trinket.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
     @Override

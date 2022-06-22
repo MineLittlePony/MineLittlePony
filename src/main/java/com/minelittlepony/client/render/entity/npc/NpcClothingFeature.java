@@ -88,7 +88,7 @@ class NpcClothingFeature<
         Identifier key = new Identifier("minelittlepony", (typeId + "/" + profId + "/" + level).replace(':', '_'));
 
         if (MinecraftClient.getInstance().getTextureManager().getOrDefault(key, null) == null) {
-            TextureFlattener.flatten(computeTextures(type, profession, typeId, profId, level), (Identifier)key);
+            TextureFlattener.flatten(computeTextures(type, profession, typeId, profId, level), key);
         }
 
         return key;

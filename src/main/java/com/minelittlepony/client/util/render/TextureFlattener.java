@@ -19,14 +19,11 @@ public class TextureFlattener {
         MinecraftClient.getInstance().getTextureManager().registerTexture(output, new ResourceTexture(output) {
             @Override
             public void load(ResourceManager resManager) throws IOException {
-                NativeImage image = null;
 
-                for (int i = 0; i < textures.size(); i++) {
-                    TextureData data = TextureData.load(resManager, textures.get(0));
-                    data.checkException();
-                    if (image == null) {
-                        image = data.getImage();
-                    } else {
+                NativeImage image = TextureData.load(resManager, textures.get(0)).getImage();
+
+                for (int i = 1; i < textures.size(); i++) {
+                    try (TextureData data = TextureData.load(resManager, textures.get(i))) {
                         copyOver(data.getImage(), image);
                     }
                 }
@@ -54,9 +51,9 @@ public class TextureFlattener {
     }
 
     public static void copyOver(NativeImage from, NativeImage to, int x, int y, int w, int h) {
-        for (; x < w; x++) {
-            for (; y < h; y++) {
-                copy(from, to, x, y);
+        for (int xx = x; xx < w; xx++) {
+            for (int yy = y; yy < h; yy++) {
+                copy(from, to, xx, yy);
             }
         }
     }
