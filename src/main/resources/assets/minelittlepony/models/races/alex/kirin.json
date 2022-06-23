@@ -1,5 +1,5 @@
 {
-	"parent": "minelittlepony:races/alex/kirin",
+	"parent": "minelittlepony:races/steve/kirin",
 	"locals": {
 		"arm_width": 3,
 		"arm_rotation_x": 2,
