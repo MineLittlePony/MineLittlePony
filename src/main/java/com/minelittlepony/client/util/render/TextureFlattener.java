@@ -20,11 +20,11 @@ public class TextureFlattener {
             @Override
             public void load(ResourceManager resManager) throws IOException {
 
-                NativeImage image = TextureData.load(resManager, textures.get(0)).getImage();
+                NativeImage image = NativeImage.read(resManager.getResourceOrThrow(textures.get(0)).getInputStream());
 
                 for (int i = 1; i < textures.size(); i++) {
-                    try (TextureData data = TextureData.load(resManager, textures.get(i))) {
-                        copyOver(data.getImage(), image);
+                    try (NativeImage data = NativeImage.read(resManager.getResourceOrThrow(textures.get(i)).getInputStream())) {
+                        copyOver(data, image);
                     }
                 }
 
