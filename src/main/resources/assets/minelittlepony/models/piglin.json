@@ -153,15 +153,14 @@
 			"type": "mson:slot",
 			"name": "tail",
 			"implementation": "com.minelittlepony.client.model.part.PonyTail",
+			"texture": {"w": 128, "h": 64},
+			"locals": {
+				"segments": 4
+			},
 			"data": {
-				"texture": {"w": 128, "h": 64},
-				"locals": {
-					"segments": 4
-				},
 				"segment_0": {
 					"type": "mson:slot",
 					"name": "segment_0",
-					"texture": {"w": 128, "h": 64},
 					"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
 					"locals": { "segment_index": 0 },
 					"data": "minelittlepony:components/tail_segment"
@@ -169,7 +168,6 @@
 				"segment_1": {
 					"type": "mson:slot",
 					"name": "segment_1",
-					"texture": {"w": 128, "h": 64},
 					"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
 					"locals": { "segment_index": 1 },
 					"data": "minelittlepony:components/tail_segment"
@@ -177,7 +175,6 @@
 				"segment_2": {
 					"type": "mson:slot",
 					"name": "segment_2",
-					"texture": {"w": 128, "h": 64},
 					"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
 					"locals": { "segment_index": 2 },
 					"data": "minelittlepony:components/tail_segment"
@@ -185,7 +182,6 @@
 				"segment_3": {
 					"type": "mson:slot",
 					"name": "segment_3",
-					"texture": {"w": 128, "h": 64},
 					"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
 					"locals": { "segment_index": 3 },
 					"data": "minelittlepony:components/tail_segment"

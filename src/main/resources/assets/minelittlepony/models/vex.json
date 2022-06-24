@@ -13,13 +13,13 @@
 					"pivot": [0, 0, 4],
 					"rotate": [0, 0, 0],
 					"cubes": [
-						{"from": [-4, -1, -8], "size": [8, 5, 8], texture: { "u": 0, "v": 24 }, "dilate": -0.1 }
+						{"from": [-4, -1, -8], "size": [8, 5, 8], "texture": { "u": 0, "v": 24 }, "dilate": -0.1 }
 					]
 				},
 				"jaw": {
 					"pivot": [0, 0, 4],
 					"cubes": [
-						{"from": [-4, 1, -8], "size": [8, 3, 8], texture: { "u": 0, "v": 13 }, "dilate": -0.001 }
+						{"from": [-4, 1, -8], "size": [8, 3, 8], "texture": { "u": 0, "v": 13 }, "dilate": -0.001 }
 					]
 				}
 			}
