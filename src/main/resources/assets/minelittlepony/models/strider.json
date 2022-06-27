@@ -139,7 +139,6 @@
 		},
 		"left_arm": {
 			"pivot": [5, 3, 0],
-			"texture": { "u": 40, "v": 16 },
 			"mirror": [true, false, false],
 			"texture": { "u": 36 },
 			"cubes": [
