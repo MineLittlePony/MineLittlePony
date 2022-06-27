@@ -11,7 +11,6 @@ import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -26,7 +25,7 @@ public class PonyTail implements IPart, MsonModel {
     private final List<Segment> segments = new ArrayList<>();
 
     public PonyTail(ModelPart tree) {
-
+        tail = tree.getChild("tail");
     }
 
     @Override
@@ -48,8 +47,6 @@ public class PonyTail implements IPart, MsonModel {
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
-
-        tail = new ModelPart(new ArrayList<>(), new HashMap<>());
     }
 
     @Override
@@ -78,8 +75,6 @@ public class PonyTail implements IPart, MsonModel {
             tail.pivotY += 6;
             tail.pivotZ++;
         }
-
-        tailStop = theModel.getMetadata().getTail().ordinal();
     }
 
     private void swingX(float ticks) {
@@ -96,6 +91,7 @@ public class PonyTail implements IPart, MsonModel {
     @Override
     public void setVisible(boolean visible) {
         tail.visible = visible;
+        tailStop = theModel.getMetadata().getTail().ordinal();
     }
 
     @Override

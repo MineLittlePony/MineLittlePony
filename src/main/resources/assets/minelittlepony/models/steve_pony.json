@@ -10,7 +10,7 @@
 		"arm_x": 0,
 		"arm_x_neg": ["#arm_x", "-", "#arm_width"],
 		"arm_z": [2, "-", "#arm_depth"],
-		"arm_rotation_x": 3,
+		"arm_rotation_x": 0,
 		"arm_rotation_x_neg": [0, "-", "#arm_rotation_x"],
 		"arm_rotation_y": 8
 	},
@@ -32,7 +32,6 @@
 	},
 	"data": {
 		"head": {
-			"pivot": [ 0, 0, -2 ],
 			"cubes": [
 				{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
 			],
@@ -53,7 +52,7 @@
 		},
 		"hat": {
 			"texture": { "u": 32, "v": 0 },
-			"pivot": [ 0, 0, -2 ],
+			"pivot": [ 0, 0, 0 ],
 			"cubes": [
 				{ "from": [-4, -6, -6], "size": [ 8,  8,  8], "dilate": 0.5 }
 			]
@@ -270,7 +269,7 @@
 			]
 		},
 		"right_leg": {
-			"pivot": ["#arm_rotation_x_neg", 0, 0],
+			"pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", 11],
 			"texture": { "u": 0, "v": 16 },
 			"cubes": [
 				{
@@ -280,7 +279,7 @@
 			]
 		},
 		"left_leg": {
-			"pivot": ["#arm_rotation_x", 0, 0],
+			"pivot": ["#arm_rotation_x", "#arm_rotation_y", 11],
 			"texture": { "u": 16, "v": 48 },
 			"cubes": [
 				{
@@ -312,7 +311,7 @@
 			]
 		},
 		"right_pants": {
-			"pivot": ["#arm_rotation_x_neg", 0, 0],
+			"pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", 0],
 			"texture": { "u": 0, "v": 32 },
 			"cubes": [
 				{
@@ -323,7 +322,7 @@
 			]
 		},
 		"left_pants": {
-			"pivot": ["#arm_rotation_x", 0, 0],
+			"pivot": ["#arm_rotation_x", "#arm_rotation_y", 0],
 			"texture": { "u": 0, "v": 48 },
 			"cubes": [
 				{

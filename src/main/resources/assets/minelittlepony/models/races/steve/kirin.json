@@ -2,7 +2,6 @@
 	"parent": "minelittlepony:races/steve/unicorn",
 	"data": {
 		"head": {
-			"pivot": [ 0, 0, -2 ],
 			"cubes": [
 				{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
 			],
