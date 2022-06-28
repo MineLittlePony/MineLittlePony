@@ -37,6 +37,10 @@ public class PonyData implements IPonyData {
      * This may either come from an attached json file or the image itself.
      */
     public static Memoize<IPonyData> parse(@Nullable Identifier identifier) {
+        return parse(identifier, null);
+    }
+
+    public static Memoize<IPonyData> parse(@Nullable Identifier identifier, Race race) {
         if (identifier == null) {
             return MEM_NULL;
         }
@@ -51,7 +55,7 @@ public class PonyData implements IPonyData {
         }).map(Memoize::of).orElseGet(() -> {
             return Memoize.load(callback -> {
                 NativeUtil.parseImage(identifier, img -> {
-                    callback.accept(new NativePonyData(img));
+                    callback.accept(new NativePonyData(img, race));
                 }, e -> {
                     MineLittlePony.logger.fatal("Unable to read {} metadata", identifier, e);
                     callback.accept(NULL);

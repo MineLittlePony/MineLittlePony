@@ -1,5 +1,6 @@
 package com.minelittlepony.api.pony;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 
@@ -11,8 +12,12 @@ import java.util.UUID;
  */
 public interface IPonyManager  {
 
-    Identifier STEVE = new Identifier("minelittlepony", "textures/entity/steve_pony.png");
-    Identifier ALEX = new Identifier("minelittlepony", "textures/entity/alex_pony.png");
+    Identifier KENZA = new Identifier("minelittlepony", "textures/entity/kenza.png");
+    Identifier STEVE = KENZA;
+    Identifier ALEX = KENZA;
+
+//    Identifier STEVE = new Identifier("minelittlepony", "textures/entity/steve_pony.png");
+//    Identifier ALEX = new Identifier("minelittlepony", "textures/entity/alex_pony.png");
 
     /**
      * Gets or creates a pony for the given player.
@@ -29,6 +34,8 @@ public interface IPonyManager  {
      */
     IPony getPony(Identifier resource);
 
+    IPony getPony(Identifier resource, Entity entity);
+
     /**
      * Gets or creates a pony for the given skin resource and entity id.
      *
@@ -40,6 +47,7 @@ public interface IPonyManager  {
      * @param uuid id of a player or entity
      */
     IPony getPony(Identifier resource, UUID uuid);
+
 
     /**
      * Gets the default pony. Either STEVE/ALEX, or a background pony based on client settings.

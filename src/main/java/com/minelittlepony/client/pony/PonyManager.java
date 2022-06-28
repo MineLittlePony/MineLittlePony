@@ -3,12 +3,17 @@ package com.minelittlepony.client.pony;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.kenza.CachePair;
+import com.kenza.KenzaInjector;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyManager;
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
@@ -24,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * The PonyManager is responsible for reading and recoding all the pony data associated with an entity of skin.
- *
  */
 public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloadListener {
 
@@ -33,18 +37,40 @@ public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloa
 
     private final PonyConfig config;
 
+
     private final LoadingCache<Identifier, IPony> poniesCache = CacheBuilder.newBuilder()
             .expireAfterAccess(30, TimeUnit.SECONDS)
             .build(CacheLoader.from(Pony::new));
+
+    private final LoadingCache<CachePair, IPony> differentRacesPoniesCache = CacheBuilder.newBuilder()
+            .expireAfterAccess(30, TimeUnit.SECONDS)
+            .build(CacheLoader.from(Pony::new));
+
 
     public PonyManager(PonyConfig config) {
         this.config = config;
     }
 
     @Override
+    public IPony getPony(Identifier resource, Entity entity) {
+        try {
+            Race race = KenzaInjector.INSTANCE.getOverridePonyRaceOfEntity(entity);
+//            Race race = null;//KenzaInjector.INSTANCE.getOverridePonyRaceOfEntity(entity);
+            if (race != null) {
+                return differentRacesPoniesCache.get(new CachePair(resource, race));
+            } else {
+                return getPony(resource);
+            }
+        } catch (ExecutionException e) {
+            return new Pony(resource, Memoize.of(PonyData.NULL));
+        }
+    }
+
+    @Override
     public IPony getPony(Identifier resource) {
         try {
             return poniesCache.get(resource);
+
         } catch (ExecutionException e) {
             return new Pony(resource, Memoize.of(PonyData.NULL));
         }
@@ -73,7 +99,7 @@ public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloa
     @Nullable
     private Identifier getSkin(PlayerEntity player) {
         if (player instanceof AbstractClientPlayerEntity) {
-            return ((AbstractClientPlayerEntity)player).getSkinTexture();
+            return ((AbstractClientPlayerEntity) player).getSkinTexture();
         }
 
         return null;
@@ -93,7 +119,7 @@ public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloa
     @Override
     public IPony getDefaultPony(UUID uuid) {
         if (config.ponyLevel.get() != PonyLevel.PONIES) {
-            return ((Pony)getPony(DefaultSkinHelper.getTexture(uuid))).defaulted();
+            return ((Pony) getPony(DefaultSkinHelper.getTexture(uuid))).defaulted();
         }
 
         return getBackgroundPony(uuid);
@@ -101,7 +127,7 @@ public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloa
 
     @Override
     public IPony getBackgroundPony(UUID uuid) {
-        return ((Pony)getPony(MineLittlePony.getInstance().getVariatedTextures().get(BACKGROUND_PONIES, uuid))).defaulted();
+        return ((Pony) getPony(MineLittlePony.getInstance().getVariatedTextures().get(BACKGROUND_PONIES, uuid))).defaulted();
     }
 
     @Override

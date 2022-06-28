@@ -1,5 +1,6 @@
 package com.minelittlepony.client;
 
+import com.kenza.KenzaInjector;
 import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.api.pony.network.fabric.Channel;
 import com.minelittlepony.client.model.ModelType;
@@ -30,6 +31,7 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -65,6 +67,8 @@ public class MineLittlePony implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        KenzaInjector.INSTANCE.init();
+
         hasHdSkins = FabricLoader.getInstance().isModLoaded("hdskins");
         hasModMenu = FabricLoader.getInstance().isModLoaded("modmenu");
 
@@ -87,7 +91,6 @@ public class MineLittlePony implements ClientModInitializer {
         ScreenInitCallback.EVENT.register(this::onScreenInit);
 
         config.load();
-
         Channel.bootstrap();
         ModelType.bootstrap();
 

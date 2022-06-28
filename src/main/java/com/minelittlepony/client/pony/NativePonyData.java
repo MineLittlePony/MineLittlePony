@@ -21,12 +21,9 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import org.jetbrains.annotations.Unmodifiable;
-
 /**
  * Implementation for IPonyData.
  */
-@Unmodifiable
 class NativePonyData implements IPonyData {
     private final TriggerPixelValue<Race> race;
     private final TriggerPixelValue<TailLength> tailSize;
@@ -37,6 +34,8 @@ class NativePonyData implements IPonyData {
     private final TriggerPixelSet<Wearable> wearables;
 
     private final Map<String, TriggerPixelType<?>> attributes = new TreeMap<>();
+
+    private Race overrideRace = null;
 
     NativePonyData(NativeImage image) {
         race = TriggerPixel.RACE.readValue(image);
@@ -54,8 +53,17 @@ class NativePonyData implements IPonyData {
         attributes.put("gear", wearables);
     }
 
+    public NativePonyData(NativeImage img, Race race) {
+        this(img);
+        overrideRace = race;
+    }
+
     @Override
     public Race getRace() {
+
+        if (overrideRace != null) {
+            return overrideRace;
+        }
         return race.getValue();
     }
 
@@ -81,7 +89,7 @@ class NativePonyData implements IPonyData {
             return Sizes.NORMAL;
         }
 
-        return (Sizes)size.getValue();
+        return (Sizes) size.getValue();
     }
 
     @Override

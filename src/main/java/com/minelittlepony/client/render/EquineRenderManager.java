@@ -1,7 +1,9 @@
 package com.minelittlepony.client.render;
 
+import com.kenza.KenzaInjector;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
@@ -152,7 +154,9 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
     }
 
     public void updateModel(T entity, ModelAttributes.Mode mode) {
+
         pony = renderer.getEntityPony(entity);
+
         playerModel.applyMetadata(pony.getMetadata());
         pony.updateForEntity(entity);
 

@@ -5,10 +5,12 @@ buildscript {
 }
 plugins {
     id 'java-library'
+    id "org.jetbrains.kotlin.jvm"
     id 'fabric-loom' version '0.12-SNAPSHOT'
     id 'maven-publish'
     id 'com.modrinth.minotaur' version '2.+'
     id 'org.ajoberstar.reckon' version '0.13.0'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.5.21'
 }
 apply plugin: 'dex.plugins.outlet'
 
@@ -24,8 +26,7 @@ outlet.mcVersionRange = project.minecraft_version_range
 
 group = project.group
 description = project.displayname
-archivesBaseName = project.name
-
+archivesBaseName = project.archives_base_name + "-" + mod_version
 loom {
     mixin.defaultRefmapName = 'minelp.mixin.refmap.json'
     accessWidenerPath = file('src/main/resources/minelp.aw')
@@ -50,9 +51,23 @@ repositories {
         name = 'minelp-release'
         url = 'https://repo.minelittlepony-mod.com/maven/release'
     }
+
+    maven {
+        url = "https://maven.theillusivec4.top/"
+    }
+    maven {
+        name = 'Ladysnake Mods'
+        url = 'https://ladysnake.jfrog.io/artifactory/mods'
+    }
+    maven {
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/"
+    }
 }
 
 dependencies {
+    modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
+
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modApi "net.fabricmc:fabric-loader:${project.loader_version}"
@@ -70,6 +85,13 @@ dependencies {
 
     modImplementation "com.minelittlepony:hdskins:${project.hd_skins_version}"
     modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
+
+    include("io.netty:netty-all:4.1.24.Final")
+
+    modImplementation("io.github.natanfudge:fabric-drawer:4.1.0-1.17.1")
+    include("io.github.natanfudge:fabric-drawer:4.1.0-1.17.1")
+
+    modImplementation "dev.emi:trinkets:${trinkets_version}"
 }
 
 //
@@ -132,6 +154,11 @@ modrinth {
        optional.project 'h9pJxJR9'
     }
 }
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.archivesBaseName}"}
+    }
+}
 
 publishing {
     publications {
@@ -179,3 +206,6 @@ publishing {
         }
     }
 }
+
+compileKotlin.kotlinOptions.jvmTarget = "16"
+

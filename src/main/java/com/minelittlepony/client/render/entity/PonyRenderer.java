@@ -1,5 +1,7 @@
 package com.minelittlepony.client.render.entity;
 
+import com.kenza.KenzaInjector;
+import com.kenza.KenzaRenderInjector;
 import com.minelittlepony.api.model.IUnicorn;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.MineLittlePony;
@@ -29,7 +31,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
+
+import static com.kenza.KenzaInjectorKt.canLoadDynamicPonySkin;
 
 public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T> & IPonyModel<T>> extends MobEntityRenderer<T, M> implements IPonyRenderContext<T, M> {
 
@@ -58,13 +63,15 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
     public void render(T entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
         DebugBoundingBoxRenderer.render(manager.getPony(entity), this, entity, stack, renderContext, tickDelta);
+
+
     }
 
     @Override
     protected void setupTransforms(T entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
         manager.preRenderCallback(entity, stack, partialTicks);
         if (getModel() instanceof PlayerEntityModel) {
-            ((PlayerEntityModel<?>)getModel()).setVisible(true);
+            ((PlayerEntityModel<?>) getModel()).setVisible(true);
         }
 
         if (getModel().getAttributes().isSitting) {
@@ -79,7 +86,7 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
 
     @Override
     public boolean shouldRender(T entity, Frustum visibleRegion, double camX, double camY, double camZ) {
-        return super.shouldRender(entity, manager.getFrustrum(entity, visibleRegion), camX, camY, camZ);
+        return true; //super.shouldRender(entity, manager.getFrustrum(entity, visibleRegion), camX, camY, camZ);
     }
 
     @Override
@@ -106,7 +113,11 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
     protected void renderLabelIfPresent(T entity, Text name, MatrixStack stack, VertexConsumerProvider renderContext, int maxDistance) {
         stack.push();
         stack.translate(0, manager.getNamePlateYOffset(entity), 0);
-        super.renderLabelIfPresent(entity, name, stack, renderContext, maxDistance);
+
+        boolean renderSuper = KenzaRenderInjector.renderTextIfNeed(entity, stack);
+        if (renderSuper) {
+            super.renderLabelIfPresent(entity, name, stack, renderContext, maxDistance);
+        }
         stack.pop();
     }
 
@@ -114,7 +125,12 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
     @Override
     @NotNull
     public final Identifier getTexture(T entity) {
-        return findTexture(entity);
+
+        if (canLoadDynamicPonySkin(entity)) {
+            return KenzaInjector.INSTANCE.findTexture(entity);
+        } else {
+            return findTexture(entity);
+        }
     }
 
     @Override
@@ -124,7 +140,16 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
 
     @Override
     public IPony getEntityPony(T entity) {
-        return MineLittlePony.getInstance().getManager().getPony(findTexture(entity));
+
+        if (canLoadDynamicPonySkin(entity)) {
+            Identifier identifier = KenzaInjector.INSTANCE.findTexture(entity);
+            return MineLittlePony.getInstance().getManager().getPony(identifier, entity);
+
+        } else {
+            return MineLittlePony.getInstance().getManager().getPony(findTexture(entity));
+
+        }
+
     }
 
     public abstract static class Caster<T extends MobEntity, M extends ClientPonyModel<T> & IUnicorn> extends PonyRenderer<T, M> {
