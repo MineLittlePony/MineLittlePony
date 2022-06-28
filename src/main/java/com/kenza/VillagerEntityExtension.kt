@@ -14,7 +14,6 @@ import net.minecraft.entity.passive.VillagerEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.text.LiteralText
 import net.minecraft.village.VillagerData
 import net.minecraft.village.VillagerProfession
 
@@ -81,11 +80,11 @@ class VillagerEntityExtensionImpl(val entity: Entity) : VillagerEntityExtension 
     override fun setCustomName(force: Boolean) {
         //&& (entity as? VillagerEntity)?.isBaby?.not() ?: false
         if ((!entity.hasCustomName() || (force)) ) {
-            entity.customName = LiteralText(getPonyCustomName())
+            entity.customName = literal(getPonyCustomName())
             entity.isCustomNameVisible = true
         }
 
-        entity.customName = LiteralText(getPonyCustomName())
+        entity.customName = literal(getPonyCustomName())
         entity.isCustomNameVisible = true
     }
 

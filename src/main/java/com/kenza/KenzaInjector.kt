@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.OpenToLanScreen
-import net.minecraft.client.gui.screen.SaveLevelScreen
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.screen.TitleScreen
 import net.minecraft.client.gui.screen.world.CreateWorldScreen
@@ -19,7 +18,6 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundEvents
-import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 import org.apache.logging.log4j.LogManager
 import java.util.*
@@ -51,28 +49,28 @@ object KenzaInjector {
 
 
     private fun onScreenInit(screen: Screen?, buttons: ScreenInitCallback.ButtonList?) {
-        if (screen is CreateWorldScreen) {
-
-        }
-        if (screen is OpenToLanScreen) {
-//            buttons.addButton(Button(screen.width / 2 - 155, 130, 150, 20))
-//                .onClick { b: Button? -> MinecraftClient.getInstance().setScreen(LanSettingsScreen(screen)) }
-//                .style.text = TranslatableText("unicopia.options.title")
-        }
-        if (screen is TitleScreen) {
-            //open world after start minecraft
-            initTitleCounter++
-            if (initTitleCounter == 2) {
-                val client = MinecraftClient.getInstance()
-                client.levelStorage.levelList.firstOrNull()?.let { level ->
-                    client.soundManager.play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0f))
-                    if (client.levelStorage.levelExists(level.name)) {
-                        client.setScreenAndRender(SaveLevelScreen(TranslatableText("selectWorld.data_read")))
-                        client.startIntegratedServer(level.name)
-                    }
-                }
-            }
-        }
+//        if (screen is CreateWorldScreen) {
+//
+//        }
+//        if (screen is OpenToLanScreen) {
+////            buttons.addButton(Button(screen.width / 2 - 155, 130, 150, 20))
+////                .onClick { b: Button? -> MinecraftClient.getInstance().setScreen(LanSettingsScreen(screen)) }
+////                .style.text = TranslatableText("unicopia.options.title")
+//        }
+//        if (screen is TitleScreen) {
+//            //open world after start minecraft
+//            initTitleCounter++
+//            if (initTitleCounter == 2) {
+//                val client = MinecraftClient.getInstance()
+//                client.levelStorage.levelList.firstOrNull()?.let { level ->
+//                    client.soundManager.play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0f))
+//                    if (client.levelStorage.levelExists(level.name)) {
+//                        client.setScreenAndRender(SaveLevelScreen(TranslatableText("selectWorld.data_read")))
+//                        client.startIntegratedServer(level.name)
+//                    }
+//                }
+//            }
+//        }
     }
 
     private fun onEntityLoaded() {
