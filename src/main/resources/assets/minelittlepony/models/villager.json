@@ -1,51 +1,52 @@
 {
 	"parent": "minelittlepony:races/steve/alicorn",
-	"head": {
-		"center": [ 0, 0, -2 ],
-		"cubes": [
-			{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
-		],
-		"children": [
-			{
-				"type": "mson:slot",
-				"name": "snout",
-				"implementation": "com.minelittlepony.client.model.part.PonySnout",
-				"content": "minelittlepony:components/snout"
-			},
-			{
-				"type": "mson:slot",
-				"name": "ears",
-				"implementation": "com.minelittlepony.client.model.part.PonyEars",
-				"content": "minelittlepony:components/ears"
-			},
-			{
-				"type": "mson:slot",
-				"name": "bat_ears",
-				"implementation": "com.minelittlepony.client.model.part.PonyEars",
-				"content": "minelittlepony:components/bat_ears"
-			},
-			{
-				"type": "mson:slot",
-				"name": "horn",
-				"implementation": "com.minelittlepony.client.model.part.UnicornHorn",
-				"content": "minelittlepony:components/horn"
+	"data": {
+		"head": {
+			"cubes": [
+				{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
+			],
+			"children": {
+				"snout": {
+					"type": "mson:slot",
+					"name": "snout",
+					"implementation": "com.minelittlepony.client.model.part.PonySnout",
+					"data": "minelittlepony:components/snout"
+				},
+				"ears": {
+					"type": "mson:slot",
+					"name": "ears",
+					"implementation": "com.minelittlepony.client.model.part.PonyEars",
+					"data": "minelittlepony:components/ears"
+				},
+				"bat_ears": {
+					"type": "mson:slot",
+					"name": "bat_ears",
+					"implementation": "com.minelittlepony.client.model.part.PonyEars",
+					"data": "minelittlepony:components/bat_ears"
+				},
+				"horn": {
+					"type": "mson:slot",
+					"name": "horn",
+					"implementation": "com.minelittlepony.client.model.part.UnicornHorn",
+					"data": "minelittlepony:components/horn"
+				}
 			}
-		]
-	},
-	"bat_wings": {
-		"type": "mson:slot",
-		"name": "bat_wings",
-		"implementation": "com.minelittlepony.client.model.part.BatWings",
-		"content": "minelittlepony:components/bat_wings"
-	},
-	"apron": {
-		"type": "mson:planar",
-		"texture": {"u": 56, "v": 16},
-		"south": [-4, 4, -3, 8, 10]
-	},
-	"trinket": {
-		"type": "mson:planar",
-		"texture": {"u": 0, "v": 3},
-		"south": [-2, 4, -3, 4, 5]
+		},
+		"bat_wings": {
+			"type": "mson:slot",
+			"name": "bat_wings",
+			"implementation": "com.minelittlepony.client.model.part.BatWings",
+			"data": "minelittlepony:components/bat_wings"
+		},
+		"apron": {
+			"type": "mson:planar",
+			"texture": {"u": 56, "v": 16},
+			"south": [-4, 4, -3, 8, 10]
+		},
+		"trinket": {
+			"type": "mson:planar",
+			"texture": {"u": 0, "v": 3},
+			"south": [-2, 4, -3, 4, 5]
+		}
 	}
 }

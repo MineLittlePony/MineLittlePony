@@ -1,84 +1,59 @@
 package com.minelittlepony.client.model.entity.race;
 
+import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.api.model.IUnicorn;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.part.UnicornHorn;
-import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.IUnicorn;
 import com.minelittlepony.mson.api.ModelContext;
-import com.minelittlepony.mson.api.model.MsonPart;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
-import net.minecraft.util.math.MathHelper;
 
 /**
  * Used for both unicorns and alicorns since there's no logical way to keep them distinct and not duplicate stuff.
  */
-public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> implements IUnicorn<ModelPart> {
+public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> implements IUnicorn {
 
-    protected ModelPart unicornArmRight;
-    protected ModelPart unicornArmLeft;
+    protected final ModelPart unicornArmRight;
+    protected final ModelPart unicornArmLeft;
 
     protected UnicornHorn horn;
 
-    public UnicornModel(boolean smallArms) {
-        super(smallArms);
+    public UnicornModel(ModelPart tree, boolean smallArms) {
+        super(tree, smallArms);
+        unicornArmRight = tree.getChild("right_cast");
+        unicornArmLeft = tree.getChild("left_cast");
     }
 
     @Override
     public void init(ModelContext context) {
         super.init(context);
         horn = context.findByName("horn");
-        unicornArmRight = context.findByName("right_cast");
-        unicornArmLeft = context.findByName("left_cast");
     }
 
     @Override
     public float getWobbleAmount() {
-        if (isCasting()) {
-            return 0;
-        }
-        return super.getWobbleAmount();
+        return isCasting() ? 0 : super.getWobbleAmount();
     }
 
     @Override
     protected void rotateLegs(float move, float swing, float ticks, T entity) {
         super.rotateLegs(move, swing, ticks, entity);
 
-        ((MsonPart)unicornArmRight).rotate(0, 0, 0).around(-7, 12, -2);
-        ((MsonPart)unicornArmLeft).rotate(0, 0, 0).around(-7, 12, -2);
-    }
+        unicornArmRight.setAngles(0, 0, 0);
+        unicornArmRight.setPivot(-7, 12, -2);
 
-    @Override
-    protected void animateBreathing(float ticks) {
-        if (canCast()) {
-            float cos = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
-            float sin = MathHelper.sin(ticks * 0.067F) * 0.05F;
-
-            if (rightArmPose != ArmPose.EMPTY) {
-                unicornArmRight.roll += cos;
-                unicornArmRight.pitch += sin;
-            }
-
-            if (leftArmPose != ArmPose.EMPTY) {
-                unicornArmLeft.roll += cos;
-                unicornArmLeft.pitch += sin;
-            }
-        } else {
-            super.animateBreathing(ticks);
-        }
-    }
-
-    @Override
-    public ModelPart getUnicornArmForSide(Arm side) {
-        return side == Arm.LEFT ? unicornArmLeft : unicornArmRight;
+        unicornArmLeft.setAngles(0, 0, 0);
+        unicornArmLeft.setPivot(-7, 12, -2);
     }
 
     @Override
     public boolean isCasting() {
-        return rightArmPose != ArmPose.EMPTY || leftArmPose != ArmPose.EMPTY;
+        return MineLittlePony.getInstance().getConfig().tpsmagic.get()
+                && (rightArmPose != ArmPose.EMPTY || leftArmPose != ArmPose.EMPTY);
     }
 
     @Override
@@ -89,7 +64,7 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
     }
 
     @Override
-    protected void renderHead(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+    public void renderHead(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
         super.renderHead(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
 
         if (hasHorn()) {
@@ -113,8 +88,8 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
 
     @Override
     public ModelPart getArm(Arm side) {
-        if (canCast() && getArmPoseForSide(side) != ArmPose.EMPTY) {
-            return getUnicornArmForSide(side);
+        if (canCast() && getArmPoseForSide(side) != ArmPose.EMPTY && MineLittlePony.getInstance().getConfig().tpsmagic.get()) {
+            return side == Arm.LEFT ? unicornArmLeft : unicornArmRight;
         }
         return super.getArm(side);
     }

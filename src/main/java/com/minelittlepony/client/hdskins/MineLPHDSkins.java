@@ -3,6 +3,8 @@ package com.minelittlepony.client.hdskins;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.client.model.ClientPonyModel;
+import com.minelittlepony.common.client.gui.ScrollContainer;
+import com.minelittlepony.common.client.gui.element.Button;
 import com.minelittlepony.common.event.ClientReadyCallback;
 import com.minelittlepony.hdskins.client.SkinCacheClearCallback;
 import com.minelittlepony.hdskins.client.ducks.ClientPlayerInfo;
@@ -14,7 +16,11 @@ import com.minelittlepony.hdskins.profile.SkinType;
 
 import com.mojang.authlib.GameProfile;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.fabricmc.api.ClientModInitializer;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
@@ -44,6 +50,16 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
             // Ponify the skins GUI.
             GuiSkins.setSkinsGui(GuiSkinsMineLP::new);
         });
+    }
+
+    @Override
+    public void renderOption(Screen screen, @Nullable Screen parent, int row, int RIGHT, ScrollContainer content) {
+        content.addButton(new Button(RIGHT, row += 20, 150, 20))
+            .onClick(button -> MinecraftClient.getInstance().setScreen(
+                    parent instanceof GuiSkins ? parent : GuiSkins.create(screen, HDSkins.getInstance().getSkinServerList())
+            ))
+            .getStyle()
+                .setText("minelp.options.skins.hdskins.open");
     }
 
     @Override

@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.minelittlepony.client.render.PonyRenderDispatcher;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -32,7 +32,7 @@ abstract class MixinFirstPersonRenderer {
 
     @Redirect(method = "renderItem(" + LivingEntity + ItemStack + Mode + Boolean + MatrixStack + VertexConsumerProvider + Int + ")V",
              at = @At(value = "INVOKE",
-                      target = ItemRenderer + "renderItem(" + LivingEntity + ItemStack + Mode + Boolean + MatrixStack + VertexConsumerProvider + World + Int + Int + ")V"))
+                      target = ItemRenderer + "renderItem(" + LivingEntity + ItemStack + Mode + Boolean + MatrixStack + VertexConsumerProvider + World + Int + Int + Int + ")V"))
     private void redirectRenderItem(ItemRenderer target,
             @Nullable LivingEntity entity,
             ItemStack item,
@@ -41,7 +41,7 @@ abstract class MixinFirstPersonRenderer {
             MatrixStack stack,
             VertexConsumerProvider renderContext,
             @Nullable World world,
-            int lightUv, int overlayUv) {
-        PonyRenderDispatcher.getInstance().getMagicRenderer().renderItemInFirstPerson(target, entity, item, transform, left, stack, renderContext, world, lightUv);
+            int lightUv, int overlayUv, int posLong) {
+        PonyRenderDispatcher.getInstance().getMagicRenderer().renderItemInFirstPerson(target, entity, item, transform, left, stack, renderContext, world, lightUv, posLong);
     }
 }

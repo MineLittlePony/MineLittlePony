@@ -3,7 +3,7 @@ package com.minelittlepony.client.model;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.model.PonyModelConstants;
+import com.minelittlepony.api.model.PonyModelConstants;
 
 /**
  * Common interface for all undead enemies.

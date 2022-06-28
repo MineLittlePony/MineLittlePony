@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.entity;
 
+import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
@@ -9,7 +10,6 @@ import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.gear.SaddleBags;
 import com.minelittlepony.client.render.DebugBoundingBoxRenderer;
 import com.minelittlepony.client.render.IPonyRenderContext;
-import com.minelittlepony.client.render.EquineRenderManager.Mode;
 import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.client.render.entity.feature.DJPon3Feature;
 import com.minelittlepony.client.render.entity.feature.PassengerFeature;
@@ -27,14 +27,17 @@ import net.minecraft.block.BedBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.Frustum;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
+import net.minecraft.client.render.entity.feature.StuckStingersFeatureRenderer;
+import net.minecraft.client.render.entity.feature.TridentRiptideFeatureRenderer;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.text.Text;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
@@ -44,26 +47,28 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
 
     protected final EquineRenderManager<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> manager = new EquineRenderManager<>(this);
 
-    public PlayerPonyRenderer(EntityRenderDispatcher dispatcher, boolean slim, ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>> key) {
-        super(dispatcher, slim);
+    public PlayerPonyRenderer(EntityRendererFactory.Context context, boolean slim, ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>> key) {
+        super(context, slim);
 
-        this.model = manager.setModel(key).getBody();
+        this.model = manager.setModel(key).body();
 
-        addLayers();
+        addLayers(context);
     }
 
-    protected void addLayers() {
+    protected void addLayers(EntityRendererFactory.Context context) {
         features.clear();
 
         addLayer(new DJPon3Feature<>(this));
         addLayer(new ArmourFeature<>(this));
-        addFeature(new StuckArrowsFeatureRenderer<>(this));
-        addLayer(new SkullFeature<>(this));
+        addFeature(new StuckArrowsFeatureRenderer<>(context, this));
+        addLayer(new SkullFeature<>(this, context.getModelLoader()));
         addLayer(new ElytraFeature<>(this));
         addLayer(new GlowingItemFeature<>(this));
         addLayer(new CapeFeature<>(this));
-        addLayer(new PassengerFeature<>(this));
+        addLayer(new PassengerFeature<>(this, context));
         addLayer(new GearFeature<>(this));
+        addFeature(new TridentRiptideFeatureRenderer<>(this, context.getModelLoader()));
+        addFeature(new StuckStingersFeatureRenderer<>(this));
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -94,8 +99,9 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
             float yaw = MathHelper.lerpAngleDegrees(tickDelta, entity.prevBodyYaw, entity.bodyYaw);
             float l = entity.getWidth() / 2 * manager.getPony(entity).getMetadata().getSize().getScaleFactor();
 
-            stack.multiply(Vector3f.NEGATIVE_Y.getDegreesQuaternion(yaw));
+            stack.multiply(Vec3f.NEGATIVE_Y.getDegreesQuaternion(yaw));
             stack.translate(0, 0, -l);
+            stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(yaw));
         }
     }
 
@@ -144,17 +150,25 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
     }
 
     protected void renderArm(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, AbstractClientPlayerEntity player, Arm side) {
-        manager.updateModel(player, Mode.FIRST_PERSON);
+        manager.updateModel(player, ModelAttributes.Mode.FIRST_PERSON);
 
         stack.push();
         float reflect = side == Arm.LEFT ? 1 : -1;
 
         stack.translate(reflect * 0.1F, -0.54F, 0);
 
+        VertexConsumerProvider interceptedContext = layer -> {
+            return renderContext.getBuffer(
+                    layer == RenderLayer.getEntitySolid(player.getSkinTexture())
+                    ? RenderLayer.getEntityTranslucent(player.getSkinTexture())
+                    : layer
+            );
+        };
+
         if (side == Arm.LEFT) {
-            super.renderLeftArm(stack, renderContext, lightUv, player);
+            super.renderLeftArm(stack, interceptedContext, lightUv, player);
         } else {
-            super.renderRightArm(stack, renderContext, lightUv, player);
+            super.renderRightArm(stack, interceptedContext, lightUv, player);
         }
 
         stack.pop();

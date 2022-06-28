@@ -1,20 +1,20 @@
 package com.minelittlepony.client.render;
 
-import java.util.Map;
 import java.util.function.Function;
 
-import com.google.common.collect.Maps;
+import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.client.mixin.MixinEntityRenderers;
 import com.minelittlepony.client.model.IPonyModel;
-import com.minelittlepony.client.model.entity.race.PlayerModels;
+import com.minelittlepony.client.model.ModelType;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
-import com.minelittlepony.common.mixin.MixinEntityRenderDispatcher;
 import com.minelittlepony.mson.api.Mson;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -37,27 +37,27 @@ public class PonyRenderDispatcher {
 
     private LevitatingItemRenderer magicRenderer = new LevitatingItemRenderer();
 
-    private final Map<EntityType<?>, EntityRenderer<?>> renderMap = Maps.newHashMap();
-
     /**
      * Registers all new player skin types. (currently only pony and slimpony).
      */
     public void initialise(EntityRenderDispatcher manager) {
-        PlayerModels.registry.forEach(i -> registerPlayerSkin(manager, i));
+        Race.REGISTRY.forEach(r -> {
+            if (!r.isHuman()) {
+                registerPlayerSkin(manager, r);
+            }
+        });
         MobRenderers.REGISTRY.values().forEach(i -> i.apply(this));
     }
 
-    private void registerPlayerSkin(EntityRenderDispatcher manager, PlayerModels playerModel) {
-        if (playerModel != PlayerModels.DEFAULT) {
-            addPlayerSkin(manager, false, playerModel);
-            addPlayerSkin(manager, true, playerModel);
-        }
+    private void registerPlayerSkin(EntityRenderDispatcher manager, Race race) {
+        addPlayerSkin(manager, false, race);
+        addPlayerSkin(manager, true, race);
     }
 
-    private void addPlayerSkin(EntityRenderDispatcher manager, boolean slimArms, PlayerModels playerModel) {
+    private void addPlayerSkin(EntityRenderDispatcher manager, boolean slimArms, Race race) {
         Mson.getInstance().getEntityRendererRegistry().registerPlayerRenderer(
-                playerModel.getId(slimArms),
-                playerModel.getModelKey().getRendererFactory(slimArms)
+                race.getModelId(slimArms),
+                ModelType.getPlayerModel(race).getRendererFactory(slimArms)
         );
     }
 
@@ -70,18 +70,13 @@ public class PonyRenderDispatcher {
      * @param factory The replacement value
      * @param <T> The entity type
      */
-    @SuppressWarnings("unchecked")
-    <T extends Entity, V extends T> void switchRenderer(boolean state, EntityType<V> type, Function<EntityRenderDispatcher, EntityRenderer<T>> factory) {
-        if (state) {
-            if (!renderMap.containsKey(type)) {
-                renderMap.put(type, ((MixinEntityRenderDispatcher)MinecraftClient.getInstance().getEntityRenderDispatcher()).getEntityRenderers().get(type));
+    <T extends Entity, V extends T> void switchRenderer(MobRenderers state, EntityType<V> type, Function<EntityRendererFactory.Context, EntityRenderer<T>> factory) {
+        Mson.getInstance().getEntityRendererRegistry().registerEntityRenderer(type, ctx -> {
+            if (!state.get()) {
+                return MixinEntityRenderers.getRendererFactories().get(type).create(ctx);
             }
-            Mson.getInstance().getEntityRendererRegistry().registerEntityRenderer(type, factory);
-        } else {
-            if (renderMap.containsKey(type)) {
-                Mson.getInstance().getEntityRendererRegistry().registerEntityRenderer(type, m -> (EntityRenderer<T>)renderMap.get(type));
-            }
-        }
+            return factory.apply(ctx);
+        });
     }
 
     public LevitatingItemRenderer getMagicRenderer() {

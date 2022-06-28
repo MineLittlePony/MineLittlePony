@@ -1,10 +1,10 @@
 package com.minelittlepony.client.render.entity.feature;
 
+import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.PonyElytra;
 import com.minelittlepony.client.render.IPonyRenderContext;
-import com.minelittlepony.model.BodyPart;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
@@ -55,7 +55,7 @@ public class ElytraFeature<T extends LivingEntity, M extends EntityModel<T> & IP
     }
 
     protected void preRenderCallback(MatrixStack stack) {
-        M body = getModelWrapper().getBody();
+        M body = getModelWrapper().body();
         stack.translate(0, body.getRiderYOffset(), 0.125);
         body.transform(BodyPart.BODY, stack);
     }

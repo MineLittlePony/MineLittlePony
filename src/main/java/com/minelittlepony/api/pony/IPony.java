@@ -37,6 +37,11 @@ public interface IPony {
     boolean isPerformingRainboom(LivingEntity entity);
 
     /**
+     * Returns whether this is one of the default ponies assigned to a player without a custom skin.
+     */
+    boolean isDefault();
+
+    /**
      * Unlike sneaking, crouching is a more specific animation parameter that controls whether the player is visible
      * nose to the ground, crouching the sand.
      *

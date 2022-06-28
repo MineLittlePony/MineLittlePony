@@ -2,48 +2,34 @@ package com.minelittlepony.client.model;
 
 import net.minecraft.entity.LivingEntity;
 
+import com.minelittlepony.api.model.IModel;
+import com.minelittlepony.api.model.IModelWrapper;
+import com.minelittlepony.api.model.armour.IArmour;
 import com.minelittlepony.api.pony.IPonyData;
-import com.minelittlepony.model.IModel;
-import com.minelittlepony.model.armour.IArmour;
-import com.minelittlepony.model.armour.IEquestrianArmour;
-import com.minelittlepony.model.capabilities.IModelWrapper;
 import com.minelittlepony.mson.api.ModelKey;
 
 /**
  * Container class for the various models and their associated piece of armour.
  */
-public class ModelWrapper<T extends LivingEntity, M extends IModel> implements IModelWrapper {
-
-    private final M body;
-
-    private final IEquestrianArmour<?> armor;
-
+public record ModelWrapper<T extends LivingEntity, M extends IModel> (
+        M body,
+        IArmour<?> armor
+) implements IModelWrapper {
     /**
      * Creates a new model wrapper to contain the given pony.
      */
-    @SuppressWarnings("unchecked")
-    public ModelWrapper(ModelKey<?> key) {
-        body = (M)key.createModel();
-        armor = body.createArmour();
-        armor.apply(body.getMetadata());
-    }
-
-    public M getBody() {
-        return body;
-    }
-
-    /**
-     * Returns the contained armour model.
-     */
-    @SuppressWarnings("unchecked")
-    public <V extends IArmour> IEquestrianArmour<V> getArmor() {
-        return (IEquestrianArmour<V>)armor;
+    public static <T extends LivingEntity, M extends IModel> ModelWrapper<T, M> of(ModelKey<?> key) {
+        @SuppressWarnings("unchecked")
+        M body = (M)key.createModel();
+        IArmour<?> armor = body.createArmour();
+        armor.applyMetadata(body.getMetadata());
+        return new ModelWrapper<>(body, armor);
     }
 
     @Override
-    public ModelWrapper<T, M> apply(IPonyData meta) {
-        body.apply(meta);
-        armor.apply(meta);
+    public ModelWrapper<T, M> applyMetadata(IPonyData meta) {
+        body.setMetadata(meta);
+        armor.applyMetadata(meta);
         return this;
     }
 }

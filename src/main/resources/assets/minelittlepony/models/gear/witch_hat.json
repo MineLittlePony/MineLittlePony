@@ -1,40 +1,42 @@
 {
 	"texture": {"u": 0, "w": 64, "h": 128},
-	"hat": {
-		"texture": {"v": 64 },
-		"center": [-5, -8, -7.0],
-		"cubes": [
-			{ "size": [10, 2, 10] }
-		],
-		"children": [
-			{
-				"texture": {"v": 76 },
-				"center": [1.75, -4, 2],
-				"rotate": [-3, 0, 1.5],
-				"cubes": [
-					{ "size": [7, 4, 7] }
-				],
-				"children": [
-					{
-						"texture": {"v": 87 },
-						"center": [1.75, -4, 2],
-						"rotate": [-6, 0, 3],
-						"cubes": [
-							{ "size": [4, 4, 4] }
-						],
-						"children": [
-							{
-								"texture": {"v": 95 },
-								"center": [1.75, -2, 2],
-								"rotate": [-12, 0, 6],
-								"cubes": [
-									{ "size": [1, 2, 1], "stretch": 0.25 }
-								]
+	"data": {
+		"hat": {
+			"texture": {"v": 64 },
+			"pivot": [-5, -8, -7.0],
+			"cubes": [
+				{ "size": [10, 2, 10] }
+			],
+			"children": {
+				"tier_1": {
+					"texture": {"v": 76 },
+					"pivot": [1.75, -4, 2],
+					"rotate": [-3, 0, 1.5],
+					"cubes": [
+						{ "size": [7, 4, 7] }
+					],
+					"children": {
+						"tier_2": {
+							"texture": {"v": 87 },
+							"pivot": [1.75, -4, 2],
+							"rotate": [-6, 0, 3],
+							"cubes": [
+								{ "size": [4, 4, 4] }
+							],
+							"children": {
+								"tier_3": {
+									"texture": {"v": 95 },
+									"pivot": [1.75, -2, 2],
+									"rotate": [-12, 0, 6],
+									"cubes": [
+										{ "size": [1, 2, 1], "dilate": 0.25 }
+									]
+								}
 							}
-						]
+						}
 					}
-				]
+				}
 			}
-		]
+		}
 	}
 }

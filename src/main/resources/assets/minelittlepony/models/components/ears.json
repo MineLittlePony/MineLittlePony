@@ -3,21 +3,28 @@
 	"locals": {
 		"x": 0,
 		"y": 0,
-		"z": 0
+		"z": 0,
+		"ear_pronouncement": 0,
+		"ear_spread": 0,
+		"ear_spread_neg": [0, "-", "#ear_spread"]
 	},
-	"right": {
-		"texture": {"u": 12, "v": 16},
-		"offset": ["#x", "#y", "#z"],
-		"cubes": [
-			{ "from": [-4, -8, -1], "size": [2, 2, 2] }
-		]
-	},
-	"left": {
-		"texture": {"u": 12, "v": 16},
-		"offset": ["#x", "#y", "#z"],
-		"mirror": true,
-		"cubes": [
-			{ "from": [2, -8, -1], "size": [2, 2, 2] }
-		]
+	"data": {
+		"right": {
+			"texture": {"u": 12, "v": 16},
+			"pivot": ["#x", "#y", "#z"],
+			"rotate": [0, 0, "#ear_spread"],
+			"cubes": [
+				{ "from": [-4, -8, -1], "size": [2, 2, 2], "dilate": [0, "#ear_pronouncement", 0] }
+			]
+		},
+		"left": {
+			"texture": {"u": 12, "v": 16},
+			"pivot": ["#x", "#y", "#z"],
+			"mirror": [true, false, false],
+			"rotate": [0, 0, "#ear_spread_neg"],
+			"cubes": [
+				{ "from": [2, -8, -1], "size": [2, 2, 2], "dilate": [0, "#ear_pronouncement", 0] }
+			]
+		}
 	}
 }

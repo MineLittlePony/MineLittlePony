@@ -1,8 +1,8 @@
 package com.minelittlepony.api.pony.meta;
 
-import com.minelittlepony.api.pony.ITriggerPixelMapped;
+import com.minelittlepony.api.pony.TriggerPixelType;
 
-public enum Gender implements ITriggerPixelMapped<Gender> {
+public enum Gender implements TriggerPixelType<Gender> {
     MARE(0),
     STALLION(0xffffff),
     ABOMONATION(0x888888);
@@ -14,7 +14,7 @@ public enum Gender implements ITriggerPixelMapped<Gender> {
     }
 
     @Override
-    public int getTriggerPixel() {
+    public int getColorCode() {
         return triggerValue;
     }
 

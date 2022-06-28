@@ -72,4 +72,6 @@ public interface IPonyManager  {
     static boolean isSlimSkin(UUID uuid) {
         return (uuid.hashCode() & 1) == 1;
     }
+
+    interface ForcedPony {}
 }

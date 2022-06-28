@@ -1,13 +1,15 @@
 pluginManagement {
     repositories {
-        jcenter()
+        mavenCentral()
         maven {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
         }
+        maven {
+            name = 'Jitpack'
+            url = 'https://jitpack.io'
+        }
         gradlePluginPortal()
     }
 }
-rootProject.name = 'MineLittlePony'
-//includeBuild '../Kirin'
-//includeBuild '../HDSkins'
+rootProject.name = 'minelittlepony'

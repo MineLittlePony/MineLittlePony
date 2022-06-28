@@ -1,12 +1,13 @@
 package com.minelittlepony.client.model.entity.race;
 
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
 
 public class ChangelingModel<T extends LivingEntity> extends AlicornModel<T> {
 
-    public ChangelingModel(boolean smallArms) {
-        super(smallArms);
+    public ChangelingModel(ModelPart tree, boolean smallArms) {
+        super(tree, smallArms);
     }
 
     @Override

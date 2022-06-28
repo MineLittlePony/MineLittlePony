@@ -1,20 +1,20 @@
 package com.minelittlepony.client.model;
 
+import com.minelittlepony.api.model.ICapitated;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.client.model.part.PonyEars;
 import com.minelittlepony.client.model.part.PonySnout;
 import com.minelittlepony.client.model.part.UnicornHorn;
 import com.minelittlepony.client.pony.PonyData;
-import com.minelittlepony.model.ICapitated;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.entity.model.SkullOverlayEntityModel;
+import net.minecraft.client.render.entity.model.SkullEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 
-public class PonySkullModel extends SkullOverlayEntityModel implements MsonModel, ICapitated<ModelPart> {
+public class PonySkullModel extends SkullEntityModel implements MsonModel, ICapitated<ModelPart> {
 
     private PonySnout snout;
 
@@ -26,9 +26,12 @@ public class PonySkullModel extends SkullOverlayEntityModel implements MsonModel
 
     public IPonyData metadata = PonyData.NULL;
 
+    public PonySkullModel(ModelPart tree) {
+        super(tree);
+    }
+
     @Override
     public void init(ModelContext context) {
-        context.findByName("skull", skull);
         hair = context.findByName("hair");
         snout = context.findByName("snout");
         horn = context.findByName("horn");
@@ -37,14 +40,14 @@ public class PonySkullModel extends SkullOverlayEntityModel implements MsonModel
 
     @Override
     public ModelPart getHead() {
-        return skull;
+        return head;
     }
 
     @Override
-    public void method_2821(float poweredTicks, float yaw, float pitch) {
-        super.method_2821(poweredTicks, yaw, pitch);
-        hair.yaw = skull.yaw;
-        hair.pitch = skull.pitch;
+    public void setHeadRotation(float animationProgress, float yaw, float pitch) {
+        super.setHeadRotation(animationProgress, yaw, pitch);
+        hair.yaw = head.yaw;
+        hair.pitch = head.pitch;
      }
 
     @Override
@@ -55,7 +58,7 @@ public class PonySkullModel extends SkullOverlayEntityModel implements MsonModel
         snout.setGender(metadata.getGender());
 
         hair.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        skull.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        head.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
 
         if (metadata.hasHorn()) {
             getHead().rotate(stack);

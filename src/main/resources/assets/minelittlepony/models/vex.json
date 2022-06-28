@@ -1,0 +1,65 @@
+{
+	"texture": {
+		"w": 64, "h": 64
+	},
+	"data": {
+		"body": {
+			"cubes": [
+				{"from": [-4, -4, -4], "size": [8, 5, 8] }
+			],
+			"children": {
+			    "lips": {
+					"pivot": [0, 0, 4],
+					"rotate": [0, 0, 0],
+					"cubes": [
+						{"from": [-4, -1, -8], "size": [8, 5, 8], "texture": { "u": 0, "v": 24 }, "dilate": -0.1 }
+					]
+				},
+				"jaw": {
+					"pivot": [0, 0, 4],
+					"cubes": [
+						{"from": [-4, 1, -8], "size": [8, 3, 8], "texture": { "u": 0, "v": 13 }, "dilate": -0.001 }
+					]
+				}
+			}
+		},
+		"leftWing": {
+			"name": "leftWing",
+			"pivot": [0, -2, 4],
+			"texture": {"u": 48, "v": 0},
+			"cubes": [
+				{
+					"type": "mson:plane",
+					"face": "west",
+					"position": [0, -16, 0],
+					"size": [ 16, 16 ]
+				}
+			]
+		},
+		"leftWing2": {
+			"name": "leftWing",
+			"pivot": [0, -2, 4],
+			"texture": {"u": 48, "v": 0},
+			"cubes": [
+				{
+					"type": "mson:plane",
+					"face": "west",
+					"position": [0, -16, 0],
+					"size": [ 16, 16 ]
+				}
+			]
+		},
+		"rightWing": {
+			"name": "rightWing",
+			"pivot": [0, -2, 4],
+			"type": "mson:planar",
+			"east": [0, -16, 0, 16, 16, 48, 0, true, false]
+		},
+		"rightWing2": {
+			"name": "rightWing",
+			"pivot": [0, -2, 4],
+			"type": "mson:planar",
+			"east": [0, -16, 0, 16, 16, 48, 0, true, false]
+		}
+	}
+}

@@ -59,9 +59,6 @@ public class PonyTextures<T extends LivingEntity & VillagerDataContainer> implem
 
     private Identifier getTexture(final VillagerType type, final VillagerProfession profession) {
 
-        if (profession == VillagerProfession.NONE) {
-            return fallback;
-        }
 
         String key = ResourceUtil.format("pony/%s/%s", type, profession);
 
@@ -85,7 +82,7 @@ public class PonyTextures<T extends LivingEntity & VillagerDataContainer> implem
     }
 
     protected Optional<Identifier> verifyTexture(Identifier texture) {
-        if (!resourceManager.containsResource(texture)) {
+        if (resourceManager.getResource(texture).isEmpty()) {
             MineLittlePony.logger.warn("Villager texture `" + texture + "` was not found.");
             return Optional.empty();
         }

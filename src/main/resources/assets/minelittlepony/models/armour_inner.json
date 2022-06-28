@@ -1,91 +1,92 @@
 {
 	"parent": "minelittlepony:steve_pony",
 	"texture": {"w": 64, "h": 32},
-	"scale": 0.125,
-	"chestpiece": {
-		"texture": {"u": 16, "v": 8},
-		"cubes": [
-			{"from": [-4, 4, -2], "size": [8, 8, 16]}
-		]
-	},
-	"head": {
-		"center": [ 0, 0, -2 ],
-		"cubes": [
-			{ "from": [-4, -6, -6], "size": [ 8, 8, 8], "stretch": 0.5 },
-			{ "from": [-4, -8, -1], "size": [ 2, 2, 2], "texture": {"u": 0, "v": 0}, "stretch": -0.0125 },
-			{ "from": [ 2, -8, -1], "size": [ 2, 2, 2], "texture": {"u": 0, "v": 4}, "stretch": -0.0125 }
-		]
-	},
-	"upper_torso": {
-		"type": "mson:planar",
-		"texture": {"u": 24, "v": 0},
-		"east": [4, 4, 2, 8, 8, 32, 32],
-		"west": [-4, 4, 2, 8, 8, 23, 32],
-		"south": [-4, 4,10, 8, 8, 32, 23],
-		"up": [-4, 4, -2, 8, 12, 32, 23],
-		"__comment": "it's a little short, so the butt tends to show. :/"
-	},
-	"right_arm": {
-		"center": ["#arm_rotation_x_neg", "#arm_rotation_y", 0],
-		"texture": { "u": 0, "v": 16 },
-		"cubes": [
-			{
-				"from": [ "#arm_x_neg", 4, "#arm_z"],
-				"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
-			}
-		]
-	},
-	"left_arm": {
-		"center": ["#arm_rotation_x", "#arm_rotation_y", 0],
-		"mirror": true,
-		"texture": { "u": 0, "v": 16 },
-		"cubes": [
-			{
-				"from": [ "#arm_x", 4, "#arm_z"],
-				"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
-			}
-		]
-	},
-	"right_leg": {
-		"center": ["#arm_rotation_x_neg", 0, 0],
-		"texture": { "u": 48, "v": 8 },
-		"cubes": [
-			{
-				"from": [ "#arm_x_neg", 4, "#arm_z"],
-				"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
-			}
-		]
-	},
-	"left_leg": {
-		"center": ["#arm_rotation_x", 0, 0],
-		"mirror": true,
-		"texture": { "u": 48, "v": 8 },
-		"cubes": [
-			{
-				"from": [ "#arm_x", 4, "#arm_z"],
-				"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
-			}
-		]
-	},
-	"steve_right_leg": {
-		"center": ["#arm_rotation_x_neg", 0, 0],
-		"texture": { "u": 0, "v": 16 },
-		"cubes": [
-			{
-				"from": [ "#arm_x_neg", 4, "#arm_z"],
-				"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
-			}
-		]
-	},
-	"steve_left_leg": {
-		"center": ["#arm_rotation_x", 0, 0],
-		"mirror": true,
-		"texture": { "u": 0, "v": 16 },
-		"cubes": [
-			{
-				"from": [ "#arm_x", 4, "#arm_z"],
-				"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
-			}
-		]
+	"dilate": 0.27,
+	"data": {
+		"chestpiece": {
+			"texture": {"u": 16, "v": 8},
+			"cubes": [
+				{"from": [-4, 4, -2], "size": [8, 8, 16]}
+			]
+		},
+		"head": {
+			"cubes": [
+				{ "from": [-4, -6, -6], "size": [ 8, 8, 8], "dilate": 0.5 },
+				{ "from": [-4, -8, -1], "size": [ 2, 2, 2], "texture": {"u": 0, "v": 0}, "dilate": -0.0125 },
+				{ "from": [ 2, -8, -1], "size": [ 2, 2, 2], "texture": {"u": 0, "v": 4}, "dilate": -0.0125 }
+			]
+		},
+		"upper_torso": {
+			"type": "mson:planar",
+			"texture": {"u": 24, "v": 0},
+			"east": [4, 4, 2, 8, 8, 32, 32],
+			"west": [-4, 4, 2, 8, 8, 23, 32],
+			"south": [-4, 4,10, 8, 8, 32, 23],
+			"up": [-4, 4, -2, 8, 12, 32, 23],
+			"__comment": "it's a little short, so the butt tends to show. :/"
+		},
+		"right_arm": {
+			"pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", 0],
+			"texture": { "u": 0, "v": 16 },
+			"cubes": [
+				{
+					"from": [ "#arm_x_neg", 4, "#arm_z"],
+					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
+				}
+			]
+		},
+		"left_arm": {
+			"pivot": ["#arm_rotation_x", "#arm_rotation_y", 0],
+			"mirror": true,
+			"texture": { "u": 0, "v": 16 },
+			"cubes": [
+				{
+					"from": [ "#arm_x", 4, "#arm_z"],
+					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
+				}
+			]
+		},
+		"right_leg": {
+			"pivot": ["#arm_rotation_x_neg", 0, 0],
+			"texture": { "u": 48, "v": 8 },
+			"cubes": [
+				{
+					"from": [ "#arm_x_neg", 4, "#arm_z"],
+					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
+				}
+			]
+		},
+		"left_leg": {
+			"pivot": ["#arm_rotation_x", 0, 0],
+			"mirror": true,
+			"texture": { "u": 48, "v": 8 },
+			"cubes": [
+				{
+					"from": [ "#arm_x", 4, "#arm_z"],
+					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
+				}
+			]
+		},
+		"steve_right_leg": {
+			"pivot": ["#arm_rotation_x_neg", 0, 0],
+			"texture": { "u": 0, "v": 16 },
+			"cubes": [
+				{
+					"from": [ "#arm_x_neg", 4, "#arm_z"],
+					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
+				}
+			]
+		},
+		"steve_left_leg": {
+			"pivot": ["#arm_rotation_x", 0, 0],
+			"mirror": true,
+			"texture": { "u": 0, "v": 16 },
+			"cubes": [
+				{
+					"from": [ "#arm_x", 4, "#arm_z"],
+					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
+				}
+			]
+		}
 	}
 }
