@@ -40,6 +40,9 @@ public final class MobRenderers {
         pony.switchRenderer(state, EntityType.PIGLIN, PonyPiglinRenderer::new);
         pony.switchRenderer(state, EntityType.PIGLIN_BRUTE, PonyPiglinRenderer::new);
         pony.switchRenderer(state, EntityType.ZOMBIFIED_PIGLIN, PonyPiglinRenderer::new);
+        if (!MineLittlePony.getInstance().getConfig().noFun.get()) {
+            pony.switchRenderer(state, EntityType.PIG, PonyPigRenderer::new);
+        }
     });
     public static final MobRenderers SKELETON = register("skeletons", (state, pony) -> {
         pony.switchRenderer(state, EntityType.SKELETON, SkeleponyRenderer::new);

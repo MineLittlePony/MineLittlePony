@@ -8,6 +8,7 @@ import java.util.List;
 
 public enum Wearable implements TriggerPixelType<Wearable> {
     NONE        (0x00),
+    CROWN       (0x16),
     MUFFIN      (0x32),
     HAT         (0x64),
     ANTLERS     (0x96),

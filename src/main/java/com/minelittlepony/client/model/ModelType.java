@@ -21,12 +21,7 @@ import com.minelittlepony.client.model.entity.race.PegasusModel;
 import com.minelittlepony.client.model.entity.race.SeaponyModel;
 import com.minelittlepony.client.model.entity.race.UnicornModel;
 import com.minelittlepony.client.model.entity.race.ZebraModel;
-import com.minelittlepony.client.model.gear.AbstractGear;
-import com.minelittlepony.client.model.gear.ChristmasHat;
-import com.minelittlepony.client.model.gear.Muffin;
-import com.minelittlepony.client.model.gear.SaddleBags;
-import com.minelittlepony.client.model.gear.Stetson;
-import com.minelittlepony.client.model.gear.WitchHat;
+import com.minelittlepony.client.model.gear.*;
 import com.minelittlepony.client.render.entity.PlayerPonyRenderer;
 import com.minelittlepony.client.render.entity.PlayerSeaponyRenderer;
 import com.minelittlepony.mson.api.ModelKey;
@@ -71,6 +66,7 @@ public final class ModelType {
 
     public static final ModelKey<Stetson> STETSON = registerGear("stetson", Wearable.STETSON, Stetson::new);
     public static final ModelKey<SaddleBags> SADDLEBAGS = registerGear("saddlebags", Wearable.SADDLE_BAGS, SaddleBags::new);
+    public static final ModelKey<Crown> CROWN = registerGear("crown", Wearable.CROWN, Crown::new);
     public static final ModelKey<Muffin> MUFFIN = registerGear("muffin", Wearable.MUFFIN, Muffin::new);
     public static final ModelKey<WitchHat> WITCH_HAT = registerGear("witch_hat", Wearable.HAT, WitchHat::new);
     public static final ModelKey<ChristmasHat> ANTLERS = registerGear("antlers", Wearable.ANTLERS, ChristmasHat::new);
