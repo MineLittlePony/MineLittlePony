@@ -33,6 +33,6 @@ public class Stetson extends AbstractGear implements IStackable {
 
     @Override
     public float getStackingHeight() {
-        return 0;
+        return 0.15F;
     }
 }

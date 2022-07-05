@@ -34,6 +34,6 @@ public class Muffin extends AbstractGear implements IStackable {
 
     @Override
     public float getStackingHeight() {
-        return 0.5F;
+        return 0.45F;
     }
 }
