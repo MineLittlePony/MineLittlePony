@@ -37,8 +37,8 @@ public class EnderStallionModel extends SkeleponyModel<EndermanEntity> {
     }
 
     @Override
-    public void setAngles(EndermanEntity entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
+    public void setModelAngles(EndermanEntity entity, float move, float swing, float ticks, float headYaw, float headPitch) {
+        super.setModelAngles(entity, move, swing, ticks, headYaw, headPitch);
 
         if (isAttacking) {
             head.pivotY -= 5;

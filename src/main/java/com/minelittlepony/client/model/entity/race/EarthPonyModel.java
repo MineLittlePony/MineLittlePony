@@ -33,8 +33,8 @@ public class EarthPonyModel<T extends LivingEntity> extends AbstractPonyModel<T>
     }
 
     @Override
-    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
+    public void setModelAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
+        super.setModelAngles(entity, move, swing, ticks, headYaw, headPitch);
         snout.setGender(getMetadata().getGender());
         cape.pivotY = sneaking ? 2 : riding ? -4 : 0;
     }

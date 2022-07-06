@@ -28,8 +28,8 @@ public class WitchPonyModel extends EarthPonyModel<WitchEntity> {
     }
 
     @Override
-    public void setAngles(WitchEntity entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
+    public void setModelAngles(WitchEntity entity, float move, float swing, float ticks, float headYaw, float headPitch) {
+        super.setModelAngles(entity, move, swing, ticks, headYaw, headPitch);
 
         if (entity.isDrinking()) {
             float noseRot = MathHelper.sin(entity.age);
@@ -39,7 +39,6 @@ public class WitchPonyModel extends EarthPonyModel<WitchEntity> {
             snout.rotate(0, 0, 0);
         }
 
-
         if (rightArmPose != ArmPose.EMPTY) {
             float rot = (float)(Math.tan(ticks / 7) + Math.sin(ticks / 3));
             if (rot > 1) rot = 1;
@@ -48,21 +47,16 @@ public class WitchPonyModel extends EarthPonyModel<WitchEntity> {
             float legDrinkingAngle = -1 * PI/3 + rot;
 
             rightArm.pitch = legDrinkingAngle;
-            rightSleeve.pitch = legDrinkingAngle;
             rightArm.yaw = 0.1F;
-            rightSleeve.yaw = 0.1F;
             rightArm.pivotX = 0.1F;
-            rightSleeve.pivotX = 0.1F;
 
             if (rot > 0) {
                 rot = 0;
             }
 
             head.pitch = -rot / 2;
-            hat.pitch = -rot / 2;
         } else {
             rightArm.pivotX = 0;
-            rightSleeve.pivotX = 0;
         }
     }
 

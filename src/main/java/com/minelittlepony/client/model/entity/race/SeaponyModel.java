@@ -16,7 +16,7 @@ import net.minecraft.util.math.MathHelper;
 
 public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
 
-    private final ModelPart bodyCenter;
+    private final ModelPart abdomin;
 
     private final ModelPart leftFin;
     private final ModelPart centerFin;
@@ -24,7 +24,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
 
     public SeaponyModel(ModelPart tree, boolean smallArms) {
         super(tree, smallArms);
-        bodyCenter = tree.getChild("abdomin");
+        abdomin = tree.getChild("abdomin");
         leftFin = tree.getChild("left_fin");
         rightFin = tree.getChild("right_fin");
         centerFin = tree.getChild("center_fin");
@@ -61,8 +61,8 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
     protected void ponySit() {}
 
     @Override
-    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
+    public void setModelAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
+        super.setModelAngles(entity, move, swing, ticks, headYaw, headPitch);
 
         float flapMotion = MathHelper.cos(ticks / 10) / 5;
 
@@ -113,7 +113,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
     @Override
     protected void renderBody(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
         body.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        bodyCenter.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        abdomin.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         body.rotate(stack);
 
         tail.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, attributes.interpolatorId);
@@ -142,7 +142,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
         leftPants.visible = false;
         rightPants.visible = false;
 
-        bodyCenter.visible = visible;
+        abdomin.visible = visible;
 
         leftFin.visible = visible;
         centerFin.visible = visible;

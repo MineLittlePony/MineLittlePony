@@ -80,23 +80,16 @@ public class VillagerPonyModel<T extends LivingEntity & VillagerDataContainer> e
     }
 
     @Override
-    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
+    public void setModelAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
+        super.setModelAngles(entity, move, swing, ticks, headYaw, headPitch);
 
-        boolean isHeadRolling = entity instanceof MerchantEntity
-                && ((MerchantEntity)entity).getHeadRollingTimeLeft() > 0;
+        boolean isHeadRolling = entity instanceof MerchantEntity && ((MerchantEntity)entity).getHeadRollingTimeLeft() > 0;
 
         if (isHeadRolling) {
-            float roll = 0.3F * MathHelper.sin(0.45F * ticks);
-
-            this.head.roll = roll;
-            this.hat.roll = roll;
-
-            this.head.pitch = 0.4F;
-            this.hat.pitch = 0.4F;
+            head.roll = 0.3F * MathHelper.sin(0.45F * ticks);
+            head.pitch = 0.4F;
         } else {
-            this.head.roll = 0.0F;
-            this.hat.roll = 0.0F;
+            head.roll = 0;
         }
     }
 }

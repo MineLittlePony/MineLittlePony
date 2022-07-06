@@ -1,8 +1,7 @@
 package com.minelittlepony.client.model;
 
 import com.minelittlepony.client.model.armour.PonyArmourModel;
-import com.minelittlepony.api.model.BodyPart;
-import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.model.armour.IArmour;
 import com.minelittlepony.api.model.fabric.PonyModelPrepareCallback;
 import com.minelittlepony.api.pony.meta.Sizes;
@@ -24,10 +23,10 @@ import net.minecraft.util.math.MathHelper;
  */
 public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPonyModel<T> {
 
-    protected ModelPart upperTorso;
-    protected ModelPart upperTorsoOverlay;
+    protected final ModelPart upperTorso;
+    protected final ModelPart upperTorsoOverlay;
 
-    protected ModelPart neck;
+    protected final ModelPart neck;
 
     public AbstractPonyModel(ModelPart tree) {
         super(tree);
@@ -58,11 +57,25 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      * @param entity    The entity we're being called for.
      */
     @Override
-    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
+    public final void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
         attributes.checkRainboom(entity, swing, canFly(), ticks);
         PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(entity, this, ModelAttributes.Mode.OTHER);
         super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
 
+        head.pivotY = head.getDefaultTransform().pivotY;
+
+        setModelAngles(entity, move, swing, ticks, headYaw, headPitch);
+
+        leftSleeve.copyTransform(leftArm);
+        rightSleeve.copyTransform(rightArm);
+        leftPants.copyTransform(leftLeg);
+        rightPants.copyTransform(rightLeg);
+        jacket.copyTransform(body);
+        hat.copyTransform(head);
+        upperTorsoOverlay.copyTransform(upperTorso);
+    }
+
+    protected void setModelAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
         rotateHead(headYaw, headPitch);
         shakeBody(move, swing, getWobbleAmount(), ticks);
         rotateLegs(move, swing, ticks, entity);
@@ -88,22 +101,12 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
             if (attributes.isSwimmingRotated) {
                 head.setPivot(0, HEAD_RP_Y_SWIM, HEAD_RP_Z_SWIM);
-            } else {
-                head.setPivot(0, 0, 0);
             }
         }
 
         if (attributes.isSleeping) {
             ponySleep();
         }
-
-        leftSleeve.copyTransform(leftArm);
-        rightSleeve.copyTransform(rightArm);
-        leftPants.copyTransform(leftLeg);
-        rightPants.copyTransform(rightLeg);
-        jacket.copyTransform(body);
-        hat.copyTransform(head);
-        upperTorsoOverlay.copyTransform(upperTorso);
     }
 
     public void setHeadRotation(float animationProgress, float yaw, float pitch) {

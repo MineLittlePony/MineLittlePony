@@ -22,8 +22,6 @@ public class PonyArmourStandModel extends ArmorStandEntityModel {
         leftArm.visible = true;
         rightArm.visible = true;
 
-
-
         if (entity.getLeftLegRotation().equals(DEFAULT_LEFT_LEG_ROTATION)) {
             PartUtil.copyAngles(leftArm, leftLeg);
             leftLeg.pitch *= -1;

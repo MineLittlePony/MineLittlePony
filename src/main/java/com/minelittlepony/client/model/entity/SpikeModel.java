@@ -82,11 +82,11 @@ public class SpikeModel<T extends LivingEntity> extends BipedEntityModel<T> {
         tail2.yaw = tail.yaw / 2;
         tail3.yaw = tail2.yaw / 2;
 
-        for (var part : this.getHeadParts()) {
+        for (var part : getHeadParts()) {
             part.pivotY += 7;
         }
 
-        for (var part : this.getBodyParts()) {
+        for (var part : getBodyParts()) {
             part.pivotY += 7;
         }
     }

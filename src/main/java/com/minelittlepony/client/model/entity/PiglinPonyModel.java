@@ -44,8 +44,8 @@ public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
     }
 
     @Override
-    public void setAngles(HostileEntity entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
+    public void setModelAngles(HostileEntity entity, float move, float swing, float ticks, float headYaw, float headPitch) {
+        super.setModelAngles(entity, move, swing, ticks, headYaw, headPitch);
 
         float progress = ticks * 0.1F + move * 0.5F;
         float range = 0.08F + swing * 0.4F;
