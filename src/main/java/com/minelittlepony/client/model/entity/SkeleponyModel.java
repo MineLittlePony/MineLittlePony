@@ -73,6 +73,10 @@ public class SkeleponyModel<T extends HostileEntity> extends AlicornModel<T> imp
         }
     }
 
+    protected void rotateArmHolding(ModelPart arm, float direction, float swingProgress, float ticks) {
+        IMobModel.rotateArmHolding(arm, direction, swingProgress, ticks);
+    }
+
     @Override
     public boolean canCast() {
         return isUnicorn;

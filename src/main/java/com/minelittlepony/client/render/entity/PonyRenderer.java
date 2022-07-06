@@ -1,6 +1,5 @@
 package com.minelittlepony.client.render.entity;
 
-import com.minelittlepony.api.model.IUnicorn;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ClientPonyModel;
@@ -127,7 +126,7 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
         return MineLittlePony.getInstance().getManager().getPony(findTexture(entity));
     }
 
-    public abstract static class Caster<T extends MobEntity, M extends ClientPonyModel<T> & IUnicorn> extends PonyRenderer<T, M> {
+    public abstract static class Caster<T extends MobEntity, M extends ClientPonyModel<T>> extends PonyRenderer<T, M> {
 
         public Caster(EntityRendererFactory.Context context, ModelKey<? super M> key) {
             super(context, key);

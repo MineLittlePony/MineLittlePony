@@ -2,11 +2,8 @@ package com.minelittlepony.client.model.entity;
 
 import com.minelittlepony.client.model.IMobModel;
 import com.minelittlepony.client.model.entity.race.AlicornModel;
-import com.minelittlepony.mson.util.PartUtil;
-
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.util.math.MathHelper;
 
 public class ZomponyModel<Zombie extends HostileEntity> extends AlicornModel<Zombie> implements IMobModel {
 
@@ -25,28 +22,17 @@ public class ZomponyModel<Zombie extends HostileEntity> extends AlicornModel<Zom
     @Override
     protected void rotateLegs(float move, float swing, float ticks, Zombie entity) {
         super.rotateLegs(move, swing, ticks, entity);
-
         if (isZombified(entity)) {
-            if (islookAngleRight(move)) {
-                rotateArmHolding(rightArm, 1, getSwingAmount(), ticks);
-                PartUtil.shift(rightArm, 0.5F, 1.5F, 3);
-            } else {
-                rotateArmHolding(leftArm, -1, getSwingAmount(), ticks);
-                PartUtil.shift(leftArm, -0.5F, 1.5F, 3);
-            }
+            IMobModel.rotateUndeadArms(this, move, ticks);
         }
-    }
-
-    protected boolean isZombified(Zombie entity) {
-        return rightArmPose == ArmPose.EMPTY;
-    }
-
-    public boolean islookAngleRight(float move) {
-        return MathHelper.sin(move / 20) < 0;
     }
 
     @Override
     public boolean canFly() {
         return isPegasus;
+    }
+
+    protected boolean isZombified(Zombie entity) {
+        return rightArmPose == ArmPose.EMPTY;
     }
 }

@@ -13,6 +13,7 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3f;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
@@ -79,6 +80,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         rotateHead(headYaw, headPitch);
         shakeBody(move, swing, getWobbleAmount(), ticks);
         rotateLegs(move, swing, ticks, entity);
+
+        if (onSetModelAngles != null) {
+            onSetModelAngles.poseModel(this, move, swing, ticks, entity);
+        }
 
         if (!attributes.isSwimming && !attributes.isGoingFast) {
             holdItem(swing);

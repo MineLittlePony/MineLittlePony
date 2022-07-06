@@ -2,9 +2,12 @@ package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.model.ModelWithHat;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
+
+import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.model.fabric.PonyModelPrepareCallback;
@@ -22,7 +25,7 @@ import com.minelittlepony.mson.api.model.biped.MsonPlayer;
  *
  * Modders can extend this class to make their own pony models if they wish.
  */
-public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer<T> implements IPonyModel<T> {
+public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer<T> implements IPonyModel<T>, ModelWithHat {
 
     /**
      * The model attributes.
@@ -34,8 +37,15 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
      */
     protected IPonyData metadata = PonyData.NULL;
 
+    @Nullable
+    protected PosingCallback<T> onSetModelAngles;
+
     public ClientPonyModel(ModelPart tree) {
         super(tree);
+    }
+
+    public void onSetModelAngles(PosingCallback<T> callback) {
+        onSetModelAngles = callback;
     }
 
     protected Arm getPreferredArm(T livingEntity) {
@@ -113,5 +123,14 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
             ((ClientPonyModel<T>)model).attributes = attributes;
             ((ClientPonyModel<T>)model).metadata = metadata;
         }
+    }
+
+    @Override
+    public void setHatVisible(boolean visible) {
+
+    }
+
+    public interface PosingCallback<T extends LivingEntity> {
+        void poseModel(ClientPonyModel<T> model, float move, float swing, float ticks, T entity);
     }
 }
