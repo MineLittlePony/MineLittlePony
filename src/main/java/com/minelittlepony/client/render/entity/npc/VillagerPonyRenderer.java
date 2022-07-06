@@ -29,10 +29,4 @@ public class VillagerPonyRenderer extends AbstractNpcRenderer<VillagerEntity> {
             }
         });
     }
-
-    @Override
-    public void scale(VillagerEntity villager, MatrixStack stack, float ticks) {
-        super.scale(villager, stack, ticks);
-        stack.scale(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
-    }
 }
