@@ -64,6 +64,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
 
         head.pivotY = head.getDefaultTransform().pivotY;
+        head.pivotX = head.getDefaultTransform().pivotX;
+        head.pivotZ = head.getDefaultTransform().pivotZ;
 
         setModelAngles(entity, move, swing, ticks, headYaw, headPitch);
 
@@ -570,7 +572,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     }
 
     protected void renderNeck(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        stack.scale(0.9F, 0.9F, 0.9F);
         neck.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 

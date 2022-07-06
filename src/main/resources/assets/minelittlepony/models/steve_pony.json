@@ -14,7 +14,7 @@
 		"arm_rotation_x_neg": [0, "-", "#arm_rotation_x"],
 		"arm_rotation_y": 8,
 		"head_pivot_y": 0,
-		"neck_dilate_y": 0
+		"neck_dilate_y": -0.1
 	},
 	"skeleton": {
 	    "upper_torso": {
@@ -175,7 +175,7 @@
 		},
 		"neck": {
 			"type": "mson:planar",
-			"dilate": [ 0, "#neck_dilate_y", 0 ],
+			"dilate": [ -0.3, "#neck_dilate_y", -0.3 ],
 			"texture": { "u": 0, "v": 16 },
 			"rotate": [9, 0, 0],
 			"north": [-2, 1.199998, -2.8, 4, 4],
