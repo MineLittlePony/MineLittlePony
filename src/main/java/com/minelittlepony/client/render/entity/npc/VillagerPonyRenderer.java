@@ -25,10 +25,7 @@ public class VillagerPonyRenderer extends AbstractNpcRenderer<VillagerEntity> {
             boolean isHeadRolling = entity instanceof MerchantEntity && ((MerchantEntity)entity).getHeadRollingTimeLeft() > 0;
 
             if (isHeadRolling) {
-                m.head.roll = 0.3F * MathHelper.sin(0.45F * ticks);
-                m.head.pitch = 0.4F;
-            } else {
-                m.head.roll = 0;
+                m.head.yaw = 0.3F * MathHelper.sin(0.45F * ticks);
             }
         });
     }
