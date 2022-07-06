@@ -7,9 +7,9 @@ import net.minecraft.util.math.MathHelper;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.meta.Wearable;
-import com.minelittlepony.client.model.entity.race.ZebraModel;
+import com.minelittlepony.client.model.entity.race.EarthPonyModel;
 
-public class WitchPonyModel extends ZebraModel<WitchEntity> {
+public class WitchPonyModel extends EarthPonyModel<WitchEntity> {
 
     public WitchPonyModel(ModelPart tree) {
         super(tree, false);

@@ -1,7 +1,12 @@
 {
 	"parent": "minelittlepony:steve_pony",
+	"locals": {
+		"head_pivot_y": -1.2,
+		"neck_dilate_y": 1.6
+	},
 	"data": {
 		"head": {
+			"pivot": [ 0, "#head_pivot_y", 0 ],
 			"cubes": [
 				{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
 			],

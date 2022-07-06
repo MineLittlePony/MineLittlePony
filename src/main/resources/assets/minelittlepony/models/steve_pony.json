@@ -12,7 +12,9 @@
 		"arm_z": [2, "-", "#arm_depth"],
 		"arm_rotation_x": 0,
 		"arm_rotation_x_neg": [0, "-", "#arm_rotation_x"],
-		"arm_rotation_y": 8
+		"arm_rotation_y": 8,
+		"head_pivot_y": 0,
+		"neck_dilate_y": 0
 	},
 	"skeleton": {
 	    "upper_torso": {
@@ -32,6 +34,7 @@
 	},
 	"data": {
 		"head": {
+			"pivot": [ 0, "#head_pivot_y", 0 ],
 			"cubes": [
 				{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
 			],
@@ -52,7 +55,7 @@
 		},
 		"hat": {
 			"texture": { "u": 32, "v": 0 },
-			"pivot": [ 0, 0, 0 ],
+			"pivot": [ 0, "#head_pivot_y", 0 ],
 			"cubes": [
 				{ "from": [-4, -6, -6], "size": [ 8,  8,  8], "dilate": 0.5 }
 			]
@@ -172,6 +175,7 @@
 		},
 		"neck": {
 			"type": "mson:planar",
+			"dilate": [ 0, "#neck_dilate_y", 0 ],
 			"texture": { "u": 0, "v": 16 },
 			"rotate": [9, 0, 0],
 			"north": [-2, 1.199998, -2.8, 4, 4],

@@ -14,13 +14,7 @@ import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.client.model.entity.*;
-import com.minelittlepony.client.model.entity.race.AlicornModel;
-import com.minelittlepony.client.model.entity.race.ChangelingModel;
-import com.minelittlepony.client.model.entity.race.EarthPonyModel;
-import com.minelittlepony.client.model.entity.race.PegasusModel;
-import com.minelittlepony.client.model.entity.race.SeaponyModel;
-import com.minelittlepony.client.model.entity.race.UnicornModel;
-import com.minelittlepony.client.model.entity.race.ZebraModel;
+import com.minelittlepony.client.model.entity.race.*;
 import com.minelittlepony.client.model.gear.*;
 import com.minelittlepony.client.render.entity.PlayerPonyRenderer;
 import com.minelittlepony.client.render.entity.PlayerSeaponyRenderer;
@@ -82,7 +76,7 @@ public final class ModelType {
     public static final PlayerModelKey<?, PegasusModel<?>> BAT_PONY = registerPlayer("bat_pony", Race.BATPONY, PegasusModel::new);
     public static final PlayerModelKey<?, ChangelingModel<?>> CHANGELING = registerPlayer("changeling", Race.CHANGELING, ChangelingModel::new);
     public static final PlayerModelKey<?, ChangelingModel<?>> CHANGEDLING = registerPlayer("reformed_changeling", Race.CHANGEDLING, ChangelingModel::new);
-    public static final PlayerModelKey<?, ZebraModel<?>> ZEBRA = registerPlayer("zebra", Race.ZEBRA, ZebraModel::new);
+    public static final PlayerModelKey<?, EarthPonyModel<?>> ZEBRA = registerPlayer("zebra", Race.ZEBRA, EarthPonyModel::new);
 
     static <E extends LivingEntity, T extends Model & MsonModel> PlayerModelKey<E, T> registerPlayer(String name, Race race, BiFunction<ModelPart, Boolean, T> constructor) {
         return registerPlayer(name, race, constructor, PlayerPonyRenderer::new);
