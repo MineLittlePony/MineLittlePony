@@ -31,11 +31,8 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
-import net.minecraft.client.render.entity.feature.StuckStingersFeatureRenderer;
-import net.minecraft.client.render.entity.feature.TridentRiptideFeatureRenderer;
-import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.render.entity.feature.*;
+import net.minecraft.client.render.entity.model.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3f;
 import net.minecraft.text.Text;
@@ -56,19 +53,25 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
     }
 
     protected void addLayers(EntityRendererFactory.Context context) {
-        features.clear();
-
-        addLayer(new DJPon3Feature<>(this));
+        // remove vanilla features (keep modded ones)
+        // TODO: test with https://github.com/Globox1997/BackSlot
+        features.removeIf(feature -> {
+            return feature instanceof ArmorFeatureRenderer
+                    || feature instanceof PlayerHeldItemFeatureRenderer
+                    || feature instanceof Deadmau5FeatureRenderer
+                    || feature instanceof CapeFeatureRenderer
+                    || feature instanceof HeadFeatureRenderer
+                    || feature instanceof ElytraFeatureRenderer
+                    || feature instanceof ShoulderParrotFeatureRenderer;
+        });
         addLayer(new ArmourFeature<>(this));
-        addFeature(new StuckArrowsFeatureRenderer<>(context, this));
+        addLayer(new GlowingItemFeature<>(this));
+        addLayer(new DJPon3Feature<>(this));
+        addLayer(new CapeFeature<>(this));
         addLayer(new SkullFeature<>(this, context.getModelLoader()));
         addLayer(new ElytraFeature<>(this));
-        addLayer(new GlowingItemFeature<>(this));
-        addLayer(new CapeFeature<>(this));
         addLayer(new PassengerFeature<>(this, context));
         addLayer(new GearFeature<>(this));
-        addFeature(new TridentRiptideFeatureRenderer<>(this, context.getModelLoader()));
-        addFeature(new StuckStingersFeatureRenderer<>(this));
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
