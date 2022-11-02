@@ -23,7 +23,7 @@ public enum PonyTransformation {
 
             switch (part) {
                 case NECK:
-                    if (model.getAttributes().isCrouching) stack.translate(-0.03F, 0.03F, 0.1F);
+                    if (model.getAttributes().isCrouching) stack.translate(-0.03F, 0.03F, 0.13F);
                     break;
                 case HEAD:
                     if (model.getAttributes().isCrouching) stack.translate(0, 0.1F, 0);
@@ -48,7 +48,7 @@ public enum PonyTransformation {
                 case NECK:
                     stack.translate(0, -0.2F, -0.05F);
                     stack.scale(1, 1.3F, 1);
-                    if (model.getAttributes().isCrouching) stack.translate(-0.03F, 0.16F, 0.07F);
+                    if (model.getAttributes().isCrouching) stack.translate(-0.03F, 0.01F, 0.2F);
                     if (model.getAttributes().isSwimmingRotated) stack.translate(0, 0.5F, 0.25F);
                     break;
                 case HEAD:
@@ -85,7 +85,7 @@ public enum PonyTransformation {
                 case NECK:
                     stack.translate(0, -0.2F, -0.07F);
                     stack.scale(1, 1.3F, 1);
-                    if (model.getAttributes().isCrouching) stack.translate(-0.03F, 0.16F, 0.07F);
+                    if (model.getAttributes().isCrouching) stack.translate(-0.03F, -0.07F, 0.09F);
                     if (model.getAttributes().isSwimmingRotated) stack.translate(0, 0.5F, 0.25F);
                     break;
                 case HEAD:
@@ -125,7 +125,7 @@ public enum PonyTransformation {
                 case NECK:
                     stack.translate(0, 0, 0.04F);
                     stack.scale(1.3F, 1.3F, 1.3F);
-                    if (model.getAttributes().isCrouching) stack.translate(0, -0.01F, 0.15F);
+                    if (model.getAttributes().isCrouching) stack.translate(-0.03F, -0.16F, 0.15F);
                     break;
                 case HEAD:
                     if (model.getAttributes().isSwimmingRotated) stack.translate(0, 0.9F, 0.9F);
@@ -153,7 +153,7 @@ public enum PonyTransformation {
                 case NECK:
                     stack.translate(0, -0.21F, -0.01F);
                     stack.scale(1, 1.28F, 1);
-                    if (model.getAttributes().isCrouching) stack.translate(-0.02F, -0.02F, 0.1F);
+                    if (model.getAttributes().isCrouching) stack.translate(-0.04F, -0.1F, 0.15F);
                     break;
                 case HEAD:
                     stack.translate(0, -0.11F, 0);
@@ -188,7 +188,7 @@ public enum PonyTransformation {
                 case NECK:
                     stack.translate(0, -0.2F, 0);
                     stack.scale(1, 1.3F, 1);
-                    if (model.getAttributes().isCrouching) stack.translate(-0.02F, -0.02F, 0.1F);
+                    if (model.getAttributes().isCrouching) stack.translate(-0.04F, -0.05F, 0.15F);
                     break;
                 case HEAD:
                     stack.translate(0, -0.15F, 0);
