@@ -24,11 +24,14 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
 
     private final Map<Race, ModelWrapper<T, ClientPonyModel<T>>> models = new HashMap<>();
 
+    private final NpcClothingFeature<T, ClientPonyModel<T>, AbstractNpcRenderer<T>> clothing;
+
     public AbstractNpcRenderer(EntityRendererFactory.Context context, String type, TextureSupplier<String> formatter) {
         super(context, ModelType.getPlayerModel(Race.EARTH).getKey(false));
         entityType = type;
         baseTextures = new PonyTextures<>(formatter);
-        addFeature(new NpcClothingFeature<>(this, entityType));
+        clothing = new NpcClothingFeature<>(this, entityType);
+        addFeature(clothing);
     }
 
     @Override
@@ -73,7 +76,7 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
     @Override
     public Identifier getDefaultTexture(T villager, Wearable wearable) {
         if (wearable == Wearable.SADDLE_BAGS) {
-            return NpcClothingFeature.getClothingTexture(villager, entityType);
+            return clothing.createTexture(villager, "accessory");
         }
         return super.getDefaultTexture(villager, wearable);
     }
