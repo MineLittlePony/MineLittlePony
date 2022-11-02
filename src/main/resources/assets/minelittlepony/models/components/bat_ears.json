@@ -3,26 +3,31 @@
 	"locals": {
 		"x": 0,
 		"y": 0,
-		"z": 0
+		"z": 0,
+    "ear_pronouncement": 0,
+    "ear_spread": 0,
+    "ear_spread_neg": [0, "-", "#ear_spread"]
 	},
 	"data": {
 		"right": {
 			"texture": {"u": 12, "v": 16},
 			"pivot": ["#x", "#y", "#z"],
+			"rotate": [0, 0, "#ear_spread"],
 			"cubes": [
-				{ "from": [-4, -8, -1], "size": [2, 2, 2] },
-				{ "from": [-3.5,   -8.49, -1.001], "size": [1, 1, 1], "texture": {"u": 0, "v": 3} },
-				{ "from": [-2.998, -8.49, -2.001], "size": [1, 1, 1], "texture": {"u": 0, "v": 5} }
+				{ "from": [-4, -8, -1], "size": [2, 2, 2], "dilate": [0, "#ear_pronouncement", 0] },
+				{ "from": [-3.5,   -8.49, 0], "size": [1, 1, 1], "texture": {"u": 0, "v": 3}, "dilate": [0, "#ear_pronouncement", 0] },
+				{ "from": [-2.998, -8.49, -1], "size": [1, 1, 1], "texture": {"u": 0, "v": 5}, "dilate": [0, "#ear_pronouncement", 0] }
 			]
 		},
 		"left": {
 			"texture": {"u": 12, "v": 16},
 			"pivot": ["#x", "#y", "#z"],
 			"mirror": [true, false, false],
+			"rotate": [0, 0, "#ear_spread_neg"],
 			"cubes": [
-				{ "from": [2, -8, -1], "size": [2, 2, 2] },
-				{ "from": [2.5,   -8.49, -1.001], "size": [1, 1, 1], "texture": {"u": 0, "v": 3} },
-				{ "from": [1.998, -8.49, -2.001], "size": [1, 1, 1], "texture": {"u": 0, "v": 5} }
+				{ "from": [2, -8, -1], "size": [2, 2, 2], "dilate": [0, "#ear_pronouncement", 0] },
+				{ "from": [2.5,   -8.49, 0], "size": [1, 1, 1], "texture": {"u": 0, "v": 3}, "dilate": [0, "#ear_pronouncement", 0] },
+				{ "from": [1.998, -8.49, -1], "size": [1, 1, 1], "texture": {"u": 0, "v": 5}, "dilate": [0, "#ear_pronouncement", 0] }
 			]
 		}
 	}
