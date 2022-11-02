@@ -50,12 +50,7 @@ public class ChristmasHat extends AbstractGear implements PonyModelConstants {
     }
 
     @Override
-    public void setModelAttributes(IModel model, Entity entity) {
-        tint = model.getMetadata().getGlowColor();
-    }
-
-    @Override
-    public void pose(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
+    public void pose(IModel model, Entity entity, boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
         float pi = PI * (float) Math.pow(swing, 16);
 
         float mve = move * 0.6662f;
@@ -65,6 +60,7 @@ public class ChristmasHat extends AbstractGear implements PonyModelConstants {
 
         bodySwing += 0.1F;
 
+        tint = model.getMetadata().getGlowColor();
         left.roll = bodySwing;
         right.roll = -bodySwing;
     }

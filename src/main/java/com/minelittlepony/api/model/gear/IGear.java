@@ -2,6 +2,7 @@ package com.minelittlepony.api.model.gear;
 
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
@@ -9,9 +10,8 @@ import net.minecraft.util.Identifier;
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.IModel;
 import com.minelittlepony.api.pony.meta.Wearable;
+import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.render.entity.feature.GearFeature;
-
-import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -57,31 +57,40 @@ public interface IGear {
     }
 
     /**
-     * Orients this wearable.
+     * Applies body transformations for this wearable
      */
-    default void setModelAttributes(IModel model, Entity entity) {
-
+    default <M extends EntityModel<?> & IPonyModel<?>> void transform(M model, MatrixStack matrices) {
+        BodyPart part = getGearLocation();
+        model.transform(part,  matrices);
+        model.getBodyPart(part).rotate(matrices);
     }
+
     /**
      * Sets the model's various rotation angles.
      *
      * See {@link AbstractPonyMode.setRotationAndAngle} for an explanation of the various parameters.
      */
-    default void pose(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
-
+    default void pose(IModel model, Entity entity, boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
+        setModelAttributes(model, entity);
+        pose(rainboom, interpolatorId, move, swing, bodySwing, ticks);
     }
+
+    /**
+     * @deprecated Use pose(model, entity, rainboom, interpolatorId, move, swing, bodySwing, ticks) instead
+     */
+    @Deprecated(forRemoval = true)
+    default void setModelAttributes(IModel model, Entity entity) { }
+
+    /**
+     * @deprecated Use pose(model, entity, rainboom, interpolatorId, move, swing, bodySwing, ticks) instead
+     */
+    @Deprecated(forRemoval = true)
+    default void pose(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) { }
 
     /**
      * Renders this model component.
      */
     void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId);
-
-    /**
-     * Sets whether this part should be rendered.
-     */
-    default void setVisible(boolean visible) {
-
-    }
 
     /**
      * A render context for instance of IGear.
@@ -100,11 +109,6 @@ public interface IGear {
          */
         default boolean shouldRender(M model, T entity, Wearable wearable, IGear gear) {
             return gear.canRender(model, entity);
-        }
-
-        @Nullable
-        default M getEntityModel() {
-            return null;
         }
 
         /**

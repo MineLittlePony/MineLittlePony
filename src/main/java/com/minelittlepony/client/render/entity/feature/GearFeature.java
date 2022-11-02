@@ -69,8 +69,7 @@ public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & IPon
             .forEach(entry -> {
             stack.push();
             BodyPart part = entry.gear.getGearLocation();
-            model.transform(part, stack);
-            model.getBodyPart(part).rotate(stack);
+            entry.gear.transform(model, stack);
 
             if (entry.gear instanceof IStackable) {
                 renderStackingOffsets.compute(part, (k, v) -> {
@@ -89,13 +88,8 @@ public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & IPon
     }
 
     private void renderGear(M model, T entity, IGear gear, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, float limbDistance, float limbAngle, float tickDelta) {
-        gear.setModelAttributes(model, entity);
-        gear.pose(model.getAttributes().isGoingFast, entity.getUuid(), limbDistance, limbAngle, model.getWobbleAmount(), tickDelta);
-
-        RenderLayer layer = RenderLayer.getEntityTranslucent(gear.getTexture(entity, getContext()));
-
-        VertexConsumer vertexConsumer = renderContext.getBuffer(layer);
-        gear.render(stack, vertexConsumer, lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1, entity.getUuid());
+        gear.pose(model, entity, model.getAttributes().isGoingFast, entity.getUuid(), limbDistance, limbAngle, model.getWobbleAmount(), tickDelta);
+        gear.render(stack, renderContext.getBuffer(RenderLayer.getEntityTranslucent(gear.getTexture(entity, getContext()))), lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1, entity.getUuid());
     }
 
     static record Entry(IGear gear, Wearable wearable) {}

@@ -28,8 +28,6 @@ public class SaddleBags extends AbstractGear implements PonyModelConstants {
 
     float dropAmount = 0;
 
-    private IModel model;
-
     public SaddleBags(ModelPart tree) {
         strap = tree.getChild("strap");
         leftBag = tree.getChild("left_bag");
@@ -37,18 +35,13 @@ public class SaddleBags extends AbstractGear implements PonyModelConstants {
     }
 
     @Override
-    public void setModelAttributes(IModel model, Entity entity) {
-        this.model = model;
-
+    public void pose(IModel model, Entity entity, boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
         hangLow = false;
 
         if (model instanceof IPegasus) {
             hangLow = model.canFly() && ((IPegasus)model).wingsAreOpen();
         }
-    }
 
-    @Override
-    public void pose(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
         float pi = PI * (float) Math.pow(swing, 16);
 
         float mve = move * 0.6662f;
@@ -68,6 +61,7 @@ public class SaddleBags extends AbstractGear implements PonyModelConstants {
         rightBag.roll = -bodySwing;
 
         dropAmount = hangLow ? 0.15F : 0;
+        dropAmount = model.getMetadata().getInterpolator(interpolatorId).interpolate("dropAmount", dropAmount, 3);
     }
 
     public void sethangingLow(boolean veryLow) {
@@ -76,8 +70,6 @@ public class SaddleBags extends AbstractGear implements PonyModelConstants {
 
     @Override
     public void render(MatrixStack stack, VertexConsumer renderContext, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
-        dropAmount = model.getMetadata().getInterpolator(interpolatorId).interpolate("dropAmount", dropAmount, 3);
-
         stack.push();
         stack.translate(0, dropAmount, 0);
 
