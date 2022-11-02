@@ -47,7 +47,7 @@ public class HorseCam {
 
         IPony pony = MineLittlePony.getInstance().getManager().getPony(player);
 
-        if (!pony.getRace(false).isHuman()) {
+        if (!pony.getRace().isHuman()) {
             float factor = pony.getMetadata().getSize().getEyeHeightFactor();
             pitch = rescaleCameraPitch(player.getStandingEyeHeight() / factor, pitch);
         }

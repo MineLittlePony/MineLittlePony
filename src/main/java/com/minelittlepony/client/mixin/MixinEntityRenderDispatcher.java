@@ -23,7 +23,7 @@ abstract class MixinEntityRenderDispatcher {
         }
         return MineLittlePony.getInstance().getManager()
                 .getPony(player)
-                .getRace(false)
+                .getRace()
                 .getModelId(player.getModel().contains("slim"));
     }
 }

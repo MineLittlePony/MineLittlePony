@@ -158,8 +158,8 @@ public class Pony implements IPony {
     }
 
     @Override
-    public Race getRace(boolean ignorePony) {
-        return getEffectiveRace(getMetadata().getRace(), ignorePony);
+    public Race getRace() {
+        return getEffectiveRace(getMetadata().getRace(), true);
     }
 
     @Override

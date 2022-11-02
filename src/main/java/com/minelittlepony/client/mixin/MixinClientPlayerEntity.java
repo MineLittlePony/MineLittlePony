@@ -46,7 +46,7 @@ abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implem
 
         IPony pony = MineLittlePony.getInstance().getManager().getPony(this);
 
-        if (!pony.getRace(false).isHuman()) {
+        if (!pony.getRace().isHuman()) {
             float factor = pony.getMetadata().getSize().getEyeHeightFactor();
             if (factor != 1) {
                 value *= factor;

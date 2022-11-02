@@ -39,7 +39,8 @@ class DummyPony extends DummyPlayer implements IPreviewModel, ModelAttributes.Sw
         }
         return MineLittlePony.getInstance().getManager()
                 .getPony(this)
-                .getRace(true)
+                .getMetadata()
+                .getRace()
                 .getModelId(super.getModel().contains("slim"));
     }
 }

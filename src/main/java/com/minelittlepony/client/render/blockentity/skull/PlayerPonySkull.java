@@ -53,7 +53,7 @@ public class PlayerPonySkull implements ISkull {
 
     @Override
     public boolean bindPony(IPony pony) {
-        Race race = pony.getRace(false);
+        Race race = pony.getRace();
         if (race.isHuman()) {
             return false;
         }

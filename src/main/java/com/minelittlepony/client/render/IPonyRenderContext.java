@@ -36,7 +36,7 @@ public interface IPonyRenderContext<T extends LivingEntity, M extends EntityMode
      * Called by riders to have their transportation adjust their position.
      */
     default void translateRider(T entity, IPony entityPony, LivingEntity passenger, IPony passengerPony, MatrixStack stack, float ticks) {
-        if (!passengerPony.getRace(false).isHuman()) {
+        if (!passengerPony.getRace().isHuman()) {
             float yaw = MathUtil.interpolateDegress((float)entity.prevY, (float)entity.getY(), ticks);
 
             getModelWrapper().applyMetadata(entityPony.getMetadata());
