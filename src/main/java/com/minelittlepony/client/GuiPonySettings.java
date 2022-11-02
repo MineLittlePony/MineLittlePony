@@ -103,7 +103,7 @@ public class GuiPonySettings extends GameGui {
         row += 20;
         content.addButton(new Label(LEFT, row)).getStyle().setText(OPTIONS_PREFIX + "options");
 
-        for (Setting<?> i : config.getByCategory("settings")) {
+        for (Setting<?> i : config.getCategory("settings").entries()) {
             boolean enabled = i != config.fillycam || allowCameraChange;
             Button button = content
                 .addButton(new Toggle(LEFT, row += 20, ((Setting<Boolean>)i).get()))
@@ -118,7 +118,7 @@ public class GuiPonySettings extends GameGui {
         }
 
         if (hiddenOptions) {
-            for (Setting<?> i : config.getByCategory("customisation")) {
+            for (Setting<?> i : config.getCategory("customisation").entries()) {
                 Button button = content
                     .addButton(new Toggle(LEFT, row += 20, ((Setting<Boolean>)i).get()))
                     .onChange((Setting<Boolean>)i);

@@ -78,7 +78,7 @@ public final class MobRenderers {
     }
 
     public Setting<Boolean> option() {
-        return MineLittlePony.getInstance().getConfig().<Boolean>get(name);
+        return MineLittlePony.getInstance().getConfig().getCategory("entities").<Boolean>get(name);
     }
 
     public boolean set(boolean value) {
