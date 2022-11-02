@@ -49,6 +49,7 @@
   "minelp.debug.scale.sa": "Show Accurate",
   "minelp.debug.scale.min": "Miniscule",
   "minelp.debug.size": "Size Override",
+  "minelp.debug.race": "Race Override",
 
   "hdskins.mode.minelp_seapony": "Seapony (in water)"
 }

@@ -98,6 +98,9 @@ public class GuiPonySettings extends GameGui {
             content.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.size");
             content.addButton(new EnumSlider<>(LEFT, row += 15, config.sizeOverride.get())
                     .onChange(config.sizeOverride::set));
+            content.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.race");
+            content.addButton(new EnumSlider<>(LEFT, row += 15, config.raceOverride.get())
+                    .onChange(config.raceOverride::set));
         }
 
         row += 20;

@@ -46,6 +46,9 @@ public class PonyConfig extends Config {
                 .addComment("Overrides pony sizes")
                 .addComment("Possible values: TALL, BULKY, LANKY, NORMAL, YEARLING, FOAL, UNSET (default)");
 
+    public final Setting<Race> raceOverride = value("debug", "raceOverride", Race.HUMAN)
+                .addComment("Overrides pony races")
+                .addComment("Possible values: HUMAN (default), EARTH, PEGASUS, UNICORN, ALICORN, CHANGELING, ZEBRA, CHANGEDLING, GRYPHON, HIPPOGRIFF, KIRIN, BAYPONT, SEAPONY");
 
     public final Setting<Boolean> flappyElytras = value("customisation", "flappyElytras", false)
                 .addComment("Pegasi will use their wings to fly even when they're wearing an elytra");
