@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath 'com.github.dexman545:Outlet:1.3.6'
+        classpath 'com.github.dexman545:Outlet:1.3.10'
     }
 }
 plugins {
