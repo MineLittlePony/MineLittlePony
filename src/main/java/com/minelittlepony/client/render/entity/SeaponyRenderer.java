@@ -30,7 +30,7 @@ public class SeaponyRenderer extends GuardianEntityRenderer {
         features.clear();
         ponyRenderer = new Proxy<GuardianEntity, GuardianPonyModel>(features, context, ModelType.GUARDIAN) {
             @Override
-            public Identifier findTexture(GuardianEntity entity) {
+            public Identifier getTexture(GuardianEntity entity) {
                 return SEAPONY;
             }
 
@@ -45,7 +45,7 @@ public class SeaponyRenderer extends GuardianEntityRenderer {
     @Override
     @NotNull
     public final Identifier getTexture(GuardianEntity entity) {
-        return ponyRenderer.getTextureFor(entity);
+        return ponyRenderer.getTexture(entity);
     }
 
     @Override

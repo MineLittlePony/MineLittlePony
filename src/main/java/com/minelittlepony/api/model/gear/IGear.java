@@ -52,6 +52,9 @@ public interface IGear {
      */
     <T extends Entity> Identifier getTexture(T entity, Context<T, ?> context);
 
+    /**
+     * Gets the layer used to render this piece of gear.
+     */
     default <T extends Entity> RenderLayer getLayer(T entity, Context<T, ?> context) {
         return RenderLayer.getEntityTranslucent(getTexture(entity, context));
     }

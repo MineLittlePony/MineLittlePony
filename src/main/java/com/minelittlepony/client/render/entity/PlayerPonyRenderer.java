@@ -193,11 +193,6 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
     }
 
     @Override
-    public Identifier findTexture(AbstractClientPlayerEntity entity) {
-        return getTexture(entity);
-    }
-
-    @Override
     public IPony getEntityPony(AbstractClientPlayerEntity entity) {
         return MineLittlePony.getInstance().getManager().getPony(entity);
     }
@@ -210,6 +205,6 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
             }
         }
 
-        return IPonyRenderContext.super.getDefaultTexture(entity, wearable);
+        return getTexture(entity);
     }
 }

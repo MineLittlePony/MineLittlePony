@@ -24,7 +24,7 @@ public class SkeleponyRenderer<Skeleton extends AbstractSkeletonEntity> extends 
     }
 
     @Override
-    public Identifier findTexture(Skeleton entity) {
+    public Identifier getTexture(Skeleton entity) {
         return SKELETON;
     }
 
@@ -41,7 +41,7 @@ public class SkeleponyRenderer<Skeleton extends AbstractSkeletonEntity> extends 
         }
 
         @Override
-        public Identifier findTexture(StrayEntity entity) {
+        public Identifier getTexture(StrayEntity entity) {
             return STRAY;
         }
     }
@@ -53,7 +53,7 @@ public class SkeleponyRenderer<Skeleton extends AbstractSkeletonEntity> extends 
         }
 
         @Override
-        public Identifier findTexture(WitherSkeletonEntity entity) {
+        public Identifier getTexture(WitherSkeletonEntity entity) {
             return WITHER;
         }
 

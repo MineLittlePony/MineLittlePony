@@ -52,7 +52,7 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
     }
 
     @Override
-    public Identifier findTexture(EndermanEntity entity) {
+    public Identifier getTexture(EndermanEntity entity) {
         return ENDERMAN;
     }
 

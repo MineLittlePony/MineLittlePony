@@ -1,6 +1,7 @@
 package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.IPonyModel;
@@ -28,7 +29,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import java.util.Locale;
 
 public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T> & IPonyModel<T>> extends MobEntityRenderer<T, M> implements IPonyRenderContext<T, M> {
 
@@ -109,11 +110,10 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
         stack.pop();
     }
 
-    @Deprecated
     @Override
-    @NotNull
-    public final Identifier getTexture(T entity) {
-        return findTexture(entity);
+    public Identifier getDefaultTexture(T entity, Wearable wearable) {
+        Identifier texture = getTexture(entity);
+        return new Identifier(texture.getNamespace(), texture.getPath().split("\\.")[0] + "_" + wearable.name().toLowerCase(Locale.ROOT) + ".png");
     }
 
     @Override
@@ -123,7 +123,7 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
 
     @Override
     public IPony getEntityPony(T entity) {
-        return MineLittlePony.getInstance().getManager().getPony(findTexture(entity));
+        return MineLittlePony.getInstance().getManager().getPony(getTexture(entity));
     }
 
     public abstract static class Caster<T extends MobEntity, M extends ClientPonyModel<T>> extends PonyRenderer<T, M> {
@@ -151,10 +151,6 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
         protected void addLayers(EntityRendererFactory.Context context) {
             features.clear();
             super.addLayers(context);
-        }
-
-        public final Identifier getTextureFor(T entity) {
-            return super.getTexture(entity);
         }
     }
 }

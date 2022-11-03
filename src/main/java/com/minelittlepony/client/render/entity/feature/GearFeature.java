@@ -89,7 +89,7 @@ public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & IPon
 
     private void renderGear(M model, T entity, IGear gear, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, float limbDistance, float limbAngle, float tickDelta) {
         gear.pose(model, entity, model.getAttributes().isGoingFast, entity.getUuid(), limbDistance, limbAngle, model.getWobbleAmount(), tickDelta);
-        gear.render(stack, renderContext.getBuffer(RenderLayer.getEntityTranslucent(gear.getTexture(entity, getContext()))), lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1, entity.getUuid());
+        gear.render(stack, renderContext.getBuffer(gear.getLayer(entity, getContext())), lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1, entity.getUuid());
     }
 
     static record Entry(IGear gear, Wearable wearable) {}

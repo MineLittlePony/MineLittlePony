@@ -22,7 +22,7 @@ public class ZomponyRenderer<Zombie extends ZombieEntity> extends PonyRenderer.C
     }
 
     @Override
-    public Identifier findTexture(Zombie entity) {
+    public Identifier getTexture(Zombie entity) {
         return ZOMBIE;
     }
 
@@ -33,7 +33,7 @@ public class ZomponyRenderer<Zombie extends ZombieEntity> extends PonyRenderer.C
         }
 
         @Override
-        public Identifier findTexture(DrownedEntity entity) {
+        public Identifier getTexture(DrownedEntity entity) {
             return DROWNED;
         }
     }
@@ -51,7 +51,7 @@ public class ZomponyRenderer<Zombie extends ZombieEntity> extends PonyRenderer.C
         }
 
         @Override
-        public Identifier findTexture(HuskEntity entity) {
+        public Identifier getTexture(HuskEntity entity) {
             return HUSK;
         }
 
@@ -70,7 +70,7 @@ public class ZomponyRenderer<Zombie extends ZombieEntity> extends PonyRenderer.C
 	    }
 
 		@Override
-	    public Identifier findTexture(GiantEntity entity) {
+	    public Identifier getTexture(GiantEntity entity) {
 	        return ZOMBIE;
 	    }
     }

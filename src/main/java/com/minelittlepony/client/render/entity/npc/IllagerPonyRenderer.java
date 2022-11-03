@@ -46,7 +46,7 @@ public abstract class IllagerPonyRenderer<T extends IllagerEntity> extends PonyR
         }
 
         @Override
-        public Identifier findTexture(VindicatorEntity entity) {
+        public Identifier getTexture(VindicatorEntity entity) {
             return VINDICATOR;
         }
     }
@@ -58,7 +58,7 @@ public abstract class IllagerPonyRenderer<T extends IllagerEntity> extends PonyR
         }
 
         @Override
-        public Identifier findTexture(EvokerEntity entity) {
+        public Identifier getTexture(EvokerEntity entity) {
             return EVOKER;
         }
     }
@@ -70,7 +70,7 @@ public abstract class IllagerPonyRenderer<T extends IllagerEntity> extends PonyR
         }
 
         @Override
-        public Identifier findTexture(IllusionerEntity entity) {
+        public Identifier getTexture(IllusionerEntity entity) {
             return ILLUSIONIST;
         }
 

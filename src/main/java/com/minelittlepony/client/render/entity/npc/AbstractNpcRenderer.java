@@ -78,11 +78,11 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
         if (wearable == Wearable.SADDLE_BAGS) {
             return clothing.createTexture(villager, "accessory");
         }
-        return super.getDefaultTexture(villager, wearable);
+        return getTexture(villager);
     }
 
     @Override
-    public Identifier findTexture(T villager) {
+    public Identifier getTexture(T villager) {
         return baseTextures.supplyTexture(villager);
     }
 }

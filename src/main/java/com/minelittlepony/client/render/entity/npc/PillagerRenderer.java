@@ -19,7 +19,7 @@ public class PillagerRenderer extends PonyRenderer<PillagerEntity, PillagerPonyM
     }
 
     @Override
-    public Identifier findTexture(PillagerEntity entity) {
+    public Identifier getTexture(PillagerEntity entity) {
         return TEXTURES;
     }
 

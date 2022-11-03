@@ -18,7 +18,7 @@ public class TraderRenderer extends PonyRenderer.Caster<WanderingTraderEntity, A
     }
 
     @Override
-    public Identifier findTexture(WanderingTraderEntity entity) {
+    public Identifier getTexture(WanderingTraderEntity entity) {
         return TEXTURE;
     }
 

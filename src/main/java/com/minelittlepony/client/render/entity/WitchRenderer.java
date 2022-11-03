@@ -39,7 +39,7 @@ public class WitchRenderer extends PonyRenderer<WitchEntity, WitchPonyModel> {
     }
 
     @Override
-    public Identifier findTexture(WitchEntity entity) {
+    public Identifier getTexture(WitchEntity entity) {
         return WITCH_TEXTURES;
     }
 }

@@ -35,7 +35,7 @@ public class PonyPiglinRenderer extends PonyRenderer.Caster<HostileEntity, Pigli
     }
 
     @Override
-    public Identifier findTexture(HostileEntity entity) {
+    public Identifier getTexture(HostileEntity entity) {
         return TEXTURES.get(entity.getType());
     }
 
