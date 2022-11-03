@@ -1,5 +1,6 @@
 package com.minelittlepony.client.model.entity;
 
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.entity.mob.PillagerEntity;
 import net.minecraft.util.Arm;
@@ -8,8 +9,8 @@ import com.minelittlepony.client.model.entity.race.ChangelingModel;
 
 public class PillagerPonyModel<T extends PillagerEntity> extends ChangelingModel<T> {
 
-    public PillagerPonyModel() {
-        super(false);
+    public PillagerPonyModel(ModelPart tree) {
+        super(tree, false);
     }
 
     @Override

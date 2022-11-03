@@ -1,3 +1,8 @@
 {
-	"parent": "minelittlepony:races/alex/unicorn"
+	"parent": "minelittlepony:races/steve/kirin",
+	"locals": {
+		"arm_width": 3,
+		"arm_rotation_x": 2,
+		"arm_rotation_y": 8.5
+	}
 }

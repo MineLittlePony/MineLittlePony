@@ -2,86 +2,84 @@ package com.minelittlepony.client.render;
 
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderPhase;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
-import com.mojang.blaze3d.platform.GlStateManager.DstFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SrcFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.minelittlepony.common.util.Color;
 
-public class MagicGlow extends RenderPhase {
+import java.util.function.BiFunction;
+
+public abstract class MagicGlow extends RenderPhase {
     private MagicGlow(String name, Runnable beginAction, Runnable endAction) {
         super(name, beginAction, endAction);
     }
 
-    protected static final RenderPhase.Transparency GLOWING_TRANSPARENCY = new RenderPhase.Transparency("glowing_transparency", () -> {
-        RenderSystem.enableBlend();
-        RenderSystem.blendFuncSeparate(
-                SrcFactor.CONSTANT_COLOR, DstFactor.ONE,
-                SrcFactor.ONE, DstFactor.ZERO);
-     }, () -> {
-        RenderSystem.disableBlend();
-        RenderSystem.defaultBlendFunc();
-     });
-
-    private static final RenderLayer MAGIC = RenderLayer.of("mlp_magic_glow", VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL, 7, 256, RenderLayer.MultiPhaseParameters.builder()
-            .texture(NO_TEXTURE)
+    private static final RenderLayer MAGIC = RenderLayer.of("mlp_magic_glow", VertexFormats.POSITION_COLOR_LIGHT, VertexFormat.DrawMode.QUADS, 256, RenderLayer.MultiPhaseParameters.builder()
+            .shader(EYES_SHADER)
             .writeMaskState(COLOR_MASK)
+            .depthTest(LEQUAL_DEPTH_TEST)
             .transparency(LIGHTNING_TRANSPARENCY)
             .lightmap(DISABLE_LIGHTMAP)
             .cull(DISABLE_CULLING)
             .build(false));
+
+    private static final BiFunction<Identifier, Integer, RenderLayer> TINTED_LAYER = Util.memoize((texture, color) -> {
+        return RenderLayer.of("mlp_tint_layer", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS, 256, true, true, RenderLayer.MultiPhaseParameters.builder()
+                .texture(new Colored(texture, color))
+                .shader(EYES_SHADER)
+                .writeMaskState(COLOR_MASK)
+                .depthTest(LEQUAL_DEPTH_TEST)
+                .transparency(LIGHTNING_TRANSPARENCY)
+                .lightmap(DISABLE_LIGHTMAP)
+                .cull(DISABLE_CULLING)
+                .build(true));
+    });
 
     public static RenderLayer getRenderLayer() {
         return MAGIC;
     }
 
     public static RenderLayer getTintedTexturedLayer(Identifier texture, float red, float green, float blue, float alpha) {
-        return RenderLayer.of("mlp_tint_layer", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, 7, 256, true, true, RenderLayer.MultiPhaseParameters.builder()
-                .texture(new Color(texture, red, green, blue, alpha))
-                .writeMaskState(COLOR_MASK)
-                .alpha(ONE_TENTH_ALPHA)
-                .transparency(GLOWING_TRANSPARENCY)
-                .lightmap(DISABLE_LIGHTMAP)
-                .overlay(DISABLE_OVERLAY_COLOR)
-                .cull(DISABLE_CULLING)
-                .build(true));
+        return TINTED_LAYER.apply(texture, Color.argbToHex(alpha, red, green, blue));
     }
 
-    private static class Color extends Texture {
+    private static class Colored extends Texture {
 
         private final float red;
         private final float green;
         private final float blue;
         private final float alpha;
 
-        public Color(Identifier texture, float red, float green, float blue, float alpha) {
+        public Colored(Identifier texture, int color) {
             super(texture, false, false);
-            this.red = red;
-            this.green = green;
-            this.blue = blue;
-            this.alpha = alpha;
+            this.red = Color.r(color);
+            this.green = Color.g(color);
+            this.blue = Color.b(color);
+            this.alpha = Color.a(color);
         }
 
         @Override
         public void startDrawing() {
-            RenderSystem.blendColor(red, green, blue, alpha);
+            RenderSystem.setShaderColor(red, green, blue, alpha);
             super.startDrawing();
         }
 
         @Override
         public void endDrawing() {
             super.endDrawing();
-            RenderSystem.blendColor(1, 1, 1, 1);
+            RenderSystem.setShaderColor(1, 1, 1, 1);
         }
 
         @Override
         public boolean equals(Object other) {
             return super.equals(other)
-                    && ((Color)other).red == red
-                    && ((Color)other).green == green
-                    && ((Color)other).blue == blue
-                    && ((Color)other).alpha == alpha;
+                    && ((Colored)other).red == red
+                    && ((Colored)other).green == green
+                    && ((Colored)other).blue == blue
+                    && ((Colored)other).alpha == alpha;
         }
     }
 }

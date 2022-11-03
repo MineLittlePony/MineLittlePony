@@ -1,9 +1,10 @@
 package com.minelittlepony.client.model.entity.race;
 
-import com.minelittlepony.model.IPart;
-import com.minelittlepony.model.IPegasus;
+import com.minelittlepony.api.model.IPart;
+import com.minelittlepony.api.model.IPegasus;
 import com.minelittlepony.mson.api.ModelContext;
 
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
@@ -12,8 +13,8 @@ public class PegasusModel<T extends LivingEntity> extends EarthPonyModel<T> impl
 
     private IPart wings;
 
-    public PegasusModel(boolean smallArms) {
-        super(smallArms);
+    public PegasusModel(ModelPart tree, boolean smallArms) {
+        super(tree, smallArms);
     }
 
     @Override
@@ -28,8 +29,8 @@ public class PegasusModel<T extends LivingEntity> extends EarthPonyModel<T> impl
     }
 
     @Override
-    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
+    public void setModelAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
+        super.setModelAngles(entity, move, swing, ticks, headYaw, headPitch);
         getWings().setRotationAndAngles(attributes.isGoingFast, entity.getUuid(), move, swing, 0, ticks);
     }
 

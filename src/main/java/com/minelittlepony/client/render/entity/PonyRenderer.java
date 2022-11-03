@@ -1,6 +1,7 @@
 package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.IPonyModel;
@@ -14,13 +15,11 @@ import com.minelittlepony.client.render.entity.feature.GlowingItemFeature;
 import com.minelittlepony.client.render.entity.feature.ArmourFeature;
 import com.minelittlepony.client.render.entity.feature.SkullFeature;
 import com.minelittlepony.client.render.entity.feature.ElytraFeature;
-import com.minelittlepony.model.IUnicorn;
 import com.minelittlepony.mson.api.ModelKey;
 
-import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
@@ -30,25 +29,25 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
-import javax.annotation.Nonnull;
+import java.util.Locale;
 
 public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T> & IPonyModel<T>> extends MobEntityRenderer<T, M> implements IPonyRenderContext<T, M> {
 
     protected EquineRenderManager<T, M> manager = new EquineRenderManager<>(this);
 
-    public PonyRenderer(EntityRenderDispatcher dispatcher, ModelKey<? super M> key) {
-        super(dispatcher, null, 0.5F);
+    public PonyRenderer(EntityRendererFactory.Context context, ModelKey<? super M> key) {
+        super(context, null, 0.5F);
 
-        this.model = manager.setModel(key).getBody();
+        this.model = manager.setModel(key).body();
 
-        addLayers();
+        addLayers(context);
     }
 
-    protected void addLayers() {
+    protected void addLayers(EntityRendererFactory.Context context) {
         addFeature(new ArmourFeature<>(this));
         addFeature(createItemHoldingLayer());
         //addFeature(new StuckArrowsFeatureRenderer<>(this));
-        addFeature(new SkullFeature<>(this));
+        addFeature(new SkullFeature<>(this, context.getModelLoader()));
         addFeature(new ElytraFeature<>(this));
         addFeature(new GearFeature<>(this));
     }
@@ -111,11 +110,10 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
         stack.pop();
     }
 
-    @Deprecated
     @Override
-    @Nonnull
-    public final Identifier getTexture(T entity) {
-        return findTexture(entity);
+    public Identifier getDefaultTexture(T entity, Wearable wearable) {
+        Identifier texture = getTexture(entity);
+        return new Identifier(texture.getNamespace(), texture.getPath().split("\\.")[0] + "_" + wearable.name().toLowerCase(Locale.ROOT) + ".png");
     }
 
     @Override
@@ -125,13 +123,13 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
 
     @Override
     public IPony getEntityPony(T entity) {
-        return MineLittlePony.getInstance().getManager().getPony(findTexture(entity));
+        return MineLittlePony.getInstance().getManager().getPony(getTexture(entity));
     }
 
-    public abstract static class Caster<T extends MobEntity, M extends ClientPonyModel<T> & IUnicorn<ModelPart>> extends PonyRenderer<T, M> {
+    public abstract static class Caster<T extends MobEntity, M extends ClientPonyModel<T>> extends PonyRenderer<T, M> {
 
-        public Caster(EntityRenderDispatcher manager, ModelKey<? super M> key) {
-            super(manager, key);
+        public Caster(EntityRendererFactory.Context context, ModelKey<? super M> key) {
+            super(context, key);
         }
 
         @Override
@@ -143,20 +141,16 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
     public abstract static class Proxy<T extends MobEntity, M extends EntityModel<T> & IPonyModel<T>> extends PonyRenderer<T, M> {
 
         @SuppressWarnings({"rawtypes", "unchecked"})
-        public Proxy(List exportedLayers, EntityRenderDispatcher manager, ModelKey<M> key) {
-            super(manager, key);
+        public Proxy(List exportedLayers, EntityRendererFactory.Context context, ModelKey<M> key) {
+            super(context, key);
 
             exportedLayers.addAll(features);
         }
 
         @Override
-        protected void addLayers() {
+        protected void addLayers(EntityRendererFactory.Context context) {
             features.clear();
-            super.addLayers();
-        }
-
-        public final Identifier getTextureFor(T entity) {
-            return super.getTexture(entity);
+            super.addLayers(context);
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.minelittlepony.client.render.entity.npc;
 
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.entity.mob.PillagerEntity;
 import net.minecraft.util.Identifier;
 
@@ -14,12 +14,12 @@ public class PillagerRenderer extends PonyRenderer<PillagerEntity, PillagerPonyM
 
     private static final Identifier TEXTURES = new Identifier("minelittlepony", "textures/entity/illager/pillager_pony.png");
 
-    public PillagerRenderer(EntityRenderDispatcher manager) {
-        super(manager, ModelType.PILLAGER);
+    public PillagerRenderer(EntityRendererFactory.Context context) {
+        super(context, ModelType.PILLAGER);
     }
 
     @Override
-    public Identifier findTexture(PillagerEntity entity) {
+    public Identifier getTexture(PillagerEntity entity) {
         return TEXTURES;
     }
 

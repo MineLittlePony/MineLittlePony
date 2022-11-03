@@ -2,16 +2,20 @@ package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.model.ModelWithHat;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
+import net.minecraft.util.Hand;
 
-import com.minelittlepony.model.capabilities.fabric.PonyModelPrepareCallback;
+import org.jetbrains.annotations.Nullable;
+
+import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.api.model.fabric.PonyModelPrepareCallback;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.meta.Size;
+import com.minelittlepony.api.pony.meta.Sizes;
 import com.minelittlepony.client.pony.PonyData;
-import com.minelittlepony.client.render.EquineRenderManager;
-import com.minelittlepony.model.ModelAttributes;
 import com.minelittlepony.mson.api.model.biped.MsonPlayer;
 
 /**
@@ -21,20 +25,36 @@ import com.minelittlepony.mson.api.model.biped.MsonPlayer;
  *
  * Modders can extend this class to make their own pony models if they wish.
  */
-public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer<T> implements IPonyModel<T> {
+public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer<T> implements IPonyModel<T>, ModelWithHat {
 
     /**
      * The model attributes.
      */
-    protected ModelAttributes<T> attributes = new ModelAttributes<>();
+    protected ModelAttributes attributes = new ModelAttributes();
 
     /**
      * Associated pony data.
      */
     protected IPonyData metadata = PonyData.NULL;
 
+    @Nullable
+    protected PosingCallback<T> onSetModelAngles;
+
+    public ClientPonyModel(ModelPart tree) {
+        super(tree);
+    }
+
+    public void onSetModelAngles(PosingCallback<T> callback) {
+        onSetModelAngles = callback;
+    }
+
+    protected Arm getPreferredArm(T livingEntity) {
+        Arm arm = livingEntity.getMainArm();
+        return livingEntity.preferredHand == Hand.MAIN_HAND ? arm : arm.getOpposite();
+    }
+
     @Override
-    public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
+    public void updateLivingState(T entity, IPony pony, ModelAttributes.Mode mode) {
         child = entity.isBaby();
         attributes.updateLivingState(entity, pony, mode);
         PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(entity, this, mode);
@@ -48,7 +68,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
     }
 
     @Override
-    public ModelAttributes<?> getAttributes() {
+    public ModelAttributes getAttributes() {
         return attributes;
     }
 
@@ -59,11 +79,11 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
 
     @Override
     public Size getSize() {
-        return child ? Size.FOAL : getMetadata().getSize();
+        return child ? Sizes.FOAL : getMetadata().getSize();
     }
 
     @Override
-    public void apply(IPonyData meta) {
+    public void setMetadata(IPonyData meta) {
         metadata = meta;
     }
 
@@ -103,5 +123,14 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
             ((ClientPonyModel<T>)model).attributes = attributes;
             ((ClientPonyModel<T>)model).metadata = metadata;
         }
+    }
+
+    @Override
+    public void setHatVisible(boolean visible) {
+
+    }
+
+    public interface PosingCallback<T extends LivingEntity> {
+        void poseModel(ClientPonyModel<T> model, float move, float swing, float ticks, T entity);
     }
 }

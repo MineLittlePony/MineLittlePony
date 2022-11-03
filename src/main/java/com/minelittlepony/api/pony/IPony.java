@@ -28,13 +28,18 @@ public interface IPony {
      * Returns true if this pony has wings and the will to use them.
      */
     default boolean canFly() {
-        return getMetadata().getRace().hasWings();
+        return getRace().hasWings();
     }
 
     /**
      * Checks the required conditions for whether the given entity can perform a sonic rainboom.
      */
     boolean isPerformingRainboom(LivingEntity entity);
+
+    /**
+     * Returns whether this is one of the default ponies assigned to a player without a custom skin.
+     */
+    boolean isDefault();
 
     /**
      * Unlike sneaking, crouching is a more specific animation parameter that controls whether the player is visible
@@ -70,12 +75,15 @@ public interface IPony {
      */
     boolean isPartiallySubmerged(LivingEntity entity);
 
+    @Deprecated
+    default Race getRace(boolean ignorePony) {
+        return com.minelittlepony.client.pony.Pony.getEffectiveRace(getMetadata().getRace(), ignorePony);
+    }
+
     /**
      * Gets the race associated with this pony.
-     *
-     * @param ignorePony    True to ignore the client's current pony level setting.
      */
-    Race getRace(boolean ignorePony);
+    Race getRace();
 
     /**
      * Returns true if an entity is sitting as when riding a vehicle or

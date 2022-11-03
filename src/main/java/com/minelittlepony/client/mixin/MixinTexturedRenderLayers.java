@@ -15,14 +15,14 @@ abstract class MixinTexturedRenderLayers {
 
     @Inject(method = "getEntityCutout()Lnet/minecraft/client/render/RenderLayer;", at = @At("HEAD"), cancellable = true)
     private static void onGetItemOpaque(CallbackInfoReturnable<RenderLayer> info) {
-        if (LevitatingItemRenderer.usesTransparency()) {
+        if (LevitatingItemRenderer.isEnabled()) {
             info.setReturnValue(LevitatingItemRenderer.getRenderLayer());
         }
     }
 
     @Inject(method = "getEntityTranslucentCull()Lnet/minecraft/client/render/RenderLayer;", at = @At("HEAD"), cancellable = true)
     private static void onGetItemTranslucent(CallbackInfoReturnable<RenderLayer> info) {
-        if (LevitatingItemRenderer.usesTransparency()) {
+        if (LevitatingItemRenderer.isEnabled()) {
             info.setReturnValue(LevitatingItemRenderer.getRenderLayer());
         }
     }

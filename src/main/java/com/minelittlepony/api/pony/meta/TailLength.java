@@ -1,9 +1,8 @@
 package com.minelittlepony.api.pony.meta;
 
-import com.minelittlepony.api.pony.ITriggerPixelMapped;
+import com.minelittlepony.api.pony.TriggerPixelType;
 
-public enum TailLength implements ITriggerPixelMapped<TailLength> {
-
+public enum TailLength implements TriggerPixelType<TailLength> {
     STUB            (0x425844),
     QUARTER         (0xd19fe4),
     HALF            (0x534b76),
@@ -17,7 +16,7 @@ public enum TailLength implements ITriggerPixelMapped<TailLength> {
     }
 
     @Override
-    public int getTriggerPixel() {
+    public int getColorCode() {
         return triggerValue;
     }
 }

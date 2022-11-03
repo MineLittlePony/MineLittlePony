@@ -20,16 +20,15 @@ abstract class MixinItemRenderer {
 
     private static final String Boolean = "Z";
 
-    @Inject(method = "getArmorGlintConsumer(" + VertexConsumerProvider + RenderLayer + Boolean + Boolean + ")" + VertexConsumer, at = @At("HEAD"), cancellable = true)
-    private static void onGetArmorVertexConsumer(VertexConsumerProvider provider, RenderLayer layer, boolean solid, boolean glint, CallbackInfoReturnable<VertexConsumer> info) {
-        if (LevitatingItemRenderer.usesTransparency()) {
-            info.setReturnValue(provider.getBuffer(LevitatingItemRenderer.getRenderLayer()));
-        }
-    }
+    private static final String PARAMS = "(" + VertexConsumerProvider + RenderLayer + Boolean + Boolean + ")" + VertexConsumer;
 
-    @Inject(method = "getDirectItemGlintConsumer(" + VertexConsumerProvider + RenderLayer + Boolean + Boolean + ")" + VertexConsumer, at = @At("HEAD"), cancellable = true)
-    private static void onMethod_29711(VertexConsumerProvider provider, RenderLayer layer, boolean solide, boolean glint, CallbackInfoReturnable<VertexConsumer> info) {
-        if (LevitatingItemRenderer.usesTransparency()) {
+    @Inject(method = {
+          "getArmorGlintConsumer" + PARAMS,
+          "getItemGlintConsumer" + PARAMS,
+          "getDirectItemGlintConsumer" + PARAMS
+        }, at = @At("HEAD"), cancellable = true)
+    private static void onGetArmorVertexConsumer(VertexConsumerProvider provider, RenderLayer layer, boolean solid, boolean glint, CallbackInfoReturnable<VertexConsumer> info) {
+        if (LevitatingItemRenderer.isEnabled()) {
             info.setReturnValue(provider.getBuffer(LevitatingItemRenderer.getRenderLayer()));
         }
     }

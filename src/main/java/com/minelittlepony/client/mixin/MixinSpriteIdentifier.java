@@ -27,7 +27,7 @@ abstract class MixinSpriteIdentifier {
             cancellable = true
     )
     public void onGetBuffer(VertexConsumerProvider provider, Function<Identifier, RenderLayer> layerFunction, CallbackInfoReturnable<VertexConsumer> info) {
-        if (LevitatingItemRenderer.usesTransparency()) {
+        if (LevitatingItemRenderer.isEnabled()) {
             SpriteIdentifier self = (SpriteIdentifier)(Object)this;
 
             info.setReturnValue(self.getSprite().getTextureSpecificVertexConsumer(provider.getBuffer(LevitatingItemRenderer.getRenderLayer(self.getAtlasId()))));

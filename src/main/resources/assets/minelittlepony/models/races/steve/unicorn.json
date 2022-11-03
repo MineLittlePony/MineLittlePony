@@ -1,49 +1,50 @@
 {
 	"parent": "minelittlepony:steve_pony",
-	"head": {
-		"center": [ 0, 0, -2 ],
-		"cubes": [
-			{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
-		],
-		"children": [
-			{
-				"type": "mson:slot",
-				"name": "snout",
-				"implementation": "com.minelittlepony.client.model.part.PonySnout",
-				"content": "minelittlepony:components/snout"
-			},
-			{
-				"type": "mson:slot",
-				"name": "ears",
-				"implementation": "com.minelittlepony.client.model.part.PonyEars",
-				"content": "minelittlepony:components/ears"
-			},
-			{
-				"type": "mson:slot",
-				"name": "horn",
-				"implementation": "com.minelittlepony.client.model.part.UnicornHorn",
-				"content": "minelittlepony:components/horn"
+	"data": {
+		"head": {
+			"cubes": [
+				{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
+			],
+			"children": {
+				"snout": {
+					"type": "mson:slot",
+					"name": "snout",
+					"implementation": "com.minelittlepony.client.model.part.PonySnout",
+					"data": "minelittlepony:components/snout"
+				},
+				"ears": {
+					"type": "mson:slot",
+					"name": "ears",
+					"implementation": "com.minelittlepony.client.model.part.PonyEars",
+					"data": "minelittlepony:components/ears"
+				},
+				"horn": {
+					"type": "mson:slot",
+					"name": "horn",
+					"implementation": "com.minelittlepony.client.model.part.UnicornHorn",
+					"data": "minelittlepony:components/horn"
+				}
 			}
-		]
-	},
-	"right_cast": {
-		"center": ["#arm_rotation_x_neg", "#arm_rotation_y", 0],
-		"texture": { "u": 40, "v": 32, "w": 64, "h": 64 },
-		"cubes": [
-			{
-				"from": [ "#arm_x_neg", 4, "#arm_z"],
-				"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
-			}
-		]
-	},
-	"left_cast": {
-		"center": ["#arm_rotation_x", "#arm_rotation_y", 0],
-		"texture": { "u": 40, "v": 32, "w": 64, "h": 64 },
-		"cubes": [
-			{
-				"from": [ "#arm_x", 4, "#arm_z"],
-				"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
-			}
-		]
+		},
+		"right_cast": {
+			"pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", 0],
+			"texture": { "u": 40, "v": 32, "w": 64, "h": 64 },
+			"cubes": [
+				{
+					"from": [ "#arm_x_neg", 4, "#arm_z"],
+					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
+				}
+			]
+		},
+		"left_cast": {
+			"pivot": ["#arm_rotation_x", "#arm_rotation_y", 0],
+			"texture": { "u": 40, "v": 32, "w": 64, "h": 64 },
+			"cubes": [
+				{
+					"from": [ "#arm_x", 4, "#arm_z"],
+					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
+				}
+			]
+		}
 	}
 }

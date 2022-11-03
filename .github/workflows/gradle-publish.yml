@@ -1,0 +1,34 @@
+name: Publish
+on:
+  push:
+    tags:
+      - '*'
+jobs:
+  gradle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Commit
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Fetch Tags
+        run: git fetch --unshallow --tags -f
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: Publish Maven Jar
+        env:
+          ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: build publish
+      - name: Publish Modrinth Jar
+        env:
+          MODRINTH_KEY: ${{ secrets.MODRINTH_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: modrinth

@@ -5,10 +5,19 @@ import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Size;
+import com.minelittlepony.api.pony.meta.Sizes;
+import com.minelittlepony.api.pony.network.MsgPonyData;
+import com.minelittlepony.api.pony.network.fabric.Channel;
+import com.minelittlepony.api.pony.network.fabric.PonyDataCallback;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.client.render.PonyRenderDispatcher;
 import com.minelittlepony.client.transform.PonyTransformation;
+import com.minelittlepony.settings.PonyLevel;
 
+import java.util.Objects;
+
+import net.fabricmc.api.EnvType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.block.StairsBlock;
@@ -22,17 +31,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-import javax.annotation.concurrent.Immutable;
+import org.jetbrains.annotations.Unmodifiable;
 
-@Immutable
+@Unmodifiable
 public class Pony implements IPony {
 
     private final Identifier texture;
-    private final IPonyData metadata;
+    private final Memoize<IPonyData> metadata;
 
-    private boolean initialized = false;
+    private boolean defaulted = false;
 
-    Pony(Identifier resource, IPonyData data) {
+    Pony(Identifier resource, Memoize<IPonyData> data) {
         texture = resource;
         metadata = data;
     }
@@ -41,11 +50,32 @@ public class Pony implements IPony {
         this(resource, PonyData.parse(resource));
     }
 
+    public IPony defaulted() {
+        defaulted = true;
+        return this;
+    }
+
+    @Override
+    public boolean isDefault() {
+        return defaulted;
+    }
+
     @Override
     public void updateForEntity(Entity entity) {
-        if (!initialized) {
-            initialized = true;
+        if (!metadata.isPresent()) {
+            return;
+        }
+
+        if (entity instanceof RegistrationHandler && ((RegistrationHandler)entity).shouldUpdateRegistration(this)) {
             entity.calculateDimensions();
+
+            PlayerEntity clientPlayer = MinecraftClient.getInstance().player;
+            if (clientPlayer != null) {
+                if (Objects.equals(entity, clientPlayer) || Objects.equals(((PlayerEntity)entity).getGameProfile(), clientPlayer.getGameProfile())) {
+                    Channel.broadcastPonyData(new MsgPonyData(getMetadata(), defaulted));
+                }
+            }
+            PonyDataCallback.EVENT.invoker().onPonyDataAvailable((PlayerEntity)entity, getMetadata(), defaulted, EnvType.CLIENT);
         }
     }
 
@@ -71,7 +101,7 @@ public class Pony implements IPony {
     public boolean isFlying(LivingEntity entity) {
         return !(isOnGround(entity)
                 || entity.hasVehicle()
-                || (entity.isClimbing() && !(entity instanceof PlayerEntity && ((PlayerEntity)entity).abilities.allowFlying))
+                || (entity.isClimbing() && !(entity instanceof PlayerEntity && ((PlayerEntity)entity).getAbilities().allowFlying))
                 || entity.isSubmergedInWater()
                 || entity.isSleeping());
     }
@@ -118,7 +148,7 @@ public class Pony implements IPony {
     }
 
     protected Vec3d getVisualEyePosition(LivingEntity entity) {
-        Size size = entity.isBaby() ? Size.FOAL : metadata.getSize();
+        Size size = entity.isBaby() ? Sizes.FOAL : getMetadata().getSize();
 
         return new Vec3d(
                 entity.getX(),
@@ -128,8 +158,8 @@ public class Pony implements IPony {
     }
 
     @Override
-    public Race getRace(boolean ignorePony) {
-        return metadata.getRace().getEffectiveRace(ignorePony);
+    public Race getRace() {
+        return getEffectiveRace(getMetadata().getRace(), true);
     }
 
     @Override
@@ -139,15 +169,12 @@ public class Pony implements IPony {
 
     @Override
     public IPonyData getMetadata() {
-        return metadata;
+        return metadata.get(PonyData.NULL);
     }
 
     @Override
     public boolean isSitting(LivingEntity entity) {
-        return entity.hasVehicle()/*
-                || (entity instanceof PlayerEntity
-                        && entity.getVelocity().x == 0 && entity.getVelocity().z == 0
-                        && !entity.isInsideWaterOrBubbleColumn() && entity.onGround && isCrouching(entity))*/;
+        return entity.hasVehicle();
     }
 
     @Override
@@ -217,5 +244,29 @@ public class Pony implements IPony {
                 .add("texture", texture)
                 .add("metadata", metadata)
                 .toString();
+    }
+
+    /**
+     * Gets the actual race determined by the given pony level.
+     * PonyLevel.HUMANS would force all races to be humans.
+     * PonyLevel.BOTH is no change.
+     * PonyLevel.PONIES (should) return a pony if this is a human. Don't be fooled, though. It doesn't.
+     */
+    public static Race getEffectiveRace(Race race, boolean ignorePony) {
+
+        Race override = MineLittlePony.getInstance().getConfig().raceOverride.get();
+        if (override != Race.HUMAN) {
+            return override;
+        }
+
+        if (MineLittlePony.getInstance().getConfig().getEffectivePonyLevel(ignorePony) == PonyLevel.HUMANS) {
+            return Race.HUMAN;
+        }
+
+        return race;
+    }
+
+    public interface RegistrationHandler {
+        boolean shouldUpdateRegistration(Pony pony);
     }
 }

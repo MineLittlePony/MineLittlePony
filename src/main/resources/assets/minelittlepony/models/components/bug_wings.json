@@ -1,55 +1,53 @@
 {
-	"left_wing": {
-		"type": "mson:slot",
-		"name": "left_wing",
-		"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
-		"content": {
-			"folded": { "visible": false },
-			"extended": {
-				"texture": {"u": 56, "v": 19, "w": 64, "h": 64},
-				"center": [2.49, 5.28, 4],
-				"rotate": [30, 0, 0],
-				"children": [
-					{
-						"type": "mson:planar",
-						"texture": {"u": 56, "v": 16},
-						"east": [-0.5, 0, -7, 8, 16]
-					},
-					{
-						"type": "mson:planar",
-						"texture": {"u": 56, "v": 32},
-						"rotate": [-0.5, 0.3, 0.3333],
-						"east": [1, 0, -5, 8, 16]
+	"data": {
+		"left_wing": {
+			"type": "mson:slot",
+			"name": "left_wing",
+			"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
+			"data": {
+				"folded": "#extended",
+				"extended": {
+					"texture": {"u": 56, "v": 19, "w": 64, "h": 64},
+					"pivot": [2.49, 5.28, 4],
+					"rotate": [30, 0, 0],
+					"children": {
+						"primary": {
+							"type": "mson:planar",
+							"east": [-0.5, 0, -7, 8, 16, 56, 16]
+						},
+						"secondary": {
+							"type": "mson:planar",
+							"rotate": [-1, 0.3, -10],
+							"east": [1, 0, -5, 8, 16, 56, 32]
+						}
 					}
-				]
+				}
 			}
-		}
-	},
-	"right_wing": {
-		"type": "mson:slot",
-		"name": "right_wing",
-		"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
-		"content": {
-			"folded": { "visible": false },
-			"extended": {
-				"texture": {"u": 56, "v": 19, "w": 64, "h": 64},
-				"center": [-2.49, 5.28, 4],
-				"rotate": [30, 0, 0],
-				"children": [
-					{
-						"type": "mson:planar",
-						"texture": {"u": 56, "v": 16},
-						"east": [0.5, 0, -7, 8, 16]
-					},
-					{
-						"type": "mson:planar",
-						"texture": {"u": 56, "v": 32},
-						"rotate": [-0.5, -0.3, -0.3333],
-						"east": [-1, 0, -5, 8, 16]
+		},
+		"right_wing": {
+			"type": "mson:slot",
+			"name": "right_wing",
+			"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
+			"data": {
+				"folded": "#extended",
+				"extended": {
+					"texture": {"u": 56, "v": 19, "w": 64, "h": 64},
+					"pivot": [-2.49, 5.28, 4],
+					"rotate": [30, 0, 0],
+					"children": {
+						"primary": {
+							"type": "mson:planar",
+							"west": [0.5, 0, -7, 8, 16, 56, 16, true, false]
+						},
+						"secondary": {
+							"type": "mson:planar",
+							"rotate": [-1, -0.3, 10],
+							"west": [-1, 0, -5, 8, 16, 56, 32, true, false]
+						}
 					}
-				]
+				}
 			}
-		}
-	},
-	"legacy_right_wing": "#right_wing"
+		},
+		"legacy_right_wing": "#right_wing"
+	}
 }

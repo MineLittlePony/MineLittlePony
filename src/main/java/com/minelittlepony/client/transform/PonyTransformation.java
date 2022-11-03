@@ -4,15 +4,16 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
 
 import com.google.common.collect.Maps;
+import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.api.model.IModel;
 import com.minelittlepony.api.pony.meta.Size;
-import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.IModel;
+import com.minelittlepony.api.pony.meta.Sizes;
 
 import java.util.Map;
 
 public enum PonyTransformation {
 
-    NORMAL(Size.NORMAL, 0, 3F, 0.75F) {
+    NORMAL(Sizes.NORMAL, 0, 3F, 0.75F) {
         @Override
         public void transform(IModel model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isSwimming) stack.translate(0, -0.3F, 0);
@@ -22,7 +23,7 @@ public enum PonyTransformation {
 
             switch (part) {
                 case NECK:
-                    if (model.getAttributes().isCrouching) stack.translate(-0.03F, 0.03F, 0.1F);
+                    if (model.getAttributes().isCrouching) stack.translate(-0.03F, 0.03F, 0.13F);
                     break;
                 case HEAD:
                     if (model.getAttributes().isCrouching) stack.translate(0, 0.1F, 0);
@@ -35,7 +36,7 @@ public enum PonyTransformation {
             }
         }
     },
-    LANKY(Size.LANKY, 0, 2.6F, 0.75F) {
+    LANKY(Sizes.LANKY, 0, 2.6F, 0.75F) {
         @Override
         public void transform(IModel model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isSwimming) stack.translate(0, -0.2F, 0);
@@ -47,7 +48,7 @@ public enum PonyTransformation {
                 case NECK:
                     stack.translate(0, -0.2F, -0.05F);
                     stack.scale(1, 1.3F, 1);
-                    if (model.getAttributes().isCrouching) stack.translate(-0.03F, 0.16F, 0.07F);
+                    if (model.getAttributes().isCrouching) stack.translate(-0.03F, 0.01F, 0.2F);
                     if (model.getAttributes().isSwimmingRotated) stack.translate(0, 0.5F, 0.25F);
                     break;
                 case HEAD:
@@ -73,7 +74,7 @@ public enum PonyTransformation {
             }
         }
     },
-    BULKY(Size.BULKY, 0, 2.3F, 0.75F) {
+    BULKY(Sizes.BULKY, 0, 2.3F, 0.75F) {
         @Override
         public void transform(IModel model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isCrouching) stack.translate(0, -0.15F, 0);
@@ -84,11 +85,11 @@ public enum PonyTransformation {
                 case NECK:
                     stack.translate(0, -0.2F, -0.07F);
                     stack.scale(1, 1.3F, 1);
-                    if (model.getAttributes().isCrouching) stack.translate(-0.03F, 0.16F, 0.07F);
+                    if (model.getAttributes().isCrouching) stack.translate(-0.03F, -0.07F, 0.09F);
                     if (model.getAttributes().isSwimmingRotated) stack.translate(0, 0.5F, 0.25F);
                     break;
                 case HEAD:
-                    stack.translate(0, -0.14F, -0.04F);
+                    stack.translate(0, -0.14F, -0.06F);
                     if (model.getAttributes().isSleeping) stack.translate(0, 0, -0.1F);
                     if (model.getAttributes().isCrouching) stack.translate(0, 0.15F, 0);
                     if (model.getAttributes().isSwimmingRotated) stack.translate(0, 0.15F, 0.25F);
@@ -110,11 +111,11 @@ public enum PonyTransformation {
             }
         }
     },
-    FOAL(Size.FOAL, 0, 3.8F, 0.75F) {
+    FOAL(Sizes.FOAL, 0, 3.8F, 0.75F) {
         @Override
         public void transform(IModel model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isSwimming) stack.translate(0, -0.9F, 0);
-            if (model.getAttributes().isCrouching) stack.translate(0, -0.3F, 0);
+            if (model.getAttributes().isCrouching) stack.translate(0, -0.2F, 0);
             if (model.getAttributes().isSleeping) stack.translate(0, -0.65F, -0.3F);
             if (model.isRiding()) stack.translate(0, -0.6F, -0.2F);
 
@@ -124,7 +125,7 @@ public enum PonyTransformation {
                 case NECK:
                     stack.translate(0, 0, 0.04F);
                     stack.scale(1.3F, 1.3F, 1.3F);
-                    if (model.getAttributes().isCrouching) stack.translate(0, -0.01F, 0.15F);
+                    if (model.getAttributes().isCrouching) stack.translate(-0.03F, -0.16F, 0.15F);
                     break;
                 case HEAD:
                     if (model.getAttributes().isSwimmingRotated) stack.translate(0, 0.9F, 0.9F);
@@ -141,7 +142,7 @@ public enum PonyTransformation {
             }
         }
     },
-    TALL(Size.TALL, 0, 2.2F, 0.75F) {
+    TALL(Sizes.TALL, 0, 2.2F, 0.75F) {
         @Override
         public void transform(IModel model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isCrouching) stack.translate(0, -0.15F, 0);
@@ -151,11 +152,11 @@ public enum PonyTransformation {
             switch (part) {
                 case NECK:
                     stack.translate(0, -0.21F, -0.01F);
-                    stack.scale(1, 1.3F, 1);
-                    if (model.getAttributes().isCrouching) stack.translate(-0.02F, -0.02F, 0.1F);
+                    stack.scale(1, 1.28F, 1);
+                    if (model.getAttributes().isCrouching) stack.translate(-0.04F, -0.1F, 0.15F);
                     break;
                 case HEAD:
-                    stack.translate(0, -0.11F, 0.03F);
+                    stack.translate(0, -0.11F, 0);
                     if (model.getAttributes().isCrouching) stack.translate(0, 0.04F, 0);
                     if (model.getAttributes().isSwimmingRotated) stack.translate(0, 0.17F, 0.25F);
                     break;
@@ -175,7 +176,7 @@ public enum PonyTransformation {
             }
         }
     },
-    YEARLING(Size.YEARLING, 0, 3.8F, 0.75F) {
+    YEARLING(Sizes.YEARLING, 0, 3.8F, 0.75F) {
         @Override
         public void transform(IModel model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isSwimming) stack.translate(0, -0.6F, 0);
@@ -185,12 +186,12 @@ public enum PonyTransformation {
 
             switch (part) {
                 case NECK:
-                    stack.translate(0, -0.2F, -0.01F);
+                    stack.translate(0, -0.2F, 0);
                     stack.scale(1, 1.3F, 1);
-                    if (model.getAttributes().isCrouching) stack.translate(-0.02F, -0.02F, 0.1F);
+                    if (model.getAttributes().isCrouching) stack.translate(-0.04F, -0.05F, 0.15F);
                     break;
                 case HEAD:
-                    stack.translate(0, -0.15F, 0.01F);
+                    stack.translate(0, -0.15F, 0);
                     if (model.getAttributes().isCrouching) stack.translate(0, 0.04F, 0);
                     if (model.getAttributes().isSwimmingRotated) stack.translate(0, 0.8F, 0.85F);
                     stack.scale(1.15F, 1.15F, 1.15F);
@@ -211,7 +212,7 @@ public enum PonyTransformation {
         }
     };
 
-    private static final Map<Size, PonyTransformation> REGISTRY = Maps.newEnumMap(Size.class);
+    private static final Map<Sizes, PonyTransformation> REGISTRY = Maps.newEnumMap(Sizes.class);
 
     static {
         for (PonyTransformation i : values()) {
@@ -221,9 +222,9 @@ public enum PonyTransformation {
 
     protected Vec3d riderOffset;
 
-    private final Size size;
+    private final Sizes size;
 
-    PonyTransformation(Size size, float rX, float rY, float rZ) {
+    PonyTransformation(Sizes size, float rX, float rY, float rZ) {
         this.size = size;
         riderOffset = new Vec3d(rX, rY, rZ);
     }

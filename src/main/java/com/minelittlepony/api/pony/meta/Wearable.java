@@ -1,12 +1,14 @@
 package com.minelittlepony.api.pony.meta;
 
-import com.minelittlepony.api.pony.ITriggerPixelMapped;
+import com.minelittlepony.api.pony.TriggerPixelType;
+import com.minelittlepony.common.util.Color;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public enum Wearable implements ITriggerPixelMapped<Wearable> {
+public enum Wearable implements TriggerPixelType<Wearable> {
     NONE        (0x00),
+    CROWN       (0x16),
     MUFFIN      (0x32),
     HAT         (0x64),
     ANTLERS     (0x96),
@@ -20,8 +22,21 @@ public enum Wearable implements ITriggerPixelMapped<Wearable> {
     }
 
     @Override
-    public int getTriggerPixel() {
+    public int getColorCode() {
         return triggerValue;
+    }
+
+    @Override
+    public int getChannelAdjustedColorCode() {
+        return triggerValue == 0 ? 0 : Color.argbToHex(255, triggerValue, triggerValue, triggerValue);
+    }
+
+    public static boolean[] flags(Wearable[] wears) {
+        boolean[] flags = new boolean[values().length];
+        for (int i = 0; i < wears.length; i++) {
+            flags[wears[i].ordinal()] = true;
+        }
+        return flags;
     }
 
     public static Wearable[] flags(boolean[] flags) {

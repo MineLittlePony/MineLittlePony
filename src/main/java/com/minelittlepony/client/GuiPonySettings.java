@@ -1,36 +1,38 @@
 package com.minelittlepony.client;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.*;
 
 import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.common.client.gui.GameGui;
 import com.minelittlepony.common.client.gui.ScrollContainer;
+import com.minelittlepony.common.client.gui.Tooltip;
+import com.minelittlepony.common.client.gui.element.AbstractSlider;
 import com.minelittlepony.common.client.gui.element.Button;
 import com.minelittlepony.common.client.gui.element.EnumSlider;
 import com.minelittlepony.common.client.gui.element.Label;
 import com.minelittlepony.common.client.gui.element.Slider;
 import com.minelittlepony.common.client.gui.element.Toggle;
 import com.minelittlepony.common.util.settings.Setting;
-import com.minelittlepony.settings.PonyLevel;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * In-Game options menu.
  *
  */
 public class GuiPonySettings extends GameGui {
-
     private static final String OPTIONS_PREFIX = "minelp.options.";
-
     private static final String PONY_LEVEL = OPTIONS_PREFIX + "ponylevel";
-
     private static final String MOB_PREFIX = "minelp.mobs.";
+
+    public static final Text SCALE_MEGA = Text.translatable("minelp.debug.scale.meg");
+    public static final Text SCALE_MAX = Text.translatable("minelp.debug.scale.max");
+    public static final Text SCALE_MID = Text.translatable("minelp.debug.scale.mid");
+    public static final Text SCALE_SHOW = Text.translatable("minelp.debug.scale.sa");
+    public static final Text SCALE_MIN = Text.translatable("minelp.debug.scale.min");
 
     private ClientPonyConfig config;
 
@@ -39,16 +41,16 @@ public class GuiPonySettings extends GameGui {
     private final boolean hiddenOptions;
 
     public GuiPonySettings(@Nullable Screen parent) {
-        super(new LiteralText(OPTIONS_PREFIX + "title"), parent);
+        super(Text.literal(OPTIONS_PREFIX + "title"), parent);
 
         config = (ClientPonyConfig)MineLittlePony.getInstance().getConfig();
 
         content.margin.top = 30;
         content.margin.bottom = 30;
-        content.padding.top = 10;
-        content.padding.right = 10;
-        content.padding.bottom = 20;
-        content.padding.left = 10;
+        content.getContentPadding().top = 10;
+        content.getContentPadding().right = 10;
+        content.getContentPadding().bottom = 20;
+        content.getContentPadding().left = 10;
 
         hiddenOptions = Screen.hasControlDown() && Screen.hasShiftDown();
     }
@@ -61,7 +63,6 @@ public class GuiPonySettings extends GameGui {
     @SuppressWarnings("unchecked")
     private void rebuildContent() {
 
-
         int LEFT = content.width / 2 - 210;
         int RIGHT = content.width / 2 + 10;
 
@@ -72,7 +73,7 @@ public class GuiPonySettings extends GameGui {
 
         int row = 0;
 
-        children().add(content);
+        getChildElements().add(content);
 
         addButton(new Label(width / 2, 5).setCentered()).getStyle().setText(getTitle().getString());
         addButton(new Button(width / 2 - 100, height - 25))
@@ -81,13 +82,11 @@ public class GuiPonySettings extends GameGui {
                 .setText("gui.done");
 
         content.addButton(new Label(LEFT, row)).getStyle().setText(PONY_LEVEL);
-        content.addButton(new Slider(LEFT, row += 20, 0, 2, config.ponyLevel.get().ordinal())
-                .onChange(v -> {
-                    PonyLevel level = PonyLevel.valueFor(v);
-                    config.ponyLevel.set(level);
-                    return (float)level.ordinal();
-                })
-                .setFormatter(value -> I18n.translate(PONY_LEVEL + "." + PonyLevel.valueFor(value).name().toLowerCase())));
+
+        content.addButton(new EnumSlider<>(LEFT, row += 20, config.ponyLevel.get())
+                .onChange(config.ponyLevel::set)
+                .setTextFormat(sender -> Text.translatable(PONY_LEVEL + "." + sender.getValue().name().toLowerCase()))
+                .setTooltipFormat(sender -> Tooltip.of(PONY_LEVEL + "." + sender.getValue().name().toLowerCase() + ".tooltip", 200)));
 
         boolean allowCameraChange = client.player == null || client.player.isCreative() || client.player.isSpectator() || client.isInSingleplayer();
 
@@ -95,16 +94,19 @@ public class GuiPonySettings extends GameGui {
             content.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.scale");
             content.addButton(new Slider(LEFT, row += 15, 0.1F, 3, config.getGlobalScaleFactor())
                     .onChange(config::setGlobalScaleFactor)
-                    .setFormatter(this::describeCurrentScale));
+                    .setTextFormat(this::describeCurrentScale));
             content.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.size");
             content.addButton(new EnumSlider<>(LEFT, row += 15, config.sizeOverride.get())
                     .onChange(config.sizeOverride::set));
+            content.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.race");
+            content.addButton(new EnumSlider<>(LEFT, row += 15, config.raceOverride.get())
+                    .onChange(config.raceOverride::set));
         }
 
         row += 20;
         content.addButton(new Label(LEFT, row)).getStyle().setText(OPTIONS_PREFIX + "options");
 
-        for (Setting<?> i : config.getByCategory("settings")) {
+        for (Setting<?> i : config.getCategory("settings").entries()) {
             boolean enabled = i != config.fillycam || allowCameraChange;
             Button button = content
                 .addButton(new Toggle(LEFT, row += 20, ((Setting<Boolean>)i).get()))
@@ -113,15 +115,24 @@ public class GuiPonySettings extends GameGui {
             button.getStyle().setText(OPTIONS_PREFIX + i.name().toLowerCase());
             if (!enabled) {
                 button.getStyle()
-                    .setTooltip(new TranslatableText(OPTIONS_PREFIX + "option.disabled"))
+                    .setTooltip(Text.translatable(OPTIONS_PREFIX + "option.disabled"))
                     .setTooltipOffset(0, 0);
             }
         }
 
-        content.addButton(new Label(LEFT, row += 20)).getStyle().setText(OPTIONS_PREFIX + "button");
+        if (hiddenOptions) {
+            for (Setting<?> i : config.getCategory("customisation").entries()) {
+                Button button = content
+                    .addButton(new Toggle(LEFT, row += 20, ((Setting<Boolean>)i).get()))
+                    .onChange((Setting<Boolean>)i);
+                button.getStyle().setText(OPTIONS_PREFIX + i.name().toLowerCase());
+            }
+        }
 
+        content.addButton(new Label(LEFT, row += 20)).getStyle().setText(OPTIONS_PREFIX + "button");
         content.addButton(new EnumSlider<>(LEFT, row += 20, config.horseButton.get())
-                .onChange(config.horseButton::set));
+                .onChange(config.horseButton::set)
+                .setTooltipFormat(sender -> Tooltip.of(OPTIONS_PREFIX + "button." + sender.getValue().name().toLowerCase(), 200)));
 
         if (RIGHT != LEFT) {
             row = 0;
@@ -135,30 +146,36 @@ public class GuiPonySettings extends GameGui {
                 .onChange(i::set)
                 .getStyle().setText(MOB_PREFIX + i.name);
         }
+
+        row += 15;
+
+        content.addButton(new Label(RIGHT, row)).getStyle().setText("minelp.options.skins");
+        SkinsProxy.instance.renderOption(this, parent, row, RIGHT, content);
     }
 
-    public String describeCurrentScale(float value) {
+    public Text describeCurrentScale(AbstractSlider<Float> sender) {
+        float value = sender.getValue();
         if (value >= 3) {
-            return "minelp.debug.scale.meg";
+            return SCALE_MEGA;
         }
         if (value == 2) {
-            return "minelp.debug.scale.max";
+            return SCALE_MAX;
         }
         if (value == 1) {
-            return "minelp.debug.scale.mid";
+            return SCALE_MID;
         }
         if (value == 0.9F) {
-            return "minelp.debug.scale.sa";
+            return SCALE_SHOW;
         }
         if (value <= 0.1F) {
-            return "minelp.debug.scale.min";
+            return SCALE_MIN;
         }
 
         value *= 100F;
         value = Math.round(value);
         value /= 100F;
 
-        return I18n.translate("minelp.debug.scale.value", value);
+        return Text.translatable("minelp.debug.scale.value", value);
     }
 
     @Override

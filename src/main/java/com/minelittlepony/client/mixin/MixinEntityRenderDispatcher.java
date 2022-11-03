@@ -2,7 +2,6 @@ package com.minelittlepony.client.mixin;
 
 import com.minelittlepony.client.IPreviewModel;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.client.model.entity.race.PlayerModels;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
@@ -22,9 +21,9 @@ abstract class MixinEntityRenderDispatcher {
         if (player instanceof IPreviewModel) {
             return player.getModel();
         }
-        return PlayerModels.forRace(MineLittlePony.getInstance().getManager()
+        return MineLittlePony.getInstance().getManager()
                 .getPony(player)
-                .getRace(false))
-                .getId(player.getModel().contains("slim"));
+                .getRace()
+                .getModelId(player.getModel().contains("slim"));
     }
 }

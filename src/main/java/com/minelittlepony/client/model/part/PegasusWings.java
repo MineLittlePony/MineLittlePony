@@ -6,9 +6,9 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
+import com.minelittlepony.api.model.IPart;
+import com.minelittlepony.api.model.IPegasus;
 import com.minelittlepony.api.pony.meta.Wearable;
-import com.minelittlepony.model.IPart;
-import com.minelittlepony.model.IPegasus;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
 
@@ -22,6 +22,10 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
     protected Wing rightWing;
 
     protected Wing legacyWing;
+
+    public PegasusWings(ModelPart tree) {
+
+    }
 
     @Override
     public void init(ModelContext context) {
@@ -65,6 +69,8 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
             if (!pegasus.getAttributes().isCrouching && pegasus.isWearing(Wearable.SADDLE_BAGS)) {
                 flapAngle -= 1F;
             }
+        } else {
+            flapAngle = ROTATE_270 - 0.9F + (float)Math.sin(ticks / 10) / 15F;
         }
 
         if (!pegasus.isFlying()) {
@@ -88,6 +94,10 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
 
         protected ModelPart extended;
         protected ModelPart folded;
+
+        public Wing(ModelPart tree) {
+
+        }
 
         @Override
         public void init(ModelContext context) {

@@ -1,4 +1,0 @@
-@ParametersAreNonnullByDefault
-package com.minelittlepony.client.hdskins;
-
-import javax.annotation.ParametersAreNonnullByDefault;

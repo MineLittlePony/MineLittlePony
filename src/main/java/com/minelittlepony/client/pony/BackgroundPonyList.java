@@ -21,6 +21,13 @@ class BackgroundPonyList {
      */
     private final List<Identifier> backgroundPonyList = new ArrayList<>();
 
+    private final Identifier id;
+
+    public BackgroundPonyList(Identifier id) {
+        this.id = id;
+        reloadAll(MinecraftClient.getInstance().getResourceManager());
+    }
+
     public Identifier getId(UUID uuid) {
         if (backgroundPonyList.isEmpty() || isUser(uuid)) {
             return IPonyManager.getDefaultSkin(uuid);
@@ -33,11 +40,11 @@ class BackgroundPonyList {
 
     public void reloadAll(ResourceManager resourceManager) {
         backgroundPonyList.clear();
-        backgroundPonyList.addAll(resourceManager.findResources("textures/entity/pony", path -> path.endsWith(".png")));
-        MineLittlePony.logger.info("Detected {} background ponies installed.", backgroundPonyList.size());
+        backgroundPonyList.addAll(resourceManager.findResources(id.getPath(), path -> path.getPath().endsWith(".png")).keySet());
+        MineLittlePony.logger.info("Detected {} ponies installed at {}.", backgroundPonyList.size(), id);
     }
 
-    private boolean isUser(UUID uuid) {
+    static boolean isUser(UUID uuid) {
         return MinecraftClient.getInstance().player != null
             && MinecraftClient.getInstance().player.getUuid().equals(uuid);
     }

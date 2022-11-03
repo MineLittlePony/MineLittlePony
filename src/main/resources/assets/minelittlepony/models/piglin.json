@@ -1,193 +1,199 @@
 {
     "texture": {"w": 128, "h": 64},
 	"parent": "minelittlepony:zombie",
-	"head": {
-		"center": [ 0, 0, -2 ],
-		"cubes": [
-			{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
-		],
-		"children": [
-			{
-				"name": "left_flap",
-				"texture": {"u": 64, "v": 0},
-				"rotate": [ 0, 0, 60 ],
-				"center": [ 5, -4, 0 ],
-				"cubes": [
-					{ "from": [-2, -0.5, -2], "size": [ 4,  1,  4] }
-				]
-			},
-			{
-				"name": "right_flap",
-				"texture": {"u": 64, "v": 0},
-				"rotate": [ 0, 0, -60 ],
-				"center": [-5, -4, 0 ],
-				"cubes": [
-					{ "from": [-2, -0.5, -2], "size": [ 4,  1,  4] }
-				]
-			},
-			{
-				"type": "mson:slot",
-				"name": "snout",
-				"texture": {"w": 128, "h": 64},
-				"implementation": "com.minelittlepony.client.model.part.PonySnout",
-				"content": "minelittlepony:components/pig_snout"
-			},
-			{
-				"type": "mson:slot",
-				"name": "ears",
-				"texture": {"w": 128, "h": 64},
-				"implementation": "com.minelittlepony.client.model.part.PonyEars",
-				"content": "minelittlepony:components/ears"
-			},
-			{
-				"type": "mson:slot",
-				"name": "horn",
-				"texture": {"w": 128, "h": 64},
-				"implementation": "com.minelittlepony.client.model.part.UnicornHorn",
-				"content": "minelittlepony:components/horn"
-			}
-		]
-	},
-	"wings": {
-		"type": "mson:slot",
-		"name": "wings",
-		"implementation": "com.minelittlepony.client.model.part.PegasusWings",
-		"content": {
-			"left_wing": {
-				"type": "mson:slot",
-				"name": "left_wing",
-				"texture": {"w": 128, "h": 64},
-				"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
-				"content": {
-					"folded": {
-						"texture": {"u": 56, "v": 32},
-						"center": [0, 13, -2],
-						"rotate": [90, 0, 0],
-						"cubes": [
-							{"from": [4, 5, 2], "size": [2, 6, 2] },
-							{"from": [4, 5, 4], "size": [2, 8, 2] },
-							{"from": [4, 5, 6], "size": [2, 6, 2] }
-						]
-					},
-					"extended": {
-						"texture": {"u": 57, "v": 35},
-						"center": [4.5, 5.3, 6],
-						"rotate": [-30, 180, 0],
-						"children": [
-							{ "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "stretch":  0.1 } ] },
-							{ "cubes": [ {"from": [-0.5,-1,  -0.3], "size": [1, 8, 2], "stretch":  0.1 } ],  "rotate": [-48, 0, 0] },
-							{ "cubes": [ {"from": [-0.5, 1.8, 1.3], "size": [1, 8, 2], "stretch": -0.1 } ],  "rotate": [-42, 0, 0] },
-							{ "cubes": [ {"from": [-0.5, 5,     2], "size": [1, 8, 2] } ],                   "rotate": [-28, 0, 0] },
-							{ "cubes": [ {"from": [-0.5, 0,  -0.2], "size": [1, 6, 2], "stretch":  0.3 } ] },
-							{ "cubes": [ {"from": [-0.5, 0,     0], "size": [1, 3, 2], "stretch":  0.19 } ], "rotate": [-48, 0, 0] }
-						]
-					}
-				}
-			},
-			"right_wing": {
-				"type": "mson:slot",
-				"name": "right_wing",
-				"texture": {"w": 128, "h": 64},
-				"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
-				"content": {
-					"folded": {
-						"texture": {"u": 56, "v": 16},
-						"center": [0, 13, -2],
-						"rotate": [90, 0, 0],
-						"cubes": [
-							{"from": [-6, 5, 2], "size": [2, 6, 2] },
-							{"from": [-6, 5, 4], "size": [2, 8, 2] },
-							{"from": [-6, 5, 6], "size": [2, 6, 2] }
-						]
-					},
-					"extended": {
-						"texture": {"u": 56, "v": 19},
-						"center": [-4.5, 5.3, 6],
-						"rotate": [-30, 180, 0],
-						"children": [
-							{ "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "stretch":  0.1 } ] },
-							{ "cubes": [ {"from": [-0.5,-1,  -0.3], "size": [1, 8, 2], "stretch":  0.1 } ],  "rotate": [-48, 0, 0] },
-							{ "cubes": [ {"from": [-0.5, 1.8, 1.3], "size": [1, 8, 2], "stretch": -0.1 } ],  "rotate": [-42, 0, 0] },
-							{ "cubes": [ {"from": [-0.5, 5,     2], "size": [1, 8, 2] } ],                   "rotate": [-28, 0, 0] },
-							{ "cubes": [ {"from": [-0.5, 0,  -0.2], "size": [1, 6, 2], "stretch":  0.3 } ] },
-							{ "cubes": [ {"from": [-0.5, 0,     0], "size": [1, 3, 2], "stretch":  0.19 } ], "rotate": [-48, 0, 0] }
-						]
-					}
-				}
-			},
-			"legacy_right_wing": {
-				"type": "mson:slot",
-				"name": "legacy_right_wing",
-				
-				"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
-				"content": {
-					"folded": {
-						"texture": {"u": 56, "v": 32},
-						"center": [0, 13, -2],
-						"rotate": [90, 0, 0],
-						"cubes": [
-							{"from": [-6, 5, 2], "size": [2, 6, 2] },
-							{"from": [-6, 5, 4], "size": [2, 8, 2] },
-							{"from": [-6, 5, 6], "size": [2, 6, 2] }
-						]
-					},
-					"extended": {
-						"texture": {"u": 57, "v": 35, "w": 64, "h": 64},
-						"center": [-4.5, 5.3, 6],
-						"rotate": [-30, 180, 0],
-						"children": [
-							{ "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "stretch":  0.1 } ],                           "mirror": true },
-							{ "cubes": [ {"from": [-0.5,-1,  -0.3], "size": [1, 8, 2], "stretch":  0.1 } ],  "rotate": [-48, 0, 0], "mirror": true },
-							{ "cubes": [ {"from": [-0.5, 1.8, 1.3], "size": [1, 8, 2], "stretch": -0.1 } ],  "rotate": [-42, 0, 0], "mirror": true },
-							{ "cubes": [ {"from": [-0.5, 5,     2], "size": [1, 8, 2] } ],                   "rotate": [-28 , 0, 0], "mirror": true },
-							{ "cubes": [ {"from": [-0.5, 0,  -0.2], "size": [1, 6, 2], "stretch":  0.3 } ] },
-							{ "cubes": [ {"from": [-0.5, 0,     0], "size": [1, 3, 2], "stretch":  0.19 } ], "rotate": [-48, 0, 0], "mirror": true }
-						]
-					}
+	"data": {
+		"head": {
+			"cubes": [
+				{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
+			],
+			"children": {
+				"left_flap": {
+					"name": "left_flap",
+					"texture": {"u": 64, "v": 0},
+					"rotate": [ 0, 0, 60 ],
+					"pivot": [ 5, -4, 0 ],
+					"cubes": [
+						{ "from": [-2, -0.5, -2], "size": [ 4,  1,  4] }
+					]
+				},
+				"right_flap": {
+					"name": "right_flap",
+					"texture": {"u": 64, "v": 0},
+					"rotate": [ 0, 0, -60 ],
+					"pivot": [-5, -4, 0 ],
+					"cubes": [
+						{ "from": [-2, -0.5, -2], "size": [ 4,  1,  4] }
+					]
+				},
+				"snout": {
+					"type": "mson:slot",
+					"name": "snout",
+					"texture": {"w": 128, "h": 64},
+					"implementation": "com.minelittlepony.client.model.part.PonySnout",
+					"data": "minelittlepony:components/pig_snout"
+				},
+				"ears": {
+					"type": "mson:slot",
+					"name": "ears",
+					"texture": {"w": 128, "h": 64},
+					"implementation": "com.minelittlepony.client.model.part.PonyEars",
+					"data": "minelittlepony:components/ears"
+				},
+				"horn": {
+					"type": "mson:slot",
+					"name": "horn",
+					"texture": {"w": 128, "h": 64},
+					"implementation": "com.minelittlepony.client.model.part.UnicornHorn",
+					"data": "minelittlepony:components/horn"
 				}
 			}
-		}
-	},
-	"tail": {
-		"type": "mson:slot",
-		"name": "tail",
-		"implementation": "com.minelittlepony.client.model.part.PonyTail",
-		"content": {
+		},
+		"wings": {
+			"type": "mson:slot",
+			"name": "wings",
+			"implementation": "com.minelittlepony.client.model.part.PegasusWings",
+			"data": {
+				"left_wing": {
+					"type": "mson:slot",
+					"name": "left_wing",
+					"texture": {"w": 128, "h": 64},
+					"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
+					"data": {
+						"folded": {
+							"texture": {"u": 56, "v": 32},
+							"pivot": [0, 13, -2],
+							"rotate": [90, 0, 0],
+							"cubes": [
+								{"from": [4, 5, 2], "size": [2, 6, 2] },
+								{"from": [4, 5, 4], "size": [2, 8, 2] },
+								{"from": [4, 5, 6], "size": [2, 6, 2] }
+							]
+						},
+						"extended": {
+							"texture": {"u": 57, "v": 35},
+							"pivot": [4.5, 5.3, 6],
+							"rotate": [-30, 180, 0],
+							"children": {
+								"feather_1": { "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "dilate":  0.1 } ] },
+								"feather_2": { "cubes": [ {"from": [-0.5,-1,  -0.3], "size": [1, 8, 2], "dilate":  0.1 } ],  "rotate": [-48, 0, 0] },
+								"feather_3": { "cubes": [ {"from": [-0.5, 1.8, 1.3], "size": [1, 8, 2], "dilate": -0.1 } ],  "rotate": [-42, 0, 0] },
+								"feather_4": { "cubes": [ {"from": [-0.5, 5,     2], "size": [1, 8, 2] } ],                   "rotate": [-28, 0, 0] },
+								"feather_5": { "cubes": [ {"from": [-0.5, 0,  -0.2], "size": [1, 6, 2], "dilate":  0.3 } ] },
+								"feather_6": { "cubes": [ {"from": [-0.5, 0,     0], "size": [1, 3, 2], "dilate":  0.19 } ], "rotate": [-48, 0, 0] }
+							}
+						}
+					}
+				},
+				"right_wing": {
+					"type": "mson:slot",
+					"name": "right_wing",
+					"texture": {"w": 128, "h": 64},
+					"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
+					"data": {
+						"folded": {
+							"texture": {"u": 56, "v": 16},
+							"pivot": [0, 13, -2],
+							"rotate": [90, 0, 0],
+							"cubes": [
+								{"from": [-6, 5, 2], "size": [2, 6, 2] },
+								{"from": [-6, 5, 4], "size": [2, 8, 2] },
+								{"from": [-6, 5, 6], "size": [2, 6, 2] }
+							]
+						},
+						"extended": {
+							"texture": {"u": 56, "v": 19},
+							"pivot": [-4.5, 5.3, 6],
+							"rotate": [-30, 180, 0],
+							"children": {
+								"feather_1": { "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "dilate":  0.1 } ] },
+								"feather_2": { "cubes": [ {"from": [-0.5,-1,  -0.3], "size": [1, 8, 2], "dilate":  0.1 } ],  "rotate": [-48, 0, 0] },
+								"feather_3": { "cubes": [ {"from": [-0.5, 1.8, 1.3], "size": [1, 8, 2], "dilate": -0.1 } ],  "rotate": [-42, 0, 0] },
+								"feather_4": { "cubes": [ {"from": [-0.5, 5,     2], "size": [1, 8, 2] } ],                   "rotate": [-28, 0, 0] },
+								"feather_5": { "cubes": [ {"from": [-0.5, 0,  -0.2], "size": [1, 6, 2], "dilate":  0.3 } ] },
+								"feather_6": { "cubes": [ {"from": [-0.5, 0,     0], "size": [1, 3, 2], "dilate":  0.19 } ], "rotate": [-48, 0, 0] }
+							}
+						}
+					}
+				},
+				"legacy_right_wing": {
+					"type": "mson:slot",
+					"name": "legacy_right_wing",
+					
+					"implementation": "com.minelittlepony.client.model.part.PegasusWings$Wing",
+					"data": {
+						"folded": {
+							"texture": {"u": 56, "v": 32},
+							"pivot": [0, 13, -2],
+							"rotate": [90, 0, 0],
+							"cubes": [
+								{"from": [-6, 5, 2], "size": [2, 6, 2] },
+								{"from": [-6, 5, 4], "size": [2, 8, 2] },
+								{"from": [-6, 5, 6], "size": [2, 6, 2] }
+							]
+						},
+						"extended": {
+							"texture": {"u": 57, "v": 35, "w": 64, "h": 64},
+							"pivot": [-4.5, 5.3, 6],
+							"rotate": [-30, 180, 0],
+							"children": {
+								"feather_1": { "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "dilate":  0.1 } ],                           "mirror": true },
+								"feather_2": { "cubes": [ {"from": [-0.5,-1,  -0.3], "size": [1, 8, 2], "dilate":  0.1 } ],  "rotate": [-48, 0, 0], "mirror": true },
+								"feather_3": { "cubes": [ {"from": [-0.5, 1.8, 1.3], "size": [1, 8, 2], "dilate": -0.1 } ],  "rotate": [-42, 0, 0], "mirror": true },
+								"feather_4": { "cubes": [ {"from": [-0.5, 5,     2], "size": [1, 8, 2] } ],                   "rotate": [-28 , 0, 0], "mirror": true },
+								"feather_5": { "cubes": [ {"from": [-0.5, 0,  -0.2], "size": [1, 6, 2], "dilate":  0.3 } ] },
+								"feather_6": { "cubes": [ {"from": [-0.5, 0,     0], "size": [1, 3, 2], "dilate":  0.19 } ], "rotate": [-48, 0, 0], "mirror": true }
+							}
+						}
+					}
+				}
+			}
+		},
+		"tail": {
+			"type": "mson:slot",
+			"name": "tail",
+			"implementation": "com.minelittlepony.client.model.part.PonyTail",
 			"texture": {"w": 128, "h": 64},
 			"locals": {
 				"segments": 4
 			},
-			"segment_0": {
-				"type": "mson:slot",
-				"name": "segment_0",
-				"texture": {"w": 128, "h": 64},
-				"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
-				"locals": { "segment_index": 0 },
-				"content": "minelittlepony:components/tail_segment"
-			},
-			"segment_1": {
-				"type": "mson:slot",
-				"name": "segment_1",
-				"texture": {"w": 128, "h": 64},
-				"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
-				"locals": { "segment_index": 1 },
-				"content": "minelittlepony:components/tail_segment"
-			},
-			"segment_2": {
-				"type": "mson:slot",
-				"name": "segment_2",
-				"texture": {"w": 128, "h": 64},
-				"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
-				"locals": { "segment_index": 2 },
-				"content": "minelittlepony:components/tail_segment"
-			},
-			"segment_3": {
-				"type": "mson:slot",
-				"name": "segment_3",
-				"texture": {"w": 128, "h": 64},
-				"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
-				"locals": { "segment_index": 3 },
-				"content": "minelittlepony:components/tail_segment"
+			"data": {
+				"tail": {
+				  "pivot": [0, 0, 14],
+					"children": {
+						"segment_0": {
+							"type": "mson:slot",
+							"name": "segment_0",
+							"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
+							"locals": { "segment_index": 0 },
+							"texture": {"w": 128, "h": 64},
+							"data": "minelittlepony:components/tail_segment"
+						},
+						"segment_1": {
+							"type": "mson:slot",
+							"name": "segment_1",
+							"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
+							"locals": { "segment_index": 1 },
+							"texture": {"w": 128, "h": 64},
+							"data": "minelittlepony:components/tail_segment"
+						},
+						"segment_2": {
+							"type": "mson:slot",
+							"name": "segment_2",
+							"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
+							"locals": { "segment_index": 2 },
+							"texture": {"w": 128, "h": 64},
+							"data": "minelittlepony:components/tail_segment"
+						},
+						"segment_3": {
+							"type": "mson:slot",
+							"name": "segment_3",
+							"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
+							"locals": { "segment_index": 3 },
+							"texture": {"w": 128, "h": 64},
+							"data": "minelittlepony:components/tail_segment"
+						}
+					}
+				}
 			}
 		}
 	}

@@ -14,6 +14,7 @@
   },
   "license": "MIT",
   "icon": "minelp_logo.png",
+  "accessWidener": "minelp.aw",
   "environment": "client",
   "entrypoints": {
     "client": [
@@ -30,7 +31,8 @@
     "minelp.mixin.json"
   ],
   "depends": {
-    "fabricloader": ">=0.4.0",
+    "fabricloader": ">=0.12.0",
+    "java": ">=17",
     "fabric-api-base": ">=0.1.0",
     "fabric-lifecycle-events-v1": ">=0.1.0",
     "fabric-resource-loader-v0": ">=0.1.0",

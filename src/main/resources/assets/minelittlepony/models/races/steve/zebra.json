@@ -1,42 +1,47 @@
 {
 	"parent": "minelittlepony:steve_pony",
-	"head": {
-		"center": [ 0, 0, -2 ],
-		"cubes": [
-			{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
-		],
-		"children": [
-			{
-				"type": "mson:slot",
-				"name": "snout",
-				"implementation": "com.minelittlepony.client.model.part.PonySnout",
-				"content": "minelittlepony:components/snout"
-			},
-			{
-				"type": "mson:slot",
-				"name": "ears",
-				"implementation": "com.minelittlepony.client.model.part.PonyEars",
-				"content": "minelittlepony:components/ears"
-			},
-			{
-				"texture": {"u": 56, "v": 32},
-				"name": "bristles",
-				"rotate": [17, 0, 0],
-				"cubes": [
-					{ "from": [ -1, -11, -1], "size": [2, 6, 2]},
-					{ "from": [ -1, -11,  1], "size": [2, 8, 2]},
-					{ "from": [ -1,  -9,  3], "size": [2, 6, 2]}
-				],
-				"children": [
-					{
-						"rotate": [0, 0, 0],
-						"cubes": [
-							{ "from": [ -1, -6, -1], "size": [2, 8, 2]},
-							{ "from": [ -1, -6, 1], "size": [2, 6, 2]}
-						]
+	"locals": {
+		"head_pivot_y": -1.2,
+		"neck_dilate_y": 1.6
+	},
+	"data": {
+		"head": {
+			"pivot": [ 0, "#head_pivot_y", 0 ],
+			"cubes": [
+				{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
+			],
+			"children": {
+				"snout": {
+					"type": "mson:slot",
+					"name": "snout",
+					"implementation": "com.minelittlepony.client.model.part.PonySnout",
+					"data": "minelittlepony:components/snout"
+				},
+				"ears": {
+					"type": "mson:slot",
+					"name": "ears",
+					"implementation": "com.minelittlepony.client.model.part.PonyEars",
+					"data": "minelittlepony:components/ears"
+				},
+				"bristles": {
+					"texture": {"u": 56, "v": 32},
+					"rotate": [17, 0, 0],
+					"cubes": [
+						{ "from": [ -1, -11, -1], "size": [2, 6, 2]},
+						{ "from": [ -1, -11,  1], "size": [2, 8, 2]},
+						{ "from": [ -1,  -9,  3], "size": [2, 6, 2]}
+					],
+					"children": {
+						"bristles_2": {
+							"rotate": [0, 0, 0],
+							"cubes": [
+								{ "from": [ -1, -6, -1], "size": [2, 8, 2]},
+								{ "from": [ -1, -6, 1], "size": [2, 6, 2]}
+							]
+						}
 					}
-				]
+				}
 			}
-		]
+		}
 	}
 }

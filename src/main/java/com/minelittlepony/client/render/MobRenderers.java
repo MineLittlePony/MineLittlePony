@@ -40,6 +40,9 @@ public final class MobRenderers {
         pony.switchRenderer(state, EntityType.PIGLIN, PonyPiglinRenderer::new);
         pony.switchRenderer(state, EntityType.PIGLIN_BRUTE, PonyPiglinRenderer::new);
         pony.switchRenderer(state, EntityType.ZOMBIFIED_PIGLIN, PonyPiglinRenderer::new);
+        if (!MineLittlePony.getInstance().getConfig().noFun.get()) {
+            pony.switchRenderer(state, EntityType.PIG, PonyPigRenderer::new);
+        }
     });
     public static final MobRenderers SKELETON = register("skeletons", (state, pony) -> {
         pony.switchRenderer(state, EntityType.SKELETON, SkeleponyRenderer::new);
@@ -57,22 +60,25 @@ public final class MobRenderers {
        pony.switchRenderer(state, EntityType.ARMOR_STAND, PonyStandRenderer::new);
     });
     public static final MobRenderers STRIDER = register("striders", (state, pony) -> {
-        pony.switchRenderer(state, EntityType.STRIDER, ParaspriteRenderer::new);
+        pony.switchRenderer(state, EntityType.STRIDER, StriderRenderer::new);
+    });
+    public static final MobRenderers ALLAY = register("allays", (state, pony) -> {
+        pony.switchRenderer(state, EntityType.ALLAY, AllayRenderer::new);
     });
 
-    private final BiConsumer<Boolean, PonyRenderDispatcher> changer;
+    private final BiConsumer<MobRenderers, PonyRenderDispatcher> changer;
 
     public final String name;
 
     private boolean lastState;
 
-    private MobRenderers(String name, BiConsumer<Boolean, PonyRenderDispatcher> changer) {
+    private MobRenderers(String name, BiConsumer<MobRenderers, PonyRenderDispatcher> changer) {
         this.name = name;
         this.changer = changer;
     }
 
     public Setting<Boolean> option() {
-        return MineLittlePony.getInstance().getConfig().<Boolean>get(name);
+        return MineLittlePony.getInstance().getConfig().getCategory("entities").<Boolean>get(name);
     }
 
     public boolean set(boolean value) {
@@ -85,16 +91,15 @@ public final class MobRenderers {
         return option().get();
     }
 
-    public static MobRenderers register(String name, BiConsumer<Boolean, PonyRenderDispatcher> changer) {
+    public static MobRenderers register(String name, BiConsumer<MobRenderers, PonyRenderDispatcher> changer) {
         return REGISTRY.computeIfAbsent(name, n -> new MobRenderers(name, changer));
     }
 
     void apply(PonyRenderDispatcher dispatcher) {
         boolean state = get();
         if (state != lastState) {
-            MineLittlePony.logger.info(String.format("Ponify %s [%B] -> [%B]", name, lastState, state));
             lastState = state;
-            changer.accept(state, dispatcher);
+            changer.accept(this, dispatcher);
         }
     }
 }

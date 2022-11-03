@@ -1,12 +1,12 @@
 package com.minelittlepony.client.model.entity.race;
 
 import com.minelittlepony.client.model.armour.PonyArmourModel;
-import com.minelittlepony.client.render.EquineRenderManager;
+import com.minelittlepony.mson.api.ModelContext;
+import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.api.model.armour.IArmour;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
-import com.minelittlepony.model.BodyPart;
-import com.minelittlepony.model.armour.IEquestrianArmour;
-import com.minelittlepony.mson.api.ModelContext;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
@@ -16,37 +16,37 @@ import net.minecraft.util.math.MathHelper;
 
 public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
 
-    private ModelPart bodyCenter;
+    private final ModelPart abdomin;
 
-    private ModelPart leftFin;
-    private ModelPart centerFin;
-    private ModelPart rightFin;
+    private final ModelPart leftFin;
+    private final ModelPart centerFin;
+    private final ModelPart rightFin;
 
-    public SeaponyModel(boolean smallArms) {
-        super(smallArms);
-        textureHeight = 64;
+    public SeaponyModel(ModelPart tree, boolean smallArms) {
+        super(tree, smallArms);
+        abdomin = tree.getChild("abdomin");
+        leftFin = tree.getChild("left_fin");
+        rightFin = tree.getChild("right_fin");
+        centerFin = tree.getChild("center_fin");
     }
 
-    public SeaponyModel() {
-        this(false);
+    public SeaponyModel(ModelPart tree) {
+        this(tree, false);
     }
 
     @Override
     public void init(ModelContext context) {
         super.init(context);
-        bodyCenter = context.findByName("abdomin");
-        leftFin = context.findByName("left_fin");
-        rightFin = context.findByName("right_fin");
-        centerFin = context.findByName("center_fin");
+        setVisible(true);
     }
 
     @Override
-    public IEquestrianArmour<?> createArmour() {
-        return new ArmourWrapper<>(Armour::new);
+    public IArmour<?> createArmour() {
+        return ArmourWrapper.of(Armour::new);
     }
 
     @Override
-    public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
+    public void updateLivingState(T entity, IPony pony, ModelAttributes.Mode mode) {
         super.updateLivingState(entity, pony, mode);
 
         // Seaponies can't sneak, silly
@@ -61,8 +61,8 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
     protected void ponySit() {}
 
     @Override
-    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
+    public void setModelAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
+        super.setModelAngles(entity, move, swing, ticks, headYaw, headPitch);
 
         float flapMotion = MathHelper.cos(ticks / 10) / 5;
 
@@ -105,13 +105,6 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
     }
 
     @Override
-    public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        setVisible(leftSleeve.visible);
-
-        super.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-    }
-
-    @Override
     public void transform(BodyPart part, MatrixStack stack) {
         stack.translate(0, 0.6F, 0);
         super.transform(part, stack);
@@ -119,9 +112,9 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
 
     @Override
     protected void renderBody(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        torso.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        bodyCenter.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        torso.rotate(stack);
+        body.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        abdomin.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        body.rotate(stack);
 
         tail.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, attributes.interpolatorId);
         leftFin.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
@@ -139,14 +132,17 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
         super.setVisible(visible);
 
         upperTorsoOverlay.visible = false;
+        leftSleeve.visible = false;
+        rightSleeve.visible = false;
+        jacket.visible = false;
 
         // hide the back legs
         leftLeg.visible = false;
         rightLeg.visible = false;
-        leftPantLeg.visible = false;
-        rightPantLeg.visible = false;
+        leftPants.visible = false;
+        rightPants.visible = false;
 
-        bodyCenter.visible = visible;
+        abdomin.visible = visible;
 
         leftFin.visible = visible;
         centerFin.visible = visible;
@@ -155,6 +151,10 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
 
     class Armour extends PonyArmourModel<T> {
 
+        public Armour(ModelPart tree) {
+            super(tree);
+        }
+
         @Override
         public void showBoots() {
             rightArm.visible = true;
@@ -162,7 +162,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
         }
 
         @Override
-        public void updateLivingState(T entity, IPony pony, EquineRenderManager.Mode mode) {
+        public void updateLivingState(T entity, IPony pony, ModelAttributes.Mode mode) {
             super.updateLivingState(entity, pony, mode);
 
             // Seaponies can't sneak, silly

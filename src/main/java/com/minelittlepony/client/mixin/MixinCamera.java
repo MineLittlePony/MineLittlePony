@@ -21,7 +21,7 @@ abstract class MixinCamera {
 
         IPony pony = MineLittlePony.getInstance().getManager().getPony(MinecraftClient.getInstance().player);
 
-        if (!pony.getRace(false).isHuman()) {
+        if (!pony.getRace().isHuman()) {
             value *= pony.getMetadata().getSize().getEyeDistanceFactor();
         }
 

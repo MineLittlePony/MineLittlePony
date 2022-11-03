@@ -1,0 +1,19 @@
+name: Build on Push
+on:
+  - push
+jobs:
+  gradle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Commit
+        uses: actions/checkout@v2
+      - name: Fetch Tags
+        run: git fetch --unshallow --tags -f
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: Build Gradle
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: check

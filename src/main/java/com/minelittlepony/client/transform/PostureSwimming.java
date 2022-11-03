@@ -4,7 +4,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 
-import com.minelittlepony.model.IModel;
+import com.minelittlepony.api.model.IModel;
 
 public class PostureSwimming extends PostureFlight {
 

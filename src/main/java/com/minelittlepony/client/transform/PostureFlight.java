@@ -1,11 +1,11 @@
 package com.minelittlepony.client.transform;
 
+import com.minelittlepony.api.model.IModel;
 import com.minelittlepony.common.util.animation.MotionCompositor;
-import com.minelittlepony.model.IModel;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.entity.LivingEntity;
 
 public class PostureFlight extends MotionCompositor implements PonyPosture<PlayerEntity> {
@@ -22,7 +22,7 @@ public class PostureFlight extends MotionCompositor implements PonyPosture<Playe
 
         roll = model.getMetadata().getInterpolator(player.getUuid()).interpolate("pegasusRoll", roll, 10);
 
-        stack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(model.getAttributes().motionPitch));
-        stack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(roll));
+        stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(model.getAttributes().motionPitch));
+        stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(roll));
     }
 }

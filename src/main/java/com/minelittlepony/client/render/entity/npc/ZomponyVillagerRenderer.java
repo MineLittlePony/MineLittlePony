@@ -1,19 +1,31 @@
 package com.minelittlepony.client.render.entity.npc;
 
-import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.entity.ZomponyVillagerModel;
-
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.ZombieVillagerEntity;
 
-public class ZomponyVillagerRenderer extends AbstractNpcRenderer<ZombieVillagerEntity, ZomponyVillagerModel> {
+import com.minelittlepony.client.model.ClientPonyModel;
+import com.minelittlepony.client.model.IMobModel;
+
+public class ZomponyVillagerRenderer extends AbstractNpcRenderer<ZombieVillagerEntity> {
 
     private static final String TYPE = "zombie_villager";
     private static final TextureSupplier<String> FORMATTER = TextureSupplier.formatted("minelittlepony", "textures/entity/zombie_villager/zombie_%s.png");
 
-    public ZomponyVillagerRenderer(EntityRenderDispatcher manager) {
-        super(manager, ModelType.ZOMBIE_VILLAGER, TYPE, FORMATTER);
+    public ZomponyVillagerRenderer(EntityRendererFactory.Context context) {
+        super(context, TYPE, FORMATTER);
+    }
+
+    @Override
+    protected void initializeModel(ClientPonyModel<ZombieVillagerEntity> model) {
+        model.onSetModelAngles((m, move, swing, ticks, entity) -> {
+            m.getAttributes().visualHeight += PonyTextures.isCrownPony(entity) ? 0.3F : -0.1F;
+
+            if (m.rightArmPose == ArmPose.EMPTY) {
+                IMobModel.rotateUndeadArms(m, move, ticks);
+            }
+        });
     }
 
     @Override

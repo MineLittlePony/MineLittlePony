@@ -1,6 +1,6 @@
 package com.minelittlepony.client.render.entity;
 
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.DrownedEntity;
 import net.minecraft.entity.mob.GiantEntity;
@@ -17,31 +17,31 @@ public class ZomponyRenderer<Zombie extends ZombieEntity> extends PonyRenderer.C
     public static final Identifier HUSK = new Identifier("minelittlepony", "textures/entity/zombie/husk_pony.png");
     public static final Identifier DROWNED = new Identifier("minelittlepony", "textures/entity/zombie/drowned_pony.png");
 
-    public ZomponyRenderer(EntityRenderDispatcher manager) {
-        super(manager, ModelType.ZOMBIE);
+    public ZomponyRenderer(EntityRendererFactory.Context context) {
+        super(context, ModelType.ZOMBIE);
     }
 
     @Override
-    public Identifier findTexture(Zombie entity) {
+    public Identifier getTexture(Zombie entity) {
         return ZOMBIE;
     }
 
     public static class Drowned extends ZomponyRenderer<DrownedEntity> {
 
-        public Drowned(EntityRenderDispatcher manager) {
-            super(manager);
+        public Drowned(EntityRendererFactory.Context context) {
+            super(context);
         }
 
         @Override
-        public Identifier findTexture(DrownedEntity entity) {
+        public Identifier getTexture(DrownedEntity entity) {
             return DROWNED;
         }
     }
 
     public static class Husk extends ZomponyRenderer<HuskEntity> {
 
-        public Husk(EntityRenderDispatcher manager) {
-            super(manager);
+        public Husk(EntityRendererFactory.Context context) {
+            super(context);
         }
 
         @Override
@@ -51,7 +51,7 @@ public class ZomponyRenderer<Zombie extends ZombieEntity> extends PonyRenderer.C
         }
 
         @Override
-        public Identifier findTexture(HuskEntity entity) {
+        public Identifier getTexture(HuskEntity entity) {
             return HUSK;
         }
 
@@ -59,8 +59,8 @@ public class ZomponyRenderer<Zombie extends ZombieEntity> extends PonyRenderer.C
 
     public static class Giant extends PonyRenderer.Caster<GiantEntity, ZomponyModel<GiantEntity>> {
 
-		public Giant(EntityRenderDispatcher manager) {
-			super(manager, ModelType.ZOMBIE);
+		public Giant(EntityRendererFactory.Context context) {
+			super(context, ModelType.ZOMBIE);
 		}
 
 		@Override
@@ -70,7 +70,7 @@ public class ZomponyRenderer<Zombie extends ZombieEntity> extends PonyRenderer.C
 	    }
 
 		@Override
-	    public Identifier findTexture(GiantEntity entity) {
+	    public Identifier getTexture(GiantEntity entity) {
 	        return ZOMBIE;
 	    }
     }

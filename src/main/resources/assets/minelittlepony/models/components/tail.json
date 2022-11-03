@@ -3,32 +3,39 @@
 	"locals": {
 		"segments": 4
 	},
-	"segment_0": {
-		"type": "mson:slot",
-		"name": "segment_0",
-		"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
-		"locals": { "segment_index": 0 },
-		"content": "minelittlepony:components/tail_segment"
-	},
-	"segment_1": {
-		"type": "mson:slot",
-		"name": "segment_1",
-		"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
-		"locals": { "segment_index": 1 },
-		"content": "minelittlepony:components/tail_segment"
-	},
-	"segment_2": {
-		"type": "mson:slot",
-		"name": "segment_2",
-		"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
-		"locals": { "segment_index": 2 },
-		"content": "minelittlepony:components/tail_segment"
-	},
-	"segment_3": {
-		"type": "mson:slot",
-		"name": "segment_3",
-		"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
-		"locals": { "segment_index": 3 },
-		"content": "minelittlepony:components/tail_segment"
+	"data": {
+		"tail": {
+			"pivot": [0, 0, 14],
+			"children": {
+				"segment_0": {
+					"type": "mson:slot",
+					"name": "segment_0",
+					"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
+					"locals": { "segment_index": 0 },
+					"data": "minelittlepony:components/tail_segment"
+				},
+				"segment_1": {
+					"type": "mson:slot",
+					"name": "segment_1",
+					"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
+					"locals": { "segment_index": 1 },
+					"data": "minelittlepony:components/tail_segment"
+				},
+				"segment_2": {
+					"type": "mson:slot",
+					"name": "segment_2",
+					"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
+					"locals": { "segment_index": 2 },
+					"data": "minelittlepony:components/tail_segment"
+				},
+				"segment_3": {
+					"type": "mson:slot",
+					"name": "segment_3",
+					"implementation": "com.minelittlepony.client.model.part.PonyTail$Segment",
+					"locals": { "segment_index": 3 },
+					"data": "minelittlepony:components/tail_segment"
+				}
+			}
+		}
 	}
 }

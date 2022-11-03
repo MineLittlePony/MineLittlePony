@@ -1,6 +1,7 @@
 package com.minelittlepony.client.model.entity;
 
 import net.minecraft.entity.mob.WitherSkeletonEntity;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.HostileEntity;
@@ -18,8 +19,8 @@ public class SkeleponyModel<T extends HostileEntity> extends AlicornModel<T> imp
 
     public boolean isWithered;
 
-    public SkeleponyModel() {
-        super(false);
+    public SkeleponyModel(ModelPart tree) {
+        super(tree, false);
     }
 
     @Override
@@ -32,7 +33,6 @@ public class SkeleponyModel<T extends HostileEntity> extends AlicornModel<T> imp
     public void animateModel(T entity, float move, float swing, float ticks) {
         isUnicorn = entity.getUuid().getLeastSignificantBits() % 3 != 0;
         isWithered = entity instanceof WitherSkeletonEntity;
-        attributes.visualHeight = isWithered ? 2.5F : 2;
 
         rightArmPose = ArmPose.EMPTY;
         leftArmPose = ArmPose.EMPTY;
@@ -71,6 +71,10 @@ public class SkeleponyModel<T extends HostileEntity> extends AlicornModel<T> imp
         if (leftArmPose != ArmPose.EMPTY) {
             rotateArmHolding(getArm(Arm.LEFT), -1, getSwingAmount(), ticks);
         }
+    }
+
+    protected void rotateArmHolding(ModelPart arm, float direction, float swingProgress, float ticks) {
+        IMobModel.rotateArmHolding(arm, direction, swingProgress, ticks);
     }
 
     @Override

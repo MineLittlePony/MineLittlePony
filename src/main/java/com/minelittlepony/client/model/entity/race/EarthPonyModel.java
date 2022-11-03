@@ -1,10 +1,11 @@
 package com.minelittlepony.client.model.entity.race;
 
+import com.minelittlepony.api.model.IPart;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.part.PonySnout;
-import com.minelittlepony.model.IPart;
 import com.minelittlepony.mson.api.ModelContext;
 
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
@@ -17,7 +18,8 @@ public class EarthPonyModel<T extends LivingEntity> extends AbstractPonyModel<T>
     protected PonySnout snout;
     protected IPart ears;
 
-    public EarthPonyModel(boolean smallArms) {
+    public EarthPonyModel(ModelPart tree, boolean smallArms) {
+        super(tree);
         this.smallArms = smallArms;
     }
 
@@ -31,10 +33,16 @@ public class EarthPonyModel<T extends LivingEntity> extends AbstractPonyModel<T>
     }
 
     @Override
-    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
+    public void setModelAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
+        super.setModelAngles(entity, move, swing, ticks, headYaw, headPitch);
         snout.setGender(getMetadata().getGender());
         cape.pivotY = sneaking ? 2 : riding ? -4 : 0;
+    }
+
+    @Override
+    public void setHeadRotation(float animationProgress, float yaw, float pitch) {
+        super.setHeadRotation(animationProgress, yaw, pitch);
+        snout.setGender(getMetadata().getGender());
     }
 
     @Override

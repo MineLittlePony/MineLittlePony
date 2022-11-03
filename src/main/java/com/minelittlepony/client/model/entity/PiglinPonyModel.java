@@ -6,26 +6,24 @@ import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.PiglinActivity;
 import net.minecraft.util.math.MathHelper;
 
+import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.IPony;
-import com.minelittlepony.client.render.EquineRenderManager;
-import com.minelittlepony.mson.api.ModelContext;
 
 public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
 
     private PiglinActivity activity;
 
-    private ModelPart leftFlap;
-    private ModelPart rightFlap;
+    private final ModelPart leftFlap;
+    private final ModelPart rightFlap;
 
-    @Override
-    public void init(ModelContext context) {
-        super.init(context);
-        leftFlap = context.findByName("left_flap");
-        rightFlap = context.findByName("right_flap");
+    public PiglinPonyModel(ModelPart tree) {
+        super(tree);
+        leftFlap = tree.getChild("left_flap");
+        rightFlap = tree.getChild("right_flap");
     }
 
     @Override
-    public void updateLivingState(HostileEntity entity, IPony pony, EquineRenderManager.Mode mode) {
+    public void updateLivingState(HostileEntity entity, IPony pony, ModelAttributes.Mode mode) {
         super.updateLivingState(entity, pony, mode);
         leftArmPose = ArmPose.EMPTY;
         rightArmPose = entity.getMainHandStack().isEmpty() ? ArmPose.EMPTY : ArmPose.ITEM;
@@ -46,8 +44,8 @@ public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
     }
 
     @Override
-    public void setAngles(HostileEntity entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
+    public void setModelAngles(HostileEntity entity, float move, float swing, float ticks, float headYaw, float headPitch) {
+        super.setModelAngles(entity, move, swing, ticks, headYaw, headPitch);
 
         float progress = ticks * 0.1F + move * 0.5F;
         float range = 0.08F + swing * 0.4F;
@@ -81,7 +79,7 @@ public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
             float legBob = MathHelper.sin(speed * 40) * 0.25F;
 
             neck.pivotY = bodyBob;
-            torso.pivotY = bodyBob;
+            body.pivotY = bodyBob;
             upperTorso.pivotY = bodyBob;
 
             leftLeg.pitch += legBob;

@@ -6,13 +6,12 @@ import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
+import com.minelittlepony.api.model.IModel;
+import com.minelittlepony.api.model.armour.ArmourVariant;
+import com.minelittlepony.api.model.armour.IArmourModel;
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.model.IModel;
-import com.minelittlepony.model.armour.ArmourVariant;
-import com.minelittlepony.model.armour.IArmour;
-import com.minelittlepony.mson.api.ModelContext;
 
-public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T> implements IArmour {
+public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T> implements IArmourModel {
 
     private ModelPart chestPiece;
 
@@ -21,16 +20,11 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
 
     private ArmourVariant variant = ArmourVariant.NORMAL;
 
-    public PonyArmourModel() {
-        textureHeight = 32;
-    }
-
-    @Override
-    public void init(ModelContext context) {
-        super.init(context);
-        chestPiece = context.findByName("chestpiece");
-        steveRightLeg = context.findByName("steve_right_leg");
-        steveLeftLeg = context.findByName("steve_left_leg");
+    public PonyArmourModel(ModelPart tree) {
+        super(tree);
+        chestPiece = tree.getChild("chestpiece");
+        steveRightLeg = tree.getChild("steve_right_leg");
+        steveLeftLeg = tree.getChild("steve_left_leg");
     }
 
     @Override
@@ -45,7 +39,7 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
     @Override
     protected void renderBody(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float limbDistance, float limbAngle, float tickDelta, float alpha) {
         if (variant == ArmourVariant.LEGACY) {
-            torso.render(stack, vertices, overlayUv, lightUv, limbDistance, limbAngle, tickDelta, alpha);
+            body.render(stack, vertices, overlayUv, lightUv, limbDistance, limbAngle, tickDelta, alpha);
             upperTorso.render(stack, vertices, overlayUv, lightUv, limbDistance, limbAngle, tickDelta, alpha);
         } else {
             chestPiece.render(stack, vertices, overlayUv, lightUv, limbDistance, limbAngle, tickDelta, alpha);
@@ -69,24 +63,24 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
         if (model instanceof BipedEntityModel) {
             @SuppressWarnings("unchecked")
             BipedEntityModel<T> mainModel = (BipedEntityModel<T>)model;
-            head.copyPositionAndRotation(mainModel.head);
-            helmet.copyPositionAndRotation(mainModel.helmet);
+            head.copyTransform(mainModel.head);
+            head.copyTransform(mainModel.head);
 
-            torso.copyPositionAndRotation(mainModel.torso);
-            rightArm.copyPositionAndRotation(mainModel.rightArm);
-            leftArm.copyPositionAndRotation(mainModel.leftArm);
-            rightLeg.copyPositionAndRotation(mainModel.rightLeg);
-            leftLeg.copyPositionAndRotation(mainModel.leftLeg);
+            body.copyTransform(mainModel.body);
+            rightArm.copyTransform(mainModel.rightArm);
+            leftArm.copyTransform(mainModel.leftArm);
+            rightLeg.copyTransform(mainModel.rightLeg);
+            leftLeg.copyTransform(mainModel.leftLeg);
 
-            steveLeftLeg.copyPositionAndRotation(mainModel.leftLeg);
-            steveRightLeg.copyPositionAndRotation(mainModel.rightLeg);
+            steveLeftLeg.copyTransform(mainModel.leftLeg);
+            steveRightLeg.copyTransform(mainModel.rightLeg);
         }
     }
 
     @Override
     public void setInVisible() {
         setVisible(false);
-        torso.visible = true;
+        body.visible = true;
         chestPiece.visible = false;
         head.visible = false;
         neck.visible = false;

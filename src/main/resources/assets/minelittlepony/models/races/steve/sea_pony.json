@@ -1,38 +1,54 @@
 {
 	"parent": "minelittlepony:races/steve/alicorn",
-	"left_fin": {
-		"type": "mson:planar",
-		"texture": {"u": 56, "v": 16},
-		"mirror": [false, false, true],
-		"rotate": [0, 30, 0],
-		"center": [3, -6, 3],
-		"east": [0, 0, 0, 8, 12]
+	"skeleton": {
+	    "abdomin": {
+            "body": {
+	            "neck": {
+	                "head": {
+	                    "horn": {}
+	                }
+	            },
+	            "left_arm": {},
+	            "right_arm": {}
+	        },
+	        "left_fin": {},
+	        "right_fin": {},
+	        "center_fin": {},
+	        "tail": { }
+	    }
 	},
-	"right_fin": {
-		"type": "mson:planar",
-		"texture": {"u": 56, "v": 16},
-		"rotate": [0, -30, 0],
-		"center": [-3, -6, 3],
-		"west": [0, 0, 0, 8, 12]
-	},
-	"center_fin": {
-		"type": "mson:planar",
-		"texture": {"u": 58, "v": 28},
-		"rotate": [84, 0, 0],
-		"center": [0, 6, 9],
-		"east": [0, -6, 0, 6, 12]
-	},
-	"abdomin": {
-		"texture": {"u": 0, "v": 48},
-		"center": [0, 6, 1],
-		"cubes": [
-			{ "from": [-3, -1, 0], "size": [6, 7, 9] }
-		]
-	},
-	"tail": {
-		"type": "mson:slot",
-		"name": "tail",
-		"implementation": "com.minelittlepony.client.model.part.SeaponyTail",
-		"content": "minelittlepony:components/fish_tail"
+	"data": {
+		"left_fin": {
+			"type": "mson:planar",
+			"rotate": [0, 30, 0],
+			"pivot": [3, -6, 3],
+			"east": [0, 0, 0, 8, 12, 56, 16, false, true]
+		},
+		"right_fin": {
+			"type": "mson:planar",
+			"rotate": [0, -30, 0],
+			"pivot": [-3, -6, 3],
+			"west": [0, 0, 0, 8, 12, 56, 16]
+		},
+		"center_fin": {
+			"type": "mson:planar",
+			"texture": {"u": 58, "v": 28},
+			"rotate": [84, 0, 0],
+			"pivot": [0, 6, 9],
+			"east": [0, -6, 0, 6, 12]
+		},
+		"abdomin": {
+			"texture": {"u": 0, "v": 48},
+			"pivot": [0, 6, 1],
+			"cubes": [
+				{ "from": [-3, -1, 0], "size": [6, 7, 9] }
+			]
+		},
+		"tail": {
+			"type": "mson:slot",
+			"name": "tail",
+			"implementation": "com.minelittlepony.client.model.part.SeaponyTail",
+			"data": "minelittlepony:components/fish_tail"
+		}
 	}
 }

@@ -9,13 +9,13 @@ import com.minelittlepony.client.model.entity.race.AlicornModel;
 
 public class IllagerPonyModel<T extends IllagerEntity> extends AlicornModel<T> {
 
-    public IllagerPonyModel() {
-        super(false);
+    public IllagerPonyModel(ModelPart tree) {
+        super(tree, false);
     }
 
     @Override
-    public void setAngles(T illager, float move, float swing, float ticks, float headYaw, float headPitch) {
-        super.setAngles(illager, move, swing, ticks, headYaw, headPitch);
+    public void setModelAngles(T illager, float move, float swing, float ticks, float headYaw, float headPitch) {
+        super.setModelAngles(illager, move, swing, ticks, headYaw, headPitch);
 
         IllagerEntity.State pose = illager.getState();
 

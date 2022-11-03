@@ -1,38 +1,41 @@
 package com.minelittlepony.client.render.entity.npc;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.render.entity.model.ModelWithHat;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
 
+import com.minelittlepony.api.model.gear.IGear;
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
-import com.minelittlepony.client.model.ClientPonyModel;
+import com.minelittlepony.client.model.*;
 import com.minelittlepony.client.render.entity.PonyRenderer;
-import com.minelittlepony.model.IUnicorn;
-import com.minelittlepony.model.gear.IGear;
-import com.minelittlepony.mson.api.ModelKey;
+import java.util.HashMap;
+import java.util.Map;
 
-abstract class AbstractNpcRenderer<
-    T extends MobEntity & VillagerDataContainer,
-    M extends ClientPonyModel<T> & IUnicorn<ModelPart> & ModelWithHat> extends PonyRenderer.Caster<T, M> {
+abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> extends PonyRenderer.Caster<T, ClientPonyModel<T>> {
 
     private final TextureSupplier<T> baseTextures;
 
     private final String entityType;
 
-    public AbstractNpcRenderer(EntityRenderDispatcher manager, ModelKey<? super M> key, String type, TextureSupplier<String> formatter) {
-        super(manager, key);
+    private final Map<Race, ModelWrapper<T, ClientPonyModel<T>>> models = new HashMap<>();
 
+    private final NpcClothingFeature<T, ClientPonyModel<T>, AbstractNpcRenderer<T>> clothing;
+
+    public AbstractNpcRenderer(EntityRendererFactory.Context context, String type, TextureSupplier<String> formatter) {
+        super(context, ModelType.getPlayerModel(Race.EARTH).getKey(false));
         entityType = type;
         baseTextures = new PonyTextures<>(formatter);
-        addFeature(new NpcClothingFeature<>(this, entityType));
+        clothing = new NpcClothingFeature<>(this, entityType);
+        addFeature(clothing);
     }
 
     @Override
-    public boolean shouldRender(M model, T entity, Wearable wearable, IGear gear) {
+    public boolean shouldRender(ClientPonyModel<T> model, T entity, Wearable wearable, IGear gear) {
 
         boolean special = PonyTextures.isBestPony(entity);
 
@@ -53,16 +56,33 @@ abstract class AbstractNpcRenderer<
         return super.shouldRender(model, entity, wearable, gear);
     }
 
-    @Override
-    public Identifier getDefaultTexture(T villager, Wearable wearable) {
-        if (wearable == Wearable.SADDLE_BAGS) {
-            return NpcClothingFeature.getClothingTexture(villager, entityType);
+    public void render(T entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
+        model = manager.setModel(models.computeIfAbsent(getEntityPony(entity).getRace(), this::createModel)).body();
+
+        super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
+    }
+
+    private ModelWrapper<T, ClientPonyModel<T>> createModel(Race race) {
+        if (race.isHuman()) {
+            race = Race.EARTH;
         }
-        return super.getDefaultTexture(villager, wearable);
+        return ModelWrapper.<T, ClientPonyModel<T>>of(ModelType.getPlayerModel(race).getKey(false), this::initializeModel);
+    }
+
+    protected void initializeModel(ClientPonyModel<T> model) {
+
     }
 
     @Override
-    public Identifier findTexture(T villager) {
+    public Identifier getDefaultTexture(T villager, Wearable wearable) {
+        if (wearable == Wearable.SADDLE_BAGS) {
+            return clothing.createTexture(villager, "accessory");
+        }
+        return getTexture(villager);
+    }
+
+    @Override
+    public Identifier getTexture(T villager) {
         return baseTextures.supplyTexture(villager);
     }
 }

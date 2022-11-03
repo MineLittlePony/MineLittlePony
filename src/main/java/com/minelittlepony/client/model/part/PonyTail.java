@@ -5,11 +5,13 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
+import com.minelittlepony.api.model.IPart;
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.model.IPart;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -20,21 +22,26 @@ public class PonyTail implements IPart, MsonModel {
 
     private int tailStop = 0;
 
+    private final List<Segment> segments = new ArrayList<>();
+
+    public PonyTail(ModelPart tree) {
+        tail = tree.getChild("tail");
+    }
+
     @Override
     public void init(ModelContext context) {
         theModel = context.getModel();
 
-        tail = new ModelPart(theModel);
-
         try {
-            int segments = context.getLocals().getValue("segments").get().intValue();
+            int segments = context.getLocals().getLocal("segments").get().intValue();
 
             ModelContext subContext = context.resolve(this);
 
             for (int i = 0; i < segments; i++) {
                 Segment segment = subContext.findByName("segment_" + i);
+                segment.tail = this;
                 segment.index = i;
-                tail.addChild(segment);
+                this.segments.add(segment);
             }
 
         } catch (InterruptedException | ExecutionException e) {
@@ -54,7 +61,7 @@ public class PonyTail implements IPart, MsonModel {
             tail.pivotY = TAIL_RP_Y_RIDING;
             tail.pitch = PI / 5;
         } else {
-            tail.setPivot(TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_NOTSNEAK);
+            tail.setPivot(0, 0, TAIL_RP_Z);
             if (rainboom) {
                 tail.pitch = ROTATE_90 + MathHelper.sin(move) / 10;
             } else {
@@ -68,8 +75,6 @@ public class PonyTail implements IPart, MsonModel {
             tail.pivotY += 6;
             tail.pivotZ++;
         }
-
-        tailStop = theModel.getMetadata().getTail().ordinal();
     }
 
     private void swingX(float ticks) {
@@ -79,40 +84,40 @@ public class PonyTail implements IPart, MsonModel {
     }
 
     private void rotateSneak() {
-        tail.setPivot(TAIL_RP_X, TAIL_RP_Y, TAIL_RP_Z_SNEAK);
+        tail.setPivot(0, 0, TAIL_RP_Z_SNEAK);
         tail.pitch = -BODY_ROT_X_SNEAK + 0.1F;
     }
 
     @Override
     public void setVisible(boolean visible) {
         tail.visible = visible;
+        tailStop = theModel.getMetadata().getTail().ordinal();
     }
 
     @Override
     public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
-        tail.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        stack.push();
+        tail.rotate(stack);
+
+        segments.forEach(segment -> segment.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha));
+
+        stack.pop();
     }
 
-    public static class Segment extends ModelPart implements MsonModel {
-
+    public static class Segment implements MsonModel {
         public PonyTail tail;
 
         public int index;
 
-        public Segment(ModelContext context) {
-            super(context.getModel());
+        private final ModelPart tree;
+
+        public Segment(ModelPart tree) {
+            this.tree = tree;
         }
 
-        @Override
-        public void init(ModelContext context) {
-            tail = context.getContext();
-            context.findByName("segment", this);
-        }
-
-        @Override
         public void render(MatrixStack stack, VertexConsumer renderContext, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
             if (index < tail.tailStop) {
-                super.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
+                tree.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
             }
         }
     }

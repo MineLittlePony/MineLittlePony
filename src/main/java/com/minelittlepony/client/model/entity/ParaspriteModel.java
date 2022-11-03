@@ -5,59 +5,94 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.passive.StriderEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.VexEntity;
+import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.mson.api.ModelContext;
-import com.minelittlepony.mson.api.MsonModel;
+import com.minelittlepony.common.util.animation.Interpolator;
 
-public class ParaspriteModel extends EntityModel<StriderEntity> implements MsonModel {
+public class ParaspriteModel<T extends LivingEntity> extends EntityModel<T> {
 
-    private ModelPart body;
-    private ModelPart leftWing;
-    private ModelPart rightWing;
+    private final ModelPart root;
 
-    private ModelPart saddle;
+    private final ModelPart body;
+    private final ModelPart jaw;
+    private final ModelPart lips;
+    private final ModelPart leftWing;
+    private final ModelPart rightWing;
 
-    public ParaspriteModel() {
+    private final ModelPart leftWing2;
+    private final ModelPart rightWing2;
+
+    public ParaspriteModel(ModelPart tree) {
         super(RenderLayer::getEntityTranslucent);
         child = false;
-        textureHeight = 64;
-    }
-
-    @Override
-    public void init(ModelContext context) {
-        body = context.findByName("body");
-        saddle = context.findByName("saddle");
-        leftWing = context.findByName("leftWing");
-        rightWing = context.findByName("rightWing");
+        root = tree;
+        body = tree.getChild("body");
+        jaw = body.getChild("jaw");
+        lips = body.getChild("lips");
+        leftWing = tree.getChild("leftWing");
+        rightWing = tree.getChild("rightWing");
+        leftWing2 = tree.getChild("leftWing2");
+        rightWing2 = tree.getChild("rightWing2");
     }
 
     @Override
     public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha) {
-        body.render(matrices, vertices, light, overlay, red, green, blue, alpha);
-        saddle.render(matrices, vertices, light, overlay, red, green, blue, alpha);
+        root.render(matrices, vertices, light, overlay, red, green, blue, alpha);
     }
 
     @Override
-    public void setAngles(StriderEntity entity, float move, float swing, float ticks, float headYaw, float headPitch) {
+    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
+
+        root.pitch = MathHelper.clamp((float)entity.getVelocity().horizontalLength() / 10F, 0, 0.1F);
+        body.pitch = 0;
+        lips.visible = false;
 
         if (entity.hasPassengers()) {
-            body.yaw = 0;
-            body.pitch = 0;
+            root.yaw = 0;
+            root.pitch = 0;
         } else {
-            body.yaw = headYaw * 0.017453292F;
-            body.pitch = headPitch * 0.017453292F;
+            root.yaw = headYaw * 0.017453292F;
+            root.pitch = headPitch * 0.017453292F;
         }
-        saddle.copyPositionAndRotation(body);
 
-        float sin = (float)Math.sin(ticks) / 2;
-        float cos = (float)Math.cos(ticks) / 3;
+        float sin = (float)Math.sin(ticks) / 2F;
+        float cos = (float)Math.cos(ticks) / 3F;
 
-        leftWing.roll = 0.5F + cos;
-        leftWing.yaw = 0.5F - sin;
+        float jawOpenAmount = Interpolator.linear(entity.getUuid()).interpolate("jawOpen", entity instanceof VexEntity vex && vex.isCharging() ? 1 : 0, 10);
+
+        jaw.pivotY = Math.max(0, 1.2F * jawOpenAmount);
+        lips.pivotY = jaw.pivotY - 0.9F;
+        lips.visible = jawOpenAmount > 0;
+        body.pitch += 0.3F * jawOpenAmount;
+        jaw.pitch = 0.4F * jawOpenAmount;
+        lips.pitch = 0.2F * jawOpenAmount;
+
+        float basWingExpand = 1;
+        float innerWingExpand = basWingExpand / 2F;
+
+        leftWing.visible = true;
+        leftWing.pitch = 0;
+        leftWing.roll = basWingExpand + cos + 0.3F;
+        leftWing.yaw = basWingExpand - sin;
 
         rightWing.visible = true;
-        rightWing.roll = -0.5F - cos;
-        rightWing.yaw = -0.5F + sin;
+        rightWing.pitch = 0;
+        rightWing.roll = -basWingExpand - cos - 0.3F;
+        rightWing.yaw = -basWingExpand + sin;
+
+        sin = -(float)Math.sin(ticks + Math.PI / 4F) / 2F;
+        cos = (float)Math.cos(ticks + Math.PI / 4F) / 3F;
+
+        leftWing2.visible = true;
+        leftWing2.pitch = 0;
+        leftWing2.roll = innerWingExpand + sin - 0.3F;
+        leftWing2.yaw = innerWingExpand - cos + 0.3F;
+
+        rightWing2.visible = true;
+        rightWing2.pitch = 0;
+        rightWing2.roll = -innerWingExpand - sin + 0.3F;
+        rightWing2.yaw = -innerWingExpand + cos - 0.3F;
     }
 }

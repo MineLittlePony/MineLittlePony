@@ -1,6 +1,6 @@
 package com.minelittlepony.client.render.entity;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import com.minelittlepony.client.mixin.IResizeable;
 import com.minelittlepony.client.model.ModelType;
@@ -8,10 +8,9 @@ import com.minelittlepony.client.model.entity.GuardianPonyModel;
 import com.minelittlepony.client.render.entity.PonyRenderer.Proxy;
 import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
 import com.minelittlepony.client.render.entity.feature.GlowingItemFeature;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.GuardianEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityDimensions;
@@ -25,13 +24,13 @@ public class SeaponyRenderer extends GuardianEntityRenderer {
 
     private final Proxy<GuardianEntity, GuardianPonyModel> ponyRenderer;
 
-    public SeaponyRenderer(EntityRenderDispatcher manager) {
-        super(manager);
+    public SeaponyRenderer(EntityRendererFactory.Context context) {
+        super(context);
 
         features.clear();
-        ponyRenderer = new Proxy<GuardianEntity, GuardianPonyModel>(features, manager, ModelType.GUARDIAN) {
+        ponyRenderer = new Proxy<GuardianEntity, GuardianPonyModel>(features, context, ModelType.GUARDIAN) {
             @Override
-            public Identifier findTexture(GuardianEntity entity) {
+            public Identifier getTexture(GuardianEntity entity) {
                 return SEAPONY;
             }
 
@@ -44,9 +43,9 @@ public class SeaponyRenderer extends GuardianEntityRenderer {
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public final Identifier getTexture(GuardianEntity entity) {
-        return ponyRenderer.getTextureFor(entity);
+        return ponyRenderer.getTexture(entity);
     }
 
     @Override
@@ -64,15 +63,13 @@ public class SeaponyRenderer extends GuardianEntityRenderer {
 
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
 
-        // The beams in RenderGuardian leave lighting disabled, so we need to change it back. #MojangPls
-        RenderSystem.enableLighting();
         resize.setCurrentSize(origin);
     }
 
     public static class Elder extends SeaponyRenderer {
 
-        public Elder(EntityRenderDispatcher manager) {
-            super(manager);
+        public Elder(EntityRendererFactory.Context context) {
+            super(context);
         }
 
         @Override

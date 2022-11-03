@@ -1,6 +1,6 @@
 package com.minelittlepony.client.render.entity;
 
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.AbstractPiglinEntity;
@@ -22,8 +22,8 @@ public class PonyPiglinRenderer extends PonyRenderer.Caster<HostileEntity, Pigli
         map.put(EntityType.ZOMBIFIED_PIGLIN, new Identifier("minelittlepony", "textures/entity/piglin/zombified_piglin_pony.png"));
     });
 
-    public PonyPiglinRenderer(EntityRenderDispatcher manager) {
-        super(manager, ModelType.PIGLIN);
+    public PonyPiglinRenderer(EntityRendererFactory.Context context) {
+        super(context, ModelType.PIGLIN);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class PonyPiglinRenderer extends PonyRenderer.Caster<HostileEntity, Pigli
     }
 
     @Override
-    public Identifier findTexture(HostileEntity entity) {
+    public Identifier getTexture(HostileEntity entity) {
         return TEXTURES.get(entity.getType());
     }
 
