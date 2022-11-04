@@ -1,5 +1,5 @@
 {
-  "minelp.options.title": "Mine Little Pony Einstelungen",
+  "minelp.options.title": "Mine Little Pony Einstellungen",
   "minelp.options.ponylevel": "Pony-Stufen",
   "minelp.options.ponylevel.ponies": "Nur Ponies",
   "minelp.options.ponylevel.ponies.tooltip": "Alle Spieler sind Ponies\n\nSkins, die keine Ponys sind, werden durch ein zufälliges Hintergrundpony ersetzt",
@@ -23,7 +23,7 @@
   "minelp.options.button": "Button auf dem Titelbildschirm anzeigen",
   "minelp.options.button.on": "Immer Anzeigen\n\nSowie der Pony Button als auch der HD Skins Button (sofern instaliert) werden angezeigt.",
   "minelp.options.button.auto": "Nur anzeigen wenn HD Skins nicht installiert ist",
-  "minelp.options.button.off": "Nimals anzeigen",
+  "minelp.options.button.off": "Niemals anzeigen",
   "minelp.options.option.disabled": "Diese Optionen sind gesperrt im Überlensmodus während einer Multiplayer Sitzung.\n\nUm die Einstelungen zu ändern trete dem Server neu\nbei oder wechsel in den Kreativ Modus.",
   "minelp.mobs.title": "Mob Einstellungen",
   "minelp.mobs.villagers": "Ponifizire Dorfbewohner",
