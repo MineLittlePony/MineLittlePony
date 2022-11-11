@@ -4,8 +4,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -13,6 +11,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Streams;
 import com.minelittlepony.gui.IconicButton;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.properties.Property;
@@ -20,15 +19,12 @@ import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 import com.voxelmodpack.hdskins.ducks.INetworkPlayerInfo;
+import com.voxelmodpack.hdskins.gui.Feature;
 import com.voxelmodpack.hdskins.gui.GuiSkins;
 import com.voxelmodpack.hdskins.resources.SkinResourceManager;
 import com.voxelmodpack.hdskins.resources.TextureLoader;
 import com.voxelmodpack.hdskins.resources.texture.ImageBufferDownloadHD;
-import com.voxelmodpack.hdskins.server.BethlehemSkinServer;
-import com.voxelmodpack.hdskins.server.LegacySkinServer;
-import com.voxelmodpack.hdskins.server.ServerType;
 import com.voxelmodpack.hdskins.server.SkinServer;
-import com.voxelmodpack.hdskins.server.ValhallaSkinServer;
 import com.voxelmodpack.hdskins.util.CallableFutures;
 import com.voxelmodpack.hdskins.util.MoreStreams;
 import com.voxelmodpack.hdskins.util.PlayerUtil;
@@ -58,7 +54,6 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
@@ -88,7 +83,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     private List<ISkinCacheClearListener> clearListeners = Lists.newArrayList();
 
-    private BiMap<String, Class<? extends SkinServer>> skinServerTypes = HashBiMap.create(2);
     private List<SkinServer> skinServers = Lists.newArrayList();
 
     private LoadingCache<GameProfile, CompletableFuture<Map<Type, MinecraftProfileTexture>>> skins = CacheBuilder.newBuilder()
@@ -103,11 +97,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
     private Function<List<SkinServer>, GuiSkins> skinsGuiFunc = GuiSkins::new;
 
     private HDSkinManager() {
-
-        // register default skin server types
-        addSkinServerType(LegacySkinServer.class);
-        addSkinServerType(ValhallaSkinServer.class);
-        addSkinServerType(BethlehemSkinServer.class);
     }
 
     public void setSkinsGui(Function<List<SkinServer>, GuiSkins> skinsGuiFunc) {
@@ -138,11 +127,13 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
             for (SkinServer server : skinServers) {
                 try {
-                    server.loadProfileData(profile).getTextures().forEach(textureMap::putIfAbsent);
-                    if (textureMap.size() == Type.values().length) {
-                        break;
+                    if (!server.supportsFeature(Feature.SYNTHETIC)) {
+                        server.loadProfileData(profile).getTextures().forEach(textureMap::putIfAbsent);
+                        if (textureMap.size() == Type.values().length) {
+                            break;
+                        }
                     }
-                } catch (IOException e) {
+                } catch (IOException | AuthenticationException e) {
                     logger.trace(e);
                 }
 
@@ -229,23 +220,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
         }
 
         return map;
-    }
-
-    private void addSkinServerType(Class<? extends SkinServer> type) {
-        Preconditions.checkArgument(!type.isInterface(), "type cannot be an interface");
-        Preconditions.checkArgument(!Modifier.isAbstract(type.getModifiers()), "type cannot be abstract");
-
-        ServerType st = type.getAnnotation(ServerType.class);
-
-        if (st == null) {
-            throw new IllegalArgumentException("class is not annotated with @ServerType");
-        }
-
-        this.skinServerTypes.put(st.value(), type);
-    }
-
-    public Class<? extends SkinServer> getSkinServerClass(String type) {
-        return this.skinServerTypes.get(type);
     }
 
     void addSkinServer(SkinServer skinServer) {

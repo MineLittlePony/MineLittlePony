@@ -1,0 +1,11 @@
+{
+  "overwrite": false,
+  "insert": "END",
+  "servers": [
+    {
+      "type": "valhalla",
+      "address": "https://skins.minelittlepony-mod.com"
+    },
+    { "type": "mojang" }
+  ]
+}

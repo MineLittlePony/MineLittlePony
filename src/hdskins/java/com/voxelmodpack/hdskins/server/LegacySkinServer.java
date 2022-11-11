@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nullable;
 
+@Deprecated
 @ServerType("legacy")
 public class LegacySkinServer implements SkinServer {
 
@@ -51,21 +52,19 @@ public class LegacySkinServer implements SkinServer {
     }
 
     @Override
-    public CompletableFuture<MinecraftTexturesPayload> getPreviewTextures(GameProfile profile) {
-        return CallableFutures.asyncFailableFuture(() -> {
-            SkinServer.verifyServerConnection(Minecraft.getMinecraft().getSession(), SERVER_ID);
+    public MinecraftTexturesPayload getPreviewTextures(GameProfile profile) throws IOException, AuthenticationException {
+        SkinServer.verifyServerConnection(Minecraft.getMinecraft().getSession(), SERVER_ID);
 
-            if (Strings.isNullOrEmpty(gateway)) {
-                throw gatewayUnsupported();
-            }
+        if (Strings.isNullOrEmpty(gateway)) {
+            throw gatewayUnsupported();
+        }
 
-            Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = new EnumMap<>(MinecraftProfileTexture.Type.class);
-            for (MinecraftProfileTexture.Type type : MinecraftProfileTexture.Type.values()) {
-                map.put(type, new MinecraftProfileTexture(getPath(gateway, type, profile), null));
-            }
+        Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = new EnumMap<>(MinecraftProfileTexture.Type.class);
+        for (MinecraftProfileTexture.Type type : MinecraftProfileTexture.Type.values()) {
+            map.put(type, new MinecraftProfileTexture(getPath(gateway, type, profile), null));
+        }
 
-            return TexturesPayloadBuilder.createTexturesPayload(profile, map);
-        }, HDSkinManager.skinDownloadExecutor);
+        return TexturesPayloadBuilder.createTexturesPayload(profile, map);
     }
 
     @Override
@@ -109,7 +108,7 @@ public class LegacySkinServer implements SkinServer {
     }
 
     @Override
-    public SkinUploadResponse performSkinUpload(SkinUpload upload) throws IOException, AuthenticationException {
+    public void performSkinUpload(SkinUpload upload) throws IOException, AuthenticationException {
         if (Strings.isNullOrEmpty(gateway)) {
             throw gatewayUnsupported();
         }
@@ -134,8 +133,6 @@ public class LegacySkinServer implements SkinServer {
         if (!response.equalsIgnoreCase("OK") && !response.endsWith("OK")) {
             throw new HttpException(response, resp.getResponseCode(), null);
         }
-
-        return new SkinUploadResponse(response);
     }
 
     private UnsupportedOperationException gatewayUnsupported() {
@@ -159,11 +156,6 @@ public class LegacySkinServer implements SkinServer {
         String uuid = UUIDTypeAdapter.fromUUID(profile.getId());
         String path = type.toString().toLowerCase() + "s";
         return String.format("%s/%s/%s.png?%s", address, path, uuid, Long.toString(new Date().getTime() / 1000));
-    }
-
-    @Override
-    public boolean verifyGateway() {
-        return !Strings.isNullOrEmpty(gateway);
     }
 
     @Override

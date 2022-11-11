@@ -1,6 +1,5 @@
 package com.voxelmodpack.hdskins.server;
 
-import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.authlib.GameProfile;
@@ -9,27 +8,18 @@ import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.mumfrey.liteloader.modconfig.Exposable;
-import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.gui.Feature;
-import com.voxelmodpack.hdskins.util.CallableFutures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public interface SkinServer extends Exposable {
 
     Gson gson = new GsonBuilder()
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
             .create();
-
-    List<SkinServer> defaultServers = Lists.newArrayList(new LegacySkinServer(
-            "http://skins.voxelmodpack.com",
-            "http://skinmanager.voxelmodpack.com")
-    );
 
     /**
      * Returns true for any features that this skin server supports.
@@ -43,7 +33,7 @@ public interface SkinServer extends Exposable {
      *
      * @throws IOException  If any authentication or network error occurs.
      */
-    MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException;
+    MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException, AuthenticationException;
 
     /**
      * Synchronously uploads a skin to this server.
@@ -55,36 +45,18 @@ public interface SkinServer extends Exposable {
      * @throws IOException  If any authentication or network error occurs.
      * @throws AuthenticationException
      */
-    SkinUploadResponse performSkinUpload(SkinUpload upload) throws IOException, AuthenticationException;
-
-    /**
-     * Asynchronously uploads a skin to the server.
-     *
-     * Returns an incomplete future for chaining other actions to be performed after this method completes.
-     * Actions are dispatched to the default skinUploadExecutor
-     *
-     * @param upload The payload to send.
-     */
-    default CompletableFuture<SkinUploadResponse> uploadSkin(SkinUpload upload) {
-        return CallableFutures.asyncFailableFuture(() -> performSkinUpload(upload), HDSkinManager.skinUploadExecutor);
-    }
+    void performSkinUpload(SkinUpload upload) throws IOException, AuthenticationException;
 
     /**
      * Asynchronously loads texture information for the provided profile.
      *
      * Returns an incomplete future for chaining other actions to be performed after this method completes.
      * Actions are dispatched to the default skinDownloadExecutor
+     * @throws AuthenticationException
+     * @throws IOException
      */
-    default CompletableFuture<MinecraftTexturesPayload> getPreviewTextures(GameProfile profile) {
-        return CallableFutures.asyncFailableFuture(() -> loadProfileData(profile), HDSkinManager.skinDownloadExecutor);
-    }
-
-    /**
-     * Called to validate this skin server's state.
-     * Any servers with an invalid gateway format will not be loaded and generate an exception.
-     */
-    default boolean verifyGateway() {
-        return true;
+    default MinecraftTexturesPayload getPreviewTextures(GameProfile profile) throws IOException, AuthenticationException {
+        return loadProfileData(profile);
     }
 
     /**

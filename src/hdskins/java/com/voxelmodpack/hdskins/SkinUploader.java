@@ -1,6 +1,7 @@
 package com.voxelmodpack.hdskins;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -10,10 +11,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.Throwables;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.exceptions.AuthenticationException;
-import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
+import com.mojang.authlib.exceptions.*;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
@@ -33,7 +33,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Predicate;
 
 public class SkinUploader implements Closeable {
 
@@ -55,11 +54,12 @@ public class SkinUploader implements Closeable {
 
     private Type skinType;
 
-    private Map<String, String> skinMetadata = new HashMap<String, String>();
+    private Map<String, String> skinMetadata = new HashMap<>();
 
     private volatile boolean fetchingSkin = false;
     private volatile boolean throttlingNeck = false;
     private volatile boolean offline = false;
+    private volatile boolean pending = false;
 
     private volatile boolean sendingSkin = false;
 
@@ -78,10 +78,6 @@ public class SkinUploader implements Closeable {
 
     private final Minecraft mc = Minecraft.getMinecraft();
 
-    private static <T> Iterator<T> cycle(List<T> list, Predicate<T> filter) {
-        return Iterables.cycle(Iterables.filter(list, filter::test)).iterator();
-    }
-
     public SkinUploader(List<SkinServer> servers, EntityPlayerModel local, EntityPlayerModel remote, ISkinUploadHandler listener) {
 
         localPlayer = local;
@@ -91,7 +87,7 @@ public class SkinUploader implements Closeable {
         skinMetadata.put("model", "default");
 
         this.listener = listener;
-        skinServers = cycle(servers, SkinServer::verifyGateway);
+        skinServers = Iterators.cycle(servers);
         cycleGateway();
     }
 
@@ -190,17 +186,14 @@ public class SkinUploader implements Closeable {
         sendingSkin = true;
         status = statusMsg;
 
-        return gateway.uploadSkin(new SkinUpload(mc.getSession(), skinType, localSkin == null ? null : localSkin.toURI(), skinMetadata)).handle((response, throwable) -> {
-            if (throwable == null) {
-                logger.info("Upload completed with: %s", response);
-                setError(null);
-            } else {
-                setError(Throwables.getRootCause(throwable).toString());
+        return CompletableFuture.runAsync(() -> {
+            try {
+                gateway.performSkinUpload(new SkinUpload(mc.getSession(), skinType, localSkin == null ? null : localSkin.toURI(), skinMetadata));
+                setError("");
+            } catch (IOException | AuthenticationException e) {
+                handleException(e);
             }
-
-            fetchRemote();
-            return null;
-        });
+        }, HDSkinManager.skinUploadExecutor).thenRunAsync(this::fetchRemote);
     }
 
     public CompletableFuture<MoreHttpResponses> downloadSkin() {
@@ -210,42 +203,59 @@ public class SkinUploader implements Closeable {
     }
 
     protected void fetchRemote() {
+        boolean wasPending = pending;
+        pending = false;
         fetchingSkin = true;
         throttlingNeck = false;
         offline = false;
 
         remotePlayer.reloadRemoteSkin(this, (type, location, profileTexture) -> {
             fetchingSkin = false;
+            if (type == skinType) {
+                fetchingSkin = false;
+                if (wasPending) {
+                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(net.minecraft.init.SoundEvents.ENTITY_VILLAGER_YES, 1));
+                }
+            }
             listener.onSetRemoteSkin(type, location, profileTexture);
-        }).handle((a, throwable) -> {
+        }).handleAsync((a, throwable) -> {
             fetchingSkin = false;
 
             if (throwable != null) {
-                throwable = throwable.getCause();
-
-                if (throwable instanceof AuthenticationUnavailableException) {
-                    offline = true;
-                } else if (throwable instanceof AuthenticationException) {
-                    throttlingNeck = true;
-                } else if (throwable instanceof HttpException) {
-                    HttpException ex = (HttpException)throwable;
-
-                    logger.error(ex.getReasonPhrase(), ex);
-
-                    int code = ex.getStatusCode();
-
-                    if (code >= 500) {
-                        setError(String.format("A fatal server error has ocurred (check logs for details): \n%s", ex.getReasonPhrase()));
-                    } else if (code >= 400 && code != 403 && code != 404) {
-                        setError(ex.getReasonPhrase());
-                    }
-                } else {
-                    logger.error("Unhandled exception", throwable);
-                    setError(throwable.toString());
-                }
+                handleException(throwable.getCause());
+            } else {
+                retries = 1;
             }
             return a;
-        });
+        }, Minecraft.getMinecraft()::addScheduledTask);
+    }
+
+    private void handleException(Throwable throwable) {
+        throwable = Throwables.getRootCause(throwable);
+
+        fetchingSkin = false;
+
+        if (throwable instanceof AuthenticationUnavailableException) {
+            offline = true;
+        } else if (throwable instanceof InvalidCredentialsException) {
+            setError("hdskins.error.session");
+        } else if (throwable instanceof AuthenticationException) {
+            throttlingNeck = true;
+        } else if (throwable instanceof HttpException) {
+            HttpException ex = (HttpException)throwable;
+
+            int code = ex.getStatusCode();
+
+            if (code >= 500) {
+                logger.error(ex.getReasonPhrase(), ex);
+                setError("A fatal server error has ocurred (check logs for details): \n" + ex.getReasonPhrase());
+            } else if (code >= 400 && code != 403 && code != 404) {
+                setError(ex.getReasonPhrase());
+            }
+        } else {
+            logger.error("Unhandled exception", throwable);
+            setError(throwable.toString());
+        }
     }
 
     @Override
@@ -282,11 +292,19 @@ public class SkinUploader implements Closeable {
                 retries++;
                 fetchRemote();
             }
+        } else if (pending) {
+            fetchRemote();
         }
     }
 
     public CompletableFuture<PreviewTextureManager> loadTextures(GameProfile profile) {
-        return gateway.getPreviewTextures(profile).thenApply(PreviewTextureManager::new);
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return new PreviewTextureManager(gateway.getPreviewTextures(profile));
+            } catch (IOException | AuthenticationException e) {
+                throw new RuntimeException(e);
+            }
+        }, HDSkinManager.skinDownloadExecutor); // run on main thread
     }
 
     public interface ISkinUploadHandler {

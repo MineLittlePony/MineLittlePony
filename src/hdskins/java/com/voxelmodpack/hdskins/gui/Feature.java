@@ -1,9 +1,16 @@
 package com.voxelmodpack.hdskins.gui;
 
 /**
- * Represents the possible features that a skin server can implement.
+ * Represents the possible features that a skin net can implement.
  */
 public enum Feature {
+    /**
+     * Whether this skin server is usable in-game.
+     *
+     * Synthetic skin servers will not be queried for skins when in-game,
+     * but can be still previewed, or accept textures to upload/download.
+     */
+    SYNTHETIC,
     /**
      * Whether a server has write access.
      * i.e. If the server allows for users to upload a new skin.

@@ -2,7 +2,9 @@ package com.voxelmodpack.hdskins.util;
 
 import com.google.common.io.ByteStreams;
 import com.google.common.io.CharStreams;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
+import com.mojang.util.UUIDTypeAdapter;
+import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.server.SkinServer;
 
 import org.apache.http.Header;
@@ -11,6 +13,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -20,8 +23,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -29,11 +31,18 @@ import java.util.stream.Stream;
  */
 @FunctionalInterface
 public interface MoreHttpResponses extends AutoCloseable {
+    Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
+            .create();
 
     CloseableHttpResponse getResponse();
 
     default boolean ok() {
         return getResponseCode() == HttpStatus.SC_OK;
+    }
+
+    default boolean json() {
+        return "application/json".contentEquals(contentType().getMimeType());
     }
 
     default int getResponseCode() {
@@ -42,6 +51,12 @@ public interface MoreHttpResponses extends AutoCloseable {
 
     default Optional<HttpEntity> getEntity() {
         return Optional.ofNullable(getResponse().getEntity());
+    }
+
+    default ContentType contentType() {
+        return getEntity()
+                .map(ContentType::get)
+                .orElse(ContentType.DEFAULT_TEXT);
     }
 
     default String getContentType() {
@@ -86,6 +101,22 @@ public interface MoreHttpResponses extends AutoCloseable {
         }
     }
 
+    default <T> T json(Class<T> type, String errorMessage) throws IOException {
+        return json((Type)type, errorMessage);
+    }
+
+    default <T> T json(Type type, String errorMessage) throws IOException {
+        if (!json()) {
+            String text = text();
+            HDSkinManager.logger.error(errorMessage, text);
+            throw new IOException(text);
+        }
+
+        try (BufferedReader reader = getReader()) {
+            return GSON.fromJson(reader, type);
+        }
+    }
+
     default <T> T unwrapAsJson(Type type) throws IOException {
         if (!"application/json".equals(getContentType())) {
             throw new IOException("Server returned a non-json response!");
@@ -95,7 +126,11 @@ public interface MoreHttpResponses extends AutoCloseable {
             return json(type);
         }
 
-        throw new IOException(json(JsonObject.class).get("message").getAsString());
+        throw exception();
+    }
+
+    default IOException exception() throws IOException {
+        return new IOException(json(JsonObject.class, "Server error wasn't in json: {}").get("message").getAsString());
     }
 
     @Override

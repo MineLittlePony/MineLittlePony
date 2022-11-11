@@ -1,5 +1,6 @@
 package com.voxelmodpack.hdskins;
 
+import com.google.common.collect.Lists;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.mumfrey.liteloader.Configurable;
@@ -14,8 +15,7 @@ import com.mumfrey.liteloader.util.ModUtilities;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
 import com.voxelmodpack.hdskins.gui.HDSkinsConfigPanel;
 import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
-import com.voxelmodpack.hdskins.server.SkinServer;
-import com.voxelmodpack.hdskins.server.SkinServerSerializer;
+import com.voxelmodpack.hdskins.server.*;
 import com.voxelmodpack.hdskins.upload.GLWindow;
 
 import net.minecraft.client.Minecraft;
@@ -35,7 +35,10 @@ public class LiteModHDSkins implements InitCompleteListener, ViewportListener, C
     }
 
     @Expose
-    public List<SkinServer> skin_servers = SkinServer.defaultServers;
+    public List<SkinServer> skin_servers = Lists.newArrayList(
+            new ValhallaSkinServer("https://skins.minelittlepony-mod.com"),
+            new YggdrasilSkinServer()
+    );
 
     @Expose
     public boolean experimentalSkinDrop = false;
@@ -54,7 +57,7 @@ public class LiteModHDSkins implements InitCompleteListener, ViewportListener, C
 
     @Override
     public String getVersion() {
-        return "4.0.0";
+        return "4.0.1";
     }
 
     public void writeConfig() {

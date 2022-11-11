@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 
+@Deprecated
 @ServerType("bethlehem")
 public class BethlehemSkinServer implements SkinServer {
 
@@ -40,7 +41,7 @@ public class BethlehemSkinServer implements SkinServer {
     }
 
     @Override
-    public SkinUploadResponse performSkinUpload(SkinUpload upload) throws IOException, AuthenticationException {
+    public void performSkinUpload(SkinUpload upload) throws IOException, AuthenticationException {
         SkinServer.verifyServerConnection(upload.getSession(), SERVER_ID);
 
         NetClient client = new NetClient("POST", address);
@@ -53,10 +54,8 @@ public class BethlehemSkinServer implements SkinServer {
 
         try (MoreHttpResponses response = client.send()) {
             if (!response.ok()) {
-                throw new HttpException(response.getResponse());
+                throw response.exception();
             }
-
-            return new SkinUploadResponse(response.text());
         }
     }
 

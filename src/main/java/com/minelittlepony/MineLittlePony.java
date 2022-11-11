@@ -36,10 +36,6 @@ public class MineLittlePony {
     public static final String MOD_NAME = "Mine Little Pony";
     public static final String MOD_VERSION = "@VERSION@";
 
-    private static final String MINELP_VALHALLA_SERVER = "http://skins.minelittlepony-mod.com";
-    private static final String MINELP_LEGACY_SERVER = "http://minelpskins.voxelmodpack.com";
-    private static final String MINELP_LEGACY_GATEWAY = "http://minelpskinmanager.voxelmodpack.com";
-
     private static final KeyBinding SETTINGS_GUI = new KeyBinding("Settings", Keyboard.KEY_F9, "Mine Little Pony");
 
     private static MineLittlePony instance;
@@ -69,10 +65,6 @@ public class MineLittlePony {
 
         MetadataSerializer ms = Minecraft.getMinecraft().getResourcePackRepository().rprMetadataSerializer;
         ms.registerMetadataSectionType(new PonyDataSerialiser(), IPonyData.class);
-
-        // This also makes it the default gateway server.
-        SkinServer.defaultServers.add(new LegacySkinServer(MINELP_LEGACY_SERVER, MINELP_LEGACY_GATEWAY));
-        SkinServer.defaultServers.add(0, new ValhallaSkinServer(MINELP_VALHALLA_SERVER));
     }
 
     /**
