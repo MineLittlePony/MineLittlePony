@@ -36,6 +36,6 @@ Stable Releases Channel: `https://repo.minelittlepony-mod.com/maven/release`
 
 Unstable Snapshot Channel: `https://repo.minelittlepony-mod.com/maven/snapshot`
 
-Dependency: `com.minelittlepony:MineLittlePony:<version>-1.15.2`
+Dependency: `com.minelittlepony:minelittlepony:<version>`
 
 Check [releases](https://github.com/MineLittlePony/MineLittlePony/releases) for the most recent release version or the `gradle.properties` for most recent snapshot version.
