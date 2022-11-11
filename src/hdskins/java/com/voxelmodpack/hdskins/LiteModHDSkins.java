@@ -17,6 +17,7 @@ import com.voxelmodpack.hdskins.gui.HDSkinsConfigPanel;
 import com.voxelmodpack.hdskins.gui.RenderPlayerModel;
 import com.voxelmodpack.hdskins.server.*;
 import com.voxelmodpack.hdskins.upload.GLWindow;
+import com.voxelmodpack.hdskins.util.SslHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -46,6 +47,9 @@ public class LiteModHDSkins implements InitCompleteListener, ViewportListener, C
     @Expose
     public String lastChosenFile = "";
 
+    @Expose
+    public boolean skipLetsEncrypt = false;
+
     public LiteModHDSkins() {
         instance = this;
     }
@@ -72,6 +76,10 @@ public class LiteModHDSkins implements InitCompleteListener, ViewportListener, C
 
         IReloadableResourceManager irrm = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
         irrm.registerReloadListener(HDSkinManager.INSTANCE);
+
+        if (!skipLetsEncrypt) {
+            SslHelper.doStuff(HDSkinManager.logger);
+        }
     }
 
     @Override

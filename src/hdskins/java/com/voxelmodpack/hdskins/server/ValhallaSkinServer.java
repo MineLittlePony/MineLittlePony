@@ -36,6 +36,9 @@ public class ValhallaSkinServer implements SkinServer {
     private transient String accessToken;
 
     public ValhallaSkinServer(String address) {
+        if (address.startsWith("http:")) {
+            address = address.replace("http:", "https:");
+        }
         this.address = address;
     }
 
