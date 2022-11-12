@@ -244,6 +244,7 @@ public class SkinUploader implements Closeable {
                 logger.error(ex.getReasonPhrase(), ex);
                 setError("A fatal server error has ocurred (check logs for details): \n" + ex.getReasonPhrase());
             } else if (code >= 400 && code != 403 && code != 404) {
+                logger.error(ex.getReasonPhrase(), ex);
                 setError(ex.getReasonPhrase());
             }
         } else {
