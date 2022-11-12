@@ -25,10 +25,8 @@ import com.voxelmodpack.hdskins.resources.SkinResourceManager;
 import com.voxelmodpack.hdskins.resources.TextureLoader;
 import com.voxelmodpack.hdskins.resources.texture.ImageBufferDownloadHD;
 import com.voxelmodpack.hdskins.server.SkinServer;
-import com.voxelmodpack.hdskins.util.CallableFutures;
-import com.voxelmodpack.hdskins.util.MoreStreams;
-import com.voxelmodpack.hdskins.util.PlayerUtil;
-import com.voxelmodpack.hdskins.util.ProfileTextureUtil;
+import com.voxelmodpack.hdskins.util.*;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiButton;
@@ -45,8 +43,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -77,7 +73,6 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
     public static final ExecutorService skinUploadExecutor = Executors.newSingleThreadExecutor();
     public static final ExecutorService skinDownloadExecutor = Executors.newFixedThreadPool(8);
-    public static final CloseableHttpClient httpClient = HttpClients.createSystem();
 
     public static final HDSkinManager INSTANCE = new HDSkinManager();
 
@@ -127,7 +122,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
 
             for (SkinServer server : skinServers) {
                 try {
-                    if (!server.supportsFeature(Feature.SYNTHETIC)) {
+                    if (!server.getFeatures().contains(Feature.SYNTHETIC)) {
                         server.loadProfileData(profile).getTextures().forEach(textureMap::putIfAbsent);
                         if (textureMap.size() == Type.values().length) {
                             break;
@@ -149,7 +144,7 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             Property textures = Iterables.getFirst(profile.getProperties().get("textures"), null);
             if (textures != null) {
                 String json = new String(Base64.getDecoder().decode(textures.getValue()), StandardCharsets.UTF_8);
-                MinecraftTexturesPayload texturePayload = SkinServer.gson.fromJson(json, MinecraftTexturesPayload.class);
+                MinecraftTexturesPayload texturePayload = MoreHttpResponses.GSON.fromJson(json, MinecraftTexturesPayload.class);
                 if (texturePayload != null) {
                     // name is optional
                     String name = texturePayload.getProfileName();

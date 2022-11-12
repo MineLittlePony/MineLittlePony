@@ -75,7 +75,6 @@ public class ModelBreezie extends ModelBiped {
         rightWing.render(scale);
     }
 
-    @SuppressWarnings("incomplete-switch")
     @Override
     public void setRotationAngles(float move, float swing, float ticks, float headYaw, float headPitch, float scale, Entity entity) {
 

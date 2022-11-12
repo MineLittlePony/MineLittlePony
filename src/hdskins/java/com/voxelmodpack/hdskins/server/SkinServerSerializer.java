@@ -27,6 +27,7 @@ public class SkinServerSerializer implements JsonSerializer<SkinServer>, JsonDes
         // register default skin server types
         addSkinServerType(ValhallaSkinServer.class);
         addSkinServerType(YggdrasilSkinServer.class);
+        addSkinServerType(BethlehemSkinServer.class);
         addSkinServerType(LegacySkinServer.class);
     }
 

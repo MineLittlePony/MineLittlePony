@@ -2,6 +2,7 @@ package com.voxelmodpack.hdskins.server;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
@@ -9,9 +10,7 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
-import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.gui.Feature;
-import com.voxelmodpack.hdskins.util.CallableFutures;
 import com.voxelmodpack.hdskins.util.IndentedToStringStyle;
 import com.voxelmodpack.hdskins.util.MoreHttpResponses;
 import com.voxelmodpack.hdskins.util.NetClient;
@@ -25,11 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+import java.util.*;
 import javax.annotation.Nullable;
 
 @Deprecated
@@ -37,6 +32,12 @@ import javax.annotation.Nullable;
 public class LegacySkinServer implements SkinServer {
 
     private static final String SERVER_ID = "7853dfddc358333843ad55a2c7485c4aa0380a51";
+
+    private static final Set<Feature> FEATURES = Sets.newHashSet(
+            Feature.DOWNLOAD_USER_SKIN,
+            Feature.UPLOAD_USER_SKIN,
+            Feature.DELETE_USER_SKIN
+    );
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -88,13 +89,13 @@ public class LegacySkinServer implements SkinServer {
     }
 
     private MinecraftProfileTexture loadProfileTexture(GameProfile profile, String url) throws IOException {
-        try (MoreHttpResponses resp = MoreHttpResponses.execute(HDSkinManager.httpClient, new HttpHead(url))) {
+        try (MoreHttpResponses resp = MoreHttpResponses.execute(HTTP_CLIENT, new HttpHead(url))) {
             if (!resp.ok()) {
-                throw new HttpException(resp.getResponse());
+                throw new HttpException(resp.response());
             }
             logger.debug("Found skin for {} at {}", profile.getName(), url);
 
-            Header eTagHeader = resp.getResponse().getFirstHeader(HttpHeaders.ETAG);
+            Header eTagHeader = resp.response().getFirstHeader(HttpHeaders.ETAG);
             final String eTag = eTagHeader == null ? "" : StringUtils.strip(eTagHeader.getValue(), "\"");
 
             // Add the ETag onto the end of the texture hash. Should properly cache the textures.
@@ -131,7 +132,7 @@ public class LegacySkinServer implements SkinServer {
         }
 
         if (!response.equalsIgnoreCase("OK") && !response.endsWith("OK")) {
-            throw new HttpException(response, resp.getResponseCode(), null);
+            throw new HttpException(response, resp.responseCode(), null);
         }
     }
 
@@ -159,14 +160,8 @@ public class LegacySkinServer implements SkinServer {
     }
 
     @Override
-    public boolean supportsFeature(Feature feature) {
-        switch (feature) {
-            case DOWNLOAD_USER_SKIN:
-            case UPLOAD_USER_SKIN:
-            case DELETE_USER_SKIN:
-                return true;
-            default: return false;
-        }
+    public Set<Feature> getFeatures() {
+        return FEATURES;
     }
 
     @Override

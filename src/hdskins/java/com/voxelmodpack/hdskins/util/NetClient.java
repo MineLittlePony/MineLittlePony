@@ -1,6 +1,7 @@
 package com.voxelmodpack.hdskins.util;
 
-import com.voxelmodpack.hdskins.HDSkinManager;
+import com.voxelmodpack.hdskins.server.SkinServer;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
@@ -17,6 +18,7 @@ import java.util.concurrent.Executor;
 /**
  * Ew. Why so many builders? >.<
  */
+@Deprecated
 public class NetClient {
 
     private final RequestBuilder rqBuilder;
@@ -71,7 +73,7 @@ public class NetClient {
             }
         }
 
-        return MoreHttpResponses.execute(HDSkinManager.httpClient, request);
+        return MoreHttpResponses.execute(SkinServer.HTTP_CLIENT, request);
     }
 
     public CompletableFuture<MoreHttpResponses> async(Executor exec) {

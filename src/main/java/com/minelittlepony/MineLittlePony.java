@@ -8,9 +8,6 @@ import com.minelittlepony.pony.data.PonyManager;
 import com.minelittlepony.render.skull.PonySkullRenderer;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.voxelmodpack.hdskins.HDSkinManager;
-import com.voxelmodpack.hdskins.server.LegacySkinServer;
-import com.voxelmodpack.hdskins.server.SkinServer;
-import com.voxelmodpack.hdskins.server.ValhallaSkinServer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;

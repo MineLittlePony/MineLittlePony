@@ -27,12 +27,6 @@ public class CallableFutures {
         return ret;
     }
 
-    public static <T> CompletableFuture<T> failedFuture(Exception e) {
-        CompletableFuture<T> ret = new CompletableFuture<>();
-        ret.completeExceptionally(e);
-        return ret;
-    }
-
     public static <T> BiFunction<? super T, Throwable, Void> callback(Runnable c) {
         return (o, t) -> {
             if (t != null) {

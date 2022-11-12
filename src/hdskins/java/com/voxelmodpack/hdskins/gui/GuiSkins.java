@@ -509,12 +509,12 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
 
     private void updateButtons() {
         btnClear.enabled = uploader.canClear();
-        btnUpload.enabled = uploader.canUpload() && uploader.supportsFeature(Feature.UPLOAD_USER_SKIN);
+        btnUpload.enabled = uploader.canUpload() && uploader.getFeatures().contains(Feature.UPLOAD_USER_SKIN);
         btnDownload.enabled = uploader.canClear() && !chooser.pickingInProgress();
         btnBrowse.enabled = !chooser.pickingInProgress();
 
-        boolean types = !uploader.supportsFeature(Feature.MODEL_TYPES);
-        boolean variants = !uploader.supportsFeature(Feature.MODEL_VARIANTS);
+        boolean types = !uploader.getFeatures().contains(Feature.MODEL_TYPES);
+        boolean variants = !uploader.getFeatures().contains(Feature.MODEL_VARIANTS);
 
         btnModeSkin.setLocked(types);
         btnModeElytra.setLocked(types);
@@ -522,9 +522,9 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
         btnModeSteve.setLocked(variants);
         btnModeAlex.setLocked(variants);
 
-        btnClear.setLocked(!uploader.supportsFeature(Feature.DELETE_USER_SKIN));
-        btnUpload.setLocked(!uploader.supportsFeature(Feature.UPLOAD_USER_SKIN));
-        btnDownload.setLocked(!uploader.supportsFeature(Feature.DOWNLOAD_USER_SKIN));
+        btnClear.setLocked(!uploader.getFeatures().contains(Feature.DELETE_USER_SKIN));
+        btnUpload.setLocked(!uploader.getFeatures().contains(Feature.UPLOAD_USER_SKIN));
+        btnDownload.setLocked(!uploader.getFeatures().contains(Feature.DOWNLOAD_USER_SKIN));
     }
 
     protected class FeatureButton extends Button {

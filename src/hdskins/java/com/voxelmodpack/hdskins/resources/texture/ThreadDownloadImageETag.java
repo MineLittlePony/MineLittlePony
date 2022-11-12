@@ -197,13 +197,13 @@ public class ThreadDownloadImageETag extends SimpleTexture implements IBufferedT
             if (resp.ok()) {
                 // write the image to disk
                 Files.createDirectories(cacheFile.getParent());
-                Files.copy(resp.getInputStream(), cacheFile);
+                Files.copy(resp.inputStream(), cacheFile);
 
                 try (InputStream in = Files.newInputStream(cacheFile)) {
                     BufferedImage bufferedimage = ImageIO.read(in);
 
                     // maybe write the etag to disk
-                    Header eTag = resp.getResponse().getFirstHeader(HttpHeaders.ETAG);
+                    Header eTag = resp.response().getFirstHeader(HttpHeaders.ETAG);
                     if (eTag != null) {
                         Files.write(eTagFile, Collections.singleton(eTag.getValue()));
                     }

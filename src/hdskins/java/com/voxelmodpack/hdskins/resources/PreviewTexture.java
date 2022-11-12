@@ -6,6 +6,10 @@ import net.minecraft.util.ResourceLocation;
 
 import com.voxelmodpack.hdskins.VanillaModels;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
 import javax.annotation.Nullable;
 
 public class PreviewTexture extends ThreadDownloadImageData {
@@ -25,6 +29,10 @@ public class PreviewTexture extends ThreadDownloadImageData {
 
     public boolean isTextureUploaded() {
         return uploaded && this.getGlTextureId() > -1;
+    }
+
+    public InputStream openStream() throws IOException {
+        return new URL(fileUrl).openStream();
     }
 
     public String getUrl() {

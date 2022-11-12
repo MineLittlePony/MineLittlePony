@@ -39,7 +39,8 @@ public class YggdrasilSkinServer implements SkinServer {
             Feature.DOWNLOAD_USER_SKIN,
             Feature.DELETE_USER_SKIN,
             Feature.MODEL_VARIANTS,
-            Feature.MODEL_TYPES);
+            Feature.MODEL_TYPES
+    );
 
     private transient final String address = "https://api.mojang.com";
     private transient final String verify = "https://authserver.mojang.com/validate";
@@ -47,8 +48,8 @@ public class YggdrasilSkinServer implements SkinServer {
     private transient final boolean requireSecure = true;
 
     @Override
-    public boolean supportsFeature(Feature feature) {
-        return FEATURES.contains(feature);
+    public Set<Feature> getFeatures() {
+        return FEATURES;
     }
 
     @Override
@@ -142,7 +143,7 @@ public class YggdrasilSkinServer implements SkinServer {
     }
 
     private void send(RequestBuilder request) throws IOException {
-        try (MoreHttpResponses response = MoreHttpResponses.execute(HDSkinManager.httpClient, request.build())) {
+        try (MoreHttpResponses response = MoreHttpResponses.execute(HTTP_CLIENT, request.build())) {
             if (!response.ok()) {
                 throw new IOException(response.json(ErrorResponse.class, "Server error wasn't in json: {}").toString());
             }

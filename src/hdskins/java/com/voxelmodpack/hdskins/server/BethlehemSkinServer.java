@@ -1,6 +1,7 @@
 package com.voxelmodpack.hdskins.server;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
@@ -13,14 +14,21 @@ import com.voxelmodpack.hdskins.util.MoreHttpResponses;
 import com.voxelmodpack.hdskins.util.NetClient;
 
 import java.io.IOException;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @Deprecated
 @ServerType("bethlehem")
 public class BethlehemSkinServer implements SkinServer {
 
     private static final String SERVER_ID = "7853dfddc358333843ad55a2c7485c4aa0380a51";
+
+    private static final Set<Feature> FEATURES = Sets.newHashSet(
+            Feature.UPLOAD_USER_SKIN,
+            Feature.DOWNLOAD_USER_SKIN,
+            Feature.MODEL_VARIANTS,
+            Feature.MODEL_TYPES,
+            Feature.LINK_PROFILE
+    );
 
     @Expose
     private final String address;
@@ -30,13 +38,18 @@ public class BethlehemSkinServer implements SkinServer {
     }
 
     @Override
+    public Set<Feature> getFeatures() {
+        return FEATURES;
+    }
+
+    @Override
     public MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException {
         try (MoreHttpResponses response = new NetClient("GET", getPath(profile)).send()) {
             if (!response.ok()) {
-                throw new HttpException(response.getResponse());
+                throw new HttpException(response.response());
             }
 
-            return response.json(MinecraftTexturesPayload.class);
+            return response.unwrapAsJson(MinecraftTexturesPayload.class);
         }
     }
 
@@ -84,18 +97,5 @@ public class BethlehemSkinServer implements SkinServer {
         return new IndentedToStringStyle.Builder(this)
                 .append("address", address)
                 .build();
-    }
-
-    @Override
-    public boolean supportsFeature(Feature feature) {
-        switch (feature) {
-            case DOWNLOAD_USER_SKIN:
-            case UPLOAD_USER_SKIN:
-            case MODEL_VARIANTS:
-            case MODEL_TYPES:
-            case LINK_PROFILE:
-                return true;
-            default: return false;
-        }
     }
 }

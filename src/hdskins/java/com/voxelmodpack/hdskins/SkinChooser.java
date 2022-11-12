@@ -3,16 +3,14 @@ package com.voxelmodpack.hdskins;
 import com.voxelmodpack.hdskins.upload.IFileDialog;
 import com.voxelmodpack.hdskins.upload.ThreadOpenFilePNG;
 import com.voxelmodpack.hdskins.upload.ThreadSaveFilePNG;
-import com.voxelmodpack.hdskins.util.MoreHttpResponses;
 
 import net.minecraft.client.Minecraft;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.logging.log4j.LogManager;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
+import java.io.*;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.swing.UIManager;
@@ -73,12 +71,10 @@ public class SkinChooser {
     public void openSavePNG(Minecraft mc, String title) {
         openFileThread = new ThreadSaveFilePNG(mc, title, mc.getSession().getUsername() + ".png", (file, dialogResult) -> {
             if (dialogResult == 0) {
-                try (MoreHttpResponses response = uploader.downloadSkin().get()) {
-                    if (response.ok()) {
-                        FileUtils.copyInputStreamToFile(response.getInputStream(), file);
-                    }
-                } catch (IOException | InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
+                try (InputStream response = uploader.getServerTexture().openStream()) {
+                    FileUtils.copyInputStreamToFile(response, file);
+                } catch (IOException e) {
+                    LogManager.getLogger().error("Failed to save remote skin.", e);
                 }
             }
             openFileThread = null;

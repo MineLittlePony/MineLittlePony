@@ -5,9 +5,7 @@ import com.google.common.io.CharStreams;
 import com.google.gson.*;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
-import com.voxelmodpack.hdskins.server.SkinServer;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -35,69 +33,53 @@ public interface MoreHttpResponses extends AutoCloseable {
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
             .create();
 
-    CloseableHttpResponse getResponse();
+    CloseableHttpResponse response();
 
     default boolean ok() {
-        return getResponseCode() == HttpStatus.SC_OK;
+        return responseCode() < HttpStatus.SC_MULTIPLE_CHOICES;
     }
 
     default boolean json() {
         return "application/json".contentEquals(contentType().getMimeType());
     }
 
-    default int getResponseCode() {
-        return getResponse().getStatusLine().getStatusCode();
+    default int responseCode() {
+        return response().getStatusLine().getStatusCode();
     }
 
-    default Optional<HttpEntity> getEntity() {
-        return Optional.ofNullable(getResponse().getEntity());
+    default Optional<HttpEntity> entity() {
+        return Optional.ofNullable(response().getEntity());
     }
 
     default ContentType contentType() {
-        return getEntity()
+        return entity()
                 .map(ContentType::get)
                 .orElse(ContentType.DEFAULT_TEXT);
     }
 
-    default String getContentType() {
-        return getEntity().map(HttpEntity::getContentType).map(Header::getValue).orElse("text/plain");
+    default InputStream inputStream() throws IOException {
+        return response().getEntity().getContent();
     }
 
-    default InputStream getInputStream() throws IOException {
-        return getResponse().getEntity().getContent();
-    }
-
-    default BufferedReader getReader() throws IOException {
-        return new BufferedReader(new InputStreamReader(getInputStream(), StandardCharsets.UTF_8));
+    default BufferedReader reader() throws IOException {
+        return new BufferedReader(new InputStreamReader(inputStream(), StandardCharsets.UTF_8));
     }
 
     default byte[] bytes() throws IOException {
-        try (InputStream input = getInputStream()) {
+        try (InputStream input = inputStream()) {
             return ByteStreams.toByteArray(input);
         }
     }
 
     default String text() throws IOException {
-        try (BufferedReader reader = getReader()) {
+        try (BufferedReader reader = reader()) {
             return CharStreams.toString(reader);
         }
     }
 
     default Stream<String> lines() throws IOException {
-        try (BufferedReader reader = getReader()) {
+        try (BufferedReader reader = reader()) {
             return reader.lines();
-        }
-    }
-
-    default <T> T json(Class<T> type) throws IOException {
-        try (BufferedReader reader = getReader()) {
-            return SkinServer.gson.fromJson(reader, type);
-        }
-    }
-
-    default <T> T json(Type type) throws IOException {
-        try (BufferedReader reader = getReader()) {
-            return SkinServer.gson.fromJson(reader, type);
         }
     }
 
@@ -112,18 +94,14 @@ public interface MoreHttpResponses extends AutoCloseable {
             throw new IOException(text);
         }
 
-        try (BufferedReader reader = getReader()) {
+        try (BufferedReader reader = reader()) {
             return GSON.fromJson(reader, type);
         }
     }
 
     default <T> T unwrapAsJson(Type type) throws IOException {
-        if (!"application/json".equals(getContentType())) {
-            throw new IOException("Server returned a non-json response!");
-        }
-
         if (ok()) {
-            return json(type);
+            return json(type, "Server returned a non-json response!");
         }
 
         throw exception();
@@ -135,7 +113,7 @@ public interface MoreHttpResponses extends AutoCloseable {
 
     @Override
     default void close() throws IOException {
-        this.getResponse().close();
+        response().close();
     }
 
     static MoreHttpResponses execute(CloseableHttpClient client, HttpUriRequest request) throws IOException {

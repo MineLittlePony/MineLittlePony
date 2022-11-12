@@ -1,13 +1,13 @@
 package com.voxelmodpack.hdskins.server;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
-import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.gui.Feature;
 import com.voxelmodpack.hdskins.util.IndentedToStringStyle;
 import com.voxelmodpack.hdskins.util.MoreHttpResponses;
@@ -23,12 +23,19 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 @ServerType("valhalla")
 public class ValhallaSkinServer implements SkinServer {
     private static final String API_PREFIX = "/api/v1";
+
+    private static final Set<Feature> FEATURES = Sets.newHashSet(
+            Feature.DOWNLOAD_USER_SKIN,
+            Feature.UPLOAD_USER_SKIN,
+            Feature.DELETE_USER_SKIN,
+            Feature.MODEL_VARIANTS,
+            Feature.MODEL_TYPES
+    );
 
     @Expose
     private final String address;
@@ -48,13 +55,13 @@ public class ValhallaSkinServer implements SkinServer {
 
     @Override
     public MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException, AuthenticationException {
-        try (MoreHttpResponses response = MoreHttpResponses.execute(HDSkinManager.httpClient, new HttpGet(getTexturesURI(profile)))) {
+        try (MoreHttpResponses response = MoreHttpResponses.execute(HTTP_CLIENT, new HttpGet(getTexturesURI(profile)))) {
 
             if (response.ok()) {
                 return response.unwrapAsJson(MinecraftTexturesPayload.class);
             }
 
-            throw new HttpException(response.getResponse());
+            throw new HttpException(response.response());
         }
     }
 
@@ -123,7 +130,7 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     private void upload(HttpUriRequest request) throws IOException {
-        try (MoreHttpResponses response = MoreHttpResponses.execute(HDSkinManager.httpClient, request)) {
+        try (MoreHttpResponses response = MoreHttpResponses.execute(HTTP_CLIENT, request)) {
             if (!response.ok()) {
                 throw response.exception();
             }
@@ -152,7 +159,7 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     private AuthHandshake authHandshake(String name) throws IOException {
-        try (MoreHttpResponses resp = MoreHttpResponses.execute(HDSkinManager.httpClient, RequestBuilder.post()
+        try (MoreHttpResponses resp = MoreHttpResponses.execute(HTTP_CLIENT, RequestBuilder.post()
                 .setUri(getHandshakeURI())
                 .addParameter("name", name)
                 .build())) {
@@ -161,7 +168,7 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     private AuthResponse authResponse(String name, long verifyToken) throws IOException {
-        try (MoreHttpResponses resp = MoreHttpResponses.execute(HDSkinManager.httpClient, RequestBuilder.post()
+        try (MoreHttpResponses resp = MoreHttpResponses.execute(HTTP_CLIENT, RequestBuilder.post()
                 .setUri(getResponseURI())
                 .addParameter("name", name)
                 .addParameter("verifyToken", String.valueOf(verifyToken))
@@ -190,16 +197,8 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     @Override
-    public boolean supportsFeature(Feature feature) {
-        switch (feature) {
-            case DOWNLOAD_USER_SKIN:
-            case UPLOAD_USER_SKIN:
-            case DELETE_USER_SKIN:
-            case MODEL_VARIANTS:
-            case MODEL_TYPES:
-                return true;
-            default: return false;
-        }
+    public Set<Feature> getFeatures() {
+        return FEATURES;
     }
 
     @Override
@@ -211,7 +210,6 @@ public class ValhallaSkinServer implements SkinServer {
 
     @SuppressWarnings("WeakerAccess")
     private static class AuthHandshake {
-
         private boolean offline;
         private String serverId;
         private long verifyToken;
@@ -219,9 +217,7 @@ public class ValhallaSkinServer implements SkinServer {
 
     @SuppressWarnings("WeakerAccess")
     private static class AuthResponse {
-
         private String accessToken;
         private UUID userId;
-
     }
 }

@@ -18,20 +18,16 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.voxelmodpack.hdskins.gui.EntityPlayerModel;
 import com.voxelmodpack.hdskins.gui.Feature;
+import com.voxelmodpack.hdskins.resources.PreviewTexture;
 import com.voxelmodpack.hdskins.resources.PreviewTextureManager;
 import com.voxelmodpack.hdskins.server.HttpException;
 import com.voxelmodpack.hdskins.server.SkinServer;
 import com.voxelmodpack.hdskins.server.SkinUpload;
-import com.voxelmodpack.hdskins.util.MoreHttpResponses;
-import com.voxelmodpack.hdskins.util.NetClient;
 
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class SkinUploader implements Closeable {
@@ -104,8 +100,8 @@ public class SkinUploader implements Closeable {
         return gateway == null ? "" : gateway.toString();
     }
 
-    public boolean supportsFeature(Feature feature) {
-        return gateway != null && gateway.supportsFeature(feature);
+    public Set<Feature> getFeatures() {
+        return gateway == null ? Collections.emptySet() : gateway.getFeatures();
     }
 
     protected void setError(String er) {
@@ -196,10 +192,8 @@ public class SkinUploader implements Closeable {
         }, HDSkinManager.skinUploadExecutor).thenRunAsync(this::fetchRemote);
     }
 
-    public CompletableFuture<MoreHttpResponses> downloadSkin() {
-        String loc = remotePlayer.getLocal(skinType).getRemote().getUrl();
-
-        return new NetClient("GET", loc).async(HDSkinManager.skinDownloadExecutor);
+    public PreviewTexture getServerTexture() {
+        return remotePlayer.getLocal(skinType).getRemote();
     }
 
     protected void fetchRemote() {

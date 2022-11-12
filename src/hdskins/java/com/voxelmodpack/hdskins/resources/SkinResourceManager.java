@@ -6,6 +6,7 @@ import com.google.gson.JsonParseException;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
+
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
@@ -17,8 +18,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -126,4 +126,17 @@ public class SkinResourceManager implements IResourceManagerReloadListener {
         return skin;
     }
 
+    public static class SkinData {
+        List<Skin> skins;
+    }
+
+    public static class Skin {
+        String name;
+        UUID uuid;
+        String skin;
+
+        public ResourceLocation getTexture() {
+            return new ResourceLocation("hdskins", String.format("textures/skins/%s.png", skin));
+        }
+    }
 }

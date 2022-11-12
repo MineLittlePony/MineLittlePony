@@ -1,30 +1,26 @@
 package com.voxelmodpack.hdskins.server;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
-import com.mojang.util.UUIDTypeAdapter;
 import com.mumfrey.liteloader.modconfig.Exposable;
 import com.voxelmodpack.hdskins.gui.Feature;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 
 import java.io.IOException;
-import java.util.UUID;
+import java.util.Set;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 public interface SkinServer extends Exposable {
-
-    Gson gson = new GsonBuilder()
-            .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
-            .create();
+    CloseableHttpClient HTTP_CLIENT = HttpClients.createSystem();
 
     /**
-     * Returns true for any features that this skin server supports.
+     * Returns the set of features that this skin server supports.
      */
-    boolean supportsFeature(Feature feature);
+    Set<Feature> getFeatures();
 
     /**
      * Synchronously loads texture information for the provided profile.
