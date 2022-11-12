@@ -18,28 +18,31 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Credit to https://github.com/Cloudhunter/LetsEncryptCraft
+ *
+ * @author CloudHunter
+ * @author Sollace - modified to close resources
  */
 public class SslHelper {
 
     public static void addLetsEncryptCertificate() throws Exception {
-        InputStream cert = SslHelper.class.getResourceAsStream("lets-encrypt-x3-cross-signed.der");
 
-        KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-        Path ksPath = Paths.get(System.getProperty("java.home"),"lib", "security", "cacerts");
-        keyStore.load(Files.newInputStream(ksPath), "changeit".toCharArray());
+        try (InputStream caInput = SslHelper.class.getResourceAsStream("/lets-encrypt-x3-cross-signed.der")) {
+            Certificate crt = CertificateFactory.getInstance("X.509").generateCertificate(caInput);
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
 
-        CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            try (InputStream ksPath = Files.newInputStream(Paths.get(System.getProperty("java.home"), "lib", "security", "cacerts"))) {
+                keyStore.load(ksPath, "changeit".toCharArray());
+            }
 
-        InputStream caInput = new BufferedInputStream(cert);
-        Certificate crt = cf.generateCertificate(caInput);
+            keyStore.setCertificateEntry("lets-encrypt-x3-cross-signed", crt);
 
-        keyStore.setCertificateEntry("lets-encrypt-x3-cross-signed", crt);
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init(keyStore);
 
-        TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        tmf.init(keyStore);
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(null, tmf.getTrustManagers(), null);
-        SSLContext.setDefault(sslContext);
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, tmf.getTrustManagers(), null);
+            SSLContext.setDefault(sslContext);
+        }
     }
 
     public static void doStuff(Logger mod) {
@@ -48,8 +51,8 @@ public class SslHelper {
         Matcher matcher = p.matcher(version);
         String majorVersion;
         int minorVersion;
-        if (matcher.matches())
-        {
+
+        if (matcher.matches()) {
             majorVersion = matcher.group(1);
             minorVersion = Integer.valueOf(matcher.group(2));
         } else {
@@ -58,18 +61,15 @@ public class SslHelper {
             mod.info("Regex to parse Java version failed - applying LetsEncrypt anyway.");
         }
 
-        switch (majorVersion)
-        {
+        switch (majorVersion) {
             case "1.7":
-                if (minorVersion >= 111)
-                {
+                if (minorVersion >= 111) {
                     mod.info("LetsEncrypt is not needed as Java version is at least Java 7u111.");
                     return;
                 }
                 break;
             case "1.8":
-                if (minorVersion >= 101)
-                {
+                if (minorVersion >= 101) {
                     mod.info("LetsEncrypt is not needed as Java version is at least Java 8u101.");
                     return;
                 }
