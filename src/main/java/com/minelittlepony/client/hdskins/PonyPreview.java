@@ -27,10 +27,6 @@ class PonyPreview extends PlayerPreview {
         return new DummyPony(world, textures);
     }
 
-    public void setWet(boolean isWet) {
-        apply(p -> ((DummyPony)p).setWet(isWet));;
-    }
-
     @Override
     public Identifier getBlankSteveSkin(SkinType type) {
         if (type == SkinType.SKIN) {

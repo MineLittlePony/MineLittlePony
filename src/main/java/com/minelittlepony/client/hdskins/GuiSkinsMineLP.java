@@ -23,7 +23,7 @@ class GuiSkinsMineLP extends GuiSkins {
 
     private IPonyManager ponyManager = MineLittlePony.getInstance().getManager();
 
-    private static final String[] panoramas = new String[] {
+    private static final String[] PANORAMAS = new String[] {
         "minelittlepony:textures/cubemap/sugarcubecorner",
         "minelittlepony:textures/cubemap/quillsandsofas",
         "minelittlepony:textures/cubemap/sweetappleacres"
@@ -66,9 +66,9 @@ class GuiSkinsMineLP extends GuiSkins {
 
     @Override
     protected Identifier getBackground() {
-        int i = (int)Math.floor(Math.random() * panoramas.length);
+        int i = (int)Math.floor(Math.random() * PANORAMAS.length);
 
-        return new Identifier(panoramas[i]);
+        return new Identifier(PANORAMAS[i]);
     }
 
     @Override
