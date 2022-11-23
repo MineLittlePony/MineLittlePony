@@ -62,6 +62,9 @@ public enum Race implements TriggerPixelType<Race> {
     }
 
     public String getModelId(boolean isSlim) {
+        if (isHuman()) {
+            return isSlim ? "slim" : "default";
+        }
         return isSlim ? "slim" + name().toLowerCase() : name().toLowerCase();
     }
 }
