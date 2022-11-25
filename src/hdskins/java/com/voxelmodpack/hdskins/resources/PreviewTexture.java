@@ -23,7 +23,7 @@ public class PreviewTexture extends ThreadDownloadImageData {
     public PreviewTexture(@Nullable String model, String url, ResourceLocation fallbackTexture, @Nullable IImageBuffer imageBuffer) {
         super(null, url, fallbackTexture, imageBuffer);
 
-        this.model = VanillaModels.nonNull(model);
+        this.model = VanillaModels.of(model);
         this.fileUrl = url;
     }
 
