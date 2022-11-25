@@ -1,8 +1,5 @@
 package com.voxelmodpack.hdskins.server;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-
 import java.io.IOException;
 
 public class HttpException extends IOException {
@@ -11,14 +8,6 @@ public class HttpException extends IOException {
     private final String reason;
 
     private final int statusCode;
-
-    public HttpException(HttpResponse response) {
-        this(response.getStatusLine());
-    }
-
-    public HttpException(StatusLine status) {
-        this(status.getReasonPhrase(), status.getStatusCode(), null);
-    }
 
     public HttpException(String reason, int statusCode, Throwable cause) {
         super("(" + statusCode + ") " + reason, cause);

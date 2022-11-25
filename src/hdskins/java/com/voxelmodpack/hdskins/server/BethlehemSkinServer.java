@@ -44,10 +44,6 @@ public class BethlehemSkinServer implements SkinServer {
     @Override
     public TexturePayload loadProfileData(GameProfile profile) throws IOException {
         try (MoreHttpResponses response = new NetClient("GET", getPath(profile)).send()) {
-            if (!response.ok()) {
-                throw new HttpException(response.response());
-            }
-
             return response.requireOk().json(TexturePayload.class, "Invalid texture payload");
         }
     }
