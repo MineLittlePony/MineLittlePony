@@ -1,5 +1,7 @@
 .gradle/
 .settings/
+liteconfig
+.mixin.out
 bin/
 build/
 run/
