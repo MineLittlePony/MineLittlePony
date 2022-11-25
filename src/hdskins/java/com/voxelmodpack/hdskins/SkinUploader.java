@@ -185,7 +185,7 @@ public class SkinUploader implements Closeable {
         return CompletableFuture.runAsync(() -> {
             try {
                 gateway.performSkinUpload(new SkinUpload(mc.getSession(), skinType, localSkin == null ? null : localSkin.toURI(), skinMetadata));
-                setError("");
+                setError(null);
             } catch (Exception e) {
                 handleException(e);
             }
