@@ -1,3 +1,5 @@
+/*
+TODO: ForgeGradle can't understand test sourcesets. Sad.
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -129,3 +131,4 @@ public class WrappedGradleStart extends GradleStart {
         }
     }
 }
+*/
