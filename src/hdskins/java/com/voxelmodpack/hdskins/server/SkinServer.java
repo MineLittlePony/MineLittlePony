@@ -3,7 +3,6 @@ package com.voxelmodpack.hdskins.server;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
-import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mumfrey.liteloader.modconfig.Exposable;
 import com.voxelmodpack.hdskins.gui.Feature;
 import net.minecraft.client.Minecraft;
@@ -29,7 +28,7 @@ public interface SkinServer extends Exposable {
      *
      * @throws IOException  If any authentication or network error occurs.
      */
-    MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException, AuthenticationException;
+    TexturePayload loadProfileData(GameProfile profile) throws IOException, AuthenticationException;
 
     /**
      * Synchronously uploads a skin to this server.
@@ -51,7 +50,7 @@ public interface SkinServer extends Exposable {
      * @throws AuthenticationException
      * @throws IOException
      */
-    default MinecraftTexturesPayload getPreviewTextures(GameProfile profile) throws IOException, AuthenticationException {
+    default TexturePayload getPreviewTextures(GameProfile profile) throws IOException, AuthenticationException {
         return loadProfileData(profile);
     }
 

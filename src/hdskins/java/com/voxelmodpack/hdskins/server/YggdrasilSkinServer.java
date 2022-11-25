@@ -15,7 +15,6 @@ import com.google.gson.Gson;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.*;
-import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.HDSkinManager;
 import com.voxelmodpack.hdskins.gui.Feature;
@@ -53,9 +52,7 @@ public class YggdrasilSkinServer implements SkinServer {
     }
 
     @Override
-    public MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException, AuthenticationException {
-
-        Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> textures = new HashMap<>();
+    public TexturePayload loadProfileData(GameProfile profile) throws IOException, AuthenticationException {
 
         Minecraft client = Minecraft.getMinecraft();
         MinecraftSessionService session = client.getSessionService();
@@ -68,13 +65,16 @@ public class YggdrasilSkinServer implements SkinServer {
         }
         profile = newProfile;
 
+        Map<String, MinecraftProfileTexture> textures = new HashMap<>();
         try {
-            textures.putAll(session.getTextures(profile, requireSecure));
+            session.getTextures(profile, requireSecure).forEach((k, v) -> {
+                textures.put(k.name(), v);
+            });
         } catch (InsecureTextureException e) {
             HDSkinManager.logger.error(e);
         }
 
-        return TexturesPayloadBuilder.createTexturesPayload(profile, textures);
+        return new TexturePayload(profile, textures);
     }
 
     @Override

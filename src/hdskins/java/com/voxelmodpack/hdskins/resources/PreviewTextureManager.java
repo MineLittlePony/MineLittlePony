@@ -2,13 +2,14 @@ package com.voxelmodpack.hdskins.resources;
 
 import com.google.common.collect.Maps;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.voxelmodpack.hdskins.resources.texture.ISkinAvailableCallback;
 import com.voxelmodpack.hdskins.resources.texture.ImageBufferDownloadHD;
+import com.voxelmodpack.hdskins.server.TexturePayload;
 
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -19,19 +20,22 @@ import javax.annotation.Nullable;
  */
 public class PreviewTextureManager {
 
-    private final Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> textures;
+    private final Map<String, MinecraftProfileTexture> textures;
 
-    public PreviewTextureManager(MinecraftTexturesPayload payload) {
+    public PreviewTextureManager(TexturePayload payload) {
         this.textures = payload.getTextures();
     }
 
     @Nullable
     public PreviewTexture getPreviewTexture(ResourceLocation location, MinecraftProfileTexture.Type type, ResourceLocation def, @Nullable SkinManager.SkinAvailableCallback callback) {
-        if (!textures.containsKey(type)) {
+
+        String key = type.name().toLowerCase(Locale.ROOT);
+
+        if (!textures.containsKey(key)) {
             return null;
         }
 
-        MinecraftProfileTexture texture = textures.get(type);
+        MinecraftProfileTexture texture = textures.get(key);
         ISkinAvailableCallback buff = new ImageBufferDownloadHD(type, () -> {
             if (callback != null) {
                 callback.skinAvailable(type, location, new MinecraftProfileTexture(texture.getUrl(), Maps.newHashMap()));

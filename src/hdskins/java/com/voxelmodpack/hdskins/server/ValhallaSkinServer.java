@@ -6,7 +6,6 @@ import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.gui.Feature;
 import com.voxelmodpack.hdskins.util.IndentedToStringStyle;
@@ -54,14 +53,9 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     @Override
-    public MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException, AuthenticationException {
+    public TexturePayload loadProfileData(GameProfile profile) throws IOException, AuthenticationException {
         try (MoreHttpResponses response = MoreHttpResponses.execute(HTTP_CLIENT, new HttpGet(getTexturesURI(profile)))) {
-
-            if (response.ok()) {
-                return response.unwrapAsJson(MinecraftTexturesPayload.class);
-            }
-
-            throw new HttpException(response.response());
+            return response.requireOk().json(TexturePayload.class, "Invalid texture payload");
         }
     }
 
@@ -131,9 +125,7 @@ public class ValhallaSkinServer implements SkinServer {
 
     private void upload(HttpUriRequest request) throws IOException {
         try (MoreHttpResponses response = MoreHttpResponses.execute(HTTP_CLIENT, request)) {
-            if (!response.ok()) {
-                throw response.exception();
-            }
+            response.requireOk();
         }
     }
 
@@ -163,7 +155,7 @@ public class ValhallaSkinServer implements SkinServer {
                 .setUri(getHandshakeURI())
                 .addParameter("name", name)
                 .build())) {
-            return resp.unwrapAsJson(AuthHandshake.class);
+            return resp.requireOk().json(AuthHandshake.class, "Invalid handshake response");
         }
     }
 
@@ -173,7 +165,7 @@ public class ValhallaSkinServer implements SkinServer {
                 .addParameter("name", name)
                 .addParameter("verifyToken", String.valueOf(verifyToken))
                 .build())) {
-            return resp.unwrapAsJson(AuthResponse.class);
+            return resp.requireOk().json(AuthResponse.class, "Invalid auth response");
         }
     }
 

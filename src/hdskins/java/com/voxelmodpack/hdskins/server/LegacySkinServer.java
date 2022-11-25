@@ -8,13 +8,11 @@ import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.gui.Feature;
 import com.voxelmodpack.hdskins.util.IndentedToStringStyle;
 import com.voxelmodpack.hdskins.util.MoreHttpResponses;
 import com.voxelmodpack.hdskins.util.NetClient;
-import com.voxelmodpack.hdskins.util.TexturesPayloadBuilder;
 import net.minecraft.client.Minecraft;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
@@ -53,39 +51,39 @@ public class LegacySkinServer implements SkinServer {
     }
 
     @Override
-    public MinecraftTexturesPayload getPreviewTextures(GameProfile profile) throws IOException, AuthenticationException {
+    public TexturePayload getPreviewTextures(GameProfile profile) throws IOException, AuthenticationException {
         SkinServer.verifyServerConnection(Minecraft.getMinecraft().getSession(), SERVER_ID);
 
         if (Strings.isNullOrEmpty(gateway)) {
             throw gatewayUnsupported();
         }
 
-        Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = new EnumMap<>(MinecraftProfileTexture.Type.class);
+        Map<String, MinecraftProfileTexture> map = new HashMap<>();
         for (MinecraftProfileTexture.Type type : MinecraftProfileTexture.Type.values()) {
-            map.put(type, new MinecraftProfileTexture(getPath(gateway, type, profile), null));
+            map.put(type.name(), new MinecraftProfileTexture(getPath(gateway, type, profile), null));
         }
 
-        return TexturesPayloadBuilder.createTexturesPayload(profile, map);
+        return new TexturePayload(profile, map);
     }
 
     @Override
-    public MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException {
-        ImmutableMap.Builder<MinecraftProfileTexture.Type, MinecraftProfileTexture> builder = ImmutableMap.builder();
+    public TexturePayload loadProfileData(GameProfile profile) throws IOException {
+        ImmutableMap.Builder<String, MinecraftProfileTexture> builder = ImmutableMap.builder();
         for (MinecraftProfileTexture.Type type : MinecraftProfileTexture.Type.values()) {
 
             String url = getPath(address, type, profile);
             try {
-                builder.put(type, loadProfileTexture(profile, url));
+                builder.put(type.name(), loadProfileTexture(profile, url));
             } catch (IOException e) {
                 logger.trace("Couldn't find texture for {} at {}. Does it exist?", profile.getName(), url, e);
             }
         }
 
-        Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = builder.build();
+        Map<String, MinecraftProfileTexture> map = builder.build();
         if (map.isEmpty()) {
             throw new HttpException(String.format("No textures found for %s at %s", profile, this.address), 404, null);
         }
-        return TexturesPayloadBuilder.createTexturesPayload(profile, map);
+        return new TexturePayload(profile, map);
     }
 
     private MinecraftProfileTexture loadProfileTexture(GameProfile profile, String url) throws IOException {
@@ -125,7 +123,7 @@ public class LegacySkinServer implements SkinServer {
         }
 
         MoreHttpResponses resp = client.send();
-        String response = resp.text();
+        String response = resp.reader().readLine();
 
         if (response.startsWith("ERROR: ")) {
             response = response.substring(7);

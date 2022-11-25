@@ -232,7 +232,7 @@ public class SkinUploader implements Closeable {
         if (throwable instanceof AuthenticationUnavailableException) {
             offline = true;
         } else if (throwable instanceof InvalidCredentialsException) {
-            setError("hdskins.error.session");
+            setError("Invalid session: Please try restarting Minecraft");
         } else if (throwable instanceof AuthenticationException) {
             throttlingNeck = true;
         } else if (throwable instanceof HttpException) {

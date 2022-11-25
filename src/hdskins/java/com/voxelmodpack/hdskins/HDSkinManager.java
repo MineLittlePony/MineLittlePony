@@ -51,13 +51,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -123,7 +117,14 @@ public final class HDSkinManager implements IResourceManagerReloadListener {
             for (SkinServer server : skinServers) {
                 try {
                     if (!server.getFeatures().contains(Feature.SYNTHETIC)) {
-                        server.loadProfileData(profile).getTextures().forEach(textureMap::putIfAbsent);
+                        server.loadProfileData(profile).getTextures().forEach((k, v) -> {
+                            try {
+                                Type t = Type.valueOf(k.toUpperCase(Locale.ROOT));
+                                if (t != null) {
+                                    textureMap.put(t, v);
+                                }
+                            } catch (Exception e) {}
+                        });
                         if (textureMap.size() == Type.values().length) {
                             break;
                         }

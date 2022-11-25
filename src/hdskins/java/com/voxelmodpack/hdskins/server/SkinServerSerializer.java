@@ -11,7 +11,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.voxelmodpack.hdskins.HDSkinManager;
 
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;

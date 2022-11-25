@@ -6,7 +6,6 @@ import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
-import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.voxelmodpack.hdskins.gui.Feature;
 import com.voxelmodpack.hdskins.util.IndentedToStringStyle;
@@ -43,13 +42,13 @@ public class BethlehemSkinServer implements SkinServer {
     }
 
     @Override
-    public MinecraftTexturesPayload loadProfileData(GameProfile profile) throws IOException {
+    public TexturePayload loadProfileData(GameProfile profile) throws IOException {
         try (MoreHttpResponses response = new NetClient("GET", getPath(profile)).send()) {
             if (!response.ok()) {
                 throw new HttpException(response.response());
             }
 
-            return response.unwrapAsJson(MinecraftTexturesPayload.class);
+            return response.requireOk().json(TexturePayload.class, "Invalid texture payload");
         }
     }
 
@@ -66,9 +65,7 @@ public class BethlehemSkinServer implements SkinServer {
         }
 
         try (MoreHttpResponses response = client.send()) {
-            if (!response.ok()) {
-                throw response.exception();
-            }
+            response.requireOk();
         }
     }
 
