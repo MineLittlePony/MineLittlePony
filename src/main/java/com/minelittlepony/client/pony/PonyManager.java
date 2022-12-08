@@ -1,8 +1,6 @@
 package com.minelittlepony.client.pony;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.google.common.cache.*;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.client.MineLittlePony;
@@ -38,6 +36,10 @@ public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloa
 
     private final PonyConfig config;
 
+    private final Cache<Identifier, IPony> defaultedPoniesCache = CacheBuilder.newBuilder()
+            .expireAfterAccess(30, TimeUnit.SECONDS)
+            .build();
+
     private final LoadingCache<Identifier, IPony> poniesCache = CacheBuilder.newBuilder()
             .expireAfterAccess(30, TimeUnit.SECONDS)
             .build(CacheLoader.from(Pony::new));
@@ -67,7 +69,7 @@ public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloa
         try {
             return poniesCache.get(resource);
         } catch (ExecutionException e) {
-            return new Pony(resource, PonyData.MEM_NULL);
+            return new Pony(resource, PonyData.MEM_NULL, true);
         }
     }
 
@@ -111,10 +113,18 @@ public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloa
         return pony;
     }
 
+    private IPony getAsDefaulted(IPony pony) {
+        try {
+            return defaultedPoniesCache.get(pony.texture(), () -> new Pony(pony.texture(), ((Pony)pony).memoizedData(), true));
+        } catch (ExecutionException e) {
+            return pony;
+        }
+    }
+
     @Override
     public IPony getDefaultPony(UUID uuid) {
         if (config.ponyLevel.get() != PonyLevel.PONIES) {
-            return ((Pony)getPony(DefaultSkinHelper.getTexture(uuid))).markDefaulted();
+            return getAsDefaulted(getPony(DefaultSkinHelper.getTexture(uuid)));
         }
 
         return getBackgroundPony(uuid);
@@ -122,17 +132,19 @@ public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloa
 
     @Override
     public IPony getBackgroundPony(UUID uuid) {
-        return ((Pony)getPony(MineLittlePony.getInstance().getVariatedTextures().get(BACKGROUND_PONIES, uuid))).markDefaulted();
+        return getAsDefaulted(getPony(MineLittlePony.getInstance().getVariatedTextures().get(BACKGROUND_PONIES, uuid)));
     }
 
     @Override
     public void removePony(Identifier resource) {
         poniesCache.invalidate(resource);
+        defaultedPoniesCache.invalidate(resource);
     }
 
     public void clearCache() {
         MineLittlePony.logger.info("Flushed {} cached ponies.", poniesCache.size());
         poniesCache.invalidateAll();
+        defaultedPoniesCache.invalidateAll();
     }
 
     @Override

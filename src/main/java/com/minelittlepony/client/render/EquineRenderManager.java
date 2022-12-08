@@ -8,7 +8,6 @@ import com.minelittlepony.api.pony.network.fabric.PonyDataCallback;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
-import com.minelittlepony.client.pony.Pony;
 import com.minelittlepony.client.transform.PonyPosture;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.util.MathUtil;
@@ -168,7 +167,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
     }
 
     private void updateForEntity(IPony pony, Entity entity) {
-        if (pony.hasMetadata() && entity instanceof Pony.RegistrationHandler && ((Pony.RegistrationHandler)entity).shouldUpdateRegistration(pony)) {
+        if (pony.hasMetadata() && entity instanceof RegistrationHandler && ((RegistrationHandler)entity).shouldUpdateRegistration(pony)) {
             entity.calculateDimensions();
 
             PlayerEntity clientPlayer = MinecraftClient.getInstance().player;
@@ -215,5 +214,9 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         }
 
         return y;
+    }
+
+    public interface RegistrationHandler {
+        boolean shouldUpdateRegistration(IPony pony);
     }
 }

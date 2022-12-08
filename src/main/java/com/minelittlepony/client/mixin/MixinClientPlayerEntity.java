@@ -3,6 +3,7 @@ package com.minelittlepony.client.mixin;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.pony.Pony;
+import com.minelittlepony.client.render.EquineRenderManager;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -18,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerEntity.class)
-abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implements Pony.RegistrationHandler {
+abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implements EquineRenderManager.RegistrationHandler {
     public MixinClientPlayerEntity() { super(null, null); }
 
     @Nullable

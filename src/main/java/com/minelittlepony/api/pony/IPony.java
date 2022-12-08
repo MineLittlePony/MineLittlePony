@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import com.google.common.collect.ComparisonChain;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.settings.PonyConfig;
 
 public interface IPony extends Comparable<IPony> {
 
@@ -41,7 +42,9 @@ public interface IPony extends Comparable<IPony> {
     /**
      * Gets the race associated with this pony.
      */
-    Race race();
+    default Race race() {
+        return PonyConfig.getEffectiveRace(metadata().getRace());
+    }
 
     /**
      * Gets the texture used for rendering this pony.

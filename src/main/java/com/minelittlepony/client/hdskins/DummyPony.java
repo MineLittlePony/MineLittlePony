@@ -7,13 +7,13 @@ import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.client.IPreviewModel;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.client.pony.Pony;
+import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.hdskins.client.dummy.*;
 
 /**
  * Dummy model used for the skin uploading screen.
  */
-class DummyPony extends DummyPlayer implements IPreviewModel, ModelAttributes.Swimmer, IPonyManager.ForcedPony, Pony.RegistrationHandler {
+class DummyPony extends DummyPlayer implements IPreviewModel, ModelAttributes.Swimmer, IPonyManager.ForcedPony, EquineRenderManager.RegistrationHandler {
 
     public DummyPony(ClientWorld world, PlayerSkins<?> textures) {
         super(world, textures);
