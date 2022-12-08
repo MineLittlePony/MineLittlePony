@@ -3,10 +3,10 @@ package com.minelittlepony.client;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 
 import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.common.util.settings.Setting;
 
 public class HorseCam {
     private static float lastOriginalPitch;
@@ -48,8 +48,20 @@ public class HorseCam {
         IPony pony = MineLittlePony.getInstance().getManager().getPony(player);
 
         if (!pony.getRace().isHuman()) {
-            float factor = pony.getMetadata().getSize().getEyeHeightFactor();
-            pitch = rescaleCameraPitch(player.getStandingEyeHeight() / factor, pitch);
+            Setting<Boolean> fillyCam = MineLittlePony.getInstance().getConfig().fillycam;
+
+            fillyCam.set(false);
+            final float vanillaHeight = player.getEyeHeight(player.getPose());
+            fillyCam.set(true);
+            final float alteredHeight = player.getEyeHeight(player.getPose());
+
+            // only change the angle if required
+            if (!MathHelper.approximatelyEquals(vanillaHeight, alteredHeight)) {
+                pitch = rescaleCameraPitch(vanillaHeight, pitch);
+            }
+
+            //float factor = pony.getMetadata().getSize().getEyeHeightFactor();
+            //pitch = rescaleCameraPitch(player.getStandingEyeHeight() / factor, pitch);
         }
 
         if (lastOriginalPitch != 0) {
@@ -123,8 +135,8 @@ public class HorseCam {
         Vec3d hitPos = hit.getPos();
         Vec3d pos = player.getPos();
 
-        double diffX = Math.abs(hitPos.x - pos.x);
-        double diffZ = Math.abs(hitPos.z - pos.z);
+        double diffX = hitPos.x - pos.x;
+        double diffZ = hitPos.z - pos.z;
 
         double horDist = Math.sqrt(diffX * diffX + diffZ * diffZ);
 
