@@ -37,7 +37,7 @@ public class PlayerPonySkull implements ISkull {
 
     @Override
     public Identifier getSkinResource(@Nullable GameProfile profile) {
-        deadMau5.get().setVisible(true);//profile != null && "deadmau5".equals(profile.getName()));
+        deadMau5.get().setVisible(profile != null && "deadmau5".equals(profile.getName()));
 
         if (profile != null) {
             Identifier skin = SkinsProxy.instance.getSkinTexture(profile);
@@ -54,12 +54,12 @@ public class PlayerPonySkull implements ISkull {
 
     @Override
     public boolean bindPony(IPony pony) {
-        Race race = pony.getRace();
+        Race race = pony.race();
         if (race.isHuman()) {
             return false;
         }
         ponyHead = modelCache.computeIfAbsent(ModelType.getPlayerModel(race), key -> key.getKey(false).createModel());
-        ponyHead.setMetadata(pony.getMetadata());
+        ponyHead.setMetadata(pony.metadata());
         return true;
     }
 

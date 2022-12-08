@@ -1,6 +1,7 @@
 package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.api.pony.PonyPosture;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.PonyElytra;
@@ -43,7 +44,7 @@ public class ElytraFeature<T extends LivingEntity, M extends EntityModel<T> & IP
 
             getContextModel().copyStateTo(elytra);
             if (elytra instanceof PonyElytra) {
-                ((PonyElytra<T>)elytra).isSneaking = getContext().getEntityPony(entity).isCrouching(entity);
+                ((PonyElytra<T>)elytra).isSneaking = PonyPosture.isCrouching(getContext().getEntityPony(entity), entity);
             }
 
             elytra.setAngles(entity, limbDistance, limbAngle, age, headYaw, headPitch);

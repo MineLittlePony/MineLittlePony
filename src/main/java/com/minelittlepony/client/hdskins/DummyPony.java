@@ -3,6 +3,7 @@ package com.minelittlepony.client.hdskins;
 import net.minecraft.client.world.ClientWorld;
 
 import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.client.IPreviewModel;
 import com.minelittlepony.client.MineLittlePony;
@@ -19,7 +20,7 @@ class DummyPony extends DummyPlayer implements IPreviewModel, ModelAttributes.Sw
     }
 
     @Override
-    public boolean shouldUpdateRegistration(Pony pony) {
+    public boolean shouldUpdateRegistration(IPony pony) {
         return false;
     }
 
@@ -35,7 +36,7 @@ class DummyPony extends DummyPlayer implements IPreviewModel, ModelAttributes.Sw
         }
         return MineLittlePony.getInstance().getManager()
                 .getPony(this)
-                .getMetadata()
+                .metadata()
                 .getRace()
                 .getModelId(getTextures().usesThinSkin());
     }

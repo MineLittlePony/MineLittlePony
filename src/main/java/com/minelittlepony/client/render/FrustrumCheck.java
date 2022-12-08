@@ -6,7 +6,7 @@ import net.minecraft.util.math.Box;
 
 import org.joml.Matrix4f;
 
-import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.client.PonyBounds;
 
 public class FrustrumCheck<T extends LivingEntity> extends Frustum {
 
@@ -29,11 +29,7 @@ public class FrustrumCheck<T extends LivingEntity> extends Frustum {
 
     @Override
     public boolean isVisible(Box bounds) {
-        IPony pony = renderer.getPony(entity);
-
-        Box boundingBox = pony.getComputedBoundingBox(entity);
-
-        return vanilla.isVisible(boundingBox);
+        return vanilla.isVisible(PonyBounds.getBoundingBox(renderer.getPony(entity), entity));
     }
 
     @Override

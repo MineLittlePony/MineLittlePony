@@ -2,9 +2,13 @@ package com.minelittlepony.client.render;
 
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.network.MsgPonyData;
+import com.minelittlepony.api.pony.network.fabric.Channel;
+import com.minelittlepony.api.pony.network.fabric.PonyDataCallback;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
+import com.minelittlepony.client.pony.Pony;
 import com.minelittlepony.client.transform.PonyPosture;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.util.MathUtil;
@@ -12,13 +16,18 @@ import com.mojang.blaze3d.platform.GlStateManager.DstFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SrcFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import java.util.Objects;
+
 import org.jetbrains.annotations.NotNull;
 
+import net.fabricmc.api.EnvType;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 
 public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> {
@@ -146,16 +155,30 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
     }
 
     public void updateMetadata(Identifier texture) {
-        pony = MineLittlePony.getInstance().getManager().getPony(texture);
-        playerModel.applyMetadata(pony.getMetadata());
+        pony = IPony.getManager().getPony(texture);
+        playerModel.applyMetadata(pony.metadata());
     }
 
     public void updateModel(T entity, ModelAttributes.Mode mode) {
         pony = renderer.getEntityPony(entity);
-        playerModel.applyMetadata(pony.getMetadata());
-        pony.updateForEntity(entity);
+        playerModel.applyMetadata(pony.metadata());
+        updateForEntity(pony, entity);
 
         getModel().updateLivingState(entity, pony, mode);
+    }
+
+    private void updateForEntity(IPony pony, Entity entity) {
+        if (pony.hasMetadata() && entity instanceof Pony.RegistrationHandler && ((Pony.RegistrationHandler)entity).shouldUpdateRegistration(pony)) {
+            entity.calculateDimensions();
+
+            PlayerEntity clientPlayer = MinecraftClient.getInstance().player;
+            if (clientPlayer != null) {
+                if (Objects.equals(entity, clientPlayer) || Objects.equals(((PlayerEntity)entity).getGameProfile(), clientPlayer.getGameProfile())) {
+                    Channel.broadcastPonyData(new MsgPonyData(pony.metadata(), pony.defaulted()));
+                }
+            }
+            PonyDataCallback.EVENT.invoker().onPonyDataAvailable((PlayerEntity)entity, pony.metadata(), pony.defaulted(), EnvType.CLIENT);
+        }
     }
 
     public IPony getPony(T entity) {

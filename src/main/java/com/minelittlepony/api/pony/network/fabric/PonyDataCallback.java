@@ -15,7 +15,7 @@ import com.minelittlepony.client.MineLittlePony;
 public interface PonyDataCallback {
 
     Event<PonyDataCallback> EVENT = EventFactory.createArrayBacked(PonyDataCallback.class, listeners -> (sender, data, noSkin, env) -> {
-        MineLittlePony.logger.info("Got pony data on the " + env + " from " + sender.getName().getString() + " with " + (noSkin ? "un" : "") + "set skin and he is a " + data.getRace() + "!");
+        MineLittlePony.logger.info("Got pony data on the " + env + " from " + sender.getUuidAsString() + " with " + (noSkin ? "un" : "") + "set skin and he is a " + data.getRace() + "!");
         for (PonyDataCallback event : listeners) {
             event.onPonyDataAvailable(sender, data, noSkin, env);
         }

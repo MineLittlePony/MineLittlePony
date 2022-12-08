@@ -1,6 +1,7 @@
 package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.PonyPosture;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.client.model.ClientPonyModel;
@@ -35,12 +36,12 @@ public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
     public IPony getEntityPony(AbstractClientPlayerEntity player) {
         IPony pony = super.getEntityPony(player);
 
-        boolean wet = pony.isPartiallySubmerged(player);
+        boolean wet = PonyPosture.isPartiallySubmerged(player);
 
         model = manager.setModel(wet ? seapony : normalPony).body();
 
         float state = wet ? 100 : 0;
-        float interpolated = pony.getMetadata().getInterpolator(player.getUuid()).interpolate("seapony_state", state, 5);
+        float interpolated = pony.metadata().getInterpolator(player.getUuid()).interpolate("seapony_state", state, 5);
 
         if (!MathUtil.compareFloats(interpolated, state)) {
             double x = player.getX() + (player.getEntityWorld().getRandom().nextFloat() * 2) - 1;

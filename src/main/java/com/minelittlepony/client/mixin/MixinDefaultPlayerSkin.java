@@ -41,7 +41,7 @@ abstract class MixinDefaultPlayerSkin {
 
             cir.setReturnValue(MineLittlePony.getInstance().getManager()
                     .getPony(IPonyManager.getDefaultSkin(uuid), uuid)
-                    .getRace()
+                    .race()
                     .getModelId(IPonyManager.isSlimSkin(uuid)));
         }
     }

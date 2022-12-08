@@ -47,7 +47,7 @@ public class HorseCam {
 
         IPony pony = MineLittlePony.getInstance().getManager().getPony(player);
 
-        if (!pony.getRace().isHuman()) {
+        if (!pony.race().isHuman()) {
             Setting<Boolean> fillyCam = MineLittlePony.getInstance().getConfig().fillycam;
 
             fillyCam.set(false);

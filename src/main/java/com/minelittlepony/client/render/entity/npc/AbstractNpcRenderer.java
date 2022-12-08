@@ -57,7 +57,7 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
     }
 
     public void render(T entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
-        model = manager.setModel(models.computeIfAbsent(getEntityPony(entity).getRace(), this::createModel)).body();
+        model = manager.setModel(models.computeIfAbsent(getEntityPony(entity).race(), this::createModel)).body();
 
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
     }

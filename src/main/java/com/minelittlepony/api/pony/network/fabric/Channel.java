@@ -39,7 +39,7 @@ public class Channel {
                 registered = true;
                 MineLittlePony.logger.info("Server has just consented");
 
-                sender.sendPacket(CLIENT_PONY_DATA, new MsgPonyData(pony.getMetadata(), pony.isDefault()).toBuffer(PacketByteBufs.create()));
+                sender.sendPacket(CLIENT_PONY_DATA, new MsgPonyData(pony.metadata(), pony.defaulted()).toBuffer(PacketByteBufs.create()));
             }
         });
         ServerPlayNetworking.registerGlobalReceiver(CLIENT_PONY_DATA, (server, player, ignore, buffer, ignore2) -> {

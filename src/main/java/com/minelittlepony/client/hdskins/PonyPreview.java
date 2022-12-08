@@ -48,7 +48,7 @@ class PonyPreview extends PlayerPreview {
             MatrixStack matrices, @Nullable Consumer<DummyPlayer> postAction) {
         super.renderWorldAndPlayer(thePlayer, frame, horizon, mouseX, mouseY, ticks, partialTick, scale, matrices, postAction);
         thePlayer.ifPresent(p -> {
-            IPonyData data = MineLittlePony.getInstance().getManager().getPony(p).getMetadata();
+            IPonyData data = MineLittlePony.getInstance().getManager().getPony(p).metadata();
             int[] index = new int[1];
             data.getTriggerPixels().forEach((key, value) -> {
                 drawLegendBlock(matrices, index[0]++, frame.left, frame.top, mouseX, mouseY, key, value);

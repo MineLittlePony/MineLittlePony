@@ -1,6 +1,7 @@
 package com.minelittlepony.api.model;
 
 import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.PonyPosture;
 import com.minelittlepony.util.MathUtil;
 
 import net.minecraft.entity.LivingEntity;
@@ -122,16 +123,16 @@ public class ModelAttributes {
 
     public void updateLivingState(LivingEntity entity, IPony pony, Mode mode) {
         visualHeight = entity.getHeight() + 0.125F;
-        isSitting = pony.isSitting(entity);
-        isCrouching = !isSitting && mode == Mode.THIRD_PERSON && pony.isCrouching(entity);
+        isSitting = PonyPosture.isSitting(entity);
+        isCrouching = !isSitting && mode == Mode.THIRD_PERSON && PonyPosture.isCrouching(pony, entity);
         isSleeping = entity.isSleeping();
-        isFlying = mode == Mode.THIRD_PERSON && pony.isFlying(entity);
+        isFlying = mode == Mode.THIRD_PERSON && PonyPosture.isFlying(entity);
         isGliding = entity.isFallFlying();
-        isSwimming = mode == Mode.THIRD_PERSON && pony.isSwimming(entity);
+        isSwimming = mode == Mode.THIRD_PERSON && PonyPosture.isSwimming(entity);
         isSwimmingRotated = isSwimming && (entity instanceof PlayerEntity || entity instanceof Swimmer);
         isRiptide = entity.isUsingRiptide();
         isHorizontal = isSwimming;
-        isRidingInteractive = pony.isRidingInteractive(entity);
+        isRidingInteractive = PonyPosture.isRidingAPony(entity);
         interpolatorId = entity.getUuid();
         isLeftHanded = entity.getMainArm() == Arm.LEFT;
     }

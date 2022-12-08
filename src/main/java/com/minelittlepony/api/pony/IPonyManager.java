@@ -1,8 +1,12 @@
 package com.minelittlepony.api.pony;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -13,6 +17,13 @@ public interface IPonyManager  {
 
     Identifier STEVE = new Identifier("minelittlepony", "textures/entity/steve_pony.png");
     Identifier ALEX = new Identifier("minelittlepony", "textures/entity/alex_pony.png");
+
+    /**
+     * Gets a pony representation of the passed in entity.
+     *
+     * If the supplied entity is null or can't be determined to be a pony, returns the empty optional.
+     */
+    Optional<IPony> getPony(@Nullable Entity entity);
 
     /**
      * Gets or creates a pony for the given player.

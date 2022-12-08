@@ -13,6 +13,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.client.PonyBounds;
 
 public final class DebugBoundingBoxRenderer {
 
@@ -29,7 +30,7 @@ public final class DebugBoundingBoxRenderer {
         stack.push();
         stack.translate(-offset.x, -offset.y, -offset.z);
 
-        Box boundingBox = pony.getComputedBoundingBox(entity);
+        Box boundingBox = PonyBounds.getBoundingBox(pony, entity);
 
         Vec3d pos = entity.getPos();
 

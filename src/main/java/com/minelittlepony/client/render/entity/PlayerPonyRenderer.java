@@ -99,7 +99,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
         // (shadows are drawn after us)
         if (!entity.hasVehicle() && !entity.isSleeping()) {
             float yaw = MathHelper.lerpAngleDegrees(tickDelta, entity.prevBodyYaw, entity.bodyYaw);
-            float l = entity.getWidth() / 2 * manager.getPony(entity).getMetadata().getSize().getScaleFactor();
+            float l = entity.getWidth() / 2 * manager.getPony(entity).metadata().getSize().getScaleFactor();
 
             stack.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(yaw));
             stack.translate(0, 0, -l);
@@ -178,7 +178,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
 
     @Override
     public Identifier getTexture(AbstractClientPlayerEntity player) {
-        return manager.getPony(player).getTexture();
+        return manager.getPony(player).texture();
     }
 
     @Override

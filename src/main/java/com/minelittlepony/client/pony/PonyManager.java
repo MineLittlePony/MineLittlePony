@@ -6,6 +6,8 @@ import com.google.common.cache.LoadingCache;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.PonyRenderDispatcher;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
 import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.settings.PonyLevel;
@@ -15,9 +17,12 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -42,11 +47,27 @@ public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloa
     }
 
     @Override
+    public Optional<IPony> getPony(@Nullable Entity entity) {
+        if (entity instanceof PlayerEntity player) {
+            return Optional.of(getPony(player));
+        }
+
+        if (entity instanceof LivingEntity living) {
+            IPonyRenderContext<LivingEntity, ?> dispatcher = PonyRenderDispatcher.getInstance().getPonyRenderer(living);
+            if (dispatcher != null) {
+                return Optional.of(dispatcher.getEntityPony(living));
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
     public IPony getPony(Identifier resource) {
         try {
             return poniesCache.get(resource);
         } catch (ExecutionException e) {
-            return new Pony(resource, Memoize.of(PonyData.NULL));
+            return new Pony(resource, PonyData.MEM_NULL);
         }
     }
 
@@ -83,7 +104,7 @@ public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloa
     public IPony getPony(Identifier resource, UUID uuid) {
         IPony pony = getPony(resource);
 
-        if (config.ponyLevel.get() == PonyLevel.PONIES && pony.getMetadata().getRace().isHuman()) {
+        if (config.ponyLevel.get() == PonyLevel.PONIES && pony.metadata().getRace().isHuman()) {
             return getBackgroundPony(uuid);
         }
 
@@ -93,7 +114,7 @@ public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloa
     @Override
     public IPony getDefaultPony(UUID uuid) {
         if (config.ponyLevel.get() != PonyLevel.PONIES) {
-            return ((Pony)getPony(DefaultSkinHelper.getTexture(uuid))).defaulted();
+            return ((Pony)getPony(DefaultSkinHelper.getTexture(uuid))).markDefaulted();
         }
 
         return getBackgroundPony(uuid);
@@ -101,7 +122,7 @@ public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloa
 
     @Override
     public IPony getBackgroundPony(UUID uuid) {
-        return ((Pony)getPony(MineLittlePony.getInstance().getVariatedTextures().get(BACKGROUND_PONIES, uuid))).defaulted();
+        return ((Pony)getPony(MineLittlePony.getInstance().getVariatedTextures().get(BACKGROUND_PONIES, uuid))).markDefaulted();
     }
 
     @Override

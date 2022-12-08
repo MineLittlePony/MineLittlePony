@@ -84,7 +84,7 @@ public class LevitatingItemRenderer {
 
             matrix.push();
 
-            boolean doMagic = MineLittlePony.getInstance().getConfig().fpsmagic.get() && pony.getMetadata().hasMagic();
+            boolean doMagic = MineLittlePony.getInstance().getConfig().fpsmagic.get() && pony.metadata().hasMagic();
 
             if (doMagic) {
                 setupPerspective(itemRenderer, entity, stack, left, matrix);
@@ -93,7 +93,7 @@ public class LevitatingItemRenderer {
             itemRenderer.renderItem(entity, stack, mode, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
 
             if (doMagic) {
-                setColor(pony.getMetadata().getGlowColor());
+                setColor(pony.metadata().getGlowColor());
 
                 matrix.scale(1.1F, 1.1F, 1.1F);
 

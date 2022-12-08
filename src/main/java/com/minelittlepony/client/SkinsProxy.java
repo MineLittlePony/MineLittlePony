@@ -42,7 +42,7 @@ public class SkinsProxy {
     }
 
     public Identifier getSeaponySkin(EquineRenderManager<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> manager, AbstractClientPlayerEntity player) {
-        return manager.getPony(player).getTexture();
+        return manager.getPony(player).texture();
     }
 }
 

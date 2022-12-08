@@ -44,7 +44,7 @@ public class MobSkull implements ISkull {
 
     @Override
     public boolean bindPony(IPony pony) {
-        ponyHead.get().setMetadata(pony.getMetadata());
+        ponyHead.get().setMetadata(pony.metadata());
         return true;
     }
 
