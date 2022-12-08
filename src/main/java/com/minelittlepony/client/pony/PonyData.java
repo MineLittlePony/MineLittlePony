@@ -14,6 +14,7 @@ import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.util.render.NativeUtil;
 import com.minelittlepony.common.util.animation.Interpolator;
+import com.minelittlepony.settings.PonyConfig;
 
 import java.io.IOException;
 import java.util.*;
@@ -133,7 +134,7 @@ public class PonyData implements IPonyData {
 
     @Override
     public boolean hasHorn() {
-        return getRace() != null && getRace().hasHorn();
+        return getRace() != null && PonyConfig.getEffectiveRace(getRace()).hasHorn();
     }
 
     @Override
