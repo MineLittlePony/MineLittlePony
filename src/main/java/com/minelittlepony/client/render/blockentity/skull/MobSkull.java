@@ -15,9 +15,10 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.RotationAxis;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 public class MobSkull implements ISkull {
     private final Identifier texture;
@@ -49,12 +50,12 @@ public class MobSkull implements ISkull {
 
     @Override
     public void setAngles(float yaw, float animationProgress) {
-        Vec3f v = new Vec3f(0, -2, 1.99F);
-        v.rotate(Vec3f.POSITIVE_Y.getDegreesQuaternion(yaw));
+        Vector3f v = new Vector3f(0, -2, 1.99F);
+        v.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(yaw));
         ModelPart head = ponyHead.get().getHead();
-        head.pivotX = v.getX();
-        head.pivotY = v.getY();
-        head.pivotZ = v.getZ();
+        head.pivotX = v.x;
+        head.pivotY = v.y;
+        head.pivotZ = v.z;
         ponyHead.get().setVisible(true);
         ponyHead.get().setHeadRotation(animationProgress, yaw, 0);
     }

@@ -1,8 +1,7 @@
 package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.entity.model.ModelWithHat;
+import net.minecraft.client.render.entity.model.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
@@ -64,7 +63,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
 
     @Override
     public void copyAttributes(BipedEntityModel<T> other) {
-        setAttributes(other);
+        copyStateTo(other);
     }
 
     @Override
@@ -116,8 +115,8 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
      * Copies this model's attributes into the passed model.
      */
     @Override
-    public void setAttributes(BipedEntityModel<T> model) {
-        super.setAttributes(model);
+    public void copyStateTo(EntityModel<T> model) {
+        super.copyStateTo(model);
 
         if (model instanceof ClientPonyModel) {
             ((ClientPonyModel<T>)model).attributes = attributes;

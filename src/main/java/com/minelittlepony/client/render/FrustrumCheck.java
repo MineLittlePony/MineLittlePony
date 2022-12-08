@@ -3,7 +3,8 @@ package com.minelittlepony.client.render;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Matrix4f;
+
+import org.joml.Matrix4f;
 
 import com.minelittlepony.api.pony.IPony;
 

@@ -13,7 +13,6 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -21,6 +20,7 @@ import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.UseAction;
+import net.minecraft.util.math.RotationAxis;
 import net.minecraft.world.World;
 
 public class LevitatingItemRenderer {
@@ -140,8 +140,8 @@ public class LevitatingItemRenderer {
                     distanceChange);
 
             if (!handHeldTool) { // bows have to point forwards
-                stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(sign * -60 + floatAmount));
-                stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(sign * 30 + driftAmount));
+                stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(sign * -60 + floatAmount));
+                stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(sign * 30 + driftAmount));
             }
         }
     }

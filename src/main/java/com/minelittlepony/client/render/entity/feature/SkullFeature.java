@@ -19,7 +19,7 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLoader;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.RotationAxis;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ArmorItem;
@@ -71,7 +71,7 @@ public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & IPo
     }
 
     private void renderBlock(MatrixStack stack, VertexConsumerProvider renderContext, T entity, ItemStack itemstack, int lightUv) {
-        stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
+        stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
         stack.scale(0.625F, -0.625F, -0.625F);
         stack.translate(0, 0.6F, -0.21F);
 

@@ -5,16 +5,18 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.TriggerPixelType;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.hdskins.client.dummy.DummyPlayer;
-import com.minelittlepony.hdskins.client.dummy.PlayerPreview;
-import com.minelittlepony.hdskins.client.dummy.TextureProxy;
+import com.minelittlepony.common.client.gui.dimension.Bounds;
+import com.minelittlepony.hdskins.client.dummy.*;
 import com.minelittlepony.hdskins.profile.SkinType;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 class PonyPreview extends PlayerPreview {
@@ -23,7 +25,7 @@ class PonyPreview extends PlayerPreview {
     public static final Identifier NO_SKIN_SEAPONY = new Identifier("minelittlepony", "textures/mob/noskin_seapony.png");
 
     @Override
-    protected DummyPlayer createEntity(ClientWorld world, TextureProxy textures) {
+    protected DummyPlayer createEntity(ClientWorld world, PlayerSkins<?> textures) {
         return new DummyPony(world, textures);
     }
 
@@ -53,15 +55,15 @@ class PonyPreview extends PlayerPreview {
 
     @Override
     public void renderWorldAndPlayer(Optional<DummyPlayer> thePlayer,
-            int frameLeft, int frameRight, int frameBottom, int frameTop,
-            float xPos, float yPos, int horizon, int mouseX, int mouseY, int ticks, float partialTick, float scale,
-            MatrixStack matrices) {
-        super.renderWorldAndPlayer(thePlayer, frameLeft, frameRight, frameBottom, frameTop, xPos, yPos, horizon, mouseX, mouseY, ticks, partialTick, scale, matrices);
+            Bounds frame,
+            int horizon, int mouseX, int mouseY, int ticks, float partialTick, float scale,
+            MatrixStack matrices, @Nullable Consumer<DummyPlayer> postAction) {
+        super.renderWorldAndPlayer(thePlayer, frame, horizon, mouseX, mouseY, ticks, partialTick, scale, matrices, postAction);
         thePlayer.ifPresent(p -> {
             IPonyData data = MineLittlePony.getInstance().getManager().getPony(p).getMetadata();
             int[] index = new int[1];
             data.getTriggerPixels().forEach((key, value) -> {
-                drawLegendBlock(matrices, index[0]++, frameLeft, frameTop, mouseX, mouseY, key, value);
+                drawLegendBlock(matrices, index[0]++, frame.left, frame.top, mouseX, mouseY, key, value);
             });
         });
     }

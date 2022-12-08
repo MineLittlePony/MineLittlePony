@@ -12,12 +12,10 @@ import com.minelittlepony.mson.util.PartUtil;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Vec3f;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.*;
 
 /**
  * Foundation class for all types of ponies.
@@ -621,12 +619,12 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     @Override
     public void transform(BodyPart part, MatrixStack stack) {
         if (attributes.isSleeping || attributes.isRiptide) {
-            stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
-            stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
+            stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
+            stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
         }
 
         if (part == BodyPart.HEAD) {
-           stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(attributes.motionPitch));
+           stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(attributes.motionPitch));
         }
 
         PonyTransformation.forSize(getSize()).transform(this, part, stack);

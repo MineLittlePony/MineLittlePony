@@ -26,7 +26,7 @@ public abstract class AbstractClothingFeature<T extends LivingEntity, M extends 
     public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
         M overlayModel = getOverlayModel();
 
-        renderer.getModel().setAttributes(overlayModel);
+        renderer.getModel().copyStateTo(overlayModel);
         overlayModel.animateModel(entity, limbDistance, limbAngle, tickDelta);
         overlayModel.setAngles(entity, limbDistance, limbAngle, age, headYaw, headPitch);
 

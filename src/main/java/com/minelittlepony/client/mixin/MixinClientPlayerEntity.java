@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerEntity.class)
 abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implements Pony.RegistrationHandler {
-    public MixinClientPlayerEntity() { super(null, null, null); }
+    public MixinClientPlayerEntity() { super(null, null); }
 
     private Pony pony;
 

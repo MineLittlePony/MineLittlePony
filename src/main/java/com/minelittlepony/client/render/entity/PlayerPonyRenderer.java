@@ -34,11 +34,10 @@ import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.feature.*;
 import net.minecraft.client.render.entity.model.*;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.text.Text;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.*;
 
 public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRenderContext<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> {
 
@@ -102,9 +101,9 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
             float yaw = MathHelper.lerpAngleDegrees(tickDelta, entity.prevBodyYaw, entity.bodyYaw);
             float l = entity.getWidth() / 2 * manager.getPony(entity).getMetadata().getSize().getScaleFactor();
 
-            stack.multiply(Vec3f.NEGATIVE_Y.getDegreesQuaternion(yaw));
+            stack.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(yaw));
             stack.translate(0, 0, -l);
-            stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(yaw));
+            stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(yaw));
         }
     }
 

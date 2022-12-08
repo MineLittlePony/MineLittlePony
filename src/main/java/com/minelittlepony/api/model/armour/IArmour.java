@@ -1,7 +1,8 @@
 package com.minelittlepony.api.model.armour;
 
 import net.minecraft.item.Item;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +23,7 @@ public interface IArmour<V extends IArmourModel> extends IModelWrapper {
      * Only one registration per item allowed.
      */
     public static <T extends IArmourModel> IArmour<T> register(IArmour<T> armour, Item item) {
-        return Registry.register(ArmourRegistry.REGISTRY, Registry.ITEM.getId(item), armour);
+        return Registry.register(ArmourRegistry.REGISTRY, Registries.ITEM.getId(item), armour);
     }
 
     /**

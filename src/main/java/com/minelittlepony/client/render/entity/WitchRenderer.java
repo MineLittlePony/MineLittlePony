@@ -7,7 +7,7 @@ import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.RotationAxis;
 import net.minecraft.entity.mob.WitchEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
@@ -27,7 +27,7 @@ public class WitchRenderer extends PonyRenderer<WitchEntity, WitchPonyModel> {
             @Override
             protected void preItemRender(WitchEntity entity, ItemStack drop, ModelTransformation.Mode transform, Arm hand, MatrixStack stack) {
                 super.preItemRender(entity, drop, transform, hand, stack);
-                stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(10));
+                stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(10));
             }
         };
     }

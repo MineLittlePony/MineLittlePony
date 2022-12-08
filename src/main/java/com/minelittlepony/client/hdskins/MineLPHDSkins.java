@@ -10,7 +10,6 @@ import com.minelittlepony.hdskins.client.SkinCacheClearCallback;
 import com.minelittlepony.hdskins.client.ducks.ClientPlayerInfo;
 import com.minelittlepony.hdskins.client.dummy.DummyPlayer;
 import com.minelittlepony.hdskins.client.gui.GuiSkins;
-import com.minelittlepony.hdskins.client.resources.LocalTexture;
 import com.minelittlepony.hdskins.mixin.client.MixinClientPlayer;
 import com.minelittlepony.hdskins.profile.SkinType;
 
@@ -65,9 +64,7 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
     @Override
     public Identifier getSeaponySkin(EquineRenderManager<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> manager, AbstractClientPlayerEntity player) {
         if (player instanceof DummyPlayer) {
-            LocalTexture tex = ((DummyPlayer)player).getTextures().get(seaponySkinType);
-            Identifier id = tex.getId();
-            return id == null ? tex.getDefault() : id;
+            return ((DummyPlayer)player).getTextures().get(seaponySkinType).getId();
         } else {
             ClientPlayerInfo info = (ClientPlayerInfo)((MixinClientPlayer)player).getBackingClientData();
             Identifier tex = info.getSkins().getSkin(seaponySkinType);
