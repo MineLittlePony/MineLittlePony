@@ -1,10 +1,14 @@
 package com.minelittlepony.api.pony;
 
 import net.minecraft.util.Identifier;
+
+import org.jetbrains.annotations.Nullable;
+
+import com.google.common.collect.ComparisonChain;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.MineLittlePony;
 
-public interface IPony {
+public interface IPony extends Comparable<IPony> {
 
     /**
      * Gets the global pony manager instance.
@@ -48,4 +52,13 @@ public interface IPony {
      * Gets the metadata associated with this pony's model texture.
      */
     IPonyData metadata();
+
+
+    @Override
+    default int compareTo(@Nullable IPony o) {
+        return o == this ? 0 : o == null ? 1 : ComparisonChain.start()
+                .compare(texture(), o.texture())
+                .compare(metadata(), o.metadata())
+                .result();
+    }
 }

@@ -9,6 +9,8 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
+
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,7 +21,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implements Pony.RegistrationHandler {
     public MixinClientPlayerEntity() { super(null, null); }
 
-    private Pony pony;
+    @Nullable
+    private IPony pony;
 
     @Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At("RETURN"))
     private void onStartRiding(Entity entity, boolean bl, CallbackInfoReturnable<Boolean> info) {
@@ -32,9 +35,9 @@ abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implem
     }
 
     @Override
-    public boolean shouldUpdateRegistration(Pony pony) {
-        if (this.pony != pony) {
-            this.pony = pony;
+    public boolean shouldUpdateRegistration(IPony pony) {
+        if (this.pony != pony && (this.pony == null || this.pony.metadata().compareTo(pony.metadata()) != 0)) {
+            this.pony = Pony.snapshot(pony);
             return true;
         }
         return false;

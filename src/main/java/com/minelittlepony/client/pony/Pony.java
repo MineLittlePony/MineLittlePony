@@ -69,4 +69,8 @@ public class Pony implements IPony {
     public interface RegistrationHandler {
         boolean shouldUpdateRegistration(IPony pony);
     }
+
+    public static IPony snapshot(IPony pony) {
+        return new Pony(pony.texture(), Memoize.of(new MsgPonyData(pony.metadata(), pony.defaulted())));
+    }
 }
