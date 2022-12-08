@@ -37,7 +37,7 @@ public class PlayerPonySkull implements ISkull {
 
     @Override
     public Identifier getSkinResource(@Nullable GameProfile profile) {
-        deadMau5.get().setVisible(profile != null && "deadmau5".equals(profile.getName()));
+        deadMau5.get().setVisible(true);//profile != null && "deadmau5".equals(profile.getName()));
 
         if (profile != null) {
             Identifier skin = SkinsProxy.instance.getSkinTexture(profile);
@@ -72,12 +72,13 @@ public class PlayerPonySkull implements ISkull {
         ponyHead.getHead().pivotZ = v.z;
         ponyHead.setVisible(true);
         ponyHead.setHeadRotation(animationProgress, yaw, 0);
+        deadMau5.get().setHeadRotation(animationProgress, yaw, 0);
     }
 
     @Override
     public void render(MatrixStack stack, VertexConsumer vertices, int lightUv, int overlayUv, float red, float green, float blue, float alpha) {
         ponyHead.renderHead(stack, vertices, lightUv, overlayUv, red, green, blue, alpha);
         ponyHead.renderHelmet(stack, vertices, lightUv, overlayUv, red, green, blue, alpha);
-        deadMau5.get().render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        deadMau5.get().render(stack, vertices, lightUv, overlayUv, red, green, blue, alpha);
     }
 }
