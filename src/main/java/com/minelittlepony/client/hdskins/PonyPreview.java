@@ -30,27 +30,15 @@ class PonyPreview extends PlayerPreview {
     }
 
     @Override
-    public Identifier getBlankSteveSkin(SkinType type) {
+    public Identifier getBlankSkin(SkinType type, boolean slim) {
         if (type == SkinType.SKIN) {
-            return NO_SKIN_STEVE_PONY;
+            return slim ? NO_SKIN_ALEX_PONY : NO_SKIN_STEVE_PONY;
         }
         if (type == MineLPHDSkins.seaponySkinType) {
             return NO_SKIN_SEAPONY;
         }
 
-        return super.getBlankSteveSkin(type);
-    }
-
-    @Override
-    public Identifier getBlankAlexSkin(SkinType type) {
-        if (type == SkinType.SKIN) {
-            return NO_SKIN_ALEX_PONY;
-        }
-        if (type == MineLPHDSkins.seaponySkinType) {
-            return NO_SKIN_SEAPONY;
-        }
-
-        return super.getBlankAlexSkin(type);
+        return super.getBlankSkin(type, slim);
     }
 
     @Override
