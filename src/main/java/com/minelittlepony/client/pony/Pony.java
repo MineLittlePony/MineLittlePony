@@ -9,11 +9,10 @@ import com.minelittlepony.api.pony.meta.Sizes;
 import com.minelittlepony.api.pony.network.MsgPonyData;
 import com.minelittlepony.api.pony.network.fabric.Channel;
 import com.minelittlepony.api.pony.network.fabric.PonyDataCallback;
-import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.client.render.PonyRenderDispatcher;
 import com.minelittlepony.client.transform.PonyTransformation;
-import com.minelittlepony.settings.PonyLevel;
+import com.minelittlepony.settings.PonyConfig;
 
 import java.util.Objects;
 
@@ -80,14 +79,6 @@ public class Pony implements IPony {
     }
 
     @Override
-    public boolean isPerformingRainboom(LivingEntity entity) {
-        Vec3d motion = entity.getVelocity();
-        double zMotion = Math.sqrt(motion.x * motion.x + motion.z * motion.z);
-
-        return (isFlying(entity) && canFly()) || entity.isFallFlying() & zMotion > 0.4F;
-    }
-
-    @Override
     public boolean isCrouching(LivingEntity entity) {
 
         boolean isSneak = entity.isInSneakingPose();
@@ -95,6 +86,13 @@ public class Pony implements IPony {
         boolean isSwimming = isSwimming(entity);
 
         return !isPerformingRainboom(entity) && !isSwimming && isSneak && !isFlying;
+    }
+
+    private boolean isPerformingRainboom(LivingEntity entity) {
+        Vec3d motion = entity.getVelocity();
+        double zMotion = Math.sqrt(motion.x * motion.x + motion.z * motion.z);
+
+        return (isFlying(entity) && getRace().hasWings()) || entity.isFallFlying() & zMotion > 0.4F;
     }
 
     @Override
@@ -141,12 +139,6 @@ public class Pony implements IPony {
                 || entity.getEntityWorld().getBlockState(entity.getBlockPos()).getMaterial() == Material.WATER;
     }
 
-    @Override
-    public boolean isFullySubmerged(LivingEntity entity) {
-        return entity.isSubmergedInWater()
-                && entity.getEntityWorld().getBlockState(new BlockPos(getVisualEyePosition(entity))).getMaterial() == Material.WATER;
-    }
-
     protected Vec3d getVisualEyePosition(LivingEntity entity) {
         Size size = entity.isBaby() ? Sizes.FOAL : getMetadata().getSize();
 
@@ -159,7 +151,7 @@ public class Pony implements IPony {
 
     @Override
     public Race getRace() {
-        return getEffectiveRace(getMetadata().getRace(), true);
+        return PonyConfig.getEffectiveRace(getMetadata().getRace());
     }
 
     @Override
@@ -244,26 +236,6 @@ public class Pony implements IPony {
                 .add("texture", texture)
                 .add("metadata", metadata)
                 .toString();
-    }
-
-    /**
-     * Gets the actual race determined by the given pony level.
-     * PonyLevel.HUMANS would force all races to be humans.
-     * PonyLevel.BOTH is no change.
-     * PonyLevel.PONIES (should) return a pony if this is a human. Don't be fooled, though. It doesn't.
-     */
-    public static Race getEffectiveRace(Race race, boolean ignorePony) {
-
-        Race override = MineLittlePony.getInstance().getConfig().raceOverride.get();
-        if (override != Race.HUMAN) {
-            return override;
-        }
-
-        if (MineLittlePony.getInstance().getConfig().getEffectivePonyLevel(ignorePony) == PonyLevel.HUMANS) {
-            return Race.HUMAN;
-        }
-
-        return race;
     }
 
     public interface RegistrationHandler {

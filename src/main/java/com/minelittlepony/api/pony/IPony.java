@@ -12,29 +12,27 @@ import com.minelittlepony.client.MineLittlePony;
 public interface IPony {
 
     /**
+     * Gets the global pony manager instance.
+     */
+    static IPonyManager getManager() {
+        return MineLittlePony.getInstance().getManager();
+    }
+
+    /**
      * Gets or creates a new pony associated with the provided resource location.
      * The results of this method should not be cached.
+     *
+     * @deprecated User IPony.getManager().getPony(texture) instead
      */
+    @Deprecated
     static IPony forResource(Identifier texture) {
-        return MineLittlePony.getInstance().getManager().getPony(texture);
+        return getManager().getPony(texture);
     }
 
     /**
      * Triggers state updates on the passed entity.
      */
     void updateForEntity(Entity entity);
-
-    /**
-     * Returns true if this pony has wings and the will to use them.
-     */
-    default boolean canFly() {
-        return getRace().hasWings();
-    }
-
-    /**
-     * Checks the required conditions for whether the given entity can perform a sonic rainboom.
-     */
-    boolean isPerformingRainboom(LivingEntity entity);
 
     /**
      * Returns whether this is one of the default ponies assigned to a player without a custom skin.
@@ -66,19 +64,9 @@ public interface IPony {
     boolean isSwimming(LivingEntity entity);
 
     /**
-     * Returns true if the provided entity is fully submerged with water reaching the entity's eyeheight or above.
-     */
-    boolean isFullySubmerged(LivingEntity entity);
-
-    /**
      * Returns true if the provided entity is partially submerged. That is if any part of it is in contact with water.
      */
     boolean isPartiallySubmerged(LivingEntity entity);
-
-    @Deprecated
-    default Race getRace(boolean ignorePony) {
-        return com.minelittlepony.client.pony.Pony.getEffectiveRace(getMetadata().getRace(), ignorePony);
-    }
 
     /**
      * Gets the race associated with this pony.

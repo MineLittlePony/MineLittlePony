@@ -133,7 +133,7 @@ public class PonyData implements IPonyData {
 
     @Override
     public boolean hasHorn() {
-        return getRace() != null && Pony.getEffectiveRace(getRace(), false).hasHorn();
+        return getRace() != null && getRace().hasHorn();
     }
 
     @Override

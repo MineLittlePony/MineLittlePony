@@ -16,6 +16,7 @@ import com.minelittlepony.api.pony.meta.TriggerPixel;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.common.util.animation.Interpolator;
+import com.minelittlepony.settings.PonyConfig;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -91,7 +92,7 @@ class NativePonyData implements IPonyData {
 
     @Override
     public boolean hasHorn() {
-        return getRace() != null && Pony.getEffectiveRace(getRace(), false).hasHorn();
+        return getRace() != null && PonyConfig.getEffectiveRace(getRace()).hasHorn();
     }
 
     @Override

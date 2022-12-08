@@ -4,6 +4,7 @@ import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Sizes;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.common.util.settings.*;
 
 import java.nio.file.Path;
@@ -60,15 +61,6 @@ public class PonyConfig extends Config {
         super(HEIRARCHICAL_JSON_ADAPTER, path);
     }
 
-    /**
-     * Gets the current PonyLevel. That is the level of ponies you would like to see.
-     *
-     * @param ignorePony true to ignore whatever value the setting has.
-     */
-    public PonyLevel getEffectivePonyLevel(boolean ignorePony) {
-        return ignorePony ? PonyLevel.BOTH : ponyLevel.get();
-    }
-
     public float setGlobalScaleFactor(float f) {
 
         if (f < 0.15F) {
@@ -100,5 +92,26 @@ public class PonyConfig extends Config {
      */
     public float getGlobalScaleFactor() {
         return showscale.get() ? scaleFactor.get() : 1;
+    }
+
+
+    /**
+     * Gets the actual race determined by the given pony level.
+     * PonyLevel.HUMANS would force all races to be humans.
+     * PonyLevel.BOTH is no change.
+     * PonyLevel.PONIES (should) return a pony if this is a human. Don't be fooled, though. It doesn't.
+     */
+    public static Race getEffectiveRace(Race race) {
+
+        Race override = MineLittlePony.getInstance().getConfig().raceOverride.get();
+        if (override != Race.HUMAN) {
+            return override;
+        }
+
+        if (MineLittlePony.getInstance().getConfig().ponyLevel.get() == PonyLevel.HUMANS) {
+            return Race.HUMAN;
+        }
+
+        return race;
     }
 }
