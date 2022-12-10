@@ -39,7 +39,7 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
 
         boolean special = PonyTextures.isBestPony(entity);
 
-        if (wearable == Wearable.SADDLE_BAGS) {
+        if (wearable.isSaddlebags()) {
             VillagerProfession profession = entity.getVillagerData().getProfession();
             return !special && profession != VillagerProfession.NONE && (
                     profession == VillagerProfession.CARTOGRAPHER
@@ -75,7 +75,7 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
 
     @Override
     public Identifier getDefaultTexture(T villager, Wearable wearable) {
-        if (wearable == Wearable.SADDLE_BAGS) {
+        if (wearable.isSaddlebags()) {
             return clothing.createTexture(villager, "accessory");
         }
         return getTexture(villager);

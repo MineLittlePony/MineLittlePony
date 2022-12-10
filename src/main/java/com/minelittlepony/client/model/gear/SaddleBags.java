@@ -60,6 +60,9 @@ public class SaddleBags extends AbstractGear implements PonyModelConstants {
         leftBag.roll = bodySwing;
         rightBag.roll = -bodySwing;
 
+        leftBag.visible = model.isWearing(Wearable.SADDLE_BAGS_BOTH) || model.isWearing(Wearable.SADDLE_BAGS_LEFT);
+        rightBag.visible = model.isWearing(Wearable.SADDLE_BAGS_BOTH) || model.isWearing(Wearable.SADDLE_BAGS_RIGHT);
+
         dropAmount = hangLow ? 0.15F : 0;
         dropAmount = model.getMetadata().getInterpolator(interpolatorId).interpolate("dropAmount", dropAmount, 3);
     }
@@ -73,16 +76,22 @@ public class SaddleBags extends AbstractGear implements PonyModelConstants {
         stack.push();
         stack.translate(0, dropAmount, 0);
 
+        if (!rightBag.visible || !leftBag.visible) {
+            stack.translate(0, 0.3F, -0.3F);
+        }
+
         leftBag.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
         rightBag.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
 
         stack.pop();
-        strap.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
+        if (leftBag.visible && rightBag.visible) {
+            strap.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
+        }
     }
 
     @Override
     public boolean canRender(IModel model, Entity entity) {
-        return model.isWearing(Wearable.SADDLE_BAGS);
+        return model.isWearing(Wearable.SADDLE_BAGS_BOTH) || model.isWearing(Wearable.SADDLE_BAGS_LEFT) || model.isWearing(Wearable.SADDLE_BAGS_RIGHT);
     }
 
     @Override
@@ -92,6 +101,6 @@ public class SaddleBags extends AbstractGear implements PonyModelConstants {
 
     @Override
     public <T extends Entity> Identifier getTexture(T entity, Context<T, ?> context) {
-        return context.getDefaultTexture(entity, Wearable.SADDLE_BAGS);
+        return context.getDefaultTexture(entity, Wearable.SADDLE_BAGS_BOTH);
     }
 }

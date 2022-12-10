@@ -13,6 +13,7 @@ import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.hdskins.client.dummy.*;
 import com.minelittlepony.hdskins.profile.SkinType;
+import com.minelittlepony.settings.PonyLevel;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,15 +31,17 @@ class PonyPreview extends PlayerPreview {
     }
 
     @Override
-    public Identifier getBlankSkin(SkinType type, boolean slim) {
-        if (type == SkinType.SKIN) {
-            return slim ? NO_SKIN_ALEX_PONY : NO_SKIN_STEVE_PONY;
+    public Identifier getDefaultSkin(SkinType type, boolean slim) {
+        if (MineLittlePony.getInstance().getConfig().ponyLevel.get() == PonyLevel.PONIES) {
+            if (type == SkinType.SKIN) {
+                return slim ? NO_SKIN_ALEX_PONY : NO_SKIN_STEVE_PONY;
+            }
         }
         if (type == MineLPHDSkins.seaponySkinType) {
             return NO_SKIN_SEAPONY;
         }
 
-        return super.getBlankSkin(type, slim);
+        return super.getDefaultSkin(type, slim);
     }
 
     @Override

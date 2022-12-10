@@ -99,7 +99,7 @@ public class PonyConfig extends Config {
      * Gets the actual race determined by the given pony level.
      * PonyLevel.HUMANS would force all races to be humans.
      * PonyLevel.BOTH is no change.
-     * PonyLevel.PONIES (should) return a pony if this is a human. Don't be fooled, though. It doesn't.
+     * PonyLevel.PONIES no change.
      */
     public static Race getEffectiveRace(Race race) {
 

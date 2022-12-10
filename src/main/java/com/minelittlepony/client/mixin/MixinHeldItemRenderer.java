@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 import net.minecraft.client.render.item.ItemRenderer;
 
 @Mixin(HeldItemRenderer.class)
-abstract class MixinFirstPersonRenderer {
+abstract class MixinHeldItemRenderer {
     private static final String LivingEntity = "Lnet/minecraft/entity/LivingEntity;";
     private static final String MatrixStack = "Lnet/minecraft/client/util/math/MatrixStack;";
     private static final String ItemStack = "Lnet/minecraft/item/ItemStack;";

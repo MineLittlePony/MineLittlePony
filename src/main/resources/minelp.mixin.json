@@ -7,11 +7,11 @@
     "client": [
         "IResizeable",
         "MixinCamera",
-        "MixinDefaultPlayerSkin",
+        "MixinDefaultSkinHelper",
         "MixinEntityRenderDispatcher",
         "MixinEntityRenderers",
         "MixinSkullBlockEntityRenderer",
-        "MixinFirstPersonRenderer",
+        "MixinHeldItemRenderer",
         "MixinItemRenderer",
         "MixinTexturedRenderLayers",
         "MixinSpriteIdentifier",

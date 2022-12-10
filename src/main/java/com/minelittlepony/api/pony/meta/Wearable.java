@@ -7,13 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum Wearable implements TriggerPixelType<Wearable> {
-    NONE        (0x00),
-    CROWN       (0x16),
-    MUFFIN      (0x32),
-    HAT         (0x64),
-    ANTLERS     (0x96),
-    SADDLE_BAGS (0xC8),
-    STETSON     (0xFA);
+    NONE              (0x00),
+    CROWN             (0x16),
+    MUFFIN            (0x32),
+    HAT               (0x64),
+    ANTLERS           (0x96),
+    SADDLE_BAGS_LEFT  (0xC6),
+    SADDLE_BAGS_RIGHT (0xC7),
+    SADDLE_BAGS_BOTH  (0xC8),
+    STETSON           (0xFA);
 
     private int triggerValue;
 
@@ -24,6 +26,10 @@ public enum Wearable implements TriggerPixelType<Wearable> {
     @Override
     public int getColorCode() {
         return triggerValue;
+    }
+
+    public boolean isSaddlebags() {
+        return this == SADDLE_BAGS_BOTH || this == SADDLE_BAGS_LEFT || this == SADDLE_BAGS_RIGHT;
     }
 
     @Override

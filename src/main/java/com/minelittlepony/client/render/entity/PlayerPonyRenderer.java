@@ -178,7 +178,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
 
     @Override
     public Identifier getTexture(AbstractClientPlayerEntity player) {
-        return manager.getPony(player).texture();
+        return manager.getTexture(player);
     }
 
     @Override
@@ -198,7 +198,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
 
     @Override
     public Identifier getDefaultTexture(AbstractClientPlayerEntity entity, Wearable wearable) {
-        if (wearable == Wearable.SADDLE_BAGS) {
+        if (wearable.isSaddlebags()) {
             if (getInternalRenderer().getModel().getMetadata().getRace() == Race.BATPONY) {
                 return SaddleBags.TEXTURE;
             }

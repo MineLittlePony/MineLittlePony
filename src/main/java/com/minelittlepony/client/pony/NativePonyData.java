@@ -57,7 +57,7 @@ class NativePonyData implements IPonyData {
 
     @Override
     public Race getRace() {
-        return race.getValue();
+        return PonyConfig.getEffectiveRace(race.getValue());
     }
 
     @Override
@@ -92,7 +92,7 @@ class NativePonyData implements IPonyData {
 
     @Override
     public boolean hasHorn() {
-        return getRace() != null && PonyConfig.getEffectiveRace(getRace()).hasHorn();
+        return getRace().hasHorn();
     }
 
     @Override

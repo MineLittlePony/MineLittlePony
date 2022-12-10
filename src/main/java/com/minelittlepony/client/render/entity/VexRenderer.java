@@ -5,6 +5,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.util.Identifier;
 
+import com.minelittlepony.api.pony.DefaultPonySkinHelper;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.ParaspriteModel;
@@ -23,7 +24,7 @@ public class VexRenderer extends MobEntityRenderer<VexEntity, ParaspriteModel<Ve
 
     @Override
     public Identifier getTexture(VexEntity entity) {
-        return MineLittlePony.getInstance().getVariatedTextures().get(PARASPRITE_PONIES, entity);
+        return MineLittlePony.getInstance().getVariatedTextures().get(PARASPRITE_PONIES, entity).orElse(DefaultPonySkinHelper.STEVE);
     }
 
 }

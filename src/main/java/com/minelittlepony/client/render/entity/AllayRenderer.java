@@ -7,6 +7,7 @@ import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
+import com.minelittlepony.api.pony.DefaultPonySkinHelper;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.BreezieModel;
@@ -24,7 +25,7 @@ public class AllayRenderer extends MobEntityRenderer<AllayEntity, BreezieModel<A
 
     @Override
     public Identifier getTexture(AllayEntity allayEntity) {
-        return MineLittlePony.getInstance().getVariatedTextures().get(BREEZIE_PONIES, allayEntity);
+        return MineLittlePony.getInstance().getVariatedTextures().get(BREEZIE_PONIES, allayEntity).orElse(DefaultPonySkinHelper.STEVE);
     }
 
     @Override

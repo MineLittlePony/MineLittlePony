@@ -1,6 +1,6 @@
 package com.minelittlepony.client.mixin;
 
-import com.minelittlepony.api.pony.IPonyManager;
+import com.minelittlepony.api.pony.DefaultPonySkinHelper;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.settings.PonyLevel;
 
@@ -14,35 +14,34 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.UUID;
 
 @Mixin(DefaultSkinHelper.class)
-abstract class MixinDefaultPlayerSkin {
+abstract class MixinDefaultSkinHelper {
     @Inject(method = "getTexture()Lnet/minecraft/util/Identifier;",
             at = @At("HEAD"),
             cancellable = true)
-    private static void legacySkin(CallbackInfoReturnable<Identifier> cir) {
+    private static void onGetTexture(CallbackInfoReturnable<Identifier> cir) {
         if (MineLittlePony.getInstance().getConfig().ponyLevel.get() == PonyLevel.PONIES) {
-            cir.setReturnValue(IPonyManager.STEVE);
+            cir.setReturnValue(DefaultPonySkinHelper.getPonySkin(cir.getReturnValue()));
         }
     }
 
     @Inject(method = "getTexture(Ljava/util/UUID;)Lnet/minecraft/util/Identifier;",
-            at = @At("HEAD"),
+            at = @At("RETURN"),
             cancellable = true)
-    private static void defaultSkin(UUID uuid, CallbackInfoReturnable<Identifier> cir) {
+    private static void onGetTexture(UUID uuid, CallbackInfoReturnable<Identifier> cir) {
         if (MineLittlePony.getInstance().getConfig().ponyLevel.get() == PonyLevel.PONIES) {
-            cir.setReturnValue(IPonyManager.getDefaultSkin(uuid));
+            cir.setReturnValue(DefaultPonySkinHelper.getPonySkin(cir.getReturnValue()));
         }
     }
 
     @Inject(method = "getModel(Ljava/util/UUID;)Ljava/lang/String;",
-            at = @At("HEAD"),
+            at = @At("RETURN"),
             cancellable = true)
-    private static void skinType(UUID uuid, CallbackInfoReturnable<String> cir) {
+    private static void onGetModel(UUID uuid, CallbackInfoReturnable<String> cir) {
         if (MineLittlePony.getInstance().getConfig().ponyLevel.get() == PonyLevel.PONIES) {
-
             cir.setReturnValue(MineLittlePony.getInstance().getManager()
-                    .getPony(IPonyManager.getDefaultSkin(uuid), uuid)
+                    .getPony(DefaultSkinHelper.getTexture(uuid), uuid)
                     .race()
-                    .getModelId(IPonyManager.isSlimSkin(uuid)));
+                    .getModelId("slim".equalsIgnoreCase(cir.getReturnValue())));
         }
     }
 }

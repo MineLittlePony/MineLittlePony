@@ -185,6 +185,10 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         return pony;
     }
 
+    public Identifier getTexture(T entity) {
+        return getPony(entity).texture();
+    }
+
     public float getShadowScale() {
         return getModel().getSize().getShadowSize();
     }

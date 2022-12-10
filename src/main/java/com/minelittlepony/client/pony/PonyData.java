@@ -99,7 +99,7 @@ public class PonyData implements IPonyData {
 
     @Override
     public Race getRace() {
-        return race;
+        return PonyConfig.getEffectiveRace(race);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class PonyData implements IPonyData {
 
     @Override
     public boolean hasHorn() {
-        return getRace() != null && PonyConfig.getEffectiveRace(getRace()).hasHorn();
+        return getRace().hasHorn();
     }
 
     @Override

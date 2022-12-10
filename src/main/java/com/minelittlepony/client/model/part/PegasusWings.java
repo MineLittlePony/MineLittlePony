@@ -40,7 +40,7 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
     }
 
     public Wing getRight() {
-        return pegasus.isWearing(Wearable.SADDLE_BAGS) ? legacyWing : rightWing;
+        return pegasus.isBurdened() ? legacyWing : rightWing;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
 
         if (pegasus.wingsAreOpen()) {
             flapAngle = pegasus.getWingRotationFactor(ticks);
-            if (!pegasus.getAttributes().isCrouching && pegasus.isWearing(Wearable.SADDLE_BAGS)) {
+            if (!pegasus.getAttributes().isCrouching && pegasus.isBurdened()) {
                 flapAngle -= 1F;
             }
         } else {
@@ -118,7 +118,7 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
             if (pegasus.wingsAreOpen()) {
                 extended.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
             } else {
-                boolean bags = pegasus.isWearing(Wearable.SADDLE_BAGS);
+                boolean bags = pegasus.isWearing(Wearable.SADDLE_BAGS_BOTH);
                 if (bags) {
                     stack.push();
                     stack.translate(0, 0, 0.198F);

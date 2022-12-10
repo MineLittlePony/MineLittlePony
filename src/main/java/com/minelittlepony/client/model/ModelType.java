@@ -56,7 +56,7 @@ public final class ModelType {
     public static final ModelKey<PonyArmourModel<?>> ARMOUR_OUTER = register("armour_outer", PonyArmourModel::new);
 
     public static final ModelKey<Stetson> STETSON = registerGear("stetson", Wearable.STETSON, Stetson::new);
-    public static final ModelKey<SaddleBags> SADDLEBAGS = registerGear("saddlebags", Wearable.SADDLE_BAGS, SaddleBags::new);
+    public static final ModelKey<SaddleBags> SADDLEBAGS = registerGear("saddlebags", Wearable.SADDLE_BAGS_BOTH, SaddleBags::new);
     public static final ModelKey<Crown> CROWN = registerGear("crown", Wearable.CROWN, Crown::new);
     public static final ModelKey<Muffin> MUFFIN = registerGear("muffin", Wearable.MUFFIN, Muffin::new);
     public static final ModelKey<WitchHat> WITCH_HAT = registerGear("witch_hat", Wearable.HAT, WitchHat::new);

@@ -14,10 +14,6 @@ import java.util.UUID;
  *
  */
 public interface IPonyManager  {
-
-    Identifier STEVE = new Identifier("minelittlepony", "textures/entity/steve_pony.png");
-    Identifier ALEX = new Identifier("minelittlepony", "textures/entity/alex_pony.png");
-
     /**
      * Gets a pony representation of the passed in entity.
      *
@@ -48,16 +44,9 @@ public interface IPonyManager  {
      * Delegates to the background-ponies registry if no pony skins were available and client settings allows it.
      *
      * @param resource A texture resource
-     * @param uuid id of a player or entity
+     * @param uuid id of a player
      */
     IPony getPony(Identifier resource, UUID uuid);
-
-    /**
-     * Gets the default pony. Either STEVE/ALEX, or a background pony based on client settings.
-     *
-     * @param uuid id of a player or entity
-     */
-    IPony getDefaultPony(UUID uuid);
 
     /**
      * Gets a random background pony determined by the given uuid.
@@ -72,17 +61,6 @@ public interface IPonyManager  {
      * De-registers a pony from the cache.
      */
     void removePony(Identifier resource);
-
-    static Identifier getDefaultSkin(UUID uuid) {
-        return isSlimSkin(uuid) ? ALEX : STEVE;
-    }
-
-    /**
-     * Returns true if the given uuid is of a player would would use the ALEX skin type.
-     */
-    static boolean isSlimSkin(UUID uuid) {
-        return (uuid.hashCode() & 1) == 1;
-    }
 
     interface ForcedPony {}
 }

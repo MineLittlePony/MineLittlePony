@@ -7,6 +7,8 @@ import com.minelittlepony.api.pony.TriggerPixelType;
 import com.minelittlepony.api.pony.TriggerPixelValue;
 import com.minelittlepony.common.util.Color;
 
+import java.util.Arrays;
+
 /**
  * Individual trigger pixels for a pony skin.
  *
@@ -26,6 +28,10 @@ public enum TriggerPixel {
     private Channel channel;
 
     TriggerPixelType<?> def;
+
+    private static final TriggerPixel[] VALUES = values();
+    private static final int MAX_READ_X = Arrays.stream(VALUES).mapToInt(i -> i.x).max().getAsInt();
+    private static final int MAX_READ_Y = Arrays.stream(VALUES).mapToInt(i -> i.y).max().getAsInt();
 
     TriggerPixel(TriggerPixelType<?> def, Channel channel, int x, int y) {
         this.def = def;
@@ -79,6 +85,10 @@ public enum TriggerPixel {
         T value = TriggerPixelType.getByTriggerPixel((T)def, channel.readValue(x, y, image));
 
         out[value.ordinal()] |= value != def;
+    }
+
+    public static boolean isTriggerPixelCoord(int x, int y) {
+        return x <= MAX_READ_X && y <= MAX_READ_Y;
     }
 
     enum Channel {

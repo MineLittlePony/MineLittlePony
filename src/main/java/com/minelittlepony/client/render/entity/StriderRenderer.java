@@ -8,6 +8,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.passive.StriderEntity;
 import net.minecraft.util.Identifier;
 
+import com.minelittlepony.api.pony.DefaultPonySkinHelper;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 
@@ -24,7 +25,7 @@ public class StriderRenderer extends MobEntityRenderer<StriderEntity, EntityMode
 
     @Override
     public Identifier getTexture(StriderEntity entity) {
-        return MineLittlePony.getInstance().getVariatedTextures().get(entity.isCold() ? COLD_DRAGON_PONIES : DRAGON_PONIES, entity);
+        return MineLittlePony.getInstance().getVariatedTextures().get(entity.isCold() ? COLD_DRAGON_PONIES : DRAGON_PONIES, entity).orElse(DefaultPonySkinHelper.STEVE);
     }
 
     @Override
