@@ -7,13 +7,15 @@ import net.minecraft.util.Identifier;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.minelittlepony.api.pony.IPonyData;
-import com.minelittlepony.api.pony.TriggerPixelType;
+import com.minelittlepony.api.pony.*;
+import com.minelittlepony.api.pony.meta.TriggerPixel;
 import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.client.render.entity.SeaponyRenderer;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.hdskins.client.dummy.*;
+import com.minelittlepony.hdskins.client.resources.DefaultSkinGenerator;
+import com.minelittlepony.hdskins.client.resources.TextureLoader;
 import com.minelittlepony.hdskins.profile.SkinType;
-import com.minelittlepony.settings.PonyLevel;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,10 +23,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 class PonyPreview extends PlayerPreview {
-    public static final Identifier NO_SKIN_STEVE_PONY = new Identifier("minelittlepony", "textures/mob/noskin.png");
-    public static final Identifier NO_SKIN_ALEX_PONY = new Identifier("minelittlepony", "textures/mob/noskin_alex.png");
-    public static final Identifier NO_SKIN_SEAPONY = new Identifier("minelittlepony", "textures/mob/noskin_seapony.png");
-
     @Override
     protected DummyPlayer createEntity(ClientWorld world, PlayerSkins<?> textures) {
         return new DummyPony(world, textures);
@@ -32,16 +30,16 @@ class PonyPreview extends PlayerPreview {
 
     @Override
     public Identifier getDefaultSkin(SkinType type, boolean slim) {
-        if (MineLittlePony.getInstance().getConfig().ponyLevel.get() == PonyLevel.PONIES) {
-            if (type == SkinType.SKIN) {
-                return slim ? NO_SKIN_ALEX_PONY : NO_SKIN_STEVE_PONY;
-            }
-        }
         if (type == MineLPHDSkins.seaponySkinType) {
-            return NO_SKIN_SEAPONY;
+            return DefaultSkinGenerator.generateGreyScale(SeaponyRenderer.TEXTURE, SeaponyRenderer.TEXTURE, getExclusion());
         }
 
         return super.getDefaultSkin(type, slim);
+    }
+
+    @Override
+    protected TextureLoader.Exclusion getExclusion() {
+        return TriggerPixel::isTriggerPixelCoord;
     }
 
     @Override

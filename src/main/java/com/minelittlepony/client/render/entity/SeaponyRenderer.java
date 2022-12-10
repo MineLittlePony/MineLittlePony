@@ -19,8 +19,7 @@ import net.minecraft.entity.mob.GuardianEntity;
 import net.minecraft.util.Identifier;
 
 public class SeaponyRenderer extends GuardianEntityRenderer {
-
-    public static final Identifier SEAPONY = new Identifier("minelittlepony", "textures/entity/seapony.png");
+    public static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/entity/seapony.png");
 
     private final Proxy<GuardianEntity, GuardianPonyModel> ponyRenderer;
 
@@ -31,7 +30,7 @@ public class SeaponyRenderer extends GuardianEntityRenderer {
         ponyRenderer = new Proxy<GuardianEntity, GuardianPonyModel>(features, context, ModelType.GUARDIAN) {
             @Override
             public Identifier getTexture(GuardianEntity entity) {
-                return SEAPONY;
+                return TEXTURE;
             }
 
             @Override
