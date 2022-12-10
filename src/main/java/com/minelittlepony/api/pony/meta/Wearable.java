@@ -7,6 +7,8 @@ import com.minelittlepony.client.model.gear.SaddleBags;
 import com.minelittlepony.common.util.Color;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public enum Wearable implements TriggerPixelType<Wearable> {
     NONE              (0x00, null),
@@ -26,6 +28,7 @@ public enum Wearable implements TriggerPixelType<Wearable> {
     private final Identifier texture;
 
     public static final List<Wearable> VALUES = Arrays.stream(values()).toList();
+    public static final Map<Identifier, Wearable> REGISTRY = VALUES.stream().collect(Collectors.toMap(Wearable::getId, Function.identity()));
 
     Wearable(int pixel, Identifier texture) {
         triggerValue = pixel;

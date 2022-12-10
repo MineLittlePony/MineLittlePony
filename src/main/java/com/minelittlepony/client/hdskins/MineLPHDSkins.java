@@ -1,5 +1,6 @@
 package com.minelittlepony.client.hdskins;
 
+import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.SkinsProxy;
@@ -8,6 +9,7 @@ import com.minelittlepony.common.client.gui.element.Button;
 import com.minelittlepony.common.event.ClientReadyCallback;
 import com.minelittlepony.hdskins.client.*;
 import com.minelittlepony.hdskins.client.dummy.DummyPlayer;
+import com.minelittlepony.hdskins.client.dummy.PlayerSkins.PlayerSkin;
 import com.minelittlepony.hdskins.client.gui.GuiSkins;
 import com.minelittlepony.hdskins.profile.SkinType;
 
@@ -91,7 +93,16 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
 
     private Optional<Identifier> getSkin(SkinType type, AbstractClientPlayerEntity player) {
         if (player instanceof DummyPlayer dummy) {
-            return Optional.of(dummy.getTextures().get(type).getId());
+            PlayerSkin skin = dummy.getTextures().get(type);
+
+            if (skin.isReady()) {
+                return Optional.of(skin.getId());
+            }
+
+            PlayerSkin main = dummy.getTextures().get(SkinType.SKIN);
+            if (IPony.getManager().getPony(main.getId()).metadata().isWearing(Wearable.REGISTRY.getOrDefault(type.getId(), Wearable.NONE))) {
+                return Optional.of(main.getId());
+            }
         }
 
         return Optional.of(player).map(PlayerSkins::of).map(skins -> skins.getSkin(type));
