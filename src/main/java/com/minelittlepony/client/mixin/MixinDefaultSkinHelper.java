@@ -16,7 +16,7 @@ import java.util.UUID;
 @Mixin(DefaultSkinHelper.class)
 abstract class MixinDefaultSkinHelper {
     @Inject(method = "getTexture()Lnet/minecraft/util/Identifier;",
-            at = @At("HEAD"),
+            at = @At("RETURN"),
             cancellable = true)
     private static void onGetTexture(CallbackInfoReturnable<Identifier> cir) {
         if (MineLittlePony.getInstance().getConfig().ponyLevel.get() == PonyLevel.PONIES) {
