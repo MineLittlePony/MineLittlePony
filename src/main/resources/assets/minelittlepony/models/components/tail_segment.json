@@ -9,7 +9,7 @@
 		"segment": {
 			"type": "mson:planar",
 			"pivot": [0, "#segment_y", 0],
-			"up":   [-2, 0, 2, 4, 4, 32, 0],
+			"up":   [-2, 0, 2, 4, 4, 32, 0, true, false],
 			"east": [ 2, 0, 2, 4, 4, 36, "#tex_x"],
 			"west": [-2, 0, 2, 4, 4, 36, "#tex_x"],
 			"south":[-2, 0, 6, 4, 4, 32, "#tex_x"],
