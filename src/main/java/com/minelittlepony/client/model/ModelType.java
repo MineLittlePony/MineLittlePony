@@ -29,9 +29,8 @@ import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 public final class ModelType {
-
     private static final Map<Race, PlayerModelKey<?, ?>> PLAYER_MODELS = new HashMap<>();
-    private static final Map<Wearable, ModelKey<? extends IGear>> GEAR_MODELS = new HashMap<>();
+    private static final Map<Wearable, GearModelKey<? extends IGear>> GEAR_MODELS = new HashMap<>();
 
     public static final ModelKey<DJPon3EarsModel> DJ_PON_3 = register("dj_pon_three", DJPon3EarsModel::new);
 
@@ -55,12 +54,14 @@ public final class ModelType {
     public static final ModelKey<PonyArmourModel<?>> ARMOUR_INNER = register("armour_inner", PonyArmourModel::new);
     public static final ModelKey<PonyArmourModel<?>> ARMOUR_OUTER = register("armour_outer", PonyArmourModel::new);
 
-    public static final ModelKey<Stetson> STETSON = registerGear("stetson", Wearable.STETSON, Stetson::new);
-    public static final ModelKey<SaddleBags> SADDLEBAGS = registerGear("saddlebags", Wearable.SADDLE_BAGS_BOTH, SaddleBags::new);
-    public static final ModelKey<Crown> CROWN = registerGear("crown", Wearable.CROWN, Crown::new);
-    public static final ModelKey<Muffin> MUFFIN = registerGear("muffin", Wearable.MUFFIN, Muffin::new);
-    public static final ModelKey<WitchHat> WITCH_HAT = registerGear("witch_hat", Wearable.HAT, WitchHat::new);
-    public static final ModelKey<ChristmasHat> ANTLERS = registerGear("antlers", Wearable.ANTLERS, ChristmasHat::new);
+    public static final GearModelKey<Stetson> STETSON = registerGear("stetson", Wearable.STETSON, Stetson::new);
+    public static final GearModelKey<SaddleBags> SADDLEBAGS_BOTH = registerGear("saddlebags", Wearable.SADDLE_BAGS_BOTH, t -> new SaddleBags(t, Wearable.SADDLE_BAGS_BOTH));
+    public static final GearModelKey<SaddleBags> SADDLEBAGS_LEFT = registerGear(SADDLEBAGS_BOTH, Wearable.SADDLE_BAGS_LEFT, t -> new SaddleBags(t, Wearable.SADDLE_BAGS_LEFT));
+    public static final GearModelKey<SaddleBags> SADDLEBAGS_RIGHT = registerGear(SADDLEBAGS_BOTH, Wearable.SADDLE_BAGS_RIGHT, t -> new SaddleBags(t, Wearable.SADDLE_BAGS_RIGHT));
+    public static final GearModelKey<Crown> CROWN = registerGear("crown", Wearable.CROWN, Crown::new);
+    public static final GearModelKey<Muffin> MUFFIN = registerGear("muffin", Wearable.MUFFIN, Muffin::new);
+    public static final GearModelKey<WitchHat> WITCH_HAT = registerGear("witch_hat", Wearable.HAT, WitchHat::new);
+    public static final GearModelKey<ChristmasHat> ANTLERS = registerGear("antlers", Wearable.ANTLERS, ChristmasHat::new);
 
     public static final PlayerModelKey<?, AlicornModel<?>> ALICORN = registerPlayer("alicorn", Race.ALICORN, AlicornModel::new);
     public static final PlayerModelKey<?, UnicornModel<?>> UNICORN = registerPlayer("unicorn", Race.UNICORN, UnicornModel::new);
@@ -87,10 +88,15 @@ public final class ModelType {
     }
 
     @SuppressWarnings("unchecked")
-    static <T extends AbstractGear> ModelKey<T> registerGear(String name, Wearable wearable, MsonModel.Factory<T> constructor) {
-        return (ModelKey<T>)GEAR_MODELS.computeIfAbsent(wearable, w -> {
-            return Mson.getInstance().registerModel(new Identifier("minelittlepony", "gear/" + name), constructor);
+    static <T extends AbstractGear> GearModelKey<T> registerGear(String name, Wearable wearable, MsonModel.Factory<T> constructor) {
+        return (GearModelKey<T>)GEAR_MODELS.computeIfAbsent(wearable, w -> {
+            return new GearModelKey<T>(Mson.getInstance().registerModel(new Identifier("minelittlepony", "gear/" + name), constructor), constructor);
         });
+    }
+
+    @SuppressWarnings("unchecked")
+    static <T extends AbstractGear> GearModelKey<T> registerGear(GearModelKey<T> key, Wearable wearable, MsonModel.Factory<T> constructor) {
+        return (GearModelKey<T>)GEAR_MODELS.computeIfAbsent(wearable, w -> new GearModelKey<T>(key.key, constructor));
     }
 
     static <T extends Model> ModelKey<T> register(String name, MsonModel.Factory<T> constructor) {
@@ -103,9 +109,15 @@ public final class ModelType {
         return (PlayerModelKey<E, T>)PLAYER_MODELS.get(race);
     }
 
-    public static Stream<Map.Entry<Wearable, ModelKey<? extends IGear>>> getWearables() {
+    public static Stream<Map.Entry<Wearable, GearModelKey<? extends IGear>>> getWearables() {
         return GEAR_MODELS.entrySet().stream();
     }
 
-    public static void bootstrap() {};
+    public static void bootstrap() { }
+
+    public record GearModelKey<T extends IGear>(ModelKey<T> key, MsonModel.Factory<T> constructor) {
+        public T createModel() {
+            return key.createModel(constructor);
+        }
+    }
 }

@@ -78,7 +78,7 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
         if (wearable.isSaddlebags()) {
             return clothing.createTexture(villager, "accessory");
         }
-        return getTexture(villager);
+        return wearable.getDefaultTexture();
     }
 
     @Override

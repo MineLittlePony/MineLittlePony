@@ -8,7 +8,8 @@ import net.minecraft.client.render.entity.feature.*;
 import net.minecraft.client.render.entity.model.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.passive.PigEntity;
-import com.minelittlepony.client.model.gear.Crown;
+
+import com.minelittlepony.api.pony.meta.Wearable;
 
 public class PonyPigRenderer extends PigEntityRenderer {
 
@@ -34,7 +35,7 @@ public class PonyPigRenderer extends PigEntityRenderer {
             getContextModel().copyStateTo(model);
             model.animateModel(entity, limbAngle, limbDistance, tickDelta);
             model.setAngles(entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
-            VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutoutNoCull(Crown.TEXTURE));
+            VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutoutNoCull(Wearable.CROWN.getDefaultTexture()));
             model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
         }
     }

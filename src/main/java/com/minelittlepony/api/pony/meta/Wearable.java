@@ -1,26 +1,44 @@
 package com.minelittlepony.api.pony.meta;
 
+import net.minecraft.util.Identifier;
+
 import com.minelittlepony.api.pony.TriggerPixelType;
+import com.minelittlepony.client.model.gear.SaddleBags;
 import com.minelittlepony.common.util.Color;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public enum Wearable implements TriggerPixelType<Wearable> {
-    NONE              (0x00),
-    CROWN             (0x16),
-    MUFFIN            (0x32),
-    HAT               (0x64),
-    ANTLERS           (0x96),
-    SADDLE_BAGS_LEFT  (0xC6),
-    SADDLE_BAGS_RIGHT (0xC7),
-    SADDLE_BAGS_BOTH  (0xC8),
-    STETSON           (0xFA);
+    NONE              (0x00, null),
+    CROWN             (0x16, new Identifier("minelittlepony", "textures/models/crown.png")),
+    MUFFIN            (0x32, new Identifier("minelittlepony", "textures/models/muffin.png")),
+    HAT               (0x64, new Identifier("textures/entity/witch.png")),
+    ANTLERS           (0x96, new Identifier("minelittlepony", "textures/models/antlers.png")),
+    SADDLE_BAGS_LEFT  (0xC6, SaddleBags.TEXTURE),
+    SADDLE_BAGS_RIGHT (0xC7, SaddleBags.TEXTURE),
+    SADDLE_BAGS_BOTH  (0xC8, SaddleBags.TEXTURE),
+    STETSON           (0xFA, new Identifier("minelittlepony", "textures/models/stetson.png"));
 
     private int triggerValue;
 
-    Wearable(int pixel) {
+    private final Identifier id;
+
+    private final Identifier texture;
+
+    public static final List<Wearable> VALUES = Arrays.stream(values()).toList();
+
+    Wearable(int pixel, Identifier texture) {
         triggerValue = pixel;
+        id = new Identifier("minelittlepony", name().toLowerCase(Locale.ROOT));
+        this.texture = texture;
+    }
+
+    public Identifier getId() {
+        return id;
+    }
+
+    public Identifier getDefaultTexture() {
+        return texture;
     }
 
     @Override
@@ -38,7 +56,7 @@ public enum Wearable implements TriggerPixelType<Wearable> {
     }
 
     public static boolean[] flags(Wearable[] wears) {
-        boolean[] flags = new boolean[values().length];
+        boolean[] flags = new boolean[VALUES.size()];
         for (int i = 0; i < wears.length; i++) {
             flags[wears[i].ordinal()] = true;
         }
@@ -47,9 +65,8 @@ public enum Wearable implements TriggerPixelType<Wearable> {
 
     public static Wearable[] flags(boolean[] flags) {
         List<Wearable> wears = new ArrayList<>();
-        Wearable[] values = values();
-        for (int i = 0; i < values.length; i++) {
-            if (flags[i]) wears.add(values[i]);
+        for (int i = 0; i < VALUES.size(); i++) {
+            if (flags[i]) wears.add(VALUES.get(i));
         }
         return wears.toArray(new Wearable[0]);
     }

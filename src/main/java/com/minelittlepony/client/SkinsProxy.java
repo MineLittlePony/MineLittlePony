@@ -1,16 +1,19 @@
 package com.minelittlepony.client;
 
-import com.minelittlepony.client.model.ClientPonyModel;
-import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.common.client.gui.ScrollContainer;
 import com.minelittlepony.common.client.gui.Tooltip;
 import com.minelittlepony.common.client.gui.element.Button;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+
+import java.util.Optional;
+import java.util.Set;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.texture.PlayerSkinProvider;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 
 import org.jetbrains.annotations.Nullable;
@@ -41,8 +44,12 @@ public class SkinsProxy {
                 .setText("minelp.options.skins.hdskins.open");
     }
 
-    public Identifier getSeaponySkin(EquineRenderManager<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> manager, AbstractClientPlayerEntity player) {
-        return manager.getTexture(player);
+    public Optional<Identifier> getSkin(Identifier skinTypeId, AbstractClientPlayerEntity player) {
+        return Optional.empty();
+    }
+
+    public Set<Identifier> getAvailableSkins(Entity entity) {
+        return Set.of();
     }
 }
 

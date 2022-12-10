@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.api.pony.meta.TriggerPixel;
+import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.entity.SeaponyRenderer;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
@@ -32,6 +33,12 @@ class PonyPreview extends PlayerPreview {
     public Identifier getDefaultSkin(SkinType type, boolean slim) {
         if (type == MineLPHDSkins.seaponySkinType) {
             return DefaultSkinGenerator.generateGreyScale(SeaponyRenderer.TEXTURE, SeaponyRenderer.TEXTURE, getExclusion());
+        }
+
+        Wearable wearable = MineLPHDSkins.wearableTypes.getOrDefault(type, Wearable.NONE);
+
+        if (wearable != Wearable.NONE) {
+            return DefaultSkinGenerator.generateGreyScale(wearable.getDefaultTexture(), wearable.getDefaultTexture(), getExclusion());
         }
 
         return super.getDefaultSkin(type, slim);

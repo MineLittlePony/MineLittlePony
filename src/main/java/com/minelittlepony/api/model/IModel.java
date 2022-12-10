@@ -84,6 +84,14 @@ public interface IModel {
      * Tests if this model is wearing the given piece of gear.
      */
     default boolean isWearing(Wearable wearable) {
+        return isEmbedded(wearable) || getAttributes().featureSkins.contains(wearable.getId());
+    }
+
+    /**
+     * Tests if the chosen piece of gear is sourcing its texture from the main skin.
+     * i.e. Used to change wing rendering when using saddlebags.
+     */
+    default boolean isEmbedded(Wearable wearable) {
         return getMetadata().isWearing(wearable);
     }
 }

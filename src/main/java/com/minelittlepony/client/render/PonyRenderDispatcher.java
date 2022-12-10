@@ -57,7 +57,7 @@ public class PonyRenderDispatcher {
     private void addPlayerSkin(EntityRenderDispatcher manager, boolean slimArms, Race race) {
         Mson.getInstance().getEntityRendererRegistry().registerPlayerRenderer(
                 race.getModelId(slimArms),
-                ModelType.getPlayerModel(race).getRendererFactory(slimArms)
+                ModelType.getPlayerModel(race).getFactory(slimArms)
         );
     }
 

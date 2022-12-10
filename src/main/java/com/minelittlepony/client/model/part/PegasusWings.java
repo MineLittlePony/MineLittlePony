@@ -40,7 +40,7 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
     }
 
     public Wing getRight() {
-        return pegasus.isBurdened() ? legacyWing : rightWing;
+        return (pegasus.isEmbedded(Wearable.SADDLE_BAGS_BOTH) || pegasus.isEmbedded(Wearable.SADDLE_BAGS_LEFT) || pegasus.isEmbedded(Wearable.SADDLE_BAGS_RIGHT)) ? legacyWing : rightWing;
     }
 
     @Override

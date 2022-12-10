@@ -16,6 +16,7 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.Identifier;
 
 public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
+    public static final Identifier SKIN_TYPE_ID = new Identifier("minelp", "seapony");
 
     private final ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> seapony;
     private final ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> normalPony;
@@ -29,7 +30,7 @@ public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
 
     @Override
     public Identifier getTexture(AbstractClientPlayerEntity player) {
-        return SkinsProxy.instance.getSeaponySkin(manager, player);
+        return SkinsProxy.instance.getSkin(SKIN_TYPE_ID, player).orElseGet(() -> super.getTexture(player));
     }
 
     @Override

@@ -15,18 +15,17 @@ import com.minelittlepony.mson.api.MsonModel;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class PlayerModelKey<T extends LivingEntity, M extends Model & MsonModel> {
-
-    private final ModelKey<M> steveKey;
-    private final ModelKey<M> alexKey;
-
-    private final RendererFactory rendererFactory;
-
+public record PlayerModelKey<T extends LivingEntity, M extends Model & MsonModel> (
+        ModelKey<M> steveKey,
+        ModelKey<M> alexKey,
+        RendererFactory factory
+) {
     PlayerModelKey(String name, BiFunction<ModelPart, Boolean, M> modelFactory, RendererFactory rendererFactory) {
-        this.rendererFactory = rendererFactory;
-
-        steveKey = Mson.getInstance().registerModel(new Identifier("minelittlepony", "races/steve/" + name), tree -> modelFactory.apply(tree, false));
-        alexKey = Mson.getInstance().registerModel(new Identifier("minelittlepony", "races/alex/" + name), tree -> modelFactory.apply(tree, true));
+        this(
+            Mson.getInstance().registerModel(new Identifier("minelittlepony", "races/steve/" + name), tree -> modelFactory.apply(tree, false)),
+            Mson.getInstance().registerModel(new Identifier("minelittlepony", "races/alex/" + name), tree -> modelFactory.apply(tree, true)),
+            rendererFactory
+        );
     }
 
     public ModelKey<M> getKey(boolean slimArms) {
@@ -34,8 +33,8 @@ public class PlayerModelKey<T extends LivingEntity, M extends Model & MsonModel>
     }
 
     @SuppressWarnings("unchecked")
-    public Function<EntityRendererFactory.Context, PlayerEntityRenderer> getRendererFactory(boolean slimArms) {
-        return d -> rendererFactory.create(d, slimArms, (ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>>)getKey(slimArms));
+    public Function<EntityRendererFactory.Context, PlayerEntityRenderer> getFactory(boolean slimArms) {
+        return d -> factory.create(d, slimArms, (ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>>)getKey(slimArms));
     }
 
     public interface RendererFactory {

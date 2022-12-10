@@ -2,15 +2,17 @@ package com.minelittlepony.api.model;
 
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.PonyPosture;
+import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.util.MathUtil;
+
+import java.util.*;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Arm;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-
-import java.util.UUID;
 
 import static com.minelittlepony.api.model.PonyModelConstants.ROTATE_270;
 import static com.minelittlepony.api.model.PonyModelConstants.WING_ROT_Z_SNEAK;
@@ -96,6 +98,11 @@ public class ModelAttributes {
     public float wingAngle;
 
     /**
+     * Contains a list of additional skins available for rendering.
+     */
+    public Set<Identifier> featureSkins = new HashSet<>();
+
+    /**
      * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
      */
     public void checkRainboom(LivingEntity entity, float swing, boolean hasWings, float ticks) {
@@ -135,6 +142,7 @@ public class ModelAttributes {
         isRidingInteractive = PonyPosture.isRidingAPony(entity);
         interpolatorId = entity.getUuid();
         isLeftHanded = entity.getMainArm() == Arm.LEFT;
+        featureSkins = SkinsProxy.instance.getAvailableSkins(entity);
     }
 
     public enum Mode {

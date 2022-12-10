@@ -4,7 +4,6 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.model.BodyPart;
@@ -16,7 +15,7 @@ import com.minelittlepony.common.util.Color;
 import java.util.Calendar;
 import java.util.UUID;
 
-public class ChristmasHat extends AbstractGear implements PonyModelConstants {
+public class ChristmasHat extends AbstractWearableGear implements PonyModelConstants {
 
     private static boolean dayChecked = false;
     private static boolean dayResult = false;
@@ -32,21 +31,20 @@ public class ChristmasHat extends AbstractGear implements PonyModelConstants {
         return dayResult;
     }
 
-    private static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/models/antlers.png");
-
     private final ModelPart left;
     private final ModelPart right;
 
     private int tint;
 
     public ChristmasHat(ModelPart tree) {
+        super(Wearable.ANTLERS, BodyPart.HEAD);
         left = tree.getChild("left");
         right = tree.getChild("right");
     }
 
     @Override
     public boolean canRender(IModel model, Entity entity) {
-        return isChristmasDay() || model.isWearing(Wearable.ANTLERS);
+        return isChristmasDay() || super.canRender(model, entity);
     }
 
     @Override
@@ -63,16 +61,6 @@ public class ChristmasHat extends AbstractGear implements PonyModelConstants {
         tint = model.getMetadata().getGlowColor();
         left.roll = bodySwing;
         right.roll = -bodySwing;
-    }
-
-    @Override
-    public BodyPart getGearLocation() {
-        return BodyPart.HEAD;
-    }
-
-    @Override
-    public <T extends Entity> Identifier getTexture(T entity, Context<T, ?> context) {
-        return TEXTURE;
     }
 
     @Override

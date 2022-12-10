@@ -15,7 +15,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-public class SaddleBags extends AbstractGear implements PonyModelConstants {
+public class SaddleBags extends AbstractWearableGear implements PonyModelConstants {
 
     public static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/models/saddlebags.png");
 
@@ -26,9 +26,10 @@ public class SaddleBags extends AbstractGear implements PonyModelConstants {
 
     private boolean hangLow = false;
 
-    float dropAmount = 0;
+    private float dropAmount = 0;
 
-    public SaddleBags(ModelPart tree) {
+    public SaddleBags(ModelPart tree, Wearable wearable) {
+        super(wearable, BodyPart.BODY);
         strap = tree.getChild("strap");
         leftBag = tree.getChild("left_bag");
         rightBag = tree.getChild("right_bag");
@@ -60,15 +61,11 @@ public class SaddleBags extends AbstractGear implements PonyModelConstants {
         leftBag.roll = bodySwing;
         rightBag.roll = -bodySwing;
 
-        leftBag.visible = model.isWearing(Wearable.SADDLE_BAGS_BOTH) || model.isWearing(Wearable.SADDLE_BAGS_LEFT);
-        rightBag.visible = model.isWearing(Wearable.SADDLE_BAGS_BOTH) || model.isWearing(Wearable.SADDLE_BAGS_RIGHT);
+        leftBag.visible = wearable == Wearable.SADDLE_BAGS_BOTH || wearable == Wearable.SADDLE_BAGS_LEFT;
+        rightBag.visible = wearable == Wearable.SADDLE_BAGS_BOTH || wearable == Wearable.SADDLE_BAGS_RIGHT;
 
         dropAmount = hangLow ? 0.15F : 0;
         dropAmount = model.getMetadata().getInterpolator(interpolatorId).interpolate("dropAmount", dropAmount, 3);
-    }
-
-    public void sethangingLow(boolean veryLow) {
-        hangLow = veryLow;
     }
 
     @Override
@@ -87,20 +84,5 @@ public class SaddleBags extends AbstractGear implements PonyModelConstants {
         if (leftBag.visible && rightBag.visible) {
             strap.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
         }
-    }
-
-    @Override
-    public boolean canRender(IModel model, Entity entity) {
-        return model.isWearing(Wearable.SADDLE_BAGS_BOTH) || model.isWearing(Wearable.SADDLE_BAGS_LEFT) || model.isWearing(Wearable.SADDLE_BAGS_RIGHT);
-    }
-
-    @Override
-    public BodyPart getGearLocation() {
-        return BodyPart.BODY;
-    }
-
-    @Override
-    public <T extends Entity> Identifier getTexture(T entity, Context<T, ?> context) {
-        return context.getDefaultTexture(entity, Wearable.SADDLE_BAGS_BOTH);
     }
 }

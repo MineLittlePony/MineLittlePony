@@ -5,6 +5,7 @@ import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.gear.SaddleBags;
@@ -198,12 +199,12 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
 
     @Override
     public Identifier getDefaultTexture(AbstractClientPlayerEntity entity, Wearable wearable) {
-        if (wearable.isSaddlebags()) {
-            if (getInternalRenderer().getModel().getMetadata().getRace() == Race.BATPONY) {
+        return SkinsProxy.instance.getSkin(wearable.getId(), entity).orElseGet(() -> {
+            if (wearable.isSaddlebags() && getInternalRenderer().getModel().getMetadata().getRace() == Race.BATPONY) {
                 return SaddleBags.TEXTURE;
             }
-        }
 
-        return getTexture(entity);
+            return wearable.getDefaultTexture();
+        });
     }
 }

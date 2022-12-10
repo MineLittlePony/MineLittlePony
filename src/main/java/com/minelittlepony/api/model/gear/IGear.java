@@ -105,7 +105,7 @@ public interface IGear {
         /**
          * The empty context.
          */
-        Context<?, ?> NULL = (e, g) -> null;
+        Context<?, ?> NULL = (e, g) -> g.getDefaultTexture();
 
         /**
          * Checks whether the given wearable and gear are able to render for this specific entity and its renderer.
