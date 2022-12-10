@@ -17,20 +17,20 @@
 		"neck_dilate_y": -0.1
 	},
 	"skeleton": {
-	    "upper_torso": {
-            "body": {
-	            "neck": {
-	                "head": {
-	                    "horn": {}
-	                }
-	            },
-	            "left_arm": {},
-	            "right_arm": {}
-	        },
-	        "left_leg": {},
-	        "right_leg": {},
-	        "wings": {}
-	    }
+		"upper_torso": {
+			"body": {
+				"neck": {
+					"head": {
+						"horn": {}
+					}
+				},
+				"left_arm": {},
+				"right_arm": {}
+			},
+			"left_leg": {},
+			"right_leg": {},
+			"wings": {}
+		}
 	},
 	"data": {
 		"head": {
@@ -111,31 +111,38 @@
 				}
 			],
 			"children": {
-			    "butt": {
-			        "pivot": [8, 8, 0],
-			        "rotate": [0, 0, 90],
-			        "cubes": [
+				"butt": {
+					"pivot": [8, 8, 0],
+					"rotate": [0, 0, 90],
+					"cubes": [
 						{
 							"type": "mson:plane", "__comment": "butt",
 							"texture": { "u": 36, "v": 16 },
 							"face": "south",
 							"position": [ -4, 4, 14 ],
 							"size": [ 8, 4 ]
-						},
-						{
-							"type": "mson:plane", "__comment": "butt",
-							"texture": { "u": 36, "v": 16 },
-							"mirror": [false, true],
-							"face": "south",
-							"position": [ -4, 8, 14 ],
-							"size": [ 8, 4 ]
 						}
-			        ]
-			    },
-			    "butt_buttom": {
-			        "pivot": [-2, 12, 14],
-			        "rotate": [0, 90, 0],
-			        "cubes": [
+					],
+					"children": {
+						"mirrored": {
+							"pivot": [ 4, 8, 14 ],
+							"rotate": [0, 180, 0],
+							"cubes": [
+								{
+									"type": "mson:plane", "__comment": "butt",
+									"texture": { "u": 36, "v": 16 },
+									"mirror": [true, true],
+									"face": "south",
+									"size": [ 8, 4 ]
+								}
+							]
+						}
+					}
+				},
+				"butt_buttom": {
+					"pivot": [-2, 12, 14],
+					"rotate": [0, 90, 0],
+					"cubes": [
 						{
 							"type": "mson:plane", "__comment": "butt bottom",
 							"texture": { "u": 36, "v": 16 },
@@ -151,8 +158,8 @@
 							"position": [ 0, 0, -2 ],
 							"size": [ 4, 4 ]
 						}
-			        ]
-			    },
+					]
+				},
 				"tail_stub": {
 					"type": "mson:planar",
 					"pivot": [0, 1, -2.25],
@@ -220,30 +227,30 @@
 						"body sides a", "body sides b", "qt mark a", "qt mark b"
 					],
 					"west": [
-						[ -4, 4,  2, 8, 4, 12, 32 ],
-						[ -4, 8,  2, 8, 4, 12, 48 ],
-						[ -4, 4, 10, 4, 4,  0, 32 ],
-						[ -4, 8, 10, 4, 4,  0, 48 ]
+						[ -4, 4,2, 8, 4, 12, 32 ],
+						[ -4, 8,2, 8, 4, 12, 48 ],
+						[ -4, 4, 10, 4, 4,0, 32 ],
+						[ -4, 8, 10, 4, 4,0, 48 ]
 					]
 				},
 				"butt": {
-			        "pivot": [8, 8, 0],
-			        "rotate": [0, 0, 90],
-			        "type": "mson:planar",
-			        "south": [
-			            [ -4, 4, 14, 8, 4, 36, 32 ],
-			            [ -4, 8, 14, 8, 4, 36, 32, false, true ]
-			        ]
-			    },
-			    "butt_buttom": {
-			        "pivot": [-2, 11.9999, 14],
-			        "rotate": [0, 90, 0],
-			        "type": "mson:planar",
-			        "down": [
-			            [ 0, 0, 2, 4, 4, 36, 32 ],
-			            [ 0, 0, -2, 4, 4, 36, 32, false, true ]
-			        ]
-			    }
+					"pivot": [8, 8, 0],
+					"rotate": [0, 0, 90],
+					"type": "mson:planar",
+					"south": [
+						[ -4, 4, 14, 8, 4, 36, 32 ],
+						[ -4, 8, 14, 8, 4, 36, 32, false, true ]
+					]
+				},
+				"butt_buttom": {
+					"pivot": [-2, 11.9999, 14],
+					"rotate": [0, 90, 0],
+					"type": "mson:planar",
+					"down": [
+						[ 0, 0, 2, 4, 4, 36, 32 ],
+						[ 0, 0, -2, 4, 4, 36, 32, false, true ]
+					]
+				}
 			}
 		},
 		"tail": {
