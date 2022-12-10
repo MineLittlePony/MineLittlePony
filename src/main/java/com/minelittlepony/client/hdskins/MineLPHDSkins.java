@@ -7,17 +7,13 @@ import com.minelittlepony.common.client.gui.ScrollContainer;
 import com.minelittlepony.common.client.gui.element.Button;
 import com.minelittlepony.common.event.ClientReadyCallback;
 import com.minelittlepony.hdskins.client.*;
-import com.minelittlepony.hdskins.client.ducks.ClientPlayerInfo;
 import com.minelittlepony.hdskins.client.dummy.DummyPlayer;
 import com.minelittlepony.hdskins.client.gui.GuiSkins;
-import com.minelittlepony.hdskins.client.resources.LocalPlayerSkins;
-import com.minelittlepony.hdskins.mixin.client.MixinClientPlayer;
 import com.minelittlepony.hdskins.profile.SkinType;
 
 import com.mojang.authlib.GameProfile;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -80,21 +76,14 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
     public Set<Identifier> getAvailableSkins(Entity entity) {
 
         if (entity instanceof DummyPlayer dummy) {
-            return SkinType.REGISTRY.stream()
-                    .filter(type -> {
-                        return dummy.getTextures().get(type).isReady()
-                            || (dummy.getTextures().getPosture().getActiveSkinType() == type && dummy.getTextures() instanceof LocalPlayerSkins);
-                    })
-                    .map(SkinType::getId)
-                    .collect(Collectors.toSet());
+            return dummy.getTextures().getProvidedSkinTypes();
         }
 
         if (entity instanceof AbstractClientPlayerEntity player) {
-            PlayerSkins skins = ((ClientPlayerInfo)((MixinClientPlayer)player).getBackingClientData()).getSkins();
-            return SkinType.REGISTRY.stream()
-                    .filter(type -> skins.getSkin(type) != null)
-                    .map(SkinType::getId)
-                    .collect(Collectors.toSet());
+            PlayerSkins skins = PlayerSkins.of(player);
+            if (skins != null) {
+                return skins.getProvidedSkinTypes();
+            }
         }
 
         return Set.of();
@@ -105,7 +94,7 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
             return Optional.of(dummy.getTextures().get(type).getId());
         }
 
-        return Optional.ofNullable(((ClientPlayerInfo)((MixinClientPlayer)player).getBackingClientData()).getSkins().getSkin(type));
+        return Optional.of(player).map(PlayerSkins::of).map(skins -> skins.getSkin(type));
     }
 
     @Override
