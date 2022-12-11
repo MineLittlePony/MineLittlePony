@@ -9,7 +9,6 @@ import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.village.VillagerType;
 
-import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.util.ResourceUtil;
 
 import java.util.HashMap;
@@ -82,12 +81,7 @@ public class PonyTextures<T extends LivingEntity & VillagerDataContainer> implem
     }
 
     protected Optional<Identifier> verifyTexture(Identifier texture) {
-        if (resourceManager.getResource(texture).isEmpty()) {
-            MineLittlePony.logger.warn("Villager texture `" + texture + "` was not found.");
-            return Optional.empty();
-        }
-
-        return Optional.of(texture);
+        return resourceManager.getResource(texture).map(i -> texture);
     }
 
     public static boolean isBestPony(LivingEntity entity) {
