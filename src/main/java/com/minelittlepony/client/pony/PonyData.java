@@ -6,11 +6,7 @@ import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.Expose;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.TriggerPixelType;
-import com.minelittlepony.api.pony.meta.Gender;
-import com.minelittlepony.api.pony.meta.Race;
-import com.minelittlepony.api.pony.meta.Sizes;
-import com.minelittlepony.api.pony.meta.TailLength;
-import com.minelittlepony.api.pony.meta.Wearable;
+import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.util.render.NativeUtil;
 import com.minelittlepony.common.util.animation.Interpolator;
@@ -65,32 +61,30 @@ public class PonyData implements IPonyData {
     private final Race race;
 
     @Expose
-    private final TailLength tailSize;
+    private final TailLength tailLength = TailLength.FULL;
 
     @Expose
-    private final Gender gender;
+    private final TailShape tailShape = TailShape.STRAIGHT;
 
     @Expose
-    private final Sizes size;
+    private final Gender gender = Gender.MARE;
 
     @Expose
-    private final int glowColor;
+    private final Sizes size = Sizes.NORMAL;
 
     @Expose
-    private final boolean[] wearables;
+    private final int glowColor = 0x4444aa;
+
+    @Expose
+    private final boolean[] wearables = new boolean[Wearable.values().length];
 
     private final Map<String, TriggerPixelType<?>> attributes = new TreeMap<>();
 
     public PonyData(Race race) {
         this.race = race;
-        tailSize = TailLength.FULL;
-        gender = Gender.MARE;
-        size = Sizes.NORMAL;
-        glowColor = 0x4444aa;
-        wearables = new boolean[Wearable.values().length];
-
         attributes.put("race", race);
-        attributes.put("tail", tailSize);
+        attributes.put("tailLength", tailLength);
+        attributes.put("tailShape", tailShape);
         attributes.put("gender", gender);
         attributes.put("size", size);
         attributes.put("magic", TriggerPixelType.of(glowColor));
@@ -103,8 +97,14 @@ public class PonyData implements IPonyData {
     }
 
     @Override
-    public TailLength getTail() {
-        return tailSize;
+    public TailLength getTailLength() {
+        return tailLength;
+    }
+
+
+    @Override
+    public TailShape getTailShape() {
+        return tailShape;
     }
 
     @Override
@@ -160,7 +160,8 @@ public class PonyData implements IPonyData {
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("race", race)
-                .add("tailSize", tailSize)
+                .add("tailLength", tailLength)
+                .add("tailShape", tailShape)
                 .add("gender", gender)
                 .add("size", size)
                 .add("wearables", getGear())

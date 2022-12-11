@@ -3,11 +3,7 @@ package com.minelittlepony.api.pony;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.ComparisonChain;
-import com.minelittlepony.api.pony.meta.Gender;
-import com.minelittlepony.api.pony.meta.Race;
-import com.minelittlepony.api.pony.meta.Size;
-import com.minelittlepony.api.pony.meta.TailLength;
-import com.minelittlepony.api.pony.meta.Wearable;
+import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.common.util.animation.Interpolator;
 
 import java.util.Arrays;
@@ -26,7 +22,12 @@ public interface IPonyData extends Comparable<IPonyData> {
     /**
      * Gets the length of the pony's tail.
      */
-    TailLength getTail();
+    TailLength getTailLength();
+
+    /**
+     * Gets the shape of the pony's tail.
+     */
+    TailShape getTailShape();
 
     /**
      * Get the pony's gender (usually female).
@@ -79,7 +80,7 @@ public interface IPonyData extends Comparable<IPonyData> {
     default int compareTo(@Nullable IPonyData o) {
         return o == this ? 0  : o == null ? 1 : ComparisonChain.start()
                 .compare(getRace(), o.getRace())
-                .compare(getTail(), o.getTail())
+                .compare(getTailLength(), o.getTailLength())
                 .compare(getGender(), o.getGender())
                 .compare(getSize().ordinal(), o.getSize().ordinal())
                 .compare(getGlowColor(), o.getGlowColor())

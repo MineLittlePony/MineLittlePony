@@ -20,7 +20,8 @@ public enum TriggerPixel {
     GENDER(Gender.MARE, Channel.ALL, 2, 0),
     SIZE(Sizes.NORMAL, Channel.ALL, 3, 0),
     GLOW(null, Channel.RAW, 0, 1),
-    WEARABLES(Wearable.NONE, Channel.RAW, 1, 1);
+    WEARABLES(Wearable.NONE, Channel.RAW, 1, 1),
+    TAIL_SHAPE(TailShape.STRAIGHT, Channel.ALL, 2, 1);
 
     private int x;
     private int y;

@@ -3,14 +3,11 @@ package com.minelittlepony.api.pony.network;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Util;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Suppliers;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.TriggerPixelType;
-import com.minelittlepony.api.pony.meta.Gender;
-import com.minelittlepony.api.pony.meta.Race;
-import com.minelittlepony.api.pony.meta.Size;
-import com.minelittlepony.api.pony.meta.TailLength;
-import com.minelittlepony.api.pony.meta.Wearable;
+import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.common.util.animation.Interpolator;
 
 import java.util.Map;
@@ -22,6 +19,7 @@ public class MsgPonyData implements IPonyData {
 
     private final Race race;
     private final TailLength tailLength;
+    private final TailShape tailShape;
     private final Gender gender;
     private final Size size;
     private final int glowColor;
@@ -36,7 +34,8 @@ public class MsgPonyData implements IPonyData {
     private final Supplier<Map<String, TriggerPixelType<?>>> triggerPixels = Suppliers.memoize(() -> Util.make(new TreeMap<>(), this::initTriggerPixels));
     private void initTriggerPixels(Map<String, TriggerPixelType<?>> map) {
         map.put("race", race);
-        map.put("tail", tailLength);
+        map.put("tailLength", tailLength);
+        map.put("tailShape", tailShape);
         map.put("gender", gender);
         map.put("size", size);
         map.put("magic", TriggerPixelType.of(glowColor));
@@ -44,9 +43,10 @@ public class MsgPonyData implements IPonyData {
     }
 
     public MsgPonyData(PacketByteBuf buffer) {
-        race = Race.values()[buffer.readInt()];
-        tailLength = TailLength.values()[buffer.readInt()];
-        gender = Gender.values()[buffer.readInt()];
+        race = buffer.readEnumConstant(Race.class);
+        tailLength = buffer.readEnumConstant(TailLength.class);
+        tailShape = buffer.readEnumConstant(TailShape.class);
+        gender = buffer.readEnumConstant(Gender.class);
         size = new MsgSize(buffer);
         glowColor = buffer.readInt();
         hasHorn = buffer.readBoolean();
@@ -63,7 +63,8 @@ public class MsgPonyData implements IPonyData {
 
     public MsgPonyData(IPonyData data, boolean noSkin) {
         race = data.getRace();
-        tailLength = data.getTail();
+        tailLength = data.getTailLength();
+        tailShape = data.getTailShape();
         gender = data.getGender();
         size = data.getSize();
         glowColor = data.getGlowColor();
@@ -75,9 +76,10 @@ public class MsgPonyData implements IPonyData {
     }
 
     public PacketByteBuf toBuffer(PacketByteBuf buffer) {
-        buffer.writeInt(race.ordinal());
-        buffer.writeInt(tailLength.ordinal());
-        buffer.writeInt(gender.ordinal());
+        buffer.writeEnumConstant(race);
+        buffer.writeEnumConstant(tailLength);
+        buffer.writeEnumConstant(tailShape);
+        buffer.writeEnumConstant(gender);
         new MsgSize(size).toBuffer(buffer);
         buffer.writeInt(glowColor);
         buffer.writeBoolean(hasHorn);
@@ -103,8 +105,13 @@ public class MsgPonyData implements IPonyData {
     }
 
     @Override
-    public TailLength getTail() {
+    public TailLength getTailLength() {
         return tailLength;
+    }
+
+    @Override
+    public TailShape getTailShape() {
+        return tailShape;
     }
 
     @Override
@@ -150,6 +157,19 @@ public class MsgPonyData implements IPonyData {
     @Override
     public Map<String, TriggerPixelType<?>> getTriggerPixels() {
         return triggerPixels.get();
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("race", race)
+                .add("tailLength", tailLength)
+                .add("tailShape", tailShape)
+                .add("gender", gender)
+                .add("size", size)
+                .add("wearables", getGear())
+                .add("glowColor", TriggerPixelType.toHex(glowColor))
+                .toString();
     }
 
     private static final class MsgSize implements Size {

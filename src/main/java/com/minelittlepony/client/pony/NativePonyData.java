@@ -7,13 +7,7 @@ import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.TriggerPixelSet;
 import com.minelittlepony.api.pony.TriggerPixelType;
 import com.minelittlepony.api.pony.TriggerPixelValue;
-import com.minelittlepony.api.pony.meta.Gender;
-import com.minelittlepony.api.pony.meta.Race;
-import com.minelittlepony.api.pony.meta.Size;
-import com.minelittlepony.api.pony.meta.Sizes;
-import com.minelittlepony.api.pony.meta.TailLength;
-import com.minelittlepony.api.pony.meta.TriggerPixel;
-import com.minelittlepony.api.pony.meta.Wearable;
+import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.common.util.animation.Interpolator;
 import com.minelittlepony.settings.PonyConfig;
@@ -30,7 +24,8 @@ import org.jetbrains.annotations.Unmodifiable;
 @Unmodifiable
 class NativePonyData implements IPonyData {
     private final TriggerPixelValue<Race> race;
-    private final TriggerPixelValue<TailLength> tailSize;
+    private final TriggerPixelValue<TailLength> tailLength;
+    private final TriggerPixelValue<TailShape> tailShape;
     private final TriggerPixelValue<Gender> gender;
     private final TriggerPixelValue<Size> size;
     private final int glowColor;
@@ -41,14 +36,16 @@ class NativePonyData implements IPonyData {
 
     NativePonyData(NativeImage image) {
         race = TriggerPixel.RACE.readValue(image);
-        tailSize = TriggerPixel.TAIL.readValue(image);
+        tailLength = TriggerPixel.TAIL.readValue(image);
+        tailShape = TriggerPixel.TAIL_SHAPE.readValue(image);
         size = TriggerPixel.SIZE.readValue(image);
         gender = TriggerPixel.GENDER.readValue(image);
         glowColor = TriggerPixel.GLOW.readColor(image);
         wearables = TriggerPixel.WEARABLES.readFlags(image);
 
         attributes.put("race", race);
-        attributes.put("tail", tailSize);
+        attributes.put("tailLength", tailLength);
+        attributes.put("tailShape", tailShape);
         attributes.put("gender", gender);
         attributes.put("size", size);
         attributes.put("magic", TriggerPixelType.of(glowColor));
@@ -61,8 +58,13 @@ class NativePonyData implements IPonyData {
     }
 
     @Override
-    public TailLength getTail() {
-        return tailSize.getValue();
+    public TailLength getTailLength() {
+        return tailLength.getValue();
+    }
+
+    @Override
+    public TailShape getTailShape() {
+        return tailShape.getValue();
     }
 
     @Override
@@ -110,6 +112,7 @@ class NativePonyData implements IPonyData {
         return Interpolator.linear(interpolatorId);
     }
 
+    @Override
     public Map<String, TriggerPixelType<?>> getTriggerPixels() {
         return attributes;
     }
@@ -118,7 +121,8 @@ class NativePonyData implements IPonyData {
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("race", race.getValue())
-                .add("tailSize", tailSize.getValue())
+                .add("tailLength", tailLength.getValue())
+                .add("tailShape", tailShape.getValue())
                 .add("gender", gender.getValue())
                 .add("size", size.getValue())
                 .add("wearables", getGear())

@@ -6,6 +6,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.model.IPart;
+import com.minelittlepony.api.pony.meta.TailShape;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
@@ -18,9 +19,10 @@ import java.util.concurrent.ExecutionException;
 public class PonyTail implements IPart, MsonModel {
 
     private ModelPart tail;
-    private AbstractPonyModel<?> theModel;
+    private AbstractPonyModel<?> model;
 
     private int tailStop = 0;
+    private TailShape shape = TailShape.STRAIGHT;
 
     private final List<Segment> segments = new ArrayList<>();
 
@@ -30,7 +32,7 @@ public class PonyTail implements IPart, MsonModel {
 
     @Override
     public void init(ModelContext context) {
-        theModel = context.getModel();
+        model = context.getModel();
 
         try {
             int segments = context.getLocals().getLocal("segments").get().intValue();
@@ -54,9 +56,9 @@ public class PonyTail implements IPart, MsonModel {
         tail.roll = rainboom ? 0 : MathHelper.cos(move * 0.8F) * 0.2f * swing;
         tail.yaw = bodySwing;
 
-        if (theModel.getAttributes().isCrouching && !rainboom) {
+        if (model.getAttributes().isCrouching && !rainboom) {
             rotateSneak();
-        } else if (theModel.isRiding()) {
+        } else if (model.isRiding()) {
             tail.pivotZ = TAIL_RP_Z_RIDING;
             tail.pivotY = TAIL_RP_Y_RIDING;
             tail.pitch = PI / 5;
@@ -91,7 +93,8 @@ public class PonyTail implements IPart, MsonModel {
     @Override
     public void setVisible(boolean visible) {
         tail.visible = visible;
-        tailStop = theModel.getMetadata().getTail().ordinal();
+        tailStop = model.getMetadata().getTailLength().ordinal();
+        shape = model.getMetadata().getTailShape();
     }
 
     @Override
@@ -116,9 +119,42 @@ public class PonyTail implements IPart, MsonModel {
         }
 
         public void render(MatrixStack stack, VertexConsumer renderContext, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-            if (index < tail.tailStop) {
-                tree.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
+            if (index >= tail.tailStop) {
+                return;
             }
+
+            if (tail.shape == TailShape.STRAIGHT) {
+                tree.yaw = 0;
+                tree.pivotZ = 0;
+                tree.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
+                return;
+            }
+
+            stack.push();
+            if (tail.shape == TailShape.BUMPY) {
+                stack.translate(0, 0, -9/16F);
+                float scale = 1 + MathHelper.cos(index + 5) / 2F;
+                stack.scale(scale, 1, scale);
+                stack.translate(1 / 16F * scale - 0.1F, 0, -2 / 16F * scale);
+                tree.pivotZ = 9;
+            }
+            if (tail.shape == TailShape.SWIRLY) {
+                stack.translate(0, 0, -6/16F);
+                float scale = 1 + MathHelper.cos(index + 10) / 5F;
+                stack.scale(1, 1, scale);
+                stack.translate(0, 0, -2 / 16F * scale);
+                tree.pivotZ = 9;
+            }
+            if (tail.shape == TailShape.SPIKY) {
+                stack.translate(0, 0, -6/16F);
+                float scale = 1 + MathHelper.cos(index + 10) / 5F;
+                stack.scale(1, 1, scale);
+                stack.translate(0, 0, -2 / 16F * scale);
+                tree.yaw = 0.2F * (index % 2 - 1);
+                tree.pivotZ = 9;
+            }
+            tree.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
+            stack.pop();
         }
     }
 }
