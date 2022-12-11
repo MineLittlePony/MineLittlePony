@@ -9,6 +9,8 @@ import com.minelittlepony.client.IPreviewModel;
 import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.hdskins.client.dummy.*;
 
+import java.util.UUID;
+
 /**
  * Dummy model used for the skin uploading screen.
  */
@@ -16,6 +18,7 @@ class DummyPony extends DummyPlayer implements IPreviewModel, ModelAttributes.Sw
 
     public DummyPony(ClientWorld world, PlayerSkins<?> textures) {
         super(world, textures);
+        setUuid(UUID.randomUUID()); // uuid must be random so animations aren't linked between the two previews
     }
 
     @Override
