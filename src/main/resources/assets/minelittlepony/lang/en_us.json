@@ -51,5 +51,13 @@
   "minelp.debug.size": "Size Override",
   "minelp.debug.race": "Race Override",
 
-  "hdskins.mode.minelp_seapony": "Seapony (in water)"
+  "hdskins.mode.minelp_seapony": "Seapony",
+  "hdskins.mode.minelittlepony_crown": "Crown",
+  "hdskins.mode.minelittlepony_muffin": "Muffin Hat",
+  "hdskins.mode.minelittlepony_hat": "Witch Hat",
+  "hdskins.mode.minelittlepony_antlers": "Deer Antlers",
+  "hdskins.mode.minelittlepony_saddle_bags_left": "Left Satchel",
+  "hdskins.mode.minelittlepony_saddle_bags_right": "Right Satchel",
+  "hdskins.mode.minelittlepony_saddle_bags_both": "Saddlebags",
+  "hdskins.mode.minelittlepony_stetson": "Stetson"
 }
