@@ -95,12 +95,13 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
         if (player instanceof DummyPlayer dummy) {
             PlayerSkin skin = dummy.getTextures().get(type);
 
-            if (skin.isReady()) {
+            if (skin.isReady() || getAvailableSkins(player).contains(type.getId())) {
                 return Optional.of(skin.getId());
             }
 
             PlayerSkin main = dummy.getTextures().get(SkinType.SKIN);
-            if (IPony.getManager().getPony(main.getId()).metadata().isWearing(Wearable.REGISTRY.getOrDefault(type.getId(), Wearable.NONE))) {
+            Wearable wearable = Wearable.REGISTRY.getOrDefault(type.getId(), Wearable.NONE);
+            if (wearable != Wearable.NONE && IPony.getManager().getPony(main.getId()).metadata().isWearing(wearable)) {
                 return Optional.of(main.getId());
             }
         }
