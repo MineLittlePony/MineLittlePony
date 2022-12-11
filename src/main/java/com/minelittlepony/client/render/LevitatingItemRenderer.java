@@ -80,7 +80,7 @@ public class LevitatingItemRenderer {
 
         if (entity instanceof PlayerEntity && (mode.isFirstPerson() || mode == ModelTransformation.Mode.THIRD_PERSON_LEFT_HAND || mode == ModelTransformation.Mode.THIRD_PERSON_RIGHT_HAND)) {
 
-            IPony pony = MineLittlePony.getInstance().getManager().getPony((PlayerEntity)entity);
+            IPony pony = IPony.getManager().getPony((PlayerEntity)entity);
 
             matrix.push();
 

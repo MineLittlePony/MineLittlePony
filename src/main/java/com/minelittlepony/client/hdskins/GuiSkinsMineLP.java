@@ -1,6 +1,6 @@
 package com.minelittlepony.client.hdskins;
 
-import com.minelittlepony.api.pony.IPonyManager;
+import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.GuiPonySettings;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.common.client.gui.element.Button;
@@ -20,8 +20,6 @@ import org.lwjgl.glfw.GLFW;
  * Skin uploading GUI. Usually displayed over the main menu.
  */
 class GuiSkinsMineLP extends GuiSkins {
-
-    private IPonyManager ponyManager = MineLittlePony.getInstance().getManager();
 
     private static final String[] PANORAMAS = new String[] {
         "minelittlepony:textures/cubemap/sugarcubecorner",
@@ -77,7 +75,7 @@ class GuiSkinsMineLP extends GuiSkins {
 
         MineLittlePony.logger.debug("Invalidating old local skin, checking updated local skin");
         if (type == SkinType.SKIN) {
-            previewer.getLocal().ifPresent(local -> ponyManager.removePony(local.getTextures().get(SkinType.SKIN).getId()));
+            previewer.getLocal().ifPresent(local -> IPony.getManager().removePony(local.getTextures().get(SkinType.SKIN).getId()));
         }
     }
 
@@ -87,7 +85,7 @@ class GuiSkinsMineLP extends GuiSkins {
 
         MineLittlePony.logger.debug("Invalidating old remote skin, checking updated remote skin");
         if (type == SkinType.SKIN) {
-            ponyManager.removePony(location);
+            IPony.getManager().removePony(location);
         }
     }
 }

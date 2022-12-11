@@ -1,13 +1,13 @@
 package com.minelittlepony.client.render.blockentity.skull;
 
 import com.google.common.base.Suppliers;
+import com.minelittlepony.api.config.PonyConfig;
+import com.minelittlepony.api.config.PonyLevel;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.client.model.*;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer.ISkull;
-import com.minelittlepony.settings.PonyConfig;
-import com.minelittlepony.settings.PonyLevel;
 import com.mojang.authlib.GameProfile;
 
 import java.util.HashMap;

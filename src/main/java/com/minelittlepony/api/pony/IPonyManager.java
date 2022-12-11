@@ -63,4 +63,8 @@ public interface IPonyManager  {
     void removePony(Identifier resource);
 
     interface ForcedPony {}
+
+    final class Instance {
+        public static IPonyManager instance;
+    }
 }

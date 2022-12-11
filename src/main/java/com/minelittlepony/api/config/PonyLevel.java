@@ -1,4 +1,4 @@
-package com.minelittlepony.settings;
+package com.minelittlepony.api.config;
 
 public enum PonyLevel {
     PONIES,

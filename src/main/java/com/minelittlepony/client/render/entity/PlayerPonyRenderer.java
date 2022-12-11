@@ -4,7 +4,6 @@ import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
-import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
@@ -194,7 +193,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
 
     @Override
     public IPony getEntityPony(AbstractClientPlayerEntity entity) {
-        return MineLittlePony.getInstance().getManager().getPony(entity);
+        return IPony.getManager().getPony(entity);
     }
 
     @Override

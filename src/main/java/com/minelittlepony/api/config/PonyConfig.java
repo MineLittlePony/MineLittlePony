@@ -1,10 +1,10 @@
-package com.minelittlepony.settings;
+package com.minelittlepony.api.config;
 
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Sizes;
-import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.common.util.GamePaths;
 import com.minelittlepony.common.util.settings.*;
 
 import java.nio.file.Path;
@@ -13,6 +13,15 @@ import java.nio.file.Path;
  * Storage container for MineLP client settings.
  */
 public class PonyConfig extends Config {
+    private static PonyConfig instance;
+
+    public static PonyConfig getInstance() {
+        if (instance != null) {
+            return instance;
+        }
+        return new PonyConfig(GamePaths.getConfigDirectory().resolve("minelp.json"));
+    }
+
     /**
      * Sets the pony level. Want MOAR PONEHS? Well here you go.
      */
@@ -59,6 +68,7 @@ public class PonyConfig extends Config {
 
     public PonyConfig(Path path) {
         super(HEIRARCHICAL_JSON_ADAPTER, path);
+        instance = this;
     }
 
     public float setGlobalScaleFactor(float f) {
@@ -103,12 +113,12 @@ public class PonyConfig extends Config {
      */
     public static Race getEffectiveRace(Race race) {
 
-        Race override = MineLittlePony.getInstance().getConfig().raceOverride.get();
+        Race override = instance.raceOverride.get();
         if (override != Race.HUMAN) {
             return override;
         }
 
-        if (MineLittlePony.getInstance().getConfig().ponyLevel.get() == PonyLevel.HUMANS) {
+        if (instance.ponyLevel.get() == PonyLevel.HUMANS) {
             return Race.HUMAN;
         }
 

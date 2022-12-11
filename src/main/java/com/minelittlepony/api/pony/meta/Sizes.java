@@ -1,6 +1,6 @@
 package com.minelittlepony.api.pony.meta;
 
-import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.api.config.PonyConfig;
 
 /**
  * Represents the different model sizes that are possible.
@@ -35,28 +35,28 @@ public enum Sizes implements Size {
 
     @Override
     public float getShadowSize() {
-        return shadowSize * MineLittlePony.getInstance().getConfig().getGlobalScaleFactor();
+        return shadowSize * PonyConfig.getInstance().getGlobalScaleFactor();
     }
 
     @Override
     public float getScaleFactor() {
-        return scale * MineLittlePony.getInstance().getConfig().getGlobalScaleFactor();
+        return scale * PonyConfig.getInstance().getGlobalScaleFactor();
     }
 
     @Override
     public float getEyeHeightFactor() {
-        if (!MineLittlePony.getInstance().getConfig().fillycam.get()) {
+        if (!PonyConfig.getInstance().fillycam.get()) {
             return 1;
         }
-        return camera * MineLittlePony.getInstance().getConfig().getGlobalScaleFactor();
+        return camera * PonyConfig.getInstance().getGlobalScaleFactor();
     }
 
     @Override
     public float getEyeDistanceFactor() {
-        if (!MineLittlePony.getInstance().getConfig().fillycam.get()) {
+        if (!PonyConfig.getInstance().fillycam.get()) {
             return 1;
         }
-        return camera * MineLittlePony.getInstance().getConfig().getGlobalScaleFactor();
+        return camera * PonyConfig.getInstance().getGlobalScaleFactor();
     }
 
     @Override

@@ -1,13 +1,14 @@
 package com.minelittlepony.client.pony;
 
 import com.google.common.cache.*;
+import com.minelittlepony.api.config.PonyConfig;
+import com.minelittlepony.api.config.PonyLevel;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.PonyRenderDispatcher;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
-import com.minelittlepony.settings.PonyConfig;
-import com.minelittlepony.settings.PonyLevel;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
@@ -44,6 +45,7 @@ public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloa
 
     public PonyManager(PonyConfig config) {
         this.config = config;
+        Instance.instance = this;
     }
 
     @Override

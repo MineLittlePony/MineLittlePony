@@ -35,7 +35,7 @@ public class Channel {
 
         ClientPlayNetworking.registerGlobalReceiver(REQUEST_PONY_DATA, (client, handler, ignored, sender) -> {
             if (client.player != null) {
-                IPony pony = MineLittlePony.getInstance().getManager().getPony(client.player);
+                IPony pony = IPony.getManager().getPony(client.player);
                 registered = true;
                 MineLittlePony.logger.info("Server has just consented");
 

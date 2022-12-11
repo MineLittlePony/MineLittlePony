@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.api.pony.meta.TriggerPixel;
 import com.minelittlepony.api.pony.meta.Wearable;
-import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.entity.SeaponyRenderer;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.hdskins.client.dummy.*;
@@ -56,7 +55,7 @@ class PonyPreview extends PlayerPreview {
             MatrixStack matrices, @Nullable Consumer<DummyPlayer> postAction) {
         super.renderWorldAndPlayer(thePlayer, frame, horizon, mouseX, mouseY, ticks, partialTick, scale, matrices, postAction);
         thePlayer.ifPresent(p -> {
-            IPonyData data = MineLittlePony.getInstance().getManager().getPony(p).metadata();
+            IPonyData data = IPony.getManager().getPony(p).metadata();
             int[] index = new int[1];
             data.getTriggerPixels().forEach((key, value) -> {
                 drawLegendBlock(matrices, index[0]++, frame.left, frame.top, mouseX, mouseY, key, value);

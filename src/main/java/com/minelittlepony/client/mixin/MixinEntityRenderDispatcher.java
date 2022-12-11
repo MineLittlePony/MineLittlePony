@@ -1,7 +1,7 @@
 package com.minelittlepony.client.mixin;
 
+import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.IPreviewModel;
-import com.minelittlepony.client.MineLittlePony;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
@@ -21,7 +21,7 @@ abstract class MixinEntityRenderDispatcher {
         if (player instanceof IPreviewModel) {
             return player.getModel();
         }
-        return MineLittlePony.getInstance().getManager()
+        return IPony.getManager()
                 .getPony(player)
                 .race()
                 .getModelId(player.getModel().contains("slim"));

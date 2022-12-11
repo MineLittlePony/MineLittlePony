@@ -2,7 +2,6 @@ package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.meta.Wearable;
-import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
@@ -123,7 +122,7 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
 
     @Override
     public IPony getEntityPony(T entity) {
-        return MineLittlePony.getInstance().getManager().getPony(getTexture(entity));
+        return IPony.getManager().getPony(getTexture(entity));
     }
 
     public abstract static class Caster<T extends MobEntity, M extends ClientPonyModel<T>> extends PonyRenderer<T, M> {

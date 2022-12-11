@@ -3,6 +3,7 @@ package com.minelittlepony.client.pony;
 import net.minecraft.client.texture.NativeImage;
 
 import com.google.common.base.MoreObjects;
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.TriggerPixelSet;
 import com.minelittlepony.api.pony.TriggerPixelType;
@@ -10,7 +11,6 @@ import com.minelittlepony.api.pony.TriggerPixelValue;
 import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.common.util.animation.Interpolator;
-import com.minelittlepony.settings.PonyConfig;
 
 import java.util.Map;
 import java.util.TreeMap;

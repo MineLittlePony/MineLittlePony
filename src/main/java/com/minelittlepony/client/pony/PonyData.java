@@ -4,13 +4,13 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.Expose;
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.TriggerPixelType;
 import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.util.render.NativeUtil;
 import com.minelittlepony.common.util.animation.Interpolator;
-import com.minelittlepony.settings.PonyConfig;
 
 import java.io.IOException;
 import java.util.*;

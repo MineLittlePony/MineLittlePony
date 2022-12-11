@@ -5,9 +5,8 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.ComparisonChain;
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.meta.Race;
-import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.settings.PonyConfig;
 
 public interface IPony extends Comparable<IPony> {
 
@@ -15,7 +14,7 @@ public interface IPony extends Comparable<IPony> {
      * Gets the global pony manager instance.
      */
     static IPonyManager getManager() {
-        return MineLittlePony.getInstance().getManager();
+        return IPonyManager.Instance.instance;
     }
 
     /**

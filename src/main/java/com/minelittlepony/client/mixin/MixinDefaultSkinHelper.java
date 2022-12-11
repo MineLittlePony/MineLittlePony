@@ -1,8 +1,9 @@
 package com.minelittlepony.client.mixin;
 
+import com.minelittlepony.api.config.PonyLevel;
 import com.minelittlepony.api.pony.DefaultPonySkinHelper;
+import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.settings.PonyLevel;
 
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.util.Identifier;
@@ -38,7 +39,7 @@ abstract class MixinDefaultSkinHelper {
             cancellable = true)
     private static void onGetModel(UUID uuid, CallbackInfoReturnable<String> cir) {
         if (MineLittlePony.getInstance().getConfig().ponyLevel.get() == PonyLevel.PONIES) {
-            cir.setReturnValue(MineLittlePony.getInstance().getManager()
+            cir.setReturnValue(IPony.getManager()
                     .getPony(DefaultSkinHelper.getTexture(uuid), uuid)
                     .race()
                     .getModelId("slim".equalsIgnoreCase(cir.getReturnValue())));
