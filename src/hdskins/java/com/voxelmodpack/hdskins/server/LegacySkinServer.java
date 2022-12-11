@@ -87,7 +87,7 @@ public class LegacySkinServer implements SkinServer {
     }
 
     private MinecraftProfileTexture loadProfileTexture(GameProfile profile, String url) throws IOException {
-        try (MoreHttpResponses resp = MoreHttpResponses.execute(HTTP_CLIENT, new HttpHead(url))) {
+        try (MoreHttpResponses resp = MoreHttpResponses.execute(new HttpHead(url))) {
             resp.requireOk();
             logger.debug("Found skin for {} at {}", profile.getName(), url);
 

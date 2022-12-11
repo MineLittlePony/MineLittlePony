@@ -1,7 +1,5 @@
 package com.voxelmodpack.hdskins.util;
 
-import com.voxelmodpack.hdskins.server.SkinServer;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
@@ -73,7 +71,7 @@ public class NetClient {
             }
         }
 
-        return MoreHttpResponses.execute(SkinServer.HTTP_CLIENT, request);
+        return MoreHttpResponses.execute(request);
     }
 
     public CompletableFuture<MoreHttpResponses> async(Executor exec) {

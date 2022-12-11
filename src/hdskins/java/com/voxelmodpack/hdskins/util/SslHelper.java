@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
+import org.apache.http.client.methods.RequestBuilder;
 import org.apache.logging.log4j.Logger;
 
 /**
@@ -87,6 +88,10 @@ public class SslHelper {
             conn.setReadTimeout(5000);
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
                 body = reader.readLine();
+            }
+
+            try (MoreHttpResponses response = MoreHttpResponses.execute(RequestBuilder.get().setUri("https://helloworld.letsencrypt.org").build())) {
+                response.requireOk();
             }
         } catch (Exception e) {
             mod.error("An error occurred whilst adding the Let's Encrypt root certificate. I'm afraid you wont be able to access resources with a Let's Encrypt certificate D:", e);

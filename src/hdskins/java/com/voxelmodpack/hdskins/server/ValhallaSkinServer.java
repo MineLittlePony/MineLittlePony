@@ -54,7 +54,7 @@ public class ValhallaSkinServer implements SkinServer {
 
     @Override
     public TexturePayload loadProfileData(GameProfile profile) throws IOException, AuthenticationException {
-        try (MoreHttpResponses response = MoreHttpResponses.execute(HTTP_CLIENT, new HttpGet(getTexturesURI(profile)))) {
+        try (MoreHttpResponses response = MoreHttpResponses.execute(new HttpGet(getTexturesURI(profile)))) {
             return response.requireOk().json(TexturePayload.class, "Invalid texture payload");
         }
     }
@@ -124,7 +124,7 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     private void upload(HttpUriRequest request) throws IOException {
-        try (MoreHttpResponses response = MoreHttpResponses.execute(HTTP_CLIENT, request)) {
+        try (MoreHttpResponses response = MoreHttpResponses.execute(request)) {
             response.requireOk();
         }
     }
@@ -151,7 +151,7 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     private AuthHandshake authHandshake(String name) throws IOException {
-        try (MoreHttpResponses resp = MoreHttpResponses.execute(HTTP_CLIENT, RequestBuilder.post()
+        try (MoreHttpResponses resp = MoreHttpResponses.execute(RequestBuilder.post()
                 .setUri(getHandshakeURI())
                 .addParameter("name", name)
                 .build())) {
@@ -160,7 +160,7 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     private AuthResponse authResponse(String name, long verifyToken) throws IOException {
-        try (MoreHttpResponses resp = MoreHttpResponses.execute(HTTP_CLIENT, RequestBuilder.post()
+        try (MoreHttpResponses resp = MoreHttpResponses.execute(RequestBuilder.post()
                 .setUri(getResponseURI())
                 .addParameter("name", name)
                 .addParameter("verifyToken", String.valueOf(verifyToken))

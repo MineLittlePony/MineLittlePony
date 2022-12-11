@@ -143,7 +143,7 @@ public class YggdrasilSkinServer implements SkinServer {
     }
 
     private void send(RequestBuilder request) throws IOException {
-        try (MoreHttpResponses response = MoreHttpResponses.execute(HTTP_CLIENT, request.build())) {
+        try (MoreHttpResponses response = MoreHttpResponses.execute(request.build())) {
             if (!response.ok()) {
                 throw new IOException(response.json(ErrorResponse.class, "Server error wasn't in json: {}").toString());
             }
