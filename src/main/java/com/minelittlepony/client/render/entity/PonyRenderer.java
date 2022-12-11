@@ -16,6 +16,9 @@ import com.minelittlepony.client.render.entity.feature.SkullFeature;
 import com.minelittlepony.client.render.entity.feature.ElytraFeature;
 import com.minelittlepony.mson.api.ModelKey;
 
+import java.util.*;
+
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -27,12 +30,11 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import java.util.List;
-import java.util.Locale;
-
 public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T> & IPonyModel<T>> extends MobEntityRenderer<T, M> implements IPonyRenderContext<T, M> {
 
-    protected EquineRenderManager<T, M> manager = new EquineRenderManager<>(this);
+    protected final EquineRenderManager<T, M> manager = new EquineRenderManager<>(this);
+
+    private final Map<Wearable, Identifier> wearableTextures = new EnumMap<>(Wearable.class);
 
     public PonyRenderer(EntityRendererFactory.Context context, ModelKey<? super M> key) {
         super(context, null, 0.5F);
@@ -111,8 +113,15 @@ public abstract class PonyRenderer<T extends MobEntity, M extends EntityModel<T>
 
     @Override
     public Identifier getDefaultTexture(T entity, Wearable wearable) {
-        Identifier texture = getTexture(entity);
-        return new Identifier(texture.getNamespace(), texture.getPath().split("\\.")[0] + "_" + wearable.name().toLowerCase(Locale.ROOT) + ".png");
+        return wearableTextures.computeIfAbsent(wearable, w -> {
+            Identifier texture = getTexture(entity);
+            texture = new Identifier(texture.getNamespace(), texture.getPath().split("\\.")[0] + "_" + wearable.name().toLowerCase(Locale.ROOT) + ".png");
+
+            if (MinecraftClient.getInstance().getResourceManager().getResource(texture).isPresent()) {
+                return texture;
+            }
+            return wearable.getDefaultTexture();
+        });
     }
 
     @Override
