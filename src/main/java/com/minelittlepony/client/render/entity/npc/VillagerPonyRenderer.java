@@ -6,6 +6,8 @@ import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.model.ClientPonyModel;
+import com.minelittlepony.client.render.entity.npc.textures.PonyTextures;
+import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 
 public class VillagerPonyRenderer extends AbstractNpcRenderer<VillagerEntity> {
 

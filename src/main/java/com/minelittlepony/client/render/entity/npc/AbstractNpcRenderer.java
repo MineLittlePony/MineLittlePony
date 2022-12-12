@@ -13,6 +13,8 @@ import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.*;
 import com.minelittlepony.client.render.entity.PonyRenderer;
+import com.minelittlepony.client.render.entity.npc.textures.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +31,7 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
     public AbstractNpcRenderer(EntityRendererFactory.Context context, String type, TextureSupplier<String> formatter) {
         super(context, ModelType.getPlayerModel(Race.EARTH).getKey(false));
         entityType = type;
-        baseTextures = new PonyTextures<>(formatter);
+        baseTextures = new SillyPonyTextures<>(new CustomPonyTextures<>(new PonyTextures<>(formatter)), formatter);
         clothing = new NpcClothingFeature<>(this, entityType);
         addFeature(clothing);
     }

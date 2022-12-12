@@ -7,6 +7,8 @@ import net.minecraft.entity.mob.ZombieVillagerEntity;
 
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.IMobModel;
+import com.minelittlepony.client.render.entity.npc.textures.PonyTextures;
+import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 
 public class ZomponyVillagerRenderer extends AbstractNpcRenderer<ZombieVillagerEntity> {
 

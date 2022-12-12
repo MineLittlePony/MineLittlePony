@@ -1,4 +1,4 @@
-package com.minelittlepony.client.render.entity.npc;
+package com.minelittlepony.client.render.entity.npc.textures;
 
 import net.minecraft.util.Identifier;
 

@@ -1,4 +1,4 @@
-package com.minelittlepony.client.render.entity.npc;
+package com.minelittlepony.client.render.entity.npc.textures;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.LivingEntity;
@@ -9,8 +9,6 @@ import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.village.VillagerType;
 
-import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.util.ResourceUtil;
 
 import java.util.*;
@@ -26,9 +24,6 @@ public class PonyTextures<T extends LivingEntity & VillagerDataContainer> implem
 
     private final Map<String, Identifier> cache = new HashMap<>();
 
-    private final Identifier egg;
-    private final Identifier egg2;
-
     private final ResourceManager resourceManager = MinecraftClient.getInstance().getResourceManager();
 
     /**
@@ -41,26 +36,10 @@ public class PonyTextures<T extends LivingEntity & VillagerDataContainer> implem
     public PonyTextures(TextureSupplier<String> formatter) {
         this.formatter = formatter;
         this.fallback = formatter.supplyTexture("villager_pony");
-        this.egg = formatter.supplyTexture("silly_pony");
-        this.egg2 = formatter.supplyTexture("tiny_silly_pony");
     }
 
     @Override
     public Identifier supplyTexture(T entity) {
-        if (isBestPony(entity)) {
-            return entity.isBaby() ? egg2 : egg;
-        }
-
-        if (entity.hasCustomName()) {
-            Optional<Identifier> override = MineLittlePony.getInstance().getVariatedTextures()
-                    .get(PonyManager.BACKGROUND_PONIES)
-                    .getByName(entity.getCustomName().getString(), entity.getUuid());
-
-            if (override.isPresent()) {
-                return override.get();
-            }
-        }
-
         VillagerData t = entity.getVillagerData();
 
         return getTexture(t.getType(), t.getProfession());
