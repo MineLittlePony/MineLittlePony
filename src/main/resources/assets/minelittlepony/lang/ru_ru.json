@@ -50,5 +50,14 @@
   "minelp.debug.scale.min": "Мельчайший",
   "minelp.debug.size": "Переопределение размера",
   "minelp.debug.race": "Переопределение расы",
-  "hdskins.mode.minelp_seapony": "Морской пони (в воде)"
+
+  "hdskins.mode.minelp_seapony": "Морской пони",
+  "hdskins.mode.minelittlepony_crown": "Корона",
+  "hdskins.mode.minelittlepony_muffin": "Маффин",
+  "hdskins.mode.minelittlepony_hat": "Шляпа Ведьмы",
+  "hdskins.mode.minelittlepony_antlers": "Оленьи рога",
+  "hdskins.mode.minelittlepony_saddle_bags_left": "Левая сумка",
+  "hdskins.mode.minelittlepony_saddle_bags_right": "Правая сумка",
+  "hdskins.mode.minelittlepony_saddle_bags_both": "Седельные сумки",
+  "hdskins.mode.minelittlepony_stetson": "Ковбойская шляпа"
 }
