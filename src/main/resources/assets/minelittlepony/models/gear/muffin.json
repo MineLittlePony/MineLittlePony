@@ -1,5 +1,5 @@
 {
-	"texture": {"w": 64, "h": 44},
+	"texture": {"w": 64, "h": 32},
 	"data": {
 		"crown": {
 			"pivot": [-4, -12, -6],
