@@ -12,6 +12,9 @@ public class HorseCam {
     private static float lastOriginalPitch;
     private static float lastComputedPitch;
 
+    private static final double HALF_PI = Math.PI / 2D;
+    private static final double TO_DEGREES = 180D / Math.PI;
+
     /**
      * Restores the previous camera (unadjusted) angle for the client when the server sends an update.
      * This is to prevent issues caused by the server updating our pitch whenever the player leaves a portal.
@@ -81,42 +84,6 @@ public class HorseCam {
      * @return The new pitch value, otherwise the original value passed in.
      */
     public static float rescaleCameraPitch(double toHeight, float originalPitch) {
-        /*     -90
-         *     |
-         *     ---------------0
-         *     |
-         *     90
-         */
-        /*  A                A - toHeight
-         *  |\               B - fromHeight
-         *  |?\              y - headPitch
-         *  |  \             ? - result
-         *  |   \            C - raytrace
-         *  B-   \
-         *  |y -  \
-         *  |    - \         Tan(?) = horDist / toHeight
-         *==|-------C===         ?  = arcTan(horDist / toHeight);
-         *   horDist
-         *
-         *   horDist
-         *  |-------C
-         *  |      /.
-         *  |     /.
-         *  |    / .
-         *  |   / .
-         *  |  /  .
-         *  |?/  .
-         *  A/  .
-         *  |   .
-         *  |  .
-         *  |  .
-         *  | .
-         *  B
-         *  |
-         *  |
-         *==o===========
-         */
-
         MinecraftClient client = MinecraftClient.getInstance();
         PlayerEntity player = client.player;
         client.gameRenderer.updateTargetedEntity(client.getTickDelta());
@@ -132,27 +99,28 @@ public class HorseCam {
             return originalPitch;
         }
 
-        Vec3d hitPos = hit.getPos();
-        Vec3d pos = player.getPos();
+        return (float)adjustAngle(originalPitch, hit.getPos(), player.getPos(), toHeight);
+    }
 
-        double diffX = hitPos.x - pos.x;
-        double diffZ = hitPos.z - pos.z;
+    private static double adjustAngle(double pitch, Vec3d hitPos, Vec3d pos, double toHeight) {
+        double x = horizontalDistance(pos, hitPos);
+        double y = pos.y + toHeight - hitPos.y;
 
-        double horDist = Math.sqrt(diffX * diffX + diffZ * diffZ);
+        if (MathHelper.approximatelyEquals(y, 0)) {
+            return 0;
+        }
 
-        double toEyePos = pos.y + toHeight;
+        double newPitch = (HALF_PI - Math.atan(x / y)) * TO_DEGREES;
+        if (newPitch > 90) {
+            newPitch -= 180F;
+        }
 
-        double verDist = Math.abs(hitPos.y - toEyePos);
+        return newPitch;
+    }
 
-        double theta = Math.atan(horDist / verDist);
-
-        // convert to degress
-        theta /= Math.PI / 180D;
-
-        // convert to vertical pitch (-90 to 90).
-        // Preserve up/down direction.
-        double newPitch = Math.abs(90 - theta) * Math.signum(originalPitch);
-
-        return (float)newPitch;
+    private static double horizontalDistance(Vec3d from, Vec3d to) {
+        double diffX = to.x - from.x;
+        double diffZ = to.z - from.z;
+        return Math.sqrt(diffX * diffX + diffZ * diffZ);
     }
 }
