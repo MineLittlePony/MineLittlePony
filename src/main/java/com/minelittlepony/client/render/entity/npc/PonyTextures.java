@@ -9,11 +9,11 @@ import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.village.VillagerType;
 
+import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.util.ResourceUtil;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Cached pool of villager textures.
@@ -49,6 +49,16 @@ public class PonyTextures<T extends LivingEntity & VillagerDataContainer> implem
     public Identifier supplyTexture(T entity) {
         if (isBestPony(entity)) {
             return entity.isBaby() ? egg2 : egg;
+        }
+
+        if (entity.hasCustomName()) {
+            Optional<Identifier> override = MineLittlePony.getInstance().getVariatedTextures()
+                    .get(PonyManager.BACKGROUND_PONIES)
+                    .getByName(entity.getCustomName().getString(), entity.getUuid());
+
+            if (override.isPresent()) {
+                return override.get();
+            }
         }
 
         VillagerData t = entity.getVillagerData();

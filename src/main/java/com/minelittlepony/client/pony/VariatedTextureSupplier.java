@@ -26,7 +26,7 @@ public class VariatedTextureSupplier implements SimpleSynchronousResourceReloadL
         return ID;
     }
 
-    private SkinList get(Identifier id) {
+    public SkinList get(Identifier id) {
         return entries.computeIfAbsent(id, SkinList::new);
     }
 
@@ -38,8 +38,9 @@ public class VariatedTextureSupplier implements SimpleSynchronousResourceReloadL
         return get(poolId, entity.getUuid());
     }
 
-    private static class SkinList {
+    public static final class SkinList {
         private final List<Identifier> textures = new ArrayList<>();
+        private final Map<String, List<Identifier>> names = new HashMap<>();
 
         private final Identifier id;
 
@@ -54,6 +55,20 @@ public class VariatedTextureSupplier implements SimpleSynchronousResourceReloadL
             }
 
             return Optional.ofNullable(textures.get(MathUtil.mod(uuid.hashCode(), textures.size())));
+        }
+
+        public Optional<Identifier> getByName(String name, UUID uuid) {
+            List<Identifier> options = names.computeIfAbsent(name.toLowerCase(Locale.ROOT).replace(' ', '_') + ".png", id -> {
+                return textures.stream().filter(texture -> {
+                    return texture.getPath().endsWith(id);
+                }).toList();
+            });
+
+            if (options.isEmpty()) {
+                return Optional.empty();
+            }
+
+            return Optional.ofNullable(options.get(MathUtil.mod(uuid.hashCode(), options.size())));
         }
 
         public void reloadAll(ResourceManager resourceManager) {
