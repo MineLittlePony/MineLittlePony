@@ -45,7 +45,8 @@ public class PonyConfig extends Config {
     public final Setting<Boolean> fpsmagic =   value("settings", "fpsmagic", true)
                 .addComment("Uses magic effects in first person")
                 .addComment("Turn this off if you encounter any compatibility issues with other mods");
-    public final Setting<Boolean> tpsmagic =   value("settings", "tpsmagic", true);
+    public final Setting<Boolean> tpsmagic =   value("settings", "tpsmagic", true)
+                .addComment("Uses magic effects in third person");
     public final Setting<Boolean> ponyskulls = value("settings", "ponyskulls", true)
                 .addComment("Not enough ponies? Turn this on to turn player heads and skulls into ponies too!");
     public final Setting<Boolean> frustrum =   value("settings", "frustrum", true)
