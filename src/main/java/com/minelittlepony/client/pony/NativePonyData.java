@@ -3,7 +3,6 @@ package com.minelittlepony.client.pony;
 import net.minecraft.client.texture.NativeImage;
 
 import com.google.common.base.MoreObjects;
-import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.TriggerPixelSet;
 import com.minelittlepony.api.pony.TriggerPixelType;
@@ -54,7 +53,7 @@ class NativePonyData implements IPonyData {
 
     @Override
     public Race getRace() {
-        return PonyConfig.getEffectiveRace(race.getValue());
+        return race.getValue();
     }
 
     @Override
@@ -90,11 +89,6 @@ class NativePonyData implements IPonyData {
     @Override
     public int getGlowColor() {
         return glowColor;
-    }
-
-    @Override
-    public boolean hasHorn() {
-        return getRace().hasHorn();
     }
 
     @Override

@@ -3,10 +3,10 @@ package com.minelittlepony.api.model;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.model.armour.IArmour;
 import com.minelittlepony.api.pony.IPonyData;
-import com.minelittlepony.api.pony.meta.Size;
-import com.minelittlepony.api.pony.meta.Wearable;
+import com.minelittlepony.api.pony.meta.*;
 
 public interface IModel {
     /**
@@ -51,11 +51,15 @@ public interface IModel {
      */
     boolean isRiding();
 
+    default Race getRace() {
+        return PonyConfig.getEffectiveRace(getMetadata().getRace());
+    }
+
     /**
      * Returns true if this model is being applied to a race that has wings.
      */
     default boolean canFly() {
-        return getMetadata().getRace().hasWings();
+        return getRace().hasWings();
     }
 
     /**

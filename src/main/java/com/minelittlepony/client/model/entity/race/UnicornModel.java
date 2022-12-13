@@ -88,7 +88,7 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
 
     @Override
     public ModelPart getArm(Arm side) {
-        if (canCast() && getArmPoseForSide(side) != ArmPose.EMPTY && MineLittlePony.getInstance().getConfig().tpsmagic.get()) {
+        if (hasMagic() && getArmPoseForSide(side) != ArmPose.EMPTY && MineLittlePony.getInstance().getConfig().tpsmagic.get()) {
             return side == Arm.LEFT ? unicornArmLeft : unicornArmRight;
         }
         return super.getArm(side);

@@ -78,7 +78,7 @@ public class SkeleponyModel<T extends HostileEntity> extends AlicornModel<T> imp
     }
 
     @Override
-    public boolean canCast() {
+    public boolean hasMagic() {
         return isUnicorn;
     }
 

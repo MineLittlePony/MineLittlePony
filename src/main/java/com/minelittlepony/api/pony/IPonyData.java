@@ -16,6 +16,8 @@ import java.util.UUID;
 public interface IPonyData extends Comparable<IPonyData> {
     /**
      * Gets this pony's race.
+     *
+     * This is the actual race value. For the effective race, prefer going through {@link IPony#race}
      */
     Race getRace();
 
@@ -43,18 +45,6 @@ public interface IPonyData extends Comparable<IPonyData> {
      * Gets the magical glow colour for magic-casting races. Returns 0 otherwise.
      */
     int getGlowColor();
-
-    /**
-     * Returns true if and only if this metadata represents a pony that has a horn.
-     */
-    boolean hasHorn();
-
-    /**
-     * Returns true if and only if this metadata represents a pony that can cast magic.
-     */
-    default boolean hasMagic() {
-        return hasHorn() && getGlowColor() != 0;
-    }
 
     /**
      * Returns an array of wearables that this pony is carrying.

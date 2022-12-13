@@ -46,6 +46,13 @@ public interface IPony extends Comparable<IPony> {
     }
 
     /**
+     * Returns true if and only if this metadata represents a pony that can cast magic.
+     */
+    default boolean hasMagic() {
+        return race().hasHorn() && metadata().getGlowColor() != 0;
+    }
+
+    /**
      * Gets the texture used for rendering this pony.
      */
     Identifier texture();

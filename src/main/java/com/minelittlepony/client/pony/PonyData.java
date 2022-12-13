@@ -4,7 +4,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.Expose;
-import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.TriggerPixelType;
 import com.minelittlepony.api.pony.meta.*;
@@ -93,14 +92,13 @@ public class PonyData implements IPonyData {
 
     @Override
     public Race getRace() {
-        return PonyConfig.getEffectiveRace(race);
+        return race;
     }
 
     @Override
     public TailLength getTailLength() {
         return tailLength;
     }
-
 
     @Override
     public TailShape getTailShape() {
@@ -130,11 +128,6 @@ public class PonyData implements IPonyData {
     @Override
     public int getGlowColor() {
         return glowColor;
-    }
-
-    @Override
-    public boolean hasHorn() {
-        return getRace().hasHorn();
     }
 
     @Override

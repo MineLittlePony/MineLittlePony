@@ -1,7 +1,9 @@
 package com.minelittlepony.client.model;
 
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.model.ICapitated;
 import com.minelittlepony.api.pony.IPonyData;
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.model.part.PonyEars;
 import com.minelittlepony.client.model.part.PonySnout;
 import com.minelittlepony.client.model.part.UnicornHorn;
@@ -52,15 +54,18 @@ public class PonySkullModel extends SkullEntityModel implements MsonModel, ICapi
 
     @Override
     public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        snout.setVisible(!metadata.getRace().isHuman());
-        ears.setVisible(!metadata.getRace().isHuman());
+
+        Race race = PonyConfig.getEffectiveRace(metadata.getRace());
+
+        snout.setVisible(!race.isHuman());
+        ears.setVisible(!race.isHuman());
 
         snout.setGender(metadata.getGender());
 
         hair.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         head.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
 
-        if (metadata.hasHorn()) {
+        if (race.hasHorn()) {
             getHead().rotate(stack);
             horn.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, null);
         }

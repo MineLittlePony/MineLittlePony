@@ -23,8 +23,6 @@ public class MsgPonyData implements IPonyData {
     private final Gender gender;
     private final Size size;
     private final int glowColor;
-    private final boolean hasHorn;
-    private final boolean hasMagic;
 
     private final boolean noSkin;
 
@@ -49,8 +47,6 @@ public class MsgPonyData implements IPonyData {
         gender = buffer.readEnumConstant(Gender.class);
         size = new MsgSize(buffer);
         glowColor = buffer.readInt();
-        hasHorn = buffer.readBoolean();
-        hasMagic = buffer.readBoolean();
         noSkin = buffer.readBoolean();
         Wearable[] gear = new Wearable[buffer.readInt()];
         Wearable[] all = Wearable.values();
@@ -68,8 +64,6 @@ public class MsgPonyData implements IPonyData {
         gender = data.getGender();
         size = data.getSize();
         glowColor = data.getGlowColor();
-        hasHorn = data.hasHorn();
-        hasMagic = data.hasMagic();
         wearables = Wearable.flags(data.getGear());
         wearableColor = data.getTriggerPixels().get("gear").getColorCode();
         this.noSkin = noSkin;
@@ -82,8 +76,6 @@ public class MsgPonyData implements IPonyData {
         buffer.writeEnumConstant(gender);
         new MsgSize(size).toBuffer(buffer);
         buffer.writeInt(glowColor);
-        buffer.writeBoolean(hasHorn);
-        buffer.writeBoolean(hasMagic);
         buffer.writeBoolean(noSkin);
 
         Wearable[] gear = getGear();
@@ -127,16 +119,6 @@ public class MsgPonyData implements IPonyData {
     @Override
     public int getGlowColor() {
         return glowColor;
-    }
-
-    @Override
-    public boolean hasHorn() {
-        return hasHorn;
-    }
-
-    @Override
-    public boolean hasMagic() {
-        return hasMagic;
     }
 
     @Override

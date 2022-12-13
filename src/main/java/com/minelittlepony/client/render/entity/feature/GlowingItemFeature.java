@@ -27,7 +27,7 @@ public class GlowingItemFeature<T extends LivingEntity, M extends EntityModel<T>
     protected boolean isUnicorn() {
         return MineLittlePony.getInstance().getConfig().tpsmagic.get()
             && getContextModel() instanceof IUnicorn
-            && ((IUnicorn)getContextModel()).canCast();
+            && ((IUnicorn)getContextModel()).hasMagic();
     }
 
     @Override

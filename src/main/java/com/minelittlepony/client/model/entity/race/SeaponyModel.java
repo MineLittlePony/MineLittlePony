@@ -111,6 +111,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
     }
 
     @Override
+    public boolean hasMagic() {
     protected void renderBody(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
         body.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         abdomin.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
@@ -123,7 +124,6 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
     }
 
     @Override
-    public boolean canCast() {
         return true;
     }
 
