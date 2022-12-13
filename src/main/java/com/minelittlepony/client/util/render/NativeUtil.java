@@ -9,6 +9,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import static com.mojang.blaze3d.platform.GlStateManager._getTexLevelParameter;
@@ -92,9 +94,13 @@ public class NativeUtil {
     }
 
     public static void parseImage(Identifier resource, Consumer<NativeImage> consumer, Consumer<Exception> fail) {
+        parseImage(resource, consumer, fail, 0);
+    }
+
+    private static void parseImage(Identifier resource, Consumer<NativeImage> consumer, Consumer<Exception> fail, int attempt) {
         try {
             if (!RenderSystem.isOnRenderThread()) {
-                RenderSystem.recordRenderCall(() -> parseImage(resource, consumer, fail));
+                RenderSystem.recordRenderCall(() -> parseImage(resource, consumer, fail, attempt));
                 return;
             }
 
@@ -112,7 +118,13 @@ public class NativeUtil {
             int height = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT);
 
             if (width * height == 0) {
-                throw new IllegalStateException("GL texture not uploaded yet: " + resource);
+                if (attempt < 3) {
+                    CompletableFuture.delayedExecutor(500, TimeUnit.MILLISECONDS, mc).execute(() -> {
+                        parseImage(resource, consumer, fail, attempt + 1);
+                    });
+                } else {
+                    throw new IllegalStateException("GL texture not uploaded yet: " + resource + " Parse failed 3/3 attempts");
+                }
             }
 
             try (NativeImage image = new NativeImage(InternalFormat.valueOf(format).getClassification(), width, height, false)) {
