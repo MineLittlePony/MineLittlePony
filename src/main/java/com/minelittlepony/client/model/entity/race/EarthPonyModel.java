@@ -6,8 +6,6 @@ import com.minelittlepony.client.model.part.PonySnout;
 import com.minelittlepony.mson.api.ModelContext;
 
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
 public class EarthPonyModel<T extends LivingEntity> extends AbstractPonyModel<T> {
@@ -30,6 +28,8 @@ public class EarthPonyModel<T extends LivingEntity> extends AbstractPonyModel<T>
         tail = context.findByName("tail");
         snout = context.findByName("snout");
         ears = context.findByName("ears");
+
+        bodyRenderList.add(forPart(tail));
     }
 
     @Override
@@ -49,12 +49,6 @@ public class EarthPonyModel<T extends LivingEntity> extends AbstractPonyModel<T>
     protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
         super.shakeBody(move, swing, bodySwing, ticks);
         tail.setRotationAndAngles(attributes.isSwimming || attributes.isGoingFast, attributes.interpolatorId, move, swing, bodySwing * 5, ticks);
-    }
-
-    @Override
-    protected void renderBody(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        super.renderBody(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        tail.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, attributes.interpolatorId);
     }
 
     @Override

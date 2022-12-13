@@ -1,9 +1,7 @@
 package com.minelittlepony.client.model.armour;
 
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
 import com.minelittlepony.api.model.IModel;
@@ -25,6 +23,10 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
         chestPiece = tree.getChild("chestpiece");
         steveRightLeg = tree.getChild("steve_right_leg");
         steveLeftLeg = tree.getChild("steve_left_leg");
+
+        bodyRenderList.clear();
+        bodyRenderList.add(body, upperTorso, chestPiece);
+        legsRenderList.add(steveLeftLeg, steveRightLeg);
     }
 
     @Override
@@ -34,23 +36,6 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
         chestPiece.pitch = rotateAngleX;
         chestPiece.pivotY = rotationPointY;
         chestPiece.pivotZ = rotationPointZ;
-    }
-
-    @Override
-    protected void renderBody(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float limbDistance, float limbAngle, float tickDelta, float alpha) {
-        if (variant == ArmourVariant.LEGACY) {
-            body.render(stack, vertices, overlayUv, lightUv, limbDistance, limbAngle, tickDelta, alpha);
-            upperTorso.render(stack, vertices, overlayUv, lightUv, limbDistance, limbAngle, tickDelta, alpha);
-        } else {
-            chestPiece.render(stack, vertices, overlayUv, lightUv, limbDistance, limbAngle, tickDelta, alpha);
-        }
-    }
-
-    @Override
-    protected void renderLegs(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        super.renderLegs(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        steveLeftLeg.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        steveRightLeg.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
     @Override
@@ -108,6 +93,9 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
     public void showChestplate() {
         chestPiece.visible = true;
         neck.visible = true;
+        body.visible = variant == ArmourVariant.LEGACY;
+        upperTorso.visible = variant == ArmourVariant.LEGACY;
+        chestPiece.visible = variant == ArmourVariant.NORMAL;
     }
 
     @Override

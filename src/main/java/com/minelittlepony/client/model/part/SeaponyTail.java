@@ -1,6 +1,7 @@
 package com.minelittlepony.client.model.part;
 
 import com.minelittlepony.api.model.IPart;
+import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
@@ -45,7 +46,7 @@ public class SeaponyTail implements IPart, MsonModel {
     }
 
     @Override
-    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
+    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, ModelAttributes attributes) {
         tailBase.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 

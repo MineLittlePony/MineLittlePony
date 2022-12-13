@@ -4,11 +4,10 @@ import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.IUnicorn;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.part.UnicornHorn;
+import com.minelittlepony.client.util.render.RenderList;
 import com.minelittlepony.mson.api.ModelContext;
 
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 
@@ -32,6 +31,10 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
     public void init(ModelContext context) {
         super.init(context);
         horn = context.findByName("horn");
+        headRenderList.add(RenderList.of().add(head::rotate).add(forPart(horn)).checked(this::hasHorn));
+        this.mainRenderList.add(withStage(BodyPart.HEAD, RenderList.of().add(head::rotate).add((stack, vertices, overlayUv, lightUv, red, green, blue, alpha) -> {
+            horn.renderMagic(stack, vertices, getMagicColor());
+        })).checked(() -> hasHorn() && hasMagic() && isCasting()));
     }
 
     @Override
@@ -61,29 +64,6 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
         super.ponyCrouch();
         unicornArmRight.pitch -= LEG_ROT_X_SNEAK_ADJ;
         unicornArmLeft.pitch -= LEG_ROT_X_SNEAK_ADJ;
-    }
-
-    @Override
-    public void renderHead(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        super.renderHead(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-
-        if (hasHorn()) {
-            head.rotate(stack);
-            horn.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, attributes.interpolatorId);
-        }
-    }
-
-    @Override
-    public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        super.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-
-        if (hasHorn() && canCast() && isCasting()) {
-            stack.push();
-            transform(BodyPart.HEAD, stack);
-            head.rotate(stack);
-            horn.renderMagic(stack, vertices, getMagicColor());
-            stack.pop();
-        }
     }
 
     @Override

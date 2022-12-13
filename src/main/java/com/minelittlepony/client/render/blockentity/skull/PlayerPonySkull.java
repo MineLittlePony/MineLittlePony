@@ -77,8 +77,8 @@ public class PlayerPonySkull implements ISkull {
 
     @Override
     public void render(MatrixStack stack, VertexConsumer vertices, int lightUv, int overlayUv, float red, float green, float blue, float alpha) {
-        ponyHead.renderHead(stack, vertices, lightUv, overlayUv, red, green, blue, alpha);
-        ponyHead.renderHelmet(stack, vertices, lightUv, overlayUv, red, green, blue, alpha);
+        ponyHead.headRenderList.accept(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+        ponyHead.helmetRenderList.accept(stack, vertices, lightUv, overlayUv, red, green, blue, alpha);
         deadMau5.get().render(stack, vertices, lightUv, overlayUv, red, green, blue, alpha);
     }
 }

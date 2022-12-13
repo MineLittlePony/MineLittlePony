@@ -6,8 +6,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 
 import com.minelittlepony.api.model.IPegasus;
-
-import java.util.UUID;
+import com.minelittlepony.api.model.ModelAttributes;
 
 public class BatWings<T extends Model & IPegasus> extends PegasusWings<T> {
 
@@ -16,11 +15,11 @@ public class BatWings<T extends Model & IPegasus> extends PegasusWings<T> {
     }
 
     @Override
-    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
+    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, ModelAttributes attributes) {
         stack.push();
         stack.scale(1.3F, 1.3F, 1.3F);
 
-        super.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, interpolatorId);
+        super.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, attributes);
 
         stack.pop();
     }

@@ -9,7 +9,6 @@ import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
 
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
@@ -38,6 +37,8 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
     public void init(ModelContext context) {
         super.init(context);
         setVisible(true);
+        bodyRenderList.clear();
+        bodyRenderList.add(body, abdomin).add(body::rotate).add(forPart(tail)).add(leftFin, centerFin, rightFin);
     }
 
     @Override
@@ -112,18 +113,6 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
 
     @Override
     public boolean hasMagic() {
-    protected void renderBody(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        body.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        abdomin.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        body.rotate(stack);
-
-        tail.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, attributes.interpolatorId);
-        leftFin.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        centerFin.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        rightFin.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-    }
-
-    @Override
         return true;
     }
 

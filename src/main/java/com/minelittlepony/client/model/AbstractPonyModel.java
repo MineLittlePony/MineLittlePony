@@ -7,7 +7,10 @@ import com.minelittlepony.api.model.fabric.PonyModelPrepareCallback;
 import com.minelittlepony.api.pony.meta.Sizes;
 import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.client.transform.PonyTransformation;
+import com.minelittlepony.client.util.render.RenderList;
 import com.minelittlepony.mson.util.PartUtil;
+
+import java.util.function.Supplier;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
@@ -27,17 +30,62 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     protected final ModelPart neck;
 
+    public final RenderList helmetRenderList;
+    protected final RenderList neckRenderList;
+    public final RenderList headRenderList;
+    protected final RenderList bodyRenderList;
+    protected final RenderList vestRenderList;
+
+    protected final RenderList legsRenderList;
+    protected final RenderList sleevesRenderList;
+
+    protected final RenderList mainRenderList;
+
     public AbstractPonyModel(ModelPart tree) {
         super(tree);
 
         upperTorso = tree.getChild("upper_torso");
         upperTorsoOverlay = tree.getChild("saddle");
         neck = tree.getChild("neck");
+        mainRenderList = RenderList.of()
+            .add(withStage(BodyPart.BODY, bodyRenderList = RenderList.of(body, upperTorso).add(body::rotate)))
+            .add(withStage(BodyPart.NECK, neckRenderList = RenderList.of(neck)))
+            .add(withStage(BodyPart.HEAD, headRenderList = RenderList.of(head)))
+            .add(withStage(BodyPart.LEGS, legsRenderList = RenderList.of().add(this::rotateForBody).add(leftArm, rightArm, leftLeg, rightLeg)))
+            .add(withStage(BodyPart.LEGS, sleevesRenderList = RenderList.of().add(this::rotateForBody).add(leftSleeve, rightSleeve, leftPants, rightPants)))
+            .add(withStage(BodyPart.BODY, vestRenderList = RenderList.of(jacket, upperTorsoOverlay)))
+            .add(withStage(BodyPart.HEAD, helmetRenderList = RenderList.of(hat)));
     }
 
     @Override
     public IArmour<?> createArmour() {
         return ArmourWrapper.of(PonyArmourModel::new);
+    }
+
+    protected RenderList forPart(Supplier<IPart> part) {
+        return (stack, vertices, overlayUv, lightUv, red, green, blue, alpha) -> {
+            part.get().renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, attributes);
+        };
+    }
+
+    protected RenderList forPart(IPart part) {
+        return (stack, vertices, overlayUv, lightUv, red, green, blue, alpha) -> {
+            part.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, attributes);
+        };
+    }
+
+    @Override
+    public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+        mainRenderList.accept(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+    }
+
+    protected RenderList withStage(BodyPart part, RenderList action) {
+        return (stack, vertices, overlayUv, lightUv, red, green, blue, alpha) -> {
+            stack.push();
+            transform(part, stack);
+            action.accept(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
+            stack.pop();
+        };
     }
 
     /**
@@ -542,68 +590,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         }
     }
 
-    @Override
-    public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        renderStage(BodyPart.BODY, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderBody);
-        renderStage(BodyPart.NECK, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderNeck);
-        renderStage(BodyPart.HEAD, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderHead);
-        renderStage(BodyPart.LEGS, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderLegs);
-
-        renderStage(BodyPart.LEGS, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderSleeves);
-        renderStage(BodyPart.BODY, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderVest);
-        renderStage(BodyPart.HEAD, stack, vertices, overlayUv, lightUv, red, green, blue, alpha, this::renderHelmet);
-    }
-
-    protected void renderStage(BodyPart part, MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, RenderStage action) {
-        stack.push();
-        transform(part, stack);
-        action.accept(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        stack.pop();
-    }
-
-    public void renderHead(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        head.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-    }
-
-    public void renderHelmet(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        hat.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-    }
-
-    protected void renderNeck(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        neck.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-    }
-
-    protected void renderBody(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        body.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        upperTorso.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        body.rotate(stack);
-    }
-
-    protected void renderVest(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        jacket.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        upperTorsoOverlay.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-    }
-
-    protected void renderLegs(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+    protected void rotateForBody(MatrixStack stack) {
         if (!sneaking) {
             body.rotate(stack);
         }
-
-        leftArm.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        rightArm.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        leftLeg.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        rightLeg.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-    }
-
-    protected void renderSleeves(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
-        if (!sneaking) {
-            body.rotate(stack);
-        }
-
-        leftSleeve.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        rightSleeve.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        leftPants.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        rightPants.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
     @Override
@@ -628,9 +618,5 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         }
 
         PonyTransformation.forSize(getSize()).transform(this, part, stack);
-    }
-
-    protected interface RenderStage {
-        void accept(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha);
     }
 }

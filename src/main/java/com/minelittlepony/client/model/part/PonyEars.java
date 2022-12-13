@@ -5,11 +5,10 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 
 import com.minelittlepony.api.model.IPart;
+import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
 import com.minelittlepony.mson.api.model.PartBuilder;
-
-import java.util.UUID;
 
 public class PonyEars implements IPart, MsonModel {
     private ModelPart right;
@@ -29,7 +28,7 @@ public class PonyEars implements IPart, MsonModel {
     }
 
     @Override
-    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
+    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, ModelAttributes attributes) {
     }
 
     @Override

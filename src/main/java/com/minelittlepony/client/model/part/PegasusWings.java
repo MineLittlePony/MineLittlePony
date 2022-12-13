@@ -6,8 +6,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.api.model.IPart;
-import com.minelittlepony.api.model.IPegasus;
+import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
@@ -83,7 +82,7 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
     }
 
     @Override
-    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
+    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, ModelAttributes attributes) {
         getLeft().render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         getRight().render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }

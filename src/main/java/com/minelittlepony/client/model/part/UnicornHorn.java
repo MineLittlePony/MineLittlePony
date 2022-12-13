@@ -8,14 +8,11 @@ import net.minecraft.client.render.VertexConsumerProvider.Immediate;
 import net.minecraft.client.util.math.MatrixStack;
 
 import com.minelittlepony.api.model.IPart;
+import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.client.render.MagicGlow;
 import com.minelittlepony.common.util.Color;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.mson.api.MsonModel;
-
-import org.jetbrains.annotations.Nullable;
-
-import java.util.UUID;
 
 public class UnicornHorn implements IPart, MsonModel {
 
@@ -35,7 +32,7 @@ public class UnicornHorn implements IPart, MsonModel {
     }
 
     @Override
-    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, @Nullable UUID interpolatorId) {
+    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, ModelAttributes attributes) {
         if (visible) {
             horn.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
         }

@@ -2,8 +2,6 @@ package com.minelittlepony.client.model.entity;
 
 import net.minecraft.entity.mob.WitherSkeletonEntity;
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
@@ -21,13 +19,9 @@ public class SkeleponyModel<T extends HostileEntity> extends AlicornModel<T> imp
 
     public SkeleponyModel(ModelPart tree) {
         super(tree, false);
+        this.vestRenderList.clear();
+        this.sleevesRenderList.clear();
     }
-
-    @Override
-    protected void renderVest(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) { }
-
-    @Override
-    protected void renderSleeves(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) { }
 
     @Override
     public void animateModel(T entity, float move, float swing, float ticks) {

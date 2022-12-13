@@ -18,7 +18,7 @@ public interface IPart extends PonyModelConstants {
     /**
      * Renders this model component.
      */
-    void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId);
+    void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, ModelAttributes attributes);
 
     /**
      * Sets whether this part should be rendered.
