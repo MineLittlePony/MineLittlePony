@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloadListener {
     private static final Identifier ID = new Identifier("minelittlepony", "background_ponies");
     public static final Identifier BACKGROUND_PONIES = new Identifier("minelittlepony", "textures/entity/pony");
+    public static final Identifier BACKGROUND_ZOMPONIES = new Identifier("minelittlepony", "textures/entity/zompony");
 
     private final PonyConfig config;
 

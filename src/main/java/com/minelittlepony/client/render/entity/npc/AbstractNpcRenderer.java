@@ -28,10 +28,10 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
 
     private final NpcClothingFeature<T, ClientPonyModel<T>, AbstractNpcRenderer<T>> clothing;
 
-    public AbstractNpcRenderer(EntityRendererFactory.Context context, String type, TextureSupplier<String> formatter) {
+    public AbstractNpcRenderer(EntityRendererFactory.Context context, String type, TextureSupplier<T> textureSupplier, TextureSupplier<String> formatter) {
         super(context, ModelType.getPlayerModel(Race.EARTH).getKey(false));
         entityType = type;
-        baseTextures = new SillyPonyTextures<>(new CustomPonyTextures<>(new PonyTextures<>(formatter)), formatter);
+        baseTextures = new SillyPonyTextureSupplier<>(textureSupplier, formatter);
         clothing = new NpcClothingFeature<>(this, entityType);
         addFeature(clothing);
     }
@@ -39,7 +39,7 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
     @Override
     public boolean shouldRender(ClientPonyModel<T> model, T entity, Wearable wearable, IGear gear) {
 
-        boolean special = PonyTextures.isBestPony(entity);
+        boolean special = SillyPonyTextureSupplier.isBestPony(entity);
 
         if (wearable == Wearable.SADDLE_BAGS_BOTH) {
             VillagerProfession profession = entity.getVillagerData().getProfession();
@@ -52,7 +52,7 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
         }
 
         if (wearable == Wearable.MUFFIN) {
-            return PonyTextures.isCrownPony(entity);
+            return SillyPonyTextureSupplier.isCrownPony(entity);
         }
 
         return super.shouldRender(model, entity, wearable, gear);
@@ -85,6 +85,6 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
 
     @Override
     public Identifier getTexture(T villager) {
-        return baseTextures.supplyTexture(villager);
+        return baseTextures.apply(villager);
     }
 }
