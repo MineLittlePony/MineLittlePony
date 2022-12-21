@@ -1,5 +1,7 @@
 package com.minelittlepony.client.render.entity.feature;
 
+import it.unimi.dsi.fastutil.objects.Object2FloatLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
@@ -34,13 +36,13 @@ public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & IPon
             MOD_GEARS.stream().map(e -> new Entry(e.get(), Wearable.NONE))
     ).collect(Collectors.toList());
 
-    private final LoadingCache<UUID, List<Entry>> randomisedGearCache = CacheBuilder.newBuilder()
+    private final LoadingCache<Long, List<Entry>> randomisedGearCache = CacheBuilder.newBuilder()
             .expireAfterAccess(3, TimeUnit.MINUTES)
-            .build(CacheLoader.from(uuid -> {
+            .build(CacheLoader.from(id -> {
                 List<Entry> randomizedOrder = new ArrayList<>();
                 List<Entry> pool = new ArrayList<>(gears);
 
-                Random rng = Random.create(uuid.getLeastSignificantBits());
+                Random rng = Random.create(id);
 
                 while (!pool.isEmpty()) {
                     randomizedOrder.add(pool.remove(rng.nextInt(pool.size() + 1) % pool.size()));
@@ -59,30 +61,26 @@ public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & IPon
         }
 
         final M model = getModelWrapper().body();
+        final Object2FloatMap<BodyPart> renderStackingOffsets = new Object2FloatLinkedOpenHashMap<>();
 
-        final Map<BodyPart, Float> renderStackingOffsets = new HashMap<>();
-
-        randomisedGearCache.getUnchecked(entity.getUuid()).forEach(entry -> {
+        for (var entry : randomisedGearCache.getUnchecked(entity.getUuid().getLeastSignificantBits())) {
             if (getContext().shouldRender(model, entity, entry.wearable, entry.gear)) {
                 stack.push();
                 BodyPart part = entry.gear.getGearLocation();
                 entry.gear.transform(model, stack);
 
-                if (entry.gear instanceof IStackable) {
-                    renderStackingOffsets.compute(part, (k, v) -> {
-                        float offset = ((IStackable)entry.gear).getStackingHeight();
-                        if (v != null) {
-                            stack.translate(0, -v, 0);
-                            offset += v;
-                        }
-                        return offset;
-                    });
+                if (entry.gear instanceof IStackable s) {
+                    float v = renderStackingOffsets.getFloat(part);
+                    if (v != 0) {
+                        stack.translate(0, -v, 0);
+                    }
+                    renderStackingOffsets.put(part, v + s.getStackingHeight());
                 }
 
                 renderGear(model, entity, entry.gear, stack, renderContext, lightUv, limbDistance, limbAngle, tickDelta);
                 stack.pop();
             }
-        });
+        }
     }
 
     private void renderGear(M model, T entity, IGear gear, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, float limbDistance, float limbAngle, float tickDelta) {
