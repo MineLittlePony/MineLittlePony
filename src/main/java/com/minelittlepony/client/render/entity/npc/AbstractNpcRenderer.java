@@ -16,8 +16,7 @@ import com.minelittlepony.client.render.entity.PonyRenderer;
 import com.minelittlepony.client.render.entity.feature.*;
 import com.minelittlepony.client.render.entity.npc.textures.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> extends PonyRenderer.Caster<T, ClientPonyModel<T>> {
 
@@ -25,7 +24,7 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
 
     private final String entityType;
 
-    private final Map<Race, ModelWrapper<T, ClientPonyModel<T>>> models = new HashMap<>();
+    private final Map<Race, ModelWrapper<T, ClientPonyModel<T>>> models = new EnumMap<>(Race.class);
 
     private final NpcClothingFeature<T, ClientPonyModel<T>, AbstractNpcRenderer<T>> clothing;
 

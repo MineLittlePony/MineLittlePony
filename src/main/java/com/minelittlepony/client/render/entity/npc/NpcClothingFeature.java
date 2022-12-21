@@ -37,33 +37,13 @@ class NpcClothingFeature<
         a.put(4, new Identifier("emerald"));
         a.put(5, new Identifier("diamond"));
     });
+    private final Set<Identifier> loadedTextures = new HashSet<>();
 
     private final String entityType;
 
     public NpcClothingFeature(C context, String type) {
         super(context);
         entityType = type;
-    }
-
-    @Deprecated(forRemoval = true)
-    public static Identifier getClothingTexture(VillagerDataContainer entity, String entityType) {
-        VillagerProfession profession = entity.getVillagerData().getProfession();
-
-        return createTexture("minelittlepony", entityType, "profession", Registries.VILLAGER_PROFESSION.getId(profession));
-    }
-
-    public static Identifier createTexture(String namespace, String entityType, String category, Identifier profession) {
-        return new Identifier(namespace, String.format("textures/entity/%s/%s/%s.png", entityType, category, profession.getPath()));
-    }
-
-    public Identifier createTexture(VillagerDataContainer entity, String category) {
-        VillagerProfession profession = entity.getVillagerData().getProfession();
-
-        return createTexture(category, Registries.VILLAGER_PROFESSION.getId(profession));
-    }
-
-    public Identifier createTexture(String category, Identifier identifier) {
-        return createTexture("minelittlepony", entityType, category, identifier);
     }
 
     @Override
@@ -94,22 +74,30 @@ class NpcClothingFeature<
 
         Identifier key = new Identifier("minelittlepony", (typeId + "/" + profId + "/" + level).replace(':', '_'));
 
-        if (MinecraftClient.getInstance().getTextureManager().getOrDefault(key, null) == null) {
-            TextureFlattener.flatten(computeTextures(type, profession, typeId, profId, level), key);
+        if (loadedTextures.add(key) && MinecraftClient.getInstance().getTextureManager().getOrDefault(key, null) == null) {
+            TextureFlattener.flatten(computeTextures(typeId, profId, profession == VillagerProfession.NITWIT ? -1 : level), key);
         }
 
         return key;
     }
 
-    private List<Identifier> computeTextures(VillagerType type, VillagerProfession profession, Identifier typeId, Identifier profId, int level) {
+    private List<Identifier> computeTextures(Identifier typeId, Identifier profId, int level) {
         List<Identifier> skins = new ArrayList<>();
 
         skins.add(createTexture("type", typeId));
-        skins.add(createTexture("profession", Registries.VILLAGER_PROFESSION.getId(profession)));
-        if (profession != VillagerProfession.NITWIT) {
+        skins.add(createTexture("profession", profId));
+        if (level != -1) {
             skins.add(createTexture("profession_level", LEVEL_TO_ID.get(level)));
         }
 
         return skins;
+    }
+
+    public Identifier createTexture(VillagerDataContainer entity, String category) {
+        return createTexture(category, Registries.VILLAGER_PROFESSION.getId(entity.getVillagerData().getProfession()));
+    }
+
+    private Identifier createTexture(String category, Identifier identifier) {
+        return new Identifier("minelittlepony", String.format("textures/entity/%s/%s/%s.png", entityType, category, identifier.getPath()));
     }
 }
