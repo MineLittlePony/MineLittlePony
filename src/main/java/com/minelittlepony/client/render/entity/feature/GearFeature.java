@@ -62,27 +62,26 @@ public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & IPon
 
         final Map<BodyPart, Float> renderStackingOffsets = new HashMap<>();
 
-        randomisedGearCache.getUnchecked(entity.getUuid())
-            .stream()
-            .filter(entry -> getContext().shouldRender(model, entity, entry.wearable, entry.gear))
-            .forEach(entry -> {
-            stack.push();
-            BodyPart part = entry.gear.getGearLocation();
-            entry.gear.transform(model, stack);
+        randomisedGearCache.getUnchecked(entity.getUuid()).forEach(entry -> {
+            if (getContext().shouldRender(model, entity, entry.wearable, entry.gear)) {
+                stack.push();
+                BodyPart part = entry.gear.getGearLocation();
+                entry.gear.transform(model, stack);
 
-            if (entry.gear instanceof IStackable) {
-                renderStackingOffsets.compute(part, (k, v) -> {
-                    float offset = ((IStackable)entry.gear).getStackingHeight();
-                    if (v != null) {
-                        stack.translate(0, -v, 0);
-                        offset += v;
-                    }
-                    return offset;
-                });
+                if (entry.gear instanceof IStackable) {
+                    renderStackingOffsets.compute(part, (k, v) -> {
+                        float offset = ((IStackable)entry.gear).getStackingHeight();
+                        if (v != null) {
+                            stack.translate(0, -v, 0);
+                            offset += v;
+                        }
+                        return offset;
+                    });
+                }
+
+                renderGear(model, entity, entry.gear, stack, renderContext, lightUv, limbDistance, limbAngle, tickDelta);
+                stack.pop();
             }
-
-            renderGear(model, entity, entry.gear, stack, renderContext, lightUv, limbDistance, limbAngle, tickDelta);
-            stack.pop();
         });
     }
 
