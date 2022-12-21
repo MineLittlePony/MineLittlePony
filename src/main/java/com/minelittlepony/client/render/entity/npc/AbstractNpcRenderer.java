@@ -13,6 +13,7 @@ import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.*;
 import com.minelittlepony.client.render.entity.PonyRenderer;
+import com.minelittlepony.client.render.entity.feature.*;
 import com.minelittlepony.client.render.entity.npc.textures.*;
 
 import java.util.HashMap;
@@ -37,6 +38,12 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
     }
 
     @Override
+    protected void addLayers(EntityRendererFactory.Context context) {
+        addFeature(createItemHoldingLayer());
+        addFeature(new GearFeature<>(this));
+    }
+
+    @Override
     public boolean shouldRender(ClientPonyModel<T> model, T entity, Wearable wearable, IGear gear) {
 
         boolean special = SillyPonyTextureSupplier.isBestPony(entity);
@@ -58,6 +65,7 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
         return super.shouldRender(model, entity, wearable, gear);
     }
 
+    @Override
     public void render(T entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
         model = manager.setModel(models.computeIfAbsent(getEntityPony(entity).race(), this::createModel)).body();
 

@@ -3,7 +3,6 @@ package com.minelittlepony.client.render.entity.feature;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.random.Random;
 
@@ -35,13 +34,13 @@ public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & IPon
             MOD_GEARS.stream().map(e -> new Entry(e.get(), Wearable.NONE))
     ).collect(Collectors.toList());
 
-    private final LoadingCache<Entity, List<Entry>> randomisedGearCache = CacheBuilder.newBuilder()
+    private final LoadingCache<UUID, List<Entry>> randomisedGearCache = CacheBuilder.newBuilder()
             .expireAfterAccess(3, TimeUnit.MINUTES)
-            .build(CacheLoader.from(entity -> {
+            .build(CacheLoader.from(uuid -> {
                 List<Entry> randomizedOrder = new ArrayList<>();
                 List<Entry> pool = new ArrayList<>(gears);
 
-                Random rng = Random.create(entity.getUuid().getLeastSignificantBits());
+                Random rng = Random.create(uuid.getLeastSignificantBits());
 
                 while (!pool.isEmpty()) {
                     randomizedOrder.add(pool.remove(rng.nextInt(pool.size() + 1) % pool.size()));
@@ -63,7 +62,7 @@ public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & IPon
 
         final Map<BodyPart, Float> renderStackingOffsets = new HashMap<>();
 
-        randomisedGearCache.getUnchecked(entity)
+        randomisedGearCache.getUnchecked(entity.getUuid())
             .stream()
             .filter(entry -> getContext().shouldRender(model, entity, entry.wearable, entry.gear))
             .forEach(entry -> {
