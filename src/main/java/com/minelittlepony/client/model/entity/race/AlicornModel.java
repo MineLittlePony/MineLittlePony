@@ -19,7 +19,7 @@ public class AlicornModel<T extends LivingEntity> extends UnicornModel<T> implem
     public void init(ModelContext context) {
         super.init(context);
         wings = context.findByName("wings");
-        headRenderList.add(forPart(this::getWings).checked(this::canFly));
+        bodyRenderList.add(forPart(this::getWings).checked(this::canFly));
     }
 
     @Override
