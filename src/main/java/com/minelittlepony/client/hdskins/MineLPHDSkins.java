@@ -1,6 +1,8 @@
 package com.minelittlepony.client.hdskins;
 
 import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.IPonyData;
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.SkinsProxy;
@@ -101,8 +103,14 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
 
             PlayerSkin main = dummy.getTextures().get(SkinType.SKIN);
             Wearable wearable = Wearable.REGISTRY.getOrDefault(type.getId(), Wearable.NONE);
-            if (wearable != Wearable.NONE && IPony.getManager().getPony(main.getId()).metadata().isWearing(wearable)) {
-                return Optional.of(main.getId());
+            IPonyData metadata = IPony.getManager().getPony(main.getId()).metadata();
+            if (wearable != Wearable.NONE && metadata.isWearing(wearable)) {
+
+                if (wearable.isSaddlebags() && metadata.getRace() != Race.BATPONY) {
+                    return Optional.of(main.getId());
+                }
+
+                return Optional.of(wearable.getDefaultTexture());
             }
         }
 
