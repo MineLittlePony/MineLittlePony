@@ -2,6 +2,7 @@ package com.minelittlepony.api.pony;
 
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TriggerPixelSet<T extends Enum<T> & TriggerPixelType<T>> extends TriggerPixelValue<boolean[]> {
 
     private final T def;
@@ -11,7 +12,6 @@ public class TriggerPixelSet<T extends Enum<T> & TriggerPixelType<T>> extends Tr
         this.def = def;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<TriggerPixelType<T>> getOptions() {
         return def.getOptions();
