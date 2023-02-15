@@ -3,11 +3,7 @@ package com.minelittlepony.client.render.entity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.ArmorStandEntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
-import net.minecraft.client.render.entity.feature.ElytraFeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
-import net.minecraft.client.render.entity.feature.HeldItemFeatureRenderer;
+import net.minecraft.client.render.entity.feature.*;
 import net.minecraft.client.render.entity.model.ArmorStandArmorEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.util.math.MatrixStack;
@@ -33,7 +29,12 @@ public class PonyStandRenderer extends ArmorStandEntityRenderer {
         super(context);
         human = model;
 
-        features.clear();
+        features.removeIf(feature -> {
+            return feature instanceof ArmorFeatureRenderer
+                    || feature instanceof HeldItemFeatureRenderer
+                    || feature instanceof ElytraFeatureRenderer
+                    || feature instanceof HeadFeatureRenderer;
+        });
         addFeature(new Armour(this, context));
         addFeature(new HeldItemFeatureRenderer<>(this, context.getHeldItemRenderer()));
         addFeature(new ElytraFeatureRenderer<>(this, context.getModelLoader()));

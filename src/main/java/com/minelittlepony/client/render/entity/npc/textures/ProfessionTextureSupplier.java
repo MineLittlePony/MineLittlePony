@@ -1,13 +1,9 @@
 package com.minelittlepony.client.render.entity.npc.textures;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.*;
 
 import com.minelittlepony.util.ResourceUtil;
-
-import java.util.*;
 
 public class ProfessionTextureSupplier<T extends VillagerDataContainer> implements TextureSupplier<T> {
 
@@ -40,7 +36,7 @@ public class ProfessionTextureSupplier<T extends VillagerDataContainer> implemen
 
     private Identifier getTexture(final VillagerType type, final VillagerProfession profession) {
         String key = ResourceUtil.format("pony/%s/%s", type, profession);
-        return verifyTexture(formatter.apply(key)).orElseGet(() -> {
+        return ResourceUtil.verifyTexture(formatter.apply(key)).orElseGet(() -> {
             if (type == VillagerType.PLAINS) {
                 // if texture loading fails, use the fallback.
                 return fallback;
@@ -48,21 +44,5 @@ public class ProfessionTextureSupplier<T extends VillagerDataContainer> implemen
 
             return getTexture(VillagerType.PLAINS, profession);
         });
-    }
-
-    protected Optional<Identifier> verifyTexture(Identifier texture) {
-        return MinecraftClient.getInstance().getResourceManager().getResource(texture).map(i -> texture);
-    }
-
-    public static boolean isBestPony(LivingEntity entity) {
-        if (!entity.hasCustomName()) {
-            return false;
-        }
-        String name = entity.getCustomName().getString();
-        return "Derpy".equals(name) || (entity.isBaby() && "Dinky".equals(name));
-    }
-
-    public static boolean isCrownPony(LivingEntity entity) {
-        return isBestPony(entity) && entity.getUuid().getLeastSignificantBits() % 20 == 0;
     }
 }

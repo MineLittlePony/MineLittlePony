@@ -1,5 +1,10 @@
 package com.minelittlepony.util;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.Identifier;
+
+import java.util.Optional;
+
 public final class ResourceUtil {
 
     public static String format(String template, Object... args) {
@@ -13,5 +18,13 @@ public final class ResourceUtil {
 
     private static String toPathComponent(Object value) {
         return value.toString().toLowerCase().replaceAll("[^a-z0-9_.-]", "_");
+    }
+
+    public static boolean textureExists(Identifier texture) {
+        return MinecraftClient.getInstance().getTextureManager().getOrDefault(texture, null) != null;
+    }
+
+    public static Optional<Identifier> verifyTexture(Identifier texture) {
+        return textureExists(texture) ? Optional.of(texture) : Optional.empty();
     }
 }
