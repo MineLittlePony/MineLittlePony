@@ -26,7 +26,7 @@ public class ModelWrapper<T extends LivingEntity, M extends IModel> implements I
 
     private final M body;
 
-    public ModelWrapper(PlayerModelKey<T, ?> playerModelKey, boolean slimArms, @Nullable Consumer<M> initializer) {
+    public ModelWrapper(PlayerModelKey<T, ? super M> playerModelKey, boolean slimArms, @Nullable Consumer<M> initializer) {
         this.armorFactory = playerModelKey.armorFactory();
         this.body = playerModelKey.getKey(slimArms).createModel();
         if (initializer != null) {
