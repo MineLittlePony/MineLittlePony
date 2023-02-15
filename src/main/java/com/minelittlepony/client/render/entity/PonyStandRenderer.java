@@ -54,7 +54,7 @@ public class PonyStandRenderer extends ArmorStandEntityRenderer {
     }
 
     class Armour extends ArmorFeatureRenderer<ArmorStandEntity, ArmorStandArmorEntityModel, ArmorStandArmorEntityModel> {
-        private final ModelWrapper<ArmorStandEntity, EarthPonyModel<ArmorStandEntity>> pony = ModelWrapper.of(ModelType.EARTH_PONY.getKey(false));
+        private final ModelWrapper<ArmorStandEntity, EarthPonyModel<ArmorStandEntity>> pony = ModelType.EARTH_PONY.<ArmorStandEntity, EarthPonyModel<ArmorStandEntity>>create(false);
 
         public Armour(FeatureRendererContext<ArmorStandEntity, ArmorStandArmorEntityModel> renderer, EntityRendererFactory.Context context) {
             super(renderer,

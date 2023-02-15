@@ -5,8 +5,7 @@ import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.SkinsProxy;
-import com.minelittlepony.client.model.ClientPonyModel;
-import com.minelittlepony.client.model.ModelWrapper;
+import com.minelittlepony.client.model.*;
 import com.minelittlepony.client.model.gear.SaddleBags;
 import com.minelittlepony.client.render.DebugBoundingBoxRenderer;
 import com.minelittlepony.client.render.IPonyRenderContext;
@@ -19,7 +18,6 @@ import com.minelittlepony.client.render.entity.feature.ArmourFeature;
 import com.minelittlepony.client.render.entity.feature.CapeFeature;
 import com.minelittlepony.client.render.entity.feature.SkullFeature;
 import com.minelittlepony.client.render.entity.feature.ElytraFeature;
-import com.minelittlepony.mson.api.ModelKey;
 
 import java.util.List;
 
@@ -43,10 +41,10 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
 
     protected final EquineRenderManager<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> manager = new EquineRenderManager<>(this);
 
-    public PlayerPonyRenderer(EntityRendererFactory.Context context, boolean slim, ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>> key) {
+    public PlayerPonyRenderer(EntityRendererFactory.Context context, boolean slim, PlayerModelKey<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> key) {
         super(context, slim);
 
-        this.model = manager.setModel(key).body();
+        this.model = manager.setModel(key.create(slim)).body();
 
         addLayers(context);
     }

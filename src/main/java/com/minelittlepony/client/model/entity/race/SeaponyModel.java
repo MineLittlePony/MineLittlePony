@@ -4,9 +4,7 @@ import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.model.armour.IArmour;
 import com.minelittlepony.api.pony.IPony;
-import com.minelittlepony.client.model.armour.ArmourWrapper;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.util.math.MatrixStack;
@@ -39,11 +37,6 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
         setVisible(true);
         bodyRenderList.clear();
         bodyRenderList.add(body, abdomin).add(body::rotate).add(forPart(tail)).add(leftFin, centerFin, rightFin);
-    }
-
-    @Override
-    public IArmour<?> createArmour() {
-        return ArmourWrapper.of(Armour::new);
     }
 
     @Override
@@ -138,7 +131,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
         rightFin.visible = visible;
     }
 
-    class Armour extends PonyArmourModel<T> {
+    public static class Armour<T extends LivingEntity> extends PonyArmourModel<T> {
 
         public Armour(ModelPart tree) {
             super(tree);

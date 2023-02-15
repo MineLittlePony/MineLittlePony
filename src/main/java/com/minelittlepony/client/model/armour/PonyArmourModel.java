@@ -5,8 +5,7 @@ import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.LivingEntity;
 
 import com.minelittlepony.api.model.IModel;
-import com.minelittlepony.api.model.armour.ArmourVariant;
-import com.minelittlepony.api.model.armour.IArmourModel;
+import com.minelittlepony.api.model.armour.*;
 import com.minelittlepony.client.model.AbstractPonyModel;
 
 public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T> implements IArmourModel {
@@ -27,6 +26,10 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
         bodyRenderList.clear();
         bodyRenderList.add(body, upperTorso, chestPiece);
         legsRenderList.add(steveLeftLeg, steveRightLeg);
+    }
+
+    public IArmourTextureResolver getArmourTextureResolver() {
+        return IArmourTextureResolver.DEFAULT;
     }
 
     @Override

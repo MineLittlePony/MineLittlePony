@@ -10,7 +10,6 @@ import net.minecraft.util.Arm;
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.IUnicorn;
 import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.model.armour.IArmour;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.meta.Size;
@@ -57,11 +56,6 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     @Override
     default Size getSize() {
         return mixin().getSize();
-    }
-
-    @Override
-    default IArmour<?> createArmour() {
-        return mixin().createArmour();
     }
 
     @Override

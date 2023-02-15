@@ -1,11 +1,8 @@
 package com.minelittlepony.client.model;
 
-import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.api.model.*;
-import com.minelittlepony.api.model.armour.IArmour;
 import com.minelittlepony.api.model.fabric.PonyModelPrepareCallback;
 import com.minelittlepony.api.pony.meta.Sizes;
-import com.minelittlepony.client.model.armour.ArmourWrapper;
 import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.client.util.render.RenderList;
 import com.minelittlepony.mson.util.PartUtil;
@@ -55,11 +52,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             .add(withStage(BodyPart.LEGS, sleevesRenderList = RenderList.of().add(leftSleeve, rightSleeve, leftPants, rightPants)))
             .add(withStage(BodyPart.BODY, vestRenderList = RenderList.of(jacket, upperTorsoOverlay)))
             .add(withStage(BodyPart.HEAD, helmetRenderList = RenderList.of(hat)));
-    }
-
-    @Override
-    public IArmour<?> createArmour() {
-        return ArmourWrapper.of(PonyArmourModel::new);
     }
 
     protected RenderList forPart(Supplier<IPart> part) {

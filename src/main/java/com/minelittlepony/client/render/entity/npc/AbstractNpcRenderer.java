@@ -75,7 +75,7 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
         if (race.isHuman()) {
             race = Race.EARTH;
         }
-        return ModelWrapper.<T, ClientPonyModel<T>>of(ModelType.getPlayerModel(race).getKey(false), this::initializeModel);
+        return ModelType.getPlayerModel(race).create(false, this::initializeModel);
     }
 
     protected void initializeModel(ClientPonyModel<T> model) {

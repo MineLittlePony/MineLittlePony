@@ -8,6 +8,7 @@ import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.entity.passive.*;
 import net.minecraft.util.Identifier;
 
+import com.minelittlepony.api.model.IModel;
 import com.minelittlepony.api.model.gear.IGear;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
@@ -51,8 +52,8 @@ public final class ModelType {
     public static final ModelKey<PonyElytra<?>> ELYTRA = register("elytra", PonyElytra::new);
 
     public static final ModelKey<ArmorStandEntityModel> ARMOUR_STAND = register("armour_stand", PonyArmourStandModel::new);
-    public static final ModelKey<PonyArmourModel<?>> ARMOUR_INNER = register("armour_inner", PonyArmourModel::new);
-    public static final ModelKey<PonyArmourModel<?>> ARMOUR_OUTER = register("armour_outer", PonyArmourModel::new);
+    public static final ModelKey<PonyArmourModel<?>> INNER_ARMOR = register("armor/inner_pony_armor", PonyArmourModel::new);
+    public static final ModelKey<PonyArmourModel<?>> OUTER_ARMOR = register("armor/outer_pony_armor", PonyArmourModel::new);
 
     public static final GearModelKey<Stetson> STETSON = registerGear("stetson", Wearable.STETSON, Stetson::new);
     public static final GearModelKey<SaddleBags> SADDLEBAGS_BOTH = registerGear("saddlebags", Wearable.SADDLE_BAGS_BOTH, t -> new SaddleBags(t, Wearable.SADDLE_BAGS_BOTH));
@@ -63,27 +64,37 @@ public final class ModelType {
     public static final GearModelKey<WitchHat> WITCH_HAT = registerGear("witch_hat", Wearable.HAT, WitchHat::new);
     public static final GearModelKey<ChristmasHat> ANTLERS = registerGear("antlers", Wearable.ANTLERS, ChristmasHat::new);
 
-    public static final PlayerModelKey<?, AlicornModel<?>> ALICORN = registerPlayer("alicorn", Race.ALICORN, AlicornModel::new);
-    public static final PlayerModelKey<?, UnicornModel<?>> UNICORN = registerPlayer("unicorn", Race.UNICORN, UnicornModel::new);
-    public static final PlayerModelKey<?, UnicornModel<?>> KIRIN = registerPlayer("kirin", Race.KIRIN, UnicornModel::new);
-    public static final PlayerModelKey<?, PegasusModel<?>> PEGASUS = registerPlayer("pegasus", Race.PEGASUS, PegasusModel::new);
-    public static final PlayerModelKey<?, PegasusModel<?>> GRYPHON = registerPlayer("gryphon", Race.GRYPHON, PegasusModel::new);
-    public static final PlayerModelKey<?, PegasusModel<?>> HIPPOGRIFF = registerPlayer("hippogriff", Race.HIPPOGRIFF, PegasusModel::new);
-    public static final PlayerModelKey<?, EarthPonyModel<?>> EARTH_PONY = registerPlayer("earth_pony", Race.EARTH, EarthPonyModel::new);
-    public static final PlayerModelKey<?, SeaponyModel<?>> SEA_PONY = registerPlayer("sea_pony", Race.SEAPONY, SeaponyModel::new, PlayerSeaponyRenderer::new);
-    public static final PlayerModelKey<?, PegasusModel<?>> BAT_PONY = registerPlayer("bat_pony", Race.BATPONY, PegasusModel::new);
-    public static final PlayerModelKey<?, ChangelingModel<?>> CHANGELING = registerPlayer("changeling", Race.CHANGELING, ChangelingModel::new);
-    public static final PlayerModelKey<?, ChangelingModel<?>> CHANGEDLING = registerPlayer("reformed_changeling", Race.CHANGEDLING, ChangelingModel::new);
-    public static final PlayerModelKey<?, EarthPonyModel<?>> ZEBRA = registerPlayer("zebra", Race.ZEBRA, EarthPonyModel::new);
+    public static final PlayerModelKey<LivingEntity, AlicornModel<?>> ALICORN = registerPlayer("alicorn", Race.ALICORN, AlicornModel::new);
+    public static final PlayerModelKey<LivingEntity, UnicornModel<?>> UNICORN = registerPlayer("unicorn", Race.UNICORN, UnicornModel::new);
+    public static final PlayerModelKey<LivingEntity, UnicornModel<?>> KIRIN = registerPlayer("kirin", Race.KIRIN, UnicornModel::new);
+    public static final PlayerModelKey<LivingEntity, PegasusModel<?>> PEGASUS = registerPlayer("pegasus", Race.PEGASUS, PegasusModel::new);
+    public static final PlayerModelKey<LivingEntity, PegasusModel<?>> GRYPHON = registerPlayer("gryphon", Race.GRYPHON, PegasusModel::new);
+    public static final PlayerModelKey<LivingEntity, PegasusModel<?>> HIPPOGRIFF = registerPlayer("hippogriff", Race.HIPPOGRIFF, PegasusModel::new);
+    public static final PlayerModelKey<LivingEntity, EarthPonyModel<?>> EARTH_PONY = registerPlayer("earth_pony", Race.EARTH, EarthPonyModel::new);
+    public static final PlayerModelKey<LivingEntity, SeaponyModel<?>> SEA_PONY = registerPlayer("sea_pony", Race.SEAPONY, SeaponyModel::new, SeaponyModel.Armour::new, PlayerSeaponyRenderer::new);
+    public static final PlayerModelKey<LivingEntity, PegasusModel<?>> BAT_PONY = registerPlayer("bat_pony", Race.BATPONY, PegasusModel::new);
+    public static final PlayerModelKey<LivingEntity, ChangelingModel<?>> CHANGELING = registerPlayer("changeling", Race.CHANGELING, ChangelingModel::new);
+    public static final PlayerModelKey<LivingEntity, ChangelingModel<?>> CHANGEDLING = registerPlayer("reformed_changeling", Race.CHANGEDLING, ChangelingModel::new);
+    public static final PlayerModelKey<LivingEntity, EarthPonyModel<?>> ZEBRA = registerPlayer("zebra", Race.ZEBRA, EarthPonyModel::new);
 
-    static <E extends LivingEntity, T extends Model & MsonModel> PlayerModelKey<E, T> registerPlayer(String name, Race race, BiFunction<ModelPart, Boolean, T> constructor) {
+    static <E extends LivingEntity, T extends Model & MsonModel & IModel> PlayerModelKey<E, T> registerPlayer(String name, Race race,
+            BiFunction<ModelPart, Boolean, T> constructor) {
         return registerPlayer(name, race, constructor, PlayerPonyRenderer::new);
     }
 
+    static <E extends LivingEntity, T extends Model & MsonModel & IModel> PlayerModelKey<E, T> registerPlayer(String name, Race race,
+            BiFunction<ModelPart, Boolean, T> constructor,
+            PlayerModelKey.RendererFactory rendererFactory) {
+        return registerPlayer(name, race, constructor, PonyArmourModel::new, rendererFactory);
+    }
+
     @SuppressWarnings("unchecked")
-    static <E extends LivingEntity, T extends Model & MsonModel> PlayerModelKey<E, T> registerPlayer(String name, Race race, BiFunction<ModelPart, Boolean, T> constructor, PlayerModelKey.RendererFactory rendererFactory) {
+    static <E extends LivingEntity, T extends Model & MsonModel & IModel> PlayerModelKey<E, T> registerPlayer(String name, Race race,
+            BiFunction<ModelPart, Boolean, T> constructor,
+            MsonModel.Factory<PonyArmourModel<E>> armorFactory,
+            PlayerModelKey.RendererFactory rendererFactory) {
         return (PlayerModelKey<E, T>)PLAYER_MODELS.computeIfAbsent(race, r -> {
-            return new PlayerModelKey<>(name, constructor, rendererFactory);
+            return new PlayerModelKey<>(name, constructor, rendererFactory, armorFactory);
         });
     }
 
@@ -105,7 +116,7 @@ public final class ModelType {
 
     @SuppressWarnings("unchecked")
     @Nullable
-    public static <E extends LivingEntity, T extends Model & MsonModel> PlayerModelKey<E, T> getPlayerModel(Race race) {
+    public static <E extends LivingEntity, T extends Model & MsonModel & IModel> PlayerModelKey<E, T> getPlayerModel(Race race) {
         return (PlayerModelKey<E, T>)PLAYER_MODELS.get(race);
     }
 

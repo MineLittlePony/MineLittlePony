@@ -1,12 +1,9 @@
 package com.minelittlepony.client.render.entity.feature;
 
-import com.minelittlepony.api.model.armour.ArmourLayer;
-import com.minelittlepony.api.model.armour.ArmourRegistry;
-import com.minelittlepony.api.model.armour.IArmour;
-import com.minelittlepony.api.model.armour.IArmourModel;
-import com.minelittlepony.api.model.armour.IArmourTextureResolver;
+import com.minelittlepony.api.model.armour.*;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
+import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.common.util.Color;
 
@@ -20,9 +17,7 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.DyeableArmorItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.util.Identifier;
 
 public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyFeature<T, M> {
@@ -43,7 +38,6 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
         }
     }
 
-    @SuppressWarnings("unchecked")
     public static <T extends LivingEntity, V extends BipedEntityModel<T> & IArmourModel> void renderArmor(
             ModelWrapper<T, ? extends IPonyModel<T>> pony, MatrixStack stack,
                     VertexConsumerProvider renderContext, int lightUv, T entity,
@@ -53,43 +47,43 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
 
         ItemStack itemstack = entity.getEquippedStack(armorSlot);
 
-        if (!itemstack.isEmpty() && itemstack.getItem() instanceof ArmorItem) {
-            IArmour<V> armour = ArmourRegistry.getArmour(itemstack, (IArmour<V>)pony.armor());
+        if (itemstack.isEmpty()) {
+            return;
+        }
 
-            armour.applyMetadata(pony.body().getMetadata());
+        PonyArmourModel<T> model = pony.getArmourModel(itemstack, layer).orElse(null);
+        if (model == null) {
+            return;
+        }
 
-            V model = armour.getModel(layer);
-            if (model == null) {
-                model = ((IArmour<V>)pony.armor()).getModel(layer);
+        model.setMetadata(pony.body().getMetadata());
+
+        if (model.prepareToRender(armorSlot, layer)) {
+            pony.body().copyAttributes(model);
+            model.setAngles(entity, limbAngle, limbDistance, age, headYaw, headPitch);
+            model.synchroniseAngles(pony.body());
+
+            Item item = itemstack.getItem();
+
+            float red = 1;
+            float green = 1;
+            float blue = 1;
+
+            if (item instanceof DyeableArmorItem) {
+                int color = ((DyeableArmorItem)item).getColor(itemstack);
+                red = Color.r(color);
+                green = Color.g(color);
+                blue = Color.b(color);
             }
 
-            if (model.prepareToRender(armorSlot, layer)) {
-                pony.body().copyAttributes(model);
-                model.setAngles(entity, limbAngle, limbDistance, age, headYaw, headPitch);
-                model.synchroniseAngles(pony.body());
+            IArmourTextureResolver resolver = model.getArmourTextureResolver();
 
-                ArmorItem item = (ArmorItem) itemstack.getItem();
+            boolean glint = itemstack.hasGlint();
 
-                float red = 1;
-                float green = 1;
-                float blue = 1;
+            renderArmourPart(stack, renderContext, lightUv, glint, model, red, green, blue, resolver, layer, resolver.getTexture(entity, itemstack, armorSlot, layer, null));
 
-                if (item instanceof DyeableArmorItem) {
-                    int color = ((DyeableArmorItem)item).getColor(itemstack);
-                    red = Color.r(color);
-                    green = Color.g(color);
-                    blue = Color.b(color);
-                }
-
-                IArmourTextureResolver resolver = armour.getTextureResolver(IArmourTextureResolver.DEFAULT);
-
-                boolean glint = itemstack.hasGlint();
-
-                renderArmourPart(stack, renderContext, lightUv, glint, model, red, green, blue, resolver, layer, resolver.getTexture(entity, itemstack, armorSlot, layer, null));
-
-                if (item instanceof DyeableArmorItem) {
-                    renderArmourPart(stack, renderContext, lightUv, false, model, 1, 1, 1, resolver, layer, resolver.getTexture(entity, itemstack, armorSlot, layer, "overlay"));
-                }
+            if (item instanceof DyeableArmorItem) {
+                renderArmourPart(stack, renderContext, lightUv, false, model, 1, 1, 1, resolver, layer, resolver.getTexture(entity, itemstack, armorSlot, layer, "overlay"));
             }
         }
     }

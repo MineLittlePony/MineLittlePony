@@ -4,10 +4,7 @@ import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.PonyPosture;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.SkinsProxy;
-import com.minelittlepony.client.model.ClientPonyModel;
-import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.ModelWrapper;
-import com.minelittlepony.mson.api.ModelKey;
+import com.minelittlepony.client.model.*;
 import com.minelittlepony.util.MathUtil;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -21,11 +18,12 @@ public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
     private final ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> seapony;
     private final ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> normalPony;
 
-    public PlayerSeaponyRenderer(EntityRendererFactory.Context context, boolean slim, ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>> key) {
+    public PlayerSeaponyRenderer(EntityRendererFactory.Context context, boolean slim,
+            PlayerModelKey<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> key) {
         super(context, slim, key);
 
-        normalPony = ModelWrapper.of(ModelType.<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>>getPlayerModel(Race.UNICORN).getKey(slim));
-        seapony = this.manager.getModelWrapper();
+        normalPony = ModelType.getPlayerModel(Race.UNICORN).<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>>create(slim);
+        seapony = getModelWrapper();
     }
 
     @Override

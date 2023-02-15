@@ -144,8 +144,9 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         return playerModel;
     }
 
-    public ModelWrapper<T, M> setModel(ModelKey<?> key) {
-        return setModel(ModelWrapper.of(key));
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public ModelWrapper<T, M> setModel(ModelKey<? super M> key) {
+        return setModel(new ModelWrapper(key));
     }
 
     public ModelWrapper<T, M> setModel(ModelWrapper<T, M> wrapper) {

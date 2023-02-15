@@ -8,23 +8,28 @@ import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 
+import org.jetbrains.annotations.Nullable;
+
+import com.minelittlepony.api.model.IModel;
+import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.mson.api.Mson;
 import com.minelittlepony.mson.api.MsonModel;
 
-import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.function.*;
 
-public record PlayerModelKey<T extends LivingEntity, M extends Model & MsonModel> (
+public record PlayerModelKey<T extends LivingEntity, M extends Model & MsonModel & IModel> (
         ModelKey<M> steveKey,
         ModelKey<M> alexKey,
-        RendererFactory factory
+        RendererFactory factory,
+        MsonModel.Factory<PonyArmourModel<T>> armorFactory
 ) {
-    PlayerModelKey(String name, BiFunction<ModelPart, Boolean, M> modelFactory, RendererFactory rendererFactory) {
+    PlayerModelKey(String name, BiFunction<ModelPart, Boolean, M> modelFactory, RendererFactory rendererFactory, MsonModel.Factory<PonyArmourModel<T>> armorFactory) {
         this(
             Mson.getInstance().registerModel(new Identifier("minelittlepony", "races/steve/" + name), tree -> modelFactory.apply(tree, false)),
             Mson.getInstance().registerModel(new Identifier("minelittlepony", "races/alex/" + name), tree -> modelFactory.apply(tree, true)),
-            rendererFactory
+            rendererFactory,
+            armorFactory
         );
     }
 
@@ -32,16 +37,25 @@ public record PlayerModelKey<T extends LivingEntity, M extends Model & MsonModel
         return slimArms ? alexKey : steveKey;
     }
 
+    public <K extends T, N extends M> ModelWrapper<K, N> create(boolean slimArms) {
+        return create(slimArms, null);
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public <K extends T, N extends M> ModelWrapper<K, N> create(boolean slimArms, @Nullable Consumer<N> initializer) {
+        return new ModelWrapper(this, slimArms, initializer);
+    }
+
     @SuppressWarnings("unchecked")
     public Function<EntityRendererFactory.Context, PlayerEntityRenderer> getFactory(boolean slimArms) {
-        return d -> factory.create(d, slimArms, (ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>>)getKey(slimArms));
+        return d -> factory.create(d, slimArms, (PlayerModelKey<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>>)this);
     }
 
     public interface RendererFactory {
         PlayerEntityRenderer create(
                 EntityRendererFactory.Context context,
                 boolean slim,
-                ModelKey<? extends ClientPonyModel<AbstractClientPlayerEntity>> key
+                PlayerModelKey<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> key
         );
     }
 }

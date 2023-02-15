@@ -4,7 +4,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.config.PonyConfig;
-import com.minelittlepony.api.model.armour.IArmour;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.meta.*;
 
@@ -18,11 +17,6 @@ public interface IModel {
      * Gets the active scaling profile used to lay out this model's parts.
      */
     Size getSize();
-
-    /**
-     * Returns a new pony armour to go with this model. Called on startup by a model wrapper.
-     */
-    IArmour<?> createArmour();
 
     /**
      * Gets the transitive properties of this model.
