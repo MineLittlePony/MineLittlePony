@@ -51,8 +51,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             .add(withStage(BodyPart.BODY, bodyRenderList = RenderList.of(body, upperTorso).add(body::rotate)))
             .add(withStage(BodyPart.NECK, neckRenderList = RenderList.of(neck)))
             .add(withStage(BodyPart.HEAD, headRenderList = RenderList.of(head)))
-            .add(withStage(BodyPart.LEGS, legsRenderList = RenderList.of().add(this::rotateForBody).add(leftArm, rightArm, leftLeg, rightLeg)))
-            .add(withStage(BodyPart.LEGS, sleevesRenderList = RenderList.of().add(this::rotateForBody).add(leftSleeve, rightSleeve, leftPants, rightPants)))
+            .add(withStage(BodyPart.LEGS, legsRenderList = RenderList.of().add(leftArm, rightArm, leftLeg, rightLeg)))
+            .add(withStage(BodyPart.LEGS, sleevesRenderList = RenderList.of().add(leftSleeve, rightSleeve, leftPants, rightPants)))
             .add(withStage(BodyPart.BODY, vestRenderList = RenderList.of(jacket, upperTorsoOverlay)))
             .add(withStage(BodyPart.HEAD, helmetRenderList = RenderList.of(hat)));
     }
@@ -587,12 +587,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             case TALL:
             case BULKY:
             default: return 0.25F;
-        }
-    }
-
-    protected void rotateForBody(MatrixStack stack) {
-        if (!sneaking) {
-            body.rotate(stack);
         }
     }
 
