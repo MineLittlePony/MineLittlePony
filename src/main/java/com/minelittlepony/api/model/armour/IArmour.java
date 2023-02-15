@@ -14,6 +14,7 @@ import com.minelittlepony.api.pony.IPonyData;
  *
  * @param <V> The type of the contained armour model.
  */
+@Deprecated
 public interface IArmour<V extends IArmourModel> extends IModelWrapper {
     /**
      * Registers a custom armour for the supplied item.

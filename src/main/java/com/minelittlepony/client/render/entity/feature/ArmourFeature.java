@@ -7,7 +7,6 @@ import com.minelittlepony.api.model.armour.IArmourModel;
 import com.minelittlepony.api.model.armour.IArmourTextureResolver;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
-import com.minelittlepony.client.model.armour.DefaultArmourTextureResolver;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.common.util.Color;
 
@@ -27,8 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyFeature<T, M> {
-
-    private static final IArmourTextureResolver DEFAULT = new DefaultArmourTextureResolver();
 
     public ArmourFeature(IPonyRenderContext<T, M> renderer) {
         super(renderer);
@@ -84,7 +81,7 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
                     blue = Color.b(color);
                 }
 
-                IArmourTextureResolver resolver = armour.getTextureResolver(DEFAULT);
+                IArmourTextureResolver resolver = armour.getTextureResolver(IArmourTextureResolver.DEFAULT);
 
                 boolean glint = itemstack.hasGlint();
 

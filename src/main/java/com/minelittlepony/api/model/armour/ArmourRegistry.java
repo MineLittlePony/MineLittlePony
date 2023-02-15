@@ -6,6 +6,7 @@ import net.minecraft.util.Identifier;
 
 import com.mojang.serialization.Lifecycle;
 
+@Deprecated
 public final class ArmourRegistry {
     private ArmourRegistry() {}
     static final Registry<IArmour<?>> REGISTRY = new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("minelittlepony", "armour")), Lifecycle.stable());

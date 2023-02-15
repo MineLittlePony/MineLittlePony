@@ -90,8 +90,6 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
 
     @Override
     public void showChestplate() {
-        chestPiece.visible = true;
-        neck.visible = true;
         body.visible = variant == ArmourVariant.LEGACY;
         upperTorso.visible = variant == ArmourVariant.LEGACY;
         chestPiece.visible = variant == ArmourVariant.NORMAL;
@@ -99,12 +97,9 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
 
     @Override
     public void showSaddle() {
-        chestPiece.visible = true;
-        neck.visible = true;
-
-        if (variant == ArmourVariant.LEGACY) {
-            upperTorso.visible = true;
-        }
+        body.visible = variant == ArmourVariant.LEGACY;
+        upperTorso.visible = variant == ArmourVariant.LEGACY;
+        chestPiece.visible = variant == ArmourVariant.NORMAL;
     }
 
     @Override
