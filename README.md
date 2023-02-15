@@ -1,5 +1,6 @@
 # Mine Little Pony
 
+[![Current Version](https://img.shields.io/github/v/tag/MineLittlePony/MineLittlePony)](https://img.shields.io/github/v/tag/MineLittlePony/MineLittlePony)
 [![Build Status](https://github.com/MineLittlePony/MineLittlePony/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/MineLittlePony/MineLittlePony/actions/workflows/gradle-build.yml)
 ![Downloads](https://img.shields.io/github/downloads/MineLittlePony/MineLittlePony/total.svg?color=yellowgreen)
 [![Discord Server](https://img.shields.io/discord/182490536119107584.svg?color=blueviolet)](https://discord.gg/HbJSFyu)
@@ -37,5 +38,3 @@ Stable Releases Channel: `https://repo.minelittlepony-mod.com/maven/release`
 Unstable Snapshot Channel: `https://repo.minelittlepony-mod.com/maven/snapshot`
 
 Dependency: `com.minelittlepony:minelittlepony:<version>`
-
-Check [releases](https://github.com/MineLittlePony/MineLittlePony/releases) for the most recent release version or the `gradle.properties` for most recent snapshot version.
