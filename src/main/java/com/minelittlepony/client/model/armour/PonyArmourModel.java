@@ -65,7 +65,6 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
     @Override
     public void setInVisible() {
         setVisible(false);
-        body.visible = true;
         chestPiece.visible = false;
         head.visible = false;
         neck.visible = false;
