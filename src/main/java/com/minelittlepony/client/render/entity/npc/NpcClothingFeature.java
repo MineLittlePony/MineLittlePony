@@ -2,7 +2,6 @@ package com.minelittlepony.client.render.entity.npc;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.EntityModel;
@@ -22,6 +21,7 @@ import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.client.render.entity.feature.AbstractPonyFeature;
 import com.minelittlepony.client.util.render.TextureFlattener;
+import com.minelittlepony.util.ResourceUtil;
 
 import java.util.*;
 
@@ -57,7 +57,9 @@ class NpcClothingFeature<
 
         if (entity.isBaby() || data.getProfession() == VillagerProfession.NONE) {
             Identifier typeSkin = createTexture("type", Registries.VILLAGER_TYPE.getId(data.getType()));
-
+            if (!ResourceUtil.textureExists(typeSkin)) {
+                typeSkin = createTexture("type", Registries.VILLAGER_TYPE.getId(VillagerType.PLAINS));
+            }
             renderModel(entityModel, typeSkin, matrixStack, provider, i, entity, 1, 1, 1);
         } else {
             renderModel(entityModel, getMergedTexture(data), matrixStack, provider, i, entity, 1, 1, 1);
@@ -74,7 +76,7 @@ class NpcClothingFeature<
 
         Identifier key = new Identifier("minelittlepony", (typeId + "/" + profId + "/" + level).replace(':', '_'));
 
-        if (loadedTextures.add(key) && MinecraftClient.getInstance().getTextureManager().getOrDefault(key, null) == null) {
+        if (loadedTextures.add(key) && !ResourceUtil.textureExists(key)) {
             TextureFlattener.flatten(computeTextures(typeId, profId, profession == VillagerProfession.NITWIT ? -1 : level), key);
         }
 
@@ -84,8 +86,14 @@ class NpcClothingFeature<
     private List<Identifier> computeTextures(Identifier typeId, Identifier profId, int level) {
         List<Identifier> skins = new ArrayList<>();
 
-        skins.add(createTexture("type", typeId));
-        skins.add(createTexture("profession", profId));
+        Identifier typeTexture = createTexture("type", typeId);
+        if (ResourceUtil.textureExists(typeTexture)) {
+            skins.add(typeTexture);
+        }
+
+        Identifier profTexture = createTexture("profession", profId);
+        skins.add(ResourceUtil.textureExists(profTexture) ? profTexture : createTexture("profession", new Identifier(VillagerProfession.NITWIT.id())));
+
         if (level != -1) {
             skins.add(createTexture("profession_level", LEVEL_TO_ID.get(level)));
         }
