@@ -13,6 +13,7 @@ import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.util.math.Vec3d;
 
 import com.minelittlepony.api.model.armour.ArmourLayer;
 import com.minelittlepony.api.pony.meta.Race;
@@ -39,10 +40,14 @@ public class PonyStandRenderer extends ArmorStandEntityRenderer {
         addFeature(new HeadFeatureRenderer<>(this, context.getModelLoader(), context.getHeldItemRenderer()));
     }
 
-    @Override
-    public void render(ArmorStandEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
+    public Vec3d getPositionOffset(ArmorStandEntity entity, float tickDelta) {
         this.model = isPonita(entity) ? pony : human;
-        super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
+        try {
+            return super.getPositionOffset(entity, tickDelta);
+        } catch (Throwable t) {
+            // We need to avoid overriding render() because other mods keep overriding it via mixins which breaks the class heirarchy.
+            return Vec3d.ZERO;
+        }
     }
 
     @Override
