@@ -63,6 +63,7 @@ public class SaddleBags extends AbstractWearableGear implements PonyModelConstan
 
         leftBag.visible = wearable == Wearable.SADDLE_BAGS_BOTH || wearable == Wearable.SADDLE_BAGS_LEFT;
         rightBag.visible = wearable == Wearable.SADDLE_BAGS_BOTH || wearable == Wearable.SADDLE_BAGS_RIGHT;
+        strap.visible = wearable == Wearable.SADDLE_BAGS_BOTH;
 
         dropAmount = hangLow ? 0.15F : 0;
         dropAmount = model.getMetadata().getInterpolator(interpolatorId).interpolate("dropAmount", dropAmount, 3);
@@ -70,10 +71,16 @@ public class SaddleBags extends AbstractWearableGear implements PonyModelConstan
 
     @Override
     public void render(MatrixStack stack, VertexConsumer renderContext, int overlayUv, int lightUv, float red, float green, float blue, float alpha, UUID interpolatorId) {
+
+        stack.push();
+        if (wearable == Wearable.SADDLE_BAGS_BOTH) {
+            stack.translate(0, 0, -0.2F);
+        }
+
         stack.push();
         stack.translate(0, dropAmount, 0);
 
-        if (!rightBag.visible || !leftBag.visible) {
+        if (wearable != Wearable.SADDLE_BAGS_BOTH) {
             stack.translate(0, 0.3F, -0.3F);
         }
 
@@ -81,8 +88,8 @@ public class SaddleBags extends AbstractWearableGear implements PonyModelConstan
         rightBag.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
 
         stack.pop();
-        if (leftBag.visible && rightBag.visible) {
-            strap.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
-        }
+        strap.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
+
+        stack.pop();
     }
 }
