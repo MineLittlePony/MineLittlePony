@@ -3,7 +3,7 @@
 	"data": {
 		"crown": {
 			"cubes": [
-				{ "from": [-4, -6, -6], "size": [ 8,  8,  8], "dilate": 0.5 }
+				{ "from": [-4, -8, -6], "size": [ 8,  3,  8], "dilate": 1 }
 			]
 		}
 	}
