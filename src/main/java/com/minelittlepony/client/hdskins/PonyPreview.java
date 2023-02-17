@@ -1,5 +1,6 @@
 package com.minelittlepony.client.hdskins;
 
+import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.Text;
@@ -40,7 +41,8 @@ class PonyPreview extends PlayerPreview {
             return DefaultSkinGenerator.generateGreyScale(wearable.getDefaultTexture(), wearable.getDefaultTexture(), getExclusion());
         }
 
-        return super.getDefaultSkin(type, slim);
+        Identifier skin = getBlankSkin(type, slim);
+        return DefaultSkinGenerator.generateGreyScale(type == SkinType.SKIN ? DefaultPonySkinHelper.getPonySkin(profile.getId(), slim) : skin, skin, getExclusion());
     }
 
     @Override

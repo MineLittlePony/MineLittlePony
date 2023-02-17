@@ -1,8 +1,8 @@
 package com.minelittlepony.api.model.armour;
 
 import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.armour.PonyArmourModel;
@@ -17,11 +17,11 @@ public interface ArmorModelRegistry {
     static final Map<Identifier, Optional<ModelKey<PonyArmourModel<?>>>> REGISTRY = new HashMap<>();
 
     public static Optional<ModelKey<PonyArmourModel<?>>> getModelKey(Item item, ArmourLayer layer) {
-        Identifier id = Registries.ITEM.getId(item);
+        Identifier id = Registry.ITEM.getId(item);
         if (id.getNamespace().equals("minecraft")) {
             return Optional.empty();
         }
-        return REGISTRY.computeIfAbsent(id.withPath(p -> "models/armor/" + layer.name().toLowerCase() + "_" + p + ".json"), i -> {
+        return REGISTRY.computeIfAbsent(new Identifier(id.getNamespace(), "models/armor/" + layer.name().toLowerCase() + "_" + id.getPath() + ".json"), i -> {
             return Optional.of(Mson.getInstance().registerModel(i, PonyArmourModel::new));
         }).filter(key -> key.getModelData().isPresent());
     }

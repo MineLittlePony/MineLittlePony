@@ -18,7 +18,7 @@ public abstract class MagicGlow extends RenderPhase {
     }
 
     private static final RenderLayer MAGIC = RenderLayer.of("mlp_magic_glow", VertexFormats.POSITION_COLOR_LIGHT, VertexFormat.DrawMode.QUADS, 256, RenderLayer.MultiPhaseParameters.builder()
-            .program(EYES_PROGRAM)
+            .shader(EYES_SHADER)
             .writeMaskState(COLOR_MASK)
             .depthTest(LEQUAL_DEPTH_TEST)
             .transparency(LIGHTNING_TRANSPARENCY)
@@ -29,7 +29,7 @@ public abstract class MagicGlow extends RenderPhase {
     private static final BiFunction<Identifier, Integer, RenderLayer> TINTED_LAYER = Util.memoize((texture, color) -> {
         return RenderLayer.of("mlp_tint_layer", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS, 256, true, true, RenderLayer.MultiPhaseParameters.builder()
                 .texture(new Colored(texture, color))
-                .program(EYES_PROGRAM)
+                .shader(EYES_SHADER)
                 .writeMaskState(COLOR_MASK)
                 .depthTest(LEQUAL_DEPTH_TEST)
                 .transparency(LIGHTNING_TRANSPARENCY)

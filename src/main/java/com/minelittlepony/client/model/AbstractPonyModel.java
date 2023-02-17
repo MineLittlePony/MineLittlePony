@@ -595,12 +595,12 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     @Override
     public void transform(BodyPart part, MatrixStack stack) {
         if (attributes.isSleeping || attributes.isRiptide) {
-            stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
-            stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
+            stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
+            stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
         }
 
         if (part == BodyPart.HEAD) {
-           stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(attributes.motionPitch));
+           stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(attributes.motionPitch));
         }
 
         PonyTransformation.forSize(getSize()).transform(this, part, stack);

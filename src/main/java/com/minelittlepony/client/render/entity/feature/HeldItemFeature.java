@@ -16,7 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
 import net.minecraft.util.UseAction;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Vec3f;
 
 public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyFeature<T, M> {
 
@@ -85,9 +85,9 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
             }
             if (main == arm) {
                 stack.translate(left * -0.05F, 0.5F, 0.7F);
-                stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-60));
-                stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90));
-                stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(left * 180));
+                stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-60));
+                stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
+                stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(left * 180));
                 stack.translate(left * -0.2F, 0.125F, -1);
 
                 return;
@@ -98,8 +98,8 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
             stack.translate(left / 10, -0.2F, -0.5F);
         }
 
-        stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90));
-        stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(left * 180));
+        stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
+        stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(left * 180));
         stack.translate(left * -0.2F, 0.125F, -1);
     }
 

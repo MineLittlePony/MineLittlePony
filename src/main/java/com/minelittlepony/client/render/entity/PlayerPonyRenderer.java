@@ -99,9 +99,9 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
             float yaw = MathHelper.lerpAngleDegrees(tickDelta, entity.prevBodyYaw, entity.bodyYaw);
             float l = entity.getWidth() / 2 * manager.getPony(entity).metadata().getSize().getScaleFactor();
 
-            stack.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(yaw));
+            stack.multiply(Vec3f.NEGATIVE_Y.getDegreesQuaternion(yaw));
             stack.translate(0, 0, -l);
-            stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(yaw));
+            stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(yaw));
         }
     }
 
