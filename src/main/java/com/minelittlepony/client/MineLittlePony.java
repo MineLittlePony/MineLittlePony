@@ -1,6 +1,7 @@
 package com.minelittlepony.client;
 
 import com.minelittlepony.api.config.PonyConfig;
+import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.api.pony.network.fabric.Channel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.pony.PonyManager;
@@ -141,7 +142,7 @@ public class MineLittlePony implements ClientModInitializer {
         return config;
     }
 
-    public PonyManager getManager() {
+    public IPonyManager getManager() {
         return ponyManager;
     }
 
