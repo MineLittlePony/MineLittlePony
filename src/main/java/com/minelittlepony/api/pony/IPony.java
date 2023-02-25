@@ -7,9 +7,9 @@ import org.jetbrains.annotations.Nullable;
 import com.google.common.collect.ComparisonChain;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.api.pony.meta.Size;
 
 public interface IPony extends Comparable<IPony> {
-
     /**
      * Gets the global pony manager instance.
      */
@@ -46,10 +46,29 @@ public interface IPony extends Comparable<IPony> {
     }
 
     /**
-     * Returns true if and only if this metadata represents a pony that can cast magic.
+     * @deprecated Replace with pony.race() when updating to 1.19.3 (minelp >=4.7.4)
      */
+    @Deprecated
+    default Race getRace(boolean ignoreLevel) {
+        return ignoreLevel ? metadata().getRace() : race();
+    }
+
+    /**
+     * Returns true if and only if this metadata represents a pony that can cast magic.
+     *
+     * @deprecated Replace with pony.metadata().hasMagic() when updating to 1.19.4 (minelp >=4.8.0)
+     */
+    @Deprecated
     default boolean hasMagic() {
         return race().hasHorn() && metadata().getGlowColor() != 0;
+    }
+
+    /**
+     * @deprecated Replace with pony.race().hasWings() when updating to 1.19.3 (minelp >=4.7.4)
+     */
+    @Deprecated
+    default boolean canFly() {
+        return race().hasWings();
     }
 
     /**
@@ -62,6 +81,21 @@ public interface IPony extends Comparable<IPony> {
      */
     IPonyData metadata();
 
+    /**
+     * @deprecated Replace with pony.metadata() when updating to 1.19.3 (minelp >=4.7.4)
+     */
+    @Deprecated
+    default IPonyData getMetadata() {
+        return metadata();
+    }
+
+    /**
+     * @deprecated Replace with pony.metadata().getSize() when updating to 1.19.3 (minelp >=4.7.4)
+     */
+    @Deprecated
+    default Size getSize() {
+        return metadata().getSize();
+    }
 
     @Override
     default int compareTo(@Nullable IPony o) {
