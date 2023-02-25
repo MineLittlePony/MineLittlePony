@@ -5,14 +5,11 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-import com.minelittlepony.api.config.PonyConfig;
-import com.minelittlepony.api.config.PonyLevel;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.util.FunctionUtil;
 import com.mojang.authlib.GameProfile;
 
-import java.util.*;
 import java.util.function.Function;
 
 public class PlayerTextureSupplier {
@@ -28,13 +25,10 @@ public class PlayerTextureSupplier {
     }
 
     static final class Entry {
-        private final UUID uuid;
-
         @Nullable
         private GameProfile profile;
 
         Entry(LivingEntity entity) {
-            uuid = entity.getUuid();
             SkullBlockEntity.loadProperties(new GameProfile(null, entity.getCustomName().getString()), resolved -> {
                 profile = resolved;
             });
@@ -44,12 +38,7 @@ public class PlayerTextureSupplier {
         public Identifier getTexture() {
             if (profile != null) {
                 Identifier skin = SkinsProxy.instance.getSkinTexture(profile);
-                if (skin != null) {
-                    if (IPony.getManager().getPony(skin).race().isHuman()) {
-                        if (PonyConfig.getInstance().ponyLevel.get() == PonyLevel.PONIES) {
-                            return IPony.getManager().getBackgroundPony(uuid).texture();
-                        }
-                    }
+                if (skin != null && !IPony.getManager().getPony(skin).race().isHuman()) {
                     return skin;
                 }
             }
