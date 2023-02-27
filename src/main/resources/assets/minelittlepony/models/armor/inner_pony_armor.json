@@ -1,7 +1,7 @@
 {
 	"parent": "minelittlepony:steve_pony",
 	"texture": {"w": 64, "h": 32},
-	"dilate": 0.27,
+	"dilate": 0.2,
 	"data": {
 		"body": {
 			"texture": { "u": 16, "v": 18 },

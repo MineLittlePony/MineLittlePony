@@ -101,6 +101,9 @@ public class GuiPonySettings extends GameGui {
             content.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.race");
             content.addButton(new EnumSlider<>(LEFT, row += 15, config.raceOverride.get())
                     .onChange(config.raceOverride::set));
+            content.addButton(new Label(LEFT, row += 30)).getStyle().setText("minelp.debug.armour");
+            content.addButton(new Toggle(LEFT, row += 15, config.disablePonifiedArmour.get())
+                    .onChange(config.disablePonifiedArmour::set));
         }
 
         row += 20;

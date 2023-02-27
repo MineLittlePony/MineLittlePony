@@ -61,6 +61,10 @@ public class PonyConfig extends Config {
                 .addComment("Overrides pony races")
                 .addComment("Possible values: HUMAN (default), EARTH, PEGASUS, UNICORN, ALICORN, CHANGELING, ZEBRA, CHANGEDLING, GRYPHON, HIPPOGRIFF, KIRIN, BAYPONT, SEAPONY");
 
+    public final Setting<Boolean> disablePonifiedArmour = value("debug", "usePonifiedArmour", false)
+                .addComment("Disables pony armour textures.")
+                .addComment("If enabled, only the vanilla textures will be considered");
+
     public final Setting<Boolean> flappyElytras = value("customisation", "flappyElytras", false)
                 .addComment("Pegasi will use their wings to fly even when they're wearing an elytra");
     public final Setting<Boolean> noFun = value("customisation", "noFun", false)

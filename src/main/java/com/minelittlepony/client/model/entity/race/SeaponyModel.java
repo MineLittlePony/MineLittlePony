@@ -4,6 +4,8 @@ import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.mson.api.ModelContext;
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.api.model.armour.ArmourLayer;
+import com.minelittlepony.api.model.armour.ArmourVariant;
 import com.minelittlepony.api.pony.IPony;
 
 import net.minecraft.client.model.ModelPart;
@@ -138,7 +140,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
         }
 
         @Override
-        public void showBoots() {
+        public void showLeggings(ArmourLayer layer, ArmourVariant variant) {
             rightArm.visible = true;
             leftArm.visible = true;
         }

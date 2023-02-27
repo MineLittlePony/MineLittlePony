@@ -47,7 +47,6 @@ public class ParaspriteModel<T extends LivingEntity> extends EntityModel<T> {
 
         root.pitch = MathHelper.clamp((float)entity.getVelocity().horizontalLength() / 10F, 0, 0.1F);
         body.pitch = 0;
-        lips.visible = false;
 
         if (entity.hasPassengers()) {
             root.yaw = 0;
@@ -72,12 +71,10 @@ public class ParaspriteModel<T extends LivingEntity> extends EntityModel<T> {
         float basWingExpand = 1;
         float innerWingExpand = basWingExpand / 2F;
 
-        leftWing.visible = true;
         leftWing.pitch = 0;
         leftWing.roll = basWingExpand + cos + 0.3F;
         leftWing.yaw = basWingExpand - sin;
 
-        rightWing.visible = true;
         rightWing.pitch = 0;
         rightWing.roll = -basWingExpand - cos - 0.3F;
         rightWing.yaw = -basWingExpand + sin;
@@ -85,12 +82,10 @@ public class ParaspriteModel<T extends LivingEntity> extends EntityModel<T> {
         sin = -(float)Math.sin(ticks + Math.PI / 4F) / 2F;
         cos = (float)Math.cos(ticks + Math.PI / 4F) / 3F;
 
-        leftWing2.visible = true;
         leftWing2.pitch = 0;
         leftWing2.roll = innerWingExpand + sin - 0.3F;
         leftWing2.yaw = innerWingExpand - cos + 0.3F;
 
-        rightWing2.visible = true;
         rightWing2.pitch = 0;
         rightWing2.roll = -innerWingExpand - sin + 0.3F;
         rightWing2.yaw = -innerWingExpand + cos - 0.3F;

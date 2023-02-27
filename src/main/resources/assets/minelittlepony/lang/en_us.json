@@ -50,6 +50,7 @@
   "minelp.debug.scale.min": "Miniscule",
   "minelp.debug.size": "Size Override",
   "minelp.debug.race": "Race Override",
+  "minelp.debug.armour": "Disable ponified armour textures",
 
   "hdskins.mode.minelp_seapony": "Seapony",
   "hdskins.mode.minelittlepony_crown": "Crown",

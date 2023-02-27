@@ -4,6 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 
 import com.minelittlepony.api.config.PonyConfig;
+import com.minelittlepony.client.model.armour.DefaultArmourTextureResolver;
 import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.common.client.gui.VisibilityMode;
 import com.minelittlepony.common.util.settings.Setting;
@@ -24,6 +25,7 @@ public class ClientPonyConfig extends PonyConfig {
     public ClientPonyConfig(Path path) {
         super(path);
         MobRenderers.REGISTRY.values().forEach(r -> value("entities", r.name, true));
+        disablePonifiedArmour.onChanged(t -> DefaultArmourTextureResolver.INSTANCE.invalidate());
     }
 
     @Override

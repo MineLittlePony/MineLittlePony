@@ -11,6 +11,7 @@ import net.minecraft.util.Identifier;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.model.armour.ArmourLayer;
 import com.minelittlepony.api.model.armour.ArmourVariant;
 import com.minelittlepony.api.model.armour.IArmourTextureResolver;
@@ -43,10 +44,15 @@ import java.util.concurrent.TimeUnit;
  * @see IArmourTextureResolver
  */
 public class DefaultArmourTextureResolver implements IArmourTextureResolver {
+    public static final DefaultArmourTextureResolver INSTANCE = new DefaultArmourTextureResolver();
 
     private final Cache<String, Identifier> cache = CacheBuilder.newBuilder()
             .expireAfterAccess(30, TimeUnit.SECONDS)
             .<String, Identifier>build();
+
+    public void invalidate() {
+        cache.invalidateAll();
+    }
 
     @Override
     public Identifier getTexture(LivingEntity entity, ItemStack stack, EquipmentSlot slot, ArmourLayer layer,  @Nullable String type) {
@@ -54,6 +60,7 @@ public class DefaultArmourTextureResolver implements IArmourTextureResolver {
         String custom = getCustom(stack);
 
         try {
+            cache.invalidateAll();
             return cache.get(String.format("%s#%s#%s#%s", material, layer, type, custom), () -> {
                 String typed = Strings.nullToEmpty(type);
                 String extra = typed.isEmpty() ? "" : "_" + typed;
@@ -106,10 +113,13 @@ public class DefaultArmourTextureResolver implements IArmourTextureResolver {
             domain = "minelittlepony"; // it's a vanilla armor. I provide these.
         }
 
-        Identifier pony = new Identifier(domain, human.getPath().replace(".png", "_pony.png"));
+        if (!PonyConfig.getInstance().disablePonifiedArmour.get()) {
 
-        if (isValid(pony)) {
-            return pony;
+            Identifier pony = new Identifier(domain, human.getPath().replace(".png", "_pony.png"));
+
+            if (isValid(pony)) {
+                return pony;
+            }
         }
 
         if (isValid(human)) {

@@ -15,7 +15,7 @@ import com.minelittlepony.client.model.armour.DefaultArmourTextureResolver;
  * This is for modders who want to override the default implementation found in {@link DefaultArmourTextureResolver}.
  */
 public interface IArmourTextureResolver {
-    IArmourTextureResolver DEFAULT = new DefaultArmourTextureResolver();
+    IArmourTextureResolver DEFAULT = DefaultArmourTextureResolver.INSTANCE;
 
     /**
      * Gets the armour texture to be used for the given entity, armour piece, slot, and render layer.

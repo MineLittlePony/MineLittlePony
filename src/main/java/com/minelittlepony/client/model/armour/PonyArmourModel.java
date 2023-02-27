@@ -2,6 +2,7 @@ package com.minelittlepony.client.model.armour;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 
 import com.minelittlepony.api.model.IModel;
@@ -14,8 +15,6 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
 
     private ModelPart steveRightLeg;
     private ModelPart steveLeftLeg;
-
-    private ArmourVariant variant = ArmourVariant.NORMAL;
 
     public PonyArmourModel(ModelPart tree) {
         super(tree);
@@ -42,11 +41,6 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
     }
 
     @Override
-    public void setVariant(ArmourVariant variant) {
-        this.variant = variant;
-    }
-
-    @Override
     public void synchroniseAngles(IModel model) {
         if (model instanceof BipedEntityModel) {
             @SuppressWarnings("unchecked")
@@ -66,7 +60,7 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
     }
 
     @Override
-    public void setInVisible() {
+    public boolean setVisibilities(EquipmentSlot slot, ArmourLayer layer, ArmourVariant variant) {
         setVisible(false);
         chestPiece.visible = false;
         head.visible = false;
@@ -74,39 +68,48 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
         upperTorso.visible = false;
         steveLeftLeg.visible = false;
         steveRightLeg.visible = false;
+
+        switch (layer) {
+            case OUTER:
+                switch (slot) {
+                    case HEAD:
+                        head.visible = true;
+                        return true;
+                    case FEET:
+                        showLeggings(layer, variant);
+                        return true;
+                    case CHEST:
+                        body.visible = variant == ArmourVariant.LEGACY;
+                        upperTorso.visible = variant == ArmourVariant.LEGACY;
+                        chestPiece.visible = variant == ArmourVariant.NORMAL;
+                        return true;
+                    default:
+                        return false;
+                }
+            case INNER:
+                switch (slot) {
+                    case LEGS:
+                        showLeggings(layer, variant);
+                        return true;
+                    case CHEST:
+                        body.visible = variant == ArmourVariant.LEGACY;
+                        upperTorso.visible = variant == ArmourVariant.LEGACY;
+                        chestPiece.visible = variant == ArmourVariant.NORMAL;
+                        return true;
+                    default:
+                        return false;
+                }
+            default:
+                return false;
+        }
     }
 
-    @Override
-    public void showBoots() {
+    protected void showLeggings(ArmourLayer layer, ArmourVariant variant) {
         rightArm.visible = true;
         leftArm.visible = true;
         rightLeg.visible = variant == ArmourVariant.NORMAL;
         leftLeg.visible = variant == ArmourVariant.NORMAL;
         steveLeftLeg.visible = variant == ArmourVariant.LEGACY;
         steveRightLeg.visible = variant == ArmourVariant.LEGACY;
-    }
-
-    @Override
-    public void showLeggings() {
-        showBoots();
-    }
-
-    @Override
-    public void showChestplate() {
-        body.visible = variant == ArmourVariant.LEGACY;
-        upperTorso.visible = variant == ArmourVariant.LEGACY;
-        chestPiece.visible = variant == ArmourVariant.NORMAL;
-    }
-
-    @Override
-    public void showSaddle() {
-        body.visible = variant == ArmourVariant.LEGACY;
-        upperTorso.visible = variant == ArmourVariant.LEGACY;
-        chestPiece.visible = variant == ArmourVariant.NORMAL;
-    }
-
-    @Override
-    public void showHelmet() {
-        head.visible = true;
     }
 }
