@@ -28,7 +28,7 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
     }
 
     public IArmourTextureResolver getArmourTextureResolver() {
-        return IArmourTextureResolver.DEFAULT;
+        return DefaultArmourTextureResolver.INSTANCE;
     }
 
     @Override
