@@ -60,7 +60,6 @@ public class DefaultArmourTextureResolver implements IArmourTextureResolver {
         String custom = getCustom(stack);
 
         try {
-            cache.invalidateAll();
             return cache.get(String.format("%s#%s#%s#%s", material, layer, type, custom), () -> {
                 String typed = Strings.nullToEmpty(type);
                 String extra = typed.isEmpty() ? "" : "_" + typed;
