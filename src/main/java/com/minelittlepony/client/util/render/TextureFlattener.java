@@ -4,6 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.*;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
 
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.platform.TextureUtil;
@@ -60,7 +61,7 @@ public class TextureFlattener {
 
     public static void copy(NativeImage from, NativeImage to, int x, int y) {
         int color = from.getColor(x, y);
-        if (NativeImage.getAlpha(color) > 0) {
+        if (ColorHelper.Argb.getAlpha(color) > 0) {
             to.setColor(x, y, color);
         }
     }

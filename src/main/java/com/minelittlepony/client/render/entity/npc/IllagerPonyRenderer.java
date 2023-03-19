@@ -77,7 +77,7 @@ public abstract class IllagerPonyRenderer<T extends IllagerEntity> extends PonyR
         @Override
         public void render(IllusionerEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
             if (entity.isInvisible()) {
-                Vec3d[] clones = entity.method_7065(tickDelta);
+                Vec3d[] clones = entity.getMirrorCopyOffsets(tickDelta);
                 float rotation = getAnimationProgress(entity, tickDelta);
 
                 for (int i = 0; i < clones.length; ++i) {

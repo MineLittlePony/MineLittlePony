@@ -9,7 +9,7 @@ import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.ModelWithArms;
-import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -49,14 +49,14 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
 
             model.transform(BodyPart.LEGS, stack);
 
-            renderHeldItem(entity, right, ModelTransformation.Mode.THIRD_PERSON_RIGHT_HAND, Arm.RIGHT, stack, renderContext, lightUv);
-            renderHeldItem(entity, left, ModelTransformation.Mode.THIRD_PERSON_LEFT_HAND, Arm.LEFT, stack, renderContext, lightUv);
+            renderHeldItem(entity, right, ModelTransformationMode.THIRD_PERSON_RIGHT_HAND, Arm.RIGHT, stack, renderContext, lightUv);
+            renderHeldItem(entity, left, ModelTransformationMode.THIRD_PERSON_LEFT_HAND, Arm.LEFT, stack, renderContext, lightUv);
 
             stack.pop();
         }
     }
 
-    private void renderHeldItem(T entity, ItemStack drop, ModelTransformation.Mode transform, Arm arm, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
+    private void renderHeldItem(T entity, ItemStack drop, ModelTransformationMode transform, Arm arm, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
         if (!drop.isEmpty()) {
             stack.push();
             renderArm(arm, stack);
@@ -73,7 +73,7 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
         }
     }
 
-    protected void preItemRender(T entity, ItemStack drop, ModelTransformation.Mode transform, Arm arm, MatrixStack stack) {
+    protected void preItemRender(T entity, ItemStack drop, ModelTransformationMode transform, Arm arm, MatrixStack stack) {
         float left = arm == Arm.LEFT ? 1 : -1;
 
         UseAction action = drop.getUseAction();
@@ -103,7 +103,7 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
         stack.translate(left * -0.2F, 0.125F, -1);
     }
 
-    protected void postItemRender(T entity, ItemStack drop, ModelTransformation.Mode transform, Arm hand, MatrixStack stack, VertexConsumerProvider renderContext) {
+    protected void postItemRender(T entity, ItemStack drop, ModelTransformationMode transform, Arm hand, MatrixStack stack, VertexConsumerProvider renderContext) {
     }
 
     /**

@@ -11,7 +11,7 @@ import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -46,7 +46,7 @@ public class LevitatingItemRenderer {
     /**
      * Renders a magical overlay over an item in third person.
      */
-    public void renderItemGlow(LivingEntity entity, ItemStack drop, ModelTransformation.Mode transform, Arm hand, int glowColor, MatrixStack stack, VertexConsumerProvider renderContext) {
+    public void renderItemGlow(LivingEntity entity, ItemStack drop, ModelTransformationMode transform, Arm hand, int glowColor, MatrixStack stack, VertexConsumerProvider renderContext) {
         setColor(glowColor);
         stack.push();
 
@@ -76,9 +76,9 @@ public class LevitatingItemRenderer {
     /**
      * Renders an item in first person optionally with a magical overlay.
      */
-    public void renderItemInFirstPerson(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformation.Mode mode, boolean left, MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world, int lightUv, int posLong) {
+    public void renderItemInFirstPerson(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformationMode mode, boolean left, MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world, int lightUv, int posLong) {
 
-        if (entity instanceof PlayerEntity && (mode.isFirstPerson() || mode == ModelTransformation.Mode.THIRD_PERSON_LEFT_HAND || mode == ModelTransformation.Mode.THIRD_PERSON_RIGHT_HAND)) {
+        if (entity instanceof PlayerEntity && (mode.isFirstPerson() || mode == ModelTransformationMode.THIRD_PERSON_LEFT_HAND || mode == ModelTransformationMode.THIRD_PERSON_RIGHT_HAND)) {
 
             IPony pony = IPony.getManager().getPony((PlayerEntity)entity);
 

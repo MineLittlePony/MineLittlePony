@@ -10,7 +10,7 @@ import com.minelittlepony.client.render.PonyRenderDispatcher;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -31,7 +31,7 @@ public class GlowingItemFeature<T extends LivingEntity, M extends EntityModel<T>
     }
 
     @Override
-    protected void preItemRender(T entity, ItemStack drop, ModelTransformation.Mode transform, Arm arm, MatrixStack stack) {
+    protected void preItemRender(T entity, ItemStack drop, ModelTransformationMode transform, Arm arm, MatrixStack stack) {
         super.preItemRender(entity, drop, transform, arm, stack);
 
         if (!isUnicorn()) {
@@ -71,7 +71,7 @@ public class GlowingItemFeature<T extends LivingEntity, M extends EntityModel<T>
     }
 
     @Override
-    protected void postItemRender(T entity, ItemStack drop, ModelTransformation.Mode transform, Arm hand, MatrixStack stack, VertexConsumerProvider renderContext) {
+    protected void postItemRender(T entity, ItemStack drop, ModelTransformationMode transform, Arm hand, MatrixStack stack, VertexConsumerProvider renderContext) {
         if (isUnicorn()) {
             PonyRenderDispatcher.getInstance().getMagicRenderer().renderItemGlow(entity, drop, transform, hand, ((IUnicorn)getContextModel()).getMagicColor(), stack, renderContext);
         }

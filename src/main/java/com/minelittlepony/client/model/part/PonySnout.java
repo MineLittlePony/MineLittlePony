@@ -16,18 +16,16 @@ public class PonySnout implements IPart, MsonModel {
 
     private boolean visible = false;
 
-    private ModelPart mare;
-    private ModelPart stallion;
+    private final ModelPart mare;
+    private final ModelPart stallion;
 
     public PonySnout(ModelPart tree) {
-
+        mare = tree.getChild("mare");
+        stallion = tree.getChild("stallion");
     }
 
     @Override
     public void init(ModelContext context) {
-        mare = context.findByName("mare");
-        stallion = context.findByName("stallion");
-
         PartBuilder head = context.getContext();
         head.addChild("mare", mare);
         head.addChild("stallion", stallion);

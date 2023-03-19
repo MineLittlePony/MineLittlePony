@@ -58,10 +58,11 @@ public final class PonyPosture {
         double offsetAmount = below.getBlock() instanceof StairsBlock ? 1 : 0.05;
 
         Vec3d pos = entity.getPos();
-        BlockPos blockpos = new BlockPos(
-                Math.floor(pos.x),
-                Math.floor(pos.y - offsetAmount),
-                Math.floor(pos.z));
+        BlockPos blockpos = BlockPos.ofFloored(
+                pos.x,
+                pos.y - offsetAmount,
+                pos.z
+        );
 
         return !entity.getEntityWorld().isAir(blockpos);
     }

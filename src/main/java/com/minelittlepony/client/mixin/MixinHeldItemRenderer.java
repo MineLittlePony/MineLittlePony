@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.model.json.ModelTransformation.Mode;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -22,7 +22,7 @@ abstract class MixinHeldItemRenderer {
     private static final String LivingEntity = "Lnet/minecraft/entity/LivingEntity;";
     private static final String MatrixStack = "Lnet/minecraft/client/util/math/MatrixStack;";
     private static final String ItemStack = "Lnet/minecraft/item/ItemStack;";
-    private static final String Mode = "Lnet/minecraft/client/render/model/json/ModelTransformation$Mode;";
+    private static final String Mode = "Lnet/minecraft/client/render/model/json/ModelTransformationMode;";
     private static final String VertexConsumerProvider = "Lnet/minecraft/client/render/VertexConsumerProvider;";
     private static final String World = "Lnet/minecraft/world/World;";
     private static final String ItemRenderer = "Lnet/minecraft/client/render/item/ItemRenderer;";
@@ -36,7 +36,7 @@ abstract class MixinHeldItemRenderer {
     private void redirectRenderItem(ItemRenderer target,
             @Nullable LivingEntity entity,
             ItemStack item,
-            Mode transform,
+            ModelTransformationMode transform,
             boolean left,
             MatrixStack stack,
             VertexConsumerProvider renderContext,
