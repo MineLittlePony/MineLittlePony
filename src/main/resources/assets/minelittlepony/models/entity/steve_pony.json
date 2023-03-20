@@ -41,14 +41,13 @@
 			]
 		},
 		"body": {
-			"texture": { "u": 16, "v": 16 },
-			"cubes": [
-				{ "from": [-4, 4, -2], "size": [ 8,  8,  4] }
-			]
-		},
-		"upper_torso": {
 			"texture": { "u": 24, "v": 0 },
 			"cubes": [
+			  {
+			    "texture": { "u": 16, "v": 16 },
+			    "from": [-4, 4, -2],
+			    "size": [ 8,  8,  4]
+			  },
 				{
 					"type": "mson:plane", "__comment": "body sides",
 					"texture": { "u": 24, "v": 0 },
@@ -171,13 +170,11 @@
 			"west":  [-2, 1.199998, -2.8, 4, 4]
 		},
 		"jacket": {
-			"cubes": [
-				{ "from": [-4, 4, -2], "size": [ 8, 8, 4 ], "texture": { "u": 16, "v": 32 }, "dilate": 0.25 }
-			]
-		},
-		"saddle": {
 			"texture": { "u": 24, "v": 0 },
-			"dilate": 0.26,
+			"dilate": 0.25,
+			"cubes": [
+        { "from": [-4, 4, -2], "size": [ 8, 8, 4 ], "texture": { "u": 16, "v": 32 }, "dilate": 0.25 }
+      ],
 			"children": {
 				"left_side": {
 					"type": "mson:planar",

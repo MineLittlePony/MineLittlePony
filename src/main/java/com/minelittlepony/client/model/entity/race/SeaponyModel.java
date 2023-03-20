@@ -14,15 +14,12 @@ import net.minecraft.util.math.MathHelper;
 
 public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
 
-    private final ModelPart abdomin;
-
     private final ModelPart leftFin;
     private final ModelPart centerFin;
     private final ModelPart rightFin;
 
     public SeaponyModel(ModelPart tree, boolean smallArms) {
         super(tree, smallArms);
-        abdomin = tree.getChild("abdomin");
         leftFin = tree.getChild("left_fin");
         rightFin = tree.getChild("right_fin");
         centerFin = tree.getChild("center_fin");
@@ -37,7 +34,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
         super.init(context);
         setVisible(true);
         bodyRenderList.clear();
-        bodyRenderList.add(body, abdomin).add(body::rotate).add(forPart(tail)).add(leftFin, centerFin, rightFin);
+        bodyRenderList.add(body).add(body::rotate).add(forPart(tail)).add(leftFin, centerFin, rightFin);
     }
 
     @Override
@@ -114,7 +111,6 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
 
-        upperTorsoOverlay.visible = false;
         leftSleeve.visible = false;
         rightSleeve.visible = false;
         jacket.visible = false;
@@ -124,8 +120,6 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
         rightLeg.visible = false;
         leftPants.visible = false;
         rightPants.visible = false;
-
-        abdomin.visible = visible;
 
         leftFin.visible = visible;
         centerFin.visible = visible;

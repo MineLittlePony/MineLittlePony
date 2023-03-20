@@ -24,9 +24,6 @@ import net.minecraft.util.math.*;
  */
 public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPonyModel<T> {
 
-    protected final ModelPart upperTorso;
-    protected final ModelPart upperTorsoOverlay;
-
     protected final ModelPart neck;
 
     public final RenderList helmetRenderList;
@@ -45,16 +42,14 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     public AbstractPonyModel(ModelPart tree) {
         super(tree);
 
-        upperTorso = tree.getChild("upper_torso");
-        upperTorsoOverlay = tree.getChild("saddle");
         neck = tree.getChild("neck");
         mainRenderList = RenderList.of()
-            .add(withStage(BodyPart.BODY, bodyRenderList = RenderList.of(body, upperTorso).add(body::rotate)))
+            .add(withStage(BodyPart.BODY, bodyRenderList = RenderList.of(body).add(body::rotate)))
             .add(withStage(BodyPart.NECK, neckRenderList = RenderList.of(neck)))
             .add(withStage(BodyPart.HEAD, headRenderList = RenderList.of(head)))
             .add(withStage(BodyPart.LEGS, legsRenderList = RenderList.of().add(leftArm, rightArm, leftLeg, rightLeg)))
             .add(withStage(BodyPart.LEGS, sleevesRenderList = RenderList.of().add(leftSleeve, rightSleeve, leftPants, rightPants)))
-            .add(withStage(BodyPart.BODY, vestRenderList = RenderList.of(jacket, upperTorsoOverlay)))
+            .add(withStage(BodyPart.BODY, vestRenderList = RenderList.of(jacket)))
             .add(withStage(BodyPart.HEAD, helmetRenderList = RenderList.of(hat)));
     }
 
@@ -122,7 +117,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         rightPants.copyTransform(rightLeg);
         jacket.copyTransform(body);
         hat.copyTransform(head);
-        upperTorsoOverlay.copyTransform(upperTorso);
     }
 
     protected void setModelAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
@@ -264,7 +258,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      * @param ticks       Total whole and partial ticks since the entity's existance. Used in animations together with {@code swing} and {@code move}.
      */
     protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
-        upperTorso.yaw = bodySwing;
         body.yaw = bodySwing;
         neck.yaw = bodySwing;
     }
@@ -582,10 +575,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         body.pitch = rotateAngleX;
         body.pivotY = rotationPointY;
         body.pivotZ = rotationPointZ;
-
-        upperTorso.pitch = rotateAngleX;
-        upperTorso.pivotY = rotationPointY;
-        upperTorso.pivotZ = rotationPointZ;
     }
 
     @Override
@@ -602,10 +591,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-
-        upperTorso.visible = visible;
-        upperTorsoOverlay.visible = visible;
-
         neck.visible = visible;
 
         parts.forEach(part -> part.setVisible(visible));

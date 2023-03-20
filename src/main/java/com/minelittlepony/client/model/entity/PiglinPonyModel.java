@@ -80,7 +80,6 @@ public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
 
             neck.pivotY = bodyBob;
             body.pivotY = bodyBob;
-            upperTorso.pivotY = bodyBob;
 
             leftLeg.pitch += legBob;
             rightLeg.pitch -= legBob;

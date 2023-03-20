@@ -23,7 +23,7 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
         steveLeftLeg = tree.getChild("steve_left_leg");
 
         bodyRenderList.clear();
-        bodyRenderList.add(body, upperTorso, chestPiece);
+        bodyRenderList.add(body, chestPiece);
         legsRenderList.add(steveLeftLeg, steveRightLeg);
     }
 
@@ -65,7 +65,6 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
         chestPiece.visible = false;
         head.visible = false;
         neck.visible = false;
-        upperTorso.visible = false;
         steveLeftLeg.visible = false;
         steveRightLeg.visible = false;
 
@@ -80,7 +79,6 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
                         return true;
                     case CHEST:
                         body.visible = variant == ArmourVariant.LEGACY;
-                        upperTorso.visible = variant == ArmourVariant.LEGACY;
                         chestPiece.visible = variant == ArmourVariant.NORMAL;
                         return true;
                     default:
@@ -93,7 +91,6 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
                         return true;
                     case CHEST:
                         body.visible = variant == ArmourVariant.LEGACY;
-                        upperTorso.visible = variant == ArmourVariant.LEGACY;
                         chestPiece.visible = variant == ArmourVariant.NORMAL;
                         return true;
                     default:
