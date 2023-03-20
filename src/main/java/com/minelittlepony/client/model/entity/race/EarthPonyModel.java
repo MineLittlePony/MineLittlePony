@@ -2,8 +2,8 @@ package com.minelittlepony.client.model.entity.race;
 
 import com.minelittlepony.api.model.IPart;
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.client.model.part.PonySnout;
-import com.minelittlepony.mson.api.ModelContext;
+import com.minelittlepony.client.model.part.*;
+import com.minelittlepony.mson.api.ModelView;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.LivingEntity;
@@ -14,7 +14,7 @@ public class EarthPonyModel<T extends LivingEntity> extends AbstractPonyModel<T>
 
     protected IPart tail;
     protected PonySnout snout;
-    protected IPart ears;
+    protected PonyEars ears;
 
     public EarthPonyModel(ModelPart tree, boolean smallArms) {
         super(tree);
@@ -22,40 +22,24 @@ public class EarthPonyModel<T extends LivingEntity> extends AbstractPonyModel<T>
     }
 
     @Override
-    public void init(ModelContext context) {
+    public void init(ModelView context) {
         super.init(context);
 
-        tail = context.findByName("tail");
-        snout = context.findByName("snout");
-        ears = context.findByName("ears");
+        tail = addPart(context.findByName("tail", this::createTail, IPart.class));
+        addPart(context.findByName("snout", PonySnout::new));
+        addPart(context.findByName("ears", PonyEars::new));
 
         bodyRenderList.add(forPart(tail));
+    }
+
+    protected IPart createTail(ModelPart tree) {
+        return new PonyTail(tree);
     }
 
     @Override
     public void setModelAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
         super.setModelAngles(entity, move, swing, ticks, headYaw, headPitch);
-        snout.setGender(getMetadata().getGender());
         cape.pivotY = sneaking ? 2 : riding ? -4 : 0;
-    }
-
-    @Override
-    public void setHeadRotation(float animationProgress, float yaw, float pitch) {
-        super.setHeadRotation(animationProgress, yaw, pitch);
-        snout.setGender(getMetadata().getGender());
-    }
-
-    @Override
-    protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
-        super.shakeBody(move, swing, bodySwing, ticks);
-        tail.setRotationAndAngles(attributes.isSwimming || attributes.isGoingFast, attributes.interpolatorId, move, swing, bodySwing * 5, ticks);
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
-        snout.setVisible(visible);
-        tail.setVisible(visible);
     }
 
     @Override

@@ -1,22 +1,5 @@
 {
 	"parent": "minelittlepony:races/steve/alicorn",
-	"skeleton": {
-	    "abdomin": {
-            "body": {
-	            "neck": {
-	                "head": {
-	                    "horn": {}
-	                }
-	            },
-	            "left_arm": {},
-	            "right_arm": {}
-	        },
-	        "left_fin": {},
-	        "right_fin": {},
-	        "center_fin": {},
-	        "tail": { }
-	    }
-	},
 	"data": {
 		"left_fin": {
 			"type": "mson:planar",
@@ -45,8 +28,6 @@
 			]
 		},
 		"tail": {
-			"type": "mson:slot",
-			"name": "tail",
 			"implementation": "com.minelittlepony.client.model.part.SeaponyTail",
 			"data": "minelittlepony:components/fish_tail"
 		}

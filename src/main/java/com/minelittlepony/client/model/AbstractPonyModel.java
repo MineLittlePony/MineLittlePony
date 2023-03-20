@@ -7,6 +7,8 @@ import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.client.util.render.RenderList;
 import com.minelittlepony.mson.util.PartUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 import net.minecraft.client.model.ModelPart;
@@ -38,6 +40,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     protected final RenderList mainRenderList;
 
+    private final List<IPart> parts = new ArrayList<>();
+
     public AbstractPonyModel(ModelPart tree) {
         super(tree);
 
@@ -52,6 +56,11 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             .add(withStage(BodyPart.LEGS, sleevesRenderList = RenderList.of().add(leftSleeve, rightSleeve, leftPants, rightPants)))
             .add(withStage(BodyPart.BODY, vestRenderList = RenderList.of(jacket, upperTorsoOverlay)))
             .add(withStage(BodyPart.HEAD, helmetRenderList = RenderList.of(hat)));
+    }
+
+    protected <P extends IPart> P addPart(P part) {
+        parts.add(part);
+        return part;
     }
 
     protected RenderList forPart(Supplier<IPart> part) {
@@ -118,7 +127,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     protected void setModelAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
         rotateHead(headYaw, headPitch);
-        shakeBody(move, swing, getWobbleAmount(), ticks);
+        float bodySwing = getWobbleAmount();
+        shakeBody(move, swing, bodySwing, ticks);
         rotateLegs(move, swing, ticks, entity);
 
         if (onSetModelAngles != null) {
@@ -152,6 +162,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         if (attributes.isSleeping) {
             ponySleep();
         }
+
+        parts.forEach(part -> part.setRotationAndAngles(attributes, move, swing, bodySwing, ticks));
     }
 
     public void setHeadRotation(float animationProgress, float yaw, float pitch) {
@@ -590,6 +602,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         upperTorsoOverlay.visible = visible;
 
         neck.visible = visible;
+
+        parts.forEach(part -> part.setVisible(visible));
     }
 
     @Override

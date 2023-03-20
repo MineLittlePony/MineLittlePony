@@ -7,39 +7,30 @@ import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.model.IPart;
 import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.common.util.animation.Interpolator;
-import com.minelittlepony.mson.api.ModelContext;
-import com.minelittlepony.mson.api.MsonModel;
 
-import java.util.UUID;
-
-public class LionTail implements IPart, MsonModel {
+public class LionTail implements IPart {
 
     private ModelPart tail;
-    private IPonyModel<?> model;
 
     public LionTail(ModelPart tree) {
         tail = tree.getChild("tail");
     }
 
     @Override
-    public void init(ModelContext context) {
-        model = context.getModel();
-    }
+    public void setRotationAndAngles(ModelAttributes attributes, float move, float swing, float bodySwing, float ticks) {
 
-    @Override
-    public void setRotationAndAngles(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
+        bodySwing *= 5;
 
         float baseSail = 1F;
 
         float speed = swing > 0.01F ? 6 : 90;
-        Interpolator interpolator = Interpolator.linear(interpolatorId);
+        Interpolator interpolator = Interpolator.linear(attributes.interpolatorId);
 
         float straightness = 1.6F * (1 + (float)Math.sin(ticks / speed) / 8F);
         float bend = (float)Math.sin(Math.PI/2F + 2 * ticks / speed) / 16F;
 
-        if (model.getAttributes().isCrouching) {
+        if (attributes.isCrouching) {
             baseSail += 1;
             straightness += 0.5F;
         }

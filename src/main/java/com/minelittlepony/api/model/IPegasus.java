@@ -13,7 +13,6 @@ public interface IPegasus extends IModel {
             && (MineLittlePony.getInstance().getConfig().flappyElytras.get() || !getAttributes().isGliding);
     }
 
-
     default boolean isBurdened() {
         return isWearing(Wearable.SADDLE_BAGS_BOTH) || isWearing(Wearable.SADDLE_BAGS_LEFT) || isWearing(Wearable.SADDLE_BAGS_RIGHT);
     }

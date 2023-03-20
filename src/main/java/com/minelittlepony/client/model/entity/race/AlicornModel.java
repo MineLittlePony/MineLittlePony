@@ -2,43 +2,29 @@ package com.minelittlepony.client.model.entity.race;
 
 import com.minelittlepony.api.model.IPart;
 import com.minelittlepony.api.model.IPegasus;
-import com.minelittlepony.mson.api.ModelContext;
+import com.minelittlepony.client.model.part.PonyWings;
+import com.minelittlepony.mson.api.ModelView;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.LivingEntity;
 
 public class AlicornModel<T extends LivingEntity> extends UnicornModel<T> implements IPegasus {
 
-    private IPart wings;
+    private PonyWings<AlicornModel<T>> wings;
 
     public AlicornModel(ModelPart tree, boolean smallArms) {
         super(tree, smallArms);
     }
 
     @Override
-    public void init(ModelContext context) {
+    public void init(ModelView context) {
         super.init(context);
-        wings = context.findByName("wings");
+        wings = addPart(context.findByName("wings", PonyWings::new));
         bodyRenderList.add(forPart(this::getWings).checked(this::canFly));
     }
 
     @Override
     public IPart getWings() {
         return wings;
-    }
-
-    @Override
-    public void setModelAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        super.setModelAngles(entity, move, swing, ticks, headYaw, headPitch);
-
-        if (canFly()) {
-            getWings().setRotationAndAngles(attributes.isGoingFast, attributes.interpolatorId, move, swing, 0, ticks);
-        }
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
-        getWings().setVisible(visible);
     }
 }

@@ -8,12 +8,10 @@ import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.meta.Wearable;
-import com.minelittlepony.mson.api.ModelContext;
+import com.minelittlepony.mson.api.ModelView;
 import com.minelittlepony.mson.api.MsonModel;
 
-import java.util.UUID;
-
-public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonModel {
+public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
 
     protected T pegasus;
 
@@ -22,16 +20,21 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
 
     protected Wing legacyWing;
 
-    public PegasusWings(ModelPart tree) {
+    private float wingScale;
+    private float walkingRotationSpeed;
+
+    public PonyWings(ModelPart tree) {
 
     }
 
     @Override
-    public void init(ModelContext context) {
+    public void init(ModelView context) {
         pegasus = context.getModel();
-        leftWing = context.findByName("left_wing");
-        rightWing = context.findByName("right_wing");
-        legacyWing = context.findByName("legacy_right_wing");
+        leftWing = context.findByName("left_wing", Wing::new);
+        rightWing = context.findByName("right_wing", Wing::new);
+        legacyWing = context.findByName("legacy_right_wing", Wing::new);
+        wingScale = context.getLocalValue("wing_scale", 1); // pegasi 1 / bats 1.3F
+        walkingRotationSpeed = context.getLocalValue("walking_rotation_speed", 0.15F); // pegasi 0.15 / bats 0.05F
     }
 
     public Wing getLeft() {
@@ -43,7 +46,7 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
     }
 
     @Override
-    public void setRotationAndAngles(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
+    public void setRotationAndAngles(ModelAttributes attributes, float move, float swing, float bodySwing, float ticks) {
         float flap = 0;
         float progress = pegasus.getSwingAmount();
 
@@ -65,7 +68,7 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
 
         if (pegasus.wingsAreOpen()) {
             flapAngle = pegasus.getWingRotationFactor(ticks);
-            if (!pegasus.getAttributes().isCrouching && pegasus.isBurdened()) {
+            if (!attributes.isCrouching && pegasus.isBurdened()) {
                 flapAngle -= 1F;
             }
         } else {
@@ -73,7 +76,7 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
         }
 
         if (!pegasus.isFlying()) {
-            flapAngle = pegasus.getMetadata().getInterpolator(interpolatorId).interpolate("wingFlap", flapAngle, 10);
+            flapAngle = pegasus.getMetadata().getInterpolator(attributes.interpolatorId).interpolate("wingFlap", flapAngle, 10);
         }
 
         getLeft().rotateFlying(flapAngle);
@@ -87,26 +90,25 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
         getRight().render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
-    public static class Wing implements MsonModel {
+    public class Wing implements MsonModel {
 
         protected IPegasus pegasus;
 
-        protected ModelPart extended;
-        protected ModelPart folded;
+        protected final ModelPart extended;
+        protected final ModelPart folded;
 
         public Wing(ModelPart tree) {
-
+            extended = tree.getChild("extended");
+            folded = tree.getChild("folded");
         }
 
         @Override
-        public void init(ModelContext context) {
+        public void init(ModelView context) {
             pegasus = context.getModel();
-            extended = context.findByName("extended");
-            folded = context.findByName("folded");
         }
 
         public void rotateWalking(float swing) {
-            folded.yaw = swing * 0.15F;
+            folded.yaw = swing * walkingRotationSpeed;
         }
 
         public void rotateFlying(float angle) {
@@ -114,6 +116,9 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
         }
 
         public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+            stack.push();
+            stack.scale(wingScale, wingScale, wingScale);
+
             if (pegasus.wingsAreOpen()) {
                 extended.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
             } else {
@@ -127,6 +132,8 @@ public class PegasusWings<T extends Model & IPegasus> implements IPart, MsonMode
                     stack.pop();
                 }
             }
+
+            stack.pop();
         }
     }
 }

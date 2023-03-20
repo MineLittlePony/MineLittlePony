@@ -2,40 +2,29 @@ package com.minelittlepony.client.model.entity.race;
 
 import com.minelittlepony.api.model.IPart;
 import com.minelittlepony.api.model.IPegasus;
-import com.minelittlepony.mson.api.ModelContext;
+import com.minelittlepony.client.model.part.PonyWings;
+import com.minelittlepony.mson.api.ModelView;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.LivingEntity;
 
 public class PegasusModel<T extends LivingEntity> extends EarthPonyModel<T> implements IPegasus {
 
-    private IPart wings;
+    private PonyWings<PegasusModel<T>> wings;
 
     public PegasusModel(ModelPart tree, boolean smallArms) {
         super(tree, smallArms);
     }
 
     @Override
-    public void init(ModelContext context) {
+    public void init(ModelView context) {
         super.init(context);
-        wings = context.findByName("wings");
+        wings = addPart(context.findByName("wings", PonyWings::new));
         bodyRenderList.add(forPart(this::getWings));
     }
 
     @Override
     public IPart getWings() {
         return wings;
-    }
-
-    @Override
-    public void setModelAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        super.setModelAngles(entity, move, swing, ticks, headYaw, headPitch);
-        getWings().setRotationAndAngles(attributes.isGoingFast, entity.getUuid(), move, swing, 0, ticks);
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
-        getWings().setVisible(visible);
     }
 }

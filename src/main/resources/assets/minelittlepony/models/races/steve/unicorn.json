@@ -6,24 +6,9 @@
 				{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
 			],
 			"children": {
-				"snout": {
-					"type": "mson:slot",
-					"name": "snout",
-					"implementation": "com.minelittlepony.client.model.part.PonySnout",
-					"data": "minelittlepony:components/snout"
-				},
-				"ears": {
-					"type": "mson:slot",
-					"name": "ears",
-					"implementation": "com.minelittlepony.client.model.part.PonyEars",
-					"data": "minelittlepony:components/ears"
-				},
-				"horn": {
-					"type": "mson:slot",
-					"name": "horn",
-					"implementation": "com.minelittlepony.client.model.part.UnicornHorn",
-					"data": "minelittlepony:components/horn"
-				}
+				"snout": { "data": "minelittlepony:components/snout" },
+				"ears": { "data": "minelittlepony:components/ears" },
+				"horn": { "data": "minelittlepony:components/horn" }
 			}
 		},
 		"right_cast": {

@@ -13,7 +13,7 @@ import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.meta.Size;
-import com.minelittlepony.mson.api.ModelContext;
+import com.minelittlepony.mson.api.ModelView;
 import com.minelittlepony.mson.api.model.BoxBuilder.RenderLayerSetter;
 
 public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>> extends IPonyModel<T>, ModelWithArms {
@@ -21,7 +21,7 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     M mixin();
 
     @Override
-    default void init(ModelContext context) {
+    default void init(ModelView context) {
         mixin().init(context);
         if (mixin() instanceof RenderLayerSetter && this instanceof RenderLayerSetter) {
             ((RenderLayerSetter)this).setRenderLayerFactory(((RenderLayerSetter)mixin()).getRenderLayerFactory());

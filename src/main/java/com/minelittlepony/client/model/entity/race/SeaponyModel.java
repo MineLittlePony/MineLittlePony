@@ -1,9 +1,9 @@
 package com.minelittlepony.client.model.entity.race;
 
 import com.minelittlepony.client.model.armour.PonyArmourModel;
-import com.minelittlepony.mson.api.ModelContext;
-import com.minelittlepony.api.model.BodyPart;
-import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.client.model.part.SeaponyTail;
+import com.minelittlepony.mson.api.ModelView;
+import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.model.armour.ArmourLayer;
 import com.minelittlepony.api.model.armour.ArmourVariant;
 import com.minelittlepony.api.pony.IPony;
@@ -34,7 +34,12 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
     }
 
     @Override
-    public void init(ModelContext context) {
+    protected IPart createTail(ModelPart tree) {
+        return new SeaponyTail(tree);
+    }
+
+    @Override
+    public void init(ModelView context) {
         super.init(context);
         setVisible(true);
         bodyRenderList.clear();

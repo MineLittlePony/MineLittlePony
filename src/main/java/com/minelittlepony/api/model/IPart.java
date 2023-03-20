@@ -3,15 +3,13 @@ package com.minelittlepony.api.model;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 
-import java.util.UUID;
-
 public interface IPart extends PonyModelConstants {
     /**
      * Sets the model's various rotation angles.
      * <p>
      * See {@link AbstractPonyMode.setRotationAndAngle} for an explanation of the various parameters.
      */
-    default void setRotationAndAngles(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
+    default void setRotationAndAngles(ModelAttributes attributes, float move, float swing, float bodySwing, float ticks) {
 
     }
 

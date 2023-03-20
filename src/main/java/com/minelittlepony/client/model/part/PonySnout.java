@@ -8,8 +8,7 @@ import com.minelittlepony.api.model.IPart;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.meta.Gender;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.mson.api.ModelContext;
-import com.minelittlepony.mson.api.MsonModel;
+import com.minelittlepony.mson.api.*;
 import com.minelittlepony.mson.api.model.PartBuilder;
 
 public class PonySnout implements IPart, MsonModel {
@@ -25,8 +24,8 @@ public class PonySnout implements IPart, MsonModel {
     }
 
     @Override
-    public void init(ModelContext context) {
-        PartBuilder head = context.getContext();
+    public void init(ModelView context) {
+        PartBuilder head = context.getThis();
         head.addChild("mare", mare);
         head.addChild("stallion", stallion);
     }
@@ -34,6 +33,11 @@ public class PonySnout implements IPart, MsonModel {
     public void rotate(float x, float y, float z) {
         mare.setAngles(x, y, z);
         stallion.setAngles(x, y, z);
+    }
+
+    @Override
+    public void setRotationAndAngles(ModelAttributes attributes, float move, float swing, float bodySwing, float ticks) {
+        setGender(attributes.metadata.getGender());
     }
 
     @Override

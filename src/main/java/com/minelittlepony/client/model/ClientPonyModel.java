@@ -14,7 +14,6 @@ import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.meta.Size;
 import com.minelittlepony.api.pony.meta.Sizes;
-import com.minelittlepony.client.pony.PonyData;
 import com.minelittlepony.mson.api.model.biped.MsonPlayer;
 
 /**
@@ -30,11 +29,6 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
      * The model attributes.
      */
     protected ModelAttributes attributes = new ModelAttributes();
-
-    /**
-     * Associated pony data.
-     */
-    protected IPonyData metadata = PonyData.NULL;
 
     @Nullable
     protected PosingCallback<T> onSetModelAngles;
@@ -73,7 +67,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
 
     @Override
     public IPonyData getMetadata() {
-        return metadata;
+        return attributes.metadata;
     }
 
     @Override
@@ -83,7 +77,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
 
     @Override
     public void setMetadata(IPonyData meta) {
-        metadata = meta;
+        attributes.metadata = meta;
     }
 
     @Override
@@ -120,7 +114,6 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
 
         if (model instanceof ClientPonyModel) {
             ((ClientPonyModel<T>)model).attributes = attributes;
-            ((ClientPonyModel<T>)model).metadata = metadata;
         }
     }
 

@@ -9,13 +9,10 @@ import com.minelittlepony.api.model.IPart;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.meta.TailShape;
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.mson.api.ModelContext;
-import com.minelittlepony.mson.api.MsonModel;
+import com.minelittlepony.mson.api.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 public class PonyTail implements IPart, MsonModel {
 
@@ -32,30 +29,24 @@ public class PonyTail implements IPart, MsonModel {
     }
 
     @Override
-    public void init(ModelContext context) {
+    public void init(ModelView context) {
         model = context.getModel();
 
-        try {
-            int segments = context.getLocals().getLocal("segments").get().intValue();
+        int segments = (int)context.getLocalValue("segments", 4);
 
-            ModelContext subContext = context.resolve(this);
-
-            for (int i = 0; i < segments; i++) {
-                Segment segment = subContext.findByName("segment_" + i);
-                segment.tail = this;
-                segment.index = i;
-                this.segments.add(segment);
-            }
-
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
+        for (int i = 0; i < segments; i++) {
+            Segment segment = context.findByName("segment_" + i, Segment::new);
+            segment.tail = this;
+            segment.index = i;
+            this.segments.add(segment);
         }
     }
 
     @Override
-    public void setRotationAndAngles(boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
+    public void setRotationAndAngles(ModelAttributes attributes, float move, float swing, float bodySwing, float ticks) {
+        boolean rainboom = attributes.isSwimming || attributes.isGoingFast;
         tail.roll = rainboom ? 0 : MathHelper.cos(move * 0.8F) * 0.2f * swing;
-        tail.yaw = bodySwing;
+        tail.yaw = bodySwing * 5;
 
         if (model.getAttributes().isCrouching && !rainboom) {
             rotateSneak();

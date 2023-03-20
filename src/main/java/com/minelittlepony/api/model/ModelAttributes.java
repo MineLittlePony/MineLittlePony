@@ -1,8 +1,8 @@
 package com.minelittlepony.api.model;
 
-import com.minelittlepony.api.pony.IPony;
-import com.minelittlepony.api.pony.PonyPosture;
+import com.minelittlepony.api.pony.*;
 import com.minelittlepony.client.SkinsProxy;
+import com.minelittlepony.client.pony.PonyData;
 import com.minelittlepony.util.MathUtil;
 
 import java.util.*;
@@ -101,6 +101,11 @@ public class ModelAttributes {
      * Contains a list of additional skins available for rendering.
      */
     public Set<Identifier> featureSkins = new HashSet<>();
+
+    /**
+     * Contains the skin metadata associated with this model.
+     */
+    public IPonyData metadata = PonyData.NULL;
 
     /**
      * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.

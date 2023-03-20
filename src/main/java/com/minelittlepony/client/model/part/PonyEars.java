@@ -6,23 +6,21 @@ import net.minecraft.client.util.math.MatrixStack;
 
 import com.minelittlepony.api.model.IPart;
 import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.mson.api.ModelContext;
-import com.minelittlepony.mson.api.MsonModel;
+import com.minelittlepony.mson.api.*;
 import com.minelittlepony.mson.api.model.PartBuilder;
 
 public class PonyEars implements IPart, MsonModel {
-    private ModelPart right;
-    private ModelPart left;
+    private final ModelPart right;
+    private final ModelPart left;
 
     public PonyEars(ModelPart tree) {
+        right = tree.getChild("right");
+        left = tree.getChild("left");
     }
 
     @Override
-    public void init(ModelContext context) {
-        right = context.findByName("right");
-        left = context.findByName("left");
-
-        PartBuilder head = context.getContext();
+    public void init(ModelView context) {
+        PartBuilder head = context.getThis();
         head.addChild("right_ear_" + hashCode(), right);
         head.addChild("left_ear_" + hashCode(), left);
     }

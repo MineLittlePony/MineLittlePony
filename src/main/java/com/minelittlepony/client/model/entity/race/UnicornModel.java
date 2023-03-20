@@ -5,7 +5,7 @@ import com.minelittlepony.api.model.IUnicorn;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.part.UnicornHorn;
 import com.minelittlepony.client.util.render.RenderList;
-import com.minelittlepony.mson.api.ModelContext;
+import com.minelittlepony.mson.api.ModelView;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.LivingEntity;
@@ -28,9 +28,9 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
     }
 
     @Override
-    public void init(ModelContext context) {
+    public void init(ModelView context) {
         super.init(context);
-        horn = context.findByName("horn");
+        horn = addPart(context.findByName("horn", UnicornHorn::new));
         headRenderList.add(RenderList.of().add(head::rotate).add(forPart(horn)).checked(this::hasHorn));
         this.mainRenderList.add(withStage(BodyPart.HEAD, RenderList.of().add(head::rotate).add((stack, vertices, overlayUv, lightUv, red, green, blue, alpha) -> {
             horn.renderMagic(stack, vertices, getMagicColor());
@@ -72,11 +72,5 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
             return side == Arm.LEFT ? unicornArmLeft : unicornArmRight;
         }
         return super.getArm(side);
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
-        horn.setVisible(visible);
     }
 }

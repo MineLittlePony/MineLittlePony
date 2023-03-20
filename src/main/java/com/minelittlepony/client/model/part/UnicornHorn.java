@@ -11,24 +11,17 @@ import com.minelittlepony.api.model.IPart;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.client.render.MagicGlow;
 import com.minelittlepony.common.util.Color;
-import com.minelittlepony.mson.api.ModelContext;
-import com.minelittlepony.mson.api.MsonModel;
 
-public class UnicornHorn implements IPart, MsonModel {
+public class UnicornHorn implements IPart {
 
-    private ModelPart horn;
-    private ModelPart glow;
+    private final ModelPart horn;
+    private final ModelPart glow;
 
     protected boolean visible = true;
 
     public UnicornHorn(ModelPart tree) {
-
-    }
-
-    @Override
-    public void init(ModelContext context) {
-        horn = context.findByName("bone");
-        glow = context.findByName("corona");
+        horn = tree.getChild("bone");
+        glow = tree.getChild("corona");
     }
 
     @Override
