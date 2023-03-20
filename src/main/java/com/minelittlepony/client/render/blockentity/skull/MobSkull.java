@@ -63,6 +63,5 @@ public class MobSkull implements ISkull {
     @Override
     public void render(MatrixStack stack, VertexConsumer vertices, int lightUv, int overlayUv, float red, float green, float blue, float alpha) {
         ponyHead.get().headRenderList.accept(stack, vertices, lightUv, overlayUv, red, green, blue, alpha);
-        ponyHead.get().headRenderList.accept(stack, vertices, lightUv, overlayUv, red, green, blue, alpha);
     }
 }
