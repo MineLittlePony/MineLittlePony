@@ -1,6 +1,9 @@
 {
 	"parent": "minelittlepony:races/steve/alicorn",
 	"data": {
-		"wings": { "data": "minelittlepony:components/bug_wings" }
+		"wings": {
+		  "data": "minelittlepony:components/bug_wings",
+		  "implementation": "com.minelittlepony.client.model.part.PonyWings"
+	  }
 	}
 }

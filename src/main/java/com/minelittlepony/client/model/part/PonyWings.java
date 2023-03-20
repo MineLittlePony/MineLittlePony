@@ -20,9 +20,6 @@ public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
 
     protected Wing legacyWing;
 
-    private float wingScale;
-    private float walkingRotationSpeed;
-
     public PonyWings(ModelPart tree) {
 
     }
@@ -30,11 +27,9 @@ public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
     @Override
     public void init(ModelView context) {
         pegasus = context.getModel();
-        leftWing = context.findByName("left_wing", Wing::new);
-        rightWing = context.findByName("right_wing", Wing::new);
-        legacyWing = context.findByName("legacy_right_wing", Wing::new);
-        wingScale = context.getLocalValue("wing_scale", 1); // pegasi 1 / bats 1.3F
-        walkingRotationSpeed = context.getLocalValue("walking_rotation_speed", 0.15F); // pegasi 0.15 / bats 0.05F
+        leftWing = context.findByName("left_wing");
+        rightWing = context.findByName("right_wing");
+        legacyWing = context.findByName("legacy_right_wing");
     }
 
     public Wing getLeft() {
@@ -90,12 +85,15 @@ public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
         getRight().render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
-    public class Wing implements MsonModel {
+    public static class Wing implements MsonModel {
 
         protected IPegasus pegasus;
 
         protected final ModelPart extended;
         protected final ModelPart folded;
+
+        private float wingScale;
+        private float walkingRotationSpeed;
 
         public Wing(ModelPart tree) {
             extended = tree.getChild("extended");
@@ -105,6 +103,8 @@ public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
         @Override
         public void init(ModelView context) {
             pegasus = context.getModel();
+            wingScale = context.getLocalValue("wing_scale", 1); // pegasi 1 / bats 1.3F
+            walkingRotationSpeed = context.getLocalValue("walking_rotation_speed", 0.15F); // pegasi 0.15 / bats 0.05F
         }
 
         public void rotateWalking(float swing) {

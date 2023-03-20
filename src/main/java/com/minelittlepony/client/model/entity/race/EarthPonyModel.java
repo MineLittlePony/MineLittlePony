@@ -25,15 +25,11 @@ public class EarthPonyModel<T extends LivingEntity> extends AbstractPonyModel<T>
     public void init(ModelView context) {
         super.init(context);
 
-        tail = addPart(context.findByName("tail", this::createTail, IPart.class));
-        addPart(context.findByName("snout", PonySnout::new));
-        addPart(context.findByName("ears", PonyEars::new));
+        tail = addPart(context.findByName("tail"));
+        addPart(context.findByName("snout"));
+        addPart(context.findByName("ears"));
 
         bodyRenderList.add(forPart(tail));
-    }
-
-    protected IPart createTail(ModelPart tree) {
-        return new PonyTail(tree);
     }
 
     @Override

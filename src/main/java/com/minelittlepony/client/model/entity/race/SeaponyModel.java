@@ -1,7 +1,6 @@
 package com.minelittlepony.client.model.entity.race;
 
 import com.minelittlepony.client.model.armour.PonyArmourModel;
-import com.minelittlepony.client.model.part.SeaponyTail;
 import com.minelittlepony.mson.api.ModelView;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.model.armour.ArmourLayer;
@@ -31,11 +30,6 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
 
     public SeaponyModel(ModelPart tree) {
         this(tree, false);
-    }
-
-    @Override
-    protected IPart createTail(ModelPart tree) {
-        return new SeaponyTail(tree);
     }
 
     @Override

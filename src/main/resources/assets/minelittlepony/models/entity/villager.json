@@ -35,7 +35,7 @@
 		"bat_wings": {
 			"type": "mson:slot",
 			"name": "bat_wings",
-			"implementation": "com.minelittlepony.client.model.part.BatWings",
+			"implementation": "com.minelittlepony.client.model.part.PonyWings",
 			"data": "minelittlepony:components/bat_wings"
 		},
 		"apron": {

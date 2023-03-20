@@ -2,13 +2,14 @@ package com.minelittlepony.client.model.part;
 
 import com.minelittlepony.api.model.IPart;
 import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.mson.api.MsonModel;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
-public class SeaponyTail implements IPart {
+public class SeaponyTail implements IPart, MsonModel {
 
     private static final float TAIL_ROTX = PI / 2;
 

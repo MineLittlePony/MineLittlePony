@@ -6,9 +6,13 @@
 				{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
 			],
 			"children": {
-				"snout": { "data": "minelittlepony:components/snout" },
+				"snout": {
+				  "data": "minelittlepony:components/snout",
+				  "implementation": "com.minelittlepony.client.model.part.PonySnout"
+			  },
 				"ears": {
 					"texture": {"w": 64, "h": 64 },
+					"implementation": "com.minelittlepony.client.model.part.PonyEars",
 					"data": {
 						"right": {
 							"type": "mson:planar",
@@ -40,7 +44,10 @@
 						}
 					}
 				},
-				"horn": { "data": "minelittlepony:components/horn" },
+				"horn": {
+				  "data": "minelittlepony:components/horn",
+				  "implementation": "com.minelittlepony.client.model.part.UnicornHorn"
+			  },
 				"right_antler": {
 					"pivot": [-2, -6, -2],
 					"rotate": [0, 0, 120],
@@ -82,12 +89,10 @@
 			}
 		},
 		"wings": {
-			"type": "mson:slot",
-			"name": "wings",
+			"implementation": "com.minelittlepony.client.model.part.PonyWings",
 			"data": {
 				"left_wing": {
-					"type": "mson:slot",
-					"name": "left_wing",
+					"implementation": "com.minelittlepony.client.model.part.PonyWings$Wing",
 					"data": {
 						"folded": "#extended",
 						"extended": {
@@ -109,8 +114,7 @@
 					}
 				},
 				"right_wing": {
-					"type": "mson:slot",
-					"name": "right_wing",
+					"implementation": "com.minelittlepony.client.model.part.PonyWings$Wing",
 					"data": {
 						"folded": "#extended",
 						"extended": {

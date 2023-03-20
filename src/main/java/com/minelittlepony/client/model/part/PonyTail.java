@@ -35,7 +35,7 @@ public class PonyTail implements IPart, MsonModel {
         int segments = (int)context.getLocalValue("segments", 4);
 
         for (int i = 0; i < segments; i++) {
-            Segment segment = context.findByName("segment_" + i, Segment::new);
+            Segment segment = context.findByName("segment_" + i);
             segment.tail = this;
             segment.index = i;
             this.segments.add(segment);
@@ -99,7 +99,7 @@ public class PonyTail implements IPart, MsonModel {
         stack.pop();
     }
 
-    public static class Segment implements MsonModel {
+    public static class Segment {
         public PonyTail tail;
 
         public int index;

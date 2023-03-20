@@ -30,7 +30,7 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
     @Override
     public void init(ModelView context) {
         super.init(context);
-        horn = addPart(context.findByName("horn", UnicornHorn::new));
+        horn = addPart(context.findByName("horn"));
         headRenderList.add(RenderList.of().add(head::rotate).add(forPart(horn)).checked(this::hasHorn));
         this.mainRenderList.add(withStage(BodyPart.HEAD, RenderList.of().add(head::rotate).add((stack, vertices, overlayUv, lightUv, red, green, blue, alpha) -> {
             horn.renderMagic(stack, vertices, getMagicColor());

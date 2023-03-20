@@ -1,6 +1,9 @@
 {
 	"parent": "minelittlepony:races/steve/unicorn",
 	"data": {
-		"wings": { "data": "minelittlepony:components/pegasus_wings" }
+		"wings": {
+		  "data": "minelittlepony:components/pegasus_wings",
+	    "implementation": "com.minelittlepony.client.model.part.PonyWings"
+    }
 	}
 }

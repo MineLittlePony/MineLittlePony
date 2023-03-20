@@ -11,8 +11,8 @@
 				{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
 			],
 			"children": {
-				"snout": { "data": "minelittlepony:components/snout" },
-				"ears": { "data": "minelittlepony:components/ears" },
+				"snout": { "data": "minelittlepony:components/snout", "implementation": "com.minelittlepony.client.model.part.PonySnout" },
+				"ears": { "data": "minelittlepony:components/ears", "implementation": "com.minelittlepony.client.model.part.PonyEars" },
 				"bristles": {
 					"texture": {"u": 56, "v": 32},
 					"rotate": [17, 0, 0],

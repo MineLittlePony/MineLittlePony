@@ -6,10 +6,19 @@
 				{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
 			],
 			"children": {
-				"snout": { "data": "minelittlepony:components/snout" },
-				"ears": { "data": "minelittlepony:components/bat_ears" }
+				"snout": {
+				  "data": "minelittlepony:components/snout",
+				  "implementation": "com.minelittlepony.client.model.part.PonySnout"
+			  },
+				"ears": {
+				  "data": "minelittlepony:components/bat_ears",
+				  "implementation": "com.minelittlepony.client.model.part.PonyEars"
+			  }
 			}
 		},
-		"wings": { "data": "minelittlepony:components/bat_wings" }
+		"wings": {
+		  "data": "minelittlepony:components/bat_wings",
+		  "implementation": "com.minelittlepony.client.model.part.PonyWings"
+	  }
 	}
 }

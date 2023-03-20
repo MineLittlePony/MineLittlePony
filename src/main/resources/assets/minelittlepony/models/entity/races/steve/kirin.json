@@ -7,21 +7,24 @@
 			],
 			"children": {
 				"snout": {
-				  "data": "minelittlepony:components/snout"
+				  "data": "minelittlepony:components/snout",
+				  "implementation": "com.minelittlepony.client.model.part.PonySnout"
 			  },
 				"ears": {
 					"locals": {
 						"ear_pronouncement": 0.9,
 						"ear_spread": 3
 					},
-					"data": "minelittlepony:components/ears"
+					"data": "minelittlepony:components/ears",
+					"implementation": "com.minelittlepony.client.model.part.PonyEars"
 				},
 				"horn": {
 					"locals": {
 						"incline": 19,
 						"scale": 0.5
 					},
-					"data": "minelittlepony:components/horn"
+					"data": "minelittlepony:components/horn",
+					"implementation": "com.minelittlepony.client.model.part.UnicornHorn"
 				}
 			}
 		},

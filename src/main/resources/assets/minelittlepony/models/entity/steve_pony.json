@@ -16,22 +16,6 @@
 		"head_pivot_y": 0,
 		"neck_dilate_y": -0.1
 	},
-	"skeleton": {
-		"upper_torso": {
-			"body": {
-				"neck": {
-					"head": {
-						"horn": {}
-					}
-				},
-				"left_arm": {},
-				"right_arm": {}
-			},
-			"left_leg": {},
-			"right_leg": {},
-			"wings": {}
-		}
-	},
 	"data": {
 		"head": {
 			"pivot": [ 0, "#head_pivot_y", 0 ],
@@ -40,14 +24,10 @@
 			],
 			"children": {
 				"snout": {
-					"type": "mson:slot",
-					"name": "snout",
 					"implementation": "com.minelittlepony.client.model.part.PonySnout",
 					"data": "minelittlepony:components/snout"
 				},
 				"ears": {
-					"type": "mson:slot",
-					"name": "ears",
 					"implementation": "com.minelittlepony.client.model.part.PonyEars",
 					"data": "minelittlepony:components/ears"
 				}

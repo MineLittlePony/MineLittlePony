@@ -19,7 +19,7 @@ public class PegasusModel<T extends LivingEntity> extends EarthPonyModel<T> impl
     @Override
     public void init(ModelView context) {
         super.init(context);
-        wings = addPart(context.findByName("wings", PonyWings::new));
+        wings = addPart(context.findByName("wings"));
         bodyRenderList.add(forPart(this::getWings));
     }
 
