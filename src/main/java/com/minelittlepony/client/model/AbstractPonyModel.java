@@ -207,26 +207,32 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     protected void ponySit() {
         if (attributes.isRidingInteractive) {
             adjustBodyComponents(BODY_ROT_X_RIDING * 2, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
-            adjustNeck(BODY_ROT_X * 2, BODY_RP_Y, BODY_RP_Z - 4);
+            neck.setPivot(NECK_ROT_X + BODY_ROT_X * 2, BODY_RP_Y, BODY_RP_Z - 4);
             head.setPivot(0, -2, -5);
         } else {
             adjustBodyComponents(BODY_ROT_X_RIDING, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
-            adjustNeck(BODY_ROT_X, BODY_RP_Y, BODY_RP_Z);
+            neck.setPivot(NECK_ROT_X + BODY_ROT_X, BODY_RP_Y, BODY_RP_Z);
             head.setPivot(0, 0, 0);
         }
 
         leftLeg.pivotZ = 14;
-        leftLeg.pivotY = 9;
+        leftLeg.pivotY = 17;
         leftLeg.pitch = -PI / 4;
-        leftLeg.yaw = -PI / 5;
+        leftLeg.yaw = -PI / 7;
+
+        leftLeg.pitch += body.pitch;
 
         rightLeg.pivotZ = 15;
-        rightLeg.pivotY = 9;
+        rightLeg.pivotY = 17;
         rightLeg.pitch = -PI / 4;
-        rightLeg.yaw =  PI / 5;
+        rightLeg.yaw =  PI / 7;
+
+        rightLeg.pitch += body.pitch;
 
         leftArm.roll = -PI * 0.06f;
+        leftArm.pitch += body.pitch;
         rightArm.roll = PI * 0.06f;
+        rightArm.pitch += body.pitch;
 
         if (attributes.isRidingInteractive) {
             leftLeg.yaw = PI / 15;
@@ -569,7 +575,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     protected void adjustBody(float rotateAngleX, float rotationPointY, float rotationPointZ) {
         adjustBodyComponents(rotateAngleX, rotationPointY, rotationPointZ);
-        adjustNeck(rotateAngleX, rotationPointY, rotationPointZ);
+        neck.setPivot(NECK_ROT_X + rotateAngleX, rotationPointY, rotationPointZ);
     }
 
     protected void adjustBodyComponents(float rotateAngleX, float rotationPointY, float rotationPointZ) {
@@ -580,10 +586,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         upperTorso.pitch = rotateAngleX;
         upperTorso.pivotY = rotationPointY;
         upperTorso.pivotZ = rotationPointZ;
-    }
-
-    private void adjustNeck(float rotateAngleX, float rotationPointY, float rotationPointZ) {
-        neck.setPivot(NECK_ROT_X + rotateAngleX, rotationPointY, rotationPointZ);
     }
 
     @Override
