@@ -26,8 +26,8 @@ public class EarthPonyModel<T extends LivingEntity> extends AbstractPonyModel<T>
         super.init(context);
 
         tail = addPart(context.findByName("tail"));
-        addPart(context.findByName("snout"));
-        addPart(context.findByName("ears"));
+        snout = addPart(context.findByName("snout"));
+        ears = addPart(context.findByName("ears"));
 
         bodyRenderList.add(forPart(tail));
     }

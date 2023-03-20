@@ -12,9 +12,6 @@
         "MixinEntityRenderers",
         "MixinSkullBlockEntityRenderer",
         "MixinHeldItemRenderer",
-        "MixinItemRenderer",
-        "MixinTexturedRenderLayers",
-        "MixinSpriteIdentifier",
         "MixinClientPlayerEntity",
         "MixinPlayerMoveC2SPacket",
         "MixinPlayerPositionLookS2CPacket"

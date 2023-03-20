@@ -42,8 +42,8 @@ public abstract class MagicGlow extends RenderPhase {
         return MAGIC;
     }
 
-    public static RenderLayer getTintedTexturedLayer(Identifier texture, float red, float green, float blue, float alpha) {
-        return TINTED_LAYER.apply(texture, Color.argbToHex(alpha, red, green, blue));
+    public static RenderLayer getColoured(Identifier texture, int color) {
+        return TINTED_LAYER.apply(texture, color);
     }
 
     private static class Colored extends Texture {
@@ -58,7 +58,7 @@ public abstract class MagicGlow extends RenderPhase {
             this.red = Color.r(color);
             this.green = Color.g(color);
             this.blue = Color.b(color);
-            this.alpha = Color.a(color);
+            this.alpha = 0.8F;
         }
 
         @Override

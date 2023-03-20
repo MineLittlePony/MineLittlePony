@@ -5,7 +5,6 @@ import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.render.LevitatingItemRenderer;
 import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.client.render.entity.SkeleponyRenderer;
 import com.minelittlepony.client.render.entity.ZomponyRenderer;
@@ -40,7 +39,7 @@ public class PonySkullRenderer {
 
     private static void loadSkulls(Map<SkullBlock.SkullType, ISkull> skullMap) {
         skullMap.put(SkullBlock.Type.SKELETON, new MobSkull(SkeleponyRenderer.SKELETON, MobRenderers.SKELETON, ModelType.SKELETON));
-        skullMap.put(SkullBlock.Type.WITHER_SKELETON, new MobSkull(SkeleponyRenderer.WITHER, MobRenderers.SKELETON, ModelType.ENDERMAN));
+        skullMap.put(SkullBlock.Type.WITHER_SKELETON, new MobSkull(SkeleponyRenderer.WITHER, MobRenderers.SKELETON, ModelType.SKELETON));
         skullMap.put(SkullBlock.Type.ZOMBIE, new MobSkull(ZomponyRenderer.ZOMBIE, MobRenderers.ZOMBIE, ModelType.ZOMBIE));
         skullMap.put(SkullBlock.Type.PLAYER, new PlayerPonySkull());
     }
@@ -57,7 +56,7 @@ public class PonySkullRenderer {
 
         selectedSkull = skull;
         selectedSkin = skull.getSkinResource(profile);
-        return LevitatingItemRenderer.getRenderLayer(selectedSkin);
+        return RenderLayer.getEntityTranslucent(selectedSkin);
     }
 
     public static boolean renderSkull(@Nullable Direction direction,

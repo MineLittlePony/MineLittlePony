@@ -73,7 +73,7 @@ public class GlowingItemFeature<T extends LivingEntity, M extends EntityModel<T>
     @Override
     protected void postItemRender(T entity, ItemStack drop, ModelTransformationMode transform, Arm hand, MatrixStack stack, VertexConsumerProvider renderContext) {
         if (isUnicorn()) {
-            PonyRenderDispatcher.getInstance().getMagicRenderer().renderItemGlow(entity, drop, transform, hand, ((IUnicorn)getContextModel()).getMagicColor(), stack, renderContext);
+            PonyRenderDispatcher.getInstance().getMagicRenderer().renderItemGlow(getContext().getEntityPony(entity), entity, drop, transform, hand, ((IUnicorn)getContextModel()).getMagicColor(), stack, renderContext);
         }
     }
 }
