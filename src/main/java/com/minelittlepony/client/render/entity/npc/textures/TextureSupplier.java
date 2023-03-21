@@ -41,6 +41,10 @@ public interface TextureSupplier<T> extends Function<T, Identifier> {
         };
     }
 
+    static <A> TextureSupplier<A> of(Identifier texture) {
+        return a -> texture;
+    }
+
     static <A> TextureSupplier<A> memoize(Function<A, Identifier> func, Function<A, String> keyFunc) {
         final Map<String, Identifier> cache = new ConcurrentHashMap<>();
         return a -> cache.computeIfAbsent(keyFunc.apply(a), k -> func.apply(a));

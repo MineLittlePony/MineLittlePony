@@ -5,9 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import com.minelittlepony.client.mixin.IResizeable;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.GuardianPonyModel;
-import com.minelittlepony.client.render.entity.PonyRenderer.Proxy;
-import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
-import com.minelittlepony.client.render.entity.feature.GlowingItemFeature;
+import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -21,24 +19,19 @@ import net.minecraft.util.Identifier;
 public class SeaponyRenderer extends GuardianEntityRenderer {
     public static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/entity/seapony.png");
 
-    private final Proxy<GuardianEntity, GuardianPonyModel> ponyRenderer;
+    private final AbstractPonyRenderer<GuardianEntity, GuardianPonyModel> ponyRenderer;
 
-    public SeaponyRenderer(EntityRendererFactory.Context context) {
+    public SeaponyRenderer(EntityRendererFactory.Context context, float scale) {
         super(context);
+        ponyRenderer = AbstractPonyRenderer.proxy(context, ModelType.GUARDIAN, TextureSupplier.of(TEXTURE), scale, features, m -> model = m);
+    }
 
-        features.clear();
-        ponyRenderer = new Proxy<GuardianEntity, GuardianPonyModel>(features, context, ModelType.GUARDIAN) {
-            @Override
-            public Identifier getTexture(GuardianEntity entity) {
-                return TEXTURE;
-            }
+    public static SeaponyRenderer guardian(EntityRendererFactory.Context context) {
+        return new SeaponyRenderer(context, 1);
+    }
 
-            @Override
-            protected HeldItemFeature<GuardianEntity, GuardianPonyModel> createItemHoldingLayer() {
-                return new GlowingItemFeature<>(this);
-            }
-        };
-        model = ponyRenderer.getModel();
+    public static SeaponyRenderer elder(EntityRendererFactory.Context context) {
+        return new SeaponyRenderer(context, 1);
     }
 
     @Override
@@ -63,18 +56,5 @@ public class SeaponyRenderer extends GuardianEntityRenderer {
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
 
         resize.setCurrentSize(origin);
-    }
-
-    public static class Elder extends SeaponyRenderer {
-
-        public Elder(EntityRendererFactory.Context context) {
-            super(context);
-        }
-
-        @Override
-        protected void scale(GuardianEntity entity, MatrixStack stack, float ticks) {
-            super.scale(entity, stack, ticks);
-            stack.scale(2.35F, 2.35F, 2.35F);
-        }
     }
 }

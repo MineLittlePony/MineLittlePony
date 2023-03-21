@@ -4,6 +4,7 @@ import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.EnderStallionModel;
 import com.minelittlepony.client.render.entity.feature.GlowingEyesFeature;
 import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
+import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 import com.minelittlepony.client.render.entity.feature.GlowingItemFeature;
 import com.minelittlepony.client.render.entity.feature.GlowingEyesFeature.IGlowingRenderer;
 
@@ -26,18 +27,18 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
     private final Random rnd = new Random();
 
     public EnderStallionRenderer(EntityRendererFactory.Context context) {
-        super(context, ModelType.ENDERMAN);
+        super(context, ModelType.ENDERMAN, TextureSupplier.of(ENDERMAN));
     }
 
     @Override
-    protected void addLayers(EntityRendererFactory.Context context) {
-        addFeature(createItemHoldingLayer());
+    protected void addFeatures(EntityRendererFactory.Context context) {
+        addFeature(createHeldItemFeature(context));
         addFeature(new StuckArrowsFeatureRenderer<>(context, this));
         addFeature(new GlowingEyesFeature<>(this));
     }
 
     @Override
-    protected HeldItemFeature<EndermanEntity, EnderStallionModel> createItemHoldingLayer() {
+    protected HeldItemFeature<EndermanEntity, EnderStallionModel> createHeldItemFeature(EntityRendererFactory.Context context) {
         return new GlowingItemFeature<EndermanEntity, EnderStallionModel>(this) {
             @Override
             protected ItemStack getRightItem(EndermanEntity entity) {
@@ -52,16 +53,9 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
     }
 
     @Override
-    public Identifier getTexture(EndermanEntity entity) {
-        return ENDERMAN;
-    }
-
-    @Override
     public void render(EndermanEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
-        EnderStallionModel modelenderman = getModel();
-
-        modelenderman.isCarrying = entity.getCarriedBlock() != null;
-        modelenderman.isAttacking = entity.isAngry();
+        model.isCarrying = entity.getCarriedBlock() != null;
+        model.isAttacking = entity.isAngry();
 
         if (entity.isAngry()) {
             stack.translate(rnd.nextGaussian() / 50, 0, rnd.nextGaussian() / 50);

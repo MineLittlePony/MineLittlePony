@@ -3,6 +3,7 @@ package com.minelittlepony.client.render.entity.npc;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.IllagerPonyModel;
 import com.minelittlepony.client.render.entity.feature.IllagerHeldItemFeature;
+import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 import com.minelittlepony.client.render.entity.PonyRenderer;
 import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
 
@@ -17,61 +18,32 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-public abstract class IllagerPonyRenderer<T extends IllagerEntity> extends PonyRenderer<T, IllagerPonyModel<T>> {
-
+public class IllagerPonyRenderer<T extends IllagerEntity> extends PonyRenderer<T, IllagerPonyModel<T>> {
     public static final Identifier ILLUSIONIST = new Identifier("minelittlepony", "textures/entity/illager/illusionist_pony.png");
     public static final Identifier EVOKER = new Identifier("minelittlepony", "textures/entity/illager/evoker_pony.png");
     public static final Identifier VINDICATOR = new Identifier("minelittlepony", "textures/entity/illager/vindicator_pony.png");
 
-    public IllagerPonyRenderer(EntityRendererFactory.Context context) {
-        super(context, ModelType.ILLAGER);
+    public IllagerPonyRenderer(EntityRendererFactory.Context context, Identifier texture) {
+        super(context, ModelType.ILLAGER, TextureSupplier.of(texture), BASE_MODEL_SCALE);
     }
 
     @Override
-    protected HeldItemFeature<T, IllagerPonyModel<T>> createItemHoldingLayer() {
+    protected HeldItemFeature<T, IllagerPonyModel<T>> createHeldItemFeature(EntityRendererFactory.Context context) {
         return new IllagerHeldItemFeature<>(this);
     }
 
-    @Override
-    public void scale(T entity, MatrixStack stack, float ticks) {
-        super.scale(entity, stack, ticks);
-        stack.scale(BASE_MODEL_SCALE, BASE_MODEL_SCALE, BASE_MODEL_SCALE);
+    public static IllagerPonyRenderer<VindicatorEntity> vindicator(EntityRendererFactory.Context context) {
+        return new IllagerPonyRenderer<>(context, VINDICATOR);
     }
 
-    public static class Vindicator extends IllagerPonyRenderer<VindicatorEntity> {
-
-        public Vindicator(EntityRendererFactory.Context context) {
-            super(context);
-
-        }
-
-        @Override
-        public Identifier getTexture(VindicatorEntity entity) {
-            return VINDICATOR;
-        }
-    }
-
-    public static class Evoker extends IllagerPonyRenderer<EvokerEntity> {
-
-        public Evoker(EntityRendererFactory.Context context) {
-            super(context);
-        }
-
-        @Override
-        public Identifier getTexture(EvokerEntity entity) {
-            return EVOKER;
-        }
+    public static IllagerPonyRenderer<EvokerEntity> evoker(EntityRendererFactory.Context context) {
+        return new IllagerPonyRenderer<>(context, EVOKER);
     }
 
     public static class Illusionist extends IllagerPonyRenderer<IllusionerEntity> {
 
         public Illusionist(EntityRendererFactory.Context context) {
-            super(context);
-        }
-
-        @Override
-        public Identifier getTexture(IllusionerEntity entity) {
-            return ILLUSIONIST;
+            super(context, ILLUSIONIST);
         }
 
         @Override

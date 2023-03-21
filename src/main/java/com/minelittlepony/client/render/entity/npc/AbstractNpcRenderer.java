@@ -18,9 +18,7 @@ import com.minelittlepony.client.render.entity.npc.textures.*;
 
 import java.util.*;
 
-abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> extends PonyRenderer.Caster<T, ClientPonyModel<T>> {
-
-    private final TextureSupplier<T> baseTextures;
+abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> extends PonyRenderer<T, ClientPonyModel<T>> {
 
     private final String entityType;
 
@@ -29,16 +27,15 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
     private final NpcClothingFeature<T, ClientPonyModel<T>, AbstractNpcRenderer<T>> clothing;
 
     public AbstractNpcRenderer(EntityRendererFactory.Context context, String type, TextureSupplier<T> textureSupplier, TextureSupplier<String> formatter) {
-        super(context, ModelType.getPlayerModel(Race.EARTH).getKey(false));
+        super(context, ModelType.getPlayerModel(Race.EARTH).getKey(false), new SillyPonyTextureSupplier<>(textureSupplier, formatter));
         entityType = type;
-        baseTextures = new SillyPonyTextureSupplier<>(textureSupplier, formatter);
         clothing = new NpcClothingFeature<>(this, entityType);
         addFeature(clothing);
     }
 
     @Override
-    protected void addLayers(EntityRendererFactory.Context context) {
-        addFeature(createItemHoldingLayer());
+    protected void addFeatures(EntityRendererFactory.Context context) {
+        addFeature(createHeldItemFeature(context));
         addFeature(new GearFeature<>(this));
     }
 
@@ -88,10 +85,5 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
             return clothing.createTexture(villager, "accessory");
         }
         return wearable.getDefaultTexture();
-    }
-
-    @Override
-    public Identifier getTexture(T villager) {
-        return baseTextures.apply(villager);
     }
 }

@@ -25,33 +25,33 @@ public final class MobRenderers {
     });
     public static final MobRenderers ILLAGER = register("illagers", (state, pony) -> {
         pony.switchRenderer(state, EntityType.VEX, VexRenderer::new);
-        pony.switchRenderer(state, EntityType.EVOKER, IllagerPonyRenderer.Evoker::new);
-        pony.switchRenderer(state, EntityType.VINDICATOR, IllagerPonyRenderer.Vindicator::new);
+        pony.switchRenderer(state, EntityType.EVOKER, IllagerPonyRenderer::evoker);
+        pony.switchRenderer(state, EntityType.VINDICATOR, IllagerPonyRenderer::vindicator);
         pony.switchRenderer(state, EntityType.ILLUSIONER, IllagerPonyRenderer.Illusionist::new);
         pony.switchRenderer(state, EntityType.PILLAGER, PillagerRenderer::new);
     });
     public static final MobRenderers ZOMBIE = register("zombies", (state, pony) -> {
-        pony.switchRenderer(state, EntityType.ZOMBIE, ZomponyRenderer::new);
-        pony.switchRenderer(state, EntityType.HUSK, ZomponyRenderer.Husk::new);
-        pony.switchRenderer(state, EntityType.GIANT, ZomponyRenderer.Giant::new);
-        pony.switchRenderer(state, EntityType.DROWNED, ZomponyRenderer.Drowned::new);
+        pony.switchRenderer(state, EntityType.ZOMBIE, ZomponyRenderer::zombie);
+        pony.switchRenderer(state, EntityType.HUSK, ZomponyRenderer::husk);
+        pony.switchRenderer(state, EntityType.GIANT, ZomponyRenderer::giant);
+        pony.switchRenderer(state, EntityType.DROWNED, ZomponyRenderer::drowned);
     });
     public static final MobRenderers PIGLIN = register("pigzombies", (state, pony) -> {
-        pony.switchRenderer(state, EntityType.PIGLIN, PonyPiglinRenderer::new);
-        pony.switchRenderer(state, EntityType.PIGLIN_BRUTE, PonyPiglinRenderer::new);
-        pony.switchRenderer(state, EntityType.ZOMBIFIED_PIGLIN, PonyPiglinRenderer::new);
+        pony.switchRenderer(state, EntityType.PIGLIN, PonyPiglinRenderer::piglin);
+        pony.switchRenderer(state, EntityType.PIGLIN_BRUTE, PonyPiglinRenderer::brute);
+        pony.switchRenderer(state, EntityType.ZOMBIFIED_PIGLIN, PonyPiglinRenderer::zombified);
         if (!MineLittlePony.getInstance().getConfig().noFun.get()) {
             pony.switchRenderer(state, EntityType.PIG, PonyPigRenderer::new);
         }
     });
     public static final MobRenderers SKELETON = register("skeletons", (state, pony) -> {
-        pony.switchRenderer(state, EntityType.SKELETON, SkeleponyRenderer::new);
-        pony.switchRenderer(state, EntityType.STRAY, SkeleponyRenderer.Stray::new);
-        pony.switchRenderer(state, EntityType.WITHER_SKELETON, SkeleponyRenderer.Wither::new);
+        pony.switchRenderer(state, EntityType.SKELETON, SkeleponyRenderer::skeleton);
+        pony.switchRenderer(state, EntityType.STRAY, SkeleponyRenderer::stray);
+        pony.switchRenderer(state, EntityType.WITHER_SKELETON, SkeleponyRenderer::wither);
     });
     public static final MobRenderers GUARDIAN = register("guardians", (state, pony) -> {
-        pony.switchRenderer(state, EntityType.GUARDIAN, SeaponyRenderer::new);
-        pony.switchRenderer(state, EntityType.ELDER_GUARDIAN, SeaponyRenderer.Elder::new);
+        pony.switchRenderer(state, EntityType.GUARDIAN, SeaponyRenderer::guardian);
+        pony.switchRenderer(state, EntityType.ELDER_GUARDIAN, SeaponyRenderer::elder);
     });
     public static final MobRenderers ENDERMAN = register("endermen", (state, pony) -> {
         pony.switchRenderer(state, EntityType.ENDERMAN, EnderStallionRenderer::new);

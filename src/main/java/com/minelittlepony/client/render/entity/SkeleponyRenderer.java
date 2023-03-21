@@ -2,15 +2,11 @@ package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.SkeleponyModel;
-import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
-import com.minelittlepony.client.render.entity.feature.GlowingItemFeature;
 import com.minelittlepony.client.render.entity.feature.StrayClothingFeature;
+import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.mob.AbstractSkeletonEntity;
-import net.minecraft.entity.mob.StrayEntity;
-import net.minecraft.entity.mob.WitherSkeletonEntity;
+import net.minecraft.entity.mob.*;
 import net.minecraft.util.Identifier;
 
 public class SkeleponyRenderer<Skeleton extends AbstractSkeletonEntity> extends PonyRenderer<Skeleton, SkeleponyModel<Skeleton>> {
@@ -19,50 +15,19 @@ public class SkeleponyRenderer<Skeleton extends AbstractSkeletonEntity> extends 
     public static final Identifier WITHER = new Identifier("minelittlepony", "textures/entity/skeleton/skeleton_wither_pony.png");
     public static final Identifier STRAY = new Identifier("minelittlepony", "textures/entity/skeleton/stray_pony.png");
 
-    public SkeleponyRenderer(EntityRendererFactory.Context context) {
-        super(context, ModelType.SKELETON);
+    public SkeleponyRenderer(EntityRendererFactory.Context context, Identifier texture, float scale) {
+        super(context, ModelType.SKELETON, TextureSupplier.of(texture), scale);
     }
 
-    @Override
-    public Identifier getTexture(Skeleton entity) {
-        return SKELETON;
+    public static SkeleponyRenderer<SkeletonEntity> skeleton(EntityRendererFactory.Context context) {
+        return new SkeleponyRenderer<>(context, SKELETON, 1);
     }
 
-    @Override
-    protected HeldItemFeature<Skeleton, SkeleponyModel<Skeleton>> createItemHoldingLayer() {
-        return new GlowingItemFeature<>(this);
+    public static SkeleponyRenderer<StrayEntity> stray(EntityRendererFactory.Context context) {
+        return PonyRenderer.appendFeature(new SkeleponyRenderer<>(context, STRAY, 1), StrayClothingFeature::new);
     }
 
-    public static class Stray extends SkeleponyRenderer<StrayEntity> {
-
-        public Stray(EntityRendererFactory.Context context) {
-            super(context);
-            addFeature(new StrayClothingFeature<>(this));
-        }
-
-        @Override
-        public Identifier getTexture(StrayEntity entity) {
-            return STRAY;
-        }
+    public static SkeleponyRenderer<WitherSkeletonEntity> wither(EntityRendererFactory.Context context) {
+        return new SkeleponyRenderer<>(context, WITHER, 1.2F);
     }
-
-    public static class Wither extends SkeleponyRenderer<WitherSkeletonEntity> {
-
-        public Wither(EntityRendererFactory.Context context) {
-            super(context);
-        }
-
-        @Override
-        public Identifier getTexture(WitherSkeletonEntity entity) {
-            return WITHER;
-        }
-
-        @Override
-        public void scale(WitherSkeletonEntity skeleton, MatrixStack stack, float ticks) {
-            super.scale(skeleton, stack, ticks);
-            stack.scale(1.2F, 1.2F, 1.2F);
-        }
-
-    }
-
 }
