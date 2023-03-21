@@ -4,11 +4,11 @@ import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.mson.api.ModelView;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.model.armour.ArmourLayer;
-import com.minelittlepony.api.model.armour.ArmourVariant;
 import com.minelittlepony.api.pony.IPony;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
 
@@ -133,9 +133,11 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
         }
 
         @Override
-        public void showLeggings(ArmourLayer layer, ArmourVariant variant) {
-            rightArm.visible = true;
-            leftArm.visible = true;
+        public boolean setVisibilities(EquipmentSlot slot, ArmourLayer layer) {
+            boolean result = super.setVisibilities(slot, layer);
+            rightLeg.visible = false;
+            leftLeg.visible = false;
+            return result;
         }
 
         @Override

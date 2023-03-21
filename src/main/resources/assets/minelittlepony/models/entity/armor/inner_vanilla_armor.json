@@ -1,0 +1,73 @@
+{
+	"parent": "minelittlepony:steve_pony",
+	"texture": {"w": 64, "h": 32},
+	"dilate": 0.2,
+	"data": {
+		"body": {
+			"texture": { "u": 16, "v": 18 },
+			"cubes": [
+				{ "from": [-4, 4, -2], "size": [ 8,  8,  4] }
+			],
+			"children": {
+				"upper_torso": {
+					"type": "mson:planar",
+					"texture": {"u": 24, "v": 0},
+					"east": [  4, 4,  2, 8,  8, 32, 23],
+					"west": [ -4, 4,  2, 8,  8, 32, 23],
+					"south": [-4, 4, 10, 8,  8, 32, 23],
+					"up": [   -4, 4,  1, 8, 12, 32, 23],
+					"__comment": "it's a little short, so the butt tends to show. :/"
+				}
+			}
+		},
+		"head": {
+			"cubes": [
+				{ "from": [-4, -6, -6], "size": [ 8, 8, 8], "dilate": 0.5 },
+				{ "from": [-4, -8, -1], "size": [ 2, 2, 2], "texture": {"u": 0, "v": 0}, "dilate": -0.0125 },
+				{ "from": [ 2, -8, -1], "size": [ 2, 2, 2], "texture": {"u": 0, "v": 4}, "dilate": -0.0125 }
+			]
+		},
+		"right_arm": {
+			"pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", 0],
+			"texture": { "u": 0, "v": 16 },
+			"cubes": [
+				{
+					"from": [ "#arm_x_neg", 4, "#arm_z"],
+					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
+				}
+			]
+		},
+		"left_arm": {
+			"pivot": ["#arm_rotation_x", "#arm_rotation_y", 0],
+			"mirror": true,
+			"texture": { "u": 0, "v": 16 },
+			"cubes": [
+				{
+					"from": [ "#arm_x", 4, "#arm_z"],
+					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
+				}
+			]
+		},
+		"right_leg": {
+      "pivot": ["#arm_rotation_x_neg", 0, 0],
+      "texture": { "u": 0, "v": 16 },
+      "cubes": [
+        {
+          "from": [ "#arm_x_neg", 4, "#arm_z"],
+          "size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
+        }
+      ]
+		},
+		"left_leg": {
+      "pivot": ["#arm_rotation_x", 0, 0],
+      "mirror": true,
+      "texture": { "u": 0, "v": 16 },
+      "cubes": [
+        {
+          "from": [ "#arm_x", 4, "#arm_z"],
+          "size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
+        }
+      ]
+		}
+	}
+}

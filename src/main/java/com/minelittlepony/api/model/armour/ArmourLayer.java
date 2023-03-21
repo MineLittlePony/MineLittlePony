@@ -16,4 +16,8 @@ public enum ArmourLayer {
     public int getLegacyId() {
         return ordinal() + 1;
     }
+
+    public boolean isInner() {
+        return this == INNER;
+    }
 }

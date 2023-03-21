@@ -43,8 +43,8 @@ public class ModelWrapper<T extends LivingEntity, M extends IModel> implements I
         return body;
     }
 
-    public Optional<PonyArmourModel<T>> getArmourModel(ItemStack stack, ArmourLayer layer) {
-        return ArmorModelRegistry.getModelKey(stack.getItem(), layer).or(() -> ArmorModelRegistry.getDefault(layer).filter(l -> stack.getItem() instanceof ArmorItem))
+    public Optional<PonyArmourModel<T>> getArmourModel(ItemStack stack, ArmourLayer layer, ArmourVariant variant) {
+        return ArmorModelRegistry.getModelKey(stack.getItem(), layer).or(() -> variant.getDefaultModel(layer).filter(l -> stack.getItem() instanceof ArmorItem))
                 .map(key -> armor.computeIfAbsent(key, k -> {
             return armorFactory == null ? k.createModel() : k.createModel(armorFactory);
         }));

@@ -1,24 +1,17 @@
 package com.minelittlepony.api.model.armour;
 
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
 
-import com.minelittlepony.api.model.IModel;
+import com.minelittlepony.client.model.IPonyModel;
 
-public interface IArmourModel {
+public interface IArmourModel<T extends LivingEntity> {
     /**
      * Called to synchronise this armour's angles with that of another.
      *
      * @param model The other model to mimic
      */
-    void synchroniseAngles(IModel model);
-
-    /**
-     * Prepares an armour model for rendering, first hiding all the pieces and then incrementally showing them as appropriate.
-     *
-     * @param slot      The armour slot being rendered
-     * @param layer     The layer. INNER/OUTER
-     *
-     * @return false to skip this render pass.
-     */
-    boolean setVisibilities(EquipmentSlot slot, ArmourLayer layer, ArmourVariant variant);
+    boolean poseModel(T entity, float limbAngle, float limbDistance, float age, float headYaw, float headPitch,
+            EquipmentSlot slot, ArmourLayer layer,
+            IPonyModel<T> mainModel);
 }

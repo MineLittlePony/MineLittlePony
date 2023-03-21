@@ -3,27 +3,29 @@ package com.minelittlepony.client.render.entity.feature;
 import com.minelittlepony.api.model.armour.*;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
-import com.minelittlepony.client.model.armour.PonyArmourModel;
+import com.minelittlepony.client.model.armour.DefaultArmourTextureResolver;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.common.util.Color;
 
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.*;
+import net.minecraft.client.render.entity.model.*;
 import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.render.model.BakedModelManager;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
+import net.minecraft.item.trim.ArmorTrim;
+import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.util.Identifier;
 
 public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyFeature<T, M> {
 
-    public ArmourFeature(IPonyRenderContext<T, M> renderer) {
-        super(renderer);
+    public ArmourFeature(IPonyRenderContext<T, M> context, BakedModelManager bakery) {
+        super(context);
     }
 
     @Override
@@ -38,66 +40,77 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
         }
     }
 
-    public static <T extends LivingEntity, V extends BipedEntityModel<T> & IArmourModel> void renderArmor(
-            ModelWrapper<T, ? extends IPonyModel<T>> pony, MatrixStack stack,
-                    VertexConsumerProvider renderContext, int lightUv, T entity,
+    public static <T extends LivingEntity, V extends BipedEntityModel<T> & IArmourModel<T>> void renderArmor(
+            ModelWrapper<T, ? extends IPonyModel<T>> pony, MatrixStack matrices,
+                    VertexConsumerProvider renderContext, int light, T entity,
                     float limbDistance, float limbAngle,
                     float age, float headYaw, float headPitch,
                     EquipmentSlot armorSlot, ArmourLayer layer) {
 
-        ItemStack itemstack = entity.getEquippedStack(armorSlot);
+        ItemStack stack = entity.getEquippedStack(armorSlot);
 
-        if (itemstack.isEmpty()) {
+        if (stack.isEmpty()) {
             return;
         }
 
-        PonyArmourModel<T> model = pony.getArmourModel(itemstack, layer).orElse(null);
-        if (model == null) {
-            return;
-        }
+        IArmourTextureResolver resolver = DefaultArmourTextureResolver.INSTANCE;
+        Identifier texture = resolver.getTexture(entity, stack, armorSlot, layer, null);
+        ArmourVariant variant = resolver.getVariant(layer, texture);
 
-        IArmourTextureResolver resolver = model.getArmourTextureResolver();
+        boolean glint = stack.hasGlint();
+        Item item = stack.getItem();
 
-        boolean glint = itemstack.hasGlint();
-
-        Identifier texture = resolver.getTexture(entity, itemstack, armorSlot, layer, null);
-
-        Item item = itemstack.getItem();
-
-        if (model.setVisibilities(armorSlot, layer, resolver.getVariant(layer, texture))) {
-            model.setMetadata(pony.body().getMetadata());
-
-            pony.body().copyAttributes(model);
-            model.setAngles(entity, limbAngle, limbDistance, age, headYaw, headPitch);
-            model.synchroniseAngles(pony.body());
-
+        pony.getArmourModel(stack, layer, variant)
+                .filter(m -> m.poseModel(entity, limbAngle, limbDistance, age, headYaw, headPitch, armorSlot, layer, pony.body()))
+                .ifPresent(model -> {
             float red = 1;
             float green = 1;
             float blue = 1;
 
-            if (item instanceof DyeableArmorItem) {
-                int color = ((DyeableArmorItem)item).getColor(itemstack);
+            if (item instanceof DyeableArmorItem dyeable) {
+                int color = dyeable.getColor(stack);
                 red = Color.r(color);
                 green = Color.g(color);
                 blue = Color.b(color);
             }
 
-            renderArmourPart(stack, renderContext, lightUv, glint, model, red, green, blue, texture);
+            model.render(matrices, getArmorConsumer(renderContext, texture, glint), light, OverlayTexture.DEFAULT_UV, red, green, blue, 1);
+
             if (item instanceof DyeableArmorItem) {
-                texture = resolver.getTexture(entity, itemstack, armorSlot, layer, "overlay");
-                if (model.setVisibilities(armorSlot, layer, resolver.getVariant(layer, texture))) {
-                    renderArmourPart(stack, renderContext, lightUv, false, model, 1, 1, 1, texture);
+                Identifier tex = resolver.getTexture(entity, stack, armorSlot, layer, "overlay");
+                pony.getArmourModel(stack, layer, resolver.getVariant(layer, tex))
+                        .filter(m -> m.poseModel(entity, limbAngle, limbDistance, age, headYaw, headPitch, armorSlot, layer, pony.body()))
+                        .ifPresent(m -> {
+                    m.render(matrices, getArmorConsumer(renderContext, tex, false), light, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
+                });
+            }
+
+            if (entity.world.getEnabledFeatures().contains(FeatureFlags.UPDATE_1_20)) {
+                if (stack.getItem() instanceof ArmorItem armor) {
+                    ArmorTrim.getTrim(entity.world.getRegistryManager(), stack).ifPresent(trim -> {
+                        pony.getArmourModel(stack, layer, ArmourVariant.TRIM)
+                                .filter(m -> m.poseModel(entity, limbAngle, limbDistance, age, headYaw, headPitch, armorSlot, layer, pony.body()))
+                                .ifPresent(m -> {
+                            m.render(matrices, getTrimConsumer(renderContext, armor.getMaterial(), trim, layer, glint), light, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
+                        });
+                    });
                 }
             }
-        }
+        });
     }
 
-    private static <T extends LivingEntity, V extends BipedEntityModel<T> & IArmourModel> void renderArmourPart(
-            MatrixStack matrices, VertexConsumerProvider provider,
-            int light, boolean glint, V model, float r, float g, float b, Identifier texture) {
+    private static VertexConsumer getArmorConsumer(VertexConsumerProvider provider, Identifier texture, boolean glint) {
+        return ItemRenderer.getArmorGlintConsumer(provider, RenderLayer.getArmorCutoutNoCull(texture), false, glint);
+    }
 
-        VertexConsumer vertices = ItemRenderer.getArmorGlintConsumer(provider, RenderLayer.getArmorCutoutNoCull(texture), false, glint);
+    private static VertexConsumer getTrimConsumer(VertexConsumerProvider provider, ArmorMaterial material, ArmorTrim trim, ArmourLayer layer, boolean glint) {
+        SpriteAtlasTexture armorTrimsAtlas = MinecraftClient.getInstance().getBakedModelManager().getAtlas(TexturedRenderLayers.ARMOR_TRIMS_ATLAS_TEXTURE);
+        Sprite sprite = armorTrimsAtlas.getSprite(
+            layer == ArmourLayer.INNER ? trim.getLeggingsModelId(material) : trim.getGenericModelId(material)
+        );
 
-        model.render(matrices, vertices, light, OverlayTexture.DEFAULT_UV, r, g, b, 1);
+        return sprite.getTextureSpecificVertexConsumer(
+            ItemRenderer.getDirectItemGlintConsumer(provider, TexturedRenderLayers.getArmorTrims(), true, glint)
+        );
     }
 }

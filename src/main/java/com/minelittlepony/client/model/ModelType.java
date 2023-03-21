@@ -52,8 +52,10 @@ public final class ModelType {
     public static final ModelKey<PonyElytra<?>> ELYTRA = register("elytra", PonyElytra::new);
 
     public static final ModelKey<ArmorStandEntityModel> ARMOUR_STAND = register("armour_stand", PonyArmourStandModel::new);
-    public static final ModelKey<PonyArmourModel<?>> INNER_ARMOR = register("armor/inner_pony_armor", PonyArmourModel::new);
-    public static final ModelKey<PonyArmourModel<?>> OUTER_ARMOR = register("armor/outer_pony_armor", PonyArmourModel::new);
+    public static final ModelKey<PonyArmourModel<?>> INNER_VANILLA_ARMOR = register("armor/inner_vanilla_armor", PonyArmourModel::new);
+    public static final ModelKey<PonyArmourModel<?>> OUTER_VANILLA_ARMOR = register("armor/outer_vanilla_armor", PonyArmourModel::new);
+    public static final ModelKey<PonyArmourModel<?>> INNER_PONY_ARMOR = register("armor/inner_pony_armor", PonyArmourModel::new);
+    public static final ModelKey<PonyArmourModel<?>> OUTER_PONY_ARMOR = register("armor/outer_pony_armor", PonyArmourModel::new);
 
     public static final GearModelKey<Stetson> STETSON = registerGear("stetson", Wearable.STETSON, Stetson::new);
     public static final GearModelKey<SaddleBags> SADDLEBAGS_BOTH = registerGear("saddlebags", Wearable.SADDLE_BAGS_BOTH, t -> new SaddleBags(t, Wearable.SADDLE_BAGS_BOTH));
