@@ -1,3 +1,9 @@
 {
-	"parent": "minelittlepony:races/steve/pegasus"
+	"parent": "minelittlepony:races/steve/hippogriff",
+	"data": {
+    "tail": {
+      "implementation": "com.minelittlepony.client.model.part.LionTail",
+      "data": "minelittlepony:components/lion_tail"
+    }
+	}
 }

@@ -1,0 +1,37 @@
+{
+  "texture": {"w": 64, "h": 64},
+  "locals": {
+    "ear_angle": 45,
+    "ear_angle_neg": [180, "-", "#ear_angle"]
+	},
+	"data": {
+		"right": {
+      "type": "mson:planar",
+      "pivot": [-3, -4, 0],
+      "rotate": [-90, 40, "#ear_angle"],
+      "west": [0, 0, 0, 4, 2, 12, 16],
+      "children": {
+        "inner": {
+          "type": "mson:planar",
+          "pivot": [0, 2, 0],
+          "rotate": [0, 0, -40],
+          "west": [0, 0, 0, 4, 2, 12, 18]
+        }
+      }
+    },
+    "left": {
+      "type": "mson:planar",
+      "pivot": [6, -1, 0],
+      "rotate": [-90, 40, "#ear_angle_neg"],
+      "west": [0, 0, 0, 4, 2, 16, 16, false, false],
+      "children": {
+        "inner": {
+          "type": "mson:planar",
+          "pivot": [0, 2, 0],
+          "rotate": [0, 0, -40],
+          "west": [0, 0, 0, 4, 2, 16, 18, false, false]
+        }
+      }
+    }
+  }
+}

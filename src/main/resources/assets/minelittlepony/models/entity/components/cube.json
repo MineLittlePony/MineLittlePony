@@ -1,0 +1,49 @@
+{
+  "texture": { "w": 64, "h": 64 },
+  "locals": {
+    "x": 0,
+    "y": 0,
+    "z": 0,
+    "u": 0,
+    "v": 0,
+
+    "width": 10,
+    "depth": 10,
+    "height": 10,
+
+    "side_v": ["#v", "+", "#depth"],
+
+    "west_face_u": "#u",
+    "north_face_u": [ "#west_face_u", "+", "#depth" ],
+    "east_face_u": [ "#north_face_u", "+", "#width"],
+    "south_face_u": [ "#east_face_u", "+", "#depth"],
+
+    "south_face_z":  [ "#z", "+", "#depth"],
+    "east_face_x":   [ "#x", "+", "#width"],
+    "bottom_face_y": [ "#y", "+", "#height"],
+
+    "dilate_x": 0,
+    "dilate_y": 0,
+    "dilate_z": 0,
+
+    "rotate_x": 0,
+    "rotate_y": 0,
+    "rotate_z": 0
+  },
+  "data": {
+    "part": {
+      "type": "mson:planar",
+      "dilate": [ "#dilate_x", "#dilate_y", "#dilate_z" ],
+      "rotate": [ "#rotate_x", "#rotate_y", "#rotate_z" ],
+
+      "up": ["#x", "#y", "#z", "#width", "#depth", "#north_face_u", "#v"],
+      "down": ["#x", "#bottom_face_y", "#z", "#width", "#depth", "#east_face_u", "#v"],
+
+      "north": ["#x", "#y", "#z", "#width", "#height", "#north_face_u", "#side_v"],
+      "west": ["#x", "#y", "#z", "#depth", "#height", "#west_face_u", "#side_v"],
+
+      "south": ["#x", "#y", "#south_face_z", "#width", "#height", "#south_face_u", "#side_v"],
+      "east": ["#east_face_x", "#y", "#z", "#depth", "#height", "#east_face_u", "#side_v"]
+    }
+  }
+}

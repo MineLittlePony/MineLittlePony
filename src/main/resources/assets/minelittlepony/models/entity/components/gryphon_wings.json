@@ -1,12 +1,16 @@
 {
+  "locals": {
+    "wing_scale": 1.25
+  },
   "data": {
 		"left_wing": {
 			"implementation": "com.minelittlepony.client.model.part.PonyWings$Wing",
 			"data": {
 				"folded": {
 					"texture": {"u": 56, "v": 32, "w": 64, "h": 64},
-					"pivot": [0, 13, -2],
-					"rotate": [90, 0, 0],
+					"dilate": [-0.125, 0.5, 0],
+					"pivot": [-1.5, 11, -1],
+					"rotate": [100, 0, 0],
 					"cubes": [
 						{"from": [4.1, 5, 1.999], "size": [2, 6, 2] },
 						{"from": [4.1, 5, 4.001], "size": [2, 8, 2] },
@@ -15,10 +19,10 @@
 				},
 				"extended": {
 					"texture": {"u": 57, "v": 35, "w": 64, "h": 64},
-					"pivot": [4.5, 5.3, 6],
+					"pivot": [3.5, 5, 6],
 					"rotate": [-30, 180, 0],
 					"children": {
-						"feather_1": { "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "dilate":  0.1 } ] },
+						"feather_1": { "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "dilate":  [0.1, 2, 0.1] } ] },
 						"feather_2": { "cubes": [ {"from": [-0.5,-1,  -0.3], "size": [1, 8, 2], "dilate":  0.1 } ],  "rotate": [-48, 0, 0] },
 						"feather_3": { "cubes": [ {"from": [-0.5, 1.8, 1.3], "size": [1, 8, 2], "dilate": -0.1 } ],  "rotate": [-42, 0, 0] },
 						"feather_4": { "cubes": [ {"from": [-0.5, 5,     2], "size": [1, 8, 2] } ],                   "rotate": [-28, 0, 0] },
@@ -33,8 +37,8 @@
 			"data": {
 				"folded": {
 					"texture": {"u": 56, "v": 16, "w": 64, "h": 64},
-					"pivot": [0, 13, -2],
-					"rotate": [90, 0, 0],
+					"pivot": [1.5, 11, -1],
+					"rotate": [100, 0, 0],
 					"cubes": [
 						{"from": [-6.001, 5, 1.999], "size": [2, 6, 2] },
 						{"from": [-6.001, 5, 4.001], "size": [2, 8, 2] },
@@ -43,10 +47,10 @@
 				},
 				"extended": {
 					"texture": {"u": 56, "v": 19, "w": 64, "h": 64},
-					"pivot": [-4.5, 5.3, 6],
+					"pivot": [-3.5, 5, 6],
 					"rotate": [-30, 180, 0],
 					"children": {
-						"feather_1": { "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "dilate":  0.1 } ] },
+						"feather_1": { "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "dilate":  [0.1, 2, 0.1] } ] },
 						"feather_2": { "cubes": [ {"from": [-0.5,-1,  -0.3], "size": [1, 8, 2], "dilate":  0.1 } ],  "rotate": [-48, 0, 0] },
 						"feather_3": { "cubes": [ {"from": [-0.5, 1.8, 1.3], "size": [1, 8, 2], "dilate": -0.1 } ],  "rotate": [-42, 0, 0] },
 						"feather_4": { "cubes": [ {"from": [-0.5, 5,     2], "size": [1, 8, 2] } ],                   "rotate": [-28, 0, 0] },
@@ -61,8 +65,8 @@
 			"data": {
 				"folded": {
 					"texture": {"u": 56, "v": 32, "w": 64, "h": 64},
-					"pivot": [0, 13, -2],
-					"rotate": [90, 0, 0],
+					"pivot": [1.5, 11, -1],
+					"rotate": [100, 0, 0],
 					"cubes": [
 						{"from": [-6.001, 5, 1.999], "size": [2, 6, 2] },
 						{"from": [-6.001, 5, 4.001], "size": [2, 8, 2] },
@@ -71,10 +75,10 @@
 				},
 				"extended": {
 					"texture": {"u": 57, "v": 35, "w": 64, "h": 64},
-					"pivot": [-4.5, 5.3, 6],
+					"pivot": [-3.5, 5, 6],
 					"rotate": [-30, 180, 0],
 					"children": {
-						"feather_1": { "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "dilate":  0.1 } ],                         "mirror": true },
+						"feather_1": { "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "dilate":  [0.1, 2, 0.1] } ],               "mirror": true },
 						"feather_2": { "cubes": [ {"from": [-0.5,-1,  -0.3], "size": [1, 8, 2], "dilate":  0.1 } ],  "rotate": [-48, 0, 0], "mirror": true },
 						"feather_3": { "cubes": [ {"from": [-0.5, 1.8, 1.3], "size": [1, 8, 2], "dilate": -0.1 } ],  "rotate": [-42, 0, 0], "mirror": true },
 						"feather_4": { "cubes": [ {"from": [-0.5, 5,     2], "size": [1, 8, 2] } ],                  "rotate": [-28, 0, 0], "mirror": true },
