@@ -17,12 +17,11 @@ public class PostureFlight extends MotionCompositor implements PonyPosture<Playe
     @Override
     public void transform(IModel model, PlayerEntity player, MatrixStack stack, double motionX, double motionY, double motionZ, float yaw, float ticks) {
         model.getAttributes().motionPitch = (float) calculateIncline(player, motionX, motionY, motionZ);
+        model.getAttributes().motionRoll = (float)calculateRoll(player, motionX,  motionY, motionZ);
 
-        float roll = (float)calculateRoll(player, motionX,  motionY, motionZ);
-
-        roll = model.getMetadata().getInterpolator(player.getUuid()).interpolate("pegasusRoll", roll, 10);
+        model.getAttributes().motionRoll = model.getMetadata().getInterpolator(model.getAttributes().interpolatorId).interpolate("pegasusRoll", model.getAttributes().motionRoll, 10);
 
         stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(model.getAttributes().motionPitch));
-        stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(roll));
+        stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(model.getAttributes().motionRoll));
     }
 }

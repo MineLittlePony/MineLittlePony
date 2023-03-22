@@ -28,19 +28,25 @@ public class LionTail implements IPart {
         Interpolator interpolator = Interpolator.linear(attributes.interpolatorId);
 
         float straightness = 1.6F * (1 + (float)Math.sin(ticks / speed) / 8F);
-        float bend = (float)Math.sin(Math.PI/2F + 2 * ticks / speed) / 16F;
+        float twist = (float)Math.sin(Math.PI/2F + 2 * ticks / speed) / 16F;
+        float bend = attributes.motionRoll / 80F;
 
         if (attributes.isCrouching) {
             baseSail += 1;
             straightness += 0.5F;
         }
 
+        if (attributes.isGoingFast) {
+            straightness *= 2;
+        }
+
         straightness = interpolator.interpolate("kirin_tail_straightness", straightness, 10);
+        twist = interpolator.interpolate("kirin_tail_twist", twist, 10);
         bend = interpolator.interpolate("kirin_tail_bendiness", bend, 10);
 
         tail.pitch = baseSail;
         tail.pitch += swing / 2;
-        tail.yaw = bend;
+        tail.yaw = twist;
         tail.roll = bodySwing * 2;
 
         float sinTickFactor = MathHelper.sin(ticks * 0.067f) * 0.05f;
@@ -49,7 +55,7 @@ public class LionTail implements IPart {
 
         var tail2 = tail.getChild("tail2");
         tail2.pitch = -(baseSail + sinTickFactor) / straightness;
-        tail2.yaw = bend;
+        tail2.yaw = twist;
         tail2.roll = bodySwing;
 
         var tail3 = tail2.getChild("tail3");
@@ -71,6 +77,11 @@ public class LionTail implements IPart {
         tail6.pitch = tail5.pitch * straightness;
         tail6.yaw = tail5.yaw;
         tail6.roll = -bodySwing * 2F;
+
+        tail3.roll += bend;
+        tail4.roll += bend;
+        tail5.roll += bend;
+        tail6.roll += bend;
     }
 
     @Override

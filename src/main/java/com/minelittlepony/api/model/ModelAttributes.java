@@ -75,6 +75,12 @@ public class ModelAttributes {
      * Vertical pitch whilst flying.
      */
     public float motionPitch;
+
+    /**
+     * Horizontal roll whilst flying.
+     */
+    public float motionRoll;
+
     /**
      * Lerp amount controlling leg swing whilst performing a rainboom.
      */
