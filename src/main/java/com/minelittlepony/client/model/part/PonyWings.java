@@ -27,9 +27,20 @@ public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
     @Override
     public void init(ModelView context) {
         pegasus = context.getModel();
+
+        float wingScale = context.getLocalValue("wing_scale", 1); // pegasi 1 / bats 1.3F
+        float walkingRotationSpeed = context.getLocalValue("walking_rotation_speed", 0.15F); // pegasi 0.15 / bats 0.05F
+
         leftWing = context.findByName("left_wing");
         rightWing = context.findByName("right_wing");
         legacyWing = context.findByName("legacy_right_wing");
+
+        leftWing.wingScale = wingScale;
+        leftWing.walkingRotationSpeed = walkingRotationSpeed;
+        rightWing.wingScale = wingScale;
+        rightWing.walkingRotationSpeed = walkingRotationSpeed;
+        legacyWing.wingScale = wingScale;
+        legacyWing.walkingRotationSpeed = walkingRotationSpeed;
     }
 
     public Wing getLeft() {
@@ -92,8 +103,8 @@ public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
         protected final ModelPart extended;
         protected final ModelPart folded;
 
-        private float wingScale;
-        private float walkingRotationSpeed;
+        private float wingScale = 1;
+        private float walkingRotationSpeed = 0.15F;
 
         public Wing(ModelPart tree) {
             extended = tree.getChild("extended");
@@ -103,8 +114,6 @@ public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
         @Override
         public void init(ModelView context) {
             pegasus = context.getModel();
-            wingScale = context.getLocalValue("wing_scale", 1); // pegasi 1 / bats 1.3F
-            walkingRotationSpeed = context.getLocalValue("walking_rotation_speed", 0.15F); // pegasi 0.15 / bats 0.05F
         }
 
         public void rotateWalking(float swing) {
