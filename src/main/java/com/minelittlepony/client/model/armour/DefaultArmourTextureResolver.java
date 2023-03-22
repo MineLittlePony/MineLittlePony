@@ -7,6 +7,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
@@ -25,23 +26,17 @@ import java.util.concurrent.TimeUnit;
 /**
  * The default texture resolver used by Mine Little Pony.
  * <p>
- * The search order is as follows:
+ * Textures found are of the format:
  * <p>
- * namespace:textures/models/armor/material_layer_[outer|inner](_overlay)(_custom_[0-9]+)_pony.png
- * namespace:textures/models/armor/material_layer_[outer|inner](_overlay)(_custom_[0-9]+).png
- * namespace:textures/models/armor/material_layer_[1|2](_overlay)(_custom_[0-9]+)_pony.png
- * namespace:textures/models/armor/material_layer_[1|2](_overlay)(_custom_[0-9]+).png
- * namespace:textures/models/armor/material_layer_[outer|inner](_overlay)_pony.png
- * namespace:textures/models/armor/material_layer_[outer|inner](_overlay).png
- * namespace:textures/models/armor/material_layer_[1|2](_overlay)_pony.png
- * namespace:textures/models/armor/material_layer_[1|2](_overlay).png
+ * namespace:textures/models/armor/material_layer_[outer|1|inner|2](_overlay)(_custom_#)(_pony).png
  * <p>
- * - if namespace is "minecraft" will be rewritten to "minelittlepony"
  * <p>
- * For how modders can customise both the model and texture please refer to {@link IArmour} and {@link IArmourTextureResolver}.
- *
- * @see IArmour
- * @see IArmourTextureResolver
+ * - Textures ending _pony are returned first if found
+ * - _custom_# corresponds to a CustomModelData NBT integer value on the item passed, if available
+ * - _overlay is used for the second layer of leather armour, or mods if they make use of it. Can be anything! Check your mod's documentation for values supported.
+ * - outer|1|inner|2 is the layer. outer is an alias for 1 and inner is an alias for 2. Named versions are used instead of numbers if available.
+ * - the "minecraft" namespace is always replaced with "minelittlepony"
+ * <p>
  */
 public class DefaultArmourTextureResolver implements IArmourTextureResolver {
     public static final DefaultArmourTextureResolver INSTANCE = new DefaultArmourTextureResolver();
@@ -56,7 +51,9 @@ public class DefaultArmourTextureResolver implements IArmourTextureResolver {
 
     @Override
     public Identifier getTexture(LivingEntity entity, ItemStack stack, EquipmentSlot slot, ArmourLayer layer,  @Nullable String type) {
-        Identifier material = new Identifier(((ArmorItem) stack.getItem()).getMaterial().getName());
+        Identifier material = stack.getItem() instanceof ArmorItem armor
+                ? new Identifier(armor.getMaterial().getName())
+                : Registries.ITEM.getId(stack.getItem());
         String custom = getCustom(stack);
 
         try {
