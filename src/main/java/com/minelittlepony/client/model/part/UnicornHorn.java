@@ -42,7 +42,7 @@ public class UnicornHorn implements IPart {
     }
 
     @Override
-    public void setVisible(boolean visible) {
+    public void setVisible(boolean visible, ModelAttributes attributes) {
         this.visible = visible;
     }
 }

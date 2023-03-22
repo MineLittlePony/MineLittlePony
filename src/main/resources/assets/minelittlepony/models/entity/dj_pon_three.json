@@ -1,5 +1,5 @@
 {
-	"texture": {"w": 64, "h": 64},
+	"texture": {"w": 64, "h": 64, "u": 24, "v": 0},
 	"data": {
 		"head": {
 			"cubes": [

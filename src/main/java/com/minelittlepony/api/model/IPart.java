@@ -21,7 +21,7 @@ public interface IPart extends PonyModelConstants {
     /**
      * Sets whether this part should be rendered.
      */
-    default void setVisible(boolean visible) {
+    default void setVisible(boolean visible, ModelAttributes attributes) {
 
     }
 }

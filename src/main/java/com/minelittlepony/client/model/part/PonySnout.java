@@ -13,8 +13,6 @@ import com.minelittlepony.mson.api.model.PartBuilder;
 
 public class PonySnout implements IPart, MsonModel {
 
-    private boolean visible = false;
-
     private final ModelPart mare;
     private final ModelPart stallion;
 
@@ -36,23 +34,15 @@ public class PonySnout implements IPart, MsonModel {
     }
 
     @Override
-    public void setRotationAndAngles(ModelAttributes attributes, float move, float swing, float bodySwing, float ticks) {
-        setGender(attributes.metadata.getGender());
-    }
-
-    @Override
     public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, ModelAttributes attributes) {
     }
 
     @Override
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
+    public void setVisible(boolean visible, ModelAttributes attributes) {
+        visible &= !attributes.metadata.getRace().isHuman() && MineLittlePony.getInstance().getConfig().snuzzles.get();
+        Gender gender = attributes.metadata.getGender();
 
-    public void setGender(Gender gender) {
-        boolean show = visible && MineLittlePony.getInstance().getConfig().snuzzles.get();
-
-        mare.visible = (show && gender.isMare());
-        stallion.visible = (show && gender.isStallion());
+        mare.visible = (visible && gender.isMare());
+        stallion.visible = (visible && gender.isStallion());
     }
 }

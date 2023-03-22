@@ -593,7 +593,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         super.setVisible(visible);
         neck.visible = visible;
 
-        parts.forEach(part -> part.setVisible(visible));
+        parts.forEach(part -> part.setVisible(visible, attributes));
     }
 
     @Override

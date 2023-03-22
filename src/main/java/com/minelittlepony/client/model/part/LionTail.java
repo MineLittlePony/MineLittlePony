@@ -74,7 +74,7 @@ public class LionTail implements IPart {
     }
 
     @Override
-    public void setVisible(boolean visible) {
+    public void setVisible(boolean visible, ModelAttributes attributes) {
         tail.visible = visible;
     }
 

@@ -30,8 +30,8 @@ public class PonyEars implements IPart, MsonModel {
     }
 
     @Override
-    public void setVisible(boolean visible) {
-        right.visible = visible;
-        left.visible = visible;
+    public void setVisible(boolean visible, ModelAttributes attributes) {
+        right.visible = visible && !attributes.metadata.getRace().isHuman();
+        left.visible = visible && !attributes.metadata.getRace().isHuman();
     }
 }
