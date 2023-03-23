@@ -17,6 +17,10 @@ import java.util.function.Supplier;
 
 public class MsgPonyData implements IPonyData {
 
+    private final short API_IDENTIFIER = (short) 0xABCD;
+    // API version - increment this number before any time any data is added/removed/moved in the data stream
+    private final byte API_VERSION = 2;
+
     private final Race race;
     private final TailLength tailLength;
     private final TailShape tailShape;
@@ -41,6 +45,19 @@ public class MsgPonyData implements IPonyData {
     }
 
     public MsgPonyData(PacketByteBuf buffer) {
+        short data = buffer.readShort();
+        if (data != API_IDENTIFIER || buffer.readByte() != API_VERSION) {
+            race = null;
+            tailLength = null;
+            tailShape = null;
+            gender = null;
+            size = null;
+            glowColor = 0;
+            noSkin = true;
+            wearables = null;
+            wearableColor = 0;
+            return;
+        }
         race = buffer.readEnumConstant(Race.class);
         tailLength = buffer.readEnumConstant(TailLength.class);
         tailShape = buffer.readEnumConstant(TailShape.class);
@@ -70,6 +87,9 @@ public class MsgPonyData implements IPonyData {
     }
 
     public PacketByteBuf toBuffer(PacketByteBuf buffer) {
+        buffer.writeByte((API_IDENTIFIER & 0xFF00) >> 8);
+        buffer.writeByte(API_IDENTIFIER & 0x00FF);
+        buffer.writeByte(API_VERSION);
         buffer.writeEnumConstant(race);
         buffer.writeEnumConstant(tailLength);
         buffer.writeEnumConstant(tailShape);
