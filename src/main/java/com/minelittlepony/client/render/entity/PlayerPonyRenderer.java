@@ -27,7 +27,6 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.feature.*;
-import net.minecraft.client.render.entity.model.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Arm;
@@ -75,10 +74,6 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
 
     @Override
     protected void scale(AbstractClientPlayerEntity entity, MatrixStack stack, float tickDelta) {
-        if (getModel() instanceof PlayerEntityModel) {
-            ((PlayerEntityModel<?>)getModel()).setVisible(true);
-        }
-
         if (manager.getModel().getAttributes().isSitting) {
             stack.translate(0, entity.getHeightOffset(), 0);
         }
