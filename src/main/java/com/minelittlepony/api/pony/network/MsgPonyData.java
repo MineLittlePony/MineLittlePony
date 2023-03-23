@@ -16,10 +16,9 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public class MsgPonyData implements IPonyData {
-
-    private final short API_IDENTIFIER = (short) 0xABCD;
+    private static final short API_IDENTIFIER = (short) 0xABCD;
     // API version - increment this number before any time any data is added/removed/moved in the data stream
-    private final byte API_VERSION = 2;
+    private static final byte API_VERSION = 2;
 
     private final Race race;
     private final TailLength tailLength;
@@ -87,8 +86,7 @@ public class MsgPonyData implements IPonyData {
     }
 
     public PacketByteBuf toBuffer(PacketByteBuf buffer) {
-        buffer.writeByte((API_IDENTIFIER & 0xFF00) >> 8);
-        buffer.writeByte(API_IDENTIFIER & 0x00FF);
+        buffer.writeShort(API_IDENTIFIER);
         buffer.writeByte(API_VERSION);
         buffer.writeEnumConstant(race);
         buffer.writeEnumConstant(tailLength);
