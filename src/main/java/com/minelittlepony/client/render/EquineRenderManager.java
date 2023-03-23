@@ -162,12 +162,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
     public void updateModel(T entity, ModelAttributes.Mode mode) {
         pony = renderer.getEntityPony(entity);
         playerModel.applyMetadata(pony.metadata());
-        updateForEntity(pony, entity);
 
-        getModel().updateLivingState(entity, pony, mode);
-    }
-
-    private void updateForEntity(IPony pony, Entity entity) {
         if (pony.hasMetadata() && entity instanceof RegistrationHandler && ((RegistrationHandler)entity).shouldUpdateRegistration(pony)) {
             entity.calculateDimensions();
 
@@ -179,6 +174,8 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
             }
             PonyDataCallback.EVENT.invoker().onPonyDataAvailable((PlayerEntity)entity, pony.metadata(), pony.defaulted(), EnvType.CLIENT);
         }
+
+        getModel().updateLivingState(entity, pony, mode);
     }
 
     public IPony getPony(T entity) {

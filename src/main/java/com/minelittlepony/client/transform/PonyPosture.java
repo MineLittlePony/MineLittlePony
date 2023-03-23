@@ -5,6 +5,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 
 import com.minelittlepony.api.model.IModel;
+import com.minelittlepony.api.model.RenderPass;
 
 public interface PonyPosture<T extends LivingEntity> {
 
@@ -19,7 +20,7 @@ public interface PonyPosture<T extends LivingEntity> {
     }
 
     default void apply(T player, IModel model, MatrixStack stack, float yaw, float ticks, int invert) {
-        if (applies(player)) {
+        if (RenderPass.getCurrent() == RenderPass.WORLD && applies(player)) {
             double motionX = player.getX() - player.prevX;
             double motionY = player.isOnGround() ? 0 : player.getY() - player.prevY;
             double motionZ = player.getZ() - player.prevZ;
