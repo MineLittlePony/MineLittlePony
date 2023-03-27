@@ -1,6 +1,7 @@
 package com.minelittlepony.client.render;
 
 import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.api.model.RenderPass;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.network.MsgPonyData;
 import com.minelittlepony.api.pony.network.fabric.Channel;
@@ -11,8 +12,6 @@ import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.transform.PonyPosture;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.util.MathUtil;
-import com.mojang.blaze3d.platform.GlStateManager.DstFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SrcFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import java.util.Objects;
@@ -46,6 +45,10 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
     }
 
     public Frustum getFrustrum(T entity, Frustum vanilla) {
+        if (RenderPass.getCurrent() == RenderPass.HUD) {
+            return FrustrumCheck.ALWAYS_VISIBLE;
+        }
+
         if (entity.isSleeping() || !MineLittlePony.getInstance().getConfig().frustrum.get()) {
             return vanilla;
         }

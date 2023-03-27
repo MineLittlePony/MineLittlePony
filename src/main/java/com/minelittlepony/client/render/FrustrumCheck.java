@@ -9,6 +9,11 @@ import org.joml.Matrix4f;
 import com.minelittlepony.client.PonyBounds;
 
 public class FrustrumCheck<T extends LivingEntity> extends Frustum {
+    public static final Frustum ALWAYS_VISIBLE = new Frustum(new Matrix4f(), new Matrix4f()) {
+        public boolean isVisible(Box bounds) {
+            return true;
+        }
+    };
 
     private T entity;
 
