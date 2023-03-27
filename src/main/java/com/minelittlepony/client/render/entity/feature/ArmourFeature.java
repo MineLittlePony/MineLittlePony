@@ -30,7 +30,7 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
 
     @Override
     public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
-        ModelWrapper<T, M> pony = getContext().getModelWrapper();
+        ModelWrapper<T, M> pony = getModelWrapper();
 
         for (EquipmentSlot i : EquipmentSlot.values()) {
             if (i.getType() == EquipmentSlot.Type.ARMOR) {

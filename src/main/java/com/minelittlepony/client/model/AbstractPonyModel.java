@@ -147,8 +147,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             }
 
             if (attributes.isSwimmingRotated) {
-                head.setPivot(0, HEAD_RP_Y_SWIM, HEAD_RP_Z_SWIM);
-
                 rightLeg.pivotZ -= 1.5F;
                 leftLeg.pivotZ -= 1.5F;
             }
@@ -270,15 +268,11 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         headYaw = attributes.isSleeping ? (Math.abs(attributes.interpolatorId.getMostSignificantBits()) % 2.8F) - 1.9F : headYaw / 57.29578F;
         headPitch = attributes.isSleeping ? 0.1f : headPitch / 57.29578F;
 
-        if (attributes.isSwimming && attributes.motionPitch != 0) {
-            headPitch -= 0.9F;
-        }
-
         float pitch = (float)Math.toRadians(attributes.motionPitch);
         head.setAngles(
                 MathHelper.clamp(headPitch, -1.25f - pitch, 0.5f - pitch),
-                attributes.isSwimmingRotated ? 0 : headYaw,
-                attributes.isSwimmingRotated ? -headYaw : 0
+                headYaw,
+                0
         );
     }
 
@@ -599,10 +593,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         if (attributes.isSleeping || attributes.isRiptide) {
             stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
             stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
-        }
-
-        if (part == BodyPart.HEAD) {
-           stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(attributes.motionPitch));
         }
 
         PonyTransformation.forSize(getSize()).transform(this, part, stack);

@@ -17,8 +17,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import java.util.Objects;
 
-import org.jetbrains.annotations.NotNull;
-
 import net.fabricmc.api.EnvType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Frustum;
@@ -31,7 +29,7 @@ import net.minecraft.util.Identifier;
 
 public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> {
 
-    public ModelWrapper<T, M> playerModel;
+    private ModelWrapper<T, M> playerModel;
 
     private IPony pony;
 
@@ -107,34 +105,14 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
 
     @SuppressWarnings("unchecked")
     public void applyPostureTransform(T player, MatrixStack stack, float yaw, float ticks) {
-        ((PonyPosture<T>) getPosture(player)).apply(player, getModel(), stack, yaw, ticks, 1);
+        ((PonyPosture<T>) PonyPosture.getPosture(getModel().getAttributes(), player)).apply(player, getModel(), stack, yaw, ticks, 1);
     }
 
     @SuppressWarnings("unchecked")
     public void applyPostureRiding(T player, MatrixStack stack, float yaw, float ticks) {
-        ((PonyPosture<T>) getPosture(player)).apply(player, getModel(), stack, yaw, ticks, -1);
+        ((PonyPosture<T>) PonyPosture.getPosture(getModel().getAttributes(), player)).apply(player, getModel(), stack, yaw, ticks, -1);
     }
 
-    @NotNull
-    private PonyPosture<?> getPosture(T entity) {
-        if (entity.isFallFlying()) {
-            return PonyPosture.ELYTRA;
-        }
-
-        if (entity.isAlive() && entity.isSleeping()) {
-            return PonyPosture.STANDING;
-        }
-
-        if (getModel().getAttributes().isHorizontal) {
-            return PonyPosture.SWIMMING;
-        }
-
-        if (getModel().getAttributes().isGoingFast && !getModel().getAttributes().isRiptide) {
-            return PonyPosture.FLYING;
-        }
-
-        return PonyPosture.FALLING;
-    }
 
     public M getModel() {
         return playerModel.body();
@@ -159,7 +137,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         playerModel.applyMetadata(pony.metadata());
     }
 
-    public void updateModel(T entity, ModelAttributes.Mode mode) {
+    public IPony updateModel(T entity, ModelAttributes.Mode mode) {
         pony = renderer.getEntityPony(entity);
         playerModel.applyMetadata(pony.metadata());
 
@@ -176,11 +154,12 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         }
 
         getModel().updateLivingState(entity, pony, mode);
+
+        return pony;
     }
 
     public IPony getPony(T entity) {
-        updateModel(entity, ModelAttributes.Mode.THIRD_PERSON);
-        return pony;
+        return updateModel(entity, ModelAttributes.Mode.THIRD_PERSON);
     }
 
     public Identifier getTexture(T entity) {

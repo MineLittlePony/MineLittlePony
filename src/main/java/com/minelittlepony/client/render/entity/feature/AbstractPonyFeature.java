@@ -43,7 +43,7 @@ public abstract class AbstractPonyFeature<T extends LivingEntity, M extends Enti
         return (C)context;
     }
 
-    public ModelWrapper<T, M> getModelWrapper() {
-        return getContext().getModelWrapper();
+    protected ModelWrapper<T, M> getModelWrapper() {
+        return context.getInternalRenderer().getModelWrapper();
     }
 }

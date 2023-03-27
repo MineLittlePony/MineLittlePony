@@ -8,7 +8,6 @@ import com.minelittlepony.util.MathUtil;
 import java.util.*;
 
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -32,10 +31,6 @@ public class ModelAttributes {
      * from regular flying in that there are actual "wings" involved.
      */
     public boolean isGliding;
-    /**
-     * True if the model is rotated 90degs (players)
-     */
-    public boolean isHorizontal;
     /**
      * True if the model is using riptide (players)
      */
@@ -123,6 +118,7 @@ public class ModelAttributes {
         isGoingFast = (isFlying && hasWings) || isGliding;
         isGoingFast &= zMotion > 0.4F;
         isGoingFast |= entity.isUsingRiptide();
+        isGoingFast |= entity.isFallFlying();
 
         motionLerp = MathUtil.clampLimit(zMotion * 30, 1);
 
@@ -143,13 +139,12 @@ public class ModelAttributes {
         visualHeight = entity.getHeight() + 0.125F;
         isSitting = PonyPosture.isSitting(entity);
         isCrouching = !isSitting && mode == Mode.THIRD_PERSON && PonyPosture.isCrouching(pony, entity);
-        isSleeping = entity.isSleeping();
+        isSleeping = entity.isAlive() && entity.isSleeping();
         isFlying = mode == Mode.THIRD_PERSON && PonyPosture.isFlying(entity);
         isGliding = entity.isFallFlying();
         isSwimming = mode == Mode.THIRD_PERSON && PonyPosture.isSwimming(entity);
-        isSwimmingRotated = isSwimming && (entity instanceof PlayerEntity || entity instanceof Swimmer);
+        isSwimmingRotated = isSwimming;
         isRiptide = entity.isUsingRiptide();
-        isHorizontal = isSwimming;
         isRidingInteractive = PonyPosture.isRidingAPony(entity);
         interpolatorId = entity.getUuid();
         isLeftHanded = entity.getMainArm() == Arm.LEFT;
@@ -160,11 +155,5 @@ public class ModelAttributes {
         FIRST_PERSON,
         THIRD_PERSON,
         OTHER
-    }
-
-    /**
-     * Special interface to mark entities that rotate horizontally when they swim.
-     */
-    public interface Swimmer {
     }
 }

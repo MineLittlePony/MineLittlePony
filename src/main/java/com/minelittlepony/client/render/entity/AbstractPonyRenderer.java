@@ -108,11 +108,6 @@ public abstract class AbstractPonyRenderer<T extends MobEntity, M extends Entity
     }
 
     @Override
-    public ModelWrapper<T, M> getModelWrapper() {
-        return manager.playerModel;
-    }
-
-    @Override
     protected void renderLabelIfPresent(T entity, Text name, MatrixStack stack, VertexConsumerProvider renderContext, int maxDistance) {
         stack.push();
         stack.translate(0, manager.getNamePlateYOffset(entity), 0);

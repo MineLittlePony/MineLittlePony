@@ -27,7 +27,6 @@ public enum PonyTransformation {
                     break;
                 case HEAD:
                     if (model.getAttributes().isCrouching) stack.translate(0, 0.1F, 0);
-                    if (model.getAttributes().isSwimmingRotated) stack.translate(0, 0.37F, 0.45F);
                     break;
                 case BACK:
                     stack.translate(riderOffset.x, riderOffset.y, riderOffset.z);
@@ -49,13 +48,11 @@ public enum PonyTransformation {
                     stack.translate(0, -0.2F, -0.05F);
                     stack.scale(1, 1.3F, 1);
                     if (model.getAttributes().isCrouching) stack.translate(-0.03F, 0.01F, 0.2F);
-                    if (model.getAttributes().isSwimmingRotated) stack.translate(0, 0.5F, 0.25F);
                     break;
                 case HEAD:
                     stack.translate(0, -0.14F, -0.04F);
                     if (model.getAttributes().isSleeping) stack.translate(0, 0, -0.1F);
                     if (model.getAttributes().isCrouching) stack.translate(0, 0.15F, 0);
-                    if (model.getAttributes().isSwimmingRotated) stack.translate(0, 0.45F, 0.45F);
                     break;
                 case BODY:
                     stack.translate(0, -0.2F, -0.04F);
@@ -86,13 +83,11 @@ public enum PonyTransformation {
                     stack.translate(0, -0.2F, -0.07F);
                     stack.scale(1, 1.3F, 1);
                     if (model.getAttributes().isCrouching) stack.translate(-0.03F, -0.07F, 0.09F);
-                    if (model.getAttributes().isSwimmingRotated) stack.translate(0, 0.5F, 0.25F);
                     break;
                 case HEAD:
                     stack.translate(0, -0.14F, -0.06F);
                     if (model.getAttributes().isSleeping) stack.translate(0, 0, -0.1F);
                     if (model.getAttributes().isCrouching) stack.translate(0, 0.15F, 0);
-                    if (model.getAttributes().isSwimmingRotated) stack.translate(0, 0.15F, 0.25F);
                     break;
                 case BODY:
                     stack.translate(0, -0.2F, -0.04F);
@@ -116,7 +111,7 @@ public enum PonyTransformation {
         public void transform(IModel model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isSwimming) stack.translate(0, -0.9F, 0);
             if (model.getAttributes().isCrouching) stack.translate(0, -0.2F, 0);
-            if (model.getAttributes().isSleeping) stack.translate(0, -0.65F, -0.3F);
+            if (model.getAttributes().isSleeping) stack.translate(0, -0.8F, -0.3F);
             if (model.isRiding()) stack.translate(0, -0.6F, -0.2F);
 
             stack.translate(0, 0.2F, 0);
@@ -128,7 +123,6 @@ public enum PonyTransformation {
                     if (model.getAttributes().isCrouching) stack.translate(-0.03F, -0.16F, 0.15F);
                     break;
                 case HEAD:
-                    if (model.getAttributes().isSwimmingRotated) stack.translate(0, 0.9F, 0.9F);
                     stack.scale(1.3F, 1.3F, 1.3F);
                     break;
                 case LEGS:
@@ -158,7 +152,6 @@ public enum PonyTransformation {
                 case HEAD:
                     stack.translate(0, -0.11F, 0);
                     if (model.getAttributes().isCrouching) stack.translate(0, 0.04F, 0);
-                    if (model.getAttributes().isSwimmingRotated) stack.translate(0, 0.17F, 0.25F);
                     break;
                 case BODY:
                 case TAIL:
@@ -181,7 +174,7 @@ public enum PonyTransformation {
         public void transform(IModel model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isSwimming) stack.translate(0, -0.6F, 0);
             if (model.getAttributes().isCrouching) stack.translate(0, -0.15F, 0);
-            if (model.getAttributes().isSleeping) stack.translate(0, -0.4F, -0.3F);
+            if (model.getAttributes().isSleeping) stack.translate(0, -0.45F, -0.3F);
             if (model.isRiding()) stack.translate(0, -0.4F, -0.2F);
 
             switch (part) {
@@ -193,7 +186,6 @@ public enum PonyTransformation {
                 case HEAD:
                     stack.translate(0, -0.15F, 0);
                     if (model.getAttributes().isCrouching) stack.translate(0, 0.04F, 0);
-                    if (model.getAttributes().isSwimmingRotated) stack.translate(0, 0.8F, 0.85F);
                     stack.scale(1.15F, 1.15F, 1.15F);
                     break;
                 case BODY:

@@ -23,7 +23,7 @@ public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
         super(context, slim, key);
 
         normalPony = ModelType.getPlayerModel(Race.UNICORN).<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>>create(slim);
-        seapony = getModelWrapper();
+        seapony = getInternalRenderer().getModelWrapper();
     }
 
     @Override

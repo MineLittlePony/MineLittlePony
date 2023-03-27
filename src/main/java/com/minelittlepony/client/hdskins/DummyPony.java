@@ -2,7 +2,6 @@ package com.minelittlepony.client.hdskins;
 
 import net.minecraft.client.world.ClientWorld;
 
-import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.client.IPreviewModel;
@@ -14,7 +13,7 @@ import java.util.UUID;
 /**
  * Dummy model used for the skin uploading screen.
  */
-class DummyPony extends DummyPlayer implements IPreviewModel, ModelAttributes.Swimmer, IPonyManager.ForcedPony, EquineRenderManager.RegistrationHandler {
+class DummyPony extends DummyPlayer implements IPreviewModel, IPonyManager.ForcedPony, EquineRenderManager.RegistrationHandler {
 
     public DummyPony(ClientWorld world, PlayerSkins<?> textures) {
         super(world, textures);
