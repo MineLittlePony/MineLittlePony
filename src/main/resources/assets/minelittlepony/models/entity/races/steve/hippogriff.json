@@ -3,10 +3,13 @@
   "locals": {
     "tight_arm_width": [ "#arm_width", "-", 1 ],
     "knee_point": [ "#arm_length", "/", 2 ],
+    "fore_leg_length": [ "#arm_length", "-", "#knee_point" ],
+    "fore_leg_y": [ 4, "+", "#knee_point" ],
+    
     "elbow_point": [ "#arm_length", "/", 3 ],
     "fore_arm_length": [ "#arm_length", "-", "#elbow_point" ],
     "back_leg_outset_z": [ "#arm_z", "-", 0.5 ],
-    "front_leg_outset_z": [ "#arm_z", "+", 0.5 ],
+    "front_leg_outset_z": [ "#arm_z", "-", 0.5 ],
     
     "claws_z": [ "#arm_z", "-", 1 ]
   },
@@ -36,7 +39,7 @@
       "texture": { "u": 32, "v": 49 },
       "cubes": [
         {
-          "from": [ "#arm_x", 4, "#back_leg_outset_z"],
+          "from": [ "#arm_x", 4, "#front_leg_outset_z"],
           "size": [ "#arm_width", "#elbow_point", "#arm_depth" ],
           "dilate": [0, 0, -0.5]
         }
@@ -64,7 +67,7 @@
       "texture": { "u": 40, "v": 17 },
       "cubes": [
         {
-          "from": [ "#arm_x_neg", 4, "#back_leg_outset_z"],
+          "from": [ "#arm_x_neg", 4, "#front_leg_outset_z"],
           "size": [ "#arm_width", "#elbow_point", "#arm_depth" ],
           "dilate": [0, 0, -0.5]
         }
@@ -103,13 +106,13 @@
           "data": "minelittlepony:components/cube",
           "locals": {
             "x": "#arm_x",
-            "y": 10,
+            "y": "#fore_leg_y",
             "z": "#arm_z",
             "u": 16,
             "v": 48,
             "side_v": 58,
             "width": "#arm_width",
-            "height": "#knee_point",
+            "height": "#fore_leg_length",
             "depth": "#arm_depth"
           }
         }
@@ -131,13 +134,13 @@
           "data": "minelittlepony:components/cube",
           "locals": {
             "x": "#arm_x_neg",
-            "y": 10,
+            "y": "#fore_leg_y",
             "z": "#arm_z",
             "u": 0,
             "v": 16,
             "side_v": 26,
             "width": "#arm_width",
-            "height": "#knee_point",
+            "height": "#fore_leg_length",
             "depth": "#arm_depth"
           }
         }

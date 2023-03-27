@@ -1,9 +1,98 @@
 {
 	"parent": "minelittlepony:races/steve/hippogriff",
+	"locals": {
+    "claw_outset_z": [ "#arm_z", "-", 1 ]
+  },
 	"data": {
     "tail": {
       "implementation": "com.minelittlepony.client.model.part.LionTail",
       "data": "minelittlepony:components/lion_tail"
+    },
+    "left_arm": {
+      "pivot": ["#arm_rotation_x", "#arm_rotation_y", 0],
+      "texture": { "u": 32, "v": 49 },
+      "cubes": [
+        {
+          "from": [ "#arm_x", 4, "#front_leg_outset_z"],
+          "size": [ "#arm_width", "#elbow_point", "#arm_depth" ],
+          "dilate": [0, 0, -0.5]
+        }
+      ],
+      "children": {
+        "left_forearm": {
+          "type": "mson:import",
+          "data": "minelittlepony:components/cube",
+          "locals": {
+            "x": "#arm_x",
+            "y": 8,
+            "z": "#arm_z",
+            "u": 32,
+            "v": 48,
+            "side_v": 56,
+            "width": "#arm_width",
+            "height": "#fore_arm_length",
+            "depth": "#arm_depth"
+          }
+        },
+        "left_claw": {
+          "type": "mson:import",
+          "data": "minelittlepony:components/cube",
+          "locals": {
+            "x": "#arm_x",
+            "y": [2.99, "+", "#arm_length"],
+            "z": "#back_leg_outset_z",
+            "u": 32,
+            "v": 48,
+            "side_v": 63,
+            "width": "#arm_width",
+            "height": 1,
+            "depth": "#arm_depth"
+          }
+        }
+      }
+    },
+    "right_arm": {
+      "pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", 0],
+      "texture": { "u": 40, "v": 17 },
+      "cubes": [
+        {
+          "from": [ "#arm_x_neg", 4, "#front_leg_outset_z"],
+          "size": [ "#arm_width", "#elbow_point", "#arm_depth" ],
+          "dilate": [0, 0, -0.5]
+        }
+      ],
+      "children": {
+        "right_forearm": {
+          "type": "mson:import",
+          "data": "minelittlepony:components/cube",
+          "locals": {
+            "x": "#arm_x_neg",
+            "y": 8,
+            "z": "#arm_z",
+            "u": 40,
+            "v": 16,
+            "side_v": 24,
+            "width": "#arm_width",
+            "height": "#fore_arm_length",
+            "depth": "#arm_depth"
+          }
+        },
+        "right_claw": {
+          "type": "mson:import",
+          "data": "minelittlepony:components/cube",
+          "locals": {
+            "x": "#arm_x_neg",
+            "y": [2.99, "+", "#arm_length"],
+            "z": "#back_leg_outset_z",
+            "u": 40,
+            "v": 16,
+            "side_v": 30,
+            "width": "#arm_width",
+            "height": 1,
+            "depth": "#arm_depth"
+          }
+        }
+      }
     }
 	}
 }
