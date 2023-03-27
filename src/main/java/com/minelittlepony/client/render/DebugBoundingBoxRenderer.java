@@ -12,12 +12,17 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
+import com.minelittlepony.api.model.RenderPass;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.PonyBounds;
 
 public final class DebugBoundingBoxRenderer {
 
     public static <T extends LivingEntity> void render(IPony pony, EntityRenderer<T> renderer, T entity, MatrixStack stack, VertexConsumerProvider renderContext, float tickDelta) {
+
+        if (RenderPass.getCurrent() != RenderPass.WORLD) {
+            return;
+        }
 
         MinecraftClient client = MinecraftClient.getInstance();
 
