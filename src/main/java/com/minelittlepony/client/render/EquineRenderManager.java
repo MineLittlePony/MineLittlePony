@@ -103,16 +103,13 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public void applyPostureTransform(T player, MatrixStack stack, float yaw, float ticks) {
-        ((PonyPosture<T>) PonyPosture.getPosture(getModel().getAttributes(), player)).apply(player, getModel(), stack, yaw, ticks, 1);
+    public void setupTransforms(T entity, MatrixStack stack, float yaw, float tickDelta) {
+        PonyPosture.of(getModel().getAttributes()).apply(entity, getModel(), stack, yaw, tickDelta, 1);
     }
 
-    @SuppressWarnings("unchecked")
-    public void applyPostureRiding(T player, MatrixStack stack, float yaw, float ticks) {
-        ((PonyPosture<T>) PonyPosture.getPosture(getModel().getAttributes(), player)).apply(player, getModel(), stack, yaw, ticks, -1);
+    public void applyPostureRiding(T entity, MatrixStack stack, float yaw, float tickDelta) {
+        PonyPosture.of(getModel().getAttributes()).apply(entity, getModel(), stack, yaw, tickDelta, -1);
     }
-
 
     public M getModel() {
         return playerModel.body();

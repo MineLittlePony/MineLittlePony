@@ -7,7 +7,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.entity.LivingEntity;
 
-public class PostureFlight extends MotionCompositor implements PonyPosture<LivingEntity> {
+public class PostureFlight extends MotionCompositor implements PonyPosture {
 
     private final float xScale;
     private final float yOffset;

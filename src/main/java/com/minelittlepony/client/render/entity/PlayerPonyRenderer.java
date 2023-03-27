@@ -102,8 +102,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
         manager.preRenderCallback(entity, stack, partialTicks);
         rotationYaw = manager.getRenderYaw(entity, rotationYaw, partialTicks);
         super.setupTransforms(entity, stack, ageInTicks, rotationYaw, partialTicks);
-
-        manager.applyPostureTransform(entity, stack, rotationYaw, partialTicks);
+        manager.setupTransforms(entity, stack, rotationYaw, partialTicks);
     }
 
     @Override

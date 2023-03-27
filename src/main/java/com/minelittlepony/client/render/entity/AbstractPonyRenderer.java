@@ -81,8 +81,7 @@ public abstract class AbstractPonyRenderer<T extends MobEntity, M extends Entity
 
         rotationYaw = manager.getRenderYaw(entity, rotationYaw, partialTicks);
         super.setupTransforms(entity, stack, ageInTicks, rotationYaw, partialTicks);
-
-        manager.applyPostureTransform(entity, stack, rotationYaw, partialTicks);
+        manager.setupTransforms(entity, stack, rotationYaw, partialTicks);
     }
 
     @Override
