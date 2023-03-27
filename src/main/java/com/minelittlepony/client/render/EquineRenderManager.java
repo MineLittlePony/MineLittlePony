@@ -35,16 +35,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
 
     private final IPonyRenderContext<T, M> renderer;
 
-    private boolean skipBlend;
-
     private final FrustrumCheck<T> frustrum = new FrustrumCheck<>(this);
-
-    public static void enableModelRenderProfile(boolean skipBlend) {
-        RenderSystem.enableBlend();
-        if (!skipBlend) {
-            RenderSystem.blendFunc(SrcFactor.SRC_ALPHA, DstFactor.ONE_MINUS_SRC_ALPHA);
-        }
-    }
 
     public static void disableModelRenderProfile() {
         RenderSystem.disableBlend();
@@ -52,10 +43,6 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
 
     public EquineRenderManager(IPonyRenderContext<T, M> renderer) {
         this.renderer = renderer;
-    }
-
-    public void setSkipBlend() {
-        skipBlend = true;
     }
 
     public Frustum getFrustrum(T entity, Frustum vanilla) {
@@ -70,7 +57,6 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
 
         float s = getScaleFactor();
         stack.scale(s, s, s);
-        enableModelRenderProfile(skipBlend);
 
         translateRider(entity, stack, ticks);
     }
