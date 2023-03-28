@@ -4,11 +4,10 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.model.AnimalModel;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import com.google.common.collect.ImmutableList;
-
-import static com.minelittlepony.api.model.PonyModelConstants.*;
 
 /**
  * Modified from ModelElytra.
@@ -42,11 +41,11 @@ public class PonyElytra<T extends LivingEntity> extends AnimalModel<T> {
      */
     @Override
     public void setAngles(T entity, float limbDistance, float limbAngle, float age, float headYaw, float headPitch) {
-        float rotateX = PI / 2;
-        float rotateY = PI / 8;
-        float rotateZ = PI / 12;
+        float rotateX = MathHelper.PI / 2;
+        float rotateY = MathHelper.PI / 8;
+        float rotateZ = MathHelper.PI / 12;
 
-        float rpY = BODY_RP_Y;
+        float rpY = 0;
 
         if (entity.isFallFlying()) {
             float velY = 1;
@@ -56,13 +55,13 @@ public class PonyElytra<T extends LivingEntity> extends AnimalModel<T> {
                 velY = 1 - (float) Math.pow(-motion.normalize().y, 1.5);
             }
 
-            rotateX = velY * PI * (2 / 3F) + (1 - velY) * rotateX;
-            rotateY = velY * (PI / 2) + (1 - velY) * rotateY;
+            rotateX = velY * MathHelper.PI * (2 / 3F) + (1 - velY) * rotateX;
+            rotateY = velY * (MathHelper.PI / 2) + (1 - velY) * rotateY;
         } else if (isSneaking) {
-            rotateX = PI * 1.175F;
-            rotateY = PI / 2;
-            rotateZ = PI / 4;
-            rpY = BODY_RP_Y_SNEAK;
+            rotateX = MathHelper.PI * 1.175F;
+            rotateY = MathHelper.PI / 2;
+            rotateZ = MathHelper.PI / 4;
+            rpY = AbstractPonyModel.BODY_SNEAKING.y();
         }
 
         leftWing.pivotX = 5;

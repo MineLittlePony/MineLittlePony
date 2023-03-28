@@ -4,8 +4,6 @@ import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.IPonyRenderContext;
 
-import static com.minelittlepony.api.model.PonyModelConstants.PI;
-
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -43,8 +41,8 @@ public class CapeFeature<M extends ClientPonyModel<AbstractClientPlayerEntity>> 
 
             float motionYaw = player.prevBodyYaw + (player.bodyYaw - player.prevBodyYaw);
 
-            double sin = MathHelper.sin(motionYaw * PI / 180);
-            double cos = (-MathHelper.cos(motionYaw * PI / 180));
+            double sin = MathHelper.sin(motionYaw * MathHelper.RADIANS_PER_DEGREE);
+            double cos = -MathHelper.cos(motionYaw * MathHelper.RADIANS_PER_DEGREE);
 
             float capeMotionY = (float) capeY * 10;
 

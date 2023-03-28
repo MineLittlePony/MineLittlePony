@@ -3,7 +3,7 @@ package com.minelittlepony.api.model;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 
-public interface IPart extends PonyModelConstants {
+public interface IPart {
     /**
      * Sets the model's various rotation angles.
      * <p>

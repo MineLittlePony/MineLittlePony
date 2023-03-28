@@ -14,10 +14,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-import static com.minelittlepony.api.model.PonyModelConstants.ROTATE_270;
-import static com.minelittlepony.api.model.PonyModelConstants.WING_ROT_Z_SNEAK;
-import static com.minelittlepony.api.model.PonyModelConstants.WING_ROT_Z_FLYING;
-
 public class ModelAttributes {
     /**
      * True if the model is sleeping in a bed.
@@ -128,12 +124,12 @@ public class ModelAttributes {
 
     private float calcWingRotationFactor(float ticks) {
         if (isSwimming) {
-            return (MathHelper.sin(ticks * 0.136f) / 2) + ROTATE_270;
+            return (MathHelper.sin(ticks * 0.136f) / 2) + MathUtil.Angles._270_DEG;
         }
         if (isFlying) {
-            return MathHelper.sin(ticks * 0.536f) + WING_ROT_Z_FLYING;
+            return MathHelper.sin(ticks * 0.536f) + IPegasus.WINGS_FULL_SPREAD_ANGLE;
         }
-        return WING_ROT_Z_SNEAK;
+        return IPegasus.WINGS_RAISED_ANGLE;
     }
 
     public void updateLivingState(LivingEntity entity, IPony pony, Mode mode) {

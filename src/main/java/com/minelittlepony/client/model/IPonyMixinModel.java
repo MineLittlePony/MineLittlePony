@@ -44,11 +44,6 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     }
 
     @Override
-    default IPonyData getMetadata() {
-        return mixin().getMetadata();
-    }
-
-    @Override
     default ModelAttributes getAttributes() {
         return mixin().getAttributes();
     }
@@ -61,11 +56,6 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     @Override
     default void setMetadata(IPonyData meta) {
         mixin().setMetadata(meta);
-    }
-
-    @Override
-    default boolean isRiding() {
-        return mixin().isRiding();
     }
 
     @Override

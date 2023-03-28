@@ -56,18 +56,13 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
     }
 
     @Override
-    public void copyAttributes(BipedEntityModel<T> other) {
+    public final void copyAttributes(BipedEntityModel<T> other) {
         copyStateTo(other);
     }
 
     @Override
-    public ModelAttributes getAttributes() {
+    public final ModelAttributes getAttributes() {
         return attributes;
-    }
-
-    @Override
-    public IPonyData getMetadata() {
-        return attributes.metadata;
     }
 
     @Override
@@ -81,20 +76,9 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
     }
 
     @Override
-    public ModelPart getHead() {
-        return head;
-    }
-
-    @Override
-    public boolean isRiding() {
-        return riding;
-    }
-
-    @Override
     public float getSwingAmount() {
         return handSwingProgress;
     }
-
 
     @Override
     public ModelPart getArm(Arm side) {

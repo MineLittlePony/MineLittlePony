@@ -26,7 +26,9 @@ public interface IModel {
     /**
      * Gets the skin metadata associated with this model.
      */
-    IPonyData getMetadata();
+    default IPonyData getMetadata() {
+        return getAttributes().metadata;
+    }
 
     /**
      * Sets the pony metadata object associated with this model.
@@ -42,8 +44,13 @@ public interface IModel {
 
     /**
      * Returns true if this model is riding a boat, horse, or other animals.
+     *
+     * @deprecated User model#getAttributes().isSitting
      */
-    boolean isRiding();
+    @Deprecated
+    default boolean isRiding() {
+        return getAttributes().isSitting;
+    }
 
     default Race getRace() {
         return PonyConfig.getEffectiveRace(getMetadata().getRace());
@@ -70,7 +77,7 @@ public interface IModel {
             return 0;
         }
 
-        return MathHelper.sin(MathHelper.sqrt(getSwingAmount()) * PonyModelConstants.PI * 2) * 0.04F;
+        return MathHelper.sin(MathHelper.sqrt(getSwingAmount()) * MathHelper.PI * 2) * 0.04F;
     }
 
     /**

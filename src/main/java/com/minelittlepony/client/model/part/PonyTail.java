@@ -10,11 +10,16 @@ import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.meta.TailShape;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.mson.api.*;
+import com.minelittlepony.util.MathUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PonyTail implements IPart, MsonModel {
+    private static final float TAIL_Z = 14;
+    private static final float TAIL_RIDING_Y = 3;
+    private static final float TAIL_RIDING_Z = 13;
+    private static final float TAIL_SNEAKING_Z = 15;
 
     private ModelPart tail;
     private AbstractPonyModel<?> model;
@@ -49,15 +54,16 @@ public class PonyTail implements IPart, MsonModel {
         tail.yaw = bodySwing * 5;
 
         if (model.getAttributes().isCrouching && !rainboom) {
-            rotateSneak();
-        } else if (model.isRiding()) {
-            tail.pivotZ = TAIL_RP_Z_RIDING;
-            tail.pivotY = TAIL_RP_Y_RIDING;
-            tail.pitch = PI / 5;
+            tail.setPivot(0, 0, TAIL_SNEAKING_Z);
+            tail.pitch = -model.body.pitch + 0.1F;
+        } else if (model.getAttributes().isSitting) {
+            tail.pivotZ = TAIL_RIDING_Z;
+            tail.pivotY = TAIL_RIDING_Y;
+            tail.pitch = MathHelper.PI / 5;
         } else {
-            tail.setPivot(0, 0, TAIL_RP_Z);
+            tail.setPivot(0, 0, TAIL_Z);
             if (rainboom) {
-                tail.pitch = ROTATE_90 + MathHelper.sin(move) / 10;
+                tail.pitch = MathUtil.Angles._90_DEG + MathHelper.sin(move) / 10;
             } else {
                 tail.pitch = swing / 2;
 
@@ -75,11 +81,6 @@ public class PonyTail implements IPart, MsonModel {
         float sinTickFactor = MathHelper.sin(ticks * 0.067f) * 0.05f;
         tail.pitch += sinTickFactor;
         tail.yaw += sinTickFactor;
-    }
-
-    private void rotateSneak() {
-        tail.setPivot(0, 0, TAIL_RP_Z_SNEAK);
-        tail.pitch = -BODY_ROT_X_SNEAK + 0.1F;
     }
 
     @Override

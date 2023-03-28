@@ -1,7 +1,6 @@
 package com.minelittlepony.client.render;
 
 import com.minelittlepony.api.model.BodyPart;
-import com.minelittlepony.api.model.PonyModelConstants;
 import com.minelittlepony.api.model.gear.IGear;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.model.*;
@@ -11,7 +10,7 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
-public interface IPonyRenderContext<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends PonyModelConstants, IGear.Context<T, M> {
+public interface IPonyRenderContext<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends IGear.Context<T, M> {
 
     IPony getEntityPony(T entity);
 

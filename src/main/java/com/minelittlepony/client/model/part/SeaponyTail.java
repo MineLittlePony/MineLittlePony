@@ -10,9 +10,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 public class SeaponyTail implements IPart, MsonModel {
-
-    private static final float TAIL_ROTX = PI / 2;
-
     private final ModelPart tailBase;
 
     private final ModelPart tailTip;
@@ -28,9 +25,9 @@ public class SeaponyTail implements IPart, MsonModel {
     public void setRotationAndAngles(ModelAttributes attributes, float move, float swing, float bodySwing, float ticks) {
         float rotation = attributes.isSleeping ? 0 : MathHelper.sin(ticks * 0.536f) / 4;
 
-        tailBase.pitch = TAIL_ROTX + rotation;
+        tailBase.pitch = MathHelper.HALF_PI + rotation;
         tailTip.pitch = rotation;
-        tailFins.pitch = rotation - TAIL_ROTX;
+        tailFins.pitch = rotation - MathHelper.HALF_PI;
     }
 
     @Override

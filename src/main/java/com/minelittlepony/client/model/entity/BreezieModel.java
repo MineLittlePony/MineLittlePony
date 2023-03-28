@@ -10,8 +10,6 @@ import net.minecraft.util.math.MathHelper;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
-import static com.minelittlepony.api.model.PonyModelConstants.PI;
-
 public class BreezieModel<T extends LivingEntity> extends BipedEntityModel<T> {
 
     private ModelPart neck;
@@ -48,13 +46,13 @@ public class BreezieModel<T extends LivingEntity> extends BipedEntityModel<T> {
         leftArm.pitch = MathHelper.cos(move * 0.6662F) * swing;
         leftArm.roll = 0;
 
-        rightArm.setAngles(swing * MathHelper.cos(move * 0.6662F + PI),        0, 0);
-        leftLeg .setAngles(swing * MathHelper.cos(move * 0.6662F + PI) * 1.4F, 0, 0);
-        rightLeg.setAngles(swing * MathHelper.cos(move * 0.6662F)      * 1.4F, 0, 0);
+        rightArm.setAngles(swing * MathHelper.cos(move * 0.6662F + MathHelper.PI),        0, 0);
+        leftLeg .setAngles(swing * MathHelper.cos(move * 0.6662F + MathHelper.PI) * 1.4F, 0, 0);
+        rightLeg.setAngles(swing * MathHelper.cos(move * 0.6662F)                 * 1.4F, 0, 0);
 
         if (riding) {
-            leftArm.pitch += -PI / 5;
-            rightArm.pitch += -PI / 5;
+            leftArm.pitch += -MathHelper.PI / 5;
+            rightArm.pitch += -MathHelper.PI / 5;
 
             rotateLegRiding(leftLeg, -1);
             rotateLegRiding(rightLeg, 1);
@@ -100,11 +98,11 @@ public class BreezieModel<T extends LivingEntity> extends BipedEntityModel<T> {
 
 
     protected void rotateLegRiding(ModelPart leg, float factor) {
-        leg.setAngles(-1.4137167F, factor * PI / 10, factor * 0.07853982F);
+        leg.setAngles(-1.4137167F, factor * MathHelper.PI / 10, factor * 0.07853982F);
     }
 
     protected void swingArms(Arm mainHand) {
-        body.yaw = MathHelper.sin(MathHelper.sqrt(handSwingProgress) * PI * 2) / 5;
+        body.yaw = MathHelper.sin(MathHelper.sqrt(handSwingProgress) * MathHelper.TAU) / 5;
 
         if (mainHand == Arm.LEFT) {
             body.yaw *= -1;
@@ -124,13 +122,13 @@ public class BreezieModel<T extends LivingEntity> extends BipedEntityModel<T> {
 
         float swingAmount = 1 - (float)Math.pow(1 - handSwingProgress, 4);
 
-        float swingFactorX = MathHelper.sin(swingAmount * PI);
-        float swingX = MathHelper.sin(handSwingProgress * PI) * (0.7F - head.pitch) * 0.75F;
+        float swingFactorX = MathHelper.sin(swingAmount * MathHelper.PI);
+        float swingX = MathHelper.sin(handSwingProgress * MathHelper.PI) * (0.7F - head.pitch) * 0.75F;
 
         ModelPart mainArm = getArm(mainHand);
         mainArm.pitch -= swingFactorX * 1.2F + swingX;
         mainArm.yaw += body.yaw * 2;
-        mainArm.roll -= MathHelper.sin(handSwingProgress * PI) * 0.4F;
+        mainArm.roll -= MathHelper.sin(handSwingProgress * MathHelper.PI) * 0.4F;
     }
 
     protected void rotateArm(ModelPart arm, ArmPose pose, float factor) {
@@ -139,7 +137,7 @@ public class BreezieModel<T extends LivingEntity> extends BipedEntityModel<T> {
                 arm.yaw = 0;
                 break;
             case ITEM:
-                arm.pitch = arm.pitch / 2 - (PI / 10);
+                arm.pitch = arm.pitch / 2 - (MathHelper.PI / 10);
                 arm.yaw = 0;
             case BLOCK:
                 arm.pitch = arm.pitch / 2 - 0.9424779F;
@@ -151,9 +149,9 @@ public class BreezieModel<T extends LivingEntity> extends BipedEntityModel<T> {
 
     protected void raiseArm(ModelPart up, ModelPart down, float factor) {
         up.yaw = head.yaw + (factor / 10);
-        up.pitch = head.pitch - (PI / 2);
+        up.pitch = head.pitch - MathHelper.HALF_PI;
 
         down.yaw = head.yaw - (factor / 2);
-        down.pitch = head.pitch - (PI / 2);
+        down.pitch = head.pitch - MathHelper.HALF_PI;
     }
 }

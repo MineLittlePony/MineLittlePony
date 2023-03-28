@@ -8,11 +8,10 @@ import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.ICapitated;
 import com.minelittlepony.api.model.IModel;
 import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.model.PonyModelConstants;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.mson.api.MsonModel;
 
-public interface IPonyModel<T extends LivingEntity> extends PonyModelConstants, IModel, ICapitated<ModelPart>, MsonModel {
+public interface IPonyModel<T extends LivingEntity> extends IModel, ICapitated<ModelPart>, MsonModel {
 
     void copyAttributes(BipedEntityModel<T> other);
 

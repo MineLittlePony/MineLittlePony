@@ -18,8 +18,8 @@ public class ChangelingModel<T extends LivingEntity> extends AlicornModel<T> {
     @Override
     public float getWingRotationFactor(float ticks) {
         if (isFlying()) {
-            return MathHelper.sin(ticks * 3) + ROTATE_270;
+            return MathHelper.sin(ticks * 3) + WINGS_HALF_SPREAD_ANGLE;
         }
-        return WING_ROT_Z_SNEAK;
+        return WINGS_RAISED_ANGLE;
     }
 }

@@ -44,7 +44,7 @@ public class WitchPonyModel extends EarthPonyModel<WitchEntity> {
             if (rot > 1) rot = 1;
             if (rot < -1) rot = -1;
 
-            float legDrinkingAngle = -1 * PI/3 + rot;
+            float legDrinkingAngle = -1 * MathHelper.PI/3 + rot;
 
             rightArm.pitch = legDrinkingAngle;
             rightArm.yaw = 0.1F;

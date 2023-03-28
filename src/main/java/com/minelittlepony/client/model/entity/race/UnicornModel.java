@@ -62,8 +62,8 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
     @Override
     protected void ponyCrouch() {
         super.ponyCrouch();
-        unicornArmRight.pitch -= LEG_ROT_X_SNEAK_ADJ;
-        unicornArmLeft.pitch -= LEG_ROT_X_SNEAK_ADJ;
+        unicornArmRight.pitch -= LEG_SNEAKING_PITCH_ADJUSTMENT;
+        unicornArmLeft.pitch -= LEG_SNEAKING_PITCH_ADJUSTMENT;
     }
 
     @Override

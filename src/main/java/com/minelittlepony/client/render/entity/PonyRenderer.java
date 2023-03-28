@@ -9,6 +9,7 @@ import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
 import net.minecraft.entity.mob.MobEntity;
 
 public class PonyRenderer<T extends MobEntity, M extends ClientPonyModel<T>> extends AbstractPonyRenderer<T, M> {
+    protected static final float BASE_MODEL_SCALE = 15/16F;
 
     public PonyRenderer(EntityRendererFactory.Context context, ModelKey<? super M> key, TextureSupplier<T> texture) {
         this(context, key, texture, 1);

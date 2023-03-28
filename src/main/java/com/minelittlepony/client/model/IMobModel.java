@@ -4,7 +4,6 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.api.model.PonyModelConstants;
 import com.minelittlepony.mson.util.PartUtil;
 
 /**
@@ -20,8 +19,8 @@ public interface IMobModel {
      * @param ticks         Render partial ticks
      */
     static void rotateArmHolding(ModelPart arm, float direction, float swingProgress, float ticks) {
-        float swing = MathHelper.sin(swingProgress * PonyModelConstants.PI);
-        float roll = MathHelper.sin((1 - (1 - swingProgress) * (1 - swingProgress)) * PonyModelConstants.PI);
+        float swing = MathHelper.sin(swingProgress * MathHelper.PI);
+        float roll = MathHelper.sin((1 - (1 - swingProgress) * (1 - swingProgress)) * MathHelper.PI);
 
         float cos = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
         float sin = MathHelper.sin(ticks * 0.067F) / 10;

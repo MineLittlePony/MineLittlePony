@@ -85,6 +85,6 @@ public class EnderStallionModel extends SkeleponyModel<EndermanEntity> {
 
     @Override
     public float getWingRotationFactor(float ticks) {
-        return MathHelper.sin(ticks) + WING_ROT_Z_SNEAK;
+        return MathHelper.sin(ticks) + WINGS_HALF_SPREAD_ANGLE;
     }
 }

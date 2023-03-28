@@ -5,7 +5,7 @@ import com.minelittlepony.api.model.fabric.PonyModelPrepareCallback;
 import com.minelittlepony.api.pony.meta.Sizes;
 import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.client.util.render.RenderList;
-import com.minelittlepony.mson.util.PartUtil;
+import com.minelittlepony.util.MathUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,19 @@ import net.minecraft.util.math.*;
  * Foundation class for all types of ponies.
  */
 public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPonyModel<T> {
+    public static final float NECK_X = 0.166F;
+    public static final float LEG_SNEAKING_PITCH_ADJUSTMENT = 0.4F;
+    public static final float BODY_RIDING_PITCH = MathHelper.PI * 3.8F;
+    public static final float BODY_SNEAKING_PITCH = 0.4F;
+    public static final float FRONT_LEGS_Y = 8;
+
+    public static final Pivot ORIGIN = new Pivot(0, 0, 0);
+    public static final Pivot HEAD_SNEAKING = new Pivot(0, 6, -2);
+    public static final Pivot HEAD_SLEEPING = new Pivot(1, 2, 0);
+    public static final Pivot BODY_SNEAKING = new Pivot(0, 7, -4);
+    public static final Pivot BODY_RIDING = new Pivot(0, 1, 4);
+    public static final Pivot FONT_LEGS_SLEEPING = new Pivot(0, 2, 6);
+    public static final Pivot BACK_LEGS_SLEEPING = new Pivot(0, 2, -6);
 
     protected final ModelPart neck;
 
@@ -133,10 +146,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         } else if (riding) {
             ponySit();
         } else {
-            adjustBody(BODY_ROT_X, BODY_RP_Y, BODY_RP_Z);
+            adjustBody(0, ORIGIN);
 
-            rightLeg.pivotY = FRONT_LEG_RP_Y;
-            leftLeg.pivotY = FRONT_LEG_RP_Y;
+            rightLeg.pivotY = FRONT_LEGS_Y;
+            leftLeg.pivotY = FRONT_LEGS_Y;
 
             if (!attributes.isSleeping) {
                 animateBreathing(animationProgress);
@@ -165,76 +178,76 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      * Aligns legs to a sneaky position.
      */
     protected void ponyCrouch() {
-        adjustBody(BODY_ROT_X_SNEAK, BODY_RP_Y_SNEAK, BODY_RP_Z_SNEAK);
-        head.setPivot(HEAD_RP_X_SNEAK, HEAD_RP_Y_SNEAK, HEAD_RP_Z_SNEAK);
+        adjustBody(BODY_SNEAKING_PITCH, BODY_SNEAKING);
+        HEAD_SNEAKING.set(head);
 
-        rightArm.pitch -= LEG_ROT_X_SNEAK_ADJ;
-        leftArm.pitch -= LEG_ROT_X_SNEAK_ADJ;
+        rightArm.pitch -= LEG_SNEAKING_PITCH_ADJUSTMENT;
+        leftArm.pitch -= LEG_SNEAKING_PITCH_ADJUSTMENT;
 
-        leftLeg.pivotY = FRONT_LEG_RP_Y_SNEAK;
-        rightLeg.pivotY = FRONT_LEG_RP_Y_SNEAK;
+        leftLeg.pivotY = FRONT_LEGS_Y;
+        rightLeg.pivotY = FRONT_LEGS_Y;
     }
 
     protected void ponySleep() {
-        rightArm.pitch = -ROTATE_90;
-        leftArm.pitch = -ROTATE_90;
+        rightArm.pitch = -MathUtil.Angles._90_DEG;
+        leftArm.pitch = -MathUtil.Angles._90_DEG;
 
-        rightLeg.pitch = ROTATE_90;
-        leftLeg.pitch = ROTATE_90;
+        rightLeg.pitch = MathUtil.Angles._90_DEG;
+        leftLeg.pitch = MathUtil.Angles._90_DEG;
 
-        head.setPivot(HEAD_RP_X_SLEEP, HEAD_RP_Y_SLEEP, sneaking ? -1 : 1);
+        HEAD_SLEEPING.set(head);
+        head.pivotZ = sneaking ? -1 : 1;
 
-        PartUtil.shift(rightArm, 0, LEG_SLEEP_OFFSET_Y, FRONT_LEG_SLEEP_OFFSET_Z);
-        PartUtil.shift(leftArm, 0, LEG_SLEEP_OFFSET_Y, FRONT_LEG_SLEEP_OFFSET_Z);
-        PartUtil.shift(rightLeg, 0, LEG_SLEEP_OFFSET_Y, BACK_LEG_SLEEP_OFFSET_Z);
-        PartUtil.shift(leftLeg, 0, LEG_SLEEP_OFFSET_Y, BACK_LEG_SLEEP_OFFSET_Z);
+        FONT_LEGS_SLEEPING.add(rightArm);
+        FONT_LEGS_SLEEPING.add(leftArm);
+        BACK_LEGS_SLEEPING.add(rightLeg);
+        BACK_LEGS_SLEEPING.add(leftLeg);
     }
 
     protected void ponySit() {
+        adjustBodyComponents(BODY_RIDING_PITCH * (attributes.isRidingInteractive ? 2 : 1), BODY_RIDING);
         if (attributes.isRidingInteractive) {
-            adjustBodyComponents(BODY_ROT_X_RIDING * 2, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
-            neck.setPivot(NECK_ROT_X + BODY_ROT_X * 2, BODY_RP_Y, BODY_RP_Z - 4);
+            neck.setPivot(NECK_X, 0, -4);
             head.setPivot(0, -2, -5);
         } else {
-            adjustBodyComponents(BODY_ROT_X_RIDING, BODY_RP_Y_RIDING, BODY_RP_Z_RIDING);
-            neck.setPivot(NECK_ROT_X + BODY_ROT_X, BODY_RP_Y, BODY_RP_Z);
+            neck.setPivot(NECK_X, 0, 0);
             head.setPivot(0, 0, 0);
         }
 
         leftLeg.pivotZ = 14;
         leftLeg.pivotY = 17;
-        leftLeg.pitch = -PI / 4;
-        leftLeg.yaw = -PI / 7;
+        leftLeg.pitch = -MathHelper.PI / 4;
+        leftLeg.yaw = -MathHelper.PI / 7;
 
         leftLeg.pitch += body.pitch;
 
         rightLeg.pivotZ = 15;
         rightLeg.pivotY = 17;
-        rightLeg.pitch = -PI / 4;
-        rightLeg.yaw =  PI / 7;
+        rightLeg.pitch = -MathHelper.PI / 4;
+        rightLeg.yaw =  MathHelper.PI / 7;
 
         rightLeg.pitch += body.pitch;
 
-        leftArm.roll = -PI * 0.06f;
+        leftArm.roll = -MathHelper.PI * 0.06f;
         leftArm.pitch += body.pitch;
-        rightArm.roll = PI * 0.06f;
+        rightArm.roll = MathHelper.PI * 0.06f;
         rightArm.pitch += body.pitch;
 
         if (attributes.isRidingInteractive) {
-            leftLeg.yaw = PI / 15;
-            leftLeg.pitch = PI / 9;
+            leftLeg.yaw = MathHelper.PI / 15;
+            leftLeg.pitch = MathHelper.PI / 9;
 
             leftLeg.pivotZ = 10;
             leftLeg.pivotY = 7;
 
-            rightLeg.yaw = -PI / 15;
-            rightLeg.pitch = PI / 9;
+            rightLeg.yaw = -MathHelper.PI / 15;
+            rightLeg.pitch = MathHelper.PI / 9;
 
             rightLeg.pivotZ = 10;
             rightLeg.pivotY = 7;
 
-            leftArm.pitch = PI / 6;
-            rightArm.pitch = PI / 6;
+            leftArm.pitch = MathHelper.PI / 6;
+            rightArm.pitch = MathHelper.PI / 6;
 
             leftArm.roll *= 2;
             rightArm.roll *= 2;
@@ -285,10 +298,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
         float lerp = entity.isSwimming() ? (float)attributes.motionLerp : 1;
 
-        float legLeft = (ROTATE_90 + MathHelper.sin((move / 3) + 2 * PI/3) / 2) * lerp;
+        float legLeft = (MathUtil.Angles._90_DEG + MathHelper.sin((move / 3) + 2 * MathHelper.PI/3) / 2) * lerp;
 
-        float left = (ROTATE_90 + MathHelper.sin((move / 3) + 2 * PI) / 2) * lerp;
-        float right = (ROTATE_90 + MathHelper.sin(move / 3) / 2) * lerp;
+        float left = (MathUtil.Angles._90_DEG + MathHelper.sin((move / 3) + 2 * MathHelper.PI) / 2) * lerp;
+        float right = (MathUtil.Angles._90_DEG + MathHelper.sin(move / 3) / 2) * lerp;
 
         leftArm.setAngles(-left, -left/2, left/2);
         rightArm.setAngles(-right, right/2, -right/2);
@@ -301,7 +314,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      *
      */
     protected void rotateLegsOnGround(float move, float swing, float ticks, T entity) {
-        float angle = PI * (float) Math.pow(swing, 16);
+        float angle = MathHelper.PI * (float) Math.pow(swing, 16);
 
         float baseRotation = move * 0.6662F; // magic number ahoy
         float scale = swing / 4;
@@ -313,10 +326,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         );
         float yAngle = 0.2F * rainboomLegLotation;
 
-        leftArm.setAngles(MathHelper.lerp(rainboomLegLotation, MathHelper.cos(baseRotation + angle) * scale, -ROTATE_90 * rainboomLegLotation), -yAngle, 0);
-        rightArm.setAngles(MathHelper.lerp(rainboomLegLotation, MathHelper.cos(baseRotation + PI + angle / 2) * scale, -ROTATE_90 * rainboomLegLotation), yAngle, 0);
-        leftLeg.setAngles(MathHelper.lerp(rainboomLegLotation, MathHelper.cos(baseRotation + PI - (angle * 0.4f)) * scale, ROTATE_90 * rainboomLegLotation), yAngle, leftLeg.roll);
-        rightLeg.setAngles(MathHelper.lerp(rainboomLegLotation, MathHelper.cos(baseRotation + angle / 5) * scale, ROTATE_90 * rainboomLegLotation), -yAngle, rightLeg.roll);
+        leftArm.setAngles(MathHelper.lerp(rainboomLegLotation, MathHelper.cos(baseRotation + angle) * scale, -MathUtil.Angles._90_DEG * rainboomLegLotation), -yAngle, 0);
+        rightArm.setAngles(MathHelper.lerp(rainboomLegLotation, MathHelper.cos(baseRotation + MathHelper.PI + angle / 2) * scale, -MathUtil.Angles._90_DEG * rainboomLegLotation), yAngle, 0);
+        leftLeg.setAngles(MathHelper.lerp(rainboomLegLotation, MathHelper.cos(baseRotation + MathHelper.PI - (angle * 0.4f)) * scale, MathUtil.Angles._90_DEG * rainboomLegLotation), yAngle, leftLeg.roll);
+        rightLeg.setAngles(MathHelper.lerp(rainboomLegLotation, MathHelper.cos(baseRotation + angle / 5) * scale, MathUtil.Angles._90_DEG * rainboomLegLotation), -yAngle, rightLeg.roll);
     }
 
     protected float getLegOutset() {
@@ -372,8 +385,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
                     }
 
                     float mult = 1 - swag/2;
-                    arm.pitch = arm.pitch * mult - (PI / 10) * swag;
-                    arm.roll = -sigma * (PI / 15);
+                    arm.pitch = arm.pitch * mult - (MathHelper.PI / 10) * swag;
+                    arm.roll = -sigma * (MathHelper.PI / 15);
 
                     if (attributes.isCrouching) {
                         arm.pivotX -= sigma * 2;
@@ -386,9 +399,9 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
                 break;
             case BLOCK:
                 arm.pitch = (arm.pitch / 2 - 0.9424779F) - 0.3F;
-                arm.yaw = sigma * PI / 9;
+                arm.yaw = sigma * MathHelper.PI / 9;
                 if (complement == pose) {
-                    arm.yaw -= sigma * PI / 18;
+                    arm.yaw -= sigma * MathHelper.PI / 18;
                 }
                 arm.pivotX += sigma;
                 arm.pivotZ += 3;
@@ -402,7 +415,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             case CROSSBOW_HOLD:
                 aimBow(arm, limbSpeed);
 
-                arm.pitch = head.pitch - ROTATE_90;
+                arm.pitch = head.pitch - MathUtil.Angles._90_DEG;
                 arm.yaw = head.yaw + 0.06F;
                 break;
             case CROSSBOW_CHARGE:
@@ -412,7 +425,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
                 arm.yaw = head.yaw + 0.06F;
                 break;
             case THROW_SPEAR:
-                arm.pitch = ROTATE_90 * 2;
+                arm.pitch = MathUtil.Angles._90_DEG * 2;
                 break;
             case SPYGLASS:
                 float addedPitch = sneaking ? -0.2617994F : 0;
@@ -439,7 +452,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     }
 
     protected void aimBow(ModelPart arm, float limbSpeed) {
-        arm.pitch = ROTATE_270 + head.pitch + (MathHelper.sin(limbSpeed * 0.067F) * 0.05F);
+        arm.pitch = MathUtil.Angles._270_DEG + head.pitch + (MathHelper.sin(limbSpeed * 0.067F) * 0.05F);
         arm.yaw = head.yaw - 0.06F;
         arm.roll = MathHelper.cos(limbSpeed * 0.09F) * 0.05F + 0.05F;
 
@@ -469,8 +482,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     protected void swingArm(ModelPart arm) {
         float swing = 1 - (float)Math.pow(1 - getSwingAmount(), 3);
 
-        float deltaX = MathHelper.sin(swing * PI);
-        float deltaZ = MathHelper.sin(getSwingAmount() * PI);
+        float deltaX = MathHelper.sin(swing * MathHelper.PI);
+        float deltaZ = MathHelper.sin(getSwingAmount() * MathHelper.PI);
 
         float deltaAim = deltaZ * (0.7F - head.pitch) * 0.75F;
 
@@ -502,15 +515,15 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         }
     }
 
-    protected void adjustBody(float rotateAngleX, float rotationPointY, float rotationPointZ) {
-        adjustBodyComponents(rotateAngleX, rotationPointY, rotationPointZ);
-        neck.setPivot(NECK_ROT_X + rotateAngleX, rotationPointY, rotationPointZ);
+    protected void adjustBody(float pitch, Pivot pivot) {
+        adjustBodyComponents(pitch, pivot);
+        neck.setPivot(NECK_X + pitch, pivot.y(), pivot.z());
     }
 
-    protected void adjustBodyComponents(float rotateAngleX, float rotationPointY, float rotationPointZ) {
-        body.pitch = rotateAngleX;
-        body.pivotY = rotationPointY;
-        body.pivotZ = rotationPointZ;
+    protected void adjustBodyComponents(float pitch, Pivot pivot) {
+        body.pitch = pitch;
+        body.pivotY = pivot.y();
+        body.pivotZ = pivot.z();
     }
 
     @Override

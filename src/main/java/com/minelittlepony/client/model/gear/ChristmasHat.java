@@ -8,14 +8,13 @@ import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.IModel;
-import com.minelittlepony.api.model.PonyModelConstants;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.common.util.Color;
 
 import java.util.Calendar;
 import java.util.UUID;
 
-public class ChristmasHat extends AbstractWearableGear implements PonyModelConstants {
+public class ChristmasHat extends AbstractWearableGear {
 
     private static boolean dayChecked = false;
     private static boolean dayResult = false;
@@ -49,7 +48,7 @@ public class ChristmasHat extends AbstractWearableGear implements PonyModelConst
 
     @Override
     public void pose(IModel model, Entity entity, boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
-        float pi = PI * (float) Math.pow(swing, 16);
+        float pi = MathHelper.PI * (float) Math.pow(swing, 16);
 
         float mve = move * 0.6662f;
         float srt = swing / 10;

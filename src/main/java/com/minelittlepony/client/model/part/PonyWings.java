@@ -10,6 +10,7 @@ import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.mson.api.ModelView;
 import com.minelittlepony.mson.api.MsonModel;
+import com.minelittlepony.util.MathUtil;
 
 public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
 
@@ -57,9 +58,9 @@ public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
         float progress = pegasus.getSwingAmount();
 
         if (progress > 0) {
-            flap = MathHelper.sin(MathHelper.sqrt(progress) * PI * 2);
+            flap = MathHelper.sin(MathHelper.sqrt(progress) * MathHelper.TAU);
         } else {
-            float pi = PI * (float) Math.pow(swing, 16);
+            float pi = MathHelper.PI * (float) Math.pow(swing, 16);
 
             float mve = move * 0.6662f; // magic number ahoy (actually 2/3)
             float srt = swing / 4;
@@ -70,7 +71,7 @@ public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
         getLeft().rotateWalking(flap);
         getRight().rotateWalking(-flap);
 
-        float flapAngle = ROTATE_270;
+        float flapAngle = MathUtil.Angles._270_DEG;
 
         if (pegasus.wingsAreOpen()) {
             flapAngle = pegasus.getWingRotationFactor(ticks);
@@ -78,7 +79,7 @@ public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
                 flapAngle -= 1F;
             }
         } else {
-            flapAngle = ROTATE_270 - 0.9F + (float)Math.sin(ticks / 10) / 15F;
+            flapAngle = MathUtil.Angles._270_DEG - 0.9F + (float)Math.sin(ticks / 10) / 15F;
         }
 
         if (!pegasus.isFlying()) {
@@ -120,8 +121,8 @@ public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
             folded.yaw = swing * walkingRotationSpeed;
         }
 
-        public void rotateFlying(float angle) {
-            extended.roll = angle;
+        public void rotateFlying(float roll) {
+            extended.roll = roll;
         }
 
         public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {

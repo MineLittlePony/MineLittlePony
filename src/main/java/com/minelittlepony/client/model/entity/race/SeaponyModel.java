@@ -14,6 +14,8 @@ import net.minecraft.util.math.MathHelper;
 
 public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
 
+    private static final float FIN_Y_ANGLE = MathHelper.PI / 6;
+
     private final ModelPart leftFin;
     private final ModelPart centerFin;
     private final ModelPart rightFin;
@@ -62,7 +64,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
             flapMotion /= 2;
         }
 
-        float finAngle = FIN_ROT_Y + flapMotion;
+        float finAngle = FIN_Y_ANGLE + flapMotion;
 
         leftFin.yaw = finAngle;
         rightFin.yaw = -finAngle;

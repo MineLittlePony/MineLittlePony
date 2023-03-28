@@ -3,8 +3,8 @@ package com.minelittlepony.client.model.gear;
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.IModel;
 import com.minelittlepony.api.model.IPegasus;
-import com.minelittlepony.api.model.PonyModelConstants;
 import com.minelittlepony.api.pony.meta.Wearable;
+import com.minelittlepony.util.MathUtil;
 
 import java.util.UUID;
 
@@ -15,7 +15,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-public class SaddleBags extends AbstractWearableGear implements PonyModelConstants {
+public class SaddleBags extends AbstractWearableGear {
 
     public static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/models/saddlebags.png");
 
@@ -43,7 +43,7 @@ public class SaddleBags extends AbstractWearableGear implements PonyModelConstan
             hangLow = model.canFly() && ((IPegasus)model).wingsAreOpen();
         }
 
-        float pi = PI * (float) Math.pow(swing, 16);
+        float pi = MathHelper.PI * (float) Math.pow(swing, 16);
 
         float mve = move * 0.6662f;
         float srt = swing / 10;
@@ -54,7 +54,7 @@ public class SaddleBags extends AbstractWearableGear implements PonyModelConstan
         rightBag.pitch = bodySwing;
 
         if (model instanceof IPegasus && model.isFlying()) {
-            bodySwing = ((IPegasus)model).getWingRotationFactor(ticks) - ROTATE_270;
+            bodySwing = ((IPegasus)model).getWingRotationFactor(ticks) - MathUtil.Angles._270_DEG;
             bodySwing /= 10;
         }
 
