@@ -274,7 +274,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         rightArm.pivotZ = 2 + sin;
         leftArm.pivotZ = 2 - sin;
 
-        float legRPX = getMetadata().getInterpolator(attributes.interpolatorId).interpolate("legOffset", cos - getLegOutset() - 0.001F, 3);
+        float legRPX = getMetadata().getInterpolator(attributes.interpolatorId).interpolate("legOffset", cos - getLegOutset() - 0.001F, 2);
 
         rightArm.pivotX = -legRPX;
         rightLeg.pivotX = -legRPX;
@@ -322,7 +322,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         float rainboomLegLotation = getMetadata().getInterpolator(attributes.interpolatorId).interpolate(
                 "rainboom_leg_rotation",
                 attributes.isGoingFast ? 1 : 0,
-                10
+                5
         );
         float yAngle = 0.2F * rainboomLegLotation;
 
