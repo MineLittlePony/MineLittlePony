@@ -14,7 +14,6 @@ import java.util.function.Supplier;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.*;
@@ -180,8 +179,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     }
 
     protected void ponySleep() {
-        rightArm.pitch = ROTATE_270;
-        leftArm.pitch = ROTATE_270;
+        rightArm.pitch = -ROTATE_90;
+        leftArm.pitch = -ROTATE_90;
 
         rightLeg.pitch = ROTATE_90;
         leftLeg.pitch = ROTATE_90;
@@ -286,8 +285,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     protected void rotateLegs(float move, float swing, float ticks, T entity) {
         if (attributes.isSwimming) {
             rotateLegsSwimming(move, swing, ticks, entity);
-        } else if (attributes.isGoingFast) {
-            rotateLegsInFlight(move, swing, ticks, entity);
         } else {
             rotateLegsOnGround(move, swing, ticks, entity);
         }
@@ -336,22 +333,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     }
 
     /**
-     * Rotates legs in quopy fashion whilst flying.
-     *
-     * Takes the same parameters as {@link AbstractPonyModel.setRotationAndAngles}
-     *
-     */
-    protected void rotateLegsInFlight(float move, float swing, float ticks, Entity entity) {
-        float armX = attributes.isGoingFast ? ROTATE_270 : MathHelper.sin(-swing / 2);
-        float legX = attributes.isGoingFast ? ROTATE_90 : MathHelper.sin(swing / 2);
-
-        leftArm.setAngles(armX, -0.2F, 0);
-        rightArm.setAngles(armX, 0.2F, 0);
-        leftLeg.setAngles(legX, 0.2F, leftLeg.roll);
-        rightLeg.setAngles(legX, -0.2F, rightLeg.roll);
-    }
-
-    /**
      * Rotates legs in quopy fashion for walking.
      *
      * Takes the same parameters as {@link AbstractPonyModel.setRotationAndAngles}
@@ -363,10 +344,17 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         float baseRotation = move * 0.6662F; // magic number ahoy
         float scale = swing / 4;
 
-        leftArm.setAngles(MathHelper.cos(baseRotation + angle) * scale, 0, 0);
-        rightArm.setAngles(MathHelper.cos(baseRotation + PI + angle / 2) * scale, 0, 0);
-        leftLeg.setAngles(MathHelper.cos(baseRotation + PI - (angle * 0.4f)) * scale, 0, leftLeg.roll);
-        rightLeg.setAngles(MathHelper.cos(baseRotation + angle / 5) * scale, 0, rightLeg.roll);
+        float rainboomLegLotation = getMetadata().getInterpolator(attributes.interpolatorId).interpolate(
+                "rainboom_leg_rotation",
+                attributes.isGoingFast ? 1 : 0,
+                10
+        );
+        float yAngle = 0.2F * rainboomLegLotation;
+
+        leftArm.setAngles(MathHelper.lerp(rainboomLegLotation, MathHelper.cos(baseRotation + angle) * scale, -ROTATE_90 * rainboomLegLotation), -yAngle, 0);
+        rightArm.setAngles(MathHelper.lerp(rainboomLegLotation, MathHelper.cos(baseRotation + PI + angle / 2) * scale, -ROTATE_90 * rainboomLegLotation), yAngle, 0);
+        leftLeg.setAngles(MathHelper.lerp(rainboomLegLotation, MathHelper.cos(baseRotation + PI - (angle * 0.4f)) * scale, ROTATE_90 * rainboomLegLotation), yAngle, leftLeg.roll);
+        rightLeg.setAngles(MathHelper.lerp(rainboomLegLotation, MathHelper.cos(baseRotation + angle / 5) * scale, ROTATE_90 * rainboomLegLotation), -yAngle, rightLeg.roll);
     }
 
     protected float getLegOutset() {
