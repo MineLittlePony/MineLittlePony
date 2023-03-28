@@ -7,6 +7,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.model.*;
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.mson.api.ModelView;
 import com.minelittlepony.mson.api.MsonModel;
@@ -119,10 +120,18 @@ public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
 
         public void rotateWalking(float swing) {
             folded.yaw = swing * walkingRotationSpeed;
+            Race race = pegasus.getMetadata().getRace();
+            if (race == Race.CHANGELING || race == Race.CHANGEDLING) {
+                extended.yaw = folded.yaw;
+            }
         }
 
         public void rotateFlying(float roll) {
             extended.roll = roll;
+            Race race = pegasus.getMetadata().getRace();
+            if (race == Race.CHANGELING || race == Race.CHANGEDLING) {
+                folded.roll = roll;
+            }
         }
 
         public void render(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
