@@ -28,21 +28,26 @@
 				}
 			}
 		},
-		"body": {
-			"texture": { "u": 16, "v": 16 },
-			"cubes": [
-				{ "from": [-4, 4, -2], "size": [ 8,  8,  4] }
-			],
-			"children": {
-				"beard": {
-					"pivot": [-4, 2, -2],
-					"rotate": [-20, 0, 0],
-					"cubes": [
-						{ "from": [0, 0, 0], "size": [ 8,  8,  4], "dilate": [0.5, -0.5, 0] }
-					]
-				}
-			}
-		},
+    "neck": {
+      "type": "mson:planar",
+      "dilate": [ -0.3, "#neck_dilate_y", -0.3 ],
+      "texture": { "u": 0, "v": 16 },
+      "rotate": [9, 0, 0],
+      "north": [-2, 1.199998, -2.8, 4, 4],
+      "south": [-2, 1.199998,  1.2, 4, 4],
+      "east":  [ 2, 1.199998, -2.8, 4, 4],
+      "west":  [-2, 1.199998, -2.8, 4, 4],
+      "children": {
+        "beard": {
+          "texture": { "u": 16, "v": 16 },
+          "pivot": [-4, 2, -2],
+          "rotate": [-29, 0, 0],
+          "cubes": [
+            { "from": [0, 0, 0], "size": [ 8,  8,  4], "dilate": [0.5, -0.5, 0] }
+          ]
+        }
+      }
+    },
 		"tail": {
 			"implementation": "com.minelittlepony.client.model.part.LionTail",
 			"data": "minelittlepony:components/lion_tail"
