@@ -36,7 +36,7 @@ public class LionTail implements IPart {
             straightness += 0.5F;
         }
 
-        if (attributes.isGoingFast) {
+        if (attributes.isGoingFast || attributes.isSwimming) {
             straightness *= 2;
         }
 
