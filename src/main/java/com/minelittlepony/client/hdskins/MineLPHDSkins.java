@@ -106,7 +106,7 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
             IPonyData metadata = IPony.getManager().getPony(main.getId()).metadata();
             if (wearable != Wearable.NONE && metadata.isWearing(wearable)) {
 
-                if (wearable.isSaddlebags() && metadata.getRace() != Race.BATPONY) {
+                if (wearable.isSaddlebags() && metadata.getRace().supportsLegacySaddlebags()) {
                     return Optional.of(main.getId());
                 }
 

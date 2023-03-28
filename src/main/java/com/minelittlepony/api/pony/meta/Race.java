@@ -36,7 +36,6 @@ public enum Race implements TriggerPixelType<Race> {
 
     /**
      * Returns true if this pony has a horn (and by extension can cast magic).
-     * @return
      */
     public boolean hasHorn() {
         return horn;
@@ -50,10 +49,24 @@ public enum Race implements TriggerPixelType<Race> {
     }
 
     /**
-     * Returns true if this is a human.
+     * Returns true if this a changeling or reformed changeling.
+     */
+    public boolean hasBugWings() {
+        return this == CHANGELING || this == CHANGEDLING;
+    }
+
+    /**
+     * Returns true if this is not a pony.
      */
     public boolean isHuman() {
         return this == HUMAN;
+    }
+
+    /**
+     * Returns true if the model allows embedding saddlebags in the main body texture.
+     */
+    public boolean supportsLegacySaddlebags() {
+        return !(this == BATPONY || hasBugWings());
     }
 
     @Override
