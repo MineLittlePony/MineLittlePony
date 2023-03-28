@@ -1,8 +1,10 @@
 package com.minelittlepony.api.model;
 
 import com.minelittlepony.api.pony.*;
+import com.minelittlepony.client.IPreviewModel;
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.client.pony.PonyData;
+import com.minelittlepony.common.util.animation.Interpolator;
 import com.minelittlepony.util.MathUtil;
 
 import java.util.*;
@@ -82,7 +84,7 @@ public class ModelAttributes {
      * Unique id of the interpolator used for this model.
      * Usually the UUID of the entity being rendered.
      */
-    public UUID interpolatorId = UUID.randomUUID();
+    private UUID interpolatorId = UUID.randomUUID();
 
     /**
      * The actual, visible height of this model when rendered.
@@ -148,6 +150,10 @@ public class ModelAttributes {
         }
         isLeftHanded = entity.getMainArm() == Arm.LEFT;
         featureSkins = SkinsProxy.instance.getAvailableSkins(entity);
+    }
+
+    public Interpolator getMainInterpolator() {
+        return metadata.getInterpolator(interpolatorId);
     }
 
     public boolean shouldLiftArm(ArmPose pose, ArmPose complement, float sigma) {

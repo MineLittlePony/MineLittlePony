@@ -25,7 +25,7 @@ public class LionTail implements IPart {
         float baseSail = 1F;
 
         float speed = swing > 0.01F ? 6 : 90;
-        Interpolator interpolator = Interpolator.linear(attributes.interpolatorId);
+        Interpolator interpolator = attributes.getMainInterpolator();
 
         float straightness = 1.6F * (1 + (float)Math.sin(ticks / speed) / 8F);
         float twist = (float)Math.sin(Math.PI/2F + 2 * ticks / speed) / 16F;

@@ -122,7 +122,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         float pitch = (float)Math.toRadians(attributes.motionPitch);
         head.setAngles(
                 MathHelper.clamp(attributes.isSleeping ? 0.1f : headPitch / 57.29578F, -1.25f - pitch, 0.5f - pitch),
-                attributes.isSleeping ? (Math.abs(attributes.interpolatorId.getMostSignificantBits()) % 2.8F) - 1.9F : headYaw / 57.29578F,
+                attributes.isSleeping ? (Math.abs(entity.getUuid().getMostSignificantBits()) % 2.8F) - 1.9F : headYaw / 57.29578F,
                 0
         );
 
@@ -274,7 +274,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         rightArm.pivotZ = 2 + sin;
         leftArm.pivotZ = 2 - sin;
 
-        float legRPX = getMetadata().getInterpolator(attributes.interpolatorId).interpolate("legOffset", cos - getLegOutset() - 0.001F, 2);
+        float legRPX = attributes.getMainInterpolator().interpolate("legOffset", cos - getLegOutset() - 0.001F, 2);
 
         rightArm.pivotX = -legRPX;
         rightLeg.pivotX = -legRPX;
@@ -319,7 +319,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         float baseRotation = move * 0.6662F; // magic number ahoy
         float scale = swing / 4;
 
-        float rainboomLegLotation = getMetadata().getInterpolator(attributes.interpolatorId).interpolate(
+        float rainboomLegLotation = attributes.getMainInterpolator().interpolate(
                 "rainboom_leg_rotation",
                 attributes.isGoingFast ? 1 : 0,
                 5

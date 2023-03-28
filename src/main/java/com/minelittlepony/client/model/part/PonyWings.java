@@ -83,7 +83,7 @@ public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
         }
 
         if (!pegasus.isFlying()) {
-            flapAngle = pegasus.getMetadata().getInterpolator(attributes.interpolatorId).interpolate("wingFlap", flapAngle, 10);
+            flapAngle = attributes.getMainInterpolator().interpolate("wingFlap", flapAngle, 10);
         }
 
         getLeft().rotateFlying(flapAngle);
