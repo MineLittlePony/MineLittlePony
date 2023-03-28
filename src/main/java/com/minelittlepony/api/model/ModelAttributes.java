@@ -7,6 +7,7 @@ import com.minelittlepony.util.MathUtil;
 
 import java.util.*;
 
+import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
@@ -111,7 +112,7 @@ public class ModelAttributes {
     /**
      * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
      */
-    public void checkRainboom(LivingEntity entity, float swing, boolean hasWings, float ticks) {
+    public void checkRainboom(LivingEntity entity, boolean hasWings, float ticks) {
         Vec3d motion = entity.getVelocity();
         double zMotion = Math.sqrt(motion.x * motion.x + motion.z * motion.z);
 
@@ -149,6 +150,12 @@ public class ModelAttributes {
         interpolatorId = entity.getUuid();
         isLeftHanded = entity.getMainArm() == Arm.LEFT;
         featureSkins = SkinsProxy.instance.getAvailableSkins(entity);
+    }
+
+    public boolean shouldLiftArm(ArmPose pose, ArmPose complement, float sigma) {
+        return pose != ArmPose.EMPTY
+                && (pose != complement || sigma == (isLeftHanded ? 1 : -1))
+                && (complement != ArmPose.BLOCK && complement != ArmPose.CROSSBOW_HOLD);
     }
 
     public enum Mode {

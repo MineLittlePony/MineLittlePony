@@ -85,28 +85,16 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     /**
      * Sets the model's various rotation angles.
-     *
-     * @param move      Entity motion parameter
-     *                  i.e. velocity in no specific direction used in bipeds to calculate step amount.
-     * @param swing     Degree to which each 'limb' swings.
-     * @param ticks     Total whole and partial ticks since the entity's existence.
-     *                  Used in animations together with {@code swing} and {@code move}.
-     * @param headYaw   Horizontal head motion in radians.
-     * @param headPitch Vertical head motion in radians.
-     * @param scale     Scaling factor used to render this model.
-     *                  Determined by the return value of {@link RenderLivingBase.prepareScale}.
-     *                  Usually {@code 0.0625F}.
-     * @param entity    The entity we're being called for.
      */
     @Override
-    public final void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        attributes.checkRainboom(entity, swing, canFly(), ticks);
+    public final void setAngles(T entity, float limbAngle, float limbSpeed, float animationProgress, float headYaw, float headPitch) {
+        attributes.checkRainboom(entity, canFly(), animationProgress);
         PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(entity, this, ModelAttributes.Mode.OTHER);
-        super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
+        super.setAngles(entity, limbAngle, limbSpeed, animationProgress, headYaw, headPitch);
 
         head.setPivot(head.getDefaultTransform().pivotX, head.getDefaultTransform().pivotY, head.getDefaultTransform().pivotZ);
 
-        setModelAngles(entity, move, swing, ticks, headYaw, headPitch);
+        setModelAngles(entity, limbAngle, limbSpeed, animationProgress, headYaw, headPitch);
 
         leftSleeve.copyTransform(leftArm);
         rightSleeve.copyTransform(rightArm);
@@ -116,18 +104,27 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         hat.copyTransform(head);
     }
 
-    protected void setModelAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        rotateHead(headYaw, headPitch);
-        float bodySwing = getWobbleAmount();
-        shakeBody(move, swing, bodySwing, ticks);
-        rotateLegs(move, swing, ticks, entity);
+    protected void setModelAngles(T entity, float limbAngle, float limbSpeed, float animationProgress, float headYaw, float headPitch) {
+
+        float pitch = (float)Math.toRadians(attributes.motionPitch);
+        head.setAngles(
+                MathHelper.clamp(attributes.isSleeping ? 0.1f : headPitch / 57.29578F, -1.25f - pitch, 0.5f - pitch),
+                attributes.isSleeping ? (Math.abs(attributes.interpolatorId.getMostSignificantBits()) % 2.8F) - 1.9F : headYaw / 57.29578F,
+                0
+        );
+
+        float wobbleAmount = getWobbleAmount();
+        body.yaw = wobbleAmount;
+        neck.yaw = wobbleAmount;
+
+        rotateLegs(limbAngle, limbSpeed, animationProgress, entity);
 
         if (onSetModelAngles != null) {
-            onSetModelAngles.poseModel(this, move, swing, ticks, entity);
+            onSetModelAngles.poseModel(this, limbAngle, limbSpeed, animationProgress, entity);
         }
 
         if (!attributes.isSwimming && !attributes.isGoingFast) {
-            holdItem(swing);
+            holdItem(limbSpeed);
         }
         swingItem(entity);
 
@@ -142,7 +139,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             leftLeg.pivotY = FRONT_LEG_RP_Y;
 
             if (!attributes.isSleeping) {
-                animateBreathing(ticks);
+                animateBreathing(animationProgress);
             }
 
             if (attributes.isSwimmingRotated) {
@@ -155,12 +152,12 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             ponySleep();
         }
 
-        parts.forEach(part -> part.setRotationAndAngles(attributes, move, swing, bodySwing, ticks));
+        parts.forEach(part -> part.setRotationAndAngles(attributes, limbAngle, limbSpeed, wobbleAmount, animationProgress));
     }
 
     public void setHeadRotation(float animationProgress, float yaw, float pitch) {
-        head.yaw = yaw * ((float)Math.PI / 180);
-        head.pitch = pitch * ((float)Math.PI / 180);
+        head.yaw = yaw * MathHelper.RADIANS_PER_DEGREE;
+        head.pitch = pitch * MathHelper.RADIANS_PER_DEGREE;
         hat.copyTransform(head);
     }
 
@@ -245,37 +242,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     }
 
     /**
-     * Sets the model's various rotation angles.
-     *
-     * @param move      Entity motion parameter - i.e. velocity in no specific direction used in bipeds to calculate step amount.
-     * @param swing     Degree to which each 'limb' swings.
-     * @param bodySwing Horizontal (Y) body rotation.
-     * @param ticks       Total whole and partial ticks since the entity's existance. Used in animations together with {@code swing} and {@code move}.
-     */
-    protected void shakeBody(float move, float swing, float bodySwing, float ticks) {
-        body.yaw = bodySwing;
-        neck.yaw = bodySwing;
-    }
-
-    /**
-     * Called to update the head rotation.
-     *
-     * @param x     New rotation X
-     * @param y     New rotation Y
-     */
-    private void rotateHead(float headYaw, float headPitch) {
-        headYaw = attributes.isSleeping ? (Math.abs(attributes.interpolatorId.getMostSignificantBits()) % 2.8F) - 1.9F : headYaw / 57.29578F;
-        headPitch = attributes.isSleeping ? 0.1f : headPitch / 57.29578F;
-
-        float pitch = (float)Math.toRadians(attributes.motionPitch);
-        head.setAngles(
-                MathHelper.clamp(headPitch, -1.25f - pitch, 0.5f - pitch),
-                headYaw,
-                0
-        );
-    }
-
-    /**
     *
     * Used to set the legs rotation based on walking/crouching animations.
     *
@@ -295,9 +261,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         rightArm.pivotZ = 2 + sin;
         leftArm.pivotZ = 2 - sin;
 
-        float legRPX = cos - getLegOutset() - 0.001F;
-
-        legRPX = getMetadata().getInterpolator(attributes.interpolatorId).interpolate("legOffset", legRPX, 3);
+        float legRPX = getMetadata().getInterpolator(attributes.interpolatorId).interpolate("legOffset", cos - getLegOutset() - 0.001F, 3);
 
         rightArm.pivotX = -legRPX;
         rightLeg.pivotX = -legRPX;
@@ -335,8 +299,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     /**
      * Rotates legs in quopy fashion for walking.
      *
-     * Takes the same parameters as {@link AbstractPonyModel.setRotationAndAngles}
-     *
      */
     protected void rotateLegsOnGround(float move, float swing, float ticks, T entity) {
         float angle = PI * (float) Math.pow(swing, 16);
@@ -372,9 +334,9 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     /**
      * Adjusts legs as if holding an item. Delegates to the correct arm/leg/limb as necessary.
      */
-    protected void holdItem(float swing) {
-        alignArmForAction(getArm(Arm.LEFT), leftArmPose, rightArmPose, swing, 1);
-        alignArmForAction(getArm(Arm.RIGHT), rightArmPose, leftArmPose, swing, -1);
+    protected void holdItem(float limbSpeed) {
+        alignArmForAction(getArm(Arm.LEFT), leftArmPose, rightArmPose, limbSpeed, 1);
+        alignArmForAction(getArm(Arm.RIGHT), rightArmPose, leftArmPose, limbSpeed, -1);
     }
 
     @Override
@@ -389,30 +351,24 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         }
     }
 
-    protected boolean shouldLiftArm(ArmPose pose, ArmPose complement, float sigma) {
-        return pose != ArmPose.EMPTY
-                && (pose != complement || sigma == (attributes.isLeftHanded ? 1 : -1))
-                && (complement != ArmPose.BLOCK && complement != ArmPose.CROSSBOW_HOLD);
-    }
-
     /**
      * Aligns an arm for the appropriate arm pose
      *
      * @param arm   The arm model to align
      * @param pose  The post to align to
-     * @param swing     Degree to which each 'limb' swings.
+     * @param limbSpeed     Degree to which each 'limb' swings.
      */
-    protected void alignArmForAction(ModelPart arm, ArmPose pose, ArmPose complement, float swing, float sigma) {
+    protected void alignArmForAction(ModelPart arm, ArmPose pose, ArmPose complement, float limbSpeed, float sigma) {
         switch (pose) {
             case ITEM:
                 arm.yaw = 0;
 
                 boolean both = pose == complement;
 
-                if (shouldLiftArm(pose, complement, sigma)) {
+                if (attributes.shouldLiftArm(pose, complement, sigma)) {
                     float swag = 1;
                     if (!isFlying() && both) {
-                        swag -= (float)Math.pow(swing, 2);
+                        swag -= (float)Math.pow(limbSpeed, 2);
                     }
 
                     float mult = 1 - swag/2;
@@ -441,16 +397,16 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
                 }
                 break;
             case BOW_AND_ARROW:
-                aimBow(arm, swing);
+                aimBow(arm, limbSpeed);
                 break;
             case CROSSBOW_HOLD:
-                aimBow(arm, swing);
+                aimBow(arm, limbSpeed);
 
                 arm.pitch = head.pitch - ROTATE_90;
                 arm.yaw = head.yaw + 0.06F;
                 break;
             case CROSSBOW_CHARGE:
-                aimBow(arm, swing);
+                aimBow(arm, limbSpeed);
 
                 arm.pitch = -0.8F;
                 arm.yaw = head.yaw + 0.06F;
@@ -482,10 +438,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         }
     }
 
-    protected void aimBow(ModelPart arm, float ticks) {
-        arm.pitch = ROTATE_270 + head.pitch + (MathHelper.sin(ticks * 0.067F) * 0.05F);
+    protected void aimBow(ModelPart arm, float limbSpeed) {
+        arm.pitch = ROTATE_270 + head.pitch + (MathHelper.sin(limbSpeed * 0.067F) * 0.05F);
         arm.yaw = head.yaw - 0.06F;
-        arm.roll = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
+        arm.roll = MathHelper.cos(limbSpeed * 0.09F) * 0.05F + 0.05F;
 
         if (sneaking) {
             arm.pivotY += 4;
@@ -526,20 +482,20 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     /**
      * Animates the arm's breathing animation when holding items.
      *
-     * @param ticks       Total whole and partial ticks since the entity's existence.
+     * @param animationProgress       Total whole and partial ticks since the entity's existence.
      *                    Used in animations together with {@code swing} and {@code move}.
      */
-    protected void animateBreathing(float ticks) {
-        float cos = MathHelper.cos(ticks * 0.09F) * 0.05F + 0.05F;
-        float sin = MathHelper.sin(ticks * 0.067F) * 0.05F;
+    protected void animateBreathing(float animationProgress) {
+        float cos = MathHelper.cos(animationProgress * 0.09F) * 0.05F + 0.05F;
+        float sin = MathHelper.sin(animationProgress * 0.067F) * 0.05F;
 
-        if (shouldLiftArm(rightArmPose, leftArmPose, -1)) {
+        if (attributes.shouldLiftArm(rightArmPose, leftArmPose, -1)) {
             ModelPart arm = getArm(Arm.RIGHT);
             arm.roll += cos;
             arm.pitch += sin;
         }
 
-        if (shouldLiftArm(leftArmPose, rightArmPose, 1)) {
+        if (attributes.shouldLiftArm(leftArmPose, rightArmPose, 1)) {
             ModelPart arm = getArm(Arm.LEFT);
             arm.roll += cos;
             arm.pitch += sin;
@@ -572,7 +528,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         neck.visible = visible;
-
         parts.forEach(part -> part.setVisible(visible, attributes));
     }
 
