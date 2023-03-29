@@ -12,8 +12,8 @@ import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.mson.api.*;
 import com.minelittlepony.util.MathUtil;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class PonyTail implements IPart, MsonModel {
     private static final float TAIL_Z = 14;
@@ -27,7 +27,7 @@ public class PonyTail implements IPart, MsonModel {
     private int tailStop = 0;
     private TailShape shape = TailShape.STRAIGHT;
 
-    private final List<Segment> segments = new ArrayList<>();
+    private List<Segment> segments = List.of();
 
     public PonyTail(ModelPart tree) {
         tail = tree.getChild("tail");
@@ -36,38 +36,32 @@ public class PonyTail implements IPart, MsonModel {
     @Override
     public void init(ModelView context) {
         model = context.getModel();
-
-        int segments = (int)context.getLocalValue("segments", 4);
-
-        for (int i = 0; i < segments; i++) {
-            Segment segment = context.findByName("segment_" + i);
-            segment.tail = this;
-            segment.index = i;
-            this.segments.add(segment);
-        }
+        segments = IntStream.range(0, (int)context.getLocalValue("segments", 4))
+                .mapToObj(i -> context.<Segment>findByName("segment_" + i))
+                .toList();
     }
 
     @Override
-    public void setRotationAndAngles(ModelAttributes attributes, float move, float swing, float bodySwing, float ticks) {
+    public void setPartAngles(ModelAttributes attributes, float limbAngle, float limbSpeed, float bodySwing, float animationProgress) {
         boolean rainboom = attributes.isSwimming || attributes.isGoingFast;
-        tail.roll = rainboom ? 0 : MathHelper.cos(move * 0.8F) * 0.2f * swing;
+        tail.roll = rainboom ? 0 : MathHelper.cos(limbAngle * 0.8F) * 0.2f * limbSpeed;
         tail.yaw = bodySwing * 5;
 
-        if (model.getAttributes().isCrouching && !rainboom) {
+        if (attributes.isCrouching && !rainboom) {
             tail.setPivot(0, 0, TAIL_SNEAKING_Z);
             tail.pitch = -model.body.pitch + 0.1F;
-        } else if (model.getAttributes().isSitting) {
+        } else if (attributes.isSitting) {
             tail.pivotZ = TAIL_RIDING_Z;
             tail.pivotY = TAIL_RIDING_Y;
             tail.pitch = MathHelper.PI / 5;
         } else {
             tail.setPivot(0, 0, TAIL_Z);
             if (rainboom) {
-                tail.pitch = MathUtil.Angles._90_DEG + MathHelper.sin(move) / 10;
+                tail.pitch = MathUtil.Angles._90_DEG + MathHelper.sin(limbAngle) / 10;
             } else {
-                tail.pitch = swing / 2;
+                tail.pitch = limbSpeed / 2;
 
-                swingX(ticks);
+                swingX(animationProgress);
             }
         }
 
@@ -86,8 +80,8 @@ public class PonyTail implements IPart, MsonModel {
     @Override
     public void setVisible(boolean visible, ModelAttributes attributes) {
         tail.visible = visible;
-        tailStop = model.getMetadata().getTailLength().ordinal();
-        shape = model.getMetadata().getTailShape();
+        tailStop = attributes.metadata.getTailLength().ordinal();
+        shape = attributes.metadata.getTailShape();
     }
 
     @Override
@@ -95,23 +89,21 @@ public class PonyTail implements IPart, MsonModel {
         stack.push();
         tail.rotate(stack);
 
-        segments.forEach(segment -> segment.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha));
+        for (int i = 0; i < segments.size(); i++) {
+            segments.get(i).render(this, stack, vertices, i, overlayUv, lightUv, red, green, blue, alpha);
+        }
 
         stack.pop();
     }
 
     public static class Segment {
-        public PonyTail tail;
-
-        public int index;
-
         private final ModelPart tree;
 
         public Segment(ModelPart tree) {
             this.tree = tree;
         }
 
-        public void render(MatrixStack stack, VertexConsumer renderContext, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+        public void render(PonyTail tail, MatrixStack stack, VertexConsumer renderContext, int index, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
             if (index >= tail.tailStop) {
                 return;
             }

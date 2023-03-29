@@ -2,7 +2,6 @@ package com.minelittlepony.client.hdskins;
 
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyData;
-import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.SkinsProxy;

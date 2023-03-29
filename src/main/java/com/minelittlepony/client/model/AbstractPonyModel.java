@@ -165,7 +165,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             ponySleep();
         }
 
-        parts.forEach(part -> part.setRotationAndAngles(attributes, limbAngle, limbSpeed, wobbleAmount, animationProgress));
+        parts.forEach(part -> part.setPartAngles(attributes, limbAngle, limbSpeed, wobbleAmount, animationProgress));
     }
 
     public void setHeadRotation(float animationProgress, float yaw, float pitch) {

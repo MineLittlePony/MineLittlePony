@@ -53,7 +53,7 @@ public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
     }
 
     @Override
-    public void setRotationAndAngles(ModelAttributes attributes, float move, float swing, float bodySwing, float ticks) {
+    public void setPartAngles(ModelAttributes attributes, float move, float swing, float bodySwing, float ticks) {
         float flap = 0;
         float progress = pegasus.getSwingAmount();
 

@@ -6,17 +6,15 @@ import net.minecraft.client.util.math.MatrixStack;
 public interface IPart {
     /**
      * Sets the model's various rotation angles.
-     * <p>
-     * See {@link AbstractPonyMode.setRotationAndAngle} for an explanation of the various parameters.
      */
-    default void setRotationAndAngles(ModelAttributes attributes, float move, float swing, float bodySwing, float ticks) {
+    default void setPartAngles(ModelAttributes attributes, float limbAngle, float limbSpeed, float bodySwing, float animationProgress) {
 
     }
 
     /**
      * Renders this model component.
      */
-    void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, ModelAttributes attributes);
+    void renderPart(MatrixStack stack, VertexConsumer vertices, int overlay, int light, float red, float green, float blue, float alpha, ModelAttributes attributes);
 
     /**
      * Sets whether this part should be rendered.

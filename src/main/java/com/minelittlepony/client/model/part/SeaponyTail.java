@@ -22,8 +22,8 @@ public class SeaponyTail implements IPart, MsonModel {
     }
 
     @Override
-    public void setRotationAndAngles(ModelAttributes attributes, float move, float swing, float bodySwing, float ticks) {
-        float rotation = attributes.isSleeping ? 0 : MathHelper.sin(ticks * 0.536f) / 4;
+    public void setPartAngles(ModelAttributes attributes, float limbAngle, float limbSpeed, float bodySwing, float animationProgress) {
+        float rotation = attributes.isSleeping ? 0 : MathHelper.sin(animationProgress * 0.536f) / 4;
 
         tailBase.pitch = MathHelper.HALF_PI + rotation;
         tailTip.pitch = rotation;

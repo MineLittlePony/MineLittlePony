@@ -18,17 +18,17 @@ public class LionTail implements IPart {
     }
 
     @Override
-    public void setRotationAndAngles(ModelAttributes attributes, float move, float swing, float bodySwing, float ticks) {
+    public void setPartAngles(ModelAttributes attributes, float limbAngle, float limbSpeed, float bodySwing, float animationProgress) {
 
         bodySwing *= 5;
 
         float baseSail = 1F;
 
-        float speed = swing > 0.01F ? 6 : 90;
+        float speed = limbSpeed > 0.01F ? 6 : 90;
         Interpolator interpolator = attributes.getMainInterpolator();
 
-        float straightness = 1.6F * (1 + (float)Math.sin(ticks / speed) / 8F);
-        float twist = (float)Math.sin(Math.PI/2F + 2 * ticks / speed) / 16F;
+        float straightness = 1.6F * (1 + (float)Math.sin(animationProgress / speed) / 8F);
+        float twist = (float)Math.sin(Math.PI/2F + 2 * animationProgress / speed) / 16F;
         float bend = attributes.motionRoll / 80F;
 
         if (attributes.isCrouching) {
@@ -45,11 +45,11 @@ public class LionTail implements IPart {
         bend = interpolator.interpolate("kirin_tail_bendiness", bend, 10);
 
         tail.pitch = baseSail;
-        tail.pitch += swing / 2;
+        tail.pitch += limbSpeed / 2;
         tail.yaw = twist;
         tail.roll = bodySwing * 2;
 
-        float sinTickFactor = MathHelper.sin(ticks * 0.067f) * 0.05f;
+        float sinTickFactor = MathHelper.sin(animationProgress * 0.067f) * 0.05f;
         tail.pitch += sinTickFactor;
         tail.yaw += sinTickFactor;
 
