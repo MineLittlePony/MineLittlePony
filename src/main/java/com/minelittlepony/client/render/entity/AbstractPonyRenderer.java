@@ -21,6 +21,7 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.text.Text;
@@ -70,6 +71,9 @@ public abstract class AbstractPonyRenderer<T extends MobEntity, M extends Entity
     @Override
     protected void setupTransforms(T entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
         manager.preRenderCallback(entity, stack, partialTicks);
+        if (getModel() instanceof PlayerEntityModel) {
+            ((PlayerEntityModel<?>)getModel()).setVisible(true);
+        }
 
         if (getModel().getAttributes().isSitting) {
             stack.translate(0, 0.125D, 0);
