@@ -1,8 +1,7 @@
 package com.minelittlepony.api.model;
 
 import com.minelittlepony.api.pony.*;
-import com.minelittlepony.client.IPreviewModel;
-import com.minelittlepony.client.SkinsProxy;
+import com.minelittlepony.client.*;
 import com.minelittlepony.client.pony.PonyData;
 import com.minelittlepony.common.util.animation.Interpolator;
 import com.minelittlepony.util.MathUtil;
@@ -64,6 +63,10 @@ public class ModelAttributes {
      * Flag indicating that this model is performing a rainboom (flight).
      */
     public boolean isGoingFast;
+    /**
+     * Flag indicating that this model should mimic the vanilla horse models.
+     */
+    public boolean isHorsey;
 
     /**
      * Vertical pitch whilst flying.
@@ -149,6 +152,7 @@ public class ModelAttributes {
             interpolatorId = entity.getUuid();
         }
         isLeftHanded = entity.getMainArm() == Arm.LEFT;
+        isHorsey = MineLittlePony.getInstance().getConfig().horsieMode.get();
         featureSkins = SkinsProxy.instance.getAvailableSkins(entity);
     }
 

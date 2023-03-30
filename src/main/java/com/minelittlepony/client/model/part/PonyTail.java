@@ -5,8 +5,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.api.model.IPart;
-import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.meta.TailShape;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.mson.api.*;
@@ -20,6 +19,8 @@ public class PonyTail implements IPart, MsonModel {
     private static final float TAIL_RIDING_Y = 3;
     private static final float TAIL_RIDING_Z = 13;
     private static final float TAIL_SNEAKING_Z = 15;
+
+    private static final Pivot HORSEY_TAIL_PIVOT = new Pivot(0, 6, -6);
 
     private ModelPart tail;
     private AbstractPonyModel<?> model;
@@ -90,7 +91,7 @@ public class PonyTail implements IPart, MsonModel {
         tail.rotate(stack);
 
         for (int i = 0; i < segments.size(); i++) {
-            segments.get(i).render(this, stack, vertices, i, overlayUv, lightUv, red, green, blue, alpha);
+            segments.get(i).render(this, stack, vertices, i, overlayUv, lightUv, red, green, blue, alpha, attributes);
         }
 
         stack.pop();
@@ -103,14 +104,20 @@ public class PonyTail implements IPart, MsonModel {
             this.tree = tree;
         }
 
-        public void render(PonyTail tail, MatrixStack stack, VertexConsumer renderContext, int index, int overlayUv, int lightUv, float red, float green, float blue, float alpha) {
+        public void render(PonyTail tail, MatrixStack stack, VertexConsumer renderContext, int index, int overlayUv, int lightUv, float red, float green, float blue, float alpha, ModelAttributes attributes) {
             if (index >= tail.tailStop) {
                 return;
             }
 
-            if (tail.shape == TailShape.STRAIGHT) {
+            if (attributes.isHorsey) {
+                tree.pitch = 0.5F;
+                HORSEY_TAIL_PIVOT.set(tree);
+            } else {
+                tree.resetTransform();
+            }
+
+            if (attributes.isHorsey || tail.shape == TailShape.STRAIGHT) {
                 tree.yaw = 0;
-                tree.pivotZ = 0;
                 tree.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
                 return;
             }

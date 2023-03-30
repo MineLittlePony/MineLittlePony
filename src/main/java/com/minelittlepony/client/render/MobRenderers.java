@@ -83,7 +83,7 @@ public final class MobRenderers {
 
     public boolean set(boolean value) {
         value = option().set(value);
-        apply(PonyRenderDispatcher.getInstance());
+        apply(PonyRenderDispatcher.getInstance(), false);
         return value;
     }
 
@@ -95,9 +95,9 @@ public final class MobRenderers {
         return REGISTRY.computeIfAbsent(name, n -> new MobRenderers(name, changer));
     }
 
-    void apply(PonyRenderDispatcher dispatcher) {
+    void apply(PonyRenderDispatcher dispatcher, boolean force) {
         boolean state = get();
-        if (state != lastState) {
+        if (state != lastState || force) {
             lastState = state;
             changer.accept(this, dispatcher);
         }

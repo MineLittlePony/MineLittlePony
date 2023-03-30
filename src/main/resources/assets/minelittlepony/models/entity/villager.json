@@ -2,6 +2,8 @@
 	"parent": "minelittlepony:races/steve/alicorn",
 	"data": {
 		"head": {
+      "pivot": [ 0, "#head_pivot_y", 0 ],
+      "dilate": ["#head_elongation", "#head_elongation", 0],
 			"cubes": [
 				{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
 			],
@@ -16,13 +18,19 @@
 					"type": "mson:slot",
 					"name": "ears",
 					"implementation": "com.minelittlepony.client.model.part.PonyEars",
-					"data": "minelittlepony:components/ears"
+					"data": "minelittlepony:components/ears",
+          "locals": {
+            "ear_shortening": "#global_ear_shortening"
+          }
 				},
 				"bat_ears": {
 					"type": "mson:slot",
 					"name": "bat_ears",
 					"implementation": "com.minelittlepony.client.model.part.PonyEars",
-					"data": "minelittlepony:components/bat_ears"
+					"data": "minelittlepony:components/bat_ears",
+          "locals": {
+            "ear_shortening": "#global_ear_shortening"
+          }
 				},
 				"horn": {
 					"type": "mson:slot",

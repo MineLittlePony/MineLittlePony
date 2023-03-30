@@ -68,7 +68,7 @@ public final class ModelType {
 
     public static final PlayerModelKey<LivingEntity, AlicornModel<?>> ALICORN = registerPlayer("alicorn", Race.ALICORN, AlicornModel::new);
     public static final PlayerModelKey<LivingEntity, UnicornModel<?>> UNICORN = registerPlayer("unicorn", Race.UNICORN, UnicornModel::new);
-    public static final PlayerModelKey<LivingEntity, UnicornModel<?>> KIRIN = registerPlayer("kirin", Race.KIRIN, UnicornModel::new);
+    public static final PlayerModelKey<LivingEntity, KirinModel<?>> KIRIN = registerPlayer("kirin", Race.KIRIN, KirinModel::new);
     public static final PlayerModelKey<LivingEntity, PegasusModel<?>> PEGASUS = registerPlayer("pegasus", Race.PEGASUS, PegasusModel::new);
     public static final PlayerModelKey<LivingEntity, PegasusModel<?>> GRYPHON = registerPlayer("gryphon", Race.GRYPHON, PegasusModel::new);
     public static final PlayerModelKey<LivingEntity, PegasusModel<?>> HIPPOGRIFF = registerPlayer("hippogriff", Race.HIPPOGRIFF, PegasusModel::new);
@@ -113,7 +113,7 @@ public final class ModelType {
     }
 
     static <T extends Model> ModelKey<T> register(String name, MsonModel.Factory<T> constructor) {
-        return Mson.getInstance().registerModel(new Identifier("minelittlepony", name), constructor);
+        return new ModelKeyImpl<T>(new Identifier("minelittlepony", name), constructor);
     }
 
     @SuppressWarnings("unchecked")

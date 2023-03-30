@@ -12,9 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.model.IModel;
 import com.minelittlepony.client.model.armour.PonyArmourModel;
-import com.minelittlepony.mson.api.ModelKey;
-import com.minelittlepony.mson.api.Mson;
-import com.minelittlepony.mson.api.MsonModel;
+import com.minelittlepony.mson.api.*;
 
 import java.util.function.*;
 
@@ -26,8 +24,8 @@ public record PlayerModelKey<T extends LivingEntity, M extends Model & MsonModel
 ) {
     PlayerModelKey(String name, BiFunction<ModelPart, Boolean, M> modelFactory, RendererFactory rendererFactory, MsonModel.Factory<PonyArmourModel<T>> armorFactory) {
         this(
-            Mson.getInstance().registerModel(new Identifier("minelittlepony", "races/steve/" + name), tree -> modelFactory.apply(tree, false)),
-            Mson.getInstance().registerModel(new Identifier("minelittlepony", "races/alex/" + name), tree -> modelFactory.apply(tree, true)),
+            new ModelKeyImpl<>(new Identifier("minelittlepony", "races/steve/" + name), tree -> modelFactory.apply(tree, false)),
+            new ModelKeyImpl<>(new Identifier("minelittlepony", "races/alex/" + name), tree -> modelFactory.apply(tree, true)),
             rendererFactory,
             armorFactory
         );

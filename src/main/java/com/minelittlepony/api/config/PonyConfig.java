@@ -52,6 +52,8 @@ public class PonyConfig extends Config {
     public final Setting<Boolean> frustrum =   value("settings", "frustrum", true)
                 .addComment("Adjust camera intersection checks to properly cull entities when they're not in view.")
                 .addComment("Helps to prevent entities from vanishing when they're in long stacks");
+    public final Setting<Boolean> horsieMode = value("settings", "horsieMode", false)
+            .addComment("Enables the alternative horsey models from the April Fools 2023 update");
 
     public final Setting<Sizes> sizeOverride = value("debug", "sizeOverride", Sizes.UNSET)
                 .addComment("Overrides pony sizes")

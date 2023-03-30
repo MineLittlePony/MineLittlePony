@@ -1,10 +1,12 @@
 package com.minelittlepony.client;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.*;
 
 import com.minelittlepony.client.render.MobRenderers;
+import com.minelittlepony.client.render.PonyRenderDispatcher;
 import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.common.client.gui.GameGui;
 import com.minelittlepony.common.client.gui.ScrollContainer;
@@ -113,7 +115,12 @@ public class GuiPonySettings extends GameGui {
             boolean enabled = i != config.fillycam || allowCameraChange;
             Button button = content
                 .addButton(new Toggle(LEFT, row += 20, ((Setting<Boolean>)i).get()))
-                .onChange((Setting<Boolean>)i)
+                .onChange(i == config.horsieMode ? (v -> {
+                    v = ((Setting<Boolean>)i).set(v);
+
+                    PonyRenderDispatcher.getInstance().initialise(MinecraftClient.getInstance().getEntityRenderDispatcher(), true);
+                    return v;
+                }) : (Setting<Boolean>)i)
                 .setEnabled(enabled);
             button.getStyle().setText(OPTIONS_PREFIX + i.name().toLowerCase());
             if (!enabled) {

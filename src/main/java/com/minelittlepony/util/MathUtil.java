@@ -6,7 +6,8 @@ public interface MathUtil {
     interface Angles {
         float
             _270_DEG = 270 * MathHelper.RADIANS_PER_DEGREE,
-            _90_DEG = 90 * MathHelper.RADIANS_PER_DEGREE
+            _90_DEG = 90 * MathHelper.RADIANS_PER_DEGREE,
+            _30_DEG = 30 * MathHelper.RADIANS_PER_DEGREE
         ;
     }
 

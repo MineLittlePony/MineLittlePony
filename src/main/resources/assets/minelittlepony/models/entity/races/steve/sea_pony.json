@@ -32,7 +32,10 @@
 			    "from": [-3, 5, 1],
 			    "size": [6, 7, 9]
 			  }
-			]
+			],
+			"children": {
+			  "tail_stub": {}
+			}
 		},
 		"tail": {
 			"implementation": "com.minelittlepony.client.model.part.SeaponyTail",

@@ -40,13 +40,13 @@ public class PonyRenderDispatcher {
     /**
      * Registers all new player skin types. (currently only pony and slimpony).
      */
-    public void initialise(EntityRenderDispatcher manager) {
+    public void initialise(EntityRenderDispatcher manager, boolean force) {
         Race.REGISTRY.forEach(r -> {
             if (!r.isHuman()) {
                 registerPlayerSkin(manager, r);
             }
         });
-        MobRenderers.REGISTRY.values().forEach(i -> i.apply(this));
+        MobRenderers.REGISTRY.values().forEach(i -> i.apply(this, force));
     }
 
     private void registerPlayerSkin(EntityRenderDispatcher manager, Race race) {

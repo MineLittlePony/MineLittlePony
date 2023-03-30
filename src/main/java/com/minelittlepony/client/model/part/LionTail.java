@@ -19,6 +19,7 @@ public class LionTail implements IPart {
 
     @Override
     public void setPartAngles(ModelAttributes attributes, float limbAngle, float limbSpeed, float bodySwing, float animationProgress) {
+        tail.resetTransform();
 
         bodySwing *= 5;
 
@@ -82,6 +83,11 @@ public class LionTail implements IPart {
         tail4.roll += bend;
         tail5.roll += bend;
         tail6.roll += bend;
+
+        if (attributes.isHorsey) {
+            tail.pivotZ = 14;
+            tail.pivotY = 7;
+        }
     }
 
     @Override

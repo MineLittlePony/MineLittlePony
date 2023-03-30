@@ -3,10 +3,18 @@
 	"parent": "minelittlepony:zombie",
 	"data": {
 		"head": {
+      "pivot": [ 0, "#head_pivot_y", 0 ],
+      "dilate": ["#head_elongation", "#head_elongation", 0],
 			"cubes": [
 				{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
 			],
 			"children": {
+        "nose": {
+          "dilate": [-1, 0, -1],
+          "cubes": [
+            { "from": [-4, -6, -13], "size": [ 8,  8,  8] }
+          ]
+        },
 				"left_flap": {
 				  "name": "left_flap",
 					"texture": {"u": 64, "v": 0},

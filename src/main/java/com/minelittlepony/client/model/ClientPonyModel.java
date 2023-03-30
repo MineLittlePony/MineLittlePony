@@ -106,6 +106,16 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
 
     }
 
+    static void resetPivot(ModelPart part) {
+        part.setPivot(part.getDefaultTransform().pivotX, part.getDefaultTransform().pivotY, part.getDefaultTransform().pivotZ);
+    }
+
+    static void resetPivot(ModelPart...parts) {
+        for (ModelPart part : parts) {
+            resetPivot(part);
+        }
+    }
+
     public interface PosingCallback<T extends LivingEntity> {
         void poseModel(ClientPonyModel<T> model, float move, float swing, float ticks, T entity);
     }

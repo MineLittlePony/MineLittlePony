@@ -9,32 +9,46 @@
 		"arm_depth": 4,
 		"arm_x": 0,
 		"arm_x_neg": ["#arm_x", "-", "#arm_width"],
-		"arm_z": [2, "-", "#arm_depth"],
+		"arm_z": ["#arm_depth", "/", -2],
 		"arm_rotation_x": 0,
 		"arm_rotation_x_neg": [0, "-", "#arm_rotation_x"],
 		"arm_rotation_y": 8,
 		"head_pivot_y": 0,
-		"neck_dilate_y": -0.1
+		"neck_dilate_y": -0.1,
+		"neck_dilate_z": -0.3,
+		"head_elongation": 0,
+		"global_ear_shortening": 0
 	},
 	"data": {
 		"head": {
 			"pivot": [ 0, "#head_pivot_y", 0 ],
+			"dilate": ["#head_elongation", "#head_elongation", 0],
 			"cubes": [
 				{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
 			],
 			"children": {
+				"nose": {
+					"dilate": [-1, 0, -1],
+					"cubes": [
+						{ "from": [-4, -6, -13], "size": [ 8,  8,  8] }
+					]
+				},
 				"snout": {
 					"implementation": "com.minelittlepony.client.model.part.PonySnout",
 					"data": "minelittlepony:components/snout"
 				},
 				"ears": {
 					"implementation": "com.minelittlepony.client.model.part.PonyEars",
-					"data": "minelittlepony:components/ears"
+					"data": "minelittlepony:components/ears",
+          "locals": {
+            "ear_shortening": "#global_ear_shortening"
+          }
 				}
 			}
 		},
 		"hat": {
 			"texture": { "u": 32, "v": 0 },
+			"dilate": ["#head_elongation", "#head_elongation", 0],
 			"pivot": [ 0, "#head_pivot_y", 0 ],
 			"cubes": [
 				{ "from": [-4, -6, -6], "size": [ 8,  8,  8], "dilate": 0.5 }
@@ -161,13 +175,26 @@
 		},
 		"neck": {
 			"type": "mson:planar",
-			"dilate": [ -0.3, "#neck_dilate_y", -0.3 ],
+			"dilate": [ -0.3, "#neck_dilate_y", "#neck_dilate_z" ],
 			"texture": { "u": 0, "v": 16 },
 			"rotate": [9, 0, 0],
 			"north": [-2, 1.199998, -2.8, 4, 4],
 			"south": [-2, 1.199998,  1.2, 4, 4],
 			"east":  [ 2, 1.199998, -2.8, 4, 4],
-			"west":  [-2, 1.199998, -2.8, 4, 4]
+			"west":  [-2, 1.199998, -2.8, 4, 4],
+			"children": {
+				"mane": {
+					"type": "mson:planar",
+					"pivot": [0, -2.9, 1.5],
+					"dilate": [ -0.8, 2, 0 ],
+					"texture": { "u": 32, "v": 0 },
+					"rotate": [0, 0, 0],
+					"north": [-2, 1.199998, -2.8, 4, 4],
+					"south": [-2, 1.199998,  1.2, 4, 4],
+					"east":  [ 2, 1.199998, -2.8, 4, 4],
+					"west":  [-2, 1.199998, -2.8, 4, 4]
+				}
+			}
 		},
 		"jacket": {
 			"texture": { "u": 24, "v": 0 },
