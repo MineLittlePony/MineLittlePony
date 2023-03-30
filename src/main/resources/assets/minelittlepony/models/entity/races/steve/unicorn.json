@@ -1,11 +1,19 @@
 {
 	"parent": "minelittlepony:steve_pony",
 	"data": {
-		"head": {
-			"cubes": [
-				{ "from": [-4, -6, -6], "size": [ 8,  8,  8] }
-			],
-			"children": {
+    "head": {
+      "pivot": [ 0, "#head_pivot_y", 0 ],
+      "dilate": [-1, -1, 0],
+      "cubes": [
+        { "from": [-4, -6, -6], "size": [ 8,  8,  8] }
+      ],
+      "children": {
+        "nose": {
+          "dilate": [-1, 0, -1],
+          "cubes": [
+            { "from": [-4, -6, -13], "size": [ 8,  8,  8] }
+          ]
+        },
 				"snout": { "data": "minelittlepony:components/snout", "implementation": "com.minelittlepony.client.model.part.PonySnout" },
 				"ears": { "data": "minelittlepony:components/ears", "implementation": "com.minelittlepony.client.model.part.PonyEars" },
 				"horn": { "data": "minelittlepony:components/horn", "implementation": "com.minelittlepony.client.model.part.UnicornHorn" }

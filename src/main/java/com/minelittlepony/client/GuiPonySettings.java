@@ -149,6 +149,9 @@ public class GuiPonySettings extends GameGui {
                 .onChange(i::set)
                 .getStyle().setText(MOB_PREFIX + i.name);
         }
+        content.addButton(new Toggle(RIGHT, row += 20, false))
+            .onChange(s -> s)
+            .getStyle().setText("Horsify Horses");
 
         row += 15;
 

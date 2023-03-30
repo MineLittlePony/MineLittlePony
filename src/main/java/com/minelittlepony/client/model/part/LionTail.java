@@ -87,6 +87,8 @@ public class LionTail implements IPart {
     @Override
     public void setVisible(boolean visible, ModelAttributes attributes) {
         tail.visible = visible;
+        tail.pivotZ = 14;
+        tail.pivotY = 7;
     }
 
     @Override

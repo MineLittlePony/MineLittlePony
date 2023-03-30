@@ -14,7 +14,7 @@
 			"pivot": ["#x", "#y", "#z"],
 			"rotate": [0, 0, "#ear_spread"],
 			"cubes": [
-				{ "from": [-4, -8, -1], "size": [2, 2, 2], "dilate": [0, "#ear_pronouncement", 0] }
+				{ "from": [-4, -8, -1], "size": [2, 2, 2], "dilate": [0, "#ear_pronouncement", -0.5] }
 			]
 		},
 		"left": {
@@ -23,7 +23,7 @@
 			"mirror": [true, false, false],
 			"rotate": [0, 0, "#ear_spread_neg"],
 			"cubes": [
-				{ "from": [2, -8, -1], "size": [2, 2, 2], "dilate": [0, "#ear_pronouncement", 0] }
+				{ "from": [2, -8, -1], "size": [2, 2, 2], "dilate": [0, "#ear_pronouncement", -0.5] }
 			]
 		}
 	}

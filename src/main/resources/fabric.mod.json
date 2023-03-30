@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "id": "minelp",
   "version": "${version}",
-  "name": "Mine Little Pony",
-  "description": "Mine Little Pony turns players and mobs into ponies.",
+  "name": "Mine Horsey Horse",
+  "description": "Mine Horsey Horse turns players and mobs into horsies.",
   "authors": [
-    "Mumfrey", "Killjoy1221", "Sollace"
+    "A bunch of horsey people"
   ],
   "contact": {
     "homepage": "https://minelittlepony-mod.com/",

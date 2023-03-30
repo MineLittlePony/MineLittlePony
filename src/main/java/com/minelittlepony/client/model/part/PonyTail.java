@@ -108,9 +108,14 @@ public class PonyTail implements IPart, MsonModel {
                 return;
             }
 
-            if (tail.shape == TailShape.STRAIGHT) {
+            tree.pitch = 0.5F;
+            tree.pivotX = 0;
+            tree.pivotY = 6;
+            tree.pivotZ = -6;
+
+            if (true || tail.shape == TailShape.STRAIGHT) {
                 tree.yaw = 0;
-                tree.pivotZ = 0;
+               // tree.pivotZ = 0;
                 tree.render(stack, renderContext, overlayUv, lightUv, red, green, blue, alpha);
                 return;
             }

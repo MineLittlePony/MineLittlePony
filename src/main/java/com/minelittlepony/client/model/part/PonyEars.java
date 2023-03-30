@@ -33,5 +33,9 @@ public class PonyEars implements IPart, MsonModel {
     public void setVisible(boolean visible, ModelAttributes attributes) {
         right.visible = visible && !attributes.metadata.getRace().isHuman();
         left.visible = visible && !attributes.metadata.getRace().isHuman();
+        left.pivotX = -1;
+        right.pivotX = 1;
+        left.pivotY = right.pivotY = 1;
+        left.pivotZ = right.pivotZ = 1.5F;
     }
 }

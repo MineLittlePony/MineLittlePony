@@ -148,8 +148,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         } else {
             adjustBody(0, ORIGIN);
 
-            rightLeg.pivotY = FRONT_LEGS_Y;
-            leftLeg.pivotY = FRONT_LEGS_Y;
+           // rightLeg.pivotY = FRONT_LEGS_Y;
+           // leftLeg.pivotY = FRONT_LEGS_Y;
 
             if (!attributes.isSleeping) {
                 animateBreathing(animationProgress);
@@ -164,6 +164,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         if (attributes.isSleeping) {
             ponySleep();
         }
+
+        head.pivotY -= 3;
+        head.pivotZ -= 2;
+        head.pitch = 0.5F;
 
         parts.forEach(part -> part.setPartAngles(attributes, limbAngle, limbSpeed, wobbleAmount, animationProgress));
     }
@@ -275,6 +279,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         leftArm.pivotZ = 2 - sin;
 
         float legRPX = attributes.getMainInterpolator().interpolate("legOffset", cos - getLegOutset() - 0.001F, 2);
+        legRPX += 2;
 
         rightArm.pivotX = -legRPX;
         rightLeg.pivotX = -legRPX;
@@ -285,8 +290,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         rightArm.yaw += body.yaw;
         leftArm.yaw += body.yaw;
 
-        rightArm.pivotY = leftArm.pivotY = 8;
-        rightLeg.pivotZ = leftLeg.pivotZ = 11;
+        rightArm.pivotZ = leftArm.pivotZ = 1;
+        rightArm.pivotY = leftArm.pivotY = 6;
+        rightLeg.pivotY = leftLeg.pivotY = 6;
+        rightLeg.pivotZ = leftLeg.pivotZ = 21;
     }
 
     /**
@@ -517,7 +524,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     protected void adjustBody(float pitch, Pivot pivot) {
         adjustBodyComponents(pitch, pivot);
-        neck.setPivot(NECK_X + pitch, pivot.y(), pivot.z());
+        neck.setPivot(NECK_X + pitch, pivot.y() - 1, pivot.z() - 2);
     }
 
     protected void adjustBodyComponents(float pitch, Pivot pivot) {
@@ -541,16 +548,25 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         neck.visible = visible;
+        hat.visible = false;
         parts.forEach(part -> part.setVisible(visible, attributes));
     }
 
     @Override
     public void transform(BodyPart part, MatrixStack stack) {
+
+        stack.translate(0, 0.1F, 0);
+
         if (attributes.isSleeping || attributes.isRiptide) {
             stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
             stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
         }
 
+        if (part == BodyPart.BODY) {
+            stack.scale(1.5F, 1, 1.5F);
+        }
+
+        neck.visible = head.visible;
         PonyTransformation.forSize(getSize()).transform(this, part, stack);
     }
 }

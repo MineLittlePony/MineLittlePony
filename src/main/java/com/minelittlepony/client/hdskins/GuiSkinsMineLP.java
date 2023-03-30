@@ -12,6 +12,8 @@ import com.minelittlepony.hdskins.profile.SkinType;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 
 import org.lwjgl.glfw.GLFW;
@@ -37,7 +39,11 @@ class GuiSkinsMineLP extends GuiSkins {
 
         if (!(parent instanceof GuiPonySettings)) {
             addButton(new Button(width - 25, height - 90, 20, 20))
-                .onClick(sender -> client.setScreen(new GuiPonySettings(this)))
+                .onClick(sender -> {
+                    client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.ENTITY_HORSE_ANGRY, 1, 1));
+                    //client.setScreen(new GuiPonySettings(this));
+                })
+
                 .getStyle()
                     .setIcon(new TextureSprite()
                             .setPosition(2, 2)

@@ -24,8 +24,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -107,7 +109,12 @@ public class MineLittlePony implements ClientModInitializer {
         }
 
         if ((mainMenu || inGame) && keyBinding.isPressed()) {
-            client.setScreen(new GuiPonySettings(client.currentScreen));
+           // client.setScreen(new GuiPonySettings(client.currentScreen));
+            client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.ENTITY_HORSE_ANGRY, 1, 1));
+        }
+
+        if (inGame && client.options.jumpKey.isPressed() && client.player.isOnGround()) {
+            client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.ENTITY_HORSE_ANGRY, 1, 1));
         }
     }
 

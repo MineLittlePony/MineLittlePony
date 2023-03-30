@@ -41,6 +41,7 @@ public class PonySnout implements IPart, MsonModel {
     public void setVisible(boolean visible, ModelAttributes attributes) {
         visible &= !attributes.metadata.getRace().isHuman() && MineLittlePony.getInstance().getConfig().snuzzles.get();
         Gender gender = attributes.metadata.getGender();
+        visible = false;
 
         mare.visible = (visible && gender.isMare());
         stallion.visible = (visible && gender.isStallion());
