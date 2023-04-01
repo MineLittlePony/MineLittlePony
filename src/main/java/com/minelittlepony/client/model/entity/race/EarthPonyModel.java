@@ -16,8 +16,15 @@ public class EarthPonyModel<T extends LivingEntity> extends AbstractPonyModel<T>
     protected PonySnout snout;
     protected PonyEars ears;
 
+    private final ModelPart mane;
+    private final ModelPart nose;
+    private final ModelPart tailStub;
+
     public EarthPonyModel(ModelPart tree, boolean smallArms) {
         super(tree);
+        mane = neck.getChild("mane");
+        nose = head.getChild("nose");
+        tailStub = body.getChild("tail_stub");
         this.smallArms = smallArms;
     }
 
@@ -44,5 +51,13 @@ public class EarthPonyModel<T extends LivingEntity> extends AbstractPonyModel<T>
             return Math.max(1, super.getLegOutset() - 1);
         }
         return super.getLegOutset();
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        mane.visible = attributes.isHorsey;
+        nose.visible = attributes.isHorsey;
+        tailStub.visible = !attributes.isHorsey;
     }
 }

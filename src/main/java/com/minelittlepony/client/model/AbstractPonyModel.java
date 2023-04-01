@@ -38,9 +38,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     public static final Pivot BACK_LEGS_SLEEPING = new Pivot(0, 2, -6);
 
     protected final ModelPart neck;
-    private final ModelPart mane;
-    private final ModelPart nose;
-    private final ModelPart tailStub;
 
     public final RenderList helmetRenderList;
     protected final RenderList neckRenderList;
@@ -59,9 +56,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         super(tree);
 
         neck = tree.getChild("neck");
-        mane = neck.getChild("mane");
-        nose = head.getChild("nose");
-        tailStub = body.getChild("tail_stub");
         mainRenderList = RenderList.of()
             .add(withStage(BodyPart.BODY, bodyRenderList = RenderList.of(body).add(body::rotate)))
             .add(withStage(BodyPart.NECK, neckRenderList = RenderList.of(neck)))
@@ -563,9 +557,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         super.setVisible(visible);
         neck.visible = visible;
         hat.visible &= !attributes.isHorsey;
-        mane.visible = attributes.isHorsey;
-        nose.visible = attributes.isHorsey;
-        tailStub.visible = !attributes.isHorsey;
         parts.forEach(part -> part.setVisible(visible, attributes));
     }
 
