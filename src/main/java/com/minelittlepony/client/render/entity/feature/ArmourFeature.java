@@ -19,7 +19,6 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.trim.ArmorTrim;
-import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.util.Identifier;
 
 public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyFeature<T, M> {
@@ -85,16 +84,14 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
                 });
             }
 
-            if (entity.world.getEnabledFeatures().contains(FeatureFlags.UPDATE_1_20)) {
-                if (stack.getItem() instanceof ArmorItem armor) {
-                    ArmorTrim.getTrim(entity.world.getRegistryManager(), stack).ifPresent(trim -> {
-                        pony.getArmourModel(stack, layer, ArmourVariant.TRIM)
-                                .filter(m -> m.poseModel(entity, limbAngle, limbDistance, age, headYaw, headPitch, armorSlot, layer, pony.body()))
-                                .ifPresent(m -> {
-                            m.render(matrices, getTrimConsumer(renderContext, armor.getMaterial(), trim, layer, glint), light, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
-                        });
+            if (stack.getItem() instanceof ArmorItem armor) {
+                ArmorTrim.getTrim(entity.world.getRegistryManager(), stack).ifPresent(trim -> {
+                    pony.getArmourModel(stack, layer, ArmourVariant.TRIM)
+                            .filter(m -> m.poseModel(entity, limbAngle, limbDistance, age, headYaw, headPitch, armorSlot, layer, pony.body()))
+                            .ifPresent(m -> {
+                        m.render(matrices, getTrimConsumer(renderContext, armor.getMaterial(), trim, layer, glint), light, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
                     });
-                }
+                });
             }
         });
     }
