@@ -14,23 +14,30 @@ public class ZomponyRenderer<Zombie extends HostileEntity> extends PonyRenderer<
     public static final Identifier HUSK = new Identifier("minelittlepony", "textures/entity/zombie/husk_pony.png");
     public static final Identifier DROWNED = new Identifier("minelittlepony", "textures/entity/zombie/drowned_pony.png");
 
-    public ZomponyRenderer(EntityRendererFactory.Context context, Identifier texture, float scale) {
-        super(context, ModelType.ZOMBIE, TextureSupplier.of(texture), scale);
+    public static final Identifier DEMON_CHILD = new Identifier("minelittlepony", "textures/entity/zombie/demon_child.png");
+
+    public ZomponyRenderer(EntityRendererFactory.Context context, TextureSupplier<Zombie> texture, float scale) {
+        super(context, ModelType.ZOMBIE, texture, scale);
     }
 
     public static ZomponyRenderer<ZombieEntity> zombie(EntityRendererFactory.Context context) {
-        return new ZomponyRenderer<>(context, ZOMBIE, 1);
+        return new ZomponyRenderer<>(context, entity -> {
+            if (entity.isBaby() && entity.getUuid().getLeastSignificantBits() % 160 == 0) {
+                return DEMON_CHILD;
+            }
+            return ZOMBIE;
+        }, 1);
     }
 
     public static ZomponyRenderer<HuskEntity> husk(EntityRendererFactory.Context context) {
-        return new ZomponyRenderer<>(context, HUSK, 1.0625F);
+        return new ZomponyRenderer<>(context, TextureSupplier.of(HUSK), 1.0625F);
     }
 
     public static ZomponyRenderer<DrownedEntity> drowned(EntityRendererFactory.Context context) {
-        return new ZomponyRenderer<>(context, DROWNED, 1);
+        return new ZomponyRenderer<>(context, TextureSupplier.of(DROWNED), 1);
     }
 
     public static ZomponyRenderer<GiantEntity> giant(EntityRendererFactory.Context context) {
-        return new ZomponyRenderer<>(context, ZOMBIE, 3);
+        return new ZomponyRenderer<>(context, TextureSupplier.of(ZOMBIE), 3);
     }
 }
