@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import net.minecraft.class_8293;
+import net.minecraft.class_8323;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -321,10 +323,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      *
      */
     protected void rotateLegsOnGround(float move, float swing, float ticks, T entity) {
-        float angle = MathHelper.PI * (float) Math.pow(swing, 16);
-
-        float baseRotation = move * 0.6662F; // magic number ahoy
-        float scale = swing / 4;
 
         float rainboomLegLotation = attributes.getMainInterpolator().interpolate(
                 "rainboom_leg_rotation",
@@ -333,10 +331,71 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         );
         float yAngle = 0.2F * rainboomLegLotation;
 
-        leftArm.setAngles(MathHelper.lerp(rainboomLegLotation, MathHelper.cos(baseRotation + angle) * scale, -MathUtil.Angles._90_DEG * rainboomLegLotation), -yAngle, 0);
-        rightArm.setAngles(MathHelper.lerp(rainboomLegLotation, MathHelper.cos(baseRotation + MathHelper.PI + angle / 2) * scale, -MathUtil.Angles._90_DEG * rainboomLegLotation), yAngle, 0);
-        leftLeg.setAngles(MathHelper.lerp(rainboomLegLotation, MathHelper.cos(baseRotation + MathHelper.PI - (angle * 0.4f)) * scale, MathUtil.Angles._90_DEG * rainboomLegLotation), yAngle, leftLeg.roll);
-        rightLeg.setAngles(MathHelper.lerp(rainboomLegLotation, MathHelper.cos(baseRotation + angle / 5) * scale, MathUtil.Angles._90_DEG * rainboomLegLotation), -yAngle, rightLeg.roll);
+        class_8323 legAnimationType = class_8293.field_43554.method_50145();
+
+        float rightArmPitch, leftArmPitch, rightLegPitch, leftLegPitch;
+
+        switch (legAnimationType) {
+            case NONE: {
+                rightArmPitch = 0;
+                leftArmPitch = 0;
+                rightLegPitch = 0;
+                leftLegPitch = 0;
+                break;
+            }
+            case WINDMILL: {
+                rightArmPitch = move * 2.0f * 0.5f / swing;
+                leftArmPitch = move * 2.0f * 0.5f / swing;
+                rightLegPitch = move * 1.4f / swing;
+                leftLegPitch = (move + MathHelper.PI) * 1.4f / swing;
+                break;
+            }
+            default: {
+                float l = switch (legAnimationType) {
+                    default -> 0.6662f;
+                    case MILD -> 0.3331f;
+                    case WILD -> 0.9993f;
+                    case EXTREME -> 1.3324f;
+                };
+                float m = switch (legAnimationType) {
+                    default -> 1.0f;
+                    case MILD -> 0.5f;
+                    case WILD -> 2.0f;
+                    case EXTREME -> 4.0f;
+                };
+
+                float baseRotation = move * l; // magic number ahoy
+                float scale = m * swing / 4;
+
+                float angle = MathHelper.PI * (float) Math.pow(swing, 16);
+
+                rightArmPitch = MathHelper.lerp(
+                        rainboomLegLotation,
+                        MathHelper.cos(baseRotation + MathHelper.PI + angle / 2) * scale,
+                        -MathUtil.Angles._90_DEG * rainboomLegLotation
+                );
+                leftArmPitch = MathHelper.lerp(
+                        rainboomLegLotation,
+                        MathHelper.cos(baseRotation + angle) * scale,
+                        -MathUtil.Angles._90_DEG * rainboomLegLotation
+                );
+                rightLegPitch = MathHelper.lerp(
+                        rainboomLegLotation,
+                        MathHelper.cos(baseRotation + angle / 5) * scale,
+                        MathUtil.Angles._90_DEG * rainboomLegLotation
+                );
+                leftLegPitch = MathHelper.lerp(
+                        rainboomLegLotation,
+                        MathHelper.cos(baseRotation + MathHelper.PI - (angle * 0.4f)) * scale,
+                        MathUtil.Angles._90_DEG * rainboomLegLotation
+                );
+            }
+        }
+
+        rightArm.setAngles(rightArmPitch, yAngle, 0);
+        leftArm.setAngles(leftArmPitch, -yAngle, 0);
+        rightLeg.setAngles(rightLegPitch, -yAngle, rightLeg.roll);
+        leftLeg.setAngles(leftLegPitch, yAngle, leftLeg.roll);
     }
 
     protected float getLegOutset() {
@@ -564,6 +623,18 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
         if (part == BodyPart.BODY) {
             stack.scale(1.5F, 1, 1.5F);
+        }
+
+        if (part == BodyPart.HEAD && method_50988()) {
+            stack.scale(1.5F, 1.5F, 1.5F);
+        }
+        if (class_8293.field_43574.method_50116()) {
+            if (part != BodyPart.HEAD) {
+                stack.scale(0.6F, 0.6F, 0.6F);
+                stack.translate(0, 0.92F, 0);
+            } else {
+                stack.translate(0, 0.6F, 0);
+            }
         }
 
         neck.visible = head.visible;

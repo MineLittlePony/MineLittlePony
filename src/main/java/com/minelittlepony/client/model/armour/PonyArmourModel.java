@@ -1,5 +1,6 @@
 package com.minelittlepony.client.model.armour;
 
+import net.minecraft.class_8293;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.EquipmentSlot;
@@ -50,5 +51,10 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
         }
 
         return head.visible || body.visible;
+    }
+
+    @Override
+    public boolean method_50994() {
+        return class_8293.field_43574.method_50116();
     }
 }
