@@ -1,9 +1,7 @@
 {
 	"parent": "minelittlepony:skeleton",
 	"locals": {
-		"arm_length": 30,
-		"arm_rotation_x": 3,
-		"arm_rotation_y": 14
+		"arm_length": 30
 	},
 	"data": {
 		"head": {
@@ -95,7 +93,7 @@
 			]
 		},
 		"right_leg": {
-			"pivot": ["#arm_rotation_x_neg", 0, 0],
+			"pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", 11],
 			"texture": { "u": 0, "v": 20 },
 			"cubes": [
 				{
@@ -105,7 +103,7 @@
 			]
 		},
 		"left_leg": {
-			"pivot": ["#arm_rotation_x", 0, 0],
+			"pivot": ["#arm_rotation_x", "#arm_rotation_y", 11],
 			"texture": { "u": 0, "v": 20 },
 			"cubes": [
 				{
