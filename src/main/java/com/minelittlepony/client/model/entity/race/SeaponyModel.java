@@ -3,12 +3,10 @@ package com.minelittlepony.client.model.entity.race;
 import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.mson.api.ModelView;
 import com.minelittlepony.api.model.*;
-import com.minelittlepony.api.model.armour.ArmourLayer;
 import com.minelittlepony.api.pony.IPony;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
 
@@ -25,6 +23,15 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
         leftFin = tree.getChild("left_fin");
         rightFin = tree.getChild("right_fin");
         centerFin = tree.getChild("center_fin");
+
+        jacket.hidden = true;
+
+        leftPants.hidden = true;
+        rightPants.hidden = true;
+        leftSleeve.hidden = true;
+        rightSleeve.hidden = true;
+        leftLeg.hidden = true;
+        rightLeg.hidden = true;
     }
 
     public SeaponyModel(ModelPart tree) {
@@ -112,17 +119,6 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-
-        leftSleeve.visible = false;
-        rightSleeve.visible = false;
-        jacket.visible = false;
-
-        // hide the back legs
-        leftLeg.visible = false;
-        rightLeg.visible = false;
-        leftPants.visible = false;
-        rightPants.visible = false;
-
         leftFin.visible = visible;
         centerFin.visible = visible;
         rightFin.visible = visible;
@@ -132,14 +128,8 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
 
         public Armour(ModelPart tree) {
             super(tree);
-        }
-
-        @Override
-        public boolean setVisibilities(EquipmentSlot slot, ArmourLayer layer) {
-            boolean result = super.setVisibilities(slot, layer);
-            rightLeg.visible = false;
-            leftLeg.visible = false;
-            return result;
+            rightLeg.hidden = true;
+            leftLeg.hidden = true;
         }
 
         @Override

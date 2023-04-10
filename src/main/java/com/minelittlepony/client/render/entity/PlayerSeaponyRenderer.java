@@ -8,7 +8,9 @@ import com.minelittlepony.client.model.*;
 import com.minelittlepony.util.MathUtil;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.Identifier;
 
@@ -28,14 +30,18 @@ public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
 
     @Override
     public Identifier getTexture(AbstractClientPlayerEntity player) {
-        return SkinsProxy.instance.getSkin(SKIN_TYPE_ID, player).orElseGet(() -> super.getTexture(player));
+        if (PonyPosture.isPartiallySubmerged(player)) {
+            return SkinsProxy.instance.getSkin(SKIN_TYPE_ID, player).orElseGet(() -> super.getTexture(player));
+        }
+        return super.getTexture(player);
     }
 
     @Override
-    public IPony getEntityPony(AbstractClientPlayerEntity player) {
-        IPony pony = super.getEntityPony(player);
-
-        boolean wet = PonyPosture.isPartiallySubmerged(player);
+    public void render(AbstractClientPlayerEntity player, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int light) {
+        IPony pony = getEntityPony(player);
+        boolean wet =
+                (pony.race() == Race.SEAPONY || SkinsProxy.instance.getSkin(SKIN_TYPE_ID, player).isPresent())
+                && PonyPosture.isPartiallySubmerged(player);
 
         model = manager.setModel(wet ? seapony : normalPony).body();
 
@@ -50,6 +56,6 @@ public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
             player.getEntityWorld().addParticle(ParticleTypes.END_ROD, x, y, z, 0, 0, 0);
         }
 
-        return pony;
+        super.render(player, entityYaw, tickDelta, stack, renderContext, light);
     }
 }
