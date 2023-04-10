@@ -91,7 +91,7 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
 
         float left = arm == Arm.LEFT ? -1 : 1;
 
-        matrices.translate(-0.3F, -0.675F, -0.3F - (0.3F * left));
+        matrices.translate(0.4F - (0.3F * left), -0.675F, -0.3F);
 
         UseAction action = getAttributes().heldStack.getUseAction();
 
@@ -103,8 +103,8 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
             if (main == arm) {
                 if (action == UseAction.SPYGLASS) {
                     Size size = getSize();
-                    float x = 0.4F;
-                    float z = -0.5F;
+                    float x = 0.3F;
+                    float z = -0.4F;
 
                     if (size == Sizes.TALL || size == Sizes.YEARLING) {
                         z += 0.05F;
@@ -113,8 +113,7 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
                         z -= 0.1F;
                     }
 
-                    //matrices.translate(x * left, -0.2, z);
-                    matrices.translate(-z, 0.9, x * left);
+                    matrices.translate(x * left, 1, -z);
                 } else {
                     matrices.translate(-0.6, -0.2, 0);
                 }
