@@ -71,7 +71,7 @@ public final class ModelType {
     public static final PlayerModelKey<LivingEntity, KirinModel<?>> KIRIN = registerPlayer("kirin", Race.KIRIN, KirinModel::new);
     public static final PlayerModelKey<LivingEntity, PegasusModel<?>> PEGASUS = registerPlayer("pegasus", Race.PEGASUS, PegasusModel::new);
     public static final PlayerModelKey<LivingEntity, PegasusModel<?>> GRYPHON = registerPlayer("gryphon", Race.GRYPHON, PegasusModel::new);
-    public static final PlayerModelKey<LivingEntity, PegasusModel<?>> HIPPOGRIFF = registerPlayer("hippogriff", Race.HIPPOGRIFF, PegasusModel::new);
+    public static final PlayerModelKey<LivingEntity, PegasusModel<?>> HIPPOGRIFF = registerPlayer("hippogriff", Race.HIPPOGRIFF, PegasusModel::new, PonyArmourModel::new, PlayerSeaponyRenderer::new);
     public static final PlayerModelKey<LivingEntity, EarthPonyModel<?>> EARTH_PONY = registerPlayer("earth_pony", Race.EARTH, EarthPonyModel::new);
     public static final PlayerModelKey<LivingEntity, SeaponyModel<?>> SEA_PONY = registerPlayer("sea_pony", Race.SEAPONY, SeaponyModel::new, SeaponyModel.Armour::new, PlayerSeaponyRenderer::new);
     public static final PlayerModelKey<LivingEntity, PegasusModel<?>> BAT_PONY = registerPlayer("bat_pony", Race.BATPONY, PegasusModel::new);
