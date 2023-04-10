@@ -6,7 +6,6 @@ import com.minelittlepony.client.util.render.RenderLayerUtil;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
@@ -17,32 +16,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.PlayerScreenHandler;
-import net.minecraft.util.Arm;
 import net.minecraft.util.UseAction;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.world.World;
 
 public class LevitatingItemRenderer {
-    /**
-     * Renders a magical overlay over an item in third person.
-     */
-    public void renderItemGlow(IPony pony, LivingEntity entity, ItemStack drop, ModelTransformationMode transform, Arm hand, int glowColor, MatrixStack stack, VertexConsumerProvider renderContext) {
-        stack.push();
-
-        ItemRenderer renderer = MinecraftClient.getInstance().getItemRenderer();
-
-        stack.scale(1.1F, 1.1F, 1.1F);
-        stack.translate(0.01F, 0.01F, 0.01F);
-
-        VertexConsumerProvider interceptedContext = getProvider(pony, renderContext);
-
-        renderer.renderItem(entity, drop, transform, hand == Arm.LEFT, stack, interceptedContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV, 0);
-        stack.translate(-0.02F, -0.02F, -0.02F);
-        renderer.renderItem(entity, drop, transform, hand == Arm.LEFT, stack, interceptedContext, entity.world, 0x0F00F0, OverlayTexture.DEFAULT_UV, 0);
-
-        stack.pop();
-    }
-
     private VertexConsumerProvider getProvider(IPony pony, VertexConsumerProvider renderContext) {
         final int color = pony.metadata().getGlowColor();
         return layer -> {
