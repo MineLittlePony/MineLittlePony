@@ -16,7 +16,7 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Arm;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 
 /**
@@ -558,6 +558,38 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         neck.visible = visible;
         hat.visible &= !attributes.isHorsey;
         parts.forEach(part -> part.setVisible(visible, attributes));
+    }
+
+    @Override
+    public final void setArmAngle(Arm arm, MatrixStack matrices) {
+        super.setArmAngle(arm, matrices);
+        positionheldItem(arm, matrices);
+    }
+
+    protected void positionheldItem(Arm arm, MatrixStack matrices) {
+        float left = arm == Arm.LEFT ? -1 : 1;
+
+        UseAction action = getAttributes().heldStack.getUseAction();
+
+        if (action == UseAction.SPYGLASS && getAttributes().itemUseTime > 0) {
+
+            Arm main = getAttributes().mainArm;
+            if (getAttributes().activeHand == Hand.OFF_HAND) {
+                main = main.getOpposite();
+            }
+            if (main == arm) {
+                matrices.translate(left * -0.05F, 0.5F, 0.2F);
+                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-60));
+
+                return;
+            }
+        }
+
+        if (getAttributes().isRidingInteractive) {
+            matrices.translate(left / 10, -0.2F, -0.5F);
+        }
+
+        matrices.translate(left * 0.1F, 0.45F, 0);
     }
 
     @Override

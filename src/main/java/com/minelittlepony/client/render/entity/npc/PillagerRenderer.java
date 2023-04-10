@@ -21,6 +21,6 @@ public class PillagerRenderer extends PonyRenderer<PillagerEntity, PillagerPonyM
 
     @Override
     protected HeldItemFeature<PillagerEntity, PillagerPonyModel<PillagerEntity>> createHeldItemFeature(EntityRendererFactory.Context context) {
-        return new IllagerHeldItemFeature<>(this);
+        return new IllagerHeldItemFeature<>(this, context.getHeldItemRenderer());
     }
 }

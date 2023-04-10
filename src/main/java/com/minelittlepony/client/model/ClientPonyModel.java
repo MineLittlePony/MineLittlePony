@@ -1,8 +1,12 @@
 package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.*;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
 
@@ -23,7 +27,7 @@ import com.minelittlepony.mson.api.model.biped.MsonPlayer;
  *
  * Modders can extend this class to make their own pony models if they wish.
  */
-public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer<T> implements IPonyModel<T>, ModelWithHat {
+public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer<T> implements IPonyModel<T>, ModelWithHat, ModelWithArms {
 
     /**
      * The model attributes.
@@ -104,6 +108,10 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
     @Override
     public void setHatVisible(boolean visible) {
 
+    }
+
+    @Override
+    public void postItemRender(IPony pony, T entity, ItemStack drop, ModelTransformationMode transform, Arm hand, MatrixStack stack, VertexConsumerProvider renderContext) {
     }
 
     static void resetPivot(ModelPart part) {

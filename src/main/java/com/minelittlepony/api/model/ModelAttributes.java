@@ -10,8 +10,8 @@ import java.util.*;
 
 import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Arm;
-import net.minecraft.util.Identifier;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -110,6 +110,11 @@ public class ModelAttributes {
      */
     public IPonyData metadata = PonyData.NULL;
 
+    public Arm mainArm;
+    public Hand activeHand;
+    public ItemStack heldStack = ItemStack.EMPTY;
+    public int itemUseTime;
+
     /**
      * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
      */
@@ -154,6 +159,9 @@ public class ModelAttributes {
         isLeftHanded = entity.getMainArm() == Arm.LEFT;
         isHorsey = MineLittlePony.getInstance().getConfig().horsieMode.get();
         featureSkins = SkinsProxy.instance.getAvailableSkins(entity);
+        mainArm = entity.getMainArm();
+        activeHand = entity.getActiveHand();
+        itemUseTime = entity.getItemUseTimeLeft();
     }
 
     public Interpolator getMainInterpolator() {

@@ -5,7 +5,6 @@ import com.minelittlepony.client.model.entity.EnderStallionModel;
 import com.minelittlepony.client.render.entity.feature.GlowingEyesFeature;
 import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
-import com.minelittlepony.client.render.entity.feature.GlowingItemFeature;
 import com.minelittlepony.client.render.entity.feature.GlowingEyesFeature.IGlowingRenderer;
 
 import net.minecraft.block.BlockState;
@@ -39,7 +38,7 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
 
     @Override
     protected HeldItemFeature<EndermanEntity, EnderStallionModel> createHeldItemFeature(EntityRendererFactory.Context context) {
-        return new GlowingItemFeature<EndermanEntity, EnderStallionModel>(this) {
+        return new HeldItemFeature<EndermanEntity, EnderStallionModel>(this, context.getHeldItemRenderer()) {
             @Override
             protected ItemStack getRightItem(EndermanEntity entity) {
                 BlockState state = entity.getCarriedBlock();

@@ -7,15 +7,8 @@ import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.client.model.*;
 import com.minelittlepony.client.render.DebugBoundingBoxRenderer;
 import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.entity.feature.*;
 import com.minelittlepony.client.render.EquineRenderManager;
-import com.minelittlepony.client.render.entity.feature.DJPon3Feature;
-import com.minelittlepony.client.render.entity.feature.PassengerFeature;
-import com.minelittlepony.client.render.entity.feature.GearFeature;
-import com.minelittlepony.client.render.entity.feature.GlowingItemFeature;
-import com.minelittlepony.client.render.entity.feature.ArmourFeature;
-import com.minelittlepony.client.render.entity.feature.CapeFeature;
-import com.minelittlepony.client.render.entity.feature.SkullFeature;
-import com.minelittlepony.client.render.entity.feature.ElytraFeature;
 
 import java.util.List;
 
@@ -57,7 +50,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
                     || feature instanceof ShoulderParrotFeatureRenderer;
         });
         addLayer(new ArmourFeature<>(this, context.getModelManager()));
-        addLayer(new GlowingItemFeature<>(this));
+        addLayer(new HeldItemFeature(this, context.getHeldItemRenderer()));
         addLayer(new DJPon3Feature<>(this));
         addLayer(new CapeFeature<>(this));
         addLayer(new SkullFeature<>(this, context.getModelLoader()));

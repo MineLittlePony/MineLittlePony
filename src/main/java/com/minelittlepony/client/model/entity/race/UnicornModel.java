@@ -1,15 +1,22 @@
 package com.minelittlepony.client.model.entity.race;
 
-import com.minelittlepony.api.model.BodyPart;
-import com.minelittlepony.api.model.IUnicorn;
+import com.minelittlepony.api.model.*;
+import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.meta.Size;
+import com.minelittlepony.api.pony.meta.Sizes;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.part.UnicornHorn;
+import com.minelittlepony.client.render.PonyRenderDispatcher;
 import com.minelittlepony.client.util.render.RenderList;
 import com.minelittlepony.mson.api.ModelView;
 
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Arm;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.*;
 
 /**
  * Used for both unicorns and alicorns since there's no logical way to keep them distinct and not duplicate stuff.
@@ -72,5 +79,55 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
             return side == Arm.LEFT ? unicornArmLeft : unicornArmRight;
         }
         return super.getArm(side);
+    }
+
+    @Override
+    protected void positionheldItem(Arm arm, MatrixStack matrices) {
+        super.positionheldItem(arm, matrices);
+
+        if (!MineLittlePony.getInstance().getConfig().tpsmagic.get() || !hasMagic()) {
+            return;
+        }
+
+        float left = arm == Arm.LEFT ? -1 : 1;
+
+        matrices.translate(-0.3F, -0.675F, -0.3F - (0.3F * left));
+
+        UseAction action = getAttributes().heldStack.getUseAction();
+
+        if ((action == UseAction.SPYGLASS || action == UseAction.BOW) && getAttributes().itemUseTime > 0) {
+            Arm main = getAttributes().mainArm;
+            if (getAttributes().activeHand == Hand.OFF_HAND) {
+                main = main.getOpposite();
+            }
+            if (main == arm) {
+                if (action == UseAction.SPYGLASS) {
+                    Size size = getSize();
+                    float x = 0.4F;
+                    float z = -0.5F;
+
+                    if (size == Sizes.TALL || size == Sizes.YEARLING) {
+                        z += 0.05F;
+                    } else if (size == Sizes.FOAL) {
+                        x -= 0.1F;
+                        z -= 0.1F;
+                    }
+
+                    //matrices.translate(x * left, -0.2, z);
+                    matrices.translate(-z, 0.9, x * left);
+                } else {
+                    matrices.translate(-0.6, -0.2, 0);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void postItemRender(IPony pony, T entity, ItemStack drop, ModelTransformationMode transform, Arm hand, MatrixStack stack, VertexConsumerProvider renderContext) {
+        if (!MineLittlePony.getInstance().getConfig().tpsmagic.get() || !hasMagic()) {
+            return;
+        }
+
+        PonyRenderDispatcher.getInstance().getMagicRenderer().renderItemGlow(pony, entity, drop, transform, hand, getMagicColor(), stack, renderContext);
     }
 }

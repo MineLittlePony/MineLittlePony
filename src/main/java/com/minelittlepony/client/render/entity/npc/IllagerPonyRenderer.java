@@ -29,7 +29,7 @@ public class IllagerPonyRenderer<T extends IllagerEntity> extends PonyRenderer<T
 
     @Override
     protected HeldItemFeature<T, IllagerPonyModel<T>> createHeldItemFeature(EntityRendererFactory.Context context) {
-        return new IllagerHeldItemFeature<>(this);
+        return new IllagerHeldItemFeature<>(this, context.getHeldItemRenderer());
     }
 
     public static IllagerPonyRenderer<VindicatorEntity> vindicator(EntityRendererFactory.Context context) {

@@ -1,12 +1,15 @@
 package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.WitchEntity;
+import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RotationAxis;
 
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.IPony;
-import com.minelittlepony.api.pony.meta.Wearable;
+import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.client.model.entity.race.EarthPonyModel;
 
 public class WitchPonyModel extends EarthPonyModel<WitchEntity> {
@@ -58,6 +61,12 @@ public class WitchPonyModel extends EarthPonyModel<WitchEntity> {
         } else {
             rightArm.pivotX = 0;
         }
+    }
+
+    @Override
+    protected void positionheldItem(Arm arm, MatrixStack matrices) {
+        super.positionheldItem(arm, matrices);
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(10));
     }
 
     @Override
