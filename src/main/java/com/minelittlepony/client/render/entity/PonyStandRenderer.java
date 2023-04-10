@@ -65,8 +65,7 @@ public class PonyStandRenderer extends ArmorStandEntityRenderer {
         public Armour(FeatureRendererContext<ArmorStandEntity, ArmorStandArmorEntityModel> renderer, EntityRendererFactory.Context context) {
             super(renderer,
                     new ArmorStandArmorEntityModel(context.getPart(EntityModelLayers.ARMOR_STAND_INNER_ARMOR)),
-                    new ArmorStandArmorEntityModel(context.getPart(EntityModelLayers.ARMOR_STAND_OUTER_ARMOR)),
-                    context.getModelManager()
+                    new ArmorStandArmorEntityModel(context.getPart(EntityModelLayers.ARMOR_STAND_OUTER_ARMOR))
             );
 
             pony.applyMetadata(new PonyData(Race.EARTH));

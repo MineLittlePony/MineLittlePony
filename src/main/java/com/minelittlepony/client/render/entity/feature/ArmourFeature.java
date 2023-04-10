@@ -7,24 +7,18 @@ import com.minelittlepony.client.model.armour.DefaultArmourTextureResolver;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.common.util.Color;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.model.*;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.render.model.BakedModelManager;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
-import net.minecraft.item.trim.ArmorTrim;
-import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.util.Identifier;
 
 public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyFeature<T, M> {
 
-    public ArmourFeature(IPonyRenderContext<T, M> context, BakedModelManager bakery) {
+    public ArmourFeature(IPonyRenderContext<T, M> context) {
         super(context);
     }
 
@@ -84,18 +78,6 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
                     m.render(matrices, getArmorConsumer(renderContext, tex, false), light, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
                 });
             }
-
-            if (entity.world.getEnabledFeatures().contains(FeatureFlags.UPDATE_1_20)) {
-                if (stack.getItem() instanceof ArmorItem armor) {
-                    ArmorTrim.getTrim(entity.world.getRegistryManager(), stack).ifPresent(trim -> {
-                        pony.getArmourModel(stack, layer, ArmourVariant.TRIM)
-                                .filter(m -> m.poseModel(entity, limbAngle, limbDistance, age, headYaw, headPitch, armorSlot, layer, pony.body()))
-                                .ifPresent(m -> {
-                            m.render(matrices, getTrimConsumer(renderContext, armor.getMaterial(), trim, layer, glint), light, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
-                        });
-                    });
-                }
-            }
         });
     }
 
@@ -103,14 +85,4 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
         return ItemRenderer.getArmorGlintConsumer(provider, RenderLayer.getArmorCutoutNoCull(texture), false, glint);
     }
 
-    private static VertexConsumer getTrimConsumer(VertexConsumerProvider provider, ArmorMaterial material, ArmorTrim trim, ArmourLayer layer, boolean glint) {
-        SpriteAtlasTexture armorTrimsAtlas = MinecraftClient.getInstance().getBakedModelManager().getAtlas(TexturedRenderLayers.ARMOR_TRIMS_ATLAS_TEXTURE);
-        Sprite sprite = armorTrimsAtlas.getSprite(
-            layer == ArmourLayer.INNER ? trim.getLeggingsModelId(material) : trim.getGenericModelId(material)
-        );
-
-        return sprite.getTextureSpecificVertexConsumer(
-            ItemRenderer.getDirectItemGlintConsumer(provider, TexturedRenderLayers.getArmorTrims(), true, glint)
-        );
-    }
 }

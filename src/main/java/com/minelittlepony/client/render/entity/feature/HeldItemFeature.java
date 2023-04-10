@@ -9,7 +9,7 @@ import net.minecraft.client.render.entity.feature.HeldItemFeatureRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.ModelWithArms;
 import net.minecraft.client.render.item.HeldItemRenderer;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -46,9 +46,9 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
             model.transform(BodyPart.LEGS, stack);
 
             model.getAttributes().heldStack = right;
-            renderItem(entity, right, ModelTransformationMode.THIRD_PERSON_RIGHT_HAND, Arm.RIGHT, stack, renderContext, lightUv);
+            renderItem(entity, right, ModelTransformation.Mode.THIRD_PERSON_RIGHT_HAND, Arm.RIGHT, stack, renderContext, lightUv);
             model.getAttributes().heldStack = left;
-            renderItem(entity, left, ModelTransformationMode.THIRD_PERSON_LEFT_HAND, Arm.LEFT, stack, renderContext, lightUv);
+            renderItem(entity, left, ModelTransformation.Mode.THIRD_PERSON_LEFT_HAND, Arm.LEFT, stack, renderContext, lightUv);
             model.getAttributes().heldStack = ItemStack.EMPTY;
             stack.pop();
         }

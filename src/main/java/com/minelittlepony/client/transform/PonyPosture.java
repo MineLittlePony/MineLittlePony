@@ -54,7 +54,7 @@ public interface PonyPosture {
 
                     if (RenderPass.getCurrent() == RenderPass.GUI) {
                         Vec3d vec3d = player.getRotationVec(tickDelta);
-                        Vec3d vec3d2 = ((AbstractClientPlayerEntity)player).lerpVelocity(tickDelta);
+                        Vec3d vec3d2 = ((AbstractClientPlayerEntity)player).getVelocity();
                         double d = vec3d2.horizontalLengthSquared();
                         double e = vec3d.horizontalLengthSquared();
                         if (d > 0.0 && e > 0.0) {
