@@ -14,6 +14,7 @@ import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Arm;
@@ -62,7 +63,7 @@ public class LevitatingItemRenderer {
 
             boolean doMagic = MineLittlePony.getInstance().getConfig().fpsmagic.get() && pony.hasMagic();
 
-            if (doMagic) {
+            if (doMagic && mode.isFirstPerson()) {
                 setupPerspective(itemRenderer, entity, stack, left, matrix);
             }
 
@@ -91,7 +92,7 @@ public class LevitatingItemRenderer {
     private void setupPerspective(ItemRenderer renderer, LivingEntity entity, ItemStack item, boolean left, MatrixStack stack) {
         UseAction action = item.getUseAction();
 
-        boolean doNormal = entity.getItemUseTime() <= 0 || action == UseAction.NONE || action == UseAction.CROSSBOW;
+        boolean doNormal = entity.getItemUseTime() <= 0 || action == UseAction.NONE || (action == UseAction.CROSSBOW && CrossbowItem.isCharged(item));
 
         if (doNormal) { // eating, blocking, and drinking are not transformed. Only held items.
             int sign = left ? 1 : -1;
