@@ -1,6 +1,6 @@
 package com.minelittlepony.client.mixin;
 
-import net.minecraft.network.packet.Packet;
+import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ServerPlayPacketListener;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 

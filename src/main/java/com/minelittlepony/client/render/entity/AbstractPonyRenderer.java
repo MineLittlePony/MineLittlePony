@@ -45,7 +45,7 @@ public abstract class AbstractPonyRenderer<T extends MobEntity, M extends Entity
     }
 
     protected void addFeatures(EntityRendererFactory.Context context) {
-        addFeature(new ArmourFeature<>(this, context.getModelManager()));
+        addFeature(new ArmourFeature<>(this));
         addFeature(createHeldItemFeature(context));
         addFeature(new SkullFeature<>(this, context.getModelLoader()));
         addFeature(new ElytraFeature<>(this));

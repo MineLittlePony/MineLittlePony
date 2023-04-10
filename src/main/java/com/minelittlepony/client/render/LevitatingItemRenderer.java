@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,7 +25,7 @@ public class LevitatingItemRenderer {
         final int color = pony.metadata().getGlowColor();
         return layer -> {
             Identifier texture = RenderLayerUtil.getTexture(layer).orElse(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
-            if (texture == ItemRenderer.ENTITY_ENCHANTMENT_GLINT || texture == ItemRenderer.ITEM_ENCHANTMENT_GLINT) {
+            if (texture == ItemRenderer.ENCHANTED_ITEM_GLINT) {
                 return renderContext.getBuffer(layer);
             }
             return renderContext.getBuffer(MagicGlow.getColoured(texture, color));
@@ -35,9 +35,9 @@ public class LevitatingItemRenderer {
     /**
      * Renders an item with a magical overlay.
      */
-    public void renderItem(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformationMode mode, boolean left, MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world, int lightUv, int posLong) {
+    public void renderItem(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformation.Mode mode, boolean left, MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world, int lightUv, int posLong) {
 
-        if (entity instanceof PlayerEntity && (mode.isFirstPerson() || mode == ModelTransformationMode.THIRD_PERSON_LEFT_HAND || mode == ModelTransformationMode.THIRD_PERSON_RIGHT_HAND)) {
+        if (entity instanceof PlayerEntity && (mode.isFirstPerson() || mode == ModelTransformation.Mode.THIRD_PERSON_LEFT_HAND || mode == ModelTransformation.Mode.THIRD_PERSON_RIGHT_HAND)) {
 
             IPony pony = IPony.getManager().getPony((PlayerEntity)entity);
 

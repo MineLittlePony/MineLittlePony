@@ -51,7 +51,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
                     || feature instanceof ElytraFeatureRenderer
                     || feature instanceof ShoulderParrotFeatureRenderer;
         });
-        addLayer(new ArmourFeature<>(this, context.getModelManager()));
+        addLayer(new ArmourFeature<>(this));
         addLayer(new HeldItemFeature(this, context.getHeldItemRenderer()));
         addLayer(new DJPon3Feature<>(this));
         addLayer(new CapeFeature<>(this));
