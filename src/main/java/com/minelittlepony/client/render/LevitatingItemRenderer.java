@@ -21,6 +21,17 @@ import net.minecraft.util.math.RotationAxis;
 import net.minecraft.world.World;
 
 public class LevitatingItemRenderer {
+    @Deprecated
+    private static int COLOR;
+    @Deprecated
+    public static boolean isEnabled() {
+        return false;
+    }
+    @Deprecated
+    public static RenderLayer getRenderLayer(Identifier texture) {
+        return MagicGlow.getColoured(texture, COLOR);
+    }
+
     private VertexConsumerProvider getProvider(IPony pony, VertexConsumerProvider renderContext) {
         final int color = pony.metadata().getGlowColor();
         return layer -> {
@@ -40,6 +51,8 @@ public class LevitatingItemRenderer {
         if (entity instanceof PlayerEntity && (mode.isFirstPerson() || mode == ModelTransformation.Mode.THIRD_PERSON_LEFT_HAND || mode == ModelTransformation.Mode.THIRD_PERSON_RIGHT_HAND)) {
 
             IPony pony = IPony.getManager().getPony((PlayerEntity)entity);
+
+            COLOR = pony.metadata().getGlowColor();
 
             matrix.push();
 
