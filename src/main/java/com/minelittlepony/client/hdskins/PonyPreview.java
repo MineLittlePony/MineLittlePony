@@ -40,7 +40,8 @@ class PonyPreview extends PlayerPreview {
             return DefaultSkinGenerator.generateGreyScale(wearable.getDefaultTexture(), wearable.getDefaultTexture(), getExclusion());
         }
 
-        return super.getDefaultSkin(type, slim);
+        Identifier skin = getBlankSkin(type, slim);
+        return DefaultSkinGenerator.generateGreyScale(type == SkinType.SKIN ? DefaultPonySkinHelper.getPonySkin(profile.getId(), slim) : skin, skin, getExclusion());
     }
 
     @Override
