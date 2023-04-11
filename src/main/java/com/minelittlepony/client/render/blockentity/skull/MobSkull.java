@@ -1,12 +1,12 @@
 package com.minelittlepony.client.render.blockentity.skull;
 
 import com.google.common.base.Suppliers;
-import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer.ISkull;
 import com.minelittlepony.mson.api.ModelKey;
+import com.minelittlepony.settings.PonyConfig;
 import com.mojang.authlib.GameProfile;
 
 import java.util.function.Supplier;

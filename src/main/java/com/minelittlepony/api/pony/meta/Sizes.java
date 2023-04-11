@@ -1,6 +1,6 @@
 package com.minelittlepony.api.pony.meta;
 
-import com.minelittlepony.api.config.PonyConfig;
+import com.minelittlepony.settings.PonyConfig;
 
 /**
  * Represents the different model sizes that are possible.

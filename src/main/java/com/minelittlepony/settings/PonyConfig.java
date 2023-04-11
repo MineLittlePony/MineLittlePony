@@ -1,4 +1,4 @@
-package com.minelittlepony.api.config;
+package com.minelittlepony.settings;
 
 import net.minecraft.util.math.MathHelper;
 

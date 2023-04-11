@@ -1,9 +1,9 @@
 package com.minelittlepony.client.mixin;
 
-import com.minelittlepony.api.config.PonyLevel;
 import com.minelittlepony.api.pony.DefaultPonySkinHelper;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.settings.PonyLevel;
 
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.util.Identifier;

@@ -12,10 +12,10 @@ import net.minecraft.util.Identifier;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.model.armour.ArmourLayer;
 import com.minelittlepony.api.model.armour.ArmourVariant;
 import com.minelittlepony.api.model.armour.IArmourTextureResolver;
+import com.minelittlepony.settings.PonyConfig;
 import com.minelittlepony.util.ResourceUtil;
 
 import org.jetbrains.annotations.Nullable;

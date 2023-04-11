@@ -3,9 +3,9 @@ package com.minelittlepony.api.model;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.meta.*;
+import com.minelittlepony.settings.PonyConfig;
 
 public interface IModel {
     /**
