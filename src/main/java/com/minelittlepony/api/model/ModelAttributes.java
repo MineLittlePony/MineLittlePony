@@ -87,7 +87,7 @@ public class ModelAttributes {
      * Unique id of the interpolator used for this model.
      * Usually the UUID of the entity being rendered.
      */
-    private UUID interpolatorId = UUID.randomUUID();
+    UUID interpolatorId = UUID.randomUUID();
 
     /**
      * The actual, visible height of this model when rendered.

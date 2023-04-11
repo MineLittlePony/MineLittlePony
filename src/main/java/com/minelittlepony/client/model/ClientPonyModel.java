@@ -9,6 +9,7 @@ import net.minecraft.util.Hand;
 import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.api.model.IPart;
 import com.minelittlepony.api.model.fabric.PonyModelPrepareCallback;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyData;
@@ -48,6 +49,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
 
     @Override
     public void updateLivingState(T entity, IPony pony, ModelAttributes.Mode mode) {
+        IPart.Compat.attributes = attributes;
         child = entity.isBaby();
         attributes.updateLivingState(entity, pony, mode);
         PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(entity, this, mode);

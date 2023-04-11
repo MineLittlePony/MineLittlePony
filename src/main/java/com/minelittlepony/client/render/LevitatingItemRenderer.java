@@ -6,8 +6,7 @@ import com.minelittlepony.client.util.render.RenderLayerUtil;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
@@ -16,11 +15,23 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.PlayerScreenHandler;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.UseAction;
 import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.World;
 
 public class LevitatingItemRenderer {
+    @Deprecated
+    private static int COLOR;
+    @Deprecated
+    public static boolean isEnabled() {
+        return false;
+    }
+    @Deprecated
+    public static RenderLayer getRenderLayer(Identifier texture) {
+        return MagicGlow.getColoured(texture, COLOR);
+    }
+
     private VertexConsumerProvider getProvider(IPony pony, VertexConsumerProvider renderContext) {
         final int color = pony.metadata().getGlowColor();
         return layer -> {
@@ -36,6 +47,8 @@ public class LevitatingItemRenderer {
         if (entity instanceof PlayerEntity && (mode.isFirstPerson() || mode == ModelTransformation.Mode.THIRD_PERSON_LEFT_HAND || mode == ModelTransformation.Mode.THIRD_PERSON_RIGHT_HAND)) {
 
             IPony pony = IPony.getManager().getPony((PlayerEntity)entity);
+
+            COLOR = pony.metadata().getGlowColor();
 
             matrix.push();
 
