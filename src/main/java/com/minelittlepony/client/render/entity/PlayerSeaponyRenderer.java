@@ -17,15 +17,16 @@ import net.minecraft.util.Identifier;
 public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
     public static final Identifier SKIN_TYPE_ID = new Identifier("minelp", "seapony");
 
-    private final ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> seapony;
-    private final ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> normalPony;
+    private final ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> wetPony;
+    private final ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> dryPony;
 
     public PlayerSeaponyRenderer(EntityRendererFactory.Context context, boolean slim,
-            PlayerModelKey<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> key) {
-        super(context, slim, key);
+            PlayerModelKey<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> wetModel,
+            PlayerModelKey<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> dryModel) {
+        super(context, slim, wetModel);
 
-        normalPony = ModelType.getPlayerModel(Race.UNICORN).<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>>create(slim);
-        seapony = getInternalRenderer().getModelWrapper();
+        dryPony = dryModel.<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>>create(slim);
+        wetPony = getInternalRenderer().getModelWrapper();
     }
 
     @Override
@@ -43,7 +44,7 @@ public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
                 (pony.race() == Race.SEAPONY || SkinsProxy.instance.getSkin(SKIN_TYPE_ID, player).isPresent())
                 && PonyPosture.isPartiallySubmerged(player);
 
-        model = manager.setModel(wet ? seapony : normalPony).body();
+        model = manager.setModel(wet ? wetPony : dryPony).body();
 
         float state = wet ? 100 : 0;
         float interpolated = pony.metadata().getInterpolator(player.getUuid()).interpolate("seapony_state", state, 5);
