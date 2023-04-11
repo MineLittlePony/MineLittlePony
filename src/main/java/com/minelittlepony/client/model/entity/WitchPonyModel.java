@@ -4,8 +4,7 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.WitchEntity;
 import net.minecraft.util.*;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.*;
 
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.IPony;
@@ -66,7 +65,7 @@ public class WitchPonyModel extends EarthPonyModel<WitchEntity> {
     @Override
     protected void positionheldItem(Arm arm, MatrixStack matrices) {
         super.positionheldItem(arm, matrices);
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(10));
+        matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(10));
     }
 
     @Override

@@ -66,7 +66,7 @@ final class ModelKeyImpl<M extends Model> implements ModelKey<M>, LocalBlock {
                 if (ctx instanceof RootContext) {
                     ((RootContext)ctx).setModel(t);
                 }
-                ((MsonModel)t).init(ctx);
+                ((MsonModel)t).init((ModelView)ctx);
             }
             return t;
         })

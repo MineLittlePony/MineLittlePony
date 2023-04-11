@@ -579,7 +579,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             }
             if (main == arm) {
                 matrices.translate(left * -0.05F, 0.5F, 0.2F);
-                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-60));
+                matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-60));
 
                 return;
             }
@@ -600,8 +600,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         }
 
         if (attributes.isSleeping || attributes.isRiptide) {
-            stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
-            stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
+            stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
+            stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
         }
 
         if (attributes.isHorsey) {

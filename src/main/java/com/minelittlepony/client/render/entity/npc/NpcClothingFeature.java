@@ -8,7 +8,7 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.ModelWithHat;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.registry.Registries;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
@@ -56,9 +56,9 @@ class NpcClothingFeature<
         M entityModel = getContextModel();
 
         if (entity.isBaby() || data.getProfession() == VillagerProfession.NONE) {
-            Identifier typeSkin = createTexture("type", Registries.VILLAGER_TYPE.getId(data.getType()));
+            Identifier typeSkin = createTexture("type", Registry.VILLAGER_TYPE.getId(data.getType()));
             if (!ResourceUtil.textureExists(typeSkin)) {
-                typeSkin = createTexture("type", Registries.VILLAGER_TYPE.getId(VillagerType.PLAINS));
+                typeSkin = createTexture("type", Registry.VILLAGER_TYPE.getId(VillagerType.PLAINS));
             }
             renderModel(entityModel, typeSkin, matrixStack, provider, i, entity, 1, 1, 1);
         } else {
@@ -71,8 +71,8 @@ class NpcClothingFeature<
         VillagerProfession profession = data.getProfession();
         int level = MathHelper.clamp(data.getLevel(), 1, LEVEL_TO_ID.size());
 
-        Identifier typeId = Registries.VILLAGER_TYPE.getId(type);
-        Identifier profId = Registries.VILLAGER_PROFESSION.getId(profession);
+        Identifier typeId = Registry.VILLAGER_TYPE.getId(type);
+        Identifier profId = Registry.VILLAGER_PROFESSION.getId(profession);
 
         Identifier key = new Identifier("minelittlepony", (typeId + "/" + profId + "/" + level).replace(':', '_'));
 
@@ -102,7 +102,7 @@ class NpcClothingFeature<
     }
 
     public Identifier createTexture(VillagerDataContainer entity, String category) {
-        return createTexture(category, Registries.VILLAGER_PROFESSION.getId(entity.getVillagerData().getProfession()));
+        return createTexture(category, Registry.VILLAGER_PROFESSION.getId(entity.getVillagerData().getProfession()));
     }
 
     private Identifier createTexture(String category, Identifier identifier) {

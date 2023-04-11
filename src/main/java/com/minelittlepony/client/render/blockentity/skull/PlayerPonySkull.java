@@ -16,11 +16,10 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Uuids;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.dynamic.DynamicSerializableUuid;
+import net.minecraft.util.math.Vec3f;
 
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 public class PlayerPonySkull implements ISkull {
     private AbstractPonyModel<?> ponyHead;
@@ -46,7 +45,7 @@ public class PlayerPonySkull implements ISkull {
                 return skin;
             }
 
-            return DefaultSkinHelper.getTexture(Uuids.getUuidFromProfile(profile));
+            return DefaultSkinHelper.getTexture(DynamicSerializableUuid.getUuidFromProfile(profile));
         }
 
         return DefaultSkinHelper.getTexture();
@@ -68,11 +67,11 @@ public class PlayerPonySkull implements ISkull {
 
     @Override
     public void setAngles(float yaw, float animationProgress) {
-        Vector3f v = new Vector3f(0, -2, 2);
-        v.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(yaw));
-        ponyHead.getHead().pivotX = v.x;
-        ponyHead.getHead().pivotY = v.y;
-        ponyHead.getHead().pivotZ = v.z;
+        Vec3f v = new Vec3f(0, -2, 2);
+        v.rotate(Vec3f.POSITIVE_Y.getDegreesQuaternion(yaw));
+        ponyHead.getHead().pivotX = v.getX();
+        ponyHead.getHead().pivotY = v.getY();
+        ponyHead.getHead().pivotZ = v.getZ();
         ponyHead.setVisible(true);
         ponyHead.setHeadRotation(animationProgress, yaw, 0);
         if (renderingEars) {

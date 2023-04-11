@@ -7,7 +7,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.registry.Registries;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.Identifier;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
@@ -53,7 +53,7 @@ public class DefaultArmourTextureResolver implements IArmourTextureResolver {
     public Identifier getTexture(LivingEntity entity, ItemStack stack, EquipmentSlot slot, ArmourLayer layer,  @Nullable String type) {
         Identifier material = stack.getItem() instanceof ArmorItem armor
                 ? new Identifier(armor.getMaterial().getName())
-                : Registries.ITEM.getId(stack.getItem());
+                : Registry.ITEM.getId(stack.getItem());
         String custom = getCustom(stack);
 
         try {
