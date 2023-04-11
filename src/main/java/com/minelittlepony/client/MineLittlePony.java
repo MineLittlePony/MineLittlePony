@@ -1,6 +1,5 @@
 package com.minelittlepony.client;
 
-import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.api.pony.network.fabric.Channel;
 import com.minelittlepony.client.model.ModelType;
@@ -15,6 +14,7 @@ import com.minelittlepony.common.event.ClientReadyCallback;
 import com.minelittlepony.common.event.ScreenInitCallback;
 import com.minelittlepony.common.event.SkinFilterCallback;
 import com.minelittlepony.common.util.GamePaths;
+import com.minelittlepony.settings.PonyConfig;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;

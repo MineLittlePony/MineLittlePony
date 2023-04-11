@@ -1,13 +1,13 @@
 package com.minelittlepony.client.render.blockentity.skull;
 
 import com.google.common.collect.Maps;
-import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.client.render.entity.SkeleponyRenderer;
 import com.minelittlepony.client.render.entity.ZomponyRenderer;
+import com.minelittlepony.settings.PonyConfig;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.block.SkullBlock;
