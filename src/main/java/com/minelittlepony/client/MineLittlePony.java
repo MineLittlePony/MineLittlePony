@@ -129,7 +129,7 @@ public class MineLittlePony implements ClientModInitializer {
                                 .setTextureSize(16, 16)
                                 .setSize(16, 16))
                         .setTooltip("minelp.options.title", 0, 10);
-                button.setY(screen.height - y); // ModMenu
+                button.y = screen.height - y; // ModMenu
             }
         }
     }

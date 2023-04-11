@@ -60,14 +60,14 @@ public interface PonyPosture {
                         if (d > 0.0 && e > 0.0) {
                             double l = (vec3d2.x * vec3d.x + vec3d2.z * vec3d.z) / Math.sqrt(d * e);
                             double m = vec3d2.x * vec3d.z - vec3d2.z * vec3d.x;
-                            stack.multiply(RotationAxis.NEGATIVE_Y.rotation((float)(Math.signum(m) * Math.acos(l))));
+                            stack.multiply(Vec3f.NEGATIVE_Y.getDegreesQuaternion((float)(Math.signum(m) * Math.acos(l))));
                         }
                     }
 
                     float roll = (float)player.getRoll() + tickDelta;
                     float targetRoll = MathHelper.clamp(roll * roll / 100F, 0, 1);
                     if (!player.isUsingRiptide()) {
-                        stack.multiply(RotationAxis.NEGATIVE_X.rotationDegrees(targetRoll * (-90 - player.getPitch())));
+                        stack.multiply(Vec3f.NEGATIVE_X.getDegreesQuaternion(targetRoll * (-90 - player.getPitch())));
                     }
 
                 } else if (leaningPitch > 0) {
@@ -75,7 +75,7 @@ public interface PonyPosture {
                         stack.translate(0.0f, 1.0f, -0.3f);
                     }
                     float pitch = MathHelper.lerp(leaningPitch, 0, player.isTouchingWater() ? -90 - player.getPitch() : -90);
-                    stack.multiply(RotationAxis.NEGATIVE_X.rotationDegrees(pitch));
+                    stack.multiply(Vec3f.NEGATIVE_X.getDegreesQuaternion(pitch));
                 }
             }
         }

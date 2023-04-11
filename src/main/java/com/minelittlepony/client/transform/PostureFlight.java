@@ -4,7 +4,7 @@ import com.minelittlepony.api.model.IModel;
 import com.minelittlepony.common.util.animation.MotionCompositor;
 
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.entity.LivingEntity;
 
 public class PostureFlight extends MotionCompositor implements PonyPosture {
@@ -24,8 +24,8 @@ public class PostureFlight extends MotionCompositor implements PonyPosture {
 
         model.getAttributes().motionRoll = model.getAttributes().getMainInterpolator().interpolate("pegasusRoll", model.getAttributes().motionRoll, 10);
 
-        stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(model.getAttributes().motionPitch));
-        stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(model.getAttributes().motionRoll));
+        stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(model.getAttributes().motionPitch));
+        stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(model.getAttributes().motionRoll));
         stack.translate(0, yOffset, 0);
     }
 }
