@@ -76,7 +76,7 @@ public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & IPo
         stack.translate(0, 0.6F, -0.21F);
 
         MinecraftClient.getInstance().getItemRenderer()
-            .renderItem(entity, itemstack, ModelTransformationMode.HEAD, false, stack, renderContext, entity.world, lightUv, OverlayTexture.DEFAULT_UV, entity.getId() + ModelTransformationMode.HEAD.ordinal());
+            .renderItem(entity, itemstack, ModelTransformationMode.HEAD, false, stack, renderContext, entity.getWorld(), lightUv, OverlayTexture.DEFAULT_UV, entity.getId() + ModelTransformationMode.HEAD.ordinal());
     }
 
     private void renderSkull(MatrixStack stack, VertexConsumerProvider renderContext, ItemStack itemstack, boolean isVillager, float limbDistance, int lightUv) {

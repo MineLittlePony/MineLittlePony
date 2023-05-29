@@ -1,8 +1,8 @@
 package com.minelittlepony.client;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.*;
 
 import com.minelittlepony.client.render.MobRenderers;
@@ -189,10 +189,10 @@ public class GuiPonySettings extends GameGui {
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(matrices);
-        super.render(matrices, mouseX, mouseY, partialTicks);
-        content.render(matrices, mouseX, mouseY, partialTicks);
+    public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+        renderBackground(context);
+        super.render(context, mouseX, mouseY, partialTicks);
+        content.render(context, mouseX, mouseY, partialTicks);
     }
 
     @Override

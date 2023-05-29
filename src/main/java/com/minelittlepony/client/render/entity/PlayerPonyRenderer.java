@@ -37,6 +37,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
         addLayers(context);
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     protected void addLayers(EntityRendererFactory.Context context) {
         // remove vanilla features (keep modded ones)
         // TODO: test with https://github.com/Globox1997/BackSlot

@@ -5,10 +5,10 @@ import com.minelittlepony.api.pony.meta.Race;
 import java.util.Optional;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -73,7 +73,7 @@ public final class PonyPosture {
 
     public static boolean isPartiallySubmerged(LivingEntity entity) {
         return entity.isSubmergedInWater()
-                || entity.getEntityWorld().getBlockState(entity.getBlockPos()).getMaterial() == Material.WATER;
+                || entity.getEntityWorld().getBlockState(entity.getBlockPos()).getFluidState().isIn(FluidTags.WATER);
     }
 
     public static boolean isSitting(LivingEntity entity) {

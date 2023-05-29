@@ -1,6 +1,6 @@
 package com.minelittlepony.client.hdskins;
 
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -52,26 +52,26 @@ class PonyPreview extends PlayerPreview {
     public void renderWorldAndPlayer(Optional<DummyPlayer> thePlayer,
             Bounds frame,
             int horizon, int mouseX, int mouseY, int ticks, float partialTick, float scale,
-            MatrixStack matrices, @Nullable Consumer<DummyPlayer> postAction) {
-        super.renderWorldAndPlayer(thePlayer, frame, horizon, mouseX, mouseY, ticks, partialTick, scale, matrices, postAction);
+            DrawContext context, @Nullable Consumer<DummyPlayer> postAction) {
+        super.renderWorldAndPlayer(thePlayer, frame, horizon, mouseX, mouseY, ticks, partialTick, scale, context, postAction);
         thePlayer.ifPresent(p -> {
             IPonyData data = IPony.getManager().getPony(p).metadata();
             int[] index = new int[1];
             data.getTriggerPixels().forEach((key, value) -> {
-                drawLegendBlock(matrices, index[0]++, frame.left, frame.top, mouseX, mouseY, key, value);
+                drawLegendBlock(context, index[0]++, frame.left, frame.top, mouseX, mouseY, key, value);
             });
         });
     }
 
-    private void drawLegendBlock(MatrixStack matrices, int index, int x, int y, int mouseX, int mouseY, String key, TriggerPixelType<?> value) {
+    private void drawLegendBlock(DrawContext context, int index, int x, int y, int mouseX, int mouseY, String key, TriggerPixelType<?> value) {
         int size = 10;
         int yPos = y + index * size + 20;
-        fill(matrices,
+        context.fill(
                 x,        yPos,
                 x + size, yPos + size,
                 0xFF003333
         );
-        fill(matrices,
+        context.fill(
                 x + 1,        yPos + 1,
                 x - 1 + size, yPos - 1 + size,
                 value.getColorCode() | 0xFF000000
@@ -82,7 +82,7 @@ class PonyPreview extends PlayerPreview {
             symbol = key.charAt(0);
         }
 
-        minecraft.textRenderer.drawWithShadow(matrices,
+        context.drawTextWithShadow(getFont(),
                Text.of(String.valueOf(symbol).toUpperCase()),
                x + 2,
                yPos + 1,
@@ -107,7 +107,7 @@ class PonyPreview extends PlayerPreview {
                 }));
             }
 
-            minecraft.currentScreen.renderTooltip(matrices, lines, mouseX, mouseY);
+            context.drawTooltip(getFont(), lines, mouseX, mouseY);
         }
     }
 }
