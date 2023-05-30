@@ -1,6 +1,6 @@
 # Mine Little Pony
 
-[![Current Version](https://img.shields.io/github/v/tag/MineLittlePony/MineLittlePony)](https://github.com/MineLittlePony/MineLittlePony/releases/latest)
+[![Current Version](https://img.shields.io/github/v/release/MineLittlePony/MineLittlePony)](https://github.com/MineLittlePony/MineLittlePony/releases/latest)
 [![Build Status](https://github.com/MineLittlePony/MineLittlePony/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/MineLittlePony/MineLittlePony/actions/workflows/gradle-build.yml)
 ![Downloads](https://img.shields.io/github/downloads/MineLittlePony/MineLittlePony/total.svg?color=yellowgreen)
 [![Discord Server](https://img.shields.io/discord/182490536119107584.svg?color=blueviolet)](https://discord.gg/HbJSFyu)
