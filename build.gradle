@@ -5,10 +5,10 @@ buildscript {
 }
 plugins {
     id 'java-library'
-    id 'fabric-loom' version '0.12-SNAPSHOT'
+    id 'fabric-loom' version '1.1-SNAPSHOT'
     id 'maven-publish'
     id 'com.modrinth.minotaur' version '2.+'
-    id 'org.ajoberstar.reckon' version '0.13.0'
+    id 'org.ajoberstar.reckon' version '0.16.1'
 }
 apply plugin: 'dex.plugins.outlet'
 
@@ -32,24 +32,14 @@ loom {
 }
 
 reckon {
-    scopeFromProp()
     stageFromProp('beta', 'rc', 'final')
 }
 
 repositories {
     mavenLocal()
-    maven {
-        name = 'modmenu'
-        url = 'https://maven.terraformersmc.com/releases'
-    }
-    maven {
-        name = 'minelp'
-        url = 'https://repo.minelittlepony-mod.com/maven/snapshot'
-    }
-    maven {
-        name = 'minelp-release'
-        url = 'https://repo.minelittlepony-mod.com/maven/release'
-    }
+    maven { name 'modmenu'; url 'https://maven.terraformersmc.com/releases' }
+    maven { name 'minelp'; url 'https://repo.minelittlepony-mod.com/maven/snapshot' }
+    maven { name 'minelp-release'; url 'https://repo.minelittlepony-mod.com/maven/release' }
 }
 
 dependencies {
@@ -110,8 +100,7 @@ tasks.withType(JavaCompile) {
 
 tasks.modrinth {
     onlyIf {
-      def stage = version.version.stage.value
-      stage == null || stage.name != 'beta'
+      version.toString().indexOf('beta') == -1
     }
 }
 
@@ -170,8 +159,8 @@ publishing {
     repositories {
         maven {
             name = "MineLittlePony"
-            def stage = version.version.stage.value
-            url = "s3://repo.minelittlepony-mod.com/maven/${stage != null && stage.name == 'beta' ? 'snapshot' : 'release'}"
+            def isBeta = version.toString().indexOf('beta') != -1;
+            url = "s3://repo.minelittlepony-mod.com/maven/${isBeta ? 'snapshot' : 'release'}"
             credentials(AwsCredentials) {
                 accessKey = System.env.ACCESS_KEY
                 secretKey = System.env.SECRET_KEY
