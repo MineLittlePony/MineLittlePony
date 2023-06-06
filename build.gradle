@@ -8,7 +8,7 @@ plugins {
     id 'fabric-loom' version '1.1-SNAPSHOT'
     id 'maven-publish'
     id 'com.modrinth.minotaur' version '2.+'
-    id 'org.ajoberstar.reckon' version '0.16.1'
+    id 'org.ajoberstar.reckon' version '0.13.0'
 }
 apply plugin: 'dex.plugins.outlet'
 
@@ -32,6 +32,7 @@ loom {
 }
 
 reckon {
+    scopeFromProp()
     stageFromProp('beta', 'rc', 'final')
 }
 
@@ -100,7 +101,8 @@ tasks.withType(JavaCompile) {
 
 tasks.modrinth {
     onlyIf {
-      version.toString().indexOf('beta') == -1
+      def stage = version.version.stage.value
+      stage == null || stage.name != 'beta'
     }
 }
 
@@ -159,8 +161,8 @@ publishing {
     repositories {
         maven {
             name = "MineLittlePony"
-            def isBeta = version.toString().indexOf('beta') != -1;
-            url = "s3://repo.minelittlepony-mod.com/maven/${isBeta ? 'snapshot' : 'release'}"
+            def stage = version.version.stage.value
+            url = "s3://repo.minelittlepony-mod.com/maven/${stage != null && stage.name == 'beta' ? 'snapshot' : 'release'}"
             credentials(AwsCredentials) {
                 accessKey = System.env.ACCESS_KEY
                 secretKey = System.env.SECRET_KEY
