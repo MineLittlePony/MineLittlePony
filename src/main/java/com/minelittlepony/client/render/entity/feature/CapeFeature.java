@@ -23,7 +23,7 @@ public class CapeFeature<M extends ClientPonyModel<AbstractClientPlayerEntity>> 
 
     @Override
     public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, AbstractClientPlayerEntity player, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
-        M model = getContextModel();
+        M model = getModelWrapper().body();
 
         if (player.hasSkinTexture() && !player.isInvisible()
                 && player.isPartVisible(PlayerModelPart.CAPE) && player.getCapeTexture() != null
