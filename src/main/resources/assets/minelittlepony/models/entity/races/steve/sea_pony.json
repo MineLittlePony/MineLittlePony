@@ -5,7 +5,7 @@
 			"type": "mson:planar",
 			"rotate": [0, 30, 0],
 			"pivot": [3, -6, 3],
-			"east": [0, 0, 0, 8, 12, 56, 16, false, true]
+			"east": [0, 0, 0, 8, 12, 56, 16, true, false]
 		},
 		"right_fin": {
 			"type": "mson:planar",
