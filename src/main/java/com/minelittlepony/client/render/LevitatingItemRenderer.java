@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 
 public class LevitatingItemRenderer {
     private VertexConsumerProvider getProvider(IPony pony, VertexConsumerProvider renderContext) {
-        final int color = (pony.metadata().getGlowColor() * 0) + 0x0000FF00;
+        final int color = pony.metadata().getGlowColor();
         return layer -> {
             Identifier texture = RenderLayerUtil.getTexture(layer).orElse(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
             if (texture == ItemRenderer.ENTITY_ENCHANTMENT_GLINT || texture == ItemRenderer.ITEM_ENCHANTMENT_GLINT) {
