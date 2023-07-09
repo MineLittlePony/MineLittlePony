@@ -53,13 +53,13 @@
   "minelp.debug.race": "Race Override",
   "minelp.debug.armour": "Disable ponified armour textures",
 
-  "hdskins.mode.minelp_seapony": "Seapony",
-  "hdskins.mode.minelittlepony_crown": "Crown",
-  "hdskins.mode.minelittlepony_muffin": "Muffin Hat",
-  "hdskins.mode.minelittlepony_hat": "Witch Hat",
-  "hdskins.mode.minelittlepony_antlers": "Deer Antlers",
-  "hdskins.mode.minelittlepony_saddle_bags_left": "Left Satchel",
-  "hdskins.mode.minelittlepony_saddle_bags_right": "Right Satchel",
-  "hdskins.mode.minelittlepony_saddle_bags_both": "Saddlebags",
-  "hdskins.mode.minelittlepony_stetson": "Stetson"
+  "skin_type.minelp.seapony": "Seapony",
+  "skin_type.minelittlepony.crown": "Crown",
+  "skin_type.minelittlepony.muffin": "Muffin Hat",
+  "skin_type.minelittlepony.hat": "Witch Hat",
+  "skin_type.minelittlepony.antlers": "Deer Antlers",
+  "skin_type.minelittlepony.saddle_bags_left": "Left Satchel",
+  "skin_type.minelittlepony.saddle_bags_right": "Right Satchel",
+  "skin_type.minelittlepony.saddle_bags_both": "Saddlebags",
+  "skin_type.minelittlepony.stetson": "Stetson"
 }
