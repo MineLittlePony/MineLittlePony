@@ -12,6 +12,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
 
 public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
@@ -19,6 +20,8 @@ public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
 
     private final ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> wetPony;
     private final ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> dryPony;
+
+    private boolean wet;
 
     public PlayerSeaponyRenderer(EntityRendererFactory.Context context, boolean slim,
             PlayerModelKey<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> wetModel,
@@ -31,7 +34,7 @@ public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
 
     @Override
     public Identifier getTexture(AbstractClientPlayerEntity player) {
-        if (PonyPosture.isPartiallySubmerged(player)) {
+        if (wet) {
             return SkinsProxy.instance.getSkin(SKIN_TYPE_ID, player).orElseGet(() -> super.getTexture(player));
         }
         return super.getTexture(player);
@@ -39,9 +42,18 @@ public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
 
     @Override
     public void render(AbstractClientPlayerEntity player, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int light) {
+        updateSeaponyState(player);
+        super.render(player, entityYaw, tickDelta, stack, renderContext, light);
+    }
+
+    protected void renderArm(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, AbstractClientPlayerEntity player, Arm side) {
+        updateSeaponyState(player);
+        super.renderArm(stack, renderContext, lightUv, player, side);
+    }
+
+    private void updateSeaponyState(AbstractClientPlayerEntity player) {
         IPony pony = getEntityPony(player);
-        boolean wet =
-                (pony.race() == Race.SEAPONY || SkinsProxy.instance.getSkin(SKIN_TYPE_ID, player).isPresent())
+        wet = (pony.race() == Race.SEAPONY || SkinsProxy.instance.getSkin(SKIN_TYPE_ID, player).isPresent())
                 && PonyPosture.isPartiallySubmerged(player);
 
         model = manager.setModel(wet ? wetPony : dryPony).body();
@@ -56,7 +68,5 @@ public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
 
             player.getEntityWorld().addParticle(ParticleTypes.END_ROD, x, y, z, 0, 0, 0);
         }
-
-        super.render(player, entityYaw, tickDelta, stack, renderContext, light);
     }
 }
