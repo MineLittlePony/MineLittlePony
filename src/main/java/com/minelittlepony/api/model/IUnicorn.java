@@ -5,7 +5,7 @@ public interface IUnicorn extends IModel {
      * Returns true if this model is being applied to a race that can use magic.
      */
     default boolean hasMagic() {
-        return getRace().hasHorn() && getMagicColor() != 0;
+        return hasHorn() && getMagicColor() != 0;
     }
 
     /**

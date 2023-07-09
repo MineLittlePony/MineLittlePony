@@ -112,11 +112,6 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
     }
 
     @Override
-    public boolean hasMagic() {
-        return true;
-    }
-
-    @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         leftFin.visible = visible;
