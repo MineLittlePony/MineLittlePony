@@ -100,6 +100,7 @@
 					"type": "mson:plane", "__comment": "back",
 					"texture": { "u": 32, "v": 20 },
 					"face": "up",
+					"mirror": [true, false],
 					"position": [ -4, 4, 2 ], "size": [ 8, 12 ]
 				}
 			],
