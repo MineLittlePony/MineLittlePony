@@ -60,7 +60,7 @@ dependencies {
     include "com.minelittlepony:mson:${project.mson_version}"
 
     modImplementation "com.minelittlepony:hdskins:${project.hd_skins_version}"
-    modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
+    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 }
 
 //
