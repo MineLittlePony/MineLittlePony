@@ -74,6 +74,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
 
     @Override
     public void render(AbstractClientPlayerEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
+        model = manager.getModel(); // EntityModelFeatures: We have to force it to use our models otherwise EMF overrides it and breaks pony rendering
         shadowRadius = manager.getShadowScale();
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
         DebugBoundingBoxRenderer.render(manager.getPony(entity), this, entity, stack, renderContext, tickDelta);
