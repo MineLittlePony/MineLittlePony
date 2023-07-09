@@ -8,6 +8,7 @@ import com.minelittlepony.client.model.*;
 import com.minelittlepony.client.render.DebugBoundingBoxRenderer;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.client.render.entity.feature.*;
+import com.minelittlepony.client.util.render.RenderLayerUtil;
 import com.minelittlepony.client.render.EquineRenderManager;
 
 import java.util.List;
@@ -142,11 +143,14 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
 
         stack.translate(reflect * 0.1F, -0.54F, 0);
 
+        Identifier texture = getTexture(player);
+        Identifier playerSkin = player.getSkinTexture();
         VertexConsumerProvider interceptedContext = layer -> {
-            return renderContext.getBuffer(
-                    layer == RenderLayer.getEntitySolid(player.getSkinTexture())
-                    ? RenderLayer.getEntityTranslucent(player.getSkinTexture())
-                    : layer
+            return renderContext.getBuffer(RenderLayerUtil
+                    .getTexture(layer)
+                    .filter(playerSkin::equals)
+                    .map(i -> RenderLayer.getEntityTranslucent(texture))
+                    .orElse(layer)
             );
         };
 
