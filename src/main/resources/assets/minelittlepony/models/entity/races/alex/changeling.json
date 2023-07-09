@@ -2,7 +2,6 @@
 	"parent": "minelittlepony:races/steve/changeling",
 	"locals": {
 		"arm_width": 3,
-		"arm_rotation_x": 2,
-		"arm_rotation_y": 8.5
+		"arm_rotation_x": 2
 	}
 }
