@@ -25,6 +25,12 @@ public interface TextureSupplier<T> extends Function<T, Identifier> {
         return key -> new Identifier(domain, String.format(path, key));
     }
 
+    static <T extends LivingEntity> TextureSupplier<T> ofVariations(Identifier poolId, TextureSupplier<T> fallback) {
+        return entity -> {
+            return MineLittlePony.getInstance().getVariatedTextures().get(poolId).getId(entity.getUuid()).orElse(fallback.apply(entity));
+        };
+    }
+
     static <T extends LivingEntity> TextureSupplier<T> ofPool(Identifier poolId, TextureSupplier<T> fallback) {
         final Function<T, Identifier> cache = FunctionUtil.memoize(entity -> {
             return MineLittlePony.getInstance().getVariatedTextures()

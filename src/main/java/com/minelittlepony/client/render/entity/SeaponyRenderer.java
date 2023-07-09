@@ -32,11 +32,11 @@ public class SeaponyRenderer extends GuardianEntityRenderer {
     }
 
     public static SeaponyRenderer guardian(EntityRendererFactory.Context context) {
-        return new SeaponyRenderer(context, TextureSupplier.ofPool(SEAPONY_TEXTURES, TextureSupplier.of(SEAPONY)), 1);
+        return new SeaponyRenderer(context, TextureSupplier.ofVariations(SEAPONY_TEXTURES, TextureSupplier.of(SEAPONY)), 1);
     }
 
     public static SeaponyRenderer elder(EntityRendererFactory.Context context) {
-        return new SeaponyRenderer(context, TextureSupplier.ofPool(ELDER_SEAPONY_TEXTURES, TextureSupplier.of(SEAPONY)), ElderGuardianEntity.SCALE);
+        return new SeaponyRenderer(context, TextureSupplier.ofVariations(ELDER_SEAPONY_TEXTURES, TextureSupplier.of(ELDER_SEAPONY)), ElderGuardianEntity.SCALE);
     }
 
     @Override
