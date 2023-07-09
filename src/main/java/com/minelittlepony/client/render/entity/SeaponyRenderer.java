@@ -11,27 +11,32 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.GuardianEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.mob.ElderGuardianEntity;
 import net.minecraft.entity.mob.GuardianEntity;
 import net.minecraft.util.Identifier;
 
 public class SeaponyRenderer extends GuardianEntityRenderer {
-    public static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/entity/seapony.png");
+    public static final Identifier SEAPONY = new Identifier("minelittlepony", "textures/entity/guardian/blueball.png");
+    private static final Identifier SEAPONY_TEXTURES = new Identifier("minelittlepony", "textures/entity/guardian");
+    public static final Identifier ELDER_SEAPONY = new Identifier("minelittlepony", "textures/entity/elder_guardian/blueball.png");
+    private static final Identifier ELDER_SEAPONY_TEXTURES = new Identifier("minelittlepony", "textures/entity/elder_guardian");
 
     private final AbstractPonyRenderer<GuardianEntity, GuardianPonyModel> ponyRenderer;
 
-    public SeaponyRenderer(EntityRendererFactory.Context context, float scale) {
+    private final float scale;
+
+    public SeaponyRenderer(EntityRendererFactory.Context context, TextureSupplier<GuardianEntity> texture, float scale) {
         super(context);
-        ponyRenderer = AbstractPonyRenderer.proxy(context, ModelType.GUARDIAN, TextureSupplier.of(TEXTURE), scale, features, m -> model = m);
+        ponyRenderer = AbstractPonyRenderer.proxy(context, ModelType.GUARDIAN, texture, scale, features, m -> model = m);
+        this.scale = scale;
     }
 
     public static SeaponyRenderer guardian(EntityRendererFactory.Context context) {
-        return new SeaponyRenderer(context, 1);
+        return new SeaponyRenderer(context, TextureSupplier.ofPool(SEAPONY_TEXTURES, TextureSupplier.of(SEAPONY)), 1);
     }
 
     public static SeaponyRenderer elder(EntityRendererFactory.Context context) {
-        return new SeaponyRenderer(context, 1);
+        return new SeaponyRenderer(context, TextureSupplier.ofPool(ELDER_SEAPONY_TEXTURES, TextureSupplier.of(SEAPONY)), ElderGuardianEntity.SCALE);
     }
 
     @Override
@@ -47,14 +52,13 @@ public class SeaponyRenderer extends GuardianEntityRenderer {
 
     @Override
     public void render(GuardianEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
-        IResizeable resize = (IResizeable)entity;
-        EntityDimensions origin = resize.getCurrentSize();
+        ponyRenderer.manager.preRenderCallback(entity, stack, tickDelta);
+
+        float height = entity.getStandingEyeHeight();
 
         // aligns the beam to their horns
-        resize.setCurrentSize(EntityDimensions.changing(origin.width, entity instanceof ElderGuardianEntity ? 6 : 3));
-
+        ((IResizeable)entity).setStandingEyeHeight(2 * scale * ponyRenderer.manager.getScaleFactor());
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
-
-        resize.setCurrentSize(origin);
+        ((IResizeable)entity).setStandingEyeHeight(height);
     }
 }

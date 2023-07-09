@@ -31,7 +31,7 @@ class PonyPreview extends PlayerPreview {
     @Override
     public Identifier getDefaultSkin(SkinType type, boolean slim) {
         if (type == MineLPHDSkins.seaponySkinType) {
-            return DefaultSkinGenerator.generateGreyScale(SeaponyRenderer.TEXTURE, SeaponyRenderer.TEXTURE, getExclusion());
+            return DefaultSkinGenerator.generateGreyScale(SeaponyRenderer.SEAPONY, SeaponyRenderer.SEAPONY, getExclusion());
         }
 
         Wearable wearable = MineLPHDSkins.wearableTypes.getOrDefault(type, Wearable.NONE);
