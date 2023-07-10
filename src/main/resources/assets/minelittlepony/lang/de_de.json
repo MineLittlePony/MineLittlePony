@@ -49,13 +49,13 @@
   "minelp.debug.size": "Überschreibe Größe",
   "minelp.debug.race": "Überschreibe Spezies",
 
-  "hdskins.mode.minelp_seapony": "Seepony",
-  "hdskins.mode.minelittlepony_crown": "Krone",
-  "hdskins.mode.minelittlepony_muffin": "Muffin-Mütze",
-  "hdskins.mode.minelittlepony_hat": "Hexen Hut",
-  "hdskins.mode.minelittlepony_antlers": "Hirschgeweih",
-  "hdskins.mode.minelittlepony_saddle_bags_left": "Linke Tasche",
-  "hdskins.mode.minelittlepony_saddle_bags_right": "Rechte Tasche",
-  "hdskins.mode.minelittlepony_saddle_bags_both": "Satteltaschen",
-  "hdskins.mode.minelittlepony_stetson": "Cowboyhut"
+  "skin_type.minelp.seapony": "Seepony",
+  "skin_type.minelittlepony.crown": "Krone",
+  "skin_type.minelittlepony.muffin": "Muffin-Mütze",
+  "skin_type.minelittlepony.hat": "Hexen Hut",
+  "skin_type.minelittlepony.antlers": "Hirschgeweih",
+  "skin_type.minelittlepony.saddle_bags_left": "Linke Tasche",
+  "skin_type.minelittlepony.saddle_bags_right": "Rechte Tasche",
+  "skin_type.minelittlepony.saddle_bags_both": "Satteltaschen",
+  "skin_type.minelittlepony.stetson": "Cowboyhut"
 }
