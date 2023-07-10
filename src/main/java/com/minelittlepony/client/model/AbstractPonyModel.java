@@ -610,6 +610,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             }
 
             neck.visible = head.visible;
+        } else {
+            neck.hidden = !head.visible;
         }
 
         PonyTransformation.forSize(getSize()).transform(this, part, stack);
