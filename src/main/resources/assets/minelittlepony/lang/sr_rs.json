@@ -52,13 +52,13 @@
   "minelp.debug.race": "Nadjačavanje vrste",
   "minelp.debug.armour": "Onemogući ponified oklop tekstura",
 
-  "hdskins.mode.minelp_seapony": "Vodeni Poni",
-  "hdskins.mode.minelittlepony_crown": "Kruna",
-  "hdskins.mode.minelittlepony_muffin": "Mafin Šešir",
-  "hdskins.mode.minelittlepony_hat": "Veštičiji Šešir",
-  "hdskins.mode.minelittlepony_antlers": "Rogovi jelena",
-  "hdskins.mode.minelittlepony_saddle_bags_left": "Levo torbe",
-  "hdskins.mode.minelittlepony_saddle_bags_right": "desno torbe",
-  "hdskins.mode.minelittlepony_saddle_bags_both": "Levo i desno torbe",
-  "hdskins.mode.minelittlepony_stetson": "Kauboj"
+  "skin_type.minelp.seapony": "Vodeni Poni",
+  "skin_type.minelittlepony.crown": "Kruna",
+  "skin_type.minelittlepony.muffin": "Mafin Šešir",
+  "skin_type.minelittlepony.hat": "Veštičiji Šešir",
+  "skin_type.minelittlepony.antlers": "Rogovi jelena",
+  "skin_type.minelittlepony.saddle_bags_left": "Levo torbe",
+  "skin_type.minelittlepony.saddle_bags_right": "desno torbe",
+  "skin_type.minelittlepony.saddle_bags_both": "Levo i desno torbe",
+  "skin_type.minelittlepony.stetson": "Kauboj"
 }
