@@ -86,7 +86,7 @@
             "z": "#back_leg_outset_z",
             "u": 40,
             "v": 16,
-            "side_v": 30,
+            "side_v": 31,
             "width": "#arm_width",
             "height": 1,
             "depth": "#arm_depth"
