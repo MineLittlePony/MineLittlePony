@@ -6,7 +6,9 @@ import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.client.IPreviewModel;
 import com.minelittlepony.client.render.EquineRenderManager;
-import com.minelittlepony.hdskins.client.dummy.*;
+import com.minelittlepony.hdskins.client.VanillaModels;
+import com.minelittlepony.hdskins.client.gui.player.*;
+import com.minelittlepony.hdskins.client.gui.player.skins.PlayerSkins;
 
 import java.util.UUID;
 
@@ -33,12 +35,12 @@ class DummyPony extends DummyPlayer implements IPreviewModel, IPonyManager.Force
     @Override
     public String getModel() {
         if (getTextures().getPosture().getActiveSkinType() == MineLPHDSkins.seaponySkinType) {
-            return getTextures().usesThinSkin() ? "slimseapony" : "seapony";
+            return VanillaModels.isSlim(getTextures().getSkinVariant()) ? "slimseapony" : "seapony";
         }
         return IPony.getManager()
                 .getPony(this)
                 .metadata()
                 .getRace()
-                .getModelId(getTextures().usesThinSkin());
+                .getModelId(VanillaModels.isSlim(getTextures().getSkinVariant()));
     }
 }

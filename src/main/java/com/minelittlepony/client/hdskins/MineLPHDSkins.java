@@ -9,9 +9,9 @@ import com.minelittlepony.common.client.gui.ScrollContainer;
 import com.minelittlepony.common.client.gui.element.Button;
 import com.minelittlepony.common.event.ClientReadyCallback;
 import com.minelittlepony.hdskins.client.*;
-import com.minelittlepony.hdskins.client.dummy.DummyPlayer;
-import com.minelittlepony.hdskins.client.dummy.PlayerSkins.PlayerSkin;
 import com.minelittlepony.hdskins.client.gui.GuiSkins;
+import com.minelittlepony.hdskins.client.gui.player.DummyPlayer;
+import com.minelittlepony.hdskins.client.gui.player.skins.PlayerSkins.PlayerSkin;
 import com.minelittlepony.hdskins.profile.SkinType;
 
 import com.mojang.authlib.GameProfile;
