@@ -16,6 +16,12 @@ import java.util.stream.Collectors;
 class LegendOverlayWidget implements Carousel.Element, ITextContext {
     private static final Bounds LEGEND_BLOCK_BOUNDS = new Bounds(0, 0, 10, 10);
 
+    private final Bounds frame;
+
+    public LegendOverlayWidget(Bounds frame) {
+        this.frame = frame;
+    }
+
     @Override
     public void render(DummyPlayer player, DrawContext context, int mouseX, int mouseY) {
         IPonyData data = IPony.getManager().getPony(player).metadata();
@@ -23,13 +29,12 @@ class LegendOverlayWidget implements Carousel.Element, ITextContext {
         data.getTriggerPixels().forEach((key, value) -> {
             context.getMatrices().push();
             int i = index[0]++;
-            int x = 0;//frame.left;
-            int y = 0/*frame.top*/ + (i * 10 + 20);
+            int x = frame.left;
+            int y = frame.top + (i * 10 + 20);
             context.getMatrices().translate(x, y, 1);
             drawLegendBlock(context, 0, 0, 0, mouseX - x, mouseY - y, key, value);
             context.getMatrices().pop();
         });
-        MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers().draw();
     }
 
     private void drawLegendBlock(DrawContext context, int index, int x, int y, int mouseX, int mouseY, String key, TriggerPixelType<?> value) {

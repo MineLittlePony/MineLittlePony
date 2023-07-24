@@ -17,8 +17,8 @@ class PonifiedDualCarouselWidget extends DualCarouselWidget {
 
     public PonifiedDualCarouselWidget(GuiSkins screen) {
         super(screen);
-        local.addElement(new LegendOverlayWidget());
-        remote.addElement(new LegendOverlayWidget());
+        local.addElement(new LegendOverlayWidget(local.bounds));
+        remote.addElement(new LegendOverlayWidget(remote.bounds));
     }
 
     @Override
