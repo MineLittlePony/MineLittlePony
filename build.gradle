@@ -63,6 +63,12 @@ dependencies {
     // modImplementation "com.minelittlepony:bigpony:${project.bigpony_version}"
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 }
+// I blame you, Modmenu
+configurations.all {
+   resolutionStrategy {
+     force("net.fabricmc:fabric-loader:$loader_version")
+   }
+}
 
 //
 // Imports the Background Ponies from the MLP Community Skin Pack
