@@ -1,7 +1,8 @@
 package com.minelittlepony.client.hdskins;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 import com.minelittlepony.api.pony.*;
@@ -23,30 +24,30 @@ class LegendOverlayWidget implements Carousel.Element, ITextContext {
     }
 
     @Override
-    public void render(DummyPlayer player, DrawContext context, int mouseX, int mouseY) {
+    public void render(DummyPlayer player, MatrixStack matrices, int mouseX, int mouseY) {
         IPonyData data = IPony.getManager().getPony(player).metadata();
         int[] index = new int[1];
         data.getTriggerPixels().forEach((key, value) -> {
-            context.getMatrices().push();
+            matrices.push();
             int i = index[0]++;
             int x = frame.left;
             int y = frame.top + (i * 10 + 20);
-            context.getMatrices().translate(x, y, 1);
-            drawLegendBlock(context, 0, 0, 0, mouseX - x, mouseY - y, key, value);
-            context.getMatrices().pop();
+            matrices.translate(x, y, 1);
+            drawLegendBlock(matrices, 0, 0, 0, mouseX - x, mouseY - y, key, value);
+            matrices.pop();
         });
     }
 
-    private void drawLegendBlock(DrawContext context, int index, int x, int y, int mouseX, int mouseY, String key, TriggerPixelType<?> value) {
-        context.fill(0, 0, LEGEND_BLOCK_BOUNDS.width, LEGEND_BLOCK_BOUNDS.height, 0xFF003333);
-        context.fill(1, 1, LEGEND_BLOCK_BOUNDS.width - 1, LEGEND_BLOCK_BOUNDS.height - 1, value.getColorCode() | 0xFF000000);
+    private void drawLegendBlock(MatrixStack matrices, int index, int x, int y, int mouseX, int mouseY, String key, TriggerPixelType<?> value) {
+        DrawableHelper.fill(matrices, 0, 0, LEGEND_BLOCK_BOUNDS.width, LEGEND_BLOCK_BOUNDS.height, 0xFF003333);
+        DrawableHelper.fill(matrices, 1, 1, LEGEND_BLOCK_BOUNDS.width - 1, LEGEND_BLOCK_BOUNDS.height - 1, value.getColorCode() | 0xFF000000);
 
         char symbol = value.name().charAt(0);
         if (symbol == '[') {
             symbol = key.charAt(0);
         }
 
-        context.drawTextWithShadow(getFont(), Text.literal(String.valueOf(symbol).toUpperCase()), 2, 1, 0xFFFFFFFF);
+        DrawableHelper.drawTextWithShadow(matrices, getFont(), Text.literal(String.valueOf(symbol).toUpperCase()), 2, 1, 0xFFFFFFFF);
 
         if (LEGEND_BLOCK_BOUNDS.contains(mouseX, mouseY)) {
             List<Text> lines = value.getOptions().stream().map(option -> {
@@ -64,7 +65,8 @@ class LegendOverlayWidget implements Carousel.Element, ITextContext {
                     return color == 0 ? s : s.withColor(value.getColorCode());
                 }));
             }
-            context.drawTooltip(getFont(), lines, 2, 10);
+
+            MinecraftClient.getInstance().currentScreen.renderTooltip(matrices, lines, 2, 10);
         }
     }
 }
