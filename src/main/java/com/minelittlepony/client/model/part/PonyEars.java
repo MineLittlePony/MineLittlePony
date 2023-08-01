@@ -3,6 +3,7 @@ package com.minelittlepony.client.model.part;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.model.IPart;
 import com.minelittlepony.api.model.ModelAttributes;
@@ -23,6 +24,30 @@ public class PonyEars implements IPart, MsonModel {
         PartBuilder head = context.getThis();
         head.addChild("right_ear_" + hashCode(), right);
         head.addChild("left_ear_" + hashCode(), left);
+    }
+
+    @Override
+    public void setPartAngles(ModelAttributes attributes, float limbAngle, float limbSpeed, float bodySwing, float animationProgress) {
+        right.resetTransform();
+
+        limbSpeed = MathHelper.clamp(limbSpeed, 0, 1);
+
+        float forwardFold = 0.14F * limbSpeed;
+        float sidewaysFlop = 0.11F * limbSpeed;
+
+        right.pitch = forwardFold;
+        left.pitch = forwardFold;
+
+        right.roll -= sidewaysFlop;
+        left.roll  += sidewaysFlop;
+
+        float floppyness = Math.abs(MathHelper.sin(animationProgress / 99F));
+        if (floppyness > 0.99F) {
+            boolean leftFlop = MathHelper.sin(animationProgress / 5F) > 0.5F;
+            (leftFlop ? left : right).roll +=
+                    0.01F * MathHelper.sin(animationProgress / 2F)
+                  + 0.015F * MathHelper.cos(animationProgress / 3F);
+        }
     }
 
     @Override
