@@ -1,11 +1,14 @@
 package com.minelittlepony.api.pony;
 
 import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.client.SkinsProxy;
+import com.minelittlepony.client.render.entity.PlayerSeaponyRenderer;
 
 import java.util.Optional;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.StairsBlock;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.tag.FluidTags;
@@ -82,5 +85,13 @@ public final class PonyPosture {
 
     public static boolean isRidingAPony(LivingEntity entity) {
         return isSitting(entity) && getMountPony(entity).map(IPony::race).orElse(Race.HUMAN) != Race.HUMAN;
+    }
+
+    public static boolean isSeaponyModifier(LivingEntity entity) {
+        return IPony.getManager().getPony(entity).filter(pony -> {
+            return (pony.race() == Race.SEAPONY
+                    || (entity instanceof AbstractClientPlayerEntity player && SkinsProxy.instance.getSkin(PlayerSeaponyRenderer.SKIN_TYPE_ID, player).isPresent())
+            ) && PonyPosture.isPartiallySubmerged(entity);
+        }).isPresent();
     }
 }
