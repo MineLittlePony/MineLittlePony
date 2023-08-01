@@ -2,6 +2,7 @@ package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.IPonyModel;
+import com.minelittlepony.client.render.IPonyRenderContext;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
@@ -17,8 +18,12 @@ import net.minecraft.util.Arm;
 
 public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T> & ModelWithArms> extends HeldItemFeatureRenderer<T, M> {
 
-    public HeldItemFeature(FeatureRendererContext<T, M> context, HeldItemRenderer renderer) {
-        super(context, renderer);
+    private final IPonyRenderContext<T, M> context;
+
+    @SuppressWarnings("unchecked")
+    public HeldItemFeature(IPonyRenderContext<T, M> context, HeldItemRenderer renderer) {
+        super((FeatureRendererContext<T, M>)context, renderer);
+        this.context = context;
     }
 
     protected ItemStack getLeftItem(T entity) {
@@ -39,7 +44,7 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
         ItemStack right = getRightItem(entity);
 
         if (!left.isEmpty() || !right.isEmpty()) {
-            M model = getContextModel();
+            M model = context.getInternalRenderer().getModel();
 
             stack.push();
 

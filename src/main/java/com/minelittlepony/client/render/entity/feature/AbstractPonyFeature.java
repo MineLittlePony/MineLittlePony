@@ -43,6 +43,11 @@ public abstract class AbstractPonyFeature<T extends LivingEntity, M extends Enti
         return (C)context;
     }
 
+    @Override
+    public final M getContextModel() {
+        return context.getInternalRenderer().getModel();
+    }
+
     protected ModelWrapper<T, M> getModelWrapper() {
         return context.getInternalRenderer().getModelWrapper();
     }

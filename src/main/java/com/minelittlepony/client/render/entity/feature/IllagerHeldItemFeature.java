@@ -1,16 +1,16 @@
 package com.minelittlepony.client.render.entity.feature;
 
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.IllagerEntity;
 
 import com.minelittlepony.client.model.entity.race.AlicornModel;
+import com.minelittlepony.client.render.IPonyRenderContext;
 
 public class IllagerHeldItemFeature<T extends IllagerEntity, M extends AlicornModel<T>> extends HeldItemFeature<T, M> {
 
-    public IllagerHeldItemFeature(FeatureRendererContext<T,M> livingPony, HeldItemRenderer renderer) {
+    public IllagerHeldItemFeature(IPonyRenderContext<T,M> livingPony, HeldItemRenderer renderer) {
         super(livingPony, renderer);
     }
 
