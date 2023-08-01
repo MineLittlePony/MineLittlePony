@@ -395,6 +395,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
                     float mult = 1 - swag/2;
                     arm.pitch = arm.pitch * mult - (MathHelper.PI / 10) * swag;
                     arm.roll = -sigma * (MathHelper.PI / 15);
+                    arm.roll += 0.3F * -limbSpeed * sigma;
 
                     if (attributes.isCrouching) {
                         arm.pivotX -= sigma * 2;
@@ -408,6 +409,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             case BLOCK:
                 arm.pitch = (arm.pitch / 2 - 0.9424779F) - 0.3F;
                 arm.yaw = sigma * MathHelper.PI / 9;
+                arm.roll += 0.3F * -limbSpeed * sigma;
                 if (complement == pose) {
                     arm.yaw -= sigma * MathHelper.PI / 18;
                 }
@@ -431,9 +433,11 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
                 arm.pitch = -0.8F;
                 arm.yaw = head.yaw + 0.06F;
+                arm.roll += 0.3F * -limbSpeed * sigma;
                 break;
             case THROW_SPEAR:
                 arm.pitch = MathUtil.Angles._90_DEG * 2;
+                arm.roll += 0.3F * -limbSpeed * sigma;
                 break;
             case SPYGLASS:
                 float addedPitch = sneaking ? -0.2617994F : 0;
@@ -453,6 +457,17 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
                     arm.pivotY -= 2;
                 }
 
+                break;
+            case TOOT_HORN:
+                arm.pitch = MathHelper.clamp(head.pitch, -0.55f, 1.2f) - 1.7835298f;
+                arm.yaw = head.yaw - 0.1235988f * sigma;
+                arm.pivotY += 3;
+                arm.roll += 0.3F * -limbSpeed * sigma;
+                break;
+            case BRUSH:
+                arm.pitch = arm.pitch * 0.5f - 0.62831855f;
+                arm.yaw = 0;
+                arm.roll += 0.3F * -limbSpeed * sigma;
                 break;
             default:
                 break;
@@ -590,6 +605,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         }
 
         matrices.translate(left * 0.1F, 0.45F, 0);
+
+        if (getAttributes().heldStack.getUseAction() == UseAction.BLOCK && getAttributes().itemUseTime == 0) {
+            matrices.translate(left * -0.1F, -0.25F, 0);
+        }
     }
 
     @Override
