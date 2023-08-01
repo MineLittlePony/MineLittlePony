@@ -227,15 +227,14 @@
 				},
 				"right_side": {
 					"type": "mson:planar",
-					"mirror": [ false, false, true ],
 					"__comment": [
 						"body sides a", "body sides b", "qt mark a", "qt mark b"
 					],
 					"west": [
-						[ -4, 4,2, 8, 4, 12, 32 ],
-						[ -4, 8,2, 8, 4, 12, 48 ],
-						[ -4, 4, 10, 4, 4,0, 32 ],
-						[ -4, 8, 10, 4, 4,0, 48 ]
+						[ -4, 4,  2, 8, 4, 12, 32, true, false ],
+						[ -4, 8,  2, 8, 4, 12, 48, true, false ],
+						[ -4, 4, 10, 4, 4,  0, 32, true, false ],
+						[ -4, 8, 10, 4, 4,  0, 48, true, false ]
 					]
 				},
 				"butt": {
