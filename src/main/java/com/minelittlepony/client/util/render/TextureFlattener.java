@@ -7,8 +7,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 
 import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.platform.TextureUtil;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,27 +17,20 @@ public class TextureFlattener {
         Preconditions.checkArgument(textures.size() > 0, "Must have at least one image to flatten");
         MinecraftClient.getInstance().getTextureManager().registerTexture(output, new ResourceTexture(output) {
             @Override
-            public void load(ResourceManager resManager) throws IOException {
+            protected TextureData loadTextureData(ResourceManager resourceManager) {
+                try {
+                    NativeImage image = NativeImage.read(resourceManager.getResourceOrThrow(textures.get(0)).getInputStream());
 
-                NativeImage image = NativeImage.read(resManager.getResourceOrThrow(textures.get(0)).getInputStream());
-
-                for (int i = 1; i < textures.size(); i++) {
-                    try (NativeImage data = NativeImage.read(resManager.getResourceOrThrow(textures.get(i)).getInputStream())) {
-                        copyOver(data, image);
+                    for (int i = 1; i < textures.size(); i++) {
+                        try (NativeImage data = NativeImage.read(resourceManager.getResourceOrThrow(textures.get(i)).getInputStream())) {
+                            copyOver(data, image);
+                        }
                     }
-                }
 
-                if (!RenderSystem.isOnRenderThreadOrInit()) {
-                    final NativeImage i = image;
-                    RenderSystem.recordRenderCall(() -> upload(i));
-                } else {
-                    upload(image);
+                    return new TextureData(null, image);
+                } catch (IOException e) {
+                    return new TextureData(e);
                 }
-            }
-
-            private void upload(NativeImage image) {
-                TextureUtil.prepareImage(getGlId(), 0, image.getWidth(), image.getHeight());
-                image.upload(0, 0, 0, 0, 0, image.getWidth(), image.getHeight(), false, false, false, true);
             }
         });
     }
