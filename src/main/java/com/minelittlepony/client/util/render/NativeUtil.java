@@ -1,17 +1,19 @@
 package com.minelittlepony.client.util.render;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.TextureManager;
+import net.minecraft.client.texture.*;
+import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.InputStream;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.mojang.blaze3d.platform.GlStateManager._getTexLevelParameter;
 import static org.lwjgl.opengl.GL11.*;
@@ -64,7 +66,7 @@ public class NativeUtil {
         private final NativeImage.Format formatClass;
         private final int glId;
 
-        public static Map<Integer, InternalFormat> LOOKUP = new HashMap<>();
+        public static final Map<Integer, InternalFormat> LOOKUP = Arrays.stream(values()).collect(Collectors.toMap(i -> i.glId, Function.identity()));
 
         private InternalFormat(NativeImage.Format formatClass) {
             this(formatClass.toGl(), formatClass);
@@ -80,16 +82,7 @@ public class NativeUtil {
         }
 
         public static InternalFormat valueOf(int glId) {
-            if (!LOOKUP.containsKey(glId)) {
-                throw new IllegalStateException("Unsupported image format: " + glId);
-            }
-            return LOOKUP.get(glId);
-        }
-
-        static {
-            for (InternalFormat f : values()) {
-                LOOKUP.put(f.glId, f);
-            }
+            return Objects.requireNonNull(LOOKUP.get(glId), "Unsupported image format: " + glId);
         }
     }
 
@@ -107,34 +100,63 @@ public class NativeUtil {
             MinecraftClient mc = MinecraftClient.getInstance();
             TextureManager textures = mc.getTextureManager();
 
-            // recreate NativeImage from the GL matrix
-            textures.bindTexture(resource);
+            AbstractTexture loadedTexture = textures.getTexture(resource);
 
-                                                     // TODO: This returns values that are too specific.
-                                                     //       Can we change the level (0) here to something
-                                                     //       else to actually get what we need?
-            int format = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT);
-            int width  = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH);
-            int height = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT);
-
-            if (width * height == 0) {
-                if (attempt < 3) {
-                    CompletableFuture.delayedExecutor(500, TimeUnit.MILLISECONDS, mc).execute(() -> {
-                        parseImage(resource, consumer, fail, attempt + 1);
-                    });
-                } else {
-                    throw new IllegalStateException("GL texture not uploaded yet: " + resource + " Parse failed 3/3 attempts");
+            if (loadedTexture instanceof NativeImageBackedTexture nibt) {
+                NativeImage image = nibt.getImage();
+                if (image != null) {
+                    consumer.accept(image);
+                    return;
                 }
             }
 
-            try (NativeImage image = new NativeImage(InternalFormat.valueOf(format).getClassification(), width, height, false)) {
-                // This allocates a new array to store the image every time.
-                // Don't do this every time. Keep a cache and store it so we don't destroy memory.
-                image.loadFromTextureImage(0, false);
-                consumer.accept(image);
+            Resource res = mc.getResourceManager().getResource(resource).orElse(null);
+            if (res != null) {
+                try (InputStream inputStream = res.getInputStream()){
+                    consumer.accept(NativeImage.read(inputStream));
+                    return;
+                }
             }
+
+            __reconstructNativeImage(resource, consumer, fail, attempt);
         } catch (Exception e) {
             fail.accept(e);
+        }
+    }
+
+    private static void __reconstructNativeImage(Identifier resource, Consumer<NativeImage> consumer, Consumer<Exception> fail, int attempt) {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        TextureManager textures = mc.getTextureManager();
+
+        // recreate NativeImage from the GL matrix
+        textures.bindTexture(resource);
+
+                                                 // TODO: This returns values that are too specific.
+                                                 //       Can we change the level (0) here to something
+                                                 //       else to actually get what we need?
+        int format = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT);
+        int width  = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH);
+        int height = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT);
+
+        if (width * height == 0) {
+            if (attempt < 3) {
+                CompletableFuture.delayedExecutor(500, TimeUnit.MILLISECONDS, mc).execute(() -> {
+                    try {
+                        __reconstructNativeImage(resource, consumer, fail, attempt + 1);
+                    } catch (Exception e) {
+                        fail.accept(e);
+                    }
+                });
+            } else {
+                throw new IllegalStateException("GL texture not uploaded yet: " + resource + " Parse failed 3/3 attempts");
+            }
+        }
+
+        try (NativeImage image = new NativeImage(InternalFormat.valueOf(format).getClassification(), width, height, false)) {
+            // This allocates a new array to store the image every time.
+            // Don't do this every time. Keep a cache and store it so we don't destroy memory.
+            image.loadFromTextureImage(0, false);
+            consumer.accept(image);
         }
     }
 }
