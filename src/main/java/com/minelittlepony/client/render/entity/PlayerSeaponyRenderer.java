@@ -57,22 +57,8 @@ public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
     protected void setupTransforms(AbstractClientPlayerEntity entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
         if (wet) {
             stack.translate(0, 0.6, 0);
-            boolean sneaking = entity.isInSneakingPose();
-            float state = sneaking ? 100 : 0;
-            float interpolated = getEntityPony(entity).metadata().getInterpolator(entity.getUuid()).interpolate("seapony_splashing", state, 5);
-
-            if (sneaking) {
+            if (entity.isInSneakingPose()) {
                 stack.translate(0, 0.125, 0);
-            }
-
-            if (!MathUtil.compareFloats(interpolated, state)) {
-                for (int i = 0; i < 10; i++) {
-                    double x = entity.getEntityWorld().getRandom().nextTriangular(entity.getX(), 1);
-                    double y = entity.getY() + 0.6;
-                    double z = entity.getEntityWorld().getRandom().nextTriangular(entity.getZ(), 1);
-
-                    entity.getEntityWorld().addParticle(ParticleTypes.BUBBLE, x, y, z, 0, 0, 0);
-                }
             }
         }
         super.setupTransforms(entity, stack, ageInTicks, rotationYaw, partialTicks);
