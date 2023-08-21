@@ -8,6 +8,7 @@
 	"data": {
 		"stallion": {
 			"type": "mson:planar",
+			"visible": false,
 			"pivot": ["#x", "#y", "#z"],
 			"north": [-2, -1, -7, 4, 3, 10, 13],
 			"up":    [-2, -1, -7, 4, 1, 10, 13],

@@ -28,8 +28,6 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
 
         leftPants.hidden = true;
         rightPants.hidden = true;
-        leftSleeve.hidden = true;
-        rightSleeve.hidden = true;
         leftLeg.hidden = true;
         rightLeg.hidden = true;
     }

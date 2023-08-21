@@ -10,6 +10,7 @@
 			"children": {
 				"nose": {
 					"dilate": [-1, 0, -1],
+					"visible": false,
 					"cubes": [
 						{ "from": [-4, -6, -13], "size": [ 8,  8,  8] }
 					]
@@ -27,6 +28,7 @@
 		},
 		"right_cast": {
 			"pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", 0],
+			"visible": false,
 			"texture": { "u": 40, "v": 32, "w": 64, "h": 64 },
 			"cubes": [
 				{
@@ -37,6 +39,7 @@
 		},
 		"left_cast": {
 			"pivot": ["#arm_rotation_x", "#arm_rotation_y", 0],
+			"visible": false,
 			"texture": { "u": 40, "v": 32, "w": 64, "h": 64 },
 			"cubes": [
 				{

@@ -16,7 +16,7 @@
 				"extended": {
 					"texture": {"u": 57, "v": 35, "w": 64, "h": 64},
 					"pivot": [4.5, 5.3, 6],
-					"rotate": [-30, 180, 0],
+					"rotate": [-30, 180, -145],
 					"children": {
 						"feather_1": { "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "dilate":  0.1 } ] },
 						"feather_2": { "cubes": [ {"from": [-0.5,-1,  -0.3], "size": [1, 8, 2], "dilate":  0.1 } ],  "rotate": [-48, 0, 0] },
@@ -44,7 +44,7 @@
 				"extended": {
 					"texture": {"u": 56, "v": 19, "w": 64, "h": 64},
 					"pivot": [-4.5, 5.3, 6],
-					"rotate": [-30, 180, 0],
+					"rotate": [-30, 180, 145],
 					"children": {
 						"feather_1": { "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "dilate":  0.1 } ] },
 						"feather_2": { "cubes": [ {"from": [-0.5,-1,  -0.3], "size": [1, 8, 2], "dilate":  0.1 } ],  "rotate": [-48, 0, 0] },
@@ -72,7 +72,7 @@
 				"extended": {
 					"texture": {"u": 57, "v": 35, "w": 64, "h": 64},
 					"pivot": [-4.5, 5.3, 6],
-					"rotate": [-30, 180, 0],
+					"rotate": [-30, 180, 145],
 					"children": {
 						"feather_1": { "cubes": [ {"from": [-0.5, 6,     0], "size": [1, 9, 2], "dilate":  0.1 } ],                         "mirror": true },
 						"feather_2": { "cubes": [ {"from": [-0.5,-1,  -0.3], "size": [1, 8, 2], "dilate":  0.1 } ],  "rotate": [-48, 0, 0], "mirror": true },

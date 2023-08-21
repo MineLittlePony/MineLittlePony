@@ -12,6 +12,7 @@
 			"children": {
 				"nose": {
 					"dilate": [-1, 0, -1],
+					"visible": false,
 					"cubes": [
 						{ "from": [-4, -6, -13], "size": [ 8,  8,  8] }
 					]

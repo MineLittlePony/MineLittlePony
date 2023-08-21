@@ -19,6 +19,7 @@
 		},
 		"corona": {
 			"rotate": ["#incline", 0, 0],
+			"visible": false,
 			"pivot": ["#x", "#y", "#z"],
 			"cubes": [
 				{
