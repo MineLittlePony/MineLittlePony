@@ -73,10 +73,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
 
         leftFin.yaw = finAngle;
         rightFin.yaw = -finAngle;
-
-        if (!attributes.isSleeping) {
-            centerFin.roll = flapMotion;
-        }
+        centerFin.roll = flapMotion;
 
         if (!entity.isSubmergedInWater()) {
             leftArm.pitch -= 0.5F;

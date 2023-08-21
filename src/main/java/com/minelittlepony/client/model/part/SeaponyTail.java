@@ -17,8 +17,8 @@ public class SeaponyTail implements IPart, MsonModel {
 
     public SeaponyTail(ModelPart tree) {
         tailBase = tree.getChild("base");
-        tailTip = tree.getChild("tip");
-        tailFins = tree.getChild("fins");
+        tailTip = tailBase.getChild("tip");
+        tailFins = tailTip.getChild("fins");
     }
 
     @Override
@@ -28,6 +28,14 @@ public class SeaponyTail implements IPart, MsonModel {
         tailBase.pitch = MathHelper.HALF_PI + rotation;
         tailTip.pitch = rotation;
         tailFins.pitch = rotation - MathHelper.HALF_PI;
+
+        float turn = MathHelper.clamp(attributes.motionRoll * 0.05F + bodySwing, -0.4F, 0.4F);
+
+        tailBase.yaw = turn;
+        turn /= 2F;
+        tailTip.roll = -turn;
+        turn /= 2F;
+        tailFins.roll = -turn;
     }
 
     @Override
