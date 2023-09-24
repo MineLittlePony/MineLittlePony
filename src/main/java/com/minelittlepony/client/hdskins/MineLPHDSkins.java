@@ -29,7 +29,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.pony.PonyManager;
-import com.minelittlepony.client.render.entity.PlayerSeaponyRenderer;
+import com.minelittlepony.client.render.entity.AquaticPlayerPonyRenderer;
 
 /**
  * All the interactions with HD Skins.
@@ -44,7 +44,7 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
     public void onInitializeClient() {
         SkinsProxy.instance = this;
 
-        seaponySkinType = SkinType.register(PlayerSeaponyRenderer.SKIN_TYPE_ID, Items.COD_BUCKET.getDefaultStack());
+        seaponySkinType = SkinType.register(AquaticPlayerPonyRenderer.SKIN_TYPE_ID, Items.COD_BUCKET.getDefaultStack());
         Wearable.VALUES.forEach(wearable -> {
             if (wearable != Wearable.NONE) {
                 wearableTypes.put(SkinType.register(wearable.getId(), Items.BUNDLE.getDefaultStack()), wearable);

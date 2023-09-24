@@ -16,8 +16,6 @@ import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.client.model.entity.*;
 import com.minelittlepony.client.model.entity.race.*;
 import com.minelittlepony.client.model.gear.*;
-import com.minelittlepony.client.render.entity.PlayerPonyRenderer;
-import com.minelittlepony.client.render.entity.PlayerSeaponyRenderer;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.mson.api.Mson;
 import com.minelittlepony.mson.api.MsonModel;
@@ -71,13 +69,9 @@ public final class ModelType {
     public static final PlayerModelKey<LivingEntity, KirinModel<?>> KIRIN = registerPlayer("kirin", Race.KIRIN, KirinModel::new);
     public static final PlayerModelKey<LivingEntity, PegasusModel<?>> PEGASUS = registerPlayer("pegasus", Race.PEGASUS, PegasusModel::new);
     public static final PlayerModelKey<LivingEntity, PegasusModel<?>> GRYPHON = registerPlayer("gryphon", Race.GRYPHON, PegasusModel::new);
-    public static final PlayerModelKey<LivingEntity, PegasusModel<?>> HIPPOGRIFF = registerPlayer("hippogriff", Race.HIPPOGRIFF, PegasusModel::new, PonyArmourModel::new, (ctx, slim, dry) -> {
-        return new PlayerSeaponyRenderer(ctx, slim, getPlayerModel(Race.SEAPONY), dry);
-    });
+    public static final PlayerModelKey<LivingEntity, PegasusModel<?>> HIPPOGRIFF = registerPlayer("hippogriff", Race.HIPPOGRIFF, PegasusModel::new, PonyArmourModel::new);
     public static final PlayerModelKey<LivingEntity, EarthPonyModel<?>> EARTH_PONY = registerPlayer("earth_pony", Race.EARTH, EarthPonyModel::new);
-    public static final PlayerModelKey<LivingEntity, SeaponyModel<?>> SEA_PONY = registerPlayer("sea_pony", Race.SEAPONY, SeaponyModel::new, SeaponyModel.Armour::new, (ctx, slim, wet) -> {
-        return new PlayerSeaponyRenderer(ctx, slim, wet, getPlayerModel(Race.UNICORN));
-    });
+    public static final PlayerModelKey<LivingEntity, SeaponyModel<?>> SEA_PONY = registerPlayer("sea_pony", Race.SEAPONY, SeaponyModel::new, SeaponyModel.Armour::new);
     public static final PlayerModelKey<LivingEntity, PegasusModel<?>> BAT_PONY = registerPlayer("bat_pony", Race.BATPONY, PegasusModel::new);
     public static final PlayerModelKey<LivingEntity, ChangelingModel<?>> CHANGELING = registerPlayer("changeling", Race.CHANGELING, ChangelingModel::new);
     public static final PlayerModelKey<LivingEntity, ChangelingModel<?>> CHANGEDLING = registerPlayer("reformed_changeling", Race.CHANGEDLING, ChangelingModel::new);
@@ -85,23 +79,14 @@ public final class ModelType {
 
     static <E extends LivingEntity, T extends Model & MsonModel & IModel> PlayerModelKey<E, T> registerPlayer(String name, Race race,
             BiFunction<ModelPart, Boolean, T> constructor) {
-        return registerPlayer(name, race, constructor, PlayerPonyRenderer::new);
-    }
-
-    static <E extends LivingEntity, T extends Model & MsonModel & IModel> PlayerModelKey<E, T> registerPlayer(String name, Race race,
-            BiFunction<ModelPart, Boolean, T> constructor,
-            PlayerModelKey.RendererFactory rendererFactory) {
-        return registerPlayer(name, race, constructor, PonyArmourModel::new, rendererFactory);
+        return registerPlayer(name, race, constructor, PonyArmourModel::new);
     }
 
     @SuppressWarnings("unchecked")
     static <E extends LivingEntity, T extends Model & MsonModel & IModel> PlayerModelKey<E, T> registerPlayer(String name, Race race,
             BiFunction<ModelPart, Boolean, T> constructor,
-            MsonModel.Factory<PonyArmourModel<E>> armorFactory,
-            PlayerModelKey.RendererFactory rendererFactory) {
-        return (PlayerModelKey<E, T>)PLAYER_MODELS.computeIfAbsent(race, r -> {
-            return new PlayerModelKey<>(name, constructor, rendererFactory, armorFactory);
-        });
+            MsonModel.Factory<PonyArmourModel<E>> armorFactory) {
+        return (PlayerModelKey<E, T>)PLAYER_MODELS.computeIfAbsent(race, r -> new PlayerModelKey<>(name, constructor, armorFactory));
     }
 
     @SuppressWarnings("unchecked")

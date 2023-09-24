@@ -2,8 +2,8 @@ package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.PonyPosture;
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.SkinsProxy;
-import com.minelittlepony.client.model.*;
 import com.minelittlepony.util.MathUtil;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -14,21 +14,13 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
 
-public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
+public class AquaticPlayerPonyRenderer extends PlayerPonyRenderer {
     public static final Identifier SKIN_TYPE_ID = new Identifier("minelp", "seapony");
-
-    private final ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> wetPony;
-    private final ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> dryPony;
 
     private boolean wet;
 
-    public PlayerSeaponyRenderer(EntityRendererFactory.Context context, boolean slim,
-            PlayerModelKey<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> wetModel,
-            PlayerModelKey<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> dryModel) {
-        super(context, slim, wetModel);
-
-        dryPony = dryModel.<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>>create(slim);
-        wetPony = getInternalRenderer().getModelWrapper();
+    public AquaticPlayerPonyRenderer(EntityRendererFactory.Context context, boolean slim) {
+        super(context, slim);
     }
 
     @Override
@@ -53,6 +45,11 @@ public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
         }
     }
 
+    protected Race getPlayerRace(AbstractClientPlayerEntity entity, IPony pony) {
+        Race race = super.getPlayerRace(entity, pony);
+        return wet ? Race.SEAPONY : race == Race.SEAPONY ? Race.UNICORN : race;
+    }
+
     @Override
     protected void setupTransforms(AbstractClientPlayerEntity entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
         if (wet) {
@@ -73,7 +70,6 @@ public class PlayerSeaponyRenderer extends PlayerPonyRenderer {
     private void updateSeaponyState(AbstractClientPlayerEntity player) {
         IPony pony = getEntityPony(player);
         wet = PonyPosture.isSeaponyModifier(player);
-        model = manager.setModel(wet ? wetPony : dryPony).body();
 
         float state = wet ? 100 : 0;
         float interpolated = pony.metadata().getInterpolator(player.getUuid()).interpolate("seapony_state", state, 5);

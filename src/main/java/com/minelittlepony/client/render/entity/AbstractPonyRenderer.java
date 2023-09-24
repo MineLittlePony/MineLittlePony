@@ -64,7 +64,7 @@ public abstract class AbstractPonyRenderer<T extends MobEntity, M extends Entity
     @Override
     public void render(T entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
-        DebugBoundingBoxRenderer.render(manager.getPony(entity), this, entity, stack, renderContext, tickDelta);
+        DebugBoundingBoxRenderer.render(getEntityPony(entity), this, entity, stack, renderContext, tickDelta);
     }
 
     @Override
@@ -90,7 +90,7 @@ public abstract class AbstractPonyRenderer<T extends MobEntity, M extends Entity
 
     @Override
     public void scale(T entity, MatrixStack stack, float tickDelta) {
-        shadowRadius = manager.getShadowScale();
+        shadowRadius = manager.getModel().getSize().getShadowSize();
 
         if (entity.isBaby()) {
             shadowRadius *= 3; // undo vanilla shadow scaling

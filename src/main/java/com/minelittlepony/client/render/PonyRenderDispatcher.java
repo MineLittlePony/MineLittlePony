@@ -1,21 +1,18 @@
 package com.minelittlepony.client.render;
 
-import java.util.Locale;
 import java.util.function.Function;
-import java.util.function.Predicate;
-
 import com.minelittlepony.api.pony.IPony;
-import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.api.pony.PonyPosture;
 import com.minelittlepony.client.mixin.MixinEntityRenderers;
 import com.minelittlepony.client.model.IPonyModel;
-import com.minelittlepony.client.model.ModelType;
+import com.minelittlepony.client.render.entity.PlayerPonyRenderer;
+import com.minelittlepony.client.render.entity.AquaticPlayerPonyRenderer;
 
 import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.mson.api.Mson;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.*;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.SkinTextures;
@@ -38,27 +35,30 @@ public class PonyRenderDispatcher {
      * Registers all new player skin types. (currently only pony and slimpony).
      */
     public void initialise(EntityRenderDispatcher manager, boolean force) {
-        Race.REGISTRY.forEach(r -> {
-            if (!r.isHuman()) {
-                registerPlayerSkin(manager, r);
-            }
-        });
+        for (SkinTextures.Model armShape : SkinTextures.Model.values()) {
+            addPlayerRenderer(armShape);
+        }
         MobRenderers.REGISTRY.values().forEach(i -> i.apply(this, force));
     }
 
-    private void registerPlayerSkin(EntityRenderDispatcher manager, Race race) {
-        addPlayerSkin(manager, SkinTextures.Model.SLIM, race);
-        addPlayerSkin(manager, SkinTextures.Model.WIDE, race);
-    }
-
-    private void addPlayerSkin(EntityRenderDispatcher manager, SkinTextures.Model armShape, Race race) {
+    private void addPlayerRenderer(SkinTextures.Model armShape) {
         Mson.getInstance().getEntityRendererRegistry().registerPlayerRenderer(
-                new Identifier("minelittlepony", race.name().toLowerCase(Locale.ROOT) + "/" + armShape.getName()),
-                (Predicate<AbstractClientPlayerEntity>)(player -> {
-                    return IPony.getManager().getPony(player).metadata().getRace() == race
+                new Identifier("minelittlepony", "sea/" + armShape.getName()),
+                player -> {
+                    return !IPony.getManager().getPony(player).race().isHuman()
+                            && PonyPosture.hasSeaponyForm(player)
                             && player.method_52814().model() == armShape;
-                }),
-                ModelType.getPlayerModel(race).getFactory(armShape == SkinTextures.Model.SLIM)
+                },
+                context -> new AquaticPlayerPonyRenderer(context, false)
+        );
+        Mson.getInstance().getEntityRendererRegistry().registerPlayerRenderer(
+                new Identifier("minelittlepony", "land/" + armShape.getName()),
+                player -> {
+                    return !IPony.getManager().getPony(player).race().isHuman()
+                            && !PonyPosture.hasSeaponyForm(player)
+                            && player.method_52814().model() == armShape;
+                },
+                context -> new PlayerPonyRenderer(context, false)
         );
     }
 

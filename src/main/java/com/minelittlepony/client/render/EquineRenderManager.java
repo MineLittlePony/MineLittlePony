@@ -24,13 +24,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Identifier;
 
 public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> {
 
     private ModelWrapper<T, M> playerModel;
-
-    private IPony pony;
 
     private final IPonyRenderContext<T, M> renderer;
 
@@ -44,6 +41,28 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         this.renderer = renderer;
     }
 
+    public IPonyRenderContext<T, M> getContext() {
+        return renderer;
+    }
+
+    public ModelWrapper<T, M> getModelWrapper() {
+        return playerModel;
+    }
+
+    public M getModel() {
+        return playerModel.body();
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public ModelWrapper<T, M> setModel(ModelKey<? super M> key) {
+        return setModel(new ModelWrapper(key));
+    }
+
+    public ModelWrapper<T, M> setModel(ModelWrapper<T, M> wrapper) {
+        playerModel = wrapper;
+        return wrapper;
+    }
+
     public Frustum getFrustrum(T entity, Frustum vanilla) {
         if (RenderPass.getCurrent() == RenderPass.HUD) {
             return FrustrumCheck.ALWAYS_VISIBLE;
@@ -55,15 +74,6 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         return frustrum.withCamera(entity, vanilla);
     }
 
-    public void preRenderCallback(T entity, MatrixStack stack, float ticks) {
-        updateModel(entity, ModelAttributes.Mode.THIRD_PERSON);
-
-        float s = getScaleFactor();
-        stack.scale(s, s, s);
-
-        translateRider(entity, stack, ticks);
-    }
-
     public float getRenderYaw(T entity, float rotationYaw, float partialTicks) {
         if (entity.hasVehicle()) {
             Entity mount = entity.getVehicle();
@@ -73,6 +83,15 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         }
 
         return rotationYaw;
+    }
+
+    public void preRenderCallback(T entity, MatrixStack stack, float ticks) {
+        updateModel(entity, ModelAttributes.Mode.THIRD_PERSON);
+
+        float s = getScaleFactor();
+        stack.scale(s, s, s);
+
+        translateRider(entity, stack, ticks);
     }
 
     private void translateRider(T entity, MatrixStack stack, float ticks) {
@@ -87,7 +106,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
 
                 IPony riderPony = renderer.getEntityPony(ridingEntity);
 
-                renderer.translateRider(ridingEntity, riderPony, entity, pony, stack, ticks);
+                renderer.translateRider(ridingEntity, riderPony, entity, renderer.getEntityPony(entity), stack, ticks);
             }
         }
     }
@@ -100,31 +119,8 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         PonyPosture.of(getModel().getAttributes()).apply(entity, getModel(), stack, yaw, tickDelta, -1);
     }
 
-    public M getModel() {
-        return playerModel.body();
-    }
-
-    public ModelWrapper<T, M> getModelWrapper() {
-        return playerModel;
-    }
-
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public ModelWrapper<T, M> setModel(ModelKey<? super M> key) {
-        return setModel(new ModelWrapper(key));
-    }
-
-    public ModelWrapper<T, M> setModel(ModelWrapper<T, M> wrapper) {
-        playerModel = wrapper;
-        return wrapper;
-    }
-
-    public void updateMetadata(Identifier texture) {
-        pony = IPony.getManager().getPony(texture);
-        playerModel.applyMetadata(pony.metadata());
-    }
-
     public IPony updateModel(T entity, ModelAttributes.Mode mode) {
-        pony = renderer.getEntityPony(entity);
+        IPony pony = renderer.getEntityPony(entity);
         playerModel.applyMetadata(pony.metadata());
 
         if (pony.hasMetadata() && entity instanceof RegistrationHandler && ((RegistrationHandler)entity).shouldUpdateRegistration(pony)) {
@@ -142,18 +138,6 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         getModel().updateLivingState(entity, pony, mode);
 
         return pony;
-    }
-
-    public IPony getPony(T entity) {
-        return updateModel(entity, ModelAttributes.Mode.THIRD_PERSON);
-    }
-
-    public Identifier getTexture(T entity) {
-        return getPony(entity).texture();
-    }
-
-    public float getShadowScale() {
-        return getModel().getSize().getShadowSize();
     }
 
     public float getScaleFactor() {

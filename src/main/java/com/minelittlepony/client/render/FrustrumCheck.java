@@ -34,7 +34,7 @@ public class FrustrumCheck<T extends LivingEntity> extends Frustum {
 
     @Override
     public boolean isVisible(Box bounds) {
-        return vanilla.isVisible(PonyBounds.getBoundingBox(renderer.getPony(entity), entity));
+        return vanilla.isVisible(PonyBounds.getBoundingBox(renderer.getContext().getEntityPony(entity), entity));
     }
 
     @Override
