@@ -118,13 +118,9 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
 
     @Override
     public Identifier getSkinTexture(GameProfile profile) {
-
-        Identifier skin = HDSkins.getInstance().getProfileRepository().getTextures(profile).get(SkinType.SKIN);
-
-        if (skin != null) {
-            return skin;
-        }
-
-        return super.getSkinTexture(profile);
+        return HDSkins.getInstance().getProfileRepository()
+                .getNow(profile)
+                .getSkin(SkinType.SKIN)
+                .orElseGet(() -> super.getSkinTexture(profile));
     }
 }

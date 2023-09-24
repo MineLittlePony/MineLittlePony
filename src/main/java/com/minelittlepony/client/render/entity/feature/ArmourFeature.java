@@ -85,7 +85,7 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
             }
 
             if (stack.getItem() instanceof ArmorItem armor) {
-                ArmorTrim.getTrim(entity.getWorld().getRegistryManager(), stack).ifPresent(trim -> {
+                ArmorTrim.getTrim(entity.getWorld().getRegistryManager(), stack, true).ifPresent(trim -> {
                     pony.getArmourModel(stack, layer, ArmourVariant.TRIM)
                             .filter(m -> m.poseModel(entity, limbAngle, limbDistance, age, headYaw, headPitch, armorSlot, layer, pony.body()))
                             .ifPresent(m -> {
@@ -107,7 +107,7 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
         );
 
         return sprite.getTextureSpecificVertexConsumer(
-            ItemRenderer.getDirectItemGlintConsumer(provider, TexturedRenderLayers.getArmorTrims(), true, glint)
+            ItemRenderer.getDirectItemGlintConsumer(provider, TexturedRenderLayers.getArmorTrims(trim.getPattern().value().decal()), true, glint)
         );
     }
 }

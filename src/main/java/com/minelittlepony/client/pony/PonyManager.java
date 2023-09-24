@@ -6,7 +6,6 @@ import com.minelittlepony.api.config.PonyLevel;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.client.render.PonyRenderDispatcher;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
 
 import org.jetbrains.annotations.Nullable;
@@ -65,7 +64,7 @@ public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloa
         }
 
         if (entity instanceof LivingEntity living) {
-            return Optional.ofNullable(PonyRenderDispatcher.getInstance().getPonyRenderer(living)).map(d -> d.getEntityPony(living));
+            return Optional.ofNullable(MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(living)).map(d -> d.getEntityPony(living));
         }
 
         return Optional.empty();
@@ -76,19 +75,19 @@ public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloa
         Identifier skin = getSkin(player);
         UUID uuid = player.getGameProfile() == null ? player.getUuid() : player.getGameProfile().getId();
 
-        if (skin == null) {
-            if (config.ponyLevel.get() == PonyLevel.PONIES) {
-                return getBackgroundPony(uuid);
+        if (skin != null) {
+            if (player instanceof IPonyManager.ForcedPony) {
+                return getPony(skin);
             }
 
-            return getAsDefaulted(getPony(DefaultSkinHelper.getTexture(uuid)));
+            return getPony(skin, uuid);
         }
 
-        if (player instanceof IPonyManager.ForcedPony) {
-            return getPony(skin);
+        if (config.ponyLevel.get() == PonyLevel.PONIES) {
+            return getBackgroundPony(uuid);
         }
 
-        return getPony(skin, uuid);
+        return getAsDefaulted(getPony(DefaultSkinHelper.getTexture(uuid).texture()));
     }
 
     @Override
@@ -104,7 +103,7 @@ public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloa
 
     @Override
     public IPony getBackgroundPony(UUID uuid) {
-        return getAsDefaulted(getPony(MineLittlePony.getInstance().getVariatedTextures().get(BACKGROUND_PONIES, uuid).orElse(DefaultSkinHelper.getTexture(uuid))));
+        return getAsDefaulted(getPony(MineLittlePony.getInstance().getVariatedTextures().get(BACKGROUND_PONIES, uuid).orElse(DefaultSkinHelper.getTexture(uuid).texture())));
     }
 
     private IPony getAsDefaulted(IPony pony) {
@@ -121,7 +120,7 @@ public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloa
             return null;
         }
         if (player instanceof AbstractClientPlayerEntity) {
-            return ((AbstractClientPlayerEntity)player).getSkinTexture();
+            return ((AbstractClientPlayerEntity)player).method_52814().texture();
         }
 
         return null;

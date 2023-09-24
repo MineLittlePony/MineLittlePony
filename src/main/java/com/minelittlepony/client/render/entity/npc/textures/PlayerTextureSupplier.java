@@ -8,8 +8,8 @@ import org.jetbrains.annotations.Nullable;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.util.FunctionUtil;
-import com.mojang.authlib.GameProfile;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 public class PlayerTextureSupplier {
@@ -25,24 +25,20 @@ public class PlayerTextureSupplier {
     }
 
     static final class Entry {
-        @Nullable
-        private GameProfile profile;
+        private final CompletableFuture<Identifier> profile;
 
         Entry(LivingEntity entity) {
-            SkullBlockEntity.loadProperties(new GameProfile(null, entity.getCustomName().getString()), resolved -> {
-                profile = resolved;
+            profile = SkullBlockEntity.fetchProfile(entity.getCustomName().getString()).thenApply(profile -> {
+                return profile
+                        .map(p -> SkinsProxy.instance.getSkinTexture(p))
+                        .filter(skin -> !IPony.getManager().getPony(skin).race().isHuman())
+                        .orElse(null);
             });
         }
 
         @Nullable
         public Identifier getTexture() {
-            if (profile != null) {
-                Identifier skin = SkinsProxy.instance.getSkinTexture(profile);
-                if (skin != null && !IPony.getManager().getPony(skin).race().isHuman()) {
-                    return skin;
-                }
-            }
-            return null;
+            return profile.getNow(null);
         }
     }
 }

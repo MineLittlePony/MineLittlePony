@@ -6,7 +6,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.*;
 
 import com.minelittlepony.client.render.MobRenderers;
-import com.minelittlepony.client.render.PonyRenderDispatcher;
 import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.common.client.gui.GameGui;
 import com.minelittlepony.common.client.gui.ScrollContainer;
@@ -118,7 +117,7 @@ public class GuiPonySettings extends GameGui {
                 .onChange(i == config.horsieMode ? (v -> {
                     v = ((Setting<Boolean>)i).set(v);
 
-                    PonyRenderDispatcher.getInstance().initialise(MinecraftClient.getInstance().getEntityRenderDispatcher(), true);
+                    MineLittlePony.getInstance().getRenderDispatcher().initialise(MinecraftClient.getInstance().getEntityRenderDispatcher(), true);
                     return v;
                 }) : (Setting<Boolean>)i)
                 .setEnabled(enabled);
@@ -189,10 +188,10 @@ public class GuiPonySettings extends GameGui {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(context);
-        super.render(context, mouseX, mouseY, partialTicks);
-        content.render(context, mouseX, mouseY, partialTicks);
+    public void render(DrawContext context, int mouseX, int mouseY, float tickDelta) {
+        renderBackground(context, mouseX, mouseY, tickDelta);
+        super.render(context, mouseX, mouseY, tickDelta);
+        content.render(context, mouseX, mouseY, tickDelta);
     }
 
     @Override

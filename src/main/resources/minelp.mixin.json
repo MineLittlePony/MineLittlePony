@@ -8,7 +8,6 @@
         "IResizeable",
         "MixinCamera",
         "MixinDefaultSkinHelper",
-        "MixinEntityRenderDispatcher",
         "MixinEntityRenderers",
         "MixinSkullBlockEntityRenderer",
         "MixinHeldItemRenderer",

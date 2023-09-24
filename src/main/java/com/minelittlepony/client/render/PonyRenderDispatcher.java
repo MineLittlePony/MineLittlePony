@@ -1,7 +1,10 @@
 package com.minelittlepony.client.render;
 
+import java.util.Locale;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
+import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.mixin.MixinEntityRenderers;
 import com.minelittlepony.client.model.IPonyModel;
@@ -12,30 +15,24 @@ import org.jetbrains.annotations.Nullable;
 import com.minelittlepony.mson.api.Mson;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.entity.*;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.util.SkinTextures;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.Identifier;
 
 /**
  * Render manager responsible for replacing and restoring entity renderers when the client settings change.
- * Old values are persisted internally.
  */
 public class PonyRenderDispatcher {
-
-    private static final PonyRenderDispatcher INSTANCE = new PonyRenderDispatcher();
-
-    /**
-     * Gets the static pony render manager responsible for all entity renderers.
-     */
-    public static PonyRenderDispatcher getInstance() {
-        return INSTANCE;
-    }
-
     private LevitatingItemRenderer magicRenderer = new LevitatingItemRenderer();
+
+    public LevitatingItemRenderer getMagicRenderer() {
+        return magicRenderer;
+    }
 
     /**
      * Registers all new player skin types. (currently only pony and slimpony).
@@ -50,14 +47,18 @@ public class PonyRenderDispatcher {
     }
 
     private void registerPlayerSkin(EntityRenderDispatcher manager, Race race) {
-        addPlayerSkin(manager, false, race);
-        addPlayerSkin(manager, true, race);
+        addPlayerSkin(manager, SkinTextures.Model.SLIM, race);
+        addPlayerSkin(manager, SkinTextures.Model.WIDE, race);
     }
 
-    private void addPlayerSkin(EntityRenderDispatcher manager, boolean slimArms, Race race) {
+    private void addPlayerSkin(EntityRenderDispatcher manager, SkinTextures.Model armShape, Race race) {
         Mson.getInstance().getEntityRendererRegistry().registerPlayerRenderer(
-                race.getModelId(slimArms),
-                ModelType.getPlayerModel(race).getFactory(slimArms)
+                new Identifier("minelittlepony", race.name().toLowerCase(Locale.ROOT) + "/" + armShape.getName()),
+                (Predicate<AbstractClientPlayerEntity>)(player -> {
+                    return IPony.getManager().getPony(player).metadata().getRace() == race
+                            && player.method_52814().model() == armShape;
+                }),
+                ModelType.getPlayerModel(race).getFactory(armShape == SkinTextures.Model.SLIM)
         );
     }
 
@@ -77,10 +78,6 @@ public class PonyRenderDispatcher {
             }
             return factory.apply(ctx);
         });
-    }
-
-    public LevitatingItemRenderer getMagicRenderer() {
-        return magicRenderer;
     }
 
     @SuppressWarnings("unchecked")

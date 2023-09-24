@@ -14,6 +14,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.util.SkinTextures;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Items;
@@ -66,21 +67,15 @@ public class ElytraFeature<T extends LivingEntity, M extends EntityModel<T> & IP
     }
 
     protected Identifier getElytraTexture(T entity) {
-        if (entity instanceof AbstractClientPlayerEntity) {
-            AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) entity;
+        if (entity instanceof AbstractClientPlayerEntity player) {
+            SkinTextures textures = player.method_52814();
 
-            Identifier result;
-
-            if (player.hasSkinTexture()) {
-                result = player.getElytraTexture();
-
-                if (result != null) return result;
+            if (textures.elytraTexture() != null) {
+                return textures.elytraTexture();
             }
 
-            if (player.hasSkinTexture() && player.isPartVisible(PlayerModelPart.CAPE)) {
-                result = player.getCapeTexture();
-
-                if (result != null) return result;
+            if (textures.capeTexture() != null && player.isPartVisible(PlayerModelPart.CAPE)) {
+                return textures.capeTexture();
             }
         }
 

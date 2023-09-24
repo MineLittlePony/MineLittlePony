@@ -68,8 +68,8 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
 
     @Override
     protected void scale(AbstractClientPlayerEntity entity, MatrixStack stack, float tickDelta) {
-        if (manager.getModel().getAttributes().isSitting) {
-            stack.translate(0, entity.getHeightOffset(), 0);
+        if (manager.getModel().getAttributes().isSitting && entity.hasVehicle()) {
+            stack.translate(0, entity.getRidingOffset(entity.getVehicle()), 0);
         }
     }
 
@@ -144,7 +144,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
         stack.translate(reflect * 0.1F, -0.54F, 0);
 
         Identifier texture = getTexture(player);
-        Identifier playerSkin = player.getSkinTexture();
+        Identifier playerSkin = player.method_52814().texture();
         VertexConsumerProvider interceptedContext = layer -> {
             return renderContext.getBuffer(RenderLayerUtil
                     .getTexture(layer)

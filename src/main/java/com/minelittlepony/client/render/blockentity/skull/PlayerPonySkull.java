@@ -16,7 +16,6 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Uuids;
 import net.minecraft.util.math.RotationAxis;
 
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +45,7 @@ public class PlayerPonySkull implements ISkull {
                 return skin;
             }
 
-            return DefaultSkinHelper.getTexture(Uuids.getUuidFromProfile(profile));
+            return DefaultSkinHelper.getTexture(profile).texture();
         }
 
         return DefaultSkinHelper.getTexture();

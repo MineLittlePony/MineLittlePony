@@ -40,13 +40,13 @@ public class MineLittlePony implements ClientModInitializer {
 
     public static final Logger logger = LogManager.getLogger("MineLittlePony");
 
-    private final PonyRenderDispatcher renderManager = PonyRenderDispatcher.getInstance();
-
     private ClientPonyConfig config;
     private PonyManager ponyManager;
     private VariatedTextureSupplier variatedTextures;
 
     private final KeyBinding keyBinding = new KeyBinding("key.minelittlepony.settings", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F9, "key.categories.misc");
+
+    private final PonyRenderDispatcher renderDispatcher = new PonyRenderDispatcher();
 
     private boolean hasHdSkins;
     private boolean hasModMenu;
@@ -82,7 +82,9 @@ public class MineLittlePony implements ClientModInitializer {
         // general events
         ClientReadyCallback.Handler.register();
         ClientTickEvents.END_CLIENT_TICK.register(this::onTick);
-        ClientReadyCallback.EVENT.register(this::onClientReady);
+        ClientReadyCallback.EVENT.register(client -> {
+            renderDispatcher.initialise(client.getEntityRenderDispatcher(), false);
+        });
         ScreenInitCallback.EVENT.register(this::onScreenInit);
 
         config.load();
@@ -91,10 +93,6 @@ public class MineLittlePony implements ClientModInitializer {
         ModelType.bootstrap();
 
         FabricLoader.getInstance().getEntrypoints("minelittlepony", ClientModInitializer.class).forEach(ClientModInitializer::onInitializeClient);
-    }
-
-    private void onClientReady(MinecraftClient client) {
-        renderManager.initialise(client.getEntityRenderDispatcher(), false);
     }
 
     private void onTick(MinecraftClient client) {
@@ -147,6 +145,13 @@ public class MineLittlePony implements ClientModInitializer {
 
     public VariatedTextureSupplier getVariatedTextures() {
         return variatedTextures;
+    }
+
+    /**
+     * Gets the static pony render manager responsible for all entity renderers.
+     */
+    public PonyRenderDispatcher getRenderDispatcher() {
+        return renderDispatcher;
     }
 }
 

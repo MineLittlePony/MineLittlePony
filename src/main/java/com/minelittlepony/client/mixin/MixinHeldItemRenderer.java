@@ -4,7 +4,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import com.minelittlepony.client.render.PonyRenderDispatcher;
+import com.minelittlepony.client.MineLittlePony;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -42,6 +42,6 @@ abstract class MixinHeldItemRenderer {
             VertexConsumerProvider renderContext,
             @Nullable World world,
             int lightUv, int overlayUv, int posLong) {
-        PonyRenderDispatcher.getInstance().getMagicRenderer().renderItem(target, entity, item, transform, left, stack, renderContext, world, lightUv, posLong);
+        MineLittlePony.getInstance().getRenderDispatcher().getMagicRenderer().renderItem(target, entity, item, transform, left, stack, renderContext, world, lightUv, posLong);
     }
 }

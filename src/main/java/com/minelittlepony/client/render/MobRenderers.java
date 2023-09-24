@@ -83,7 +83,7 @@ public final class MobRenderers {
 
     public boolean set(boolean value) {
         value = option().set(value);
-        apply(PonyRenderDispatcher.getInstance(), false);
+        apply(MineLittlePony.getInstance().getRenderDispatcher(), false);
         return value;
     }
 

@@ -56,7 +56,7 @@ abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implem
 
                 if (hasVehicle()) {
                     value += getVehicle().getEyeHeight(getVehicle().getPose());
-                    value -= getVehicle().getMountedHeightOffset();
+                    value -= getRidingOffset(getVehicle());
                 }
 
                 return Math.max(value, 0.1F);

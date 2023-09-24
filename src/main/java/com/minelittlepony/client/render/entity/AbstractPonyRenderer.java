@@ -99,7 +99,7 @@ public abstract class AbstractPonyRenderer<T extends MobEntity, M extends Entity
         if (!entity.hasVehicle()) {
             stack.translate(0, 0, -entity.getWidth() / 2); // move us to the center of the shadow
         } else {
-            stack.translate(0, entity.getHeightOffset(), 0);
+            stack.translate(0, entity.getRidingOffset(entity.getVehicle()), 0);
         }
 
         stack.scale(scale, scale, scale);

@@ -2,8 +2,7 @@ package com.minelittlepony.api.pony.meta;
 
 import com.minelittlepony.api.pony.TriggerPixelType;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public enum Race implements TriggerPixelType<Race> {
     HUMAN       (0x000000, false, false),
@@ -72,12 +71,5 @@ public enum Race implements TriggerPixelType<Race> {
     @Override
     public int getColorCode() {
         return triggerPixel;
-    }
-
-    public String getModelId(boolean isSlim) {
-        if (isHuman()) {
-            return isSlim ? "slim" : "default";
-        }
-        return isSlim ? "slim" + name().toLowerCase() : name().toLowerCase();
     }
 }

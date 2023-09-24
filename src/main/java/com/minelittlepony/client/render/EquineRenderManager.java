@@ -79,7 +79,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         if (entity.hasVehicle() && entity.getVehicle() instanceof LivingEntity) {
 
             LivingEntity ridingEntity = (LivingEntity) entity.getVehicle();
-            IPonyRenderContext<LivingEntity, ?> renderer = PonyRenderDispatcher.getInstance().getPonyRenderer(ridingEntity);
+            IPonyRenderContext<LivingEntity, ?> renderer = MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(ridingEntity);
 
             if (renderer != null) {
                 // negate vanilla translations so the rider begins at the ridees feet.

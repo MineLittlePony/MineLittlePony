@@ -25,8 +25,8 @@ public class CapeFeature<M extends ClientPonyModel<AbstractClientPlayerEntity>> 
     public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, AbstractClientPlayerEntity player, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
         M model = getModelWrapper().body();
 
-        if (player.hasSkinTexture() && !player.isInvisible()
-                && player.isPartVisible(PlayerModelPart.CAPE) && player.getCapeTexture() != null
+        if (!player.isInvisible()
+                && player.isPartVisible(PlayerModelPart.CAPE) && player.method_52814().capeTexture() != null
                 && player.getEquippedStack(EquipmentSlot.CHEST).getItem() != Items.ELYTRA) {
 
             stack.push();
@@ -64,7 +64,7 @@ public class CapeFeature<M extends ClientPonyModel<AbstractClientPlayerEntity>> 
             stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
             stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
 
-            VertexConsumer vertices = renderContext.getBuffer(RenderLayer.getEntitySolid(player.getCapeTexture()));
+            VertexConsumer vertices = renderContext.getBuffer(RenderLayer.getEntitySolid(player.method_52814().capeTexture()));
             model.renderCape(stack, vertices, lightUv, OverlayTexture.DEFAULT_UV);
             stack.pop();
         }

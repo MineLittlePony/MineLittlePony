@@ -4,7 +4,6 @@ import com.minelittlepony.common.client.gui.ScrollContainer;
 import com.minelittlepony.common.client.gui.Tooltip;
 import com.minelittlepony.common.client.gui.element.Button;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 
 import java.util.Optional;
 import java.util.Set;
@@ -25,15 +24,7 @@ public class SkinsProxy {
     @Nullable
     public Identifier getSkinTexture(GameProfile profile) {
         PlayerSkinProvider skins = MinecraftClient.getInstance().getSkinProvider();
-
-        @Nullable
-        MinecraftProfileTexture texture = skins.getTextures(profile).get(MinecraftProfileTexture.Type.SKIN);
-
-        if (texture == null) {
-            return null;
-        }
-
-        return skins.loadSkin(texture, MinecraftProfileTexture.Type.SKIN);
+        return skins.getSkinTextures(profile).texture();
     }
 
     public void renderOption(Screen screen, @Nullable Screen parent, int row, int RIGHT, ScrollContainer content) {
