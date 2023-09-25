@@ -42,14 +42,14 @@ public interface IPony extends Comparable<IPony> {
      * Gets the race associated with this pony.
      */
     default Race race() {
-        return PonyConfig.getEffectiveRace(metadata().getRace());
+        return PonyConfig.getEffectiveRace(metadata().race());
     }
 
     /**
      * Returns true if and only if this metadata represents a pony that can cast magic.
      */
     default boolean hasMagic() {
-        return race().hasHorn() && metadata().getGlowColor() != 0;
+        return race().hasHorn() && metadata().glowColor() != 0;
     }
 
     /**

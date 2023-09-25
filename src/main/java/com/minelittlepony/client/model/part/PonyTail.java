@@ -81,8 +81,8 @@ public class PonyTail implements IPart, MsonModel {
     @Override
     public void setVisible(boolean visible, ModelAttributes attributes) {
         tail.visible = visible;
-        tailStop = attributes.metadata.getTailLength().ordinal();
-        shape = attributes.metadata.getTailShape();
+        tailStop = attributes.metadata.tailLength().ordinal();
+        shape = attributes.metadata.tailShape();
     }
 
     @Override

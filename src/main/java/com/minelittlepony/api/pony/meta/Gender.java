@@ -14,7 +14,7 @@ public enum Gender implements TriggerPixelType<Gender> {
     }
 
     @Override
-    public int getColorCode() {
+    public int colorCode() {
         return triggerValue;
     }
 

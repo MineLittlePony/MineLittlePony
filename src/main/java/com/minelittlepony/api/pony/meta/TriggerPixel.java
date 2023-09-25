@@ -2,9 +2,7 @@ package com.minelittlepony.api.pony.meta;
 
 import net.minecraft.client.texture.NativeImage;
 
-import com.minelittlepony.api.pony.TriggerPixelSet;
 import com.minelittlepony.api.pony.TriggerPixelType;
-import com.minelittlepony.api.pony.TriggerPixelValue;
 import com.minelittlepony.common.util.Color;
 
 import java.util.Arrays;
@@ -55,20 +53,20 @@ public enum TriggerPixel {
      *
      * @param image Image to read
      */
-    public <T extends TriggerPixelType<T>> TriggerPixelValue<T> readValue(NativeImage image) {
+    public <T extends TriggerPixelType<T>> TriggerPixelType.Value<T> readValue(NativeImage image) {
         int color = readColor(image);
 
         if (Channel.ALPHA.readValue(x, y, image) < 255) {
-            return new TriggerPixelValue<>(color, (T)def);
+            return new TriggerPixelType.Value<>(color, (T)def);
         }
 
-        return new TriggerPixelValue<>(color, TriggerPixelType.getByTriggerPixel((T)def, color));
+        return new TriggerPixelType.Value<>(color, TriggerPixelType.getByTriggerPixel((T)def, color));
     }
 
-    public <T extends Enum<T> & TriggerPixelType<T>> TriggerPixelSet<T> readFlags(NativeImage image) {
+    public <T extends Enum<T> & TriggerPixelType<T>> TriggerPixelType.Flags<T> readFlags(NativeImage image) {
         boolean[] out = new boolean[def.getClass().getEnumConstants().length];
         readFlags(out, image);
-        return new TriggerPixelSet<>(readColor(image), (T)def, out);
+        return new TriggerPixelType.Flags<>(readColor(image), (T)def, out);
     }
 
     public <T extends Enum<T> & TriggerPixelType<T>> void readFlags(boolean[] out, NativeImage image) {

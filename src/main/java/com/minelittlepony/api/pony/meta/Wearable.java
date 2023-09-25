@@ -45,7 +45,7 @@ public enum Wearable implements TriggerPixelType<Wearable> {
     }
 
     @Override
-    public int getColorCode() {
+    public int colorCode() {
         return triggerValue;
     }
 

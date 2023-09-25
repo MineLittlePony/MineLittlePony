@@ -34,17 +34,17 @@ public enum Sizes implements Size {
     }
 
     @Override
-    public float getShadowSize() {
+    public float shadowSize() {
         return shadowSize * PonyConfig.getInstance().getGlobalScaleFactor();
     }
 
     @Override
-    public float getScaleFactor() {
+    public float scaleFactor() {
         return scale * PonyConfig.getInstance().getGlobalScaleFactor();
     }
 
     @Override
-    public float getEyeHeightFactor() {
+    public float eyeHeightFactor() {
         if (!PonyConfig.getInstance().fillycam.get()) {
             return 1;
         }
@@ -52,7 +52,7 @@ public enum Sizes implements Size {
     }
 
     @Override
-    public float getEyeDistanceFactor() {
+    public float eyeDistanceFactor() {
         if (!PonyConfig.getInstance().fillycam.get()) {
             return 1;
         }
@@ -60,7 +60,7 @@ public enum Sizes implements Size {
     }
 
     @Override
-    public int getColorCode() {
+    public int colorCode() {
         return triggerValue;
     }
 

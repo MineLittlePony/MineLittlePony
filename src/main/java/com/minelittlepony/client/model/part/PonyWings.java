@@ -119,14 +119,14 @@ public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
 
         public void rotateWalking(float swing) {
             folded.yaw = swing * walkingRotationSpeed;
-            if (pegasus.getMetadata().getRace().hasBugWings()) {
+            if (pegasus.getMetadata().race().hasBugWings()) {
                 extended.yaw = folded.yaw;
             }
         }
 
         public void rotateFlying(float roll) {
             extended.roll = roll;
-            if (pegasus.getMetadata().getRace().hasBugWings()) {
+            if (pegasus.getMetadata().race().hasBugWings()) {
                 folded.roll = roll;
             }
         }

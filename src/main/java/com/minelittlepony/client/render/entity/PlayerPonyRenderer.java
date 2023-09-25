@@ -80,7 +80,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
         IPony pony = getEntityPony(entity);
         model = manager.setModel(modelsCache.apply(getPlayerRace(entity, pony))).body();
         // EntityModelFeatures: We have to force it to use our models otherwise EMF overrides it and breaks pony rendering
-        shadowRadius = manager.getModel().getSize().getShadowSize();
+        shadowRadius = manager.getModel().getSize().shadowSize();
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
         DebugBoundingBoxRenderer.render(pony, this, entity, stack, renderContext, tickDelta);
 
@@ -88,7 +88,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
         // (shadows are drawn after us)
         if (!entity.hasVehicle() && !entity.isSleeping()) {
             float yaw = MathHelper.lerpAngleDegrees(tickDelta, entity.prevBodyYaw, entity.bodyYaw);
-            float l = entity.getWidth() / 2 * pony.metadata().getSize().getScaleFactor();
+            float l = entity.getWidth() / 2 * pony.metadata().size().scaleFactor();
 
             stack.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(yaw));
             stack.translate(0, 0, -l);
@@ -191,7 +191,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
     @Override
     public Identifier getDefaultTexture(AbstractClientPlayerEntity entity, Wearable wearable) {
         return SkinsProxy.instance.getSkin(wearable.getId(), entity).orElseGet(() -> {
-            if (wearable.isSaddlebags() && getInternalRenderer().getModel().getMetadata().getRace().supportsLegacySaddlebags()) {
+            if (wearable.isSaddlebags() && getInternalRenderer().getModel().getMetadata().race().supportsLegacySaddlebags()) {
                 return getTexture(entity);
             }
 

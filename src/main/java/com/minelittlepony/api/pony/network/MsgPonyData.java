@@ -74,14 +74,14 @@ public class MsgPonyData implements IPonyData {
     }
 
     public MsgPonyData(IPonyData data, boolean noSkin) {
-        race = data.getRace();
-        tailLength = data.getTailLength();
-        tailShape = data.getTailShape();
-        gender = data.getGender();
-        size = data.getSize();
-        glowColor = data.getGlowColor();
-        wearables = Wearable.flags(data.getGear());
-        wearableColor = data.getTriggerPixels().get("gear").getColorCode();
+        race = data.race();
+        tailLength = data.tailLength();
+        tailShape = data.tailShape();
+        gender = data.gender();
+        size = data.size();
+        glowColor = data.glowColor();
+        wearables = Wearable.flags(data.gear());
+        wearableColor = data.attributes().get("gear").colorCode();
         this.noSkin = noSkin;
     }
 
@@ -96,7 +96,7 @@ public class MsgPonyData implements IPonyData {
         buffer.writeInt(glowColor);
         buffer.writeBoolean(noSkin);
 
-        Wearable[] gear = getGear();
+        Wearable[] gear = gear();
         buffer.writeInt(gear.length);
         for (int i = 0; i < gear.length; i++) {
             buffer.writeInt(gear[i].ordinal());
@@ -110,37 +110,37 @@ public class MsgPonyData implements IPonyData {
     }
 
     @Override
-    public Race getRace() {
+    public Race race() {
         return race;
     }
 
     @Override
-    public TailLength getTailLength() {
+    public TailLength tailLength() {
         return tailLength;
     }
 
     @Override
-    public TailShape getTailShape() {
+    public TailShape tailShape() {
         return tailShape;
     }
 
     @Override
-    public Gender getGender() {
+    public Gender gender() {
         return gender;
     }
 
     @Override
-    public Size getSize() {
+    public Size size() {
         return size;
     }
 
     @Override
-    public int getGlowColor() {
+    public int glowColor() {
         return glowColor;
     }
 
     @Override
-    public Wearable[] getGear() {
+    public Wearable[] gear() {
         return Wearable.flags(wearables);
     }
 
@@ -155,7 +155,7 @@ public class MsgPonyData implements IPonyData {
     }
 
     @Override
-    public Map<String, TriggerPixelType<?>> getTriggerPixels() {
+    public Map<String, TriggerPixelType<?>> attributes() {
         return triggerPixels.get();
     }
 
@@ -167,79 +167,36 @@ public class MsgPonyData implements IPonyData {
                 .add("tailShape", tailShape)
                 .add("gender", gender)
                 .add("size", size)
-                .add("wearables", getGear())
+                .add("wearables", gear())
                 .add("glowColor", TriggerPixelType.toHex(glowColor))
                 .toString();
     }
 
-    private static final class MsgSize implements Size {
-
-        private final int ordinal;
-        private final String name;
-        private final float shadow;
-        private final float scale;
-        private final float eyeHeight;
-        private final float eyeDistance;
-        private final int triggerPixel;
+    private record MsgSize (
+            int ordinal,
+            String name,
+            float shadowSize,
+            float scaleFactor,
+            float eyeHeightFactor,
+            float eyeDistanceFactor,
+            int triggerPixel) implements Size {
 
         MsgSize(Size size) {
-            ordinal = size.ordinal();
-            name = size.name();
-            shadow = size.getShadowSize();
-            scale = size.getScaleFactor();
-            eyeHeight = size.getEyeHeightFactor();
-            eyeDistance = size.getEyeDistanceFactor();
-            triggerPixel = size.getColorCode();
+            this(size.ordinal(), size.name(), size.shadowSize(), size.scaleFactor(), size.eyeHeightFactor(), size.eyeDistanceFactor(), size.colorCode());
         }
 
         MsgSize(PacketByteBuf buffer) {
-            ordinal = buffer.readInt();
-            name = buffer.readString(32767);
-            shadow = buffer.readFloat();
-            scale = buffer.readFloat();
-            eyeHeight = buffer.readFloat();
-            eyeDistance = buffer.readFloat();
-            triggerPixel = buffer.readInt();
+            this(buffer.readInt(), buffer.readString(32767), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readInt());
         }
 
         public void toBuffer(PacketByteBuf buffer) {
             buffer.writeInt(ordinal);
             buffer.writeString(name);
-            buffer.writeFloat(shadow);
-            buffer.writeFloat(scale);
-            buffer.writeFloat(eyeHeight);
-            buffer.writeFloat(eyeDistance);
+            buffer.writeFloat(shadowSize);
+            buffer.writeFloat(scaleFactor);
+            buffer.writeFloat(eyeHeightFactor);
+            buffer.writeFloat(eyeDistanceFactor);
             buffer.writeFloat(triggerPixel);
-        }
-
-        @Override
-        public int ordinal() {
-            return ordinal;
-        }
-
-        @Override
-        public String name() {
-            return name;
-        }
-
-        @Override
-        public float getShadowSize() {
-            return shadow;
-        }
-
-        @Override
-        public float getScaleFactor() {
-            return scale;
-        }
-
-        @Override
-        public float getEyeHeightFactor() {
-            return eyeHeight;
-        }
-
-        @Override
-        public float getEyeDistanceFactor() {
-            return eyeDistance;
         }
 
         @Override
@@ -248,7 +205,7 @@ public class MsgPonyData implements IPonyData {
         }
 
         @Override
-        public int getColorCode() {
+        public int colorCode() {
             return triggerPixel;
         }
     }

@@ -27,20 +27,20 @@ public interface Size extends TriggerPixelType<Size> {
     /**
      * A scale factor that controls the size of the shadow that appears under the entity.
      */
-    float getShadowSize();
+    float shadowSize();
 
     /**
      * The global scale factor applied to all physical dimensions.
      */
-    float getScaleFactor();
+    float scaleFactor();
 
     /**
      * A scale factor used to alter the vertical eye position.
      */
-    float getEyeHeightFactor();
+    float eyeHeightFactor();
 
     /**
      * A scale factor used to alter the camera's distance.
      */
-    float getEyeDistanceFactor();
+    float eyeDistanceFactor();
 }

@@ -53,7 +53,7 @@ public interface IModel {
     }
 
     default Race getRace() {
-        return PonyConfig.getEffectiveRace(getMetadata().getRace());
+        return PonyConfig.getEffectiveRace(getMetadata().race());
     }
 
     /**

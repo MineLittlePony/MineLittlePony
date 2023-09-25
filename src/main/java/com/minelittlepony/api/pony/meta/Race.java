@@ -69,7 +69,7 @@ public enum Race implements TriggerPixelType<Race> {
     }
 
     @Override
-    public int getColorCode() {
+    public int colorCode() {
         return triggerPixel;
     }
 }

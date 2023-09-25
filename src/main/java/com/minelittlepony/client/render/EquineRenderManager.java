@@ -141,7 +141,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
     }
 
     public float getScaleFactor() {
-        return getModel().getSize().getScaleFactor();
+        return getModel().getSize().scaleFactor();
     }
 
     public double getNamePlateYOffset(T entity) {

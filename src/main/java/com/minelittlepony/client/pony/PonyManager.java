@@ -94,7 +94,7 @@ public class PonyManager implements IPonyManager, SimpleSynchronousResourceReloa
     public IPony getPony(Identifier resource, UUID uuid) {
         IPony pony = getPony(resource);
 
-        if (config.ponyLevel.get() == PonyLevel.PONIES && pony.metadata().getRace().isHuman()) {
+        if (config.ponyLevel.get() == PonyLevel.PONIES && pony.metadata().race().isHuman()) {
             return getBackgroundPony(uuid);
         }
 

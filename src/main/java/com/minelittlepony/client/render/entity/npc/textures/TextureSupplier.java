@@ -2,12 +2,14 @@ package com.minelittlepony.client.render.entity.npc.textures;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.util.FunctionUtil;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -32,14 +34,14 @@ public interface TextureSupplier<T> extends Function<T, Identifier> {
     }
 
     static <T extends LivingEntity> TextureSupplier<T> ofPool(Identifier poolId, TextureSupplier<T> fallback) {
-        final Function<T, Identifier> cache = FunctionUtil.memoize(entity -> {
+        final BiFunction<String, UUID, Identifier> cache = Util.memoize((name, uuid) -> {
             return MineLittlePony.getInstance().getVariatedTextures()
                     .get(poolId)
-                    .getByName(entity.getCustomName().getString(), entity.getUuid())
+                    .getByName(name, uuid)
                     .orElse(null);
-        }, entity -> entity.getCustomName().getString() + "_" + entity.getUuidAsString());
+        });
         return entity -> {
-            Identifier override = entity.hasCustomName() ? cache.apply(entity) : null;
+            Identifier override = entity.hasCustomName() ? cache.apply(entity.getCustomName().getString(), entity.getUuid()) : null;
             if (override != null) {
                 return override;
             }

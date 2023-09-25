@@ -1,5 +1,6 @@
 package com.minelittlepony.api.pony;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -9,13 +10,13 @@ public interface TriggerPixelType<T> {
     /**
      * Gets the pixel colour matching this enum value.
      */
-    int getColorCode();
+    int colorCode();
 
     /**
      * Gets the pixel colour matching this enum value, adjusted to fill all three channels.
      */
     default int getChannelAdjustedColorCode() {
-        return getColorCode();
+        return colorCode();
     }
 
     /**
@@ -26,7 +27,7 @@ public interface TriggerPixelType<T> {
     }
 
     default String getHexValue() {
-        return toHex(getColorCode());
+        return toHex(colorCode());
     }
 
     /**
@@ -55,7 +56,7 @@ public interface TriggerPixelType<T> {
     @SuppressWarnings("unchecked")
     static <T extends TriggerPixelType<T>> T getByTriggerPixel(T type, int pixelValue) {
         return (T)type.getOptions().stream()
-                .filter(i -> i.getColorCode() == pixelValue)
+                .filter(i -> i.colorCode() == pixelValue)
                 .findFirst()
                 .orElse(type);
     }
@@ -70,5 +71,44 @@ public interface TriggerPixelType<T> {
             v = "0" + v;
         }
         return "#" + v;
+    }
+
+    public record Flags<T extends Enum<T> & TriggerPixelType<T>> (
+            int colorCode,
+            T def,
+            boolean[] value
+        ) implements TriggerPixelType<boolean[]> {
+        @Override
+        public String name() {
+            return "[Flags " + Arrays.toString(value) + "]";
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public List<TriggerPixelType<T>> getOptions() {
+            return def.getOptions();
+        }
+
+        @Override
+        public boolean matches(Object o) {
+            return o.getClass() == def.getClass() && value()[((Enum<?>)o).ordinal()];
+        }
+    }
+
+    public record Value<T> (
+            int colorCode,
+            T value
+        ) implements TriggerPixelType<T> {
+
+        @Override
+        public String name() {
+            return value instanceof TriggerPixelType t ? t.name() : TriggerPixelType.super.name();
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public <Option extends TriggerPixelType<T>> List<Option> getOptions() {
+            return value instanceof TriggerPixelType t ? t.getOptions() : TriggerPixelType.super.getOptions();
+        }
     }
 }

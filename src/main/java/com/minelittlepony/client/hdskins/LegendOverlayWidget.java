@@ -25,7 +25,7 @@ class LegendOverlayWidget implements Carousel.Element, ITextContext {
     public void render(DummyPlayer player, DrawContext context, int mouseX, int mouseY) {
         IPonyData data = IPony.getManager().getPony(player).metadata();
         int[] index = new int[1];
-        data.getTriggerPixels().forEach((key, value) -> {
+        data.attributes().forEach((key, value) -> {
             context.getMatrices().push();
             int i = index[0]++;
             int x = frame.left;
@@ -38,7 +38,7 @@ class LegendOverlayWidget implements Carousel.Element, ITextContext {
 
     private void drawLegendBlock(DrawContext context, int index, int x, int y, int mouseX, int mouseY, String key, TriggerPixelType<?> value) {
         context.fill(0, 0, LEGEND_BLOCK_BOUNDS.width, LEGEND_BLOCK_BOUNDS.height, 0xFF003333);
-        context.fill(1, 1, LEGEND_BLOCK_BOUNDS.width - 1, LEGEND_BLOCK_BOUNDS.height - 1, value.getColorCode() | 0xFF000000);
+        context.fill(1, 1, LEGEND_BLOCK_BOUNDS.width - 1, LEGEND_BLOCK_BOUNDS.height - 1, value.colorCode() | 0xFF000000);
 
         char symbol = value.name().charAt(0);
         if (symbol == '[') {
@@ -60,7 +60,7 @@ class LegendOverlayWidget implements Carousel.Element, ITextContext {
             if (lines.size() == 1) {
                 lines.add(Text.literal(value.name()).styled(s -> {
                     int color = value.getChannelAdjustedColorCode();
-                    return color == 0 ? s : s.withColor(value.getColorCode());
+                    return color == 0 ? s : s.withColor(value.colorCode());
                 }));
             }
             context.drawTooltip(getFont(), lines, 2, 10);

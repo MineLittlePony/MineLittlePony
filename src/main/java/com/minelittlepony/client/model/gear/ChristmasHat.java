@@ -57,7 +57,7 @@ public class ChristmasHat extends AbstractWearableGear {
 
         bodySwing += 0.1F;
 
-        tint = model.getMetadata().getGlowColor();
+        tint = model.getMetadata().glowColor();
         left.roll = bodySwing;
         right.roll = -bodySwing;
     }

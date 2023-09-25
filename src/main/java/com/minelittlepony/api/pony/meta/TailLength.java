@@ -16,7 +16,7 @@ public enum TailLength implements TriggerPixelType<TailLength> {
     }
 
     @Override
-    public int getColorCode() {
+    public int colorCode() {
         return triggerValue;
     }
 }

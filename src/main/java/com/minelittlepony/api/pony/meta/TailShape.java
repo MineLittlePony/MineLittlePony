@@ -15,7 +15,7 @@ public enum TailShape implements TriggerPixelType<TailShape> {
     }
 
     @Override
-    public int getColorCode() {
+    public int colorCode() {
         return triggerValue;
     }
 }

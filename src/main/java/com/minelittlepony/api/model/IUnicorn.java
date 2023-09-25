@@ -25,6 +25,6 @@ public interface IUnicorn extends IModel {
      * Gets the preferred magic color for this mode.
      */
     default int getMagicColor() {
-        return getMetadata().getGlowColor();
+        return getMetadata().glowColor();
     }
 }

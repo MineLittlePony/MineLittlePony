@@ -16,8 +16,8 @@ public class PonyBounds {
         return PonyPosture.getMountPony(entity).map(ridingPony -> {
             LivingEntity vehicle = (LivingEntity)entity.getVehicle();
 
-            Vec3d offset = PonyTransformation.forSize(ridingPony.metadata().getSize()).getRiderOffset();
-            float scale = ridingPony.metadata().getSize().getScaleFactor();
+            Vec3d offset = PonyTransformation.forSize(ridingPony.metadata().size()).getRiderOffset();
+            float scale = ridingPony.metadata().size().scaleFactor();
 
             return getAbsoluteRidingOffset(vehicle).add(
                     0,
@@ -41,7 +41,7 @@ public class PonyBounds {
     }
 
     public static Box getBoundingBox(IPony pony, LivingEntity entity) {
-        final float scale = pony.metadata().getSize().getScaleFactor() + 0.1F;
+        final float scale = pony.metadata().size().scaleFactor() + 0.1F;
         final float width = entity.getWidth() * scale;
         final float height = entity.getHeight() * scale;
 

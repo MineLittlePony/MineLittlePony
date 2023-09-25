@@ -67,7 +67,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
 
     @Override
     public Size getSize() {
-        return child ? Sizes.FOAL : getMetadata().getSize();
+        return child ? Sizes.FOAL : getMetadata().size();
     }
 
     @Override
