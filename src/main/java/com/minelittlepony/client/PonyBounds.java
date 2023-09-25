@@ -1,6 +1,6 @@
 package com.minelittlepony.client;
 
-import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyPosture;
 import com.minelittlepony.client.transform.PonyTransformation;
 
@@ -16,7 +16,7 @@ public class PonyBounds {
         return PonyPosture.getMountPony(entity).map(ridingPony -> {
             LivingEntity vehicle = (LivingEntity)entity.getVehicle();
 
-            Vec3d offset = PonyTransformation.forSize(ridingPony.metadata().size()).getRiderOffset();
+            Vec3d offset = PonyTransformation.forSize(ridingPony.size()).getRiderOffset();
             float scale = ridingPony.metadata().size().scaleFactor();
 
             return getAbsoluteRidingOffset(vehicle).add(
@@ -40,8 +40,8 @@ public class PonyBounds {
         );
     }
 
-    public static Box getBoundingBox(IPony pony, LivingEntity entity) {
-        final float scale = pony.metadata().size().scaleFactor() + 0.1F;
+    public static Box getBoundingBox(Pony pony, LivingEntity entity) {
+        final float scale = pony.size().scaleFactor() + 0.1F;
         final float width = entity.getWidth() * scale;
         final float height = entity.getHeight() * scale;
 

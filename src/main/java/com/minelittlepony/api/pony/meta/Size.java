@@ -1,7 +1,5 @@
 package com.minelittlepony.api.pony.meta;
 
-import com.minelittlepony.api.pony.TriggerPixelType;
-
 /**
  * Represents the different model sizes that are possible.
  *

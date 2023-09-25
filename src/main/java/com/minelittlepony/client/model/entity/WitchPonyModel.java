@@ -8,7 +8,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
 import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.client.model.entity.race.EarthPonyModel;
 
@@ -19,7 +19,7 @@ public class WitchPonyModel extends EarthPonyModel<WitchEntity> {
     }
 
     @Override
-    public void updateLivingState(WitchEntity entity, IPony pony, ModelAttributes.Mode mode) {
+    public void updateLivingState(WitchEntity entity, Pony pony, ModelAttributes.Mode mode) {
         super.updateLivingState(entity, pony, mode);
 
         if (entity.hasCustomName() && "Filly".equals(entity.getCustomName().getString())) {
@@ -71,9 +71,6 @@ public class WitchPonyModel extends EarthPonyModel<WitchEntity> {
 
     @Override
     public boolean isWearing(Wearable wearable) {
-        if (wearable == Wearable.HAT) {
-            return true;
-        }
-        return super.isWearing(wearable);
+        return wearable == Wearable.HAT || super.isWearing(wearable);
     }
 }

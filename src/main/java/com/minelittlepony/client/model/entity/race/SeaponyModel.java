@@ -3,7 +3,7 @@ package com.minelittlepony.client.model.entity.race;
 import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.mson.api.ModelView;
 import com.minelittlepony.api.model.*;
-import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.Pony;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.util.math.MatrixStack;
@@ -45,7 +45,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
     }
 
     @Override
-    public void updateLivingState(T entity, IPony pony, ModelAttributes.Mode mode) {
+    public void updateLivingState(T entity, Pony pony, ModelAttributes.Mode mode) {
         super.updateLivingState(entity, pony, mode);
 
         // Seaponies can't sneak, silly
@@ -123,7 +123,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
         }
 
         @Override
-        public void updateLivingState(T entity, IPony pony, ModelAttributes.Mode mode) {
+        public void updateLivingState(T entity, Pony pony, ModelAttributes.Mode mode) {
             super.updateLivingState(entity, pony, mode);
 
             // Seaponies can't sneak, silly

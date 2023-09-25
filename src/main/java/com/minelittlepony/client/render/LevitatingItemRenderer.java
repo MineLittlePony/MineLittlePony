@@ -1,6 +1,6 @@
 package com.minelittlepony.client.render;
 
-import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.util.render.RenderLayerUtil;
 
@@ -21,7 +21,7 @@ import net.minecraft.util.math.RotationAxis;
 import net.minecraft.world.World;
 
 public class LevitatingItemRenderer {
-    private VertexConsumerProvider getProvider(IPony pony, VertexConsumerProvider renderContext) {
+    private VertexConsumerProvider getProvider(Pony pony, VertexConsumerProvider renderContext) {
         final int color = pony.metadata().glowColor();
         return layer -> {
             Identifier texture = RenderLayerUtil.getTexture(layer).orElse(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
@@ -39,7 +39,7 @@ public class LevitatingItemRenderer {
 
         if (entity instanceof PlayerEntity && (mode.isFirstPerson() || mode == ModelTransformationMode.THIRD_PERSON_LEFT_HAND || mode == ModelTransformationMode.THIRD_PERSON_RIGHT_HAND)) {
 
-            IPony pony = IPony.getManager().getPony((PlayerEntity)entity);
+            Pony pony = Pony.getManager().getPony((PlayerEntity)entity);
 
             matrix.push();
 

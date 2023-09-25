@@ -1,8 +1,8 @@
 package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.pony.PonyPosture;
-import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.PonyElytra;
 import com.minelittlepony.client.render.IPonyRenderContext;
@@ -22,7 +22,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
-public class ElytraFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyFeature<T, M> {
+public class ElytraFeature<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> extends AbstractPonyFeature<T, M> {
 
     private static final Identifier TEXTURE_ELYTRA = new Identifier("textures/entity/elytra.png");
 

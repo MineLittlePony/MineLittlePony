@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.SkinsProxy;
@@ -77,7 +77,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
 
     @Override
     public void render(AbstractClientPlayerEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
-        IPony pony = getEntityPony(entity);
+        Pony pony = getEntityPony(entity);
         model = manager.setModel(modelsCache.apply(getPlayerRace(entity, pony))).body();
         // EntityModelFeatures: We have to force it to use our models otherwise EMF overrides it and breaks pony rendering
         shadowRadius = manager.getModel().getSize().shadowSize();
@@ -88,7 +88,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
         // (shadows are drawn after us)
         if (!entity.hasVehicle() && !entity.isSleeping()) {
             float yaw = MathHelper.lerpAngleDegrees(tickDelta, entity.prevBodyYaw, entity.bodyYaw);
-            float l = entity.getWidth() / 2 * pony.metadata().size().scaleFactor();
+            float l = entity.getWidth() / 2 * pony.size().scaleFactor();
 
             stack.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(yaw));
             stack.translate(0, 0, -l);
@@ -96,7 +96,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
         }
     }
 
-    protected Race getPlayerRace(AbstractClientPlayerEntity entity, IPony pony) {
+    protected Race getPlayerRace(AbstractClientPlayerEntity entity, Pony pony) {
         return pony.race();
     }
 
@@ -144,7 +144,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
     }
 
     protected void renderArm(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, AbstractClientPlayerEntity player, Arm side) {
-        IPony pony = getEntityPony(player);
+        Pony pony = getEntityPony(player);
         model = manager.setModel(modelsCache.apply(getPlayerRace(player, pony))).body();
         manager.updateModel(player, ModelAttributes.Mode.FIRST_PERSON);
 
@@ -184,14 +184,14 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
     }
 
     @Override
-    public IPony getEntityPony(AbstractClientPlayerEntity entity) {
-        return IPony.getManager().getPony(entity);
+    public Pony getEntityPony(AbstractClientPlayerEntity entity) {
+        return Pony.getManager().getPony(entity);
     }
 
     @Override
     public Identifier getDefaultTexture(AbstractClientPlayerEntity entity, Wearable wearable) {
         return SkinsProxy.instance.getSkin(wearable.getId(), entity).orElseGet(() -> {
-            if (wearable.isSaddlebags() && getInternalRenderer().getModel().getMetadata().race().supportsLegacySaddlebags()) {
+            if (wearable.isSaddlebags() && getInternalRenderer().getModel().getRace().supportsLegacySaddlebags()) {
                 return getTexture(entity);
             }
 

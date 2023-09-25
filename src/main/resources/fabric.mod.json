@@ -21,10 +21,10 @@
       "com.minelittlepony.client.MineLittlePony"
     ],
     "hdskins": [
-      "com.minelittlepony.client.hdskins.MineLPHDSkins"
+      "com.minelittlepony.client.compat.hdskins.MineLPHDSkins"
     ],
     "modmenu": [
-      "com.minelittlepony.client.modmenu.MineLPModMenuFactory"
+      "com.minelittlepony.client.compat.modmenu.MineLPModMenuFactory"
     ]
   },
   "mixins": [

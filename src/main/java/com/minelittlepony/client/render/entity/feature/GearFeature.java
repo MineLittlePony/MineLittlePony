@@ -11,10 +11,9 @@ import net.minecraft.util.math.random.Random;
 import com.google.common.cache.*;
 import com.google.common.collect.Streams;
 import com.minelittlepony.api.model.BodyPart;
-import com.minelittlepony.api.model.gear.IGear;
-import com.minelittlepony.api.model.gear.IStackable;
+import com.minelittlepony.api.model.PonyModel;
+import com.minelittlepony.api.model.gear.Gear;
 import com.minelittlepony.api.pony.meta.Wearable;
-import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.render.IPonyRenderContext;
 
@@ -23,11 +22,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyFeature<T, M> {
+public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> extends AbstractPonyFeature<T, M> {
 
-    private static final List<Supplier<IGear>> MOD_GEARS = new ArrayList<>();
+    private static final List<Supplier<Gear>> MOD_GEARS = new ArrayList<>();
 
-    public static void addModGear(Supplier<IGear> gear) {
+    public static void addModGear(Supplier<Gear> gear) {
         MOD_GEARS.add(gear);
     }
 
@@ -64,29 +63,30 @@ public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & IPon
         final Object2FloatMap<BodyPart> renderStackingOffsets = new Object2FloatLinkedOpenHashMap<>();
 
         for (var entry : randomisedGearCache.getUnchecked(entity.getUuid().getLeastSignificantBits())) {
-            if (getContext().shouldRender(model, entity, entry.wearable, entry.gear)) {
+            if (getContext().shouldRender(model, entity, entry.wearable(), entry.gear())) {
                 stack.push();
-                BodyPart part = entry.gear.getGearLocation();
-                entry.gear.transform(model, stack);
+                Gear gear = entry.gear();
+                gear.transform(model, stack);
 
-                if (entry.gear instanceof IStackable s) {
+                if (gear.isStackable()) {
+                    BodyPart part = gear.getGearLocation();
                     float v = renderStackingOffsets.getFloat(part);
                     if (v != 0) {
                         stack.translate(0, -v, 0);
                     }
-                    renderStackingOffsets.put(part, v + s.getStackingHeight());
+                    renderStackingOffsets.put(part, v + gear.getStackingHeight());
                 }
 
-                renderGear(model, entity, entry.gear, stack, renderContext, lightUv, limbDistance, limbAngle, tickDelta);
+                renderGear(model, entity, gear, stack, renderContext, lightUv, limbDistance, limbAngle, tickDelta);
                 stack.pop();
             }
         }
     }
 
-    private void renderGear(M model, T entity, IGear gear, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, float limbDistance, float limbAngle, float tickDelta) {
+    private void renderGear(M model, T entity, Gear gear, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, float limbDistance, float limbAngle, float tickDelta) {
         gear.pose(model, entity, model.getAttributes().isGoingFast, entity.getUuid(), limbDistance, limbAngle, model.getWobbleAmount(), tickDelta);
         gear.render(stack, renderContext.getBuffer(gear.getLayer(entity, getContext())), lightUv, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1, entity.getUuid());
     }
 
-    static record Entry(IGear gear, Wearable wearable) {}
+    static record Entry(Gear gear, Wearable wearable) { }
 }

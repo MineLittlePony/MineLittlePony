@@ -7,13 +7,13 @@ import net.minecraft.util.Identifier;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.minelittlepony.api.model.IModel;
+import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.mson.api.*;
 
 import java.util.function.*;
 
-public record PlayerModelKey<T extends LivingEntity, M extends Model & MsonModel & IModel> (
+public record PlayerModelKey<T extends LivingEntity, M extends Model & PonyModel<?>> (
         ModelKey<M> steveKey,
         ModelKey<M> alexKey,
         MsonModel.Factory<PonyArmourModel<T>> armorFactory
@@ -30,12 +30,12 @@ public record PlayerModelKey<T extends LivingEntity, M extends Model & MsonModel
         return slimArms ? alexKey : steveKey;
     }
 
-    public <K extends T, N extends M> ModelWrapper<K, N> create(boolean slimArms) {
+    public <E extends T, N extends M> ModelWrapper<E, N> create(boolean slimArms) {
         return create(slimArms, null);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public <K extends T, N extends M> ModelWrapper<K, N> create(boolean slimArms, @Nullable Consumer<N> initializer) {
+    public <E extends T, N extends M> ModelWrapper<E, N>  create(boolean slimArms, @Nullable Consumer<N> initializer) {
         return new ModelWrapper(this, slimArms, initializer);
     }
 }

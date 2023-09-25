@@ -13,7 +13,6 @@ import static com.minelittlepony.common.event.SkinFilterCallback.copy;
  *
  */
 class LegacySkinConverter implements SkinFilterCallback {
-
     @Override
     public void processImage(NativeImage image, boolean legacy) {
         if (legacy) {

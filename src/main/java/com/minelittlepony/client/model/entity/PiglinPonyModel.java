@@ -7,7 +7,7 @@ import net.minecraft.entity.mob.PiglinActivity;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.Pony;
 
 public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
 
@@ -23,7 +23,7 @@ public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
     }
 
     @Override
-    public void updateLivingState(HostileEntity entity, IPony pony, ModelAttributes.Mode mode) {
+    public void updateLivingState(HostileEntity entity, Pony pony, ModelAttributes.Mode mode) {
         super.updateLivingState(entity, pony, mode);
         leftArmPose = ArmPose.EMPTY;
         rightArmPose = entity.getMainHandStack().isEmpty() ? ArmPose.EMPTY : ArmPose.ITEM;

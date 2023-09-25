@@ -16,7 +16,7 @@ import net.minecraft.util.*;
 /**
  * Used for both unicorns and alicorns since there's no logical way to keep them distinct and not duplicate stuff.
  */
-public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> implements IUnicorn {
+public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> implements HornedPonyModel<T> {
 
     protected final ModelPart unicornArmRight;
     protected final ModelPart unicornArmLeft;
@@ -33,10 +33,10 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
     public void init(ModelView context) {
         super.init(context);
         horn = addPart(context.findByName("horn"));
-        headRenderList.add(RenderList.of().add(head::rotate).add(forPart(horn)).checked(this::hasHorn));
+        headRenderList.add(RenderList.of().add(head::rotate).add(forPart(horn)).checked(() -> getRace().hasHorn()));
         this.mainRenderList.add(withStage(BodyPart.HEAD, RenderList.of().add(head::rotate).add((stack, vertices, overlayUv, lightUv, red, green, blue, alpha) -> {
-            horn.renderMagic(stack, vertices, getMagicColor());
-        })).checked(() -> hasHorn() && hasMagic() && isCasting()));
+            horn.renderMagic(stack, vertices, getAttributes().metadata.glowColor());
+        })).checked(() -> hasMagic() && isCasting()));
     }
 
     @Override

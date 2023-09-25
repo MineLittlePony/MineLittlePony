@@ -2,7 +2,7 @@ package com.minelittlepony.client.render.blockentity.skull;
 
 import com.google.common.collect.Maps;
 import com.minelittlepony.api.config.PonyConfig;
-import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.render.MobRenderers;
@@ -68,7 +68,7 @@ public class PonySkullRenderer {
             return false;
         }
 
-        if (!selectedSkull.bindPony(IPony.getManager().getPony(selectedSkin))) {
+        if (!selectedSkull.bindPony(Pony.getManager().getPony(selectedSkin))) {
             return false;
         }
 
@@ -112,6 +112,6 @@ public class PonySkullRenderer {
 
         Identifier getSkinResource(@Nullable GameProfile profile);
 
-        boolean bindPony(IPony pony);
+        boolean bindPony(Pony pony);
     }
 }

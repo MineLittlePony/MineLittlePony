@@ -1,8 +1,9 @@
 package com.minelittlepony.client.model.gear;
 
 import com.minelittlepony.api.model.BodyPart;
-import com.minelittlepony.api.model.IModel;
-import com.minelittlepony.api.model.IPegasus;
+import com.minelittlepony.api.model.PonyModel;
+import com.minelittlepony.api.model.WingedPonyModel;
+import com.minelittlepony.api.model.gear.WearableGear;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.util.MathUtil;
 
@@ -15,7 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-public class SaddleBags extends AbstractWearableGear {
+public class SaddleBags extends WearableGear {
 
     public static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/models/saddlebags.png");
 
@@ -29,19 +30,15 @@ public class SaddleBags extends AbstractWearableGear {
     private float dropAmount = 0;
 
     public SaddleBags(ModelPart tree, Wearable wearable) {
-        super(wearable, BodyPart.BODY);
+        super(wearable, BodyPart.BODY, 0);
         strap = tree.getChild("strap");
         leftBag = tree.getChild("left_bag");
         rightBag = tree.getChild("right_bag");
     }
 
     @Override
-    public void pose(IModel model, Entity entity, boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
-        hangLow = false;
-
-        if (model instanceof IPegasus) {
-            hangLow = model.canFly() && ((IPegasus)model).wingsAreOpen();
-        }
+    public void pose(PonyModel<?> model, Entity entity, boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
+        hangLow = model instanceof WingedPonyModel pegasus && pegasus.wingsAreOpen();
 
         float pi = MathHelper.PI * (float) Math.pow(swing, 16);
 
@@ -53,8 +50,8 @@ public class SaddleBags extends AbstractWearableGear {
         leftBag.pitch = bodySwing;
         rightBag.pitch = bodySwing;
 
-        if (model instanceof IPegasus && model.isFlying()) {
-            bodySwing = ((IPegasus)model).getWingRotationFactor(ticks) - MathUtil.Angles._270_DEG;
+        if (model instanceof WingedPonyModel pegasus && pegasus.getAttributes().isFlying) {
+            bodySwing = pegasus.getWingRotationFactor(ticks) - MathUtil.Angles._270_DEG;
             bodySwing /= 10;
         }
 
@@ -66,7 +63,7 @@ public class SaddleBags extends AbstractWearableGear {
         strap.visible = wearable == Wearable.SADDLE_BAGS_BOTH;
 
         dropAmount = hangLow ? 0.15F : 0;
-        dropAmount = model.getMetadata().getInterpolator(interpolatorId).interpolate("dropAmount", dropAmount, 3);
+        dropAmount = model.getAttributes().metadata.getInterpolator(interpolatorId).interpolate("dropAmount", dropAmount, 3);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.minelittlepony.client.mixin;
 
-import com.minelittlepony.api.pony.IPony;
-import com.minelittlepony.client.pony.Pony;
+import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.render.EquineRenderManager;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -22,7 +21,7 @@ abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implem
     public MixinClientPlayerEntity() { super(null, null); }
 
     @Nullable
-    private IPony pony;
+    private Pony pony;
 
     @Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At("RETURN"))
     private void onStartRiding(Entity entity, boolean bl, CallbackInfoReturnable<Boolean> info) {
@@ -35,9 +34,9 @@ abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implem
     }
 
     @Override
-    public boolean shouldUpdateRegistration(IPony pony) {
+    public boolean shouldUpdateRegistration(Pony pony) {
         if (this.pony != pony && (this.pony == null || this.pony.metadata().compareTo(pony.metadata()) != 0)) {
-            this.pony = Pony.snapshot(pony);
+            this.pony = pony.immutableCopy();
             return true;
         }
         return false;
@@ -47,10 +46,10 @@ abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implem
     public float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
         float value = super.getActiveEyeHeight(pose, dimensions);
 
-        IPony pony = IPony.getManager().getPony(this);
+        Pony pony = Pony.getManager().getPony(this);
 
         if (!pony.race().isHuman()) {
-            float factor = pony.metadata().size().eyeHeightFactor();
+            float factor = pony.size().eyeHeightFactor();
             if (factor != 1) {
                 value *= factor;
 

@@ -4,7 +4,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
 
 import com.minelittlepony.api.model.BodyPart;
-import com.minelittlepony.api.model.IModel;
+import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.pony.meta.Size;
 import com.minelittlepony.api.pony.meta.Sizes;
 
@@ -17,7 +17,7 @@ public enum PonyTransformation {
 
     NORMAL(Sizes.NORMAL, 0, 3F, 0.75F) {
         @Override
-        public void transform(IModel model, BodyPart part, MatrixStack stack) {
+        public void transform(PonyModel<?> model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isSwimming) stack.translate(0, -0.3F, 0);
             if (model.getAttributes().isCrouching) stack.translate(0, -0.2F, 0);
             if (model.getAttributes().isSleeping) stack.translate(0, -0.61F, 0.1F);
@@ -39,7 +39,7 @@ public enum PonyTransformation {
     },
     LANKY(Sizes.LANKY, 0, 2.6F, 0.75F) {
         @Override
-        public void transform(IModel model, BodyPart part, MatrixStack stack) {
+        public void transform(PonyModel<?> model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isSwimming) stack.translate(0, -0.2F, 0);
             if (model.getAttributes().isCrouching) stack.translate(0, -0.15F, 0);
             if (model.getAttributes().isSleeping) stack.translate(0, -0.6F, 0.15F);
@@ -75,7 +75,7 @@ public enum PonyTransformation {
     },
     BULKY(Sizes.BULKY, 0, 2.3F, 0.75F) {
         @Override
-        public void transform(IModel model, BodyPart part, MatrixStack stack) {
+        public void transform(PonyModel<?> model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isCrouching) stack.translate(0, -0.15F, 0);
             if (model.getAttributes().isSleeping) stack.translate(0, -0.6F, 0.25F);
             if (model.getAttributes().isSitting) stack.translate(0, 0, -0.2F);
@@ -110,7 +110,7 @@ public enum PonyTransformation {
     },
     FOAL(Sizes.FOAL, 0, 3.8F, 0.75F) {
         @Override
-        public void transform(IModel model, BodyPart part, MatrixStack stack) {
+        public void transform(PonyModel<?> model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isSwimming) stack.translate(0, -0.9F, 0);
             if (model.getAttributes().isCrouching) stack.translate(0, -0.2F, 0);
             if (model.getAttributes().isSleeping) stack.translate(0, -0.8F, -0.3F);
@@ -140,7 +140,7 @@ public enum PonyTransformation {
     },
     TALL(Sizes.TALL, 0, 2.2F, 0.75F) {
         @Override
-        public void transform(IModel model, BodyPart part, MatrixStack stack) {
+        public void transform(PonyModel<?> model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isCrouching) stack.translate(0, -0.15F, 0);
             if (model.getAttributes().isSleeping) stack.translate(0, -0.5F, 0.35F);
             if (model.getAttributes().isSitting) stack.translate(0, 0.1F, -0.2F);
@@ -172,7 +172,7 @@ public enum PonyTransformation {
     },
     YEARLING(Sizes.YEARLING, 0, 3.8F, 0.75F) {
         @Override
-        public void transform(IModel model, BodyPart part, MatrixStack stack) {
+        public void transform(PonyModel<?> model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isSwimming) stack.translate(0, -0.6F, 0);
             if (model.getAttributes().isCrouching) stack.translate(0, -0.15F, 0);
             if (model.getAttributes().isSleeping) stack.translate(0, -0.45F, -0.3F);
@@ -223,7 +223,7 @@ public enum PonyTransformation {
         stack.translate(riderOffset.x, riderOffset.y, riderOffset.z);
     }
 
-    public abstract void transform(IModel model, BodyPart part, MatrixStack stack);
+    public abstract void transform(PonyModel<?> model, BodyPart part, MatrixStack stack);
 
     public static PonyTransformation forSize(Size size) {
         return REGISTRY.getOrDefault(size, NORMAL);

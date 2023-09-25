@@ -8,10 +8,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
 
-import com.minelittlepony.client.model.IMobModel;
+import com.minelittlepony.api.model.MobPosingHelper;
 import com.minelittlepony.client.model.entity.race.AlicornModel;
 
-public class SkeleponyModel<T extends HostileEntity> extends AlicornModel<T> implements IMobModel {
+public class SkeleponyModel<T extends HostileEntity> extends AlicornModel<T> {
 
     public boolean isUnicorn;
 
@@ -68,7 +68,7 @@ public class SkeleponyModel<T extends HostileEntity> extends AlicornModel<T> imp
     }
 
     protected void rotateArmHolding(ModelPart arm, float direction, float swingProgress, float ticks) {
-        IMobModel.rotateArmHolding(arm, direction, swingProgress, ticks);
+        MobPosingHelper.rotateArmHolding(arm, direction, swingProgress, ticks);
     }
 
     @Override

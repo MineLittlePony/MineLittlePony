@@ -1,8 +1,8 @@
 package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.mojang.authlib.GameProfile;
 
@@ -30,7 +30,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.village.VillagerDataContainer;
 
-public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyFeature<T, M> {
+public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> extends AbstractPonyFeature<T, M> {
 
     private final Map<SkullBlock.SkullType, SkullBlockEntityModel> headModels;
 

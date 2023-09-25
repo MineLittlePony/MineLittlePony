@@ -7,16 +7,14 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 
-import com.minelittlepony.api.model.BodyPart;
-import com.minelittlepony.api.model.IUnicorn;
-import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.pony.IPony;
-import com.minelittlepony.api.pony.IPonyData;
+import com.minelittlepony.api.model.*;
+import com.minelittlepony.api.pony.Pony;
+import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.api.pony.meta.Size;
 import com.minelittlepony.mson.api.ModelView;
 import com.minelittlepony.mson.api.model.BoxBuilder.RenderLayerSetter;
 
-public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>> extends IPonyModel<T>, ModelWithArms {
+public interface IPonyMixinModel<T extends LivingEntity, M extends PonyModel<T>> extends PonyModel<T> {
 
     M mixin();
 
@@ -29,7 +27,7 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     }
 
     @Override
-    default void updateLivingState(T entity, IPony pony, ModelAttributes.Mode mode) {
+    default void updateLivingState(T entity, Pony pony, ModelAttributes.Mode mode) {
         mixin().updateLivingState(entity, pony, mode);
     }
 
@@ -54,7 +52,7 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
     }
 
     @Override
-    default void setMetadata(IPonyData meta) {
+    default void setMetadata(PonyData meta) {
         mixin().setMetadata(meta);
     }
 
@@ -90,7 +88,12 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends IPonyModel<T>
         return mixin().getBodyPart(part);
     }
 
-    interface Caster<T extends LivingEntity, M extends IPonyModel<T> & IUnicorn, ArmModel> extends IPonyMixinModel<T, M>, IUnicorn {
+    @Override
+    default void setHatVisible(boolean hatVisible) {
+        mixin().setHatVisible(hatVisible);
+    }
+
+    interface Caster<T extends LivingEntity, M extends PonyModel<T> & HornedPonyModel<T>, ArmModel> extends IPonyMixinModel<T, M>, HornedPonyModel<T> {
         @Override
         default boolean isCasting() {
             return mixin().isCasting();

@@ -2,8 +2,7 @@ package com.minelittlepony.api.config;
 
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.api.pony.meta.Race;
-import com.minelittlepony.api.pony.meta.Sizes;
+import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.common.util.GamePaths;
 import com.minelittlepony.common.util.settings.*;
 
@@ -130,5 +129,19 @@ public class PonyConfig extends Config {
         }
 
         return race;
+    }
+
+    public static Size getEffectiveSize(Size size) {
+        Sizes sz = instance.sizeOverride.get();
+
+        if (sz != Sizes.UNSET) {
+            return sz;
+        }
+
+        if (size == Sizes.UNSET || !instance.sizes.get()) {
+            return Sizes.NORMAL;
+        }
+
+        return size;
     }
 }

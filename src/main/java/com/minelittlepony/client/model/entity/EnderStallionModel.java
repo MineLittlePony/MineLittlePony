@@ -6,6 +6,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.util.math.MathHelper;
 
+import com.minelittlepony.api.pony.meta.Race;
+
 public class EnderStallionModel extends SkeleponyModel<EndermanEntity> {
 
     public boolean isCarrying;
@@ -54,8 +56,8 @@ public class EnderStallionModel extends SkeleponyModel<EndermanEntity> {
     }
 
     @Override
-    public boolean canFly() {
-        return isAlicorn;
+    public Race getRace() {
+        return isAlicorn ? (super.getRace().hasHorn() ? Race.ALICORN : Race.PEGASUS) : super.getRace();
     }
 
     @Override

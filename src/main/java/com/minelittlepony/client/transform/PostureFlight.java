@@ -1,6 +1,6 @@
 package com.minelittlepony.client.transform;
 
-import com.minelittlepony.api.model.IModel;
+import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.common.util.animation.MotionCompositor;
 
 import net.minecraft.client.util.math.MatrixStack;
@@ -18,7 +18,7 @@ public class PostureFlight extends MotionCompositor implements PonyPosture {
     }
 
     @Override
-    public void transform(IModel model, LivingEntity player, MatrixStack stack, double motionX, double motionY, double motionZ, float yaw, float ticks) {
+    public void transform(PonyModel<?> model, LivingEntity player, MatrixStack stack, double motionX, double motionY, double motionZ, float yaw, float ticks) {
         model.getAttributes().motionPitch = (float)calculateIncline(player, motionX, motionY, motionZ);
         model.getAttributes().motionRoll = (float)calculateRoll(player, motionX * xScale,  motionY, motionZ * xScale);
 

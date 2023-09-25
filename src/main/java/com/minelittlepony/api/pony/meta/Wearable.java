@@ -2,7 +2,6 @@ package com.minelittlepony.api.pony.meta;
 
 import net.minecraft.util.Identifier;
 
-import com.minelittlepony.api.pony.TriggerPixelType;
 import com.minelittlepony.client.model.gear.SaddleBags;
 import com.minelittlepony.common.util.Color;
 
@@ -30,6 +29,8 @@ public enum Wearable implements TriggerPixelType<Wearable> {
     public static final List<Wearable> VALUES = Arrays.stream(values()).toList();
     public static final Map<Identifier, Wearable> REGISTRY = VALUES.stream().collect(Collectors.toMap(Wearable::getId, Function.identity()));
 
+    public static final Flags<Wearable> EMPTY_FLAGS = Flags.of(Wearable.class);
+
     Wearable(int pixel, Identifier texture) {
         triggerValue = pixel;
         id = new Identifier("minelittlepony", name().toLowerCase(Locale.ROOT));
@@ -56,21 +57,5 @@ public enum Wearable implements TriggerPixelType<Wearable> {
     @Override
     public int getChannelAdjustedColorCode() {
         return triggerValue == 0 ? 0 : Color.argbToHex(255, triggerValue, triggerValue, triggerValue);
-    }
-
-    public static boolean[] flags(Wearable[] wears) {
-        boolean[] flags = new boolean[VALUES.size()];
-        for (int i = 0; i < wears.length; i++) {
-            flags[wears[i].ordinal()] = true;
-        }
-        return flags;
-    }
-
-    public static Wearable[] flags(boolean[] flags) {
-        List<Wearable> wears = new ArrayList<>();
-        for (int i = 0; i < VALUES.size(); i++) {
-            if (flags[i]) wears.add(VALUES.get(i));
-        }
-        return wears.toArray(new Wearable[0]);
     }
 }

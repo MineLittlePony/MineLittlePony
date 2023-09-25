@@ -1,7 +1,5 @@
 package com.minelittlepony.api.pony.meta;
 
-import com.minelittlepony.api.pony.TriggerPixelType;
-
 public enum TailShape implements TriggerPixelType<TailShape> {
     STRAIGHT(0),
     BUMPY   (0xfc539f),

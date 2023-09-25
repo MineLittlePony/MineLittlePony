@@ -1,7 +1,5 @@
 package com.minelittlepony.api.pony.meta;
 
-import com.minelittlepony.api.pony.TriggerPixelType;
-
 public enum TailLength implements TriggerPixelType<TailLength> {
     STUB            (0x425844),
     QUARTER         (0xd19fe4),

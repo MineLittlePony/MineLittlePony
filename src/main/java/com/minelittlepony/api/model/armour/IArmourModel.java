@@ -3,7 +3,7 @@ package com.minelittlepony.api.model.armour;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 
-import com.minelittlepony.client.model.IPonyModel;
+import com.minelittlepony.api.model.PonyModel;
 
 public interface IArmourModel<T extends LivingEntity> {
     /**
@@ -13,5 +13,5 @@ public interface IArmourModel<T extends LivingEntity> {
      */
     boolean poseModel(T entity, float limbAngle, float limbDistance, float age, float headYaw, float headPitch,
             EquipmentSlot slot, ArmourLayer layer,
-            IPonyModel<T> mainModel);
+            PonyModel<T> mainModel);
 }

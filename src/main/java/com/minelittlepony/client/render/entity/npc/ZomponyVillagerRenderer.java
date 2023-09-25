@@ -5,9 +5,9 @@ import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.ZombieVillagerEntity;
 
+import com.minelittlepony.api.model.MobPosingHelper;
+import com.minelittlepony.client.VariatedTextureSupplier;
 import com.minelittlepony.client.model.ClientPonyModel;
-import com.minelittlepony.client.model.IMobModel;
-import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.client.render.entity.npc.textures.*;
 
 public class ZomponyVillagerRenderer extends AbstractNpcRenderer<ZombieVillagerEntity> {
@@ -17,8 +17,8 @@ public class ZomponyVillagerRenderer extends AbstractNpcRenderer<ZombieVillagerE
 
     public ZomponyVillagerRenderer(EntityRendererFactory.Context context) {
         super(context, TYPE,
-                TextureSupplier.ofPool(PonyManager.BACKGROUND_ZOMPONIES,
-                TextureSupplier.ofPool(PonyManager.BACKGROUND_PONIES,
+                TextureSupplier.ofPool(VariatedTextureSupplier.BACKGROUND_ZOMPONIES_POOL,
+                TextureSupplier.ofPool(VariatedTextureSupplier.BACKGROUND_PONIES_POOL,
                 PlayerTextureSupplier.create(ProfessionTextureSupplier.create(FORMATTER)))),
                 FORMATTER);
     }
@@ -29,7 +29,7 @@ public class ZomponyVillagerRenderer extends AbstractNpcRenderer<ZombieVillagerE
             m.getAttributes().visualHeight += SillyPonyTextureSupplier.isCrownPony(entity) ? 0.3F : -0.1F;
 
             if (m.rightArmPose == ArmPose.EMPTY) {
-                IMobModel.rotateUndeadArms(m, move, ticks);
+                MobPosingHelper.rotateUndeadArms(m, move, ticks);
             }
         });
     }

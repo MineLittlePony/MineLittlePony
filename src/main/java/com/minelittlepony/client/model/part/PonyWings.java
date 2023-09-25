@@ -12,7 +12,7 @@ import com.minelittlepony.mson.api.ModelView;
 import com.minelittlepony.mson.api.MsonModel;
 import com.minelittlepony.util.MathUtil;
 
-public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
+public class PonyWings<T extends Model & WingedPonyModel<?>> implements IPart, MsonModel {
 
     protected T pegasus;
 
@@ -49,7 +49,11 @@ public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
     }
 
     public Wing getRight() {
-        return (pegasus.isEmbedded(Wearable.SADDLE_BAGS_BOTH) || pegasus.isEmbedded(Wearable.SADDLE_BAGS_LEFT) || pegasus.isEmbedded(Wearable.SADDLE_BAGS_RIGHT)) ? legacyWing : rightWing;
+        return (
+                pegasus.isEmbedded(Wearable.SADDLE_BAGS_BOTH)
+            || pegasus.isEmbedded(Wearable.SADDLE_BAGS_LEFT)
+            || pegasus.isEmbedded(Wearable.SADDLE_BAGS_RIGHT)
+        ) ? legacyWing : rightWing;
     }
 
     @Override
@@ -82,7 +86,7 @@ public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
             flapAngle = MathUtil.Angles._270_DEG - 0.9F + (float)Math.sin(ticks / 10) / 15F;
         }
 
-        if (!pegasus.isFlying()) {
+        if (!pegasus.getAttributes().isFlying) {
             flapAngle = attributes.getMainInterpolator().interpolate("wingFlap", flapAngle, 10);
         }
 
@@ -99,7 +103,7 @@ public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
 
     public static class Wing implements MsonModel {
 
-        protected IPegasus pegasus;
+        protected WingedPonyModel<?> pegasus;
 
         protected final ModelPart extended;
         protected final ModelPart folded;
@@ -119,14 +123,14 @@ public class PonyWings<T extends Model & IPegasus> implements IPart, MsonModel {
 
         public void rotateWalking(float swing) {
             folded.yaw = swing * walkingRotationSpeed;
-            if (pegasus.getMetadata().race().hasBugWings()) {
+            if (pegasus.getRace().hasBugWings()) {
                 extended.yaw = folded.yaw;
             }
         }
 
         public void rotateFlying(float roll) {
             extended.roll = roll;
-            if (pegasus.getMetadata().race().hasBugWings()) {
+            if (pegasus.getRace().hasBugWings()) {
                 folded.roll = roll;
             }
         }

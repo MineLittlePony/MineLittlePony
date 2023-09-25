@@ -102,7 +102,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      */
     @Override
     public final void setAngles(T entity, float limbAngle, float limbSpeed, float animationProgress, float headYaw, float headPitch) {
-        attributes.checkRainboom(entity, canFly(), animationProgress);
+        attributes.checkRainboom(entity, this, animationProgress);
         PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(entity, this, ModelAttributes.Mode.OTHER);
         super.setAngles(entity, limbAngle, limbSpeed, animationProgress, headYaw, headPitch);
 
@@ -388,7 +388,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
                 if (attributes.shouldLiftArm(pose, complement, sigma)) {
                     float swag = 1;
-                    if (!isFlying() && both) {
+                    if (!getAttributes().isFlying && both) {
                         swag -= (float)Math.pow(limbSpeed, 2);
                     }
 

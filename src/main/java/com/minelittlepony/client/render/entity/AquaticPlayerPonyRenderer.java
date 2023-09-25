@@ -1,9 +1,9 @@
 package com.minelittlepony.client.render.entity;
 
-import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyPosture;
 import com.minelittlepony.api.pony.meta.Race;
-import com.minelittlepony.client.IPreviewModel;
+import com.minelittlepony.client.PreviewModel;
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.util.MathUtil;
 
@@ -37,7 +37,7 @@ public class AquaticPlayerPonyRenderer extends PlayerPonyRenderer {
         updateSeaponyState(player);
         super.render(player, entityYaw, tickDelta, stack, renderContext, light);
 
-        if (!(player instanceof IPreviewModel) && wet && player.getVelocity().length() > 0.1F) {
+        if (!(player instanceof PreviewModel) && wet && player.getVelocity().length() > 0.1F) {
             double x = player.getEntityWorld().getRandom().nextTriangular(player.getX(), 1);
             double y = player.getEntityWorld().getRandom().nextTriangular(player.getY(), 1);
             double z = player.getEntityWorld().getRandom().nextTriangular(player.getZ(), 1);
@@ -46,7 +46,7 @@ public class AquaticPlayerPonyRenderer extends PlayerPonyRenderer {
         }
     }
 
-    protected Race getPlayerRace(AbstractClientPlayerEntity entity, IPony pony) {
+    protected Race getPlayerRace(AbstractClientPlayerEntity entity, Pony pony) {
         Race race = super.getPlayerRace(entity, pony);
         return wet ? Race.SEAPONY : race == Race.SEAPONY ? Race.UNICORN : race;
     }
@@ -69,10 +69,10 @@ public class AquaticPlayerPonyRenderer extends PlayerPonyRenderer {
     }
 
     private void updateSeaponyState(AbstractClientPlayerEntity player) {
-        IPony pony = getEntityPony(player);
+        Pony pony = getEntityPony(player);
         wet = PonyPosture.isSeaponyModifier(player);
 
-        if (!(player instanceof IPreviewModel)) {
+        if (!(player instanceof PreviewModel)) {
             float state = wet ? 100 : 0;
             float interpolated = pony.metadata().getInterpolator(player.getUuid()).interpolate("seapony_state", state, 5);
 

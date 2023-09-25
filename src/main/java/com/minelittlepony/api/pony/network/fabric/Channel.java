@@ -11,7 +11,8 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 
-import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.Pony;
+import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.api.pony.network.MsgPonyData;
 import com.minelittlepony.client.MineLittlePony;
 
@@ -35,22 +36,22 @@ public class Channel {
 
         ClientPlayNetworking.registerGlobalReceiver(REQUEST_PONY_DATA, (client, handler, ignored, sender) -> {
             if (client.player != null) {
-                IPony pony = IPony.getManager().getPony(client.player);
+                Pony pony = Pony.getManager().getPony(client.player);
                 registered = true;
                 MineLittlePony.logger.info("Server has just consented");
 
-                sender.sendPacket(CLIENT_PONY_DATA, new MsgPonyData(pony.metadata(), pony.defaulted()).toBuffer(PacketByteBufs.create()));
+                sender.sendPacket(CLIENT_PONY_DATA, MsgPonyData.write(pony.metadata(), PacketByteBufs.create()));
             }
         });
         ServerPlayNetworking.registerGlobalReceiver(CLIENT_PONY_DATA, (server, player, ignore, buffer, ignore2) -> {
-            MsgPonyData packet = new MsgPonyData(buffer);
+            PonyData packet = MsgPonyData.read(buffer);
             server.execute(() -> {
-                PonyDataCallback.EVENT.invoker().onPonyDataAvailable(player, packet, packet.isNoSkin(), EnvType.SERVER);
+                PonyDataCallback.EVENT.invoker().onPonyDataAvailable(player, packet, EnvType.SERVER);
             });
         });
     }
 
-    public static void broadcastPonyData(MsgPonyData packet) {
+    public static void broadcastPonyData(PonyData packet) {
         if (FabricLoader.getInstance().getEnvironmentType() != EnvType.CLIENT) {
             throw new RuntimeException("Client packet send called by the server");
         }
@@ -64,6 +65,6 @@ public class Channel {
             }
         }
 
-        ClientPlayNetworking.send(CLIENT_PONY_DATA, packet.toBuffer(PacketByteBufs.create()));
+        ClientPlayNetworking.send(CLIENT_PONY_DATA, MsgPonyData.write(packet, PacketByteBufs.create()));
     }
 }

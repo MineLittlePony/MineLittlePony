@@ -1,10 +1,11 @@
 package com.minelittlepony.client.render;
 
 import java.util.function.Function;
-import com.minelittlepony.api.pony.IPony;
+
+import com.minelittlepony.api.model.PonyModel;
+import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyPosture;
 import com.minelittlepony.client.mixin.MixinEntityRenderers;
-import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.render.entity.PlayerPonyRenderer;
 import com.minelittlepony.client.render.entity.AquaticPlayerPonyRenderer;
 
@@ -45,7 +46,7 @@ public class PonyRenderDispatcher {
         Mson.getInstance().getEntityRendererRegistry().registerPlayerRenderer(
                 new Identifier("minelittlepony", "sea/" + armShape.getName()),
                 player -> {
-                    return !IPony.getManager().getPony(player).race().isHuman()
+                    return !Pony.getManager().getPony(player).race().isHuman()
                             && PonyPosture.hasSeaponyForm(player)
                             && player.method_52814().model() == armShape;
                 },
@@ -54,7 +55,7 @@ public class PonyRenderDispatcher {
         Mson.getInstance().getEntityRendererRegistry().registerPlayerRenderer(
                 new Identifier("minelittlepony", "land/" + armShape.getName()),
                 player -> {
-                    return !IPony.getManager().getPony(player).race().isHuman()
+                    return !Pony.getManager().getPony(player).race().isHuman()
                             && !PonyPosture.hasSeaponyForm(player)
                             && player.method_52814().model() == armShape;
                 },
@@ -82,7 +83,7 @@ public class PonyRenderDispatcher {
 
     @SuppressWarnings("unchecked")
     @Nullable
-    public <T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> IPonyRenderContext<T, M> getPonyRenderer(@Nullable T entity) {
+    public <T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> IPonyRenderContext<T, M> getPonyRenderer(@Nullable T entity) {
         if (entity == null) {
             return null;
         }

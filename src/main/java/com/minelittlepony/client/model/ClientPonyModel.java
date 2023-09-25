@@ -8,10 +8,10 @@ import net.minecraft.util.Hand;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.model.fabric.PonyModelPrepareCallback;
-import com.minelittlepony.api.pony.IPony;
-import com.minelittlepony.api.pony.IPonyData;
+import com.minelittlepony.api.pony.Pony;
+import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.api.pony.meta.Size;
 import com.minelittlepony.api.pony.meta.Sizes;
 import com.minelittlepony.mson.api.model.biped.MsonPlayer;
@@ -23,7 +23,7 @@ import com.minelittlepony.mson.api.model.biped.MsonPlayer;
  *
  * Modders can extend this class to make their own pony models if they wish.
  */
-public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer<T> implements IPonyModel<T>, ModelWithHat, ModelWithArms {
+public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer<T> implements PonyModel<T> {
 
     /**
      * The model attributes.
@@ -47,7 +47,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
     }
 
     @Override
-    public void updateLivingState(T entity, IPony pony, ModelAttributes.Mode mode) {
+    public void updateLivingState(T entity, Pony pony, ModelAttributes.Mode mode) {
         child = entity.isBaby();
         attributes.updateLivingState(entity, pony, mode);
         PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(entity, this, mode);
@@ -60,6 +60,18 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
         copyStateTo(other);
     }
 
+    /**
+     * Copies this model's attributes into the passed model.
+     */
+    @Override
+    public void copyStateTo(EntityModel<T> model) {
+        super.copyStateTo(model);
+
+        if (model instanceof ClientPonyModel) {
+            ((ClientPonyModel<T>)model).attributes = attributes;
+        }
+    }
+
     @Override
     public final ModelAttributes getAttributes() {
         return attributes;
@@ -67,11 +79,11 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
 
     @Override
     public Size getSize() {
-        return child ? Sizes.FOAL : getMetadata().size();
+        return child ? Sizes.FOAL : PonyModel.super.getSize();
     }
 
     @Override
-    public void setMetadata(IPonyData meta) {
+    public void setMetadata(PonyData meta) {
         attributes.metadata = meta;
     }
 
@@ -87,18 +99,6 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
 
     public ArmPose getArmPoseForSide(Arm side) {
         return side == Arm.RIGHT ? rightArmPose : leftArmPose;
-    }
-
-    /**
-     * Copies this model's attributes into the passed model.
-     */
-    @Override
-    public void copyStateTo(EntityModel<T> model) {
-        super.copyStateTo(model);
-
-        if (model instanceof ClientPonyModel) {
-            ((ClientPonyModel<T>)model).attributes = attributes;
-        }
     }
 
     @Override

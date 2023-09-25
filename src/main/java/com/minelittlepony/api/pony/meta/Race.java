@@ -1,7 +1,5 @@
 package com.minelittlepony.api.pony.meta;
 
-import com.minelittlepony.api.pony.TriggerPixelType;
-
 import java.util.*;
 
 public enum Race implements TriggerPixelType<Race> {

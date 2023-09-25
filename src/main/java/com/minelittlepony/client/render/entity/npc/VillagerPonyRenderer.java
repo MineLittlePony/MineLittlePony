@@ -5,8 +5,8 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.util.math.MathHelper;
 
+import com.minelittlepony.client.VariatedTextureSupplier;
 import com.minelittlepony.client.model.ClientPonyModel;
-import com.minelittlepony.client.pony.PonyManager;
 import com.minelittlepony.client.render.entity.npc.textures.*;
 
 public class VillagerPonyRenderer extends AbstractNpcRenderer<VillagerEntity> {
@@ -16,7 +16,7 @@ public class VillagerPonyRenderer extends AbstractNpcRenderer<VillagerEntity> {
 
     public VillagerPonyRenderer(EntityRendererFactory.Context context) {
         super(context, TYPE,
-                TextureSupplier.ofPool(PonyManager.BACKGROUND_PONIES,
+                TextureSupplier.ofPool(VariatedTextureSupplier.BACKGROUND_PONIES_POOL,
                 PlayerTextureSupplier.create(ProfessionTextureSupplier.create(FORMATTER))), FORMATTER);
     }
 

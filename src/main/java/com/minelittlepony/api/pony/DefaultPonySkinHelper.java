@@ -28,7 +28,7 @@ public final class DefaultPonySkinHelper {
 
     public static String getModelType(UUID id) {
         SkinTextures textures = DefaultSkinHelper.getTexture(id);
-        return getModelType(IPony.getManager().getPony(textures.texture(), id).race(), textures.model());
+        return getModelType(Pony.getManager().getPony(textures.texture(), id).race(), textures.model());
     }
 
     public static String getModelType(Race race, SkinTextures.Model armShape) {

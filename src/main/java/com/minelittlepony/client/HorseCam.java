@@ -5,7 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.*;
 
-import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.common.util.settings.Setting;
 
 public class HorseCam {
@@ -48,7 +48,7 @@ public class HorseCam {
             return pitch;
         }
 
-        IPony pony = IPony.getManager().getPony(player);
+        Pony pony = Pony.getManager().getPony(player);
 
         if (!pony.race().isHuman()) {
             Setting<Boolean> fillyCam = MineLittlePony.getInstance().getConfig().fillycam;

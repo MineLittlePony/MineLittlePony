@@ -1,6 +1,7 @@
 package com.minelittlepony.client.render.entity;
 
-import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.model.PonyModel;
+import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.*;
 import com.minelittlepony.client.render.DebugBoundingBoxRenderer;
@@ -26,7 +27,7 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-public abstract class AbstractPonyRenderer<T extends MobEntity, M extends EntityModel<T> & IPonyModel<T> & ModelWithArms> extends MobEntityRenderer<T, M> implements IPonyRenderContext<T, M> {
+public abstract class AbstractPonyRenderer<T extends MobEntity, M extends EntityModel<T> & PonyModel<T> & ModelWithArms> extends MobEntityRenderer<T, M> implements IPonyRenderContext<T, M> {
 
     protected final EquineRenderManager<T, M> manager = new EquineRenderManager<>(this);
 
@@ -132,8 +133,8 @@ public abstract class AbstractPonyRenderer<T extends MobEntity, M extends Entity
     }
 
     @Override
-    public IPony getEntityPony(T entity) {
-        return IPony.getManager().getPony(getTexture(entity));
+    public Pony getEntityPony(T entity) {
+        return Pony.getManager().getPony(getTexture(entity));
     }
 
     public static <E extends MobEntity, M extends ClientPonyModel<E>, T extends PonyRenderer<E, M>, F extends FeatureRenderer<E, M>>
@@ -143,7 +144,7 @@ public abstract class AbstractPonyRenderer<T extends MobEntity, M extends Entity
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static <T extends MobEntity, M extends EntityModel<T> & IPonyModel<T> & ModelWithArms> AbstractPonyRenderer<T, M> proxy(EntityRendererFactory.Context context, ModelKey<? super M> key, TextureSupplier<T> texture, float scale,
+    public static <T extends MobEntity, M extends EntityModel<T> & PonyModel<T> & ModelWithArms> AbstractPonyRenderer<T, M> proxy(EntityRendererFactory.Context context, ModelKey<? super M> key, TextureSupplier<T> texture, float scale,
             List exportedLayers, Consumer<M> modelConsumer) {
         var renderer = new AbstractPonyRenderer<T, M>(context, key, texture, scale) {
             @Override

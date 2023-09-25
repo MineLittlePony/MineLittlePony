@@ -7,7 +7,7 @@ import net.minecraft.util.Util;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.SkinsProxy;
 
 import java.util.concurrent.CompletableFuture;
@@ -32,7 +32,7 @@ public class PlayerTextureSupplier {
             profile = SkullBlockEntity.fetchProfile(name).thenApply(profile -> {
                 return profile
                         .map(p -> SkinsProxy.instance.getSkinTexture(p))
-                        .filter(skin -> !IPony.getManager().getPony(skin).race().isHuman())
+                        .filter(skin -> !Pony.getManager().getPony(skin).race().isHuman())
                         .orElse(null);
             });
         }

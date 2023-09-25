@@ -2,7 +2,7 @@ package com.minelittlepony.client.render.blockentity.skull;
 
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.config.PonyLevel;
-import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.client.model.*;
@@ -52,7 +52,7 @@ public class PlayerPonySkull implements ISkull {
     }
 
     @Override
-    public boolean bindPony(IPony pony) {
+    public boolean bindPony(Pony pony) {
         Race race = pony.race();
         if (race.isHuman()) {
             race = Race.EARTH;

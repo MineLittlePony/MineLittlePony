@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.BodyPart;
-import com.minelittlepony.client.model.IPonyModel;
+import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.render.IPonyRenderContext;
 
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -16,7 +16,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
 
-public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T> & ModelWithArms> extends HeldItemFeatureRenderer<T, M> {
+public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T> & ModelWithArms> extends HeldItemFeatureRenderer<T, M> {
 
     private final IPonyRenderContext<T, M> context;
 

@@ -12,12 +12,12 @@ public class ChangelingModel<T extends LivingEntity> extends AlicornModel<T> {
 
     @Override
     public boolean wingsAreOpen() {
-        return (isFlying() || attributes.isCrouching) && !getAttributes().isGliding;
+        return (getAttributes().isFlying || getAttributes().isCrouching) && !getAttributes().isGliding;
     }
 
     @Override
     public float getWingRotationFactor(float ticks) {
-        if (isFlying()) {
+        if (getAttributes().isFlying) {
             return MathHelper.sin(ticks * 3) + WINGS_HALF_SPREAD_ANGLE;
         }
         return WINGS_RAISED_ANGLE;

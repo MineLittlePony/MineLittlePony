@@ -2,7 +2,6 @@ package com.minelittlepony.api.pony.meta;
 
 import net.minecraft.client.texture.NativeImage;
 
-import com.minelittlepony.api.pony.TriggerPixelType;
 import com.minelittlepony.common.util.Color;
 
 import java.util.Arrays;
@@ -21,12 +20,12 @@ public enum TriggerPixel {
     WEARABLES(Wearable.NONE, Channel.RAW, 1, 1),
     TAIL_SHAPE(TailShape.STRAIGHT, Channel.ALL, 2, 1);
 
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
-    private Channel channel;
+    private final Channel channel;
 
-    TriggerPixelType<?> def;
+    private final TriggerPixelType<?> def;
 
     private static final TriggerPixel[] VALUES = values();
     private static final int MAX_READ_X = Arrays.stream(VALUES).mapToInt(i -> i.x).max().getAsInt();
@@ -53,20 +52,20 @@ public enum TriggerPixel {
      *
      * @param image Image to read
      */
-    public <T extends TriggerPixelType<T>> TriggerPixelType.Value<T> readValue(NativeImage image) {
+    public <T extends TriggerPixelType<T>> T readValue(NativeImage image) {
         int color = readColor(image);
 
         if (Channel.ALPHA.readValue(x, y, image) < 255) {
-            return new TriggerPixelType.Value<>(color, (T)def);
+            return (T)def;
         }
 
-        return new TriggerPixelType.Value<>(color, TriggerPixelType.getByTriggerPixel((T)def, color));
+        return TriggerPixelType.getByTriggerPixel((T)def, color);
     }
 
-    public <T extends Enum<T> & TriggerPixelType<T>> TriggerPixelType.Flags<T> readFlags(NativeImage image) {
+    public <T extends Enum<T> & TriggerPixelType<T>> TriggerPixelType.Multiple<T> readFlags(NativeImage image) {
         boolean[] out = new boolean[def.getClass().getEnumConstants().length];
         readFlags(out, image);
-        return new TriggerPixelType.Flags<>(readColor(image), (T)def, out);
+        return new TriggerPixelType.Multiple<>(readColor(image), (T)def, out);
     }
 
     public <T extends Enum<T> & TriggerPixelType<T>> void readFlags(boolean[] out, NativeImage image) {

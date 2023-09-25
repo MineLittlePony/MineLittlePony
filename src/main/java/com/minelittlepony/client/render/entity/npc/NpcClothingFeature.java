@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.model.ModelWithHat;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.registry.Registries;
@@ -17,7 +16,7 @@ import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.village.VillagerType;
 
-import com.minelittlepony.client.model.IPonyModel;
+import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.client.render.entity.feature.AbstractPonyFeature;
 import com.minelittlepony.client.util.render.TextureFlattener;
@@ -27,7 +26,7 @@ import java.util.*;
 
 class NpcClothingFeature<
         T extends LivingEntity & VillagerDataContainer,
-        M extends EntityModel<T> & IPonyModel<T> & ModelWithHat,
+        M extends EntityModel<T> & PonyModel<T>,
         C extends FeatureRendererContext<T, M> & IPonyRenderContext<T, M>> extends AbstractPonyFeature<T, M> {
 
     private static final Int2ObjectMap<Identifier> LEVEL_TO_ID = Util.make(new Int2ObjectOpenHashMap<>(), a -> {

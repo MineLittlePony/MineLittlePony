@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.entity.feature;
 
+import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.model.armour.*;
-import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.armour.DefaultArmourTextureResolver;
 import com.minelittlepony.client.render.IPonyRenderContext;
@@ -21,7 +21,7 @@ import net.minecraft.item.*;
 import net.minecraft.item.trim.ArmorTrim;
 import net.minecraft.util.Identifier;
 
-public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends AbstractPonyFeature<T, M> {
+public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> extends AbstractPonyFeature<T, M> {
 
     public ArmourFeature(IPonyRenderContext<T, M> context, BakedModelManager bakery) {
         super(context);
@@ -40,7 +40,7 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
     }
 
     public static <T extends LivingEntity, V extends BipedEntityModel<T> & IArmourModel<T>> void renderArmor(
-            ModelWrapper<T, ? extends IPonyModel<T>> pony, MatrixStack matrices,
+            ModelWrapper<T, ? extends PonyModel<T>> pony, MatrixStack matrices,
                     VertexConsumerProvider renderContext, int light, T entity,
                     float limbDistance, float limbAngle,
                     float age, float headYaw, float headPitch,

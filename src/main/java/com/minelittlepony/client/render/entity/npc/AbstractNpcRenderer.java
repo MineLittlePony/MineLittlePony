@@ -8,7 +8,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
 
-import com.minelittlepony.api.model.gear.IGear;
+import com.minelittlepony.api.model.gear.Gear;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.*;
@@ -40,7 +40,7 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
     }
 
     @Override
-    public boolean shouldRender(ClientPonyModel<T> model, T entity, Wearable wearable, IGear gear) {
+    public boolean shouldRender(ClientPonyModel<T> model, T entity, Wearable wearable, Gear gear) {
 
         boolean special = SillyPonyTextureSupplier.isBestPony(entity);
 

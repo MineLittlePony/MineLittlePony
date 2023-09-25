@@ -2,7 +2,6 @@ package com.minelittlepony.api.model;
 
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.client.*;
-import com.minelittlepony.client.pony.PonyData;
 import com.minelittlepony.common.util.animation.Interpolator;
 import com.minelittlepony.util.MathUtil;
 
@@ -108,7 +107,7 @@ public class ModelAttributes {
     /**
      * Contains the skin metadata associated with this model.
      */
-    public IPonyData metadata = PonyData.NULL;
+    public PonyData metadata = PonyData.NULL;
 
     public Arm mainArm;
     public Hand activeHand;
@@ -118,11 +117,11 @@ public class ModelAttributes {
     /**
      * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
      */
-    public void checkRainboom(LivingEntity entity, boolean hasWings, float ticks) {
+    public void checkRainboom(LivingEntity entity, PonyModel<?> model, float ticks) {
         Vec3d motion = entity.getVelocity();
         double zMotion = Math.sqrt(motion.x * motion.x + motion.z * motion.z);
 
-        isGoingFast = (isFlying && hasWings) || isGliding;
+        isGoingFast = (isFlying && model instanceof WingedPonyModel) || isGliding;
         isGoingFast &= zMotion > 0.4F;
         isGoingFast |= entity.isUsingRiptide();
         isGoingFast |= entity.isFallFlying();
@@ -137,12 +136,12 @@ public class ModelAttributes {
             return (MathHelper.sin(ticks * 0.136f) / 2) + MathUtil.Angles._270_DEG;
         }
         if (isFlying) {
-            return MathHelper.sin(ticks * 0.536f) + IPegasus.WINGS_FULL_SPREAD_ANGLE;
+            return MathHelper.sin(ticks * 0.536f) + WingedPonyModel.WINGS_FULL_SPREAD_ANGLE;
         }
-        return IPegasus.WINGS_RAISED_ANGLE;
+        return WingedPonyModel.WINGS_RAISED_ANGLE;
     }
 
-    public void updateLivingState(LivingEntity entity, IPony pony, Mode mode) {
+    public void updateLivingState(LivingEntity entity, Pony pony, Mode mode) {
         visualHeight = entity.getHeight() + 0.125F;
         isSitting = PonyPosture.isSitting(entity);
         isCrouching = !isSitting && mode == Mode.THIRD_PERSON && PonyPosture.isCrouching(pony, entity);
@@ -153,7 +152,7 @@ public class ModelAttributes {
         isSwimmingRotated = isSwimming;
         isRiptide = entity.isUsingRiptide();
         isRidingInteractive = PonyPosture.isRidingAPony(entity);
-        if (!(entity instanceof IPreviewModel)) {
+        if (!(entity instanceof PreviewModel)) {
             interpolatorId = entity.getUuid();
         }
         isLeftHanded = entity.getMainArm() == Arm.LEFT;

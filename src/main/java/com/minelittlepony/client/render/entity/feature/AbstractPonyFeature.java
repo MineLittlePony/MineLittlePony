@@ -1,6 +1,6 @@
 package com.minelittlepony.client.render.entity.feature;
 
-import com.minelittlepony.client.model.IPonyModel;
+import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.render.IPonyRenderContext;
 
@@ -11,7 +11,7 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
-public abstract class AbstractPonyFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends FeatureRenderer<T, M> {
+public abstract class AbstractPonyFeature<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> extends FeatureRenderer<T, M> {
 
     private final IPonyRenderContext<T, M> context;
 

@@ -6,10 +6,10 @@ import net.minecraft.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.minelittlepony.api.model.IModel;
+import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.model.IModelWrapper;
 import com.minelittlepony.api.model.armour.*;
-import com.minelittlepony.api.pony.IPonyData;
+import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.mson.api.*;
 
@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 /**
  * Container class for the various models and their associated piece of armour.
  */
-public class ModelWrapper<T extends LivingEntity, M extends IModel> implements IModelWrapper {
+public class ModelWrapper<T extends LivingEntity, M extends PonyModel<?>> implements IModelWrapper {
     @Nullable
     private final MsonModel.Factory<PonyArmourModel<T>> armorFactory;
     private final Map<ModelKey<PonyArmourModel<?>>, PonyArmourModel<T>> armor = new HashMap<>();
@@ -51,7 +51,7 @@ public class ModelWrapper<T extends LivingEntity, M extends IModel> implements I
     }
 
     @Override
-    public ModelWrapper<T, M> applyMetadata(IPonyData meta) {
+    public ModelWrapper<T, M> applyMetadata(PonyData meta) {
         body.setMetadata(meta);
         armor.values().forEach(a -> a.setMetadata(meta));
         return this;

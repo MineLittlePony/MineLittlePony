@@ -1,13 +1,10 @@
 package com.minelittlepony.client.render;
 
-import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.model.RenderPass;
-import com.minelittlepony.api.pony.IPony;
-import com.minelittlepony.api.pony.network.MsgPonyData;
+import com.minelittlepony.api.model.*;
+import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.network.fabric.Channel;
 import com.minelittlepony.api.pony.network.fabric.PonyDataCallback;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.transform.PonyPosture;
 import com.minelittlepony.mson.api.ModelKey;
@@ -25,7 +22,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 
-public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> {
+public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> {
 
     private ModelWrapper<T, M> playerModel;
 
@@ -104,7 +101,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
                 // negate vanilla translations so the rider begins at the ridees feet.
                 stack.translate(0, -ridingEntity.getHeight(), 0);
 
-                IPony riderPony = renderer.getEntityPony(ridingEntity);
+                Pony riderPony = renderer.getEntityPony(ridingEntity);
 
                 renderer.translateRider(ridingEntity, riderPony, entity, renderer.getEntityPony(entity), stack, ticks);
             }
@@ -119,8 +116,8 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         PonyPosture.of(getModel().getAttributes()).apply(entity, getModel(), stack, yaw, tickDelta, -1);
     }
 
-    public IPony updateModel(T entity, ModelAttributes.Mode mode) {
-        IPony pony = renderer.getEntityPony(entity);
+    public Pony updateModel(T entity, ModelAttributes.Mode mode) {
+        Pony pony = renderer.getEntityPony(entity);
         playerModel.applyMetadata(pony.metadata());
 
         if (pony.hasMetadata() && entity instanceof RegistrationHandler && ((RegistrationHandler)entity).shouldUpdateRegistration(pony)) {
@@ -129,10 +126,10 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
             PlayerEntity clientPlayer = MinecraftClient.getInstance().player;
             if (clientPlayer != null) {
                 if (Objects.equals(entity, clientPlayer) || Objects.equals(((PlayerEntity)entity).getGameProfile(), clientPlayer.getGameProfile())) {
-                    Channel.broadcastPonyData(new MsgPonyData(pony.metadata(), pony.defaulted()));
+                    Channel.broadcastPonyData(pony.metadata());
                 }
             }
-            PonyDataCallback.EVENT.invoker().onPonyDataAvailable((PlayerEntity)entity, pony.metadata(), pony.defaulted(), EnvType.CLIENT);
+            PonyDataCallback.EVENT.invoker().onPonyDataAvailable((PlayerEntity)entity, pony.metadata(), EnvType.CLIENT);
         }
 
         getModel().updateLivingState(entity, pony, mode);
@@ -168,6 +165,6 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
     }
 
     public interface RegistrationHandler {
-        boolean shouldUpdateRegistration(IPony pony);
+        boolean shouldUpdateRegistration(Pony pony);
     }
 }

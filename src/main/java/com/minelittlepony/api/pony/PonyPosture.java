@@ -1,7 +1,7 @@
 package com.minelittlepony.api.pony;
 
 import com.minelittlepony.api.pony.meta.Race;
-import com.minelittlepony.client.IPreviewModel;
+import com.minelittlepony.client.PreviewModel;
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.client.render.entity.AquaticPlayerPonyRenderer;
 
@@ -17,13 +17,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public final class PonyPosture {
-    public static Optional<IPony> getMountPony(LivingEntity entity) {
+    public static Optional<Pony> getMountPony(LivingEntity entity) {
         return entity.getVehicle() instanceof LivingEntity mount
-                ? IPony.getManager().getPony(mount)
+                ? Pony.getManager().getPony(mount)
                 : Optional.empty();
     }
 
-    public static boolean isCrouching(IPony pony, LivingEntity entity) {
+    public static boolean isCrouching(Pony pony, LivingEntity entity) {
         boolean isSneak = entity.isInSneakingPose();
         boolean isFlying = isFlying(entity);
         boolean isSwimming = isSwimming(entity);
@@ -31,7 +31,7 @@ public final class PonyPosture {
         return !isPerformingRainboom(pony, entity) && !isSwimming && isSneak && !isFlying;
     }
 
-    private static boolean isPerformingRainboom(IPony pony, LivingEntity entity) {
+    private static boolean isPerformingRainboom(Pony pony, LivingEntity entity) {
         Vec3d motion = entity.getVelocity();
         double zMotion = Math.sqrt(motion.x * motion.x + motion.z * motion.z);
 
@@ -85,21 +85,21 @@ public final class PonyPosture {
     }
 
     public static boolean isRidingAPony(LivingEntity entity) {
-        return isSitting(entity) && getMountPony(entity).map(IPony::race).orElse(Race.HUMAN) != Race.HUMAN;
+        return isSitting(entity) && getMountPony(entity).map(Pony::race).orElse(Race.HUMAN) != Race.HUMAN;
     }
 
     public static boolean isSeaponyModifier(LivingEntity entity) {
-        if (entity instanceof IPreviewModel preview) {
+        if (entity instanceof PreviewModel preview) {
             return preview.forceSeapony();
         }
         return hasSeaponyForm(entity) && isPartiallySubmerged(entity);
     }
 
     public static boolean hasSeaponyForm(LivingEntity entity) {
-        if (entity instanceof IPreviewModel preview) {
+        if (entity instanceof PreviewModel preview) {
             return preview.forceSeapony();
         }
-        return IPony.getManager().getPony(entity).filter(pony -> {
+        return Pony.getManager().getPony(entity).filter(pony -> {
             return (pony.race() == Race.SEAPONY
                     || (entity instanceof AbstractClientPlayerEntity player && SkinsProxy.instance.getSkin(AquaticPlayerPonyRenderer.SKIN_TYPE_ID, player).isPresent())
             );

@@ -5,9 +5,9 @@ import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 
+import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.model.armour.*;
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.client.model.IPonyModel;
 
 public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T> implements IArmourModel<T> {
 
@@ -18,7 +18,7 @@ public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T
     @Override
     public boolean poseModel(T entity, float limbAngle, float limbDistance, float age, float headYaw, float headPitch,
             EquipmentSlot slot, ArmourLayer layer,
-            IPonyModel<T> mainModel) {
+            PonyModel<T> mainModel) {
 
         if (!setVisibilities(slot, layer)) {
             return false;

@@ -1,11 +1,12 @@
 package com.minelittlepony.client.model.entity;
 
-import com.minelittlepony.client.model.IMobModel;
+import com.minelittlepony.api.model.MobPosingHelper;
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.model.entity.race.AlicornModel;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.mob.HostileEntity;
 
-public class ZomponyModel<Zombie extends HostileEntity> extends AlicornModel<Zombie> implements IMobModel {
+public class ZomponyModel<Zombie extends HostileEntity> extends AlicornModel<Zombie> {
 
     private boolean isPegasus;
 
@@ -23,13 +24,13 @@ public class ZomponyModel<Zombie extends HostileEntity> extends AlicornModel<Zom
     protected void rotateLegs(float move, float swing, float ticks, Zombie entity) {
         super.rotateLegs(move, swing, ticks, entity);
         if (isZombified(entity)) {
-            IMobModel.rotateUndeadArms(this, move, ticks);
+            MobPosingHelper.rotateUndeadArms(this, move, ticks);
         }
     }
 
     @Override
-    public boolean canFly() {
-        return isPegasus;
+    public Race getRace() {
+        return isPegasus ? (super.getRace().hasHorn() ? Race.ALICORN : Race.PEGASUS) : super.getRace();
     }
 
     protected boolean isZombified(Zombie entity) {

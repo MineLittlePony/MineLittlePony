@@ -7,10 +7,10 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 
-import com.minelittlepony.client.model.IPonyModel;
+import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.render.IPonyRenderContext;
 
-public class GlowingEyesFeature<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> extends EyesFeatureRenderer<T, M> {
+public class GlowingEyesFeature<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> extends EyesFeatureRenderer<T, M> {
 
     private final RenderLayer layer;
 

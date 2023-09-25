@@ -1,12 +1,10 @@
 package com.minelittlepony.client;
 
 import com.minelittlepony.api.config.PonyConfig;
+import com.minelittlepony.api.pony.PonyManager;
 import com.minelittlepony.api.pony.network.fabric.Channel;
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.pony.PonyManager;
-import com.minelittlepony.client.pony.VariatedTextureSupplier;
 import com.minelittlepony.client.render.PonyRenderDispatcher;
-import com.minelittlepony.client.settings.ClientPonyConfig;
 import com.minelittlepony.common.client.gui.VisibilityMode;
 import com.minelittlepony.common.client.gui.element.Button;
 import com.minelittlepony.common.client.gui.sprite.TextureSprite;
@@ -41,7 +39,7 @@ public class MineLittlePony implements ClientModInitializer {
     public static final Logger logger = LogManager.getLogger("MineLittlePony");
 
     private ClientPonyConfig config;
-    private PonyManager ponyManager;
+    private PonyManagerImpl ponyManager;
     private VariatedTextureSupplier variatedTextures;
 
     private final KeyBinding keyBinding = new KeyBinding("key.minelittlepony.settings", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F9, "key.categories.misc");
@@ -68,7 +66,7 @@ public class MineLittlePony implements ClientModInitializer {
         hasModMenu = FabricLoader.getInstance().isModLoaded("modmenu");
 
         config = new ClientPonyConfig(GamePaths.getConfigDirectory().resolve("minelp.json"));
-        ponyManager = new PonyManager(config);
+        ponyManager = new PonyManagerImpl(config);
         variatedTextures = new VariatedTextureSupplier();
 
         KeyBindingHelper.registerKeyBinding(keyBinding);
@@ -105,7 +103,7 @@ public class MineLittlePony implements ClientModInitializer {
         }
 
         if ((mainMenu || inGame) && keyBinding.isPressed()) {
-            client.setScreen(new GuiPonySettings(client.currentScreen));
+            client.setScreen(new PonySettingsscreen(client.currentScreen));
         }
     }
 
@@ -119,7 +117,7 @@ public class MineLittlePony implements ClientModInitializer {
             if (show) {
                 int y = hasHdSkins ? 75 : 50;
                 Button button = buttons.addButton(new Button(screen.width - 50, screen.height - y, 20, 20))
-                    .onClick(sender -> MinecraftClient.getInstance().setScreen(new GuiPonySettings(screen)));
+                    .onClick(sender -> MinecraftClient.getInstance().setScreen(new PonySettingsscreen(screen)));
                 button.getStyle()
                         .setIcon(new TextureSprite()
                                 .setPosition(2, 2)

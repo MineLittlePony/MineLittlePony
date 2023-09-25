@@ -10,10 +10,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 
-import com.minelittlepony.api.model.IModel;
+import com.minelittlepony.api.model.PonyModel;
 
 // separate class in case I need it later
-public abstract class AbstractClothingFeature<T extends LivingEntity, M extends BipedEntityModel<T> & IModel> extends FeatureRenderer<T, M> {
+public abstract class AbstractClothingFeature<T extends LivingEntity, M extends BipedEntityModel<T> & PonyModel<T>> extends FeatureRenderer<T, M> {
 
     protected final FeatureRendererContext<T, M> renderer;
 

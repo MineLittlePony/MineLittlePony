@@ -2,7 +2,7 @@ package com.minelittlepony.client.render.blockentity.skull;
 
 import com.google.common.base.Suppliers;
 import com.minelittlepony.api.config.PonyConfig;
-import com.minelittlepony.api.pony.IPony;
+import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer.ISkull;
@@ -43,7 +43,7 @@ public class MobSkull implements ISkull {
     }
 
     @Override
-    public boolean bindPony(IPony pony) {
+    public boolean bindPony(Pony pony) {
         ponyHead.get().setMetadata(pony.metadata());
         return true;
     }
