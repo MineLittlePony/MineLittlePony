@@ -26,7 +26,7 @@ class DummyPony extends DummyPlayer implements IPreviewModel, IPonyManager.Force
     }
 
     @Override
-    public boolean isSubmergedInWater() {
-        return getTextures().getPosture().getActiveSkinType() == MineLPHDSkins.seaponySkinType || super.isSubmergedInWater();
+    public boolean forceSeapony() {
+        return getTextures().getPosture().getActiveSkinType() == MineLPHDSkins.seaponySkinType;
     }
 }

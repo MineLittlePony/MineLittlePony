@@ -3,6 +3,7 @@ package com.minelittlepony.client.render.entity;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.PonyPosture;
 import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.client.IPreviewModel;
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.util.MathUtil;
 
@@ -36,7 +37,7 @@ public class AquaticPlayerPonyRenderer extends PlayerPonyRenderer {
         updateSeaponyState(player);
         super.render(player, entityYaw, tickDelta, stack, renderContext, light);
 
-        if (wet && player.getVelocity().length() > 0.1F) {
+        if (!(player instanceof IPreviewModel) && wet && player.getVelocity().length() > 0.1F) {
             double x = player.getEntityWorld().getRandom().nextTriangular(player.getX(), 1);
             double y = player.getEntityWorld().getRandom().nextTriangular(player.getY(), 1);
             double z = player.getEntityWorld().getRandom().nextTriangular(player.getZ(), 1);
@@ -71,15 +72,17 @@ public class AquaticPlayerPonyRenderer extends PlayerPonyRenderer {
         IPony pony = getEntityPony(player);
         wet = PonyPosture.isSeaponyModifier(player);
 
-        float state = wet ? 100 : 0;
-        float interpolated = pony.metadata().getInterpolator(player.getUuid()).interpolate("seapony_state", state, 5);
+        if (!(player instanceof IPreviewModel)) {
+            float state = wet ? 100 : 0;
+            float interpolated = pony.metadata().getInterpolator(player.getUuid()).interpolate("seapony_state", state, 5);
 
-        if (!MathUtil.compareFloats(interpolated, state)) {
-            double x = player.getEntityWorld().getRandom().nextTriangular(player.getX(), 1);
-            double y = player.getEntityWorld().getRandom().nextTriangular(player.getY() + player.getHeight() * 0.5F, 1);
-            double z = player.getEntityWorld().getRandom().nextTriangular(player.getZ(), 1);
+            if (!MathUtil.compareFloats(interpolated, state)) {
+                double x = player.getEntityWorld().getRandom().nextTriangular(player.getX(), 1);
+                double y = player.getEntityWorld().getRandom().nextTriangular(player.getY() + player.getHeight() * 0.5F, 1);
+                double z = player.getEntityWorld().getRandom().nextTriangular(player.getZ(), 1);
 
-            player.getEntityWorld().addParticle(ParticleTypes.END_ROD, x, y, z, 0, 0, 0);
+                player.getEntityWorld().addParticle(ParticleTypes.END_ROD, x, y, z, 0, 0, 0);
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.minelittlepony.api.pony;
 
 import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.client.IPreviewModel;
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.client.render.entity.AquaticPlayerPonyRenderer;
 
@@ -88,10 +89,16 @@ public final class PonyPosture {
     }
 
     public static boolean isSeaponyModifier(LivingEntity entity) {
+        if (entity instanceof IPreviewModel preview) {
+            return preview.forceSeapony();
+        }
         return hasSeaponyForm(entity) && isPartiallySubmerged(entity);
     }
 
     public static boolean hasSeaponyForm(LivingEntity entity) {
+        if (entity instanceof IPreviewModel preview) {
+            return preview.forceSeapony();
+        }
         return IPony.getManager().getPony(entity).filter(pony -> {
             return (pony.race() == Race.SEAPONY
                     || (entity instanceof AbstractClientPlayerEntity player && SkinsProxy.instance.getSkin(AquaticPlayerPonyRenderer.SKIN_TYPE_ID, player).isPresent())
