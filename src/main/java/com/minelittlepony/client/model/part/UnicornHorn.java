@@ -26,13 +26,11 @@ public class UnicornHorn implements IPart {
 
     @Override
     public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlayUv, int lightUv, float red, float green, float blue, float alpha, ModelAttributes attributes) {
-        if (visible) {
-            horn.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
-        }
+        horn.render(stack, vertices, overlayUv, lightUv, red, green, blue, alpha);
     }
 
     public void renderMagic(MatrixStack stack, VertexConsumer verts, int tint) {
-        if (visible) {
+        if (glow.visible) {
             Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
 
             VertexConsumer vertices = immediate.getBuffer(MagicGlow.getRenderLayer());
@@ -43,6 +41,7 @@ public class UnicornHorn implements IPart {
 
     @Override
     public void setVisible(boolean visible, ModelAttributes attributes) {
-        this.visible = visible;
+        horn.visible = visible;
+        glow.visible = visible;
     }
 }
