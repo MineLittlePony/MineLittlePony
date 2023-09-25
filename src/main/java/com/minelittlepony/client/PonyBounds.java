@@ -31,7 +31,7 @@ public class PonyBounds {
         float delta = MinecraftClient.getInstance().getTickDelta();
 
         Entity vehicle = entity.getVehicle();
-        double vehicleOffset = vehicle == null ? 0 : vehicle.getHeight() - entity.getRidingOffset(vehicle);
+        double vehicleOffset = vehicle == null ? 0 : vehicle.getHeight();
 
         return new Vec3d(
                 MathHelper.lerp(delta, entity.prevX, entity.getX()),
