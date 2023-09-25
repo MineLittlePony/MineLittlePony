@@ -49,7 +49,7 @@ public class PonyRenderDispatcher {
                             && PonyPosture.hasSeaponyForm(player)
                             && player.method_52814().model() == armShape;
                 },
-                context -> new AquaticPlayerPonyRenderer(context, false)
+                context -> new AquaticPlayerPonyRenderer(context, armShape == SkinTextures.Model.SLIM)
         );
         Mson.getInstance().getEntityRendererRegistry().registerPlayerRenderer(
                 new Identifier("minelittlepony", "land/" + armShape.getName()),
@@ -58,7 +58,7 @@ public class PonyRenderDispatcher {
                             && !PonyPosture.hasSeaponyForm(player)
                             && player.method_52814().model() == armShape;
                 },
-                context -> new PlayerPonyRenderer(context, false)
+                context -> new PlayerPonyRenderer(context, armShape == SkinTextures.Model.SLIM)
         );
     }
 
