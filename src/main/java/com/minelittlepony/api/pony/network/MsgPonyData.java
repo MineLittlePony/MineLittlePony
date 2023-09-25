@@ -8,7 +8,7 @@ import com.minelittlepony.api.pony.meta.*;
 public class MsgPonyData {
     private static final short API_IDENTIFIER = (short) 0xABCD;
     // API version - increment this number before any time any data is added/removed/moved in the data stream
-    private static final byte API_VERSION = 2;
+    private static final byte API_VERSION = 3;
 
     public static PonyData read(PacketByteBuf buffer) {
         short data = buffer.readShort();
