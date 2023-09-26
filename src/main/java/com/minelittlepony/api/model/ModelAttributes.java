@@ -20,6 +20,11 @@ public class ModelAttributes {
      * True if the model is sleeping in a bed.
      */
     public boolean isSleeping;
+
+    /**
+     * True if the model is lying down comfortably
+     */
+    public boolean isLyingDown;
     /**
      * True if the model is flying like a pegasus.
      */
@@ -145,9 +150,10 @@ public class ModelAttributes {
     public void updateLivingState(LivingEntity entity, IPony pony, Mode mode) {
         visualHeight = entity.getHeight() + 0.125F;
         isSitting = PonyPosture.isSitting(entity);
-        isCrouching = !isSitting && mode == Mode.THIRD_PERSON && PonyPosture.isCrouching(pony, entity);
-        isSleeping = entity.isAlive() && entity.isSleeping();
-        isFlying = mode == Mode.THIRD_PERSON && PonyPosture.isFlying(entity);
+        isSleeping = entity.isAlive() && entity.isSleeping();;
+        isLyingDown = isSleeping;
+        isCrouching = !isLyingDown && !isSitting && mode == Mode.THIRD_PERSON && PonyPosture.isCrouching(pony, entity);
+        isFlying = !isLyingDown && mode == Mode.THIRD_PERSON && PonyPosture.isFlying(entity);
         isGliding = entity.isFallFlying();
         isSwimming = mode == Mode.THIRD_PERSON && PonyPosture.isSwimming(entity);
         isSwimmingRotated = isSwimming;

@@ -65,7 +65,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
 
         float flapMotion = MathHelper.cos(ticks / 10) / 5;
 
-        if (attributes.isSleeping) {
+        if (attributes.isLyingDown) {
             flapMotion /= 2;
         }
 
