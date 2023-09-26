@@ -437,7 +437,8 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
                 break;
             case THROW_SPEAR:
                 arm.pitch = MathUtil.Angles._90_DEG * 2;
-                arm.roll += 0.3F * -limbSpeed * sigma;
+                arm.roll += (0.3F * -limbSpeed + 0.6F) * sigma;
+                arm.pivotY ++;
                 break;
             case SPYGLASS:
                 float addedPitch = sneaking ? -0.2617994F : 0;
@@ -604,10 +605,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             matrices.translate(left / 10, -0.2F, -0.5F);
         }
 
-        matrices.translate(left * 0.1F, 0.45F, 0);
+        matrices.translate(-left * 0.1F, 0.45F, 0);
 
         if (getAttributes().heldStack.getUseAction() == UseAction.BLOCK && getAttributes().itemUseTime == 0) {
-            matrices.translate(left * -0.1F, -0.25F, 0);
+            matrices.translate(left * 0.02F, -0.25F, 0);
         }
     }
 
