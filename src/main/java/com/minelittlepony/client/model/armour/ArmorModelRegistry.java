@@ -17,7 +17,7 @@ public interface ArmorModelRegistry {
         if (id.getNamespace().equals("minecraft")) {
             return Optional.empty();
         }
-        return REGISTRY.computeIfAbsent(id.withPath(p -> "models/armor/" + layer.name().toLowerCase(Locale.ROOT) + "_" + p + ".json"), i -> {
+        return REGISTRY.computeIfAbsent(id.withPath(p -> "armor/" + layer.name().toLowerCase(Locale.ROOT) + "_" + p + ".json"), i -> {
             return Optional.of(Mson.getInstance().registerModel(i, PonyArmourModel::new));
         }).filter(key -> key.getModelData().isPresent());
     }

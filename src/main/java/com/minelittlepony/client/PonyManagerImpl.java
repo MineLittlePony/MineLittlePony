@@ -50,7 +50,6 @@ public class PonyManagerImpl implements PonyManager, SimpleSynchronousResourceRe
 
     @Override
     public Pony getPony(PlayerEntity player) {
-        clearCache();
         return getPony(getSkin(player), player instanceof ForcedPony ? null : player.getGameProfile() == null ? player.getUuid() : player.getGameProfile().getId());
     }
 

@@ -119,11 +119,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     }
 
     protected void setModelAngles(T entity, float limbAngle, float limbSpeed, float animationProgress, float headYaw, float headPitch) {
-
-        float pitch = (float)Math.toRadians(attributes.motionPitch);
+        float pitch = attributes.motionPitch * MathHelper.RADIANS_PER_DEGREE;
         head.setAngles(
                 MathHelper.clamp(attributes.isSleeping ? 0.1f : headPitch / 57.29578F, -1.25f - pitch, 0.5f - pitch),
-                attributes.isSleeping ? (Math.abs(entity.getUuid().getMostSignificantBits()) % 2.8F) - 1.9F : headYaw / 57.29578F,
+                attributes.isSleeping ? (Math.signum(MathHelper.wrapDegrees(headYaw)) * 1.3F) : headYaw * MathHelper.RADIANS_PER_DEGREE,
                 0
         );
 
@@ -149,7 +148,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         } else {
             adjustBody(0, ORIGIN);
 
-            if (!attributes.isSleeping) {
+            if (!attributes.isLyingDown) {
                 animateBreathing(animationProgress);
             }
 
@@ -159,7 +158,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             }
         }
 
-        if (attributes.isSleeping) {
+        if (attributes.isLyingDown) {
             ponySleep();
         }
 
@@ -197,7 +196,6 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         leftLeg.pitch = MathUtil.Angles._90_DEG;
 
         HEAD_SLEEPING.set(head);
-        head.pivotZ = sneaking ? -1 : 1;
 
         FONT_LEGS_SLEEPING.add(rightArm);
         FONT_LEGS_SLEEPING.add(leftArm);
@@ -341,7 +339,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
     }
 
     protected float getLegOutset() {
-        if (attributes.isSleeping) {
+        if (attributes.isLyingDown) {
             return 3.6f;
         }
 
@@ -491,7 +489,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
      * @param entity     The entity we are being called for.
      */
     protected void swingItem(T entity) {
-        if (getSwingAmount() > 0 && !attributes.isSleeping) {
+        if (getSwingAmount() > 0 && !attributes.isLyingDown) {
             Arm mainSide = getPreferredArm(entity);
 
             swingArm(getArm(mainSide));
@@ -622,6 +620,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         if (attributes.isSleeping || attributes.isRiptide) {
             stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
             stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
+        }
+
+        if (attributes.isLyingDown && !attributes.isSleeping) {
+            stack.translate(0, 1.35F, 0);
         }
 
         if (attributes.isHorsey) {

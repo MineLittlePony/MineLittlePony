@@ -29,7 +29,7 @@ public interface PonyPosture {
             return ELYTRA;
         }
 
-        if (attributes.isSleeping) {
+        if (attributes.isLyingDown) {
             return STANDING;
         }
 

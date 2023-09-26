@@ -78,7 +78,7 @@ public class SkeleponyModel<T extends HostileEntity> extends AlicornModel<T> {
 
     @Override
     protected float getLegOutset() {
-        if (attributes.isSleeping) return 2.6f;
+        if (attributes.isLyingDown) return 2.6f;
         if (attributes.isCrouching) return 0;
         return 4;
     }
