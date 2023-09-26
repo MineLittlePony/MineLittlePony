@@ -1,7 +1,6 @@
-package com.minelittlepony.api.model.armour;
+package com.minelittlepony.client.model.armour;
 
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.mson.api.ModelKey;
 
 import java.util.Optional;

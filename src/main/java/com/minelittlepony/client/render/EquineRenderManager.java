@@ -1,11 +1,11 @@
 package com.minelittlepony.client.render;
 
+import com.minelittlepony.api.config.PonyConfig;
+import com.minelittlepony.api.events.Channel;
+import com.minelittlepony.api.events.PonyDataCallback;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
-import com.minelittlepony.api.pony.network.fabric.Channel;
-import com.minelittlepony.api.pony.network.fabric.PonyDataCallback;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.transform.PonyPosture;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.util.MathUtil;
@@ -65,7 +65,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
             return FrustrumCheck.ALWAYS_VISIBLE;
         }
 
-        if (entity.isSleeping() || !MineLittlePony.getInstance().getConfig().frustrum.get()) {
+        if (entity.isSleeping() || !PonyConfig.getInstance().frustrum.get()) {
             return vanilla;
         }
         return frustrum.withCamera(entity, vanilla);

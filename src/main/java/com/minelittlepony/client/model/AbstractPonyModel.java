@@ -1,7 +1,7 @@
 package com.minelittlepony.client.model;
 
 import com.minelittlepony.api.model.*;
-import com.minelittlepony.api.model.fabric.PonyModelPrepareCallback;
+import com.minelittlepony.api.events.PonyModelPrepareCallback;
 import com.minelittlepony.api.pony.meta.Sizes;
 import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.client.util.render.RenderList;
@@ -50,7 +50,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     protected final RenderList mainRenderList;
 
-    private final List<IPart> parts = new ArrayList<>();
+    private final List<SubModel> parts = new ArrayList<>();
 
     public AbstractPonyModel(ModelPart tree) {
         super(tree);
@@ -66,18 +66,18 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             .add(withStage(BodyPart.HEAD, helmetRenderList = RenderList.of(hat)));
     }
 
-    protected <P extends IPart> P addPart(P part) {
+    protected <P extends SubModel> P addPart(P part) {
         parts.add(part);
         return part;
     }
 
-    protected RenderList forPart(Supplier<IPart> part) {
+    protected RenderList forPart(Supplier<SubModel> part) {
         return (stack, vertices, overlayUv, lightUv, red, green, blue, alpha) -> {
             part.get().renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, attributes);
         };
     }
 
-    protected RenderList forPart(IPart part) {
+    protected RenderList forPart(SubModel part) {
         return (stack, vertices, overlayUv, lightUv, red, green, blue, alpha) -> {
             part.renderPart(stack, vertices, overlayUv, lightUv, red, green, blue, alpha, attributes);
         };

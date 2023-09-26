@@ -18,8 +18,6 @@ public enum Sizes implements Size {
     FOAL    (0xffbe53, 0.25f, 0.6F,  0.5F),
     UNSET   (0x000000, 1,     1,     1);
 
-    public static final Sizes[] REGISTRY = values();
-
     private int triggerValue;
 
     private float shadowSize;
@@ -31,6 +29,11 @@ public enum Sizes implements Size {
         shadowSize = shadowSz;
         scale = scaleF;
         camera = cameraF;
+    }
+
+    @Override
+    public int colorCode() {
+        return triggerValue;
     }
 
     @Override
@@ -53,25 +56,7 @@ public enum Sizes implements Size {
 
     @Override
     public float eyeDistanceFactor() {
-        if (!PonyConfig.getInstance().fillycam.get()) {
-            return 1;
-        }
-        return camera * PonyConfig.getInstance().getGlobalScaleFactor();
+        return eyeHeightFactor();
     }
 
-    @Override
-    public int colorCode() {
-        return triggerValue;
-    }
-
-    public static Sizes of(Size size) {
-        if (size instanceof Sizes) {
-            return (Sizes)size;
-        }
-        int i = size.ordinal();
-        if (i < 0 || i >= REGISTRY.length) {
-            return UNSET;
-        }
-        return REGISTRY[i];
-    }
 }

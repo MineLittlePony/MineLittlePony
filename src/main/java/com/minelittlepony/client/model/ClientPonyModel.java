@@ -8,8 +8,8 @@ import net.minecraft.util.Hand;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.minelittlepony.api.events.PonyModelPrepareCallback;
 import com.minelittlepony.api.model.*;
-import com.minelittlepony.api.model.fabric.PonyModelPrepareCallback;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.api.pony.meta.Size;
@@ -93,10 +93,16 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
     }
 
     @Override
-    public ModelPart getArm(Arm side) {
-        return super.getArm(side);
+    public ModelPart getForeLeg(Arm side) {
+        return getArm(side);
     }
 
+    @Override
+    public ModelPart getHindLeg(Arm side) {
+        return side == Arm.LEFT ? leftLeg : rightLeg;
+    }
+
+    @Override
     public ArmPose getArmPoseForSide(Arm side) {
         return side == Arm.RIGHT ? rightArmPose : leftArmPose;
     }

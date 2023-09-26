@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.entity.feature;
 
+import com.minelittlepony.api.model.ModelWrapper;
 import com.minelittlepony.api.model.PonyModel;
-import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.render.IPonyRenderContext;
 
 import net.minecraft.client.render.VertexConsumerProvider;

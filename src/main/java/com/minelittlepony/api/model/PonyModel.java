@@ -12,7 +12,7 @@ import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.mson.api.MsonModel;
 
-public interface PonyModel<T extends LivingEntity> extends MsonModel, ModelWithArms, ModelWithHat, ModelWithHead {
+public interface PonyModel<T extends LivingEntity> extends MsonModel, ModelWithHooves, ModelWithHat, ModelWithHead {
 
     void copyAttributes(BipedEntityModel<T> other);
 

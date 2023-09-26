@@ -13,13 +13,9 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 public class SaddleBags extends WearableGear {
-
-    public static final Identifier TEXTURE = new Identifier("minelittlepony", "textures/models/saddlebags.png");
-
     private final ModelPart leftBag;
     private final ModelPart rightBag;
 

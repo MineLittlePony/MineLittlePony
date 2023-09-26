@@ -5,12 +5,12 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.api.model.IPart;
+import com.minelittlepony.api.model.SubModel;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.mson.api.*;
 import com.minelittlepony.mson.api.model.PartBuilder;
 
-public class PonyEars implements IPart, MsonModel {
+public class PonyEars implements SubModel, MsonModel {
     private final ModelPart right;
     private final ModelPart left;
 

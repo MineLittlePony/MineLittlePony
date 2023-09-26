@@ -7,12 +7,12 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider.Immediate;
 import net.minecraft.client.util.math.MatrixStack;
 
-import com.minelittlepony.api.model.IPart;
+import com.minelittlepony.api.model.SubModel;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.client.render.MagicGlow;
 import com.minelittlepony.common.util.Color;
 
-public class UnicornHorn implements IPart {
+public class UnicornHorn implements SubModel {
 
     private final ModelPart horn;
     private final ModelPart glow;

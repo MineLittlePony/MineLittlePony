@@ -12,7 +12,7 @@ import com.minelittlepony.mson.api.ModelView;
 import com.minelittlepony.mson.api.MsonModel;
 import com.minelittlepony.util.MathUtil;
 
-public class PonyWings<T extends Model & WingedPonyModel<?>> implements IPart, MsonModel {
+public class PonyWings<T extends Model & WingedPonyModel<?>> implements SubModel, MsonModel {
 
     protected T pegasus;
 

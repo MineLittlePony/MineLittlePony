@@ -1,9 +1,9 @@
 package com.minelittlepony.client.model.entity.race;
 
-import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.mson.api.ModelView;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
+import com.minelittlepony.client.model.armour.PonyArmourModel;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.util.math.MatrixStack;

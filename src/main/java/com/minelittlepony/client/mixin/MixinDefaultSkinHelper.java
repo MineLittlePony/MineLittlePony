@@ -1,8 +1,8 @@
 package com.minelittlepony.client.mixin;
 
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.config.PonyLevel;
 import com.minelittlepony.api.pony.DefaultPonySkinHelper;
-import com.minelittlepony.client.MineLittlePony;
 
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.SkinTextures;
@@ -21,7 +21,7 @@ abstract class MixinDefaultSkinHelper {
             at = @At("RETURN"),
             cancellable = true)
     private static void onGetTexture(CallbackInfoReturnable<Identifier> cir) {
-        if (MineLittlePony.getInstance().getConfig().ponyLevel.get() == PonyLevel.PONIES) {
+        if (PonyConfig.getInstance().ponyLevel.get() == PonyLevel.PONIES) {
             cir.setReturnValue(DefaultPonySkinHelper.STEVE);
         }
     }
@@ -30,7 +30,7 @@ abstract class MixinDefaultSkinHelper {
             at = @At("RETURN"),
             cancellable = true)
     private static void onGetTexture(UUID uuid, CallbackInfoReturnable<SkinTextures> cir) {
-        if (MineLittlePony.getInstance().getConfig().ponyLevel.get() == PonyLevel.PONIES) {
+        if (PonyConfig.getInstance().ponyLevel.get() == PonyLevel.PONIES) {
             cir.setReturnValue(DefaultPonySkinHelper.getTextures(cir.getReturnValue()));
         }
     }

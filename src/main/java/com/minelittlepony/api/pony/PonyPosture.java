@@ -1,7 +1,7 @@
 package com.minelittlepony.api.pony;
 
 import com.minelittlepony.api.pony.meta.Race;
-import com.minelittlepony.client.PreviewModel;
+import com.minelittlepony.api.model.PreviewModel;
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.client.render.entity.AquaticPlayerPonyRenderer;
 

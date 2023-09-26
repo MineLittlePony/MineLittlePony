@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.*;
 
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.common.util.settings.Setting;
 
@@ -31,7 +32,7 @@ public class HorseCam {
      */
     public static float transformCameraAngle(float pitch) {
 
-        if (!MineLittlePony.getInstance().getConfig().fillycam.get()) {
+        if (!PonyConfig.getInstance().fillycam.get()) {
             return pitch;
         }
 
@@ -51,7 +52,7 @@ public class HorseCam {
         Pony pony = Pony.getManager().getPony(player);
 
         if (!pony.race().isHuman()) {
-            Setting<Boolean> fillyCam = MineLittlePony.getInstance().getConfig().fillycam;
+            Setting<Boolean> fillyCam = PonyConfig.getInstance().fillycam;
 
             fillyCam.set(false);
             final float vanillaHeight = player.getEyeHeight(player.getPose());

@@ -1,4 +1,4 @@
-package com.minelittlepony.api.pony.network;
+package com.minelittlepony.api.events;
 
 import net.minecraft.network.PacketByteBuf;
 

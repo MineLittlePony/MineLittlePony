@@ -1,6 +1,7 @@
 package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.api.model.ModelWrapper;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;

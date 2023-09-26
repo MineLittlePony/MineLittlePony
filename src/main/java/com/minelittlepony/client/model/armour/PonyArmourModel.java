@@ -6,16 +6,14 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 
 import com.minelittlepony.api.model.PonyModel;
-import com.minelittlepony.api.model.armour.*;
 import com.minelittlepony.client.model.AbstractPonyModel;
 
-public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T> implements IArmourModel<T> {
+public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T> {
 
     public PonyArmourModel(ModelPart tree) {
         super(tree);
     }
 
-    @Override
     public boolean poseModel(T entity, float limbAngle, float limbDistance, float age, float headYaw, float headPitch,
             EquipmentSlot slot, ArmourLayer layer,
             PonyModel<T> mainModel) {

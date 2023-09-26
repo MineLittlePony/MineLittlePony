@@ -1,10 +1,9 @@
-package com.minelittlepony.api.model.armour;
+package com.minelittlepony.client.model.armour;
 
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
-import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.mson.api.Mson;
 

@@ -1,9 +1,9 @@
 package com.minelittlepony.client.model.entity.race;
 
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.meta.Size;
 import com.minelittlepony.api.pony.meta.Sizes;
-import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.part.UnicornHorn;
 import com.minelittlepony.client.util.render.RenderList;
 import com.minelittlepony.mson.api.ModelView;
@@ -57,7 +57,7 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
 
     @Override
     public boolean isCasting() {
-        return MineLittlePony.getInstance().getConfig().tpsmagic.get()
+        return PonyConfig.getInstance().tpsmagic.get()
                 && (rightArmPose != ArmPose.EMPTY || leftArmPose != ArmPose.EMPTY);
     }
 
@@ -70,7 +70,7 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
 
     @Override
     public ModelPart getArm(Arm side) {
-        if (hasMagic() && getArmPoseForSide(side) != ArmPose.EMPTY && MineLittlePony.getInstance().getConfig().tpsmagic.get()) {
+        if (hasMagic() && getArmPoseForSide(side) != ArmPose.EMPTY && PonyConfig.getInstance().tpsmagic.get()) {
             return side == Arm.LEFT ? unicornArmLeft : unicornArmRight;
         }
         return super.getArm(side);
@@ -80,7 +80,7 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
     protected void positionheldItem(Arm arm, MatrixStack matrices) {
         super.positionheldItem(arm, matrices);
 
-        if (!MineLittlePony.getInstance().getConfig().tpsmagic.get() || !hasMagic()) {
+        if (!PonyConfig.getInstance().tpsmagic.get() || !hasMagic()) {
             return;
         }
 

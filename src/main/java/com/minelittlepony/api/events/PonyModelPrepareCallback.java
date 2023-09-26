@@ -1,4 +1,4 @@
-package com.minelittlepony.api.model.fabric;
+package com.minelittlepony.api.events;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;

@@ -3,7 +3,6 @@ package com.minelittlepony.client.render.blockentity.skull;
 import com.google.common.collect.Maps;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.Pony;
-import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.client.render.entity.SkeleponyRenderer;
@@ -50,7 +49,7 @@ public class PonySkullRenderer {
 
         ISkull skull = SKULLS.get(skullType);
 
-        if (skull == null || !skull.canRender(MineLittlePony.getInstance().getConfig())) {
+        if (skull == null || !skull.canRender(PonyConfig.getInstance())) {
             return null;
         }
 
@@ -64,7 +63,7 @@ public class PonySkullRenderer {
             MatrixStack stack, VertexConsumerProvider renderContext, RenderLayer layer,
             int lightUv) {
 
-        if (selectedSkull == null || !selectedSkull.canRender(MineLittlePony.getInstance().getConfig())) {
+        if (selectedSkull == null || !selectedSkull.canRender(PonyConfig.getInstance())) {
             return false;
         }
 

@@ -7,6 +7,7 @@ import net.minecraft.util.Identifier;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.minelittlepony.api.model.ModelWrapper;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.mson.api.*;

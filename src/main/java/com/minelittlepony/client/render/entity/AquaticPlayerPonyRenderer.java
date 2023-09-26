@@ -1,9 +1,9 @@
 package com.minelittlepony.client.render.entity;
 
+import com.minelittlepony.api.model.PreviewModel;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyPosture;
 import com.minelittlepony.api.pony.meta.Race;
-import com.minelittlepony.client.PreviewModel;
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.util.MathUtil;
 

@@ -4,14 +4,14 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 
-import com.minelittlepony.api.model.IPart;
+import com.minelittlepony.api.config.PonyConfig;
+import com.minelittlepony.api.model.SubModel;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.meta.Gender;
-import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.mson.api.*;
 import com.minelittlepony.mson.api.model.PartBuilder;
 
-public class PonySnout implements IPart, MsonModel {
+public class PonySnout implements SubModel, MsonModel {
 
     private final ModelPart mare;
     private final ModelPart stallion;
@@ -41,7 +41,7 @@ public class PonySnout implements IPart, MsonModel {
     public void setVisible(boolean visible, ModelAttributes attributes) {
         visible &= !attributes.isHorsey
                 && !attributes.metadata.race().isHuman()
-                && MineLittlePony.getInstance().getConfig().snuzzles.get();
+                && PonyConfig.getInstance().snuzzles.get();
         Gender gender = attributes.metadata.gender();
 
         mare.visible = (visible && gender.isMare());

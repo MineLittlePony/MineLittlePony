@@ -17,7 +17,6 @@ import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.PonyBounds;
 
 public final class DebugBoundingBoxRenderer {
-
     public static <T extends LivingEntity> void render(Pony pony, EntityRenderer<T> renderer, T entity, MatrixStack stack, VertexConsumerProvider renderContext, float tickDelta) {
 
         if (RenderPass.getCurrent() != RenderPass.WORLD) {

@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render;
 
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.entity.*;
 import com.minelittlepony.client.render.entity.npc.*;
@@ -40,7 +41,7 @@ public final class MobRenderers {
         pony.switchRenderer(state, EntityType.PIGLIN, PonyPiglinRenderer::piglin);
         pony.switchRenderer(state, EntityType.PIGLIN_BRUTE, PonyPiglinRenderer::brute);
         pony.switchRenderer(state, EntityType.ZOMBIFIED_PIGLIN, PonyPiglinRenderer::zombified);
-        if (!MineLittlePony.getInstance().getConfig().noFun.get()) {
+        if (!PonyConfig.getInstance().noFun.get()) {
             pony.switchRenderer(state, EntityType.PIG, PonyPigRenderer::new);
         }
     });
@@ -78,7 +79,7 @@ public final class MobRenderers {
     }
 
     public Setting<Boolean> option() {
-        return MineLittlePony.getInstance().getConfig().getCategory("entities").<Boolean>get(name);
+        return PonyConfig.getInstance().getCategory("entities").<Boolean>get(name);
     }
 
     public boolean set(boolean value) {

@@ -1,4 +1,4 @@
-package com.minelittlepony.api.pony.network.fabric;
+package com.minelittlepony.api.events;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -11,25 +11,28 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyData;
-import com.minelittlepony.api.pony.network.MsgPonyData;
-import com.minelittlepony.client.MineLittlePony;
 
 @Environment(EnvType.CLIENT)
 public class Channel {
     private static final Identifier CLIENT_PONY_DATA = new Identifier("minelittlepony", "pony_data");
     private static final Identifier REQUEST_PONY_DATA = new Identifier("minelittlepony", "request_pony_data");
 
+    private static final Logger LOGGER = LogManager.getLogger("MineLittlePony");
+
     private static boolean registered;
 
     public static void bootstrap() {
         ClientLoginConnectionEvents.INIT.register((handler, client) -> {
            registered = false;
-           MineLittlePony.logger.info("Resetting registered flag");
+           LOGGER.info("Resetting registered flag");
         });
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            MineLittlePony.logger.info("Sending consent packet to " + handler.getPlayer().getName().getString());
+            LOGGER.info("Sending consent packet to " + handler.getPlayer().getName().getString());
 
             sender.sendPacket(REQUEST_PONY_DATA, PacketByteBufs.empty());
         });
@@ -38,7 +41,7 @@ public class Channel {
             if (client.player != null) {
                 Pony pony = Pony.getManager().getPony(client.player);
                 registered = true;
-                MineLittlePony.logger.info("Server has just consented");
+                LOGGER.info("Server has just consented");
 
                 sender.sendPacket(CLIENT_PONY_DATA, MsgPonyData.write(pony.metadata(), PacketByteBufs.create()));
             }
@@ -58,9 +61,9 @@ public class Channel {
 
         if (!registered) {
             if (MinecraftClient.getInstance().isInSingleplayer() || MinecraftClient.getInstance().isIntegratedServerRunning()) {
-                MineLittlePony.logger.info("Sending pony skin data over as we are either in single-player or lan");
+                LOGGER.info("Sending pony skin data over as we are either in single-player or lan");
             } else {
-                MineLittlePony.logger.info("Skipping network packet as the server has not consented");
+                LOGGER.info("Skipping network packet as the server has not consented");
                 return;
             }
         }

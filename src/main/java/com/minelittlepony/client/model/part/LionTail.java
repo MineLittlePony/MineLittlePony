@@ -5,11 +5,11 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.api.model.IPart;
+import com.minelittlepony.api.model.SubModel;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.common.util.animation.Interpolator;
 
-public class LionTail implements IPart {
+public class LionTail implements SubModel {
 
     private ModelPart tail;
 

@@ -1,9 +1,8 @@
 package com.minelittlepony.client.render.entity.feature;
 
+import com.minelittlepony.api.model.ModelWrapper;
 import com.minelittlepony.api.model.PonyModel;
-import com.minelittlepony.api.model.armour.*;
-import com.minelittlepony.client.model.ModelWrapper;
-import com.minelittlepony.client.model.armour.DefaultArmourTextureResolver;
+import com.minelittlepony.client.model.armour.*;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.common.util.Color;
 
@@ -39,7 +38,7 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & Po
         }
     }
 
-    public static <T extends LivingEntity, V extends BipedEntityModel<T> & IArmourModel<T>> void renderArmor(
+    public static <T extends LivingEntity, V extends PonyArmourModel<T>> void renderArmor(
             ModelWrapper<T, ? extends PonyModel<T>> pony, MatrixStack matrices,
                     VertexConsumerProvider renderContext, int light, T entity,
                     float limbDistance, float limbAngle,
@@ -52,9 +51,8 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & Po
             return;
         }
 
-        IArmourTextureResolver resolver = DefaultArmourTextureResolver.INSTANCE;
-        Identifier texture = resolver.getTexture(entity, stack, armorSlot, layer, null);
-        ArmourVariant variant = resolver.getVariant(layer, texture);
+        Identifier texture = ArmourTextureResolver.INSTANCE.getTexture(entity, stack, armorSlot, layer, null);
+        ArmourVariant variant = ArmourTextureResolver.INSTANCE.getVariant(layer, texture);
 
         boolean glint = stack.hasGlint();
         Item item = stack.getItem();
@@ -76,8 +74,8 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & Po
             model.render(matrices, getArmorConsumer(renderContext, texture, glint), light, OverlayTexture.DEFAULT_UV, red, green, blue, 1);
 
             if (item instanceof DyeableArmorItem) {
-                Identifier tex = resolver.getTexture(entity, stack, armorSlot, layer, "overlay");
-                pony.getArmourModel(stack, layer, resolver.getVariant(layer, tex))
+                Identifier tex = ArmourTextureResolver.INSTANCE.getTexture(entity, stack, armorSlot, layer, "overlay");
+                pony.getArmourModel(stack, layer, ArmourTextureResolver.INSTANCE.getVariant(layer, tex))
                         .filter(m -> m.poseModel(entity, limbAngle, limbDistance, age, headYaw, headPitch, armorSlot, layer, pony.body()))
                         .ifPresent(m -> {
                     m.render(matrices, getArmorConsumer(renderContext, tex, false), light, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);

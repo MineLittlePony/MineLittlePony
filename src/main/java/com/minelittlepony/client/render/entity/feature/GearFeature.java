@@ -19,20 +19,13 @@ import com.minelittlepony.client.render.IPonyRenderContext;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> extends AbstractPonyFeature<T, M> {
 
-    private static final List<Supplier<Gear>> MOD_GEARS = new ArrayList<>();
-
-    public static void addModGear(Supplier<Gear> gear) {
-        MOD_GEARS.add(gear);
-    }
-
     private final List<Entry> gears = Streams.concat(
             ModelType.getWearables().map(e -> new Entry(e.getValue().createModel(), e.getKey())),
-            MOD_GEARS.stream().map(e -> new Entry(e.get(), Wearable.NONE))
+            Gear.MOD_GEARS.stream().map(e -> new Entry(e.get(), Wearable.NONE))
     ).collect(Collectors.toList());
 
     private final LoadingCache<Long, List<Entry>> randomisedGearCache = CacheBuilder.newBuilder()

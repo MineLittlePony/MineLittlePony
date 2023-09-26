@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model.entity.race;
 
-import com.minelittlepony.api.model.IPart;
+import com.minelittlepony.api.model.SubModel;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.part.*;
 import com.minelittlepony.mson.api.ModelView;
@@ -12,7 +12,7 @@ public class EarthPonyModel<T extends LivingEntity> extends AbstractPonyModel<T>
 
     private final boolean smallArms;
 
-    protected IPart tail;
+    protected SubModel tail;
     protected PonySnout snout;
     protected PonyEars ears;
 

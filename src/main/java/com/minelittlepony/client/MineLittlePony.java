@@ -1,8 +1,7 @@
 package com.minelittlepony.client;
 
-import com.minelittlepony.api.config.PonyConfig;
+import com.minelittlepony.api.events.Channel;
 import com.minelittlepony.api.pony.PonyManager;
-import com.minelittlepony.api.pony.network.fabric.Channel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.render.PonyRenderDispatcher;
 import com.minelittlepony.common.client.gui.VisibilityMode;
@@ -128,13 +127,6 @@ public class MineLittlePony implements ClientModInitializer {
                 button.setY(screen.height - y); // ModMenu
             }
         }
-    }
-
-    /**
-     * Gets the global MineLP client configuration.
-     */
-    public PonyConfig getConfig() {
-        return config;
     }
 
     public PonyManager getManager() {

@@ -6,10 +6,11 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.GuardianEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.GuardianEntity;
-import com.minelittlepony.client.model.IPonyMixinModel;
+
+import com.minelittlepony.api.model.PonyModelMixin;
 import com.minelittlepony.client.model.entity.race.SeaponyModel;
 
-public class GuardianPonyModel extends GuardianEntityModel implements IPonyMixinModel.Caster<GuardianEntity, SeaponyModel<GuardianEntity>, ModelPart> {
+public class GuardianPonyModel extends GuardianEntityModel implements PonyModelMixin.Caster<GuardianEntity, SeaponyModel<GuardianEntity>, ModelPart> {
     private final SeaponyModel<GuardianEntity> mixin;
 
     public GuardianPonyModel(ModelPart tree) {

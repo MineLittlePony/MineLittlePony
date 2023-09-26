@@ -11,11 +11,11 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.util.math.Vec3d;
 
-import com.minelittlepony.api.model.armour.ArmourLayer;
+import com.minelittlepony.api.model.ModelWrapper;
 import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.ModelWrapper;
+import com.minelittlepony.client.model.armour.ArmourLayer;
 import com.minelittlepony.client.model.entity.PonyArmourStandModel;
 import com.minelittlepony.client.model.entity.race.EarthPonyModel;
 import com.minelittlepony.client.render.entity.feature.ArmourFeature;

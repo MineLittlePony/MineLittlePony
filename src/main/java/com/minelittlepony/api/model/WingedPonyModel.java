@@ -2,8 +2,8 @@ package com.minelittlepony.api.model;
 
 import net.minecraft.entity.LivingEntity;
 
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.meta.Wearable;
-import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.util.MathUtil;
 
 public interface WingedPonyModel<T extends LivingEntity> extends PonyModel<T> {
@@ -16,7 +16,7 @@ public interface WingedPonyModel<T extends LivingEntity> extends PonyModel<T> {
      */
     default boolean wingsAreOpen() {
         return (getAttributes().isSwimming || getAttributes().isFlying || getAttributes().isCrouching)
-            && (MineLittlePony.getInstance().getConfig().flappyElytras.get() || !getAttributes().isGliding);
+            && (PonyConfig.getInstance().flappyElytras.get() || !getAttributes().isGliding);
     }
 
     default boolean isBurdened() {
@@ -28,7 +28,7 @@ public interface WingedPonyModel<T extends LivingEntity> extends PonyModel<T> {
     /**
      * Gets the wings of this pegasus/flying creature
      */
-    IPart getWings();
+    SubModel getWings();
 
     /**
      * Determines angle used to animate wing flaps whilst flying/swimming.

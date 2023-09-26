@@ -1,4 +1,4 @@
-package com.minelittlepony.api.model.armour;
+package com.minelittlepony.client.model.armour;
 
 /**
  * The layer used to render a given armour piece.

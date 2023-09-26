@@ -13,9 +13,6 @@ import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.minelittlepony.api.config.PonyConfig;
-import com.minelittlepony.api.model.armour.ArmourLayer;
-import com.minelittlepony.api.model.armour.ArmourVariant;
-import com.minelittlepony.api.model.armour.IArmourTextureResolver;
 import com.minelittlepony.util.ResourceUtil;
 
 import org.jetbrains.annotations.Nullable;
@@ -38,8 +35,8 @@ import java.util.concurrent.TimeUnit;
  * - the "minecraft" namespace is always replaced with "minelittlepony"
  * <p>
  */
-public class DefaultArmourTextureResolver implements IArmourTextureResolver {
-    public static final DefaultArmourTextureResolver INSTANCE = new DefaultArmourTextureResolver();
+public class ArmourTextureResolver {
+    public static final ArmourTextureResolver INSTANCE = new ArmourTextureResolver();
 
     private final Cache<String, Identifier> cache = CacheBuilder.newBuilder()
             .expireAfterAccess(30, TimeUnit.SECONDS)
@@ -49,7 +46,6 @@ public class DefaultArmourTextureResolver implements IArmourTextureResolver {
         cache.invalidateAll();
     }
 
-    @Override
     public Identifier getTexture(LivingEntity entity, ItemStack stack, EquipmentSlot slot, ArmourLayer layer,  @Nullable String type) {
         Identifier material = stack.getItem() instanceof ArmorItem armor
                 ? new Identifier(armor.getMaterial().getName())
@@ -129,7 +125,6 @@ public class DefaultArmourTextureResolver implements IArmourTextureResolver {
         return MinecraftClient.getInstance().getResourceManager().getResource(texture).isPresent();
     }
 
-    @Override
     public ArmourVariant getVariant(ArmourLayer layer, Identifier resolvedTexture) {
         if (resolvedTexture.getPath().endsWith("_pony.png")) {
             return ArmourVariant.NORMAL;

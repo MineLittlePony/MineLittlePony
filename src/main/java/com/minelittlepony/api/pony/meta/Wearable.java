@@ -2,7 +2,6 @@ package com.minelittlepony.api.pony.meta;
 
 import net.minecraft.util.Identifier;
 
-import com.minelittlepony.client.model.gear.SaddleBags;
 import com.minelittlepony.common.util.Color;
 
 import java.util.*;
@@ -15,9 +14,9 @@ public enum Wearable implements TriggerPixelType<Wearable> {
     MUFFIN            (0x32, new Identifier("minelittlepony", "textures/models/muffin.png")),
     HAT               (0x64, new Identifier("textures/entity/witch.png")),
     ANTLERS           (0x96, new Identifier("minelittlepony", "textures/models/antlers.png")),
-    SADDLE_BAGS_LEFT  (0xC6, SaddleBags.TEXTURE),
-    SADDLE_BAGS_RIGHT (0xC7, SaddleBags.TEXTURE),
-    SADDLE_BAGS_BOTH  (0xC8, SaddleBags.TEXTURE),
+    SADDLE_BAGS_LEFT  (0xC6, new Identifier("minelittlepony", "textures/models/saddlebags.png")),
+    SADDLE_BAGS_RIGHT (0xC7, new Identifier("minelittlepony", "textures/models/saddlebags.png")),
+    SADDLE_BAGS_BOTH  (0xC8, new Identifier("minelittlepony", "textures/models/saddlebags.png")),
     STETSON           (0xFA, new Identifier("minelittlepony", "textures/models/stetson.png"));
 
     private int triggerValue;

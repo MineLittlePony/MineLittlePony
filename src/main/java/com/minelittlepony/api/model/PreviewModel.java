@@ -1,4 +1,4 @@
-package com.minelittlepony.client;
+package com.minelittlepony.api.model;
 
 public interface PreviewModel {
     boolean forceSeapony();

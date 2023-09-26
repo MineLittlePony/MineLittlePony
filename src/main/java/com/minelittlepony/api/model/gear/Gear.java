@@ -9,22 +9,23 @@ import net.minecraft.util.Identifier;
 
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.meta.Wearable;
-import com.minelittlepony.client.render.entity.feature.GearFeature;
 
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
  * Interface for an accessory on a pony's body.
  */
 public interface Gear {
+    List<Supplier<Gear>> MOD_GEARS = new ArrayList<>();
+
     /**
      * Registers a custom gear to be used with the mod.
      * <p>
      * This would be awesome for creating socks.
      */
     static Supplier<Gear> register(Supplier<Gear> gear) {
-        GearFeature.addModGear(gear);
+        MOD_GEARS.add(gear);
         return gear;
     }
 

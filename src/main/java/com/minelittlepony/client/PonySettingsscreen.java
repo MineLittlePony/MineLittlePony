@@ -5,6 +5,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.*;
 
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.common.client.gui.GameGui;
 import com.minelittlepony.common.client.gui.ScrollContainer;
@@ -43,7 +44,7 @@ public class PonySettingsscreen extends GameGui {
     public PonySettingsscreen(@Nullable Screen parent) {
         super(Text.literal(OPTIONS_PREFIX + "title"), parent);
 
-        config = (ClientPonyConfig)MineLittlePony.getInstance().getConfig();
+        config = (ClientPonyConfig)PonyConfig.getInstance();
 
         content.margin.top = 30;
         content.margin.bottom = 30;

@@ -4,12 +4,8 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.mson.util.PartUtil;
 
-/**
- * Common interface for all undead enemies.
- */
 public final class MobPosingHelper {
     /**
      * Rotates the provided arm to the correct orientation for holding an item.
@@ -34,9 +30,9 @@ public final class MobPosingHelper {
         arm.roll = cos;
     }
 
-    public static void rotateUndeadArms(ClientPonyModel<?> model, float move, float ticks) {
-        ModelPart leftArm = model.getArm(Arm.LEFT);
-        ModelPart rightArm = model.getArm(Arm.RIGHT);
+    public static void rotateUndeadArms(PonyModel<?> model, float move, float ticks) {
+        ModelPart leftArm = model.getForeLeg(Arm.LEFT);
+        ModelPart rightArm = model.getForeLeg(Arm.RIGHT);
 
         if (islookAngleRight(move)) {
             rotateArmHolding(rightArm, 1, model.getSwingAmount(), ticks);

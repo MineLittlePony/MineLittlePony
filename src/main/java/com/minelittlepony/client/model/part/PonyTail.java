@@ -14,7 +14,7 @@ import com.minelittlepony.util.MathUtil;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class PonyTail implements IPart, MsonModel {
+public class PonyTail implements SubModel, MsonModel {
     private static final float TAIL_Z = 14;
     private static final float TAIL_RIDING_Y = 3;
     private static final float TAIL_RIDING_Z = 13;

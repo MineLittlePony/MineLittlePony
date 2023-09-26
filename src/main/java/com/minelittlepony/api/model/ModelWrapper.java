@@ -1,4 +1,4 @@
-package com.minelittlepony.client.model;
+package com.minelittlepony.api.model;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ArmorItem;
@@ -6,12 +6,11 @@ import net.minecraft.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.minelittlepony.api.model.PonyModel;
-import com.minelittlepony.api.model.IModelWrapper;
-import com.minelittlepony.api.model.armour.*;
 import com.minelittlepony.api.pony.PonyData;
-import com.minelittlepony.client.model.armour.PonyArmourModel;
-import com.minelittlepony.mson.api.*;
+import com.minelittlepony.client.model.PlayerModelKey;
+import com.minelittlepony.client.model.armour.*;
+import com.minelittlepony.mson.api.ModelKey;
+import com.minelittlepony.mson.api.MsonModel;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -19,7 +18,7 @@ import java.util.function.Consumer;
 /**
  * Container class for the various models and their associated piece of armour.
  */
-public class ModelWrapper<T extends LivingEntity, M extends PonyModel<?>> implements IModelWrapper {
+public class ModelWrapper<T extends LivingEntity, M extends PonyModel<?>> {
     @Nullable
     private final MsonModel.Factory<PonyArmourModel<T>> armorFactory;
     private final Map<ModelKey<PonyArmourModel<?>>, PonyArmourModel<T>> armor = new HashMap<>();
@@ -50,7 +49,6 @@ public class ModelWrapper<T extends LivingEntity, M extends PonyModel<?>> implem
         }));
     }
 
-    @Override
     public ModelWrapper<T, M> applyMetadata(PonyData meta) {
         body.setMetadata(meta);
         armor.values().forEach(a -> a.setMetadata(meta));

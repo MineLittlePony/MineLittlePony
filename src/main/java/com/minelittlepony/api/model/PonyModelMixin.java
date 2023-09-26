@@ -1,21 +1,20 @@
-package com.minelittlepony.client.model;
+package com.minelittlepony.api.model;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.ModelWithArms;
+import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
 
-import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.api.pony.meta.Size;
 import com.minelittlepony.mson.api.ModelView;
 import com.minelittlepony.mson.api.model.BoxBuilder.RenderLayerSetter;
 
-public interface IPonyMixinModel<T extends LivingEntity, M extends PonyModel<T>> extends PonyModel<T> {
-
+public interface PonyModelMixin<T extends LivingEntity, M extends PonyModel<T>> extends PonyModel<T> {
     M mixin();
 
     @Override
@@ -71,6 +70,22 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends PonyModel<T>>
         return mixin().getRiderYOffset();
     }
 
+
+    @Override
+    default ModelPart getForeLeg(Arm side) {
+        return mixin().getForeLeg(side);
+    }
+
+    @Override
+    default ModelPart getHindLeg(Arm side) {
+        return mixin().getHindLeg(side);
+    }
+
+    @Override
+    default ArmPose getArmPoseForSide(Arm side) {
+        return mixin().getArmPoseForSide(side);
+    }
+
     @Override
     default void setArmAngle(Arm arm, MatrixStack stack) {
         if (mixin() instanceof ModelWithArms) {
@@ -93,7 +108,7 @@ public interface IPonyMixinModel<T extends LivingEntity, M extends PonyModel<T>>
         mixin().setHatVisible(hatVisible);
     }
 
-    interface Caster<T extends LivingEntity, M extends PonyModel<T> & HornedPonyModel<T>, ArmModel> extends IPonyMixinModel<T, M>, HornedPonyModel<T> {
+    interface Caster<T extends LivingEntity, M extends PonyModel<T> & HornedPonyModel<T>, ArmModel> extends PonyModelMixin<T, M>, HornedPonyModel<T> {
         @Override
         default boolean isCasting() {
             return mixin().isCasting();

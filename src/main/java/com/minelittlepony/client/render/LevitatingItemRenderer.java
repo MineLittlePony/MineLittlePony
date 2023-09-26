@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render;
 
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.Pony;
-import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.util.render.RenderLayerUtil;
 
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +43,7 @@ public class LevitatingItemRenderer {
 
             matrix.push();
 
-            boolean doMagic = MineLittlePony.getInstance().getConfig().fpsmagic.get() && pony.hasMagic();
+            boolean doMagic = PonyConfig.getInstance().fpsmagic.get() && pony.hasMagic();
 
             if (doMagic && mode.isFirstPerson()) {
                 setupPerspective(itemRenderer, entity, stack, left, matrix);

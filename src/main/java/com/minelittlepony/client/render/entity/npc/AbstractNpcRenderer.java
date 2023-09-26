@@ -8,6 +8,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
 
+import com.minelittlepony.api.model.ModelWrapper;
 import com.minelittlepony.api.model.gear.Gear;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;

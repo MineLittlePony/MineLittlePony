@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model.entity.race;
 
-import com.minelittlepony.api.model.IPart;
+import com.minelittlepony.api.model.SubModel;
 import com.minelittlepony.api.model.WingedPonyModel;
 import com.minelittlepony.client.model.part.PonyWings;
 import com.minelittlepony.mson.api.ModelView;
@@ -24,7 +24,7 @@ public class PegasusModel<T extends LivingEntity> extends EarthPonyModel<T> impl
     }
 
     @Override
-    public IPart getWings() {
+    public SubModel getWings() {
         return wings;
     }
 }

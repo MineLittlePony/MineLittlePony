@@ -6,7 +6,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 
 import com.google.common.base.Preconditions;
-import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.mson.api.*;
 import com.minelittlepony.mson.api.MsonModel.Factory;
 import com.minelittlepony.mson.api.model.traversal.PartSkeleton;
@@ -79,7 +79,7 @@ final class ModelKeyImpl<M extends Model> implements ModelKey<M>, LocalBlock {
     }
 
     private ModelContext getModelContext(FileContent<?> content) {
-        if (MineLittlePony.getInstance().getConfig().horsieMode.get()) {
+        if (PonyConfig.getInstance().horsieMode.get()) {
             return content.createContext(null, null, content.getLocals().extendWith(getId(), Optional.of(this), Optional.empty()).bake());
         }
         return content.createContext(null, null, content.getLocals().bake());

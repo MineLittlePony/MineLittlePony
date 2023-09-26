@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model.part;
 
-import com.minelittlepony.api.model.IPart;
+import com.minelittlepony.api.model.SubModel;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.mson.api.MsonModel;
 
@@ -9,7 +9,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
-public class SeaponyTail implements IPart, MsonModel {
+public class SeaponyTail implements SubModel, MsonModel {
     private final ModelPart tailBase;
 
     private final ModelPart tailTip;

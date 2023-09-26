@@ -2,8 +2,8 @@ package com.minelittlepony.client.compat.hdskins;
 
 import net.minecraft.client.world.ClientWorld;
 
+import com.minelittlepony.api.model.PreviewModel;
 import com.minelittlepony.api.pony.*;
-import com.minelittlepony.client.PreviewModel;
 import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.hdskins.client.gui.player.*;
 import com.minelittlepony.hdskins.client.gui.player.skins.PlayerSkins;
