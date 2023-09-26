@@ -82,7 +82,7 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
         if (entity instanceof AbstractClientPlayerEntity player) {
             PlayerSkins skins = PlayerSkins.of(player);
             if (skins != null) {
-                return skins.getProvidedSkinTypes();
+                return skins.combined().getProvidedSkinTypes();
             }
         }
 
@@ -110,7 +110,7 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
             }
         }
 
-        return Optional.of(player).map(PlayerSkins::of).map(skins -> skins.getSkin(type));
+        return Optional.of(player).map(PlayerSkins::of).flatMap(skins -> skins.combined().getSkin(type));
     }
 
     @Override
