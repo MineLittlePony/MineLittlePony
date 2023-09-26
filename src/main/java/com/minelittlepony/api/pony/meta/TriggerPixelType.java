@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Interface for enums that can be parsed from an image trigger pixel value.
  */
-public interface TriggerPixelType<T> {
+public interface TriggerPixelType<T extends TriggerPixelType<T>> {
     /**
      * Gets the pixel colour matching this enum value.
      */
@@ -34,10 +34,10 @@ public interface TriggerPixelType<T> {
      * Returns a list of possible values this trigger pixel can accept.
      */
     @SuppressWarnings("unchecked")
-    default <Option extends TriggerPixelType<T>> List<Option> getOptions() {
+    default List<TriggerPixelType<T>> getOptions() {
         if (this instanceof Enum) {
             // cast is required because gradle's compiler is more strict
-            return (List<Option>)List.of(getClass().getEnumConstants());
+            return Arrays.asList(getClass().getEnumConstants());
         }
         return List.of();
     }
@@ -61,7 +61,7 @@ public interface TriggerPixelType<T> {
                 .orElse(type);
     }
 
-    static TriggerPixelType<?> of(int color) {
+    static <T extends TriggerPixelType<T>> TriggerPixelType<T> of(int color) {
         return () -> color;
     }
 
@@ -77,13 +77,12 @@ public interface TriggerPixelType<T> {
             int colorCode,
             T def,
             boolean[] value
-        ) implements TriggerPixelType<boolean[]> {
+        ) implements TriggerPixelType<T> {
         @Override
         public String name() {
             return "[Flags " + Arrays.toString(value) + "]";
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public List<TriggerPixelType<T>> getOptions() {
             return def.getOptions();
