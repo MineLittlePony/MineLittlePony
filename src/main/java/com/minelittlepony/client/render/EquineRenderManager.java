@@ -26,7 +26,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
 
     private ModelWrapper<T, M> playerModel;
 
-    private final IPonyRenderContext<T, M> renderer;
+    private final PonyRenderContext<T, M> renderer;
 
     private final FrustrumCheck<T> frustrum = new FrustrumCheck<>(this);
 
@@ -34,11 +34,11 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         RenderSystem.disableBlend();
     }
 
-    public EquineRenderManager(IPonyRenderContext<T, M> renderer) {
+    public EquineRenderManager(PonyRenderContext<T, M> renderer) {
         this.renderer = renderer;
     }
 
-    public IPonyRenderContext<T, M> getContext() {
+    public PonyRenderContext<T, M> getContext() {
         return renderer;
     }
 
@@ -95,7 +95,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         if (entity.hasVehicle() && entity.getVehicle() instanceof LivingEntity) {
 
             LivingEntity ridingEntity = (LivingEntity) entity.getVehicle();
-            IPonyRenderContext<LivingEntity, ?> renderer = MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(ridingEntity);
+            PonyRenderContext<LivingEntity, ?> renderer = MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(ridingEntity);
 
             if (renderer != null) {
                 // negate vanilla translations so the rider begins at the ridees feet.
@@ -139,6 +139,10 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
 
     public float getScaleFactor() {
         return getModel().getSize().scaleFactor();
+    }
+
+    public float getShadowSize() {
+        return getModel().getSize().shadowSize();
     }
 
     public double getNamePlateYOffset(T entity) {

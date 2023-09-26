@@ -1,8 +1,6 @@
 package com.minelittlepony.api.pony.meta;
 
-import java.util.*;
-
-public enum Race implements TriggerPixelType<Race> {
+public enum Race implements TValue<Race> {
     HUMAN       (0x000000, false, false),
     EARTH       (0xf9b131, false, false),
     PEGASUS     (0x88caf0, true,  false),
@@ -17,16 +15,13 @@ public enum Race implements TriggerPixelType<Race> {
     BATPONY     (0xeeeeee, true,  false),
     SEAPONY     (0x3655dd, false, true);
 
-    private boolean wings;
-    private boolean horn;
+    private final boolean wings;
+    private final boolean horn;
 
-    private int triggerPixel;
+    private final int colorCode;
 
-    public static final List<Race> REGISTRY = Arrays.asList(values());
-
-    Race(int triggerPixel, boolean wings, boolean horn) {
-        this.triggerPixel = triggerPixel;
-
+    Race(int colorCode, boolean wings, boolean horn) {
+        this.colorCode = colorCode;
         this.wings = wings;
         this.horn = horn;
     }
@@ -68,6 +63,6 @@ public enum Race implements TriggerPixelType<Race> {
 
     @Override
     public int colorCode() {
-        return triggerPixel;
+        return colorCode;
     }
 }

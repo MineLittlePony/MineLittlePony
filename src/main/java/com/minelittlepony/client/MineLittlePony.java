@@ -1,8 +1,10 @@
 package com.minelittlepony.client;
 
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.events.Channel;
-import com.minelittlepony.api.pony.PonyManager;
 import com.minelittlepony.client.model.ModelType;
+import com.minelittlepony.client.model.armour.ArmourTextureResolver;
+import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.client.render.PonyRenderDispatcher;
 import com.minelittlepony.common.client.gui.VisibilityMode;
 import com.minelittlepony.common.client.gui.element.Button;
@@ -11,6 +13,8 @@ import com.minelittlepony.common.event.ClientReadyCallback;
 import com.minelittlepony.common.event.ScreenInitCallback;
 import com.minelittlepony.common.event.SkinFilterCallback;
 import com.minelittlepony.common.util.GamePaths;
+
+import java.nio.file.Path;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -22,6 +26,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
@@ -37,7 +42,6 @@ public class MineLittlePony implements ClientModInitializer {
 
     public static final Logger logger = LogManager.getLogger("MineLittlePony");
 
-    private ClientPonyConfig config;
     private PonyManagerImpl ponyManager;
     private VariatedTextureSupplier variatedTextures;
 
@@ -64,7 +68,7 @@ public class MineLittlePony implements ClientModInitializer {
         hasHdSkins = FabricLoader.getInstance().isModLoaded("hdskins");
         hasModMenu = FabricLoader.getInstance().isModLoaded("modmenu");
 
-        config = new ClientPonyConfig(GamePaths.getConfigDirectory().resolve("minelp.json"));
+        PonyConfig config = new ClientPonyConfig(GamePaths.getConfigDirectory().resolve("minelp.json"));
         ponyManager = new PonyManagerImpl(config);
         variatedTextures = new VariatedTextureSupplier();
 
@@ -108,7 +112,7 @@ public class MineLittlePony implements ClientModInitializer {
 
     private void onScreenInit(Screen screen, ScreenInitCallback.ButtonList buttons) {
         if (screen instanceof TitleScreen) {
-            VisibilityMode mode = config.horseButton.get();
+            VisibilityMode mode = ClientPonyConfig.getInstance().horseButton.get();
             boolean show = mode == VisibilityMode.ON || (mode == VisibilityMode.AUTO
                 && !(hasHdSkins || hasModMenu
             ));
@@ -129,7 +133,7 @@ public class MineLittlePony implements ClientModInitializer {
         }
     }
 
-    public PonyManager getManager() {
+    public PonyManagerImpl getManager() {
         return ponyManager;
     }
 
@@ -142,6 +146,23 @@ public class MineLittlePony implements ClientModInitializer {
      */
     public PonyRenderDispatcher getRenderDispatcher() {
         return renderDispatcher;
+    }
+
+    private static final class ClientPonyConfig extends PonyConfig {
+        public ClientPonyConfig(Path path) {
+            super(path);
+            MobRenderers.REGISTRY.values().forEach(r -> value("entities", r.name, true));
+            disablePonifiedArmour.onChanged(t -> ArmourTextureResolver.INSTANCE.invalidate());
+        }
+
+        @Override
+        public void save() {
+            super.save();
+            PlayerEntity player = MinecraftClient.getInstance().player;
+            if (player != null) {
+                player.calculateDimensions();
+            }
+        }
     }
 }
 

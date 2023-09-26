@@ -15,7 +15,7 @@ import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.model.gear.Gear;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.PonyRenderContext;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +42,7 @@ public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & Pony
                 return randomizedOrder;
             }));
 
-    public GearFeature(IPonyRenderContext<T, M> renderer) {
+    public GearFeature(PonyRenderContext<T, M> renderer) {
         super(renderer);
     }
 

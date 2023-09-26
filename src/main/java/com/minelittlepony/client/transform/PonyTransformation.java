@@ -6,7 +6,7 @@ import net.minecraft.util.math.Vec3d;
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.pony.meta.Size;
-import com.minelittlepony.api.pony.meta.Sizes;
+import com.minelittlepony.api.pony.meta.SizePreset;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public enum PonyTransformation {
 
-    NORMAL(Sizes.NORMAL, 0, 3F, 0.75F) {
+    NORMAL(SizePreset.NORMAL, 0, 3F, 0.75F) {
         @Override
         public void transform(PonyModel<?> model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isSwimming) stack.translate(0, -0.3F, 0);
@@ -37,7 +37,7 @@ public enum PonyTransformation {
             }
         }
     },
-    LANKY(Sizes.LANKY, 0, 2.6F, 0.75F) {
+    LANKY(SizePreset.LANKY, 0, 2.6F, 0.75F) {
         @Override
         public void transform(PonyModel<?> model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isSwimming) stack.translate(0, -0.2F, 0);
@@ -73,7 +73,7 @@ public enum PonyTransformation {
             }
         }
     },
-    BULKY(Sizes.BULKY, 0, 2.3F, 0.75F) {
+    BULKY(SizePreset.BULKY, 0, 2.3F, 0.75F) {
         @Override
         public void transform(PonyModel<?> model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isCrouching) stack.translate(0, -0.15F, 0);
@@ -108,7 +108,7 @@ public enum PonyTransformation {
             }
         }
     },
-    FOAL(Sizes.FOAL, 0, 3.8F, 0.75F) {
+    FOAL(SizePreset.FOAL, 0, 3.8F, 0.75F) {
         @Override
         public void transform(PonyModel<?> model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isSwimming) stack.translate(0, -0.9F, 0);
@@ -138,7 +138,7 @@ public enum PonyTransformation {
             }
         }
     },
-    TALL(Sizes.TALL, 0, 2.2F, 0.75F) {
+    TALL(SizePreset.TALL, 0, 2.2F, 0.75F) {
         @Override
         public void transform(PonyModel<?> model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isCrouching) stack.translate(0, -0.15F, 0);
@@ -170,7 +170,7 @@ public enum PonyTransformation {
             }
         }
     },
-    YEARLING(Sizes.YEARLING, 0, 3.8F, 0.75F) {
+    YEARLING(SizePreset.YEARLING, 0, 3.8F, 0.75F) {
         @Override
         public void transform(PonyModel<?> model, BodyPart part, MatrixStack stack) {
             if (model.getAttributes().isSwimming) stack.translate(0, -0.6F, 0);
@@ -205,12 +205,12 @@ public enum PonyTransformation {
         }
     };
 
-    private static final Map<Sizes, PonyTransformation> REGISTRY = Arrays.stream(values()).collect(Collectors.toMap(i -> i.size, Function.identity()));
+    private static final Map<Size, PonyTransformation> REGISTRY = Arrays.stream(values()).collect(Collectors.toMap(i -> i.size, Function.identity()));
 
-    private final Sizes size;
+    private final Size size;
     private final Vec3d riderOffset;
 
-    PonyTransformation(Sizes size, float rX, float rY, float rZ) {
+    PonyTransformation(Size size, float rX, float rY, float rZ) {
         this.size = size;
         riderOffset = new Vec3d(rX, rY, rZ);
     }

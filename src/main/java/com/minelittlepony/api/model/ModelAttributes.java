@@ -165,7 +165,7 @@ public class ModelAttributes {
     }
 
     public Interpolator getMainInterpolator() {
-        return metadata.getInterpolator(interpolatorId);
+        return Interpolator.linear(interpolatorId);
     }
 
     public boolean shouldLiftArm(ArmPose pose, ArmPose complement, float sigma) {

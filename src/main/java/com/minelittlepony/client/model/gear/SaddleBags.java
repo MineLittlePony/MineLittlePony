@@ -59,7 +59,7 @@ public class SaddleBags extends WearableGear {
         strap.visible = wearable == Wearable.SADDLE_BAGS_BOTH;
 
         dropAmount = hangLow ? 0.15F : 0;
-        dropAmount = model.getAttributes().metadata.getInterpolator(interpolatorId).interpolate("dropAmount", dropAmount, 3);
+        dropAmount = model.getAttributes().getMainInterpolator().interpolate("dropAmount", dropAmount, 3);
     }
 
     @Override

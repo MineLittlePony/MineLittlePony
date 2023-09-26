@@ -2,7 +2,7 @@ package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.ClientPonyModel;
-import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.PonyRenderContext;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
@@ -17,7 +17,7 @@ import net.minecraft.entity.EquipmentSlot;
 
 public class CapeFeature<M extends ClientPonyModel<AbstractClientPlayerEntity>> extends AbstractPonyFeature<AbstractClientPlayerEntity, M> {
 
-    public CapeFeature(IPonyRenderContext<AbstractClientPlayerEntity, M> context) {
+    public CapeFeature(PonyRenderContext<AbstractClientPlayerEntity, M> context) {
         super(context);
     }
 

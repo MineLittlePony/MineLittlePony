@@ -35,7 +35,7 @@ public class PonySettingsscreen extends GameGui {
     public static final Text SCALE_SHOW = Text.translatable("minelp.debug.scale.sa");
     public static final Text SCALE_MIN = Text.translatable("minelp.debug.scale.min");
 
-    private ClientPonyConfig config;
+    private final PonyConfig config = PonyConfig.getInstance();
 
     private final ScrollContainer content = new ScrollContainer();
 
@@ -43,9 +43,6 @@ public class PonySettingsscreen extends GameGui {
 
     public PonySettingsscreen(@Nullable Screen parent) {
         super(Text.literal(OPTIONS_PREFIX + "title"), parent);
-
-        config = (ClientPonyConfig)PonyConfig.getInstance();
-
         content.margin.top = 30;
         content.margin.bottom = 30;
         content.getContentPadding().top = 10;

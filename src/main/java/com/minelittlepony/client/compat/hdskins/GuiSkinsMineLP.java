@@ -1,6 +1,5 @@
 package com.minelittlepony.client.compat.hdskins;
 
-import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.PonySettingsscreen;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
@@ -29,13 +28,13 @@ class GuiSkinsMineLP extends GuiSkins {
         chooser.addSkinChangedEventListener(type -> {
             MineLittlePony.logger.debug("Invalidating old local skin, checking updated local skin");
             if (type == SkinType.SKIN) {
-                Pony.getManager().removePony(previewer.getLocal().getSkins().get(SkinType.SKIN).getId());
+                MineLittlePony.getInstance().getManager().removePony(previewer.getLocal().getSkins().get(SkinType.SKIN).getId());
             }
         });
         uploader.addSkinLoadedEventListener((type, location, profileTexture) -> {
             MineLittlePony.logger.debug("Invalidating old remote skin, checking updated remote skin");
             if (type == SkinType.SKIN) {
-                Pony.getManager().removePony(location);
+                MineLittlePony.getInstance().getManager().removePony(location);
             }
         });
     }

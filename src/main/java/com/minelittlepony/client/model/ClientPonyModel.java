@@ -13,7 +13,7 @@ import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.api.pony.meta.Size;
-import com.minelittlepony.api.pony.meta.Sizes;
+import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.mson.api.model.biped.MsonPlayer;
 
 /**
@@ -79,7 +79,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
 
     @Override
     public Size getSize() {
-        return child ? Sizes.FOAL : PonyModel.super.getSize();
+        return child ? SizePreset.FOAL : PonyModel.super.getSize();
     }
 
     @Override

@@ -17,7 +17,7 @@ import net.minecraft.village.VillagerProfession;
 import net.minecraft.village.VillagerType;
 
 import com.minelittlepony.api.model.PonyModel;
-import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.feature.AbstractPonyFeature;
 import com.minelittlepony.client.util.render.TextureFlattener;
 import com.minelittlepony.util.ResourceUtil;
@@ -27,7 +27,7 @@ import java.util.*;
 class NpcClothingFeature<
         T extends LivingEntity & VillagerDataContainer,
         M extends EntityModel<T> & PonyModel<T>,
-        C extends FeatureRendererContext<T, M> & IPonyRenderContext<T, M>> extends AbstractPonyFeature<T, M> {
+        C extends FeatureRendererContext<T, M> & PonyRenderContext<T, M>> extends AbstractPonyFeature<T, M> {
 
     private static final Int2ObjectMap<Identifier> LEVEL_TO_ID = Util.make(new Int2ObjectOpenHashMap<>(), a -> {
         a.put(1, new Identifier("stone"));

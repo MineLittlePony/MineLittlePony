@@ -3,7 +3,7 @@ package com.minelittlepony.client.render.entity.feature;
 import com.minelittlepony.api.model.ModelWrapper;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.model.armour.*;
-import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.common.util.Color;
 
 import net.minecraft.client.MinecraftClient;
@@ -22,7 +22,7 @@ import net.minecraft.util.Identifier;
 
 public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> extends AbstractPonyFeature<T, M> {
 
-    public ArmourFeature(IPonyRenderContext<T, M> context, BakedModelManager bakery) {
+    public ArmourFeature(PonyRenderContext<T, M> context, BakedModelManager bakery) {
         super(context);
     }
 

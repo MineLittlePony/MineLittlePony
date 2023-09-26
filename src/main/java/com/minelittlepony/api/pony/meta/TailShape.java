@@ -1,6 +1,6 @@
 package com.minelittlepony.api.pony.meta;
 
-public enum TailShape implements TriggerPixelType<TailShape> {
+public enum TailShape implements TValue<TailShape> {
     STRAIGHT(0),
     BUMPY   (0xfc539f),
     SWIRLY  (0x3eff22),

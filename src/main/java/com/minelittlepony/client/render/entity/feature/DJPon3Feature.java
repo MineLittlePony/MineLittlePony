@@ -11,13 +11,13 @@ import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.model.DJPon3EarsModel;
-import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.PonyRenderContext;
 
 public class DJPon3Feature<T extends AbstractClientPlayerEntity, M extends EntityModel<T> & PonyModel<T>> extends AbstractPonyFeature<T, M> {
 
     private final DJPon3EarsModel deadMau5 = ModelType.DJ_PON_3.createModel();
 
-    public DJPon3Feature(IPonyRenderContext<T, M> context) {
+    public DJPon3Feature(PonyRenderContext<T, M> context) {
         super(context);
     }
 

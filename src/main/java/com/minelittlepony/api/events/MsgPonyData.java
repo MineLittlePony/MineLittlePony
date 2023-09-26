@@ -23,7 +23,7 @@ public class MsgPonyData {
                 new MsgSize(buffer),
                 buffer.readInt(),
                 buffer.readBoolean(),
-                Flags.read(Wearable.class, buffer)
+                Flags.read(Wearable.NONE, buffer)
         );
     }
 

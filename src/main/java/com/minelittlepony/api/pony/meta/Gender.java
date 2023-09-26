@@ -1,6 +1,6 @@
 package com.minelittlepony.api.pony.meta;
 
-public enum Gender implements TriggerPixelType<Gender> {
+public enum Gender implements TValue<Gender> {
     MARE(0),
     STALLION(0xffffff),
     ABOMONATION(0x888888);

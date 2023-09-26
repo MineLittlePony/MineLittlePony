@@ -2,7 +2,7 @@ package com.minelittlepony.client.model;
 
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.events.PonyModelPrepareCallback;
-import com.minelittlepony.api.pony.meta.Sizes;
+import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.client.util.render.RenderList;
 import com.minelittlepony.util.MathUtil;
@@ -450,10 +450,10 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
                     arm.pivotX -= 6 * sigma;
                     arm.pivotZ -= 2;
                 }
-                if (getSize() == Sizes.TALL) {
+                if (getSize() == SizePreset.TALL) {
                     arm.pivotY += 1;
                 }
-                if (getSize() == Sizes.FOAL) {
+                if (getSize() == SizePreset.FOAL) {
                     arm.pivotY -= 2;
                 }
 
@@ -558,7 +558,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
 
     @Override
     public float getRiderYOffset() {
-        switch ((Sizes)getSize()) {
+        switch ((SizePreset)getSize()) {
             case NORMAL: return 0.4F;
             case FOAL:
             case TALL:

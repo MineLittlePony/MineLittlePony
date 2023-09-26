@@ -79,7 +79,7 @@ public interface PonyModel<T extends LivingEntity> extends MsonModel, ModelWithH
      * i.e. Used to change wing rendering when using saddlebags.
      */
     default boolean isEmbedded(Wearable wearable) {
-        return getAttributes().metadata.isWearing(wearable);
+        return getAttributes().metadata.gear().matches(wearable);
     }
 
 }

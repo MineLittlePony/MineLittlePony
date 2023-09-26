@@ -11,12 +11,10 @@ import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.npc.textures.*;
 
 public class ZomponyVillagerRenderer extends AbstractNpcRenderer<ZombieVillagerEntity> {
-
-    private static final String TYPE = "zombie_villager";
     private static final TextureSupplier<String> FORMATTER = TextureSupplier.formatted("minelittlepony", "textures/entity/zombie_villager/zombie_%s.png");
 
     public ZomponyVillagerRenderer(EntityRendererFactory.Context context) {
-        super(context, TYPE,
+        super(context, "zombie_villager",
                 TextureSupplier.ofPool(VariatedTextureSupplier.BACKGROUND_ZOMPONIES_POOL,
                 TextureSupplier.ofPool(VariatedTextureSupplier.BACKGROUND_PONIES_POOL,
                 PlayerTextureSupplier.create(ProfessionTextureSupplier.create(FORMATTER)))),

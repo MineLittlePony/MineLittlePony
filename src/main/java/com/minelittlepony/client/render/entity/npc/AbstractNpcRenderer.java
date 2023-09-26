@@ -20,17 +20,12 @@ import com.minelittlepony.client.render.entity.npc.textures.*;
 import java.util.*;
 
 abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> extends PonyRenderer<T, ClientPonyModel<T>> {
-
-    private final String entityType;
-
     private final Map<Race, ModelWrapper<T, ClientPonyModel<T>>> models = new EnumMap<>(Race.class);
-
     private final NpcClothingFeature<T, ClientPonyModel<T>, AbstractNpcRenderer<T>> clothing;
 
     public AbstractNpcRenderer(EntityRendererFactory.Context context, String type, TextureSupplier<T> textureSupplier, TextureSupplier<String> formatter) {
-        super(context, ModelType.getPlayerModel(Race.EARTH).getKey(false), new SillyPonyTextureSupplier<>(textureSupplier, formatter));
-        entityType = type;
-        clothing = new NpcClothingFeature<>(this, entityType);
+        super(context, ModelType.getPlayerModel(Race.EARTH).getKey(false), SillyPonyTextureSupplier.create(textureSupplier, formatter));
+        clothing = new NpcClothingFeature<>(this, type);
         addFeature(clothing);
     }
 
@@ -42,12 +37,9 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
 
     @Override
     public boolean shouldRender(ClientPonyModel<T> model, T entity, Wearable wearable, Gear gear) {
-
-        boolean special = SillyPonyTextureSupplier.isBestPony(entity);
-
         if (wearable == Wearable.SADDLE_BAGS_BOTH) {
             VillagerProfession profession = entity.getVillagerData().getProfession();
-            return !special && profession != VillagerProfession.NONE && (
+            return !SillyPonyTextureSupplier.isBestPony(entity) && profession != VillagerProfession.NONE && (
                     profession == VillagerProfession.CARTOGRAPHER
                  || profession == VillagerProfession.FARMER
                  || profession == VillagerProfession.FISHERMAN

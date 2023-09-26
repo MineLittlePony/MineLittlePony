@@ -1,14 +1,13 @@
 package com.minelittlepony.api.pony.meta;
 
 import net.minecraft.util.Identifier;
-
-import com.minelittlepony.common.util.Color;
+import net.minecraft.util.math.ColorHelper;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public enum Wearable implements TriggerPixelType<Wearable> {
+public enum Wearable implements TValue<Wearable> {
     NONE              (0x00, null),
     CROWN             (0x16, new Identifier("minelittlepony", "textures/models/crown.png")),
     MUFFIN            (0x32, new Identifier("minelittlepony", "textures/models/muffin.png")),
@@ -22,13 +21,11 @@ public enum Wearable implements TriggerPixelType<Wearable> {
     private int triggerValue;
 
     private final Identifier id;
-
     private final Identifier texture;
 
-    public static final List<Wearable> VALUES = Arrays.stream(values()).toList();
-    public static final Map<Identifier, Wearable> REGISTRY = VALUES.stream().collect(Collectors.toMap(Wearable::getId, Function.identity()));
+    public static final Map<Identifier, Wearable> REGISTRY = Arrays.stream(values()).collect(Collectors.toMap(Wearable::getId, Function.identity()));
 
-    public static final Flags<Wearable> EMPTY_FLAGS = Flags.of(Wearable.class);
+    public static final Flags<Wearable> EMPTY_FLAGS = Flags.of(NONE);
 
     Wearable(int pixel, Identifier texture) {
         triggerValue = pixel;
@@ -55,6 +52,6 @@ public enum Wearable implements TriggerPixelType<Wearable> {
 
     @Override
     public int getChannelAdjustedColorCode() {
-        return triggerValue == 0 ? 0 : Color.argbToHex(255, triggerValue, triggerValue, triggerValue);
+        return triggerValue == 0 ? 0 : ColorHelper.Argb.getArgb(255, triggerValue, triggerValue, triggerValue);
     }
 }

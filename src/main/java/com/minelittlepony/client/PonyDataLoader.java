@@ -6,7 +6,6 @@ import net.minecraft.util.Identifier;
 
 import com.google.gson.*;
 import com.minelittlepony.api.pony.PonyData;
-import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.client.util.render.NativeUtil;
 
 import java.io.IOException;
@@ -53,16 +52,7 @@ class PonyDataLoader {
         }).map(PonyDataLoader::loaded).orElseGet(() -> {
             return load(callback -> {
                 NativeUtil.parseImage(identifier, image -> {
-                    callback.accept(new PonyData(
-                            TriggerPixel.RACE.readValue(image),
-                            TriggerPixel.TAIL.readValue(image),
-                            TriggerPixel.TAIL_SHAPE.readValue(image),
-                            TriggerPixel.GENDER.readValue(image),
-                            TriggerPixel.SIZE.readValue(image),
-                            TriggerPixel.GLOW.readColor(image),
-                            TriggerPixel.WEARABLES.readFlags(image),
-                            noSkin
-                    ));
+                    callback.accept(new PonyData(image, noSkin));
                 }, e -> {
                     MineLittlePony.logger.fatal("Unable to read {} metadata", identifier, e);
                     callback.accept(PonyData.NULL);

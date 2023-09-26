@@ -43,7 +43,7 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
         SkinsProxy.instance = this;
 
         seaponySkinType = SkinType.register(AquaticPlayerPonyRenderer.SKIN_TYPE_ID, Items.COD_BUCKET.getDefaultStack());
-        Wearable.VALUES.forEach(wearable -> {
+        Wearable.REGISTRY.values().forEach(wearable -> {
             if (wearable != Wearable.NONE) {
                 wearableTypes.put(SkinType.register(wearable.getId(), Items.BUNDLE.getDefaultStack()), wearable);
             }
@@ -100,7 +100,7 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
             PlayerSkin main = dummy.getTextures().get(SkinType.SKIN);
             Wearable wearable = Wearable.REGISTRY.getOrDefault(type.getId(), Wearable.NONE);
             PonyData metadata = Pony.getManager().getPony(main.getId()).metadata();
-            if (wearable != Wearable.NONE && metadata.isWearing(wearable)) {
+            if (wearable != Wearable.NONE && metadata.gear().matches(wearable)) {
 
                 if (wearable.isSaddlebags() && metadata.race().supportsLegacySaddlebags()) {
                     return Optional.of(main.getId());

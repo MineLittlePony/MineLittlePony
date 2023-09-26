@@ -8,7 +8,7 @@ import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.client.model.*;
 import com.minelittlepony.client.render.DebugBoundingBoxRenderer;
-import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.feature.*;
 import com.minelittlepony.client.util.render.RenderLayerUtil;
 
@@ -29,7 +29,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 
-public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRenderContext<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> {
+public class PlayerPonyRenderer extends PlayerEntityRenderer implements PonyRenderContext<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> {
 
     protected final EquineRenderManager<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> manager = new EquineRenderManager<>(this);
 
@@ -81,7 +81,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
         Pony pony = getEntityPony(entity);
         model = manager.setModel(modelsCache.apply(getPlayerRace(entity, pony))).body();
         // EntityModelFeatures: We have to force it to use our models otherwise EMF overrides it and breaks pony rendering
-        shadowRadius = manager.getModel().getSize().shadowSize();
+        shadowRadius = manager.getShadowSize();
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
         DebugBoundingBoxRenderer.render(pony, this, entity, stack, renderContext, tickDelta);
 
@@ -89,7 +89,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
         // (shadows are drawn after us)
         if (!entity.hasVehicle() && !entity.isSleeping()) {
             float yaw = MathHelper.lerpAngleDegrees(tickDelta, entity.prevBodyYaw, entity.bodyYaw);
-            float l = entity.getWidth() / 2 * pony.size().scaleFactor();
+            float l = entity.getWidth() / 2 * manager.getScaleFactor();
 
             stack.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(yaw));
             stack.translate(0, 0, -l);

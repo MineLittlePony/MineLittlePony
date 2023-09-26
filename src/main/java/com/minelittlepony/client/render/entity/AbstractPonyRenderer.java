@@ -5,7 +5,7 @@ import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.*;
 import com.minelittlepony.client.render.DebugBoundingBoxRenderer;
-import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.client.render.entity.feature.*;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
@@ -27,7 +27,7 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-public abstract class AbstractPonyRenderer<T extends MobEntity, M extends EntityModel<T> & PonyModel<T> & ModelWithArms> extends MobEntityRenderer<T, M> implements IPonyRenderContext<T, M> {
+public abstract class AbstractPonyRenderer<T extends MobEntity, M extends EntityModel<T> & PonyModel<T> & ModelWithArms> extends MobEntityRenderer<T, M> implements PonyRenderContext<T, M> {
 
     protected final EquineRenderManager<T, M> manager = new EquineRenderManager<>(this);
 
@@ -91,7 +91,7 @@ public abstract class AbstractPonyRenderer<T extends MobEntity, M extends Entity
 
     @Override
     public void scale(T entity, MatrixStack stack, float tickDelta) {
-        shadowRadius = manager.getModel().getSize().shadowSize();
+        shadowRadius = manager.getShadowSize();
 
         if (entity.isBaby()) {
             shadowRadius *= 3; // undo vanilla shadow scaling

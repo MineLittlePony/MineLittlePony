@@ -3,7 +3,7 @@ package com.minelittlepony.client.model.entity.race;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.meta.Size;
-import com.minelittlepony.api.pony.meta.Sizes;
+import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.client.model.part.UnicornHorn;
 import com.minelittlepony.client.util.render.RenderList;
 import com.minelittlepony.mson.api.ModelView;
@@ -101,9 +101,9 @@ public class UnicornModel<T extends LivingEntity> extends EarthPonyModel<T> impl
                     float x = 0.3F;
                     float z = -0.4F;
 
-                    if (size == Sizes.TALL || size == Sizes.YEARLING) {
+                    if (size == SizePreset.TALL || size == SizePreset.YEARLING) {
                         z += 0.05F;
-                    } else if (size == Sizes.FOAL) {
+                    } else if (size == SizePreset.FOAL) {
                         x -= 0.1F;
                         z -= 0.1F;
                     }

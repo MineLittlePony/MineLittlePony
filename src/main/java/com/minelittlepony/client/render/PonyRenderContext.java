@@ -10,7 +10,7 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
-public interface IPonyRenderContext<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> extends Gear.Context<T, M> {
+public interface PonyRenderContext<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> extends Gear.Context<T, M> {
 
     Pony getEntityPony(T entity);
 

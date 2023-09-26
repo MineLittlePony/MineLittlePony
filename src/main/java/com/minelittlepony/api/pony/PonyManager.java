@@ -1,6 +1,7 @@
 package com.minelittlepony.api.pony;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 
@@ -10,8 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * The PonyManager is responsible for reading and recoding all the pony data associated with an entity of skin.
- *
+ * The PonyManager is responsible for reading and recoding all the pony data associated with the skin of an entity.
  */
 public interface PonyManager  {
     /**
@@ -19,7 +19,25 @@ public interface PonyManager  {
      *
      * If the supplied entity is null or can't be determined to be a pony, returns the empty optional.
      */
-    Optional<Pony> getPony(@Nullable Entity entity);
+    default Optional<Pony> getPony(@Nullable Entity entity) {
+        return entity instanceof LivingEntity living ? getPony(living) : Optional.empty();
+    }
+
+    /**
+     * Gets a pony representation of the passed in entity.
+     *
+     * If the supplied entity is null or can't be determined to be a pony, returns the empty optional.
+     */
+    Optional<Pony> getPony(LivingEntity entity);
+
+    /**
+     * Gets a random background pony determined by the given uuid.
+     *
+     * Useful for mods that offer customisation, especially ones that have a whole lot of NPCs.
+     *
+     * @param uuid id of a player
+     */
+    Pony getBackgroundPony(UUID uuid);
 
     /**
      * Gets or creates a pony for the given player.
@@ -28,13 +46,6 @@ public interface PonyManager  {
      * @param player the player
      */
     Pony getPony(PlayerEntity player);
-
-    /**
-     * Gets or creates a pony for the given skin resource and vanilla model type.
-     *
-     * @param resource A texture resource
-     */
-    Pony getPony(Identifier resource);
 
     /**
      * Gets or creates a pony for the given skin resource and entity id.
@@ -46,23 +57,16 @@ public interface PonyManager  {
      * @param resource A texture resource
      * @param uuid id of a player
      */
-    Pony getPony(Identifier resource, UUID uuid);
+    Pony getPony(@Nullable Identifier resource, @Nullable UUID uuid);
 
     /**
-     * Gets a random background pony determined by the given uuid.
+     * Gets or creates a pony for the given skin resource and vanilla model type.
      *
-     * Useful for mods that offer customisation, especially ones that have a whole lot of NPCs.
-     *
-     * @param uuid  A UUID. Either a user or an entity.
+     * @param resource A texture resource
      */
-    Pony getBackgroundPony(UUID uuid);
-
-    /**
-     * De-registers a pony from the cache.
-     */
-    void removePony(Identifier resource);
-
-    void clearCache();
+    default Pony getPony(Identifier resource) {
+        return getPony(resource, null);
+    }
 
     interface ForcedPony {}
 

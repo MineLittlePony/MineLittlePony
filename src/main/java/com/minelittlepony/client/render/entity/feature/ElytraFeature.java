@@ -5,7 +5,7 @@ import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.pony.PonyPosture;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.PonyElytra;
-import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.PonyRenderContext;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
@@ -29,7 +29,7 @@ public class ElytraFeature<T extends LivingEntity, M extends EntityModel<T> & Po
     @SuppressWarnings("unchecked")
     private final PonyElytra<T> modelElytra = (PonyElytra<T>)ModelType.ELYTRA.createModel();
 
-    public ElytraFeature(IPonyRenderContext<T, M> rp) {
+    public ElytraFeature(PonyRenderContext<T, M> rp) {
         super(rp);
     }
 

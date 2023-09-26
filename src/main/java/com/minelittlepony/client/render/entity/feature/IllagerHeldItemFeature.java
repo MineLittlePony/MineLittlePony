@@ -6,11 +6,11 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.IllagerEntity;
 
 import com.minelittlepony.client.model.entity.race.AlicornModel;
-import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.PonyRenderContext;
 
 public class IllagerHeldItemFeature<T extends IllagerEntity, M extends AlicornModel<T>> extends HeldItemFeature<T, M> {
 
-    public IllagerHeldItemFeature(IPonyRenderContext<T,M> livingPony, HeldItemRenderer renderer) {
+    public IllagerHeldItemFeature(PonyRenderContext<T,M> livingPony, HeldItemRenderer renderer) {
         super(livingPony, renderer);
     }
 

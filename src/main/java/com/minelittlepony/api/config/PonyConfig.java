@@ -3,6 +3,7 @@ package com.minelittlepony.api.config;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.pony.meta.*;
+import com.minelittlepony.common.client.gui.VisibilityMode;
 import com.minelittlepony.common.util.GamePaths;
 import com.minelittlepony.common.util.settings.*;
 
@@ -54,7 +55,7 @@ public class PonyConfig extends Config {
     public final Setting<Boolean> horsieMode = value("settings", "horsieMode", false)
             .addComment("Enables the alternative horsey models from the April Fools 2023 update");
 
-    public final Setting<Sizes> sizeOverride = value("debug", "sizeOverride", Sizes.UNSET)
+    public final Setting<SizePreset> sizeOverride = value("debug", "sizeOverride", SizePreset.UNSET)
                 .addComment("Overrides pony sizes")
                 .addComment("Possible values: TALL, BULKY, LANKY, NORMAL, YEARLING, FOAL, UNSET (default)");
 
@@ -71,6 +72,12 @@ public class PonyConfig extends Config {
     public final Setting<Boolean> noFun = value("customisation", "noFun", false)
                 .addComment("Disables certain easter eggs and secrets (party pooper)")
                 .addComment("Turning this off may help with compatibility in some cases");
+
+    public final Setting<VisibilityMode> horseButton = value("horseButton", VisibilityMode.AUTO)
+            .addComment("Whether to show the mine little pony settings button on the main menu")
+            .addComment("AUTO (default) - only show when HDSkins is not installed")
+            .addComment("ON - always show")
+            .addComment("OFF - never show");
 
     public PonyConfig(Path path) {
         super(HEIRARCHICAL_JSON_ADAPTER, path);
@@ -132,14 +139,14 @@ public class PonyConfig extends Config {
     }
 
     public static Size getEffectiveSize(Size size) {
-        Sizes sz = instance.sizeOverride.get();
+        SizePreset sz = instance.sizeOverride.get();
 
-        if (sz != Sizes.UNSET) {
+        if (sz != SizePreset.UNSET) {
             return sz;
         }
 
-        if (size == Sizes.UNSET || !instance.sizes.get()) {
-            return Sizes.NORMAL;
+        if (size == SizePreset.UNSET || !instance.sizes.get()) {
+            return SizePreset.NORMAL;
         }
 
         return size;

@@ -6,7 +6,6 @@ import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.ComparisonChain;
 import com.minelittlepony.api.pony.meta.*;
-import com.minelittlepony.common.util.animation.Interpolator;
 
 import java.util.*;
 import java.util.function.Function;
@@ -53,64 +52,40 @@ public record PonyData (
         /**
          * Gets the trigger pixel values as they appeared in the underlying image.
          */
-        Map<String, TriggerPixelType<?>> attributes
+        Map<String, TValue<?>> attributes
     ) implements Comparable<PonyData> {
-    private static final Function<Race, PonyData> OF_RACE = Util.memoize(race -> {
-        return new PonyData(race, TailLength.FULL, TailShape.STRAIGHT, Gender.MARE, Sizes.NORMAL, 0x4444aa, Wearable.EMPTY_FLAGS, true, Util.make(new TreeMap<>(), attributes -> {
-            attributes.put("race", race);
-            attributes.put("tailLength", TailLength.FULL);
-            attributes.put("tailShape", TailShape.STRAIGHT);
-            attributes.put("gender", Gender.MARE);
-            attributes.put("size", Sizes.NORMAL);
-            attributes.put("magic", TriggerPixelType.of(0x4444aa));
-            attributes.put("gear", TriggerPixelType.of(0));
-        }));
-    });
+    public static final int DEFAULT_MAGIC_COLOR = 0x4444aa;
+    private static final Function<Race, PonyData> OF_RACE = Util.memoize(race -> new PonyData(race, TailLength.FULL, TailShape.STRAIGHT, Gender.MARE, SizePreset.NORMAL, DEFAULT_MAGIC_COLOR, true, Wearable.EMPTY_FLAGS));
     public static final PonyData NULL = OF_RACE.apply(Race.HUMAN);
 
     public static PonyData emptyOf(Race race) {
         return OF_RACE.apply(race);
     }
 
-
-    public PonyData(Race race, TailLength tailLength, TailShape tailShape, Gender gender, Size size, int glowColor, boolean noSkin, Flags<Wearable> wearables) {
-        this(race, tailLength, tailShape, gender, size, glowColor, wearables, noSkin, Util.make(new TreeMap<>(), map -> {
-            map.put("race", race);
-            map.put("tailLength", tailLength);
-            map.put("tailShape", tailShape);
-            map.put("gender", gender);
-            map.put("size", size);
-            map.put("magic", TriggerPixelType.of(glowColor));
-            map.put("gear", TriggerPixelType.of(wearables.colorCode()));
-        }));
-    }
-    public PonyData(Race race, TailLength tailLength, TailShape tailShape, Gender gender, Size size, int glowColor, TriggerPixelType.Multiple<Wearable> wearables, boolean noSkin) {
-        this(race, tailLength, tailShape, gender, size, glowColor,
-                Flags.of(Wearable.class, wearables.colorCode(), wearables.value()),
-                noSkin, Util.make(new TreeMap<>(), map -> {
-                    map.put("race", race);
-                    map.put("tailLength", tailLength);
-                    map.put("tailShape", tailShape);
-                    map.put("gender", gender);
-                    map.put("size", size);
-                    map.put("magic", TriggerPixelType.of(glowColor));
-                    map.put("gear", wearables);
-                })
+    public PonyData(TriggerPixel.Mat image, boolean noSkin) {
+        this(
+            TriggerPixel.RACE.read(image),
+            TriggerPixel.TAIL.read(image),
+            TriggerPixel.TAIL_SHAPE.read(image),
+            TriggerPixel.GENDER.read(image),
+            TriggerPixel.SIZE.read(image),
+            TriggerPixel.GLOW.read(image),
+            noSkin,
+            TriggerPixel.WEARABLES.read(image)
         );
     }
 
-    /**
-     * Checks it this pony is wearing the given accessory.
-     */
-    public boolean isWearing(Wearable wearable) {
-        return gear().includes(wearable);
-    }
-
-    /**
-     * Gets an interpolator for interpolating values.
-     */
-    public Interpolator getInterpolator(UUID interpolatorId) {
-        return Interpolator.linear(interpolatorId);
+    public PonyData(Race race, TailLength tailLength, TailShape tailShape, Gender gender, Size size, int glowColor, boolean noSkin, Flags<Wearable> wearables) {
+        this(race, tailLength, tailShape, gender, size, glowColor, wearables, noSkin, Util.make(new TreeMap<>(), map -> {
+                map.put("race", race);
+                map.put("tailLength", tailLength);
+                map.put("tailShape", tailShape);
+                map.put("gender", gender);
+                map.put("size", size);
+                map.put("magic", new TValue.Numeric(glowColor));
+                map.put("gear", wearables);
+            })
+        );
     }
 
     @Override

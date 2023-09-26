@@ -5,6 +5,7 @@ import net.minecraft.client.texture.*;
 import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
 
+import com.minelittlepony.api.pony.meta.TriggerPixel;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import java.io.InputStream;
@@ -86,11 +87,11 @@ public class NativeUtil {
         }
     }
 
-    public static void parseImage(Identifier resource, Consumer<NativeImage> consumer, Consumer<Exception> fail) {
+    public static void parseImage(Identifier resource, Consumer<TriggerPixel.Mat> consumer, Consumer<Exception> fail) {
         parseImage(resource, consumer, fail, 0);
     }
 
-    private static void parseImage(Identifier resource, Consumer<NativeImage> consumer, Consumer<Exception> fail, int attempt) {
+    private static void parseImage(Identifier resource, Consumer<TriggerPixel.Mat> consumer, Consumer<Exception> fail, int attempt) {
         try {
             if (!RenderSystem.isOnRenderThread()) {
                 RenderSystem.recordRenderCall(() -> parseImage(resource, consumer, fail, attempt));
@@ -105,7 +106,7 @@ public class NativeUtil {
             if (loadedTexture instanceof NativeImageBackedTexture nibt) {
                 NativeImage image = nibt.getImage();
                 if (image != null) {
-                    consumer.accept(image);
+                    consumer.accept(image::getColor);
                     return;
                 }
             }
@@ -113,7 +114,7 @@ public class NativeUtil {
             Resource res = mc.getResourceManager().getResource(resource).orElse(null);
             if (res != null) {
                 try (InputStream inputStream = res.getInputStream()){
-                    consumer.accept(NativeImage.read(inputStream));
+                    consumer.accept(NativeImage.read(inputStream)::getColor);
                     return;
                 }
             }
@@ -124,7 +125,7 @@ public class NativeUtil {
         }
     }
 
-    private static void __reconstructNativeImage(Identifier resource, Consumer<NativeImage> consumer, Consumer<Exception> fail, int attempt) {
+    private static void __reconstructNativeImage(Identifier resource, Consumer<TriggerPixel.Mat> consumer, Consumer<Exception> fail, int attempt) {
         MinecraftClient mc = MinecraftClient.getInstance();
         TextureManager textures = mc.getTextureManager();
 
@@ -156,7 +157,7 @@ public class NativeUtil {
             // This allocates a new array to store the image every time.
             // Don't do this every time. Keep a cache and store it so we don't destroy memory.
             image.loadFromTextureImage(0, false);
-            consumer.accept(image);
+            consumer.accept(image::getColor);
         }
     }
 }

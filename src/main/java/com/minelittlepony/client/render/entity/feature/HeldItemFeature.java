@@ -2,7 +2,7 @@ package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.PonyModel;
-import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.PonyRenderContext;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
@@ -18,10 +18,10 @@ import net.minecraft.util.Arm;
 
 public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T> & ModelWithArms> extends HeldItemFeatureRenderer<T, M> {
 
-    private final IPonyRenderContext<T, M> context;
+    private final PonyRenderContext<T, M> context;
 
     @SuppressWarnings("unchecked")
-    public HeldItemFeature(IPonyRenderContext<T, M> context, HeldItemRenderer renderer) {
+    public HeldItemFeature(PonyRenderContext<T, M> context, HeldItemRenderer renderer) {
         super((FeatureRendererContext<T, M>)context, renderer);
         this.context = context;
     }

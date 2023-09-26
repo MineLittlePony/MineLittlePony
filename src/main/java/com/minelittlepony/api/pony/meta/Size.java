@@ -3,13 +3,13 @@ package com.minelittlepony.api.pony.meta;
 /**
  * Represents the different model sizes that are possible.
  *
- * For a list of possible presets, look at {@link Sizes}.
+ * For a list of possible presets, look at {@link SizePreset}.
  * This interface exists for servers so they can work with this information even though they might not have access to the client config.
  *
  */
-public interface Size extends TriggerPixelType<Size> {
+public interface Size extends TValue<Size> {
     /**
-     * The Enum index of this size. May be used on the client to convert to an instance of Sizes or use {@link Sizes#of}
+     * The Enum index of this size. May be used on the client to convert to an instance of Sizes or use {@link SizePreset#of}
      *
      * Made to be compatible with the enum variant.
      */

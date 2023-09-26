@@ -4,7 +4,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
 import com.minelittlepony.api.pony.*;
-import com.minelittlepony.api.pony.meta.TriggerPixelType;
+import com.minelittlepony.api.pony.meta.TValue;
 import com.minelittlepony.common.client.gui.ITextContext;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.hdskins.client.gui.Carousel;
@@ -37,7 +37,7 @@ class LegendOverlayWidget implements Carousel.Element, ITextContext {
         });
     }
 
-    private void drawLegendBlock(DrawContext context, int index, int x, int y, int mouseX, int mouseY, String key, TriggerPixelType<?> value) {
+    private void drawLegendBlock(DrawContext context, int index, int x, int y, int mouseX, int mouseY, String key, TValue<?> value) {
         context.fill(0, 0, LEGEND_BLOCK_BOUNDS.width, LEGEND_BLOCK_BOUNDS.height, 0xFF003333);
         context.fill(1, 1, LEGEND_BLOCK_BOUNDS.width - 1, LEGEND_BLOCK_BOUNDS.height - 1, value.colorCode() | 0xFF000000);
 

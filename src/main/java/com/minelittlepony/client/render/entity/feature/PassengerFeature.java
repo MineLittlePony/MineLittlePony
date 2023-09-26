@@ -17,7 +17,7 @@ import net.minecraft.util.Identifier;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.ClientPonyModel;
-import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.PonyRenderContext;
 
 import java.util.Optional;
 
@@ -25,7 +25,7 @@ public class PassengerFeature<T extends PlayerEntity, M extends ClientPonyModel<
 
     private final ParrotEntityModel model;
 
-    public PassengerFeature(IPonyRenderContext<T, M> renderer, EntityRendererFactory.Context context) {
+    public PassengerFeature(PonyRenderContext<T, M> renderer, EntityRendererFactory.Context context) {
         super(renderer);
         model = new ParrotEntityModel(context.getPart(EntityModelLayers.PARROT));
     }

@@ -8,13 +8,13 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.api.model.PonyModel;
-import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.PonyRenderContext;
 
 public class GlowingEyesFeature<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> extends EyesFeatureRenderer<T, M> {
 
     private final RenderLayer layer;
 
-    public <V extends FeatureRendererContext<T, M> & IPonyRenderContext<T, M> & IGlowingRenderer> GlowingEyesFeature(V renderer) {
+    public <V extends FeatureRendererContext<T, M> & PonyRenderContext<T, M> & IGlowingRenderer> GlowingEyesFeature(V renderer) {
         super(renderer);
         layer = RenderLayer.getEyes(renderer.getEyeTexture());
     }

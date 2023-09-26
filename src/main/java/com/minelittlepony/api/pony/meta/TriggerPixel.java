@@ -1,112 +1,91 @@
 package com.minelittlepony.api.pony.meta;
 
-import net.minecraft.client.texture.NativeImage;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.minecraft.util.math.ColorHelper;
+
+import org.joml.Vector2i;
 
 import com.minelittlepony.common.util.Color;
 
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * Individual trigger pixels for a pony skin.
- *
  */
-@SuppressWarnings("unchecked")
-public enum TriggerPixel {
-    RACE(Race.HUMAN, Channel.ALL, 0, 0),
-    TAIL(TailLength.FULL, Channel.ALL, 1, 0),
-    GENDER(Gender.MARE, Channel.ALL, 2, 0),
-    SIZE(Sizes.NORMAL, Channel.ALL, 3, 0),
-    GLOW(null, Channel.RAW, 0, 1),
-    WEARABLES(Wearable.NONE, Channel.RAW, 1, 1),
-    TAIL_SHAPE(TailShape.STRAIGHT, Channel.ALL, 2, 1);
+public interface TriggerPixel<T> {
+    Vector2i MAX_COORDS = new Vector2i();
 
-    private final int x;
-    private final int y;
+    TriggerPixel<Race> RACE = ofOptions(0, 0, Race.HUMAN, Race.values());
+    TriggerPixel<TailLength> TAIL = ofOptions(1, 0, TailLength.FULL, TailLength.values());
+    TriggerPixel<Gender> GENDER = ofOptions(2, 0, Gender.MARE, Gender.values());
+    TriggerPixel<TailShape> TAIL_SHAPE = ofOptions(2, 1, TailShape.STRAIGHT, TailShape.values());
+    TriggerPixel<Size> SIZE = ofOptions(3, 0, SizePreset.NORMAL, SizePreset.values());
+    TriggerPixel<Integer> GLOW = ofColor(0, 1);
+    TriggerPixel<Flags<Wearable>> WEARABLES = ofFlags(1, 1, Wearable.EMPTY_FLAGS, Wearable.values());
 
-    private final Channel channel;
+    static <T extends TValue<T>> TriggerPixel<T> ofOptions(int x, int y, T def, T[] options) {
+        MAX_COORDS.x = Math.max(MAX_COORDS.x, x);
+        MAX_COORDS.y = Math.max(MAX_COORDS.y, y);
+        Int2ObjectOpenHashMap<T> lookup = buildLookup(options);
+        return image -> {
+            int color = Color.abgrToArgb(image.getColor(x, y));
 
-    private final TriggerPixelType<?> def;
-
-    private static final TriggerPixel[] VALUES = values();
-    private static final int MAX_READ_X = Arrays.stream(VALUES).mapToInt(i -> i.x).max().getAsInt();
-    private static final int MAX_READ_Y = Arrays.stream(VALUES).mapToInt(i -> i.y).max().getAsInt();
-
-    TriggerPixel(TriggerPixelType<?> def, Channel channel, int x, int y) {
-        this.def = def;
-        this.channel = channel;
-        this.x = x;
-        this.y = y;
+            if (ColorHelper.Argb.getAlpha(color) < 255) {
+                return (T)def;
+            }
+            return lookup.getOrDefault(color & 0x00FFFFFF, def);
+        };
     }
 
-    /**
-     * Reads this trigger pixel's value and returns the raw colour.
-     *
-     * @param image Image to read
-     */
-    public int readColor(NativeImage image) {
-        return channel.readValue(x, y, image);
+    static TriggerPixel<Integer> ofColor(int x, int y) {
+        MAX_COORDS.x = Math.max(MAX_COORDS.x, x);
+        MAX_COORDS.y = Math.max(MAX_COORDS.y, y);
+        return image -> Color.abgrToArgb(image.getColor(x, y));
     }
 
-    /**
-     * Reads this trigger pixel's value and parses it to an Enum instance.
-     *
-     * @param image Image to read
-     */
-    public <T extends TriggerPixelType<T>> T readValue(NativeImage image) {
-        int color = readColor(image);
+    static <T extends Enum<T> & TValue<T>> TriggerPixel<Flags<T>> ofFlags(int x, int y, Flags<T> def, T[] options) {
+        MAX_COORDS.x = Math.max(MAX_COORDS.x, x);
+        MAX_COORDS.y = Math.max(MAX_COORDS.y, y);
+        Int2ObjectOpenHashMap<T> lookup = buildLookup(options);
+        var flagReader = new Object() {
+            boolean readFlag(int color, Set<T> values) {
+                T value = lookup.get(color);
+                return value != null && values.add(value);
+            }
+        };
+        return image -> {
+            int color = Color.abgrToArgb(image.getColor(x, y));
+            if (ColorHelper.Argb.getAlpha(color) < 255) {
+                return def;
+            }
+            @SuppressWarnings("unchecked")
+            Set<T> values = EnumSet.noneOf((Class<T>)def.def().getClass());
+            if (flagReader.readFlag(ColorHelper.Argb.getRed(color), values)
+                    || flagReader.readFlag(ColorHelper.Argb.getGreen(color), values)
+                    || flagReader.readFlag(ColorHelper.Argb.getBlue(color), values)) {
+                return new Flags<>(def.def(), values, color & 0x00FFFFFF);
+            }
+            return def;
+        };
+    }
 
-        if (Channel.ALPHA.readValue(x, y, image) < 255) {
-            return (T)def;
+    static <T extends TValue<T>> Int2ObjectOpenHashMap<T> buildLookup(T[] options) {
+        Int2ObjectOpenHashMap<T> lookup = new Int2ObjectOpenHashMap<>();
+        for (int i = 0; i < options.length; i++) {
+            lookup.put(options[i].colorCode(), options[i]);
         }
-
-        return TriggerPixelType.getByTriggerPixel((T)def, color);
+        return lookup;
     }
 
-    public <T extends Enum<T> & TriggerPixelType<T>> TriggerPixelType.Multiple<T> readFlags(NativeImage image) {
-        boolean[] out = new boolean[def.getClass().getEnumConstants().length];
-        readFlags(out, image);
-        return new TriggerPixelType.Multiple<>(readColor(image), (T)def, out);
+
+    T read(Mat image);
+
+    static boolean isTriggerPixelCoord(int x, int y) {
+        return x <= MAX_COORDS.x && y <= MAX_COORDS.y;
     }
 
-    public <T extends Enum<T> & TriggerPixelType<T>> void readFlags(boolean[] out, NativeImage image) {
-        readFlag(out, Channel.RED, image);
-        readFlag(out, Channel.GREEN, image);
-        readFlag(out, Channel.BLUE, image);
+    interface Mat {
+        int getColor(int x, int y);
     }
 
-    private <T extends Enum<T> & TriggerPixelType<T>> void readFlag(boolean[] out, Channel channel, NativeImage image) {
-
-        if (Channel.ALPHA.readValue(x, y, image) < 255) {
-            return;
-        }
-
-        T value = TriggerPixelType.getByTriggerPixel((T)def, channel.readValue(x, y, image));
-
-        out[value.ordinal()] |= value != def;
-    }
-
-    public static boolean isTriggerPixelCoord(int x, int y) {
-        return x <= MAX_READ_X && y <= MAX_READ_Y;
-    }
-
-    enum Channel {
-        RAW  (0xFFFFFFFF, 0),
-        ALL  (0x00FFFFFF, 0),
-        ALPHA(0x000000FF, 24),
-        RED  (0x000000FF, 0),
-        GREEN(0x000000FF, 8),
-        BLUE (0x000000FF, 16);
-
-        private int mask;
-        private int offset;
-
-        Channel(int mask, int offset) {
-            this.mask = mask;
-            this.offset = offset;
-        }
-
-        public int readValue(int x, int y, NativeImage image) {
-            return (Color.abgrToArgb(image.getColor(x, y)) >> offset) & mask;
-        }
-    }
 }

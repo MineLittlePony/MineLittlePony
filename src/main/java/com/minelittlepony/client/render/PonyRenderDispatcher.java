@@ -6,8 +6,8 @@ import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyPosture;
 import com.minelittlepony.client.mixin.MixinEntityRenderers;
-import com.minelittlepony.client.render.entity.PlayerPonyRenderer;
 import com.minelittlepony.client.render.entity.AquaticPlayerPonyRenderer;
+import com.minelittlepony.client.render.entity.PlayerPonyRenderer;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -83,15 +83,15 @@ public class PonyRenderDispatcher {
 
     @SuppressWarnings("unchecked")
     @Nullable
-    public <T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> IPonyRenderContext<T, M> getPonyRenderer(@Nullable T entity) {
+    public <T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> PonyRenderContext<T, M> getPonyRenderer(@Nullable T entity) {
         if (entity == null) {
             return null;
         }
 
         EntityRenderer<?> renderer = MinecraftClient.getInstance().getEntityRenderDispatcher().getRenderer(entity);
 
-        if (renderer instanceof IPonyRenderContext) {
-            return (IPonyRenderContext<T, M>) renderer;
+        if (renderer instanceof PonyRenderContext) {
+            return (PonyRenderContext<T, M>) renderer;
         }
 
         return null;

@@ -9,7 +9,7 @@ import com.minelittlepony.api.config.PonyConfig;
  *
  * For spooky things at a distance, use {@link Size} instead.
  */
-public enum Sizes implements Size {
+public enum SizePreset implements Size {
     TALL    (0x534b76, 0.45f, 1.1F,  1.15F),
     BULKY   (0xce3254, 0.5f,  1,     1.05F),
     LANKY   (0x3254ce, 0.45F, 0.85F, 0.9F),
@@ -18,13 +18,12 @@ public enum Sizes implements Size {
     FOAL    (0xffbe53, 0.25f, 0.6F,  0.5F),
     UNSET   (0x000000, 1,     1,     1);
 
-    private int triggerValue;
+    private final int triggerValue;
+    private final float shadowSize;
+    private final float scale;
+    private final float camera;
 
-    private float shadowSize;
-    private float scale;
-    private float camera;
-
-    Sizes(int pixel, float shadowSz, float scaleF, float cameraF) {
+    SizePreset(int pixel, float shadowSz, float scaleF, float cameraF) {
         triggerValue = pixel;
         shadowSize = shadowSz;
         scale = scaleF;
@@ -58,5 +57,4 @@ public enum Sizes implements Size {
     public float eyeDistanceFactor() {
         return eyeHeightFactor();
     }
-
 }

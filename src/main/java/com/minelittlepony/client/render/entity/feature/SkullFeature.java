@@ -3,7 +3,7 @@ package com.minelittlepony.client.render.entity.feature;
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.client.render.IPonyRenderContext;
+import com.minelittlepony.client.render.PonyRenderContext;
 import com.mojang.authlib.GameProfile;
 
 import java.util.Map;
@@ -34,7 +34,7 @@ public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & Pon
 
     private final Map<SkullBlock.SkullType, SkullBlockEntityModel> headModels;
 
-    public SkullFeature(IPonyRenderContext<T, M> renderPony, EntityModelLoader entityModelLoader) {
+    public SkullFeature(PonyRenderContext<T, M> renderPony, EntityModelLoader entityModelLoader) {
         super(renderPony);
         headModels = SkullBlockEntityRenderer.getModels(entityModelLoader);
     }
