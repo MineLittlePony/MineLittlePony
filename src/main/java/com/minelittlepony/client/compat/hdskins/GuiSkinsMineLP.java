@@ -1,6 +1,6 @@
 package com.minelittlepony.client.compat.hdskins;
 
-import com.minelittlepony.client.PonySettingsscreen;
+import com.minelittlepony.client.PonySettingsScreen;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.element.Button;
@@ -41,9 +41,9 @@ class GuiSkinsMineLP extends GuiSkins {
 
     @Override
     protected void initServerPreviewButtons(Bounds area) {
-        if (!(parent instanceof PonySettingsscreen)) {
+        if (!(parent instanceof PonySettingsScreen)) {
             addButton(new Button(area.right() - 20, area.bottom() + 5, 20, 20))
-                .onClick(sender -> client.setScreen(new PonySettingsscreen(this)))
+                .onClick(sender -> client.setScreen(new PonySettingsScreen(this)))
                 .getStyle()
                     .setIcon(new TextureSprite()
                             .setPosition(2, 2)

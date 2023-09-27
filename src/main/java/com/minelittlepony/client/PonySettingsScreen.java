@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
  * In-Game options menu.
  *
  */
-public class PonySettingsscreen extends GameGui {
+public class PonySettingsScreen extends GameGui {
     private static final String OPTIONS_PREFIX = "minelp.options.";
     private static final String PONY_LEVEL = OPTIONS_PREFIX + "ponylevel";
     private static final String MOB_PREFIX = "minelp.mobs.";
@@ -41,7 +41,7 @@ public class PonySettingsscreen extends GameGui {
 
     private final boolean hiddenOptions;
 
-    public PonySettingsscreen(@Nullable Screen parent) {
+    public PonySettingsScreen(@Nullable Screen parent) {
         super(Text.literal(OPTIONS_PREFIX + "title"), parent);
         content.margin.top = 30;
         content.margin.bottom = 30;
