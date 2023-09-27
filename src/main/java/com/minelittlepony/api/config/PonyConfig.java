@@ -54,6 +54,10 @@ public class PonyConfig extends Config {
                 .addComment("Helps to prevent entities from vanishing when they're in long stacks");
     public final Setting<Boolean> horsieMode = value("settings", "horsieMode", false)
             .addComment("Enables the alternative horsey models from the April Fools 2023 update");
+    public final Setting<Boolean> mixedHumanSkins = value("settings", "mixedHumanSkins", false)
+            .addComment("(Experimental) When displaying humans, use mojang's skin server instead.")
+            .addComment("(Experimental) Only takes effect on pony level = HUMANS")
+            .addComment("(Experimental) Will cause the vanilla skin to show if the hd skin is a pony skin");
 
     public final Setting<SizePreset> sizeOverride = value("debug", "sizeOverride", SizePreset.UNSET)
                 .addComment("Overrides pony sizes")
@@ -69,6 +73,7 @@ public class PonyConfig extends Config {
 
     public final Setting<Boolean> flappyElytras = value("customisation", "flappyElytras", false)
                 .addComment("Pegasi will use their wings to fly even when they're wearing an elytra");
+
     public final Setting<Boolean> noFun = value("customisation", "noFun", false)
                 .addComment("Disables certain easter eggs and secrets (party pooper)")
                 .addComment("Turning this off may help with compatibility in some cases");

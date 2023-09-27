@@ -21,7 +21,6 @@ public class SkinsProxy {
 
     public static SkinsProxy instance = new SkinsProxy();
 
-    @Nullable
     public Identifier getSkinTexture(GameProfile profile) {
         PlayerSkinProvider skins = MinecraftClient.getInstance().getSkinProvider();
         return skins.getSkinTextures(profile).texture();

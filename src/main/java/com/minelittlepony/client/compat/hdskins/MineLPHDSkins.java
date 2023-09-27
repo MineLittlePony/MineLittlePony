@@ -1,5 +1,7 @@
 package com.minelittlepony.client.compat.hdskins;
 
+import com.minelittlepony.api.config.PonyConfig;
+import com.minelittlepony.api.config.PonyLevel;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.api.pony.meta.Wearable;
@@ -56,6 +58,25 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
             // Ponify the skins GUI.
             GuiSkins.setSkinsGui(GuiSkinsMineLP::new);
         });
+
+        HDSkins.getInstance().getSkinPrioritySorter().addSelector((skinType, playerSkins) -> {
+            if (skinType == SkinType.SKIN && PonyConfig.getInstance().mixedHumanSkins.get()) {
+                PonyLevel level = PonyConfig.getInstance().ponyLevel.get();
+
+                if (level == PonyLevel.HUMANS && isPony(playerSkins.hd()) && !isPony(playerSkins.vanilla())) {
+                    return playerSkins.vanilla();
+                }
+            }
+            return playerSkins.combined();
+        });
+    }
+
+    static boolean isPony(PlayerSkins.Layer layer) {
+        return layer
+            .getSkin(SkinType.SKIN)
+            .map(Pony.getManager()::getPony)
+            .filter(pony -> !pony.metadata().race().isHuman())
+            .isPresent();
     }
 
     @Override
@@ -80,10 +101,10 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
         }
 
         if (entity instanceof AbstractClientPlayerEntity player) {
-            PlayerSkins skins = PlayerSkins.of(player);
-            if (skins != null) {
-                return skins.combined().getProvidedSkinTypes();
-            }
+            return PlayerSkins.of(player)
+                    .map(PlayerSkins::combined)
+                    .map(PlayerSkins.Layer::getProvidedSkinTypes)
+                    .orElseGet(Set::of);
         }
 
         return Set.of();
@@ -110,7 +131,7 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
             }
         }
 
-        return Optional.of(player).map(PlayerSkins::of).flatMap(skins -> skins.combined().getSkin(type));
+        return Optional.of(player).flatMap(PlayerSkins::of).map(PlayerSkins::combined).flatMap(skins -> skins.getSkin(type));
     }
 
     @Override
