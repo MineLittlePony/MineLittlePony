@@ -16,8 +16,8 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public abstract class MagicGlow extends RenderPhase {
-    private MagicGlow(String name, Runnable beginAction, Runnable endAction) {
-        super(name, beginAction, endAction);
+    private MagicGlow() {
+        super(null, null, null);
     }
 
     private static final Supplier<RenderLayer> MAGIC = Suppliers.memoize(() -> {
@@ -54,7 +54,6 @@ public abstract class MagicGlow extends RenderPhase {
     }
 
     private static class Colored extends Texture {
-
         private final float red;
         private final float green;
         private final float blue;

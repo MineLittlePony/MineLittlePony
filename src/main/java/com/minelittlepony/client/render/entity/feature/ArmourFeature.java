@@ -3,6 +3,7 @@ package com.minelittlepony.client.render.entity.feature;
 import com.minelittlepony.api.model.ModelWrapper;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.model.armour.*;
+import com.minelittlepony.client.render.ArmorRenderLayers;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.common.util.Color;
 
@@ -95,7 +96,7 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & Po
     }
 
     private static VertexConsumer getArmorConsumer(VertexConsumerProvider provider, Identifier texture, boolean glint) {
-        return ItemRenderer.getArmorGlintConsumer(provider, RenderLayer.getArmorCutoutNoCull(texture), false, glint);
+        return ItemRenderer.getArmorGlintConsumer(provider, ArmorRenderLayers.getArmorTranslucentNoCull(texture, false), false, glint);
     }
 
     private static VertexConsumer getTrimConsumer(VertexConsumerProvider provider, ArmorMaterial material, ArmorTrim trim, ArmourLayer layer, boolean glint) {
@@ -103,9 +104,8 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & Po
         Sprite sprite = armorTrimsAtlas.getSprite(
             layer == ArmourLayer.INNER ? trim.getLeggingsModelId(material) : trim.getGenericModelId(material)
         );
+        RenderLayer renderLayer = ArmorRenderLayers.getArmorTranslucentNoCull(TexturedRenderLayers.ARMOR_TRIMS_ATLAS_TEXTURE, trim.getPattern().value().decal());
 
-        return sprite.getTextureSpecificVertexConsumer(
-            ItemRenderer.getDirectItemGlintConsumer(provider, TexturedRenderLayers.getArmorTrims(trim.getPattern().value().decal()), true, glint)
-        );
+        return sprite.getTextureSpecificVertexConsumer(ItemRenderer.getDirectItemGlintConsumer(provider, renderLayer, true, glint));
     }
 }
