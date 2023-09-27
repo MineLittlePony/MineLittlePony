@@ -61,9 +61,12 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
 
         HDSkins.getInstance().getSkinPrioritySorter().addSelector((skinType, playerSkins) -> {
             if (skinType == SkinType.SKIN && PonyConfig.getInstance().mixedHumanSkins.get()) {
-                PonyLevel level = PonyConfig.getInstance().ponyLevel.get();
+                Optional<Pony> hdPony = getPony(playerSkins.hd());
+                Optional<Pony> vanillaPony = getPony(playerSkins.vanilla());
 
-                if (level == PonyLevel.HUMANS && isPony(playerSkins.hd()) && !isPony(playerSkins.vanilla())) {
+                if (hdPony.isPresent() && vanillaPony.isPresent()
+                        && vanillaPony.get().metadata().priority() > hdPony.get().metadata().priority()
+                        && (PonyConfig.getInstance().ponyLevel.get() == PonyLevel.HUMANS || vanillaPony.get().metadata().race().isHuman() == hdPony.get().metadata().race().isHuman())) {
                     return playerSkins.vanilla();
                 }
             }
@@ -71,12 +74,10 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
         });
     }
 
-    static boolean isPony(PlayerSkins.Layer layer) {
+    static Optional<Pony> getPony(PlayerSkins.Layer layer) {
         return layer
             .getSkin(SkinType.SKIN)
-            .map(Pony.getManager()::getPony)
-            .filter(pony -> !pony.metadata().race().isHuman())
-            .isPresent();
+            .map(Pony.getManager()::getPony);
     }
 
     @Override

@@ -50,12 +50,24 @@ public record PonyData (
          */
         boolean noSkin,
         /**
+         * (Experimental) Priority.
+         * Used to decide which skin to use when dual skin mode is active.
+         * Provides an optional tie-breaker when the client has to decide between displaying
+         * either the HDSkins texture or vanilla texture given both are otherwise acceptable.
+         *
+         * Any time both skins resolve to the same race (eg. on pony-level HUMANS, or if both are ponies)
+         * the skin with the highest priority will be chosen.
+         *
+         * If both have the same priority, HD Skins' texture will always be used (old default).
+         */
+        int priority,
+        /**
          * Gets the trigger pixel values as they appeared in the underlying image.
          */
         Map<String, TValue<?>> attributes
     ) implements Comparable<PonyData> {
     public static final int DEFAULT_MAGIC_COLOR = 0x4444aa;
-    private static final Function<Race, PonyData> OF_RACE = Util.memoize(race -> new PonyData(race, TailLength.FULL, TailShape.STRAIGHT, Gender.MARE, SizePreset.NORMAL, DEFAULT_MAGIC_COLOR, true, Wearable.EMPTY_FLAGS));
+    private static final Function<Race, PonyData> OF_RACE = Util.memoize(race -> new PonyData(race, TailLength.FULL, TailShape.STRAIGHT, Gender.MARE, SizePreset.NORMAL, DEFAULT_MAGIC_COLOR, true, 0, Wearable.EMPTY_FLAGS));
     public static final PonyData NULL = OF_RACE.apply(Race.HUMAN);
 
     public static PonyData emptyOf(Race race) {
@@ -71,18 +83,20 @@ public record PonyData (
             TriggerPixel.SIZE.read(image),
             TriggerPixel.GLOW.read(image),
             noSkin,
+            TriggerPixel.PRIORITY.read(image),
             TriggerPixel.WEARABLES.read(image)
         );
     }
 
-    public PonyData(Race race, TailLength tailLength, TailShape tailShape, Gender gender, Size size, int glowColor, boolean noSkin, Flags<Wearable> wearables) {
-        this(race, tailLength, tailShape, gender, size, glowColor, wearables, noSkin, Util.make(new TreeMap<>(), map -> {
+    public PonyData(Race race, TailLength tailLength, TailShape tailShape, Gender gender, Size size, int glowColor, boolean noSkin, int priority, Flags<Wearable> wearables) {
+        this(race, tailLength, tailShape, gender, size, glowColor, wearables, noSkin, priority, Util.make(new TreeMap<>(), map -> {
                 map.put("race", race);
                 map.put("tailLength", tailLength);
                 map.put("tailShape", tailShape);
                 map.put("gender", gender);
                 map.put("size", size);
                 map.put("magic", new TValue.Numeric(glowColor));
+                map.put("priority", new TValue.Numeric(priority));
                 map.put("gear", wearables);
             })
         );

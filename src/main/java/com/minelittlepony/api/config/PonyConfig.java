@@ -26,13 +26,13 @@ public class PonyConfig extends Config {
      * Sets the pony level. Want MOAR PONEHS? Well here you go.
      */
     public final Setting<PonyLevel> ponyLevel = value("ponylevel", PonyLevel.PONIES)
-            .addComment("How much pony do you want?")
-            .addComment("PONIES - all players are turned into ponies")
-            .addComment("HUMANS - all players are humans")
-            .addComment("BOTH - players with compatible skins will be ponies whilst the rest are humans");
+                .addComment("How much pony do you want?")
+                .addComment("PONIES - all players are turned into ponies")
+                .addComment("HUMANS - all players are humans")
+                .addComment("BOTH - players with compatible skins will be ponies whilst the rest are humans");
     private final Setting<Float> scaleFactor = value("globalScaleFactor", 0.9F)
-            .addComment("How large do you want your ponies to be?")
-            .addComment("Default is show scale (0.9)");
+                .addComment("How large do you want your ponies to be?")
+                .addComment("Default is show scale (0.9)");
 
     public final Setting<Boolean> sizes =      value("settings", "sizes", true)
                 .addComment("Allows ponies of different sizes/ages");
@@ -53,11 +53,12 @@ public class PonyConfig extends Config {
                 .addComment("Adjust camera intersection checks to properly cull entities when they're not in view.")
                 .addComment("Helps to prevent entities from vanishing when they're in long stacks");
     public final Setting<Boolean> horsieMode = value("settings", "horsieMode", false)
-            .addComment("Enables the alternative horsey models from the April Fools 2023 update");
-    public final Setting<Boolean> mixedHumanSkins = value("settings", "mixedHumanSkins", false)
-            .addComment("(Experimental) When displaying humans, use mojang's skin server instead.")
-            .addComment("(Experimental) Only takes effect on pony level = HUMANS")
-            .addComment("(Experimental) Will cause the vanilla skin to show if the hd skin is a pony skin");
+                .addComment("Enables the alternative horsey models from the April Fools 2023 update");
+    public final Setting<Boolean> mixedHumanSkins = value("settings", "dualSkinMode", false)
+                .addComment("(Experimental) Use priority to decide between displaying the HDSkins' texture, or vanilla mojang server skin")
+                .addComment("(Experimental) eg. On pony level = HUMANS")
+                .addComment("(Experimental) Any time both skins resolve to the same race (eg. on pony-level HUMANS, or if both are ponies)")
+                .addComment("(Experimental) the skin with the highest priority will be chosen.");;
 
     public final Setting<SizePreset> sizeOverride = value("debug", "sizeOverride", SizePreset.UNSET)
                 .addComment("Overrides pony sizes")
@@ -79,10 +80,10 @@ public class PonyConfig extends Config {
                 .addComment("Turning this off may help with compatibility in some cases");
 
     public final Setting<VisibilityMode> horseButton = value("horseButton", VisibilityMode.AUTO)
-            .addComment("Whether to show the mine little pony settings button on the main menu")
-            .addComment("AUTO (default) - only show when HDSkins is not installed")
-            .addComment("ON - always show")
-            .addComment("OFF - never show");
+                .addComment("Whether to show the mine little pony settings button on the main menu")
+                .addComment("AUTO (default) - only show when HDSkins is not installed")
+                .addComment("ON - always show")
+                .addComment("OFF - never show");
 
     public PonyConfig(Path path) {
         super(HEIRARCHICAL_JSON_ADAPTER, path);

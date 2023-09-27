@@ -23,6 +23,7 @@ public class MsgPonyData {
                 new MsgSize(buffer),
                 buffer.readInt(),
                 buffer.readBoolean(),
+                buffer.readVarInt(),
                 Flags.read(Wearable.NONE, buffer)
         );
     }
@@ -34,6 +35,7 @@ public class MsgPonyData {
         buffer.writeEnumConstant(data.tailLength());
         buffer.writeEnumConstant(data.tailShape());
         buffer.writeEnumConstant(data.gender());
+        buffer.writeVarInt(data.priority());
         new MsgSize(data.size()).toBuffer(buffer);
         buffer.writeInt(data.glowColor());
         buffer.writeBoolean(data.noSkin());
