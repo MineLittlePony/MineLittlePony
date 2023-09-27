@@ -22,6 +22,7 @@
   "minelp.options.frustrum": "Изменить проверку поля зрения",
   "minelp.options.flappyelytras": "Махать крыльями при Парении",
   "minelp.options.passivenetworking": "Пассивная сеть [Beta]",
+  "minelp.options.dualskinmode": "(Экспериментально) Режим двойных скинов",
   "minelp.options.button": "Отображать на главном экране",
   "minelp.options.button.on": "Отображать всегда\n\nВидны обе кнопки Mine Little Pony и HD Skins (если установлен)",
   "minelp.options.button.auto": "Отображать, только если не установлен мод HD Skins",
