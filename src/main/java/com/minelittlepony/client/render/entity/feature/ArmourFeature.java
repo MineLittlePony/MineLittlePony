@@ -97,7 +97,7 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
     }
 
     private static VertexConsumer getArmorConsumer(VertexConsumerProvider provider, Identifier texture, boolean glint) {
-        return ItemRenderer.getArmorGlintConsumer(provider, RenderLayer.getArmorCutoutNoCull(texture), false, glint);
+        return ItemRenderer.getArmorGlintConsumer(provider, ArmorRenderLayers.getArmorTranslucentNoCull(texture, false), false, glint);
     }
 
     private static VertexConsumer getTrimConsumer(VertexConsumerProvider provider, ArmorMaterial material, ArmorTrim trim, ArmourLayer layer, boolean glint) {
@@ -105,9 +105,8 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
         Sprite sprite = armorTrimsAtlas.getSprite(
             layer == ArmourLayer.INNER ? trim.getLeggingsModelId(material) : trim.getGenericModelId(material)
         );
+        RenderLayer renderLayer = ArmorRenderLayers.getArmorTranslucentNoCull(TexturedRenderLayers.ARMOR_TRIMS_ATLAS_TEXTURE, trim.getPattern().value().decal());
 
-        return sprite.getTextureSpecificVertexConsumer(
-            ItemRenderer.getDirectItemGlintConsumer(provider, TexturedRenderLayers.getArmorTrims(), true, glint)
-        );
+        return sprite.getTextureSpecificVertexConsumer(ItemRenderer.getDirectItemGlintConsumer(provider, renderLayer, true, glint));
     }
 }
