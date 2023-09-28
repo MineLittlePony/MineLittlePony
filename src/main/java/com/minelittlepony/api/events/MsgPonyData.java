@@ -35,10 +35,10 @@ public class MsgPonyData {
         buffer.writeEnumConstant(data.tailLength());
         buffer.writeEnumConstant(data.tailShape());
         buffer.writeEnumConstant(data.gender());
-        buffer.writeVarInt(data.priority());
         new MsgSize(data.size()).toBuffer(buffer);
         buffer.writeInt(data.glowColor());
         buffer.writeBoolean(data.noSkin());
+        buffer.writeVarInt(data.priority());
         data.gear().write(buffer);
         return buffer;
     }
