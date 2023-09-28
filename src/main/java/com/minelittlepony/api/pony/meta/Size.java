@@ -41,4 +41,9 @@ public interface Size extends TValue<Size> {
      * A scale factor used to alter the camera's distance.
      */
     float eyeDistanceFactor();
+
+    /**
+     * The trigger pixel colour corresponding to this size.
+     */
+    int colorCode();
 }

@@ -30,14 +30,6 @@ public record Flags<T extends Enum<T> & TValue<T>> (
         return new Flags<>(def, values, buffer.readInt());
     }
 
-    public static <T> List<T> flags(T[] values, boolean[] flags) {
-        List<T> wears = new ArrayList<>();
-        for (int i = 0; i < values.length; i++) {
-            if (flags[i]) wears.add(values[i]);
-        }
-        return wears;
-    }
-
     public void write(PacketByteBuf buffer) {
         buffer.writeCollection(values, (buf, value) -> buf.writeInt(value.ordinal()));
         buffer.writeInt(colorCode);

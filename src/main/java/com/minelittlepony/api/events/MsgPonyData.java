@@ -35,12 +35,22 @@ public class MsgPonyData {
         buffer.writeEnumConstant(data.tailLength());
         buffer.writeEnumConstant(data.tailShape());
         buffer.writeEnumConstant(data.gender());
-        new MsgSize(data.size()).toBuffer(buffer);
+        write(data.size(), buffer);
         buffer.writeInt(data.glowColor());
         buffer.writeBoolean(data.noSkin());
         buffer.writeVarInt(data.priority());
         data.gear().write(buffer);
         return buffer;
+    }
+
+    private static void write(Size size, PacketByteBuf buffer) {
+        buffer.writeInt(size.ordinal());
+        buffer.writeString(size.name());
+        buffer.writeFloat(size.shadowSize());
+        buffer.writeFloat(size.scaleFactor());
+        buffer.writeFloat(size.eyeHeightFactor());
+        buffer.writeFloat(size.eyeDistanceFactor());
+        buffer.writeFloat(size.colorCode());
     }
 
     private record MsgSize (
@@ -51,23 +61,8 @@ public class MsgPonyData {
             float eyeHeightFactor,
             float eyeDistanceFactor,
             int colorCode) implements Size {
-
-        MsgSize(Size size) {
-            this(size.ordinal(), size.name(), size.shadowSize(), size.scaleFactor(), size.eyeHeightFactor(), size.eyeDistanceFactor(), size.colorCode());
-        }
-
         MsgSize(PacketByteBuf buffer) {
-            this(buffer.readInt(), buffer.readString(32767), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readInt());
-        }
-
-        public void toBuffer(PacketByteBuf buffer) {
-            buffer.writeInt(ordinal);
-            buffer.writeString(name);
-            buffer.writeFloat(shadowSize);
-            buffer.writeFloat(scaleFactor);
-            buffer.writeFloat(eyeHeightFactor);
-            buffer.writeFloat(eyeDistanceFactor);
-            buffer.writeFloat(colorCode);
+            this(buffer.readInt(), buffer.readString(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readInt());
         }
 
         @Override
