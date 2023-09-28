@@ -1,5 +1,6 @@
 package com.minelittlepony.client.mixin;
 
+import com.minelittlepony.api.model.PreviewModel;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.client.IPreviewModel;
 
@@ -18,7 +19,7 @@ abstract class MixinEntityRenderDispatcher {
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/network/AbstractClientPlayerEntity;getModel()Ljava/lang/String;"))
     private String getPlayerModel(AbstractClientPlayerEntity player, Entity entity) {
-        if (player instanceof IPreviewModel) {
+        if (player instanceof PreviewModel) {
             return player.getModel();
         }
         return IPony.getManager()

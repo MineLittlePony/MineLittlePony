@@ -10,7 +10,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -21,8 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implements EquineRenderManager.RegistrationHandler {
     public MixinClientPlayerEntity() { super(null, null); }
 
-    @Nullable
-    private IPony pony;
+    private final EquineRenderManager.SyncedPony syncedPony = new EquineRenderManager.SyncedPony();
 
     @Inject(method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z", at = @At("RETURN"))
     private void onStartRiding(Entity entity, boolean bl, CallbackInfoReturnable<Boolean> info) {
@@ -35,12 +33,8 @@ abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implem
     }
 
     @Override
-    public boolean shouldUpdateRegistration(IPony pony) {
-        if (this.pony != pony && (this.pony == null || this.pony.metadata().compareTo(pony.metadata()) != 0)) {
-            this.pony = Pony.snapshot(pony);
-            return true;
-        }
-        return false;
+    public EquineRenderManager.SyncedPony getSyncedPony() {
+        return syncedPony;
     }
 
     @Override

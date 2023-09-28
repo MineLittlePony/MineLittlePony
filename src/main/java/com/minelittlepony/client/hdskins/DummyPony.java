@@ -2,6 +2,7 @@ package com.minelittlepony.client.hdskins;
 
 import net.minecraft.client.world.ClientWorld;
 
+import com.minelittlepony.api.model.PreviewModel;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyManager;
 import com.minelittlepony.client.IPreviewModel;
@@ -15,16 +16,11 @@ import java.util.UUID;
 /**
  * Dummy model used for the skin uploading screen.
  */
-class DummyPony extends DummyPlayer implements IPreviewModel, IPonyManager.ForcedPony, EquineRenderManager.RegistrationHandler {
+class DummyPony extends DummyPlayer implements PreviewModel, IPonyManager.ForcedPony {
 
     public DummyPony(ClientWorld world, PlayerSkins<?> textures) {
         super(world, textures);
         setUuid(UUID.randomUUID()); // uuid must be random so animations aren't linked between the two previews
-    }
-
-    @Override
-    public boolean shouldUpdateRegistration(IPony pony) {
-        return false;
     }
 
     @Override

@@ -1,9 +1,7 @@
 package com.minelittlepony.client.render;
 
-import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.model.RenderPass;
+import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.IPony;
-import com.minelittlepony.api.pony.network.MsgPonyData;
 import com.minelittlepony.api.pony.network.fabric.Channel;
 import com.minelittlepony.api.pony.network.fabric.PonyDataCallback;
 import com.minelittlepony.client.MineLittlePony;
@@ -25,6 +23,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
+
+import org.jetbrains.annotations.Nullable;
 
 public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T> & IPonyModel<T>> {
 
@@ -127,16 +127,31 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         pony = renderer.getEntityPony(entity);
         playerModel.applyMetadata(pony.metadata());
 
-        if (pony.hasMetadata() && entity instanceof RegistrationHandler && ((RegistrationHandler)entity).shouldUpdateRegistration(pony)) {
-            entity.calculateDimensions();
+        if (entity instanceof PlayerEntity player && entity instanceof RegistrationHandler handler) {
+            SyncedPony synced = handler.getSyncedPony();
+            boolean changed = pony.compareTo(synced.lastRenderedPony) != 0;
 
-            PlayerEntity clientPlayer = MinecraftClient.getInstance().player;
-            if (clientPlayer != null) {
-                if (Objects.equals(entity, clientPlayer) || Objects.equals(((PlayerEntity)entity).getGameProfile(), clientPlayer.getGameProfile())) {
-                    Channel.broadcastPonyData(new MsgPonyData(pony.metadata(), pony.defaulted()));
+            if (changed) {
+                synced.lastRenderedPony = pony;
+                player.calculateDimensions();
+            }
+
+            if (!(player instanceof PreviewModel)) {
+                @Nullable
+                PlayerEntity clientPlayer = MinecraftClient.getInstance().player;
+
+                if (pony.compareTo(synced.lastTransmittedPony) != 0) {
+                    if (clientPlayer != null && (Objects.equals(player, clientPlayer) || Objects.equals(player.getGameProfile(), clientPlayer.getGameProfile()))) {
+                        if (Channel.broadcastPonyData(pony.metadata(), pony.defaulted())) {
+                            synced.lastTransmittedPony = pony;
+                        }
+                    }
+                }
+
+                if (changed) {
+                    PonyDataCallback.EVENT.invoker().onPonyDataAvailable(player, pony.metadata(), pony.defaulted(), EnvType.CLIENT);
                 }
             }
-            PonyDataCallback.EVENT.invoker().onPonyDataAvailable((PlayerEntity)entity, pony.metadata(), pony.defaulted(), EnvType.CLIENT);
         }
 
         getModel().updateLivingState(entity, pony, mode);
@@ -184,6 +199,13 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
     }
 
     public interface RegistrationHandler {
-        boolean shouldUpdateRegistration(IPony pony);
+        SyncedPony getSyncedPony();
+    }
+
+    public static class SyncedPony {
+        @Nullable
+        private IPony lastRenderedPony;
+        @Nullable
+        private IPony lastTransmittedPony;
     }
 }
