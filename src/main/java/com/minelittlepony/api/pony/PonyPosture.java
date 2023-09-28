@@ -2,8 +2,6 @@ package com.minelittlepony.api.pony;
 
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.model.PreviewModel;
-import com.minelittlepony.client.SkinsProxy;
-import com.minelittlepony.client.render.entity.AquaticPlayerPonyRenderer;
 
 import java.util.Optional;
 
@@ -101,7 +99,7 @@ public final class PonyPosture {
         }
         return Pony.getManager().getPony(entity).filter(pony -> {
             return (pony.race() == Race.SEAPONY
-                    || (entity instanceof AbstractClientPlayerEntity player && SkinsProxy.instance.getSkin(AquaticPlayerPonyRenderer.SKIN_TYPE_ID, player).isPresent())
+                    || (entity instanceof AbstractClientPlayerEntity player && SkinsProxy.instance.getSkin(DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, player).isPresent())
             );
         }).isPresent();
     }

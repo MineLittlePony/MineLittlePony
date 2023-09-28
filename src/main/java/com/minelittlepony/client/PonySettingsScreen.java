@@ -35,6 +35,14 @@ public class PonySettingsScreen extends GameGui {
     public static final Text SCALE_SHOW = Text.translatable("minelp.debug.scale.sa");
     public static final Text SCALE_MIN = Text.translatable("minelp.debug.scale.min");
 
+    public static HorseButtonFactory buttonFactory = (screen, parent, row, RIGHT, content) -> {
+        content.addButton(new Button(RIGHT, row += 20, 150, 20))
+            .setEnabled(false)
+            .getStyle()
+                .setTooltip(Tooltip.of("minelp.options.skins.hdskins.disabled", 200))
+                .setText("minelp.options.skins.hdskins.open");
+    };
+
     private final PonyConfig config = PonyConfig.getInstance();
 
     private final ScrollContainer content = new ScrollContainer();
@@ -156,7 +164,7 @@ public class PonySettingsScreen extends GameGui {
         row += 15;
 
         content.addButton(new Label(RIGHT, row)).getStyle().setText("minelp.options.skins");
-        SkinsProxy.instance.renderOption(this, parent, row, RIGHT, content);
+        buttonFactory.renderOption(this, parent, row, RIGHT, content);
     }
 
     public Text describeCurrentScale(AbstractSlider<Float> sender) {
@@ -193,5 +201,9 @@ public class PonySettingsScreen extends GameGui {
     @Override
     public void removed() {
         config.save();
+    }
+
+    public interface HorseButtonFactory {
+        void renderOption(Screen screen, @Nullable Screen parent, int row, int RIGHT, ScrollContainer content);
     }
 }

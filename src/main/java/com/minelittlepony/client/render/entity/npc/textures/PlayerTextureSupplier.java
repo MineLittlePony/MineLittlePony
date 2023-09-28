@@ -6,7 +6,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 
 import com.minelittlepony.api.pony.Pony;
-import com.minelittlepony.client.SkinsProxy;
+import com.minelittlepony.api.pony.SkinsProxy;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;

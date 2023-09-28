@@ -11,6 +11,8 @@ import java.util.*;
 public final class DefaultPonySkinHelper {
     public static final Identifier STEVE = new Identifier("minelittlepony", "textures/entity/player/wide/steve_pony.png");
 
+    public static final Identifier SEAPONY_SKIN_TYPE_ID = new Identifier("minelp", "seapony");
+
     private static final Map<SkinTextures, SkinTextures> SKINS = new HashMap<>();
 
     public static SkinTextures getTextures(SkinTextures original) {

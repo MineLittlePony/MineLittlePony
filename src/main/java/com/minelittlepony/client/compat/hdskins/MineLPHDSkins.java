@@ -2,8 +2,7 @@ package com.minelittlepony.client.compat.hdskins;
 
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.config.PonyLevel;
-import com.minelittlepony.api.pony.Pony;
-import com.minelittlepony.api.pony.PonyData;
+import com.minelittlepony.api.pony.*;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.common.client.gui.ScrollContainer;
 import com.minelittlepony.common.client.gui.element.Button;
@@ -29,7 +28,6 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.*;
-import com.minelittlepony.client.render.entity.AquaticPlayerPonyRenderer;
 
 /**
  * All the interactions with HD Skins.
@@ -43,8 +41,9 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         SkinsProxy.instance = this;
+        PonySettingsScreen.buttonFactory = this::renderOption;
 
-        seaponySkinType = SkinType.register(AquaticPlayerPonyRenderer.SKIN_TYPE_ID, Items.COD_BUCKET.getDefaultStack());
+        seaponySkinType = SkinType.register(DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, Items.COD_BUCKET.getDefaultStack());
         Wearable.REGISTRY.values().forEach(wearable -> {
             if (wearable != Wearable.NONE) {
                 wearableTypes.put(SkinType.register(wearable.getId(), Items.BUNDLE.getDefaultStack()), wearable);
@@ -80,8 +79,7 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
             .map(Pony.getManager()::getPony);
     }
 
-    @Override
-    public void renderOption(Screen screen, @Nullable Screen parent, int row, int RIGHT, ScrollContainer content) {
+    private void renderOption(Screen screen, @Nullable Screen parent, int row, int RIGHT, ScrollContainer content) {
         content.addButton(new Button(RIGHT, row += 20, 150, 20))
             .onClick(button -> MinecraftClient.getInstance().setScreen(
                     parent instanceof GuiSkins ? parent : GuiSkins.create(screen, HDSkins.getInstance().getSkinServerList())

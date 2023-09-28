@@ -2,7 +2,6 @@ package com.minelittlepony.api.model;
 
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.*;
-import com.minelittlepony.client.*;
 import com.minelittlepony.common.util.animation.Interpolator;
 import com.minelittlepony.util.MathUtil;
 

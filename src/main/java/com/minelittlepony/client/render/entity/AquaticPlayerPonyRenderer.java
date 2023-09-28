@@ -1,10 +1,8 @@
 package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.api.model.PreviewModel;
-import com.minelittlepony.api.pony.Pony;
-import com.minelittlepony.api.pony.PonyPosture;
+import com.minelittlepony.api.pony.*;
 import com.minelittlepony.api.pony.meta.Race;
-import com.minelittlepony.client.SkinsProxy;
 import com.minelittlepony.util.MathUtil;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -16,8 +14,6 @@ import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
 
 public class AquaticPlayerPonyRenderer extends PlayerPonyRenderer {
-    public static final Identifier SKIN_TYPE_ID = new Identifier("minelp", "seapony");
-
     private boolean wet;
 
     public AquaticPlayerPonyRenderer(EntityRendererFactory.Context context, boolean slim) {
@@ -27,7 +23,7 @@ public class AquaticPlayerPonyRenderer extends PlayerPonyRenderer {
     @Override
     public Identifier getTexture(AbstractClientPlayerEntity player) {
         if (wet) {
-            return SkinsProxy.instance.getSkin(SKIN_TYPE_ID, player).orElseGet(() -> super.getTexture(player));
+            return SkinsProxy.instance.getSkin(DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, player).orElseGet(() -> super.getTexture(player));
         }
         return super.getTexture(player);
     }
