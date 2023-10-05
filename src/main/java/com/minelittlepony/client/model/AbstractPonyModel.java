@@ -623,8 +623,11 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
         }
 
+        boolean crouching = attributes.isCrouching;
+
         if (attributes.isLyingDown && !attributes.isSleeping) {
             stack.translate(0, 1.35F, 0);
+            attributes.isCrouching = sneaking;
         }
 
         if (attributes.isHorsey) {
@@ -638,5 +641,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         }
 
         PonyTransformation.forSize(getSize()).transform(this, part, stack);
+
+        attributes.isCrouching = crouching;
     }
 }
