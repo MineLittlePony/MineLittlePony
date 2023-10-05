@@ -4,6 +4,7 @@ import com.minelittlepony.api.model.armour.*;
 import com.minelittlepony.client.model.IPonyModel;
 import com.minelittlepony.client.model.ModelWrapper;
 import com.minelittlepony.client.model.armour.DefaultArmourTextureResolver;
+import com.minelittlepony.client.render.ArmorRenderLayers;
 import com.minelittlepony.client.render.IPonyRenderContext;
 import com.minelittlepony.common.util.Color;
 
@@ -105,7 +106,7 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & IP
         Sprite sprite = armorTrimsAtlas.getSprite(
             layer == ArmourLayer.INNER ? trim.getLeggingsModelId(material) : trim.getGenericModelId(material)
         );
-        RenderLayer renderLayer = ArmorRenderLayers.getArmorTranslucentNoCull(TexturedRenderLayers.ARMOR_TRIMS_ATLAS_TEXTURE, trim.getPattern().value().decal());
+        RenderLayer renderLayer = ArmorRenderLayers.getArmorTranslucentNoCull(TexturedRenderLayers.ARMOR_TRIMS_ATLAS_TEXTURE, false);
 
         return sprite.getTextureSpecificVertexConsumer(ItemRenderer.getDirectItemGlintConsumer(provider, renderLayer, true, glint));
     }
