@@ -159,7 +159,7 @@ public class ModelAttributes {
         isSwimmingRotated = isSwimming;
         isRiptide = entity.isUsingRiptide();
         isRidingInteractive = PonyPosture.isRidingAPony(entity);
-        if (!(entity instanceof IPreviewModel)) {
+        if (!(entity instanceof PreviewModel)) {
             interpolatorId = entity.getUuid();
         }
         isLeftHanded = entity.getMainArm() == Arm.LEFT;

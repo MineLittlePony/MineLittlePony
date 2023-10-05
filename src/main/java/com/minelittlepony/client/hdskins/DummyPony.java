@@ -5,7 +5,6 @@ import net.minecraft.client.world.ClientWorld;
 import com.minelittlepony.api.model.PreviewModel;
 import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyManager;
-import com.minelittlepony.client.IPreviewModel;
 import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.hdskins.client.VanillaModels;
 import com.minelittlepony.hdskins.client.gui.player.*;

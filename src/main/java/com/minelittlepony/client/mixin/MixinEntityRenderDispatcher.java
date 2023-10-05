@@ -2,7 +2,6 @@ package com.minelittlepony.client.mixin;
 
 import com.minelittlepony.api.model.PreviewModel;
 import com.minelittlepony.api.pony.IPony;
-import com.minelittlepony.client.IPreviewModel;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
