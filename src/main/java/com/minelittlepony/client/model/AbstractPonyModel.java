@@ -366,6 +366,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             case NECK: return neck;
             case TAIL:
             case LEGS:
+            case BACK:
             case BODY: return body;
         }
     }
