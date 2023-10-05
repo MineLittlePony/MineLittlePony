@@ -1,6 +1,6 @@
 package com.minelittlepony.client.render.entity.feature;
 
-import com.minelittlepony.api.model.ModelWrapper;
+import com.minelittlepony.api.model.Models;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.render.PonyRenderContext;
 
@@ -45,10 +45,10 @@ public abstract class AbstractPonyFeature<T extends LivingEntity, M extends Enti
 
     @Override
     public final M getContextModel() {
-        return context.getInternalRenderer().getModel();
+        return context.getInternalRenderer().getModels().body();
     }
 
-    protected ModelWrapper<T, M> getModelWrapper() {
-        return context.getInternalRenderer().getModelWrapper();
+    protected Models<T, M> getModelWrapper() {
+        return context.getInternalRenderer().getModels();
     }
 }

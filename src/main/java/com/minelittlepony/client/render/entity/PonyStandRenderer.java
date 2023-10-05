@@ -11,7 +11,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.util.math.Vec3d;
 
-import com.minelittlepony.api.model.ModelWrapper;
+import com.minelittlepony.api.model.Models;
 import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.model.ModelType;
@@ -60,7 +60,7 @@ public class PonyStandRenderer extends ArmorStandEntityRenderer {
     }
 
     class Armour extends ArmorFeatureRenderer<ArmorStandEntity, ArmorStandArmorEntityModel, ArmorStandArmorEntityModel> {
-        private final ModelWrapper<ArmorStandEntity, EarthPonyModel<ArmorStandEntity>> pony = ModelType.EARTH_PONY.<ArmorStandEntity, EarthPonyModel<ArmorStandEntity>>create(false);
+        private final Models<ArmorStandEntity, EarthPonyModel<ArmorStandEntity>> pony = ModelType.EARTH_PONY.<ArmorStandEntity, EarthPonyModel<ArmorStandEntity>>create(false);
 
         public Armour(FeatureRendererContext<ArmorStandEntity, ArmorStandArmorEntityModel> renderer, EntityRendererFactory.Context context) {
             super(renderer,

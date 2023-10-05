@@ -1,14 +1,13 @@
 package com.minelittlepony.client.render.entity.npc;
 
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
 
-import com.minelittlepony.api.model.ModelWrapper;
+import com.minelittlepony.api.model.Models;
 import com.minelittlepony.api.model.gear.Gear;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
@@ -17,15 +16,21 @@ import com.minelittlepony.client.render.entity.PonyRenderer;
 import com.minelittlepony.client.render.entity.feature.*;
 import com.minelittlepony.client.render.entity.npc.textures.*;
 
-import java.util.*;
+import java.util.function.Function;
 
 abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> extends PonyRenderer<T, ClientPonyModel<T>> {
-    private final Map<Race, ModelWrapper<T, ClientPonyModel<T>>> models = new EnumMap<>(Race.class);
     private final NpcClothingFeature<T, ClientPonyModel<T>, AbstractNpcRenderer<T>> clothing;
+    private final Function<Race, Models<T, ClientPonyModel<T>>> models = Util.memoize(race -> {
+        if (race.isHuman()) {
+            race = Race.EARTH;
+        }
+        return ModelType.getPlayerModel(race).create(false, this::initializeModel);
+    });
 
     public AbstractNpcRenderer(EntityRendererFactory.Context context, String type, TextureSupplier<T> textureSupplier, TextureSupplier<String> formatter) {
         super(context, ModelType.getPlayerModel(Race.EARTH).getKey(false), SillyPonyTextureSupplier.create(textureSupplier, formatter));
         clothing = new NpcClothingFeature<>(this, type);
+        this.manager.setModelsLookup(entity -> models.apply(getEntityPony(entity).race()));
         addFeature(clothing);
     }
 
@@ -52,20 +57,6 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
         }
 
         return super.shouldRender(model, entity, wearable, gear);
-    }
-
-    @Override
-    public void render(T entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
-        model = manager.setModel(models.computeIfAbsent(getEntityPony(entity).race(), this::createModel)).body();
-
-        super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
-    }
-
-    private ModelWrapper<T, ClientPonyModel<T>> createModel(Race race) {
-        if (race.isHuman()) {
-            race = Race.EARTH;
-        }
-        return ModelType.getPlayerModel(race).create(false, this::initializeModel);
     }
 
     protected void initializeModel(ClientPonyModel<T> model) {

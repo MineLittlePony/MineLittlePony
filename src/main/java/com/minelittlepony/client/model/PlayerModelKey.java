@@ -7,7 +7,7 @@ import net.minecraft.util.Identifier;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.minelittlepony.api.model.ModelWrapper;
+import com.minelittlepony.api.model.Models;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.mson.api.*;
@@ -31,12 +31,12 @@ public record PlayerModelKey<T extends LivingEntity, M extends Model & PonyModel
         return slimArms ? alexKey : steveKey;
     }
 
-    public <E extends T, N extends M> ModelWrapper<E, N> create(boolean slimArms) {
+    public <E extends T, N extends M> Models<E, N> create(boolean slimArms) {
         return create(slimArms, null);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public <E extends T, N extends M> ModelWrapper<E, N>  create(boolean slimArms, @Nullable Consumer<N> initializer) {
-        return new ModelWrapper(this, slimArms, initializer);
+    public <E extends T, N extends M> Models<E, N>  create(boolean slimArms, @Nullable Consumer<N> initializer) {
+        return new Models(this, slimArms, initializer);
     }
 }

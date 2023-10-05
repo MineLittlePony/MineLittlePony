@@ -12,6 +12,7 @@ import com.minelittlepony.util.MathUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 import net.fabricmc.api.EnvType;
 import net.minecraft.client.MinecraftClient;
@@ -26,40 +27,38 @@ import org.jetbrains.annotations.Nullable;
 
 public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> {
 
-    private ModelWrapper<T, M> playerModel;
+    private Models<T, M> models;
+    @Nullable
+    private Function<T, Models<T, M>> modelsLookup;
 
-    private final PonyRenderContext<T, M> renderer;
+    private final PonyRenderContext<T, M> context;
+    private final Transformer<T> transformer;
 
-    private final FrustrumCheck<T> frustrum = new FrustrumCheck<>(this);
+    private final FrustrumCheck<T> frustrum;
 
     public static void disableModelRenderProfile() {
         RenderSystem.disableBlend();
     }
 
-    public EquineRenderManager(PonyRenderContext<T, M> renderer) {
-        this.renderer = renderer;
-    }
-
-    public PonyRenderContext<T, M> getContext() {
-        return renderer;
-    }
-
-    public ModelWrapper<T, M> getModelWrapper() {
-        return playerModel;
-    }
-
-    public M getModel() {
-        return playerModel.body();
+    public EquineRenderManager(PonyRenderContext<T, M> context, Transformer<T> transformer, Models<T, M> models) {
+        this.context = context;
+        this.transformer = transformer;
+        this.models = models;
+        frustrum = new FrustrumCheck<>(context);
+        context.setModel(models.body());
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public ModelWrapper<T, M> setModel(ModelKey<? super M> key) {
-        return setModel(new ModelWrapper(key));
+    public EquineRenderManager(PonyRenderContext<T, M> context, Transformer<T> transformer, ModelKey<? super M> key) {
+        this(context, transformer, new Models(key));
     }
 
-    public ModelWrapper<T, M> setModel(ModelWrapper<T, M> wrapper) {
-        playerModel = wrapper;
-        return wrapper;
+    public void setModelsLookup(@Nullable Function<T, Models<T, M>> modelsLookup) {
+        this.modelsLookup = modelsLookup;
+    }
+
+    public Models<T, M> getModels() {
+        return models;
     }
 
     public Frustum getFrustrum(T entity, Frustum vanilla) {
@@ -73,7 +72,61 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         return frustrum.withCamera(entity, vanilla);
     }
 
-    public float getRenderYaw(T entity, float rotationYaw, float partialTicks) {
+    public void preRender(T entity, ModelAttributes.Mode mode) {
+        Pony pony = context.getEntityPony(entity);
+        if (modelsLookup != null) {
+            models = modelsLookup.apply(entity);
+            context.setModel(models.body());
+        }
+        models.applyMetadata(pony.metadata());
+        models.body().updateLivingState(entity, pony, mode);
+
+        if (entity instanceof PlayerEntity player && entity instanceof RegistrationHandler handler) {
+            handler.getSyncedPony().synchronize(player, pony);
+        }
+    }
+
+    public void setupTransforms(T entity, MatrixStack stack, float ageInTicks, float rotationYaw, float tickDelta) {
+        float s = getScaleFactor();
+        stack.scale(s, s, s);
+
+        if (entity.hasVehicle() && entity.getVehicle() instanceof LivingEntity livingVehicles) {
+            PonyRenderContext<LivingEntity, ?> renderer = MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(livingVehicles);
+
+            if (renderer != null) {
+                // negate vanilla translations so the rider begins at the ridees feet.
+                stack.translate(0, -livingVehicles.getHeight(), 0);
+                Pony pony = context.getEntityPony(entity);
+                if (!pony.race().isHuman()) {
+                    renderer.getInternalRenderer().translateRider(livingVehicles, renderer.getEntityPony(livingVehicles), entity, pony, stack, tickDelta);
+                }
+            }
+        }
+
+        if (entity instanceof PlayerEntity) {
+            if (getModels().body().getAttributes().isSitting) {
+                stack.translate(0, 0.125D, 0);
+            }
+        }
+
+        rotationYaw = getMountedYaw(entity, rotationYaw, tickDelta);
+        transformer.setupTransforms(entity, stack, ageInTicks, rotationYaw, tickDelta);
+
+        PonyPosture.of(getModels().body().getAttributes()).apply(entity, getModels().body(), stack, rotationYaw, tickDelta, 1);
+    }
+
+    private void translateRider(T entity, Pony pony, LivingEntity passenger, Pony passengerPony, MatrixStack stack, float tickDelta) {
+        if (!passengerPony.race().isHuman()) {
+            float yaw = MathUtil.interpolateDegress((float)entity.prevY, (float)entity.getY(), tickDelta);
+
+            models.applyMetadata(pony.metadata());
+            models.body().transform(BodyPart.BACK, stack);
+
+            PonyPosture.of(models.body().getAttributes()).apply(entity, getModels().body(), stack, yaw, tickDelta, -1);
+        }
+    }
+
+    private float getMountedYaw(T entity, float rotationYaw, float partialTicks) {
         if (entity.hasVehicle()) {
             Entity mount = entity.getVehicle();
             if (mount instanceof LivingEntity) {
@@ -84,91 +137,20 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         return rotationYaw;
     }
 
-    public void preRenderCallback(T entity, MatrixStack stack, float ticks) {
-        updateModel(entity, ModelAttributes.Mode.THIRD_PERSON);
-
-        float s = getScaleFactor();
-        stack.scale(s, s, s);
-
-        translateRider(entity, stack, ticks);
-    }
-
-    private void translateRider(T entity, MatrixStack stack, float ticks) {
-        if (entity.hasVehicle() && entity.getVehicle() instanceof LivingEntity) {
-
-            LivingEntity ridingEntity = (LivingEntity) entity.getVehicle();
-            PonyRenderContext<LivingEntity, ?> renderer = MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(ridingEntity);
-
-            if (renderer != null) {
-                // negate vanilla translations so the rider begins at the ridees feet.
-                stack.translate(0, -ridingEntity.getHeight(), 0);
-
-                Pony riderPony = renderer.getEntityPony(ridingEntity);
-
-                renderer.translateRider(ridingEntity, riderPony, entity, renderer.getEntityPony(entity), stack, ticks);
-            }
-        }
-    }
-
-    public void setupTransforms(T entity, MatrixStack stack, float yaw, float tickDelta) {
-        PonyPosture.of(getModel().getAttributes()).apply(entity, getModel(), stack, yaw, tickDelta, 1);
-    }
-
-    public void applyPostureRiding(T entity, MatrixStack stack, float yaw, float tickDelta) {
-        PonyPosture.of(getModel().getAttributes()).apply(entity, getModel(), stack, yaw, tickDelta, -1);
-    }
-
-    public Pony updateModel(T entity, ModelAttributes.Mode mode) {
-        Pony pony = renderer.getEntityPony(entity);
-        playerModel.applyMetadata(pony.metadata());
-
-        if (entity instanceof PlayerEntity player && entity instanceof RegistrationHandler handler) {
-            SyncedPony synced = handler.getSyncedPony();
-            boolean changed = pony.compareTo(synced.lastRenderedPony) != 0;
-
-            if (changed) {
-                synced.lastRenderedPony = pony;
-                player.calculateDimensions();
-            }
-
-            if (!(player instanceof PreviewModel)) {
-                @Nullable
-                PlayerEntity clientPlayer = MinecraftClient.getInstance().player;
-
-                if (pony.compareTo(synced.lastTransmittedPony) != 0) {
-                    if (clientPlayer != null && (Objects.equals(player, clientPlayer) || Objects.equals(player.getGameProfile(), clientPlayer.getGameProfile()))) {
-                        if (Channel.broadcastPonyData(pony.metadata())) {
-                            synced.lastTransmittedPony = pony;
-                        }
-                    }
-                }
-
-                if (changed) {
-                    PonyDataCallback.EVENT.invoker().onPonyDataAvailable(player, pony.metadata(), EnvType.CLIENT);
-                }
-            }
-        }
-
-        getModel().updateLivingState(entity, pony, mode);
-
-        return pony;
-    }
-
     public float getScaleFactor() {
-        return getModel().getSize().scaleFactor();
+        return getModels().body().getSize().scaleFactor();
     }
 
     public float getShadowSize() {
-        return getModel().getSize().shadowSize();
+        return getModels().body().getSize().shadowSize();
     }
 
     public double getNamePlateYOffset(T entity) {
-
         // We start by negating the height calculation done by mahjong.
         float y = -(entity.getHeight() + 0.5F);
 
         // Then we add our own offsets.
-        y += getModel().getAttributes().visualHeight * getScaleFactor() + 0.25F;
+        y += getModels().body().getAttributes().visualHeight * getScaleFactor() + 0.25F;
 
         if (entity.isSneaking()) {
             y -= 0.25F;
@@ -185,8 +167,16 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         return y;
     }
 
+    public interface Transformer<T extends LivingEntity> {
+        void setupTransforms(T entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks);
+    }
+
     public interface RegistrationHandler {
         SyncedPony getSyncedPony();
+    }
+
+    public interface ModelHolder<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> {
+        void setModel(M model);
     }
 
     public static class SyncedPony {
@@ -194,5 +184,31 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
         private Pony lastRenderedPony;
         @Nullable
         private Pony lastTransmittedPony;
+
+        public void synchronize(PlayerEntity player, Pony pony) {
+            boolean changed = pony.compareTo(lastRenderedPony) != 0;
+
+            if (changed) {
+                lastRenderedPony = pony;
+                player.calculateDimensions();
+            }
+
+            if (!(player instanceof PreviewModel)) {
+                @Nullable
+                PlayerEntity clientPlayer = MinecraftClient.getInstance().player;
+
+                if (pony.compareTo(lastTransmittedPony) != 0) {
+                    if (clientPlayer != null && (Objects.equals(player, clientPlayer) || Objects.equals(player.getGameProfile(), clientPlayer.getGameProfile()))) {
+                        if (Channel.broadcastPonyData(pony.metadata())) {
+                            lastTransmittedPony = pony;
+                        }
+                    }
+                }
+
+                if (changed) {
+                    PonyDataCallback.EVENT.invoker().onPonyDataAvailable(player, pony.metadata(), EnvType.CLIENT);
+                }
+            }
+        }
     }
 }

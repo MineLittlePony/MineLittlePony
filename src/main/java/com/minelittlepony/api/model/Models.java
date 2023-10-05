@@ -18,14 +18,14 @@ import java.util.function.Consumer;
 /**
  * Container class for the various models and their associated piece of armour.
  */
-public class ModelWrapper<T extends LivingEntity, M extends PonyModel<?>> {
+public class Models<T extends LivingEntity, M extends PonyModel<?>> {
     @Nullable
     private final MsonModel.Factory<PonyArmourModel<T>> armorFactory;
     private final Map<ModelKey<PonyArmourModel<?>>, PonyArmourModel<T>> armor = new HashMap<>();
 
     private final M body;
 
-    public ModelWrapper(PlayerModelKey<T, ? super M> playerModelKey, boolean slimArms, @Nullable Consumer<M> initializer) {
+    public Models(PlayerModelKey<T, ? super M> playerModelKey, boolean slimArms, @Nullable Consumer<M> initializer) {
         this.armorFactory = playerModelKey.armorFactory();
         this.body = playerModelKey.getKey(slimArms).createModel();
         if (initializer != null) {
@@ -33,7 +33,7 @@ public class ModelWrapper<T extends LivingEntity, M extends PonyModel<?>> {
         }
     }
 
-    public ModelWrapper(ModelKey<M> key) {
+    public Models(ModelKey<M> key) {
         this.armorFactory = null;
         this.body = key.createModel();
     }
@@ -49,7 +49,7 @@ public class ModelWrapper<T extends LivingEntity, M extends PonyModel<?>> {
         }));
     }
 
-    public ModelWrapper<T, M> applyMetadata(PonyData meta) {
+    public Models<T, M> applyMetadata(PonyData meta) {
         body.setMetadata(meta);
         armor.values().forEach(a -> a.setMetadata(meta));
         return this;

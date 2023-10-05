@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.model.ModelWrapper;
+import com.minelittlepony.api.model.Models;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.SkinsProxy;
 import com.minelittlepony.api.pony.meta.Race;
@@ -30,21 +30,20 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 
 public class PlayerPonyRenderer extends PlayerEntityRenderer implements PonyRenderContext<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> {
-
-    protected final EquineRenderManager<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> manager = new EquineRenderManager<>(this);
-
-    private final Function<Race, ModelWrapper<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>>> modelsCache;
+    private final Function<Race, Models<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>>> modelsCache;
+    protected final EquineRenderManager<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> manager;
 
     public PlayerPonyRenderer(EntityRendererFactory.Context context, boolean slim) {
         super(context, slim);
         modelsCache = Util.memoize(race -> ModelType.getPlayerModel(race).create(slim));
+        manager = new EquineRenderManager<>(this, super::setupTransforms, modelsCache.apply(Race.EARTH));
+        manager.setModelsLookup(entity -> modelsCache.apply(getPlayerRace(entity, getEntityPony(entity))));
         addLayers(context);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected void addLayers(EntityRendererFactory.Context context) {
         // remove vanilla features (keep modded ones)
-        // TODO: test with https://github.com/Globox1997/BackSlot
         features.removeIf(feature -> {
             return feature instanceof ArmorFeatureRenderer
                     || feature instanceof PlayerHeldItemFeatureRenderer
@@ -71,19 +70,18 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements PonyRend
 
     @Override
     protected void scale(AbstractClientPlayerEntity entity, MatrixStack stack, float tickDelta) {
-        if (manager.getModel().getAttributes().isSitting && entity.hasVehicle()) {
+        if (manager.getModels().body().getAttributes().isSitting && entity.hasVehicle()) {
             stack.translate(0, entity.getRidingOffset(entity.getVehicle()), 0);
         }
     }
 
     @Override
     public void render(AbstractClientPlayerEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
-        Pony pony = getEntityPony(entity);
-        model = manager.setModel(modelsCache.apply(getPlayerRace(entity, pony))).body();
         // EntityModelFeatures: We have to force it to use our models otherwise EMF overrides it and breaks pony rendering
+        manager.preRender(entity, ModelAttributes.Mode.THIRD_PERSON);
         shadowRadius = manager.getShadowSize();
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
-        DebugBoundingBoxRenderer.render(pony, this, entity, stack, renderContext, tickDelta);
+        DebugBoundingBoxRenderer.render(getEntityPony(entity), this, entity, stack, renderContext, tickDelta);
 
         // Translate the shadow position after everything is done
         // (shadows are drawn after us)
@@ -103,10 +101,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements PonyRend
 
     @Override
     protected void setupTransforms(AbstractClientPlayerEntity entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
-        manager.preRenderCallback(entity, stack, partialTicks);
-        rotationYaw = manager.getRenderYaw(entity, rotationYaw, partialTicks);
-        super.setupTransforms(entity, stack, ageInTicks, rotationYaw, partialTicks);
-        manager.setupTransforms(entity, stack, rotationYaw, partialTicks);
+        manager.setupTransforms(entity, stack, ageInTicks, rotationYaw, partialTicks);
     }
 
     @Override
@@ -145,9 +140,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements PonyRend
     }
 
     protected void renderArm(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, AbstractClientPlayerEntity player, Arm side) {
-        Pony pony = getEntityPony(player);
-        model = manager.setModel(modelsCache.apply(getPlayerRace(player, pony))).body();
-        manager.updateModel(player, ModelAttributes.Mode.FIRST_PERSON);
+        manager.preRender(player, ModelAttributes.Mode.FIRST_PERSON);
 
         stack.push();
         float reflect = side == Arm.LEFT ? 1 : -1;
@@ -180,6 +173,11 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements PonyRend
     }
 
     @Override
+    public void setModel(ClientPonyModel<AbstractClientPlayerEntity> model) {
+        this.model = model;
+    }
+
+    @Override
     public EquineRenderManager<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> getInternalRenderer() {
         return manager;
     }
@@ -192,7 +190,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements PonyRend
     @Override
     public Identifier getDefaultTexture(AbstractClientPlayerEntity entity, Wearable wearable) {
         return SkinsProxy.instance.getSkin(wearable.getId(), entity).orElseGet(() -> {
-            if (wearable.isSaddlebags() && getInternalRenderer().getModel().getRace().supportsLegacySaddlebags()) {
+            if (wearable.isSaddlebags() && getInternalRenderer().getModels().body().getRace().supportsLegacySaddlebags()) {
                 return getTexture(entity);
             }
 

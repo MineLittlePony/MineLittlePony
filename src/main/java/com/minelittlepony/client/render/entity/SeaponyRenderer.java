@@ -2,6 +2,7 @@ package com.minelittlepony.client.render.entity;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.client.mixin.IResizeable;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.GuardianPonyModel;
@@ -52,7 +53,7 @@ public class SeaponyRenderer extends GuardianEntityRenderer {
 
     @Override
     public void render(GuardianEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
-        ponyRenderer.manager.preRenderCallback(entity, stack, tickDelta);
+        ponyRenderer.manager.preRender(entity, ModelAttributes.Mode.THIRD_PERSON);
 
         float height = entity.getStandingEyeHeight();
 
@@ -60,5 +61,10 @@ public class SeaponyRenderer extends GuardianEntityRenderer {
         ((IResizeable)entity).setStandingEyeHeight(2 * scale * ponyRenderer.manager.getScaleFactor());
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
         ((IResizeable)entity).setStandingEyeHeight(height);
+    }
+
+    @Override
+    protected void setupTransforms(GuardianEntity entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
+        ponyRenderer.manager.setupTransforms(entity, stack, ageInTicks, rotationYaw, partialTicks);
     }
 }

@@ -44,7 +44,7 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
         ItemStack right = getRightItem(entity);
 
         if (!left.isEmpty() || !right.isEmpty()) {
-            M model = context.getInternalRenderer().getModel();
+            M model = context.getInternalRenderer().getModels().body();
 
             stack.push();
 

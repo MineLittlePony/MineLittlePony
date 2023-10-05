@@ -1,6 +1,6 @@
 package com.minelittlepony.client.render.entity.feature;
 
-import com.minelittlepony.api.model.ModelWrapper;
+import com.minelittlepony.api.model.Models;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.model.armour.*;
 import com.minelittlepony.client.render.ArmorRenderLayers;
@@ -29,7 +29,7 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & Po
 
     @Override
     public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
-        ModelWrapper<T, M> pony = getModelWrapper();
+        Models<T, M> pony = getModelWrapper();
 
         for (EquipmentSlot i : EquipmentSlot.values()) {
             if (i.getType() == EquipmentSlot.Type.ARMOR) {
@@ -40,7 +40,7 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & Po
     }
 
     public static <T extends LivingEntity, V extends PonyArmourModel<T>> void renderArmor(
-            ModelWrapper<T, ? extends PonyModel<T>> pony, MatrixStack matrices,
+            Models<T, ? extends PonyModel<T>> pony, MatrixStack matrices,
                     VertexConsumerProvider renderContext, int light, T entity,
                     float limbDistance, float limbAngle,
                     float age, float headYaw, float headPitch,

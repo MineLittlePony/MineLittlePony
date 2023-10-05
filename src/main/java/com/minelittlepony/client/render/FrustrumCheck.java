@@ -19,11 +19,11 @@ public class FrustrumCheck<T extends LivingEntity> extends Frustum {
 
     private Frustum vanilla;
 
-    private final EquineRenderManager<T, ?> renderer;
+    private final PonyRenderContext<T, ?> context;
 
-    public FrustrumCheck(EquineRenderManager<T, ?> render) {
+    public FrustrumCheck(PonyRenderContext<T, ?> context) {
         super(new Matrix4f(), new Matrix4f());
-        renderer = render;
+        this.context = context;
     }
 
     public Frustum withCamera(T entity, Frustum vanillaFrustrum) {
@@ -34,7 +34,7 @@ public class FrustrumCheck<T extends LivingEntity> extends Frustum {
 
     @Override
     public boolean isVisible(Box bounds) {
-        return vanilla.isVisible(PonyBounds.getBoundingBox(renderer.getContext().getEntityPony(entity), entity));
+        return vanilla.isVisible(PonyBounds.getBoundingBox(context.getEntityPony(entity), entity));
     }
 
     @Override

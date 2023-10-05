@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.entity;
 
+import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Wearable;
@@ -29,7 +30,7 @@ import net.minecraft.util.Identifier;
 
 public abstract class AbstractPonyRenderer<T extends MobEntity, M extends EntityModel<T> & PonyModel<T> & ModelWithArms> extends MobEntityRenderer<T, M> implements PonyRenderContext<T, M> {
 
-    protected final EquineRenderManager<T, M> manager = new EquineRenderManager<>(this);
+    protected final EquineRenderManager<T, M> manager;
 
     private final Map<Wearable, Identifier> wearableTextures = new EnumMap<>(Wearable.class);
 
@@ -39,7 +40,7 @@ public abstract class AbstractPonyRenderer<T extends MobEntity, M extends Entity
 
     public AbstractPonyRenderer(EntityRendererFactory.Context context, ModelKey<? super M> key, TextureSupplier<T> texture, float scale) {
         super(context, null, 0.5F);
-        this.model = manager.setModel(key).body();
+        this.manager = new EquineRenderManager<>(this, super::setupTransforms, key);
         this.texture = texture;
         this.scale = scale;
         addFeatures(context);
@@ -64,24 +65,14 @@ public abstract class AbstractPonyRenderer<T extends MobEntity, M extends Entity
 
     @Override
     public void render(T entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
+        manager.preRender(entity, ModelAttributes.Mode.THIRD_PERSON);
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
         DebugBoundingBoxRenderer.render(getEntityPony(entity), this, entity, stack, renderContext, tickDelta);
     }
 
     @Override
     protected void setupTransforms(T entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
-        manager.preRenderCallback(entity, stack, partialTicks);
-        if (getModel() instanceof PlayerEntityModel) {
-            ((PlayerEntityModel<?>)getModel()).setVisible(true);
-        }
-
-        if (getModel().getAttributes().isSitting) {
-            stack.translate(0, 0.125D, 0);
-        }
-
-        rotationYaw = manager.getRenderYaw(entity, rotationYaw, partialTicks);
-        super.setupTransforms(entity, stack, ageInTicks, rotationYaw, partialTicks);
-        manager.setupTransforms(entity, stack, rotationYaw, partialTicks);
+        manager.setupTransforms(entity, stack, ageInTicks, rotationYaw, partialTicks);
     }
 
     @Override
@@ -117,14 +108,18 @@ public abstract class AbstractPonyRenderer<T extends MobEntity, M extends Entity
     @Override
     public Identifier getDefaultTexture(T entity, Wearable wearable) {
         return wearableTextures.computeIfAbsent(wearable, w -> {
-            Identifier texture = getTexture(entity);
-            texture = new Identifier(texture.getNamespace(), texture.getPath().split("\\.")[0] + "_" + wearable.name().toLowerCase(Locale.ROOT) + ".png");
+            Identifier texture = getTexture(entity).withPath(path -> path.split("\\.")[0] + "_" + wearable.name().toLowerCase(Locale.ROOT) + ".png");
 
             if (MinecraftClient.getInstance().getResourceManager().getResource(texture).isPresent()) {
                 return texture;
             }
             return wearable.getDefaultTexture();
         });
+    }
+
+    @Override
+    public void setModel(M model) {
+        this.model = model;
     }
 
     @Override
