@@ -27,7 +27,6 @@ import net.minecraft.client.render.entity.feature.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
-import net.minecraft.util.math.*;
 
 public class PlayerPonyRenderer extends PlayerEntityRenderer implements PonyRenderContext<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> {
     private final Function<Race, Models<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>>> modelsCache;
@@ -85,6 +84,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements PonyRend
 
         // Translate the shadow position after everything is done
         // (shadows are drawn after us)
+        /*
         if (!entity.hasVehicle() && !entity.isSleeping()) {
             float yaw = MathHelper.lerpAngleDegrees(tickDelta, entity.prevBodyYaw, entity.bodyYaw);
             float l = entity.getWidth() / 2 * manager.getScaleFactor();
@@ -93,6 +93,8 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements PonyRend
             stack.translate(0, 0, -l);
             stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(yaw));
         }
+        */
+
     }
 
     protected Race getPlayerRace(AbstractClientPlayerEntity entity, Pony pony) {
