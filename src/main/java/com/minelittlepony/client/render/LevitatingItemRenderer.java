@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render;
 
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.IPony;
-import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.util.render.RenderLayerUtil;
 
 import org.jetbrains.annotations.Nullable;
@@ -11,7 +11,6 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.PlayerScreenHandler;
@@ -37,32 +36,36 @@ public class LevitatingItemRenderer {
      */
     public void renderItem(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformationMode mode, boolean left, MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world, int lightUv, int posLong) {
 
-        if (entity instanceof PlayerEntity && (mode.isFirstPerson() || mode == ModelTransformationMode.THIRD_PERSON_LEFT_HAND || mode == ModelTransformationMode.THIRD_PERSON_RIGHT_HAND)) {
+        if (mode.isFirstPerson()
+                || mode == ModelTransformationMode.THIRD_PERSON_LEFT_HAND
+                || mode == ModelTransformationMode.THIRD_PERSON_RIGHT_HAND
+            ) {
+            IPony.getManager().getPony(entity).ifPresentOrElse(pony -> {
+                matrix.push();
 
-            IPony pony = IPony.getManager().getPony((PlayerEntity)entity);
+                boolean doMagic = PonyConfig.getInstance().fpsmagic.get() && pony.hasMagic();
 
-            matrix.push();
+                if (doMagic && mode.isFirstPerson()) {
+                    setupPerspective(itemRenderer, entity, stack, left, matrix);
+                }
 
-            boolean doMagic = MineLittlePony.getInstance().getConfig().fpsmagic.get() && pony.hasMagic();
+                itemRenderer.renderItem(entity, stack, mode, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
 
-            if (doMagic && mode.isFirstPerson()) {
-                setupPerspective(itemRenderer, entity, stack, left, matrix);
-            }
+                if (doMagic) {
+                    VertexConsumerProvider interceptedContext = getProvider(pony, renderContext);
 
-            itemRenderer.renderItem(entity, stack, mode, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
+                    matrix.scale(1.1F, 1.1F, 1.1F);
+                    matrix.translate(0.015F, 0.01F, 0.01F);
 
-            if (doMagic) {
-                VertexConsumerProvider interceptedContext = getProvider(pony, renderContext);
+                    itemRenderer.renderItem(entity, stack, mode, left, matrix, interceptedContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
+                    matrix.translate(-0.03F, -0.02F, -0.02F);
+                    itemRenderer.renderItem(entity, stack, mode, left, matrix, interceptedContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
+                }
 
-                matrix.scale(1.1F, 1.1F, 1.1F);
-                matrix.translate(0.015F, 0.01F, 0.01F);
-
-                itemRenderer.renderItem(entity, stack, mode, left, matrix, interceptedContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
-                matrix.translate(-0.03F, -0.02F, -0.02F);
-                itemRenderer.renderItem(entity, stack, mode, left, matrix, interceptedContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
-            }
-
-            matrix.pop();
+                matrix.pop();
+            }, () -> {
+                itemRenderer.renderItem(entity, stack, mode, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
+            });
         } else {
             itemRenderer.renderItem(entity, stack, mode, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
         }

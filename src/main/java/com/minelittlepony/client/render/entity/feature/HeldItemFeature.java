@@ -37,6 +37,7 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
 
         return main ? entity.getMainHandStack() : entity.getOffHandStack();
     }
+
     @Override
     public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
 
