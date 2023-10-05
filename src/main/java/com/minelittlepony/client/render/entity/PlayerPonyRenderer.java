@@ -24,7 +24,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.*;
 
 public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRenderContext<AbstractClientPlayerEntity, ClientPonyModel<AbstractClientPlayerEntity>> {
 
@@ -82,6 +81,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
 
         // Translate the shadow position after everything is done
         // (shadows are drawn after us)
+        /*
         if (!entity.hasVehicle() && !entity.isSleeping()) {
             float yaw = MathHelper.lerpAngleDegrees(tickDelta, entity.prevBodyYaw, entity.bodyYaw);
             float l = entity.getWidth() / 2 * manager.getPony(entity).metadata().getSize().getScaleFactor();
@@ -90,6 +90,8 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements IPonyRen
             stack.translate(0, 0, -l);
             stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(yaw));
         }
+        */
+
     }
 
     @Override
