@@ -10,6 +10,7 @@ import java.util.*;
 
 import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
@@ -152,6 +153,11 @@ public class ModelAttributes {
         isSitting = PonyPosture.isSitting(entity);
         isSleeping = entity.isAlive() && entity.isSleeping();;
         isLyingDown = isSleeping;
+        if (entity instanceof PlayerEntity) {
+            boolean moving = entity.getVelocity().multiply(1, 0, 1).length() == 0 && entity.isSneaking();
+            isLyingDown |= getMainInterpolator().interpolate("lyingDown", moving ? 10 : 0, 10) >= 9;
+        }
+
         isCrouching = !isLyingDown && !isSitting && mode == Mode.THIRD_PERSON && PonyPosture.isCrouching(pony, entity);
         isFlying = !isLyingDown && mode == Mode.THIRD_PERSON && PonyPosture.isFlying(entity);
         isGliding = entity.isFallFlying();
