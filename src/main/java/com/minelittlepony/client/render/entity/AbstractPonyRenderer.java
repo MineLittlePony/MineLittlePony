@@ -66,6 +66,9 @@ public abstract class AbstractPonyRenderer<T extends MobEntity, M extends Entity
     @Override
     public void render(T entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
         manager.preRender(entity, ModelAttributes.Mode.THIRD_PERSON);
+        if (manager.getModels().body() instanceof BipedEntityModel model) {
+            model.setVisible(true);
+        }
         super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
         DebugBoundingBoxRenderer.render(getEntityPony(entity), this, entity, stack, renderContext, tickDelta);
     }
