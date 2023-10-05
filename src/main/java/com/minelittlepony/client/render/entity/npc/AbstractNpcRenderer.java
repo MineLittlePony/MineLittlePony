@@ -27,7 +27,7 @@ abstract class AbstractNpcRenderer<T extends MobEntity & VillagerDataContainer> 
     private final NpcClothingFeature<T, ClientPonyModel<T>, AbstractNpcRenderer<T>> clothing;
 
     public AbstractNpcRenderer(EntityRendererFactory.Context context, String type, TextureSupplier<T> textureSupplier, TextureSupplier<String> formatter) {
-        super(context, ModelType.getPlayerModel(Race.EARTH).getKey(false), new SillyPonyTextureSupplier<>(textureSupplier, formatter));
+        super(context, ModelType.getPlayerModel(Race.EARTH).getKey(false), SillyPonyTextureSupplier.create(textureSupplier, formatter));
         entityType = type;
         clothing = new NpcClothingFeature<>(this, entityType);
         addFeature(clothing);
