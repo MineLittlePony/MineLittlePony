@@ -29,6 +29,7 @@ public class PonyEars implements IPart, MsonModel {
     @Override
     public void setPartAngles(ModelAttributes attributes, float limbAngle, float limbSpeed, float bodySwing, float animationProgress) {
         right.resetTransform();
+        left.resetTransform();
 
         limbSpeed = MathHelper.clamp(limbSpeed, 0, 1);
 
