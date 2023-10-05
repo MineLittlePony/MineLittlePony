@@ -39,9 +39,15 @@ public interface IMobModel {
 
         if (islookAngleRight(move)) {
             IMobModel.rotateArmHolding(rightArm, 1, model.getSwingAmount(), ticks);
+            if (model.getAttributes().isSitting) {
+                rightArm.pitch += 0.6F;
+            }
             PartUtil.shift(rightArm, 0.5F, 1.5F, 3);
         } else {
             IMobModel.rotateArmHolding(leftArm, -1, model.getSwingAmount(), ticks);
+            if (model.getAttributes().isSitting) {
+                leftArm.pitch += 0.6F;
+            }
             PartUtil.shift(leftArm, -0.5F, 1.5F, 3);
         }
     }
