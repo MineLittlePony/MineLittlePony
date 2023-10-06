@@ -14,7 +14,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.PlayerScreenHandler;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.UseAction;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.world.World;
@@ -23,11 +22,10 @@ public class LevitatingItemRenderer {
     private VertexConsumerProvider getProvider(Pony pony, VertexConsumerProvider renderContext) {
         final int color = pony.metadata().glowColor();
         return layer -> {
-            Identifier texture = RenderLayerUtil.getTexture(layer).orElse(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
-            if (texture == ItemRenderer.ENTITY_ENCHANTMENT_GLINT || texture == ItemRenderer.ITEM_ENCHANTMENT_GLINT) {
+            if (layer.getVertexFormat() != VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL) {
                 return renderContext.getBuffer(layer);
             }
-            return renderContext.getBuffer(MagicGlow.getColoured(texture, color));
+            return renderContext.getBuffer(MagicGlow.getColoured(RenderLayerUtil.getTexture(layer).orElse(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE), color));
         };
     }
 
