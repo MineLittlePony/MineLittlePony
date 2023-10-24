@@ -54,16 +54,16 @@ public class Channel {
         });
     }
 
+    public static boolean isRegistered() {
+        return registered;
+    }
+
     public static boolean broadcastPonyData(PonyData packet) {
+        if (!isRegistered()) {
+            return false;
+        }
         if (FabricLoader.getInstance().getEnvironmentType() != EnvType.CLIENT) {
             throw new RuntimeException("Client packet send called by the server");
-        }
-
-        if (!registered) {
-            LOGGER.info("Skipping network packet as the server has not consented");
-            return false;
-        } else {
-            LOGGER.info("Sending pony data to server for player");
         }
 
         ClientPlayNetworking.send(CLIENT_PONY_DATA, MsgPonyData.write(packet, PacketByteBufs.create()));

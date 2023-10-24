@@ -197,7 +197,7 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
                 @Nullable
                 PlayerEntity clientPlayer = MinecraftClient.getInstance().player;
 
-                if (pony.compareTo(lastTransmittedPony) != 0) {
+                if (Channel.isRegistered() && pony.compareTo(lastTransmittedPony) != 0) {
                     if (clientPlayer != null && (Objects.equals(player, clientPlayer) || Objects.equals(player.getGameProfile(), clientPlayer.getGameProfile()))) {
                         if (Channel.broadcastPonyData(pony.metadata())) {
                             lastTransmittedPony = pony;
