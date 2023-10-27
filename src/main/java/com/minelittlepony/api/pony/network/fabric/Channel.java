@@ -13,7 +13,6 @@ import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.IPonyData;
 import com.minelittlepony.api.pony.network.MsgPonyData;
 import com.minelittlepony.client.MineLittlePony;
@@ -38,14 +37,7 @@ public class Channel {
 
         ClientPlayNetworking.registerGlobalReceiver(REQUEST_PONY_DATA, (client, handler, ignored, sender) -> {
             registered = true;
-            if (client.player != null) {
-                IPony pony = IPony.getManager().getPony(client.player);
-                LOGGER.info("Server has just consented");
-
-                sender.sendPacket(CLIENT_PONY_DATA, new MsgPonyData(pony.metadata(), pony.defaulted()).toBuffer(PacketByteBufs.create()));
-            } else {
-                LOGGER.info("Server has just consented but the client player was not set");
-            }
+            LOGGER.info("Server has just consented");
         });
         ServerPlayNetworking.registerGlobalReceiver(CLIENT_PONY_DATA, (server, player, ignore, buffer, ignore2) -> {
             MsgPonyData packet = new MsgPonyData(buffer);

@@ -87,16 +87,17 @@ public class NativeUtil {
     }
 
     public static void parseImage(Identifier resource, Consumer<NativeImage> consumer, Consumer<Exception> fail) {
-        parseImage(resource, consumer, fail, 0);
-    }
-
-    private static void parseImage(Identifier resource, Consumer<NativeImage> consumer, Consumer<Exception> fail, int attempt) {
-        try {
+        MinecraftClient.getInstance().execute(() -> {
             if (!RenderSystem.isOnRenderThread()) {
-                RenderSystem.recordRenderCall(() -> parseImage(resource, consumer, fail, attempt));
+                RenderSystem.recordRenderCall(() -> _parseImage(resource, consumer, fail, 0));
                 return;
             }
+            _parseImage(resource, consumer, fail, 0);
+        });
+    }
 
+    private static void _parseImage(Identifier resource, Consumer<NativeImage> consumer, Consumer<Exception> fail, int attempt) {
+        try {
             MinecraftClient mc = MinecraftClient.getInstance();
             TextureManager textures = mc.getTextureManager();
 
