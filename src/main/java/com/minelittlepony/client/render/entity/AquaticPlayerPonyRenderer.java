@@ -65,8 +65,9 @@ public class AquaticPlayerPonyRenderer extends PlayerPonyRenderer {
     }
 
     private void updateSeaponyState(AbstractClientPlayerEntity player) {
+        wet = PonyPosture.isSeaponyModifier(player);
         if (!(player instanceof PreviewModel)) {
-            float state = PonyPosture.isSeaponyModifier(player) ? 100 : 0;
+            float state = wet ? 100 : 0;
             float interpolated = getInternalRenderer().getModels().body().getAttributes().getMainInterpolator().interpolate("seapony_state", state, 5);
 
             if (!MathUtil.compareFloats(interpolated, state)) {
