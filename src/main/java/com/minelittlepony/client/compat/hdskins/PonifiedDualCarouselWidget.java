@@ -31,6 +31,9 @@ class PonifiedDualCarouselWidget extends DualCarouselWidget {
         if (type == MineLPHDSkins.seaponySkinType) {
             return NativeImageFilters.GREYSCALE.load(SeaponyRenderer.SEAPONY, SeaponyRenderer.SEAPONY, getExclusion());
         }
+        if (type == MineLPHDSkins.nirikSkinType) {
+            return super.getDefaultSkin(SkinType.SKIN, modelVariant);
+        }
 
         Wearable wearable = MineLPHDSkins.wearableTypes.getOrDefault(type, Wearable.NONE);
 

@@ -3,11 +3,9 @@ package com.minelittlepony.client.render;
 import java.util.function.Function;
 
 import com.minelittlepony.api.model.PonyModel;
-import com.minelittlepony.api.pony.Pony;
-import com.minelittlepony.api.pony.PonyPosture;
+import com.minelittlepony.api.pony.*;
 import com.minelittlepony.client.mixin.MixinEntityRenderers;
-import com.minelittlepony.client.render.entity.AquaticPlayerPonyRenderer;
-import com.minelittlepony.client.render.entity.PlayerPonyRenderer;
+import com.minelittlepony.client.render.entity.*;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -53,10 +51,19 @@ public class PonyRenderDispatcher {
                 context -> new AquaticPlayerPonyRenderer(context, armShape == SkinTextures.Model.SLIM)
         );
         Mson.getInstance().getEntityRendererRegistry().registerPlayerRenderer(
+                new Identifier("minelittlepony", "nirik/" + armShape.getName()),
+                player -> {
+                    return !Pony.getManager().getPony(player).race().isHuman()
+                            && PonyPosture.hasNirikForm(player)
+                            && player.method_52814().model() == armShape;
+                },
+                context -> new FormChangingPlayerPonyRenderer(context, armShape == SkinTextures.Model.SLIM, DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, PonyPosture::isNirikModifier)
+        );
+        Mson.getInstance().getEntityRendererRegistry().registerPlayerRenderer(
                 new Identifier("minelittlepony", "land/" + armShape.getName()),
                 player -> {
                     return !Pony.getManager().getPony(player).race().isHuman()
-                            && !PonyPosture.hasSeaponyForm(player)
+                            && !PonyPosture.hasSeaponyForm(player) && !PonyPosture.hasNirikForm(player)
                             && player.method_52814().model() == armShape;
                 },
                 context -> new PlayerPonyRenderer(context, armShape == SkinTextures.Model.SLIM)

@@ -54,7 +54,8 @@
   "minelp.debug.race": "Race Override",
   "minelp.debug.armour": "Disable ponified armour textures",
 
-  "skin_type.minelp.seapony": "Seapony",
+  "skin_type.minelp.seapony": "Seapony Form",
+  "skin_type.minelp.nirik": "Kirin Nirik Form",
   "skin_type.minelittlepony.crown": "Crown",
   "skin_type.minelittlepony.muffin": "Muffin Hat",
   "skin_type.minelittlepony.hat": "Witch Hat",

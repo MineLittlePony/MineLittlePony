@@ -12,6 +12,7 @@ public final class DefaultPonySkinHelper {
     public static final Identifier STEVE = new Identifier("minelittlepony", "textures/entity/player/wide/steve_pony.png");
 
     public static final Identifier SEAPONY_SKIN_TYPE_ID = new Identifier("minelp", "seapony");
+    public static final Identifier NIRIK_SKIN_TYPE_ID = new Identifier("minelp", "nirik");
 
     private static final Map<SkinTextures, SkinTextures> SKINS = new HashMap<>();
 

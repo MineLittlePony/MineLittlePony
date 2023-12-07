@@ -23,4 +23,9 @@ class DummyPony extends DummyPlayer implements PreviewModel, PonyManager.ForcedP
     public boolean forceSeapony() {
         return getTextures().getPosture().getActiveSkinType() == MineLPHDSkins.seaponySkinType;
     }
+
+    @Override
+    public boolean forceNirik() {
+        return getTextures().getPosture().getActiveSkinType() == MineLPHDSkins.nirikSkinType;
+    }
 }

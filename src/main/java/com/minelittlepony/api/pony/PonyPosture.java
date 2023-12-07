@@ -103,4 +103,23 @@ public final class PonyPosture {
             );
         }).isPresent();
     }
+
+    public static boolean isNirikModifier(LivingEntity entity) {
+        if (entity instanceof PreviewModel preview) {
+            return preview.forceNirik();
+        }
+        return false;
+    }
+
+
+    public static boolean hasNirikForm(LivingEntity entity) {
+        if (entity instanceof PreviewModel preview) {
+            return preview.forceNirik();
+        }
+        return Pony.getManager().getPony(entity).filter(pony -> {
+            return (pony.race() == Race.KIRIN
+                    && (entity instanceof AbstractClientPlayerEntity player && SkinsProxy.instance.getSkin(DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, player).isPresent())
+            );
+        }).isPresent();
+    }
 }

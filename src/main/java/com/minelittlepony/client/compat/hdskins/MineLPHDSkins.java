@@ -35,6 +35,7 @@ import com.minelittlepony.client.*;
 public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
 
     static SkinType seaponySkinType;
+    static SkinType nirikSkinType;
 
     static final Map<SkinType, Wearable> wearableTypes = new HashMap<>();
 
@@ -44,6 +45,7 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
         PonySettingsScreen.buttonFactory = this::renderOption;
 
         seaponySkinType = SkinType.register(DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, Items.COD_BUCKET.getDefaultStack());
+        nirikSkinType = SkinType.register(DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, Items.LAVA_BUCKET.getDefaultStack());
         Wearable.REGISTRY.values().forEach(wearable -> {
             if (wearable != Wearable.NONE) {
                 wearableTypes.put(SkinType.register(wearable.getId(), Items.BUNDLE.getDefaultStack()), wearable);
