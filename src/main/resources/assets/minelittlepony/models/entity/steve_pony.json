@@ -127,8 +127,8 @@
 								{
 									"type": "mson:plane", "__comment": "butt",
 									"texture": { "u": 36, "v": 16 },
-									"mirror": [true, true],
-									"face": "south",
+									"mirror": [false, true],
+									"face": "north",
 									"size": [ 8, 4 ]
 								}
 							]
