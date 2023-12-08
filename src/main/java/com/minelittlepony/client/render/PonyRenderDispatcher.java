@@ -46,7 +46,7 @@ public class PonyRenderDispatcher {
                 player -> {
                     return !Pony.getManager().getPony(player).race().isHuman()
                             && PonyPosture.hasSeaponyForm(player)
-                            && player.method_52814().model() == armShape;
+                            && player.getSkinTextures().model() == armShape;
                 },
                 context -> new AquaticPlayerPonyRenderer(context, armShape == SkinTextures.Model.SLIM)
         );
@@ -55,7 +55,7 @@ public class PonyRenderDispatcher {
                 player -> {
                     return !Pony.getManager().getPony(player).race().isHuman()
                             && PonyPosture.hasNirikForm(player)
-                            && player.method_52814().model() == armShape;
+                            && player.getSkinTextures().model() == armShape;
                 },
                 context -> new FormChangingPlayerPonyRenderer(context, armShape == SkinTextures.Model.SLIM, DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, PonyPosture::isNirikModifier)
         );
@@ -64,7 +64,7 @@ public class PonyRenderDispatcher {
                 player -> {
                     return !Pony.getManager().getPony(player).race().isHuman()
                             && !PonyPosture.hasSeaponyForm(player) && !PonyPosture.hasNirikForm(player)
-                            && player.method_52814().model() == armShape;
+                            && player.getSkinTextures().model() == armShape;
                 },
                 context -> new PlayerPonyRenderer(context, armShape == SkinTextures.Model.SLIM)
         );

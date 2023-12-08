@@ -45,7 +45,7 @@ public class PlayerPonySkull implements ISkull {
                 return skin;
             }
 
-            return DefaultSkinHelper.getTexture(profile).texture();
+            return DefaultSkinHelper.getSkinTextures(profile).texture();
         }
 
         return DefaultSkinHelper.getTexture();

@@ -36,7 +36,7 @@ public class DJPon3Feature<T extends AbstractClientPlayerEntity, M extends Entit
 
             deadMau5.setVisible(true);
 
-            VertexConsumer vertices = renderContext.getBuffer(deadMau5.getLayer(entity.method_52814().texture()));
+            VertexConsumer vertices = renderContext.getBuffer(deadMau5.getLayer(entity.getSkinTextures().texture()));
 
             deadMau5.render(stack, vertices, OverlayTexture.DEFAULT_UV, lightUv, limbDistance, limbAngle, tickDelta, 1);
 

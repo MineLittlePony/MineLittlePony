@@ -79,16 +79,16 @@ public class PonyManagerImpl implements PonyManager, SimpleSynchronousResourceRe
     @Override
     public Pony getBackgroundPony(@Nullable UUID uuid) {
         if (config.ponyLevel.get() == PonyLevel.PONIES) {
-            return loadPony(MineLittlePony.getInstance().getVariatedTextures().get(VariatedTextureSupplier.BACKGROUND_PONIES_POOL, uuid).orElse(DefaultSkinHelper.getTexture(uuid).texture()), true);
+            return loadPony(MineLittlePony.getInstance().getVariatedTextures().get(VariatedTextureSupplier.BACKGROUND_PONIES_POOL, uuid).orElse(DefaultSkinHelper.getSkinTextures(uuid).texture()), true);
         }
-        return loadPony(DefaultSkinHelper.getTexture(uuid).texture(), true);
+        return loadPony(DefaultSkinHelper.getSkinTextures(uuid).texture(), true);
     }
 
     @Nullable
     private Identifier getSkin(LivingEntity entity) {
         if (entity instanceof PlayerEntity player) {
             if (player.getGameProfile() != null && player instanceof AbstractClientPlayerEntity clientPlayer) {
-                return clientPlayer.method_52814().texture();
+                return clientPlayer.getSkinTextures().texture();
             }
         } else {
             if (MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(entity) != null) {

@@ -68,7 +68,7 @@ public class ElytraFeature<T extends LivingEntity, M extends EntityModel<T> & Po
 
     protected Identifier getElytraTexture(T entity) {
         if (entity instanceof AbstractClientPlayerEntity player) {
-            SkinTextures textures = player.method_52814();
+            SkinTextures textures = player.getSkinTextures();
 
             if (textures.elytraTexture() != null) {
                 return textures.elytraTexture();

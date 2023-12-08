@@ -150,7 +150,7 @@ public class PlayerPonyRenderer extends PlayerEntityRenderer implements PonyRend
         stack.translate(reflect * 0.1F, -0.54F, 0);
 
         Identifier texture = getTexture(player);
-        Identifier playerSkin = player.method_52814().texture();
+        Identifier playerSkin = player.getSkinTextures().texture();
         VertexConsumerProvider interceptedContext = layer -> {
             return renderContext.getBuffer(RenderLayerUtil
                     .getTexture(layer)

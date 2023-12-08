@@ -26,7 +26,7 @@ abstract class MixinDefaultSkinHelper {
         }
     }
 
-    @Inject(method = "getTexture(Ljava/util/UUID;)Lnet/minecraft/client/util/SkinTextures;",
+    @Inject(method = "getSkinTextures(Ljava/util/UUID;)Lnet/minecraft/client/util/SkinTextures;",
             at = @At("RETURN"),
             cancellable = true)
     private static void onGetTexture(UUID uuid, CallbackInfoReturnable<SkinTextures> cir) {

@@ -30,7 +30,7 @@ public final class DefaultPonySkinHelper {
     }
 
     public static String getModelType(UUID id) {
-        SkinTextures textures = DefaultSkinHelper.getTexture(id);
+        SkinTextures textures = DefaultSkinHelper.getSkinTextures(id);
         return getModelType(Pony.getManager().getPony(textures.texture(), id).race(), textures.model());
     }
 
