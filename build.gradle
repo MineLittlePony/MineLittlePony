@@ -86,7 +86,8 @@ processResources {
         expand "version": project.version.toString(),
                 "minecraftVersion": ">=${project.minecraft_version}",
                 "loaderVersion": ">=${project.loader_version}",
-                "fabricVersion": ">=${project.fabric_version}"
+                "fabricVersion": ">=${project.fabric_version}",
+                "kirinVersion": ">=${project.kirin_version}"
     }
 
     from 'LICENSE'
