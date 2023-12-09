@@ -31,12 +31,11 @@
     "minelp.mixin.json"
   ],
   "depends": {
-    "fabricloader": ">=0.12.0",
+    "minecraft": "${minecraftVersion}",
+    "fabricloader": "${loaderVersion}",
     "java": ">=17",
-    "fabric-api-base": ">=0.1.0",
-    "fabric-lifecycle-events-v1": ">=0.1.0",
-    "fabric-resource-loader-v0": ">=0.1.0",
-    "kirin": "*"
+    "fabric-api": "${fabricVersion}"
+    "kirin": "${kirinVersion}"
   },
   "suggests": {
     "hdskins": "*",
