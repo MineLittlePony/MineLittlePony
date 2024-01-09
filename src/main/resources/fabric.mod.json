@@ -34,7 +34,7 @@
     "minecraft": "${minecraftVersion}",
     "fabricloader": "${loaderVersion}",
     "java": ">=17",
-    "fabric-api": "${fabricVersion}"
+    "fabric-api": "${fabricVersion}",
     "kirin": "${kirinVersion}"
   },
   "suggests": {
