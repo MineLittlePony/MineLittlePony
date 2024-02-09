@@ -154,7 +154,7 @@ public class ModelAttributes {
         isLyingDown = isSleeping;
         if (entity instanceof PlayerEntity) {
             boolean moving = entity.getVelocity().multiply(1, 0, 1).length() == 0 && entity.isSneaking();
-            isLyingDown |= getMainInterpolator().interpolate("lyingDown", moving ? 10 : 0, 10) >= 9;
+            isLyingDown |= getMainInterpolator().interpolate("lyingDown", moving ? 10 : 0, 200) >= 9;
         }
 
         isCrouching = !isLyingDown && !isSitting && mode == Mode.THIRD_PERSON && PonyPosture.isCrouching(pony, entity);
