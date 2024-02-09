@@ -1,7 +1,6 @@
 package com.minelittlepony.client.mixin;
 
 import com.minelittlepony.api.pony.IPony;
-import com.minelittlepony.client.pony.Pony;
 import com.minelittlepony.client.render.EquineRenderManager;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;

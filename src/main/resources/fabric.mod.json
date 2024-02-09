@@ -36,7 +36,8 @@
     "fabric-api-base": ">=0.1.0",
     "fabric-lifecycle-events-v1": ">=0.1.0",
     "fabric-resource-loader-v0": ">=0.1.0",
-    "kirin": "*"
+    "kirin": "*",
+    "mson": "*"
   },
   "suggests": {
     "hdskins": "*",

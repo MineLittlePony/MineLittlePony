@@ -2,6 +2,7 @@ package com.minelittlepony.client.render;
 
 import java.util.function.Function;
 
+import com.minelittlepony.api.pony.IPony;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.mixin.MixinEntityRenderers;
 import com.minelittlepony.client.model.IPonyModel;
@@ -19,6 +20,7 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.Identifier;
 
 /**
  * Render manager responsible for replacing and restoring entity renderers when the client settings change.
@@ -55,8 +57,14 @@ public class PonyRenderDispatcher {
     }
 
     private void addPlayerSkin(EntityRenderDispatcher manager, boolean slimArms, Race race) {
+        String modelId = race.getModelId(slimArms);
         Mson.getInstance().getEntityRendererRegistry().registerPlayerRenderer(
-                race.getModelId(slimArms),
+                new Identifier("minelittlepony", race.getModelId(slimArms)),
+                player -> {
+                    return IPony.getManager()
+                            .getPony(player)
+                            .race().getModelId(slimArms).equalsIgnoreCase(modelId);
+                },
                 ModelType.getPlayerModel(race).getFactory(slimArms)
         );
     }
