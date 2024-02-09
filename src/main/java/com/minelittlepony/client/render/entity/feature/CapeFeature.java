@@ -31,8 +31,11 @@ public class CapeFeature<M extends ClientPonyModel<AbstractClientPlayerEntity>> 
 
             stack.push();
 
-            model.transform(BodyPart.BODY, stack);
             stack.translate(0, 0.24F, 0);
+            if (model.getAttributes().isLyingDown) {
+                stack.translate(0, -0.05F, 0);
+            }
+            model.transform(BodyPart.BODY, stack);
             model.getBodyPart(BodyPart.BODY).rotate(stack);
 
             double capeX = MathHelper.lerp(tickDelta, player.capeX, player.prevCapeX) - MathHelper.lerp(tickDelta, player.prevX, player.getX());

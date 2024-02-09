@@ -51,7 +51,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
         child = entity.isBaby();
         attributes.updateLivingState(entity, pony, mode);
         PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(entity, this, mode);
-        sneaking = attributes.isCrouching;
+        sneaking = attributes.isCrouching && !attributes.isLyingDown;
         riding = attributes.isSitting;
     }
 
