@@ -6,6 +6,7 @@ import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.element.Button;
 import com.minelittlepony.common.client.gui.sprite.TextureSprite;
+import com.minelittlepony.hdskins.client.HDSkins;
 import com.minelittlepony.hdskins.client.gui.DualCarouselWidget;
 import com.minelittlepony.hdskins.client.gui.GuiSkins;
 import com.minelittlepony.hdskins.server.SkinServerList;
@@ -38,6 +39,16 @@ class GuiSkinsMineLP extends GuiSkins {
                 IPony.getManager().removePony(location);
             }
         });
+    }
+
+    @Override
+    public void init() {
+        // TODO: Known HDSkins bug only occurs when reloading with Ctrl+Alt+R
+        var equipment = HDSkins.getInstance().getDummyPlayerEquipmentList().getValues().toList();
+        if (equipment.indexOf(previewer.getEquipment()) < 0) {
+            previewer.setEquipment(HDSkins.getInstance().getDummyPlayerEquipmentList().getDefault());
+        }
+        super.init();
     }
 
     @Override
