@@ -35,7 +35,8 @@
     "fabricloader": "${loaderVersion}",
     "java": ">=17",
     "fabric-api": "${fabricVersion}",
-    "kirin": "${kirinVersion}"
+    "kirin": "${kirinVersion}",
+    "mson": "${msonVersion}"
   },
   "suggests": {
     "hdskins": "*",
