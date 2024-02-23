@@ -54,7 +54,8 @@
   "minelp.debug.race": "覆盖种族",
   "minelp.debug.armour": "停用小马化护甲纹理",
 
-  "skin_type.minelp.seapony": "海马",
+  "skin_type.minelp.seapony": "海马形态",
+  "skin_type.minelp.nirik": "麒麟 逆麟形态",
   "skin_type.minelittlepony.crown": "头冠",
   "skin_type.minelittlepony.muffin": "马芬帽",
   "skin_type.minelittlepony.hat": "女巫帽",
@@ -63,5 +64,4 @@
   "skin_type.minelittlepony.saddle_bags_right": "右侧鞍包",
   "skin_type.minelittlepony.saddle_bags_both": "双侧鞍包",
   "skin_type.minelittlepony.stetson": "牛仔帽"
-  
 }
