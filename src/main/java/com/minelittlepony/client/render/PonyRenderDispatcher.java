@@ -63,7 +63,7 @@ public class PonyRenderDispatcher {
                 player -> {
                     return IPony.getManager()
                             .getPony(player)
-                            .race().getModelId(slimArms).equalsIgnoreCase(modelId);
+                            .race().getModelId(player.getModel().contains("slim")).equalsIgnoreCase(modelId);
                 },
                 ModelType.getPlayerModel(race).getFactory(slimArms)
         );
