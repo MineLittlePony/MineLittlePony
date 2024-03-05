@@ -38,6 +38,6 @@ public class ZomponyRenderer<Zombie extends HostileEntity> extends PonyRenderer<
     }
 
     public static ZomponyRenderer<GiantEntity> giant(EntityRendererFactory.Context context) {
-        return new ZomponyRenderer<>(context, TextureSupplier.of(ZOMBIE), 3);
+        return new ZomponyRenderer<>(context, TextureSupplier.of(ZOMBIE), 6.8F);
     }
 }
