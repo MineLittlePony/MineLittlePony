@@ -62,8 +62,8 @@ public interface TriggerPixel<T> {
             @SuppressWarnings("unchecked")
             Set<T> values = EnumSet.noneOf((Class<T>)def.def().getClass());
             if (flagReader.readFlag(ColorHelper.Argb.getRed(color), values)
-                    || flagReader.readFlag(ColorHelper.Argb.getGreen(color), values)
-                    || flagReader.readFlag(ColorHelper.Argb.getBlue(color), values)) {
+                    | flagReader.readFlag(ColorHelper.Argb.getGreen(color), values)
+                    | flagReader.readFlag(ColorHelper.Argb.getBlue(color), values)) {
                 return new Flags<>(def.def(), values, color & 0x00FFFFFF);
             }
             return def;
