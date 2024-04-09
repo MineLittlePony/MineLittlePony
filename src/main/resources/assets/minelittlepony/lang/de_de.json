@@ -21,7 +21,7 @@
   "minelp.options.flappyelytras": "Beim Gleiten mit den Flügeln schlagen",
   "minelp.options.nofun": "Langweiliger Modus",
   "minelp.options.button": "Button auf dem Titelbildschirm anzeigen",
-  "minelp.options.button.on": "Immer Anzeigen\n\nSowie der Pony Button, als auch der HD Skins Button (sofern instaliert) werden angezeigt.",
+  "minelp.options.button.on": "Immer Anzeigen\n\nSowie der Pony Button, als auch der HD Skins Button (sofern instaliert) werden angezeigt",
   "minelp.options.button.auto": "Nur anzeigen wenn HD Skins nicht installiert ist",
   "minelp.options.button.off": "Niemals anzeigen",
   "minelp.options.option.disabled": "Diese Optionen sind, wärend einer Mehrspieler Sitzung, im Überlebensmodus gesperrt.\n\nUm die Einstellungen zu ändern trete dem Server neu\nbei oder wechsel in den Kreativ Modus.",
