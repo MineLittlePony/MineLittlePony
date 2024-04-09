@@ -1,5 +1,4 @@
 {
-
   "key.minelittlepony.settings": "Petite Equine Sailor",
   "minelp.options.title": "Petite Equine Sailor Choices",
   "minelp.options.ponylevel": "Notoriety",
@@ -48,7 +47,5 @@
   "minelp.debug.scale.sa": "Normal",
   "minelp.debug.scale.min": "Pathetic",
   "minelp.debug.size": "Bow Width",
-  "minelp.debug.race": "Sail Height",
-
-  "hdskins.mode.minelp_seapony": "Seaharpy (in da briny deep)"
+  "minelp.debug.race": "Sail Height"
 }
