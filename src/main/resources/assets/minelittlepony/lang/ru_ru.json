@@ -1,5 +1,4 @@
 {
-  "key.minelittlepony.settings": "Mine Little Pony",
   "minelp.options.title": "Настройки Mine Little Pony",
   "minelp.options.ponylevel": "Уровень пони",
   "minelp.options.ponylevel.ponies": "Только пони",
@@ -21,7 +20,6 @@
   "minelp.options.ponyskulls": "Понифицировать черепа",
   "minelp.options.frustrum": "Изменить проверку поля зрения",
   "minelp.options.flappyelytras": "Махать крыльями при Парении",
-  "minelp.options.passivenetworking": "Пассивная сеть [Beta]",
   "minelp.options.button": "Отображать на главном экране",
   "minelp.options.button.on": "Отображать всегда\n\nВидны обе кнопки Mine Little Pony и HD Skins (если установлен)",
   "minelp.options.button.auto": "Отображать, только если не установлен мод HD Skins",
@@ -42,7 +40,6 @@
   "minelp.mode.wet": "Морской пони",
   "minelp.debug.reload_models.message": "Перезагрузка понифицированных моделей...",
   "minelp.debug.scale": "Масштаб",
-  "minelp.debug.scale.value": "%.2f",
   "minelp.debug.scale.meg": "Мега",
   "minelp.debug.scale.max": "Удвоенный",
   "minelp.debug.scale.mid": "Стандартный",
@@ -50,7 +47,6 @@
   "minelp.debug.scale.min": "Мельчайший",
   "minelp.debug.size": "Переопределение размера",
   "minelp.debug.race": "Переопределение расы",
-
   "skin_type.minelp.seapony": "Морской пони",
   "skin_type.minelittlepony.crown": "Корона",
   "skin_type.minelittlepony.muffin": "Маффин",
