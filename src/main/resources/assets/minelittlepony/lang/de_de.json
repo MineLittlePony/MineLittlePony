@@ -40,7 +40,6 @@
   "minelp.mode.wet": "Seepony",
   "minelp.debug.reload_models.message": "Ponytexturen neu laden...",
   "minelp.debug.scale": "Skalierungsfaktor",
-  "minelp.debug.scale.value": "%.2f",
   "minelp.debug.scale.meg": "Enorm",
   "minelp.debug.scale.max": "Doppelt",
   "minelp.debug.scale.mid": "Normal",
@@ -48,7 +47,6 @@
   "minelp.debug.scale.min": "Winzig",
   "minelp.debug.size": "Überschreibe Größe",
   "minelp.debug.race": "Überschreibe Spezies",
-
   "skin_type.minelp.seapony": "Seepony",
   "skin_type.minelittlepony.crown": "Krone",
   "skin_type.minelittlepony.muffin": "Muffin-Mütze",
