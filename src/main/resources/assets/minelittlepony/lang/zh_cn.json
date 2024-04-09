@@ -28,7 +28,6 @@
   "minelp.mode.wet": "海马小马模型",
   "minelp.debug.reload_models.message": "重新加载小马模型中...",
   "minelp.debug.scale": "比例系数",
-  "minelp.debug.scale.value": "%.2f",
   "minelp.debug.scale.meg": "巨大的",
   "minelp.debug.scale.max": "双倍的",
   "minelp.debug.scale.mid": "默认",
