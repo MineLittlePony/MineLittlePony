@@ -21,6 +21,7 @@
   "minelp.options.ponyskulls": "Rendaaar mah heads",
   "minelp.options.frustrum": "Horsey Sails",
   "minelp.options.flappyelytras": "Look at yew, ye flapping like a wee bird",
+  "minelp.options.nofun": "Being Serious-like",
   "minelp.options.button": "Anounce Yer Arrival",
   "minelp.options.button.on": "More t' merrier\n\nShow off ya haul even ifn' noboy asked",
   "minelp.options.button.auto": "Proud n' contained\n\nNo need ta scare the lad...yet",
@@ -47,5 +48,15 @@
   "minelp.debug.scale.sa": "Normal",
   "minelp.debug.scale.min": "Pathetic",
   "minelp.debug.size": "Bow Width",
-  "minelp.debug.race": "Sail Height"
+  "minelp.debug.race": "Sail Height",
+  "minelp.debug.armour": "Batten down the hatches",
+  "skin_type.minelp.seapony": "Maremaid",
+  "skin_type.minelittlepony.crown": "Captain's Tricorne",
+  "skin_type.minelittlepony.muffin": "Galley-man's Headwear",
+  "skin_type.minelittlepony.hat": "Olde Hag's Gown",
+  "skin_type.minelittlepony.antlers": "Banshee's Handlebars",
+  "skin_type.minelittlepony.saddle_bags_left": "Starboard Treasure Chest",
+  "skin_type.minelittlepony.saddle_bags_right": "Port-side Treasure Chest",
+  "skin_type.minelittlepony.saddle_bags_both": "Treasure Chests",
+  "skin_type.minelittlepony.stetson": "Captin's Hat"
 }
