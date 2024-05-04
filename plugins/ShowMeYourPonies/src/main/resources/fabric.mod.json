@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "smyp",
+  "version": "${version}",
+  "name": "Show Me Your Ponies",
+  "description": "Plugin for Mine Little Pony that add compatibility for the Show Me Your Skin mod",
+  "authors": [
+    "Sollace"
+  ],
+  "contact": {
+    "homepage": "https://minelittlepony-mod.com/",
+    "sources": "https://github.com/MineLittlePony/MineLittlePony",
+    "issues": "https://github.com/MineLittlePony/MineLittlePony/issues"
+  },
+  "license": "MIT",
+  "icon": "minelp_logo.png",
+  "environment": "client",
+  "entrypoints": {
+    "minelittlepony": [
+      "com.minelittlepony.smyp.Main"
+    ]
+  },
+  "depends": {
+    "minecraft": "${minecraftVersion}",
+    "fabricloader": "${loaderVersion}",
+    "java": ">=17",
+    "fabric-api": "${fabricVersion}",
+    "showmeyourskin": "${smysVersion}",
+    "minelp": "${minelpVersion}"
+  }
+}

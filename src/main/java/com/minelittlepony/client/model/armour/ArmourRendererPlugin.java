@@ -18,12 +18,13 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 public interface ArmourRendererPlugin {
     AtomicReference<ArmourRendererPlugin> INSTANCE = new AtomicReference<>(new ArmourRendererPlugin() {});
 
-    static void register(ArmourRendererPlugin plugin) {
-        INSTANCE.set(plugin);
+    static void register(Function<ArmourRendererPlugin, ArmourRendererPlugin> constructor) {
+        INSTANCE.set(constructor.apply(INSTANCE.get()));
     }
 
     default ArmourTextureLookup getTextureLookup() {

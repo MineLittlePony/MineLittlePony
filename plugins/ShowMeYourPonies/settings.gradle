@@ -1,0 +1,9 @@
+pluginManagement {
+    repositories {
+        mavenCentral()
+        maven { name 'Fabric'; url 'https://maven.fabricmc.net/' }
+        maven { name 'Jitpack'; url 'https://jitpack.io' }
+        gradlePluginPortal()
+    }
+}
+rootProject.name = 'showmeyourponies'
