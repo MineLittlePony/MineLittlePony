@@ -1,12 +1,12 @@
 package com.minelittlepony.api.model;
 
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.util.MathUtil;
 
-public interface WingedPonyModel<T extends LivingEntity> extends PonyModel<T> {
+public interface WingedPonyModel<T extends BipedEntityRenderState & PonyModel.AttributedHolder> extends PonyModel<T> {
     public static final float WINGS_HALF_SPREAD_ANGLE = MathUtil.Angles._270_DEG;
     public static final float WINGS_FULL_SPREAD_ANGLE = MathUtil.Angles._270_DEG + 0.4F;
     public static final float WINGS_RAISED_ANGLE = 4;
@@ -14,15 +14,15 @@ public interface WingedPonyModel<T extends LivingEntity> extends PonyModel<T> {
     /**
      * Returns true if the wings are spread.
      */
-    default boolean wingsAreOpen() {
-        return (getAttributes().isSwimming || getAttributes().isFlying || getAttributes().isCrouching)
-            && (PonyConfig.getInstance().flappyElytras.get() || !getAttributes().isGliding);
+    default boolean wingsAreOpen(T state) {
+        return (state.getAttributes().isSwimming || state.getAttributes().isFlying || state.getAttributes().isCrouching)
+            && (PonyConfig.getInstance().flappyElytras.get() || !state.getAttributes().isGliding);
     }
 
-    default boolean isBurdened() {
-        return isWearing(Wearable.SADDLE_BAGS_BOTH)
-                || isWearing(Wearable.SADDLE_BAGS_LEFT)
-                || isWearing(Wearable.SADDLE_BAGS_RIGHT);
+    default boolean isBurdened(T state) {
+        return state.getAttributes().isWearing(Wearable.SADDLE_BAGS_BOTH)
+                || state.getAttributes().isWearing(Wearable.SADDLE_BAGS_LEFT)
+                || state.getAttributes().isWearing(Wearable.SADDLE_BAGS_RIGHT);
     }
 
     /**
@@ -35,8 +35,8 @@ public interface WingedPonyModel<T extends LivingEntity> extends PonyModel<T> {
      *
      * @param ticks Partial render ticks
      */
-    default float getWingRotationFactor(float ticks) {
-        return getAttributes().wingAngle;
+    default float getWingRotationFactor(T state, float ticks) {
+        return state.getAttributes().wingAngle;
     }
 
 }

@@ -1,62 +1,53 @@
 package com.minelittlepony.client.render.entity.feature;
 
-import com.minelittlepony.api.model.BodyPart;
-import com.minelittlepony.api.model.PonyModel;
+import com.minelittlepony.api.model.*;
 import com.minelittlepony.client.render.PonyRenderContext;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.feature.HeldItemFeatureRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.model.ModelWithArms;
-import net.minecraft.client.render.item.HeldItemRenderer;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
+import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ModelTransformationMode;
 import net.minecraft.util.Arm;
 
-public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T> & ModelWithArms> extends HeldItemFeatureRenderer<T, M> {
+@SuppressWarnings(value = {"unchecked"})
+public class HeldItemFeature<
+        S extends PonyRenderState,
+        M extends EntityModel<PlayerEntityRenderState> & PonyModel<S>
+    > extends HeldItemFeatureRenderer<PlayerEntityRenderState, M> {
 
-    private final PonyRenderContext<T, M> context;
+    private final PonyRenderContext<?, S, M> context;
 
-    @SuppressWarnings("unchecked")
-    public HeldItemFeature(PonyRenderContext<T, M> context, HeldItemRenderer renderer) {
-        super((FeatureRendererContext<T, M>)context, renderer);
+    public HeldItemFeature(PonyRenderContext<?, S, M> context, ItemRenderer renderer) {
+        super((FeatureRendererContext<PlayerEntityRenderState, M>)context, renderer);
         this.context = context;
     }
 
-    protected ItemStack getLeftItem(T entity) {
-        boolean main = entity.getMainArm() == Arm.LEFT;
+    public void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, S state, float limbAngle, float limbDistance) {
+        if (!state.leftHandStack.isEmpty() || !state.rightHandStack.isEmpty()) {
+            M model = context.getInternalRenderer().getModels().body();
 
-        return main ? entity.getMainHandStack() : entity.getOffHandStack();
-    }
+            matrices.push();
+            model.transform(state, BodyPart.LEGS, matrices);
 
-    protected ItemStack getRightItem(T entity) {
-        boolean main = entity.getMainArm() == Arm.RIGHT;
+            ModelAttributes attributes = ((PonyModel.AttributedHolder)state).getAttributes();
 
-        return main ? entity.getMainHandStack() : entity.getOffHandStack();
+            attributes.heldStack = state.rightHandStack;
+            renderItem(state, state.rightHandItemModel, state.rightHandStack, ModelTransformationMode.THIRD_PERSON_RIGHT_HAND, Arm.RIGHT, matrices, vertices, light);
+            attributes.heldStack = state.leftHandStack;
+            renderItem(state, state.leftHandItemModel, state.leftHandStack, ModelTransformationMode.THIRD_PERSON_LEFT_HAND, Arm.LEFT, matrices, vertices, light);
+            attributes.heldStack = ItemStack.EMPTY;
+            matrices.pop();
+        }
     }
 
     @Override
-    public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
-
-        ItemStack left = getLeftItem(entity);
-        ItemStack right = getRightItem(entity);
-
-        if (!left.isEmpty() || !right.isEmpty()) {
-            M model = context.getInternalRenderer().getModels().body();
-
-            stack.push();
-
-            model.transform(BodyPart.LEGS, stack);
-
-            model.getAttributes().heldStack = right;
-            renderItem(entity, right, ModelTransformationMode.THIRD_PERSON_RIGHT_HAND, Arm.RIGHT, stack, renderContext, lightUv);
-            model.getAttributes().heldStack = left;
-            renderItem(entity, left, ModelTransformationMode.THIRD_PERSON_LEFT_HAND, Arm.LEFT, stack, renderContext, lightUv);
-            model.getAttributes().heldStack = ItemStack.EMPTY;
-            stack.pop();
-        }
+    public final void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, PlayerEntityRenderState state, float limbAngle, float limbDistance) {
+        render(matrices, vertices, light, (S)state, limbAngle, limbDistance);
     }
 }

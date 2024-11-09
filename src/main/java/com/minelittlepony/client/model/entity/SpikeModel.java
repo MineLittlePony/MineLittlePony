@@ -2,11 +2,12 @@ package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.state.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.StriderEntity;
 import net.minecraft.util.math.MathHelper;
 
-public class SpikeModel<T extends LivingEntity> extends BipedEntityModel<T> {
+public class SpikeModel<T extends LivingEntityRenderState> extends BipedEntityModel<T> {
 
     private final ModelPart tail;
     private final ModelPart tail2;
@@ -20,22 +21,22 @@ public class SpikeModel<T extends LivingEntity> extends BipedEntityModel<T> {
     }
 
     @Override
-    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        swing *= 2;
-        move *= 1.5F;
-        child = false;
+    public void setAngles(T entity) {
+        entity.limbFrequency *= 2;
+        entity.limbAmplitudeMultiplier *= 1.5F;
+        entity.baby = false;
 
         head.pivotX = 0;
         head.pivotZ = 0;
         head.pivotY = 0;
 
-        super.setAngles(entity, move, swing, ticks, headYaw, headPitch);
+        super.setAngles(entity);
 
         leftArm.pivotY++;
         rightArm.pivotY++;
         body.pitch += 0.15F;
 
-        if ((entity instanceof StriderEntity strider && strider.isSaddled())) {
+        if ((entity instanceof SaddleableRenderState strider && strider.isSaddled())) {
             leftArm.pitch = 3.15F;
             leftArm.yaw = 1;
             rightArm.pitch = 3.15F;
@@ -60,8 +61,8 @@ public class SpikeModel<T extends LivingEntity> extends BipedEntityModel<T> {
             rightArm.pivotZ += 2;
             rightArm.pitch -= 0.3F;
 
-            if (entity instanceof StriderEntity strider && strider.isCold()) {
-                float armMotion = (float)Math.sin(ticks / 10F) / 10F;
+            if (entity instanceof StriderEntityRenderState strider && strider.cold) {
+                float armMotion = (float)Math.sin(entity.age / 10F) / 10F;
 
                 leftArm.pitch = -1 - armMotion;
                 rightArm.pitch = -1 + armMotion;
@@ -74,21 +75,15 @@ public class SpikeModel<T extends LivingEntity> extends BipedEntityModel<T> {
             }
         }
 
-        tail.pitch = (float)Math.sin(move) / 3F - 0.5F;
+        tail.pitch = (float)Math.sin(entity.limbFrequency) / 3F - 0.5F;
         tail2.pitch = -tail.pitch / 2;
         tail3.pitch = tail2.pitch / 2;
 
-        tail.yaw = (float)Math.sin(ticks / 20F) / 40 + (float)Math.sin(move / 20F) / 4;
+        tail.yaw = (float)Math.sin(entity.age / 20F) / 40 + (float)Math.sin(entity.limbFrequency / 20F) / 4;
         tail2.yaw = tail.yaw / 2;
         tail3.yaw = tail2.yaw / 2;
 
-        for (var part : getHeadParts()) {
-            part.pivotY += 7;
-        }
-
-        for (var part : getBodyParts()) {
-            part.pivotY += 7;
-        }
+        getRootPart().pivotY += 7;
     }
 }
 

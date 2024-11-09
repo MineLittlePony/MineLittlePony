@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import net.minecraft.block.SkullBlock;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -24,12 +25,17 @@ import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.armour.ArmourLayer;
 import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.PonyRenderContext;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> extends AbstractPonyFeature<T, M> {
+public class GearFeature<
+        T extends LivingEntity,
+        S extends PonyRenderState,
+        M extends EntityModel<? super S> & PonyModel<S>
+    > extends AbstractPonyFeature<S, M> {
 
     private final List<Entry> gears = Streams.concat(
             ModelType.getWearables().map(e -> new Entry(e.getValue().createModel(), e.getKey())),
@@ -50,13 +56,13 @@ public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & Pony
                 return randomizedOrder;
             }));
 
-    public GearFeature(PonyRenderContext<T, M> renderer) {
+    public GearFeature(PonyRenderContext<T, S, M> renderer) {
         super(renderer);
     }
 
     @Override
-    public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
-        if (entity.isInvisible()) {
+    public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, S entity, float limbAngle, float limbDistance) {
+        if (entity.invisible) {
             return;
         }
 
@@ -89,7 +95,7 @@ public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & Pony
                     renderStackingOffsets.put(part, v + gear.getStackingHeight());
                 }
 
-                renderGear(model, entity, gear, stack, renderContext, lightUv, limbDistance, limbAngle, tickDelta);
+                renderGear(model, entity, gear, stack, renderContext, lightUv, limbDistance, limbAngle, entity.age);
                 stack.pop();
             }
         }

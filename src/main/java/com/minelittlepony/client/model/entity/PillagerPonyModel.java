@@ -1,31 +1,33 @@
 package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.entity.mob.IllagerEntity;
-import net.minecraft.entity.mob.PillagerEntity;
 import net.minecraft.util.Arm;
 
 import com.minelittlepony.client.model.entity.race.ChangelingModel;
+import com.minelittlepony.client.render.entity.npc.PillagerRenderer;
 
-public class PillagerPonyModel<T extends PillagerEntity> extends ChangelingModel<T> {
-
+public class PillagerPonyModel extends ChangelingModel<PillagerRenderer.State> {
     public PillagerPonyModel(ModelPart tree) {
         super(tree, false);
     }
 
     @Override
-    public void animateModel(T entity, float move, float swing, float ticks) {
-        ArmPose holdingPose = getHoldingPose(entity.getState());
+    protected BipedEntityModel.ArmPose getArmPose(PlayerEntityRenderState state, Arm arm) {
+        ArmPose holdingPose = getHoldingPose(((PillagerRenderer.State)state).state);
 
         if (holdingPose != ArmPose.EMPTY) {
-            boolean rightHanded = entity.getMainArm() == Arm.RIGHT;
+            boolean isMain = state.mainArm == Arm.RIGHT;
 
-            leftArmPose = rightHanded ? ArmPose.EMPTY : holdingPose;
-            rightArmPose = rightHanded ? holdingPose : ArmPose.EMPTY;
+            return isMain ? holdingPose : ArmPose.EMPTY;
         }
+
+        return super.getArmPose(state, arm);
     }
 
-    protected ArmPose getHoldingPose(IllagerEntity.State state) {
+    static ArmPose getHoldingPose(IllagerEntity.State state) {
         switch (state) {
             case BOW_AND_ARROW: return ArmPose.BOW_AND_ARROW;
             case CROSSBOW_CHARGE: return ArmPose.CROSSBOW_CHARGE;

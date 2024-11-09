@@ -5,8 +5,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderPhase;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
+import net.minecraft.util.*;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.google.common.base.Suppliers;
@@ -62,7 +61,7 @@ public abstract class MagicGlow extends RenderPhase {
         private final float alpha;
 
         public Colored(Identifier texture, int color) {
-            super(texture, false, false);
+            super(texture, TriState.FALSE, false);
             this.red = Color.r(color);
             this.green = Color.g(color);
             this.blue = Color.b(color);

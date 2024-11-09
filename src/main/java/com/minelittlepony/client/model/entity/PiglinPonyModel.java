@@ -1,17 +1,20 @@
 package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.entity.PlayerEntityRenderer;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.entity.mob.AbstractPiglinEntity;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.PiglinActivity;
+import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.Pony;
+import com.minelittlepony.client.render.entity.PonyPiglinRenderer;
 
 public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
-
-    private PiglinActivity activity;
 
     private final ModelPart leftFlap;
     private final ModelPart rightFlap;
@@ -23,24 +26,22 @@ public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
     }
 
     @Override
-    public void updateLivingState(HostileEntity entity, Pony pony, ModelAttributes.Mode mode) {
-        super.updateLivingState(entity, pony, mode);
-        leftArmPose = ArmPose.EMPTY;
-        rightArmPose = entity.getMainHandStack().isEmpty() ? ArmPose.EMPTY : ArmPose.ITEM;
-
-        if (entity instanceof AbstractPiglinEntity) {
-            activity = ((AbstractPiglinEntity)entity).getActivity();
-
-            if (activity == PiglinActivity.CROSSBOW_HOLD) {
-                rightArmPose = ArmPose.CROSSBOW_HOLD;
-            } else if (activity == PiglinActivity.CROSSBOW_CHARGE) {
-                rightArmPose = ArmPose.CROSSBOW_CHARGE;
-            } else if (activity == PiglinActivity.ADMIRING_ITEM) {
-                leftArmPose = ArmPose.ITEM;
-            }
-        } else {
-            activity = PiglinActivity.DEFAULT;
+    protected ArmPose getArmPose(PlayerEntityRenderState p, Arm arm) {
+        if (p instanceof PonyPiglinRenderer.State state) {
+            return switch (arm) {
+                case LEFT -> switch (state.activity) {
+                    case CROSSBOW_HOLD -> ArmPose.CROSSBOW_HOLD;
+                    case CROSSBOW_CHARGE -> ArmPose.CROSSBOW_CHARGE;
+                    default -> ArmPose.EMPTY;
+                };
+                case RIGHT -> switch (state.activity) {
+                    case ADMIRING_ITEM -> ArmPose.ITEM;
+                    default -> ArmPose.EMPTY;
+                };
+            };
         }
+
+        return super.getArmPose(p, arm);
     }
 
     @Override

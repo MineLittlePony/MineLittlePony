@@ -54,6 +54,6 @@ public enum Wearable implements TValue<Wearable> {
 
     @Override
     public int getChannelAdjustedColorCode() {
-        return triggerValue == 0 ? 0 : ColorHelper.Argb.getArgb(255, triggerValue, triggerValue, triggerValue);
+        return triggerValue == 0 ? 0 : ColorHelper.getArgb(255, triggerValue, triggerValue, triggerValue);
     }
 }

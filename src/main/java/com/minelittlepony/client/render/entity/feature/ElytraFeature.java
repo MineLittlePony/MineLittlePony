@@ -8,12 +8,14 @@ import com.minelittlepony.client.model.PonyElytra;
 import com.minelittlepony.client.model.armour.ArmourLayer;
 import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.PonyRenderContext;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.util.SkinTextures;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
@@ -23,17 +25,21 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 
-public class ElytraFeature<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> extends AbstractPonyFeature<T, M> {
+public class ElytraFeature<
+        T extends LivingEntity,
+        S extends PonyRenderState,
+        M extends EntityModel<? super S> & PonyModel<S>
+    > extends AbstractPonyFeature<S, M> {
     private static final Identifier TEXTURE = Identifier.ofVanilla("textures/entity/elytra.png");
 
     private final PonyElytra<T> model = ModelType.ELYTRA.createModel();
 
-    public ElytraFeature(PonyRenderContext<T, M> context) {
+    public ElytraFeature(PonyRenderContext<T, S, M> context) {
         super(context);
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider provider, int light, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
+    public void render(MatrixStack matrices, VertexConsumerProvider provider, int light, S entity, float limbAngle, float limbDistance) {
         ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
 
         for (ItemStack stack : plugin.getArmorStacks(entity, EquipmentSlot.CHEST, ArmourLayer.OUTER, ArmourRendererPlugin.ArmourType.ELYTRA)) {
@@ -50,9 +56,7 @@ public class ElytraFeature<T extends LivingEntity, M extends EntityModel<T> & Po
             matrices.push();
             preRenderCallback(matrices);
 
-            getContextModel().copyStateTo(model);
-            model.isSneaking = PonyPosture.isCrouching(getContext().getEntityPony(entity), entity);
-            model.setAngles(entity, limbDistance, limbAngle, age, headYaw, headPitch);
+            model.setAngles(entity);
             model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, (Colors.WHITE & 0xFFFFFF) | (int)(alpha * 255) << 24);
 
             matrices.pop();
@@ -61,10 +65,10 @@ public class ElytraFeature<T extends LivingEntity, M extends EntityModel<T> & Po
         plugin.onArmourRendered(entity, matrices, provider, EquipmentSlot.BODY, ArmourLayer.OUTER, ArmourRendererPlugin.ArmourType.ELYTRA);
     }
 
-    protected void preRenderCallback(MatrixStack stack) {
+    protected void preRenderCallback(S state, MatrixStack stack) {
         M body = getModelWrapper().body();
-        stack.translate(0, body.getRiderYOffset(), 0.125);
-        body.transform(BodyPart.BODY, stack);
+        stack.translate(0, state.riderOffset, 0.125);
+        body.transform(state, BodyPart.BODY, stack);
     }
 
     protected Identifier getElytraTexture(T entity) {

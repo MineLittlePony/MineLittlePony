@@ -50,7 +50,7 @@ public interface PonyPosture {
             // this reverts the rotations done in PlayerEntityRenderer#setupTransforms
             if (player instanceof PlayerEntity) {
                 float leaningPitch = player.getLeaningPitch(tickDelta);
-                if (player.isFallFlying()) {
+                if (player.isGliding()) {
 
                     if (RenderPass.getCurrent() == RenderPass.GUI) {
                         Vec3d vec3d = player.getRotationVec(tickDelta);
@@ -64,7 +64,7 @@ public interface PonyPosture {
                         }
                     }
 
-                    float roll = (float)player.getFallFlyingTicks() + tickDelta;
+                    float roll = (float)player.getGlidingTicks() + tickDelta;
                     float targetRoll = MathHelper.clamp(roll * roll / 100F, 0, 1);
                     if (!player.isUsingRiptide()) {
                         stack.multiply(RotationAxis.NEGATIVE_X.rotationDegrees(targetRoll * (-90 - player.getPitch())));

@@ -10,6 +10,7 @@ import java.util.*;
 
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.model.*;
+import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
@@ -19,19 +20,19 @@ import net.minecraft.item.*;
 import net.minecraft.item.trim.ArmorTrim;
 import net.minecraft.util.Colors;
 
-public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> extends AbstractPonyFeature<T, M> {
-    public ArmourFeature(PonyRenderContext<T, M> context, BakedModelManager bakery) {
+public class ArmourFeature<T extends LivingEntity, S extends BipedEntityRenderState, M extends EntityModel<? super S> & PonyModel<S>> extends AbstractPonyFeature<S, M> {
+    public ArmourFeature(PonyRenderContext<T, S, M> context, BakedModelManager bakery) {
         super(context);
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider provider, int light, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
-        renderArmor(getModelWrapper(), matrices, provider, light, entity, limbDistance, limbAngle, age, headYaw, headPitch);
+    public void render(MatrixStack matrices, VertexConsumerProvider provider, int light, S entity, float limbDistance, float limbAngle) {
+        renderArmor(getModelWrapper(), matrices, provider, light, entity, limbDistance, limbAngle);
     }
 
-    public static <T extends LivingEntity, V extends PonyArmourModel<T>> void renderArmor(
-            Models<T, ? extends PonyModel<T>> pony, MatrixStack matrices,
-                    VertexConsumerProvider provider, int light, T entity,
+    public static <S extends BipedEntityRenderState, V extends PonyArmourModel<S>> void renderArmor(
+            Models<?, ? extends PonyModel<S>> pony, MatrixStack matrices,
+                    VertexConsumerProvider provider, int light, S entity,
                     float limbDistance, float limbAngle,
                     float age, float headYaw, float headPitch) {
         ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
@@ -44,9 +45,9 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & Po
         }
     }
 
-    private static <T extends LivingEntity, V extends PonyArmourModel<T>> void renderArmor(
-            Models<T, ? extends PonyModel<T>> pony, MatrixStack matrices,
-                    VertexConsumerProvider provider, int light, T entity,
+    private static <S extends BipedEntityRenderState, V extends PonyArmourModel<S>> void renderArmor(
+            Models<?, ? extends PonyModel<S>> pony, MatrixStack matrices,
+                    VertexConsumerProvider provider, int light, S entity,
                     float limbDistance, float limbAngle,
                     float age, float headYaw, float headPitch,
                     EquipmentSlot armorSlot, ArmourLayer layer, ArmourRendererPlugin plugin) {

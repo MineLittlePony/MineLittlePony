@@ -2,7 +2,6 @@ package com.minelittlepony.api.events;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.entity.Entity;
 
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.model.ModelAttributes;
@@ -20,5 +19,5 @@ public interface PonyModelPrepareCallback {
         }
     });
 
-    void onPonyModelPrepared(Entity entity, PonyModel<?> model, ModelAttributes.Mode mode);
+    void onPonyModelPrepared(ModelAttributes attributes, PonyModel<?> model, ModelAttributes.Mode mode);
 }

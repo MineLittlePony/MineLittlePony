@@ -2,6 +2,7 @@ package com.minelittlepony.api.model;
 
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.*;
+import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.common.util.animation.Interpolator;
 import com.minelittlepony.util.MathUtil;
 
@@ -74,6 +75,11 @@ public class ModelAttributes {
     public boolean isHorsey;
 
     /**
+     * Flag indicating whether the pony is a player
+     */
+    public boolean isPlayer;
+
+    /**
      * Vertical pitch whilst flying.
      */
     public float motionPitch;
@@ -130,7 +136,7 @@ public class ModelAttributes {
         isGoingFast = (isFlying && model instanceof WingedPonyModel) || isGliding;
         isGoingFast &= zMotion > 0.4F;
         isGoingFast |= entity.isUsingRiptide();
-        isGoingFast |= entity.isFallFlying();
+        isGoingFast |= entity.isGliding();
 
         motionLerp = MathUtil.clampLimit(zMotion * 30, 1);
 
@@ -148,18 +154,19 @@ public class ModelAttributes {
     }
 
     public void updateLivingState(LivingEntity entity, Pony pony, Mode mode) {
+        isPlayer = entity instanceof PlayerEntity;
         visualHeight = entity.getHeight() + 0.125F;
         isSitting = PonyPosture.isSitting(entity);
         isSleeping = entity.isAlive() && entity.isSleeping();;
         isLyingDown = isSleeping;
-        if (entity instanceof PlayerEntity) {
+        if (isPlayer) {
             boolean moving = entity.getVelocity().multiply(1, 0, 1).length() == 0 && entity.isSneaking();
             isLyingDown |= getMainInterpolator().interpolate("lyingDown", moving ? 10 : 0, 200) >= 9;
         }
 
         isCrouching = !isLyingDown && !isSitting && mode == Mode.THIRD_PERSON && PonyPosture.isCrouching(pony, entity);
         isFlying = !isLyingDown && mode == Mode.THIRD_PERSON && PonyPosture.isFlying(entity);
-        isGliding = entity.isFallFlying();
+        isGliding = entity.isGliding();
         isSwimming = mode == Mode.THIRD_PERSON && PonyPosture.isSwimming(entity);
         isSwimmingRotated = isSwimming;
         isRiptide = entity.isUsingRiptide();
@@ -183,6 +190,21 @@ public class ModelAttributes {
         return pose != ArmPose.EMPTY
                 && (pose != complement || sigma == (isLeftHanded ? 1 : -1))
                 && (complement != ArmPose.BLOCK && complement != ArmPose.CROSSBOW_HOLD);
+    }
+
+    /**
+     * Tests if this model is wearing the given piece of gear.
+     */
+    public boolean isWearing(Wearable wearable) {
+        return isEmbedded(wearable) || featureSkins.contains(wearable.getId());
+    }
+
+    /**
+     * Tests if the chosen piece of gear is sourcing its texture from the main skin.
+     * i.e. Used to change wing rendering when using saddlebags.
+     */
+    public boolean isEmbedded(Wearable wearable) {
+        return metadata.gear().matches(wearable);
     }
 
     public enum Mode {

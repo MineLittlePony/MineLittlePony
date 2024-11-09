@@ -6,37 +6,38 @@ import com.minelittlepony.client.model.armour.ArmourLayer;
 import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import net.minecraft.block.AbstractSkullBlock;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLoader;
+import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.ZombieVillagerEntity;
 import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 
-public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> extends AbstractPonyFeature<T, M> {
+public class SkullFeature<
+        T extends LivingEntity,
+        S extends PonyRenderState,
+        M extends EntityModel<? super S> & PonyModel<S>> extends AbstractPonyFeature<S, M> {
     private final ItemRenderer itemRenderer;
 
-    public SkullFeature(PonyRenderContext<T, M> renderPony, EntityModelLoader entityModelLoader, ItemRenderer itemRenderer) {
+    public SkullFeature(PonyRenderContext<T, S, M> renderPony, EntityModelLoader entityModelLoader, ItemRenderer itemRenderer) {
         super(renderPony);
         this.itemRenderer = itemRenderer;
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider provider, int light, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
+    public void render(MatrixStack matrices, VertexConsumerProvider provider, int light, S state, float limbAngle, float limbDistance) {
         ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
 
-        for (ItemStack stack : plugin.getArmorStacks(entity, EquipmentSlot.HEAD, ArmourLayer.OUTER, ArmourRendererPlugin.ArmourType.SKULL)) {
+        for (ItemStack stack : plugin.getArmorStacks(state, EquipmentSlot.HEAD, ArmourLayer.OUTER, ArmourRendererPlugin.ArmourType.SKULL)) {
             if (stack.isEmpty()) {
                 continue;
             }
@@ -46,16 +47,16 @@ public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & Pon
 
             matrices.push();
 
-            if (entity.isBaby() && !(entity instanceof VillagerEntity)) {
+            if (state.baby && !(state instanceof VillagerEntity)) {
                 matrices.translate(0, 0.03125F, 0);
                 matrices.scale(0.7F, 0.7F, 0.7F);
                 matrices.translate(0, 1, 0);
             }
 
-            model.transform(BodyPart.HEAD, matrices);
+            model.transform(state, BodyPart.HEAD, matrices);
             model.getHead().rotate(matrices);
 
-            boolean isVillager = entity instanceof VillagerEntity || entity instanceof ZombieVillagerEntity;
+            boolean isVillager = state instanceof VillagerEntity || state instanceof ZombieVillagerEntity;
 
             float f = 1.1F;
             matrices.scale(f, f, f);
@@ -65,16 +66,16 @@ public class SkullFeature<T extends LivingEntity, M extends EntityModel<T> & Pon
                 matrices.scale(n, -n, -n);
                 matrices.translate(0, -0.1F, 0.1F);
                 matrices.translate(-0.5, 0, -0.5);
-                PonySkullRenderer.INSTANCE.renderSkull(matrices, provider, stack, entity, tickDelta, light, true);
+                PonySkullRenderer.INSTANCE.renderSkull(matrices, provider, stack, state, state.age, light, true);
             } else if (!(item instanceof ArmorItem a) || a.getSlotType() != EquipmentSlot.HEAD) {
                 matrices.translate(0, 0.1F, -0.1F);
                 HeadFeatureRenderer.translate(matrices, isVillager);
-                itemRenderer.renderItem(entity, stack, ModelTransformationMode.HEAD, false, matrices, provider, entity.getWorld(), light, OverlayTexture.DEFAULT_UV, entity.getId() + ModelTransformationMode.HEAD.ordinal());
+                itemRenderer.renderItem(state, stack, ModelTransformationMode.HEAD, false, matrices, provider, entity.getWorld(), light, OverlayTexture.DEFAULT_UV, entity.getId() + ModelTransformationMode.HEAD.ordinal());
             }
 
             matrices.pop();
         }
 
-        plugin.onArmourRendered(entity, matrices, provider, EquipmentSlot.BODY, ArmourLayer.OUTER, ArmourRendererPlugin.ArmourType.SKULL);
+        plugin.onArmourRendered(state, matrices, provider, EquipmentSlot.BODY, ArmourLayer.OUTER, ArmourRendererPlugin.ArmourType.SKULL);
     }
 }

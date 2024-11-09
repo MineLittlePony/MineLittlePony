@@ -39,7 +39,7 @@ public final class ModelType {
     public static final ModelKey<PiglinPonyModel> PIGLIN = register("piglin", PiglinPonyModel::new);
     public static final ModelKey<SkeleponyModel<?>> SKELETON = register("skeleton", SkeleponyModel::new);
     public static final ModelKey<SkeleponyModel<?>> SKELETON_CLOTHES = register("skeleton_clothes", SkeleponyModel::new);
-    public static final ModelKey<PillagerPonyModel<?>> PILLAGER = register("pillager", PillagerPonyModel::new);
+    public static final ModelKey<PillagerPonyModel> PILLAGER = register("pillager", PillagerPonyModel::new);
     public static final ModelKey<IllagerPonyModel<?>> ILLAGER = register("illager", IllagerPonyModel::new);
     public static final ModelKey<GuardianPonyModel> GUARDIAN = register("guardian", GuardianPonyModel::new);
     public static final ModelKey<EnderStallionModel> ENDERMAN = register("enderman", EnderStallionModel::new);

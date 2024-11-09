@@ -19,9 +19,9 @@ public class FrustrumCheck<T extends LivingEntity> extends Frustum {
 
     private Frustum vanilla;
 
-    private final PonyRenderContext<T, ?> context;
+    private final PonyRenderContext<T, ?, ?> context;
 
-    public FrustrumCheck(PonyRenderContext<T, ?> context) {
+    public FrustrumCheck(PonyRenderContext<T, ?, ?> context) {
         super(new Matrix4f(), new Matrix4f());
         this.context = context;
     }

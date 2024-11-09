@@ -19,6 +19,7 @@ import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.feature.AbstractPonyFeature;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.client.util.render.TextureFlattener;
 import com.minelittlepony.util.ResourceUtil;
 
@@ -26,8 +27,9 @@ import java.util.*;
 
 class NpcClothingFeature<
         T extends LivingEntity & VillagerDataContainer,
-        M extends EntityModel<T> & PonyModel<T>,
-        C extends FeatureRendererContext<T, M> & PonyRenderContext<T, M>> extends AbstractPonyFeature<T, M> {
+        S extends PonyRenderState,
+        M extends EntityModel<S> & PonyModel<S>,
+        C extends FeatureRendererContext<S, M> & PonyRenderContext<T, S, M>> extends AbstractPonyFeature<S, M> {
 
     private static final Int2ObjectMap<Identifier> LEVEL_TO_ID = Util.make(new Int2ObjectOpenHashMap<>(), a -> {
         a.put(1, Identifier.ofVanilla("stone"));
@@ -46,22 +48,22 @@ class NpcClothingFeature<
     }
 
     @Override
-    public void render(MatrixStack matrixStack, VertexConsumerProvider provider, int i, T entity, float f, float g, float h, float j, float k, float l) {
-        if (entity.isInvisible()) {
+    public void render(MatrixStack matrixStack, VertexConsumerProvider provider, int light, S entity, float limbAngle, float limbDistance) {
+        if (entity.invisible) {
             return;
         }
 
         VillagerData data = entity.getVillagerData();
         M entityModel = getContextModel();
 
-        if (entity.isBaby() || data.getProfession() == VillagerProfession.NONE) {
+        if (entity.baby || data.getProfession() == VillagerProfession.NONE) {
             Identifier typeSkin = createTexture("type", Registries.VILLAGER_TYPE.getId(data.getType()));
             if (!ResourceUtil.textureExists(typeSkin)) {
                 typeSkin = createTexture("type", Registries.VILLAGER_TYPE.getId(VillagerType.PLAINS));
             }
-            renderModel(entityModel, typeSkin, matrixStack, provider, i, entity, Colors.WHITE);
+            renderModel(entityModel, typeSkin, matrixStack, provider, light, entity, Colors.WHITE);
         } else {
-            renderModel(entityModel, getMergedTexture(data), matrixStack, provider, i, entity, Colors.WHITE);
+            renderModel(entityModel, getMergedTexture(data), matrixStack, provider, light, entity, Colors.WHITE);
         }
     }
 

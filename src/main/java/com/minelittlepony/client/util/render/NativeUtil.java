@@ -107,7 +107,7 @@ public class NativeUtil {
             if (loadedTexture instanceof NativeImageBackedTexture nibt) {
                 NativeImage image = nibt.getImage();
                 if (image != null) {
-                    consumer.accept(image::getColor);
+                    consumer.accept(image::getColorArgb);
                     return;
                 }
             }
@@ -115,7 +115,7 @@ public class NativeUtil {
             Resource res = mc.getResourceManager().getResource(resource).orElse(null);
             if (res != null) {
                 try (InputStream inputStream = res.getInputStream()){
-                    consumer.accept(NativeImage.read(inputStream)::getColor);
+                    consumer.accept(NativeImage.read(inputStream)::getColorArgb);
                     return;
                 }
             }
@@ -128,10 +128,9 @@ public class NativeUtil {
 
     private static void __reconstructNativeImage(Identifier resource, Consumer<TriggerPixel.Mat> consumer, Consumer<Exception> fail, int attempt) {
         MinecraftClient mc = MinecraftClient.getInstance();
-        TextureManager textures = mc.getTextureManager();
 
         // recreate NativeImage from the GL matrix
-        textures.bindTexture(resource);
+        RenderSystem.setShaderTexture(GL_TEXTURE_2D, resource);
 
                                                  // TODO: This returns values that are too specific.
                                                  //       Can we change the level (0) here to something
@@ -158,7 +157,7 @@ public class NativeUtil {
             // This allocates a new array to store the image every time.
             // Don't do this every time. Keep a cache and store it so we don't destroy memory.
             image.loadFromTextureImage(0, false);
-            consumer.accept(image::getColor);
+            consumer.accept(image::getColorArgb);
         }
     }
 }

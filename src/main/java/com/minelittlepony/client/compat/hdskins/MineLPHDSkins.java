@@ -93,7 +93,7 @@ public class MineLPHDSkins extends ClientSkinsProxy implements ClientModInitiali
     @Override
     public Optional<Identifier> getSkin(Identifier skinTypeId, PlayerEntity player) {
         if (player instanceof AbstractClientPlayerEntity clientPlayer) {
-            return SkinType.REGISTRY.getOrEmpty(skinTypeId).flatMap(type -> getSkin(type, clientPlayer));
+            return SkinType.REGISTRY.getOptionalValue(skinTypeId).flatMap(type -> getSkin(type, clientPlayer));
 
         }
 

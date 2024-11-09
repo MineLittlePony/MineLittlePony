@@ -32,7 +32,7 @@ public final class PonyPosture {
         Vec3d motion = entity.getVelocity();
         double zMotion = Math.sqrt(motion.x * motion.x + motion.z * motion.z);
 
-        return (isFlying(entity) && pony.race().hasWings()) || entity.isFallFlying() & zMotion > 0.4F;
+        return (isFlying(entity) && pony.race().hasWings()) || entity.isGliding() & zMotion > 0.4F;
     }
 
     public static boolean isFlying(LivingEntity entity) {

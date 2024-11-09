@@ -2,19 +2,13 @@ package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.*;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.util.Arm;
-import net.minecraft.util.Hand;
-
 import org.jetbrains.annotations.Nullable;
 
-import com.minelittlepony.api.events.PonyModelPrepareCallback;
 import com.minelittlepony.api.model.*;
-import com.minelittlepony.api.pony.Pony;
-import com.minelittlepony.api.pony.PonyData;
-import com.minelittlepony.api.pony.meta.Size;
-import com.minelittlepony.api.pony.meta.SizePreset;
-import com.minelittlepony.mson.api.model.biped.MsonPlayer;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.minelittlepony.mson.api.MsonModel;
 
 /**
  * The raw pony model without any implementations.
@@ -23,73 +17,16 @@ import com.minelittlepony.mson.api.model.biped.MsonPlayer;
  *
  * Modders can extend this class to make their own pony models if they wish.
  */
-public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer<T> implements PonyModel<T> {
-
-    /**
-     * The model attributes.
-     */
-    protected ModelAttributes attributes = new ModelAttributes();
-
+public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerEntityModel implements MsonModel, PonyModel<T> {
     @Nullable
     protected PosingCallback<T> onSetModelAngles;
 
-    public ClientPonyModel(ModelPart tree) {
-        super(tree);
+    public ClientPonyModel(ModelPart tree, boolean smallArms) {
+        super(tree, smallArms);
     }
 
     public void onSetModelAngles(PosingCallback<T> callback) {
         onSetModelAngles = callback;
-    }
-
-    protected Arm getPreferredArm(T livingEntity) {
-        Arm arm = livingEntity.getMainArm();
-        return livingEntity.preferredHand == Hand.MAIN_HAND ? arm : arm.getOpposite();
-    }
-
-    @Override
-    public void updateLivingState(T entity, Pony pony, ModelAttributes.Mode mode) {
-        child = entity.isBaby();
-        attributes.updateLivingState(entity, pony, mode);
-        PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(entity, this, mode);
-        sneaking = attributes.isCrouching && !attributes.isLyingDown;
-        riding = attributes.isSitting;
-    }
-
-    @Override
-    public final void copyAttributes(BipedEntityModel<T> other) {
-        copyStateTo(other);
-    }
-
-    /**
-     * Copies this model's attributes into the passed model.
-     */
-    @Override
-    public void copyStateTo(EntityModel<T> model) {
-        super.copyStateTo(model);
-
-        if (model instanceof ClientPonyModel) {
-            ((ClientPonyModel<T>)model).attributes = attributes;
-        }
-    }
-
-    @Override
-    public final ModelAttributes getAttributes() {
-        return attributes;
-    }
-
-    @Override
-    public Size getSize() {
-        return child ? SizePreset.FOAL : PonyModel.super.getSize();
-    }
-
-    @Override
-    public void setMetadata(PonyData meta) {
-        attributes.metadata = meta;
-    }
-
-    @Override
-    public float getSwingAmount() {
-        return handSwingProgress;
     }
 
     @Override
@@ -103,8 +40,8 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
     }
 
     @Override
-    public ArmPose getArmPoseForSide(Arm side) {
-        return side == Arm.RIGHT ? rightArmPose : leftArmPose;
+    public <S extends PlayerEntityRenderState> ArmPose getArmPoseForSide(S state, Arm side) {
+        return getArmPose(state, side);
     }
 
     @Override
@@ -113,7 +50,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
     }
 
     static void resetPivot(ModelPart part) {
-        part.setPivot(part.getDefaultTransform().pivotX, part.getDefaultTransform().pivotY, part.getDefaultTransform().pivotZ);
+        part.setPivot(part.getDefaultTransform().pivotX(), part.getDefaultTransform().pivotY(), part.getDefaultTransform().pivotZ());
     }
 
     static void resetPivot(ModelPart...parts) {
@@ -122,7 +59,7 @@ public abstract class ClientPonyModel<T extends LivingEntity> extends MsonPlayer
         }
     }
 
-    public interface PosingCallback<T extends LivingEntity> {
-        void poseModel(ClientPonyModel<T> model, float move, float swing, float ticks, T entity);
+    public interface PosingCallback<S extends PonyRenderState> {
+        void poseModel(ClientPonyModel<S> model, S state);
     }
 }

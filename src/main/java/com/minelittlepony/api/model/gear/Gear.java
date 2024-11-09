@@ -3,6 +3,7 @@ package com.minelittlepony.api.model.gear;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
@@ -37,7 +38,7 @@ public interface Gear {
      *
      * @return True to render this wearable
      */
-    boolean canRender(PonyModel<?> model, Entity entity);
+    boolean canRender(PonyModel<?> model, EntityRenderState entity);
 
     /**
      * Gets the body location that this wearable appears on.
@@ -62,12 +63,12 @@ public interface Gear {
      *
      * If you need to use the player's own skin, use {@link IRenderContext#getDefaultTexture(entity, wearable)}
      */
-    <T extends Entity> Identifier getTexture(T entity, Context<T, ?> context);
+    <S extends EntityRenderState> Identifier getTexture(S entity, Context<S, ?> context);
 
     /**
      * Gets the layer used to render this piece of gear.
      */
-    default <T extends Entity> RenderLayer getLayer(T entity, Context<T, ?> context) {
+    default <S extends EntityRenderState> RenderLayer getLayer(S entity, Context<S, ?> context) {
         return RenderLayer.getEntityTranslucent(getTexture(entity, context));
     }
 
@@ -100,7 +101,7 @@ public interface Gear {
      * @param <T> The type of entity being rendered.
      * @param <M> The type of the entity's primary model.
      */
-    public interface Context<T extends Entity, M extends PonyModel<?>> {
+    public interface Context<S extends EntityRenderState, M extends PonyModel<?>> {
         /**
          * The empty context.
          */
@@ -109,7 +110,7 @@ public interface Gear {
         /**
          * Checks whether the given wearable and gear are able to render for this specific entity and its renderer.
          */
-        default boolean shouldRender(M model, T entity, Wearable wearable, Gear gear) {
+        default boolean shouldRender(M model, S entity, Wearable wearable, Gear gear) {
             return gear.canRender(model, entity);
         }
 
@@ -118,6 +119,6 @@ public interface Gear {
          *
          * May be the entity's own texture or a specific texture allocated for that wearable.
          */
-        Identifier getDefaultTexture(T entity, Wearable wearable);
+        Identifier getDefaultTexture(S entity, Wearable wearable);
     }
 }

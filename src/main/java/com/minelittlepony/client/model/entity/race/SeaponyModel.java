@@ -4,13 +4,14 @@ import com.minelittlepony.mson.api.ModelView;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.model.armour.PonyArmourModel;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
 
-public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
+public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
 
     private static final float FIN_Y_ANGLE = MathHelper.PI / 6;
 
@@ -60,12 +61,12 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
     protected void ponySit() {}
 
     @Override
-    public void setModelAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        super.setModelAngles(entity, move, swing, ticks, headYaw, headPitch);
+    protected void setModelAngles(T entity) {
+        super.setModelAngles(entity);
 
-        float flapMotion = MathHelper.cos(ticks / 10) / 5;
+        float flapMotion = MathHelper.cos(entity.age / 10) / 5;
 
-        if (attributes.isLyingDown) {
+        if (entity.attributes.isLyingDown) {
             flapMotion /= 2;
         }
 
@@ -75,20 +76,20 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
         rightFin.yaw = -finAngle;
         centerFin.roll = flapMotion;
 
-        if (!entity.isSubmergedInWater()) {
+        if (!entity.submergedInWater) {
             leftArm.pitch -= 0.5F;
             rightArm.pitch -= 0.5F;
         }
 
-        if (!entity.isSubmergedInWater() || entity.isOnGround()) {
+        if (!entity.submergedInWater || entity.onGround) {
             leftArm.yaw -= 0.5F;
             rightArm.yaw += 0.5F;
         }
     }
 
     @Override
-    protected void rotateLegs(float move, float swing, float ticks, T entity) {
-        super.rotateLegs(move, swing, ticks, entity);
+    protected void rotateLegs(T state, float move, float swing, float ticks, T entity) {
+        super.rotateLegs(state, move, swing, ticks, entity);
         leftArm.pitch -= 1.4F;
         leftArm.yaw -= 0.3F;
         rightArm.pitch -= 1.4F;
@@ -96,8 +97,8 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
     }
 
     @Override
-    protected void rotateLegsSwimming(float move, float swing, float ticks, T entity) {
-        super.rotateLegsOnGround(move, swing, ticks, entity);
+    protected void rotateLegsSwimming(T state, float move, float swing, float ticks, T entity) {
+        super.rotateLegsOnGround(state, move, swing, ticks, entity);
     }
 
     @Override
@@ -114,7 +115,7 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
         rightFin.visible = visible;
     }
 
-    public static class Armour<T extends LivingEntity> extends PonyArmourModel<T> {
+    public static class Armour<T extends PonyRenderState> extends PonyArmourModel<T> {
 
         public Armour(ModelPart tree) {
             super(tree);
@@ -131,14 +132,13 @@ public class SeaponyModel<T extends LivingEntity> extends UnicornModel<T> {
         }
 
         @Override
-        protected void rotateLegsSwimming(float move, float swing, float ticks, T entity) {
-            super.rotateLegsOnGround(move, swing, ticks, entity);
+        protected void rotateLegsSwimming(T state, float move, float swing, float ticks, T entity) {
+            super.rotateLegsOnGround(state, move, swing, ticks, entity);
         }
 
         @Override
         public void transform(BodyPart part, MatrixStack stack) {
             stack.translate(0, 0.6F, 0);
-
             super.transform(part, stack);
         }
     }

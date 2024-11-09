@@ -29,9 +29,9 @@ public interface TriggerPixel<T> {
         MAX_COORDS.y = Math.max(MAX_COORDS.y, y);
         Int2ObjectOpenHashMap<T> lookup = buildLookup(options);
         return image -> {
-            int color = Color.abgrToArgb(image.getColor(x, y));
+            int color = image.getColor(x, y);
 
-            if (ColorHelper.Argb.getAlpha(color) < 255) {
+            if (ColorHelper.getAlpha(color) < 255) {
                 return (T)def;
             }
             return lookup.getOrDefault(color & 0x00FFFFFF, def);
@@ -55,15 +55,15 @@ public interface TriggerPixel<T> {
             }
         };
         return image -> {
-            int color = Color.abgrToArgb(image.getColor(x, y));
-            if (ColorHelper.Argb.getAlpha(color) < 255) {
+            int color = image.getColor(x, y);
+            if (ColorHelper.getAlpha(color) < 255) {
                 return def;
             }
             @SuppressWarnings("unchecked")
             Set<T> values = EnumSet.noneOf((Class<T>)def.def().getClass());
-            if (flagReader.readFlag(ColorHelper.Argb.getRed(color), values)
-                    | flagReader.readFlag(ColorHelper.Argb.getGreen(color), values)
-                    | flagReader.readFlag(ColorHelper.Argb.getBlue(color), values)) {
+            if (flagReader.readFlag(ColorHelper.getRed(color), values)
+                    | flagReader.readFlag(ColorHelper.getGreen(color), values)
+                    | flagReader.readFlag(ColorHelper.getBlue(color), values)) {
                 return new Flags<>(def.def(), values, color & 0x00FFFFFF);
             }
             return def;

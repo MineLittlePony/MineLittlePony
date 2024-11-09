@@ -12,31 +12,32 @@ import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.api.model.PonyModel;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 // separate class in case I need it later
-public abstract class AbstractClothingFeature<T extends LivingEntity, M extends BipedEntityModel<T> & PonyModel<T>> extends FeatureRenderer<T, M> {
+public abstract class AbstractClothingFeature<
+        T extends LivingEntity,
+        S extends PonyRenderState,
+        M extends BipedEntityModel<S> & PonyModel<S>
+    > extends FeatureRenderer<S, M> {
 
-    protected final FeatureRendererContext<T, M> renderer;
+    protected final FeatureRendererContext<S, M> renderer;
 
-    public AbstractClothingFeature(FeatureRendererContext<T, M> render) {
+    public AbstractClothingFeature(FeatureRendererContext<S, M> render) {
         super(render);
         renderer = render;
     }
 
     @Override
-    public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
+    public void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, S state, float limbAngle, float limbDistance) {
         M overlayModel = getOverlayModel();
 
-        renderer.getModel().copyStateTo(overlayModel);
-        overlayModel.animateModel(entity, limbDistance, limbAngle, tickDelta);
-        overlayModel.setAngles(entity, limbDistance, limbAngle, age, headYaw, headPitch);
-
-        VertexConsumer vertexConsumer = renderContext.getBuffer(overlayModel.getLayer(getOverlayTexture()));
-        overlayModel.render(stack, vertexConsumer, lightUv, OverlayTexture.DEFAULT_UV, Colors.WHITE);
+        overlayModel.setAngles(state);
+        VertexConsumer buffer = vertices.getBuffer(overlayModel.getLayer(getOverlayTexture()));
+        overlayModel.render(matrices, buffer, light, OverlayTexture.DEFAULT_UV, Colors.WHITE);
     }
 
     protected abstract M getOverlayModel();
 
     protected abstract Identifier getOverlayTexture();
-
 }

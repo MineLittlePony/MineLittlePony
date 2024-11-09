@@ -2,13 +2,14 @@ package com.minelittlepony.client.model.armour;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.model.AbstractPonyModel;
 
-public class PonyArmourModel<T extends LivingEntity> extends AbstractPonyModel<T> {
+public class PonyArmourModel<T extends BipedEntityRenderState> extends AbstractPonyModel<T> {
 
     public PonyArmourModel(ModelPart tree) {
         super(tree);

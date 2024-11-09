@@ -1,5 +1,6 @@
 package com.minelittlepony.api.model.gear;
 
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 
@@ -12,8 +13,8 @@ public class WearableGear extends AbstractGearModel {
     protected final Wearable wearable;
     protected final BodyPart location;
 
-    public WearableGear(Wearable wearable, BodyPart location, float stackingHeight) {
-        super(stackingHeight);
+    public WearableGear(ModelPart root, Wearable wearable, BodyPart location, float stackingHeight) {
+        super(root, stackingHeight);
         this.wearable = wearable;
         this.location = location;
     }

@@ -2,39 +2,23 @@ package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.mob.WitchEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
-import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.pony.Pony;
-import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.client.model.entity.race.EarthPonyModel;
+import com.minelittlepony.client.render.entity.WitchRenderer;
 
-public class WitchPonyModel extends EarthPonyModel<WitchEntity> {
-
+public class WitchPonyModel extends EarthPonyModel<WitchRenderer.State> {
     public WitchPonyModel(ModelPart tree) {
         super(tree, false);
     }
 
     @Override
-    public void updateLivingState(WitchEntity entity, Pony pony, ModelAttributes.Mode mode) {
-        super.updateLivingState(entity, pony, mode);
+    public void setModelAngles(WitchRenderer.State entity) {
+        super.setModelAngles(entity);
 
-        if (entity.hasCustomName() && "Filly".equals(entity.getCustomName().getString())) {
-            child = true;
-        }
-        attributes.visualHeight += 0.5F;
-        leftArmPose = ArmPose.EMPTY;
-        rightArmPose = entity.getMainHandStack().isEmpty() ? ArmPose.EMPTY : ArmPose.ITEM;
-    }
-
-    @Override
-    public void setModelAngles(WitchEntity entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        super.setModelAngles(entity, move, swing, ticks, headYaw, headPitch);
-
-        if (entity.isDrinking()) {
+        if (entity.drinking) {
             float noseRot = MathHelper.sin(entity.age);
 
             snout.rotate(noseRot * 4.5F * 0.02F, 0, noseRot * 2.5F * 0.02F);
@@ -42,12 +26,12 @@ public class WitchPonyModel extends EarthPonyModel<WitchEntity> {
             snout.rotate(0, 0, 0);
         }
 
-        if (rightArmPose != ArmPose.EMPTY) {
-            float rot = (float)(Math.tan(ticks / 7) + Math.sin(ticks / 3));
+        if (!entity.getMainHandStack().isEmpty()) {
+            float rot = (float)(Math.tan(entity.age / 7) + Math.sin(entity.age / 3));
             if (rot > 1) rot = 1;
             if (rot < -1) rot = -1;
 
-            float legDrinkingAngle = -1 * MathHelper.PI/3 + rot;
+            float legDrinkingAngle = -1 * MathHelper.PI / 3F + rot;
 
             rightArm.pitch = legDrinkingAngle;
             rightArm.yaw = 0.1F;
@@ -64,13 +48,8 @@ public class WitchPonyModel extends EarthPonyModel<WitchEntity> {
     }
 
     @Override
-    protected void positionheldItem(Arm arm, MatrixStack matrices) {
-        super.positionheldItem(arm, matrices);
+    protected void positionheldItem(WitchRenderer.State state, Arm arm, MatrixStack matrices) {
+        super.positionheldItem(state, arm, matrices);
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(10));
-    }
-
-    @Override
-    public boolean isWearing(Wearable wearable) {
-        return wearable == Wearable.HAT || super.isWearing(wearable);
     }
 }

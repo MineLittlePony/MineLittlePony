@@ -8,6 +8,7 @@ import com.minelittlepony.api.model.PreviewModel;
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.client.mixin.MixinEntityRenderers;
 import com.minelittlepony.client.render.entity.*;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -16,6 +17,7 @@ import com.minelittlepony.mson.api.Mson;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.*;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.SkinTextures;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -69,7 +71,7 @@ public class PonyRenderDispatcher {
      * @param factory The replacement value
      * @param <T> The entity type
      */
-    <T extends Entity, V extends T> void switchRenderer(MobRenderers state, EntityType<V> type, Function<EntityRendererFactory.Context, EntityRenderer<T>> factory) {
+    <T extends Entity, S extends EntityRenderState, V extends T> void switchRenderer(MobRenderers state, EntityType<V> type, Function<EntityRendererFactory.Context, EntityRenderer<T, S>> factory) {
         Mson.getInstance().getEntityRendererRegistry().registerEntityRenderer(type, ctx -> state.get()
                 ? factory.apply(ctx)
                 : MixinEntityRenderers.getRendererFactories().get(type).create(ctx)
@@ -78,7 +80,7 @@ public class PonyRenderDispatcher {
 
     @SuppressWarnings("unchecked")
     @Nullable
-    public <T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> PonyRenderContext<T, M> getPonyRenderer(@Nullable T entity) {
+    public <T extends LivingEntity, S extends PonyRenderState, M extends EntityModel<S> & PonyModel<S>> PonyRenderContext<T, S, M> getPonyRenderer(@Nullable T entity) {
         if (entity != null && MinecraftClient.getInstance().getEntityRenderDispatcher().getRenderer(entity) instanceof PonyRenderContext c) {
             return c;
         }

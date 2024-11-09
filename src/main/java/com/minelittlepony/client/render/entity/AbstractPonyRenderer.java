@@ -10,11 +10,11 @@ import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.client.render.entity.feature.*;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.ModelKey;
 
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.*;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Frustum;
@@ -23,27 +23,39 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.model.*;
+import net.minecraft.client.render.entity.state.BipedEntityRenderState;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-public abstract class AbstractPonyRenderer<T extends MobEntity, M extends EntityModel<T> & PonyModel<T> & ModelWithArms> extends MobEntityRenderer<T, M> implements PonyRenderContext<T, M> {
+public abstract class AbstractPonyRenderer<
+        T extends MobEntity,
+        S extends PonyRenderState,
+        M extends EntityModel<? super S> & PonyModel<S>
+    > extends MobEntityRenderer<T, S, M> implements PonyRenderContext<T, S, M> {
 
-    protected final EquineRenderManager<T, M> manager;
+    protected final EquineRenderManager<T, S, M> manager;
 
     private final Map<Wearable, Identifier> wearableTextures = new EnumMap<>(Wearable.class);
 
-    private final TextureSupplier<T> texture;
+    private final TextureSupplier<S> texture;
 
     private final float scale;
 
-    public AbstractPonyRenderer(EntityRendererFactory.Context context, ModelKey<? super M> key, TextureSupplier<T> texture, float scale) {
+    public AbstractPonyRenderer(EntityRendererFactory.Context context, ModelKey<? super M> key, TextureSupplier<S> texture, float scale) {
         super(context, null, 0.5F);
-        this.manager = new EquineRenderManager<>(this, super::setupTransforms, key);
+        this.manager = new EquineRenderManager<T, S, M>(this, super::setupTransforms, key);
         this.texture = texture;
         this.scale = scale;
         addFeatures(context);
+    }
+
+    @Override
+    public void updateRenderState(T entity, S state, float tickDelta) {
+        super.updateRenderState(entity, state, tickDelta);
+        manager.preRender(entity, state, ModelAttributes.Mode.THIRD_PERSON);
     }
 
     protected void addFeatures(EntityRendererFactory.Context context) {
@@ -54,47 +66,48 @@ public abstract class AbstractPonyRenderer<T extends MobEntity, M extends Entity
         addFeature(new GearFeature<>(this));
     }
 
-    protected HeldItemFeature<T, M> createHeldItemFeature(EntityRendererFactory.Context context) {
-        return new HeldItemFeature<>(this, context.getHeldItemRenderer());
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    protected final boolean addPonyFeature(FeatureRenderer<? extends PlayerEntityRenderState, ? extends ClientPonyModel<? extends PlayerEntityRenderState>> feature) {
+        return ((List)features).add(feature);
+    }
+
+    protected HeldItemFeature createHeldItemFeature(EntityRendererFactory.Context context) {
+        return new HeldItemFeature(this, context.getItemRenderer());
     }
 
     @Override
-    public final Identifier getTexture(T entity) {
+    public final Identifier getTexture(S entity) {
         return texture.apply(entity);
     }
 
     @Override
-    public void render(T entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
-        manager.preRender(entity, ModelAttributes.Mode.THIRD_PERSON);
-        if (manager.getModels().body() instanceof BipedEntityModel model) {
-            model.setVisible(true);
-        }
-        super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
-        DebugBoundingBoxRenderer.render(getEntityPony(entity), this, entity, stack, renderContext, tickDelta);
+    public void render(S state, MatrixStack stack, VertexConsumerProvider vertices, int light) {
+        super.render(state, stack, vertices, light);
+        DebugBoundingBoxRenderer.render(getEntityPony(state), this, state, stack, vertices);
     }
 
     @Override
-    protected void setupTransforms(T entity, MatrixStack stack, float animationProgress, float bodyYaw, float tickDelta, float scale) {
-        manager.setupTransforms(entity, stack, animationProgress, bodyYaw, tickDelta, scale);
+    protected void setupTransforms(S state, MatrixStack stack, float animationProgress, float bodyYaw) {
+        manager.setupTransforms(state, stack, animationProgress, bodyYaw);
     }
 
     @Override
-    public boolean shouldRender(T entity, Frustum visibleRegion, double camX, double camY, double camZ) {
-        return super.shouldRender(entity, manager.getFrustrum(entity, visibleRegion), camX, camY, camZ);
+    public boolean shouldRender(T state, Frustum visibleRegion, double camX, double camY, double camZ) {
+        return super.shouldRender(state, manager.getFrustrum(state, visibleRegion), camX, camY, camZ);
     }
 
     @Override
-    public void scale(T entity, MatrixStack stack, float tickDelta) {
-        shadowRadius = manager.getShadowSize();
+    public void scale(S state, MatrixStack stack) {
+        shadowRadius = state.getShadowSize();
 
-        if (entity.isBaby()) {
+        if (state.baby) {
             shadowRadius *= 3; // undo vanilla shadow scaling
         }
 
-        if (!entity.hasVehicle()) {
-            stack.translate(0, 0, -entity.getWidth() / 2); // move us to the center of the shadow
+        if (!state.hasVehicle) {
+            stack.translate(0, 0, -state.width / 2); // move us to the center of the shadow
         } else {
-            if (manager.getModels().body().getAttributes().isSitting && entity.hasVehicle()) {
+            if (state.attributes.isSitting && state.hasVehicle) {
                 stack.translate(0, 0.25F, 0);
             }
         }
@@ -103,17 +116,17 @@ public abstract class AbstractPonyRenderer<T extends MobEntity, M extends Entity
     }
 
     @Override
-    protected void renderLabelIfPresent(T entity, Text name, MatrixStack matrices, VertexConsumerProvider vertices, int light, float tickDelta) {
+    protected void renderLabelIfPresent(S state, Text name, MatrixStack matrices, VertexConsumerProvider vertices, int light) {
         matrices.push();
-        matrices.translate(0, manager.getNamePlateYOffset(entity), 0);
-        super.renderLabelIfPresent(entity, name, matrices, vertices, light, tickDelta);
+        matrices.translate(0, state.nameplateYOffset, 0);
+        super.renderLabelIfPresent(state, name, matrices, vertices, light);
         matrices.pop();
     }
 
     @Override
-    public Identifier getDefaultTexture(T entity, Wearable wearable) {
+    public Identifier getDefaultTexture(S state, Wearable wearable) {
         return wearableTextures.computeIfAbsent(wearable, w -> {
-            Identifier texture = getTexture(entity).withPath(path -> path.split("\\.")[0] + "_" + wearable.name().toLowerCase(Locale.ROOT) + ".png");
+            Identifier texture = getTexture(state).withPath(path -> path.split("\\.")[0] + "_" + wearable.name().toLowerCase(Locale.ROOT) + ".png");
 
             if (MinecraftClient.getInstance().getResourceManager().getResource(texture).isPresent()) {
                 return texture;
@@ -128,7 +141,7 @@ public abstract class AbstractPonyRenderer<T extends MobEntity, M extends Entity
     }
 
     @Override
-    public EquineRenderManager<T, M> getInternalRenderer() {
+    public EquineRenderManager<T, S, M> getInternalRenderer() {
         return manager;
     }
 
@@ -137,25 +150,39 @@ public abstract class AbstractPonyRenderer<T extends MobEntity, M extends Entity
         return Pony.getManager().getPony(getTexture(entity));
     }
 
-    public static <E extends MobEntity, M extends ClientPonyModel<E>, T extends PonyRenderer<E, M>, F extends FeatureRenderer<E, M>>
+    public static <E extends MobEntity, C extends PonyRenderState, M extends ClientPonyModel<C>, T extends PonyRenderer<E, C, M>, F extends FeatureRenderer<C, M>>
             T appendFeature(T renderer, Function<T, F> featureFactory) {
         renderer.addFeature(featureFactory.apply(renderer));
         return renderer;
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static <T extends MobEntity, M extends EntityModel<T> & PonyModel<T> & ModelWithArms> AbstractPonyRenderer<T, M> proxy(EntityRendererFactory.Context context, ModelKey<? super M> key, TextureSupplier<T> texture, float scale,
-            List exportedLayers, Consumer<M> modelConsumer) {
-        var renderer = new AbstractPonyRenderer<T, M>(context, key, texture, scale) {
+    public static <
+            T extends MobEntity,
+            S extends PonyRenderState,
+            M extends EntityModel<S> & PonyModel<S>> AbstractPonyRenderer<T, S, M> proxy(
+                    EntityRendererFactory.Context context, ModelKey<? super M> key,
+                    TextureSupplier<S> texture,
+                    float scale,
+                    List exportedLayers,
+                    Consumer<M> modelConsumer,
+                    Supplier<S> renderStateSupplier) {
+        return new AbstractPonyRenderer<T, S, M>(context, key, texture, scale) {
+            {
+                exportedLayers.clear();
+                exportedLayers.addAll(features);
+                modelConsumer.accept(getModel());
+            }
             @Override
             protected void addFeatures(EntityRendererFactory.Context context) {
                 features.clear();
                 super.addFeatures(context);
             }
+
+            @Override
+            public S createRenderState() {
+                return renderStateSupplier.get();
+            }
         };
-        exportedLayers.clear();
-        exportedLayers.addAll(renderer.features);
-        modelConsumer.accept(renderer.getModel());
-        return renderer;
     }
 }

@@ -51,9 +51,9 @@ public class TextureFlattener {
     }
 
     public static void copy(NativeImage from, NativeImage to, int x, int y) {
-        int color = from.getColor(x, y);
-        if (ColorHelper.Argb.getAlpha(color) > 0) {
-            to.setColor(x, y, color);
+        int color = from.getColorArgb(x, y);
+        if (ColorHelper.getAlpha(color) > 0) {
+            to.setColorArgb(x, y, color);
         }
     }
 }

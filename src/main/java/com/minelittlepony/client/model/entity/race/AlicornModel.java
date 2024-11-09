@@ -3,12 +3,13 @@ package com.minelittlepony.client.model.entity.race;
 import com.minelittlepony.api.model.SubModel;
 import com.minelittlepony.api.model.WingedPonyModel;
 import com.minelittlepony.client.model.part.PonyWings;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.ModelView;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.LivingEntity;
 
-public class AlicornModel<T extends LivingEntity> extends UnicornModel<T> implements WingedPonyModel<T> {
+public class AlicornModel<T extends PonyRenderState> extends UnicornModel<T> implements WingedPonyModel<T> {
 
     private PonyWings<AlicornModel<T>> wings;
 

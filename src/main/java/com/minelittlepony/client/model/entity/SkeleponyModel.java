@@ -1,86 +1,34 @@
 package com.minelittlepony.client.model.entity;
 
-import net.minecraft.entity.mob.WitherSkeletonEntity;
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
-import net.minecraft.util.Hand;
 
-import com.minelittlepony.api.model.MobPosingHelper;
-import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.model.entity.race.AlicornModel;
+import com.minelittlepony.client.render.entity.state.SkeletonPonyRenderState;
 
-public class SkeleponyModel<T extends HostileEntity> extends AlicornModel<T> {
-
-    public boolean isUnicorn;
-
-    public boolean isWithered;
-
+public class SkeleponyModel<T extends SkeletonPonyRenderState> extends AlicornModel<T> {
     public SkeleponyModel(ModelPart tree) {
         super(tree, false);
-        this.vestRenderList.clear();
-        this.sleevesRenderList.clear();
+        vestRenderList.clear();
+        sleevesRenderList.clear();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void animateModel(T entity, float move, float swing, float ticks) {
-        isUnicorn = entity.getUuid().getLeastSignificantBits() % 3 != 0;
-        isWithered = entity instanceof WitherSkeletonEntity;
+    protected BipedEntityModel.ArmPose getArmPose(PlayerEntityRenderState state, Arm arm) {
+        boolean isMain = arm == state.mainArm;
 
-        rightArmPose = ArmPose.EMPTY;
-        leftArmPose = ArmPose.EMPTY;
-
-        ItemStack mainHand = entity.getStackInHand(Hand.MAIN_HAND);
-        ItemStack offHand = entity.getStackInHand(Hand.OFF_HAND);
-
-        boolean right = entity.getMainArm() == Arm.RIGHT;
-
-        if (!offHand.isEmpty()) {
-            if (right) {
-                leftArmPose = ArmPose.ITEM;
-            } else {
-                rightArmPose = ArmPose.ITEM;
+        if (isMain) {
+            ItemStack mainHand = state.getMainHandStack();
+            if (!mainHand.isEmpty()) {
+                return mainHand.getItem() == Items.BOW && ((T)state).isAttacking ? ArmPose.BOW_AND_ARROW : ArmPose.ITEM;
             }
         }
 
-        if (!mainHand.isEmpty()) {
-            ArmPose pose = mainHand.getItem() == Items.BOW && entity.isAttacking() ? ArmPose.BOW_AND_ARROW : ArmPose.ITEM;
-
-            if (right) {
-                rightArmPose = pose;
-            } else {
-                leftArmPose = pose;
-            }
-        }
-    }
-
-    @Override
-    protected void rotateLegs(float move, float swing, float ticks, T entity) {
-        super.rotateLegs(move, swing, ticks, entity);
-        if (rightArmPose != ArmPose.EMPTY && entity.isAttacking()) {
-            rotateArmHolding(getArm(Arm.RIGHT), -1, getSwingAmount(), ticks);
-        }
-
-        if (leftArmPose != ArmPose.EMPTY && entity.isAttacking()) {
-            rotateArmHolding(getArm(Arm.LEFT), -1, getSwingAmount(), ticks);
-        }
-    }
-
-    protected void rotateArmHolding(ModelPart arm, float direction, float swingProgress, float ticks) {
-        MobPosingHelper.rotateArmHolding(arm, direction, swingProgress, ticks);
-    }
-
-    @Override
-    public Race getRace() {
-        return isUnicorn ? super.getRace() : Race.EARTH;
-    }
-
-    @Override
-    protected float getLegOutset() {
-        if (attributes.isLyingDown) return 2.6f;
-        if (attributes.isCrouching) return 0;
-        return 4;
+        return super.getArmPose(state, arm);
     }
 }
