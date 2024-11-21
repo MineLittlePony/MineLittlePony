@@ -1,12 +1,8 @@
 package com.minelittlepony.client.model.armour;
 
-import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.ItemStack;
-
-import java.util.List;
+import net.minecraft.item.equipment.EquipmentModel;
 
 public interface ArmourTextureLookup {
-    ArmourTexture getTexture(ItemStack stack, ArmourLayer layer, ArmorMaterial.Layer armorLayer);
-
-    List<ArmorMaterial.Layer> getArmorLayers(ItemStack stack, int dyeColor);
+    ArmourTexture getTexture(ItemStack stack, ArmourLayer layerType, EquipmentModel.Layer layer);
 }

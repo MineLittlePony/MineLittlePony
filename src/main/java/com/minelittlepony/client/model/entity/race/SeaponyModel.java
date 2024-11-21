@@ -2,13 +2,11 @@ package com.minelittlepony.client.model.entity.race;
 
 import com.minelittlepony.mson.api.ModelView;
 import com.minelittlepony.api.model.*;
-import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
 
 public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
@@ -46,21 +44,6 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
     }
 
     @Override
-    public void updateLivingState(T entity, Pony pony, ModelAttributes.Mode mode) {
-        super.updateLivingState(entity, pony, mode);
-
-        // Seaponies can't sneak, silly
-        sneaking = false;
-        attributes.isCrouching = false;
-    }
-
-    @Override
-    protected void ponySleep() {}
-
-    @Override
-    protected void ponySit() {}
-
-    @Override
     protected void setModelAngles(T entity) {
         super.setModelAngles(entity);
 
@@ -88,8 +71,8 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
     }
 
     @Override
-    protected void rotateLegs(T state, float move, float swing, float ticks, T entity) {
-        super.rotateLegs(state, move, swing, ticks, entity);
+    protected void rotateLegs(T state, float move, float swing, float ticks) {
+        super.rotateLegs(state, move, swing, ticks);
         leftArm.pitch -= 1.4F;
         leftArm.yaw -= 0.3F;
         rightArm.pitch -= 1.4F;
@@ -97,14 +80,14 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
     }
 
     @Override
-    protected void rotateLegsSwimming(T state, float move, float swing, float ticks, T entity) {
-        super.rotateLegsOnGround(state, move, swing, ticks, entity);
+    protected void rotateLegsSwimming(T state, float move, float swing, float ticks) {
+        rotateLegsOnGround(state, move, swing, ticks);
     }
 
     @Override
-    public void transform(BodyPart part, MatrixStack stack) {
+    public void transform(T state, BodyPart part, MatrixStack stack) {
         stack.translate(0, 0.6F, 0);
-        super.transform(part, stack);
+        super.transform(state, part, stack);
     }
 
     @Override
@@ -116,7 +99,6 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
     }
 
     public static class Armour<T extends PonyRenderState> extends PonyArmourModel<T> {
-
         public Armour(ModelPart tree) {
             super(tree);
             rightLeg.hidden = true;
@@ -124,22 +106,14 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
         }
 
         @Override
-        public void updateLivingState(T entity, Pony pony, ModelAttributes.Mode mode) {
-            super.updateLivingState(entity, pony, mode);
-
-            // Seaponies can't sneak, silly
-            sneaking = false;
+        protected void rotateLegsSwimming(T state, float move, float swing, float ticks) {
+            rotateLegsOnGround(state, move, swing, ticks);
         }
 
         @Override
-        protected void rotateLegsSwimming(T state, float move, float swing, float ticks, T entity) {
-            super.rotateLegsOnGround(state, move, swing, ticks, entity);
-        }
-
-        @Override
-        public void transform(BodyPart part, MatrixStack stack) {
+        public void transform(T state, BodyPart part, MatrixStack stack) {
             stack.translate(0, 0.6F, 0);
-            super.transform(part, stack);
+            super.transform(state, part, stack);
         }
     }
 }

@@ -11,8 +11,9 @@ import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
+import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -108,6 +109,7 @@ public class PonyManagerImpl implements PonyManager, SimpleSynchronousResourceRe
         return loadPony(DefaultSkinHelper.getSkinTextures(uuid).texture(), true);
     }
 
+    @SuppressWarnings("unchecked")
     @Nullable
     private Identifier getSkin(LivingEntity entity) {
         if (entity instanceof PlayerEntity player) {
@@ -115,8 +117,8 @@ public class PonyManagerImpl implements PonyManager, SimpleSynchronousResourceRe
                 return clientPlayer.getSkinTextures().texture();
             }
         } else {
-            if (MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(entity) != null) {
-                return MinecraftClient.getInstance().getEntityRenderDispatcher().getRenderer(entity).getTexture(entity);
+            if (MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(entity) instanceof LivingEntityRenderer renderer) {
+                return renderer.getTexture((LivingEntityRenderState)renderer.getAndUpdateRenderState(entity, 1));
             }
         }
 

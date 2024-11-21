@@ -12,6 +12,11 @@ public interface WingedPonyModel<T extends BipedEntityRenderState & PonyModel.At
     public static final float WINGS_RAISED_ANGLE = 4;
 
     /**
+     * Gets the wings of this pegasus/flying creature
+     */
+    SubModel<T> getWings();
+
+    /**
      * Returns true if the wings are spread.
      */
     default boolean wingsAreOpen(T state) {
@@ -24,11 +29,6 @@ public interface WingedPonyModel<T extends BipedEntityRenderState & PonyModel.At
                 || state.getAttributes().isWearing(Wearable.SADDLE_BAGS_LEFT)
                 || state.getAttributes().isWearing(Wearable.SADDLE_BAGS_RIGHT);
     }
-
-    /**
-     * Gets the wings of this pegasus/flying creature
-     */
-    SubModel getWings();
 
     /**
      * Determines angle used to animate wing flaps whilst flying/swimming.

@@ -3,7 +3,6 @@ package com.minelittlepony.client.render.blockentity.skull;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.armour.ArmourLayer;
 import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.client.render.entity.*;
@@ -26,6 +25,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.equipment.EquipmentModel.LayerType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Direction;
@@ -112,7 +112,7 @@ public class PonySkullRenderer {
         VertexConsumer vertices = renderContext.getBuffer(layer);
 
         selectedSkull.setAngles(yaw, animationProgress);
-        selectedSkull.render(stack, vertices, light, OverlayTexture.DEFAULT_UV, Color.argbToHex(ArmourRendererPlugin.INSTANCE.get().getArmourAlpha(EquipmentSlot.HEAD, ArmourLayer.OUTER), 1, 1, 1));
+        selectedSkull.render(stack, vertices, light, OverlayTexture.DEFAULT_UV, Color.argbToHex(ArmourRendererPlugin.INSTANCE.get().getArmourAlpha(EquipmentSlot.HEAD, LayerType.HUMANOID), 1, 1, 1));
 
         stack.pop();
 

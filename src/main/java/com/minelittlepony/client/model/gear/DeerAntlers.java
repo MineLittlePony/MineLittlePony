@@ -2,8 +2,9 @@ package com.minelittlepony.client.model.gear;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.entity.state.BipedEntityRenderState;
+import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.model.BodyPart;
@@ -35,18 +36,18 @@ public class DeerAntlers extends WearableGear {
     private int tint;
 
     public DeerAntlers(ModelPart tree) {
-        super(Wearable.ANTLERS, BodyPart.HEAD, 0);
+        super(tree, Wearable.ANTLERS, BodyPart.HEAD, 0);
         left = tree.getChild("left");
         right = tree.getChild("right");
     }
 
     @Override
-    public boolean canRender(PonyModel<?> model, Entity entity) {
+    public boolean canRender(PonyModel<?> model, EntityRenderState entity) {
         return isChristmasDay() || super.canRender(model, entity);
     }
 
     @Override
-    public void pose(PonyModel<?> model, Entity entity, boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
+    public <S extends BipedEntityRenderState & PonyModel.AttributedHolder> void pose(PonyModel<S> model, S state, boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
         float pi = MathHelper.PI * (float) Math.pow(swing, 16);
 
         float mve = move * 0.6662f;
@@ -56,7 +57,7 @@ public class DeerAntlers extends WearableGear {
 
         bodySwing += 0.1F;
 
-        tint = model.getAttributes().metadata.glowColor();
+        tint = state.getAttributes().metadata.glowColor();
         left.roll = bodySwing;
         right.roll = -bodySwing;
     }

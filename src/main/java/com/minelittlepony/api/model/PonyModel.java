@@ -2,12 +2,13 @@ package com.minelittlepony.api.model;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.*;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
+import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.mson.api.MsonModel;
 
-public interface PonyModel<T extends BipedEntityRenderState & PonyModel.AttributedHolder> extends MsonModel, ModelWithHooves, ModelWithHat, ModelWithHead {
+public interface PonyModel<T extends EntityRenderState & PonyModel.AttributedHolder> extends MsonModel, ModelWithHooves, ModelWithHat, ModelWithHead {
 
     ModelPart getBodyPart(BodyPart part);
 
@@ -18,5 +19,9 @@ public interface PonyModel<T extends BipedEntityRenderState & PonyModel.Attribut
 
     public interface AttributedHolder {
         ModelAttributes getAttributes();
+
+        Race getRace();
+
+        float getSwingAmount();
     }
 }

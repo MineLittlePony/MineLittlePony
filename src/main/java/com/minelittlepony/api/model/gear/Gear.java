@@ -2,10 +2,9 @@ package com.minelittlepony.api.model.gear;
 
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.api.model.*;
@@ -75,9 +74,9 @@ public interface Gear {
     /**
      * Applies body transformations for this wearable
      */
-    default <M extends EntityModel<?> & PonyModel<?>> void transform(M model, MatrixStack matrices) {
+    default <S extends EntityRenderState & PonyModel.AttributedHolder> void transform(S state, PonyModel<S> model, MatrixStack matrices) {
         BodyPart part = getGearLocation();
-        model.transform(part,  matrices);
+        model.transform(state, part,  matrices);
         model.getBodyPart(part).rotate(matrices);
     }
 
@@ -86,7 +85,7 @@ public interface Gear {
      *
      * See {@link AbstractPonyMode.setRotationAndAngle} for an explanation of the various parameters.
      */
-    default void pose(PonyModel<?> model, Entity entity, boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
+    default <S extends BipedEntityRenderState & PonyModel.AttributedHolder> void pose(PonyModel<S> model, S state, boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
 
     }
 

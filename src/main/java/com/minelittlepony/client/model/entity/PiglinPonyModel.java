@@ -1,20 +1,14 @@
 package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
-import net.minecraft.entity.mob.AbstractPiglinEntity;
-import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.PiglinActivity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.render.entity.PonyPiglinRenderer;
 
-public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
+public class PiglinPonyModel extends ZomponyModel<PonyPiglinRenderer.State> {
 
     private final ModelPart leftFlap;
     private final ModelPart rightFlap;
@@ -45,11 +39,11 @@ public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
     }
 
     @Override
-    public void setModelAngles(HostileEntity entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-        super.setModelAngles(entity, move, swing, ticks, headYaw, headPitch);
+    public void setModelAngles(PonyPiglinRenderer.State state) {
+        super.setModelAngles(state);
 
-        float progress = ticks * 0.1F + move * 0.5F;
-        float range = 0.08F + swing * 0.4F;
+        float progress = state.age * 0.1F + state.limbFrequency * 0.5F;
+        float range = 0.08F + state.limbAmplitudeMultiplier * 0.4F;
         rightFlap.roll = -0.5235988F - MathHelper.cos(progress * 1.2F) * range;
         leftFlap.roll =   0.5235988F + MathHelper.cos(progress) * range;
     }
@@ -62,10 +56,10 @@ public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
     }
 
     @Override
-    protected void rotateLegs(float move, float swing, float ticks, HostileEntity entity) {
-        super.rotateLegs(move, swing, ticks, entity);
+    protected void rotateLegs(PonyPiglinRenderer.State state, float move, float swing, float ticks) {
+        super.rotateLegs(state, move, swing, ticks);
 
-        if (activity == PiglinActivity.ADMIRING_ITEM) {
+        if (state.activity == PiglinActivity.ADMIRING_ITEM) {
             leftArm.yaw = 0.5F;
             leftArm.pitch = -1.9F;
             leftArm.pivotY += 4;
@@ -75,7 +69,7 @@ public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
             head.yaw = 0;
 
             head.roll = MathHelper.sin(ticks / 10) / 3F;
-        } else if (activity == PiglinActivity.DANCING) {
+        } else if (state.activity == PiglinActivity.DANCING) {
 
             float speed = ticks / 60;
 
@@ -101,7 +95,7 @@ public class PiglinPonyModel extends ZomponyModel<HostileEntity> {
     }
 
     @Override
-    protected boolean isZombified(HostileEntity entity) {
-        return !(entity instanceof AbstractPiglinEntity);
+    protected boolean shouldLiftBothArms(PonyPiglinRenderer.State state) {
+        return state.zombified && super.shouldLiftBothArms(state);
     }
 }

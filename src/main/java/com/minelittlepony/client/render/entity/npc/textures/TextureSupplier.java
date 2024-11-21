@@ -1,10 +1,10 @@
 package com.minelittlepony.client.render.entity.npc.textures;
 
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 
 import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import java.util.Map;
 import java.util.UUID;
@@ -27,13 +27,13 @@ public interface TextureSupplier<T> extends Function<T, Identifier> {
         return key -> Identifier.of(domain, String.format(path, key));
     }
 
-    static <T extends LivingEntity> TextureSupplier<T> ofVariations(Identifier poolId, TextureSupplier<T> fallback) {
+    static <T extends PonyRenderState> TextureSupplier<T> ofVariations(Identifier poolId, TextureSupplier<T> fallback) {
         return entity -> {
-            return MineLittlePony.getInstance().getVariatedTextures().get(poolId).getId(entity.getUuid()).orElse(fallback.apply(entity));
+            return MineLittlePony.getInstance().getVariatedTextures().get(poolId).getId(entity.attributes.getEntityId()).orElse(fallback.apply(entity));
         };
     }
 
-    static <T extends LivingEntity> TextureSupplier<T> ofPool(Identifier poolId, TextureSupplier<T> fallback) {
+    static <T extends PonyRenderState> TextureSupplier<T> ofPool(Identifier poolId, TextureSupplier<T> fallback) {
         final BiFunction<String, UUID, Identifier> cache = Util.memoize((name, uuid) -> {
             return MineLittlePony.getInstance().getVariatedTextures()
                     .get(poolId)
@@ -41,7 +41,7 @@ public interface TextureSupplier<T> extends Function<T, Identifier> {
                     .orElse(null);
         });
         return entity -> {
-            Identifier override = entity.hasCustomName() ? cache.apply(entity.getCustomName().getString(), entity.getUuid()) : null;
+            Identifier override = entity.customName != null ? cache.apply(entity.customName.getString(), entity.attributes.getEntityId()) : null;
             if (override != null) {
                 return override;
             }

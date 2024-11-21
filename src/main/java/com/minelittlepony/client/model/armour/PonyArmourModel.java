@@ -2,28 +2,26 @@ package com.minelittlepony.client.model.armour;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.model.AbstractPonyModel;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
-public class PonyArmourModel<T extends BipedEntityRenderState> extends AbstractPonyModel<T> {
+public class PonyArmourModel<S extends PonyRenderState> extends AbstractPonyModel<S> {
 
     public PonyArmourModel(ModelPart tree) {
-        super(tree);
+        super(tree, false);
     }
 
-    public boolean poseModel(T entity, float limbAngle, float limbDistance, float age, float headYaw, float headPitch,
+    public boolean poseModel(S state,
             EquipmentSlot slot, ArmourLayer layer,
-            PonyModel<T> mainModel) {
+            PonyModel<S> mainModel) {
 
         if (!setVisibilities(slot, layer)) {
             return false;
         }
-        mainModel.copyAttributes(this);
-        setAngles(entity, limbAngle, limbDistance, age, headYaw, headPitch);
+        setAngles(state);
         if (mainModel instanceof BipedEntityModel<?> biped) {
             head.copyTransform(biped.head);
             body.copyTransform(biped.body);

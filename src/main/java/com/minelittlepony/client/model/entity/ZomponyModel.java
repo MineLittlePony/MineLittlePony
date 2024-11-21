@@ -1,39 +1,25 @@
 package com.minelittlepony.client.model.entity;
 
 import com.minelittlepony.api.model.MobPosingHelper;
-import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.model.entity.race.AlicornModel;
+import com.minelittlepony.client.render.entity.ZomponyRenderer;
+
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.entity.mob.HostileEntity;
 
-public class ZomponyModel<Zombie extends HostileEntity> extends AlicornModel<Zombie> {
-
-    private boolean isPegasus;
-
+public class ZomponyModel<T extends ZomponyRenderer.State> extends AlicornModel<T> {
     public ZomponyModel(ModelPart tree) {
         super(tree, false);
     }
 
     @Override
-    public void animateModel(Zombie entity, float move, float swing, float ticks) {
-        super.animateModel(entity, move, swing, ticks);
-        isPegasus = entity.getUuid().getLeastSignificantBits() % 30 == 0;
-    }
-
-    @Override
-    protected void rotateLegs(float move, float swing, float ticks, Zombie entity) {
-        super.rotateLegs(move, swing, ticks, entity);
-        if (isZombified(entity)) {
-            MobPosingHelper.rotateUndeadArms(this, move, ticks);
+    protected void rotateLegs(T state, float move, float swing, float ticks) {
+        super.rotateLegs(state, move, swing, ticks);
+        if (shouldLiftBothArms(state)) {
+            MobPosingHelper.rotateUndeadArms(state, this, state.limbFrequency, state.age);
         }
     }
 
-    @Override
-    public Race getRace() {
-        return isPegasus ? (super.getRace().hasHorn() ? Race.ALICORN : Race.PEGASUS) : super.getRace();
-    }
-
-    protected boolean isZombified(Zombie entity) {
-        return rightArmPose == ArmPose.EMPTY;
+    protected boolean shouldLiftBothArms(T state) {
+        return getArmPose(state, state.mainArm) == ArmPose.EMPTY;
     }
 }

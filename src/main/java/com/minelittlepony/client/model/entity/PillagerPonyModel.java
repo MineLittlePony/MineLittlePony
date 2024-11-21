@@ -7,16 +7,16 @@ import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.util.Arm;
 
 import com.minelittlepony.client.model.entity.race.ChangelingModel;
-import com.minelittlepony.client.render.entity.npc.PillagerRenderer;
+import com.minelittlepony.client.render.entity.npc.IllagerPonyRenderer;
 
-public class PillagerPonyModel extends ChangelingModel<PillagerRenderer.State> {
+public class PillagerPonyModel extends ChangelingModel<IllagerPonyRenderer.State> {
     public PillagerPonyModel(ModelPart tree) {
         super(tree, false);
     }
 
     @Override
     protected BipedEntityModel.ArmPose getArmPose(PlayerEntityRenderState state, Arm arm) {
-        ArmPose holdingPose = getHoldingPose(((PillagerRenderer.State)state).state);
+        ArmPose holdingPose = getHoldingPose(((IllagerPonyRenderer.State)state).state);
 
         if (holdingPose != ArmPose.EMPTY) {
             boolean isMain = state.mainArm == Arm.RIGHT;

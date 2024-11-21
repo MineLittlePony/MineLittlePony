@@ -1,7 +1,7 @@
 package com.minelittlepony.client.model.part;
 
 import com.minelittlepony.api.model.SubModel;
-import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.MsonModel;
 
 import net.minecraft.client.model.ModelPart;
@@ -9,7 +9,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
-public class SeaponyTail implements SubModel, MsonModel {
+public class SeaponyTail implements SubModel<PonyRenderState>, MsonModel {
     private final ModelPart tailBase;
 
     private final ModelPart tailTip;
@@ -22,14 +22,14 @@ public class SeaponyTail implements SubModel, MsonModel {
     }
 
     @Override
-    public void setPartAngles(ModelAttributes attributes, float limbAngle, float limbSpeed, float bodySwing, float animationProgress) {
-        float rotation = attributes.isLyingDown ? 0 : MathHelper.sin(animationProgress * 0.536f) / 4;
+    public void setPartAngles(PonyRenderState state, float limbAngle, float limbSpeed, float bodySwing, float animationProgress) {
+        float rotation = state.attributes.isLyingDown ? 0 : MathHelper.sin(animationProgress * 0.536f) / 4;
 
         tailBase.pitch = MathHelper.HALF_PI + rotation;
         tailTip.pitch = rotation;
         tailFins.pitch = rotation - MathHelper.HALF_PI;
 
-        float turn = MathHelper.clamp(attributes.motionRoll * 0.05F + bodySwing, -0.4F, 0.4F);
+        float turn = MathHelper.clamp(state.attributes.motionRoll * 0.05F + bodySwing, -0.4F, 0.4F);
 
         tailBase.yaw = turn;
         turn /= 2F;
@@ -39,7 +39,7 @@ public class SeaponyTail implements SubModel, MsonModel {
     }
 
     @Override
-    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color, ModelAttributes attributes) {
+    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
         tailBase.render(stack, vertices, overlay, light, color);
     }
 

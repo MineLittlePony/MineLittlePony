@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import net.minecraft.block.SkullBlock;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -77,11 +76,11 @@ public class GearFeature<
         final M model = getModelWrapper().body();
         final Object2FloatMap<BodyPart> renderStackingOffsets = new Object2FloatLinkedOpenHashMap<>();
 
-        for (var entry : randomisedGearCache.getUnchecked(entity.getUuid().getLeastSignificantBits())) {
+        for (var entry : randomisedGearCache.getUnchecked(entity.attributes.getEntityId().getLeastSignificantBits())) {
             if (getContext().shouldRender(model, entity, entry.wearable(), entry.gear())) {
                 stack.push();
                 Gear gear = entry.gear();
-                gear.transform(model, stack);
+                gear.transform(entity, model, stack);
                 BodyPart part = gear.getGearLocation();
                 if (hasSkull && part== BodyPart.HEAD && renderStackingOffsets.getFloat(part) == 0) {
                     renderStackingOffsets.put(part, 0.25F);
@@ -101,9 +100,9 @@ public class GearFeature<
         }
     }
 
-    private void renderGear(M model, T entity, Gear gear, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, float limbDistance, float limbAngle, float tickDelta) {
-        gear.pose(model, entity, model.getAttributes().isGoingFast, entity.getUuid(), limbDistance, limbAngle, model.getWobbleAmount(), tickDelta);
-        gear.render(stack, renderContext.getBuffer(gear.getLayer(entity, getContext())), lightUv, OverlayTexture.DEFAULT_UV, Colors.WHITE, entity.getUuid());
+    private void renderGear(M model, S entity, Gear gear, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, float limbDistance, float limbAngle, float tickDelta) {
+        gear.pose(model, entity, entity.attributes.isGoingFast, entity.attributes.getEntityId(), limbDistance, limbAngle, entity.getWobbleAmount(), tickDelta);
+        gear.render(stack, renderContext.getBuffer(gear.getLayer(entity, getContext())), lightUv, OverlayTexture.DEFAULT_UV, Colors.WHITE, entity.attributes.getEntityId());
     }
 
     static record Entry(Gear gear, Wearable wearable) { }

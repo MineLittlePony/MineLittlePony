@@ -55,7 +55,7 @@ public abstract class AbstractPonyRenderer<
     @Override
     public void updateRenderState(T entity, S state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
-        manager.preRender(entity, state, ModelAttributes.Mode.THIRD_PERSON);
+        manager.updateState(entity, state, ModelAttributes.Mode.THIRD_PERSON);
     }
 
     protected void addFeatures(EntityRendererFactory.Context context) {
@@ -83,7 +83,7 @@ public abstract class AbstractPonyRenderer<
     @Override
     public void render(S state, MatrixStack stack, VertexConsumerProvider vertices, int light) {
         super.render(state, stack, vertices, light);
-        DebugBoundingBoxRenderer.render(getEntityPony(state), this, state, stack, vertices);
+        DebugBoundingBoxRenderer.render(state, stack, vertices);
     }
 
     @Override

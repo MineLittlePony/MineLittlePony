@@ -1,16 +1,17 @@
 package com.minelittlepony.client.render.entity;
 
-import com.minelittlepony.api.model.PreviewModel;
+import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
 import com.minelittlepony.util.MathUtil;
 
 import java.util.function.Predicate;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.EntityPose;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.Identifier;
 
@@ -21,47 +22,37 @@ public class AquaticPlayerPonyRenderer extends FormChangingPlayerPonyRenderer {
     }
 
     @Override
-    public void render(AbstractClientPlayerEntity player, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int light) {
-        super.render(player, entityYaw, tickDelta, stack, renderContext, light);
-
-        if (!(player instanceof PreviewModel) && transformed && player.getVelocity().length() > 0.1F) {
-            double x = player.getEntityWorld().getRandom().nextTriangular(player.getX(), 1);
-            double y = player.getEntityWorld().getRandom().nextTriangular(player.getY(), 1);
-            double z = player.getEntityWorld().getRandom().nextTriangular(player.getZ(), 1);
-            player.getEntityWorld().addParticle(ParticleTypes.BUBBLE, x, y, z, 0, 0, 0);
-        }
+    protected Race getPlayerRace(PlayerPonyRenderState state) {
+        Race race = super.getPlayerRace(state);
+        return ((State)state).skinOverride != null ? Race.SEAPONY : race == Race.SEAPONY ? Race.UNICORN : race;
     }
 
-    @Override
-    protected Race getPlayerRace(AbstractClientPlayerEntity entity, Pony pony) {
-        Race race = super.getPlayerRace(entity, pony);
-        return transformed ? Race.SEAPONY : race == Race.SEAPONY ? Race.UNICORN : race;
-    }
+    protected class State extends FormChangingPlayerPonyRenderer.State {
+        @Override
+        public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
+            super.updateState(entity, model, pony, mode);
+            yOffset = skinOverride != null ? (0.6 + (isInSneakingPose ? 0.125 : 0)) : 0;
+            pose = EntityPose.STANDING;
+            isInSneakingPose = false;
+            attributes.isCrouching = false;
+            if (!isPreviewModel) {
+                float state = skinOverride != null ? 100 : 0;
+                float interpolated = attributes.getMainInterpolator().interpolate("seapony_state", state, 5);
 
-    @Override
-    protected void setupTransforms(AbstractClientPlayerEntity player, MatrixStack matrices, float animationProgress, float bodyYaw, float tickDelta, float scale) {
-        if (transformed) {
-            matrices.translate(0, 0.6 * scale, 0);
-            if (player.isInSneakingPose()) {
-                matrices.translate(0, 0.125 * scale, 0);
-            }
-        }
-        super.setupTransforms(player, matrices, animationProgress, bodyYaw, tickDelta, scale);
-    }
+                if (!MathUtil.compareFloats(interpolated, state)) {
+                    double x = entity.getEntityWorld().getRandom().nextTriangular(entity.getX(), 1);
+                    double y = entity.getEntityWorld().getRandom().nextTriangular(entity.getY() + entity.getHeight() * 0.5F, 1);
+                    double z = entity.getEntityWorld().getRandom().nextTriangular(entity.getZ(), 1);
 
-    @Override
-    protected void updateForm(AbstractClientPlayerEntity player) {
-        super.updateForm(player);
-        if (!(player instanceof PreviewModel)) {
-            float state = transformed ? 100 : 0;
-            float interpolated = getInternalRenderer().getModels().body().getAttributes().getMainInterpolator().interpolate("seapony_state", state, 5);
+                    entity.getEntityWorld().addParticle(ParticleTypes.END_ROD, x, y, z, 0, 0, 0);
+                }
 
-            if (!MathUtil.compareFloats(interpolated, state)) {
-                double x = player.getEntityWorld().getRandom().nextTriangular(player.getX(), 1);
-                double y = player.getEntityWorld().getRandom().nextTriangular(player.getY() + player.getHeight() * 0.5F, 1);
-                double z = player.getEntityWorld().getRandom().nextTriangular(player.getZ(), 1);
-
-                player.getEntityWorld().addParticle(ParticleTypes.END_ROD, x, y, z, 0, 0, 0);
+                if (!isPreviewModel && skinOverride != null && entity.getVelocity().length() > 0.1F) {
+                    double x = entity.getEntityWorld().getRandom().nextTriangular(entity.getX(), 1);
+                    double y = entity.getEntityWorld().getRandom().nextTriangular(entity.getY(), 1);
+                    double z = entity.getEntityWorld().getRandom().nextTriangular(entity.getZ(), 1);
+                    entity.getEntityWorld().addParticle(ParticleTypes.BUBBLE, x, y, z, 0, 0, 0);
+                }
             }
         }
     }

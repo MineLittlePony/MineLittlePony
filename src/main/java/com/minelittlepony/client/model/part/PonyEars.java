@@ -6,11 +6,11 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.model.SubModel;
-import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.*;
 import com.minelittlepony.mson.api.model.PartBuilder;
 
-public class PonyEars implements SubModel, MsonModel {
+public class PonyEars implements SubModel<PonyRenderState>, MsonModel {
     private final ModelPart right;
     private final ModelPart left;
 
@@ -27,7 +27,7 @@ public class PonyEars implements SubModel, MsonModel {
     }
 
     @Override
-    public void setPartAngles(ModelAttributes attributes, float limbAngle, float limbSpeed, float bodySwing, float animationProgress) {
+    public void setPartAngles(PonyRenderState state, float limbAngle, float limbSpeed, float bodySwing, float animationProgress) {
         right.resetTransform();
         left.resetTransform();
 
@@ -52,15 +52,15 @@ public class PonyEars implements SubModel, MsonModel {
     }
 
     @Override
-    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color, ModelAttributes attributes) {
+    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
     }
 
     @Override
-    public void setVisible(boolean visible, ModelAttributes attributes) {
-        right.visible = visible && !attributes.metadata.race().isHuman();
-        left.visible = visible && !attributes.metadata.race().isHuman();
+    public void setVisible(boolean visible, PonyRenderState state) {
+        right.visible = visible && !state.getRace().isHuman();
+        left.visible = visible && !state.getRace().isHuman();
 
-        if (attributes.isHorsey) {
+        if (state.attributes.isHorsey) {
             left.pivotX = -1;
             right.pivotX = 1;
             left.pivotY = right.pivotY = 1;

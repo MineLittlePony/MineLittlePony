@@ -12,6 +12,7 @@ import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.*;
+import com.minelittlepony.client.transform.PonyPosture;
 
 public class PonyRenderState extends PlayerEntityRenderState implements PonyModel.AttributedHolder {
     public final ModelAttributes attributes = new ModelAttributes();
@@ -28,9 +29,9 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
     public Pony pony;
 
     public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
+        this.pony = pony;
         attributes.updateLivingState(entity, pony, mode);
         attributes.checkRainboom(entity, model, age);
-        this.pony = pony;
         vehicleOffset = hasVehicle ? entity.getVehicle().getEyeHeight(pose) : 0;
         riderOffset = getRiderYOffset();
         nameplateYOffset = getNamePlateYOffset(entity);
@@ -42,6 +43,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
             pose = EntityPose.SITTING;
         }
 
+        PonyPosture.of(attributes).updateState(entity, this);
         PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(attributes, model, ModelAttributes.Mode.OTHER);
     }
 
@@ -54,6 +56,10 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
 
     public Race getRace() {
         return PonyConfig.getEffectiveRace(attributes.metadata.race());
+    }
+
+    public boolean hasMagicGlow() {
+        return getRace().hasHorn() && attributes.metadata.glowColor() != 0;
     }
 
     public final float getScaleFactor() {
@@ -83,7 +89,6 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
     }
 
     protected float getLegOutset() {
-
         float outset = attributes.isLyingDown ? 3.6F : attributes.isCrouching ? 1 : 5;
 
         if (smallArms) {

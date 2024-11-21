@@ -10,7 +10,6 @@ import com.minelittlepony.client.model.entity.EnderStallionModel;
 import com.minelittlepony.client.render.entity.feature.GlowingEyesFeature;
 import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
-import com.minelittlepony.client.render.entity.state.SkeletonPonyRenderState;
 import com.minelittlepony.client.render.entity.feature.GlowingEyesFeature.IGlowingRenderer;
 
 import net.minecraft.block.BlockState;
@@ -69,7 +68,7 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
         return EYES;
     }
 
-    public class State extends SkeletonPonyRenderState {
+    public class State extends SkeleponyRenderer.State {
         public boolean angry;
         @Nullable
         public BlockState carriedBlock;

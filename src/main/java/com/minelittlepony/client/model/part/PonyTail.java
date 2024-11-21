@@ -8,13 +8,14 @@ import net.minecraft.util.math.MathHelper;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.meta.TailShape;
 import com.minelittlepony.client.model.AbstractPonyModel;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.*;
 import com.minelittlepony.util.MathUtil;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class PonyTail implements SubModel, MsonModel {
+public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
     private static final float TAIL_Z = 14;
     private static final float TAIL_RIDING_Y = 3;
     private static final float TAIL_RIDING_Z = 13;
@@ -43,15 +44,15 @@ public class PonyTail implements SubModel, MsonModel {
     }
 
     @Override
-    public void setPartAngles(ModelAttributes attributes, float limbAngle, float limbSpeed, float bodySwing, float animationProgress) {
-        boolean rainboom = attributes.isSwimming || attributes.isGoingFast;
+    public void setPartAngles(PonyRenderState state, float limbAngle, float limbSpeed, float bodySwing, float animationProgress) {
+        boolean rainboom = state.attributes.isSwimming || state.attributes.isGoingFast;
         tail.roll = rainboom ? 0 : MathHelper.cos(limbAngle * 0.8F) * 0.2f * limbSpeed;
         tail.yaw = bodySwing * 5;
 
-        if (attributes.isCrouching && !rainboom) {
+        if (state.attributes.isCrouching && !rainboom) {
             tail.setPivot(0, 0, TAIL_SNEAKING_Z);
             tail.pitch = -model.body.pitch + 0.1F;
-        } else if (attributes.isSitting) {
+        } else if (state.attributes.isSitting) {
             tail.pivotZ = TAIL_RIDING_Z;
             tail.pivotY = TAIL_RIDING_Y;
             tail.pitch = MathHelper.PI / 5;
@@ -70,6 +71,10 @@ public class PonyTail implements SubModel, MsonModel {
             tail.pivotY += 6;
             tail.pivotZ++;
         }
+
+        for (int i = 0; i < segments.size(); i++) {
+            segments.get(i).setAngles(i, this, state.attributes);
+        }
     }
 
     private void swingX(float ticks) {
@@ -79,19 +84,19 @@ public class PonyTail implements SubModel, MsonModel {
     }
 
     @Override
-    public void setVisible(boolean visible, ModelAttributes attributes) {
+    public void setVisible(boolean visible, PonyRenderState state) {
         tail.visible = visible;
-        tailStop = attributes.metadata.tailLength().ordinal();
-        shape = attributes.metadata.tailShape();
+        tailStop = state.attributes.metadata.tailLength().ordinal();
+        shape = state.attributes.metadata.tailShape();
     }
 
     @Override
-    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color, ModelAttributes attributes) {
+    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
         stack.push();
         tail.rotate(stack);
 
         for (int i = 0; i < segments.size(); i++) {
-            segments.get(i).render(this, stack, vertices, i, overlay, light, color, attributes);
+            segments.get(i).render(stack, vertices, i, overlay, light, color);
         }
 
         stack.pop();
@@ -99,15 +104,17 @@ public class PonyTail implements SubModel, MsonModel {
 
     public static class Segment {
         private final ModelPart tree;
+        private TailShape shape;
+        private boolean horsey;
 
         public Segment(ModelPart tree) {
             this.tree = tree;
         }
 
-        public void render(PonyTail tail, MatrixStack stack, VertexConsumer renderContext, int index, int overlay, int light, int color, ModelAttributes attributes) {
-            if (index >= tail.tailStop) {
-                return;
-            }
+        public void setAngles(int index, PonyTail tail, ModelAttributes attributes) {
+            tree.visible = index >= tail.tailStop;
+            shape = tail.shape;
+            horsey = attributes.isHorsey;
 
             if (attributes.isHorsey) {
                 tree.pitch = 0.5F;
@@ -115,29 +122,35 @@ public class PonyTail implements SubModel, MsonModel {
             } else {
                 tree.resetTransform();
             }
+        }
 
-            if (attributes.isHorsey || tail.shape == TailShape.STRAIGHT) {
+        public void render(MatrixStack stack, VertexConsumer renderContext, int index, int overlay, int light, int color) {
+            if (!tree.visible) {
+                return;
+            }
+
+            if (horsey || shape == TailShape.STRAIGHT) {
                 tree.yaw = 0;
                 tree.render(stack, renderContext, overlay, light, color);
                 return;
             }
 
             stack.push();
-            if (tail.shape == TailShape.BUMPY) {
+            if (shape == TailShape.BUMPY) {
                 stack.translate(0, 0, -9/16F);
                 float scale = 1 + MathHelper.cos(index + 5) / 2F;
                 stack.scale(scale, 1, scale);
                 stack.translate(1 / 16F * scale - 0.1F, 0, -2 / 16F * scale);
                 tree.pivotZ = 9;
             }
-            if (tail.shape == TailShape.SWIRLY) {
+            if (shape == TailShape.SWIRLY) {
                 stack.translate(0, 0, -6/16F);
                 float scale = 1 + MathHelper.cos(index + 10) / 5F;
                 stack.scale(1, 1, scale);
                 stack.translate(0, 0, -2 / 16F * scale);
                 tree.pivotZ = 9;
             }
-            if (tail.shape == TailShape.SPIKY) {
+            if (shape == TailShape.SPIKY) {
                 stack.translate(0, 0, -6/16F);
                 float scale = 1 + MathHelper.cos(index + 10) / 5F;
                 stack.scale(1, 1, scale);

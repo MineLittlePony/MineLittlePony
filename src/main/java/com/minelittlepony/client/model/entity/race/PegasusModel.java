@@ -10,7 +10,7 @@ import net.minecraft.client.model.ModelPart;
 
 public class PegasusModel<T extends PonyRenderState> extends EarthPonyModel<T> implements WingedPonyModel<T> {
 
-    private PonyWings<PegasusModel<T>> wings;
+    private PonyWings<T> wings;
 
     public PegasusModel(ModelPart tree, boolean smallArms) {
         super(tree, smallArms);
@@ -24,7 +24,7 @@ public class PegasusModel<T extends PonyRenderState> extends EarthPonyModel<T> i
     }
 
     @Override
-    public SubModel getWings() {
+    public SubModel<T> getWings() {
         return wings;
     }
 }

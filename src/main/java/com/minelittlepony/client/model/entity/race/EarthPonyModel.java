@@ -10,7 +10,7 @@ import net.minecraft.client.model.ModelPart;
 
 public class EarthPonyModel<T extends PonyRenderState> extends AbstractPonyModel<T> {
 
-    protected SubModel tail;
+    protected SubModel<T> tail;
     protected PonySnout snout;
     protected PonyEars ears;
 

@@ -7,11 +7,10 @@ import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.ModelView;
 
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.entity.LivingEntity;
 
 public class AlicornModel<T extends PonyRenderState> extends UnicornModel<T> implements WingedPonyModel<T> {
 
-    private PonyWings<AlicornModel<T>> wings;
+    private PonyWings<T> wings;
 
     public AlicornModel(ModelPart tree, boolean smallArms) {
         super(tree, smallArms);
@@ -21,11 +20,11 @@ public class AlicornModel<T extends PonyRenderState> extends UnicornModel<T> imp
     public void init(ModelView context) {
         super.init(context);
         wings = addPart(context.findByName("wings"));
-        bodyRenderList.add(forPart(this::getWings).checked(() -> getRace().hasWings()));
+        bodyRenderList.add(forPart(this::getWings).checked(() -> currentState.getRace().hasWings()));
     }
 
     @Override
-    public SubModel getWings() {
+    public SubModel<T> getWings() {
         return wings;
     }
 }

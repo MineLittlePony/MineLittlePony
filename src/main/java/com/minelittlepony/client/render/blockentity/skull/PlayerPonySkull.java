@@ -23,7 +23,7 @@ import org.joml.Vector3f;
 
 public class PlayerPonySkull implements ISkull {
     private AbstractPonyModel<?> ponyHead;
-    private final Map<PlayerModelKey<?, AbstractPonyModel<?>>, AbstractPonyModel<?>> modelCache = new HashMap<>();
+    private final Map<PlayerModelKey<AbstractPonyModel<?>>, AbstractPonyModel<?>> modelCache = new HashMap<>();
 
     private final DJPon3EarsModel deadMau5 = ModelType.DJ_PON_3.createModel();
 
@@ -61,7 +61,6 @@ public class PlayerPonySkull implements ISkull {
             }
         }
         ponyHead = modelCache.computeIfAbsent(ModelType.getPlayerModel(race), key -> key.getKey(false).createModel());
-        ponyHead.setMetadata(pony.metadata());
         return true;
     }
 

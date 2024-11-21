@@ -33,7 +33,7 @@ public abstract class AbstractPonyFeature<
         return context.getInternalRenderer().getModels().body();
     }
 
-    protected Models<?, M> getModelWrapper() {
+    protected Models<M> getModelWrapper() {
         return context.getInternalRenderer().getModels();
     }
 }

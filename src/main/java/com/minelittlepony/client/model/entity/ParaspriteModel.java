@@ -2,19 +2,12 @@ package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.common.util.animation.Interpolator;
+import com.minelittlepony.client.render.entity.VexRenderer;
 
-public class ParaspriteModel<T extends LivingEntity> extends EntityModel<T> {
-
-    private final ModelPart root;
-
+public class ParaspriteModel extends EntityModel<VexRenderer.State> {
     private final ModelPart body;
     private final ModelPart jaw;
     private final ModelPart lips;
@@ -24,70 +17,45 @@ public class ParaspriteModel<T extends LivingEntity> extends EntityModel<T> {
     private final ModelPart leftWing2;
     private final ModelPart rightWing2;
 
-    public ParaspriteModel(ModelPart tree) {
-        super(RenderLayer::getEntityTranslucent);
-        child = false;
-        root = tree;
-        body = tree.getChild("body");
+    public ParaspriteModel(ModelPart root) {
+        super(root, RenderLayer::getEntityTranslucent);
+        body = root.getChild("body");
         jaw = body.getChild("jaw");
         lips = body.getChild("lips");
-        leftWing = tree.getChild("leftWing");
-        rightWing = tree.getChild("rightWing");
-        leftWing2 = tree.getChild("leftWing2");
-        rightWing2 = tree.getChild("rightWing2");
+        leftWing = root.getChild("leftWing");
+        rightWing = root.getChild("rightWing");
+        leftWing2 = root.getChild("leftWing2");
+        rightWing2 = root.getChild("rightWing2");
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
-        root.render(matrices, vertices, light, overlay, color);
-    }
-
-    @Override
-    public void setAngles(T entity, float move, float swing, float ticks, float headYaw, float headPitch) {
-
-        root.pitch = MathHelper.clamp((float)entity.getVelocity().horizontalLength() / 10F, 0, 0.1F);
+    public void setAngles(VexRenderer.State state) {
+        root.pitch = state.bodyPitch;
         body.pitch = 0;
+        root.pitch = state.pitch * MathHelper.RADIANS_PER_DEGREE;
+        root.yaw = state.yawDegrees * MathHelper.RADIANS_PER_DEGREE;
 
-        if (entity.hasPassengers()) {
-            root.yaw = 0;
-            root.pitch = 0;
-        } else {
-            root.yaw = headYaw * 0.017453292F;
-            root.pitch = headPitch * 0.017453292F;
-        }
-
-        float sin = (float)Math.sin(ticks) / 2F;
-        float cos = (float)Math.cos(ticks) / 3F;
-
-        float jawOpenAmount = Interpolator.linear(entity.getUuid()).interpolate("jawOpen", entity instanceof VexEntity vex && vex.isCharging() ? 1 : 0, 10);
-
-        jaw.pivotY = Math.max(0, 1.2F * jawOpenAmount);
+        jaw.pivotY = Math.max(0, 1.2F * state.jawOpenAmount);
         lips.pivotY = jaw.pivotY - 0.9F;
-        lips.visible = jawOpenAmount > 0;
-        body.pitch += 0.3F * jawOpenAmount;
-        jaw.pitch = 0.4F * jawOpenAmount;
-        lips.pitch = 0.2F * jawOpenAmount;
-
-        float basWingExpand = 1;
-        float innerWingExpand = basWingExpand / 2F;
+        lips.visible = state.jawOpenAmount > 0;
+        body.pitch += 0.3F * state.jawOpenAmount;
+        jaw.pitch = 0.4F * state.jawOpenAmount;
+        lips.pitch = 0.2F * state.jawOpenAmount;
 
         leftWing.pitch = 0;
-        leftWing.roll = basWingExpand + cos + 0.3F;
-        leftWing.yaw = basWingExpand - sin;
+        leftWing.roll = state.wingRoll;
+        leftWing.yaw = state.wingYaw;
 
         rightWing.pitch = 0;
-        rightWing.roll = -basWingExpand - cos - 0.3F;
-        rightWing.yaw = -basWingExpand + sin;
-
-        sin = -(float)Math.sin(ticks + Math.PI / 4F) / 2F;
-        cos = (float)Math.cos(ticks + Math.PI / 4F) / 3F;
+        rightWing.roll = -state.wingRoll;
+        rightWing.yaw = -state.wingYaw;
 
         leftWing2.pitch = 0;
-        leftWing2.roll = innerWingExpand + sin - 0.3F;
-        leftWing2.yaw = innerWingExpand - cos + 0.3F;
+        leftWing2.roll = state.innerWingRoll;
+        leftWing2.yaw = state.innerWingPitch;
 
         rightWing2.pitch = 0;
-        rightWing2.roll = -innerWingExpand - sin + 0.3F;
-        rightWing2.yaw = -innerWingExpand + cos - 0.3F;
+        rightWing2.roll = -state.innerWingRoll;
+        rightWing2.yaw = -state.innerWingPitch;
     }
 }

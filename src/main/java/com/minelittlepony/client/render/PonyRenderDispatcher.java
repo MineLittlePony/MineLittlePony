@@ -80,9 +80,9 @@ public class PonyRenderDispatcher {
 
     @SuppressWarnings("unchecked")
     @Nullable
-    public <T extends LivingEntity, S extends PonyRenderState, M extends EntityModel<S> & PonyModel<S>> PonyRenderContext<T, S, M> getPonyRenderer(@Nullable T entity) {
+    public <T extends LivingEntity, S extends PonyRenderState, M extends EntityModel<S> & PonyModel<S>, R extends LivingEntityRenderer<T, S, M> & PonyRenderContext<T, S, M>> R getPonyRenderer(@Nullable T entity) {
         if (entity != null && MinecraftClient.getInstance().getEntityRenderDispatcher().getRenderer(entity) instanceof PonyRenderContext c) {
-            return c;
+            return (R)c;
         }
 
         return null;

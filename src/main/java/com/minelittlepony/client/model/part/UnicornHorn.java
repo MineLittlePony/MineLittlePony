@@ -8,10 +8,10 @@ import net.minecraft.client.render.VertexConsumerProvider.Immediate;
 import net.minecraft.client.util.math.MatrixStack;
 
 import com.minelittlepony.api.model.SubModel;
-import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.client.render.MagicGlow;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
-public class UnicornHorn implements SubModel {
+public class UnicornHorn implements SubModel<PonyRenderState> {
 
     private final ModelPart horn;
     private final ModelPart glow;
@@ -24,7 +24,7 @@ public class UnicornHorn implements SubModel {
     }
 
     @Override
-    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color, ModelAttributes attributes) {
+    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
         horn.render(stack, vertices, overlay, light, color);
     }
 
@@ -38,7 +38,7 @@ public class UnicornHorn implements SubModel {
     }
 
     @Override
-    public void setVisible(boolean visible, ModelAttributes attributes) {
+    public void setVisible(boolean visible, PonyRenderState state) {
         horn.visible = visible;
         glow.visible = visible;
     }

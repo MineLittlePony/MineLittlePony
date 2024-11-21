@@ -39,7 +39,7 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> i
         headRenderList.add(RenderList.of().add(head::rotate).add(forPart(horn)).checked(() -> currentState.getRace().hasHorn()));
         this.mainRenderList.add(withStage(BodyPart.HEAD, RenderList.of().add(head::rotate).add((stack, vertices, overlay, light, color) -> {
             horn.renderMagic(stack, vertices, currentState.attributes.metadata.glowColor());
-        })).checked(() -> hasMagic(currentState) && isCasting(currentState)));
+        })).checked(() -> currentState.hasMagicGlow() && isCasting(currentState)));
     }
 
     @Override
@@ -48,19 +48,14 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> i
     }
 
     @Override
-    protected void rotateLegs(T state, float move, float swing, float ticks, T entity) {
-        super.rotateLegs(state, move, swing, ticks, entity);
+    protected void rotateLegs(T state, float move, float swing, float ticks) {
+        super.rotateLegs(state, move, swing, ticks);
 
         unicornArmRight.setAngles(0, 0, 0);
         unicornArmRight.setPivot(-7, 12, -2);
 
         unicornArmLeft.setAngles(0, 0, 0);
         unicornArmLeft.setPivot(-7, 12, -2);
-    }
-
-    @Override
-    public boolean isCasting(T state) {
-        return PonyConfig.getInstance().tpsmagic.get() && (!state.leftHandStack.isEmpty() || !state.rightHandStack.isEmpty());
     }
 
     @Override
@@ -72,7 +67,7 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> i
 
     @Override
     public ModelPart getArm(Arm side) {
-        if (hasMagic(currentState) && getArmPoseForSide(currentState, side) != ArmPose.EMPTY && PonyConfig.getInstance().tpsmagic.get()) {
+        if (currentState.hasMagicGlow() && getArmPoseForSide(currentState, side) != ArmPose.EMPTY && PonyConfig.getInstance().tpsmagic.get()) {
             return side == Arm.LEFT ? unicornArmLeft : unicornArmRight;
         }
         return super.getArm(side);
@@ -82,7 +77,7 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> i
     protected void positionheldItem(T state, Arm arm, MatrixStack matrices) {
         super.positionheldItem(state, arm, matrices);
 
-        if (!PonyConfig.getInstance().tpsmagic.get() || !hasMagic(state)) {
+        if (!PonyConfig.getInstance().tpsmagic.get() || !currentState.hasMagicGlow()) {
             return;
         }
 

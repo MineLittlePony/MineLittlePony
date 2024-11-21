@@ -28,8 +28,8 @@ public class MobRenderers {
         pony.switchRenderer(state, EntityType.VEX, VexRenderer::new);
         pony.switchRenderer(state, EntityType.EVOKER, IllagerPonyRenderer::evoker);
         pony.switchRenderer(state, EntityType.VINDICATOR, IllagerPonyRenderer::vindicator);
-        pony.switchRenderer(state, EntityType.ILLUSIONER, IllagerPonyRenderer.Illusionist::new);
-        pony.switchRenderer(state, EntityType.PILLAGER, PillagerRenderer::new);
+        pony.switchRenderer(state, EntityType.ILLUSIONER, IllusionistPonyRenderer::new);
+        pony.switchRenderer(state, EntityType.PILLAGER, IllagerPonyRenderer::pillager);
     });
     public static final MobRenderers ZOMBIE = register("zombies", (state, pony) -> {
         pony.switchRenderer(state, EntityType.ZOMBIE, ZomponyRenderer::zombie);

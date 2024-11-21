@@ -36,7 +36,7 @@ import net.minecraft.util.math.Vec3d;
 public class PlayerPonyRenderer
         extends PlayerEntityRenderer
         implements PonyRenderContext<AbstractClientPlayerEntity, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> {
-    private final Function<Race, Models<AbstractClientPlayerEntity, ClientPonyModel<PlayerPonyRenderState>>> modelsCache;
+    private final Function<Race, Models<ClientPonyModel<PlayerPonyRenderState>>> modelsCache;
     protected final EquineRenderManager<AbstractClientPlayerEntity, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> manager;
 
     private ModelAttributes.Mode mode = ModelAttributes.Mode.THIRD_PERSON;
@@ -78,7 +78,7 @@ public class PlayerPonyRenderer
 
     public Vec3d getPositionOffset(PlayerEntityRenderState state) {
         Vec3d offset = super.getPositionOffset(state);
-        return offset.multiply(((PonyRenderState)state).getScaleFactor());
+        return offset.add(state.baseScale * ((PlayerPonyRenderState)state).yOffset).multiply(((PonyRenderState)state).getScaleFactor());
     }
 
     @Override
@@ -89,7 +89,7 @@ public class PlayerPonyRenderer
     @Override
     public void updateRenderState(AbstractClientPlayerEntity entity, PlayerEntityRenderState state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
-        manager.preRender(entity, (PlayerPonyRenderState)state, mode);
+        manager.updateState(entity, (PlayerPonyRenderState)state, mode);
     }
 
     public final PlayerPonyRenderState getAndUpdateRenderState(AbstractClientPlayerEntity entity, float tickDelta, ModelAttributes.Mode mode) {

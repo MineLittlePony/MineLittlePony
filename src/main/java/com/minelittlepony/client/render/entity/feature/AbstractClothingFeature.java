@@ -18,7 +18,7 @@ import com.minelittlepony.client.render.entity.state.PonyRenderState;
 public abstract class AbstractClothingFeature<
         T extends LivingEntity,
         S extends PonyRenderState,
-        M extends BipedEntityModel<S> & PonyModel<S>
+        M extends BipedEntityModel<? super S> & PonyModel<? super S>
     > extends FeatureRenderer<S, M> {
 
     protected final FeatureRendererContext<S, M> renderer;

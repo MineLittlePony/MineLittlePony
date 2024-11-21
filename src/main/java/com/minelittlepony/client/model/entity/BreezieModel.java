@@ -2,12 +2,13 @@ package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
-public class BreezieModel<T extends BipedEntityRenderState> extends BipedEntityModel<T> {
+import com.minelittlepony.client.render.entity.AllayRenderer;
+
+public class BreezieModel extends BipedEntityModel<AllayRenderer.State> {
 
     private ModelPart leftWing;
     private ModelPart rightWing;
@@ -25,7 +26,7 @@ public class BreezieModel<T extends BipedEntityRenderState> extends BipedEntityM
     }
 
     @Override
-    public void setAngles(T state) {
+    public void setAngles(AllayRenderer.State state) {
 
         float move = state.limbFrequency;
         float swing = state.limbAmplitudeMultiplier;
@@ -90,7 +91,7 @@ public class BreezieModel<T extends BipedEntityRenderState> extends BipedEntityM
         leg.setAngles(-1.4137167F, factor * MathHelper.PI / 10, factor * 0.07853982F);
     }
 
-    protected void swingArms(T state, Arm mainHand) {
+    protected void swingArms(AllayRenderer.State state, Arm mainHand) {
         body.yaw = MathHelper.sin(MathHelper.sqrt(state.handSwingProgress) * MathHelper.TAU) / 5;
 
         if (mainHand == Arm.LEFT) {

@@ -1,76 +1,91 @@
 package com.minelittlepony.client.render.entity.npc;
 
+import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.api.model.PonyModel;
+import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.entity.IllagerPonyModel;
-import com.minelittlepony.client.render.entity.feature.IllagerHeldItemFeature;
+import com.minelittlepony.client.model.entity.race.AlicornModel;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.minelittlepony.mson.api.ModelKey;
+import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.PonyRenderer;
 import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.mob.EvokerEntity;
-import net.minecraft.entity.mob.IllagerEntity;
-import net.minecraft.entity.mob.IllusionerEntity;
-import net.minecraft.entity.mob.VindicatorEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.*;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 
-public class IllagerPonyRenderer<T extends IllagerEntity> extends PonyRenderer<T, IllagerPonyModel<T>> {
+public class IllagerPonyRenderer<
+        T extends IllagerEntity,
+        S extends IllagerPonyRenderer.State,
+        M extends AlicornModel<S>
+    > extends PonyRenderer<T, S, M> {
+    public static final Identifier PILLAGER = MineLittlePony.id("textures/entity/illager/pillager_pony.png");
     public static final Identifier ILLUSIONIST = MineLittlePony.id("textures/entity/illager/illusionist_pony.png");
     public static final Identifier EVOKER = MineLittlePony.id("textures/entity/illager/evoker_pony.png");
     public static final Identifier VINDICATOR = MineLittlePony.id("textures/entity/illager/vindicator_pony.png");
 
-    public IllagerPonyRenderer(EntityRendererFactory.Context context, Identifier texture) {
-        super(context, ModelType.ILLAGER, TextureSupplier.of(texture), BASE_MODEL_SCALE);
+    public IllagerPonyRenderer(EntityRendererFactory.Context context, ModelKey<? super M> key, Identifier texture) {
+        super(context, key, TextureSupplier.of(texture), BASE_MODEL_SCALE);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public S createRenderState() {
+        return (S)new State();
     }
 
     @Override
-    protected HeldItemFeature<T, IllagerPonyModel<T>> createHeldItemFeature(EntityRendererFactory.Context context) {
-        return new IllagerHeldItemFeature<>(this, context.getHeldItemRenderer());
+    protected HeldItemFeature<S, M> createHeldItemFeature(EntityRendererFactory.Context context) {
+        return new IllagerHeldItemFeature<>(this, context.getItemRenderer());
     }
 
-    public static IllagerPonyRenderer<VindicatorEntity> vindicator(EntityRendererFactory.Context context) {
-        return new IllagerPonyRenderer<>(context, VINDICATOR);
+    public static IllagerPonyRenderer<PillagerEntity, ?, ?> pillager(EntityRendererFactory.Context context) {
+        return new IllagerPonyRenderer<>(context, ModelType.PILLAGER, PILLAGER);
     }
 
-    public static IllagerPonyRenderer<EvokerEntity> evoker(EntityRendererFactory.Context context) {
-        return new IllagerPonyRenderer<>(context, EVOKER);
+    public static IllagerPonyRenderer<VindicatorEntity, ?, ?> vindicator(EntityRendererFactory.Context context) {
+        return new IllagerPonyRenderer<>(context, (ModelKey<?>)ModelType.ILLAGER, VINDICATOR);
     }
 
-    public static class Illusionist extends IllagerPonyRenderer<IllusionerEntity> {
+    public static IllagerPonyRenderer<EvokerEntity, ?, ?> evoker(EntityRendererFactory.Context context) {
+        return new IllagerPonyRenderer<>(context, (ModelKey<?>)ModelType.ILLAGER, EVOKER);
+    }
 
-        public Illusionist(EntityRendererFactory.Context context) {
-            super(context, ILLUSIONIST);
+    public static class State extends PonyRenderState {
+        public IllagerEntity.State state;
+
+        public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
+            super.updateState(entity, model, pony, mode);
+            state = ((IllagerEntity)entity).getState();
+        }
+    }
+
+    public static class IllagerHeldItemFeature<
+        T extends IllagerEntity,
+        S extends IllagerPonyRenderer.State,
+        M extends AlicornModel<S>
+    > extends HeldItemFeature<S, M> {
+
+        public IllagerHeldItemFeature(PonyRenderContext<T, S, M> livingPony, ItemRenderer renderer) {
+            super(livingPony, renderer);
         }
 
         @Override
-        public void render(IllusionerEntity entity, float entityYaw, float tickDelta, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv) {
-            if (entity.isInvisible()) {
-                Vec3d[] clones = entity.getMirrorCopyOffsets(tickDelta);
-                float rotation = getAnimationProgress(entity, tickDelta);
-
-                for (int i = 0; i < clones.length; ++i) {
-                    stack.push();
-                    stack.translate(
-                            clones[i].x + MathHelper.cos(i + rotation * 0.5F) * 0.025D,
-                            clones[i].y + MathHelper.cos(i + rotation * 0.75F) * 0.0125D,
-                            clones[i].z + MathHelper.cos(i + rotation * 0.7F) * 0.025D
-                    );
-                    super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
-                    stack.pop();
-                }
-            } else {
-                super.render(entity, entityYaw, tickDelta, stack, renderContext, lightUv);
+        public void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, S state, float limbAngle, float limbDistance) {
+            if (shouldRender(state)) {
+                super.render(matrices, vertices, light, state, limbAngle, limbDistance);
             }
         }
 
-        @Override
-        protected boolean isVisible(IllusionerEntity entity) {
-            return true;
+        protected boolean shouldRender(S state) {
+            return state.state != IllagerEntity.State.CROSSED;
         }
     }
 }

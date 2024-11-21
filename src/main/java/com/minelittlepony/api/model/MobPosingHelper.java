@@ -30,26 +30,25 @@ public final class MobPosingHelper {
         arm.roll = cos;
     }
 
-    public static void rotateUndeadArms(PonyModel<?> model, float move, float ticks) {
-        ModelPart leftArm = model.getForeLeg(Arm.LEFT);
-        ModelPart rightArm = model.getForeLeg(Arm.RIGHT);
-
-        if (islookAngleRight(move)) {
-            rotateArmHolding(rightArm, 1, model.getSwingAmount(), ticks);
-            if (model.getAttributes().isSitting) {
+    public static void rotateUndeadArms(PonyModel.AttributedHolder attributes, PonyModel<?> model, float limbAngle, float ticks) {
+        if (islookAngleRight(limbAngle)) {
+            ModelPart rightArm = model.getForeLeg(Arm.RIGHT);
+            rotateArmHolding(rightArm, 1, attributes.getSwingAmount(), ticks);
+            if (attributes.getAttributes().isSitting) {
                 rightArm.pitch += 0.6F;
             }
             PartUtil.shift(rightArm, 0.5F, 1.5F, 3);
         } else {
-            rotateArmHolding(leftArm, -1, model.getSwingAmount(), ticks);
-            if (model.getAttributes().isSitting) {
+            ModelPart leftArm = model.getForeLeg(Arm.LEFT);
+            rotateArmHolding(leftArm, -1, attributes.getSwingAmount(), ticks);
+            if (attributes.getAttributes().isSitting) {
                 leftArm.pitch += 0.6F;
             }
             PartUtil.shift(leftArm, -0.5F, 1.5F, 3);
         }
     }
 
-    public static boolean islookAngleRight(float move) {
-        return MathHelper.sin(move / 20) < 0;
+    public static boolean islookAngleRight(float limbAngle) {
+        return MathHelper.sin(limbAngle / 20) < 0;
     }
 }

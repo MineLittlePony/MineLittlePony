@@ -10,7 +10,6 @@ import com.minelittlepony.client.PonyDataLoader;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.client.transform.PonyPosture;
 import com.minelittlepony.mson.api.ModelKey;
-import com.minelittlepony.util.MathUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import java.util.*;
@@ -21,10 +20,8 @@ import net.fabricmc.api.EnvType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 
@@ -35,9 +32,9 @@ public class EquineRenderManager<
         S extends PonyRenderState,
         M extends EntityModel<? super S> & PonyModel<S>> {
 
-    private Models<T, M> models;
-    @Nullable
-    private Function<S, Models<T, M>> modelsLookup;
+    private Models<M> models;
+
+    private Function<S, Models<M>> modelsLookup = s -> models;
 
     private final PonyRenderContext<T, S, M> context;
     private final Transformer<? super S> transformer;
@@ -48,7 +45,7 @@ public class EquineRenderManager<
         RenderSystem.disableBlend();
     }
 
-    public EquineRenderManager(PonyRenderContext<T, S, M> context, Transformer<? super S> transformer, Models<T, M> models) {
+    public EquineRenderManager(PonyRenderContext<T, S, M> context, Transformer<? super S> transformer, Models<M> models) {
         this.context = context;
         this.transformer = transformer;
         this.models = models;
@@ -61,11 +58,11 @@ public class EquineRenderManager<
         this(context, transformer, new Models(key));
     }
 
-    public void setModelsLookup(@Nullable Function<S, Models<T, M>> modelsLookup) {
+    public void setModelsLookup(Function<S, Models<M>> modelsLookup) {
         this.modelsLookup = modelsLookup;
     }
 
-    public Models<T, M> getModels() {
+    public Models<M> getModels() {
         return models;
     }
 
@@ -80,32 +77,28 @@ public class EquineRenderManager<
         return frustrum.withCamera(entity, vanilla);
     }
 
-    public void preRender(T entity, S state, ModelAttributes.Mode mode) {
-        Pony pony = context.getEntityPony(entity);
-        if (modelsLookup != null) {
-            models = modelsLookup.apply(state);
-            context.setModel(models.body());
-        }
-        models.applyMetadata(pony.metadata());
-        state.updateState(entity, models.body(), pony, mode);
+    public void updateState(T entity, S state, ModelAttributes.Mode mode) {
+        models = modelsLookup.apply(state);
+        context.setModel(models.body());
+        state.updateState(entity, models.body(), context.getEntityPony(entity), mode);
     }
 
     public void setupTransforms(S state, MatrixStack stack, float animationProgress, float bodyYaw) {
         float s = state.getScaleFactor();
         stack.scale(s, s, s);
 
-        if (state instanceof PlayerEntityRenderState) {
-            if (state.attributes.isSitting) {
-                stack.translate(0, 0.125D, 0);
-            }
+        if (state instanceof PlayerEntityRenderState && state.attributes.isSitting) {
+            stack.translate(0, 0.125D, 0);
         }
 
         transformer.setupTransforms(state, stack, animationProgress, bodyYaw);
 
-        PonyPosture.of(state.attributes).apply(state, getModels().body(), stack, bodyYaw, state.age, 1);
+        if (RenderPass.getCurrent() == RenderPass.WORLD) {
+            PonyPosture.of(state.attributes).transform(state, stack);
+        }
     }
 
-    public interface Transformer<S extends BipedEntityRenderState> {
+    public interface Transformer<S extends PonyRenderState> {
         void setupTransforms(S state, MatrixStack stack, float animationProgress, float bodyYaw);
     }
 
@@ -113,7 +106,7 @@ public class EquineRenderManager<
         SyncedPony getSyncedPony();
     }
 
-    public interface ModelHolder<S extends BipedEntityRenderState, M extends EntityModel<S> & PonyModel<S>> {
+    public interface ModelHolder<S extends PonyRenderState, M extends EntityModel<S> & PonyModel<S>> {
         void setModel(M model);
     }
 

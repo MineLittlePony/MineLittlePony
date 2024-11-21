@@ -8,9 +8,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
 
 import com.minelittlepony.client.model.entity.race.AlicornModel;
-import com.minelittlepony.client.render.entity.state.SkeletonPonyRenderState;
+import com.minelittlepony.client.render.entity.SkeleponyRenderer;
 
-public class SkeleponyModel<T extends SkeletonPonyRenderState> extends AlicornModel<T> {
+public class SkeleponyModel<T extends SkeleponyRenderer.State> extends AlicornModel<T> {
     public SkeleponyModel(ModelPart tree) {
         super(tree, false);
         vestRenderList.clear();

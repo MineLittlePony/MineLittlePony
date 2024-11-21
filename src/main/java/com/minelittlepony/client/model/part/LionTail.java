@@ -6,10 +6,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.model.SubModel;
-import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.common.util.animation.Interpolator;
 
-public class LionTail implements SubModel {
+public class LionTail implements SubModel<PonyRenderState> {
 
     private ModelPart tail;
 
@@ -18,7 +18,7 @@ public class LionTail implements SubModel {
     }
 
     @Override
-    public void setPartAngles(ModelAttributes attributes, float limbAngle, float limbSpeed, float bodySwing, float animationProgress) {
+    public void setPartAngles(PonyRenderState state, float limbAngle, float limbSpeed, float bodySwing, float animationProgress) {
         tail.resetTransform();
 
         bodySwing *= 5;
@@ -26,18 +26,18 @@ public class LionTail implements SubModel {
         float baseSail = 1F;
 
         float speed = limbSpeed > 0.01F ? 6 : 90;
-        Interpolator interpolator = attributes.getMainInterpolator();
+        Interpolator interpolator = state.attributes.getMainInterpolator();
 
         float straightness = 1.6F * (1 + (float)Math.sin(animationProgress / speed) / 8F);
         float twist = (float)Math.sin(Math.PI/2F + 2 * animationProgress / speed) / 16F;
-        float bend = attributes.motionRoll / 80F;
+        float bend = state.attributes.motionRoll / 80F;
 
-        if (attributes.isCrouching) {
+        if (state.attributes.isCrouching) {
             baseSail += 1;
             straightness += 0.5F;
         }
 
-        if (attributes.isGoingFast || attributes.isSwimming) {
+        if (state.attributes.isGoingFast || state.attributes.isSwimming) {
             straightness *= 2;
         }
 
@@ -84,19 +84,19 @@ public class LionTail implements SubModel {
         tail5.roll += bend;
         tail6.roll += bend;
 
-        if (attributes.isHorsey) {
+        if (state.attributes.isHorsey) {
             tail.pivotZ = 14;
             tail.pivotY = 7;
         }
     }
 
     @Override
-    public void setVisible(boolean visible, ModelAttributes attributes) {
+    public void setVisible(boolean visible, PonyRenderState state) {
         tail.visible = visible;
     }
 
     @Override
-    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color, ModelAttributes attributes) {
+    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
         tail.render(stack, vertices, overlay, light, color);
     }
 }

@@ -1,17 +1,13 @@
 package com.minelittlepony.client.render.entity;
 
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.state.PiglinEntityRenderState;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.*;
-import net.minecraft.item.CrossbowItem;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.PiglinPonyModel;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
-import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 public class PonyPiglinRenderer extends PonyRenderer<HostileEntity, PonyPiglinRenderer.State, PiglinPonyModel> {
     public static final Identifier PIGLIN = MineLittlePony.id("textures/entity/piglin/piglin_pony.png");
@@ -39,10 +35,11 @@ public class PonyPiglinRenderer extends PonyRenderer<HostileEntity, PonyPiglinRe
         return new State();
     }
 
-    public void updateRenderState(AbstractPiglinEntity entity, State state, float tickDelta) {
+    public void updateRenderState(HostileEntity entity, State state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
-        state.activity = entity.getActivity();
-        state.shouldZombify = entity.shouldZombify();
+        state.zombified = entity instanceof ZombifiedPiglinEntity;
+        state.activity = entity instanceof AbstractPiglinEntity piglin ? piglin.getActivity() : PiglinActivity.DEFAULT;
+        state.shouldZombify = entity instanceof AbstractPiglinEntity piglin && piglin.shouldZombify();
     }
 
     @Override
@@ -50,9 +47,9 @@ public class PonyPiglinRenderer extends PonyRenderer<HostileEntity, PonyPiglinRe
        return super.isShaking(state) || state.shouldZombify;
     }
 
-    public static class State extends PonyRenderState {
+    public static class State extends ZomponyRenderer.State {
         public boolean shouldZombify;
+        public boolean zombified;
         public PiglinActivity activity;
     }
-
 }

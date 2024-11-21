@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.registry.Registries;
@@ -15,11 +14,11 @@ import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.village.VillagerType;
 
-import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.feature.AbstractPonyFeature;
-import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.minelittlepony.client.render.entity.npc.textures.SillyPonyTextureSupplier;
 import com.minelittlepony.client.util.render.TextureFlattener;
 import com.minelittlepony.util.ResourceUtil;
 
@@ -27,8 +26,8 @@ import java.util.*;
 
 class NpcClothingFeature<
         T extends LivingEntity & VillagerDataContainer,
-        S extends PonyRenderState,
-        M extends EntityModel<S> & PonyModel<S>,
+        S extends SillyPonyTextureSupplier.State,
+        M extends ClientPonyModel<S>,
         C extends FeatureRendererContext<S, M> & PonyRenderContext<T, S, M>> extends AbstractPonyFeature<S, M> {
 
     private static final Int2ObjectMap<Identifier> LEVEL_TO_ID = Util.make(new Int2ObjectOpenHashMap<>(), a -> {
@@ -53,7 +52,7 @@ class NpcClothingFeature<
             return;
         }
 
-        VillagerData data = entity.getVillagerData();
+        VillagerData data = entity.villagerData;
         M entityModel = getContextModel();
 
         if (entity.baby || data.getProfession() == VillagerProfession.NONE) {
@@ -102,8 +101,8 @@ class NpcClothingFeature<
         return skins;
     }
 
-    public Identifier createTexture(VillagerDataContainer entity, String category) {
-        return createTexture(category, Registries.VILLAGER_PROFESSION.getId(entity.getVillagerData().getProfession()));
+    public Identifier createTexture(S entity, String category) {
+        return createTexture(category, Registries.VILLAGER_PROFESSION.getId(entity.villagerData.getProfession()));
     }
 
     private Identifier createTexture(String category, Identifier identifier) {

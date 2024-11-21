@@ -57,7 +57,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
     protected final RenderList mainRenderList;
 
-    private final List<SubModel> parts = new ArrayList<>();
+    private final List<SubModel<? super T>> parts = new ArrayList<>();
 
     @Nullable
     protected T currentState;
@@ -76,17 +76,17 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             .add(withStage(BodyPart.HEAD, helmetRenderList = RenderList.of(hat)));
     }
 
-    protected <P extends SubModel> P addPart(P part) {
+    protected <P extends SubModel<? super T>> P addPart(P part) {
         parts.add(part);
         return part;
     }
 
-    protected RenderList forPart(Supplier<SubModel> part) {
-        return (stack, vertices, overlay, light, color) -> part.get().renderPart(stack, vertices, overlay, light, color, currentState.attributes);
+    protected RenderList forPart(Supplier<SubModel<? super T>> part) {
+        return (stack, vertices, overlay, light, color) -> part.get().renderPart(stack, vertices, overlay, light, color);
     }
 
-    protected RenderList forPart(SubModel part) {
-        return (stack, vertices, overlay, light, color) -> part.renderPart(stack, vertices, overlay, light, color, currentState.attributes);
+    protected RenderList forPart(SubModel<T> part) {
+        return (stack, vertices, overlay, light, color) -> part.renderPart(stack, vertices, overlay, light, color);
     }
 
     protected RenderList withStage(BodyPart part, RenderList action) {
@@ -127,7 +127,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
     protected void setModelVisibilities(T state) {
         hat.visible = head.visible && !state.attributes.isHorsey;
-        parts.forEach(part -> part.setVisible(body.visible, state.attributes));
+        parts.forEach(part -> part.setVisible(body.visible, state));
     }
 
     protected void setModelAngles(T entity) {
@@ -147,7 +147,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         body.yaw = wobbleAmount;
         neck.yaw = wobbleAmount;
 
-        rotateLegs(entity, limbAngle, limbSpeed, animationProgress, entity);
+        rotateLegs(entity, limbAngle, limbSpeed, animationProgress);
 
         ArmPose left = getArmPose(entity, Arm.LEFT);
         ArmPose right = getArmPose(entity, Arm.RIGHT);
@@ -188,7 +188,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             head.pitch = 0.5F;
         }
 
-        parts.forEach(part -> part.setPartAngles(entity.attributes, limbAngle, limbSpeed, wobbleAmount, animationProgress));
+        parts.forEach(part -> part.setPartAngles(entity, limbAngle, limbSpeed, wobbleAmount, animationProgress));
     }
 
     public void setHeadRotation(float animationProgress, float yaw, float pitch) {
@@ -253,11 +253,11 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     * Takes the same parameters as {@link AbstractPonyModel.setRotationAndAngles}
     *
     */
-    protected void rotateLegs(T state, float move, float swing, float ticks, T entity) {
+    protected void rotateLegs(T state, float move, float swing, float ticks) {
         if (state.attributes.isSwimming) {
-            rotateLegsSwimming(state, move, swing, ticks, entity);
+            rotateLegsSwimming(state, move, swing, ticks);
         } else {
-            rotateLegsOnGround(state, move, swing, ticks, entity);
+            rotateLegsOnGround(state, move, swing, ticks);
         }
 
         float sin = MathHelper.sin(body.yaw) * 5;
@@ -293,14 +293,14 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
      *
      * Takes the same parameters as {@link AbstractPonyModel.setRotationAndAngles}
      */
-    protected void rotateLegsSwimming(T state, float move, float swing, float ticks, T entity) {
+    protected void rotateLegsSwimming(T state, @Deprecated float move, @Deprecated float swing, @Deprecated float ticks) {
 
-        float lerp = entity.isInPose(EntityPose.SWIMMING) ? (float)state.attributes.motionLerp : 1;
+        float lerp = state.isInPose(EntityPose.SWIMMING) ? (float)state.attributes.motionLerp : 1;
 
-        float legLeft = (MathUtil.Angles._90_DEG + MathHelper.sin((move / 3) + 2 * MathHelper.PI/3) / 2) * lerp;
+        float legLeft = (MathUtil.Angles._90_DEG + MathHelper.sin((state.limbFrequency / 3) + 2 * MathHelper.PI/3) / 2) * lerp;
 
-        float left = (MathUtil.Angles._90_DEG + MathHelper.sin((move / 3) + 2 * MathHelper.PI) / 2) * lerp;
-        float right = (MathUtil.Angles._90_DEG + MathHelper.sin(move / 3) / 2) * lerp;
+        float left = (MathUtil.Angles._90_DEG + MathHelper.sin((state.limbFrequency / 3) + 2 * MathHelper.PI) / 2) * lerp;
+        float right = (MathUtil.Angles._90_DEG + MathHelper.sin(state.limbFrequency / 3) / 2) * lerp;
 
         leftArm.setAngles(-left, -left/2, left/2);
         rightArm.setAngles(-right, right/2, -right/2);
@@ -312,7 +312,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
      * Rotates legs in quopy fashion for walking.
      *
      */
-    protected void rotateLegsOnGround(T state, float move, float swing, float ticks, T entity) {
+    protected void rotateLegsOnGround(T state, float move, float swing, float ticks) {
         float angle = MathHelper.PI * (float) Math.pow(swing, 16);
 
         float baseRotation = move * 0.6662F; // magic number ahoy
@@ -545,7 +545,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     @Override
     public final void setArmAngle(Arm arm, MatrixStack matrices) {
         super.setArmAngle(arm, matrices);
-        positionheldItem(arm, matrices);
+        positionheldItem(currentState, arm, matrices);
     }
 
     protected void positionheldItem(T state, Arm arm, MatrixStack matrices) {
@@ -600,6 +600,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             neck.hidden = !head.visible;
         }
 
-        PonyTransformation.forSize(state.getSize()).transform(this, part, stack);
+        PonyTransformation.forSize(state.getSize()).transform(state.attributes, part, stack);
     }
 }

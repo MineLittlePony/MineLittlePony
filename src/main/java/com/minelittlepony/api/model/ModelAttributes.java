@@ -186,6 +186,10 @@ public class ModelAttributes {
         return Interpolator.linear(interpolatorId);
     }
 
+    public UUID getEntityId() {
+        return interpolatorId;
+    }
+
     public boolean shouldLiftArm(ArmPose pose, ArmPose complement, float sigma) {
         return pose != ArmPose.EMPTY
                 && (pose != complement || sigma == (isLeftHanded ? 1 : -1))

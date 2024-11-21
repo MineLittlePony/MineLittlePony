@@ -11,8 +11,8 @@ import java.util.UUID;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
 public class SaddleBags extends WearableGear {
@@ -26,15 +26,16 @@ public class SaddleBags extends WearableGear {
     private float dropAmount = 0;
 
     public SaddleBags(ModelPart tree, Wearable wearable) {
-        super(wearable, BodyPart.BODY, 0);
+        super(tree, wearable, BodyPart.BODY, 0);
         strap = tree.getChild("strap");
         leftBag = tree.getChild("left_bag");
         rightBag = tree.getChild("right_bag");
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void pose(PonyModel<?> model, Entity entity, boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
-        hangLow = model instanceof WingedPonyModel pegasus && pegasus.wingsAreOpen();
+    public <S extends BipedEntityRenderState & PonyModel.AttributedHolder> void pose(PonyModel<S> model, S state, boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
+        hangLow = model instanceof WingedPonyModel pegasus && pegasus.wingsAreOpen(state);
 
         float pi = MathHelper.PI * (float) Math.pow(swing, 16);
 
@@ -46,8 +47,8 @@ public class SaddleBags extends WearableGear {
         leftBag.pitch = bodySwing;
         rightBag.pitch = bodySwing;
 
-        if (model instanceof WingedPonyModel pegasus && pegasus.getAttributes().isFlying) {
-            bodySwing = pegasus.getWingRotationFactor(ticks) - MathUtil.Angles._270_DEG;
+        if (model instanceof WingedPonyModel pegasus && state.getAttributes().isFlying) {
+            bodySwing = pegasus.getWingRotationFactor(state, ticks) - MathUtil.Angles._270_DEG;
             bodySwing /= 10;
         }
 
@@ -59,7 +60,7 @@ public class SaddleBags extends WearableGear {
         strap.visible = wearable == Wearable.SADDLE_BAGS_BOTH;
 
         dropAmount = hangLow ? 0.15F : 0;
-        dropAmount = model.getAttributes().getMainInterpolator().interpolate("dropAmount", dropAmount, 3);
+        dropAmount = state.getAttributes().getMainInterpolator().interpolate("dropAmount", dropAmount, 3);
     }
 
     @Override

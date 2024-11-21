@@ -1,6 +1,7 @@
 package com.minelittlepony.client.model.gear;
 
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.AbstractPiglinEntity;
 import net.minecraft.entity.mob.ZombifiedPiglinEntity;
@@ -14,12 +15,11 @@ import com.minelittlepony.api.pony.meta.Wearable;
 public class Crown extends WearableGear {
 
     public Crown(ModelPart tree) {
-        super(Wearable.CROWN, BodyPart.HEAD, 0.1F);
-        addPart(tree.getChild("crown"));
+        super(tree.getChild("crown"), Wearable.CROWN, BodyPart.HEAD, 0.1F);
     }
 
     @Override
-    public boolean canRender(PonyModel<?> model, Entity entity) {
+    public boolean canRender(PonyModel<?> model, EntityRenderState entity) {
         return super.canRender(model, entity)
             || ((
                        entity instanceof AbstractPiglinEntity

@@ -2,12 +2,10 @@ package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.entity.state.*;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.StriderEntity;
-import net.minecraft.util.math.MathHelper;
 
-public class SpikeModel<T extends LivingEntityRenderState> extends BipedEntityModel<T> {
+import com.minelittlepony.client.render.entity.StriderRenderer;
+
+public class SpikeModel extends BipedEntityModel<StriderRenderer.State> {
 
     private final ModelPart tail;
     private final ModelPart tail2;
@@ -21,7 +19,7 @@ public class SpikeModel<T extends LivingEntityRenderState> extends BipedEntityMo
     }
 
     @Override
-    public void setAngles(T entity) {
+    public void setAngles(StriderRenderer.State entity) {
         entity.limbFrequency *= 2;
         entity.limbAmplitudeMultiplier *= 1.5F;
         entity.baby = false;
@@ -36,7 +34,7 @@ public class SpikeModel<T extends LivingEntityRenderState> extends BipedEntityMo
         rightArm.pivotY++;
         body.pitch += 0.15F;
 
-        if ((entity instanceof SaddleableRenderState strider && strider.isSaddled())) {
+        if (entity.saddled) {
             leftArm.pitch = 3.15F;
             leftArm.yaw = 1;
             rightArm.pitch = 3.15F;
@@ -50,10 +48,8 @@ public class SpikeModel<T extends LivingEntityRenderState> extends BipedEntityMo
             leftLeg.pitch += 0.4F;
             rightLeg.pitch += 0.4F;
         } else {
-            float flailAmount = 1 + (float)MathHelper.clamp(entity.getVelocity().y * 10, 0, 7);
-
-            leftArm.roll -= 0.2F * flailAmount;
-            rightArm.roll += 0.2F * flailAmount;
+            leftArm.roll -= 0.2F * entity.flailAmount;
+            rightArm.roll += 0.2F * entity.flailAmount;
 
             leftArm.pivotZ += 2;
             leftArm.pitch -= 0.3F;
@@ -61,7 +57,7 @@ public class SpikeModel<T extends LivingEntityRenderState> extends BipedEntityMo
             rightArm.pivotZ += 2;
             rightArm.pitch -= 0.3F;
 
-            if (entity instanceof StriderEntityRenderState strider && strider.cold) {
+            if (entity.cold) {
                 float armMotion = (float)Math.sin(entity.age / 10F) / 10F;
 
                 leftArm.pitch = -1 - armMotion;

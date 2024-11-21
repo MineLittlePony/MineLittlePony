@@ -2,8 +2,7 @@ package com.minelittlepony.client.render;
 
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.RenderLayer.MultiPhaseParameters;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
+import net.minecraft.util.*;
 
 import java.util.function.BiFunction;
 
@@ -16,7 +15,7 @@ public class ArmorRenderLayers extends RenderPhase {
         return RenderLayer.of(decal ? "armor_decal_translucent_no_cull" : "armor_translucent_no_cull",
                 VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS, 256, true, false, MultiPhaseParameters.builder()
             .program(ARMOR_CUTOUT_NO_CULL_PROGRAM)
-            .texture(new RenderPhase.Texture(texture, false, false))
+            .texture(new RenderPhase.Texture(texture, TriState.FALSE, false))
             .transparency(TRANSLUCENT_TRANSPARENCY)
             .cull(DISABLE_CULLING)
             .lightmap(ENABLE_LIGHTMAP)

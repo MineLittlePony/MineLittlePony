@@ -1,17 +1,15 @@
 package com.minelittlepony.api.model;
 
-import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
+import net.minecraft.client.render.entity.state.*;
+import net.minecraft.util.Arm;
 
-public interface HornedPonyModel<T extends PonyRenderState> extends PonyModel<T> {
-    /**
-     * Returns true if this model is being applied to a race that can use magic.
-     */
-    default boolean hasMagic(T state) {
-        return state.getRace().hasHorn() && state.attributes.metadata.glowColor() != 0;
-    }
-
+public interface HornedPonyModel<T extends EntityRenderState & PonyModel.AttributedHolder> extends PonyModel<T> {
     /**
      * Returns true if this model is currently using magic (horn is lit).
      */
-    boolean isCasting(T state);
+    default boolean isCasting(T state) {
+        return state instanceof PlayerEntityRenderState s
+                && (getArmPoseForSide(s, Arm.LEFT) != ArmPose.EMPTY || getArmPoseForSide(s, Arm.RIGHT) != ArmPose.EMPTY);
+    }
 }

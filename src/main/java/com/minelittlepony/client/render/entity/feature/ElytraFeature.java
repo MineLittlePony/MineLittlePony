@@ -2,7 +2,6 @@ package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.PonyModel;
-import com.minelittlepony.api.pony.PonyPosture;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.PonyElytra;
 import com.minelittlepony.client.model.armour.ArmourLayer;
@@ -10,19 +9,18 @@ import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.equipment.EquipmentRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.SkinTextures;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Colors;
+import net.minecraft.item.equipment.EquipmentModel;
 import net.minecraft.util.Identifier;
 
 public class ElytraFeature<
@@ -32,10 +30,13 @@ public class ElytraFeature<
     > extends AbstractPonyFeature<S, M> {
     private static final Identifier TEXTURE = Identifier.ofVanilla("textures/entity/elytra.png");
 
-    private final PonyElytra<T> model = ModelType.ELYTRA.createModel();
+    private final PonyElytra<S> model = ModelType.ELYTRA.createModel();
 
-    public ElytraFeature(PonyRenderContext<T, S, M> context) {
+    private final EquipmentRenderer equipmentRenderer;
+
+    public ElytraFeature(PonyRenderContext<T, S, M> context, EquipmentRenderer equipmentRenderer) {
         super(context);
+        this.equipmentRenderer = equipmentRenderer;
     }
 
     @Override
@@ -43,23 +44,22 @@ public class ElytraFeature<
         ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
 
         for (ItemStack stack : plugin.getArmorStacks(entity, EquipmentSlot.CHEST, ArmourLayer.OUTER, ArmourRendererPlugin.ArmourType.ELYTRA)) {
-            float alpha = plugin.getElytraAlpha(stack, model, entity);
-            if (alpha <= 0) {
-                return;
+            EquippableComponent equippable = stack.get(DataComponentTypes.EQUIPPABLE);
+
+            if (equippable != null && !equippable.model().isEmpty()) {
+                Identifier equipmentModel = equippable.model().get();
+
+                float alpha = plugin.getElytraAlpha(stack, model, entity);
+                if (alpha <= 0) {
+                    return;
+                }
+
+                matrices.push();
+                model.setAngles(entity);
+                preRenderCallback(entity, matrices);
+                equipmentRenderer.render(EquipmentModel.LayerType.WINGS, equipmentModel, model, stack, matrices, provider, light, getElytraTexture(entity));
+                matrices.pop();
             }
-
-            VertexConsumer vertexConsumer = plugin.getElytraConsumer(stack, model, entity, provider, getElytraTexture(entity));
-            if (vertexConsumer == null) {
-                return;
-            }
-
-            matrices.push();
-            preRenderCallback(matrices);
-
-            model.setAngles(entity);
-            model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, (Colors.WHITE & 0xFFFFFF) | (int)(alpha * 255) << 24);
-
-            matrices.pop();
         }
 
         plugin.onArmourRendered(entity, matrices, provider, EquipmentSlot.BODY, ArmourLayer.OUTER, ArmourRendererPlugin.ArmourType.ELYTRA);
@@ -71,15 +71,15 @@ public class ElytraFeature<
         body.transform(state, BodyPart.BODY, stack);
     }
 
-    protected Identifier getElytraTexture(T entity) {
-        if (entity instanceof AbstractClientPlayerEntity player) {
-            SkinTextures textures = player.getSkinTextures();
+    protected Identifier getElytraTexture(S state) {
+        if (state instanceof PlayerEntityRenderState playerState) {
+            SkinTextures textures = playerState.skinTextures;
 
             if (textures.elytraTexture() != null) {
                 return textures.elytraTexture();
             }
 
-            if (textures.capeTexture() != null && player.isPartVisible(PlayerModelPart.CAPE)) {
+            if (textures.capeTexture() != null && state.capeVisible) {
                 return textures.capeTexture();
             }
         }

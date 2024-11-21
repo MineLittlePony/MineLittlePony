@@ -1,57 +1,40 @@
 package com.minelittlepony.api.model;
 
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Util;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.client.model.PlayerModelKey;
 import com.minelittlepony.client.model.armour.*;
 import com.minelittlepony.mson.api.ModelKey;
-import com.minelittlepony.mson.api.MsonModel;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Container class for the various models and their associated piece of armour.
  */
-public class Models<T extends LivingEntity, M extends PonyModel<?>> {
-    @Nullable
-    private final MsonModel.Factory<PonyArmourModel<T>> armorFactory;
-    private final Map<ModelKey<PonyArmourModel<?>>, PonyArmourModel<T>> armor = new HashMap<>();
+public record Models<M extends PonyModel<?>> (
+        Function<ModelKey<PonyArmourModel<?>>, PonyArmourModel<?>> armor,
+        M body
+    ) {
 
-    private final M body;
-
-    public Models(PlayerModelKey<T, ? super M> playerModelKey, boolean slimArms, @Nullable Consumer<M> initializer) {
-        this.armorFactory = playerModelKey.armorFactory();
-        this.body = playerModelKey.getKey(slimArms).createModel();
+    public Models(PlayerModelKey<? super M> playerModelKey, boolean slimArms, @Nullable Consumer<M> initializer) {
+        this(Util.memoize(key -> key.createModel(playerModelKey.armorFactory())), playerModelKey.getKey(slimArms).createModel());
         if (initializer != null) {
-            initializer.accept(this.body);
+            initializer.accept(body);
         }
     }
 
     public Models(ModelKey<M> key) {
-        this.armorFactory = null;
-        this.body = key.createModel();
+        this(Util.memoize(k -> k.createModel()), key.createModel());
     }
 
-    public M body() {
-        return body;
-    }
-
-    public Optional<PonyArmourModel<T>> getArmourModel(ItemStack stack, ArmourLayer layer, ArmourVariant variant) {
+    public Optional<PonyArmourModel<?>> getArmourModel(ItemStack stack, ArmourLayer layer, ArmourVariant variant) {
         return ArmorModelRegistry.getModelKey(stack.getItem(), layer).or(() -> variant.getDefaultModel(layer).filter(l -> stack.getItem() instanceof ArmorItem))
-                .map(key -> armor.computeIfAbsent(key, k -> {
-            return armorFactory == null ? k.createModel() : k.createModel(armorFactory);
-        }));
-    }
-
-    public Models<T, M> applyMetadata(PonyData meta) {
-        body.setMetadata(meta);
-        armor.values().forEach(a -> a.setMetadata(meta));
-        return this;
+                .map(armor);
     }
 }
