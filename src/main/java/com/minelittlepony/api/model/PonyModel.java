@@ -17,6 +17,10 @@ public interface PonyModel<T extends EntityRenderState & PonyModel.AttributedHol
      */
     void transform(T state, BodyPart part, MatrixStack stack);
 
+    default float getWobbleAmplitude(T state) {
+        return 1;
+    }
+
     public interface AttributedHolder {
         ModelAttributes getAttributes();
 

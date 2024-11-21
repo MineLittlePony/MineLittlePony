@@ -18,18 +18,18 @@ public class LionTail implements SubModel<PonyRenderState> {
     }
 
     @Override
-    public void setPartAngles(PonyRenderState state, float limbAngle, float limbSpeed, float bodySwing, float animationProgress) {
+    public void setPartAngles(PonyRenderState state, float bodySwing) {
         tail.resetTransform();
 
         bodySwing *= 5;
 
         float baseSail = 1F;
 
-        float speed = limbSpeed > 0.01F ? 6 : 90;
+        float speed = state.limbAmplitudeMultiplier > 0.01F ? 6 : 90;
         Interpolator interpolator = state.attributes.getMainInterpolator();
 
-        float straightness = 1.6F * (1 + (float)Math.sin(animationProgress / speed) / 8F);
-        float twist = (float)Math.sin(Math.PI/2F + 2 * animationProgress / speed) / 16F;
+        float straightness = 1.6F * (1 + (float)Math.sin(state.age / speed) / 8F);
+        float twist = (float)Math.sin(Math.PI/2F + 2 * state.age / speed) / 16F;
         float bend = state.attributes.motionRoll / 80F;
 
         if (state.attributes.isCrouching) {
@@ -46,11 +46,11 @@ public class LionTail implements SubModel<PonyRenderState> {
         bend = interpolator.interpolate("kirin_tail_bendiness", bend, 10);
 
         tail.pitch = baseSail;
-        tail.pitch += limbSpeed / 2;
+        tail.pitch += state.limbAmplitudeMultiplier / 2;
         tail.yaw = twist;
         tail.roll = bodySwing * 2;
 
-        float sinTickFactor = MathHelper.sin(animationProgress * 0.067f) * 0.05f;
+        float sinTickFactor = MathHelper.sin(state.age * 0.067f) * 0.05f;
         tail.pitch += sinTickFactor;
         tail.yaw += sinTickFactor;
 

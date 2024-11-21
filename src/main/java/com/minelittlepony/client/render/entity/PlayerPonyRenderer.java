@@ -52,6 +52,7 @@ public class PlayerPonyRenderer
         addPonyFeatures(context);
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     protected void addPonyFeatures(EntityRendererFactory.Context context) {
         // remove vanilla features (keep modded ones)
         features.removeIf(feature -> {
@@ -67,8 +68,8 @@ public class PlayerPonyRenderer
         addPonyFeature(new HeldItemFeature<>(this, context.getItemRenderer()));
         addPonyFeature(new DJPon3Feature<>(this));
         addFeature(new CapeFeature(this, context.getModelLoader(), context.getEquipmentModelLoader()));
-        addPonyFeature(new SkullFeature<>(this, context.getModelLoader(), context.getItemRenderer()));
-        addPonyFeature(new ElytraFeature<>(this, context.getEquipmentRenderer()));
+        addPonyFeature(new SkullFeature<>(this, context.getModelLoader(), context.getItemRenderer(), HeadFeatureRenderer.HeadTransformation.DEFAULT, true));
+        addPonyFeature(new ElytraFeature(this, context.getEquipmentRenderer()));
         addPonyFeature(new PassengerFeature<>(this, context));
         addPonyFeature(new GearFeature<>(this));
     }
@@ -83,7 +84,7 @@ public class PlayerPonyRenderer
 
     public Vec3d getPositionOffset(PlayerEntityRenderState state) {
         Vec3d offset = super.getPositionOffset(state);
-        return offset.add(state.baseScale * ((PlayerPonyRenderState)state).yOffset).multiply(((PonyRenderState)state).getScaleFactor());
+        return offset.add(state.baseScale * ((PlayerPonyRenderState)state).yOffset).multiply(((PonyRenderState)state).size.scaleFactor());
     }
 
     @Override
@@ -112,7 +113,7 @@ public class PlayerPonyRenderer
     @Override
     public void render(PlayerEntityRenderState state, MatrixStack stack, VertexConsumerProvider vertices, int light) {
         // EntityModelFeatures: We have to force it to use our models otherwise EMF overrides it and breaks pony rendering
-        shadowRadius = ((PlayerPonyRenderState)state).getShadowSize();
+        shadowRadius = ((PlayerPonyRenderState)state).size.shadowSize();
         super.render(state, stack, vertices, light);
         DebugBoundingBoxRenderer.render((PlayerPonyRenderState)state, stack, vertices);
 

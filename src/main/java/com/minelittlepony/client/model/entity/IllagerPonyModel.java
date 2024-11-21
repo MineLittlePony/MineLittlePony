@@ -49,7 +49,7 @@ public class IllagerPonyModel<S extends IllagerPonyRenderer.State> extends Alico
             arm.roll = mult * MathHelper.cos(state.age * 0.6662F) / 4;
             arm.yaw = mult * 1.1F;
         } else if (pose == IllagerEntity.State.BOW_AND_ARROW) {
-            aimBow(state, arm, state.age);
+            aimBow(state, arm);
         }
     }
 }

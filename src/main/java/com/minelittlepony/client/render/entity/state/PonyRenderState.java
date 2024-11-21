@@ -24,6 +24,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
     public float riderOffset;
     public float nameplateYOffset;
     public float legOutset;
+    public float wobbleAmount;
     public boolean smallArms;
     public boolean sleepingInBed;
     public boolean submergedInWater;
@@ -31,6 +32,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
     public boolean isTechnoblade;
 
     public Pony pony;
+    public Size size;
 
     public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
         this.pony = pony;
@@ -43,6 +45,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         isInSneakingPose = attributes.isCrouching && !attributes.isLyingDown;
         sleepingInBed = entity.getSleepingPosition().isPresent() && entity.getEntityWorld().getBlockState(entity.getSleepingPosition().get()).getBlock() instanceof BedBlock;
         submergedInWater = entity.isSubmergedInWater();
+        wobbleAmount = handSwingProgress <= 0 ? 0 : MathHelper.sin(MathHelper.sqrt(getSwingAmount()) * MathHelper.PI * 2) * 0.04F;
         if (attributes.isSitting) {
             pose = EntityPose.SITTING;
         }
@@ -53,18 +56,13 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
                  || entity instanceof ZombifiedPiglinEntity
              ) && entity.hasCustomName() && entity.getCustomName().getString().equalsIgnoreCase("technoblade")
          );
+        size = baby ? SizePreset.FOAL : PonyConfig.getEffectiveSize(attributes.metadata.size());
 
         PonyPosture.of(attributes).updateState(entity, this);
         PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(attributes, model, ModelAttributes.Mode.OTHER);
     }
 
-    /**
-     * Gets the active scaling profile used to lay out this model's parts.
-     */
-    public Size getSize() {
-        return baby ? SizePreset.FOAL : PonyConfig.getEffectiveSize(attributes.metadata.size());
-    }
-
+    @Override
     public Race getRace() {
         return PonyConfig.getEffectiveRace(attributes.metadata.race());
     }
@@ -73,30 +71,11 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         return getRace().hasHorn() && attributes.metadata.glowColor() != 0;
     }
 
-    public final float getScaleFactor() {
-        return getSize().scaleFactor();
-    }
-
-    public final float getShadowSize() {
-        return getSize().shadowSize();
-    }
-
     /**
      * Gets the current leg swing amount.
      */
     public float getSwingAmount() {
         return this.handSwingProgress;
-    }
-
-    /**
-     * Gets the step wobble used for various hair bits and animations.
-     */
-    public float getWobbleAmount() {
-        if (getSwingAmount() <= 0) {
-            return 0;
-        }
-
-        return MathHelper.sin(MathHelper.sqrt(getSwingAmount()) * MathHelper.PI * 2) * 0.04F;
     }
 
     protected float getLegOutset() {
@@ -112,13 +91,10 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
      * Gets the y-offset applied to entities riding this one.
      */
     protected float getRiderYOffset() {
-        switch ((SizePreset)getSize()) {
-            case NORMAL: return 0.4F;
-            case FOAL:
-            case TALL:
-            case BULKY:
-            default: return 0.25F;
-        }
+        return switch ((SizePreset)size) {
+            case NORMAL -> 0.4F;
+            default -> 0.25F;
+        };
     }
 
     /**
@@ -141,7 +117,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         float y = -(height + 0.5F);
 
         // Then we add our own offsets.
-        y += attributes.visualHeight * getScaleFactor() + 0.25F;
+        y += attributes.visualHeight * size.scaleFactor() + 0.25F;
         y += vehicleOffset;
 
         if (isInSneakingPose) {

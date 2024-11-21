@@ -112,6 +112,11 @@ public class ModelAttributes {
     public float wingAngle;
 
     /**
+     * Flag to indicate whether the wings are open or shut
+     */
+    public boolean wingsSpread;
+
+    /**
      * Contains a list of additional skins available for rendering.
      */
     public Set<Identifier> featureSkins = new HashSet<>();
@@ -141,6 +146,7 @@ public class ModelAttributes {
         motionLerp = MathUtil.clampLimit(zMotion * 30, 1);
 
         wingAngle = calcWingRotationFactor(ticks);
+        wingsSpread = (isSwimming || isFlying || isCrouching) && (PonyConfig.getInstance().flappyElytras.get() || !isGliding);
     }
 
     private float calcWingRotationFactor(float ticks) {

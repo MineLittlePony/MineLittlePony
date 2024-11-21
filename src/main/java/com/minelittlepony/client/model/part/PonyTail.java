@@ -44,9 +44,9 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
     }
 
     @Override
-    public void setPartAngles(PonyRenderState state, float limbAngle, float limbSpeed, float bodySwing, float animationProgress) {
+    public void setPartAngles(PonyRenderState state, float bodySwing) {
         boolean rainboom = state.attributes.isSwimming || state.attributes.isGoingFast;
-        tail.roll = rainboom ? 0 : MathHelper.cos(limbAngle * 0.8F) * 0.2f * limbSpeed;
+        tail.roll = rainboom ? 0 : MathHelper.cos(state.limbAmplitudeInverse * 0.8F) * 0.2f * state.limbAmplitudeMultiplier;
         tail.yaw = bodySwing * 5;
 
         if (state.attributes.isCrouching && !rainboom) {
@@ -59,11 +59,11 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
         } else {
             tail.setPivot(0, 0, TAIL_Z);
             if (rainboom) {
-                tail.pitch = MathUtil.Angles._90_DEG + MathHelper.sin(limbAngle) / 10;
+                tail.pitch = MathUtil.Angles._90_DEG + MathHelper.sin(state.limbAmplitudeInverse) / 10;
             } else {
-                tail.pitch = limbSpeed / 2;
+                tail.pitch = state.limbAmplitudeMultiplier / 2;
 
-                swingX(animationProgress);
+                swingX(state.age);
             }
         }
 

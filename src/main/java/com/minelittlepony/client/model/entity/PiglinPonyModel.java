@@ -56,8 +56,8 @@ public class PiglinPonyModel extends ZomponyModel<PonyPiglinRenderer.State> {
     }
 
     @Override
-    protected void rotateLegs(PonyPiglinRenderer.State state, float move, float swing, float ticks) {
-        super.rotateLegs(state, move, swing, ticks);
+    protected void rotateLegs(PonyPiglinRenderer.State state) {
+        super.rotateLegs(state);
 
         if (state.activity == PiglinActivity.ADMIRING_ITEM) {
             leftArm.yaw = 0.5F;
@@ -65,13 +65,13 @@ public class PiglinPonyModel extends ZomponyModel<PonyPiglinRenderer.State> {
             leftArm.pivotY += 4;
             leftArm.pivotZ += 3;
             leftArm.pivotX += 2;
-            head.pitch = MathHelper.sin(ticks / 12) / 6 + 0.5F;
+            head.pitch = MathHelper.sin(state.age / 12) / 6 + 0.5F;
             head.yaw = 0;
 
-            head.roll = MathHelper.sin(ticks / 10) / 3F;
+            head.roll = MathHelper.sin(state.age / 10) / 3F;
         } else if (state.activity == PiglinActivity.DANCING) {
 
-            float speed = ticks / 60;
+            float speed = state.age / 60;
 
             head.pivotX = MathHelper.sin(speed * 10);
             head.pivotY = MathHelper.sin(speed * 40) + 0.4F;

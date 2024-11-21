@@ -1,7 +1,6 @@
 package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.BodyPart;
-import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.armour.ArmourLayer;
 import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
@@ -12,27 +11,31 @@ import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import net.minecraft.block.AbstractSkullBlock;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
-import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLoader;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.ZombieVillagerEntity;
-import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.item.*;
 
 public class SkullFeature<
-        T extends LivingEntity,
         S extends PonyRenderState,
         M extends ClientPonyModel<S>
     > extends AbstractPonyFeature<S, M> {
     private final ItemRenderer itemRenderer;
 
-    public SkullFeature(PonyRenderContext<T, S, M> renderPony, EntityModelLoader entityModelLoader, ItemRenderer itemRenderer) {
-        super(renderPony);
+    private final HeadFeatureRenderer.HeadTransformation headTransformation;
+
+    private final boolean scaleForChild;
+
+    public SkullFeature(PonyRenderContext<?, S, M> context, EntityModelLoader entityModelLoader, ItemRenderer itemRenderer,
+            HeadFeatureRenderer.HeadTransformation headTransformation, boolean scaleForChild) {
+        super(context);
         this.itemRenderer = itemRenderer;
+        this.headTransformation = headTransformation;
+        this.scaleForChild = scaleForChild;
     }
 
     @Override
@@ -40,16 +43,20 @@ public class SkullFeature<
         ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
 
         for (ItemStack stack : plugin.getArmorStacks(state, EquipmentSlot.HEAD, ArmourLayer.OUTER, ArmourRendererPlugin.ArmourType.SKULL)) {
-            if (stack.isEmpty()) {
+
+            BakedModel headModel = state.equippedHeadItemModel;
+
+            if (stack.isEmpty() || headModel == null) {
                 continue;
             }
 
             M model = getModelWrapper().body();
             Item item = stack.getItem();
+            EquippableComponent equipable = stack.get(DataComponentTypes.EQUIPPABLE);
 
             matrices.push();
 
-            if (state.baby && !(state instanceof VillagerEntity)) {
+            if (state.baby && scaleForChild) {
                 matrices.translate(0, 0.03125F, 0);
                 matrices.scale(0.7F, 0.7F, 0.7F);
                 matrices.translate(0, 1, 0);
@@ -57,8 +64,6 @@ public class SkullFeature<
 
             model.transform(state, BodyPart.HEAD, matrices);
             model.getHead().rotate(matrices);
-
-            boolean isVillager = state instanceof VillagerEntity || state instanceof ZombieVillagerEntity;
 
             float f = 1.1F;
             matrices.scale(f, f, f);
@@ -69,10 +74,10 @@ public class SkullFeature<
                 matrices.translate(0, -0.1F, 0.1F);
                 matrices.translate(-0.5, 0, -0.5);
                 PonySkullRenderer.INSTANCE.renderSkull(matrices, provider, stack, state, state.age, light, true);
-            } else if (!(item instanceof ArmorItem a) || a.getSlotType() != EquipmentSlot.HEAD) {
+            } else if (equipable != null && equipable.slot() != EquipmentSlot.HEAD) {
                 matrices.translate(0, 0.1F, -0.1F);
-                HeadFeatureRenderer.translate(matrices, isVillager);
-                itemRenderer.renderItem(state, stack, ModelTransformationMode.HEAD, false, matrices, provider, entity.getWorld(), light, OverlayTexture.DEFAULT_UV, entity.getId() + ModelTransformationMode.HEAD.ordinal());
+                HeadFeatureRenderer.translate(matrices, headTransformation);
+                itemRenderer.renderItem(stack, ModelTransformationMode.HEAD, false, matrices, provider, light, OverlayTexture.DEFAULT_UV, headModel);
             }
 
             matrices.pop();

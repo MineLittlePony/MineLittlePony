@@ -22,8 +22,8 @@ public class SeaponyTail implements SubModel<PonyRenderState>, MsonModel {
     }
 
     @Override
-    public void setPartAngles(PonyRenderState state, float limbAngle, float limbSpeed, float bodySwing, float animationProgress) {
-        float rotation = state.attributes.isLyingDown ? 0 : MathHelper.sin(animationProgress * 0.536f) / 4;
+    public void setPartAngles(PonyRenderState state, float bodySwing) {
+        float rotation = state.attributes.isLyingDown ? 0 : MathHelper.sin(state.age * 0.536f) / 4;
 
         tailBase.pitch = MathHelper.HALF_PI + rotation;
         tailTip.pitch = rotation;

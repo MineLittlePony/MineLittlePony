@@ -17,7 +17,7 @@ public class ChangelingModel<T extends PonyRenderState> extends AlicornModel<T> 
     }
 
     @Override
-    public float getWingRotationFactor(T state, float ticks) {
-        return state.attributes.isFlying ? MathHelper.sin(ticks * 3) + WINGS_HALF_SPREAD_ANGLE : WINGS_RAISED_ANGLE;
+    public float getWingRotationFactor(T state) {
+        return state.attributes.isFlying ? MathHelper.sin(state.age * 3) + WINGS_HALF_SPREAD_ANGLE : WINGS_RAISED_ANGLE;
     }
 }

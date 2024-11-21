@@ -6,7 +6,6 @@ import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.client.render.entity.*;
-import com.minelittlepony.common.util.Color;
 
 import net.minecraft.block.AbstractSkullBlock;
 import net.minecraft.block.SkullBlock;
@@ -18,16 +17,17 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.SkullBlockEntityModel;
 import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
+import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.EquipmentModel.LayerType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Direction;
 
 import java.util.HashMap;
@@ -60,13 +60,13 @@ public class PonySkullRenderer {
         headModels = SkullBlockEntityRenderer.getModels(MinecraftClient.getInstance().getEntityModelLoader());
     }
 
-    public void renderSkull(MatrixStack matrices, VertexConsumerProvider provider, ItemStack stack, LivingEntity entity, float tickDelta, int light, boolean isPony) {
+    public void renderSkull(MatrixStack matrices, VertexConsumerProvider provider, ItemStack stack, LivingEntityRenderState entity, float tickDelta, int light, boolean isPony) {
         isBeingWorn = true;
         this.isPony = isPony;
         SkullType type = ((AbstractSkullBlock) ((BlockItem) stack.getItem()).getBlock()).getSkullType();
         SkullBlockEntityModel skullBlockEntityModel = headModels.get(type);
         RenderLayer renderLayer = SkullBlockEntityRenderer.getRenderLayer(type, stack.get(DataComponentTypes.PROFILE));
-        SkullBlockEntityRenderer.renderSkull(null, 180, (entity.getVehicle() instanceof LivingEntity l ? l : entity).limbAnimator.getPos(tickDelta), matrices, provider, light, skullBlockEntityModel, renderLayer);
+        SkullBlockEntityRenderer.renderSkull(null, 180, entity.headItemAnimationProgress, matrices, provider, light, skullBlockEntityModel, renderLayer);
         isBeingWorn = false;
         this.isPony = false;
     }
@@ -112,7 +112,7 @@ public class PonySkullRenderer {
         VertexConsumer vertices = renderContext.getBuffer(layer);
 
         selectedSkull.setAngles(yaw, animationProgress);
-        selectedSkull.render(stack, vertices, light, OverlayTexture.DEFAULT_UV, Color.argbToHex(ArmourRendererPlugin.INSTANCE.get().getArmourAlpha(EquipmentSlot.HEAD, LayerType.HUMANOID), 1, 1, 1));
+        selectedSkull.render(stack, vertices, light, OverlayTexture.DEFAULT_UV, ColorHelper.fromFloats(ArmourRendererPlugin.INSTANCE.get().getArmourAlpha(EquipmentSlot.HEAD, LayerType.HUMANOID), 1, 1, 1));
 
         stack.pop();
 

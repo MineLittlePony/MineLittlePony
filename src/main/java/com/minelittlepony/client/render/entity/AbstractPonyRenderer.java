@@ -21,6 +21,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
+import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.MobEntity;
@@ -58,7 +59,7 @@ public abstract class AbstractPonyRenderer<
     protected void addFeatures(EntityRendererFactory.Context context) {
         addFeature(new ArmourFeature<>(this, context.getEquipmentModelLoader()));
         addPonyFeature(createHeldItemFeature(context));
-        addFeature(new SkullFeature<>(this, context.getModelLoader(), context.getItemRenderer()));
+        addFeature(createSkullFeature(context));
         addPonyFeature(new ElytraFeature<>(this, context.getEquipmentRenderer()));
         addFeature(new GearFeature<>(this));
     }
@@ -69,6 +70,10 @@ public abstract class AbstractPonyRenderer<
                 ? extends ClientPonyModel<? extends PlayerEntityRenderState>
             > feature) {
         return ((List)features).add(feature);
+    }
+
+    protected SkullFeature<S, M> createSkullFeature(EntityRendererFactory.Context context) {
+        return new SkullFeature<>(this, context.getModelLoader(), context.getItemRenderer(), HeadFeatureRenderer.HeadTransformation.DEFAULT, true);
     }
 
     protected HeldItemFeature<S, M> createHeldItemFeature(EntityRendererFactory.Context context) {
@@ -92,13 +97,13 @@ public abstract class AbstractPonyRenderer<
     }
 
     @Override
-    public boolean shouldRender(T state, Frustum visibleRegion, double camX, double camY, double camZ) {
-        return super.shouldRender(state, manager.getFrustrum(state, visibleRegion), camX, camY, camZ);
+    public boolean shouldRender(T entity, Frustum visibleRegion, double camX, double camY, double camZ) {
+        return super.shouldRender(entity, manager.getFrustrum(entity, visibleRegion), camX, camY, camZ);
     }
 
     @Override
     public void scale(S state, MatrixStack stack) {
-        shadowRadius = state.getShadowSize();
+        shadowRadius = state.size.shadowSize();
 
         if (state.baby) {
             shadowRadius *= 3; // undo vanilla shadow scaling

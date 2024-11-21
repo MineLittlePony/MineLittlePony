@@ -48,7 +48,7 @@ public class SaddleBags extends WearableGear {
         rightBag.pitch = bodySwing;
 
         if (model instanceof WingedPonyModel pegasus && state.getAttributes().isFlying) {
-            bodySwing = pegasus.getWingRotationFactor(state, ticks) - MathUtil.Angles._270_DEG;
+            bodySwing = pegasus.getWingRotationFactor(state) - MathUtil.Angles._270_DEG;
             bodySwing /= 10;
         }
 

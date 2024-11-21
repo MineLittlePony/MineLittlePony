@@ -2,8 +2,6 @@ package com.minelittlepony.api.model;
 
 import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 
-import com.minelittlepony.api.config.PonyConfig;
-import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.util.MathUtil;
 
 public interface WingedPonyModel<T extends BipedEntityRenderState & PonyModel.AttributedHolder> extends PonyModel<T> {
@@ -20,14 +18,7 @@ public interface WingedPonyModel<T extends BipedEntityRenderState & PonyModel.At
      * Returns true if the wings are spread.
      */
     default boolean wingsAreOpen(T state) {
-        return (state.getAttributes().isSwimming || state.getAttributes().isFlying || state.getAttributes().isCrouching)
-            && (PonyConfig.getInstance().flappyElytras.get() || !state.getAttributes().isGliding);
-    }
-
-    default boolean isBurdened(T state) {
-        return state.getAttributes().isWearing(Wearable.SADDLE_BAGS_BOTH)
-                || state.getAttributes().isWearing(Wearable.SADDLE_BAGS_LEFT)
-                || state.getAttributes().isWearing(Wearable.SADDLE_BAGS_RIGHT);
+        return state.getAttributes().wingsSpread;
     }
 
     /**
@@ -35,8 +26,7 @@ public interface WingedPonyModel<T extends BipedEntityRenderState & PonyModel.At
      *
      * @param ticks Partial render ticks
      */
-    default float getWingRotationFactor(T state, float ticks) {
+    default float getWingRotationFactor(T state) {
         return state.getAttributes().wingAngle;
     }
-
 }

@@ -127,23 +127,18 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     }
 
     protected void setModelAngles(T entity) {
-        setModelAngles((T)entity, entity.limbAmplitudeInverse, entity.limbAmplitudeMultiplier, entity.age, entity.yawDegrees, entity.pitch);
-    }
-
-    @Deprecated
-    protected final void setModelAngles(T entity, float limbAngle, float limbSpeed, float animationProgress, float headYaw, float headPitch) {
         float pitch = entity.attributes.motionPitch * MathHelper.RADIANS_PER_DEGREE;
         head.setAngles(
-                MathHelper.clamp(entity.attributes.isSleeping ? 0.1f : headPitch / 57.29578F, -1.25f - pitch, 0.5f - pitch),
-                entity.attributes.isSleeping ? (Math.signum(MathHelper.wrapDegrees(headYaw)) * 1.3F) : headYaw * MathHelper.RADIANS_PER_DEGREE,
+                MathHelper.clamp(entity.attributes.isSleeping ? 0.1f : entity.pitch / 57.29578F, -1.25f - pitch, 0.5f - pitch),
+                entity.attributes.isSleeping ? (Math.signum(MathHelper.wrapDegrees(entity.yawDegrees)) * 1.3F) : entity.yawDegrees * MathHelper.RADIANS_PER_DEGREE,
                 0
         );
 
-        float wobbleAmount = entity.getWobbleAmount();
+        float wobbleAmount = entity.wobbleAmount * getWobbleAmplitude(entity);
         body.yaw = wobbleAmount;
         neck.yaw = wobbleAmount;
 
-        rotateLegs(entity, limbAngle, limbSpeed, animationProgress);
+        rotateLegs(entity);
 
         ArmPose left = getArmPose(entity, Arm.LEFT);
         ArmPose right = getArmPose(entity, Arm.RIGHT);
@@ -153,7 +148,8 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         }
 
         if (!entity.attributes.isSwimming && !entity.attributes.isGoingFast) {
-            holdItem(entity, limbSpeed, left, right);
+            alignArmForAction(entity, getArm(Arm.LEFT), left, right, 1);
+            alignArmForAction(entity, getArm(Arm.RIGHT), right, left, -1);
         }
         swingItem(entity);
 
@@ -165,7 +161,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             adjustBody(entity, 0, ORIGIN);
 
             if (!entity.attributes.isLyingDown) {
-                animateBreathing(entity, animationProgress, left, right);
+                animateBreathing(entity, left, right);
             }
 
             if (entity.attributes.isSwimmingRotated) {
@@ -184,7 +180,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             head.pitch = 0.5F;
         }
 
-        parts.forEach(part -> part.setPartAngles(entity, limbAngle, limbSpeed, wobbleAmount, animationProgress));
+        parts.forEach(part -> part.setPartAngles(entity, wobbleAmount));
     }
 
     public void setHeadRotation(float animationProgress, float yaw, float pitch) {
@@ -249,11 +245,11 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     * Takes the same parameters as {@link AbstractPonyModel.setRotationAndAngles}
     *
     */
-    protected void rotateLegs(T state, float move, float swing, float ticks) {
+    protected void rotateLegs(T state) {
         if (state.attributes.isSwimming) {
-            rotateLegsSwimming(state, move, swing, ticks);
+            rotateLegsSwimming(state, state.limbAmplitudeInverse, state.limbAmplitudeMultiplier, state.age);
         } else {
-            rotateLegsOnGround(state, move, swing, ticks);
+            rotateLegsOnGround(state, state.limbAmplitudeInverse, state.limbAmplitudeMultiplier, state.age);
         }
 
         float sin = MathHelper.sin(body.yaw) * 5;
@@ -327,14 +323,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         rightLeg.setAngles(MathHelper.lerp(rainboomLegLotation, MathHelper.cos(baseRotation + angle / 5) * scale, MathUtil.Angles._90_DEG * rainboomLegLotation), -yAngle, rightLeg.roll);
     }
 
-    /**
-     * Adjusts legs as if holding an item. Delegates to the correct arm/leg/limb as necessary.
-     */
-    protected void holdItem(T state, float limbSpeed, ArmPose left, ArmPose right) {
-        alignArmForAction(state, getArm(Arm.LEFT), left, right, limbSpeed, 1);
-        alignArmForAction(state, getArm(Arm.RIGHT), right, left, limbSpeed, -1);
-    }
-
     @Override
     public ModelPart getBodyPart(BodyPart part) {
         switch (part) {
@@ -355,7 +343,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
      * @param pose  The post to align to
      * @param limbSpeed     Degree to which each 'limb' swings.
      */
-    protected void alignArmForAction(T state, ModelPart arm, ArmPose pose, ArmPose complement, float limbSpeed, float sigma) {
+    protected void alignArmForAction(T state, ModelPart arm, ArmPose pose, ArmPose complement, float sigma) {
         switch (pose) {
             case ITEM:
                 arm.yaw = 0;
@@ -365,13 +353,13 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
                 if (state.attributes.shouldLiftArm(pose, complement, sigma)) {
                     float swag = 1;
                     if (!state.attributes.isFlying && both) {
-                        swag -= (float)Math.pow(limbSpeed, 2);
+                        swag -= (float)Math.pow(state.limbAmplitudeMultiplier, 2);
                     }
 
                     float mult = 1 - swag/2;
                     arm.pitch = arm.pitch * mult - (MathHelper.PI / 10) * swag;
                     arm.roll = -sigma * (MathHelper.PI / 15);
-                    arm.roll += 0.3F * -limbSpeed * sigma;
+                    arm.roll += 0.3F * -state.limbAmplitudeMultiplier * sigma;
 
                     if (state.attributes.isCrouching) {
                         arm.pivotX -= sigma * 2;
@@ -385,7 +373,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             case BLOCK:
                 arm.pitch = (arm.pitch / 2 - 0.9424779F) - 0.3F;
                 arm.yaw = sigma * MathHelper.PI / 9;
-                arm.roll += 0.3F * -limbSpeed * sigma;
+                arm.roll += 0.3F * -state.limbAmplitudeMultiplier * sigma;
                 if (complement == pose) {
                     arm.yaw -= sigma * MathHelper.PI / 18;
                 }
@@ -396,24 +384,24 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
                 }
                 break;
             case BOW_AND_ARROW:
-                aimBow(state, arm, limbSpeed);
+                aimBow(state, arm);
                 break;
             case CROSSBOW_HOLD:
-                aimBow(state, arm, limbSpeed);
+                aimBow(state, arm);
 
                 arm.pitch = head.pitch - MathUtil.Angles._90_DEG;
                 arm.yaw = head.yaw + 0.06F;
                 break;
             case CROSSBOW_CHARGE:
-                aimBow(state, arm, limbSpeed);
+                aimBow(state, arm);
 
                 arm.pitch = -0.8F;
                 arm.yaw = head.yaw + 0.06F;
-                arm.roll += 0.3F * -limbSpeed * sigma;
+                arm.roll += 0.3F * -state.limbAmplitudeMultiplier * sigma;
                 break;
             case THROW_SPEAR:
                 arm.pitch = MathUtil.Angles._90_DEG * 2;
-                arm.roll += (0.3F * -limbSpeed + 0.6F) * sigma;
+                arm.roll += (0.3F * -state.limbAmplitudeMultiplier + 0.6F) * sigma;
                 arm.pivotY ++;
                 break;
             case SPYGLASS:
@@ -427,10 +415,10 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
                     arm.pivotX -= 6 * sigma;
                     arm.pivotZ -= 2;
                 }
-                if (state.getSize() == SizePreset.TALL) {
+                if (state.size == SizePreset.TALL) {
                     arm.pivotY += 1;
                 }
-                if (state.getSize() == SizePreset.FOAL) {
+                if (state.size == SizePreset.FOAL) {
                     arm.pivotY -= 2;
                 }
 
@@ -439,22 +427,22 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
                 arm.pitch = MathHelper.clamp(head.pitch, -0.55f, 1.2f) - 1.7835298f;
                 arm.yaw = head.yaw - 0.1235988f * sigma;
                 arm.pivotY += 3;
-                arm.roll += 0.3F * -limbSpeed * sigma;
+                arm.roll += 0.3F * -state.limbAmplitudeMultiplier * sigma;
                 break;
             case BRUSH:
                 arm.pitch = arm.pitch * 0.5f - 0.62831855f;
                 arm.yaw = 0;
-                arm.roll += 0.3F * -limbSpeed * sigma;
+                arm.roll += 0.3F * -state.limbAmplitudeMultiplier * sigma;
                 break;
             default:
                 break;
         }
     }
 
-    protected void aimBow(T state, ModelPart arm, float limbSpeed) {
-        arm.pitch = MathUtil.Angles._270_DEG + head.pitch + (MathHelper.sin(limbSpeed * 0.067F) * 0.05F);
+    protected final void aimBow(T state, ModelPart arm) {
+        arm.pitch = MathUtil.Angles._270_DEG + head.pitch + (MathHelper.sin(state.limbAmplitudeMultiplier * 0.067F) * 0.05F);
         arm.yaw = head.yaw - 0.06F;
-        arm.roll = MathHelper.cos(limbSpeed * 0.09F) * 0.05F + 0.05F;
+        arm.roll = MathHelper.cos(state.limbAmplitudeMultiplier * 0.09F) * 0.05F + 0.05F;
 
         if (state.isInSneakingPose) {
             arm.pivotY += 4;
@@ -466,7 +454,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
      *
      * @param entity     The entity we are being called for.
      */
-    protected void swingItem(T state) {
+    protected final void swingItem(T state) {
         if (state.getSwingAmount() > 0 && !state.attributes.isLyingDown) {
             swingArm(state, getArm(state.preferredArm));
         }
@@ -477,7 +465,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
      *
      * @param arm       The arm to swing
      */
-    protected void swingArm(T state, ModelPart arm) {
+    protected final void swingArm(T state, ModelPart arm) {
         float swing = 1 - (float)Math.pow(1 - state.getSwingAmount(), 3);
 
         float deltaX = MathHelper.sin(swing * MathHelper.PI);
@@ -496,9 +484,9 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
      * @param animationProgress       Total whole and partial ticks since the entity's existence.
      *                    Used in animations together with {@code swing} and {@code move}.
      */
-    protected void animateBreathing(T state, float animationProgress, ArmPose left, ArmPose right) {
-        float cos = MathHelper.cos(animationProgress * 0.09F) * 0.05F + 0.05F;
-        float sin = MathHelper.sin(animationProgress * 0.067F) * 0.05F;
+    protected void animateBreathing(T state, ArmPose left, ArmPose right) {
+        float cos = MathHelper.cos(state.age * 0.09F) * 0.05F + 0.05F;
+        float sin = MathHelper.sin(state.age * 0.067F) * 0.05F;
 
         if (state.attributes.shouldLiftArm(right, left, -1)) {
             ModelPart arm = getArm(Arm.RIGHT);
@@ -596,6 +584,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             neck.hidden = !head.visible;
         }
 
-        PonyTransformation.forSize(state.getSize()).transform(state.attributes, part, stack);
+        PonyTransformation.forSize(state.size).transform(state.attributes, part, stack);
     }
 }

@@ -37,7 +37,7 @@ public final class DebugBoundingBoxRenderer {
     }
 
     public static Box getBoundingBox(PonyRenderState state) {
-        final float scale = state.getScaleFactor();
+        final float scale = state.size.scaleFactor();
         final float width = state.width * scale;
         final float height = state.height * scale;
 

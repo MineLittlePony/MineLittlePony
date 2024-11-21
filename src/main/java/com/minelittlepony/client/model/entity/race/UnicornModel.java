@@ -2,7 +2,6 @@ package com.minelittlepony.client.model.entity.race;
 
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.model.*;
-import com.minelittlepony.api.pony.meta.Size;
 import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.client.model.part.UnicornHorn;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
@@ -11,7 +10,6 @@ import com.minelittlepony.mson.util.RenderList;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.*;
@@ -43,13 +41,8 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> i
     }
 
     @Override
-    public float getWobbleAmount() {
-        return isCasting(currentState) ? 0 : super.getWobbleAmount();
-    }
-
-    @Override
-    protected void rotateLegs(T state, float move, float swing, float ticks) {
-        super.rotateLegs(state, move, swing, ticks);
+    protected void rotateLegs(T state) {
+        super.rotateLegs(state);
 
         unicornArmRight.setAngles(0, 0, 0);
         unicornArmRight.setPivot(-7, 12, -2);
@@ -97,13 +90,12 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> i
             }
             if (main == arm) {
                 if (action == UseAction.SPYGLASS) {
-                    Size size = state.getSize();
                     float x = 0.3F;
                     float z = -0.4F;
 
-                    if (size == SizePreset.TALL || size == SizePreset.YEARLING) {
+                    if (state.size == SizePreset.TALL || state.size == SizePreset.YEARLING) {
                         z += 0.05F;
-                    } else if (size == SizePreset.FOAL) {
+                    } else if (state.size == SizePreset.FOAL) {
                         x -= 0.1F;
                         z -= 0.1F;
                     }

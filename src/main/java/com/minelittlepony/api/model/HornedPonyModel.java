@@ -12,4 +12,9 @@ public interface HornedPonyModel<T extends EntityRenderState & PonyModel.Attribu
         return state instanceof PlayerEntityRenderState s
                 && (getArmPoseForSide(s, Arm.LEFT) != ArmPose.EMPTY || getArmPoseForSide(s, Arm.RIGHT) != ArmPose.EMPTY);
     }
+
+    @Override
+    default float getWobbleAmplitude(T state) {
+        return isCasting(state) ? 0 : 1;
+    }
 }

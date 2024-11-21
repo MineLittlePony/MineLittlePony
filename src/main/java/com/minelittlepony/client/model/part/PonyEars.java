@@ -27,11 +27,11 @@ public class PonyEars implements SubModel<PonyRenderState>, MsonModel {
     }
 
     @Override
-    public void setPartAngles(PonyRenderState state, float limbAngle, float limbSpeed, float bodySwing, float animationProgress) {
+    public void setPartAngles(PonyRenderState state, float bodySwing) {
         right.resetTransform();
         left.resetTransform();
 
-        limbSpeed = MathHelper.clamp(limbSpeed, 0, 1);
+        float limbSpeed = MathHelper.clamp(state.limbAmplitudeMultiplier, 0, 1);
 
         float forwardFold = 0.14F * limbSpeed;
         float sidewaysFlop = 0.11F * limbSpeed;
@@ -42,12 +42,12 @@ public class PonyEars implements SubModel<PonyRenderState>, MsonModel {
         right.roll -= sidewaysFlop;
         left.roll  += sidewaysFlop;
 
-        float floppyness = Math.abs(MathHelper.sin(animationProgress / 99F));
+        float floppyness = Math.abs(MathHelper.sin(state.age / 99F));
         if (floppyness > 0.99F) {
-            boolean leftFlop = MathHelper.sin(animationProgress / 5F) > 0.5F;
+            boolean leftFlop = MathHelper.sin(state.age / 5F) > 0.5F;
             (leftFlop ? left : right).roll +=
-                    0.01F * MathHelper.sin(animationProgress / 2F)
-                  + 0.015F * MathHelper.cos(animationProgress / 3F);
+                    0.01F * MathHelper.sin(state.age / 2F)
+                  + 0.015F * MathHelper.cos(state.age / 3F);
         }
     }
 

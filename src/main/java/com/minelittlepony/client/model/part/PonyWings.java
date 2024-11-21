@@ -57,17 +57,17 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
     }
 
     @Override
-    public void setPartAngles(S state, float move, float swing, float bodySwing, float ticks) {
+    public void setPartAngles(S state, float bodySwing) {
         float flap = 0;
         float progress = state.getSwingAmount();
 
         if (progress > 0) {
             flap = MathHelper.sin(MathHelper.sqrt(progress) * MathHelper.TAU);
         } else {
-            float pi = MathHelper.PI * (float) Math.pow(swing, 16);
+            float pi = MathHelper.PI * (float) Math.pow(state.limbAmplitudeMultiplier, 16);
 
-            float mve = move * 0.6662f; // magic number ahoy (actually 2/3)
-            float srt = swing / 4;
+            float mve = state.limbAmplitudeInverse * 0.6662f; // magic number ahoy (actually 2/3)
+            float srt = state.limbAmplitudeMultiplier * 0.25F;
 
             flap = MathHelper.cos(mve + pi) * srt;
         }
@@ -75,12 +75,12 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
         float flapAngle = MathUtil.Angles._270_DEG;
 
         if (pegasus.wingsAreOpen(state)) {
-            flapAngle = pegasus.getWingRotationFactor(state, ticks);
-            if (!state.attributes.isCrouching && pegasus.isBurdened(state)) {
+            flapAngle = pegasus.getWingRotationFactor(state);
+            if (!state.attributes.isCrouching && isBurdened(state)) {
                 flapAngle -= 1F;
             }
         } else {
-            flapAngle = MathUtil.Angles._270_DEG - 0.9F + (float)Math.sin(ticks / 10) / 15F;
+            flapAngle = MathUtil.Angles._270_DEG - 0.9F + (float)Math.sin(state.age * 0.1F) / 15F;
         }
 
         if (!state.attributes.isFlying) {
@@ -112,6 +112,13 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
             legacyWing.bags = bags;
             legacyWing.setAngles(state, -flap, -flapAngle);
         }
+    }
+
+
+    private boolean isBurdened(S state) {
+        return state.getAttributes().isWearing(Wearable.SADDLE_BAGS_BOTH)
+                || state.getAttributes().isWearing(Wearable.SADDLE_BAGS_LEFT)
+                || state.getAttributes().isWearing(Wearable.SADDLE_BAGS_RIGHT);
     }
 
     @Override

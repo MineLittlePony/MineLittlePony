@@ -11,8 +11,6 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.equipment.EquipmentRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.SkinTextures;
 import net.minecraft.client.util.math.MatrixStack;
@@ -24,8 +22,8 @@ import net.minecraft.item.equipment.EquipmentModel;
 import net.minecraft.util.Identifier;
 
 public class ElytraFeature<
-        S extends BipedEntityRenderState,
-        M extends EntityModel<S>
+        S extends PonyRenderState,
+        M extends ClientPonyModel<S>
     > extends FeatureRenderer<S, M> {
     private static final Identifier TEXTURE = Identifier.ofVanilla("textures/entity/elytra.png");
 

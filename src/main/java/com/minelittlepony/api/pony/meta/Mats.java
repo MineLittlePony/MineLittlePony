@@ -1,8 +1,9 @@
 package com.minelittlepony.api.pony.meta;
 
+import net.minecraft.util.math.ColorHelper;
+
 import org.jetbrains.annotations.Nullable;
 
-import com.minelittlepony.common.util.Color;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 
 import javax.imageio.ImageIO;
@@ -31,7 +32,7 @@ public interface Mats {
                     return 0;
                 }
                 int[] color = raster.getPixel(x, y, new int[] {0, 0, 0, 0});
-                return Color.argbToHex(color[3], color[0], color[1], color[2]);
+                return ColorHelper.getArgb(color[3], color[0], color[1], color[2]);
             };
         } catch (IllegalArgumentException e) {
             throw new IOException("Could not create mat from image", e);

@@ -12,8 +12,8 @@ public class ZomponyModel<T extends ZomponyRenderer.State> extends AlicornModel<
     }
 
     @Override
-    protected void rotateLegs(T state, float move, float swing, float ticks) {
-        super.rotateLegs(state, move, swing, ticks);
+    protected void rotateLegs(T state) {
+        super.rotateLegs(state);
         if (shouldLiftBothArms(state)) {
             MobPosingHelper.rotateUndeadArms(state, this, state.limbFrequency, state.age);
         }

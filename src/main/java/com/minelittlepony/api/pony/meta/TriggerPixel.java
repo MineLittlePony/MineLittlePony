@@ -5,8 +5,6 @@ import net.minecraft.util.math.ColorHelper;
 
 import org.joml.Vector2i;
 
-import com.minelittlepony.common.util.Color;
-
 import java.util.*;
 
 /**
@@ -41,7 +39,7 @@ public interface TriggerPixel<T> {
     static TriggerPixel<Integer> ofColor(int x, int y) {
         MAX_COORDS.x = Math.max(MAX_COORDS.x, x);
         MAX_COORDS.y = Math.max(MAX_COORDS.y, y);
-        return image -> Color.abgrToArgb(image.getColor(x, y));
+        return image -> image.getColor(x, y);
     }
 
     static <T extends Enum<T> & TValue<T>> TriggerPixel<Flags<T>> ofFlags(int x, int y, Flags<T> def, T[] options) {

@@ -8,9 +8,9 @@ import com.minelittlepony.client.model.entity.race.SeaponyModel;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.entity.GuardianEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -50,8 +50,8 @@ public class SeaponyRenderer extends PonyRenderer<GuardianEntity, SeaponyRendere
         super.updateRenderState(entity, state, tickDelta);
         state.spikesExtension = entity.getSpikesExtension(tickDelta);
         state.tailAngle = entity.getTailAngle(tickDelta);
-        state.cameraPosVec = getScaledCameraPosVec(entity, tickDelta, state.getScaleFactor());
-        Entity cameraBeamTarget = getBeamTarget(entity);
+        state.cameraPosVec = getScaledCameraPosVec(entity, tickDelta, state.size.scaleFactor());
+        Entity cameraBeamTarget = GuardianEntityRenderer.getBeamTarget(entity);
         state.rotationVec = cameraBeamTarget != null ? entity.getRotationVec(tickDelta) : null;
         state.lookAtPos = cameraBeamTarget != null ? cameraBeamTarget.getCameraPosVec(tickDelta) : null;
 
@@ -73,7 +73,7 @@ public class SeaponyRenderer extends PonyRenderer<GuardianEntity, SeaponyRendere
             float f = state.beamTicks * 0.5F % 1.0F;
             matrices.push();
             matrices.translate(0.0F, state.standingEyeHeight, 0.0F);
-            renderBeam(
+            GuardianEntityRenderer.renderBeam(
                 matrices,
                 vertices.getBuffer(LAYER),
                 vec3d.subtract(state.cameraPosVec),
@@ -83,71 +83,6 @@ public class SeaponyRenderer extends PonyRenderer<GuardianEntity, SeaponyRendere
             );
             matrices.pop();
         }
-    }
-
-    private static void renderBeam(MatrixStack matrices, VertexConsumer vertexConsumer, Vec3d vec3d, float beamTicks, float f, float g) {
-        float h = (float)(vec3d.length() + 1.0);
-        vec3d = vec3d.normalize();
-        float i = (float)Math.acos(vec3d.y);
-        float j = (float) (Math.PI / 2) - (float)Math.atan2(vec3d.z, vec3d.x);
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j * (180.0F / (float)Math.PI)));
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(i * (180.0F / (float)Math.PI)));
-        float k = beamTicks * 0.05F * -1.5F;
-        float l = f * f;
-        int m = 64 + (int)(l * 191.0F);
-        int n = 32 + (int)(l * 191.0F);
-        int o = 128 - (int)(l * 64.0F);
-        float p = 0.2F;
-        float q = 0.282F;
-        float r = MathHelper.cos(k + (float) (Math.PI * 3.0 / 4.0)) * 0.282F;
-        float s = MathHelper.sin(k + (float) (Math.PI * 3.0 / 4.0)) * 0.282F;
-        float t = MathHelper.cos(k + (float) (Math.PI / 4)) * 0.282F;
-        float u = MathHelper.sin(k + (float) (Math.PI / 4)) * 0.282F;
-        float v = MathHelper.cos(k + ((float) Math.PI * 5.0F / 4.0F)) * 0.282F;
-        float w = MathHelper.sin(k + ((float) Math.PI * 5.0F / 4.0F)) * 0.282F;
-        float x = MathHelper.cos(k + ((float) Math.PI * 7.0F / 4.0F)) * 0.282F;
-        float y = MathHelper.sin(k + ((float) Math.PI * 7.0F / 4.0F)) * 0.282F;
-        float z = MathHelper.cos(k + (float) Math.PI) * 0.2F;
-        float aa = MathHelper.sin(k + (float) Math.PI) * 0.2F;
-        float ab = MathHelper.cos(k + 0.0F) * 0.2F;
-        float ac = MathHelper.sin(k + 0.0F) * 0.2F;
-        float ad = MathHelper.cos(k + (float) (Math.PI / 2)) * 0.2F;
-        float ae = MathHelper.sin(k + (float) (Math.PI / 2)) * 0.2F;
-        float af = MathHelper.cos(k + (float) (Math.PI * 3.0 / 2.0)) * 0.2F;
-        float ag = MathHelper.sin(k + (float) (Math.PI * 3.0 / 2.0)) * 0.2F;
-        float ai = 0.0F;
-        float aj = 0.4999F;
-        float ak = -1.0F + g;
-        float al = ak + h * 2.5F;
-        MatrixStack.Entry entry = matrices.peek();
-        vertex(vertexConsumer, entry, z, h, aa, m, n, o, 0.4999F, al);
-        vertex(vertexConsumer, entry, z, 0.0F, aa, m, n, o, 0.4999F, ak);
-        vertex(vertexConsumer, entry, ab, 0.0F, ac, m, n, o, 0.0F, ak);
-        vertex(vertexConsumer, entry, ab, h, ac, m, n, o, 0.0F, al);
-        vertex(vertexConsumer, entry, ad, h, ae, m, n, o, 0.4999F, al);
-        vertex(vertexConsumer, entry, ad, 0.0F, ae, m, n, o, 0.4999F, ak);
-        vertex(vertexConsumer, entry, af, 0.0F, ag, m, n, o, 0.0F, ak);
-        vertex(vertexConsumer, entry, af, h, ag, m, n, o, 0.0F, al);
-        float am = MathHelper.floor(beamTicks) % 2 == 0 ? 0.5F : 0.0F;
-        vertex(vertexConsumer, entry, r, h, s, m, n, o, 0.5F, am + 0.5F);
-        vertex(vertexConsumer, entry, t, h, u, m, n, o, 1.0F, am + 0.5F);
-        vertex(vertexConsumer, entry, x, h, y, m, n, o, 1.0F, am);
-        vertex(vertexConsumer, entry, v, h, w, m, n, o, 0.5F, am);
-    }
-
-    private static void vertex(VertexConsumer vertexConsumer, MatrixStack.Entry matrix, float x, float y, float z, int red, int green, int blue, float u, float v) {
-        vertexConsumer.vertex(matrix, x, y, z)
-            .color(red, green, blue, 255)
-            .texture(u, v)
-            .overlay(OverlayTexture.DEFAULT_UV)
-            .light(LightmapTextureManager.MAX_LIGHT_COORDINATE)
-            .normal(matrix, 0.0F, 1.0F, 0.0F);
-    }
-
-    @Nullable
-    private static Entity getBeamTarget(GuardianEntity guardian) {
-        Entity entity = MinecraftClient.getInstance().getCameraEntity();
-        return guardian.hasBeamTarget() ? guardian.getBeamTarget() : entity;
     }
 
     private Vec3d fromLerpedPosition(LivingEntity entity, double yOffset, float delta) {

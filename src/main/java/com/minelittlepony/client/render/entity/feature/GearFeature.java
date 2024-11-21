@@ -100,7 +100,7 @@ public class GearFeature<
     }
 
     private void renderGear(M model, S entity, Gear gear, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, float limbDistance, float limbAngle, float tickDelta) {
-        gear.pose(model, entity, entity.attributes.isGoingFast, entity.attributes.getEntityId(), limbDistance, limbAngle, entity.getWobbleAmount(), tickDelta);
+        gear.pose(model, entity, entity.attributes.isGoingFast, entity.attributes.getEntityId(), limbDistance, limbAngle, entity.wobbleAmount * model.getWobbleAmplitude(entity), tickDelta);
         gear.render(stack, renderContext.getBuffer(gear.getLayer(entity, getContext())), lightUv, OverlayTexture.DEFAULT_UV, Colors.WHITE, entity.attributes.getEntityId());
     }
 

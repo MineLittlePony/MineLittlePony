@@ -3,7 +3,6 @@ package com.minelittlepony.client.model.entity;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.render.entity.EnderStallionRenderer;
 
@@ -53,15 +52,5 @@ public class EnderStallionModel extends SkeleponyModel<EnderStallionRenderer.Sta
 
         leftPants.visible = false;
         rightPants.visible = false;
-    }
-
-    @Override
-    public boolean wingsAreOpen(EnderStallionRenderer.State state) {
-        return state.isAttacking;
-    }
-
-    @Override
-    public float getWingRotationFactor(EnderStallionRenderer.State state, float ticks) {
-        return MathHelper.sin(ticks) + WINGS_HALF_SPREAD_ANGLE;
     }
 }

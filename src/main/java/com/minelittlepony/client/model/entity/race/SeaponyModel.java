@@ -71,8 +71,8 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
     }
 
     @Override
-    protected void rotateLegs(T state, float move, float swing, float ticks) {
-        super.rotateLegs(state, move, swing, ticks);
+    protected void rotateLegs(T state) {
+        super.rotateLegs(state);
         leftArm.pitch -= 1.4F;
         leftArm.yaw -= 0.3F;
         rightArm.pitch -= 1.4F;

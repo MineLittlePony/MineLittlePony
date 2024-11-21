@@ -8,7 +8,6 @@ import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
-import com.minelittlepony.mson.api.MsonModel;
 
 /**
  * The raw pony model without any implementations.
@@ -17,7 +16,7 @@ import com.minelittlepony.mson.api.MsonModel;
  *
  * Modders can extend this class to make their own pony models if they wish.
  */
-public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerEntityModel implements MsonModel, PonyModel<T> {
+public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerEntityModel implements PonyModel<T> {
     @Nullable
     protected PosingCallback<T> onSetModelAngles;
 

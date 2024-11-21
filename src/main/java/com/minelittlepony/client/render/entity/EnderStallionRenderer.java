@@ -1,7 +1,6 @@
 package com.minelittlepony.client.render.entity;
 
-import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.model.PonyModel;
+import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.MineLittlePony;
@@ -21,6 +20,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -92,6 +92,9 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
                     leftHandStack = carriedBlock.getBlock().asItem().getDefaultStack();
                 }
             }
+
+            attributes.wingsSpread = isAttacking;
+            attributes.wingAngle = MathHelper.sin(age) + WingedPonyModel.WINGS_HALF_SPREAD_ANGLE;
         }
 
         @Override
