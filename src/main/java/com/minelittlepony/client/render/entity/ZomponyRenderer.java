@@ -22,7 +22,7 @@ public class ZomponyRenderer<T extends HostileEntity> extends PonyRenderer<T, Zo
 
     public static final Identifier DEMON_CHILD = MineLittlePony.id("textures/entity/zombie/demon_child.png");
 
-    protected ZomponyRenderer(EntityRendererFactory.Context context, TextureSupplier<State> texture, float scale) {
+    protected ZomponyRenderer(EntityRendererFactory.Context context, TextureSupplier<T> texture, float scale) {
         super(context, ModelType.ZOMBIE, texture, scale);
     }
 
@@ -32,7 +32,7 @@ public class ZomponyRenderer<T extends HostileEntity> extends PonyRenderer<T, Zo
     }
 
     public static ZomponyRenderer<ZombieEntity> zombie(EntityRendererFactory.Context context) {
-        return new ZomponyRenderer<>(context, entity -> entity.isCozyGlow ? DEMON_CHILD : ZOMBIE, 1);
+        return new ZomponyRenderer<>(context, entity -> isCozyGlow(entity) ? DEMON_CHILD : ZOMBIE, 1);
     }
 
     public static ZomponyRenderer<HuskEntity> husk(EntityRendererFactory.Context context) {
@@ -47,13 +47,17 @@ public class ZomponyRenderer<T extends HostileEntity> extends PonyRenderer<T, Zo
         return new ZomponyRenderer<>(context, TextureSupplier.of(ZOMBIE), 6.8F);
     }
 
+    static boolean isCozyGlow(LivingEntity entity) {
+        return entity.isBaby() && entity.getUuid().getLeastSignificantBits() % 160 == 0;
+    }
+
     public static class State extends PonyRenderState {
         public boolean isWinged;
         public boolean isCozyGlow;
 
         public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
             super.updateState(entity, model, pony, mode);
-            isCozyGlow = baby && entity.getUuid().getLeastSignificantBits() % 160 == 0;
+            isCozyGlow = isCozyGlow(entity);
             isWinged = entity.getUuid().getLeastSignificantBits() % 30 == 0;
         }
 

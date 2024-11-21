@@ -1,17 +1,14 @@
 package com.minelittlepony.client.render;
 
 import com.minelittlepony.api.config.PonyConfig;
-import com.minelittlepony.api.model.HornedPonyModel;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.common.util.render.RenderLayerUtil;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
-import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
@@ -110,8 +107,7 @@ public class LevitatingItemRenderer {
                        action == UseAction.BOW
                     || action == UseAction.CROSSBOW
                     || action == UseAction.BLOCK
-                    || item.getItem() instanceof ToolItem
-                    || item.getItem() instanceof RangedWeaponItem
+                    || item.contains(DataComponentTypes.TOOL)
                     || PonyConfig.getInstance().forwardHoldingItems.get().contains(Registries.ITEM.getId(item.getItem()));
 
             float distanceChange = handHeldTool ? -0.3F : -0.6F;

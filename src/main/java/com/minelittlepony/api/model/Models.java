@@ -34,7 +34,8 @@ public record Models<M extends PonyModel<?>> (
     }
 
     public Optional<PonyArmourModel<?>> getArmourModel(ItemStack stack, ArmourLayer layer, ArmourVariant variant) {
-        return ArmorModelRegistry.getModelKey(stack.getItem(), layer).or(() -> variant.getDefaultModel(layer).filter(l -> stack.getItem() instanceof ArmorItem))
+        return ArmorModelRegistry.getModelKey(stack.getItem(), layer)
+                .or(() -> variant.getDefaultModel(layer).filter(l -> stack.getItem() instanceof ArmorItem))
                 .map(armor);
     }
 }

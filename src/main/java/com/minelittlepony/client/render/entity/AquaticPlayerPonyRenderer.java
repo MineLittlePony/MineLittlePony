@@ -2,7 +2,6 @@ package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.*;
-import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
 import com.minelittlepony.util.MathUtil;
 
@@ -10,6 +9,7 @@ import java.util.function.Predicate;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.particle.ParticleTypes;
@@ -22,15 +22,15 @@ public class AquaticPlayerPonyRenderer extends FormChangingPlayerPonyRenderer {
     }
 
     @Override
-    protected Race getPlayerRace(PlayerPonyRenderState state) {
-        Race race = super.getPlayerRace(state);
-        return ((State)state).skinOverride != null ? Race.SEAPONY : race == Race.SEAPONY ? Race.UNICORN : race;
+    public PlayerEntityRenderState createRenderState() {
+        return new State();
     }
 
-    protected class State extends FormChangingPlayerPonyRenderer.State {
+    class State extends PlayerPonyRenderState {
         @Override
         public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
             super.updateState(entity, model, pony, mode);
+            Identifier skinOverride = getSkinOverride((AbstractClientPlayerEntity)entity);
             yOffset = skinOverride != null ? (0.6 + (isInSneakingPose ? 0.125 : 0)) : 0;
             pose = EntityPose.STANDING;
             isInSneakingPose = false;

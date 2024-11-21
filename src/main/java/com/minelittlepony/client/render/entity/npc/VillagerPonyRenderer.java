@@ -13,7 +13,7 @@ import com.minelittlepony.client.render.entity.npc.textures.*;
 
 public class VillagerPonyRenderer extends AbstractNpcRenderer<VillagerEntity, VillagerPonyRenderer.State> {
     private static final TextureSupplier<String> FORMATTER = TextureSupplier.formatted("minelittlepony", "textures/entity/villager/%s.png");
-    private static final TextureSupplier<State> TEXTURES = TextureSupplier.ofPool(
+    private static final TextureSupplier<VillagerEntity> TEXTURES = TextureSupplier.ofPool(
             VariatedTextureSupplier.BACKGROUND_PONIES_POOL,
             PlayerTextureSupplier.create(ProfessionTextureSupplier.create(FORMATTER))
     );

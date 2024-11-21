@@ -1,25 +1,23 @@
 package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.Models;
-import com.minelittlepony.api.model.PonyModel;
+import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.LivingEntity;
 
 public abstract class AbstractPonyFeature<
         S extends PonyRenderState,
-        M extends EntityModel<? super S> & PonyModel<S>
+        M extends ClientPonyModel<S>
     > extends FeatureRenderer<S, M> {
 
     private final PonyRenderContext<?, S, M> context;
 
-    @SuppressWarnings("unchecked")
     public AbstractPonyFeature(PonyRenderContext<?, S, M> context) {
-        super((FeatureRendererContext<S, M>)context);
+        super(context.upcast());
         this.context = context;
     }
 

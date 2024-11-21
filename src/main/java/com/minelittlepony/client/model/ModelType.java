@@ -58,7 +58,7 @@ public final class ModelType {
     public static final GearModelKey<SaddleBags> SADDLEBAGS_BOTH = registerGear("saddlebags", Wearable.SADDLE_BAGS_BOTH, t -> new SaddleBags(t, Wearable.SADDLE_BAGS_BOTH));
     public static final GearModelKey<SaddleBags> SADDLEBAGS_LEFT = registerGear(SADDLEBAGS_BOTH, Wearable.SADDLE_BAGS_LEFT, t -> new SaddleBags(t, Wearable.SADDLE_BAGS_LEFT));
     public static final GearModelKey<SaddleBags> SADDLEBAGS_RIGHT = registerGear(SADDLEBAGS_BOTH, Wearable.SADDLE_BAGS_RIGHT, t -> new SaddleBags(t, Wearable.SADDLE_BAGS_RIGHT));
-    public static final GearModelKey<Crown> CROWN = registerGear("crown", Wearable.CROWN, Crown::new);
+    public static final GearModelKey<AbstractGearModel> CROWN = registerGear("crown", Wearable.CROWN, t -> new WearableGear(t.getChild("crown"), Wearable.CROWN, BodyPart.HEAD, 0.1F));
     public static final GearModelKey<AbstractGearModel> MUFFIN = registerGear("muffin", Wearable.MUFFIN, t -> new WearableGear(t.getChild("crown"), Wearable.MUFFIN, BodyPart.HEAD, 0.45F));
     public static final GearModelKey<AbstractGearModel> WITCH_HAT = registerGear("witch_hat", Wearable.HAT, t -> new WearableGear(t.getChild("hat"), Wearable.HAT, BodyPart.HEAD, 0.7F));
     public static final GearModelKey<DeerAntlers> ANTLERS = registerGear("antlers", Wearable.ANTLERS, DeerAntlers::new);

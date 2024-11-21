@@ -11,7 +11,7 @@ import com.minelittlepony.api.model.SubModel;
 import com.minelittlepony.client.render.MagicGlow;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
-public class UnicornHorn implements SubModel<PonyRenderState> {
+public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
 
     private final ModelPart horn;
     private final ModelPart glow;
@@ -38,8 +38,8 @@ public class UnicornHorn implements SubModel<PonyRenderState> {
     }
 
     @Override
-    public void setVisible(boolean visible, PonyRenderState state) {
-        horn.visible = visible;
-        glow.visible = visible;
+    public void setVisible(boolean visible, T state) {
+        horn.visible = this.visible && visible;
+        glow.visible = this.visible && visible;
     }
 }

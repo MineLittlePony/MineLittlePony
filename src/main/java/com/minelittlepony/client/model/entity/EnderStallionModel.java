@@ -21,9 +21,9 @@ public class EnderStallionModel extends SkeleponyModel<EnderStallionRenderer.Sta
     @Override
     protected void setModelVisibilities(EnderStallionRenderer.State state) {
         super.setModelVisibilities(state);
-        tail.setVisible(false, state.attributes);
-        snout.setVisible(false, state.attributes);
-        horn.setVisible(!state.isBoss, state.attributes);
+        tail.setVisible(false, state);
+        snout.setVisible(false, state);
+        horn.setVisible(!state.isBoss, state);
         leftHorn.visible = rightHorn.visible = state.isBoss;
     }
 

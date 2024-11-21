@@ -1,7 +1,6 @@
 package com.minelittlepony.client.model.armour;
 
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.EquipmentSlot;
 
 import com.minelittlepony.api.model.PonyModel;
@@ -14,21 +13,12 @@ public class PonyArmourModel<S extends PonyRenderState> extends AbstractPonyMode
         super(tree, false);
     }
 
-    public boolean poseModel(S state,
-            EquipmentSlot slot, ArmourLayer layer,
-            PonyModel<S> mainModel) {
-
+    public boolean poseModel(EquipmentSlot slot, ArmourLayer layer, PonyModel<?> mainModel) {
         if (!setVisibilities(slot, layer)) {
             return false;
         }
-        setAngles(state);
-        if (mainModel instanceof BipedEntityModel<?> biped) {
-            head.copyTransform(biped.head);
-            body.copyTransform(biped.body);
-            rightArm.copyTransform(biped.rightArm);
-            leftArm.copyTransform(biped.leftArm);
-            rightLeg.copyTransform(biped.rightLeg);
-            leftLeg.copyTransform(biped.leftLeg);
+        if (mainModel instanceof AbstractPonyModel abs) {
+            abs.copyTransforms(this);
         }
         return true;
     }

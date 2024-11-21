@@ -28,7 +28,7 @@ abstract class AbstractNpcRenderer<
         return ModelType.getPlayerModel(race).create(false, this::initializeModel);
     });
 
-    public AbstractNpcRenderer(EntityRendererFactory.Context context, String type, TextureSupplier<S> textureSupplier, TextureSupplier<String> formatter) {
+    public AbstractNpcRenderer(EntityRendererFactory.Context context, String type, TextureSupplier<T> textureSupplier, TextureSupplier<String> formatter) {
         super(context, ModelType.getPlayerModel(Race.EARTH).getKey(false), SillyPonyTextureSupplier.create(textureSupplier, formatter));
         clothing = new NpcClothingFeature<>(this, type);
         this.manager.setModelsLookup(entity -> models.apply(entity.getRace()));

@@ -1,7 +1,6 @@
 package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.*;
@@ -22,8 +21,6 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.model.*;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.MobEntity;
@@ -33,18 +30,18 @@ import net.minecraft.util.Identifier;
 public abstract class AbstractPonyRenderer<
         T extends MobEntity,
         S extends PonyRenderState,
-        M extends EntityModel<? super S> & PonyModel<S>
+        M extends ClientPonyModel<S>
     > extends MobEntityRenderer<T, S, M> implements PonyRenderContext<T, S, M> {
 
     protected final EquineRenderManager<T, S, M> manager;
 
     private final Map<Wearable, Identifier> wearableTextures = new EnumMap<>(Wearable.class);
 
-    private final TextureSupplier<S> texture;
+    private final TextureSupplier<T> texture;
 
     private final float scale;
 
-    public AbstractPonyRenderer(EntityRendererFactory.Context context, ModelKey<? super M> key, TextureSupplier<S> texture, float scale) {
+    public AbstractPonyRenderer(EntityRendererFactory.Context context, ModelKey<? super M> key, TextureSupplier<T> texture, float scale) {
         super(context, null, 0.5F);
         this.manager = new EquineRenderManager<T, S, M>(this, super::setupTransforms, key);
         this.texture = texture;
@@ -59,25 +56,28 @@ public abstract class AbstractPonyRenderer<
     }
 
     protected void addFeatures(EntityRendererFactory.Context context) {
-        addFeature(new ArmourFeature<>(this, context.getModelManager()));
-        addFeature(createHeldItemFeature(context));
+        addFeature(new ArmourFeature<>(this, context.getEquipmentModelLoader()));
+        addPonyFeature(createHeldItemFeature(context));
         addFeature(new SkullFeature<>(this, context.getModelLoader(), context.getItemRenderer()));
-        addFeature(new ElytraFeature<>(this));
+        addPonyFeature(new ElytraFeature<>(this, context.getEquipmentRenderer()));
         addFeature(new GearFeature<>(this));
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    protected final boolean addPonyFeature(FeatureRenderer<? extends PlayerEntityRenderState, ? extends ClientPonyModel<? extends PlayerEntityRenderState>> feature) {
+    protected final boolean addPonyFeature(FeatureRenderer<
+                ? extends PlayerEntityRenderState,
+                ? extends ClientPonyModel<? extends PlayerEntityRenderState>
+            > feature) {
         return ((List)features).add(feature);
     }
 
-    protected HeldItemFeature createHeldItemFeature(EntityRendererFactory.Context context) {
-        return new HeldItemFeature(this, context.getItemRenderer());
+    protected HeldItemFeature<S, M> createHeldItemFeature(EntityRendererFactory.Context context) {
+        return new HeldItemFeature<>(this, context.getItemRenderer());
     }
 
     @Override
     public final Identifier getTexture(S entity) {
-        return texture.apply(entity);
+        return entity.pony.texture();
     }
 
     @Override
@@ -147,7 +147,7 @@ public abstract class AbstractPonyRenderer<
 
     @Override
     public Pony getEntityPony(T entity) {
-        return Pony.getManager().getPony(getTexture(entity));
+        return Pony.getManager().getPony(texture.apply(entity));
     }
 
     public static <E extends MobEntity, C extends PonyRenderState, M extends ClientPonyModel<C>, T extends PonyRenderer<E, C, M>, F extends FeatureRenderer<C, M>>
@@ -160,9 +160,9 @@ public abstract class AbstractPonyRenderer<
     public static <
             T extends MobEntity,
             S extends PonyRenderState,
-            M extends EntityModel<S> & PonyModel<S>> AbstractPonyRenderer<T, S, M> proxy(
+            M extends ClientPonyModel<S>> AbstractPonyRenderer<T, S, M> proxy(
                     EntityRendererFactory.Context context, ModelKey<? super M> key,
-                    TextureSupplier<S> texture,
+                    TextureSupplier<T> texture,
                     float scale,
                     List exportedLayers,
                     Consumer<M> modelConsumer,

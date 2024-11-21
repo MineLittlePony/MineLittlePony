@@ -3,10 +3,10 @@ package com.minelittlepony.client.render;
 import java.util.function.Function;
 
 import com.google.common.base.Predicates;
-import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.model.PreviewModel;
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.client.mixin.MixinEntityRenderers;
+import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.*;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
@@ -16,7 +16,6 @@ import com.minelittlepony.mson.api.Mson;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.*;
-import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.SkinTextures;
 import net.minecraft.entity.Entity;
@@ -80,7 +79,7 @@ public class PonyRenderDispatcher {
 
     @SuppressWarnings("unchecked")
     @Nullable
-    public <T extends LivingEntity, S extends PonyRenderState, M extends EntityModel<S> & PonyModel<S>, R extends LivingEntityRenderer<T, S, M> & PonyRenderContext<T, S, M>> R getPonyRenderer(@Nullable T entity) {
+    public <T extends LivingEntity, S extends PonyRenderState, M extends ClientPonyModel<S>, R extends LivingEntityRenderer<T, S, M> & PonyRenderContext<T, S, M>> R getPonyRenderer(@Nullable T entity) {
         if (entity != null && MinecraftClient.getInstance().getEntityRenderDispatcher().getRenderer(entity) instanceof PonyRenderContext c) {
             return (R)c;
         }

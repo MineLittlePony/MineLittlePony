@@ -24,7 +24,7 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> i
     protected final ModelPart unicornArmRight;
     protected final ModelPart unicornArmLeft;
 
-    protected UnicornHorn horn;
+    protected UnicornHorn<T> horn;
 
     public UnicornModel(ModelPart tree, boolean smallArms) {
         super(tree, smallArms);

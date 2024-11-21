@@ -7,6 +7,7 @@ import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.client.PonyDataLoader;
+import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.client.transform.PonyPosture;
 import com.minelittlepony.mson.api.ModelKey;
@@ -30,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 public class EquineRenderManager<
         T extends LivingEntity,
         S extends PonyRenderState,
-        M extends EntityModel<? super S> & PonyModel<S>> {
+        M extends ClientPonyModel<S>> {
 
     private Models<M> models;
 
@@ -39,7 +40,9 @@ public class EquineRenderManager<
     private final PonyRenderContext<T, S, M> context;
     private final Transformer<? super S> transformer;
 
-    private final FrustrumCheck<T> frustrum;
+    private final FrustrumCheck<S> frustrum = new FrustrumCheck<>();
+
+    private final MinecraftClient client = MinecraftClient.getInstance();
 
     public static void disableModelRenderProfile() {
         RenderSystem.disableBlend();
@@ -49,7 +52,6 @@ public class EquineRenderManager<
         this.context = context;
         this.transformer = transformer;
         this.models = models;
-        frustrum = new FrustrumCheck<>(context);
         context.setModel(models.body());
     }
 
@@ -74,7 +76,8 @@ public class EquineRenderManager<
         if (entity.isSleeping() || !PonyConfig.getInstance().frustrum.get()) {
             return vanilla;
         }
-        return frustrum.withCamera(entity, vanilla);
+
+        return frustrum.withCamera(context.getVanillaRenderer().getAndUpdateRenderState(entity, client.getRenderTickCounter().getTickDelta(false)), vanilla);
     }
 
     public void updateState(T entity, S state, ModelAttributes.Mode mode) {

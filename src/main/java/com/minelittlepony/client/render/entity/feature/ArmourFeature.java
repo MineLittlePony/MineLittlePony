@@ -2,13 +2,13 @@ package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.Models;
 import com.minelittlepony.api.model.PonyModel;
+import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.armour.*;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.equipment.EquipmentModelLoader;
-import net.minecraft.client.render.entity.model.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.EquippableComponent;
@@ -18,7 +18,11 @@ import net.minecraft.item.*;
 import net.minecraft.item.equipment.EquipmentModel;
 import net.minecraft.util.Identifier;
 
-public class ArmourFeature<T extends LivingEntity, S extends PonyRenderState, M extends EntityModel<? super S> & PonyModel<S>> extends AbstractPonyFeature<S, M> {
+public class ArmourFeature<
+        T extends LivingEntity,
+        S extends PonyRenderState,
+        M extends ClientPonyModel<S>
+    > extends AbstractPonyFeature<S, M> {
 
     private final PonifiedEquipmentRenderer equipmentRenderer;
 

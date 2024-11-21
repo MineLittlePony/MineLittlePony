@@ -1,7 +1,6 @@
 package com.minelittlepony.client.model;
 
 import com.minelittlepony.api.model.*;
-import com.minelittlepony.api.events.PonyModelPrepareCallback;
 import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.client.transform.PonyTransformation;
@@ -15,12 +14,9 @@ import java.util.function.Supplier;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;

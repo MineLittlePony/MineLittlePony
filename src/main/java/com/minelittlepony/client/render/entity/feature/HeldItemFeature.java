@@ -1,13 +1,12 @@
 package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.*;
+import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.feature.HeldItemFeatureRenderer;
-import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.feature.PlayerHeldItemFeatureRenderer;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -18,13 +17,13 @@ import net.minecraft.util.Arm;
 @SuppressWarnings(value = {"unchecked"})
 public class HeldItemFeature<
         S extends PonyRenderState,
-        M extends EntityModel<PlayerEntityRenderState> & PonyModel<S>
-    > extends HeldItemFeatureRenderer<PlayerEntityRenderState, M> {
+        M extends ClientPonyModel<S>
+    > extends PlayerHeldItemFeatureRenderer<PlayerEntityRenderState, M> {
 
     private final PonyRenderContext<?, S, M> context;
 
     public HeldItemFeature(PonyRenderContext<?, S, M> context, ItemRenderer renderer) {
-        super((FeatureRendererContext<PlayerEntityRenderState, M>)context, renderer);
+        super(context.upcast(), renderer);
         this.context = context;
     }
 

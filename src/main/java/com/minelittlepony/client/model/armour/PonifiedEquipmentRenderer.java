@@ -71,7 +71,8 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
                 for (EquipmentModel.Layer layer : layers) {
                     int j = getDyeColor(layer, i);
                     if (j != 0) {
-                        ArmourTexture armorTexture = plugin.getTextureLookup().getTexture(stack, layerType == LayerType.HUMANOID_LEGGINGS ? ArmourLayer.INNER : ArmourLayer.OUTER, layer);
+                        ArmourLayer armourLayer = layerType == LayerType.HUMANOID_LEGGINGS ? ArmourLayer.INNER : ArmourLayer.OUTER;
+                        ArmourTexture armorTexture = plugin.getTextureLookup().getTexture(stack, armourLayer, layer);
                         Identifier layerTexture = layer.usePlayerTexture() && texture != null
                             ? texture
                             : armorTexture.texture();
@@ -81,7 +82,9 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
                             ArmourVariant variant = layer.usePlayerTexture() ? ArmourVariant.NORMAL : armorTexture.variant();
                             models.getArmourModel(stack, null, variant).ifPresent(model -> {
                                 VertexConsumer glintConsumer = hasGlint ? plugin.getGlintConsumer(equipmentSlot, vertexConsumers, layerType) : null;
-                                model.render(matrices, glintConsumer != null ? VertexConsumers.union(plugin.getGlintConsumer(equipmentSlot, vertexConsumers, layerType), armorConsumer) : armorConsumer, light, OverlayTexture.DEFAULT_UV, j);
+                                if (model.poseModel(equipmentSlot, armourLayer, models.body())) {
+                                    model.render(matrices, glintConsumer != null ? VertexConsumers.union(plugin.getGlintConsumer(equipmentSlot, vertexConsumers, layerType), armorConsumer) : armorConsumer, light, OverlayTexture.DEFAULT_UV, j);
+                                }
                             });
                         }
                     }

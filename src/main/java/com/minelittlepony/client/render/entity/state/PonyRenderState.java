@@ -4,6 +4,9 @@ import net.minecraft.block.BedBlock;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.AbstractPiglinEntity;
+import net.minecraft.entity.mob.ZombifiedPiglinEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.config.PonyConfig;
@@ -25,6 +28,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
     public boolean sleepingInBed;
     public boolean submergedInWater;
     public boolean onGround;
+    public boolean isTechnoblade;
 
     public Pony pony;
 
@@ -42,6 +46,13 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         if (attributes.isSitting) {
             pose = EntityPose.SITTING;
         }
+
+        isTechnoblade = ((
+                    entity instanceof AbstractPiglinEntity
+                 || entity instanceof PlayerEntity
+                 || entity instanceof ZombifiedPiglinEntity
+             ) && entity.hasCustomName() && entity.getCustomName().getString().equalsIgnoreCase("technoblade")
+         );
 
         PonyPosture.of(attributes).updateState(entity, this);
         PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(attributes, model, ModelAttributes.Mode.OTHER);
@@ -114,7 +125,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
      * Tests if this model is wearing the given piece of gear.
      */
     public boolean isWearing(Wearable wearable) {
-        return isEmbedded(wearable) || attributes.featureSkins.contains(wearable.getId());
+        return isEmbedded(wearable) || attributes.featureSkins.contains(wearable.getId()) || isTechnoblade && wearable == Wearable.CROWN;
     }
 
     /**

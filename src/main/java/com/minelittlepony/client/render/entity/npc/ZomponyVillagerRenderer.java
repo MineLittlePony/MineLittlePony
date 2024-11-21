@@ -13,7 +13,7 @@ import com.minelittlepony.client.render.entity.npc.textures.*;
 
 public class ZomponyVillagerRenderer extends AbstractNpcRenderer<ZombieVillagerEntity, ZomponyVillagerRenderer.State> {
     private static final TextureSupplier<String> FORMATTER = TextureSupplier.formatted("minelittlepony", "textures/entity/zombie_villager/zombie_%s.png");
-    private static final TextureSupplier<State> TEXTURES = TextureSupplier.ofPool(
+    private static final TextureSupplier<ZombieVillagerEntity> TEXTURES = TextureSupplier.ofPool(
             VariatedTextureSupplier.BACKGROUND_ZOMPONIES_POOL,
             TextureSupplier.ofPool(
                     VariatedTextureSupplier.BACKGROUND_PONIES_POOL,

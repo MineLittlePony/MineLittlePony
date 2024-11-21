@@ -28,7 +28,7 @@ public class SeaponyRenderer extends PonyRenderer<GuardianEntity, SeaponyRendere
     private static final Identifier EXPLOSION_BEAM_TEXTURE = Identifier.ofVanilla("textures/entity/guardian_beam.png");
     private static final RenderLayer LAYER = RenderLayer.getEntityCutoutNoCull(EXPLOSION_BEAM_TEXTURE);
 
-    public SeaponyRenderer(EntityRendererFactory.Context context, TextureSupplier<State> texture, float scale) {
+    public SeaponyRenderer(EntityRendererFactory.Context context, TextureSupplier<GuardianEntity> texture, float scale) {
         super(context, ModelType.GUARDIAN, texture, scale);
     }
 

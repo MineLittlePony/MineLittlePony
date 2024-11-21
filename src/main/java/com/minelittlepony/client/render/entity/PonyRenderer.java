@@ -16,11 +16,11 @@ public abstract class PonyRenderer<
     > extends AbstractPonyRenderer<T, S, M> {
     protected static final float BASE_MODEL_SCALE = 15/16F;
 
-    public PonyRenderer(EntityRendererFactory.Context context, ModelKey<? super M> key, TextureSupplier<S> texture) {
+    public PonyRenderer(EntityRendererFactory.Context context, ModelKey<? super M> key, TextureSupplier<T> texture) {
         this(context, key, texture, 1);
     }
 
-    public PonyRenderer(EntityRendererFactory.Context context, ModelKey<? super M> key, TextureSupplier<S> texture, float scale) {
+    public PonyRenderer(EntityRendererFactory.Context context, ModelKey<? super M> key, TextureSupplier<T> texture, float scale) {
         super(context, key, texture, scale);
     }
 

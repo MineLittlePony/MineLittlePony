@@ -3,7 +3,6 @@ package com.minelittlepony.client.render.entity;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.model.Models;
 import com.minelittlepony.api.pony.Pony;
-import com.minelittlepony.api.pony.SkinsProxy;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.*;
@@ -19,7 +18,6 @@ import java.util.function.Function;
 
 import com.minelittlepony.client.render.EquineRenderManager;
 
-import net.minecraft.block.BedBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.*;
@@ -31,11 +29,16 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class PlayerPonyRenderer
         extends PlayerEntityRenderer
-        implements PonyRenderContext<AbstractClientPlayerEntity, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> {
+        implements PonyRenderContext<
+            AbstractClientPlayerEntity,
+            PlayerPonyRenderState,
+            ClientPonyModel<PlayerPonyRenderState>
+        > {
     private final Function<Race, Models<ClientPonyModel<PlayerPonyRenderState>>> modelsCache;
     protected final EquineRenderManager<AbstractClientPlayerEntity, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> manager;
 
@@ -49,7 +52,6 @@ public class PlayerPonyRenderer
         addPonyFeatures(context);
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     protected void addPonyFeatures(EntityRendererFactory.Context context) {
         // remove vanilla features (keep modded ones)
         features.removeIf(feature -> {
@@ -61,18 +63,21 @@ public class PlayerPonyRenderer
                     || feature instanceof ElytraFeatureRenderer
                     || feature instanceof ShoulderParrotFeatureRenderer;
         });
-        addPonyFeature(new ArmourFeature<>(this, context.getModelManager()));
-        addPonyFeature(new HeldItemFeature(this, context.getItemRenderer()));
+        addPonyFeature(new ArmourFeature<>(this, context.getEquipmentModelLoader()));
+        addPonyFeature(new HeldItemFeature<>(this, context.getItemRenderer()));
         addPonyFeature(new DJPon3Feature<>(this));
-        addPonyFeature(new CapeFeature<>(this));
+        addFeature(new CapeFeature(this, context.getModelLoader(), context.getEquipmentModelLoader()));
         addPonyFeature(new SkullFeature<>(this, context.getModelLoader(), context.getItemRenderer()));
-        addPonyFeature(new ElytraFeature<>(this));
+        addPonyFeature(new ElytraFeature<>(this, context.getEquipmentRenderer()));
         addPonyFeature(new PassengerFeature<>(this, context));
         addPonyFeature(new GearFeature<>(this));
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    protected final boolean addPonyFeature(FeatureRenderer<? extends PonyRenderState, ? extends ClientPonyModel<? extends PonyRenderState>> feature) {
+    protected final boolean addPonyFeature(FeatureRenderer<
+            ? extends PlayerEntityRenderState,
+            ? extends ClientPonyModel<? extends PonyRenderState>
+            > feature) {
         return ((List)features).add(feature);
     }
 
@@ -90,6 +95,9 @@ public class PlayerPonyRenderer
     public void updateRenderState(AbstractClientPlayerEntity entity, PlayerEntityRenderState state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
         manager.updateState(entity, (PlayerPonyRenderState)state, mode);
+
+        // Rotate cape to align with the pony back
+        state.field_53536 += MathHelper.PI / 2;
     }
 
     public final PlayerPonyRenderState getAndUpdateRenderState(AbstractClientPlayerEntity entity, float tickDelta, ModelAttributes.Mode mode) {
@@ -206,7 +214,7 @@ public class PlayerPonyRenderer
     }
 
     @Override
-    public Identifier getTexture(PlayerEntityRenderState state) {
+    public final Identifier getTexture(PlayerEntityRenderState state) {
         return ((PonyRenderState)state).pony.texture();
     }
 

@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.Object2FloatLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import net.minecraft.block.SkullBlock;
 import net.minecraft.client.render.*;
-import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -17,9 +16,9 @@ import net.minecraft.world.EmptyBlockView;
 import com.google.common.cache.*;
 import com.google.common.collect.Streams;
 import com.minelittlepony.api.model.BodyPart;
-import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.model.gear.Gear;
 import com.minelittlepony.api.pony.meta.Wearable;
+import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.armour.ArmourLayer;
 import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
@@ -33,7 +32,7 @@ import java.util.stream.Collectors;
 public class GearFeature<
         T extends LivingEntity,
         S extends PonyRenderState,
-        M extends EntityModel<? super S> & PonyModel<S>
+        M extends ClientPonyModel<S>
     > extends AbstractPonyFeature<S, M> {
 
     private final List<Entry> gears = Streams.concat(

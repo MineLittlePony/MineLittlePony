@@ -4,21 +4,18 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Colors;
 
-import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.api.model.BodyPart;
-import com.minelittlepony.api.model.PonyModel;
-import com.minelittlepony.client.model.DJPon3EarsModel;
+import com.minelittlepony.client.model.*;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 public class DJPon3Feature<
         T extends AbstractClientPlayerEntity,
         S extends PonyRenderState,
-        M extends EntityModel<? super S> & PonyModel<S>
+        M extends ClientPonyModel<S>
     > extends AbstractPonyFeature<S, M> {
 
     private final DJPon3EarsModel deadMau5 = ModelType.DJ_PON_3.createModel();

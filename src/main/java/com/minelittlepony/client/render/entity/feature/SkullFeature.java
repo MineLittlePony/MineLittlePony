@@ -2,6 +2,7 @@ package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.PonyModel;
+import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.armour.ArmourLayer;
 import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.PonyRenderContext;
@@ -25,7 +26,8 @@ import net.minecraft.item.*;
 public class SkullFeature<
         T extends LivingEntity,
         S extends PonyRenderState,
-        M extends EntityModel<? super S> & PonyModel<S>> extends AbstractPonyFeature<S, M> {
+        M extends ClientPonyModel<S>
+    > extends AbstractPonyFeature<S, M> {
     private final ItemRenderer itemRenderer;
 
     public SkullFeature(PonyRenderContext<T, S, M> renderPony, EntityModelLoader entityModelLoader, ItemRenderer itemRenderer) {

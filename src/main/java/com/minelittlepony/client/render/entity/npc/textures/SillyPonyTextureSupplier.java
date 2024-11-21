@@ -10,10 +10,10 @@ import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 public class SillyPonyTextureSupplier {
-    public static <T extends State> TextureSupplier<T> create(TextureSupplier<T> fallback, TextureSupplier<String> formatter) {
+    public static <T extends LivingEntity> TextureSupplier<T> create(TextureSupplier<T> fallback, TextureSupplier<String> formatter) {
         Identifier egg = formatter.apply("silly_pony");
         Identifier egg2 = formatter.apply("tiny_silly_pony");
-        return entity -> entity.isDerpy ? (entity.isDinky ? egg2 : egg) : fallback.apply(entity);
+        return entity -> SillyPonyTextureSupplier.isBestPony(entity) ? (isDinky(entity) ? egg2 : egg) : fallback.apply(entity);
     }
 
     public static boolean isBestPony(LivingEntity entity) {
@@ -26,6 +26,10 @@ public class SillyPonyTextureSupplier {
 
     public static boolean isCrownPony(LivingEntity entity) {
         return isBestPony(entity) && entity.getUuid().getLeastSignificantBits() % 20 == 0;
+    }
+
+    public static boolean isDinky(LivingEntity entity) {
+        return entity.hasCustomName() && "Dinky".equals(entity.getCustomName().getString());
     }
 
     public static class State extends PonyRenderState implements VillagerDataContainer {

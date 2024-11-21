@@ -14,8 +14,8 @@ import static com.minelittlepony.common.event.SkinFilterCallback.copy;
  */
 class LegacySkinConverter implements SkinFilterCallback {
     @Override
-    public void processImage(NativeImage image, boolean legacy) {
-        if (legacy) {
+    public NativeImage processImage(NativeImage image, int initialWidth, int initialHeight) {
+        if (SkinFilterCallback.isLegacyAspectRatio(initialWidth, initialHeight)) {
             // ( from ) ( offset )  (size) flipX flipY
             copy(image, 58, 16, 0, 16, 2, 2, true, false); // top
             copy(image, 60, 16, 0, 16, 2, 2, true, false); // bottom
@@ -24,5 +24,7 @@ class LegacySkinConverter implements SkinFilterCallback {
             copy(image, 56, 18, 4, 16, 2, 14, true, false); // outside
             copy(image, 62, 18, 0, 16, 2, 14, true, false); // front
         }
+
+        return image;
     }
 }

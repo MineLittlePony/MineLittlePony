@@ -5,79 +5,63 @@ import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.armour.ArmourLayer;
 import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.PonyRenderContext;
+import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
+import com.minelittlepony.common.util.render.RenderLayerUtil;
 
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.equipment.EquipmentModelLoader;
+import net.minecraft.client.render.entity.feature.CapeFeatureRenderer;
+import net.minecraft.client.render.entity.model.EntityModelLoader;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.player.PlayerModelPart;
-import net.minecraft.util.math.*;
+import net.minecraft.util.Identifier;
 
-public class CapeFeature<M extends ClientPonyModel<AbstractClientPlayerEntity>> extends AbstractPonyFeature<AbstractClientPlayerEntity, M> {
+public class CapeFeature extends CapeFeatureRenderer {
 
-    public CapeFeature(PonyRenderContext<AbstractClientPlayerEntity, M> context) {
-        super(context);
+    private final PonyRenderContext<?, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> context;
+
+    public CapeFeature(PonyRenderContext<?, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> context, EntityModelLoader modelLoader, EquipmentModelLoader equipmentModelLoader) {
+        super(context.upcast(), modelLoader, equipmentModelLoader);
+        this.context = context;
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider provider, int light, AbstractClientPlayerEntity player, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
-        M model = getModelWrapper().body();
+    public void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, PlayerEntityRenderState player, float limbAngle, float limbDistance) {
+        ClientPonyModel<PlayerPonyRenderState> model = context.getInternalRenderer().getModels().body();
 
-        if (!player.isInvisible()
-            && player.isPartVisible(PlayerModelPart.CAPE)
-            && player.getSkinTextures().capeTexture() != null) {
-
+        if (!player.invisible && player.capeVisible) {
             ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
 
-            VertexConsumer vertices = plugin.getCapeConsumer(player, provider, player.getSkinTextures().capeTexture());
-            if (vertices == null) {
+            Identifier capeTexture = player.skinTextures.capeTexture();
+            VertexConsumer buffer = plugin.getCapeConsumer(player, vertices, player.skinTextures.capeTexture());
+            if (buffer == null) {
                 return;
             }
 
+            boolean[] rendered = {false};
             matrices.push();
+            super.render(matrices, layer -> {
+                if (RenderLayerUtil.getTexture(layer).orElse(null) == capeTexture) {
+                    rendered[0] = true;
 
-            matrices.translate(0, 0.24F, 0);
-            if (model.getAttributes().isLyingDown) {
-                matrices.translate(0, -0.05F, 0);
-            }
-            model.transform(BodyPart.BODY, matrices);
-            model.getBodyPart(BodyPart.BODY).rotate(matrices);
+                    matrices.translate(0, 0.24F, 0);
+                    if (((PlayerPonyRenderState)player).getAttributes().isLyingDown) {
+                        matrices.translate(0, -0.05F, 0);
+                    }
+                    model.transform((PlayerPonyRenderState)player, BodyPart.BODY, matrices);
+                    model.getBodyPart(BodyPart.BODY).rotate(matrices);
 
-            double capeX = MathHelper.lerp(tickDelta, player.capeX, player.prevCapeX) - MathHelper.lerp(tickDelta, player.prevX, player.getX());
-            double capeY = MathHelper.lerp(tickDelta, player.capeY, player.prevCapeY) - MathHelper.lerp(tickDelta, player.prevY, player.getY());
-            double capeZ = MathHelper.lerp(tickDelta, player.capeZ, player.prevCapeZ) - MathHelper.lerp(tickDelta, player.prevZ, player.getZ());
-
-            float motionYaw = player.prevBodyYaw + (player.bodyYaw - player.prevBodyYaw);
-
-            double sin = MathHelper.sin(motionYaw * MathHelper.RADIANS_PER_DEGREE);
-            double cos = -MathHelper.cos(motionYaw * MathHelper.RADIANS_PER_DEGREE);
-
-            float capeMotionY = (float) capeY * 10;
-
-            if (capeMotionY < -6) capeMotionY = -6;
-            if (capeMotionY > 32) capeMotionY = 32;
-
-            float capeMotionX = (float) (capeX * sin + capeZ * cos) * 100;
-
-            float diagMotion =  (float) (capeX * cos - capeZ * sin) * 100;
-
-            if (capeMotionX < 0) capeMotionX = 0;
-
-            float camera = MathHelper.lerp(tickDelta, player.prevStrideDistance, player.strideDistance);
-            capeMotionY += MathHelper.sin(MathHelper.lerp(tickDelta, player.prevHorizontalSpeed, player.horizontalSpeed) * 6) * 32 * camera;
-
-            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(2 + capeMotionX / 12 + capeMotionY));
-            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees( diagMotion / 2));
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-diagMotion / 2));
-            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
-            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
-
-            model.renderCape(matrices, vertices, light, OverlayTexture.DEFAULT_UV);
+                    return buffer;
+                }
+                return vertices.getBuffer(layer);
+            }, light, player, limbAngle, limbDistance);
             matrices.pop();
 
-            plugin.onArmourRendered(player, matrices, provider, EquipmentSlot.BODY, ArmourLayer.OUTER, ArmourRendererPlugin.ArmourType.CAPE);
+            if (rendered[0]) {
+                plugin.onArmourRendered(player, matrices, vertices, EquipmentSlot.BODY, ArmourLayer.OUTER, ArmourRendererPlugin.ArmourType.CAPE);
+            }
         }
     }
 }

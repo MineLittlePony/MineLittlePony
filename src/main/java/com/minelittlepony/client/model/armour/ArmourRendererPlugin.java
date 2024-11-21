@@ -11,7 +11,6 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.equipment.EquipmentModel;
 import net.minecraft.item.equipment.EquipmentModel.LayerType;
@@ -108,15 +107,15 @@ public interface ArmourRendererPlugin {
     }
 
     @Nullable
-    default VertexConsumer getCapeConsumer(LivingEntity entity, VertexConsumerProvider provider, Identifier texture) {
-        if (entity.getEquippedStack(EquipmentSlot.CHEST).isOf(Items.ELYTRA)) {
+    default VertexConsumer getCapeConsumer(BipedEntityRenderState entity, VertexConsumerProvider provider, Identifier texture) {
+        if (entity.equippedChestStack.isOf(Items.ELYTRA)) {
             return null;
         }
         return getOptionalBuffer(provider, getCapeLayer(entity, texture));
     }
 
     @Nullable
-    default RenderLayer getCapeLayer(LivingEntity entity, Identifier texture) {
+    default RenderLayer getCapeLayer(BipedEntityRenderState entity, Identifier texture) {
         return RenderLayer.getEntitySolid(texture);
     }
 
