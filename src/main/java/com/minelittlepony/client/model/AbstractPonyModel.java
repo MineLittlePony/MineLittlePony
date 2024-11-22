@@ -455,7 +455,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
      * @param entity     The entity we are being called for.
      */
     protected final void swingItem(T state) {
-        if (state.getSwingAmount() > 0 && !state.attributes.isLyingDown) {
+        if (state.handSwingProgress > 0 && !state.attributes.isLyingDown) {
             swingArm(state, getArm(state.preferredArm));
         }
     }
@@ -466,10 +466,10 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
      * @param arm       The arm to swing
      */
     protected final void swingArm(T state, ModelPart arm) {
-        float swing = 1 - (float)Math.pow(1 - state.getSwingAmount(), 3);
+        float swing = 1 - (float)Math.pow(1 - state.handSwingProgress, 3);
 
         float deltaX = MathHelper.sin(swing * MathHelper.PI);
-        float deltaZ = MathHelper.sin(state.getSwingAmount() * MathHelper.PI);
+        float deltaZ = MathHelper.sin(state.handSwingProgress * MathHelper.PI);
 
         float deltaAim = deltaZ * (0.7F - head.pitch) * 0.75F;
 

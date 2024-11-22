@@ -67,19 +67,13 @@ public class SkeleponyRenderer<T extends AbstractSkeletonEntity> extends PonyRen
     }
 
     public static class State extends PonyRenderState {
-        public boolean isUnicorn;
-        public boolean isWithered;
         public boolean isAttacking;
 
         public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
-            isUnicorn = entity.getUuid().getLeastSignificantBits() % 3 != 0;
-            isWithered = entity instanceof WitherSkeletonEntity;
             isAttacking = entity instanceof HostileEntity h && h.isAttacking();
-        }
-
-        @Override
-        public Race getRace() {
-            return isUnicorn ? super.getRace() : Race.EARTH;
+            if (entity.getUuid().getLeastSignificantBits() % 3 == 0) {
+                race = Race.EARTH;
+            }
         }
 
         @Override

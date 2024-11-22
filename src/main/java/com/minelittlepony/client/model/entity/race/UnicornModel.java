@@ -34,7 +34,7 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> i
     public void init(ModelView context) {
         super.init(context);
         horn = addPart(context.findByName("horn"));
-        headRenderList.add(RenderList.of().add(head::rotate).add(forPart(horn)).checked(() -> currentState.getRace().hasHorn()));
+        headRenderList.add(RenderList.of().add(head::rotate).add(forPart(horn)).checked(() -> currentState.race.hasHorn()));
         this.mainRenderList.add(withStage(BodyPart.HEAD, RenderList.of().add(head::rotate).add((stack, vertices, overlay, light, color) -> {
             horn.renderMagic(stack, vertices, currentState.attributes.metadata.glowColor());
         })).checked(() -> currentState.hasMagicGlow() && isCasting(currentState)));

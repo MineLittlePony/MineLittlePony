@@ -29,7 +29,7 @@ public class CapeFeature extends CapeFeatureRenderer {
 
     @Override
     public void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, PlayerEntityRenderState player, float limbAngle, float limbDistance) {
-        ClientPonyModel<PlayerPonyRenderState> model = context.getInternalRenderer().getModels().body();
+        ClientPonyModel<PlayerPonyRenderState> model = context.getEquineManager().getModels().body();
 
         if (!player.invisible && player.capeVisible) {
             ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();

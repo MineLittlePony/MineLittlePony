@@ -69,7 +69,7 @@ public class ElytraFeature<
         if (state instanceof PonyRenderState ponyState && context instanceof PonyRenderContext context) {
             stack.translate(0, ponyState.riderOffset, 0.125);
 
-            ((ClientPonyModel<PonyRenderState>)context.getInternalRenderer().getModels().body()).transform(ponyState, BodyPart.BODY, stack);
+            ((ClientPonyModel<PonyRenderState>)context.getEquineManager().getModels().body()).transform(ponyState, BodyPart.BODY, stack);
         }
     }
 

@@ -1,9 +1,7 @@
 package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.model.Models;
 import com.minelittlepony.api.pony.Pony;
-import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.*;
 import com.minelittlepony.client.render.DebugBoundingBoxRenderer;
@@ -14,11 +12,9 @@ import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.common.util.render.RenderLayerUtil;
 
 import java.util.*;
-import java.util.function.Function;
 
 import com.minelittlepony.client.render.EquineRenderManager;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -29,8 +25,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 
 public class PlayerPonyRenderer
         extends PlayerEntityRenderer
@@ -39,21 +34,15 @@ public class PlayerPonyRenderer
             PlayerPonyRenderState,
             ClientPonyModel<PlayerPonyRenderState>
         > {
-    private final Function<Race, Models<ClientPonyModel<PlayerPonyRenderState>>> modelsCache;
     protected final EquineRenderManager<AbstractClientPlayerEntity, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> manager;
 
     private ModelAttributes.Mode mode = ModelAttributes.Mode.THIRD_PERSON;
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public PlayerPonyRenderer(EntityRendererFactory.Context context, boolean slim) {
         super(context, slim);
-        modelsCache = Util.memoize(race -> ModelType.getPlayerModel(race).create(slim));
-        manager = new EquineRenderManager<>(this, super::setupTransforms, modelsCache.apply(Race.EARTH));
-        manager.setModelsLookup(entity -> modelsCache.apply(getPlayerRace(entity)));
-        addPonyFeatures(context);
-    }
+        manager = new EquineRenderManager<>(this, super::setupTransforms, race -> ModelType.getPlayerModel(race).create(slim));
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    protected void addPonyFeatures(EntityRendererFactory.Context context) {
         // remove vanilla features (keep modded ones)
         features.removeIf(feature -> {
             return feature instanceof ArmorFeatureRenderer
@@ -129,11 +118,6 @@ public class PlayerPonyRenderer
             stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(yaw));
         }
         */
-
-    }
-
-    protected Race getPlayerRace(PlayerPonyRenderState state) {
-        return state.getRace();
     }
 
     @Override
@@ -142,12 +126,8 @@ public class PlayerPonyRenderer
     }
 
     @Override
-    public boolean shouldRender(AbstractClientPlayerEntity entity, Frustum camera, double camX, double camY, double camZ) {
-        if (entity.isSleeping() && entity == MinecraftClient.getInstance().player) {
-            return !MinecraftClient.getInstance().options.getPerspective().isFirstPerson()
-                    && super.shouldRender(entity, camera, camX, camY, camZ);
-        }
-        return super.shouldRender(entity, manager.getFrustrum(entity, camera), camX, camY, camZ);
+    protected Box getBoundingBox(AbstractClientPlayerEntity entity) {
+        return manager.getBoundingBox(entity, entity.getBoundingBox());
     }
 
     @Override
@@ -205,7 +185,7 @@ public class PlayerPonyRenderer
     }
 
     @Override
-    public EquineRenderManager<AbstractClientPlayerEntity, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> getInternalRenderer() {
+    public EquineRenderManager<AbstractClientPlayerEntity, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> getEquineManager() {
         return manager;
     }
 
@@ -225,7 +205,7 @@ public class PlayerPonyRenderer
             return state.wearabledTextures.get(wearable);
         }
 
-        if (wearable.isSaddlebags() && state.getRace().supportsLegacySaddlebags()) {
+        if (wearable.isSaddlebags() && state.race.supportsLegacySaddlebags()) {
             return getTexture(state);
         }
 

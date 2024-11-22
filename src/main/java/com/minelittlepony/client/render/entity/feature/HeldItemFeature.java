@@ -29,7 +29,7 @@ public class HeldItemFeature<
 
     public void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, S state, float limbAngle, float limbDistance) {
         if (!state.leftHandStack.isEmpty() || !state.rightHandStack.isEmpty()) {
-            M model = context.getInternalRenderer().getModels().body();
+            M model = context.getEquineManager().getModels().body();
 
             matrices.push();
             model.transform(state, BodyPart.LEGS, matrices);

@@ -32,7 +32,6 @@ public class PassengerFeature<
         parrotState.parrotPose = ParrotEntityModel.Pose.ON_SHOULDER;
     }
 
-
     @Override
     public void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, S state, float limbAngle, float limbDistance) {
         if (state.leftShoulderParrotVariant != null) {

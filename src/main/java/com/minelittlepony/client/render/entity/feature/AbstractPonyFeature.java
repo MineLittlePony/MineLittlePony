@@ -28,10 +28,10 @@ public abstract class AbstractPonyFeature<
 
     @Override
     public final M getContextModel() {
-        return context.getInternalRenderer().getModels().body();
+        return context.getEquineManager().getModels().body();
     }
 
     protected Models<M> getModelWrapper() {
-        return context.getInternalRenderer().getModels();
+        return context.getEquineManager().getModels();
     }
 }

@@ -62,7 +62,7 @@ public record MobRenderers (String name, BiConsumer<MobRenderers, EntityRenderer
         registry.registerEntityRenderer(EntityType.ENDERMAN, state, EnderStallionRenderer::new);
     });
     public static final MobRenderers INANIMATE = register("inanimates", (state, registry) -> {
-       registry.registerEntityRenderer(EntityType.ARMOR_STAND, state, PonyStandRenderer::new);
+       registry.registerEntityRenderer(EntityType.ARMOR_STAND, e -> state.option().get() && PonyStandRenderer.isPonyStand(e), PonyStandRenderer::new);
     });
     public static final MobRenderers STRIDER = register("striders", (state, registry) -> {
         registry.registerEntityRenderer(EntityType.STRIDER, state, StriderRenderer::new);

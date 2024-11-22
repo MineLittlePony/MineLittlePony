@@ -8,6 +8,7 @@ import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.PiglinPonyModel;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 public class PonyPiglinRenderer extends PonyRenderer<HostileEntity, PonyPiglinRenderer.State, PiglinPonyModel> {
     public static final Identifier PIGLIN = MineLittlePony.id("textures/entity/piglin/piglin_pony.png");
@@ -39,16 +40,10 @@ public class PonyPiglinRenderer extends PonyRenderer<HostileEntity, PonyPiglinRe
         super.updateRenderState(entity, state, tickDelta);
         state.zombified = entity instanceof ZombifiedPiglinEntity;
         state.activity = entity instanceof AbstractPiglinEntity piglin ? piglin.getActivity() : PiglinActivity.DEFAULT;
-        state.shouldZombify = entity instanceof AbstractPiglinEntity piglin && piglin.shouldZombify();
+        state.shaking |= entity instanceof AbstractPiglinEntity piglin && piglin.shouldZombify();
     }
 
-    @Override
-    protected boolean isShaking(State state) {
-       return super.isShaking(state) || state.shouldZombify;
-    }
-
-    public static class State extends ZomponyRenderer.State {
-        public boolean shouldZombify;
+    public static class State extends PonyRenderState {
         public boolean zombified;
         public PiglinActivity activity;
     }

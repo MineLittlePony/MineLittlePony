@@ -2,7 +2,6 @@ package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.entity.model.ArmorStandEntityModel;
 import net.minecraft.entity.LivingEntity;
 
 import com.minelittlepony.api.model.BodyPart;
@@ -48,7 +47,7 @@ public final class ModelType {
 
     public static final ModelKey<PonyElytra<?>> ELYTRA = register("elytra", PonyElytra::new);
 
-    public static final ModelKey<ArmorStandEntityModel> ARMOUR_STAND = register("armour_stand", PonyArmourStandModel::new);
+    public static final ModelKey<PonyArmourStandModel> ARMOUR_STAND = register("armour_stand", PonyArmourStandModel::new);
     public static final ModelKey<PonyArmourModel<?>> INNER_VANILLA_ARMOR = register("armor/inner_vanilla_armor", PonyArmourModel::new);
     public static final ModelKey<PonyArmourModel<?>> OUTER_VANILLA_ARMOR = register("armor/outer_vanilla_armor", PonyArmourModel::new);
     public static final ModelKey<PonyArmourModel<?>> INNER_PONY_ARMOR = register("armor/inner_pony_armor", PonyArmourModel::new);

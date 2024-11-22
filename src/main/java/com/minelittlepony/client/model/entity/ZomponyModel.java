@@ -2,11 +2,11 @@ package com.minelittlepony.client.model.entity;
 
 import com.minelittlepony.api.model.MobPosingHelper;
 import com.minelittlepony.client.model.entity.race.AlicornModel;
-import com.minelittlepony.client.render.entity.ZomponyRenderer;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import net.minecraft.client.model.ModelPart;
 
-public class ZomponyModel<T extends ZomponyRenderer.State> extends AlicornModel<T> {
+public class ZomponyModel<T extends PonyRenderState> extends AlicornModel<T> {
     public ZomponyModel(ModelPart tree) {
         super(tree, false);
     }

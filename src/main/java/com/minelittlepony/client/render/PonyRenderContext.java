@@ -2,6 +2,7 @@ package com.minelittlepony.client.render;
 
 import com.minelittlepony.api.model.gear.Gear;
 import com.minelittlepony.api.pony.Pony;
+import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
@@ -10,6 +11,7 @@ import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.Identifier;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -21,9 +23,16 @@ public interface PonyRenderContext<
 
     Pony getEntityPony(T entity);
 
-    EquineRenderManager<T, S, M> getInternalRenderer();
+    EquineRenderManager<T, S, M> getEquineManager();
 
-    void setModel(M model);
+    default void setModel(M model) {
+
+    }
+
+    @Override
+    default Identifier getDefaultTexture(S entity, Wearable wearable) {
+        return wearable.getDefaultTexture();
+    }
 
     @Nullable
     @SuppressWarnings("unchecked")

@@ -1,7 +1,6 @@
 package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.api.model.*;
-import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
@@ -16,7 +15,6 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
@@ -36,17 +34,37 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
         super(context, ModelType.ENDERMAN, TextureSupplier.of(ENDERMAN));
     }
 
-    @Override
-    public State createRenderState() {
-        return new State();
-    }
-
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     protected void addFeatures(EntityRendererFactory.Context context) {
         addPonyFeature(createHeldItemFeature(context));
         addPonyFeature(new StuckArrowsFeatureRenderer<EnderStallionModel>((PonyRenderer)this, context));
         addPonyFeature(new GlowingEyesFeature<EnderStallionRenderer.State, EnderStallionModel>(this));
+    }
+
+    @Override
+    public State createRenderState() {
+        return new State();
+    }
+
+    @Override
+    public void updateRenderState(EndermanEntity entity, State state, float tickDelta) {
+        super.updateRenderState(entity, state, tickDelta);
+        boolean isAlicorn = entity.getUuid().getLeastSignificantBits() % 3 == 0;
+        state.isBoss = !isAlicorn && entity.getUuid().getLeastSignificantBits() % 90 == 0;
+        state.race = isAlicorn ? (state.attributes.metadata.race().hasHorn() ? Race.ALICORN : Race.PEGASUS) : state.attributes.metadata.race();
+        state.angry = entity.isAngry();
+        state.carriedBlock = entity.getCarriedBlock();
+
+        if (state.carriedBlock != null) {
+            if (state.mainArm == Arm.RIGHT) {
+                state.rightHandStack = state.carriedBlock.getBlock().asItem().getDefaultStack();
+            } else {
+                state.leftHandStack = state.carriedBlock.getBlock().asItem().getDefaultStack();
+            }
+        }
+        state.attributes.wingsSpread = state.isAttacking;
+        state.attributes.wingAngle = MathHelper.sin(state.age) + WingedPonyModel.WINGS_HALF_SPREAD_ANGLE;
     }
 
     @Override
@@ -72,34 +90,6 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
         public boolean angry;
         @Nullable
         public BlockState carriedBlock;
-
-        public boolean isAlicorn;
         public boolean isBoss;
-
-        public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
-            super.updateState(entity, model, pony, mode);
-            isUnicorn = true;
-            isAlicorn = entity.getUuid().getLeastSignificantBits() % 3 == 0;
-            isBoss = !isAlicorn && entity.getUuid().getLeastSignificantBits() % 90 == 0;
-
-            angry = ((EndermanEntity)entity).isAngry();
-            carriedBlock = ((EndermanEntity)entity).getCarriedBlock();
-
-            if (carriedBlock != null) {
-                if (mainArm == Arm.RIGHT) {
-                    rightHandStack = carriedBlock.getBlock().asItem().getDefaultStack();
-                } else {
-                    leftHandStack = carriedBlock.getBlock().asItem().getDefaultStack();
-                }
-            }
-
-            attributes.wingsSpread = isAttacking;
-            attributes.wingAngle = MathHelper.sin(age) + WingedPonyModel.WINGS_HALF_SPREAD_ANGLE;
-        }
-
-        @Override
-        public Race getRace() {
-            return isAlicorn ? (super.getRace().hasHorn() ? Race.ALICORN : Race.PEGASUS) : super.getRace();
-        }
     }
 }

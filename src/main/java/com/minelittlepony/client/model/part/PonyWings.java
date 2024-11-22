@@ -50,19 +50,18 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
 
     public Wing<S> getRight(S state) {
         return (
-                state.isEmbedded(Wearable.SADDLE_BAGS_BOTH)
-            || state.isEmbedded(Wearable.SADDLE_BAGS_LEFT)
-            || state.isEmbedded(Wearable.SADDLE_BAGS_RIGHT)
+                state.getAttributes().isEmbedded(Wearable.SADDLE_BAGS_BOTH)
+            || state.getAttributes().isEmbedded(Wearable.SADDLE_BAGS_LEFT)
+            || state.getAttributes().isEmbedded(Wearable.SADDLE_BAGS_RIGHT)
         ) ? legacyWing : rightWing;
     }
 
     @Override
     public void setPartAngles(S state, float bodySwing) {
         float flap = 0;
-        float progress = state.getSwingAmount();
 
-        if (progress > 0) {
-            flap = MathHelper.sin(MathHelper.sqrt(progress) * MathHelper.TAU);
+        if (state.handSwingProgress > 0) {
+            flap = MathHelper.sin(MathHelper.sqrt(state.handSwingProgress) * MathHelper.TAU);
         } else {
             float pi = MathHelper.PI * (float) Math.pow(state.limbAmplitudeMultiplier, 16);
 
@@ -92,9 +91,9 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
         boolean bags = !extended && state.isWearing(Wearable.SADDLE_BAGS_BOTH);
 
         boolean useLegacyWing = (
-                state.isEmbedded(Wearable.SADDLE_BAGS_BOTH)
-            || state.isEmbedded(Wearable.SADDLE_BAGS_LEFT)
-            || state.isEmbedded(Wearable.SADDLE_BAGS_RIGHT)
+                state.getAttributes().isEmbedded(Wearable.SADDLE_BAGS_BOTH)
+            || state.getAttributes().isEmbedded(Wearable.SADDLE_BAGS_LEFT)
+            || state.getAttributes().isEmbedded(Wearable.SADDLE_BAGS_RIGHT)
         );
 
         leftWing.open = extended;
@@ -156,12 +155,12 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
             extended.visible = open;
             folded.visible = !open;
             folded.yaw = swing * walkingRotationSpeed;
-            if (state.getRace().hasBugWings()) {
+            if (state.race.hasBugWings()) {
                 extended.yaw = folded.yaw;
             }
 
             extended.roll = roll;
-            if (state.getRace().hasBugWings()) {
+            if (state.race.hasBugWings()) {
                 folded.roll = roll;
             }
         }

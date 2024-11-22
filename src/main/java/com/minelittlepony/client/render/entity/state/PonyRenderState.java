@@ -33,6 +33,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
 
     public Pony pony;
     public Size size;
+    public Race race;
 
     public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
         this.pony = pony;
@@ -45,7 +46,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         isInSneakingPose = attributes.isCrouching && !attributes.isLyingDown;
         sleepingInBed = entity.getSleepingPosition().isPresent() && entity.getEntityWorld().getBlockState(entity.getSleepingPosition().get()).getBlock() instanceof BedBlock;
         submergedInWater = entity.isSubmergedInWater();
-        wobbleAmount = handSwingProgress <= 0 ? 0 : MathHelper.sin(MathHelper.sqrt(getSwingAmount()) * MathHelper.PI * 2) * 0.04F;
+        wobbleAmount = handSwingProgress <= 0 ? 0 : MathHelper.sin(MathHelper.sqrt(handSwingProgress) * MathHelper.PI * 2) * 0.04F;
         if (attributes.isSitting) {
             pose = EntityPose.SITTING;
         }
@@ -57,23 +58,25 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
              ) && entity.hasCustomName() && entity.getCustomName().getString().equalsIgnoreCase("technoblade")
          );
         size = baby ? SizePreset.FOAL : PonyConfig.getEffectiveSize(attributes.metadata.size());
+        race = PonyConfig.getEffectiveRace(attributes.metadata.race());
 
         PonyPosture.of(attributes).updateState(entity, this);
         PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(attributes, model, ModelAttributes.Mode.OTHER);
     }
 
     @Override
-    public Race getRace() {
-        return PonyConfig.getEffectiveRace(attributes.metadata.race());
+    public final Race getRace() {
+        return race;
     }
 
     public boolean hasMagicGlow() {
-        return getRace().hasHorn() && attributes.metadata.glowColor() != 0;
+        return race.hasHorn() && attributes.metadata.glowColor() != 0;
     }
 
     /**
      * Gets the current leg swing amount.
      */
+    @Override
     public float getSwingAmount() {
         return this.handSwingProgress;
     }
@@ -101,15 +104,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
      * Tests if this model is wearing the given piece of gear.
      */
     public boolean isWearing(Wearable wearable) {
-        return isEmbedded(wearable) || attributes.featureSkins.contains(wearable.getId()) || isTechnoblade && wearable == Wearable.CROWN;
-    }
-
-    /**
-     * Tests if the chosen piece of gear is sourcing its texture from the main skin.
-     * i.e. Used to change wing rendering when using saddlebags.
-     */
-    public boolean isEmbedded(Wearable wearable) {
-        return attributes.metadata.gear().matches(wearable);
+        return attributes.isEmbedded(wearable) || attributes.featureSkins.contains(wearable.getId()) || isTechnoblade && wearable == Wearable.CROWN;
     }
 
     private float getNamePlateYOffset(LivingEntity entity) {

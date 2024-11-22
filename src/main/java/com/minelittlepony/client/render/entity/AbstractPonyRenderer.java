@@ -15,8 +15,6 @@ import com.minelittlepony.mson.api.ModelKey;
 import java.util.*;
 import java.util.function.*;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
@@ -24,9 +22,13 @@ import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.item.Items;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Box;
 
 public abstract class AbstractPonyRenderer<
         T extends MobEntity,
@@ -36,9 +38,11 @@ public abstract class AbstractPonyRenderer<
 
     protected final EquineRenderManager<T, S, M> manager;
 
-    private final Map<Wearable, Identifier> wearableTextures = new EnumMap<>(Wearable.class);
+    private final Map<Identifier, Identifier> wearableTextures = new HashMap<>();
 
     private final TextureSupplier<T> texture;
+
+    private final ResourceManager resources;
 
     private final float scale;
 
@@ -47,6 +51,7 @@ public abstract class AbstractPonyRenderer<
         this.manager = new EquineRenderManager<T, S, M>(this, super::setupTransforms, key);
         this.texture = texture;
         this.scale = scale;
+        resources = context.getResourceManager();
         addFeatures(context);
     }
 
@@ -97,8 +102,16 @@ public abstract class AbstractPonyRenderer<
     }
 
     @Override
-    public boolean shouldRender(T entity, Frustum visibleRegion, double camX, double camY, double camZ) {
-        return super.shouldRender(entity, manager.getFrustrum(entity, visibleRegion), camX, camY, camZ);
+    protected final Box getBoundingBox(T entity) {
+        Box box = manager.getBoundingBox(entity, getUnscaledBoundingBox(entity));
+        if (entity.getEquippedStack(EquipmentSlot.HEAD).isOf(Items.DRAGON_HEAD)) {
+            return box.expand(0.5, 0.5, 0.5);
+        }
+        return box;
+    }
+
+    protected Box getUnscaledBoundingBox(T entity) {
+        return entity.getBoundingBox();
     }
 
     @Override
@@ -130,14 +143,8 @@ public abstract class AbstractPonyRenderer<
 
     @Override
     public Identifier getDefaultTexture(S state, Wearable wearable) {
-        return wearableTextures.computeIfAbsent(wearable, w -> {
-            Identifier texture = getTexture(state).withPath(path -> path.split("\\.")[0] + "_" + wearable.name().toLowerCase(Locale.ROOT) + ".png");
-
-            if (MinecraftClient.getInstance().getResourceManager().getResource(texture).isPresent()) {
-                return texture;
-            }
-            return wearable.getDefaultTexture();
-        });
+        Identifier texture = getTexture(state).withPath(path -> path.split("\\.")[0] + "_" + wearable.name().toLowerCase(Locale.ROOT) + ".png");
+        return wearableTextures.computeIfAbsent(texture, t -> resources.getResource(t).isPresent() ? t : wearable.getDefaultTexture());
     }
 
     @Override
@@ -146,7 +153,7 @@ public abstract class AbstractPonyRenderer<
     }
 
     @Override
-    public EquineRenderManager<T, S, M> getInternalRenderer() {
+    public EquineRenderManager<T, S, M> getEquineManager() {
         return manager;
     }
 

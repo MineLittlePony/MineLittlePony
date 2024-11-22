@@ -1,21 +1,24 @@
 package com.minelittlepony.client.render.entity;
 
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.*;
 import net.minecraft.client.render.entity.feature.*;
-import net.minecraft.client.render.entity.model.ArmorStandArmorEntityModel;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.state.ArmorStandEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RotationAxis;
+
+import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.model.ModelAttributes.Mode;
-import com.minelittlepony.api.model.Models;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyData;
-import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.armour.PonifiedEquipmentRenderer;
 import com.minelittlepony.client.model.entity.PonyArmourStandModel;
 import com.minelittlepony.client.model.entity.race.EarthPonyModel;
 import com.minelittlepony.client.render.EquineRenderManager;
@@ -24,115 +27,114 @@ import com.minelittlepony.client.render.entity.feature.*;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
-public class PonyStandRenderer extends ArmorStandEntityRenderer implements PonyRenderContext<ArmorStandEntity, PonyRenderState, EarthPonyModel<PonyRenderState>> {
+public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, PonyStandRenderer.State, PonyArmourStandModel> {
     static final Pony PONY = new Pony(Identifier.ofVanilla("null"), () -> Optional.of(PonyData.NULL));
-    private final PonyArmourStandModel pony = ModelType.ARMOUR_STAND.createModel();
-    private final Models<EarthPonyModel<PonyRenderState>> models = ModelType.EARTH_PONY.create(false);
 
-    private final ArmorStandArmorEntityModel human;
+    private final PonifiedContext context = new PonifiedContext();
 
-    private final EquineRenderManager<ArmorStandEntity, PonyRenderState, EarthPonyModel<PonyRenderState>> manager;
+    public static boolean isPonyStand(Entity entity) {
+        return entity.hasCustomName() && "Ponita".equals(entity.getCustomName().getString());
+    }
 
     public PonyStandRenderer(EntityRendererFactory.Context context) {
-        super(context);
-        human = model;
-        this.manager = new EquineRenderManager<>(this, (state, stack, progress, yaw) -> {}, models);
-
-        Predicate<ArmorStandEntityRenderState> swapPredicate = state -> ((State)state).hasPonyForm;
-        Function<ArmorStandEntityRenderState, PonyRenderState> converter = state -> ((State)state).ponyState;
-
-        for (int i = 0; i < features.size(); i++) {
-            var feature = features.get(i);
-            if (feature instanceof ArmorFeatureRenderer) {
-                features.set(i, new SwappableFeature<>(this, feature, new Armour(context), swapPredicate, converter));
-            }
-            if (feature instanceof ElytraFeatureRenderer) {
-                features.set(i, new SwappableFeature<>(this,
-                        feature,
-                        new ElytraFeature<>(() -> models.body(), context.getEquipmentRenderer()), swapPredicate, converter));
-            }
-            if (feature instanceof HeadFeatureRenderer) {
-                features.set(i, new SwappableFeature<>(this,
-                        feature,
-                        new SkullFeature<PonyRenderState, EarthPonyModel<PonyRenderState>>(
-                                this,
-                                context.getModelLoader(),
-                                context.getItemRenderer(),
-                                HeadFeatureRenderer.HeadTransformation.DEFAULT,
-                                false
-                        ), swapPredicate, converter));
-            }
-        }
-    }
-
-
-    @Override
-    public Identifier getDefaultTexture(PonyRenderState entity, Wearable wearable) {
-        return wearable.getDefaultTexture();
+        super(context, ModelType.ARMOUR_STAND.createModel(), 0);
+        addFeature(new PonifiedFeature(this, new ArmourFeature<>(this.context, context.getEquipmentModelLoader())));
+        addFeature(new PonifiedFeature(this, new HeldItemFeature<>(this.context, context.getItemRenderer())));
+        addFeature(new PonifiedFeature(this, new ElytraFeature<>(this.context, context.getEquipmentRenderer())));
+        addFeature(new PonifiedFeature(this, new SkullFeature<>(this.context, context.getModelLoader(), context.getItemRenderer(), HeadFeatureRenderer.HeadTransformation.DEFAULT, false)));
     }
 
     @Override
-    public Pony getEntityPony(ArmorStandEntity entity) {
-        return PONY;
-    }
-
-    @Override
-    public EquineRenderManager<ArmorStandEntity, PonyRenderState, EarthPonyModel<PonyRenderState>> getInternalRenderer() {
-        return manager;
-    }
-
-    @Override
-    public void setModel(EarthPonyModel<PonyRenderState> model) { }
-
-    @Override
-    public ArmorStandEntityRenderState createRenderState() {
+    public State createRenderState() {
         return new State();
     }
 
-    public void updateRenderState(ArmorStandEntity entity, ArmorStandEntityRenderState state, float tickDelta) {
-        boolean ponified = entity.hasCustomName() && "Ponita".equals(entity.getCustomName().getString());
+    @Override
+    public Identifier getTexture(State state) {
+        return ArmorStandEntityRenderer.TEXTURE;
+    }
 
+    public void updateRenderState(ArmorStandEntity entity, State state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
-        ((State)state).hasPonyForm = ponified;
-        if (ponified) {
-            BipedEntityRenderer.updateBipedRenderState(entity, ((State)state).ponyState, tickDelta);
-            manager.updateState(entity, ((State)state).ponyState, Mode.OTHER);
-            state.pitch = 0.017453292F * entity.getHeadRotation().getPitch();
-            state.yawDegrees = 0.017453292F * entity.getHeadRotation().getYaw();
-        }
+        BipedEntityRenderer.updateBipedRenderState(entity, state.ponyState, tickDelta);
+        context.manager.updateState(entity, state.ponyState, Mode.OTHER);
+        state.pitch = MathHelper.RADIANS_PER_DEGREE * entity.getHeadRotation().getPitch();
+        state.yawDegrees = MathHelper.RADIANS_PER_DEGREE * entity.getHeadRotation().getYaw();
     }
 
     @Override
-    protected void setupTransforms(ArmorStandEntityRenderState state, MatrixStack stack, float animationProgress, float bodyYaw) {
-        super.setupTransforms(state, stack, animationProgress, bodyYaw);
-        if (((State)state).hasPonyForm) {
-            stack.translate(0, 0, state.baseScale * -4/16F);
-            this.model = pony;
-        } else {
-            this.model = human;
+    protected void setupTransforms(State state, MatrixStack matrices, float animationProgress, float bodyYaw) {
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180 - animationProgress));
+        if (state.timeSinceLastHit < 5) {
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(MathHelper.sin(state.timeSinceLastHit / 1.5F * (float) Math.PI) * 3.0F));
         }
+        matrices.translate(0, 0, state.baseScale * -4/16F);
     }
 
-    class Armour extends FeatureRenderer<PonyRenderState, EarthPonyModel<PonyRenderState>> {
-        private final PonifiedEquipmentRenderer equipmentRenderer;
+    @Override
+    protected boolean hasLabel(ArmorStandEntity entity, double squaredDistanceToCamera) {
+        return entity.isCustomNameVisible();
+    }
 
-        public Armour(EntityRendererFactory.Context context) {
-            super(() -> models.body());
-            equipmentRenderer = new PonifiedEquipmentRenderer(context.getEquipmentModelLoader());
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Override
+    @Nullable
+    protected RenderLayer getRenderLayer(State state, boolean showBody, boolean translucent, boolean showOutline) {
+        if (context.getModel() instanceof BipedEntityModel bipedModel) {
+            bipedModel.copyTransforms((BipedEntityModel)model);
+        }
+        if (!state.marker) {
+            return super.getRenderLayer(state, showBody, translucent, showOutline);
+        }
+
+        Identifier identifier = getTexture(state);
+        if (translucent) {
+            return RenderLayer.getEntityTranslucent(identifier, false);
+        }
+
+        return showBody ? RenderLayer.getEntityCutoutNoCull(identifier, false) : null;
+    }
+
+    private class PonifiedContext implements
+                FeatureRendererContext<PonyRenderState, EarthPonyModel<PonyRenderState>>,
+                PonyRenderContext<ArmorStandEntity, PonyRenderState, EarthPonyModel<PonyRenderState>> {
+        private final EquineRenderManager<ArmorStandEntity, PonyRenderState, EarthPonyModel<PonyRenderState>> manager
+            = new EquineRenderManager<>(this, (state, stack, progress, yaw) -> {}, ModelType.EARTH_PONY.create(false));
+
+        @Override
+        public Pony getEntityPony(ArmorStandEntity entity) {
+            return PONY;
         }
 
         @Override
-        public void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, PonyRenderState state, float limbAngle, float limbDistance) {
-            getContextModel().setAngles(state);
-            ArmourFeature.renderArmor(models, matrices, vertices, light, state, limbDistance, limbAngle, equipmentRenderer);
+        public EquineRenderManager<ArmorStandEntity, PonyRenderState, EarthPonyModel<PonyRenderState>> getEquineManager() {
+            return manager;
+        }
+
+        @Override
+        public EarthPonyModel<PonyRenderState> getModel() {
+            return manager.getModels().body();
+        }
+    }
+
+    private class PonifiedFeature extends FeatureRenderer<PonyStandRenderer.State, PonyArmourStandModel> {
+        private final FeatureRenderer<?, ?> feature;
+
+        public PonifiedFeature(FeatureRendererContext<PonyStandRenderer.State, PonyArmourStandModel> context,
+                FeatureRenderer<?, ?> feature) {
+            super(context);
+            this.feature = feature;
+        }
+
+        @SuppressWarnings({"rawtypes", "unchecked"})
+        @Override
+        public void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, PonyStandRenderer.State state, float limbAngle, float limbDistance) {
+            ((FeatureRenderer)feature).render(matrices, vertices, light, state.ponyState, limbAngle, limbDistance);
         }
     }
 
     public static final class State extends ArmorStandEntityRenderState {
-        public boolean hasPonyForm;
         public PonyRenderState ponyState = new PonyRenderState();
     }
 }

@@ -6,6 +6,8 @@ import com.minelittlepony.api.events.PonyDataCallback;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyData;
+import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.client.PonyDataLoader;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
@@ -19,12 +21,13 @@ import java.util.function.Supplier;
 
 import net.fabricmc.api.EnvType;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Util;
+import net.minecraft.util.math.Box;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -35,17 +38,21 @@ public class EquineRenderManager<
 
     private Models<M> models;
 
-    private Function<S, Models<M>> modelsLookup = s -> models;
+    private Function<Race, Models<M>> modelsLookup = race -> models;
 
     private final PonyRenderContext<T, S, M> context;
     private final Transformer<? super S> transformer;
 
-    private final FrustrumCheck<S> frustrum = new FrustrumCheck<>();
-
-    private final MinecraftClient client = MinecraftClient.getInstance();
-
     public static void disableModelRenderProfile() {
         RenderSystem.disableBlend();
+    }
+
+    public EquineRenderManager(PonyRenderContext<T, S, M> context, Transformer<? super S> transformer, Function<Race, Models<M>> modelsLookup) {
+        this.context = context;
+        this.transformer = transformer;
+        setModelsLookup(modelsLookup);
+        this.models = this.modelsLookup.apply(Race.EARTH);
+        context.setModel(models.body());
     }
 
     public EquineRenderManager(PonyRenderContext<T, S, M> context, Transformer<? super S> transformer, Models<M> models) {
@@ -60,30 +67,30 @@ public class EquineRenderManager<
         this(context, transformer, new Models(key));
     }
 
-    public void setModelsLookup(Function<S, Models<M>> modelsLookup) {
-        this.modelsLookup = modelsLookup;
+    public void setModelsLookup(Function<Race, Models<M>> modelsLookup) {
+        this.modelsLookup = Util.memoize(modelsLookup);
     }
 
     public Models<M> getModels() {
         return models;
     }
 
-    public Frustum getFrustrum(T entity, Frustum vanilla) {
-        if (RenderPass.getCurrent() == RenderPass.HUD) {
-            return FrustrumCheck.ALWAYS_VISIBLE;
-        }
+    public Box getBoundingBox(T entity, Box box) {
 
         if (entity.isSleeping() || !PonyConfig.getInstance().frustrum.get()) {
-            return vanilla;
+            return box;
         }
 
-        return frustrum.withCamera(context.getVanillaRenderer().getAndUpdateRenderState(entity, client.getRenderTickCounter().getTickDelta(false)), vanilla);
+        Pony pony = context.getEntityPony(entity);
+        float scale = (entity.isBaby() ? SizePreset.FOAL : pony.size()).scaleFactor();
+        return DebugBoundingBoxRenderer.applyScale(scale, box);
     }
 
     public void updateState(T entity, S state, ModelAttributes.Mode mode) {
-        models = modelsLookup.apply(state);
+        Pony pony = context.getEntityPony(entity);
+        models = modelsLookup.apply(pony.race());
         context.setModel(models.body());
-        state.updateState(entity, models.body(), context.getEntityPony(entity), mode);
+        state.updateState(entity, models.body(), pony, mode);
     }
 
     public void setupTransforms(S state, MatrixStack stack, float animationProgress, float bodyYaw) {

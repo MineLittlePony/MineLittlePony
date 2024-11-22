@@ -5,9 +5,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.*;
 import net.minecraft.util.Identifier;
 
-import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.model.PonyModel;
-import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
@@ -15,7 +12,7 @@ import com.minelittlepony.client.model.entity.ZomponyModel;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
-public class ZomponyRenderer<T extends HostileEntity> extends PonyRenderer<T, ZomponyRenderer.State, ZomponyModel<ZomponyRenderer.State>> {
+public class ZomponyRenderer<T extends HostileEntity> extends PonyRenderer<T, PonyRenderState, ZomponyModel<PonyRenderState>> {
     public static final Identifier ZOMBIE = MineLittlePony.id("textures/entity/zombie/zombie_pony.png");
     public static final Identifier HUSK = MineLittlePony.id("textures/entity/zombie/husk_pony.png");
     public static final Identifier DROWNED = MineLittlePony.id("textures/entity/zombie/drowned_pony.png");
@@ -27,8 +24,14 @@ public class ZomponyRenderer<T extends HostileEntity> extends PonyRenderer<T, Zo
     }
 
     @Override
-    public State createRenderState() {
-        return new State();
+    public PonyRenderState createRenderState() {
+        return new PonyRenderState();
+    }
+
+    @Override
+    public void updateRenderState(T entity, PonyRenderState state, float tickDelta) {
+        super.updateRenderState(entity, state, tickDelta);
+        state.race = isWinged(entity) ? (state.race.hasHorn() ? Race.ALICORN : Race.PEGASUS) : state.race;
     }
 
     public static ZomponyRenderer<ZombieEntity> zombie(EntityRendererFactory.Context context) {
@@ -51,19 +54,7 @@ public class ZomponyRenderer<T extends HostileEntity> extends PonyRenderer<T, Zo
         return entity.isBaby() && entity.getUuid().getLeastSignificantBits() % 160 == 0;
     }
 
-    public static class State extends PonyRenderState {
-        public boolean isWinged;
-        public boolean isCozyGlow;
-
-        public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
-            super.updateState(entity, model, pony, mode);
-            isCozyGlow = isCozyGlow(entity);
-            isWinged = entity.getUuid().getLeastSignificantBits() % 30 == 0;
-        }
-
-        @Override
-        public Race getRace() {
-            return isWinged ? (super.getRace().hasHorn() ? Race.ALICORN : Race.PEGASUS) : super.getRace();
-        }
+    static boolean isWinged(LivingEntity entity) {
+        return entity.getUuid().getLeastSignificantBits() % 30 == 0;
     }
 }
