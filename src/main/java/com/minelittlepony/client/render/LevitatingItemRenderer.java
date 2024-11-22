@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.MineLittlePony;
@@ -35,63 +36,67 @@ public class LevitatingItemRenderer {
     /**
      * Renders an item with a magical overlay.
      */
-    public void renderItem(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformationMode mode, boolean left, MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world, int lightUv, int posLong) {
+    public boolean renderItem(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformationMode mode, boolean left,
+            MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world,
+            int lightUv, int overlay, int seed, Operation<Void> original) {
 
-        if (entity != null && (mode.isFirstPerson()
+        if (entity == null || !(mode.isFirstPerson()
                 || mode == ModelTransformationMode.THIRD_PERSON_LEFT_HAND
                 || mode == ModelTransformationMode.THIRD_PERSON_RIGHT_HAND)
             ) {
-            var context = MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(entity);
-            if (context != null) {
-                var state = context.getAndUpdateRenderState(entity, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false));
-
-                matrix.push();
-
-                boolean doMagic = (mode.isFirstPerson() ? PonyConfig.getInstance().fpsmagic : PonyConfig.getInstance().tpsmagic).get() && state.hasMagicGlow();
-
-                if (doMagic && mode.isFirstPerson()) {
-                    setupPerspective(itemRenderer, entity, stack, left, matrix);
-                }
-
-                itemRenderer.renderItem(entity, stack, mode, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
-
-                if (doMagic) {
-                    VertexConsumerProvider interceptedContext = getProvider(state.pony, renderContext);
-
-                    if (stack.hasGlint()) {
-                        stack = stack.copy();
-                        stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
-                    }
-
-                    float tickDelta = MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false) + entity.age;
-
-
-                    float driftStrength = 0.002F;
-                    float xDrift = MathHelper.sin(tickDelta / 20F) * driftStrength;
-                    float zDrift = MathHelper.cos((tickDelta + 20) / 20F) * driftStrength;
-
-                    float scale = 1.1F + (MathHelper.sin(tickDelta / 20F) + 1) * driftStrength;
-                    matrix.scale(scale, scale, scale);
-                    matrix.translate(0.015F + xDrift, 0.01F, 0.01F + zDrift);
-
-                    itemRenderer.renderItem(entity, stack, mode, left, matrix, interceptedContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
-                    matrix.scale(scale, scale, scale);
-                    matrix.translate(-0.03F - xDrift, -0.02F, -0.02F - zDrift);
-                    itemRenderer.renderItem(entity, stack, mode, left, matrix, interceptedContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
-                }
-
-                matrix.pop();
-                return;
-            }
+            return false;
         }
 
-        itemRenderer.renderItem(entity, stack, mode, left, matrix, renderContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
+        var context = MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(entity);
+        if (context == null) {
+            return false;
+        }
+
+        var state = context.getAndUpdateRenderState(entity, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false));
+
+        matrix.push();
+
+        boolean doMagic = (mode.isFirstPerson() ? PonyConfig.getInstance().fpsmagic : PonyConfig.getInstance().tpsmagic).get() && state.hasMagicGlow();
+
+        if (doMagic && mode.isFirstPerson()) {
+            setupPerspective(entity, stack, left, matrix);
+        }
+
+        original.call(entity, stack, mode, left, matrix, renderContext, world, lightUv, overlay, seed);
+
+        if (doMagic) {
+            VertexConsumerProvider interceptedContext = getProvider(state.pony, renderContext);
+
+            if (stack.hasGlint()) {
+                stack = stack.copy();
+                stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
+            }
+
+            float tickDelta = MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false) + entity.age;
+
+
+            float driftStrength = 0.002F;
+            float xDrift = MathHelper.sin(tickDelta / 20F) * driftStrength;
+            float zDrift = MathHelper.cos((tickDelta + 20) / 20F) * driftStrength;
+
+            float scale = 1.1F + (MathHelper.sin(tickDelta / 20F) + 1) * driftStrength;
+            matrix.scale(scale, scale, scale);
+            matrix.translate(0.015F + xDrift, 0.01F, 0.01F + zDrift);
+
+            original.call(entity, stack, mode, left, matrix, interceptedContext, world, lightUv, OverlayTexture.DEFAULT_UV, seed);
+            matrix.scale(scale, scale, scale);
+            matrix.translate(-0.03F - xDrift, -0.02F, -0.02F - zDrift);
+            original.call(entity, stack, mode, left, matrix, interceptedContext, world, lightUv, OverlayTexture.DEFAULT_UV, seed);
+        }
+
+        matrix.pop();
+        return true;
     }
 
     /**
      * Moves held items to look like they're floating in the player's field.
      */
-    private void setupPerspective(ItemRenderer renderer, LivingEntity entity, ItemStack item, boolean left, MatrixStack stack) {
+    private void setupPerspective(LivingEntity entity, ItemStack item, boolean left, MatrixStack stack) {
         UseAction action = item.getUseAction();
 
         boolean doNormal = entity.getItemUseTime() <= 0 || action == UseAction.NONE || (action == UseAction.CROSSBOW && CrossbowItem.isCharged(item));

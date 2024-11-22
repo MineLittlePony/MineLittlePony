@@ -2,8 +2,9 @@ package com.minelittlepony.client.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.minelittlepony.client.MineLittlePony;
 
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +23,7 @@ abstract class MixinHeldItemRenderer {
     private static final String LivingEntity = "Lnet/minecraft/entity/LivingEntity;";
     private static final String MatrixStack = "Lnet/minecraft/client/util/math/MatrixStack;";
     private static final String ItemStack = "Lnet/minecraft/item/ItemStack;";
-    private static final String Mode = "Lnet/minecraft/client/render/model/json/ModelTransformationMode;";
+    private static final String Mode = "Lnet/minecraft/item/ModelTransformationMode;";
     private static final String VertexConsumerProvider = "Lnet/minecraft/client/render/VertexConsumerProvider;";
     private static final String World = "Lnet/minecraft/world/World;";
     private static final String ItemRenderer = "Lnet/minecraft/client/render/item/ItemRenderer;";
@@ -30,18 +31,20 @@ abstract class MixinHeldItemRenderer {
     private static final String Boolean = "Z";
     private static final String Int = "I";
 
-    @Redirect(method = "renderItem(" + LivingEntity + ItemStack + Mode + Boolean + MatrixStack + VertexConsumerProvider + Int + ")V",
+    @WrapOperation(method = "renderItem(" + LivingEntity + ItemStack + Mode + Boolean + MatrixStack + VertexConsumerProvider + Int + ")V",
              at = @At(value = "INVOKE",
                       target = ItemRenderer + "renderItem(" + LivingEntity + ItemStack + Mode + Boolean + MatrixStack + VertexConsumerProvider + World + Int + Int + Int + ")V"))
-    private void redirectRenderItem(ItemRenderer target,
+    private void wrapRenderItem(ItemRenderer target,
             @Nullable LivingEntity entity,
-            ItemStack item,
-            ModelTransformationMode transform,
+            ItemStack stack,
+            ModelTransformationMode mode,
             boolean left,
-            MatrixStack stack,
-            VertexConsumerProvider renderContext,
+            MatrixStack matrices,
+            VertexConsumerProvider vertices,
             @Nullable World world,
-            int lightUv, int overlayUv, int posLong) {
-        MineLittlePony.getInstance().getRenderDispatcher().getMagicRenderer().renderItem(target, entity, item, transform, left, stack, renderContext, world, lightUv, posLong);
+            int light, int overlay, int seed, Operation<Void> operation) {
+        if (!MineLittlePony.getInstance().getRenderDispatcher().getMagicRenderer().renderItem(target, entity, stack, mode, left, matrices, vertices, world, light, overlay, seed, operation)) {
+            operation.call(entity, stack, mode, left, matrices, vertices, world, light, overlay, seed);
+        }
     }
 }

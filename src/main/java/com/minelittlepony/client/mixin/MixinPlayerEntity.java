@@ -21,8 +21,7 @@ abstract class MixinPlayerEntity implements RegistrationHandler {
         return syncedPony;
     }
 
-    @ModifyReturnValue(method = "getBaseDimensions(Lnet/minecraft/entity/EntityPose;)Lnet/minecraft/entity/EntityDimensions;",
-                      at = @At("RETURN"))
+    @ModifyReturnValue(method = "getBaseDimensions(Lnet/minecraft/entity/EntityPose;)Lnet/minecraft/entity/EntityDimensions;", at = @At("RETURN"))
     private EntityDimensions modifyEyeHeight(EntityDimensions dimensions, EntityPose pose) {
         float factor = syncedPony.getCachedPonyData().size().eyeHeightFactor();
         return factor == 1 ? dimensions : dimensions.withEyeHeight(dimensions.eyeHeight() * factor);

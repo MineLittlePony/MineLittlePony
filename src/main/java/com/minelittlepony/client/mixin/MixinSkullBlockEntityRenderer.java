@@ -23,31 +23,20 @@ import org.jetbrains.annotations.Nullable;
 
 @Mixin(SkullBlockEntityRenderer.class)
 abstract class MixinSkullBlockEntityRenderer implements BlockEntityRenderer<SkullBlockEntity> {
-    @Inject(method = "renderSkull("
-            + "Lnet/minecraft/util/math/Direction;"
-            + "F"
-            + "F"
-            + "Lnet/minecraft/client/util/math/MatrixStack;"
-            + "Lnet/minecraft/client/render/VertexConsumerProvider;"
-            + "I"
-            + "Lnet/minecraft/client/render/block/entity/SkullBlockEntityModel;"
-            + "Lnet/minecraft/client/render/RenderLayer;"
-            + ")V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "renderSkull", at = @At("HEAD"), cancellable = true)
     private static void onRenderSkull(@Nullable Direction direction,
-            float angle, float poweredTicks,
-            MatrixStack stack, VertexConsumerProvider renderContext, int lightUv,
+            float yaw, float animationProgress,
+            MatrixStack matrices, VertexConsumerProvider vertices,
+            int light,
             SkullBlockEntityModel model, RenderLayer layer,
             CallbackInfo info) {
 
-        if (!info.isCancelled() && PonySkullRenderer.INSTANCE.renderSkull(direction, angle, poweredTicks, stack, renderContext, layer, lightUv)) {
+        if (!info.isCancelled() && PonySkullRenderer.INSTANCE.renderSkull(direction, yaw, animationProgress, matrices, vertices, layer, light)) {
             info.cancel();
         }
     }
 
-    @Inject(method = "getRenderLayer("
-            + "Lnet/minecraft/block/SkullBlock$SkullType;"
-            + "Lnet/minecraft/component/type/ProfileComponent;"
-            + ")Lnet/minecraft/client/render/RenderLayer;", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getRenderLayer", at = @At("HEAD"), cancellable = true)
     private static void onGetRenderLayer(SkullBlock.SkullType skullType, @Nullable ProfileComponent profile, CallbackInfoReturnable<RenderLayer> info) {
         if (!info.isCancelled()) {
             RenderLayer result = PonySkullRenderer.INSTANCE.getSkullRenderLayer(skullType, profile);
