@@ -34,7 +34,7 @@ public class MobSkull implements ISkull {
 
     @Override
     public boolean canRender(PonyConfig config) {
-        return config.ponyskulls.get() && type.get();
+        return config.ponyskulls.get() && type.option().get();
     }
 
     @Override

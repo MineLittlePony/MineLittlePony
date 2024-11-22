@@ -14,6 +14,7 @@ import com.minelittlepony.common.event.SkinFilterCallback;
 import com.minelittlepony.common.util.GamePaths;
 
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -47,7 +48,8 @@ public class MineLittlePony implements ClientModInitializer {
     private final KeyBinding keyBinding = new KeyBinding("key.minelittlepony.settings", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F9, "key.categories.misc");
 
     private final PonyRenderDispatcher renderDispatcher = new PonyRenderDispatcher();
-    private boolean initialized;
+    private final AtomicBoolean initialized = new AtomicBoolean();
+    private final AtomicBoolean configChanged = new AtomicBoolean();
 
     private boolean hasHdSkins;
     private boolean hasModMenu;
@@ -92,7 +94,7 @@ public class MineLittlePony implements ClientModInitializer {
         new ClientSkinsProxy();
 
         config.load();
-        config.onChangedExternally(c -> initialized = false);
+        config.onChangedExternally(c -> configChanged.set(true));
 
         ClientChannel.bootstrap();
         ModelType.bootstrap();
@@ -101,13 +103,12 @@ public class MineLittlePony implements ClientModInitializer {
     }
 
     private void onTick(MinecraftClient client) {
-        if (!initialized) {
-            initialized = true;
+        if (!initialized.getAndSet(true)) {
             renderDispatcher.initialise(client.getEntityRenderDispatcher(), false);
+        }
 
-            if (client.currentScreen instanceof PonySettingsScreen screen) {
-                screen.init(client, screen.width, screen.height);
-            }
+        if (configChanged.getAndSet(false) && client.currentScreen instanceof PonySettingsScreen screen) {
+            screen.init(client, screen.width, screen.height);
         }
 
         boolean inGame = client.world != null && client.player != null && client.currentScreen == null;
@@ -163,7 +164,7 @@ public class MineLittlePony implements ClientModInitializer {
     private static final class ClientPonyConfig extends PonyConfig {
         public ClientPonyConfig(Path path) {
             super(path);
-            MobRenderers.REGISTRY.values().forEach(r -> value("entities", r.name, true));
+            MobRenderers.REGISTRY.values().forEach(r -> value("entities", r.name(), true));
             disablePonifiedArmour.onChanged(t -> ArmourTextureResolver.INSTANCE.invalidate());
         }
 

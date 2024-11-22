@@ -1,11 +1,8 @@
 package com.minelittlepony.client.render;
 
-import java.util.function.Function;
-
 import com.google.common.base.Predicates;
 import com.minelittlepony.api.model.PreviewModel;
 import com.minelittlepony.api.pony.*;
-import com.minelittlepony.client.mixin.MixinEntityRenderers;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.*;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
@@ -16,10 +13,7 @@ import com.minelittlepony.mson.api.Mson;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.*;
-import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.SkinTextures;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 
 /**
@@ -58,23 +52,7 @@ public class PonyRenderDispatcher {
                 );
             }
         });
-        MobRenderers.REGISTRY.values().forEach(i -> i.apply(this, force));
-    }
-
-    /**
-     *
-     * Replaces an entity renderer depending on whether we want ponies or not.
-     *
-     * @param state   True if we want ponies (the original will be stored)
-     * @param type    The type to replace
-     * @param factory The replacement value
-     * @param <T> The entity type
-     */
-    <T extends Entity, S extends EntityRenderState, V extends T> void switchRenderer(MobRenderers state, EntityType<V> type, Function<EntityRendererFactory.Context, EntityRenderer<T, S>> factory) {
-        Mson.getInstance().getEntityRendererRegistry().registerEntityRenderer(type, ctx -> state.get()
-                ? factory.apply(ctx)
-                : MixinEntityRenderers.getRendererFactories().get(type).create(ctx)
-        );
+        MobRenderers.REGISTRY.values().forEach(i -> i.changer().accept(i, Mson.getInstance().getEntityRendererRegistry()));
     }
 
     @SuppressWarnings("unchecked")

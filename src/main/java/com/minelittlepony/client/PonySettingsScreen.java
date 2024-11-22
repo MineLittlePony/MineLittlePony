@@ -157,9 +157,9 @@ public class PonySettingsScreen extends GameGui {
 
         content.addButton(new Label(RIGHT, row)).getStyle().setText(MOB_PREFIX + "title");
         for (MobRenderers i : MobRenderers.REGISTRY.values()) {
-            content.addButton(new Toggle(RIGHT, row += 20, i.get()))
-                .onChange(i::set)
-                .getStyle().setText(MOB_PREFIX + i.name);
+            content.addButton(new Toggle(RIGHT, row += 20, i.option()))
+                .onChange(i.option())
+                .getStyle().setText(MOB_PREFIX + i.name());
         }
 
         row += 15;
