@@ -3,19 +3,6 @@
 	"texture": {
 		"w": 64, "h": 64
 	},
-	"skeleton": {
-        "body": {
-            "neck": {
-                "head": {}
-            },
-            "left_arm": {},
-            "right_arm": {},
-            "left_leg": {},
-            "right_leg": {},
-            "left_wing": {},
-            "right_wing": {}
-        }
-	},
 	"data": {
 		"head": {
 			"pivot": [0, 1, -4],
@@ -32,19 +19,19 @@
 						{"from": [ 1, -11, -3], "size": [1, 6, 1], "texture": {"u": 28, "v": 2} },
 						{"from": [-2, -11, -3], "size": [1, 6, 1], "texture": {"u": 24, "v": 2} }
 					]
-				}
-			}
-		},
-		"hat": {
-		    "texture": { "u": 40, "v": 27 },
-		    "pivot": [0, 1, -4],
-			"children": {
-				"hat_parts": {
-					"pivot": [0, 2, 0],
-					"cubes": [
-						{"from": [-3, -8, -3], "size": [6, 6, 6], "dilate": 0.2 }
-					]
-				}
+				},
+        "hat": {
+          "texture": { "u": 40, "v": 27 },
+          "pivot": [0, 1, -4],
+          "children": {
+            "hat_parts": {
+              "pivot": [0, 2, 0],
+              "cubes": [
+                {"from": [-3, -8, -3], "size": [6, 6, 6], "dilate": 0.2 }
+              ]
+            }
+          }
+        }
 			}
 		},
 		"neck": {
@@ -63,6 +50,9 @@
 				{"from": [0, 0, 0], "size": [6, 7, 14] }
 			],
 			"children": {
+        "jacket": {
+          "visible": false
+        },
 				"tail": {
 					"texture": {"u": 40, "v": 7 },
 					"pivot": [3, 0, 13],
@@ -88,7 +78,12 @@
 			"texture": { "u": 36, "v": 12 },
 			"cubes": [
 				{ "from": [0, 0, 0], "size": [ 2, 12, 2] }
-			]
+			],
+      "children": {
+        "right_sleeve": {
+          "visible": false
+        }
+      }
 		},
 		"left_arm": {
 			"pivot": [1, 8, -5],
@@ -96,14 +91,24 @@
 			"mirror": true,
 			"cubes": [
 				{ "from": [0, 0, 0], "size": [ 2, 12, 2] }
-			]
+			],
+      "children": {
+        "left_sleeve": {
+          "visible": false
+        }
+      }
 		},
 		"right_leg": {
 			"pivot": [-3, 12, 3],
 			"texture": { "u": 0, "v": 12 },
 			"cubes": [
 				{ "from": [0, 0, 0], "size": [ 2, 12, 2] }
-			]
+			],
+      "children": {
+        "right_pants": {
+          "visible": false
+        }
+      }
 		},
 		"left_leg": {
 			"pivot": [1, 12, 3],
@@ -111,7 +116,12 @@
 			"mirror": true,
 			"cubes": [
 				{ "from": [0, 0, 0], "size": [ 2, 12, 2] }
-			]
+			],
+      "children": {
+        "left_pants": {
+          "visible": false
+        }
+      }
 		},
 		"left_wing": {
 			"pivot": [2, 3, 1],

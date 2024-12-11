@@ -11,9 +11,6 @@ import net.minecraft.util.Identifier;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.UUID;
 
 @Mixin(DefaultSkinHelper.class)
 abstract class MixinDefaultSkinHelper {
@@ -23,7 +20,7 @@ abstract class MixinDefaultSkinHelper {
     }
 
     @ModifyReturnValue(method = "getSkinTextures(Ljava/util/UUID;)Lnet/minecraft/client/util/SkinTextures;", at = @At("RETURN"))
-    private static SkinTextures onGetTexture(SkinTextures returnValue, UUID uuid, CallbackInfoReturnable<SkinTextures> cir) {
+    private static SkinTextures onGetTexture(SkinTextures returnValue) {
         return PonyConfig.getInstance().ponyLevel.get() == PonyLevel.PONIES ? DefaultPonySkinHelper.getTextures(returnValue) : returnValue;
     }
 }

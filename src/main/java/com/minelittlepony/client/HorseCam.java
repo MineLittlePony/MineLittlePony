@@ -2,6 +2,7 @@ package com.minelittlepony.client;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerPosition;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.*;
 
@@ -20,11 +21,11 @@ public class HorseCam {
      * Restores the previous camera (unadjusted) angle for the client when the server sends an update.
      * This is to prevent issues caused by the server updating our pitch whenever the player leaves a portal.
      */
-    public static float transformIncomingServerCameraAngle(float serverPitch) {
-        if (MathHelper.approximatelyEquals(serverPitch, lastComputedPitch)) {
-            return lastOriginalPitch;
+    public static PlayerPosition transformIncomingServerCameraAngle(PlayerPosition change) {
+        if (MathHelper.approximatelyEquals(change.pitch(), lastComputedPitch)) {
+            return new PlayerPosition(change.position(), change.deltaMovement(), change.yaw(), lastOriginalPitch);
         }
-        return serverPitch;
+        return change;
     }
 
     /**

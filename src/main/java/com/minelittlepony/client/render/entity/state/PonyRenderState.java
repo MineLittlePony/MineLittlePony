@@ -39,6 +39,8 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         this.pony = pony;
         attributes.updateLivingState(entity, pony, mode);
         attributes.checkRainboom(entity, model, age);
+        size = baby ? SizePreset.FOAL : PonyConfig.getEffectiveSize(attributes.metadata.size());
+        race = PonyConfig.getEffectiveRace(attributes.metadata.race());
         vehicleOffset = hasVehicle ? entity.getVehicle().getEyeHeight(pose) : 0;
         riderOffset = getRiderYOffset();
         nameplateYOffset = getNamePlateYOffset(entity);
@@ -57,8 +59,6 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
                  || entity instanceof ZombifiedPiglinEntity
              ) && entity.hasCustomName() && entity.getCustomName().getString().equalsIgnoreCase("technoblade")
          );
-        size = baby ? SizePreset.FOAL : PonyConfig.getEffectiveSize(attributes.metadata.size());
-        race = PonyConfig.getEffectiveRace(attributes.metadata.race());
 
         PonyPosture.of(attributes).updateState(entity, this);
         PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(attributes, model, ModelAttributes.Mode.OTHER);

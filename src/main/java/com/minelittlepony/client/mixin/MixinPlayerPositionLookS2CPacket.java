@@ -4,6 +4,7 @@ import com.minelittlepony.client.HorseCam;
 
 import java.util.Set;
 
+import net.minecraft.entity.player.PlayerPosition;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
@@ -17,15 +18,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PlayerPositionLookS2CPacket.class)
 abstract class MixinPlayerPositionLookS2CPacket implements Packet<ClientPlayPacketListener> {
     @Shadow @Mutable
-    private @Final float pitch;
+    private @Final PlayerPosition change;
     @Shadow
-    private @Final Set<PositionFlag> flags;
+    private @Final Set<PositionFlag> relatives;
 
     @Inject(method = "apply(Lnet/minecraft/network/listener/ClientPlayPacketListener;)V",
             at = @At("HEAD"))
     private void onApply(ClientPlayPacketListener clientPlayPacketListener, CallbackInfo info) {
-        if (!flags.contains(PositionFlag.Y_ROT)) {
-            pitch = HorseCam.transformIncomingServerCameraAngle(pitch);
+        if (!relatives.contains(PositionFlag.Y_ROT)) {
+            change = HorseCam.transformIncomingServerCameraAngle(change);
         }
     }
 }

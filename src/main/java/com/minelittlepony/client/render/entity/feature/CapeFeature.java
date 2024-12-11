@@ -35,7 +35,10 @@ public class CapeFeature extends CapeFeatureRenderer {
             ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
 
             Identifier capeTexture = player.skinTextures.capeTexture();
-            VertexConsumer buffer = plugin.getCapeConsumer(player, vertices, player.skinTextures.capeTexture());
+            if (capeTexture == null) {
+                return;
+            }
+            VertexConsumer buffer = plugin.getCapeConsumer(player, vertices, capeTexture);
             if (buffer == null) {
                 return;
             }

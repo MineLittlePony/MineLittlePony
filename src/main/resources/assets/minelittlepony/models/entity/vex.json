@@ -8,7 +8,7 @@
 				{"from": [-4, -4, -4], "size": [8, 5, 8] }
 			],
 			"children": {
-			    "lips": {
+		    "lips": {
 					"pivot": [0, 0, 4],
 					"rotate": [0, 0, 0],
 					"cubes": [

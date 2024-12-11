@@ -48,6 +48,18 @@
             "height": 1,
             "depth": "#arm_depth"
           }
+        },
+        "left_sleeve": {
+          "pivot": ["#arm_rotation_x", "#arm_rotation_y", "#arm_rotation_z"],
+          "visible": false,
+          "texture": { "u": 48, "v": 48 },
+          "cubes": [
+            {
+              "from": [ "#arm_x", 4, "#arm_z"],
+              "size": [ "#arm_width",  "#arm_length",  "#arm_depth" ],
+              "dilate": 0.25
+            }
+          ]
         }
       }
     },
@@ -91,6 +103,13 @@
             "height": 1,
             "depth": "#arm_depth"
           }
+        },
+        "right_sleeve": {
+          "visible": false,
+          "texture": { "u": 40, "v": 32 },
+          "cubes": [
+            { "from": [-3, -2, -2], "size": [ 4,  12,  4], "dilate": [0.25, 0.25, 0.25] }
+          ]
         }
       }
     }
