@@ -20,7 +20,7 @@ public class AlicornModel<T extends PonyRenderState> extends UnicornModel<T> imp
     public void init(ModelView context) {
         super.init(context);
         wings = addPart(context.findByName("wings"));
-        bodyRenderList.add(forPart(this::getWings).checked(() -> currentState.race.hasWings()));
+        bodyRenderList.add(forPart(this::getWings));
     }
 
     @Override

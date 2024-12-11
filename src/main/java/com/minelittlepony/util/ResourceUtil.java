@@ -3,8 +3,6 @@ package com.minelittlepony.util;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 
-import com.minelittlepony.client.MineLittlePony;
-
 import java.util.Optional;
 
 public final class ResourceUtil {
@@ -29,17 +27,5 @@ public final class ResourceUtil {
 
     public static Optional<Identifier> verifyTexture(Identifier texture) {
         return textureExists(texture) ? Optional.of(texture) : Optional.empty();
-    }
-
-    public static Identifier ponify(Identifier texture) {
-        String path = texture.getPath();
-        if (path.endsWith("_pony.png")) {
-            return texture;
-        }
-        if (Identifier.DEFAULT_NAMESPACE.contentEquals(texture.getNamespace())) {
-            return MineLittlePony.id(path.replace(".png", "_pony.png")); // it's in the vanilla namespace, we provide these.
-        }
-
-        return texture.withPath(p -> p.replace(".png", "_pony.png"));
     }
 }

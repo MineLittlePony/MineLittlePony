@@ -2,7 +2,7 @@ package com.minelittlepony.api.model;
 
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.*;
-import com.minelittlepony.api.pony.meta.Wearable;
+import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.common.util.animation.Interpolator;
 import com.minelittlepony.util.MathUtil;
 
@@ -126,6 +126,8 @@ public class ModelAttributes {
      */
     public PonyData metadata = PonyData.NULL;
 
+    public Size size = SizePreset.NORMAL;
+
     public Arm mainArm;
     public Hand activeHand;
     public ItemStack heldStack = ItemStack.EMPTY;
@@ -160,6 +162,8 @@ public class ModelAttributes {
     }
 
     public void updateLivingState(LivingEntity entity, Pony pony, Mode mode) {
+        metadata = pony.metadata();
+        size = entity.isBaby() ? SizePreset.FOAL : PonyConfig.getEffectiveSize(metadata.size());
         isPlayer = entity instanceof PlayerEntity;
         visualHeight = entity.getHeight() + 0.125F;
         isSitting = PonyPosture.isSitting(entity);

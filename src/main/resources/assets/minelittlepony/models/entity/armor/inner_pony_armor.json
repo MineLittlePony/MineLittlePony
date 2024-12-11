@@ -5,7 +5,12 @@
 			"texture": {"u": 16, "v": 8},
 			"cubes": [
 				{"from": [-4, 4, -2], "size": [8, 8, 16]}
-			]
+			],
+      "children": {
+        "jacket": {
+          "visible": false
+        }
+      }
 		},
 		"right_leg": {
 			"pivot": ["#arm_rotation_x_neg", 0, 0],
@@ -15,7 +20,12 @@
 					"from": [ "#arm_x_neg", 4, "#arm_z"],
 					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
 				}
-			]
+			],
+      "children": {
+        "right_pants": {
+          "visible": false
+        }
+      }
 		},
 		"left_leg": {
 			"pivot": ["#arm_rotation_x", 0, 0],
@@ -26,7 +36,12 @@
 					"from": [ "#arm_x", 4, "#arm_z"],
 					"size": [ "#arm_width",  "#arm_length",  "#arm_depth" ]
 				}
-			]
+			],
+      "children": {
+        "left_pants": {
+          "visible": false
+        }
+      }
 		}
 	}
 }

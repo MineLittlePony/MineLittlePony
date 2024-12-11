@@ -26,13 +26,9 @@ public record ArmourTexture(Identifier texture, ArmourVariant variant) {
         return INTERNER.intern(new ArmourTexture(texture, ArmourVariant.NORMAL));
     }
 
-    public Stream<ArmourTexture> named() {
-        return Stream.of(legacy(texture().withPath(p -> p.replace("1", "inner").replace("2", "outer"))), this);
-    }
-
     public Stream<ArmourTexture> ponify() {
         if (!PonyConfig.getInstance().disablePonifiedArmour.get()) {
-            return Stream.of(this, modern(ResourceUtil.ponify(texture())));
+            return Stream.of(this, modern(texture().withPath(p -> p.replace("humanoid", "ponified"))));
         }
         return Stream.of(this);
     }

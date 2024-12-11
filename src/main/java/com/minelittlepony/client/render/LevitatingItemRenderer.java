@@ -37,8 +37,8 @@ public class LevitatingItemRenderer {
      * Renders an item with a magical overlay.
      */
     public boolean renderItem(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformationMode mode, boolean left,
-            MatrixStack matrix, VertexConsumerProvider renderContext, @Nullable World world,
-            int lightUv, int overlay, int seed, Operation<Void> original) {
+            MatrixStack matrices, VertexConsumerProvider vertices, @Nullable World world,
+            int light, int overlay, int seed, Operation<Void> original) {
 
         if (entity == null || !(mode.isFirstPerson()
                 || mode == ModelTransformationMode.THIRD_PERSON_LEFT_HAND
@@ -54,18 +54,18 @@ public class LevitatingItemRenderer {
 
         var state = context.getAndUpdateRenderState(entity, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false));
 
-        matrix.push();
+        matrices.push();
 
         boolean doMagic = (mode.isFirstPerson() ? PonyConfig.getInstance().fpsmagic : PonyConfig.getInstance().tpsmagic).get() && state.hasMagicGlow();
 
         if (doMagic && mode.isFirstPerson()) {
-            setupPerspective(entity, stack, left, matrix);
+            setupPerspective(entity, stack, left, matrices);
         }
 
-        original.call(entity, stack, mode, left, matrix, renderContext, world, lightUv, overlay, seed);
+        original.call(itemRenderer, entity, stack, mode, left, matrices, vertices, world, light, overlay, seed);
 
         if (doMagic) {
-            VertexConsumerProvider interceptedContext = getProvider(state.pony, renderContext);
+            VertexConsumerProvider interceptedContext = getProvider(state.pony, vertices);
 
             if (stack.hasGlint()) {
                 stack = stack.copy();
@@ -80,16 +80,16 @@ public class LevitatingItemRenderer {
             float zDrift = MathHelper.cos((tickDelta + 20) / 20F) * driftStrength;
 
             float scale = 1.1F + (MathHelper.sin(tickDelta / 20F) + 1) * driftStrength;
-            matrix.scale(scale, scale, scale);
-            matrix.translate(0.015F + xDrift, 0.01F, 0.01F + zDrift);
+            matrices.scale(scale, scale, scale);
+            matrices.translate(0.015F + xDrift, 0.01F, 0.01F + zDrift);
 
-            original.call(entity, stack, mode, left, matrix, interceptedContext, world, lightUv, OverlayTexture.DEFAULT_UV, seed);
-            matrix.scale(scale, scale, scale);
-            matrix.translate(-0.03F - xDrift, -0.02F, -0.02F - zDrift);
-            original.call(entity, stack, mode, left, matrix, interceptedContext, world, lightUv, OverlayTexture.DEFAULT_UV, seed);
+            original.call(itemRenderer, entity, stack, mode, left, matrices, interceptedContext, world, light, OverlayTexture.DEFAULT_UV, seed);
+            matrices.scale(scale, scale, scale);
+            matrices.translate(-0.03F - xDrift, -0.02F, -0.02F - zDrift);
+            original.call(itemRenderer, entity, stack, mode, left, matrices, interceptedContext, world, light, OverlayTexture.DEFAULT_UV, seed);
         }
 
-        matrix.pop();
+        matrices.pop();
         return true;
     }
 

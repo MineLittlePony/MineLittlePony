@@ -22,7 +22,6 @@
 				},
         "hat": {
           "texture": { "u": 40, "v": 27 },
-          "pivot": [0, 1, -4],
           "children": {
             "hat_parts": {
               "pivot": [0, 2, 0],

@@ -14,6 +14,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityPose;
@@ -42,19 +43,17 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
     protected final ModelPart neck;
 
-    public final RenderList helmetRenderList;
     protected final RenderList neckRenderList;
     public final RenderList headRenderList;
     protected final RenderList bodyRenderList;
-    protected final RenderList vestRenderList;
 
     protected final RenderList legsRenderList;
-    protected final RenderList sleevesRenderList;
 
     protected final RenderList mainRenderList;
 
     private final List<SubModel<? super T>> parts = new ArrayList<>();
 
+    @Deprecated
     @Nullable
     protected T currentState;
 
@@ -66,10 +65,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             .add(withStage(BodyPart.BODY, bodyRenderList = RenderList.of(body).add(body::rotate)))
             .add(withStage(BodyPart.NECK, neckRenderList = RenderList.of(neck)))
             .add(withStage(BodyPart.HEAD, headRenderList = RenderList.of(head)))
-            .add(withStage(BodyPart.LEGS, legsRenderList = RenderList.of().add(leftArm, rightArm, leftLeg, rightLeg)))
-            .add(withStage(BodyPart.LEGS, sleevesRenderList = RenderList.of().add(leftSleeve, rightSleeve, leftPants, rightPants)))
-            .add(withStage(BodyPart.BODY, vestRenderList = RenderList.of(jacket)))
-            .add(withStage(BodyPart.HEAD, helmetRenderList = RenderList.of(hat)));
+            .add(withStage(BodyPart.LEGS, legsRenderList = RenderList.of().add(leftArm, rightArm, leftLeg, rightLeg)));
     }
 
     protected <P extends SubModel<? super T>> P addPart(P part) {
@@ -88,14 +84,16 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     protected RenderList withStage(BodyPart part, RenderList action) {
         return (stack, vertices, overlay, light, color) -> {
             stack.push();
-            transform(currentState, part, stack);
+            if (currentState != null) {
+                transform(currentState, part, stack);
+            }
             action.accept(stack, vertices, overlay, light, color);
             stack.pop();
         };
     }
 
     @Override
-    public void render(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
+    public final void render(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
         mainRenderList.accept(stack, vertices, overlay, light, color);
     }
 
@@ -112,18 +110,19 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
         setModelVisibilities((T)entity);
         setModelAngles((T)entity);
-
-        leftSleeve.copyTransform(leftArm);
-        rightSleeve.copyTransform(rightArm);
-        leftPants.copyTransform(leftLeg);
-        rightPants.copyTransform(rightLeg);
-        jacket.copyTransform(body);
-        hat.copyTransform(head);
     }
 
     protected void setModelVisibilities(T state) {
         hat.visible = head.visible && !state.attributes.isHorsey;
         parts.forEach(part -> part.setVisible(body.visible, state));
+    }
+
+    @SuppressWarnings("unchecked")
+    public void copyTransforms(BipedEntityModel<PlayerEntityRenderState> model) {
+        super.copyTransforms(model);
+        if (model instanceof AbstractPonyModel m) {
+            ((AbstractPonyModel<T>)m).currentState = currentState;
+        }
     }
 
     protected void setModelAngles(T entity) {
@@ -186,7 +185,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     public void setHeadRotation(float animationProgress, float yaw, float pitch) {
         head.yaw = yaw * MathHelper.RADIANS_PER_DEGREE;
         head.pitch = pitch * MathHelper.RADIANS_PER_DEGREE;
-        hat.copyTransform(head);
     }
 
     /**
@@ -286,7 +284,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
      * Takes the same parameters as {@link AbstractPonyModel.setRotationAndAngles}
      */
     protected void rotateLegsSwimming(T state, @Deprecated float move, @Deprecated float swing, @Deprecated float ticks) {
-
         float lerp = state.isInPose(EntityPose.SWIMMING) ? (float)state.attributes.motionLerp : 1;
 
         float legLeft = (MathUtil.Angles._90_DEG + MathHelper.sin((state.limbFrequency / 3) + 2 * MathHelper.PI/3) / 2) * lerp;
@@ -307,8 +304,8 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     protected void rotateLegsOnGround(T state, float move, float swing, float ticks) {
         float angle = MathHelper.PI * (float) Math.pow(swing, 16);
 
-        float baseRotation = move * 0.6662F; // magic number ahoy
-        float scale = swing / 4;
+        float baseRotation = state.limbFrequency * 0.6662F; // magic number ahoy
+        float scale = state.limbAmplitudeMultiplier / 4;
 
         float rainboomLegLotation = state.attributes.getMainInterpolator().interpolate(
                 "rainboom_leg_rotation",
@@ -415,10 +412,10 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
                     arm.pivotX -= 6 * sigma;
                     arm.pivotZ -= 2;
                 }
-                if (state.size == SizePreset.TALL) {
+                if (state.attributes.size == SizePreset.TALL) {
                     arm.pivotY += 1;
                 }
-                if (state.size == SizePreset.FOAL) {
+                if (state.attributes.size == SizePreset.FOAL) {
                     arm.pivotY -= 2;
                 }
 
@@ -529,7 +526,9 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     @Override
     public final void setArmAngle(Arm arm, MatrixStack matrices) {
         super.setArmAngle(arm, matrices);
-        positionheldItem(currentState, arm, matrices);
+        if (currentState != null) {
+            positionheldItem(currentState, arm, matrices);
+        }
     }
 
     protected void positionheldItem(T state, Arm arm, MatrixStack matrices) {
@@ -584,6 +583,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             neck.hidden = !head.visible;
         }
 
-        PonyTransformation.forSize(state.size).transform(state.attributes, part, stack);
+        PonyTransformation.forSize(state.attributes.size).transform(state.attributes, part, stack);
     }
 }

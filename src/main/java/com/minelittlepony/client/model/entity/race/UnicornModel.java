@@ -9,6 +9,7 @@ import com.minelittlepony.mson.api.ModelView;
 import com.minelittlepony.mson.util.RenderList;
 
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.registry.Registries;
@@ -17,7 +18,7 @@ import net.minecraft.util.*;
 /**
  * Used for both unicorns and alicorns since there's no logical way to keep them distinct and not duplicate stuff.
  */
-public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> implements HornedPonyModel<T> {
+public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> {
 
     protected final ModelPart unicornArmRight;
     protected final ModelPart unicornArmLeft;
@@ -30,14 +31,24 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> i
         unicornArmLeft = tree.getChild("left_cast");
     }
 
+    public boolean isCasting(T state) {
+        return state instanceof PlayerEntityRenderState s
+                && (getArmPose(s, Arm.LEFT) != ArmPose.EMPTY || getArmPose(s, Arm.RIGHT) != ArmPose.EMPTY);
+    }
+
+    @Override
+    public float getWobbleAmplitude(T state) {
+        return isCasting(state) ? 0 : 1;
+    }
+
     @Override
     public void init(ModelView context) {
         super.init(context);
         horn = addPart(context.findByName("horn"));
-        headRenderList.add(RenderList.of().add(head::rotate).add(forPart(horn)).checked(() -> currentState.race.hasHorn()));
-        this.mainRenderList.add(withStage(BodyPart.HEAD, RenderList.of().add(head::rotate).add((stack, vertices, overlay, light, color) -> {
-            horn.renderMagic(stack, vertices, currentState.attributes.metadata.glowColor());
-        })).checked(() -> currentState.hasMagicGlow() && isCasting(currentState)));
+        headRenderList.add(RenderList.of().add(head::rotate).add(forPart(horn)));
+        mainRenderList.add(withStage(BodyPart.HEAD, RenderList.of().add(head::rotate).add((stack, vertices, overlay, light, color) -> {
+            horn.renderMagic(stack, vertices, currentState == null ? 0 : currentState.attributes.metadata.glowColor());
+        })).checked(() -> isCasting(currentState)));
     }
 
     @Override
@@ -60,7 +71,7 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> i
 
     @Override
     public ModelPart getArm(Arm side) {
-        if (currentState.hasMagicGlow() && getArmPoseForSide(currentState, side) != ArmPose.EMPTY && PonyConfig.getInstance().tpsmagic.get()) {
+        if (currentState != null && currentState.hasMagicGlow() && getArmPoseForSide(currentState, side) != ArmPose.EMPTY && PonyConfig.getInstance().tpsmagic.get()) {
             return side == Arm.LEFT ? unicornArmLeft : unicornArmRight;
         }
         return super.getArm(side);
@@ -70,7 +81,7 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> i
     protected void positionheldItem(T state, Arm arm, MatrixStack matrices) {
         super.positionheldItem(state, arm, matrices);
 
-        if (!PonyConfig.getInstance().tpsmagic.get() || !currentState.hasMagicGlow()) {
+        if (!PonyConfig.getInstance().tpsmagic.get() || !state.hasMagicGlow()) {
             return;
         }
 
@@ -93,9 +104,9 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> i
                     float x = 0.3F;
                     float z = -0.4F;
 
-                    if (state.size == SizePreset.TALL || state.size == SizePreset.YEARLING) {
+                    if (state.attributes.size == SizePreset.TALL || state.attributes.size == SizePreset.YEARLING) {
                         z += 0.05F;
-                    } else if (state.size == SizePreset.FOAL) {
+                    } else if (state.attributes.size == SizePreset.FOAL) {
                         x -= 0.1F;
                         z -= 0.1F;
                     }

@@ -1,9 +1,9 @@
 package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 
+import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.render.entity.EnderStallionRenderer;
 
 public class EnderStallionModel extends SkeleponyModel<EnderStallionRenderer.State> {
@@ -36,11 +36,9 @@ public class EnderStallionModel extends SkeleponyModel<EnderStallionRenderer.Sta
     }
 
     @Override
-    public void render(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
-        stack.push();
+    public void transform(EnderStallionRenderer.State state, BodyPart part, MatrixStack stack) {
         stack.translate(0, -1.15F, 0);
-        super.render(stack, vertices, overlay, light, color);
-        stack.pop();
+        super.transform(state, part, stack);
     }
 
     @Override

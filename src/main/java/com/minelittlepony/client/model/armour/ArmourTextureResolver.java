@@ -39,12 +39,7 @@ public class ArmourTextureResolver implements ArmourTextureLookup, IdentifiableR
     private final LoadingCache<ArmourParameters, ArmourTexture> layerCache = CacheBuilder.newBuilder()
             .expireAfterAccess(30, TimeUnit.SECONDS)
             .build(CacheLoader.from(parameters -> {
-                return Stream.of(ArmourTexture.legacy(parameters.material().textureId())).flatMap(i -> {
-                    if (parameters.layer() == ArmourLayer.OUTER) {
-                        return Stream.of(i, ArmourTexture.legacy(parameters.material().textureId()));
-                    }
-                    return Stream.of(i);
-                }).flatMap(i -> {
+                return Stream.of(ArmourTexture.legacy(parameters.textureId())).flatMap(i -> {
                     if (parameters.customModelId() != 0) {
                         return Stream.of(ArmourTexture.legacy(i.texture().withPath(p -> p.replace(".png", parameters.customModelId() + ".png"))), i);
                     }
@@ -53,10 +48,7 @@ public class ArmourTextureResolver implements ArmourTextureLookup, IdentifiableR
             }));
 
     private Stream<ArmourTexture> performLookup(ArmourTexture id) {
-        List<ArmourTexture> options = Stream.of(id)
-                .flatMap(ArmourTexture::named)
-                .flatMap(ArmourTexture::ponify)
-                .toList();
+        List<ArmourTexture> options = Stream.of(id).flatMap(ArmourTexture::ponify).toList();
         return options.stream().distinct()
                 .filter(ArmourTexture::validate)
                 .findFirst()
@@ -84,15 +76,17 @@ public class ArmourTextureResolver implements ArmourTextureLookup, IdentifiableR
     }
 
     @Override
-    public ArmourTexture getTexture(ItemStack stack, ArmourLayer layer, EquipmentModel.Layer armorLayer) {
-        return layerCache.getUnchecked(new ArmourParameters(layer, armorLayer, getCustom(stack)));
+    public ArmourTexture getTexture(ItemStack stack, EquipmentModel.LayerType layerType, EquipmentModel.Layer layer) {
+        return layerCache.getUnchecked(new ArmourParameters(layer, layerType, getCustom(stack)));
     }
 
     private int getCustom(ItemStack stack) {
         return stack.getOrDefault(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelDataComponent.DEFAULT).value();
     }
 
-    private record ArmourParameters(ArmourLayer layer, EquipmentModel.Layer material, int customModelId) {
-
+    private record ArmourParameters(EquipmentModel.Layer layer, EquipmentModel.LayerType layerType, int customModelId) {
+        public Identifier textureId() {
+            return layer.getFullTextureId(layerType);
+        }
     }
 }

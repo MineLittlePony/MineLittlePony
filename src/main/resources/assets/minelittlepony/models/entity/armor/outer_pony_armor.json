@@ -7,7 +7,12 @@
       "dilate": 0.41,
       "cubes": [
         {"from": [-4, 4, -2], "size": [8, 8, 16]}
-      ]
+      ],
+      "children": {
+        "jacket": {
+          "visible": false
+        }
+      }
     }
   }
 }

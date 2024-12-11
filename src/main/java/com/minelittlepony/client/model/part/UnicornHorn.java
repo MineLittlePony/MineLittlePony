@@ -17,6 +17,7 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
     private final ModelPart glow;
 
     protected boolean visible = true;
+    protected boolean glowing;
 
     public UnicornHorn(ModelPart tree) {
         horn = tree.getChild("bone");
@@ -39,7 +40,7 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
 
     @Override
     public void setVisible(boolean visible, T state) {
-        horn.visible = this.visible && visible;
-        glow.visible = this.visible && visible;
+        horn.visible = this.visible && visible && state.race.hasHorn();
+        glow.visible = this.visible && visible && state.hasMagicGlow();
     }
 }

@@ -37,19 +37,21 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
             EquipmentSlot equipmentSlot,
             EquipmentModel.LayerType layerType,
             Identifier modelId,
+            S entity,
             Models<? extends PonyModel<S>> models,
             ItemStack stack,
             MatrixStack matrices,
             VertexConsumerProvider vertexConsumers,
             int light
         ) {
-        this.render(equipmentSlot, layerType, modelId, models, stack, matrices, vertexConsumers, light, null);
+        this.render(equipmentSlot, layerType, modelId, entity, models, stack, matrices, vertexConsumers, light, null);
     }
 
     public <S extends PonyRenderState, V extends PonyArmourModel<S>> void render(
             EquipmentSlot equipmentSlot,
             EquipmentModel.LayerType layerType,
             Identifier modelId,
+            S entity,
             Models<? extends PonyModel<S>> models,
             ItemStack stack,
             MatrixStack matrices,
@@ -72,7 +74,7 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
                     int j = getDyeColor(layer, i);
                     if (j != 0) {
                         ArmourLayer armourLayer = layerType == LayerType.HUMANOID_LEGGINGS ? ArmourLayer.INNER : ArmourLayer.OUTER;
-                        ArmourTexture armorTexture = plugin.getTextureLookup().getTexture(stack, armourLayer, layer);
+                        ArmourTexture armorTexture = plugin.getTextureLookup().getTexture(stack, layerType, layer);
                         Identifier layerTexture = layer.usePlayerTexture() && texture != null
                             ? texture
                             : armorTexture.texture();
@@ -80,9 +82,10 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
                         VertexConsumer armorConsumer = plugin.getArmourConsumer(equipmentSlot, vertexConsumers, layerTexture, layerType);
                         if (armorConsumer != null) {
                             ArmourVariant variant = layer.usePlayerTexture() ? ArmourVariant.NORMAL : armorTexture.variant();
-                            models.getArmourModel(stack, null, variant).ifPresent(model -> {
+                            models.getArmourModel(stack, armourLayer, variant).ifPresent(model -> {
                                 VertexConsumer glintConsumer = hasGlint ? plugin.getGlintConsumer(equipmentSlot, vertexConsumers, layerType) : null;
                                 if (model.poseModel(equipmentSlot, armourLayer, models.body())) {
+                                    model.setAngles(entity);
                                     model.render(matrices, glintConsumer != null ? VertexConsumers.union(plugin.getGlintConsumer(equipmentSlot, vertexConsumers, layerType), armorConsumer) : armorConsumer, light, OverlayTexture.DEFAULT_UV, j);
                                 }
                             });

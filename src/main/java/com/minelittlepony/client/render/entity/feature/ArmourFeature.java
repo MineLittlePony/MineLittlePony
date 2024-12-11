@@ -51,9 +51,9 @@ public class ArmourFeature<
 
     private static <S extends PonyRenderState, V extends PonyArmourModel<S>> void renderArmor(
             Models<? extends PonyModel<S>> models, MatrixStack matrices,
-                    VertexConsumerProvider vertices, int light, S entity,
-                    float limbDistance, float limbAngle,
-                    EquipmentSlot armorSlot, ArmourLayer layer, PonifiedEquipmentRenderer equipmentRenderer) {
+            VertexConsumerProvider vertices, int light, S entity,
+            float limbDistance, float limbAngle,
+            EquipmentSlot armorSlot, ArmourLayer layer, PonifiedEquipmentRenderer equipmentRenderer) {
 
         ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
 
@@ -65,7 +65,7 @@ public class ArmourFeature<
                         ? EquipmentModel.LayerType.HUMANOID_LEGGINGS
                         : EquipmentModel.LayerType.HUMANOID;
                 Identifier modelId = equippableComponent.model().orElseThrow();
-                equipmentRenderer.render(armorSlot, layerType, modelId, models, stack, matrices, vertices, light);
+                equipmentRenderer.render(armorSlot, layerType, modelId, entity, models, stack, matrices, vertices, light);
             }
         }
 

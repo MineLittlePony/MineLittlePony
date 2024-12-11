@@ -13,7 +13,7 @@ import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.events.PonyModelPrepareCallback;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.model.PonyModel;
-import com.minelittlepony.api.pony.Pony;
+import com.minelittlepony.api.pony.*;
 import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.client.transform.PonyPosture;
 
@@ -31,15 +31,14 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
     public boolean onGround;
     public boolean isTechnoblade;
 
-    public Pony pony;
-    public Size size;
-    public Race race;
+    public Pony pony = Pony.getManager().getPony(DefaultPonySkinHelper.STEVE);
+    public Race race = Race.HUMAN;
 
     public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
         this.pony = pony;
         attributes.updateLivingState(entity, pony, mode);
         attributes.checkRainboom(entity, model, age);
-        size = baby ? SizePreset.FOAL : PonyConfig.getEffectiveSize(attributes.metadata.size());
+        baby = attributes.size == SizePreset.FOAL;
         race = PonyConfig.getEffectiveRace(attributes.metadata.race());
         vehicleOffset = hasVehicle ? entity.getVehicle().getEyeHeight(pose) : 0;
         riderOffset = getRiderYOffset();
@@ -94,7 +93,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
      * Gets the y-offset applied to entities riding this one.
      */
     protected float getRiderYOffset() {
-        return switch ((SizePreset)size) {
+        return switch ((SizePreset)attributes.size) {
             case NORMAL -> 0.4F;
             default -> 0.25F;
         };
@@ -112,7 +111,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         float y = -(height + 0.5F);
 
         // Then we add our own offsets.
-        y += attributes.visualHeight * size.scaleFactor() + 0.25F;
+        y += attributes.visualHeight * attributes.size.scaleFactor() + 0.25F;
         y += vehicleOffset;
 
         if (isInSneakingPose) {

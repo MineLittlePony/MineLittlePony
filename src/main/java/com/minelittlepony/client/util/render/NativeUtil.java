@@ -114,7 +114,7 @@ public class NativeUtil {
 
             Resource res = mc.getResourceManager().getResource(resource).orElse(null);
             if (res != null) {
-                try (InputStream inputStream = res.getInputStream()){
+                try (InputStream inputStream = res.getInputStream()) {
                     consumer.accept(NativeImage.read(inputStream)::getColorArgb);
                     return;
                 }

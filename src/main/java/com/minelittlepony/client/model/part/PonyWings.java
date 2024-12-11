@@ -21,6 +21,8 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
 
     protected Wing<S> legacyWing;
 
+    private boolean visible;
+
     public PonyWings(ModelPart tree) {
 
     }
@@ -113,6 +115,10 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
         }
     }
 
+    @Override
+    public void setVisible(boolean visible, S state) {
+        visible = state.race.hasWings();
+    }
 
     private boolean isBurdened(S state) {
         return state.getAttributes().isWearing(Wearable.SADDLE_BAGS_BOTH)
@@ -122,9 +128,11 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
 
     @Override
     public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
-        leftWing.render(stack, vertices, overlay, light, color);
-        rightWing.render(stack, vertices, overlay, light, color);
-        legacyWing.render(stack, vertices, overlay, light, color);
+        if (visible) {
+            leftWing.render(stack, vertices, overlay, light, color);
+            rightWing.render(stack, vertices, overlay, light, color);
+            legacyWing.render(stack, vertices, overlay, light, color);
+        }
     }
 
     public static class Wing<S extends PonyRenderState> implements MsonModel {

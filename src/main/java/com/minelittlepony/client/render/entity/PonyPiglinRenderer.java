@@ -45,6 +45,6 @@ public class PonyPiglinRenderer extends PonyRenderer<HostileEntity, PonyPiglinRe
 
     public static class State extends PonyRenderState {
         public boolean zombified;
-        public PiglinActivity activity;
+        public PiglinActivity activity = PiglinActivity.DEFAULT;
     }
 }

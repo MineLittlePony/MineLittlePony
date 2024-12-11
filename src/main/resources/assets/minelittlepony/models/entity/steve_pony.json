@@ -278,7 +278,6 @@
 			],
       "children": {
         "right_sleeve": {
-          "pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", "#arm_rotation_z"],
           "visible": false,
           "texture": { "u": 40, "v": 32 },
           "cubes": [
@@ -302,7 +301,6 @@
 			],
       "children": {
         "left_sleeve": {
-          "pivot": ["#arm_rotation_x", "#arm_rotation_y", "#arm_rotation_z"],
           "visible": false,
           "texture": { "u": 48, "v": 48 },
           "cubes": [
@@ -326,7 +324,6 @@
 			],
       "children": {
         "right_pants": {
-          "pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", 11],
           "visible": false,
           "texture": { "u": 0, "v": 32 },
           "cubes": [
@@ -350,7 +347,6 @@
 			],
       "children": {
         "left_pants": {
-          "pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", 11],
           "visible": false,
           "texture": { "u": 0, "v": 48 },
           "cubes": [

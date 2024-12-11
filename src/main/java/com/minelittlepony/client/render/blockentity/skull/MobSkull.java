@@ -6,6 +6,7 @@ import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer.ISkull;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.ModelKey;
 
 import java.util.function.Supplier;
@@ -20,15 +21,17 @@ import net.minecraft.util.math.RotationAxis;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-public class MobSkull implements ISkull {
+public class MobSkull<S extends PonyRenderState> implements ISkull {
     private final Identifier texture;
     private final MobRenderers type;
 
     private final Supplier<AbstractPonyModel<?>> ponyHead;
+    private final Supplier<S> state;
 
-    MobSkull(Identifier texture, MobRenderers type, ModelKey<? extends AbstractPonyModel<?>> modelKey) {
+    MobSkull(Identifier texture, MobRenderers type, ModelKey<? extends AbstractPonyModel<?>> modelKey, Supplier<S> state) {
         this.texture = texture;
         this.type = type;
+        this.state = Suppliers.memoize(state::get);
         this.ponyHead = Suppliers.memoize(modelKey::createModel);
     }
 
@@ -44,6 +47,11 @@ public class MobSkull implements ISkull {
 
     @Override
     public boolean bindPony(Pony pony) {
+        S state = this.state.get();
+        state.pony = pony;
+        state.race = pony.race();
+        state.attributes.size = pony.size();
+        state.attributes.metadata = pony.metadata();
         return true;
     }
 
@@ -51,11 +59,12 @@ public class MobSkull implements ISkull {
     public void setAngles(float yaw, float animationProgress) {
         Vector3f v = new Vector3f(0, -2, 1.99F);
         v.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(yaw));
+        ponyHead.get().setVisible(true);
+        ponyHead.get().setAngles(state.get());
         ModelPart head = ponyHead.get().getHead();
         head.pivotX = v.x;
         head.pivotY = v.y;
         head.pivotZ = v.z;
-        ponyHead.get().setVisible(true);
         ponyHead.get().setHeadRotation(animationProgress, yaw, 0);
     }
 

@@ -94,7 +94,7 @@ public class EquineRenderManager<
     }
 
     public void setupTransforms(S state, MatrixStack stack, float animationProgress, float bodyYaw) {
-        float s = state.size.scaleFactor();
+        float s = state.attributes.size.scaleFactor();
         stack.scale(s, s, s);
 
         if (state instanceof PlayerEntityRenderState && state.attributes.isSitting) {

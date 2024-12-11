@@ -5,6 +5,7 @@ import net.minecraft.entity.EquipmentSlot;
 
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.model.AbstractPonyModel;
+import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 public class PonyArmourModel<S extends PonyRenderState> extends AbstractPonyModel<S> {
@@ -17,7 +18,7 @@ public class PonyArmourModel<S extends PonyRenderState> extends AbstractPonyMode
         if (!setVisibilities(slot, layer)) {
             return false;
         }
-        if (mainModel instanceof AbstractPonyModel abs) {
+        if (mainModel instanceof ClientPonyModel abs) {
             abs.copyTransforms(this);
         }
         return true;

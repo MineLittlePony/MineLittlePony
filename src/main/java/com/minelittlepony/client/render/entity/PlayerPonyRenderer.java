@@ -73,7 +73,7 @@ public class PlayerPonyRenderer
 
     public Vec3d getPositionOffset(PlayerEntityRenderState state) {
         Vec3d offset = super.getPositionOffset(state);
-        return offset.add(state.baseScale * ((PlayerPonyRenderState)state).yOffset).multiply(((PonyRenderState)state).size.scaleFactor());
+        return offset.add(state.baseScale * ((PlayerPonyRenderState)state).yOffset).multiply(((PonyRenderState)state).attributes.size.scaleFactor());
     }
 
     @Override
@@ -102,7 +102,7 @@ public class PlayerPonyRenderer
     @Override
     public void render(PlayerEntityRenderState state, MatrixStack stack, VertexConsumerProvider vertices, int light) {
         // EntityModelFeatures: We have to force it to use our models otherwise EMF overrides it and breaks pony rendering
-        shadowRadius = ((PlayerPonyRenderState)state).size.shadowSize();
+        shadowRadius = ((PlayerPonyRenderState)state).attributes.size.shadowSize();
         super.render(state, stack, vertices, light);
         DebugBoundingBoxRenderer.render((PlayerPonyRenderState)state, stack, vertices);
 

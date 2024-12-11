@@ -6,6 +6,7 @@ import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.client.render.entity.*;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import net.minecraft.block.AbstractSkullBlock;
 import net.minecraft.block.SkullBlock;
@@ -51,10 +52,10 @@ public class PonySkullRenderer {
 
     public void reload() {
         skulls = Util.make(new HashMap<>(), skullMap -> {
-            skullMap.put(SkullBlock.Type.SKELETON, new MobSkull(SkeleponyRenderer.SKELETON, MobRenderers.SKELETON, ModelType.SKELETON));
-            skullMap.put(SkullBlock.Type.WITHER_SKELETON, new MobSkull(SkeleponyRenderer.WITHER, MobRenderers.SKELETON, ModelType.SKELETON));
-            skullMap.put(SkullBlock.Type.ZOMBIE, new MobSkull(ZomponyRenderer.ZOMBIE, MobRenderers.ZOMBIE, ModelType.ZOMBIE));
-            skullMap.put(SkullBlock.Type.PIGLIN, new MobSkull(PonyPiglinRenderer.PIGLIN, MobRenderers.PIGLIN, ModelType.PIGLIN));
+            skullMap.put(SkullBlock.Type.SKELETON, new MobSkull<>(SkeleponyRenderer.SKELETON, MobRenderers.SKELETON, ModelType.SKELETON, SkeleponyRenderer.State::new));
+            skullMap.put(SkullBlock.Type.WITHER_SKELETON, new MobSkull<>(SkeleponyRenderer.WITHER, MobRenderers.SKELETON, ModelType.SKELETON, SkeleponyRenderer.State::new));
+            skullMap.put(SkullBlock.Type.ZOMBIE, new MobSkull<>(ZomponyRenderer.ZOMBIE, MobRenderers.ZOMBIE, ModelType.ZOMBIE, PonyRenderState::new));
+            skullMap.put(SkullBlock.Type.PIGLIN, new MobSkull<>(PonyPiglinRenderer.PIGLIN, MobRenderers.PIGLIN, ModelType.PIGLIN, PonyPiglinRenderer.State::new));
             skullMap.put(SkullBlock.Type.PLAYER, new PlayerPonySkull());
         });
         headModels = SkullBlockEntityRenderer.getModels(MinecraftClient.getInstance().getEntityModelLoader());

@@ -29,7 +29,6 @@
         "hat": {
           "texture": { "u": 32, "v": 0 },
           "visible": false,
-          "pivot": [0, 0, -2],
           "cubes": [
             { "from": [-4, -6, -6], "size": [ 8, 8, 8], "dilate": -0.5 }
           ]

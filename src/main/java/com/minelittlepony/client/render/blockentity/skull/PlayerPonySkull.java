@@ -83,9 +83,6 @@ public class PlayerPonySkull implements ISkull {
         stack.push();
         ponyHead.headRenderList.accept(stack, vertices, light, overlay, color);
         stack.pop();
-        stack.push();
-        ponyHead.helmetRenderList.accept(stack, vertices, light, overlay, color);
-        stack.pop();
         if (renderingEars) {
             stack.push();
             stack.scale(1.3333334f, 1.3333334f, 1.3333334f);

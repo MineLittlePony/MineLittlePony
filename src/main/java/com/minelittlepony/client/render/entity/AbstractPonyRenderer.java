@@ -116,7 +116,7 @@ public abstract class AbstractPonyRenderer<
 
     @Override
     public void scale(S state, MatrixStack stack) {
-        shadowRadius = state.size.shadowSize();
+        shadowRadius = state.attributes.size.shadowSize();
 
         if (state.baby) {
             shadowRadius *= 3; // undo vanilla shadow scaling

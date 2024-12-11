@@ -56,7 +56,6 @@
       ],
       "children": {
         "right_sleeve": {
-          "pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", "#arm_rotation_z"],
           "rotate": [-80, 29, 0],
           "visible": false,
           "texture": { "u": 40, "v": 32 },
@@ -82,7 +81,6 @@
       ],
       "children": {
         "left_sleeve": {
-          "pivot": ["#arm_rotation_x", "#arm_rotation_y", "#arm_rotation_z"],
           "rotate": [-80, -29, 0],
           "visible": false,
           "texture": { "u": 48, "v": 48 },

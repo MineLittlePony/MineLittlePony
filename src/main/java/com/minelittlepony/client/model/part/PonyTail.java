@@ -112,7 +112,7 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
         }
 
         public void setAngles(int index, PonyTail tail, ModelAttributes attributes) {
-            tree.visible = index >= tail.tailStop;
+            tree.visible = index < tail.tailStop;
             shape = tail.shape;
             horsey = attributes.isHorsey;
 

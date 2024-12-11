@@ -39,7 +39,7 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
     }
 
     @Override
-    public <S extends PlayerEntityRenderState> ArmPose getArmPoseForSide(S state, Arm side) {
+    public final <S extends PlayerEntityRenderState> ArmPose getArmPoseForSide(S state, Arm side) {
         return getArmPose(state, side);
     }
 

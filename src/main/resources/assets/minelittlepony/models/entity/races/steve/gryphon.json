@@ -50,7 +50,6 @@
           }
         },
         "left_sleeve": {
-          "pivot": ["#arm_rotation_x", "#arm_rotation_y", "#arm_rotation_z"],
           "visible": false,
           "texture": { "u": 48, "v": 48 },
           "cubes": [
@@ -108,7 +107,11 @@
           "visible": false,
           "texture": { "u": 40, "v": 32 },
           "cubes": [
-            { "from": [-3, -2, -2], "size": [ 4,  12,  4], "dilate": [0.25, 0.25, 0.25] }
+            {
+              "from": [ "#arm_x_neg", 4, "#arm_z"],
+              "size": [ "#arm_width",  "#arm_length",  "#arm_depth" ],
+              "dilate": 0.25
+            }
           ]
         }
       }

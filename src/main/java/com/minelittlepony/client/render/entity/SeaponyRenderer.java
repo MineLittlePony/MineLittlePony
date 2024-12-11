@@ -50,7 +50,7 @@ public class SeaponyRenderer extends PonyRenderer<GuardianEntity, SeaponyRendere
         super.updateRenderState(entity, state, tickDelta);
         state.spikesExtension = entity.getSpikesExtension(tickDelta);
         state.tailAngle = entity.getTailAngle(tickDelta);
-        state.cameraPosVec = getScaledCameraPosVec(entity, tickDelta, state.size.scaleFactor());
+        state.cameraPosVec = getScaledCameraPosVec(entity, tickDelta, state.attributes.size.scaleFactor());
         Entity cameraBeamTarget = GuardianEntityRenderer.getBeamTarget(entity);
         state.rotationVec = cameraBeamTarget != null ? entity.getRotationVec(tickDelta) : null;
         state.lookAtPos = cameraBeamTarget != null ? cameraBeamTarget.getCameraPosVec(tickDelta) : null;
