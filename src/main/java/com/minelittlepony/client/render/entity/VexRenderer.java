@@ -30,12 +30,13 @@ public class VexRenderer extends MobEntityRenderer<VexEntity, VexRenderer.State,
     @Override
     public void updateRenderState(VexEntity entity, State state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
+        state.uuid = entity.getUuid();
         state.bodyPitch = MathHelper.clamp((float)entity.getVelocity().horizontalLength() / 10F, 0, 0.1F);
-        state.jawOpenAmount = Interpolator.linear(entity.getUuid()).interpolate("jawOpen", entity instanceof VexEntity vex && vex.isCharging() ? 1 : 0, 10);
-        state.wingRoll = 1 + ((float)Math.cos(state.age) / 3F) + 0.3F;
-        state.wingYaw = 1 - ((float)Math.sin(state.age) / 2F);
-        state.innerWingRoll = 0.5F + (-(float)Math.sin(state.age + Math.PI / 4F) / 2F) - 0.3F;
-        state.innerWingPitch = 0.5F - ((float)Math.cos(state.age + Math.PI / 4F) / 3F) + 0.3F;
+        state.jawOpenAmount = Interpolator.linear(state.uuid).interpolate("jawOpen", entity.isCharging() ? 1 : 0, 10);
+        state.wingRoll = 1 + (MathHelper.cos(state.age) / 3F) + 0.3F;
+        state.wingYaw = 1 - (MathHelper.sin(state.age) / 2F);
+        state.innerWingRoll = 0.5F + (-MathHelper.sin(state.age + MathHelper.PI / 4F) / 2F) - 0.3F;
+        state.innerWingPitch = 0.5F - (MathHelper.cos(state.age + MathHelper.PI / 4F) / 3F) + 0.3F;
         if (entity.hasPassengers()) {
             state.yawDegrees = 0;
             state.pitch = 0;
@@ -55,7 +56,6 @@ public class VexRenderer extends MobEntityRenderer<VexEntity, VexRenderer.State,
     public static class State extends LivingEntityRenderState {
         public UUID uuid;
         public float bodyPitch;
-        public boolean hasPassengers;
         public float jawOpenAmount;
         public float wingRoll;
         public float wingYaw;
