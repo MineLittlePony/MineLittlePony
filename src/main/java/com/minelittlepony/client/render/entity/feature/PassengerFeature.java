@@ -55,9 +55,10 @@ public class PassengerFeature<
     ) {
         matrices.push();
         getContextModel().transform(state, BodyPart.BACK, matrices);
+        getContextModel().body.rotate(matrices);
         matrices.translate(
                 left ? 0.25F : -0.25F,
-                state.isInSneakingPose ? -1.3F : -1.5F, 0.0F
+                state.isInSneakingPose ? -1.7F : -1.5F, 0
         );
         matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(left ? -5 : 5));
         parrotState.age = state.age;

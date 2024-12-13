@@ -298,12 +298,13 @@ public enum PonyTransformation {
         riderOffset = new Vec3d(rX, rY, rZ);
     }
 
+    @Deprecated
     public Vec3d getRiderOffset() {
         return riderOffset;
     }
 
     public void translateForRider(MatrixStack stack) {
-        stack.translate(riderOffset.x, riderOffset.y, riderOffset.z);
+        stack.translate(riderOffset.x, riderOffset.y / 16F, riderOffset.z);
     }
 
     public abstract void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack);
