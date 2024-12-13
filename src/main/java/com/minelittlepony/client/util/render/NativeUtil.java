@@ -107,6 +107,7 @@ public class NativeUtil {
             if (loadedTexture instanceof NativeImageBackedTexture nibt) {
                 NativeImage image = nibt.getImage();
                 if (image != null) {
+                    System.out.println("Format of in-memory resource " + resource + " is " + image.getFormat());
                     consumer.accept(image::getColorArgb);
                     return;
                 }
@@ -115,7 +116,11 @@ public class NativeUtil {
             Resource res = mc.getResourceManager().getResource(resource).orElse(null);
             if (res != null) {
                 try (InputStream inputStream = res.getInputStream()) {
-                    consumer.accept(NativeImage.read(inputStream)::getColorArgb);
+                    NativeImage image = NativeImage.read(inputStream);
+
+                    System.out.println("Format of stored resource " + resource + " is " + image.getFormat());
+
+                    consumer.accept(image::getColorArgb);
                     return;
                 }
             }
@@ -130,11 +135,12 @@ public class NativeUtil {
         MinecraftClient mc = MinecraftClient.getInstance();
 
         // recreate NativeImage from the GL matrix
-        RenderSystem.setShaderTexture(GL_TEXTURE_2D, resource);
+        RenderSystem.bindTexture(mc.getTextureManager().getTexture(resource).getGlId());
 
                                                  // TODO: This returns values that are too specific.
                                                  //       Can we change the level (0) here to something
                                                  //       else to actually get what we need?
+
         int format = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT);
         int width  = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH);
         int height = _getTexLevelParameter(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT);
