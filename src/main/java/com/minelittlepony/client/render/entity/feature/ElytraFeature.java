@@ -19,6 +19,9 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.EquipmentModel;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.RotationAxis;
+
+import org.jetbrains.annotations.Nullable;
 
 public class ElytraFeature<
         S extends PonyRenderState,
@@ -66,12 +69,13 @@ public class ElytraFeature<
     @SuppressWarnings("unchecked")
     protected void preRenderCallback(S state, MatrixStack stack) {
         if (state instanceof PonyRenderState ponyState && context instanceof PonyRenderContext context) {
-            stack.translate(0, ponyState.riderOffset, 0.125);
-
+            stack.translate(0, 0.45F, 0);
             ((ClientPonyModel<PonyRenderState>)context.getEquineManager().getModels().body()).transform(ponyState, BodyPart.BODY, stack);
+            stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(80));
         }
     }
 
+    @Nullable
     protected Identifier getElytraTexture(S state) {
         if (state instanceof PlayerEntityRenderState playerState) {
             SkinTextures textures = playerState.skinTextures;
@@ -85,6 +89,6 @@ public class ElytraFeature<
             }
         }
 
-        return TEXTURE;
+        return null;
     }
 }

@@ -107,7 +107,6 @@ public class NativeUtil {
             if (loadedTexture instanceof NativeImageBackedTexture nibt) {
                 NativeImage image = nibt.getImage();
                 if (image != null) {
-                    System.out.println("Format of in-memory resource " + resource + " is " + image.getFormat());
                     consumer.accept(image::getColorArgb);
                     return;
                 }
@@ -116,11 +115,9 @@ public class NativeUtil {
             Resource res = mc.getResourceManager().getResource(resource).orElse(null);
             if (res != null) {
                 try (InputStream inputStream = res.getInputStream()) {
-                    NativeImage image = NativeImage.read(inputStream);
-
-                    System.out.println("Format of stored resource " + resource + " is " + image.getFormat());
-
-                    consumer.accept(image::getColorArgb);
+                    try (NativeImage image = NativeImage.read(inputStream)) {
+                        consumer.accept(image::getColorArgb);
+                    }
                     return;
                 }
             }

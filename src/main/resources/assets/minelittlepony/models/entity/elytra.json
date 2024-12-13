@@ -2,12 +2,16 @@
 	"texture": {"u": 22, "w": 64, "h": 32},
 	"data": {
 		"left_wing": {
+			"pivot": [ 5, 0, 0 ],
+			"rotate": [0.26, 0, -0.26],
 			"cubes": [
 				{"from": [-10, 0, 0], "size": [10, 20, 2], "dilate": 1}
 			]
 		},
 		"right_wing": {
 			"mirror": true,
+			"pivot": [-5, 0, 0 ],
+			"rotate": [0.26, 0, -0.26],
 			"cubes": [
 				{"from": [ 0, 0, 0], "size": [10, 20, 2], "dilate": 1}
 			]
