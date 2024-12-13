@@ -58,6 +58,12 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
              ) && entity.hasCustomName() && entity.getCustomName().getString().equalsIgnoreCase("technoblade")
          );
 
+        // Adjust cape angles
+        // capePitch
+        field_53537 *= 0.3F;
+        // capeRoll
+        field_53538 *= 3F;
+
         PonyPosture.of(attributes).updateState(entity, this);
         PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(attributes, model, ModelAttributes.Mode.OTHER);
     }

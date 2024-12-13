@@ -67,10 +67,12 @@ public class MineLPHDSkins extends ClientSkinsProxy implements ClientModInitiali
 
                 if (hdPony.isPresent() && vanillaPony.isPresent()
                         && vanillaPony.get().metadata().priority() > hdPony.get().metadata().priority()
-                        && (PonyConfig.getInstance().ponyLevel.get() == PonyLevel.HUMANS || vanillaPony.get().metadata().race().isHuman() == hdPony.get().metadata().race().isHuman())) {
+                        && (PonyConfig.getInstance().ponyLevel.get() == PonyLevel.HUMANS
+                            || vanillaPony.get().metadata().race().isHuman() == hdPony.get().metadata().race().isHuman())) {
                     return playerSkins.vanilla();
                 }
             }
+
             return playerSkins.combined();
         });
     }

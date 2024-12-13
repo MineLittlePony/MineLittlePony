@@ -87,9 +87,6 @@ public class PlayerPonyRenderer
     public void updateRenderState(AbstractClientPlayerEntity entity, PlayerEntityRenderState state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
         manager.updateState(entity, (PlayerPonyRenderState)state, mode);
-
-        // Rotate cape to align with the pony back
-        //state.field_53536 += MathHelper.PI / 4;
     }
 
     public final PlayerPonyRenderState getAndUpdateRenderState(AbstractClientPlayerEntity entity, float tickDelta, ModelAttributes.Mode mode) {

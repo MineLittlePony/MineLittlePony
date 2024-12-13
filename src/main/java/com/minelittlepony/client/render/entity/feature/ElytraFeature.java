@@ -27,8 +27,6 @@ public class ElytraFeature<
         S extends PonyRenderState,
         M extends ClientPonyModel<S>
     > extends FeatureRenderer<S, M> {
-    private static final Identifier TEXTURE = Identifier.ofVanilla("textures/entity/elytra.png");
-
     private final PonyElytra<S> model = ModelType.ELYTRA.createModel();
 
     private final FeatureRendererContext<S, M> context;

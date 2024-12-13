@@ -17,6 +17,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.equipment.EquipmentModel;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.RotationAxis;
 
 public class CapeFeature extends CapeFeatureRenderer {
 
@@ -35,6 +36,7 @@ public class CapeFeature extends CapeFeatureRenderer {
             ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
 
             Identifier capeTexture = player.skinTextures.capeTexture();
+
             if (capeTexture == null) {
                 return;
             }
@@ -49,12 +51,16 @@ public class CapeFeature extends CapeFeatureRenderer {
                 if (RenderLayerUtil.getTexture(layer).orElse(null) == capeTexture) {
                     rendered[0] = true;
 
-                    matrices.translate(0, 0.24F, 0);
+                    matrices.translate(0, 0.34F, 0);
                     if (((PlayerPonyRenderState)player).getAttributes().isLyingDown) {
                         matrices.translate(0, -0.05F, 0);
                     }
                     model.transform((PlayerPonyRenderState)player, BodyPart.BODY, matrices);
                     model.getBodyPart(BodyPart.BODY).rotate(matrices);
+                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(85));
+                    if (player.baby) {
+                        matrices.scale(1.1F, 1.1F, 1.1F);
+                    }
 
                     return buffer;
                 }
