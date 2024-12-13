@@ -24,10 +24,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -121,13 +122,12 @@ public class EquineRenderManager<
     }
 
     public static class SyncedPony {
-        @Nullable
-        private Pony lastRenderedPony;
+        private Optional<Pony> lastRenderedPony = Optional.empty();
         private Supplier<Optional<PonyData>> lastPonyData = PonyDataLoader.NULL;
-        @Nullable
-        private Pony lastTransmittedPony;
+        private Optional<Pony> lastTransmittedPony = Optional.empty();
+        private boolean seated;
 
-        public Pony getCachedPony() {
+        public Optional<Pony> getCachedPony() {
             return lastRenderedPony;
         }
 
@@ -135,24 +135,44 @@ public class EquineRenderManager<
             return lastPonyData.get().orElse(PonyData.NULL);
         }
 
+        public EntityDimensions modifyEyeHeight(PlayerEntity player, EntityDimensions dimensions, EntityPose pose) {
+            Pony pony = lastRenderedPony.orElse(null);
+            float factor = pony == null || pony.race().isHuman() ? 1 : pony.size().eyeHeightFactor();
+            if (factor == 1) {
+                return dimensions;
+            }
+            float eyeHeight = dimensions.eyeHeight() * factor;
+            if (player.hasVehicle()) {
+                Vec3d attachment = dimensions.attachments().getPointNullable(EntityAttachmentType.VEHICLE, 0, 0);
+                if (attachment != null) {
+                    double yAttachment = attachment.getY();
+                    eyeHeight += yAttachment * factor;
+                }
+            }
+
+            return dimensions.withEyeHeight(eyeHeight);
+        }
+
         public void synchronize(PlayerEntity player) {
             Pony pony = Pony.getManager().getPony(player);
-            boolean changed = pony.compareTo(lastRenderedPony) != 0;
+            boolean changed = pony.compareTo(lastRenderedPony.orElse(null)) != 0;
+            boolean seated = player.hasVehicle();
 
-            if (changed) {
-                lastRenderedPony = pony;
+            if (changed || seated != this.seated) {
+                lastRenderedPony = Optional.of(pony);
                 lastPonyData = pony.metadataGetter();
                 player.calculateDimensions();
             }
+            this.seated = seated;
 
             if (!(player instanceof PreviewModel)) {
                 @Nullable
                 PlayerEntity clientPlayer = MinecraftClient.getInstance().player;
 
-                if (ClientChannel.isRegistered() && pony.compareTo(lastTransmittedPony) != 0) {
+                if (ClientChannel.isRegistered() && pony.compareTo(lastTransmittedPony.orElse(null)) != 0) {
                     if (clientPlayer != null && (Objects.equals(player, clientPlayer) || Objects.equals(player.getGameProfile(), clientPlayer.getGameProfile()))) {
                         if (ClientChannel.broadcastPonyData(pony.metadata())) {
-                            lastTransmittedPony = pony;
+                            lastTransmittedPony = Optional.of(pony);
                         }
                     }
                 }

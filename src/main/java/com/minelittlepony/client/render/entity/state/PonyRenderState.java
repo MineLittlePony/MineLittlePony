@@ -9,7 +9,6 @@ import net.minecraft.entity.mob.ZombifiedPiglinEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.events.PonyModelPrepareCallback;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.model.PonyModel;
@@ -39,7 +38,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         attributes.updateLivingState(entity, pony, mode);
         attributes.checkRainboom(entity, model, age);
         baby = attributes.size == SizePreset.FOAL;
-        race = PonyConfig.getEffectiveRace(attributes.metadata.race());
+        race = pony.race();
         vehicleOffset = hasVehicle ? entity.getVehicle().getEyeHeight(pose) : 0;
         riderOffset = getRiderYOffset();
         nameplateYOffset = getNamePlateYOffset(entity);

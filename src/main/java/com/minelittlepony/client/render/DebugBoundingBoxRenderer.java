@@ -6,6 +6,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Box;
 
 import com.minelittlepony.api.model.RenderPass;
+import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 public final class DebugBoundingBoxRenderer {
@@ -21,7 +22,11 @@ public final class DebugBoundingBoxRenderer {
         }
 
         stack.push();
-        VertexRendering.drawBox(stack, matrices.getBuffer(RenderLayer.getLines()), getBoundingBox(state).offset(-state.x, -state.y, -state.z), 1, 1, 0, 1);
+        VertexRendering.drawBox(stack, matrices.getBuffer(RenderLayer.getLines()), getBoundingBox(state).offset(
+                -state.x,
+                -state.y + (state instanceof PlayerPonyRenderState s ? s.baseScale * s.yOffset : 0),
+                -state.z
+        ), 1, 1, 0, 1);
         stack.pop();
     }
 

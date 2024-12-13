@@ -73,7 +73,9 @@ public class PlayerPonyRenderer
 
     public Vec3d getPositionOffset(PlayerEntityRenderState state) {
         Vec3d offset = super.getPositionOffset(state);
-        return offset.add(state.baseScale * ((PlayerPonyRenderState)state).yOffset).multiply(((PonyRenderState)state).attributes.size.scaleFactor());
+        return offset
+                .multiply(((PonyRenderState)state).attributes.size.scaleFactor())
+                .add(0, state.baseScale * ((PlayerPonyRenderState)state).yOffset, 0);
     }
 
     @Override

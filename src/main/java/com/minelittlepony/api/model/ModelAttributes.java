@@ -163,7 +163,7 @@ public class ModelAttributes {
 
     public void updateLivingState(LivingEntity entity, Pony pony, Mode mode) {
         metadata = pony.metadata();
-        size = entity.isBaby() ? SizePreset.FOAL : PonyConfig.getEffectiveSize(metadata.size());
+        size = entity.isBaby() ? SizePreset.FOAL : pony.size();
         isPlayer = entity instanceof PlayerEntity;
         visualHeight = entity.getHeight() + 0.125F;
         isSitting = PonyPosture.isSitting(entity);

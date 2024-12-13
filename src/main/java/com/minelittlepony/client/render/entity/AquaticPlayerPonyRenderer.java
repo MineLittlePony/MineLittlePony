@@ -31,7 +31,7 @@ public class AquaticPlayerPonyRenderer extends FormChangingPlayerPonyRenderer {
         public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
             super.updateState(entity, model, pony, mode);
             Identifier skinOverride = getSkinOverride((AbstractClientPlayerEntity)entity);
-            yOffset = skinOverride != null ? (0.6 + (isInSneakingPose ? 0.125 : 0)) : 0;
+            yOffset += skinOverride != null ? (0.6 + (isInSneakingPose ? 0.125 : 0)) : 0;
             pose = EntityPose.STANDING;
             isInSneakingPose = false;
             attributes.isCrouching = false;
