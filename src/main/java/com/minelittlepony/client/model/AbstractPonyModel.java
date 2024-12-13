@@ -534,17 +534,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         UseAction action = state.attributes.heldStack.getUseAction();
 
         if (action == UseAction.SPYGLASS && state.attributes.itemUseTime > 0) {
-
-            Arm main = state.attributes.mainArm;
-            if (state.attributes.activeHand == Hand.OFF_HAND) {
-                main = main.getOpposite();
-            }
-            if (main == arm) {
-                matrices.translate(left * -0.05F, 0.5F, 0.2F);
-                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-60));
-
-                return;
-            }
+            return;
         }
 
         matrices.translate(-left * 0.1F, 0.45F, 0);

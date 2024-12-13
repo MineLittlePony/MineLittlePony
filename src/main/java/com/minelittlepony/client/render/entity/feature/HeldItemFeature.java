@@ -17,6 +17,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ModelTransformationMode;
+import net.minecraft.item.consume.UseAction;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
@@ -74,18 +75,24 @@ public class HeldItemFeature<
                 item.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
             }
 
+            boolean noTransform = state.attributes.heldStack.getUseAction() == UseAction.SPYGLASS && state.attributes.itemUseTime > 0;
+
             float driftStrength = 0.002F;
             float xDrift = MathHelper.sin(state.age / 10F) * driftStrength;
             float zDrift = MathHelper.cos((state.age + 20) / 10F) * driftStrength;
 
             float scale = 1.1F + (MathHelper.sin(state.age / 20F) + 1) * driftStrength;
-            matrices.scale(scale, scale, scale);
-            matrices.translate(0.045F + xDrift, 0.01F - 0.12F, 0.03F + zDrift);
 
-            renderItem((PlayerEntityRenderState)state, model, item, mode, arm, matrices, vertices, light);
             matrices.scale(scale, scale, scale);
-            matrices.translate(0.1F, -0.1F, 0.1F);
-            matrices.translate(-0.03F - xDrift, -0.02F, -0.02F - zDrift);
+            if (!noTransform) {
+                matrices.translate(0.045F + xDrift, 0.01F - 0.12F, 0.03F + zDrift);
+            }
+            renderItem((PlayerEntityRenderState)state, model, item, mode, arm, matrices, vertices, light);
+            if (!noTransform) {
+                matrices.scale(scale, scale, scale);
+                matrices.translate(0.1F, -0.1F, 0.1F);
+                matrices.translate(-0.03F - xDrift, -0.02F, -0.02F - zDrift);
+            }
             renderItem((PlayerEntityRenderState)state, model, item, mode, arm, matrices, vertices, light);
         }
     }

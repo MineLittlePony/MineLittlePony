@@ -87,11 +87,15 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> {
 
         float left = arm == Arm.LEFT ? -1 : 1;
 
+        UseAction action = state.attributes.heldStack.getUseAction();
+        if (action == UseAction.SPYGLASS && state.attributes.itemUseTime > 0) {
+            return;
+        }
+
         matrices.translate(0.4F - (0.3F * left), -0.675F, -0.3F);
 
-        UseAction action = state.attributes.heldStack.getUseAction();
         boolean shouldAimItem =
-                (action == UseAction.SPYGLASS || action == UseAction.BOW) && state.attributes.itemUseTime > 0
+                (action == UseAction.BOW) && state.attributes.itemUseTime > 0
                 || PonyConfig.getInstance().forwardHoldingItems.get().contains(Registries.ITEM.getId(state.attributes.heldStack.getItem()));
 
         if (shouldAimItem) {
