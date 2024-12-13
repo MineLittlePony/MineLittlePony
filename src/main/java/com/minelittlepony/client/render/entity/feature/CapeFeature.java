@@ -2,7 +2,6 @@ package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.ClientPonyModel;
-import com.minelittlepony.client.model.armour.ArmourLayer;
 import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
@@ -16,6 +15,7 @@ import net.minecraft.client.render.entity.model.EntityModelLoader;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.equipment.EquipmentModel;
 import net.minecraft.util.Identifier;
 
 public class CapeFeature extends CapeFeatureRenderer {
@@ -63,7 +63,7 @@ public class CapeFeature extends CapeFeatureRenderer {
             matrices.pop();
 
             if (rendered[0]) {
-                plugin.onArmourRendered(player, matrices, vertices, EquipmentSlot.BODY, ArmourLayer.OUTER, ArmourRendererPlugin.ArmourType.CAPE);
+                plugin.onArmourRendered(player, matrices, vertices, EquipmentSlot.BODY, EquipmentModel.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.CAPE);
             }
         }
     }

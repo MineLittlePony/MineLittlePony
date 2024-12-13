@@ -1,5 +1,8 @@
 package com.minelittlepony.client.model.armour;
 
+import net.minecraft.item.equipment.EquipmentModel;
+
+import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.mson.api.ModelKey;
 
@@ -10,15 +13,15 @@ public enum ArmourVariant {
     LEGACY(ModelType.INNER_VANILLA_ARMOR, ModelType.OUTER_VANILLA_ARMOR),
     TRIM(ModelType.INNER_VANILLA_ARMOR, ModelType.OUTER_VANILLA_ARMOR);
 
-    private final Optional<ModelKey<PonyArmourModel<?>>> innerModel;
-    private final Optional<ModelKey<PonyArmourModel<?>>> outerModel;
+    private final Optional<ModelKey<AbstractPonyModel<?>>> innerModel;
+    private final Optional<ModelKey<AbstractPonyModel<?>>> outerModel;
 
-    ArmourVariant(ModelKey<PonyArmourModel<?>> inner, ModelKey<PonyArmourModel<?>> outer) {
+    ArmourVariant(ModelKey<AbstractPonyModel<?>> inner, ModelKey<AbstractPonyModel<?>> outer) {
         this.innerModel = Optional.of(inner);
         this.outerModel = Optional.of(outer);
     }
 
-    public Optional<ModelKey<PonyArmourModel<?>>> getDefaultModel(ArmourLayer layer) {
-        return layer.isInner() ? innerModel : outerModel;
+    public Optional<ModelKey<AbstractPonyModel<?>>> getDefaultModel(EquipmentModel.LayerType layerType) {
+        return layerType == EquipmentModel.LayerType.HUMANOID_LEGGINGS ? innerModel : outerModel;
     }
 }

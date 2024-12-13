@@ -8,7 +8,6 @@ import org.jetbrains.annotations.Nullable;
 import com.minelittlepony.api.model.Models;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.client.model.armour.PonyArmourModel;
 import com.minelittlepony.mson.api.*;
 
 import java.util.function.*;
@@ -16,11 +15,11 @@ import java.util.function.*;
 public record PlayerModelKey<M extends Model & PonyModel<?>> (
         ModelKey<M> steveKey,
         ModelKey<M> alexKey,
-        MsonModel.Factory<PonyArmourModel<?>> armorFactory
+        MsonModel.Factory<AbstractPonyModel<?>> armorFactory
 ) {
     PlayerModelKey(String name,
             BiFunction<ModelPart, Boolean, M> modelFactory,
-            MsonModel.Factory<PonyArmourModel<?>> armorFactory
+            MsonModel.Factory<AbstractPonyModel<?>> armorFactory
     ) {
         this(
             new ModelKeyImpl<>(MineLittlePony.id("races/steve/" + name), tree -> modelFactory.apply(tree, false)),

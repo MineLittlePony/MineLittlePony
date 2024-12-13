@@ -8,6 +8,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
+import net.minecraft.item.equipment.EquipmentModel;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
@@ -20,7 +21,6 @@ import com.minelittlepony.api.model.gear.Gear;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.armour.ArmourLayer;
 import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
@@ -65,7 +65,7 @@ public class GearFeature<
         }
 
         boolean hasSkull = false;
-        for (ItemStack skull : ArmourRendererPlugin.INSTANCE.get().getArmorStacks(entity, EquipmentSlot.HEAD, ArmourLayer.OUTER, ArmourRendererPlugin.ArmourType.SKULL)) {
+        for (ItemStack skull : ArmourRendererPlugin.INSTANCE.get().getArmorStacks(entity, EquipmentSlot.HEAD, EquipmentModel.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.SKULL)) {
             if (skull.getItem() instanceof BlockItem b && (b.getBlock() instanceof SkullBlock || b.getBlock().getDefaultState().isSolidBlock(EmptyBlockView.INSTANCE, BlockPos.ORIGIN))) {
                 hasSkull = true;
                 break;

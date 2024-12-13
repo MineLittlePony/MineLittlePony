@@ -1,10 +1,12 @@
 package com.minelittlepony.api.model;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.equipment.EquipmentModel;
 import net.minecraft.util.Util;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.PlayerModelKey;
 import com.minelittlepony.client.model.armour.*;
 import com.minelittlepony.mson.api.ModelKey;
@@ -17,7 +19,7 @@ import java.util.function.Function;
  * Container class for the various models and their associated piece of armour.
  */
 public record Models<M extends PonyModel<?>> (
-        Function<ModelKey<PonyArmourModel<?>>, PonyArmourModel<?>> armor,
+        Function<ModelKey<AbstractPonyModel<?>>, AbstractPonyModel<?>> armor,
         M body
     ) {
 
@@ -32,9 +34,9 @@ public record Models<M extends PonyModel<?>> (
         this(Util.memoize(k -> k.createModel()), key.createModel());
     }
 
-    public Optional<PonyArmourModel<?>> getArmourModel(ItemStack stack, ArmourLayer layer, ArmourVariant variant) {
-        return ArmorModelRegistry.getModelKey(stack.getItem(), layer)
-                .or(() -> variant.getDefaultModel(layer))
+    public Optional<AbstractPonyModel<?>> getArmourModel(ItemStack stack, EquipmentModel.LayerType layerType, ArmourVariant variant) {
+        return ArmorModelRegistry.getModelKey(stack.getItem(), layerType)
+                .or(() -> variant.getDefaultModel(layerType))
                 .map(armor);
     }
 }

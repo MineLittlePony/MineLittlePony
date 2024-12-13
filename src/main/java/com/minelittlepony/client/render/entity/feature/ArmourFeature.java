@@ -1,7 +1,6 @@
 package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.Models;
-import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.armour.*;
 import com.minelittlepony.client.render.PonyRenderContext;
@@ -16,7 +15,6 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.equipment.EquipmentModel;
-import net.minecraft.util.Identifier;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -38,40 +36,36 @@ public class ArmourFeature<
         renderArmor(getModelWrapper(), matrices, provider, light, entity, limbDistance, limbAngle, equipmentRenderer);
     }
 
-    public static <S extends PonyRenderState, V extends PonyArmourModel<S>> void renderArmor(
-            Models<? extends PonyModel<S>> pony, MatrixStack matrices,
-                    VertexConsumerProvider provider, int light, S entity,
-                    float limbDistance, float limbAngle, PonifiedEquipmentRenderer equipmentRenderer) {
+    public static <S extends PonyRenderState, V extends ClientPonyModel<S>> void renderArmor(
+            Models<V> pony, MatrixStack matrices,
+            VertexConsumerProvider provider, int light, S entity,
+            float limbDistance, float limbAngle, PonifiedEquipmentRenderer equipmentRenderer) {
 
         for (EquipmentSlot i : EquipmentSlot.values()) {
             if (i.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
-                renderArmor(pony, matrices, provider, light, entity, limbDistance, limbAngle, i, ArmourLayer.INNER, equipmentRenderer);
-                renderArmor(pony, matrices, provider, light, entity, limbDistance, limbAngle, i, ArmourLayer.OUTER, equipmentRenderer);
+                renderArmor(pony, matrices, provider, light, entity, limbDistance, limbAngle, i, EquipmentModel.LayerType.HUMANOID_LEGGINGS, equipmentRenderer);
+                renderArmor(pony, matrices, provider, light, entity, limbDistance, limbAngle, i, EquipmentModel.LayerType.HUMANOID, equipmentRenderer);
             }
         }
     }
 
-    private static <S extends PonyRenderState, V extends PonyArmourModel<S>> void renderArmor(
-            Models<? extends PonyModel<S>> models, MatrixStack matrices,
+    private static <S extends PonyRenderState, V extends ClientPonyModel<S>> void renderArmor(
+            Models<V> models, MatrixStack matrices,
             VertexConsumerProvider vertices, int light, S entity,
             float limbDistance, float limbAngle,
-            EquipmentSlot armorSlot, ArmourLayer layer, PonifiedEquipmentRenderer equipmentRenderer) {
+            EquipmentSlot armorSlot, EquipmentModel.LayerType layerType, PonifiedEquipmentRenderer equipmentRenderer) {
 
         ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
 
-        for (ItemStack stack : plugin.getArmorStacks(entity, armorSlot, layer, ArmourRendererPlugin.ArmourType.ARMOUR)) {
+        for (ItemStack stack : plugin.getArmorStacks(entity, armorSlot, layerType, ArmourRendererPlugin.ArmourType.ARMOUR)) {
             EquippableComponent equippableComponent = stack.get(DataComponentTypes.EQUIPPABLE);
 
             if (hasModel(equippableComponent, armorSlot)) {
-                EquipmentModel.LayerType layerType = layer == ArmourLayer.INNER
-                        ? EquipmentModel.LayerType.HUMANOID_LEGGINGS
-                        : EquipmentModel.LayerType.HUMANOID;
-                Identifier modelId = equippableComponent.model().orElseThrow();
-                equipmentRenderer.render(armorSlot, layerType, modelId, entity, models, stack, matrices, vertices, light);
+                equipmentRenderer.render(armorSlot, layerType, equippableComponent.model().orElseThrow(), entity, models, stack, matrices, vertices, light);
             }
         }
 
-        plugin.onArmourRendered(entity, matrices, vertices, armorSlot, layer, ArmourRendererPlugin.ArmourType.ARMOUR);
+        plugin.onArmourRendered(entity, matrices, vertices, armorSlot, layerType, ArmourRendererPlugin.ArmourType.ARMOUR);
     }
 
     private static boolean hasModel(@Nullable EquippableComponent component, EquipmentSlot slot) {

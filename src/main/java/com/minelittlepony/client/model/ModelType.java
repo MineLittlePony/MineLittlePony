@@ -48,10 +48,10 @@ public final class ModelType {
     public static final ModelKey<PonyElytra<?>> ELYTRA = register("elytra", PonyElytra::new);
 
     public static final ModelKey<PonyArmourStandModel> ARMOUR_STAND = register("armour_stand", PonyArmourStandModel::new);
-    public static final ModelKey<PonyArmourModel<?>> INNER_VANILLA_ARMOR = register("armor/inner_vanilla_armor", PonyArmourModel::new);
-    public static final ModelKey<PonyArmourModel<?>> OUTER_VANILLA_ARMOR = register("armor/outer_vanilla_armor", PonyArmourModel::new);
-    public static final ModelKey<PonyArmourModel<?>> INNER_PONY_ARMOR = register("armor/inner_pony_armor", PonyArmourModel::new);
-    public static final ModelKey<PonyArmourModel<?>> OUTER_PONY_ARMOR = register("armor/outer_pony_armor", PonyArmourModel::new);
+    public static final ModelKey<AbstractPonyModel<?>> INNER_VANILLA_ARMOR = register("armor/inner_vanilla_armor", PonyArmourModel::new);
+    public static final ModelKey<AbstractPonyModel<?>> OUTER_VANILLA_ARMOR = register("armor/outer_vanilla_armor", PonyArmourModel::new);
+    public static final ModelKey<AbstractPonyModel<?>> INNER_PONY_ARMOR = register("armor/inner_pony_armor", PonyArmourModel::new);
+    public static final ModelKey<AbstractPonyModel<?>> OUTER_PONY_ARMOR = register("armor/outer_pony_armor", PonyArmourModel::new);
 
     public static final GearModelKey<AbstractGearModel> STETSON = registerGear("stetson", Wearable.STETSON, t -> new WearableGear(t, Wearable.STETSON, BodyPart.HEAD, 0.15F));
     public static final GearModelKey<SaddleBags> SADDLEBAGS_BOTH = registerGear("saddlebags", Wearable.SADDLE_BAGS_BOTH, t -> new SaddleBags(t, Wearable.SADDLE_BAGS_BOTH));
@@ -83,7 +83,7 @@ public final class ModelType {
     @SuppressWarnings("unchecked")
     static <T extends Model & PonyModel<?>> PlayerModelKey<T> registerPlayer(String name, Race race,
             BiFunction<ModelPart, Boolean, T> constructor,
-            MsonModel.Factory<PonyArmourModel<?>> armorFactory) {
+            MsonModel.Factory<AbstractPonyModel<?>> armorFactory) {
         return (PlayerModelKey<T>)PLAYER_MODELS.computeIfAbsent(race, r -> new PlayerModelKey<T>(name, constructor, armorFactory));
     }
 

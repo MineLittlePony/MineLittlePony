@@ -2,7 +2,6 @@ package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.*;
-import com.minelittlepony.client.model.armour.ArmourLayer;
 import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
@@ -42,7 +41,7 @@ public class ElytraFeature<
     public void render(MatrixStack matrices, VertexConsumerProvider provider, int light, S state, float limbAngle, float limbDistance) {
         ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
 
-        for (ItemStack stack : plugin.getArmorStacks(state, EquipmentSlot.CHEST, ArmourLayer.OUTER, ArmourRendererPlugin.ArmourType.ELYTRA)) {
+        for (ItemStack stack : plugin.getArmorStacks(state, EquipmentSlot.CHEST, EquipmentModel.LayerType.WINGS, ArmourRendererPlugin.ArmourType.ELYTRA)) {
             EquippableComponent equippable = stack.get(DataComponentTypes.EQUIPPABLE);
 
             if (equippable != null && !equippable.model().isEmpty()) {
@@ -61,7 +60,7 @@ public class ElytraFeature<
             }
         }
 
-        plugin.onArmourRendered(state, matrices, provider, EquipmentSlot.BODY, ArmourLayer.OUTER, ArmourRendererPlugin.ArmourType.ELYTRA);
+        plugin.onArmourRendered(state, matrices, provider, EquipmentSlot.BODY, EquipmentModel.LayerType.WINGS, ArmourRendererPlugin.ArmourType.ELYTRA);
     }
 
     @SuppressWarnings("unchecked")

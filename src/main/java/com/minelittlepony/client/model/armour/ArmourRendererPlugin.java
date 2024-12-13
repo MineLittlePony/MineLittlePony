@@ -34,11 +34,11 @@ public interface ArmourRendererPlugin {
         return ArmourTextureResolver.INSTANCE;
     }
 
-    default void onArmourRendered(LivingEntityRenderState state, MatrixStack matrices, VertexConsumerProvider provider, EquipmentSlot armorSlot, ArmourLayer layer, ArmourType type) {
+    default void onArmourRendered(LivingEntityRenderState state, MatrixStack matrices, VertexConsumerProvider provider, EquipmentSlot armorSlot, EquipmentModel.LayerType layerType, ArmourType type) {
 
     }
 
-    default ItemStack[] getArmorStacks(BipedEntityRenderState state, EquipmentSlot armorSlot, ArmourLayer layer, ArmourType type) {
+    default ItemStack[] getArmorStacks(BipedEntityRenderState state, EquipmentSlot armorSlot, EquipmentModel.LayerType layerType, ArmourType type) {
         return new ItemStack[] { switch (armorSlot) {
             case HEAD -> state.equippedHeadStack;
             case CHEST -> state.equippedChestStack;

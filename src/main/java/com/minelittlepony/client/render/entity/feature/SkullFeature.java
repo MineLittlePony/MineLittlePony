@@ -2,7 +2,6 @@ package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.ClientPonyModel;
-import com.minelittlepony.client.model.armour.ArmourLayer;
 import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
@@ -19,6 +18,7 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.*;
+import net.minecraft.item.equipment.EquipmentModel;
 
 public class SkullFeature<
         S extends PonyRenderState,
@@ -42,7 +42,7 @@ public class SkullFeature<
     public void render(MatrixStack matrices, VertexConsumerProvider provider, int light, S state, float limbAngle, float limbDistance) {
         ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
 
-        for (ItemStack stack : plugin.getArmorStacks(state, EquipmentSlot.HEAD, ArmourLayer.OUTER, ArmourRendererPlugin.ArmourType.SKULL)) {
+        for (ItemStack stack : plugin.getArmorStacks(state, EquipmentSlot.HEAD, EquipmentModel.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.SKULL)) {
 
             BakedModel headModel = state.equippedHeadItemModel;
 
@@ -83,6 +83,6 @@ public class SkullFeature<
             matrices.pop();
         }
 
-        plugin.onArmourRendered(state, matrices, provider, EquipmentSlot.BODY, ArmourLayer.OUTER, ArmourRendererPlugin.ArmourType.SKULL);
+        plugin.onArmourRendered(state, matrices, provider, EquipmentSlot.BODY, EquipmentModel.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.SKULL);
     }
 }
