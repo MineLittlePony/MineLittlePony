@@ -10,14 +10,14 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.*;
 
 import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.model.ModelAttributes.Mode;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyData;
+import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.PonyArmourStandModel;
 import com.minelittlepony.client.model.entity.race.EarthPonyModel;
@@ -58,13 +58,40 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
     public void updateRenderState(ArmorStandEntity entity, State state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
         BipedEntityRenderer.updateBipedRenderState(entity, state.ponyState, tickDelta);
+        state.yaw = MathHelper.lerpAngleDegrees(tickDelta, entity.prevYaw, entity.getYaw());
+        state.marker = entity.isMarker();
+        state.small = entity.isSmall();
+        state.showArms = true;
+        state.showBasePlate = entity.shouldShowBasePlate();
+        state.bodyRotation = entity.getBodyRotation();
+        state.headRotation = entity.getHeadRotation();
+        state.leftArmRotation = entity.getLeftArmRotation();
+        state.rightArmRotation = entity.getRightArmRotation();
+        state.leftLegRotation = entity.getLeftLegRotation();
+        state.rightLegRotation = entity.getRightLegRotation();
+        state.timeSinceLastHit = (float)(entity.getWorld().getTime() - entity.lastHitTime) + tickDelta;
+
+        if (state.leftLegRotation.equals(ArmorStandEntity.DEFAULT_LEFT_LEG_ROTATION)) {
+            state.leftLegRotation = new EulerAngle(-state.leftArmRotation.getPitch(), state.leftArmRotation.getYaw(), state.leftArmRotation.getRoll());
+        }
+
+        if (state.rightLegRotation.equals(ArmorStandEntity.DEFAULT_RIGHT_LEG_ROTATION)) {
+            state.rightLegRotation = new EulerAngle(-state.rightArmRotation.getPitch(), state.rightArmRotation.getYaw(), state.rightArmRotation.getRoll());
+        }
+
         context.manager.updateState(entity, state.ponyState, Mode.OTHER);
+        state.ponyState.baby = state.small;
+        state.ponyState.attributes.size = state.small ? SizePreset.FOAL : SizePreset.NORMAL;
+        state.ponyState.equippedHeadStack = state.equippedHeadStack;
         state.pitch = MathHelper.RADIANS_PER_DEGREE * entity.getHeadRotation().getPitch();
         state.yawDegrees = MathHelper.RADIANS_PER_DEGREE * entity.getHeadRotation().getYaw();
     }
 
     @Override
     protected void setupTransforms(State state, MatrixStack matrices, float animationProgress, float bodyYaw) {
+
+        context.manager.setupTransforms(state.ponyState, matrices, animationProgress, bodyYaw);
+
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180 - animationProgress));
         if (state.timeSinceLastHit < 5) {
             matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(MathHelper.sin(state.timeSinceLastHit / 1.5F * (float) Math.PI) * 3.0F));
@@ -77,13 +104,9 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
         return entity.isCustomNameVisible();
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     @Nullable
     protected RenderLayer getRenderLayer(State state, boolean showBody, boolean translucent, boolean showOutline) {
-        if (context.getModel() instanceof BipedEntityModel bipedModel) {
-            bipedModel.copyTransforms((BipedEntityModel)model);
-        }
         if (!state.marker) {
             return super.getRenderLayer(state, showBody, translucent, showOutline);
         }
@@ -130,6 +153,9 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
         @SuppressWarnings({"rawtypes", "unchecked"})
         @Override
         public void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, PonyStandRenderer.State state, float limbAngle, float limbDistance) {
+            if (context.getModel() instanceof BipedEntityModel bipedModel) {
+                model.copyTransforms(bipedModel);
+            }
             ((FeatureRenderer)feature).render(matrices, vertices, light, state.ponyState, limbAngle, limbDistance);
         }
     }

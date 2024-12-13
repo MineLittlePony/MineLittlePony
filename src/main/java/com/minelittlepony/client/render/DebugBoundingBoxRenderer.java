@@ -4,7 +4,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
 
 import com.minelittlepony.api.model.RenderPass;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
@@ -21,18 +20,8 @@ public final class DebugBoundingBoxRenderer {
             return;
         }
 
-        Vec3d offset = state.positionOffset;
-
         stack.push();
-        stack.translate(-offset.x, -offset.y, -offset.z);
-
-        double x = -state.x;
-        double y = -state.y;
-        double z = -state.z;
-
-        VertexConsumer vertices = matrices.getBuffer(RenderLayer.getLines());
-
-        VertexRendering.drawBox(stack, vertices, getBoundingBox(state).offset(x, y, z), 1, 1, 0, 1);
+        VertexRendering.drawBox(stack, matrices.getBuffer(RenderLayer.getLines()), getBoundingBox(state).offset(-state.x, -state.y, -state.z), 1, 1, 0, 1);
         stack.pop();
     }
 

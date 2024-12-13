@@ -82,11 +82,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
 
     protected float getLegOutset() {
         float outset = attributes.isLyingDown ? 3.6F : attributes.isCrouching ? 1 : 5;
-
-        if (smallArms) {
-            return Math.max(1, outset - 1);
-        }
-        return outset;
+        return smallArms ? Math.max(1, outset - 1) : outset;
     }
 
     /**

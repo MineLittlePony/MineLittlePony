@@ -72,9 +72,7 @@ public class SkeleponyRenderer<T extends AbstractSkeletonEntity> extends PonyRen
         public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
             super.updateState(entity, model, pony, mode);
             isAttacking = entity instanceof HostileEntity h && h.isAttacking();
-            if (entity.getUuid().getLeastSignificantBits() % 3 == 0) {
-                race = Race.EARTH;
-            }
+            race = entity.getUuid().getLeastSignificantBits() % 3 == 0 ? Race.EARTH : Race.UNICORN;
         }
 
         @Override

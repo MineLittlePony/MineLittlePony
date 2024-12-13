@@ -27,6 +27,12 @@ public class HeldItemFeature<
         this.context = context;
     }
 
+    @Deprecated
+    @Override
+    public final void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, PlayerEntityRenderState state, float limbAngle, float limbDistance) {
+        render(matrices, vertices, light, (S)state, limbAngle, limbDistance);
+    }
+
     public void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, S state, float limbAngle, float limbDistance) {
         if (!state.leftHandStack.isEmpty() || !state.rightHandStack.isEmpty()) {
             M model = context.getEquineManager().getModels().body();
@@ -43,10 +49,5 @@ public class HeldItemFeature<
             attributes.heldStack = ItemStack.EMPTY;
             matrices.pop();
         }
-    }
-
-    @Override
-    public final void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, PlayerEntityRenderState state, float limbAngle, float limbDistance) {
-        render(matrices, vertices, light, (S)state, limbAngle, limbDistance);
     }
 }

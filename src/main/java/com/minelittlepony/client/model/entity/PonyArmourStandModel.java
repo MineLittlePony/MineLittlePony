@@ -2,8 +2,8 @@ package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.ArmorStandEntityModel;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.state.ArmorStandEntityRenderState;
-import net.minecraft.entity.decoration.ArmorStandEntity;
 
 import com.minelittlepony.mson.util.PartUtil;
 
@@ -13,19 +13,20 @@ public class PonyArmourStandModel extends ArmorStandEntityModel {
     }
 
     @Override
+    public void copyTransforms(BipedEntityModel<ArmorStandEntityRenderState> model) {
+        if (model instanceof PonyArmourStandModel) {
+            super.copyTransforms(model);
+        } else {
+            PartUtil.copyAngles(head, model.head);
+            PartUtil.copyAngles(rightArm, model.rightArm);
+            PartUtil.copyAngles(leftArm, model.leftArm);
+            PartUtil.copyAngles(rightArm, model.rightLeg);
+            PartUtil.copyAngles(leftLeg, model.leftLeg);
+        }
+    }
+
+    @Override
     public void setAngles(ArmorStandEntityRenderState state) {
         super.setAngles(state);
-        leftArm.visible = true;
-        rightArm.visible = true;
-
-        if (state.leftLegRotation.equals(ArmorStandEntity.DEFAULT_LEFT_LEG_ROTATION)) {
-            PartUtil.copyAngles(leftArm, leftLeg);
-            leftLeg.pitch *= -1;
-        }
-
-        if (state.rightLegRotation.equals(ArmorStandEntity.DEFAULT_RIGHT_LEG_ROTATION)) {
-            PartUtil.copyAngles(rightArm, rightLeg);
-            rightLeg.pitch *= -1;
-        }
     }
 }

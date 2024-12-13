@@ -101,23 +101,9 @@ public class PlayerPonyRenderer
 
     @Override
     public void render(PlayerEntityRenderState state, MatrixStack stack, VertexConsumerProvider vertices, int light) {
-        // EntityModelFeatures: We have to force it to use our models otherwise EMF overrides it and breaks pony rendering
         shadowRadius = ((PlayerPonyRenderState)state).attributes.size.shadowSize();
         super.render(state, stack, vertices, light);
         DebugBoundingBoxRenderer.render((PlayerPonyRenderState)state, stack, vertices);
-
-        // Translate the shadow position after everything is done
-        // (shadows are drawn after us)
-        /*
-        if (!entity.hasVehicle() && !entity.isSleeping()) {
-            float yaw = MathHelper.lerpAngleDegrees(tickDelta, entity.prevBodyYaw, entity.bodyYaw);
-            float l = entity.getWidth() / 2 * manager.getScaleFactor();
-
-            stack.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(yaw));
-            stack.translate(0, 0, -l);
-            stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(yaw));
-        }
-        */
     }
 
     @Override
