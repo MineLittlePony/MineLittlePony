@@ -117,7 +117,7 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
 
     @Override
     public void setVisible(boolean visible, S state) {
-        visible = state.race.hasWings();
+        this.visible = visible && state.race.hasWings();
     }
 
     private boolean isBurdened(S state) {
