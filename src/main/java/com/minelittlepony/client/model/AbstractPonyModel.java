@@ -114,6 +114,11 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
     protected void setModelVisibilities(T state) {
         hat.visible = head.visible && !state.attributes.isHorsey;
+        if (state.attributes.isHorsey) {
+            neck.visible = head.visible;
+        } else {
+            neck.hidden = !head.visible;
+        }
         parts.forEach(part -> part.setVisible(body.visible, state));
     }
 
@@ -573,14 +578,8 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             stack.translate(0, 1.35F, 0);
         }
 
-        if (state.attributes.isHorsey) {
-            if (part == BodyPart.BODY) {
-                stack.scale(1.5F, 1, 1.5F);
-            }
-
-            neck.visible = head.visible;
-        } else {
-            neck.hidden = !head.visible;
+        if (state.attributes.isHorsey && part == BodyPart.BODY) {
+            stack.scale(1.5F, 1, 1.5F);
         }
 
         PonyTransformation.forSize(state.attributes.size).transform(state.attributes, part, stack);

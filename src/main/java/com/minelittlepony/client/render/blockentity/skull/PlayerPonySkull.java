@@ -7,6 +7,7 @@ import com.minelittlepony.api.pony.SkinsProxy;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.model.*;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer.ISkull;
+import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,7 @@ import org.joml.Vector3f;
 public class PlayerPonySkull implements ISkull {
     private AbstractPonyModel<?> ponyHead;
     private final Map<PlayerModelKey<AbstractPonyModel<?>>, AbstractPonyModel<?>> modelCache = new HashMap<>();
+    private final PlayerPonyRenderState state = new PlayerPonyRenderState();
 
     private final DJPon3EarsModel deadMau5 = ModelType.DJ_PON_3.createModel();
 
@@ -61,6 +63,10 @@ public class PlayerPonySkull implements ISkull {
             }
         }
         ponyHead = modelCache.computeIfAbsent(ModelType.getPlayerModel(race), key -> key.getKey(false).createModel());
+        state.pony = pony;
+        state.race = pony.race();
+        state.attributes.size = pony.size();
+        state.attributes.metadata = pony.metadata();
         return true;
     }
 
@@ -68,10 +74,11 @@ public class PlayerPonySkull implements ISkull {
     public void setAngles(float yaw, float animationProgress) {
         Vector3f v = new Vector3f(0, -2, 2);
         v.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(yaw));
+        ponyHead.setVisible(true);
+        ponyHead.setAngles(state);
         ponyHead.getHead().pivotX = v.x;
         ponyHead.getHead().pivotY = v.y;
         ponyHead.getHead().pivotZ = v.z;
-        ponyHead.setVisible(true);
         ponyHead.setHeadRotation(animationProgress, yaw, 0);
         if (renderingEars) {
             deadMau5.setHeadRotation(animationProgress, yaw, 0);
