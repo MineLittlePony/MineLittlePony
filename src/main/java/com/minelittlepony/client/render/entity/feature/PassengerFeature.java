@@ -56,6 +56,8 @@ public class PassengerFeature<
         matrices.push();
         getContextModel().transform(state, BodyPart.BACK, matrices);
         getContextModel().body.rotate(matrices);
+        float scale = 1 / state.attributes.size.scaleFactor();
+        matrices.scale(scale, scale, scale);
         matrices.translate(
                 left ? 0.25F : -0.25F,
                 state.isInSneakingPose ? -1.7F : -1.5F, 0
