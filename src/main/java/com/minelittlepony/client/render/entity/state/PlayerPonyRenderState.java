@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.entity.state;
 
+import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.SkinTextures;
 import net.minecraft.entity.LivingEntity;
@@ -21,7 +22,7 @@ public class PlayerPonyRenderState extends PonyRenderState {
 
     @Override
     public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
-        smallArms = ((ClientPlayerEntity)entity).getSkinTextures().model() == SkinTextures.Model.SLIM;
+        smallArms = ((AbstractClientPlayerEntity)entity).getSkinTextures().model() == SkinTextures.Model.SLIM;
         super.updateState(entity, model, pony, mode);
         isPreviewModel = entity instanceof PreviewModel;
         wearabledTextures.clear();
