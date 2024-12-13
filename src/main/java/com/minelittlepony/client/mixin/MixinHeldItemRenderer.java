@@ -43,8 +43,6 @@ abstract class MixinHeldItemRenderer {
             VertexConsumerProvider vertices,
             @Nullable World world,
             int light, int overlay, int seed, Operation<Void> operation) {
-
-
         if (!MineLittlePony.getInstance().getRenderDispatcher().getMagicRenderer().renderItem(target, entity, stack, mode, left, matrices, vertices, world, light, overlay, seed, operation)) {
             operation.call(target, entity, stack, mode, left, matrices, vertices, world, light, overlay, seed);
         }

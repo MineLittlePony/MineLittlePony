@@ -48,7 +48,7 @@ public class WitchPonyModel extends EarthPonyModel<WitchRenderer.State> {
     }
 
     @Override
-    protected void positionheldItem(WitchRenderer.State state, Arm arm, MatrixStack matrices) {
+    public void positionheldItem(WitchRenderer.State state, Arm arm, MatrixStack matrices) {
         super.positionheldItem(state, arm, matrices);
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(10));
     }

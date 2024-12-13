@@ -528,15 +528,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         hat.visible  = false;
     }
 
-    @Override
-    public final void setArmAngle(Arm arm, MatrixStack matrices) {
-        super.setArmAngle(arm, matrices);
-        if (currentState != null) {
-            positionheldItem(currentState, arm, matrices);
-        }
-    }
-
-    protected void positionheldItem(T state, Arm arm, MatrixStack matrices) {
+    public void positionheldItem(T state, Arm arm, MatrixStack matrices) {
         float left = arm == Arm.LEFT ? -1 : 1;
 
         UseAction action = state.attributes.heldStack.getUseAction();

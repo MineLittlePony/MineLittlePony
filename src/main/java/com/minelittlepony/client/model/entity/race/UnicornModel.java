@@ -78,7 +78,7 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> {
     }
 
     @Override
-    protected void positionheldItem(T state, Arm arm, MatrixStack matrices) {
+    public void positionheldItem(T state, Arm arm, MatrixStack matrices) {
         super.positionheldItem(state, arm, matrices);
 
         if (!PonyConfig.getInstance().tpsmagic.get() || !state.hasMagicGlow()) {

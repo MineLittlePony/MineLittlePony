@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.common.util.render.RenderLayerUtil;
 
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +24,7 @@ import net.minecraft.util.math.RotationAxis;
 import net.minecraft.world.World;
 
 public class LevitatingItemRenderer {
-    private VertexConsumerProvider getProvider(Pony pony, VertexConsumerProvider provider) {
+    public static VertexConsumerProvider getProvider(Pony pony, VertexConsumerProvider provider) {
         final int color = pony.metadata().glowColor();
         return layer -> {
             if (layer.getVertexFormat() != VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL) {
@@ -59,7 +60,7 @@ public class LevitatingItemRenderer {
         boolean doMagic = (mode.isFirstPerson() ? PonyConfig.getInstance().fpsmagic : PonyConfig.getInstance().tpsmagic).get() && state.hasMagicGlow();
 
         if (doMagic && mode.isFirstPerson()) {
-            setupPerspective(entity, stack, left, matrices);
+            setupPerspective(state, stack, left, matrices);
         }
 
         original.call(itemRenderer, entity, stack, mode, left, matrices, vertices, world, light, overlay, seed);
@@ -72,14 +73,11 @@ public class LevitatingItemRenderer {
                 stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
             }
 
-            float tickDelta = MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false) + entity.age;
-
-
             float driftStrength = 0.002F;
-            float xDrift = MathHelper.sin(tickDelta / 20F) * driftStrength;
-            float zDrift = MathHelper.cos((tickDelta + 20) / 20F) * driftStrength;
+            float xDrift = MathHelper.sin(state.age / 20F) * driftStrength;
+            float zDrift = MathHelper.cos((state.age + 20) / 20F) * driftStrength;
 
-            float scale = 1.1F + (MathHelper.sin(tickDelta / 20F) + 1) * driftStrength;
+            float scale = 1.1F + (MathHelper.sin(state.age / 20F) + 1) * driftStrength;
             matrices.scale(scale, scale, scale);
             matrices.translate(0.015F + xDrift, 0.01F, 0.01F + zDrift);
 
@@ -96,14 +94,14 @@ public class LevitatingItemRenderer {
     /**
      * Moves held items to look like they're floating in the player's field.
      */
-    private void setupPerspective(LivingEntity entity, ItemStack item, boolean left, MatrixStack stack) {
+    public static void setupPerspective(PonyRenderState state, ItemStack item, boolean left, MatrixStack stack) {
         UseAction action = item.getUseAction();
 
-        boolean doNormal = entity.getItemUseTime() <= 0 || action == UseAction.NONE || (action == UseAction.CROSSBOW && CrossbowItem.isCharged(item));
+        boolean doNormal = state.itemUseTime <= 0 || action == UseAction.NONE || (action == UseAction.CROSSBOW && CrossbowItem.isCharged(item));
 
         if (doNormal) { // eating, blocking, and drinking are not transformed. Only held items.
             int sign = left ? 1 : -1;
-            float ticks = entity.age * sign;
+            float ticks = state.age * sign;
 
             float floatAmount = -(float)Math.sin(ticks / 9F) / 40F;
             float driftAmount = -(float)Math.cos(ticks / 6F) / 40F;
