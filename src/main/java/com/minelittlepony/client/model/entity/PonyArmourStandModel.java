@@ -20,7 +20,7 @@ public class PonyArmourStandModel extends ArmorStandEntityModel {
             PartUtil.copyAngles(head, model.head);
             PartUtil.copyAngles(rightArm, model.rightArm);
             PartUtil.copyAngles(leftArm, model.leftArm);
-            PartUtil.copyAngles(rightArm, model.rightLeg);
+            PartUtil.copyAngles(rightLeg, model.rightLeg);
             PartUtil.copyAngles(leftLeg, model.leftLeg);
         }
     }
