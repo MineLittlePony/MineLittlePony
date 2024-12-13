@@ -4,6 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.equipment.EquipmentModelLoader;
 import net.minecraft.client.render.entity.equipment.EquipmentRenderer;
+import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
@@ -13,6 +14,7 @@ import net.minecraft.item.equipment.EquipmentModel;
 import net.minecraft.item.equipment.EquipmentModel.LayerType;
 import net.minecraft.item.equipment.trim.ArmorTrim;
 import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 
@@ -25,6 +27,7 @@ import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import java.util.*;
 
 public class PonifiedEquipmentRenderer extends EquipmentRenderer {
+    private static final int TRANSPARENT = 0;
 
     private final EquipmentModelLoader modelLoader;
 
@@ -63,30 +66,27 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
         List<EquipmentModel.Layer> layers = modelLoader.get(modelId).getLayers(layerType);
         if (!layers.isEmpty()) {
             ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
-            int i = stack.isIn(ItemTags.DYEABLE) ? DyedColorComponent.getColor(stack, 0) : 0;
+            int defaultColor = stack.isIn(ItemTags.DYEABLE) ? DyedColorComponent.getColor(stack, 0) : 0;
             float armorAlpha = plugin.getArmourAlpha(equipmentSlot, layerType);
             boolean hasGlint = plugin.getGlintAlpha(equipmentSlot, stack) > 0 && stack.hasGlint();
 
-            Set<V> drawnModels = new HashSet<>();
+            Set<EntityModel<?>> drawnModels = new HashSet<>();
 
             if (armorAlpha > 0) {
                 for (EquipmentModel.Layer layer : layers) {
-                    int j = getDyeColor(layer, i);
-                    if (j != 0) {
+                    int dyeColor = getDyeColor(layer, defaultColor);
+                    if (dyeColor != TRANSPARENT) {
                         ArmourLayer armourLayer = layerType == LayerType.HUMANOID_LEGGINGS ? ArmourLayer.INNER : ArmourLayer.OUTER;
                         ArmourTexture armorTexture = plugin.getTextureLookup().getTexture(stack, layerType, layer);
-                        Identifier layerTexture = layer.usePlayerTexture() && texture != null
-                            ? texture
-                            : armorTexture.texture();
+                        Identifier layerTexture = layer.usePlayerTexture() && texture != null ? texture : armorTexture.texture();
 
-                        VertexConsumer armorConsumer = plugin.getArmourConsumer(equipmentSlot, vertexConsumers, layerTexture, layerType);
+                        VertexConsumer armorConsumer = getArmorVertexConsumer(plugin, equipmentSlot, vertexConsumers, layerTexture, layerType, hasGlint);
                         if (armorConsumer != null) {
                             ArmourVariant variant = layer.usePlayerTexture() ? ArmourVariant.NORMAL : armorTexture.variant();
                             models.getArmourModel(stack, armourLayer, variant).ifPresent(model -> {
-                                VertexConsumer glintConsumer = hasGlint ? plugin.getGlintConsumer(equipmentSlot, vertexConsumers, layerType) : null;
-                                if (model.poseModel(equipmentSlot, armourLayer, models.body())) {
-                                    model.setAngles(entity);
-                                    model.render(matrices, glintConsumer != null ? VertexConsumers.union(plugin.getGlintConsumer(equipmentSlot, vertexConsumers, layerType), armorConsumer) : armorConsumer, light, OverlayTexture.DEFAULT_UV, j);
+                                if (model.setAngles(entity, equipmentSlot, armourLayer, models.body())) {
+                                    model.render(matrices, armorConsumer, light, OverlayTexture.DEFAULT_UV, dyeColor);
+                                    drawnModels.add(model);
                                 }
                             });
                         }
@@ -98,22 +98,31 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
             if (armorTrim != null && plugin.getTrimAlpha(equipmentSlot, armorTrim, layerType) > 0) {
                 VertexConsumer trimConsumer = plugin.getTrimConsumer(equipmentSlot, vertexConsumers, armorTrim, layerType, modelId);
                 if (trimConsumer != null) {
-                    drawnModels.forEach(model -> {
-                        model.render(matrices, trimConsumer, light, OverlayTexture.DEFAULT_UV);
-                    });
+                    drawnModels.forEach(model -> model.render(matrices, trimConsumer, light, OverlayTexture.DEFAULT_UV));
                 }
             }
         }
     }
 
+    @Nullable
+    private static VertexConsumer getArmorVertexConsumer(ArmourRendererPlugin plugin, EquipmentSlot slot, VertexConsumerProvider provider, Identifier texture, EquipmentModel.LayerType layerType, boolean glint) {
+        VertexConsumer armorConsumer = plugin.getArmourConsumer(slot, provider, texture, layerType);
+        if (armorConsumer != null) {
+            VertexConsumer glintConsumer = glint ? plugin.getGlintConsumer(slot, provider, layerType) : null;
+            if (glintConsumer != null) {
+                return VertexConsumers.union(glintConsumer, armorConsumer);
+            }
+        }
+        return armorConsumer;
+    }
+
     private static int getDyeColor(EquipmentModel.Layer layer, int dyeColor) {
         Optional<EquipmentModel.Dyeable> optional = layer.dyeable();
         if (optional.isPresent()) {
-            int i = (Integer)((EquipmentModel.Dyeable)optional.get()).colorWhenUndyed().map(ColorHelper::fullAlpha).orElse(0);
-            return dyeColor != 0 ? dyeColor : i;
-        } else {
-            return -1;
+            int i = optional.get().colorWhenUndyed().map(ColorHelper::fullAlpha).orElse(0);
+            return dyeColor != TRANSPARENT ? dyeColor : i;
         }
+        return Colors.WHITE;
     }
 
 }

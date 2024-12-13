@@ -18,6 +18,8 @@ import net.minecraft.item.*;
 import net.minecraft.item.equipment.EquipmentModel;
 import net.minecraft.util.Identifier;
 
+import org.jetbrains.annotations.Nullable;
+
 public class ArmourFeature<
         T extends LivingEntity,
         S extends PonyRenderState,
@@ -60,7 +62,7 @@ public class ArmourFeature<
         for (ItemStack stack : plugin.getArmorStacks(entity, armorSlot, layer, ArmourRendererPlugin.ArmourType.ARMOUR)) {
             EquippableComponent equippableComponent = stack.get(DataComponentTypes.EQUIPPABLE);
 
-            if (equippableComponent != null && hasModel(equippableComponent, armorSlot)) {
+            if (hasModel(equippableComponent, armorSlot)) {
                 EquipmentModel.LayerType layerType = layer == ArmourLayer.INNER
                         ? EquipmentModel.LayerType.HUMANOID_LEGGINGS
                         : EquipmentModel.LayerType.HUMANOID;
@@ -72,7 +74,7 @@ public class ArmourFeature<
         plugin.onArmourRendered(entity, matrices, vertices, armorSlot, layer, ArmourRendererPlugin.ArmourType.ARMOUR);
     }
 
-    private static boolean hasModel(EquippableComponent component, EquipmentSlot slot) {
-        return component.model().isPresent() && component.slot() == slot;
+    private static boolean hasModel(@Nullable EquippableComponent component, EquipmentSlot slot) {
+        return component != null && component.model().isPresent() && component.slot() == slot;
     }
 }

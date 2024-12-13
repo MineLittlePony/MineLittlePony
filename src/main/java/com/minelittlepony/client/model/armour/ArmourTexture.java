@@ -28,7 +28,7 @@ public record ArmourTexture(Identifier texture, ArmourVariant variant) {
 
     public Stream<ArmourTexture> ponify() {
         if (!PonyConfig.getInstance().disablePonifiedArmour.get()) {
-            return Stream.of(this, modern(texture().withPath(p -> p.replace("humanoid", "ponified"))));
+            return Stream.of(modern(texture().withPath(p -> p.replace("humanoid", "ponified"))), this);
         }
         return Stream.of(this);
     }

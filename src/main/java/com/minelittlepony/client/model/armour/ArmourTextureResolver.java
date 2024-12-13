@@ -77,6 +77,7 @@ public class ArmourTextureResolver implements ArmourTextureLookup, IdentifiableR
 
     @Override
     public ArmourTexture getTexture(ItemStack stack, EquipmentModel.LayerType layerType, EquipmentModel.Layer layer) {
+        layerCache.invalidateAll();
         return layerCache.getUnchecked(new ArmourParameters(layer, layerType, getCustom(stack)));
     }
 

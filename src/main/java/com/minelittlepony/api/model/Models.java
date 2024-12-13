@@ -1,6 +1,5 @@
 package com.minelittlepony.api.model;
 
-import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Util;
 
@@ -35,7 +34,7 @@ public record Models<M extends PonyModel<?>> (
 
     public Optional<PonyArmourModel<?>> getArmourModel(ItemStack stack, ArmourLayer layer, ArmourVariant variant) {
         return ArmorModelRegistry.getModelKey(stack.getItem(), layer)
-                .or(() -> variant.getDefaultModel(layer).filter(l -> stack.getItem() instanceof ArmorItem))
+                .or(() -> variant.getDefaultModel(layer))
                 .map(armor);
     }
 }

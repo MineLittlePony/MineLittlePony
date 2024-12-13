@@ -1,6 +1,7 @@
 package com.minelittlepony.client.model.armour;
 
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.entity.EquipmentSlot;
 
 import com.minelittlepony.api.model.PonyModel;
@@ -14,7 +15,8 @@ public class PonyArmourModel<S extends PonyRenderState> extends AbstractPonyMode
         super(tree, false);
     }
 
-    public boolean poseModel(EquipmentSlot slot, ArmourLayer layer, PonyModel<?> mainModel) {
+    public boolean setAngles(PlayerEntityRenderState state, EquipmentSlot slot, ArmourLayer layer, PonyModel<?> mainModel) {
+        setAngles(state);
         if (!setVisibilities(slot, layer)) {
             return false;
         }
