@@ -17,10 +17,8 @@ public class SkeleponyModel<T extends SkeleponyRenderer.State> extends AlicornMo
 
     @SuppressWarnings("unchecked")
     @Override
-    protected BipedEntityModel.ArmPose getArmPose(PlayerEntityRenderState state, Arm arm) {
-        boolean isMain = arm == state.mainArm;
-
-        if (isMain) {
+    public BipedEntityModel.ArmPose getArmPose(PlayerEntityRenderState state, Arm arm) {
+        if (arm == state.mainArm) {
             ItemStack mainHand = state.getMainHandStack();
             if (!mainHand.isEmpty()) {
                 return mainHand.getItem() == Items.BOW && ((T)state).isAttacking ? ArmPose.BOW_AND_ARROW : ArmPose.ITEM;

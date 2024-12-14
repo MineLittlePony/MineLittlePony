@@ -20,7 +20,7 @@ public class PegasusModel<T extends PonyRenderState> extends EarthPonyModel<T> i
     public void init(ModelView context) {
         super.init(context);
         wings = addPart(context.findByName("wings"));
-        bodyRenderList.add(forPart(this::getWings));
+        bodyRenderList.add(SubModel.toRenderList(this::getWings));
     }
 
     @Override

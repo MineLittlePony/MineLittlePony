@@ -14,13 +14,13 @@ public class AlicornModel<T extends PonyRenderState> extends UnicornModel<T> imp
 
     public AlicornModel(ModelPart tree, boolean smallArms) {
         super(tree, smallArms);
+        bodyRenderList.add(SubModel.toRenderList(this::getWings));
     }
 
     @Override
     public void init(ModelView context) {
         super.init(context);
         wings = addPart(context.findByName("wings"));
-        bodyRenderList.add(forPart(this::getWings));
     }
 
     @Override

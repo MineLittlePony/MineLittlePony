@@ -43,9 +43,7 @@ abstract class AbstractNpcRenderer<
         return super.shouldRender(model, entity, wearable, gear);
     }
 
-    protected void initializeModel(ClientPonyModel<S> model) {
-
-    }
+    protected abstract void initializeModel(ClientPonyModel<S> model);
 
     @Override
     public Identifier getDefaultTexture(S villager, Wearable wearable) {

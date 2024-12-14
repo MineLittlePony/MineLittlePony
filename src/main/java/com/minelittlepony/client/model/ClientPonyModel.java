@@ -20,12 +20,39 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
     @Nullable
     protected PosingCallback<T> onSetModelAngles;
 
+    @Deprecated
+    @Nullable
+    protected T currentState;
+
     public ClientPonyModel(ModelPart tree, boolean smallArms) {
         super(tree, smallArms);
     }
 
     public void onSetModelAngles(PosingCallback<T> callback) {
         onSetModelAngles = callback;
+    }
+
+    /**
+     * Sets the model's various rotation angles.
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public final void setAngles(PlayerEntityRenderState entity) {
+        currentState = (T)entity;
+        super.setAngles((PlayerEntityRenderState)entity);
+
+        setModelVisibilities((T)entity);
+        setModelAngles((T)entity);
+
+        if (onSetModelAngles != null) {
+            onSetModelAngles.poseModel(this, (T)entity);
+        }
+    }
+
+    protected void setModelVisibilities(T state) {
+    }
+
+    protected void setModelAngles(T entity) {
     }
 
     @Override
@@ -39,13 +66,8 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
     }
 
     @Override
-    public final <S extends PlayerEntityRenderState> ArmPose getArmPoseForSide(S state, Arm side) {
-        return getArmPose(state, side);
-    }
-
-    @Override
-    public void setHatVisible(boolean visible) {
-
+    public ArmPose getArmPose(PlayerEntityRenderState state, Arm side) {
+        return super.getArmPose(state, side);
     }
 
     static void resetPivot(ModelPart part) {

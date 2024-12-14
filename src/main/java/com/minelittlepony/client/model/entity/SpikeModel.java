@@ -20,18 +20,8 @@ public class SpikeModel extends BipedEntityModel<StriderRenderer.State> {
 
     @Override
     public void setAngles(StriderRenderer.State entity) {
-        entity.limbFrequency *= 2;
-        entity.limbAmplitudeMultiplier *= 1.5F;
-        entity.baby = false;
-
-        head.pivotX = 0;
-        head.pivotZ = 0;
-        head.pivotY = 0;
-
         super.setAngles(entity);
 
-        leftArm.pivotY++;
-        rightArm.pivotY++;
         body.pitch += 0.15F;
 
         if (entity.saddled) {
@@ -78,8 +68,6 @@ public class SpikeModel extends BipedEntityModel<StriderRenderer.State> {
         tail.yaw = (float)Math.sin(entity.age / 20F) / 40 + (float)Math.sin(entity.limbFrequency / 20F) / 4;
         tail2.yaw = tail.yaw / 2;
         tail3.yaw = tail2.yaw / 2;
-
-        getRootPart().pivotY += 7;
     }
 }
 

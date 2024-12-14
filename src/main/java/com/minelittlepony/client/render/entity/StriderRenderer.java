@@ -41,6 +41,9 @@ public class StriderRenderer extends MobEntityRenderer<StriderEntity, StriderRen
         state.cold = entity.isCold();
         state.saddled = entity.isSaddled();
         state.flailAmount = 1 + (float)MathHelper.clamp(entity.getVelocity().y * 10, 0, 7);
+        state.limbFrequency *= 2;
+        state.limbAmplitudeMultiplier *= 1.5F;
+
     }
 
     @Override

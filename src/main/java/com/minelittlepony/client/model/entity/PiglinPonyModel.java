@@ -20,7 +20,7 @@ public class PiglinPonyModel extends ZomponyModel<PonyPiglinRenderer.State> {
     }
 
     @Override
-    protected ArmPose getArmPose(PlayerEntityRenderState p, Arm arm) {
+    public ArmPose getArmPose(PlayerEntityRenderState p, Arm arm) {
         if (p instanceof PonyPiglinRenderer.State state) {
             return switch (arm) {
                 case LEFT -> switch (state.activity) {

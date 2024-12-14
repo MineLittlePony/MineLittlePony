@@ -25,10 +25,23 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> {
 
     protected UnicornHorn<T> horn;
 
+    @SuppressWarnings("deprecation")
     public UnicornModel(ModelPart tree, boolean smallArms) {
         super(tree, smallArms);
         unicornArmRight = tree.getChild("right_cast");
         unicornArmLeft = tree.getChild("left_cast");
+        headRenderList.add(RenderList.of().add(head::rotate).add(SubModel.toRenderList(() -> horn)));
+        mainRenderList.add(withStage(BodyPart.HEAD, RenderList.of().add(head::rotate).add((stack, vertices, overlay, light, color) -> {
+            if (isCasting(currentState)) {
+                horn.renderMagic(stack, vertices, currentState == null ? 0 : currentState.attributes.metadata.glowColor());
+            }
+        })));
+    }
+
+    @Override
+    public void init(ModelView context) {
+        super.init(context);
+        horn = addPart(context.findByName("horn"));
     }
 
     public boolean isCasting(T state) {
@@ -39,16 +52,6 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> {
     @Override
     public float getWobbleAmplitude(T state) {
         return isCasting(state) ? 0 : 1;
-    }
-
-    @Override
-    public void init(ModelView context) {
-        super.init(context);
-        horn = addPart(context.findByName("horn"));
-        headRenderList.add(RenderList.of().add(head::rotate).add(forPart(horn)));
-        mainRenderList.add(withStage(BodyPart.HEAD, RenderList.of().add(head::rotate).add((stack, vertices, overlay, light, color) -> {
-            horn.renderMagic(stack, vertices, currentState == null ? 0 : currentState.attributes.metadata.glowColor());
-        })).checked(() -> isCasting(currentState)));
     }
 
     @Override
@@ -69,9 +72,10 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> {
         unicornArmLeft.pitch -= LEG_SNEAKING_PITCH_ADJUSTMENT;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public ModelPart getArm(Arm side) {
-        if (currentState != null && currentState.hasMagicGlow() && getArmPoseForSide(currentState, side) != ArmPose.EMPTY && PonyConfig.getInstance().tpsmagic.get()) {
+        if (currentState != null && currentState.hasMagicGlow() && getArmPose(currentState, side) != ArmPose.EMPTY && PonyConfig.getInstance().tpsmagic.get()) {
             return side == Arm.LEFT ? unicornArmLeft : unicornArmRight;
         }
         return super.getArm(side);

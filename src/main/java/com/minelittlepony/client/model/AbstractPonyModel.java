@@ -10,7 +10,6 @@ import com.minelittlepony.util.MathUtil.Angles;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
@@ -21,8 +20,6 @@ import net.minecraft.entity.EntityPose;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
-
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Foundation class for all types of ponies.
@@ -53,10 +50,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
     private final List<SubModel<? super T>> parts = new ArrayList<>();
 
-    @Deprecated
-    @Nullable
-    protected T currentState;
-
     public AbstractPonyModel(ModelPart tree, boolean smallArms) {
         super(tree, smallArms);
 
@@ -73,14 +66,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         return part;
     }
 
-    protected RenderList forPart(Supplier<SubModel<? super T>> part) {
-        return (stack, vertices, overlay, light, color) -> part.get().renderPart(stack, vertices, overlay, light, color);
-    }
-
-    protected RenderList forPart(SubModel<T> part) {
-        return (stack, vertices, overlay, light, color) -> part.renderPart(stack, vertices, overlay, light, color);
-    }
-
+    @SuppressWarnings({"deprecation"})
     protected RenderList withStage(BodyPart part, RenderList action) {
         return (stack, vertices, overlay, light, color) -> {
             stack.push();
@@ -97,22 +83,8 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         mainRenderList.accept(stack, vertices, overlay, light, color);
     }
 
-    /**
-     * Sets the model's various rotation angles.
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public final void setAngles(PlayerEntityRenderState entity) {
-        currentState = (T)entity;
-        super.setAngles((PlayerEntityRenderState)entity);
-
-        resetPivot(head, neck, leftArm, rightArm, leftLeg, rightLeg);
-
-        setModelVisibilities((T)entity);
-        setModelAngles((T)entity);
-    }
-
     protected void setModelVisibilities(T state) {
+        resetPivot(head, neck, leftArm, rightArm, leftLeg, rightLeg);
         hat.visible = head.visible && !state.attributes.isHorsey;
         if (state.attributes.isHorsey) {
             neck.visible = head.visible;
@@ -122,7 +94,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         parts.forEach(part -> part.setVisible(body.visible, state));
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "deprecation"})
     public void copyTransforms(BipedEntityModel<PlayerEntityRenderState> model) {
         super.copyTransforms(model);
         if (model instanceof AbstractPonyModel m) {
@@ -146,10 +118,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
         ArmPose left = getArmPose(entity, Arm.LEFT);
         ArmPose right = getArmPose(entity, Arm.RIGHT);
-
-        if (onSetModelAngles != null) {
-            onSetModelAngles.poseModel(this, entity);
-        }
 
         if (!entity.attributes.isSwimming && !entity.attributes.isGoingFast) {
             alignArmForAction(entity, getArm(Arm.LEFT), left, right, 1);

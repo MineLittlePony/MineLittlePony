@@ -1,14 +1,11 @@
 package com.minelittlepony.client.render.entity.npc;
 
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.model.PonyModel;
-import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.VariatedTextureSupplier;
+import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.npc.textures.*;
 
 public class VillagerPonyRenderer extends AbstractNpcRenderer<VillagerEntity, VillagerPonyRenderer.State> {
@@ -23,17 +20,30 @@ public class VillagerPonyRenderer extends AbstractNpcRenderer<VillagerEntity, Vi
     }
 
     @Override
+    protected void initializeModel(ClientPonyModel<State> model) {
+        model.onSetModelAngles((m, state) -> {
+            if (state.headRolling) {
+                m.head.roll = 0.3F * MathHelper.sin(0.45F * state.age);
+                m.head.pitch = 0.4F;
+            } else {
+                m.head.roll = 0;
+            }
+        });
+    }
+
+    @Override
     public State createRenderState() {
         return new State();
     }
 
+    @Override
+    public void updateRenderState(VillagerEntity entity, State state, float tickDelta) {
+        super.updateRenderState(entity, state, tickDelta);
+        state.headRolling = entity.getHeadRollingTimeLeft() > 0;
+        state.yawDegrees = 0.3F * MathHelper.sin(0.45F * state.age);
+    }
+
     public static class State extends SillyPonyTextureSupplier.State {
-        public int headRollingTime;
-        public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
-            super.updateState(entity, model, pony, mode);
-            if (((VillagerEntity)entity).getHeadRollingTimeLeft() > 0) {
-                this.yawDegrees = 0.3F * MathHelper.sin(0.45F * age);
-            }
-        }
+        public boolean headRolling;
     }
 }

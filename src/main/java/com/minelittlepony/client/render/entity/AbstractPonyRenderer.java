@@ -168,6 +168,7 @@ public abstract class AbstractPonyRenderer<
         return renderer;
     }
 
+    @Deprecated
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static <
             T extends MobEntity,

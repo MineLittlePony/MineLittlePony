@@ -9,7 +9,6 @@ import com.minelittlepony.mson.api.ModelView;
 import net.minecraft.client.model.ModelPart;
 
 public class EarthPonyModel<T extends PonyRenderState> extends AbstractPonyModel<T> {
-
     protected SubModel<T> tail;
     protected PonySnout snout;
     protected PonyEars ears;
@@ -33,7 +32,7 @@ public class EarthPonyModel<T extends PonyRenderState> extends AbstractPonyModel
         snout = addPart(context.findByName("snout"));
         ears = addPart(context.findByName("ears"));
 
-        bodyRenderList.add(forPart(tail));
+        bodyRenderList.add(tail);
     }
 
     protected void setModelVisibilities(T state) {

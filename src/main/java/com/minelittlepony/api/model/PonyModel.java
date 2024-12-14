@@ -8,7 +8,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.mson.api.MsonModel;
 
-public interface PonyModel<T extends EntityRenderState & PonyModel.AttributedHolder> extends MsonModel, ModelWithHooves, ModelWithHat, ModelWithHead {
+public interface PonyModel<T extends EntityRenderState & PonyModel.AttributedHolder> extends MsonModel, ModelWithHooves, ModelWithHead {
 
     ModelPart getBodyPart(BodyPart part);
 

@@ -15,7 +15,7 @@ public class PillagerPonyModel extends ChangelingModel<IllagerPonyRenderer.State
     }
 
     @Override
-    protected BipedEntityModel.ArmPose getArmPose(PlayerEntityRenderState state, Arm arm) {
+    public BipedEntityModel.ArmPose getArmPose(PlayerEntityRenderState state, Arm arm) {
         ArmPose holdingPose = getHoldingPose(((IllagerPonyRenderer.State)state).state);
 
         if (holdingPose != ArmPose.EMPTY) {
