@@ -57,11 +57,6 @@ public class PonyConfig extends Config {
                 .addComment("Helps to prevent entities from vanishing when they're in long stacks");
     public final Setting<Boolean> horsieMode = value("settings", "horsieMode", false)
                 .addComment("Enables the alternative horsey models from the April Fools 2023 update");
-    public final Setting<Boolean> mixedHumanSkins = value("settings", "dualSkinMode", false)
-                .addComment("(Experimental) Use priority to decide between displaying the HDSkins' texture, or vanilla mojang server skin")
-                .addComment("(Experimental) eg. On pony level = HUMANS")
-                .addComment("(Experimental) Any time both skins resolve to the same race (eg. on pony-level HUMANS, or if both are ponies)")
-                .addComment("(Experimental) the skin with the highest priority will be chosen.");;
 
     public final Setting<SizePreset> sizeOverride = value("debug", "sizeOverride", SizePreset.UNSET)
                 .addComment("Overrides pony sizes")

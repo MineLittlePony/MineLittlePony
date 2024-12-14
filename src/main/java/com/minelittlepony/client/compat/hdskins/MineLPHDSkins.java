@@ -61,14 +61,21 @@ public class MineLPHDSkins extends ClientSkinsProxy implements ClientModInitiali
         GuiSkins.setSkinsGui(GuiSkinsMineLP::new);
 
         HDSkins.getInstance().getSkinPrioritySorter().addSelector((skinType, playerSkins) -> {
-            if (skinType == SkinType.SKIN && PonyConfig.getInstance().mixedHumanSkins.get()) {
+            if (skinType == SkinType.SKIN) {
                 Optional<Pony> hdPony = getPony(playerSkins.hd());
                 Optional<Pony> vanillaPony = getPony(playerSkins.vanilla());
 
-                if (hdPony.isPresent() && vanillaPony.isPresent()
-                        && vanillaPony.get().metadata().priority() > hdPony.get().metadata().priority()
-                        && (PonyConfig.getInstance().ponyLevel.get() == PonyLevel.HUMANS || vanillaPony.get().metadata().race().isHuman() == hdPony.get().metadata().race().isHuman())) {
-                    return playerSkins.vanilla();
+                if (hdPony.isPresent() && vanillaPony.isPresent()) {
+                    PonyLevel level = PonyConfig.getInstance().ponyLevel.get();
+                    boolean vanillaHuman = vanillaPony.get().metadata().race().isHuman();
+                    boolean hdHuman = hdPony.get().metadata().race().isHuman();
+                    if (vanillaHuman != hdHuman) {
+                        return (level == PonyLevel.HUMANS ? vanillaHuman : hdHuman) ? playerSkins.vanilla() : playerSkins.hd();
+                    }
+
+                    if (vanillaPony.get().metadata().priority() > hdPony.get().metadata().priority()) {
+                        return playerSkins.vanilla();
+                    }
                 }
             }
             return playerSkins.combined();
