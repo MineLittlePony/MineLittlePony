@@ -1,68 +1,102 @@
 package com.minelittlepony.client.render.entity;
 
-import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.model.PonyModel;
+import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.SkeleponyModel;
-import com.minelittlepony.client.render.entity.feature.AbstractClothingFeature;
+import com.minelittlepony.client.render.entity.feature.ClothingFeature;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
+import net.minecraft.client.model.Model.SinglePartModel;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
+import net.minecraft.client.render.entity.feature.FeatureRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.*;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 
-public class SkeleponyRenderer<T extends AbstractSkeletonEntity> extends PonyRenderer<T, SkeleponyRenderer.State, SkeleponyModel<SkeleponyRenderer.State>> {
+public class SkeleponyRenderer<T extends AbstractSkeletonEntity, S extends SkeleponyRenderer.State> extends PonyRenderer<T, S, SkeleponyModel<S>> {
     public static final Identifier SKELETON = MineLittlePony.id("textures/entity/skeleton/skeleton_pony.png");
     public static final Identifier WITHER = MineLittlePony.id("textures/entity/skeleton/skeleton_wither_pony.png");
     public static final Identifier STRAY = MineLittlePony.id("textures/entity/skeleton/stray_pony.png");
+    public static final Identifier BOGGED = MineLittlePony.id("textures/entity/skeleton/bogged_pony.png");
+
+    public static final Identifier STRAY_SKELETON_OVERLAY = MineLittlePony.id("textures/entity/skeleton/stray_pony_overlay.png");
+    public static final Identifier BOGGED_SKELETON_OVERLAY = MineLittlePony.id("textures/entity/skeleton/bogged_pony_overlay.png");
 
     public SkeleponyRenderer(EntityRendererFactory.Context context, Identifier texture, float scale) {
         super(context, ModelType.SKELETON, TextureSupplier.of(texture), scale);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public SkeleponyRenderer.State createRenderState() {
-        return new State();
+    public S createRenderState() {
+        return (S)new State();
     }
 
-    public static SkeleponyRenderer<SkeletonEntity> skeleton(EntityRendererFactory.Context context) {
+    public static SkeleponyRenderer<SkeletonEntity, State> skeleton(EntityRendererFactory.Context context) {
         return new SkeleponyRenderer<>(context, SKELETON, 1);
     }
 
-    public static SkeleponyRenderer<StrayEntity> stray(EntityRendererFactory.Context context) {
-        return PonyRenderer.appendFeature(new SkeleponyRenderer<>(context, STRAY, 1), StrayClothingFeature::new);
+    public static SkeleponyRenderer<StrayEntity, State> stray(EntityRendererFactory.Context context) {
+        return PonyRenderer.appendFeature(new SkeleponyRenderer<StrayEntity, State>(context, STRAY, 1), ctx -> {
+            return new ClothingFeature<>(ctx, ModelType.SKELETON_CLOTHES, STRAY_SKELETON_OVERLAY);
+        });
     }
 
-    public static SkeleponyRenderer<WitherSkeletonEntity> wither(EntityRendererFactory.Context context) {
+    public static SkeleponyRenderer<BoggedEntity, BoggedState> bogged(EntityRendererFactory.Context context) {
+        return PonyRenderer.appendFeature(PonyRenderer.appendFeature(new SkeleponyRenderer<>(context, BOGGED, 1) {
+            @Override
+            public BoggedState createRenderState() {
+                return new BoggedState();
+            }
+        }, ctx -> {
+            return new ClothingFeature<>(ctx, ModelType.SKELETON_CLOTHES, BOGGED_SKELETON_OVERLAY);
+        }), BoggedMushroomsFeature::new);
+    }
+
+    public static SkeleponyRenderer<WitherSkeletonEntity, State> wither(EntityRendererFactory.Context context) {
         return new SkeleponyRenderer<>(context, WITHER, 1.2F);
     }
 
-    public static class StrayClothingFeature<
+    public static class BoggedMushroomsFeature<
         T extends AbstractSkeletonEntity,
         S extends SkeleponyRenderer.State
-    > extends AbstractClothingFeature<T, S, SkeleponyModel<S>> {
-        public static final Identifier STRAY_SKELETON_OVERLAY = MineLittlePony.id("textures/entity/skeleton/stray_pony_overlay.png");
+    > extends FeatureRenderer<BoggedState, SkeleponyModel<BoggedState>> {
+        public static final Identifier MUSHROOMS = MineLittlePony.id("textures/entity/skeleton/bogged_pony_mushrooms.png");
 
-        private final SkeleponyModel<S> overlayModel = ModelType.SKELETON_CLOTHES.createModel();
+        private final SinglePartModel model = ModelType.BOGGED_MUSHROOMS.createModel();
 
-        public StrayClothingFeature(LivingEntityRenderer<T, S, SkeleponyModel<S>> render) {
-            super(render);
+        public BoggedMushroomsFeature(LivingEntityRenderer<BoggedEntity, BoggedState, SkeleponyModel<BoggedState>> renderer) {
+            super(renderer);
         }
 
         @Override
-        protected SkeleponyModel<S> getOverlayModel() {
-            return overlayModel;
+        public void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, BoggedState state, float limbAngle, float limbDistance) {
+            if (!state.sheared) {
+                matrices.push();
+                getContextModel().transform(state, BodyPart.HEAD, matrices);
+                getContextModel().head.rotate(matrices);
+                VertexConsumer buffer = vertices.getBuffer(model.getLayer(MUSHROOMS));
+                model.render(matrices, buffer, light, OverlayTexture.DEFAULT_UV, Colors.WHITE);
+                matrices.pop();
+            }
         }
+    }
+
+    public static class BoggedState extends State {
+        public boolean sheared;
 
         @Override
-        protected Identifier getOverlayTexture() {
-            return STRAY_SKELETON_OVERLAY;
+        public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
+            super.updateState(entity, model, pony, mode);
+            sheared = entity instanceof BoggedEntity bogged && bogged.isSheared();
         }
     }
 

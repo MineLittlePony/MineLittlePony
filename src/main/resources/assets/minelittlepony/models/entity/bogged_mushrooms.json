@@ -1,0 +1,58 @@
+{
+  "texture": {"u": 50, "w": 64, "h": 32},
+  "data": {
+    "mushrooms": {
+      "pivot": [0, 1, -2],
+      "children": {
+        "red_mushroom_1": {
+          "texture": {"v": 16},
+          "pivot": [3, -8, 3],
+          "rotate": [0, 45, 0],
+          "cubes": [
+            { "from": [-3, -3, 0], "size": [6, 4, 0]}
+          ]
+        },
+        "red_mushroom_2": {
+          "texture": {"v": 16},
+          "pivot": [3, -8, 3],
+          "rotate": [0, 134, 0],
+          "cubes": [
+            { "from": [-3, -3, 0], "size": [6, 4, 0]}
+          ]
+        },
+        "brown_mushroom_1": {
+          "texture": {"v": 22},
+          "pivot": [-3, -8, -3],
+          "rotate": [0, 45, 0],
+          "cubes": [
+            { "from": [-3, -3, 0], "size": [6, 4, 0]}
+          ]
+        },
+        "brown_mushroom_2": {
+          "texture": {"v": 22},
+          "pivot": [-3, -8, -3],
+          "rotate": [0, 134, 0],
+          "cubes": [
+            { "from": [-3, -3, 0], "size": [6, 4, 0]}
+          ]
+        },
+        "brown_mushroom_3": {
+          "texture": {"v": 28},
+          "pivot": [-2, -1, 4],
+          "rotate": [-90, 0, 45],
+          "cubes": [
+            { "from": [-3, -4, 0], "size": [6, 4, 0]}
+          ]
+        },
+        "brown_mushroom_4": {
+          "texture": {"v": 28},
+          "pivot": [-2, -1, 4],
+          "rotate": [-90, 0, 134],
+          "cubes": [
+            { "from": [-3, -4, 0], "size": [6, 4, 0]}
+          ]
+        }
+      }
+    }
+  }
+}
