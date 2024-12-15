@@ -28,6 +28,6 @@ abstract class MixinPlayerEntity implements RegistrationHandler {
 
     @Inject(method = "tick()V", at = @At("TAIL"))
     private void onTick(CallbackInfo info) {
-        syncedPony.synchronize((PlayerEntity)(Object)this);
+        getSyncedPony().synchronize((PlayerEntity)(Object)this);
     }
 }

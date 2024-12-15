@@ -54,15 +54,19 @@ public class PassengerFeature<
         boolean left
     ) {
         matrices.push();
+
+        float scale = 1/state.attributes.size.scaleFactor();
+        final double parrotModelHeight = 1.5;
+
         getContextModel().transform(state, BodyPart.BACK, matrices);
         getContextModel().body.rotate(matrices);
-        float scale = 1 / state.attributes.size.scaleFactor();
-        matrices.scale(scale, scale, scale);
-        matrices.translate(
-                left ? 0.25F : -0.25F,
-                state.isInSneakingPose ? -1.7F : -1.5F, 0
-        );
+
+        matrices.translate(0, -1.28, 0);
         matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(left ? -5 : 5));
+        matrices.translate(0, parrotModelHeight, 0);
+        matrices.scale(scale, scale, scale);
+        matrices.translate(left ? 0.25 : -0.25, -parrotModelHeight, 0.45);
+
         parrotState.age = state.age;
         parrotState.limbFrequency = state.limbFrequency;
         parrotState.limbAmplitudeMultiplier = state.limbAmplitudeMultiplier;

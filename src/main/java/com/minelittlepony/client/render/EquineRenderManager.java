@@ -33,7 +33,6 @@ import net.minecraft.item.ModelTransformationMode;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -167,11 +166,7 @@ public class EquineRenderManager<
             }
             float eyeHeight = dimensions.eyeHeight() * factor;
             if (player.hasVehicle()) {
-                Vec3d attachment = dimensions.attachments().getPointNullable(EntityAttachmentType.VEHICLE, 0, 0);
-                if (attachment != null) {
-                    double yAttachment = attachment.getY();
-                    eyeHeight += yAttachment * factor;
-                }
+                eyeHeight += player.getVehicleAttachmentPos(player.getVehicle()).getY();
             }
 
             return dimensions.withEyeHeight(eyeHeight);
