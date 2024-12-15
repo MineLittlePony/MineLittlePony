@@ -9,6 +9,7 @@ import net.minecraft.client.render.block.entity.SkullBlockEntityModel;
 import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.type.ProfileComponent;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,8 +37,8 @@ abstract class MixinSkullBlockEntityRenderer implements BlockEntityRenderer<Skul
         }
     }
 
-    @Inject(method = "getRenderLayer", at = @At("HEAD"), cancellable = true)
-    private static void onGetRenderLayer(SkullBlock.SkullType skullType, @Nullable ProfileComponent profile, CallbackInfoReturnable<RenderLayer> info) {
+    @Inject(method = "getRenderLayer(Lnet/minecraft/block/SkullBlock$SkullType;Lnet/minecraft/component/type/ProfileComponent;Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/RenderLayer;", at = @At("HEAD"), cancellable = true)
+    private static void onGetRenderLayer(SkullBlock.SkullType skullType, @Nullable ProfileComponent profile, @Nullable Identifier texture, CallbackInfoReturnable<RenderLayer> info) {
         if (!info.isCancelled()) {
             RenderLayer result = PonySkullRenderer.INSTANCE.getSkullRenderLayer(skullType, profile);
             if (result != null) {

@@ -3,8 +3,7 @@ package com.minelittlepony.client.render.entity.state;
 import net.minecraft.block.BedBlock;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.mob.AbstractPiglinEntity;
 import net.minecraft.entity.mob.ZombifiedPiglinEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -46,6 +45,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
     public final ItemRenderState glintlessLeftHandItemState = new ItemRenderState();
 
     public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
+        this.equippedHeadStack = entity.getEquippedStack(EquipmentSlot.HEAD);
         this.pony = pony;
         attributes.updateLivingState(entity, pony, mode);
         attributes.checkRainboom(entity, model, age);
