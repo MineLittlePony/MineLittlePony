@@ -8,12 +8,13 @@ import net.minecraft.client.render.entity.ParrotEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.ParrotEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.RotationAxis;
+
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.ParrotEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.*;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.ClientPonyModel;
@@ -48,14 +49,17 @@ public class PassengerFeature<T extends PlayerEntity, M extends ClientPonyModel<
 
     private void renderShoulderParrot(MatrixStack stack, VertexConsumerProvider renderContext, int light, T entity, float limbDistance, float limbAngle, float headYaw, float headPitch, Identifier texture, int sigma) {
        stack.push();
+       float scale = 1/getContext().getEntityPony(entity).size().scaleFactor();
+       final double parrotModelHeight = 1.5;
 
-       getContextModel().transform(BodyPart.BODY, stack);
+       getContextModel().transform(BodyPart.BACK, stack);
+       getContextModel().body.rotate(stack);
 
-       stack.translate(
-               sigma * 0.25,
-               entity.isInSneakingPose() ? -0.9 : -1.2,
-               0.45);
+       stack.translate(0, -1.28, 0);
        stack.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(sigma * -5));
+       stack.translate(0, parrotModelHeight, 0);
+       stack.scale(scale, scale, scale);
+       stack.translate(sigma * 0.25, -parrotModelHeight, 0.45);
 
        VertexConsumer buffer = renderContext.getBuffer(model.getLayer(texture));
        model.poseOnShoulder(stack, buffer, light, OverlayTexture.DEFAULT_UV, limbDistance, limbAngle, headYaw, headPitch, entity.age);
