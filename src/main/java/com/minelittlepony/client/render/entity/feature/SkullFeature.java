@@ -60,13 +60,8 @@ public class SkullFeature<
 
             matrices.push();
 
-            if (state.baby && scaleForChild) {
-                matrices.translate(0, 0.03125F, 0);
-                matrices.scale(0.7F, 0.7F, 0.7F);
-                matrices.translate(0, 1, 0);
-            }
-
             M model = getModelWrapper().body();
+
             model.transform(state, BodyPart.HEAD, matrices);
             model.getHead().rotate(matrices);
 
