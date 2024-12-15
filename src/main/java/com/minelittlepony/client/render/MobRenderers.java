@@ -48,6 +48,7 @@ public class MobRenderers {
     public static final MobRenderers SKELETON = register("skeletons", (state, pony) -> {
         pony.switchRenderer(state, EntityType.SKELETON, SkeleponyRenderer::skeleton);
         pony.switchRenderer(state, EntityType.STRAY, SkeleponyRenderer::stray);
+        pony.switchRenderer(state, EntityType.BOGGED, SkeleponyRenderer::bogged);
         pony.switchRenderer(state, EntityType.WITHER_SKELETON, SkeleponyRenderer::wither);
     });
     public static final MobRenderers GUARDIAN = register("guardians", (state, pony) -> {

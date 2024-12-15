@@ -1,8 +1,11 @@
 package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.Model;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.ArmorStandEntityModel;
+import net.minecraft.client.render.entity.model.SinglePartEntityModel;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.entity.passive.*;
@@ -38,6 +41,15 @@ public final class ModelType {
     public static final ModelKey<ZomponyModel<?>> ZOMBIE = register("zombie", ZomponyModel::new);
     public static final ModelKey<PiglinPonyModel> PIGLIN = register("piglin", PiglinPonyModel::new);
     public static final ModelKey<SkeleponyModel<?>> SKELETON = register("skeleton", SkeleponyModel::new);
+    public static final ModelKey<SinglePartEntityModel<?>> BOGGED_MUSHROOMS = register("bogged_mushrooms", tree -> new SinglePartEntityModel<>(RenderLayer::getEntityTranslucent) {
+        @Override
+        public ModelPart getPart() {
+            return tree;
+        }
+
+        @Override
+        public void setAngles(Entity entity, float var2, float var3, float var4, float var5, float var6) {}
+    });
     public static final ModelKey<SkeleponyModel<?>> SKELETON_CLOTHES = register("skeleton_clothes", SkeleponyModel::new);
     public static final ModelKey<PillagerPonyModel<?>> PILLAGER = register("pillager", PillagerPonyModel::new);
     public static final ModelKey<IllagerPonyModel<?>> ILLAGER = register("illager", IllagerPonyModel::new);
