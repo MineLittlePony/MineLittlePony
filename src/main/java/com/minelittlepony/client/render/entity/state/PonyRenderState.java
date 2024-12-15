@@ -1,7 +1,6 @@
 package com.minelittlepony.client.render.entity.state;
 
 import net.minecraft.block.BedBlock;
-import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.entity.EntityPose;
