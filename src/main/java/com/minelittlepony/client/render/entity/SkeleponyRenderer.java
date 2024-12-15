@@ -46,7 +46,7 @@ public class SkeleponyRenderer<T extends AbstractSkeletonEntity, S extends Skele
 
     public static SkeleponyRenderer<StrayEntity, State> stray(EntityRendererFactory.Context context) {
         return PonyRenderer.appendFeature(new SkeleponyRenderer<StrayEntity, State>(context, STRAY, 1), ctx -> {
-            return new ClothingFeature<>(ctx, ModelType.SKELETON_CLOTHES, STRAY_SKELETON_OVERLAY);
+            return new ClothingFeature<State, SkeleponyModel<State>>(ctx, ModelType.SKELETON_CLOTHES, STRAY_SKELETON_OVERLAY);
         });
     }
 
@@ -57,7 +57,7 @@ public class SkeleponyRenderer<T extends AbstractSkeletonEntity, S extends Skele
                 return new BoggedState();
             }
         }, ctx -> {
-            return new ClothingFeature<>(ctx, ModelType.SKELETON_CLOTHES, BOGGED_SKELETON_OVERLAY);
+            return new ClothingFeature<BoggedState, SkeleponyModel<BoggedState>>(ctx, ModelType.SKELETON_CLOTHES, BOGGED_SKELETON_OVERLAY);
         }), BoggedMushroomsFeature::new);
     }
 

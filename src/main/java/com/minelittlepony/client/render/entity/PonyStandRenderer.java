@@ -123,7 +123,7 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
                 FeatureRendererContext<PonyRenderState, EarthPonyModel<PonyRenderState>>,
                 PonyRenderContext<ArmorStandEntity, PonyRenderState, EarthPonyModel<PonyRenderState>> {
         private final EquineRenderManager<ArmorStandEntity, PonyRenderState, EarthPonyModel<PonyRenderState>> manager
-            = new EquineRenderManager<>(this, (state, stack, progress, yaw) -> {}, ModelType.EARTH_PONY.create(false));
+            = new EquineRenderManager<ArmorStandEntity, PonyRenderState, EarthPonyModel<PonyRenderState>>(this, (state, stack, progress, yaw) -> {}, ModelType.EARTH_PONY.create(false));
 
         @Override
         public Pony getEntityPony(ArmorStandEntity entity) {

@@ -5,6 +5,7 @@ import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
+import com.minelittlepony.client.model.entity.IllagerPonyModel;
 import com.minelittlepony.client.model.entity.race.AlicornModel;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
@@ -51,11 +52,11 @@ public class IllagerPonyRenderer<
     }
 
     public static IllagerPonyRenderer<VindicatorEntity, ?, ?> vindicator(EntityRendererFactory.Context context) {
-        return new IllagerPonyRenderer<>(context, (ModelKey<?>)ModelType.ILLAGER, VINDICATOR);
+        return new IllagerPonyRenderer<VindicatorEntity, State, IllagerPonyModel<State>>(context, ModelType.ILLAGER, VINDICATOR);
     }
 
     public static IllagerPonyRenderer<EvokerEntity, ?, ?> evoker(EntityRendererFactory.Context context) {
-        return new IllagerPonyRenderer<>(context, (ModelKey<?>)ModelType.ILLAGER, EVOKER);
+        return new IllagerPonyRenderer<EvokerEntity, State, IllagerPonyModel<State>>(context,ModelType.ILLAGER, EVOKER);
     }
 
     public static class State extends PonyRenderState {
