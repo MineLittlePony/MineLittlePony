@@ -84,7 +84,7 @@ processResources {
 
     filesMatching("fabric.mod.json") {
         expand "version": project.version.toString(),
-                "minecraftVersion": ">=${project.minecraft_version}",
+                "minecraftVersion": project.minecraft_version_range,
                 "loaderVersion": ">=${project.loader_version}",
                 "fabricVersion": ">=${project.fabric_version}",
                 "kirinVersion": ">=${project.kirin_version}",
