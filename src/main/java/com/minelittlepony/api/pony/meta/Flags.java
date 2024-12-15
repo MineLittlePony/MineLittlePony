@@ -17,7 +17,7 @@ public record Flags<T extends Enum<T> & TValue<T>> (
 
     public static <T extends Enum<T> & TValue<T>> Codec<Flags<T>> codec(T def, Codec<T> elementCodec) {
         Codec<Set<T>> setCodec = Codec.list(elementCodec).xmap(elements -> elements.stream().distinct().collect(Collectors.toUnmodifiableSet()), set -> List.copyOf(set));
-        return Codec.xor(setCodec.xmap(elements -> new Flags<>(def, elements, 0), flags -> flags.values()), RecordCodecBuilder.create(i -> i.group(
+        return Codec.xor(setCodec.xmap(elements -> new Flags<>(def, elements, 0), flags -> flags.values()), RecordCodecBuilder.<Flags<T>>create(i -> i.group(
                 elementCodec.fieldOf("def").forGetter(Flags::def),
                 setCodec.fieldOf("values").forGetter(Flags::values),
                 Codec.INT.fieldOf("colorCode").forGetter(Flags::colorCode)

@@ -16,6 +16,7 @@ import net.minecraft.util.math.*;
 import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.model.ModelAttributes.Mode;
+import com.minelittlepony.api.model.Models;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.api.pony.meta.SizePreset;
@@ -125,7 +126,7 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
                 FeatureRendererContext<PonyRenderState, EarthPonyModel<PonyRenderState>>,
                 PonyRenderContext<ArmorStandEntity, PonyRenderState, EarthPonyModel<PonyRenderState>> {
         private final EquineRenderManager<ArmorStandEntity, PonyRenderState, EarthPonyModel<PonyRenderState>> manager
-            = new EquineRenderManager<>(this, (state, stack, progress, yaw) -> {}, ModelType.EARTH_PONY.create(false));
+            = new EquineRenderManager<>(this, (state, stack, progress, yaw) -> {}, ModelType.EARTH_PONY.<EarthPonyModel<PonyRenderState>>create(false));
 
         @Override
         public Pony getEntityPony(ArmorStandEntity entity) {
