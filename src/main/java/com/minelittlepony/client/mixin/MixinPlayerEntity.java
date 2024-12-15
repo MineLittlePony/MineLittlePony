@@ -24,12 +24,11 @@ abstract class MixinPlayerEntity implements RegistrationHandler {
     @ModifyReturnValue(method = "getBaseDimensions(Lnet/minecraft/entity/EntityPose;)Lnet/minecraft/entity/EntityDimensions;",
                       at = @At("RETURN"))
     private EntityDimensions modifyEyeHeight(EntityDimensions dimensions, EntityPose pose) {
-        float factor = syncedPony.getCachedPonyData().size().eyeHeightFactor();
-        return factor == 1 ? dimensions : dimensions.withEyeHeight(dimensions.eyeHeight() * factor);
+        return getSyncedPony().modifyEyeHeight((PlayerEntity)(Object)this, dimensions, pose);
     }
 
     @Inject(method = "tick()V", at = @At("TAIL"))
     private void onTick(CallbackInfo info) {
-        syncedPony.synchronize((PlayerEntity)(Object)this);
+        getSyncedPony().synchronize((PlayerEntity)(Object)this);
     }
 }
