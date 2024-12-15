@@ -1,7 +1,9 @@
 package com.minelittlepony.client.render.entity;
 
 import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
 import net.minecraft.entity.mob.*;
+import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.MineLittlePony;
@@ -34,6 +36,25 @@ public class PonyPiglinRenderer extends PonyRenderer<HostileEntity, PonyPiglinRe
     @Override
     public State createRenderState() {
         return new State();
+    }
+
+    @Override
+    public ArmPose getArmPose(ArmPose initial, HostileEntity entity, Arm arm) {
+        if (entity instanceof AbstractPiglinEntity piglin) {
+            return switch (arm) {
+                case LEFT -> switch (piglin.getActivity()) {
+                    case CROSSBOW_HOLD -> ArmPose.CROSSBOW_HOLD;
+                    case CROSSBOW_CHARGE -> ArmPose.CROSSBOW_CHARGE;
+                    default -> ArmPose.EMPTY;
+                };
+                case RIGHT -> switch (piglin.getActivity()) {
+                    case ADMIRING_ITEM -> ArmPose.ITEM;
+                    default -> ArmPose.EMPTY;
+                };
+            };
+        }
+
+        return initial;
     }
 
     public void updateRenderState(HostileEntity entity, State state, float tickDelta) {

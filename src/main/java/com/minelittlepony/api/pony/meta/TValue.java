@@ -1,12 +1,14 @@
 package com.minelittlepony.api.pony.meta;
 
+import net.minecraft.util.StringIdentifiable;
+
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * Interface for enums that can be parsed from an image trigger pixel value.
  */
-public interface TValue<T> {
+public interface TValue<T> extends StringIdentifiable {
     /**
      * Gets the pixel colour matching this enum value.
      */
@@ -23,6 +25,11 @@ public interface TValue<T> {
      * Gets a string representation of this value.
      */
     String name();
+
+    @Override
+    default String asString() {
+        return name();
+    }
 
     default String getHexValue() {
         return toHex(colorCode());

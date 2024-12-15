@@ -65,11 +65,6 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
         return side == Arm.LEFT ? leftLeg : rightLeg;
     }
 
-    @Override
-    public ArmPose getArmPose(PlayerEntityRenderState state, Arm side) {
-        return super.getArmPose(state, side);
-    }
-
     static void resetPivot(ModelPart part) {
         part.setPivot(part.getDefaultTransform().pivotX(), part.getDefaultTransform().pivotY(), part.getDefaultTransform().pivotZ());
     }

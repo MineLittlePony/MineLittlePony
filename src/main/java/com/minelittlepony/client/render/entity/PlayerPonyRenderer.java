@@ -15,6 +15,7 @@ import java.util.*;
 
 import com.minelittlepony.client.render.EquineRenderManager;
 
+import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -37,10 +38,12 @@ public class PlayerPonyRenderer
     protected final EquineRenderManager<AbstractClientPlayerEntity, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> manager;
 
     private ModelAttributes.Mode mode = ModelAttributes.Mode.THIRD_PERSON;
+    protected final ItemModelManager itemModelManager;
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public PlayerPonyRenderer(EntityRendererFactory.Context context, boolean slim) {
         super(context, slim);
+        itemModelManager = context.getItemModelManager();
         manager = new EquineRenderManager<>(this, super::setupTransforms, race -> ModelType.getPlayerModel(race).create(slim));
 
         // remove vanilla features (keep modded ones)
@@ -54,10 +57,10 @@ public class PlayerPonyRenderer
                     || feature instanceof ShoulderParrotFeatureRenderer;
         });
         addPonyFeature(new ArmourFeature<>(this, context.getEquipmentModelLoader()));
-        addPonyFeature(new HeldItemFeature<>(this, context.getItemRenderer()));
+        addPonyFeature(new HeldItemFeature<>(this));
         addPonyFeature(new DJPon3Feature<>(this));
-        addFeature(new CapeFeature(this, context.getModelLoader(), context.getEquipmentModelLoader()));
-        addPonyFeature(new SkullFeature<>(this, context.getModelLoader(), context.getItemRenderer(), HeadFeatureRenderer.HeadTransformation.DEFAULT, true));
+        addFeature(new CapeFeature(this, context.getEntityModels(), context.getEquipmentModelLoader()));
+        addPonyFeature(new SkullFeature<>(this, context.getItemModelManager(), HeadFeatureRenderer.HeadTransformation.DEFAULT, true));
         addPonyFeature(new ElytraFeature(this, context.getEquipmentRenderer()));
         addPonyFeature(new PassengerFeature<>(this, context));
         addPonyFeature(new GearFeature<>(this));
@@ -86,7 +89,7 @@ public class PlayerPonyRenderer
     @Override
     public void updateRenderState(AbstractClientPlayerEntity entity, PlayerEntityRenderState state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
-        manager.updateState(entity, (PlayerPonyRenderState)state, mode);
+        manager.updateState(entity, (PlayerPonyRenderState)state, mode, itemModelManager);
     }
 
     public final PlayerPonyRenderState getAndUpdateRenderState(AbstractClientPlayerEntity entity, float tickDelta, ModelAttributes.Mode mode) {
@@ -120,7 +123,7 @@ public class PlayerPonyRenderer
         matrices.push();
         if (state.isInPose(EntityPose.SLEEPING)) {
             if (state.sleepingDirection != null && ((PlayerPonyRenderState)state).sleepingInBed) {
-                double bedRad = Math.toRadians(state.sleepingDirection.asRotation());
+                double bedRad = Math.toRadians(state.sleepingDirection.getPositiveHorizontalDegrees());
 
                 matrices.translate(Math.cos(bedRad), 0, -Math.sin(bedRad));
             }

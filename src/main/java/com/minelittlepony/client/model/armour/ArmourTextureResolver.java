@@ -1,10 +1,8 @@
 package com.minelittlepony.client.model.armour;
 
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.CustomModelDataComponent;
+import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.item.*;
-import net.minecraft.item.equipment.EquipmentModel;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.util.Identifier;
@@ -38,14 +36,7 @@ public class ArmourTextureResolver implements ArmourTextureLookup, IdentifiableR
 
     private final LoadingCache<ArmourParameters, ArmourTexture> layerCache = CacheBuilder.newBuilder()
             .expireAfterAccess(30, TimeUnit.SECONDS)
-            .build(CacheLoader.from(parameters -> {
-                return Stream.of(ArmourTexture.legacy(parameters.textureId())).flatMap(i -> {
-                    if (parameters.customModelId() != 0) {
-                        return Stream.of(ArmourTexture.legacy(i.texture().withPath(p -> p.replace(".png", parameters.customModelId() + ".png"))), i);
-                    }
-                    return Stream.of(i);
-                }).flatMap(this::performLookup).findFirst().orElse(ArmourTexture.UNKNOWN);
-            }));
+            .build(CacheLoader.from(parameters -> Stream.of(ArmourTexture.legacy(parameters.textureId())).flatMap(this::performLookup).findFirst().orElse(ArmourTexture.UNKNOWN)));
 
     private Stream<ArmourTexture> performLookup(ArmourTexture id) {
         List<ArmourTexture> options = Stream.of(id).flatMap(ArmourTexture::ponify).toList();
@@ -78,14 +69,10 @@ public class ArmourTextureResolver implements ArmourTextureLookup, IdentifiableR
     @Override
     public ArmourTexture getTexture(ItemStack stack, EquipmentModel.LayerType layerType, EquipmentModel.Layer layer) {
         layerCache.invalidateAll();
-        return layerCache.getUnchecked(new ArmourParameters(layer, layerType, getCustom(stack)));
+        return layerCache.getUnchecked(new ArmourParameters(layer, layerType));
     }
 
-    private int getCustom(ItemStack stack) {
-        return stack.getOrDefault(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelDataComponent.DEFAULT).value();
-    }
-
-    private record ArmourParameters(EquipmentModel.Layer layer, EquipmentModel.LayerType layerType, int customModelId) {
+    private record ArmourParameters(EquipmentModel.Layer layer, EquipmentModel.LayerType layerType) {
         public Identifier textureId() {
             return layer.getFullTextureId(layerType);
         }

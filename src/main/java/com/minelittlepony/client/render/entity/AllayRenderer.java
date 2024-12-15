@@ -23,7 +23,7 @@ public class AllayRenderer extends MobEntityRenderer<AllayEntity, AllayRenderer.
 
     public AllayRenderer(EntityRendererFactory.Context context) {
         super(context, ModelType.ALLAY.createModel(), 0.4f);
-        addFeature(new HeldItemFeatureRenderer<State, BreezieModel>(this, context.getItemRenderer()));
+        addFeature(new HeldItemFeatureRenderer<State, BreezieModel>(this));
     }
 
     @Override

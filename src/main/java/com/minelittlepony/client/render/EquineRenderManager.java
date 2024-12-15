@@ -21,11 +21,16 @@ import java.util.function.Supplier;
 
 import net.fabricmc.api.EnvType;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ModelTransformationMode;
+import net.minecraft.util.Arm;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -87,11 +92,30 @@ public class EquineRenderManager<
         return DebugBoundingBoxRenderer.applyScale(scale, box);
     }
 
-    public void updateState(T entity, S state, ModelAttributes.Mode mode) {
+    public void updateState(T entity, S state, ModelAttributes.Mode mode, ItemModelManager modelManager) {
         Pony pony = context.getEntityPony(entity);
         models = modelsLookup.apply(pony.race());
         context.setModel(models.body());
         state.updateState(entity, models.body(), pony, mode);
+        if (PonyConfig.getInstance().tpsmagic.get() && state.hasMagicGlow()) {
+            modelManager.updateForLivingEntity(
+                state.glintlessRightHandItemState, getWithoutGlint(entity.getStackInArm(Arm.RIGHT)), ModelTransformationMode.THIRD_PERSON_RIGHT_HAND, false, entity
+            );
+            modelManager.updateForLivingEntity(
+                state.glintlessLeftHandItemState, getWithoutGlint(entity.getStackInArm(Arm.LEFT)), ModelTransformationMode.THIRD_PERSON_LEFT_HAND, true, entity
+            );
+        } else {
+            state.glintlessRightHandItemState.clear();
+            state.glintlessLeftHandItemState.clear();
+        }
+    }
+
+    private static ItemStack getWithoutGlint(ItemStack stack) {
+        if (!stack.isEmpty()) {
+            stack = stack.copy();
+            stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
+        }
+        return stack;
     }
 
     public void setupTransforms(S state, MatrixStack stack, float animationProgress, float bodyYaw) {

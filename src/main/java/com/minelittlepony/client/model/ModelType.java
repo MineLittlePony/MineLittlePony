@@ -36,10 +36,10 @@ public final class ModelType {
     public static final ModelKey<WitchPonyModel> WITCH = register("witch", WitchPonyModel::new);
     public static final ModelKey<ZomponyModel<?>> ZOMBIE = register("zombie", ZomponyModel::new);
     public static final ModelKey<PiglinPonyModel> PIGLIN = register("piglin", PiglinPonyModel::new);
-    public static final ModelKey<SkeleponyModel<?>> SKELETON = register("skeleton", SkeleponyModel::new);
+    public static final ModelKey<AlicornModel<?>> SKELETON = register("skeleton", tree -> new AlicornModel<>(tree, false));
     public static final ModelKey<SinglePartModel> BOGGED_MUSHROOMS = register("bogged_mushrooms", tree -> new SinglePartModel(tree, RenderLayer::getEntityTranslucent));
-    public static final ModelKey<SkeleponyModel<?>> SKELETON_CLOTHES = register("skeleton_clothes", SkeleponyModel::new);
-    public static final ModelKey<PillagerPonyModel> PILLAGER = register("pillager", PillagerPonyModel::new);
+    public static final ModelKey<AlicornModel<?>> SKELETON_CLOTHES = register("skeleton_clothes", tree -> new AlicornModel<>(tree, false));
+    public static final ModelKey<ChangelingModel<?>> PILLAGER = register("pillager", tree -> new ChangelingModel<>(tree, false));
     public static final ModelKey<IllagerPonyModel<?>> ILLAGER = register("illager", IllagerPonyModel::new);
     public static final ModelKey<SeaponyModel<?>> GUARDIAN = register("guardian", SeaponyModel::new);
     public static final ModelKey<EnderStallionModel> ENDERMAN = register("enderman", EnderStallionModel::new);

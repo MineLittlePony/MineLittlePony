@@ -20,9 +20,7 @@ public final class ResourceUtil {
     }
 
     public static boolean textureExists(Identifier texture) {
-        return
-            MinecraftClient.getInstance().getTextureManager().getOrDefault(texture, null) != null
-            || MinecraftClient.getInstance().getResourceManager().getResource(texture).isPresent();
+        return MinecraftClient.getInstance().getResourceManager().getResource(texture).isPresent();
     }
 
     public static Optional<Identifier> verifyTexture(Identifier texture) {

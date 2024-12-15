@@ -6,6 +6,7 @@ import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.race.AlicornModel;
+import com.minelittlepony.client.model.entity.race.ChangelingModel;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.ModelKey;
@@ -15,10 +16,11 @@ import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.*;
+import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
 
 public class IllagerPonyRenderer<
@@ -41,13 +43,35 @@ public class IllagerPonyRenderer<
         return (S)new State();
     }
 
-    @Override
-    protected HeldItemFeature<S, M> createHeldItemFeature(EntityRendererFactory.Context context) {
-        return new IllagerHeldItemFeature<>(this, context.getItemRenderer());
+    static ArmPose getHoldingPose(IllagerEntity.State state) {
+        switch (state) {
+            case BOW_AND_ARROW: return ArmPose.BOW_AND_ARROW;
+            case CROSSBOW_CHARGE: return ArmPose.CROSSBOW_CHARGE;
+            case CROSSBOW_HOLD: return ArmPose.CROSSBOW_HOLD;
+            default: return ArmPose.EMPTY;
+        }
     }
 
-    public static IllagerPonyRenderer<PillagerEntity, ?, ?> pillager(EntityRendererFactory.Context context) {
-        return new IllagerPonyRenderer<>(context, ModelType.PILLAGER, PILLAGER);
+    @Override
+    protected HeldItemFeature<S, M> createHeldItemFeature(EntityRendererFactory.Context context) {
+        return new IllagerHeldItemFeature<>(this);
+    }
+
+    public static IllagerPonyRenderer<PillagerEntity, State, ChangelingModel<State>> pillager(EntityRendererFactory.Context context) {
+        return new IllagerPonyRenderer<PillagerEntity, State, ChangelingModel<State>>(context, ModelType.PILLAGER, PILLAGER) {
+            @Override
+            public ArmPose getArmPose(ArmPose initial, PillagerEntity state, Arm arm) {
+                ArmPose holdingPose = getHoldingPose(state.getState());
+
+                if (holdingPose != ArmPose.EMPTY) {
+                    boolean isMain = state.getMainArm() == Arm.RIGHT;
+
+                    return isMain ? holdingPose : ArmPose.EMPTY;
+                }
+
+                return initial;
+            }
+        };
     }
 
     public static IllagerPonyRenderer<VindicatorEntity, ?, ?> vindicator(EntityRendererFactory.Context context) {
@@ -73,8 +97,8 @@ public class IllagerPonyRenderer<
         M extends AlicornModel<S>
     > extends HeldItemFeature<S, M> {
 
-        public IllagerHeldItemFeature(PonyRenderContext<T, S, M> livingPony, ItemRenderer renderer) {
-            super(livingPony, renderer);
+        public IllagerHeldItemFeature(PonyRenderContext<T, S, M> livingPony) {
+            super(livingPony);
         }
 
         @Override

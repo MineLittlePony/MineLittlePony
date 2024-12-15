@@ -1,14 +1,21 @@
 package com.minelittlepony.client.render.entity.state;
 
 import net.minecraft.block.BedBlock;
+import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
+import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.AbstractPiglinEntity;
 import net.minecraft.entity.mob.ZombifiedPiglinEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.consume.UseAction;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.events.PonyModelPrepareCallback;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.model.PonyModel;
@@ -32,6 +39,12 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
 
     public Pony pony = Pony.getManager().getPony(DefaultPonySkinHelper.STEVE);
     public Race race = Race.HUMAN;
+
+    public final HeldItemRenderState leftHeldItem = new HeldItemRenderState();
+    public final HeldItemRenderState rightHeldItem = new HeldItemRenderState();
+
+    public final ItemRenderState glintlessRightHandItemState = new ItemRenderState();
+    public final ItemRenderState glintlessLeftHandItemState = new ItemRenderState();
 
     public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
         this.pony = pony;
@@ -57,6 +70,9 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
                  || entity instanceof ZombifiedPiglinEntity
              ) && entity.hasCustomName() && entity.getCustomName().getString().equalsIgnoreCase("technoblade")
          );
+
+        leftHeldItem.update(entity.getStackInArm(Arm.LEFT));
+        rightHeldItem.update(entity.getStackInArm(Arm.RIGHT));
 
         // Adjust cape angles
         // capePitch
@@ -129,5 +145,19 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
     @Override
     public ModelAttributes getAttributes() {
         return attributes;
+    }
+
+    public HeldItemRenderState getHeldItem(Arm arm) {
+        return arm == Arm.LEFT ? leftHeldItem : rightHeldItem;
+    }
+
+    public static class HeldItemRenderState {
+        public UseAction action = UseAction.NONE;
+        public boolean forwardFacing;
+
+        private void update(ItemStack stack) {
+            action = stack.getUseAction();
+            forwardFacing = PonyConfig.getInstance().forwardHoldingItems.get().contains(Registries.ITEM.getId(stack.getItem()));
+        }
     }
 }

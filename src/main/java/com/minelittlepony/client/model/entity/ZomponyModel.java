@@ -5,6 +5,7 @@ import com.minelittlepony.client.model.entity.race.AlicornModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.util.Arm;
 
 public class ZomponyModel<T extends PonyRenderState> extends AlicornModel<T> {
     public ZomponyModel(ModelPart tree) {
@@ -20,6 +21,6 @@ public class ZomponyModel<T extends PonyRenderState> extends AlicornModel<T> {
     }
 
     protected boolean shouldLiftBothArms(T state) {
-        return getArmPose(state, state.mainArm) == ArmPose.EMPTY;
+        return (state.mainArm == Arm.LEFT ? state.leftArmPose : state.rightArmPose) == ArmPose.EMPTY;
     }
 }

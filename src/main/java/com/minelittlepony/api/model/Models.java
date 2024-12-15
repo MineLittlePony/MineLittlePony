@@ -1,7 +1,7 @@
 package com.minelittlepony.api.model;
 
+import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.equipment.EquipmentModel;
 import net.minecraft.util.Util;
 
 import org.jetbrains.annotations.Nullable;

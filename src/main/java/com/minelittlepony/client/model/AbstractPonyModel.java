@@ -116,12 +116,9 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
         rotateLegs(entity);
 
-        ArmPose left = getArmPose(entity, Arm.LEFT);
-        ArmPose right = getArmPose(entity, Arm.RIGHT);
-
         if (!entity.attributes.isSwimming && !entity.attributes.isGoingFast) {
-            alignArmForAction(entity, getArm(Arm.LEFT), left, right, 1);
-            alignArmForAction(entity, getArm(Arm.RIGHT), right, left, -1);
+            alignArmForAction(entity, getArm(Arm.LEFT), entity.leftArmPose, entity.rightArmPose, 1);
+            alignArmForAction(entity, getArm(Arm.RIGHT), entity.rightArmPose, entity.leftArmPose, -1);
         }
         swingItem(entity);
 
@@ -133,7 +130,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             adjustBody(entity, 0, ORIGIN);
 
             if (!entity.attributes.isLyingDown) {
-                animateBreathing(entity, left, right);
+                animateBreathing(entity);
             }
 
             if (entity.attributes.isSwimmingRotated) {
@@ -454,17 +451,17 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
      * @param animationProgress       Total whole and partial ticks since the entity's existence.
      *                    Used in animations together with {@code swing} and {@code move}.
      */
-    protected void animateBreathing(T state, ArmPose left, ArmPose right) {
+    protected void animateBreathing(T state) {
         float cos = MathHelper.cos(state.age * 0.09F) * 0.05F + 0.05F;
         float sin = MathHelper.sin(state.age * 0.067F) * 0.05F;
 
-        if (state.attributes.shouldLiftArm(right, left, -1)) {
+        if (state.attributes.shouldLiftArm(state.rightArmPose, state.leftArmPose, -1)) {
             ModelPart arm = getArm(Arm.RIGHT);
             arm.roll += cos;
             arm.pitch += sin;
         }
 
-        if (state.attributes.shouldLiftArm(left, right, 1)) {
+        if (state.attributes.shouldLiftArm(state.leftArmPose, state.rightArmPose, 1)) {
             ModelPart arm = getArm(Arm.LEFT);
             arm.roll += cos;
             arm.pitch += sin;
@@ -499,7 +496,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     public void positionheldItem(T state, Arm arm, MatrixStack matrices) {
         float left = arm == Arm.LEFT ? -1 : 1;
 
-        UseAction action = state.attributes.heldStack.getUseAction();
+        UseAction action = state.getHeldItem(arm).action;
 
         if (action == UseAction.SPYGLASS && state.attributes.itemUseTime > 0) {
             return;
@@ -507,7 +504,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
         matrices.translate(-left * 0.1F, 0.45F, 0);
 
-        if (state.attributes.heldStack.getUseAction() == UseAction.BLOCK && state.attributes.itemUseTime == 0) {
+        if (action == UseAction.BLOCK && state.attributes.itemUseTime == 0) {
             matrices.translate(left * 0.02F, -0.25F, 0);
         }
     }

@@ -130,6 +130,7 @@ public class ModelAttributes {
 
     public Arm mainArm;
     public Hand activeHand;
+    @Deprecated
     public ItemStack heldStack = ItemStack.EMPTY;
     public int itemUseTime;
 

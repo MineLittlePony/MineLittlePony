@@ -51,11 +51,8 @@ public class BreezieModel extends BipedEntityModel<AllayRenderer.State> {
             rotateLegRiding(rightLeg, 1);
         }
 
-        ArmPose left = getArmPose(state, Arm.LEFT);
-        ArmPose right = getArmPose(state, Arm.RIGHT);
-
-        rotateArm(leftArm, left, 1);
-        rotateArm(rightArm, right, 1);
+        rotateArm(leftArm, state.leftArmPose, 1);
+        rotateArm(rightArm, state.rightArmPose, 1);
 
         if (state.handSwingProgress > 0) {
             swingArms(state, state.preferredArm);
@@ -80,9 +77,9 @@ public class BreezieModel extends BipedEntityModel<AllayRenderer.State> {
         rightWing.yaw = -rotX * 10;
         rightWing.pitch = rotZ;
 
-        if (right == ArmPose.BOW_AND_ARROW) {
+        if (state.rightArmPose == ArmPose.BOW_AND_ARROW) {
             raiseArm(rightArm, leftArm, -1);
-        } else if (left == ArmPose.BOW_AND_ARROW) {
+        } else if (state.leftArmPose == ArmPose.BOW_AND_ARROW) {
             raiseArm(leftArm, rightArm, 1);
         }
     }

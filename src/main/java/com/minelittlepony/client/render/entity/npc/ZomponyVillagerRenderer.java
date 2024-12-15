@@ -3,6 +3,7 @@ package com.minelittlepony.client.render.entity.npc;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
 import net.minecraft.entity.mob.ZombieVillagerEntity;
+import net.minecraft.util.Arm;
 
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.client.VariatedTextureSupplier;
@@ -39,7 +40,7 @@ public class ZomponyVillagerRenderer extends AbstractNpcRenderer<ZombieVillagerE
     @Override
     protected void initializeModel(ClientPonyModel<SillyPonyTextureSupplier.State> model) {
         model.onSetModelAngles((m, state) -> {
-            if (m.getArmPose(state, state.mainArm) == ArmPose.EMPTY) {
+            if ((state.mainArm == Arm.LEFT ? state.leftArmPose : state.rightArmPose) == ArmPose.EMPTY) {
                 MobPosingHelper.rotateUndeadArms(state, m, state.limbFrequency, state.age);
             }
         });

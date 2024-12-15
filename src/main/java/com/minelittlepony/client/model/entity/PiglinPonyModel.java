@@ -1,9 +1,7 @@
 package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.entity.mob.PiglinActivity;
-import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.render.entity.PonyPiglinRenderer;
@@ -17,25 +15,6 @@ public class PiglinPonyModel extends ZomponyModel<PonyPiglinRenderer.State> {
         super(tree);
         leftFlap = tree.getChild("left_flap");
         rightFlap = tree.getChild("right_flap");
-    }
-
-    @Override
-    public ArmPose getArmPose(PlayerEntityRenderState p, Arm arm) {
-        if (p instanceof PonyPiglinRenderer.State state) {
-            return switch (arm) {
-                case LEFT -> switch (state.activity) {
-                    case CROSSBOW_HOLD -> ArmPose.CROSSBOW_HOLD;
-                    case CROSSBOW_CHARGE -> ArmPose.CROSSBOW_CHARGE;
-                    default -> ArmPose.EMPTY;
-                };
-                case RIGHT -> switch (state.activity) {
-                    case ADMIRING_ITEM -> ArmPose.ITEM;
-                    default -> ArmPose.EMPTY;
-                };
-            };
-        }
-
-        return super.getArmPose(p, arm);
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.equipment.EquipmentModelLoader;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
@@ -14,7 +15,6 @@ import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
-import net.minecraft.item.equipment.EquipmentModel;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -61,7 +61,7 @@ public class ArmourFeature<
             EquippableComponent equippableComponent = stack.get(DataComponentTypes.EQUIPPABLE);
 
             if (hasModel(equippableComponent, armorSlot)) {
-                equipmentRenderer.render(armorSlot, layerType, equippableComponent.model().orElseThrow(), entity, models, stack, matrices, vertices, light);
+                equipmentRenderer.render(armorSlot, layerType, equippableComponent.assetId().orElseThrow(), entity, models, stack, matrices, vertices, light);
             }
         }
 
@@ -69,6 +69,6 @@ public class ArmourFeature<
     }
 
     private static boolean hasModel(@Nullable EquippableComponent component, EquipmentSlot slot) {
-        return component != null && component.model().isPresent() && component.slot() == slot;
+        return component != null && component.assetId().isPresent() && component.slot() == slot;
     }
 }

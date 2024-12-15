@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.entity;
 
+import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.*;
@@ -32,6 +33,7 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
     static final Pony PONY = new Pony(Identifier.ofVanilla("null"), () -> Optional.of(PonyData.NULL));
 
     private final PonifiedContext context = new PonifiedContext();
+    private final ItemModelManager itemModelManager;
 
     public static boolean isPonyStand(Entity entity) {
         return entity.hasCustomName() && "Ponita".equals(entity.getCustomName().getString());
@@ -39,10 +41,11 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
 
     public PonyStandRenderer(EntityRendererFactory.Context context) {
         super(context, ModelType.ARMOUR_STAND.createModel(), 0);
+        itemModelManager = context.getItemModelManager();
         addFeature(new PonifiedFeature(this, new ArmourFeature<>(this.context, context.getEquipmentModelLoader())));
-        addFeature(new PonifiedFeature(this, new HeldItemFeature<>(this.context, context.getItemRenderer())));
+        addFeature(new PonifiedFeature(this, new HeldItemFeature<>(this.context)));
         addFeature(new PonifiedFeature(this, new ElytraFeature<>(this.context, context.getEquipmentRenderer())));
-        addFeature(new PonifiedFeature(this, new SkullFeature<>(this.context, context.getModelLoader(), context.getItemRenderer(), HeadFeatureRenderer.HeadTransformation.DEFAULT, false)));
+        addFeature(new PonifiedFeature(this, new SkullFeature<>(this.context, context.getItemModelManager(), HeadFeatureRenderer.HeadTransformation.DEFAULT, false)));
     }
 
     @Override
@@ -57,7 +60,7 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
 
     public void updateRenderState(ArmorStandEntity entity, State state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
-        BipedEntityRenderer.updateBipedRenderState(entity, state.ponyState, tickDelta);
+        BipedEntityRenderer.updateBipedRenderState(entity, state.ponyState, tickDelta, itemModelManager);
         state.yaw = MathHelper.lerpAngleDegrees(tickDelta, entity.prevYaw, entity.getYaw());
         state.marker = entity.isMarker();
         state.small = entity.isSmall();
@@ -79,10 +82,9 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
             state.rightLegRotation = new EulerAngle(-state.rightArmRotation.getPitch(), state.rightArmRotation.getYaw(), state.rightArmRotation.getRoll());
         }
 
-        context.manager.updateState(entity, state.ponyState, Mode.OTHER);
+        context.manager.updateState(entity, state.ponyState, Mode.OTHER, itemModelManager);
         state.ponyState.baby = state.small;
         state.ponyState.attributes.size = state.small ? SizePreset.FOAL : SizePreset.NORMAL;
-        state.ponyState.equippedHeadStack = state.equippedHeadStack;
         state.pitch = MathHelper.RADIANS_PER_DEGREE * entity.getHeadRotation().getPitch();
         state.yawDegrees = MathHelper.RADIANS_PER_DEGREE * entity.getHeadRotation().getYaw();
     }

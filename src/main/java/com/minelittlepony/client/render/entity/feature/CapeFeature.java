@@ -9,13 +9,13 @@ import com.minelittlepony.common.util.render.RenderLayerUtil;
 
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.equipment.EquipmentModelLoader;
 import net.minecraft.client.render.entity.feature.CapeFeatureRenderer;
-import net.minecraft.client.render.entity.model.EntityModelLoader;
+import net.minecraft.client.render.entity.model.LoadedEntityModels;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.equipment.EquipmentModel;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 
@@ -23,7 +23,7 @@ public class CapeFeature extends CapeFeatureRenderer {
 
     private final PonyRenderContext<?, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> context;
 
-    public CapeFeature(PonyRenderContext<?, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> context, EntityModelLoader modelLoader, EquipmentModelLoader equipmentModelLoader) {
+    public CapeFeature(PonyRenderContext<?, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> context, LoadedEntityModels modelLoader, EquipmentModelLoader equipmentModelLoader) {
         super(context.upcast(), modelLoader, equipmentModelLoader);
         this.context = context;
     }

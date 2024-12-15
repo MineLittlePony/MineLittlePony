@@ -1,10 +1,9 @@
 package com.minelittlepony.client;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.resource.metadata.ResourceMetadataReader;
+import net.minecraft.resource.metadata.ResourceMetadataSerializer;
 import net.minecraft.util.Identifier;
 
-import com.google.gson.*;
 import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.client.util.render.NativeUtil;
 
@@ -17,21 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class PonyDataLoader {
     public static final Supplier<Optional<PonyData>> NULL = loaded(PonyData.NULL);
-    private static final ResourceMetadataReader<PonyData> SERIALIZER = new ResourceMetadataReader<PonyData>() {
-        private static final Gson GSON = new GsonBuilder()
-                .excludeFieldsWithoutExposeAnnotation()
-                .create();
-
-        @Override
-        public String getKey() {
-            return "pony";
-        }
-
-        @Override
-        public PonyData fromJson(JsonObject json) {
-            return GSON.fromJson(json, PonyData.class);
-        }
-    };
+    private static final ResourceMetadataSerializer<PonyData> SERIALIZER = new ResourceMetadataSerializer<PonyData>("pony", PonyData.CODEC);
 
     /**
      * Parses the given resource into a new IPonyData.

@@ -2,13 +2,27 @@ package com.minelittlepony.api.pony.meta;
 
 import net.minecraft.network.PacketByteBuf;
 
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import java.util.*;
+import java.util.stream.Collectors;
 
 public record Flags<T extends Enum<T> & TValue<T>> (
         T def,
         Set<T> values,
         int colorCode
     ) implements Comparable<Flags<T>>, TValue<T> {
+
+    public static <T extends Enum<T> & TValue<T>> Codec<Flags<T>> codec(T def, Codec<T> elementCodec) {
+        Codec<Set<T>> setCodec = Codec.list(elementCodec).xmap(elements -> elements.stream().distinct().collect(Collectors.toUnmodifiableSet()), set -> List.copyOf(set));
+        return Codec.xor(setCodec.xmap(elements -> new Flags<>(def, elements, 0), flags -> flags.values()), RecordCodecBuilder.create(i -> i.group(
+                elementCodec.fieldOf("def").forGetter(Flags::def),
+                setCodec.fieldOf("values").forGetter(Flags::values),
+                Codec.INT.fieldOf("colorCode").forGetter(Flags::colorCode)
+        ).apply(i, Flags::new))).xmap(Either::unwrap, Either::left);
+    }
 
     public static <T extends Enum<T> & TValue<T>> Flags<T> of(T def) {
         return new Flags<>(def, Set.<T>of(), 0);

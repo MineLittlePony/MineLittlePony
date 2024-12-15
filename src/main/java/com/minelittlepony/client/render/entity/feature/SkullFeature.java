@@ -8,32 +8,28 @@ import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import net.minecraft.block.AbstractSkullBlock;
+import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.entity.equipment.EquipmentModel;
+import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
 import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
-import net.minecraft.client.render.entity.model.EntityModelLoader;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.*;
-import net.minecraft.item.equipment.EquipmentModel;
 
 public class SkullFeature<
         S extends PonyRenderState,
         M extends ClientPonyModel<S>
     > extends AbstractPonyFeature<S, M> {
-    private final ItemRenderer itemRenderer;
 
+    protected final ItemModelManager itemModelResolver;
     private final HeadFeatureRenderer.HeadTransformation headTransformation;
 
     private final boolean scaleForChild;
 
-    public SkullFeature(PonyRenderContext<?, S, M> context, EntityModelLoader entityModelLoader, ItemRenderer itemRenderer,
-            HeadFeatureRenderer.HeadTransformation headTransformation, boolean scaleForChild) {
+    public SkullFeature(PonyRenderContext<?, S, M> context, ItemModelManager itemModelResolver, HeadFeatureRenderer.HeadTransformation headTransformation, boolean scaleForChild) {
         super(context);
-        this.itemRenderer = itemRenderer;
+        this.itemModelResolver = itemModelResolver;
         this.headTransformation = headTransformation;
         this.scaleForChild = scaleForChild;
     }
@@ -44,15 +40,23 @@ public class SkullFeature<
 
         for (ItemStack stack : plugin.getArmorStacks(state, EquipmentSlot.HEAD, EquipmentModel.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.SKULL)) {
 
-            BakedModel headModel = state.equippedHeadItemModel;
-
-            if (stack.isEmpty() || headModel == null) {
+            if (stack.isEmpty()) {
                 continue;
             }
 
-            M model = getModelWrapper().body();
-            Item item = stack.getItem();
-            EquippableComponent equipable = stack.get(DataComponentTypes.EQUIPPABLE);
+            boolean isSkull = stack.getItem() instanceof BlockItem b && b.getBlock() instanceof AbstractSkullBlock;
+
+            if (!isSkull) {
+                if (!ArmorFeatureRenderer.hasModel(stack, EquipmentSlot.HEAD)) {
+                    itemModelResolver.update(state.headItemRenderState, stack, ModelTransformationMode.HEAD, false, null, null, 0);
+                } else {
+                    state.headItemRenderState.clear();
+                }
+
+                if (state.headItemRenderState.isEmpty()) {
+                    continue;
+                }
+            }
 
             matrices.push();
 
@@ -62,22 +66,23 @@ public class SkullFeature<
                 matrices.translate(0, 1, 0);
             }
 
+            M model = getModelWrapper().body();
             model.transform(state, BodyPart.HEAD, matrices);
             model.getHead().rotate(matrices);
 
             float f = 1.1F;
             matrices.scale(f, f, f);
 
-            if (item instanceof BlockItem b && b.getBlock() instanceof AbstractSkullBlock) {
+            if (isSkull) {
                 float n = 1.1875F;
                 matrices.scale(n, -n, -n);
                 matrices.translate(0, -0.1F, 0.1F);
                 matrices.translate(-0.5, 0, -0.5);
                 PonySkullRenderer.INSTANCE.renderSkull(matrices, provider, stack, state, state.age, light, true);
-            } else if (equipable != null && equipable.slot() != EquipmentSlot.HEAD) {
+            } else if (!ArmorFeatureRenderer.hasModel(stack, EquipmentSlot.HEAD)) {
                 matrices.translate(0, 0.1F, -0.1F);
                 HeadFeatureRenderer.translate(matrices, headTransformation);
-                itemRenderer.renderItem(stack, ModelTransformationMode.HEAD, false, matrices, provider, light, OverlayTexture.DEFAULT_UV, headModel);
+                state.headItemRenderState.render(matrices, provider, light, OverlayTexture.DEFAULT_UV);
             }
 
             matrices.pop();

@@ -26,7 +26,7 @@ public class WitchPonyModel extends EarthPonyModel<WitchRenderer.State> {
             snout.rotate(0, 0, 0);
         }
 
-        if (!entity.getMainHandStack().isEmpty()) {
+        if (!entity.getMainHandItemState().isEmpty()) {
             float rot = (float)(Math.tan(entity.age / 7) + Math.sin(entity.age / 3));
             if (rot > 1) rot = 1;
             if (rot < -1) rot = -1;

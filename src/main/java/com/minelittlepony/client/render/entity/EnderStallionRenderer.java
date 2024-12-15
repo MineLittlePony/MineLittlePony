@@ -11,11 +11,13 @@ import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 import com.minelittlepony.client.render.entity.feature.GlowingEyesFeature.IGlowingRenderer;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.EndermanEntity;
+import net.minecraft.item.ModelTransformationMode;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -29,9 +31,11 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
     private static final Identifier EYES = MineLittlePony.id("textures/entity/enderman/enderman_pony_eyes.png");
 
     private final Random rnd = new Random();
+    private final ItemModelManager itemModelManager;
 
     public EnderStallionRenderer(EntityRendererFactory.Context context) {
         super(context, ModelType.ENDERMAN, TextureSupplier.of(ENDERMAN));
+        itemModelManager = context.getItemModelManager();;
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -40,6 +44,7 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
         addPonyFeature(createHeldItemFeature(context));
         addPonyFeature(new StuckArrowsFeatureRenderer<EnderStallionModel>((PonyRenderer)this, context));
         addPonyFeature(new GlowingEyesFeature<EnderStallionRenderer.State, EnderStallionModel>(this));
+
     }
 
     @Override
@@ -58,10 +63,13 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
 
         if (state.carriedBlock != null) {
             if (state.mainArm == Arm.RIGHT) {
-                state.rightHandStack = state.carriedBlock.getBlock().asItem().getDefaultStack();
+                itemModelManager.updateForLivingEntity(state.rightHandItemState, state.carriedBlock.getBlock().asItem().getDefaultStack(), ModelTransformationMode.THIRD_PERSON_RIGHT_HAND, false, entity);
             } else {
-                state.leftHandStack = state.carriedBlock.getBlock().asItem().getDefaultStack();
+                itemModelManager.updateForLivingEntity(state.leftHandItemState, state.carriedBlock.getBlock().asItem().getDefaultStack(), ModelTransformationMode.THIRD_PERSON_LEFT_HAND, true, entity);
             }
+        } else {
+            state.rightHandItemState.clear();
+            state.leftHandItemState.clear();
         }
         state.attributes.wingsSpread = state.isAttacking;
         state.attributes.wingAngle = MathHelper.sin(state.age) + WingedPonyModel.WINGS_HALF_SPREAD_ANGLE;
@@ -69,7 +77,7 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
 
     @Override
     protected HeldItemFeature<State, EnderStallionModel> createHeldItemFeature(EntityRendererFactory.Context context) {
-        return new HeldItemFeature<State, EnderStallionModel>(this, context.getItemRenderer());
+        return new HeldItemFeature<State, EnderStallionModel>(this);
     }
 
     @Override

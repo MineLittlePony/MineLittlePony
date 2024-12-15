@@ -17,20 +17,16 @@ public class TextureFlattener {
         Preconditions.checkArgument(textures.size() > 0, "Must have at least one image to flatten");
         MinecraftClient.getInstance().getTextureManager().registerTexture(output, new ResourceTexture(output) {
             @Override
-            protected TextureData loadTextureData(ResourceManager resourceManager) {
-                try {
-                    NativeImage image = NativeImage.read(resourceManager.getResourceOrThrow(textures.get(0)).getInputStream());
+            public TextureContents loadContents(ResourceManager resourceManager) throws IOException {
+                NativeImage image = NativeImage.read(resourceManager.getResourceOrThrow(textures.get(0)).getInputStream());
 
-                    for (int i = 1; i < textures.size(); i++) {
-                        try (NativeImage data = NativeImage.read(resourceManager.getResourceOrThrow(textures.get(i)).getInputStream())) {
-                            copyOver(data, image);
-                        }
+                for (int i = 1; i < textures.size(); i++) {
+                    try (NativeImage data = NativeImage.read(resourceManager.getResourceOrThrow(textures.get(i)).getInputStream())) {
+                        copyOver(data, image);
                     }
-
-                    return new TextureData(null, image);
-                } catch (IOException e) {
-                    return new TextureData(e);
                 }
+
+                return new TextureContents(image, null);
             }
         });
     }

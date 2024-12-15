@@ -6,6 +6,8 @@ import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.ComparisonChain;
 import com.minelittlepony.api.pony.meta.*;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.*;
 import java.util.function.Function;
@@ -69,6 +71,20 @@ public record PonyData (
     public static final int DEFAULT_MAGIC_COLOR = 0x4444aa;
     private static final Function<Race, PonyData> OF_RACE = Util.memoize(race -> new PonyData(race, TailLength.FULL, TailShape.STRAIGHT, Gender.MARE, SizePreset.NORMAL, DEFAULT_MAGIC_COLOR, true, 0, Wearable.EMPTY_FLAGS));
     public static final PonyData NULL = OF_RACE.apply(Race.HUMAN);
+
+    public static final Codec<PonyData> CODEC = RecordCodecBuilder.create(i -> {
+        return i.group(
+                Race.CODEC.fieldOf("race").forGetter(PonyData::race),
+                TailLength.CODEC.fieldOf("tailLength").forGetter(PonyData::tailLength),
+                TailShape.CODEC.fieldOf("tailShape").forGetter(PonyData::tailShape),
+                Gender.CODEC.fieldOf("gender").forGetter(PonyData::gender),
+                SizePreset.CODEC.xmap(s -> (Size)s, s -> (SizePreset)s).fieldOf("size").forGetter(PonyData::size),
+                Codec.INT.fieldOf("glowColor").forGetter(PonyData::glowColor),
+                Codec.BOOL.optionalFieldOf("noSkin", false).forGetter(PonyData::noSkin),
+                Codec.INT.optionalFieldOf("priority", 0).forGetter(PonyData::priority),
+                Wearable.FLAGS_CODEC.fieldOf("gear").forGetter(PonyData::gear)
+        ).apply(i, PonyData::new);
+    });
 
     public static PonyData emptyOf(Race race) {
         return OF_RACE.apply(race);

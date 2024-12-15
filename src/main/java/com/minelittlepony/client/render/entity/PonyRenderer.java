@@ -7,7 +7,9 @@ import com.minelittlepony.mson.api.ModelKey;
 
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.util.Arm;
 
 public abstract class PonyRenderer<
         T extends MobEntity,
@@ -29,5 +31,15 @@ public abstract class PonyRenderer<
     protected void addFeatures(EntityRendererFactory.Context context) {
         super.addFeatures(context);
         addFeature(new StuckArrowsFeatureRenderer(this, context));
+    }
+
+    public void updateRenderState(T entity, S state, float tickDelta) {
+        super.updateRenderState(entity, state, tickDelta);
+        state.leftArmPose = getArmPose(state.leftArmPose, entity, Arm.LEFT);
+        state.rightArmPose = getArmPose(state.rightArmPose, entity, Arm.RIGHT);
+    }
+
+    public BipedEntityModel.ArmPose getArmPose(BipedEntityModel.ArmPose initial, T entity, Arm arm) {
+        return initial;
     }
 }

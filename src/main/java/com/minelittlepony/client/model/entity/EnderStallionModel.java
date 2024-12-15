@@ -4,15 +4,15 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.util.math.MatrixStack;
 
 import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.client.model.entity.race.AlicornModel;
 import com.minelittlepony.client.render.entity.EnderStallionRenderer;
 
-public class EnderStallionModel extends SkeleponyModel<EnderStallionRenderer.State> {
-
+public class EnderStallionModel extends AlicornModel<EnderStallionRenderer.State> {
     private final ModelPart leftHorn;
     private final ModelPart rightHorn;
 
     public EnderStallionModel(ModelPart tree) {
-        super(tree);
+        super(tree, false);
         leftHorn = tree.getChild("left_horn");
         rightHorn = tree.getChild("right_horn");
     }

@@ -2,16 +2,16 @@ package com.minelittlepony.client.model.armour;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
-import net.minecraft.client.render.entity.equipment.EquipmentModelLoader;
-import net.minecraft.client.render.entity.equipment.EquipmentRenderer;
+import net.minecraft.client.render.entity.equipment.*;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.equipment.EquipmentModel;
+import net.minecraft.item.equipment.EquipmentAsset;
 import net.minecraft.item.equipment.trim.ArmorTrim;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
@@ -41,7 +41,7 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
     public <S extends PonyRenderState, V extends ClientPonyModel<S>> void render(
             EquipmentSlot equipmentSlot,
             EquipmentModel.LayerType layerType,
-            Identifier modelId,
+            RegistryKey<EquipmentAsset> assetId,
             S entity,
             Models<V> models,
             ItemStack stack,
@@ -49,13 +49,13 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
             VertexConsumerProvider vertexConsumers,
             int light
         ) {
-        render(equipmentSlot, layerType, modelId, entity, models, stack, matrices, vertexConsumers, light, null);
+        render(equipmentSlot, layerType, assetId, entity, models, stack, matrices, vertexConsumers, light, null);
     }
 
     public <S extends PonyRenderState, V extends ClientPonyModel<S>> void render(
             EquipmentSlot equipmentSlot,
             EquipmentModel.LayerType layerType,
-            Identifier modelId,
+            RegistryKey<EquipmentAsset> assetId,
             S entity,
             Models<V> models,
             ItemStack stack,
@@ -64,7 +64,7 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
             int light,
             @Nullable Identifier texture
         ) {
-        List<EquipmentModel.Layer> layers = modelLoader.get(modelId).getLayers(layerType);
+        List<EquipmentModel.Layer> layers = modelLoader.get(assetId).getLayers(layerType);
         if (!layers.isEmpty()) {
             ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
             int defaultColor = stack.isIn(ItemTags.DYEABLE) ? DyedColorComponent.getColor(stack, 0) : 0;
@@ -103,7 +103,7 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
                 @Nullable
                 ArmorTrim armorTrim = stack.get(DataComponentTypes.TRIM);
                 @Nullable
-                VertexConsumer trimConsumer = armorTrim != null && plugin.getTrimAlpha(equipmentSlot, armorTrim, layerType) > 0 ? plugin.getTrimConsumer(equipmentSlot, vertices, armorTrim, layerType, modelId) : null;
+                VertexConsumer trimConsumer = armorTrim != null && plugin.getTrimAlpha(equipmentSlot, armorTrim, layerType) > 0 ? plugin.getTrimConsumer(equipmentSlot, vertices, armorTrim, layerType, assetId) : null;
                 if (trimConsumer != null) {
                     for (EntityModel<?> model : drawnModels) {
                         model.render(matrices, trimConsumer, light, OverlayTexture.DEFAULT_UV);

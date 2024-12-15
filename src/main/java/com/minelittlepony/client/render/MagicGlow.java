@@ -6,10 +6,10 @@ import net.minecraft.client.render.RenderPhase;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.*;
+import net.minecraft.util.math.ColorHelper;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.google.common.base.Suppliers;
-import com.minelittlepony.common.util.Color;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -62,9 +62,9 @@ public abstract class MagicGlow extends RenderPhase {
 
         public Colored(Identifier texture, int color) {
             super(texture, TriState.FALSE, false);
-            this.red = Color.r(color);
-            this.green = Color.g(color);
-            this.blue = Color.b(color);
+            this.red = ColorHelper.getRedFloat(color);
+            this.green = ColorHelper.getGreenFloat(color);
+            this.blue = ColorHelper.getBlueFloat(color);
             this.alpha = 0.8F;
         }
 

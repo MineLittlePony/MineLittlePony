@@ -15,6 +15,7 @@ import com.minelittlepony.mson.api.ModelKey;
 import java.util.*;
 import java.util.function.*;
 
+import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
@@ -44,6 +45,8 @@ public abstract class AbstractPonyRenderer<
 
     private final ResourceManager resources;
 
+    protected final ItemModelManager itemModelManager;
+
     private final float scale;
 
     public AbstractPonyRenderer(EntityRendererFactory.Context context, ModelKey<? super M> key, TextureSupplier<T> texture, float scale) {
@@ -52,13 +55,14 @@ public abstract class AbstractPonyRenderer<
         this.texture = texture;
         this.scale = scale;
         resources = context.getResourceManager();
+        itemModelManager = context.getItemModelManager();
         addFeatures(context);
     }
 
     @Override
     public void updateRenderState(T entity, S state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
-        manager.updateState(entity, state, ModelAttributes.Mode.THIRD_PERSON);
+        manager.updateState(entity, state, ModelAttributes.Mode.THIRD_PERSON, itemModelManager);
     }
 
     protected void addFeatures(EntityRendererFactory.Context context) {
@@ -78,11 +82,11 @@ public abstract class AbstractPonyRenderer<
     }
 
     protected SkullFeature<S, M> createSkullFeature(EntityRendererFactory.Context context) {
-        return new SkullFeature<>(this, context.getModelLoader(), context.getItemRenderer(), HeadFeatureRenderer.HeadTransformation.DEFAULT, true);
+        return new SkullFeature<>(this, context.getItemModelManager(), HeadFeatureRenderer.HeadTransformation.DEFAULT, true);
     }
 
     protected HeldItemFeature<S, M> createHeldItemFeature(EntityRendererFactory.Context context) {
-        return new HeldItemFeature<>(this, context.getItemRenderer());
+        return new HeldItemFeature<>(this);
     }
 
     @Override

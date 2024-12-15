@@ -12,7 +12,6 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.consume.UseAction;
-import net.minecraft.registry.Registries;
 import net.minecraft.util.*;
 
 /**
@@ -45,8 +44,7 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> {
     }
 
     public boolean isCasting(T state) {
-        return state instanceof PlayerEntityRenderState s
-                && (getArmPose(s, Arm.LEFT) != ArmPose.EMPTY || getArmPose(s, Arm.RIGHT) != ArmPose.EMPTY);
+        return state instanceof PlayerEntityRenderState && (state.leftArmPose != ArmPose.EMPTY || state.rightArmPose != ArmPose.EMPTY);
     }
 
     @Override
@@ -75,7 +73,7 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> {
     @SuppressWarnings("deprecation")
     @Override
     public ModelPart getArm(Arm side) {
-        if (currentState != null && currentState.hasMagicGlow() && getArmPose(currentState, side) != ArmPose.EMPTY && PonyConfig.getInstance().tpsmagic.get()) {
+        if (currentState != null && currentState.hasMagicGlow() && (side == Arm.LEFT ? currentState.leftArmPose : currentState.rightArmPose) != ArmPose.EMPTY && PonyConfig.getInstance().tpsmagic.get()) {
             return side == Arm.LEFT ? unicornArmLeft : unicornArmRight;
         }
         return super.getArm(side);
@@ -91,7 +89,7 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> {
 
         float left = arm == Arm.LEFT ? -1 : 1;
 
-        UseAction action = state.attributes.heldStack.getUseAction();
+        UseAction action = state.getHeldItem(arm).action;
         if (action == UseAction.SPYGLASS && state.attributes.itemUseTime > 0) {
             return;
         }
@@ -100,7 +98,7 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> {
 
         boolean shouldAimItem =
                 (action == UseAction.BOW) && state.attributes.itemUseTime > 0
-                || PonyConfig.getInstance().forwardHoldingItems.get().contains(Registries.ITEM.getId(state.attributes.heldStack.getItem()));
+                || state.getHeldItem(arm).forwardFacing;
 
         if (shouldAimItem) {
             Arm main = state.attributes.mainArm;

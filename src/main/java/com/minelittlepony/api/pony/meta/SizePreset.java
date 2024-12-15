@@ -1,6 +1,9 @@
 package com.minelittlepony.api.pony.meta;
 
+import net.minecraft.util.StringIdentifiable;
+
 import com.minelittlepony.api.config.PonyConfig;
+import com.mojang.serialization.Codec;
 
 /**
  * Represents the different model sizes that are possible.
@@ -19,6 +22,8 @@ public enum SizePreset implements Size {
     YEARLING(0x53beff, 0.4F,  0.6F,  0.65F),
     FOAL    (0xffbe53, 0.25f, 0.6F,  0.5F),
     UNSET   (0x000000, 1,     1,     1);
+
+    public static final Codec<SizePreset> CODEC = StringIdentifiable.createCodec(SizePreset::values);
 
     private final int triggerValue;
     private final float shadowSize;

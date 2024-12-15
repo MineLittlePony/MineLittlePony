@@ -7,6 +7,7 @@ import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.equipment.EquipmentRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
@@ -17,7 +18,8 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.equipment.EquipmentModel;
+import net.minecraft.item.equipment.EquipmentAsset;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 
@@ -45,8 +47,8 @@ public class ElytraFeature<
         for (ItemStack stack : plugin.getArmorStacks(state, EquipmentSlot.CHEST, EquipmentModel.LayerType.WINGS, ArmourRendererPlugin.ArmourType.ELYTRA)) {
             EquippableComponent equippable = stack.get(DataComponentTypes.EQUIPPABLE);
 
-            if (equippable != null && !equippable.model().isEmpty()) {
-                Identifier equipmentModel = equippable.model().get();
+            if (equippable != null && !equippable.assetId().isEmpty()) {
+                RegistryKey<EquipmentAsset> equipmentModel = equippable.assetId().get();
 
                 float alpha = plugin.getElytraAlpha(stack, model, state);
                 if (alpha <= 0) {

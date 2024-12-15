@@ -3,6 +3,7 @@ package com.minelittlepony.client.model.armour;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.client.render.item.ItemRenderer;
@@ -12,9 +13,11 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.*;
-import net.minecraft.item.equipment.EquipmentModel;
-import net.minecraft.item.equipment.EquipmentModel.LayerType;
+import net.minecraft.item.equipment.EquipmentAsset;
 import net.minecraft.item.equipment.trim.ArmorTrim;
+import net.minecraft.item.equipment.trim.ArmorTrimMaterial;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.*;
 
@@ -22,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 public interface ArmourRendererPlugin {
     AtomicReference<ArmourRendererPlugin> INSTANCE = new AtomicReference<>(new ArmourRendererPlugin() {});
@@ -45,8 +49,10 @@ public interface ArmourRendererPlugin {
             case LEGS -> state.equippedLegsStack;
             case FEET -> state.equippedFeetStack;
             case BODY -> state.equippedChestStack;
-            case MAINHAND -> state.getMainHandStack();
-            case OFFHAND -> state.mainArm == Arm.LEFT ? state.leftHandStack : state.rightHandStack;
+            default -> ItemStack.EMPTY;
+            // TODO: Mojaaaaaaang!!
+            //case MAINHAND -> state.getMainHandStack();
+            //case OFFHAND -> state.mainArm == Arm.LEFT ? state.leftHandStack : state.rightHandStack;
         }};
     }
 
@@ -58,11 +64,11 @@ public interface ArmourRendererPlugin {
         return stack.isIn(ItemTags.DYEABLE) ? DyedColorComponent.getColor(stack, -6265536) : Colors.WHITE;
     }
 
-    default float getArmourAlpha(EquipmentSlot slot, LayerType layer) {
+    default float getArmourAlpha(EquipmentSlot slot, EquipmentModel.LayerType layer) {
         return 1F;
     }
 
-    default float getTrimAlpha(EquipmentSlot slot, ArmorTrim trim, LayerType layer) {
+    default float getTrimAlpha(EquipmentSlot slot, ArmorTrim trim, EquipmentModel.LayerType layer) {
         return 1F;
     }
 
@@ -71,18 +77,29 @@ public interface ArmourRendererPlugin {
     }
 
     @Nullable
-    default VertexConsumer getTrimConsumer(EquipmentSlot slot, VertexConsumerProvider provider, ArmorTrim trim, LayerType layerType, Identifier modelId) {
-        @Nullable VertexConsumer buffer = getOptionalBuffer(provider, getTrimLayer(slot, trim, layerType, modelId));
+    default VertexConsumer getTrimConsumer(EquipmentSlot slot, VertexConsumerProvider provider, ArmorTrim trim, EquipmentModel.LayerType layerType, RegistryKey<EquipmentAsset> assetId) {
+        @Nullable VertexConsumer buffer = getOptionalBuffer(provider, getTrimLayer(slot, trim, layerType, assetId));
         if (buffer == null) {
             return null;
         }
         SpriteAtlasTexture armorTrimsAtlas = MinecraftClient.getInstance().getBakedModelManager().getAtlas(TexturedRenderLayers.ARMOR_TRIMS_ATLAS_TEXTURE);
-        Sprite sprite = armorTrimsAtlas.getSprite(trim.getTexture(layerType, modelId));
+        Sprite sprite = armorTrimsAtlas.getSprite(getTexture(trim, layerType, assetId));
         return sprite.getTextureSpecificVertexConsumer(buffer);
     }
 
+    private static String getAssetName(RegistryEntry<ArmorTrimMaterial> material, RegistryKey<EquipmentAsset> assetKey) {
+        String string = (String)material.value().overrideArmorAssets().get(assetKey);
+        return string != null ? string : material.value().assetName();
+    }
+
+    private static Identifier getTexture(ArmorTrim trim, EquipmentModel.LayerType layerType, RegistryKey<EquipmentAsset> assetId) {
+        Identifier identifier = trim.pattern().value().assetId();
+        String string = getAssetName(trim.material(), assetId);
+        return identifier.withPath((UnaryOperator<String>)(path -> "trims/entity/" + layerType.asString() + "/" + path + "_" + string));
+    }
+
     @Nullable
-    default RenderLayer getTrimLayer(EquipmentSlot slot, ArmorTrim trim, LayerType layerType, Identifier modelId) {
+    default RenderLayer getTrimLayer(EquipmentSlot slot, ArmorTrim trim, EquipmentModel.LayerType layerType, RegistryKey<EquipmentAsset> assetId) {
         return TexturedRenderLayers.getArmorTrims(trim.pattern().value().decal());
     }
 

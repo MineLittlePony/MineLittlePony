@@ -5,7 +5,7 @@ import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.entity.SkeleponyModel;
+import com.minelittlepony.client.model.entity.race.AlicornModel;
 import com.minelittlepony.client.render.entity.feature.ClothingFeature;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
@@ -15,13 +15,16 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.*;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.*;
 
-public class SkeleponyRenderer<T extends AbstractSkeletonEntity, S extends SkeleponyRenderer.State> extends PonyRenderer<T, S, SkeleponyModel<S>> {
+public class SkeleponyRenderer<T extends AbstractSkeletonEntity, S extends SkeleponyRenderer.State> extends PonyRenderer<T, S, AlicornModel<S>> {
     public static final Identifier SKELETON = MineLittlePony.id("textures/entity/skeleton/skeleton_pony.png");
     public static final Identifier WITHER = MineLittlePony.id("textures/entity/skeleton/skeleton_wither_pony.png");
     public static final Identifier STRAY = MineLittlePony.id("textures/entity/skeleton/stray_pony.png");
@@ -38,6 +41,18 @@ public class SkeleponyRenderer<T extends AbstractSkeletonEntity, S extends Skele
     @Override
     public S createRenderState() {
         return (S)new State();
+    }
+
+    @Override
+    public BipedEntityModel.ArmPose getArmPose(BipedEntityModel.ArmPose initial, T entity, Arm arm) {
+        if (arm == entity.getMainArm()) {
+            ItemStack mainHand = entity.getMainHandStack();
+            if (!mainHand.isEmpty()) {
+                return mainHand.getItem() == Items.BOW && entity.isAttacking() ? ArmPose.BOW_AND_ARROW : ArmPose.ITEM;
+            }
+        }
+
+        return initial;
     }
 
     public static SkeleponyRenderer<SkeletonEntity, State> skeleton(EntityRendererFactory.Context context) {
@@ -68,12 +83,12 @@ public class SkeleponyRenderer<T extends AbstractSkeletonEntity, S extends Skele
     public static class BoggedMushroomsFeature<
         T extends AbstractSkeletonEntity,
         S extends SkeleponyRenderer.State
-    > extends FeatureRenderer<BoggedState, SkeleponyModel<BoggedState>> {
+    > extends FeatureRenderer<BoggedState, AlicornModel<BoggedState>> {
         public static final Identifier MUSHROOMS = MineLittlePony.id("textures/entity/skeleton/bogged_pony_mushrooms.png");
 
         private final SinglePartModel model = ModelType.BOGGED_MUSHROOMS.createModel();
 
-        public BoggedMushroomsFeature(LivingEntityRenderer<BoggedEntity, BoggedState, SkeleponyModel<BoggedState>> renderer) {
+        public BoggedMushroomsFeature(LivingEntityRenderer<BoggedEntity, BoggedState, AlicornModel<BoggedState>> renderer) {
             super(renderer);
         }
 

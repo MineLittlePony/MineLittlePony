@@ -1,9 +1,11 @@
 package com.minelittlepony.api.pony.meta;
 
 import net.minecraft.util.Identifier;
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.ColorHelper;
 
 import com.minelittlepony.api.pony.Pony;
+import com.mojang.serialization.Codec;
 
 import java.util.*;
 import java.util.function.Function;
@@ -28,6 +30,9 @@ public enum Wearable implements TValue<Wearable> {
     public static final Map<Identifier, Wearable> REGISTRY = Arrays.stream(values()).collect(Collectors.toMap(Wearable::getId, Function.identity()));
 
     public static final Flags<Wearable> EMPTY_FLAGS = Flags.of(NONE);
+
+    public static final Codec<Wearable> CODEC = StringIdentifiable.createCodec(Wearable::values);
+    public static final Codec<Flags<Wearable>> FLAGS_CODEC = Flags.codec(NONE, CODEC);
 
     Wearable(int pixel, Identifier texture) {
         triggerValue = pixel;

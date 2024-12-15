@@ -1,6 +1,6 @@
 package com.minelittlepony.client.model.armour;
 
-import net.minecraft.item.equipment.EquipmentModel;
+import net.minecraft.client.render.entity.equipment.EquipmentModel;
 
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.ModelType;
