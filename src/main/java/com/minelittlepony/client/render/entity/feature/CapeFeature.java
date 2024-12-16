@@ -17,6 +17,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.equipment.EquipmentModel;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
 public class CapeFeature extends CapeFeatureRenderer {
@@ -54,7 +55,7 @@ public class CapeFeature extends CapeFeatureRenderer {
                     matrices.translate(0, 0.34F, 0);
                     model.transform((PlayerPonyRenderState)player, BodyPart.BODY, matrices);
                     model.body.rotate(matrices);
-                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(85));
+                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(85 - model.body.pitch * MathHelper.DEGREES_PER_RADIAN));
                     if (player.baby) {
                         matrices.scale(1.1F, 1.1F, 1.1F);
                     }
