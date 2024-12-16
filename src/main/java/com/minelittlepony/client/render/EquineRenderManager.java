@@ -67,9 +67,8 @@ public class EquineRenderManager<
         context.setModel(models.body());
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     public EquineRenderManager(PonyRenderContext<T, S, M> context, Transformer<? super S> transformer, ModelKey<? super M> key) {
-        this(context, transformer, new Models(key));
+        this(context, transformer, new Models<>(key));
     }
 
     public void setModelsLookup(Function<Race, Models<M>> modelsLookup) {

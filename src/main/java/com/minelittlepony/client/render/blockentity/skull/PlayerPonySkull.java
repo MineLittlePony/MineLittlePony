@@ -62,7 +62,7 @@ public class PlayerPonySkull implements ISkull {
                 return false;
             }
         }
-        ponyHead = modelCache.computeIfAbsent(ModelType.getPlayerModel(race), key -> key.getKey(false).createModel());
+        ponyHead = modelCache.computeIfAbsent(ModelType.getPlayerModel(race), key -> key.steveKey().createModel());
         state.pony = pony;
         state.race = pony.race();
         state.attributes.size = pony.size();

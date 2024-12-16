@@ -145,6 +145,7 @@ public class ModelAttributes {
         isGoingFast &= zMotion > 0.4F;
         isGoingFast |= entity.isUsingRiptide();
         isGoingFast |= entity.isGliding();
+        isGoingFast &= !entity.isSpectator();
 
         motionLerp = MathUtil.clampLimit(zMotion * 30, 1);
 

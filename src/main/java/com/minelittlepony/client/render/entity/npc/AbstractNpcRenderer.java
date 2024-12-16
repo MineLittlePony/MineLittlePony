@@ -5,6 +5,7 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.*;
 
+import com.minelittlepony.api.model.Models;
 import com.minelittlepony.api.model.gear.Gear;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
@@ -19,13 +20,15 @@ abstract class AbstractNpcRenderer<
     private final NpcClothingFeature<T, S, ClientPonyModel<S>, AbstractNpcRenderer<T, S>> clothing;
 
     public AbstractNpcRenderer(EntityRendererFactory.Context context, String type, TextureSupplier<T> textureSupplier, TextureSupplier<String> formatter) {
-        super(context, ModelType.getPlayerModel(Race.EARTH).getKey(false), SillyPonyTextureSupplier.create(textureSupplier, formatter));
+        super(context, ModelType.getPlayerModel(Race.EARTH).steveKey(), SillyPonyTextureSupplier.create(textureSupplier, formatter));
         clothing = new NpcClothingFeature<>(this, type);
         this.manager.setModelsLookup(race -> {
             if (race.isHuman()) {
                 race = Race.EARTH;
             }
-            return ModelType.getPlayerModel(race).create(false, this::initializeModel);
+            Models<ClientPonyModel<S>> models = ModelType.getPlayerModel(race).steve();
+            initializeModel(models.body());
+            return models;
         });
         addFeature(clothing);
     }

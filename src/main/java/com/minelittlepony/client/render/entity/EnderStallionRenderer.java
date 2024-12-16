@@ -8,7 +8,6 @@ import com.minelittlepony.client.model.entity.EnderStallionModel;
 import com.minelittlepony.client.render.entity.feature.GlowingEyesFeature;
 import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
-import com.minelittlepony.client.render.entity.feature.GlowingEyesFeature.IGlowingRenderer;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.item.ItemModelManager;
@@ -26,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
-public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderStallionRenderer.State, EnderStallionModel> implements IGlowingRenderer {
+public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderStallionRenderer.State, EnderStallionModel> {
     public static final Identifier ENDERMAN = MineLittlePony.id("textures/entity/enderman/enderman_pony.png");
     private static final Identifier EYES = MineLittlePony.id("textures/entity/enderman/enderman_pony_eyes.png");
 
@@ -43,8 +42,7 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
     protected void addFeatures(EntityRendererFactory.Context context) {
         addPonyFeature(createHeldItemFeature(context));
         addPonyFeature(new StuckArrowsFeatureRenderer<EnderStallionModel>((PonyRenderer)this, context));
-        addPonyFeature(new GlowingEyesFeature<EnderStallionRenderer.State, EnderStallionModel>(this));
-
+        addPonyFeature(new GlowingEyesFeature<EnderStallionRenderer.State, EnderStallionModel>(this, EYES));
     }
 
     @Override
@@ -87,11 +85,6 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
         }
 
         super.render(entity, matrices, vertices, light);
-    }
-
-    @Override
-    public Identifier getEyeTexture() {
-        return EYES;
     }
 
     public class State extends SkeleponyRenderer.State {
