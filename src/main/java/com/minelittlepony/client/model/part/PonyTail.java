@@ -92,14 +92,16 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
 
     @Override
     public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
-        stack.push();
-        tail.rotate(stack);
+        if (tail.visible) {
+            stack.push();
+            tail.rotate(stack);
 
-        for (int i = 0; i < segments.size(); i++) {
-            segments.get(i).render(stack, vertices, i, overlay, light, color);
+            for (int i = 0; i < segments.size(); i++) {
+                segments.get(i).render(stack, vertices, i, overlay, light, color);
+            }
+
+            stack.pop();
         }
-
-        stack.pop();
     }
 
     public static class Segment {

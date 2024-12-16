@@ -57,8 +57,8 @@ public class PonyEars implements SubModel<PonyRenderState>, MsonModel {
 
     @Override
     public void setVisible(boolean visible, PonyRenderState state) {
-        right.visible = visible && !state.race.isHuman();
-        left.visible = visible && !state.race.isHuman();
+        right.visible = !state.race.isHuman();
+        left.visible = !state.race.isHuman();
 
         if (state.attributes.isHorsey) {
             left.pivotX = -1;

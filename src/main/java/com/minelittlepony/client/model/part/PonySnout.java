@@ -39,7 +39,7 @@ public class PonySnout implements SubModel<PonyRenderState>, MsonModel {
 
     @Override
     public void setVisible(boolean visible, PonyRenderState state) {
-        visible &= !state.attributes.isHorsey
+        visible = !state.attributes.isHorsey
                 && !state.attributes.metadata.race().isHuman()
                 && PonyConfig.getInstance().snuzzles.get();
         Gender gender = state.attributes.metadata.gender();
