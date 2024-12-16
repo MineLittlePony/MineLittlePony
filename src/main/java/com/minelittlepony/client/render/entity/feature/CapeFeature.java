@@ -52,11 +52,8 @@ public class CapeFeature extends CapeFeatureRenderer {
                     rendered[0] = true;
 
                     matrices.translate(0, 0.34F, 0);
-                    if (((PlayerPonyRenderState)player).getAttributes().isLyingDown) {
-                        matrices.translate(0, -0.05F, 0);
-                    }
                     model.transform((PlayerPonyRenderState)player, BodyPart.BODY, matrices);
-                    model.getBodyPart(BodyPart.BODY).rotate(matrices);
+                    model.body.rotate(matrices);
                     matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(85));
                     if (player.baby) {
                         matrices.scale(1.1F, 1.1F, 1.1F);
