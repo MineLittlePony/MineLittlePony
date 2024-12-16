@@ -6,6 +6,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.model.SubModel;
+import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.mson.api.*;
 import com.minelittlepony.mson.api.model.PartBuilder;
@@ -57,8 +59,9 @@ public class PonyEars implements SubModel, MsonModel {
 
     @Override
     public void setVisible(boolean visible, ModelAttributes attributes) {
-        right.visible = visible && !attributes.metadata.race().isHuman();
-        left.visible = visible && !attributes.metadata.race().isHuman();
+        Race race = PonyConfig.getEffectiveRace(attributes.metadata.race());
+        right.visible = !race.isHuman();
+        left.visible = !race.isHuman();
 
         if (attributes.isHorsey) {
             left.pivotX = -1;

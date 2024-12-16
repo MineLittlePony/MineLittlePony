@@ -39,8 +39,8 @@ public class PonySnout implements SubModel, MsonModel {
 
     @Override
     public void setVisible(boolean visible, ModelAttributes attributes) {
-        visible &= !attributes.isHorsey
-                && !attributes.metadata.race().isHuman()
+        visible = !attributes.isHorsey
+                && !PonyConfig.getEffectiveRace(attributes.metadata.race()).isHuman()
                 && PonyConfig.getInstance().snuzzles.get();
         Gender gender = attributes.metadata.gender();
 
