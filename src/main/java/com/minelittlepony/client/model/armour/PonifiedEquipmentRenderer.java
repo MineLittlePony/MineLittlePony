@@ -82,7 +82,7 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
                         VertexConsumer armorConsumer = getArmorVertexConsumer(plugin, equipmentSlot, vertices, layerTexture, layerType, hasGlint);
                         if (armorConsumer != null) {
                             ArmourVariant variant = layer.usePlayerTexture() ? ArmourVariant.LEGACY : armorTexture.variant();
-                            AbstractPonyModel<?> model = models.getArmourModel(stack, layerType, variant).orElse(null);
+                            AbstractPonyModel<?> model = models.getArmourModel(stack, layerType, variant);
                             if (model != null) {
                                 model.setAngles(entity);
                                 models.body().copyTransforms(model);

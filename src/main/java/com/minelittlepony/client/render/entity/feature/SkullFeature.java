@@ -28,14 +28,11 @@ public class SkullFeature<
 
     private final HeadFeatureRenderer.HeadTransformation headTransformation;
 
-    private final boolean scaleForChild;
-
     public SkullFeature(PonyRenderContext<?, S, M> context, EntityModelLoader entityModelLoader, ItemRenderer itemRenderer,
             HeadFeatureRenderer.HeadTransformation headTransformation, boolean scaleForChild) {
         super(context);
         this.itemRenderer = itemRenderer;
         this.headTransformation = headTransformation;
-        this.scaleForChild = scaleForChild;
     }
 
     @Override

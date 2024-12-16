@@ -4,15 +4,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.EquipmentModel;
 import net.minecraft.util.Util;
 
-import org.jetbrains.annotations.Nullable;
-
 import com.minelittlepony.client.model.AbstractPonyModel;
-import com.minelittlepony.client.model.PlayerModelKey;
 import com.minelittlepony.client.model.armour.*;
 import com.minelittlepony.mson.api.ModelKey;
+import com.minelittlepony.mson.api.MsonModel;
 
-import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -23,20 +19,15 @@ public record Models<M extends PonyModel<?>> (
         M body
     ) {
 
-    public Models(PlayerModelKey<? super M> playerModelKey, boolean slimArms, @Nullable Consumer<M> initializer) {
-        this(Util.memoize(key -> key.createModel(playerModelKey.armorFactory())), playerModelKey.getKey(slimArms).createModel());
-        if (initializer != null) {
-            initializer.accept(body);
-        }
+    public Models(ModelKey<? super M> modelKey, MsonModel.Factory<AbstractPonyModel<?>> armorFactory) {
+        this(Util.memoize(key -> key.createModel(armorFactory)), modelKey.createModel());
     }
 
-    public Models(ModelKey<M> key) {
+    public Models(ModelKey<? super M> key) {
         this(Util.memoize(k -> k.createModel()), key.createModel());
     }
 
-    public Optional<AbstractPonyModel<?>> getArmourModel(ItemStack stack, EquipmentModel.LayerType layerType, ArmourVariant variant) {
-        return ArmorModelRegistry.getModelKey(stack.getItem(), layerType)
-                .or(() -> variant.getDefaultModel(layerType))
-                .map(armor);
+    public AbstractPonyModel<?> getArmourModel(ItemStack stack, EquipmentModel.LayerType layerType, ArmourVariant variant) {
+        return armor.apply(ArmorModelRegistry.getModelKey(stack.getItem(), layerType, variant));
     }
 }

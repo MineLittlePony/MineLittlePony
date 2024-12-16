@@ -23,6 +23,7 @@ public interface MathUtil {
         return value;
     }
 
+    @Deprecated(forRemoval = true)
     static float interpolateDegress(float prev, float current, float partialTicks) {
         float difference = current - prev;
 

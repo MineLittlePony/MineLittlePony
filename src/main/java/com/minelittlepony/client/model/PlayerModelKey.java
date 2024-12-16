@@ -3,8 +3,6 @@ package com.minelittlepony.client.model;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.ModelPart;
 
-import org.jetbrains.annotations.Nullable;
-
 import com.minelittlepony.api.model.Models;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.client.MineLittlePony;
@@ -28,15 +26,15 @@ public record PlayerModelKey<M extends Model & PonyModel<?>> (
         );
     }
 
-    public ModelKey<M> getKey(boolean slimArms) {
-        return slimArms ? alexKey : steveKey;
+    public <N extends M> Models<N>  alex() {
+        return new Models<N>(alexKey, armorFactory);
     }
 
-    public <N extends M> Models<N> create(boolean slimArms) {
-        return create(slimArms, null);
+    public <N extends M> Models<N>  steve() {
+        return new Models<N>(steveKey, armorFactory);
     }
 
-    public <N extends M> Models<N>  create(boolean slimArms, @Nullable Consumer<N> initializer) {
-        return new Models<>(this, slimArms, initializer);
+    public <N extends M> Models<N>  create(boolean slimArms) {
+        return slimArms ? alex() : steve();
     }
 }

@@ -15,7 +15,7 @@ public class TraderRenderer extends PonyRenderer<WanderingTraderEntity, PonyRend
     public static final Identifier TEXTURE = MineLittlePony.id("textures/entity/wandering_trader_pony.png");
 
     public TraderRenderer(EntityRendererFactory.Context context) {
-        super(context, ModelType.ALICORN.getKey(false), TextureSupplier.of(TEXTURE), BASE_MODEL_SCALE);
+        super(context, ModelType.ALICORN.steveKey(), TextureSupplier.of(TEXTURE), BASE_MODEL_SCALE);
     }
 
     @Override
