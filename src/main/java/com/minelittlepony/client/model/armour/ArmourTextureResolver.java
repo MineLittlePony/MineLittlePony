@@ -20,17 +20,22 @@ import java.util.stream.Stream;
 /**
  * The default texture resolver used by Mine Little Pony.
  * <p>
- * Textures found are of the format:
+ * Textures are resolved by taking the original path and replacing "humanoid" with "ponified".
  * <p>
- * namespace:textures/models/armor/material_layer_[outer|1|inner|2](_overlay)(_custom_#)(_pony).png
+ * For example:
+ *
+ * assets/minecraft/textures/entity/equipment/humanoid/iron.png
+ * Becomes: assets/minecraft/textures/entity/equipment/ponified/iron.png
+ *
+ * assets/minecraft/textures/entity/equipment/humanoid_leggings/iron.png
+ * Becomes: assets/minecraft/textures/entity/equipment/ponified_leggings/iron.png
  * <p>
- * <p>
- * - Textures ending _pony are returned first if found
- * - _custom_# corresponds to a CustomModelData NBT integer value on the item passed, if available
- * - _overlay is used for the second layer of leather armour, or mods if they make use of it. Can be anything! Check your mod's documentation for values supported.
- * - outer|1|inner|2 is the layer. outer is an alias for 1 and inner is an alias for 2. Named versions are used instead of numbers if available.
- * - the "minecraft" namespace is always replaced with "minelittlepony"
- * <p>
+ * In addition to the above, unlike in vanilla, all pony armour pieces make use of both the regular and leggings textures to show in two different layers.
+ * In general, the textures are distributed as follows:
+ * Helmet = ponified_leggings
+ * Chestplate = ponified (banner) + ponified_leggings (body plates)
+ * Leggings = ponified_leggings (leg chainmail)
+ * Boots = ponified (knee guards and boots)
  */
 public class ArmourTextureResolver implements ArmourTextureLookup, IdentifiableResourceReloadListener {
     public static final Identifier ID = MineLittlePony.id("armor_textures");
