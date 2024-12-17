@@ -11,6 +11,7 @@ import com.minelittlepony.hdskins.client.*;
 import com.minelittlepony.hdskins.client.gui.GuiSkins;
 import com.minelittlepony.hdskins.client.gui.player.DummyPlayer;
 import com.minelittlepony.hdskins.client.gui.player.skins.PlayerSkins.PlayerSkin;
+import com.minelittlepony.hdskins.client.profile.SkinLoader.ProvidedSkins;
 import com.minelittlepony.hdskins.profile.SkinType;
 
 import com.mojang.authlib.GameProfile;
@@ -75,7 +76,7 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
         });
     }
 
-    static Optional<Pony> getPony(PlayerSkins.Layer layer) {
+    static Optional<Pony> getPony(PlayerSkinLayers.Layer layer) {
         return layer
             .getSkin(SkinType.SKIN)
             .map(Pony.getManager()::getPony);
@@ -103,8 +104,9 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
 
         if (entity instanceof AbstractClientPlayerEntity player) {
             return PlayerSkins.of(player)
-                    .map(PlayerSkins::combined)
-                    .map(PlayerSkins.Layer::getProvidedSkinTypes)
+                    .map(PlayerSkins::layers)
+                    .map(PlayerSkinLayers::combined)
+                    .map(PlayerSkinLayers.Layer::getProvidedSkinTypes)
                     .orElseGet(Set::of);
         }
 
@@ -132,13 +134,16 @@ public class MineLPHDSkins extends SkinsProxy implements ClientModInitializer {
             }
         }
 
-        return Optional.of(player).flatMap(PlayerSkins::of).map(PlayerSkins::combined).flatMap(skins -> skins.getSkin(type));
+        return Optional.of(player).flatMap(PlayerSkins::of)
+                .map(PlayerSkins::layers)
+                .map(PlayerSkinLayers::combined).flatMap(skins -> skins.getSkin(type));
     }
 
     @Override
     public Identifier getSkinTexture(GameProfile profile) {
         return HDSkins.getInstance().getProfileRepository()
-                .getNow(profile)
+                .load(profile)
+                .getNow(ProvidedSkins.EMPTY)
                 .getSkin(SkinType.SKIN)
                 .orElseGet(() -> super.getSkinTexture(profile));
     }
