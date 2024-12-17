@@ -14,6 +14,7 @@
   "minelp.options.skins.hdskins.open": "Open HD Skins",
   "minelp.options.skins.hdskins.disabled": "HD Skins is not installed\n\nThe HD Skins mod is required to upload skins from in-game and to use custom skin servers.\n\nIf you cannot use that you will have to go to www.minecraft.net to upload your skin there.",
   "minelp.options.snuzzles": "Show Snuzzles",
+  "minelp.options.enablefabricmodelsapisupport": "(Experimental) Show Modded Armor",
   "minelp.options.fillycam": "Filly Cam",
   "minelp.options.showscale": "Show-accurate scaling",
   "minelp.options.fpsmagic": "Magic in first-person",

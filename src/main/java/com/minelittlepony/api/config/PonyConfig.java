@@ -77,6 +77,15 @@ public class PonyConfig extends Config {
                 .addComment("Disables certain easter eggs and secrets (party pooper)")
                 .addComment("Turning this off may help with compatibility in some cases");
 
+    public final Setting<Boolean> enableFabricModelsApiSupport = value("settings", "enableFabricModelsApiSupport", false)
+            .addComment("Enables rendering of modded armour registered via the fabric api")
+            .addComment("Note that since any armour registered in this way is designed to work for the human model, pieces may not fit exactly.")
+            .addComment("i.e. Anything that goes on the plyer's backs needs to be rotated by the mod developer when rendered on a pony")
+            .addComment("Developers: To know if you're being rendered on a pony model, check the renderstate or model class with")
+            .addComment(" state instanceof com.minelittlepony.api.model.PonyModel$AttributedHolder or model instanceof com.minelittlepony.api.model.PonyModel")
+            .addComment(" Note that the matrix stack your receieve is pre-transformed for the body part your model is attached to, so if you intend to call model.transform(state, part, matrices)")
+            .addComment(" with a different part (ie BACK) you must pop the stack to revert to the previous first.");
+
     public final Setting<VisibilityMode> horseButton = value("horseButton", VisibilityMode.AUTO)
                 .addComment("Whether to show the mine little pony settings button on the main menu")
                 .addComment("AUTO (default) - only show when HDSkins is not installed")
