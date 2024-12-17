@@ -7,6 +7,7 @@ import com.minelittlepony.util.MathUtil;
 
 import java.util.function.Predicate;
 
+import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
@@ -28,8 +29,8 @@ public class AquaticPlayerPonyRenderer extends FormChangingPlayerPonyRenderer {
 
     class State extends PlayerPonyRenderState {
         @Override
-        public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
-            super.updateState(entity, model, pony, mode);
+        public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
+            super.updateState(resolver, entity, model, pony, mode);
             Identifier skinOverride = getSkinOverride((AbstractClientPlayerEntity)entity);
             yOffset += skinOverride != null ? (0.6 + (isInSneakingPose ? 0.125 : 0)) : 0;
             pose = EntityPose.STANDING;

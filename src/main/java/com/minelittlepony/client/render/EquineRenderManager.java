@@ -90,16 +90,16 @@ public class EquineRenderManager<
         return DebugBoundingBoxRenderer.applyScale(scale, box);
     }
 
-    public void updateState(T entity, S state, ModelAttributes.Mode mode, ItemModelManager modelManager) {
+    public void updateState(T entity, S state, ModelAttributes.Mode mode, ItemModelManager resolver) {
         Pony pony = context.getEntityPony(entity);
         models = modelsLookup.apply(pony.race());
         context.setModel(models.body());
-        state.updateState(entity, models.body(), pony, mode);
+        state.updateState(resolver, entity, models.body(), pony, mode);
         if (PonyConfig.getInstance().tpsmagic.get() && state.hasMagicGlow()) {
-            modelManager.updateForLivingEntity(
+            resolver.updateForLivingEntity(
                 state.glintlessRightHandItemState, getWithoutGlint(entity.getStackInArm(Arm.RIGHT)), ModelTransformationMode.THIRD_PERSON_RIGHT_HAND, false, entity
             );
-            modelManager.updateForLivingEntity(
+            resolver.updateForLivingEntity(
                 state.glintlessLeftHandItemState, getWithoutGlint(entity.getStackInArm(Arm.LEFT)), ModelTransformationMode.THIRD_PERSON_LEFT_HAND, true, entity
             );
         } else {

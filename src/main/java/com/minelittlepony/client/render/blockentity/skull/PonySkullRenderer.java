@@ -7,10 +7,9 @@ import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.client.render.entity.*;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.minelittlepony.client.render.entity.state.PonyRenderState.EquippedHeadRenderState;
 
-import net.minecraft.block.AbstractSkullBlock;
 import net.minecraft.block.SkullBlock;
-import net.minecraft.block.SkullBlock.SkullType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -21,11 +20,8 @@ import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.ColorHelper;
@@ -47,9 +43,6 @@ public class PonySkullRenderer {
     private ISkull selectedSkull;
     private Identifier selectedSkin;
 
-    boolean isBeingWorn;
-    boolean isPony;
-
     public void reload() {
         cache = new Cache();
     }
@@ -70,15 +63,11 @@ public class PonySkullRenderer {
         }
     }
 
-    public void renderSkull(MatrixStack matrices, VertexConsumerProvider provider, ItemStack stack, LivingEntityRenderState entity, float tickDelta, int light, boolean isPony) {
-        isBeingWorn = true;
-        this.isPony = isPony;
-        SkullType type = ((AbstractSkullBlock) ((BlockItem) stack.getItem()).getBlock()).getSkullType();
-        SkullBlockEntityModel skullBlockEntityModel = cache.headModels().apply(type);
-        RenderLayer renderLayer = SkullBlockEntityRenderer.getRenderLayer(type, stack.get(DataComponentTypes.PROFILE));
-        SkullBlockEntityRenderer.renderSkull(null, 180, entity.headItemAnimationProgress, matrices, provider, light, skullBlockEntityModel, renderLayer);
-        isBeingWorn = false;
-        this.isPony = false;
+    public void renderSkull(MatrixStack matrices, VertexConsumerProvider provider, EquippedHeadRenderState headState, LivingEntityRenderState entity, float tickDelta, int light, boolean isPony) {
+        SkullBlockEntityRenderer.renderSkull(null, 180, entity.headItemAnimationProgress, matrices, provider, light,
+                cache.headModels().apply(headState.skullType()),
+                SkullBlockEntityRenderer.getRenderLayer(headState.skullType(), headState.wearingSkullProfile())
+        );
     }
 
     public RenderLayer getSkullRenderLayer(SkullBlock.SkullType skullType, @Nullable ProfileComponent profile) {

@@ -15,6 +15,7 @@ import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.PonyRenderer;
 import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
 
+import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
@@ -86,8 +87,8 @@ public class IllagerPonyRenderer<
     public static class State extends PonyRenderState {
         public IllagerEntity.State state;
 
-        public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
-            super.updateState(entity, model, pony, mode);
+        public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
+            super.updateState(resolver, entity, model, pony, mode);
             state = ((IllagerEntity)entity).getState();
         }
     }

@@ -1,17 +1,26 @@
 package com.minelittlepony.client.render.entity.state;
 
+import net.minecraft.block.AbstractSkullBlock;
 import net.minecraft.block.BedBlock;
+import net.minecraft.block.SkullBlock.SkullType;
+import net.minecraft.client.item.ItemModelManager;
+import net.minecraft.client.render.entity.equipment.EquipmentModel;
+import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.render.item.ItemRenderState;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.*;
 import net.minecraft.entity.mob.AbstractPiglinEntity;
 import net.minecraft.entity.mob.ZombifiedPiglinEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
+
+import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.events.PonyModelPrepareCallback;
@@ -19,7 +28,11 @@ import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.api.pony.meta.*;
+import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.transform.PonyPosture;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PonyRenderState extends PlayerEntityRenderState implements PonyModel.AttributedHolder {
     public final ModelAttributes attributes = new ModelAttributes();
@@ -44,7 +57,9 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
     public final ItemRenderState glintlessRightHandItemState = new ItemRenderState();
     public final ItemRenderState glintlessLeftHandItemState = new ItemRenderState();
 
-    public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
+    public final List<EquippedHeadRenderState> equippedHeads = new ArrayList<>();
+
+    public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
         this.equippedHeadStack = entity.getEquippedStack(EquipmentSlot.HEAD);
         this.pony = pony;
         attributes.updateLivingState(entity, pony, mode);
@@ -78,6 +93,16 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         field_53537 *= 0.3F;
         // capeRoll
         field_53538 *= 3F;
+
+        ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
+
+        equippedHeads.clear();
+        for (ItemStack stack : plugin.getArmorStacks(entity, EquipmentSlot.HEAD, EquipmentModel.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.SKULL)) {
+            EquippedHeadRenderState state = EquippedHeadRenderState.of(resolver, stack, entity);
+            if (!state.isEmpty()) {
+                equippedHeads.add(state);
+            }
+        }
 
         PonyPosture.of(attributes).updateState(entity, this);
         PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(attributes, model, ModelAttributes.Mode.OTHER);
@@ -157,6 +182,37 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         private void update(ItemStack stack) {
             action = stack.getUseAction();
             forwardFacing = PonyConfig.getInstance().forwardHoldingItems.get().contains(Registries.ITEM.getId(stack.getItem()));
+        }
+    }
+
+    public record EquippedHeadRenderState(
+            ItemRenderState item,
+            @Nullable SkullType skullType,
+            @Nullable ProfileComponent wearingSkullProfile) {
+        static final EquippedHeadRenderState EMPTY = new EquippedHeadRenderState(new ItemRenderState(), null, null);
+
+        public static EquippedHeadRenderState of(ItemModelManager resolver, ItemStack stack, LivingEntity entity) {
+            if (stack.isEmpty()) {
+                return EMPTY;
+            }
+
+            if (stack.getItem() instanceof BlockItem b && b.getBlock() instanceof AbstractSkullBlock skullBlock) {
+                return new EquippedHeadRenderState(EMPTY.item(), skullBlock.getSkullType(), stack.get(DataComponentTypes.PROFILE));
+            }
+
+            if (!ArmorFeatureRenderer.hasModel(stack, EquipmentSlot.HEAD)) {
+                ItemRenderState item = new ItemRenderState();
+                resolver.updateForLivingEntity(item, stack, ModelTransformationMode.HEAD, false, entity);
+                if (!item.isEmpty()) {
+                    return new EquippedHeadRenderState(item, null, null);
+                }
+            }
+
+            return EMPTY;
+        }
+
+        public boolean isEmpty() {
+            return item.isEmpty() && skullType == null;
         }
     }
 }

@@ -12,6 +12,7 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.equipment.EquipmentAsset;
 import net.minecraft.item.equipment.trim.ArmorTrim;
@@ -40,6 +41,12 @@ public interface ArmourRendererPlugin {
 
     default void onArmourRendered(LivingEntityRenderState state, MatrixStack matrices, VertexConsumerProvider provider, EquipmentSlot armorSlot, EquipmentModel.LayerType layerType, ArmourType type) {
 
+    }
+
+    default ItemStack[] getArmorStacks(LivingEntity entity, EquipmentSlot armorSlot, EquipmentModel.LayerType layerType, ArmourType type) {
+        return new ItemStack[] {
+            entity.getEquippedStack(armorSlot)
+        };
     }
 
     default ItemStack[] getArmorStacks(BipedEntityRenderState state, EquipmentSlot armorSlot, EquipmentModel.LayerType layerType, ArmourType type) {

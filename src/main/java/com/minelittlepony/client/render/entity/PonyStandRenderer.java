@@ -16,7 +16,6 @@ import net.minecraft.util.math.*;
 import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.model.ModelAttributes.Mode;
-import com.minelittlepony.api.model.Models;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.api.pony.meta.SizePreset;

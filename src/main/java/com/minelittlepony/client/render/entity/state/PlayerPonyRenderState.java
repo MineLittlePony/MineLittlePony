@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.entity.state;
 
+import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.util.SkinTextures;
 import net.minecraft.entity.EntityAttachmentType;
@@ -22,9 +23,9 @@ public class PlayerPonyRenderState extends PonyRenderState {
     public double yOffset;
 
     @Override
-    public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
+    public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
         smallArms = ((AbstractClientPlayerEntity)entity).getSkinTextures().model() == SkinTextures.Model.SLIM;
-        super.updateState(entity, model, pony, mode);
+        super.updateState(resolver, entity, model, pony, mode);
         yOffset = 0;
         if (entity.hasVehicle()) {
             Vec3d attachment = entity.getDimensions(entity.getPose()).attachments().getPointNullable(EntityAttachmentType.VEHICLE, 0, 0);

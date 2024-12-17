@@ -10,6 +10,7 @@ import com.minelittlepony.client.render.entity.feature.ClothingFeature;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
+import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.model.Model.SinglePartModel;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -109,8 +110,8 @@ public class SkeleponyRenderer<T extends AbstractSkeletonEntity, S extends Skele
         public boolean sheared;
 
         @Override
-        public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
-            super.updateState(entity, model, pony, mode);
+        public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
+            super.updateState(resolver, entity, model, pony, mode);
             sheared = entity instanceof BoggedEntity bogged && bogged.isSheared();
         }
     }
@@ -118,8 +119,8 @@ public class SkeleponyRenderer<T extends AbstractSkeletonEntity, S extends Skele
     public static class State extends PonyRenderState {
         public boolean isAttacking;
 
-        public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
-            super.updateState(entity, model, pony, mode);
+        public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
+            super.updateState(resolver, entity, model, pony, mode);
             isAttacking = entity instanceof HostileEntity h && h.isAttacking();
             race = entity.getUuid().getLeastSignificantBits() % 3 == 0 ? Race.EARTH : Race.UNICORN;
         }

@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.entity.npc.textures;
 
+import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.*;
@@ -40,8 +41,8 @@ public class SillyPonyTextureSupplier {
         public boolean hasMuffinHat;
         public boolean hasSaddlebags;
 
-        public void updateState(LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
-            super.updateState(entity, model, pony, mode);
+        public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
+            super.updateState(resolver, entity, model, pony, mode);
             attributes.visualHeight += hasMuffinHat ? 0.3F : -0.1F;
             isDerpy = SillyPonyTextureSupplier.isBestPony(entity);
             isDinky = isDerpy && customName != null && "Dinky".equals(customName.getString());
