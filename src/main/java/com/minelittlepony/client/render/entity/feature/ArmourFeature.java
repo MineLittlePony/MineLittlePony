@@ -8,9 +8,17 @@ import com.minelittlepony.common.util.Color;
 
 import java.util.*;
 
+import com.minelittlepony.api.config.PonyConfig;
+import com.minelittlepony.api.model.*;
+import com.minelittlepony.client.model.ClientPonyModel;
+import com.minelittlepony.client.util.render.MatrixStackUtil;
+
+import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
+import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.model.*;
 import net.minecraft.client.render.model.BakedModelManager;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.EquipmentSlot;
@@ -18,8 +26,16 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.trim.ArmorTrim;
 import net.minecraft.util.Colors;
+import net.minecraft.util.Unit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & PonyModel<T>> extends AbstractPonyFeature<T, M> {
+    private static final Logger LOGGER = LogManager.getLogger("PonifiedEquipmentRenderer");
+
+    private static boolean FABRIC_API_FAILURE;
+
     public ArmourFeature(PonyRenderContext<T, M> context, BakedModelManager bakery) {
         super(context);
     }
@@ -54,6 +70,17 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & Po
         for (ItemStack stack : plugin.getArmorStacks(entity, armorSlot, layer, ArmourRendererPlugin.ArmourType.ARMOUR)) {
             if (stack.isEmpty()) {
                 continue;
+            }
+
+            if (!FABRIC_API_FAILURE && PonyConfig.getInstance().enableFabricModelsApiSupport.get()) {
+                try {
+                    if (FabricArmorRendererInvoker.renderArmor(stack, pony, matrices, provider, light, entity, armorSlot)) {
+                        continue;
+                    }
+                } catch (Throwable t) {
+                    LOGGER.error("Failure calling fabric armor rendering api", t);
+                    FABRIC_API_FAILURE = true;
+                }
             }
 
             float glintAlpha = plugin.getGlintAlpha(armorSlot, stack);
@@ -117,5 +144,44 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & Po
         }
 
         plugin.onArmourRendered(entity, matrices, provider, armorSlot, layer, ArmourRendererPlugin.ArmourType.ARMOUR);
+    }
+
+
+    private static final class FabricArmorRendererInvoker {
+        private static final Map<ArmorRenderer, Unit> FAILING_RENDERERS = new WeakHashMap<>();
+
+        @SuppressWarnings({"rawtypes", "unchecked"})
+        private static <T extends LivingEntity, V extends ClientPonyModel<T>> boolean renderArmor(
+                ItemStack stack,
+                Models<T, ? extends PonyModel<T>> models, MatrixStack matrices,
+                VertexConsumerProvider vertices, int light, T entity,
+                EquipmentSlot armorSlot) {
+            ArmorRenderer renderer = ArmorRendererRegistryImpl.get(stack.getItem());
+
+            if (renderer != null && !FAILING_RENDERERS.containsKey(renderer)) {
+                MatrixStack isolation = MatrixStackUtil.pushIsolation(matrices);
+                try {
+                    isolation.push();
+                    models.body().transform(getBodyPart(armorSlot), isolation);
+                    renderer.render(isolation, vertices, stack, entity, armorSlot, light, (BipedEntityModel)models.body());
+                    isolation.pop();
+                } catch (Throwable t) {
+                    LOGGER.error("Exception occured whilst rendering custom armor via fabric api. Renderer {} has been disabled", renderer, t);
+                    FAILING_RENDERERS.put(renderer, Unit.INSTANCE);
+                } finally {
+                    MatrixStackUtil.popIsolation();
+                }
+                return true;
+            }
+            return false;
+        }
+
+        private static BodyPart getBodyPart(EquipmentSlot slot) {
+            return switch (slot) {
+                case HEAD -> BodyPart.HEAD;
+                case CHEST, BODY -> BodyPart.BODY;
+                case LEGS, FEET, MAINHAND, OFFHAND -> BodyPart.LEGS;
+            };
+        }
     }
 }
