@@ -22,9 +22,8 @@ public class DeerAntlers extends WearableGear {
             dayChecked = true;
             Calendar cal = Calendar.getInstance();
             dayResult = cal.get(Calendar.MONTH) == Calendar.DECEMBER
-                     && cal.get(Calendar.DAY_OF_MONTH) == 25;
+                     && Math.abs(cal.get(Calendar.DAY_OF_MONTH) - 25) < 2;
         }
-
 
         return dayResult;
     }
