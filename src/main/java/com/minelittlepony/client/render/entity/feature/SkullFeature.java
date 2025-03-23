@@ -37,7 +37,7 @@ public class SkullFeature<
             M model = getModelWrapper().body();
 
             model.transform(state, BodyPart.HEAD, matrices);
-            model.getHead().rotate(matrices);
+            model.getHead().applyTransform(matrices);
 
             float f = 1.1F;
             matrices.scale(f, f, f);

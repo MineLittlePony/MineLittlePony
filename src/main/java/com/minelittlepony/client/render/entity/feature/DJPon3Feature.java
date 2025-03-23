@@ -32,7 +32,7 @@ public class DJPon3Feature<
             M body = getModelWrapper().body();
 
             body.transform(state, BodyPart.HEAD, stack);
-            body.getHead().rotate(stack);
+            body.getHead().applyTransform(stack);
 
             stack.scale(1.3333334F, 1.3333334F, 1.3333334F);
             stack.translate(0, 0.3F, 0);

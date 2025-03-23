@@ -31,7 +31,7 @@ public class PonyEars implements SubModel<PonyRenderState>, MsonModel {
         right.resetTransform();
         left.resetTransform();
 
-        float limbSpeed = MathHelper.clamp(state.limbAmplitudeMultiplier, 0, 1);
+        float limbSpeed = MathHelper.clamp(state.limbSwingAmplitude, 0, 1);
 
         float forwardFold = 0.14F * limbSpeed;
         float sidewaysFlop = 0.11F * limbSpeed;
@@ -61,10 +61,10 @@ public class PonyEars implements SubModel<PonyRenderState>, MsonModel {
         left.visible = !state.race.isHuman();
 
         if (state.attributes.isHorsey) {
-            left.pivotX = -1;
-            right.pivotX = 1;
-            left.pivotY = right.pivotY = 1;
-            left.pivotZ = right.pivotZ = 1.5F;
+            left.originX = -1;
+            right.originX = 1;
+            left.originY = right.originY = 1;
+            left.originZ = right.originZ = 1.5F;
         } else {
             left.resetTransform();
             right.resetTransform();

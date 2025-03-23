@@ -11,7 +11,6 @@ import com.minelittlepony.mson.api.ModelKey;
 
 import java.util.function.Supplier;
 
-import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.type.ProfileComponent;
@@ -61,10 +60,7 @@ public class MobSkull<S extends PonyRenderState> implements ISkull {
         v.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(yaw));
         ponyHead.get().setVisible(true);
         ponyHead.get().setAngles(state.get());
-        ModelPart head = ponyHead.get().getHead();
-        head.pivotX = v.x;
-        head.pivotY = v.y;
-        head.pivotZ = v.z;
+        ponyHead.get().getHead().setOrigin(v.x, v.y, v.z);
         ponyHead.get().setHeadRotation(animationProgress, yaw, 0);
     }
 

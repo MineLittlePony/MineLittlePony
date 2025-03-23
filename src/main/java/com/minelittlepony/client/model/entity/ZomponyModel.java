@@ -16,7 +16,7 @@ public class ZomponyModel<T extends PonyRenderState> extends AlicornModel<T> {
     protected void rotateLegs(T state) {
         super.rotateLegs(state);
         if (shouldLiftBothArms(state)) {
-            MobPosingHelper.rotateUndeadArms(state, this, state.limbFrequency, state.age);
+            MobPosingHelper.rotateUndeadArms(state, this, state.limbSwingAnimationProgress, state.age);
         }
     }
 

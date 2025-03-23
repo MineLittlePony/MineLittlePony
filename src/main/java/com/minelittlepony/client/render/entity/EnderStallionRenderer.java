@@ -16,7 +16,7 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.EndermanEntity;
-import net.minecraft.item.ModelTransformationMode;
+import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -61,9 +61,9 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
 
         if (state.carriedBlock != null) {
             if (state.mainArm == Arm.RIGHT) {
-                itemModelManager.updateForLivingEntity(state.rightHandItemState, state.carriedBlock.getBlock().asItem().getDefaultStack(), ModelTransformationMode.THIRD_PERSON_RIGHT_HAND, false, entity);
+                itemModelManager.updateForLivingEntity(state.rightHandItemState, state.carriedBlock.getBlock().asItem().getDefaultStack(), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
             } else {
-                itemModelManager.updateForLivingEntity(state.leftHandItemState, state.carriedBlock.getBlock().asItem().getDefaultStack(), ModelTransformationMode.THIRD_PERSON_LEFT_HAND, true, entity);
+                itemModelManager.updateForLivingEntity(state.leftHandItemState, state.carriedBlock.getBlock().asItem().getDefaultStack(), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
             }
         } else {
             state.rightHandItemState.clear();

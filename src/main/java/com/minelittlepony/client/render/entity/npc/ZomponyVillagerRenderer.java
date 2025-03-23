@@ -41,7 +41,7 @@ public class ZomponyVillagerRenderer extends AbstractNpcRenderer<ZombieVillagerE
     protected void initializeModel(ClientPonyModel<SillyPonyTextureSupplier.State> model) {
         model.onSetModelAngles((m, state) -> {
             if ((state.mainArm == Arm.LEFT ? state.leftArmPose : state.rightArmPose) == ArmPose.EMPTY) {
-                MobPosingHelper.rotateUndeadArms(state, m, state.limbFrequency, state.age);
+                MobPosingHelper.rotateUndeadArms(state, m, state.limbSwingAnimationProgress, state.age);
             }
         });
     }

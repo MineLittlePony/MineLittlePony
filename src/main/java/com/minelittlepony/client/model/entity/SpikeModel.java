@@ -24,16 +24,16 @@ public class SpikeModel extends BipedEntityModel<StriderRenderer.State> {
 
         body.pitch += 0.15F;
 
-        if (entity.saddled) {
+        if (!entity.saddleStack.isEmpty()) {
             leftArm.pitch = 3.15F;
             leftArm.yaw = 1;
             rightArm.pitch = 3.15F;
             rightArm.yaw = -1;
 
-            head.pivotY += 4;
-            head.pivotZ = -3;
-            hat.pivotY += 4;
-            hat.pivotZ = -3;
+            head.originY += 4;
+            head.originZ = -3;
+            hat.originY += 4;
+            hat.originZ = -3;
 
             leftLeg.pitch += 0.4F;
             rightLeg.pitch += 0.4F;
@@ -41,10 +41,10 @@ public class SpikeModel extends BipedEntityModel<StriderRenderer.State> {
             leftArm.roll -= 0.2F * entity.flailAmount;
             rightArm.roll += 0.2F * entity.flailAmount;
 
-            leftArm.pivotZ += 2;
+            leftArm.originZ += 2;
             leftArm.pitch -= 0.3F;
 
-            rightArm.pivotZ += 2;
+            rightArm.originZ += 2;
             rightArm.pitch -= 0.3F;
 
             if (entity.cold) {
@@ -56,16 +56,16 @@ public class SpikeModel extends BipedEntityModel<StriderRenderer.State> {
                 leftArm.yaw = 0.8F;
                 rightArm.yaw = -0.8F;
 
-                leftArm.pivotZ -= 3;
-                rightArm.pivotZ -= 3;
+                leftArm.originZ -= 3;
+                rightArm.originZ -= 3;
             }
         }
 
-        tail.pitch = (float)Math.sin(entity.limbFrequency) / 3F - 0.5F;
+        tail.pitch = (float)Math.sin(entity.limbSwingAnimationProgress) / 3F - 0.5F;
         tail2.pitch = -tail.pitch / 2;
         tail3.pitch = tail2.pitch / 2;
 
-        tail.yaw = (float)Math.sin(entity.age / 20F) / 40 + (float)Math.sin(entity.limbFrequency / 20F) / 4;
+        tail.yaw = (float)Math.sin(entity.age / 20F) / 40 + (float)Math.sin(entity.limbSwingAnimationProgress / 20F) / 4;
         tail2.yaw = tail.yaw / 2;
         tail3.yaw = tail2.yaw / 2;
     }

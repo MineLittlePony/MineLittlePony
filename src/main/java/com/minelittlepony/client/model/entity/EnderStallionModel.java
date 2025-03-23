@@ -31,7 +31,7 @@ public class EnderStallionModel extends AlicornModel<EnderStallionRenderer.State
         super.setModelAngles(state);
 
         if (state.isAttacking) {
-            head.pivotY -= 5;
+            head.originY -= 5;
         }
     }
 

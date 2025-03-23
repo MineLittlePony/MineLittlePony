@@ -76,9 +76,7 @@ public class PlayerPonySkull implements ISkull {
         v.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(yaw));
         ponyHead.setVisible(true);
         ponyHead.setAngles(state);
-        ponyHead.getHead().pivotX = v.x;
-        ponyHead.getHead().pivotY = v.y;
-        ponyHead.getHead().pivotZ = v.z;
+        ponyHead.getHead().setOrigin(v.x, v.y, v.z);
         ponyHead.setHeadRotation(animationProgress, yaw, 0);
         if (renderingEars) {
             deadMau5.setHeadRotation(animationProgress, yaw, 0);

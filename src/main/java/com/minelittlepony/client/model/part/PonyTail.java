@@ -46,30 +46,30 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
     @Override
     public void setPartAngles(PonyRenderState state, float bodySwing) {
         boolean rainboom = state.attributes.isSwimming || state.attributes.isGoingFast;
-        tail.roll = rainboom ? 0 : MathHelper.cos(state.limbAmplitudeInverse * 0.8F) * 0.2f * state.limbAmplitudeMultiplier;
+        tail.roll = rainboom ? 0 : MathHelper.cos(state.limbAmplitudeInverse * 0.8F) * 0.2f * state.limbSwingAmplitude;
         tail.yaw = bodySwing * 5;
 
         if (state.attributes.isCrouching && !rainboom) {
-            tail.setPivot(0, 0, TAIL_SNEAKING_Z);
+            tail.setOrigin(0, 0, TAIL_SNEAKING_Z);
             tail.pitch = -model.body.pitch + 0.1F;
         } else if (state.attributes.isSitting) {
-            tail.pivotZ = TAIL_RIDING_Z;
-            tail.pivotY = TAIL_RIDING_Y;
+            tail.originZ = TAIL_RIDING_Z;
+            tail.originY = TAIL_RIDING_Y;
             tail.pitch = MathHelper.PI / 5;
         } else {
-            tail.setPivot(0, 0, TAIL_Z);
+            tail.setOrigin(0, 0, TAIL_Z);
             if (rainboom) {
                 tail.pitch = MathUtil.Angles._90_DEG + MathHelper.sin(state.limbAmplitudeInverse) / 10;
             } else {
-                tail.pitch = state.limbAmplitudeMultiplier / 2;
+                tail.pitch = state.limbSwingAmplitude / 2;
 
                 swingX(state.age);
             }
         }
 
         if (rainboom) {
-            tail.pivotY += 6;
-            tail.pivotZ++;
+            tail.originY += 6;
+            tail.originZ++;
         }
 
         for (int i = 0; i < segments.size(); i++) {
@@ -94,7 +94,7 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
     public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
         if (tail.visible) {
             stack.push();
-            tail.rotate(stack);
+            tail.applyTransform(stack);
 
             for (int i = 0; i < segments.size(); i++) {
                 segments.get(i).render(stack, vertices, i, overlay, light, color);
@@ -143,14 +143,14 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
                 float scale = 1 + MathHelper.cos(index + 5) / 2F;
                 stack.scale(scale, 1, scale);
                 stack.translate(1 / 16F * scale - 0.1F, 0, -2 / 16F * scale);
-                tree.pivotZ = 9;
+                tree.originZ = 9;
             }
             if (shape == TailShape.SWIRLY) {
                 stack.translate(0, 0, -6/16F);
                 float scale = 1 + MathHelper.cos(index + 10) / 5F;
                 stack.scale(1, 1, scale);
                 stack.translate(0, 0, -2 / 16F * scale);
-                tree.pivotZ = 9;
+                tree.originZ = 9;
             }
             if (shape == TailShape.SPIKY) {
                 stack.translate(0, 0, -6/16F);
@@ -158,7 +158,7 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
                 stack.scale(1, 1, scale);
                 stack.translate(0, 0, -2 / 16F * scale);
                 tree.yaw = 0.2F * (index % 2 - 1);
-                tree.pivotZ = 9;
+                tree.originZ = 9;
             }
             tree.render(stack, renderContext, overlay, light, color);
             stack.pop();

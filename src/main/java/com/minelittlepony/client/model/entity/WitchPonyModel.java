@@ -35,7 +35,7 @@ public class WitchPonyModel extends EarthPonyModel<WitchRenderer.State> {
 
             rightArm.pitch = legDrinkingAngle;
             rightArm.yaw = 0.1F;
-            rightArm.pivotX = 0.1F;
+            rightArm.originX = 0.1F;
 
             if (rot > 0) {
                 rot = 0;
@@ -43,7 +43,7 @@ public class WitchPonyModel extends EarthPonyModel<WitchRenderer.State> {
 
             head.pitch = -rot / 2;
         } else {
-            rightArm.pivotX = 0;
+            rightArm.originX = 0;
         }
     }
 

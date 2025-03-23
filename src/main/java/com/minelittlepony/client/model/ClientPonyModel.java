@@ -66,7 +66,7 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
     }
 
     static void resetPivot(ModelPart part) {
-        part.setPivot(part.getDefaultTransform().pivotX(), part.getDefaultTransform().pivotY(), part.getDefaultTransform().pivotZ());
+        part.setOrigin(part.getDefaultTransform().x(), part.getDefaultTransform().y(), part.getDefaultTransform().z());
     }
 
     static void resetPivot(ModelPart...parts) {

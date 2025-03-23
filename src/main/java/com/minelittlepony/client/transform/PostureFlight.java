@@ -21,9 +21,9 @@ public class PostureFlight extends PonyPosture {
     public void updateState(LivingEntity entity, PonyRenderState state) {
         super.updateState(entity, state);
 
-        double motionX = entity.getX() - entity.prevX;
-        double motionY = entity.isOnGround() ? 0 : entity.getY() - entity.prevY;
-        double motionZ = entity.getZ() - entity.prevZ;
+        double motionX = entity.getX() - entity.lastX;
+        double motionY = entity.isOnGround() ? 0 : entity.getY() - entity.lastY;
+        double motionZ = entity.getZ() - entity.lastZ;
 
         state.attributes.motionPitch = (float)compositor.calculateIncline(entity, motionX, motionY, motionZ);
         state.attributes.motionRoll = (float)compositor.calculateRoll(entity, motionX * xScale,  motionY, motionZ * xScale);

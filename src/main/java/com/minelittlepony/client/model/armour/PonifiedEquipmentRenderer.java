@@ -1,9 +1,12 @@
 package com.minelittlepony.client.model.armour;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.equipment.*;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
@@ -13,8 +16,7 @@ import net.minecraft.item.equipment.EquipmentAsset;
 import net.minecraft.item.equipment.trim.ArmorTrim;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.*;
 import net.minecraft.util.math.ColorHelper;
 
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +25,11 @@ import com.minelittlepony.api.model.Models;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.minelittlepony.util.ResourceUtil;
+
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class PonifiedEquipmentRenderer extends EquipmentRenderer {
     private static final int TRANSPARENT = 0;
@@ -31,10 +37,63 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
     private final EquipmentModelLoader modelLoader;
 
     private @Nullable Set<EntityModel<?>> drawnModels;
+    private final Function<LayerTextureKey, Identifier> layerTextures;
+    private final Function<TrimSpriteKey, Sprite> trimSprites;
+    private final BiFunction<EquipmentModel.LayerType, Identifier, Identifier> ponifier = Util.memoize((type, texture) -> {
+        return ResourceUtil.verifyTexture(texture.withPath(p -> p.replace(type.asString(), "ponified_" + type.asString()))).orElse(texture);
+    });
 
     public PonifiedEquipmentRenderer(EquipmentModelLoader modelLoader) {
         super(modelLoader, MinecraftClient.getInstance().getBakedModelManager().getAtlas(TexturedRenderLayers.ARMOR_TRIMS_ATLAS_TEXTURE));
         this.modelLoader = modelLoader;
+        var armorTrimsAtlas = MinecraftClient.getInstance().getBakedModelManager().getAtlas(TexturedRenderLayers.ARMOR_TRIMS_ATLAS_TEXTURE);
+        layerTextures = Util.memoize(key -> key.layer.getFullTextureId(key.layerType));
+        trimSprites = Util.memoize(key -> armorTrimsAtlas.getSprite(key.getTexture()));
+    }
+
+    record LayerTextureKey(EquipmentModel.LayerType layerType, EquipmentModel.Layer layer) {}
+
+    record TrimSpriteKey(ArmorTrim trim, EquipmentModel.LayerType layerType, RegistryKey<EquipmentAsset> equipmentAssetId) {
+        public Identifier getTexture() {
+            return this.trim.getTextureId(this.layerType.getTrimsDirectory(), this.equipmentAssetId);
+        }
+    }
+
+    @Override
+    public void render(
+            EquipmentModel.LayerType layerType,
+            RegistryKey<EquipmentAsset> assetKey,
+            Model model,
+            ItemStack stack,
+            MatrixStack matrices,
+            VertexConsumerProvider vertexConsumers,
+            int light,
+            @Nullable Identifier texture
+        ) {
+        // extures/entity/equipment/strider_saddle/saddle.png
+        List<EquipmentModel.Layer> layers = modelLoader.get(assetKey).getLayers(layerType);
+        if (!layers.isEmpty()) {
+            int i = DyedColorComponent.getColor(stack, 0);
+            boolean glint = stack.hasGlint();
+
+            for (EquipmentModel.Layer layer : layers) {
+                int color = getDyeColor(layer, i);
+                if (color != 0) {
+                    model.render(matrices, ItemRenderer.getArmorGlintConsumer(vertexConsumers, RenderLayer.getArmorCutoutNoCull(
+                        ponifier.apply(layerType, layer.usePlayerTexture() && texture != null ? texture : layerTextures.apply(new LayerTextureKey(layerType, layer)))
+                    ), glint), light, OverlayTexture.DEFAULT_UV, color);
+                    glint = false;
+                }
+            }
+
+            ArmorTrim armorTrim = stack.get(DataComponentTypes.TRIM);
+            if (armorTrim != null) {
+                Sprite sprite = trimSprites.apply(new TrimSpriteKey(armorTrim, layerType, assetKey));
+                model.render(matrices, sprite.getTextureSpecificVertexConsumer(
+                        vertexConsumers.getBuffer(TexturedRenderLayers.getArmorTrims(armorTrim.pattern().value().decal()))
+                ), light, OverlayTexture.DEFAULT_UV);
+            }
+        }
     }
 
     public <S extends PonyRenderState, V extends ClientPonyModel<S>> void render(

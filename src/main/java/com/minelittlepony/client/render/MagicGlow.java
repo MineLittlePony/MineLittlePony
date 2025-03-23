@@ -1,48 +1,54 @@
 package com.minelittlepony.client.render;
 
-import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderPhase;
-import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.*;
 import net.minecraft.util.math.ColorHelper;
 
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.DepthTestFunction;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.google.common.base.Suppliers;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-public abstract class MagicGlow extends RenderPhase {
-    private MagicGlow() {
-        super(null, null, null);
-    }
+public interface MagicGlow {
+    RenderPipeline /*ENTITY_EYES*/ ENTITY_MAGIC_GLOW_PIPELINE = RenderPipelines.register(
+            RenderPipeline.builder(RenderPipelines.MATRICES_COLOR_FOG_SNIPPET)
+                .withLocation("pipeline/magic_glow")
+                .withVertexShader("core/entity")
+                .withFragmentShader("core/entity")
+                .withShaderDefine("EMISSIVE")
+                .withShaderDefine("NO_OVERLAY")
+                .withShaderDefine("NO_CARDINAL_LIGHTING")
+                .withSampler("Sampler0")
+                .withBlend(BlendFunction.LIGHTNING)
+                .withDepthWrite(false)
+                .withCull(false) /*added*/
+                .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST) /*added*/
+                .withVertexFormat(VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS)
+                .build()
+        );
 
-    private static final Supplier<RenderLayer> MAGIC = Suppliers.memoize(() -> {
-        return RenderLayer.of("mlp_magic_glow",
-                FabricLoader.getInstance().isModLoaded("vulkanmod") ? VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL : VertexFormats.POSITION_COLOR_LIGHT,
-                VertexFormat.DrawMode.QUADS, 256, RenderLayer.MultiPhaseParameters.builder()
-            .program(EYES_PROGRAM)
-            .writeMaskState(COLOR_MASK)
-            .depthTest(LEQUAL_DEPTH_TEST)
-            .transparency(LIGHTNING_TRANSPARENCY)
-            .lightmap(DISABLE_LIGHTMAP)
-            .cull(DISABLE_CULLING)
-            .layering(VIEW_OFFSET_Z_LAYERING)
-            .build(false));
+    Supplier<RenderLayer> MAGIC = Suppliers.memoize(() -> {
+        return RenderLayer.of("mlp_magic_glow", 1536, false, true, RenderPipelines.ENTITY_EYES, RenderLayer.MultiPhaseParameters.builder()
+                .lightmap(RenderPhase.DISABLE_LIGHTMAP)
+                .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
+                .target(RenderPhase.TRANSLUCENT_TARGET)
+                .build(false));
     });
 
-    private static final BiFunction<Identifier, Integer, RenderLayer> TINTED_LAYER = Util.memoize((texture, color) -> {
-        return RenderLayer.of("mlp_tint_layer", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS, 256, true, true, RenderLayer.MultiPhaseParameters.builder()
+    BiFunction<Identifier, Integer, RenderLayer> TINTED_LAYER = Util.memoize((texture, color) -> {
+        return RenderLayer.of("mlp_tint_layer", 1536, false, true, RenderPipelines.ENTITY_EYES, RenderLayer.MultiPhaseParameters.builder()
                 .texture(new Colored(texture, color))
-                .program(EYES_PROGRAM)
-                .writeMaskState(COLOR_MASK)
-                .depthTest(LEQUAL_DEPTH_TEST)
-                .transparency(LIGHTNING_TRANSPARENCY)
-                .lightmap(DISABLE_LIGHTMAP)
-                .cull(DISABLE_CULLING)
-                .layering(VIEW_OFFSET_Z_LAYERING)
+                .lightmap(RenderPhase.DISABLE_LIGHTMAP)
+                .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
+                .target(RenderPhase.TRANSLUCENT_TARGET)
                 .build(true));
     });
 
@@ -54,7 +60,9 @@ public abstract class MagicGlow extends RenderPhase {
         return TINTED_LAYER.apply(texture, color);
     }
 
-    private static class Colored extends Texture {
+    public static void bootstrap() {}
+
+    public static class Colored extends RenderPhase.Texture {
         private final float red;
         private final float green;
         private final float blue;

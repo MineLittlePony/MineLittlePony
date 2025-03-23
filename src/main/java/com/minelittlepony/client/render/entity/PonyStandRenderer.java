@@ -61,7 +61,7 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
     public void updateRenderState(ArmorStandEntity entity, State state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
         BipedEntityRenderer.updateBipedRenderState(entity, state.ponyState, tickDelta, itemModelManager);
-        state.yaw = MathHelper.lerpAngleDegrees(tickDelta, entity.prevYaw, entity.getYaw());
+        state.yaw = MathHelper.lerpAngleDegrees(tickDelta, entity.lastYaw, entity.getYaw());
         state.marker = entity.isMarker();
         state.small = entity.isSmall();
         state.showArms = true;
@@ -75,18 +75,18 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
         state.timeSinceLastHit = (float)(entity.getWorld().getTime() - entity.lastHitTime) + tickDelta;
 
         if (state.leftLegRotation.equals(ArmorStandEntity.DEFAULT_LEFT_LEG_ROTATION)) {
-            state.leftLegRotation = new EulerAngle(-state.leftArmRotation.getPitch(), state.leftArmRotation.getYaw(), state.leftArmRotation.getRoll());
+            state.leftLegRotation = new EulerAngle(-state.leftArmRotation.pitch(), state.leftArmRotation.yaw(), state.leftArmRotation.roll());
         }
 
         if (state.rightLegRotation.equals(ArmorStandEntity.DEFAULT_RIGHT_LEG_ROTATION)) {
-            state.rightLegRotation = new EulerAngle(-state.rightArmRotation.getPitch(), state.rightArmRotation.getYaw(), state.rightArmRotation.getRoll());
+            state.rightLegRotation = new EulerAngle(-state.rightArmRotation.pitch(), state.rightArmRotation.yaw(), state.rightArmRotation.roll());
         }
 
         context.manager.updateState(entity, state.ponyState, Mode.OTHER, itemModelManager);
         state.ponyState.baby = state.small;
         state.ponyState.attributes.size = state.small ? SizePreset.FOAL : SizePreset.NORMAL;
-        state.pitch = MathHelper.RADIANS_PER_DEGREE * entity.getHeadRotation().getPitch();
-        state.yawDegrees = MathHelper.RADIANS_PER_DEGREE * entity.getHeadRotation().getYaw();
+        state.pitch = MathHelper.RADIANS_PER_DEGREE * entity.getHeadRotation().pitch();
+        state.relativeHeadYaw = MathHelper.RADIANS_PER_DEGREE * entity.getHeadRotation().yaw();
     }
 
     @Override

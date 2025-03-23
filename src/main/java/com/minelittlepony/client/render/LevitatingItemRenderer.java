@@ -38,13 +38,13 @@ public class LevitatingItemRenderer {
     /**
      * Renders an item with a magical overlay.
      */
-    public boolean renderItem(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformationMode mode, boolean left,
+    public boolean renderItem(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ItemDisplayContext mode,
             MatrixStack matrices, VertexConsumerProvider vertices, @Nullable World world,
             int light, int overlay, int seed, Operation<Void> original) {
 
         if (entity == null || !(mode.isFirstPerson()
-                || mode == ModelTransformationMode.THIRD_PERSON_LEFT_HAND
-                || mode == ModelTransformationMode.THIRD_PERSON_RIGHT_HAND)
+                || mode == ItemDisplayContext.THIRD_PERSON_LEFT_HAND
+                || mode == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
             ) {
             return false;
         }
@@ -54,17 +54,17 @@ public class LevitatingItemRenderer {
             return false;
         }
 
-        var state = context.getAndUpdateRenderState(entity, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false));
+        var state = context.getAndUpdateRenderState(entity, MinecraftClient.getInstance().getRenderTickCounter().getTickProgress(false));
 
         matrices.push();
 
         boolean doMagic = (mode.isFirstPerson() ? PonyConfig.getInstance().fpsmagic : PonyConfig.getInstance().tpsmagic).get() && state.hasMagicGlow();
 
         if (doMagic && mode.isFirstPerson()) {
-            setupPerspective(state, stack, left, matrices);
+            setupPerspective(state, stack, mode.isLeftHand(), matrices);
         }
 
-        original.call(itemRenderer, entity, stack, mode, left, matrices, vertices, world, light, overlay, seed);
+        original.call(itemRenderer, entity, stack, mode, matrices, vertices, world, light, overlay, seed);
 
         if (doMagic) {
             VertexConsumerProvider interceptedContext = getProvider(state.pony, vertices);
@@ -82,10 +82,10 @@ public class LevitatingItemRenderer {
             matrices.scale(scale, scale, scale);
             matrices.translate(0.015F + xDrift, 0.01F, 0.01F + zDrift);
 
-            original.call(itemRenderer, entity, stack, mode, left, matrices, interceptedContext, world, light, OverlayTexture.DEFAULT_UV, seed);
+            original.call(itemRenderer, entity, stack, mode, matrices, interceptedContext, world, light, OverlayTexture.DEFAULT_UV, seed);
             matrices.scale(scale, scale, scale);
             matrices.translate(-0.03F - xDrift, -0.02F, -0.02F - zDrift);
-            original.call(itemRenderer, entity, stack, mode, left, matrices, interceptedContext, world, light, OverlayTexture.DEFAULT_UV, seed);
+            original.call(itemRenderer, entity, stack, mode, matrices, interceptedContext, world, light, OverlayTexture.DEFAULT_UV, seed);
         }
 
         matrices.pop();

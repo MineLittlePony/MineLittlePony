@@ -41,7 +41,10 @@ public class ArmourTextureResolver implements ArmourTextureLookup, IdentifiableR
 
     private final LoadingCache<ArmourParameters, ArmourTexture> layerCache = CacheBuilder.newBuilder()
             .expireAfterAccess(30, TimeUnit.SECONDS)
-            .build(CacheLoader.from(parameters -> Stream.of(ArmourTexture.legacy(parameters.textureId())).flatMap(this::performLookup).findFirst().orElse(ArmourTexture.UNKNOWN)));
+            .build(CacheLoader.from(parameters -> Stream.of(ArmourTexture.legacy(parameters.layerType(), parameters.textureId()))
+                    .flatMap(this::performLookup)
+                    .findFirst()
+                    .orElse(ArmourTexture.unknown(parameters.layerType()))));
 
     private Stream<ArmourTexture> performLookup(ArmourTexture id) {
         List<ArmourTexture> options = Stream.of(id).flatMap(ArmourTexture::ponify).toList();

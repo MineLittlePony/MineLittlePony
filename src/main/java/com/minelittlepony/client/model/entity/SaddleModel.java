@@ -13,6 +13,6 @@ public class SaddleModel extends EntityModel<StriderRenderer.State> {
 
     @Override
     public void setAngles(StriderRenderer.State entity) {
-        root.pivotY = 2 - MathHelper.cos(entity.limbFrequency * 1.5F) * 3 * entity.limbAmplitudeMultiplier;
+        root.originY = 2 - MathHelper.cos(entity.limbSwingAnimationProgress * 1.5F) * 3 * entity.limbSwingAmplitude;
     }
 }

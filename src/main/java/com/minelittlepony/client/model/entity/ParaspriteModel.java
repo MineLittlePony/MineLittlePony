@@ -33,10 +33,10 @@ public class ParaspriteModel extends EntityModel<VexRenderer.State> {
         root.pitch = state.bodyPitch;
         body.pitch = 0;
         root.pitch = state.pitch * MathHelper.RADIANS_PER_DEGREE;
-        root.yaw = state.yawDegrees * MathHelper.RADIANS_PER_DEGREE;
+        root.yaw = state.relativeHeadYaw * MathHelper.RADIANS_PER_DEGREE;
 
-        jaw.pivotY = Math.max(0, 1.2F * state.jawOpenAmount);
-        lips.pivotY = jaw.pivotY - 0.9F;
+        jaw.originY = Math.max(0, 1.2F * state.jawOpenAmount);
+        lips.originY = jaw.originY - 0.9F;
         lips.visible = state.jawOpenAmount > 0;
         body.pitch += 0.3F * state.jawOpenAmount;
         jaw.pitch = 0.4F * state.jawOpenAmount;

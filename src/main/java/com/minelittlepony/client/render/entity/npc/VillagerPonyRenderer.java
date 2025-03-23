@@ -40,7 +40,7 @@ public class VillagerPonyRenderer extends AbstractNpcRenderer<VillagerEntity, Vi
     public void updateRenderState(VillagerEntity entity, State state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
         state.headRolling = entity.getHeadRollingTimeLeft() > 0;
-        state.yawDegrees = 0.3F * MathHelper.sin(0.45F * state.age);
+        state.relativeHeadYaw = 0.3F * MathHelper.sin(0.45F * state.age);
     }
 
     public static class State extends SillyPonyTextureSupplier.State {

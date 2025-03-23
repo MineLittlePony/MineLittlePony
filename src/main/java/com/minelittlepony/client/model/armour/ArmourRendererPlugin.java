@@ -15,10 +15,8 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.equipment.EquipmentAsset;
-import net.minecraft.item.equipment.trim.ArmorTrim;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterial;
+import net.minecraft.item.equipment.trim.*;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.*;
 
@@ -26,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
 
 public interface ArmourRendererPlugin {
     AtomicReference<ArmourRendererPlugin> INSTANCE = new AtomicReference<>(new ArmourRendererPlugin() {});
@@ -90,19 +87,8 @@ public interface ArmourRendererPlugin {
             return null;
         }
         SpriteAtlasTexture armorTrimsAtlas = MinecraftClient.getInstance().getBakedModelManager().getAtlas(TexturedRenderLayers.ARMOR_TRIMS_ATLAS_TEXTURE);
-        Sprite sprite = armorTrimsAtlas.getSprite(getTexture(trim, layerType, assetId));
+        Sprite sprite = armorTrimsAtlas.getSprite(trim.getTextureId(layerType.getTrimsDirectory(), assetId));
         return sprite.getTextureSpecificVertexConsumer(buffer);
-    }
-
-    private static String getAssetName(RegistryEntry<ArmorTrimMaterial> material, RegistryKey<EquipmentAsset> assetKey) {
-        String string = (String)material.value().overrideArmorAssets().get(assetKey);
-        return string != null ? string : material.value().assetName();
-    }
-
-    private static Identifier getTexture(ArmorTrim trim, EquipmentModel.LayerType layerType, RegistryKey<EquipmentAsset> assetId) {
-        Identifier identifier = trim.pattern().value().assetId();
-        String string = getAssetName(trim.material(), assetId);
-        return identifier.withPath((UnaryOperator<String>)(path -> "trims/entity/" + layerType.asString() + "/" + path + "_" + string));
     }
 
     @Nullable

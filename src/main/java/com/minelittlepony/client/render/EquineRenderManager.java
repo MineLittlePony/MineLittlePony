@@ -13,7 +13,6 @@ import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.client.transform.PonyPosture;
 import com.minelittlepony.mson.api.ModelKey;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import java.util.*;
 import java.util.function.Function;
@@ -28,8 +27,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ModelTransformationMode;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Box;
@@ -47,10 +46,6 @@ public class EquineRenderManager<
 
     private final PonyRenderContext<T, S, M> context;
     private final Transformer<? super S> transformer;
-
-    public static void disableModelRenderProfile() {
-        RenderSystem.disableBlend();
-    }
 
     public EquineRenderManager(PonyRenderContext<T, S, M> context, Transformer<? super S> transformer, Function<Race, Models<M>> modelsLookup) {
         this.context = context;
@@ -97,10 +92,10 @@ public class EquineRenderManager<
         state.updateState(resolver, entity, models.body(), pony, mode);
         if (PonyConfig.getInstance().tpsmagic.get() && state.hasMagicGlow()) {
             resolver.updateForLivingEntity(
-                state.glintlessRightHandItemState, getWithoutGlint(entity.getStackInArm(Arm.RIGHT)), ModelTransformationMode.THIRD_PERSON_RIGHT_HAND, false, entity
+                state.glintlessRightHandItemState, getWithoutGlint(entity.getStackInArm(Arm.RIGHT)), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity
             );
             resolver.updateForLivingEntity(
-                state.glintlessLeftHandItemState, getWithoutGlint(entity.getStackInArm(Arm.LEFT)), ModelTransformationMode.THIRD_PERSON_LEFT_HAND, true, entity
+                state.glintlessLeftHandItemState, getWithoutGlint(entity.getStackInArm(Arm.LEFT)), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity
             );
         } else {
             state.glintlessRightHandItemState.clear();

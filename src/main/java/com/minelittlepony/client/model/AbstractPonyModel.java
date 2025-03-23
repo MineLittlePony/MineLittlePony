@@ -55,7 +55,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
         neck = tree.getChild("neck");
         mainRenderList = RenderList.of()
-            .add(withStage(BodyPart.BODY, bodyRenderList = RenderList.of(body).add(body::rotate)))
+            .add(withStage(BodyPart.BODY, bodyRenderList = RenderList.of(body).add(body::applyTransform)))
             .add(withStage(BodyPart.NECK, neckRenderList = RenderList.of(neck)))
             .add(withStage(BodyPart.HEAD, headRenderList = RenderList.of(head)))
             .add(withStage(BodyPart.LEGS, legsRenderList = RenderList.of().add(leftArm, rightArm, leftLeg, rightLeg)));
@@ -107,7 +107,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         float pitch = entity.attributes.motionPitch * MathHelper.RADIANS_PER_DEGREE;
         head.setAngles(
                 MathHelper.clamp(entity.attributes.isSleeping ? 0.1f : entity.pitch / 57.29578F, -1.25f - pitch, 0.5f - pitch),
-                entity.attributes.isSleeping ? (Math.signum(MathHelper.wrapDegrees(entity.yawDegrees)) * 1.3F) : entity.yawDegrees * MathHelper.RADIANS_PER_DEGREE,
+                entity.attributes.isSleeping ? (Math.signum(MathHelper.wrapDegrees(entity.relativeHeadYaw)) * 1.3F) : entity.relativeHeadYaw * MathHelper.RADIANS_PER_DEGREE,
                 0
         );
 
@@ -135,8 +135,8 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             }
 
             if (entity.attributes.isSwimmingRotated) {
-                rightLeg.pivotZ -= 1.5F;
-                leftLeg.pivotZ -= 1.5F;
+                rightLeg.originZ -= 1.5F;
+                leftLeg.originZ -= 1.5F;
             }
         }
 
@@ -145,8 +145,8 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         }
 
         if (entity.attributes.isHorsey) {
-            head.pivotY -= 3;
-            head.pivotZ -= 2;
+            head.originY -= 3;
+            head.originZ -= 2;
             head.pitch = 0.5F;
         }
 
@@ -184,18 +184,18 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
     protected void ponySit() {
         adjustBodyComponents(BODY_RIDING_PITCH, BODY_RIDING);
-        neck.setPivot(NECK_X, 0, 0);
-        head.setPivot(0, 0, 0);
+        neck.setOrigin(NECK_X, 0, 0);
+        head.setOrigin(0, 0, 0);
 
-        leftLeg.pivotZ = 14;
-        leftLeg.pivotY = 17;
+        leftLeg.originZ = 14;
+        leftLeg.originY = 17;
         leftLeg.pitch = -MathHelper.PI / 4;
         leftLeg.yaw = -MathHelper.PI / 7;
 
         leftLeg.pitch += body.pitch;
 
-        rightLeg.pivotZ = 15;
-        rightLeg.pivotY = 17;
+        rightLeg.originZ = 15;
+        rightLeg.originY = 17;
         rightLeg.pitch = -MathHelper.PI / 4;
         rightLeg.yaw =  MathHelper.PI / 7;
 
@@ -216,36 +216,36 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     */
     protected void rotateLegs(T state) {
         if (state.attributes.isSwimming) {
-            rotateLegsSwimming(state, state.limbAmplitudeInverse, state.limbAmplitudeMultiplier, state.age);
+            rotateLegsSwimming(state, state.limbAmplitudeInverse, state.limbSwingAmplitude, state.age);
         } else {
-            rotateLegsOnGround(state, state.limbAmplitudeInverse, state.limbAmplitudeMultiplier, state.age);
+            rotateLegsOnGround(state, state.limbAmplitudeInverse, state.limbSwingAmplitude, state.age);
         }
 
         float sin = MathHelper.sin(body.yaw) * 5;
         float cos = MathHelper.cos(body.yaw) * 5;
 
-        rightArm.pivotZ = 2 + sin;
-        leftArm.pivotZ = 2 - sin;
+        rightArm.originZ = 2 + sin;
+        leftArm.originZ = 2 - sin;
 
         float legRPX = state.attributes.getMainInterpolator().interpolate("legOffset", cos - state.legOutset - 0.001F, 2);
         if (state.attributes.isHorsey) {
             legRPX += 2;
         }
 
-        rightArm.pivotX = -legRPX;
-        rightLeg.pivotX = -legRPX;
+        rightArm.originX = -legRPX;
+        rightLeg.originX = -legRPX;
 
-        leftArm.pivotX = legRPX;
-        leftLeg.pivotX = legRPX;
+        leftArm.originX = legRPX;
+        leftLeg.originX = legRPX;
 
         rightArm.yaw += body.yaw;
         leftArm.yaw += body.yaw;
 
         if (state.attributes.isHorsey) {
-            rightArm.pivotZ = leftArm.pivotZ = -1;
-            rightArm.pivotY = leftArm.pivotY = 6;
-            rightLeg.pivotZ = leftLeg.pivotZ = 19;
-            rightLeg.pivotY = leftLeg.pivotY = 6;
+            rightArm.originZ = leftArm.originZ = -1;
+            rightArm.originY = leftArm.originY = 6;
+            rightLeg.originZ = leftLeg.originZ = 19;
+            rightLeg.originY = leftLeg.originY = 6;
         }
     }
 
@@ -257,10 +257,10 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     protected void rotateLegsSwimming(T state, @Deprecated float move, @Deprecated float swing, @Deprecated float ticks) {
         float lerp = state.isInPose(EntityPose.SWIMMING) ? (float)state.attributes.motionLerp : 1;
 
-        float legLeft = (MathUtil.Angles._90_DEG + MathHelper.sin((state.limbFrequency / 3) + 2 * MathHelper.PI/3) / 2) * lerp;
+        float legLeft = (MathUtil.Angles._90_DEG + MathHelper.sin((state.limbSwingAnimationProgress / 3) + 2 * MathHelper.PI/3) / 2) * lerp;
 
-        float left = (MathUtil.Angles._90_DEG + MathHelper.sin((state.limbFrequency / 3) + 2 * MathHelper.PI) / 2) * lerp;
-        float right = (MathUtil.Angles._90_DEG + MathHelper.sin(state.limbFrequency / 3) / 2) * lerp;
+        float left = (MathUtil.Angles._90_DEG + MathHelper.sin((state.limbSwingAnimationProgress / 3) + 2 * MathHelper.PI) / 2) * lerp;
+        float right = (MathUtil.Angles._90_DEG + MathHelper.sin(state.limbSwingAnimationProgress / 3) / 2) * lerp;
 
         leftArm.setAngles(-left, -left/2, left/2);
         rightArm.setAngles(-right, right/2, -right/2);
@@ -275,8 +275,8 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     protected void rotateLegsOnGround(T state, float move, float swing, float ticks) {
         float angle = MathHelper.PI * (float) Math.pow(swing, 16);
 
-        float baseRotation = state.limbFrequency * 0.6662F; // magic number ahoy
-        float scale = state.limbAmplitudeMultiplier / 4;
+        float baseRotation = state.limbSwingAnimationProgress * 0.6662F; // magic number ahoy
+        float scale = state.limbSwingAmplitude / 4;
 
         float rainboomLegLotation = state.attributes.getMainInterpolator().interpolate(
                 "rainboom_leg_rotation",
@@ -321,16 +321,16 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
                 if (state.attributes.shouldLiftArm(pose, complement, sigma)) {
                     float swag = 1;
                     if (!state.attributes.isFlying && both) {
-                        swag -= (float)Math.pow(state.limbAmplitudeMultiplier, 2);
+                        swag -= (float)Math.pow(state.limbSwingAmplitude, 2);
                     }
 
                     float mult = 1 - swag/2;
                     arm.pitch = arm.pitch * mult - (MathHelper.PI / 10) * swag;
                     arm.roll = -sigma * (MathHelper.PI / 15);
-                    arm.roll += 0.3F * -state.limbAmplitudeMultiplier * sigma;
+                    arm.roll += 0.3F * -state.limbSwingAmplitude * sigma;
 
                     if (state.attributes.isCrouching) {
-                        arm.pivotX -= sigma * 2;
+                        arm.originX -= sigma * 2;
                     }
                 }
 
@@ -341,14 +341,14 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             case BLOCK:
                 arm.pitch = (arm.pitch / 2 - 0.9424779F) - 0.3F;
                 arm.yaw = sigma * MathHelper.PI / 9;
-                arm.roll += 0.3F * -state.limbAmplitudeMultiplier * sigma;
+                arm.roll += 0.3F * -state.limbSwingAmplitude * sigma;
                 if (complement == pose) {
                     arm.yaw -= sigma * MathHelper.PI / 18;
                 }
-                arm.pivotX += sigma;
-                arm.pivotZ += 3;
+                arm.originX += sigma;
+                arm.originZ += 3;
                 if (state.attributes.isCrouching) {
-                    arm.pivotY += 4;
+                    arm.originY += 4;
                 }
                 break;
             case BOW_AND_ARROW:
@@ -365,12 +365,12 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
                 arm.pitch = -0.8F;
                 arm.yaw = head.yaw + 0.06F;
-                arm.roll += 0.3F * -state.limbAmplitudeMultiplier * sigma;
+                arm.roll += 0.3F * -state.limbSwingAmplitude * sigma;
                 break;
             case THROW_SPEAR:
                 arm.pitch = MathUtil.Angles._90_DEG * 2;
-                arm.roll += (0.3F * -state.limbAmplitudeMultiplier + 0.6F) * sigma;
-                arm.pivotY ++;
+                arm.roll += (0.3F * -state.limbSwingAmplitude + 0.6F) * sigma;
+                arm.originY ++;
                 break;
             case SPYGLASS:
                 float addedPitch = state.isInSneakingPose ? -0.2617994F : 0;
@@ -379,28 +379,28 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
                 arm.yaw = head.yaw;
 
                 if (state.isInSneakingPose) {
-                    arm.pivotY += 9;
-                    arm.pivotX -= 6 * sigma;
-                    arm.pivotZ -= 2;
+                    arm.originY += 9;
+                    arm.originX -= 6 * sigma;
+                    arm.originZ -= 2;
                 }
                 if (state.attributes.size == SizePreset.TALL) {
-                    arm.pivotY += 1;
+                    arm.originY += 1;
                 }
                 if (state.attributes.size == SizePreset.FOAL) {
-                    arm.pivotY -= 2;
+                    arm.originY -= 2;
                 }
 
                 break;
             case TOOT_HORN:
                 arm.pitch = MathHelper.clamp(head.pitch, -0.55f, 1.2f) - 1.7835298f;
                 arm.yaw = head.yaw - 0.1235988f * sigma;
-                arm.pivotY += 3;
-                arm.roll += 0.3F * -state.limbAmplitudeMultiplier * sigma;
+                arm.originY += 3;
+                arm.roll += 0.3F * -state.limbSwingAmplitude * sigma;
                 break;
             case BRUSH:
                 arm.pitch = arm.pitch * 0.5f - 0.62831855f;
                 arm.yaw = 0;
-                arm.roll += 0.3F * -state.limbAmplitudeMultiplier * sigma;
+                arm.roll += 0.3F * -state.limbSwingAmplitude * sigma;
                 break;
             default:
                 break;
@@ -408,12 +408,12 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     }
 
     protected final void aimBow(T state, ModelPart arm) {
-        arm.pitch = MathUtil.Angles._270_DEG + head.pitch + (MathHelper.sin(state.limbAmplitudeMultiplier * 0.067F) * 0.05F);
+        arm.pitch = MathUtil.Angles._270_DEG + head.pitch + (MathHelper.sin(state.limbSwingAmplitude * 0.067F) * 0.05F);
         arm.yaw = head.yaw - 0.06F;
-        arm.roll = MathHelper.cos(state.limbAmplitudeMultiplier * 0.09F) * 0.05F + 0.05F;
+        arm.roll = MathHelper.cos(state.limbSwingAmplitude * 0.09F) * 0.05F + 0.05F;
 
         if (state.isInSneakingPose) {
-            arm.pivotY += 4;
+            arm.originY += 4;
         }
     }
 
@@ -469,22 +469,22 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         }
     }
 
-    protected void adjustBody(T state, float pitch, Pivot pivot) {
-        adjustBodyComponents(pitch, pivot);
+    protected void adjustBody(T state, float pitch, Pivot origin) {
+        adjustBodyComponents(pitch, origin);
         if (!state.attributes.isHorsey) {
-            neck.setPivot(NECK_X + pitch, pivot.y(), pivot.z());
-            rightLeg.pivotY = FRONT_LEGS_Y;
-            leftLeg.pivotY = FRONT_LEGS_Y;
+            neck.setOrigin(NECK_X + pitch, origin.y(), origin.z());
+            rightLeg.originY = FRONT_LEGS_Y;
+            leftLeg.originY = FRONT_LEGS_Y;
         } else {
-            neck.setPivot(NECK_X + pitch, pivot.y() - 1, pivot.z() - 2);
+            neck.setOrigin(NECK_X + pitch, origin.y() - 1, origin.z() - 2);
             neck.pitch = Angles._30_DEG;
         }
     }
 
-    protected void adjustBodyComponents(float pitch, Pivot pivot) {
+    protected void adjustBodyComponents(float pitch, Pivot origin) {
         body.pitch = pitch;
-        body.pivotY = pivot.y();
-        body.pivotZ = pivot.z();
+        body.originY = origin.y();
+        body.originZ = origin.z();
     }
 
     @Override

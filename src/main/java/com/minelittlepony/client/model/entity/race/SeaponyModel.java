@@ -40,7 +40,7 @@ public class SeaponyModel<T extends PonyRenderState> extends UnicornModel<T> {
         super.init(context);
         setVisible(true);
         bodyRenderList.clear();
-        bodyRenderList.add(body).add(body::rotate).add(tail).add(leftFin, centerFin, rightFin);
+        bodyRenderList.add(body).add(body::applyTransform).add(tail).add(leftFin, centerFin, rightFin);
     }
 
     @Override

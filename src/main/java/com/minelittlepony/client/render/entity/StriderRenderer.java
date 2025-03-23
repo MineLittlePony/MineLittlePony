@@ -2,17 +2,20 @@ package com.minelittlepony.client.render.entity;
 
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
+import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.feature.SaddleFeatureRenderer;
 import net.minecraft.client.render.entity.state.BipedEntityRenderState;
-import net.minecraft.client.render.entity.state.SaddleableRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.passive.StriderEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.api.pony.DefaultPonySkinHelper;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
+import com.minelittlepony.client.model.armour.PonifiedEquipmentRenderer;
 import com.minelittlepony.client.model.entity.SpikeModel;
 
 import java.util.UUID;
@@ -21,12 +24,12 @@ public class StriderRenderer extends MobEntityRenderer<StriderEntity, StriderRen
     public static final Identifier DRAGON_PONIES = MineLittlePony.id("textures/entity/strider/pony");
     public static final Identifier COLD_DRAGON_PONIES = MineLittlePony.id("textures/entity/strider/cold_pony");
 
-    private static final Identifier SADDLE = MineLittlePony.id("textures/entity/strider/strider_saddle_pony.png");
-
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public StriderRenderer(EntityRendererFactory.Context context) {
         super(context, ModelType.STRIDER.createModel(), 0.5F);
-        addFeature(new SaddleFeatureRenderer(this, ModelType.STRIDER_SADDLE.createModel(), SADDLE));
+        addFeature(new SaddleFeatureRenderer<>(this, new PonifiedEquipmentRenderer(context.getEquipmentModelLoader()),
+                ModelType.STRIDER_SADDLE.createModel(),
+                EquipmentModel.LayerType.STRIDER_SADDLE,
+                state -> state.saddleStack));
     }
 
     @Override
@@ -39,10 +42,10 @@ public class StriderRenderer extends MobEntityRenderer<StriderEntity, StriderRen
         super.updateRenderState(entity, state, tickDelta);
         state.uuid = entity.getUuid();
         state.cold = entity.isCold();
-        state.saddled = entity.isSaddled();
+        state.saddleStack = entity.getEquippedStack(EquipmentSlot.SADDLE);
         state.flailAmount = 1 + (float)MathHelper.clamp(entity.getVelocity().y * 10, 0, 7);
-        state.limbFrequency *= 2;
-        state.limbAmplitudeMultiplier *= 1.5F;
+        state.limbSwingAnimationProgress *= 2;
+        state.limbSwingAmplitude *= 1.5F;
 
     }
 
@@ -69,15 +72,11 @@ public class StriderRenderer extends MobEntityRenderer<StriderEntity, StriderRen
         return state.cold;
     }
 
-    public static class State extends BipedEntityRenderState implements SaddleableRenderState {
+    public static class State extends BipedEntityRenderState {
         public UUID uuid;
         public boolean cold;
-        public boolean saddled;
+        public ItemStack saddleStack = ItemStack.EMPTY;
         public float flailAmount;
 
-        @Override
-        public boolean isSaddled() {
-            return saddled;
-        }
     }
 }

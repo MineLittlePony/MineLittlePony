@@ -2,6 +2,7 @@ package com.minelittlepony.client.render.entity.npc.textures;
 
 import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.*;
 
@@ -49,7 +50,7 @@ public class SillyPonyTextureSupplier {
             hasMuffinHat = SillyPonyTextureSupplier.isCrownPony(entity);
 
             villagerData = ((VillagerDataContainer)entity).getVillagerData();
-            VillagerProfession profession = villagerData.getProfession();
+            RegistryKey<VillagerProfession> profession = villagerData.profession().getKey().orElse(VillagerProfession.NONE);
 
             hasSaddlebags = !isDerpy && profession != VillagerProfession.NONE && (
                     profession == VillagerProfession.CARTOGRAPHER

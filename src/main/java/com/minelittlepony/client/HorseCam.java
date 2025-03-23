@@ -88,7 +88,7 @@ public class HorseCam {
     public static float rescaleCameraPitch(double toHeight, float originalPitch) {
         MinecraftClient client = MinecraftClient.getInstance();
         PlayerEntity player = client.player;
-        client.gameRenderer.updateCrosshairTarget(client.getRenderTickCounter().getTickDelta(false));
+        client.gameRenderer.updateCrosshairTarget(client.getRenderTickCounter().getTickProgress(false));
         HitResult hit = client.crosshairTarget;
 
         if (client.targetedEntity != null) {

@@ -202,7 +202,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
 
             if (!ArmorFeatureRenderer.hasModel(stack, EquipmentSlot.HEAD)) {
                 ItemRenderState item = new ItemRenderState();
-                resolver.updateForLivingEntity(item, stack, ModelTransformationMode.HEAD, false, entity);
+                resolver.updateForLivingEntity(item, stack, ItemDisplayContext.HEAD, entity);
                 if (!item.isEmpty()) {
                     return new EquippedHeadRenderState(item, null, null);
                 }

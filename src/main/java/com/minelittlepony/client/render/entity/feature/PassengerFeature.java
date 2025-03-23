@@ -59,7 +59,7 @@ public class PassengerFeature<
         final double parrotModelHeight = 1.5;
 
         getContextModel().transform(state, BodyPart.BACK, matrices);
-        getContextModel().body.rotate(matrices);
+        getContextModel().body.applyTransform(matrices);
 
         matrices.translate(0, -1.28, 0);
         matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(left ? -5 : 5));
@@ -68,9 +68,9 @@ public class PassengerFeature<
         matrices.translate(left ? 0.25 : -0.25, -parrotModelHeight, 0.45);
 
         parrotState.age = state.age;
-        parrotState.limbFrequency = state.limbFrequency;
-        parrotState.limbAmplitudeMultiplier = state.limbAmplitudeMultiplier;
-        parrotState.yawDegrees = headYaw;
+        parrotState.limbSwingAnimationProgress = state.limbSwingAnimationProgress;
+        parrotState.limbSwingAmplitude = state.limbSwingAmplitude;
+        parrotState.relativeHeadYaw = headYaw;
         parrotState.pitch = headPitch;
         model.setAngles(parrotState);
         model.render(matrices, vertexConsumers.getBuffer(model.getLayer(ParrotEntityRenderer.getTexture(parrotVariant))), light, OverlayTexture.DEFAULT_UV);

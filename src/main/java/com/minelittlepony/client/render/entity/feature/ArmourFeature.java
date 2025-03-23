@@ -139,7 +139,7 @@ public class ArmourFeature<
         private static BodyPart getBodyPart(EquipmentSlot slot) {
             return switch (slot) {
                 case HEAD -> BodyPart.HEAD;
-                case CHEST, BODY -> BodyPart.BODY;
+                case CHEST, BODY, SADDLE -> BodyPart.BODY;
                 case LEGS, FEET, MAINHAND, OFFHAND -> BodyPart.LEGS;
             };
         }

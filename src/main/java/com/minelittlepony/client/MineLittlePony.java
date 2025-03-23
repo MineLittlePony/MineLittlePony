@@ -4,8 +4,7 @@ import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.events.ClientChannel;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.armour.ArmourTextureResolver;
-import com.minelittlepony.client.render.MobRenderers;
-import com.minelittlepony.client.render.PonyRenderDispatcher;
+import com.minelittlepony.client.render.*;
 import com.minelittlepony.common.client.gui.VisibilityMode;
 import com.minelittlepony.common.client.gui.element.Button;
 import com.minelittlepony.common.client.gui.sprite.TextureSprite;
@@ -98,6 +97,7 @@ public class MineLittlePony implements ClientModInitializer {
 
         ClientChannel.bootstrap();
         ModelType.bootstrap();
+        MagicGlow.bootstrap();
 
         FabricLoader.getInstance().getEntrypoints("minelittlepony", ClientModInitializer.class).forEach(ClientModInitializer::onInitializeClient);
     }

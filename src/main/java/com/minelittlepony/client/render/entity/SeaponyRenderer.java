@@ -93,9 +93,9 @@ public class SeaponyRenderer extends PonyRenderer<GuardianEntity, SeaponyRendere
     }
 
     public static Vec3d getScaledCameraPosVec(GuardianEntity entity, float tickDelta, float scale) {
-        double d = MathHelper.lerp((double)tickDelta, entity.prevX, entity.getX());
-        double e = MathHelper.lerp((double)tickDelta, entity.prevY, entity.getY()) + ((double)entity.getStandingEyeHeight() * scale);
-        double f = MathHelper.lerp((double)tickDelta, entity.prevZ, entity.getZ());
+        double d = MathHelper.lerp((double)tickDelta, entity.lastX, entity.getX());
+        double e = MathHelper.lerp((double)tickDelta, entity.lastY, entity.getY()) + ((double)entity.getStandingEyeHeight() * scale);
+        double f = MathHelper.lerp((double)tickDelta, entity.lastZ, entity.getZ());
         return new Vec3d(d, e, f);
     }
 

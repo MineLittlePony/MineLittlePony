@@ -65,10 +65,10 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
         if (state.handSwingProgress > 0) {
             flap = MathHelper.sin(MathHelper.sqrt(state.handSwingProgress) * MathHelper.TAU);
         } else {
-            float pi = MathHelper.PI * (float) Math.pow(state.limbAmplitudeMultiplier, 16);
+            float pi = MathHelper.PI * (float) Math.pow(state.limbSwingAmplitude, 16);
 
             float mve = state.limbAmplitudeInverse * 0.6662f; // magic number ahoy (actually 2/3)
-            float srt = state.limbAmplitudeMultiplier * 0.25F;
+            float srt = state.limbSwingAmplitude * 0.25F;
 
             flap = MathHelper.cos(mve + pi) * srt;
         }
@@ -156,7 +156,7 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
         }
 
         public void setAngles(S state, float swing, float roll) {
-            root.pivotY = root.getDefaultTransform().pivotY() + (bags ? 0.198F / wingScale : 0);
+            root.originY = root.getDefaultTransform().y() + (bags ? 0.198F / wingScale : 0);
             root.xScale = wingScale;
             root.yScale = wingScale;
             root.zScale = wingScale;

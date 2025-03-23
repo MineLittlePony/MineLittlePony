@@ -21,8 +21,8 @@ public class PiglinPonyModel extends ZomponyModel<PonyPiglinRenderer.State> {
     public void setModelAngles(PonyPiglinRenderer.State state) {
         super.setModelAngles(state);
 
-        float progress = state.age * 0.1F + state.limbFrequency * 0.5F;
-        float range = 0.08F + state.limbAmplitudeMultiplier * 0.4F;
+        float progress = state.age * 0.1F + state.limbSwingAnimationProgress * 0.5F;
+        float range = 0.08F + state.limbSwingAmplitude * 0.4F;
         rightFlap.roll = -0.5235988F - MathHelper.cos(progress * 1.2F) * range;
         leftFlap.roll =   0.5235988F + MathHelper.cos(progress) * range;
     }
@@ -41,9 +41,9 @@ public class PiglinPonyModel extends ZomponyModel<PonyPiglinRenderer.State> {
         if (state.activity == PiglinActivity.ADMIRING_ITEM) {
             leftArm.yaw = 0.5F;
             leftArm.pitch = -1.9F;
-            leftArm.pivotY += 4;
-            leftArm.pivotZ += 3;
-            leftArm.pivotX += 2;
+            leftArm.originY += 4;
+            leftArm.originZ += 3;
+            leftArm.originX += 2;
             head.pitch = MathHelper.sin(state.age / 12) / 6 + 0.5F;
             head.yaw = 0;
 
@@ -52,15 +52,15 @@ public class PiglinPonyModel extends ZomponyModel<PonyPiglinRenderer.State> {
 
             float speed = state.age / 60;
 
-            head.pivotX = MathHelper.sin(speed * 10);
-            head.pivotY = MathHelper.sin(speed * 40) + 0.4F;
+            head.originX = MathHelper.sin(speed * 10);
+            head.originY = MathHelper.sin(speed * 40) + 0.4F;
             head.pitch += MathHelper.sin(speed * 40) / 4 + 0.4F;
 
             float bodyBob = MathHelper.sin(speed * 40) * 0.35F;
             float legBob = MathHelper.sin(speed * 40) * 0.25F;
 
-            neck.pivotY = bodyBob;
-            body.pivotY = bodyBob;
+            neck.originY = bodyBob;
+            body.originY = bodyBob;
 
             leftLeg.pitch += legBob;
             rightLeg.pitch -= legBob;

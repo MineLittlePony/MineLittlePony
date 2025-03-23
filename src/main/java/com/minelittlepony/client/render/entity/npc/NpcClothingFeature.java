@@ -6,7 +6,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.village.VillagerData;
@@ -55,10 +55,10 @@ class NpcClothingFeature<
         VillagerData data = entity.villagerData;
         M entityModel = getContextModel();
 
-        if (entity.baby || data.getProfession() == VillagerProfession.NONE) {
-            Identifier typeSkin = createTexture("type", Registries.VILLAGER_TYPE.getId(data.getType()));
+        if (entity.baby || data.profession().getKey().orElse(VillagerProfession.NONE).equals(VillagerProfession.NONE)) {
+            Identifier typeSkin = createTexture("type", data.type().getKey().orElse(VillagerType.PLAINS).getValue());
             if (!ResourceUtil.textureExists(typeSkin)) {
-                typeSkin = createTexture("type", Registries.VILLAGER_TYPE.getId(VillagerType.PLAINS));
+                typeSkin = createTexture("type", VillagerType.PLAINS.getValue());
             }
             renderModel(entityModel, typeSkin, matrixStack, provider, light, entity, Colors.WHITE);
         } else {
@@ -67,17 +67,17 @@ class NpcClothingFeature<
     }
 
     public Identifier getMergedTexture(VillagerData data) {
-        VillagerType type = data.getType();
-        VillagerProfession profession = data.getProfession();
-        int level = MathHelper.clamp(data.getLevel(), 1, LEVEL_TO_ID.size());
+        RegistryKey<VillagerType> type = data.type().getKey().orElse(VillagerType.PLAINS);
+        RegistryKey<VillagerProfession> profession = data.profession().getKey().orElse(VillagerProfession.NONE);
+        int level = MathHelper.clamp(data.level(), 1, LEVEL_TO_ID.size());
 
-        Identifier typeId = Registries.VILLAGER_TYPE.getId(type);
-        Identifier profId = Registries.VILLAGER_PROFESSION.getId(profession);
+        Identifier typeId = type.getValue();
+        Identifier profId = profession.getValue();
 
         Identifier key = MineLittlePony.id((typeId + "/" + profId + "/" + level).replace(':', '_'));
 
         if (loadedTextures.add(key) && !ResourceUtil.textureExists(key)) {
-            TextureFlattener.flatten(computeTextures(typeId, profId, profession == VillagerProfession.NITWIT ? -1 : level), key);
+            TextureFlattener.flatten(computeTextures(typeId, profId, profession.equals(VillagerProfession.NITWIT) ? -1 : level), key);
         }
 
         return key;
@@ -92,7 +92,7 @@ class NpcClothingFeature<
         }
 
         Identifier profTexture = createTexture("profession", profId);
-        skins.add(ResourceUtil.textureExists(profTexture) ? profTexture : createTexture("profession", Identifier.of(VillagerProfession.NITWIT.id())));
+        skins.add(ResourceUtil.textureExists(profTexture) ? profTexture : createTexture("profession", VillagerProfession.NITWIT.getValue()));
 
         if (level != -1) {
             skins.add(createTexture("profession_level", LEVEL_TO_ID.get(level)));
@@ -102,7 +102,7 @@ class NpcClothingFeature<
     }
 
     public Identifier createTexture(S entity, String category) {
-        return createTexture(category, Registries.VILLAGER_PROFESSION.getId(entity.villagerData.getProfession()));
+        return createTexture(category, entity.villagerData.profession().getKey().orElse(VillagerProfession.NONE).getValue());
     }
 
     private Identifier createTexture(String category, Identifier identifier) {

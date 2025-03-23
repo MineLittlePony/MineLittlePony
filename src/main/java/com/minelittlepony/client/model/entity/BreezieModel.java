@@ -28,10 +28,10 @@ public class BreezieModel extends BipedEntityModel<AllayRenderer.State> {
     @Override
     public void setAngles(AllayRenderer.State state) {
 
-        float move = state.limbFrequency;
-        float swing = state.limbAmplitudeMultiplier;
+        float move = state.limbSwingAnimationProgress;
+        float swing = state.limbSwingAmplitude;
 
-        head.yaw = state.yawDegrees * 0.017453292F;
+        head.yaw = state.relativeHeadYaw * 0.017453292F;
         head.pitch = state.pitch * 0.017453292F;
 
         hat.copyTransform(head);
@@ -100,12 +100,12 @@ public class BreezieModel extends BipedEntityModel<AllayRenderer.State> {
 
         leftArm.pitch += body.yaw;
         leftArm.yaw += body.yaw;
-        leftArm.pivotX = cos;
-        leftArm.pivotZ = -sin;
+        leftArm.originX = cos;
+        leftArm.originZ = -sin;
 
         rightArm.yaw += body.yaw;
-        rightArm.pivotX = -cos;
-        rightArm.pivotZ = sin;
+        rightArm.originX = -cos;
+        rightArm.originZ = sin;
 
         float swingAmount = 1 - (float)Math.pow(1 - state.handSwingProgress, 4);
 

@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.entity.npc.textures;
 
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.*;
 
@@ -26,18 +27,18 @@ public class ProfessionTextureSupplier<T extends VillagerDataContainer> implemen
     }
 
     public Identifier apply(VillagerData t) {
-        return getTexture(t.getType(), t.getProfession());
+        return getTexture(t.type().getKey().orElse(VillagerType.PLAINS), t.profession().getKey().orElse(VillagerProfession.NONE));
     }
 
     public static String getKey(VillagerDataContainer container) {
         VillagerData t = container.getVillagerData();
-        return ResourceUtil.format("pony/%s/%s", t.getType(), t.getProfession());
+        return ResourceUtil.format("pony/%s/%s", t.type(), t.profession());
     }
 
-    private Identifier getTexture(final VillagerType type, final VillagerProfession profession) {
+    private Identifier getTexture(final RegistryKey<VillagerType> type, final RegistryKey<VillagerProfession> profession) {
         String key = ResourceUtil.format("pony/%s/%s", type, profession);
         return ResourceUtil.verifyTexture(formatter.apply(key)).orElseGet(() -> {
-            if (type == VillagerType.PLAINS) {
+            if (type.equals(VillagerType.PLAINS)) {
                 // if texture loading fails, use the fallback.
                 return fallback;
             }

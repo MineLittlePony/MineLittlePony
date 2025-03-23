@@ -77,7 +77,7 @@ public interface Gear {
     default <S extends EntityRenderState & PonyModel.AttributedHolder> void transform(S state, PonyModel<S> model, MatrixStack matrices) {
         BodyPart part = getGearLocation();
         model.transform(state, part,  matrices);
-        model.getBodyPart(part).rotate(matrices);
+        model.getBodyPart(part).applyTransform(matrices);
     }
 
     /**

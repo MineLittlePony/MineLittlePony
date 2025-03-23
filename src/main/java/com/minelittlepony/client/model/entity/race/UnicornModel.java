@@ -29,8 +29,8 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> {
         super(tree, smallArms);
         unicornArmRight = tree.getChild("right_cast");
         unicornArmLeft = tree.getChild("left_cast");
-        headRenderList.add(RenderList.of().add(head::rotate).add(SubModel.toRenderList(() -> horn)));
-        mainRenderList.add(withStage(BodyPart.HEAD, RenderList.of().add(head::rotate).add((stack, vertices, overlay, light, color) -> {
+        headRenderList.add(RenderList.of().add(head::applyTransform).add(SubModel.toRenderList(() -> horn)));
+        mainRenderList.add(withStage(BodyPart.HEAD, RenderList.of().add(head::applyTransform).add((stack, vertices, overlay, light, color) -> {
             if (isCasting(currentState)) {
                 horn.renderMagic(stack, vertices, currentState == null ? 0 : currentState.attributes.metadata.glowColor());
             }
@@ -57,10 +57,10 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> {
         super.rotateLegs(state);
 
         unicornArmRight.setAngles(0, 0, 0);
-        unicornArmRight.setPivot(-7, 12, -2);
+        unicornArmRight.setOrigin(-7, 12, -2);
 
         unicornArmLeft.setAngles(0, 0, 0);
-        unicornArmLeft.setPivot(-7, 12, -2);
+        unicornArmLeft.setOrigin(-7, 12, -2);
     }
 
     @Override

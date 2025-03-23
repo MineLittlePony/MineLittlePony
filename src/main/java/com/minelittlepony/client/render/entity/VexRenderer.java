@@ -38,7 +38,7 @@ public class VexRenderer extends MobEntityRenderer<VexEntity, VexRenderer.State,
         state.innerWingRoll = 0.5F + (-MathHelper.sin(state.age + MathHelper.PI / 4F) / 2F) - 0.3F;
         state.innerWingPitch = 0.5F - (MathHelper.cos(state.age + MathHelper.PI / 4F) / 3F) + 0.3F;
         if (entity.hasPassengers()) {
-            state.yawDegrees = 0;
+            state.relativeHeadYaw = 0;
             state.pitch = 0;
         }
     }
