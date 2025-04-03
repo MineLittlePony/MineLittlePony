@@ -4,6 +4,8 @@ transitive-accessible class    net/minecraft/client/render/RenderLayer$MultiPhas
 
 transitive-accessible method   net/minecraft/client/gl/RenderPipelines                                    register             (Lcom/mojang/blaze3d/pipeline/RenderPipeline;)Lcom/mojang/blaze3d/pipeline/RenderPipeline;
 
+transitive-accessible method   net/minecraft/client/render/RenderLayer                                    of                   (Ljava/lang/String;IZZLcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
+
 transitive-accessible method   net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder       texturing            (Lnet/minecraft/client/render/RenderPhase$Texturing;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder;
 transitive-accessible method   net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder       texture              (Lnet/minecraft/client/render/RenderPhase$TextureBase;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder;
 transitive-accessible method   net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder       lightmap             (Lnet/minecraft/client/render/RenderPhase$Lightmap;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder;

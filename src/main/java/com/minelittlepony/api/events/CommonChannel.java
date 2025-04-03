@@ -26,7 +26,7 @@ public class CommonChannel {
         PayloadTypeRegistry.playC2S().register(PonyDataPayload.ID, PonyDataPayload.CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(PonyDataPayload.ID, (packet, context) -> {
-            context.player().server.execute(() -> {
+            context.player().method_69130().getServer().execute(() -> {
                 PonyDataCallback.EVENT.invoker().onPonyDataAvailable(context.player(), packet.data(), EnvType.SERVER);
             });
         });

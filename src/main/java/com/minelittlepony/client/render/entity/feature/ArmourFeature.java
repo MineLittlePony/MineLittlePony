@@ -10,8 +10,6 @@ import com.minelittlepony.client.util.render.MatrixStackUtil;
 
 import java.util.*;
 
-import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
-import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.equipment.EquipmentModelLoader;
@@ -108,7 +106,7 @@ public class ArmourFeature<
     }
 
     private static final class FabricArmorRendererInvoker {
-        private static final Map<ArmorRenderer, Unit> FAILING_RENDERERS = new WeakHashMap<>();
+        //private static final Map<ArmorRenderer, Unit> FAILING_RENDERERS = new WeakHashMap<>();
 
         @SuppressWarnings({"rawtypes", "unchecked"})
         private static <S extends PonyRenderState, V extends ClientPonyModel<S>> boolean renderArmor(
@@ -116,9 +114,9 @@ public class ArmourFeature<
                 Models<V> models, MatrixStack matrices,
                 VertexConsumerProvider vertices, int light, S entity,
                 EquipmentSlot armorSlot, EquipmentModel.LayerType layerType) {
-            ArmorRenderer renderer = ArmorRendererRegistryImpl.get(stack.getItem());
+            //ArmorRenderer renderer = ArmorRendererRegistryImpl.get(stack.getItem());
 
-            if (renderer != null && !FAILING_RENDERERS.containsKey(renderer)) {
+            /*if (renderer != null && !FAILING_RENDERERS.containsKey(renderer)) {
                 MatrixStack isolation = MatrixStackUtil.pushIsolation(matrices);
                 try {
                     isolation.push();
@@ -132,7 +130,7 @@ public class ArmourFeature<
                     MatrixStackUtil.popIsolation();
                 }
                 return true;
-            }
+            }*/
             return false;
         }
 

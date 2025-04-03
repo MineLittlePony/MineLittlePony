@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
@@ -76,8 +76,6 @@ public class MineLittlePony implements ClientModInitializer {
         PonyConfig config = new ClientPonyConfig(GamePaths.getConfigDirectory().resolve("minelp.json"));
         ponyManager = new PonyManagerImpl(config);
         variatedTextures = new VariatedTextureSupplier();
-
-        KeyBindingHelper.registerKeyBinding(keyBinding);
 
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(ponyManager);
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(variatedTextures);

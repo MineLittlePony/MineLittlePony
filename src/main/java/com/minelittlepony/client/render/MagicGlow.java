@@ -17,8 +17,12 @@ import com.google.common.base.Suppliers;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-public interface MagicGlow {
-    RenderPipeline /*ENTITY_EYES*/ ENTITY_MAGIC_GLOW_PIPELINE = RenderPipelines.register(
+public abstract class MagicGlow extends RenderLayer {
+    private MagicGlow() {
+        super(null, 0, false, false, null, null);
+    }
+
+    public static final RenderPipeline /*ENTITY_EYES*/ ENTITY_MAGIC_GLOW_PIPELINE = RenderPipelines.register(
             RenderPipeline.builder(RenderPipelines.MATRICES_COLOR_FOG_SNIPPET)
                 .withLocation("pipeline/magic_glow")
                 .withVertexShader("core/entity")
@@ -35,7 +39,7 @@ public interface MagicGlow {
                 .build()
         );
 
-    Supplier<RenderLayer> MAGIC = Suppliers.memoize(() -> {
+    public static final Supplier<RenderLayer> MAGIC = Suppliers.memoize(() -> {
         return RenderLayer.of("mlp_magic_glow", 1536, false, true, RenderPipelines.ENTITY_EYES, RenderLayer.MultiPhaseParameters.builder()
                 .lightmap(RenderPhase.DISABLE_LIGHTMAP)
                 .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
@@ -43,7 +47,7 @@ public interface MagicGlow {
                 .build(false));
     });
 
-    BiFunction<Identifier, Integer, RenderLayer> TINTED_LAYER = Util.memoize((texture, color) -> {
+    public static final BiFunction<Identifier, Integer, RenderLayer> TINTED_LAYER = Util.memoize((texture, color) -> {
         return RenderLayer.of("mlp_tint_layer", 1536, false, true, RenderPipelines.ENTITY_EYES, RenderLayer.MultiPhaseParameters.builder()
                 .texture(new Colored(texture, color))
                 .lightmap(RenderPhase.DISABLE_LIGHTMAP)
