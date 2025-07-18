@@ -1,6 +1,7 @@
 package com.minelittlepony.client.compat.hdskins;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
@@ -36,12 +37,18 @@ public class PonyBodyWidget extends PlayerBodyWidget<PonyBodyWidget.State> {
     public void updateState(float xPosition, float yPosition, float mouseX, float mouseY, float tickDelta) {
         super.updateState(xPosition, yPosition, mouseX, mouseY, tickDelta);
 
+        boolean sneaking = playerState.isInSneakingPose;
+
         playerState.updateState(MinecraftClient.getInstance().getItemModelManager(),
                 equipment, handStacks,
                 Pony.getManager().getPony(skins.get(SkinType.SKIN).getId()), ModelAttributes.Mode.OTHER
         );
         playerState.smallArms = VanillaModels.isSlim(skins.getSkinVariant());
         playerState.form = getForm();
+
+        playerState.attributes.isSitting = playerState.hasVehicle;
+        playerState.attributes.isCrouching = playerState.isInSneakingPose = sneaking;
+        playerState.attributes.isSleeping = playerState.sleepingInBed;
 
         playerState.wearabledTextures.clear();
         for (Wearable wearable : Wearable.REGISTRY.values()) {
