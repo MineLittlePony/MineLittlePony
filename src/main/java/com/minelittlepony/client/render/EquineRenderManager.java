@@ -1,8 +1,7 @@
 package com.minelittlepony.client.render;
 
 import com.minelittlepony.api.config.PonyConfig;
-import com.minelittlepony.api.events.ClientChannel;
-import com.minelittlepony.api.events.PonyDataCallback;
+import com.minelittlepony.api.events.*;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyData;
@@ -10,6 +9,7 @@ import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.client.PonyDataLoader;
 import com.minelittlepony.client.model.ClientPonyModel;
+import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.client.transform.PonyPosture;
 import com.minelittlepony.mson.api.ModelKey;
@@ -85,6 +85,18 @@ public class EquineRenderManager<
         return DebugBoundingBoxRenderer.applyScale(scale, box);
     }
 
+    public PlayerPonyRenderState completeStateUpdate(PlayerEntityRenderState state) {
+        if (state instanceof PlayerPonyRenderState s) {
+            return s;
+        }
+
+        PlayerPonyRenderState s = ((PreviewRenderState)state).getRenderState();
+        models = modelsLookup.apply(s.pony.race());
+        context.setModel(models.body());
+        ((PreviewRenderState)state).completeStateUpdate(models.body());
+        return s;
+    }
+
     public void updateState(T entity, S state, ModelAttributes.Mode mode, ItemModelManager resolver) {
         Pony pony = context.getEntityPony(entity);
         models = modelsLookup.apply(pony.race());
@@ -103,7 +115,7 @@ public class EquineRenderManager<
         }
     }
 
-    private static ItemStack getWithoutGlint(ItemStack stack) {
+    public static ItemStack getWithoutGlint(ItemStack stack) {
         if (!stack.isEmpty()) {
             stack = stack.copy();
             stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
@@ -178,21 +190,19 @@ public class EquineRenderManager<
             }
             this.seated = seated;
 
-            if (!(player instanceof PreviewModel)) {
-                @Nullable
-                PlayerEntity clientPlayer = MinecraftClient.getInstance().player;
+            @Nullable
+            PlayerEntity clientPlayer = MinecraftClient.getInstance().player;
 
-                if (ClientChannel.isRegistered() && pony.compareTo(lastTransmittedPony.orElse(null)) != 0) {
-                    if (clientPlayer != null && (Objects.equals(player, clientPlayer) || Objects.equals(player.getGameProfile(), clientPlayer.getGameProfile()))) {
-                        if (ClientChannel.broadcastPonyData(pony.metadata())) {
-                            lastTransmittedPony = Optional.of(pony);
-                        }
+            if (ClientChannel.isRegistered() && pony.compareTo(lastTransmittedPony.orElse(null)) != 0) {
+                if (clientPlayer != null && (Objects.equals(player, clientPlayer) || Objects.equals(player.getGameProfile(), clientPlayer.getGameProfile()))) {
+                    if (ClientChannel.broadcastPonyData(pony.metadata())) {
+                        lastTransmittedPony = Optional.of(pony);
                     }
                 }
+            }
 
-                if (changed) {
-                    PonyDataCallback.EVENT.invoker().onPonyDataAvailable(player, pony.metadata(), EnvType.CLIENT);
-                }
+            if (changed) {
+                PonyDataCallback.EVENT.invoker().onPonyDataAvailable(player, pony.metadata(), EnvType.CLIENT);
             }
         }
     }

@@ -3,37 +3,54 @@ package com.minelittlepony.client.compat.hdskins;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
+import org.joml.Quaternionf;
+
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.api.pony.meta.TValue;
 import com.minelittlepony.common.client.gui.ITextContext;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.hdskins.client.gui.Carousel;
-import com.minelittlepony.hdskins.client.gui.player.DummyPlayer;
 
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-class LegendOverlayWidget implements Carousel.Element, ITextContext {
+class LegendOverlayWidget implements Carousel.Element<DummyPonyRenderState>, ITextContext {
     private static final Bounds LEGEND_BLOCK_BOUNDS = new Bounds(0, 0, 10, 10);
 
     private final Bounds frame;
 
-    public LegendOverlayWidget(Bounds frame) {
+    private final Supplier<DummyPonyRenderState> player;
+
+    public LegendOverlayWidget(Bounds frame, Supplier<DummyPonyRenderState> player) {
         this.frame = frame;
+        this.player = player;
     }
 
     @Override
-    public void render(DummyPlayer player, DrawContext context, int mouseX, int mouseY) {
-        PonyData data = Pony.getManager().getPony(player).metadata();
+    public void tick() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void updateState(float xPosition, float yPosition, float mouseX, float mouseY, float tickDelta) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void render(DrawContext context, Bounds bounds, int mouseX, int mouseY, Quaternionf rotation) {
+        PonyData data = Pony.getManager().getPony(player.get().skinTextures.texture()).metadata();
         int[] index = new int[1];
         data.attributes().forEach((key, value) -> {
-            context.getMatrices().push();
+            context.getMatrices().pushMatrix();
             int i = index[0]++;
             int x = frame.left;
             int y = frame.top + (i * 10 + 20);
-            context.getMatrices().translate(x, y, 1);
+            context.getMatrices().translate(x, y);
             drawLegendBlock(context, 0, 0, 0, mouseX - x, mouseY - y, key, value);
-            context.getMatrices().pop();
+            context.getMatrices().popMatrix();
         });
     }
 

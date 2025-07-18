@@ -58,7 +58,7 @@ class GuiSkinsMineLP extends GuiSkins {
     }
 
     @Override
-    public DualCarouselWidget createPreviewer() {
+    public DualCarouselWidget<?> createPreviewer() {
         return new PonifiedDualCarouselWidget(this);
     }
 

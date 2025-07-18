@@ -1,20 +1,24 @@
 package com.minelittlepony.client.render;
 
 import com.google.common.base.Predicates;
-import com.minelittlepony.api.model.PreviewModel;
+import com.minelittlepony.api.model.PreviewRenderState;
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.*;
+import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.mson.api.Mson;
 
+import java.util.function.Function;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.*;
 import net.minecraft.client.util.SkinTextures;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.Identifier;
 
 /**
  * Render manager responsible for replacing and restoring entity renderers when the client settings change.
@@ -24,13 +28,8 @@ public class PonyRenderDispatcher {
 
     public PonyRenderDispatcher() {
         PonyForm.register(PonyForm.DEFAULT, Predicates.alwaysTrue(), PlayerPonyRenderer::new);
-        PonyForm.register(PonyForm.SEAPONY, PonyPosture::hasSeaponyForm, (context, slimArms) -> new AquaticPlayerPonyRenderer(context, slimArms, DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, entity -> {
-            if (entity instanceof PreviewModel preview) {
-                return preview.getForm() == PonyForm.SEAPONY;
-            }
-            return PonyPosture.hasSeaponyForm(entity) && PonyPosture.isPartiallySubmerged(entity);
-        }));
-        PonyForm.register(PonyForm.NIRIK, PonyPosture::hasNirikForm, (context, slimArms) -> new FormChangingPlayerPonyRenderer(context, slimArms, DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, PonyPosture::hasNirikForm));
+        PonyForm.register(PonyForm.SEAPONY, PonyPosture::hasSeaponyForm, (context, slimArms) -> new AquaticPlayerPonyRenderer(context, slimArms, DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, PonyPosture::isSeaponyFormActive));
+        PonyForm.register(PonyForm.NIRIK, PonyPosture::hasNirikForm, (context, slimArms) -> new FormChangingPlayerPonyRenderer(context, slimArms, DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, PonyPosture::isNirikFormActive));
     }
 
     public LevitatingItemRenderer getMagicRenderer() {
@@ -43,13 +42,22 @@ public class PonyRenderDispatcher {
     public void initialise(EntityRenderDispatcher manager, boolean force) {
         PonyForm.REGISTRY.values().forEach(form -> {
             for (SkinTextures.Model armShape : SkinTextures.Model.values()) {
+                Identifier id = form.id().withSuffixedPath("/" + armShape.getName());
+                Function<EntityRendererFactory.Context, ? extends PlayerPonyRenderer> factory = context -> form.factory().create(context, armShape == SkinTextures.Model.SLIM);
                 Mson.getInstance().getEntityRendererRegistry().registerPlayerRenderer(
-                        form.id().withSuffixedPath("/" + armShape.getName()),
+                        id,
                         player -> !Pony.getManager().getPony(player).race().isHuman()
                                     && player.getSkinTextures().model() == armShape
-                                    && form.shouldApply().test(player) && PonyForm.of(player) == form,
-                        context -> form.factory().create(context, armShape == SkinTextures.Model.SLIM)
+                                    && form.shouldApply().test(player)
+                                    && PonyForm.of(player) == form,
+                        factory
                 );
+                Mson.getInstance().getEntityRendererRegistry().registerPlayerStateRenderer(id, state -> {
+                    PlayerPonyRenderState s = state instanceof PreviewRenderState m ? m.getRenderState() : state instanceof PlayerPonyRenderState a ? a : null;
+                    return s != null && !s.race.isHuman()
+                        && s.smallArms == (armShape == SkinTextures.Model.SLIM)
+                        && form.id().equals(s.form);
+                }, factory);
             }
         });
         MobRenderers.REGISTRY.values().forEach(i -> i.changer().accept(i, Mson.getInstance().getEntityRendererRegistry()));

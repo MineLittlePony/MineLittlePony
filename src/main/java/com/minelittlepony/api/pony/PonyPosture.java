@@ -1,7 +1,6 @@
 package com.minelittlepony.api.pony;
 
 import com.minelittlepony.api.pony.meta.Race;
-import com.minelittlepony.api.model.PreviewModel;
 
 import java.util.Optional;
 
@@ -85,9 +84,6 @@ public final class PonyPosture {
     }
 
     public static boolean hasSeaponyForm(LivingEntity entity) {
-        if (entity instanceof PreviewModel preview) {
-            return preview.getForm() == PonyForm.SEAPONY;
-        }
         return Pony.getManager().getPony(entity).filter(pony -> {
             return (pony.race() == Race.SEAPONY
                     || (entity instanceof PlayerEntity player && SkinsProxy.getInstance().getSkin(DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, player).isPresent())
@@ -95,14 +91,19 @@ public final class PonyPosture {
         }).isPresent();
     }
 
+    public static boolean isSeaponyFormActive(LivingEntity entity) {
+        return hasSeaponyForm(entity) && isPartiallySubmerged(entity);
+    }
+
     public static boolean hasNirikForm(LivingEntity entity) {
-        if (entity instanceof PreviewModel preview) {
-            return preview.getForm() == PonyForm.NIRIK;
-        }
         return Pony.getManager().getPony(entity).filter(pony -> {
             return (pony.race() == Race.KIRIN
                     && (entity instanceof PlayerEntity player && SkinsProxy.getInstance().getSkin(DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, player).isPresent())
             );
         }).isPresent();
+    }
+
+    public static boolean isNirikFormActive(LivingEntity entity) {
+        return false;
     }
 }

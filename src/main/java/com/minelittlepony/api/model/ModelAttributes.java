@@ -8,6 +8,7 @@ import com.minelittlepony.util.MathUtil;
 
 import java.util.*;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,6 +16,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+
+import org.jetbrains.annotations.Nullable;
 
 public class ModelAttributes {
     /**
@@ -128,8 +131,8 @@ public class ModelAttributes {
 
     public Size size = SizePreset.NORMAL;
 
-    public Arm mainArm;
-    public Hand activeHand;
+    public Arm mainArm = Arm.RIGHT;
+    public Hand activeHand = Hand.MAIN_HAND;
     @Deprecated
     public ItemStack heldStack = ItemStack.EMPTY;
     public int itemUseTime;
@@ -163,35 +166,35 @@ public class ModelAttributes {
         return WingedPonyModel.WINGS_RAISED_ANGLE;
     }
 
-    public void updateLivingState(LivingEntity entity, Pony pony, Mode mode) {
+    public void updateLivingState(@Nullable LivingEntity entity, Pony pony, Mode mode) {
         metadata = pony.metadata();
-        size = entity.isBaby() ? SizePreset.FOAL : pony.size();
+        size = entity != null && entity.isBaby() ? SizePreset.FOAL : pony.size();
         isPlayer = entity instanceof PlayerEntity;
-        visualHeight = entity.getHeight() + 0.125F;
-        isSitting = PonyPosture.isSitting(entity);
-        isSleeping = entity.isAlive() && entity.isSleeping();;
+        visualHeight = (entity == null ? PlayerEntity.DEFAULT_EYE_HEIGHT : entity.getHeight()) + 0.125F;
+        isSitting = entity != null && PonyPosture.isSitting(entity);
+        isSleeping = entity != null && entity.isAlive() && entity.isSleeping();;
         isLyingDown = isSleeping;
-        if (isPlayer) {
+        if (isPlayer && entity != null) {
             boolean moving = entity.getVelocity().multiply(1, 0, 1).length() == 0 && entity.isSneaking();
             isLyingDown |= getMainInterpolator().interpolate("lyingDown", moving ? 10 : 0, 200) >= 9;
         }
 
-        isCrouching = !isLyingDown && !isSitting && mode == Mode.THIRD_PERSON && PonyPosture.isCrouching(pony, entity);
-        isFlying = !isLyingDown && mode == Mode.THIRD_PERSON && PonyPosture.isFlying(entity);
+        isCrouching = !isLyingDown && !isSitting && mode == Mode.THIRD_PERSON && entity != null && PonyPosture.isCrouching(pony, entity);
+        isFlying = !isLyingDown && mode == Mode.THIRD_PERSON && entity != null && PonyPosture.isFlying(entity);
         isGliding = entity.isGliding();
-        isSwimming = mode == Mode.THIRD_PERSON && PonyPosture.isSwimming(entity);
+        isSwimming = mode == Mode.THIRD_PERSON && entity != null && PonyPosture.isSwimming(entity);
         isSwimmingRotated = isSwimming;
-        isRiptide = entity.isUsingRiptide();
-        isRidingInteractive = PonyPosture.isRidingAPony(entity);
-        if (!(entity instanceof PreviewModel)) {
+        isRiptide = entity != null && entity.isUsingRiptide();
+        isRidingInteractive = entity != null && PonyPosture.isRidingAPony(entity);
+        if (entity != null) {
             interpolatorId = entity.getUuid();
         }
-        isLeftHanded = entity.getMainArm() == Arm.LEFT;
+        isLeftHanded = entity != null && entity.getMainArm() == Arm.LEFT;
         isHorsey = PonyConfig.getInstance().horsieMode.get();
-        featureSkins = SkinsProxy.getInstance().getAvailableSkins(entity);
-        mainArm = entity.getMainArm();
-        activeHand = entity.getActiveHand();
-        itemUseTime = entity.getItemUseTimeLeft();
+        featureSkins = entity == null ? Set.of() : SkinsProxy.getInstance().getAvailableSkins(entity);
+        mainArm = entity == null ? MinecraftClient.getInstance().options.getMainArm().getValue() : entity.getMainArm();
+        activeHand = entity == null ? Hand.MAIN_HAND : entity.getActiveHand();
+        itemUseTime = entity == null ? 0 : entity.getItemUseTimeLeft();
     }
 
     public Interpolator getMainInterpolator() {

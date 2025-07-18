@@ -1,29 +1,27 @@
 package com.minelittlepony.client.compat.hdskins;
 
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.client.render.entity.SeaponyRenderer;
 import com.minelittlepony.hdskins.client.gui.DualCarouselWidget;
 import com.minelittlepony.hdskins.client.gui.GuiSkins;
-import com.minelittlepony.hdskins.client.gui.player.DummyPlayer;
 import com.minelittlepony.hdskins.client.gui.player.skins.PlayerSkins;
 import com.minelittlepony.hdskins.client.resources.NativeImageFilters;
 import com.minelittlepony.hdskins.client.resources.TextureLoader;
 import com.minelittlepony.hdskins.profile.SkinType;
 
-class PonifiedDualCarouselWidget extends DualCarouselWidget {
+class PonifiedDualCarouselWidget extends DualCarouselWidget<DummyPonyRenderState> {
 
     public PonifiedDualCarouselWidget(GuiSkins screen) {
         super(screen);
-        local.addElement(new LegendOverlayWidget(local.bounds));
-        remote.addElement(new LegendOverlayWidget(remote.bounds));
+        local.addElement(new LegendOverlayWidget(local.bounds, () -> getLocal().getEntity().playerState));
+        remote.addElement(new LegendOverlayWidget(remote.bounds, () -> getRemote().getEntity().playerState));
     }
 
     @Override
-    protected DummyPlayer createEntity(ClientWorld world, PlayerSkins<?> textures) {
-        return new DummyPony(world, textures);
+    protected DummyPonyRenderState createEntity(PlayerSkins<?> textures) {
+        return new DummyPonyRenderState(textures);
     }
 
     @Override

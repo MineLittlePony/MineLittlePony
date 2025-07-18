@@ -31,8 +31,7 @@ import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.transform.PonyPosture;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class PonyRenderState extends PlayerEntityRenderState implements PonyModel.AttributedHolder {
     public final ModelAttributes attributes = new ModelAttributes();
@@ -59,6 +58,46 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
 
     public final List<EquippedHeadRenderState> equippedHeads = new ArrayList<>();
 
+    public void updateState(ItemModelManager resolver,
+            Map<EquipmentSlot, ItemStack> equipment,
+            Map<Arm, ItemStack> armStacks,
+            Pony pony, ModelAttributes.Mode mode) {
+        this.equippedHeadStack = equipment.getOrDefault(EquipmentSlot.HEAD, ItemStack.EMPTY);
+        this.pony = pony;
+        attributes.updateLivingState(null, pony, mode);
+        baby = attributes.size == SizePreset.FOAL;
+        race = pony.race();
+        vehicleOffset = 0;
+        riderOffset = getRiderYOffset();
+        nameplateYOffset = getNamePlateYOffset();
+        legOutset = getLegOutset();
+        isInSneakingPose = attributes.isCrouching && !attributes.isLyingDown;
+        sleepingInBed = false;
+        submergedInWater = false;
+        wobbleAmount = handSwingProgress <= 0 ? 0 : MathHelper.sin(MathHelper.sqrt(handSwingProgress) * MathHelper.PI * 2) * 0.04F;
+        if (attributes.isSitting) {
+            pose = EntityPose.SITTING;
+        }
+
+        isTechnoblade = false;
+
+        leftHeldItem.update(armStacks.getOrDefault(Arm.LEFT, ItemStack.EMPTY));
+        rightHeldItem.update(armStacks.getOrDefault(Arm.RIGHT, ItemStack.EMPTY));
+
+        // Adjust cape angles
+        // capePitch
+        field_53537 *= 0.3F;
+        // capeRoll
+        field_53538 *= 3F;
+
+        equippedHeads.clear();
+        ItemStack stack = equipment.getOrDefault(EquipmentSlot.HEAD, ItemStack.EMPTY);
+        EquippedHeadRenderState state = EquippedHeadRenderState.of(resolver, stack, null);
+        if (!state.isEmpty()) {
+            equippedHeads.add(state);
+        }
+    }
+
     public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
         this.equippedHeadStack = entity.getEquippedStack(EquipmentSlot.HEAD);
         this.pony = pony;
@@ -68,7 +107,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         race = pony.race();
         vehicleOffset = hasVehicle ? entity.getVehicle().getEyeHeight(pose) : 0;
         riderOffset = getRiderYOffset();
-        nameplateYOffset = getNamePlateYOffset(entity);
+        nameplateYOffset = getNamePlateYOffset();
         legOutset = getLegOutset();
         isInSneakingPose = attributes.isCrouching && !attributes.isLyingDown;
         sleepingInBed = entity.getSleepingPosition().isPresent() && entity.getWorld().getBlockState(entity.getSleepingPosition().get()).getBlock() instanceof BedBlock;
@@ -147,7 +186,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         return attributes.isEmbedded(wearable) || attributes.featureSkins.contains(wearable.getId()) || isTechnoblade && wearable == Wearable.CROWN;
     }
 
-    private float getNamePlateYOffset(LivingEntity entity) {
+    private float getNamePlateYOffset() {
         // We start by negating the height calculation done by mahjong.
         float y = -(height + 0.5F);
 
@@ -191,7 +230,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
             @Nullable ProfileComponent wearingSkullProfile) {
         static final EquippedHeadRenderState EMPTY = new EquippedHeadRenderState(new ItemRenderState(), null, null);
 
-        public static EquippedHeadRenderState of(ItemModelManager resolver, ItemStack stack, LivingEntity entity) {
+        public static EquippedHeadRenderState of(ItemModelManager resolver, ItemStack stack, @Nullable LivingEntity entity) {
             if (stack.isEmpty()) {
                 return EMPTY;
             }
@@ -202,7 +241,11 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
 
             if (!ArmorFeatureRenderer.hasModel(stack, EquipmentSlot.HEAD)) {
                 ItemRenderState item = new ItemRenderState();
-                resolver.updateForLivingEntity(item, stack, ItemDisplayContext.HEAD, entity);
+                if (entity != null) {
+                    resolver.updateForLivingEntity(item, stack, ItemDisplayContext.HEAD, entity);
+                } else {
+                    resolver.clearAndUpdate(item, stack, ItemDisplayContext.HEAD, null, null, 0);
+                }
                 if (!item.isEmpty()) {
                     return new EquippedHeadRenderState(item, null, null);
                 }

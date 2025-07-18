@@ -9,8 +9,6 @@ import com.minelittlepony.common.client.gui.element.Button;
 import com.minelittlepony.hdskins.HDSkinsServer;
 import com.minelittlepony.hdskins.client.*;
 import com.minelittlepony.hdskins.client.gui.GuiSkins;
-import com.minelittlepony.hdskins.client.gui.player.DummyPlayer;
-import com.minelittlepony.hdskins.client.gui.player.skins.PlayerSkins.PlayerSkin;
 import com.minelittlepony.hdskins.client.profile.SkinLoader.ProvidedSkins;
 import com.minelittlepony.hdskins.profile.SkinType;
 import com.mojang.authlib.GameProfile;
@@ -109,11 +107,6 @@ public class MineLPHDSkins extends ClientSkinsProxy implements ClientModInitiali
     }
 
     public Set<Identifier> getAvailableSkins(Entity entity) {
-
-        if (entity instanceof DummyPlayer dummy) {
-            return dummy.getTextures().getProvidedSkinTypes();
-        }
-
         if (entity instanceof AbstractClientPlayerEntity player) {
             return PlayerSkins.of(player)
                     .map(PlayerSkins::layers)
@@ -126,26 +119,6 @@ public class MineLPHDSkins extends ClientSkinsProxy implements ClientModInitiali
     }
 
     private Optional<Identifier> getSkin(SkinType type, AbstractClientPlayerEntity player) {
-        if (player instanceof DummyPlayer dummy) {
-            PlayerSkin skin = dummy.getTextures().get(type);
-
-            if (skin.isReady() || getAvailableSkins(player).contains(type.getId())) {
-                return Optional.of(skin.getId());
-            }
-
-            PlayerSkin main = dummy.getTextures().get(SkinType.SKIN);
-            Wearable wearable = Wearable.REGISTRY.getOrDefault(type.getId(), Wearable.NONE);
-            PonyData metadata = Pony.getManager().getPony(main.getId()).metadata();
-            if (wearable != Wearable.NONE && metadata.gear().matches(wearable)) {
-
-                if (wearable.isSaddlebags() && metadata.race().supportsLegacySaddlebags()) {
-                    return Optional.of(main.getId());
-                }
-
-                return Optional.of(wearable.getDefaultTexture());
-            }
-        }
-
         return Optional.of(player)
                 .flatMap(PlayerSkins::of)
                 .map(PlayerSkins::layers)
