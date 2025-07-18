@@ -10,7 +10,6 @@ import net.minecraft.util.math.ColorHelper;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DepthTestFunction;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.google.common.base.Suppliers;
 
@@ -19,7 +18,7 @@ import java.util.function.Supplier;
 
 public interface MagicGlow {
     RenderPipeline /*ENTITY_EYES*/ ENTITY_MAGIC_GLOW_PIPELINE = RenderPipelines.register(
-            RenderPipeline.builder(RenderPipelines.MATRICES_COLOR_FOG_SNIPPET)
+            RenderPipeline.builder(RenderPipelines.TRANSFORMS_PROJECTION_FOG_SNIPPET)
                 .withLocation("pipeline/magic_glow")
                 .withVertexShader("core/entity")
                 .withFragmentShader("core/entity")
@@ -36,15 +35,16 @@ public interface MagicGlow {
         );
 
     Supplier<RenderLayer> MAGIC = Suppliers.memoize(() -> {
-        return RenderLayer.of("mlp_magic_glow", 1536, false, true, RenderPipelines.ENTITY_EYES, RenderLayer.MultiPhaseParameters.builder()
+        return RenderLayer.of("mlp_magic_glow", 1536, false, true, ENTITY_MAGIC_GLOW_PIPELINE, RenderLayer.MultiPhaseParameters.builder()
                 .lightmap(RenderPhase.DISABLE_LIGHTMAP)
                 .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
                 .target(RenderPhase.TRANSLUCENT_TARGET)
                 .build(false));
     });
 
+    @Deprecated
     BiFunction<Identifier, Integer, RenderLayer> TINTED_LAYER = Util.memoize((texture, color) -> {
-        return RenderLayer.of("mlp_tint_layer", 1536, false, true, RenderPipelines.ENTITY_EYES, RenderLayer.MultiPhaseParameters.builder()
+        return RenderLayer.of("mlp_tint_layer", 1536, false, true, ENTITY_MAGIC_GLOW_PIPELINE, RenderLayer.MultiPhaseParameters.builder()
                 .texture(new Colored(texture, color))
                 .lightmap(RenderPhase.DISABLE_LIGHTMAP)
                 .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
@@ -56,12 +56,14 @@ public interface MagicGlow {
         return MAGIC.get();
     }
 
+    @Deprecated
     public static RenderLayer getColoured(Identifier texture, int color) {
         return TINTED_LAYER.apply(texture, color);
     }
 
     public static void bootstrap() {}
 
+    @Deprecated
     public static class Colored extends RenderPhase.Texture {
         private final float red;
         private final float green;
@@ -69,23 +71,11 @@ public interface MagicGlow {
         private final float alpha;
 
         public Colored(Identifier texture, int color) {
-            super(texture, TriState.FALSE, false);
+            super(texture, false);
             this.red = ColorHelper.getRedFloat(color);
             this.green = ColorHelper.getGreenFloat(color);
             this.blue = ColorHelper.getBlueFloat(color);
             this.alpha = 0.8F;
-        }
-
-        @Override
-        public void startDrawing() {
-            RenderSystem.setShaderColor(red, green, blue, alpha);
-            super.startDrawing();
-        }
-
-        @Override
-        public void endDrawing() {
-            super.endDrawing();
-            RenderSystem.setShaderColor(1, 1, 1, 1);
         }
 
         @Override

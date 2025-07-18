@@ -65,20 +65,14 @@ public class NativeUtil {
         int width  = texture.getWidth(0);
         int height = texture.getHeight(0);
 
-        try (GpuBuffer gpuBuffer = RenderSystem.getDevice().createBuffer(() -> "Texture Retrieval buffer", BufferType.PIXEL_PACK, BufferUsage.STATIC_READ, width * height * format)) {
+        try (GpuBuffer gpuBuffer = RenderSystem.getDevice().createBuffer(() -> "Texture Retrieval buffer", 9, width * height * format)) {
             CommandEncoder commandEncoder = RenderSystem.getDevice().createCommandEncoder();
             RenderSystem.getDevice().createCommandEncoder().copyTextureToBuffer(texture, gpuBuffer, 0, () -> {
-                try (GpuBuffer.ReadView readView = commandEncoder.readBuffer(gpuBuffer)) {
-                    try (NativeImage image = new NativeImage(width, height, false)) {
-                        for (int k = 0; k < height; k++) {
-                            for (int l = 0; l < width; l++) {
-                                int m = readView.data().getInt((l + k * width) * format);
-                                image.setColor(l, height - k - 1, m);
-                            }
-                        }
-
-                        consumer.accept(image::getColorArgb);
-                    }
+                try (GpuBuffer.MappedView readView = commandEncoder.mapBuffer(gpuBuffer, true, false)) {
+                    consumer.accept((x, y) -> {
+                        y = height - y;
+                        return readView.data().getInt((x + y * width) * format);
+                    });
                 }
             }, 0);
         }

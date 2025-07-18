@@ -41,18 +41,18 @@ public class AquaticPlayerPonyRenderer extends FormChangingPlayerPonyRenderer {
                 float interpolated = attributes.getMainInterpolator().interpolate("seapony_state", state, 5);
 
                 if (!MathUtil.compareFloats(interpolated, state)) {
-                    double x = entity.getEntityWorld().getRandom().nextTriangular(entity.getX(), 1);
-                    double y = entity.getEntityWorld().getRandom().nextTriangular(entity.getY() + entity.getHeight() * 0.5F, 1);
-                    double z = entity.getEntityWorld().getRandom().nextTriangular(entity.getZ(), 1);
+                    double x = entity.getWorld().getRandom().nextTriangular(entity.getX(), 1);
+                    double y = entity.getWorld().getRandom().nextTriangular(entity.getY() + entity.getHeight() * 0.5F, 1);
+                    double z = entity.getWorld().getRandom().nextTriangular(entity.getZ(), 1);
 
-                    entity.getEntityWorld().addParticleClient(ParticleTypes.END_ROD, x, y, z, 0, 0, 0);
+                    entity.getWorld().addParticleClient(ParticleTypes.END_ROD, x, y, z, 0, 0, 0);
                 }
 
                 if (!isPreviewModel && skinOverride != null && entity.getVelocity().length() > 0.1F) {
-                    double x = entity.getEntityWorld().getRandom().nextTriangular(entity.getX(), 1);
-                    double y = entity.getEntityWorld().getRandom().nextTriangular(entity.getY(), 1);
-                    double z = entity.getEntityWorld().getRandom().nextTriangular(entity.getZ(), 1);
-                    entity.getEntityWorld().addParticleClient(ParticleTypes.BUBBLE, x, y, z, 0, 0, 0);
+                    double x = entity.getWorld().getRandom().nextTriangular(entity.getX(), 1);
+                    double y = entity.getWorld().getRandom().nextTriangular(entity.getY(), 1);
+                    double z = entity.getWorld().getRandom().nextTriangular(entity.getZ(), 1);
+                    entity.getWorld().addParticleClient(ParticleTypes.BUBBLE, x, y, z, 0, 0, 0);
                 }
             }
         }

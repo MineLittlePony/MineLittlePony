@@ -71,7 +71,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         nameplateYOffset = getNamePlateYOffset(entity);
         legOutset = getLegOutset();
         isInSneakingPose = attributes.isCrouching && !attributes.isLyingDown;
-        sleepingInBed = entity.getSleepingPosition().isPresent() && entity.getEntityWorld().getBlockState(entity.getSleepingPosition().get()).getBlock() instanceof BedBlock;
+        sleepingInBed = entity.getSleepingPosition().isPresent() && entity.getWorld().getBlockState(entity.getSleepingPosition().get()).getBlock() instanceof BedBlock;
         submergedInWater = entity.isSubmergedInWater();
         wobbleAmount = handSwingProgress <= 0 ? 0 : MathHelper.sin(MathHelper.sqrt(handSwingProgress) * MathHelper.PI * 2) * 0.04F;
         if (attributes.isSitting) {
