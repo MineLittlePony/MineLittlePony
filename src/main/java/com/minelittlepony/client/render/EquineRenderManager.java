@@ -24,12 +24,8 @@ import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemDisplayContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Arm;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Box;
 
@@ -85,16 +81,12 @@ public class EquineRenderManager<
         return DebugBoundingBoxRenderer.applyScale(scale, box);
     }
 
-    public PlayerPonyRenderState completeStateUpdate(PlayerEntityRenderState state) {
-        if (state instanceof PlayerPonyRenderState s) {
-            return s;
+    public void completeStateUpdate(PlayerEntityRenderState state) {
+        if (state instanceof PreviewRenderState) {
+            models = modelsLookup.apply(((PlayerPonyRenderState)state).pony.race());
+            context.setModel(models.body());
+            ((PreviewRenderState)state).completeStateUpdate(models.body());
         }
-
-        PlayerPonyRenderState s = ((PreviewRenderState)state).getRenderState();
-        models = modelsLookup.apply(s.pony.race());
-        context.setModel(models.body());
-        ((PreviewRenderState)state).completeStateUpdate(models.body());
-        return s;
     }
 
     public void updateState(T entity, S state, ModelAttributes.Mode mode, ItemModelManager resolver) {
@@ -102,25 +94,6 @@ public class EquineRenderManager<
         models = modelsLookup.apply(pony.race());
         context.setModel(models.body());
         state.updateState(resolver, entity, models.body(), pony, mode);
-        if (PonyConfig.getInstance().tpsmagic.get() && state.hasMagicGlow()) {
-            resolver.updateForLivingEntity(
-                state.glintlessRightHandItemState, getWithoutGlint(entity.getStackInArm(Arm.RIGHT)), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity
-            );
-            resolver.updateForLivingEntity(
-                state.glintlessLeftHandItemState, getWithoutGlint(entity.getStackInArm(Arm.LEFT)), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity
-            );
-        } else {
-            state.glintlessRightHandItemState.clear();
-            state.glintlessLeftHandItemState.clear();
-        }
-    }
-
-    public static ItemStack getWithoutGlint(ItemStack stack) {
-        if (!stack.isEmpty()) {
-            stack = stack.copy();
-            stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
-        }
-        return stack;
     }
 
     public void setupTransforms(S state, MatrixStack stack, float animationProgress, float bodyYaw) {

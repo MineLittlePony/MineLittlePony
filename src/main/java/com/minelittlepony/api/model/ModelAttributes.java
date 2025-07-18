@@ -174,14 +174,14 @@ public class ModelAttributes {
         isSitting = entity != null && PonyPosture.isSitting(entity);
         isSleeping = entity != null && entity.isAlive() && entity.isSleeping();;
         isLyingDown = isSleeping;
-        if (isPlayer && entity != null) {
+        if (isPlayer) {
             boolean moving = entity.getVelocity().multiply(1, 0, 1).length() == 0 && entity.isSneaking();
             isLyingDown |= getMainInterpolator().interpolate("lyingDown", moving ? 10 : 0, 200) >= 9;
         }
 
         isCrouching = !isLyingDown && !isSitting && mode == Mode.THIRD_PERSON && entity != null && PonyPosture.isCrouching(pony, entity);
         isFlying = !isLyingDown && mode == Mode.THIRD_PERSON && entity != null && PonyPosture.isFlying(entity);
-        isGliding = entity.isGliding();
+        isGliding = entity != null && entity.isGliding();
         isSwimming = mode == Mode.THIRD_PERSON && entity != null && PonyPosture.isSwimming(entity);
         isSwimmingRotated = isSwimming;
         isRiptide = entity != null && entity.isUsingRiptide();

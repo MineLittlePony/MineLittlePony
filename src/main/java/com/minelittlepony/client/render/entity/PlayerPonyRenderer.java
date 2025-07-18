@@ -74,10 +74,11 @@ public class PlayerPonyRenderer
         return ((List)features).add(feature);
     }
 
+    @Override
     public Vec3d getPositionOffset(PlayerEntityRenderState state) {
         Vec3d offset = super.getPositionOffset(state);
         return offset
-                .multiply(((PonyRenderState)state).attributes.size.scaleFactor())
+                .multiply(((PlayerPonyRenderState)state).attributes.size.scaleFactor())
                 .add(0, state.baseScale * ((PlayerPonyRenderState)state).yOffset, 0);
     }
 
@@ -103,6 +104,7 @@ public class PlayerPonyRenderer
 
     @Override
     public void render(PlayerEntityRenderState state, MatrixStack stack, VertexConsumerProvider vertices, int light) {
+        manager.completeStateUpdate(state);
         shadowRadius = ((PlayerPonyRenderState)state).attributes.size.shadowSize();
         super.render(state, stack, vertices, light);
         DebugBoundingBoxRenderer.render((PlayerPonyRenderState)state, stack, vertices);
@@ -184,7 +186,7 @@ public class PlayerPonyRenderer
 
     @Override
     public final Identifier getTexture(PlayerEntityRenderState state) {
-        return ((PonyRenderState)state).pony.texture();
+        return ((PlayerPonyRenderState)state).pony.texture();
     }
 
     @Override

@@ -10,38 +10,37 @@ import com.minelittlepony.api.pony.meta.TValue;
 import com.minelittlepony.common.client.gui.ITextContext;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.hdskins.client.gui.Carousel;
+import com.minelittlepony.hdskins.client.gui.PlayerBodyWidget;
 
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-class LegendOverlayWidget implements Carousel.Element<DummyPonyRenderState>, ITextContext {
+class LegendOverlayWidget implements Carousel.Element, ITextContext {
     private static final Bounds LEGEND_BLOCK_BOUNDS = new Bounds(0, 0, 10, 10);
 
     private final Bounds frame;
 
-    private final Supplier<DummyPonyRenderState> player;
+    private final Supplier<PlayerBodyWidget<?>> player;
 
-    public LegendOverlayWidget(Bounds frame, Supplier<DummyPonyRenderState> player) {
+    public LegendOverlayWidget(Bounds frame, Supplier<PlayerBodyWidget<?>> player) {
         this.frame = frame;
         this.player = player;
     }
 
     @Override
     public void tick() {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void updateState(float xPosition, float yPosition, float mouseX, float mouseY, float tickDelta) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void render(DrawContext context, Bounds bounds, int mouseX, int mouseY, Quaternionf rotation) {
-        PonyData data = Pony.getManager().getPony(player.get().skinTextures.texture()).metadata();
+        PonyData data = Pony.getManager().getPony(player.get().playerState.skinTextures.texture()).metadata();
         int[] index = new int[1];
         data.attributes().forEach((key, value) -> {
             context.getMatrices().pushMatrix();

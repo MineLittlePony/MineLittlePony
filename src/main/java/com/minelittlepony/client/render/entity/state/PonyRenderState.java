@@ -24,8 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.events.PonyModelPrepareCallback;
-import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.model.PonyModel;
+import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.api.pony.meta.*;
 import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
@@ -96,6 +95,14 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         if (!state.isEmpty()) {
             equippedHeads.add(state);
         }
+
+        if (PonyConfig.getInstance().tpsmagic.get() && hasMagicGlow()) {
+            resolver.clearAndUpdate(glintlessRightHandItemState, getWithoutGlint(armStacks.getOrDefault(Arm.RIGHT, ItemStack.EMPTY)), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, null, null, 0);
+            resolver.clearAndUpdate(glintlessLeftHandItemState, getWithoutGlint(armStacks.getOrDefault(Arm.RIGHT, ItemStack.EMPTY)), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, null, null, 0);
+        } else {
+            glintlessRightHandItemState.clear();
+            glintlessLeftHandItemState.clear();
+        }
     }
 
     public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
@@ -141,6 +148,14 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
             if (!state.isEmpty()) {
                 equippedHeads.add(state);
             }
+        }
+
+        if (PonyConfig.getInstance().tpsmagic.get() && hasMagicGlow()) {
+            resolver.updateForLivingEntity(glintlessRightHandItemState, getWithoutGlint(entity.getStackInArm(Arm.RIGHT)), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
+            resolver.updateForLivingEntity(glintlessLeftHandItemState, getWithoutGlint(entity.getStackInArm(Arm.LEFT)), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
+        } else {
+            glintlessRightHandItemState.clear();
+            glintlessLeftHandItemState.clear();
         }
 
         PonyPosture.of(attributes).updateState(entity, this);
@@ -213,6 +228,15 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
     public HeldItemRenderState getHeldItem(Arm arm) {
         return arm == Arm.LEFT ? leftHeldItem : rightHeldItem;
     }
+
+    public static ItemStack getWithoutGlint(ItemStack stack) {
+        if (!stack.isEmpty()) {
+            stack = stack.copy();
+            stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
+        }
+        return stack;
+    }
+
 
     public static class HeldItemRenderState {
         public UseAction action = UseAction.NONE;

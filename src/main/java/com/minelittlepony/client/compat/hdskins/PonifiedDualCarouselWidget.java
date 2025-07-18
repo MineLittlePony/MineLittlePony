@@ -11,17 +11,17 @@ import com.minelittlepony.hdskins.client.resources.NativeImageFilters;
 import com.minelittlepony.hdskins.client.resources.TextureLoader;
 import com.minelittlepony.hdskins.profile.SkinType;
 
-class PonifiedDualCarouselWidget extends DualCarouselWidget<DummyPonyRenderState> {
+class PonifiedDualCarouselWidget extends DualCarouselWidget<PonyBodyWidget.State> {
 
     public PonifiedDualCarouselWidget(GuiSkins screen) {
         super(screen);
-        local.addElement(new LegendOverlayWidget(local.bounds, () -> getLocal().getEntity().playerState));
-        remote.addElement(new LegendOverlayWidget(remote.bounds, () -> getRemote().getEntity().playerState));
+        local.addElement(new LegendOverlayWidget(local.bounds, () -> getLocal().getEntity()));
+        remote.addElement(new LegendOverlayWidget(remote.bounds, () -> getRemote().getEntity()));
     }
 
     @Override
-    protected DummyPonyRenderState createEntity(PlayerSkins<?> textures) {
-        return new DummyPonyRenderState(textures);
+    protected PonyBodyWidget createEntity(PlayerSkins<?> textures) {
+        return new PonyBodyWidget(textures);
     }
 
     @Override

@@ -37,15 +37,15 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
      */
     @SuppressWarnings("unchecked")
     @Override
-    public final void setAngles(PlayerEntityRenderState entity) {
-        currentState = (T)entity;
-        super.setAngles((PlayerEntityRenderState)entity);
+    public final void setAngles(PlayerEntityRenderState state) {
+        currentState = (T)state;
+        super.setAngles(currentState);
 
-        setModelVisibilities((T)entity);
-        setModelAngles((T)entity);
+        setModelVisibilities(currentState);
+        setModelAngles(currentState);
 
         if (onSetModelAngles != null) {
-            onSetModelAngles.poseModel(this, (T)entity);
+            onSetModelAngles.poseModel(this, currentState);
         }
     }
 

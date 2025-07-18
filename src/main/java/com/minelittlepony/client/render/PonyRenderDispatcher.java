@@ -1,7 +1,6 @@
 package com.minelittlepony.client.render;
 
 import com.google.common.base.Predicates;
-import com.minelittlepony.api.model.PreviewRenderState;
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.*;
@@ -52,12 +51,13 @@ public class PonyRenderDispatcher {
                                     && PonyForm.of(player) == form,
                         factory
                 );
-                Mson.getInstance().getEntityRendererRegistry().registerPlayerStateRenderer(id, state -> {
-                    PlayerPonyRenderState s = state instanceof PreviewRenderState m ? m.getRenderState() : state instanceof PlayerPonyRenderState a ? a : null;
-                    return s != null && !s.race.isHuman()
-                        && s.smallArms == (armShape == SkinTextures.Model.SLIM)
-                        && form.id().equals(s.form);
-                }, factory);
+                Mson.getInstance().getEntityRendererRegistry().registerPlayerStateRenderer(id,
+                        state -> state instanceof PlayerPonyRenderState s
+                                    && !s.race.isHuman()
+                                    && s.smallArms == (armShape == SkinTextures.Model.SLIM)
+                                    && form.id().equals(s.form),
+                        factory
+                );
             }
         });
         MobRenderers.REGISTRY.values().forEach(i -> i.changer().accept(i, Mson.getInstance().getEntityRendererRegistry()));
