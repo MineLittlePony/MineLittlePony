@@ -1,10 +1,8 @@
 package com.minelittlepony.api.pony;
 
-import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.model.PreviewModel;
-
+import com.minelittlepony.api.pony.meta.Race;
 import java.util.Optional;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.entity.LivingEntity;
@@ -38,7 +36,8 @@ public final class PonyPosture {
     public static boolean isFlying(LivingEntity entity) {
         return !(isOnGround(entity)
                 || entity.hasVehicle()
-                || (entity.isClimbing() && !(entity instanceof PlayerEntity && ((PlayerEntity)entity).getAbilities().allowFlying))
+                || (entity.isClimbing() &&
+                !(entity instanceof PlayerEntity && ((PlayerEntity) entity).getAbilities().allowFlying))
                 || entity.isSubmergedInWater()
                 || entity.isSleeping());
     }
@@ -52,10 +51,9 @@ public final class PonyPosture {
             return true;
         }
 
-        BlockState below = entity.getEntityWorld()
+        BlockState below = entity.getWorld()
                 .getBlockState(entity.getBlockPos().down(1));
 
-        // Check for stairs so we can keep Pegasi from flailing their wings as they descend
         double offsetAmount = below.getBlock() instanceof StairsBlock ? 1 : 0.05;
 
         Vec3d pos = entity.getPos();
@@ -65,7 +63,7 @@ public final class PonyPosture {
                 pos.z
         );
 
-        return !entity.getEntityWorld().isAir(blockpos);
+        return !entity.getWorld().isAir(blockpos);
     }
 
     public static boolean isSwimming(LivingEntity entity) {
@@ -74,7 +72,7 @@ public final class PonyPosture {
 
     public static boolean isPartiallySubmerged(LivingEntity entity) {
         return entity.isSubmergedInWater()
-                || entity.getEntityWorld().getBlockState(entity.getBlockPos()).getFluidState().isIn(FluidTags.WATER);
+                || entity.getWorld().getBlockState(entity.getBlockPos()).getFluidState().isIn(FluidTags.WATER);
     }
 
     public static boolean isSitting(LivingEntity entity) {
@@ -91,7 +89,8 @@ public final class PonyPosture {
         }
         return Pony.getManager().getPony(entity).filter(pony -> {
             return (pony.race() == Race.SEAPONY
-                    || (entity instanceof PlayerEntity player && SkinsProxy.getInstance().getSkin(DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, player).isPresent())
+                    || (entity instanceof PlayerEntity player &&
+                    SkinsProxy.getInstance().getSkin(DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, player).isPresent())
             );
         }).isPresent();
     }
@@ -102,7 +101,8 @@ public final class PonyPosture {
         }
         return Pony.getManager().getPony(entity).filter(pony -> {
             return (pony.race() == Race.KIRIN
-                    && (entity instanceof PlayerEntity player && SkinsProxy.getInstance().getSkin(DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, player).isPresent())
+                    && (entity instanceof PlayerEntity player &&
+                    SkinsProxy.getInstance().getSkin(DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, player).isPresent())
             );
         }).isPresent();
     }

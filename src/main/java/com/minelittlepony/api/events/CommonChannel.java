@@ -1,16 +1,16 @@
 package com.minelittlepony.api.events;
 
+import com.minelittlepony.api.pony.PonyData;
 import net.fabricmc.api.EnvType;
-import net.fabricmc.fabric.api.networking.v1.*;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.minelittlepony.api.pony.PonyData;
 
 public class CommonChannel {
     private static final Logger LOGGER = LogManager.getLogger("MineLittlePony:Networking");
@@ -26,7 +26,7 @@ public class CommonChannel {
         PayloadTypeRegistry.playC2S().register(PonyDataPayload.ID, PonyDataPayload.CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(PonyDataPayload.ID, (packet, context) -> {
-            context.player().server.execute(() -> {
+            context.server().execute(() -> {
                 PonyDataCallback.EVENT.invoker().onPonyDataAvailable(context.player(), packet.data(), EnvType.SERVER);
             });
         });

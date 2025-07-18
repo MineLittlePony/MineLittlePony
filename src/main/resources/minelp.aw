@@ -16,4 +16,4 @@ transitive-accessible method   net/minecraft/client/render/entity/GuardianEntity
 
 transitive-extendable method   net/minecraft/client/model/Model                                           render               (Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;III)V    
 
-transitive-accessible field    net/minecraft/client/gl/RenderPipelines                           MATRICES_COLOR_FOG_SNIPPET    Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field    net/minecraft/client/gl/RenderPipelines                           TRANSFORMS_PROJECTION_FOG_SNIPPET    Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;

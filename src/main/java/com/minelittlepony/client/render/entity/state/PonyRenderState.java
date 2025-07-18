@@ -1,5 +1,18 @@
 package com.minelittlepony.client.render.entity.state;
 
+import com.minelittlepony.api.config.PonyConfig;
+import com.minelittlepony.api.events.PonyModelPrepareCallback;
+import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.api.model.PonyModel;
+import com.minelittlepony.api.pony.DefaultPonySkinHelper;
+import com.minelittlepony.api.pony.Pony;
+import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.api.pony.meta.SizePreset;
+import com.minelittlepony.api.pony.meta.Wearable;
+import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
+import com.minelittlepony.client.transform.PonyPosture;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.block.AbstractSkullBlock;
 import net.minecraft.block.BedBlock;
 import net.minecraft.block.SkullBlock.SkullType;
@@ -10,29 +23,20 @@ import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityPose;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.AbstractPiglinEntity;
 import net.minecraft.entity.mob.ZombifiedPiglinEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.ItemDisplayContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
-
 import org.jetbrains.annotations.Nullable;
-
-import com.minelittlepony.api.config.PonyConfig;
-import com.minelittlepony.api.events.PonyModelPrepareCallback;
-import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.model.PonyModel;
-import com.minelittlepony.api.pony.*;
-import com.minelittlepony.api.pony.meta.*;
-import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
-import com.minelittlepony.client.transform.PonyPosture;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PonyRenderState extends PlayerEntityRenderState implements PonyModel.AttributedHolder {
     public final ModelAttributes attributes = new ModelAttributes();
@@ -59,7 +63,8 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
 
     public final List<EquippedHeadRenderState> equippedHeads = new ArrayList<>();
 
-    public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
+    public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony,
+                            ModelAttributes.Mode mode) {
         this.equippedHeadStack = entity.getEquippedStack(EquipmentSlot.HEAD);
         this.pony = pony;
         attributes.updateLivingState(entity, pony, mode);
@@ -71,19 +76,23 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         nameplateYOffset = getNamePlateYOffset(entity);
         legOutset = getLegOutset();
         isInSneakingPose = attributes.isCrouching && !attributes.isLyingDown;
-        sleepingInBed = entity.getSleepingPosition().isPresent() && entity.getEntityWorld().getBlockState(entity.getSleepingPosition().get()).getBlock() instanceof BedBlock;
+        sleepingInBed =
+                entity.getSleepingPosition().isPresent() &&
+                        entity.getWorld().getBlockState(entity.getSleepingPosition().get())
+                                .getBlock() instanceof BedBlock;
         submergedInWater = entity.isSubmergedInWater();
-        wobbleAmount = handSwingProgress <= 0 ? 0 : MathHelper.sin(MathHelper.sqrt(handSwingProgress) * MathHelper.PI * 2) * 0.04F;
+        wobbleAmount = handSwingProgress <= 0 ? 0 :
+                MathHelper.sin(MathHelper.sqrt(handSwingProgress) * MathHelper.PI * 2) * 0.04F;
         if (attributes.isSitting) {
             pose = EntityPose.SITTING;
         }
 
         isTechnoblade = ((
-                    entity instanceof AbstractPiglinEntity
-                 || entity instanceof PlayerEntity
-                 || entity instanceof ZombifiedPiglinEntity
-             ) && entity.hasCustomName() && entity.getCustomName().getString().equalsIgnoreCase("technoblade")
-         );
+                entity instanceof AbstractPiglinEntity
+                        || entity instanceof PlayerEntity
+                        || entity instanceof ZombifiedPiglinEntity
+        ) && entity.hasCustomName() && entity.getCustomName().getString().equalsIgnoreCase("technoblade")
+        );
 
         leftHeldItem.update(entity.getStackInArm(Arm.LEFT));
         rightHeldItem.update(entity.getStackInArm(Arm.RIGHT));
@@ -97,7 +106,8 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
 
         equippedHeads.clear();
-        for (ItemStack stack : plugin.getArmorStacks(entity, EquipmentSlot.HEAD, EquipmentModel.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.SKULL)) {
+        for (ItemStack stack : plugin.getArmorStacks(entity, EquipmentSlot.HEAD, EquipmentModel.LayerType.HUMANOID,
+                ArmourRendererPlugin.ArmourType.SKULL)) {
             EquippedHeadRenderState state = EquippedHeadRenderState.of(resolver, stack, entity);
             if (!state.isEmpty()) {
                 equippedHeads.add(state);
@@ -134,7 +144,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
      * Gets the y-offset applied to entities riding this one.
      */
     protected float getRiderYOffset() {
-        return switch ((SizePreset)attributes.size) {
+        return switch ((SizePreset) attributes.size) {
             case NORMAL -> 0.4F;
             default -> 0.25F;
         };
@@ -144,7 +154,8 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
      * Tests if this model is wearing the given piece of gear.
      */
     public boolean isWearing(Wearable wearable) {
-        return attributes.isEmbedded(wearable) || attributes.featureSkins.contains(wearable.getId()) || isTechnoblade && wearable == Wearable.CROWN;
+        return attributes.isEmbedded(wearable) || attributes.featureSkins.contains(wearable.getId()) ||
+                isTechnoblade && wearable == Wearable.CROWN;
     }
 
     private float getNamePlateYOffset(LivingEntity entity) {
@@ -181,7 +192,8 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
 
         private void update(ItemStack stack) {
             action = stack.getUseAction();
-            forwardFacing = PonyConfig.getInstance().forwardHoldingItems.get().contains(Registries.ITEM.getId(stack.getItem()));
+            forwardFacing =
+                    PonyConfig.getInstance().forwardHoldingItems.get().contains(Registries.ITEM.getId(stack.getItem()));
         }
     }
 
@@ -197,7 +209,8 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
             }
 
             if (stack.getItem() instanceof BlockItem b && b.getBlock() instanceof AbstractSkullBlock skullBlock) {
-                return new EquippedHeadRenderState(EMPTY.item(), skullBlock.getSkullType(), stack.get(DataComponentTypes.PROFILE));
+                return new EquippedHeadRenderState(EMPTY.item(), skullBlock.getSkullType(),
+                        stack.get(DataComponentTypes.PROFILE));
             }
 
             if (!ArmorFeatureRenderer.hasModel(stack, EquipmentSlot.HEAD)) {
