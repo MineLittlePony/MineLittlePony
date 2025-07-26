@@ -1,20 +1,21 @@
 package com.minelittlepony.client.render;
 
 import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderPhase;
-import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.*;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.MatrixStack.Entry;
 import net.minecraft.util.*;
-import net.minecraft.util.math.ColorHelper;
 
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DepthTestFunction;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.google.common.base.Suppliers;
 
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
+import java.util.function.*;
+
+import com.google.common.base.Suppliers;
+import com.minelittlepony.common.util.render.RenderLayerUtil;
 
 public interface MagicGlow {
     RenderPipeline /*ENTITY_EYES*/ ENTITY_MAGIC_GLOW_PIPELINE = RenderPipelines.register(
@@ -42,10 +43,9 @@ public interface MagicGlow {
                 .build(false));
     });
 
-    @Deprecated
-    BiFunction<Identifier, Integer, RenderLayer> TINTED_LAYER = Util.memoize((texture, color) -> {
-        return RenderLayer.of("mlp_tint_layer", 1536, false, true, ENTITY_MAGIC_GLOW_PIPELINE, RenderLayer.MultiPhaseParameters.builder()
-                .texture(new Colored(texture, color))
+    Function<Identifier, RenderLayer> TEXTURED = Util.memoize(texture -> {
+        return RenderLayer.of("mlp_magic_glow_textured", 1536, false, true, ENTITY_MAGIC_GLOW_PIPELINE, RenderLayer.MultiPhaseParameters.builder()
+                .texture(new RenderPhase.Texture(texture, false))
                 .lightmap(RenderPhase.DISABLE_LIGHTMAP)
                 .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
                 .target(RenderPhase.TRANSLUCENT_TARGET)
@@ -56,35 +56,49 @@ public interface MagicGlow {
         return MAGIC.get();
     }
 
-    @Deprecated
-    public static RenderLayer getColoured(Identifier texture, int color) {
-        return TINTED_LAYER.apply(texture, color);
+    public static RenderLayer getTextured(Identifier texture) {
+        return TEXTURED.apply(texture);
+    }
+
+    @SuppressWarnings("deprecation")
+    public static VertexConsumerProvider getProvider(int color, VertexConsumerProvider provider, MatrixStack matrices) {
+        return layer -> {
+            if (layer.getVertexFormat() != VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL) {
+                return provider.getBuffer(layer);
+            }
+
+            return new MagicGlowOverlayVertexConsumer(provider.getBuffer(getTextured(RenderLayerUtil.getTexture(layer).orElse(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE))), matrices.peek(), color);
+        };
     }
 
     public static void bootstrap() {}
 
-    @Deprecated
-    public static class Colored extends RenderPhase.Texture {
-        private final float red;
-        private final float green;
-        private final float blue;
-        private final float alpha;
+    static class MagicGlowOverlayVertexConsumer extends OverlayVertexConsumer {
+        private final VertexConsumer delegate;
+        private final int color;
 
-        public Colored(Identifier texture, int color) {
-            super(texture, false);
-            this.red = ColorHelper.getRedFloat(color);
-            this.green = ColorHelper.getGreenFloat(color);
-            this.blue = ColorHelper.getBlueFloat(color);
-            this.alpha = 0.8F;
+        public MagicGlowOverlayVertexConsumer(VertexConsumer delegate, Entry matrix, int color) {
+            super(delegate, matrix, 1);
+            this.delegate = delegate;
+            this.color = color;
         }
 
         @Override
-        public boolean equals(Object other) {
-            return super.equals(other)
-                    && ((Colored)other).red == red
-                    && ((Colored)other).green == green
-                    && ((Colored)other).blue == blue
-                    && ((Colored)other).alpha == alpha;
+        public VertexConsumer texture(float u, float v) {
+            delegate.texture(u, v);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer color(int red, int green, int blue, int alpha) {
+            delegate.color(color);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer normal(float x, float y, float z) {
+            this.delegate.normal(x, y, z);
+            return this;
         }
     }
 }

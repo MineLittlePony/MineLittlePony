@@ -3,8 +3,7 @@ package com.minelittlepony.client.render.entity.feature;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.ClientPonyModel;
-import com.minelittlepony.client.render.LevitatingItemRenderer;
-import com.minelittlepony.client.render.PonyRenderContext;
+import com.minelittlepony.client.render.*;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -56,7 +55,7 @@ public class HeldItemFeature<
             renderItem((PlayerEntityRenderState)state, item, arm, matrices, vertices, light);
 
             if (!glintLessItem.isEmpty()) {
-                vertices = LevitatingItemRenderer.getProvider(state.pony, vertices);
+                vertices = MagicGlow.getProvider(state.pony.metadata().glowColor(), vertices, matrices);
 
                 boolean noTransform = state.getHeldItem(arm).action == UseAction.SPYGLASS && state.attributes.itemUseTime > 0;
 
