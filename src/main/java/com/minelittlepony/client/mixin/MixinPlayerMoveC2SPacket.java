@@ -19,13 +19,10 @@ abstract class MixinPlayerMoveC2SPacket implements Packet<ServerPlayPacketListen
     @Shadow @Final @Mutable
     protected float pitch;
 
-    @Shadow @Final
-    protected boolean changeLook;
-
     @Inject(method = "<init>(DDDFFZZZZ)V", at = @At("RETURN"))
-    private void onInit(CallbackInfo info) {
+    private void onInit(double x, double y, double z, float yaw, float pitch, boolean onGround, boolean horizontalCollision, boolean changePosition, boolean changeLook, CallbackInfo info) {
         if (changeLook) {
-            pitch = HorseCam.transformCameraAngle(pitch);
+            this.pitch = HorseCam.transformCameraAngle(pitch);
         }
     }
 }
