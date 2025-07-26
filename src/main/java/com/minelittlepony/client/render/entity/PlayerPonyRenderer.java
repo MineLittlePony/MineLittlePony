@@ -103,15 +103,9 @@ public class PlayerPonyRenderer
     }
 
     @Override
-    public void render(PlayerEntityRenderState state, MatrixStack stack, VertexConsumerProvider vertices, int light) {
+    protected void setupTransforms(PlayerEntityRenderState state, MatrixStack matrices, float animationProgress, float bodyYaw) {
         manager.completeStateUpdate(state);
         shadowRadius = ((PlayerPonyRenderState)state).attributes.size.shadowSize();
-        super.render(state, stack, vertices, light);
-        DebugBoundingBoxRenderer.render((PlayerPonyRenderState)state, stack, vertices);
-    }
-
-    @Override
-    protected void setupTransforms(PlayerEntityRenderState state, MatrixStack matrices, float animationProgress, float bodyYaw) {
         manager.setupTransforms((PlayerPonyRenderState)state, matrices, animationProgress, bodyYaw);
     }
 
@@ -133,6 +127,7 @@ public class PlayerPonyRenderer
         matrices.translate(0, ((PlayerPonyRenderState)state).nameplateYOffset, 0);
         super.renderLabelIfPresent(state, name, matrices, vertices, light);
         matrices.pop();
+        DebugBoundingBoxRenderer.render((PlayerPonyRenderState)state, matrices, vertices);
     }
 
     @Override
