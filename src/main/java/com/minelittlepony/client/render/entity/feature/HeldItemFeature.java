@@ -2,6 +2,7 @@ package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.PonyModel;
+import com.minelittlepony.client.render.MagicGlow;
 import com.minelittlepony.client.render.PonyRenderContext;
 
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -39,7 +40,7 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
     }
 
     @Override
-    public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
+    public void render(MatrixStack matrices, VertexConsumerProvider vertices, int lightUv, T entity, float limbDistance, float limbAngle, float tickDelta, float age, float headYaw, float headPitch) {
 
         ItemStack left = getLeftItem(entity);
         ItemStack right = getRightItem(entity);
@@ -47,16 +48,18 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
         if (!left.isEmpty() || !right.isEmpty()) {
             M model = context.getInternalRenderer().getModels().body();
 
-            stack.push();
+            vertices = MagicGlow.getProvider(context.getEntityPony(entity).metadata().glowColor(), vertices, matrices);
 
-            model.transform(BodyPart.LEGS, stack);
+            matrices.push();
+
+            model.transform(BodyPart.LEGS, matrices);
 
             model.getAttributes().heldStack = right;
-            renderItem(entity, right, ModelTransformationMode.THIRD_PERSON_RIGHT_HAND, Arm.RIGHT, stack, renderContext, lightUv);
+            renderItem(entity, right, ModelTransformationMode.THIRD_PERSON_RIGHT_HAND, Arm.RIGHT, matrices, vertices, lightUv);
             model.getAttributes().heldStack = left;
-            renderItem(entity, left, ModelTransformationMode.THIRD_PERSON_LEFT_HAND, Arm.LEFT, stack, renderContext, lightUv);
+            renderItem(entity, left, ModelTransformationMode.THIRD_PERSON_LEFT_HAND, Arm.LEFT, matrices, vertices, lightUv);
             model.getAttributes().heldStack = ItemStack.EMPTY;
-            stack.pop();
+            matrices.pop();
         }
     }
 }
