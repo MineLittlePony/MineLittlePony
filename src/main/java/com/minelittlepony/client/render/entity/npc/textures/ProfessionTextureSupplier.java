@@ -30,14 +30,8 @@ public class ProfessionTextureSupplier<T extends VillagerDataContainer> implemen
         return getTexture(t.type().getKey().orElse(VillagerType.PLAINS), t.profession().getKey().orElse(VillagerProfession.NONE));
     }
 
-    public static String getKey(VillagerDataContainer container) {
-        VillagerData t = container.getVillagerData();
-        return ResourceUtil.format("pony/%s/%s", t.type(), t.profession());
-    }
-
     private Identifier getTexture(final RegistryKey<VillagerType> type, final RegistryKey<VillagerProfession> profession) {
-        String key = ResourceUtil.format("pony/%s/%s", type, profession);
-        return ResourceUtil.verifyTexture(formatter.apply(key)).orElseGet(() -> {
+        return ResourceUtil.verifyTexture(formatter.apply(getKey(type, profession))).orElseGet(() -> {
             if (type.equals(VillagerType.PLAINS)) {
                 // if texture loading fails, use the fallback.
                 return fallback;
@@ -46,4 +40,19 @@ public class ProfessionTextureSupplier<T extends VillagerDataContainer> implemen
             return getTexture(VillagerType.PLAINS, profession);
         });
     }
+
+    public static String getKey(VillagerDataContainer container) {
+        VillagerData t = container.getVillagerData();
+        return getKey(
+                t.type().getKey().orElse(VillagerType.PLAINS),
+                t.profession().getKey().orElse(VillagerProfession.NONE)
+        );
+    }
+
+    public static String getKey(final RegistryKey<VillagerType> type, final RegistryKey<VillagerProfession> profession) {
+        return ResourceUtil.format("pony/%s/%s",
+                type.getValue().getPath(),
+                profession.getValue().getPath());
+    }
+
 }
