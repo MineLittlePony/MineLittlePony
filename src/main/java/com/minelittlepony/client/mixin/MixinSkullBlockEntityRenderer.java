@@ -9,6 +9,7 @@ import net.minecraft.client.render.block.entity.SkullBlockEntityModel;
 import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.type.ProfileComponent;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,10 +37,21 @@ abstract class MixinSkullBlockEntityRenderer implements BlockEntityRenderer<Skul
         }
     }
 
-    @Inject(method = "getRenderLayer(Lnet/minecraft/block/SkullBlock$SkullType;Lnet/minecraft/component/type/ProfileComponent;)Lnet/minecraft/client/render/RenderLayer;", at = @At("HEAD"), cancellable = true)
-    private static void onGetRenderLayer(SkullBlock.SkullType skullType, @Nullable ProfileComponent profile, CallbackInfoReturnable<RenderLayer> info) {
+
+    @Inject(method = "getCutoutRenderLayer(Lnet/minecraft/block/SkullBlock$SkullType;)Lnet/minecraft/client/render/RenderLayer;", at = @At("HEAD"), cancellable = true)
+    private static void onGetCutoutRenderLayer(SkullBlock.SkullType type, @Nullable Identifier texture, CallbackInfoReturnable<RenderLayer> info) {
         if (!info.isCancelled()) {
-            RenderLayer result = PonySkullRenderer.INSTANCE.getSkullRenderLayer(skullType, profile);
+            RenderLayer result = PonySkullRenderer.INSTANCE.getSkullRenderLayer(type, null, texture);
+            if (result != null) {
+                info.setReturnValue(result);
+            }
+        }
+    }
+
+    @Inject(method = "getRenderLayer(Lnet/minecraft/block/SkullBlock$SkullType;Lnet/minecraft/component/type/ProfileComponent;)Lnet/minecraft/client/render/RenderLayer;", at = @At("HEAD"), cancellable = true)
+    private static void onGetRenderLayer(SkullBlock.SkullType type, @Nullable ProfileComponent profile, CallbackInfoReturnable<RenderLayer> info) {
+        if (!info.isCancelled()) {
+            RenderLayer result = PonySkullRenderer.INSTANCE.getSkullRenderLayer(type, profile, null);
             if (result != null) {
                 info.setReturnValue(result);
             }

@@ -70,18 +70,18 @@ public class PonySkullRenderer {
         );
     }
 
-    public RenderLayer getSkullRenderLayer(SkullBlock.SkullType skullType, @Nullable ProfileComponent profile) {
+    public RenderLayer getSkullRenderLayer(SkullBlock.SkullType skullType, @Nullable ProfileComponent profile, @Nullable Identifier texture) {
         selectedSkull = null;
         selectedSkin = null;
 
         ISkull skull = cache.skulls().apply(skullType);
 
-        if (skull == null || !skull.canRender(PonyConfig.getInstance())) {
+        if ((texture != null && skullType != SkullBlock.Type.PLAYER) || skull == null || !skull.canRender(PonyConfig.getInstance())) {
             return null;
         }
 
         selectedSkull = skull;
-        selectedSkin = skull.getSkinResource(profile);
+        selectedSkin = texture == null ? skull.getSkinResource(profile) : texture;
         return RenderLayer.getEntityTranslucent(selectedSkin);
     }
 
