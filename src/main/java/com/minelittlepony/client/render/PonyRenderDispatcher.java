@@ -1,7 +1,6 @@
 package com.minelittlepony.client.render;
 
 import com.google.common.base.Predicates;
-import com.minelittlepony.api.model.PreviewModel;
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.*;
@@ -24,13 +23,8 @@ public class PonyRenderDispatcher {
 
     public PonyRenderDispatcher() {
         PonyForm.register(PonyForm.DEFAULT, Predicates.alwaysTrue(), PlayerPonyRenderer::new);
-        PonyForm.register(PonyForm.SEAPONY, PonyPosture::hasSeaponyForm, (context, slimArms) -> new AquaticPlayerPonyRenderer(context, slimArms, DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, entity -> {
-            if (entity instanceof PreviewModel preview) {
-                return preview.getForm() == PonyForm.SEAPONY;
-            }
-            return PonyPosture.hasSeaponyForm(entity) && PonyPosture.isPartiallySubmerged(entity);
-        }));
-        PonyForm.register(PonyForm.NIRIK, PonyPosture::hasNirikForm, (context, slimArms) -> new FormChangingPlayerPonyRenderer(context, slimArms, DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, PonyPosture::hasNirikForm));
+        PonyForm.register(PonyForm.SEAPONY, PonyPosture::hasSeaponyForm, (context, slimArms) -> new AquaticPlayerPonyRenderer(context, slimArms, DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, PonyPosture::isSeaponyFormActive));
+        PonyForm.register(PonyForm.NIRIK, PonyPosture::hasNirikForm, (context, slimArms) -> new FormChangingPlayerPonyRenderer(context, slimArms, DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, PonyPosture::isNirikFormActive));
     }
 
     public LevitatingItemRenderer getMagicRenderer() {
