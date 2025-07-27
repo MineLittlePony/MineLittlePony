@@ -96,6 +96,13 @@ public final class PonyPosture {
         }).isPresent();
     }
 
+    public static boolean isSeaponyFormActive(LivingEntity entity) {
+        if (entity instanceof PreviewModel preview) {
+            return preview.getForm() == PonyForm.SEAPONY;
+        }
+        return hasSeaponyForm(entity) && isPartiallySubmerged(entity);
+    }
+
     public static boolean hasNirikForm(LivingEntity entity) {
         if (entity instanceof PreviewModel preview) {
             return preview.getForm() == PonyForm.NIRIK;
@@ -105,5 +112,9 @@ public final class PonyPosture {
                     && (entity instanceof PlayerEntity player && SkinsProxy.getInstance().getSkin(DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, player).isPresent())
             );
         }).isPresent();
+    }
+
+    public static boolean isNirikFormActive(LivingEntity entity) {
+        return false;
     }
 }
