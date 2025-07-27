@@ -17,8 +17,7 @@ import java.util.function.*;
 
 import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.MobEntityRenderer;
+import net.minecraft.client.render.entity.*;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
@@ -62,6 +61,7 @@ public abstract class AbstractPonyRenderer<
     @Override
     public void updateRenderState(T entity, S state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
+        BipedEntityRenderer.updateBipedRenderState(entity, state, tickDelta, itemModelManager);
         manager.updateState(entity, state, ModelAttributes.Mode.THIRD_PERSON, itemModelManager);
     }
 
