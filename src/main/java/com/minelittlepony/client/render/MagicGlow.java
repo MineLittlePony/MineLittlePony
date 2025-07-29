@@ -6,6 +6,7 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.MatrixStack.Entry;
 import net.minecraft.util.*;
+import net.minecraft.util.math.ColorHelper;
 
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -91,14 +92,26 @@ public interface MagicGlow {
 
         @Override
         public VertexConsumer color(int red, int green, int blue, int alpha) {
-            delegate.color(color);
+            delegate.color(ColorHelper.getRed(color), ColorHelper.getGreen(color), ColorHelper.getBlue(color), alpha);
             return this;
         }
 
         @Override
         public VertexConsumer normal(float x, float y, float z) {
-            this.delegate.normal(x, y, z);
+            delegate.normal(x, y, z);
             return this;
+        }
+
+        @Override
+        public void vertex(float x, float y, float z, int color, float u, float v, int overlay, int light, float normalX, float normalY, float normalZ) {
+            delegate.vertex(x, y, z, ColorHelper.withAlpha(ColorHelper.getAlpha(color), this.color), u, v, overlay, light, normalX, normalY, normalZ);
+        }
+
+        // Sodium
+        // https://github.com/CaffeineMC/sodium/blob/dev/common/src/main/java/net/caffeinemc/mods/sodium/mixin/core/render/immediate/consumer/SheetedDecalTextureGeneratorMixin.java
+        // @Override
+        public boolean canUseIntrinsics() {
+            return false;
         }
     }
 }
