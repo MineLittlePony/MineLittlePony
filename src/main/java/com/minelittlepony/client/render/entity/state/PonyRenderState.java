@@ -30,7 +30,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
     public boolean submergedInWater;
     public boolean onGround;
     public boolean isTechnoblade;
-    public boolean headVisible;
+    public boolean headVisible = true;
 
     public Pony pony = Pony.getManager().getPony(DefaultPonySkinHelper.STEVE);
     public Race race = Race.HUMAN;
