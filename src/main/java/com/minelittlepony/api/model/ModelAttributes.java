@@ -140,15 +140,15 @@ public class ModelAttributes {
     /**
      * Checks flying and speed conditions and sets rainboom to true if we're a species with wings and is going faaast.
      */
-    public void checkRainboom(LivingEntity entity, PonyModel<?> model, float ticks) {
-        Vec3d motion = entity.getVelocity();
+    public void checkRainboom(@Nullable LivingEntity entity, PonyModel<?> model, float ticks) {
+        Vec3d motion = entity == null ? Vec3d.ZERO : entity.getVelocity();
         double zMotion = Math.sqrt(motion.x * motion.x + motion.z * motion.z);
 
         isGoingFast = (isFlying && model instanceof WingedPonyModel) || isGliding;
         isGoingFast &= zMotion > 0.4F;
-        isGoingFast |= entity.isUsingRiptide();
-        isGoingFast |= entity.isGliding();
-        isGoingFast &= !entity.isSpectator();
+        isGoingFast |= isRiptide;
+        isGoingFast |= isGliding;
+        isGoingFast &= entity != null && !entity.isSpectator();
 
         motionLerp = MathUtil.clampLimit(zMotion * 30, 1);
 

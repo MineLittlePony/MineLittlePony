@@ -38,17 +38,25 @@ public class PonyBodyWidget extends PlayerBodyWidget<PonyBodyWidget.State> {
         super.updateState(xPosition, yPosition, mouseX, mouseY, tickDelta);
 
         boolean sneaking = playerState.isInSneakingPose;
+        Pony pony = Pony.getManager().getPony(skins.get(SkinType.SKIN).getId());
 
+        playerState.attributes.updateLivingState(null, pony, ModelAttributes.Mode.OTHER);
+        playerState.attributes.isSitting = playerState.hasVehicle;
+        playerState.attributes.isCrouching = playerState.isInSneakingPose = sneaking;
+        playerState.sleepingInBed = playerState.isInPose(EntityPose.SLEEPING);
+        playerState.attributes.isSleeping = playerState.sleepingInBed;
+        playerState.attributes.isLyingDown = playerState.sleepingInBed;
+        playerState.attributes.isRiptide = playerState.usingRiptide;
+        playerState.attributes.motionLerp = 1;
+        playerState.attributes.isSwimming = playerState.isSwimming || playerState.attributes.isRiptide;
+        playerState.attributes.isSwimmingRotated = playerState.attributes.isSwimming;
+        playerState.attributes.checkRainboom(null, null, playerState.age);
         playerState.updateState(MinecraftClient.getInstance().getItemModelManager(),
                 equipment, handStacks,
-                Pony.getManager().getPony(skins.get(SkinType.SKIN).getId()), ModelAttributes.Mode.OTHER
+                pony, ModelAttributes.Mode.OTHER
         );
         playerState.smallArms = VanillaModels.isSlim(skins.getSkinVariant());
         playerState.form = getForm();
-
-        playerState.attributes.isSitting = playerState.hasVehicle;
-        playerState.attributes.isCrouching = playerState.isInSneakingPose = sneaking;
-        playerState.attributes.isSleeping = playerState.sleepingInBed;
 
         playerState.wearabledTextures.clear();
         for (Wearable wearable : Wearable.REGISTRY.values()) {

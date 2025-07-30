@@ -67,7 +67,6 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
             Pony pony, ModelAttributes.Mode mode) {
         this.equippedHeadStack = equipment.getOrDefault(EquipmentSlot.HEAD, ItemStack.EMPTY);
         this.pony = pony;
-        attributes.updateLivingState(null, pony, mode);
         baby = attributes.size == SizePreset.FOAL;
         race = pony.race();
         vehicleOffset = 0;
