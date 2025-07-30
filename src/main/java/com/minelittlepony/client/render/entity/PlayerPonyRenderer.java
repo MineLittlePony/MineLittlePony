@@ -60,7 +60,7 @@ public class PlayerPonyRenderer
         addPonyFeature(new HeldItemFeature<>(this));
         addPonyFeature(new DJPon3Feature<>(this));
         addFeature(new CapeFeature(this, context.getEntityModels(), context.getEquipmentModelLoader()));
-        addPonyFeature(new SkullFeature<>(this, context.getItemModelManager(), HeadFeatureRenderer.HeadTransformation.DEFAULT, true));
+        addPonyFeature(new SkullFeature<>(this, context.getEntityModels(), HeadFeatureRenderer.HeadTransformation.DEFAULT, true));
         addPonyFeature(new ElytraFeature(this, context.getEquipmentRenderer()));
         addPonyFeature(new PassengerFeature<>(this, context));
         addPonyFeature(new GearFeature<>(this));
