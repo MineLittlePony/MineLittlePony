@@ -40,7 +40,9 @@ public class PonySkullRenderer {
 
     private Cache cache = new Cache();
 
+    @Nullable
     private ISkull selectedSkull;
+    @Nullable
     private Identifier selectedSkin;
 
     public void reload() {
@@ -81,8 +83,9 @@ public class PonySkullRenderer {
         }
 
         selectedSkull = skull;
-        selectedSkin = texture == null ? skull.getSkinResource(profile) : texture;
-        return RenderLayer.getEntityTranslucent(selectedSkin);
+        texture = texture == null ? skull.getSkinResource(profile) : texture;
+        selectedSkin = texture;
+        return RenderLayer.getEntityTranslucent(texture);
     }
 
     public boolean renderSkull(@Nullable Direction direction,
@@ -90,7 +93,10 @@ public class PonySkullRenderer {
             MatrixStack stack, VertexConsumerProvider renderContext, RenderLayer layer,
             int light) {
 
-        if (selectedSkull == null || !selectedSkull.canRender(PonyConfig.getInstance()) || !selectedSkull.bindPony(Pony.getManager().getPony(selectedSkin))) {
+        var skull = selectedSkull;
+        var skin = selectedSkin;
+
+        if (skull == null || skin == null || !skull.canRender(PonyConfig.getInstance()) || !skull.bindPony(Pony.getManager().getPony(skin))) {
             return false;
         }
 
@@ -110,8 +116,8 @@ public class PonySkullRenderer {
 
         VertexConsumer vertices = renderContext.getBuffer(layer);
 
-        selectedSkull.setAngles(yaw, animationProgress);
-        selectedSkull.render(stack, vertices, light, OverlayTexture.DEFAULT_UV, ColorHelper.fromFloats(ArmourRendererPlugin.INSTANCE.get().getArmourAlpha(EquipmentSlot.HEAD, EquipmentModel.LayerType.HUMANOID), 1, 1, 1));
+        skull.setAngles(yaw, animationProgress);
+        skull.render(stack, vertices, light, OverlayTexture.DEFAULT_UV, ColorHelper.fromFloats(ArmourRendererPlugin.INSTANCE.get().getArmourAlpha(EquipmentSlot.HEAD, EquipmentModel.LayerType.HUMANOID), 1, 1, 1));
 
         stack.pop();
 
