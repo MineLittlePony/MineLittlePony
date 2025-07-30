@@ -3,6 +3,7 @@ package com.minelittlepony.client.render.entity.state;
 import net.minecraft.block.AbstractSkullBlock;
 import net.minecraft.block.BedBlock;
 import net.minecraft.block.SkullBlock.SkullType;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
@@ -45,6 +46,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
     public boolean submergedInWater;
     public boolean onGround;
     public boolean isTechnoblade;
+    public boolean headVisible;
 
     public Pony pony = Pony.getManager().getPony(DefaultPonySkinHelper.STEVE);
     public Race race = Race.HUMAN;
@@ -133,6 +135,9 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
             pose = EntityPose.SITTING;
         }
 
+        headVisible = !(entity == MinecraftClient.getInstance().getCameraEntity()
+                && attributes.isLyingDown
+                && MinecraftClient.getInstance().options.getPerspective().isFirstPerson());
         isTechnoblade = ((
                     entity instanceof AbstractPiglinEntity
                  || entity instanceof PlayerEntity
