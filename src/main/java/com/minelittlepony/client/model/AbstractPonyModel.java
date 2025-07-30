@@ -251,6 +251,11 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             rightLeg.pivotZ = leftLeg.pivotZ = 19;
             rightLeg.pivotY = leftLeg.pivotY = 6;
         }
+
+        if (state.attributes.isGoingFast) {
+            leftLeg.pivotZ -= 1F;
+            rightLeg.pivotZ -= 1F;
+        }
     }
 
     /**
