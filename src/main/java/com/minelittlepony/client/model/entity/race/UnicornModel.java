@@ -96,9 +96,7 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> {
 
         matrices.translate(0.4F - (0.3F * left), -0.675F, -0.3F);
 
-        boolean shouldAimItem =
-                (action == UseAction.BOW) && state.attributes.itemUseTime > 0
-                || state.getHeldItem(arm).forwardFacing;
+        boolean shouldAimItem = action == UseAction.BOW && state.attributes.itemUseTime > 0 || state.getHeldItem(arm).forwardFacing;
 
         if (shouldAimItem) {
             Arm main = state.attributes.mainArm;

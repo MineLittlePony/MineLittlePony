@@ -16,7 +16,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.registry.Registries;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.world.World;
 
@@ -28,7 +27,8 @@ public class LevitatingItemRenderer {
             MatrixStack matrices, VertexConsumerProvider vertices, @Nullable World world,
             int light, int overlay, int seed, Operation<Void> original) {
 
-        if (entity == null || !(mode.isFirstPerson()
+        if (entity == null || !(
+                mode.isFirstPerson()
                 || mode == ItemDisplayContext.THIRD_PERSON_LEFT_HAND
                 || mode == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
             ) {
@@ -41,8 +41,6 @@ public class LevitatingItemRenderer {
         }
 
         var state = context.getAndUpdateRenderState(entity, MinecraftClient.getInstance().getRenderTickCounter().getTickProgress(false));
-
-        matrices.push();
 
         boolean doMagic = (mode.isFirstPerson() ? PonyConfig.getInstance().fpsmagic : PonyConfig.getInstance().tpsmagic).get() && state.hasMagicGlow();
 
@@ -60,21 +58,18 @@ public class LevitatingItemRenderer {
                 stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
             }
 
-            float driftStrength = 0.002F;
-            float xDrift = MathHelper.sin(state.age / 20F) * driftStrength;
-            float zDrift = MathHelper.cos((state.age + 20) / 20F) * driftStrength;
-
-            float scale = 1.1F + (MathHelper.sin(state.age / 20F) + 1) * driftStrength;
+            float scale = state.levitatingItemScale;
+            matrices.push();
+            matrices.translate(0.015F + state.levitatingItemXDrift, 0.01F, 0.01F + state.levitatingItemZDrift);
             matrices.scale(scale, scale, scale);
-            matrices.translate(0.015F + xDrift, 0.01F, 0.01F + zDrift);
 
             original.call(itemRenderer, entity, stack, mode, matrices, interceptedContext, world, light, OverlayTexture.DEFAULT_UV, seed);
+            matrices.translate(-0.03F - state.levitatingItemXDrift, -0.02F, -0.02F - state.levitatingItemZDrift);
             matrices.scale(scale, scale, scale);
-            matrices.translate(-0.03F - xDrift, -0.02F, -0.02F - zDrift);
             original.call(itemRenderer, entity, stack, mode, matrices, interceptedContext, world, light, OverlayTexture.DEFAULT_UV, seed);
+            matrices.pop();
         }
 
-        matrices.pop();
         return true;
     }
 

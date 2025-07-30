@@ -57,6 +57,10 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
 
     public final List<EquippedHeadRenderState> equippedHeads = new ArrayList<>();
 
+    public float levitatingItemXDrift;
+    public float levitatingItemZDrift;
+    public float levitatingItemScale;
+
     public void updateState(ItemModelManager resolver,
             Map<EquipmentSlot, ItemStack> equipment,
             Map<Arm, ItemStack> armStacks,
@@ -95,6 +99,12 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         if (!state.isEmpty()) {
             equippedHeads.add(state);
         }
+
+        float driftStrength = 0.002F;
+        levitatingItemXDrift = MathHelper.sin(age / 20F) * driftStrength;
+        levitatingItemZDrift = MathHelper.cos((age + 20) / 20F) * driftStrength;
+
+        levitatingItemScale = 1.1F + (MathHelper.sin(age / 20F) + 1) * driftStrength;
 
         if (PonyConfig.getInstance().tpsmagic.get() && hasMagicGlow()) {
             resolver.clearAndUpdate(glintlessRightHandItemState, getWithoutGlint(armStacks.getOrDefault(Arm.RIGHT, ItemStack.EMPTY)), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, null, null, 0);
@@ -149,6 +159,12 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
                 equippedHeads.add(state);
             }
         }
+
+        float driftStrength = 0.002F;
+        levitatingItemXDrift = MathHelper.sin(age / 20F) * driftStrength;
+        levitatingItemZDrift = MathHelper.cos((age + 20) / 20F) * driftStrength;
+
+        levitatingItemScale = 1.1F + (MathHelper.sin(age / 20F) + 1) * driftStrength;
 
         if (PonyConfig.getInstance().tpsmagic.get() && hasMagicGlow()) {
             resolver.updateForLivingEntity(glintlessRightHandItemState, getWithoutGlint(entity.getStackInArm(Arm.RIGHT)), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);

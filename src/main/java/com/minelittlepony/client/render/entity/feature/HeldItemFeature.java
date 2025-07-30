@@ -13,7 +13,6 @@ import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.util.Arm;
-import net.minecraft.util.math.MathHelper;
 
 public class HeldItemFeature<
         S extends PonyRenderState,
@@ -59,23 +58,21 @@ public class HeldItemFeature<
 
                 boolean noTransform = state.getHeldItem(arm).action == UseAction.SPYGLASS && state.attributes.itemUseTime > 0;
 
-                float driftStrength = 0.002F;
-                float xDrift = MathHelper.sin(state.age / 10F) * driftStrength;
-                float zDrift = MathHelper.cos((state.age + 20) / 10F) * driftStrength;
-
-                float scale = 1.1F + (MathHelper.sin(state.age / 20F) + 1) * driftStrength;
-
+                float scale = state.levitatingItemScale;
+                matrices.push();
+                if (!noTransform) {
+                    matrices.translate(0.03F, -0.12F, 0.02F);
+                    matrices.translate(0.015F + state.levitatingItemXDrift, 0.01F, 0.01F + state.levitatingItemZDrift);
+                }
                 matrices.scale(scale, scale, scale);
-                if (!noTransform) {
-                    matrices.translate(0.045F + xDrift, 0.01F - 0.12F, 0.03F + zDrift);
-                }
                 renderItem((PlayerEntityRenderState)state, glintLessItem, arm, matrices, vertices, light);
                 if (!noTransform) {
-                    matrices.scale(scale, scale, scale);
                     matrices.translate(0.1F, -0.1F, 0.1F);
-                    matrices.translate(-0.03F - xDrift, -0.02F, -0.02F - zDrift);
+                    matrices.translate(-0.03F - state.levitatingItemXDrift, -0.02F, -0.02F - state.levitatingItemZDrift);
                 }
+                matrices.scale(scale, scale, scale);
                 renderItem((PlayerEntityRenderState)state, glintLessItem, arm, matrices, vertices, light);
+                matrices.pop();
             }
         }
     }
