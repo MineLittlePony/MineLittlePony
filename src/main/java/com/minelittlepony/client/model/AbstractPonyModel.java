@@ -248,6 +248,11 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             rightLeg.originZ = leftLeg.originZ = 19;
             rightLeg.originY = leftLeg.originY = 6;
         }
+
+        if (state.attributes.isGoingFast) {
+            leftLeg.originZ -= 1F;
+            rightLeg.originZ -= 1F;
+        }
     }
 
     /**
