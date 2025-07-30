@@ -25,56 +25,59 @@ public class LevitatingItemRenderer {
     /**
      * Renders an item with a magical overlay.
      */
-    public void renderItem(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformationMode mode, boolean left, MatrixStack matrices, VertexConsumerProvider vertices, @Nullable World world, int lightUv, int posLong) {
+    public boolean renderItem(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ModelTransformationMode mode, boolean left, MatrixStack matrices, VertexConsumerProvider vertices, @Nullable World world, int lightUv, int posLong) {
 
-        if (entity != null && (mode.isFirstPerson()
+        if (entity == null || !(
+                mode.isFirstPerson()
                 || mode == ModelTransformationMode.THIRD_PERSON_LEFT_HAND
                 || mode == ModelTransformationMode.THIRD_PERSON_RIGHT_HAND)
             ) {
-            if (MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(entity) instanceof PonyRenderContext<LivingEntity, ?> context) {
-                Pony pony = context.getEntityPony(entity);
-                if (context.getInternalRenderer().getModels().body() instanceof HornedPonyModel model) {
-                    matrices.push();
-
-                    boolean doMagic = (mode.isFirstPerson() ? PonyConfig.getInstance().fpsmagic : PonyConfig.getInstance().tpsmagic).get() && model.hasMagic();
-
-                    if (doMagic && mode.isFirstPerson()) {
-                        setupPerspective(itemRenderer, entity, stack, left, matrices);
-                    }
-
-                    itemRenderer.renderItem(entity, stack, mode, left, matrices, vertices, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
-
-                    if (doMagic) {
-                        VertexConsumerProvider interceptedContext = MagicGlow.getProvider(pony.metadata().glowColor(), vertices, matrices);
-
-                        if (stack.hasGlint()) {
-                            stack = stack.copy();
-                            stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
-                        }
-
-                        float tickDelta = MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false) + entity.age;
-
-                        float driftStrength = 0.002F;
-                        float xDrift = MathHelper.sin(tickDelta / 20F) * driftStrength;
-                        float zDrift = MathHelper.cos((tickDelta + 20) / 20F) * driftStrength;
-
-                        float scale = 1.1F + (MathHelper.sin(tickDelta / 20F) + 1) * driftStrength;
-                        matrices.scale(scale, scale, scale);
-                        matrices.translate(0.015F + xDrift, 0.01F, 0.01F + zDrift);
-
-                        itemRenderer.renderItem(entity, stack, mode, left, matrices, interceptedContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
-                        matrices.scale(scale, scale, scale);
-                        matrices.translate(-0.03F - xDrift, -0.02F, -0.02F - zDrift);
-                        itemRenderer.renderItem(entity, stack, mode, left, matrices, interceptedContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
-                    }
-
-                    matrices.pop();
-                    return;
-                }
-            }
+            return false;
         }
 
+        var context = MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(entity);
+        if (context == null || !(context.getInternalRenderer().getModels().body() instanceof HornedPonyModel model)) {
+            return false;
+        }
+
+        Pony pony = context.getEntityPony(entity);
+
+        boolean doMagic = (mode.isFirstPerson() ? PonyConfig.getInstance().fpsmagic : PonyConfig.getInstance().tpsmagic).get() && model.hasMagic();
+
+        if (!doMagic) {
+            return false;
+        }
+
+        matrices.push();
+        setupPerspective(itemRenderer, entity, stack, left, matrices);
         itemRenderer.renderItem(entity, stack, mode, left, matrices, vertices, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
+
+        VertexConsumerProvider interceptedContext = MagicGlow.getProvider(pony.metadata().glowColor(), vertices, matrices);
+
+        if (stack.hasGlint()) {
+            stack = stack.copy();
+            stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
+        }
+
+        float tickDelta = MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false) + entity.age;
+
+        float driftStrength = 0.002F;
+        float xDrift = MathHelper.sin(tickDelta / 20F) * driftStrength;
+        float zDrift = MathHelper.cos((tickDelta + 20) / 20F) * driftStrength;
+
+        float scale = 1.1F + (MathHelper.sin(tickDelta / 20F) + 1) * driftStrength;
+        matrices.push();
+        matrices.translate(0.015F + xDrift, 0.01F, 0.01F + zDrift);
+        matrices.scale(scale, scale, scale);
+
+        itemRenderer.renderItem(entity, stack, mode, left, matrices, interceptedContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
+        matrices.translate(-0.03F - xDrift, -0.02F, -0.02F - zDrift);
+        matrices.scale(scale, scale, scale);
+        itemRenderer.renderItem(entity, stack, mode, left, matrices, interceptedContext, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
+        matrices.pop();
+        matrices.pop();
+
+        return true;
     }
 
     /**
