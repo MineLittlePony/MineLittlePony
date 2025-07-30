@@ -7,6 +7,7 @@ import com.minelittlepony.util.MathUtil;
 
 import java.util.*;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -72,6 +73,9 @@ public class ModelAttributes {
      * Flag indicating that this model should mimic the vanilla horse models.
      */
     public boolean isHorsey;
+
+    @Deprecated
+    public boolean headVisible;
 
     /**
      * Vertical pitch whilst flying.
@@ -157,6 +161,10 @@ public class ModelAttributes {
             boolean moving = entity.getVelocity().multiply(1, 0, 1).length() == 0 && entity.isSneaking();
             isLyingDown |= getMainInterpolator().interpolate("lyingDown", moving ? 10 : 0, 200) >= 9;
         }
+
+        headVisible = !(entity == MinecraftClient.getInstance().getCameraEntity()
+                && isLyingDown
+                && MinecraftClient.getInstance().options.getPerspective().isFirstPerson());
 
         isCrouching = !isLyingDown && !isSitting && mode == Mode.THIRD_PERSON && PonyPosture.isCrouching(pony, entity);
         isFlying = !isLyingDown && mode == Mode.THIRD_PERSON && PonyPosture.isFlying(entity);

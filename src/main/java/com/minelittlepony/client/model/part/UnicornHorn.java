@@ -39,7 +39,7 @@ public class UnicornHorn implements SubModel {
 
     @Override
     public void setVisible(boolean visible, ModelAttributes attributes) {
-        horn.visible = visible;
-        glow.visible = visible;
+        horn.visible = this.visible && visible && attributes.headVisible;
+        glow.visible = this.visible && visible && attributes.headVisible;
     }
 }

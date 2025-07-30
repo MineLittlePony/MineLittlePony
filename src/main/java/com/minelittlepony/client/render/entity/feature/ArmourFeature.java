@@ -67,6 +67,10 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & Po
                     float age, float headYaw, float headPitch,
                     EquipmentSlot armorSlot, ArmourLayer layer, ArmourRendererPlugin plugin) {
 
+        if (armorSlot == EquipmentSlot.HEAD && !pony.body().getAttributes().headVisible) {
+            return;
+        }
+
         for (ItemStack stack : plugin.getArmorStacks(entity, armorSlot, layer, ArmourRendererPlugin.ArmourType.ARMOUR)) {
             if (stack.isEmpty()) {
                 continue;

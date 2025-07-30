@@ -77,19 +77,21 @@ public class GearFeature<T extends LivingEntity, M extends EntityModel<T> & Pony
                 Gear gear = entry.gear();
                 gear.transform(model, stack);
                 BodyPart part = gear.getGearLocation();
-                if (hasSkull && part== BodyPart.HEAD && renderStackingOffsets.getFloat(part) == 0) {
-                    renderStackingOffsets.put(part, 0.25F);
-                }
-
-                if (gear.isStackable()) {
-                    float v = renderStackingOffsets.getFloat(part);
-                    if (v != 0) {
-                        stack.translate(0, -v, 0);
+                if (part != BodyPart.HEAD || model.getAttributes().headVisible) {
+                    if (hasSkull && part == BodyPart.HEAD && renderStackingOffsets.getFloat(part) == 0) {
+                        renderStackingOffsets.put(part, 0.25F);
                     }
-                    renderStackingOffsets.put(part, v + gear.getStackingHeight());
-                }
 
-                renderGear(model, entity, gear, stack, renderContext, lightUv, limbDistance, limbAngle, tickDelta);
+                    if (gear.isStackable()) {
+                        float v = renderStackingOffsets.getFloat(part);
+                        if (v != 0) {
+                            stack.translate(0, -v, 0);
+                        }
+                        renderStackingOffsets.put(part, v + gear.getStackingHeight());
+                    }
+
+                    renderGear(model, entity, gear, stack, renderContext, lightUv, limbDistance, limbAngle, tickDelta);
+                }
                 stack.pop();
             }
         }

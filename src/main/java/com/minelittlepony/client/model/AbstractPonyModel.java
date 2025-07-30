@@ -116,6 +116,7 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
         jacket.copyTransform(body);
         hat.copyTransform(head);
 
+        head.visible = attributes.headVisible;
         hat.visible = head.visible && !attributes.isHorsey;
         neck.visible = body.visible;
         if (attributes.isHorsey) {
