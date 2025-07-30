@@ -84,6 +84,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     }
 
     protected void setModelVisibilities(T state) {
+        head.visible = state.headVisible;
         resetPivot(head, neck, leftArm, rightArm, leftLeg, rightLeg);
         hat.visible = head.visible && !state.attributes.isHorsey;
         neck.visible = body.visible;

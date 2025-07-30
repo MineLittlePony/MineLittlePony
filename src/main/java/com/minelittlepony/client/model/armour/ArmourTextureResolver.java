@@ -25,10 +25,10 @@ import java.util.stream.Stream;
  * For example:
  *
  * assets/minecraft/textures/entity/equipment/humanoid/iron.png
- * Becomes: assets/minecraft/textures/entity/equipment/ponified/iron.png
+ * Becomes: assets/minecraft/textures/entity/equipment/ponified_humanoid/iron.png
  *
  * assets/minecraft/textures/entity/equipment/humanoid_leggings/iron.png
- * Becomes: assets/minecraft/textures/entity/equipment/ponified_leggings/iron.png
+ * Becomes: assets/minecraft/textures/entity/equipment/ponified_humanoid_leggings/iron.png
  * <p>
  * In addition to the above, unlike in vanilla, all pony armour pieces make use of both the regular and leggings textures to show in two different layers.
  * In general, the textures are distributed as follows:
