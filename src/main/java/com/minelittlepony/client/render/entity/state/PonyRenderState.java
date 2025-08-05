@@ -54,14 +54,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
     public final HeldItemRenderState leftHeldItem = new HeldItemRenderState();
     public final HeldItemRenderState rightHeldItem = new HeldItemRenderState();
 
-    public final ItemRenderState glintlessRightHandItemState = new ItemRenderState();
-    public final ItemRenderState glintlessLeftHandItemState = new ItemRenderState();
-
     public final List<EquippedHeadRenderState> equippedHeads = new ArrayList<>();
-
-    public float levitatingItemXDrift;
-    public float levitatingItemZDrift;
-    public float levitatingItemScale;
 
     public void updateState(ItemModelManager resolver,
             Map<EquipmentSlot, ItemStack> equipment,
@@ -85,9 +78,6 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
 
         isTechnoblade = false;
 
-        leftHeldItem.update(armStacks.getOrDefault(Arm.LEFT, ItemStack.EMPTY));
-        rightHeldItem.update(armStacks.getOrDefault(Arm.RIGHT, ItemStack.EMPTY));
-
         // Adjust cape angles
         // capePitch
         field_53537 *= 0.3F;
@@ -101,41 +91,32 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
             equippedHeads.add(state);
         }
 
-        float driftStrength = 0.002F;
-        levitatingItemXDrift = MathHelper.sin(age / 20F) * driftStrength;
-        levitatingItemZDrift = MathHelper.cos((age + 20) / 20F) * driftStrength;
-
-        levitatingItemScale = 1.1F + (MathHelper.sin(age / 20F) + 1) * driftStrength;
-
-        if (PonyConfig.getInstance().tpsmagic.get() && hasMagicGlow()) {
-            resolver.clearAndUpdate(glintlessRightHandItemState, getWithoutGlint(armStacks.getOrDefault(Arm.RIGHT, ItemStack.EMPTY)), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, null, null, 0);
-            resolver.clearAndUpdate(glintlessLeftHandItemState, getWithoutGlint(armStacks.getOrDefault(Arm.RIGHT, ItemStack.EMPTY)), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, null, null, 0);
-        } else {
-            glintlessRightHandItemState.clear();
-            glintlessLeftHandItemState.clear();
-        }
+        rightHeldItem.updateItemRenderState(this, resolver, armStacks.getOrDefault(Arm.RIGHT, ItemStack.EMPTY), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, null);
+        leftHeldItem.updateItemRenderState(this, resolver, armStacks.getOrDefault(Arm.LEFT, ItemStack.EMPTY), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, null);
     }
 
-    public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
+    public void updateState(ItemModelManager resolver, @Nullable LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
         this.equippedHeadStack = entity.getEquippedStack(EquipmentSlot.HEAD);
         this.pony = pony;
-        attributes.updateLivingState(entity, pony, mode);
-        attributes.checkRainboom(entity, model, age);
+        if (entity != null) {
+            attributes.updateLivingState(entity, pony, mode);
+            attributes.checkRainboom(entity, model, age);
+        }
         baby = attributes.size == SizePreset.FOAL;
         race = pony.race();
-        vehicleOffset = hasVehicle ? entity.getVehicle().getEyeHeight(pose) : 0;
+        vehicleOffset = hasVehicle && entity != null ? entity.getVehicle().getEyeHeight(pose) : 0;
         riderOffset = getRiderYOffset();
         nameplateYOffset = getNamePlateYOffset();
         legOutset = getLegOutset();
         isInSneakingPose = attributes.isCrouching && !attributes.isLyingDown;
-        sleepingInBed = entity.getSleepingPosition().isPresent() && entity.getWorld().getBlockState(entity.getSleepingPosition().get()).getBlock() instanceof BedBlock;
-        submergedInWater = entity.isSubmergedInWater();
+        sleepingInBed = entity != null && entity.getSleepingPosition().isPresent() && entity.getWorld().getBlockState(entity.getSleepingPosition().get()).getBlock() instanceof BedBlock;
+        submergedInWater = entity != null && entity.isSubmergedInWater();
         wobbleAmount = handSwingProgress <= 0 ? 0 : MathHelper.sin(MathHelper.sqrt(handSwingProgress) * MathHelper.PI * 2) * 0.04F;
         if (attributes.isSitting) {
             pose = EntityPose.SITTING;
         }
 
-        headVisible = !(entity == MinecraftClient.getInstance().getCameraEntity()
+        headVisible = entity == null || !(entity == MinecraftClient.getInstance().getCameraEntity()
                 && attributes.isLyingDown
                 && MinecraftClient.getInstance().options.getPerspective().isFirstPerson());
         isTechnoblade = ((
@@ -144,9 +125,6 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
                  || entity instanceof ZombifiedPiglinEntity
              ) && entity.hasCustomName() && entity.getCustomName().getString().equalsIgnoreCase("technoblade")
          );
-
-        leftHeldItem.update(entity.getStackInArm(Arm.LEFT));
-        rightHeldItem.update(entity.getStackInArm(Arm.RIGHT));
 
         // Adjust cape angles
         // capePitch
@@ -164,21 +142,12 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
             }
         }
 
-        float driftStrength = 0.002F;
-        levitatingItemXDrift = MathHelper.sin(age / 20F) * driftStrength;
-        levitatingItemZDrift = MathHelper.cos((age + 20) / 20F) * driftStrength;
+        rightHeldItem.updateItemRenderState(this, resolver, entity.getStackInArm(Arm.RIGHT), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
+        leftHeldItem.updateItemRenderState(this, resolver, entity.getStackInArm(Arm.LEFT), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
 
-        levitatingItemScale = 1.1F + (MathHelper.sin(age / 20F) + 1) * driftStrength;
-
-        if (PonyConfig.getInstance().tpsmagic.get() && hasMagicGlow()) {
-            resolver.updateForLivingEntity(glintlessRightHandItemState, getWithoutGlint(entity.getStackInArm(Arm.RIGHT)), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
-            resolver.updateForLivingEntity(glintlessLeftHandItemState, getWithoutGlint(entity.getStackInArm(Arm.LEFT)), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
-        } else {
-            glintlessRightHandItemState.clear();
-            glintlessLeftHandItemState.clear();
+        if (entity != null) {
+            PonyPosture.of(attributes).updateState(entity, this);
         }
-
-        PonyPosture.of(attributes).updateState(entity, this);
         PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(attributes, model, ModelAttributes.Mode.OTHER);
     }
 
@@ -249,22 +218,50 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         return arm == Arm.LEFT ? leftHeldItem : rightHeldItem;
     }
 
-    public static ItemStack getWithoutGlint(ItemStack stack) {
-        if (!stack.isEmpty()) {
-            stack = stack.copy();
-            stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
-        }
-        return stack;
-    }
-
-
     public static class HeldItemRenderState {
         public UseAction action = UseAction.NONE;
         public boolean forwardFacing;
+        public boolean chargedCrossbow;
+        public boolean repositionFirstPerson;
+        public boolean handHeldTool;
 
-        private void update(ItemStack stack) {
+        public float levitatingItemXDrift;
+        public float levitatingItemZDrift;
+        public float levitatingItemScale;
+
+        public final ItemRenderState glintlessHandItemState = new ItemRenderState();
+
+        public void updateItemRenderState(PonyRenderState state, ItemModelManager resolver, ItemStack stack, ItemDisplayContext context, @Nullable LivingEntity entity) {
             action = stack.getUseAction();
             forwardFacing = PonyConfig.getInstance().forwardHoldingItems.get().contains(Registries.ITEM.getId(stack.getItem()));
+            chargedCrossbow = action == UseAction.CROSSBOW && CrossbowItem.isCharged(stack);
+            repositionFirstPerson = state.itemUseTime <= 0 || action == UseAction.NONE || chargedCrossbow;
+            handHeldTool = action == UseAction.BOW
+                    || action == UseAction.CROSSBOW
+                    || action == UseAction.BLOCK
+                    || stack.contains(DataComponentTypes.TOOL)
+                    || forwardFacing;
+
+            if (PonyConfig.getInstance().tpsmagic.get() && state.hasMagicGlow()) {
+                float driftStrength = 0.002F;
+                levitatingItemXDrift = MathHelper.sin(state.age / 20F) * driftStrength;
+                levitatingItemZDrift = MathHelper.cos((state.age + 20) / 20F) * driftStrength;
+
+                levitatingItemScale = 1.1F + (MathHelper.sin(state.age / 20F) + 1) * driftStrength;
+
+                Boolean glintOverride = stack.get(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE);
+                stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
+
+                if (entity == null) {
+                    resolver.clearAndUpdate(glintlessHandItemState, stack, context, null, null, 0);
+                } else {
+                    resolver.updateForLivingEntity(glintlessHandItemState, stack, context, entity);
+                }
+
+                stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, glintOverride);
+            } else {
+                glintlessHandItemState.clear();
+            }
         }
     }
 

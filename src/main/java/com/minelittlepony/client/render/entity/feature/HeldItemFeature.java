@@ -39,39 +39,40 @@ public class HeldItemFeature<
 
             matrices.push();
             model.transform(state, BodyPart.LEGS, matrices);
-            renderItem(state, state.rightHandItemState, state.glintlessRightHandItemState, Arm.RIGHT, matrices, vertices, light);
-            renderItem(state, state.leftHandItemState, state.glintlessLeftHandItemState, Arm.LEFT, matrices, vertices, light);
+            renderItem(state, state.rightHandItemState, state.rightHeldItem, Arm.RIGHT, matrices, vertices, light);
+            renderItem(state, state.leftHandItemState, state.leftHeldItem, Arm.LEFT, matrices, vertices, light);
             matrices.pop();
         }
     }
 
     @SuppressWarnings(value = {"unchecked"})
-    protected void renderItem(S state, ItemRenderState item, ItemRenderState glintLessItem, Arm arm, MatrixStack matrices, VertexConsumerProvider vertices, int light) {
+    protected void renderItem(S state, ItemRenderState item, PonyRenderState.HeldItemRenderState glintLessItem, Arm arm, MatrixStack matrices, VertexConsumerProvider vertices, int light) {
         if (!item.isEmpty()) {
             if (context.getEquineManager().getModels().body() instanceof AbstractPonyModel m) {
                 m.positionheldItem(state, arm, matrices);
             }
+
             renderItem((PlayerEntityRenderState)state, item, arm, matrices, vertices, light);
 
-            if (!glintLessItem.isEmpty()) {
+            if (!glintLessItem.glintlessHandItemState.isEmpty()) {
                 vertices = MagicGlow.getProvider(state.pony.metadata().glowColor(), vertices, matrices);
 
                 boolean noTransform = state.getHeldItem(arm).action == UseAction.SPYGLASS && state.attributes.itemUseTime > 0;
 
-                float scale = state.levitatingItemScale;
+                float scale = glintLessItem.levitatingItemScale;
                 matrices.push();
                 if (!noTransform) {
                     matrices.translate(0.03F, -0.12F, 0.02F);
-                    matrices.translate(0.015F + state.levitatingItemXDrift, 0.01F, 0.01F + state.levitatingItemZDrift);
+                    matrices.translate(0.015F + glintLessItem.levitatingItemXDrift, 0.01F, 0.01F + glintLessItem.levitatingItemZDrift);
                 }
                 matrices.scale(scale, scale, scale);
-                renderItem((PlayerEntityRenderState)state, glintLessItem, arm, matrices, vertices, light);
+                renderItem((PlayerEntityRenderState)state, glintLessItem.glintlessHandItemState, arm, matrices, vertices, light);
                 if (!noTransform) {
                     matrices.translate(0.1F, -0.1F, 0.1F);
-                    matrices.translate(-0.03F - state.levitatingItemXDrift, -0.02F, -0.02F - state.levitatingItemZDrift);
+                    matrices.translate(-0.03F - glintLessItem.levitatingItemXDrift, -0.02F, -0.02F - glintLessItem.levitatingItemZDrift);
                 }
                 matrices.scale(scale, scale, scale);
-                renderItem((PlayerEntityRenderState)state, glintLessItem, arm, matrices, vertices, light);
+                renderItem((PlayerEntityRenderState)state, glintLessItem.glintlessHandItemState, arm, matrices, vertices, light);
                 matrices.pop();
             }
         }

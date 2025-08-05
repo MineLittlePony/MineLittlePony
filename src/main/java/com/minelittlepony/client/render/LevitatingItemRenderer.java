@@ -14,24 +14,18 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
-import net.minecraft.item.consume.UseAction;
-import net.minecraft.registry.Registries;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.world.World;
 
 public class LevitatingItemRenderer {
     /**
-     * Renders an item with a magical overlay.
+     * Renders a first-person item with a magical overlay.
      */
     public boolean renderItem(ItemRenderer itemRenderer, @Nullable LivingEntity entity, ItemStack stack, ItemDisplayContext mode,
             MatrixStack matrices, VertexConsumerProvider vertices, @Nullable World world,
             int light, int overlay, int seed, Operation<Void> original) {
 
-        if (entity == null || !(
-                mode.isFirstPerson()
-                || mode == ItemDisplayContext.THIRD_PERSON_LEFT_HAND
-                || mode == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
-            ) {
+        if (!PonyConfig.getInstance().fpsmagic.get() || entity == null || !mode.isFirstPerson()) {
             return false;
         }
 
@@ -42,67 +36,52 @@ public class LevitatingItemRenderer {
 
         var state = context.getAndUpdateRenderState(entity, MinecraftClient.getInstance().getRenderTickCounter().getTickProgress(false));
 
-        boolean doMagic = (mode.isFirstPerson() ? PonyConfig.getInstance().fpsmagic : PonyConfig.getInstance().tpsmagic).get() && state.hasMagicGlow();
-
-        if (doMagic && mode.isFirstPerson()) {
-            setupPerspective(state, stack, mode.isLeftHand(), matrices);
+        if (!state.hasMagicGlow()) {
+            return false;
         }
 
+        var itemState = mode.isLeftHand() ? state.leftHeldItem : state.rightHeldItem;
+
+        itemState.updateItemRenderState(state, MinecraftClient.getInstance().getItemModelManager(), stack, mode, entity);
+
+        setupPerspective(state, itemState, stack, mode.isLeftHand(), matrices);
         original.call(itemRenderer, entity, stack, mode, matrices, vertices, world, light, overlay, seed);
 
-        if (doMagic) {
-            VertexConsumerProvider interceptedContext = MagicGlow.getProvider(state.pony.metadata().glowColor(), vertices, matrices);
+        VertexConsumerProvider interceptedContext = MagicGlow.getProvider(state.pony.metadata().glowColor(), vertices, matrices);
 
-            if (stack.hasGlint()) {
-                stack = stack.copy();
-                stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
-            }
+        @Nullable
+        Boolean glint = stack.get(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE);
+        stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
 
-            float scale = state.levitatingItemScale;
-            matrices.push();
-            matrices.translate(0.015F + state.levitatingItemXDrift, 0.01F, 0.01F + state.levitatingItemZDrift);
-            matrices.scale(scale, scale, scale);
+        float scale = itemState.levitatingItemScale;
+        matrices.push();
+        matrices.translate(0.015F + itemState.levitatingItemXDrift, 0.01F, 0.01F + itemState.levitatingItemZDrift);
+        matrices.scale(scale, scale, scale);
 
-            original.call(itemRenderer, entity, stack, mode, matrices, interceptedContext, world, light, OverlayTexture.DEFAULT_UV, seed);
-            matrices.translate(-0.03F - state.levitatingItemXDrift, -0.02F, -0.02F - state.levitatingItemZDrift);
-            matrices.scale(scale, scale, scale);
-            original.call(itemRenderer, entity, stack, mode, matrices, interceptedContext, world, light, OverlayTexture.DEFAULT_UV, seed);
-            matrices.pop();
-        }
+        original.call(itemRenderer, entity, stack, mode, matrices, interceptedContext, world, light, OverlayTexture.DEFAULT_UV, seed);
+        matrices.translate(-0.03F - itemState.levitatingItemXDrift, -0.02F, -0.02F - itemState.levitatingItemZDrift);
+        matrices.scale(scale, scale, scale);
+        original.call(itemRenderer, entity, stack, mode, matrices, interceptedContext, world, light, OverlayTexture.DEFAULT_UV, seed);
+        matrices.pop();
 
+        stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, glint);
         return true;
     }
 
     /**
      * Moves held items to look like they're floating in the player's field.
      */
-    public static void setupPerspective(PonyRenderState state, ItemStack item, boolean left, MatrixStack stack) {
-        UseAction action = item.getUseAction();
-
-        boolean doNormal = state.itemUseTime <= 0 || action == UseAction.NONE || (action == UseAction.CROSSBOW && CrossbowItem.isCharged(item));
-
-        if (doNormal) { // eating, blocking, and drinking are not transformed. Only held items.
+    public static void setupPerspective(PonyRenderState state, PonyRenderState.HeldItemRenderState heldItem, ItemStack item, boolean left, MatrixStack stack) {
+        if (heldItem.repositionFirstPerson) { // eating, blocking, and drinking are not transformed. Only held items.
             int sign = left ? 1 : -1;
-            float ticks = state.age * sign;
 
-            float floatAmount = -(float)Math.sin(ticks / 9F) / 40F;
-            float driftAmount = -(float)Math.cos(ticks / 6F) / 40F;
+            float floatAmount = heldItem.levitatingItemXDrift * 2.5F;
+            float driftAmount = heldItem.levitatingItemZDrift * 4;
+            float distanceChange = heldItem.handHeldTool ? -0.3F : -0.6F;
 
-            boolean handHeldTool =
-                       action == UseAction.BOW
-                    || action == UseAction.CROSSBOW
-                    || action == UseAction.BLOCK
-                    || item.contains(DataComponentTypes.TOOL)
-                    || PonyConfig.getInstance().forwardHoldingItems.get().contains(Registries.ITEM.getId(item.getItem()));
+            stack.translate(driftAmount - floatAmount / 4F + distanceChange / 1.5F * sign, floatAmount, distanceChange);
 
-            float distanceChange = handHeldTool ? -0.3F : -0.6F;
-
-            stack.translate(
-                    driftAmount - floatAmount / 4F + distanceChange / 1.5F * sign,
-                    floatAmount,
-                    distanceChange);
-
-            if (!handHeldTool) { // bows have to point forwards
+            if (!heldItem.handHeldTool) { // bows have to point forwards
                 stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(sign * -60 + floatAmount));
                 stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(sign * 30 + driftAmount));
             }
