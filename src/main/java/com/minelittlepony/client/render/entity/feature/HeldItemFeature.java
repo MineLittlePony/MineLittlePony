@@ -59,19 +59,32 @@ public class HeldItemFeature<
 
                 boolean noTransform = state.getHeldItem(arm).action == UseAction.SPYGLASS && state.attributes.itemUseTime > 0;
 
+                var box = glintLessItem.glintlessHandItemState.getModelBoundingBox();
+
                 float scale = glintLessItem.levitatingItemScale;
                 matrices.push();
                 if (!noTransform) {
                     matrices.translate(0.03F, -0.12F, 0.02F);
                     matrices.translate(0.015F + glintLessItem.levitatingItemXDrift, 0.01F, 0.01F + glintLessItem.levitatingItemZDrift);
                 }
+
+                var dX = (box.maxX + box.minX) * 0.5;
+                var dY = (box.maxY + box.minY) * 0.5;
+                var dZ = (box.maxZ + box.minZ) * 0.5;
+
+                matrices.translate(dX, dY, dZ);
                 matrices.scale(scale, scale, scale);
+                matrices.translate(-dX, -dY, -dZ);
+
                 renderItem((PlayerEntityRenderState)state, glintLessItem.glintlessHandItemState, arm, matrices, vertices, light);
+                matrices.translate(dX, dY, dZ);
+                matrices.scale(scale, scale, scale);
+                matrices.translate(-dX, -dY, -dZ);
                 if (!noTransform) {
                     matrices.translate(0.1F, -0.1F, 0.1F);
                     matrices.translate(-0.03F - glintLessItem.levitatingItemXDrift, -0.02F, -0.02F - glintLessItem.levitatingItemZDrift);
                 }
-                matrices.scale(scale, scale, scale);
+
                 renderItem((PlayerEntityRenderState)state, glintLessItem.glintlessHandItemState, arm, matrices, vertices, light);
                 matrices.pop();
             }

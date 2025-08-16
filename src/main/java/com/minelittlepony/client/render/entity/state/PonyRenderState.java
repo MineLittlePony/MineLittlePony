@@ -247,7 +247,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
                 levitatingItemXDrift = MathHelper.sin(state.age / 20F) * driftStrength;
                 levitatingItemZDrift = MathHelper.cos((state.age + 20) / 20F) * driftStrength;
 
-                levitatingItemScale = 1.1F + (MathHelper.sin(state.age / 20F) + 1) * driftStrength;
+                levitatingItemScale = 1.1F + (MathHelper.sin(state.age / 10F) + 1) * driftStrength * 3;
 
                 Boolean glintOverride = stack.get(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE);
                 stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
