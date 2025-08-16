@@ -5,7 +5,6 @@ import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
-import com.minelittlepony.common.util.render.RenderLayerUtil;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +17,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.registry.Registries;
-import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.world.World;
@@ -26,12 +24,7 @@ import net.minecraft.world.World;
 public class LevitatingItemRenderer {
     public static VertexConsumerProvider getProvider(Pony pony, VertexConsumerProvider provider) {
         final int color = pony.metadata().glowColor();
-        return layer -> {
-            if (layer.getVertexFormat() != VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL) {
-                return provider.getBuffer(layer);
-            }
-            return provider.getBuffer(MagicGlow.getColoured(RenderLayerUtil.getTexture(layer).orElse(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE), color));
-        };
+        return MagicGlow.getProvider(color, provider, new MatrixStack());
     }
 
     /**
@@ -66,7 +59,7 @@ public class LevitatingItemRenderer {
         original.call(itemRenderer, entity, stack, mode, left, matrices, vertices, world, light, overlay, seed);
 
         if (doMagic) {
-            VertexConsumerProvider interceptedContext = getProvider(state.pony, vertices);
+            VertexConsumerProvider interceptedContext = MagicGlow.getProvider(state.pony.metadata().glowColor(), vertices, matrices);
 
             if (stack.hasGlint()) {
                 stack = stack.copy();
