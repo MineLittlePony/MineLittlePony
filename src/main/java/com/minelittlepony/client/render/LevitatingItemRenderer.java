@@ -52,15 +52,24 @@ public class LevitatingItemRenderer {
         @Nullable
         Boolean glint = stack.get(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE);
         stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false);
+        var box = itemState.glintlessHandItemState.getModelBoundingBox();
 
         float scale = itemState.levitatingItemScale;
         matrices.push();
         matrices.translate(0.015F + itemState.levitatingItemXDrift, 0.01F, 0.01F + itemState.levitatingItemZDrift);
+        var dX = (box.maxX + box.minX) * 0.5;
+        var dY = (box.maxY + box.minY) * 0.5;
+        var dZ = (box.maxZ + box.minZ) * 0.5;
+
+        matrices.translate(dX, dY, dZ);
         matrices.scale(scale, scale, scale);
+        matrices.translate(-dX, -dY, -dZ);
 
         original.call(itemRenderer, entity, stack, mode, matrices, interceptedContext, world, light, OverlayTexture.DEFAULT_UV, seed);
-        matrices.translate(-0.03F - itemState.levitatingItemXDrift, -0.02F, -0.02F - itemState.levitatingItemZDrift);
+        matrices.translate(dX, dY, dZ);
         matrices.scale(scale, scale, scale);
+        matrices.translate(-dX, -dY, -dZ);
+        matrices.translate(-0.03F - itemState.levitatingItemXDrift, -0.02F, -0.02F - itemState.levitatingItemZDrift);
         original.call(itemRenderer, entity, stack, mode, matrices, interceptedContext, world, light, OverlayTexture.DEFAULT_UV, seed);
         matrices.pop();
 

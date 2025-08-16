@@ -15,7 +15,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 
 import java.util.function.*;
 
-import com.google.common.base.Suppliers;
+import com.minelittlepony.client.compat.iris.IrisApiCompat;
 import com.minelittlepony.common.util.render.RenderLayerUtil;
 
 public interface MagicGlow {
@@ -36,36 +36,36 @@ public interface MagicGlow {
                 .build()
         );
 
-    Supplier<RenderLayer> MAGIC = Suppliers.memoize(() -> {
-        return RenderLayer.of("mlp_magic_glow", 1536, false, true, ENTITY_MAGIC_GLOW_PIPELINE, RenderLayer.MultiPhaseParameters.builder()
+    Function<Boolean, RenderLayer> MAGIC = Util.memoize(shaders -> {
+        return RenderLayer.of("mlp_magic_glow", 1536, false, true, shaders ? RenderPipelines.ENTITY_EYES : ENTITY_MAGIC_GLOW_PIPELINE, RenderLayer.MultiPhaseParameters.builder()
                 .lightmap(RenderPhase.DISABLE_LIGHTMAP)
                 .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
-                .target(RenderPhase.TRANSLUCENT_TARGET)
+                .target(RenderPhase.MAIN_TARGET)
                 .build(false));
     });
 
-    Function<Identifier, RenderLayer> TEXTURED = Util.memoize(texture -> {
-        return RenderLayer.of("mlp_magic_glow_textured", 1536, false, true, ENTITY_MAGIC_GLOW_PIPELINE, RenderLayer.MultiPhaseParameters.builder()
+    BiFunction<Boolean, Identifier, RenderLayer> TEXTURED = Util.memoize((shaders, texture) -> {
+        return RenderLayer.of("mlp_magic_glow_textured", 1536, false, true, shaders ? RenderPipelines.ENTITY_EYES : ENTITY_MAGIC_GLOW_PIPELINE, RenderLayer.MultiPhaseParameters.builder()
                 .texture(new RenderPhase.Texture(texture, false))
                 .lightmap(RenderPhase.DISABLE_LIGHTMAP)
                 .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
-                .target(RenderPhase.TRANSLUCENT_TARGET)
+                .target(RenderPhase.MAIN_TARGET)
                 .build(true));
     });
 
     public static RenderLayer getRenderLayer() {
-        return MAGIC.get();
+        return MAGIC.apply(IrisApiCompat.areShadersEnabled());
     }
 
     public static RenderLayer getTextured(Identifier texture) {
-        return TEXTURED.apply(texture);
+        return TEXTURED.apply(IrisApiCompat.areShadersEnabled(), texture);
     }
 
     @SuppressWarnings("deprecation")
     public static VertexConsumerProvider getProvider(int color, VertexConsumerProvider provider, MatrixStack matrices) {
         return layer -> {
-            if (layer.getVertexFormat() != VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL) {
-                return provider.getBuffer(layer);
+            if (!layer.getVertexFormat().getElements().containsAll(VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL.getElements())) {
+                return new DummyVertexConsumer();
             }
 
             return new MagicGlowOverlayVertexConsumer(provider.getBuffer(getTextured(RenderLayerUtil.getTexture(layer).orElse(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE))), matrices.peek(), color);
@@ -73,6 +73,45 @@ public interface MagicGlow {
     }
 
     public static void bootstrap() {}
+
+    static class DummyVertexConsumer implements VertexConsumer {
+        @Override
+        public VertexConsumer color(int red, int green, int blue, int alpha) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer light(int u, int v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer normal(float x, float y, float z) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer overlay(int u, int v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer texture(float u, float v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer vertex(float x, float y, float z) {
+            return this;
+        }
+
+        // Sodium
+        // https://github.com/CaffeineMC/sodium/blob/dev/common/src/main/java/net/caffeinemc/mods/sodium/mixin/core/render/immediate/consumer/SheetedDecalTextureGeneratorMixin.java
+        // @Override
+        public boolean canUseIntrinsics() {
+            return false;
+        }
+    }
 
     static class MagicGlowOverlayVertexConsumer extends OverlayVertexConsumer {
         private final VertexConsumer delegate;
