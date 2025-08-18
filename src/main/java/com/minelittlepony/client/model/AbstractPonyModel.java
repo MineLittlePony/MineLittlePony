@@ -275,9 +275,9 @@ public abstract class AbstractPonyModel<T extends LivingEntity> extends ClientPo
             rightLeg.pivotY = leftLeg.pivotY = 6;
         }
 
-        if (state.attributes.isGoingFast) {
-            leftLeg.originZ -= 1F;
-            rightLeg.originZ -= 1F;
+        if (attributes.isGoingFast) {
+            leftLeg.pivotZ -= 1F;
+            rightLeg.pivotZ -= 1F;
         }
     }
 
