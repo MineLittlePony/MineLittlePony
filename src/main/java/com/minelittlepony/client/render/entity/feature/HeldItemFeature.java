@@ -2,7 +2,6 @@ package com.minelittlepony.client.render.entity.feature;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.PonyModel;
-import com.minelittlepony.client.render.MagicGlow;
 import com.minelittlepony.client.render.PonyRenderContext;
 
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -47,8 +46,6 @@ public class HeldItemFeature<T extends LivingEntity, M extends EntityModel<T> & 
 
         if (!left.isEmpty() || !right.isEmpty()) {
             M model = context.getInternalRenderer().getModels().body();
-
-            vertices = MagicGlow.getProvider(context.getEntityPony(entity).metadata().glowColor(), vertices, matrices);
 
             matrices.push();
 

@@ -42,6 +42,8 @@ abstract class MixinHeldItemRenderer {
             VertexConsumerProvider renderContext,
             @Nullable World world,
             int lightUv, int overlayUv, int posLong) {
-        MineLittlePony.getInstance().getRenderDispatcher().getMagicRenderer().renderItem(target, entity, item, transform, left, stack, renderContext, world, lightUv, posLong);
+        if (!MineLittlePony.getInstance().getRenderDispatcher().getMagicRenderer().renderItem(target, entity, item, transform, left, stack, renderContext, world, lightUv, posLong)) {
+            target.renderItem(entity, item, transform, left, stack, renderContext, world, lightUv, overlayUv, posLong);
+        }
     }
 }
