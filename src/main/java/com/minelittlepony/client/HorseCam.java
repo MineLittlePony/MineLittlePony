@@ -20,59 +20,62 @@ public class HorseCam {
      * Restores the previous camera (unadjusted) angle for the client when the server sends an update.
      * This is to prevent issues caused by the server updating our pitch whenever the player leaves a portal.
      */
-    public static float transformIncomingServerCameraAngle(float serverPitch) {
-        if (MathHelper.approximatelyEquals(serverPitch, lastComputedPitch)) {
-            return lastOriginalPitch;
+    public static float transformIncomingServerCameraAngle(float pitch) {
+        try {
+            if (!PonyConfig.getInstance().fillycam.get()) {
+                return pitch;
+            }
+            if (MathHelper.approximatelyEquals(pitch, lastComputedPitch)) {
+                return lastOriginalPitch;
+            }
+        } catch (Throwable t) {
+            MineLittlePony.LOGGER.error("Error occured whilst handling player look {}", t);
         }
-        return serverPitch;
+        return pitch;
     }
 
     /**
      * Transforms the client pony's pitch to the corresponding angle for a human character.
      */
     public static float transformCameraAngle(float pitch) {
-
-        if (!PonyConfig.getInstance().fillycam.get()) {
-            return pitch;
-        }
-
-        if (pitch != 0) {
+        try {
             lastOriginalPitch = pitch;
             lastComputedPitch = pitch;
-        }
 
-        PlayerEntity player = MinecraftClient.getInstance().player;
-
-        // noop
-        // Only run when the player has an item in their hands. Can't check for buckets specifically since mods exist.
-        if (player.getMainHandStack().isEmpty() && player.getOffHandStack().isEmpty()) {
-            return pitch;
-        }
-
-        Pony pony = Pony.getManager().getPony(player);
-
-        if (!pony.race().isHuman()) {
-            Setting<Boolean> fillyCam = PonyConfig.getInstance().fillycam;
-
-            fillyCam.set(false);
-            final float vanillaHeight = player.getEyeHeight(player.getPose());
-            fillyCam.set(true);
-            final float alteredHeight = player.getEyeHeight(player.getPose());
-
-            // only change the angle if required
-            if (!MathHelper.approximatelyEquals(vanillaHeight, alteredHeight)) {
-                pitch = rescaleCameraPitch(vanillaHeight, pitch);
+            if (!PonyConfig.getInstance().fillycam.get()) {
+                return pitch;
             }
 
-            //float factor = pony.getMetadata().getSize().getEyeHeightFactor();
-            //pitch = rescaleCameraPitch(player.getStandingEyeHeight() / factor, pitch);
-        }
+            PlayerEntity player = MinecraftClient.getInstance().player;
 
-        if (lastOriginalPitch != 0) {
+            // noop
+            // Only run when the player has an item in their hands. Can't check for buckets specifically since mods exist.
+            if (player.getMainHandStack().isEmpty() && player.getOffHandStack().isEmpty()) {
+                return pitch;
+            }
+
+            Pony pony = Pony.getManager().getPony(player);
+
+            if (!pony.race().isHuman()) {
+                Setting<Boolean> fillyCam = PonyConfig.getInstance().fillycam;
+
+                fillyCam.set(false);
+                final float vanillaHeight = player.getEyeHeight(player.getPose());
+                fillyCam.set(true);
+                final float alteredHeight = player.getEyeHeight(player.getPose());
+
+                // only change the angle if required
+                if (!MathHelper.approximatelyEquals(vanillaHeight, alteredHeight)) {
+                    pitch = rescaleCameraPitch(vanillaHeight, pitch);
+                }
+            }
+
             lastComputedPitch = pitch;
+            return pitch;
+        } catch (Throwable t) {
+            MineLittlePony.LOGGER.info("Error occured when unconverting camera pitch: {}", t);
         }
-
-        return pitch;
+        return lastOriginalPitch;
     }
 
     /**
@@ -112,6 +115,11 @@ public class HorseCam {
         }
 
         double newPitch = (HALF_PI - Math.atan(x / y)) * TO_DEGREES;
+        // Try not to break stuff
+        if (Double.isInfinite(newPitch) || Double.isNaN(newPitch)) {
+            return pitch;
+        }
+
         if (newPitch > 90) {
             newPitch -= 180F;
         }

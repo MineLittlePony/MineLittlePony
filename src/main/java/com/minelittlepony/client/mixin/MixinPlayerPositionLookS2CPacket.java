@@ -24,8 +24,6 @@ abstract class MixinPlayerPositionLookS2CPacket implements Packet<ClientPlayPack
     @Inject(method = "apply(Lnet/minecraft/network/listener/ClientPlayPacketListener;)V",
             at = @At("HEAD"))
     private void onApply(ClientPlayPacketListener clientPlayPacketListener, CallbackInfo info) {
-        if (!flags.contains(PositionFlag.Y_ROT)) {
-            pitch = HorseCam.transformIncomingServerCameraAngle(pitch);
-        }
+        pitch = HorseCam.transformIncomingServerCameraAngle(pitch);
     }
 }
