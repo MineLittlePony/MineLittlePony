@@ -17,6 +17,7 @@ import net.minecraft.util.math.ColorHelper;
 
 import java.util.function.*;
 
+import com.minelittlepony.client.compat.iris.IrisApiCompat;
 import com.minelittlepony.common.util.render.RenderLayerUtil;
 
 public abstract class MagicGlow extends RenderPhase {
@@ -57,18 +58,21 @@ public abstract class MagicGlow extends RenderPhase {
 
     @Deprecated
     public static RenderLayer getColoured(Identifier texture, int color) {
-        return TEXTURED.apply(texture);
+        return getTextured(texture);
     }
 
     public static RenderLayer getTextured(Identifier texture) {
+        if (IrisApiCompat.areShadersEnabled()) {
+            return RenderLayer.getEyes(texture);
+        }
         return TEXTURED.apply(texture);
     }
 
     @SuppressWarnings("deprecation")
     public static VertexConsumerProvider getProvider(int color, VertexConsumerProvider provider, MatrixStack matrices) {
         return layer -> {
-            if (layer.getVertexFormat() != VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL) {
-                return provider.getBuffer(layer);
+            if (!layer.getVertexFormat().getElements().containsAll(VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL.getElements())) {
+                return new DummyVertexConsumer();
             }
 
             return new MagicGlowOverlayVertexConsumer(provider.getBuffer(getTextured(RenderLayerUtil.getTexture(layer).orElse(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE))), matrices.peek(), color);
@@ -76,6 +80,45 @@ public abstract class MagicGlow extends RenderPhase {
     }
 
     public static void bootstrap() {}
+
+    static class DummyVertexConsumer implements VertexConsumer {
+        @Override
+        public VertexConsumer color(int red, int green, int blue, int alpha) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer light(int u, int v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer normal(float x, float y, float z) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer overlay(int u, int v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer texture(float u, float v) {
+            return this;
+        }
+
+        @Override
+        public VertexConsumer vertex(float x, float y, float z) {
+            return this;
+        }
+
+        // Sodium
+        // https://github.com/CaffeineMC/sodium/blob/dev/common/src/main/java/net/caffeinemc/mods/sodium/mixin/core/render/immediate/consumer/SheetedDecalTextureGeneratorMixin.java
+        // @Override
+        public boolean canUseIntrinsics() {
+            return false;
+        }
+    }
 
     static class MagicGlowOverlayVertexConsumer extends OverlayVertexConsumer {
         private final VertexConsumer delegate;
