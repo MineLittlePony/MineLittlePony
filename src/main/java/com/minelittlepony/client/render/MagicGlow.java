@@ -13,7 +13,6 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.MatrixStack.Entry;
-import net.minecraft.util.*;
 import net.minecraft.util.math.ColorHelper;
 
 import java.util.function.*;
@@ -96,7 +95,7 @@ public abstract class MagicGlow extends RenderPhase {
 
         @Override
         public VertexConsumer color(int red, int green, int blue, int alpha) {
-            delegate.color(ColorHelper.getRed(color), ColorHelper.getGreen(color), ColorHelper.getBlue(color), alpha);
+            delegate.color(ColorHelper.Argb.getRed(color), ColorHelper.Argb.getGreen(color), ColorHelper.Argb.getBlue(color), alpha);
             return this;
         }
 
@@ -108,7 +107,7 @@ public abstract class MagicGlow extends RenderPhase {
 
         @Override
         public void vertex(float x, float y, float z, int color, float u, float v, int overlay, int light, float normalX, float normalY, float normalZ) {
-            delegate.vertex(x, y, z, ColorHelper.withAlpha(ColorHelper.getAlpha(color), this.color), u, v, overlay, light, normalX, normalY, normalZ);
+            delegate.vertex(x, y, z, ColorHelper.Argb.withAlpha(ColorHelper.Argb.getAlpha(color), this.color), u, v, overlay, light, normalX, normalY, normalZ);
         }
 
         // Sodium
