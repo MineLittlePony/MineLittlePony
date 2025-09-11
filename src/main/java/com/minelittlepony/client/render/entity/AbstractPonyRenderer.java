@@ -82,7 +82,7 @@ public abstract class AbstractPonyRenderer<
     }
 
     protected SkullFeature<S, M> createSkullFeature(EntityRendererFactory.Context context) {
-        return new SkullFeature<>(this, context.getEntityModels(), context.getItemModelManager(), HeadFeatureRenderer.HeadTransformation.DEFAULT, true);
+        return new SkullFeature<>(this, context.getEntityModels(), HeadFeatureRenderer.HeadTransformation.DEFAULT, true);
     }
 
     protected HeldItemFeature<S, M> createHeldItemFeature(EntityRendererFactory.Context context) {

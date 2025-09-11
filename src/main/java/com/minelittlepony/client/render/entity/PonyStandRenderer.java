@@ -45,7 +45,7 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
         addFeature(new PonifiedFeature(this, new ArmourFeature<>(this.context, context.getEquipmentModelLoader())));
         addFeature(new PonifiedFeature(this, new HeldItemFeature<>(this.context)));
         addFeature(new PonifiedFeature(this, new ElytraFeature<>(this.context, context.getEquipmentRenderer())));
-        addFeature(new PonifiedFeature(this, new SkullFeature<>(this.context, context.getEntityModels(), context.getItemModelManager(), HeadFeatureRenderer.HeadTransformation.DEFAULT, false)));
+        addFeature(new PonifiedFeature(this, new SkullFeature<>(this.context, context.getEntityModels(), HeadFeatureRenderer.HeadTransformation.DEFAULT, false)));
     }
 
     @Override

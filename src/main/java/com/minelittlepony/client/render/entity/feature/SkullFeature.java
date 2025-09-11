@@ -7,30 +7,31 @@ import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.client.render.entity.state.PonyRenderState.EquippedHeadRenderState;
 
-import net.minecraft.client.item.ItemModelManager;
+import java.util.function.Function;
+
+import net.minecraft.block.SkullBlock;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.block.entity.SkullBlockEntityModel;
+import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
 import net.minecraft.client.render.entity.model.LoadedEntityModels;
-
-import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.util.Util;
 
 public class SkullFeature<
         S extends PonyRenderState,
         M extends ClientPonyModel<S>
     > extends AbstractPonyFeature<S, M> {
 
-    protected final ItemModelManager itemModelResolver;
     private final HeadFeatureRenderer.HeadTransformation headTransformation;
-    private final LoadedEntityModels models;
+    private final Function<SkullBlock.SkullType, SkullBlockEntityModel> headModels;
 
-    public SkullFeature(PonyRenderContext<?, S, M> context, LoadedEntityModels models, ItemModelManager itemModelResolver, HeadFeatureRenderer.HeadTransformation headTransformation, boolean scaleForChild) {
+    public SkullFeature(PonyRenderContext<?, S, M> context, LoadedEntityModels models, HeadFeatureRenderer.HeadTransformation headTransformation, boolean scaleForChild) {
         super(context);
-        this.itemModelResolver = itemModelResolver;
         this.headTransformation = headTransformation;
-        this.models = models;
+        this.headModels = Util.memoize(type -> SkullBlockEntityRenderer.getModels(models, type));
     }
 
     @Override
@@ -52,7 +53,7 @@ public class SkullFeature<
                 matrices.translate(0, -0.1F, 0.1F);
                 matrices.translate(-0.5, 0, -0.5);
                 SkullBlockEntityRenderer.renderSkull(null, 180, state.headItemAnimationProgress, matrices, vertices, light,
-                        SkullBlockEntityRenderer.getModels(models, headState.skullType()),
+                        headModels.apply(headState.skullType()),
                         SkullBlockEntityRenderer.getRenderLayer(headState.skullType(), headState.wearingSkullProfile())
                 );
             } else {
