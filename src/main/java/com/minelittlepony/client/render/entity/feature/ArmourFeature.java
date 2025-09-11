@@ -98,7 +98,7 @@ public class ArmourFeature<
             }
         }
         EquippableComponent equippableComponent = stack.get(DataComponentTypes.EQUIPPABLE);
-        if (hasModel(equippableComponent, slot)) {
+        if (hasModel(equippableComponent, slot) && (slot != EquipmentSlot.HEAD || entity.headVisible)) {
             equipmentRenderer.render(slot, layerType, equippableComponent.assetId().orElseThrow(), entity, models, stack, matrices, vertices, light, null);
         }
     }

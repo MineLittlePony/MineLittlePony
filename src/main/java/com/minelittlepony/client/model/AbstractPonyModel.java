@@ -84,6 +84,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     }
 
     protected void setModelVisibilities(T state) {
+        head.visible = state.headVisible;
         resetPivot(head, neck, leftArm, rightArm, leftLeg, rightLeg);
         hat.visible = head.visible && !state.attributes.isHorsey;
         neck.visible = body.visible;
@@ -246,6 +247,11 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             rightArm.pivotY = leftArm.pivotY = 6;
             rightLeg.pivotZ = leftLeg.pivotZ = 19;
             rightLeg.pivotY = leftLeg.pivotY = 6;
+        }
+
+        if (state.attributes.isGoingFast) {
+            leftLeg.pivotZ -= 1F;
+            rightLeg.pivotZ -= 1F;
         }
     }
 
