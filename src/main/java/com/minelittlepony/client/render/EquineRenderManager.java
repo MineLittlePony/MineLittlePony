@@ -93,17 +93,9 @@ public class EquineRenderManager<T extends LivingEntity, M extends EntityModel<T
             }
         }
 
-        bodyYaw = getMountedYaw(entity, bodyYaw, tickDelta);
         transformer.setupTransforms(entity, stack, animationProgress, bodyYaw, tickDelta, scale);
 
         PonyPosture.of(getModels().body().getAttributes()).apply(entity, getModels().body(), stack, bodyYaw, tickDelta, 1);
-    }
-
-    private float getMountedYaw(T entity, float bodyYaw, float tickDelta) {
-        if (entity.hasVehicle() && entity.getVehicle() instanceof LivingEntity mount) {
-            return bodyYaw + MathUtil.interpolateDegress(mount.prevBodyYaw, mount.bodyYaw, tickDelta);
-        }
-        return bodyYaw;
     }
 
     public float getScaleFactor() {
