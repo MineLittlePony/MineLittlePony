@@ -106,7 +106,11 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & Po
                     }
 
                     var m = pony.getArmourModel(stack, layer, layerTexture.variant()).orElse(null);
-                    if (m != null && m.poseModel(entity, limbAngle, limbDistance, age, headYaw, headPitch, armorSlot, layer, pony.body())) {
+                    if (m != null && m.shouldRender(armorSlot, layer)) {
+                        pony.body().copyAttributes(m);
+                        m.setAngles(entity, limbAngle, limbDistance, age, headYaw, headPitch);
+                        m.setVisible(false);
+                        m.setVisibilities(armorSlot, layer);
                         VertexConsumer armorConsumer = plugin.getArmourConsumer(armorSlot, provider, layerTexture.texture(), layer);
                         if (armorConsumer != null) {
                             int armorTint = Colors.WHITE;
@@ -128,7 +132,12 @@ public class ArmourFeature<T extends LivingEntity, M extends EntityModel<T> & Po
                 float trimAlpha = plugin.getTrimAlpha(armorSlot, armor.getMaterial(), trim, layer);
                 if (trimAlpha > 0) {
                     var m = pony.getArmourModel(stack, layer, ArmourVariant.TRIM).orElse(null);
-                    if (m != null && m.poseModel(entity, limbAngle, limbDistance, age, headYaw, headPitch, armorSlot, layer, pony.body())) {
+
+                    if (m != null && m.shouldRender(armorSlot, layer)) {
+                        pony.body().copyAttributes(m);
+                        m.setAngles(entity, limbAngle, limbDistance, age, headYaw, headPitch);
+                        m.setVisible(false);
+                        m.setVisibilities(armorSlot, layer);
                         VertexConsumer trimConsumer = plugin.getTrimConsumer(armorSlot, provider, armor.getMaterial(), trim, layer);
                         if (trimConsumer != null) {
                             m.render(matrices, trimConsumer, light, OverlayTexture.DEFAULT_UV, 0xFFFFFFFF);
