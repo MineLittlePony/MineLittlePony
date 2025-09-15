@@ -164,7 +164,9 @@ public class ModelAttributes {
 
         headVisible = !(entity == MinecraftClient.getInstance().getCameraEntity()
                 && isLyingDown
-                && MinecraftClient.getInstance().options.getPerspective().isFirstPerson());
+                && MinecraftClient.getInstance().options.getPerspective().isFirstPerson())
+                // Prevent head from rendering for ourselves if the model ends up rendered in first person view
+                && !(mode == Mode.THIRD_PERSON && entity == MinecraftClient.getInstance().getCameraEntity());
 
         isCrouching = !isLyingDown && !isSitting && mode == Mode.THIRD_PERSON && PonyPosture.isCrouching(pony, entity);
         isFlying = !isLyingDown && mode == Mode.THIRD_PERSON && PonyPosture.isFlying(entity);
