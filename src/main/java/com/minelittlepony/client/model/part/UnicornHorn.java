@@ -30,7 +30,7 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
     }
 
     public void renderMagic(MatrixStack stack, VertexConsumer verts, int tint) {
-        if (glow.visible) {
+        if (visible && glow.visible) {
             Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
 
             VertexConsumer vertices = immediate.getBuffer(MagicGlow.getRenderLayer());
