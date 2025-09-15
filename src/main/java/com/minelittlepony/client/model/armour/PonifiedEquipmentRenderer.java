@@ -6,7 +6,6 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.equipment.*;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
@@ -38,7 +37,6 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
 
     private @Nullable Set<EntityModel<?>> drawnModels;
     private final Function<LayerTextureKey, Identifier> layerTextures;
-    private final Function<TrimSpriteKey, Sprite> trimSprites;
     private final BiFunction<EquipmentModel.LayerType, Identifier, Identifier> ponifier = Util.memoize((type, texture) -> {
         return ResourceUtil.verifyTexture(texture.withPath(p -> p.replace(type.asString(), "ponified_" + type.asString()))).orElse(texture);
     });
@@ -46,9 +44,7 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
     public PonifiedEquipmentRenderer(EquipmentModelLoader modelLoader) {
         super(modelLoader, MinecraftClient.getInstance().getBakedModelManager().getAtlas(TexturedRenderLayers.ARMOR_TRIMS_ATLAS_TEXTURE));
         this.modelLoader = modelLoader;
-        var armorTrimsAtlas = MinecraftClient.getInstance().getBakedModelManager().getAtlas(TexturedRenderLayers.ARMOR_TRIMS_ATLAS_TEXTURE);
         layerTextures = Util.memoize(key -> key.layer.getFullTextureId(key.layerType));
-        trimSprites = Util.memoize(key -> armorTrimsAtlas.getSprite(key.getTexture()));
     }
 
     record LayerTextureKey(EquipmentModel.LayerType layerType, EquipmentModel.Layer layer) {}
@@ -70,28 +66,44 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
             int light,
             @Nullable Identifier texture
         ) {
+        EquipmentSlot slot = layerType == EquipmentModel.LayerType.WINGS ? EquipmentSlot.CHEST : EquipmentSlot.BODY;
+
         // extures/entity/equipment/strider_saddle/saddle.png
         List<EquipmentModel.Layer> layers = modelLoader.get(assetKey).getLayers(layerType);
         if (!layers.isEmpty()) {
+            ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
+
             int i = DyedColorComponent.getColor(stack, 0);
-            boolean glint = stack.hasGlint();
+            float alpha = plugin.getArmourAlpha(slot, layerType);
+            boolean hasGlint = plugin.getGlintAlpha(slot, stack) > 0;
 
-            for (EquipmentModel.Layer layer : layers) {
-                int color = getDyeColor(layer, i);
-                if (color != 0) {
-                    model.render(matrices, ItemRenderer.getArmorGlintConsumer(vertexConsumers, RenderLayer.getArmorCutoutNoCull(
-                        ponifier.apply(layerType, layer.usePlayerTexture() && texture != null ? texture : layerTextures.apply(new LayerTextureKey(layerType, layer)))
-                    ), glint), light, OverlayTexture.DEFAULT_UV, color);
-                    glint = false;
+            if (alpha > 0) {
+                for (EquipmentModel.Layer layer : layers) {
+                    int color = getDyeColor(layer, i);
+
+                    if (color != 0) {
+                        Identifier layerTexture = layer.usePlayerTexture() && texture != null ? texture : layerTextures.apply(new LayerTextureKey(layerType, layer));
+                        @Nullable
+                        VertexConsumer armorConsumer = getArmorVertexConsumer(plugin, slot, vertexConsumers, layerTexture, layerType, hasGlint);
+                        if (armorConsumer != null) {
+                            model.render(matrices, ItemRenderer.getArmorGlintConsumer(vertexConsumers, RenderLayer.getArmorCutoutNoCull(
+                                ponifier.apply(layerType, layer.usePlayerTexture() && texture != null ? texture : layerTextures.apply(new LayerTextureKey(layerType, layer)))
+                            ), hasGlint), light, OverlayTexture.DEFAULT_UV, ColorHelper.withAlpha(alpha, color));
+                            hasGlint = false;
+                        }
+                    }
                 }
-            }
 
-            ArmorTrim armorTrim = stack.get(DataComponentTypes.TRIM);
-            if (armorTrim != null) {
-                Sprite sprite = trimSprites.apply(new TrimSpriteKey(armorTrim, layerType, assetKey));
-                model.render(matrices, sprite.getTextureSpecificVertexConsumer(
-                        vertexConsumers.getBuffer(TexturedRenderLayers.getArmorTrims(armorTrim.pattern().value().decal()))
-                ), light, OverlayTexture.DEFAULT_UV);
+                ArmorTrim armorTrim = stack.get(DataComponentTypes.TRIM);
+                if (armorTrim != null) {
+                    float trimAlpha = plugin.getTrimAlpha(slot, armorTrim, layerType);
+                    if (trimAlpha > 0) {
+                        VertexConsumer trimConsumer = plugin.getTrimConsumer(slot, vertexConsumers, armorTrim, layerType, assetKey);
+                        if (trimConsumer != null) {
+                            model.render(matrices, trimConsumer, light, OverlayTexture.DEFAULT_UV, ColorHelper.withAlpha(trimAlpha, Colors.WHITE));
+                        }
+                    }
+                }
             }
         }
     }
@@ -145,7 +157,8 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
                                 model.setAngles(entity);
                                 models.body().copyTransforms(model);
                                 if (setVisibilities(model, equipmentSlot, layerType)) {
-                                    model.render(matrices, armorConsumer, light, OverlayTexture.DEFAULT_UV, dyeColor);
+                                    model.render(matrices, armorConsumer, light, OverlayTexture.DEFAULT_UV, ColorHelper.withAlpha(armorAlpha, dyeColor));
+                                    hasGlint = false;
                                     if (drawnModels == null) {
                                         drawnModels = new HashSet<>();
                                     }
@@ -160,11 +173,16 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
             if (drawnModels != null) {
                 @Nullable
                 ArmorTrim armorTrim = stack.get(DataComponentTypes.TRIM);
-                @Nullable
-                VertexConsumer trimConsumer = armorTrim != null && plugin.getTrimAlpha(equipmentSlot, armorTrim, layerType) > 0 ? plugin.getTrimConsumer(equipmentSlot, vertices, armorTrim, layerType, assetId) : null;
-                if (trimConsumer != null) {
-                    for (EntityModel<?> model : drawnModels) {
-                        model.render(matrices, trimConsumer, light, OverlayTexture.DEFAULT_UV);
+                if (armorTrim != null) {
+                    float trimAlpha = plugin.getTrimAlpha(equipmentSlot, armorTrim, layerType);
+                    if (trimAlpha > 0) {
+                        @Nullable
+                        VertexConsumer trimConsumer = plugin.getTrimConsumer(equipmentSlot, vertices, armorTrim, layerType, assetId);
+                        if (trimConsumer != null) {
+                            for (EntityModel<?> model : drawnModels) {
+                                model.render(matrices, trimConsumer, light, OverlayTexture.DEFAULT_UV, ColorHelper.withAlpha(trimAlpha, Colors.WHITE));
+                            }
+                        }
                     }
                 }
             }
