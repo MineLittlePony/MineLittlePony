@@ -82,7 +82,8 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
 
         headVisible = !(entity == MinecraftClient.getInstance().getCameraEntity()
                 && attributes.isLyingDown
-                && MinecraftClient.getInstance().options.getPerspective().isFirstPerson());
+                && MinecraftClient.getInstance().options.getPerspective().isFirstPerson())
+                && !(mode == ModelAttributes.Mode.THIRD_PERSON && entity == MinecraftClient.getInstance().getCameraEntity());
         isTechnoblade = ((
                     entity instanceof AbstractPiglinEntity
                  || entity instanceof PlayerEntity
