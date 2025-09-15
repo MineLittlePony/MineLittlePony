@@ -76,6 +76,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
             pose = EntityPose.SITTING;
         }
 
+        headVisible = true;
         isTechnoblade = false;
 
         // Adjust cape angles
@@ -118,7 +119,8 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
 
         headVisible = entity == null || !(entity == MinecraftClient.getInstance().getCameraEntity()
                 && attributes.isLyingDown
-                && MinecraftClient.getInstance().options.getPerspective().isFirstPerson());
+                && MinecraftClient.getInstance().options.getPerspective().isFirstPerson())
+                && !(mode == ModelAttributes.Mode.THIRD_PERSON && entity == MinecraftClient.getInstance().getCameraEntity());
         isTechnoblade = ((
                     entity instanceof AbstractPiglinEntity
                  || entity instanceof PlayerEntity
