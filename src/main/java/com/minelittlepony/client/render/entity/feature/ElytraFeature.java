@@ -63,7 +63,7 @@ public class ElytraFeature<
             }
         }
 
-        plugin.onArmourRendered(state, matrices, provider, EquipmentSlot.BODY, EquipmentModel.LayerType.WINGS, ArmourRendererPlugin.ArmourType.ELYTRA);
+        plugin.onArmourRendered(state, matrices, provider, EquipmentSlot.CHEST, EquipmentModel.LayerType.WINGS, ArmourRendererPlugin.ArmourType.ELYTRA);
     }
 
     @SuppressWarnings("unchecked")
