@@ -2,8 +2,7 @@ package com.minelittlepony.client.model.part;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.VertexConsumerProvider.Immediate;
 import net.minecraft.client.util.math.MatrixStack;
 
@@ -16,8 +15,6 @@ public class UnicornHorn implements SubModel {
     private final ModelPart horn;
     private final ModelPart glow;
 
-    protected boolean visible = true;
-
     public UnicornHorn(ModelPart tree) {
         horn = tree.getChild("bone");
         glow = tree.getChild("corona");
@@ -29,17 +26,17 @@ public class UnicornHorn implements SubModel {
     }
 
     public void renderMagic(MatrixStack stack, VertexConsumer verts, int tint) {
-        if (visible && glow.visible) {
+        if (glow.visible) {
             Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
 
             VertexConsumer vertices = immediate.getBuffer(MagicGlow.getRenderLayer());
-            glow.render(stack, vertices, OverlayTexture.DEFAULT_UV, 0x0F00F0, (tint & 0xFFFFFF) | (102 << 24));
+            glow.render(stack, vertices, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, (tint & 0xFFFFFF) | (102 << 24));
         }
     }
 
     @Override
     public void setVisible(boolean visible, ModelAttributes attributes) {
-        horn.visible = this.visible && visible && attributes.headVisible;
-        glow.visible = this.visible && visible && attributes.headVisible;
+        horn.visible = visible && attributes.headVisible;
+        glow.visible = visible && attributes.headVisible && attributes.hornGlowVisible;
     }
 }

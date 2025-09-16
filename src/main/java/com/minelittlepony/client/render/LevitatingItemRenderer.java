@@ -4,6 +4,7 @@ import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.model.HornedPonyModel;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.client.compat.iris.IrisApiCompat;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -51,6 +52,10 @@ public class LevitatingItemRenderer {
         matrices.push();
         setupPerspective(itemRenderer, entity, stack, left, matrices);
         itemRenderer.renderItem(entity, stack, mode, left, matrices, vertices, world, lightUv, OverlayTexture.DEFAULT_UV, posLong);
+
+        if (IrisApiCompat.isOnShadowPass()) {
+            return true;
+        }
 
         VertexConsumerProvider interceptedContext = MagicGlow.getProvider(pony.metadata().glowColor(), vertices, matrices);
 
