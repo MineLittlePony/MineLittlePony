@@ -58,6 +58,10 @@ public class LevitatingItemRenderer {
 
         original.call(itemRenderer, entity, stack, mode, matrices, vertices, world, light, overlay, seed);
 
+        if (!state.hornGlowVisible) {
+            return true;
+        }
+
         if (doMagic) {
             VertexConsumerProvider interceptedContext = MagicGlow.getProvider(state.pony.metadata().glowColor(), vertices, matrices);
 
