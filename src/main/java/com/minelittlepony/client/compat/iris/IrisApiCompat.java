@@ -11,4 +11,12 @@ public interface IrisApiCompat {
 
         return IrisApi.getInstance().getConfig().areShadersEnabled();
     }
+
+    static boolean isOnShadowPass() {
+        if (!FabricLoader.getInstance().isModLoaded("iris")) {
+            return false;
+        }
+
+        return IrisApi.getInstance().isRenderingShadowPass();
+    }
 }

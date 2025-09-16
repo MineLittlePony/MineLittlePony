@@ -15,6 +15,7 @@ import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.api.pony.meta.*;
+import com.minelittlepony.client.compat.iris.IrisApiCompat;
 import com.minelittlepony.client.transform.PonyPosture;
 
 public class PonyRenderState extends PlayerEntityRenderState implements PonyModel.AttributedHolder {
@@ -31,6 +32,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
     public boolean onGround;
     public boolean isTechnoblade;
     public boolean headVisible = true;
+    public boolean hornGlowVisible = true;
 
     public Pony pony = Pony.getManager().getPony(DefaultPonySkinHelper.STEVE);
     public Race race = Race.HUMAN;
@@ -53,10 +55,12 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
             pose = EntityPose.SITTING;
         }
 
-        headVisible = !(entity == MinecraftClient.getInstance().getCameraEntity()
-                && attributes.isLyingDown
-                && MinecraftClient.getInstance().options.getPerspective().isFirstPerson())
-                && !(mode == ModelAttributes.Mode.THIRD_PERSON && entity == MinecraftClient.getInstance().getCameraEntity());
+        // Prevent head from rendering for ourselves if we are sleeping in first person mode
+        headVisible = entity != MinecraftClient.getInstance().getCameraEntity()
+                || !MinecraftClient.getInstance().options.getPerspective().isFirstPerson()
+                || !attributes.isLyingDown;
+        // Hide the horn glow if we're being rendered during an iris shadow pass
+        hornGlowVisible = !IrisApiCompat.isOnShadowPass();
         isTechnoblade = ((
                     entity instanceof AbstractPiglinEntity
                  || entity instanceof PlayerEntity
