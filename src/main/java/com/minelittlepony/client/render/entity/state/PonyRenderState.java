@@ -10,7 +10,7 @@ import net.minecraft.entity.mob.ZombifiedPiglinEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.api.events.PonyModelPrepareCallback;
+import com.minelittlepony.api.events.PonyRenderStatePrepareCallback;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.pony.*;
@@ -75,7 +75,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         field_53538 *= 3F;
 
         PonyPosture.of(attributes).updateState(entity, this);
-        PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(attributes, model, ModelAttributes.Mode.OTHER);
+        PonyRenderStatePrepareCallback.EVENT.invoker().onPonyRenderStatePrepared(this, model, mode);
     }
 
     @Override
