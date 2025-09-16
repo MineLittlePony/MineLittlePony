@@ -47,6 +47,10 @@ public class LevitatingItemRenderer {
         setupPerspective(state, itemState, stack, mode.isLeftHand(), matrices);
         original.call(itemRenderer, entity, stack, mode, matrices, vertices, world, light, overlay, seed);
 
+        if (!state.hornGlowVisible) {
+            return true;
+        }
+
         VertexConsumerProvider interceptedContext = MagicGlow.getProvider(state.pony.metadata().glowColor(), vertices, matrices);
 
         @Nullable
