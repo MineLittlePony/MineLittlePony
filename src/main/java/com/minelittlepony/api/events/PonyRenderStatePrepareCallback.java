@@ -14,7 +14,9 @@ import com.minelittlepony.api.model.ModelAttributes;
  * allow for custom animations.
  */
 public interface PonyRenderStatePrepareCallback {
+    @SuppressWarnings("removal")
     Event<PonyRenderStatePrepareCallback> EVENT = EventFactory.createArrayBacked(PonyRenderStatePrepareCallback.class, listeners -> (state, model, mode) -> {
+        PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(state.getAttributes(), model, mode);
         for (PonyRenderStatePrepareCallback event : listeners) {
             event.onPonyRenderStatePrepared(state, model, mode);
         }

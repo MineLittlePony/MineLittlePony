@@ -6,7 +6,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 
-import com.minelittlepony.api.events.PonyModelPrepareCallback;
+import com.minelittlepony.api.events.PonyRenderStatePrepareCallback;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.api.pony.meta.Wearable;
@@ -110,7 +110,7 @@ public class PonyBodyWidget extends PlayerBodyWidget<PonyBodyWidget.State> {
         public void completeStateUpdate(PonyModel<?> model) {
             if (stateIncomplete) {
                 stateIncomplete = false;
-                PonyModelPrepareCallback.EVENT.invoker().onPonyModelPrepared(attributes, model, ModelAttributes.Mode.OTHER);
+                PonyRenderStatePrepareCallback.EVENT.invoker().onPonyRenderStatePrepared(this, model, ModelAttributes.Mode.OTHER);
             }
         }
     }

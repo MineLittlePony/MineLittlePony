@@ -24,6 +24,7 @@ import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.config.PonyConfig;
+import com.minelittlepony.api.events.PonyModelPrepareCallback;
 import com.minelittlepony.api.events.PonyRenderStatePrepareCallback;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.*;
