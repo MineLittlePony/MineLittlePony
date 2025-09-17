@@ -1,9 +1,9 @@
 package com.minelittlepony.api.events;
 
 import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
 import com.minelittlepony.api.model.PonyModel;
-import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.api.model.ModelAttributes;
 
 /**
@@ -15,14 +15,12 @@ import com.minelittlepony.api.model.ModelAttributes;
  * @deprecated Replace with {@link PonyRenderStatePrepareCallback}
  */
 @Deprecated(forRemoval = true)
-public interface PonyModelPrepareCallback extends PonyRenderStatePrepareCallback {
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    Event<PonyModelPrepareCallback> EVENT = (Event)PonyRenderStatePrepareCallback.EVENT;
-
-    @Override
-    default void onPonyRenderStatePrepared(PonyRenderState state, PonyModel<?> model, ModelAttributes.Mode mode) {
-        onPonyModelPrepared(state.getAttributes(), model, mode);
-    }
+public interface PonyModelPrepareCallback {
+    Event<PonyModelPrepareCallback> EVENT = EventFactory.createArrayBacked(PonyModelPrepareCallback.class, listeners -> (attributes, model, mode) -> {
+        for (PonyModelPrepareCallback event : listeners) {
+            event.onPonyModelPrepared(attributes, model, mode);
+        }
+    });
 
     void onPonyModelPrepared(ModelAttributes attributes, PonyModel<?> model, ModelAttributes.Mode mode);
 }
