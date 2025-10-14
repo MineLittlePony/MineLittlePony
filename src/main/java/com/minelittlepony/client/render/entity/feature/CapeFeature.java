@@ -11,7 +11,7 @@ import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.equipment.EquipmentModelLoader;
 import net.minecraft.client.render.entity.feature.CapeFeatureRenderer;
-import net.minecraft.client.render.entity.model.LoadedEntityModels;
+import net.minecraft.client.render.entity.model.*;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
@@ -23,14 +23,14 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
 public class CapeFeature extends CapeFeatureRenderer {
-
     private final PonyRenderContext<?, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> context;
-
+    private final BipedEntityModel<PlayerEntityRenderState> model;
     private final EquipmentModelLoader equipmentModelLoader;
 
     public CapeFeature(PonyRenderContext<?, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> context, LoadedEntityModels modelLoader, EquipmentModelLoader equipmentModelLoader) {
         super(context.upcast(), modelLoader, equipmentModelLoader);
         this.context = context;
+        this.model = new PlayerCapeModel(modelLoader.getModelPart(EntityModelLayers.PLAYER_CAPE));
         this.equipmentModelLoader = equipmentModelLoader;
     }
 
@@ -66,7 +66,7 @@ public class CapeFeature extends CapeFeatureRenderer {
                             matrixStack.scale(1.1F, 1.1F, 1.1F);
                         }
 
-                        queue.submitModel(model, state, matrixStack, capeLayer, light, OverlayTexture.DEFAULT_UV, state.outlineColor, null);
+                        queue.submitModel(this.model, state, matrixStack, capeLayer, light, OverlayTexture.DEFAULT_UV, state.outlineColor, null);
 
                         matrixStack.pop();
 
