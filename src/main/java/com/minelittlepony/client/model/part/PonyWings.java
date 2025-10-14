@@ -14,7 +14,7 @@ import com.minelittlepony.util.MathUtil;
 
 public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonModel {
 
-    private WingedPonyModel<S> pegasus;
+    private ModelWithWings<S> pegasus;
 
     protected Wing<S> leftWing;
     protected Wing<S> rightWing;

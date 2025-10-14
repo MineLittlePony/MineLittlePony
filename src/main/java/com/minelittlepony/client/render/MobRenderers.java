@@ -1,8 +1,10 @@
 package com.minelittlepony.client.render;
 
+import com.minelittlepony.api.config.PonyCommandTags;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.client.render.entity.*;
 import com.minelittlepony.client.render.entity.npc.*;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.common.util.settings.Setting;
 import com.minelittlepony.mson.api.EntityRendererRegistry;
 
@@ -28,7 +30,7 @@ public record MobRenderers (String name, BiConsumer<MobRenderers, EntityRenderer
                 @Override
                 public <T extends Entity, R extends EntityRenderer<?, ?>> void registerEntityRenderer(EntityType<T> type, Predicate<? super T> condition, Function<EntityRendererFactory.Context, R> constructor) {
                     registry.registerEntityRenderer(type, condition, constructor);
-                    registry.registerEntityStateRenderer(type, s -> state.option().get(), constructor);
+                    registry.registerEntityStateRenderer(type, s -> s.entityType == type && s instanceof PonyRenderState, constructor);
                 }
             });
         }));
@@ -85,6 +87,9 @@ public record MobRenderers (String name, BiConsumer<MobRenderers, EntityRenderer
     public static final MobRenderers ALLAY = register("allays", (state, registry) -> {
         registry.registerEntityRenderer(EntityType.ALLAY, state, AllayRenderer::new);
     });
+    public static final MobRenderers MANNEQUINE = register("mannequine", (state, registry) -> {
+
+    });
 
     public Setting<Boolean> option() {
         return PonyConfig.getInstance().getCategory("entities").<Boolean>get(name);
@@ -92,6 +97,6 @@ public record MobRenderers (String name, BiConsumer<MobRenderers, EntityRenderer
 
     @Override
     public boolean test(Entity entity) {
-        return option().get();
+        return PonyCommandTags.isAPony(entity, option().get());
     }
 }

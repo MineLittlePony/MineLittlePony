@@ -56,7 +56,7 @@ public class HeldItemFeature<
             renderItem((PlayerEntityRenderState)state, item, arm, matrices, queue, light);
 
             if (!glintLessItem.glintlessHandItemState.isEmpty()) {
-                queue = MagicGlow.getQueue(state.pony.metadata().glowColor(), queue);
+                queue = MagicGlow.getQueue(state.glowColor, queue);
 
                 boolean noTransform = state.getHeldItem(arm).action == UseAction.SPYGLASS && state.attributes.itemUseTime > 0;
 

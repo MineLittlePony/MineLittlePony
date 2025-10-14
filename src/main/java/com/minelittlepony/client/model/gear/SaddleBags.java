@@ -2,7 +2,7 @@ package com.minelittlepony.client.model.gear;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.PonyModel;
-import com.minelittlepony.api.model.WingedPonyModel;
+import com.minelittlepony.api.model.ModelWithWings;
 import com.minelittlepony.api.model.gear.WearableGear;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.util.MathUtil;
@@ -27,7 +27,7 @@ public class SaddleBags<T extends BipedEntityRenderState & PonyModel.AttributedH
     @SuppressWarnings("unchecked")
     @Override
     public void setAngles(GearRenderState<T> state) {
-        boolean hangLow = state.model instanceof WingedPonyModel pegasus && pegasus.wingsAreOpen(state.entityState);
+        boolean hangLow = state.model instanceof ModelWithWings pegasus && pegasus.wingsAreOpen(state.entityState);
 
         float pi = MathHelper.PI * (float) Math.pow(state.limbDistance, 16);
 
@@ -39,7 +39,7 @@ public class SaddleBags<T extends BipedEntityRenderState & PonyModel.AttributedH
         leftBag.pitch = bodySwing;
         rightBag.pitch = bodySwing;
 
-        if (state.model instanceof WingedPonyModel pegasus && state.entityState.getAttributes().isFlying) {
+        if (state.model instanceof ModelWithWings pegasus && state.entityState.getAttributes().isFlying) {
             bodySwing = pegasus.getWingRotationFactor(state.entityState) - MathUtil.Angles._270_DEG;
             bodySwing /= 10;
         }

@@ -15,6 +15,8 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
     private final ModelPart horn;
     private final ModelPart glow;
 
+    private int tint;
+
     public UnicornHorn(ModelPart tree) {
         horn = tree.getChild("bone");
         glow = tree.getChild("corona");
@@ -25,8 +27,8 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
         horn.render(stack, vertices, overlay, light, color);
     }
 
-    public void renderMagic(MatrixStack stack, VertexConsumer verts, int tint) {
-        if (glow.visible) {
+    public void renderMagic(MatrixStack stack, VertexConsumer verts) {
+        if (tint != 0) {
             Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
 
             VertexConsumer vertices = immediate.getBuffer(MagicGlow.getRenderLayer());
@@ -36,7 +38,7 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
 
     @Override
     public void setVisible(boolean visible, T state) {
+        tint = visible && state.hasMagicGlow() && state.headVisible && state.hornGlowVisible ? state.glowColor : 0;
         horn.visible = visible && state.race.hasHorn() && state.headVisible;
-        glow.visible = visible && state.hasMagicGlow() && state.headVisible && state.hornGlowVisible;
     }
 }

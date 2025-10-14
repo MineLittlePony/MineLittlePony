@@ -64,18 +64,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         return part;
     }
 
-    @SuppressWarnings({"deprecation"})
-    protected RenderList withStage(BodyPart part, RenderList action) {
-        return (stack, vertices, overlay, light, color) -> {
-            stack.push();
-            if (currentState != null) {
-                transform(currentState, part, stack);
-            }
-            action.accept(stack, vertices, overlay, light, color);
-            stack.pop();
-        };
-    }
-
     @Override
     public final void render(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
         mainRenderList.accept(stack, vertices, overlay, light, color);
@@ -143,6 +131,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         }
 
         parts.forEach(part -> part.setPartAngles(entity, wobbleAmount));
+        mainRenderList.pose(entity);
     }
 
     public void setHeadRotation(float animationProgress, float yaw, float pitch) {

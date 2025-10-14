@@ -71,7 +71,7 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
             state.leftHandItemState.clear();
         }
         state.attributes.wingsSpread = state.isAttacking;
-        state.attributes.wingAngle = MathHelper.sin(state.age) + WingedPonyModel.WINGS_HALF_SPREAD_ANGLE;
+        state.attributes.wingAngle = MathHelper.sin(state.age) + ModelWithWings.WINGS_HALF_SPREAD_ANGLE;
     }
 
     @Override

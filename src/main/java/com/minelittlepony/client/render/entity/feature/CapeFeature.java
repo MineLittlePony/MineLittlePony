@@ -50,17 +50,13 @@ public class CapeFeature extends CapeFeatureRenderer {
 
                     RenderLayer capeLayer = plugin.getCapeLayer(state, skinTextures.cape().texturePath());
                     if (capeLayer != null) {
-
                         matrixStack.push();
                         if (hasCustomModelForLayer(state.equippedChestStack, EquipmentModel.LayerType.HUMANOID)) {
                             matrixStack.translate(0.0F, -0.053125F, 0.06875F);
                         }
 
-                        ClientPonyModel<PlayerPonyRenderState> model = context.lookupModel(state).body();
-
                         matrixStack.translate(0, 0.34F, 0);
-                        model.transform((PlayerPonyRenderState)state, BodyPart.BODY, matrixStack);
-                        model.body.applyTransform(matrixStack);
+                        context.lookupModel(state).body().transformAccessory((PlayerPonyRenderState)state, BodyPart.BODY, matrixStack);
                         matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(85 - model.body.pitch * MathHelper.DEGREES_PER_RADIAN));
                         if (state.baby) {
                             matrixStack.scale(1.1F, 1.1F, 1.1F);
@@ -68,9 +64,8 @@ public class CapeFeature extends CapeFeatureRenderer {
 
                         queue.submitModel(this.model, state, matrixStack, capeLayer, light, OverlayTexture.DEFAULT_UV, state.outlineColor, null);
 
-                        matrixStack.pop();
-
                         plugin.onArmourRendered(state, matrixStack, queue, EquipmentSlot.BODY, EquipmentModel.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.CAPE);
+                        matrixStack.pop();
                     }
                 }
             }

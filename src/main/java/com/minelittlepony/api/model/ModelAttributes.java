@@ -145,7 +145,7 @@ public class ModelAttributes {
         Vec3d motion = entity == null ? Vec3d.ZERO : entity.getVelocity();
         double zMotion = Math.sqrt(motion.x * motion.x + motion.z * motion.z);
 
-        isGoingFast = (isFlying && model instanceof WingedPonyModel) || isGliding;
+        isGoingFast = (isFlying && model instanceof ModelWithWings) || isGliding;
         isGoingFast &= zMotion > 0.4F;
         isGoingFast |= isRiptide;
         isGoingFast |= isGliding;
@@ -162,9 +162,9 @@ public class ModelAttributes {
             return (MathHelper.sin(ticks * 0.136f) / 2) + MathUtil.Angles._270_DEG;
         }
         if (isFlying) {
-            return MathHelper.sin(ticks * 0.536f) + WingedPonyModel.WINGS_FULL_SPREAD_ANGLE;
+            return MathHelper.sin(ticks * 0.536f) + ModelWithWings.WINGS_FULL_SPREAD_ANGLE;
         }
-        return WingedPonyModel.WINGS_RAISED_ANGLE;
+        return ModelWithWings.WINGS_RAISED_ANGLE;
     }
 
     public void updateLivingState(@Nullable LivingEntity entity, Pony pony, Mode mode) {

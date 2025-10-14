@@ -18,6 +18,7 @@ import net.minecraft.client.network.ClientPlayerLikeEntity;
 import net.minecraft.client.render.entity.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.PlayerLikeEntity;
+import net.minecraft.entity.decoration.MannequinEntity;
 import net.minecraft.entity.player.PlayerSkinType;
 import net.minecraft.util.Identifier;
 
@@ -51,7 +52,8 @@ public class PonyRenderDispatcher {
                         player -> !Pony.getManager().getPony(player).race().isHuman()
                                     && player.getSkin().model() == armShape
                                     && form.shouldApply().test(player)
-                                    && PonyForm.of(player) == form,
+                                    && PonyForm.of(player) == form
+                                    && (!(player instanceof MannequinEntity) || MobRenderers.MANNEQUINE.test(player)),
                         factory
                 );
                 Mson.getInstance().getEntityRendererRegistry().registerPlayerStateRenderer(id,

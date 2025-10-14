@@ -15,7 +15,15 @@ public interface PonyModel<T extends EntityRenderState & PonyModel.AttributedHol
     /**
      * Applies a transform particular to a certain body part.
      */
-    void transform(T state, BodyPart part, MatrixStack stack);
+    void transform(T state, BodyPart part, MatrixStack matrices);
+
+    /**
+     * Applies transformations to align to a certain body part.
+     */
+    default void transformAccessory(T state, BodyPart part, MatrixStack matrices) {
+        transform(state, part, matrices);
+        getBodyPart(part).applyTransform(matrices);
+    }
 
     default float getWobbleAmplitude(T state) {
         return 1;

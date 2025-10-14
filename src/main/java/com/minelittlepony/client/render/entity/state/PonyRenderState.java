@@ -23,6 +23,7 @@ import net.minecraft.util.math.MathHelper;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.minelittlepony.api.config.PonyCommandTags;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.events.PonyRenderStatePrepareCallback;
 import com.minelittlepony.api.model.*;
@@ -52,6 +53,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
 
     public Pony pony = Pony.getManager().getPony(DefaultPonySkinHelper.STEVE);
     public Race race = Race.HUMAN;
+    public int glowColor;
 
     public final HeldItemRenderState leftHeldItem = new HeldItemRenderState();
     public final HeldItemRenderState rightHeldItem = new HeldItemRenderState();
@@ -66,6 +68,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         this.pony = pony;
         baby = attributes.size == SizePreset.FOAL;
         race = pony.race();
+        glowColor = attributes.metadata.glowColor();
         vehicleOffset = 0;
         riderOffset = getRiderYOffset();
         nameplateYOffset = getNamePlateYOffset();
@@ -100,6 +103,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         leftHeldItem.updateItemRenderState(this, resolver, armStacks.getOrDefault(Arm.LEFT, ItemStack.EMPTY), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, null);
     }
 
+    @SuppressWarnings("unchecked")
     public void updateState(ItemModelManager resolver, @Nullable LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
         this.equippedHeadStack = entity.getEquippedStack(EquipmentSlot.HEAD);
         this.pony = pony;
@@ -109,6 +113,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         }
         baby = attributes.size == SizePreset.FOAL;
         race = pony.race();
+        glowColor = PonyCommandTags.getMagicColorOverride(entity, attributes.metadata.glowColor());
         vehicleOffset = hasVehicle && entity != null ? entity.getVehicle().getEyeHeight(pose) : 0;
         riderOffset = getRiderYOffset();
         nameplateYOffset = getNamePlateYOffset();
@@ -126,7 +131,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
                 || !MinecraftClient.getInstance().options.getPerspective().isFirstPerson()
                 || !attributes.isLyingDown;
         // Hide the horn glow if we're being rendered during an iris shadow pass
-        hornGlowVisible = !IrisApiCompat.isOnShadowPass();
+        hornGlowVisible = !IrisApiCompat.isOnShadowPass() && models.body() instanceof ModelWithHorn h && h.isCasting(this);
         isTechnoblade = ((
                     entity instanceof AbstractPiglinEntity
                  || entity instanceof PlayerEntity
@@ -165,7 +170,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
     }
 
     public boolean hasMagicGlow() {
-        return race.hasHorn() && attributes.metadata.glowColor() != 0;
+        return race.hasHorn() && glowColor != 0;
     }
 
     /**

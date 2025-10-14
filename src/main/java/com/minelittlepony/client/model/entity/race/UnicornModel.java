@@ -9,7 +9,6 @@ import com.minelittlepony.mson.api.ModelView;
 import com.minelittlepony.mson.util.RenderList;
 
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.util.*;
@@ -17,34 +16,28 @@ import net.minecraft.util.*;
 /**
  * Used for both unicorns and alicorns since there's no logical way to keep them distinct and not duplicate stuff.
  */
-public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> {
+public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> implements ModelWithHorn<T> {
 
     protected final ModelPart unicornArmRight;
     protected final ModelPart unicornArmLeft;
 
+    private boolean usingUnicornArmLeft;
+    private boolean usingUnicornArmRight;
+
     protected UnicornHorn<T> horn;
 
-    @SuppressWarnings("deprecation")
     public UnicornModel(ModelPart tree, boolean smallArms) {
         super(tree, smallArms);
         unicornArmRight = tree.getChild("right_cast");
         unicornArmLeft = tree.getChild("left_cast");
         headRenderList.add(RenderList.of().add(head::applyTransform).add(SubModel.toRenderList(() -> horn)));
-        mainRenderList.add(withStage(BodyPart.HEAD, RenderList.of().add(head::applyTransform).add((stack, vertices, overlay, light, color) -> {
-            if (isCasting(currentState)) {
-                horn.renderMagic(stack, vertices, currentState == null ? 0 : currentState.attributes.metadata.glowColor());
-            }
-        })));
+        mainRenderList.add(withStage(BodyPart.HEAD, RenderList.of().add(head::applyTransform).add((stack, vertices, overlay, light, color) -> horn.renderMagic(stack, vertices))));
     }
 
     @Override
     public void init(ModelView context) {
         super.init(context);
         horn = addPart(context.findByName("horn"));
-    }
-
-    public boolean isCasting(T state) {
-        return state instanceof PlayerEntityRenderState && (state.leftArmPose != ArmPose.EMPTY || state.rightArmPose != ArmPose.EMPTY);
     }
 
     @Override
@@ -70,10 +63,16 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> {
         unicornArmLeft.pitch -= LEG_SNEAKING_PITCH_ADJUSTMENT;
     }
 
-    @SuppressWarnings("deprecation")
+    @Override
+    protected void setModelAngles(T state) {
+        usingUnicornArmLeft = PonyConfig.getInstance().tpsmagic.get() && state.hasMagicGlow() && state.leftArmPose != ArmPose.EMPTY;
+        usingUnicornArmRight = PonyConfig.getInstance().tpsmagic.get() && state.hasMagicGlow() && state.rightArmPose != ArmPose.EMPTY;
+        super.setModelAngles(state);
+    }
+
     @Override
     public ModelPart getArm(Arm side) {
-        if (currentState != null && currentState.hasMagicGlow() && (side == Arm.LEFT ? currentState.leftArmPose : currentState.rightArmPose) != ArmPose.EMPTY && PonyConfig.getInstance().tpsmagic.get()) {
+        if ((side == Arm.LEFT ? usingUnicornArmLeft : usingUnicornArmRight)) {
             return side == Arm.LEFT ? unicornArmLeft : unicornArmRight;
         }
         return super.getArm(side);

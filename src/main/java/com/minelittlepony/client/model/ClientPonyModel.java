@@ -1,13 +1,16 @@
 package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.*;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Arm;
 import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.minelittlepony.mson.util.RenderList;
 
 /**
  * The raw pony model without any implementations.
@@ -20,10 +23,6 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
     @Nullable
     protected PosingCallback<T> onSetModelAngles;
 
-    @Deprecated
-    @Nullable
-    protected T currentState;
-
     public ClientPonyModel(ModelPart tree, boolean smallArms) {
         super(tree, smallArms);
     }
@@ -32,27 +31,48 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
         onSetModelAngles = callback;
     }
 
+    protected RenderList withStage(BodyPart part, RenderList action) {
+        return new RenderList() {
+            @Nullable
+            private T currentState;
+
+            @Override
+            public void accept(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
+                stack.push();
+                if (currentState != null) {
+                    transform(currentState, part, stack);
+                }
+                action.accept(stack, vertices, overlay, light, color);
+                stack.pop();
+            }
+
+            @SuppressWarnings("unchecked")
+            public <S> void pose(S state) {
+                currentState = (T)state;
+            }
+        };
+    }
+
     /**
      * Sets the model's various rotation angles.
      */
     @SuppressWarnings("unchecked")
     @Override
     public final void setAngles(PlayerEntityRenderState state) {
-        currentState = (T)state;
-        super.setAngles(currentState);
+        super.setAngles((T)state);
 
-        setModelVisibilities(currentState);
-        setModelAngles(currentState);
+        setModelVisibilities((T)state);
+        setModelAngles((T)state);
 
         if (onSetModelAngles != null) {
-            onSetModelAngles.poseModel(this, currentState);
+            onSetModelAngles.poseModel(this, (T)state);
         }
     }
 
     protected void setModelVisibilities(T state) {
     }
 
-    protected void setModelAngles(T entity) {
+    protected void setModelAngles(T state) {
     }
 
     @Override

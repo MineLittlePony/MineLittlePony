@@ -11,6 +11,7 @@ import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.model.gear.WearableGear;
 import com.minelittlepony.api.pony.meta.Wearable;
+import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import java.util.Calendar;
 
@@ -61,7 +62,7 @@ public class DeerAntlers<T extends BipedEntityRenderState & PonyModel.Attributed
 
     @Override
     public void render(MatrixStack matrices, GearRenderState<T> state, OrderedRenderCommandQueue queue, RenderLayer layer, int overlay, int light, int color) {
-        int tint = state.entityState.getAttributes().metadata.glowColor();
+        int tint = state.entityState instanceof PonyRenderState s ? s.glowColor : state.entityState.getAttributes().metadata.glowColor();
         super.render(matrices, state, queue, layer, overlay, light, tint != 0 ? tint : color);
     }
 }

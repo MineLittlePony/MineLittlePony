@@ -44,7 +44,7 @@ public class LevitatingItemRenderer {
         original.call(itemRenderState, matrices, queue, light, overlay, outline);
 
         if (state.hornGlowVisible) {
-            queue = MagicGlow.getQueue(state.pony.metadata().glowColor(), queue);
+            queue = MagicGlow.getQueue(state.glowColor, queue);
 
             var box = itemState.glintlessHandItemState.getModelBoundingBox();
 
