@@ -110,8 +110,8 @@ public class SkeleponyRenderer<T extends AbstractSkeletonEntity, S extends Skele
         public boolean sheared;
 
         @Override
-        public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
-            super.updateState(resolver, entity, model, pony, mode);
+        public void updateState(ItemModelManager resolver, LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
+            super.updateState(resolver, entity, models, pony, mode);
             sheared = entity instanceof BoggedEntity bogged && bogged.isSheared();
         }
     }
@@ -119,8 +119,8 @@ public class SkeleponyRenderer<T extends AbstractSkeletonEntity, S extends Skele
     public static class State extends PonyRenderState {
         public boolean isAttacking;
 
-        public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
-            super.updateState(resolver, entity, model, pony, mode);
+        public void updateState(ItemModelManager resolver, LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
+            super.updateState(resolver, entity, models, pony, mode);
             isAttacking = entity instanceof HostileEntity h && h.isAttacking();
             race = entity.getUuid().getLeastSignificantBits() % 3 == 0 ? Race.EARTH : Race.UNICORN;
         }

@@ -1,7 +1,6 @@
 package com.minelittlepony.client.render.entity.npc;
 
-import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.model.PonyModel;
+import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
@@ -87,8 +86,8 @@ public class IllagerPonyRenderer<
     public static class State extends PonyRenderState {
         public IllagerEntity.State state;
 
-        public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
-            super.updateState(resolver, entity, model, pony, mode);
+        public void updateState(ItemModelManager resolver, LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
+            super.updateState(resolver, entity, models, pony, mode);
             state = ((IllagerEntity)entity).getState();
         }
     }

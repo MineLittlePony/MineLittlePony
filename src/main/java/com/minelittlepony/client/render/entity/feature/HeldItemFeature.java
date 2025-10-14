@@ -36,7 +36,7 @@ public class HeldItemFeature<
 
     public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
         if (!state.leftHandItemState.isEmpty() || !state.rightHandItemState.isEmpty()) {
-            M model = context.getEquineManager().getModels().body();
+            M model = context.lookupModel(state).body();
 
             matrices.push();
             model.transform(state, BodyPart.LEGS, matrices);
@@ -49,7 +49,7 @@ public class HeldItemFeature<
     @SuppressWarnings(value = {"unchecked"})
     protected void renderItem(S state, ItemRenderState item, PonyRenderState.HeldItemRenderState glintLessItem, Arm arm, MatrixStack matrices, OrderedRenderCommandQueue queue, int light) {
         if (!item.isEmpty()) {
-            if (context.getEquineManager().getModels().body() instanceof AbstractPonyModel m) {
+            if (context.lookupModel(state).body() instanceof AbstractPonyModel m) {
                 m.positionheldItem(state, arm, matrices);
             }
 

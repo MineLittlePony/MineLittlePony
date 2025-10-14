@@ -6,8 +6,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.*;
 
-import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.model.PonyModel;
+import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
@@ -42,8 +41,8 @@ public class SillyPonyTextureSupplier {
         public boolean hasMuffinHat;
         public boolean hasSaddlebags;
 
-        public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
-            super.updateState(resolver, entity, model, pony, mode);
+        public void updateState(ItemModelManager resolver, LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
+            super.updateState(resolver, entity, models, pony, mode);
             attributes.visualHeight += hasMuffinHat ? 0.3F : -0.1F;
             isDerpy = SillyPonyTextureSupplier.isBestPony(entity);
             isDinky = isDerpy && "Dinky".equals(entity.getCustomName().getString());

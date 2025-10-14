@@ -96,6 +96,7 @@ public abstract class AbstractPonyRenderer<
 
     @Override
     public void render(S state, MatrixStack stack, OrderedRenderCommandQueue queue, CameraRenderState camera) {
+        model = lookupModel(state).body();
         super.render(state, stack, queue, camera);
         DebugBoundingBoxRenderer.render(state, stack, queue);
     }
@@ -149,11 +150,6 @@ public abstract class AbstractPonyRenderer<
     public Identifier getDefaultTexture(S state, Wearable wearable) {
         Identifier texture = getTexture(state).withPath(path -> path.split("\\.")[0] + "_" + wearable.name().toLowerCase(Locale.ROOT) + ".png");
         return wearableTextures.computeIfAbsent(texture, t -> resources.getResource(t).isPresent() ? t : wearable.getDefaultTexture());
-    }
-
-    @Override
-    public void setModel(M model) {
-        this.model = model;
     }
 
     @Override

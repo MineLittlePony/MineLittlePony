@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render;
 
+import com.minelittlepony.api.model.Models;
 import com.minelittlepony.api.model.gear.Gear;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Wearable;
@@ -25,8 +26,8 @@ public interface PonyRenderContext<
 
     EquineRenderManager<T, S, M> getEquineManager();
 
-    default void setModel(M model) {
-
+    default Models<M> lookupModel(EntityRenderState state) {
+        return getEquineManager().lookupModel(state);
     }
 
     @Override

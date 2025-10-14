@@ -9,7 +9,6 @@ import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.client.PonyDataLoader;
 import com.minelittlepony.client.model.ClientPonyModel;
-import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.client.transform.PonyPosture;
 import com.minelittlepony.mson.api.ModelKey;
@@ -22,6 +21,7 @@ import net.fabricmc.api.EnvType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.*;
@@ -36,9 +36,7 @@ public class EquineRenderManager<
         S extends PonyRenderState,
         M extends ClientPonyModel<S>> {
 
-    private Models<M> models;
-
-    private Function<Race, Models<M>> modelsLookup = race -> models;
+    private Function<Race, Models<M>> modelsLookup;
 
     private final PonyRenderContext<T, S, M> context;
     private final Transformer<? super S> transformer;
@@ -47,15 +45,12 @@ public class EquineRenderManager<
         this.context = context;
         this.transformer = transformer;
         setModelsLookup(modelsLookup);
-        this.models = this.modelsLookup.apply(Race.EARTH);
-        context.setModel(models.body());
     }
 
     public EquineRenderManager(PonyRenderContext<T, S, M> context, Transformer<? super S> transformer, Models<M> models) {
         this.context = context;
         this.transformer = transformer;
-        this.models = models;
-        context.setModel(models.body());
+        setModelsLookup(race -> models);
     }
 
     public EquineRenderManager(PonyRenderContext<T, S, M> context, Transformer<? super S> transformer, ModelKey<? super M> key) {
@@ -66,8 +61,16 @@ public class EquineRenderManager<
         this.modelsLookup = Util.memoize(modelsLookup);
     }
 
-    public Models<M> getModels() {
-        return models;
+    public Models<M> lookupModel(EntityRenderState state) {
+        return lookupModel(state instanceof PonyModel.AttributedHolder holder ? holder.getRace() : Race.EARTH);
+    }
+
+    public Models<M> lookupModel(PonyRenderState state) {
+        return lookupModel(state.getRace());
+    }
+
+    public Models<M> lookupModel(Race race) {
+        return modelsLookup.apply(race);
     }
 
     public Box getBoundingBox(T entity, Box box) {
@@ -82,18 +85,15 @@ public class EquineRenderManager<
     }
 
     public void completeStateUpdate(PlayerEntityRenderState state) {
-        if (state instanceof PreviewRenderState) {
-            models = modelsLookup.apply(((PlayerPonyRenderState)state).pony.race());
-            context.setModel(models.body());
-            ((PreviewRenderState)state).completeStateUpdate(models.body());
+        if (state instanceof PreviewRenderState previewer) {
+            previewer.completeStateUpdate(modelsLookup.apply(previewer.getRace()));
         }
     }
 
     public void updateState(T entity, S state, ModelAttributes.Mode mode, ItemModelManager resolver) {
+        state.entityType = entity.getType();
         Pony pony = context.getEntityPony(entity);
-        models = modelsLookup.apply(pony.race());
-        context.setModel(models.body());
-        state.updateState(resolver, entity, models.body(), pony, mode);
+        state.updateState(resolver, entity, modelsLookup.apply(pony.race()), pony, mode);
     }
 
     public void setupTransforms(S state, MatrixStack stack, float animationProgress, float bodyYaw) {

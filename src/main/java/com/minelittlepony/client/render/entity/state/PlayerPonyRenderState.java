@@ -21,13 +21,13 @@ public class PlayerPonyRenderState extends PonyRenderState {
     public Identifier form = PonyForm.DEFAULT;
 
     @Override
-    public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
+    public void updateState(ItemModelManager resolver, LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
         smallArms = ((ClientPlayerLikeEntity)entity).getSkin().model() == PlayerSkinType.SLIM;
 
         PonyForm f = entity instanceof PlayerEntity player ? PonyForm.of(player) : null;
         form = f == null ? PonyForm.DEFAULT : f.id();
 
-        super.updateState(resolver, entity, model, pony, mode);
+        super.updateState(resolver, entity, models, pony, mode);
         yOffset = 0;
         if (entity.hasVehicle()) {
             Vec3d attachment = entity.getDimensions(entity.getPose()).attachments().getPointNullable(EntityAttachmentType.VEHICLE, 0, 0);

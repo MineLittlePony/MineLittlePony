@@ -140,7 +140,7 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
             EquipmentModel.LayerType layerType,
             RegistryKey<EquipmentAsset> assetId,
             S state,
-            Models<V> models,
+            Models<?> models,
             ItemStack stack,
             MatrixStack matrices,
             OrderedRenderCommandQueue queue,

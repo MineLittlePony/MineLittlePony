@@ -107,10 +107,10 @@ public class PonyBodyWidget extends PlayerBodyWidget<PonyBodyWidget.State> {
         public boolean stateIncomplete;
 
         @Override
-        public void completeStateUpdate(PonyModel<?> model) {
+        public void completeStateUpdate(Models<?> models) {
             if (stateIncomplete) {
                 stateIncomplete = false;
-                PonyRenderStatePrepareCallback.EVENT.invoker().onPonyRenderStatePrepared(this, model, ModelAttributes.Mode.OTHER);
+                PonyRenderStatePrepareCallback.EVENT.invoker().onPonyRenderStatePrepared(this, models.body(), ModelAttributes.Mode.OTHER);
             }
         }
     }

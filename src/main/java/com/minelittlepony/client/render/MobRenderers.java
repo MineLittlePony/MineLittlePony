@@ -8,9 +8,10 @@ import com.minelittlepony.mson.api.EntityRendererRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Predicate;
+import java.util.function.*;
 
+import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 
@@ -20,8 +21,21 @@ import net.minecraft.entity.EntityType;
 public record MobRenderers (String name, BiConsumer<MobRenderers, EntityRendererRegistry> changer) implements Predicate<Entity> {
     public static final Map<String, MobRenderers> REGISTRY = new HashMap<>();
 
-    public static MobRenderers register(String name, BiConsumer<MobRenderers, EntityRendererRegistry> changer) {
-        return REGISTRY.computeIfAbsent(name, n -> new MobRenderers(name, changer));
+    public static MobRenderers register(String name, BiConsumer<MobRenderers, Registry> changer) {
+        return REGISTRY.computeIfAbsent(name, n -> new MobRenderers(name, (state, registry) -> {
+
+            changer.accept(state, new Registry() {
+                @Override
+                public <T extends Entity, R extends EntityRenderer<?, ?>> void registerEntityRenderer(EntityType<T> type, Predicate<? super T> condition, Function<EntityRendererFactory.Context, R> constructor) {
+                    registry.registerEntityRenderer(type, condition, constructor);
+                    registry.registerEntityStateRenderer(type, s -> state.option().get(), constructor);
+                }
+            });
+        }));
+    }
+
+    interface Registry {
+        <T extends Entity, R extends EntityRenderer<?, ?>> void registerEntityRenderer(EntityType<T> type, Predicate<? super T> condition, Function<EntityRendererFactory.Context, R> constructor);
     }
 
     public static final MobRenderers VILLAGER = register("villagers", (state, registry) -> {

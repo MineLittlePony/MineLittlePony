@@ -105,6 +105,7 @@ public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLi
     @Override
     protected void setupTransforms(PlayerEntityRenderState state, MatrixStack matrices, float animationProgress, float bodyYaw) {
         manager.completeStateUpdate(state);
+        model = lookupModel(state).body();
         shadowRadius = ((PlayerPonyRenderState)state).attributes.size.shadowSize();
         manager.setupTransforms((PlayerPonyRenderState)state, matrices, animationProgress, bodyYaw);
     }
@@ -153,11 +154,6 @@ public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLi
         }
 
         stack.pop();
-    }
-
-    @Override
-    public void setModel(ClientPonyModel<PlayerPonyRenderState> model) {
-        this.model = model;
     }
 
     @Override

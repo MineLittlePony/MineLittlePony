@@ -8,6 +8,7 @@ import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.client.render.entity.*;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
+import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.block.SkullBlock;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.SkullBlockEntityModel;
@@ -21,6 +22,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Direction;
 
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import org.jetbrains.annotations.Nullable;
@@ -30,6 +32,18 @@ import org.jetbrains.annotations.Nullable;
  */
 public class PonySkullRenderer {
     public static final PonySkullRenderer INSTANCE = new PonySkullRenderer();
+
+    public static final RenderStateDataKey<Data> DATA_KEY = RenderStateDataKey.create(() -> "Pony_Skull_State");
+    @Nullable
+    private final AtomicReference<PonySkullRenderer.Data> ponySkullState = new AtomicReference<>(null);
+
+    public Data popState() {
+        return ponySkullState.getAndSet(null);
+    }
+
+    public void pushState(@Nullable Data data) {
+        ponySkullState.set(data);
+    }
 
     private Function<SkullBlock.SkullType, ISkull> skulls;
 
@@ -50,6 +64,11 @@ public class PonySkullRenderer {
 
     @Nullable
     public Data getSkullState(SkullBlock.SkullType skullType, @Nullable ProfileComponent profile) {
+        return getSkullState(skullType, profile, null);
+    }
+
+    @Nullable
+    public Data getSkullState(SkullBlock.SkullType skullType, @Nullable ProfileComponent profile, @Nullable Identifier overrideTexture) {
         @Nullable
         ISkull skull = skulls.apply(skullType);
 
@@ -57,7 +76,7 @@ public class PonySkullRenderer {
             return null;
         }
 
-        Identifier texture = skull.getSkinResource(profile);
+        Identifier texture = overrideTexture == null ? skull.getSkinResource(profile) : overrideTexture;
         return new Data(skull, RenderLayer.getEntityTranslucent(texture), Pony.getManager().getPony(texture));
     }
 

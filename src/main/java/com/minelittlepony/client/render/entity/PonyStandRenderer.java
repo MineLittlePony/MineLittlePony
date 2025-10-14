@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import com.minelittlepony.api.model.ModelAttributes.Mode;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyData;
+import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.race.EarthPonyModel;
@@ -138,7 +139,7 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
 
         @Override
         public EarthPonyModel<PonyRenderState> getModel() {
-            return manager.getModels().body();
+            return getEquineManager().lookupModel(Race.EARTH).body();
         }
     }
 

@@ -46,7 +46,7 @@ public class ArmourFeature<
 
     @Override
     public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, S entity, float limbDistance, float limbAngle) {
-        renderArmor(getModelWrapper(), matrices, queue, light, entity, limbDistance, limbAngle, equipmentRenderer);
+        renderArmor(getContext().getEquineManager().lookupModel(entity), matrices, queue, light, entity, limbDistance, limbAngle, equipmentRenderer);
     }
 
     public static <S extends PonyRenderState, V extends ClientPonyModel<S>> void renderArmor(

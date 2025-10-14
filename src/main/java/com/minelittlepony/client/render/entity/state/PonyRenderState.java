@@ -100,12 +100,12 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         leftHeldItem.updateItemRenderState(this, resolver, armStacks.getOrDefault(Arm.LEFT, ItemStack.EMPTY), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, null);
     }
 
-    public void updateState(ItemModelManager resolver, @Nullable LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
+    public void updateState(ItemModelManager resolver, @Nullable LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
         this.equippedHeadStack = entity.getEquippedStack(EquipmentSlot.HEAD);
         this.pony = pony;
         if (entity != null) {
             attributes.updateLivingState(entity, pony, mode);
-            attributes.checkRainboom(entity, model, age);
+            attributes.checkRainboom(entity, models.body(), age);
         }
         baby = attributes.size == SizePreset.FOAL;
         race = pony.race();
@@ -156,7 +156,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         if (entity != null) {
             PonyPosture.of(attributes).updateState(entity, this);
         }
-        PonyRenderStatePrepareCallback.EVENT.invoker().onPonyRenderStatePrepared(this, model, mode);
+        PonyRenderStatePrepareCallback.EVENT.invoker().onPonyRenderStatePrepared(this, models.body(), mode);
     }
 
     @Override

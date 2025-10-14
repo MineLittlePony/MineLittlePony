@@ -73,7 +73,7 @@ public class GearFeature<
             }
         }
 
-        final M model = getModelWrapper().body();
+        final M model = lookupModel(state).body();
         final Object2FloatMap<BodyPart> renderStackingOffsets = new Object2FloatLinkedOpenHashMap<>();
 
         for (var entry : randomisedGearCache.getUnchecked(state.attributes.getEntityId().getLeastSignificantBits())) {
@@ -97,6 +97,8 @@ public class GearFeature<
                     }
 
                     Gear.GearRenderState<S> gearState = new Gear.GearRenderState<S>();
+                    gearState.entityState = state;
+                    gearState.model = model;
                     gearState.bodySwing = state.wobbleAmount * model.getWobbleAmplitude(state);
                     gearState.limbDistance = limbDistance;
                     gearState.limbAngle = limbAngle;

@@ -45,7 +45,7 @@ public class SkullFeature<
         for (EquippedHeadRenderState headState : state.equippedHeads) {
             matrices.push();
 
-            M model = getModelWrapper().body();
+            M model = lookupModel(state).body();
 
             model.transform(state, BodyPart.HEAD, matrices);
             model.getHead().applyTransform(matrices);

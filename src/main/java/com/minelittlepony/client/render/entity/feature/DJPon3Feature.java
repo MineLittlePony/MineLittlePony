@@ -30,7 +30,7 @@ public class DJPon3Feature<
         if (state.displayName != null && "deadmau5".equals(state.displayName.getString())) {
             stack.push();
 
-            M body = getModelWrapper().body();
+            M body = getContext().getEquineManager().lookupModel(state).body();
 
             body.transform(state, BodyPart.HEAD, stack);
             body.getHead().applyTransform(stack);

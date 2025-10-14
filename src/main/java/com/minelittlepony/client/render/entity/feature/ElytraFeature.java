@@ -70,7 +70,7 @@ public class ElytraFeature<
     protected void preRenderCallback(S state, MatrixStack stack) {
         if (state instanceof PonyRenderState ponyState && context instanceof PonyRenderContext context) {
             stack.translate(0, 0.45F, 0);
-            ((ClientPonyModel<PonyRenderState>)context.getEquineManager().getModels().body()).transform(ponyState, BodyPart.BODY, stack);
+            ((ClientPonyModel<PonyRenderState>)context.getEquineManager().lookupModel(state).body()).transform(ponyState, BodyPart.BODY, stack);
             stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(80));
         }
     }

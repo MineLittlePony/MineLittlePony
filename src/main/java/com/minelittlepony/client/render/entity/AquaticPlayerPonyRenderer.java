@@ -28,7 +28,7 @@ public class AquaticPlayerPonyRenderer<Player extends PlayerLikeEntity & ClientP
 
     class State extends PlayerPonyRenderState {
         @Override
-        public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
+        public void updateState(ItemModelManager resolver, LivingEntity entity, Models<?> model, Pony pony, ModelAttributes.Mode mode) {
             super.updateState(resolver, entity, model, pony, mode);
             @SuppressWarnings("unchecked")
             Identifier skinOverride = getSkinOverride((Player)entity);

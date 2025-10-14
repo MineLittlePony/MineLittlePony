@@ -26,12 +26,7 @@ public abstract class AbstractPonyFeature<
         return (C)context;
     }
 
-    @Override
-    public final M getContextModel() {
-        return context.getEquineManager().getModels().body();
-    }
-
-    protected Models<M> getModelWrapper() {
-        return context.getEquineManager().getModels();
+    public final Models<M> lookupModel(S state) {
+        return getContext().lookupModel(state);
     }
 }

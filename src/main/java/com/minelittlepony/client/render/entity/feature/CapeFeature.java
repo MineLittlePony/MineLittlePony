@@ -56,7 +56,7 @@ public class CapeFeature extends CapeFeatureRenderer {
                             matrixStack.translate(0.0F, -0.053125F, 0.06875F);
                         }
 
-                        ClientPonyModel<PlayerPonyRenderState> model = context.getEquineManager().getModels().body();
+                        ClientPonyModel<PlayerPonyRenderState> model = context.lookupModel(state).body();
 
                         matrixStack.translate(0, 0.34F, 0);
                         model.transform((PlayerPonyRenderState)state, BodyPart.BODY, matrixStack);
