@@ -1,10 +1,9 @@
 package com.minelittlepony.client.render.entity.state;
 
 import net.minecraft.client.item.ItemModelManager;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.util.SkinTextures;
+import net.minecraft.client.network.ClientPlayerLikeEntity;
 import net.minecraft.entity.*;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
@@ -23,7 +22,7 @@ public class PlayerPonyRenderState extends PonyRenderState {
 
     @Override
     public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
-        smallArms = ((AbstractClientPlayerEntity)entity).getSkinTextures().model() == SkinTextures.Model.SLIM;
+        smallArms = ((ClientPlayerLikeEntity)entity).getSkin().model() == PlayerSkinType.SLIM;
 
         PonyForm f = entity instanceof PlayerEntity player ? PonyForm.of(player) : null;
         form = f == null ? PonyForm.DEFAULT : f.id();

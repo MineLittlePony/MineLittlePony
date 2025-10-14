@@ -11,10 +11,12 @@ import com.minelittlepony.mson.api.ModelKey;
 
 import java.util.function.Supplier;
 
-import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.*;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.RotationAxis;
 
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +32,7 @@ public class MobSkull<S extends PonyRenderState> implements ISkull {
     MobSkull(Identifier texture, MobRenderers type, ModelKey<? extends AbstractPonyModel<?>> modelKey, Supplier<S> state) {
         this.texture = texture;
         this.type = type;
-        this.state = Suppliers.memoize(state::get);
+        this.state = state;
         this.ponyHead = Suppliers.memoize(modelKey::createModel);
     }
 
@@ -45,27 +47,28 @@ public class MobSkull<S extends PonyRenderState> implements ISkull {
     }
 
     @Override
-    public boolean bindPony(Pony pony) {
-        S state = this.state.get();
-        state.pony = pony;
-        state.race = pony.race();
-        state.attributes.size = pony.size();
-        state.attributes.metadata = pony.metadata();
-        return true;
-    }
+    public void render(MatrixStack stack, State state, OrderedRenderCommandQueue queue, Pony pony, RenderLayer layer) {
 
-    @Override
-    public void setAngles(float yaw, float animationProgress) {
+        S ponyState = this.state.get();
+        ponyState.pony = pony;
+        ponyState.race = pony.race();
+        ponyState.attributes.size = pony.size();
+        ponyState.attributes.metadata = pony.metadata();
+
+        MatrixStack copyStack = new MatrixStack();
+        var model = ponyHead.get();
         Vector3f v = new Vector3f(0, -2, 1.99F);
-        v.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(yaw));
-        ponyHead.get().setVisible(true);
-        ponyHead.get().setAngles(state.get());
-        ponyHead.get().getHead().setOrigin(v.x, v.y, v.z);
-        ponyHead.get().setHeadRotation(animationProgress, yaw, 0);
-    }
+        v.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(state.yaw));
+        int color = ColorHelper.getWhite(state.alpha);
 
-    @Override
-    public void render(MatrixStack stack, VertexConsumer vertices, int light, int overlay, int color) {
-        ponyHead.get().headRenderList.accept(stack, vertices, light, overlay, color);
+        queue.getBatchingQueue(0).submitCustom(stack, layer, (entry, vertices) -> {
+            model.setVisible(true);
+            model.setAngles(ponyState);
+            model.getHead().setOrigin(v.x, v.y, v.z);
+            model.setHeadRotation(state.poweredTicks, state.yaw, 0);
+            copyStack.peek().getPositionMatrix().set(entry.getPositionMatrix());
+            copyStack.peek().getNormalMatrix().set(entry.getNormalMatrix());
+            model.headRenderList.accept(copyStack, vertices, state.light, OverlayTexture.DEFAULT_UV, color);
+        });
     }
 }

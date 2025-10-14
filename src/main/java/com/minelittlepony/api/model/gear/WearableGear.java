@@ -1,15 +1,14 @@
 package com.minelittlepony.api.model.gear;
 
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.entity.state.EntityRenderState;
+import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.pony.meta.Wearable;
-import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
-public class WearableGear extends AbstractGearModel {
+public class WearableGear<T extends BipedEntityRenderState & PonyModel.AttributedHolder> extends AbstractGearModel<T> {
 
     protected final Wearable wearable;
     protected final BodyPart location;
@@ -26,12 +25,12 @@ public class WearableGear extends AbstractGearModel {
     }
 
     @Override
-    public boolean canRender(PonyModel<?> model, EntityRenderState entity) {
-        return entity instanceof PonyRenderState state && state.isWearing(wearable);
+    public boolean canRender(PonyModel<?> model, T state) {
+        return state.getAttributes().isWearing(wearable);
     }
 
     @Override
-    public <S extends EntityRenderState> Identifier getTexture(S entity, Context<S, ?> context) {
+    public Identifier getTexture(T entity, Context<T, ?> context) {
         return context.getDefaultTexture(entity, wearable);
     }
 }

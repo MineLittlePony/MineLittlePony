@@ -3,7 +3,10 @@ package com.minelittlepony.api.pony;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.util.DefaultSkinHelper;
-import net.minecraft.client.util.SkinTextures;
+import net.minecraft.entity.player.PlayerSkinType;
+import net.minecraft.entity.player.SkinTextures;
+import net.minecraft.util.AssetInfo.TextureAsset;
+import net.minecraft.util.AssetInfo.TextureAssetInfo;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 
@@ -20,13 +23,17 @@ public final class DefaultPonySkinHelper {
     public static final Identifier NIRIK_SKIN_TYPE_ID = Pony.id("nirik");
 
     private static final Function<SkinTextures, SkinTextures> SKINS = Util.memoize(original -> new SkinTextures(
-            Pony.id(original.texture().getPath().replace(".png", "_pony.png")),
-            null,
+            remapAsset(original.body()),
             null,
             null,
             original.model(),
             false
     ));
+
+    private static TextureAssetInfo remapAsset(TextureAsset asset) {
+        Identifier id = Pony.id(asset.texturePath().getPath().replace(".png", "_pony.png"));
+        return new TextureAssetInfo(id, id);
+    }
 
     public static SkinTextures getTextures(SkinTextures original) {
         return SKINS.apply(original);
@@ -34,13 +41,13 @@ public final class DefaultPonySkinHelper {
 
     public static String getModelType(UUID id) {
         SkinTextures textures = DefaultSkinHelper.getSkinTextures(id);
-        return getModelType(Pony.getManager().getPony(textures.texture(), id).race(), textures.model());
+        return getModelType(Pony.getManager().getPony(textures.body().texturePath(), id).race(), textures.model());
     }
 
-    public static String getModelType(Race race, SkinTextures.Model armShape) {
+    public static String getModelType(Race race, PlayerSkinType armShape) {
         if (race.isHuman()) {
-            return armShape.getName();
+            return armShape.asString();
         }
-        return (armShape == SkinTextures.Model.SLIM) ? armShape.getName() + race.name().toLowerCase(Locale.ROOT) : race.name().toLowerCase(Locale.ROOT);
+        return (armShape == PlayerSkinType.SLIM) ? armShape.asString() + race.name().toLowerCase(Locale.ROOT) : race.name().toLowerCase(Locale.ROOT);
     }
 }

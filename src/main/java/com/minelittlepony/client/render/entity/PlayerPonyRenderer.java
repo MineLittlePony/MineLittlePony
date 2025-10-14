@@ -9,33 +9,33 @@ import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.feature.*;
 import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
-import com.minelittlepony.common.util.render.RenderLayerUtil;
 
 import java.util.*;
 
 import com.minelittlepony.client.render.EquineRenderManager;
 
 import net.minecraft.client.item.ItemModelManager;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.*;
+import net.minecraft.client.network.ClientPlayerLikeEntity;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.feature.*;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityPose;
-import net.minecraft.text.Text;
+import net.minecraft.entity.PlayerLikeEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 
-public class PlayerPonyRenderer
-        extends PlayerEntityRenderer
+public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLikeEntity>
+        extends PlayerEntityRenderer<Player>
         implements PonyRenderContext<
-            AbstractClientPlayerEntity,
+            Player,
             PlayerPonyRenderState,
             ClientPonyModel<PlayerPonyRenderState>
         > {
-    protected final EquineRenderManager<AbstractClientPlayerEntity, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> manager;
+    protected final EquineRenderManager<Player, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> manager;
 
     private ModelAttributes.Mode mode = ModelAttributes.Mode.THIRD_PERSON;
     protected final ItemModelManager itemModelManager;
@@ -60,7 +60,7 @@ public class PlayerPonyRenderer
         addPonyFeature(new HeldItemFeature<>(this));
         addPonyFeature(new DJPon3Feature<>(this));
         addFeature(new CapeFeature(this, context.getEntityModels(), context.getEquipmentModelLoader()));
-        addPonyFeature(new SkullFeature<>(this, context.getEntityModels(), HeadFeatureRenderer.HeadTransformation.DEFAULT, true));
+        addPonyFeature(new SkullFeature<>(this, context.getPlayerSkinCache(), context.getEntityModels(), HeadFeatureRenderer.HeadTransformation.DEFAULT, true));
         addPonyFeature(new ElytraFeature(this, context.getEquipmentRenderer()));
         addPonyFeature(new PassengerFeature<>(this, context));
         addPonyFeature(new GearFeature<>(this));
@@ -88,12 +88,12 @@ public class PlayerPonyRenderer
     }
 
     @Override
-    public void updateRenderState(AbstractClientPlayerEntity entity, PlayerEntityRenderState state, float tickDelta) {
+    public void updateRenderState(Player entity, PlayerEntityRenderState state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
         manager.updateState(entity, (PlayerPonyRenderState)state, mode, itemModelManager);
     }
 
-    public final PlayerPonyRenderState getAndUpdateRenderState(AbstractClientPlayerEntity entity, float tickDelta, ModelAttributes.Mode mode) {
+    public final PlayerPonyRenderState getAndUpdateRenderState(Player entity, float tickDelta, ModelAttributes.Mode mode) {
         try {
             this.mode = mode;
             return (PlayerPonyRenderState)getAndUpdateRenderState(entity, tickDelta);
@@ -110,12 +110,12 @@ public class PlayerPonyRenderer
     }
 
     @Override
-    protected Box getBoundingBox(AbstractClientPlayerEntity entity) {
+    protected Box getBoundingBox(Player entity) {
         return manager.getBoundingBox(entity, entity.getBoundingBox());
     }
 
     @Override
-    protected void renderLabelIfPresent(PlayerEntityRenderState state, Text name, MatrixStack matrices, VertexConsumerProvider vertices, int light) {
+    protected void renderLabelIfPresent(PlayerEntityRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState camera) {
         matrices.push();
         if (state.isInPose(EntityPose.SLEEPING)) {
             if (state.sleepingDirection != null && ((PlayerPonyRenderState)state).sleepingInBed) {
@@ -125,40 +125,31 @@ public class PlayerPonyRenderer
             }
         }
         matrices.translate(0, ((PlayerPonyRenderState)state).nameplateYOffset, 0);
-        super.renderLabelIfPresent(state, name, matrices, vertices, light);
+        super.renderLabelIfPresent(state, matrices, queue, camera);
         matrices.pop();
-        DebugBoundingBoxRenderer.render((PlayerPonyRenderState)state, matrices, vertices);
+        DebugBoundingBoxRenderer.render((PlayerPonyRenderState)state, matrices, queue);
     }
 
     @Override
-    public final void renderRightArm(MatrixStack matrices, VertexConsumerProvider vertices, int light, Identifier skinTexture, boolean sleeveVisible) {
-        renderArm(matrices, vertices, light, skinTexture, sleeveVisible, Arm.RIGHT);
+    public final void renderRightArm(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, Identifier skinTexture, boolean sleeveVisible) {
+        renderArm(matrices, queue, light, skinTexture, sleeveVisible, Arm.RIGHT);
     }
 
     @Override
-    public final void renderLeftArm(MatrixStack matrices, VertexConsumerProvider vertices, int light, Identifier skinTexture, boolean sleeveVisible) {
-        renderArm(matrices, vertices, light, skinTexture, sleeveVisible, Arm.LEFT);
+    public final void renderLeftArm(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, Identifier skinTexture, boolean sleeveVisible) {
+        renderArm(matrices, queue, light, skinTexture, sleeveVisible, Arm.LEFT);
     }
 
-    protected void renderArm(MatrixStack stack, VertexConsumerProvider renderContext, int light, Identifier skinTexture, boolean sleeveVisible, Arm side) {
+    protected void renderArm(MatrixStack stack, OrderedRenderCommandQueue queue, int light, Identifier skinTexture, boolean sleeveVisible, Arm side) {
         stack.push();
         float reflect = side == Arm.LEFT ? 1 : -1;
 
         stack.translate(reflect * 0.1F, -0.54F, 0);
 
-        VertexConsumerProvider interceptedContext = layer -> {
-            return renderContext.getBuffer(RenderLayerUtil
-                    .getTexture(layer)
-                    .filter(skinTexture::equals)
-                    .map(i -> RenderLayer.getEntityTranslucent(skinTexture))
-                    .orElse(layer)
-            );
-        };
-
         if (side == Arm.LEFT) {
-            super.renderLeftArm(stack, interceptedContext, light, skinTexture, sleeveVisible);
+            super.renderLeftArm(stack, queue, light, skinTexture, sleeveVisible);
         } else {
-            super.renderRightArm(stack, interceptedContext, light, skinTexture, sleeveVisible);
+            super.renderRightArm(stack, queue, light, skinTexture, sleeveVisible);
         }
 
         stack.pop();
@@ -170,12 +161,12 @@ public class PlayerPonyRenderer
     }
 
     @Override
-    public EquineRenderManager<AbstractClientPlayerEntity, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> getEquineManager() {
+    public EquineRenderManager<Player, PlayerPonyRenderState, ClientPonyModel<PlayerPonyRenderState>> getEquineManager() {
         return manager;
     }
 
     @Override
-    public Pony getEntityPony(AbstractClientPlayerEntity entity) {
+    public Pony getEntityPony(Player entity) {
         return Pony.getManager().getPony(entity);
     }
 

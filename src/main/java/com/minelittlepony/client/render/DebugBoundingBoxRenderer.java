@@ -1,7 +1,7 @@
 package com.minelittlepony.client.render;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Box;
 
@@ -10,24 +10,21 @@ import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 public final class DebugBoundingBoxRenderer {
-    public static <T extends PonyRenderState> void render(T state, MatrixStack stack, VertexConsumerProvider matrices) {
-        if (RenderPass.getCurrent() != RenderPass.WORLD) {
+    public static <T extends PonyRenderState> void render(T state, MatrixStack stack, OrderedRenderCommandQueue queue) {
+        if (RenderPass.getCurrent() != RenderPass.WORLD || state.hitbox == null) {
             return;
         }
 
-        MinecraftClient client = MinecraftClient.getInstance();
-
-        if (!client.getEntityRenderDispatcher().shouldRenderHitboxes() || state.invisible || client.hasReducedDebugInfo()) {
+        if (state.hitbox == null) {
             return;
         }
 
-        stack.push();
-        VertexRendering.drawBox(stack, matrices.getBuffer(RenderLayer.getLines()), getBoundingBox(state).offset(
+        Box box = getBoundingBox(state).offset(
                 -state.x,
                 -state.y + (state instanceof PlayerPonyRenderState s ? s.baseScale * s.yOffset : 0),
                 -state.z
-        ), 1, 1, 0, 1);
-        stack.pop();
+        );
+        queue.submitCustom(stack, RenderLayer.getLines(), (entry, vertices) -> VertexRendering.drawBox(entry, vertices, box, 1, 1, 0, 1));
     }
 
     public static Box getBoundingBox(PonyRenderState state) {

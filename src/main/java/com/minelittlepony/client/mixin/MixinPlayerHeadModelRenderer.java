@@ -1,10 +1,9 @@
 package com.minelittlepony.client.mixin;
 
 import net.minecraft.block.SkullBlock;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.SkullBlockEntityModel;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.item.model.special.*;
-import net.minecraft.client.texture.PlayerSkinProvider;
+import net.minecraft.client.texture.PlayerSkinCache;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemDisplayContext;
@@ -23,26 +22,20 @@ import java.util.*;
 
 @Mixin(value = PlayerHeadModelRenderer.class, priority = 3000)
 abstract class MixinPlayerHeadModelRenderer {
-    @Shadow
-    private @Final PlayerHeadModelRenderer.Data data;
-
-    private final Map<PlayerHeadModelRenderer.Data, PonySkullRenderer.Data> ponyData = new HashMap<>();
-
-    @Inject(method = "<init>", at = @At("TAIL"))
-    private void onInit(PlayerSkinProvider playerSkinProvider, SkullBlockEntityModel model, PlayerHeadModelRenderer.Data data, CallbackInfo info) {
-        ponyData.put(data, PonySkullRenderer.INSTANCE.getSkullState(SkullBlock.Type.PLAYER, null));
-    }
+    private final Map<PlayerSkinCache.Entry, PonySkullRenderer.Data> ponyData = new HashMap<>();
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
-    private void onRender(@Nullable PlayerHeadModelRenderer.Data data, ItemDisplayContext context, MatrixStack matrices, VertexConsumerProvider vertices, int light, int overlay, boolean glint, CallbackInfo info) {
-        var state = ponyData.get(Objects.requireNonNullElse(data, this.data));
-        if (state != null && state.render(null, 180, 0, matrices, vertices, light)) {
-            info.cancel();
+    private void onRender(@Nullable PlayerSkinCache.Entry data, ItemDisplayContext context, MatrixStack matrices, OrderedRenderCommandQueue queue, int light, int overlay, boolean glint, int k, CallbackInfo info) {
+        if (data != null) {
+            var state = ponyData.get(data);
+            if (state != null && state.render(null, 180, 0, matrices, queue, light, 0, null)) {
+                info.cancel();
+            }
         }
     }
 
-    @Inject(method = "getData(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/client/render/item/model/special/PlayerHeadModelRenderer$Data;", at = @At("RETURN"), cancellable = true)
-    private void onGetData(ItemStack stack, CallbackInfoReturnable<PlayerHeadModelRenderer.Data> info) {
+    @Inject(method = "getData(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/client/texture/PlayerSkinCache$Entry;", at = @At("RETURN"), cancellable = true)
+    private void onGetData(ItemStack stack, CallbackInfoReturnable<PlayerSkinCache.Entry> info) {
         var data = info.getReturnValue();
         if (data != null) {
             ponyData.put(data, PonySkullRenderer.INSTANCE.getSkullState(SkullBlock.Type.PLAYER, stack.get(DataComponentTypes.PROFILE)));

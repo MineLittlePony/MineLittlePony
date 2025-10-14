@@ -27,9 +27,12 @@ public class StriderRenderer extends MobEntityRenderer<StriderEntity, StriderRen
     public StriderRenderer(EntityRendererFactory.Context context) {
         super(context, ModelType.STRIDER.createModel(), 0.5F);
         addFeature(new SaddleFeatureRenderer<>(this, new PonifiedEquipmentRenderer(context.getEquipmentModelLoader()),
-                ModelType.STRIDER_SADDLE.createModel(),
                 EquipmentModel.LayerType.STRIDER_SADDLE,
-                state -> state.saddleStack));
+                state -> state.saddleStack,
+                ModelType.STRIDER_SADDLE.createModel(),
+                ModelType.STRIDER_SADDLE.createModel(),
+                1
+        ));
     }
 
     @Override

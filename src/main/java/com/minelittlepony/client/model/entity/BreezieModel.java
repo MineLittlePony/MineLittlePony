@@ -34,8 +34,6 @@ public class BreezieModel extends BipedEntityModel<AllayRenderer.State> {
         head.yaw = state.relativeHeadYaw * 0.017453292F;
         head.pitch = state.pitch * 0.017453292F;
 
-        hat.copyTransform(head);
-
         leftArm.pitch = MathHelper.cos(move * 0.6662F) * swing;
         leftArm.roll = 0;
 

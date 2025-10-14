@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.PlayerLikeEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 
@@ -25,7 +25,7 @@ public class SkinsProxy {
     private final LoadingCache<GameProfile, GameProfile> profileCache = CacheBuilder.newBuilder()
             .expireAfterAccess(30, TimeUnit.SECONDS)
             .build(CacheLoader.from(profile -> {
-                var result = MineLittlePonyServer.getServer().getSessionService().fetchProfile(profile.getId(), false);
+                var result = MineLittlePonyServer.getServer().getApiServices().sessionService().fetchProfile(profile.id(), false);
                 return result == null ? profile : result.profile();
             }));
 
@@ -40,12 +40,16 @@ public class SkinsProxy {
     }
 
     @Nullable
-    public Identifier getSkinTexture(GameProfile profile) {
+    public Identifier getSkinTexture(@Nullable GameProfile profile) {
+        if (profile == null) {
+            return null;
+        }
+
         MinecraftServer server = MineLittlePonyServer.getServer();
         if (server != null) {
             profile = profileCache.getUnchecked(profile);
 
-            MinecraftProfileTextures textures = server.getSessionService().getTextures(profile);
+            MinecraftProfileTextures textures = server.getApiServices().sessionService().getTextures(profile);
 
             if (textures != MinecraftProfileTextures.EMPTY) {
                 return Identifier.of(textures.skin().getUrl());
@@ -54,7 +58,7 @@ public class SkinsProxy {
         return null;
     }
 
-    public Optional<Identifier> getSkin(Identifier skinTypeId, PlayerEntity player) {
+    public Optional<Identifier> getSkin(Identifier skinTypeId, PlayerLikeEntity player) {
         return Optional.empty();
     }
 

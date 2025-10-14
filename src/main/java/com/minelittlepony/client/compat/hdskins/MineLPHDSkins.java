@@ -8,10 +8,9 @@ import com.minelittlepony.common.client.gui.ScrollContainer;
 import com.minelittlepony.common.client.gui.element.Button;
 import com.minelittlepony.hdskins.HDSkinsServer;
 import com.minelittlepony.hdskins.client.*;
+import com.minelittlepony.hdskins.client.ducks.ClientPlayerInfo;
 import com.minelittlepony.hdskins.client.gui.GuiSkins;
-import com.minelittlepony.hdskins.client.profile.SkinLoader.ProvidedSkins;
 import com.minelittlepony.hdskins.profile.SkinType;
-import com.mojang.authlib.GameProfile;
 
 import java.util.*;
 
@@ -22,8 +21,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.PlayerLikeEntity;
 import net.minecraft.item.Items;
+import net.minecraft.util.AssetInfo.TextureAsset;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.*;
@@ -84,6 +84,7 @@ public class MineLPHDSkins extends ClientSkinsProxy implements ClientModInitiali
     static Optional<Pony> getPony(PlayerSkinLayers.Layer layer) {
         return layer
             .getSkin(SkinType.SKIN)
+            .map(TextureAsset::texturePath)
             .map(Pony.getManager()::getPony);
     }
 
@@ -97,13 +98,8 @@ public class MineLPHDSkins extends ClientSkinsProxy implements ClientModInitiali
     }
 
     @Override
-    public Optional<Identifier> getSkin(Identifier skinTypeId, PlayerEntity player) {
-        if (player instanceof AbstractClientPlayerEntity clientPlayer) {
-            return SkinType.REGISTRY.getOptionalValue(skinTypeId).flatMap(type -> getSkin(type, clientPlayer));
-
-        }
-
-        return Optional.empty();
+    public Optional<Identifier> getSkin(Identifier skinTypeId, PlayerLikeEntity player) {
+        return SkinType.REGISTRY.getOptionalValue(skinTypeId).flatMap(type -> getSkin(type, player));
     }
 
     public Set<Identifier> getAvailableSkins(Entity entity) {
@@ -118,19 +114,9 @@ public class MineLPHDSkins extends ClientSkinsProxy implements ClientModInitiali
         return Set.of();
     }
 
-    private Optional<Identifier> getSkin(SkinType type, AbstractClientPlayerEntity player) {
-        return Optional.of(player)
-                .flatMap(PlayerSkins::of)
-                .map(PlayerSkins::layers)
-                .map(PlayerSkinLayers::combined)
-                .flatMap(skins -> skins.getSkin(type));
-    }
-
-    @Override
-    public Identifier getSkinTexture(GameProfile profile) {
-        return HDSkins.getInstance().getProfileRepository()
-                .load(profile).getNow(ProvidedSkins.EMPTY)
-                .getSkin(SkinType.SKIN)
-                .orElseGet(() -> super.getSkinTexture(profile));
+    private Optional<Identifier> getSkin(SkinType type, PlayerLikeEntity player) {
+        return ClientPlayerInfo.of(player)
+                .flatMap(skins -> skins.getSkins().layers().combined().getSkin(type))
+                .map(skin -> skin.texturePath());
     }
 }

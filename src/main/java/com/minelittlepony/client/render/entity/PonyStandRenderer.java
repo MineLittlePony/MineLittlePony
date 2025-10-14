@@ -2,10 +2,10 @@ package com.minelittlepony.client.render.entity;
 
 import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.*;
 import net.minecraft.client.render.entity.feature.*;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.model.ArmorStandEntityModel;
 import net.minecraft.client.render.entity.state.ArmorStandEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
@@ -20,7 +20,6 @@ import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.entity.PonyArmourStandModel;
 import com.minelittlepony.client.model.entity.race.EarthPonyModel;
 import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.client.render.PonyRenderContext;
@@ -29,7 +28,7 @@ import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import java.util.Optional;
 
-public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, PonyStandRenderer.State, PonyArmourStandModel> {
+public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, PonyStandRenderer.State, ArmorStandEntityModel> {
     static final Pony PONY = new Pony(Identifier.ofVanilla("null"), () -> Optional.of(PonyData.NULL));
 
     private final PonifiedContext context = new PonifiedContext();
@@ -45,7 +44,7 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
         addFeature(new PonifiedFeature(this, new ArmourFeature<>(this.context, context.getEquipmentModelLoader())));
         addFeature(new PonifiedFeature(this, new HeldItemFeature<>(this.context)));
         addFeature(new PonifiedFeature(this, new ElytraFeature<>(this.context, context.getEquipmentRenderer())));
-        addFeature(new PonifiedFeature(this, new SkullFeature<>(this.context, context.getEntityModels(), HeadFeatureRenderer.HeadTransformation.DEFAULT, false)));
+        addFeature(new PonifiedFeature(this, new SkullFeature<>(this.context, context.getPlayerSkinCache(), context.getEntityModels(), HeadFeatureRenderer.HeadTransformation.DEFAULT, false)));
     }
 
     @Override
@@ -72,7 +71,7 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
         state.rightArmRotation = entity.getRightArmRotation();
         state.leftLegRotation = entity.getLeftLegRotation();
         state.rightLegRotation = entity.getRightLegRotation();
-        state.timeSinceLastHit = (float)(entity.getWorld().getTime() - entity.lastHitTime) + tickDelta;
+        state.timeSinceLastHit = (float)(entity.getEntityWorld().getTime() - entity.lastHitTime) + tickDelta;
 
         if (state.leftLegRotation.equals(ArmorStandEntity.DEFAULT_LEFT_LEG_ROTATION)) {
             state.leftLegRotation = new EulerAngle(-state.leftArmRotation.pitch(), state.leftArmRotation.yaw(), state.leftArmRotation.roll());
@@ -143,10 +142,10 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
         }
     }
 
-    private class PonifiedFeature extends FeatureRenderer<PonyStandRenderer.State, PonyArmourStandModel> {
+    private class PonifiedFeature extends FeatureRenderer<PonyStandRenderer.State, ArmorStandEntityModel> {
         private final FeatureRenderer<?, ?> feature;
 
-        public PonifiedFeature(FeatureRendererContext<PonyStandRenderer.State, PonyArmourStandModel> context,
+        public PonifiedFeature(FeatureRendererContext<PonyStandRenderer.State, ArmorStandEntityModel> context,
                 FeatureRenderer<?, ?> feature) {
             super(context);
             this.feature = feature;
@@ -154,11 +153,8 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
 
         @SuppressWarnings({"rawtypes", "unchecked"})
         @Override
-        public void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, PonyStandRenderer.State state, float limbAngle, float limbDistance) {
-            if (context.getModel() instanceof BipedEntityModel bipedModel) {
-                model.copyTransforms(bipedModel);
-            }
-            ((FeatureRenderer)feature).render(matrices, vertices, light, state.ponyState, limbAngle, limbDistance);
+        public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, PonyStandRenderer.State state, float limbAngle, float limbDistance) {
+            ((FeatureRenderer)feature).render(matrices, queue, light, state.ponyState, limbAngle, limbDistance);
         }
     }
 

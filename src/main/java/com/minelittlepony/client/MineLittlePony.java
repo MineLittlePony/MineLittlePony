@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -44,7 +44,7 @@ public class MineLittlePony implements ClientModInitializer {
     private PonyManagerImpl ponyManager;
     private VariatedTextureSupplier variatedTextures;
 
-    private final KeyBinding keyBinding = new KeyBinding("key.minelittlepony.settings", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F9, "key.categories.misc");
+    private final KeyBinding keyBinding = new KeyBinding("key.minelittlepony.settings", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F9, KeyBinding.Category.MISC);
 
     private final PonyRenderDispatcher renderDispatcher = new PonyRenderDispatcher();
     private final AtomicBoolean initialized = new AtomicBoolean();
@@ -79,9 +79,9 @@ public class MineLittlePony implements ClientModInitializer {
 
         KeyBindingHelper.registerKeyBinding(keyBinding);
 
-        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(ponyManager);
-        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(variatedTextures);
-        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(ArmourTextureResolver.INSTANCE);
+        ResourceLoader.get(ResourceType.CLIENT_RESOURCES).registerReloader(PonyManagerImpl.ID, ponyManager);
+        ResourceLoader.get(ResourceType.CLIENT_RESOURCES).registerReloader(VariatedTextureSupplier.ID, variatedTextures);
+        ResourceLoader.get(ResourceType.CLIENT_RESOURCES).registerReloader(ArmourTextureResolver.ID, ArmourTextureResolver.INSTANCE);
 
         // convert legacy pony skins
         SkinFilterCallback.EVENT.register(new LegacySkinConverter());

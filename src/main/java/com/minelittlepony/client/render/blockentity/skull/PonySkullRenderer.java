@@ -9,17 +9,16 @@ import com.minelittlepony.client.render.entity.*;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import net.minecraft.block.SkullBlock;
-import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.entity.SkullBlockEntityModel;
+import net.minecraft.client.render.command.ModelCommandRenderer;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Direction;
 
 import java.util.function.Function;
@@ -68,15 +67,18 @@ public class PonySkullRenderer {
      * Implement this interface if you want to extend our behaviour, modders.
      */
     public interface ISkull {
-        void setAngles(float angle, float poweredTicks);
-
-        void render(MatrixStack stack, VertexConsumer vertices, int light, int overlay, int color);
+        void render(MatrixStack stack, State state, OrderedRenderCommandQueue queue, Pony pony, RenderLayer layer);
 
         boolean canRender(PonyConfig config);
 
         Identifier getSkinResource(@Nullable ProfileComponent profile);
 
-        boolean bindPony(Pony pony);
+        class State extends SkullBlockEntityModel.SkullModelState {
+            public float alpha;
+            public int outlineColor;
+            public int light;
+            public @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay;
+        }
     }
 
     public interface Proxy {
@@ -84,8 +86,8 @@ public class PonySkullRenderer {
     }
 
     public record Data(ISkull model, RenderLayer layer, Pony pony) {
-        public boolean render(@Nullable Direction direction, float yaw, float animationProgress, MatrixStack matrices, VertexConsumerProvider vertices, int light) {
-            if (!model.canRender(PonyConfig.getInstance()) || !model.bindPony(pony)) {
+        public boolean render(@Nullable Direction direction, float yaw, float poweredTicks, MatrixStack matrices, OrderedRenderCommandQueue queue, int light, int outlineColor, @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay) {
+            if (!model.canRender(PonyConfig.getInstance())) {
                 return false;
             }
 
@@ -103,8 +105,15 @@ public class PonySkullRenderer {
             }
             matrices.scale(-1, -1, 1);
 
-            model.setAngles(yaw, animationProgress);
-            model.render(matrices, vertices.getBuffer(layer), light, OverlayTexture.DEFAULT_UV, ColorHelper.fromFloats(ArmourRendererPlugin.INSTANCE.get().getArmourAlpha(EquipmentSlot.HEAD, EquipmentModel.LayerType.HUMANOID), 1, 1, 1));
+            ISkull.State skullModelState = new ISkull.State();
+            skullModelState.poweredTicks = poweredTicks;
+            skullModelState.yaw = yaw;
+            skullModelState.alpha = ArmourRendererPlugin.INSTANCE.get().getArmourAlpha(EquipmentSlot.HEAD, EquipmentModel.LayerType.HUMANOID);
+            skullModelState.outlineColor = outlineColor;
+            skullModelState.light = light;
+            skullModelState.crumblingOverlay = crumblingOverlay;
+
+            model.render(matrices, skullModelState, queue, pony, layer);
 
             matrices.pop();
 

@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2FloatLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import net.minecraft.block.SkullBlock;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
@@ -59,13 +60,13 @@ public class GearFeature<
     }
 
     @Override
-    public void render(MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, S entity, float limbAngle, float limbDistance) {
-        if (entity.invisible) {
+    public void render(MatrixStack stack, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
+        if (state.invisible) {
             return;
         }
 
         boolean hasSkull = false;
-        for (ItemStack skull : ArmourRendererPlugin.INSTANCE.get().getArmorStacks(entity, EquipmentSlot.HEAD, EquipmentModel.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.SKULL)) {
+        for (ItemStack skull : ArmourRendererPlugin.INSTANCE.get().getArmorStacks(state, EquipmentSlot.HEAD, EquipmentModel.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.SKULL)) {
             if (skull.getItem() instanceof BlockItem b && (b.getBlock() instanceof SkullBlock || b.getBlock().getDefaultState().isSolidBlock(EmptyBlockView.INSTANCE, BlockPos.ORIGIN))) {
                 hasSkull = true;
                 break;
@@ -75,13 +76,14 @@ public class GearFeature<
         final M model = getModelWrapper().body();
         final Object2FloatMap<BodyPart> renderStackingOffsets = new Object2FloatLinkedOpenHashMap<>();
 
-        for (var entry : randomisedGearCache.getUnchecked(entity.attributes.getEntityId().getLeastSignificantBits())) {
-            if (getContext().shouldRender(model, entity, entry.wearable(), entry.gear())) {
+        for (var entry : randomisedGearCache.getUnchecked(state.attributes.getEntityId().getLeastSignificantBits())) {
+            @SuppressWarnings("unchecked")
+            Gear<S> gear = (Gear<S>)entry.gear();
+            if (getContext().shouldRender(model, state, entry.wearable(), gear)) {
                 stack.push();
-                Gear gear = entry.gear();
-                gear.transform(entity, model, stack);
+                gear.transform(state, model, stack);
                 BodyPart part = gear.getGearLocation();
-                if (part != BodyPart.HEAD || entity.headVisible) {
+                if (part != BodyPart.HEAD || state.headVisible) {
                     if (hasSkull && part == BodyPart.HEAD && renderStackingOffsets.getFloat(part) == 0) {
                         renderStackingOffsets.put(part, 0.25F);
                     }
@@ -94,17 +96,17 @@ public class GearFeature<
                         renderStackingOffsets.put(part, v + gear.getStackingHeight());
                     }
 
-                    renderGear(model, entity, gear, stack, renderContext, lightUv, limbDistance, limbAngle, entity.age);
+                    Gear.GearRenderState<S> gearState = new Gear.GearRenderState<S>();
+                    gearState.bodySwing = state.wobbleAmount * model.getWobbleAmplitude(state);
+                    gearState.limbDistance = limbDistance;
+                    gearState.limbAngle = limbAngle;
+
+                    gear.render(stack, gearState, queue, gear.getLayer(state, getContext()), light, OverlayTexture.DEFAULT_UV, Colors.WHITE);
                 }
                 stack.pop();
             }
         }
     }
 
-    private void renderGear(M model, S entity, Gear gear, MatrixStack stack, VertexConsumerProvider renderContext, int lightUv, float limbDistance, float limbAngle, float tickDelta) {
-        gear.pose(model, entity, entity.attributes.isGoingFast, entity.attributes.getEntityId(), limbDistance, limbAngle, entity.wobbleAmount * model.getWobbleAmplitude(entity), tickDelta);
-        gear.render(stack, renderContext.getBuffer(gear.getLayer(entity, getContext())), lightUv, OverlayTexture.DEFAULT_UV, Colors.WHITE, entity.attributes.getEntityId());
-    }
-
-    static record Entry(Gear gear, Wearable wearable) { }
+    static record Entry(Gear<?> gear, Wearable wearable) { }
 }

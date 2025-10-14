@@ -34,7 +34,7 @@ abstract class AbstractNpcRenderer<
     }
 
     @Override
-    public boolean shouldRender(ClientPonyModel<S> model, S entity, Wearable wearable, Gear gear) {
+    public boolean shouldRender(ClientPonyModel<S> model, S entity, Wearable wearable, Gear<S> gear) {
         if (wearable == Wearable.SADDLE_BAGS_BOTH) {
             return entity.hasSaddlebags;
         }

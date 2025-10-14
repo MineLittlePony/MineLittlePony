@@ -129,6 +129,12 @@ public class EquineRenderManager<
         private Optional<Pony> lastTransmittedPony = Optional.empty();
         private boolean seated;
 
+        private final PlayerLikeEntity player;
+
+        public SyncedPony(PlayerLikeEntity player) {
+            this.player = player;
+        }
+
         public Optional<Pony> getCachedPony() {
             return lastRenderedPony;
         }
@@ -137,7 +143,7 @@ public class EquineRenderManager<
             return lastPonyData.get().orElse(PonyData.NULL);
         }
 
-        public EntityDimensions modifyEyeHeight(PlayerEntity player, EntityDimensions dimensions, EntityPose pose) {
+        public EntityDimensions modifyEyeHeight(EntityDimensions dimensions, EntityPose pose) {
             Pony pony = lastRenderedPony.orElse(null);
             float factor = pony == null || pony.race().isHuman() ? 1 : pony.size().eyeHeightFactor();
             if (factor == 1) {
@@ -151,7 +157,7 @@ public class EquineRenderManager<
             return dimensions.withEyeHeight(eyeHeight);
         }
 
-        public void synchronize(PlayerEntity player) {
+        public void synchronize() {
             Pony pony = Pony.getManager().getPony(player);
             boolean changed = pony.compareTo(lastRenderedPony.orElse(null)) != 0;
             boolean seated = player.hasVehicle();
@@ -167,7 +173,7 @@ public class EquineRenderManager<
             PlayerEntity clientPlayer = MinecraftClient.getInstance().player;
 
             if (ClientChannel.isRegistered() && pony.compareTo(lastTransmittedPony.orElse(null)) != 0) {
-                if (clientPlayer != null && (Objects.equals(player, clientPlayer) || Objects.equals(player.getGameProfile(), clientPlayer.getGameProfile()))) {
+                if (clientPlayer != null && (Objects.equals(player, clientPlayer) || Objects.equals(player.getUuid(), clientPlayer.getGameProfile().id()))) {
                     if (ClientChannel.broadcastPonyData(pony.metadata())) {
                         lastTransmittedPony = Optional.of(pony);
                     }

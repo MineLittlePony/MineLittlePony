@@ -46,7 +46,7 @@ public class SillyPonyTextureSupplier {
             super.updateState(resolver, entity, model, pony, mode);
             attributes.visualHeight += hasMuffinHat ? 0.3F : -0.1F;
             isDerpy = SillyPonyTextureSupplier.isBestPony(entity);
-            isDinky = isDerpy && customName != null && "Dinky".equals(customName.getString());
+            isDinky = isDerpy && "Dinky".equals(entity.getCustomName().getString());
             hasMuffinHat = SillyPonyTextureSupplier.isCrownPony(entity);
 
             villagerData = ((VillagerDataContainer)entity).getVillagerData();

@@ -6,7 +6,7 @@ import com.minelittlepony.api.config.PonyLevel;
 import com.minelittlepony.api.pony.DefaultPonySkinHelper;
 
 import net.minecraft.client.util.DefaultSkinHelper;
-import net.minecraft.client.util.SkinTextures;
+import net.minecraft.entity.player.SkinTextures;
 import net.minecraft.util.Identifier;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,7 +19,7 @@ abstract class MixinDefaultSkinHelper {
         return PonyConfig.getInstance().ponyLevel.get() == PonyLevel.PONIES ? DefaultPonySkinHelper.STEVE : returnValue;
     }
 
-    @ModifyReturnValue(method = "getSkinTextures(Ljava/util/UUID;)Lnet/minecraft/client/util/SkinTextures;", at = @At("RETURN"))
+    @ModifyReturnValue(method = "getSkinTextures(Ljava/util/UUID;)Lnet/minecraft/entity/player/SkinTextures;", at = @At("RETURN"))
     private static SkinTextures onGetTexture(SkinTextures returnValue) {
         return PonyConfig.getInstance().ponyLevel.get() == PonyLevel.PONIES ? DefaultPonySkinHelper.getTextures(returnValue) : returnValue;
     }

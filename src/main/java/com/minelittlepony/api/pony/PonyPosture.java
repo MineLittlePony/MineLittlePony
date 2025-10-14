@@ -51,19 +51,19 @@ public final class PonyPosture {
             return true;
         }
 
-        BlockState below = entity.getWorld().getBlockState(entity.getBlockPos().down(1));
+        BlockState below = entity.getEntityWorld().getBlockState(entity.getBlockPos().down(1));
 
         // Check for stairs so we can keep Pegasi from flailing their wings as they descend
         double offsetAmount = below.getBlock() instanceof StairsBlock ? 1 : 0.05;
 
-        Vec3d pos = entity.getPos();
+        Vec3d pos = entity.getEntityPos();
         BlockPos blockpos = BlockPos.ofFloored(
                 pos.x,
                 pos.y - offsetAmount,
                 pos.z
         );
 
-        return !entity.getWorld().isAir(blockpos);
+        return !entity.getEntityWorld().isAir(blockpos);
     }
 
     public static boolean isSwimming(LivingEntity entity) {
@@ -72,7 +72,7 @@ public final class PonyPosture {
 
     public static boolean isPartiallySubmerged(LivingEntity entity) {
         return entity.isSubmergedInWater()
-                || entity.getWorld().getBlockState(entity.getBlockPos()).getFluidState().isIn(FluidTags.WATER);
+                || entity.getEntityWorld().getBlockState(entity.getBlockPos()).getFluidState().isIn(FluidTags.WATER);
     }
 
     public static boolean isSitting(LivingEntity entity) {

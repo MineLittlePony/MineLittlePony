@@ -8,17 +8,16 @@ import com.minelittlepony.util.MathUtil;
 import java.util.function.Predicate;
 
 import net.minecraft.client.item.ItemModelManager;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.network.ClientPlayerLikeEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.Identifier;
 
-public class AquaticPlayerPonyRenderer extends FormChangingPlayerPonyRenderer {
+public class AquaticPlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLikeEntity> extends FormChangingPlayerPonyRenderer<Player> {
 
-    public AquaticPlayerPonyRenderer(EntityRendererFactory.Context context, boolean slim, Identifier alternateFormSkinId, Predicate<AbstractClientPlayerEntity> formModifierPredicate) {
+    public AquaticPlayerPonyRenderer(EntityRendererFactory.Context context, boolean slim, Identifier alternateFormSkinId, Predicate<Player> formModifierPredicate) {
         super(context, slim, alternateFormSkinId, formModifierPredicate);
     }
 
@@ -31,7 +30,8 @@ public class AquaticPlayerPonyRenderer extends FormChangingPlayerPonyRenderer {
         @Override
         public void updateState(ItemModelManager resolver, LivingEntity entity, PonyModel<?> model, Pony pony, ModelAttributes.Mode mode) {
             super.updateState(resolver, entity, model, pony, mode);
-            Identifier skinOverride = getSkinOverride((AbstractClientPlayerEntity)entity);
+            @SuppressWarnings("unchecked")
+            Identifier skinOverride = getSkinOverride((Player)entity);
             yOffset += skinOverride != null ? (0.6 + (isInSneakingPose ? 0.125 : 0)) : 0;
             pose = EntityPose.STANDING;
             isInSneakingPose = false;
@@ -41,18 +41,18 @@ public class AquaticPlayerPonyRenderer extends FormChangingPlayerPonyRenderer {
                 float interpolated = attributes.getMainInterpolator().interpolate("seapony_state", state, 5);
 
                 if (!MathUtil.compareFloats(interpolated, state)) {
-                    double x = entity.getWorld().getRandom().nextTriangular(entity.getX(), 1);
-                    double y = entity.getWorld().getRandom().nextTriangular(entity.getY() + entity.getHeight() * 0.5F, 1);
-                    double z = entity.getWorld().getRandom().nextTriangular(entity.getZ(), 1);
+                    double x = entity.getEntityWorld().getRandom().nextTriangular(entity.getX(), 1);
+                    double y = entity.getEntityWorld().getRandom().nextTriangular(entity.getY() + entity.getHeight() * 0.5F, 1);
+                    double z = entity.getEntityWorld().getRandom().nextTriangular(entity.getZ(), 1);
 
-                    entity.getWorld().addParticleClient(ParticleTypes.END_ROD, x, y, z, 0, 0, 0);
+                    entity.getEntityWorld().addParticleClient(ParticleTypes.END_ROD, x, y, z, 0, 0, 0);
                 }
 
                 if (!isPreviewModel && skinOverride != null && entity.getVelocity().length() > 0.1F) {
-                    double x = entity.getWorld().getRandom().nextTriangular(entity.getX(), 1);
-                    double y = entity.getWorld().getRandom().nextTriangular(entity.getY(), 1);
-                    double z = entity.getWorld().getRandom().nextTriangular(entity.getZ(), 1);
-                    entity.getWorld().addParticleClient(ParticleTypes.BUBBLE, x, y, z, 0, 0, 0);
+                    double x = entity.getEntityWorld().getRandom().nextTriangular(entity.getX(), 1);
+                    double y = entity.getEntityWorld().getRandom().nextTriangular(entity.getY(), 1);
+                    double z = entity.getEntityWorld().getRandom().nextTriangular(entity.getZ(), 1);
+                    entity.getEntityWorld().addParticleClient(ParticleTypes.BUBBLE, x, y, z, 0, 0, 0);
                 }
             }
         }

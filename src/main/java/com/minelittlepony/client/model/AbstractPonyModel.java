@@ -13,8 +13,6 @@ import java.util.List;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.item.consume.UseAction;
@@ -96,14 +94,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         parts.forEach(part -> part.setVisible(body.visible, state));
     }
 
-    @SuppressWarnings({"unchecked", "deprecation"})
-    public void copyTransforms(BipedEntityModel<PlayerEntityRenderState> model) {
-        super.copyTransforms(model);
-        if (model instanceof AbstractPonyModel m) {
-            ((AbstractPonyModel<T>)m).currentState = currentState;
-        }
-    }
-
+    @Override
     protected void setModelAngles(T entity) {
         float pitch = entity.attributes.motionPitch * MathHelper.RADIANS_PER_DEGREE;
         head.setAngles(

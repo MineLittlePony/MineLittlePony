@@ -11,6 +11,7 @@ import java.util.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.PlayerLikeEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
@@ -170,7 +171,7 @@ public class ModelAttributes {
         metadata = pony.metadata();
         size = entity != null && entity.isBaby() ? SizePreset.FOAL : pony.size();
         isPlayer = entity instanceof PlayerEntity;
-        visualHeight = (entity == null ? PlayerEntity.DEFAULT_EYE_HEIGHT : entity.getHeight()) + 0.125F;
+        visualHeight = (entity == null ? PlayerLikeEntity.EYE_HEIGHT : entity.getHeight()) + 0.125F;
         isSitting = entity != null && PonyPosture.isSitting(entity);
         isSleeping = entity != null && entity.isAlive() && entity.isSleeping();;
         isLyingDown = isSleeping;

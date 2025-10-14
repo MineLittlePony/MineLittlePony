@@ -12,6 +12,7 @@
         "MixinHeadModelRenderer",
         "MixinHeadModelRenderer_Unbaked",
         "MixinHeldItemRenderer",
+        "MixinLivingEntity",
         "MixinPlayerEntity",
         "MixinPlayerMoveC2SPacket",
         "MixinPlayerPositionLookS2CPacket",

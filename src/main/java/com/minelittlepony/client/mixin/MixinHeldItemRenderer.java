@@ -7,41 +7,19 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.minelittlepony.client.MineLittlePony;
 
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.client.render.item.HeldItemRenderer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
+import net.minecraft.client.render.item.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
-import net.minecraft.world.World;
-import net.minecraft.client.render.item.ItemRenderer;
 
 @Mixin(HeldItemRenderer.class)
 abstract class MixinHeldItemRenderer {
-    private static final String LivingEntity = "Lnet/minecraft/entity/LivingEntity;";
-    private static final String MatrixStack = "Lnet/minecraft/client/util/math/MatrixStack;";
-    private static final String ItemStack = "Lnet/minecraft/item/ItemStack;";
-    private static final String Mode = "Lnet/minecraft/item/ItemDisplayContext;";
-    private static final String VertexConsumerProvider = "Lnet/minecraft/client/render/VertexConsumerProvider;";
-    private static final String World = "Lnet/minecraft/world/World;";
-    private static final String ItemRenderer = "Lnet/minecraft/client/render/item/ItemRenderer;";
-
-    private static final String Int = "I";
-
-    @WrapOperation(method = "renderItem(" + LivingEntity + ItemStack + Mode + MatrixStack + VertexConsumerProvider + Int + ")V",
+    @WrapOperation(method = "renderItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemDisplayContext;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;I)V",
              at = @At(value = "INVOKE",
-                      target = ItemRenderer + "renderItem(" + LivingEntity + ItemStack + Mode + MatrixStack + VertexConsumerProvider + World + Int + Int + Int + ")V"))
-    private void wrapRenderItem(ItemRenderer target,
-            @Nullable LivingEntity entity,
-            ItemStack stack,
-            ItemDisplayContext mode,
-            MatrixStack matrices,
-            VertexConsumerProvider vertices,
-            @Nullable World world,
-            int light, int overlay, int seed, Operation<Void> operation) {
-        if (!MineLittlePony.getInstance().getRenderDispatcher().getMagicRenderer().renderItem(target, entity, stack, mode, matrices, vertices, world, light, overlay, seed, operation)) {
-            operation.call(target, entity, stack, mode, matrices, vertices, world, light, overlay, seed);
-        }
+                      target = "net/minecraft/client/render/item/ItemRenderState.render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;III)V"))
+    private void wrapRenderItem(ItemRenderState state,
+            MatrixStack matrices, OrderedRenderCommandQueue queue, int light, int overlay, int outline, Operation<Void> operation, LivingEntity entity, ItemStack stack, ItemDisplayContext renderMode) {
+        MineLittlePony.getInstance().getRenderDispatcher().getMagicRenderer().renderItem(entity, stack, renderMode, state, matrices, queue, light, overlay, outline, operation);
     }
 }

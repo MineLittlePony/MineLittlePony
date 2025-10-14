@@ -11,9 +11,10 @@ import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.item.ItemModelManager;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.item.ItemDisplayContext;
@@ -79,12 +80,12 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
     }
 
     @Override
-    public void render(State entity, MatrixStack matrices, VertexConsumerProvider vertices, int light) {
+    public void render(State entity, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState camera) {
         if (entity.angry) {
             matrices.translate(rnd.nextGaussian() / 50, 0, rnd.nextGaussian() / 50);
         }
 
-        super.render(entity, matrices, vertices, light);
+        super.render(entity, matrices, queue, camera);
     }
 
     public class State extends SkeleponyRenderer.State {

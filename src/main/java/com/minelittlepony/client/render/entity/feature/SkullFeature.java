@@ -13,10 +13,13 @@ import net.minecraft.block.SkullBlock;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.SkullBlockEntityModel;
 import net.minecraft.client.render.block.entity.SkullBlockEntityRenderer;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
 import net.minecraft.client.render.entity.model.LoadedEntityModels;
+import net.minecraft.client.texture.PlayerSkinCache;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.util.Util;
 
@@ -28,14 +31,17 @@ public class SkullFeature<
     private final HeadFeatureRenderer.HeadTransformation headTransformation;
     private final Function<SkullBlock.SkullType, SkullBlockEntityModel> headModels;
 
-    public SkullFeature(PonyRenderContext<?, S, M> context, LoadedEntityModels models, HeadFeatureRenderer.HeadTransformation headTransformation, boolean scaleForChild) {
+    private final PlayerSkinCache skinCache;
+
+    public SkullFeature(PonyRenderContext<?, S, M> context, PlayerSkinCache skinCache, LoadedEntityModels models, HeadFeatureRenderer.HeadTransformation headTransformation, boolean scaleForChild) {
         super(context);
+        this.skinCache = skinCache;
         this.headTransformation = headTransformation;
         this.headModels = Util.memoize(type -> SkullBlockEntityRenderer.getModels(models, type));
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, S state, float limbAngle, float limbDistance) {
+    public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
         for (EquippedHeadRenderState headState : state.equippedHeads) {
             matrices.push();
 
@@ -52,19 +58,32 @@ public class SkullFeature<
                 matrices.scale(n, -n, -n);
                 matrices.translate(0, -0.1F, 0.1F);
                 matrices.translate(-0.5, 0, -0.5);
-                SkullBlockEntityRenderer.renderSkull(null, 180, state.headItemAnimationProgress, matrices, vertices, light,
+                SkullBlockEntityRenderer.render(null, 180, state.headItemAnimationProgress, matrices, queue, light,
                         headModels.apply(headState.skullType()),
-                        SkullBlockEntityRenderer.getRenderLayer(headState.skullType(), headState.wearingSkullProfile())
+                        getRenderLayer(headState),
+                        state.outlineColor,
+                        null
                 );
             } else {
                 matrices.translate(0, 0.1F, -0.1F);
                 HeadFeatureRenderer.translate(matrices, headTransformation);
-                headState.item().render(matrices, vertices, light, OverlayTexture.DEFAULT_UV);
+                headState.item().render(matrices, queue, light, OverlayTexture.DEFAULT_UV, state.outlineColor);
             }
 
             matrices.pop();
         }
 
-        ArmourRendererPlugin.INSTANCE.get().onArmourRendered(state, matrices, vertices, EquipmentSlot.BODY, EquipmentModel.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.SKULL);
+        ArmourRendererPlugin.INSTANCE.get().onArmourRendered(state, matrices, queue, EquipmentSlot.BODY, EquipmentModel.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.SKULL);
+    }
+
+    private RenderLayer getRenderLayer(EquippedHeadRenderState state) {
+        if (state.skullType() == SkullBlock.Type.PLAYER) {
+            ProfileComponent profileComponent = state.wearingSkullProfile();
+            if (profileComponent != null) {
+                return skinCache.get(profileComponent).getRenderLayer();
+            }
+        }
+
+        return SkullBlockEntityRenderer.getCutoutRenderLayer(state.skullType(), null);
     }
 }

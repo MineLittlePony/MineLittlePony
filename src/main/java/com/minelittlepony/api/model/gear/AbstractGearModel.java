@@ -3,12 +3,13 @@ package com.minelittlepony.api.model.gear;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
+import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 
-import java.util.UUID;
+import com.minelittlepony.api.model.PonyModel;
 
-public abstract class AbstractGearModel extends Model implements Gear {
+public abstract class AbstractGearModel<T extends BipedEntityRenderState & PonyModel.AttributedHolder> extends Model<Gear.GearRenderState<T>> implements Gear<T> {
 
     private final float stackingHeight;
 
@@ -18,8 +19,8 @@ public abstract class AbstractGearModel extends Model implements Gear {
     }
 
     @Override
-    public void render(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color, UUID interpolatorId) {
-        render(stack, vertices, overlay, light, color);
+    public void render(MatrixStack stack, GearRenderState<T> state, OrderedRenderCommandQueue queue, RenderLayer layer, int overlay, int light, int color) {
+        queue.submitModel(this, state, stack, layer, light, overlay, color, null, state.entityState.outlineColor, null);
     }
 
     @Override

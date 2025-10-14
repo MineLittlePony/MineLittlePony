@@ -1,8 +1,8 @@
 package com.minelittlepony.client;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.EntityPosition;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerPosition;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.*;
 
@@ -21,13 +21,13 @@ public class HorseCam {
      * Restores the previous camera (unadjusted) angle for the client when the server sends an update.
      * This is to prevent issues caused by the server updating our pitch whenever the player leaves a portal.
      */
-    public static PlayerPosition transformIncomingServerCameraAngle(PlayerPosition change) {
+    public static EntityPosition transformIncomingServerCameraAngle(EntityPosition change) {
         try {
             if (!PonyConfig.getInstance().fillycam.get()) {
                 return change;
             }
             if (MathHelper.approximatelyEquals(change.pitch(), lastComputedPitch)) {
-                return new PlayerPosition(change.position(), change.deltaMovement(), change.yaw(), lastOriginalPitch);
+                return new EntityPosition(change.position(), change.deltaMovement(), change.yaw(), lastOriginalPitch);
             }
         } catch (Throwable t) {
             MineLittlePony.LOGGER.error("Error occured whilst handling player look {}", t);
@@ -104,7 +104,7 @@ public class HorseCam {
             return originalPitch;
         }
 
-        return (float)adjustAngle(originalPitch, hit.getPos(), player.getPos(), toHeight);
+        return (float)adjustAngle(originalPitch, hit.getPos(), player.getEntityPos(), toHeight);
     }
 
     private static double adjustAngle(double pitch, Vec3d hitPos, Vec3d pos, double toHeight) {

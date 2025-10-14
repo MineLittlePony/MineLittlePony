@@ -1,12 +1,12 @@
 package com.minelittlepony.client.render.entity.npc.textures;
 
-import net.minecraft.block.entity.SkullBlockEntity;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 
 import com.minelittlepony.api.pony.Pony;
-import com.minelittlepony.api.pony.SkinsProxy;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -14,9 +14,9 @@ import java.util.function.Function;
 public class PlayerTextureSupplier {
     public static <T extends LivingEntity> TextureSupplier<T> create(TextureSupplier<T> fallback) {
         Function<String, CompletableFuture<Identifier>> customNameCache = Util.memoize(name -> {
-            return SkullBlockEntity.fetchProfileByName(name).thenApply(profile -> {
-                return profile
-                        .map(p -> SkinsProxy.getInstance().getSkinTexture(p))
+            return MinecraftClient.getInstance().getPlayerSkinCache().getFuture(ProfileComponent.ofDynamic(name)).thenApply(entry -> {
+                return entry
+                        .map(i -> i.getTextures().body().texturePath())
                         .filter(skin -> !Pony.getManager().getPony(skin).race().isHuman())
                         .orElse(null);
             });

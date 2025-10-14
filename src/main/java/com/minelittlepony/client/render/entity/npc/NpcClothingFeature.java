@@ -2,7 +2,7 @@ package com.minelittlepony.client.render.entity.npc;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
@@ -47,7 +47,7 @@ class NpcClothingFeature<
     }
 
     @Override
-    public void render(MatrixStack matrixStack, VertexConsumerProvider provider, int light, S entity, float limbAngle, float limbDistance) {
+    public void render(MatrixStack matrixStack, OrderedRenderCommandQueue queue, int light, S entity, float limbAngle, float limbDistance) {
         if (entity.invisible) {
             return;
         }
@@ -60,9 +60,9 @@ class NpcClothingFeature<
             if (!ResourceUtil.textureExists(typeSkin)) {
                 typeSkin = createTexture("type", VillagerType.PLAINS.getValue());
             }
-            renderModel(entityModel, typeSkin, matrixStack, provider, light, entity, Colors.WHITE);
+            renderModel(entityModel, typeSkin, matrixStack, queue, light, entity, Colors.WHITE, 1);
         } else {
-            renderModel(entityModel, getMergedTexture(data), matrixStack, provider, light, entity, Colors.WHITE);
+            renderModel(entityModel, getMergedTexture(data), matrixStack, queue, light, entity, Colors.WHITE, 1);
         }
     }
 

@@ -10,7 +10,7 @@ import com.minelittlepony.mson.api.*;
 
 import java.util.function.*;
 
-public record PlayerModelKey<M extends Model & PonyModel<?>> (
+public record PlayerModelKey<M extends Model<?> & PonyModel<?>> (
         ModelKey<M> steveKey,
         ModelKey<M> alexKey,
         MsonModel.Factory<AbstractPonyModel<?>> armorFactory

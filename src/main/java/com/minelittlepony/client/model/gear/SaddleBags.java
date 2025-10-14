@@ -7,23 +7,15 @@ import com.minelittlepony.api.model.gear.WearableGear;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.util.MathUtil;
 
-import java.util.UUID;
-
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.state.BipedEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
-public class SaddleBags extends WearableGear {
+public class SaddleBags<T extends BipedEntityRenderState & PonyModel.AttributedHolder> extends WearableGear<T> {
     private final ModelPart leftBag;
     private final ModelPart rightBag;
 
     private final ModelPart strap;
-
-    private boolean hangLow = false;
-
-    private float dropAmount = 0;
 
     public SaddleBags(ModelPart tree, Wearable wearable) {
         super(tree, wearable, BodyPart.BODY, 0);
@@ -34,21 +26,21 @@ public class SaddleBags extends WearableGear {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <S extends BipedEntityRenderState & PonyModel.AttributedHolder> void pose(PonyModel<S> model, S state, boolean rainboom, UUID interpolatorId, float move, float swing, float bodySwing, float ticks) {
-        hangLow = model instanceof WingedPonyModel pegasus && pegasus.wingsAreOpen(state);
+    public void setAngles(GearRenderState<T> state) {
+        boolean hangLow = state.model instanceof WingedPonyModel pegasus && pegasus.wingsAreOpen(state.entityState);
 
-        float pi = MathHelper.PI * (float) Math.pow(swing, 16);
+        float pi = MathHelper.PI * (float) Math.pow(state.limbDistance, 16);
 
-        float mve = move * 0.6662f;
-        float srt = swing / 10;
+        float mve = state.limbDistance * 0.6662f;
+        float srt = state.limbAngle / 10;
 
-        bodySwing = MathHelper.cos(mve + pi) * srt;
+        float bodySwing = MathHelper.cos(mve + pi) * srt;
 
         leftBag.pitch = bodySwing;
         rightBag.pitch = bodySwing;
 
-        if (model instanceof WingedPonyModel pegasus && state.getAttributes().isFlying) {
-            bodySwing = pegasus.getWingRotationFactor(state) - MathUtil.Angles._270_DEG;
+        if (state.model instanceof WingedPonyModel pegasus && state.entityState.getAttributes().isFlying) {
+            bodySwing = pegasus.getWingRotationFactor(state.entityState) - MathUtil.Angles._270_DEG;
             bodySwing /= 10;
         }
 
@@ -59,31 +51,21 @@ public class SaddleBags extends WearableGear {
         rightBag.visible = wearable == Wearable.SADDLE_BAGS_BOTH || wearable == Wearable.SADDLE_BAGS_RIGHT;
         strap.visible = wearable == Wearable.SADDLE_BAGS_BOTH;
 
-        dropAmount = hangLow ? 0.15F : 0;
-        dropAmount = state.getAttributes().getMainInterpolator().interpolate("dropAmount", dropAmount, 3);
-    }
+        float dropAmount = hangLow ? 0.15F : 0;
+        dropAmount = state.entityState.getAttributes().getMainInterpolator().interpolate("dropAmount", dropAmount, 3);
 
-    @Override
-    public void render(MatrixStack stack, VertexConsumer renderContext, int overlay, int light, int color, UUID interpolatorId) {
-
-        stack.push();
         if (wearable == Wearable.SADDLE_BAGS_BOTH) {
-            stack.translate(0, 0, -0.2F);
+            getRootPart().originZ -= 0.2F;
         }
 
-        stack.push();
-        stack.translate(0, dropAmount, 0);
+        leftBag.originY += dropAmount;
+        rightBag.originY += dropAmount;
 
         if (wearable != Wearable.SADDLE_BAGS_BOTH) {
-            stack.translate(0, 0.3F, -0.3F);
+            leftBag.originY += 0.3F;
+            rightBag.originY += 0.3F;
+            leftBag.originZ -= 0.3F;
+            rightBag.originZ -= 0.3F;
         }
-
-        leftBag.render(stack, renderContext, overlay, light, color);
-        rightBag.render(stack, renderContext, overlay, light, color);
-
-        stack.pop();
-        strap.render(stack, renderContext, overlay, light, color);
-
-        stack.pop();
     }
 }

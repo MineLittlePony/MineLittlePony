@@ -3,6 +3,7 @@ package com.minelittlepony.client;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.*;
 
 import com.minelittlepony.api.config.PonyConfig;
@@ -58,7 +59,7 @@ public class PonySettingsScreen extends GameGui {
         content.getContentPadding().bottom = 20;
         content.getContentPadding().left = 10;
 
-        hiddenOptions = Screen.hasControlDown() && Screen.hasShiftDown();
+        hiddenOptions = (GameGui.isKeyDown(InputUtil.GLFW_KEY_LEFT_CONTROL) || GameGui.isKeyDown(InputUtil.GLFW_KEY_RIGHT_CONTROL)) && GameGui.isKeyDown(InputUtil.GLFW_MOD_SHIFT);
     }
 
     @Override

@@ -8,9 +8,10 @@ import com.minelittlepony.client.model.entity.race.SeaponyModel;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.GuardianEntityRenderer;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -24,9 +25,6 @@ public class SeaponyRenderer extends PonyRenderer<GuardianEntity, SeaponyRendere
     private static final Identifier SEAPONY_TEXTURES = MineLittlePony.id("textures/entity/guardian");
     public static final Identifier ELDER_SEAPONY = MineLittlePony.id("textures/entity/elder_guardian/blueball.png");
     private static final Identifier ELDER_SEAPONY_TEXTURES = MineLittlePony.id("textures/entity/elder_guardian");
-
-    private static final Identifier EXPLOSION_BEAM_TEXTURE = Identifier.ofVanilla("textures/entity/guardian_beam.png");
-    private static final RenderLayer LAYER = RenderLayer.getEntityCutoutNoCull(EXPLOSION_BEAM_TEXTURE);
 
     public SeaponyRenderer(EntityRendererFactory.Context context, TextureSupplier<GuardianEntity> texture, float scale) {
         super(context, ModelType.GUARDIAN, texture, scale);
@@ -66,8 +64,8 @@ public class SeaponyRenderer extends PonyRenderer<GuardianEntity, SeaponyRendere
     }
 
     @Override
-    public void render(State state, MatrixStack matrices, VertexConsumerProvider vertices, int light) {
-        super.render(state, matrices, vertices, light);
+    public void render(State state, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState camera) {
+        super.render(state, matrices, queue, camera);
         Vec3d vec3d = state.beamTargetPos;
         if (vec3d != null) {
             float f = state.beamTicks * 0.5F % 1.0F;
@@ -75,7 +73,7 @@ public class SeaponyRenderer extends PonyRenderer<GuardianEntity, SeaponyRendere
             matrices.translate(0.0F, state.standingEyeHeight, 0.0F);
             GuardianEntityRenderer.renderBeam(
                 matrices,
-                vertices.getBuffer(LAYER),
+                queue,
                 vec3d.subtract(state.cameraPosVec),
                 state.beamTicks,
                 state.beamProgress,

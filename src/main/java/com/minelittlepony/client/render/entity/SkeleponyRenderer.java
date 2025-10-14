@@ -13,6 +13,7 @@ import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.model.Model.SinglePartModel;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
@@ -94,13 +95,12 @@ public class SkeleponyRenderer<T extends AbstractSkeletonEntity, S extends Skele
         }
 
         @Override
-        public void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, BoggedState state, float limbAngle, float limbDistance) {
+        public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, BoggedState state, float limbAngle, float limbDistance) {
             if (!state.sheared) {
                 matrices.push();
                 getContextModel().transform(state, BodyPart.HEAD, matrices);
                 getContextModel().head.applyTransform(matrices);
-                VertexConsumer buffer = vertices.getBuffer(model.getLayer(MUSHROOMS));
-                model.render(matrices, buffer, light, OverlayTexture.DEFAULT_UV, Colors.WHITE);
+                queue.submitModel(model, Unit.INSTANCE, matrices, model.getLayer(MUSHROOMS), light, OverlayTexture.DEFAULT_UV, state.outlineColor, null);
                 matrices.pop();
             }
         }

@@ -1,9 +1,7 @@
 package com.minelittlepony.client.model.armour;
 
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.item.*;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.util.Identifier;
 
@@ -35,7 +33,7 @@ import java.util.stream.Stream;
  * Leggings = ponified_leggings (leg chainmail)
  * Boots = ponified (knee guards and boots)
  */
-public class ArmourTextureResolver implements ArmourTextureLookup, IdentifiableResourceReloadListener {
+public class ArmourTextureResolver implements ArmourTextureLookup, ResourceReloader {
     public static final Identifier ID = MineLittlePony.id("armor_textures");
     public static final ArmourTextureResolver INSTANCE = new ArmourTextureResolver();
 
@@ -65,13 +63,8 @@ public class ArmourTextureResolver implements ArmourTextureLookup, IdentifiableR
     }
 
     @Override
-    public CompletableFuture<Void> reload(ResourceReloader.Synchronizer synchronizer, ResourceManager manager, Executor prepareExecutor, Executor applyExecutor) {
-        return CompletableFuture.runAsync(this::invalidate, prepareExecutor).thenCompose(synchronizer::whenPrepared);
-    }
-
-    @Override
-    public Identifier getFabricId() {
-        return ID;
+    public CompletableFuture<Void> reload(ResourceReloader.Store store, Executor prepareExecutor, Synchronizer sync, Executor applyExecutor) {
+        return CompletableFuture.runAsync(this::invalidate, prepareExecutor).thenCompose(sync::whenPrepared);
     }
 
     @Override

@@ -1,6 +1,9 @@
 package com.minelittlepony.server;
 
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.PlayerLikeEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 
@@ -9,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import com.google.common.cache.*;
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.api.pony.meta.Mats;
+import com.mojang.authlib.GameProfile;
 
 import java.io.IOException;
 import java.net.URI;
@@ -69,8 +73,8 @@ public class ServerPonyManager implements PonyManager {
     }
 
     @Override
-    public Pony getPony(PlayerEntity player) {
-        return getPony(SkinsProxy.getInstance().getSkinTexture(player.getGameProfile()), null);
+    public Pony getPony(PlayerLikeEntity player) {
+        return getPony(SkinsProxy.getInstance().getSkinTexture(getProfile(player)), null);
     }
 
     @Override
@@ -79,5 +83,24 @@ public class ServerPonyManager implements PonyManager {
             return poniesCache.getUnchecked(resource);
         }
         return NULL_PONY;
+    }
+
+
+    @Nullable
+    private static GameProfile getProfile(PlayerLikeEntity player) {
+        if (player instanceof ForcedPony) {
+            return null;
+        }
+
+        ProfileComponent profile = player.get(DataComponentTypes.PROFILE);
+        if (profile != null) {
+            return profile.getGameProfile();
+        }
+
+        if (player instanceof PlayerEntity p && p.getGameProfile() != null) {
+            return p.getGameProfile();
+        }
+
+        return null;
     }
 }

@@ -1,6 +1,7 @@
 package com.minelittlepony.client;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.util.Identifier;
 
 import org.jetbrains.annotations.Nullable;
@@ -10,7 +11,10 @@ import com.mojang.authlib.GameProfile;
 
 public class ClientSkinsProxy extends SkinsProxy {
     @Nullable
-    public Identifier getSkinTexture(GameProfile profile) {
-        return MinecraftClient.getInstance().getSkinProvider().getSkinTextures(profile).texture();
+    public Identifier getSkinTexture(@Nullable GameProfile profile) {
+        if (profile == null) {
+            return null;
+        }
+        return MinecraftClient.getInstance().getPlayerSkinCache().get(ProfileComponent.ofStatic(profile)).getTextures().body().texturePath();
     }
 }

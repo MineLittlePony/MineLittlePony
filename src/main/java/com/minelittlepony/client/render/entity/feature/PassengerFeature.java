@@ -1,7 +1,8 @@
 package com.minelittlepony.client.render.entity.feature;
 
+import net.minecraft.client.network.ClientPlayerLikeEntity;
 import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.ParrotEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
@@ -9,8 +10,8 @@ import net.minecraft.client.render.entity.model.ParrotEntityModel;
 import net.minecraft.client.render.entity.state.ParrotEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
+import net.minecraft.entity.PlayerLikeEntity;
 import net.minecraft.entity.passive.ParrotEntity;
-import net.minecraft.entity.player.PlayerEntity;
 
 import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.client.model.ClientPonyModel;
@@ -18,7 +19,7 @@ import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 public class PassengerFeature<
-        T extends PlayerEntity,
+        T extends PlayerLikeEntity & ClientPlayerLikeEntity,
         S extends PonyRenderState,
         M extends ClientPonyModel<S>
     > extends AbstractPonyFeature<S, M> {
@@ -33,19 +34,19 @@ public class PassengerFeature<
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, S state, float limbAngle, float limbDistance) {
+    public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
         if (state.leftShoulderParrotVariant != null) {
-            render(matrices, vertices, light, state, state.leftShoulderParrotVariant, limbAngle, limbDistance, true);
+            render(matrices, queue, light, state, state.leftShoulderParrotVariant, limbAngle, limbDistance, true);
         }
 
         if (state.rightShoulderParrotVariant != null) {
-            render(matrices, vertices, light, state, state.rightShoulderParrotVariant, limbAngle, limbDistance, false);
+            render(matrices, queue, light, state, state.rightShoulderParrotVariant, limbAngle, limbDistance, false);
         }
     }
 
     private void render(
         MatrixStack matrices,
-        VertexConsumerProvider vertexConsumers,
+        OrderedRenderCommandQueue queue,
         int light,
         S state,
         ParrotEntity.Variant parrotVariant,
@@ -72,8 +73,7 @@ public class PassengerFeature<
         parrotState.limbSwingAmplitude = state.limbSwingAmplitude;
         parrotState.relativeHeadYaw = headYaw;
         parrotState.pitch = headPitch;
-        model.setAngles(parrotState);
-        model.render(matrices, vertexConsumers.getBuffer(model.getLayer(ParrotEntityRenderer.getTexture(parrotVariant))), light, OverlayTexture.DEFAULT_UV);
+        queue.getBatchingQueue(0).submitModel(model, parrotState, matrices, model.getLayer(ParrotEntityRenderer.getTexture(parrotVariant)), light, OverlayTexture.DEFAULT_UV, state.outlineColor, null);
         matrices.pop();
     }
 }

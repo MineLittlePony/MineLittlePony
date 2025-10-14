@@ -24,7 +24,6 @@ import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.config.PonyConfig;
-import com.minelittlepony.api.events.PonyModelPrepareCallback;
 import com.minelittlepony.api.events.PonyRenderStatePrepareCallback;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.*;
@@ -115,7 +114,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         nameplateYOffset = getNamePlateYOffset();
         legOutset = getLegOutset();
         isInSneakingPose = attributes.isCrouching && !attributes.isLyingDown;
-        sleepingInBed = entity != null && entity.getSleepingPosition().isPresent() && entity.getWorld().getBlockState(entity.getSleepingPosition().get()).getBlock() instanceof BedBlock;
+        sleepingInBed = entity != null && entity.getSleepingPosition().isPresent() && entity.getEntityWorld().getBlockState(entity.getSleepingPosition().get()).getBlock() instanceof BedBlock;
         submergedInWater = entity != null && entity.isSubmergedInWater();
         wobbleAmount = handSwingProgress <= 0 ? 0 : MathHelper.sin(MathHelper.sqrt(handSwingProgress) * MathHelper.PI * 2) * 0.04F;
         if (attributes.isSitting) {

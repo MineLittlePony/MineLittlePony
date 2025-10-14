@@ -1,17 +1,17 @@
 package com.minelittlepony.client;
 
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.SynchronousResourceReloader;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.util.MathUtil;
 
 import java.util.*;
 
-public class VariatedTextureSupplier implements SimpleSynchronousResourceReloadListener {
-    private static final Identifier ID = MineLittlePony.id("variated_textures");
+public class VariatedTextureSupplier implements SynchronousResourceReloader {
+    public static final Identifier ID = MineLittlePony.id("variated_textures");
     public static final Identifier BACKGROUND_PONIES_POOL = MineLittlePony.id("textures/entity/pony");
     public static final Identifier BACKGROUND_ZOMPONIES_POOL = MineLittlePony.id("textures/entity/zompony");
 
@@ -20,11 +20,6 @@ public class VariatedTextureSupplier implements SimpleSynchronousResourceReloadL
     @Override
     public void reload(ResourceManager manager) {
         entries.clear();
-    }
-
-    @Override
-    public Identifier getFabricId() {
-        return ID;
     }
 
     public SkinList get(Identifier id) {

@@ -40,7 +40,7 @@ class LegendOverlayWidget implements Carousel.Element, ITextContext {
 
     @Override
     public void render(DrawContext context, Bounds bounds, int mouseX, int mouseY, Quaternionf rotation) {
-        PonyData data = Pony.getManager().getPony(player.get().playerState.skinTextures.texture()).metadata();
+        PonyData data = Pony.getManager().getPony(player.get().playerState.skinTextures.body().texturePath()).metadata();
         int[] index = new int[1];
         data.attributes().forEach((key, value) -> {
             context.getMatrices().pushMatrix();

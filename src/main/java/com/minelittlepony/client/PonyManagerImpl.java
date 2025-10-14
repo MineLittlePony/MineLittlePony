@@ -7,17 +7,21 @@ import com.minelittlepony.api.config.PonyLevel;
 import com.minelittlepony.api.events.PonySkinResolver;
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
+import com.mojang.authlib.GameProfile;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.network.ClientPlayerLikeEntity;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.client.util.DefaultSkinHelper;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.SynchronousResourceReloader;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.PlayerLikeEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 
@@ -25,8 +29,8 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class PonyManagerImpl implements PonyManager, SimpleSynchronousResourceReloadListener {
-    private static final Identifier ID = MineLittlePony.id("background_ponies");
+public class PonyManagerImpl implements PonyManager, SynchronousResourceReloader {
+    public static final Identifier ID = MineLittlePony.id("background_ponies");
 
     private final PonyConfig config;
 
@@ -51,8 +55,9 @@ public class PonyManagerImpl implements PonyManager, SimpleSynchronousResourceRe
     }
 
     @Override
-    public Pony getPony(PlayerEntity player) {
-        final UUID id = player instanceof ForcedPony ? null : player.getGameProfile() == null || player.getGameProfile().getId() == null ? player.getUuid() : player.getGameProfile().getId();
+    public Pony getPony(PlayerLikeEntity player) {
+        @Nullable
+        final UUID id = getProfileId(player);
 
         Pony pony;
         if (player instanceof ServerPlayerEntity && id != null) {
@@ -104,22 +109,22 @@ public class PonyManagerImpl implements PonyManager, SimpleSynchronousResourceRe
     @Override
     public Pony getBackgroundPony(@Nullable UUID uuid) {
         if (config.ponyLevel.get() == PonyLevel.PONIES) {
-            return loadPony(MineLittlePony.getInstance().getVariatedTextures().get(VariatedTextureSupplier.BACKGROUND_PONIES_POOL, uuid).orElse(DefaultSkinHelper.getSkinTextures(uuid).texture()), true);
+            return loadPony(MineLittlePony.getInstance().getVariatedTextures().get(VariatedTextureSupplier.BACKGROUND_PONIES_POOL, uuid).orElse(DefaultSkinHelper.getSkinTextures(uuid).body().texturePath()), true);
         }
-        return loadPony(DefaultSkinHelper.getSkinTextures(uuid).texture(), true);
+        return loadPony(DefaultSkinHelper.getSkinTextures(uuid).body().texturePath(), true);
     }
 
     @SuppressWarnings("unchecked")
     @Nullable
     private Identifier getSkin(LivingEntity entity) {
-        if (entity instanceof PlayerEntity player) {
-            if (player.getGameProfile() != null && player instanceof AbstractClientPlayerEntity clientPlayer) {
-                return clientPlayer.getSkinTextures().texture();
+        if (entity instanceof PlayerLikeEntity player) {
+            if (getProfile(player) != null && player instanceof ClientPlayerLikeEntity clientPlayer) {
+                return clientPlayer.getSkin().body().texturePath();
             }
-        } else {
-            if (MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(entity) instanceof LivingEntityRenderer renderer) {
-                return renderer.getTexture((LivingEntityRenderState)renderer.getAndUpdateRenderState(entity, 1));
-            }
+        }
+
+        if (MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(entity) instanceof LivingEntityRenderer renderer) {
+            return renderer.getTexture((LivingEntityRenderState)renderer.getAndUpdateRenderState(entity, 1));
         }
 
         return null;
@@ -140,8 +145,39 @@ public class PonyManagerImpl implements PonyManager, SimpleSynchronousResourceRe
         PonySkullRenderer.INSTANCE.reload();
     }
 
-    @Override
-    public Identifier getFabricId() {
-        return ID;
+    @Nullable
+    private static UUID getProfileId(PlayerLikeEntity player) {
+        if (player instanceof ForcedPony) {
+            return null;
+        }
+
+        ProfileComponent profile = player.get(DataComponentTypes.PROFILE);
+        if (profile != null) {
+            return MoreObjects.firstNonNull(profile.getGameProfile().id(), player.getUuid());
+        }
+
+        if (player instanceof PlayerEntity p && p.getGameProfile() != null) {
+            return MoreObjects.firstNonNull(p.getGameProfile().id(), player.getUuid());
+        }
+
+        return null;
+    }
+
+    @Nullable
+    private static GameProfile getProfile(PlayerLikeEntity player) {
+        if (player instanceof ForcedPony) {
+            return null;
+        }
+
+        ProfileComponent profile = player.get(DataComponentTypes.PROFILE);
+        if (profile != null) {
+            return profile.getGameProfile();
+        }
+
+        if (player instanceof PlayerEntity p && p.getGameProfile() != null) {
+            return p.getGameProfile();
+        }
+
+        return null;
     }
 }

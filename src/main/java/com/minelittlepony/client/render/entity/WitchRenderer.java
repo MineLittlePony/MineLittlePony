@@ -27,7 +27,7 @@ public class WitchRenderer extends PonyRenderer<WitchEntity, WitchRenderer.State
         super.updateRenderState(entity, state, tickDelta);
         state.drinking = entity instanceof WitchEntity w && w.isDrinking();
         state.attributes.visualHeight += 0.5F;
-        state.baby |= state.customName != null && "Filly".equals(state.customName.getString());
+        state.baby |= state.displayName != null && "Filly".equals(state.displayName.getString());
     }
 
     public static class State extends PonyRenderState {

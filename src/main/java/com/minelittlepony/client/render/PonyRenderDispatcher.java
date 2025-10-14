@@ -14,9 +14,11 @@ import com.minelittlepony.mson.api.Mson;
 import java.util.function.Function;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerLikeEntity;
 import net.minecraft.client.render.entity.*;
-import net.minecraft.client.util.SkinTextures;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.PlayerLikeEntity;
+import net.minecraft.entity.player.PlayerSkinType;
 import net.minecraft.util.Identifier;
 
 /**
@@ -27,8 +29,8 @@ public class PonyRenderDispatcher {
 
     public PonyRenderDispatcher() {
         PonyForm.register(PonyForm.DEFAULT, Predicates.alwaysTrue(), PlayerPonyRenderer::new);
-        PonyForm.register(PonyForm.SEAPONY, PonyPosture::hasSeaponyForm, (context, slimArms) -> new AquaticPlayerPonyRenderer(context, slimArms, DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, PonyPosture::isSeaponyFormActive));
-        PonyForm.register(PonyForm.NIRIK, PonyPosture::hasNirikForm, (context, slimArms) -> new FormChangingPlayerPonyRenderer(context, slimArms, DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, PonyPosture::isNirikFormActive));
+        PonyForm.register(PonyForm.SEAPONY, PonyPosture::hasSeaponyForm, (context, slimArms) -> new AquaticPlayerPonyRenderer<>(context, slimArms, DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, PonyPosture::isSeaponyFormActive));
+        PonyForm.register(PonyForm.NIRIK, PonyPosture::hasNirikForm, (context, slimArms) -> new FormChangingPlayerPonyRenderer<>(context, slimArms, DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, PonyPosture::isNirikFormActive));
     }
 
     public LevitatingItemRenderer getMagicRenderer() {
@@ -38,15 +40,16 @@ public class PonyRenderDispatcher {
     /**
      * Registers all new player skin types. (currently only pony and slimpony).
      */
-    public void initialise(EntityRenderDispatcher manager, boolean force) {
+    public <T extends PlayerLikeEntity & ClientPlayerLikeEntity> void initialise(EntityRenderManager manager, boolean force) {
         PonyForm.REGISTRY.values().forEach(form -> {
-            for (SkinTextures.Model armShape : SkinTextures.Model.values()) {
-                Identifier id = form.id().withSuffixedPath("/" + armShape.getName());
-                Function<EntityRendererFactory.Context, ? extends PlayerPonyRenderer> factory = context -> form.factory().create(context, armShape == SkinTextures.Model.SLIM);
+            for (PlayerSkinType armShape : PlayerSkinType.values()) {
+                Identifier id = form.id().withSuffixedPath("/" + armShape.asString());
+                @SuppressWarnings("unchecked")
+                Function<EntityRendererFactory.Context, ? extends PlayerPonyRenderer<T>> factory = context -> (PlayerPonyRenderer<T>)form.factory().create(context, armShape == PlayerSkinType.SLIM);
                 Mson.getInstance().getEntityRendererRegistry().registerPlayerRenderer(
                         id,
                         player -> !Pony.getManager().getPony(player).race().isHuman()
-                                    && player.getSkinTextures().model() == armShape
+                                    && player.getSkin().model() == armShape
                                     && form.shouldApply().test(player)
                                     && PonyForm.of(player) == form,
                         factory
@@ -54,7 +57,7 @@ public class PonyRenderDispatcher {
                 Mson.getInstance().getEntityRendererRegistry().registerPlayerStateRenderer(id,
                         state -> state instanceof PlayerPonyRenderState s
                                     && !s.race.isHuman()
-                                    && s.smallArms == (armShape == SkinTextures.Model.SLIM)
+                                    && s.smallArms == (armShape == PlayerSkinType.SLIM)
                                     && form.id().equals(s.form),
                         factory
                 );

@@ -9,7 +9,6 @@ import com.google.common.base.Preconditions;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.mson.api.*;
 import com.minelittlepony.mson.api.MsonModel.Factory;
-import com.minelittlepony.mson.api.model.traversal.PartSkeleton;
 import com.minelittlepony.mson.api.model.traversal.SkeletonisedModel;
 import com.minelittlepony.mson.api.parser.FileContent;
 import com.minelittlepony.mson.api.parser.locals.LocalBlock;
@@ -18,7 +17,7 @@ import com.minelittlepony.mson.impl.model.RootContext;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-final class ModelKeyImpl<M extends Model> implements ModelKey<M>, LocalBlock {
+final class ModelKeyImpl<M extends Model<?>> implements ModelKey<M>, LocalBlock {
 
     private final Map<String, Incomplete<Float>> horseModeValues = Util.make(new HashMap<>(), map -> {
         map.put("head_elongation", Incomplete.completed(-1F));
@@ -57,16 +56,16 @@ final class ModelKeyImpl<M extends Model> implements ModelKey<M>, LocalBlock {
             ModelPart root = ctx.toTree();
             V t = factory.create(root);
 
-            if (t instanceof SkeletonisedModel) {
-                ((SkeletonisedModel)t).setSkeleton(content.getSkeleton()
-                        .map(s -> PartSkeleton.of(root, s))
-                        .orElseGet(() -> PartSkeleton.of(root)));
+            if (t instanceof SkeletonisedModel tt) {
+                tt.setSkeleton(content.getSkeleton()
+                        .map(root::ordered)
+                        .orElse(root));
             }
-            if (t instanceof MsonModel) {
-                if (ctx instanceof RootContext) {
-                    ((RootContext)ctx).setModel(t);
+            if (t instanceof MsonModel m) {
+                if (ctx instanceof RootContext c) {
+                    c.setModel(t);
                 }
-                ((MsonModel)t).init(ctx);
+                m.init(ctx);
             }
             return t;
         })

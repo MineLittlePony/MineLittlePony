@@ -16,17 +16,17 @@ import java.util.*;
 import java.util.function.*;
 
 import net.minecraft.client.item.ItemModelManager;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.*;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.Items;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 
@@ -82,7 +82,7 @@ public abstract class AbstractPonyRenderer<
     }
 
     protected SkullFeature<S, M> createSkullFeature(EntityRendererFactory.Context context) {
-        return new SkullFeature<>(this, context.getEntityModels(), HeadFeatureRenderer.HeadTransformation.DEFAULT, true);
+        return new SkullFeature<>(this, context.getPlayerSkinCache(), context.getEntityModels(), HeadFeatureRenderer.HeadTransformation.DEFAULT, true);
     }
 
     protected HeldItemFeature<S, M> createHeldItemFeature(EntityRendererFactory.Context context) {
@@ -95,9 +95,9 @@ public abstract class AbstractPonyRenderer<
     }
 
     @Override
-    public void render(S state, MatrixStack stack, VertexConsumerProvider vertices, int light) {
-        super.render(state, stack, vertices, light);
-        DebugBoundingBoxRenderer.render(state, stack, vertices);
+    public void render(S state, MatrixStack stack, OrderedRenderCommandQueue queue, CameraRenderState camera) {
+        super.render(state, stack, queue, camera);
+        DebugBoundingBoxRenderer.render(state, stack, queue);
     }
 
     @Override
@@ -138,10 +138,10 @@ public abstract class AbstractPonyRenderer<
     }
 
     @Override
-    protected void renderLabelIfPresent(S state, Text name, MatrixStack matrices, VertexConsumerProvider vertices, int light) {
+    protected void renderLabelIfPresent(S state, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState camera) {
         matrices.push();
         matrices.translate(0, state.nameplateYOffset, 0);
-        super.renderLabelIfPresent(state, name, matrices, vertices, light);
+        super.renderLabelIfPresent(state, matrices, queue, camera);
         matrices.pop();
     }
 

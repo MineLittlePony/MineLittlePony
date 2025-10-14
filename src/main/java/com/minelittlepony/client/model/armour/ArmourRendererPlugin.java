@@ -3,10 +3,10 @@ package com.minelittlepony.client.model.armour;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.render.entity.state.LivingEntityRenderState;
-import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
@@ -36,7 +36,7 @@ public interface ArmourRendererPlugin {
         return ArmourTextureResolver.INSTANCE;
     }
 
-    default void onArmourRendered(LivingEntityRenderState state, MatrixStack matrices, VertexConsumerProvider provider, EquipmentSlot armorSlot, EquipmentModel.LayerType layerType, ArmourType type) {
+    default void onArmourRendered(LivingEntityRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, EquipmentSlot armorSlot, EquipmentModel.LayerType layerType, ArmourType type) {
 
     }
 
@@ -76,7 +76,7 @@ public interface ArmourRendererPlugin {
         return 1F;
     }
 
-    default float getElytraAlpha(ItemStack stack, Model model, LivingEntityRenderState entity) {
+    default float getElytraAlpha(ItemStack stack, Model<?> model, LivingEntityRenderState entity) {
         return stack.isOf(Items.ELYTRA) ? 1F : 0F;
     }
 
@@ -86,7 +86,7 @@ public interface ArmourRendererPlugin {
         if (buffer == null) {
             return null;
         }
-        SpriteAtlasTexture armorTrimsAtlas = MinecraftClient.getInstance().getBakedModelManager().getAtlas(TexturedRenderLayers.ARMOR_TRIMS_ATLAS_TEXTURE);
+        SpriteAtlasTexture armorTrimsAtlas = MinecraftClient.getInstance().getAtlasManager().getAtlasTexture(Atlases.ARMOR_TRIMS);
         Sprite sprite = armorTrimsAtlas.getSprite(trim.getTextureId(layerType.getTrimsDirectory(), assetId));
         return sprite.getTextureSpecificVertexConsumer(buffer);
     }
@@ -127,15 +127,6 @@ public interface ArmourRendererPlugin {
     @Nullable
     default RenderLayer getCapeLayer(BipedEntityRenderState entity, Identifier texture) {
         return RenderLayer.getEntitySolid(texture);
-    }
-
-    /**
-     * @deprecated Method is no longer used
-     */
-    @Deprecated
-    @Nullable
-    default VertexConsumer getElytraConsumer(ItemStack stack, Model model, BipedEntityRenderState state, VertexConsumerProvider provider, Identifier texture) {
-        return ItemRenderer.getArmorGlintConsumer(provider, RenderLayer.getArmorCutoutNoCull(texture), getGlintAlpha(EquipmentSlot.CHEST, stack) > 0F);
     }
 
     @Nullable

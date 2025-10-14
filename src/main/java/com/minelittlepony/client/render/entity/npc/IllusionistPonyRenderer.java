@@ -1,7 +1,8 @@
 package com.minelittlepony.client.render.entity.npc;
 
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.IllusionerEntity;
 import net.minecraft.util.math.MathHelper;
@@ -23,7 +24,7 @@ public class IllusionistPonyRenderer extends IllagerPonyRenderer<IllusionerEntit
     }
 
     @Override
-    public void render(IllusionistPonyRenderer.State entity, MatrixStack stack, VertexConsumerProvider renderContext, int light) {
+    public void render(IllusionistPonyRenderer.State entity, MatrixStack stack, OrderedRenderCommandQueue queue, CameraRenderState camera) {
         if (!entity.invisible) {
             Vec3d[] clones = entity.mirrorCopyOffsets;
 
@@ -34,11 +35,11 @@ public class IllusionistPonyRenderer extends IllagerPonyRenderer<IllusionerEntit
                         clones[i].y + MathHelper.cos(i + entity.age * 0.75F) * 0.0125D,
                         clones[i].z + MathHelper.cos(i + entity.age * 0.7F) * 0.025D
                 );
-                super.render(entity, stack, renderContext, light);
+                super.render(entity, stack, queue, camera);
                 stack.pop();
             }
         } else {
-            super.render(entity, stack, renderContext, light);
+            super.render(entity, stack, queue, camera);
         }
     }
 

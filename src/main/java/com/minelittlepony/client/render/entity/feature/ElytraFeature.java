@@ -6,17 +6,17 @@ import com.minelittlepony.client.model.armour.ArmourRendererPlugin;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.equipment.EquipmentRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
-import net.minecraft.client.util.SkinTextures;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.player.SkinTextures;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.EquipmentAsset;
 import net.minecraft.registry.RegistryKey;
@@ -41,7 +41,7 @@ public class ElytraFeature<
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider provider, int light, S state, float limbAngle, float limbDistance) {
+    public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
         ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
 
         for (ItemStack stack : plugin.getArmorStacks(state, EquipmentSlot.CHEST, EquipmentModel.LayerType.WINGS, ArmourRendererPlugin.ArmourType.ELYTRA)) {
@@ -58,12 +58,12 @@ public class ElytraFeature<
                 matrices.push();
                 model.setAngles(state);
                 preRenderCallback(state, matrices);
-                equipmentRenderer.render(EquipmentModel.LayerType.WINGS, equipmentModel, model, stack, matrices, provider, light, getElytraTexture(state));
+                equipmentRenderer.render(EquipmentModel.LayerType.WINGS, equipmentModel, model, state, stack, matrices, queue, light, getElytraTexture(state), state.outlineColor, 0);
                 matrices.pop();
             }
         }
 
-        plugin.onArmourRendered(state, matrices, provider, EquipmentSlot.CHEST, EquipmentModel.LayerType.WINGS, ArmourRendererPlugin.ArmourType.ELYTRA);
+        plugin.onArmourRendered(state, matrices, queue, EquipmentSlot.CHEST, EquipmentModel.LayerType.WINGS, ArmourRendererPlugin.ArmourType.ELYTRA);
     }
 
     @SuppressWarnings("unchecked")
@@ -80,12 +80,12 @@ public class ElytraFeature<
         if (state instanceof PlayerEntityRenderState playerState) {
             SkinTextures textures = playerState.skinTextures;
 
-            if (textures.elytraTexture() != null) {
-                return textures.elytraTexture();
+            if (textures.elytra() != null) {
+                return textures.elytra().texturePath();
             }
 
-            if (textures.capeTexture() != null && playerState.capeVisible) {
-                return textures.capeTexture();
+            if (textures.cape() != null && playerState.capeVisible) {
+                return textures.cape().texturePath();
             }
         }
 

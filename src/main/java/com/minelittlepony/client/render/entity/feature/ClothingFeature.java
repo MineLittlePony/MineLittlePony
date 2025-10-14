@@ -1,8 +1,7 @@
 package com.minelittlepony.client.render.entity.feature;
 
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.*;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.util.math.MatrixStack;
@@ -31,9 +30,8 @@ public class ClothingFeature<
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, S state, float limbAngle, float limbDistance) {
+    public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
         model.setAngles(state);
-        VertexConsumer buffer = vertices.getBuffer(model.getLayer(texture));
-        model.render(matrices, buffer, light, OverlayTexture.DEFAULT_UV, Colors.WHITE);
+        queue.getBatchingQueue(1).submitModel(model, state, matrices, model.getLayer(texture), light, OverlayTexture.DEFAULT_UV, Colors.WHITE, null, state.outlineColor, null);
     }
 }

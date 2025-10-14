@@ -16,7 +16,7 @@ import com.minelittlepony.client.render.entity.PonyRenderer;
 import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
 
 import net.minecraft.client.item.ItemModelManager;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
 import net.minecraft.client.util.math.MatrixStack;
@@ -104,9 +104,9 @@ public class IllagerPonyRenderer<
         }
 
         @Override
-        public void render(MatrixStack matrices, VertexConsumerProvider vertices, int light, S state, float limbAngle, float limbDistance) {
+        public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
             if (shouldRender(state)) {
-                super.render(matrices, vertices, light, state, limbAngle, limbDistance);
+                super.render(matrices, queue, light, state, limbAngle, limbDistance);
             }
         }
 

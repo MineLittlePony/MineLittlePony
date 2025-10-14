@@ -1,8 +1,7 @@
 package com.minelittlepony.client.mixin;
 
 import net.minecraft.block.SkullBlock;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.model.LoadedEntityModels;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.item.model.special.HeadModelRenderer;
 import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -28,8 +27,8 @@ abstract class MixinHeadModelRenderer implements PonySkullRenderer.Proxy {
     }
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
-    public void onRender(ItemDisplayContext displayContext, MatrixStack matrices, VertexConsumerProvider vertices, int light, int overlay, boolean glint, CallbackInfo info) {
-        if (data != null && data.render(null, 180, 0, matrices, vertices, light)) {
+    public void onRender(ItemDisplayContext displayContext, MatrixStack matrices, OrderedRenderCommandQueue queue, int light, int overlay, boolean glint, int i, CallbackInfo info) {
+        if (data != null && data.render(null, 180, 0, matrices, queue, light, 0, null)) {
             info.cancel();
         }
     }
@@ -41,7 +40,7 @@ abstract class MixinHeadModelRenderer_Unbaked {
     private @Final SkullBlock.SkullType kind;
 
     @Inject(method = "bake", at = @At("RETURN"), cancellable = true)
-    private void onBake(LoadedEntityModels entityModels, CallbackInfoReturnable<SpecialModelRenderer<?>> info) {
+    private void onBake(SpecialModelRenderer.BakeContext context, CallbackInfoReturnable<SpecialModelRenderer<?>> info) {
         if (info.getReturnValue() instanceof PonySkullRenderer.Proxy p) {
             p.setPonySkullData(PonySkullRenderer.INSTANCE.getSkullState(kind, null));
         }
