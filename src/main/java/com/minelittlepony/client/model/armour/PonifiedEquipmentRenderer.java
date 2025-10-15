@@ -3,8 +3,7 @@ package com.minelittlepony.client.model.armour;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.render.*;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.command.RenderCommandQueue;
+import net.minecraft.client.render.command.*;
 import net.minecraft.client.render.entity.equipment.*;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
@@ -24,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import com.minelittlepony.api.model.Models;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.ClientPonyModel;
+import com.minelittlepony.client.render.command.CustomModelRenderCommand;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.util.ResourceUtil;
 
@@ -90,11 +90,11 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
                         @Nullable
                         RenderLayer armorRenderLayer = plugin.getArmourLayer(slot, partTexture, layerType);
                         if (armorRenderLayer != null) {
-                            submitArmorPiece(queue.getBatchingQueue(order++), model, state, matrices, armorRenderLayer, light, OverlayTexture.DEFAULT_UV, ColorHelper.withAlpha(alpha, color), layerType, slot, assetKey, partTexture, null);
+                            submitArmorPiece(queue.getBatchingQueue(order++), model, state, matrices, armorRenderLayer, light, OverlayTexture.DEFAULT_UV, ColorHelper.withAlpha(alpha, color), outlineColor, layerType, slot, assetKey, partTexture, null);
                             if (hasGlint) {
                                 RenderLayer glintRenderLayer = plugin.getGlintLayer(slot, layerType);
                                 if (glintRenderLayer != null) {
-                                    submitArmorPiece(queue.getBatchingQueue(order++), model, state, matrices, glintRenderLayer, light, OverlayTexture.DEFAULT_UV, ColorHelper.withAlpha(alpha, color), layerType, slot, assetKey, null, null);
+                                    submitArmorPiece(queue.getBatchingQueue(order++), model, state, matrices, glintRenderLayer, light, OverlayTexture.DEFAULT_UV, ColorHelper.withAlpha(alpha, color), outlineColor, layerType, slot, assetKey, null, null);
                                 }
                             }
                             hasGlint = false;
@@ -109,7 +109,7 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
                         @Nullable
                         RenderLayer trimLayer = plugin.getTrimLayer(slot, armorTrim, layerType, assetKey);
                         if (trimLayer != null) {
-                            submitArmorPiece(queue.getBatchingQueue(order++), model, state, matrices, trimLayer, light, OverlayTexture.DEFAULT_UV, ColorHelper.getWhite(trimAlpha), layerType, slot, assetKey, null, armorTrim);
+                            submitArmorPiece(queue.getBatchingQueue(order++), model, state, matrices, trimLayer, light, OverlayTexture.DEFAULT_UV, ColorHelper.getWhite(trimAlpha), outlineColor, layerType, slot, assetKey, null, armorTrim);
                         }
                     }
                 }
@@ -169,11 +169,11 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
                             AbstractPonyModel<S> model = (AbstractPonyModel<S>)models.getArmourModel(stack, layerType, variant);
 
                             if (setVisibilities(model, equipmentSlot, layerType)) {
-                                submitPonyArmorPiece(queue.getBatchingQueue(order++), model, state, matrices, armorRenderLayer, light, OverlayTexture.DEFAULT_UV, ColorHelper.withAlpha(armorAlpha, dyeColor), layerType, equipmentSlot, assetId, partTexture, null);
+                                submitPonyArmorPiece(queue.getBatchingQueue(order++), model, state, matrices, armorRenderLayer, light, OverlayTexture.DEFAULT_UV, ColorHelper.withAlpha(armorAlpha, dyeColor), outlineColor, layerType, equipmentSlot, assetId, partTexture, null);
                                 if (hasGlint) {
                                     RenderLayer glintRenderLayer = plugin.getGlintLayer(equipmentSlot, layerType);
                                     if (glintRenderLayer != null) {
-                                        submitPonyArmorPiece(queue.getBatchingQueue(order++), model, state, matrices, glintRenderLayer, light, OverlayTexture.DEFAULT_UV, ColorHelper.withAlpha(armorAlpha, dyeColor), layerType, equipmentSlot, assetId, null, null);
+                                        submitPonyArmorPiece(queue.getBatchingQueue(order++), model, state, matrices, glintRenderLayer, light, OverlayTexture.DEFAULT_UV, ColorHelper.withAlpha(armorAlpha, dyeColor), outlineColor, layerType, equipmentSlot, assetId, null, null);
                                     }
                                 }
                                 hasGlint = false;
@@ -194,7 +194,7 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
                         RenderLayer trimLayer = plugin.getTrimLayer(equipmentSlot, armorTrim, layerType, assetId);
                         if (trimLayer != null) {
                             for (EntityModel<?> model : drawnModels) {
-                                submitArmorPiece(queue.getBatchingQueue(order++), (AbstractPonyModel<S>)model, state, matrices, trimLayer, light, OverlayTexture.DEFAULT_UV, ColorHelper.getWhite(trimAlpha), layerType, equipmentSlot, assetId, null, armorTrim);
+                                submitArmorPiece(queue.getBatchingQueue(order++), (AbstractPonyModel<S>)model, state, matrices, trimLayer, light, OverlayTexture.DEFAULT_UV, ColorHelper.getWhite(trimAlpha), outlineColor, layerType, equipmentSlot, assetId, null, armorTrim);
                             }
                         }
                     }
@@ -207,67 +207,40 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
 
     private static <S extends PonyRenderState> void submitPonyArmorPiece(
             RenderCommandQueue queue,
-            AbstractPonyModel<? super S> model,
-            S state,
-            MatrixStack matrices,
-            RenderLayer renderLayer,
-            int light,
-            int overlay,
-            int tintedColor,
-            EquipmentModel.LayerType layerType,
-            EquipmentSlot slot,
-            RegistryKey<EquipmentAsset> assetKey,
-            @Nullable Identifier partTexture,
-            @Nullable ArmorTrim trim
+            AbstractPonyModel<? super S> model, S state,
+            MatrixStack matrices, RenderLayer renderLayer,
+            int light, int overlay, int tint, int outline,
+            EquipmentModel.LayerType layerType, EquipmentSlot slot,
+            RegistryKey<EquipmentAsset> assetKey, @Nullable Identifier partTexture, @Nullable ArmorTrim trim
         ) {
-        ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
-        MatrixStack copyMatrices = new MatrixStack();
-        queue.submitCustom(matrices, renderLayer, (entry, buffer) -> {
-            var provider = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
-            buffer = trim != null
-                    ? plugin.getTrimConsumer(slot, provider, trim, layerType, assetKey) : partTexture != null
-                    ? plugin.getArmourConsumer(slot, provider, partTexture, layerType) : plugin.getGlintConsumer(slot, provider, layerType);
-            if (buffer != null) {
-                copyMatrices.push();
-                copyMatrices.peek().copy(entry);
-                model.setAngles(state);
-                if (setVisibilities(model, slot, layerType)) {
-                    model.render(matrices, buffer, light, overlay, tintedColor);
-                }
-                copyMatrices.pop();
-            }
-        });
+        CustomModelRenderCommand.submit(queue, model, state, matrices, renderLayer, light, overlay, tint, null, outline, null,
+                createLayerFunc(layerType, slot, assetKey, partTexture, trim),
+                command -> setVisibilities(model, slot, layerType));
     }
 
     private static <S> void submitArmorPiece(
             RenderCommandQueue queue,
-            Model<? super S> model,
-            S state,
-            MatrixStack matrices,
-            RenderLayer renderLayer,
-            int light,
-            int overlay,
-            int tintedColor,
-            EquipmentModel.LayerType layerType,
-            EquipmentSlot slot,
-            RegistryKey<EquipmentAsset> assetKey,
-            @Nullable Identifier partTexture,
-            @Nullable ArmorTrim trim
+            Model<? super S> model, S state,
+            MatrixStack matrices, RenderLayer renderLayer,
+            int light, int overlay, int tint, int outline,
+            EquipmentModel.LayerType layerType, EquipmentSlot slot,
+            RegistryKey<EquipmentAsset> assetKey, @Nullable Identifier partTexture, @Nullable ArmorTrim trim
         ) {
-        ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
-        MatrixStack copyMatrices = new MatrixStack();
-        queue.submitCustom(matrices, renderLayer, (entry, buffer) -> {
+        CustomModelRenderCommand.submit(queue, model, state, matrices, renderLayer, light, overlay, tint, null, outline, null,
+                createLayerFunc(layerType, slot, assetKey, partTexture, trim), null);
+    }
+
+    private static <S> Function<OrderedRenderCommandQueueImpl.ModelCommand<S>, VertexConsumer> createLayerFunc(
+            EquipmentModel.LayerType layerType, EquipmentSlot slot,
+            RegistryKey<EquipmentAsset> assetKey, @Nullable Identifier partTexture, @Nullable ArmorTrim trim
+        ) {
+        return command -> {
             var provider = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
-            buffer = trim != null
+            var plugin = ArmourRendererPlugin.INSTANCE.get();
+            return trim != null
                     ? plugin.getTrimConsumer(slot, provider, trim, layerType, assetKey) : partTexture != null
                     ? plugin.getArmourConsumer(slot, provider, partTexture, layerType) : plugin.getGlintConsumer(slot, provider, layerType);
-            if (buffer != null) {
-                copyMatrices.peek().getPositionMatrix().set(entry.getPositionMatrix());
-                copyMatrices.peek().getNormalMatrix().set(entry.getNormalMatrix());
-                model.setAngles(state);
-                model.render(matrices, buffer, light, overlay, tintedColor);
-            }
-        });
+        };
     }
 
     private static int getDyeColor(EquipmentModel.Layer layer, int dyeColor) {
