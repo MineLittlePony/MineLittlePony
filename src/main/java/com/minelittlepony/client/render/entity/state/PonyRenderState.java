@@ -35,7 +35,7 @@ import com.minelittlepony.client.transform.PonyPosture;
 
 import java.util.*;
 
-public class PonyRenderState extends PlayerEntityRenderState implements PonyModel.AttributedHolder {
+public class PonyRenderState extends PlayerEntityRenderState implements PonyModel.AttributedHolder, PonifiedRenderState {
     public final ModelAttributes attributes = new ModelAttributes();
 
     public float vehicleOffset;

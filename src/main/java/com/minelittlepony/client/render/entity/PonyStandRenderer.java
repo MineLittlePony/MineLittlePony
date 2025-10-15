@@ -26,6 +26,7 @@ import com.minelittlepony.client.model.entity.race.EarthPonyModel;
 import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.feature.*;
+import com.minelittlepony.client.render.entity.state.PonifiedRenderState;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import java.util.Optional;
@@ -160,7 +161,7 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
         }
     }
 
-    public static final class State extends ArmorStandEntityRenderState {
+    public static final class State extends ArmorStandEntityRenderState implements PonifiedRenderState {
         public PonyRenderState ponyState = new PonyRenderState();
     }
 }

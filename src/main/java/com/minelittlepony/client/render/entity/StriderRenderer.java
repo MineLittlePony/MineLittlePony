@@ -17,6 +17,7 @@ import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.armour.PonifiedEquipmentRenderer;
 import com.minelittlepony.client.model.entity.SpikeModel;
+import com.minelittlepony.client.render.entity.state.PonifiedRenderState;
 
 import java.util.UUID;
 
@@ -75,11 +76,10 @@ public class StriderRenderer extends MobEntityRenderer<StriderEntity, StriderRen
         return state.cold;
     }
 
-    public static class State extends BipedEntityRenderState {
+    public static class State extends BipedEntityRenderState implements PonifiedRenderState {
         public UUID uuid;
         public boolean cold;
         public ItemStack saddleStack = ItemStack.EMPTY;
         public float flailAmount;
-
     }
 }

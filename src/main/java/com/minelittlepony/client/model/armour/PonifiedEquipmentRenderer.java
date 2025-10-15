@@ -52,7 +52,7 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
 
     record TrimSpriteKey(ArmorTrim trim, EquipmentModel.LayerType layerType, RegistryKey<EquipmentAsset> equipmentAssetId) {
         public Identifier getTexture() {
-            return this.trim.getTextureId(this.layerType.getTrimsDirectory(), this.equipmentAssetId);
+            return trim.getTextureId(layerType.getTrimsDirectory(), equipmentAssetId);
         }
     }
 
@@ -72,7 +72,6 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
         ) {
         EquipmentSlot slot = layerType == EquipmentModel.LayerType.WINGS ? EquipmentSlot.CHEST : EquipmentSlot.BODY;
 
-        // textures/entity/equipment/strider_saddle/saddle.png
         List<EquipmentModel.Layer> layers = modelLoader.get(assetKey).getLayers(layerType);
         if (!layers.isEmpty()) {
             ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
@@ -86,7 +85,7 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
                 for (EquipmentModel.Layer layer : layers) {
                     int color = getDyeColor(layer, i);
 
-                    if (color != 0) {
+                    if (color != TRANSPARENT) {
                         Identifier partTexture = ponifier.apply(layerType, layer.usePlayerTexture() && texture != null ? texture : layerTextures.apply(new LayerTextureKey(layerType, layer)));
                         @Nullable
                         RenderLayer armorRenderLayer = plugin.getArmourLayer(slot, partTexture, layerType);
@@ -229,12 +228,13 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
                     ? plugin.getTrimConsumer(slot, provider, trim, layerType, assetKey) : partTexture != null
                     ? plugin.getArmourConsumer(slot, provider, partTexture, layerType) : plugin.getGlintConsumer(slot, provider, layerType);
             if (buffer != null) {
-                copyMatrices.peek().getPositionMatrix().set(entry.getPositionMatrix());
-                copyMatrices.peek().getNormalMatrix().set(entry.getNormalMatrix());
+                copyMatrices.push();
+                copyMatrices.peek().copy(entry);
                 model.setAngles(state);
                 if (setVisibilities(model, slot, layerType)) {
                     model.render(matrices, buffer, light, overlay, tintedColor);
                 }
+                copyMatrices.pop();
             }
         });
     }

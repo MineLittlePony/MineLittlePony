@@ -4,7 +4,7 @@ import com.minelittlepony.api.config.PonyCommandTags;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.client.render.entity.*;
 import com.minelittlepony.client.render.entity.npc.*;
-import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.minelittlepony.client.render.entity.state.PonifiedRenderState;
 import com.minelittlepony.common.util.settings.Setting;
 import com.minelittlepony.mson.api.EntityRendererRegistry;
 
@@ -25,12 +25,11 @@ public record MobRenderers (String name, BiConsumer<MobRenderers, EntityRenderer
 
     public static MobRenderers register(String name, BiConsumer<MobRenderers, Registry> changer) {
         return REGISTRY.computeIfAbsent(name, n -> new MobRenderers(name, (state, registry) -> {
-
             changer.accept(state, new Registry() {
                 @Override
                 public <T extends Entity, R extends EntityRenderer<?, ?>> void registerEntityRenderer(EntityType<T> type, Predicate<? super T> condition, Function<EntityRendererFactory.Context, R> constructor) {
                     registry.registerEntityRenderer(type, condition, constructor);
-                    registry.registerEntityStateRenderer(type, s -> s.entityType == type && s instanceof PonyRenderState, constructor);
+                    registry.registerEntityStateRenderer(type, s -> s.entityType == type && s instanceof PonifiedRenderState, constructor);
                 }
             });
         }));

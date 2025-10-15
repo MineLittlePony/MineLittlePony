@@ -12,6 +12,7 @@ import com.minelittlepony.api.pony.DefaultPonySkinHelper;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.BreezieModel;
+import com.minelittlepony.client.render.entity.state.PonifiedRenderState;
 
 import java.util.UUID;
 
@@ -55,7 +56,7 @@ public class AllayRenderer extends MobEntityRenderer<AllayEntity, AllayRenderer.
         return 15;
     }
 
-    public static class State extends BipedEntityRenderState {
+    public static class State extends BipedEntityRenderState implements PonifiedRenderState {
         public UUID uuid;
         public boolean dancing;
         public boolean spinning;
