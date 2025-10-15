@@ -10,4 +10,10 @@ public class PonyArmourModel<T extends PonyRenderState> extends AbstractPonyMode
         super(tree, false);
     }
 
+    @Override
+    protected void alignArmForAction(T state, ModelPart arm, ArmPose pose, ArmPose complement, float sigma) {
+        if (!state.hasMagicGlow()) {
+            super.alignArmForAction(state, arm, pose, complement, sigma);
+        }
+    }
 }
