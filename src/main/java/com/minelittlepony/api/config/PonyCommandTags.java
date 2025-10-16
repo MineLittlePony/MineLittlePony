@@ -12,8 +12,8 @@ import com.minelittlepony.client.mixin.NbtAccessor;
  * Command Tags you can apply to entities to force their pony mode either on or off.
  */
 public interface PonyCommandTags {
-    String NEVER_PONIFY = "minelittlepony:never_ponify";
-    String ALWAYS_PONIFY = "minelittlepony:always_ponify";
+    String NEVER_PONIFY = "minelittlepony.never_ponify";
+    String ALWAYS_PONIFY = "minelittlepony.always_ponify";
     String MAGIC_COLOR_OVERRIDE = "minelittlepony:magic_color_override";
 
     static boolean isAlwaysAPony(@Nullable Entity entity) {
