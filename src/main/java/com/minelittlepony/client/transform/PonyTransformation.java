@@ -17,9 +17,9 @@ public enum PonyTransformation {
         @Override
         public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
             if (attributes.isSwimming) stack.translate(0, -0.3F, 0);
-            if (attributes.isCrouching) stack.translate(0, -0.2F, 0);
-            if (attributes.isLyingDown) stack.translate(0, -0.77F, 0.1F);
-            if (attributes.isSleeping) stack.translate(0, 0.16F, 0);
+            if (attributes.isCrouching) stack.translate(0, -0.13F, 0);
+            if (attributes.isLyingDown) stack.translate(0, -0.6F, 0);
+            if (attributes.isSleeping) stack.translate(0, 0.05F, 0.25);
             if (attributes.isSitting) stack.translate(0, -0.2F, -0.2F);
 
             switch (part) {
@@ -40,9 +40,9 @@ public enum PonyTransformation {
         @Override
         public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
             if (attributes.isSwimming) stack.translate(0, -0.3F, 0);
-            if (attributes.isCrouching) stack.translate(0, -0.2F, 0);
-            if (attributes.isLyingDown) stack.translate(0, -0.77F, 0.1F);
-            if (attributes.isSleeping) stack.translate(0, 0.16F, 0);
+            if (attributes.isCrouching) stack.translate(0, -0.13F, 0);
+            if (attributes.isLyingDown) stack.translate(0, -0.6F, 0);
+            if (attributes.isSleeping) stack.translate(0, 0.05F, 0.3F);
             if (attributes.isSitting) stack.translate(0, -0.25F, -0.2F);
 
             switch (part) {
@@ -80,8 +80,8 @@ public enum PonyTransformation {
         public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
             if (attributes.isSwimming) stack.translate(0, -0.2F, 0);
             if (attributes.isCrouching) stack.translate(0, -0.15F, 0);
-            if (attributes.isLyingDown) stack.translate(0, -0.68F, 0.15F);
-            if (attributes.isSleeping) stack.translate(0, 0.08F, 0);
+            if (attributes.isLyingDown) stack.translate(0, -0.45F, 0);
+            if (attributes.isSleeping) stack.translate(0, 0, 0.15F);
             if (attributes.isSitting) stack.translate(0, 0, -0.2F);
 
             switch (part) {
@@ -115,9 +115,9 @@ public enum PonyTransformation {
     BULKY(SizePreset.BULKY, 0, 2.3F, 0.75F) {
         @Override
         public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
-            if (attributes.isCrouching) stack.translate(0, -0.15F, 0);
-            if (attributes.isLyingDown) stack.translate(0, -0.66F, 0.25F);
-            if (attributes.isSleeping) stack.translate(0, 0.06F, 0);
+            if (attributes.isCrouching) stack.translate(0, -0.1F, 0);
+            if (attributes.isLyingDown) stack.translate(0, -0.51F, 0);
+            if (attributes.isSleeping) stack.translate(0, 0.03F, -0.07F);
             if (attributes.isSitting) stack.translate(0, 0, -0.2F);
 
             switch (part) {
@@ -152,9 +152,9 @@ public enum PonyTransformation {
         @Override
         public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
             if (attributes.isSwimming) stack.translate(0, -0.9F, 0);
-            if (attributes.isCrouching) stack.translate(0, -0.2F, 0);
-            if (attributes.isLyingDown) stack.translate(0, -0.98F, -0.3F);
-            if (attributes.isSleeping) stack.translate(0, 0.18F, 0);
+            if (attributes.isCrouching) stack.translate(0, -0.13F, 0);
+            if (attributes.isLyingDown) stack.translate(0, -0.75F, 0);
+            if (attributes.isSleeping) stack.translate(0, 0.1F, 1.15F -0.3F);
             if (attributes.isSitting) stack.translate(0, -0.6F, -0.2F);
 
             stack.translate(0, 0.2F, 0);
@@ -181,9 +181,9 @@ public enum PonyTransformation {
     TALL(SizePreset.TALL, 0, 2.2F, 0.75F) {
         @Override
         public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
-            if (attributes.isCrouching) stack.translate(0, -0.15F, 0);
-            if (attributes.isLyingDown) stack.translate(0, -0.6F, 0.35F);
-            if (attributes.isSleeping) stack.translate(0, 0.1F, 0);
+            if (attributes.isCrouching) stack.translate(0, -0.13F, 0);
+            if (attributes.isLyingDown) stack.translate(0, -0.45F, 0);
+            if (attributes.isSleeping) stack.translate(0, -0.03F, -0.1F);
             if (attributes.isSitting) stack.translate(0, 0.1F, -0.2F);
 
             switch (part) {
@@ -214,8 +214,8 @@ public enum PonyTransformation {
         public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
             if (attributes.isSwimming) stack.translate(0, -0.6F, 0);
             if (attributes.isCrouching) stack.translate(0, -0.15F, 0);
-            if (attributes.isLyingDown) stack.translate(0, -0.71F, -0.3F);
-            if (attributes.isSleeping) stack.translate(0, 0.26F, 0);
+            if (attributes.isLyingDown) stack.translate(0, -0.47F, 0);
+            if (attributes.isSleeping) stack.translate(0, 0.15F, 0.4F);
             if (attributes.isSitting) stack.translate(0, -0.4F, -0.2F);
 
             switch (part) {
@@ -246,9 +246,9 @@ public enum PonyTransformation {
         @Override
         public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
             if (attributes.isSwimming) stack.translate(0, -0.6F, 0);
-            if (attributes.isCrouching) stack.translate(0, -0.2F, 0);
-            if (attributes.isLyingDown) stack.translate(0, -1, 0);
-            if (attributes.isSleeping) stack.translate(0, 0.2F, 0);
+            if (attributes.isCrouching) stack.translate(0, -0.15F, 0);
+            if (attributes.isLyingDown) stack.translate(0, -0.65F, 0);
+            if (attributes.isSleeping) stack.translate(0, 0.06F, 0.4F);
             if (attributes.isSitting) stack.translate(0, -0.5F, -0.2F);
 
             stack.translate(0, -0.05F, 0);
