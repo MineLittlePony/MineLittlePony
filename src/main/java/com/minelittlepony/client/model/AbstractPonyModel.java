@@ -84,12 +84,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
     @Override
     protected void setModelAngles(T entity) {
-        float pitch = entity.attributes.motionPitch * MathHelper.RADIANS_PER_DEGREE;
-        head.setAngles(
-                MathHelper.clamp(entity.attributes.isSleeping ? 0.1f : entity.pitch / 57.29578F, -1.25f - pitch, 0.5f - pitch),
-                entity.attributes.isSleeping ? (Math.signum(MathHelper.wrapDegrees(entity.relativeHeadYaw)) * 1.3F) : entity.relativeHeadYaw * MathHelper.RADIANS_PER_DEGREE,
-                0
-        );
+        head.setAngles(entity.pitch * MathHelper.RADIANS_PER_DEGREE, entity.relativeHeadYaw * MathHelper.RADIANS_PER_DEGREE, 0);
 
         float wobbleAmount = entity.wobbleAmount * getWobbleAmplitude(entity);
         body.yaw = wobbleAmount;
