@@ -84,6 +84,12 @@ public class EquineRenderManager<
         return DebugBoundingBoxRenderer.applyScale(scale, box);
     }
 
+    public Box getHitbox(T entity) {
+        Pony pony = context.getEntityPony(entity);
+        float scale = (entity.isBaby() ? SizePreset.FOAL : pony.size()).scaleFactor();
+        return DebugBoundingBoxRenderer.applyScale(scale, entity.getBoundingBox());
+    }
+
     public void completeStateUpdate(PlayerEntityRenderState state) {
         if (state instanceof PreviewRenderState previewer) {
             previewer.completeStateUpdate(modelsLookup.apply(previewer.getRace()));

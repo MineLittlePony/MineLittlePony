@@ -161,6 +161,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         if (entity != null) {
             PonyPosture.of(attributes).updateState(entity, this);
         }
+
         PonyRenderStatePrepareCallback.EVENT.invoker().onPonyRenderStatePrepared(this, models.body(), mode);
     }
 
@@ -216,7 +217,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         }
 
         if (isInPose(EntityPose.SLEEPING)) {
-            y /= 2;
+            y += 0.5F;
         }
 
         return y;

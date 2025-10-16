@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.entity;
 
+import com.google.common.collect.ImmutableList.Builder;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Wearable;
@@ -20,10 +21,10 @@ import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.feature.*;
+import net.minecraft.client.render.entity.state.EntityHitbox;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.PlayerLikeEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
@@ -118,17 +119,15 @@ public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLi
     @Override
     protected void renderLabelIfPresent(PlayerEntityRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState camera) {
         matrices.push();
-        if (state.isInPose(EntityPose.SLEEPING)) {
-            if (state.sleepingDirection != null && ((PlayerPonyRenderState)state).sleepingInBed) {
-                double bedRad = Math.toRadians(state.sleepingDirection.getPositiveHorizontalDegrees());
-
-                matrices.translate(Math.cos(bedRad), 0, -Math.sin(bedRad));
-            }
-        }
         matrices.translate(0, ((PlayerPonyRenderState)state).nameplateYOffset, 0);
         super.renderLabelIfPresent(state, matrices, queue, camera);
         matrices.pop();
-        DebugBoundingBoxRenderer.render((PlayerPonyRenderState)state, matrices, queue);
+    }
+
+    @Override
+    protected void appendHitboxes(Player entity, Builder<EntityHitbox> builder, float tickDelta) {
+        super.appendHitboxes(entity, builder, tickDelta);
+        DebugBoundingBoxRenderer.appendHitbox(entity, manager, builder, tickDelta);
     }
 
     @Override

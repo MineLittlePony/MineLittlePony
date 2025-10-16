@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.entity;
 
+import com.google.common.collect.ImmutableList.Builder;
 import com.minelittlepony.api.model.ModelAttributes;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Wearable;
@@ -20,6 +21,7 @@ import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.*;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
+import net.minecraft.client.render.entity.state.EntityHitbox;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
@@ -98,7 +100,12 @@ public abstract class AbstractPonyRenderer<
     public void render(S state, MatrixStack stack, OrderedRenderCommandQueue queue, CameraRenderState camera) {
         model = lookupModel(state).body();
         super.render(state, stack, queue, camera);
-        DebugBoundingBoxRenderer.render(state, stack, queue);
+    }
+
+    @Override
+    protected void appendHitboxes(T entity, Builder<EntityHitbox> builder, float tickDelta) {
+        super.appendHitboxes(entity, builder, tickDelta);
+        DebugBoundingBoxRenderer.appendHitbox(entity, manager, builder, tickDelta);
     }
 
     @Override

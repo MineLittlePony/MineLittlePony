@@ -1,34 +1,28 @@
 package com.minelittlepony.client.render;
 
-import net.minecraft.client.render.*;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.render.entity.state.EntityHitbox;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Box;
 
+import com.google.common.collect.ImmutableList.Builder;
 import com.minelittlepony.api.model.RenderPass;
-import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
-import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 public final class DebugBoundingBoxRenderer {
-    public static <T extends PonyRenderState> void render(T state, MatrixStack stack, OrderedRenderCommandQueue queue) {
-        if (RenderPass.getCurrent() != RenderPass.WORLD || state.hitbox == null) {
-            return;
+    public static <T extends LivingEntity> void appendHitbox(T entity, EquineRenderManager<T, ?, ?> manager, Builder<EntityHitbox> builder, float tickDelta) {
+        if (RenderPass.getCurrent() == RenderPass.WORLD) {
+            Box box = manager.getHitbox(entity);
+            builder.add(new EntityHitbox(
+                box.minX - entity.getX(),
+                box.minY - entity.getY(),
+                box.minZ - entity.getZ(),
+                box.maxX - entity.getX(),
+                box.maxY - entity.getY(),
+                box.maxZ - entity.getZ(),
+                1,
+                1,
+                0
+            ));
         }
-
-        if (state.hitbox == null) {
-            return;
-        }
-
-        Box box = getBoundingBox(state).offset(
-                -state.x,
-                -state.y + (state instanceof PlayerPonyRenderState s ? s.baseScale * s.yOffset : 0),
-                -state.z
-        );
-        queue.submitCustom(stack, RenderLayer.getLines(), (entry, vertices) -> VertexRendering.drawBox(entry, vertices, box, 1, 1, 0, 1));
-    }
-
-    public static Box getBoundingBox(PonyRenderState state) {
-        return getBoundingBox(state.x, state.y, state.z, state.attributes.size.scaleFactor(), state.width, state.height);
     }
 
     public static Box getBoundingBox(double x, double y, double z, float scale, float width, float height) {
