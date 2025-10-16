@@ -55,7 +55,7 @@ public class CapeFeature extends CapeFeatureRenderer {
                             matrixStack.translate(0.0F, -0.053125F, 0.06875F);
                         }
 
-                        matrixStack.translate(0, 0.34F, 0);
+                        matrixStack.translate(0, 0.44F, 0);
                         context.lookupModel(state).body().transformAccessory((PlayerPonyRenderState)state, BodyPart.BODY, matrixStack);
                         matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(85 - model.body.pitch * MathHelper.DEGREES_PER_RADIAN));
                         if (state.baby) {
