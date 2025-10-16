@@ -168,6 +168,9 @@ public class ModelAttributes {
     }
 
     public void updateLivingState(@Nullable LivingEntity entity, Pony pony, Mode mode) {
+        if (entity != null) {
+            interpolatorId = entity.getUuid();
+        }
         metadata = pony.metadata();
         size = entity != null && entity.isBaby() ? SizePreset.FOAL : pony.size();
         isPlayer = entity instanceof PlayerEntity;
@@ -187,9 +190,6 @@ public class ModelAttributes {
         isSwimmingRotated = isSwimming;
         isRiptide = entity != null && entity.isUsingRiptide();
         isRidingInteractive = entity != null && PonyPosture.isRidingAPony(entity);
-        if (entity != null) {
-            interpolatorId = entity.getUuid();
-        }
         isLeftHanded = entity != null && entity.getMainArm() == Arm.LEFT;
         isHorsey = PonyConfig.getInstance().horsieMode.get();
         featureSkins = entity == null ? Set.of() : SkinsProxy.getInstance().getAvailableSkins(entity);
