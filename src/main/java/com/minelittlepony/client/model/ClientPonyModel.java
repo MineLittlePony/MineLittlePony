@@ -60,6 +60,7 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
     @Override
     public final void setAngles(PlayerEntityRenderState state) {
         super.setAngles((T)state);
+        resetTransforms();
 
         setModelVisibilities((T)state);
         setModelAngles((T)state);
