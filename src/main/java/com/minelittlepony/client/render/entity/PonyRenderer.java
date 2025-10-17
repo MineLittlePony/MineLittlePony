@@ -33,6 +33,7 @@ public abstract class PonyRenderer<
         addFeature(new StuckArrowsFeatureRenderer(this, context));
     }
 
+    @Override
     public void updateRenderState(T entity, S state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
         state.leftArmPose = getArmPose(state.leftArmPose, entity, Arm.LEFT);

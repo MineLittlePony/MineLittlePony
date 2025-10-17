@@ -1,7 +1,9 @@
 package com.minelittlepony.client.render.entity.npc;
 
 import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.client.VariatedTextureSupplier;
@@ -41,6 +43,14 @@ public class VillagerPonyRenderer extends AbstractNpcRenderer<VillagerEntity, Vi
         super.updateRenderState(entity, state, tickDelta);
         state.headRolling = entity.getHeadRollingTimeLeft() > 0;
         state.relativeHeadYaw = 0.3F * MathHelper.sin(0.45F * state.age);
+    }
+
+    @Override
+    public BipedEntityModel.ArmPose getArmPose(BipedEntityModel.ArmPose initial, VillagerEntity entity, Arm arm) {
+        if (arm == entity.getMainArm() && !entity.getMainHandStack().isEmpty()) {
+            return BipedEntityModel.ArmPose.ITEM;
+        }
+        return initial;
     }
 
     public static class State extends SillyPonyTextureSupplier.State {
