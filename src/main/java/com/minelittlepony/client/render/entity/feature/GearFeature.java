@@ -103,7 +103,7 @@ public class GearFeature<
                     gearState.limbDistance = limbDistance;
                     gearState.limbAngle = limbAngle;
 
-                    gear.render(stack, gearState, queue, gear.getLayer(state, getContext()), light, OverlayTexture.DEFAULT_UV, Colors.WHITE);
+                    gear.render(stack, gearState, queue, gear.getLayer(state, getContext()), OverlayTexture.DEFAULT_UV, light, Colors.WHITE);
                 }
                 stack.pop();
             }
