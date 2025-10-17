@@ -13,7 +13,7 @@
       }
 		},
 		"right_leg": {
-			"pivot": ["#arm_rotation_x_neg", 0, 0],
+			"pivot": ["#arm_rotation_x_neg", 0, 11],
 			"texture": { "u": 48, "v": 8 },
 			"cubes": [
 				{
@@ -28,7 +28,7 @@
       }
 		},
 		"left_leg": {
-			"pivot": ["#arm_rotation_x", 0, 0],
+			"pivot": ["#arm_rotation_x", 0, 11],
 			"mirror": true,
 			"texture": { "u": 48, "v": 8 },
 			"cubes": [
