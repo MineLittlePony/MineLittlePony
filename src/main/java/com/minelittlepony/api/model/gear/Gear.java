@@ -44,7 +44,7 @@ public interface Gear<S extends BipedEntityRenderState & PonyModel.AttributedHol
     BodyPart getGearLocation();
 
     default boolean isStackable() {
-        return false;
+        return getStackingHeight() > 0;
     }
 
     /**

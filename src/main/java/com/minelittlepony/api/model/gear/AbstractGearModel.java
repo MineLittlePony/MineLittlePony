@@ -24,11 +24,6 @@ public abstract class AbstractGearModel<T extends BipedEntityRenderState & PonyM
     }
 
     @Override
-    public boolean isStackable() {
-        return stackingHeight > 0;
-    }
-
-    @Override
     public float getStackingHeight() {
         return stackingHeight;
     }

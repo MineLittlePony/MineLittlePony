@@ -176,7 +176,7 @@ public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLi
             return state.wearabledTextures.get(wearable);
         }
 
-        if (wearable.isSaddlebags() && state.race.supportsLegacySaddlebags()) {
+        if (wearable.isSaddlebags() && state.race.supportsLegacySaddlebags() && state.attributes.isEmbedded(wearable)) {
             return getTexture(state);
         }
 

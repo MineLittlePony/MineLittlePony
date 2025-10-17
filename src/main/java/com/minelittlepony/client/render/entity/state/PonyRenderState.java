@@ -207,7 +207,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
      * Tests if this model is wearing the given piece of gear.
      */
     public boolean isWearing(Wearable wearable) {
-        return attributes.isEmbedded(wearable) || attributes.featureSkins.contains(wearable.getId()) || isTechnoblade && wearable == Wearable.CROWN;
+        return attributes.isWearing(wearable) || isTechnoblade && wearable == Wearable.CROWN;
     }
 
     private float getNamePlateYOffset() {

@@ -38,7 +38,7 @@ public class PlayerPonyRenderState extends PonyRenderState {
         wearabledTextures.clear();
         for (Wearable wearable : Wearable.REGISTRY.values()) {
             if (isWearing(wearable)) {
-                SkinsProxy.getInstance().getSkin(wearable.getId(), (PlayerEntity)entity).ifPresent(skin -> {
+                SkinsProxy.getInstance().getSkin(wearable.getId(), (PlayerLikeEntity)entity).ifPresent(skin -> {
                     wearabledTextures.put(wearable, skin);
                 });
             }
