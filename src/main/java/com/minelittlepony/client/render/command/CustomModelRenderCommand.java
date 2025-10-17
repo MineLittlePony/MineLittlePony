@@ -58,7 +58,7 @@ public record CustomModelRenderCommand<S>(
             command.model().setAngles(command.state());
             if (anglesFunc == null || anglesFunc.test(command)) {
                 matrices.push();
-                matrices.peek().copy(command.matricesEntry());
+                matrices.peek().copy(matricesEntry);
 
                 renderModel(buffer);
 
