@@ -15,7 +15,6 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityPose;
-import net.minecraft.item.consume.UseAction;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 
@@ -73,7 +72,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
     protected void setModelVisibilities(T state) {
         head.visible = state.headVisible;
-        resetPivot(head, neck, leftArm, rightArm, leftLeg, rightLeg);
         hat.visible = head.visible && !state.attributes.isHorsey;
         neck.visible = body.visible;
         if (state.attributes.isHorsey) {

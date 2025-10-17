@@ -85,17 +85,6 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
         return side == Arm.LEFT ? leftLeg : rightLeg;
     }
 
-    static void resetPivot(ModelPart part) {
-        part.resetTransform();
-        //part.setOrigin(part.getDefaultTransform().x(), part.getDefaultTransform().y(), part.getDefaultTransform().z());
-    }
-
-    static void resetPivot(ModelPart...parts) {
-        for (ModelPart part : parts) {
-            resetPivot(part);
-        }
-    }
-
     public interface PosingCallback<S extends PonyRenderState> {
         void poseModel(ClientPonyModel<S> model, S state);
     }
