@@ -502,18 +502,34 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
     @Override
     public void transform(T state, BodyPart part, MatrixStack stack) {
-
-        if (state.attributes.isHorsey) {
-            stack.translate(0, 0.1F, 0);
-        }
+        float originY = 1.5F;
+        float originZ = 0;
 
         if (state.attributes.isSleeping || state.attributes.isRiptide) {
             stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
             stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
+            stack.translate(0, -0.67F, -0.51F);
+            originY += -0.75F;
         }
 
-        if (state.attributes.isLyingDown && !state.attributes.isSleeping) {
-            stack.translate(0, 1.35F, 0);
+        if (state.attributes.isSwimming) {
+            originY += -0.75F;
+        }
+        if (state.attributes.isLyingDown) {
+            originZ += -0.3F;
+        }
+
+        stack.translate(0, originY, originZ);
+
+        if (state.attributes.isCrouching) {
+            stack.translate(0, -0.13F, 0);
+        }
+        if (state.attributes.isLyingDown) {
+            stack.translate(0, state.attributes.isSleeping ? 0F : 0.77F, state.attributes.isSleeping ? 1 : 0);
+        }
+
+        if (state.attributes.isHorsey) {
+            stack.translate(0, 0.1F, 0);
         }
 
         if (state.attributes.isHorsey && part == BodyPart.BODY) {
@@ -521,5 +537,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         }
 
         PonyTransformation.forSize(state.attributes.size).transform(state.attributes, part, stack);
+
+        stack.translate(0, -originY, originZ);
     }
 }
