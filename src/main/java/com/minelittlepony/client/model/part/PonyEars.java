@@ -28,8 +28,15 @@ public class PonyEars implements SubModel<PonyRenderState>, MsonModel {
 
     @Override
     public void setPartAngles(PonyRenderState state, float bodySwing) {
-        right.resetTransform();
         left.resetTransform();
+        right.resetTransform();
+
+        if (state.attributes.isHorsey) {
+            left.originX = -1;
+            right.originX = 1;
+            left.originY = right.originY = 1;
+            left.originZ = right.originZ = 1.5F;
+        }
 
         float limbSpeed = MathHelper.clamp(state.limbSwingAmplitude, 0, 1);
 
@@ -59,15 +66,5 @@ public class PonyEars implements SubModel<PonyRenderState>, MsonModel {
     public void setVisible(boolean visible, PonyRenderState state) {
         right.visible = !state.race.isHuman();
         left.visible = !state.race.isHuman();
-
-        if (state.attributes.isHorsey) {
-            left.originX = -1;
-            right.originX = 1;
-            left.originY = right.originY = 1;
-            left.originZ = right.originZ = 1.5F;
-        } else {
-            left.resetTransform();
-            right.resetTransform();
-        }
     }
 }
