@@ -62,15 +62,11 @@ public class IllagerPonyRenderer<
         return new IllagerPonyRenderer<PillagerEntity, State, ChangelingModel<State>>(context, ModelType.PILLAGER, PILLAGER) {
             @Override
             public ArmPose getArmPose(ArmPose initial, PillagerEntity state, Arm arm) {
-                ArmPose holdingPose = getHoldingPose(state.getState());
-
-                if (holdingPose != ArmPose.EMPTY) {
-                    boolean isMain = state.getMainArm() == Arm.RIGHT;
-
-                    return isMain ? holdingPose : ArmPose.EMPTY;
+                if (state.getMainArm() == arm) {
+                    return getHoldingPose(state.getState());
                 }
 
-                return initial;
+                return ArmPose.EMPTY;
             }
         };
     }

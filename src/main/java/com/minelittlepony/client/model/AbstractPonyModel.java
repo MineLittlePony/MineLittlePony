@@ -19,6 +19,8 @@ import net.minecraft.item.consume.UseAction;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 
+import org.joml.Quaternionf;
+
 /**
  * Foundation class for all types of ponies.
  */
@@ -475,19 +477,28 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         hat.visible  = false;
     }
 
-    public void positionheldItem(T state, Arm arm, MatrixStack matrices) {
+    public final void transformHeldItem(T state, Arm arm, MatrixStack matrices) {
+        transform(state, BodyPart.LEGS, matrices);
+        ModelPart a = getArm(arm);
+        Quaternionf rotation = new Quaternionf().rotationZYX(a.roll, a.yaw, a.pitch);
+        matrices.multiply(rotation);
+        positionheldItem(state, arm, matrices);
+        matrices.multiply(rotation.conjugate());
+    }
+
+    protected void positionheldItem(T state, Arm arm, MatrixStack matrices) {
         float left = arm == Arm.LEFT ? -1 : 1;
+        ArmPose pose = arm == Arm.LEFT ? state.leftArmPose : state.rightArmPose;
 
-        UseAction action = state.getHeldItem(arm).action;
-
-        if (action == UseAction.SPYGLASS && state.attributes.itemUseTime > 0) {
+        if (pose == ArmPose.SPYGLASS) {
+            matrices.translate(0, 0.3, 0.3);
             return;
         }
 
-        matrices.translate(-left * 0.1F, 0.45F, 0);
+        matrices.translate(-left * 0.06F, 0.355F, -0.06F);
 
-        if (action == UseAction.BLOCK && state.attributes.itemUseTime == 0) {
-            matrices.translate(left * 0.02F, -0.25F, 0);
+        if (pose == ArmPose.BOW_AND_ARROW) {
+            matrices.translate(0, 0.1F, 0);
         }
     }
 

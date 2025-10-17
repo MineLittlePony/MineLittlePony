@@ -1,6 +1,5 @@
 package com.minelittlepony.client.render.entity.feature;
 
-import com.minelittlepony.api.model.*;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.*;
@@ -20,11 +19,8 @@ public class HeldItemFeature<
         M extends ClientPonyModel<S>
     > extends PlayerHeldItemFeatureRenderer<PlayerEntityRenderState, M> {
 
-    private final PonyRenderContext<?, S, M> context;
-
     public HeldItemFeature(PonyRenderContext<?, S, M> context) {
         super(context.upcast());
-        this.context = context;
     }
 
     @SuppressWarnings(value = {"unchecked"})
@@ -36,21 +32,17 @@ public class HeldItemFeature<
 
     public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
         if (!state.leftHandItemState.isEmpty() || !state.rightHandItemState.isEmpty()) {
-            M model = context.lookupModel(state).body();
-
-            matrices.push();
-            model.transform(state, BodyPart.LEGS, matrices);
             renderItem(state, state.rightHandItemState, state.rightHeldItem, Arm.RIGHT, matrices, queue, light);
             renderItem(state, state.leftHandItemState, state.leftHeldItem, Arm.LEFT, matrices, queue, light);
-            matrices.pop();
         }
     }
 
     @SuppressWarnings(value = {"unchecked"})
     protected void renderItem(S state, ItemRenderState item, PonyRenderState.HeldItemRenderState glintLessItem, Arm arm, MatrixStack matrices, OrderedRenderCommandQueue queue, int light) {
         if (!item.isEmpty()) {
-            if (context.lookupModel(state).body() instanceof AbstractPonyModel m) {
-                m.positionheldItem(state, arm, matrices);
+            matrices.push();
+            if (getContextModel() instanceof AbstractPonyModel m) {
+                m.transformHeldItem(state, arm, matrices);
             }
 
             renderItem((PlayerEntityRenderState)state, item, arm, matrices, queue, light);
@@ -89,6 +81,7 @@ public class HeldItemFeature<
                 renderItem((PlayerEntityRenderState)state, glintLessItem.glintlessHandItemState, arm, matrices, queue, LightmapTextureManager.MAX_LIGHT_COORDINATE);
                 matrices.pop();
             }
+            matrices.pop();
         }
     }
 }
