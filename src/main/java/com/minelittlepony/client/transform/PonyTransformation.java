@@ -126,6 +126,7 @@ public enum PonyTransformation {
                     stack.translate(0, -0.2F, 0.08F);
                     break;
                 case LEGS:
+                    if (attributes.isGliding) stack.translate(0, 0.2F, 0);
                     if (attributes.isLyingDown || attributes.isGoingFast) {
                         stack.scale(1.15F, 1.15F, 1.12F);
                     } else {
@@ -153,12 +154,12 @@ public enum PonyTransformation {
                     stack.scale(1.3F, 1.3F, 1.3F);
                     break;
                 case LEGS:
+                    if (attributes.isGliding) stack.translate(0, 0.2F, 0);
                     if (attributes.isLyingDown || attributes.isGoingFast) {
                         stack.scale(1, 1, 0.81F);
                     } else {
                         stack.scale(1, 0.81F, 1);
                     }
-
                     break;
                 case BACK:
                     if (attributes.isCrouching) stack.translate(0, -0.1F, 0);
@@ -193,6 +194,7 @@ public enum PonyTransformation {
                     stack.translate(0, -0.1F, 0);
                     break;
                 case LEGS:
+                    if (attributes.isGoingFast) stack.translate(0, -0.1F, 0);
                     if (attributes.isLyingDown || attributes.isGoingFast) {
                         stack.scale(1, 1, 1.18F);
                     } else {
