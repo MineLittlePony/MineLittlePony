@@ -5,6 +5,7 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.VertexConsumerProvider.Immediate;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.ColorHelper;
 
 import com.minelittlepony.api.model.SubModel;
 import com.minelittlepony.client.render.MagicGlow;
@@ -30,9 +31,8 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
     public void renderMagic(MatrixStack stack, VertexConsumer verts) {
         if (tint != 0) {
             Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
-
             VertexConsumer vertices = immediate.getBuffer(MagicGlow.getRenderLayer());
-            glow.render(stack, vertices, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, (tint & 0xFFFFFF) | (102 << 24));
+            glow.render(stack, vertices, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, ColorHelper.withAlpha(0.5F, tint));
         }
     }
 
@@ -40,5 +40,6 @@ public class UnicornHorn<T extends PonyRenderState> implements SubModel<T> {
     public void setVisible(boolean visible, T state) {
         tint = visible && state.hasMagicGlow() && state.headVisible && state.hornGlowVisible ? state.glowColor : 0;
         horn.visible = visible && state.race.hasHorn() && state.headVisible;
+        glow.visible = tint != 0;
     }
 }
