@@ -48,7 +48,7 @@ class LegendOverlayWidget implements Carousel.Element, ITextContext {
             int x = frame.left;
             int y = frame.top + (i * 10 + 20);
             context.getMatrices().translate(x, y);
-            drawLegendBlock(context, 0, 0, 0, mouseX - x, mouseY - y, key, value);
+            drawLegendBlock(context, i, x, y, mouseX - x, mouseY - y, key, value);
             context.getMatrices().popMatrix();
         });
     }
@@ -80,7 +80,7 @@ class LegendOverlayWidget implements Carousel.Element, ITextContext {
                     return color == 0 ? s : s.withColor(value.colorCode());
                 }));
             }
-            context.drawTooltip(getFont(), lines, 2, 10);
+            context.drawTooltip(getFont(), lines, x + mouseX + 2, y + mouseY + 10);
         }
     }
 }
