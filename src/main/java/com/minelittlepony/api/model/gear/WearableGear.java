@@ -26,7 +26,7 @@ public class WearableGear<T extends BipedEntityRenderState & PonyModel.Attribute
 
     @Override
     public boolean canRender(PonyModel<?> model, T state) {
-        return state.getAttributes().isWearing(wearable);
+        return state.isWearing(wearable);
     }
 
     @Override

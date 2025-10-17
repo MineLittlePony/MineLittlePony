@@ -86,9 +86,8 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     protected void setModelAngles(T entity) {
         head.setAngles(entity.pitch * MathHelper.RADIANS_PER_DEGREE, entity.relativeHeadYaw * MathHelper.RADIANS_PER_DEGREE, 0);
 
-        float wobbleAmount = entity.wobbleAmount * getWobbleAmplitude(entity);
-        body.yaw = wobbleAmount;
-        neck.yaw = wobbleAmount;
+        body.yaw = entity.wobbleAmount;
+        neck.yaw = entity.wobbleAmount;
 
         rotateLegs(entity);
 
@@ -125,7 +124,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             head.pitch = 0.5F;
         }
 
-        parts.forEach(part -> part.setPartAngles(entity, wobbleAmount));
+        parts.forEach(part -> part.setPartAngles(entity, entity.wobbleAmount));
         mainRenderList.pose(entity);
     }
 

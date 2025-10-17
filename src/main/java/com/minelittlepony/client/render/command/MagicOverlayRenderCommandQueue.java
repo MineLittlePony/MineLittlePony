@@ -33,6 +33,7 @@ import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -78,7 +79,11 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
     public void submitItem(MatrixStack matrices, ItemDisplayContext displayContext, int light, int overlay, int outlineColors, int[] tintLayers, List<BakedQuad> quads, RenderLayer renderLayer, Glint glintType) {
         renderLayer = layer.apply(renderLayer);
         if (renderLayer != null) {
-            parent.submitItem(matrices, displayContext, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0, tintLayers, quads, renderLayer, Glint.NONE);
+            List<BakedQuad> adjustedQuad = new ArrayList<>();
+            for (var quad : quads) {
+                adjustedQuad.add(new BakedQuad(quad.vertexData(), 0, quad.face(), quad.sprite(), false, 1));
+            }
+            parent.submitItem(matrices, displayContext, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0, new int[] {color}, adjustedQuad, renderLayer, Glint.NONE);
         }
     }
 

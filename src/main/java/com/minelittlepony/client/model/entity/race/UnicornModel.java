@@ -41,11 +41,6 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> i
     }
 
     @Override
-    public float getWobbleAmplitude(T state) {
-        return isCasting(state) ? 0 : 1;
-    }
-
-    @Override
     protected void rotateLegs(T state) {
         super.rotateLegs(state);
 

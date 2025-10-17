@@ -3,6 +3,7 @@ package com.minelittlepony.client.render.entity;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.client.compat.iris.IrisApiCompat;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.EnderStallionModel;
 import com.minelittlepony.client.render.entity.feature.GlowingEyesFeature;
@@ -53,18 +54,21 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
 
     @Override
     public void updateRenderState(EndermanEntity entity, State state, float tickDelta) {
+        state.carriedBlock = entity.getCarriedBlock();
         super.updateRenderState(entity, state, tickDelta);
         boolean isAlicorn = entity.getUuid().getLeastSignificantBits() % 3 == 0;
         state.isBoss = !isAlicorn && entity.getUuid().getLeastSignificantBits() % 90 == 0;
         state.race = isAlicorn ? (state.attributes.metadata.race().hasHorn() ? Race.ALICORN : Race.PEGASUS) : state.attributes.metadata.race();
         state.angry = entity.isAngry();
-        state.carriedBlock = entity.getCarriedBlock();
+        state.hornGlowVisible = !IrisApiCompat.isOnShadowPass() && state.race.hasHorn() && state.carriedBlock != null;
 
         if (state.carriedBlock != null) {
             if (state.mainArm == Arm.RIGHT) {
                 itemModelManager.updateForLivingEntity(state.rightHandItemState, state.carriedBlock.getBlock().asItem().getDefaultStack(), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
+                state.rightHeldItem.updateItemRenderState(state, itemModelManager, state.carriedBlock.getBlock().asItem().getDefaultStack(), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
             } else {
                 itemModelManager.updateForLivingEntity(state.leftHandItemState, state.carriedBlock.getBlock().asItem().getDefaultStack(), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
+                state.leftHeldItem.updateItemRenderState(state, itemModelManager, state.carriedBlock.getBlock().asItem().getDefaultStack(), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
             }
         } else {
             state.rightHandItemState.clear();

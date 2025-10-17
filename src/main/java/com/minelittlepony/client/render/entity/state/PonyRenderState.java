@@ -1,7 +1,6 @@
 package com.minelittlepony.client.render.entity.state;
 
-import net.minecraft.block.AbstractSkullBlock;
-import net.minecraft.block.BedBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.SkullBlock.SkullType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.ItemModelManager;
@@ -19,7 +18,9 @@ import net.minecraft.item.*;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Arm;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.EmptyBlockView;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -50,6 +51,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
     public boolean isTechnoblade;
     public boolean headVisible = true;
     public boolean hornGlowVisible = true;
+    public boolean hasHeadBlock;
 
     public Pony pony = Pony.getManager().getPony(DefaultPonySkinHelper.STEVE);
     public Race race = Race.HUMAN;
@@ -77,6 +79,9 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         sleepingInBed = false;
         submergedInWater = false;
         wobbleAmount = handSwingProgress <= 0 ? 0 : MathHelper.sin(MathHelper.sqrt(handSwingProgress) * MathHelper.PI * 2) * 0.04F;
+        if (hasMagicGlow()) {
+            wobbleAmount *= 0.5;
+        }
         if (attributes.isSitting) {
             pose = EntityPose.SITTING;
         }
@@ -93,10 +98,12 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         field_53538 *= 3F;
 
         equippedHeads.clear();
+        hasHeadBlock = false;
         ItemStack stack = equipment.getOrDefault(EquipmentSlot.HEAD, ItemStack.EMPTY);
         EquippedHeadRenderState state = EquippedHeadRenderState.of(resolver, stack, null);
         if (!state.isEmpty()) {
             equippedHeads.add(state);
+            hasHeadBlock |= state.opaque;
         }
 
         rightHeldItem.updateItemRenderState(this, resolver, armStacks.getOrDefault(Arm.RIGHT, ItemStack.EMPTY), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, null);
@@ -122,6 +129,9 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         sleepingInBed = entity != null && entity.getSleepingPosition().isPresent() && entity.getEntityWorld().getBlockState(entity.getSleepingPosition().get()).getBlock() instanceof BedBlock;
         submergedInWater = entity != null && entity.isSubmergedInWater();
         wobbleAmount = handSwingProgress <= 0 ? 0 : MathHelper.sin(MathHelper.sqrt(handSwingProgress) * MathHelper.PI * 2) * 0.04F;
+        if (hasMagicGlow()) {
+            wobbleAmount *= 0.5;
+        }
         if (attributes.isSitting) {
             pose = EntityPose.SITTING;
         }
@@ -148,10 +158,12 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         ArmourRendererPlugin plugin = ArmourRendererPlugin.INSTANCE.get();
 
         equippedHeads.clear();
+        hasHeadBlock = false;
         for (ItemStack stack : plugin.getArmorStacks(entity, EquipmentSlot.HEAD, EquipmentModel.LayerType.HUMANOID, ArmourRendererPlugin.ArmourType.SKULL)) {
             EquippedHeadRenderState state = EquippedHeadRenderState.of(resolver, stack, entity);
             if (!state.isEmpty()) {
                 equippedHeads.add(state);
+                hasHeadBlock |= state.opaque;
             }
         }
 
@@ -203,9 +215,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         };
     }
 
-    /**
-     * Tests if this model is wearing the given piece of gear.
-     */
+    @Override
     public boolean isWearing(Wearable wearable) {
         return attributes.isWearing(wearable) || isTechnoblade && wearable == Wearable.CROWN;
     }
@@ -287,9 +297,10 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
 
     public record EquippedHeadRenderState(
             ItemRenderState item,
+            boolean opaque,
             @Nullable SkullType skullType,
             @Nullable ProfileComponent wearingSkullProfile) {
-        static final EquippedHeadRenderState EMPTY = new EquippedHeadRenderState(new ItemRenderState(), null, null);
+        static final EquippedHeadRenderState EMPTY = new EquippedHeadRenderState(new ItemRenderState(), false, null, null);
 
         public static EquippedHeadRenderState of(ItemModelManager resolver, ItemStack stack, @Nullable LivingEntity entity) {
             if (stack.isEmpty()) {
@@ -297,7 +308,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
             }
 
             if (stack.getItem() instanceof BlockItem b && b.getBlock() instanceof AbstractSkullBlock skullBlock) {
-                return new EquippedHeadRenderState(EMPTY.item(), skullBlock.getSkullType(), stack.get(DataComponentTypes.PROFILE));
+                return new EquippedHeadRenderState(EMPTY.item(), skullBlock.getDefaultState().isSolidBlock(EmptyBlockView.INSTANCE, BlockPos.ORIGIN), skullBlock.getSkullType(), stack.get(DataComponentTypes.PROFILE));
             }
 
             if (!ArmorFeatureRenderer.hasModel(stack, EquipmentSlot.HEAD)) {
@@ -308,7 +319,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
                     resolver.clearAndUpdate(item, stack, ItemDisplayContext.HEAD, null, null, 0);
                 }
                 if (!item.isEmpty()) {
-                    return new EquippedHeadRenderState(item, null, null);
+                    return new EquippedHeadRenderState(item, false, null, null);
                 }
             }
 

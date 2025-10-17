@@ -6,6 +6,7 @@ import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 
 import com.minelittlepony.api.pony.meta.Race;
+import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.mson.api.MsonModel;
 
 public interface PonyModel<T extends EntityRenderState & PonyModel.AttributedHolder> extends MsonModel, ModelWithHooves<T>, ModelWithHead {
@@ -25,15 +26,16 @@ public interface PonyModel<T extends EntityRenderState & PonyModel.AttributedHol
         getBodyPart(part).applyTransform(matrices);
     }
 
-    default float getWobbleAmplitude(T state) {
-        return 1;
-    }
-
     public interface AttributedHolder {
         ModelAttributes getAttributes();
 
         Race getRace();
 
         float getSwingAmount();
+
+        /**
+         * Tests if this model is wearing the given piece of gear.
+         */
+        boolean isWearing(Wearable wearable);
     }
 }
