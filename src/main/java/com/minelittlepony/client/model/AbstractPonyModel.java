@@ -275,11 +275,13 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     public ModelPart getBodyPart(BodyPart part) {
         switch (part) {
             default:
+            case HORN:
             case HEAD: return head;
             case NECK: return neck;
             case TAIL:
             case LEGS:
             case BACK:
+            case WINGS:
             case BODY: return body;
         }
     }

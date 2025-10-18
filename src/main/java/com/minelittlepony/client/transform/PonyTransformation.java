@@ -165,7 +165,7 @@ public enum PonyTransformation {
                     stack.translate(0, 0.25F, 0);
                     break;
                 case WINGS:
-                    stack.translate(0, 0.1F, 0);
+                    stack.translate(0.02F, 0.1F, 0);
                     break;
                 default:
             }
@@ -204,6 +204,9 @@ public enum PonyTransformation {
                 case TAIL:
                     stack.translate(0, -0.1F, 0);
                     break;
+                case WINGS:
+                    stack.translate(-0.05F, 0, 0);
+                    break;
                 case LEGS:
                     if (!attributes.isLyingDown) stack.translate(0, -0.2F, 0);
                     if (attributes.isGoingFast) stack.translate(0, 0.049F, 0);
@@ -222,7 +225,7 @@ public enum PonyTransformation {
                 case NECK -> new Vector3f(0, 0.28F, 0);
                 case HORN -> new Vector3f(0, 0.7F, 0);
                 case LEGS -> new Vector3f(0, 0.18F, 0);
-                case WINGS -> attributes.isCrouching ? new Vector3f(0.1F) : ZERO;
+                case WINGS -> new Vector3f(0.1F);
                 default -> ZERO;
             });
         }

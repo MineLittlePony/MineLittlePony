@@ -14,6 +14,7 @@ import com.minelittlepony.util.MathUtil;
 
 public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonModel {
 
+    private S state;
     private ModelWithWings<S> pegasus;
 
     protected Wing<S> leftWing;
@@ -100,23 +101,19 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
 
         leftWing.open = extended;
         leftWing.bags = bags;
-        leftWing.setAngles(state, flap, flapAngle);
+        leftWing.setAngles(model, state, flap, flapAngle);
 
         rightWing.open = extended;
         rightWing.bags = bags;
-        rightWing.setAngles(state, -flap, -flapAngle);
+        rightWing.setAngles(model, state, -flap, -flapAngle);
 
         if (legacyWing != rightWing) {
             rightWing.root.hidden = useLegacyWing;
             legacyWing.root.hidden = !useLegacyWing;
             legacyWing.open = extended;
             legacyWing.bags = bags;
-            legacyWing.setAngles(state, -flap, -flapAngle);
+            legacyWing.setAngles(model, state, -flap, -flapAngle);
         }
-
-        model.transform(state, BodyPart.WINGS, leftWing.root);
-        model.transform(state, BodyPart.WINGS, rightWing.root);
-        model.transform(state, BodyPart.WINGS, legacyWing.root);
     }
 
     @Override
@@ -131,12 +128,39 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
     }
 
     @Override
-    public void accept(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
+    public void accept(MatrixStack matrices, VertexConsumer vertices, int overlay, int light, int color) {
         if (visible) {
-            leftWing.render(stack, vertices, overlay, light, color);
-            rightWing.render(stack, vertices, overlay, light, color);
-            legacyWing.render(stack, vertices, overlay, light, color);
+            MatrixStack transform = new MatrixStack();
+            matrices.push();
+            if (state != null) {
+                transform.push();
+                pegasus.transform(state, BodyPart.WINGS, transform);
+                matrices.peek().getPositionMatrix().mul(transform.peek().getPositionMatrix());
+                matrices.peek().getNormalMatrix().mul(transform.peek().getNormalMatrix());
+                transform.pop();
+            }
+            leftWing.render(matrices, vertices, overlay, light, color);
+            matrices.pop();
+            matrices.push();
+            if (state != null) {
+                transform.push();
+                transform.scale(-1, 1, 1);
+                pegasus.transform(state, BodyPart.WINGS, transform);
+                transform.scale(-1, 1, 1);
+                matrices.peek().getPositionMatrix().mul(transform.peek().getPositionMatrix());
+                matrices.peek().getNormalMatrix().mul(transform.peek().getNormalMatrix());
+                transform.pop();
+            }
+            rightWing.render(matrices, vertices, overlay, light, color);
+            legacyWing.render(matrices, vertices, overlay, light, color);
+            matrices.pop();
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <X> void pose(X state) {
+        this.state = (S)state;
     }
 
     public static class Wing<S extends PonyRenderState> implements MsonModel {
@@ -159,7 +183,7 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
             folded = tree.getChild("folded");
         }
 
-        public void setAngles(S state, float swing, float roll) {
+        public void setAngles(PonyModel<S> model, S state, float swing, float roll) {
             root.originY = root.getDefaultTransform().y() + (bags ? 0.198F / wingScale : 0);
             root.xScale = wingScale;
             root.yScale = wingScale;
@@ -175,6 +199,8 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
             if (state.race.hasBugWings()) {
                 folded.roll = roll;
             }
+
+            model.transform(state, BodyPart.WINGS, root);
         }
 
         public void render(MatrixStack matrices, VertexConsumer vertices, int overlay, int light, int color) {
