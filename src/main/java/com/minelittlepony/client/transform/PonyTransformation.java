@@ -2,7 +2,6 @@ package com.minelittlepony.client.transform;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Vec3d;
 
 import org.joml.Vector3f;
 
@@ -16,7 +15,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public enum PonyTransformation {
-    NORMAL(SizePreset.NORMAL, 0, 3F, 0.75F) {
+    NORMAL(SizePreset.NORMAL) {
         @Override
         public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
             switch (part) {
@@ -35,7 +34,7 @@ public enum PonyTransformation {
             }
         }
     },
-    STOCKY(SizePreset.STOCKY, 0, 3F, 0.75F) {
+    STOCKY(SizePreset.STOCKY) {
         @Override
         public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
             switch (part) {
@@ -74,7 +73,7 @@ public enum PonyTransformation {
             });
         }
     },
-    LANKY(SizePreset.LANKY, 0, 2.6F, 0.75F) {
+    LANKY(SizePreset.LANKY) {
         @Override
         public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
             switch (part) {
@@ -108,7 +107,7 @@ public enum PonyTransformation {
             });
         }
     },
-    BULKY(SizePreset.BULKY, 0, 2.3F, 0.75F) {
+    BULKY(SizePreset.BULKY) {
         @Override
         public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
             switch (part) {
@@ -143,7 +142,7 @@ public enum PonyTransformation {
             });
         }
     },
-    FOAL(SizePreset.FOAL, 0, 3.8F, 0.75F) {
+    FOAL(SizePreset.FOAL) {
         @Override
         public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
             switch (part) {
@@ -182,7 +181,7 @@ public enum PonyTransformation {
             });
         }
     },
-    TALL(SizePreset.TALL, 0, 2.2F, 0.75F) {
+    TALL(SizePreset.TALL) {
         @Override
         public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
             switch (part) {
@@ -230,7 +229,7 @@ public enum PonyTransformation {
             });
         }
     },
-    YEARLING(SizePreset.YEARLING, 0, 3.8F, 0.75F) {
+    YEARLING(SizePreset.YEARLING) {
         @Override
         public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
             switch (part) {
@@ -269,7 +268,7 @@ public enum PonyTransformation {
             });
         }
     },
-    SQUAT(SizePreset.SQUAT, 0, 3.4F, 0.75F) {
+    SQUAT(SizePreset.SQUAT) {
         @Override
         public void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack) {
             switch (part) {
@@ -318,20 +317,9 @@ public enum PonyTransformation {
     private static final Map<Size, PonyTransformation> REGISTRY = Arrays.stream(values()).collect(Collectors.toMap(i -> i.size, Function.identity()));
 
     private final Size size;
-    private final Vec3d riderOffset;
 
-    PonyTransformation(Size size, float rX, float rY, float rZ) {
+    PonyTransformation(Size size) {
         this.size = size;
-        riderOffset = new Vec3d(rX, rY, rZ);
-    }
-
-    @Deprecated
-    public Vec3d getRiderOffset() {
-        return riderOffset;
-    }
-
-    public void translateForRider(MatrixStack stack) {
-        stack.translate(riderOffset.x, riderOffset.y / 16F, riderOffset.z);
     }
 
     public abstract void transform(ModelAttributes attributes, BodyPart part, MatrixStack stack);
