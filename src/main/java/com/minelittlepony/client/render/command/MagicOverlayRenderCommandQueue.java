@@ -91,23 +91,32 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
     public void fabric_submitItem(MatrixStack matrices, ItemDisplayContext displayContext, int light, int overlay, int outlineColors, int[] tintLayers, List<BakedQuad> quads, RenderLayer renderLayer, Glint glintType, MeshView mesh) {
         renderLayer = layer.apply(renderLayer);
         if (renderLayer != null) {
-            ((AccessRenderCommandQueue)parent).fabric_submitItem(matrices, displayContext, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0, tintLayers, quads, renderLayer, Glint.NONE, mesh);
+            List<BakedQuad> adjustedQuad = new ArrayList<>();
+            for (var quad : quads) {
+                adjustedQuad.add(new BakedQuad(quad.vertexData(), 0, quad.face(), quad.sprite(), false, 1));
+            }
+            ((AccessRenderCommandQueue)parent).fabric_submitItem(matrices, displayContext, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0, new int[] {color}, adjustedQuad, renderLayer, Glint.NONE, mesh);
         }
     }
 
     @Override
-    public void submitModelPart(ModelPart part, MatrixStack matrices, RenderLayer renderLayer, int light, int overlay, Sprite sprite, boolean sheeted, boolean hasGlint, int tintedColor, CrumblingOverlayCommand crumblingOverlay, int i) {
+    public void submitModelPart(ModelPart part, MatrixStack matrices, RenderLayer renderLayer, int light, int overlay, @Nullable Sprite sprite, boolean sheeted, boolean hasGlint, int tintedColor, CrumblingOverlayCommand crumblingOverlay, int i) {
         renderLayer = layer.apply(renderLayer);
         if (renderLayer != null) {
-            parent.submitModelPart(part, matrices, renderLayer, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, sprite, sheeted, false, color, null, i);
+            parent.submitModelPart(part, matrices, renderLayer, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, null, false, false, color, null, i);
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void submitCustom(MatrixStack matrices, RenderLayer renderLayer, Custom customRenderer) {
         renderLayer = layer.apply(renderLayer);
         if (renderLayer != null) {
-            parent.submitCustom(matrices, layer.apply(renderLayer), customRenderer);
+            if (customRenderer instanceof CustomModelRenderCommand custom) {
+                final RenderLayer l = renderLayer;
+                customRenderer = new CustomModelRenderCommand<>(custom.matrices(), custom.command(), renderLayer, c -> custom.bufferFunc().apply(c) == null ? null : l, custom.anglesFunc());
+            }
+            parent.submitCustom(matrices, renderLayer, customRenderer);
         }
     }
 
