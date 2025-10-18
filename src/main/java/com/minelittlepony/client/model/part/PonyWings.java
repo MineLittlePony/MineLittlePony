@@ -59,7 +59,7 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
     }
 
     @Override
-    public void setPartAngles(S state, float bodySwing) {
+    public void setAngles(PonyModel<S> model, S state) {
         float flap = 0;
 
         if (state.handSwingProgress > 0) {
@@ -113,6 +113,10 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
             legacyWing.bags = bags;
             legacyWing.setAngles(state, -flap, -flapAngle);
         }
+
+        model.transform(state, BodyPart.WINGS, leftWing.root);
+        model.transform(state, BodyPart.WINGS, rightWing.root);
+        model.transform(state, BodyPart.WINGS, legacyWing.root);
     }
 
     @Override
@@ -127,7 +131,7 @@ public class PonyWings<S extends PonyRenderState> implements SubModel<S>, MsonMo
     }
 
     @Override
-    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
+    public void accept(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
         if (visible) {
             leftWing.render(stack, vertices, overlay, light, color);
             rightWing.render(stack, vertices, overlay, light, color);

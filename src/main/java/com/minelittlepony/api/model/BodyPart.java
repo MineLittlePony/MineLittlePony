@@ -6,5 +6,7 @@ public enum BodyPart {
     TAIL,
     NECK,
     LEGS,
-    BACK;
+    BACK,
+    WINGS,
+    HORN;
 }

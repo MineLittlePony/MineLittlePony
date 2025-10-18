@@ -5,6 +5,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
+import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.model.SubModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.common.util.animation.Interpolator;
@@ -18,10 +19,10 @@ public class LionTail implements SubModel<PonyRenderState> {
     }
 
     @Override
-    public void setPartAngles(PonyRenderState state, float bodySwing) {
+    public void setAngles(PonyModel<PonyRenderState> model, PonyRenderState state) {
         tail.resetTransform();
 
-        bodySwing *= 5;
+        float bodySwing = state.wobbleAmount * 5;
 
         float baseSail = 1F;
 
@@ -96,7 +97,7 @@ public class LionTail implements SubModel<PonyRenderState> {
     }
 
     @Override
-    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
+    public void accept(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
         tail.render(stack, vertices, overlay, light, color);
     }
 }

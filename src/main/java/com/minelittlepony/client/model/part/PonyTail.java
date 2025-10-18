@@ -44,14 +44,14 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
     }
 
     @Override
-    public void setPartAngles(PonyRenderState state, float bodySwing) {
+    public void setAngles(PonyModel<PonyRenderState> model, PonyRenderState state) {
         boolean rainboom = state.attributes.isSwimming || state.attributes.isGoingFast;
         tail.roll = rainboom ? 0 : MathHelper.cos(state.limbAmplitudeInverse * 0.8F) * 0.2f * state.limbSwingAmplitude;
-        tail.yaw = bodySwing * 5;
+        tail.yaw = state.wobbleAmount * 5;
 
         if (state.attributes.isCrouching && !rainboom) {
             tail.setOrigin(0, 0, TAIL_SNEAKING_Z);
-            tail.pitch = -model.body.pitch + 0.1F;
+            tail.pitch = -model.getBodyPart(BodyPart.BODY).pitch + 0.1F;
         } else if (state.attributes.isSitting) {
             tail.originZ = TAIL_RIDING_Z;
             tail.originY = TAIL_RIDING_Y;
@@ -91,7 +91,7 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
     }
 
     @Override
-    public void renderPart(MatrixStack matrices, VertexConsumer vertices, int overlay, int light, int color) {
+    public void accept(MatrixStack matrices, VertexConsumer vertices, int overlay, int light, int color) {
         if (tail.visible) {
             matrices.push();
             model.body.applyTransform(matrices);

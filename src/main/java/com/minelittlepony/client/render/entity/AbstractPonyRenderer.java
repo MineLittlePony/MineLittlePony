@@ -2,6 +2,7 @@ package com.minelittlepony.client.render.entity;
 
 import com.google.common.collect.ImmutableList.Builder;
 import com.minelittlepony.api.model.ModelAttributes;
+import com.minelittlepony.api.model.ModelWithHorn;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.*;
@@ -67,12 +68,14 @@ public abstract class AbstractPonyRenderer<
         manager.updateState(entity, state, ModelAttributes.Mode.THIRD_PERSON, itemModelManager);
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     protected void addFeatures(EntityRendererFactory.Context context) {
         addFeature(new ArmourFeature<>(this, context.getEquipmentModelLoader()));
         addPonyFeature(createHeldItemFeature(context));
         addFeature(createSkullFeature(context));
         addPonyFeature(new ElytraFeature<>(this, context.getEquipmentRenderer()));
         addFeature(new GearFeature<>(this));
+        addPonyFeature(new PonyBodyPartFeature<>(this, m -> m instanceof ModelWithHorn, m -> ((ModelWithHorn)m).getHorn()));
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})

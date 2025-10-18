@@ -32,11 +32,15 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> i
     }
 
     @Override
+    public SubModel<T> getHorn() {
+        return horn;
+    }
+
+    @Override
     public void init(ModelView context) {
         super.init(context);
         horn = addPart(context.findByName("horn"));
         headRenderList.add(head::applyTransform).add(horn);
-        mainRenderList.add(withStage(BodyPart.HEAD).add(head::applyTransform).add((stack, vertices, overlay, light, color) -> horn.renderMagic(stack, vertices)));
     }
 
     @Override

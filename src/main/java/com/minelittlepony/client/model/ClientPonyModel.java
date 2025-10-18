@@ -74,6 +74,7 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
             @SuppressWarnings("unchecked")
             public <S> void pose(S state) {
                 currentState = (T)state;
+                action.pose(state);
                 parts.forEach(o -> transform((T)state, part, o));
             }
         };

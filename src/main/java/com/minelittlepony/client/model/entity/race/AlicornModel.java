@@ -1,5 +1,6 @@
 package com.minelittlepony.client.model.entity.race;
 
+import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.ModelWithWings;
 import com.minelittlepony.client.model.part.PonyWings;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
@@ -16,6 +17,6 @@ public class AlicornModel<T extends PonyRenderState> extends UnicornModel<T> imp
     @Override
     public void init(ModelView context) {
         super.init(context);
-        bodyRenderList.add(addPart(context.<PonyWings<T>>findByName("wings")));
+        bodyRenderList.add(withStage(BodyPart.WINGS).add(addPart(context.<PonyWings<T>>findByName("wings"))));
     }
 }

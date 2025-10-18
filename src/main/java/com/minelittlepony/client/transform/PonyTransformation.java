@@ -129,6 +129,7 @@ public enum PonyTransformation {
                     if (!attributes.isLyingDown) stack.translate(0, -0.12F, 0);
                     if (attributes.isGliding) stack.translate(0, 0.15F, 0);
                     break;
+                default:
             }
         }
 
@@ -163,6 +164,9 @@ public enum PonyTransformation {
                     if (attributes.isLyingDown) stack.translate(0, -0.3F, 0);
                     stack.translate(0, 0.25F, 0);
                     break;
+                case WINGS:
+                    stack.translate(0, 0.1F, 0);
+                    break;
                 default:
             }
         }
@@ -171,7 +175,9 @@ public enum PonyTransformation {
         public void transform(ModelAttributes attributes, BodyPart bodyPart, ModelPart part) {
             part.scale(switch (bodyPart) {
                 case HEAD -> new Vector3f(0.3F);
+                case HORN -> new Vector3f(-0.1F, -0.1F, -0.1F);
                 case LEGS -> new Vector3f(0, -0.19F, 0);
+                case WINGS -> new Vector3f(-0.2F);
                 default -> ZERO;
             });
         }
@@ -189,6 +195,9 @@ public enum PonyTransformation {
                     stack.translate(0, -0.12F, 0);
                     if (attributes.isCrouching || attributes.isSwimming) stack.translate(0, 0.04F, 0);
                     break;
+                case HORN:
+                    stack.translate(0, 0.05F, 0);
+                    break;
                 case BACK:
                     stack.translate(0, -0.05F, 0);
                 case BODY:
@@ -199,14 +208,21 @@ public enum PonyTransformation {
                     if (!attributes.isLyingDown) stack.translate(0, -0.2F, 0);
                     if (attributes.isGoingFast) stack.translate(0, 0.049F, 0);
                     break;
+                default:
             }
         }
 
         @Override
         public void transform(ModelAttributes attributes, BodyPart bodyPart, ModelPart part) {
+            if (bodyPart == BodyPart.HORN) {
+                part.originY += 4;
+                part.originZ += 3;
+            }
             part.scale(switch (bodyPart) {
                 case NECK -> new Vector3f(0, 0.28F, 0);
+                case HORN -> new Vector3f(0, 0.7F, 0);
                 case LEGS -> new Vector3f(0, 0.18F, 0);
+                case WINGS -> attributes.isCrouching ? new Vector3f(0.1F) : ZERO;
                 default -> ZERO;
             });
         }
@@ -236,6 +252,7 @@ public enum PonyTransformation {
                     if (!attributes.isLyingDown) stack.translate(0, -0.2F, 0);
                     if (attributes.isGoingFast) stack.translate(0, -0.118F, 0);
                     break;
+                default:
             }
         }
 
@@ -278,6 +295,7 @@ public enum PonyTransformation {
                     if (!attributes.isLyingDown) stack.translate(0, 0.2F, -0.1F);
                     if (attributes.isGoingFast) stack.translate(0, 0.3F, 0);
                     break;
+                default:
             }
         }
 

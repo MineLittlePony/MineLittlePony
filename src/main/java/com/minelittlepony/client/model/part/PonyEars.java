@@ -5,6 +5,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
+import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.model.SubModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.*;
@@ -27,7 +28,7 @@ public class PonyEars implements SubModel<PonyRenderState>, MsonModel {
     }
 
     @Override
-    public void setPartAngles(PonyRenderState state, float bodySwing) {
+    public void setAngles(PonyModel<PonyRenderState> model, PonyRenderState state) {
         left.resetTransform();
         right.resetTransform();
 
@@ -59,7 +60,7 @@ public class PonyEars implements SubModel<PonyRenderState>, MsonModel {
     }
 
     @Override
-    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
+    public void accept(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
     }
 
     @Override

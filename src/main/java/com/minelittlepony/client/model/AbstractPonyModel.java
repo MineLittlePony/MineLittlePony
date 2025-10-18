@@ -81,6 +81,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         parts.forEach(part -> part.setVisible(body.visible, state));
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     protected void setModelAngles(T entity) {
         head.setAngles(entity.pitch * MathHelper.RADIANS_PER_DEGREE, entity.relativeHeadYaw * MathHelper.RADIANS_PER_DEGREE, 0);
@@ -123,7 +124,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             head.pitch = 0.5F;
         }
 
-        parts.forEach(part -> part.setPartAngles(entity, entity.wobbleAmount));
+        parts.forEach(part -> part.setAngles((PonyModel)this, entity));
         mainRenderList.pose(entity);
     }
 

@@ -1,5 +1,6 @@
 package com.minelittlepony.client.model.part;
 
+import com.minelittlepony.api.model.PonyModel;
 import com.minelittlepony.api.model.SubModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.MsonModel;
@@ -22,14 +23,14 @@ public class SeaponyTail implements SubModel<PonyRenderState>, MsonModel {
     }
 
     @Override
-    public void setPartAngles(PonyRenderState state, float bodySwing) {
+    public void setAngles(PonyModel<PonyRenderState> model, PonyRenderState state) {
         float rotation = state.attributes.isLyingDown ? 0 : MathHelper.sin(state.age * 0.536f) / 4;
 
         tailBase.pitch = MathHelper.HALF_PI + rotation;
         tailTip.pitch = rotation;
         tailFins.pitch = rotation - MathHelper.HALF_PI;
 
-        float turn = MathHelper.clamp(state.attributes.motionRoll * 0.05F + bodySwing, -0.4F, 0.4F);
+        float turn = MathHelper.clamp(state.attributes.motionRoll * 0.05F + state.wobbleAmount, -0.4F, 0.4F);
 
         tailBase.yaw = turn;
         turn /= 2F;
@@ -39,7 +40,7 @@ public class SeaponyTail implements SubModel<PonyRenderState>, MsonModel {
     }
 
     @Override
-    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
+    public void accept(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
         tailBase.render(stack, vertices, overlay, light, color);
     }
 
