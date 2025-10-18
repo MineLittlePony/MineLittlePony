@@ -57,10 +57,12 @@ public class PonyConfig extends Config {
                 .addComment("Helps to prevent entities from vanishing when they're in long stacks");
     public final Setting<Boolean> horsieMode = value("settings", "horsieMode", false)
                 .addComment("Enables the alternative horsey models from the April Fools 2023 update");
+    public final Setting<Boolean> chibiMode = value("settings", "chibiMode", false)
+            .addComment("Turns ponies into bobble heads");
 
     public final Setting<SizePreset> sizeOverride = value("debug", "sizeOverride", SizePreset.UNSET)
                 .addComment("Overrides pony sizes")
-                .addComment("Possible values: TALL, BULKY, LANKY, NORMAL, YEARLING, FOAL, UNSET (default)");
+                .addComment("Possible values: TALL, BULKY, LANKY, NORMAL, STOCKY, SQUAT, YEARLING, FOAL, UNSET (default)");
 
     public final Setting<Race> raceOverride = value("debug", "raceOverride", Race.HUMAN)
                 .addComment("Overrides pony races")

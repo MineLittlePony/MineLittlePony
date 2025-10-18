@@ -1,7 +1,9 @@
 package com.minelittlepony.client.model;
 
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.meta.SizePreset;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.mson.util.RenderList;
@@ -535,6 +537,16 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
         if (state.attributes.isHorsey && part == BodyPart.BODY) {
             stack.scale(1.5F, 1, 1.5F);
+        }
+
+        if (PonyConfig.getInstance().chibiMode.get() && part == BodyPart.HEAD) {
+            head.xScale += 0.5;
+            head.zScale += 0.5;
+            head.yScale += 0.5;
+            float bobScale = state.getAttributes().getMainInterpolator().interpolate("head_bob", state.limbSwingAmplitude, 120) * 0.4F;
+            head.roll += MathHelper.sin(state.age / 2F) * bobScale;
+            head.yaw += MathHelper.sin(state.age / 3F) * bobScale;
+            head.pitch += MathHelper.cos(state.age / 2F) * bobScale * 1.2F;
         }
 
         PonyTransformation.forSize(state.attributes.size).transform(state.attributes, part, stack);

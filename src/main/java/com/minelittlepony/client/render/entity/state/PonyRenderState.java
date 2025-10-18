@@ -174,8 +174,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
             PonyPosture.of(attributes).updateState(entity, this);
         }
 
-        float pitch = attributes.motionPitch * MathHelper.RADIANS_PER_DEGREE;
-        this.pitch = MathHelper.clamp(attributes.isSleeping ? 0.1f : this.pitch / 57.29578F, -1.25f - pitch, 0.5f - pitch);
+        this.pitch = attributes.isSleeping ? 0.1f : this.pitch;
         if (entity instanceof PlayerLikeEntity) {
             relativeHeadYaw = attributes.isSleeping ? (Math.signum(MathHelper.wrapDegrees(relativeHeadYaw)) * 1.3F) : relativeHeadYaw;
         }
