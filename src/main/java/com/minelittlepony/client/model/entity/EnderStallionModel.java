@@ -42,7 +42,9 @@ public class EnderStallionModel extends AlicornModel<EnderStallionRenderer.State
 
     @Override
     public void transform(EnderStallionRenderer.State state, BodyPart part, MatrixStack stack) {
-        stack.translate(0, -1.15F, 0);
+        if (part != BodyPart.WINGS) {
+            stack.translate(0, -1.15F, 0);
+        }
         super.transform(state, part, stack);
     }
 
