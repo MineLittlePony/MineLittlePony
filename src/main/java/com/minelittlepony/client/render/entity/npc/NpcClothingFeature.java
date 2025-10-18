@@ -9,7 +9,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.village.VillagerData;
 import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.village.VillagerType;
@@ -47,29 +46,28 @@ class NpcClothingFeature<
     }
 
     @Override
-    public void render(MatrixStack matrixStack, OrderedRenderCommandQueue queue, int light, S entity, float limbAngle, float limbDistance) {
-        if (entity.invisible) {
+    public void render(MatrixStack matrixStack, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
+        if (state.invisible) {
             return;
         }
 
-        VillagerData data = entity.villagerData;
         M entityModel = getContextModel();
 
-        if (entity.baby || data.profession().getKey().orElse(VillagerProfession.NONE).equals(VillagerProfession.NONE)) {
-            Identifier typeSkin = createTexture("type", data.type().getKey().orElse(VillagerType.PLAINS).getValue());
+        if (state.baby || state.profession.equals(VillagerProfession.NONE)) {
+            Identifier typeSkin = createTexture("type", state.type.getValue());
             if (!ResourceUtil.textureExists(typeSkin)) {
                 typeSkin = createTexture("type", VillagerType.PLAINS.getValue());
             }
-            renderModel(entityModel, typeSkin, matrixStack, queue, light, entity, Colors.WHITE, 1);
+            renderModel(entityModel, typeSkin, matrixStack, queue, light, state, Colors.WHITE, 1);
         } else {
-            renderModel(entityModel, getMergedTexture(data), matrixStack, queue, light, entity, Colors.WHITE, 1);
+            renderModel(entityModel, getMergedTexture(state), matrixStack, queue, light, state, Colors.WHITE, 1);
         }
     }
 
-    public Identifier getMergedTexture(VillagerData data) {
-        RegistryKey<VillagerType> type = data.type().getKey().orElse(VillagerType.PLAINS);
-        RegistryKey<VillagerProfession> profession = data.profession().getKey().orElse(VillagerProfession.NONE);
-        int level = MathHelper.clamp(data.level(), 1, LEVEL_TO_ID.size());
+    public Identifier getMergedTexture(S state) {
+        RegistryKey<VillagerType> type = state.type;
+        RegistryKey<VillagerProfession> profession = state.profession;
+        int level = MathHelper.clamp(state.level, 1, LEVEL_TO_ID.size());
 
         Identifier typeId = type.getValue();
         Identifier profId = profession.getValue();
@@ -101,8 +99,8 @@ class NpcClothingFeature<
         return skins;
     }
 
-    public Identifier createTexture(S entity, String category) {
-        return createTexture(category, entity.villagerData.profession().getKey().orElse(VillagerProfession.NONE).getValue());
+    public Identifier createTexture(S state, String category) {
+        return createTexture(category, state.profession.getValue());
     }
 
     private Identifier createTexture(String category, Identifier identifier) {

@@ -6,8 +6,6 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.*;
 
-import org.jetbrains.annotations.Nullable;
-
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
@@ -35,9 +33,10 @@ public class SillyPonyTextureSupplier {
         return entity.hasCustomName() && "Dinky".equals(entity.getCustomName().getString());
     }
 
-    public static class State extends PonyRenderState implements VillagerDataContainer {
-        @Nullable
-        public VillagerData villagerData;
+    public static class State extends PonyRenderState {
+        public RegistryKey<VillagerType> type = VillagerType.PLAINS;
+        public RegistryKey<VillagerProfession> profession = VillagerProfession.NONE;
+        public int level;
 
         public boolean isDerpy;
         public boolean isDinky;
@@ -52,8 +51,10 @@ public class SillyPonyTextureSupplier {
             isDinky = isDinky(entity);
             hasMuffinHat = isCrownPony(entity);
 
-            villagerData = ((VillagerDataContainer)entity).getVillagerData();
-            RegistryKey<VillagerProfession> profession = villagerData.profession().getKey().orElse(VillagerProfession.NONE);
+            var villagerData = ((VillagerDataContainer)entity).getVillagerData();
+            type = villagerData.type().getKey().orElse(VillagerType.PLAINS);
+            profession = villagerData.profession().getKey().orElse(VillagerProfession.NONE);
+            level = villagerData.level();
 
             hasSaddlebags = !isDerpy && profession != VillagerProfession.NONE && (
                     profession == VillagerProfession.CARTOGRAPHER
@@ -61,16 +62,6 @@ public class SillyPonyTextureSupplier {
                  || profession == VillagerProfession.FISHERMAN
                  || profession == VillagerProfession.LIBRARIAN
                  || profession == VillagerProfession.SHEPHERD);
-        }
-
-        @Nullable
-        @Override
-        public VillagerData getVillagerData() {
-            return villagerData;
-        }
-
-        @Override
-        public void setVillagerData(VillagerData villagerData) {
         }
     }
 }
