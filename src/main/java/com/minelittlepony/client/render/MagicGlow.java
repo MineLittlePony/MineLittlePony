@@ -4,7 +4,6 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.*;
 
 import com.mojang.blaze3d.pipeline.BlendFunction;

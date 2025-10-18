@@ -107,14 +107,14 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public void submitCustom(MatrixStack matrices, RenderLayer renderLayer, Custom customRenderer) {
         renderLayer = layer.apply(renderLayer);
         if (renderLayer != null) {
             if (customRenderer instanceof CustomModelRenderCommand custom) {
                 final RenderLayer l = renderLayer;
-                customRenderer = new CustomModelRenderCommand<>(custom.matrices(), custom.command(), renderLayer, c -> custom.bufferFunc().apply(c) == null ? null : l, custom.anglesFunc());
+                customRenderer = new CustomModelRenderCommand(custom.matrices(), custom.command(), renderLayer, c -> custom.bufferFunc().apply(c) == null ? null : l, custom.anglesFunc());
             }
             parent.submitCustom(matrices, renderLayer, customRenderer);
         }
