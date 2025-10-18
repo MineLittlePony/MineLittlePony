@@ -56,6 +56,12 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
             }
 
             @Override
+            public void clear() {
+                action.clear();
+                parts.clear();
+            }
+
+            @Override
             public void accept(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
                 stack.push();
                 if (currentState != null) {

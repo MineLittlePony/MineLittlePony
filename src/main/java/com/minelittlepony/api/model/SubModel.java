@@ -6,13 +6,7 @@ import net.minecraft.client.util.math.MatrixStack;
 
 import com.minelittlepony.mson.util.RenderList;
 
-import java.util.function.Supplier;
-
 public interface SubModel<T extends EntityRenderState> extends RenderList {
-    static <T extends EntityRenderState> RenderList toRenderList(Supplier<SubModel<? super T>> part) {
-        return (stack, vertices, overlay, light, color) -> part.get().renderPart(stack, vertices, overlay, light, color);
-    }
-
     /**
      * Renders this model component.
      */

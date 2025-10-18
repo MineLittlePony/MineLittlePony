@@ -10,11 +10,6 @@ public interface ModelWithWings<T extends BipedEntityRenderState & PonyModel.Att
     public static final float WINGS_RAISED_ANGLE = 4;
 
     /**
-     * Gets the wings of this pegasus/flying creature
-     */
-    SubModel<T> getWings();
-
-    /**
      * Returns true if the wings are spread.
      */
     default boolean wingsAreOpen(T state) {

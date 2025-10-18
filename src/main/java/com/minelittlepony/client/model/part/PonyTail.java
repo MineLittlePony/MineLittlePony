@@ -91,16 +91,17 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
     }
 
     @Override
-    public void renderPart(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
+    public void renderPart(MatrixStack matrices, VertexConsumer vertices, int overlay, int light, int color) {
         if (tail.visible) {
-            stack.push();
-            tail.applyTransform(stack);
+            matrices.push();
+            model.body.applyTransform(matrices);
+            tail.applyTransform(matrices);
 
             for (int i = 0; i < segments.size(); i++) {
-                segments.get(i).render(stack, vertices, i, overlay, light, color);
+                segments.get(i).render(matrices, vertices, i, overlay, light, color);
             }
 
-            stack.pop();
+            matrices.pop();
         }
     }
 
@@ -126,42 +127,42 @@ public class PonyTail implements SubModel<PonyRenderState>, MsonModel {
             }
         }
 
-        public void render(MatrixStack stack, VertexConsumer renderContext, int index, int overlay, int light, int color) {
+        public void render(MatrixStack matrices, VertexConsumer vertices, int index, int overlay, int light, int color) {
             if (!tree.visible) {
                 return;
             }
 
             if (horsey || shape == TailShape.STRAIGHT) {
                 tree.yaw = 0;
-                tree.render(stack, renderContext, overlay, light, color);
+                tree.render(matrices, vertices, overlay, light, color);
                 return;
             }
 
-            stack.push();
+            matrices.push();
             if (shape == TailShape.BUMPY) {
-                stack.translate(0, 0, -9/16F);
+                matrices.translate(0, 0, -9/16F);
                 float scale = 1 + MathHelper.cos(index + 5) / 2F;
-                stack.scale(scale, 1, scale);
-                stack.translate(1 / 16F * scale - 0.1F, 0, -2 / 16F * scale);
+                matrices.scale(scale, 1, scale);
+                matrices.translate(1 / 16F * scale - 0.1F, 0, -2 / 16F * scale);
                 tree.originZ = 9;
             }
             if (shape == TailShape.SWIRLY) {
-                stack.translate(0, 0, -6/16F);
+                matrices.translate(0, 0, -6/16F);
                 float scale = 1 + MathHelper.cos(index + 10) / 5F;
-                stack.scale(1, 1, scale);
-                stack.translate(0, 0, -2 / 16F * scale);
+                matrices.scale(1, 1, scale);
+                matrices.translate(0, 0, -2 / 16F * scale);
                 tree.originZ = 9;
             }
             if (shape == TailShape.SPIKY) {
-                stack.translate(0, 0, -6/16F);
+                matrices.translate(0, 0, -6/16F);
                 float scale = 1 + MathHelper.cos(index + 10) / 5F;
-                stack.scale(1, 1, scale);
-                stack.translate(0, 0, -2 / 16F * scale);
+                matrices.scale(1, 1, scale);
+                matrices.translate(0, 0, -2 / 16F * scale);
                 tree.yaw = 0.2F * (index % 2 - 1);
                 tree.originZ = 9;
             }
-            tree.render(stack, renderContext, overlay, light, color);
-            stack.pop();
+            tree.render(matrices, vertices, overlay, light, color);
+            matrices.pop();
         }
     }
 }
