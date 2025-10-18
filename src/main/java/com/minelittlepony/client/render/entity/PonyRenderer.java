@@ -1,5 +1,7 @@
 package com.minelittlepony.client.render.entity;
 
+import com.minelittlepony.api.model.ModelWithHorn;
+import com.minelittlepony.client.compat.iris.IrisApiCompat;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
@@ -33,11 +35,13 @@ public abstract class PonyRenderer<
         addFeature(new StuckArrowsFeatureRenderer(this, context));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void updateRenderState(T entity, S state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
         state.leftArmPose = getArmPose(state.leftArmPose, entity, Arm.LEFT);
         state.rightArmPose = getArmPose(state.rightArmPose, entity, Arm.RIGHT);
+        state.hornGlowVisible = !IrisApiCompat.isOnShadowPass() && this.lookupModel(state).body() instanceof ModelWithHorn h && h.isCasting(state);
     }
 
     public BipedEntityModel.ArmPose getArmPose(BipedEntityModel.ArmPose initial, T entity, Arm arm) {

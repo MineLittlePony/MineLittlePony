@@ -6,8 +6,7 @@ import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.EnderStallionModel;
-import com.minelittlepony.client.render.entity.feature.GlowingEyesFeature;
-import com.minelittlepony.client.render.entity.feature.HeldItemFeature;
+import com.minelittlepony.client.render.entity.feature.*;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 
 import net.minecraft.block.BlockState;
@@ -47,16 +46,12 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
         addPonyFeature(createHeldItemFeature(context));
         addPonyFeature(new StuckArrowsFeatureRenderer<EnderStallionModel>((PonyRenderer)this, context));
         addPonyFeature(new GlowingEyesFeature<EnderStallionRenderer.State, EnderStallionModel>(this, EYES));
+        addPonyFeature(new PonyBodyPartFeature<>(this, m -> m instanceof ModelWithHorn, m -> ((ModelWithHorn)m).getHorn()));
     }
 
     @Override
     public State createRenderState() {
         return new State();
-    }
-
-    @Override
-    protected HeldItemFeature<State, EnderStallionModel> createHeldItemFeature(EntityRendererFactory.Context context) {
-        return new HeldItemFeature<State, EnderStallionModel>(this);
     }
 
     @Override
@@ -76,6 +71,7 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
 
         @Override
         public void updateState(ItemModelManager resolver, LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
+            carriedBlock = entity instanceof EndermanEntity man ? man.getCarriedBlock() : null;
             super.updateState(resolver, entity, models, pony, mode);
             isAttacking = entity instanceof HostileEntity h && h.isAttacking();
             angry = entity instanceof EndermanEntity man && man.isAngry();
@@ -85,7 +81,6 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
 
         @Override
         protected void updateHeldItems(ItemModelManager resolver, LivingEntity entity) {
-            carriedBlock = entity instanceof EndermanEntity man ? man.getCarriedBlock() : null;
             if (carriedBlock != null) {
                 if (mainArm == Arm.RIGHT) {
                     itemModelManager.updateForLivingEntity(rightHandItemState, carriedBlock.getBlock().asItem().getDefaultStack(), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
