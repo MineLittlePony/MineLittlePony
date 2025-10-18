@@ -1,5 +1,6 @@
 package com.minelittlepony.api.model;
 
+import com.google.common.cache.*;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.*;
 import com.minelittlepony.api.pony.meta.*;
@@ -7,6 +8,7 @@ import com.minelittlepony.common.util.animation.Interpolator;
 import com.minelittlepony.util.MathUtil;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
@@ -199,7 +201,34 @@ public class ModelAttributes {
     }
 
     public Interpolator getMainInterpolator() {
-        return Interpolator.linear(interpolatorId);
+        return LinearInterpolator.instanceCache.getUnchecked(interpolatorId);
+    }
+
+    @Deprecated
+    static class LinearInterpolator implements Interpolator {
+        static LoadingCache<UUID, LinearInterpolator> instanceCache = CacheBuilder.newBuilder()
+            .expireAfterAccess(30, TimeUnit.SECONDS)
+            .build(CacheLoader.from(LinearInterpolator::new));
+
+        private final Map<String, Float> properties = new HashMap<>();
+
+        @Override
+        public float interpolate(String key, float to, float animationSpeed) {
+            float from = properties.getOrDefault(key, to);
+
+            if (!MinecraftClient.getInstance().isPaused()) {
+                from += (to - from) / animationSpeed;
+
+                if (Float.isNaN(from) || Float.isInfinite(from)) {
+                    System.err.println("Error: Animation frame for " + key + " is NaN or Infinite.");
+                    from = to;
+                }
+
+                properties.put(key, from);
+            }
+
+            return from;
+        }
     }
 
     public UUID getEntityId() {
