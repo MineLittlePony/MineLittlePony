@@ -4,6 +4,7 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.*;
 
 import com.mojang.blaze3d.pipeline.BlendFunction;
@@ -50,7 +51,7 @@ public interface MagicGlow {
                 .lightmap(RenderPhase.DISABLE_LIGHTMAP)
                 .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
                 .target(RenderPhase.MAIN_TARGET)
-                .build(true));
+                .build(false));
     });
 
     public static RenderLayer getRenderLayer() {
