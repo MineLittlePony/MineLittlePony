@@ -3,7 +3,6 @@ package com.minelittlepony.client.model;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.meta.SizePreset;
-import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.mson.util.RenderList;

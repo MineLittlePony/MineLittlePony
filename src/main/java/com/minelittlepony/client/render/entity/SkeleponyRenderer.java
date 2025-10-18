@@ -4,7 +4,6 @@ import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.client.compat.iris.IrisApiCompat;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.race.AlicornModel;
 import com.minelittlepony.client.render.entity.feature.ClothingFeature;
@@ -26,6 +25,8 @@ import net.minecraft.entity.mob.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.*;
+
+import org.jetbrains.annotations.Nullable;
 
 public class SkeleponyRenderer<T extends AbstractSkeletonEntity, S extends SkeleponyRenderer.State> extends PonyRenderer<T, S, AlicornModel<S>> {
     public static final Identifier SKELETON = MineLittlePony.id("textures/entity/skeleton/skeleton_pony.png");
@@ -120,17 +121,15 @@ public class SkeleponyRenderer<T extends AbstractSkeletonEntity, S extends Skele
     public static class State extends PonyRenderState {
         public boolean isAttacking;
 
-        @SuppressWarnings("unchecked")
+        @Override
         public void updateState(ItemModelManager resolver, LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
             super.updateState(resolver, entity, models, pony, mode);
             isAttacking = entity instanceof HostileEntity h && h.isAttacking();
-            race = entity.getUuid().getLeastSignificantBits() % 3 == 0 ? Race.EARTH : Race.UNICORN;
-            if (!race.hasHorn()) {
-                glowColor = 0;
-                leftHeldItem.glintlessHandItemState.clear();
-                rightHeldItem.glintlessHandItemState.clear();
-            }
-            hornGlowVisible = !IrisApiCompat.isOnShadowPass() && race.hasHorn() && models.body() instanceof ModelWithHorn h && h.isCasting(this);
+        }
+
+        @Override
+        protected Race computeRace(@Nullable LivingEntity entity, Pony pony) {
+            return entity != null && entity.getUuid().getLeastSignificantBits() % 3 == 0 ? Race.EARTH : Race.UNICORN;
         }
 
         @Override

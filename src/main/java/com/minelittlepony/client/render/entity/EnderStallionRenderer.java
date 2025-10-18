@@ -1,9 +1,9 @@
 package com.minelittlepony.client.render.entity;
 
 import com.minelittlepony.api.model.*;
+import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.client.MineLittlePony;
-import com.minelittlepony.client.compat.iris.IrisApiCompat;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.entity.EnderStallionModel;
 import com.minelittlepony.client.render.entity.feature.GlowingEyesFeature;
@@ -17,7 +17,9 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer;
 import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.EndermanEntity;
+import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
@@ -53,32 +55,6 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
     }
 
     @Override
-    public void updateRenderState(EndermanEntity entity, State state, float tickDelta) {
-        state.carriedBlock = entity.getCarriedBlock();
-        super.updateRenderState(entity, state, tickDelta);
-        boolean isAlicorn = entity.getUuid().getLeastSignificantBits() % 3 == 0;
-        state.isBoss = !isAlicorn && entity.getUuid().getLeastSignificantBits() % 90 == 0;
-        state.race = isAlicorn ? (state.attributes.metadata.race().hasHorn() ? Race.ALICORN : Race.PEGASUS) : state.attributes.metadata.race();
-        state.angry = entity.isAngry();
-        state.hornGlowVisible = !IrisApiCompat.isOnShadowPass() && state.race.hasHorn() && state.carriedBlock != null;
-
-        if (state.carriedBlock != null) {
-            if (state.mainArm == Arm.RIGHT) {
-                itemModelManager.updateForLivingEntity(state.rightHandItemState, state.carriedBlock.getBlock().asItem().getDefaultStack(), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
-                state.rightHeldItem.updateItemRenderState(state, itemModelManager, state.carriedBlock.getBlock().asItem().getDefaultStack(), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
-            } else {
-                itemModelManager.updateForLivingEntity(state.leftHandItemState, state.carriedBlock.getBlock().asItem().getDefaultStack(), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
-                state.leftHeldItem.updateItemRenderState(state, itemModelManager, state.carriedBlock.getBlock().asItem().getDefaultStack(), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
-            }
-        } else {
-            state.rightHandItemState.clear();
-            state.leftHandItemState.clear();
-        }
-        state.attributes.wingsSpread = state.isAttacking;
-        state.attributes.wingAngle = MathHelper.sin(state.age) + ModelWithWings.WINGS_HALF_SPREAD_ANGLE;
-    }
-
-    @Override
     protected HeldItemFeature<State, EnderStallionModel> createHeldItemFeature(EntityRendererFactory.Context context) {
         return new HeldItemFeature<State, EnderStallionModel>(this);
     }
@@ -97,5 +73,38 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
         @Nullable
         public BlockState carriedBlock;
         public boolean isBoss;
+
+        @Override
+        public void updateState(ItemModelManager resolver, LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
+            super.updateState(resolver, entity, models, pony, mode);
+            isAttacking = entity instanceof HostileEntity h && h.isAttacking();
+            angry = entity instanceof EndermanEntity man && man.isAngry();
+            attributes.wingsSpread = isAttacking;
+            attributes.wingAngle = MathHelper.sin(age) + ModelWithWings.WINGS_HALF_SPREAD_ANGLE;
+        }
+
+        @Override
+        protected void updateHeldItems(ItemModelManager resolver, LivingEntity entity) {
+            carriedBlock = entity instanceof EndermanEntity man ? man.getCarriedBlock() : null;
+            if (carriedBlock != null) {
+                if (mainArm == Arm.RIGHT) {
+                    itemModelManager.updateForLivingEntity(rightHandItemState, carriedBlock.getBlock().asItem().getDefaultStack(), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
+                    rightHeldItem.updateItemRenderState(this, itemModelManager, carriedBlock.getBlock().asItem().getDefaultStack(), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
+                } else {
+                    itemModelManager.updateForLivingEntity(leftHandItemState, carriedBlock.getBlock().asItem().getDefaultStack(), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
+                    leftHeldItem.updateItemRenderState(this, itemModelManager, carriedBlock.getBlock().asItem().getDefaultStack(), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
+                }
+            } else {
+                rightHandItemState.clear();
+                leftHandItemState.clear();
+            }
+        }
+
+        @Override
+        protected Race computeRace(@Nullable LivingEntity entity, Pony pony) {
+            boolean isAlicorn = entity.getUuid().getLeastSignificantBits() % 3 == 0;
+            isBoss = !isAlicorn && entity.getUuid().getLeastSignificantBits() % 90 == 0;
+            return isAlicorn ? (pony.race().hasHorn() ? Race.ALICORN : Race.PEGASUS) : pony.race();
+        }
     }
 }

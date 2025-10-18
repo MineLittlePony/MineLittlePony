@@ -62,6 +62,8 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
 
     public final List<EquippedHeadRenderState> equippedHeads = new ArrayList<>();
 
+    public PonyPosture posture = PonyPosture.STANDING;
+
     public void updateState(ItemModelManager resolver,
             Map<EquipmentSlot, ItemStack> equipment,
             Map<Arm, ItemStack> armStacks,
@@ -119,7 +121,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
             attributes.checkRainboom(entity, models.body(), age);
         }
         baby = attributes.size == SizePreset.FOAL;
-        race = pony.race();
+        race = computeRace(entity, pony);
         glowColor = PonyCommandTags.getMagicColorOverride(entity, attributes.metadata.glowColor());
         vehicleOffset = hasVehicle && entity != null ? entity.getVehicle().getEyeHeight(pose) : 0;
         riderOffset = getRiderYOffset();
@@ -140,13 +142,17 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         headVisible = entity != MinecraftClient.getInstance().getCameraEntity()
                 || !MinecraftClient.getInstance().options.getPerspective().isFirstPerson()
                 || !attributes.isLyingDown;
+
+        if (entity != null) {
+            updateHeldItems(resolver, entity);
+        }
         // Hide the horn glow if we're being rendered during an iris shadow pass
         hornGlowVisible = !IrisApiCompat.isOnShadowPass() && models.body() instanceof ModelWithHorn h && h.isCasting(this);
         isTechnoblade = ((
                     entity instanceof AbstractPiglinEntity
                  || entity instanceof PlayerEntity
                  || entity instanceof ZombifiedPiglinEntity
-             ) && entity.hasCustomName() && entity.getCustomName().getString().equalsIgnoreCase("technoblade")
+             ) && displayName != null && displayName.getString().equalsIgnoreCase("technoblade")
          );
 
         // Adjust cape angles
@@ -167,11 +173,10 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
             }
         }
 
-        rightHeldItem.updateItemRenderState(this, resolver, entity.getStackInArm(Arm.RIGHT), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
-        leftHeldItem.updateItemRenderState(this, resolver, entity.getStackInArm(Arm.LEFT), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
+        this.posture = PonyPosture.of(attributes);
 
         if (entity != null) {
-            PonyPosture.of(attributes).updateState(entity, this);
+            posture.updateState(entity, this);
         }
 
         this.pitch = attributes.isSleeping ? 0.1f : this.pitch;
@@ -180,6 +185,15 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         }
 
         PonyRenderStatePrepareCallback.EVENT.invoker().onPonyRenderStatePrepared(this, models.body(), mode);
+    }
+
+    protected void updateHeldItems(ItemModelManager resolver, LivingEntity entity) {
+        rightHeldItem.updateItemRenderState(this, resolver, entity.getStackInArm(Arm.RIGHT), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
+        leftHeldItem.updateItemRenderState(this, resolver, entity.getStackInArm(Arm.LEFT), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
+    }
+
+    protected Race computeRace(@Nullable LivingEntity entity, Pony pony) {
+        return pony.race();
     }
 
     @Override

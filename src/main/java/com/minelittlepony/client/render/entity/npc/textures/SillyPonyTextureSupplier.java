@@ -6,6 +6,8 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.*;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
@@ -14,7 +16,7 @@ public class SillyPonyTextureSupplier {
     public static <T extends LivingEntity> TextureSupplier<T> create(TextureSupplier<T> fallback, TextureSupplier<String> formatter) {
         Identifier egg = formatter.apply("silly_pony");
         Identifier egg2 = formatter.apply("tiny_silly_pony");
-        return entity -> SillyPonyTextureSupplier.isBestPony(entity) ? (isDinky(entity) ? egg2 : egg) : fallback.apply(entity);
+        return entity -> isBestPony(entity) ? (isDinky(entity) ? egg2 : egg) : fallback.apply(entity);
     }
 
     public static boolean isBestPony(LivingEntity entity) {
@@ -34,6 +36,7 @@ public class SillyPonyTextureSupplier {
     }
 
     public static class State extends PonyRenderState implements VillagerDataContainer {
+        @Nullable
         public VillagerData villagerData;
 
         public boolean isDerpy;
@@ -41,12 +44,13 @@ public class SillyPonyTextureSupplier {
         public boolean hasMuffinHat;
         public boolean hasSaddlebags;
 
+        @Override
         public void updateState(ItemModelManager resolver, LivingEntity entity, Models<?> models, Pony pony, ModelAttributes.Mode mode) {
             super.updateState(resolver, entity, models, pony, mode);
             attributes.visualHeight += hasMuffinHat ? 0.3F : -0.1F;
-            isDerpy = SillyPonyTextureSupplier.isBestPony(entity);
-            isDinky = isDerpy && "Dinky".equals(entity.getCustomName().getString());
-            hasMuffinHat = SillyPonyTextureSupplier.isCrownPony(entity);
+            isDerpy = isBestPony(entity);
+            isDinky = isDinky(entity);
+            hasMuffinHat = isCrownPony(entity);
 
             villagerData = ((VillagerDataContainer)entity).getVillagerData();
             RegistryKey<VillagerProfession> profession = villagerData.profession().getKey().orElse(VillagerProfession.NONE);
@@ -59,6 +63,7 @@ public class SillyPonyTextureSupplier {
                  || profession == VillagerProfession.SHEPHERD);
         }
 
+        @Nullable
         @Override
         public VillagerData getVillagerData() {
             return villagerData;

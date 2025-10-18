@@ -10,7 +10,6 @@ import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.client.PonyDataLoader;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
-import com.minelittlepony.client.transform.PonyPosture;
 import com.minelittlepony.mson.api.ModelKey;
 
 import java.util.*;
@@ -113,7 +112,7 @@ public class EquineRenderManager<
         transformer.setupTransforms(state, stack, animationProgress, bodyYaw);
 
         if (RenderPass.getCurrent() == RenderPass.WORLD) {
-            PonyPosture.of(state.attributes).transform(state, stack);
+            state.posture.transform(state, stack);
         }
     }
 
