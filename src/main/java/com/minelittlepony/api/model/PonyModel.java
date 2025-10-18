@@ -18,6 +18,8 @@ public interface PonyModel<T extends EntityRenderState & PonyModel.AttributedHol
      */
     void transform(T state, BodyPart part, MatrixStack matrices);
 
+    void transform(T state, BodyPart bodyPart, ModelPart part);
+
     /**
      * Applies transformations to align to a certain body part.
      */

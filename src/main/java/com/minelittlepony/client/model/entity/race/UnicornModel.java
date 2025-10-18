@@ -6,7 +6,6 @@ import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.client.model.part.UnicornHorn;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.api.ModelView;
-import com.minelittlepony.mson.util.RenderList;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.util.math.MatrixStack;
@@ -30,8 +29,8 @@ public class UnicornModel<T extends PonyRenderState> extends EarthPonyModel<T> i
         super(tree, smallArms);
         unicornArmRight = tree.getChild("right_cast");
         unicornArmLeft = tree.getChild("left_cast");
-        headRenderList.add(RenderList.of().add(head::applyTransform).add(SubModel.toRenderList(() -> horn)));
-        mainRenderList.add(withStage(BodyPart.HEAD, RenderList.of().add(head::applyTransform).add((stack, vertices, overlay, light, color) -> horn.renderMagic(stack, vertices))));
+        headRenderList.add(head::applyTransform).add(SubModel.toRenderList(() -> horn));
+        mainRenderList.add(withStage(BodyPart.HEAD).add(head::applyTransform).add((stack, vertices, overlay, light, color) -> horn.renderMagic(stack, vertices)));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.minelittlepony.client.model.entity.race;
 
+import com.minelittlepony.api.model.BodyPart;
 import com.minelittlepony.api.model.SubModel;
 import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.part.*;
@@ -32,7 +33,7 @@ public class EarthPonyModel<T extends PonyRenderState> extends AbstractPonyModel
         snout = addPart(context.findByName("snout"));
         ears = addPart(context.findByName("ears"));
 
-        bodyRenderList.add(tail);
+        mainRenderList.add(withStage(BodyPart.TAIL).add(body::applyTransform).add(tail));
     }
 
     protected void setModelVisibilities(T state) {

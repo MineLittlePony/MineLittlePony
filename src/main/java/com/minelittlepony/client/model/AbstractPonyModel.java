@@ -24,7 +24,6 @@ import org.joml.Quaternionf;
  * Foundation class for all types of ponies.
  */
 public abstract class AbstractPonyModel<T extends PonyRenderState> extends ClientPonyModel<T> {
-    public static final float NECK_X = 0.166F;
     public static final float LEG_SNEAKING_PITCH_ADJUSTMENT = 0.4F;
     public static final float BODY_RIDING_PITCH = MathHelper.PI * 3.8F;
     public static final float BODY_SNEAKING_PITCH = 0.4F;
@@ -54,10 +53,10 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
         neck = tree.getChild("neck");
         mainRenderList = RenderList.of()
-            .add(withStage(BodyPart.BODY, bodyRenderList = RenderList.of(body).add(body::applyTransform)))
-            .add(withStage(BodyPart.NECK, neckRenderList = RenderList.of(neck)))
-            .add(withStage(BodyPart.HEAD, headRenderList = RenderList.of(head)))
-            .add(withStage(BodyPart.LEGS, legsRenderList = RenderList.of().add(leftArm, rightArm, leftLeg, rightLeg)));
+            .add(bodyRenderList = withStage(BodyPart.BODY).add(body).add(body::applyTransform))
+            .add(neckRenderList = withStage(BodyPart.NECK).add(neck))
+            .add(headRenderList = withStage(BodyPart.HEAD).add(head))
+            .add(legsRenderList = withStage(BodyPart.LEGS).add(leftArm, rightArm, leftLeg, rightLeg));
     }
 
     protected <P extends SubModel<? super T>> P addPart(P part) {
@@ -159,7 +158,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
     protected void ponySit() {
         adjustBodyComponents(BODY_RIDING_PITCH, BODY_RIDING);
-        neck.setOrigin(NECK_X, 0, 0);
+        neck.setOrigin(0, 0, 0);
         head.setOrigin(0, 0, 0);
 
         leftLeg.originZ = 14;
@@ -452,11 +451,11 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     protected void adjustBody(T state, float pitch, Pivot origin) {
         adjustBodyComponents(pitch, origin);
         if (!state.attributes.isHorsey) {
-            neck.setOrigin(NECK_X + pitch, origin.y(), origin.z());
+            neck.setOrigin(0, origin.y(), origin.z());
             rightLeg.originY = FRONT_LEGS_Y;
             leftLeg.originY = FRONT_LEGS_Y;
         } else {
-            neck.setOrigin(NECK_X + pitch, origin.y() - 1, origin.z() - 2);
+            neck.setOrigin(0, origin.y() - 1, origin.z() - 2);
             neck.pitch = Angles._30_DEG;
         }
     }
@@ -538,5 +537,10 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         PonyTransformation.forSize(state.attributes.size).transform(state.attributes, part, stack);
 
         stack.translate(0, -originY, originZ);
+    }
+
+    @Override
+    public void transform(T state, BodyPart bodyPart, ModelPart part) {
+        PonyTransformation.forSize(state.attributes.size).transform(state.attributes, bodyPart, part);
     }
 }

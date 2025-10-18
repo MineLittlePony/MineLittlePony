@@ -12,6 +12,9 @@ import com.minelittlepony.api.model.*;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.mson.util.RenderList;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The raw pony model without any implementations.
  * Will act effectively the same as a normal player model without any hints
@@ -31,10 +34,26 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
         onSetModelAngles = callback;
     }
 
-    protected RenderList withStage(BodyPart part, RenderList action) {
+    protected RenderList withStage(BodyPart part) {
         return new RenderList() {
+            private final RenderList action = RenderList.of();
+            private final List<ModelPart> parts = new ArrayList<>();
+
             @Nullable
             private T currentState;
+
+            @Override
+            public RenderList add(RenderList part) {
+                action.add(part);
+                return this;
+            }
+
+            @Override
+            public RenderList add(ModelPart...parts) {
+                action.add(parts);
+                this.parts.addAll(List.of(parts));
+                return this;
+            }
 
             @Override
             public void accept(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
@@ -49,6 +68,7 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
             @SuppressWarnings("unchecked")
             public <S> void pose(S state) {
                 currentState = (T)state;
+                parts.forEach(o -> transform((T)state, part, o));
             }
         };
     }
