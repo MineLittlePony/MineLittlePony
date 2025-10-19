@@ -75,8 +75,8 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
             super.updateState(resolver, entity, models, pony, mode);
             isAttacking = entity instanceof HostileEntity h && h.isAttacking();
             angry = entity instanceof EndermanEntity man && man.isAngry();
-            attributes.wingsSpread = isAttacking;
-            attributes.wingAngle = MathHelper.sin(age) + ModelWithWings.WINGS_HALF_SPREAD_ANGLE;
+            attributes.wingsSpread = isAttacking || hurt;
+            attributes.wingAngle = (isAttacking ? -0.6F : MathHelper.sin(age)) + ModelWithWings.WINGS_HALF_SPREAD_ANGLE;
         }
 
         @Override
