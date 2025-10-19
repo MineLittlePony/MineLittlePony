@@ -63,7 +63,7 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
     public void submitBlockStateModel(MatrixStack matrices, RenderLayer renderLayer, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor) {
         renderLayer = layer.apply(renderLayer);
         if (renderLayer != null) {
-            parent.submitBlockStateModel(matrices, layer.apply(renderLayer), model, ColorHelper.getRedFloat(color), ColorHelper.getGreenFloat(color), ColorHelper.getBlueFloat(color), LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0);
+            parent.submitBlockStateModel(matrices, renderLayer, model, ColorHelper.getRedFloat(color), ColorHelper.getGreenFloat(color), ColorHelper.getBlueFloat(color), LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0);
         }
     }
 
@@ -71,7 +71,7 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
     public <S> void submitModel(Model<? super S> model, S state, MatrixStack matrices, RenderLayer renderLayer, int light, int overlay, int tintedColor, Sprite sprite, int outline, CrumblingOverlayCommand crumblingOverlay) {
         renderLayer = layer.apply(renderLayer);
         if (renderLayer != null) {
-            parent.submitModel(model, state, matrices, renderLayer, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, color, sprite, 0, null);
+            parent.submitModel(model, state, matrices, renderLayer, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, color, null, 0, null);
         }
     }
 

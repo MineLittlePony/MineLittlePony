@@ -13,6 +13,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 
 import java.util.function.*;
 
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.compat.iris.IrisApiCompat;
 import com.minelittlepony.client.render.command.MagicOverlayOrderedRenderCommandQueue;
 import com.minelittlepony.client.render.command.MagicOverlayRenderCommandQueue;
@@ -22,11 +23,8 @@ public interface MagicGlow {
     RenderPipeline /*ENTITY_EYES*/ ENTITY_MAGIC_GLOW_PIPELINE = RenderPipelines.register(
             RenderPipeline.builder(RenderPipelines.TRANSFORMS_PROJECTION_FOG_SNIPPET)
                 .withLocation("pipeline/magic_glow")
-                .withVertexShader("core/entity")
-                .withFragmentShader("core/entity")
-                .withShaderDefine("EMISSIVE")
-                .withShaderDefine("NO_OVERLAY")
-                .withShaderDefine("NO_CARDINAL_LIGHTING")
+                .withVertexShader(MineLittlePony.id("core/magic"))
+                .withFragmentShader(MineLittlePony.id("core/magic"))
                 .withSampler("Sampler0")
                 .withBlend(BlendFunction.LIGHTNING)
                 .withDepthWrite(false)
