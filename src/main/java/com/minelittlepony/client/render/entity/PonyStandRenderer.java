@@ -22,6 +22,7 @@ import com.minelittlepony.api.pony.PonyData;
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.client.model.ModelType;
+import com.minelittlepony.client.model.entity.PonyArmorStandEntityArmorModel;
 import com.minelittlepony.client.model.entity.race.EarthPonyModel;
 import com.minelittlepony.client.render.EquineRenderManager;
 import com.minelittlepony.client.render.PonyRenderContext;
@@ -124,10 +125,11 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
     }
 
     private class PonifiedContext implements
-                FeatureRendererContext<PonyRenderState, EarthPonyModel<PonyRenderState>>,
-                PonyRenderContext<ArmorStandEntity, PonyRenderState, EarthPonyModel<PonyRenderState>> {
-        private final EquineRenderManager<ArmorStandEntity, PonyRenderState, EarthPonyModel<PonyRenderState>> manager
-            = new EquineRenderManager<>(this, (state, stack, progress, yaw) -> {}, ModelType.EARTH_PONY.<EarthPonyModel<PonyRenderState>>create(false));
+                FeatureRendererContext<PonyState, EarthPonyModel<PonyState>>,
+                PonyRenderContext<ArmorStandEntity, PonyState, EarthPonyModel<PonyState>> {
+        private final EquineRenderManager<ArmorStandEntity, PonyState, EarthPonyModel<PonyState>> manager
+            = new EquineRenderManager<>(this, (state, stack, progress, yaw) -> {},
+                    ModelType.EARTH_PONY.<EarthPonyModel<PonyState>>create(false).withArmorFactory(PonyArmorStandEntityArmorModel::new));
 
         @Override
         public Pony getEntityPony(ArmorStandEntity entity) {
@@ -135,12 +137,12 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
         }
 
         @Override
-        public EquineRenderManager<ArmorStandEntity, PonyRenderState, EarthPonyModel<PonyRenderState>> getEquineManager() {
+        public EquineRenderManager<ArmorStandEntity, PonyState, EarthPonyModel<PonyState>> getEquineManager() {
             return manager;
         }
 
         @Override
-        public EarthPonyModel<PonyRenderState> getModel() {
+        public EarthPonyModel<PonyState> getModel() {
             return getEquineManager().lookupModel(Race.EARTH).body();
         }
     }
@@ -162,6 +164,13 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
     }
 
     public static final class State extends ArmorStandEntityRenderState implements PonifiedRenderState {
-        public PonyRenderState ponyState = new PonyRenderState();
+        public PonyState ponyState = new PonyState(this);
+    }
+
+    public static class PonyState extends PonyRenderState {
+        public final ArmorStandEntityRenderState angles;
+        public PonyState(ArmorStandEntityRenderState state) {
+            this.angles = state;
+        }
     }
 }

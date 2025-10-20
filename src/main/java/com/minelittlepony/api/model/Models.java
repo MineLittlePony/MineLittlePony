@@ -30,4 +30,8 @@ public record Models<M extends PonyModel<?>> (
     public AbstractPonyModel<?> getArmourModel(ItemStack stack, EquipmentModel.LayerType layerType, ArmourVariant variant) {
         return armor.apply(ArmorModelRegistry.getModelKey(stack.getItem(), layerType, variant));
     }
+
+    public Models<M> withArmorFactory(MsonModel.Factory<AbstractPonyModel<?>> armorFactory) {
+        return new Models<>(Util.memoize(key -> key.createModel(armorFactory)), body);
+    }
 }

@@ -194,7 +194,7 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
                         RenderLayer trimLayer = plugin.getTrimLayer(equipmentSlot, armorTrim, layerType, assetId);
                         if (trimLayer != null) {
                             for (EntityModel<?> model : drawnModels) {
-                                submitArmorPiece(queue.getBatchingQueue(order++), (AbstractPonyModel<S>)model, state, matrices, trimLayer, light, OverlayTexture.DEFAULT_UV, ColorHelper.getWhite(trimAlpha), outlineColor, layerType, equipmentSlot, assetId, null, armorTrim);
+                                submitPonyArmorPiece(queue.getBatchingQueue(order++), (AbstractPonyModel<S>)model, state, matrices, trimLayer, light, OverlayTexture.DEFAULT_UV, ColorHelper.getWhite(trimAlpha), outlineColor, layerType, equipmentSlot, assetId, null, armorTrim);
                             }
                         }
                     }
