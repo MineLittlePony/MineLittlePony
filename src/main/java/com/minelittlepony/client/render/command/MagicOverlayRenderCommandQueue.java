@@ -202,7 +202,7 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
             int vertexIndex = i / 8;
             int inner = vertexIndex > 0 && vertexIndex < 3 ? 1 : -1;
             int lower = vertexIndex < 2 ? 1 : -1;
-            int xDir = normal.getX() + (normalizedNormal.getY() * lower) + (lower * normal.getZ());
+            int xDir = normal.getX() + (normalizedNormal.getY() * lower) + (-lower * normal.getZ());
             int yDir = normal.getY() + (normalizedNormal.getX() * inner) + (normalizedNormal.getZ() * inner);
             int zDir = normal.getZ() + (inner * normal.getY()) + (lower * normal.getX());
             vertices[i] = Float.floatToRawIntBits(Float.intBitsToFloat(vertices[i]) - inflation * xDir);
