@@ -5,6 +5,8 @@ import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
+import java.util.ArrayList;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
@@ -13,13 +15,24 @@ import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
+import net.minecraft.item.consume.UseAction;
 import net.minecraft.util.math.RotationAxis;
 
+import org.joml.Vector3f;
+import org.joml.Vector3fc;
+
 public class LevitatingItemRenderer {
+    private static final Vector3fc[] THIRD_PERSON_TRANSFORM = {
+            new Vector3f(-0.1F, 0, -0.09F), new Vector3f(-0.05F, 0, -0.15F)
+    };
+    private static final Vector3fc[] FIRST_PERSON_TRANSFORM = {
+            new Vector3f(-0.05F, -0.12F, -0.1F), new Vector3f(-0.1F, -0.05F, -0.1F)
+    };
+
     /**
      * Renders a first-person item with a magical overlay.
      */
-    public void renderItem(
+    public static void renderItem(
             LivingEntity entity, ItemStack stack, ItemDisplayContext mode,
             ItemRenderState itemRenderState, MatrixStack matrices, OrderedRenderCommandQueue queue, int light, int overlay, int outline, Operation<Void> original) {
 
@@ -44,30 +57,56 @@ public class LevitatingItemRenderer {
         original.call(itemRenderState, matrices, queue, light, overlay, outline);
 
         if (state.hornGlowVisible) {
-            queue = MagicGlow.getQueue(state.glowColor, queue);
-
-            var box = itemState.glintlessHandItemState.getModelBoundingBox();
-
-            float scale = itemState.levitatingItemScale;
-            matrices.push();
-            matrices.translate(0.015F + itemState.levitatingItemXDrift, 0.01F, 0.01F + itemState.levitatingItemZDrift);
-            var dX = (box.maxX + box.minX) * 0.5;
-            var dY = (box.maxY + box.minY) * 0.5;
-            var dZ = (box.maxZ + box.minZ) * 0.5;
-
-            matrices.translate(dX, dY, dZ);
-            matrices.scale(scale, scale, scale);
-            matrices.translate(-dX, -dY, -dZ);
-
+            queue = MagicGlow.getQueue(state.glowColor, queue, calculateTransformPasses(itemState, FIRST_PERSON_TRANSFORM, false));
             original.call(itemState.glintlessHandItemState, matrices, queue, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0);
-            matrices.translate(dX, dY, dZ);
-            matrices.scale(scale, scale, scale);
-            matrices.translate(-dX, -dY, -dZ);
-            matrices.translate(-0.03F - itemState.levitatingItemXDrift, -0.02F, -0.02F - itemState.levitatingItemZDrift);
-            original.call(itemState.glintlessHandItemState, matrices, queue, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0);
-            matrices.pop();
         }
     }
+
+    public static ArrayList<MatrixStack.Entry> getThirdPersonLevitatingItemTransformPasses(PonyRenderState state, PonyRenderState.HeldItemRenderState glintLessItem) {
+        return calculateTransformPasses(glintLessItem, THIRD_PERSON_TRANSFORM, glintLessItem.action == UseAction.SPYGLASS && state.attributes.itemUseTime > 0);
+    }
+
+    private static ArrayList<MatrixStack.Entry> calculateTransformPasses(PonyRenderState.HeldItemRenderState glintLessItem, Vector3fc[] offset, boolean noTransform) {
+        var passes = new ArrayList<MatrixStack.Entry>();
+
+        var box = glintLessItem.glintlessHandItemState.getModelBoundingBox();
+
+        float scale = glintLessItem.levitatingItemScale;
+        scale = 1 + (scale - 1) * 2;
+
+        var dX = (box.maxX + box.minX) * 0.5;
+        var dY = (box.maxY + box.minY) * 0.5;
+        var dZ = (box.maxZ + box.minZ) * 0.5;
+
+        MatrixStack matrices = new MatrixStack();
+        matrices.push();
+        if (!noTransform) {
+            matrices.translate(offset[0].x(), offset[0].y(), offset[0].z());
+            matrices.translate(0.015F + glintLessItem.levitatingItemXDrift, 0.01F, 0.01F + glintLessItem.levitatingItemZDrift);
+        }
+        matrices.translate(dX, dY, dZ);
+        matrices.scale(scale, scale, scale);
+        matrices.translate(-dX, -dY, -dZ);
+
+        passes.add(matrices.peek());
+        matrices.pop();
+
+        matrices = new MatrixStack();
+        matrices.push();
+        scale = 1 + (scale - 1) * 1.5F;
+        matrices.translate(dX, dY, dZ);
+        matrices.scale(scale, scale, scale);
+        matrices.translate(-dX, -dY, -dZ);
+        if (!noTransform) {
+            matrices.translate(offset[1].x(), offset[1].y(), offset[1].z());
+            matrices.translate(0.015F + glintLessItem.levitatingItemXDrift, 0.01F, 0.01F + glintLessItem.levitatingItemZDrift);
+        }
+
+        passes.add(matrices.peek());
+        matrices.pop();
+        return passes;
+    }
+
 
     /**
      * Moves held items to look like they're floating in the player's field.

@@ -4,6 +4,7 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.*;
 
 import com.mojang.blaze3d.pipeline.BlendFunction;
@@ -11,6 +12,7 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DepthTestFunction;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
+import java.util.List;
 import java.util.function.*;
 
 import com.minelittlepony.client.MineLittlePony;
@@ -60,7 +62,7 @@ public interface MagicGlow {
     }
 
     @SuppressWarnings("deprecation")
-    public static OrderedRenderCommandQueue getQueue(int color, OrderedRenderCommandQueue queue) {
+    public static OrderedRenderCommandQueue getQueue(int color, OrderedRenderCommandQueue queue, List<MatrixStack.Entry> passes) {
         if (queue instanceof MagicOverlayRenderCommandQueue p) {
             queue = p.unwrap();
         }
@@ -70,7 +72,7 @@ public interface MagicGlow {
             }
 
             return getTextured(RenderLayerUtil.getTexture(layer).orElse(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE));
-        }, color);
+        }, color, passes);
     }
 
     public static void bootstrap() {}

@@ -26,16 +26,10 @@ import net.minecraft.util.Identifier;
  * Render manager responsible for replacing and restoring entity renderers when the client settings change.
  */
 public class PonyRenderDispatcher {
-    private LevitatingItemRenderer magicRenderer = new LevitatingItemRenderer();
-
     public PonyRenderDispatcher() {
         PonyForm.register(PonyForm.DEFAULT, Predicates.alwaysTrue(), PlayerPonyRenderer::new);
         PonyForm.register(PonyForm.SEAPONY, PonyPosture::hasSeaponyForm, (context, slimArms) -> new AquaticPlayerPonyRenderer<>(context, slimArms, DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, PonyPosture::isSeaponyFormActive));
         PonyForm.register(PonyForm.NIRIK, PonyPosture::hasNirikForm, (context, slimArms) -> new FormChangingPlayerPonyRenderer<>(context, slimArms, DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, PonyPosture::isNirikFormActive));
-    }
-
-    public LevitatingItemRenderer getMagicRenderer() {
-        return magicRenderer;
     }
 
     /**

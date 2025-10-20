@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.client.render.LevitatingItemRenderer;
 
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.item.*;
@@ -20,6 +20,6 @@ abstract class MixinHeldItemRenderer {
                       target = "net/minecraft/client/render/item/ItemRenderState.render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;III)V"))
     private void wrapRenderItem(ItemRenderState state,
             MatrixStack matrices, OrderedRenderCommandQueue queue, int light, int overlay, int outline, Operation<Void> operation, LivingEntity entity, ItemStack stack, ItemDisplayContext renderMode) {
-        MineLittlePony.getInstance().getRenderDispatcher().getMagicRenderer().renderItem(entity, stack, renderMode, state, matrices, queue, light, overlay, outline, operation);
+        LevitatingItemRenderer.renderItem(entity, stack, renderMode, state, matrices, queue, light, overlay, outline, operation);
     }
 }
