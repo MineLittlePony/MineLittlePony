@@ -14,7 +14,7 @@ in vec2 texCoord0;
 out vec4 fragColor;
 
 void main() {
-    if (texture(Sampler0, texCoord0).a < 0.1) {
+    if (texture(Sampler0, texCoord0).a < 0.01) {
       discard;
     }
     fragColor = apply_fog(vertexColor,

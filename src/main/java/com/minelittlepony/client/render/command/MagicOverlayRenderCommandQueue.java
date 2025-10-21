@@ -2,13 +2,16 @@ package com.minelittlepony.client.render.command;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessRenderCommandQueue;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer.TextLayerType;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.*;
+import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.block.MovingBlockRenderState;
+import net.minecraft.client.render.block.entity.LoadedBlockEntityModels;
 import net.minecraft.client.render.command.ModelCommandRenderer.CrumblingOverlayCommand;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue.Custom;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue.LayeredCustom;
@@ -57,26 +60,43 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
 
     @Override
     public void submitBlock(MatrixStack matrices, BlockState state, int light, int overlay, int outlineColor) {
-        passes.forEach(pass -> {
-            matrices.push();
-            matrices.peek().getPositionMatrix().mul(pass.getPositionMatrix());
-            matrices.peek().getNormalMatrix().mul(pass.getNormalMatrix());
-            parent.submitBlock(matrices, state, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0);
-            matrices.pop();
-        });
+        RenderLayer layer = this.layer.apply(RenderLayers.getEntityBlockLayer(state));
+        if (layer != null) {
+            MatrixStack commandMatrix = new MatrixStack();
+            parent.submitCustom(matrices, layer, (entry, buffer) -> {
+                commandMatrix.push();
+                commandMatrix.peek().copy(entry);
+
+                for (var pass : passes) {
+                    commandMatrix.push();
+                    commandMatrix.peek().getPositionMatrix().mul(pass.getPositionMatrix());
+                    commandMatrix.peek().getNormalMatrix().mul(pass.getNormalMatrix());
+
+                    if (state.getRenderType() != BlockRenderType.INVISIBLE) {
+                        BlockStateModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(state);
+                        BlockModelRenderer.render(commandMatrix.peek(), buffer, model, ColorHelper.getRedFloat(color), ColorHelper.getGreenFloat(color), ColorHelper.getBlueFloat(color), LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
+                    }
+
+                    commandMatrix.pop();
+                }
+
+                commandMatrix.pop();
+            });
+            ((LoadedBlockEntityModels)MinecraftClient.getInstance().getBakedModelManager().getBlockEntityModelsSupplier().get()).render(state.getBlock(), ItemDisplayContext.NONE, matrices, owner, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0);
+        }
     }
 
     @Override
     public void submitBlockStateModel(MatrixStack matrices, RenderLayer renderLayer, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor) {
         var l = layer.apply(renderLayer);
         if (l != null) {
-            passes.forEach(pass -> {
+            for (var pass : passes) {
                 matrices.push();
                 matrices.peek().getPositionMatrix().mul(pass.getPositionMatrix());
                 matrices.peek().getNormalMatrix().mul(pass.getNormalMatrix());
-                parent.submitBlockStateModel(matrices, l, model, ColorHelper.getRedFloat(color), ColorHelper.getGreenFloat(color), ColorHelper.getBlueFloat(color), LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0);
+                parent.submitBlockStateModel(matrices, l, model, ColorHelper.getRedFloat(color), ColorHelper.getGreenFloat(color), ColorHelper.getBlueFloat(color), LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0);
                 matrices.pop();
-            });
+            }
         }
     }
 
@@ -84,51 +104,45 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
     public <S> void submitModel(Model<? super S> model, S state, MatrixStack matrices, RenderLayer renderLayer, int light, int overlay, int tintedColor, Sprite sprite, int outline, CrumblingOverlayCommand crumblingOverlay) {
         var l = layer.apply(renderLayer);
         if (l != null) {
-            passes.forEach(pass -> {
+            for (var pass : passes) {
                 matrices.push();
                 matrices.peek().getPositionMatrix().mul(pass.getPositionMatrix());
                 matrices.peek().getNormalMatrix().mul(pass.getNormalMatrix());
-                parent.submitModel(model, state, matrices, l, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, color, null, 0, null);
+                parent.submitModel(model, state, matrices, l, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, color, sprite, 0, null);
                 matrices.pop();
-            });
+            }
         }
     }
 
     @Override
     public void submitItem(MatrixStack matrices, ItemDisplayContext displayContext, int light, int overlay, int outlineColors, int[] tintLayers, List<BakedQuad> quads, RenderLayer renderLayer, Glint glintType) {
-        var l = layer.apply(renderLayer);
-        if (l != null) {
-            List<BakedQuad> adjustedQuad = new ArrayList<>();
+        renderLayer = layer.apply(renderLayer);
+        if (renderLayer != null) {
+            quads = getColoredQuads(quads);
             int[] tints = new int[] {color};
-            for (var quad : quads) {
-                adjustedQuad.add(new BakedQuad(quad.vertexData(), 0, quad.face(), quad.sprite(), false, 1));
-            }
-            passes.forEach(pass -> {
+            for (var pass : passes) {
                 matrices.push();
                 matrices.peek().getPositionMatrix().mul(pass.getPositionMatrix());
                 matrices.peek().getNormalMatrix().mul(pass.getNormalMatrix());
-                parent.submitItem(matrices, displayContext, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0, tints, adjustedQuad, l, Glint.NONE);
+                parent.submitItem(matrices, displayContext, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0, tints, quads, renderLayer, Glint.NONE);
                 matrices.pop();
-            });
+            }
         }
     }
 
     @Override
     public void fabric_submitItem(MatrixStack matrices, ItemDisplayContext displayContext, int light, int overlay, int outlineColors, int[] tintLayers, List<BakedQuad> quads, RenderLayer renderLayer, Glint glintType, MeshView mesh) {
-        var l = layer.apply(renderLayer);
-        if (l != null) {
-            List<BakedQuad> adjustedQuad = new ArrayList<>();
+        renderLayer = layer.apply(renderLayer);
+        if (renderLayer != null) {
+            quads = getColoredQuads(quads);
             int[] tints = new int[] {color};
-            for (var quad : quads) {
-                adjustedQuad.add(new BakedQuad(quad.vertexData(), 0, quad.face(), quad.sprite(), false, 1));
-            }
-            passes.forEach(pass -> {
+            for (var pass : passes) {
                 matrices.push();
                 matrices.peek().getPositionMatrix().mul(pass.getPositionMatrix());
                 matrices.peek().getNormalMatrix().mul(pass.getNormalMatrix());
-                ((AccessRenderCommandQueue)parent).fabric_submitItem(matrices, displayContext, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0, tints, adjustedQuad, l, Glint.NONE, mesh);
+                ((AccessRenderCommandQueue)parent).fabric_submitItem(matrices, displayContext, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0, tints, quads, renderLayer, Glint.NONE, mesh);
                 matrices.pop();
-            });
+            }
         }
     }
 
@@ -136,13 +150,13 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
     public void submitModelPart(ModelPart part, MatrixStack matrices, RenderLayer renderLayer, int light, int overlay, @Nullable Sprite sprite, boolean sheeted, boolean hasGlint, int tintedColor, CrumblingOverlayCommand crumblingOverlay, int i) {
         var l = layer.apply(renderLayer);
         if (l != null) {
-            passes.forEach(pass -> {
+            for (var pass : passes) {
                 matrices.push();
                 matrices.peek().getPositionMatrix().mul(pass.getPositionMatrix());
                 matrices.peek().getNormalMatrix().mul(pass.getNormalMatrix());
                 parent.submitModelPart(part, matrices, l, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, null, false, false, color, null, i);
                 matrices.pop();
-            });
+            }
         }
     }
 
@@ -152,7 +166,7 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
         var l = layer.apply(renderLayer);
         if (l != null) {
 
-            passes.forEach(pass -> {
+            for (var pass : passes) {
                 matrices.push();
                 matrices.peek().getPositionMatrix().mul(pass.getPositionMatrix());
                 matrices.peek().getNormalMatrix().mul(pass.getNormalMatrix());
@@ -162,8 +176,16 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
                 }
                 parent.submitCustom(matrices, l, c);
                 matrices.pop();
-            });
+            }
         }
+    }
+
+    private List<BakedQuad> getColoredQuads(List<BakedQuad> quads) {
+        List<BakedQuad> adjustedQuad = new ArrayList<>();
+        for (var quad : quads) {
+            adjustedQuad.add(new BakedQuad(quad.vertexData(), 0, quad.face(), quad.sprite(), false, 1));
+        }
+        return adjustedQuad;
     }
 
     @Override
