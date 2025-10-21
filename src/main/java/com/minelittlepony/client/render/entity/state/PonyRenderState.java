@@ -120,7 +120,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
             attributes.updateLivingState(entity, pony, mode);
             attributes.checkRainboom(entity, models.body(), age);
         }
-        attributes.size = PonyDisplayTags.of(entity).size().orElse(attributes.size);
+        attributes.size = PonyDisplayTags.of(entity).size().orElseGet(() -> computeSize(entity, attributes.size));
         baby = attributes.size == SizePreset.FOAL;
         race = PonyDisplayTags.of(entity).race().orElseGet(() -> computeRace(entity, pony));
         glowColor = PonyDisplayTags.of(entity).magicColor().orElse(attributes.metadata.glowColor());
@@ -195,6 +195,10 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
 
     protected Race computeRace(@Nullable LivingEntity entity, Pony pony) {
         return pony.race();
+    }
+
+    protected Size computeSize(@Nullable LivingEntity entity, Size size) {
+        return size;
     }
 
     @Override

@@ -86,7 +86,10 @@ public record MobRenderers (String name, BiConsumer<MobRenderers, EntityRenderer
     public static final MobRenderers ALLAY = register("allays", (state, registry) -> {
         registry.registerEntityRenderer(EntityType.ALLAY, state, AllayRenderer::new);
     });
-    public static final MobRenderers MANNEQUINE = register("mannequine", (state, registry) -> {
+    public static final MobRenderers COPPER_GOLEMS = register("copper_golems", (state, registry) -> {
+        registry.registerEntityRenderer(EntityType.COPPER_GOLEM, state, CopperPonyRenderer::new);
+    });
+    public static final MobRenderers MANNEQUINE = register("mannequines", (state, registry) -> {
 
     });
 

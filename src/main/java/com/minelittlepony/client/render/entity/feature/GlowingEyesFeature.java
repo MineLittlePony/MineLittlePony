@@ -1,28 +1,37 @@
 package com.minelittlepony.client.render.entity.feature;
 
+import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.entity.feature.EyesFeatureRenderer;
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
+import net.minecraft.client.render.entity.feature.FeatureRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.PonyRenderContext;
+import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 public class GlowingEyesFeature<
         S extends PonyRenderState,
         M extends ClientPonyModel<S>
-    > extends EyesFeatureRenderer<PlayerEntityRenderState, M> {
+    > extends FeatureRenderer<S, M> {
 
-    private final RenderLayer layer;
+    private final TextureSupplier<S> textureSupplier;
 
-    public GlowingEyesFeature(PonyRenderContext<?, S, M> context, Identifier texture) {
+    public GlowingEyesFeature(PonyRenderContext<?, S, M> context, TextureSupplier<S> textureSupplier) {
         super(context.upcast());
-        layer = RenderLayer.getEyes(texture);
+        this.textureSupplier = textureSupplier;
     }
 
+    public GlowingEyesFeature(PonyRenderContext<?, S, M> context, Identifier texture) {
+        this(context, TextureSupplier.of(texture));
+    }
+
+
     @Override
-    public RenderLayer getEyesTexture() {
-        return layer;
+    public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
+        queue.getBatchingQueue(1)
+            .submitModel(this.getContextModel(), state, matrices, RenderLayer.getEyes(textureSupplier.apply(state)), light, OverlayTexture.DEFAULT_UV, -1, null, state.outlineColor, null);
     }
 }

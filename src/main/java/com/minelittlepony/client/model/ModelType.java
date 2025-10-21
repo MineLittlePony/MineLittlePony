@@ -48,6 +48,7 @@ public final class ModelType {
     public static final ModelKey<SpikeModel> STRIDER = register("strider", SpikeModel::new);
     public static final ModelKey<SaddleModel> STRIDER_SADDLE = register("strider_saddle", SaddleModel::new);
     public static final ModelKey<BreezieModel> ALLAY = register("allay", BreezieModel::new);
+    public static final ModelKey<CopperPonyModel> COPPER_GOLEM = register("copper_golem", CopperPonyModel::new);
 
     public static final ModelKey<PonyElytra<?>> ELYTRA = register("elytra", PonyElytra::new);
 

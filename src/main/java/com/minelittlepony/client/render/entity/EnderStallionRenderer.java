@@ -44,9 +44,9 @@ public class EnderStallionRenderer extends PonyRenderer<EndermanEntity, EnderSta
     @Override
     protected void addFeatures(EntityRendererFactory.Context context) {
         addPonyFeature(createHeldItemFeature(context));
-        addPonyFeature(new StuckArrowsFeatureRenderer<EnderStallionModel>((PonyRenderer)this, context));
-        addPonyFeature(new GlowingEyesFeature<EnderStallionRenderer.State, EnderStallionModel>(this, EYES));
-        addPonyFeature(new PonyBodyPartFeature<>(this, m -> m instanceof ModelWithHorn, m -> ((ModelWithHorn)m).getHorn()));
+        addPonyFeature(new StuckArrowsFeatureRenderer<>((PonyRenderer)this, context));
+        addFeature(new GlowingEyesFeature<>(this, EYES));
+        addFeature(new PonyBodyPartFeature<>(this, m -> m instanceof ModelWithHorn, m -> ((ModelWithHorn)m).getHorn()));
     }
 
     @Override
