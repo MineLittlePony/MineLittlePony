@@ -24,7 +24,7 @@ import net.minecraft.world.EmptyBlockView;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.minelittlepony.api.config.PonyCommandTags;
+import com.minelittlepony.api.config.PonyDisplayTags;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.events.PonyRenderStatePrepareCallback;
 import com.minelittlepony.api.model.*;
@@ -120,9 +120,10 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
             attributes.updateLivingState(entity, pony, mode);
             attributes.checkRainboom(entity, models.body(), age);
         }
+        attributes.size = PonyDisplayTags.of(entity).size().orElse(attributes.size);
         baby = attributes.size == SizePreset.FOAL;
-        race = computeRace(entity, pony);
-        glowColor = PonyCommandTags.getMagicColorOverride(entity, attributes.metadata.glowColor());
+        race = PonyDisplayTags.of(entity).race().orElseGet(() -> computeRace(entity, pony));
+        glowColor = PonyDisplayTags.of(entity).magicColor().orElse(attributes.metadata.glowColor());
         vehicleOffset = hasVehicle && entity != null ? entity.getVehicle().getEyeHeight(pose) : 0;
         riderOffset = getRiderYOffset();
         nameplateYOffset = getNamePlateYOffset();

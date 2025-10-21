@@ -1,6 +1,6 @@
 package com.minelittlepony.client.render;
 
-import com.minelittlepony.api.config.PonyCommandTags;
+import com.minelittlepony.api.config.PonyDisplayTags;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.client.render.entity.*;
 import com.minelittlepony.client.render.entity.npc.*;
@@ -96,6 +96,6 @@ public record MobRenderers (String name, BiConsumer<MobRenderers, EntityRenderer
 
     @Override
     public boolean test(Entity entity) {
-        return PonyCommandTags.isAPony(entity, option().get());
+        return PonyDisplayTags.of(entity).shouldPonify(option().get());
     }
 }

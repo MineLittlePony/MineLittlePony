@@ -15,7 +15,7 @@ import net.minecraft.util.math.*;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.minelittlepony.api.config.PonyCommandTags;
+import com.minelittlepony.api.config.PonyDisplayTags;
 import com.minelittlepony.api.model.ModelAttributes.Mode;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.PonyData;
@@ -39,7 +39,7 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
     private final ItemModelManager itemModelManager;
 
     public static boolean isPonyStand(Entity entity) {
-        return PonyCommandTags.isAPony(entity, entity.hasCustomName() && "Ponita".equals(entity.getCustomName().getString()));
+        return PonyDisplayTags.of(entity).shouldPonify(entity.hasCustomName() && "Ponita".equals(entity.getCustomName().getString()));
     }
 
     public PonyStandRenderer(EntityRendererFactory.Context context) {
