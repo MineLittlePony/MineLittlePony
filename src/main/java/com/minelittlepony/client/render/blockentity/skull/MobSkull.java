@@ -3,7 +3,7 @@ package com.minelittlepony.client.render.blockentity.skull;
 import com.google.common.base.Suppliers;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.Pony;
-import com.minelittlepony.client.model.AbstractPonyModel;
+import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer.ISkull;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
@@ -26,10 +26,10 @@ public class MobSkull<S extends PonyRenderState> implements ISkull {
     private final Identifier texture;
     private final MobRenderers type;
 
-    private final Supplier<AbstractPonyModel<?>> ponyHead;
+    private final Supplier<ClientPonyModel<?>> ponyHead;
     private final Supplier<S> state;
 
-    MobSkull(Identifier texture, MobRenderers type, ModelKey<? extends AbstractPonyModel<?>> modelKey, Supplier<S> state) {
+    MobSkull(Identifier texture, MobRenderers type, ModelKey<? extends ClientPonyModel<?>> modelKey, Supplier<S> state) {
         this.texture = texture;
         this.type = type;
         this.state = state;
@@ -59,16 +59,14 @@ public class MobSkull<S extends PonyRenderState> implements ISkull {
         var model = ponyHead.get();
         Vector3f v = new Vector3f(0, -2, 1.99F);
         v.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(state.yaw));
-        int color = ColorHelper.getWhite(state.alpha);
 
         queue.getBatchingQueue(0).submitCustom(stack, layer, (entry, vertices) -> {
+            copyStack.peek().copy(entry);
             model.setVisible(true);
             model.setAngles(ponyState);
             model.getHead().setOrigin(v.x, v.y, v.z);
             model.setHeadRotation(state.poweredTicks, state.yaw, 0);
-            copyStack.peek().getPositionMatrix().set(entry.getPositionMatrix());
-            copyStack.peek().getNormalMatrix().set(entry.getNormalMatrix());
-            model.headRenderList.accept(copyStack, vertices, state.light, OverlayTexture.DEFAULT_UV, color);
+            model.renderHead(copyStack, vertices, state.light, OverlayTexture.DEFAULT_UV, ColorHelper.getWhite(state.alpha));
         });
     }
 }

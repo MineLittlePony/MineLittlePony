@@ -4,7 +4,7 @@ import net.minecraft.item.Item;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.util.Identifier;
 
-import com.minelittlepony.client.model.AbstractPonyModel;
+import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.mson.api.ModelKey;
 import com.minelittlepony.mson.api.Mson;
 import com.minelittlepony.util.ResourceUtil;
@@ -12,10 +12,10 @@ import com.minelittlepony.util.ResourceUtil;
 import java.util.*;
 
 public interface ArmorModelRegistry {
-    static final Map<Identifier, Optional<ModelKey<AbstractPonyModel<?>>>> REGISTRY = new HashMap<>();
+    static final Map<Identifier, Optional<ModelKey<ClientPonyModel<?>>>> REGISTRY = new HashMap<>();
 
     @SuppressWarnings("deprecation")
-    public static ModelKey<AbstractPonyModel<?>> getModelKey(Item item, EquipmentModel.LayerType layerType, ArmourVariant variant) {
+    public static ModelKey<ClientPonyModel<?>> getModelKey(Item item, EquipmentModel.LayerType layerType, ArmourVariant variant) {
         return item.getRegistryEntry().getKey().map(key -> key.getValue()).flatMap(id -> {
             if (id.getNamespace().equals("minecraft")) {
                 return Optional.empty();

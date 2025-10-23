@@ -34,29 +34,30 @@ public final class ModelType {
 
     public static final ModelKey<DJPon3EarsModel> DJ_PON_3 = register("dj_pon_three", DJPon3EarsModel::new);
 
-    public static final ModelKey<WitchPonyModel> WITCH = register("witch", WitchPonyModel::new);
-    public static final ModelKey<ZomponyModel<?>> ZOMBIE = register("zombie", ZomponyModel::new);
-    public static final ModelKey<PiglinPonyModel> PIGLIN = register("piglin", PiglinPonyModel::new);
-    public static final ModelKey<AlicornModel<?>> SKELETON = register("skeleton", tree -> new AlicornModel<>(tree, false));
+    public static final ModelKey<ClientPonyModel<?>> WITCH = register("witch", WitchPonyModel::new);
+    public static final ModelKey<ClientPonyModel<?>> ZOMBIE = register("zombie", ZomponyModel::new);
+    public static final ModelKey<ClientPonyModel<?>> PIGLIN = register("piglin", PiglinPonyModel::new);
+    public static final ModelKey<ClientPonyModel<?>> SKELETON = register("skeleton", tree -> new AlicornModel<>(tree, false));
     public static final ModelKey<SinglePartModel> BOGGED_MUSHROOMS = register("bogged_mushrooms", tree -> new SinglePartModel(tree, RenderLayer::getEntityTranslucent));
-    public static final ModelKey<AlicornModel<?>> SKELETON_CLOTHES = register("skeleton_clothes", tree -> new AlicornModel<>(tree, false));
-    public static final ModelKey<ChangelingModel<?>> PILLAGER = register("pillager", tree -> new ChangelingModel<>(tree, false));
-    public static final ModelKey<IllagerPonyModel<?>> ILLAGER = register("illager", IllagerPonyModel::new);
-    public static final ModelKey<SeaponyModel<?>> GUARDIAN = register("guardian", SeaponyModel::new);
-    public static final ModelKey<EnderStallionModel> ENDERMAN = register("enderman", EnderStallionModel::new);
+    public static final ModelKey<ClientPonyModel<?>> SKELETON_CLOTHES = register("skeleton_clothes", tree -> new AlicornModel<>(tree, false));
+    public static final ModelKey<ClientPonyModel<?>> PILLAGER = register("pillager", tree -> new ChangelingModel<>(tree, false));
+    public static final ModelKey<ClientPonyModel<?>> ILLAGER = register("illager", IllagerPonyModel::new);
+    public static final ModelKey<ClientPonyModel<?>> GUARDIAN = register("guardian", SeaponyModel::new);
+    public static final ModelKey<ClientPonyModel<?>> ENDERMAN = register("enderman", EnderStallionModel::new);
     public static final ModelKey<ParaspriteModel> VEX = register("vex", ParaspriteModel::new);
-    public static final ModelKey<SpikeModel> STRIDER = register("strider", SpikeModel::new);
+    public static final ModelKey<StriderDragonModel> STRIDER = register("strider", StriderDragonModel::new);
     public static final ModelKey<SaddleModel> STRIDER_SADDLE = register("strider_saddle", SaddleModel::new);
     public static final ModelKey<BreezieModel> ALLAY = register("allay", BreezieModel::new);
-    public static final ModelKey<CopperPonyModel> COPPER_GOLEM = register("copper_golem", CopperPonyModel::new);
+    public static final ModelKey<ClientPonyModel<?>> COPPER_GOLEM = register("copper_golem", CopperPonyModel::new);
+    public static final ModelKey<ClientPonyModel<?>> SPIKE = register("spike", SpikeModel::new);
 
     public static final ModelKey<PonyElytra<?>> ELYTRA = register("elytra", PonyElytra::new);
 
     public static final ModelKey<ArmorStandEntityModel> ARMOUR_STAND = register("armour_stand", ArmorStandEntityModel::new);
-    public static final ModelKey<AbstractPonyModel<?>> INNER_VANILLA_ARMOR = register("armor/inner_vanilla_armor", PonyArmourModel::new);
-    public static final ModelKey<AbstractPonyModel<?>> OUTER_VANILLA_ARMOR = register("armor/outer_vanilla_armor", PonyArmourModel::new);
-    public static final ModelKey<AbstractPonyModel<?>> INNER_PONY_ARMOR = register("armor/inner_pony_armor", PonyArmourModel::new);
-    public static final ModelKey<AbstractPonyModel<?>> OUTER_PONY_ARMOR = register("armor/outer_pony_armor", PonyArmourModel::new);
+    public static final ModelKey<ClientPonyModel<?>> INNER_VANILLA_ARMOR = register("armor/inner_vanilla_armor", PonyArmourModel::new);
+    public static final ModelKey<ClientPonyModel<?>> OUTER_VANILLA_ARMOR = register("armor/outer_vanilla_armor", PonyArmourModel::new);
+    public static final ModelKey<ClientPonyModel<?>> INNER_PONY_ARMOR = register("armor/inner_pony_armor", PonyArmourModel::new);
+    public static final ModelKey<ClientPonyModel<?>> OUTER_PONY_ARMOR = register("armor/outer_pony_armor", PonyArmourModel::new);
 
     public static final GearModelKey<AbstractGearModel<?>> STETSON = registerGear("stetson", Wearable.STETSON, t -> new WearableGear<>(t, Wearable.STETSON, BodyPart.HEAD, 0.15F));
     public static final GearModelKey<SaddleBags<?>> SADDLEBAGS_BOTH = registerGear("saddlebags", Wearable.SADDLE_BAGS_BOTH, t -> new SaddleBags<>(t, Wearable.SADDLE_BAGS_BOTH));
@@ -67,18 +68,18 @@ public final class ModelType {
     public static final GearModelKey<AbstractGearModel<?>> WITCH_HAT = registerGear("witch_hat", Wearable.HAT, t -> new WearableGear<>(t.getChild("hat"), Wearable.HAT, BodyPart.HEAD, 0.7F));
     public static final GearModelKey<DeerAntlers<?>> ANTLERS = registerGear("antlers", Wearable.ANTLERS, DeerAntlers::new);
 
-    public static final PlayerModelKey<AlicornModel<?>> ALICORN = registerPlayer("alicorn", Race.ALICORN, AlicornModel::new);
-    public static final PlayerModelKey<UnicornModel<?>> UNICORN = registerPlayer("unicorn", Race.UNICORN, UnicornModel::new);
-    public static final PlayerModelKey<KirinModel<?>> KIRIN = registerPlayer("kirin", Race.KIRIN, KirinModel::new);
-    public static final PlayerModelKey<PegasusModel<?>> PEGASUS = registerPlayer("pegasus", Race.PEGASUS, PegasusModel::new);
-    public static final PlayerModelKey<PegasusModel<?>> GRYPHON = registerPlayer("gryphon", Race.GRYPHON, PegasusModel::new);
-    public static final PlayerModelKey<PegasusModel<?>> HIPPOGRIFF = registerPlayer("hippogriff", Race.HIPPOGRIFF, PegasusModel::new, PonyArmourModel::new);
-    public static final PlayerModelKey<EarthPonyModel<?>> EARTH_PONY = registerPlayer("earth_pony", Race.EARTH, EarthPonyModel::new);
-    public static final PlayerModelKey<SeaponyModel<?>> SEA_PONY = registerPlayer("sea_pony", Race.SEAPONY, SeaponyModel::new, SeaponyModel.Armour::new);
-    public static final PlayerModelKey<PegasusModel<?>> BAT_PONY = registerPlayer("bat_pony", Race.BATPONY, PegasusModel::new);
-    public static final PlayerModelKey<ChangelingModel<?>> CHANGELING = registerPlayer("changeling", Race.CHANGELING, ChangelingModel::new);
-    public static final PlayerModelKey<ChangelingModel<?>> CHANGEDLING = registerPlayer("reformed_changeling", Race.CHANGEDLING, ChangelingModel::new);
-    public static final PlayerModelKey<EarthPonyModel<?>> ZEBRA = registerPlayer("zebra", Race.ZEBRA, EarthPonyModel::new);
+    public static final PlayerModelKey<ClientPonyModel<?>> ALICORN = registerPlayer("alicorn", Race.ALICORN, AlicornModel::new);
+    public static final PlayerModelKey<ClientPonyModel<?>> UNICORN = registerPlayer("unicorn", Race.UNICORN, UnicornModel::new);
+    public static final PlayerModelKey<ClientPonyModel<?>> KIRIN = registerPlayer("kirin", Race.KIRIN, KirinModel::new);
+    public static final PlayerModelKey<ClientPonyModel<?>> PEGASUS = registerPlayer("pegasus", Race.PEGASUS, PegasusModel::new);
+    public static final PlayerModelKey<ClientPonyModel<?>> GRYPHON = registerPlayer("gryphon", Race.GRYPHON, PegasusModel::new);
+    public static final PlayerModelKey<ClientPonyModel<?>> HIPPOGRIFF = registerPlayer("hippogriff", Race.HIPPOGRIFF, PegasusModel::new, PonyArmourModel::new);
+    public static final PlayerModelKey<ClientPonyModel<?>> EARTH_PONY = registerPlayer("earth_pony", Race.EARTH, EarthPonyModel::new);
+    public static final PlayerModelKey<ClientPonyModel<?>> SEA_PONY = registerPlayer("sea_pony", Race.SEAPONY, SeaponyModel::new, SeaponyModel.Armour::new);
+    public static final PlayerModelKey<ClientPonyModel<?>> BAT_PONY = registerPlayer("bat_pony", Race.BATPONY, PegasusModel::new);
+    public static final PlayerModelKey<ClientPonyModel<?>> CHANGELING = registerPlayer("changeling", Race.CHANGELING, ChangelingModel::new);
+    public static final PlayerModelKey<ClientPonyModel<?>> CHANGEDLING = registerPlayer("reformed_changeling", Race.CHANGEDLING, ChangelingModel::new);
+    public static final PlayerModelKey<ClientPonyModel<?>> ZEBRA = registerPlayer("zebra", Race.ZEBRA, EarthPonyModel::new);
 
     static <E extends LivingEntity, T extends Model<?> & MsonModel & PonyModel<?>> PlayerModelKey<T> registerPlayer(String name, Race race,
             BiFunction<ModelPart, Boolean, T> constructor) {
@@ -88,7 +89,7 @@ public final class ModelType {
     @SuppressWarnings("unchecked")
     static <T extends Model<?> & PonyModel<?>> PlayerModelKey<T> registerPlayer(String name, Race race,
             BiFunction<ModelPart, Boolean, T> constructor,
-            MsonModel.Factory<AbstractPonyModel<?>> armorFactory) {
+            MsonModel.Factory<ClientPonyModel<?>> armorFactory) {
         return (PlayerModelKey<T>)PLAYER_MODELS.computeIfAbsent(race, r -> new PlayerModelKey<T>(name, constructor, armorFactory));
     }
 

@@ -1,6 +1,5 @@
 package com.minelittlepony.client.render.entity.feature;
 
-import com.minelittlepony.client.model.AbstractPonyModel;
 import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.render.*;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
@@ -36,19 +35,16 @@ public class HeldItemFeature<
         }
     }
 
-    @SuppressWarnings(value = {"unchecked"})
     protected void renderItem(S state, ItemRenderState item, PonyRenderState.HeldItemRenderState glintLessItem, Arm arm, MatrixStack matrices, OrderedRenderCommandQueue queue, int light) {
         if (!item.isEmpty()) {
             matrices.push();
-            if (getContextModel() instanceof AbstractPonyModel m) {
-                m.transformHeldItem(state, arm, matrices);
-            }
+            getContextModel().transformHeldItem(state, arm, matrices);
 
-            renderItem((PlayerEntityRenderState)state, item, arm, matrices, queue, light);
+            renderItem(state, item, arm, matrices, queue, light);
 
             if (!glintLessItem.glintlessHandItemState.isEmpty()) {
                 queue = MagicGlow.getQueue(state.glowColor, queue, LevitatingItemRenderer.getThirdPersonLevitatingItemTransformPasses(state, glintLessItem));
-                renderItem((PlayerEntityRenderState)state, glintLessItem.glintlessHandItemState, arm, matrices, queue, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+                renderItem(state, glintLessItem.glintlessHandItemState, arm, matrices, queue, LightmapTextureManager.MAX_LIGHT_COORDINATE);
             }
             matrices.pop();
         }

@@ -16,12 +16,12 @@ import com.minelittlepony.api.pony.DefaultPonySkinHelper;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.ModelType;
 import com.minelittlepony.client.model.armour.PonifiedEquipmentRenderer;
-import com.minelittlepony.client.model.entity.SpikeModel;
+import com.minelittlepony.client.model.entity.StriderDragonModel;
 import com.minelittlepony.client.render.entity.state.PonifiedRenderState;
 
 import java.util.UUID;
 
-public class StriderRenderer extends MobEntityRenderer<StriderEntity, StriderRenderer.State, SpikeModel> {
+public class StriderRenderer extends MobEntityRenderer<StriderEntity, StriderRenderer.State, StriderDragonModel> {
     public static final Identifier DRAGON_PONIES = MineLittlePony.id("textures/entity/strider/pony");
     public static final Identifier COLD_DRAGON_PONIES = MineLittlePony.id("textures/entity/strider/cold_pony");
 

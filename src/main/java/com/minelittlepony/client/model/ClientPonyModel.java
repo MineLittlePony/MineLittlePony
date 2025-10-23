@@ -6,6 +6,8 @@ import net.minecraft.client.render.entity.model.*;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Arm;
+import net.minecraft.util.math.MathHelper;
+
 import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.model.*;
@@ -87,7 +89,6 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
     @Override
     public final void setAngles(PlayerEntityRenderState state) {
         super.setAngles((T)state);
-        resetTransforms();
 
         setModelVisibilities((T)state);
         setModelAngles((T)state);
@@ -101,6 +102,29 @@ public abstract class ClientPonyModel<T extends PonyRenderState> extends PlayerE
     }
 
     protected void setModelAngles(T state) {
+    }
+
+    public void setHeadRotation(float animationProgress, float yaw, float pitch) {
+        head.yaw = yaw * MathHelper.RADIANS_PER_DEGREE;
+        head.pitch = pitch * MathHelper.RADIANS_PER_DEGREE;
+    }
+
+    public void renderHead(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
+        getHead().render(matrices, vertices, light, overlay, color);
+    }
+
+    @Override
+    public ModelPart getBodyPart(BodyPart part) {
+        switch (part) {
+            default:
+            case HORN:
+            case HEAD: return head;
+            case TAIL:
+            case LEGS:
+            case BACK:
+            case WINGS:
+            case BODY: return body;
+        }
     }
 
     @Override

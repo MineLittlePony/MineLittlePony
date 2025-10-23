@@ -4,6 +4,7 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.*;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Arm;
 
 import com.minelittlepony.api.pony.meta.Race;
 import com.minelittlepony.api.pony.meta.Wearable;
@@ -16,9 +17,11 @@ public interface PonyModel<T extends EntityRenderState & PonyModel.AttributedHol
     /**
      * Applies a transform particular to a certain body part.
      */
-    void transform(T state, BodyPart part, MatrixStack matrices);
+    default void transform(T state, BodyPart part, MatrixStack matrices) { }
 
-    void transform(T state, BodyPart bodyPart, ModelPart part);
+    default void transform(T state, BodyPart bodyPart, ModelPart part) { }
+
+    default void transformHeldItem(T state, Arm arm, MatrixStack matrices) {}
 
     /**
      * Applies transformations to align to a certain body part.

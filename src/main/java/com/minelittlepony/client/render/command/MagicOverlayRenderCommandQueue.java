@@ -69,8 +69,7 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
 
                 for (var pass : passes) {
                     commandMatrix.push();
-                    commandMatrix.peek().getPositionMatrix().mul(pass.getPositionMatrix());
-                    commandMatrix.peek().getNormalMatrix().mul(pass.getNormalMatrix());
+                    applyPass(pass, commandMatrix);
 
                     if (state.getRenderType() != BlockRenderType.INVISIBLE) {
                         BlockStateModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(state);
@@ -92,8 +91,7 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
         if (l != null) {
             for (var pass : passes) {
                 matrices.push();
-                matrices.peek().getPositionMatrix().mul(pass.getPositionMatrix());
-                matrices.peek().getNormalMatrix().mul(pass.getNormalMatrix());
+                applyPass(pass, matrices);
                 parent.submitBlockStateModel(matrices, l, model, ColorHelper.getRedFloat(color), ColorHelper.getGreenFloat(color), ColorHelper.getBlueFloat(color), LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0);
                 matrices.pop();
             }
@@ -106,8 +104,7 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
         if (l != null) {
             for (var pass : passes) {
                 matrices.push();
-                matrices.peek().getPositionMatrix().mul(pass.getPositionMatrix());
-                matrices.peek().getNormalMatrix().mul(pass.getNormalMatrix());
+                applyPass(pass, matrices);
                 parent.submitModel(model, state, matrices, l, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, color, sprite, 0, null);
                 matrices.pop();
             }
@@ -122,8 +119,7 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
             int[] tints = new int[] {color};
             for (var pass : passes) {
                 matrices.push();
-                matrices.peek().getPositionMatrix().mul(pass.getPositionMatrix());
-                matrices.peek().getNormalMatrix().mul(pass.getNormalMatrix());
+                applyPass(pass, matrices);
                 parent.submitItem(matrices, displayContext, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0, tints, quads, renderLayer, Glint.NONE);
                 matrices.pop();
             }
@@ -138,8 +134,7 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
             int[] tints = new int[] {color};
             for (var pass : passes) {
                 matrices.push();
-                matrices.peek().getPositionMatrix().mul(pass.getPositionMatrix());
-                matrices.peek().getNormalMatrix().mul(pass.getNormalMatrix());
+                applyPass(pass, matrices);
                 ((AccessRenderCommandQueue)parent).fabric_submitItem(matrices, displayContext, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0, tints, quads, renderLayer, Glint.NONE, mesh);
                 matrices.pop();
             }
@@ -152,8 +147,7 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
         if (l != null) {
             for (var pass : passes) {
                 matrices.push();
-                matrices.peek().getPositionMatrix().mul(pass.getPositionMatrix());
-                matrices.peek().getNormalMatrix().mul(pass.getNormalMatrix());
+                applyPass(pass, matrices);
                 parent.submitModelPart(part, matrices, l, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, null, false, false, color, null, i);
                 matrices.pop();
             }
@@ -168,8 +162,7 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
 
             for (var pass : passes) {
                 matrices.push();
-                matrices.peek().getPositionMatrix().mul(pass.getPositionMatrix());
-                matrices.peek().getNormalMatrix().mul(pass.getNormalMatrix());
+                applyPass(pass, matrices);
                 Custom c = customRenderer;
                 if (c instanceof CustomModelRenderCommand custom) {
                     c = new CustomModelRenderCommand(matrices, custom.command(), l, cc -> custom.bufferFunc().apply(cc) == null ? null : l, custom.anglesFunc());
@@ -178,6 +171,11 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
                 matrices.pop();
             }
         }
+    }
+
+    private void applyPass(MatrixStack.Entry pass, MatrixStack matrices) {
+        matrices.peek().getPositionMatrix().mul(pass.getPositionMatrix());
+        matrices.peek().getNormalMatrix().mul(pass.getNormalMatrix());
     }
 
     private List<BakedQuad> getColoredQuads(List<BakedQuad> quads) {

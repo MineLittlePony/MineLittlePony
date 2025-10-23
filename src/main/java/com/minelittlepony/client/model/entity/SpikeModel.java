@@ -1,82 +1,78 @@
 package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.util.math.MathHelper;
 
-import com.minelittlepony.client.render.entity.StriderRenderer;
+import com.minelittlepony.api.model.BodyPart;
+import com.minelittlepony.client.model.ClientPonyModel;
+import com.minelittlepony.client.render.entity.CopperPonyRenderer;
 
-public class SpikeModel extends BipedEntityModel<StriderRenderer.State> {
+public class SpikeModel extends ClientPonyModel<CopperPonyRenderer.State> {
 
     private final ModelPart tail;
     private final ModelPart tail2;
     private final ModelPart tail3;
 
     public SpikeModel(ModelPart tree) {
-        super(tree);
+        super(tree, false);
         tail = body.getChild("tail");
         tail2 = tail.getChild("tail2");
         tail3 = tail2.getChild("tail3");
     }
 
     @Override
-    public void setAngles(StriderRenderer.State entity) {
-        super.setAngles(entity);
+    public ModelPart getBodyPart(BodyPart part) {
+        if (part == BodyPart.TAIL) {
+            return tail;
+        }
+        return super.getBodyPart(part);
+    }
 
-        body.pitch += 0.15F;
+    @Override
+    protected void setModelAngles(CopperPonyRenderer.State state) {
+        getRootPart().originZ += 3;
+        float baseRotation = state.limbSwingAnimationProgress * 0.6662F; // magic number ahoy
+        float scale = state.limbSwingAmplitude;
 
-        if (!entity.saddleStack.isEmpty()) {
-            leftArm.pitch = 3.15F;
-            leftArm.yaw = 1;
-            rightArm.pitch = 3.15F;
-            rightArm.yaw = -1;
+        tail.yaw = MathHelper.sin(baseRotation) * scale / state.limbAmplitudeInverse;
+        tail2.yaw = tail.yaw;
+        tail3.yaw = tail.yaw;
 
-            head.originY += 4;
-            head.originZ = -3;
-            hat.originY += 4;
-            hat.originZ = -3;
-
-            leftLeg.pitch += 0.4F;
-            rightLeg.pitch += 0.4F;
-        } else {
-            leftArm.roll -= 0.2F * entity.flailAmount;
-            rightArm.roll += 0.2F * entity.flailAmount;
-
-            leftArm.originZ += 2;
-            leftArm.pitch -= 0.3F;
-
-            rightArm.originZ += 2;
-            rightArm.pitch -= 0.3F;
-
-            if (entity.cold) {
-                float armMotion = (float)Math.sin(entity.age / 10F) / 10F;
-
-                leftArm.pitch = -1 - armMotion;
-                rightArm.pitch = -1 + armMotion;
-
-                leftArm.yaw = 0.8F;
-                rightArm.yaw = -0.8F;
-
-                leftArm.originZ -= 3;
-                rightArm.originZ -= 3;
-            }
+        if (state.spinHeadAnimationState.isRunning() && state.spinHeadAnimationState.getTimeInMilliseconds(state.age) < 300) {
+            head.yaw += MathHelper.sin(state.age / 2F) * MathHelper.PI;
+            head.pitch *= 0;
         }
 
-        tail.pitch = (float)Math.sin(entity.limbSwingAnimationProgress) / 3F - 0.5F;
-        tail2.pitch = -tail.pitch / 2;
-        tail3.pitch = tail2.pitch / 2;
+        float armSwingTime = 200F;
+        float maxArmAngle = MathHelper.PI * 0.3F;
+        ModelPart arm = getArm(state.mainArm);
+        ModelPart otherArm = getArm(state.mainArm.getOpposite());
+        if (state.gettingItemAnimationState.isRunning()) {
+            float progress = MathHelper.clamp(state.gettingItemAnimationState.getTimeInMilliseconds(state.age) / armSwingTime, 0, 1);
+            arm.pitch -= maxArmAngle * progress;
+            body.pitch += 0.2F * progress;
+        }
+        if (state.gettingNoItemAnimationState.isRunning()) {
+            float progress = MathHelper.clamp(state.gettingNoItemAnimationState.getTimeInMilliseconds(state.age) / armSwingTime, 0, 1);
+            arm.pitch -= maxArmAngle * progress;
+            body.pitch += 0.2F * progress;
+        }
+        if (state.droppingItemAnimationState.isRunning()) {
+            float progress = MathHelper.clamp(state.droppingItemAnimationState.getTimeInMilliseconds(state.age) / armSwingTime, 0, 1);
+            arm.pitch -= maxArmAngle * progress;
+        }
+        if (state.droppingNoItemAnimationState.isRunning()) {
+            float progress = MathHelper.clamp(state.droppingNoItemAnimationState.getTimeInMilliseconds(state.age) / armSwingTime, 0, 1);
+            arm.pitch -= MathHelper.TAU * progress;
+            head.yaw += MathHelper.sin(state.age / 3F) * MathHelper.TAU * 0.1F;
+            head.pitch = MathHelper.lerp(progress, head.pitch, 0.2F);
+        }
+        arm.pitch = MathHelper.clamp(arm.pitch, -maxArmAngle, maxArmAngle);
+        arm.yaw -= maxArmAngle * 0.2F;
 
-        tail.yaw = (float)Math.sin(entity.age / 20F) / 40 + (float)Math.sin(entity.limbSwingAnimationProgress / 20F) / 4;
-        tail2.yaw = tail.yaw / 2;
-        tail3.yaw = tail2.yaw / 2;
+        if (state.gettingItemAnimationState.isRunning()) {
+            otherArm.pitch = arm.pitch;
+            otherArm.yaw = -arm.yaw;
+        }
     }
 }
-
-
-
-
-
-
-
-
-
-

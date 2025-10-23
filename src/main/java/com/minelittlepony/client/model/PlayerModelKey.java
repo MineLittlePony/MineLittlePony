@@ -13,11 +13,11 @@ import java.util.function.*;
 public record PlayerModelKey<M extends Model<?> & PonyModel<?>> (
         ModelKey<M> steveKey,
         ModelKey<M> alexKey,
-        MsonModel.Factory<AbstractPonyModel<?>> armorFactory
+        MsonModel.Factory<ClientPonyModel<?>> armorFactory
 ) {
     PlayerModelKey(String name,
             BiFunction<ModelPart, Boolean, M> modelFactory,
-            MsonModel.Factory<AbstractPonyModel<?>> armorFactory
+            MsonModel.Factory<ClientPonyModel<?>> armorFactory
     ) {
         this(
             new ModelKeyImpl<>(MineLittlePony.id("races/steve/" + name), tree -> modelFactory.apply(tree, false)),

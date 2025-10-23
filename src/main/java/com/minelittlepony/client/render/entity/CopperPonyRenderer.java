@@ -10,38 +10,34 @@ import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.*;
 import net.minecraft.item.BlockItem;
-import net.minecraft.util.Identifier;
 
 import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.pony.meta.Size;
 import com.minelittlepony.api.pony.meta.SizePreset;
 import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.client.model.ClientPonyModel;
 import com.minelittlepony.client.model.ModelType;
-import com.minelittlepony.client.model.entity.CopperPonyModel;
 import com.minelittlepony.client.render.entity.feature.GlowingEyesFeature;
 import com.minelittlepony.client.render.entity.npc.textures.TextureSupplier;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import java.util.Optional;
 
-public class CopperPonyRenderer extends PonyRenderer<CopperGolemEntity, CopperPonyRenderer.State, CopperPonyModel> {
-    public static final Identifier TEXTURE = MineLittlePony.id("textures/entity/copper_golem/copper_golem.png");
-    public static final Identifier EYES = MineLittlePony.id("textures/entity/copper_golem/copper_golem_eyes.png");
-
-    private static final TextureSupplier<CopperGolemEntity> TEXTURES = TextureSupplier.memoize(entity -> {
-        return MineLittlePony.id("textures/entity/copper_golem/" + getKey(entity.getOxidationLevel()) + "copper_golem_pony.png");
-    }, entity -> getKey(entity.getOxidationLevel()));
-    private static final TextureSupplier<State> EYES_TEXTURES = TextureSupplier.memoize(state -> {
-        return MineLittlePony.id("textures/entity/copper_golem/" + getKey(state.oxidationLevel) + "copper_golem_eyes_pony.png");
-    }, state -> getKey(state.oxidationLevel));
+public class CopperPonyRenderer extends PonyRenderer<CopperGolemEntity, CopperPonyRenderer.State, ClientPonyModel<CopperPonyRenderer.State>> {
+    private static final TextureSupplier<CopperGolemEntity> TEXTURES = entity -> {
+        return MineLittlePony.id("textures/entity/copper_golem/" + getKey(entity.getOxidationLevel()) + "copper_golem_dragon.png");
+    };
+    private static final TextureSupplier<State> EYES_TEXTURES = state -> {
+        return MineLittlePony.id("textures/entity/copper_golem/" + getKey(state.oxidationLevel) + "copper_golem_eyes_dragon.png");
+    };
 
     private static String getKey(OxidationLevel level) {
         return level == OxidationLevel.UNAFFECTED ? "" : level.asString() + "_";
     }
 
     public CopperPonyRenderer(Context context) {
-        super(context, ModelType.COPPER_GOLEM, TEXTURES);
+        super(context, ModelType.SPIKE, TEXTURES);
     }
 
     @Override
@@ -59,6 +55,7 @@ public class CopperPonyRenderer extends PonyRenderer<CopperGolemEntity, CopperPo
     public void updateRenderState(CopperGolemEntity entity, State state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
         state.oxidationLevel = entity.getOxidationLevel();
+        state.baseScale += 0.13F;
         state.copperGolemState = entity.getState();
         state.spinHeadAnimationState.copyFrom(entity.getSpinHeadAnimationState());
         state.gettingItemAnimationState.copyFrom(entity.getGettingItemAnimationState());
@@ -85,7 +82,7 @@ public class CopperPonyRenderer extends PonyRenderer<CopperGolemEntity, CopperPo
 
         @Override
         protected Size computeSize(@Nullable LivingEntity entity, Size size) {
-            return SizePreset.FOAL;
+            return SizePreset.NORMAL;
         }
     }
 }

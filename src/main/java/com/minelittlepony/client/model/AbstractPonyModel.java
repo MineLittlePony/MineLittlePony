@@ -66,8 +66,12 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     }
 
     @Override
-    public final void render(MatrixStack stack, VertexConsumer vertices, int overlay, int light, int color) {
-        mainRenderList.accept(stack, vertices, overlay, light, color);
+    public final void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
+        mainRenderList.accept(matrices, vertices, light, overlay, color);
+    }
+
+    public final void renderHead(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
+        headRenderList.accept(matrices, vertices, light, overlay, color);
     }
 
     protected void setModelVisibilities(T state) {
@@ -85,6 +89,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     protected void setModelAngles(T entity) {
+        resetTransforms();
         head.setAngles(entity.pitch * MathHelper.RADIANS_PER_DEGREE, entity.relativeHeadYaw * MathHelper.RADIANS_PER_DEGREE, 0);
 
         body.yaw = entity.wobbleAmount;
@@ -127,11 +132,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
         parts.forEach(part -> part.setAngles((PonyModel)this, entity));
         mainRenderList.pose(entity);
-    }
-
-    public void setHeadRotation(float animationProgress, float yaw, float pitch) {
-        head.yaw = yaw * MathHelper.RADIANS_PER_DEGREE;
-        head.pitch = pitch * MathHelper.RADIANS_PER_DEGREE;
     }
 
     /**
@@ -274,17 +274,10 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
 
     @Override
     public ModelPart getBodyPart(BodyPart part) {
-        switch (part) {
-            default:
-            case HORN:
-            case HEAD: return head;
-            case NECK: return neck;
-            case TAIL:
-            case LEGS:
-            case BACK:
-            case WINGS:
-            case BODY: return body;
+        if (part == BodyPart.NECK) {
+            return neck;
         }
+        return super.getBodyPart(part);
     }
 
     /**
