@@ -57,7 +57,7 @@ final class ModelKeyImpl<M extends Model<?>> implements ModelKey<M>, LocalBlock 
             V t = factory.create(root);
 
             if (t instanceof SkeletonisedModel tt) {
-                tt.setSkeleton(content.getSkeleton()
+                tt.setSkeleton(content.skeleton()
                         .map(root::ordered)
                         .orElse(root));
             }
@@ -79,9 +79,9 @@ final class ModelKeyImpl<M extends Model<?>> implements ModelKey<M>, LocalBlock 
 
     private ModelContext getModelContext(FileContent<?> content) {
         if (PonyConfig.getInstance().horsieMode.get()) {
-            return content.createContext(null, null, content.getLocals().extendWith(getId(), Optional.of(this), Optional.empty()).bake());
+            return content.createContext(null, null, content.locals().extendWith(getId(), Optional.of(this), Optional.empty()).bake());
         }
-        return content.createContext(null, null, content.getLocals().bake());
+        return content.createContext(null, null, content.locals().bake());
     }
 
     @Override
