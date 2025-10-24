@@ -26,11 +26,9 @@ abstract class MixinPlayerHeadModelRenderer {
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     private void onRender(@Nullable PlayerSkinCache.Entry data, ItemDisplayContext context, MatrixStack matrices, OrderedRenderCommandQueue queue, int light, int overlay, boolean glint, int k, CallbackInfo info) {
-        if (data != null) {
-            var state = ponyData.get(data);
-            if (state != null && state.render(null, 180, 0, matrices, queue, light, 0, null)) {
-                info.cancel();
-            }
+        var state = data == null ? PonySkullRenderer.INSTANCE.getSkullState(SkullBlock.Type.PLAYER, null) : ponyData.get(data);
+        if (state != null && state.render(null, 180, 0, matrices, queue, light, 0, null)) {
+            info.cancel();
         }
     }
 

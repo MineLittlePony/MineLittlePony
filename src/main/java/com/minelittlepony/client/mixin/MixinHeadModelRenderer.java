@@ -27,7 +27,7 @@ abstract class MixinHeadModelRenderer implements PonySkullRenderer.Proxy {
     }
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
-    public void onRender(ItemDisplayContext displayContext, MatrixStack matrices, OrderedRenderCommandQueue queue, int light, int overlay, boolean glint, int i, CallbackInfo info) {
+    private void onRender(ItemDisplayContext displayContext, MatrixStack matrices, OrderedRenderCommandQueue queue, int light, int overlay, boolean glint, int i, CallbackInfo info) {
         if (data != null && data.render(null, 180, 0, matrices, queue, light, 0, null)) {
             info.cancel();
         }
