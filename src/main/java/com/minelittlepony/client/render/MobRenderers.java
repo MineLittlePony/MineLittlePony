@@ -12,6 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.*;
 
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory.Context;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.entity.Entity;
@@ -31,12 +36,20 @@ public record MobRenderers (String name, BiConsumer<MobRenderers, EntityRenderer
                     registry.registerEntityRenderer(type, condition, constructor);
                     registry.registerEntityStateRenderer(type, s -> s.entityType == type && s instanceof PonifiedRenderState, constructor);
                 }
+
+                @Override
+                public <P extends BlockEntity, R extends BlockEntityRenderer<?, ?>> void registerBlockRenderer(BlockEntityType<P> type, Predicate<? super P> condition, Function<Context, R> constructor) {
+                    registry.registerBlockRenderer(type, condition, constructor);
+                    registry.registerBlockStateRenderer(type, s -> s.type == type && state.option().get(), constructor);
+                }
             });
         }));
     }
 
     interface Registry {
         <T extends Entity, R extends EntityRenderer<?, ?>> void registerEntityRenderer(EntityType<T> type, Predicate<? super T> condition, Function<EntityRendererFactory.Context, R> constructor);
+
+        <P extends BlockEntity, R extends BlockEntityRenderer<?, ?>> void registerBlockRenderer(BlockEntityType<P> type, Predicate<? super P> condition, Function<BlockEntityRendererFactory.Context, R> constructor);
     }
 
     public static final MobRenderers VILLAGER = register("villagers", (state, registry) -> {
@@ -88,6 +101,7 @@ public record MobRenderers (String name, BiConsumer<MobRenderers, EntityRenderer
     });
     public static final MobRenderers COPPER_GOLEMS = register("copper_golems", (state, registry) -> {
         registry.registerEntityRenderer(EntityType.COPPER_GOLEM, state, CopperPonyRenderer::new);
+        registry.registerBlockRenderer(BlockEntityType.COPPER_GOLEM_STATUE, p -> MobRenderers.COPPER_GOLEMS.option().get(), CopperPonyBlockEntityRenderer::new);
     });
     public static final MobRenderers MANNEQUINE = register("mannequines", (state, registry) -> {
 

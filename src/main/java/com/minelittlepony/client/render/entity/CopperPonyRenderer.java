@@ -10,6 +10,7 @@ import net.minecraft.entity.AnimationState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.*;
 import net.minecraft.item.BlockItem;
+import net.minecraft.util.Identifier;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -25,6 +26,8 @@ import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import java.util.Optional;
 
 public class CopperPonyRenderer extends PonyRenderer<CopperGolemEntity, CopperPonyRenderer.State, ClientPonyModel<CopperPonyRenderer.State>> {
+    public static final Identifier BASE_TEXTURE = MineLittlePony.id("textures/entity/copper_golem/copper_golem_dragon.png");
+
     private static final TextureSupplier<CopperGolemEntity> TEXTURES = entity -> {
         return MineLittlePony.id("textures/entity/copper_golem/" + getKey(entity.getOxidationLevel()) + "copper_golem_dragon.png");
     };
