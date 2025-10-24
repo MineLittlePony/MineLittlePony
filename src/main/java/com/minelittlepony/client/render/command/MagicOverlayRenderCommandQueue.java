@@ -1,7 +1,5 @@
 package com.minelittlepony.client.render.command;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshView;
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessRenderCommandQueue;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -39,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, AccessRenderCommandQueue {
+public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
     private final OrderedRenderCommandQueue owner;
     private final RenderCommandQueue parent;
     protected final Function<RenderLayer, @Nullable RenderLayer> layer;
@@ -121,21 +119,6 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue, Acces
                 matrices.push();
                 applyPass(pass, matrices);
                 parent.submitItem(matrices, displayContext, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0, tints, quads, renderLayer, Glint.NONE);
-                matrices.pop();
-            }
-        }
-    }
-
-    @Override
-    public void fabric_submitItem(MatrixStack matrices, ItemDisplayContext displayContext, int light, int overlay, int outlineColors, int[] tintLayers, List<BakedQuad> quads, RenderLayer renderLayer, Glint glintType, MeshView mesh) {
-        renderLayer = layer.apply(renderLayer);
-        if (renderLayer != null) {
-            quads = getColoredQuads(quads);
-            int[] tints = new int[] {color};
-            for (var pass : passes) {
-                matrices.push();
-                applyPass(pass, matrices);
-                ((AccessRenderCommandQueue)parent).fabric_submitItem(matrices, displayContext, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0, tints, quads, renderLayer, Glint.NONE, mesh);
                 matrices.pop();
             }
         }
