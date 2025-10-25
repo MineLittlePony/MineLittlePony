@@ -44,5 +44,15 @@
   "suggests": {
     "hdskins": "*",
     "modmenu": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/zKSZ8Mg",
+        "modmenu.github_releases": "https://github.com/MineLittlePony/MineLittlePony",
+        "modmenu.modrinth": "https://modrinth.com/mod/mine-little-pony"
+      },
+      "update_checker": true
+    }
   }
 }
