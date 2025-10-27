@@ -32,7 +32,7 @@ public record CustomModelRenderCommand<S>(
             @Nullable Predicate<CustomModelRenderCommand<S>> anglesFunc) {
         queue.submitCustom(matrices, renderLayer, new CustomModelRenderCommand<>(
                 new MatrixStack(),
-                new OrderedRenderCommandQueueImpl.ModelCommand<>(matrices.peek(), model, state, light, overlay, tint, sprite, outline, crumblingOverlay),
+                new OrderedRenderCommandQueueImpl.ModelCommand<>(matrices.peek().copy(), model, state, light, overlay, tint, sprite, outline, crumblingOverlay),
                 renderLayer,
                 layerFunc,
                 anglesFunc
