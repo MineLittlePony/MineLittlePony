@@ -27,6 +27,6 @@ void main() {
     sphericalVertexDistance = fog_spherical_distance(Position);
     cylindricalVertexDistance = fog_cylindrical_distance(Position);
 
-    vertexColor = vec4(Color.rgb, Color.a * 0.9);
+    vertexColor = vec4(Color.rgb, Color.a * 0.3);
     texCoord0 = UV0;
 }

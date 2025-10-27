@@ -230,12 +230,11 @@ public class PonifiedEquipmentRenderer extends EquipmentRenderer {
                 createLayerFunc(layerType, slot, assetKey, partTexture, trim), null);
     }
 
-    private static <S> Function<OrderedRenderCommandQueueImpl.ModelCommand<S>, VertexConsumer> createLayerFunc(
+    private static <S> BiFunction<CustomModelRenderCommand<S>, VertexConsumerProvider, VertexConsumer> createLayerFunc(
             EquipmentModel.LayerType layerType, EquipmentSlot slot,
             RegistryKey<EquipmentAsset> assetKey, @Nullable Identifier partTexture, @Nullable ArmorTrim trim
         ) {
-        return command -> {
-            var provider = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+        return (command, provider) -> {
             var plugin = ArmourRendererPlugin.INSTANCE.get();
             return trim != null
                     ? plugin.getTrimConsumer(slot, provider, trim, layerType, assetKey) : partTexture != null

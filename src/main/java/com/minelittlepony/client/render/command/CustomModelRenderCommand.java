@@ -12,15 +12,14 @@ import net.minecraft.client.util.math.MatrixStack.Entry;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 
 public record CustomModelRenderCommand<S>(
         MatrixStack matrices,
         OrderedRenderCommandQueueImpl.ModelCommand<S> command,
         RenderLayer layer,
-        @Nullable Function<OrderedRenderCommandQueueImpl.ModelCommand<S>, VertexConsumer> bufferFunc,
-        @Nullable Predicate<OrderedRenderCommandQueueImpl.ModelCommand<S>> anglesFunc) implements OrderedRenderCommandQueue.Custom {
+        @Nullable BiFunction<CustomModelRenderCommand<S>, VertexConsumerProvider, VertexConsumer> bufferFunc,
+        @Nullable Predicate<CustomModelRenderCommand<S>> anglesFunc) implements OrderedRenderCommandQueue.Custom {
 
     public static <S> void submit(
             RenderCommandQueue queue,
@@ -29,8 +28,8 @@ public record CustomModelRenderCommand<S>(
             int light, int overlay, int tint,
             @Nullable Sprite sprite, int outline,
             @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay,
-            @Nullable Function<OrderedRenderCommandQueueImpl.ModelCommand<S>, VertexConsumer> layerFunc,
-            @Nullable Predicate<OrderedRenderCommandQueueImpl.ModelCommand<S>> anglesFunc) {
+            @Nullable BiFunction<CustomModelRenderCommand<S>, VertexConsumerProvider, VertexConsumer> layerFunc,
+            @Nullable Predicate<CustomModelRenderCommand<S>> anglesFunc) {
         queue.submitCustom(matrices, renderLayer, new CustomModelRenderCommand<>(
                 new MatrixStack(),
                 new OrderedRenderCommandQueueImpl.ModelCommand<>(matrices.peek(), model, state, light, overlay, tint, sprite, outline, crumblingOverlay),
@@ -46,17 +45,18 @@ public record CustomModelRenderCommand<S>(
             MatrixStack matrices, RenderLayer renderLayer,
             int light, int overlay, int outlineColor,
             @Nullable CrumblingOverlayCommand crumblingOverlay,
-            @Nullable Function<OrderedRenderCommandQueueImpl.ModelCommand<S>, VertexConsumer> layerFunc,
-            @Nullable Predicate<OrderedRenderCommandQueueImpl.ModelCommand<S>> anglesFunc) {
+            @Nullable BiFunction<CustomModelRenderCommand<S>, VertexConsumerProvider, VertexConsumer> layerFunc,
+            @Nullable Predicate<CustomModelRenderCommand<S>> anglesFunc) {
         submit(queue, model, state, matrices, renderLayer, light, overlay, -1, null, outlineColor, crumblingOverlay, layerFunc, anglesFunc);
     }
 
     @Override
     public void render(Entry matricesEntry, VertexConsumer buffer) {
-        buffer = bufferFunc == null ? buffer : bufferFunc.apply(command);
+        var provider = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+        buffer = bufferFunc == null ? buffer : bufferFunc.apply(this, provider);
         if (buffer != null) {
             command.model().setAngles(command.state());
-            if (anglesFunc == null || anglesFunc.test(command)) {
+            if (anglesFunc == null || anglesFunc.test(this)) {
                 matrices.push();
                 matrices.peek().copy(matricesEntry);
 

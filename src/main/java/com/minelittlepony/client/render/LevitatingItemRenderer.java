@@ -3,6 +3,7 @@ package com.minelittlepony.client.render;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.client.render.command.MagicOverlayRenderCommandQueue;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Vec3d;
 
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
@@ -28,6 +30,8 @@ public class LevitatingItemRenderer {
     private static final Vector3fc[] FIRST_PERSON_TRANSFORM = {
             new Vector3f(-0.05F, -0.12F, -0.1F), new Vector3f(-0.1F, -0.05F, -0.1F)
     };
+    private static final MatrixStack TRANSFORM = new MatrixStack();
+
 
     /**
      * Renders a first-person item with a magical overlay.
@@ -57,17 +61,17 @@ public class LevitatingItemRenderer {
         original.call(itemRenderState, matrices, queue, light, overlay, outline);
 
         if (state.hornGlowVisible) {
-            queue = MagicGlow.getQueue(state.glowColor, queue, calculateTransformPasses(itemState, FIRST_PERSON_TRANSFORM, false));
-            original.call(itemState.glintlessHandItemState, matrices, queue, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0);
+            var q = MagicGlow.getQueue(state.glowColor, queue, calculateTransformPasses(itemState, FIRST_PERSON_TRANSFORM, false));
+            original.call(itemState.glintlessHandItemState, matrices, q, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0);
         }
     }
 
-    public static ArrayList<MatrixStack.Entry> getThirdPersonLevitatingItemTransformPasses(PonyRenderState state, PonyRenderState.HeldItemRenderState glintLessItem) {
+    public static ArrayList<MagicOverlayRenderCommandQueue.Pass> getThirdPersonLevitatingItemTransformPasses(PonyRenderState state, PonyRenderState.HeldItemRenderState glintLessItem) {
         return calculateTransformPasses(glintLessItem, THIRD_PERSON_TRANSFORM, glintLessItem.action == UseAction.SPYGLASS && state.attributes.itemUseTime > 0);
     }
 
-    private static ArrayList<MatrixStack.Entry> calculateTransformPasses(PonyRenderState.HeldItemRenderState glintLessItem, Vector3fc[] offset, boolean noTransform) {
-        var passes = new ArrayList<MatrixStack.Entry>();
+    private static ArrayList<MagicOverlayRenderCommandQueue.Pass> calculateTransformPasses(PonyRenderState.HeldItemRenderState glintLessItem, Vector3fc[] offset, boolean noTransform) {
+        var passes = new ArrayList<MagicOverlayRenderCommandQueue.Pass>();
 
         var box = glintLessItem.glintlessHandItemState.getModelBoundingBox();
 
@@ -78,32 +82,30 @@ public class LevitatingItemRenderer {
         var dY = (box.maxY + box.minY) * 0.5;
         var dZ = (box.maxZ + box.minZ) * 0.5;
 
-        MatrixStack matrices = new MatrixStack();
-        matrices.push();
+        TRANSFORM.peek().loadIdentity();
+        Vec3d translation = Vec3d.ZERO;
         if (!noTransform) {
-            matrices.translate(offset[0].x(), offset[0].y(), offset[0].z());
-            matrices.translate(0.015F + glintLessItem.levitatingItemXDrift, 0.01F, 0.01F + glintLessItem.levitatingItemZDrift);
+            translation = new Vec3d(offset[0].x() + 0.015F + glintLessItem.levitatingItemXDrift, offset[0].y() + 0.01F, offset[0].z() + 0.01F + glintLessItem.levitatingItemZDrift);
+            TRANSFORM.translate(translation);
         }
-        matrices.translate(dX, dY, dZ);
-        matrices.scale(scale, scale, scale);
-        matrices.translate(-dX, -dY, -dZ);
+        TRANSFORM.translate(dX, dY, dZ);
+        TRANSFORM.scale(scale, scale, scale);
+        TRANSFORM.translate(-dX, -dY, -dZ);
 
-        passes.add(matrices.peek());
-        matrices.pop();
+        passes.add(new MagicOverlayRenderCommandQueue.Pass(TRANSFORM.peek().copy(), translation, scale));
 
-        matrices = new MatrixStack();
-        matrices.push();
+        translation = Vec3d.ZERO;
         scale = 1 + (scale - 1) * 1.5F;
-        matrices.translate(dX, dY, dZ);
-        matrices.scale(scale, scale, scale);
-        matrices.translate(-dX, -dY, -dZ);
+        TRANSFORM.peek().loadIdentity();
+        TRANSFORM.translate(dX, dY, dZ);
+        TRANSFORM.scale(scale, scale, scale);
+        TRANSFORM.translate(-dX, -dY, -dZ);
         if (!noTransform) {
-            matrices.translate(offset[1].x(), offset[1].y(), offset[1].z());
-            matrices.translate(0.015F + glintLessItem.levitatingItemXDrift, 0.01F, 0.01F + glintLessItem.levitatingItemZDrift);
+            translation = new Vec3d(offset[1].x() + 0.015F + glintLessItem.levitatingItemXDrift, offset[1].y() + 0.01F, offset[1].z() + 0.01F + glintLessItem.levitatingItemZDrift);
+            TRANSFORM.translate(translation);
         }
 
-        passes.add(matrices.peek());
-        matrices.pop();
+        passes.add(new MagicOverlayRenderCommandQueue.Pass(TRANSFORM.peek().copy(), translation, scale));
         return passes;
     }
 

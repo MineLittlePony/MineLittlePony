@@ -10,11 +10,10 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.block.MovingBlockRenderState;
 import net.minecraft.client.render.block.entity.LoadedBlockEntityModels;
+import net.minecraft.client.render.command.*;
 import net.minecraft.client.render.command.ModelCommandRenderer.CrumblingOverlayCommand;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue.Custom;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue.LayeredCustom;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.command.RenderCommandQueue;
 import net.minecraft.client.render.entity.state.EntityHitboxAndView;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.render.entity.state.EntityRenderState.LeashData;
@@ -31,10 +30,11 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.*;
 
 import org.jetbrains.annotations.Nullable;
-import org.joml.Quaternionf;
+import org.joml.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
@@ -42,14 +42,23 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
     private final RenderCommandQueue parent;
     protected final Function<RenderLayer, @Nullable RenderLayer> layer;
     protected final int color;
-    protected final List<MatrixStack.Entry> passes;
+    protected final List<Pass> passes;
 
-    public MagicOverlayRenderCommandQueue(OrderedRenderCommandQueue owner, RenderCommandQueue parent, Function<RenderLayer, @Nullable RenderLayer> layer, int color, List<MatrixStack.Entry> passes) {
+    private final float red;
+    private final float green;
+    private final float blue;
+
+    public record Pass(MatrixStack.Entry itemMeshTransform, Vec3d translation, float scale) {}
+
+    public MagicOverlayRenderCommandQueue(OrderedRenderCommandQueue owner, RenderCommandQueue parent, Function<RenderLayer, @Nullable RenderLayer> layer, int color, List<Pass> passes) {
         this.owner = owner;
         this.parent = parent;
         this.layer = layer;
         this.color = ColorHelper.withAlpha(0.5F, color);
         this.passes = passes;
+        red = ColorHelper.getRedFloat(color);
+        green = ColorHelper.getGreenFloat(color);
+        blue = ColorHelper.getBlueFloat(color);
     }
 
     public OrderedRenderCommandQueue unwrap() {
@@ -67,11 +76,13 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
 
                 for (var pass : passes) {
                     commandMatrix.push();
-                    applyPass(pass, commandMatrix);
-
+                    commandMatrix.translate(pass.translation());
                     if (state.getRenderType() != BlockRenderType.INVISIBLE) {
                         BlockStateModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(state);
-                        BlockModelRenderer.render(commandMatrix.peek(), buffer, model, ColorHelper.getRedFloat(color), ColorHelper.getGreenFloat(color), ColorHelper.getBlueFloat(color), LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
+                        BlockModelRenderer.render(commandMatrix.peek(), new ScaledVertexConsumer(buffer, pass.scale(), color, commandMatrix), model,
+                                red,
+                                green,
+                                blue, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
                     }
 
                     commandMatrix.pop();
@@ -87,12 +98,28 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
     public void submitBlockStateModel(MatrixStack matrices, RenderLayer renderLayer, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor) {
         var l = layer.apply(renderLayer);
         if (l != null) {
-            for (var pass : passes) {
-                matrices.push();
-                applyPass(pass, matrices);
-                parent.submitBlockStateModel(matrices, l, model, ColorHelper.getRedFloat(color), ColorHelper.getGreenFloat(color), ColorHelper.getBlueFloat(color), LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0);
-                matrices.pop();
-            }
+            MatrixStack commandMatrix = new MatrixStack();
+            parent.submitCustom(matrices, l, (entry, buffer) -> {
+                commandMatrix.push();
+                commandMatrix.peek().copy(entry);
+                for (var pass : passes) {
+                    commandMatrix.push();
+                    commandMatrix.translate(pass.translation());
+
+                    BlockModelRenderer.render(
+                        commandMatrix.peek(),
+                        new ScaledVertexConsumer(buffer, pass.scale(), color, commandMatrix),
+                        model,
+                        red,
+                        green,
+                        blue,
+                        LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV
+                    );
+
+                    commandMatrix.pop();
+                }
+                commandMatrix.pop();
+            });
         }
     }
 
@@ -100,10 +127,15 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
     public <S> void submitModel(Model<? super S> model, S state, MatrixStack matrices, RenderLayer renderLayer, int light, int overlay, int tintedColor, Sprite sprite, int outline, CrumblingOverlayCommand crumblingOverlay) {
         var l = layer.apply(renderLayer);
         if (l != null) {
+            matrices.push();
+            parent.submitModel(model, state, matrices, RenderLayer.getWaterMask(), light, overlay, tintedColor, sprite, outline, crumblingOverlay);
+            matrices.pop();
             for (var pass : passes) {
                 matrices.push();
-                applyPass(pass, matrices);
-                parent.submitModel(model, state, matrices, l, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, color, sprite, 0, null);
+                matrices.translate(pass.translation().multiply(1/16F));
+                CustomModelRenderCommand.<S>submit(parent, model, state, matrices, l, light, overlay, color, sprite, 0, null, (command, provider) -> {
+                    return new ScaledVertexConsumer(provider.getBuffer(l), pass.scale(), color, command.matrices());
+                }, null);
                 matrices.pop();
             }
         }
@@ -113,12 +145,16 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
     public void submitItem(MatrixStack matrices, ItemDisplayContext displayContext, int light, int overlay, int outlineColors, int[] tintLayers, List<BakedQuad> quads, RenderLayer renderLayer, Glint glintType) {
         renderLayer = layer.apply(renderLayer);
         if (renderLayer != null) {
-            quads = getColoredQuads(quads);
             int[] tints = new int[] {color};
             for (var pass : passes) {
                 matrices.push();
-                applyPass(pass, matrices);
-                parent.submitItem(matrices, displayContext, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0, tints, quads, renderLayer, Glint.NONE);
+                matrices.translate(pass.translation().multiply(1/16F));
+                List<BakedQuad> adjustedQuad = new ArrayList<>();
+                for (var quad : quads) {
+                    float sc = (pass.scale() - 1F) / 3F;
+                    adjustedQuad.add(new BakedQuad(VertexTransforms.inflateQuad(quad.vertexData(), quad.face(), sc), 0, quad.face(), quad.sprite(), false, quad.lightEmission()));
+                }
+                parent.submitItem(matrices, displayContext, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0, tints, adjustedQuad, renderLayer, Glint.NONE);
                 matrices.pop();
             }
         }
@@ -142,31 +178,32 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
     public void submitCustom(MatrixStack matrices, RenderLayer renderLayer, Custom customRenderer) {
         var l = layer.apply(renderLayer);
         if (l != null) {
-
-            for (var pass : passes) {
-                matrices.push();
-                applyPass(pass, matrices);
-                Custom c = customRenderer;
-                if (c instanceof CustomModelRenderCommand custom) {
-                    c = new CustomModelRenderCommand(matrices, custom.command(), l, cc -> custom.bufferFunc().apply(cc) == null ? null : l, custom.anglesFunc());
+            matrices.push();
+            Custom c = customRenderer;
+            if (c instanceof CustomModelRenderCommand custom) {
+                for (var pass : passes) {
+                    BiFunction<Object, VertexConsumerProvider, VertexConsumer> layerFunc = (cc, provider) -> custom.bufferFunc().apply(cc, provider) == null ? null : new ScaledVertexConsumer(provider.getBuffer(l), pass.scale(), color, custom.matrices());
+                    parent.submitCustom(matrices, l, new CustomModelRenderCommand(custom.matrices(), custom.command(), l, layerFunc, custom.anglesFunc()));
                 }
-                parent.submitCustom(matrices, l, c);
-                matrices.pop();
+            } else {
+                MatrixStack m = new MatrixStack();
+                parent.submitCustom(matrices, l, (entry, buffer) -> {
+                    for (var pass : passes) {
+                        //applyPass(pass, matrices);
+                        m.peek().copy(entry);
+                        m.translate(pass.translation().multiply(1/16F));
+                        c.render(m.peek(), new ScaledVertexConsumer(buffer, pass.scale(), color, m));
+                    }
+                });
             }
+            matrices.pop();
+
         }
     }
 
-    private void applyPass(MatrixStack.Entry pass, MatrixStack matrices) {
-        matrices.peek().getPositionMatrix().mul(pass.getPositionMatrix());
-        matrices.peek().getNormalMatrix().mul(pass.getNormalMatrix());
-    }
-
-    private List<BakedQuad> getColoredQuads(List<BakedQuad> quads) {
-        List<BakedQuad> adjustedQuad = new ArrayList<>();
-        for (var quad : quads) {
-            adjustedQuad.add(new BakedQuad(quad.vertexData(), 0, quad.face(), quad.sprite(), false, 1));
-        }
-        return adjustedQuad;
+    private void applyPass(Pass pass, MatrixStack matrices) {
+        matrices.peek().getPositionMatrix().mul(pass.itemMeshTransform().getPositionMatrix());
+        matrices.peek().getNormalMatrix().mul(pass.itemMeshTransform().getNormalMatrix());
     }
 
     @Override
@@ -192,27 +229,4 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
 
     @Override
     public void submitMovingBlock(MatrixStack matrices, MovingBlockRenderState state) { }
-
-    @SuppressWarnings("unused")
-    private static int[] inflateVertices(int[] packedVertices, Direction face, float inflation) {
-        int[] vertices = new int[packedVertices.length];
-        System.arraycopy(packedVertices, 0, vertices, 0, vertices.length);
-
-        Vec3i normal = face.getOpposite().getVector();
-        Vec3i normalizedNormal = new Vec3i(Math.abs(normal.getX()), Math.abs(normal.getY()), Math.abs(normal.getZ()));
-
-        for (int i = 0; i < vertices.length; i += 8) {
-            int vertexIndex = i / 8;
-            int inner = vertexIndex > 0 && vertexIndex < 3 ? 1 : -1;
-            int lower = vertexIndex < 2 ? 1 : -1;
-            int xDir = normal.getX() + (normalizedNormal.getY() * lower) + (-lower * normal.getZ());
-            int yDir = normal.getY() + (normalizedNormal.getX() * inner) + (normalizedNormal.getZ() * inner);
-            int zDir = normal.getZ() + (inner * normal.getY()) + (lower * normal.getX());
-            vertices[i] = Float.floatToRawIntBits(Float.intBitsToFloat(vertices[i]) - inflation * xDir);
-            vertices[i + 1] = Float.floatToRawIntBits(Float.intBitsToFloat(vertices[i + 1]) - inflation * yDir);
-            vertices[i + 2] = Float.floatToRawIntBits(Float.intBitsToFloat(vertices[i + 2]) - inflation * zDir);
-        }
-
-        return vertices;
-    }
 }

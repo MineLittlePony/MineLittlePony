@@ -4,7 +4,6 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.*;
 
 import com.mojang.blaze3d.pipeline.BlendFunction;
@@ -31,7 +30,7 @@ public interface MagicGlow {
                 .withBlend(BlendFunction.LIGHTNING)
                 .withDepthWrite(false)
                 .withCull(false) /*added*/
-                .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST) /*added*/
+                .withDepthTestFunction(DepthTestFunction.LESS_DEPTH_TEST) /*added*/
                 .withVertexFormat(VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS)
                 .build()
         );
@@ -62,7 +61,7 @@ public interface MagicGlow {
     }
 
     @SuppressWarnings("deprecation")
-    public static OrderedRenderCommandQueue getQueue(int color, OrderedRenderCommandQueue queue, List<MatrixStack.Entry> passes) {
+    public static OrderedRenderCommandQueue getQueue(int color, OrderedRenderCommandQueue queue, List<MagicOverlayRenderCommandQueue.Pass> passes) {
         if (queue instanceof MagicOverlayRenderCommandQueue p) {
             queue = p.unwrap();
         }
