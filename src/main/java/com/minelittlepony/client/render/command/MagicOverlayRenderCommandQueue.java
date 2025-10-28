@@ -76,7 +76,7 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
 
                 for (var pass : passes) {
                     commandMatrix.push();
-                    commandMatrix.translate(pass.translation());
+                    commandMatrix.translate(pass.translation().multiply(1/8F));
                     if (state.getRenderType() != BlockRenderType.INVISIBLE) {
                         BlockStateModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(state);
                         BlockModelRenderer.render(commandMatrix.peek(), new ScaledVertexConsumer(buffer, pass.scale(), color, commandMatrix), model,
@@ -104,7 +104,7 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
                 commandMatrix.peek().copy(entry);
                 for (var pass : passes) {
                     commandMatrix.push();
-                    commandMatrix.translate(pass.translation());
+                    commandMatrix.translate(pass.translation().multiply(1/8F));
 
                     BlockModelRenderer.render(
                         commandMatrix.peek(),
@@ -132,7 +132,7 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
             matrices.pop();
             for (var pass : passes) {
                 matrices.push();
-                matrices.translate(pass.translation().multiply(1/16F));
+                matrices.translate(pass.translation().multiply(1/8F));
                 CustomModelRenderCommand.<S>submit(parent, model, state, matrices, l, light, overlay, color, sprite, 0, null, (command, provider) -> {
                     return new ScaledVertexConsumer(provider.getBuffer(l), pass.scale(), color, command.matrices());
                 }, null);
@@ -148,10 +148,10 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
             int[] tints = new int[] {color};
             for (var pass : passes) {
                 matrices.push();
-                matrices.translate(pass.translation().multiply(1/16F));
+                matrices.translate(pass.translation().multiply(1/8F));
                 List<BakedQuad> adjustedQuad = new ArrayList<>();
                 for (var quad : quads) {
-                    float sc = (pass.scale() - 1F) / 3F;
+                    float sc = pass.scale() / 3F;
                     adjustedQuad.add(new BakedQuad(VertexTransforms.inflateQuad(quad.vertexData(), quad.face(), sc), 0, quad.face(), quad.sprite(), false, quad.lightEmission()));
                 }
                 parent.submitItem(matrices, displayContext, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0, tints, adjustedQuad, renderLayer, Glint.NONE);

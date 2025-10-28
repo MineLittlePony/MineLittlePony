@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList.Builder;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Wearable;
+import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.*;
 import com.minelittlepony.client.render.DebugBoundingBoxRenderer;
 import com.minelittlepony.client.render.PonyRenderContext;
@@ -27,6 +28,7 @@ import net.minecraft.client.render.entity.feature.*;
 import net.minecraft.client.render.entity.state.*;
 import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.PlayerLikeEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
@@ -146,14 +148,25 @@ public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLi
 
     @SuppressWarnings("unchecked")
     protected void renderArm(MatrixStack stack, OrderedRenderCommandQueue queue, int light, Identifier skinTexture, boolean sleeveVisible, Arm side) {
+
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+
+
+        var renderer = MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(player);
+        if (((Object)renderer) != this) {
+            return;
+        }
+        PonyRenderState state = renderer.getAndUpdateRenderState(player, MinecraftClient.getInstance().getRenderTickCounter().getTickProgress(false));
+
+        if (state.hasMagicGlow() && (player.getStackInHand(Hand.MAIN_HAND).contains(DataComponentTypes.MAP_ID) || player.getStackInHand(Hand.OFF_HAND).contains(DataComponentTypes.MAP_ID))) {
+            return;
+        }
+
         stack.push();
         float reflect = side == Arm.LEFT ? 1 : -1;
 
         stack.translate(reflect * 0.3F, -0.54F, 0);
 
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        var renderer = MinecraftClient.getInstance().getEntityRenderDispatcher().getRenderer(player);
-        EntityRenderState state = renderer.getAndUpdateRenderState(player, MinecraftClient.getInstance().getRenderTickCounter().getTickProgress(false));
         model = lookupModel(state).body();
 
         if (side == Arm.LEFT) {

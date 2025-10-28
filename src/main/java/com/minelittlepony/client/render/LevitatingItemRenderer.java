@@ -5,18 +5,20 @@ import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.render.command.MagicOverlayRenderCommandQueue;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
+import com.minelittlepony.client.render.entity.state.PonyRenderState.HeldItemRenderState;
 
 import java.util.ArrayList;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.consume.UseAction;
+import net.minecraft.util.Arm;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
 
@@ -57,12 +59,52 @@ public class LevitatingItemRenderer {
 
         itemState.updateItemRenderState(state, MinecraftClient.getInstance().getItemModelManager(), stack, mode, entity);
 
-        setupPerspective(state, itemState, mode.isLeftHand(), matrices);
+        setupPerspective(state, itemState, mode.isLeftHand(), true, matrices);
         original.call(itemRenderState, matrices, queue, light, overlay, outline);
 
         if (state.hornGlowVisible) {
             var q = MagicGlow.getQueue(state.glowColor, queue, calculateTransformPasses(itemState, FIRST_PERSON_TRANSFORM, false));
             original.call(itemState.glintlessHandItemState, matrices, q, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0);
+        }
+    }
+
+    public static void renderMap(MatrixStack matrices, OrderedRenderCommandQueue queue, int swingProgress, ItemStack stack) {
+
+        if (!PonyConfig.getInstance().fpsmagic.get()) {
+            return;
+        }
+
+        var entity = MinecraftClient.getInstance().player;
+        var context = MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(entity);
+        var state = context == null ? null : context.getAndUpdateRenderState(entity, MinecraftClient.getInstance().getRenderTickCounter().getTickProgress(false));
+
+        if (state == null || !state.hasMagicGlow()) {
+            return;
+        }
+
+        Arm arm = entity.getStackInArm(Arm.LEFT) == stack ? Arm.LEFT : Arm.RIGHT;
+        HeldItemRenderState itemState = state.getHeldItem(arm);
+
+        //setupPerspective(state, itemState, arm == Arm.LEFT, false, matrices);
+
+        float floatAmount = itemState.levitatingItemXDrift * 2000;
+        float driftAmount = itemState.levitatingItemZDrift * 2000;
+
+        matrices.translate(floatAmount, driftAmount, driftAmount * 0.25F);
+
+        RenderLayer renderLayer = MagicGlow.getTextured(Identifier.ofVanilla("textures/map/map_background.png"));
+        for (var pass : calculateTransformPasses(itemState, FIRST_PERSON_TRANSFORM, false)) {
+            matrices.push();
+            matrices.peek().getPositionMatrix().scaleAround(1 + pass.scale() / 2F, 64, 64, 0);
+            matrices.translate(pass.translation());
+
+            queue.submitCustom(matrices, renderLayer, (entry, buffer) -> {
+                buffer.vertex(entry, -7, 135, 1).color(state.glowColor).texture(0, 1).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).overlay(OverlayTexture.DEFAULT_UV).normal(0, 1, 0);
+                buffer.vertex(entry, 135, 135, 1).color(state.glowColor).texture(1, 1).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).overlay(OverlayTexture.DEFAULT_UV).normal(0, 1, 0);
+                buffer.vertex(entry, 135, -7, 1).color(state.glowColor).texture(1, 0).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).overlay(OverlayTexture.DEFAULT_UV).normal(0, 1, 0);
+                buffer.vertex(entry, -7, -7, 1).color(state.glowColor).texture(0, 0).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).overlay(OverlayTexture.DEFAULT_UV).normal(0, 1, 0);
+            });
+            matrices.pop();
         }
     }
 
@@ -76,11 +118,13 @@ public class LevitatingItemRenderer {
         var box = glintLessItem.glintlessHandItemState.getModelBoundingBox();
 
         float scale = glintLessItem.levitatingItemScale;
-        scale = 1 + (scale - 1) * 2;
 
-        var dX = (box.maxX + box.minX) * 0.5;
-        var dY = (box.maxY + box.minY) * 0.5;
-        var dZ = (box.maxZ + box.minZ) * 0.5;
+        var dX = (float)(box.maxX + box.minX) * 0.5F;
+        var dY = (float)(box.maxY + box.minY) * 0.5F;
+        var dZ = (float)(box.maxZ + box.minZ) * 0.5F;
+
+        //var maxDim = Math.max(Math.max(dX, dY), dZ);
+        //scale *= maxDim * 4F;
 
         TRANSFORM.peek().loadIdentity();
         Vec3d translation = Vec3d.ZERO;
@@ -88,18 +132,14 @@ public class LevitatingItemRenderer {
             translation = new Vec3d(offset[0].x() + 0.015F + glintLessItem.levitatingItemXDrift, offset[0].y() + 0.01F, offset[0].z() + 0.01F + glintLessItem.levitatingItemZDrift);
             TRANSFORM.translate(translation);
         }
-        TRANSFORM.translate(dX, dY, dZ);
-        TRANSFORM.scale(scale, scale, scale);
-        TRANSFORM.translate(-dX, -dY, -dZ);
+        TRANSFORM.peek().getPositionMatrix().scaleAround(1 + scale, -dX, -dY, -dZ);
 
         passes.add(new MagicOverlayRenderCommandQueue.Pass(TRANSFORM.peek().copy(), translation, scale));
 
         translation = Vec3d.ZERO;
-        scale = 1 + (scale - 1) * 1.5F;
+        scale *= 1.5F;
         TRANSFORM.peek().loadIdentity();
-        TRANSFORM.translate(dX, dY, dZ);
-        TRANSFORM.scale(scale, scale, scale);
-        TRANSFORM.translate(-dX, -dY, -dZ);
+        TRANSFORM.peek().getPositionMatrix().scaleAround(1 + scale, -dX, -dY, -dZ);
         if (!noTransform) {
             translation = new Vec3d(offset[1].x() + 0.015F + glintLessItem.levitatingItemXDrift, offset[1].y() + 0.01F, offset[1].z() + 0.01F + glintLessItem.levitatingItemZDrift);
             TRANSFORM.translate(translation);
@@ -113,9 +153,9 @@ public class LevitatingItemRenderer {
     /**
      * Moves held items to look like they're floating in the player's field.
      */
-    public static void setupPerspective(PonyRenderState state, PonyRenderState.HeldItemRenderState heldItem, boolean left, MatrixStack stack) {
+    public static void setupPerspective(PonyRenderState state, PonyRenderState.HeldItemRenderState heldItem, boolean left, boolean rotate, MatrixStack stack) {
         if (heldItem.repositionFirstPerson) { // eating, blocking, and drinking are not transformed. Only held items.
-            int sign = left ? 1 : -1;
+            int sign = rotate ? (left ? 1 : -1) : 0;
 
             float floatAmount = heldItem.levitatingItemXDrift * 2.5F;
             float driftAmount = heldItem.levitatingItemZDrift * 4;
@@ -123,7 +163,7 @@ public class LevitatingItemRenderer {
 
             stack.translate(driftAmount - floatAmount / 4F + distanceChange / 1.5F * sign, floatAmount, distanceChange);
 
-            if (!heldItem.handHeldTool) { // bows have to point forwards
+            if (rotate && !heldItem.handHeldTool) { // bows have to point forwards
                 stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(sign * -60 + floatAmount));
                 stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(sign * 30 + driftAmount));
             }

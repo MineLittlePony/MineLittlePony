@@ -63,7 +63,7 @@ final class ScaledVertexConsumer implements VertexConsumer {
         var normal = localTransform.peek().getNormalMatrix().invert().transform(new Vector3f(normalX, normalY, normalZ));
         var inflation = VertexTransforms.getInflationNormal(vertexIndex++, normal);
         inflation = localTransform.peek().getNormalMatrix().invert().transform(inflation);
-        float sc = (scale - 1F) / 3F;
+        float sc = scale / 8F;
         buffer.vertex(
                 x + inflation.x() * sc,
                 y + inflation.y() * sc,
@@ -83,7 +83,8 @@ final class ScaledVertexConsumer implements VertexConsumer {
             int overlay,
             boolean colorize
         ) {
-        buffer.quad(matrixEntry, VertexTransforms.inflateQuad(quad, scale), brightnesses,
+        float sc = scale / 8F;
+        buffer.quad(matrixEntry, VertexTransforms.inflateQuad(quad, sc), brightnesses,
                 ColorHelper.getRedFloat(color),
                 ColorHelper.getGreenFloat(color),
                 ColorHelper.getBlueFloat(color),
