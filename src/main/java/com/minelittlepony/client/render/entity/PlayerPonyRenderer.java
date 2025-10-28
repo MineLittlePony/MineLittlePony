@@ -21,6 +21,8 @@ import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerLikeEntity;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
@@ -151,7 +153,6 @@ public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLi
 
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
 
-
         var renderer = MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(player);
         if (((Object)renderer) != this) {
             return;
@@ -163,18 +164,18 @@ public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLi
         }
 
         stack.push();
-        float reflect = side == Arm.LEFT ? 1 : -1;
+        float reflect = side == Arm.LEFT ? -1 : 1;
 
-        stack.translate(reflect * 0.3F, -0.54F, 0);
+        stack.translate(reflect * -0.3F, -0.54F, 0);
 
         model = lookupModel(state).body();
 
-        if (side == Arm.LEFT) {
-            super.renderLeftArm(stack, queue, light, skinTexture, sleeveVisible);
-        } else {
-            super.renderRightArm(stack, queue, light, skinTexture, sleeveVisible);
-        }
         ModelPart arm = side == Arm.LEFT ? model.leftArm : model.rightArm;
+        arm.resetTransform();
+        arm.visible = true;
+        model.leftSleeve.visible = sleeveVisible;
+        model.rightSleeve.visible = sleeveVisible;
+        arm.roll = reflect * 0.1F;
         // seapony has different angles, so make sure they're correct
         arm.pitch = 0;
         arm.yaw = 0;
@@ -183,6 +184,7 @@ public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLi
             ponyModel.transform(state, BodyPart.LEGS, arm);
         }
 
+        queue.submitModelPart(arm, stack, RenderLayer.getEntityTranslucent(skinTexture), light, OverlayTexture.DEFAULT_UV, null);
         stack.pop();
     }
 
