@@ -1,8 +1,7 @@
 package com.minelittlepony.client.render.entity;
 
 import com.google.common.collect.ImmutableList.Builder;
-import com.minelittlepony.api.model.ModelAttributes;
-import com.minelittlepony.api.model.ModelWithHorn;
+import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.model.*;
@@ -16,14 +15,16 @@ import java.util.*;
 
 import com.minelittlepony.client.render.EquineRenderManager;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.ItemModelManager;
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerLikeEntity;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.feature.*;
-import net.minecraft.client.render.entity.state.EntityHitbox;
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
+import net.minecraft.client.render.entity.state.*;
 import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.PlayerLikeEntity;
@@ -143,16 +144,30 @@ public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLi
         renderArm(matrices, queue, light, skinTexture, sleeveVisible, Arm.LEFT);
     }
 
+    @SuppressWarnings("unchecked")
     protected void renderArm(MatrixStack stack, OrderedRenderCommandQueue queue, int light, Identifier skinTexture, boolean sleeveVisible, Arm side) {
         stack.push();
         float reflect = side == Arm.LEFT ? 1 : -1;
 
-        stack.translate(reflect * 0.1F, -0.54F, 0);
+        stack.translate(reflect * 0.3F, -0.54F, 0);
+
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        var renderer = MinecraftClient.getInstance().getEntityRenderDispatcher().getRenderer(player);
+        EntityRenderState state = renderer.getAndUpdateRenderState(player, MinecraftClient.getInstance().getRenderTickCounter().getTickProgress(false));
+        model = lookupModel(state).body();
 
         if (side == Arm.LEFT) {
             super.renderLeftArm(stack, queue, light, skinTexture, sleeveVisible);
         } else {
             super.renderRightArm(stack, queue, light, skinTexture, sleeveVisible);
+        }
+        ModelPart arm = side == Arm.LEFT ? model.leftArm : model.rightArm;
+        // seapony has different angles, so make sure they're correct
+        arm.pitch = 0;
+        arm.yaw = 0;
+
+        if (model instanceof PonyModel ponyModel) {
+            ponyModel.transform(state, BodyPart.LEGS, arm);
         }
 
         stack.pop();
