@@ -27,13 +27,11 @@ import org.joml.Vector3fc;
 
 public class LevitatingItemRenderer {
     private static final Vector3fc[] THIRD_PERSON_TRANSFORM = {
-            new Vector3f(-0.1F, 0, -0.09F), new Vector3f(-0.05F, 0, -0.15F)
+            new Vector3f(-0.085F, 0.01F, -0.08F), new Vector3f(-0.035F, 0.01F, -0.14F)
     };
     private static final Vector3fc[] FIRST_PERSON_TRANSFORM = {
-            new Vector3f(-0.05F, -0.12F, -0.1F), new Vector3f(-0.1F, -0.05F, -0.1F)
+            new Vector3f(-0.035F, -0.11F, -0.09F), new Vector3f(-0.085F, -0.04F, -0.09F)
     };
-    private static final MatrixStack TRANSFORM = new MatrixStack();
-
 
     /**
      * Renders a first-person item with a magical overlay.
@@ -85,8 +83,6 @@ public class LevitatingItemRenderer {
         Arm arm = entity.getStackInArm(Arm.LEFT) == stack ? Arm.LEFT : Arm.RIGHT;
         HeldItemRenderState itemState = state.getHeldItem(arm);
 
-        //setupPerspective(state, itemState, arm == Arm.LEFT, false, matrices);
-
         float floatAmount = itemState.levitatingItemXDrift * 2000;
         float driftAmount = itemState.levitatingItemZDrift * 2000;
 
@@ -95,7 +91,7 @@ public class LevitatingItemRenderer {
         RenderLayer renderLayer = MagicGlow.getTextured(Identifier.ofVanilla("textures/map/map_background.png"));
         for (var pass : calculateTransformPasses(itemState, FIRST_PERSON_TRANSFORM, false)) {
             matrices.push();
-            matrices.peek().getPositionMatrix().scaleAround(1 + pass.scale() / 2F, 64, 64, 0);
+            matrices.peek().getPositionMatrix().scaleAround(1 + pass.scale() / 3F, 64, 64, 0);
             matrices.translate(pass.translation());
 
             queue.submitCustom(matrices, renderLayer, (entry, buffer) -> {
@@ -114,38 +110,14 @@ public class LevitatingItemRenderer {
 
     private static ArrayList<MagicOverlayRenderCommandQueue.Pass> calculateTransformPasses(PonyRenderState.HeldItemRenderState glintLessItem, Vector3fc[] offset, boolean noTransform) {
         var passes = new ArrayList<MagicOverlayRenderCommandQueue.Pass>();
-
-        var box = glintLessItem.glintlessHandItemState.getModelBoundingBox();
-
-        float scale = glintLessItem.levitatingItemScale;
-
-        var dX = (float)(box.maxX + box.minX) * 0.5F;
-        var dY = (float)(box.maxY + box.minY) * 0.5F;
-        var dZ = (float)(box.maxZ + box.minZ) * 0.5F;
-
-        //var maxDim = Math.max(Math.max(dX, dY), dZ);
-        //scale *= maxDim * 4F;
-
-        TRANSFORM.peek().loadIdentity();
-        Vec3d translation = Vec3d.ZERO;
-        if (!noTransform) {
-            translation = new Vec3d(offset[0].x() + 0.015F + glintLessItem.levitatingItemXDrift, offset[0].y() + 0.01F, offset[0].z() + 0.01F + glintLessItem.levitatingItemZDrift);
-            TRANSFORM.translate(translation);
-        }
-        TRANSFORM.peek().getPositionMatrix().scaleAround(1 + scale, -dX, -dY, -dZ);
-
-        passes.add(new MagicOverlayRenderCommandQueue.Pass(TRANSFORM.peek().copy(), translation, scale));
-
-        translation = Vec3d.ZERO;
-        scale *= 1.5F;
-        TRANSFORM.peek().loadIdentity();
-        TRANSFORM.peek().getPositionMatrix().scaleAround(1 + scale, -dX, -dY, -dZ);
-        if (!noTransform) {
-            translation = new Vec3d(offset[1].x() + 0.015F + glintLessItem.levitatingItemXDrift, offset[1].y() + 0.01F, offset[1].z() + 0.01F + glintLessItem.levitatingItemZDrift);
-            TRANSFORM.translate(translation);
-        }
-
-        passes.add(new MagicOverlayRenderCommandQueue.Pass(TRANSFORM.peek().copy(), translation, scale));
+        passes.add(new MagicOverlayRenderCommandQueue.Pass(
+                noTransform ? Vec3d.ZERO : new Vec3d(offset[0].x() + glintLessItem.levitatingItemXDrift, offset[0].y(), offset[0].z() + glintLessItem.levitatingItemZDrift),
+                glintLessItem.levitatingItemScale
+        ));
+        passes.add(new MagicOverlayRenderCommandQueue.Pass(
+                noTransform ? Vec3d.ZERO : new Vec3d(offset[1].x() + glintLessItem.levitatingItemXDrift, offset[1].y(), offset[1].z() + glintLessItem.levitatingItemZDrift),
+                glintLessItem.levitatingItemScale * 1.5F
+        ));
         return passes;
     }
 

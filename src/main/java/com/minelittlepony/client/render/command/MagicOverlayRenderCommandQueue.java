@@ -32,12 +32,13 @@ import net.minecraft.util.math.*;
 import org.jetbrains.annotations.Nullable;
 import org.joml.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
+    static final float TRANSLATION_SCALE = 1/8F;
+
     private final OrderedRenderCommandQueue owner;
     private final RenderCommandQueue parent;
     protected final Function<RenderLayer, @Nullable RenderLayer> layer;
@@ -48,7 +49,7 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
     private final float green;
     private final float blue;
 
-    public record Pass(MatrixStack.Entry itemMeshTransform, Vec3d translation, float scale) {}
+    public record Pass(Vec3d translation, float scale) { }
 
     public MagicOverlayRenderCommandQueue(OrderedRenderCommandQueue owner, RenderCommandQueue parent, Function<RenderLayer, @Nullable RenderLayer> layer, int color, List<Pass> passes) {
         this.owner = owner;
@@ -65,31 +66,33 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
         return owner;
     }
 
+    private void submitCustomPasses(MatrixStack matrices, RenderLayer layer, PassedCustom custom, float scaleMultiple, @Nullable Sprite sprite) {
+        MatrixStack commandMatrix = new MatrixStack();
+        parent.submitCustom(matrices, layer, (entry, buffer) -> {
+            buffer = sprite == null ? buffer : sprite.getTextureSpecificVertexConsumer(buffer);
+            commandMatrix.peek().copy(entry);
+            for (var pass : passes) {
+                commandMatrix.push();
+                commandMatrix.translate(pass.translation().multiply(TRANSLATION_SCALE));
+                custom.render(commandMatrix, new ScaledVertexConsumer(buffer, pass.scale() * scaleMultiple, color, commandMatrix), pass);
+                commandMatrix.pop();
+            }
+        });
+    }
+
+    interface PassedCustom {
+        void render(MatrixStack matrices, VertexConsumer buffer, Pass pass);
+    }
+
     @Override
     public void submitBlock(MatrixStack matrices, BlockState state, int light, int overlay, int outlineColor) {
         RenderLayer layer = this.layer.apply(RenderLayers.getEntityBlockLayer(state));
         if (layer != null) {
-            MatrixStack commandMatrix = new MatrixStack();
-            parent.submitCustom(matrices, layer, (entry, buffer) -> {
-                commandMatrix.push();
-                commandMatrix.peek().copy(entry);
-
-                for (var pass : passes) {
-                    commandMatrix.push();
-                    commandMatrix.translate(pass.translation().multiply(1/8F));
-                    if (state.getRenderType() != BlockRenderType.INVISIBLE) {
-                        BlockStateModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(state);
-                        BlockModelRenderer.render(commandMatrix.peek(), new ScaledVertexConsumer(buffer, pass.scale(), color, commandMatrix), model,
-                                red,
-                                green,
-                                blue, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
-                    }
-
-                    commandMatrix.pop();
+            submitCustomPasses(matrices, layer, (transform, buffer, pass) -> {
+                if (state.getRenderType() != BlockRenderType.INVISIBLE) {
+                    BlockModelRenderer.render(transform.peek(), buffer, MinecraftClient.getInstance().getBlockRenderManager().getModel(state), red, green, blue, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
                 }
-
-                commandMatrix.pop();
-            });
+            }, 1, null);
             ((LoadedBlockEntityModels)MinecraftClient.getInstance().getBakedModelManager().getBlockEntityModelsSupplier().get()).render(state.getBlock(), ItemDisplayContext.NONE, matrices, owner, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0);
         }
     }
@@ -98,28 +101,9 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
     public void submitBlockStateModel(MatrixStack matrices, RenderLayer renderLayer, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor) {
         var l = layer.apply(renderLayer);
         if (l != null) {
-            MatrixStack commandMatrix = new MatrixStack();
-            parent.submitCustom(matrices, l, (entry, buffer) -> {
-                commandMatrix.push();
-                commandMatrix.peek().copy(entry);
-                for (var pass : passes) {
-                    commandMatrix.push();
-                    commandMatrix.translate(pass.translation().multiply(1/8F));
-
-                    BlockModelRenderer.render(
-                        commandMatrix.peek(),
-                        new ScaledVertexConsumer(buffer, pass.scale(), color, commandMatrix),
-                        model,
-                        red,
-                        green,
-                        blue,
-                        LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV
-                    );
-
-                    commandMatrix.pop();
-                }
-                commandMatrix.pop();
-            });
+            submitCustomPasses(matrices, l, (transform, buffer, pass) -> {
+                BlockModelRenderer.render(transform.peek(), buffer, model, red, green, blue, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
+            }, 1, null);
         }
     }
 
@@ -127,12 +111,9 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
     public <S> void submitModel(Model<? super S> model, S state, MatrixStack matrices, RenderLayer renderLayer, int light, int overlay, int tintedColor, Sprite sprite, int outline, CrumblingOverlayCommand crumblingOverlay) {
         var l = layer.apply(renderLayer);
         if (l != null) {
-            matrices.push();
-            parent.submitModel(model, state, matrices, RenderLayer.getWaterMask(), light, overlay, tintedColor, sprite, outline, crumblingOverlay);
-            matrices.pop();
             for (var pass : passes) {
                 matrices.push();
-                matrices.translate(pass.translation().multiply(1/8F));
+                matrices.translate(pass.translation().multiply(TRANSLATION_SCALE));
                 CustomModelRenderCommand.<S>submit(parent, model, state, matrices, l, light, overlay, color, sprite, 0, null, (command, provider) -> {
                     return new ScaledVertexConsumer(provider.getBuffer(l), pass.scale(), color, command.matrices());
                 }, null);
@@ -145,31 +126,22 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
     public void submitItem(MatrixStack matrices, ItemDisplayContext displayContext, int light, int overlay, int outlineColors, int[] tintLayers, List<BakedQuad> quads, RenderLayer renderLayer, Glint glintType) {
         renderLayer = layer.apply(renderLayer);
         if (renderLayer != null) {
-            int[] tints = new int[] {color};
-            for (var pass : passes) {
-                matrices.push();
-                matrices.translate(pass.translation().multiply(1/8F));
-                List<BakedQuad> adjustedQuad = new ArrayList<>();
-                for (var quad : quads) {
-                    float sc = pass.scale() / 3F;
-                    adjustedQuad.add(new BakedQuad(VertexTransforms.inflateQuad(quad.vertexData(), quad.face(), sc), 0, quad.face(), quad.sprite(), false, quad.lightEmission()));
+            submitCustomPasses(matrices, renderLayer, (transform, buffer, pass) -> {
+                MatrixStack.Entry entry = transform.peek();
+                for (BakedQuad quad : quads) {
+                    buffer.quad(entry, quad, red, green, blue, 1, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
                 }
-                parent.submitItem(matrices, displayContext, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, 0, tints, adjustedQuad, renderLayer, Glint.NONE);
-                matrices.pop();
-            }
+            }, 2.3F, null);
         }
     }
 
     @Override
     public void submitModelPart(ModelPart part, MatrixStack matrices, RenderLayer renderLayer, int light, int overlay, @Nullable Sprite sprite, boolean sheeted, boolean hasGlint, int tintedColor, CrumblingOverlayCommand crumblingOverlay, int i) {
-        var l = layer.apply(renderLayer);
-        if (l != null) {
-            for (var pass : passes) {
-                matrices.push();
-                applyPass(pass, matrices);
-                parent.submitModelPart(part, matrices, l, LightmapTextureManager.MAX_LIGHT_COORDINATE, 0, null, false, false, color, null, i);
-                matrices.pop();
-            }
+        renderLayer = layer.apply(renderLayer);
+        if (renderLayer != null) {
+            submitCustomPasses(matrices, renderLayer, (transform, buffer, pass) -> {
+                part.render(transform, buffer, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, color);
+            }, 1, sprite);
         }
     }
 
@@ -186,24 +158,13 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
                     parent.submitCustom(matrices, l, new CustomModelRenderCommand(custom.matrices(), custom.command(), l, layerFunc, custom.anglesFunc()));
                 }
             } else {
-                MatrixStack m = new MatrixStack();
-                parent.submitCustom(matrices, l, (entry, buffer) -> {
-                    for (var pass : passes) {
-                        //applyPass(pass, matrices);
-                        m.peek().copy(entry);
-                        m.translate(pass.translation().multiply(1/16F));
-                        c.render(m.peek(), new ScaledVertexConsumer(buffer, pass.scale(), color, m));
-                    }
-                });
+                submitCustomPasses(matrices, l, (transform, buffer, pass) -> {
+                    c.render(transform.peek(), new ScaledVertexConsumer(buffer, pass.scale(), color, transform));
+                }, 1, null);
             }
             matrices.pop();
 
         }
-    }
-
-    private void applyPass(Pass pass, MatrixStack matrices) {
-        matrices.peek().getPositionMatrix().mul(pass.itemMeshTransform().getPositionMatrix());
-        matrices.peek().getNormalMatrix().mul(pass.itemMeshTransform().getNormalMatrix());
     }
 
     @Override
