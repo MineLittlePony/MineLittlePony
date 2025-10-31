@@ -52,6 +52,7 @@ public class ModelAttributes {
     /**
      * True if the model is swimming, and rotated 90degs (players)
      */
+    @Deprecated
     public boolean isSwimmingRotated;
 
     /**

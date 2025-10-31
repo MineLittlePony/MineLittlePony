@@ -113,11 +113,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             if (!entity.attributes.isLyingDown) {
                 animateBreathing(entity);
             }
-
-            if (entity.attributes.isSwimmingRotated) {
-                rightLeg.originZ -= 1.5F;
-                leftLeg.originZ -= 1.5F;
-            }
         }
 
         if (entity.attributes.isLyingDown) {
@@ -197,11 +192,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             rotateLegsOnGround(state, state.limbAmplitudeInverse, state.limbSwingAmplitude, state.age);
         }
 
-        float sin = MathHelper.sin(body.yaw) * 5;
         float cos = MathHelper.cos(body.yaw) * 5;
-
-        rightArm.originZ = 2 + sin;
-        leftArm.originZ = 2 - sin;
 
         float legRPX = state.attributes.getMainInterpolator().interpolate("legOffset", cos - state.legOutset - 0.001F, 2);
         if (state.attributes.isHorsey) {
@@ -223,11 +214,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             rightLeg.originZ = leftLeg.originZ = 19;
             rightLeg.originY = leftLeg.originY = 6;
         }
-
-        if (state.attributes.isGoingFast) {
-            leftLeg.originZ -= 1F;
-            rightLeg.originZ -= 1F;
-        }
     }
 
     /**
@@ -236,7 +222,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
      * Takes the same parameters as {@link AbstractPonyModel.setRotationAndAngles}
      */
     protected void rotateLegsSwimming(T state, @Deprecated float move, @Deprecated float swing, @Deprecated float ticks) {
-        float lerp = state.isInPose(EntityPose.SWIMMING) ? (float)state.attributes.motionLerp : 1;
+        float lerp = state.submergedInWater ? (float)state.attributes.motionLerp : 1;
 
         float legLeft = (MathUtil.Angles._90_DEG + MathHelper.sin((state.limbSwingAnimationProgress / 3) + 2 * MathHelper.PI/3) / 2) * lerp;
 
@@ -507,9 +493,6 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             originY += -0.75F;
         }
 
-        if (state.attributes.isSwimming) {
-            originY += -0.75F;
-        }
         if (state.attributes.isLyingDown) {
             originZ += -0.3F;
         }
@@ -522,7 +505,9 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         if (state.attributes.isLyingDown) {
             stack.translate(0, state.attributes.isSleeping ? 0F : 0.77F, state.attributes.isSleeping ? 1 : 0);
         }
-
+        if (state.attributes.isSwimming) {
+            stack.translate(0, -0.2F, 0);
+        }
         if (state.attributes.isHorsey) {
             stack.translate(0, 0.1F, 0);
         }
