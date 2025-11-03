@@ -16,4 +16,18 @@ public class PonyArmourModel<T extends PonyRenderState> extends AbstractPonyMode
             super.alignArmForAction(state, arm, pose, complement, sigma);
         }
     }
+
+    @Override
+    protected void swingArm(T state, ModelPart arm) {
+        if (!state.hasMagicGlow()) {
+            super.swingArm(state, arm);
+        }
+    }
+
+    @Override
+    protected void animateBreathing(T state) {
+        if (!state.hasMagicGlow()) {
+            super.animateBreathing(state);
+        }
+    }
 }

@@ -102,7 +102,9 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             alignArmForAction(entity, getArm(Arm.LEFT), entity.leftArmPose, entity.rightArmPose, 1);
             alignArmForAction(entity, getArm(Arm.RIGHT), entity.rightArmPose, entity.leftArmPose, -1);
         }
-        swingItem(entity);
+        if (entity.handSwingProgress > 0 && !entity.attributes.isLyingDown) {
+            swingArm(entity, getArm(entity.preferredArm));
+        }
 
         if (entity.attributes.isCrouching) {
             ponyCrouch(entity);
@@ -391,22 +393,11 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
     }
 
     /**
-     * Animates arm swinging. Delegates to the correct arm/leg/limb as necessary.
-     *
-     * @param entity     The entity we are being called for.
-     */
-    protected final void swingItem(T state) {
-        if (state.handSwingProgress > 0 && !state.attributes.isLyingDown) {
-            swingArm(state, getArm(state.preferredArm));
-        }
-    }
-
-    /**
      * Animates arm swinging.
      *
      * @param arm       The arm to swing
      */
-    protected final void swingArm(T state, ModelPart arm) {
+    protected void swingArm(T state, ModelPart arm) {
         float swing = 1 - (float)Math.pow(1 - state.handSwingProgress, 3);
 
         float deltaX = MathHelper.sin(swing * MathHelper.PI);

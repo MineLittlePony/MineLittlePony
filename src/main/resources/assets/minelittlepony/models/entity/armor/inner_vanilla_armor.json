@@ -41,7 +41,7 @@
       }
 		},
 		"right_arm": {
-			"pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", 0],
+			"pivot": ["#arm_rotation_x_neg", "#arm_rotation_y", "#arm_rotation_z"],
 			"texture": { "u": 0, "v": 16 },
 			"cubes": [
 				{
@@ -56,7 +56,7 @@
       }
 		},
 		"left_arm": {
-			"pivot": ["#arm_rotation_x", "#arm_rotation_y", 0],
+			"pivot": ["#arm_rotation_x", "#arm_rotation_y", "#arm_rotation_z"],
 			"mirror": true,
 			"texture": { "u": 0, "v": 16 },
 			"cubes": [
