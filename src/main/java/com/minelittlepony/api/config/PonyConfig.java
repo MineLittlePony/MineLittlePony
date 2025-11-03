@@ -165,7 +165,7 @@ public class PonyConfig extends Config {
             return sz;
         }
 
-        if (size == SizePreset.UNSET || !instance.sizes.get()) {
+        if (size == SizePreset.UNSET || !getInstance().sizes.get()) {
             return SizePreset.NORMAL;
         }
 

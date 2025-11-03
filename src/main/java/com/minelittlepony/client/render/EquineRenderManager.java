@@ -27,6 +27,7 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.RotationAxis;
 
 import org.jetbrains.annotations.Nullable;
 

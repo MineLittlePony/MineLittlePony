@@ -137,7 +137,7 @@ public abstract class AbstractPonyRenderer<
             shadowRadius *= 3; // undo vanilla shadow scaling
         }
 
-        if (!state.hasVehicle) {
+        if (!state.hasVehicle && !state.attributes.isLyingDown) {
             stack.translate(0, 0, -state.width / 2); // move us to the center of the shadow
         } else {
             if (state.attributes.isSitting && state.hasVehicle) {

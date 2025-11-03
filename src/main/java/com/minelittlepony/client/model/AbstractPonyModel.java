@@ -3,6 +3,7 @@ package com.minelittlepony.client.model;
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.pony.meta.SizePreset;
+import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
 import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import com.minelittlepony.client.transform.PonyTransformation;
 import com.minelittlepony.mson.util.RenderList;
@@ -123,6 +124,16 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
             head.originY -= 3;
             head.originZ -= 2;
             head.pitch = 0.5F;
+        }
+
+        if (PonyConfig.getInstance().chibiMode.get()) {
+            head.xScale += 0.5;
+            head.zScale += 0.5;
+            head.yScale += 0.5;
+            float bobScale = entity.attributes.getMainInterpolator().interpolate("head_bob", entity.limbSwingAmplitude, 120) * 0.4F;
+            head.roll += MathHelper.sin(entity.age / 2F) * bobScale;
+            head.yaw += MathHelper.sin(entity.age / 3F) * bobScale;
+            head.pitch += MathHelper.cos(entity.age / 2F) * bobScale * 1.2F;
         }
 
         parts.forEach(part -> part.setAngles((PonyModel)this, entity));
@@ -487,48 +498,56 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
         float originZ = 0;
 
         if (state.attributes.isSleeping || state.attributes.isRiptide) {
-            stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
-            stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
-            stack.translate(0, -0.67F, -0.51F);
-            originY += -0.75F;
+            originY += -0.7F;
         }
 
         if (state.attributes.isLyingDown) {
-            originZ += -0.3F;
+            originZ += 0.5F;
+        }
+
+        if (part != BodyPart.WINGS) {
+            if (state.attributes.isSleeping || state.attributes.isRiptide) {
+                stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
+                stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90));
+            }
         }
 
         stack.translate(0, originY, originZ);
+        float scaleFactor = state.attributes.size.scaleFactor();
 
-        if (state.attributes.isCrouching) {
-            stack.translate(0, -0.13F, 0);
-        }
-        if (state.attributes.isLyingDown) {
-            stack.translate(0, state.attributes.isSleeping ? 0F : 0.77F, state.attributes.isSleeping ? 1 : 0);
-        }
-        if (state.attributes.isSwimming) {
-            stack.translate(0, -0.2F, 0);
-        }
-        if (state.attributes.isHorsey) {
-            stack.translate(0, 0.1F, 0);
+        if (part != BodyPart.WINGS) {
+            if (state.attributes.isSleeping || state.attributes.isRiptide) {
+                stack.translate(0, -0.75F, -0.35F);
+                if (state instanceof PlayerPonyRenderState) {
+                    stack.translate(0, 0.15F / scaleFactor, 0.4F);
+                }
+            }
+
+            if (state.attributes.isCrouching) {
+                stack.translate(0, -0.13F, 0);
+            }
+
+            if (state.attributes.isLyingDown && !state.attributes.isSleeping) {
+                stack.translate(0, 0.75F, 0);
+            }
+
+
+            if (state.attributes.isSwimming) {
+                stack.translate(0, -0.2F, 0);
+            }
+
+            if (state.attributes.isHorsey) {
+                stack.translate(0, 0.1F, 0);
+            }
         }
 
         if (state.attributes.isHorsey && part == BodyPart.BODY) {
             stack.scale(1.5F, 1, 1.5F);
         }
 
-        if (PonyConfig.getInstance().chibiMode.get() && part == BodyPart.HEAD) {
-            head.xScale += 0.5;
-            head.zScale += 0.5;
-            head.yScale += 0.5;
-            float bobScale = state.getAttributes().getMainInterpolator().interpolate("head_bob", state.limbSwingAmplitude, 120) * 0.4F;
-            head.roll += MathHelper.sin(state.age / 2F) * bobScale;
-            head.yaw += MathHelper.sin(state.age / 3F) * bobScale;
-            head.pitch += MathHelper.cos(state.age / 2F) * bobScale * 1.2F;
-        }
-
         PonyTransformation.forSize(state.attributes.size).transform(state.attributes, part, stack);
 
-        stack.translate(0, -originY, originZ);
+        stack.translate(0, -originY, -originZ);
     }
 
     @Override
