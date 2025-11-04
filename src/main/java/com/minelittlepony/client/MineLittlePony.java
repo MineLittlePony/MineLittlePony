@@ -83,6 +83,7 @@ public class MineLittlePony implements ClientModInitializer {
 
         KeyBindingHelper.registerKeyBinding(keyBinding);
         DebugHudEntries.register(PONY_HITBOXES_DEBUG_HUD_ENTRY, new RendererDebugHudEntry());
+        DebugHudEntries.register(PonyEntityRenderersDebugEntry.ID, new PonyEntityRenderersDebugEntry());
 
         ResourceLoader.get(ResourceType.CLIENT_RESOURCES).registerReloader(PonyManagerImpl.ID, ponyManager);
         ResourceLoader.get(ResourceType.CLIENT_RESOURCES).registerReloader(VariatedTextureSupplier.ID, variatedTextures);

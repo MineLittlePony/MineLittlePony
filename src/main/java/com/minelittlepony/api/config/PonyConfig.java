@@ -43,7 +43,7 @@ public class PonyConfig extends Config {
                 .addComment("Controls whether ponies have snouts");
     public final Setting<Boolean> fillycam =   value("settings", "fillycam", true)
                 .addComment("Turn on to adjust the player's camera position to their model");
-    private final Setting<Boolean> showscale = value("settings", "showscale", true)
+    public final Setting<Boolean> showscale = value("settings", "showscale", true)
                 .addComment("Adjusts pony scales to match the show (approximate)");
     public final Setting<Boolean> fpsmagic =   value("settings", "fpsmagic", true)
                 .addComment("Uses magic effects in first person")
