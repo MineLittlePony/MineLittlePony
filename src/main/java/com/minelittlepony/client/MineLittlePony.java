@@ -21,6 +21,8 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.hud.debug.DebugHudEntries;
+import net.minecraft.client.gui.hud.debug.RendererDebugHudEntry;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.option.KeyBinding;
@@ -40,6 +42,8 @@ public class MineLittlePony implements ClientModInitializer {
     private static MineLittlePony instance;
 
     public static final Logger LOGGER = LogManager.getLogger("MineLittlePony");
+
+    public static final Identifier PONY_HITBOXES_DEBUG_HUD_ENTRY = id("pony_hitboxes");
 
     private PonyManagerImpl ponyManager;
     private VariatedTextureSupplier variatedTextures;
@@ -78,6 +82,7 @@ public class MineLittlePony implements ClientModInitializer {
         variatedTextures = new VariatedTextureSupplier();
 
         KeyBindingHelper.registerKeyBinding(keyBinding);
+        DebugHudEntries.register(PONY_HITBOXES_DEBUG_HUD_ENTRY, new RendererDebugHudEntry());
 
         ResourceLoader.get(ResourceType.CLIENT_RESOURCES).registerReloader(PonyManagerImpl.ID, ponyManager);
         ResourceLoader.get(ResourceType.CLIENT_RESOURCES).registerReloader(VariatedTextureSupplier.ID, variatedTextures);

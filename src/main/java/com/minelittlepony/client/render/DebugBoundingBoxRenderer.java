@@ -1,15 +1,17 @@
 package com.minelittlepony.client.render;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.state.EntityHitbox;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.*;
 
 import com.google.common.collect.ImmutableList.Builder;
 import com.minelittlepony.api.model.RenderPass;
+import com.minelittlepony.client.MineLittlePony;
 
 public final class DebugBoundingBoxRenderer {
     public static <T extends LivingEntity> void appendHitbox(T entity, EquineRenderManager<T, ?, ?> manager, Builder<EntityHitbox> builder, float tickDelta) {
-        if (RenderPass.getCurrent() == RenderPass.WORLD) {
+        if (RenderPass.getCurrent() == RenderPass.WORLD && MinecraftClient.getInstance().debugHudEntryList.isEntryVisible(MineLittlePony.PONY_HITBOXES_DEBUG_HUD_ENTRY)) {
             Box box = manager.getHitbox(entity).offset(-entity.getX(), -entity.getY(), -entity.getZ());
             builder.add(new EntityHitbox(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, 1, 1, 0));
 
