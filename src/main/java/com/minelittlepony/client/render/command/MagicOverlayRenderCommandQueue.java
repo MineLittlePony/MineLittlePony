@@ -33,7 +33,6 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.*;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
@@ -145,25 +144,13 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
         }
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public void submitCustom(MatrixStack matrices, RenderLayer renderLayer, Custom customRenderer) {
-        var l = layer.apply(renderLayer);
-        if (l != null) {
-            matrices.push();
-            Custom c = customRenderer;
-            if (c instanceof CustomModelRenderCommand custom) {
-                for (var pass : passes) {
-                    BiFunction<Object, VertexConsumerProvider, VertexConsumer> layerFunc = (cc, provider) -> custom.bufferFunc().apply(cc, provider) == null ? null : new ScaledVertexConsumer(provider.getBuffer(l), pass.scale(), color, custom.matrices());
-                    parent.submitCustom(matrices, l, new CustomModelRenderCommand(custom.matrices(), custom.command(), l, layerFunc, custom.anglesFunc()));
-                }
-            } else {
-                submitCustomPasses(matrices, l, (transform, buffer, pass) -> {
-                    c.render(transform.peek(), new ScaledVertexConsumer(buffer, pass.scale(), color, transform));
-                }, 1, null);
-            }
-            matrices.pop();
-
+        renderLayer = layer.apply(renderLayer);
+        if (renderLayer != null) {
+            submitCustomPasses(matrices, renderLayer, (transform, buffer, pass) -> {
+                customRenderer.render(transform.peek(), new ScaledVertexConsumer(buffer, pass.scale(), color, transform));
+            }, 1, null);
         }
     }
 

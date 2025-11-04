@@ -63,7 +63,7 @@ public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLi
                     || feature instanceof ElytraFeatureRenderer
                     || feature instanceof ShoulderParrotFeatureRenderer;
         });
-        addPonyFeature(new ArmourFeature<>(this, context.getEquipmentModelLoader()));
+        addPonyFeature(new ArmourFeature<>(this, context.getEquipmentModelLoader(), context.getSpriteAtlasTexture(Atlases.ARMOR_TRIMS)));
         addPonyFeature(new HeldItemFeature<>(this));
         addPonyFeature(new DJPon3Feature<>(this));
         addFeature(new CapeFeature(this, context.getEntityModels(), context.getEquipmentModelLoader()));

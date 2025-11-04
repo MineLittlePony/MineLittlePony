@@ -16,6 +16,7 @@ import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.equipment.EquipmentModelLoader;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.EquippableComponent;
@@ -39,9 +40,9 @@ public class ArmourFeature<
 
     private final PonifiedEquipmentRenderer equipmentRenderer;
 
-    public ArmourFeature(PonyRenderContext<T, S, M> context, EquipmentModelLoader modelLoader) {
+    public ArmourFeature(PonyRenderContext<T, S, M> context, EquipmentModelLoader modelLoader, SpriteAtlasTexture armorTrimsAtlas) {
         super(context);
-        this.equipmentRenderer = new PonifiedEquipmentRenderer(modelLoader);
+        this.equipmentRenderer = new PonifiedEquipmentRenderer(modelLoader, armorTrimsAtlas);
     }
 
     @Override

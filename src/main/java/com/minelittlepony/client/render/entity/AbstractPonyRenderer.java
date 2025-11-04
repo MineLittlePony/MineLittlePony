@@ -30,6 +30,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.Items;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Atlases;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 
@@ -70,7 +71,7 @@ public abstract class AbstractPonyRenderer<
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected void addFeatures(EntityRendererFactory.Context context) {
-        addFeature(new ArmourFeature<>(this, context.getEquipmentModelLoader()));
+        addFeature(new ArmourFeature<>(this, context.getEquipmentModelLoader(), context.getSpriteAtlasTexture(Atlases.ARMOR_TRIMS)));
         addPonyFeature(createHeldItemFeature(context));
         addFeature(createSkullFeature(context));
         addPonyFeature(new ElytraFeature<>(this, context.getEquipmentRenderer()));

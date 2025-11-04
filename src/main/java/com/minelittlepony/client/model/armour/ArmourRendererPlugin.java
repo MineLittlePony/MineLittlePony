@@ -80,6 +80,7 @@ public interface ArmourRendererPlugin {
         return stack.isOf(Items.ELYTRA) ? 1F : 0F;
     }
 
+    @Deprecated(forRemoval = true)
     @Nullable
     default VertexConsumer getTrimConsumer(EquipmentSlot slot, VertexConsumerProvider provider, ArmorTrim trim, EquipmentModel.LayerType layerType, RegistryKey<EquipmentAsset> assetId) {
         @Nullable VertexConsumer buffer = getOptionalBuffer(provider, getTrimLayer(slot, trim, layerType, assetId));
@@ -96,6 +97,7 @@ public interface ArmourRendererPlugin {
         return TexturedRenderLayers.getArmorTrims(trim.pattern().value().decal());
     }
 
+    @Deprecated(forRemoval = true)
     @Nullable
     default VertexConsumer getArmourConsumer(EquipmentSlot slot, VertexConsumerProvider provider, Identifier texture, EquipmentModel.LayerType layer) {
         return getOptionalBuffer(provider, getArmourLayer(slot, texture, layer));
@@ -106,6 +108,7 @@ public interface ArmourRendererPlugin {
         return RenderLayer.getArmorCutoutNoCull(texture);
     }
 
+    @Deprecated(forRemoval = true)
     @Nullable
     default VertexConsumer getGlintConsumer(EquipmentSlot slot, VertexConsumerProvider provider, EquipmentModel.LayerType layer) {
         return getOptionalBuffer(provider, getGlintLayer(slot, layer));
@@ -116,6 +119,7 @@ public interface ArmourRendererPlugin {
         return RenderLayer.getArmorEntityGlint();
     }
 
+    @Deprecated(forRemoval = true)
     @Nullable
     default VertexConsumer getCapeConsumer(BipedEntityRenderState entity, VertexConsumerProvider provider, Identifier texture) {
         if (entity.equippedChestStack.isOf(Items.ELYTRA)) {
@@ -129,6 +133,7 @@ public interface ArmourRendererPlugin {
         return RenderLayer.getEntitySolid(texture);
     }
 
+    @Deprecated(forRemoval = true)
     @Nullable
     static VertexConsumer getOptionalBuffer(VertexConsumerProvider provider, @Nullable RenderLayer layer) {
         return layer == null ? null : provider.getBuffer(layer);

@@ -43,11 +43,11 @@ public record CustomModelRenderCommand<S>(
             RenderCommandQueue queue,
             Model<? super S> model, S state,
             MatrixStack matrices, RenderLayer renderLayer,
-            int light, int overlay, int outlineColor,
+            int light, int overlay, int outline,
             @Nullable CrumblingOverlayCommand crumblingOverlay,
             @Nullable BiFunction<CustomModelRenderCommand<S>, VertexConsumerProvider, VertexConsumer> layerFunc,
             @Nullable Predicate<CustomModelRenderCommand<S>> anglesFunc) {
-        submit(queue, model, state, matrices, renderLayer, light, overlay, -1, null, outlineColor, crumblingOverlay, layerFunc, anglesFunc);
+        submit(queue, model, state, matrices, renderLayer, light, overlay, -1, null, outline, crumblingOverlay, layerFunc, anglesFunc);
     }
 
     @Override

@@ -10,6 +10,7 @@ import net.minecraft.client.render.entity.state.ArmorStandEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.util.Atlases;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 
@@ -45,7 +46,7 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
     public PonyStandRenderer(EntityRendererFactory.Context context) {
         super(context, ModelType.ARMOUR_STAND.createModel(), 0);
         itemModelManager = context.getItemModelManager();
-        addFeature(new PonifiedFeature(this, new ArmourFeature<>(this.context, context.getEquipmentModelLoader())));
+        addFeature(new PonifiedFeature(this, new ArmourFeature<>(this.context, context.getEquipmentModelLoader(), context.getSpriteAtlasTexture(Atlases.ARMOR_TRIMS))));
         addFeature(new PonifiedFeature(this, new HeldItemFeature<>(this.context)));
         addFeature(new PonifiedFeature(this, new ElytraFeature<>(this.context, context.getEquipmentRenderer())));
         addFeature(new PonifiedFeature(this, new SkullFeature<>(this.context, context.getPlayerSkinCache(), context.getEntityModels(), HeadFeatureRenderer.HeadTransformation.DEFAULT, false)));

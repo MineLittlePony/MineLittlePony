@@ -9,6 +9,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.passive.StriderEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Atlases;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
@@ -27,7 +28,7 @@ public class StriderRenderer extends MobEntityRenderer<StriderEntity, StriderRen
 
     public StriderRenderer(EntityRendererFactory.Context context) {
         super(context, ModelType.STRIDER.createModel(), 0.5F);
-        addFeature(new SaddleFeatureRenderer<>(this, new PonifiedEquipmentRenderer(context.getEquipmentModelLoader()),
+        addFeature(new SaddleFeatureRenderer<>(this, new PonifiedEquipmentRenderer(context.getEquipmentModelLoader(), context.getSpriteAtlasTexture(Atlases.ARMOR_TRIMS)),
                 EquipmentModel.LayerType.STRIDER_SADDLE,
                 state -> state.saddleStack,
                 ModelType.STRIDER_SADDLE.createModel(),
