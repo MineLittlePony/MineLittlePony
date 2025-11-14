@@ -10,6 +10,7 @@ import net.minecraft.block.StairsBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.tag.FluidTags;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -86,14 +87,7 @@ public final class PonyPosture {
     }
 
     public static boolean hasSeaponyForm(LivingEntity entity) {
-        if (entity instanceof PreviewModel preview) {
-            return preview.getForm() == PonyForm.SEAPONY;
-        }
-        return Pony.getManager().getPony(entity).filter(pony -> {
-            return (pony.race() == Race.SEAPONY
-                    || (entity instanceof PlayerEntity player && SkinsProxy.getInstance().getSkin(DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, player).isPresent())
-            );
-        }).isPresent();
+        return hasForm(entity, Race.SEAPONY, DefaultPonySkinHelper.SEAPONY_SKIN_TYPE_ID, PonyForm.SEAPONY);
     }
 
     public static boolean isSeaponyFormActive(LivingEntity entity) {
@@ -104,17 +98,24 @@ public final class PonyPosture {
     }
 
     public static boolean hasNirikForm(LivingEntity entity) {
-        if (entity instanceof PreviewModel preview) {
-            return preview.getForm() == PonyForm.NIRIK;
-        }
-        return Pony.getManager().getPony(entity).filter(pony -> {
-            return (pony.race() == Race.KIRIN
-                    && (entity instanceof PlayerEntity player && SkinsProxy.getInstance().getSkin(DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, player).isPresent())
-            );
-        }).isPresent();
+        return hasForm(entity, Race.KIRIN, DefaultPonySkinHelper.NIRIK_SKIN_TYPE_ID, PonyForm.NIRIK);
     }
 
     public static boolean isNirikFormActive(LivingEntity entity) {
+        if (entity instanceof PreviewModel preview) {
+            return preview.getForm() == PonyForm.NIRIK;
+        }
         return false;
+    }
+
+    public static boolean hasForm(LivingEntity entity, Race race, Identifier skinId, Identifier ponyform) {
+        if (entity instanceof PreviewModel preview) {
+            return preview.getForm() == ponyform;
+        }
+        return Pony.getManager().getPony(entity).filter(pony -> {
+            return (pony.race() == race
+                    && (entity instanceof PlayerEntity player && SkinsProxy.getInstance().getSkin(skinId, player).isPresent())
+            );
+        }).isPresent();
     }
 }

@@ -1,5 +1,6 @@
 package com.minelittlepony.client.render.entity.npc.textures;
 
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.*;
 
@@ -29,15 +30,9 @@ public class ProfessionTextureSupplier<T extends VillagerDataContainer> implemen
         return getTexture(t.getType(), t.getProfession());
     }
 
-    public static String getKey(VillagerDataContainer container) {
-        VillagerData t = container.getVillagerData();
-        return ResourceUtil.format("pony/%s/%s", t.getType(), t.getProfession());
-    }
-
     private Identifier getTexture(final VillagerType type, final VillagerProfession profession) {
-        String key = ResourceUtil.format("pony/%s/%s", type, profession);
-        return ResourceUtil.verifyTexture(formatter.apply(key)).orElseGet(() -> {
-            if (type == VillagerType.PLAINS) {
+        return ResourceUtil.verifyTexture(formatter.apply(getKey(type, profession))).orElseGet(() -> {
+            if (type.equals(VillagerType.PLAINS)) {
                 // if texture loading fails, use the fallback.
                 return fallback;
             }
@@ -45,4 +40,19 @@ public class ProfessionTextureSupplier<T extends VillagerDataContainer> implemen
             return getTexture(VillagerType.PLAINS, profession);
         });
     }
+
+    public static String getKey(VillagerDataContainer container) {
+        VillagerData t = container.getVillagerData();
+        return getKey(
+                t.getType(),
+                t.getProfession()
+        );
+    }
+
+    public static String getKey(final VillagerType type, final VillagerProfession profession) {
+        return ResourceUtil.format("pony/%s/%s",
+                Registries.VILLAGER_TYPE.getId(type).getPath(),
+                Registries.VILLAGER_PROFESSION.getId(profession).getPath());
+    }
+
 }
