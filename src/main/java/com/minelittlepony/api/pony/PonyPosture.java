@@ -97,9 +97,6 @@ public final class PonyPosture {
     }
 
     public static boolean isNirikFormActive(LivingEntity entity) {
-        if (entity instanceof PreviewModel preview) {
-            return preview.getForm() == PonyForm.NIRIK;
-        }
         return false;
     }
 
