@@ -2,6 +2,8 @@ package com.minelittlepony.client.render.entity;
 
 import net.minecraft.client.render.entity.*;
 import net.minecraft.client.render.entity.feature.HeldItemFeatureRenderer;
+import net.minecraft.client.render.entity.model.BipedEntityModel.ArmPose;
+import net.minecraft.client.render.entity.state.ArmedEntityRenderState;
 import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.passive.AllayEntity;
@@ -34,6 +36,9 @@ public class AllayRenderer extends MobEntityRenderer<AllayEntity, AllayRenderer.
 
     public void updateRenderState(AllayEntity entity, State state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
+        ArmedEntityRenderState.updateRenderState(entity, state, itemModelResolver);
+        state.leftArmPose = state.leftHandItemState.isEmpty() ? ArmPose.EMPTY : ArmPose.ITEM;
+        state.rightArmPose = state.rightHandItemState.isEmpty() ? ArmPose.EMPTY : ArmPose.ITEM;
         state.uuid = entity.getUuid();
         state.dancing = entity.isDancing();
         state.spinning = entity.isSpinning();

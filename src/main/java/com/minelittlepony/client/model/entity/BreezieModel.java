@@ -27,6 +27,7 @@ public class BreezieModel extends BipedEntityModel<AllayRenderer.State> {
 
     @Override
     public void setAngles(AllayRenderer.State state) {
+        super.setAngles(state);
 
         float move = state.limbSwingAnimationProgress;
         float swing = state.limbSwingAmplitude;
