@@ -19,7 +19,6 @@
         "MixinPlayerPositionLookS2CPacket",
         "MixinVertextConsumers",
         "MixinGameRenderer",
-        "MixinWorldRenderer",
-        "NbtAccessor"
+        "MixinWorldRenderer"
     ]
 }
