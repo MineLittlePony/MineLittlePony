@@ -2,6 +2,7 @@ package com.minelittlepony.client.render.entity;
 
 import com.google.common.collect.ImmutableList.Builder;
 import com.minelittlepony.api.model.*;
+import com.minelittlepony.api.model.ModelAttributes.Mode;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.MineLittlePony;
@@ -31,9 +32,14 @@ import net.minecraft.client.render.entity.state.*;
 import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.PlayerLikeEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
+
+import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLikeEntity>
         extends PlayerEntityRenderer<Player>
@@ -146,6 +152,52 @@ public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLi
     @Override
     public final void renderLeftArm(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, Identifier skinTexture, boolean sleeveVisible) {
         renderArm(matrices, queue, light, skinTexture, sleeveVisible, Arm.LEFT);
+    }
+
+    @Nullable
+    @SuppressWarnings("unchecked")
+    public Vec3d getHandPos(Player player, Arm arm, float swingProgress, float tickDelta) {
+        if (dispatcher.gameOptions.getPerspective().isFirstPerson() && player == MinecraftClient.getInstance().player) {
+            return null;
+        }
+
+        var state = getAndUpdateRenderState(player, tickDelta, Mode.THIRD_PERSON);
+        MatrixStack matrices = new MatrixStack();
+        if (state.isInPose(EntityPose.SLEEPING)) {
+            Direction direction = state.sleepingDirection;
+            if (direction != null) {
+                float bodyLength = state.standingEyeHeight - 0.1F;
+                matrices.translate(-direction.getOffsetX() * bodyLength, 0, -direction.getOffsetZ() * bodyLength);
+            }
+        }
+        float scale = state.baseScale;
+        matrices.scale(scale, scale, scale);
+        setupTransforms(state, matrices, state.bodyYaw, 0);
+        matrices.scale(-1, -1, 1);
+        scale(state, matrices);
+        matrices.translate(0, -1.501F, 0);
+        model.setAngles(state);
+        ((ClientPonyModel<PlayerPonyRenderState>)model).transformHeldItem(state, arm, matrices);
+        model.setArmAngle(state, arm, matrices);
+        var a = arm == Arm.LEFT ? model.leftArm : model.rightArm;
+        Quaternionf rotation = new Quaternionf().rotationZYX(a.roll, a.yaw, a.pitch);
+        matrices.multiply(rotation);
+        matrices.translate(0, -0.2F, -0.7F);
+        matrices.multiply(rotation.conjugate());
+        model.body.applyTransform(matrices);
+
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
+        boolean left = arm == Arm.LEFT;
+        matrices.translate((left ? -1 : 1) / 16F, 0.125F, -0.625F);
+        var vec = matrices.peek().getPositionMatrix().transformPosition(new Vector3f());
+        var pos = new Vec3d(
+                MathHelper.lerp(tickDelta, player.lastX, player.getX()),
+                MathHelper.lerp(tickDelta, player.lastY, player.getY()),
+                MathHelper.lerp(tickDelta, player.lastZ, player.getZ())
+        );
+
+        return pos.add(vec.x, vec.y, vec.z);
     }
 
     @SuppressWarnings("unchecked")

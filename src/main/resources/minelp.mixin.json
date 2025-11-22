@@ -8,6 +8,7 @@
         "MixinCamera",
         "MixinCopperGolemStatueModelRenderer",
         "MixinDefaultSkinHelper",
+        "MixinFishingBobberEntityRenderer",
         "MixinSkullBlockEntityRenderer",
         "MixinPlayerHeadModelRenderer",
         "MixinHeadModelRenderer",
