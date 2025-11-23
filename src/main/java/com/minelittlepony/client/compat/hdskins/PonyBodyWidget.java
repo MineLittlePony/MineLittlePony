@@ -48,7 +48,6 @@ public class PonyBodyWidget extends PlayerBodyWidget<PonyBodyWidget.State> {
         playerState.attributes.isLyingDown = playerState.sleepingInBed;
         playerState.attributes.isRiptide = playerState.usingRiptide;
         playerState.attributes.isSwimming = playerState.isSwimming || playerState.attributes.isRiptide;
-        playerState.attributes.isSwimmingRotated = playerState.attributes.isSwimming;
         playerState.attributes.checkRainboom(null, null, playerState.age);
         playerState.attributes.motionLerp = 1;
         playerState.updateState(MinecraftClient.getInstance().getItemModelManager(),

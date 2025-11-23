@@ -142,7 +142,7 @@ public class PonyRenderState extends PlayerEntityRenderState implements PonyMode
         // Prevent head from rendering for ourselves if we are sleeping in first person mode
         headVisible = entity != MinecraftClient.getInstance().getCameraEntity()
                 || !MinecraftClient.getInstance().options.getPerspective().isFirstPerson()
-                || !attributes.isLyingDown;
+                || MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().squaredDistanceTo(entity.getCameraPosVec(age - (int)age)) > 1;
 
         if (entity != null) {
             updateHeldItems(resolver, entity);
