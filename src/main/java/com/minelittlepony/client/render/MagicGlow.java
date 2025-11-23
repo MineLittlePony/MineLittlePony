@@ -3,17 +3,19 @@ package com.minelittlepony.client.render;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.texture.*;
 import net.minecraft.util.*;
 
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DepthTestFunction;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
 import java.util.List;
 import java.util.function.*;
 
+import com.google.common.base.Suppliers;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.compat.iris.IrisApiCompat;
 import com.minelittlepony.client.render.command.MagicOverlayOrderedRenderCommandQueue;
@@ -34,18 +36,20 @@ public interface MagicGlow {
                 .withVertexFormat(VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS)
                 .build()
         );
-
-    Function<Boolean, RenderLayer> MAGIC = Util.memoize(shaders -> {
-        return RenderLayer.of("mlp_magic_glow", 1536, false, true, shaders ? RenderPipelines.ENTITY_EYES : ENTITY_MAGIC_GLOW_PIPELINE, RenderLayer.MultiPhaseParameters.builder()
-                .lightmap(RenderPhase.DISABLE_LIGHTMAP)
-                .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
-                .target(RenderPhase.MAIN_TARGET)
-                .build(false));
+    Supplier<NativeImageBackedTexture> EMPTY_TEXTURE = Suppliers.memoize(() -> {
+        NativeImage image = new NativeImage(1, 1, false);
+        image.setColor(0, 0, Colors.WHITE);
+        var texture = new NativeImageBackedTexture(() -> "Solid Color", image);
+        texture.upload();
+        return texture;
     });
+    RenderPhase.TextureBase NO_TEXTURE = new RenderPhase.TextureBase(() -> {
+        RenderSystem.setShaderTexture(0, EMPTY_TEXTURE.get().getGlTextureView());
+    }, () -> {});
 
     BiFunction<Boolean, Identifier, RenderLayer> TEXTURED = Util.memoize((shaders, texture) -> {
         return RenderLayer.of("mlp_magic_glow_textured", 1536, false, true, shaders ? RenderPipelines.ENTITY_EYES : ENTITY_MAGIC_GLOW_PIPELINE, RenderLayer.MultiPhaseParameters.builder()
-                .texture(new RenderPhase.Texture(texture, false))
+                .texture(texture == null ? NO_TEXTURE : new RenderPhase.Texture(texture, false))
                 .lightmap(RenderPhase.DISABLE_LIGHTMAP)
                 .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
                 .target(RenderPhase.MAIN_TARGET)
@@ -53,7 +57,7 @@ public interface MagicGlow {
     });
 
     public static RenderLayer getRenderLayer() {
-        return MAGIC.apply(IrisApiCompat.areShadersEnabled());
+        return getTextured(null);
     }
 
     public static RenderLayer getTextured(Identifier texture) {
