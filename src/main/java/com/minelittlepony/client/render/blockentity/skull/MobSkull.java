@@ -54,6 +54,7 @@ public class MobSkull<S extends PonyRenderState> implements ISkull {
         ponyState.race = pony.race();
         ponyState.attributes.size = pony.size();
         ponyState.attributes.metadata = pony.metadata();
+        ponyState.headVisible = true;
 
         MatrixStack copyStack = new MatrixStack();
         var model = ponyHead.get();

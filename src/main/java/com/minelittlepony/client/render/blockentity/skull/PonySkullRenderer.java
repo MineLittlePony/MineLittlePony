@@ -77,7 +77,7 @@ public class PonySkullRenderer {
         }
 
         Identifier texture = overrideTexture == null ? skull.getSkinResource(profile) : overrideTexture;
-        return new Data(skull, RenderLayer.getEntityTranslucent(texture), Pony.getManager().getPony(texture));
+        return new Data(skull, RenderLayer.getEntityTranslucent(texture), Pony.getManager().getPony(texture), profile);
     }
 
     /**
@@ -97,6 +97,7 @@ public class PonySkullRenderer {
             public int outlineColor;
             public int light;
             public @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay;
+            public @Nullable ProfileComponent profile;
         }
     }
 
@@ -104,7 +105,7 @@ public class PonySkullRenderer {
         void setPonySkullData(Data data);
     }
 
-    public record Data(ISkull model, RenderLayer layer, Pony pony) {
+    public record Data(ISkull model, RenderLayer layer, Pony pony, @Nullable ProfileComponent profile) {
         public boolean render(@Nullable Direction direction, float yaw, float poweredTicks, MatrixStack matrices, OrderedRenderCommandQueue queue, int light, int outlineColor, @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay) {
             if (!model.canRender(PonyConfig.getInstance())) {
                 return false;
@@ -131,6 +132,7 @@ public class PonySkullRenderer {
             skullModelState.outlineColor = outlineColor;
             skullModelState.light = light;
             skullModelState.crumblingOverlay = crumblingOverlay;
+            skullModelState.profile = profile;
 
             model.render(matrices, skullModelState, queue, pony, layer);
 

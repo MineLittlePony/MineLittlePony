@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer;
 
 import org.jetbrains.annotations.Nullable;
@@ -78,7 +79,7 @@ abstract class MixinSkullBlockEntityRenderer implements BlockEntityRenderer<Skul
     private static RenderLayer replaceRenderLayer(RenderLayer layer, SkullBlock.SkullType skullType, Identifier overrideTexture) {
         if (overrideTexture == null) {
             var state = PonySkullRenderer.INSTANCE.getSkullState(skullType, null, overrideTexture);
-            if (state != null) {
+            if (state != null && state.model().canRender(PonyConfig.getInstance())) {
                 PonySkullRenderer.INSTANCE.pushState(state);
                 return state.layer();
             }

@@ -25,11 +25,8 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 public class PlayerPonySkull implements ISkull {
-
     private final Map<PlayerModelKey<AbstractPonyModel<?>>, AbstractPonyModel<?>> modelCache = new HashMap<>();
     private final DJPon3EarsModel deadMau5 = ModelType.DJ_PON_3.createModel();
-
-    private boolean renderingEars;
 
     @Override
     public boolean canRender(PonyConfig config) {
@@ -41,14 +38,13 @@ public class PlayerPonySkull implements ISkull {
         if (profile == null) {
             return DefaultSkinHelper.getTexture();
         }
-        renderingEars = "deadmau5".equals(profile.getGameProfile().name());
-
         return MinecraftClient.getInstance().getPlayerSkinCache().get(profile).getTextures().body().texturePath();
     }
 
     @Override
     public void render(MatrixStack stack, State state, OrderedRenderCommandQueue queue, Pony pony, RenderLayer layer) {
         Race race = pony.race();
+        boolean renderingEars = state.profile != null && "deadmau5".equals(state.profile.getGameProfile().name());
         if (race.isHuman()) {
             race = Race.EARTH;
             if (!renderingEars) {
