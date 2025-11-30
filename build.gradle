@@ -35,6 +35,8 @@ reckon {
     stageFromProp('beta', 'rc', 'final')
 }
 
+System.out.println "Outlet MC Versions: ${outlet.mcVersions()}"
+
 repositories {
     mavenLocal()
     flatDir { dirs 'lib' }
