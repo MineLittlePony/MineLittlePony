@@ -32,9 +32,11 @@ public class SkeleponyRenderer<T extends AbstractSkeletonEntity, S extends Skele
     public static final Identifier SKELETON = MineLittlePony.id("textures/entity/skeleton/skeleton_pony.png");
     public static final Identifier WITHER = MineLittlePony.id("textures/entity/skeleton/skeleton_wither_pony.png");
     public static final Identifier STRAY = MineLittlePony.id("textures/entity/skeleton/stray_pony.png");
+    public static final Identifier PARCHED = MineLittlePony.id("textures/entity/skeleton/parched_pony.png");
     public static final Identifier BOGGED = MineLittlePony.id("textures/entity/skeleton/bogged_pony.png");
 
     public static final Identifier STRAY_SKELETON_OVERLAY = MineLittlePony.id("textures/entity/skeleton/stray_pony_overlay.png");
+    public static final Identifier PARCHED_SKELETON_OVERLAY = MineLittlePony.id("textures/entity/skeleton/parched_pony_overlay.png");
     public static final Identifier BOGGED_SKELETON_OVERLAY = MineLittlePony.id("textures/entity/skeleton/bogged_pony_overlay.png");
 
     public SkeleponyRenderer(EntityRendererFactory.Context context, Identifier texture, float scale) {
@@ -78,6 +80,12 @@ public class SkeleponyRenderer<T extends AbstractSkeletonEntity, S extends Skele
         }, ctx -> {
             return new ClothingFeature<BoggedState, AlicornModel<BoggedState>>(ctx, ModelType.SKELETON_CLOTHES, BOGGED_SKELETON_OVERLAY);
         }), BoggedMushroomsFeature::new);
+    }
+
+    public static SkeleponyRenderer<ParchedEntity, State> parched(EntityRendererFactory.Context context) {
+        return PonyRenderer.appendFeature(new SkeleponyRenderer<ParchedEntity, State>(context, PARCHED, 1), ctx -> {
+            return new ClothingFeature<State, AlicornModel<State>>(ctx, ModelType.SKELETON_CLOTHES, PARCHED_SKELETON_OVERLAY);
+        });
     }
 
     public static SkeleponyRenderer<WitherSkeletonEntity, State> wither(EntityRendererFactory.Context context) {

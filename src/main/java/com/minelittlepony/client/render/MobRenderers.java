@@ -81,6 +81,7 @@ public record MobRenderers (String name, BiConsumer<MobRenderers, EntityRenderer
         registry.registerEntityRenderer(EntityType.SKELETON, state, SkeleponyRenderer::skeleton);
         registry.registerEntityRenderer(EntityType.STRAY, state, SkeleponyRenderer::stray);
         registry.registerEntityRenderer(EntityType.BOGGED, state, SkeleponyRenderer::bogged);
+        registry.registerEntityRenderer(EntityType.PARCHED, state, SkeleponyRenderer::parched);
         registry.registerEntityRenderer(EntityType.WITHER_SKELETON, state, SkeleponyRenderer::wither);
     });
     public static final MobRenderers GUARDIAN = register("guardians", (state, registry) -> {
