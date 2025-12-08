@@ -33,8 +33,8 @@ public class SaddleBags<T extends BipedEntityRenderState & PonyModel.AttributedH
 
         float pi = MathHelper.PI * (float) Math.pow(state.limbAngle, 16);
 
-        float mve = state.limbAngle * 0.6662f;
-        float srt = state.limbDistance * MathHelper.RADIANS_PER_DEGREE / 10;
+        float mve = state.limbDistance * 0.6662f;
+        float srt = state.limbAngle * MathHelper.RADIANS_PER_DEGREE / 10;
 
         float bodySwing = MathHelper.cos(mve + pi) * srt;
 

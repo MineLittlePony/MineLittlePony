@@ -53,7 +53,7 @@ public class GearFeature<
     }
 
     @Override
-    public void render(MatrixStack stack, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
+    public void render(MatrixStack stack, OrderedRenderCommandQueue queue, int light, S state, float headYaw, float headPitch) {
         if (state.invisible) {
             return;
         }
@@ -85,8 +85,8 @@ public class GearFeature<
                     gearState.entityState = state;
                     gearState.model = model;
                     gearState.bodySwing = state.wobbleAmount;
-                    gearState.limbDistance = limbDistance;
-                    gearState.limbAngle = limbAngle;
+                    gearState.limbDistance = state.limbSwingAnimationProgress;
+                    gearState.limbAngle = state.limbSwingAmplitude;
 
                     gear.render(stack, gearState, queue, gear.getLayer(state, getContext()), OverlayTexture.DEFAULT_UV, light, Colors.WHITE);
                 }
