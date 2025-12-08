@@ -1,15 +1,19 @@
 package com.minelittlepony.client.render;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.GpuSampler;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.RenderSetup.OutlineMode;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.texture.*;
 import net.minecraft.util.*;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DepthTestFunction;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
 import java.util.List;
@@ -36,6 +40,7 @@ public interface MagicGlow {
                 .withVertexFormat(VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS)
                 .build()
         );
+    Identifier NO_TEXTURE_ID = MineLittlePony.id("magic_solid");
     Supplier<NativeImageBackedTexture> EMPTY_TEXTURE = Suppliers.memoize(() -> {
         NativeImage image = new NativeImage(1, 1, false);
         image.setColor(0, 0, Colors.WHITE);
@@ -43,17 +48,24 @@ public interface MagicGlow {
         texture.upload();
         return texture;
     });
-    RenderPhase.TextureBase NO_TEXTURE = new RenderPhase.TextureBase(() -> {
-        RenderSystem.setShaderTexture(0, EMPTY_TEXTURE.get().getGlTextureView());
-    }, () -> {});
+
 
     BiFunction<Boolean, Identifier, RenderLayer> TEXTURED = Util.memoize((shaders, texture) -> {
-        return RenderLayer.of("mlp_magic_glow_textured", 1536, false, true, shaders ? RenderPipelines.ENTITY_EYES : ENTITY_MAGIC_GLOW_PIPELINE, RenderLayer.MultiPhaseParameters.builder()
-                .texture(texture == null ? NO_TEXTURE : new RenderPhase.Texture(texture, false))
-                .lightmap(RenderPhase.DISABLE_LIGHTMAP)
-                .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
-                .target(RenderPhase.MAIN_TARGET)
-                .build(false));
+        @Nullable
+        Supplier<GpuSampler> sampler = null;
+        if (texture == null) {
+            AbstractTexture resource = EMPTY_TEXTURE.get();
+            MinecraftClient.getInstance().getTextureManager().registerTexture(NO_TEXTURE_ID, resource);
+            sampler = resource::getSampler;
+            texture = NO_TEXTURE_ID;
+        }
+        return RenderLayer.of("mlp_magic_glow_textured", RenderSetup.builder(shaders ? RenderPipelines.ENTITY_EYES : ENTITY_MAGIC_GLOW_PIPELINE)
+            .method_76560("Sampler0", texture, sampler)
+            .layeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
+            .outputTarget(OutputTarget.MAIN_TARGET)
+            .outlineMode(OutlineMode.NONE)
+            .build()
+        );
     });
 
     public static RenderLayer getRenderLayer() {

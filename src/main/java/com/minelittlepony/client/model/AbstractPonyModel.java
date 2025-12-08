@@ -15,6 +15,7 @@ import java.util.List;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.entity.state.Lancing;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.util.*;
@@ -342,7 +343,7 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
                 arm.yaw = head.yaw + 0.06F;
                 arm.roll += 0.3F * -state.limbSwingAmplitude * sigma;
                 break;
-            case THROW_SPEAR:
+            case THROW_TRIDENT:
                 arm.pitch = MathUtil.Angles._90_DEG * 2;
                 arm.roll += (0.3F * -state.limbSwingAmplitude + 0.6F) * sigma;
                 arm.originY ++;
@@ -376,6 +377,10 @@ public abstract class AbstractPonyModel<T extends PonyRenderState> extends Clien
                 arm.pitch = arm.pitch * 0.5f - 0.62831855f;
                 arm.yaw = 0;
                 arm.roll += 0.3F * -state.limbSwingAmplitude * sigma;
+                break;
+                // TODO: Test this
+            case SPEAR:
+                Lancing.positionArmForSpear(arm, head, sigma > 0, state.getItemStackForArm(sigma > 0 ? Arm.RIGHT : Arm.LEFT), state);
                 break;
             default:
                 break;

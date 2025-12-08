@@ -2,6 +2,7 @@ package com.minelittlepony.client.render.entity;
 
 import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.*;
 import net.minecraft.client.render.entity.feature.*;
@@ -119,10 +120,10 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
 
         Identifier identifier = getTexture(state);
         if (translucent) {
-            return RenderLayer.getEntityTranslucent(identifier, false);
+            return RenderLayers.entityTranslucent(identifier, false);
         }
 
-        return showBody ? RenderLayer.getEntityCutoutNoCull(identifier, false) : null;
+        return showBody ? RenderLayers.entityCutoutNoCull(identifier, false) : null;
     }
 
     private class PonifiedContext implements

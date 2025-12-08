@@ -23,8 +23,20 @@ final class ScaledVertexConsumer implements VertexConsumer {
     }
 
     @Override
+    public VertexConsumer lineWidth(float width) {
+        buffer.lineWidth(width);
+        return this;
+    }
+
+    @Override
     public VertexConsumer vertex(float x, float y, float z) {
         buffer.vertex(x, y, z);
+        return this;
+    }
+
+    @Override
+    public VertexConsumer color(int argb) {
+        buffer.color(color);
         return this;
     }
 
@@ -80,8 +92,7 @@ final class ScaledVertexConsumer implements VertexConsumer {
             float blue,
             float alpha,
             int[] lights,
-            int overlay,
-            boolean colorize
+            int overlay
         ) {
         float sc = scale / 8F;
         buffer.quad(matrixEntry, VertexTransforms.inflateQuad(quad, sc), brightnesses,
@@ -89,7 +100,7 @@ final class ScaledVertexConsumer implements VertexConsumer {
                 ColorHelper.getGreenFloat(color),
                 ColorHelper.getBlueFloat(color),
                 ColorHelper.getAlphaFloat(color),
-                lights, OverlayTexture.DEFAULT_UV, colorize);
+                lights, OverlayTexture.DEFAULT_UV);
     }
 
     // Sodium

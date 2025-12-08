@@ -3,7 +3,7 @@ package com.minelittlepony.client.model.entity;
 import net.minecraft.block.CopperGolemStatueBlock;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.block.entity.state.CopperGolemStatueBlockEntityRenderState;
 import net.minecraft.client.render.entity.animation.Animation;
 import net.minecraft.client.render.entity.animation.CopperGolemAnimations;
@@ -114,7 +114,7 @@ public class SpikeModel extends ClientPonyModel<CopperPonyRenderer.State> {
         private final ModelPart tail;
 
         public BlockModel(ModelPart root) {
-            super(root, RenderLayer::getEntityCutout);
+            super(root, RenderLayers::entityCutout);
             leftArm = root.getChild("left_arm");
             rightArm = root.getChild("right_arm");
             leftLeg = root.getChild("left_leg");

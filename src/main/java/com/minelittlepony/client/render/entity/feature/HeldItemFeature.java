@@ -10,6 +10,7 @@ import net.minecraft.client.render.entity.feature.PlayerHeldItemFeatureRenderer;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
 
 public class HeldItemFeature<
@@ -30,21 +31,21 @@ public class HeldItemFeature<
 
     public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
         if (!state.leftHandItemState.isEmpty() || !state.rightHandItemState.isEmpty()) {
-            renderItem(state, state.rightHandItemState, state.rightHeldItem, Arm.RIGHT, matrices, queue, light);
-            renderItem(state, state.leftHandItemState, state.leftHeldItem, Arm.LEFT, matrices, queue, light);
+            renderItem(state, state.rightHandItemState, state.rightHandItem, state.rightHeldItem, Arm.RIGHT, matrices, queue, light);
+            renderItem(state, state.leftHandItemState, state.leftHandItem, state.leftHeldItem, Arm.LEFT, matrices, queue, light);
         }
     }
 
-    protected void renderItem(S state, ItemRenderState item, PonyRenderState.HeldItemRenderState glintLessItem, Arm arm, MatrixStack matrices, OrderedRenderCommandQueue queue, int light) {
+    protected void renderItem(S state, ItemRenderState item, ItemStack stack, PonyRenderState.HeldItemRenderState glintLessItem, Arm arm, MatrixStack matrices, OrderedRenderCommandQueue queue, int light) {
         if (!item.isEmpty()) {
             matrices.push();
             getContextModel().transformHeldItem(state, arm, matrices);
 
-            renderItem(state, item, arm, matrices, queue, light);
+            renderItem(state, item, stack, arm, matrices, queue, light);
 
             if (!glintLessItem.glintlessHandItemState.isEmpty()) {
                 queue = MagicGlow.getQueue(state.glowColor, queue, LevitatingItemRenderer.getThirdPersonLevitatingItemTransformPasses(state, glintLessItem));
-                renderItem(state, glintLessItem.glintlessHandItemState, arm, matrices, queue, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+                renderItem(state, glintLessItem.glintlessHandItemState, stack, arm, matrices, queue, LightmapTextureManager.MAX_LIGHT_COORDINATE);
             }
             matrices.pop();
         }

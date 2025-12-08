@@ -1,7 +1,7 @@
 package com.minelittlepony.client.mixin;
 
 import net.minecraft.block.CopperGolemStatueBlock.Pose;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.block.entity.state.CopperGolemStatueBlockEntityRenderState;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.item.model.special.CopperGolemStatueModelRenderer;
@@ -11,7 +11,7 @@ import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -23,7 +23,7 @@ import com.minelittlepony.client.model.entity.SpikeModel;
 import com.minelittlepony.client.render.MobRenderers;
 import com.minelittlepony.util.ResourceUtil;
 
-import java.util.Set;
+import java.util.function.Consumer;
 
 @Mixin(CopperGolemStatueModelRenderer.class)
 abstract class MixinCopperGolemStatueModelRenderer implements SimpleSpecialModelRenderer {
@@ -38,11 +38,11 @@ abstract class MixinCopperGolemStatueModelRenderer implements SimpleSpecialModel
 
 
     @Inject(
-            method = "collectVertices(Ljava/util/Set;)V",
+            method = "collectVertices(Ljava/util/function/Consumer;)V",
             at = @At("HEAD"),
             cancellable = true
     )
-    private void onCollectVertices(Set<Vector3f> vertices, CallbackInfo info) {
+    private void onCollectVertices(Consumer<Vector3fc> vertices, CallbackInfo info) {
         if (MobRenderers.COPPER_GOLEMS.option().get()) {
             if (ResourceUtil.textureExists(MineLittlePony.id(texture.getPath().replace(".png", "_dragon.png")))) {
                 MatrixStack matrices = new MatrixStack();
@@ -66,7 +66,7 @@ abstract class MixinCopperGolemStatueModelRenderer implements SimpleSpecialModel
                 CopperGolemStatueBlockEntityRenderState state = new CopperGolemStatueBlockEntityRenderState();
                 state.facing = Direction.SOUTH;
                 state.pose = Pose.STANDING;
-                queue.submitModel(spike_model, state, matrices, RenderLayer.getEntityCutoutNoCull(MineLittlePony.id(texture.getPath().replace(".png", "_dragon.png"))), light, overlay, -1, null, i, null);
+                queue.submitModel(spike_model, state, matrices, RenderLayers.entityCutoutNoCull(MineLittlePony.id(texture.getPath().replace(".png", "_dragon.png"))), light, overlay, -1, null, i, null);
                 info.cancel();
             }
         }

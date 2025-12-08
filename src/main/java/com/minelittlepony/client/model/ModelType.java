@@ -2,7 +2,7 @@ package com.minelittlepony.client.model;
 
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.Model.SinglePartModel;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.entity.model.ArmorStandEntityModel;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.entity.LivingEntity;
@@ -38,7 +38,7 @@ public final class ModelType {
     public static final ModelKey<ClientPonyModel<?>> ZOMBIE = register("zombie", ZomponyModel::new);
     public static final ModelKey<ClientPonyModel<?>> PIGLIN = register("piglin", PiglinPonyModel::new);
     public static final ModelKey<ClientPonyModel<?>> SKELETON = register("skeleton", tree -> new AlicornModel<>(tree, false));
-    public static final ModelKey<SinglePartModel> BOGGED_MUSHROOMS = register("bogged_mushrooms", tree -> new SinglePartModel(tree, RenderLayer::getEntityTranslucent));
+    public static final ModelKey<SinglePartModel> BOGGED_MUSHROOMS = register("bogged_mushrooms", tree -> new SinglePartModel(tree, RenderLayers::entityTranslucent));
     public static final ModelKey<ClientPonyModel<?>> SKELETON_CLOTHES = register("skeleton_clothes", tree -> new AlicornModel<>(tree, false));
     public static final ModelKey<ClientPonyModel<?>> PILLAGER = register("pillager", tree -> new ChangelingModel<>(tree, false));
     public static final ModelKey<ClientPonyModel<?>> ILLAGER = register("illager", IllagerPonyModel::new);

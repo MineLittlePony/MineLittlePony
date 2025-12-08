@@ -11,6 +11,7 @@ import com.minelittlepony.client.render.entity.state.PonyRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.block.SkullBlock;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.block.entity.SkullBlockEntityModel;
 import net.minecraft.client.render.command.ModelCommandRenderer;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
@@ -77,7 +78,7 @@ public class PonySkullRenderer {
         }
 
         Identifier texture = overrideTexture == null ? skull.getSkinResource(profile) : overrideTexture;
-        return new Data(skull, RenderLayer.getEntityTranslucent(texture), Pony.getManager().getPony(texture), profile);
+        return new Data(skull, RenderLayers.entityTranslucent(texture), Pony.getManager().getPony(texture), profile);
     }
 
     /**

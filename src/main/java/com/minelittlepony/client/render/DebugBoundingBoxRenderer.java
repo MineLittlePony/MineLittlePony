@@ -1,26 +1,35 @@
 package com.minelittlepony.client.render;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.entity.state.EntityHitbox;
+import net.minecraft.client.render.DrawStyle;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.*;
+import net.minecraft.world.debug.gizmo.GizmoDrawing;
 
-import com.google.common.collect.ImmutableList.Builder;
-import com.minelittlepony.api.model.RenderPass;
 import com.minelittlepony.client.MineLittlePony;
 
 public final class DebugBoundingBoxRenderer {
-    public static <T extends LivingEntity> void appendHitbox(T entity, EquineRenderManager<T, ?, ?> manager, Builder<EntityHitbox> builder, float tickDelta) {
-        if (RenderPass.getCurrent() == RenderPass.WORLD && MinecraftClient.getInstance().debugHudEntryList.isEntryVisible(MineLittlePony.PONY_HITBOXES_DEBUG_HUD_ENTRY)) {
-            Box box = manager.getHitbox(entity).offset(-entity.getX(), -entity.getY(), -entity.getZ());
-            builder.add(new EntityHitbox(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, 1, 1, 0));
-
-            float yaw = (entity.isSleeping() && entity.getSleepingDirection() != null ? entity.getSleepingDirection().getPositiveHorizontalDegrees() : entity.bodyYaw) * MathHelper.RADIANS_PER_DEGREE;
-            Vec3d min = new Vec3d(0, 0, 0.3).rotateY(MathHelper.PI - yaw);
-
-            box = box.offset(min.x, 0, min.z);
-            builder.add(new EntityHitbox(box.minX, box.minY, box.minZ, box.maxX, box.maxY * 0.6F, box.maxZ, 1, 0, 0));
+    public static void drawHitboxes(Entity entity, float tickProgress, boolean inLocalServer) {
+        if (inLocalServer || !(entity instanceof LivingEntity l) || !MinecraftClient.getInstance().debugHudEntryList.isEntryVisible(MineLittlePony.PONY_HITBOXES_DEBUG_HUD_ENTRY)) {
+            return;
         }
+        var renderer = MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(l);
+        if (renderer == null) {
+            return;
+        }
+
+        Vec3d posJitter = entity.getLerpedPos(tickProgress).subtract(entity.getEntityPos());
+
+        Box box = renderer.getEquineManager().getHitbox(l).offset(posJitter);
+        GizmoDrawing.box(box, DrawStyle.stroked(0xFFFFFF00));
+
+
+        float yaw = (l.isSleeping() && l.getSleepingDirection() != null ? l.getSleepingDirection().getPositiveHorizontalDegrees() : MathHelper.lerp(tickProgress, l.lastBodyYaw, l.bodyYaw)) * MathHelper.RADIANS_PER_DEGREE;
+        Vec3d min = new Vec3d(0, 0, 0.3).rotateY(MathHelper.PI - yaw);
+
+        box = box.offset(min.x, 0, min.z);
+        GizmoDrawing.box(new Box(box.minX, box.minY, box.minZ, box.maxX, box.minY + (box.maxY - box.minY) * 0.6F, box.maxZ), DrawStyle.stroked(0xFFFF0000));
     }
 
     public static Box getBoundingBox(double x, double y, double z, float scale, float width, float height) {

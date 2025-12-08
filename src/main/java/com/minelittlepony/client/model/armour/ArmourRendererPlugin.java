@@ -105,7 +105,7 @@ public interface ArmourRendererPlugin {
 
     @Nullable
     default RenderLayer getArmourLayer(EquipmentSlot slot, Identifier texture, EquipmentModel.LayerType layer) {
-        return RenderLayer.getArmorCutoutNoCull(texture);
+        return RenderLayers.armorCutoutNoCull(texture);
     }
 
     @Deprecated(forRemoval = true)
@@ -116,7 +116,7 @@ public interface ArmourRendererPlugin {
 
     @Nullable
     default RenderLayer getGlintLayer(EquipmentSlot slot, EquipmentModel.LayerType layer) {
-        return RenderLayer.getArmorEntityGlint();
+        return RenderLayers.armorEntityGlint();
     }
 
     @Deprecated(forRemoval = true)
@@ -130,7 +130,7 @@ public interface ArmourRendererPlugin {
 
     @Nullable
     default RenderLayer getCapeLayer(BipedEntityRenderState entity, Identifier texture) {
-        return RenderLayer.getEntitySolid(texture);
+        return RenderLayers.entitySolid(texture);
     }
 
     @Deprecated(forRemoval = true)

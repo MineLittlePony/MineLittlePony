@@ -36,7 +36,7 @@ public class AllayRenderer extends MobEntityRenderer<AllayEntity, AllayRenderer.
 
     public void updateRenderState(AllayEntity entity, State state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
-        ArmedEntityRenderState.updateRenderState(entity, state, itemModelResolver);
+        ArmedEntityRenderState.updateRenderState(entity, state, itemModelResolver, tickDelta);
         state.leftArmPose = state.leftHandItemState.isEmpty() ? ArmPose.EMPTY : ArmPose.ITEM;
         state.rightArmPose = state.rightHandItemState.isEmpty() ? ArmPose.EMPTY : ArmPose.ITEM;
         state.uuid = entity.getUuid();

@@ -114,7 +114,7 @@ public class MineLittlePony implements ClientModInitializer {
         }
 
         if (configChanged.getAndSet(false) && client.currentScreen instanceof PonySettingsScreen screen) {
-            screen.init(client, screen.width, screen.height);
+            screen.init(screen.width, screen.height);
         }
 
         boolean inGame = client.world != null && client.player != null && client.currentScreen == null;

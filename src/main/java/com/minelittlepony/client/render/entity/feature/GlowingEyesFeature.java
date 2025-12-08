@@ -1,7 +1,6 @@
 package com.minelittlepony.client.render.entity.feature;
 
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -32,6 +31,6 @@ public class GlowingEyesFeature<
     @Override
     public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, S state, float limbAngle, float limbDistance) {
         queue.getBatchingQueue(1)
-            .submitModel(this.getContextModel(), state, matrices, RenderLayer.getEyes(textureSupplier.apply(state)), light, OverlayTexture.DEFAULT_UV, -1, null, state.outlineColor, null);
+            .submitModel(this.getContextModel(), state, matrices, RenderLayers.eyes(textureSupplier.apply(state)), light, OverlayTexture.DEFAULT_UV, -1, null, state.outlineColor, null);
     }
 }

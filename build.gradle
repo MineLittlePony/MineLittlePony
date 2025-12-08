@@ -4,7 +4,7 @@ buildscript {
     }
 }
 plugins {
-    id 'fabric-loom' version '1.11-SNAPSHOT'
+    id 'fabric-loom' version '1.13-SNAPSHOT'
     id 'maven-publish'
     id 'com.modrinth.minotaur' version '2.+'
     id 'org.ajoberstar.reckon' version '0.13.1'
@@ -18,21 +18,22 @@ java {
     withSourcesJar()
 }
 
-outlet.allowSnapshotsForProject = false
-outlet.mcVersionRange = ">=${project.minecraft_version}"
-
 group = project.group
 description = project.displayname
 archivesBaseName = project.name
 
 loom {
-    mixin.defaultRefmapName = 'minelp.mixin.refmap.json'
     accessWidenerPath = file('src/main/resources/minelp.aw')
 }
 
 reckon {
     scopeFromProp()
     stageFromProp('beta', 'rc', 'final')
+}
+
+outlet {
+    allowSnapshotsForProject = true
+    mcVersionRange = project.minecraft_version_range
 }
 
 System.out.println "Outlet MC Versions: ${outlet.mcVersions()}"

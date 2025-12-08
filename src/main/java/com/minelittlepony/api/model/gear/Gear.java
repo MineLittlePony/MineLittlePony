@@ -1,6 +1,7 @@
 package com.minelittlepony.api.model.gear;
 
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
@@ -67,7 +68,7 @@ public interface Gear<S extends BipedEntityRenderState & PonyModel.AttributedHol
      * Gets the layer used to render this piece of gear.
      */
     default RenderLayer getLayer(S entity, Context<S, ?> context) {
-        return RenderLayer.getEntityTranslucent(getTexture(entity, context));
+        return RenderLayers.entityTranslucent(getTexture(entity, context));
     }
 
     /**

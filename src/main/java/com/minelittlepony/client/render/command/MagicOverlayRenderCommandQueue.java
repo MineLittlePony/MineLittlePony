@@ -14,7 +14,6 @@ import net.minecraft.client.render.command.*;
 import net.minecraft.client.render.command.ModelCommandRenderer.CrumblingOverlayCommand;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue.Custom;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue.LayeredCustom;
-import net.minecraft.client.render.entity.state.EntityHitboxAndView;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.render.entity.state.EntityRenderState.LeashData;
 import net.minecraft.client.render.entity.state.EntityRenderState.ShadowPiece;
@@ -85,14 +84,14 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
 
     @Override
     public void submitBlock(MatrixStack matrices, BlockState state, int light, int overlay, int outlineColor) {
-        RenderLayer layer = this.layer.apply(RenderLayers.getEntityBlockLayer(state));
+        RenderLayer layer = this.layer.apply(BlockRenderLayers.getEntityBlockLayer(state));
         if (layer != null) {
             submitCustomPasses(matrices, layer, (transform, buffer, pass) -> {
                 if (state.getRenderType() != BlockRenderType.INVISIBLE) {
                     BlockModelRenderer.render(transform.peek(), buffer, MinecraftClient.getInstance().getBlockRenderManager().getModel(state), red, green, blue, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
                 }
             }, 1, null);
-            ((LoadedBlockEntityModels)MinecraftClient.getInstance().getBakedModelManager().getBlockEntityModelsSupplier().get()).render(state.getBlock(), ItemDisplayContext.NONE, matrices, owner, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0);
+            ((LoadedBlockEntityModels)MinecraftClient.getInstance().getBakedModelManager().getBlockEntityModelsSupplier()).render(state.getBlock(), ItemDisplayContext.NONE, matrices, owner, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0);
         }
     }
 
@@ -156,9 +155,6 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
 
     @Override
     public void submitCustom(LayeredCustom customRenderer) { }
-
-    @Override
-    public void submitDebugHitbox(MatrixStack matrices, EntityRenderState renderState, EntityHitboxAndView debugHitbox) { }
 
     @Override
     public void submitShadowPieces(MatrixStack matrices, float shadowRadius, List<ShadowPiece> shadowPieces) { }

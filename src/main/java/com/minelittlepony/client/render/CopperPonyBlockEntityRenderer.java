@@ -2,8 +2,7 @@ package com.minelittlepony.client.render;
 
 import net.minecraft.block.CopperGolemStatueBlock;
 import net.minecraft.block.Oxidizable.OxidationLevel;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory.Context;
 import net.minecraft.client.render.block.entity.CopperGolemStatueBlockEntityRenderer;
 import net.minecraft.client.render.block.entity.state.CopperGolemStatueBlockEntityRenderState;
@@ -32,7 +31,7 @@ public class CopperPonyBlockEntityRenderer extends CopperGolemStatueBlockEntityR
             var oxidation = block.getOxidationLevel();
             Identifier texture = MineLittlePony.id("textures/entity/copper_golem/" + (oxidation == OxidationLevel.UNAFFECTED ? "" : oxidation.asString() + "_") + "copper_golem_dragon.png");
 
-            RenderLayer renderLayer = RenderLayer.getEntityCutoutNoCull(texture);
+            RenderLayer renderLayer = RenderLayers.entityCutoutNoCull(texture);
             queue.submitModel(model, state, matrices, renderLayer, state.lightmapCoordinates, OverlayTexture.DEFAULT_UV, 0, state.crumblingOverlay);
             matrices.pop();
         }

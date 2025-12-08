@@ -3,6 +3,7 @@ package com.minelittlepony.api.model.gear;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
@@ -14,7 +15,7 @@ public abstract class AbstractGearModel<T extends BipedEntityRenderState & PonyM
     private final float stackingHeight;
 
     public AbstractGearModel(ModelPart root, float stackingHeight) {
-        super(root, RenderLayer::getEntitySolid);
+        super(root, RenderLayers::entitySolid);
         this.stackingHeight = stackingHeight;
     }
 

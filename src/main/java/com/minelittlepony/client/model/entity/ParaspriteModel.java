@@ -1,7 +1,7 @@
 package com.minelittlepony.client.model.entity;
 
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.util.math.MathHelper;
 
@@ -18,7 +18,7 @@ public class ParaspriteModel extends EntityModel<VexRenderer.State> {
     private final ModelPart rightWing2;
 
     public ParaspriteModel(ModelPart root) {
-        super(root, RenderLayer::getEntityTranslucent);
+        super(root, RenderLayers::entityTranslucent);
         body = root.getChild("body");
         jaw = body.getChild("jaw");
         lips = body.getChild("lips");

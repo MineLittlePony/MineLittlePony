@@ -7,12 +7,12 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.item.ItemStack;
 
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.client.render.blockentity.skull.PonySkullRenderer.Data;
 
-import java.util.Set;
+import java.util.function.Consumer;
 
 public class PonyHeadModelRenderer implements SpecialModelRenderer<PonySkullRenderer.Data> {
 
@@ -40,7 +40,7 @@ public class PonyHeadModelRenderer implements SpecialModelRenderer<PonySkullRend
     }
 
     @Override
-    public void collectVertices(Set<Vector3f> vertices) {
+    public void collectVertices(Consumer<Vector3fc> vertices) {
         renderer.collectVertices(vertices);
     }
 }

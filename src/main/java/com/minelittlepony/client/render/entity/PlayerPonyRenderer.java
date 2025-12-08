@@ -1,13 +1,11 @@
 package com.minelittlepony.client.render.entity;
 
-import com.google.common.collect.ImmutableList.Builder;
 import com.minelittlepony.api.model.*;
 import com.minelittlepony.api.model.ModelAttributes.Mode;
 import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.api.pony.meta.Wearable;
 import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.client.model.*;
-import com.minelittlepony.client.render.DebugBoundingBoxRenderer;
 import com.minelittlepony.client.render.PonyRenderContext;
 import com.minelittlepony.client.render.entity.feature.*;
 import com.minelittlepony.client.render.entity.state.PlayerPonyRenderState;
@@ -22,8 +20,7 @@ import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerLikeEntity;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
@@ -139,12 +136,6 @@ public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLi
     }
 
     @Override
-    protected void appendHitboxes(Player entity, Builder<EntityHitbox> builder, float tickDelta) {
-        super.appendHitboxes(entity, builder, tickDelta);
-        DebugBoundingBoxRenderer.appendHitbox(entity, manager, builder, tickDelta);
-    }
-
-    @Override
     public final void renderRightArm(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, Identifier skinTexture, boolean sleeveVisible) {
         renderArm(matrices, queue, light, skinTexture, sleeveVisible, Arm.RIGHT);
     }
@@ -236,7 +227,7 @@ public class PlayerPonyRenderer<Player extends PlayerLikeEntity & ClientPlayerLi
             ponyModel.transform(state, BodyPart.LEGS, arm);
         }
 
-        queue.submitModelPart(arm, stack, RenderLayer.getEntityTranslucent(skinTexture), light, OverlayTexture.DEFAULT_UV, null);
+        queue.submitModelPart(arm, stack, RenderLayers.entityTranslucent(skinTexture), light, OverlayTexture.DEFAULT_UV, null);
         stack.pop();
     }
 
