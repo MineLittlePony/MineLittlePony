@@ -159,8 +159,8 @@ public class PonyStandRenderer extends LivingEntityRenderer<ArmorStandEntity, Po
 
         @SuppressWarnings({"rawtypes", "unchecked"})
         @Override
-        public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, PonyStandRenderer.State state, float limbAngle, float limbDistance) {
-            ((FeatureRenderer)feature).render(matrices, queue, light, state.ponyState, limbAngle, limbDistance);
+        public void render(MatrixStack matrices, OrderedRenderCommandQueue queue, int light, PonyStandRenderer.State state, float headYaw, float headPitch) {
+            ((FeatureRenderer)feature).render(matrices, queue, light, state.ponyState, headYaw, headPitch);
         }
     }
 
