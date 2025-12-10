@@ -34,7 +34,7 @@ abstract class MixinCopperGolemStatueModelRenderer implements SimpleSpecialModel
     private @Final Identifier texture;
 
     @Shadow
-    abstract void setAngles(MatrixStack matrices);
+    private static void setAngles(MatrixStack matrices) {}
 
 
     @Inject(
@@ -62,7 +62,7 @@ abstract class MixinCopperGolemStatueModelRenderer implements SimpleSpecialModel
         if (MobRenderers.COPPER_GOLEMS.option().get()) {
             Identifier ponifiedTexture = MineLittlePony.id(texture.getPath().replace(".png", "_dragon.png"));
             if (ResourceUtil.textureExists(ponifiedTexture)) {
-                this.setAngles(matrices);
+                setAngles(matrices);
                 CopperGolemStatueBlockEntityRenderState state = new CopperGolemStatueBlockEntityRenderState();
                 state.facing = Direction.SOUTH;
                 state.pose = Pose.STANDING;

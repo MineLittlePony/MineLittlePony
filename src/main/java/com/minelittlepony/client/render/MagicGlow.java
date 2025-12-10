@@ -60,7 +60,7 @@ public interface MagicGlow {
             texture = NO_TEXTURE_ID;
         }
         return RenderLayer.of("mlp_magic_glow_textured", RenderSetup.builder(shaders ? RenderPipelines.ENTITY_EYES : ENTITY_MAGIC_GLOW_PIPELINE)
-            .method_76560("Sampler0", texture, sampler)
+            .texture("Sampler0", texture, sampler)
             .layeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
             .outputTarget(OutputTarget.MAIN_TARGET)
             .outlineMode(OutlineMode.NONE)

@@ -9,14 +9,14 @@ import org.joml.Vector3fc;
 public interface VertexTransforms {
 
     static BakedQuad inflateQuad(BakedQuad quad, float inflation) {
-        Vector3fc[] inflatedVertices = new Vector3fc[BakedQuad.field_64572];
+        Vector3fc[] inflatedVertices = new Vector3fc[BakedQuad.NUM_VERTICES];
 
         Vec3i normal = quad.face().getOpposite().getVector();
         Vec3i normalizedNormal = new Vec3i(Math.abs(normal.getX()), Math.abs(normal.getY()), Math.abs(normal.getZ()));
         Vector3f inflationNormal = new Vector3f();
 
         for (int vertexIndex = 0; vertexIndex < inflatedVertices.length; vertexIndex++) {
-            Vector3fc vertex = quad.method_76648(vertexIndex);
+            Vector3fc vertex = quad.getPosition(vertexIndex);
             int inner = vertexIndex > 0 && vertexIndex < 3 ? 1 : -1;
             int lower = vertexIndex < 2 ? 1 : -1;
             inflatedVertices[vertexIndex] = inflationNormal.set(

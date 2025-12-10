@@ -58,29 +58,32 @@ dependencies {
     modApi fabricApi.module("fabric-api-base", project.fabric_version)
     modApi fabricApi.module("fabric-lifecycle-events-v1", project.fabric_version)
     modApi fabricApi.module("fabric-resource-loader-v0", project.fabric_version)
+    modApi fabricApi.module("fabric-key-binding-api-v1", project.fabric_version)
     modApi fabricApi.module("fabric-networking-api-v1", project.fabric_version)
+    modApi fabricApi.module("fabric-rendering-v1", project.fabric_version)
+    modApi fabricApi.module("fabric-transitive-access-wideners-v1", project.fabric_version)
 
-    modApi "com.minelittlepony:kirin:${project.kirin_version}"
+    modApi "com.minelittlepony:kirin:${project.kirin_version}", { exclude group: "net.fabricmc.fabric-api" }
     include "com.minelittlepony:kirin:${project.kirin_version}"
 
-    modApi "com.minelittlepony:mson:${project.mson_version}"
+    modApi "com.minelittlepony:mson:${project.mson_version}", { exclude group: "net.fabricmc.fabric-api" }
     include "com.minelittlepony:mson:${project.mson_version}"
 
-    modImplementation "com.minelittlepony:hdskins:${project.hd_skins_version}"
-    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    modImplementation "com.minelittlepony:hdskins:${project.hd_skins_version}", { exclude group: "net.fabricmc.fabric-api" }
+    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}", { exclude group: "net.fabricmc.fabric-api" }
+    modApi fabricApi.module("fabric-screen-api-v1", project.fabric_version)
 
     if (project.use_sodium == '1') {
-        modCompileOnly "maven.modrinth:sodium:${project.sodium_version}", { exclude group: "net.fabricmc.fabric-api" }
-        if (project.use_iris == '1') {
-            modCompileOnly "maven.modrinth:iris:${project.iris_version}", { exclude group: "net.fabricmc.fabric-api" }
-            modImplementation "org.anarres:jcpp:1.4.14"
-            modImplementation "org.antlr:antlr4-runtime:4.13.1"
-            modImplementation "io.github.douira:glsl-transformer:2.0.1"
-        } else {
-            modCompileOnly "maven.modrinth:iris-dummy:${project.iris_version}", { exclude group: "net.fabricmc.fabric-api" }
-        }
+        modCompileOnly "maven.modrinth:sodium:${project.sodium_version}"
+    }
+
+    if (project.use_sodium == '1' && project.use_iris == '1') {
+        modCompileOnly "maven.modrinth:iris:${project.iris_version}"
+        modImplementation "org.anarres:jcpp:1.4.14"
+        modImplementation "org.antlr:antlr4-runtime:4.13.1"
+        modImplementation "io.github.douira:glsl-transformer:2.0.1"
     } else {
-        modCompileOnly "maven.modrinth:iris-dummy:${project.iris_version}", { exclude group: "net.fabricmc.fabric-api" }
+        modCompileOnly "maven.modrinth:iris-dummy:${project.iris_version}"
     }
 }
 
