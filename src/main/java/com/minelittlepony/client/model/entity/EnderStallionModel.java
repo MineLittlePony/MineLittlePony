@@ -38,6 +38,7 @@ public class EnderStallionModel extends AlicornModel<EnderStallionRenderer.State
         if (state.isAttacking) {
             head.originY -= 5;
         }
+        hat.visible = state.isAttacking;
     }
 
     @Override
