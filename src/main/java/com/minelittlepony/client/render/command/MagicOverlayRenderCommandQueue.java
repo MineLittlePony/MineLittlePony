@@ -31,6 +31,8 @@ import net.minecraft.util.math.*;
 import org.jetbrains.annotations.Nullable;
 import org.joml.*;
 
+import com.minelittlepony.client.compat.iris.IrisApiCompat;
+
 import java.util.List;
 import java.util.function.Function;
 
@@ -52,7 +54,7 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
     public MagicOverlayRenderCommandQueue(OrderedRenderCommandQueue owner, RenderCommandQueue parent, Function<RenderLayer, @Nullable RenderLayer> layer, int color, List<Pass> passes) {
         this.owner = owner;
         this.parent = parent;
-        this.layer = layer;
+        this.layer = IrisApiCompat.isIrisLoaded() ? layer.andThen(IrisApiCompat::wrapExactlyOnce) : layer;
         this.color = ColorHelper.withAlpha(0.5F, color);
         this.passes = passes;
         red = ColorHelper.getRedFloat(color);
@@ -65,6 +67,9 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
     }
 
     private void submitCustomPasses(MatrixStack matrices, RenderLayer layer, PassedCustom custom, float scaleMultiple, @Nullable Sprite sprite) {
+        if (IrisApiCompat.isOnShadowPass()) {
+            return;
+        }
         MatrixStack commandMatrix = new MatrixStack();
         parent.submitCustom(matrices, layer, (entry, buffer) -> {
             buffer = sprite == null ? buffer : sprite.getTextureSpecificVertexConsumer(buffer);
@@ -106,8 +111,11 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
     }
 
     @Override
-    public <S> void submitModel(Model<? super S> model, S state, MatrixStack matrices, RenderLayer renderLayer, int light, int overlay, int tintedColor, Sprite sprite, int outline, CrumblingOverlayCommand crumblingOverlay) {
-        var l = layer.apply(renderLayer);
+    public <S> void submitModel(Model<? super S> model, S state, MatrixStack matrices, RenderLayer renderLayer, int light, int overlay, int tintedColor, @Nullable Sprite sprite, int outline, @Nullable CrumblingOverlayCommand crumblingOverlay) {
+        if (IrisApiCompat.isOnShadowPass()) {
+            return;
+        }
+        var l = IrisApiCompat.wrapExactlyOnce(layer.apply(renderLayer));
         if (l != null) {
             for (var pass : passes) {
                 matrices.push();
@@ -117,6 +125,7 @@ public class MagicOverlayRenderCommandQueue implements RenderCommandQueue {
                 }, null);
                 matrices.pop();
             }
+            parent.submitModel(model, state, matrices, renderLayer, light, overlay, tintedColor, sprite, outline, crumblingOverlay);
         }
     }
 

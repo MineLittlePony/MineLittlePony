@@ -12,6 +12,8 @@ import net.minecraft.client.util.math.MatrixStack.Entry;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.minelittlepony.client.compat.iris.IrisApiCompat;
+
 import java.util.function.*;
 
 public record CustomModelRenderCommand<S>(
@@ -32,7 +34,7 @@ public record CustomModelRenderCommand<S>(
             @Nullable Predicate<CustomModelRenderCommand<S>> anglesFunc) {
         queue.submitCustom(matrices, renderLayer, new CustomModelRenderCommand<>(
                 new MatrixStack(),
-                new OrderedRenderCommandQueueImpl.ModelCommand<>(matrices.peek().copy(), model, state, light, overlay, tint, sprite, outline, crumblingOverlay),
+                IrisApiCompat.iris$capture(new OrderedRenderCommandQueueImpl.ModelCommand<>(matrices.peek().copy(), model, state, light, overlay, tint, sprite, outline, crumblingOverlay)),
                 renderLayer,
                 layerFunc,
                 anglesFunc
@@ -77,11 +79,16 @@ public record CustomModelRenderCommand<S>(
                 }
 
                 matrices.pop();
+
+                if (bufferFunc != null) {
+                    provider.draw();
+                }
             }
         }
     }
 
     private void renderModel(VertexConsumer buffer) {
+        matrices.push();
         command.model().render(
             matrices,
             command.sprite() == null ? buffer : command.sprite().getTextureSpecificVertexConsumer(buffer),
@@ -89,5 +96,6 @@ public record CustomModelRenderCommand<S>(
             command.overlayCoords(),
             command.tintedColor()
         );
+        matrices.pop();
     }
 }

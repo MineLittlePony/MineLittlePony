@@ -1,22 +1,36 @@
 package com.minelittlepony.client.compat.iris;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.irisshaders.iris.api.v0.IrisApi;
+import net.minecraft.client.render.RenderLayer;
+
+import org.jetbrains.annotations.Nullable;
 
 public interface IrisApiCompat {
-    static boolean areShadersEnabled() {
-        if (!FabricLoader.getInstance().isModLoaded("iris")) {
-            return false;
-        }
+    static boolean isIrisLoaded() {
+        return FabricLoader.getInstance().isModLoaded("iris");
+    }
 
-        return IrisApi.getInstance().getConfig().areShadersEnabled();
+    static boolean areShadersEnabled() {
+        return isIrisLoaded() && IrisApiCompatImpl.areShadersEnabled();
     }
 
     static boolean isOnShadowPass() {
-        if (!FabricLoader.getInstance().isModLoaded("iris")) {
-            return false;
+        return isIrisLoaded() && IrisApiCompatImpl.isOnShadowPass();
+    }
+
+    static @Nullable RenderLayer wrapExactlyOnce(@Nullable RenderLayer layer) {
+        if (layer == null || !isIrisLoaded()) {
+            return layer;
         }
 
-        return IrisApi.getInstance().isRenderingShadowPass();
+        return IrisApiCompatImpl.wrapExactlyOnce(layer);
+    }
+
+    static <T> T iris$capture(T object) {
+        if (object == null || !isIrisLoaded()) {
+            return object;
+        }
+
+        return IrisApiCompatImpl.iris$capture(object);
     }
 }
