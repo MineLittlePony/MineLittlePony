@@ -4,10 +4,14 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.DrawStyle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.Colors;
 import net.minecraft.util.math.*;
 import net.minecraft.world.debug.gizmo.GizmoDrawing;
 
+import com.minelittlepony.api.config.PonyConfig;
+import com.minelittlepony.client.HorseCam;
 import com.minelittlepony.client.MineLittlePony;
+import com.minelittlepony.common.util.settings.Setting;
 
 public final class DebugBoundingBoxRenderer {
     public static void drawHitboxes(Entity entity, float tickProgress, boolean inLocalServer) {
@@ -30,6 +34,34 @@ public final class DebugBoundingBoxRenderer {
 
         box = box.offset(min.x, 0, min.z);
         GizmoDrawing.box(new Box(box.minX, box.minY, box.minZ, box.maxX, box.minY + (box.maxY - box.minY) * 0.6F, box.maxZ), DrawStyle.stroked(0xFFFF0000));
+
+        //drawFillyCamRays(entity, tickProgress);
+    }
+
+    public static void drawFillyCamRays(Entity entity, float tickProgress) {
+        Setting<Boolean> fillyCam = PonyConfig.getInstance().fillycam;
+
+        fillyCam.set(false);
+        final float vanillaHeight = entity.getEyeHeight(entity.getPose());
+        fillyCam.set(true);
+        final float alteredHeight = entity.getEyeHeight(entity.getPose());
+
+        final float pitch = entity.getPitch(tickProgress);
+        final float rescaledPitch = HorseCam.rescaleCameraPitch(entity, alteredHeight, vanillaHeight, pitch);
+
+        var a = entity.getEntityPos().add(0, vanillaHeight, 0);
+        var b = HorseCam.getRaycastPos(entity, a, rescaledPitch);
+        if (b != null) {
+            GizmoDrawing.line(a, b, Colors.RED, 4);
+        }
+
+        a = entity.getEntityPos().add(0, alteredHeight, 0);
+        b = HorseCam.getRaycastPos(entity, a, pitch);
+        if (b != null) {
+            GizmoDrawing.line(a, b, Colors.WHITE, 4);
+        }
+
+        GizmoDrawing.line(b, new Vec3d(b.x, b.y + (entity.getEntityPos().y - b.y + vanillaHeight), b.z), Colors.YELLOW, 4);
     }
 
     public static Box getBoundingBox(double x, double y, double z, float scale, float width, float height) {

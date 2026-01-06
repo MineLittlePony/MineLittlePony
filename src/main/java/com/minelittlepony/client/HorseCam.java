@@ -1,10 +1,15 @@
 package com.minelittlepony.client;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPosition;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.*;
+import net.minecraft.world.RaycastContext;
+
+import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.api.config.PonyConfig;
 import com.minelittlepony.api.pony.Pony;
@@ -14,7 +19,6 @@ public class HorseCam {
     private static float lastOriginalPitch;
     private static float lastComputedPitch;
 
-    private static final double HALF_PI = Math.PI / 2D;
     private static final double TO_DEGREES = 180D / Math.PI;
 
     /**
@@ -47,7 +51,8 @@ public class HorseCam {
                 return pitch;
             }
 
-            PlayerEntity player = MinecraftClient.getInstance().player;
+            MinecraftClient client = MinecraftClient.getInstance();
+            PlayerEntity player = client.player;
 
             // noop
             // Only run when the player has an item in their hands. Can't check for buckets specifically since mods exist.
@@ -66,8 +71,12 @@ public class HorseCam {
                 final float alteredHeight = player.getEyeHeight(player.getPose());
 
                 // only change the angle if required
-                if (!MathHelper.approximatelyEquals(vanillaHeight, alteredHeight)) {
-                    pitch = rescaleCameraPitch(vanillaHeight, pitch);
+                if (!MathHelper.approximatelyEquals(vanillaHeight, alteredHeight) && client.targetedEntity == null) {
+                    // noop
+                    // Ignore misses, helps with bows, arrows, and projectiles
+                    if (client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.BLOCK) {
+                        pitch = rescaleCameraPitch(player, alteredHeight, vanillaHeight, pitch);
+                    }
                 }
             }
 
@@ -88,41 +97,39 @@ public class HorseCam {
      *
      * @return The new pitch value, otherwise the original value passed in.
      */
-    public static float rescaleCameraPitch(double toHeight, float originalPitch) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        PlayerEntity player = client.player;
-        client.gameRenderer.updateCrosshairTarget(client.getRenderTickCounter().getTickProgress(false));
-        HitResult hit = client.crosshairTarget;
+    public static float rescaleCameraPitch(Entity entity, double fromHeight, double toHeight, float originalPitch) {
+        Vec3d start = entity.getEntityPos().add(0, fromHeight, 0);
+        Vec3d end = getRaycastPos(entity, start, originalPitch);
 
-        if (client.targetedEntity != null) {
+        if (end == null) {
             return originalPitch;
         }
 
-        // noop
-        // Ignore misses, helps with bows, arrows, and projectiles
-        if (hit == null || hit.getType() != HitResult.Type.BLOCK || player == null) {
-            return originalPitch;
-        }
-
-        return (float)adjustAngle(originalPitch, hit.getPos(), player.getEntityPos(), toHeight);
+        return (float)adjustAngle(originalPitch, entity.getEntityPos(), end, start, fromHeight, toHeight);
     }
 
-    private static double adjustAngle(double pitch, Vec3d hitPos, Vec3d pos, double toHeight) {
-        double x = horizontalDistance(pos, hitPos);
-        double y = pos.y + toHeight - hitPos.y;
+    public static @Nullable Vec3d getRaycastPos(Entity entity, Vec3d start, float pitch) {
+        float tickDelta = MinecraftClient.getInstance().getRenderTickCounter().getTickProgress(false);
+        BlockHitResult hit = entity.getEntityWorld().raycast(new RaycastContext(
+                start,
+                start.add(entity.getRotationVector(pitch, entity.getYaw(tickDelta)).multiply(16)),
+                RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.SOURCE_ONLY, entity)
+        );
+        return hit == null ? null : hit.getPos();
+    }
 
-        if (MathHelper.approximatelyEquals(y, 0)) {
-            return 0;
-        }
+    public static double adjustAngle(double pitch, Vec3d origin, Vec3d end, Vec3d start, double fromHeight, double toHeight) {
+        double x = horizontalDistance(start, end);
+        double y = origin.y - end.y + toHeight;
 
-        double newPitch = (HALF_PI - Math.atan(x / y)) * TO_DEGREES;
-        // Try not to break stuff
-        if (Double.isInfinite(newPitch) || Double.isNaN(newPitch)) {
+        if (x == 0) {
             return pitch;
         }
 
-        if (newPitch > 90) {
-            newPitch -= 180F;
+        double newPitch = Math.atan(y / x) * TO_DEGREES;
+        // Try not to break stuff
+        if (Double.isInfinite(newPitch) || Double.isNaN(newPitch)) {
+            return pitch;
         }
 
         return newPitch;
