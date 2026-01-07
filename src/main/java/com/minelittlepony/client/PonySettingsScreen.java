@@ -116,7 +116,7 @@ public class PonySettingsScreen extends GameGui {
         content.addButton(new Label(LEFT, row)).getStyle().setText(OPTIONS_PREFIX + "options");
 
         for (Setting<?> i : config.getCategory("settings").entries()) {
-            boolean enabled = i != config.fillycam || allowCameraChange;
+            boolean enabled = i == config.disablebucketfix ? config.fillycam.get() : i != config.fillycam || allowCameraChange;
             Button button = content
                 .addButton(new Toggle(LEFT, row += 20, ((Setting<Boolean>)i).get()))
                 .onChange(i == config.horsieMode ? (v -> {
@@ -124,12 +124,20 @@ public class PonySettingsScreen extends GameGui {
 
                     MineLittlePony.getInstance().getRenderDispatcher().initialise(MinecraftClient.getInstance().getEntityRenderDispatcher(), true);
                     return v;
-                }) : (Setting<Boolean>)i)
+                }) : i == config.fillycam ? (v -> {
+                    v = ((Setting<Boolean>)i).set(v);
+                    clearAndInit();
+                    return v;
+                }): (Setting<Boolean>)i)
                 .setEnabled(enabled);
             button.getStyle().setText(OPTIONS_PREFIX + i.name().toLowerCase());
             if (!enabled) {
                 button.getStyle()
                     .setTooltip(Text.translatable(OPTIONS_PREFIX + "option.disabled"))
+                    .setTooltipOffset(0, 0);
+            } else if (i == config.disablebucketfix) {
+                button.getStyle()
+                    .setTooltip(Text.translatable(OPTIONS_PREFIX + i.name().toLowerCase() + ".tooltip"))
                     .setTooltipOffset(0, 0);
             }
         }

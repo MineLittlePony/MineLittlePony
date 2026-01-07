@@ -43,6 +43,8 @@ public class PonyConfig extends Config {
                 .addComment("Controls whether ponies have snouts");
     public final Setting<Boolean> fillycam =   value("settings", "fillycam", true)
                 .addComment("Turn on to adjust the player's camera position to their model");
+    public final Setting<Boolean> disablebucketfix =   value("settings", "disablebucketfix", false)
+            .addComment("Turn on to disable the bucket fix for filly cam. Only use this if you have problems joining multiplayer servers (i.e. hypixel)");
     public final Setting<Boolean> showscale = value("settings", "showscale", true)
                 .addComment("Adjusts pony scales to match the show (approximate)");
     public final Setting<Boolean> fpsmagic =   value("settings", "fpsmagic", true)

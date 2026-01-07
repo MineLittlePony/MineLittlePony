@@ -22,7 +22,7 @@ public class HorseCam {
      */
     public static float transformCameraAngle(float pitch) {
         try {
-            if (!PonyConfig.getInstance().fillycam.get()) {
+            if (!PonyConfig.getInstance().fillycam.get() || PonyConfig.getInstance().disablebucketfix.get()) {
                 return pitch;
             }
 
@@ -81,7 +81,20 @@ public class HorseCam {
             return originalPitch;
         }
 
-        return (float)adjustAngle(originalPitch, entity.getEntityPos(), end, start, fromHeight, toHeight);
+        double x = horizontalDistance(start, end);
+        double y = entity.getY() - end.y + toHeight;
+
+        if (x == 0) {
+            return originalPitch;
+        }
+
+        double newPitch = Math.atan(y / x) * TO_DEGREES;
+        // Try not to break stuff
+        if (Double.isInfinite(newPitch) || Double.isNaN(newPitch)) {
+            return originalPitch;
+        }
+
+        return (float)newPitch;
     }
 
     public static @Nullable Vec3d getRaycastPos(Entity entity, Vec3d start, float pitch) {
@@ -91,23 +104,6 @@ public class HorseCam {
                 RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, entity)
         );
         return hit == null ? null : hit.getPos();
-    }
-
-    public static double adjustAngle(double pitch, Vec3d origin, Vec3d end, Vec3d start, double fromHeight, double toHeight) {
-        double x = horizontalDistance(start, end);
-        double y = origin.y - end.y + toHeight;
-
-        if (x == 0) {
-            return pitch;
-        }
-
-        double newPitch = Math.atan(y / x) * TO_DEGREES;
-        // Try not to break stuff
-        if (Double.isInfinite(newPitch) || Double.isNaN(newPitch)) {
-            return pitch;
-        }
-
-        return newPitch;
     }
 
     private static double horizontalDistance(Vec3d from, Vec3d to) {

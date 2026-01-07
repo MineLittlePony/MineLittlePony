@@ -19,6 +19,8 @@
   "minelp.options.showscale": "Show-accurate scaling",
   "minelp.options.fpsmagic": "Magic in first-person",
   "minelp.options.tpsmagic": "Magic in third-person",
+  "minelp.options.disablebucketfix": "Disable Bucket Fix",
+  "minelp.options.disablebucketfix.tooltip": "Turn on to disable the bucket fix for filly cam. Only use this if you have problems joining multiplayer servers (i.e. hypixel)",
   "minelp.options.ponyskulls": "Pony Skulls",
   "minelp.options.frustrum": "Frustum checks",
   "minelp.options.flappyelytras": "Flap Wings whilst Gliding",
