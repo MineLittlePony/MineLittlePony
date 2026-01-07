@@ -2,7 +2,6 @@ package com.minelittlepony.client;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityPosition;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -16,43 +15,23 @@ import com.minelittlepony.api.pony.Pony;
 import com.minelittlepony.common.util.settings.Setting;
 
 public class HorseCam {
-    private static float lastOriginalPitch;
-    private static float lastComputedPitch;
-
     private static final double TO_DEGREES = 180D / Math.PI;
-
-    /**
-     * Restores the previous camera (unadjusted) angle for the client when the server sends an update.
-     * This is to prevent issues caused by the server updating our pitch whenever the player leaves a portal.
-     */
-    public static EntityPosition transformIncomingServerCameraAngle(EntityPosition change) {
-        try {
-            if (!PonyConfig.getInstance().fillycam.get()) {
-                return change;
-            }
-            if (MathHelper.approximatelyEquals(change.pitch(), lastComputedPitch)) {
-                return new EntityPosition(change.position(), change.deltaMovement(), change.yaw(), lastOriginalPitch);
-            }
-        } catch (Throwable t) {
-            MineLittlePony.LOGGER.error("Error occured whilst handling player look {}", t);
-        }
-        return change;
-    }
 
     /**
      * Transforms the client pony's pitch to the corresponding angle for a human character.
      */
     public static float transformCameraAngle(float pitch) {
         try {
-            lastOriginalPitch = pitch;
-            lastComputedPitch = pitch;
-
             if (!PonyConfig.getInstance().fillycam.get()) {
                 return pitch;
             }
 
             MinecraftClient client = MinecraftClient.getInstance();
             PlayerEntity player = client.player;
+
+            if (player == null || client.isInSingleplayer() || client.isIntegratedServerRunning()) {
+                return pitch;
+            }
 
             // noop
             // Only run when the player has an item in their hands. Can't check for buckets specifically since mods exist.
@@ -75,17 +54,14 @@ public class HorseCam {
                     // noop
                     // Ignore misses, helps with bows, arrows, and projectiles
                     if (client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.BLOCK) {
-                        pitch = rescaleCameraPitch(player, alteredHeight, vanillaHeight, pitch);
+                        return rescaleCameraPitch(player, alteredHeight, vanillaHeight, pitch);
                     }
                 }
             }
-
-            lastComputedPitch = pitch;
-            return pitch;
         } catch (Throwable t) {
             MineLittlePony.LOGGER.info("Error occured when unconverting camera pitch: {}", t);
         }
-        return lastOriginalPitch;
+        return pitch;
     }
 
     /**
@@ -109,11 +85,10 @@ public class HorseCam {
     }
 
     public static @Nullable Vec3d getRaycastPos(Entity entity, Vec3d start, float pitch) {
-        float tickDelta = MinecraftClient.getInstance().getRenderTickCounter().getTickProgress(false);
         BlockHitResult hit = entity.getEntityWorld().raycast(new RaycastContext(
                 start,
-                start.add(entity.getRotationVector(pitch, entity.getYaw(tickDelta)).multiply(16)),
-                RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.SOURCE_ONLY, entity)
+                start.add(entity.getRotationVector(pitch, entity.getYaw()).multiply(16)),
+                RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, entity)
         );
         return hit == null ? null : hit.getPos();
     }

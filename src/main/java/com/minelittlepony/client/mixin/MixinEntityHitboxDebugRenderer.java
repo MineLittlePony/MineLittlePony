@@ -15,6 +15,9 @@ import com.minelittlepony.client.render.DebugBoundingBoxRenderer;
 abstract class MixinEntityHitboxDebugRenderer implements DebugRenderer.Renderer {
     @Inject(method = "drawHitbox", at = @At("RETURN"))
     private void onDrawHitbox(Entity entity, float tickProgress, boolean inLocalServer, CallbackInfo info) {
-        DebugBoundingBoxRenderer.drawHitboxes(entity, tickProgress, inLocalServer);
+        if (!inLocalServer) {
+            DebugBoundingBoxRenderer.drawHitboxes(entity, tickProgress);
+            DebugBoundingBoxRenderer.drawFillyCamRays(entity, tickProgress);
+        }
     }
 }

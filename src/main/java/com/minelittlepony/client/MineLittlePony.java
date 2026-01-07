@@ -44,6 +44,7 @@ public class MineLittlePony implements ClientModInitializer {
     public static final Logger LOGGER = LogManager.getLogger("MineLittlePony");
 
     public static final Identifier PONY_HITBOXES_DEBUG_HUD_ENTRY = id("pony_hitboxes");
+    public static final Identifier PONY_FILLYCAM_RAYS_DEBUG_HUD_ENTRY = id("pony_fillycam_rays");
 
     private PonyManagerImpl ponyManager;
     private VariatedTextureSupplier variatedTextures;
@@ -83,6 +84,7 @@ public class MineLittlePony implements ClientModInitializer {
 
         KeyBindingHelper.registerKeyBinding(keyBinding);
         DebugHudEntries.register(PONY_HITBOXES_DEBUG_HUD_ENTRY, new RendererDebugHudEntry());
+        DebugHudEntries.register(PONY_FILLYCAM_RAYS_DEBUG_HUD_ENTRY, new RendererDebugHudEntry());
         DebugHudEntries.register(PonyEntityRenderersDebugEntry.ID, new PonyEntityRenderersDebugEntry());
 
         ResourceLoader.get(ResourceType.CLIENT_RESOURCES).registerReloader(PonyManagerImpl.ID, ponyManager);

@@ -16,8 +16,7 @@
         "MixinHeldItemRenderer",
         "MixinLivingEntity",
         "MixinPlayerEntity",
-        "MixinPlayerMoveC2SPacket",
-        "MixinPlayerPositionLookS2CPacket",
+        "MixinPlayerInteractItemC2SPacket",
         "MixinVertextConsumers",
         "MixinGameRenderer",
         "MixinWorldRenderer"

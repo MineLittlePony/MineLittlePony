@@ -1,6 +1,5 @@
 package com.minelittlepony.api.pony.meta;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.StringIdentifiable;
 
 import com.minelittlepony.api.config.PonyConfig;

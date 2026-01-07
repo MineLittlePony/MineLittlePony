@@ -1,6 +1,7 @@
 package com.minelittlepony.client.render;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerLikeEntity;
 import net.minecraft.client.render.DrawStyle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -14,8 +15,8 @@ import com.minelittlepony.client.MineLittlePony;
 import com.minelittlepony.common.util.settings.Setting;
 
 public final class DebugBoundingBoxRenderer {
-    public static void drawHitboxes(Entity entity, float tickProgress, boolean inLocalServer) {
-        if (inLocalServer || !(entity instanceof LivingEntity l) || !MinecraftClient.getInstance().debugHudEntryList.isEntryVisible(MineLittlePony.PONY_HITBOXES_DEBUG_HUD_ENTRY)) {
+    public static void drawHitboxes(Entity entity, float tickProgress) {
+        if (!(entity instanceof LivingEntity l) || !MinecraftClient.getInstance().debugHudEntryList.isEntryVisible(MineLittlePony.PONY_HITBOXES_DEBUG_HUD_ENTRY)) {
             return;
         }
         var renderer = MineLittlePony.getInstance().getRenderDispatcher().getPonyRenderer(l);
@@ -35,10 +36,13 @@ public final class DebugBoundingBoxRenderer {
         box = box.offset(min.x, 0, min.z);
         GizmoDrawing.box(new Box(box.minX, box.minY, box.minZ, box.maxX, box.minY + (box.maxY - box.minY) * 0.6F, box.maxZ), DrawStyle.stroked(0xFFFF0000));
 
-        //drawFillyCamRays(entity, tickProgress);
+        drawFillyCamRays(entity, tickProgress);
     }
 
     public static void drawFillyCamRays(Entity entity, float tickProgress) {
+        if (!(entity instanceof ClientPlayerLikeEntity) || !MinecraftClient.getInstance().debugHudEntryList.isEntryVisible(MineLittlePony.PONY_FILLYCAM_RAYS_DEBUG_HUD_ENTRY)) {
+            return;
+        }
         Setting<Boolean> fillyCam = PonyConfig.getInstance().fillycam;
 
         fillyCam.set(false);
@@ -61,7 +65,10 @@ public final class DebugBoundingBoxRenderer {
             GizmoDrawing.line(a, b, Colors.WHITE, 4);
         }
 
-        GizmoDrawing.line(b, new Vec3d(b.x, b.y + (entity.getEntityPos().y - b.y + vanillaHeight), b.z), Colors.YELLOW, 4);
+        var corner = new Vec3d(b.x, b.y + (entity.getY() - b.y + vanillaHeight), b.z);
+
+        GizmoDrawing.line(b, corner, Colors.YELLOW, 4);
+        GizmoDrawing.line(a.withAxis(Direction.Axis.Y, corner.y), corner, Colors.BLUE, 4);
     }
 
     public static Box getBoundingBox(double x, double y, double z, float scale, float width, float height) {
