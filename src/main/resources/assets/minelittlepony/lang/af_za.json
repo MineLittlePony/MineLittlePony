@@ -18,6 +18,8 @@
   "minelp.options.showscale": "Toon-akkurate skaal",
   "minelp.options.fpsmagic": "Magie in eerstepersoon",
   "minelp.options.tpsmagic": "Magie in derdepersoon",
+  "minelp.options.disablebucketfix": "Deaktiveer Emmerherstel",
+  "minelp.options.disablebucketfix.tooltip": "Skakel aan om die emmerregstelling vir Vul-kamera te deaktiveer. Gebruik dit slegs as jy probleme ondervind om aan te sluit by multispeler-bedieners (i.e. hypixel)",
   "minelp.options.ponyskulls": "Ponieskedels",
   "minelp.options.frustrum": "Frustum tjeks",
   "minelp.options.flappyelytras": "Klap vlerke terwyl jy sweef",
