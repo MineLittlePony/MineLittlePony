@@ -19,6 +19,8 @@
   "minelp.options.showscale": "Adjusted Sails",
   "minelp.options.fpsmagic": "Sparklin' Riches",
   "minelp.options.tpsmagic": "Sparklin' sails",
+  "minelp.options.disablebucketfix": "Ride the rapids",
+  "minelp.options.disablebucketfix.tooltip": "Hoist the sails and take to the rapids! Only do this if the ports don't let you dock yer ship in their harbour (i.e. hypixel)",
   "minelp.options.ponyskulls": "Rendaaar mah heads",
   "minelp.options.frustrum": "Horsey Sails",
   "minelp.options.flappyelytras": "Look at yew, ye flapping like a wee bird",
