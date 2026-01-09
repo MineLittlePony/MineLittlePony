@@ -21,6 +21,6 @@ abstract class MixinPlayerInteractItemC2SPacket implements Packet<ClientPlayPack
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void onInit(Hand hand, int sequence, float yaw, float pitch, CallbackInfo into) {
-        this.pitch = HorseCam.transformCameraAngle(pitch);
+        this.pitch = HorseCam.transformCameraAngle(this.pitch);
     }
 }
