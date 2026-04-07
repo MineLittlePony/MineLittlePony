@@ -53,10 +53,9 @@ public interface ArmourRendererPlugin {
             case LEGS -> state.equippedLegsStack;
             case FEET -> state.equippedFeetStack;
             case BODY -> state.equippedChestStack;
+            case MAINHAND -> state.getMainHandItemStack();
+            case OFFHAND -> state.mainArm == Arm.LEFT ? state.leftHandItem : state.rightHandItem;
             default -> ItemStack.EMPTY;
-            // TODO: Mojaaaaaaang!!
-            //case MAINHAND -> state.getMainHandStack();
-            //case OFFHAND -> state.mainArm == Arm.LEFT ? state.leftHandStack : state.rightHandStack;
         }};
     }
 
